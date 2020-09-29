@@ -1,0 +1,4 @@
+{
+  "apiUrl": "http://voron.ismy.io",
+  "socketUrl": "ws://voron.ismy.io/websocket"
+}

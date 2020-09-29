@@ -1,0 +1,24 @@
+.v-btn-super {
+  .v-btn__content {
+    display: block;
+  }
+  span {
+    display: block;
+  }
+}
+
+.v-text-field-outer-btn {
+  .v-input__control {
+    min-height: 36px !important;
+  }
+  .v-input__prepend-outer, .v-input__append-outer {
+    margin-top: 0px !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+.file-system {
+  .is-directory, .is-directory.td {
+    cursor: pointer;
+  }
+}
