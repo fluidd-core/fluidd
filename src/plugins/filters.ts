@@ -65,6 +65,14 @@ const Filters = {
   },
 
   /**
+   * Formats a number representing mm to m if > 1000
+   */
+  getReadableLengthString (lengthInMm: number) {
+    if (lengthInMm > 1000) return (lengthInMm / 1000).toFixed(2) + 'm'
+    return (lengthInMm / 1000).toFixed(2) + 'mm'
+  },
+
+  /**
    * The filesystem sorter. This is copied from vuetify, and modified to ensure our directories
    * are always sorted to the top.
    */
@@ -134,6 +142,7 @@ declare module 'vue/types/vue' {
     capitalize(string: string): string;
     formatFileDateTime(datetime: string): string;
     getReadableFileSizeString(fileSizeInBytes: number): string;
+    getReadableLengthString(lengthInMm: number): string;
     /* eslint-disable @typescript-eslint/no-explicit-any */
     fileSystemSort(items: Array<any>, sortBy: string[], sortDesc: boolean[], locale: string): Array<any>;
     /* eslint-enable @typescript-eslint/no-explicit-any */

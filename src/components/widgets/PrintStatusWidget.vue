@@ -10,27 +10,37 @@
               :value="timeEstimates.progress"
               color="primary"
             >
-            <span class="percentComplete grey--text text-h5 font-weight-normal">{{ timeEstimates.progress.toFixed() }}%</span>
+            <span class="percentComplete grey--text text-h5 font-weight-normal">{{ timeEstimates.progress }}%</span>
           </v-progress-circular>
         </v-col>
         <v-col class="d-flex flex-column" style="overflow: hidden;" align="start">
-            <div class="mb-1 grey--text">
+            <div class="mb-1 grey--text" v-if="printTimeEstimationsType !== 'totals'">
               <v-tooltip left>
                 <template v-slot:activator="{ on, attrs }">
                   <v-icon v-bind="attrs" v-on="on" color="grey darken-2">mdi-timer-sand</v-icon>
                 </template>
-                estimated time left
+                <span>estimated time left</span>
               </v-tooltip>
               {{ timeEstimates.timeLeft }}
             </div>
             <div class="mb-1 grey--text">
               <v-tooltip left>
                 <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-bind="attrs" v-on="on" color="grey darken-2">mdi-clock-outline</v-icon>
+                  <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">mdi-clock-outline</v-icon>
                 </template>
-                duration &amp; total
+                {{ (printTimeEstimationsType !== 'totals') ? 'duration &amp; total' : 'duration' }}
               </v-tooltip>
-              {{ timeEstimates.duration }} <span class="grey--text text--darken-2">/ {{ timeEstimates.totalDuration }}</span>
+              <span>{{ timeEstimates.duration }}</span>
+              <span class="grey--text text--darken-2" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.totalDuration }}</span>
+            </div>
+            <div class="mb-1 grey--text" v-if="filamentEstimates !== ''">
+              <v-tooltip left>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">mdi-format-line-spacing</v-icon>
+                </template>
+                used filament
+              </v-tooltip>
+              <span class="grey--text text--darken-2">{{ filamentEstimates }}</span>
             </div>
             <div class="d-flex grey--text text--darken-2">
               <v-icon color="grey darken-2">mdi-file-document-outline</v-icon>
@@ -124,9 +134,35 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
     return this.$store.state.socket.printer.print_stats.filename
   }
 
-  get timeEstimates () {
-    return this.$store.getters['socket/getTimeEstimates']('slicer')
+  get printTimeEstimationsType () {
+    return this.$store.state.config.fileConfig.general.printTimeEstimationsType
   }
+
+  get timeEstimates () {
+    return this.$store.getters['socket/getTimeEstimates'](this.printTimeEstimationsType)
+  }
+
+  get filamentEstimates () {
+    const filamentUsed = this.$store.state.socket.printer.print_stats.filament_used || 0
+    const filamentTotal = this.$store.state.socket.printer.current_file.filament_total || 0
+    if (filamentUsed > 0) {
+      if (filamentTotal > 0) {
+        return `${this.$filters.getReadableLengthString(filamentUsed)} / ${this.$filters.getReadableLengthString(filamentTotal)}`
+      } else {
+        return this.$filters.getReadableLengthString(filamentUsed)
+      }
+    } else {
+      return ''
+    }
+  }
+
+  // get usedFilament () {
+  //   return this.$store.state.socket.printer.print_stats.filament_used
+  // }
+
+  // get estimatedTotalFilament () {
+  //   return this.$store.state.socket.printer.current_file.filament_total
+  // }
 
   cancelPrint () {
     SocketActions.printerPrintCancel()

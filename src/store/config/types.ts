@@ -27,6 +27,7 @@ export interface GeneralConfig {
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
   defaultToolheadMoveLength: string;
+  printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
 }
 
 export interface CameraConfig {

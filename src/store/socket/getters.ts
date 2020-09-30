@@ -25,29 +25,34 @@ export const getters: GetterTree<SocketState, RootState> = {
     // printing, busy, paused, ready, idle, standby
     if (state1 && state2) {
       if (
-        state1.toLowerCase() === 'printing' &&
-        state2.toLowerCase() !== 'printing'
-      ) {
-        return 'busy'
-      }
-      if (
         state2.toLowerCase() === 'paused'
       ) {
         return state2
       }
+      if (
+        state1.toLowerCase() === 'printing' &&
+        state2.toLowerCase() !== 'printing'
+      ) {
+        // The printers idle_timeout changes to printing when it's busy applying
+        // some change - but not necessarily printing anything. This state hopefully
+        // helps aleviate that confusion.
+        return 'Busy'
+      }
       return state1
     } else {
-      return 'ready'
+      return 'Loading'
     }
   },
 
   /**
    * Returns an object representing the time estimates of a current print.
    */
-  getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament'): TimeEstimates => {
+  getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament' | 'totals'): TimeEstimates => {
     // const filename = state.printer.print_stats.filename
-    const progress = state.printer.display_status.progress * 100
-    const duration = state.printer.print_stats.print_duration
+    const progress = state.printer.display_status.progress || 0
+    const duration = state.printer.print_stats.print_duration || 0
+    const usedFilament = state.printer.print_stats.filament_used || 0
+    const estimatedFilament = state.printer.current_file.filament_total || 0
     let timeLeft = 0
     let totalDuration = 0
 
@@ -55,12 +60,32 @@ export const getters: GetterTree<SocketState, RootState> = {
       case 'slicer': {
         totalDuration = (state.printer.current_file.estimated_time > 0) ? state.printer.current_file.estimated_time : duration
         timeLeft = totalDuration - duration
+        break
+      }
+      case 'filament': {
+        totalDuration = duration / (usedFilament / estimatedFilament) - duration
+        timeLeft = totalDuration - duration
+        break
+      }
+      case 'file': {
+        totalDuration = duration / (progress) - duration
+        timeLeft = totalDuration - duration
+        break
+      }
+      case 'totals': { // totals only.
+        totalDuration = 0
+        timeLeft = 0
+        break
+      }
+      default: { // totals only.
+        totalDuration = duration / (progress * 100) - duration
+        timeLeft = totalDuration - duration
       }
     }
 
     return {
       type,
-      progress: progress,
+      progress: (progress * 100).toFixed(),
       timeLeft: Vue.$filters.formatCounterTime(timeLeft),
       duration: Vue.$filters.formatCounterTime(duration),
       totalDuration: Vue.$filters.formatCounterTime(totalDuration)

@@ -29,14 +29,16 @@ export const actions: ActionTree<ConfigState, RootState> = {
    * under state.config.fileConfig
    */
   async saveGeneric ({ commit }, config: GenericSave) {
+    commit('setUnsavedChanges', true)
     commit('onSaveGeneric', config)
   },
 
   /**
    *
    */
-  async updateHiddenMacros (_, payload) {
-    console.log('updateHiddenMacros', payload)
+  async updateHiddenMacros ({ commit }, payload) {
+    commit('setUnsavedChanges', true)
+    commit('updateHiddenMacros', payload)
   },
 
   /**
@@ -55,7 +57,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Saves fileConfig to file.
    */
-  async saveFileConfig ({ state, rootState }) {
+  async saveFileConfig ({ commit, state, rootState }) {
     if (state.fileConfig && Object.keys(state.fileConfig).length > 0) {
       const formData = new FormData()
       const filename = Globals.SETTINGS_FILENAME
@@ -74,5 +76,6 @@ export const actions: ActionTree<ConfigState, RootState> = {
         }
       )
     }
+    commit('setUnsavedChanges', false)
   }
 }

@@ -6,7 +6,7 @@
           <v-card-title>
             <v-icon large left>mdi-cog</v-icon>
             <span class="title font-weight-light text-h5">UI Settings</span>
-            <v-btn color="primary" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">mdi-content-save-alert-outline</v-icon> Save Changes</v-btn>
+            <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">mdi-content-save-alert-outline</v-icon> Save Changes</v-btn>
           </v-card-title>
         </v-card>
         <v-row>
@@ -38,6 +38,10 @@ import TemperaturePresetsSettingsWidget from '@/components/widgets/settings/Temp
   }
 })
 export default class Settings extends Mixins(UtilsMixin) {
+  get hasUnsavedChanges () {
+    return this.$store.state.config.unsavedChanges
+  }
+
   saveFileConfig () {
     this.$store.dispatch('config/saveFileConfig')
   }

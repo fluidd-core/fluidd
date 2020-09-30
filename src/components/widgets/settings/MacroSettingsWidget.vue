@@ -2,6 +2,7 @@
   <v-card>
     <v-card-title>Dashboard Macros</v-card-title>
     <v-card-subtitle>Configure which macros appear on the dashboard.</v-card-subtitle>
+    <v-divider></v-divider>
     <v-card-text>
       <v-row>
         <v-col cols="12" md="6" class="py-0" v-for="(macro) in macros" :key="macro.name">

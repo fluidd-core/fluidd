@@ -2,7 +2,7 @@
 <div>
   <div class="d-flex justify-start">
     <div class="grey--text text--darken-1 align-self-end">{{ label }}</div>
-    <div class="grey--text text--lighten-1 text-h5 ml-auto">{{ newValue }}%</div>
+    <div class="grey--text text--lighten-1 text-h5 ml-auto">{{ newValue.toFixed() }}%</div>
   </div>
   <v-slider
     @change="emitChange(newValue)"

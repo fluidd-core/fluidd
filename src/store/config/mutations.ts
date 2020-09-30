@@ -50,8 +50,8 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Sets unsaved changes for file config.
    */
-  setUnsavedChanges (state) {
-    state.unsavedChanges = true
+  setUnsavedChanges (state, payload: boolean) {
+    state.unsavedChanges = payload
   },
 
   /**

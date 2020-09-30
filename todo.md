@@ -1,10 +1,9 @@
 # TODO [fluidd]
 
 ## Next Up
-- add a throttle to temp updates, print timers, position trackers.
-- Add initial documentation
-- Add initial commit requirements / help
-- add other types of print time estimates
+- toasts on error (like move is out of bounds!!)
+- Figure out a first release zip + process
+- Printer setup page + bed levelling
 
 ## Known Bugs:
 - during pause / resume - the button states change incorrectly
@@ -15,6 +14,8 @@
   - the metadata load fails because the file is no longer there.
 
 ## General Improvements
+- add console.log wrapper for dev vs prod
+- add a throttle to temp updates, print timers, position trackers.
 - Performance / memory heap checks
 - bed levelling
 - filament sensor status
