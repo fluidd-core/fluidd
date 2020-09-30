@@ -13,7 +13,8 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release": "standard-version"
   },
   "main": "index.js",
   "dependencies": {
@@ -60,6 +61,7 @@
     "fibers": "^5.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "standard-version": "^9.0.0",
     "typescript": "~3.9.3",
     "vue-cli-plugin-vuetify": "~2.0.7",
     "vue-template-compiler": "^2.6.11",
