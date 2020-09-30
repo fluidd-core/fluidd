@@ -17,12 +17,12 @@ Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 
 // Load API configuration
-fetch('/config.json')
+fetch('/config.json', { cache: 'no-store' })
   .then(res => res.json())
   .then(apiConfig => {
     // Commit the api configuration to our store.
     store.commit('config/onInitApiConfig', apiConfig)
-    return fetch(apiConfig.apiUrl + '/server/files/config/' + Globals.SETTINGS_FILENAME)
+    return fetch(apiConfig.apiUrl + '/server/files/config/' + Globals.SETTINGS_FILENAME, { cache: 'no-store' })
       .then(res => (!res.ok) ? undefined : res.json())
       .then((fileConfig) => {
         // Init the store. This should include any GUI settings we've loaded from moonraker.
