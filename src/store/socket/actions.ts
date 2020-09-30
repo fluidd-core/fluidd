@@ -85,12 +85,6 @@ export const actions: ActionTree<SocketState, RootState> = {
       // We're good, move on. Start by loading the temperature history.
       SocketActions.serverTemperatureStore()
     }
-
-    // Vue.prototype.$socket.sendObj('server.files.get_directory', { path: 'gcodes' }, 'getDirectory');
-    // Vue.prototype.$socket.sendObj('server.files.get_directory', { path: 'config' }, 'getDirectory');
-    // Vue.prototype.$socket.sendObj('server.files.get_directory', { path: 'config_examples' }, 'getDirectory');
-    // Vue.prototype.$socket.sendObj('server.files.get_directory', { path: '/gcodes' }, 'getDirectoryRoot') // file info
-    // Vue.prototype.$socket.sendObj('machine.gpio_power.devices', {}, 'getPowerDevices'); // power plugin
   },
 
   /**
@@ -217,23 +211,25 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * ==========================================================================
    * Automated notifications via socket
-   * Note that klipper will send an update every 250ms, if the data changed.
-   * This applies per object subscribed.
+   * Note that klipper will send an update every 250ms, if the data CHANGED.
+   * This applies per object subscribed - which can add up.
    * ==========================================================================
    */
 
   /** Automated notify events via socket */
   async notifyStatusUpdate ({ state, commit }, payload) {
-    // TODO: Maybe we need to debounce / throttle these notifications.
-    // Should start by debouncing by default, and have an exception list
-    // for things we don't want to miss, like target temp changes etc.
+    // TODO: We potentially get many updates here.
+    // Consider caching the updates and sending them every <interval>.
+    // We don't want to miss an update - but also don't need all of them
+    // so quickly.
+
+    // Take payload, put it in buffer object.
+    // add setTimeout to empty the buffer and run the below..
 
     if (payload) {
       for (const key in payload) {
         const val = payload[key]
         // Skip anything we need here.
-        // gcode_macro's have already been added during the object subscribe
-        // so we can safely ignore them here.
         if (
           !key.includes('gcode_macro')
         ) {
@@ -256,9 +252,6 @@ export const actions: ActionTree<SocketState, RootState> = {
             ('temperature' in val || 'target' in val) // Ensures the node has a temp or target val...
           ) {
             const r = configureChartEntry(key, val, state)
-            // if (key.includes('chamber')) {
-            //   console.log('got chamber update', key, val, r)
-            // }
             commit('addChartValue', r.temperature)
             commit('addChartValue', r.target)
           }

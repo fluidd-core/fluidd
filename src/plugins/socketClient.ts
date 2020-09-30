@@ -64,10 +64,9 @@ export class WebSocketClient {
         }
         console.debug(`${this.logPrefix} Response error:`, d.error)
         this.store.dispatch('socket/onSocketError', d.error)
-        return
       }
 
-      if (request) {
+      if (request && !d.error) {
         // these are specific answers to a request we've made.
         // Build the response, including a non-enumerable ref of the original request.
         let result = (d.result) ? d.result : d.params
