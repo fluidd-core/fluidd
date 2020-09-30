@@ -29,6 +29,7 @@ import UtilsMixin from '@/mixins/utils'
 import MacroSettingsWidget from '@/components/widgets/settings/MacroSettingsWidget.vue'
 import GeneralSettingsWidget from '@/components/widgets/settings/GeneralSettingsWidget.vue'
 import TemperaturePresetsSettingsWidget from '@/components/widgets/settings/TemperaturePresetsSettingsWidget.vue'
+import EventBus from '@/eventBus'
 
 @Component({
   components: {
@@ -43,6 +44,7 @@ export default class Settings extends Mixins(UtilsMixin) {
   }
 
   saveFileConfig () {
+    EventBus.$emit('flashMessage')
     this.$store.dispatch('config/saveFileConfig')
   }
 }

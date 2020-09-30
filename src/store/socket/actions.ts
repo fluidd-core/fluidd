@@ -5,6 +5,7 @@ import { RootState } from '../types'
 import { configureChartEntry } from '../helpers'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
+import EventBus from '@/eventBus'
 
 export const actions: ActionTree<SocketState, RootState> = {
   /**
@@ -41,7 +42,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       if (payload.__request__ && payload.__request__.wait) {
         commit('removeWait', payload.__request__.wait)
       }
-      console.debug('throw an error to the user', payload.message)
+      EventBus.$emit('flashMessage', { type: 'error', timeout: -1, text: payload.message })
     }
     if (payload.code === 503) {
       //  && payload.message.toLowerCase() === 'klippy host not connected'

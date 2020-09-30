@@ -12,7 +12,7 @@ export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
   state: {
     version: '0.0.1',
-    darkMode: false
+    darkMode: true
   },
   modules: {
     config,
