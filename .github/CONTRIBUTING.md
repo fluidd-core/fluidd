@@ -2,30 +2,25 @@
 
 ## Project setup
 ```
-npm install
-```
+# Install dependencies.
+$ npm install
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+# Configure environment.
+$ cd fluidd
+$ cp .env.local.example .env.local
 
-### Compiles and minifies for production
-```
-npm run build
-```
+# Compile and serve for development.
+$ npm start
 
-### Run your unit tests
-```
-npm run test:unit
-```
+# Compile and minify for prod
+$ npm run build
 
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
+# Run unit tests
+$ npm run test:unit
 
-### Lints and fixes files
-```
-npm run lint
+# Run E2E tests
+$ npm run test:e2e
+
+# Lint and fix files
+$ npm run link
 ```

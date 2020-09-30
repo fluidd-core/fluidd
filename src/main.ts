@@ -17,8 +17,21 @@ Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 
 // Load API configuration
-fetch('/config.json', { cache: 'no-store' })
-  .then(res => res.json())
+// If we're in a local development environment,
+// then we should load the env variables instead of the
+// config.json
+const promise = new Promise<ApiConfig>((resolve, reject) => {
+  if (process.env.VUE_APP_API && process.env.VUE_APP_SOCKET) {
+    resolve({ apiUrl: process.env.VUE_APP_API, socketUrl: process.env.VUE_APP_SOCKET })
+  } else {
+    fetch('/config.json', { cache: 'no-store' })
+      .then(res => res.json())
+      .then(resolve)
+      .catch(reject)
+  }
+})
+
+promise
   .then(apiConfig => {
     // Commit the api configuration to our store.
     store.commit('config/onInitApiConfig', apiConfig)
@@ -45,7 +58,11 @@ fetch('/config.json', { cache: 'no-store' })
           }).$mount('#app')
         })
       })
-  })
-  .catch((e) => {
+  }).catch((e) => {
     console.error(e)
   })
+
+export interface ApiConfig {
+  apiUrl: string;
+  socketUrl: string;
+}
