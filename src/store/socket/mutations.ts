@@ -38,13 +38,13 @@ export const mutations: MutationTree<SocketState> = {
         Vue.set(state.printer, payload.key, payload.payload)
       } else {
         Object.keys(payload.payload).forEach((p) => {
+          // Leaving the if here, although it should
+          // always evaluate true since we never
+          // get an update unless something has changed.
           if (
             o[p] !== payload.payload[p]
           ) {
             Vue.set(state.printer[payload.key], p, payload.payload[p])
-          } else {
-            // never getting here...
-            // i think because updates are only sending changed values.
           }
         })
       }
