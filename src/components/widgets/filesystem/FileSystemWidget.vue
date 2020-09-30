@@ -163,7 +163,6 @@ import { Directory, File } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
-import { Waits } from '@/globals'
 import { DialogData } from '@/types'
 import { clone } from 'lodash-es'
 import { AxiosResponse } from 'axios'
@@ -299,7 +298,7 @@ export default class FileSystemWidget extends Vue {
     }
   }
 
-  uploadFile (file: any) {
+  uploadFile (file: globalThis.File) {
     const formData = new FormData()
     let filename = file.name.replace(' ', '_')
     filename = `${this.currentPath}/${filename}`.substring(7)
@@ -317,8 +316,8 @@ export default class FileSystemWidget extends Vue {
   }
 
   // This feels hacky...
-  downloadFile (item: any) {
-    const filename = item.name
+  downloadFile (item: File) {
+    const filename = item.name || ''
     const filepath = `/server/files/${this.currentPath}/${item.name}`
     this.$http.get(
       this.apiUrl + filepath,

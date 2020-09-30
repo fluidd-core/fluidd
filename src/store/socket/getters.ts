@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { SocketState, TimeEstimates } from './types'
+import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet } from './types'
 import { RootState } from '../types'
 import { chartConfiguration } from '@/globals'
 import { TinyColor } from '@ctrl/tinycolor'
@@ -85,12 +85,12 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Return available heaters
    */
-  getHeaters: (state) => {
+  getHeaters: (state): Heater[] => {
     if (
       state.printer.heaters.available_heaters &&
       state.printer.heaters.available_heaters.length
     ) {
-      const r: any = []
+      const r: Heater[] = []
       state.printer.heaters.available_heaters.forEach((e: string) => {
         const config = (state.printer.configfile.config[e]) ? state.printer.configfile.config[e] : undefined
         r.push({
@@ -100,7 +100,7 @@ export const getters: GetterTree<SocketState, RootState> = {
           maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
         })
       })
-      return r.sort((a: any, b: any) => {
+      return r.sort((a: Heater, b: Heater) => {
         const name1 = a.name.toUpperCase()
         const name2 = b.name.toUpperCase()
         return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
@@ -112,12 +112,12 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
   * Return available temperature fans
   */
-  getFans: (state) => {
+  getFans: (state): Fan[] => {
     if (
       state.temperature_fans &&
       state.temperature_fans.length
     ) {
-      const r: any = []
+      const r: Fan[] = []
       state.temperature_fans.forEach((e: string) => {
         const config = (state.printer.configfile.config['temperature_fan ' + e]) ? state.printer.configfile.config['temperature_fan ' + e] : undefined
         r.push({
@@ -135,12 +135,12 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Return available temperature probes / sensors.
    */
-  getSensors: (state) => {
+  getSensors: (state): Sensor[] => {
     if (
       state.temperature_sensors &&
       state.temperature_sensors.length
     ) {
-      const r: any = []
+      const r: Sensor[] = []
       state.temperature_sensors.forEach((e: string) => {
         r.push({
           name: e,
@@ -180,7 +180,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getChartData: (state) => {
-    const chartData: {[key: string]: Array<{[key: string]: any}> } = {
+    const chartData: Chart = {
       labels: [],
       datasets: []
     }
@@ -190,7 +190,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       // Beds should probably be some variation of blue;
       // Hotends should be some variation of red;
       // Other sensors can hue off'f green.
-      const defaults: {[key: string]: any } = {
+      const defaults: ChartDataSet = {
         data: item.data,
         label: item.label,
         display: false,

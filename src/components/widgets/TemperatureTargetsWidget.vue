@@ -86,6 +86,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputTemperature from '@/components/inputs/InputTemperature.vue'
 import UtilsMixin from '@/mixins/utils'
+import { Fan, Heater } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -105,11 +106,11 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
     return this.$store.getters['socket/getFans']
   }
 
-  setHeaterTargetTemp (item: any, target: any) {
+  setHeaterTargetTemp (item: Heater, target: number) {
     this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${item.name} TARGET=${target}`)
   }
 
-  setFanTargetTemp (item: any, target: any) {
+  setFanTargetTemp (item: Fan, target: number) {
     this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${item.name} TARGET=${target}`)
   }
 

@@ -1,7 +1,7 @@
 import _Vue from 'vue'
 import Axios, { AxiosStatic } from 'axios'
 
-export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue, options?: AxiosPluginOptions): void {
+export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
   // do stuff with options
   Vue.prototype.$http = Axios
   Vue.$http = Axios

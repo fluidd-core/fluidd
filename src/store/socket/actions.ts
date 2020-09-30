@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { SocketState, ChartItem } from './types'
+import { SocketState, ChartDataSet } from './types'
 import { RootState } from '../types'
 import { configureChartEntry } from '../helpers'
 import { Globals } from '@/globals'
@@ -59,18 +59,18 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Print cancelled confirmation.
    */
-  async onPrintCancel ({ commit }, payload) {
+  async onPrintCancel () {
     console.log('Print Cancelled')
   },
 
   /**
    * Print paused confirmation.
    */
-  async onPrintPause ({ commit }, payload) {
+  async onPrintPause () {
     console.log('Print Paused')
   },
 
-  async onPrintResume ({ commit }, payload) {
+  async onPrintResume () {
     console.log('Print Resumed')
   },
 
@@ -162,7 +162,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       if (originalKey.includes(' ')) {
         key = key.split(' ')[1]
       }
-      const data: ChartItem[] = [
+      const data: ChartDataSet[] = [
         { label: key, data: [], radius: 0 },
         { label: `${key}Target`, data: [], radius: 0 }
       ]
@@ -283,7 +283,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifyFilelistChanged ({ dispatch }, payload) {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true }) // Passed on to the files module
   },
-  async notifyMetadataUpdate ({ commit, state }, payload) {
+  async notifyMetadataUpdate (_, payload) {
     console.log('metadataUpdate', payload)
   },
 
@@ -306,7 +306,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     }
     commit('addConsoleEntry', payload.replace(/(?:\r\n|\r|\n)/g, '<br>'))
   },
-  async addMacro ({ commit, state, rootState }, macro) {
+  async addMacro ({ commit, rootState }, macro) {
     // Macros should include a property to indicate if they're visible
     // on the dashboard or not. This comes from the fileConfig.
     const hidden = rootState.config?.fileConfig?.dashboard?.hiddenMacros.includes(macro)

@@ -17,17 +17,7 @@
 import { Component, Vue, Watch } from 'vue-property-decorator'
 import TemperatureChartWidget from '@/components/widgets/TemperatureChartWidget.vue'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
-import { Chart } from 'chart.js'
-
-export interface Data {
-  label: string;
-  data: Value[];
-}
-
-export interface Value {
-  x: Date;
-  y: number;
-}
+import { ChartData, Chart } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -52,19 +42,13 @@ export default class TemperatureCard extends Vue {
   }
 
   @Watch('allChartData')
-  onAllChartDataChanged (val: any) {
-    if (val.datasets.length) {
+  onAllChartDataChanged (val: Chart) {
+    if (val.datasets && val.datasets.length) {
       this.start()
     }
   }
 
-  mounted () {
-    // we should setup a watch and start once we have initial data.
-    // this.start()
-  }
-
   private start () {
-    // this.chartData.datasets = this.$store.state.socket.chart
     this.chartData = this.allChartData
     this.chartReady = true
   }

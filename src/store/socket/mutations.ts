@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
-import { SocketState, ChartItem, Macro } from './types'
+import { SocketState, ChartDataSet, Macro } from './types'
 import { state as originalState, state } from './index'
 import { chartConfiguration } from '@/globals'
 
@@ -84,7 +84,7 @@ export const mutations: MutationTree<SocketState> = {
     }
   },
   addInitialChartData (state, payload) {
-    payload.forEach((item: ChartItem) => {
+    payload.forEach((item: ChartDataSet) => {
       state.chart.push(item)
     })
   },

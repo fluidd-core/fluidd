@@ -1,13 +1,11 @@
 <script lang="ts">
-/* eslint-disable padded-blocks */
-import { Vue, Component, Prop, Mixins, Emit } from 'vue-property-decorator'
+import { Vue, Component, Prop, Mixins } from 'vue-property-decorator'
 import Chart from 'chart.js'
 import VueChart from 'vue-chartjs'
 import 'chartjs-plugin-colorschemes'
 
 @Component({})
 export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueChart.mixins.reactiveProp) {
-
   @Prop({ required: true, default: {} })
   public chartData!: Chart.ChartData
 
@@ -69,7 +67,6 @@ export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueCha
 
   private applyDefaultOptions () {
     const ticks = this.getXTicks()
-    // this.options.onClick = this.onClick
     this.options.maintainAspectRatio = false
     this.options.responsive = true
     this.options.scales = {
@@ -149,33 +146,6 @@ export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueCha
     this.options.hover = {
       mode: undefined
     }
-  }
-
-  private onClick (
-    event?: MouseEvent | undefined,
-    activeElements?: {}[] | undefined
-  ): any {
-    const element = this.chart.getElementAtEvent(event)
-    if (element && element.length > 0) {
-      this.clickChartElement(element)
-    }
-  }
-
-  /**
-   * Reset chart position
-   */
-  // @Watch('resetChart')
-  // private resetChartPosition() {
-  //   console.log(this.chart);
-  //   if (this.resetChart) {
-  //     const chart: any = this.zoomChartInstance;
-  //     chart.resetZoom();
-  //   }
-  // }
-
-  @Emit('click-chart-element')
-  public clickChartElement (element: any) {
-    return element
   }
 }
 

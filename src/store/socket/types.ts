@@ -4,7 +4,7 @@ export interface SocketState {
   waits: string[]; // list of things that we might be waiting on, like a gcode script to finish.
   macros: Macros;
   console: string[]; // console stream.
-  chart: ChartItem[]; // chart data
+  chart: ChartDataSet[]; // chart data
   temperature_fans: string[]; // maintains a list of available temp fans
   temperature_sensors: string[]; // maintains a list of available probes
   heater_fans: string[]; // maintains a list of available heater fans
@@ -20,44 +20,10 @@ export interface Macro {
   visible: boolean;
 }
 
-export interface ChartItem {
-  label: string;
-  data: ChartDataItem[];
-  radius: number;
-}
-
-export interface ChartDataItem {
-  x: Date;
-  y: number;
-}
-
 export interface SocketError {
     code: number;
     message: string;
 }
-// export interface Printer {
-//   // [key: string]: string[] | PrinterInfo | PrintStats | undefined | {[key: string]: {[key: string]: string} | string };
-//   info?: PrinterInfo;
-//   objects: string[];
-//   macros: string[];
-//   print_stats: PrintStats;
-//   idle_timeout: IdleTimeout;
-// }
-
-// export interface PrintStats {
-//   state: string;
-// }
-
-// export interface PrinterInfo {
-//   config_file: string;
-//   cpu_info: string;
-//   hostname: string;
-//   klipper_path: string;
-//   log_file: string;
-//   python_path: string;
-//   software_version: string;
-//   state: string;
-// }
 
 export interface TimeEstimates {
   type: 'file' | 'slicer' | 'filament';
@@ -75,4 +41,42 @@ export interface FileChangeSocketResponse {
 export interface FileChangeItem {
   root: string;
   path: string;
+}
+
+export interface Heater {
+  name: string;
+  minTemp: number;
+  maxTemp: number;
+}
+
+export interface Fan {
+  name: string;
+  minTemp: number;
+  maxTemp: number;
+}
+
+export interface Sensor {
+  name: string;
+}
+
+export interface Chart {
+  labels: {}[]; // Filled by chartjs
+  datasets: ChartDataSet[];
+}
+
+export interface ChartDataSet {
+  data: ChartData[];
+  label: string;
+  display?: boolean;
+  radius: number;
+  spanGaps?: boolean;
+  borderWidth?: number;
+  fill?: boolean;
+  borderColor?: string;
+  backgroundColor?: string;
+}
+
+export interface ChartData {
+  x: Date;
+  y: number;
 }

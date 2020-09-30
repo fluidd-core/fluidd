@@ -42,7 +42,7 @@ export const SocketActions = {
   async printerPrintCancel () {
     Vue.$socket.emit(
       'printer.print.cancel', {
-        action: 'onPrintCancel',
+        action: 'socket/onPrintCancel',
         wait: Waits.onPrintCancel
       }
     )
@@ -51,7 +51,7 @@ export const SocketActions = {
   async printerPrintPause () {
     Vue.$socket.emit(
       'printer.print.pause', {
-        action: 'onPrintPause',
+        action: 'socket/onPrintPause',
         wait: Waits.onPrintPause
       }
     )
@@ -60,7 +60,7 @@ export const SocketActions = {
   async printerPrintResume () {
     Vue.$socket.emit(
       'printer.print.resume', {
-        action: 'onPrintResume',
+        action: 'socket/onPrintResume',
         wait: Waits.onPrintResume
       }
     )

@@ -7,6 +7,7 @@
 - add other types of print time estimates
 
 ## Known Bugs:
+- during pause / resume - the button states change incorrectly
 - multi line gcodes not having a Send: prefix after the first line
 - move app.vue css to its own css file
 - if you complete a print, then delete the original gcode;
