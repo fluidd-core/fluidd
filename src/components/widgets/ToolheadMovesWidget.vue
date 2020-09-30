@@ -2,21 +2,21 @@
   <v-container fluid class="pa-0">
     <v-row no-gutters>
       <v-col class="pa-2" offset="3">
-        <v-btn @click="sendMoveGcode('Y', moveDistance)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0" color="secondary"><v-icon>mdi-arrow-up</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Y', toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0" color="secondary"><v-icon>mdi-arrow-up</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2" offset="3">
-        <v-btn @click="sendMoveGcode('Z', moveDistance)" :disabled="hasWaits || !zHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-up</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Z', toolheadMoveLength)" :disabled="hasWaits || !zHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-up</v-icon></v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col class="pa-2">
-        <v-btn @click="sendMoveGcode('X', '-'+moveDistance)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-left</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('X', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-left</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2">
         <v-btn @click="sendGcode('G28 X Y', waits.onHomeXY)" :loading="hasWait(waits.onHomeXY)" :disabled="hasWaits" :min-width="40" class="pa-0" :color="(!xyHomed) ? 'warning' : 'secondary'"><v-icon>mdi-home</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2">
-        <v-btn @click="sendMoveGcode('X', moveDistance)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-right</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('X', toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-right</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2">
         <v-btn @click="sendGcode('G28 Z', waits.onHomeZ)" :loading="hasWait(waits.onHomeZ)" :disabled="hasWaits" :min-width="40" class="pa-0" :color="(!zHomed) ? 'warning' : 'secondary'"><v-icon>mdi-home</v-icon></v-btn>
@@ -24,15 +24,15 @@
     </v-row>
     <v-row no-gutters>
       <v-col class="pa-2" offset="3">
-        <v-btn @click="sendMoveGcode('Y', '-'+moveDistance)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-down</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Y', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-down</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2" offset="3">
-        <v-btn @click="sendMoveGcode('Z', '-'+moveDistance)" :disabled="hasWaits || !zHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-down</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Z', '-' + toolheadMoveLength)" :disabled="hasWaits || !zHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>mdi-arrow-down</v-icon></v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters>
       <v-col class="pa-2">
-        <v-btn-toggle mandatory dense v-model="toolheadMoveDistance">
+        <v-btn-toggle mandatory dense v-model="toolheadMoveLength">
           <v-btn :min-width="52" color="secondary" value="0.1">0.1</v-btn>
           <v-btn :min-width="52" class="pa-0" color="secondary" value="1.0">1.0</v-btn>
           <v-btn :min-width="52" class="pa-0" color="secondary" value="10">10</v-btn>
@@ -53,15 +53,13 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   waits = Waits
   moveLength = ''
 
-  get toolheadMoveDistance () {
-    if (this.moveLength === '') {
-      return this.$store.state.config.fileConfig.general.defaultToolheadMoveLength
-    } else {
-      return this.moveLength
-    }
+  get toolheadMoveLength () {
+    return (this.moveLength === '')
+      ? this.$store.state.config.fileConfig.general.defaultToolheadMoveLength
+      : this.moveLength
   }
 
-  set toolheadMoveDistance (val: string) {
+  set toolheadMoveLength (val: string) {
     this.moveLength = val
   }
 }

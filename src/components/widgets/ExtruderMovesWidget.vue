@@ -4,7 +4,7 @@
     <v-col class="pa-2" cols="4">
       <v-layout flex-column>
         <v-btn
-          @click="sendRetractGcode(feedqty, feedrate, waits.onExtract)"
+          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
           :disabled="hasWaits || !extrudeRetractReady"
           color="secondary"
           class="mb-4">
@@ -12,7 +12,7 @@
           <v-icon>mdi-chevron-up</v-icon>
         </v-btn>
         <v-btn
-          @click="sendExtrudeGcode(feedqty, feedrate, waits.onExtrude)"
+          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
           :disabled="hasWaits || !extrudeRetractReady"
           color="secondary">
           Extrude
@@ -57,7 +57,9 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   feedLength = -1
 
   get extrudeSpeed () {
-    return (this.feedSpeed === -1) ? this.$store.state.config.fileConfig.general.defaultExtrudeSpeed : this.feedSpeed
+    return (this.feedSpeed === -1)
+      ? this.$store.state.config.fileConfig.general.defaultExtrudeSpeed
+      : this.feedSpeed
   }
 
   set extrudeSpeed (val: number) {
@@ -65,7 +67,9 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   }
 
   get extrudeLength () {
-    return (this.feedLength === -1) ? this.$store.state.config.fileConfig.general.defaultExtrudeLength : this.feedLength
+    return (this.feedLength === -1)
+      ? this.$store.state.config.fileConfig.general.defaultExtrudeLength
+      : this.feedLength
   }
 
   set extrudeLength (val: number) {
@@ -77,20 +81,18 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   }
 
   get minExtrudeTemp () {
-    if (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp) {
-      return this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp
-    }
-    return 0
+    return (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
+      ? this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp
+      : 0
   }
 
   /**
    * Ensures our temps are high enough to extrude or retract.
    */
   get extrudeRetractReady () {
-    if (this.extruder && this.minExtrudeTemp) {
-      return (this.extruder.temperature > this.minExtrudeTemp)
-    }
-    return false
+    return (this.extruder && this.minExtrudeTemp)
+      ? (this.extruder.temperature > this.minExtrudeTemp)
+      : false
   }
 }
 </script>
