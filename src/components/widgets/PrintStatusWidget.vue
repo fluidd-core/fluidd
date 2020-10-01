@@ -62,7 +62,7 @@
             @click="cancelPrint()"
             :loading="hasWait(waits.onPrintCancel)"
             :width="buttonWidths"
-            v-if="printerPrinting"
+            v-if="printerPrinting || printerPaused"
             color="secondary"
             class="mb-2">
             <v-icon small>mdi-window-close</v-icon>
@@ -155,14 +155,6 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
       return ''
     }
   }
-
-  // get usedFilament () {
-  //   return this.$store.state.socket.printer.print_stats.filament_used
-  // }
-
-  // get estimatedTotalFilament () {
-  //   return this.$store.state.socket.printer.current_file.filament_total
-  // }
 
   cancelPrint () {
     SocketActions.printerPrintCancel()

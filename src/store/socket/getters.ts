@@ -63,12 +63,12 @@ export const getters: GetterTree<SocketState, RootState> = {
         break
       }
       case 'filament': {
-        totalDuration = duration / (usedFilament / estimatedFilament) - duration
+        totalDuration = duration / (usedFilament / estimatedFilament)
         timeLeft = totalDuration - duration
         break
       }
       case 'file': {
-        totalDuration = duration / (progress) - duration
+        totalDuration = duration / (progress)
         timeLeft = totalDuration - duration
         break
       }
