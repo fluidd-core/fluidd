@@ -15,7 +15,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
 
   /**
-    * Fired when the socket first opens.
+    * Fired when the socket opens.
     */
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
@@ -23,7 +23,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   /**
-   * Fired when the socket first closes.
+   * Fired when the socket closes.
    */
   async onSocketClose ({ commit }, payload) {
     commit('onSocketClose', payload)

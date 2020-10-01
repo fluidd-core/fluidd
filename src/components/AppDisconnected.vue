@@ -13,7 +13,7 @@
         Connecting to printer...
       </v-col>
       <v-col cols="6" v-if="!klippyConnected">
-        <v-alert type="error" v-if="!klippyConnected">
+        <v-alert type="error">
           Klippy has disconnected or is shutdown.<br />
           <span v-html=klippyError></span>
         </v-alert>
@@ -26,6 +26,7 @@
           rounded
           height="6"
         ></v-progress-linear>
+        <v-btn block color="warning" @click="reload()" class="me-2 mb-2">Refresh</v-btn>
       </v-col>
     </v-row>
   </v-container>
@@ -60,6 +61,10 @@ export default class AppDisconnected extends Mixins(UtilsMixin) {
       return message.replace(/(?:\r\n|\r|\n)/g, '<br />')
     }
     return ''
+  }
+
+  reload () {
+    window.location.reload()
   }
 }
 </script>
