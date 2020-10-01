@@ -48,7 +48,6 @@ export const getters: GetterTree<SocketState, RootState> = {
    * Returns an object representing the time estimates of a current print.
    */
   getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament' | 'totals'): TimeEstimates => {
-    // const filename = state.printer.print_stats.filename
     const progress = state.printer.display_status.progress || 0
     const duration = state.printer.print_stats.print_duration || 0
     const usedFilament = state.printer.print_stats.filament_used || 0
@@ -83,13 +82,14 @@ export const getters: GetterTree<SocketState, RootState> = {
       }
     }
 
-    return {
+    const o = {
       type,
       progress: (progress * 100).toFixed(),
       timeLeft: Vue.$filters.formatCounterTime(timeLeft),
       duration: Vue.$filters.formatCounterTime(duration),
       totalDuration: Vue.$filters.formatCounterTime(totalDuration)
     }
+    return o
   },
 
   /**
