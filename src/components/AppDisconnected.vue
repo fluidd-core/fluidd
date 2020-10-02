@@ -21,6 +21,7 @@
       </v-col>
       <v-col cols="6" v-if="!printerConnected">
         <v-progress-linear
+          class="mb-4"
           color="warning"
           indeterminate
           rounded

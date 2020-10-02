@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>General Settings</v-card-title>
+    <v-card-title><v-icon left>mdi-cogs</v-icon> Settings</v-card-title>
     <v-card-subtitle>General settings.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>

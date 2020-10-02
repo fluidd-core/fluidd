@@ -25,7 +25,8 @@ export const Waits = Object.freeze({
   onSetFlow: 'onSetFlow',
   onZAdjust: 'onZAdjust',
   onRetract: 'onRetract',
-  onExtrude: 'onExtrude'
+  onExtrude: 'onExtrude',
+  onMeshCalibrate: 'onMeshCalibrate'
 })
 
 /* eslint-disable @typescript-eslint/camelcase */
@@ -39,4 +40,38 @@ export const chartConfiguration: ChartConfiguration = Object.freeze({
     }
   }
 })
+
+export const defaultPlotLayout = Object.freeze({
+  showScale: true,
+  plot_bgcolor: 'transparent',
+  paper_bgcolor: 'transparent',
+  margin: {
+    l: 0,
+    r: 100,
+    b: 0,
+    t: 0
+  },
+  scene: {
+    camera: {
+      eye: {
+        x: -1.25,
+        y: -1.25,
+        z: 0.5
+      }
+    },
+    xaxis: {
+      color: '#999',
+      range: [0, 200]
+    },
+    yaxis: {
+      color: '#999',
+      range: [0, 200]
+    },
+    zaxis: {
+      color: '#999',
+      range: [-1, 1]
+    }
+  }
+})
+
 /* eslint-enable @typescript-eslint/camelcase */

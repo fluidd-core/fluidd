@@ -1,12 +1,14 @@
-import { DialogData, NewDirectory } from './dialogs'
+import { FileSystemDialogData, NewDirectory } from './dialogs'
 import { ChartConfiguration, ChartColors, ChartNamedColors } from './chart'
 import { FlashMessage } from './flashmessage'
+import { MeshData } from './mesh'
 
 export {
-  DialogData,
+  FileSystemDialogData,
   NewDirectory,
   ChartConfiguration,
   ChartColors,
   ChartNamedColors,
-  FlashMessage
+  FlashMessage,
+  MeshData
 }

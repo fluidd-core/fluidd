@@ -64,9 +64,10 @@ export class WebSocketClient {
         }
         console.debug(`${this.logPrefix} Response error:`, d.error)
         this.store.dispatch('socket/onSocketError', d.error)
+        return
       }
 
-      if (request && !d.error) {
+      if (request) {
         // these are specific answers to a request we've made.
         // Build the response, including a non-enumerable ref of the original request.
         let result = (d.result) ? d.result : d.params
@@ -198,7 +199,7 @@ interface SocketResponse {
   params?: Array<object>; // generic responses
   id?: number; // specific response
   result?: object; // specific response
-  error?: SocketError; // specific response
+  error?: string | SocketError; // specific response
 }
 
 interface SocketError {

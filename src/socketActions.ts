@@ -3,15 +3,23 @@ import { Waits } from '@/globals'
 
 export const SocketActions = {
   async printerInfo () {
-    Vue.prototype.$socket.emit(
+    Vue.$socket.emit(
       'printer.info', {
         action: 'socket/onPrinterInfo'
       }
     )
   },
 
+  async printerQueryEndstops () {
+    Vue.$socket.emit(
+      'printer.query_endstops.status', {
+        action: 'socket/onQueryEndstops'
+      }
+    )
+  },
+
   async printerObjectsList () {
-    Vue.prototype.$socket.emit(
+    Vue.$socket.emit(
       'printer.objects.list', {
         action: 'socket/onPrinterObjectsList'
       }
@@ -19,7 +27,7 @@ export const SocketActions = {
   },
 
   async printerObjectsSubscribe (objects: {[key: string]: null}) {
-    Vue.prototype.$socket.emit(
+    Vue.$socket.emit(
       'printer.objects.subscribe', {
         action: 'socket/onPrinterObjectsSubscribe',
         params: {
@@ -87,7 +95,7 @@ export const SocketActions = {
   },
 
   async serverTemperatureStore () {
-    Vue.prototype.$socket.emit(
+    Vue.$socket.emit(
       'server.temperature_store', {
         action: 'socket/onTemperatureStore'
       }

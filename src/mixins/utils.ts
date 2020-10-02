@@ -112,4 +112,16 @@ export default class UtilsMixin extends Vue {
       G1 E${amount} F${rate * 60}`
     this.sendGcode(gcode, wait)
   }
+
+  get printerSupportsQgl (): boolean {
+    return 'quad_gantry_level' in this.$store.state.socket.printer.configfile.config
+  }
+
+  get printerSupportsZtilt (): boolean {
+    return 'z_tilt' in this.$store.state.socket.printer.configfile.config
+  }
+
+  get allHomed (): boolean {
+    return this.$store.getters['socket/getHomedAxes']('xyz')
+  }
 }

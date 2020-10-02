@@ -2,8 +2,8 @@
   <v-dialog
     @input="emitChange(value)"
     :value="value"
+    :max-width="maxWidthValue"
     persistent
-    max-width="250px"
   >
     <v-card>
       <v-card-title>
@@ -32,6 +32,13 @@ export default class DialogInput extends Mixins(UtilsMixin) {
 
   @Prop({ type: String, required: true })
   title!: string
+
+  @Prop({ type: Number, required: false, default: 250 })
+  maxWidth!: number
+
+  get maxWidthValue (): string | undefined {
+    return (this.maxWidth) ? this.maxWidth.toString() + 'px' : undefined
+  }
 
   emitChange (val: boolean) {
     this.$emit('input', val)

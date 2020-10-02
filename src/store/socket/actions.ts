@@ -26,6 +26,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Fired when the socket closes.
    */
   async onSocketClose ({ commit }, payload) {
+    commit('resetState')
     commit('onSocketClose', payload)
   },
 
@@ -42,7 +43,17 @@ export const actions: ActionTree<SocketState, RootState> = {
       if (payload.__request__ && payload.__request__.wait) {
         commit('removeWait', payload.__request__.wait)
       }
-      EventBus.$emit('flashMessage', { type: 'error', timeout: -1, text: payload.message })
+
+      // If our message contains json, we should try to parse it.
+      // This is pretty bad, should get moonraker to fix this response.
+      let message = ''
+      try {
+        message = JSON.parse(payload.message.replace(/'/g, '"')).message
+      } catch (e: any) {
+        message = payload.message
+      }
+
+      EventBus.$emit('flashMessage', { type: 'error', timeout: -1, text: message })
     }
     if (payload.code === 503) {
       //  && payload.message.toLowerCase() === 'klippy host not connected'
@@ -55,6 +66,10 @@ export const actions: ActionTree<SocketState, RootState> = {
         SocketActions.printerInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
+  },
+
+  async onQueryEndstops ({ commit }, payload) {
+    commit('onQueryEndstops', payload)
   },
 
   /**
@@ -184,7 +199,14 @@ export const actions: ActionTree<SocketState, RootState> = {
     // This initial subscribe also gives us all of our temperature fans, probes etc..
     // so we can populate a list of these things, without having to re-iterate the
     // whole printer object later.
-    const keys = ['temperature_fan', 'temperature_probe', 'temperature_sensor', 'heater_fan']
+    const keys = [
+      'temperature_fan',
+      'temperature_probe',
+      'temperature_sensor',
+      'heater_fan',
+      'filament_switch_sensor',
+      'output_pin'
+    ]
     const r: {[key: string]: string[]} = {}
 
     Object.keys(payload.status).forEach((p) => {

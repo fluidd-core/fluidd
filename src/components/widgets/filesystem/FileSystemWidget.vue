@@ -163,7 +163,7 @@ import { Directory, File } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
-import { DialogData } from '@/types'
+import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
 import { AxiosResponse } from 'axios'
 
@@ -191,7 +191,7 @@ export default class FileSystemWidget extends Vue {
   ]
 
   uploadDialog = false
-  dialog: DialogData = {
+  dialog: FileSystemDialogData = {
     type: '',
     active: false,
     title: '',

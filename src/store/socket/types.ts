@@ -2,12 +2,15 @@ export interface SocketState {
   open: boolean;
   error: SocketError | null;
   waits: string[]; // list of things that we might be waiting on, like a gcode script to finish.
+  endstops: EndStops;
   macros: Macros;
   console: string[]; // console stream.
   chart: ChartDataSet[]; // chart data
   temperature_fans: string[]; // maintains a list of available temp fans
   temperature_sensors: string[]; // maintains a list of available probes
   heater_fans: string[]; // maintains a list of available heater fans
+  filament_switch_sensors: string[]; // maintains a list of available filament switch sensors
+  output_pins: string[]; // maintains a list of available output pins
   printer: any;
 }
 
@@ -79,4 +82,40 @@ export interface ChartDataSet {
 export interface ChartData {
   x: Date;
   y: number;
+}
+
+export interface EndStops {
+  [key: string]: 'TRIGGERED' | 'open';
+}
+
+export interface RunoutSensor {
+  name: string;
+  enabled: boolean;
+  filament_detected: boolean;
+}
+
+export interface BedMesh {
+  profile_name: string;
+  active: boolean;
+  markedForRemoval?: boolean;
+  markedForSave?: boolean;
+  mesh_max?: number[];
+  mesh_min?: number[];
+  mesh_matrix?: number[][];
+  probed_matrix?: number[][];
+}
+
+export interface BedMeshProfile {
+  algo: string;
+  max_x: string;
+  max_y: string;
+  mesh_x_pps: string;
+  mesh_y_pps: string;
+  min_x: string;
+  min_y: string;
+  points: string;
+  tension: string;
+  version: string;
+  x_count: string;
+  y_count: string;
 }

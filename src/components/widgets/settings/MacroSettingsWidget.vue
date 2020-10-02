@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Dashboard Macros</v-card-title>
+    <v-card-title><v-icon left>mdi-file-code</v-icon> Macros</v-card-title>
     <v-card-subtitle>Configure which macros appear on the dashboard.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>

@@ -5,6 +5,14 @@
       <span class="title font-weight-light text-h5">Toolhead</span>
       <v-spacer />
       <v-btn
+        v-if="!printerPrinting"
+        @click="sendGcode('M84')"
+        :disabled="hasWaits"
+        class="mr-2"
+        color="secondary">
+          MOTORS OFF
+      </v-btn>
+      <v-btn
         v-if="!printerPrinting && printerSupportsZtilt"
         @click="sendGcode('Z_TILT', waits.onZTilt)"
         :loading="hasWait(waits.onZTilt)"
@@ -28,7 +36,7 @@
         :loading="hasWait(waits.onHomeAll)"
         :disabled="hasWaits"
         :color="(!allHomed) ? 'warning' : 'secondary'">
-          <v-icon>mdi-home</v-icon> All
+          <v-icon small class="mr-1">mdi-home</v-icon> All
       </v-btn>
     </v-card-title>
     <toolhead-widget></toolhead-widget>
@@ -48,17 +56,5 @@ import { Waits } from '@/globals'
 })
 export default class ToolheadCard extends Mixins(UtilsMixin) {
   waits = Waits
-
-  get printerSupportsQgl (): boolean {
-    return 'quad_gantry_level' in this.$store.state.socket.printer.configfile.config
-  }
-
-  get printerSupportsZtilt (): boolean {
-    return 'z_tilt' in this.$store.state.socket.printer.configfile.config
-  }
-
-  get allHomed (): boolean {
-    return this.$store.getters['socket/getHomedAxes']('xyz')
-  }
 }
 </script>

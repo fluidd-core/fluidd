@@ -1,6 +1,6 @@
 import { Directory, File } from '@/store/files/types'
 
-export interface DialogData {
+export interface FileSystemDialogData {
   type: 'rename' | 'createdir' | '';
   active: boolean;
   title: string;
@@ -11,4 +11,10 @@ export interface DialogData {
 
 export interface NewDirectory {
   name: string;
+}
+
+export interface SaveMeshDialog {
+  open: boolean;
+  profileName: string;
+  removeDefault: boolean;
 }

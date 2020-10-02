@@ -11,7 +11,8 @@
     </v-toolbar-title>
     <v-spacer />
     <v-btn color="secondary" class="mr-2" to="/"><v-icon small class="mr-2">mdi-home</v-icon> Dashboard</v-btn>
-    <!-- <v-btn color="secondary" class="mr-2" to="/configuration"><v-icon small class="mr-2">mdi-tune</v-icon> Configuration</v-btn> -->
+    <v-btn color="secondary" class="mr-2" to="/configuration"><v-icon small class="mr-2">mdi-tune</v-icon> Configuration</v-btn>
+    <v-btn color="secondary" class="mr-2" to="/settings"><v-icon small class="mr-2">mdi-cog</v-icon> Settings</v-btn>
     <v-spacer />
     <v-tooltip bottom v-if="printerConnected && klippyConnected">
       <template v-slot:activator="{ on, attrs }">
@@ -19,7 +20,7 @@
       </template>
       Emergency Stop
     </v-tooltip>
-    <v-btn icon color="white" class="mr-2" to="/settings"><v-icon small>mdi-cog</v-icon></v-btn>
+    <!-- <v-btn icon color="white" class="mr-2" to="/settings"><v-icon small>mdi-cog</v-icon></v-btn> -->
   </v-app-bar>
 </template>
 
@@ -54,8 +55,8 @@ export default class AppBar extends Mixins(UtilsMixin) {
   // Watch currentfile and refresh its metadata to ensure
   // our status has the correct data.
   @Watch('currentFile')
-  oncurrentFileChanged (val: string) {
-    if (val && val.length > 0) {
+  onCurrentFileChanged (val: string) {
+    if (val && val.length > 0 && val !== 'standby') {
       SocketActions.serverFilesMetaData(val)
     }
   }

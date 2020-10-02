@@ -2,12 +2,21 @@ import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
 import { SocketState, ChartDataSet, Macro } from './types'
-import { state as originalState, state } from './index'
+import { state, getDefaultState } from './index'
 import { chartConfiguration } from '@/globals'
 
 export const mutations: MutationTree<SocketState> = {
   resetState (state) {
-    Vue.set(state, 'printer', originalState.printer)
+    const newState = getDefaultState()
+    Vue.set(state, 'printer', newState.printer)
+    Vue.set(state, 'chart', newState.chart)
+    Vue.set(state, 'waits', newState.waits)
+    Vue.set(state, 'filament_switch_sensors', newState.filament_switch_sensors)
+    Vue.set(state, 'heater_fans', newState.heater_fans)
+    Vue.set(state, 'output_pins', newState.output_pins)
+    Vue.set(state, 'temperature_fans', newState.temperature_fans)
+    Vue.set(state, 'temperature_sensors', newState.temperature_sensors)
+    Vue.set(state, 'endstops', newState.endstops)
   },
   setFansProbes (state, payload) {
     if (
@@ -24,9 +33,9 @@ export const mutations: MutationTree<SocketState> = {
   onSocketClose (state) {
     state.open = false
   },
-  // onSocketError (state, payload: SocketError) {
-  //   state.error = payload
-  // },
+  onQueryEndstops (state, payload) {
+    state.endstops = payload
+  },
   onPrinterBusy (state, payload: boolean) {
     state.printer.busy = payload
   },
@@ -82,6 +91,9 @@ export const mutations: MutationTree<SocketState> = {
     if (state.waits.length) {
       state.waits.splice(state.waits.indexOf(payload, 0), 1)
     }
+  },
+  clearEndStops (state) {
+    state.endstops = {}
   },
   addInitialChartData (state, payload) {
     payload.forEach((item: ChartDataSet) => {
