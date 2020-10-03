@@ -49,7 +49,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       let message = ''
       try {
         message = JSON.parse(payload.message.replace(/'/g, '"')).message
-      } catch (e: any) {
+      } catch (e) {
         message = payload.message
       }
 

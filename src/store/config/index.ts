@@ -16,7 +16,7 @@ export const state: ConfigState = {
   },
   fileConfig: {
     general: {
-      printTimeEstimationsType: 'filament',
+      printTimeEstimationsType: 'file',
       defaultExtrudeLength: 10,
       defaultExtrudeSpeed: 5,
       defaultToolheadMoveLength: '1.0'
