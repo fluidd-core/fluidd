@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.2](https://github.com/cadriel/fluidd/compare/v0.0.1...v0.0.2) (2020-10-04)
+
+
+### Features
+
+* bed mesh, runout sensors & end stops ([d533b99](https://github.com/cadriel/fluidd/commit/d533b99ef8eccc4744c9749376171b638bce4a20))
+
+
+### Bug Fixes
+
+* allow force refresh on socket disconnection ([4c6e316](https://github.com/cadriel/fluidd/commit/4c6e316c01991c57f13d641dd73827b453042ff9))
+* cancel button during pause ([6647b25](https://github.com/cadriel/fluidd/commit/6647b250197c39265ee64c55cc5b1ed83693bca1))
+* default time estimation now klipper / file based ([6f1503a](https://github.com/cadriel/fluidd/commit/6f1503a144ecb19b95236fce077b7a4ec3654057))
+* time estimations no longer return nan ([d5dea3c](https://github.com/cadriel/fluidd/commit/d5dea3c9efc98e9e6560cc3f2b59d7fc48a5c7f0))
+
 ### 0.0.1 (2020-09-30)
 
 
