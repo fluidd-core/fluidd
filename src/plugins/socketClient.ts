@@ -95,7 +95,7 @@ export class WebSocketClient {
     if (this.reconnectCount <= this.allowedReconnectAttempts) {
       this.reconnectCount += 1
       this.connection = null
-      console.log(`${this.logPrefix} Reconnecting in ${this.reconnectInterval}`)
+      console.debug(`${this.logPrefix} Reconnecting in ${this.reconnectInterval}`)
       setTimeout(() => {
         this.connect()
       }, this.reconnectInterval)
@@ -133,7 +133,7 @@ export class WebSocketClient {
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
-      console.log(`${this.logPrefix} Not ready.`)
+      console.debug(`${this.logPrefix} Not ready.`)
     }
   }
 }

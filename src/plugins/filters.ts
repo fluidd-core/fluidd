@@ -87,7 +87,6 @@ const Filters = {
 
         let sortA = a[sortKey]
         let sortB = b[sortKey]
-        // console.log(a.type)
 
         if (sortDesc[i]) {
           [sortA, sortB] = [sortB, sortA]

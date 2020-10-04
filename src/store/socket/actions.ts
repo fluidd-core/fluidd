@@ -76,18 +76,18 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Print cancelled confirmation.
    */
   async onPrintCancel () {
-    console.log('Print Cancelled')
+    console.debug('Print Cancelled')
   },
 
   /**
    * Print paused confirmation.
    */
   async onPrintPause () {
-    console.log('Print Paused')
+    console.debug('Print Paused')
   },
 
   async onPrintResume () {
-    console.log('Print Resumed')
+    console.debug('Print Resumed')
   },
 
   async onPrinterInfo ({ commit }, payload) {
@@ -300,7 +300,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true }) // Passed on to the files module
   },
   async notifyMetadataUpdate (_, payload) {
-    console.log('metadataUpdate', payload)
+    console.debug('metadataUpdate', payload)
   },
 
   /**

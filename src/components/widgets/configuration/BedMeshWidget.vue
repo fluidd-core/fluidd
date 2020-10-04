@@ -220,14 +220,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
   saveToConfig (config: SaveMeshDialog) {
     if (config.profileName !== this.currentMesh.profile_name) {
-      console.log('saving as', config.profileName)
       this.sendGcode('BED_MESH_PROFILE SAVE=' + config.profileName)
     }
     if (config.removeDefault) {
-      console.log('removing default')
       this.sendGcode('BED_MESH_PROFILE REMOVE=' + this.currentMesh.profile_name)
     }
-    console.log('sending save')
     this.sendGcode('SAVE_CONFIG')
   }
 

@@ -65,7 +65,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
       // let file = new File([JSON.stringify({ webcam: state.webcam, gui: state.gui })], 'gui.json');
       formData.append('file', file, filename)
       formData.append('root', 'config')
-      console.log('uploading configuration...', filename, formData)
+      console.debug('uploading configuration...', filename, formData)
       Vue.$http.post(
         rootState.config?.apiUrl + '/server/files/upload',
         formData,

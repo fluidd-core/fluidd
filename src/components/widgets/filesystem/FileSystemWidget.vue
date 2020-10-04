@@ -303,7 +303,6 @@ export default class FileSystemWidget extends Vue {
     let filename = file.name.replace(' ', '_')
     filename = `${this.currentPath}/${filename}`.substring(7)
     formData.append('file', file, filename)
-    console.log('uploading a file...', filename, formData)
     this.$http.post(
       this.apiUrl + '/server/files/upload',
       formData,
