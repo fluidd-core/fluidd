@@ -3,9 +3,9 @@
 ## Next Up
 - move to mdi svg icons, and reduce overall size
 - add custompios image
-- figure out a best approach for nginx
 - setup discord?
-- 
+- dynamic favicon that looks like the percent finished ring
+- Config file list / editing
 
 ## Known Bugs:
 - multi line gcodes not having a Send: prefix after the first line

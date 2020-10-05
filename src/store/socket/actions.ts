@@ -133,7 +133,9 @@ export const actions: ActionTree<SocketState, RootState> = {
       let key = k
       if (k.includes(' ')) key = key.replace(' ', '.')
       if (k.includes('gcode_macro')) {
-        dispatch('addMacro', k.split(' ')[1])
+        const split: string[] = k.split(' ')
+        split.shift()
+        dispatch('addMacro', split.join(' '))
       } else {
         commit('onPrinterObjectsList', key)
       }
