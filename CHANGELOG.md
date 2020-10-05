@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.3](https://github.com/cadriel/fluidd/compare/v0.0.2...v0.0.3) (2020-10-05)
+
+
+### Bug Fixes
+
+* config now correctly applies when no valid env or config.json given ([ba8ae43](https://github.com/cadriel/fluidd/commit/ba8ae43ed1a20524fafaccb4bba00da62bb391d4))
+* macro's with spaces now show in the UI correctly ([d13bb0c](https://github.com/cadriel/fluidd/commit/d13bb0cac9389efb26c7223d7d3cd7a0277d5597))
+
 ### [0.0.2](https://github.com/cadriel/fluidd/compare/v0.0.1...v0.0.2) (2020-10-04)
 
 
