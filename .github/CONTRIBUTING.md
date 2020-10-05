@@ -7,7 +7,10 @@ $ npm install
 
 # Configure environment.
 $ cd fluidd
-$ cp .env.local.example .env.local
+
+# Copy local dev environment file, and edit it to suite your requirements.
+$ cp .env.development.local.example .env.development.local
+$ vim .env.development.local
 
 # Compile and serve for development.
 $ npm start

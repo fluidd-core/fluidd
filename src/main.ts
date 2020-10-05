@@ -19,13 +19,35 @@ Vue.use(FiltersPlugin)
 // Load API configuration
 // If we're in a local development environment,
 // then we should load the env variables instead of the
-// config.json
+// config.json. config.json can also be used to override
+// the default host for API and Websockets, if required.
 const promise = new Promise<ApiConfig>((resolve, reject) => {
   if (process.env.VUE_APP_API && process.env.VUE_APP_SOCKET) {
+    console.debug('API Config from ENV', process.env)
     resolve({ apiUrl: process.env.VUE_APP_API, socketUrl: process.env.VUE_APP_SOCKET })
   } else {
     fetch('/config.json', { cache: 'no-store' })
-      .then(res => res.json())
+      .then(res => (res.ok) ? res.json() : undefined)
+      .then(res => {
+        if (
+          res &&
+          res.apiUrl &&
+          res.socketUrl &&
+          res.apiUrl !== '' &&
+          res.socketUrl !== ''
+        ) {
+          console.debug('API Config from JSON', res)
+          return res
+        } else {
+          const wsProtocol = document.location.protocol === 'https:' ? 'wss://' : 'ws://'
+          const r = {
+            apiUrl: '//' + window.location.host,
+            socketUrl: wsProtocol + window.location.host + '/websocket'
+          }
+          console.debug('API Config from window.location', r)
+          return r
+        }
+      })
       .then(resolve)
       .catch(reject)
   }
@@ -36,7 +58,7 @@ promise
     // Commit the api configuration to our store.
     store.commit('config/onInitApiConfig', apiConfig)
     return fetch(apiConfig.apiUrl + '/server/files/config/' + Globals.SETTINGS_FILENAME, { cache: 'no-store' })
-      .then(res => (!res.ok) ? undefined : res.json())
+      .then(res => (res.ok) ? res.json() : undefined)
       .then((fileConfig) => {
         // Init the store. This should include any GUI settings we've loaded from moonraker.
         return store.dispatch('init', fileConfig).then(() => {

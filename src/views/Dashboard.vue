@@ -20,7 +20,6 @@ import ToolsCard from '@/components/cards/ToolsCard.vue'
 import ToolheadCard from '@/components/cards/ToolheadCard.vue'
 import TerminalCard from '@/components/cards/TerminalCard.vue'
 import TemperatureCard from '@/components/cards/TemperatureCard.vue'
-import WebCamCard from '@/components/cards/WebCamCard.vue'
 
 @Component({
   components: {
@@ -28,8 +27,7 @@ import WebCamCard from '@/components/cards/WebCamCard.vue'
     ToolsCard,
     ToolheadCard,
     TerminalCard,
-    TemperatureCard,
-    WebCamCard
+    TemperatureCard
   }
 })
 export default class Dashboard extends Vue {}

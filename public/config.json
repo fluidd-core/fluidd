@@ -1,4 +1,4 @@
 {
-  "apiUrl": "//localhost",
-  "socketUrl": "ws://localhost/websocket"
+  "apiUrl": "",
+  "socketUrl": ""
 }
