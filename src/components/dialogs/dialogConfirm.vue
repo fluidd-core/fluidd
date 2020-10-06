@@ -5,7 +5,7 @@
     :max-width="maxWidthValue"
     persistent
   >
-    <v-card>
+    <v-card color="secondary darken-1">
       <v-card-title>
         <span class="headline"> {{ title }}</span>
       </v-card-title>
