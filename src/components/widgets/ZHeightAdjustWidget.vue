@@ -19,9 +19,9 @@
           <v-icon>mdi-arrow-collapse-down</v-icon>
         </v-btn>
       </v-col>
-      <v-col class="py-0 px-3">
+      <v-col class="py-0 px-3 flex-column justify-center d-flex">
         <div class="grey--text text--darken-1">Offset Z</div>
-        {{ ZHomingOrigin }}mm
+        <div>{{ ZHomingOrigin }}mm</div>
       </v-col>
     </v-row>
     <v-row>
