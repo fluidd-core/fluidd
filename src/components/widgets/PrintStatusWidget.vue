@@ -58,8 +58,9 @@
             <v-icon small>mdi-pause</v-icon>
             <span>Pause</span>
           </v-btn>
+
           <v-btn
-            @click="cancelPrint()"
+            @click="confirmDialog.open = true"
             :loading="hasWait(waits.onPrintCancel)"
             :width="buttonWidths"
             v-if="printerPrinting || printerPaused"
@@ -104,6 +105,11 @@
       </v-row>
     </v-expand-transition>
     </v-container>
+    <dialog-confirm
+      v-model="confirmDialog.open"
+      @confirm="cancelPrint()">
+      <p>Are you sure? This will cancel your print.</p>
+    </dialog-confirm>
   </v-sheet>
 </template>
 
@@ -112,11 +118,20 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { Waits } from '@/globals'
 import { SocketActions } from '@/socketActions'
+import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 
-@Component({})
+@Component({
+  components: {
+    DialogConfirm
+  }
+})
 export default class PrintStatusWidget extends Mixins(UtilsMixin) {
   buttonWidths = 140
   waits = Waits
+
+  confirmDialog = {
+    open: false
+  }
 
   get cameraUrl (): string {
     return this.$store.state.config.fileConfig.camera.url

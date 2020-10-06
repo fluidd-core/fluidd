@@ -14,8 +14,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="secondary" @click="emitChange(false)">Close</v-btn>
-        <v-btn color="primary" @click="saveValue()">Save</v-btn>
+        <v-btn color="secondary" @click="emitChange(false)">No</v-btn>
+        <v-btn color="warning" @click="emitChange(true)">Yes</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -30,7 +30,7 @@ export default class DialogInput extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false, default: 'Confirm' })
   title!: string
 
   @Prop({ type: Number, required: false, default: 250 })
@@ -41,11 +41,9 @@ export default class DialogInput extends Mixins(UtilsMixin) {
   }
 
   emitChange (val: boolean) {
-    this.$emit('input', val)
-  }
-
-  saveValue () {
-    this.$emit('save')
+    if (val === true) {
+      this.$emit('confirm')
+    }
     this.$emit('input', false)
   }
 }
