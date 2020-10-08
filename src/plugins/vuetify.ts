@@ -12,9 +12,17 @@ export default new Vuetify({
   theme: {
     themes: {
       dark: {
-        primary: colors.blue.base
+        primary: colors.blue.base,
+        secondary: colors.grey.darken3,
+        tertiary: '#262626',
+        quaternary: '#333333'
+      },
+      light: {
+        primary: colors.blue.base,
+        secondary: colors.grey.lighten5,
+        tertiary: '#ededed',
+        quaternary: '#dbdbdb'
       }
-    },
-    dark: true
+    }
   }
 })

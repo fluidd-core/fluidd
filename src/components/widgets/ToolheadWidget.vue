@@ -1,31 +1,29 @@
 <template>
-  <v-sheet color="#262626" class="mb-4">
-    <v-container fluid class="py-0">
-      <v-row>
-        <v-col cols="auto">
-          <!--  Toolhead Moves and Offset Z -->
-          <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
-          <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
-        </v-col>
+  <v-container fluid class="py-0">
+    <v-row>
+      <v-col cols="auto">
+        <!--  Toolhead Moves and Offset Z -->
+        <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
+        <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
+      </v-col>
 
-        <v-col class="d-flex flex-column">
-          <!-- Extruder Moves, Tooldhead Position and Part Cooling -->
-          <v-container fluid class="pa-0">
-            <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
-            <toolhead-position-widget></toolhead-position-widget>
-            <fans-widget></fans-widget>
-          </v-container>
-        </v-col>
-      </v-row>
+      <v-col class="d-flex flex-column">
+        <!-- Extruder Moves, Tooldhead Position and Part Cooling -->
+        <v-container fluid class="pa-0">
+          <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
+          <toolhead-position-widget></toolhead-position-widget>
+          <fans-widget></fans-widget>
+        </v-container>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col class="py-0">
-          <!-- Speed and Flow Adjustments  -->
-          <speed-and-flow-adjust-widget></speed-and-flow-adjust-widget>
-        </v-col>
-      </v-row>
-    </v-container>
-  </v-sheet>
+    <v-row>
+      <v-col class="py-0">
+        <!-- Speed and Flow Adjustments  -->
+        <speed-and-flow-adjust-widget></speed-and-flow-adjust-widget>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">

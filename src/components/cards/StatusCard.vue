@@ -1,7 +1,7 @@
 <template>
-  <v-card class="mb-4">
-    <v-card-title >
-      <v-icon large left>mdi-printer-3d</v-icon>
+  <v-card color="tertiary" class="mb-4">
+    <v-card-title class="quaternary">
+      <v-icon left>mdi-printer-3d</v-icon>
       <span class="font-weight-light">
         {{ printerState }}
         <span class="font-weight-light text-subtitle-2 ml-4">{{ printerMessage }}</span>
@@ -10,6 +10,7 @@
       <v-spacer />
       <img v-if="printerPrinting && thumbnail" :src="'data:image/gif;base64,'+thumbnail.data" height="36px" />
     </v-card-title>
+    <v-divider></v-divider>
 
     <print-status-widget></print-status-widget>
   </v-card>

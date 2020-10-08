@@ -1,5 +1,5 @@
 <template>
-  <v-card-text class="d-flex flex-wrap align-center justify-start">
+  <v-card-text class="d-flex flex-wrap align-center justify-start pt-5">
     <v-btn
       v-for="(macro, index) in macros"
       :key="index"

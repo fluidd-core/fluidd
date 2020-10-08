@@ -2,8 +2,8 @@
   <v-container fluid class="configuration">
     <v-row>
       <v-col cols="12" class="pt-0">
-        <v-card>
-          <v-card-title>
+        <v-card color="quaternary">
+          <v-card-title color="quaternary">
             <v-icon large left>mdi-tune</v-icon>
             <span class="font-weight-light">Printer Configuration</span>
           </v-card-title>
@@ -22,14 +22,12 @@
           </v-col>
           <v-col cols="5">
             <!-- <printer-limits-widget></printer-limits-widget> -->
-            <v-card>
-              <file-system-widget
-                :root="['config', 'config_examples']"
-                accept=".conf,.cfg"
-                panel-title="Config"
-                :show-meta-data="false">
-              </file-system-widget>
-            </v-card>
+            <file-system-widget
+              :root="['config', 'config_examples']"
+              accept=".conf,.cfg"
+              panel-title="Config"
+              :show-meta-data="false">
+            </file-system-widget>
           </v-col>
         </v-row>
       </v-col>

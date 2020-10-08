@@ -1,5 +1,5 @@
 <template>
-  <v-card class="file-system mb-5" elevation="5">
+  <div class="file-system">
     <v-data-table
       :headers="headers"
       :items="directory.items"
@@ -177,7 +177,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-  </v-card>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,13 +1,12 @@
 <template>
-  <v-sheet color="#262626">
-    <v-container class="py-2">
+    <v-container fluid class="py-2 px-6">
       <v-row>
-        <v-col offset="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+        <v-col offset="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
           Actual
         </v-col>
-        <v-col class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+        <v-col class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
           Target
-          <v-menu bottom :offset-y="true">
+          <!-- <v-menu bottom :offset-y="true">
             <template v-slot:activator="{ on, attrs }">
               <v-btn small v-bind="attrs" v-on="on" icon color="grey"><v-icon>mdi-chevron-down</v-icon></v-btn>
             </template>
@@ -22,7 +21,7 @@
                 <v-list-item-title>Set PLA</v-list-item-title>
               </v-list-item>
             </v-list>
-          </v-menu>
+          </v-menu> -->
         </v-col>
       </v-row>
       <v-row v-for="item in heaters" :key="item.name">
@@ -75,7 +74,6 @@
         </v-col>
       </v-row>
     </v-container>
-  </v-sheet>
 </template>
 
 <script lang="ts">

@@ -10,6 +10,10 @@
       Fluidd
     </v-toolbar-title>
     <v-spacer />
+    <!-- <v-switch
+      v-model="darkmode"
+      label="Darkmode"
+    ></v-switch> -->
     <v-toolbar-items>
       <v-btn text to="/"><v-icon small class="mr-2">mdi-home</v-icon> Dashboard</v-btn>
       <v-btn text to="/configuration"><v-icon small class="mr-2">mdi-tune</v-icon> Configuration</v-btn>
@@ -51,6 +55,15 @@ export default class AppBar extends Mixins(UtilsMixin) {
 
   get currentFile () {
     return this.$store.state.socket.printer.print_stats.filename
+  }
+
+  get darkmode () {
+    return this.$store.state.darkMode
+  }
+
+  set darkmode (val: boolean) {
+    this.$vuetify.theme.dark = val
+    this.$store.commit('setDarkMode', val)
   }
 
   // Watch currentfile and refresh its metadata to ensure

@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-card outlined color="#262626" class="console-container mb-3 pa-1" height="300">
+      <v-card outlined color="#1c1c1c" class="console-container mb-3 pa-1" height="300">
         <span v-for="(item, index) in consoleItems" :key="index" v-html="item"></span>
       </v-card>
       <v-text-field

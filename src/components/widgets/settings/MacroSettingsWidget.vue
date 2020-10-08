@@ -1,7 +1,7 @@
 <template>
-  <v-card>
-    <v-card-title><v-icon left>mdi-file-code</v-icon> Macros</v-card-title>
-    <v-card-subtitle>Configure which macros appear on the dashboard.</v-card-subtitle>
+  <v-card color="tertiary">
+    <v-card-title class="quaternary"><v-icon left>mdi-file-code</v-icon> Macros</v-card-title>
+    <v-card-subtitle class="quaternary">Configure which macros appear on the dashboard.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>
       <v-row>

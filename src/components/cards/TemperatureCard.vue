@@ -1,9 +1,10 @@
 <template>
-  <v-card class="mb-4">
-    <v-card-title >
-      <v-icon large left>mdi-fire</v-icon>
+  <v-card color="tertiary" class="mb-4">
+    <v-card-title class="quaternary">
+      <v-icon left>mdi-fire</v-icon>
       <span class="font-weight-light">Temperatures</span>
     </v-card-title>
+    <v-divider></v-divider>
 
     <temperature-targets-widget></temperature-targets-widget>
 

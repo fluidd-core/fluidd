@@ -1,7 +1,7 @@
 <template>
-  <v-card>
-    <v-card-title><v-icon left>mdi-cogs</v-icon> Settings</v-card-title>
-    <v-card-subtitle>General settings.</v-card-subtitle>
+  <v-card color="tertiary">
+    <v-card-title class="quaternary"><v-icon left>mdi-cogs</v-icon> Settings</v-card-title>
+    <v-card-subtitle class="quaternary">General settings.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>
       <p>

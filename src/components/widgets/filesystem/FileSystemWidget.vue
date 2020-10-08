@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-card-title class="pb-1">
+  <v-card color="tertiary">
+    <v-card-title class="quaternary rounded-t">
       <v-row>
         <v-col cols="7" class="px-4 py-0">
           <v-icon left>mdi-file-multiple-outline</v-icon>
@@ -19,6 +19,7 @@
         </v-col>
       </v-row>
     </v-card-title>
+    <v-divider></v-divider>
     <file-system-browser
       :root="currentRoot"
       :show-meta-data="showMetaData"
@@ -32,8 +33,8 @@
       @remove-dir="removeDir"
       @download-file="download"
       @edit-file="edit"
-      @view-file="edit"
-    ></file-system-browser>
+      @view-file="edit">
+    </file-system-browser>
     <dialog-file-editor
       v-model="dialog.open"
       @save="saveEdit"
@@ -43,7 +44,7 @@
       :loading="dialog.loading"
       :readonly="(this.currentRoot === 'config_examples') ? true : false"
     ></dialog-file-editor>
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">

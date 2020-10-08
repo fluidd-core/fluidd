@@ -1,23 +1,18 @@
 <template>
-  <v-card class="mb-4">
-    <v-row>
-      <v-col>
-        <v-card-title class="pt-0 pr-0 font-weight-light">
-          <v-icon left>mdi-arrow-expand-horizontal</v-icon> Endstops<br />
-        </v-card-title>
-        <v-card-subtitle class="pr-0">Use the refresh button to update endstop status.</v-card-subtitle>
-      </v-col>
-      <v-col cols="auto" class="pl-0">
-        <v-btn
-          @click="queryEndstops"
-          small
-          fab
-          class="mr-4"
-          color="secondary">
-          <v-icon>mdi-refresh</v-icon>
-        </v-btn>
-      </v-col>
-    </v-row>
+  <v-card class="mb-4" color="tertiary">
+    <v-card-title class="font-weight-light quaternary">
+      <v-icon left>mdi-arrow-expand-horizontal</v-icon> Endstops<br />
+      <v-btn
+        @click="queryEndstops"
+        small
+        right
+        fab
+        absolute
+        color="secondary">
+        <v-icon>mdi-refresh</v-icon>
+      </v-btn>
+    </v-card-title>
+    <v-card-subtitle class="quaternary">Use the refresh button to update endstop status.</v-card-subtitle>
     <v-divider v-if="hasEndStops"></v-divider>
     <v-card-text v-if="hasEndStops">
       <v-layout
