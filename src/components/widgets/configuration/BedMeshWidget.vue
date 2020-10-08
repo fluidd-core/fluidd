@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title><v-icon left>mdi-view-grid-outline</v-icon> Bed Mesh</v-card-title>
+    <v-card-title class="font-weight-light"><v-icon left>mdi-view-grid-outline</v-icon> Bed Mesh</v-card-title>
     <v-card-subtitle>Configure your bed mesh and mesh profiles.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>

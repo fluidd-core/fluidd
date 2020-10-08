@@ -9,6 +9,7 @@ export const mutations: MutationTree<SocketState> = {
   resetState (state) {
     const newState = getDefaultState()
     Vue.set(state, 'printer', newState.printer)
+    Vue.set(state, 'macros', newState.macros)
     Vue.set(state, 'chart', newState.chart)
     Vue.set(state, 'waits', newState.waits)
     Vue.set(state, 'filament_switch_sensors', newState.filament_switch_sensors)

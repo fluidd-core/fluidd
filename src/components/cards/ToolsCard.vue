@@ -8,30 +8,28 @@
       <v-tab-item :key="0">
         <v-card-title>
           <v-icon large left>mdi-file-code</v-icon>
-          <span class="title font-weight-light text-h5">Macros</span>
+          <span class="font-weight-light">Macros</span>
         </v-card-title>
         <macros-widget></macros-widget>
       </v-tab-item>
       <v-tab-item :key="1">
         <v-card-title >
           <v-icon large left>mdi-tools</v-icon>
-          <span class="title font-weight-light text-h5">Sys Commands</span>
+          <span class="font-weight-light">Sys Commands</span>
         </v-card-title>
         <system-commands-widget></system-commands-widget>
       </v-tab-item>
       <v-tab-item :key="2">
-        <v-card-title >
-          <v-icon large left>mdi-file-multiple-outline</v-icon>
-          <span class="title font-weight-light text-h5">Jobs</span>
-        </v-card-title>
-        <v-card-text>
-          <file-system-widget root="gcodes" :show-meta-data="false"></file-system-widget>
-        </v-card-text>
+        <file-system-widget
+          root="gcodes"
+          accept=".gcode"
+          :show-meta-data="false"
+        ></file-system-widget>
       </v-tab-item>
       <v-tab-item :key="3">
         <v-card-title >
           <v-icon large left>mdi-console</v-icon>
-          <span class="title font-weight-light text-h5">Console</span>
+          <span class="font-weight-light">Console</span>
         </v-card-title>
           <console-widget></console-widget>
       </v-tab-item>

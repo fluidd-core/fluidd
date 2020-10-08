@@ -113,6 +113,10 @@ export const SocketActions = {
     )
   },
 
+  /**
+   * This only requires path, but we pass root along too
+   * for brevity.
+   */
   async serverFilesGetDirectory (root: string, path: string) {
     Vue.$socket.emit(
       'server.files.get_directory',

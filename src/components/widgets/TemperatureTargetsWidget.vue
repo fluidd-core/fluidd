@@ -29,15 +29,10 @@
         <v-col class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
           {{ item.name }}
           <small class="ml-3" v-if="item.target === 0">off</small>
-          <!-- <v-icon
-            color="grey darken-1"
-            small
-            v-if="item.target === 0">
-            mdi-power-plug-off
-          </v-icon> -->
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
           {{ item.temperature.toFixed(1) }}
+          <small>°C</small>
         </v-col>
         <v-col class="py-1 px-2">
           <input-temperature
@@ -68,6 +63,7 @@
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
           {{ item.temperature.toFixed(1) }}
+          <small>°C</small>
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
           <input-temperature

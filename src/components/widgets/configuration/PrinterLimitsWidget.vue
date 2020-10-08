@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title><v-icon left>mdi-hazard-lights</v-icon> Printer Limits</v-card-title>
+    <v-card-title class="font-weight-light"><v-icon left>mdi-hazard-lights</v-icon> Printer Limits</v-card-title>
     <v-card-subtitle>These are not persistent. They will reset to your printer configuration on host reboot.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>

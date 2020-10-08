@@ -18,7 +18,52 @@
 }
 
 .file-system {
-  .is-directory, .is-directory.td {
+  td {
     cursor: pointer;
+    user-select: none;
+  }
+
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:nth-child(-n+2),
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:nth-child(-n+2),
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td:nth-child(-n+2),
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-child(-n+2),
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:nth-child(-n+2),
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-child(-n+2) {
+    padding-right: 0;
+    padding-left: 0;
+  }
+
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:first-child,
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:first-child,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td:first-child,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:first-child,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:first-child,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:first-child {
+    padding-left: 12px;
+  }
+
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:last-child,
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:last-child,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td:last-child,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:last-child,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:last-child,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:last-child,
+    .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:nth-last-child(2),
+    .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:nth-last-child(2),
+    .v-data-table > .v-data-table__wrapper > table > thead > tr > td:nth-last-child(2),
+    .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-last-child(2),
+    .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:nth-last-child(2),
+    .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-last-child(2) {
+      white-space: nowrap;
   }
 }

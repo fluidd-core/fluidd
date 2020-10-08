@@ -10,7 +10,7 @@ import { RootState } from '../types'
 export const state: FilesState = {
   gcodes: [],
   config: [],
-  configExamples: []
+  config_examples: []
 }
 
 const namespaced = true

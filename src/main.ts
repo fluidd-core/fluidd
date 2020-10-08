@@ -1,3 +1,4 @@
+import '@/scss/global.scss'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -9,7 +10,9 @@ import { SocketPlugin } from './plugins/socketClient'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 
-import '@/scss/global.scss'
+import Btn from '@/components/inputs/Btn.vue'
+
+Vue.component('btn', Btn)
 
 // Use any Plugins
 Vue.use(AxiosPlugin)

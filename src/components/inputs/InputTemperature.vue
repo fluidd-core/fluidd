@@ -12,7 +12,7 @@
     @keyup.enter="emitChange(newValue)"
     label="target"
     type="number"
-    suffix="℃"
+    suffix="°C"
     class="v-text-field-outer-btn">
     <template v-slot:append-outer>
       <v-btn

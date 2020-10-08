@@ -5,17 +5,31 @@
         <v-card>
           <v-card-title>
             <v-icon large left>mdi-tune</v-icon>
-            <span class="title font-weight-light text-h5">Printer Configuration</span>
+            <span class="font-weight-light">Printer Configuration</span>
           </v-card-title>
         </v-card>
         <v-row>
-          <v-col cols="8" v-if="supportsBedMesh">
+          <v-col cols="7" v-if="supportsBedMesh">
             <bed-mesh-widget></bed-mesh-widget>
+            <v-row>
+              <v-col cols="6">
+                <runout-sensor-widget></runout-sensor-widget>
+              </v-col>
+              <v-col cols="6">
+                <end-stops-widget></end-stops-widget>
+              </v-col>
+            </v-row>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="5">
             <!-- <printer-limits-widget></printer-limits-widget> -->
-            <end-stops-widget></end-stops-widget>
-            <runout-sensor-widget></runout-sensor-widget>
+            <v-card>
+              <file-system-widget
+                :root="['config', 'config_examples']"
+                accept=".conf,.cfg"
+                panel-title="Config"
+                :show-meta-data="false">
+              </file-system-widget>
+            </v-card>
           </v-col>
         </v-row>
       </v-col>
@@ -30,13 +44,15 @@ import PrinterLimitsWidget from '@/components/widgets/configuration/PrinterLimit
 import BedMeshWidget from '@/components/widgets/configuration/BedMeshWidget.vue'
 import EndStopsWidget from '@/components/widgets/configuration/EndStopsWidget.vue'
 import RunoutSensorWidget from '@/components/widgets/configuration/RunoutSensorWidget.vue'
+import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
 
 @Component({
   components: {
     PrinterLimitsWidget,
     BedMeshWidget,
     EndStopsWidget,
-    RunoutSensorWidget
+    RunoutSensorWidget,
+    FileSystemWidget
   }
 })
 export default class Configuration extends Mixins(UtilsMixin) {

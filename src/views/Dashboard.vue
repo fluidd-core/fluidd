@@ -18,7 +18,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import StatusCard from '@/components/cards/StatusCard.vue'
 import ToolsCard from '@/components/cards/ToolsCard.vue'
 import ToolheadCard from '@/components/cards/ToolheadCard.vue'
-import TerminalCard from '@/components/cards/TerminalCard.vue'
 import TemperatureCard from '@/components/cards/TemperatureCard.vue'
 
 @Component({
@@ -26,7 +25,6 @@ import TemperatureCard from '@/components/cards/TemperatureCard.vue'
     StatusCard,
     ToolsCard,
     ToolheadCard,
-    TerminalCard,
     TemperatureCard
   }
 })

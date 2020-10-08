@@ -2,7 +2,7 @@ export interface FilesState {
   [key: string]: Files[];
   gcodes: Files[];
   config: Files[];
-  configExamples: Files[];
+  config_examples: Files[];
 }
 
 export interface Files {
@@ -14,6 +14,7 @@ export interface Files {
 export interface File {
   type: string;
   name?: string;
+  extension: string;
   filename: string;
   modified: number;
   size: number;

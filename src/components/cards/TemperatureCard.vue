@@ -2,7 +2,7 @@
   <v-card class="mb-4">
     <v-card-title >
       <v-icon large left>mdi-fire</v-icon>
-      <span class="title font-weight-light text-h5">Temperatures</span>
+      <span class="font-weight-light">Temperatures</span>
     </v-card-title>
 
     <temperature-targets-widget></temperature-targets-widget>

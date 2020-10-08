@@ -2,7 +2,7 @@
   <v-card class="mb-4">
     <v-card-title >
       <v-icon large left>mdi-printer-3d-nozzle-outline</v-icon>
-      <span class="title font-weight-light text-h5">Toolhead</span>
+      <span class="font-weight-light">Toolhead</span>
       <v-spacer />
       <v-btn
         v-if="!printerPrinting"

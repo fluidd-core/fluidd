@@ -2,7 +2,7 @@
   <v-card class="mb-4">
     <v-card-title >
       <v-icon large left>mdi-printer-3d</v-icon>
-      <span class="title font-weight-light text-h5">
+      <span class="font-weight-light">
         {{ printerState }}
         <span class="font-weight-light text-subtitle-2 ml-4">{{ printerMessage }}</span>
       </span>

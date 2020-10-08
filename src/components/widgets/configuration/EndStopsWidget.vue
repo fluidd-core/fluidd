@@ -2,7 +2,7 @@
   <v-card class="mb-4">
     <v-row>
       <v-col>
-        <v-card-title class="pt-0 pr-0">
+        <v-card-title class="pt-0 pr-0 font-weight-light">
           <v-icon left>mdi-arrow-expand-horizontal</v-icon> Endstops<br />
         </v-card-title>
         <v-card-subtitle class="pr-0">Use the refresh button to update endstop status.</v-card-subtitle>
