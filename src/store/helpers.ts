@@ -74,7 +74,7 @@ export const configureChartEntry = (key: string, val: {[key: string]: number }, 
   if ('target' in val) {
     r.target.y = val.target
   } else {
-    r.target.y = state.printer[key].target // this could be undefined, but i don't think the chart cares?
+    r.target.y = state.printer[key].target || 0 // sensors may not have targets
   }
 
   return r

@@ -3,7 +3,12 @@
       <v-card outlined color="#1c1c1c" class="console-container mb-3 pa-1" height="300">
         <span v-for="(item, index) in consoleItems" :key="index" v-html="item"></span>
       </v-card>
-      <v-text-field
+      <input-console-command
+        v-model="consoleCommand"
+        @send="sendCommand"
+      >
+      </input-console-command>
+      <!-- <v-text-field
         v-model="consoleCommand"
         :items="consoleHistory"
         class="ma-4"
@@ -14,7 +19,8 @@
         placeholder="Send gcode"
         append-outer-icon="mdi-send"
         @click:append-outer="sendCommand(consoleCommand)"
-        @keyup.enter="sendCommand(consoleCommand)"></v-text-field>
+        @keyup.enter="sendCommand(consoleCommand)">
+      </v-text-field> -->
       <!-- <v-virtual-scroll
         :bench="50"
         :items="consoleItems"
@@ -33,24 +39,22 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
+import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 
-@Component({})
+@Component({
+  components: {
+    InputConsoleCommand
+  }
+})
 export default class ConsoleWidget extends Mixins(UtilsMixin) {
   get consoleItems () {
     return this.$store.state.socket.console
   }
 
   consoleCommand = ''
-  consoleHistory: string[] = []
 
-  sendCommand (command: string) {
-    // keep a history of 5 items.
+  sendCommand (command?: string) {
     if (command && command.length) {
-      this.consoleCommand = ''
-      if (this.consoleHistory.length >= 5) {
-        this.consoleHistory.shift()
-      }
-      this.consoleHistory.unshift(command)
       this.sendGcode(command)
     }
   }

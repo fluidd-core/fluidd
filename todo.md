@@ -1,11 +1,14 @@
 # TODO [fluidd]
 
 ## Next Up
-- Config file list / editing
+- add min and max for sensors and probes
 - move to mdi svg icons, and reduce overall size
-- dynamic favicon that looks like the percent finished ring
-- impl quick print button
 - expand current print metadata (with bigger thumb?)
+- file / folder move
+- allow theme change dark / light
+- dynamic favicon that looks like the percent finished ring
+- firmware restart from config page
+- have config page visible on klippy disconnect (socket connect vs klippy connect)
 
 ## Known Bugs:
 - multi line gcodes not having a Send: prefix after the first line
@@ -14,14 +17,12 @@
   - the metadata load fails because the file is no longer there.
 
 ## General Improvements
-- draggable dashboard panels
-- allow contraction and expansion of dashboard panels
-- implement new console history
+- draggable dashboard panels?
+- allow contraction and expansion of dashboard panels?
 - add console.log wrapper for dev vs prod
-- add a throttle to temp updates, print timers, position trackers.
+- add a throttle to (socket notifications) temp updates, print timers, position trackers.
 - Performance / memory heap checks
 - add status of heater_fans (extruder fan and controller fan)
-- allow theme change dark / light
 - stick git version in the footer somewhere for klipper, moonraker and fluidd
 - filter out temp waits from console
 - cancel and pause really need a confirm dialog

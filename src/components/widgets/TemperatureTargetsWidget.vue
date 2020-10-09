@@ -122,13 +122,5 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   setFanTargetTemp (item: Fan, target: number) {
     this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${item.name} TARGET=${target}`)
   }
-
-  mounted () {
-    // setTimeout(() => {}, 3000)
-  }
 }
 </script>
-
-<style type="scss" scoped>
-
-</style>
