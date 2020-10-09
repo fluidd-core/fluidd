@@ -8,7 +8,7 @@
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
   >
-    <v-card d-flex color="secondary darken-1">
+    <v-card d-flex color="black">
       <v-toolbar
         dark
         dense

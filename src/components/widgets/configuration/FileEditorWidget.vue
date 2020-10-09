@@ -66,7 +66,7 @@ export default class FileEditorWidget extends Vue {
 
 <style lang="scss">
   .file-editor {
-    background: #2d2d2d;
+    background: transparent;
     color: #ccc;
 
     /* you must provide font-family font-size line-height. Example: */
