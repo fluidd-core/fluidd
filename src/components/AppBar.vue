@@ -5,7 +5,7 @@
   >
     <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
     <!-- <img src="./assets/logo.svg" class="logo" /> -->
-    <v-icon large color="#1970b5">mdi-printer-3d-nozzle</v-icon>
+    <v-icon large color="#1970b5">{{ icons.printer3dNozzle }}</v-icon>
     <v-toolbar-title class="title text-h4 mr-5">
       Fluidd
     </v-toolbar-title>
@@ -15,17 +15,16 @@
       label="Darkmode"
     ></v-switch> -->
     <v-toolbar-items>
-      <v-btn text to="/"><v-icon small class="mr-2">mdi-home</v-icon> Dashboard</v-btn>
-      <v-btn text to="/configuration"><v-icon small class="mr-2">mdi-tune</v-icon> Configuration</v-btn>
-      <v-btn text to="/settings"><v-icon small class="mr-2">mdi-cog</v-icon> Settings</v-btn>
+      <v-btn text to="/"><v-icon small class="mr-2">{{ icons.home }}</v-icon> Dashboard</v-btn>
+      <v-btn text to="/configuration"><v-icon small class="mr-2">{{ icons.tune }}</v-icon> Configuration</v-btn>
+      <v-btn text to="/settings"><v-icon small class="mr-2">{{ icons.cog }}</v-icon> Settings</v-btn>
       <v-tooltip bottom v-if="printerConnected && klippyConnected">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn text color="error" @click="emergencyStop()" v-bind="attrs" v-on="on"><v-icon>mdi-car-brake-alert</v-icon></v-btn>
+          <v-btn text color="error" @click="emergencyStop()" v-bind="attrs" v-on="on"><v-icon>{{ icons.estop }}</v-icon></v-btn>
         </template>
         Emergency Stop
       </v-tooltip>
     </v-toolbar-items>
-    <!-- <v-btn icon color="white" class="mr-2" to="/settings"><v-icon small>mdi-cog</v-icon></v-btn> -->
   </v-app-bar>
 </template>
 

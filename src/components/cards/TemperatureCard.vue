@@ -1,7 +1,7 @@
 <template>
   <v-card color="tertiary" class="mb-4">
     <v-card-title class="quaternary">
-      <v-icon left>mdi-fire</v-icon>
+      <v-icon left>{{ icons.fire }}</v-icon>
       <span class="font-weight-light">Temperatures</span>
     </v-card-title>
     <v-divider></v-divider>
@@ -15,10 +15,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import TemperatureChartWidget from '@/components/widgets/TemperatureChartWidget.vue'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 import { ChartData, Chart } from '@/store/socket/types'
+import UtilsMixin from '@/mixins/utils'
 
 @Component({
   components: {
@@ -26,7 +27,7 @@ import { ChartData, Chart } from '@/store/socket/types'
     TemperatureTargetsWidget
   }
 })
-export default class TemperatureCard extends Vue {
+export default class TemperatureCard extends Mixins(UtilsMixin) {
   private chartData: Chart.ChartData = {}
   private startInterval!: number | undefined
   private chartReady = false

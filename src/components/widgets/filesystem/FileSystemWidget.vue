@@ -3,7 +3,7 @@
     <v-card-title class="quaternary rounded-t">
       <v-row>
         <v-col cols="7" class="px-4 py-0">
-          <v-icon left>mdi-file-multiple-outline</v-icon>
+          <v-icon left>{{ icons.files }}</v-icon>
           <span class="font-weight-light">{{ panelTitle }}</span>
         </v-col>
         <v-col cols="5" class="px-4 py-0" v-if="isMultiRoot">
@@ -48,11 +48,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import FileSystemBrowser from '@/components/widgets/filesystem/FileSystemBrowser.vue'
 import { AxiosResponse } from 'axios'
 import { SocketActions } from '@/socketActions'
 import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
+import UtilsMixin from '@/mixins/utils'
 
 @Component({
   components: {
@@ -60,7 +61,7 @@ import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
     DialogFileEditor
   }
 })
-export default class FileSystemWidget extends Vue {
+export default class FileSystemWidget extends Mixins(UtilsMixin) {
   @Prop({ type: [String, Array], required: true })
   root!: string | string[];
 

@@ -25,7 +25,7 @@
         small
         color="secondary">
         <v-icon color="grey lighten-2">
-          mdi-minus
+          {{ icons.minus }}
         </v-icon>
       </v-btn>
     </template>
@@ -39,7 +39,7 @@
         small
         color="secondary">
         <v-icon color="grey lighten-2">
-          mdi-plus
+          {{ icons.plus }}
         </v-icon>
       </v-btn>
     </template>
@@ -48,10 +48,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
+import UtilsMixin from '@/mixins/utils'
 
 @Component({})
-export default class InputSlider extends Vue {
+export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 

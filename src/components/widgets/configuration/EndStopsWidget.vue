@@ -1,7 +1,7 @@
 <template>
   <v-card class="mb-4" color="tertiary">
     <v-card-title class="font-weight-light quaternary">
-      <v-icon left>mdi-arrow-expand-horizontal</v-icon> Endstops<br />
+      <v-icon left>{{ icons.expandHorizontal }}</v-icon> Endstops<br />
       <v-btn
         @click="queryEndstops"
         small
@@ -9,7 +9,7 @@
         fab
         absolute
         color="secondary">
-        <v-icon>mdi-refresh</v-icon>
+        <v-icon>{{ icons.refresh }}</v-icon>
       </v-btn>
     </v-card-title>
     <v-card-subtitle class="quaternary">Use the refresh button to update endstop status.</v-card-subtitle>
@@ -26,7 +26,7 @@
           class="ml-2"
           small
           label>
-          <v-icon small left>{{ (item === 'open') ? 'mdi-checkbox-blank-circle-outline' : 'mdi-checkbox-marked-circle' }}</v-icon>
+          <v-icon small left>{{ (item === 'open') ? icons.blankCircle : icons.markedCircle }}</v-icon>
           {{ item.toUpperCase() }}
         </v-chip>
       </v-layout>

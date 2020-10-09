@@ -1,7 +1,6 @@
 # TODO [fluidd]
 
 ## Next Up
-- add min and max for sensors and probes
 - move to mdi svg icons, and reduce overall size
 - expand current print metadata (with bigger thumb?)
 - file / folder move

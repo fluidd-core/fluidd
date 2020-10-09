@@ -37,7 +37,7 @@
     "vuex": "^3.4.0"
   },
   "devDependencies": {
-    "@mdi/font": "^5.5.55",
+    "@mdi/js": "^5.6.55",
     "@types/chai": "^4.2.11",
     "@types/lodash-es": "^4.17.3",
     "@types/mocha": "^5.2.4",

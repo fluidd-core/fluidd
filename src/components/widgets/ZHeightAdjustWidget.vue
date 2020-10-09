@@ -8,7 +8,7 @@
           :loading="hasWait('ZAdjust')"
           class="pa-0 mb-2"
           color="secondary">
-          <v-icon>mdi-arrow-collapse-up</v-icon>
+          <v-icon>{{ icons.upCollapse }}</v-icon>
         </v-btn><br />
         <v-btn
           @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
@@ -16,7 +16,7 @@
           :loading="hasWait('ZAdjust')"
           class="pa-0"
           color="secondary">
-          <v-icon>mdi-arrow-collapse-down</v-icon>
+          <v-icon>{{ downCollapse }}</v-icon>
         </v-btn>
       </v-col>
       <v-col class="py-0 px-3 flex-column justify-center d-flex">

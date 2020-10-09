@@ -1,7 +1,7 @@
 <template>
   <v-card class="mb-4" color="tertiary">
     <v-card-title class="font-weight-light quaternary">
-      <v-icon left>mdi-printer-3d-nozzle-alert-outline</v-icon> Runout Sensors
+      <v-icon left>{{ icons.printer3dNozzleAlert }}</v-icon> Runout Sensors
     </v-card-title>
     <v-card-subtitle class="quaternary">Indicate runout sensor status.<br /> These are not persistent. They will reset to your printer configuration on host reboot.</v-card-subtitle>
     <v-divider></v-divider>
@@ -16,7 +16,7 @@
           :color="(item.filament_detected) ? 'success' : 'warning'"
           class="ml-3"
           left>
-          {{ (item.filament_detected) ? 'mdi-check-circle' : 'mdi-alert-circle' }}
+          {{ (item.filament_detected) ? icons.checkedCircle : icons.alertCircle }}
         </v-icon>
         <v-switch
           class="ml-3"

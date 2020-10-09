@@ -30,8 +30,7 @@
           <small class="ml-3" v-if="item.target === 0">off</small>
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
-          {{ item.temperature.toFixed(1) }}
-          <small>°C</small>
+          {{ item.temperature.toFixed(1) }}<small>°C</small>
         </v-col>
         <v-col class="py-1 px-2">
           <input-temperature
@@ -50,7 +49,7 @@
               color="grey darken-1"
               small
               v-if="item.target > 0">
-              mdi-fan mdi-spin
+              {{ icons.fan }}
             </v-icon>
             {{ (item.speed * 100).toFixed(0) }}%
           </small>
@@ -61,8 +60,7 @@
           <small class="ml-2" v-if="item.speed <=0 && item.target <= 0">off</small>
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
-          {{ item.temperature.toFixed(1) }}
-          <small>°C</small>
+          {{ item.temperature.toFixed(1) }}<small>°C</small>
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
           <input-temperature
@@ -78,8 +76,16 @@
           {{ item.name }}
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
-          {{ item.temperature.toFixed(1) }}
-          <small>°C</small>
+          <v-tooltip right>
+            <template v-slot:activator="{ on, attrs }">
+              <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
+            </template>
+            <span>
+              <span class="blue--text text--lighten-4">{{ item.minMeasuredTemp.toFixed(1) }}°C&nbsp;&nbsp;</span>
+              <span class="red--text text--lighten-2">{{ item.maxMeasuredTemp.toFixed(1) }}°C</span>
+            </span>
+          </v-tooltip>
+
         </v-col>
         <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
         </v-col>

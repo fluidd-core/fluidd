@@ -1,9 +1,14 @@
 import { SocketActions } from '@/socketActions'
 import Vue from 'vue'
 import Component from 'vue-class-component'
+import { Icons } from '@/globals'
 
 @Component({})
 export default class UtilsMixin extends Vue {
+  get icons () {
+    return Icons
+  }
+
   // Return a list of our databases in a format vuetify can use.
   get printerState () {
     return this.$filters.startCase(this.$store.getters['socket/getPrinterState'])

@@ -247,7 +247,9 @@ export const getters: GetterTree<SocketState, RootState> = {
         if (sensor && Object.keys(sensor).length > 0) {
           r.push({
             name: e,
-            ...sensor
+            ...sensor,
+            minMeasuredTemp: (sensor.measured_min_temp) ? sensor.measured_min_temp : null,
+            maxMeasuredTemp: (sensor.measured_max_temp) ? sensor.measured_max_temp : null
           })
         }
       })

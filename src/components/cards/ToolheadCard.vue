@@ -1,7 +1,7 @@
 <template>
   <v-card color="tertiary" class="mb-4">
     <v-card-title class="quaternary">
-      <v-icon left>mdi-printer-3d-nozzle-outline</v-icon>
+      <v-icon left>{{ icons.printer3dNozzle }}</v-icon>
       <span class="font-weight-light">Toolhead</span>
       <v-spacer />
       <v-btn
@@ -36,7 +36,7 @@
         :loading="hasWait(waits.onHomeAll)"
         :disabled="hasWaits"
         :color="(!allHomed) ? 'warning' : 'secondary'">
-          <v-icon small class="mr-1">mdi-home</v-icon> All
+          <v-icon small class="mr-1">{{ icons.home }}</v-icon> All
       </v-btn>
     </v-card-title>
     <v-divider></v-divider>

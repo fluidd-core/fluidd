@@ -49,18 +49,26 @@ export interface FileChangeItem {
 
 export interface Heater {
   name: string;
-  minTemp: number;
-  maxTemp: number;
+  temperature: number;
+  target: number;
+  minTemp?: number;
+  maxTemp?: number;
 }
 
 export interface Fan {
   name: string;
-  minTemp: number;
-  maxTemp: number;
+  temperature?: number;
+  target?: number;
+  minTemp?: number;
+  maxTemp?: number;
 }
 
 export interface Sensor {
   name: string;
+  temperature: number;
+  target?: number;
+  minMeasuredTemp?: number;
+  maxMeasuredTemp?: number;
 }
 
 export interface Chart {

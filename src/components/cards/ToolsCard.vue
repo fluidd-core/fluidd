@@ -4,7 +4,7 @@
     <v-tabs-items v-model="activeTab" class="mb-auto rounded">
       <v-tab-item :key="0" class="tertiary rounded">
         <v-card-title class="quaternary rounded">
-          <v-icon left>mdi-file-code</v-icon>
+          <v-icon left>{{ icons.fileCode }}</v-icon>
           <span class="font-weight-light">Macros</span>
         </v-card-title>
         <v-divider></v-divider>
@@ -12,7 +12,7 @@
       </v-tab-item>
       <v-tab-item :key="1" class="tertiary rounded">
         <v-card-title class="quaternary rounded">
-          <v-icon left>mdi-tools</v-icon>
+          <v-icon left>{{ icons.tools }}</v-icon>
           <span class="font-weight-light">Sys Commands</span>
         </v-card-title>
         <v-divider></v-divider>
@@ -27,7 +27,7 @@
       </v-tab-item>
       <v-tab-item :key="3" class="tertiary rounded">
         <v-card-title class="quaternary rounded">
-          <v-icon left>mdi-console</v-icon>
+          <v-icon left>{{ icons.console }}</v-icon>
           <span class="font-weight-light">Console</span>
         </v-card-title>
         <v-divider></v-divider>
@@ -43,19 +43,19 @@
     >
       <v-tab :key="0">
         Macros
-        <v-icon>mdi-file-code</v-icon>
+        <v-icon>{{ icons.fileCode }}</v-icon>
       </v-tab>
       <v-tab :key="1">
         Sys Commands
-        <v-icon>mdi-tools</v-icon>
+        <v-icon>{{ icons.tools }}</v-icon>
       </v-tab>
       <v-tab :key="2">
         Jobs
-        <v-icon>mdi-file-multiple-outline</v-icon>
+        <v-icon>{{ icons.files }}</v-icon>
       </v-tab>
       <v-tab :key="3">
         Console
-        <v-icon>mdi-console</v-icon>
+        <v-icon>{{ icons.console }}</v-icon>
       </v-tab>
     </v-tabs>
 

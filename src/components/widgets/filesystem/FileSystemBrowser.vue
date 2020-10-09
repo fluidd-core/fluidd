@@ -44,7 +44,7 @@
             color="secondary"
             class="mr-2"
             @click="createDirectoryDialog()">
-            <v-icon small>mdi-folder-plus</v-icon>
+            <v-icon small>{{ icons.folderAdd }}</v-icon>
           </v-btn>
           <btn-file-upload
             v-if="!readonly"
@@ -58,7 +58,7 @@
             small
             color="secondary"
             @click="refreshPath(currentPath)">
-            <v-icon small>mdi-refresh</v-icon>
+            <v-icon small>{{ icons.refresh }}</v-icon>
           </v-btn>
         </v-toolbar>
         <dialog-input
@@ -104,7 +104,7 @@
               small
               :color="(item.type === 'file') ? 'grey' : 'primary'"
               class="mr-1">
-              {{ (item.type === 'file' ? 'mdi-file' : item.name === '..' ? 'mdi-folder-upload' : 'mdi-folder') }}
+              {{ (item.type === 'file' ? icons.file : item.name === '..' ? icons.folderAdd : icons.folder) }}
             </v-icon>
           </td>
           <td class="grey--text">
@@ -121,7 +121,7 @@
               v-if="item.type === 'file'"
               @click="expand(!isExpanded)">
               <v-icon small>
-                {{ (isExpanded) ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
+                {{ (isExpanded) ? icons.chevronUp : icons.chevronDown }}
               </v-icon>
             </v-btn>
           </td>
@@ -141,37 +141,37 @@
         color="secondary darken-1">
         <v-list-item link @click="printItem(contextMenu.item)" v-if="contextMenu.item.type !== 'directory' && contextMenu.item.extension === 'gcode'">
           <v-list-item-icon>
-            <v-icon>mdi-printer</v-icon>
+            <v-icon>{{ icons.printer }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title color="primary">Print</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="editItem(contextMenu.item)" v-if="!readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
           <v-list-item-icon>
-            <v-icon>mdi-pencil</v-icon>
+            <v-icon>{{ icons.pencil }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title color="primary">Edit</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="viewItem(contextMenu.item)" v-if="readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
           <v-list-item-icon>
-            <v-icon>mdi-magnify</v-icon>
+            <v-icon>{{ icons.magnify }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title color="primary">View</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="downloadFile(contextMenu.item)" v-if="contextMenu.item.type !== 'directory'">
           <v-list-item-icon>
-            <v-icon>mdi-download</v-icon>
+            <v-icon>{{ icons.download }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Download</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="renameDialog(contextMenu.item)" v-if="!readonly">
           <v-list-item-icon>
-            <v-icon>mdi-form-textbox</v-icon>
+            <v-icon>{{ icons.rename }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Rename</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="removeItem(contextMenu.item)" v-if="!readonly">
           <v-list-item-icon>
-            <v-icon>mdi-delete-alert-outline</v-icon>
+            <v-icon>{{ icons.delete }}</v-icon>
           </v-list-item-icon>
           <v-list-item-title>Remove</v-list-item-title>
         </v-list-item>
@@ -181,13 +181,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { Directory, File } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
+import UtilsMixin from '@/mixins/utils'
 
 @Component({
   components: {
@@ -195,7 +196,7 @@ import { clone } from 'lodash-es'
     BtnFileUpload
   }
 })
-export default class FileSystemBrowser extends Vue {
+export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   @Prop({ type: String, required: true })
   root!: string;
 

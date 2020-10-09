@@ -21,17 +21,18 @@
         class="pa-0"
         :color="(value === newValue) ? 'secondary' : 'primary'"
         @click="emitChange(newValue)">
-        <v-icon small>mdi-check</v-icon>
+        <v-icon small>{{ icons.check }}</v-icon>
       </v-btn>
     </template>
   </v-text-field>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import UtilsMixin from '@/mixins/utils'
 
 @Component({})
-export default class InputTemperature extends Vue {
+export default class InputTemperature extends Mixins(UtilsMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 

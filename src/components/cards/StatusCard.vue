@@ -1,7 +1,7 @@
 <template>
   <v-card color="tertiary" class="mb-4">
     <v-card-title class="quaternary">
-      <v-icon left>mdi-printer-3d</v-icon>
+      <v-icon left>{{ icons.printer3d }}</v-icon>
       <span class="font-weight-light">
         {{ printerState }}
         <span class="font-weight-light text-subtitle-2 ml-4">{{ printerMessage }}</span>

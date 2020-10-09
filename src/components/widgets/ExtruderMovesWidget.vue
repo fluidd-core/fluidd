@@ -9,14 +9,14 @@
           color="secondary"
           class="mb-4">
           Retract
-          <v-icon>mdi-chevron-up</v-icon>
+          <v-icon>{{ icons.chevronUp }}</v-icon>
         </v-btn>
         <v-btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
           :disabled="hasWaits || !extrudeRetractReady"
           color="secondary">
           Extrude
-          <v-icon>mdi-chevron-down</v-icon>
+          <v-icon>{{ icons.chevronDown }}</v-icon>
         </v-btn>
       </v-layout>
     </v-col>

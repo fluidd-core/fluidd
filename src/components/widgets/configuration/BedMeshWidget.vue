@@ -1,7 +1,7 @@
 <template>
   <v-card color="tertiary">
     <v-card-title class="quaternary font-weight-light">
-      <v-icon left>mdi-view-grid-outline</v-icon> Bed Mesh
+      <v-icon left>{{ icons.bedMesh }}</v-icon> Bed Mesh
     </v-card-title>
     <v-card-subtitle class="quaternary">Configure your bed mesh and mesh profiles.</v-card-subtitle>
     <v-divider></v-divider>
@@ -85,7 +85,7 @@
             :loading="hasWait(waits.onHomeAll)"
             :disabled="hasWaits || printerPrinting || printerBusy"
             :color="(!allHomed) ? 'warning' : 'secondary'">
-              <v-icon small class="mr-1">mdi-home</v-icon> All
+              <v-icon small class="mr-1">{{ icons.home }}</v-icon> All
           </v-btn>
           <v-btn
             v-if="!printerPrinting && printerSupportsQgl"

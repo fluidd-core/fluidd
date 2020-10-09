@@ -16,7 +16,7 @@
           <div class="mb-1 grey--text" v-if="printTimeEstimationsType !== 'totals'">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2">mdi-timer-sand</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="grey darken-2">{{ icons.timer }}</v-icon>
               </template>
               <span>estimated time left</span>
             </v-tooltip>
@@ -25,7 +25,7 @@
           <div class="mb-1 grey--text">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">mdi-clock-outline</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">{{ icons.clock }}</v-icon>
               </template>
               {{ (printTimeEstimationsType !== 'totals') ? 'duration &amp; total' : 'duration' }}
             </v-tooltip>
@@ -35,14 +35,14 @@
           <div class="mb-1 grey--text" v-if="filamentEstimates !== ''">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">mdi-format-line-spacing</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">{{ icons.filamentEstimate }}</v-icon>
               </template>
               used filament
             </v-tooltip>
             <span class="grey--text text--darken-2">{{ filamentEstimates }}</span>
           </div>
           <div class="d-flex grey--text text--darken-2">
-            <v-icon color="grey darken-2">mdi-file-document-outline</v-icon>
+            <v-icon color="grey darken-2">{{ icons.fileDocument }}</v-icon>
             <div class="filename ml-1" v-if="filename">gcodes/{{ filename }}</div>
           </div>
       </v-col>
@@ -54,7 +54,7 @@
           v-if="!printerPaused && printerPrinting"
           color="secondary"
           class="mb-2">
-          <v-icon small>mdi-pause</v-icon>
+          <v-icon small>{{ icons.pause }}</v-icon>
           <span>Pause</span>
         </v-btn>
 
@@ -65,7 +65,7 @@
           v-if="printerPrinting || printerPaused"
           color="secondary"
           class="mb-2">
-          <v-icon small>mdi-window-close</v-icon>
+          <v-icon small>{{ icons.close }}e</v-icon>
           <span>Cancel</span>
         </v-btn>
         <v-btn
@@ -75,7 +75,7 @@
           v-if="printerPaused"
           color="secondary"
           class="mb-2">
-          <v-icon small class="mr-1">mdi-play-box-outline</v-icon>
+          <v-icon small class="mr-1">{{ icons.resume }}</v-icon>
           <span>Resume</span>
         </v-btn>
         <v-btn
@@ -83,7 +83,7 @@
           v-if="!printerPrinting && !printerPaused && filename"
           color="secondary"
           class="mb-2">
-          <v-icon small class="mr-1">mdi-printer</v-icon>
+          <v-icon small class="mr-1">{{ icons.reprint }}</v-icon>
           <span>Reprint</span>
         </v-btn>
         <v-btn
@@ -91,7 +91,7 @@
           :width="buttonWidths"
           color="secondary"
           class="mb-2">
-          <v-icon small class="mr-1">mdi-camera</v-icon>
+          <v-icon small class="mr-1">{{ icons.camera }}</v-icon>
           <span>Camera</span>
         </v-btn>
       </v-col>
