@@ -267,7 +267,8 @@ export const actions: ActionTree<SocketState, RootState> = {
           // A list of key strings to check for.
           let keys = [
             'temperature_fan',
-            'temperature_probe'
+            'temperature_probe',
+            'temperature_sensor'
           ]
           if (state.printer.heaters.available_heaters.length > 0) {
             keys = [...keys, ...state.printer.heaters.available_heaters]

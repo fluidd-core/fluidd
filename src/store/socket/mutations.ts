@@ -17,6 +17,7 @@ export const mutations: MutationTree<SocketState> = {
     Vue.set(state, 'output_pins', newState.output_pins)
     Vue.set(state, 'temperature_fans', newState.temperature_fans)
     Vue.set(state, 'temperature_sensors', newState.temperature_sensors)
+    Vue.set(state, 'temperature_probes', newState.temperature_sensors)
     Vue.set(state, 'endstops', newState.endstops)
   },
   setFansProbes (state, payload) {

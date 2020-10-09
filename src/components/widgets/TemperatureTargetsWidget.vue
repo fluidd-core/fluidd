@@ -73,6 +73,17 @@
           ></input-temperature>
         </v-col>
       </v-row>
+      <v-row v-for="item in sensors" :key="item.name">
+        <v-col class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+          {{ item.name }}
+        </v-col>
+        <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
+          {{ item.temperature.toFixed(1) }}
+          <small>°C</small>
+        </v-col>
+        <v-col class="py-1 px-2 grey--text text--lighten-1 text-h5">
+        </v-col>
+      </v-row>
     </v-container>
 </template>
 
@@ -98,6 +109,10 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
 
   get fans () {
     return this.$store.getters['socket/getFans']
+  }
+
+  get sensors () {
+    return this.$store.getters['socket/getSensors']
   }
 
   setHeaterTargetTemp (item: Heater, target: number) {

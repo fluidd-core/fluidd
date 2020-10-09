@@ -187,13 +187,16 @@ export const getters: GetterTree<SocketState, RootState> = {
     ) {
       const r: Heater[] = []
       state.printer.heaters.available_heaters.forEach((e: string) => {
-        const config = (state.printer.configfile.config[e]) ? state.printer.configfile.config[e] : undefined
-        r.push({
-          name: e,
-          ...state.printer[e],
-          minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
-          maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
-        })
+        const heater = state.printer[e]
+        if (heater && Object.keys(heater).length > 0) {
+          const config = (state.printer.configfile.config[e]) ? state.printer.configfile.config[e] : undefined
+          r.push({
+            name: e,
+            ...heater,
+            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
+            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
+          })
+        }
       })
       return r.sort((a: Heater, b: Heater) => {
         const name1 = a.name.toUpperCase()
@@ -214,13 +217,16 @@ export const getters: GetterTree<SocketState, RootState> = {
     ) {
       const r: Fan[] = []
       state.temperature_fans.forEach((e: string) => {
-        const config = (state.printer.configfile.config['temperature_fan ' + e]) ? state.printer.configfile.config['temperature_fan ' + e] : undefined
-        r.push({
-          name: e,
-          ...state.printer['temperature_fan ' + e],
-          minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
-          maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
-        })
+        const fan = state.printer['temperature_fan ' + e]
+        if (fan && Object.keys(fan).length > 0) {
+          const config = (state.printer.configfile.config['temperature_fan ' + e]) ? state.printer.configfile.config['temperature_fan ' + e] : undefined
+          r.push({
+            name: e,
+            ...fan,
+            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
+            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
+          })
+        }
       })
       return r
     }
@@ -231,20 +237,37 @@ export const getters: GetterTree<SocketState, RootState> = {
    * Return available temperature probes / sensors.
    */
   getSensors: (state): Sensor[] => {
+    const r: Sensor[] = []
     if (
       state.temperature_sensors &&
       state.temperature_sensors.length
     ) {
-      const r: Sensor[] = []
       state.temperature_sensors.forEach((e: string) => {
-        r.push({
-          name: e,
-          ...state.printer['temperature_probes ' + e]
-        })
+        const sensor = state.printer['temperature_sensor ' + e]
+        if (sensor && Object.keys(sensor).length > 0) {
+          r.push({
+            name: e,
+            ...sensor
+          })
+        }
       })
-      return r
     }
-    return []
+
+    if (
+      state.temperature_probes &&
+      state.temperature_probes.length
+    ) {
+      state.temperature_probes.forEach((e: string) => {
+        const sensor = state.printer['temperature_probe ' + e]
+        if (sensor && Object.keys(sensor).length > 0) {
+          r.push({
+            name: e,
+            ...sensor
+          })
+        }
+      })
+    }
+    return r
   },
 
   /**

@@ -7,7 +7,8 @@ export interface SocketState {
   console: string[]; // console stream.
   chart: ChartDataSet[]; // chart data
   temperature_fans: string[]; // maintains a list of available temp fans
-  temperature_sensors: string[]; // maintains a list of available probes
+  temperature_sensors: string[]; // maintains a list of available sensors
+  temperature_probes: string[]; // maintains a list of available probes
   heater_fans: string[]; // maintains a list of available heater fans
   filament_switch_sensors: string[]; // maintains a list of available filament switch sensors
   output_pins: string[]; // maintains a list of available output pins
