@@ -10,10 +10,12 @@
       Fluidd
     </v-toolbar-title>
     <v-spacer />
-    <!-- <v-switch
+    <v-switch
       v-model="darkmode"
-      label="Darkmode"
-    ></v-switch> -->
+      label="dark mode"
+      hide-details
+      class="mr-5"
+    ></v-switch>
     <v-toolbar-items>
       <v-btn text to="/"><v-icon small class="mr-2">{{ icons.home }}</v-icon> Dashboard</v-btn>
       <v-btn text to="/configuration"><v-icon small class="mr-2">{{ icons.tune }}</v-icon> Configuration</v-btn>
@@ -57,12 +59,12 @@ export default class AppBar extends Mixins(UtilsMixin) {
   }
 
   get darkmode () {
-    return this.$store.state.darkMode
+    return this.$store.state.config.localConfig.darkMode
   }
 
   set darkmode (val: boolean) {
     this.$vuetify.theme.dark = val
-    this.$store.commit('setDarkMode', val)
+    this.$store.dispatch('config/saveLocalStorage', { darkMode: val })
   }
 
   // Watch currentfile and refresh its metadata to ensure
@@ -72,6 +74,10 @@ export default class AppBar extends Mixins(UtilsMixin) {
     if (val && val.length > 0 && val !== 'standby') {
       SocketActions.serverFilesMetaData(val)
     }
+  }
+
+  emergencyStop () {
+    SocketActions.printerEmergencyStop()
   }
 }
 </script>

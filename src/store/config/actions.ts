@@ -16,7 +16,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   },
 
   /**
-   * Inits and file config we may have.
+   * Inits any file config we may have.
    */
   async initFile ({ commit }, config: FileConfig) {
     if (config) {

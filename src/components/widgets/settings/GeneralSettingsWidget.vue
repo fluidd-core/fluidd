@@ -1,6 +1,6 @@
 <template>
   <v-card color="tertiary">
-    <v-card-title class="quaternary"><v-icon left>{{ icons.cogs }}</v-icon> Settings</v-card-title>
+    <v-card-title class="quaternary font-weight-light"><v-icon left>{{ icons.cogs }}</v-icon> Settings</v-card-title>
     <v-card-subtitle class="quaternary">General settings.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>

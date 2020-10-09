@@ -11,8 +11,7 @@ Vue.use(Vuex)
 export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
   state: {
-    version: '0.0.3',
-    darkMode: true
+    version: '0.0.3'
   },
   modules: {
     config,
@@ -20,11 +19,6 @@ export default new Vuex.Store<RootState>({
     files
   },
   mutations: {
-    setDarkMode (state, payload: boolean) {
-      console.log('setting darkmode', payload)
-      // this.$store.commit('setDarkMode', value)
-      state.darkMode = payload
-    }
   },
   actions: {
     init ({ dispatch }, payload: FileConfig) {

@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-card-title>Temperature Presets</v-card-title>
+    <v-card-title class="font-weight-light">Temperature Presets</v-card-title>
     <v-card-subtitle>Temperature presets can be easily applied on the main dashboard.</v-card-subtitle>
     <v-card-text>
       <v-row>

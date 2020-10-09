@@ -1,10 +1,8 @@
 # TODO [fluidd]
 
 ## Next Up
-- move to mdi svg icons, and reduce overall size
 - expand current print metadata (with bigger thumb?)
 - file / folder move
-- allow theme change dark / light
 - dynamic favicon that looks like the percent finished ring
 - firmware restart from config page
 - have config page visible on klippy disconnect (socket connect vs klippy connect)

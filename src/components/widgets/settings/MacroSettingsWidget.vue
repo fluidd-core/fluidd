@@ -1,6 +1,6 @@
 <template>
   <v-card color="tertiary">
-    <v-card-title class="quaternary"><v-icon left>{{ icons.fileCode }}</v-icon> Macros</v-card-title>
+    <v-card-title class="quaternary font-weight-light"><v-icon left>{{ icons.fileCode }}</v-icon> Macros</v-card-title>
     <v-card-subtitle class="quaternary">Configure which macros appear on the dashboard.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>

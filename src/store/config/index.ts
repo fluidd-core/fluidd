@@ -12,7 +12,8 @@ export const state: ConfigState = {
   socketUrl: '',
   unsavedChanges: false,
   localConfig: {
-    cameraVisible: false
+    cameraVisible: false,
+    darkMode: true
   },
   fileConfig: {
     general: {

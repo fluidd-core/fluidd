@@ -17,8 +17,8 @@ export default new Vuetify({
         quaternary: '#333333'
       },
       light: {
-        primary: colors.blue.base,
-        secondary: colors.grey.lighten5,
+        primary: colors.blue.darken2,
+        secondary: colors.grey.base,
         tertiary: '#ededed',
         quaternary: '#dbdbdb'
       }

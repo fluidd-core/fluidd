@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { ConfigState, FileConfig, GenericSave } from './types'
 import { Macro } from '../socket/types'
@@ -9,7 +10,9 @@ export const mutations: MutationTree<ConfigState> = {
    * This would usually be set once loaded from localStorage.
    */
   onInitLocal (state, payload) {
-    state.localConfig = payload
+    for (const o in payload) {
+      Vue.set(state.localConfig, o, payload[o])
+    }
   },
 
   /**
