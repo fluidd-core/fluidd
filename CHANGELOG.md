@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.4](https://github.com/cadriel/fluidd/compare/v0.0.3...v0.0.4) (2020-10-09)
+
+
+### Features
+
+* added confirm dialog to cancel print button ([3a70c88](https://github.com/cadriel/fluidd/commit/3a70c88a79ed85c08ab1059d14ff82d3dcc843df))
+* configuration file editing ([03106d8](https://github.com/cadriel/fluidd/commit/03106d8910d1d4d9019b8664ba0596d610edf073))
+* console command history ([b4c8d1d](https://github.com/cadriel/fluidd/commit/b4c8d1da9513dba04e0d62ff8d4b65bb386b0fe4))
+* style updates to prep for light theme ([ef1cacd](https://github.com/cadriel/fluidd/commit/ef1cacdeee92d0c83aa347703e248253f928dc8f))
+* theme switching between light and dark ([f66637d](https://github.com/cadriel/fluidd/commit/f66637d95d3705db4e9739db3d3a18f4a96fb934))
+
+
+### Bug Fixes
+
+* temp sensors and probes now display ([8776fbc](https://github.com/cadriel/fluidd/commit/8776fbcb533d32fd6624fe037876e9d98a574f0b))
+
 ### [0.0.3](https://github.com/cadriel/fluidd/compare/v0.0.2...v0.0.3) (2020-10-05)
 
 
