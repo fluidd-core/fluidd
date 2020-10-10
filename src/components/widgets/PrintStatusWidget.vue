@@ -65,7 +65,7 @@
           v-if="printerPrinting || printerPaused"
           color="secondary"
           class="mb-2">
-          <v-icon small>{{ icons.close }}e</v-icon>
+          <v-icon small>{{ icons.cancel }}</v-icon>
           <span>Cancel</span>
         </v-btn>
         <v-btn

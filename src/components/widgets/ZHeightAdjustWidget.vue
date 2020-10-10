@@ -16,7 +16,7 @@
           :loading="hasWait('ZAdjust')"
           class="pa-0"
           color="secondary">
-          <v-icon>{{ downCollapse }}</v-icon>
+          <v-icon>{{ icons.downCollapse }}</v-icon>
         </v-btn>
       </v-col>
       <v-col class="py-0 px-3 flex-column justify-center d-flex">
