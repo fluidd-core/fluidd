@@ -8,31 +8,6 @@
         @send="sendCommand"
       >
       </input-console-command>
-      <!-- <v-text-field
-        v-model="consoleCommand"
-        :items="consoleHistory"
-        class="ma-4"
-        clearable
-        solo
-        dense
-        hide-details
-        placeholder="Send gcode"
-        append-outer-icon="mdi-send"
-        @click:append-outer="sendCommand(consoleCommand)"
-        @keyup.enter="sendCommand(consoleCommand)">
-      </v-text-field> -->
-      <!-- <v-virtual-scroll
-        :bench="50"
-        :items="consoleItems"
-        height="300"
-        item-height="25"
-        class=""
-      >
-        <template v-slot="{ item }">
-          <div class="d-flex" style="flex: 0 1 auto;">{{ item }}</div>
-        </template>
-      </v-virtual-scroll> -->
-
   </div>
 </template>
 

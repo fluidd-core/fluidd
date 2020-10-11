@@ -60,6 +60,8 @@ import {
  */
 export const Globals = Object.freeze({
   CONSOLE_HISTORY_RETENTION: 1000,
+  CONSOLE_RECEIVE_PREFIX: 'Recv:',
+  CONSOLE_SEND_PREFIX: 'Send:',
   KLIPPY_RETRY_DELAY: 3000,
   LOCAL_STORAGE_KEY: 'appConfig',
   SETTINGS_FILENAME: '.fluidd.json'

@@ -8,17 +8,20 @@ import { chartConfiguration } from '@/globals'
 export const mutations: MutationTree<SocketState> = {
   resetState (state) {
     const newState = getDefaultState()
-    Vue.set(state, 'printer', newState.printer)
-    Vue.set(state, 'macros', newState.macros)
-    Vue.set(state, 'chart', newState.chart)
-    Vue.set(state, 'waits', newState.waits)
-    Vue.set(state, 'filament_switch_sensors', newState.filament_switch_sensors)
-    Vue.set(state, 'heater_fans', newState.heater_fans)
-    Vue.set(state, 'output_pins', newState.output_pins)
-    Vue.set(state, 'temperature_fans', newState.temperature_fans)
-    Vue.set(state, 'temperature_sensors', newState.temperature_sensors)
-    Vue.set(state, 'temperature_probes', newState.temperature_sensors)
-    Vue.set(state, 'endstops', newState.endstops)
+    Object.keys(newState).forEach((key: string) => {
+      Vue.set(state, key, newState[key])
+    })
+    // Vue.set(state, 'printer', newState.printer)
+    // Vue.set(state, 'macros', newState.macros)
+    // Vue.set(state, 'chart', newState.chart)
+    // Vue.set(state, 'waits', newState.waits)
+    // Vue.set(state, 'filament_switch_sensors', newState.filament_switch_sensors)
+    // Vue.set(state, 'heater_fans', newState.heater_fans)
+    // Vue.set(state, 'output_pins', newState.output_pins)
+    // Vue.set(state, 'temperature_fans', newState.temperature_fans)
+    // Vue.set(state, 'temperature_sensors', newState.temperature_sensors)
+    // Vue.set(state, 'temperature_probes', newState.temperature_sensors)
+    // Vue.set(state, 'endstops', newState.endstops)
   },
   setFansProbes (state, payload) {
     if (
@@ -34,6 +37,9 @@ export const mutations: MutationTree<SocketState> = {
   },
   onSocketClose (state) {
     state.open = false
+  },
+  onAcceptNotifications (state) {
+    state.acceptingNotifications = true
   },
   onQueryEndstops (state, payload) {
     state.endstops = payload
@@ -96,6 +102,9 @@ export const mutations: MutationTree<SocketState> = {
   },
   clearEndStops (state) {
     state.endstops = {}
+  },
+  addInitialConsoleData (state, payload) {
+    state.console = payload
   },
   addInitialChartData (state, payload) {
     payload.forEach((item: ChartDataSet) => {

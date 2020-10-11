@@ -10,6 +10,14 @@ export const SocketActions = {
     )
   },
 
+  async serverInfo () {
+    Vue.$socket.emit(
+      'server.info', {
+        action: 'socket/onServerInfo'
+      }
+    )
+  },
+
   async printerQueryEndstops () {
     Vue.$socket.emit(
       'printer.query_endstops.status', {
@@ -98,6 +106,14 @@ export const SocketActions = {
     Vue.$socket.emit(
       'server.temperature_store', {
         action: 'socket/onTemperatureStore'
+      }
+    )
+  },
+
+  async serverGcodeStore () {
+    Vue.$socket.emit(
+      'server.gcode_store', {
+        action: 'socket/onGcodeStore'
       }
     )
   },

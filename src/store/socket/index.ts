@@ -10,6 +10,7 @@ import { RootState } from '../types'
 export const getDefaultState = (): SocketState => {
   return {
     open: false,
+    acceptingNotifications: false,
     error: null,
     waits: [],
     endstops: {},

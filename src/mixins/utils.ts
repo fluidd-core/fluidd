@@ -1,7 +1,7 @@
 import { SocketActions } from '@/socketActions'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Icons } from '@/globals'
+import { Globals, Icons } from '@/globals'
 
 @Component({})
 export default class UtilsMixin extends Vue {
@@ -84,7 +84,7 @@ export default class UtilsMixin extends Vue {
   sendGcode (gcode: string, wait?: string) {
     if (wait) this.$store.dispatch('socket/addWait', wait)
     SocketActions.printerGcodeScript(gcode, wait)
-    this.$store.dispatch('socket/addConsoleEntry', `Send: ${gcode}`)
+    this.$store.dispatch('socket/addConsoleEntry', `${Globals.CONSOLE_SEND_PREFIX} ${gcode}`)
   }
 
   /**

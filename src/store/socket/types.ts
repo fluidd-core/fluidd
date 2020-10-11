@@ -1,5 +1,7 @@
 export interface SocketState {
+  [key: string]: any;
   open: boolean;
+  acceptingNotifications: boolean;
   error: SocketError | null;
   waits: string[]; // list of things that we might be waiting on, like a gcode script to finish.
   endstops: EndStops;

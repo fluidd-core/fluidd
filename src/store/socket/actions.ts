@@ -98,8 +98,9 @@ export const actions: ActionTree<SocketState, RootState> = {
         SocketActions.printerInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
-      // We're good, move on. Start by loading the temperature history.
+      // We're good, move on. Start by loading the temperature and console history.
       SocketActions.serverTemperatureStore()
+      SocketActions.serverGcodeStore()
     }
   },
 
@@ -111,7 +112,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onGcodeScript ({ commit, dispatch }, payload) {
     // If the response is ok, pass it to the console.
     if (payload && payload.result && payload.result === 'ok') {
-      dispatch('addConsoleEntry', 'Recv: Ok')
+      dispatch('addConsoleEntry', Globals.CONSOLE_RECEIVE_PREFIX + ' Ok')
     }
     // Remove a wait if defined.
     if (payload.__request__ && payload.__request__.wait && payload.__request__.wait.length) {
@@ -141,6 +142,19 @@ export const actions: ActionTree<SocketState, RootState> = {
       }
     })
     SocketActions.printerObjectsSubscribe(intendedSubscriptions)
+  },
+
+  /**
+   * On a fresh load of the UI, we load prior gcode / console history
+   */
+  async onGcodeStore ({ commit }, payload) {
+    if (payload && payload.gcode_store) {
+      const split = payload.gcode_store.split('\n')
+      split.forEach((s: string, i: number) => {
+        split[i] = Globals.CONSOLE_RECEIVE_PREFIX + ' ' + s
+      })
+      commit('addInitialConsoleData', split.reverse())
+    }
   },
 
   /**
@@ -225,6 +239,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         }
       }
     })
+    commit('onAcceptNotifications') // start accepting notifications after our subscribe.
     commit('setFansProbes', r)
     dispatch('notifyStatusUpdate', payload.status)
   },
@@ -251,7 +266,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     // Take payload, put it in buffer object.
     // add setTimeout to empty the buffer and run the below..
 
-    if (payload) {
+    // Do NOT accept notification updates until our subscribe comes back.
+    // This is because moonraker may send a notification update prior to
+    // subscribing on a browser refresh.
+    if (payload && state.acceptingNotifications) {
       for (const key in payload) {
         const val = payload[key]
         // Skip anything we need here.
@@ -293,7 +311,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifyGcodeResponse ({ dispatch }, payload) {
     // stream gcode responses to our console data, ensuring
     // we truncate to max line count.
-    dispatch('addConsoleEntry', `Recv: ${payload}`)
+    dispatch('addConsoleEntry', `${Globals.CONSOLE_RECEIVE_PREFIX} ${payload}`)
   },
   async notifyKlippyDisconnected ({ commit }) {
     commit('resetState')
