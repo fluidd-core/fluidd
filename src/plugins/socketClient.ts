@@ -9,6 +9,7 @@
  */
 import _Vue from 'vue'
 import { camelCase } from 'lodash-es'
+import { RateLimiter } from '@/rateLimiter'
 
 export class WebSocketClient {
   url = '';
@@ -20,12 +21,17 @@ export class WebSocketClient {
   logPrefix = '[WEBSOCKET]';
   requests: Array<Request> = [];
   store: any | null = null;
+  // limiter: RateLimiter
+  limitedDispatch: any
 
   constructor (options: Options) {
     this.url = options.url
     this.reconnectEnabled = options.reconnectEnabled || false
     this.reconnectInterval = options.reconnectInterval || 3000
     this.store = options.store ? options.store : null
+
+    const limiter = new RateLimiter(1000)
+    this.limitedDispatch = limiter.create(this.store.dispatch, 1000)
   }
 
   connect () {
@@ -88,9 +94,14 @@ export class WebSocketClient {
         // These are socket notifications (i.e., no specific request was made..)
         // Dispatch with the name of the method, converted to camelCase.
         // console.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
+
+        // Moonraker sends an update every 250ms, for any object subscribed.
+        // So - we cache them using a basic cached rate limiter.
         if (d.params && d.params[0]) {
-          this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
+          this.limitedDispatch('socket/' + camelCase(d.method), d.params[0])
+          // this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
         } else {
+          // No need to cache this, as it passes no params.
           this.store.dispatch('socket/' + camelCase(d.method))
         }
       }

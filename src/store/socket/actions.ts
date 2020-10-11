@@ -295,21 +295,11 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * ==========================================================================
    * Automated notifications via socket
-   * Note that klipper will send an update every 250ms, if the data CHANGED.
-   * This applies per object subscribed - which can add up.
    * ==========================================================================
    */
 
-  /** Automated notify events via socket */
+  // Automated notify events via socket
   async notifyStatusUpdate ({ state, commit }, payload) {
-    // TODO: We potentially get many updates here.
-    // Consider caching the updates and sending them every <interval>.
-    // We don't want to miss an update - but also don't need all of them
-    // so quickly.
-
-    // Take payload, put it in buffer object.
-    // add setTimeout to empty the buffer and run the below..
-
     // Do NOT accept notification updates until our subscribe comes back.
     // This is because moonraker may send a notification update prior to
     // subscribing on a browser refresh.
