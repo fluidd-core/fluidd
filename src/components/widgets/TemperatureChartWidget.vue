@@ -29,7 +29,7 @@ export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueCha
     this.chart = this.$data._chart
 
     // Update chart
-    this.chartTimer = setInterval(this.updateChart, 500)
+    this.chartTimer = setInterval(this.updateChart, 1000)
   }
 
   private getXTicks () {
