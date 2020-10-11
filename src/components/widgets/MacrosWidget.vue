@@ -5,7 +5,6 @@
       :key="index"
       @click="sendGcode(macro, `${waits.onMacro}${macro}`)"
       :loading="hasWait(`${waits.onMacro}${macro}`)"
-      :disabled="printerPrinting"
       color="secondary"
       class="me-2 mb-2">{{ macro }}</v-btn>
   </v-card-text>
