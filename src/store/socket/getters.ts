@@ -15,6 +15,16 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
+   * Indicates if klippy is connected or not.
+   */
+  getKlippyState: (state): boolean => {
+    if (state.printer.info.state !== 'ready') {
+      return false
+    }
+    return true
+  },
+
+  /**
    * Returns a string value indicating the state of the printer.
    */
   getPrinterState: (state): string => {

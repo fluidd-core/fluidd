@@ -11,7 +11,7 @@ Vue.use(Vuex)
 export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
   state: {
-    version: '0.0.3'
+    version: '0'
   },
   modules: {
     config,
@@ -19,11 +19,15 @@ export default new Vuex.Store<RootState>({
     files
   },
   mutations: {
+    setVersion (state, payload) {
+      state.version = payload
+    }
   },
   actions: {
-    init ({ dispatch }, payload: FileConfig) {
+    init ({ dispatch, commit }, payload: FileConfig) {
       // Should init the store, and ensure we've loaded our
       // configuration if there is any.
+      commit('setVersion', process.env.VERSION)
       const initLocal = dispatch('config/initLocal')
       const initFile = dispatch('config/initFile', payload)
       return Promise.all([initLocal, initFile])

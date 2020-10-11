@@ -8,7 +8,7 @@
       <v-col
         class="subtitle-1 text-center"
         cols="12"
-        v-if="!printerConnected"
+        v-if="!socketConnected"
       >
         Connecting to printer...
       </v-col>
@@ -19,7 +19,7 @@
         </v-alert>
         <v-btn block color="warning" @click="sendGcode('FIRMWARE_RESTART')" class="me-2 mb-2">Firmware Restart</v-btn>
       </v-col>
-      <v-col cols="6" v-if="!printerConnected">
+      <v-col cols="6" v-if="!socketConnected">
         <v-progress-linear
           class="mb-4"
           color="warning"
@@ -41,21 +41,6 @@ import UtilsMixin from '@/mixins/utils'
   components: {}
 })
 export default class AppDisconnected extends Mixins(UtilsMixin) {
-  get printerConnected () {
-    return this.$store.getters['socket/getConnectionState']
-  }
-
-  get klippyState () {
-    return this.$store.state.socket.printer.info.state
-  }
-
-  get klippyConnected () {
-    if (this.klippyState !== 'ready') {
-      return false
-    }
-    return true
-  }
-
   get klippyError () {
     const message = this.$store.state.socket.printer.info.state_message
     if (message) {

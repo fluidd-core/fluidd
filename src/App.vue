@@ -10,13 +10,14 @@
     />
 
     <v-main>
-      <router-view v-if="printerConnected && klippyConnected" />
-      <app-disconnected v-if="!printerConnected || !klippyConnected"></app-disconnected>
+      <router-view v-if="socketConnected && klippyConnected" />
+      <app-disconnected v-if="!socketConnected || !klippyConnected"></app-disconnected>
     </v-main>
 
-    <v-footer app>
+    <!-- <v-footer app>
       <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
+    </v-footer> -->
+    <app-footer></app-footer>
   </v-app>
 </template>
 
@@ -26,6 +27,7 @@ import EventBus from '@/eventBus'
 import UtilsMixin from './mixins/utils'
 import { FlashMessage as FlashMessageType } from '@/types'
 import AppBar from '@/components/AppBar.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import AppDisconnected from '@/components/AppDisconnected.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
 
@@ -33,7 +35,8 @@ import FlashMessage from '@/components/FlashMessage.vue'
   components: {
     AppBar,
     AppDisconnected,
-    FlashMessage
+    FlashMessage,
+    AppFooter
   }
 })
 export default class App extends Mixins(UtilsMixin) {
@@ -41,21 +44,6 @@ export default class App extends Mixins(UtilsMixin) {
     open: false,
     text: undefined,
     type: undefined
-  }
-
-  get printerConnected () {
-    return this.$store.getters['socket/getConnectionState']
-  }
-
-  get klippyState () {
-    return this.$store.state.socket.printer.info.state
-  }
-
-  get klippyConnected () {
-    if (this.klippyState !== 'ready') {
-      return false
-    }
-    return true
   }
 
   mounted () {

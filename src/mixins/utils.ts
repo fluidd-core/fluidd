@@ -9,14 +9,21 @@ export default class UtilsMixin extends Vue {
     return Icons
   }
 
-  // Return a list of our databases in a format vuetify can use.
+  // Indicates connection to the socket.
+  get socketConnected () {
+    return this.$store.getters['socket/getConnectionState']
+  }
+
+  get klippyConnected () {
+    return this.$store.getters['socket/getKlippyState']
+  }
+
+  // Return the printer state
   get printerState () {
     return this.$filters.startCase(this.$store.getters['socket/getPrinterState'])
   }
 
-  /**
-   * Returns a boolean indicating if the printer is busy in some way..
-   */
+  // Returns a boolean indicating if the printer is busy in some way..
   get printerBusy () {
     const printerState = this.printerState.toLowerCase()
     if (
