@@ -18,6 +18,18 @@ export const SocketActions = {
     )
   },
 
+  async machineReboot () {
+    Vue.$socket.emit(
+      'machine.reboot'
+    )
+  },
+
+  async machineShutdown () {
+    Vue.$socket.emit(
+      'machine.shutdown'
+    )
+  },
+
   async printerQueryEndstops () {
     Vue.$socket.emit(
       'printer.query_endstops.status', {
