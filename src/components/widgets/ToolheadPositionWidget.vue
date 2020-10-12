@@ -1,26 +1,22 @@
 <template>
-  <v-row>
-    <v-col class="pa-2">
+  <v-card class="d-flex flex-column flex-sm-row justify-space-around pa-4">
 
-      <v-card class="xyzLabels d-flex py-3">
-        <v-col class="d-flex flex-column align-center py-0 px-2">
-          <div class="text-subtitle-1 grey--text text--darken-1">X</div>
-          <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[0].toFixed(2) }}</div>
-        </v-col>
+    <div class="d-flex flex-row align-center justify-space-between">
+      <div class="text-subtitle-1 grey--text text--darken-1 mr-2">X</div>
+      <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[0].toFixed(2) }}</div>
+    </div>
 
-        <v-col class="d-flex flex-column align-center py-0 px-2">
-          <div class="text-subtitle-1 grey--text text--darken-1">Y</div>
-          <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[1].toFixed(2) }}</div>
-        </v-col>
+    <div class="d-flex flex-row align-center justify-space-between">
+      <div class="text-subtitle-1 grey--text text--darken-1 mr-2">Y</div>
+      <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[1].toFixed(2) }}</div>
+    </div>
 
-        <v-col class="d-flex flex-column align-center py-0 px-2">
-          <div class="text-subtitle-1 grey--text text--darken-1">Z</div>
-          <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[2].toFixed(2) }}</div>
-        </v-col>
-      </v-card>
-    </v-col>
+    <div class="d-flex flex-row align-center justify-space-between">
+      <div class="text-subtitle-1 grey--text text--darken-1 mr-2">Z</div>
+      <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[2].toFixed(2) }}</div>
+    </div>
 
-  </v-row>
+  </v-card>
 </template>
 
 <script lang="ts">

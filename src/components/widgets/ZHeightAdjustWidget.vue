@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="py-0">
     <v-row>
       <v-col class="pa-0" cols="auto">
         <v-btn
@@ -19,7 +19,7 @@
           <v-icon>{{ icons.downCollapse }}</v-icon>
         </v-btn>
       </v-col>
-      <v-col class="py-0 px-3 flex-column justify-center d-flex">
+      <v-col class="pa-0 px-3 flex-column justify-center d-flex">
         <div class="grey--text text--darken-1">Offset Z</div>
         <div>{{ ZHomingOrigin }}mm</div>
       </v-col>

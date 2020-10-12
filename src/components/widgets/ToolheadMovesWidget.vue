@@ -1,14 +1,14 @@
 <template>
-  <v-container fluid class="pa-0">
-    <v-row no-gutters>
-      <v-col class="pa-2" offset="3">
+  <v-container>
+    <v-row>
+      <v-col class="pa-2 pt-0" offset="3">
         <v-btn @click="sendMoveGcode('Y', toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0" color="secondary"><v-icon>{{ icons.up }}</v-icon></v-btn>
       </v-col>
-      <v-col class="pa-2" offset="3">
+      <v-col class="pa-2 pt-0" offset="3">
         <v-btn @click="sendMoveGcode('Z', toolheadMoveLength)" :disabled="hasWaits || !zHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.up }}</v-icon></v-btn>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row>
       <v-col class="pa-2">
         <v-btn @click="sendMoveGcode('X', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.left }}</v-icon></v-btn>
       </v-col>
@@ -22,7 +22,7 @@
         <v-btn @click="sendGcode('G28 Z', waits.onHomeZ)" :loading="hasWait(waits.onHomeZ)" :disabled="hasWaits" :min-width="40" class="pa-0" :color="(!zHomed) ? 'warning' : 'secondary'"><v-icon>{{ icons.home }}</v-icon></v-btn>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row>
       <v-col class="pa-2" offset="3">
         <v-btn @click="sendMoveGcode('Y', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.down }}</v-icon></v-btn>
       </v-col>
@@ -30,7 +30,7 @@
         <v-btn @click="sendMoveGcode('Z', '-' + toolheadMoveLength)" :disabled="hasWaits || !zHomed" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.down }}</v-icon></v-btn>
       </v-col>
     </v-row>
-    <v-row no-gutters>
+    <v-row>
       <v-col class="pa-2">
         <v-btn-toggle mandatory dense v-model="toolheadMoveLength">
           <v-btn :min-width="52" color="secondary" value="0.1">0.1</v-btn>

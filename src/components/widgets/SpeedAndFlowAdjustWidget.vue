@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <!-- Speed and Flow Adjust -->
-    <v-col class="pa-2 pt-0">
+    <v-col cols="12" sm="6" class="pa-2 pt-0">
       <input-slider
         label="Speed"
         :value="speed"
@@ -12,7 +12,7 @@
         v-if="printerPrinting">
       </input-slider>
     </v-col>
-    <v-col class="pa-2 pt-0">
+    <v-col cols="12" sm="6" class="pa-2 pt-0">
       <input-slider
         label="Flow"
         :value="flow"
