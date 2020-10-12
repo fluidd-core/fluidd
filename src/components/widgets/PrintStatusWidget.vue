@@ -1,7 +1,7 @@
 <template>
   <v-container class="py-0">
     <v-row align="center">
-      <v-col sm="auto">
+      <v-col cols="auto">
         <v-progress-circular
             :rotate="180"
             :size="90"
@@ -46,54 +46,12 @@
             <div class="filename ml-1" v-if="filename">gcodes/{{ filename }}</div>
           </div>
       </v-col>
-      <v-col sm="auto" class="d-flex flex-column">
-        <v-btn
-          @click="pausePrint()"
-          :loading="hasWait(waits.onPrintPause)"
-          :width="buttonWidths"
-          v-if="!printerPaused && printerPrinting"
-          color="secondary"
-          class="mb-2">
-          <v-icon small>{{ icons.pause }}</v-icon>
-          <span>Pause</span>
-        </v-btn>
-
-        <v-btn
-          @click="confirmDialog.open = true"
-          :loading="hasWait(waits.onPrintCancel)"
-          :width="buttonWidths"
-          v-if="printerPrinting || printerPaused"
-          color="secondary"
-          class="mb-2">
-          <v-icon small>{{ icons.cancel }}</v-icon>
-          <span>Cancel</span>
-        </v-btn>
-        <v-btn
-          @click="resumePrint()"
-          :loading="hasWait(waits.onPrintResume)"
-          :width="buttonWidths"
-          v-if="printerPaused"
-          color="secondary"
-          class="mb-2">
-          <v-icon small class="mr-1">{{ icons.resume }}</v-icon>
-          <span>Resume</span>
-        </v-btn>
-        <v-btn
-          :width="buttonWidths"
-          v-if="!printerPrinting && !printerPaused && filename"
-          color="secondary"
-          class="mb-2">
-          <v-icon small class="mr-1">{{ icons.reprint }}</v-icon>
-          <span>Reprint</span>
-        </v-btn>
-        <v-btn
-          @click="cameraVisible = !cameraVisible"
-          :width="buttonWidths"
-          color="secondary"
-          class="mb-2">
-          <v-icon small class="mr-1">{{ icons.camera }}</v-icon>
-          <span>Camera</span>
-        </v-btn>
+      <v-col cols="auto" class="d-none d-sm-flex">
+        <img
+          v-if="thumbnail && printerPrinting"
+          class="print-thumb"
+          :src="thumbnail.data"
+        />
       </v-col>
     </v-row>
     <v-expand-transition>
@@ -103,11 +61,6 @@
         </v-col>
       </v-row>
     </v-expand-transition>
-    <dialog-confirm
-      v-model="confirmDialog.open"
-      @confirm="cancelPrint()">
-      <p>Are you sure? This will cancel your print.</p>
-    </dialog-confirm>
   </v-container>
 </template>
 
@@ -115,21 +68,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { Waits } from '@/globals'
-import { SocketActions } from '@/socketActions'
-import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 
-@Component({
-  components: {
-    DialogConfirm
-  }
-})
+@Component({})
 export default class PrintStatusWidget extends Mixins(UtilsMixin) {
   buttonWidths = 140
   waits = Waits
-
-  confirmDialog = {
-    open: false
-  }
 
   get cameraUrl (): string {
     return this.$store.state.config.fileConfig.camera.url
@@ -139,12 +82,12 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
     return this.$store.state.config.localConfig.cameraVisible
   }
 
-  set cameraVisible (val: boolean) {
-    this.$store.dispatch('config/saveLocalStorage', { cameraVisible: val })
-  }
-
   get filename () {
     return this.$store.state.socket.printer.print_stats.filename
+  }
+
+  get thumbnail () {
+    return this.$store.getters['socket/getPrintImage']
   }
 
   get printTimeEstimationsType () {
@@ -168,24 +111,16 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
       return ''
     }
   }
-
-  cancelPrint () {
-    SocketActions.printerPrintCancel()
-  }
-
-  pausePrint () {
-    SocketActions.printerPrintPause()
-  }
-
-  resumePrint () {
-    SocketActions.printerPrintResume()
-  }
 }
 </script>
 
 <style lang="scss" scoped>
   .webcam {
     width: 100%;
+  }
+
+  .print-thumb {
+    max-height: 110px;
   }
 
   .filename {

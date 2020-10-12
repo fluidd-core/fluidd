@@ -14,8 +14,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="secondary" @click="emitChange(false)">Close</v-btn>
-        <v-btn color="primary" @click="saveValue()">Save</v-btn>
+        <slot name="actions">
+          <v-btn color="secondary" @click="emitChange(false)">Close</v-btn>
+          <v-btn color="primary" @click="saveValue()">Save</v-btn>
+        </slot>
       </v-card-actions>
     </v-card>
   </v-dialog>

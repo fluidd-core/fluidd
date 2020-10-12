@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh } from './types'
+import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Thumbnail } from './types'
 import { RootState } from '../types'
 import { chartConfiguration } from '@/globals'
 import { TinyColor } from '@ctrl/tinycolor'
@@ -53,6 +53,27 @@ export const getters: GetterTree<SocketState, RootState> = {
     } else {
       return 'Loading'
     }
+  },
+
+  getPrintImage: (state) => {
+    // We may have more than one thumb - so pick the largest.
+    let thumb: Thumbnail | undefined
+    if (
+      state.printer.current_file &&
+      state.printer.current_file.thumbnails &&
+      state.printer.current_file.thumbnails.length
+    ) {
+      state.printer.current_file.thumbnails.forEach((item: Thumbnail) => {
+        if (!thumb || (item.size > thumb.size)) {
+          thumb = { ...item }
+        }
+      })
+    }
+
+    if (thumb) {
+      thumb.data = 'data:image/gif;base64,' + thumb.data
+    }
+    return thumb
   },
 
   /**

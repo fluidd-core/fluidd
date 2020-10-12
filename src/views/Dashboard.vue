@@ -1,11 +1,11 @@
 <template>
   <v-container fluid class="dashboard">
     <v-row>
-      <v-col class="pt-0">
+      <v-col cols="12" md="6" class="pt-0">
         <status-card></status-card>
         <toolhead-card></toolhead-card>
       </v-col>
-      <v-col class="pt-0">
+      <v-col cols="12" md="6" class="pt-0">
         <tools-card></tools-card>
         <temperature-card></temperature-card>
       </v-col>

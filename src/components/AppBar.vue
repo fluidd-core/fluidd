@@ -6,7 +6,7 @@
     <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
     <!-- <img src="./assets/logo.svg" class="logo" /> -->
     <v-icon large color="#1970b5">{{ icons.printer3dNozzle }}</v-icon>
-    <v-toolbar-title class="title text-h4 mr-5">
+    <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
       Fluidd
     </v-toolbar-title>
     <v-spacer />
@@ -14,12 +14,21 @@
       v-model="darkmode"
       label="dark mode"
       hide-details
-      class="mr-5"
+      class="mr-5 d-none d-sm-block"
     ></v-switch>
     <v-toolbar-items>
-      <v-btn text to="/"><v-icon small class="mr-2">{{ icons.home }}</v-icon> Dashboard</v-btn>
-      <v-btn text to="/configuration"><v-icon small class="mr-2">{{ icons.tune }}</v-icon> Configuration</v-btn>
-      <v-btn text to="/settings"><v-icon small class="mr-2">{{ icons.cog }}</v-icon> Settings</v-btn>
+      <v-btn text to="/">
+        <v-icon small class="mr-md-1">{{ icons.home }}</v-icon>
+        <span class="d-none d-md-inline">Dashboard</span>
+      </v-btn>
+      <v-btn text to="/configuration">
+        <v-icon small class="mr-md-1">{{ icons.tune }}</v-icon>
+        <span class="d-none d-md-inline">Configuration</span>
+      </v-btn>
+      <v-btn text to="/settings">
+        <v-icon small class="mr-md-1">{{ icons.cog }}</v-icon>
+        <span class="d-none d-md-inline">Settings</span>
+      </v-btn>
       <v-tooltip bottom v-if="socketConnected && klippyConnected">
         <template v-slot:activator="{ on, attrs }">
           <v-btn text color="error" @click="emergencyStop()" v-bind="attrs" v-on="on"><v-icon>{{ icons.estop }}</v-icon></v-btn>

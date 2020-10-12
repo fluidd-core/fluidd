@@ -130,3 +130,10 @@ export interface BedMeshProfile {
   x_count: string;
   y_count: string;
 }
+
+export interface Thumbnail {
+  data: string;
+  height: number;
+  width: number;
+  size: number;
+}
