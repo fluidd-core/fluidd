@@ -7,7 +7,7 @@ export class RateLimiter {
   resolver: Function | undefined = undefined
   timeout = 0
   timer = -1
-  fetchDate = 0
+  fetchDate = new Date()
   private cache: any = {}
 
   constructor (timeout: number) {
@@ -37,17 +37,17 @@ export class RateLimiter {
   }
 
   isCacheExpired () {
-    return (this.fetchDate + this.timeout) < new Date().getTime()
+    return (this.fetchDate.getTime() + this.timeout) < new Date().getTime()
   }
 
   resetCache () {
-    this.fetchDate = new Date().getTime()
+    const today = new Date()
+    this.fetchDate = today
   }
 
   addCacheItem (key: string, args: any) {
     if (!this.cache[key]) this.cache[key] = []
     merge(this.cache[key], args)
-    // console.log('add cache item', key, args)
   }
 }
 

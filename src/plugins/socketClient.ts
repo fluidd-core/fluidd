@@ -31,7 +31,7 @@ export class WebSocketClient {
     this.store = options.store ? options.store : null
 
     const limiter = new RateLimiter(1000)
-    this.limitedDispatch = limiter.create(this.store.dispatch, 1000)
+    this.limitedDispatch = limiter.create(this.store.dispatch)
   }
 
   connect () {
