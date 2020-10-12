@@ -8,11 +8,17 @@ const Filters = {
    * Expects to be passed seconds.
    */
   formatCounterTime: (seconds: number) => {
+    let isNeg = false
     if (isNaN(seconds)) seconds = 0
+    if (seconds < 0) {
+      seconds = Math.abs(seconds)
+      isNeg = true
+    }
     const h = Math.floor(seconds / 3600)
     const m = Math.floor(seconds % 3600 / 60)
     const s = Math.floor(seconds % 3600 % 60)
-    return `${h}h ${m}m ${s}s`
+    const r = `${h}h ${m}m ${s}s`
+    return (isNeg) ? '-' + r : r
   },
 
   /**

@@ -1,11 +1,16 @@
 # TODO [fluidd]
 
 ## Next Up
+- confirm  host restart and shutdown works
+- why on klippy crash did eddie not get the disconnected screen stuff?
+  - maybe because none of the state updated, or something else?
 - expand current print metadata (with bigger thumb?)
 - file / folder move
 - dynamic favicon that looks like the percent finished ring
-- firmware restart from config page
-- have config page visible on klippy disconnect (socket connect vs klippy connect)
+- probed vs mesh bed level display option
+- mobile layout
+- temperature presets
+- sqv etc..
 
 ## Known Bugs:
 - multi line gcodes not having a Send: prefix after the first line
@@ -14,6 +19,8 @@
   - the metadata load fails because the file is no longer there.
 
 ## General Improvements
+- should be able to force part speed fan during a print
+- console line item management needs improving
 - draggable dashboard panels?
 - allow contraction and expansion of dashboard panels?
 - add console.log wrapper for dev vs prod
