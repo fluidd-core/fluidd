@@ -9,18 +9,18 @@
           </v-card-title>
         </v-card>
         <v-row>
-          <v-col cols="7" v-if="supportsBedMesh">
+          <v-col cols="12" md="7" v-if="supportsBedMesh">
             <bed-mesh-widget></bed-mesh-widget>
             <v-row>
-              <v-col cols="6">
+              <v-col cols="12" sm="6">
                 <runout-sensor-widget></runout-sensor-widget>
               </v-col>
-              <v-col cols="6">
+              <v-col cols="12" sm="6">
                 <end-stops-widget></end-stops-widget>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="5">
+          <v-col cols="12" md="5">
             <!-- <printer-limits-widget></printer-limits-widget> -->
             <file-system-widget
               :root="['config', 'config_examples']"

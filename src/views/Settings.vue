@@ -10,11 +10,11 @@
           </v-card-title>
         </v-card>
         <v-row>
-          <v-col cols="6">
+          <v-col cols="12" sm="6">
             <general-settings-widget></general-settings-widget>
             <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
           </v-col>
-          <v-col cols="6">
+          <v-col cols="12" sm="6">
             <macro-settings-widget></macro-settings-widget>
           </v-col>
         </v-row>

@@ -42,19 +42,19 @@
       background-color="tertiary"
     >
       <v-tab :key="0">
-        Macros
+        <span class="d-none d-sm-inline">Macros</span>
         <v-icon>{{ icons.fileCode }}</v-icon>
       </v-tab>
       <v-tab :key="1">
-        Sys Commands
+        <span class="d-none d-sm-inline">Sys Commands</span>
         <v-icon>{{ icons.tools }}</v-icon>
       </v-tab>
       <v-tab :key="2">
-        Jobs
+        <span class="d-none d-sm-inline">Jobs</span>
         <v-icon>{{ icons.files }}</v-icon>
       </v-tab>
       <v-tab :key="3">
-        Console
+        <span class="d-none d-sm-inline">Console</span>
         <v-icon>{{ icons.console }}</v-icon>
       </v-tab>
     </v-tabs>
@@ -82,3 +82,10 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   activeTab = 0
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .v-tabs > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile > .v-slide-group__prev,
+  ::v-deep .v-tabs > .v-slide-group--is-overflowing.v-tabs-bar--is-mobile > .v-slide-group__next {
+    display: none !important;
+  }
+</style>
