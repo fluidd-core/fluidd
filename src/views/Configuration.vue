@@ -10,8 +10,9 @@
         </v-card>
         <v-row>
           <v-col cols="12" md="7" v-if="supportsBedMesh">
-            <bed-mesh-widget></bed-mesh-widget>
-            <v-row>
+            <bed-mesh-widget v-if="supportsBedMesh && klippyConnected"></bed-mesh-widget>
+            <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
+            <v-row v-if="klippyConnected">
               <v-col cols="12" sm="6">
                 <runout-sensor-widget></runout-sensor-widget>
               </v-col>
@@ -43,6 +44,7 @@ import BedMeshWidget from '@/components/widgets/configuration/BedMeshWidget.vue'
 import EndStopsWidget from '@/components/widgets/configuration/EndStopsWidget.vue'
 import RunoutSensorWidget from '@/components/widgets/configuration/RunoutSensorWidget.vue'
 import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
+import KlippyDisconnectedWidget from '@/components/widgets/KlippyDisconnectedWidget.vue'
 
 @Component({
   components: {
@@ -50,7 +52,8 @@ import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.v
     BedMeshWidget,
     EndStopsWidget,
     RunoutSensorWidget,
-    FileSystemWidget
+    FileSystemWidget,
+    KlippyDisconnectedWidget
   }
 })
 export default class Configuration extends Mixins(UtilsMixin) {

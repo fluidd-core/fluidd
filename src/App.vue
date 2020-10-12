@@ -10,13 +10,10 @@
     />
 
     <v-main>
-      <router-view v-if="socketConnected && klippyConnected" />
-      <app-disconnected v-if="!socketConnected || !klippyConnected"></app-disconnected>
+      <router-view v-if="socketConnected" />
+      <socket-disconnected-widget v-if="!socketConnected"></socket-disconnected-widget>
     </v-main>
 
-    <!-- <v-footer app>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer> -->
     <app-footer></app-footer>
   </v-app>
 </template>
@@ -28,13 +25,13 @@ import UtilsMixin from './mixins/utils'
 import { FlashMessage as FlashMessageType } from '@/types'
 import AppBar from '@/components/AppBar.vue'
 import AppFooter from '@/components/AppFooter.vue'
-import AppDisconnected from '@/components/AppDisconnected.vue'
+import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
 
 @Component({
   components: {
     AppBar,
-    AppDisconnected,
+    SocketDisconnectedWidget,
     FlashMessage,
     AppFooter
   }

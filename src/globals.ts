@@ -52,7 +52,8 @@ import {
   mdiFormTextbox,
   mdiDeleteAlertOutline,
   mdiCogs,
-  mdiContentSaveOutline
+  mdiContentSaveOutline,
+  mdiAlert
 } from '@mdi/js'
 
 /**
@@ -71,6 +72,7 @@ export const Icons = Object.freeze({
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
+  alert: mdiAlert,
   hazard: mdiHazardLights,
   blankCircle: mdiCheckboxBlankCircleOutline,
   markedCircle: mdiCheckboxMarkedCircle,
