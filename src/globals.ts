@@ -63,7 +63,7 @@ export const Globals = Object.freeze({
   CONSOLE_HISTORY_RETENTION: 1000,
   CONSOLE_RECEIVE_PREFIX: 'Recv:',
   CONSOLE_SEND_PREFIX: 'Send:',
-  KLIPPY_RETRY_DELAY: 3000,
+  KLIPPY_RETRY_DELAY: 2000,
   LOCAL_STORAGE_KEY: 'appConfig',
   SETTINGS_FILENAME: '.fluidd.json'
 })
@@ -142,7 +142,9 @@ export const Waits = Object.freeze({
   onZAdjust: 'onZAdjust',
   onRetract: 'onRetract',
   onExtrude: 'onExtrude',
-  onMeshCalibrate: 'onMeshCalibrate'
+  onMeshCalibrate: 'onMeshCalibrate',
+  onRestart: 'restart',
+  onFirmwareRestart: 'restart'
 })
 
 /* eslint-disable @typescript-eslint/camelcase */

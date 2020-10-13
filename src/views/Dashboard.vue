@@ -2,7 +2,8 @@
   <v-container fluid class="dashboard">
     <v-row>
       <v-col cols="12" md="6" class="pt-0">
-        <status-card></status-card>
+        <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
+        <status-card v-if="klippyConnected"></status-card>
         <toolhead-card></toolhead-card>
       </v-col>
       <v-col cols="12" md="6" class="pt-0">
@@ -14,21 +15,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StatusCard from '@/components/cards/StatusCard.vue'
 import ToolsCard from '@/components/cards/ToolsCard.vue'
 import ToolheadCard from '@/components/cards/ToolheadCard.vue'
 import TemperatureCard from '@/components/cards/TemperatureCard.vue'
+import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import UtilsMixin from '@/mixins/utils'
 
 @Component({
   components: {
     StatusCard,
     ToolsCard,
     ToolheadCard,
-    TemperatureCard
+    TemperatureCard,
+    KlippyDisconnectedWidget
   }
 })
-export default class Dashboard extends Vue {}
+export default class Dashboard extends Mixins(UtilsMixin) {}
 </script>
 
 <style lang="scss">

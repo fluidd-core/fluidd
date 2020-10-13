@@ -10,6 +10,7 @@ import { RootState } from '../types'
 export const getDefaultState = (): SocketState => {
   return {
     open: false,
+    loading: false,
     acceptingNotifications: false,
     error: null,
     waits: [],
@@ -30,7 +31,7 @@ export const getDefaultState = (): SocketState => {
         available_sensors: []
       },
       info: {
-        state: 'ready',
+        state: '',
         state_message: ''
       },
       configfile: {
@@ -41,12 +42,12 @@ export const getDefaultState = (): SocketState => {
       },
       objects: [],
       idle_timeout: {
-        state: 'ready'
+        state: ''
       },
       print_stats: {
         state: '',
         print_duration: 0,
-        filename: 'standby'
+        filename: ''
       },
       display_status: {
         progress: 0,
@@ -68,6 +69,10 @@ export const getDefaultState = (): SocketState => {
       },
       fan: {
         speed: 0
+      },
+      webhooks: {
+        state: 'ready',
+        state_message: ''
       }
     }
   }

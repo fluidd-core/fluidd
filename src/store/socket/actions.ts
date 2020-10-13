@@ -7,6 +7,8 @@ import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import EventBus from '@/eventBus'
 
+let retryTimeout: number
+
 export const actions: ActionTree<SocketState, RootState> = {
   /**
    * ==========================================================================
@@ -56,13 +58,17 @@ export const actions: ActionTree<SocketState, RootState> = {
       EventBus.$emit('flashMessage', { type: 'error', timeout: -1, text: message })
     }
     if (payload.code === 503) {
-      //  && payload.message.toLowerCase() === 'klippy host not connected'
       // This indicates klippy is non-responsive, or there's a configuration error
       // in klipper. We should retry after the set delay.
       // Restart our startup sequence.
       commit('resetState')
-      commit('onPrinterInfo', { state: 'error', message: payload.message }) // Forcefully set the printer in error
-      setTimeout(() => {
+      /* eslint-disable @typescript-eslint/camelcase */
+      commit('onPrinterInfo', { state: 'error', state_message: payload.message }) // Forcefully set the printer in error
+      /* eslint-enable @typescript-eslint/camelcase */
+      // setTimeout(() => {
+      clearTimeout(retryTimeout)
+      retryTimeout = setTimeout(() => {
+        // console.log('running printer info')
         SocketActions.printerInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
@@ -92,9 +98,12 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async onPrinterInfo ({ commit }, payload) {
     commit('onPrinterInfo', payload)
+    // console.log('got printer info')
 
     if (payload.state !== 'ready') {
-      setTimeout(() => {
+      clearTimeout(retryTimeout)
+      retryTimeout = setTimeout(() => {
+        // console.log('running printer info')
         SocketActions.printerInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
@@ -315,7 +324,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
   async notifyKlippyDisconnected ({ commit }) {
     commit('resetState')
-    commit('onPrinterInfo', { state: 'error' }) // Forcefully set the printer in error
+    SocketActions.printerInfo()
   },
   async notifyFilelistChanged ({ dispatch }, payload) {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true }) // Passed on to the files module

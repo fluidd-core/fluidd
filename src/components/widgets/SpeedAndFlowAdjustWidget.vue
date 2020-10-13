@@ -5,6 +5,7 @@
       <input-slider
         label="Speed"
         :value="speed"
+        :disabled="!klippyConnected"
         :loading="hasWait(waits.onSetSpeed)"
         :min="0"
         :max="200"
@@ -16,6 +17,7 @@
       <input-slider
         label="Flow"
         :value="flow"
+        :disabled="!klippyConnected"
         :loading="hasWait(waits.onSetFlow)"
         :min="0"
         :max="200"

@@ -1,19 +1,14 @@
 # TODO [fluidd]
 
 ## Next Up
-- confirm  host restart and shutdown works
-- why on klippy crash did eddie not get the disconnected screen stuff?
-  - maybe because none of the state updated, or something else?
 - expand current print metadata (with bigger thumb?)
 - file / folder move
 - dynamic favicon that looks like the percent finished ring
 - probed vs mesh bed level display option
-- mobile layout
 - temperature presets
-- sqv etc..
+- sqv, machine limits etc..
 
 ## Known Bugs:
-- multi line gcodes not having a Send: prefix after the first line
 - if you complete a print, then delete the original gcode;
   - then you can still attempt to reprint something that's no longer there and;
   - the metadata load fails because the file is no longer there.
@@ -34,7 +29,6 @@
 ## Filesystem Improvements:
 - file expand details for metadata
 - ability to move folder / files
-- better place for print thumbs
 
 ## [Page] UI Settings
 - temp presets (needs config)
@@ -52,5 +46,5 @@
 - gcode viewer that works with more than 25mb
 - timelapses
 - plugins for raise cloud, astroprint and alike
-- to remote access without vpn and shit
-- more secure
+- to remote access without vpn
+- more security?

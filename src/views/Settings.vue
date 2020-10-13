@@ -11,6 +11,7 @@
         </v-card>
         <v-row>
           <v-col cols="12" sm="6">
+            <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
             <general-settings-widget></general-settings-widget>
             <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
           </v-col>
@@ -29,13 +30,15 @@ import UtilsMixin from '@/mixins/utils'
 import MacroSettingsWidget from '@/components/widgets/settings/MacroSettingsWidget.vue'
 import GeneralSettingsWidget from '@/components/widgets/settings/GeneralSettingsWidget.vue'
 import TemperaturePresetsSettingsWidget from '@/components/widgets/settings/TemperaturePresetsSettingsWidget.vue'
+import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
 import EventBus from '@/eventBus'
 
 @Component({
   components: {
     MacroSettingsWidget,
     GeneralSettingsWidget,
-    TemperaturePresetsSettingsWidget
+    TemperaturePresetsSettingsWidget,
+    KlippyDisconnectedWidget
   }
 })
 export default class Settings extends Mixins(UtilsMixin) {

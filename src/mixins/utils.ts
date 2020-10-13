@@ -1,10 +1,16 @@
 import { SocketActions } from '@/socketActions'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Globals, Icons } from '@/globals'
+import { Globals, Waits, Icons } from '@/globals'
+import { AxiosResponse } from 'axios'
+import { File } from '@/store/files/types'
 
 @Component({})
 export default class UtilsMixin extends Vue {
+  get apiUrl () {
+    return this.$store.state.config.apiUrl
+  }
+
   get icons () {
     return Icons
   }
@@ -15,7 +21,15 @@ export default class UtilsMixin extends Vue {
   }
 
   get klippyConnected () {
+    return this.$store.getters['socket/getKlippyConnected']
+  }
+
+  get klippyState () {
     return this.$store.getters['socket/getKlippyState']
+  }
+
+  get klippyStateMessage () {
+    return this.$store.getters['socket/getKlippyStateMessage']
   }
 
   // Return the printer state
@@ -78,6 +92,28 @@ export default class UtilsMixin extends Vue {
     return this.$store.getters['socket/hasWaits']
   }
 
+  get printerSupportsQgl (): boolean {
+    return 'quad_gantry_level' in this.$store.state.socket.printer.configfile.config
+  }
+
+  get printerSupportsZtilt (): boolean {
+    return 'z_tilt' in this.$store.state.socket.printer.configfile.config
+  }
+
+  get allHomed (): boolean {
+    return this.$store.getters['socket/getHomedAxes']('xyz')
+  }
+
+  restartKlippy () {
+    this.sendGcode('RESTART', Waits.onRestart)
+    // this.$store.commit('socket/resetState')
+  }
+
+  firmwareRestartKlippy () {
+    this.sendGcode('FIRMWARE_RESTART', Waits.onFirmwareRestart)
+    // this.$store.commit('socket/resetState')
+  }
+
   /**
    * Send a gcode script.
    */
@@ -125,15 +161,26 @@ export default class UtilsMixin extends Vue {
     this.sendGcode(gcode, wait)
   }
 
-  get printerSupportsQgl (): boolean {
-    return 'quad_gantry_level' in this.$store.state.socket.printer.configfile.config
+  getFile (path: string) {
+    const filepath = path
+    return this.$http.get(
+      this.apiUrl + filepath + '?date' + new Date().getTime(),
+      {
+        responseType: 'blob'
+      }
+    )
   }
 
-  get printerSupportsZtilt (): boolean {
-    return 'z_tilt' in this.$store.state.socket.printer.configfile.config
-  }
-
-  get allHomed (): boolean {
-    return this.$store.getters['socket/getHomedAxes']('xyz')
+  download (file: File | any, path: string) {
+    const filename = file.name || ''
+    this.getFile(`/server/files/${path}/${file.name}`)
+      .then((response: AxiosResponse) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', filename)
+        document.body.appendChild(link)
+        link.click()
+      })
   }
 }

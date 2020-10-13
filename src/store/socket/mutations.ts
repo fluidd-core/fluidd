@@ -7,21 +7,16 @@ import { chartConfiguration } from '@/globals'
 
 export const mutations: MutationTree<SocketState> = {
   resetState (state) {
+    console.log('resetting state...')
     const newState = getDefaultState()
     Object.keys(newState).forEach((key: string) => {
-      Vue.set(state, key, newState[key])
+      // Some properties we may not want to reset.
+      if (
+        key !== 'open' // don't reset socket state
+      ) {
+        Vue.set(state, key, newState[key])
+      }
     })
-    // Vue.set(state, 'printer', newState.printer)
-    // Vue.set(state, 'macros', newState.macros)
-    // Vue.set(state, 'chart', newState.chart)
-    // Vue.set(state, 'waits', newState.waits)
-    // Vue.set(state, 'filament_switch_sensors', newState.filament_switch_sensors)
-    // Vue.set(state, 'heater_fans', newState.heater_fans)
-    // Vue.set(state, 'output_pins', newState.output_pins)
-    // Vue.set(state, 'temperature_fans', newState.temperature_fans)
-    // Vue.set(state, 'temperature_sensors', newState.temperature_sensors)
-    // Vue.set(state, 'temperature_probes', newState.temperature_sensors)
-    // Vue.set(state, 'endstops', newState.endstops)
   },
   setFansProbes (state, payload) {
     if (

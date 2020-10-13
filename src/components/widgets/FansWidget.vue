@@ -5,6 +5,7 @@
       <input-slider
         label="Part Fan"
         :value="partFanSpeed"
+        :disabled="!klippyConnected"
         @input="setPartFanSpeed($event)"
         :readonly="printerPrinting">
       </input-slider>

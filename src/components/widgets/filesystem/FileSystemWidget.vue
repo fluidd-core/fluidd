@@ -54,6 +54,7 @@ import { AxiosResponse } from 'axios'
 import { SocketActions } from '@/socketActions'
 import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
 import UtilsMixin from '@/mixins/utils'
+import { File } from '@/store/files/types'
 
 @Component({
   components: {
@@ -87,10 +88,6 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
     path: ''
   }
 
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
-  }
-
   get isMultiRoot () {
     return (Array.isArray(this.root))
   }
@@ -118,16 +115,6 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
     SocketActions.serverFilesDeleteDirectory(path)
   }
 
-  getFile (path: string) {
-    const filepath = path
-    return this.$http.get(
-      this.apiUrl + filepath + '?date' + new Date().getTime(),
-      {
-        responseType: 'blob'
-      }
-    )
-  }
-
   edit (file: File, path: string) {
     this.dialog = {
       open: true,
@@ -141,24 +128,11 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
         const blob = new Blob([response.data])
         blob.text()
           .then((result) => {
-            this.dialog.filename = file.name
+            this.dialog.filename = file.name || ''
             this.dialog.path = path
             this.dialog.contents = result
             this.dialog.loading = false
           })
-      })
-  }
-
-  download (file: File, path: string) {
-    const filename = file.name || ''
-    this.getFile(`/server/files/${path}/${file.name}`)
-      .then((response: AxiosResponse) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', filename)
-        document.body.appendChild(link)
-        link.click()
       })
   }
 

@@ -1,6 +1,6 @@
 <template>
     <v-container fluid class="py-2 px-6">
-      <v-row class="d-none d-sm-flex">
+      <v-row class="d-none d-sm-flex" v-if="klippyConnected">
         <v-col offset="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
           Actual
         </v-col>

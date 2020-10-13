@@ -9,7 +9,7 @@
     <temperature-targets-widget></temperature-targets-widget>
 
     <v-card-text class="chart-container">
-      <temperature-chart-widget v-if="chartReady" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
+      <temperature-chart-widget v-if="chartReady && klippyConnected" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
     </v-card-text>
   </v-card>
 </template>

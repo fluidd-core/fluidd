@@ -17,11 +17,54 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Indicates if klippy is connected or not.
    */
-  getKlippyState: (state): boolean => {
-    if (state.printer.info.state !== 'ready') {
+  getKlippyConnected: (state): boolean => {
+    // Valid states are;
+    // ready, startup, shutdown, error
+    if (
+      state.printer.info.state !== 'ready' ||
+      state.printer.webhooks.state !== 'ready'
+      // state.printer.info.state === 'error' ||
+      // state.printer.info.state === 'shutdown' ||
+      // state.printer.webhooks.state === 'error' ||
+      // state.printer.webhooks.state === 'shutdown'
+    ) {
       return false
     }
     return true
+  },
+
+  getKlippyState: (state): string => {
+    const state1 = state.printer.webhooks.state || ''
+    const state2 = state.printer.info.state || ''
+
+    if (state1 === state2) {
+      return Vue.$filters.capitalize(state1)
+    }
+    if (state1 !== 'ready') {
+      return Vue.$filters.capitalize(state1)
+    }
+    if (state2 !== 'ready') {
+      return Vue.$filters.capitalize(state2)
+    }
+    return state1
+  },
+
+  getKlippyStateMessage: (state): string => {
+    // If an external source fires an estop, or the client
+    // is refreshed while klipper is down - the webhook data maybe invalid
+    // but the printer info should be good.
+    let message = ''
+    if (
+      state.printer.webhooks.state_message &&
+      state.printer.webhooks.state_message !== ''
+    ) {
+      message = state.printer.webhooks.state_message
+    } else {
+      if (state.printer.info.state_message) {
+        message = state.printer.info.state_message
+      }
+    }
+    return message.trim().replace(/(?:\r\n|\r|\n)/g, '<br />')
   },
 
   /**

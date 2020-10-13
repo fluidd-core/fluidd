@@ -37,17 +37,17 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  // If klippy is disconnected, users should not be able to
-  // go to the dashboard.
-  if (
-    store.getters['socket/getKlippyState'] !== true &&
-    to.name === 'Dashboard'
-  ) {
-    next({ name: 'Printer Configuration' })
-  } else {
-    next()
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   // If klippy is disconnected, users should not be able to
+//   // go to the dashboard.
+//   if (
+//     store.getters['socket/getKlippyState'] !== true &&
+//     to.name === 'Dashboard'
+//   ) {
+//     next({ name: 'Printer Configuration' })
+//   } else {
+//     next()
+//   }
+// })
 
 export default router

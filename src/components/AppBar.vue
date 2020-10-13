@@ -29,9 +29,17 @@
         <v-icon small class="mr-md-1">{{ icons.cog }}</v-icon>
         <span class="d-none d-md-inline">Settings</span>
       </v-btn>
-      <v-tooltip bottom v-if="socketConnected && klippyConnected">
+      <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn text color="error" @click="emergencyStop()" v-bind="attrs" v-on="on"><v-icon>{{ icons.estop }}</v-icon></v-btn>
+          <v-btn
+            :disabled="!klippyConnected"
+            text
+            color="error"
+            @click="emergencyStop()"
+            v-bind="attrs"
+            v-on="on">
+            <v-icon>{{ icons.estop }}</v-icon>
+          </v-btn>
         </template>
         Emergency Stop
       </v-tooltip>

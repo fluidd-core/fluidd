@@ -5,7 +5,7 @@
       <v-layout flex-column>
         <v-btn
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
-          :disabled="hasWaits || !extrudeRetractReady"
+          :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
           color="secondary"
           class="mb-4">
           Retract
@@ -13,7 +13,7 @@
         </v-btn>
         <v-btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
-          :disabled="hasWaits || !extrudeRetractReady"
+          :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
           color="secondary">
           Extrude
           <v-icon>{{ icons.chevronDown }}</v-icon>
@@ -23,6 +23,7 @@
     <v-col class="pa-2 flex-column" cols="4">
       <v-text-field
         v-model="extrudeLength"
+        :disabled="!klippyConnected"
         solo
         dense
         hide-details
@@ -33,6 +34,7 @@
       </v-text-field>
       <v-text-field
         v-model="extrudeSpeed"
+        :disabled="!klippyConnected"
         solo
         dense
         hide-details

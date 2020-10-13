@@ -7,7 +7,7 @@
       <v-btn
         v-if="!printerPrinting"
         @click="sendGcode('M84')"
-        :disabled="hasWaits"
+        :disabled="hasWaits || !klippyConnected"
         class="mr-2"
         color="secondary">
           MOTORS OFF
@@ -16,7 +16,7 @@
         v-if="!printerPrinting && printerSupportsZtilt"
         @click="sendGcode('Z_TILT', waits.onZTilt)"
         :loading="hasWait(waits.onZTilt)"
-        :disabled="hasWaits"
+        :disabled="hasWaits || !klippyConnected"
         class="mr-2"
         color="secondary">
           Z_TILT
@@ -25,7 +25,7 @@
         v-if="!printerPrinting && printerSupportsQgl"
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         :loading="hasWait(waits.onQGL)"
-        :disabled="hasWaits"
+        :disabled="hasWaits || !klippyConnected"
         class="mr-2"
         color="secondary">
           QGL
@@ -34,7 +34,7 @@
         v-if="!printerPrinting"
         @click="sendGcode('G28', waits.onHomeAll)"
         :loading="hasWait(waits.onHomeAll)"
-        :disabled="hasWaits"
+        :disabled="hasWaits || !klippyConnected"
         :color="(!allHomed) ? 'warning' : 'secondary'">
           <v-icon small class="mr-1">{{ icons.home }}</v-icon> All
       </v-btn>

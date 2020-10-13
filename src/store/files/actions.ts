@@ -19,23 +19,27 @@ export const actions: ActionTree<FilesState, RootState> = {
         modified: new Date().getTime()
       })
     }
-    payload.dirs.forEach((dir: Directory) => {
-      if (!dir.dirname.startsWith('.')) {
-        dir.type = 'directory'
-        dir.name = dir.dirname
-        dir.modified = new Date(dir.modified).getTime()
-        items.push(dir)
-      }
-    })
-    payload.files.forEach((file: File) => {
-      if (!file.filename.startsWith('.')) {
-        file.type = 'file'
-        file.name = file.filename
-        file.extension = file.filename.split('.').pop() || ''
-        file.modified = new Date(file.modified).getTime()
-        items.push(file)
-      }
-    })
+    if (payload.dirs) {
+      payload.dirs.forEach((dir: Directory) => {
+        if (!dir.dirname.startsWith('.')) {
+          dir.type = 'directory'
+          dir.name = dir.dirname
+          dir.modified = new Date(dir.modified).getTime()
+          items.push(dir)
+        }
+      })
+    }
+    if (payload.files) {
+      payload.files.forEach((file: File) => {
+        if (!file.filename.startsWith('.')) {
+          file.type = 'file'
+          file.name = file.filename
+          file.extension = file.filename.split('.').pop() || ''
+          file.modified = new Date(file.modified).getTime()
+          items.push(file)
+        }
+      })
+    }
     commit('onServerFilesGetDirectory', { root, directory: { path, items } })
   },
 

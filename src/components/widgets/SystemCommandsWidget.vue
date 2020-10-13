@@ -3,8 +3,8 @@
     <v-card-text>
       <v-row>
         <v-col>
-          <v-btn block color="warning" :disabled="printerBusy" @click="sendGcode('RESTART')" class="me-2 mb-2">Restart</v-btn>
-          <v-btn block color="warning" :disabled="printerBusy" @click="sendGcode('FIRMWARE_RESTART')" class="me-2 mb-2">Firmware Restart</v-btn>
+          <v-btn block color="warning" :disabled="printerBusy" @click="restartKlippy" class="me-2 mb-2">Restart</v-btn>
+          <v-btn block color="warning" :disabled="printerBusy" @click="firmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</v-btn>
         </v-col>
         <v-col>
           <v-btn block color="error" :disabled="printerBusy" @click="confirmRebootDialog.open = true" class="me-2 mb-2">Host Reboot</v-btn>

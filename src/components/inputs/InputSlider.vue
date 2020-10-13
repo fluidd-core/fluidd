@@ -2,7 +2,7 @@
 <div>
   <div class="d-flex justify-start">
     <div class="grey--text text--darken-1 align-self-end">{{ label }}</div>
-    <div class="grey--text text--lighten-1 text-h5 ml-auto">{{ newValue.toFixed() }}%</div>
+    <div class="grey--text text-h5 ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}%</div>
   </div>
   <v-slider
     @change="emitChange(newValue)"
@@ -11,6 +11,7 @@
     :min="min"
     :max="max"
     :readonly="readonly"
+    :disabled="disabled"
     :loading="loading"
     :thumb-label="false"
     dense
@@ -18,7 +19,7 @@
   >
     <template v-slot:prepend>
       <v-btn
-        :disabled="readonly"
+        :disabled="readonly || disabled"
         @click="emitChange(newValue - 1)"
         :min-width="40"
         class="pa-0"
@@ -32,7 +33,7 @@
 
     <template v-slot:append>
       <v-btn
-        :disabled="readonly"
+        :disabled="readonly || disabled"
         @click="emitChange(newValue + 1)"
         :min-width="40"
         class="pa-0"
@@ -61,6 +62,9 @@ export default class InputSlider extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, required: false, default: false })
   public readonly!: boolean
+
+  @Prop({ type: Boolean, required: false, default: false })
+  public disabled!: boolean
 
   @Prop({ type: Boolean, required: false, default: false })
   public loading!: boolean
