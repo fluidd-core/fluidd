@@ -158,7 +158,7 @@
           </v-list-item-icon>
           <v-list-item-title class="white--text">View</v-list-item-title>
         </v-list-item>
-        <v-list-item link @click="downloadFile(contextMenu.item)" v-if="contextMenu.item.type !== 'directory'">
+        <v-list-item link @click="downloadFile(contextMenu.item.name)" v-if="contextMenu.item.type !== 'directory'">
           <v-list-item-icon>
             <v-icon class="white--text">{{ icons.download }}</v-icon>
           </v-list-item-icon>
@@ -387,8 +387,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.$emit('create-file', file, this.currentRoot, this.currentPath)
   }
 
-  // This feels hacky...
-  downloadFile (file: File) {
+  downloadFile (file: string) {
     this.$emit('download-file', file, this.currentPath)
   }
 

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import store from '@/store'
+// import store from '@/store'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
 import Configuration from '../views/Configuration.vue'

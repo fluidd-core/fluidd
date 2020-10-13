@@ -38,11 +38,11 @@ import UtilsMixin from '@/mixins/utils'
 })
 export default class KlippyDisconnectedWidget extends Mixins(UtilsMixin) {
   getKlippyLog () {
-    this.download({ name: 'klippy.log' }, '')
+    this.download('klippy.log', '')
   }
 
   getMoonrakerLog () {
-    this.download({ name: 'moonraker.log' }, '')
+    this.download('moonraker.log', '')
   }
 
   reload () {

@@ -3,7 +3,6 @@ import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Globals, Waits, Icons } from '@/globals'
 import { AxiosResponse } from 'axios'
-import { File } from '@/store/files/types'
 
 @Component({})
 export default class UtilsMixin extends Vue {
@@ -171,9 +170,9 @@ export default class UtilsMixin extends Vue {
     )
   }
 
-  download (file: File | any, path: string) {
-    const filename = file.name || ''
-    this.getFile(`/server/files/${path}/${file.name}`)
+  download (file: string, path: string) {
+    const filename = file || ''
+    this.getFile(`/server/files/${path}/${file}`)
       .then((response: AxiosResponse) => {
         const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')
