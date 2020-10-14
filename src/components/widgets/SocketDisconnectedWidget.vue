@@ -9,10 +9,12 @@
         class="subtitle-1 text-center"
         cols="12"
       >
-        Connecting to printer...
+        <span v-if="socketConnecting">Connecting to printer...</span>
+        <span v-if="!socketConnecting">Lost socket connection. Please refresh.</span>
       </v-col>
       <v-col cols="6">
         <v-progress-linear
+          v-if="socketConnecting"
           class="mb-4"
           color="warning"
           indeterminate

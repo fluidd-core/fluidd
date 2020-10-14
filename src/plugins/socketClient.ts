@@ -30,12 +30,16 @@ export class WebSocketClient {
 
   connect () {
     this.connection = new WebSocket(this.url)
+    if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
 
     this.connection.onopen = (e) => {
       if (this.reconnectEnabled) {
         this.reconnectCount = 1
       }
-      if (this.store) this.store.dispatch('socket/onSocketOpen', e)
+      if (this.store) {
+        this.store.dispatch('socket/onSocketOpen', e)
+        this.store.dispatch('socket/onSocketConnecting', false)
+      }
     }
 
     this.connection.onclose = (e) => {
@@ -43,6 +47,8 @@ export class WebSocketClient {
       if (this.store) this.store.dispatch('socket/onSocketClose', e)
       if (!e.wasClean && this.reconnectEnabled) {
         this.reconnect()
+      } else {
+        if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
       }
     }
 
@@ -100,7 +106,7 @@ export class WebSocketClient {
         this.connect()
       }, this.reconnectInterval)
     } else {
-      // Maybe add something here in order to let the user kick off more retry attempts.
+      if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
     }
   }
 

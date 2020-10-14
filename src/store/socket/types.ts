@@ -1,7 +1,7 @@
 export interface SocketState {
   [key: string]: any;
   open: boolean;
-  loading: boolean;
+  connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   acceptingNotifications: boolean;
   error: SocketError | null;
   waits: string[]; // list of things that we might be waiting on, like a gcode script to finish.

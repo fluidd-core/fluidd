@@ -15,6 +15,13 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
+   * Indicates if our socket is attempting to connect still..
+   */
+  getConnectingState: (state): boolean => {
+    return state.connecting
+  },
+
+  /**
    * Indicates if klippy is connected or not.
    */
   getKlippyConnected: (state): boolean => {

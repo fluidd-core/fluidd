@@ -33,6 +33,9 @@ export const mutations: MutationTree<SocketState> = {
   onSocketClose (state) {
     state.open = false
   },
+  onSocketConnecting (state, payload) {
+    state.connecting = payload
+  },
   onAcceptNotifications (state) {
     state.acceptingNotifications = true
   },

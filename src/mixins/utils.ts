@@ -19,6 +19,10 @@ export default class UtilsMixin extends Vue {
     return this.$store.getters['socket/getConnectionState']
   }
 
+  get socketConnecting () {
+    return this.$store.getters['socket/getConnectingState']
+  }
+
   get klippyConnected () {
     return this.$store.getters['socket/getKlippyConnected']
   }

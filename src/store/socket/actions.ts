@@ -33,6 +33,15 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   /**
+   * Sets state based on if we're attempting to reconnect
+   * the socket or not. If we are not, then the user
+   * can invoke a forced refresh.
+   */
+  async onSocketConnecting ({ commit }, payload) {
+    commit('onSocketConnecting', payload)
+  },
+
+  /**
    * Fired when the socket encounters an error.
    * We might see an error under code 400 for invalid circumstances, like
    * trying to extrude under temp. Should present the user with an error
