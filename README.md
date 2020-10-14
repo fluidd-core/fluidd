@@ -1,7 +1,8 @@
 # Fluidd
 Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
 
-<img src="https://raw.githubusercontent.com/cadriel/fluidd/develop/.github/images/Printing.png">
+<img align="left" width="225" src="https://raw.githubusercontent.com/cadriel/fluidd/develop/.github/images/PrintingMobile.png">
+<img width="550" src="https://raw.githubusercontent.com/cadriel/fluidd/develop/.github/images/Ready.png">
 
 ## Features
 - Desktop, tablet and mobile layouts
