@@ -13,7 +13,7 @@
         </v-progress-circular>
       </v-col>
       <v-col class="d-flex flex-column" style="overflow: hidden;" align="start">
-          <div class="mb-1 grey--text" v-if="printTimeEstimationsType !== 'totals'">
+          <div class="mb-1 grey--text text--lighten-1" v-if="printTimeEstimationsType !== 'totals'">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on" color="grey darken-2">{{ icons.timer }}</v-icon>
@@ -22,7 +22,7 @@
             </v-tooltip>
             {{ timeEstimates.timeLeft }}
           </div>
-          <div class="mb-1 grey--text">
+          <div class="mb-1 grey--text text--lighten-1">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">{{ icons.clock }}</v-icon>

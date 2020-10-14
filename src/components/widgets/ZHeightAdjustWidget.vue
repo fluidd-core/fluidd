@@ -21,7 +21,7 @@
       </v-col>
       <v-col class="pa-0 px-3 flex-column justify-center d-flex">
         <div class="grey--text text--darken-1">Offset Z</div>
-        <div>{{ ZHomingOrigin }}mm</div>
+        <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
       </v-col>
     </v-row>
     <v-row>
