@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.6](https://github.com/cadriel/fluidd/compare/v0.0.5...v0.0.6) (2020-10-15)
+
+
+### Features
+
+* Add console history on load ([55403da](https://github.com/cadriel/fluidd/commit/55403da8eb98dd642180a1523216f3f9f14f037d))
+* add machine limits card (currently disabled..) ([b03fe61](https://github.com/cadriel/fluidd/commit/b03fe6119a932fa1625fd0079cbe9ccd4d860d6b))
+* add version information to footer ([ba77c0d](https://github.com/cadriel/fluidd/commit/ba77c0dde23293c5eeae5c35810d9b3fa06c6615))
+* config editing available when klipper in error ([887b5f4](https://github.com/cadriel/fluidd/commit/887b5f401a03397c0dc1d4fc7d21a8ebb1167c9f))
+* git hash in footer, footer no longer fixed ([a7eea18](https://github.com/cadriel/fluidd/commit/a7eea18fbf376ce5d29106bed6f81d3ef737b004))
+* mobile and tablet layouts ([f79f945](https://github.com/cadriel/fluidd/commit/f79f94549808f4d4ad7d805cfcd4b266782ddd7a))
+
+
+### Bug Fixes
+
+* adds confirm dialogs to shutdown and reboot host buttons ([f7147c6](https://github.com/cadriel/fluidd/commit/f7147c69cb5f1ec4aa027078658a6976513c8295))
+* host reboot and shutdown now work ([07bc5d5](https://github.com/cadriel/fluidd/commit/07bc5d52035aa98219971cfde127a805d0b85feb))
+* macros no longer disabled during print ([8b70ac4](https://github.com/cadriel/fluidd/commit/8b70ac42d206fcd4a0042536b80b802c34f20c1a))
+
 ### [0.0.5](https://github.com/cadriel/fluidd/compare/v0.0.4...v0.0.5) (2020-10-10)
 
 

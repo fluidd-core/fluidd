@@ -1,6 +1,6 @@
 {
   "name": "fluidd",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "private": true,
   "description": "fluidd, a klipper web client.",
   "author": {
