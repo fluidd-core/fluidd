@@ -183,7 +183,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { Directory, File } from '@/store/files/types'
+import { Directory, KlipperFile } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
@@ -222,7 +222,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     // { text: '', value: 'actions', width: '30px', sortable: false }
   ]
 
-  contextMenu: {[key: string]: boolean | number | File | Directory | undefined } = {
+  contextMenu: {[key: string]: boolean | number | KlipperFile | Directory | undefined } = {
     open: false,
     x: 0,
     y: 0,
@@ -257,7 +257,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.loadFiles(root)
   }
 
-  get directory (): File[] | Directory[] {
+  get directory (): KlipperFile[] | Directory[] {
     return this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
   }
 
@@ -302,14 +302,14 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     return this.$filters.getReadableFileSizeString(size)
   }
 
-  printItem (item: File) {
+  printItem (item: KlipperFile) {
     SocketActions.printerPrintStart(item.filename)
   }
 
   saveDialog () {
     if (this.dialog.type === 'rename') {
-      const item = this.dialog.item as File | Directory
-      const original = this.dialog.original as File | Directory
+      const item = this.dialog.item as KlipperFile | Directory
+      const original = this.dialog.original as KlipperFile | Directory
       this.renameItem(item, original)
     }
     if (this.dialog.item && this.dialog.type === 'createdir') {
@@ -320,7 +320,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  renameDialog (item: File | Directory) {
+  renameDialog (item: KlipperFile | Directory) {
     if (item) {
       this.dialog = {
         type: 'rename',
@@ -337,7 +337,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  renameItem (item: File | Directory, original: File | Directory) {
+  renameItem (item: KlipperFile | Directory, original: KlipperFile | Directory) {
     const source = `${this.currentPath}/${original.name}`
     const dest = `${this.currentPath}/${item.name}`
 
@@ -348,11 +348,11 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  editItem (item: File) {
+  editItem (item: KlipperFile) {
     this.$emit('edit-file', item, this.currentPath)
   }
 
-  viewItem (item: File) {
+  viewItem (item: KlipperFile) {
     this.$emit('view-file', item, this.currentPath)
   }
 
@@ -374,7 +374,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.$emit('create-dir', `${this.currentPath}/${path}`)
   }
 
-  removeItem (item: File | Directory) {
+  removeItem (item: KlipperFile | Directory) {
     if (item.type === 'file') {
       this.$emit('remove-file', `${this.currentPath}/${item.name}`)
     } else {
@@ -383,7 +383,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  uploadFile (file: globalThis.File) {
+  uploadFile (file: File) {
     this.$emit('create-file', file, this.currentRoot, this.currentPath)
   }
 
@@ -391,7 +391,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.$emit('download-file', file, this.currentPath)
   }
 
-  rowClick (item: File | Directory, e: MouseEvent) {
+  rowClick (item: KlipperFile | Directory, e: MouseEvent) {
     if (!this.contextMenu.open) {
       if (item.type === 'directory') {
         const dir = item as Directory
@@ -412,7 +412,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  openContextMenu (item: File | Directory, e: MouseEvent) {
+  openContextMenu (item: KlipperFile | Directory, e: MouseEvent) {
     e.preventDefault()
     this.contextMenu.x = e.clientX
     this.contextMenu.y = e.clientY

@@ -2,12 +2,14 @@
 <div>
   <div class="d-flex justify-start">
     <div class="grey--text text--darken-1 align-self-end">{{ label }}</div>
-    <div class="grey--text text-h5 ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}%</div>
+    <div class="grey--text text-h5 ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
   </div>
   <v-slider
-    @change="emitChange(newValue)"
+    @click="emitChange(newValue)"
     @input="updateValue"
-    :value="value"
+    @update:error="updateError"
+    :value="newValue"
+    :rules="rules"
     :min="min"
     :max="max"
     :readonly="readonly"
@@ -19,8 +21,11 @@
   >
     <template v-slot:prepend>
       <v-btn
-        :disabled="readonly || disabled"
-        @click="emitChange(newValue - 1)"
+        :disabled="
+          readonly ||
+          disabled ||
+          newValue === 0"
+        @click="clickChange(newValue - 1)"
         :min-width="40"
         class="pa-0"
         small
@@ -33,8 +38,8 @@
 
     <template v-slot:append>
       <v-btn
-        :disabled="readonly || disabled"
-        @click="emitChange(newValue + 1)"
+        :disabled="readonly || disabled || newValue === max"
+        @click="clickChange(newValue + 1)"
         :min-width="40"
         class="pa-0"
         small
@@ -51,11 +56,15 @@
 <script lang="ts">
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
+import { InputValidationRules } from 'vuetify'
 
 @Component({})
 export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
+
+  @Prop({ required: false })
+  public rules!: InputValidationRules
 
   @Prop({ type: String, required: true })
   public label!: string
@@ -75,19 +84,35 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, default: 100 })
   public max!: number;
 
+  @Prop({ type: String, required: false })
+  public valueSuffix!: string;
+
   @Watch('value')
   onValueChange (val: number) {
     this.newValue = val
   }
 
-  newValue = 0;
+  newValue = 0
+  error = false
 
-  updateValue (e: string) {
-    this.newValue = parseInt(e)
+  updateValue (e: number) {
+    this.newValue = e
+  }
+
+  clickChange (val: number) {
+    this.$emit('input', val)
   }
 
   emitChange (val: number) {
-    this.$emit('input', val)
+    if (!this.error) {
+      this.$emit('input', val)
+    } else {
+      this.newValue = this.value
+    }
+  }
+
+  updateError (val: boolean) {
+    this.error = val
   }
 
   mounted () {

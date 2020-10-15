@@ -7,11 +7,11 @@ export interface FilesState {
 
 export interface Files {
   path: string;
-  files: File[];
+  files: KlipperFile[];
   dirs: Directory[];
 }
 
-export interface File {
+export interface KlipperFile {
   type: string;
   name?: string;
   extension: string;

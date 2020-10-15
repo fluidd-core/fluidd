@@ -37,7 +37,14 @@ export const getDefaultState = (): SocketState => {
       configfile: {
         config: {
           extruder: {},
-          bed_mesh: {}
+          bed_mesh: {},
+          fan: {},
+          printer: {
+            max_accel_to_decel: 0,
+            max_accel: 0,
+            max_velocity: 0,
+            square_corner_velocity: 5
+          }
         }
       },
       objects: [],
@@ -54,8 +61,14 @@ export const getDefaultState = (): SocketState => {
         message: ''
       },
       toolhead: {
+        estimated_print_time: 0,
+        homed_axes: '',
+        max_accel: 0,
+        max_accel_to_decel: 0,
+        max_velocity: 0,
         position: [0, 0, 0, 0],
-        homed_axes: ''
+        print_time: 0,
+        square_corner_velocity: 0
       },
       current_file: {
         estimated_time: 0,

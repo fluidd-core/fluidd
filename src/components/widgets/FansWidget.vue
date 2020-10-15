@@ -1,10 +1,12 @@
 <template>
   <v-row>
     <!-- Fans -->
-    <v-col class="pa-2 pt-4 pb-0">
+    <v-col class="px-2 pt-0 pb-5">
       <input-slider
         label="Part Fan"
+        value-suffix="%"
         :value="partFanSpeed"
+        :rules="rules"
         :disabled="!klippyConnected"
         @input="setPartFanSpeed($event)"
         :readonly="printerPrinting">
@@ -17,6 +19,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputSlider from '@/components/inputs/InputSlider.vue'
 import UtilsMixin from '@/mixins/utils'
+import { Waits } from '@/globals'
 
 @Component({
   components: {
@@ -28,9 +31,21 @@ export default class FansWidget extends Mixins(UtilsMixin) {
     return this.$store.state.socket.printer.fan.speed * 100
   }
 
+  get offBelow () {
+    const offBelow = parseFloat(this.$store.state.socket.printer.configfile.config.fan.off_below) || 0
+    return offBelow * 100
+  }
+
+  rules = [
+    (v: number) => {
+      if (this.offBelow <= 0) return true
+      return (v >= this.offBelow || v === 0) || 'min error'
+    }
+  ]
+
   setPartFanSpeed (target: number) {
     target = Math.ceil(target * 2.55)
-    this.sendGcode(`M106 S${target}`)
+    this.sendGcode(`M106 S${target}`, Waits.onSetFanSpeed)
   }
 }
 </script>

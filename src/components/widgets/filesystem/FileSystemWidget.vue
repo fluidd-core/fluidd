@@ -54,7 +54,7 @@ import { AxiosResponse } from 'axios'
 import { SocketActions } from '@/socketActions'
 import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
 import UtilsMixin from '@/mixins/utils'
-import { File } from '@/store/files/types'
+import { KlipperFile } from '@/store/files/types'
 
 @Component({
   components: {
@@ -115,7 +115,7 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
     SocketActions.serverFilesDeleteDirectory(path)
   }
 
-  edit (file: File, path: string) {
+  edit (file: KlipperFile, path: string) {
     this.dialog = {
       open: true,
       loading: true,
@@ -136,7 +136,7 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
       })
   }
 
-  upload (file: globalThis.File, root: string, path: string) {
+  upload (file: File, root: string, path: string) {
     const formData = new FormData()
     let filename = file.name.replace(' ', '_')
     filename = `${path}/${filename}`.substring(7)

@@ -1,28 +1,28 @@
 <template>
   <v-row>
     <!-- Speed and Flow Adjust -->
-    <v-col cols="12" sm="6" class="pa-2 pt-0">
+    <v-col cols="12" sm="6" class="px-2 pt-0 pb-5">
       <input-slider
         label="Speed"
         :value="speed"
+        value-suffix="%"
         :disabled="!klippyConnected"
         :loading="hasWait(waits.onSetSpeed)"
         :min="0"
         :max="200"
-        @input="setSpeed($event, waits.onSetSpeed)"
-        v-if="printerPrinting">
+        @input="setSpeed($event, waits.onSetSpeed)">
       </input-slider>
     </v-col>
-    <v-col cols="12" sm="6" class="pa-2 pt-0">
+    <v-col cols="12" sm="6" class="px-2 pt-0 pb-5">
       <input-slider
         label="Flow"
         :value="flow"
+        value-suffix="%"
         :disabled="!klippyConnected"
         :loading="hasWait(waits.onSetFlow)"
         :min="0"
         :max="200"
-        @input="setFlow($event, waits.onSetFlow)"
-        v-if="printerPrinting">
+        @input="setFlow($event, waits.onSetFlow)">
       </input-slider>
     </v-col>
   </v-row>

@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { FilesState, File, Directory } from './types'
+import { FilesState, KlipperFile, Directory } from './types'
 import { FileChangeSocketResponse } from '../socket/types'
 import { RootState } from '../types'
 import { getFileListChangeInfo } from '../helpers'
@@ -9,7 +9,7 @@ export const actions: ActionTree<FilesState, RootState> = {
   async onServerFilesGetDirectory ({ commit }, payload) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
-    const items: (File|Directory)[] = []
+    const items: (KlipperFile | Directory)[] = []
     if (path && path.indexOf('/') >= 0) {
       items.push({
         type: 'directory',
@@ -30,7 +30,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       })
     }
     if (payload.files) {
-      payload.files.forEach((file: File) => {
+      payload.files.forEach((file: KlipperFile) => {
         if (!file.filename.startsWith('.')) {
           file.type = 'file'
           file.name = file.filename

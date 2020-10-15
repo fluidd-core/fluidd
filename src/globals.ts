@@ -139,12 +139,17 @@ export const Waits = Object.freeze({
   onGetDirectory: 'getDirectory',
   onSetSpeed: 'onSetSpeed',
   onSetFlow: 'onSetFlow',
+  onSetFanSpeed: 'onSetFanSpeed',
   onZAdjust: 'onZAdjust',
   onRetract: 'onRetract',
   onExtrude: 'onExtrude',
   onMeshCalibrate: 'onMeshCalibrate',
   onRestart: 'restart',
-  onFirmwareRestart: 'restart'
+  onFirmwareRestart: 'restart',
+  onSetVelocity: 'onSetVelocity',
+  onSetAcceleration: 'onSetAcceleration',
+  onSetDeceleration: 'onSetDeceleration',
+  onSetSCV: 'onSetSCV'
 })
 
 /* eslint-disable @typescript-eslint/camelcase */

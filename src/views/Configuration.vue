@@ -22,7 +22,6 @@
             </v-row>
           </v-col>
           <v-col cols="12" md="5">
-            <!-- <printer-limits-widget></printer-limits-widget> -->
             <file-system-widget
               :root="['config', 'config_examples']"
               accept=".conf,.cfg"
@@ -39,7 +38,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import PrinterLimitsWidget from '@/components/widgets/configuration/PrinterLimitsWidget.vue'
 import BedMeshWidget from '@/components/widgets/configuration/BedMeshWidget.vue'
 import EndStopsWidget from '@/components/widgets/configuration/EndStopsWidget.vue'
 import RunoutSensorWidget from '@/components/widgets/configuration/RunoutSensorWidget.vue'
@@ -48,7 +46,6 @@ import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyD
 
 @Component({
   components: {
-    PrinterLimitsWidget,
     BedMeshWidget,
     EndStopsWidget,
     RunoutSensorWidget,

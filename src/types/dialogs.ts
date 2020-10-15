@@ -1,4 +1,4 @@
-import { Directory, File } from '@/store/files/types'
+import { Directory, KlipperFile } from '@/store/files/types'
 import { InputValidationRules } from 'vuetify'
 
 export interface FileSystemDialogData {
@@ -7,8 +7,8 @@ export interface FileSystemDialogData {
   title: string;
   formLabel: string;
   rules: InputValidationRules;
-  item: Directory | NewDirectory | File;
-  original?: Directory | File;
+  item: Directory | NewDirectory | KlipperFile;
+  original?: Directory | KlipperFile;
 }
 
 export interface NewDirectory {

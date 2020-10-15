@@ -22,6 +22,7 @@
         <fans-widget></fans-widget>
         <!-- Speed and Flow Adjustments  -->
         <speed-and-flow-adjust-widget></speed-and-flow-adjust-widget>
+        <!-- <printer-limits-widget></printer-limits-widget> -->
       </v-col>
     </v-row>
   </v-container>
@@ -36,6 +37,7 @@ import ToolheadPositionWidget from '@/components/widgets/ToolheadPositionWidget.
 import ZHeightAdjustWidget from '@/components/widgets/ZHeightAdjustWidget.vue'
 import SpeedAndFlowAdjustWidget from '@/components/widgets/SpeedAndFlowAdjustWidget.vue'
 import FansWidget from '@/components/widgets/FansWidget.vue'
+import PrinterLimitsWidget from '@/components/widgets/PrinterLimitsWidget.vue'
 
 @Component({
   components: {
@@ -44,7 +46,8 @@ import FansWidget from '@/components/widgets/FansWidget.vue'
     ToolheadPositionWidget,
     ZHeightAdjustWidget,
     SpeedAndFlowAdjustWidget,
-    FansWidget
+    FansWidget,
+    PrinterLimitsWidget
   }
 })
 export default class ToolheadWidget extends Mixins(UtilsMixin) {}
