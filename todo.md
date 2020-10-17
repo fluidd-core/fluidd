@@ -1,6 +1,8 @@
 # TODO [fluidd]
 
 ## Next Up
+- look at moving tabs to top instead of bottom of cards (and reduce their size)
+- allow users to define an instance name and use this in the title tab, along with percent complete `[23%] instance name`
 - cleanup socket store / move socket out and keep printer data
 - split utils mixin into many mixins, in a logical way
 - expand current print metadata (with bigger thumb?)
