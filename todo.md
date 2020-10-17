@@ -1,6 +1,7 @@
 # TODO [fluidd]
 
 ## Next Up
+- power panel api
 - look at moving tabs to top instead of bottom of cards (and reduce their size)
 - allow users to define an instance name and use this in the title tab, along with percent complete `[23%] instance name`
 - cleanup socket store / move socket out and keep printer data
