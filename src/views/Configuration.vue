@@ -21,7 +21,7 @@
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="5">
+          <v-col cols="12" md="5" class="config-files-wrapper">
             <file-system-widget
               :root="['config', 'config_examples']"
               accept=".conf,.cfg"
@@ -59,3 +59,9 @@ export default class Configuration extends Mixins(UtilsMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .config-files-wrapper {
+    height: 600px;
+  }
+</style>
