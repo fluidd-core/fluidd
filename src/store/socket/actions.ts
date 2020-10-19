@@ -355,10 +355,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async removeWait ({ commit }, wait) {
     commit('removeWait', wait)
   },
-  async addConsoleEntry ({ commit, state }, payload) {
-    if (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
-      commit('removeConsoleFirstEntry')
-    }
+  async addConsoleEntry ({ commit }, payload) {
     commit('addConsoleEntry', payload.replace(/(?:\r\n|\r|\n)/g, '<br>'))
   },
   async addMacro ({ commit, rootState }, macro) {
