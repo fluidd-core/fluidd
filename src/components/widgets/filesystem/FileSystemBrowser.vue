@@ -303,7 +303,8 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   printItem (item: KlipperFile) {
-    SocketActions.printerPrintStart(item.filename)
+    const filename = `${this.currentPath}/${item.filename}`.replace(this.root, '')
+    SocketActions.printerPrintStart(filename)
   }
 
   saveDialog () {
