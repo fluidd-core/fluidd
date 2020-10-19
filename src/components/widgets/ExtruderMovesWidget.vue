@@ -1,50 +1,55 @@
 <template>
-<div>
-  <v-row>
-    <v-col class="pa-2" cols="4">
-      <v-layout flex-column>
-        <v-btn
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
-          color="secondary"
-          class="mb-4">
-          Retract
-          <v-icon>{{ icons.chevronUp }}</v-icon>
-        </v-btn>
-        <v-btn
-          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
-          color="secondary">
-          Extrude
-          <v-icon>{{ icons.chevronDown }}</v-icon>
-        </v-btn>
-      </v-layout>
-    </v-col>
-    <v-col class="pa-2 flex-column" cols="4">
-      <v-text-field
-        v-model="extrudeLength"
-        :disabled="!klippyConnected"
-        solo
-        dense
-        hide-details
-        label="Extrude Length"
-        type="number"
-        suffix="mm"
-        class="mb-3">
-      </v-text-field>
-      <v-text-field
-        v-model="extrudeSpeed"
-        :disabled="!klippyConnected"
-        solo
-        dense
-        hide-details
-        label="Extrude Speed"
-        suffix="mm/s"
-        class="">
-      </v-text-field>
-    </v-col>
-  </v-row>
-</div>
+  <v-container>
+    <v-row>
+      <v-col cols="12" lg="4" class="pt-0 pa-2">
+        <v-layout flex-column>
+          <v-btn
+            @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
+            :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
+            block
+            color="secondary"
+            class="mb-4">
+            Retract
+            <v-icon>{{ icons.chevronUp }}</v-icon>
+          </v-btn>
+          <v-btn
+            @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
+            :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
+            block
+            color="secondary">
+            Extrude
+            <v-icon>{{ icons.chevronDown }}</v-icon>
+          </v-btn>
+        </v-layout>
+      </v-col>
+      <v-col cols="12" lg="4" class="pa-2 pt-0" v-if="!extrudeRetractReady">
+        <v-alert dense text type="error" class="mb-0" elevation="2">below {{ minExtrudeTemp }}<small>°C</small></v-alert>
+      </v-col>
+      <v-col cols="12" lg="4" class="pa-2 pt-0 flex-column">
+        <v-text-field
+          v-model="extrudeLength"
+          :disabled="!klippyConnected"
+          solo
+          dense
+          hide-details
+          label="Extrude Length"
+          type="number"
+          suffix="mm"
+          class="mb-3">
+        </v-text-field>
+        <v-text-field
+          v-model="extrudeSpeed"
+          :disabled="!klippyConnected"
+          solo
+          dense
+          hide-details
+          label="Extrude Speed"
+          suffix="mm/s"
+          class="">
+        </v-text-field>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script lang="ts">

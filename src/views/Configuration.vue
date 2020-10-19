@@ -9,10 +9,10 @@
           </v-card-title>
         </v-card>
         <v-row>
-          <v-col cols="12" md="7" v-if="supportsBedMesh">
+          <v-col cols="12" md="7">
             <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
-            <bed-mesh-widget v-if="supportsBedMesh && klippyConnected && socketConnected"></bed-mesh-widget>
-            <v-row v-if="klippyConnected && socketConnected">
+            <bed-mesh-widget v-if="supportsBedMesh && klippyConnected"></bed-mesh-widget>
+            <v-row v-if="klippyConnected">
               <v-col cols="12" sm="6">
                 <runout-sensor-widget></runout-sensor-widget>
               </v-col>
