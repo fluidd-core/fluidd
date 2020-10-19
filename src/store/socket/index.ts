@@ -20,6 +20,7 @@ export const getDefaultState = (): SocketState => {
     macros: {},
     temperature_fans: [],
     heater_fans: [],
+    heater_generics: [],
     temperature_sensors: [],
     temperature_probes: [],
     filament_switch_sensors: [],

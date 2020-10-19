@@ -238,22 +238,26 @@ export const actions: ActionTree<SocketState, RootState> = {
       'temperature_probe',
       'temperature_sensor',
       'heater_fan',
+      'heater_generic',
       'filament_switch_sensor',
       'output_pin'
     ]
     const r: {[key: string]: string[]} = {}
 
     Object.keys(payload.status).forEach((p) => {
-      const key = p.split(' ')
+      const split = p.split(' ')
+      const key = split[0]
+      split.shift()
+      const name = split.join(' ')
       if (
         p.includes(' ') &&
-        keys.includes(key[0])
+        keys.includes(key)
       ) {
-        const rootKey = key[0] + 's'
+        const rootKey = key + 's'
         if (rootKey in r === false) {
-          r[rootKey] = [key[1]]
+          r[rootKey] = [name]
         } else {
-          r[rootKey].push(key[1])
+          r[rootKey].push(name)
         }
       }
     })

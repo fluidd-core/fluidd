@@ -13,6 +13,7 @@ export interface SocketState {
   temperature_sensors: string[]; // maintains a list of available sensors
   temperature_probes: string[]; // maintains a list of available probes
   heater_fans: string[]; // maintains a list of available heater fans
+  heater_generics: string[]; // maintains a list of generic heaters
   filament_switch_sensors: string[]; // maintains a list of available filament switch sensors
   output_pins: string[]; // maintains a list of available output pins
   printer: any;

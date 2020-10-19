@@ -284,8 +284,19 @@ export const getters: GetterTree<SocketState, RootState> = {
         const heater = state.printer[e]
         if (heater && Object.keys(heater).length > 0) {
           const config = (state.printer.configfile.config[e]) ? state.printer.configfile.config[e] : undefined
+          let name = e
+          // Some heater items may have a prefix determining type.
+          // Check for these and split as necessary.
+          const keys = [
+            'heater_generic'
+          ]
+          const split = e.split(' ')
+          if (split.length > 1 && keys.includes(split[0])) {
+            split.shift()
+            name = split.join(' ')
+          }
           r.push({
-            name: e,
+            name,
             ...heater,
             minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
             maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
