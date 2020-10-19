@@ -1,5 +1,4 @@
 <template>
-  <div>
   <v-text-field
     :value="newValue"
     @input="emitChange"
@@ -18,7 +17,6 @@
   </v-text-field>
   <!-- {{ originalHistory}}<br />
   {{ history }} -->
-  </div>
 </template>
 
 <script lang="ts">

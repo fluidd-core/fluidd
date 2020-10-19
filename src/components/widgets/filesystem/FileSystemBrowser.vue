@@ -11,12 +11,12 @@
       :search="search"
       :single-expand="true"
       :show-expand="showMetaData"
+      height="100%"
       no-data-text="No files"
       no-results-text="No files found"
       sort-by="modified"
       hide-default-footer
       dense
-      height="300"
     >
 
       <template v-slot:top>

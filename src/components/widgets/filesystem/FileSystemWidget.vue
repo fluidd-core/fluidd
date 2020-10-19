@@ -1,6 +1,6 @@
 <template>
-  <v-card color="tertiary">
-    <v-card-title class="quaternary rounded-t">
+  <v-card color="tertiary" class="filesystem-wrapper">
+    <v-card-title class="quaternary rounded-t" v-if="showTitle">
       <v-row>
         <v-col cols="7" class="px-4 py-0">
           <v-icon left>{{ icons.files }}</v-icon>
@@ -19,7 +19,7 @@
         </v-col>
       </v-row>
     </v-card-title>
-    <v-divider></v-divider>
+    <v-divider v-if="showTitle"></v-divider>
     <file-system-browser
       :root="currentRoot"
       :show-meta-data="showMetaData"
@@ -77,6 +77,9 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
 
   @Prop({ type: String, default: 'Jobs' })
   panelTitle!: string;
+
+  @Prop({ type: Boolean, default: true })
+  showTitle!: boolean;
 
   currentRoot = ''
 
@@ -166,6 +169,15 @@ export default class FileSystemWidget extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
+.filesystem-wrapper,
+.file-system,
+.file-system ::v-deep .v-data-table {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
 .v-text-field .v-select__slot .v-select__selection--comma {
   min-width: min-content;
 }

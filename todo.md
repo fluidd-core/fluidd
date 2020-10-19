@@ -1,6 +1,7 @@
 # TODO [fluidd]
 
 ## Next Up
+- extrude / retract options should use same confirm control as temps
 - power panel api
 - look at moving tabs to top instead of bottom of cards (and reduce their size)
 - allow users to define an instance name and use this in the title tab, along with percent complete `[23%] instance name`

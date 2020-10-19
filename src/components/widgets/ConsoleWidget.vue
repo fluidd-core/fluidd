@@ -1,13 +1,13 @@
 <template>
-  <div>
-      <v-card outlined color="#1c1c1c" class="console-container mb-3 pa-1" height="300">
-        <span v-for="(item, index) in consoleItems" :key="index" v-html="item"></span>
-      </v-card>
-      <input-console-command
-        v-model="consoleCommand"
-        @send="sendCommand"
-      >
-      </input-console-command>
+  <div class="console-wrapper">
+    <v-card outlined color="tertiary" class="console pa-1">
+      <span v-for="(item, index) in consoleItems" :key="index" v-html="item"></span>
+    </v-card>
+    <input-console-command
+      v-model="consoleCommand"
+      @send="sendCommand"
+    >
+    </input-console-command>
   </div>
 </template>
 
@@ -37,7 +37,13 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .console-container {
+  .console-wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+  .console {
     display: flex;
     flex-direction: column-reverse;
     overflow-y: scroll;
