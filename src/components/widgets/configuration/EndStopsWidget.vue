@@ -44,7 +44,7 @@ import { SocketActions } from '@/socketActions'
 })
 export default class EndStopsWidget extends Mixins(UtilsMixin) {
   get endStops () {
-    return this.$store.state.socket.endstops
+    return this.$store.getters['socket/getEndstops']
   }
 
   // Default state is an empty object.

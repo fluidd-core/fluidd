@@ -50,6 +50,10 @@ export interface FileChangeItem {
   path: string;
 }
 
+export interface Endstops {
+  [key: string]: string;
+}
+
 export interface Heater {
   name: string;
   temperature: number;

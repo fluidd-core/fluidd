@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Thumbnail } from './types'
+import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Thumbnail, Endstops } from './types'
 import { RootState } from '../types'
 import { chartConfiguration } from '@/globals'
 import { TinyColor } from '@ctrl/tinycolor'
@@ -256,6 +256,19 @@ export const getters: GetterTree<SocketState, RootState> = {
       if (a.profile_name === 'default' || b.profile_name === 'default') return 1
       return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
     })
+  },
+
+  getEndstops: (state): Endstops => {
+    if (
+      state.endstops
+    ) {
+      const sorted: Endstops = {}
+      Object.keys(state.endstops).sort().forEach((key) => {
+        sorted[key] = state.endstops[key]
+      })
+      return sorted
+    }
+    return {}
   },
 
   /**
