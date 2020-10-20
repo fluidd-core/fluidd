@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.7](https://github.com/cadriel/fluidd/compare/v0.0.6...v0.0.7) (2020-10-20)
+
+
+### Bug Fixes
+
+* console now properly maintains history ([2334c3f](https://github.com/cadriel/fluidd/commit/2334c3f16c4bed98e01125bb9b4c5dece98c827a))
+* extrude / retract now work if min extrude temp not defined ([cbc52e2](https://github.com/cadriel/fluidd/commit/cbc52e2f8598b65092ed7ed56f7281392b09a193))
+* generic heaters now work ([99fa1e6](https://github.com/cadriel/fluidd/commit/99fa1e65c0a9ee9f71c66a2d699cff96b6ad7235))
+* printing within a folder ([aea8257](https://github.com/cadriel/fluidd/commit/aea8257b5b8e80f3571a04295923cbd842616663))
+* sorted endstops ([dc489f5](https://github.com/cadriel/fluidd/commit/dc489f52f0816501c2b61bba0e6417b5feb2b4a2))
+
 ### [0.0.6](https://github.com/cadriel/fluidd/compare/v0.0.5...v0.0.6) (2020-10-15)
 
 
