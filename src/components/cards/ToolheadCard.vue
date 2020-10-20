@@ -14,12 +14,12 @@
       </v-btn>
       <v-btn
         v-if="!printerPrinting && printerSupportsZtilt"
-        @click="sendGcode('Z_TILT', waits.onZTilt)"
+        @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :loading="hasWait(waits.onZTilt)"
         :disabled="hasWaits || !klippyConnected"
         class="mr-2"
         color="secondary">
-          Z_TILT
+          Z_TILT_ADJUST
       </v-btn>
       <v-btn
         v-if="!printerPrinting && printerSupportsQgl"
