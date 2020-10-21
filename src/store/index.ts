@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import { socket } from './socket'
 import { files } from './files'
 import { config } from './config'
+import { gpio } from './gpio'
 import { RootState } from './types'
 import { FileConfig } from './config/types'
 
@@ -17,7 +18,8 @@ export default new Vuex.Store<RootState>({
   modules: {
     config,
     socket,
-    files
+    files,
+    gpio
   },
   mutations: {
     setVersion (state, payload) {

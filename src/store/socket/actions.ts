@@ -117,8 +117,31 @@ export const actions: ActionTree<SocketState, RootState> = {
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
       // We're good, move on. Start by loading the temperature and console history.
+      SocketActions.serverInfo()
       SocketActions.serverTemperatureStore()
       SocketActions.serverGcodeStore()
+    }
+  },
+
+  async onServerInfo ({ commit }, payload) {
+    // This payload should return a list of enabled plugins.
+    const plugins = [
+      'power'
+    ]
+    if (
+      payload.plugins &&
+      payload.plugins.length > 0
+    ) {
+      commit('onPlugins', payload.plugins)
+      plugins.forEach((plugin) => {
+        if (payload.plugins.includes(plugin)) {
+          switch (plugin) {
+            case 'power':
+              SocketActions.machineGpioPowerDevices()
+              break
+          }
+        }
+      })
     }
   },
 

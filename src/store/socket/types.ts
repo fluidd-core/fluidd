@@ -4,10 +4,11 @@ export interface SocketState {
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   acceptingNotifications: boolean;
   error: SocketError | null;
-  waits: string[]; // list of things that we might be waiting on, like a gcode script to finish.
+  waits: string[]; // list of things that we might be waiting on, like a gcode script to finish
   endstops: EndStops;
   macros: Macros;
-  console: string[]; // console stream.
+  plugins: string[]; // active plugins (gpio_power)
+  console: string[]; // console stream
   chart: ChartDataSet[]; // chart data
   temperature_fans: string[]; // maintains a list of available temp fans
   temperature_sensors: string[]; // maintains a list of available sensors

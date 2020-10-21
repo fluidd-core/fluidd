@@ -53,7 +53,8 @@ import {
   mdiDeleteAlertOutline,
   mdiCogs,
   mdiContentSaveOutline,
-  mdiAlert
+  mdiAlert,
+  mdiPowerPlug
 } from '@mdi/js'
 
 /**
@@ -70,6 +71,7 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
+  power: mdiPowerPlug,
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
@@ -128,6 +130,7 @@ export const Icons = Object.freeze({
 })
 
 export const Waits = Object.freeze({
+  onGpio: 'onGpio',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',
   onHomeZ: 'onHomeZ',

@@ -18,6 +18,7 @@ export const getDefaultState = (): SocketState => {
     console: [],
     chart: [],
     macros: {},
+    plugins: [],
     temperature_fans: [],
     heater_fans: [],
     heater_generics: [],

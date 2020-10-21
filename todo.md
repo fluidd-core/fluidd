@@ -12,6 +12,8 @@
 - Performance / memory heap checks
 - 
 ## Known Bugs:
+- No console data / history on first load causes the send textbox to be at the top of the panel
+ (instead of the bottom)
 - if you complete a print, then delete the original gcode;
   - then you can still attempt to reprint something that's no longer there and;
   - the metadata load fails because the file is no longer there.

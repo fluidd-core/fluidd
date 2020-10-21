@@ -7,7 +7,6 @@ import { Globals, chartConfiguration } from '@/globals'
 
 export const mutations: MutationTree<SocketState> = {
   resetState (state) {
-    console.log('resetting state...')
     const newState = getDefaultState()
     Object.keys(newState).forEach((key: string) => {
       // Some properties we may not want to reset.
@@ -72,6 +71,9 @@ export const mutations: MutationTree<SocketState> = {
   },
   onPrinterInfo (state, payload) {
     state.printer.info = payload
+  },
+  onPlugins (state, payload) {
+    payload.forEach((plugin: string) => state.plugins.push(plugin))
   },
   onPrinterObjectsList (state, payload) {
     if (!state.printer.objects.includes(payload)) {

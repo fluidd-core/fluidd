@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { Waits } from '@/globals'
+import { Device } from './store/gpio/types'
 
 export const SocketActions = {
   async printerInfo () {
@@ -27,6 +28,35 @@ export const SocketActions = {
   async machineShutdown () {
     Vue.$socket.emit(
       'machine.shutdown'
+    )
+  },
+
+  async machineGpioPowerDevices () {
+    Vue.$socket.emit(
+      'machine.gpio_power.devices', {
+        action: 'gpio/init'
+      }
+    )
+  },
+
+  async machineGpioPowerStatus () {
+    Vue.$socket.emit(
+      'machine.gpio_power.status', {
+        action: 'gpio/onStatus'
+      }
+    )
+  },
+
+  async machineGpioPowerToggle (id: string, state: number, wait?: string) {
+    const emit = (state === 1)
+      ? 'machine.gpio_power.on'
+      : 'machine.gpio_power.off'
+    Vue.$socket.emit(
+      emit, {
+        action: 'gpio/onToggle',
+        params: { [id]: null },
+        wait
+      }
     )
   },
 

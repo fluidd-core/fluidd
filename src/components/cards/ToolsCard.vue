@@ -6,19 +6,23 @@
       fixed-tabs
       background-color="quaternary"
     >
-      <v-tab :key="0">
+      <v-tab :key="'macros'">
         <v-icon left>{{ icons.fileCode }}</v-icon>
         Macros
       </v-tab>
-      <v-tab :key="1">
+      <v-tab :key="'power'" v-if="gpioPowerPluginEnabled">
+        <v-icon left>{{ icons.power }}</v-icon>
+        Power
+      </v-tab>
+      <v-tab :key="'syscommands'">
         <v-icon left>{{ icons.tools }}</v-icon>
         Sys Commands
       </v-tab>
-      <v-tab :key="2">
+      <v-tab :key="'jobs'">
         <v-icon left>{{ icons.files }}</v-icon>
         Jobs
       </v-tab>
-      <v-tab :key="3">
+      <v-tab :key="'console'">
         <v-icon left>{{ icons.console }}</v-icon>
         Console
       </v-tab>
@@ -26,13 +30,16 @@
     <v-divider></v-divider>
 
     <v-tabs-items v-model="activeTab" class="mb-auto rounded">
-      <v-tab-item :key="0" class="tertiary rounded">
+      <v-tab-item :key="'macros'" class="tertiary rounded">
         <macros-widget></macros-widget>
       </v-tab-item>
-      <v-tab-item :key="1" class="tertiary rounded">
+      <v-tab-item :key="'power'" class="tertiary rounded" v-if="gpioPowerPluginEnabled">
+        <power-control-widget></power-control-widget>
+      </v-tab-item>
+      <v-tab-item :key="'syscommands'" class="tertiary rounded">
         <system-commands-widget></system-commands-widget>
       </v-tab-item>
-      <v-tab-item :key="2" class="tertiary rounded max-height">
+      <v-tab-item :key="'jobs'" class="tertiary rounded max-height">
         <file-system-widget
           root="gcodes"
           accept=".gcode"
@@ -40,7 +47,7 @@
           :show-meta-data="false"
         ></file-system-widget>
       </v-tab-item>
-      <v-tab-item :key="3" class="tertiary rounded max-height">
+      <v-tab-item :key="'console'" class="tertiary rounded max-height">
         <console-widget></console-widget>
       </v-tab-item>
     </v-tabs-items>
@@ -55,17 +62,23 @@ import MacrosWidget from '@/components/widgets/MacrosWidget.vue'
 import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
+import PowerControlWidget from '@/components/widgets/PowerControlWidget.vue'
 
 @Component({
   components: {
     MacrosWidget,
     FileSystemWidget,
     SystemCommandsWidget,
-    ConsoleWidget
+    ConsoleWidget,
+    PowerControlWidget
   }
 })
 export default class ToolsCard extends Mixins(UtilsMixin) {
-  activeTab = 0
+  activeTab = 'macros'
+
+  get gpioPowerPluginEnabled () {
+    return (this.$store.state.socket.plugins.includes('power'))
+  }
 }
 </script>
 
