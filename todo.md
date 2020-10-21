@@ -2,7 +2,6 @@
 
 ## Next Up
 - temperature presets
-- power panel api
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
