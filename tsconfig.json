@@ -17,6 +17,7 @@
       "mocha",
       "chai",
       "vuetify",
+      "vue-meta"
     ],
     "paths": {
       "@/*": [

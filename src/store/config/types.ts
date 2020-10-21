@@ -25,6 +25,7 @@ export interface FileConfig {
 }
 
 export interface GeneralConfig {
+  instanceName: string;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
   defaultToolheadMoveLength: string;

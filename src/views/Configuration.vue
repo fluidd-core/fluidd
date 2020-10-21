@@ -43,6 +43,7 @@ import EndStopsWidget from '@/components/widgets/configuration/EndStopsWidget.vu
 import RunoutSensorWidget from '@/components/widgets/configuration/RunoutSensorWidget.vue'
 import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
 import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import { MetaInfo } from 'vue-meta'
 
 @Component({
   components: {
@@ -51,6 +52,11 @@ import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyD
     RunoutSensorWidget,
     FileSystemWidget,
     KlippyDisconnectedWidget
+  },
+  metaInfo (this: Configuration): MetaInfo {
+    return {
+      title: 'Configuration'
+    }
   }
 })
 export default class Configuration extends Mixins(UtilsMixin) {

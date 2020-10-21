@@ -31,6 +31,7 @@ import MacroSettingsWidget from '@/components/widgets/settings/MacroSettingsWidg
 import GeneralSettingsWidget from '@/components/widgets/settings/GeneralSettingsWidget.vue'
 import TemperaturePresetsSettingsWidget from '@/components/widgets/settings/TemperaturePresetsSettingsWidget.vue'
 import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import { MetaInfo } from 'vue-meta'
 import EventBus from '@/eventBus'
 
 @Component({
@@ -39,6 +40,11 @@ import EventBus from '@/eventBus'
     GeneralSettingsWidget,
     TemperaturePresetsSettingsWidget,
     KlippyDisconnectedWidget
+  },
+  metaInfo (this: Settings): MetaInfo {
+    return {
+      title: 'Settings'
+    }
   }
 })
 export default class Settings extends Mixins(UtilsMixin) {

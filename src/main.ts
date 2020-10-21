@@ -4,6 +4,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
+import VueMeta from 'vue-meta'
 import { Globals } from './globals'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
@@ -18,6 +19,7 @@ Vue.component('btn', Btn)
 Vue.use(AxiosPlugin)
 Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
+Vue.use(VueMeta)
 
 // Load API configuration
 // If we're in a local development environment,

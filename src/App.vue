@@ -27,6 +27,7 @@ import AppBar from '@/components/AppBar.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
+import { MetaInfo } from 'vue-meta'
 
 @Component({
   components: {
@@ -34,9 +35,32 @@ import FlashMessage from '@/components/FlashMessage.vue'
     SocketDisconnectedWidget,
     FlashMessage,
     AppFooter
+  },
+  metaInfo (this: App): MetaInfo {
+    const instanceName = this.instanceName
+    const r = {
+      title: '',
+      titleTemplate: ''
+    }
+    if (this.printerPrinting) {
+      const progress = this.progress
+      r.titleTemplate = `[${progress}%] | %s | ${instanceName}`
+    } else {
+      r.titleTemplate = `%s | ${instanceName}`
+    }
+    return r
   }
 })
 export default class App extends Mixins(UtilsMixin) {
+  get instanceName () {
+    return this.$store.state.config.fileConfig.general.instanceName || ''
+  }
+
+  get progress () {
+    const progress = this.$store.state.socket.printer.display_status.progress || 0
+    return (progress * 100).toFixed()
+  }
+
   flashMessage: FlashMessageType = {
     open: false,
     text: undefined,
@@ -58,9 +82,11 @@ export default class App extends Mixins(UtilsMixin) {
 
 <style lang="scss" scoped>
   .title {
-    background: -webkit-linear-gradient(45deg, #1970b5, #9accf5);
+    background: linear-gradient(45deg, #1970b5, #9accf5);
     background-clip: text;
-    -webkit-text-fill-color: transparent;}
+    -webkit-text-fill-color: transparent;
+  }
+
   .logo {
     margin-right: 12px;
     max-height: 40px;

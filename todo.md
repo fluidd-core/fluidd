@@ -3,7 +3,6 @@
 ## Next Up
 - temperature presets
 - power panel api
-- allow users to define an instance name and use this in the title tab, along with percent complete `[23%] instance name`
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data

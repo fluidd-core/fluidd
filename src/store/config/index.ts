@@ -6,6 +6,7 @@ import { actions } from './actions'
 import { mutations } from './mutations'
 import { ConfigState } from './types'
 import { RootState } from '../types'
+import { Globals } from '@/globals'
 
 export const state: ConfigState = {
   apiUrl: '',
@@ -17,6 +18,7 @@ export const state: ConfigState = {
   },
   fileConfig: {
     general: {
+      instanceName: Globals.APP_NAME,
       printTimeEstimationsType: 'file',
       defaultExtrudeLength: 10,
       defaultExtrudeSpeed: 5,

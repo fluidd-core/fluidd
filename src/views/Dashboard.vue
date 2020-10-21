@@ -21,6 +21,7 @@ import ToolsCard from '@/components/cards/ToolsCard.vue'
 import ToolheadCard from '@/components/cards/ToolheadCard.vue'
 import TemperatureCard from '@/components/cards/TemperatureCard.vue'
 import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import { MetaInfo } from 'vue-meta'
 import UtilsMixin from '@/mixins/utils'
 
 @Component({
@@ -30,11 +31,13 @@ import UtilsMixin from '@/mixins/utils'
     ToolheadCard,
     TemperatureCard,
     KlippyDisconnectedWidget
+  },
+  metaInfo (this: Dashboard): MetaInfo {
+    return {
+      title: 'Dashboard'
+    }
   }
 })
-export default class Dashboard extends Mixins(UtilsMixin) {}
+export default class Dashboard extends Mixins(UtilsMixin) {
+}
 </script>
-
-<style lang="scss">
-
-</style>

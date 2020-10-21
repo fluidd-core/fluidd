@@ -65,7 +65,8 @@ export const Globals = Object.freeze({
   CONSOLE_SEND_PREFIX: 'Send:',
   KLIPPY_RETRY_DELAY: 2000,
   LOCAL_STORAGE_KEY: 'appConfig',
-  SETTINGS_FILENAME: '.fluidd.json'
+  SETTINGS_FILENAME: '.fluidd.json',
+  APP_NAME: 'Fluidd'
 })
 
 export const Icons = Object.freeze({
