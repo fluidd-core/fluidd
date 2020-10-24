@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import { Waits } from '@/globals'
-import { Device } from './store/gpio/types'
 
 export const SocketActions = {
   async printerInfo () {
