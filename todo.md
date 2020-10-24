@@ -9,7 +9,8 @@
 - add console.log wrapper for dev vs prod
 - add a cached throttle to (socket notifications) temp updates, print timers, position trackers.
 - Performance / memory heap checks
-- 
+- lazy load bigger components / pages (perhaps require a loader)
+
 ## Known Bugs:
 - No console data / history on first load causes the send textbox to be at the top of the panel
  (instead of the bottom)

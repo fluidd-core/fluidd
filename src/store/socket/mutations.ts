@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
-import { SocketState, ChartDataSet, Macro } from './types'
+import { SocketState, ChartDataSet, Macro, ConsoleEntry } from './types'
 import { getDefaultState } from './index'
 import { Globals, chartConfiguration } from '@/globals'
 
@@ -80,12 +80,16 @@ export const mutations: MutationTree<SocketState> = {
       state.printer.objects.push(payload)
     }
   },
-  addConsoleEntry (state, payload) {
+  addConsoleEntry (state, message) {
     while (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
       state.console.pop()
     }
 
-    state.console.unshift(payload)
+    const entry: ConsoleEntry = {
+      time: new Date().getTime(),
+      message
+    }
+    state.console.unshift(entry)
   },
   addMacro (state, macro: Macro) {
     Vue.set(state.macros, macro.name, macro)

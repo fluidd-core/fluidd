@@ -1,7 +1,7 @@
 <template>
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
-      <span v-for="(item, index) in consoleItems" :key="index" v-html="item"></span>
+      <span v-for="(item, index) in consoleItems" :key="index" v-html="item.message"></span>
     </v-card>
     <input-console-command
       v-model="consoleCommand"
@@ -15,6 +15,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
+import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -22,7 +23,7 @@ import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
   }
 })
 export default class ConsoleWidget extends Mixins(UtilsMixin) {
-  get consoleItems () {
+  get consoleItems (): ConsoleEntry[] {
     return this.$store.state.socket.console
   }
 

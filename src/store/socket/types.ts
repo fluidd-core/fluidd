@@ -8,7 +8,7 @@ export interface SocketState {
   endstops: EndStops;
   macros: Macros;
   plugins: string[]; // active plugins (gpio_power)
-  console: string[]; // console stream
+  console: ConsoleEntry[]; // console stream
   chart: ChartDataSet[]; // chart data
   temperature_fans: string[]; // maintains a list of available temp fans
   temperature_sensors: string[]; // maintains a list of available sensors
@@ -143,4 +143,9 @@ export interface Thumbnail {
   height: number;
   width: number;
   size: number;
+}
+
+export interface ConsoleEntry {
+  message: string;
+  time: number;
 }

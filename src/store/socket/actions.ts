@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { SocketState, ChartDataSet } from './types'
+import { SocketState, ChartDataSet, ConsoleEntry } from './types'
 import { RootState } from '../types'
 import { configureChartEntry } from '../helpers'
 import { Globals } from '@/globals'
@@ -189,12 +189,12 @@ export const actions: ActionTree<SocketState, RootState> = {
    * On a fresh load of the UI, we load prior gcode / console history
    */
   async onGcodeStore ({ commit }, payload) {
+    console.log('got gcodestore', payload)
     if (payload && payload.gcode_store) {
-      const split = payload.gcode_store.split('\n')
-      split.forEach((s: string, i: number) => {
-        split[i] = Globals.CONSOLE_RECEIVE_PREFIX + ' ' + s
+      payload.gcode_store.forEach((s: ConsoleEntry) => {
+        s.message = Globals.CONSOLE_RECEIVE_PREFIX + ' ' + s.message
       })
-      commit('addInitialConsoleData', split.reverse())
+      commit('addInitialConsoleData', payload.gcode_store.reverse())
     }
   },
 
