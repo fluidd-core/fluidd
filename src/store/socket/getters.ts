@@ -120,7 +120,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       })
     }
 
-    if (thumb) {
+    if (thumb && thumb.data) {
       thumb.data = 'data:image/gif;base64,' + thumb.data
     }
     return thumb
