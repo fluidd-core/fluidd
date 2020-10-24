@@ -80,14 +80,9 @@ export const mutations: MutationTree<SocketState> = {
       state.printer.objects.push(payload)
     }
   },
-  addConsoleEntry (state, message) {
+  addConsoleEntry (state, entry: ConsoleEntry) {
     while (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
       state.console.pop()
-    }
-
-    const entry: ConsoleEntry = {
-      time: new Date().getTime(),
-      message
     }
     state.console.unshift(entry)
   },
@@ -108,9 +103,9 @@ export const mutations: MutationTree<SocketState> = {
   clearEndStops (state) {
     state.endstops = {}
   },
-  addInitialConsoleData (state, payload) {
-    state.console = payload
-  },
+  // addInitialConsoleData (state, payload) {
+  //   state.console = payload
+  // },
   addInitialChartData (state, payload) {
     payload.forEach((item: ChartDataSet) => {
       state.chart.push(item)

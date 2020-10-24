@@ -1,7 +1,7 @@
 <template>
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
-      <span v-for="(item, index) in consoleItems" :key="index" v-html="item.message"></span>
+      <span v-for="(item, index) in consoleItems" :key="index" v-html="item.message" :class="consoleClass(item)"></span>
     </v-card>
     <input-console-command
       v-model="consoleCommand"
@@ -16,6 +16,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 import { ConsoleEntry } from '@/store/socket/types'
+import { Globals } from '@/globals'
 
 @Component({
   components: {
@@ -33,6 +34,22 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     if (command && command.length) {
       this.sendGcode(command)
     }
+  }
+
+  consoleClass (item: ConsoleEntry) {
+    if (item.message.startsWith('!!')) {
+      return { 'error--text': true }
+    }
+
+    if (item.message.startsWith('//')) {
+      return { 'grey--text': true }
+    }
+
+    if (item.message.startsWith(Globals.CONSOLE_SEND_PREFIX)) {
+      return { 'grey--text text--lighten-1': true }
+    }
+
+    return { 'grey--text text--darken-1': true }
   }
 }
 </script>

@@ -153,7 +153,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onGcodeScript ({ commit, dispatch }, payload) {
     // If the response is ok, pass it to the console.
     if (payload && payload.result && payload.result === 'ok') {
-      dispatch('addConsoleEntry', Globals.CONSOLE_RECEIVE_PREFIX + ' Ok')
+      dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + 'Ok' })
     }
     // Remove a wait if defined.
     if (payload.__request__ && payload.__request__.wait && payload.__request__.wait.length) {
@@ -188,13 +188,13 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * On a fresh load of the UI, we load prior gcode / console history
    */
-  async onGcodeStore ({ commit }, payload) {
+  async onGcodeStore ({ dispatch }, payload) {
     console.log('got gcodestore', payload)
     if (payload && payload.gcode_store) {
       payload.gcode_store.forEach((s: ConsoleEntry) => {
-        s.message = Globals.CONSOLE_RECEIVE_PREFIX + ' ' + s.message
+        s.message = Globals.CONSOLE_RECEIVE_PREFIX + s.message
+        dispatch('addConsoleEntry', s)
       })
-      commit('addInitialConsoleData', payload.gcode_store.reverse())
     }
   },
 
@@ -356,7 +356,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifyGcodeResponse ({ dispatch }, payload) {
     // stream gcode responses to our console data, ensuring
     // we truncate to max line count.
-    dispatch('addConsoleEntry', `${Globals.CONSOLE_RECEIVE_PREFIX} ${payload}`)
+    dispatch('addConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` })
   },
   async notifyKlippyDisconnected ({ commit }) {
     commit('resetState')
@@ -382,9 +382,14 @@ export const actions: ActionTree<SocketState, RootState> = {
   async removeWait ({ commit }, wait) {
     commit('removeWait', wait)
   },
-  async addConsoleEntry ({ commit }, payload) {
-    commit('addConsoleEntry', payload.replace(/(?:\r\n|\r|\n)/g, '<br>'))
+  async addConsoleEntry ({ commit }, payload: ConsoleEntry) {
+    payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
+    if (!payload.time || payload.time <= 0) {
+      payload.time = new Date().getTime()
+    }
+    commit('addConsoleEntry', payload)
   },
+
   async addMacro ({ commit, rootState }, macro) {
     // Macros should include a property to indicate if they're visible
     // on the dashboard or not. This comes from the fileConfig.

@@ -147,5 +147,5 @@ export interface Thumbnail {
 
 export interface ConsoleEntry {
   message: string;
-  time: number;
+  time?: number;
 }
