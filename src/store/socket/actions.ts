@@ -189,7 +189,6 @@ export const actions: ActionTree<SocketState, RootState> = {
    * On a fresh load of the UI, we load prior gcode / console history
    */
   async onGcodeStore ({ dispatch }, payload) {
-    console.log('got gcodestore', payload)
     if (payload && payload.gcode_store) {
       payload.gcode_store.forEach((s: ConsoleEntry) => {
         s.message = Globals.CONSOLE_RECEIVE_PREFIX + s.message
