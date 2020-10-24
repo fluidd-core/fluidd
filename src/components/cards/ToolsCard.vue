@@ -14,10 +14,6 @@
         <v-icon left>{{ icons.power }}</v-icon>
         Power
       </v-tab>
-      <v-tab :key="'syscommands'">
-        <v-icon left>{{ icons.tools }}</v-icon>
-        Sys Commands
-      </v-tab>
       <v-tab :key="'jobs'">
         <v-icon left>{{ icons.files }}</v-icon>
         Jobs
@@ -35,9 +31,6 @@
       </v-tab-item>
       <v-tab-item :key="'power'" class="tertiary rounded" v-if="gpioPowerPluginEnabled">
         <power-control-widget></power-control-widget>
-      </v-tab-item>
-      <v-tab-item :key="'syscommands'" class="tertiary rounded">
-        <system-commands-widget></system-commands-widget>
       </v-tab-item>
       <v-tab-item :key="'jobs'" class="tertiary rounded max-height">
         <file-system-widget
@@ -60,7 +53,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import MacrosWidget from '@/components/widgets/MacrosWidget.vue'
 import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
-import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
 import PowerControlWidget from '@/components/widgets/PowerControlWidget.vue'
 
@@ -68,7 +60,6 @@ import PowerControlWidget from '@/components/widgets/PowerControlWidget.vue'
   components: {
     MacrosWidget,
     FileSystemWidget,
-    SystemCommandsWidget,
     ConsoleWidget,
     PowerControlWidget
   }

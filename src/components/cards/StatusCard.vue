@@ -109,8 +109,10 @@ export default class StatusCard extends Mixins(UtilsMixin) {
     return this.$store.state.socket.printer.print_stats.filename
   }
 
-  cancelPrint () {
-    SocketActions.printerPrintCancel()
+  cancelPrint (val: boolean) {
+    if (val) {
+      SocketActions.printerPrintCancel()
+    }
   }
 
   pausePrint () {

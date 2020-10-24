@@ -55,7 +55,8 @@ import {
   mdiContentSaveOutline,
   mdiAlert,
   mdiPowerPlug,
-  mdiChartBellCurve
+  mdiChartBellCurve,
+  mdiDotsVertical
 } from '@mdi/js'
 
 /**
@@ -72,6 +73,7 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
+  menu: mdiDotsVertical,
   chart: mdiChartBellCurve,
   power: mdiPowerPlug,
   home: mdiHome,

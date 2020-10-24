@@ -3,19 +3,11 @@
     app
     clipped-left
   >
-    <!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon> -->
-    <!-- <img src="./assets/logo.svg" class="logo" /> -->
     <v-icon large color="#1970b5">{{ icons.printer3dNozzle }}</v-icon>
     <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
       Fluidd
     </v-toolbar-title>
     <v-spacer />
-    <v-switch
-      v-model="darkmode"
-      label="dark mode"
-      hide-details
-      class="mr-5 d-none d-sm-block"
-    ></v-switch>
     <v-toolbar-items>
       <v-btn text to="/">
         <v-icon small class="mr-md-1">{{ icons.home }}</v-icon>
@@ -43,6 +35,7 @@
         </template>
         Emergency Stop
       </v-tooltip>
+      <system-commands-widget></system-commands-widget>
     </v-toolbar-items>
   </v-app-bar>
 </template>
@@ -51,22 +44,16 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { SocketActions } from '@/socketActions'
+import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 
 @Component({
-  components: {}
+  components: {
+    SystemCommandsWidget
+  }
 })
 export default class AppBar extends Mixins(UtilsMixin) {
   get currentFile () {
     return this.$store.state.socket.printer.print_stats.filename
-  }
-
-  get darkmode () {
-    return this.$store.state.config.localConfig.darkMode
-  }
-
-  set darkmode (val: boolean) {
-    this.$vuetify.theme.dark = val
-    this.$store.dispatch('config/saveLocalStorage', { darkMode: val })
   }
 
   // Watch currentfile and refresh its metadata to ensure
