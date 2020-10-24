@@ -2,7 +2,7 @@
   <v-card color="tertiary" class="mb-4">
     <v-card-title class="quaternary">
       <v-icon left>{{ icons.printer3dNozzle }}</v-icon>
-      <span class="font-weight-light">Toolhead</span>
+      <span class="font-weight-light">Tool</span>
       <v-spacer />
       <v-btn
         v-if="!printerPrinting"

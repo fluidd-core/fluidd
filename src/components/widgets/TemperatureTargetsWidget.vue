@@ -5,23 +5,39 @@
           Actual
         </v-col>
         <v-col class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
-          Target
-          <!-- <v-menu bottom :offset-y="true">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn small v-bind="attrs" v-on="on" icon color="grey"><v-icon>mdi-chevron-down</v-icon></v-btn>
-            </template>
-            <v-list nav dense transition="slide-y-transition">
-              <v-list-item>
-                <v-list-item-title>Off</v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Set ABS</v-list-item-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-title>Set PLA</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu> -->
+          <v-layout>
+            Target
+            <v-spacer></v-spacer>
+            <!-- <v-menu bottom left :offset-y="true" :min-width="150">
+              <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                :min-width="40"
+                v-bind="attrs" v-on="on"
+                color="secondary"
+                small
+                class="pa-0">
+                <v-icon>{{ icons.chevronDown }}</v-icon>
+              </v-btn>
+              </template>
+              <v-list
+                nav
+                dense
+                color="secondary">
+                <v-list-item link>
+                  <v-list-item-title>Off</v-list-item-title>
+                </v-list-item>
+                <v-list-item link>
+                  <v-list-item-title>Preheat</v-list-item-title>
+                </v-list-item>
+                <v-list-item link>
+                  <v-list-item-title>ABS</v-list-item-title>
+                </v-list-item>
+                <v-list-item link>
+                  <v-list-item-title>PLA</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu> -->
+          </v-layout>
         </v-col>
       </v-row>
 

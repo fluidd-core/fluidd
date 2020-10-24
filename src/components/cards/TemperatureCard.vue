@@ -1,14 +1,27 @@
 <template>
   <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary">
-      <v-icon left>{{ icons.fire }}</v-icon>
-      <span class="font-weight-light">Temperatures</span>
+    <v-card-title class="quaternary py-3">
+
+      <v-col cols="12" lg="auto" class="pa-0">
+        <v-icon left>{{ icons.fire }}</v-icon>
+        <span class="font-weight-light">Temperatures</span>
+      </v-col>
+
+      <v-col class="pa-0 d-inline-flex justify-start justify-md-end flex-wrap">
+        <v-btn
+          @click="chartVisible = !chartVisible"
+          color="secondary"
+          class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
+          <v-icon small class="mr-1">{{ icons.chart }}</v-icon>
+          <span>Chart</span>
+        </v-btn>
+      </v-col>
     </v-card-title>
     <v-divider></v-divider>
 
     <temperature-targets-widget></temperature-targets-widget>
 
-    <v-card-text class="chart-container">
+    <v-card-text class="chart-container" v-if="chartVisible">
       <temperature-chart-widget v-if="chartReady && klippyConnected" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
     </v-card-text>
   </v-card>
@@ -53,6 +66,14 @@ export default class TemperatureCard extends Mixins(UtilsMixin) {
   private start () {
     this.chartData = this.allChartData
     this.chartReady = true
+  }
+
+  get chartVisible (): boolean {
+    return this.$store.state.config.localConfig.chartVisible
+  }
+
+  set chartVisible (val: boolean) {
+    this.$store.dispatch('config/saveLocalStorage', { chartVisible: val })
   }
 }
 </script>

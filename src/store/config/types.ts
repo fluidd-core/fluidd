@@ -11,6 +11,7 @@ export interface ConfigState {
 export interface LocalConfig {
   [key: string]: string | boolean | number;
   cameraVisible: boolean;
+  chartVisible: boolean;
   darkMode: boolean;
 }
 

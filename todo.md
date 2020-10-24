@@ -48,6 +48,7 @@
 - add a widget to configure ztilt (needed?)
 
 ## User wants
+- another request to have the current temps above the macors etc during a print, but not while not printing.
 - draggable dashboard panels?
 - maybe look at tightening the mobile ui. have fan's as a value, that you can click
   on which then makes a popout to adjust fan?

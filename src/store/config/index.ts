@@ -14,6 +14,7 @@ export const state: ConfigState = {
   unsavedChanges: false,
   localConfig: {
     cameraVisible: false,
+    chartVisible: true,
     darkMode: true
   },
   fileConfig: {
