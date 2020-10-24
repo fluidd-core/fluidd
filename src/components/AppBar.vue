@@ -10,12 +10,6 @@
       Fluidd
     </v-toolbar-title>
     <v-spacer />
-    <v-switch
-      v-model="darkmode"
-      label="dark mode"
-      hide-details
-      class="mr-5 d-none d-sm-block"
-    ></v-switch>
     <v-toolbar-items>
       <v-btn text to="/">
         <v-icon small class="mr-md-1">{{ icons.home }}</v-icon>
@@ -58,15 +52,6 @@ import { SocketActions } from '@/socketActions'
 export default class AppBar extends Mixins(UtilsMixin) {
   get currentFile () {
     return this.$store.state.socket.printer.print_stats.filename
-  }
-
-  get darkmode () {
-    return this.$store.state.config.localConfig.darkMode
-  }
-
-  set darkmode (val: boolean) {
-    this.$vuetify.theme.dark = val
-    this.$store.dispatch('config/saveLocalStorage', { darkMode: val })
   }
 
   // Watch currentfile and refresh its metadata to ensure

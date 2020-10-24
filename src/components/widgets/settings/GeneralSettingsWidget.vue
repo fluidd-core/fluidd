@@ -21,6 +21,16 @@
     </v-card-text>
     <v-divider></v-divider>
     <v-card-text>
+      <p>Switches between the dark and light theme.</p>
+      <v-switch
+      v-model="darkmode"
+      label="Enable Dark Mode"
+      hide-details
+      class="mr-5 d-none d-sm-block"
+    ></v-switch>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-text>
       <v-text-field
         filled
         label="Camera URL"
@@ -103,6 +113,15 @@ export default class GeneralSettingsWidget extends Mixins(UtilsMixin) {
 
   set printTimeEstimationsType (value: string) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.printTimeEstimationsType', value })
+  }
+
+  get darkmode () {
+    return this.$store.state.config.localConfig.darkMode
+  }
+
+  set darkmode (val: boolean) {
+    this.$vuetify.theme.dark = val
+    this.$store.dispatch('config/saveLocalStorage', { darkMode: val })
   }
 }
 </script>
