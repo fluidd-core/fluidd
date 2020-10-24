@@ -45,8 +45,8 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
       return { 'grey--text': true }
     }
 
-    if (item.message.startsWith(Globals.CONSOLE_SEND_PREFIX)) {
-      return { 'grey--text text--lighten-1': true }
+    if (item.message.startsWith(Globals.CONSOLE_SEND_PREFIX.trim())) {
+      return { 'primary--text text--lighten-1': true }
     }
 
     return { 'grey--text text--darken-1': true }
@@ -61,6 +61,9 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     overflow: hidden;
     height: 100%;
   }
+  .v-input {
+    flex-grow: 0;
+  }
   .console {
     display: flex;
     flex-direction: column-reverse;
@@ -69,8 +72,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     font-family: monospace;
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
-    span {
-      flex: 0 0 auto;
-    }
+    flex: 1 0 auto;
   }
 </style>
