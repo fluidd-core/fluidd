@@ -2,6 +2,7 @@
 
 ## Next Up
 - temperature presets
+- allow contraction and expansion of dashboard panels?
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -12,8 +13,6 @@
 - lazy load bigger components / pages (perhaps require a loader)
 
 ## Known Bugs:
-- No console data / history on first load causes the send textbox to be at the top of the panel
- (instead of the bottom)
 - if you complete a print, then delete the original gcode;
   - then you can still attempt to reprint something that's no longer there and;
   - the metadata load fails because the file is no longer there.
@@ -28,9 +27,8 @@
 - probed vs mesh bed level display option
 - sqv, machine limits etc..
 - should be able to force part speed fan during a print
-- allow contraction and expansion of dashboard panels?
 - add status of heater_fans (extruder fan and controller fan)
-- filter out temp waits from console
+- add UI to filter out temp waits from console
 
 ## Filesystem Improvements:
 - file expand details for metadata (needed tho?, maybe just for current print)
@@ -38,7 +36,6 @@
 
 ## [Page] UI Settings
 - rotate camera
-- power control module
 
 ## [Page] Printer Configuration
 - add pid heater calibrate
@@ -48,6 +45,7 @@
 - add a widget to configure ztilt (needed?)
 
 ## User wants
+- parse underscores out of macro names
 - another request to have the current temps above the macors etc during a print, but not while not printing.
 - draggable dashboard panels?
 - maybe look at tightening the mobile ui. have fan's as a value, that you can click
