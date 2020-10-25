@@ -4,6 +4,8 @@ import 'dayjs/locale/en'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import isToday from 'dayjs/plugin/isToday'
 import updateLocale from 'dayjs/plugin/updateLocale'
+import utc from 'dayjs/plugin/utc'
+
 // import localeData from 'dayjs/plugin/localeData'
 
 export const DayJSPlugin = {
@@ -11,6 +13,7 @@ export const DayJSPlugin = {
     dayjs.extend(relativeTime)
     dayjs.extend(isToday)
     dayjs.extend(updateLocale)
+    dayjs.extend(utc)
     dayjs.locale('en-chart', {
       relativeTime: {
         future: 'in %s',

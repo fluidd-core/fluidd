@@ -1,7 +1,10 @@
 <template>
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
-      <span v-for="(item, index) in consoleItems" :key="index" v-html="item.message" :class="consoleClass(item)"></span>
+      <v-layout v-for="(item, index) in consoleItems" :key="index">
+        <span class="grey--text text--darken-2 mr-3">{{ getTime(item.time) }} </span>
+        <span :class="consoleClass(item)" v-html="item.message"></span>
+      </v-layout>
     </v-card>
     <input-console-command
       v-model="consoleCommand"
@@ -34,6 +37,10 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     if (command && command.length) {
       this.sendGcode(command)
     }
+  }
+
+  getTime (item: number) {
+    return this.$dayjs(item * 1000).format('HH:MM:ss')
   }
 
   consoleClass (item: ConsoleEntry) {
@@ -72,6 +79,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     font-family: monospace;
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
-    flex: 1 0 auto;
+    // flex: 1 0 auto;
   }
 </style>

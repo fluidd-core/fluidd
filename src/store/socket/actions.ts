@@ -384,7 +384,8 @@ export const actions: ActionTree<SocketState, RootState> = {
   async addConsoleEntry ({ commit }, payload: ConsoleEntry) {
     payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
     if (!payload.time || payload.time <= 0) {
-      payload.time = new Date().getTime()
+      // console.log('setting time', payload)
+      payload.time = new Date().getTime() / 1000 | 0
     }
     commit('addConsoleEntry', payload)
   },
