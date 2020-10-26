@@ -131,5 +131,9 @@ export const mutations: MutationTree<SocketState> = {
         }
       }
     }
+  },
+  resetCurrentFile (state) {
+    const newState = getDefaultState().printer.current_file
+    Vue.set(state.printer, 'current_file', newState)
   }
 }

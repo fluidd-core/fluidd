@@ -62,6 +62,8 @@ export default class AppBar extends Mixins(UtilsMixin) {
   onCurrentFileChanged (val: string) {
     if (val && val.length > 0 && val !== 'standby') {
       SocketActions.serverFilesMetaData(val)
+    } else {
+      this.$store.commit('socket/resetCurrentFile')
     }
   }
 
