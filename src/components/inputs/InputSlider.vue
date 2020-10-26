@@ -5,7 +5,7 @@
     <div class="grey--text text-h5 ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
   </div>
   <v-slider
-    @click="emitChange(newValue)"
+    @end="emitChange(newValue)"
     @input="updateValue"
     @update:error="updateError"
     :value="newValue"
