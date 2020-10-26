@@ -51,6 +51,7 @@
         </v-btn>
 
         <v-btn
+          @click="rePrint()"
           v-if="!printerPrinting && !printerPaused && filename"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
@@ -111,7 +112,7 @@ export default class StatusCard extends Mixins(UtilsMixin) {
   }
 
   get filename () {
-    return this.$store.state.socket.printer.print_stats.filename
+    return this.$store.state.socket.printer.current_file.filename || ''
   }
 
   cancelPrint (val: boolean) {
@@ -126,6 +127,12 @@ export default class StatusCard extends Mixins(UtilsMixin) {
 
   resumePrint () {
     SocketActions.printerPrintResume()
+  }
+
+  rePrint () {
+    if (this.filename && this.filename.length > 0) {
+      SocketActions.printerPrintStart(this.filename)
+    }
   }
 }
 </script>
