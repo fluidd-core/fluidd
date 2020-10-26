@@ -294,7 +294,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  formatDate (date: string) {
+  formatDate (date: number) {
     return this.$filters.formatFileDateTime(date)
   }
 

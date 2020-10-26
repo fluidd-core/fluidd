@@ -25,7 +25,7 @@ const Filters = {
    * Formats a date in string format into a human readable
    * datetime.
    */
-  formatFileDateTime: (datetime: string) => {
+  formatFileDateTime: (datetime: number) => {
     const date = _Vue.$dayjs(datetime)
     if (date.isToday()) {
       return date.fromNow()
@@ -146,7 +146,7 @@ declare module 'vue/types/vue' {
     camelCase(string: string): string;
     startCase(string: string): string;
     capitalize(string: string): string;
-    formatFileDateTime(datetime: string): string;
+    formatFileDateTime(datetime: number): string;
     getReadableFileSizeString(fileSizeInBytes: number): string;
     getReadableLengthString(lengthInMm: number): string;
     /* eslint-disable @typescript-eslint/no-explicit-any */
