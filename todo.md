@@ -1,6 +1,10 @@
 # TODO [fluidd]
 
 ## Next Up
+- fix button layouts in titles
+- add mechanism to contract / expand all panels on dash
+- add file thumbs to file list, potentiall move to its own nav item
+- add background image to header or sidebar, depending what we do
 - temperature presets
 - allow contraction and expansion of dashboard panels?
 
