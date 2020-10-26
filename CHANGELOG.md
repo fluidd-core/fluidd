@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.8](https://github.com/cadriel/fluidd/compare/v0.0.7...v0.0.8) (2020-10-26)
+
+
+### Features
+
+* allow toggle for temp chart ([121e36c](https://github.com/cadriel/fluidd/commit/121e36c8a64c98ed3f6900c807c204b445ae2973))
+* animate chart show / hide transition ([5dee489](https://github.com/cadriel/fluidd/commit/5dee4896d393cf88625bba3cad0fd6ccdf1ecf17))
+* display printer progress and instance in doc title ([18e89a2](https://github.com/cadriel/fluidd/commit/18e89a2cf1b0ae7e815d0f40183bacaec984d7a0))
+* moonraker power plugin support ([be67ba0](https://github.com/cadriel/fluidd/commit/be67ba013e70ef05add40447f09e2c8a0c3cd078))
+* timestamps in console ([20793b1](https://github.com/cadriel/fluidd/commit/20793b12cde060c032ff67c1a745563ff0e10733))
+
+
+### Bug Fixes
+
+* broken image for thumbs if they don't exist ([94602e5](https://github.com/cadriel/fluidd/commit/94602e59c75886585646442cd9bafb67227a5692))
+* console now fills space after host reboot ([c0a43f7](https://github.com/cadriel/fluidd/commit/c0a43f712315b97908a9a872d8b359208c0b4d28))
+* previous print thumb shouldn't on next print if there's no thumb ([eeeb7d6](https://github.com/cadriel/fluidd/commit/eeeb7d6124c676618e1628e2670bac7526591a55))
+* updates to reflect moonraker changes to file modified ([d71712f](https://github.com/cadriel/fluidd/commit/d71712f4103f2e79ff76d4cbbbc2d940b9732525))
+* z_tilt_adjust ([0a020b1](https://github.com/cadriel/fluidd/commit/0a020b16dba0dce5379db53ebcfd372deda9b2b3))
+
 ### [0.0.7](https://github.com/cadriel/fluidd/compare/v0.0.6...v0.0.7) (2020-10-20)
 
 
