@@ -13,7 +13,6 @@ export interface LocalConfig {
   cameraVisible: boolean;
   chartVisible: boolean;
   limitsVisible: boolean;
-  darkMode: boolean;
 }
 
 export interface SaveLocalConfig {
@@ -28,6 +27,7 @@ export interface FileConfig {
 
 export interface GeneralConfig {
   instanceName: string;
+  darkMode: boolean;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
   defaultToolheadMoveLength: string;

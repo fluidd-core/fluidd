@@ -9,7 +9,6 @@ export default new Vuetify({
     iconfont: 'mdiSvg'
   },
   theme: {
-    dark: true, // default.
     themes: {
       dark: {
         primary: colors.blue.base,

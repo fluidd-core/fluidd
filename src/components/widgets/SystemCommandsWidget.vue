@@ -12,22 +12,6 @@
     <v-card color="secondary">
       <v-list dense color="secondary">
         <v-list-item>
-          <v-list-item-action>
-            <v-switch
-              @click.native.stop
-              v-model="darkmode"
-              hide-details
-              class="mr-5 d-none d-sm-block"
-            ></v-switch>
-          </v-list-item-action>
-          <v-list-item-title>Enable Dark Mode</v-list-item-title>
-        </v-list-item>
-      </v-list>
-
-      <v-divider></v-divider>
-
-      <v-list dense color="secondary">
-        <v-list-item>
           <v-btn block color="warning" :disabled="printerBusy" @click="restartKlippy" class="me-2 mb-2">Restart</v-btn>
         </v-list-item>
         <v-list-item>
@@ -82,15 +66,6 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
 
   confirmShutdownDialog = {
     open: false
-  }
-
-  get darkmode () {
-    return this.$store.state.config.localConfig.darkMode
-  }
-
-  set darkmode (val: boolean) {
-    this.$vuetify.theme.dark = val
-    this.$store.dispatch('config/saveLocalStorage', { darkMode: val })
   }
 
   hostReboot (val: boolean) {

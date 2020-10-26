@@ -67,6 +67,11 @@ promise
       .then((fileConfig) => {
         // Init the store. This should include any GUI settings we've loaded from moonraker.
         return store.dispatch('init', fileConfig).then(() => {
+          // Set vuetify to the correct initial theme.
+          if (store.state.config && store.state.config.fileConfig.general) {
+            vuetify.framework.theme.dark = store.state.config.fileConfig.general.darkMode
+          }
+
           // Init the socket plugin
           Vue.use(SocketPlugin, {
             url: apiConfig.socketUrl,

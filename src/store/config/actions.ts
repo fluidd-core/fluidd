@@ -26,7 +26,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
 
   /**
    * Saves keys to file storage. Assumes a root[key] structure
-   * under state.config.fileConfig
+   * under state.config
    */
   async saveGeneric ({ commit }, config: GenericSave) {
     commit('setUnsavedChanges', true)
@@ -62,10 +62,9 @@ export const actions: ActionTree<ConfigState, RootState> = {
       const formData = new FormData()
       const filename = Globals.SETTINGS_FILENAME
       const file = new File([JSON.stringify(state.fileConfig)], filename)
-      // let file = new File([JSON.stringify({ webcam: state.webcam, gui: state.gui })], 'gui.json');
       formData.append('file', file, filename)
       formData.append('root', 'config')
-      console.debug('uploading configuration...', filename, formData)
+      console.debug('uploading configuration...', filename, state.fileConfig)
       Vue.$http.post(
         rootState.config?.apiUrl + '/server/files/upload',
         formData,

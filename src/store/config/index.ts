@@ -15,12 +15,12 @@ export const state: ConfigState = {
   localConfig: {
     cameraVisible: false,
     chartVisible: true,
-    limitsVisible: false,
-    darkMode: true
+    limitsVisible: false
   },
   fileConfig: {
     general: {
       instanceName: Globals.APP_NAME,
+      darkMode: true,
       printTimeEstimationsType: 'file',
       defaultExtrudeLength: 10,
       defaultExtrudeSpeed: 5,

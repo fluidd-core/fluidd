@@ -68,8 +68,7 @@ export default class App extends Mixins(UtilsMixin) {
   }
 
   mounted () {
-    this.$vuetify.theme.dark = this.$store.state.config.localConfig.darkMode
-
+    this.$vuetify.theme.dark = this.$store.state.config.fileConfig.general.darkMode
     EventBus.$on('flashMessage', (payload: FlashMessageType) => {
       this.flashMessage.text = (payload && payload.text) || undefined
       this.flashMessage.type = (payload && payload.type) || undefined

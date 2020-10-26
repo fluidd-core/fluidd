@@ -13,6 +13,7 @@
           <v-col cols="12" sm="4" md="3">
             <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
             <general-settings-widget></general-settings-widget>
+            <theme-settings-widget></theme-settings-widget>
             <print-time-estimate-settings-widget></print-time-estimate-settings-widget>
           </v-col>
           <v-col cols="12" sm="4" md="3">
@@ -39,6 +40,7 @@ import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyD
 import CameraSettingsWidget from '@/components/widgets/settings/CameraSettingsWidget.vue'
 import ToolheadSettingsWidget from '@/components/widgets/settings/ToolheadSettingsWidget.vue'
 import PrintTimeEstimateSettingsWidget from '@/components/widgets/settings/PrintTimeEstimateSettingsWidget.vue'
+import ThemeSettingsWidget from '@/components/widgets/settings/ThemeSettingsWidget.vue'
 import { MetaInfo } from 'vue-meta'
 import EventBus from '@/eventBus'
 
@@ -50,7 +52,8 @@ import EventBus from '@/eventBus'
     KlippyDisconnectedWidget,
     CameraSettingsWidget,
     ToolheadSettingsWidget,
-    PrintTimeEstimateSettingsWidget
+    PrintTimeEstimateSettingsWidget,
+    ThemeSettingsWidget
   },
   metaInfo (this: Settings): MetaInfo {
     return {
