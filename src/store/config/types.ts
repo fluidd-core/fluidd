@@ -12,6 +12,7 @@ export interface LocalConfig {
   [key: string]: string | boolean | number;
   cameraVisible: boolean;
   chartVisible: boolean;
+  limitsVisible: boolean;
   darkMode: boolean;
 }
 

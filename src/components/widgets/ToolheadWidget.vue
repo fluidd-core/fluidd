@@ -8,11 +8,8 @@
       </v-col>
 
       <v-col class="pt-0">
-        <!-- Extruder Moves, Tooldhead Position-->
-        <!-- <v-container fluid class="pa-0"> -->
-          <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
-          <toolhead-position-widget></toolhead-position-widget>
-        <!-- </v-container> -->
+        <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
+        <toolhead-position-widget></toolhead-position-widget>
       </v-col>
     </v-row>
 
@@ -20,9 +17,10 @@
       <v-col class="pt-0">
         <!-- Part cooling -->
         <fans-widget></fans-widget>
+
         <!-- Speed and Flow Adjustments  -->
         <speed-and-flow-adjust-widget></speed-and-flow-adjust-widget>
-        <!-- <printer-limits-widget></printer-limits-widget> -->
+        <printer-limits-widget></printer-limits-widget>
       </v-col>
     </v-row>
   </v-container>
