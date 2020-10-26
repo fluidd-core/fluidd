@@ -38,6 +38,9 @@ export default new Vuex.Store<RootState>({
       const initLocal = dispatch('config/initLocal')
       const initFile = dispatch('config/initFile', payload)
       return Promise.all([initLocal, initFile])
+    },
+    void () {
+      console.debug('void action')
     }
   }
 })

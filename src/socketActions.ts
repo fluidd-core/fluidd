@@ -20,13 +20,17 @@ export const SocketActions = {
 
   async machineReboot () {
     Vue.$socket.emit(
-      'machine.reboot'
+      'machine.reboot', {
+        action: 'void'
+      }
     )
   },
 
   async machineShutdown () {
     Vue.$socket.emit(
-      'machine.shutdown'
+      'machine.shutdown', {
+        action: 'void'
+      }
     )
   },
 
@@ -89,6 +93,7 @@ export const SocketActions = {
   async printerPrintStart (path: string) {
     Vue.$socket.emit(
       'printer.print.start', {
+        action: 'void',
         params: {
           filename: path
         }
@@ -187,6 +192,7 @@ export const SocketActions = {
   async serverFilesMove (source: string, dest: string) {
     Vue.$socket.emit(
       'server.files.move', {
+        action: 'void',
         params: {
           source,
           dest
@@ -202,6 +208,7 @@ export const SocketActions = {
   async serverFilesPostDirectory (path: string) {
     Vue.$socket.emit(
       'server.files.post_directory', {
+        action: 'void',
         params: {
           path
         }
@@ -212,6 +219,7 @@ export const SocketActions = {
   async serverFilesDeleteFile (path: string) {
     Vue.$socket.emit(
       'server.files.delete_file', {
+        action: 'void',
         params: {
           path
         }
@@ -222,6 +230,7 @@ export const SocketActions = {
   async serverFilesDeleteDirectory (path: string) {
     Vue.$socket.emit(
       'server.files.delete_directory', {
+        action: 'void',
         params: {
           path,
           force: true
