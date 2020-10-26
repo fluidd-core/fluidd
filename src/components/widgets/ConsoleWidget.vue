@@ -1,7 +1,7 @@
 <template>
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
-      <v-layout v-for="(item, index) in consoleItems" :key="index">
+      <v-layout v-for="(item, index) in consoleItems" :key="index" class="console-item">
         <span class="grey--text text--darken-2 mr-3">{{ getTime(item.time) }} </span>
         <span :class="consoleClass(item)" v-html="item.message"></span>
       </v-layout>
@@ -69,7 +69,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     height: 100%;
   }
   .v-input {
-    flex-grow: 0;
+    flex: 0 0 auto;
   }
   .console {
     display: flex;
@@ -79,6 +79,9 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     font-family: monospace;
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
-    // flex: 1 0 auto;
+    flex: 1 0 0;
+  }
+  .console-item {
+    flex: 0 0 auto;
   }
 </style>
