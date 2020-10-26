@@ -14,7 +14,7 @@
         <v-icon left>{{ icons.power }}</v-icon>
         Power
       </v-tab>
-      <v-tab :key="'jobs'">
+      <v-tab :key="'jobs'" v-if="klippyConnected">
         <v-icon left>{{ icons.files }}</v-icon>
         Jobs
       </v-tab>
@@ -32,7 +32,7 @@
       <v-tab-item :key="'power'" class="tertiary rounded" v-if="gpioPowerPluginEnabled">
         <power-control-widget></power-control-widget>
       </v-tab-item>
-      <v-tab-item :key="'jobs'" class="tertiary rounded max-height">
+      <v-tab-item :key="'jobs'" class="tertiary rounded max-height" v-if="klippyConnected">
         <file-system-widget
           root="gcodes"
           accept=".gcode"

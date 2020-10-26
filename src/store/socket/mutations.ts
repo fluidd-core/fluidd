@@ -10,8 +10,13 @@ export const mutations: MutationTree<SocketState> = {
     const newState = getDefaultState()
     Object.keys(newState).forEach((key: string) => {
       // Some properties we may not want to reset.
+      // Macros and plugins we don't clear in order to
+      // ensure a user can still turn off / on a printer
+      // for example even when klippy may be disconnected.
       if (
-        key !== 'open' // don't reset socket state
+        key !== 'open' && // don't reset socket state
+        key !== 'macros' && // dont clear macros
+        key !== 'plugins' // dont clear plugins
       ) {
         Vue.set(state, key, newState[key])
       }
