@@ -1,7 +1,7 @@
 
 <template>
   <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>{{ icons.cogs }}</v-icon> Themes</v-card-title>
+    <v-card-title class="quaternary font-weight-light"><v-icon left>$cogs</v-icon> Themes</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-select

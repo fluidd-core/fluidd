@@ -16,7 +16,7 @@
           <div class="mb-1 grey--text text--lighten-1" v-if="printTimeEstimationsType !== 'totals'">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2">{{ icons.timer }}</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="grey darken-2">$timer</v-icon>
               </template>
               <span>estimated time left</span>
             </v-tooltip>
@@ -25,7 +25,7 @@
           <div class="mb-1 grey--text text--lighten-1">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">{{ icons.clock }}</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">$clock</v-icon>
               </template>
               {{ (printTimeEstimationsType !== 'totals') ? 'duration &amp; total' : 'duration' }}
             </v-tooltip>
@@ -35,14 +35,14 @@
           <div class="mb-1 grey--text" v-if="filamentEstimates !== ''">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">{{ icons.filamentEstimate }}</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">$filamentEstimate</v-icon>
               </template>
               used filament
             </v-tooltip>
             <span class="grey--text text--darken-2">{{ filamentEstimates }}</span>
           </div>
           <div class="d-flex grey--text text--darken-2">
-            <v-icon color="grey darken-2">{{ icons.fileDocument }}</v-icon>
+            <v-icon color="grey darken-2">$fileDocument</v-icon>
             <div class="filename ml-1" v-if="filename">gcodes/{{ filename }}</div>
           </div>
       </v-col>

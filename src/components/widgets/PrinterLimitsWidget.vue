@@ -2,7 +2,7 @@
   <div>
     <v-btn block text @click="limitsVisible = !limitsVisible" class="mb-2">
       {{ (limitsVisible) ? 'Hide' : 'Show' }} machine limits
-      <v-icon>{{ (limitsVisible) ? icons.chevronUp : icons.chevronDown }}</v-icon>
+      <v-icon>{{ (limitsVisible) ? '$chevronUp' : '$chevronDown' }}</v-icon>
     </v-btn>
     <v-expand-transition>
       <!-- Speed and Flow Adjust -->

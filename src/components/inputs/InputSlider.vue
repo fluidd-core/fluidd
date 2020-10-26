@@ -31,7 +31,7 @@
         small
         color="secondary">
         <v-icon color="grey lighten-2">
-          {{ icons.minus }}
+          $minus
         </v-icon>
       </v-btn>
     </template>
@@ -45,7 +45,7 @@
         small
         color="secondary">
         <v-icon color="grey lighten-2">
-          {{ icons.plus }}
+          $plus
         </v-icon>
       </v-btn>
     </template>

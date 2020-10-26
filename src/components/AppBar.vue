@@ -3,22 +3,22 @@
     app
     clipped-left
   >
-    <v-icon large color="#1970b5">{{ icons.printer3dNozzle }}</v-icon>
+    <v-icon large color="#1970b5">$printer3dNozzle</v-icon>
     <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
       {{ instanceName }}
     </v-toolbar-title>
     <v-spacer />
     <v-toolbar-items>
       <v-btn text to="/">
-        <v-icon small class="mr-md-1">{{ icons.home }}</v-icon>
+        <v-icon small class="mr-md-1">$home</v-icon>
         <span class="d-none d-md-inline">Dashboard</span>
       </v-btn>
       <v-btn text to="/configuration">
-        <v-icon small class="mr-md-1">{{ icons.tune }}</v-icon>
+        <v-icon small class="mr-md-1">$tune</v-icon>
         <span class="d-none d-md-inline">Configuration</span>
       </v-btn>
       <v-btn text to="/settings">
-        <v-icon small class="mr-md-1">{{ icons.cog }}</v-icon>
+        <v-icon small class="mr-md-1">$cog</v-icon>
         <span class="d-none d-md-inline">Settings</span>
       </v-btn>
       <v-tooltip bottom v-if="socketConnected">
@@ -30,7 +30,7 @@
             @click="emergencyStop()"
             v-bind="attrs"
             v-on="on">
-            <v-icon>{{ icons.estop }}</v-icon>
+            <v-icon>$estop</v-icon>
           </v-btn>
         </template>
         Emergency Stop

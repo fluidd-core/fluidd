@@ -7,19 +7,19 @@
       background-color="quaternary"
     >
       <v-tab :key="'macros'">
-        <v-icon left>{{ icons.fileCode }}</v-icon>
+        <v-icon left>$fileCode</v-icon>
         Macros
       </v-tab>
       <v-tab :key="'power'" v-if="gpioPowerPluginEnabled">
-        <v-icon left>{{ icons.power }}</v-icon>
+        <v-icon left>$power</v-icon>
         Power
       </v-tab>
       <v-tab :key="'jobs'" v-if="klippyConnected">
-        <v-icon left>{{ icons.files }}</v-icon>
+        <v-icon left>$files</v-icon>
         Jobs
       </v-tab>
       <v-tab :key="'console'">
-        <v-icon left>{{ icons.console }}</v-icon>
+        <v-icon left>$console</v-icon>
         Console
       </v-tab>
     </v-tabs>

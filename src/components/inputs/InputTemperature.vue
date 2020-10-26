@@ -21,7 +21,7 @@
         class="pa-0"
         :color="(value === newValue) ? 'secondary' : 'primary'"
         @click="emitChange(newValue)">
-        <v-icon small>{{ icons.check }}</v-icon>
+        <v-icon small>$check</v-icon>
       </v-btn>
     </template>
   </v-text-field>

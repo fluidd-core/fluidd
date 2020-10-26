@@ -4,7 +4,7 @@
       <v-col cols="12" class="pt-0">
         <v-card color="quaternary">
           <v-card-title color="quaternary">
-            <v-icon large left>{{ icons.tune }}</v-icon>
+            <v-icon large left>$tune</v-icon>
             <span class="font-weight-light">Printer Configuration</span>
           </v-card-title>
         </v-card>

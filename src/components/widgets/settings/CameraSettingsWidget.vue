@@ -1,6 +1,6 @@
 <template>
   <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>{{ icons.camera }}</v-icon> Camera</v-card-title>
+    <v-card-title class="quaternary font-weight-light"><v-icon left>$camera</v-icon> Camera</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-switch

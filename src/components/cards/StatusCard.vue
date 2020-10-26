@@ -3,7 +3,7 @@
     <v-card-title class="quaternary py-3">
 
       <v-col cols="12" lg="auto" class="pa-0">
-        <v-icon left>{{ icons.printer3d }}</v-icon>
+        <v-icon left>$printer3d</v-icon>
         <span class="font-weight-light">
           {{ printerState }}
           <span class="font-weight-light text-subtitle-2 ml-4">{{ printerMessage }}</span>
@@ -16,7 +16,7 @@
           v-if="cameraEnabled"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
-          <v-icon small class="mr-1">{{ icons.camera }}</v-icon>
+          <v-icon small class="mr-1">$camera</v-icon>
           <span>Camera</span>
         </v-btn>
 
@@ -26,7 +26,7 @@
           v-if="!printerPaused && printerPrinting"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
-          <v-icon small>{{ icons.pause }}</v-icon>
+          <v-icon small>$pause</v-icon>
           <span>Pause</span>
         </v-btn>
 
@@ -36,7 +36,7 @@
           v-if="printerPrinting || printerPaused"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
-          <v-icon small>{{ icons.cancel }}</v-icon>
+          <v-icon small>$cancel</v-icon>
           <span>Cancel</span>
         </v-btn>
 
@@ -46,7 +46,7 @@
           v-if="printerPaused"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
-          <v-icon small class="mr-1">{{ icons.resume }}</v-icon>
+          <v-icon small class="mr-1">$resume</v-icon>
           <span>Resume</span>
         </v-btn>
 
@@ -55,7 +55,7 @@
           v-if="!printerPrinting && !printerPaused && filename"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
-          <v-icon small class="mr-1">{{ icons.reprint }}</v-icon>
+          <v-icon small class="mr-1">$reprint</v-icon>
           <span>Reprint</span>
         </v-btn>
       </v-col>

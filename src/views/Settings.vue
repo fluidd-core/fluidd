@@ -4,9 +4,9 @@
       <v-col cols="12" class="pt-0">
         <v-card color="quaternary">
           <v-card-title class="quaternary">
-            <v-icon large left>{{ icons.cog }}</v-icon>
+            <v-icon large left>$cog</v-icon>
             <span class="font-weight-light">UI Settings</span>
-            <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">{{ icons.save }}</v-icon> Save Changes</v-btn>
+            <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">$save</v-icon> Save Changes</v-btn>
           </v-card-title>
         </v-card>
         <v-row>

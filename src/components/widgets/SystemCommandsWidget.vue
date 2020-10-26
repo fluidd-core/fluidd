@@ -5,7 +5,7 @@
         v-bind="attrs"
         v-on="on"
         text>
-        <v-icon>{{ icons.menu }}</v-icon>
+        <v-icon>$menu</v-icon>
       </v-btn>
     </template>
 

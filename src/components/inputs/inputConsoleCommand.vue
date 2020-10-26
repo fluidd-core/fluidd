@@ -9,11 +9,12 @@
     dense
     hide-details
     placeholder="Send gcode"
-    append-outer-icon="mdi-send"
-    @click:append-outer="emitSend(newValue)"
     @keyup.enter="emitSend(newValue)"
     @keyup.up="historyUp()"
     @keyup.down="historyDown()">
+    <template v-slot:append-outer>
+      <v-icon @click="emitSend(newValue)">$send</v-icon>
+    </template>
   </v-text-field>
   <!-- {{ originalHistory}}<br />
   {{ history }} -->

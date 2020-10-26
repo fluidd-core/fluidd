@@ -30,13 +30,15 @@
             <v-text-field
               v-model="search"
               :max-width="130"
-              append-icon="mdi-magnify"
               label="Search"
               solo
               flat
               dense
               single-line
               hide-details>
+              <template v-slot:append>
+                <v-icon>$magnify</v-icon>
+              </template>
             </v-text-field>
           </v-col>
           <v-btn
@@ -45,11 +47,11 @@
             color="secondary"
             class="mr-2"
             @click="createDirectoryDialog()">
-            <v-icon small>{{ icons.folderAdd }}</v-icon>
+            <v-icon small>$folderAdd</v-icon>
           </v-btn>
           <btn-file-upload
             v-if="!readonly"
-            icon="mdi-upload"
+            icon="$folderUp"
             color="secondary"
             class="mr-2"
             :accept="accept"
@@ -59,7 +61,7 @@
             small
             color="secondary"
             @click="refreshPath(currentPath)">
-            <v-icon small>{{ icons.refresh }}</v-icon>
+            <v-icon small>$refresh</v-icon>
           </v-btn>
         </v-toolbar>
         <dialog-input
@@ -105,7 +107,7 @@
               small
               :color="(item.type === 'file') ? 'grey' : 'primary'"
               class="mr-1">
-              {{ (item.type === 'file' ? icons.file : item.name === '..' ? icons.folderUp : icons.folder) }}
+              {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
             </v-icon>
           </td>
           <td class="grey--text">
@@ -122,7 +124,7 @@
               v-if="item.type === 'file'"
               @click="expand(!isExpanded)">
               <v-icon small>
-                {{ (isExpanded) ? icons.chevronUp : icons.chevronDown }}
+                {{ (isExpanded) ? '$chevronUp' : '$chevronDown' }}
               </v-icon>
             </v-btn>
           </td>
@@ -142,37 +144,37 @@
         color="secondary">
         <v-list-item link @click="printItem(contextMenu.item)" v-if="contextMenu.item.type !== 'directory' && contextMenu.item.extension === 'gcode'">
           <v-list-item-icon>
-            <v-icon class="white--text">{{ icons.printer }}</v-icon>
+            <v-icon class="white--text">$printer</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="white--text">Print</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="editItem(contextMenu.item)" v-if="!readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
           <v-list-item-icon>
-            <v-icon class="white--text">{{ icons.pencil }}</v-icon>
+            <v-icon class="white--text">$pencil</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="white--text">Edit</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="viewItem(contextMenu.item)" v-if="readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
           <v-list-item-icon>
-            <v-icon class="white--text">{{ icons.magnify }}</v-icon>
+            <v-icon class="white--text">$magnify</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="white--text">View</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="downloadFile(contextMenu.item.name)" v-if="contextMenu.item.type !== 'directory'">
           <v-list-item-icon>
-            <v-icon class="white--text">{{ icons.download }}</v-icon>
+            <v-icon class="white--text">$download</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="white--text">Download</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="renameDialog(contextMenu.item)" v-if="!readonly">
           <v-list-item-icon>
-            <v-icon class="white--text">{{ icons.rename }}</v-icon>
+            <v-icon class="white--text">$rename</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="white--text">Rename</v-list-item-title>
         </v-list-item>
         <v-list-item link @click="removeItem(contextMenu.item)" v-if="!readonly">
           <v-list-item-icon>
-            <v-icon class="white--text">{{ icons.delete }}</v-icon>
+            <v-icon class="white--text">$delete</v-icon>
           </v-list-item-icon>
           <v-list-item-title class="white--text">Remove</v-list-item-title>
         </v-list-item>

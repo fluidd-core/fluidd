@@ -3,7 +3,7 @@
     <v-card-title class="quaternary rounded-t" v-if="showTitle">
       <v-row>
         <v-col cols="7" class="px-4 py-0">
-          <v-icon left>{{ icons.files }}</v-icon>
+          <v-icon left>$files</v-icon>
           <span class="font-weight-light">{{ panelTitle }}</span>
         </v-col>
         <v-col cols="5" class="px-4 py-0" v-if="isMultiRoot">

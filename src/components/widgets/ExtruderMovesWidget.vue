@@ -10,7 +10,7 @@
             color="secondary"
             class="mb-4">
             Retract
-            <v-icon>{{ icons.chevronUp }}</v-icon>
+            <v-icon>$chevronUp</v-icon>
           </v-btn>
           <v-btn
             @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
@@ -18,7 +18,7 @@
             block
             color="secondary">
             Extrude
-            <v-icon>{{ icons.chevronDown }}</v-icon>
+            <v-icon>$chevronDown</v-icon>
           </v-btn>
         </v-layout>
       </v-col>

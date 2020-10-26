@@ -16,7 +16,7 @@
                 color="secondary"
                 small
                 class="pa-0">
-                <v-icon>{{ icons.chevronDown }}</v-icon>
+                <v-icon>chevronDown</v-icon>
               </v-btn>
               </template>
               <v-list
@@ -67,7 +67,7 @@
               color="grey darken-1"
               small
               v-if="item.target > 0">
-              {{ icons.fan }}
+              fan
             </v-icon>
             {{ (item.speed * 100).toFixed(0) }}%
           </small>

@@ -1,6 +1,6 @@
 <template>
   <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>{{ icons.printer3dNozzle }}</v-icon> Toolhead</v-card-title>
+    <v-card-title class="quaternary font-weight-light"><v-icon left>$printer3dNozzle</v-icon> Toolhead</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-text-field

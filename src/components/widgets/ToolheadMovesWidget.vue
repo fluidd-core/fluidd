@@ -2,32 +2,32 @@
   <v-container>
     <v-row>
       <v-col class="pa-2 pt-0" offset="3">
-        <v-btn @click="sendMoveGcode('Y', toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0" color="secondary"><v-icon>{{ icons.up }}</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Y', toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0" color="secondary"><v-icon>$up</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2 pt-0" offset="3">
-        <v-btn @click="sendMoveGcode('Z', toolheadMoveLength)" :disabled="hasWaits || !zHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.up }}</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Z', toolheadMoveLength)" :disabled="hasWaits || !zHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>$up</v-icon></v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pa-2">
-        <v-btn @click="sendMoveGcode('X', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.left }}</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('X', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>$left</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2">
-        <v-btn @click="sendGcode('G28 X Y', waits.onHomeXY)" :loading="hasWait(waits.onHomeXY)" :disabled="hasWaits || !klippyConnected" :min-width="40" class="pa-0" :color="(!xyHomed) ? 'warning' : 'secondary'"><v-icon>{{ icons.home }}</v-icon></v-btn>
+        <v-btn @click="sendGcode('G28 X Y', waits.onHomeXY)" :loading="hasWait(waits.onHomeXY)" :disabled="hasWaits || !klippyConnected" :min-width="40" class="pa-0" :color="(!xyHomed) ? 'warning' : 'secondary'"><v-icon>$home</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2">
-        <v-btn @click="sendMoveGcode('X', toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.right }}</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('X', toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>$right</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2">
-        <v-btn @click="sendGcode('G28 Z', waits.onHomeZ)" :loading="hasWait(waits.onHomeZ)" :disabled="hasWaits || !klippyConnected" :min-width="40" class="pa-0" :color="(!zHomed) ? 'warning' : 'secondary'"><v-icon>{{ icons.home }}</v-icon></v-btn>
+        <v-btn @click="sendGcode('G28 Z', waits.onHomeZ)" :loading="hasWait(waits.onHomeZ)" :disabled="hasWaits || !klippyConnected" :min-width="40" class="pa-0" :color="(!zHomed) ? 'warning' : 'secondary'"><v-icon>$home</v-icon></v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col class="pa-2" offset="3">
-        <v-btn @click="sendMoveGcode('Y', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.down }}</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Y', '-' + toolheadMoveLength)" :disabled="hasWaits || !xyHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>$down</v-icon></v-btn>
       </v-col>
       <v-col class="pa-2" offset="3">
-        <v-btn @click="sendMoveGcode('Z', '-' + toolheadMoveLength)" :disabled="hasWaits || !zHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>{{ icons.down }}</v-icon></v-btn>
+        <v-btn @click="sendMoveGcode('Z', '-' + toolheadMoveLength)" :disabled="hasWaits || !zHomed || !klippyConnected" :min-width="40" class="pa-0"  color="secondary"><v-icon>$down</v-icon></v-btn>
       </v-col>
     </v-row>
     <v-row>

@@ -3,7 +3,7 @@
     <v-card-title class="quaternary py-3">
 
       <v-col cols="12" lg="auto" class="pa-0">
-        <v-icon left>{{ icons.fire }}</v-icon>
+        <v-icon left>$fire</v-icon>
         <span class="font-weight-light">Temperatures</span>
       </v-col>
 
@@ -12,7 +12,7 @@
           @click="chartVisible = !chartVisible"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
-          <v-icon small class="mr-1">{{ icons.chart }}</v-icon>
+          <v-icon small class="mr-1">$chart</v-icon>
           <span>Chart</span>
         </v-btn>
       </v-col>

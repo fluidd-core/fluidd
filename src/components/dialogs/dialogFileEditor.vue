@@ -19,7 +19,7 @@
           dark
           @click="emitClose()"
         >
-          <v-icon>{{ icons.close }}</v-icon>
+          <v-icon>$close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ filename }}</v-toolbar-title>
         <v-spacer></v-spacer>

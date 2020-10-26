@@ -1,14 +1,14 @@
 <template>
   <v-card color="tertiary" class="mb-4">
     <v-card-title class="quaternary font-weight-light">
-      <v-icon left>{{ icons.alert }}</v-icon>Klippy: {{ klippyState }}
+      <v-icon left>$alert</v-icon>Klippy: {{ klippyState }}
     </v-card-title>
     <v-divider></v-divider>
     <v-card-text>
       <v-row>
         <v-col cols="auto">
-          <v-btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>{{ icons.download }}</v-icon> Klippy.log</v-btn>
-          <v-btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>{{ icons.download }}</v-icon>Moonraker.log</v-btn>
+          <v-btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon> Klippy.log</v-btn>
+          <v-btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</v-btn>
         </v-col>
         <v-col cols="auto">
           <v-btn block color="warning" @click="restartKlippy" class="me-2 mb-2">Restart</v-btn>

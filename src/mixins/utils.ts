@@ -10,10 +10,6 @@ export default class UtilsMixin extends Vue {
     return this.$store.state.config.apiUrl
   }
 
-  get icons () {
-    return Icons
-  }
-
   // Indicates connection to the socket.
   get socketConnected () {
     return this.$store.getters['socket/getConnectionState']
