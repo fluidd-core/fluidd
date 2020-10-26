@@ -4,6 +4,15 @@
     <v-card-subtitle class="quaternary">General settings.</v-card-subtitle>
     <v-divider></v-divider>
     <v-card-text>
+      <p>Define the name of your printer. Shows in the browser title and app header.</p>
+      <v-text-field
+        filled
+        label="Printer Name"
+        v-model="instanceName"
+      ></v-text-field>
+    </v-card-text>
+    <v-divider></v-divider>
+    <v-card-text>
       <p>
         Print times can be estimated based on the slicer data, filament used or klipper. <br />
         Alternatively you can choose to just present the current print time and progress. <br />
@@ -65,6 +74,14 @@ import UtilsMixin from '@/mixins/utils'
   components: {}
 })
 export default class GeneralSettingsWidget extends Mixins(UtilsMixin) {
+  get instanceName () {
+    return this.$store.state.config.fileConfig.general.instanceName
+  }
+
+  set instanceName (value: string) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.instanceName', value })
+  }
+
   get cameraUrl () {
     return this.$store.state.config.fileConfig.camera.url
   }

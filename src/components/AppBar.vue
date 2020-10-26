@@ -5,7 +5,7 @@
   >
     <v-icon large color="#1970b5">{{ icons.printer3dNozzle }}</v-icon>
     <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
-      Fluidd
+      {{ instanceName }}
     </v-toolbar-title>
     <v-spacer />
     <v-toolbar-items>
@@ -52,6 +52,10 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
   }
 })
 export default class AppBar extends Mixins(UtilsMixin) {
+  get instanceName () {
+    return this.$store.state.config.fileConfig.general.instanceName
+  }
+
   get currentFile () {
     return this.$store.state.socket.printer.print_stats.filename
   }
