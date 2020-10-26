@@ -21,9 +21,12 @@
 
     <temperature-targets-widget></temperature-targets-widget>
 
-    <v-card-text class="chart-container" v-if="chartVisible">
-      <temperature-chart-widget v-if="chartReady && klippyConnected" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
-    </v-card-text>
+    <v-expand-transition>
+      <v-card-text class="chart-container" v-if="chartVisible">
+          <temperature-chart-widget v-if="chartReady && klippyConnected" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
+      </v-card-text>
+    </v-expand-transition>
+
   </v-card>
 </template>
 
