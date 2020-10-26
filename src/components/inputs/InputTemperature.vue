@@ -10,6 +10,7 @@
     @input="updateValue"
     @update:error="onError"
     @keyup.enter="emitChange(newValue)"
+    @focus="$event.target.select()"
     label="target"
     type="number"
     suffix="°C"
