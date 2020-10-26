@@ -29,6 +29,7 @@
         <v-text-field
           v-model="extrudeLength"
           :disabled="!klippyConnected"
+          @focus="$event.target.select()"
           solo
           dense
           hide-details
@@ -40,6 +41,7 @@
         <v-text-field
           v-model="extrudeSpeed"
           :disabled="!klippyConnected"
+          @focus="$event.target.select()"
           solo
           dense
           hide-details
