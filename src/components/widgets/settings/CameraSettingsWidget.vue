@@ -3,6 +3,10 @@
     <v-card-title class="quaternary font-weight-light"><v-icon left>{{ icons.camera }}</v-icon> Camera</v-card-title>
     <v-divider></v-divider>
     <v-card-text>
+      <v-switch
+        label="Enabled"
+        v-model="cameraEnabled">
+      </v-switch>
       <v-text-field
         filled
         label="Camera URL"
@@ -20,6 +24,14 @@ import UtilsMixin from '@/mixins/utils'
   components: {}
 })
 export default class CameraSettingsWidget extends Mixins(UtilsMixin) {
+  get cameraEnabled () {
+    return this.$store.state.config.fileConfig.camera.enabled
+  }
+
+  set cameraEnabled (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.enabled', value })
+  }
+
   get cameraUrl () {
     return this.$store.state.config.fileConfig.camera.url
   }

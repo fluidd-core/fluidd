@@ -13,6 +13,7 @@
       <v-col class="pa-0 d-inline-flex justify-start justify-md-end flex-wrap">
         <v-btn
           @click="cameraVisible = !cameraVisible"
+          v-if="cameraEnabled"
           color="secondary"
           class="ml-0 ml-md-2 mr-2 mr-md-0 my-1">
           <v-icon small class="mr-1">{{ icons.camera }}</v-icon>
@@ -91,6 +92,10 @@ export default class StatusCard extends Mixins(UtilsMixin) {
 
   confirmDialog = {
     open: false
+  }
+
+  get cameraEnabled (): boolean {
+    return this.$store.state.config.fileConfig.camera.enabled
   }
 
   get cameraVisible (): boolean {

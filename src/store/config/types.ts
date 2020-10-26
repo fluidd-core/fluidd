@@ -35,6 +35,7 @@ export interface GeneralConfig {
 }
 
 export interface CameraConfig {
+  enabled: boolean;
   url: string;
   rotateX: boolean;
 }

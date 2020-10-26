@@ -27,6 +27,7 @@ export const state: ConfigState = {
       defaultToolheadMoveLength: '1.0'
     },
     camera: {
+      enabled: false,
       url: '/webcam/?action=stream',
       rotateX: false
     },
