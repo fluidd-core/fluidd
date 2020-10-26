@@ -10,12 +10,17 @@
           </v-card-title>
         </v-card>
         <v-row>
-          <v-col cols="12" sm="6">
+          <v-col cols="12" sm="4" md="3">
             <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
             <general-settings-widget></general-settings-widget>
+            <print-time-estimate-settings-widget></print-time-estimate-settings-widget>
+          </v-col>
+          <v-col cols="12" sm="4" md="3">
+            <camera-settings-widget></camera-settings-widget>
+            <toolhead-settings-widget></toolhead-settings-widget>
             <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
           </v-col>
-          <v-col cols="12" sm="6">
+          <v-col cols="12" sm="4" md="6">
             <macro-settings-widget></macro-settings-widget>
           </v-col>
         </v-row>
@@ -31,6 +36,9 @@ import MacroSettingsWidget from '@/components/widgets/settings/MacroSettingsWidg
 import GeneralSettingsWidget from '@/components/widgets/settings/GeneralSettingsWidget.vue'
 import TemperaturePresetsSettingsWidget from '@/components/widgets/settings/TemperaturePresetsSettingsWidget.vue'
 import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import CameraSettingsWidget from '@/components/widgets/settings/CameraSettingsWidget.vue'
+import ToolheadSettingsWidget from '@/components/widgets/settings/ToolheadSettingsWidget.vue'
+import PrintTimeEstimateSettingsWidget from '@/components/widgets/settings/PrintTimeEstimateSettingsWidget.vue'
 import { MetaInfo } from 'vue-meta'
 import EventBus from '@/eventBus'
 
@@ -39,7 +47,10 @@ import EventBus from '@/eventBus'
     MacroSettingsWidget,
     GeneralSettingsWidget,
     TemperaturePresetsSettingsWidget,
-    KlippyDisconnectedWidget
+    KlippyDisconnectedWidget,
+    CameraSettingsWidget,
+    ToolheadSettingsWidget,
+    PrintTimeEstimateSettingsWidget
   },
   metaInfo (this: Settings): MetaInfo {
     return {
