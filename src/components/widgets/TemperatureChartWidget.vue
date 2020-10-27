@@ -1,11 +1,11 @@
 <script lang="ts">
-import { Vue, Component, Prop, Mixins } from 'vue-property-decorator'
+import { Vue, Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import Chart from 'chart.js'
-import VueChart from 'vue-chartjs'
+import { Line, mixins } from 'vue-chartjs'
 import 'chartjs-plugin-colorschemes'
 
 @Component({})
-export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueChart.mixins.reactiveProp) {
+export default class TemperatureChartWidget extends Mixins(Line, mixins.reactiveProp) {
   @Prop({ required: true, default: {} })
   public chartData!: Chart.ChartData
 
@@ -19,6 +19,11 @@ export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueCha
   private chart!: Chart;
   private chartTimer = -1;
 
+  @Watch('chartData')
+  onChartDataChange () {
+    this.updateChart()
+  }
+
   mounted () {
     if (!this.chartOptions) {
       this.applyDefaultOptions()
@@ -29,7 +34,7 @@ export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueCha
     this.chart = this.$data._chart
 
     // Update chart
-    this.chartTimer = setInterval(this.updateChart, 1000)
+    // this.chartTimer = setInterval(this.updateChart, 1000)
   }
 
   private getXTicks () {
@@ -43,9 +48,6 @@ export default class TemperatureChartWidget extends Mixins(VueChart.Line, VueCha
 
   private updateChart () {
     const ticks = this.getXTicks()
-    // if (this.options && this.options.scales && this.options.scales.xAxes && this.options.scales.xAxes.length && this.options.scales.xAxes[0].ticks) {
-    // this.options.scales.xAxes[0].ticks.min = ticks.min
-    // this.options.scales.xAxes[0].ticks.max = ticks.max
     if (
       this.chart &&
       this.chart.config &&

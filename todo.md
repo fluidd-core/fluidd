@@ -1,12 +1,15 @@
 # TODO [fluidd]
 
 ## Next Up
-- fix button layouts in titles
-- add mechanism to contract / expand all panels on dash
-- add file thumbs to file list, potentiall move to its own nav item
-- add background image to header or sidebar, depending what we do
+- add camera flip in UI.
+- add buttons to home just x or y
+- add swap up / down for toolhead [railcore specific...]
+- add mechanism to contract / expand all panels on dash, and cleanup how we do this in a consistent way
+- add file thumbs to file list, potentially move to its own nav item
 - temperature presets
-- allow contraction and expansion of dashboard panels?
+- fix button layouts in titles
+- add background image to header or sidebar, depending what we do
+- machine limits (set velocity, accel, decel and square corner velocity)
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -26,7 +29,6 @@
   at the moment tho. Is this a problem?
 
 ## General Improvements
-- machine limits (set velocity, accel, decel and square corner velocity)
 - dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option
 - sqv, machine limits etc..

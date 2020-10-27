@@ -32,10 +32,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import TemperatureChartWidget from '@/components/widgets/TemperatureChartWidget.vue'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 import { ChartData, Chart } from '@/store/socket/types'
 import UtilsMixin from '@/mixins/utils'
+
+const TemperatureChartWidget = () => import(/* webpackChunkName: "tempchart", webpackPrefetch: true */ '@/components/widgets/TemperatureChartWidget.vue')
 
 @Component({
   components: {

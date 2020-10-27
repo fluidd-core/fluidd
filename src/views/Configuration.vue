@@ -38,12 +38,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import BedMeshWidget from '@/components/widgets/configuration/BedMeshWidget.vue'
 import EndStopsWidget from '@/components/widgets/configuration/EndStopsWidget.vue'
 import RunoutSensorWidget from '@/components/widgets/configuration/RunoutSensorWidget.vue'
 import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
 import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
 import { MetaInfo } from 'vue-meta'
+
+const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
 @Component({
   components: {

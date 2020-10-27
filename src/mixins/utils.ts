@@ -1,7 +1,7 @@
 import { SocketActions } from '@/socketActions'
 import Vue from 'vue'
 import Component from 'vue-class-component'
-import { Globals, Waits, Icons } from '@/globals'
+import { Globals, Waits } from '@/globals'
 import { AxiosResponse } from 'axios'
 
 @Component({})

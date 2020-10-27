@@ -156,11 +156,11 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { BedMesh } from '@/store/socket/types'
-import { Plotly } from 'vue-plotly'
 import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import { SaveMeshDialog } from '@/types/dialogs'
+import { Plotly } from 'vue-plotly'
 
 @Component({
   components: {
