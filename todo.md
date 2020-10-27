@@ -3,13 +3,12 @@
 ## Next Up
 - add camera flip in UI.
 - add buttons to home just x or y
-- add swap up / down for toolhead [railcore specific...]
 - add mechanism to contract / expand all panels on dash, and cleanup how we do this in a consistent way
-- add file thumbs to file list, potentially move to its own nav item
+- add swap up / down for toolhead [railcore specific...]
 - temperature presets
+- add file thumbs to file list, potentially move to its own nav item
 - fix button layouts in titles
 - add background image to header or sidebar, depending what we do
-- machine limits (set velocity, accel, decel and square corner velocity)
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data

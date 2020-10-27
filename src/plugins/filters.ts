@@ -26,7 +26,7 @@ const Filters = {
    * datetime.
    */
   formatFileDateTime: (datetime: number) => {
-    const date = _Vue.$dayjs(datetime)
+    const date = _Vue.$dayjs(datetime * 1000)
     if (date.isToday()) {
       return date.fromNow()
     } else {

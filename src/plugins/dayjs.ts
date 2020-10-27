@@ -35,6 +35,7 @@ export const DayJSPlugin = {
     // Globally set the locale to en, we'll use the en-chart locale specifically
     // for our chart labels.
     dayjs.locale('en')
+
     Vue.prototype.$dayjs = dayjs
     Vue.$dayjs = dayjs
   }
@@ -42,10 +43,14 @@ export const DayJSPlugin = {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $dayjs(date?: dayjs.ConfigType, option?: dayjs.OptionType, locale?: string): dayjs.Dayjs;
+    $dayjs (date?: dayjs.ConfigType): dayjs.Dayjs;
+    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, strict?: boolean): dayjs.Dayjs;
+    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean): dayjs.Dayjs;
   }
 
   interface VueConstructor {
-    $dayjs(date?: dayjs.ConfigType, option?: dayjs.OptionType, locale?: string): dayjs.Dayjs;
+    $dayjs (date?: dayjs.ConfigType): dayjs.Dayjs;
+    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, strict?: boolean): dayjs.Dayjs;
+    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean): dayjs.Dayjs;
   }
 }
