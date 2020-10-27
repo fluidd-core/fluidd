@@ -29,7 +29,8 @@ export const state: ConfigState = {
     camera: {
       enabled: false,
       url: '/webcam/?action=stream',
-      rotateX: false
+      flipX: false,
+      flipY: false
     },
     dashboard: {
       hiddenMacros: []

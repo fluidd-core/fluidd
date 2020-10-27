@@ -5,12 +5,24 @@
     <v-card-text>
       <v-switch
         label="Enabled"
-        v-model="cameraEnabled">
+        hide-details
+        v-model="enabled">
+      </v-switch>
+      <v-switch
+        label="Flip horizontally"
+        hide-details
+        v-model="flipX">
+      </v-switch>
+      <v-switch
+        label="Flip vertically"
+        hide-details
+        v-model="flipY">
       </v-switch>
       <v-text-field
+        class="mt-5"
         filled
         label="Camera URL"
-        v-model="cameraUrl"
+        v-model="url"
       ></v-text-field>
     </v-card-text>
   </v-card>
@@ -24,20 +36,36 @@ import UtilsMixin from '@/mixins/utils'
   components: {}
 })
 export default class CameraSettingsWidget extends Mixins(UtilsMixin) {
-  get cameraEnabled () {
+  get enabled () {
     return this.$store.state.config.fileConfig.camera.enabled
   }
 
-  set cameraEnabled (value: boolean) {
+  set enabled (value: boolean) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.enabled', value })
   }
 
-  get cameraUrl () {
+  get url () {
     return this.$store.state.config.fileConfig.camera.url
   }
 
-  set cameraUrl (value: string) {
+  set url (value: string) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.url', value })
+  }
+
+  get flipX () {
+    return this.$store.state.config.fileConfig.camera.flipX
+  }
+
+  set flipX (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.flipX', value })
+  }
+
+  get flipY () {
+    return this.$store.state.config.fileConfig.camera.flipY
+  }
+
+  set flipY (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.flipY', value })
   }
 }
 </script>

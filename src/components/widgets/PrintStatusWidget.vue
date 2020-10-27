@@ -56,7 +56,7 @@
     <v-expand-transition>
       <v-row v-show="cameraVisible">
         <v-col>
-        <img :src="cameraUrl" class="webcam" />
+        <img :src="cameraUrl" class="webcam" :style="cameraTransforms" />
         </v-col>
       </v-row>
     </v-expand-transition>
@@ -79,6 +79,14 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
 
   get cameraVisible (): boolean {
     return this.$store.state.config.localConfig.cameraVisible
+  }
+
+  get cameraTransforms () {
+    const config = this.$store.state.config.fileConfig.camera
+    let transforms = ''
+    transforms += (config && config.flipX) ? ' scaleX(-1)' : ''
+    transforms += (config && config.flipY) ? ' scaleY(-1)' : ''
+    return (transforms.trimLeft().length) ? { transform: transforms.trimLeft() } : {}
   }
 
   get filename () {
