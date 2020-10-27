@@ -65,7 +65,7 @@
 
     <dialog-confirm
       v-model="confirmDialog.open"
-      @confirm="cancelPrint()">
+      @confirm="cancelPrint">
       <p>Are you sure? This will cancel your print.</p>
     </dialog-confirm>
 
