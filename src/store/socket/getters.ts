@@ -130,10 +130,22 @@ export const getters: GetterTree<SocketState, RootState> = {
    * Returns an object representing the time estimates of a current print.
    */
   getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament' | 'totals'): TimeEstimates => {
-    const progress = state.printer.display_status.progress || 0
-    const duration = state.printer.print_stats.print_duration || 0
-    const usedFilament = state.printer.print_stats.filament_used || 0
-    const estimatedFilament = state.printer.current_file.filament_total || 0
+    const progress = (state.printer.display_status.progress && !isNaN(state.printer.display_status.progress))
+      ? state.printer.display_status.progress
+      : 0
+    // state.printer.print_stats.total_duration
+    const duration = (state.printer.print_stats.print_duration && !isNaN(state.printer.print_stats.print_duration))
+      ? state.printer.print_stats.print_duration
+      : 0
+
+    const usedFilament = (state.printer.print_stats.filament_used && !isNaN(state.printer.print_stats.filament_used))
+      ? state.printer.print_stats.filament_used
+      : 0
+
+    const estimatedFilament = (state.printer.current_file.filament_total && !isNaN(state.printer.current_file.filament_total))
+      ? state.printer.current_file.filament_total
+      : 0
+
     let timeLeft = 0
     let totalDuration = 0
 
@@ -169,7 +181,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       progress: (progress * 100).toFixed(),
       timeLeft: Vue.$filters.formatCounterTime(timeLeft),
       duration: Vue.$filters.formatCounterTime(duration),
-      totalDuration: Vue.$filters.formatCounterTime(totalDuration)
+      totalDuration: Vue.$filters.formatCounterTime(totalDuration) // estimated total duration
     }
     return o
   },
