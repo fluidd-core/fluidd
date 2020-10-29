@@ -1,5 +1,5 @@
 <template>
-  <v-row class="pt-0">
+  <v-row dense class="pt-0">
     <v-col class="d-flex flex-column pt-0" cols="auto">
       <v-btn
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
@@ -49,7 +49,7 @@ export default class ZHeightAdjustWidget extends Mixins(UtilsMixin) {
       this.$store.state.socket.printer.gcode_move.homing_origin.length >= 4
     ) {
       const origin = this.$store.state.socket.printer.gcode_move.homing_origin[2]
-      return origin.toFixed(2)
+      return origin.toFixed(3)
     } else {
       return null
     }
