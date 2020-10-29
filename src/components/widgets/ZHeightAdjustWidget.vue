@@ -1,38 +1,34 @@
 <template>
-  <v-container class="py-0">
-    <v-row>
-      <v-col class="pa-0" cols="auto">
-        <v-btn
-          @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
-          :min-width="40"
-          :loading="hasWait('ZAdjust')"
-          class="pa-0 mb-2"
-          color="secondary">
-          <v-icon>$upCollapse</v-icon>
-        </v-btn><br />
-        <v-btn
-          @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
-          :min-width="40"
-          :loading="hasWait('ZAdjust')"
-          class="pa-0"
-          color="secondary">
-          <v-icon>$downCollapse</v-icon>
-        </v-btn>
-      </v-col>
-      <v-col class="pa-0 px-3 flex-column justify-center d-flex">
-        <div class="grey--text text--darken-1">Offset Z</div>
-        <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col class="px-0 pb-0">
-        <v-btn-toggle mandatory dense v-model="moveDistance">
-          <v-btn :min-width="52" color="secondary" value="0.01">0.01</v-btn>
-          <v-btn :min-width="52" class="pa-0" color="secondary" value="0.05">0.05</v-btn>
-        </v-btn-toggle>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row class="pt-0">
+    <v-col class="d-flex flex-column pt-0" cols="auto">
+      <v-btn
+        @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
+        :min-width="80"
+        :loading="hasWait('ZAdjust')"
+        class="pa-0 mb-2"
+        color="secondary">
+        <v-icon small>$upCollapse</v-icon>
+      </v-btn>
+      <v-btn
+        @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
+        :min-width="80"
+        :loading="hasWait('ZAdjust')"
+        class="pa-0"
+        color="secondary">
+        <v-icon small>$downCollapse</v-icon>
+      </v-btn>
+    </v-col>
+    <v-col class="d-flex flex-column justify-center pt-0" cols="auto">
+      <div class="grey--text text--darken-1">Offset Z</div>
+      <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
+    </v-col>
+    <v-col class="d-flex flex-column justify-center pt-0" cols="auto">
+      <v-btn-toggle mandatory dense v-model="moveDistance">
+        <v-btn color="secondary" value="0.01">0.01</v-btn>
+        <v-btn color="secondary" value="0.05">0.05</v-btn>
+      </v-btn-toggle>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

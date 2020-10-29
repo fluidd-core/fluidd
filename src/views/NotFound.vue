@@ -6,7 +6,6 @@
           <div class="text-h5">404 Not Found</div>
           <v-btn color="secondary" to="/" class="mt-5">Return to the dashboard</v-btn>
         </center>
-
       </v-col>
     </v-row>
   </v-container>
