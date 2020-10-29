@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="dashboard">
+  <v-container fluid class="constrained-width">
     <v-row>
       <v-col cols="12" md="6" class="pt-0">
         <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>

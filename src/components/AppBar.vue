@@ -3,40 +3,42 @@
     app
     clipped-left
   >
-    <v-icon large color="#1970b5">$printer3dNozzle</v-icon>
-    <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
-      {{ instanceName }}
-    </v-toolbar-title>
-    <v-spacer />
-    <v-toolbar-items>
-      <v-btn text to="/">
-        <v-icon small class="mr-md-1">$home</v-icon>
-        <span class="d-none d-md-inline">Dashboard</span>
-      </v-btn>
-      <v-btn text to="/configuration">
-        <v-icon small class="mr-md-1">$tune</v-icon>
-        <span class="d-none d-md-inline">Printer</span>
-      </v-btn>
-      <v-btn text to="/settings">
-        <v-icon small class="mr-md-1">$cog</v-icon>
-        <span class="d-none d-md-inline">Settings</span>
-      </v-btn>
-      <v-tooltip bottom v-if="socketConnected">
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            :disabled="!klippyConnected"
-            text
-            color="error"
-            @click="emergencyStop()"
-            v-bind="attrs"
-            v-on="on">
-            <v-icon>$estop</v-icon>
-          </v-btn>
-        </template>
-        Emergency Stop
-      </v-tooltip>
-      <system-commands-widget></system-commands-widget>
-    </v-toolbar-items>
+    <v-container fluid class="constrained-width py-0 fill-height">
+      <v-icon large color="#1970b5" class="d-none d-sm-inline">$printer3dNozzle</v-icon>
+      <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
+        {{ instanceName }}
+      </v-toolbar-title>
+      <v-spacer />
+      <v-toolbar-items>
+        <v-btn text to="/">
+          <v-icon small class="mr-md-1">$home</v-icon>
+          <span class="d-none d-md-inline">Dashboard</span>
+        </v-btn>
+        <v-btn text to="/configuration">
+          <v-icon small class="mr-md-1">$tune</v-icon>
+          <span class="d-none d-md-inline">Printer</span>
+        </v-btn>
+        <v-btn text to="/settings">
+          <v-icon small class="mr-md-1">$cog</v-icon>
+          <span class="d-none d-md-inline">Settings</span>
+        </v-btn>
+        <v-tooltip bottom v-if="socketConnected">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              :disabled="!klippyConnected"
+              text
+              color="error"
+              @click="emergencyStop()"
+              v-bind="attrs"
+              v-on="on">
+              <v-icon>$estop</v-icon>
+            </v-btn>
+          </template>
+          Emergency Stop
+        </v-tooltip>
+        <system-commands-widget></system-commands-widget>
+      </v-toolbar-items>
+    </v-container>
   </v-app-bar>
 </template>
 

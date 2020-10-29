@@ -1,37 +1,27 @@
 <template>
-  <v-container fluid class="configuration">
-    <!-- <v-row>
-      <v-col cols="12" class="pt-0"> -->
-        <!-- <v-card color="quaternary">
-          <v-card-title color="quaternary">
-            <v-icon large left>$tune</v-icon>
-            <span class="font-weight-light">Printer Configuration</span>
-          </v-card-title>
-        </v-card> -->
-        <v-row>
-          <v-col cols="12" md="7" class="pt-0">
-            <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
-            <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
-            <v-row v-if="klippyConnected">
-              <v-col cols="12" sm="6">
-                <runout-sensors-card v-if="klippyConnected"></runout-sensors-card>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <end-stops-card v-if="klippyConnected"></end-stops-card>
-              </v-col>
-            </v-row>
+  <v-container fluid class="constrained-width">
+    <v-row>
+      <v-col cols="12" md="7" class="pt-0">
+        <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+        <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
+        <v-row v-if="klippyConnected">
+          <v-col cols="12" sm="6">
+            <runout-sensors-card v-if="klippyConnected"></runout-sensors-card>
           </v-col>
-          <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
-            <file-system-card
-              :root="['config', 'config_examples']"
-              accept=".conf,.cfg"
-              panel-title="Config"
-              :show-meta-data="false">
-            </file-system-card>
+          <v-col cols="12" sm="6">
+            <end-stops-card v-if="klippyConnected"></end-stops-card>
           </v-col>
         </v-row>
-      <!-- </v-col>
-    </v-row> -->
+      </v-col>
+      <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
+        <file-system-card
+          :root="['config', 'config_examples']"
+          accept=".conf,.cfg"
+          panel-title="Config"
+          :show-meta-data="false">
+        </file-system-card>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

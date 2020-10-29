@@ -1,3 +1,8 @@
+.container--fluid.constrained-width {
+  // @media (min-width: map-get($grid-breakpoints, 'xl')) {
+  max-width: map-get($container-max-widths, 'xl');
+}
+
 .v-btn-super {
   .v-btn__content {
     display: block;
