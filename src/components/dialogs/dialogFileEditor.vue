@@ -45,7 +45,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import FileEditorWidget from '@/components/widgets/configuration/FileEditorWidget.vue'
+import FileEditorWidget from '@/components/widgets/filesystem/FileEditorWidget.vue'
 
 @Component({
   components: {

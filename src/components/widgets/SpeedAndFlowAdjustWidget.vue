@@ -1,7 +1,7 @@
 <template>
-  <v-row>
+  <v-row class="my-0">
     <!-- Speed and Flow Adjust -->
-    <v-col cols="12" sm="6" class="px-2 pt-0 pb-5">
+    <v-col cols="12" sm="6" class="py-0">
       <input-slider
         label="Speed"
         :value="speed"
@@ -13,7 +13,7 @@
         @input="setSpeed($event, waits.onSetSpeed)">
       </input-slider>
     </v-col>
-    <v-col cols="12" sm="6" class="px-2 pt-0 pb-5">
+    <v-col cols="12" sm="6" class="py-0">
       <input-slider
         label="Flow"
         :value="flow"

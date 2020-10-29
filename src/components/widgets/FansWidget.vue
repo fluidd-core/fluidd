@@ -1,7 +1,7 @@
 <template>
-  <v-row>
-    <!-- Fans -->
-    <v-col class="px-2 pt-0 pb-5">
+  <!-- Fans -->
+  <v-row no-gutters class="mb-4">
+    <v-col class="">
       <input-slider
         label="Part Fan"
         value-suffix="%"

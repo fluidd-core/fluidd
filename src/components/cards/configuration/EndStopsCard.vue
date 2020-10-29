@@ -1,19 +1,16 @@
 <template>
-  <v-card class="mb-4" color="tertiary">
-    <v-card-title class="font-weight-light quaternary">
-      <v-icon left>$expandHorizontal</v-icon> Endstops<br />
+  <collapsable-card
+    title="Endstops"
+    subTitle="Use the refresh button to update endstop status."
+    :collapsable="false"
+    icon="$expandHorizontal">
+    <template v-slot:collapse-button>
       <v-btn
         @click="queryEndstops"
-        small
-        right
-        fab
-        absolute
-        color="secondary">
+        fab small text>
         <v-icon>$refresh</v-icon>
       </v-btn>
-    </v-card-title>
-    <v-card-subtitle class="quaternary">Use the refresh button to update endstop status.</v-card-subtitle>
-    <v-divider v-if="hasEndStops"></v-divider>
+    </template>
     <v-card-text v-if="hasEndStops">
       <v-layout
         align-center justify-start
@@ -31,7 +28,7 @@
         </v-chip>
       </v-layout>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -42,7 +39,7 @@ import { SocketActions } from '@/socketActions'
 @Component({
   components: {}
 })
-export default class EndStopsWidget extends Mixins(UtilsMixin) {
+export default class EndStopsCard extends Mixins(UtilsMixin) {
   get endStops () {
     return this.$store.getters['socket/getEndstops']
   }

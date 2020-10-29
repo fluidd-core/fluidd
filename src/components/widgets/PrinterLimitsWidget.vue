@@ -1,67 +1,59 @@
 <template>
-  <div>
-    <v-btn block text @click="limitsVisible = !limitsVisible" class="mb-2">
-      {{ (limitsVisible) ? 'Hide' : 'Show' }} machine limits
-      <v-icon>{{ (limitsVisible) ? '$chevronUp' : '$chevronDown' }}</v-icon>
-    </v-btn>
-    <v-expand-transition>
-      <!-- Speed and Flow Adjust -->
-      <div v-show="limitsVisible">
-      <v-row>
-        <v-col cols="12" sm="6" class="px-2 pt-0 pb-5">
-          <input-slider
-            label="Velocity"
-            value-suffix="mm/s"
-            :value="velocity.current"
-            :min="0"
-            :max="velocity.max"
-            :disabled="!klippyConnected"
-            :loading="hasWait(waits.onSetVelocity)"
-            @input="setVelocity($event)">
-          </input-slider>
-        </v-col>
-        <v-col cols="12" sm="6" class="px-2 pt-0 pb-5">
-          <input-slider
-            label="Square Corner Velocity"
-            value-suffix="mm/s"
-            :value="scv.current"
-            :min="0"
-            :max="scv.max"
-            :disabled="!klippyConnected"
-            :loading="hasWait(waits.onSetSQV)"
-            @input="setSCV($event)">
-          </input-slider>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="12" sm="6" class="px-2 pt-0 pb-0">
-          <input-slider
-            label="Acceleration"
-            value-suffix="mm/s^2"
-            :value="accel.current"
-            :min="0"
-            :max="accel.max"
-            :disabled="!klippyConnected"
-            :loading="hasWait(waits.onSetAcceleration)"
-            @input="setAcceleration($event)">
-          </input-slider>
-        </v-col>
-        <v-col cols="12" sm="6" class="px-2 pt-0 pb-0">
-          <input-slider
-            label="Deceleration"
-            value-suffix="mm/s^2"
-            :value="decel.current"
-            :min="0"
-            :max="decel.max"
-            :disabled="!klippyConnected"
-            :loading="hasWait(waits.onSetDeceleration)"
-            @input="setDeceleration($event)">
-          </input-slider>
-        </v-col>
-      </v-row>
-      </div>
-    </v-expand-transition>
-  </div>
+  <!-- Speed and Flow Adjust -->
+  <v-card-text>
+    <v-row class="my-0 mb-4">
+      <v-col cols="12" sm="6" class="py-0">
+        <input-slider
+          label="Velocity"
+          value-suffix="mm/s"
+          :value="velocity.current"
+          :min="0"
+          :max="velocity.max"
+          :disabled="!klippyConnected"
+          :loading="hasWait(waits.onSetVelocity)"
+          @input="setVelocity($event)">
+        </input-slider>
+      </v-col>
+      <v-col cols="12" sm="6" class="py-0">
+        <input-slider
+          label="Square Corner Velocity"
+          value-suffix="mm/s"
+          :value="scv.current"
+          :min="0"
+          :max="scv.max"
+          :disabled="!klippyConnected"
+          :loading="hasWait(waits.onSetSQV)"
+          @input="setSCV($event)">
+        </input-slider>
+      </v-col>
+    </v-row>
+    <v-row class="my-0">
+      <v-col cols="12" sm="6" class="py-0">
+        <input-slider
+          label="Acceleration"
+          value-suffix="mm/s^2"
+          :value="accel.current"
+          :min="0"
+          :max="accel.max"
+          :disabled="!klippyConnected"
+          :loading="hasWait(waits.onSetAcceleration)"
+          @input="setAcceleration($event)">
+        </input-slider>
+      </v-col>
+      <v-col cols="12" sm="6" class="py-0">
+        <input-slider
+          label="Deceleration"
+          value-suffix="mm/s^2"
+          :value="decel.current"
+          :min="0"
+          :max="decel.max"
+          :disabled="!klippyConnected"
+          :loading="hasWait(waits.onSetDeceleration)"
+          @input="setDeceleration($event)">
+        </input-slider>
+      </v-col>
+    </v-row>
+  </v-card-text>
 </template>
 
 <script lang="ts">
@@ -77,14 +69,6 @@ import InputSlider from '@/components/inputs/InputSlider.vue'
 })
 export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   waits = Waits
-
-  get limitsVisible (): boolean {
-    return this.$store.state.config.localConfig.limitsVisible
-  }
-
-  set limitsVisible (val: boolean) {
-    this.$store.dispatch('config/saveLocalStorage', { limitsVisible: val })
-  }
 
   get velocity () {
     const max = parseInt(this.$store.state.socket.printer.configfile.config.printer.max_velocity)
@@ -133,14 +117,5 @@ export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   setSCV (val: number) {
     this.sendGcode(`SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=${val}`, Waits.onSetSCV)
   }
-
-  /**
-   * SET_VELOCITY_LIMIT
-   * [VELOCITY=<value>]
-   * [ACCEL=<value>]
-   * [ACCEL_TO_DECEL=<value>]
-   * [SQUARE_CORNER_VELOCITY=<value>]:
-   * Modify the printer's velocity limits. Note that one may only set values less than or equal to the limits specified in the config file.
-   */
 }
 </script>

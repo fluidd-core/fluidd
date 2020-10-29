@@ -1,10 +1,7 @@
 <template>
-  <v-card class="mb-4" color="tertiary">
-    <v-card-title class="font-weight-light quaternary">
-      <v-icon left>$printer3dNozzleAlert</v-icon> Runout Sensors
-    </v-card-title>
-    <v-card-subtitle class="quaternary">Indicate runout sensor status.<br /> These are not persistent. They will reset to your printer configuration on host reboot.</v-card-subtitle>
-    <v-divider></v-divider>
+  <collapsable-card
+    title="Runout Sensors"
+    icon="$printer3dNozzleAlert">
     <v-card-text>
       <v-layout
         align-center justify-start
@@ -27,7 +24,8 @@
         </v-switch>
       </v-layout>
     </v-card-text>
-  </v-card>
+
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -35,10 +33,8 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { RunoutSensor } from '@/store/socket/types'
 
-@Component({
-  components: {}
-})
-export default class RunoutSensorWidget extends Mixins(UtilsMixin) {
+@Component({})
+export default class BedMeshCard extends Mixins(UtilsMixin) {
   get sensors () {
     return this.$store.getters['socket/getRunoutSensors']
   }

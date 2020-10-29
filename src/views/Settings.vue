@@ -11,18 +11,18 @@
         </v-card>
         <v-row>
           <v-col cols="12" sm="4" md="3">
-            <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
-            <general-settings-widget></general-settings-widget>
-            <theme-settings-widget></theme-settings-widget>
-            <print-time-estimate-settings-widget></print-time-estimate-settings-widget>
+            <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+            <general-settings-card></general-settings-card>
+            <theme-settings-card></theme-settings-card>
+            <print-time-estimate-settings-card></print-time-estimate-settings-card>
           </v-col>
           <v-col cols="12" sm="4" md="3">
-            <camera-settings-widget></camera-settings-widget>
-            <toolhead-settings-widget></toolhead-settings-widget>
+            <camera-settings-card></camera-settings-card>
+            <toolhead-settings-card></toolhead-settings-card>
             <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
           </v-col>
           <v-col cols="12" sm="4" md="6">
-            <macro-settings-widget></macro-settings-widget>
+            <macro-settings-card></macro-settings-card>
           </v-col>
         </v-row>
       </v-col>
@@ -33,27 +33,27 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import MacroSettingsWidget from '@/components/widgets/settings/MacroSettingsWidget.vue'
-import GeneralSettingsWidget from '@/components/widgets/settings/GeneralSettingsWidget.vue'
-import TemperaturePresetsSettingsWidget from '@/components/widgets/settings/TemperaturePresetsSettingsWidget.vue'
-import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
-import CameraSettingsWidget from '@/components/widgets/settings/CameraSettingsWidget.vue'
-import ToolheadSettingsWidget from '@/components/widgets/settings/ToolheadSettingsWidget.vue'
-import PrintTimeEstimateSettingsWidget from '@/components/widgets/settings/PrintTimeEstimateSettingsWidget.vue'
-import ThemeSettingsWidget from '@/components/widgets/settings/ThemeSettingsWidget.vue'
+import MacroSettingsCard from '@/components/cards/settings/MacroSettingsCard.vue'
+import GeneralSettingsCard from '@/components/cards/settings/GeneralSettingsCard.vue'
+import TemperaturePresetsSettingsCard from '@/components/cards/settings/TemperaturePresetsSettingsCard.vue'
+import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
+import CameraSettingsCard from '@/components/cards/settings/CameraSettingsCard.vue'
+import ToolheadSettingsCard from '@/components/cards/settings/ToolheadSettingsCard.vue'
+import PrintTimeEstimateSettingsCard from '@/components/cards/settings/PrintTimeEstimateSettingsCard.vue'
+import ThemeSettingsCard from '@/components/cards/settings/ThemeSettingsCard.vue'
 import { MetaInfo } from 'vue-meta'
 import EventBus from '@/eventBus'
 
 @Component({
   components: {
-    MacroSettingsWidget,
-    GeneralSettingsWidget,
-    TemperaturePresetsSettingsWidget,
-    KlippyDisconnectedWidget,
-    CameraSettingsWidget,
-    ToolheadSettingsWidget,
-    PrintTimeEstimateSettingsWidget,
-    ThemeSettingsWidget
+    MacroSettingsCard,
+    GeneralSettingsCard,
+    TemperaturePresetsSettingsCard,
+    KlippyDisconnectedCard,
+    CameraSettingsCard,
+    ToolheadSettingsCard,
+    PrintTimeEstimateSettingsCard,
+    ThemeSettingsCard
   },
   metaInfo (this: Settings): MetaInfo {
     return {

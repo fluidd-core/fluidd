@@ -1,8 +1,9 @@
 
 <template>
-  <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>$cogs</v-icon> Themes</v-card-title>
-    <v-divider></v-divider>
+  <collapsable-card
+    title="Themes"
+    cardKey="ThemeSettings"
+    icon="$cogs">
     <v-card-text>
       <v-select
         label="Theme"
@@ -16,7 +17,7 @@
         class="mr-5 d-none d-sm-block"
       ></v-switch> -->
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -26,7 +27,7 @@ import UtilsMixin from '@/mixins/utils'
 @Component({
   components: {}
 })
-export default class ThemeSettingsWidget extends Mixins(UtilsMixin) {
+export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
   // Theme is currently restricted to dark / light.
   // This starts impl thought on more options.
   get theme () {

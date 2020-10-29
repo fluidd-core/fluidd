@@ -1,7 +1,8 @@
 <template>
-  <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>$clock</v-icon> Print Times</v-card-title>
-    <v-divider></v-divider>
+  <collapsable-card
+    title="Print Times"
+    cardKey="PrintTimeSettings"
+    icon="$clock">
     <v-card-text>
       <v-radio-group
         v-model="printTimeEstimationsType"
@@ -12,7 +13,7 @@
         <v-radio label="Filament used (accuracy over time)" value="filament"></v-radio>
       </v-radio-group>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -22,7 +23,7 @@ import UtilsMixin from '@/mixins/utils'
 @Component({
   components: {}
 })
-export default class PrintTimeEstimateSettingsWidget extends Mixins(UtilsMixin) {
+export default class PrintTimeEstimateSettingsCard extends Mixins(UtilsMixin) {
   get cameraUrl () {
     return this.$store.state.config.fileConfig.camera.url
   }

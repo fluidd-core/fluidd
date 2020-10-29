@@ -53,13 +53,6 @@
         />
       </v-col>
     </v-row>
-    <v-expand-transition>
-      <v-row v-show="cameraVisible">
-        <v-col>
-        <img :src="cameraUrl" class="webcam" :style="cameraTransforms" />
-        </v-col>
-      </v-row>
-    </v-expand-transition>
   </v-container>
 </template>
 
@@ -72,22 +65,6 @@ import { Waits } from '@/globals'
 export default class PrintStatusWidget extends Mixins(UtilsMixin) {
   buttonWidths = 140
   waits = Waits
-
-  get cameraUrl (): string {
-    return this.$store.state.config.fileConfig.camera.url
-  }
-
-  get cameraVisible (): boolean {
-    return this.$store.state.config.localConfig.cameraVisible
-  }
-
-  get cameraTransforms () {
-    const config = this.$store.state.config.fileConfig.camera
-    let transforms = ''
-    transforms += (config && config.flipX) ? ' scaleX(-1)' : ''
-    transforms += (config && config.flipY) ? ' scaleY(-1)' : ''
-    return (transforms.trimLeft().length) ? { transform: transforms.trimLeft() } : {}
-  }
 
   get filename () {
     return this.$store.state.socket.printer.print_stats.filename
@@ -122,10 +99,6 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .webcam {
-    width: 100%;
-  }
-
   .print-thumb {
     max-height: 110px;
   }

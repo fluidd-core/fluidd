@@ -1,8 +1,9 @@
 <template>
-  <v-card color="tertiary">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>$fileCode</v-icon> Macros</v-card-title>
-    <v-card-subtitle class="quaternary">Configure which macros appear on the dashboard.</v-card-subtitle>
-    <v-divider></v-divider>
+  <collapsable-card
+    title="Macros"
+    subTitle="Configure which macros appear on the dashboard"
+    cardKey="MacroSettings"
+    icon="$fileCode">
     <v-card-text>
       <v-row>
         <v-col cols="12" md="6" class="py-0" v-for="(macro) in macros" :key="macro.name">
@@ -16,7 +17,7 @@
         </v-col>
       </v-row>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -27,7 +28,7 @@ import { Macro } from '@/store/socket/types'
 @Component({
   components: {}
 })
-export default class MacroSettingsWidget extends Mixins(UtilsMixin) {
+export default class MacroSettingsCard extends Mixins(UtilsMixin) {
   get macros () {
     return this.$store.state.socket.macros
   }

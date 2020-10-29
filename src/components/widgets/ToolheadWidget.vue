@@ -1,29 +1,28 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col cols="auto" class="pt-0">
+  <v-card-text>
+    <v-row no-gutters justify="space-between" class="mb-4">
+      <v-col cols="12" sm="6">
         <!--  Toolhead Moves and Offset Z -->
         <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
         <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
       </v-col>
 
-      <v-col class="pt-0">
+      <v-col cols="12" sm="6">
         <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
         <toolhead-position-widget></toolhead-position-widget>
       </v-col>
     </v-row>
 
-    <v-row>
-      <v-col class="pt-0">
+    <v-row no-gutters>
+      <v-col cols="12">
         <!-- Part cooling -->
         <fans-widget></fans-widget>
 
         <!-- Speed and Flow Adjustments  -->
         <speed-and-flow-adjust-widget></speed-and-flow-adjust-widget>
-        <printer-limits-widget></printer-limits-widget>
       </v-col>
     </v-row>
-  </v-container>
+  </v-card-text>
 </template>
 
 <script lang="ts">
@@ -35,7 +34,6 @@ import ToolheadPositionWidget from '@/components/widgets/ToolheadPositionWidget.
 import ZHeightAdjustWidget from '@/components/widgets/ZHeightAdjustWidget.vue'
 import SpeedAndFlowAdjustWidget from '@/components/widgets/SpeedAndFlowAdjustWidget.vue'
 import FansWidget from '@/components/widgets/FansWidget.vue'
-import PrinterLimitsWidget from '@/components/widgets/PrinterLimitsWidget.vue'
 
 @Component({
   components: {
@@ -44,8 +42,7 @@ import PrinterLimitsWidget from '@/components/widgets/PrinterLimitsWidget.vue'
     ToolheadPositionWidget,
     ZHeightAdjustWidget,
     SpeedAndFlowAdjustWidget,
-    FansWidget,
-    PrinterLimitsWidget
+    FansWidget
   }
 })
 export default class ToolheadWidget extends Mixins(UtilsMixin) {}

@@ -12,11 +12,7 @@ export const state: ConfigState = {
   apiUrl: '',
   socketUrl: '',
   unsavedChanges: false,
-  localConfig: {
-    cameraVisible: false,
-    chartVisible: true,
-    limitsVisible: false
-  },
+  localConfig: {},
   fileConfig: {
     general: {
       instanceName: Globals.APP_NAME,

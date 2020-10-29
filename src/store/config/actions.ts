@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, FileConfig, SaveLocalConfig, GenericSave } from './types'
+import { ConfigState, FileConfig, LocalConfig, GenericSave } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -45,7 +45,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
    * Saves local keys to state and localstorage.
    * Assumes a flat structure of key value pairs.
    */
-  async saveLocalStorage ({ commit }, payload: SaveLocalConfig) {
+  async saveLocalStorage ({ commit }, payload: LocalConfig) {
     let config = (Globals.LOCAL_STORAGE_KEY in localStorage) ? JSON.parse(localStorage.appConfig) : {}
     config = { ...config, ...payload }
     localStorage.setItem(Globals.LOCAL_STORAGE_KEY, JSON.stringify(config))

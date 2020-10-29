@@ -1,7 +1,8 @@
 <template>
-  <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>$printer3dNozzle</v-icon> Toolhead</v-card-title>
-    <v-divider></v-divider>
+  <collapsable-card
+    title="Tool"
+    cardKey="ToolSettings"
+    icon="$printer3dNozzle">
     <v-card-text>
       <v-text-field
         filled
@@ -23,7 +24,7 @@
         v-model="defaultToolheadMoveLength">
       </v-select>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -33,7 +34,7 @@ import UtilsMixin from '@/mixins/utils'
 @Component({
   components: {}
 })
-export default class ToolHeadSettingsWidget extends Mixins(UtilsMixin) {
+export default class ToolHeadSettingsCard extends Mixins(UtilsMixin) {
   get defaultExtrudeSpeed () {
     return this.$store.state.config.fileConfig.general.defaultExtrudeSpeed
   }

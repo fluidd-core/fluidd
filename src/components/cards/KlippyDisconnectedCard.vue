@@ -1,9 +1,8 @@
 <template>
-  <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light">
-      <v-icon left>$alert</v-icon>Klippy: {{ klippyState }}
-    </v-card-title>
-    <v-divider></v-divider>
+  <collapsable-card
+    :title="'Klippy: ' + klippyState"
+    :collapsable="false"
+    icon="$alert">
     <v-card-text>
       <v-row>
         <v-col cols="auto">
@@ -26,7 +25,7 @@
         </v-col>
       </v-row>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -36,7 +35,7 @@ import UtilsMixin from '@/mixins/utils'
 @Component({
   components: {}
 })
-export default class KlippyDisconnectedWidget extends Mixins(UtilsMixin) {
+export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
   getKlippyLog () {
     this.download('klippy.log', '')
   }

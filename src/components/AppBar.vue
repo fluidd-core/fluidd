@@ -15,7 +15,7 @@
       </v-btn>
       <v-btn text to="/configuration">
         <v-icon small class="mr-md-1">$tune</v-icon>
-        <span class="d-none d-md-inline">Configuration</span>
+        <span class="d-none d-md-inline">Printer</span>
       </v-btn>
       <v-btn text to="/settings">
         <v-icon small class="mr-md-1">$cog</v-icon>

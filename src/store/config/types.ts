@@ -10,13 +10,6 @@ export interface ConfigState {
 // We should keep these simple, so as to keep local storage to a minimum.
 export interface LocalConfig {
   [key: string]: string | boolean | number;
-  cameraVisible: boolean;
-  chartVisible: boolean;
-  limitsVisible: boolean;
-}
-
-export interface SaveLocalConfig {
-  [key: string]: string | boolean | number;
 }
 
 export interface FileConfig {

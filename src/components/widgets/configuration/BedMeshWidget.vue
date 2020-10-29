@@ -1,155 +1,146 @@
 <template>
-  <v-card color="tertiary">
-    <v-card-title class="quaternary font-weight-light">
-      <v-icon left>$bedMesh</v-icon> Bed Mesh
-    </v-card-title>
-    <v-card-subtitle class="quaternary">Configure your bed mesh and mesh profiles.</v-card-subtitle>
-    <v-divider></v-divider>
-    <v-card-text>
+  <v-card-text>
+    <v-row>
+      <v-col cols="12" lg="8">
+        <span v-if="meshes.length === 0">No existing bed meshes found.</span>
+        <v-simple-table v-if="meshes.length > 0">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>&nbsp;</th>
+              <th>Variance</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="mesh in meshes" :key="mesh.profile_name">
+              <td class="grey--text text--lighten-1 text-body-1">
+                {{ mesh.profile_name }}
+              </td>
+              <td>
+                <v-chip
+                  v-if="mesh.active"
+                  color="secondary"
+                  small
+                  block>
+                  active
+                </v-chip>
+              </td>
+              <td class="grey--text text--lighten-1 text-body-1"><span v-if="mesh.active">{{ variance.toFixed(4) }}</span></td>
+              <td>
+                <v-btn
+                  @click="loadProfile(mesh.profile_name)"
+                  :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
+                  color="secondary"
+                  small>
+                  Load Profile
+                </v-btn>
+              </td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>&nbsp;</td>
+              <td>
+                <v-btn
+                  @click="clearMesh()"
+                  :disabled="!meshLoaded"
+                  color="secondary"
+                  small>
+                  Clear Profile
+                </v-btn>
+              </td>
+            </tr>
+          </tbody>
+        </v-simple-table>
+      </v-col>
+      <v-col cols="12" lg="4">
+        <v-tooltip right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              block
+              class="mb-2"
+              color="secondary"
+              :loading="hasWait(waits.onMeshCalibrate)"
+              :disabled="hasWaits || printerPrinting || printerBusy"
+              @click="calibrate()">
+              Calibrate
+            </v-btn>
+          </template>
+          <span>Begins a new calibration, saving as profile 'default'</span>
+        </v-tooltip>
+        <v-btn
+          @click="sendGcode('G28', waits.onHomeAll)"
+          block
+          class="mb-2"
+          :loading="hasWait(waits.onHomeAll)"
+          :disabled="hasWaits || printerPrinting || printerBusy"
+          :color="(!allHomed) ? 'warning' : 'secondary'">
+            <v-icon small class="mr-1">$home</v-icon> All
+        </v-btn>
+        <v-btn
+          v-if="!printerPrinting && printerSupportsQgl"
+          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+          :loading="hasWait(waits.onQGL)"
+          :disabled="hasWaits || printerPrinting || printerBusy"
+          block
+          class="mb-2"
+          color="secondary">
+            QGL
+        </v-btn>
+        <v-tooltip right>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              block
+              class="mb-2"
+              color="warning"
+              :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+              @click="openSaveDialog()">
+              Save Config As...
+            </v-btn>
+          </template>
+          <span>Commits calibrated profile to printer.cfg. This WILL restart your printer.</span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
 
-      <v-row>
-        <v-col cols="12" lg="8">
-          <span v-if="meshes.length === 0">No existing bed meshes found.</span>
-          <v-simple-table v-if="meshes.length > 0">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>&nbsp;</th>
-                <th>Variance</th>
-                <th>&nbsp;</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="mesh in meshes" :key="mesh.profile_name">
-                <td class="grey--text text--lighten-1 text-body-1">
-                  {{ mesh.profile_name }}
-                </td>
-                <td>
-                  <v-chip
-                    v-if="mesh.active"
-                    color="secondary"
-                    small
-                    block>
-                    active
-                  </v-chip>
-                </td>
-                <td class="grey--text text--lighten-1 text-body-1"><span v-if="mesh.active">{{ variance.toFixed(4) }}</span></td>
-                <td>
-                  <v-btn
-                    @click="loadProfile(mesh.profile_name)"
-                    :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
-                    color="secondary"
-                    small>
-                    Load Profile
-                  </v-btn>
-                </td>
-              </tr>
-              <tr>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>
-                  <v-btn
-                    @click="clearMesh()"
-                    :disabled="!meshLoaded"
-                    color="secondary"
-                    small>
-                    Clear Profile
-                  </v-btn>
-                </td>
-              </tr>
-            </tbody>
-          </v-simple-table>
-        </v-col>
-        <v-col cols="12" lg="4">
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                block
-                class="mb-2"
-                color="secondary"
-                :loading="hasWait(waits.onMeshCalibrate)"
-                :disabled="hasWaits || printerPrinting || printerBusy"
-                @click="calibrate()">
-                Calibrate
-              </v-btn>
-            </template>
-            <span>Begins a new calibration, saving as profile 'default'</span>
-          </v-tooltip>
-          <v-btn
-            @click="sendGcode('G28', waits.onHomeAll)"
-            block
-            class="mb-2"
-            :loading="hasWait(waits.onHomeAll)"
-            :disabled="hasWaits || printerPrinting || printerBusy"
-            :color="(!allHomed) ? 'warning' : 'secondary'">
-              <v-icon small class="mr-1">$home</v-icon> All
-          </v-btn>
-          <v-btn
-            v-if="!printerPrinting && printerSupportsQgl"
-            @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
-            :loading="hasWait(waits.onQGL)"
-            :disabled="hasWaits || printerPrinting || printerBusy"
-            block
-            class="mb-2"
-            color="secondary">
-              QGL
-          </v-btn>
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                v-bind="attrs"
-                v-on="on"
-                block
-                class="mb-2"
-                color="warning"
-                :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
-                @click="openSaveDialog()">
-                Save Config As...
-              </v-btn>
-            </template>
-            <span>Commits calibrated profile to printer.cfg. This WILL restart your printer.</span>
-          </v-tooltip>
-        </v-col>
-      </v-row>
+    <dialog-input
+      title="Save config as..."
+      v-model="saveDialog.open"
+      @save="saveToConfig(saveDialog)"
+      :max-width="450">
+      <!-- <p>
+        By default, save overrites the currently loaded profile ({{ currentMesh.profile_name }}).
+      </p> -->
+      <v-text-field
+        filled
+        required
+        class="mb-4"
+        :rules="[value => !!value || 'Required.']"
+        hide-details="auto"
+        label="Profile Name"
+        v-model="saveDialog.profileName">
+      </v-text-field>
 
-      <dialog-input
-        title="Save config as..."
-        v-model="saveDialog.open"
-        @save="saveToConfig(saveDialog)"
-        :max-width="450">
-        <!-- <p>
-          By default, save overrites the currently loaded profile ({{ currentMesh.profile_name }}).
-        </p> -->
-        <v-text-field
-          filled
-          required
-          class="mb-4"
-          :rules="[value => !!value || 'Required.']"
-          hide-details="auto"
-          label="Profile Name"
-          v-model="saveDialog.profileName">
-        </v-text-field>
+      <v-checkbox
+        :label="`Remove ${currentMesh.profile_name} profile`"
+        hide-details="auto"
+        class="mb-4"
+        v-model="saveDialog.removeDefault"
+        :disabled="saveDialog.profileName === currentMesh.profile_name"
+        ></v-checkbox>
+      <p>
+        If saving as something other than {{ currentMesh.profile_name }}, you can choose to
+        also remove the {{ currentMesh.profile_name }} profile.
+      </p>
+    </dialog-input>
 
-        <v-checkbox
-          :label="`Remove ${currentMesh.profile_name} profile`"
-          hide-details="auto"
-          class="mb-4"
-          v-model="saveDialog.removeDefault"
-          :disabled="saveDialog.profileName === currentMesh.profile_name"
-          ></v-checkbox>
-        <p>
-          If saving as something other than {{ currentMesh.profile_name }}, you can choose to
-          also remove the {{ currentMesh.profile_name }} profile.
-        </p>
-      </dialog-input>
-
-      <Plotly v-if="meshLoaded" :data="data" :layout="layout" :display-mode-bar="false"></Plotly>
-
-    </v-card-text>
-  </v-card>
+    <Plotly v-if="meshLoaded" :data="data" :layout="layout" :display-mode-bar="false"></Plotly>
+  </v-card-text>
 </template>
 
 <script lang="ts">

@@ -47,7 +47,7 @@ export const mutations: MutationTree<ConfigState> = {
    * Explicitly saves to the localConfig, which matches localStorage.
    */
   onSaveLocal (state, payload: GenericSave) {
-    state.localConfig[payload.key] = payload.value
+    Vue.set(state.localConfig, payload.key, payload.value)
   },
 
   /**

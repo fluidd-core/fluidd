@@ -55,9 +55,11 @@ import {
   mdiContentSaveOutline,
   mdiAlert,
   mdiPowerPlug,
-  mdiChartBellCurve,
   mdiDotsVertical,
-  mdiSend
+  mdiSend,
+  mdiArrowHorizontalLock,
+  mdiChartTimelineVariant,
+  mdiFireAlert
 } from '@mdi/js'
 
 /**
@@ -74,14 +76,16 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
+  limits: mdiArrowHorizontalLock,
   send: mdiSend,
   menu: mdiDotsVertical,
-  chart: mdiChartBellCurve,
+  chart: mdiChartTimelineVariant,
   power: mdiPowerPlug,
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
   alert: mdiAlert,
+  fireAlert: mdiFireAlert,
   hazard: mdiHazardLights,
   blankCircle: mdiCheckboxBlankCircleOutline,
   markedCircle: mdiCheckboxMarkedCircle,
@@ -139,6 +143,8 @@ export const Waits = Object.freeze({
   onGpio: 'onGpio',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',
+  onHomeX: 'onHomeX',
+  onHomeY: 'onHomeY',
   onHomeZ: 'onHomeZ',
   onQGL: 'onQGL',
   onZTilt: 'onZTilt',

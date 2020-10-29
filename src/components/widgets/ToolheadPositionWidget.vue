@@ -1,28 +1,20 @@
 <template>
-  <v-container>
-    <v-row>
-      <v-col class="pa-2 pt-0">
-
-        <v-card class="d-flex flex-column flex-sm-row justify-space-around pa-4">
-          <div class="d-flex flex-row align-center justify-space-between">
-            <div class="text-subtitle-1 grey--text text--darken-1 mr-2">X</div>
-            <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[0].toFixed(2) }}</div>
-          </div>
-
-          <div class="d-flex flex-row align-center justify-space-between">
-            <div class="text-subtitle-1 grey--text text--darken-1 mr-2">Y</div>
-            <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[1].toFixed(2) }}</div>
-          </div>
-
-          <div class="d-flex flex-row align-center justify-space-between">
-            <div class="text-subtitle-1 grey--text text--darken-1 mr-2">Z</div>
-            <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[2].toFixed(2) }}</div>
-          </div>
-        </v-card>
-
+  <v-card class="pa-4">
+    <v-row no-gutters>
+      <v-col cols="12" lg="4" class="d-flex align-center justify-space-around">
+        <div class="text-subtitle-1 grey--text text--darken-1 mr-2">X</div>
+        <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[0].toFixed(2) }}</div>
+      </v-col>
+      <v-col cols="12" lg="4" class="d-flex align-center justify-space-around">
+        <div class="text-subtitle-1 grey--text text--darken-1 mr-2">Y</div>
+        <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[1].toFixed(2) }}</div>
+      </v-col>
+      <v-col cols="12" lg="4" class="d-flex align-center justify-space-around">
+        <div class="text-subtitle-1 grey--text text--darken-1 mr-2">Z</div>
+        <div class="grey--text text--lighten-1 text-h5">{{ toolheadPosition[2].toFixed(2) }}</div>
       </v-col>
     </v-row>
-  </v-container>
+  </v-card>
 </template>
 
 <script lang="ts">

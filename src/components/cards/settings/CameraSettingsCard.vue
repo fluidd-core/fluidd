@@ -1,7 +1,8 @@
 <template>
-  <v-card color="tertiary" class="mb-4">
-    <v-card-title class="quaternary font-weight-light"><v-icon left>$camera</v-icon> Camera</v-card-title>
-    <v-divider></v-divider>
+  <collapsable-card
+    title="Camera"
+    cardKey="CameraSettings"
+    icon="$camera">
     <v-card-text>
       <v-switch
         label="Enabled"
@@ -25,7 +26,7 @@
         v-model="url"
       ></v-text-field>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -35,7 +36,7 @@ import UtilsMixin from '@/mixins/utils'
 @Component({
   components: {}
 })
-export default class CameraSettingsWidget extends Mixins(UtilsMixin) {
+export default class CameraSettingsCard extends Mixins(UtilsMixin) {
   get enabled () {
     return this.$store.state.config.fileConfig.camera.enabled
   }

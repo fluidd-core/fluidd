@@ -1,58 +1,60 @@
 <template>
   <v-container fluid class="configuration">
-    <v-row>
-      <v-col cols="12" class="pt-0">
-        <v-card color="quaternary">
+    <!-- <v-row>
+      <v-col cols="12" class="pt-0"> -->
+        <!-- <v-card color="quaternary">
           <v-card-title color="quaternary">
             <v-icon large left>$tune</v-icon>
             <span class="font-weight-light">Printer Configuration</span>
           </v-card-title>
-        </v-card>
+        </v-card> -->
         <v-row>
-          <v-col cols="12" md="7">
-            <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
-            <bed-mesh-widget v-if="supportsBedMesh && klippyConnected"></bed-mesh-widget>
+          <v-col cols="12" md="7" class="pt-0">
+            <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+            <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
             <v-row v-if="klippyConnected">
               <v-col cols="12" sm="6">
-                <runout-sensor-widget></runout-sensor-widget>
+                <runout-sensors-card v-if="klippyConnected"></runout-sensors-card>
               </v-col>
               <v-col cols="12" sm="6">
-                <end-stops-widget></end-stops-widget>
+                <end-stops-card v-if="klippyConnected"></end-stops-card>
               </v-col>
             </v-row>
           </v-col>
-          <v-col cols="12" md="5" class="config-files-wrapper">
-            <file-system-widget
+          <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
+            <file-system-card
               :root="['config', 'config_examples']"
               accept=".conf,.cfg"
               panel-title="Config"
               :show-meta-data="false">
-            </file-system-widget>
+            </file-system-card>
           </v-col>
         </v-row>
-      </v-col>
-    </v-row>
+      <!-- </v-col>
+    </v-row> -->
   </v-container>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import EndStopsWidget from '@/components/widgets/configuration/EndStopsWidget.vue'
-import RunoutSensorWidget from '@/components/widgets/configuration/RunoutSensorWidget.vue'
-import FileSystemWidget from '@/components/widgets/filesystem/FileSystemWidget.vue'
-import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
+import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
+import FileSystemCard from '@/components/cards/FileSystemCard.vue'
+import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
+import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
 import { MetaInfo } from 'vue-meta'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
 @Component({
   components: {
+    BedMeshCard,
     BedMeshWidget,
-    EndStopsWidget,
-    RunoutSensorWidget,
-    FileSystemWidget,
-    KlippyDisconnectedWidget
+    EndStopsCard,
+    RunoutSensorsCard,
+    FileSystemCard,
+    KlippyDisconnectedCard
   },
   metaInfo (this: Configuration): MetaInfo {
     return {

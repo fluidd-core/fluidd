@@ -6,6 +6,8 @@ import { AxiosResponse } from 'axios'
 
 @Component({})
 export default class UtilsMixin extends Vue {
+  waits = Waits
+
   get apiUrl () {
     return this.$store.state.config.apiUrl
   }
@@ -61,6 +63,14 @@ export default class UtilsMixin extends Vue {
 
   get xyHomed (): boolean {
     return this.$store.getters['socket/getHomedAxes']('xy')
+  }
+
+  get xHomed (): boolean {
+    return this.$store.getters['socket/getHomedAxes']('x')
+  }
+
+  get yHomed (): boolean {
+    return this.$store.getters['socket/getHomedAxes']('y')
   }
 
   get zHomed (): boolean {

@@ -12,8 +12,10 @@ import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 
 import Btn from '@/components/inputs/Btn.vue'
+import CollapsableCard from '@/components/cards/CollapsableCard.vue'
 
 Vue.component('btn', Btn)
+Vue.component('collapsable-card', CollapsableCard)
 
 // Use any Plugins
 Vue.use(AxiosPlugin)

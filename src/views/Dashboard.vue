@@ -2,13 +2,17 @@
   <v-container fluid class="dashboard">
     <v-row>
       <v-col cols="12" md="6" class="pt-0">
-        <klippy-disconnected-widget v-if="!klippyConnected"></klippy-disconnected-widget>
+        <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
         <status-card v-if="klippyConnected"></status-card>
+        <camera-card v-if="cameraEnabled"></camera-card>
         <toolhead-card></toolhead-card>
+        <printer-limits-card></printer-limits-card>
       </v-col>
       <v-col cols="12" md="6" class="pt-0">
         <tools-card></tools-card>
-        <temperature-card></temperature-card>
+        <console-card></console-card>
+        <temperature-targets-card></temperature-targets-card>
+        <temperature-graph-card></temperature-graph-card>
       </v-col>
     </v-row>
   </v-container>
@@ -16,11 +20,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StatusCard from '@/components/cards/StatusCard.vue'
-import ToolsCard from '@/components/cards/ToolsCard.vue'
-import ToolheadCard from '@/components/cards/ToolheadCard.vue'
-import TemperatureCard from '@/components/cards/TemperatureCard.vue'
-import KlippyDisconnectedWidget from '@/components/widgets/configuration/KlippyDisconnectedWidget.vue'
+import StatusCard from '@/components/cards/dashboard/StatusCard.vue'
+import ToolsCard from '@/components/cards/dashboard/ToolsCard.vue'
+import ToolheadCard from '@/components/cards/dashboard/ToolheadCard.vue'
+import TemperatureTargetsCard from '@/components/cards/dashboard/TemperatureTargetsCard.vue'
+import TemperatureGraphCard from '@/components/cards/dashboard/TemperatureGraphCard.vue'
+import CameraCard from '@/components/cards/dashboard/CameraCard.vue'
+import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
+import PrinterLimitsCard from '@/components/cards/dashboard/PrinterLimitsCard.vue'
+import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import { MetaInfo } from 'vue-meta'
 import UtilsMixin from '@/mixins/utils'
 
@@ -29,8 +37,12 @@ import UtilsMixin from '@/mixins/utils'
     StatusCard,
     ToolsCard,
     ToolheadCard,
-    TemperatureCard,
-    KlippyDisconnectedWidget
+    TemperatureTargetsCard,
+    TemperatureGraphCard,
+    CameraCard,
+    PrinterLimitsCard,
+    KlippyDisconnectedCard,
+    ConsoleCard
   },
   metaInfo (this: Dashboard): MetaInfo {
     return {
@@ -39,5 +51,8 @@ import UtilsMixin from '@/mixins/utils'
   }
 })
 export default class Dashboard extends Mixins(UtilsMixin) {
+  get cameraEnabled (): boolean {
+    return this.$store.state.config.fileConfig.camera.enabled
+  }
 }
 </script>

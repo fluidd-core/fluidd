@@ -1,14 +1,9 @@
 # TODO [fluidd]
 
 ## Next Up
-- add camera flip in UI.
-- add buttons to home just x or y
-- add mechanism to contract / expand all panels on dash, and cleanup how we do this in a consistent way
-- add swap up / down for toolhead [railcore specific...]
+- move temp targets to tabs?
 - temperature presets
 - add file thumbs to file list, potentially move to its own nav item
-- fix button layouts in titles
-- add background image to header or sidebar, depending what we do
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -30,7 +25,6 @@
 ## General Improvements
 - dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option
-- sqv, machine limits etc..
 - should be able to force part speed fan during a print
 - add status of heater_fans (extruder fan and controller fan)
 - add UI to filter out temp waits from console
@@ -40,7 +34,6 @@
 - ability to move folder / files
 
 ## [Page] UI Settings
-- rotate camera
 
 ## [Page] Printer Configuration
 - add pid heater calibrate
@@ -50,6 +43,7 @@
 - add a widget to configure ztilt (needed?)
 
 ## User wants
+- add swap up / down for toolhead [railcore specific...] (waiting on issue feedback)
 - parse underscores out of macro names
 - another request to have the current temps above the macors etc during a print, but not while not printing.
 - draggable dashboard panels?

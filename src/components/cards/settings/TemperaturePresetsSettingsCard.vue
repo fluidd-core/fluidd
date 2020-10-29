@@ -1,7 +1,7 @@
 <template>
-  <v-card>
-    <v-card-title class="font-weight-light">Temperature Presets</v-card-title>
-    <v-card-subtitle>Temperature presets can be easily applied on the main dashboard.</v-card-subtitle>
+  <collapsable-card
+    title="Temperature Presets"
+    subTitle="Temperature presets can be easily applied on the main dashboard.">
     <v-card-text>
       <v-row>
         <v-col>
@@ -14,7 +14,7 @@
         <v-col></v-col>
       </v-row>
     </v-card-text>
-  </v-card>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
@@ -24,6 +24,6 @@ import UtilsMixin from '@/mixins/utils'
 @Component({
   components: {}
 })
-export default class TemperaturePresetsSettingsWidget extends Mixins(UtilsMixin) {
+export default class TemperaturePresetsSettingsCard extends Mixins(UtilsMixin) {
 }
 </script>

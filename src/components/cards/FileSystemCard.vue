@@ -1,23 +1,18 @@
 <template>
   <v-card color="tertiary" class="filesystem-wrapper">
-    <v-card-title class="quaternary rounded-t" v-if="showTitle">
-      <v-row>
-        <v-col cols="7" class="px-4 py-0">
-          <v-icon left>$files</v-icon>
-          <span class="font-weight-light">{{ panelTitle }}</span>
-        </v-col>
-        <v-col cols="5" class="px-4 py-0" v-if="isMultiRoot">
-          <v-select
-            style="min-width: min-content;"
-            dense
-            filled
-            hide-details
-            max-width="120"
-            v-model="currentRoot"
-            :items="root">
-          </v-select>
-        </v-col>
-      </v-row>
+    <v-card-title class="quaternary rounded-t py-1" v-if="showTitle">
+      <v-icon left>$files</v-icon>
+      <span class="font-weight-light">{{ panelTitle }}</span>
+      <v-spacer></v-spacer>
+      <v-select
+        v-if="isMultiRoot"
+        style="max-width: 190px;"
+        dense
+        solo
+        hide-details
+        v-model="currentRoot"
+        :items="root">
+      </v-select>
     </v-card-title>
     <v-divider v-if="showTitle"></v-divider>
     <file-system-browser
@@ -62,7 +57,7 @@ import { KlipperFile } from '@/store/files/types'
     DialogFileEditor
   }
 })
-export default class FileSystemWidget extends Mixins(UtilsMixin) {
+export default class FileSystemCard extends Mixins(UtilsMixin) {
   @Prop({ type: [String, Array], required: true })
   root!: string | string[];
 
