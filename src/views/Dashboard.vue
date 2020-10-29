@@ -11,7 +11,7 @@
       <v-col cols="12" md="6" class="pt-0">
         <tools-card></tools-card>
         <console-card></console-card>
-        <temperature-targets-card></temperature-targets-card>
+        <!-- <temperature-targets-card></temperature-targets-card> -->
         <temperature-graph-card></temperature-graph-card>
       </v-col>
     </v-row>

@@ -5,6 +5,10 @@
       fixed-tabs
       background-color="quaternary"
     >
+      <v-tab :key="'targets'">
+        <v-icon left>$fire</v-icon>
+        Targets
+      </v-tab>
       <v-tab :key="'macros'">
         <v-icon left>$fileCode</v-icon>
         Macros
@@ -32,6 +36,9 @@
     <v-expand-transition>
       <div v-show="!isCollapsed">
         <v-tabs-items v-model="activeTab" class="mb-auto rounded">
+          <v-tab-item :key="'targets'" class="tertiary rounded">
+            <temperature-targets-widget></temperature-targets-widget>
+          </v-tab-item>
           <v-tab-item :key="'macros'" class="tertiary rounded">
             <macros-widget></macros-widget>
           </v-tab-item>
@@ -58,12 +65,14 @@ import UtilsMixin from '@/mixins/utils'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
 import PowerControlWidget from '@/components/widgets/PowerControlWidget.vue'
 import MacrosWidget from '@/components/widgets/MacrosWidget.vue'
+import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 
 @Component({
   components: {
     FileSystemCard,
     PowerControlWidget,
-    MacrosWidget
+    MacrosWidget,
+    TemperatureTargetsWidget
   }
 })
 export default class ToolsCard extends Mixins(UtilsMixin) {
