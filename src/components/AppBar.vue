@@ -11,6 +11,7 @@
         :src="require('@/assets/logo.svg')"
         transition="scale-transition"
         width="35"
+        height="40"
       />
       <!-- <v-icon large color="#1970b5" class="d-none d-sm-inline">$printer3dNozzle</v-icon> -->
       <v-toolbar-title class="title text--secondary font-weight-light text-h4 mr-5 d-none d-sm-inline">
