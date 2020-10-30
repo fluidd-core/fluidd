@@ -19,6 +19,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@cadriel/vue-plotly": "^1.1.0",
     "@ctrl/tinycolor": "^3.1.4",
     "axios": "^0.20.0",
     "chart.js": "^2.9.3",
@@ -31,7 +32,6 @@
     "vue-chartjs": "^3.5.1",
     "vue-class-component": "^7.2.3",
     "vue-meta": "^2.4.0",
-    "vue-plotly": "^1.1.0",
     "vue-prism-editor": "^1.2.2",
     "vue-property-decorator": "^8.4.2",
     "vue-router": "^3.2.0",

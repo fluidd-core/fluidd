@@ -151,7 +151,7 @@ import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import { SaveMeshDialog } from '@/types/dialogs'
-import { Plotly } from 'vue-plotly'
+import { Plotly } from '@cadriel/vue-plotly'
 
 @Component({
   components: {

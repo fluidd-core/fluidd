@@ -7,9 +7,12 @@ module.exports = {
     'vuetify'
   ],
   configureWebpack: {
+    resolve: {
+      symlinks: false // Don't follow symlinks, fixes issues when using npm link.
+    },
     plugins: [
       // new ContextReplacementPlugin(/moment[/\\]locale$/, /de|fr|hu/), // Ignore specific locales.
-      new IgnorePlugin(/^\.\/locale$/, /moment$/) // Ignore all moment locales.
+      new IgnorePlugin(/^\.\/locale$/, /moment$/) // Ignore all moment locales (comes from chartjs)
       // new BundleAnalyzerPlugin({
       //   analyzerMode:
       //     (process.env.NODE_ENV === 'production') ? 'server' : 'disabled'
@@ -20,7 +23,7 @@ module.exports = {
     // config
     //   .resolve
     //   .alias
-    //   .set('plotly.js$', path.resolve(__dirname, 'node_modules/plotly.js/dist/plotly-basic.js'))
+    //   .set('plotly.js/dist/plotly', 'plotly.js/dist/plotly-basic.js')
 
     config
       .plugin('define')
