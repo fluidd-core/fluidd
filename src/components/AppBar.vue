@@ -4,8 +4,16 @@
     clipped-left
   >
     <v-container fluid class="constrained-width py-0 fill-height">
-      <v-icon large color="#1970b5" class="d-none d-sm-inline">$printer3dNozzle</v-icon>
-      <v-toolbar-title class="title text-h4 mr-5 d-none d-sm-inline">
+      <v-img
+        alt="Fluidd"
+        class="shrink mr-4"
+        contain
+        :src="require('@/assets/logo.svg')"
+        transition="scale-transition"
+        width="35"
+      />
+      <!-- <v-icon large color="#1970b5" class="d-none d-sm-inline">$printer3dNozzle</v-icon> -->
+      <v-toolbar-title class="title text--secondary font-weight-light text-h4 mr-5 d-none d-sm-inline">
         {{ instanceName }}
       </v-toolbar-title>
       <v-spacer />
@@ -80,14 +88,10 @@ export default class AppBar extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .title {
-    background: -webkit-linear-gradient(45deg, #1970b5, #9accf5);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;}
-  .logo {
-    margin-right: 12px;
-    max-height: 40px;
-    max-width: 40px;
-    object-fit: contain;
-  }
+  // .logo {
+  //   margin-right: 12px;
+  //   max-height: 40px;
+  //   max-width: 40px;
+  //   object-fit: contain;
+  // }
 </style>
