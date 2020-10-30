@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.10](https://github.com/cadriel/fluidd/compare/v0.0.9...v0.0.10) (2020-10-30)
+
+
+### Bug Fixes
+
+* firefox not showing logo ([31475c5](https://github.com/cadriel/fluidd/commit/31475c5b5fe2063535b3ac040446f13f852e4911))
+
 ### [0.0.9](https://github.com/cadriel/fluidd/compare/v0.0.8...v0.0.9) (2020-10-30)
 
 
