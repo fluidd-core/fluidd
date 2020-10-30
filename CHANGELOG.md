@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.9](https://github.com/cadriel/fluidd/compare/v0.0.8...v0.0.9) (2020-10-30)
+
+
+### Features
+
+* add base logo ([906bea3](https://github.com/cadriel/fluidd/commit/906bea365c9b0436ed098d4cd4027265ed5c6e12))
+* allow flipping camera horizontally or vertically ([ae20c2b](https://github.com/cadriel/fluidd/commit/ae20c2bd8d7f06abad906656d895e781712d0e63))
+* camera defaults to disabled, can be toggled in settings ([d4483c9](https://github.com/cadriel/fluidd/commit/d4483c901b50627424718afc004398d30a1fcb5e))
+* collapsable panels ([ed8f288](https://github.com/cadriel/fluidd/commit/ed8f2886042ca2c39b5c1acbd4e00b4f99056f37))
+* enable machine limits ([762399e](https://github.com/cadriel/fluidd/commit/762399e6f53645cdbb74aba2bba3356a42dc6c01))
+* initial pwa support + icon ([c624494](https://github.com/cadriel/fluidd/commit/c624494d468eb9ffb9cb06adabdc1d958bef67fa))
+* max constrained width ([56ce0ca](https://github.com/cadriel/fluidd/commit/56ce0caadb246b1995c72b7b7d37c6647e3bf79e))
+* move temp targets to tabbed panel ([dc326f3](https://github.com/cadriel/fluidd/commit/dc326f35ace4cfe9984e4f3bd7cec5b25eb4633e))
+* moves theme switcher to settings page and json config ([524a0fa](https://github.com/cadriel/fluidd/commit/524a0fade15eb93ec8d76c7da269b9e28db46ba3))
+* settings instance name ([38c563c](https://github.com/cadriel/fluidd/commit/38c563c702f734b3e2289c607baf0b09888dff0a))
+
+
+### Bug Fixes
+
+* cancel now works ([8acb24f](https://github.com/cadriel/fluidd/commit/8acb24fc6e72006512595cacc11f3d92e4f03ca2))
+* ensure power plugin is available when klippy is not ([1493738](https://github.com/cadriel/fluidd/commit/1493738a12425bcd390ceeae75c0acc0fc199c7e))
+* file modified dates should now be correct ([9623272](https://github.com/cadriel/fluidd/commit/9623272e0486c7c271ad4e1bc2d7ec35afff7b5a))
+* first few console items should no longer spread ([728cc55](https://github.com/cadriel/fluidd/commit/728cc554d8f6b7b3723fa118df490c4dca613b64))
+* invalid time estimates ([2dc4dd3](https://github.com/cadriel/fluidd/commit/2dc4dd3ba9b2915ccb30cd5a2d7c149b215470b4))
+* reprint button now works ([0667cd7](https://github.com/cadriel/fluidd/commit/0667cd7baf28dc83f635c87ea82877266cc8522a))
+* sliders not registering if mouse released outside of control ([8dee998](https://github.com/cadriel/fluidd/commit/8dee9983341b6820129618137a8ecb1a4132bf8c))
+* z-adjust displays to 3 decimal points, as per lcd. ([05c9869](https://github.com/cadriel/fluidd/commit/05c986921387059e1d379d84e9dd0db2edd57bae))
+
 ### [0.0.8](https://github.com/cadriel/fluidd/compare/v0.0.7...v0.0.8) (2020-10-26)
 
 
