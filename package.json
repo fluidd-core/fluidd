@@ -7,15 +7,15 @@
     "name": "Craig Bassett"
   },
   "scripts": {
-    "start": "vue-cli-service serve",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "inspect": "vue-cli-service inspect",
-    "release": "standard-version"
+    "release": "standard-version",
+    "start": "vue-cli-service serve",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "index.js",
   "dependencies": {
@@ -28,6 +28,7 @@
     "dayjs": "^1.8.36",
     "lodash-es": "^4.17.15",
     "prismjs": "^1.21.0",
+    "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.5.1",
     "vue-class-component": "^7.2.3",
@@ -45,11 +46,13 @@
     "@types/mocha": "^5.2.4",
     "@types/plotly.js": "^1.50.21",
     "@types/prismjs": "^1.16.1",
+    "@types/workbox-window": "^4.3.3",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-plugin-pwa": "^4.5.8",
     "@vue/cli-plugin-router": "~4.5.0",
     "@vue/cli-plugin-typescript": "~4.5.0",
     "@vue/cli-plugin-unit-mocha": "~4.5.0",

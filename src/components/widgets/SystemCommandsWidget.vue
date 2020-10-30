@@ -4,7 +4,8 @@
       <v-btn
         v-bind="attrs"
         v-on="on"
-        text>
+        text
+        min-width="54">
         <v-icon>$menu</v-icon>
       </v-btn>
     </template>

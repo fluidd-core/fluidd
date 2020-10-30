@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="constrained-width">
-    <v-row>
+  <v-container fluid class="constrained-width px-2 px-sm-4">
+    <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
         <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
         <status-card v-if="klippyConnected"></status-card>

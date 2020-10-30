@@ -3,10 +3,10 @@
     app
     clipped-left
   >
-    <v-container fluid class="constrained-width py-0 fill-height">
+    <v-container fluid class="constrained-width pa-0 fill-height">
       <v-img
         alt="Fluidd"
-        class="shrink mr-4"
+        class="shrink mr-4 d-none d-sm-inline"
         contain
         :src="require('@/assets/logo.svg')"
         transition="scale-transition"

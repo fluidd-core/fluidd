@@ -1,6 +1,6 @@
 <template>
-  <v-container fill-height fluid class="constrained-width">
-    <v-row justify="center" align="center">
+  <v-container fill-height fluid class="constrained-width px-2 px-sm-4">
+    <v-row justify="center" align="center" class="mt-0 mt-sm-2">
       <v-col>
         <center>
           <div class="text-h5">404 Not Found</div>

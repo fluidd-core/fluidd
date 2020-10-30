@@ -1,30 +1,33 @@
 <template>
-  <v-container fluid class="constrained-width">
+  <v-container fluid class="constrained-width px-2 px-sm-4">
+    <v-row no-gutters class="mt-0 mt-sm-2">
+      <v-col cols="12" class="pa-0">
+        <collapsable-card
+          title="UI Settings"
+          icon="$cogs"
+          :collapsable="false"
+          overrideClasses="mb-0 mb-sm-2"
+          >
+          <template v-slot:collapse-button>
+            <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">$save</v-icon> Save</v-btn>
+          </template>
+        </collapsable-card>
+      </v-col>
+    </v-row>
     <v-row>
-      <v-col cols="12" class="pt-0">
-        <v-card color="quaternary">
-          <v-card-title class="quaternary">
-            <v-icon large left>$cog</v-icon>
-            <span class="font-weight-light">UI Settings</span>
-            <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">$save</v-icon> Save Changes</v-btn>
-          </v-card-title>
-        </v-card>
-        <v-row>
-          <v-col cols="12" sm="4" md="3">
-            <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
-            <general-settings-card></general-settings-card>
-            <theme-settings-card></theme-settings-card>
-            <print-time-estimate-settings-card></print-time-estimate-settings-card>
-          </v-col>
-          <v-col cols="12" sm="4" md="3">
-            <camera-settings-card></camera-settings-card>
-            <toolhead-settings-card></toolhead-settings-card>
-            <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
-          </v-col>
-          <v-col cols="12" sm="4" md="6">
-            <macro-settings-card></macro-settings-card>
-          </v-col>
-        </v-row>
+      <v-col cols="12" sm="4" md="3">
+        <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+        <general-settings-card></general-settings-card>
+        <theme-settings-card></theme-settings-card>
+        <print-time-estimate-settings-card></print-time-estimate-settings-card>
+      </v-col>
+      <v-col cols="12" sm="4" md="3">
+        <camera-settings-card></camera-settings-card>
+        <toolhead-settings-card></toolhead-settings-card>
+        <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
+      </v-col>
+      <v-col cols="12" sm="4" md="6">
+        <macro-settings-card></macro-settings-card>
       </v-col>
     </v-row>
   </v-container>

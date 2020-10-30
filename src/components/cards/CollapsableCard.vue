@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="mb-4"
+    :class="componentClasses"
     color="tertiary"
     :rounded="rounded"
     :loading="isLoading">
@@ -93,6 +93,17 @@ export default class ToolheadCard extends Vue {
 
   @Prop({ type: Boolean, default: false })
   hideMenu!: boolean
+
+  @Prop({ type: String })
+  overrideClasses!: string
+
+  baseClasses = 'mb-2 mb-sm-4'
+
+  get componentClasses () {
+    return (this.overrideClasses)
+      ? this.overrideClasses
+      : this.baseClasses
+  }
 
   get id (): string {
     return (this.cardKey) ? this.cardKey : this.title

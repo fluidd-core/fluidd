@@ -1,14 +1,14 @@
 <template>
-  <v-container fluid class="constrained-width">
-    <v-row>
+  <v-container fluid class="constrained-width px-2 px-sm-4">
+    <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="7" class="pt-0">
         <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
         <v-row v-if="klippyConnected">
-          <v-col cols="12" sm="6">
+          <v-col cols="12" sm="6" class="pt-0">
             <runout-sensors-card v-if="klippyConnected"></runout-sensors-card>
           </v-col>
-          <v-col cols="12" sm="6">
+          <v-col cols="12" sm="6" class="pt-0">
             <end-stops-card v-if="klippyConnected"></end-stops-card>
           </v-col>
         </v-row>

@@ -3,6 +3,11 @@ const { IgnorePlugin } = require('webpack')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 module.exports = {
+  pwa: {
+    themeColor: '#2196F3',
+    msTileColor: '#000000',
+    appleMobileWebAppCache: 'yes'
+  },
   transpileDependencies: [
     'vuetify'
   ],
