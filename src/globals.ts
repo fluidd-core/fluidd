@@ -43,7 +43,6 @@ import {
   mdiPrinter3dNozzleAlertOutline,
   mdiAlertCircle,
   mdiFolderPlus,
-  mdiFolderUpload,
   mdiFile,
   mdiFolder,
   mdiPencil,
