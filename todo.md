@@ -1,9 +1,11 @@
 # TODO [fluidd]
 
 ## Next Up
-- move temp targets to tabs?
+- ensure tabs are also remembered in localstorage
 - temperature presets
 - add file thumbs to file list, potentially move to its own nav item
+- on printer config, force file browser to be full height (make card 100% height)
+- add option to change camera from <img> to <video>
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data

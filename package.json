@@ -19,7 +19,7 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@cadriel/vue-plotly": "^1.1.0",
+    "@cadriel/vue-plotly": "github:cadriel/vue-plotly",
     "@ctrl/tinycolor": "^3.1.4",
     "axios": "^0.20.0",
     "chart.js": "^2.9.3",
