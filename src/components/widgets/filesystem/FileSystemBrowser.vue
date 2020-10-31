@@ -51,7 +51,7 @@
           </v-btn>
           <btn-file-upload
             v-if="!readonly"
-            icon="$folderUp"
+            icon="$fileUpload"
             color="secondary"
             class="mr-2"
             :accept="accept"

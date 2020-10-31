@@ -59,7 +59,8 @@ import {
   mdiSend,
   mdiArrowHorizontalLock,
   mdiChartTimelineVariant,
-  mdiFireAlert
+  mdiFireAlert,
+  mdiUpload
 } from '@mdi/js'
 
 /**
@@ -93,7 +94,7 @@ export const Icons = Object.freeze({
   alertCircle: mdiAlertCircle,
   folderAdd: mdiFolderPlus,
   folder: mdiFolder,
-  folderUp: mdiFolderUpload,
+  fileUpload: mdiUpload,
   up: mdiArrowUp,
   down: mdiArrowDown,
   left: mdiArrowLeft,

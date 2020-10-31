@@ -23,6 +23,7 @@
   at the moment tho. Is this a problem?
 
 ## General Improvements
+- click / tap image camara update option (i.e., not constant image updates)
 - dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option
 - should be able to force part speed fan during a print
