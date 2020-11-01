@@ -368,6 +368,9 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifyMetadataUpdate (_, payload) {
     console.debug('metadataUpdate', payload)
   },
+  async notifyPowerChanged ({ dispatch }, payload) {
+    dispatch('gpio/onStatus', { [payload.device]: payload.status }, { root: true })
+  },
 
   /**
    * ==========================================================================
