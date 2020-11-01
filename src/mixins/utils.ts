@@ -2,7 +2,7 @@ import { SocketActions } from '@/socketActions'
 import Vue from 'vue'
 import Component from 'vue-class-component'
 import { Globals, Waits } from '@/globals'
-import { AxiosResponse } from 'axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 @Component({})
 export default class UtilsMixin extends Vue {
@@ -170,19 +170,18 @@ export default class UtilsMixin extends Vue {
     this.sendGcode(gcode, wait)
   }
 
-  getFile (path: string) {
+  getFile (path: string, options?: AxiosRequestConfig) {
     const filepath = path
+    const o = { ...options }
     return this.$http.get(
       this.apiUrl + filepath + '?date' + new Date().getTime(),
-      {
-        responseType: 'blob'
-      }
+      o
     )
   }
 
   download (file: string, path: string) {
     const filename = file || ''
-    this.getFile(`/server/files/${path}/${file}`)
+    this.getFile(`/server/files/${path}/${file}`, { responseType: 'blob' })
       .then((response: AxiosResponse) => {
         const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')

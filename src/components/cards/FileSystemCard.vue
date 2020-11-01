@@ -123,14 +123,10 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
     }
     this.getFile(`/server/files/${path}/${file.name}`)
       .then((response: AxiosResponse) => {
-        const blob = new Blob([response.data])
-        blob.text()
-          .then((result) => {
-            this.dialog.filename = file.name || ''
-            this.dialog.path = path
-            this.dialog.contents = result
-            this.dialog.loading = false
-          })
+        this.dialog.filename = file.name || ''
+        this.dialog.path = path
+        this.dialog.contents = response.data
+        this.dialog.loading = false
       })
   }
 
