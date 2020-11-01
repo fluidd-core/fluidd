@@ -100,8 +100,8 @@
               <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
             </template>
             <span>
-              <span class="blue--text text--lighten-4">{{ item.minMeasuredTemp.toFixed(1) }}°C&nbsp;&nbsp;</span>
-              <span class="red--text text--lighten-2">{{ item.maxMeasuredTemp.toFixed(1) }}°C</span>
+              <span class="amber--text text--lighten-1">high {{ item.maxMeasuredTemp.toFixed(1) }}°C</span><br />
+              <span class="cyan--text">low {{ item.minMeasuredTemp.toFixed(1) }}°C</span>
             </span>
           </v-tooltip>
         </v-col>
