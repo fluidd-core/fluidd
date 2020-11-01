@@ -62,13 +62,14 @@
       <v-row v-for="item in fans" :key="item.name">
         <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
           {{ item.name }}
-          <small class="ml-2" v-if="item.speed > 0 && item.target > 0">
-            <v-icon
-              color="grey darken-1"
-              small
-              v-if="item.target > 0">
-              fan
-            </v-icon>
+          <v-icon
+            v-if="item.speed > 0 && item.target > 0"
+            color="grey darken-1"
+            class="ml-2 spin"
+            small>
+            $fan
+          </v-icon>
+          <small v-if="item.speed > 0 && item.target > 0">
             {{ (item.speed * 100).toFixed(0) }}%
           </small>
 

@@ -1,4 +1,4 @@
-import { SocketState, FileChangeSocketResponse } from './socket/types'
+import { SocketState, FileChangeSocketResponse, ChartDataSet } from './socket/types'
 import { FileListChangeInfo } from './files/types'
 
 /**
@@ -40,41 +40,46 @@ export const getFileListChangeInfo = (payload: FileChangeSocketResponse): FileLi
 
 /**
  * Prepare packet data for a chart entry.
- * Every packet should have both a current temperature
- * and a target. If this update is the target, use the existing temp.
- * If this update is the temp, use the existing target.
+ * Every packet can have both a current temperature
+ * and a target. Determine if they SHOULD have targets by
+ * looking at the config object. If this update is the target,
+ * use the existing temp. If this update is the temp, use
+ * the existing target.
  * @param key The sensor key to update.
  * @param val The value being passed. We can tell if its a temp or target due to its property name.
  */
 export const configureChartEntry = (key: string, val: {[key: string]: number }, state: SocketState) => {
+  const config = state.printer[key]
   let label = key
   if (key.includes(' ')) label = key.split(' ')[1]
 
   const now = new Date() // Common date for this data.
-  const r = {
-    date: now,
-    temperature: {
+  const r: {temperature?: ChartDataSet; target?: ChartDataSet} = {}
+
+  if ('temperature' in val) {
+    r.temperature = {
       label,
-      x: now,
-      y: 0
-    },
-    target: {
-      label: `${label}Target`,
-      x: now,
-      y: 0
+      data: [{ x: now, y: val.temperature }]
+    }
+  } else {
+    r.temperature = {
+      label,
+      data: [{ x: now, y: config.temperature }]
     }
   }
 
-  if ('temperature' in val) {
-    r.temperature.y = val.temperature
-  } else {
-    r.temperature.y = state.printer[key].temperature
-  }
-
   if ('target' in val) {
-    r.target.y = val.target
+    r.target = {
+      label: `${label}Target`,
+      data: [{ x: now, y: val.target }]
+    }
   } else {
-    r.target.y = state.printer[key].target || 0 // sensors may not have targets
+    if ('target' in config) {
+      r.target = {
+        label: `${label}Target`,
+        data: [{ x: now, y: config.target }]
+      }
+    }
   }
 
   return r

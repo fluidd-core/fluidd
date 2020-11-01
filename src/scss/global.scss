@@ -1,6 +1,22 @@
+/** Force a constrained width for our pages.. */
 .container--fluid.constrained-width {
-  // @media (min-width: map-get($grid-breakpoints, 'xl')) {
   max-width: map-get($container-max-widths, 'xl');
+}
+
+/** Add a class to help us spin an icon if we need.. */
+.spin {
+  animation-name: spin;
+  animation-duration: 2000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(-360deg);
+  }
 }
 
 .v-btn-super {

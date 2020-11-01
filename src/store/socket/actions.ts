@@ -71,13 +71,9 @@ export const actions: ActionTree<SocketState, RootState> = {
       // in klipper. We should retry after the set delay.
       // Restart our startup sequence.
       commit('resetState')
-      /* eslint-disable @typescript-eslint/camelcase */
       commit('onPrinterInfo', { state: 'error', state_message: payload.message }) // Forcefully set the printer in error
-      /* eslint-enable @typescript-eslint/camelcase */
-      // setTimeout(() => {
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
-        // console.log('running printer info')
         SocketActions.printerInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
@@ -112,14 +108,13 @@ export const actions: ActionTree<SocketState, RootState> = {
     if (payload.state !== 'ready') {
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
-        // console.log('running printer info')
         SocketActions.printerInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
-      // We're good, move on. Start by loading the temperature and console history.
+      // We're good, move on. Start by loading the server data, temperature and console history.
       SocketActions.serverInfo()
-      SocketActions.serverTemperatureStore()
       SocketActions.serverGcodeStore()
+      SocketActions.serverTemperatureStore()
     }
   },
 
@@ -167,6 +162,8 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onPrinterObjectsList ({ commit, dispatch }, payload) {
     // Given our object list, subscribe to any data we'd want constant updates for
     // and prepopulate our store.
+    // Also ensure we init the chart data with the labels
+    // we know we'll need.
     let intendedSubscriptions = {}
     payload.objects.forEach((k: string) => {
       if (!k.includes('menu') && !k.includes('gcode_macro')) {
@@ -283,7 +280,9 @@ export const actions: ActionTree<SocketState, RootState> = {
         }
       }
     })
-    commit('onAcceptNotifications') // start accepting notifications after our subscribe.
+
+    // Accept notifications, and commit the first subscribe.
+    commit('onAcceptNotifications')
     commit('setFansProbes', r)
     dispatch('notifyStatusUpdate', payload.status)
   },
@@ -311,8 +310,8 @@ export const actions: ActionTree<SocketState, RootState> = {
     // add setTimeout to empty the buffer and run the below..
 
     // Do NOT accept notification updates until our subscribe comes back.
-    // This is because moonraker may send a notification update prior to
-    // subscribing on a browser refresh.
+    // This is because moonraker currently sends notification updates
+    // prior to subscribing on browser refresh.
     if (payload && state.acceptingNotifications) {
       for (const key in payload) {
         const val = payload[key]
@@ -340,11 +339,13 @@ export const actions: ActionTree<SocketState, RootState> = {
             ('temperature' in val || 'target' in val) // Ensures the node has a temp or target val...
           ) {
             const r = configureChartEntry(key, val, state)
-            commit('addChartValue', r.temperature)
-            commit('addChartValue', r.target)
+            if ('temperature' in r) commit('addChartValue', r.temperature)
+            if ('target' in r) commit('addChartValue', r.target)
           }
         }
       }
+      // The first notification should have pre-populated any chart labels, so mark it as ready.
+      if (!state.chartReady) commit('setChartReadyState', true)
     }
   },
 

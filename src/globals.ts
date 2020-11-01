@@ -168,7 +168,6 @@ export const Waits = Object.freeze({
   onSetSCV: 'onSetSCV'
 })
 
-/* eslint-disable @typescript-eslint/camelcase */
 export const chartConfiguration: ChartConfiguration = Object.freeze({
   HISTORY_RETENTION: 11, // history in minutes of chart to keep.
   COLORS: {
@@ -212,5 +211,3 @@ export const defaultPlotLayout = Object.freeze({
     }
   }
 })
-
-/* eslint-enable @typescript-eslint/camelcase */

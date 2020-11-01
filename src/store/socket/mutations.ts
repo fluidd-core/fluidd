@@ -108,32 +108,39 @@ export const mutations: MutationTree<SocketState> = {
   clearEndStops (state) {
     state.endstops = {}
   },
-  // addInitialConsoleData (state, payload) {
-  //   state.console = payload
-  // },
   addInitialChartData (state, payload) {
     payload.forEach((item: ChartDataSet) => {
       state.chart.push(item)
     })
   },
-  addChartValue (state, payload) {
-    // Sensor is assumed added by the initial chart data.
-    const chartItem = state.chart.find(item => item.label === payload.label)
-    // Dont keep data older than 10 minutes...
+  setChartReadyState (state, payload) {
+    state.chartReady = payload
+  },
+  addChartValue (state, payload: ChartDataSet) {
+    // Dont keep data older than 10 minutes and...
+    // Only add if it's at least a second over the prior entry.
+    let chartItem = state.chart.find(item => item.label === payload.label)
+    if (!chartItem) {
+      chartItem = { label: payload.label, data: [], radius: 0 }
+      state.chart.push(chartItem)
+    }
     if (chartItem) {
-      // Only add if it's at least a second over the prior entry.
-      const date1 = new Date(payload.x)
-      const date2 = new Date(chartItem.data[chartItem.data.length - 1].x)
-      const diff1 = 1000 // time to wait before adding another entry.
-      const diff2 = chartConfiguration.HISTORY_RETENTION * 60 * 1000 // Truncate items older than this.
-      if (date1.getTime() - date2.getTime() > diff1) {
-        chartItem.data.push({ x: payload.x, y: payload.y })
-        let i
-        while (
-          (i = chartItem.data.findIndex(item => date1.getTime() - new Date(item.x).getTime() > diff2)) > -1
-        ) {
-          chartItem.data.splice(i, 1)
+      if (chartItem.data.length) {
+        const date1 = new Date(payload.data[0].x)
+        const date2 = new Date(chartItem.data[chartItem.data.length - 1].x)
+        const diff1 = 1000 // time to wait before adding another entry.
+        const diff2 = chartConfiguration.HISTORY_RETENTION * 60 * 1000 // Truncate items older than this.
+        if (date1.getTime() - date2.getTime() > diff1) {
+          chartItem.data.push(payload.data[0])
+          let i
+          while (
+            (i = chartItem.data.findIndex(item => date1.getTime() - new Date(item.x).getTime() > diff2)) > -1
+          ) {
+            chartItem.data.splice(i, 1)
+          }
         }
+      } else {
+        chartItem.data.push(payload.data[0])
       }
     }
   },

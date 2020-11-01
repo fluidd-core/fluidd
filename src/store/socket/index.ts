@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import { Module } from 'vuex'
 import { getters } from './getters'
 import { actions } from './actions'
@@ -17,6 +15,7 @@ export const getDefaultState = (): SocketState => {
     endstops: {},
     console: [],
     chart: [],
+    chartReady: false,
     macros: {},
     plugins: [],
     temperature_fans: [],

@@ -251,7 +251,6 @@ export const getters: GetterTree<SocketState, RootState> = {
             split.length > 0 &&
             split[0] === 'bed_mesh'
           ) {
-            /* eslint-disable @typescript-eslint/camelcase */
             const profile: BedMesh = {
               profile_name: split[1],
               active: false

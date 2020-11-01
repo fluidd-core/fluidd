@@ -1,11 +1,11 @@
 <template>
   <collapsable-card
-    :loading="loading"
+    :loading="!chartReady"
     title="Temperature"
     icon="$chart">
 
     <v-card-text class="chart-container">
-      <temperature-chart-widget @hook:mounted="chartMounted()" v-if="chartReady && klippyConnected" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
+      <temperature-chart-widget @hook:mounted="chartMounted()" v-if="chartReady" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
     </v-card-text>
 
   </collapsable-card>
@@ -26,7 +26,7 @@ const TemperatureChartWidget = () => import(/* webpackChunkName: "tempchart", we
 export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
   private chartData: Chart.ChartData = {}
   private startInterval!: number | undefined
-  private chartReady = false
+  private ready = false
   private chartStyles = {
     overflow: 'auto',
     position: 'relative',
@@ -52,9 +52,18 @@ export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
     }
   }
 
+  get chartReady () {
+    return (
+      this.$store.state.socket.acceptingNotifications &&
+      this.$store.state.socket.chartReady &&
+      this.klippyConnected &&
+      this.ready
+    )
+  }
+
   private start () {
     this.chartData = this.allChartData
-    this.chartReady = true
+    this.ready = true
   }
 }
 </script>

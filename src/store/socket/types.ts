@@ -10,6 +10,7 @@ export interface SocketState {
   plugins: string[]; // active plugins (gpio_power)
   console: ConsoleEntry[]; // console stream
   chart: ChartDataSet[]; // chart data
+  chartReady: boolean;
   temperature_fans: string[]; // maintains a list of available temp fans
   temperature_sensors: string[]; // maintains a list of available sensors
   temperature_probes: string[]; // maintains a list of available probes
@@ -89,7 +90,7 @@ export interface ChartDataSet {
   data: ChartData[];
   label: string;
   display?: boolean;
-  radius: number;
+  radius?: number;
   spanGaps?: boolean;
   borderWidth?: number;
   fill?: boolean;

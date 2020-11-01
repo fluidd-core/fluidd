@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import { Module } from 'vuex'
 import { getters } from './getters'
 import { actions } from './actions'
