@@ -4,6 +4,7 @@ import { FileChangeSocketResponse } from '../socket/types'
 import { RootState } from '../types'
 import { getFileListChangeInfo } from '../helpers'
 import { SocketActions } from '@/socketActions'
+import { Globals } from '@/globals'
 
 export const actions: ActionTree<FilesState, RootState> = {
   async onServerFilesGetDirectory ({ commit }, payload) {
@@ -21,7 +22,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
     if (payload.dirs) {
       payload.dirs.forEach((dir: Directory) => {
-        if (!dir.dirname.startsWith('.')) {
+        if (!Globals.FILTERED_FILES.some(e => dir.dirname.startsWith(e))) {
           dir.type = 'directory'
           dir.name = dir.dirname
           dir.modified = new Date(dir.modified).getTime()
@@ -31,7 +32,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
     if (payload.files) {
       payload.files.forEach((file: KlipperFile) => {
-        if (!file.filename.startsWith('.')) {
+        if (!Globals.FILTERED_FILES.some(e => file.filename.startsWith(e))) {
           file.type = 'file'
           file.name = file.filename
           file.extension = file.filename.split('.').pop() || ''

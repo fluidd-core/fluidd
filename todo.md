@@ -1,7 +1,7 @@
 # TODO [fluidd]
 
 ## Next Up
-- ufp plugin support. 300x300 thumbs, don't show thumbs folder in UI / browser.
+- look into why IOS/safari fails to load some config files
 - in file save window add 'save and close' option, and maybe 'save, close and restart'
 - ensure tabs are also remembered in localstorage
 - temperature presets

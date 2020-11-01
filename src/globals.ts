@@ -59,7 +59,8 @@ import {
   mdiArrowHorizontalLock,
   mdiChartTimelineVariant,
   mdiFireAlert,
-  mdiUpload
+  mdiUpload,
+  mdiFolderUpload
 } from '@mdi/js'
 
 /**
@@ -72,7 +73,8 @@ export const Globals = Object.freeze({
   KLIPPY_RETRY_DELAY: 2000,
   LOCAL_STORAGE_KEY: 'appConfig',
   SETTINGS_FILENAME: '.fluidd.json',
-  APP_NAME: 'Fluidd'
+  APP_NAME: 'Fluidd',
+  FILTERED_FILES: ['.', 'thumbs']
 })
 
 export const Icons = Object.freeze({
@@ -92,6 +94,7 @@ export const Icons = Object.freeze({
   checkedCircle: mdiCheckCircleOutline,
   alertCircle: mdiAlertCircle,
   folderAdd: mdiFolderPlus,
+  folderUp: mdiFolderUpload,
   folder: mdiFolder,
   fileUpload: mdiUpload,
   up: mdiArrowUp,
