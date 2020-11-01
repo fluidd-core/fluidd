@@ -1,6 +1,8 @@
 # TODO [fluidd]
 
 ## Next Up
+- ufp plugin support. 300x300 thumbs, don't show thumbs folder in UI / browser.
+- in file save window add 'save and close' option, and maybe 'save, close and restart'
 - ensure tabs are also remembered in localstorage
 - temperature presets
 - add file thumbs to file list, potentially move to its own nav item
@@ -13,7 +15,6 @@
 - add console.log wrapper for dev vs prod
 - add a cached throttle to (socket notifications) temp updates, print timers, position trackers.
 - Performance / memory heap checks
-- lazy load bigger components / pages (perhaps require a loader)
 
 ## Known Bugs:
 - if you complete a print, then delete the original gcode;
