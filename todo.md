@@ -1,7 +1,6 @@
 # TODO [fluidd]
 
 ## Next Up
-- look into why IOS/safari fails to load some config files
 - in file save window add 'save and close' option, and maybe 'save, close and restart'
 - ensure tabs are also remembered in localstorage
 - temperature presets
