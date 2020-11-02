@@ -48,7 +48,7 @@
           <v-tab-item :key="'jobs'" class="tertiary rounded max-height" v-if="klippyConnected">
             <file-system-card
               root="gcodes"
-              accept=".gcode"
+              accept=".gcode, .ufp"
               :show-title="false"
               :show-meta-data="false"
             ></file-system-card>
