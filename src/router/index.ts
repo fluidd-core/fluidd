@@ -2,6 +2,7 @@ import Vue from 'vue'
 // import store from '@/store'
 import VueRouter, { RouteConfig } from 'vue-router'
 import Dashboard from '../views/Dashboard.vue'
+import Jobs from '../views/Jobs.vue'
 import Configuration from '../views/Configuration.vue'
 import Settings from '../views/Settings.vue'
 import NotFound from '../views/NotFound.vue'
@@ -13,6 +14,11 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Dashboard',
     component: Dashboard
+  },
+  {
+    path: '/jobs',
+    name: 'Jobs',
+    component: Jobs
   },
   {
     path: '/settings',

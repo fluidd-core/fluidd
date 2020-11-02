@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { FilesState, KlipperFile, Directory } from './types'
+import { FilesState, KlipperFile, Directory, Files } from './types'
 import { FileChangeSocketResponse } from '../socket/types'
 import { RootState } from '../types'
 import { getFileListChangeInfo } from '../helpers'
@@ -10,6 +10,8 @@ export const actions: ActionTree<FilesState, RootState> = {
   async onServerFilesGetDirectory ({ commit }, payload) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
+    let pathNoRoot = path.replace(root, '')
+    if (pathNoRoot.startsWith('/')) pathNoRoot = pathNoRoot.substring(1)
     const items: (KlipperFile | Directory)[] = []
     if (path && path.indexOf('/') >= 0) {
       items.push({
@@ -22,7 +24,10 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
     if (payload.dirs) {
       payload.dirs.forEach((dir: Directory) => {
-        if (!Globals.FILTERED_FILES.some(e => dir.dirname.startsWith(e))) {
+        if (
+          !Globals.FILTERED_FILES_PREFIX.some(e => dir.dirname.startsWith(e)) &&
+          !Globals.FILTERED_FILES_EXTENSION.some(e => dir.dirname.endsWith(e))
+        ) {
           dir.type = 'directory'
           dir.name = dir.dirname
           dir.modified = new Date(dir.modified).getTime()
@@ -32,7 +37,13 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
     if (payload.files) {
       payload.files.forEach((file: KlipperFile) => {
-        if (!Globals.FILTERED_FILES.some(e => file.filename.startsWith(e))) {
+        if (
+          !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
+          !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
+        ) {
+          if (root === 'gcodes') {
+            SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename, path, file.filename)
+          }
           file.type = 'file'
           file.name = file.filename
           file.extension = file.filename.split('.').pop() || ''
@@ -42,6 +53,19 @@ export const actions: ActionTree<FilesState, RootState> = {
       })
     }
     commit('onServerFilesGetDirectory', { root, directory: { path, items } })
+  },
+
+  async onServerFilesMetadata ({ state, commit }, payload) {
+    const root = 'gcodes' // We'd only ever load metadata for gcode files.
+    const path = payload.__request__.params.path // has the root in it.
+    const filename = payload.__request__.params.name // should just be the filename
+    const pathIndex = state[root].findIndex((f: Files) => (f.path === path))
+    if (state[root][pathIndex] && state[root][pathIndex].items) {
+      const fileIndex = state[root][pathIndex].items.findIndex(f => (f.type === 'file' && f.filename === filename))
+      if (fileIndex >= 0) {
+        commit('onFileMetaUpdate', { root, pathIndex, fileIndex, payload })
+      }
+    }
   },
 
   /**

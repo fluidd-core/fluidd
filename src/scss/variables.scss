@@ -1,2 +1,7 @@
 // In theory vuetify bootstraps this automagically?
+
+// Change our grid gutters to 16px.
 $grid-gutter: 16px;
+
+// Standard height rows for our table should be..
+$data-table-regular-row-height: 40px;

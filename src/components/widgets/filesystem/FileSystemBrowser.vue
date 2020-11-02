@@ -3,20 +3,18 @@
     <v-data-table
       :headers="headers"
       :items="directory.items"
-      item-key="name"
+      :dense="dense"
       :disable-pagination="true"
       :loading="loadingDirectory"
       :sort-desc="true"
       :custom-sort="$filters.fileSystemSort"
       :search="search"
-      :single-expand="true"
-      :show-expand="showMetaData"
+      item-key="name"
       height="100%"
       no-data-text="No files"
       no-results-text="No files found"
       sort-by="modified"
       hide-default-footer
-      dense
     >
 
       <template v-slot:top>
@@ -76,26 +74,7 @@
         </dialog-input>
       </template>
 
-      <template v-slot:expanded-item="{ headers }">
-        <tr class="is-expanded grey--text">
-          <td :colspan="headers.length">
-            <v-row>
-              <v-col>
-                Object Height: 0.0 <br />
-                Layer Height: 2 <br />
-                Print Time: 12 <br />
-              </v-col>
-              <v-col>
-                Filament Usage: 1 <br />
-                Slicer: SimpleSlicer <br />
-                <!-- <img :src="'data:image/gif;base64,'+thumbnail.data" height="36px" /> -->
-              </v-col>
-            </v-row>
-          </td>
-        </tr>
-      </template>
-
-      <template v-slot:item="{ item, expand, isExpanded }">
+      <template v-slot:item="{ item }">
         <tr
           :class="{ 'is-directory': (item.type === 'directory'), 'is-file': (item.type === 'file') }"
           class="px-1"
@@ -103,31 +82,52 @@
           @contextmenu="openContextMenu(item, $event)"
         >
           <td>
+            <!-- icons are 16px small, or 24px for standard size. -->
             <v-icon
-              small
+              v-if="!item.thumbnails || !item.thumbnails.length"
+              :small="dense"
               :color="(item.type === 'file') ? 'grey' : 'primary'"
               class="mr-1">
               {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
             </v-icon>
+            <img
+              v-if="item.thumbnails && item.thumbnails.length"
+              class="mr-1 file-icon-thumb"
+              :src="getThumb(item).data"
+              :width="(dense) ? 16 : 24"
+            />
+
           </td>
           <td class="grey--text">
             {{ item.name }}
+          </td>
+          <td class="grey--text" v-if="showMetaData">
+            <span v-if="item.type === 'file' && item.object_height">
+              {{ item.object_height }} mm
+            </span>
+          </td>
+          <td class="grey--text" v-if="showMetaData">
+            <span v-if="item.type === 'file' && item.layer_height">
+              {{ item.layer_height }} mm
+            </span>
+          </td>
+          <td class="grey--text" v-if="showMetaData">
+            <span v-if="item.type === 'file'">
+              {{ getReadableLengthString(item.filament_total) }}
+            </span>
+          </td>
+          <td class="grey--text" v-if="showMetaData">
+            {{ item.slicer }}
+          </td>
+          <td class="grey--text" v-if="showMetaData">
+            <span v-if="item.type === 'file'">
+            {{ formatCounterTime(item.estimated_time) }}
+            </span>
           </td>
           <td class="grey--text">
             {{ (item.type === 'directory' && item.name === '..') ? '--' : formatDate(item.modified) }}
           </td>
           <td class="grey--text text-end">{{ (item.type === 'file') ? formatSize(item.size) : '--' }}</td>
-          <td class="px-0" v-if="showMetaData">
-            <v-btn
-              icon
-              small
-              v-if="item.type === 'file'"
-              @click="expand(!isExpanded)">
-              <v-icon small>
-                {{ (isExpanded) ? '$chevronUp' : '$chevronDown' }}
-              </v-icon>
-            </v-btn>
-          </td>
         </tr>
       </template>
     </v-data-table>
@@ -185,13 +185,15 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { Directory, KlipperFile } from '@/store/files/types'
+import { Directory, KlipperFile, KlipperFileWithMeta } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
+import { getThumb } from '@/store/helpers'
 import DialogInput from '@/components/dialogs/dialogInput.vue'
 import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
 import UtilsMixin from '@/mixins/utils'
+import { DataTableHeader } from 'vuetify'
 
 @Component({
   components: {
@@ -212,31 +214,29 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  dense!: boolean;
+
   currentRoot = ''
   currentPath = ''
   search = ''
   loadingDirectory = false
-  headers = [
-    { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-    { text: 'name', value: 'name' },
-    { text: 'modified', value: 'modified', width: '1%' },
-    { text: 'size', value: 'size', width: '1%', align: 'end' }
-    // { text: '', value: 'actions', width: '30px', sortable: false }
-  ]
+  headers: DataTableHeader[] = []
 
-  contextMenu: {[key: string]: boolean | number | KlipperFile | Directory | undefined } = {
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  contextMenu: any = {
     open: false,
     x: 0,
     y: 0,
     item: {
-      dirname: '',
       filename: '',
       name: '',
-      type: '',
+      type: 'file',
       modified: 0,
       size: 0
     }
   }
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   uploadDialog = false
   dialog: FileSystemDialogData = {
@@ -268,15 +268,36 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   mounted () {
-    if (this.showMetaData) {
-      this.headers.push({
-        text: '',
-        value: 'data-table-expand',
-        width: '30px'
-      })
-    }
-
     this.currentRoot = this.root
+
+    if (!this.showMetaData) {
+      this.headers = [
+        { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
+        { text: 'name', value: 'name' },
+        { text: 'modified', value: 'modified', width: '1%' },
+        { text: 'size', value: 'size', width: '1%', align: 'end' }
+      ]
+    } else {
+      this.headers = [
+        { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
+        { text: 'name', value: 'name' },
+        { text: 'height', value: 'object_height' },
+        { text: 'layer height', value: 'layer_height' },
+        { text: 'filament', value: 'filament_total' },
+        { text: 'slicer', value: 'slicer' },
+        { text: 'estimated time', value: 'estimated_time' },
+        { text: 'modified', value: 'modified', width: '1%' },
+        { text: 'size', value: 'size', width: '1%', align: 'end' }
+      ]
+    }
+  }
+
+  formatCounterTime (seconds: number) {
+    return this.$filters.formatCounterTime(seconds)
+  }
+
+  getReadableLengthString (length: number) {
+    return this.$filters.getReadableLengthString(length)
   }
 
   selectRoot (root: string) {
@@ -357,6 +378,14 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
 
   viewItem (item: KlipperFile) {
     this.$emit('view-file', item, this.currentPath)
+  }
+
+  getThumb (item: KlipperFile | KlipperFileWithMeta) {
+    if ('thumbnails' in item) {
+      const file = item as KlipperFileWithMeta
+      return getThumb(file, false)
+    }
+    return null
   }
 
   createDirectoryDialog () {

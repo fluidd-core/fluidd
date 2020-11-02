@@ -1,5 +1,30 @@
 import { SocketState, FileChangeSocketResponse, ChartDataSet } from './socket/types'
-import { FileListChangeInfo } from './files/types'
+import { FileListChangeInfo, KlipperFileWithMeta, Thumbnail } from './files/types'
+
+/**
+ * Return a file thumb if one exists
+ * Optionally, pick the largest or smallest image.
+ */
+export const getThumb = (file: KlipperFileWithMeta, goLarge = true) => {
+  if (
+    file.thumbnails &&
+    file.thumbnails.length
+  ) {
+    const thumbs = file.thumbnails
+    let thumb: Thumbnail | undefined
+    if (thumbs) {
+      if (goLarge) {
+        thumb = thumbs.reduce((a, c) => (a.size && c.size && (a.size > c.size)) ? a : c)
+      } else {
+        thumb = thumbs.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)
+      }
+      if (thumb && thumb.data && thumb.data !== null) {
+        return { ...thumb, data: 'data:image/gif;base64,' + thumb.data }
+      }
+    }
+  }
+  return undefined
+}
 
 /**
  * Takes the file list changed information and formats

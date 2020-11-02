@@ -1,12 +1,13 @@
 # TODO [fluidd]
 
 ## Next Up
-- in file save window add 'save and close' option, and maybe 'save, close and restart'
+- add file thumbs to file list, potentially move to its own nav item
+  - the dialog should show a larger image too perhaps?
 - ensure tabs are also remembered in localstorage
 - temperature presets
-- add file thumbs to file list, potentially move to its own nav item
 - on printer config, force file browser to be full height (make card 100% height)
 - add option to change camera from <img> to <video>
+- load gcode help and implement in console
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -28,7 +29,7 @@
 - click / tap image camara update option (i.e., not constant image updates)
 - dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option
-- should be able to force part speed fan during a print
+- should be able to force part speed fan during a print?
 - add status of heater_fans (extruder fan and controller fan)
 - add UI to filter out temp waits from console
 

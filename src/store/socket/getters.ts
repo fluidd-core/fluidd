@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Thumbnail, Endstops } from './types'
+import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Endstops } from './types'
+import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
 import { chartConfiguration } from '@/globals'
 import { TinyColor } from '@ctrl/tinycolor'
 import { get } from 'lodash-es'
+import { getThumb } from '../helpers'
 
 export const getters: GetterTree<SocketState, RootState> = {
   /**
@@ -106,23 +108,11 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getPrintImage: (state) => {
-    // We may have more than one thumb - so pick the largest.
     let thumb: Thumbnail | undefined
-    if (
-      state.printer.current_file &&
-      state.printer.current_file.thumbnails &&
-      state.printer.current_file.thumbnails.length
-    ) {
-      state.printer.current_file.thumbnails.forEach((item: Thumbnail) => {
-        if (!thumb || (item.size > thumb.size)) {
-          thumb = { ...item }
-        }
-      })
+    if (state.printer.current_file) {
+      thumb = getThumb(state.printer.current_file)
     }
-
-    if (thumb && thumb.data) {
-      thumb.data = 'data:image/gif;base64,' + thumb.data
-    }
+    console.log('have thumb', state.printer.current_file)
     return thumb
   },
 

@@ -17,7 +17,12 @@ const Filters = {
     const h = Math.floor(seconds / 3600)
     const m = Math.floor(seconds % 3600 / 60)
     const s = Math.floor(seconds % 3600 % 60)
-    const r = `${h}h ${m}m ${s}s`
+
+    let r = s + 's'
+    if (m > 0) r = m + 'm ' + r
+    if (h > 0) r = h + 'h ' + r
+
+    // const r = `${h}h ${m}m ${s}s`
     return (isNeg) ? '-' + r : r
   },
 
@@ -75,8 +80,8 @@ const Filters = {
    * Formats a number representing mm to m if > 1000
    */
   getReadableLengthString (lengthInMm: number) {
-    if (lengthInMm > 1000) return (lengthInMm / 1000).toFixed(2) + 'm'
-    return (lengthInMm / 1000).toFixed(2) + 'mm'
+    if (lengthInMm > 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
+    return (lengthInMm / 1000).toFixed(2) + ' mm'
   },
 
   /**

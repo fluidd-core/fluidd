@@ -41,9 +41,9 @@
             </v-tooltip>
             <span class="grey--text text--darken-2">{{ filamentEstimates }}</span>
           </div>
-          <div class="d-flex grey--text text--darken-2">
+          <div class="d-flex grey--text text--darken-2" v-if="filename">
             <v-icon color="grey darken-2">$fileDocument</v-icon>
-            <div class="filename ml-1" v-if="filename">gcodes/{{ filename }}</div>
+            <div class="filename ml-1">gcodes/{{ filename }}</div>
           </div>
       </v-col>
       <v-col cols="auto" class="d-none d-sm-flex" v-if="thumbnail && printerPrinting">

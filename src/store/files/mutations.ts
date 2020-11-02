@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { FilesState } from './types'
 
@@ -10,9 +11,14 @@ export const mutations: MutationTree<FilesState> = {
     } else {
       state[payload.root].push(payload.directory)
     }
+  },
+
+  onFileMetaUpdate (state, payload) {
+    const root = payload.root
+    const pathIndex = payload.pathIndex
+    const fileIndex = payload.fileIndex
+    const file = state[root][pathIndex].items[fileIndex]
+    Vue.set(state[root][pathIndex].items, fileIndex, { ...file, ...payload.payload })
   }
 
-  // removeDirectory (state, payload) {
-  //   state[payload.root].splice(payload.index, 1)
-  // }
 }

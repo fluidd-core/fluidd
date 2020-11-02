@@ -7,12 +7,11 @@ export interface FilesState {
 
 export interface Files {
   path: string;
-  files: KlipperFile[];
-  dirs: Directory[];
+  items: [KlipperFile | KlipperFileWithMeta | Directory];
 }
 
 export interface KlipperFile {
-  type: string;
+  type: 'file';
   name?: string;
   extension: string;
   filename: string;
@@ -20,11 +19,31 @@ export interface KlipperFile {
   size: number;
 }
 
+export interface KlipperFileWithMeta extends KlipperFile {
+  estimated_time?: number;
+  filament_total?: number;
+  first_layer_bed_temp?: number;
+  first_layer_extr_temp?: number;
+  first_layer_height?: number;
+  layer_height?: number;
+  object_height?: number;
+  slicer?: string;
+  slicer_version?: string;
+  thumbnails?: Thumbnail[];
+}
+
 export interface Directory {
-  type: string;
+  type: 'directory';
   name?: string;
   dirname: string;
   modified: number;
+  size: number;
+}
+
+export interface Thumbnail {
+  data: string;
+  height: number;
+  width: number;
   size: number;
 }
 

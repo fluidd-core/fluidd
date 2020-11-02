@@ -23,6 +23,10 @@
           <v-icon small class="mr-md-1">$home</v-icon>
           <span class="d-none d-md-inline">Dashboard</span>
         </v-btn>
+        <v-btn text to="/jobs">
+          <v-icon small class="mr-md-1">$files</v-icon>
+          <span class="d-none d-md-inline">Jobs</span>
+        </v-btn>
         <v-btn text to="/configuration">
           <v-icon small class="mr-md-1">$tune</v-icon>
           <span class="d-none d-md-inline">Printer</span>

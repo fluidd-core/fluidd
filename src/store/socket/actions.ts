@@ -287,8 +287,14 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('notifyStatusUpdate', payload.status)
   },
 
-  async onServerFilesMetadata ({ commit }, payload) {
-    commit('onSocketNotify', { key: 'current_file', payload })
+  // We've loaded a files metadata. If its for the current_file,
+  // then apply it there - otherwise pass on to the file module.
+  async onServerFilesMetadata ({ commit, dispatch, state }, payload) {
+    if (payload.filename === state.printer.print_stats.filename) {
+      commit('onSocketNotify', { key: 'current_file', payload })
+    } else {
+      dispatch('files/onServerFilesMetadata', payload, { root: true })
+    }
   },
 
   /**

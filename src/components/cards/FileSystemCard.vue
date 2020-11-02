@@ -20,6 +20,7 @@
       :show-meta-data="showMetaData"
       :accept="accept"
       :readonly="(this.currentRoot === 'config_examples') ? true : false"
+      :dense="dense"
       @create-file="upload"
       @create-dir="create"
       @rename-file="rename"
@@ -67,14 +68,14 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   @Prop({ type: String, required: false, default: '.gcode' })
   accept!: string;
 
-  // @Prop({ type: Boolean, default: false })
-  // readonly!: boolean;
-
   @Prop({ type: String, default: 'Jobs' })
   panelTitle!: string;
 
   @Prop({ type: Boolean, default: true })
   showTitle!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  dense!: boolean;
 
   currentRoot = ''
 

@@ -49,6 +49,7 @@
             <file-system-card
               root="gcodes"
               accept=".gcode, .ufp"
+              dense
               :show-title="false"
               :show-meta-data="false"
             ></file-system-card>

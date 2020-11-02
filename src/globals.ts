@@ -74,7 +74,8 @@ export const Globals = Object.freeze({
   LOCAL_STORAGE_KEY: 'appConfig',
   SETTINGS_FILENAME: '.fluidd.json',
   APP_NAME: 'Fluidd',
-  FILTERED_FILES: ['.', 'thumbs']
+  FILTERED_FILES_PREFIX: ['.', 'thumbs'],
+  FILTERED_FILES_EXTENSION: ['.json']
 })
 
 export const Icons = Object.freeze({

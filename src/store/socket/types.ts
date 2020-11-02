@@ -139,13 +139,6 @@ export interface BedMeshProfile {
   y_count: string;
 }
 
-export interface Thumbnail {
-  data: string;
-  height: number;
-  width: number;
-  size: number;
-}
-
 export interface ConsoleEntry {
   message: string;
   time?: number;
