@@ -367,10 +367,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     SocketActions.printerInfo()
   },
   async notifyFilelistChanged ({ dispatch }, payload) {
-    dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true }) // Passed on to the files module
+    dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true })
   },
   async notifyMetadataUpdate ({ dispatch }, payload) {
-    dispatch('files/onServerFilesMetadata', payload, { root: true }) // Passed on to the files module
+    dispatch('files/onServerFilesMetadata', payload, { root: true })
   },
   async notifyPowerChanged ({ dispatch }, payload) {
     dispatch('gpio/onStatus', { [payload.device]: payload.status }, { root: true })

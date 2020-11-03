@@ -10,8 +10,8 @@
       </v-btn>
     </template>
 
-    <v-card color="tertiary">
-      <v-list dense color="tertiary">
+    <v-card color="secondary">
+      <v-list dense color="secondary">
         <v-list-item>
           <v-btn block color="warning" :disabled="printerBusy" @click="restartKlippy" class="me-2 mb-2">Restart</v-btn>
         </v-list-item>
@@ -22,7 +22,7 @@
 
       <v-divider></v-divider>
 
-      <v-list dense color="tertiary">
+      <v-list dense color="secondary">
         <v-list-item>
           <v-btn block color="error" :disabled="printerBusy" @click.stop="confirmRebootDialog.open = true" class="me-2 mb-2">Host Reboot</v-btn>
         </v-list-item>

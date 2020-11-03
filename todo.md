@@ -1,8 +1,6 @@
 # TODO [fluidd]
 
 ## Next Up
-- add file thumbs to file list, potentially move to its own nav item
-  - the dialog should show a larger image too perhaps?
 - ensure tabs are also remembered in localstorage
 - temperature presets
 - on printer config, force file browser to be full height (make card 100% height)

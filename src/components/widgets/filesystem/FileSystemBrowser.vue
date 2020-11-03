@@ -1,6 +1,7 @@
 <template>
   <div class="file-system">
     <v-data-table
+      mobile-breakpoint="0"
       :headers="headers"
       :items="directory.items"
       :dense="dense"
@@ -19,12 +20,12 @@
 
       <template v-slot:top>
         <v-toolbar flat color="tertiary">
-          <v-toolbar-title class="grey--text text--lighten-1">
+          <v-toolbar-title class="grey--text text--lighten-1 d-none d-sm-block">
             <div>/{{ currentPath }}</div>
           </v-toolbar-title>
 
           <v-spacer></v-spacer>
-          <v-col cols="4">
+          <v-col cols="4" class="d-none d-sm-block">
             <v-text-field
               v-model="search"
               :max-width="130"
@@ -133,54 +134,70 @@
         </tr>
       </template>
     </v-data-table>
+
     <v-menu
       v-model="contextMenu.open"
       :position-x="contextMenu.x"
       :position-y="contextMenu.y"
       min-width="180"
       absolute
-      left>
-      <v-list
-        nav
-        dense
-        color="secondary">
-        <v-list-item link @click="printItem(contextMenu.item)" v-if="contextMenu.item.type !== 'directory' && contextMenu.item.extension === 'gcode'">
-          <v-list-item-icon>
-            <v-icon class="white--text">$printer</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">Print</v-list-item-title>
-        </v-list-item>
-        <v-list-item link @click="editItem(contextMenu.item)" v-if="!readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
-          <v-list-item-icon>
-            <v-icon class="white--text">$pencil</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">Edit</v-list-item-title>
-        </v-list-item>
-        <v-list-item link @click="viewItem(contextMenu.item)" v-if="readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
-          <v-list-item-icon>
-            <v-icon class="white--text">$magnify</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">View</v-list-item-title>
-        </v-list-item>
-        <v-list-item link @click="downloadFile(contextMenu.item.name)" v-if="contextMenu.item.type !== 'directory'">
-          <v-list-item-icon>
-            <v-icon class="white--text">$download</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">Download</v-list-item-title>
-        </v-list-item>
-        <v-list-item link @click="renameDialog(contextMenu.item)" v-if="!readonly">
-          <v-list-item-icon>
-            <v-icon class="white--text">$rename</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">Rename</v-list-item-title>
-        </v-list-item>
-        <v-list-item link @click="removeItem(contextMenu.item)" v-if="!readonly">
-          <v-list-item-icon>
-            <v-icon class="white--text">$delete</v-icon>
-          </v-list-item-icon>
-          <v-list-item-title class="white--text">Remove</v-list-item-title>
-        </v-list-item>
-      </v-list>
+      right>
+
+      <v-card color="tertiary">
+        <v-row align="center" justify="center" no-gutters>
+          <v-col>
+            <v-list
+              nav
+              dense
+              color="secondary">
+              <v-list-item link @click="printItem(contextMenu.item)" v-if="contextMenu.item.type !== 'directory' && contextMenu.item.extension === 'gcode'">
+                <v-list-item-icon>
+                  <v-icon class="white--text">$printer</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="white--text">Print</v-list-item-title>
+              </v-list-item>
+              <v-list-item link @click="editItem(contextMenu.item)" v-if="!readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
+                <v-list-item-icon>
+                  <v-icon class="white--text">$pencil</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="white--text">Edit</v-list-item-title>
+              </v-list-item>
+              <v-list-item link @click="viewItem(contextMenu.item)" v-if="readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
+                <v-list-item-icon>
+                  <v-icon class="white--text">$magnify</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="white--text">View</v-list-item-title>
+              </v-list-item>
+              <v-list-item link @click="downloadFile(contextMenu.item.name)" v-if="contextMenu.item.type !== 'directory'">
+                <v-list-item-icon>
+                  <v-icon class="white--text">$download</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="white--text">Download</v-list-item-title>
+              </v-list-item>
+              <v-list-item link @click="renameDialog(contextMenu.item)" v-if="!readonly">
+                <v-list-item-icon>
+                  <v-icon class="white--text">$rename</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="white--text">Rename</v-list-item-title>
+              </v-list-item>
+              <v-list-item link @click="removeItem(contextMenu.item)" v-if="!readonly">
+                <v-list-item-icon>
+                  <v-icon class="white--text">$delete</v-icon>
+                </v-list-item-icon>
+                <v-list-item-title class="white--text">Remove</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-col>
+          <v-col class="px-2 d-none d-sm-flex">
+            <img
+              v-if="contextMenu.item.thumbnails && contextMenu.item.thumbnails.length"
+              class="mr-1 file-icon-thumb"
+              :src="getThumb(contextMenu.item, true).data"
+              :height="150"
+            />
+          </v-col>
+        </v-row>
+      </v-card>
     </v-menu>
   </div>
 </template>
@@ -378,10 +395,10 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.$emit('view-file', item, this.currentPath)
   }
 
-  getThumb (item: KlipperFile | KlipperFileWithMeta) {
+  getThumb (item: KlipperFile | KlipperFileWithMeta, goLarge: boolean) {
     if ('thumbnails' in item) {
       const file = item as KlipperFileWithMeta
-      return getThumb(file, false)
+      return getThumb(file, goLarge)
     }
     return null
   }
