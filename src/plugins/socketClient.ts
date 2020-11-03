@@ -62,7 +62,12 @@ export class WebSocketClient {
       const d: SocketResponse = JSON.parse(m.data)
 
       // Is this a socket notification, or an answer to a specific request?
-      const request = this.requests.find(request => request.id === d.id)
+      let request: Request | undefined
+      const requestIndex = this.requests.findIndex(request => request.id === d.id)
+      if (requestIndex > -1) {
+        request = this.requests[requestIndex]
+        this.requests.splice(requestIndex, 1)
+      }
 
       if (d.error) { // Is it in error?
         if (request) {
@@ -83,7 +88,8 @@ export class WebSocketClient {
 
         Object.defineProperty(result, '__request__', { enumerable: false, value: request })
         console.debug(`${this.logPrefix} Response:`, result)
-        if (request.action) this.store?.dispatch(request.action, result)
+        if (request.dispatch) this.store?.dispatch(request.dispatch, result)
+        if (request.commit) this.store?.commit(request.commit, result)
       } else {
         // These are socket notifications (i.e., no specific request was made..)
         // Dispatch with the name of the method, converted to camelCase.
@@ -118,15 +124,17 @@ export class WebSocketClient {
   emit (method: string, options?: NotifyOptions) {
     if (this.connection?.readyState === WebSocket.OPEN) {
       // moonraker expects a unique id for us to reference back to when data is returned.
-      const id = Math.floor(Math.random() * Math.floor(10000))
+      const getRandomNumber = (min: number, max: number) => {
+        return Math.floor(Math.random() * (max - min + 1)) + min
+      }
+      const id = getRandomNumber(10000, 99999)
       const packet: SocketRequest = {
         id,
         method,
         jsonrpc: '2.0'
       }
       const request: Request = {
-        id,
-        action: method
+        id
       }
       if (options && options.wait) {
         request.wait = options.wait
@@ -135,7 +143,8 @@ export class WebSocketClient {
         packet.params = options.params
         request.params = options.params
       }
-      if (options && options.action) request.action = options.action
+      if (options && options.dispatch) request.dispatch = options.dispatch
+      if (options && options.commit) request.commit = options.commit
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
@@ -181,13 +190,15 @@ interface Options {
 
 interface NotifyOptions {
   params?: any;
-  action?: any;
+  dispatch?: string;
+  commit?: string;
   wait?: string;
 }
 
 interface Request {
   id: number;
-  action: string;
+  dispatch?: string;
+  commit?: string;
   params?: any;
   wait?: string;
 }
