@@ -223,7 +223,12 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   currentPath = ''
   search = ''
   loadingDirectory = false
-  headers: DataTableHeader[] = []
+  headers: DataTableHeader[] = [
+    { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
+    { text: 'name', value: 'name' },
+    { text: 'modified', value: 'modified', width: '1%' },
+    { text: 'size', value: 'size', width: '1%', align: 'end' }
+  ]
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   contextMenu: any = {
@@ -272,24 +277,15 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   mounted () {
     this.currentRoot = this.root
 
-    if (!this.showMetaData) {
+    if (this.showMetaData) {
       this.headers = [
-        { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-        { text: 'name', value: 'name' },
-        { text: 'modified', value: 'modified', width: '1%' },
-        { text: 'size', value: 'size', width: '1%', align: 'end' }
-      ]
-    } else {
-      this.headers = [
-        { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-        { text: 'name', value: 'name' },
+        ...this.headers.slice(0, 2),
         { text: 'height', value: 'object_height' },
         { text: 'layer height', value: 'layer_height' },
         { text: 'filament', value: 'filament_total' },
         { text: 'slicer', value: 'slicer' },
         { text: 'estimated time', value: 'estimated_time' },
-        { text: 'modified', value: 'modified', width: '1%' },
-        { text: 'size', value: 'size', width: '1%', align: 'end' }
+        ...this.headers.slice(2)
       ]
     }
   }
