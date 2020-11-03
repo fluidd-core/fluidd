@@ -41,14 +41,14 @@ export const actions: ActionTree<FilesState, RootState> = {
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
         ) {
-          if (root === 'gcodes') {
-            SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename, path, file.filename)
-          }
           file.type = 'file'
           file.name = file.filename
           file.extension = file.filename.split('.').pop() || ''
           file.modified = new Date(file.modified).getTime()
           items.push(file)
+          if (root === 'gcodes' && file.extension === 'gcode') {
+            SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename, path, file.filename)
+          }
         }
       })
     }
