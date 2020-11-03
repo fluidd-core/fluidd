@@ -20,6 +20,8 @@ export interface FileConfig {
 
 export interface GeneralConfig {
   instanceName: string;
+  jobsInMenu: boolean;
+  jobsInDash: boolean;
   darkMode: boolean;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;

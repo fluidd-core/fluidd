@@ -23,7 +23,7 @@
           <v-icon small class="mr-md-1">$home</v-icon>
           <span>Dashboard</span>
         </v-btn>
-        <v-btn text to="/jobs" class="d-none d-md-flex">
+        <v-btn text to="/jobs" class="d-none d-md-flex" v-if="jobsInMenu">
           <v-icon small class="mr-md-1">$files</v-icon>
           <span>Jobs</span>
         </v-btn>
@@ -73,7 +73,7 @@
                   <v-list-item-title>Dashboard</v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-              <v-list-item to="/jobs">
+              <v-list-item to="/jobs" v-if="jobsInMenu">
                 <v-list-item-icon>
                   <v-icon>$files</v-icon>
                 </v-list-item-icon>
@@ -130,6 +130,10 @@ export default class AppBar extends Mixins(UtilsMixin) {
 
   get currentFile () {
     return this.$store.state.socket.printer.print_stats.filename
+  }
+
+  get jobsInMenu () {
+    return this.$store.state.config.fileConfig.general.jobsInMenu
   }
 
   // Watch currentfile and refresh its metadata to ensure

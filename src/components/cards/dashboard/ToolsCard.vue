@@ -17,7 +17,7 @@
         <v-icon left>$power</v-icon>
         Power
       </v-tab>
-      <v-tab :key="'jobs'" v-if="klippyConnected">
+      <v-tab :key="'jobs'" v-if="klippyConnected && jobsInDash">
         <v-icon left>$files</v-icon>
         Jobs
       </v-tab>
@@ -45,7 +45,7 @@
           <v-tab-item :key="'power'" class="tertiary rounded" v-if="gpioPowerPluginEnabled">
             <power-control-widget></power-control-widget>
           </v-tab-item>
-          <v-tab-item :key="'jobs'" class="tertiary rounded max-height" v-if="klippyConnected">
+          <v-tab-item :key="'jobs'" class="tertiary rounded max-height" v-if="klippyConnected && jobsInDash">
             <file-system-card
               root="gcodes"
               accept=".gcode, .ufp"
@@ -93,6 +93,10 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
 
   get gpioPowerPluginEnabled () {
     return (this.$store.state.socket.plugins.includes('power'))
+  }
+
+  get jobsInDash () {
+    return this.$store.state.config.fileConfig.general.jobsInDash
   }
 }
 </script>

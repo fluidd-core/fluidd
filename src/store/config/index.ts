@@ -14,6 +14,8 @@ export const state: ConfigState = {
   fileConfig: {
     general: {
       instanceName: Globals.APP_NAME,
+      jobsInMenu: true,
+      jobsInDash: false,
       darkMode: true,
       printTimeEstimationsType: 'file',
       defaultExtrudeLength: 10,
