@@ -8,6 +8,7 @@
 - on printer config, force file browser to be full height (make card 100% height)
 - add option to change camera from <img> to <video>
 - load gcode help and implement in console
+- drag / drop file upload
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data

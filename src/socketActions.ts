@@ -5,7 +5,7 @@ export const SocketActions = {
   async printerInfo () {
     Vue.$socket.emit(
       'printer.info', {
-        action: 'socket/onPrinterInfo'
+        dispatch: 'socket/onPrinterInfo'
       }
     )
   },
@@ -13,7 +13,7 @@ export const SocketActions = {
   async serverInfo () {
     Vue.$socket.emit(
       'server.info', {
-        action: 'socket/onServerInfo'
+        dispatch: 'socket/onServerInfo'
       }
     )
   },
@@ -21,7 +21,7 @@ export const SocketActions = {
   async machineReboot () {
     Vue.$socket.emit(
       'machine.reboot', {
-        action: 'void'
+        dispatch: 'void'
       }
     )
   },
@@ -29,7 +29,7 @@ export const SocketActions = {
   async machineShutdown () {
     Vue.$socket.emit(
       'machine.shutdown', {
-        action: 'void'
+        dispatch: 'void'
       }
     )
   },
@@ -37,7 +37,7 @@ export const SocketActions = {
   async machineGpioPowerDevices () {
     Vue.$socket.emit(
       'machine.gpio_power.devices', {
-        action: 'gpio/init'
+        dispatch: 'gpio/init'
       }
     )
   },
@@ -45,7 +45,7 @@ export const SocketActions = {
   async machineGpioPowerStatus () {
     Vue.$socket.emit(
       'machine.gpio_power.status', {
-        action: 'gpio/onStatus'
+        dispatch: 'gpio/onStatus'
       }
     )
   },
@@ -56,7 +56,7 @@ export const SocketActions = {
       : 'machine.gpio_power.off'
     Vue.$socket.emit(
       emit, {
-        action: 'gpio/onToggle',
+        dispatch: 'gpio/onToggle',
         params: { [id]: null },
         wait
       }
@@ -66,7 +66,7 @@ export const SocketActions = {
   async printerQueryEndstops () {
     Vue.$socket.emit(
       'printer.query_endstops.status', {
-        action: 'socket/onQueryEndstops'
+        dispatch: 'socket/onQueryEndstops'
       }
     )
   },
@@ -74,7 +74,7 @@ export const SocketActions = {
   async printerObjectsList () {
     Vue.$socket.emit(
       'printer.objects.list', {
-        action: 'socket/onPrinterObjectsList'
+        dispatch: 'socket/onPrinterObjectsList'
       }
     )
   },
@@ -82,7 +82,7 @@ export const SocketActions = {
   async printerObjectsSubscribe (objects: {[key: string]: null}) {
     Vue.$socket.emit(
       'printer.objects.subscribe', {
-        action: 'socket/onPrinterObjectsSubscribe',
+        dispatch: 'socket/onPrinterObjectsSubscribe',
         params: {
           objects
         }
@@ -93,7 +93,7 @@ export const SocketActions = {
   async printerPrintStart (path: string) {
     Vue.$socket.emit(
       'printer.print.start', {
-        action: 'void',
+        dispatch: 'void',
         params: {
           filename: path
         }
@@ -104,7 +104,7 @@ export const SocketActions = {
   async printerPrintCancel () {
     Vue.$socket.emit(
       'printer.print.cancel', {
-        action: 'socket/onPrintCancel',
+        dispatch: 'socket/onPrintCancel',
         wait: Waits.onPrintCancel
       }
     )
@@ -113,7 +113,7 @@ export const SocketActions = {
   async printerPrintPause () {
     Vue.$socket.emit(
       'printer.print.pause', {
-        action: 'socket/onPrintPause',
+        dispatch: 'socket/onPrintPause',
         wait: Waits.onPrintPause
       }
     )
@@ -122,7 +122,7 @@ export const SocketActions = {
   async printerPrintResume () {
     Vue.$socket.emit(
       'printer.print.resume', {
-        action: 'socket/onPrintResume',
+        dispatch: 'socket/onPrintResume',
         wait: Waits.onPrintResume
       }
     )
@@ -131,7 +131,7 @@ export const SocketActions = {
   async printerGcodeScript (gcode: string, wait?: string) {
     Vue.$socket.emit(
       'printer.gcode.script', {
-        action: 'socket/onGcodeScript',
+        dispatch: 'socket/onGcodeScript',
         params: {
           script: gcode
         },
@@ -143,7 +143,7 @@ export const SocketActions = {
   async printerEmergencyStop () {
     Vue.$socket.emit(
       'printer.emergency_stop', {
-        action: 'socket/notifyKlippyDisconnected'
+        dispatch: 'socket/notifyKlippyDisconnected'
       }
     )
   },
@@ -151,7 +151,7 @@ export const SocketActions = {
   async serverTemperatureStore () {
     Vue.$socket.emit(
       'server.temperature_store', {
-        action: 'socket/onTemperatureStore'
+        dispatch: 'socket/onTemperatureStore'
       }
     )
   },
@@ -159,7 +159,7 @@ export const SocketActions = {
   async serverGcodeStore () {
     Vue.$socket.emit(
       'server.gcode_store', {
-        action: 'socket/onGcodeStore'
+        dispatch: 'socket/onGcodeStore'
       }
     )
   },
@@ -176,7 +176,7 @@ export const SocketActions = {
     }
     Vue.$socket.emit(
       'server.files.metadata', {
-        action: 'socket/onServerFilesMetadata',
+        dispatch: 'files/onServerFilesMetadata',
         params
       }
     )
@@ -190,7 +190,7 @@ export const SocketActions = {
     Vue.$socket.emit(
       'server.files.get_directory',
       {
-        action: 'files/onServerFilesGetDirectory',
+        dispatch: 'files/onServerFilesGetDirectory',
         wait: `${Waits.onGetDirectory}${path}`,
         params: { root, path }
       }
@@ -199,7 +199,7 @@ export const SocketActions = {
   async serverFilesMove (source: string, dest: string) {
     Vue.$socket.emit(
       'server.files.move', {
-        action: 'void',
+        dispatch: 'void',
         params: {
           source,
           dest
@@ -215,7 +215,7 @@ export const SocketActions = {
   async serverFilesPostDirectory (path: string) {
     Vue.$socket.emit(
       'server.files.post_directory', {
-        action: 'void',
+        dispatch: 'void',
         params: {
           path
         }
@@ -226,7 +226,7 @@ export const SocketActions = {
   async serverFilesDeleteFile (path: string) {
     Vue.$socket.emit(
       'server.files.delete_file', {
-        action: 'void',
+        dispatch: 'void',
         params: {
           path
         }
@@ -237,7 +237,7 @@ export const SocketActions = {
   async serverFilesDeleteDirectory (path: string) {
     Vue.$socket.emit(
       'server.files.delete_directory', {
-        action: 'void',
+        dispatch: 'void',
         params: {
           path,
           force: true

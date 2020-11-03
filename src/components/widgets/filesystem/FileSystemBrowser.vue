@@ -112,16 +112,18 @@
             </span>
           </td>
           <td class="grey--text" v-if="showMetaData">
-            <span v-if="item.type === 'file'">
+            <span v-if="item.type === 'file' && item.filament_total">
               {{ getReadableLengthString(item.filament_total) }}
             </span>
           </td>
           <td class="grey--text" v-if="showMetaData">
-            {{ item.slicer }}
+            <span v-if="item.type === 'file' && item.slicer">
+              {{ item.slicer }}
+            </span>
           </td>
           <td class="grey--text" v-if="showMetaData">
-            <span v-if="item.type === 'file'">
-            {{ formatCounterTime(item.estimated_time) }}
+            <span v-if="item.type === 'file' && item.estimated_time">
+              {{ formatCounterTime(item.estimated_time) }}
             </span>
           </td>
           <td class="grey--text">
