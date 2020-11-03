@@ -47,7 +47,7 @@ export const actions: ActionTree<FilesState, RootState> = {
           file.modified = new Date(file.modified).getTime()
           items.push(file)
           if (root === 'gcodes' && file.extension === 'gcode') {
-            SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename, path, file.filename)
+            SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename)
           }
         }
       })
@@ -57,8 +57,10 @@ export const actions: ActionTree<FilesState, RootState> = {
 
   async onServerFilesMetadata ({ state, commit }, payload) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
-    const path = payload.__request__.params.path // has the root in it.
-    const filename = payload.__request__.params.name // should just be the filename
+    let path = payload.filename.substr(0, payload.filename.lastIndexOf('/'))
+    path = (path.length) ? root + '/' + path : root
+    const filename = payload.filename.split('/').pop() || ''
+
     const pathIndex = state[root].findIndex((f: Files) => (f.path === path))
     if (state[root][pathIndex] && state[root][pathIndex].items) {
       const fileIndex = state[root][pathIndex].items.findIndex(f => (f.type === 'file' && f.filename === filename))

@@ -168,16 +168,11 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetaData (filepath: string, path?: string, filename?: string) {
-    const params = {
-      filename: filepath,
-      path,
-      name: filename
-    }
+  async serverFilesMetaData (filename: string) {
     Vue.$socket.emit(
       'server.files.metadata', {
         dispatch: 'files/onServerFilesMetadata',
-        params
+        params: { filename }
       }
     )
   },

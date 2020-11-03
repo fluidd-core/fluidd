@@ -360,8 +360,6 @@ export const actions: ActionTree<SocketState, RootState> = {
    * irrelevant on if this was a specific request or not.
    */
   async notifyGcodeResponse ({ dispatch }, payload) {
-    // stream gcode responses to our console data, ensuring
-    // we truncate to max line count.
     dispatch('addConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` })
   },
   async notifyKlippyDisconnected ({ commit }) {
@@ -371,8 +369,8 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifyFilelistChanged ({ dispatch }, payload) {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true }) // Passed on to the files module
   },
-  async notifyMetadataUpdate (_, payload) {
-    console.debug('metadataUpdate', payload)
+  async notifyMetadataUpdate ({ dispatch }, payload) {
+    dispatch('files/onServerFilesMetadata', payload, { root: true }) // Passed on to the files module
   },
   async notifyPowerChanged ({ dispatch }, payload) {
     dispatch('gpio/onStatus', { [payload.device]: payload.status }, { root: true })
