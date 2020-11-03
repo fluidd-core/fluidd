@@ -40,7 +40,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   }
 
   getTime (item: number) {
-    return this.$dayjs(item * 1000).format('HH:MM:ss')
+    return this.$dayjs(item * 1000).format('HH:mm:ss')
   }
 
   consoleClass (item: ConsoleEntry) {
