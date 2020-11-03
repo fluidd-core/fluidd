@@ -6,7 +6,7 @@
     <v-container fluid class="constrained-width pa-0 fill-height">
       <v-img
         alt="Fluidd"
-        class="shrink mr-4 d-none d-sm-inline"
+        class="shrink mr-4"
         contain
         :src="require('@/assets/logo.svg')"
         transition="scale-transition"
@@ -19,22 +19,23 @@
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
-        <v-btn text to="/">
+        <v-btn text to="/" class="d-none d-md-flex">
           <v-icon small class="mr-md-1">$home</v-icon>
-          <span class="d-none d-md-inline">Dashboard</span>
+          <span>Dashboard</span>
         </v-btn>
-        <v-btn text to="/jobs">
+        <v-btn text to="/jobs" class="d-none d-md-flex">
           <v-icon small class="mr-md-1">$files</v-icon>
-          <span class="d-none d-md-inline">Jobs</span>
+          <span>Jobs</span>
         </v-btn>
-        <v-btn text to="/configuration">
+        <v-btn text to="/configuration" class="d-none d-md-flex">
           <v-icon small class="mr-md-1">$tune</v-icon>
-          <span class="d-none d-md-inline">Printer</span>
+          <span>Printer</span>
         </v-btn>
-        <v-btn text to="/settings">
+        <v-btn text to="/settings" class="d-none d-md-flex">
           <v-icon small class="mr-md-1">$cog</v-icon>
-          <span class="d-none d-md-inline">Settings</span>
+          <span>Settings</span>
         </v-btn>
+
         <v-tooltip bottom v-if="socketConnected">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -49,7 +50,61 @@
           </template>
           Emergency Stop
         </v-tooltip>
-        <system-commands-widget></system-commands-widget>
+
+        <v-menu bottom left offset-y :min-width="150" v-model="menu">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              text
+              min-width="54">
+              <v-icon>$menu</v-icon>
+            </v-btn>
+          </template>
+
+          <v-card color="secondary">
+
+            <v-list nav dense color="secondary" class="d-block d-md-none">
+              <v-list-item to="/">
+                <v-list-item-icon>
+                  <v-icon>$home</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Dashboard</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item to="/jobs">
+                <v-list-item-icon>
+                  <v-icon>$files</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Jobs</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item to="/configuration">
+                <v-list-item-icon>
+                  <v-icon>$tune</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Printer Configuration</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-item to="/settings">
+                <v-list-item-icon>
+                  <v-icon>$cog</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>UI Settings</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
+
+            <v-divider class="d-block d-md-none"></v-divider>
+
+            <system-commands-widget></system-commands-widget>
+          </v-card>
+        </v-menu>
+
       </v-toolbar-items>
     </v-container>
   </v-app-bar>
@@ -67,6 +122,8 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
   }
 })
 export default class AppBar extends Mixins(UtilsMixin) {
+  menu = false
+
   get instanceName () {
     return this.$store.state.config.fileConfig.general.instanceName
   }
