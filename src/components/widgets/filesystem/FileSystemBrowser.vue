@@ -150,37 +150,55 @@
               nav
               dense
               color="secondary">
-              <v-list-item link @click="printItem(contextMenu.item)" v-if="contextMenu.item.type !== 'directory' && contextMenu.item.extension === 'gcode'">
+              <v-list-item
+                link
+                @click="printItem(contextMenu.item)"
+                v-if="contextMenu.item.type !== 'directory' && contextMenu.item.extension === 'gcode'">
                 <v-list-item-icon>
                   <v-icon class="white--text">$printer</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title class="white--text">Print</v-list-item-title>
               </v-list-item>
-              <v-list-item link @click="editItem(contextMenu.item)" v-if="!readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
+              <v-list-item
+                link
+                @click="editItem(contextMenu.item)"
+                v-if="!readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
                 <v-list-item-icon>
                   <v-icon class="white--text">$pencil</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title class="white--text">Edit</v-list-item-title>
               </v-list-item>
-              <v-list-item link @click="viewItem(contextMenu.item)" v-if="readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
+              <v-list-item
+                link
+                @click="viewItem(contextMenu.item)"
+                v-if="readonly && contextMenu.item.type !== 'directory' && contextMenu.item.extension !== 'gcode'">
                 <v-list-item-icon>
                   <v-icon class="white--text">$magnify</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title class="white--text">View</v-list-item-title>
               </v-list-item>
-              <v-list-item link @click="downloadFile(contextMenu.item.name)" v-if="contextMenu.item.type !== 'directory'">
+              <v-list-item
+                link
+                @click="downloadFile(contextMenu.item.name)"
+                v-if="contextMenu.item.type !== 'directory'">
                 <v-list-item-icon>
                   <v-icon class="white--text">$download</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title class="white--text">Download</v-list-item-title>
               </v-list-item>
-              <v-list-item link @click="renameDialog(contextMenu.item)" v-if="!readonly">
+              <v-list-item
+                link
+                @click="renameDialog(contextMenu.item)"
+                v-if="!readonly">
                 <v-list-item-icon>
                   <v-icon class="white--text">$rename</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title class="white--text">Rename</v-list-item-title>
               </v-list-item>
-              <v-list-item link @click="removeItem(contextMenu.item)" v-if="!readonly">
+              <v-list-item
+                link
+                @click="removeItem(contextMenu.item)"
+                v-if="!readonly">
                 <v-list-item-icon>
                   <v-icon class="white--text">$delete</v-icon>
                 </v-list-item-icon>
