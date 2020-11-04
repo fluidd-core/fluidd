@@ -1,6 +1,8 @@
 # TODO [fluidd]
 
 ## Next Up
+- if virtual_sdcard.is_active but we're not printing, add a clear current file button
+- have card hamburgers appear in mobile, but buttons in header for desktop
 - ensure tabs are also remembered in localstorage
 - temperature presets
 - on printer config, force file browser to be full height (make card 100% height)
