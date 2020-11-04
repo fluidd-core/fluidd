@@ -55,12 +55,19 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('onServerFilesGetDirectory', { root, directory: { path, items } })
   },
 
-  async onServerFilesMetadata ({ state, commit }, payload) {
+  async onServerFilesMetadata ({ state, commit, rootState }, payload) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
     let path = payload.filename.substr(0, payload.filename.lastIndexOf('/'))
     path = (path.length) ? root + '/' + path : root
     const filename = payload.filename.split('/').pop() || ''
 
+    // If this is an update to the currently printing file, then push it to
+    // current_file.
+    if (rootState.socket && payload.filename === rootState.socket.printer.print_stats.filename) {
+      commit('socket/onSocketNotify', { key: 'current_file', payload }, { root: true })
+    }
+
+    // Apply the metadata to our specific file.
     const pathIndex = state[root].findIndex((f: Files) => (f.path === path))
     if (state[root][pathIndex] && state[root][pathIndex].items) {
       const fileIndex = state[root][pathIndex].items.findIndex(f => (f.type === 'file' && f.filename === filename))
