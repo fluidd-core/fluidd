@@ -49,7 +49,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Another case might be during a klippy disconnect.
    */
   async onSocketError ({ commit }, payload) {
-    if (payload.code === 400) {
+    if (payload.code >= 400 && payload.code < 500) {
       // clear any associated waits.
       if (payload.__request__ && payload.__request__.wait) {
         commit('removeWait', payload.__request__.wait)
