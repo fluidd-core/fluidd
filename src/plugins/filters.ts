@@ -19,9 +19,9 @@ const Filters = {
     const m = Math.floor(seconds % 3600 / 60)
     const s = Math.floor(seconds % 3600 % 60)
 
-    let r = s + 's'
-    if (m > 0) r = m + 'm ' + r
-    if (h > 0) r = h + 'h ' + r
+    let r = s + 's' // always show seconds
+    r = m + 'm ' + r // always show minutes
+    if (h > 0) r = h + 'h ' + r // only show hours if relevent
 
     return (isNeg) ? '-' + r : r
   },
