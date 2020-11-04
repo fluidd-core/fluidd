@@ -11,12 +11,18 @@
       </slot>
       <v-spacer />
 
-      <!-- Menu -->
+      <!-- Menu Buttons, desktop + -->
+      <div class="d-none d-lg-flex">
+        <slot name="menu"></slot>
+      </div>
+
+      <!-- Menu, mobile / tablet -->
       <v-menu
         v-if="hasMenuSlot && !hideMenu"
         left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            class="d-flex d-lg-none"
             fab small text
             v-bind="attrs"
             v-on="on"

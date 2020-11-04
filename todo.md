@@ -1,6 +1,7 @@
 # TODO [fluidd]
 
 ## Next Up
+- add QUERY_PROBE to endstops widget
 - if virtual_sdcard.is_active but we're not printing, add a clear current file button
 - have card hamburgers appear in mobile, but buttons in header for desktop
 - ensure tabs are also remembered in localstorage

@@ -28,6 +28,7 @@
         v-if="!printerPrinting"
         @click="sendGcode('M84')"
         :disabled="hasWaits || !klippyConnected"
+        small
         class="ma-1"
         color="secondary">
           MOTORS OFF
@@ -37,15 +38,17 @@
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :loading="hasWait(waits.onZTilt)"
         :disabled="hasWaits || !klippyConnected"
+        small
         class="ma-1"
         color="secondary">
-          Z_TILT_ADJUST
+          ZTA
       </v-btn>
       <v-btn
         v-if="!printerPrinting && printerSupportsQgl"
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         :loading="hasWait(waits.onQGL)"
         :disabled="hasWaits || !klippyConnected"
+        small
         class="ma-1"
         color="secondary">
           QGL
@@ -56,6 +59,7 @@
         @click="sendGcode('G28', waits.onHomeAll)"
         :loading="hasWait(waits.onHomeAll)"
         :disabled="hasWaits || !klippyConnected"
+        small
         class="ma-1"
         :color="(!allHomed) ? 'warning' : 'secondary'">
           <v-icon small class="mr-1">$home</v-icon> All
@@ -65,6 +69,7 @@
         @click="sendGcode('G28 X', waits.onHomeX)"
         :loading="hasWait(waits.onHomeX)"
         :disabled="hasWaits || !klippyConnected"
+        small
         class="ma-1"
         :color="(!allHomed) ? 'warning' : 'secondary'">
           <v-icon small class="mr-1">$home</v-icon> X
@@ -74,6 +79,7 @@
         @click="sendGcode('G28 Y', waits.onHomeY)"
         :loading="hasWait(waits.onHomeY)"
         :disabled="hasWaits || !klippyConnected"
+        small
         class="ma-1"
         :color="(!allHomed) ? 'warning' : 'secondary'">
           <v-icon small class="mr-1">$home</v-icon> Y

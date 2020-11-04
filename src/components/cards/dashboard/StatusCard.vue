@@ -16,6 +16,7 @@
         @click="pausePrint()"
         v-if="!printerPaused && printerPrinting"
         :loading="hasWait(waits.onPrintPause)"
+        small
         color="secondary"
         class="ma-1">
         <v-icon small>$pause</v-icon>
@@ -26,6 +27,7 @@
         @click="confirmDialog.open = true"
         v-if="printerPrinting || printerPaused"
         :loading="hasWait(waits.onPrintCancel)"
+        small
         color="secondary"
         class="ma-1">
         <v-icon small>$cancel</v-icon>
@@ -36,6 +38,7 @@
         @click="resumePrint()"
         v-if="printerPaused"
         :loading="hasWait(waits.onPrintResume)"
+        small
         color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>
@@ -43,8 +46,19 @@
       </v-btn>
 
       <v-btn
+        @click="resetFile()"
+        v-if="!printerPrinting && !printerPaused && filename"
+        small
+        color="secondary"
+        class="ma-1">
+        <v-icon small class="mr-1">$refresh</v-icon>
+        <span>Reset File</span>
+      </v-btn>
+
+      <v-btn
         @click="rePrint()"
         v-if="!printerPrinting && !printerPaused && filename"
+        small
         color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
@@ -114,6 +128,10 @@ export default class StatusCard extends Mixins(UtilsMixin) {
     if (this.filename && this.filename.length > 0) {
       SocketActions.printerPrintStart(this.filename)
     }
+  }
+
+  resetFile () {
+    this.sendGcode('SDCARD_RESET_FILE')
   }
 }
 </script>
