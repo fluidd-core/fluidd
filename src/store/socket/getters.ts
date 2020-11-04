@@ -112,7 +112,6 @@ export const getters: GetterTree<SocketState, RootState> = {
     if (state.printer.current_file) {
       thumb = getThumb(state.printer.current_file)
     }
-    console.log('have thumb', state.printer.current_file)
     return thumb
   },
 
