@@ -5,7 +5,7 @@ import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
 import { chartConfiguration } from '@/globals'
 import { TinyColor } from '@ctrl/tinycolor'
-import { get } from 'lodash-es'
+import { get, isFinite } from 'lodash-es'
 import { getThumb } from '../helpers'
 
 export const getters: GetterTree<SocketState, RootState> = {
@@ -120,21 +120,37 @@ export const getters: GetterTree<SocketState, RootState> = {
    * Returns an object representing the time estimates of a current print.
    */
   getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament' | 'totals'): TimeEstimates => {
-    const progress = (state.printer.display_status.progress && !isNaN(state.printer.display_status.progress))
-      ? state.printer.display_status.progress
-      : 0
-    // state.printer.print_stats.total_duration
-    const duration = (state.printer.print_stats.print_duration && !isNaN(state.printer.print_stats.print_duration))
-      ? state.printer.print_stats.print_duration
-      : 0
+    const progress = (
+      !state.printer.virtual_sdcard.progress ||
+      isNaN(+state.printer.virtual_sdcard.progress) ||
+      !isFinite(+state.printer.virtual_sdcard.progress)
+    )
+      ? 0
+      : state.printer.virtual_sdcard.progress
 
-    const usedFilament = (state.printer.print_stats.filament_used && !isNaN(state.printer.print_stats.filament_used))
-      ? state.printer.print_stats.filament_used
-      : 0
+    const duration = (
+      !state.printer.print_stats.print_duration ||
+      isNaN(+state.printer.print_stats.print_duration) ||
+      !isFinite(+state.printer.print_stats.print_duration)
+    )
+      ? 0
+      : state.printer.print_stats.print_duration
 
-    const estimatedFilament = (state.printer.current_file.filament_total && !isNaN(state.printer.current_file.filament_total))
-      ? state.printer.current_file.filament_total
-      : 0
+    const usedFilament = (
+      !state.printer.print_stats.filament_used ||
+      isNaN(+state.printer.print_stats.filament_used) ||
+      !isFinite(+state.printer.print_stats.filament_used)
+    )
+      ? 0
+      : state.printer.print_stats.filament_used
+
+    const estimatedFilament = (
+      !state.printer.current_file.filament_total ||
+      isNaN(+state.printer.current_file.filament_total) ||
+      !isFinite(+state.printer.current_file.filament_total)
+    )
+      ? 0
+      : state.printer.current_file.filament_total
 
     let timeLeft = 0
     let totalDuration = 0
@@ -161,10 +177,24 @@ export const getters: GetterTree<SocketState, RootState> = {
         break
       }
       default: { // totals only.
-        totalDuration = duration / (progress * 100) - duration
-        timeLeft = totalDuration - duration
+        totalDuration = 0
+        timeLeft = 0
       }
     }
+
+    totalDuration = (
+      isNaN(+totalDuration) ||
+      !isFinite(+totalDuration)
+    )
+      ? 0
+      : totalDuration
+
+    timeLeft = (
+      isNaN(+timeLeft) ||
+      !isFinite(+timeLeft)
+    )
+      ? 0
+      : timeLeft
 
     const o = {
       type,

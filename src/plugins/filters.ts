@@ -1,5 +1,5 @@
 import _Vue from 'vue'
-import { camelCase, startCase, capitalize } from 'lodash-es'
+import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 
 const Filters = {
 
@@ -8,8 +8,9 @@ const Filters = {
    * Expects to be passed seconds.
    */
   formatCounterTime: (seconds: number) => {
+    seconds = Number(seconds)
+    if (isNaN(+seconds) || !isFinite(seconds)) seconds = 0
     let isNeg = false
-    if (isNaN(seconds)) seconds = 0
     if (seconds < 0) {
       seconds = Math.abs(seconds)
       isNeg = true
@@ -22,7 +23,6 @@ const Filters = {
     if (m > 0) r = m + 'm ' + r
     if (h > 0) r = h + 'h ' + r
 
-    // const r = `${h}h ${m}m ${s}s`
     return (isNeg) ? '-' + r : r
   },
 

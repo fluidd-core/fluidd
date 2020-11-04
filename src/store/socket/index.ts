@@ -55,11 +55,18 @@ export const getDefaultState = (): SocketState => {
       print_stats: {
         state: '',
         print_duration: 0,
+        total_duration: 0,
+        filament_used: 0,
         filename: ''
       },
       display_status: {
         progress: 0,
         message: ''
+      },
+      virtual_sdcard: {
+        file_position: 0,
+        is_active: false,
+        progress: 0
       },
       toolhead: {
         estimated_print_time: 0,

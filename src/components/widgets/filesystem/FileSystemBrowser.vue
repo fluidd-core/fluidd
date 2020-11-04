@@ -188,10 +188,9 @@
               </v-list-item>
             </v-list>
           </v-col>
-          <v-col class="px-2 d-none d-sm-flex">
+          <v-col class="px-2 d-none d-sm-flex" v-if="contextMenu.item.thumbnails && contextMenu.item.thumbnails.length">
             <img
-              v-if="contextMenu.item.thumbnails && contextMenu.item.thumbnails.length"
-              class="mr-1 file-icon-thumb"
+              class="mr-2 ml-2"
               :src="getThumb(contextMenu.item, true).data"
               :height="150"
             />
