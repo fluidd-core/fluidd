@@ -38,12 +38,12 @@ import { MetaInfo } from 'vue-meta'
   },
   metaInfo (this: App): MetaInfo {
     const instanceName = this.instanceName
+    const progress = this.progress
     const r = {
       title: '',
       titleTemplate: ''
     }
     if (this.printerPrinting) {
-      const progress = this.progress
       r.titleTemplate = `[${progress}%] | %s | ${instanceName}`
     } else {
       r.titleTemplate = `%s | ${instanceName}`

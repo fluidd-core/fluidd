@@ -2,10 +2,6 @@
 
 ## Next Up
 - power plugin, call up front so users can still power on printer even if klippy isn't active
-- update metadata only for notify, check to make sure already exists and add if not
-- add QUERY_PROBE to endstops widget
-- if virtual_sdcard.is_active but we're not printing, add a clear current file button
-- have card hamburgers appear in mobile, but buttons in header for desktop
 - ensure tabs are also remembered in localstorage
 - temperature presets
 - on printer config, force file browser to be full height (make card 100% height)
@@ -51,6 +47,7 @@
 - add a widget to configure ztilt (needed?)
 
 ## User wants
+- add QUERY_PROBE to endstops widget
 - add swap up / down for toolhead [railcore specific...] (waiting on issue feedback)
 - parse underscores out of macro names
 - another request to have the current temps above the macors etc during a print, but not while not printing.
