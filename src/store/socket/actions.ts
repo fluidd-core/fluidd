@@ -22,6 +22,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
     SocketActions.printerInfo()
+    SocketActions.serverInfo()
   },
 
   /**
