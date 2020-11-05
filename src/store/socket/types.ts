@@ -43,16 +43,6 @@ export interface TimeEstimates {
   totalDuration: string;
 }
 
-export interface FileChangeSocketResponse {
-  item: FileChangeItem;
-  source_item?: FileChangeItem;
-}
-
-export interface FileChangeItem {
-  root: string;
-  path: string;
-}
-
 export interface Endstops {
   [key: string]: string;
 }

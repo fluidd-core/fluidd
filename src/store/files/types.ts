@@ -7,7 +7,7 @@ export interface FilesState {
 
 export interface Files {
   path: string;
-  items: [KlipperFile | KlipperFileWithMeta | Directory];
+  items: (KlipperFile | KlipperFileWithMeta | Directory)[];
 }
 
 export interface KlipperFile {
@@ -47,14 +47,26 @@ export interface Thumbnail {
   size: number;
 }
 
-export interface FileListChangeInfo {
-  root: string;
-  destination: FileListChangeItem;
-  source?: FileListChangeItem;
+export interface FileChangeSocketResponse {
+  item: FileChangeItem;
+  source_item?: FileChangeItem;
 }
 
-export interface FileListChangeItem {
-  item: string;
+export interface FileChangeItem {
+  root: string;
   path: string;
-  notifyPath: string;
+  modified: number;
+  size: number;
+}
+
+export interface FilePaths {
+  filename: string;
+  path: string;
+  rootPath: string;
+}
+
+export interface FileUpdate {
+  paths: FilePaths;
+  file: KlipperFile | KlipperFileWithMeta;
+  root: string;
 }

@@ -1,6 +1,8 @@
 # TODO [fluidd]
 
 ## Next Up
+- power plugin, call up front so users can still power on printer even if klippy isn't active
+- update metadata only for notify, check to make sure already exists and add if not
 - add QUERY_PROBE to endstops widget
 - if virtual_sdcard.is_active but we're not printing, add a clear current file button
 - have card hamburgers appear in mobile, but buttons in header for desktop

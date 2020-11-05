@@ -1,5 +1,5 @@
-import { SocketState, FileChangeSocketResponse, ChartDataSet } from './socket/types'
-import { FileListChangeInfo, KlipperFileWithMeta, Thumbnail } from './files/types'
+import { SocketState, ChartDataSet } from './socket/types'
+import { FileChangeItem, FilePaths, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
 
 /**
  * Return a file thumb if one exists
@@ -27,40 +27,46 @@ export const getThumb = (file: KlipperFileWithMeta, goLarge = true) => {
 }
 
 /**
- * Takes the file list changed information and formats
- * it for us.
- * The user can only change the file name, or its path -
- * but not both at once.
+ * Takes a filename and root and provides;
+ * - the filename, with no path.
+ * - the path, with no root or filename.
+ * - the path, including root.
  */
-export const getFileListChangeInfo = (payload: FileChangeSocketResponse): FileListChangeInfo => {
-  // Determine the old and new path;
-  // Determine the old and new item (if relevent..);
-  // Note, the item could represent a folder or file.
-  const root = payload.item.root
-  const path = payload.item.path.substr(0, payload.item.path.lastIndexOf('/'))
-  let r = {
-    root,
-    destination: {
-      item: payload.item.path.split('/').pop() || '',
-      path,
-      notifyPath: (path.length === 0) ? root : root + '/' + path
-    }
+export const getFilePaths = (filePath: string, root: string): FilePaths => {
+  let path = filePath.substr(0, filePath.lastIndexOf('/'))
+  path = (path && path.startsWith(root))
+    ? path.substring(root.length)
+    : path
+  return {
+    filename: filePath.split('/').pop() || '',
+    path,
+    rootPath: (path.length === 0) ? root : root + '/' + path
   }
+}
 
-  if (payload.source_item) {
-    const sourcePath = payload.source_item.path.substr(0, payload.source_item.path.lastIndexOf('/'))
-    r = {
-      ...r,
-      ...{
-        source: {
-          item: payload.source_item.path.split('/').pop(),
-          path: sourcePath,
-          notifyPath: (sourcePath.length === 0) ? root : root + '/' + sourcePath
-        }
-      }
-    }
+/**
+ * File Updates come in with the filename representing the filepath,
+ * so we need to strip the path to reflect what we store.
+ */
+export const mergeFileUpdate = (root: string, existing: KlipperFile, updates: KlipperFileWithMeta): KlipperFileWithMeta => {
+  const paths = getFilePaths(updates.filename, root)
+  updates.filename = paths.filename
+  return { ...existing, ...updates }
+}
+
+/**
+ * Takes file change item and formats to represent a klipperfile.
+ */
+export const formatAsFile = (root: string, file: FileChangeItem): KlipperFile | KlipperFileWithMeta => {
+  const paths = getFilePaths(file.path, root)
+  return {
+    type: 'file',
+    filename: paths.filename,
+    extension: paths.filename.split('.').pop() || '',
+    name: paths.filename,
+    size: file.size,
+    modified: file.modified
   }
-  return r
 }
 
 /**

@@ -360,7 +360,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true })
   },
   async notifyMetadataUpdate ({ dispatch }, payload) {
-    dispatch('files/onServerFilesMetadata', payload, { root: true })
+    dispatch('files/onFileUpdate', payload, { root: true })
   },
   async notifyPowerChanged ({ dispatch }, payload) {
     dispatch('gpio/onStatus', { [payload.device]: payload.status }, { root: true })

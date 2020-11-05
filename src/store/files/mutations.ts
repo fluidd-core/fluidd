@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { FilesState } from './types'
+import { mergeFileUpdate } from '../helpers'
+import { Files, FilesState, FileUpdate, KlipperFile, KlipperFileWithMeta } from './types'
 
 export const mutations: MutationTree<FilesState> = {
   onServerFilesGetDirectory (state, payload) {
@@ -13,12 +14,37 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  onFileMetaUpdate (state, payload) {
+  onFileUpdate (state, payload: FileUpdate) {
     const root = payload.root
-    const pathIndex = payload.pathIndex
-    const fileIndex = payload.fileIndex
-    const file = state[root][pathIndex].items[fileIndex]
-    Vue.set(state[root][pathIndex].items, fileIndex, { ...file, ...payload.payload })
+    const paths = payload.paths
+
+    // Find relevant directory.
+    const directory = state[root].find((f: Files) => (f.path === paths.rootPath))
+
+    if (directory) {
+      const fileIndex = directory.items.findIndex(file => file.name === paths.filename)
+      const file = directory.items[fileIndex] as KlipperFile | KlipperFileWithMeta
+      if (fileIndex >= 0) {
+        Vue.set(directory.items, fileIndex, mergeFileUpdate(root, file, payload.file))
+      } else {
+        directory.items.push(payload.file)
+      }
+    }
+  },
+
+  onFileDelete (state, payload: FileUpdate) {
+    console.log('on file delete', payload)
+    const root = payload.root
+    const paths = payload.paths
+
+    // Find relevant directory.
+    const directory = state[root].find((f: Files) => (f.path === paths.rootPath))
+    if (directory) {
+      const fileIndex = directory.items.findIndex(file => file.name === paths.filename)
+      if (fileIndex) {
+        directory.items.splice(fileIndex, 1)
+      }
+    }
   }
 
 }

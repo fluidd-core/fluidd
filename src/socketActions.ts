@@ -165,14 +165,15 @@ export const SocketActions = {
   },
 
   /**
+   * Loads the metadata for a given filepath.
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetaData (filename: string) {
+  async serverFilesMetaData (filepath: string) {
     Vue.$socket.emit(
       'server.files.metadata', {
-        dispatch: 'files/onServerFilesMetadata',
-        params: { filename }
+        dispatch: 'files/onFileUpdate',
+        params: { filename: filepath }
       }
     )
   },
@@ -187,7 +188,7 @@ export const SocketActions = {
       {
         dispatch: 'files/onServerFilesGetDirectory',
         wait: `${Waits.onGetDirectory}${path}`,
-        params: { root, path }
+        params: { root, path, extended: true }
       }
     )
   },
@@ -235,7 +236,7 @@ export const SocketActions = {
         dispatch: 'void',
         params: {
           path,
-          force: true
+          force: false
         }
       }
     )

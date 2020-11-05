@@ -1,8 +1,7 @@
 import { ActionTree } from 'vuex'
-import { FilesState, KlipperFile, Directory, Files } from './types'
-import { FileChangeSocketResponse } from '../socket/types'
+import { FilesState, KlipperFile, Directory, FileChangeSocketResponse, FileUpdate, KlipperFileWithMeta } from './types'
 import { RootState } from '../types'
-import { getFileListChangeInfo } from '../helpers'
+import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
 
@@ -46,68 +45,100 @@ export const actions: ActionTree<FilesState, RootState> = {
           file.extension = file.filename.split('.').pop() || ''
           file.modified = new Date(file.modified).getTime()
           items.push(file)
-          if (root === 'gcodes' && file.extension === 'gcode') {
-            SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename)
-          }
+          // if (root === 'gcodes' && file.extension === 'gcode') {
+          //   SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename)
+          // }
         }
       })
     }
     commit('onServerFilesGetDirectory', { root, directory: { path, items } })
   },
 
-  async onServerFilesMetadata ({ state, commit, rootState }, payload) {
+  /**
+   * This handles when a file is uploaded or metadata is updated for a file
+   * in the browser, or the current file.
+   */
+  async onFileUpdate ({ commit, rootState }, file: KlipperFile | KlipperFileWithMeta) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
-    let path = payload.filename.substr(0, payload.filename.lastIndexOf('/'))
-    path = (path.length) ? root + '/' + path : root
-    const filename = payload.filename.split('/').pop() || ''
+    const paths = getFilePaths(file.filename, root)
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
-    if (rootState.socket && payload.filename === rootState.socket.printer.print_stats.filename) {
-      commit('socket/onSocketNotify', { key: 'current_file', payload }, { root: true })
+    if (rootState.socket && file.filename === rootState.socket.printer.print_stats.filename) {
+      commit('socket/onSocketNotify', { key: 'current_file', payload: file }, { root: true })
     }
 
     // Apply the metadata to our specific file.
-    const pathIndex = state[root].findIndex((f: Files) => (f.path === path))
-    if (state[root][pathIndex] && state[root][pathIndex].items) {
-      const fileIndex = state[root][pathIndex].items.findIndex(f => (f.type === 'file' && f.filename === filename))
-      if (fileIndex >= 0) {
-        commit('onFileMetaUpdate', { root, pathIndex, fileIndex, payload })
-      }
+    const update: FileUpdate = {
+      paths,
+      root,
+      file
     }
+    commit('onFileUpdate', update)
   },
 
   /**
    * The socket has notified that a file or folder has moved,
    * or - in the case of a folder, has been renamed.
    */
-  async notifyMoveitem (_, payload: FileChangeSocketResponse) {
-    // For now, we just refresh the two paths in question.
-    // Perhaps later it might be more prudent to manually update the individual files...
-    const info = getFileListChangeInfo(payload)
-    SocketActions.serverFilesGetDirectory(info.root, info.destination.notifyPath)
-    if (info.source) {
-      SocketActions.serverFilesGetDirectory(info.root, info.source.notifyPath)
+  async notifyCopyitem (_, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const itemPaths = getFilePaths(payload.item.path, root)
+
+    SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
+    if (payload.source_item) {
+      const sourcePaths = getFilePaths(payload.source_item.path, root)
+      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
     }
   },
 
-  async notifyUploadfile (_, payload: FileChangeSocketResponse) {
-    const info = getFileListChangeInfo(payload)
-    SocketActions.serverFilesGetDirectory(info.root, info.destination.notifyPath)
+  /**
+   * Move a file or directory.
+   */
+  async notifyMoveitem (_, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const itemPaths = getFilePaths(payload.item.path, root)
+
+    SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
+    if (payload.source_item) {
+      const sourcePaths = getFilePaths(payload.source_item.path, root)
+      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+    }
   },
 
-  async notifyDeletefile (_, payload: FileChangeSocketResponse) {
-    const info = getFileListChangeInfo(payload)
-    SocketActions.serverFilesGetDirectory(info.root, info.destination.notifyPath)
+  async notifyUploadfile ({ commit }, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const paths = getFilePaths(payload.item.path, root)
+    const file = formatAsFile(root, payload.item)
+    const update: FileUpdate = {
+      paths,
+      root,
+      file
+    }
+    commit('onFileUpdate', update)
+  },
+
+  async notifyDeletefile ({ commit }, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const paths = getFilePaths(payload.item.path, root)
+    const file = formatAsFile(root, payload.item)
+    const update: FileUpdate = {
+      paths,
+      root,
+      file
+    }
+    commit('onFileDelete', update)
   },
 
   async notifyCreatedir (_, payload: FileChangeSocketResponse) {
-    const info = getFileListChangeInfo(payload)
-    SocketActions.serverFilesGetDirectory(info.root, info.destination.notifyPath)
+    const root = payload.item.root
+    const paths = getFilePaths(payload.item.path, root)
+    SocketActions.serverFilesGetDirectory(root, paths.rootPath)
   },
 
   async notifyDeletedir (_, payload: FileChangeSocketResponse) {
-    const info = getFileListChangeInfo(payload)
-    SocketActions.serverFilesGetDirectory(info.root, info.destination.notifyPath)
+    const root = payload.item.root
+    const paths = getFilePaths(payload.item.path, root)
+    SocketActions.serverFilesGetDirectory(root, paths.rootPath)
   }
 }
