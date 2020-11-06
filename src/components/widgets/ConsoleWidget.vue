@@ -2,7 +2,7 @@
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
       <v-layout v-for="(item, index) in consoleItems" :key="index" class="console-item">
-        <span class="grey--text text--darken-2 mr-3">{{ getTime(item.time) }} </span>
+        <span class="grey--text text--darken-2 mr-3 d-none d-sm-block">{{ getTime(item.time) }} </span>
         <span :class="consoleClass(item)" v-html="item.message"></span>
       </v-layout>
     </v-card>
