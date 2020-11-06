@@ -2,6 +2,7 @@ export interface SocketState {
   [key: string]: any;
   open: boolean;
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
+  ready: boolean;
   acceptingNotifications: boolean;
   error: SocketError | null;
   waits: string[]; // list of things that we might be waiting on, like a gcode script to finish
@@ -10,7 +11,6 @@ export interface SocketState {
   plugins: string[]; // active plugins (gpio_power)
   console: ConsoleEntry[]; // console stream
   chart: ChartDataSet[]; // chart data
-  chartReady: boolean;
   temperature_fans: string[]; // maintains a list of available temp fans
   temperature_sensors: string[]; // maintains a list of available sensors
   temperature_probes: string[]; // maintains a list of available probes

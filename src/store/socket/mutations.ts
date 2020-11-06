@@ -40,6 +40,9 @@ export const mutations: MutationTree<SocketState> = {
   onSocketConnecting (state, payload) {
     state.connecting = payload
   },
+  onSocketReadyState (state, payload) {
+    state.ready = payload
+  },
   onAcceptNotifications (state) {
     state.acceptingNotifications = true
   },
@@ -112,9 +115,6 @@ export const mutations: MutationTree<SocketState> = {
     payload.forEach((item: ChartDataSet) => {
       state.chart.push(item)
     })
-  },
-  setChartReadyState (state, payload) {
-    state.chartReady = payload
   },
   addChartValue (state, payload: ChartDataSet) {
     // Dont keep data older than 10 minutes and...

@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app class="fluidd">
     <app-bar></app-bar>
 
     <FlashMessage

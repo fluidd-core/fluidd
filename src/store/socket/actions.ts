@@ -341,8 +341,8 @@ export const actions: ActionTree<SocketState, RootState> = {
           }
         }
       }
-      // The first notification should have pre-populated any chart labels, so mark it as ready.
-      if (!state.chartReady) commit('setChartReadyState', true)
+      // The first notification should have pre-populated any data & chart labels, so mark the socket as ready.
+      if (!state.ready) commit('onSocketReadyState', true)
     }
   },
 

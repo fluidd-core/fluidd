@@ -19,7 +19,7 @@
     </v-row>
     <v-row>
       <v-col cols="12" sm="4" md="3">
-        <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+        <klippy-disconnected-card></klippy-disconnected-card>
         <general-settings-card></general-settings-card>
         <theme-settings-card></theme-settings-card>
         <print-time-estimate-settings-card></print-time-estimate-settings-card>

@@ -7,15 +7,15 @@ import { RootState } from '../types'
 
 export const getDefaultState = (): SocketState => {
   return {
-    open: false,
-    connecting: false,
+    open: false, // socket is open or closed.
+    connecting: false, // socket is trying to connect.
+    ready: false, // indicates the socket is ready (and has first dump of data...)
     acceptingNotifications: false,
     error: null,
     waits: [],
     endstops: {},
     console: [],
     chart: [],
-    chartReady: false,
     macros: {},
     plugins: [],
     temperature_fans: [],

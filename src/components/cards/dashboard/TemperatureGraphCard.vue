@@ -55,7 +55,7 @@ export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
   get chartReady () {
     return (
       this.$store.state.socket.acceptingNotifications &&
-      this.$store.state.socket.chartReady &&
+      this.$store.state.socket.ready &&
       this.klippyConnected &&
       this.ready
     )

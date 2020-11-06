@@ -6,7 +6,7 @@
 
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="7" class="pt-0">
-        <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+        <klippy-disconnected-card></klippy-disconnected-card>
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
         <v-row v-if="klippyConnected">
           <v-col cols="12" sm="6" class="pt-0">

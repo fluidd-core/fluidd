@@ -6,7 +6,7 @@
 
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
-        <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
+        <klippy-disconnected-card></klippy-disconnected-card>
         <status-card v-if="klippyConnected"></status-card>
         <camera-card v-if="cameraEnabled"></camera-card>
         <toolhead-card></toolhead-card>
@@ -15,7 +15,6 @@
       <v-col cols="12" md="6" class="pt-0">
         <tools-card></tools-card>
         <console-card></console-card>
-        <!-- <temperature-targets-card></temperature-targets-card> -->
         <temperature-graph-card></temperature-graph-card>
       </v-col>
     </v-row>
