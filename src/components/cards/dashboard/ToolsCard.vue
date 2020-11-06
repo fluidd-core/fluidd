@@ -1,7 +1,7 @@
 <template>
   <v-card class="mb-4">
     <v-tabs
-      v-model="activeTab"
+      v-model="tab"
       fixed-tabs
       background-color="quaternary"
     >
@@ -35,7 +35,7 @@
 
     <v-expand-transition>
       <div v-show="!isCollapsed">
-        <v-tabs-items v-model="activeTab" class="mb-auto rounded">
+        <v-tabs-items v-model="tab" class="mb-auto rounded">
           <v-tab-item :key="'targets'" class="tertiary rounded">
             <temperature-targets-widget></temperature-targets-widget>
           </v-tab-item>
@@ -79,15 +79,15 @@ import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWid
 })
 export default class ToolsCard extends Mixins(UtilsMixin) {
   tab = 0
-  get activeTab () {
-    return (this.$store.state.config.localConfig.dashTab === undefined)
-      ? this.tab
-      : this.$store.state.config.localConfig.dashTab
-  }
+  // get activeTab () {
+  //   return (this.$store.state.config.localConfig.dashTab === undefined)
+  //     ? this.tab
+  //     : this.$store.state.config.localConfig.dashTab
+  // }
 
-  set activeTab (val: string) {
-    this.$store.dispatch('config/saveLocalStorage', { dashTab: val })
-  }
+  // set activeTab (val: string) {
+  //   this.$store.dispatch('config/saveLocalStorage', { dashTab: val })
+  // }
 
   get isCollapsed (): boolean {
     const collapsed = (this.$store.state.config.localConfig.Tools === undefined)

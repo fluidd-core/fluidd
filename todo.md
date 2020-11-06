@@ -1,6 +1,7 @@
 # TODO [fluidd]
 
 ## Next Up
+- fix title tag
 - instance management?
 - temperature presets
 - add option to change camera from <img> to <video>
