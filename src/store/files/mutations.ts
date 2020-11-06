@@ -33,7 +33,6 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   onFileDelete (state, payload: FileUpdate) {
-    console.log('on file delete', payload)
     const root = payload.root
     const paths = payload.paths
 
