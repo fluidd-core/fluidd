@@ -50,6 +50,7 @@
               root="gcodes"
               accept=".gcode, .ufp"
               dense
+              :height="400"
               :show-title="false"
               :show-meta-data="false"
             ></file-system-card>
@@ -114,7 +115,7 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   .v-tabs-items {
     > .v-window__container {
       > .v-window-item.max-height {
-        height: 400px;
+        // height: 400px;
       }
     }
   }

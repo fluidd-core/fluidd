@@ -1,5 +1,5 @@
 <template>
-  <v-card color="tertiary" class="filesystem-wrapper">
+  <v-card color="tertiary" class="filesystem-wrapper" :height="height">
     <v-card-title class="quaternary rounded-t py-1" v-if="showTitle">
       <v-icon left>$files</v-icon>
       <span class="font-weight-light">{{ panelTitle }}</span>
@@ -76,6 +76,9 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, default: false })
   dense!: boolean;
+
+  @Prop({ type: [Number, String] })
+  height!: number | string;
 
   currentRoot = ''
 

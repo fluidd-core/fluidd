@@ -5,9 +5,8 @@
         <collapsable-card
           title="UI Settings"
           icon="$cogs"
-          :collapsable="false"
-          overrideClasses="mb-0 mb-sm-2"
-          >
+          cardClasses="mb-0 mb-sm-2"
+          :collapsable="false">
           <template v-slot:collapse-button>
             <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">$save</v-icon> Save</v-btn>
           </template>

@@ -1,9 +1,10 @@
 <template>
   <v-card
-    :class="componentClasses"
+    :class="_cardClasses"
     color="tertiary"
     :rounded="rounded"
-    :loading="isLoading">
+    :loading="isLoading"
+    :height="height">
     <v-card-title class="card-title quaternary py-1">
       <slot name="title">
         <v-icon left>{{ icon }}</v-icon>
@@ -50,7 +51,7 @@
     <v-divider></v-divider>
 
     <v-expand-transition>
-      <div v-show="!isCollapsed" :style="contentContainerStyle">
+      <div v-show="!isCollapsed" :class="_contentClasses">
         <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="subTitle">
             <span v-html="subTitle"></span>
@@ -94,21 +95,31 @@ export default class ToolheadCard extends Vue {
   @Prop({ type: String, default: 'md' })
   rounded!: string
 
-  @Prop({ type: Number, required: false })
-  height!: number
+  @Prop({ type: [Number, String], required: false })
+  height!: number | string
 
   @Prop({ type: Boolean, default: false })
   hideMenu!: boolean
 
   @Prop({ type: String })
-  overrideClasses!: string
+  cardClasses!: string
 
-  baseClasses = 'mb-2 mb-sm-4'
+  @Prop({ type: String })
+  contentClasses!: string
 
-  get componentClasses () {
-    return (this.overrideClasses)
-      ? this.overrideClasses
-      : this.baseClasses
+  baseCardClasses = 'mb-2 mb-sm-4'
+  baseContentClasses = ''
+
+  get _cardClasses () {
+    return (this.cardClasses)
+      ? this.cardClasses
+      : this.baseCardClasses
+  }
+
+  get _contentClasses () {
+    return (this.contentClasses)
+      ? this.contentClasses
+      : this.baseContentClasses
   }
 
   get id (): string {
@@ -129,10 +140,6 @@ export default class ToolheadCard extends Vue {
 
   set isCollapsed (val: boolean) {
     this.$store.dispatch('config/saveLocalStorage', { [this.id]: val })
-  }
-
-  get contentContainerStyle () {
-    return (this.height) ? { height: this.height + 'px' } : {}
   }
 
   get hasDefaultSlot () {

@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
+  <v-container fluid class="constrained-width fill-height px-2 px-sm-4">
+    <v-row class="mt-0 mt-sm-2 fill-height">
       <v-col cols="12" md="7" class="pt-0">
         <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
@@ -13,9 +13,10 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
+      <v-col cols="12" md="5" class="pt-0 config-files-wrapper fill-height">
         <file-system-card
           :root="['config', 'config_examples']"
+          height="100%"
           accept=".conf,.cfg"
           dense
           panel-title="Config"
@@ -62,6 +63,6 @@ export default class Configuration extends Mixins(UtilsMixin) {
 
 <style lang="scss" scoped>
   .config-files-wrapper {
-    height: 600px;
+    // height: 100vmin;
   }
 </style>
