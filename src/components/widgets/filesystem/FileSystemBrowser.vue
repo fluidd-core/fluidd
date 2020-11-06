@@ -54,6 +54,7 @@
             color="secondary"
             class="mr-2"
             :accept="accept"
+            :loading="hasWait(waits.onUploadGcode)"
             @file-update="uploadFile">
           </btn-file-upload>
           <v-btn

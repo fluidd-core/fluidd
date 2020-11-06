@@ -10,7 +10,14 @@
       style="display: none"
       @change="fileChanged"
     >
-    <v-btn small :color="color" @click="$refs.uploadFile.click()"><v-icon small v-if="icon">{{ icon }}</v-icon>{{ label }}</v-btn>
+    <v-btn
+      small
+      :color="color"
+      :loading="loading"
+      @click="$refs.uploadFile.click()">
+      <v-icon small v-if="icon">{{ icon }}</v-icon>
+      {{ label }}
+    </v-btn>
   </div>
 </template>
 
@@ -33,6 +40,9 @@ export default class BtnFileUpload extends Vue {
 
   @Prop({ type: String, required: false })
   public color!: string
+
+  @Prop({ type: Boolean })
+  public loading!: boolean
 
   fileChanged (e: Event) {
     const target = e.target as HTMLInputElement

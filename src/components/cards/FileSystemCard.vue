@@ -51,6 +51,7 @@ import { SocketActions } from '@/socketActions'
 import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
 import UtilsMixin from '@/mixins/utils'
 import { KlipperFile } from '@/store/files/types'
+import { Waits } from '@/globals'
 
 @Component({
   components: {
@@ -140,15 +141,21 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
     filename = `${path}/${filename}`.substring(7)
     formData.append('file', file, filename)
     formData.append('root', root)
-    return this.$http.post(
-      this.apiUrl + '/server/files/upload',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
+    this.$store.dispatch('socket/addWait', Waits.onUploadGcode)
+    console.log('uploading, set wait', Waits.onUploadGcode)
+    return this.$http
+      .post(
+        this.apiUrl + '/server/files/upload',
+        formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         }
-      }
-    )
+      )
+      .finally(() => {
+        console.log('finished uploading, remove wait', Waits.onUploadGcode)
+        this.$store.dispatch('socket/removeWait', Waits.onUploadGcode)
+      })
   }
 
   saveEdit (content: string, filename: string, path: string) {

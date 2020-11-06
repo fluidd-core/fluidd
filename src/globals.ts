@@ -169,7 +169,8 @@ export const Waits = Object.freeze({
   onSetVelocity: 'onSetVelocity',
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
-  onSetSCV: 'onSetSCV'
+  onSetSCV: 'onSetSCV',
+  onUploadGcode: 'onUploadGcode'
 })
 
 export const chartConfiguration: ChartConfiguration = Object.freeze({
