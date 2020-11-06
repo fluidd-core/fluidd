@@ -1,8 +1,6 @@
 # TODO [fluidd]
 
 ## Next Up
-- power plugin, call up front so users can still power on printer even if klippy isn't active
-- ensure tabs are also remembered in localstorage
 - temperature presets
 - on printer config, force file browser to be full height (make card 100% height)
 - add option to change camera from <img> to <video>

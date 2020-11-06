@@ -77,7 +77,16 @@ import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWid
   }
 })
 export default class ToolsCard extends Mixins(UtilsMixin) {
-  activeTab = 'macros'
+  tab = 0
+  get activeTab () {
+    return (this.$store.state.config.localConfig.dashTab === undefined)
+      ? this.tab
+      : this.$store.state.config.localConfig.dashTab
+  }
+
+  set activeTab (val: string) {
+    this.$store.dispatch('config/saveLocalStorage', { dashTab: val })
+  }
 
   get isCollapsed (): boolean {
     const collapsed = (this.$store.state.config.localConfig.Tools === undefined)
