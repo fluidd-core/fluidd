@@ -1,5 +1,9 @@
 <template>
   <v-container fill-height fluid class="constrained-width px-2 px-sm-4">
+    <vue-headful
+      :title="pageTitle">
+    </vue-headful>
+
     <v-row justify="center" align="center" class="mt-0 mt-sm-2">
       <v-col>
         <center>
@@ -15,5 +19,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class NotFound extends Vue {}
+export default class NotFound extends Vue {
+  pageName = '404'
+}
 </script>

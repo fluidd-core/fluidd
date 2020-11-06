@@ -1,5 +1,9 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
+    <vue-headful
+      :title="pageTitle">
+    </vue-headful>
+
     <v-row no-gutters class="mt-0 mt-sm-2">
       <v-col cols="12" class="pa-0">
         <collapsable-card
@@ -43,7 +47,7 @@ import CameraSettingsCard from '@/components/cards/settings/CameraSettingsCard.v
 import ToolheadSettingsCard from '@/components/cards/settings/ToolheadSettingsCard.vue'
 import PrintTimeEstimateSettingsCard from '@/components/cards/settings/PrintTimeEstimateSettingsCard.vue'
 import ThemeSettingsCard from '@/components/cards/settings/ThemeSettingsCard.vue'
-import { MetaInfo } from 'vue-meta'
+// import { MetaInfo } from 'vue-meta'
 import EventBus from '@/eventBus'
 
 @Component({
@@ -56,14 +60,15 @@ import EventBus from '@/eventBus'
     ToolheadSettingsCard,
     PrintTimeEstimateSettingsCard,
     ThemeSettingsCard
-  },
-  metaInfo (this: Settings): MetaInfo {
-    return {
-      title: 'Settings'
-    }
   }
+  // metaInfo (this: Settings): MetaInfo {
+  //   return {
+  //     title: 'Settings'
+  //   }
+  // }
 })
 export default class Settings extends Mixins(UtilsMixin) {
+  pageName = 'Settings'
   get hasUnsavedChanges () {
     return this.$store.state.config.unsavedChanges
   }

@@ -1,5 +1,9 @@
 <template>
   <v-container fluid class="constrained-width fill-height px-2 px-sm-4">
+    <vue-headful
+      :title="pageTitle">
+    </vue-headful>
+
     <v-row class="mt-0 mt-sm-2 fill-height">
       <v-col cols="12" md="7" class="pt-0">
         <klippy-disconnected-card v-if="!klippyConnected"></klippy-disconnected-card>
@@ -35,7 +39,7 @@ import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCar
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
-import { MetaInfo } from 'vue-meta'
+// import { MetaInfo } from 'vue-meta'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
@@ -47,22 +51,17 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     RunoutSensorsCard,
     FileSystemCard,
     KlippyDisconnectedCard
-  },
-  metaInfo (this: Configuration): MetaInfo {
-    return {
-      title: 'Configuration'
-    }
   }
+  // metaInfo (this: Configuration): MetaInfo {
+  //   return {
+  //     title: 'Configuration'
+  //   }
+  // }
 })
 export default class Configuration extends Mixins(UtilsMixin) {
+  pageName = 'Configuration'
   get supportsBedMesh () {
     return this.$store.getters['socket/getSupportsBedMesh']
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .config-files-wrapper {
-    // height: 100vmin;
-  }
-</style>

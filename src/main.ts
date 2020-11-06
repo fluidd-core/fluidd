@@ -10,12 +10,14 @@ import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
+import vueHeadful from 'vue-headful'
 
 import Btn from '@/components/inputs/Btn.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
 
 Vue.component('btn', Btn)
 Vue.component('collapsable-card', CollapsableCard)
+Vue.component('vue-headful', vueHeadful)
 
 // Use any Plugins
 Vue.use(AxiosPlugin)
