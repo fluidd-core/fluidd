@@ -3,8 +3,7 @@
     :class="_cardClasses"
     color="tertiary"
     :rounded="rounded"
-    :loading="isLoading"
-    :height="height">
+    :loading="isLoading">
     <v-card-title class="card-title quaternary py-1">
       <slot name="title">
         <v-icon left>{{ icon }}</v-icon>
@@ -51,7 +50,7 @@
     <v-divider></v-divider>
 
     <v-expand-transition>
-      <div v-show="!isCollapsed" :class="_contentClasses">
+      <div v-show="!isCollapsed" :class="_contentClasses" :style="_contentStyles">
         <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="subTitle">
             <span v-html="subTitle"></span>
@@ -120,6 +119,17 @@ export default class ToolheadCard extends Vue {
     return (this.contentClasses)
       ? this.contentClasses
       : this.baseContentClasses
+  }
+
+  // height can not be applied to the card, otherwise
+  // it will not collapse properly.
+  // Instead we assign the height to the content area
+  // and abritrarily remove what we think the header
+  // height is to get close enough.
+  get _contentStyles () {
+    return (this.height)
+      ? `height: calc(${this.height}px - 49px);`
+      : ''
   }
 
   get id (): string {
