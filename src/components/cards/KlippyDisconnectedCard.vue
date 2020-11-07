@@ -20,15 +20,16 @@
       </v-row>
       <v-row>
         <v-col>
-          <v-alert text type="error" v-if="klippyStateMessage !== 'Printer is ready'">
+          <v-alert text dense type="error" v-if="klippyStateMessage !== 'Printer is ready'">
             <span v-html=klippyStateMessage></span>
           </v-alert>
-          <v-alert text type="error" v-if="socketReady && clientWarnings.length && klippyStateMessage === 'Printer is ready'">
-            <div class="mb-3">
-              Detected missing configuration required for smooth operation.
+          <v-alert text dense icon="$alert" type="warning" v-if="socketReady && clientWarnings.length && klippyStateMessage === 'Printer is ready'">
+            <div class="mb-2">
+              {{ appName }} warnings found
             </div>
 
-            <div class="client-warning mb-2" v-for="(warning, index) in clientWarnings" :key="index" v-html="warning.message"></div>
+            <!-- <div class="client-warning mb-2" v-for="(warning, index) in clientWarnings" :key="index" v-html="warning.message"></div> -->
+            <div class="client-warning" v-for="(warning, index) in clientWarnings" :key="index" v-html="warning.message"></div>
           </v-alert>
         </v-col>
       </v-row>
@@ -59,19 +60,19 @@ export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
     const config = this.$store.state.socket.printer.configfile.config
     const warnings = []
     if (config && !config.virtual_sdcard) {
-      warnings.push({ message: '<code>[virtual_sd_card]</code> not defined. Please ensure this is configured and the correct path is set.' })
+      warnings.push({ message: '[virtual_sd_card] not found in printer configuration.' })
     }
 
     if (config && !config.pause_resume) {
-      warnings.push({ message: '<code>[pause_resume]</code> not defined in config.' })
+      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
     }
 
     if (config && !config.display_status) {
-      warnings.push({ message: '<code>[display_status]</code> not defined in config.' })
+      warnings.push({ message: '[display_status] not found in printer configuration.' })
     }
 
     if (config && ('gcode_macro CANCEL_PRINT' in config === false)) {
-      warnings.push({ message: '<code>CANCEL_PRINT</code> macro is required. Should ensure <code>CLEAR_PAUSE</code> and <code>SDCARD_RESET_FILE</code> is defined.' })
+      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
     }
     return warnings
   }
