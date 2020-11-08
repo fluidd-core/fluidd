@@ -10,10 +10,10 @@
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
         <v-row v-if="klippyConnected">
           <v-col cols="12" sm="6" class="pt-0">
-            <runout-sensors-card v-if="klippyConnected"></runout-sensors-card>
+            <end-stops-card v-if="klippyConnected"></end-stops-card>
           </v-col>
           <v-col cols="12" sm="6" class="pt-0">
-            <end-stops-card v-if="klippyConnected"></end-stops-card>
+            <runout-sensors-card v-if="klippyConnected && supportsRunoutSensors"></runout-sensors-card>
           </v-col>
         </v-row>
       </v-col>
@@ -61,6 +61,15 @@ export default class Configuration extends Mixins(UtilsMixin) {
   pageName = 'Configuration'
   get supportsBedMesh () {
     return this.$store.getters['socket/getSupportsBedMesh']
+  }
+
+  get supportsRunoutSensors () {
+    return this.$store.getters['socket/getRunoutSensors'].length
+  }
+
+  get supportsEndstops () {
+    const endStops = this.$store.getters['socket/getEndstops']
+    return (Object.keys(endStops).length > 0)
   }
 }
 </script>
