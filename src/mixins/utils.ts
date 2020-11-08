@@ -123,6 +123,14 @@ export default class UtilsMixin extends Vue {
     return 'z_tilt' in this.$store.state.socket.printer.configfile.config
   }
 
+  get printerSupportsBedScrews (): boolean {
+    return 'bed_screws' in this.$store.state.socket.printer.configfile.config
+  }
+
+  get printerSupportsBedScrewsCalculate (): boolean {
+    return 'screws_tilt_adjust' in this.$store.state.socket.printer.configfile.config
+  }
+
   get allHomed (): boolean {
     return this.$store.getters['socket/getHomedAxes']('xyz')
   }

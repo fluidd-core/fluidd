@@ -34,6 +34,26 @@
           MOTORS OFF
       </v-btn>
       <v-btn
+        v-if="!printerPrinting && printerSupportsBedScrews"
+        @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
+        :loading="hasWait(waits.onBedScrewsAdjust)"
+        :disabled="hasWaits || !klippyConnected"
+        small
+        class="ma-1"
+        color="secondary">
+          Bed_Screws_Adjust
+      </v-btn>
+      <v-btn
+        v-if="!printerPrinting && printerSupportsBedScrewsCalculate"
+        @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
+        :loading="hasWait(waits.onBedScrewsCalculate)"
+        :disabled="!allHomed || hasWaits || !klippyConnected"
+        small
+        class="ma-1"
+        color="secondary">
+          Screws_Tilt_Calculate
+      </v-btn>
+      <v-btn
         v-if="!printerPrinting && printerSupportsZtilt"
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :loading="hasWait(waits.onZTilt)"
@@ -41,7 +61,7 @@
         small
         class="ma-1"
         color="secondary">
-          ZTA
+          Z_Tilt_Adjust
       </v-btn>
       <v-btn
         v-if="!printerPrinting && printerSupportsQgl"
