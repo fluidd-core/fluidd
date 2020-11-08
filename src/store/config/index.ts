@@ -17,6 +17,12 @@ export const state: ConfigState = {
       jobsInMenu: true,
       jobsInDash: false,
       darkMode: true,
+      axis: {
+        x: { inverted: false },
+        y: { inverted: false },
+        z: { inverted: false }
+      },
+      invertZControl: false,
       printTimeEstimationsType: 'file',
       defaultExtrudeLength: 10,
       defaultExtrudeSpeed: 5,

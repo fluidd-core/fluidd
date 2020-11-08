@@ -16,7 +16,6 @@ export default class BtnCollapse extends Vue {
   value!: boolean
 
   emitChange (value: boolean) {
-    console.log('emitting ', value)
     this.$emit('input', value)
   }
 }

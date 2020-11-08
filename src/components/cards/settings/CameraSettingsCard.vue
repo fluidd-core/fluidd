@@ -5,6 +5,7 @@
     icon="$camera">
     <v-card-text>
       <v-switch
+        class="mt-0"
         label="Enabled"
         hide-details
         v-model="enabled">
