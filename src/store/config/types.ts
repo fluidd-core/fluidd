@@ -41,6 +41,7 @@ export interface AxisConfig {
 
 export interface CameraConfig {
   enabled: boolean;
+  type: 'mjpgstreamer' | 'ipcamera';
   url: string;
   flipX: boolean;
   flipY: boolean;

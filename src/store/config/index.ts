@@ -30,6 +30,7 @@ export const state: ConfigState = {
     },
     camera: {
       enabled: false,
+      type: 'mjpgstreamer',
       url: '/webcam/?action=stream',
       flipX: false,
       flipY: false

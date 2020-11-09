@@ -16,10 +16,17 @@
         v-model="flipX">
       </v-switch>
       <v-switch
+        class="mb-4"
         label="Flip vertically"
         hide-details
         v-model="flipY">
       </v-switch>
+      <v-select
+        label="Stream type"
+        hide-details="auto"
+        :items="[{ text: 'mjpgstreamer', value: 'mjpgstreamer' }, { text: 'ip camera', value: 'ipcamera' }]"
+        v-model="streamType">
+      </v-select>
       <v-text-field
         class="mt-5"
         filled
@@ -68,6 +75,14 @@ export default class CameraSettingsCard extends Mixins(UtilsMixin) {
 
   set flipY (value: boolean) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.flipY', value })
+  }
+
+  get streamType () {
+    return this.$store.state.config.fileConfig.camera.type
+  }
+
+  set streamType (value: string) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.type', value })
   }
 }
 </script>
