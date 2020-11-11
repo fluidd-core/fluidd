@@ -7,6 +7,7 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios'
 @Component({})
 export default class UtilsMixin extends Vue {
   waits = Waits
+  logoImage: HTMLImageElement | undefined = undefined
 
   get pageTitle () {
     const instanceName = this.$store.state.config.fileConfig.general.instanceName || ''
@@ -20,6 +21,50 @@ export default class UtilsMixin extends Vue {
       return `[${progress}%] | ${pageName} | ${instanceName}`
     } else {
       return `${pageName} | ${instanceName}`
+    }
+  }
+
+  get pageIcon () {
+    let iconUrl = null
+    if (this.logoImage === undefined) {
+      this.logoImage = new Image()
+      this.logoImage.src = require('@/assets/logo.svg')
+    }
+    if (this.printerPrinting) {
+      let progress = this.$store.state.socket.printer.display_status.progress || 0
+      progress = (progress * 100).toFixed()
+      const faviconSize = 64
+      const canvas = document.createElement('canvas') as HTMLCanvasElement
+      canvas.width = faviconSize
+      canvas.height = faviconSize
+      const context = canvas.getContext('2d')
+      if (context !== null) {
+        const centerX = faviconSize / 2
+        const centerY = faviconSize / 2
+        const lineWidth = 8
+        const radius = faviconSize / 2 - lineWidth / 2
+        const startAngle = 1 * Math.PI
+        const endAngle = startAngle + (progress * 2 * Math.PI / 100)
+        const logoSize = (radius * 2) / Math.sqrt(2)
+        context.moveTo(centerX, centerY)
+        context.beginPath()
+        context.arc(centerX, centerY, radius, startAngle, endAngle, false)
+        context.strokeStyle = '#2196F3'
+        context.lineWidth = lineWidth
+        context.stroke()
+        if (this.logoImage.complete) {
+          context.drawImage(this.logoImage, (faviconSize - logoSize) / 2, (faviconSize - logoSize) / 2, logoSize, logoSize)
+        }
+        iconUrl = canvas.toDataURL('image/png')
+      }
+    }
+    return {
+      'link[rel="icon"][sizes="32x32"]': {
+        href: iconUrl || `${process.env.BASE_URL}img/icons/favicon-32x32.png`
+      },
+      'link[rel="icon"][sizes="16x16"]': {
+        href: iconUrl || `${process.env.BASE_URL}img/icons/favicon-16x16.png`
+      }
     }
   }
 
