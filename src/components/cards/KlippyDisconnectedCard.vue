@@ -60,7 +60,7 @@ export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
     const config = this.$store.state.socket.printer.configfile.config
     const warnings = []
     if (config && !config.virtual_sdcard) {
-      warnings.push({ message: '[virtual_sd_card] not found in printer configuration.' })
+      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
     }
 
     if (config && !config.pause_resume) {
