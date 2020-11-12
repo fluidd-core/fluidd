@@ -8,6 +8,7 @@
       <v-row>
         <v-col cols="12" md="6" class="py-0" v-for="(macro) in macros" :key="macro.name">
           <v-switch
+            class="mt-0 mb-4"
             :input-value="macro.visible"
             @change="changeMacro(macro, $event)"
             :label="macro.name"

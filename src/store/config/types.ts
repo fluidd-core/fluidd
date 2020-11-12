@@ -23,14 +23,25 @@ export interface GeneralConfig {
   jobsInMenu: boolean;
   jobsInDash: boolean;
   darkMode: boolean;
+  axis: Axis;
+  invertZControl: boolean;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
   defaultToolheadMoveLength: string;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
 }
 
+export interface Axis {
+  [key: string]: AxisConfig;
+}
+
+export interface AxisConfig {
+  inverted: boolean;
+}
+
 export interface CameraConfig {
   enabled: boolean;
+  type: 'mjpgstreamer' | 'ipcamera';
   url: string;
   flipX: boolean;
   flipY: boolean;

@@ -25,8 +25,7 @@
             class="d-flex d-lg-none"
             fab small text
             v-bind="attrs"
-            v-on="on"
-          >
+            v-on="on">
             <v-icon>$menu</v-icon>
           </v-btn>
         </template>
@@ -38,13 +37,7 @@
 
       <!-- Collapse Control -->
       <slot name="collapse-button">
-        <v-btn
-          v-if="collapsable"
-          @click="isCollapsed = !isCollapsed"
-          fab small text>
-          <v-icon v-if="!isCollapsed">$chevronUp</v-icon>
-          <v-icon v-if="isCollapsed">$chevronDown</v-icon>
-        </v-btn>
+        <btn-collapse v-model="isCollapsed"></btn-collapse>
       </slot>
     </v-card-title>
     <v-divider></v-divider>

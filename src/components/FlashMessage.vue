@@ -35,7 +35,7 @@ export default class FlashMessage extends Vue {
   @Prop({ type: String, default: 'Saved!' })
   text!: string;
 
-  @Prop({ type: Number, default: 4000 })
+  @Prop({ type: Number, default: 3000 })
   timeout!: number;
 
   get open () {

@@ -4,6 +4,24 @@
     cardKey="ToolSettings"
     icon="$printer3dNozzle">
     <v-card-text>
+      <v-switch
+        class="mt-0 mb-4"
+        label="Invert X"
+        hide-details
+        v-model="invertX">
+      </v-switch>
+      <v-switch
+        class="mt-0 mb-4"
+        label="Invert Y"
+        hide-details
+        v-model="invertY">
+      </v-switch>
+      <v-switch
+        class="mt-0 mb-4"
+        label="Invert Z"
+        hide-details
+        v-model="invertZ">
+      </v-switch>
       <v-text-field
         filled
         label="Default Extrude Length"
@@ -57,6 +75,30 @@ export default class ToolHeadSettingsCard extends Mixins(UtilsMixin) {
 
   set defaultToolheadMoveLength (value: number) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadMoveLength', value })
+  }
+
+  get invertX () {
+    return this.$store.state.config.fileConfig.general.axis.x.inverted
+  }
+
+  set invertX (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.axis.x.inverted', value })
+  }
+
+  get invertY () {
+    return this.$store.state.config.fileConfig.general.axis.y.inverted
+  }
+
+  set invertY (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.axis.y.inverted', value })
+  }
+
+  get invertZ () {
+    return this.$store.state.config.fileConfig.general.axis.z.inverted
+  }
+
+  set invertZ (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.axis.z.inverted', value })
   }
 }
 </script>

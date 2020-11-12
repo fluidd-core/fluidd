@@ -17,6 +17,12 @@ export const state: ConfigState = {
       jobsInMenu: true,
       jobsInDash: false,
       darkMode: true,
+      axis: {
+        x: { inverted: false },
+        y: { inverted: false },
+        z: { inverted: false }
+      },
+      invertZControl: false,
       printTimeEstimationsType: 'file',
       defaultExtrudeLength: 10,
       defaultExtrudeSpeed: 5,
@@ -24,6 +30,7 @@ export const state: ConfigState = {
     },
     camera: {
       enabled: false,
+      type: 'mjpgstreamer',
       url: '/webcam/?action=stream',
       flipX: false,
       flipY: false

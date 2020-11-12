@@ -8,7 +8,7 @@
         class="py-1"
         v-for="item in sensors"
         :key="item.name">
-        <span class="grey--text text--lighten-1 text-h5">{{ item.name }}</span>
+        <span class="grey--text text--lighten-1 text-subtitle-1">{{ item.name }}</span>
         <v-icon
           :color="(item.filament_detected) ? 'success' : 'warning'"
           class="ml-3"
@@ -16,7 +16,7 @@
           {{ (item.filament_detected) ? '$checkedCircle' : '$alertCircle' }}
         </v-icon>
         <v-switch
-          class="ml-3"
+          class="ml-2"
           color="success"
           :input-value="item.enabled"
           @change="changeSensor(item, $event)"

@@ -1,6 +1,20 @@
 <template>
-  <v-card class="mb-4">
+  <v-card
+    class="mb-2 mb-sm-4"
+    color="tertiary">
+
+    <v-card-title
+      class="card-title quaternary py-1"
+      v-if="!showTabs">
+      <v-icon left>$fire</v-icon>
+      <span class="font-weight-light">Targets</span>
+      <v-spacer />
+
+      <btn-collapse v-model="isCollapsed"></btn-collapse>
+
+    </v-card-title>
     <v-tabs
+      v-if="showTabs"
       v-model="tab"
       fixed-tabs
       background-color="quaternary"
@@ -9,7 +23,7 @@
         <v-icon left>$fire</v-icon>
         Targets
       </v-tab>
-      <v-tab :key="'macros'">
+      <v-tab :key="'macros'" v-if="hasMacros">
         <v-icon left>$fileCode</v-icon>
         Macros
       </v-tab>
@@ -23,13 +37,7 @@
       </v-tab>
 
       <!-- Collapse Control -->
-      <v-btn
-        @click="isCollapsed = !isCollapsed"
-        class="align-self-center ml-2 mr-4"
-        fab small text>
-        <v-icon v-if="!isCollapsed">$chevronUp</v-icon>
-        <v-icon v-if="isCollapsed">$chevronDown</v-icon>
-      </v-btn>
+      <btn-collapse class="align-self-center ml-2 mr-4" v-model="isCollapsed"></btn-collapse>
     </v-tabs>
     <v-divider></v-divider>
 
@@ -39,7 +47,7 @@
           <v-tab-item :key="'targets'" class="tertiary rounded">
             <temperature-targets-widget></temperature-targets-widget>
           </v-tab-item>
-          <v-tab-item :key="'macros'" class="tertiary rounded">
+          <v-tab-item :key="'macros'" class="tertiary rounded" v-if="hasMacros">
             <macros-widget></macros-widget>
           </v-tab-item>
           <v-tab-item :key="'power'" class="tertiary rounded" v-if="gpioPowerPluginEnabled">
@@ -88,6 +96,14 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   // set activeTab (val: string) {
   //   this.$store.dispatch('config/saveLocalStorage', { dashTab: val })
   // }
+
+  get showTabs () {
+    return (this.hasMacros || this.gpioPowerPluginEnabled || this.jobsInDash)
+  }
+
+  get hasMacros () {
+    return (this.$store.getters['socket/getVisibleMacros'].length)
+  }
 
   get isCollapsed (): boolean {
     const collapsed = (this.$store.state.config.localConfig.Tools === undefined)

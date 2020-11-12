@@ -141,8 +141,12 @@ export default class AppBar extends Mixins(UtilsMixin) {
   @Watch('currentFile')
   onCurrentFileChanged (val: string) {
     if (val && val.length > 0 && val !== 'standby') {
+      // Print has started, refresh the meta data.
+      // Note, this may fail if users are uploading via slicer and have the 'Start Immediately'
+      // option set - because the metadata may have not been parsed.
       SocketActions.serverFilesMetaData(val)
     } else {
+      // Print has stop or the file is cleared.
       this.$store.commit('socket/resetCurrentFile')
     }
   }

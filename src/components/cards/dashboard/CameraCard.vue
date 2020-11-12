@@ -3,7 +3,9 @@
     title="Camera"
     icon="$camera"
     :collapsed="true">
-    <img :src="cameraUrl" class="webcam" :style="cameraTransforms" />
+
+    <img :src="cameraUrl" class="webcam" :style="cameraTransforms" v-if="streamType === 'mjpgstreamer'" />
+    <video :src="cameraUrl" autoplay class="webcam" :style="cameraTransforms" v-if="streamType === 'ipcamera'" />
   </collapsable-card>
 </template>
 
@@ -20,6 +22,10 @@ import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
   }
 })
 export default class CameraCard extends Mixins(UtilsMixin) {
+  get streamType () {
+    return this.$store.state.config.fileConfig.camera.type
+  }
+
   get cameraUrl (): string {
     return this.$store.state.config.fileConfig.camera.url
   }

@@ -168,6 +168,14 @@ export default class UtilsMixin extends Vue {
     return 'z_tilt' in this.$store.state.socket.printer.configfile.config
   }
 
+  get printerSupportsBedScrews (): boolean {
+    return 'bed_screws' in this.$store.state.socket.printer.configfile.config
+  }
+
+  get printerSupportsBedScrewsCalculate (): boolean {
+    return 'screws_tilt_adjust' in this.$store.state.socket.printer.configfile.config
+  }
+
   get allHomed (): boolean {
     return this.$store.getters['socket/getHomedAxes']('xyz')
   }
@@ -194,9 +202,15 @@ export default class UtilsMixin extends Vue {
   /**
    * Send a move gcode script.
    */
-  sendMoveGcode (axes: string, distance: string) {
+  sendMoveGcode (axis: string, distance: string, negative = false) {
+    axis = axis.toLowerCase()
+    const inverted = this.$store.state.config.fileConfig.general.axis[axis].inverted || false
+    distance = ((negative && !inverted) || (!negative && inverted))
+      ? '-' + distance
+      : distance
+
     this.sendGcode(`G91
-      G1 ${axes}${distance} F6000
+      G1 ${axis}${distance} F6000
       G90`)
   }
 

@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/cadriel/fluidd/compare/v0.0.10...v0.1.0) (2020-11-06)
+
+
+### Features
+
+* add loader to file uploads ([0bc62f4](https://github.com/cadriel/fluidd/commit/0bc62f446a62696b95b18633a7fe1f19cd077172))
+* add save and close to file editor ([24bc44b](https://github.com/cadriel/fluidd/commit/24bc44b726fae0baa6d77e26b1ec994ad1fef852))
+* adds settings to control jobs card and menu item ([8290ac8](https://github.com/cadriel/fluidd/commit/8290ac818470bdd2d72fa1f443928a071d2c3aa4))
+* allow .ufp uploads into jobs ([7691f07](https://github.com/cadriel/fluidd/commit/7691f07d7f29de3c81a80972fb68c3ff61e8b2d3))
+* file menu shows larger thumb ([156f84b](https://github.com/cadriel/fluidd/commit/156f84b681a7225f9c5044dc039117bea848a4ca))
+* filter thumbs folder ([1857dee](https://github.com/cadriel/fluidd/commit/1857dee2125faef27147311aae329d09f6560d3f))
+* load meta data ([c59c0a8](https://github.com/cadriel/fluidd/commit/c59c0a871d8c4faefd3161c3d4fd87b27aa41cfe))
+* print pushes user to dashboard if not already ([61a4f9b](https://github.com/cadriel/fluidd/commit/61a4f9b6b65d566b6f6e4b82bda0ca105b411fa1))
+* sensors now show up in graph ([4813d0b](https://github.com/cadriel/fluidd/commit/4813d0b6ad1e9c07745d5349b37149b86bc42ad5))
+* support power notifications ([2e27a99](https://github.com/cadriel/fluidd/commit/2e27a99bb4d4cf464b86e52f869a93178e82e380))
+
+
+### Bug Fixes
+
+* catch a greater subset of errors to throw to the user ([eed7c71](https://github.com/cadriel/fluidd/commit/eed7c7171bde452ca3eb2951a617c9ef2365b7d0))
+* change file upload icon in file browser ([bade073](https://github.com/cadriel/fluidd/commit/bade0738ab2c576cf70303b99356c449a58cf06a))
+* editing files now works in safari / ios properly ([49b33e7](https://github.com/cadriel/fluidd/commit/49b33e716c0c0f35517e8916fdce0e8b4ce788ed))
+* ensure current_print is updated properly ([6282753](https://github.com/cadriel/fluidd/commit/62827537cea93a0ec9565098019edeca3ffa7392))
+* incorrect console timestamps ([d3fcbaf](https://github.com/cadriel/fluidd/commit/d3fcbafa0b786367419f067a4b5b1e325fbffe80))
+* load plugins on socket connection ([bd7c064](https://github.com/cadriel/fluidd/commit/bd7c0649c94a5f7556502b8c8984972cd9d7cb0e))
+* send MOVE=1 for z-adjust during prints ([eee510b](https://github.com/cadriel/fluidd/commit/eee510b04e313bcdb7c1b2ad7876c472dc2fde6f))
+* socket client was not clearing old requests ([075377b](https://github.com/cadriel/fluidd/commit/075377bf9c7eb973dc87a840c68e9276fe201453))
+* tabs not saving due to lifecycle issues, reverting ([c2de2de](https://github.com/cadriel/fluidd/commit/c2de2dedba231fe7e1aff7420b895615d39f8f27))
+* time estimations display Infinity ([2caccaa](https://github.com/cadriel/fluidd/commit/2caccaa70fd77908979b10329bd95541cbb34c5f))
+* unused var ([86b163f](https://github.com/cadriel/fluidd/commit/86b163f552ea8e369f862d715cccf98398101d10))
+* update ref for vue-plotly ([1f7d275](https://github.com/cadriel/fluidd/commit/1f7d2758584e77026b5f906c160c7f47272cc3e0))
+
 ### [0.0.10](https://github.com/cadriel/fluidd/compare/v0.0.9...v0.0.10) (2020-10-30)
 
 

@@ -5,6 +5,7 @@
     icon="$clock">
     <v-card-text>
       <v-radio-group
+        class="mt-0 mb-0"
         v-model="printTimeEstimationsType"
         :mandatory="true">
         <v-radio label="Duration only" value="totals"></v-radio>

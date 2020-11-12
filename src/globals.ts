@@ -150,6 +150,8 @@ export const Waits = Object.freeze({
   onHomeZ: 'onHomeZ',
   onQGL: 'onQGL',
   onZTilt: 'onZTilt',
+  onBedScrewsAdjust: 'onBedScrewAdjust',
+  onBedScrewsCalculate: 'onBedScrewsCalculate',
   onPrintPause: 'onPrintPause',
   onPrintCancel: 'onPrintCancel',
   onPrintResume: 'onPrintResume',

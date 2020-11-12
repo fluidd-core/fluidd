@@ -19,7 +19,7 @@
     <v-row no-gutters justify="start" class="mb-3">
       <v-col cols="auto">
         <btn-toolhead-move
-          @click="sendMoveGcode('X', '-' + toolheadMoveLength)"
+          @click="sendMoveGcode('X', toolheadMoveLength, true)"
           :disabled="hasWaits || !xyHomed || !klippyConnected"
           icon="$left">
         </btn-toolhead-move>
@@ -53,14 +53,14 @@
     <v-row no-gutters justify="start" class="mb-3">
       <v-col cols="auto" class="ml-13 mr-8">
         <btn-toolhead-move
-          @click="sendMoveGcode('Y', '-' + toolheadMoveLength)"
+          @click="sendMoveGcode('Y', toolheadMoveLength, true)"
           :disabled="hasWaits || !xyHomed || !klippyConnected"
           icon="$down">
         </btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-8">
         <btn-toolhead-move
-          @click="sendMoveGcode('Z', '-' + toolheadMoveLength)"
+          @click="sendMoveGcode('Z', toolheadMoveLength, true)"
           :disabled="hasWaits || !zHomed || !klippyConnected"
           icon="$down">
         </btn-toolhead-move>
