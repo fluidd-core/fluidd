@@ -23,6 +23,8 @@ Fluidd is distributed as a RaspbiOS image, with Fluidd pre-installed and setup a
 
 The recommended approach is to flash a fresh image using FluiddPI.
 
+Please see our [wiki](https://github.com/cadriel/fluidd/wiki) for help with setup.
+
 Please see https://github.com/cadriel/FluiddPI for further instruction.
 
 ### ⏳ Manual Installation
