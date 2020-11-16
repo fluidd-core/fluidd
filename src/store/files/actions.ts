@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { FilesState, KlipperFile, Directory, FileChangeSocketResponse, FileUpdate, KlipperFileWithMeta } from './types'
+import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta } from './types'
 import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
@@ -11,7 +11,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     const root = payload.__request__.params.root
     let pathNoRoot = path.replace(root, '')
     if (pathNoRoot.startsWith('/')) pathNoRoot = pathNoRoot.substring(1)
-    const items: (KlipperFile | Directory)[] = []
+    const items: (AppFileWithMeta | AppDirectory)[] = []
     if (path && path.indexOf('/') >= 0) {
       items.push({
         type: 'directory',
@@ -22,7 +22,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       })
     }
     if (payload.dirs) {
-      payload.dirs.forEach((dir: Directory) => {
+      payload.dirs.forEach((dir: AppDirectory) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => dir.dirname.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => dir.dirname.endsWith(e))
@@ -35,7 +35,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       })
     }
     if (payload.files) {
-      payload.files.forEach((file: KlipperFile) => {
+      payload.files.forEach((file: AppFileWithMeta) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
@@ -45,9 +45,6 @@ export const actions: ActionTree<FilesState, RootState> = {
           file.extension = file.filename.split('.').pop() || ''
           file.modified = new Date(file.modified).getTime()
           items.push(file)
-          // if (root === 'gcodes' && file.extension === 'gcode') {
-          //   SocketActions.serverFilesMetaData((pathNoRoot.length) ? `${pathNoRoot}/${file.filename}` : file.filename)
-          // }
         }
       })
     }
@@ -58,9 +55,11 @@ export const actions: ActionTree<FilesState, RootState> = {
    * This handles when a file is uploaded or metadata is updated for a file
    * in the browser, or the current file.
    */
-  async onFileUpdate ({ commit, rootState }, file: KlipperFile | KlipperFileWithMeta) {
+  async onFileUpdate ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
-    const paths = getFilePaths(file.filename, root)
+    const paths = getFilePaths(payload.filename, root)
+    console.log('got file update', payload)
+    const file = formatAsFile(root, payload)
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
@@ -106,16 +105,20 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyUploadfile ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyUploadfile (_, payload: FileChangeSocketResponse) {
+    console.log('notified if file upload', payload)
     const root = payload.item.root
-    const paths = getFilePaths(payload.item.path, root)
+    // const paths = getFilePaths(payload.item.path, root)
     const file = formatAsFile(root, payload.item)
-    const update: FileUpdate = {
-      paths,
-      root,
-      file
+    // const update: FileUpdate = {
+    //   paths,
+    //   root,
+    //   file
+    // }
+    // commit('onFileUpdate', update)
+    if (file.extension === 'gcode') {
+      SocketActions.serverFilesMetaData(payload.item.path)
     }
-    commit('onFileUpdate', update)
   },
 
   async notifyDeletefile ({ commit }, payload: FileChangeSocketResponse) {

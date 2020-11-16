@@ -5,9 +5,13 @@ import { mutations } from './mutations'
 import { GpioState } from './types'
 import { RootState } from '../types'
 
-export const state: GpioState = {
-  devices: []
+export const defaultState = (): GpioState => {
+  return {
+    devices: []
+  }
 }
+
+export const state = defaultState()
 
 const namespaced = true
 

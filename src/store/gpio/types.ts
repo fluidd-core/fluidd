@@ -1,4 +1,5 @@
 export interface GpioState {
+  [key: string]: Device[];
   devices: Device[];
 }
 

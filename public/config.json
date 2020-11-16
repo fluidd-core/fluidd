@@ -1,4 +1,11 @@
 {
-  "apiUrl": "",
-  "socketUrl": ""
+  "endpoints": [
+    "http://fluiddpi.local:7125",
+    "http://mainsailos.local:7125",
+    "http://octopi.local:7125"
+  ],
+  "blacklist": [
+    "fluidd.xyz",
+    "fluidd.net"
+  ]
 }

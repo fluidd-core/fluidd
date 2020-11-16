@@ -13,12 +13,10 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
 import UtilsMixin from '@/mixins/utils'
-import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 
 @Component({
   components: {
-    PrintStatusWidget,
-    DialogConfirm
+    PrintStatusWidget
   }
 })
 export default class CameraCard extends Mixins(UtilsMixin) {

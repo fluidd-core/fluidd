@@ -108,36 +108,45 @@
       </v-col>
     </v-row>
 
-    <dialog-input
+    <dialog-base
       title="Save config as..."
       v-model="saveDialog.open"
-      @save="saveToConfig(saveDialog)"
       :max-width="450">
-      <!-- <p>
-        By default, save overrites the currently loaded profile ({{ currentMesh.profile_name }}).
-      </p> -->
-      <v-text-field
-        filled
-        required
-        class="mb-4"
-        :rules="[value => !!value || 'Required.']"
-        hide-details="auto"
-        label="Profile Name"
-        v-model="saveDialog.profileName">
-      </v-text-field>
 
-      <v-checkbox
-        :label="`Remove ${currentMesh.profile_name} profile`"
-        hide-details="auto"
-        class="mb-4"
-        v-model="saveDialog.removeDefault"
-        :disabled="saveDialog.profileName === currentMesh.profile_name"
-        ></v-checkbox>
+      <template v-slot:actions>
+        <v-btn color="secondary" @click="saveDialog.open = false">Close</v-btn>
+        <v-btn color="primary" :disabled="!saveDialog.valid" type="submit" form="form">Save</v-btn>
+      </template>
+
+      <v-form
+        ref="form"
+        id="form"
+        @submit="saveToConfig()"
+        v-model="saveDialog.valid">
+        <v-text-field
+          autofocus
+          filled
+          required
+          class="mb-4"
+          :rules="[value => !!value || 'Required.']"
+          hide-details="auto"
+          label="Profile Name"
+          v-model="saveDialog.profileName">
+        </v-text-field>
+
+        <v-checkbox
+          :label="`Remove ${currentMesh.profile_name} profile`"
+          hide-details="auto"
+          class="mb-4"
+          v-model="saveDialog.removeDefault"
+          :disabled="saveDialog.profileName === currentMesh.profile_name"
+          ></v-checkbox>
+      </v-form>
       <p>
         If saving as something other than {{ currentMesh.profile_name }}, you can choose to
         also remove the {{ currentMesh.profile_name }} profile.
       </p>
-    </dialog-input>
+    </dialog-base>
 
     <Plotly v-if="meshLoaded" :data="data" :layout="layout" :display-mode-bar="false"></Plotly>
   </v-card-text>
@@ -149,29 +158,29 @@ import UtilsMixin from '@/mixins/utils'
 import { BedMesh } from '@/store/socket/types'
 import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
-import DialogInput from '@/components/dialogs/dialogInput.vue'
-import { SaveMeshDialog } from '@/types/dialogs'
+import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { Plotly } from '@cadriel/vue-plotly'
 
 @Component({
   components: {
     Plotly,
-    DialogInput
+    DialogBase
   }
 })
 export default class BedMeshWidget extends Mixins(UtilsMixin) {
   waits = Waits
   layout = defaultPlotLayout
   variance = 0
-  saveDialog: SaveMeshDialog = {
+  saveDialog = {
+    valid: false,
     open: false,
     profileName: 'default',
     removeDefault: false
   }
 
   @Watch('saveDialog', { deep: true })
-  onSaveDialogChange (val: SaveMeshDialog) {
-    if (val.profileName === this.currentMesh.profile_name) {
+  onSaveDialogChange () {
+    if (this.saveDialog.profileName === this.currentMesh.profile_name) {
       this.saveDialog.removeDefault = false
     }
   }
@@ -211,14 +220,16 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
     this.sendGcode('BED_MESH_PROFILE LOAD=' + name)
   }
 
-  saveToConfig (config: SaveMeshDialog) {
-    if (config.profileName !== this.currentMesh.profile_name) {
-      this.sendGcode('BED_MESH_PROFILE SAVE=' + config.profileName)
+  saveToConfig () {
+    if (this.saveDialog.valid) {
+      if (this.saveDialog.profileName !== this.currentMesh.profile_name) {
+        this.sendGcode('BED_MESH_PROFILE SAVE=' + this.saveDialog.profileName)
+      }
+      if (this.saveDialog.removeDefault) {
+        this.sendGcode('BED_MESH_PROFILE REMOVE=' + this.currentMesh.profile_name)
+      }
+      this.sendGcode('SAVE_CONFIG')
     }
-    if (config.removeDefault) {
-      this.sendGcode('BED_MESH_PROFILE REMOVE=' + this.currentMesh.profile_name)
-    }
-    this.sendGcode('SAVE_CONFIG')
   }
 
   mounted () {

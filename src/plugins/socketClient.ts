@@ -15,7 +15,7 @@ export class WebSocketClient {
   connection: WebSocket | null = null;
   reconnectEnabled = false;
   reconnectInterval = 3000;
-  allowedReconnectAttempts = 3;
+  allowedReconnectAttempts = 2;
   reconnectCount = 0;
   logPrefix = '[WEBSOCKET]';
   requests: Array<Request> = [];
@@ -28,7 +28,15 @@ export class WebSocketClient {
     this.store = options.store ? options.store : null
   }
 
-  connect () {
+  close () {
+    if (this.connection) {
+      this.connection.close()
+      this.reconnectCount = 0
+    }
+  }
+
+  connect (url?: string) {
+    if (url) this.url = url
     this.connection = new WebSocket(this.url)
     if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
 
@@ -156,7 +164,7 @@ export class WebSocketClient {
 export const SocketPlugin = {
   install (Vue: typeof _Vue, options?: any) {
     const socket = new WebSocketClient(options)
-    socket.connect()
+    // socket.connect()
     Vue.prototype.$socket = socket
     Vue.$socket = socket
   }
@@ -177,7 +185,8 @@ declare module 'vue/types/options' {
 }
 
 interface SocketClient {
-  connect(): void;
+  connect(url?: string): void;
+  close(): void;
   emit(method: string, options?: NotifyOptions): void;
 }
 

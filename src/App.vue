@@ -1,6 +1,7 @@
 <template>
   <v-app class="fluidd">
-    <app-bar></app-bar>
+    <app-drawer v-model="drawer"></app-drawer>
+    <app-bar @drawer="onDrawerChange"></app-bar>
 
     <FlashMessage
       v-model="flashMessage.open"
@@ -10,6 +11,7 @@
     />
 
     <v-main>
+      <!-- <p v-if="showUpdateUI">UPDATE FOUND. <v-btn @click="accept()">Update</v-btn></p> -->
       <router-view v-if="socketConnected" />
       <socket-disconnected-widget v-if="!socketConnected"></socket-disconnected-widget>
     </v-main>
@@ -24,6 +26,7 @@ import EventBus from '@/eventBus'
 import UtilsMixin from './mixins/utils'
 import { FlashMessage as FlashMessageType } from '@/types'
 import AppBar from '@/components/AppBar.vue'
+import AppDrawer from '@/components/AppDrawer.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
@@ -32,6 +35,7 @@ import FlashMessage from '@/components/FlashMessage.vue'
 @Component({
   components: {
     AppBar,
+    AppDrawer,
     SocketDisconnectedWidget,
     FlashMessage,
     AppFooter
@@ -52,11 +56,22 @@ import FlashMessage from '@/components/FlashMessage.vue'
   // }
 })
 export default class App extends Mixins(UtilsMixin) {
+  drawer = false
+  showUpdateUI = false
+
   flashMessage: FlashMessageType = {
     open: false,
     text: undefined,
     type: undefined
   }
+
+  // created () {
+  //   if (this.$workbox) {
+  //     this.$workbox.addEventListener('waiting', () => {
+  //       this.showUpdateUI = true
+  //     })
+  //   }
+  // }
 
   mounted () {
     this.$vuetify.theme.dark = this.$store.state.config.fileConfig.general.darkMode
@@ -66,6 +81,17 @@ export default class App extends Mixins(UtilsMixin) {
       this.flashMessage.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
       this.flashMessage.open = true
     })
+  }
+
+  // async accept () {
+  //   this.showUpdateUI = false
+  //   if (this.$workbox) {
+  //     await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
+  //   }
+  // }
+
+  onDrawerChange () {
+    this.drawer = !this.drawer
   }
 }
 </script>

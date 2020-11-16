@@ -64,16 +64,26 @@
             <v-icon small>$refresh</v-icon>
           </v-btn>
         </v-toolbar>
-        <dialog-input
+        <dialog-base
           :title="dialog.title"
-          v-model="dialog.active"
-          @save="saveDialog()">
-          <v-text-field
-            v-model="dialog.item.name"
-            :rules="dialog.rules"
-            required>
-          </v-text-field>
-        </dialog-input>
+          v-model="dialog.active">
+          <template v-slot:actions>
+            <v-btn color="secondary" @click="dialog.active = false">Close</v-btn>
+            <v-btn color="primary" :disabled="!dialog.valid" type="submit" form="form">Save</v-btn>
+          </template>
+          <v-form
+            ref="form"
+            id="form"
+            @submit="saveDialog()"
+            v-model="dialog.valid">
+            <v-text-field
+              autofocus
+              v-model="dialog.item.name"
+              :rules="dialog.rules"
+              required>
+            </v-text-field>
+          </v-form>
+        </dialog-base>
       </template>
 
       <template v-slot:item="{ item }">
@@ -222,10 +232,10 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { Directory, KlipperFile, KlipperFileWithMeta } from '@/store/files/types'
+import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import { getThumb } from '@/store/helpers'
-import DialogInput from '@/components/dialogs/dialogInput.vue'
+import DialogBase from '@/components/dialogs/dialogBase.vue'
 import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
@@ -234,7 +244,7 @@ import { DataTableHeader } from 'vuetify'
 
 @Component({
   components: {
-    DialogInput,
+    DialogBase,
     BtnFileUpload
   }
 })
@@ -283,6 +293,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   uploadDialog = false
   dialog: FileSystemDialogData = {
     type: '',
+    valid: false,
     active: false,
     title: '',
     formLabel: '',
@@ -301,7 +312,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.loadFiles(root)
   }
 
-  get directory (): KlipperFile[] | Directory[] {
+  get directory (): AppFile[] | AppDirectory[] {
     return this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
   }
 
@@ -358,31 +369,35 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     return this.$filters.getReadableFileSizeString(size)
   }
 
-  printItem (item: KlipperFile) {
+  printItem (item: AppFile) {
     const filename = `${this.currentPath}/${item.filename}`.replace(this.root, '')
     SocketActions.printerPrintStart(filename)
     this.$router.push({ path: '/' })
   }
 
   saveDialog () {
-    if (this.dialog.type === 'rename') {
-      const item = this.dialog.item as KlipperFile | Directory
-      const original = this.dialog.original as KlipperFile | Directory
-      this.renameItem(item, original)
-    }
-    if (this.dialog.item && this.dialog.type === 'createdir') {
-      const name = this.dialog.item.name
-      if (name) {
-        this.createDirectory(name)
+    if (this.dialog.valid) {
+      if (this.dialog.type === 'rename') {
+        const item = this.dialog.item as AppFile | AppDirectory
+        const original = this.dialog.original as AppFile | AppDirectory
+        this.renameItem(item, original)
       }
+      if (this.dialog.item && this.dialog.type === 'createdir') {
+        const name = this.dialog.item.name
+        if (name) {
+          this.createDirectory(name)
+        }
+      }
+      this.dialog.active = false
     }
   }
 
-  renameDialog (item: KlipperFile | Directory) {
+  renameDialog (item: AppFile | AppDirectory) {
     if (item) {
       this.dialog = {
         type: 'rename',
         title: 'Rename',
+        valid: false,
         formLabel: 'Name',
         rules: [
           (v: string) => !!v || 'Name is required',
@@ -395,7 +410,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  renameItem (item: KlipperFile | Directory, original: KlipperFile | Directory) {
+  renameItem (item: AppFile | AppDirectory, original: AppFile | AppDirectory) {
     const source = `${this.currentPath}/${original.name}`
     const dest = `${this.currentPath}/${item.name}`
 
@@ -406,17 +421,17 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  editItem (item: KlipperFile) {
+  editItem (item: AppFile) {
     this.$emit('edit-file', item, this.currentPath)
   }
 
-  viewItem (item: KlipperFile) {
+  viewItem (item: AppFile) {
     this.$emit('view-file', item, this.currentPath)
   }
 
-  getThumb (item: KlipperFile | KlipperFileWithMeta, goLarge: boolean) {
+  getThumb (item: AppFile | AppFileWithMeta, goLarge: boolean) {
     if ('thumbnails' in item) {
-      const file = item as KlipperFileWithMeta
+      const file = item as AppFileWithMeta
       return getThumb(file, goLarge)
     }
     return null
@@ -426,6 +441,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.dialog = {
       type: 'createdir',
       title: 'Create Directory',
+      valid: false,
       formLabel: 'Name',
       rules: [
         (v: string) => !!v || 'Name is required',
@@ -440,7 +456,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.$emit('create-dir', `${this.currentPath}/${path}`)
   }
 
-  removeItem (item: KlipperFile | Directory) {
+  removeItem (item: AppFile | AppDirectory) {
     if (item.type === 'file') {
       this.$emit('remove-file', `${this.currentPath}/${item.name}`)
     } else {
@@ -457,10 +473,10 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     this.$emit('download-file', file, this.currentPath)
   }
 
-  rowClick (item: KlipperFile | Directory, e: MouseEvent) {
+  rowClick (item: AppFile | AppDirectory, e: MouseEvent) {
     if (!this.contextMenu.open) {
       if (item.type === 'directory') {
-        const dir = item as Directory
+        const dir = item as AppDirectory
         if (item.name === '..') {
           const dirs = this.currentPath.split('/')
           const newpath = dirs.slice(0, -1).join('/')
@@ -478,7 +494,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  openContextMenu (item: KlipperFile | Directory, e: MouseEvent) {
+  openContextMenu (item: AppFile | AppDirectory, e: MouseEvent) {
     e.preventDefault()
     this.contextMenu.x = e.clientX
     this.contextMenu.y = e.clientY

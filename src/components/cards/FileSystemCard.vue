@@ -50,7 +50,7 @@ import { AxiosResponse } from 'axios'
 import { SocketActions } from '@/socketActions'
 import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
 import UtilsMixin from '@/mixins/utils'
-import { KlipperFile } from '@/store/files/types'
+import { AppFile } from '@/store/files/types'
 import { Waits } from '@/globals'
 
 @Component({
@@ -118,7 +118,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
     SocketActions.serverFilesDeleteDirectory(path)
   }
 
-  edit (file: KlipperFile, path: string) {
+  edit (file: AppFile, path: string) {
     this.dialog = {
       open: true,
       loading: true,
@@ -142,7 +142,6 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
     formData.append('file', file, filename)
     formData.append('root', root)
     this.$store.dispatch('socket/addWait', Waits.onUploadGcode)
-    console.log('uploading, set wait', Waits.onUploadGcode)
     return this.$http
       .post(
         this.apiUrl + '/server/files/upload',

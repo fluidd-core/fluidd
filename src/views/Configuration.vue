@@ -38,7 +38,6 @@ import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCar
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
-// import { MetaInfo } from 'vue-meta'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
@@ -51,11 +50,6 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     FileSystemCard,
     KlippyDisconnectedCard
   }
-  // metaInfo (this: Configuration): MetaInfo {
-  //   return {
-  //     title: 'Configuration'
-  //   }
-  // }
 })
 export default class Configuration extends Mixins(UtilsMixin) {
   pageName = 'Configuration'

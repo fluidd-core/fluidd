@@ -1,22 +1,17 @@
-import { Directory, KlipperFile } from '@/store/files/types'
+import { AppDirectory, AppFile } from '@/store/files/types'
 import { InputValidationRules } from 'vuetify'
 
 export interface FileSystemDialogData {
   type: 'rename' | 'createdir' | '';
   active: boolean;
+  valid: boolean;
   title: string;
   formLabel: string;
   rules: InputValidationRules;
-  item: Directory | NewDirectory | KlipperFile;
-  original?: Directory | KlipperFile;
+  item: AppDirectory | NewDirectory | AppFile;
+  original?: AppDirectory | AppFile;
 }
 
 export interface NewDirectory {
   name: string;
-}
-
-export interface SaveMeshDialog {
-  open: boolean;
-  profileName: string;
-  removeDefault: boolean;
 }

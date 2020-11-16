@@ -1,5 +1,5 @@
 export interface SocketState {
-  [key: string]: any;
+  [key: string]: boolean | SocketError | EndStops | Macros | ConsoleEntry[] | ChartDataSet[] | string | string[] | Printer | null;
   open: boolean;
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   ready: boolean;
@@ -18,7 +18,11 @@ export interface SocketState {
   heater_generics: string[]; // maintains a list of generic heaters
   filament_switch_sensors: string[]; // maintains a list of available filament switch sensors
   output_pins: string[]; // maintains a list of available output pins
-  printer: any;
+  printer: Printer;
+}
+
+export interface Printer {
+  [key: string]: any;
 }
 
 export interface Macros {

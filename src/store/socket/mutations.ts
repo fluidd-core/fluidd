@@ -2,21 +2,21 @@ import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
 import { SocketState, ChartDataSet, Macro, ConsoleEntry } from './types'
-import { getDefaultState } from './index'
+import { defaultState } from './index'
 import { Globals, chartConfiguration } from '@/globals'
 
 export const mutations: MutationTree<SocketState> = {
-  resetState (state) {
-    const newState = getDefaultState()
+  resetState (state, fullReset: boolean) {
+    const newState = defaultState()
+    const keysToAvoid = ['open', 'connecting', 'macros', 'plugins']
     Object.keys(newState).forEach((key: string) => {
       // Some properties we may not want to reset.
       // Macros and plugins we don't clear in order to
       // ensure a user can still turn off / on a printer
       // for example even when klippy may be disconnected.
       if (
-        key !== 'open' && // don't reset socket state
-        key !== 'macros' && // dont clear macros
-        key !== 'plugins' // dont clear plugins
+        !keysToAvoid.includes(key) ||
+        fullReset
       ) {
         Vue.set(state, key, newState[key])
       }
@@ -145,7 +145,7 @@ export const mutations: MutationTree<SocketState> = {
     }
   },
   resetCurrentFile (state) {
-    const newState = getDefaultState().printer.current_file
+    const newState = defaultState().printer.current_file
     Vue.set(state.printer, 'current_file', newState)
   }
 }

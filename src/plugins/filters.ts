@@ -1,5 +1,6 @@
 import _Vue from 'vue'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
+import { ApiConfig } from '@/store/config/types'
 
 const Filters = {
 
@@ -126,7 +127,20 @@ const Filters = {
       return 0
     })
     return items
+  },
+
+  /**
+   * Determines API urls from a base url
+   */
+  getApiUrls (url: string) {
+    const _url = new URL(url)
+    const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
+    return {
+      apiUrl: `http://${_url.host}`,
+      socketUrl: `${wsProtocol}${_url.host}/websocket`
+    }
   }
+
   /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
@@ -154,6 +168,7 @@ declare module 'vue/types/vue' {
     formatFileDateTime(datetime: number): string;
     getReadableFileSizeString(fileSizeInBytes: number): string;
     getReadableLengthString(lengthInMm: number): string;
+    getApiUrls(url: string): ApiConfig;
     /* eslint-disable @typescript-eslint/no-explicit-any */
     fileSystemSort(items: Array<any>, sortBy: string[], sortDesc: boolean[], locale: string): Array<any>;
     /* eslint-enable @typescript-eslint/no-explicit-any */

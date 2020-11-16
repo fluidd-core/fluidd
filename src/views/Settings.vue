@@ -47,7 +47,6 @@ import CameraSettingsCard from '@/components/cards/settings/CameraSettingsCard.v
 import ToolheadSettingsCard from '@/components/cards/settings/ToolheadSettingsCard.vue'
 import PrintTimeEstimateSettingsCard from '@/components/cards/settings/PrintTimeEstimateSettingsCard.vue'
 import ThemeSettingsCard from '@/components/cards/settings/ThemeSettingsCard.vue'
-// import { MetaInfo } from 'vue-meta'
 import EventBus from '@/eventBus'
 
 @Component({
@@ -61,11 +60,6 @@ import EventBus from '@/eventBus'
     PrintTimeEstimateSettingsCard,
     ThemeSettingsCard
   }
-  // metaInfo (this: Settings): MetaInfo {
-  //   return {
-  //     title: 'Settings'
-  //   }
-  // }
 })
 export default class Settings extends Mixins(UtilsMixin) {
   pageName = 'Settings'
@@ -75,6 +69,12 @@ export default class Settings extends Mixins(UtilsMixin) {
 
   saveFileConfig () {
     EventBus.$emit('flashMessage')
+    let instance = this.$store.getters['config/getCurrentInstance']
+    if (instance) {
+      instance = { ...instance, ...{ name: this.$store.state.config.fileConfig.general.instanceName } }
+      console.log('got instance, saving as', instance)
+      this.$store.dispatch('config/updateInstance', instance)
+    }
     this.$store.dispatch('config/saveFileConfig')
   }
 }

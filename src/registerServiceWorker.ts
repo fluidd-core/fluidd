@@ -1,7 +1,7 @@
 // import { register } from 'register-service-worker'
 import { Workbox } from 'workbox-window'
 
-let wb
+let wb: Workbox | null
 
 if ('serviceWorker' in navigator) {
   wb = new Workbox(`${process.env.BASE_URL}service-worker.js`)

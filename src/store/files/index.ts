@@ -5,11 +5,15 @@ import { mutations } from './mutations'
 import { FilesState } from './types'
 import { RootState } from '../types'
 
-export const state: FilesState = {
-  gcodes: [],
-  config: [],
-  config_examples: []
+export const defaultState = (): FilesState => {
+  return {
+    gcodes: [],
+    config: [],
+    config_examples: []
+  }
 }
+
+export const state = defaultState()
 
 const namespaced = true
 

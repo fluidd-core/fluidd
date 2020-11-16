@@ -19,7 +19,7 @@
             $fireAlert
           </v-icon>
         </template>
-        <span>extruder disabled, min_extrude_temp below {{ minExtrudeTemp }}<small>°C</small></span>
+        <span>extruder disabled, below min_extrude_temp ({{ minExtrudeTemp }}<small>°C</small>)</span>
       </v-tooltip>
     </template>
 

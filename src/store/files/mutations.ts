@@ -2,8 +2,16 @@ import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { mergeFileUpdate } from '../helpers'
 import { Files, FilesState, FileUpdate, KlipperFile, KlipperFileWithMeta } from './types'
+import { defaultState } from './index'
 
 export const mutations: MutationTree<FilesState> = {
+  resetState (state) {
+    const newState = defaultState()
+    Object.keys(newState).forEach((key: string) => {
+      Vue.set(state, key, newState[key])
+    })
+  },
+
   onServerFilesGetDirectory (state, payload) {
     const path = payload.directory.path
     const i = state[payload.root].findIndex(o => o.path === path)

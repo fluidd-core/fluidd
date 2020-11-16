@@ -1,8 +1,16 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { GpioState } from './types'
+import { defaultState } from './index'
 
 export const mutations: MutationTree<GpioState> = {
+  resetState (state) {
+    const newState = defaultState()
+    Object.keys(newState).forEach((key: string) => {
+      Vue.set(state, key, newState[key])
+    })
+  },
+
   onDevices (state, payload) {
     state.devices = payload.devices
   },

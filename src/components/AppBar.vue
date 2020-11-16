@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    clipped-left
+    clipped-right
   >
     <v-container fluid class="constrained-width pa-0 fill-height">
       <v-img
@@ -31,16 +31,11 @@
           <v-icon small class="mr-md-1">$tune</v-icon>
           <span>Printer</span>
         </v-btn>
-        <v-btn text to="/settings" class="d-none d-md-flex">
-          <v-icon small class="mr-md-1">$cog</v-icon>
-          <span>Settings</span>
-        </v-btn>
-
         <v-tooltip bottom v-if="socketConnected">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               :disabled="!klippyConnected"
-              text
+              icon
               color="error"
               @click="emergencyStop()"
               v-bind="attrs"
@@ -51,61 +46,11 @@
           Emergency Stop
         </v-tooltip>
 
-        <v-menu bottom left offset-y :min-width="150" v-model="menu">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              text
-              min-width="54">
-              <v-icon>$menu</v-icon>
-            </v-btn>
-          </template>
-
-          <v-card color="secondary">
-
-            <v-list nav dense color="secondary" class="d-block d-md-none">
-              <v-list-item to="/">
-                <v-list-item-icon>
-                  <v-icon>$home</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>Dashboard</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item to="/jobs" v-if="jobsInMenu">
-                <v-list-item-icon>
-                  <v-icon>$files</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>Jobs</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item to="/configuration">
-                <v-list-item-icon>
-                  <v-icon>$tune</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>Printer Configuration</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-              <v-list-item to="/settings">
-                <v-list-item-icon>
-                  <v-icon>$cog</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title>UI Settings</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-
-            <v-divider class="d-block d-md-none"></v-divider>
-
-            <system-commands-widget></system-commands-widget>
-          </v-card>
-        </v-menu>
-
+        <v-btn icon @click="$emit('drawer')">
+          <v-icon>$menu</v-icon>
+        </v-btn>
       </v-toolbar-items>
+
     </v-container>
   </v-app-bar>
 </template>
@@ -123,6 +68,10 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 })
 export default class AppBar extends Mixins(UtilsMixin) {
   menu = false
+
+  get instances () {
+    return this.$store.state.config.instances
+  }
 
   get instanceName () {
     return this.$store.state.config.fileConfig.general.instanceName

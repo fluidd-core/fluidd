@@ -29,7 +29,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Fired when the socket closes.
    */
   async onSocketClose ({ commit }, payload) {
-    commit('resetState')
+    commit('resetState', false)
     commit('onSocketClose', payload)
   },
 
@@ -71,7 +71,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       // This indicates klippy is non-responsive, or there's a configuration error
       // in klipper. We should retry after the set delay.
       // Restart our startup sequence.
-      commit('resetState')
+      commit('resetState', false)
       commit('onPrinterInfo', { state: 'error', state_message: payload.message }) // Forcefully set the printer in error
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
@@ -354,7 +354,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('addConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` })
   },
   async notifyKlippyDisconnected ({ commit }) {
-    commit('resetState')
+    commit('resetState', false)
     SocketActions.printerInfo()
   },
   async notifyFilelistChanged ({ dispatch }, payload) {

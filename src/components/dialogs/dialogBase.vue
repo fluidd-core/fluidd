@@ -28,7 +28,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 
 @Component({})
-export default class DialogInput extends Mixins(UtilsMixin) {
+export default class DialogBase extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 

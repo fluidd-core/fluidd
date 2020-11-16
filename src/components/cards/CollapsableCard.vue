@@ -142,7 +142,7 @@ export default class ToolheadCard extends Vue {
   }
 
   set isCollapsed (val: boolean) {
-    this.$store.dispatch('config/saveLocalStorage', { [this.id]: val })
+    this.$store.dispatch('config/saveLocal', { [this.id]: val })
   }
 
   get hasDefaultSlot () {

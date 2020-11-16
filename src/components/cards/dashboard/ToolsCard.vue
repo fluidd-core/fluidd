@@ -94,7 +94,7 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   // }
 
   // set activeTab (val: string) {
-  //   this.$store.dispatch('config/saveLocalStorage', { dashTab: val })
+  //   this.$store.dispatch('config/saveLocal', { dashTab: val })
   // }
 
   get showTabs () {
@@ -114,7 +114,7 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   }
 
   set isCollapsed (val: boolean) {
-    this.$store.dispatch('config/saveLocalStorage', { Tools: val })
+    this.$store.dispatch('config/saveLocal', { Tools: val })
   }
 
   get gpioPowerPluginEnabled () {

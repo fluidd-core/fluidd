@@ -1,11 +1,11 @@
 import { SocketState, ChartDataSet } from './socket/types'
-import { FileChangeItem, FilePaths, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
+import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
 
 /**
  * Return a file thumb if one exists
  * Optionally, pick the largest or smallest image.
  */
-export const getThumb = (file: KlipperFileWithMeta, goLarge = true) => {
+export const getThumb = (file: AppFileWithMeta, goLarge = true) => {
   if (
     file.thumbnails &&
     file.thumbnails.length
@@ -55,17 +55,27 @@ export const mergeFileUpdate = (root: string, existing: KlipperFile, updates: Kl
 }
 
 /**
- * Takes file change item and formats to represent a klipperfile.
+ * Takes file change item and formats to represent an app file.
  */
-export const formatAsFile = (root: string, file: FileChangeItem): KlipperFile | KlipperFileWithMeta => {
-  const paths = getFilePaths(file.path, root)
+export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | KlipperFileWithMeta): AppFile | AppFileWithMeta => {
+  // A FileChangeItem
+  if ('path' in file) {
+    const paths = getFilePaths(file.path, root)
+    return {
+      type: 'file',
+      filename: paths.filename,
+      extension: paths.filename.split('.').pop() || '',
+      name: paths.filename,
+      size: file.size,
+      modified: file.modified
+    }
+  }
+  const paths = getFilePaths(file.filename, root)
   return {
+    ...file,
     type: 'file',
-    filename: paths.filename,
     extension: paths.filename.split('.').pop() || '',
-    name: paths.filename,
-    size: file.size,
-    modified: file.modified
+    name: paths.filename
   }
 }
 

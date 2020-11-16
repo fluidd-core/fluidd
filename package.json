@@ -8,12 +8,14 @@
   },
   "scripts": {
     "serve": "vue-cli-service serve",
+    "serve.prod": "serve -s ./dist",
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "inspect": "vue-cli-service inspect",
     "release": "standard-version",
+    "deploy": "potato -s dist -u -b fluidd.xyz",
     "start": "vue-cli-service serve",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -72,6 +74,7 @@
     "fibers": "^5.0.0",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "serve": "^11.3.2",
     "standard-version": "^9.0.0",
     "typescript": "~3.9.3",
     "vue-cli-plugin-vuetify": "~2.0.7",

@@ -7,10 +7,10 @@ export interface FilesState {
 
 export interface Files {
   path: string;
-  items: (KlipperFile | KlipperFileWithMeta | Directory)[];
+  items: (AppFile | AppFileWithMeta | AppDirectory)[];
 }
 
-export interface KlipperFile {
+export interface AppFile {
   type: 'file';
   name?: string;
   extension: string;
@@ -19,12 +19,20 @@ export interface KlipperFile {
   size: number;
 }
 
-export interface KlipperFileWithMeta extends KlipperFile {
+export interface KlipperFile {
+  filename: string;
+  modified: number;
+  size: number;
+}
+
+export interface KlipperFileMeta {
   estimated_time?: number;
   filament_total?: number;
   first_layer_bed_temp?: number;
   first_layer_extr_temp?: number;
   first_layer_height?: number;
+  gcode_end_byte?: number;
+  gcode_start_byte?: number;
   layer_height?: number;
   object_height?: number;
   slicer?: string;
@@ -32,7 +40,10 @@ export interface KlipperFileWithMeta extends KlipperFile {
   thumbnails?: Thumbnail[];
 }
 
-export interface Directory {
+export interface AppFileWithMeta extends AppFile, KlipperFileMeta {}
+export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
+
+export interface AppDirectory {
   type: 'directory';
   name?: string;
   dirname: string;
@@ -45,6 +56,10 @@ export interface Thumbnail {
   height: number;
   width: number;
   size: number;
+}
+
+export interface FileMetaDataSocketResponse {
+  estimated_time: string;
 }
 
 export interface FileChangeSocketResponse {
@@ -67,6 +82,6 @@ export interface FilePaths {
 
 export interface FileUpdate {
   paths: FilePaths;
-  file: KlipperFile | KlipperFileWithMeta;
+  file: AppFile | AppFileWithMeta;
   root: string;
 }

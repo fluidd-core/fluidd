@@ -137,12 +137,10 @@ export default class UtilsMixin extends Vue {
 
   restartKlippy () {
     this.sendGcode('RESTART', Waits.onRestart)
-    // this.$store.commit('socket/resetState')
   }
 
   firmwareRestartKlippy () {
     this.sendGcode('FIRMWARE_RESTART', Waits.onFirmwareRestart)
-    // this.$store.commit('socket/resetState')
   }
 
   /**

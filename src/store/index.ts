@@ -5,7 +5,7 @@ import { files } from './files'
 import { config } from './config'
 import { gpio } from './gpio'
 import { RootState } from './types'
-import { FileConfig } from './config/types'
+import { Config } from './config/types'
 
 Vue.use(Vuex)
 
@@ -30,14 +30,22 @@ export default new Vuex.Store<RootState>({
     }
   },
   actions: {
-    init ({ dispatch, commit }, payload: FileConfig) {
+    async init ({ dispatch, commit }, payload: Config) {
       // Should init the store, and ensure we've loaded our
       // configuration if there is any.
       commit('setVersion', process.env.VERSION)
       commit('setHash', process.env.HASH)
-      const initLocal = dispatch('config/initLocal')
-      const initFile = dispatch('config/initFile', payload)
-      return Promise.all([initLocal, initFile])
+      const initFile = await dispatch('config/initFile', payload.fileConfig)
+      const initLocal = await dispatch('config/initLocal', payload)
+      return [initLocal, initFile]
+    },
+    reset () {
+      // Reset the entire store - should be used when swapping instances.
+      // extend this so we can pass an object defining what to reset, and if its a full reset or not.
+      this.commit('socket/resetState')
+      this.commit('config/resetState')
+      this.commit('files/resetState')
+      this.commit('gpio/resetState')
     },
     void () {
       console.debug('void action')

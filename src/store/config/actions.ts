@@ -1,27 +1,50 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, FileConfig, LocalConfig, GenericSave } from './types'
+import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
-   * Inits any local storage state we may have.
+   * Inits any file config we may have.
    */
-  async initLocal ({ commit }) {
-    if (Globals.LOCAL_STORAGE_KEY in localStorage) {
-      const config = JSON.parse(localStorage.appConfig)
-      commit('onInitLocal', config)
-    }
+  async initFile ({ commit }, payload: FileConfig) {
+    commit('onInitFile', payload)
   },
 
   /**
-   * Inits any file config we may have.
+   * Inits any local storage state we may have.
    */
-  async initFile ({ commit }, config: FileConfig) {
-    if (config) {
-      commit('onInitFile', config)
-    }
+  async initLocal ({ commit }, payload: Config) {
+    commit('onInitLocal') // Just loads local storage config into the store.
+    commit('onInitInstances', payload) // Loads instances from local storage, and also inits the current instance.
+  },
+
+  /**
+   * Ensure our instance is recorded, and set the current instance.
+   */
+  onInitApiConfig ({ commit }, payload) {
+    commit('onInitApiConfig', payload)
+  },
+
+  /**
+   * Saves local keys to state and localstorage.
+   * Assumes a flat structure of key value pairs.
+   */
+  async saveLocal ({ commit }, payload: LocalConfig) {
+    commit('onSaveLocal', payload)
+  },
+
+  async addInstance ({ commit }, payload: InstanceConfig) {
+    commit('addInstance', payload)
+  },
+
+  async removeInstance ({ commit }, payload: InstanceConfig) {
+    commit('removeInstance', payload)
+  },
+
+  async updateInstance ({ commit }, payload: InstanceConfig) {
+    commit('updateInstanceName', payload)
   },
 
   /**
@@ -39,19 +62,6 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async updateHiddenMacros ({ commit }, payload) {
     commit('setUnsavedChanges', true)
     commit('updateHiddenMacros', payload)
-  },
-
-  /**
-   * Saves local keys to state and localstorage.
-   * Assumes a flat structure of key value pairs.
-   */
-  async saveLocalStorage ({ commit }, payload: LocalConfig) {
-    let config = (Globals.LOCAL_STORAGE_KEY in localStorage) ? JSON.parse(localStorage.appConfig) : {}
-    config = { ...config, ...payload }
-    localStorage.setItem(Globals.LOCAL_STORAGE_KEY, JSON.stringify(config))
-    for (const key in payload) {
-      commit('onSaveLocal', { key, value: payload[key] })
-    }
   },
 
   /**

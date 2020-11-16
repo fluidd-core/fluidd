@@ -1,8 +1,10 @@
 export interface ConfigState {
+  [key: string]: string | boolean | LocalConfig | InstanceConfig[] | FileConfig;
   apiUrl: string;
   socketUrl: string;
   unsavedChanges: boolean;
   localConfig: LocalConfig;
+  instances: InstanceConfig[];
   fileConfig: FileConfig;
 }
 
@@ -54,4 +56,19 @@ export interface DashboardConfig {
 export interface GenericSave {
   key: string;
   value: string | boolean | number;
+}
+
+export interface Config {
+  apiConfig: ApiConfig | InstanceConfig;
+  fileConfig: FileConfig | undefined | null;
+}
+
+export interface ApiConfig {
+  apiUrl: string;
+  socketUrl: string;
+}
+
+export interface InstanceConfig extends ApiConfig {
+  name: string;
+  active: boolean;
 }

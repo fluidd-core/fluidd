@@ -5,7 +5,7 @@ import { mutations } from './mutations'
 import { SocketState } from './types'
 import { RootState } from '../types'
 
-export const getDefaultState = (): SocketState => {
+export const defaultState = (): SocketState => {
   return {
     open: false, // socket is open or closed.
     connecting: false, // socket is trying to connect.
@@ -100,7 +100,7 @@ export const getDefaultState = (): SocketState => {
   }
 }
 
-export const state: SocketState = getDefaultState()
+export const state = defaultState()
 
 const namespaced = true
 

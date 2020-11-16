@@ -10,7 +10,7 @@
         cols="12"
       >
         <span v-if="socketConnecting">Connecting to printer...</span>
-        <span v-if="!socketConnecting">Lost printer connection. Please check moonraker status and / or refresh.</span>
+        <span v-if="!socketConnecting">No printer connection. Please check moonraker status and / or refresh.</span>
       </v-col>
       <v-col cols="6">
         <v-progress-linear

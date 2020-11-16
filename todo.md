@@ -1,10 +1,10 @@
 # TODO [fluidd]
 
 ## Next Up
-- fix title tag
-- instance management?
+- figure out https
+- update panel collapse so these are remembered per instance
+- finish up update notification / pwa setup
 - temperature presets
-- add option to change camera from <img> to <video>
 - load gcode help and implement in console
 - drag / drop file upload
 

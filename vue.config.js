@@ -6,7 +6,10 @@ module.exports = {
   pwa: {
     themeColor: '#2196F3',
     msTileColor: '#000000',
-    appleMobileWebAppCache: 'yes'
+    appleMobileWebAppCache: 'yes',
+    manifestOptions: {
+      background_color: '#000000'
+    }
   },
   transpileDependencies: [
     'vuetify'

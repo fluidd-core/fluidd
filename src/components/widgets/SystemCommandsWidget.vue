@@ -1,9 +1,37 @@
 <template>
-  <v-layout column justify-start class="px-2">
-    <v-btn small block text class="mt-2" color="warning" :disabled="printerBusy" @click="restartKlippy">Restart</v-btn>
-    <v-btn small block text class="mt-1" color="warning" :disabled="printerBusy" @click="firmwareRestartKlippy">Firmware Restart</v-btn>
-    <v-btn small block text class="mt-1" color="error" :disabled="printerBusy" @click.stop="confirmRebootDialog.open = true">Host Reboot</v-btn>
-    <v-btn small block text class="mt-1 mb-2" color="error" :disabled="printerBusy" @click.stop="confirmShutdownDialog.open = true">Host Shutdown</v-btn>
+  <div>
+    <v-list-item @click="restartKlippy">
+      <v-list-item-icon>
+        <v-icon color="warning">$refresh</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>Restart</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item @click="firmwareRestartKlippy">
+      <v-list-item-icon>
+        <v-icon color="warning">$refresh</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>Firmware Restart</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item @click="confirmRebootDialog.open = true">
+      <v-list-item-icon>
+        <v-icon color="error">$alert</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>Host Reboot</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+    <v-list-item @click="confirmShutdownDialog.open = true">
+      <v-list-item-icon>
+        <v-icon color="error">$alert</v-icon>
+      </v-list-item-icon>
+      <v-list-item-content>
+        <v-list-item-title>Host Shutdown</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
 
     <dialog-confirm
       v-model="confirmRebootDialog.open"
@@ -16,7 +44,7 @@
       @confirm="hostShutdown">
       <p>Are you sure? This will shutdown your host system.</p>
     </dialog-confirm>
-  </v-layout>
+  </div>
 </template>
 
 <script lang="ts">
