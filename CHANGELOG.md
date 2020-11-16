@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-rc.0](https://github.com/cadriel/fluidd/compare/v0.1.0...v1.0.0-rc.0) (2020-11-16)
+
+
+### Features
+
+* allow inverting axis ([cf6a993](https://github.com/cadriel/fluidd/commit/cf6a993b3655d349d724bdb150211ba2d4813409))
+* multi-printer management ([319e3bb](https://github.com/cadriel/fluidd/commit/319e3bbe60ff25ab1dc27ed8bcf93e239c2daddb))
+* support for bed_screws_adjust and screws_tilt_calculate ([6e09088](https://github.com/cadriel/fluidd/commit/6e0908826c97bf59892ff476a23ed5d4a7ade132))
+* support ip camera streams ([a055bce](https://github.com/cadriel/fluidd/commit/a055bce8439004ba5a2afb2582aac91c096b716d))
+
+
+### Bug Fixes
+
+* [virtual_sd_card] -> [virtual_sdcard] ([27395bb](https://github.com/cadriel/fluidd/commit/27395bb90c552bdd5bba00719eb38b44ac4c975e))
+* ensures tool tabs present properly if only one tab is available ([fcbe166](https://github.com/cadriel/fluidd/commit/fcbe166686934f12ca1d7b5ce73381a38eebecf3))
+* error toasts now use the default timeout ([58385c5](https://github.com/cadriel/fluidd/commit/58385c5049515b396870b747fc53ec2ebb5c446e))
+* progress uses display_status to represent M73 if configured ([b0c575c](https://github.com/cadriel/fluidd/commit/b0c575c08d71ac199404ed62e88cf05279015460))
+
 ## [0.1.0](https://github.com/cadriel/fluidd/compare/v0.0.10...v0.1.0) (2020-11-06)
 
 
