@@ -15,7 +15,7 @@
     "lint": "vue-cli-service lint",
     "inspect": "vue-cli-service inspect",
     "release": "standard-version",
-    "deploy": "potato -s dist -u -b fluidd.xyz",
+    "deploy": "potato -s dist -u -b app.fluidd.xyz",
     "start": "vue-cli-service serve",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
