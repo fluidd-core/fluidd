@@ -51,7 +51,7 @@ const getApiConfig = async (): Promise<ApiConfig | InstanceConfig> => {
   // Add the browsers url to our endpoints list, unless black listed.
   if (blacklist.findIndex(s => s.includes(document.location.hostname)) === -1) {
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:7125`)
-    // endpoints.push(`${document.location.protocol}//${document.location.hostname}`)
+    endpoints.push(`${document.location.protocol}//${document.location.hostname}`)
   }
 
   // For each endpoint we have, ping each one to determine if any are active.
