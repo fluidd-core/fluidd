@@ -83,8 +83,8 @@ export const mutations: MutationTree<ConfigState> = {
       }
     } else {
       instances.forEach((instance, index) => {
+        instance.active = (index === i)
         if (index === i) {
-          instance.active = (index === i)
           instance.name = state.fileConfig.general.instanceName
         }
       })
@@ -102,15 +102,15 @@ export const mutations: MutationTree<ConfigState> = {
     localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(state.instances))
   },
 
-  addInstance (state, payload) {
-    const instances = state.instances
-    const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
-    if (i === -1) {
-      instances.push(payload)
-      Vue.set(state, 'instances', instances)
-      localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(instances))
-    }
-  },
+  // addInstance (state, payload) {
+  //   const instances = state.instances
+  //   const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
+  //   if (i === -1) {
+  //     instances.push(payload)
+  //     Vue.set(state, 'instances', instances)
+  //     localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(instances))
+  //   }
+  // },
 
   removeInstance (state, payload) {
     const instances = state.instances
