@@ -59,7 +59,8 @@ import {
   mdiChartTimelineVariant,
   mdiFireAlert,
   mdiUpload,
-  mdiFolderUpload
+  mdiFolderUpload,
+  mdiHelp
 } from '@mdi/js'
 
 /**
@@ -75,10 +76,12 @@ export const Globals = Object.freeze({
   SETTINGS_FILENAME: '.fluidd.json',
   APP_NAME: 'Fluidd',
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
-  FILTERED_FILES_EXTENSION: ['.json']
+  FILTERED_FILES_EXTENSION: ['.json'],
+  DOCUMENTATION_ROOT: 'https://github.com/cadriel/fluidd/wiki/'
 })
 
 export const Icons = Object.freeze({
+  help: mdiHelp,
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
   menu: mdiDotsVertical,

@@ -56,7 +56,7 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action v-if="!instance.active">
-            <v-btn icon small @click="removeInstance(instance)">
+            <v-btn icon small @click.stop="removeInstance(instance)">
               <v-icon small>$delete</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -76,6 +76,7 @@
 
     <dialog-base
       title="Add printer"
+      :maxWidth="320"
       v-model="instanceDialog.open">
 
       <template v-slot:actions>
@@ -83,7 +84,19 @@
         <v-btn color="primary" :disabled="!instanceDialog.valid" type="submit" form="form">Save</v-btn>
       </template>
 
+      <template v-slot:help-tooltip>
+        Enter your moonraker API endpoint.<br />
+        Some examples might include;<br />
+        <blockquote>
+          fluidd.local,
+          my_ip_address
+        </blockquote>
+      </template>
+
+      Having trouble? <a :href="docsUrl + '/Multiple-Printers'" target="_blank">See here</a> for more information.<br />
+
       <v-form
+        class="mt-3"
         ref="form"
         id="form"
         v-model="instanceDialog.valid"
@@ -92,7 +105,7 @@
       >
         <v-text-field
           autofocus
-          label="Url"
+          label="Moonraker api url"
           :rules="[rules.required, rules.url]"
           persistent-hint
           hint="E.g., fluiddpi.local:7125"
@@ -112,6 +125,7 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 import DialogBase from '@/components/dialogs/dialogBase.vue'
 import UtilsMixin from '@/mixins/utils'
 import { appInit } from '@/init'
+import { Globals } from '@/globals'
 
 @Component({
   components: {
@@ -122,6 +136,8 @@ import { appInit } from '@/init'
 export default class AppDrawer extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean
+
+  docsUrl = Globals.DOCUMENTATION_ROOT
 
   get instances () {
     return this.$store.state.config.instances
@@ -164,28 +180,16 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
     this.$emit('input', e)
   }
 
-  activateInstance (instance: ApiConfig) {
-    // Close the drawer.
-    this.emitChange(false)
-
-    // Close the existing socket.
-    this.$socket.close()
-
-    // Re-init the app.
-    appInit(instance)
-      .then((config: Config) => {
-        // Reconnect the socket with the new instance url.
-        console.debug('Activating new instance with config', config)
-        this.$socket.connect(instance.socketUrl)
-      })
-  }
-
   addInstanceDialog () {
     this.instanceDialog = {
       valid: false,
       open: true,
       url: ''
     }
+  }
+
+  removeInstance (instance: InstanceConfig) {
+    this.$store.dispatch('config/removeInstance', instance)
   }
 
   addInstance () {
@@ -201,8 +205,20 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
     }
   }
 
-  removeInstance (instance: InstanceConfig) {
-    this.$store.dispatch('config/removeInstance', instance)
+  activateInstance (instance: ApiConfig) {
+    // Close the drawer.
+    this.emitChange(false)
+
+    // Close the existing socket.
+    this.$socket.close()
+
+    // Re-init the app.
+    appInit(instance)
+      .then((config: Config) => {
+        // Reconnect the socket with the new instance url.
+        console.debug('Activating new instance with config', config)
+        this.$socket.connect(instance.socketUrl)
+      })
   }
 }
 </script>

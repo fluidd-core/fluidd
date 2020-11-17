@@ -3,10 +3,11 @@
   max-width: map-get($container-max-widths, 'xl');
 }
 
-.fluidd.v-application code {
-  background-color: #000;
-  color: #C0341D;
-  padding: 0 0.4rem;
+.fluidd.v-application blockquote {
+  font-family: monospace, monospace
+  // background-color: transparent;
+  // color: #C0341D;
+  // padding: 0 0.4rem;
 }
 
 /* Add a class to help us spin an icon if we need.. */

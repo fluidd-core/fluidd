@@ -35,9 +35,9 @@ export const actions: ActionTree<ConfigState, RootState> = {
     commit('onSaveLocal', payload)
   },
 
-  async addInstance ({ commit }, payload: InstanceConfig) {
-    commit('addInstance', payload)
-  },
+  // async addInstance ({ commit }, payload: InstanceConfig) {
+  //   commit('addInstance', payload)
+  // },
 
   async removeInstance ({ commit }, payload: InstanceConfig) {
     commit('removeInstance', payload)

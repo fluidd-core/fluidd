@@ -8,6 +8,23 @@
     <v-card color="secondary darken-1">
       <v-card-title>
         <span class="headline"> {{ title }}</span>
+        <v-spacer />
+        <v-tooltip bottom v-if="hasHelpTooltipSlot || helpTooltip">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              small
+              icon>
+              <v-icon
+                small>
+                $help
+              </v-icon>
+            </v-btn>
+          </template>
+          <span v-if="!hasHelpTooltipSlot && helpTooltip">{{ helpTooltip }}</span>
+          <slot name="help-tooltip" v-if="hasHelpTooltipSlot"></slot>
+        </v-tooltip>
       </v-card-title>
       <v-card-text>
         <slot></slot>
@@ -38,6 +55,9 @@ export default class DialogBase extends Mixins(UtilsMixin) {
   @Prop({ type: Number, required: false, default: 250 })
   maxWidth!: number
 
+  @Prop({ type: String })
+  helpTooltip!: string
+
   get maxWidthValue (): string | undefined {
     return (this.maxWidth) ? this.maxWidth.toString() + 'px' : undefined
   }
@@ -49,6 +69,18 @@ export default class DialogBase extends Mixins(UtilsMixin) {
   saveValue () {
     this.$emit('save')
     this.$emit('input', false)
+  }
+
+  get hasDefaultSlot () {
+    return this.$slots.default || this.$scopedSlots.default
+  }
+
+  get hasActionsSlot () {
+    return this.$slots.actions || this.$scopedSlots.actions
+  }
+
+  get hasHelpTooltipSlot () {
+    return this.$slots['help-tooltip'] || this.$scopedSlots['help-tooltip']
   }
 }
 </script>
