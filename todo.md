@@ -48,7 +48,6 @@
 ## User wants
 - add QUERY_PROBE to endstops widget
 - add swap up / down for toolhead [railcore specific...] (waiting on issue feedback)
-- parse underscores out of macro names
 - another request to have the current temps above the macors etc during a print, but not while not printing.
 - draggable dashboard panels?
 - maybe look at tightening the mobile ui. have fan's as a value, that you can click

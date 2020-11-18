@@ -414,7 +414,7 @@ export const getters: GetterTree<SocketState, RootState> = {
     const macros: string[] = []
     for (const macro in state.macros) {
       if (state.macros[macro].visible) {
-        macros.push(macro)
+        macros.push(macro.replaceAll('_', ' '))
       }
     }
     return macros
