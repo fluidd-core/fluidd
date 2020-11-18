@@ -45,9 +45,8 @@
 - add widget for setting z offset during configuration
 - add a widget to configure ztilt (needed?)
 
-## User wants
+## User wants (not necessarily something we'll implement in the suggested way...)
 - add QUERY_PROBE to endstops widget
-- add swap up / down for toolhead [railcore specific...] (waiting on issue feedback)
 - parse underscores out of macro names
 - another request to have the current temps above the macors etc during a print, but not while not printing.
 - draggable dashboard panels?
