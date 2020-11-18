@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-rc.1](https://github.com/cadriel/fluidd/compare/v1.0.0-rc.0...v1.0.0-rc.1) (2020-11-18)
+
+
+### Bug Fixes
+
+* Issue where all instances were disabled ([9da4a3d](https://github.com/cadriel/fluidd/commit/9da4a3d56c207d32ff8ffce962b80eb603433a34))
+
 ## [1.0.0-rc.0](https://github.com/cadriel/fluidd/compare/v0.1.0...v1.0.0-rc.0) (2020-11-16)
 
 
