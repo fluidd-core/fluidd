@@ -72,7 +72,6 @@ export default class Settings extends Mixins(UtilsMixin) {
     let instance = this.$store.getters['config/getCurrentInstance']
     if (instance) {
       instance = { ...instance, ...{ name: this.$store.state.config.fileConfig.general.instanceName } }
-      console.log('got instance, saving as', instance)
       this.$store.dispatch('config/updateInstance', instance)
     }
     this.$store.dispatch('config/saveFileConfig')

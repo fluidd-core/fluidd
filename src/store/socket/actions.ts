@@ -104,7 +104,6 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async onPrinterInfo ({ commit }, payload) {
     commit('onPrinterInfo', payload)
-    // console.log('got printer info')
 
     if (payload.state !== 'ready') {
       clearTimeout(retryTimeout)
@@ -383,7 +382,6 @@ export const actions: ActionTree<SocketState, RootState> = {
   async addConsoleEntry ({ commit }, payload: ConsoleEntry) {
     payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
     if (!payload.time || payload.time <= 0) {
-      // console.log('setting time', payload)
       payload.time = new Date().getTime() / 1000 | 0
     }
     commit('addConsoleEntry', payload)

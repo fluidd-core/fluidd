@@ -152,7 +152,6 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
         }
       )
       .finally(() => {
-        console.log('finished uploading, remove wait', Waits.onUploadGcode)
         this.$store.dispatch('socket/removeWait', Waits.onUploadGcode)
       })
   }

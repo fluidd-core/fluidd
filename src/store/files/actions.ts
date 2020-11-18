@@ -58,7 +58,6 @@ export const actions: ActionTree<FilesState, RootState> = {
   async onFileUpdate ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
     const paths = getFilePaths(payload.filename, root)
-    console.log('got file update', payload)
     const file = formatAsFile(root, payload)
 
     // If this is an update to the currently printing file, then push it to
@@ -106,7 +105,6 @@ export const actions: ActionTree<FilesState, RootState> = {
   },
 
   async notifyUploadfile (_, payload: FileChangeSocketResponse) {
-    console.log('notified if file upload', payload)
     const root = payload.item.root
     // const paths = getFilePaths(payload.item.path, root)
     const file = formatAsFile(root, payload.item)
