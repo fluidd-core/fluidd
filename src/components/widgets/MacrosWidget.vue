@@ -3,10 +3,10 @@
     <v-btn
       v-for="(macro, index) in macros"
       :key="index"
-      @click="sendGcode(macro.replaceAll(' ', '_'), `${waits.onMacro}${macro}`)"
+      @click="sendGcode(macro, `${waits.onMacro}${macro}`)"
       :loading="hasWait(`${waits.onMacro}${macro}`)"
       color="secondary"
-      class="me-2 mb-2">{{ macro }}</v-btn>
+      class="me-2 mb-2">{{ macro.replaceAll('_', ' ') }}</v-btn>
   </v-card-text>
 </template>
 
