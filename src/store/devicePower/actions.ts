@@ -1,9 +1,8 @@
 import { ActionTree } from 'vuex'
-import { GpioState } from './types'
+import { DevicePowerState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
 
-export const actions: ActionTree<GpioState, RootState> = {
+export const actions: ActionTree<DevicePowerState, RootState> = {
 
   /**
    * Inits the list of available devices.
@@ -14,12 +13,11 @@ export const actions: ActionTree<GpioState, RootState> = {
       payload.devices.length > 0
     ) {
       commit('onDevices', payload)
-      SocketActions.machineGpioPowerStatus()
     }
   },
 
   /**
-   * Loads the current status of each power device defined.
+   * Fires when we receive a notification of power changing
    */
   async onStatus ({ commit }, payload) {
     commit('onStatus', payload)

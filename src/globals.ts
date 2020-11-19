@@ -146,7 +146,7 @@ export const Icons = Object.freeze({
 })
 
 export const Waits = Object.freeze({
-  onGpio: 'onGpio',
+  onDevicePowerToggle: 'onDevicePowerToggle',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',
   onHomeX: 'onHomeX',

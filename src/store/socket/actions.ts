@@ -132,7 +132,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         if (payload.plugins.includes(plugin)) {
           switch (plugin) {
             case 'power':
-              SocketActions.machineGpioPowerDevices()
+              SocketActions.machineDevicePowerDevices()
               break
           }
         }
@@ -356,6 +356,9 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('resetState', false)
     SocketActions.printerInfo()
   },
+  async notifyKlippyReady () {
+    console.debug('Klippy Ready')
+  },
   async notifyFilelistChanged ({ dispatch }, payload) {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true })
   },
@@ -363,7 +366,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('files/onFileUpdate', payload, { root: true })
   },
   async notifyPowerChanged ({ dispatch }, payload) {
-    dispatch('gpio/onStatus', { [payload.device]: payload.status }, { root: true })
+    dispatch('devicePower/onStatus', { [payload.device]: payload.status }, { root: true })
   },
 
   /**

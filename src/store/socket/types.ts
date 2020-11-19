@@ -8,7 +8,7 @@ export interface SocketState {
   waits: string[]; // list of things that we might be waiting on, like a gcode script to finish
   endstops: EndStops;
   macros: Macros;
-  plugins: string[]; // active plugins (gpio_power)
+  plugins: string[]; // active plugins (device_power)
   console: ConsoleEntry[]; // console stream
   chart: ChartDataSet[]; // chart data
   temperature_fans: string[]; // maintains a list of available temp fans

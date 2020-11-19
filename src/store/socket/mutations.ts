@@ -81,7 +81,11 @@ export const mutations: MutationTree<SocketState> = {
     state.printer.info = payload
   },
   onPlugins (state, payload) {
-    payload.forEach((plugin: string) => state.plugins.push(plugin))
+    Vue.set(
+      state,
+      'plugins',
+      [...new Set([...state.plugins, ...payload])]
+    )
   },
   onPrinterObjectsList (state, payload) {
     if (!state.printer.objects.includes(payload)) {

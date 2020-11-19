@@ -27,7 +27,7 @@
         <v-icon left>$fileCode</v-icon>
         Macros
       </v-tab>
-      <v-tab :key="'power'" v-if="gpioPowerPluginEnabled">
+      <v-tab :key="'power'" v-if="devicePowerPluginEnabled">
         <v-icon left>$power</v-icon>
         Power
       </v-tab>
@@ -50,7 +50,7 @@
           <v-tab-item :key="'macros'" class="tertiary rounded" v-if="hasMacros">
             <macros-widget></macros-widget>
           </v-tab-item>
-          <v-tab-item :key="'power'" class="tertiary rounded" v-if="gpioPowerPluginEnabled">
+          <v-tab-item :key="'power'" class="tertiary rounded" v-if="devicePowerPluginEnabled">
             <power-control-widget></power-control-widget>
           </v-tab-item>
           <v-tab-item :key="'jobs'" class="tertiary rounded max-height" v-if="klippyConnected && jobsInDash">
@@ -98,7 +98,7 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   // }
 
   get showTabs () {
-    return (this.hasMacros || this.gpioPowerPluginEnabled || this.jobsInDash)
+    return (this.hasMacros || this.devicePowerPluginEnabled || this.jobsInDash)
   }
 
   get hasMacros () {
@@ -117,7 +117,7 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
     this.$store.dispatch('config/saveLocal', { Tools: val })
   }
 
-  get gpioPowerPluginEnabled () {
+  get devicePowerPluginEnabled () {
     return (this.$store.state.socket.plugins.includes('power'))
   }
 

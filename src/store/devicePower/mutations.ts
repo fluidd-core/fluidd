@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { GpioState } from './types'
+import { DevicePowerState } from './types'
 import { defaultState } from './index'
 
-export const mutations: MutationTree<GpioState> = {
+export const mutations: MutationTree<DevicePowerState> = {
   resetState (state) {
     const newState = defaultState()
     Object.keys(newState).forEach((key: string) => {
@@ -17,10 +17,9 @@ export const mutations: MutationTree<GpioState> = {
 
   onStatus (state, payload) {
     for (const key in payload) {
-      const i = state.devices.findIndex(device => device.id === key)
+      const i = state.devices.findIndex(device => device.device === key)
       if (i >= 0) {
-        // Vue.set(state.devices, i, payload[key] === 'off' ? 0 : 1)
-        Vue.set(state.devices[i], 'state', payload[key] === 'off' ? 0 : 1)
+        Vue.set(state.devices[i], 'status', payload[key])
       }
     }
   }

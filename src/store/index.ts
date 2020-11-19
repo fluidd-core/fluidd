@@ -3,7 +3,7 @@ import Vuex from 'vuex'
 import { socket } from './socket'
 import { files } from './files'
 import { config } from './config'
-import { gpio } from './gpio'
+import { devicePower } from './devicePower'
 import { RootState } from './types'
 import { Config } from './config/types'
 
@@ -19,7 +19,7 @@ export default new Vuex.Store<RootState>({
     config,
     socket,
     files,
-    gpio
+    devicePower
   },
   mutations: {
     setVersion (state, payload) {
@@ -45,7 +45,7 @@ export default new Vuex.Store<RootState>({
       this.commit('socket/resetState')
       this.commit('config/resetState')
       this.commit('files/resetState')
-      this.commit('gpio/resetState')
+      this.commit('devicePower/resetState')
     },
     void () {
       console.debug('void action')

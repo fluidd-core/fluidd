@@ -34,30 +34,31 @@ export const SocketActions = {
     )
   },
 
-  async machineGpioPowerDevices () {
+  async machineDevicePowerDevices () {
     Vue.$socket.emit(
-      'machine.gpio_power.devices', {
-        dispatch: 'gpio/init'
+      'machine.device_power.devices', {
+        dispatch: 'devicePower/init'
       }
     )
   },
 
-  async machineGpioPowerStatus () {
+  async machineDevicePowerStatus (device: string) {
     Vue.$socket.emit(
-      'machine.gpio_power.status', {
-        dispatch: 'gpio/onStatus'
+      'machine.device_power.status', {
+        dispatch: 'devicePower/onStatus',
+        params: { [device]: null }
       }
     )
   },
 
-  async machineGpioPowerToggle (id: string, state: number, wait?: string) {
-    const emit = (state === 1)
-      ? 'machine.gpio_power.on'
-      : 'machine.gpio_power.off'
+  async machineDevicePowerToggle (device: string, state: string, wait?: string) {
+    const emit = (state === 'on')
+      ? 'machine.device_power.on'
+      : 'machine.device_power.off'
     Vue.$socket.emit(
       emit, {
-        dispatch: 'gpio/onToggle',
-        params: { [id]: null },
+        dispatch: 'devicePower/onToggle',
+        params: { [device]: null },
         wait
       }
     )

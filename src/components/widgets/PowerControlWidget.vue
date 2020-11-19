@@ -3,10 +3,13 @@
     <v-btn
       v-for="(device, index) in devices"
       :key="index"
-      @click="toggleDevice(device, `${waits.onGpio}${device.id}`)"
-      :loading="hasWait(`${waits.onGpio}${device.id}`)"
-      color="secondary"
-      class="me-2 mb-2">Toggle {{ device.name }} {{ (device.state === 1) ? 'Off' : 'On' }}</v-btn>
+      :disabled="(device.status === 'error' || device.status === 'init')"
+      @click="toggleDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
+      :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
+      :color="(device.status === 'error') ? 'error' : 'secondary'"
+      class="me-2 mb-2">
+      {{ buttonText(device) }}
+    </v-btn>
   </v-card-text>
 </template>
 
@@ -15,20 +18,37 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { Waits } from '@/globals'
 import { SocketActions } from '@/socketActions'
-import { Device } from '@/store/gpio/types'
+import { Device } from '@/store/devicePower/types'
 
 @Component({})
 export default class PowerControlWidget extends Mixins(UtilsMixin) {
   waits = Waits
 
   get devices () {
-    return this.$store.state.gpio.devices
+    return this.$store.state.devicePower.devices
+  }
+
+  buttonText (device: Device): string {
+    switch (device.status) {
+      case 'error': {
+        return `${device.device} [error]`
+      }
+      case 'init': {
+        return `${device.device} [init]`
+      }
+      case 'on': {
+        return `Toggle ${device.device} off`
+      }
+      case 'off': {
+        return `Toggle ${device.device} on`
+      }
+    }
   }
 
   toggleDevice (device: Device, wait?: string) {
-    const state = (device.state === 1) ? 0 : 1
+    const state = (device.status === 'on') ? 'off' : 'on'
     if (wait) this.$store.dispatch('socket/addWait', wait)
-    SocketActions.machineGpioPowerToggle(device.id, state, wait)
+    SocketActions.machineDevicePowerToggle(device.device, state, wait)
   }
 }
 </script>

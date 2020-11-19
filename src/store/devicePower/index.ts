@@ -2,10 +2,10 @@ import { Module } from 'vuex'
 import { getters } from './getters'
 import { actions } from './actions'
 import { mutations } from './mutations'
-import { GpioState } from './types'
+import { DevicePowerState } from './types'
 import { RootState } from '../types'
 
-export const defaultState = (): GpioState => {
+export const defaultState = (): DevicePowerState => {
   return {
     devices: []
   }
@@ -15,7 +15,7 @@ export const state = defaultState()
 
 const namespaced = true
 
-export const gpio: Module<GpioState, RootState> = {
+export const devicePower: Module<DevicePowerState, RootState> = {
   namespaced,
   state,
   getters,
