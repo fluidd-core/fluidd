@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.0.0-rc.2](https://github.com/cadriel/fluidd/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2020-11-20)
+
+
+### Bug Fixes
+
+* error deleting single file when only one exists in jobs ([ddde730](https://github.com/cadriel/fluidd/commit/ddde7305b82fa91bfb66ba8c2407fd443463c544))
+* reset and reprint buttons not showing up ([1e461fd](https://github.com/cadriel/fluidd/commit/1e461fd490db99ec99295c6f7b2d58f6f74138a7))
+
 ## [1.0.0-rc.1](https://github.com/cadriel/fluidd/compare/v1.0.0-rc.0...v1.0.0-rc.1) (2020-11-18)
 
 
