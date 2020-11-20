@@ -1,12 +1,14 @@
 # TODO [fluidd]
 
 ## Next Up
-- figure out https
 - update panel collapse so these are remembered per instance
-- finish up update notification / pwa setup
 - temperature presets
+- docker image
+- upload and print immediately
 - load gcode help and implement in console
 - drag / drop file upload
+- figure out https
+- finish up update notification / pwa setup
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
