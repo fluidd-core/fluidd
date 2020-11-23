@@ -56,7 +56,7 @@
           <v-tab-item :key="'jobs'" class="tertiary rounded max-height" v-if="klippyConnected && jobsInDash">
             <file-system-card
               root="gcodes"
-              accept=".gcode, .ufp"
+              accept=".gcode,.ufp"
               dense
               :height="400"
               :show-title="false"

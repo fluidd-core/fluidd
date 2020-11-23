@@ -1,14 +1,22 @@
 # TODO [fluidd]
 
 ## Next Up
+- temperature presets (select a preset from a dropdown that apples to all heaters)
+- add status of heater_fans (extruder fan and controller fan)
 - update panel collapse so these are remembered per instance
-- temperature presets
+- stage 1 themes (pick a specific theme (red, green etc..)
 - docker image
-- upload and print immediately
+- upload & print immediately
 - load gcode help and implement in console
-- drag / drop file upload
+- show mm/s in status
+- auto save printer settings?
+- remove root prefix from file system
+- maxlength on name + elipses in mobile format
+
+- make larger font common in some way
 - figure out https
 - finish up update notification / pwa setup
+- PID calibrate option via dialog maybe?
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -31,7 +39,6 @@
 - dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option
 - should be able to force part speed fan during a print?
-- add status of heater_fans (extruder fan and controller fan)
 - add UI to filter out temp waits from console
 
 ## Filesystem Improvements:

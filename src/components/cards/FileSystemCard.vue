@@ -1,5 +1,29 @@
 <template>
-  <v-card color="tertiary" class="filesystem-wrapper" :height="height">
+  <v-card
+    @dragenter.capture.prevent="dragEnter"
+    @dragover.prevent
+    @dragleave.self.prevent="dragLeave"
+    @drop.prevent.stop="dropUpload"
+    color="tertiary"
+    class="filesystem-wrapper"
+    :class="{ 'no-pointer-events': uploadOverlay.active }"
+    :height="height">
+    <v-overlay
+      class="uploadOverlay"
+      :value="uploadOverlay.active"
+      :opacity="0.85"
+      absolute
+    >
+      <v-layout column align-center>
+        <v-icon x-large v-if="!uploadOverlay.uploading">$fileUpload</v-icon>
+        <v-progress-circular
+          v-if="uploadOverlay.uploading"
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+        <div class="text-h6 font-weight-light"><strong>Drag</strong> a file here</div>
+      </v-layout>
+    </v-overlay>
     <v-card-title class="quaternary rounded-t py-1" v-if="showTitle">
       <v-icon left>$files</v-icon>
       <span class="font-weight-light">{{ panelTitle }}</span>
@@ -15,12 +39,18 @@
       </v-select>
     </v-card-title>
     <v-divider v-if="showTitle"></v-divider>
+    <!-- <p>
+      currentPath: {{ currentPath }}<br />
+      trimmedPath: {{ trimmedPath }}
+    </p> -->
     <file-system-browser
       :root="currentRoot"
       :show-meta-data="showMetaData"
       :accept="accept"
-      :readonly="(this.currentRoot === 'config_examples') ? true : false"
+      :readonly="readOnly"
       :dense="dense"
+      @current-path="currentPath = $event"
+      @trimmed-path="trimmedPath = $event"
       @create-file="upload"
       @create-dir="create"
       @rename-file="rename"
@@ -31,6 +61,7 @@
       @edit-file="edit"
       @view-file="edit">
     </file-system-browser>
+
     <dialog-file-editor
       v-model="dialog.open"
       @save="saveEdit"
@@ -52,6 +83,7 @@ import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
 import UtilsMixin from '@/mixins/utils'
 import { AppFile } from '@/store/files/types'
 import { Waits } from '@/globals'
+import EventBus from '@/eventBus'
 
 @Component({
   components: {
@@ -82,6 +114,13 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   height!: number | string;
 
   currentRoot = ''
+  currentPath = ''
+  trimmedPath = ''
+
+  uploadOverlay = {
+    active: false,
+    uploading: false
+  }
 
   dialog = {
     open: false,
@@ -93,6 +132,10 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
 
   get isMultiRoot () {
     return (Array.isArray(this.root))
+  }
+
+  get readOnly () {
+    return (this.currentRoot === 'config_examples')
   }
 
   mounted () {
@@ -118,7 +161,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
     SocketActions.serverFilesDeleteDirectory(path)
   }
 
-  edit (file: AppFile, path: string) {
+  edit (file: AppFile, root: string, path: string) {
     this.dialog = {
       open: true,
       loading: true,
@@ -126,7 +169,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
       filename: '',
       path: ''
     }
-    this.getFile(`/server/files/${path}/${file.name}`)
+    this.getFile(`/server/files/${root}/${path}/${file.name}`)
       .then((response: AxiosResponse) => {
         this.dialog.filename = file.name || ''
         this.dialog.path = path
@@ -135,13 +178,63 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
       })
   }
 
-  upload (file: File, root: string, path: string) {
+  async upload (file: File, root: string, path: string) {
+    this.$store.dispatch('socket/addWait', Waits.onUploadGcode)
+    await this.doUpload(file, root, path)
+    this.$store.dispatch('socket/removeWait', Waits.onUploadGcode)
+  }
+
+  async dropUpload (e: DragEvent) {
+    if (e && e.dataTransfer && e.dataTransfer.files.length && !this.readOnly) {
+      this.$store.dispatch('socket/addWait', Waits.onUploadGcode)
+      this.uploadOverlay.uploading = true
+
+      const files = e.dataTransfer.files
+      // Async uploads cause issues in moonraker / klipper.
+      // So instead, upload sequentially.
+      for (const file of files) {
+        try {
+          const extension = '.' + file.name.split('.').pop()
+          const accepts = this.accept.split(',')
+          if (extension && accepts.includes(extension)) {
+            await this.doUpload(file, this.currentRoot, this.trimmedPath)
+          } else {
+            EventBus.$emit('flashMessage', { type: 'warning', text: `Error uploading ${file.name}, invalid extension.` })
+          }
+        } catch (e) {
+          EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
+        }
+      }
+      this.uploadOverlay.uploading = false
+
+      // await Promise.all(
+      //   files.map(async file => {
+      //     try {
+      //       const extension = '.' + file.name.split('.').pop()
+      //       const accepts = this.accept.split(',')
+      //       if (extension && accepts.includes(extension)) {
+      //         return await this.doUpload(file, this.currentRoot, this.trimmedPath)
+      //       }
+      //     } catch (e) {
+      //       EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
+      //     }
+      //   })
+      // )
+
+      this.uploadOverlay.active = false
+      this.$store.dispatch('socket/removeWait', Waits.onUploadGcode)
+    }
+  }
+
+  async doUpload (file: File, root: string, path: string) {
     const formData = new FormData()
     let filename = file.name.replace(' ', '_')
-    filename = `${path}/${filename}`.substring(7)
+    filename = `${path}/${filename}`
+    filename = (filename.startsWith('/'))
+      ? filename
+      : '/' + filename
     formData.append('file', file, filename)
     formData.append('root', root)
-    this.$store.dispatch('socket/addWait', Waits.onUploadGcode)
     return this.$http
       .post(
         this.apiUrl + '/server/files/upload',
@@ -151,34 +244,45 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
           }
         }
       )
-      .finally(() => {
-        this.$store.dispatch('socket/removeWait', Waits.onUploadGcode)
-      })
   }
 
-  saveEdit (content: string, filename: string, path: string) {
+  async saveEdit (content: string, filename: string, path: string) {
     const file = new File([content], filename)
     this.dialog.loading = true
-    this.upload(file, this.currentRoot, path)
-      .then(() => {
-        this.dialog.loading = false
-        this.dialog.contents = content
-      })
+    await this.doUpload(file, this.currentRoot, path)
+    this.dialog.loading = false
+    this.dialog.contents = content
+  }
+
+  dragEnter () {
+    if (!this.readOnly) {
+      this.uploadOverlay.active = true
+    }
+  }
+
+  dragLeave () {
+    if (!this.readOnly) {
+      this.uploadOverlay.active = false
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.filesystem-wrapper,
-.file-system,
-.file-system ::v-deep .v-data-table {
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  height: 100%;
-}
+  .filesystem-wrapper,
+  .file-system,
+  .file-system ::v-deep .v-data-table {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
 
-.v-text-field .v-select__slot .v-select__selection--comma {
-  min-width: min-content;
-}
+  .v-text-field .v-select__slot .v-select__selection--comma {
+    min-width: min-content;
+  }
+
+  .uploadOverlay.v-overlay--active {
+    border: dashed 3px #616161;
+  }
 </style>

@@ -21,7 +21,7 @@
       <template v-slot:top>
         <v-toolbar flat color="tertiary">
           <v-toolbar-title class="grey--text text--lighten-1 d-none d-sm-block">
-            <div>/{{ currentPath }}</div>
+            <div>/{{ trimmedPath }}</div>
           </v-toolbar-title>
 
           <v-spacer></v-spacer>
@@ -308,12 +308,32 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
 
   @Watch('root')
   onRootChange (root: string) {
-    this.currentRoot = root
-    this.loadFiles(root)
+    if (root && root.length) {
+      this.currentRoot = root
+      this.loadFiles(root)
+    }
+  }
+
+  @Watch('currentPath')
+  onCurrentPathChange (path: string) {
+    this.$emit('current-path', path)
+    this.$emit('trimmed-path', this.trimmedPath)
   }
 
   get directory (): AppFile[] | AppDirectory[] {
     return this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
+  }
+
+  // Returns the current path with no root.
+  get trimmedPath (): string {
+    if (this.currentPath.startsWith(`${this.root}`)) {
+      const dirs = this.currentPath.split('/')
+      dirs.shift()
+      return (dirs)
+        ? dirs.join('/')
+        : ''
+    }
+    return this.currentPath
   }
 
   get apiUrl () {
@@ -422,11 +442,11 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   editItem (item: AppFile) {
-    this.$emit('edit-file', item, this.currentPath)
+    this.$emit('edit-file', item, this.root, this.trimmedPath)
   }
 
   viewItem (item: AppFile) {
-    this.$emit('view-file', item, this.currentPath)
+    this.$emit('view-file', item, this.root, this.trimmedPath)
   }
 
   getThumb (item: AppFile | AppFileWithMeta, goLarge: boolean) {
@@ -466,7 +486,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   uploadFile (file: File) {
-    this.$emit('create-file', file, this.currentRoot, this.currentPath)
+    this.$emit('create-file', file, this.currentRoot, this.trimmedPath)
   }
 
   downloadFile (file: string) {

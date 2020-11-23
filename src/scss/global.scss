@@ -26,6 +26,10 @@
   }
 }
 
+.no-pointer-events * {
+  pointer-events: none !important;
+}
+
 /* Helps alignment for some outer buttons */
 .v-text-field-outer-btn {
   .v-input__control {
