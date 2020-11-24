@@ -6,12 +6,9 @@
 - update panel collapse so these are remembered per instance
 - stage 1 themes (pick a specific theme (red, green etc..)
 - docker image
-- upload & print immediately
 - load gcode help and implement in console
 - show mm/s in status
 - auto save printer settings?
-- remove root prefix from file system
-- maxlength on name + elipses in mobile format
 
 - make larger font common in some way
 - figure out https
