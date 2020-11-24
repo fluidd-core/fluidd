@@ -8,8 +8,7 @@
         :value="partFanSpeed"
         :rules="rules"
         :disabled="!klippyConnected"
-        @input="setPartFanSpeed($event)"
-        :readonly="printerPrinting">
+        @input="setPartFanSpeed($event)">
       </input-slider>
     </v-col>
   </v-row>
