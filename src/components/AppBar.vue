@@ -3,7 +3,7 @@
     app
     clipped-right
   >
-    <v-container fluid class="constrained-width pa-0 fill-height">
+    <v-container fluid class="flex-nowrap constrained-width pa-0 fill-height">
       <v-img
         alt="Fluidd"
         class="shrink mr-4"
@@ -13,8 +13,7 @@
         width="35"
         height="40"
       />
-      <!-- <v-icon large color="#1970b5" class="d-none d-sm-inline">$printer3dNozzle</v-icon> -->
-      <v-toolbar-title class="title text--secondary font-weight-light text-h4 mr-5 d-none d-sm-inline">
+      <v-toolbar-title class="title text--secondary font-weight-light text-h4 mr-5">
         {{ instanceName }}
       </v-toolbar-title>
       <v-spacer />
@@ -107,6 +106,11 @@ export default class AppBar extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
   // .logo {
   //   margin-right: 12px;
   //   max-height: 40px;
