@@ -60,6 +60,7 @@ import {
   mdiFireAlert,
   mdiUpload,
   mdiFolderUpload,
+  mdiProgressUpload,
   mdiHelp
 } from '@mdi/js'
 
@@ -100,6 +101,7 @@ export const Icons = Object.freeze({
   folderUp: mdiFolderUpload,
   folder: mdiFolder,
   fileUpload: mdiUpload,
+  progressUpload: mdiProgressUpload,
   up: mdiArrowUp,
   down: mdiArrowDown,
   left: mdiArrowLeft,

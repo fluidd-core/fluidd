@@ -40,29 +40,16 @@
               </template>
             </v-text-field>
           </v-col>
-          <v-btn
-            v-if="!readonly"
-            small
-            color="secondary"
-            class="mr-2"
-            @click="createDirectoryDialog()">
-            <v-icon small>$folderAdd</v-icon>
-          </v-btn>
-          <btn-file-upload
-            v-if="!readonly"
-            icon="$fileUpload"
-            color="secondary"
-            class="mr-2"
+          <file-system-controls
             :accept="accept"
-            :loading="hasWait(waits.onUploadGcode)"
-            @file-update="uploadFile">
-          </btn-file-upload>
-          <v-btn
-            small
-            color="secondary"
-            @click="refreshPath(currentPath)">
-            <v-icon small>$refresh</v-icon>
-          </v-btn>
+            :readonly="readonly"
+            :upload-loading="hasWait(waits.onUploadGcode)"
+            :upload-and-print="uploadAndPrint"
+            @upload="uploadFile"
+            @refresh="refreshPath(currentPath)"
+            @folder-add="createDirectoryDialog()"
+            >
+          </file-system-controls>
         </v-toolbar>
         <dialog-base
           :title="dialog.title"
@@ -236,7 +223,7 @@ import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import { getThumb } from '@/store/helpers'
 import DialogBase from '@/components/dialogs/dialogBase.vue'
-import BtnFileUpload from '@/components/inputs/BtnFileUpload.vue'
+import FileSystemControls from '@/components/widgets/filesystem/FileSystemControls.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
 import UtilsMixin from '@/mixins/utils'
@@ -245,7 +232,7 @@ import { DataTableHeader } from 'vuetify'
 @Component({
   components: {
     DialogBase,
-    BtnFileUpload
+    FileSystemControls
   }
 })
 export default class FileSystemBrowser extends Mixins(UtilsMixin) {
@@ -260,6 +247,9 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  uploadAndPrint!: boolean
 
   @Prop({ type: Boolean, default: false })
   dense!: boolean;
@@ -485,8 +475,8 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  uploadFile (file: File) {
-    this.$emit('create-file', file, this.currentRoot, this.trimmedPath)
+  uploadFile (file: File, andPrint: boolean) {
+    this.$emit('create-file', file, this.currentRoot, this.trimmedPath, andPrint)
   }
 
   downloadFile (file: string) {

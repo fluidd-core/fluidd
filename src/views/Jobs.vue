@@ -9,6 +9,7 @@
         <file-system-card
           :root="'gcodes'"
           accept=".gcode, .ufp"
+          :upload-and-print="true"
           :show-meta-data="true">
         </file-system-card>
       </v-col>

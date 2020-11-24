@@ -49,6 +49,7 @@
       :accept="accept"
       :readonly="readOnly"
       :dense="dense"
+      :upload-and-print="uploadAndPrint"
       @current-path="currentPath = $event"
       @trimmed-path="trimmedPath = $event"
       @create-file="upload"
@@ -113,7 +114,10 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   @Prop({ type: [Number, String] })
   height!: number | string;
 
-  currentRoot = ''
+  @Prop({ type: Boolean, default: false })
+  uploadAndPrint!: boolean
+
+currentRoot = ''
   currentPath = ''
   trimmedPath = ''
 
@@ -178,9 +182,9 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
       })
   }
 
-  async upload (file: File, root: string, path: string) {
+  async upload (file: File, root: string, path: string, andPrint: boolean) {
     this.$store.dispatch('socket/addWait', Waits.onUploadGcode)
-    await this.doUpload(file, root, path)
+    await this.doUpload(file, root, path, andPrint)
     this.$store.dispatch('socket/removeWait', Waits.onUploadGcode)
   }
 
@@ -197,7 +201,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
           const extension = '.' + file.name.split('.').pop()
           const accepts = this.accept.split(',')
           if (extension && accepts.includes(extension)) {
-            await this.doUpload(file, this.currentRoot, this.trimmedPath)
+            await this.doUpload(file, this.currentRoot, this.trimmedPath, false)
           } else {
             EventBus.$emit('flashMessage', { type: 'warning', text: `Error uploading ${file.name}, invalid extension.` })
           }
@@ -226,7 +230,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
     }
   }
 
-  async doUpload (file: File, root: string, path: string) {
+  async doUpload (file: File, root: string, path: string, andPrint: boolean) {
     const formData = new FormData()
     let filename = file.name.replace(' ', '_')
     filename = `${path}/${filename}`
@@ -235,6 +239,9 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
       : '/' + filename
     formData.append('file', file, filename)
     formData.append('root', root)
+    if (andPrint) {
+      formData.append('print', 'true')
+    }
     return this.$http
       .post(
         this.apiUrl + '/server/files/upload',
@@ -249,7 +256,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   async saveEdit (content: string, filename: string, path: string) {
     const file = new File([content], filename)
     this.dialog.loading = true
-    await this.doUpload(file, this.currentRoot, path)
+    await this.doUpload(file, this.currentRoot, path, false)
     this.dialog.loading = false
     this.dialog.contents = content
   }

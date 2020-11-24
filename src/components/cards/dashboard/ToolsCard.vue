@@ -61,6 +61,7 @@
               :height="400"
               :show-title="false"
               :show-meta-data="false"
+              :upload-and-print="true"
             ></file-system-card>
           </v-tab-item>
         </v-tabs-items>

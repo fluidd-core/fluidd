@@ -21,6 +21,7 @@
         <file-system-card
           :root="['config', 'config_examples']"
           accept=".conf,.cfg"
+          :upload-and-print="false"
           dense
           panel-title="Config"
           :show-meta-data="false">
