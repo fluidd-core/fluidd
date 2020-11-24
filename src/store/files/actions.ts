@@ -104,18 +104,21 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyUploadfile (_, payload: FileChangeSocketResponse) {
+  async notifyUploadfile ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
-    // const paths = getFilePaths(payload.item.path, root)
     const file = formatAsFile(root, payload.item)
-    // const update: FileUpdate = {
-    //   paths,
-    //   root,
-    //   file
-    // }
-    // commit('onFileUpdate', update)
     if (file.extension === 'gcode') {
+      // For gcode files, get the metadata and the meta update will take care of the rest.
       SocketActions.serverFilesMetaData(payload.item.path)
+    } else {
+      // For other files, just add it here.
+      const paths = getFilePaths(payload.item.path, root)
+      const update: FileUpdate = {
+        paths,
+        root,
+        file
+      }
+      commit('onFileUpdate', update)
     }
   },
 
