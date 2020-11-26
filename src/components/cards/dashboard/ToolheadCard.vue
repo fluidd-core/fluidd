@@ -15,8 +15,8 @@
             v-on="on"
             v-show="!extrudeRetractReady"
             class="ml-3"
-            color="error">
-            $fireAlert
+            color="cyan">
+            $snowflakeAlert
           </v-icon>
         </template>
         <span>extruder disabled, below min_extrude_temp ({{ minExtrudeTemp }}<small>°C</small>)</span>
