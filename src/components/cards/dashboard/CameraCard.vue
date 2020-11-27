@@ -2,6 +2,7 @@
   <collapsable-card
     title="Camera"
     icon="$camera"
+    :lazy="false"
     :collapsed="true">
 
     <img :src="cameraUrl" class="webcam" :style="cameraTransforms" v-if="streamType === 'mjpgstreamer'" />
