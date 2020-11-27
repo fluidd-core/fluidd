@@ -42,8 +42,32 @@
     </v-card-title>
     <v-divider></v-divider>
 
-    <v-expand-transition>
-      <div v-show="!isCollapsed" :class="_contentClasses" :style="_contentStyles">
+    <v-expand-transition v-if="!lazy">
+      <div
+        @transitionend="transitionEvent"
+        id="card-content"
+        v-if="!isCollapsed"
+        :class="_contentClasses"
+        :style="_contentStyles">
+        <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
+          <slot name="subTitle">
+            <span v-html="subTitle"></span>
+          </slot>
+        </v-card-subtitle>
+        <v-divider v-if="subTitle || hasSubTitleSlot"></v-divider>
+
+        <!-- Primary Content slot -->
+        <slot></slot>
+      </div>
+    </v-expand-transition>
+
+    <v-expand-transition v-if="lazy">
+      <div
+        @transitionend="transitionEvent"
+        id="card-content"
+        v-show="!isCollapsed"
+        :class="_contentClasses"
+        :style="_contentStyles">
         <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="subTitle">
             <span v-html="subTitle"></span>
@@ -71,6 +95,9 @@ export default class ToolheadCard extends Vue {
 
   @Prop({ type: String })
   cardKey!: string
+
+  @Prop({ type: Boolean, default: true })
+  lazy!: boolean // use v-show or v-if
 
   @Prop({ type: String, required: true })
   icon!: string
@@ -168,6 +195,17 @@ export default class ToolheadCard extends Vue {
   mounted () {
     if (this.hasCollapseButtonSlot) {
       this.collapsable = false
+    }
+  }
+
+  transitionEvent (e: TransitionEvent) {
+    if (
+      e.target &&
+      e.target) {
+      const target = e.target as Element
+      if (target.id === 'card-content') {
+        this.$emit('transition-end')
+      }
     }
   }
 }
