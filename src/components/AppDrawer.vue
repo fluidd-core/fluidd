@@ -8,7 +8,7 @@
     <v-list dense>
       <v-subheader>Printer: {{ instanceName }}</v-subheader>
 
-      <v-list-item to="/" class="d-flex d-sm-none">
+      <v-list-item to="/" class="d-flex d-md-none">
         <v-list-item-icon>
           <v-icon>$home</v-icon>
         </v-list-item-icon>
@@ -16,7 +16,7 @@
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/jobs" class="d-flex d-sm-none" v-if="jobsInMenu">
+      <v-list-item to="/jobs" class="d-flex d-md-none" v-if="jobsInMenu">
         <v-list-item-icon>
           <v-icon>$files</v-icon>
         </v-list-item-icon>
@@ -24,7 +24,7 @@
           <v-list-item-title>Jobs</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/configuration" class="d-flex d-sm-none">
+      <v-list-item to="/configuration" class="d-flex d-md-none">
         <v-list-item-icon>
           <v-icon>$tune</v-icon>
         </v-list-item-icon>
