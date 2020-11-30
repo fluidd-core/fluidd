@@ -382,7 +382,9 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   printItem (item: AppFile) {
     const filename = `${this.currentPath}/${item.filename}`.replace(this.root, '')
     SocketActions.printerPrintStart(filename)
-    this.$router.push({ path: '/' })
+    if (this.$router.currentRoute.path !== '/') {
+      this.$router.push({ path: '/' })
+    }
   }
 
   saveDialog () {
