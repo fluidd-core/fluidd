@@ -65,9 +65,7 @@ import {
   mdiRadioboxMarked,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
-  mdiMenu,
-  mdiThermometer,
-  mdiThermometerOff
+  mdiMenuDown
 } from '@mdi/js'
 
 /**
@@ -92,7 +90,7 @@ export const Icons = Object.freeze({
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
   menu: mdiDotsVertical,
-  menuAlt: mdiMenu,
+  menuAlt: mdiMenuDown,
   chart: mdiChartTimelineVariant,
   power: mdiPowerPlug,
   home: mdiHome,
@@ -154,9 +152,7 @@ export const Icons = Object.freeze({
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
-  bedMesh: mdiViewGridOutline,
-  thermometer: mdiThermometer,
-  thermometerOff: mdiThermometerOff
+  bedMesh: mdiViewGridOutline
 })
 
 export const Waits = Object.freeze({

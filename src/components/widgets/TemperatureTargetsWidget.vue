@@ -26,7 +26,7 @@
                   @click="setAllOff"
                   link>
                   <v-list-item-title>
-                    <v-icon small left color="info">$thermometerOff</v-icon>
+                    <v-icon small left color="cyan">$snowflakeAlert</v-icon>
                     All off
                   </v-list-item-title>
                 </v-list-item>
@@ -37,7 +37,7 @@
                   v-for="(preset, i) of presets"
                   :key="i">
                   <v-list-item-title>
-                    <v-icon small left color="error">$thermometer</v-icon>
+                    <v-icon small left color="warning">$fire</v-icon>
                     {{ preset.name }}
                   </v-list-item-title>
                 </v-list-item>
