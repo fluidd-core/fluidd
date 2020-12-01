@@ -173,7 +173,13 @@ currentRoot = ''
       filename: '',
       path: ''
     }
-    this.getFile(`/server/files/${root}/${path}/${file.name}`)
+
+    let filepath = '/server/files'
+    if (root) filepath += `/${root}`
+    if (path) filepath += `/${path}`
+    filepath += `/${file.name}`
+
+    this.getFile(filepath)
       .then((response: AxiosResponse) => {
         this.dialog.filename = file.name || ''
         this.dialog.path = path

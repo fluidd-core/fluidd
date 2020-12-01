@@ -34,7 +34,7 @@ const getApiConfig = async (): Promise<ApiConfig | InstanceConfig> => {
   let blacklist: string[] = []
   let config: AxiosResponse | undefined
   try {
-    config = await Vue.$http.get('/config.json?date' + new Date().getTime())
+    config = await Vue.$http.get('/config.json?date=' + new Date().getTime())
   } catch (e) {
     console.debug('Failed loading web host configuration')
   }

@@ -194,10 +194,9 @@ export default class UtilsMixin extends Vue {
   }
 
   getFile (path: string, options?: AxiosRequestConfig) {
-    const filepath = path
     const o = { ...options }
     return this.$http.get(
-      this.apiUrl + filepath + '?date' + new Date().getTime(),
+      this.apiUrl + path + '?date=' + new Date().getTime(),
       o
     )
   }
