@@ -125,7 +125,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import InputTemperature from '@/components/inputs/InputTemperature.vue'
 import UtilsMixin from '@/mixins/utils'
-import { Fan, Heater } from '@/store/socket/types'
 import { TemperaturePreset } from '@/store/config/types'
 
 @Component({
