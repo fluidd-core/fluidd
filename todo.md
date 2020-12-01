@@ -1,18 +1,12 @@
 # TODO [fluidd]
 
 ## Next Up
-- temperature presets (select a preset from a dropdown that apples to all heaters)
-- add status of heater_fans (extruder fan and controller fan)
 - update panel collapse so these are remembered per instance
 - stage 1 themes (pick a specific theme (red, green etc..)
 - docker image
 - load gcode help and implement in console
 - show mm/s in status
 - auto save printer settings?
-
-- make larger font common in some way
-- figure out https
-- finish up update notification / pwa setup
 - PID calibrate option via dialog maybe?
 
 ## Refactoring / Core
@@ -32,6 +26,8 @@
   at the moment tho. Is this a problem?
 
 ## General Improvements
+- finish up update notification / pwa setup
+- figure out https
 - click / tap image camara update option (i.e., not constant image updates)
 - dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option

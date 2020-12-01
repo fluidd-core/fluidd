@@ -351,14 +351,16 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
   * Return available fans
   */
-  getFans: (state): Fan[] => {
-    const supportedFans = [
-      'temperature_fan',
-      'controller_fan',
-      'heater_fan',
-      'fan_generic',
-      'fan'
-    ]
+  getFans: (state) => (filter?: string[]): Fan[] => {
+    const supportedFans = (filter && filter.length)
+      ? filter
+      : [
+        'temperature_fan',
+        'controller_fan',
+        'heater_fan',
+        'fan_generic',
+        'fan'
+      ]
 
     const controllableFans = [
       'fan'
@@ -372,7 +374,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       if (supportedFans.includes(split[0])) {
         const name = (split.length > 1) ? split[1] : item
         let prettyName = (name === 'fan') ? 'Part Fan' : Vue.$filters.startCase(name)
-        if (!name.endsWith('fan')) prettyName = prettyName + ' Fan'
+        if (!name.endsWith('fan')) prettyName += ' Fan'
         const type = (split.length) ? split[0] : item
         const config = (state.printer.configfile.config[item]) ? state.printer.configfile.config[item] : undefined
         const fan = {

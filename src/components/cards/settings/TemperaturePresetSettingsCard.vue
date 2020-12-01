@@ -112,7 +112,7 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   get fans (): Fan[] {
-    return this.$store.getters['socket/getFans']
+    return this.$store.getters['socket/getFans'](['temperature_fan'])
   }
 
   get presets () {

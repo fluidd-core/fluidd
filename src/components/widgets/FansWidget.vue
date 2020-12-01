@@ -32,7 +32,7 @@ import { Fan } from '@/store/socket/types'
 })
 export default class FansWidget extends Mixins(UtilsMixin) {
   get fans () {
-    return this.$store.getters['socket/getFans']
+    return this.$store.getters['socket/getFans']()
   }
 
   get partFanSpeed () {
