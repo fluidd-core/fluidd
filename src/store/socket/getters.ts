@@ -235,14 +235,20 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getRunoutSensors: (state): RunoutSensor[] => {
+    const supportedSensors = ['filament_switch_sensor']
     const sensors: RunoutSensor[] = []
-    state.filament_switch_sensors.forEach(name => {
-      const sensor = get(state.printer, 'filament_switch_sensor ' + name, undefined)
-      sensors.push({
-        name,
-        ...sensor
-      })
-    })
+    for (const item in state.printer) {
+      const split = item.split(' ')
+
+      if (supportedSensors.includes(split[0])) {
+        const name = (split.length > 1) ? split[1] : item
+        const sensor = get(state.printer, 'filament_switch_sensor ' + name, undefined)
+        sensors.push({
+          name,
+          ...sensor
+        })
+      }
+    }
     return sensors
   },
 
@@ -343,68 +349,76 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
-  * Return available temperature fans
+  * Return available fans
   */
   getFans: (state): Fan[] => {
-    if (
-      state.temperature_fans &&
-      state.temperature_fans.length
-    ) {
-      const r: Fan[] = []
-      state.temperature_fans.forEach((e: string) => {
-        const fan = state.printer['temperature_fan ' + e]
-        if (fan && Object.keys(fan).length > 0) {
-          const config = (state.printer.configfile.config['temperature_fan ' + e]) ? state.printer.configfile.config['temperature_fan ' + e] : undefined
-          r.push({
-            name: e,
-            ...fan,
-            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
-            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
-          })
+    const supportedFans = [
+      'temperature_fan',
+      'controller_fan',
+      'heater_fan',
+      'fan_generic',
+      'fan'
+    ]
+
+    const controllableFans = [
+      'fan'
+    ]
+
+    const fans: Fan[] = []
+
+    for (const item in state.printer) {
+      const split = item.split(' ')
+
+      if (supportedFans.includes(split[0])) {
+        const name = (split.length > 1) ? split[1] : item
+        let prettyName = (name === 'fan') ? 'Part Fan' : Vue.$filters.startCase(name)
+        if (!name.endsWith('fan')) prettyName = prettyName + ' Fan'
+        const type = (split.length) ? split[0] : item
+        const config = (state.printer.configfile.config[item]) ? state.printer.configfile.config[item] : undefined
+        const fan = {
+          ...state.printer[item],
+          ...config,
+          name,
+          prettyName,
+          type,
+          controllable: (controllableFans.includes(split[0])),
+          minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
+          maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
         }
-      })
-      return r
+        fans.push(fan)
+      }
     }
-    return []
+    return fans
   },
 
   /**
    * Return available temperature probes / sensors.
    */
   getSensors: (state): Sensor[] => {
-    const r: Sensor[] = []
-    if (
-      state.temperature_sensors &&
-      state.temperature_sensors.length
-    ) {
-      state.temperature_sensors.forEach((e: string) => {
-        const sensor = state.printer['temperature_sensor ' + e]
-        if (sensor && Object.keys(sensor).length > 0) {
-          r.push({
-            name: e,
-            ...sensor,
-            minMeasuredTemp: (sensor.measured_min_temp) ? sensor.measured_min_temp : null,
-            maxMeasuredTemp: (sensor.measured_max_temp) ? sensor.measured_max_temp : null
-          })
-        }
-      })
-    }
+    const supportedSensors = [
+      'temperature_sensor',
+      'temperature_probe'
+    ]
+    const sensors: Sensor[] = []
+    for (const item in state.printer) {
+      const split = item.split(' ')
 
-    if (
-      state.temperature_probes &&
-      state.temperature_probes.length
-    ) {
-      state.temperature_probes.forEach((e: string) => {
-        const sensor = state.printer['temperature_probe ' + e]
-        if (sensor && Object.keys(sensor).length > 0) {
-          r.push({
-            name: e,
-            ...sensor
-          })
+      if (supportedSensors.includes(split[0])) {
+        const name = (split.length > 1) ? split[1] : item
+        const type = (split.length) ? split[0] : item
+        const config = (state.printer.configfile.config[item]) ? state.printer.configfile.config[item] : undefined
+        const sensor = {
+          ...state.printer[item],
+          ...config,
+          minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
+          maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null,
+          name,
+          type
         }
-      })
+        sensors.push(sensor)
+      }
     }
-    return r
+    return sensors
   },
 
   /**

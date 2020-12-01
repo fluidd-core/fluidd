@@ -1,10 +1,11 @@
 <template>
 <div>
-  <div class="d-flex justify-start">
-    <div class="grey--text text--darken-1 align-self-end">{{ label }}</div>
-    <div class="grey--text text-h5 ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
-  </div>
+  <v-layout align-end>
+    <div class="grey--text text--darken-1 font-weight-regular">{{ label }}</div>
+    <div class="grey--text focus--text ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
+  </v-layout>
   <v-slider
+    v-if="!readonly"
     @end="emitChange(newValue)"
     @input="updateValue"
     @update:error="updateError"
@@ -20,34 +21,21 @@
     hide-details
   >
     <template v-slot:prepend>
-      <v-btn
-        :disabled="
-          readonly ||
-          disabled ||
-          newValue === 0"
+      <v-icon
+        :disabled="readonly || disabled || newValue === 0"
         @click="clickChange(newValue - 1)"
-        :min-width="40"
-        class="pa-0"
-        small
-        color="secondary">
-        <v-icon color="grey lighten-2">
-          $minus
-        </v-icon>
-      </v-btn>
+        color="grey lighten-2">
+        $minus
+      </v-icon>
     </template>
 
     <template v-slot:append>
-      <v-btn
+      <v-icon
         :disabled="readonly || disabled || newValue === max"
         @click="clickChange(newValue + 1)"
-        :min-width="40"
-        class="pa-0"
-        small
-        color="secondary">
-        <v-icon color="grey lighten-2">
-          $plus
-        </v-icon>
-      </v-btn>
+        color="grey lighten-2">
+        $plus
+      </v-icon>
     </template>
   </v-slider>
 </div>

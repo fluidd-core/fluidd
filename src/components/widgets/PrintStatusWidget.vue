@@ -9,7 +9,7 @@
             :value="timeEstimates.progress"
             color="primary"
           >
-          <span class="percentComplete grey--text text-h5 font-weight-normal">{{ timeEstimates.progress }}%</span>
+          <span class="percentComplete grey--text focus--text">{{ timeEstimates.progress }}%</span>
         </v-progress-circular>
       </v-col>
       <v-col class="d-flex flex-column" style="overflow: hidden;" align="start">

@@ -249,41 +249,8 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
-    // This initial subscribe also gives us all of our temperature fans, probes etc..
-    // so we can populate a list of these things, without having to re-iterate the
-    // whole printer object later.
-    const keys = [
-      'temperature_fan',
-      'temperature_probe',
-      'temperature_sensor',
-      'heater_fan',
-      'heater_generic',
-      'filament_switch_sensor',
-      'output_pin'
-    ]
-    const r: {[key: string]: string[]} = {}
-
-    Object.keys(payload.status).forEach((p) => {
-      const split = p.split(' ')
-      const key = split[0]
-      split.shift()
-      const name = split.join(' ')
-      if (
-        p.includes(' ') &&
-        keys.includes(key)
-      ) {
-        const rootKey = key + 's'
-        if (rootKey in r === false) {
-          r[rootKey] = [name]
-        } else {
-          r[rootKey].push(name)
-        }
-      }
-    })
-
     // Accept notifications, and commit the first subscribe.
     commit('onAcceptNotifications')
-    commit('setFansProbes', r)
     dispatch('notifyStatusUpdate', payload.status)
   },
 

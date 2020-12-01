@@ -18,13 +18,6 @@ export const defaultState = (): SocketState => {
     chart: [],
     macros: {},
     plugins: [],
-    temperature_fans: [],
-    heater_fans: [],
-    heater_generics: [],
-    temperature_sensors: [],
-    temperature_probes: [],
-    filament_switch_sensors: [],
-    output_pins: [],
     printer: {
       bed_mesh: {},
       heaters: {

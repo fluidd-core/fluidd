@@ -10,6 +10,14 @@
   // padding: 0 0.4rem;
 }
 
+// Focused text
+.focus--text {
+  font-size: 1.25rem !important;
+  font-weight: 300 !important;
+  letter-spacing: 0.0125em !important;
+  line-height: auto;
+}
+
 /* Add a class to help us spin an icon if we need.. */
 .spin {
   animation-name: spin;

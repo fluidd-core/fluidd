@@ -7,7 +7,7 @@
 
       <div v-for="(preset, i) in presets" :key="i">
         <v-layout align-center >
-          <div class="grey--text text--lighten-1 text-h5 mr-4">{{ preset.name }}</div>
+          <div class="grey--text focus--text mr-4">{{ preset.name }}</div>
           <v-chip
             label
             class="mx-1 my-2"

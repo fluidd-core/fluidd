@@ -11,13 +11,6 @@ export interface SocketState {
   plugins: string[]; // active plugins (device_power)
   console: ConsoleEntry[]; // console stream
   chart: ChartDataSet[]; // chart data
-  temperature_fans: string[]; // maintains a list of available temp fans
-  temperature_sensors: string[]; // maintains a list of available sensors
-  temperature_probes: string[]; // maintains a list of available probes
-  heater_fans: string[]; // maintains a list of available heater fans
-  heater_generics: string[]; // maintains a list of generic heaters
-  filament_switch_sensors: string[]; // maintains a list of available filament switch sensors
-  output_pins: string[]; // maintains a list of available output pins
   printer: Printer;
 }
 
@@ -61,6 +54,10 @@ export interface Heater {
 
 export interface Fan {
   name: string;
+  prettyName: string;
+  type: string;
+  controllable: boolean;
+  speed?: number;
   temperature?: number;
   target?: number;
   minTemp?: number;
@@ -69,10 +66,13 @@ export interface Fan {
 
 export interface Sensor {
   name: string;
+  type: string;
   temperature: number;
   target?: number;
-  minMeasuredTemp?: number;
-  maxMeasuredTemp?: number;
+  measured_min_temp?: number;
+  measured_max_temp?: number;
+  maxTemp?: number;
+  minTemp?: number;
 }
 
 export interface Chart {

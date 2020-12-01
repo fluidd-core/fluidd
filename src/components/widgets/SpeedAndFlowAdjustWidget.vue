@@ -1,31 +1,30 @@
 <template>
-  <v-row class="my-0">
+  <div>
     <!-- Speed and Flow Adjust -->
-    <v-col cols="12" sm="6" class="py-0">
-      <input-slider
-        label="Speed"
-        :value="speed"
-        value-suffix="%"
-        :disabled="!klippyConnected"
-        :loading="hasWait(waits.onSetSpeed)"
-        :min="0"
-        :max="200"
-        @input="setSpeed($event, waits.onSetSpeed)">
-      </input-slider>
-    </v-col>
-    <v-col cols="12" sm="6" class="py-0">
-      <input-slider
-        label="Flow"
-        :value="flow"
-        value-suffix="%"
-        :disabled="!klippyConnected"
-        :loading="hasWait(waits.onSetFlow)"
-        :min="0"
-        :max="200"
-        @input="setFlow($event, waits.onSetFlow)">
-      </input-slider>
-    </v-col>
-  </v-row>
+    <input-slider
+      label="Speed"
+      value-suffix="%"
+      :value="speed"
+      :disabled="!klippyConnected"
+      :loading="hasWait(waits.onSetSpeed)"
+      :min="0"
+      :max="200"
+      @input="setSpeed($event, waits.onSetSpeed)">
+    </input-slider>
+
+    <v-divider class="my-2"></v-divider>
+
+    <input-slider
+      label="Flow"
+      value-suffix="%"
+      :value="flow"
+      :disabled="!klippyConnected"
+      :loading="hasWait(waits.onSetFlow)"
+      :min="0"
+      :max="200"
+      @input="setFlow($event, waits.onSetFlow)">
+    </input-slider>
+  </div>
 </template>
 
 <script lang="ts">

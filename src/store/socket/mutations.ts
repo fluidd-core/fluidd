@@ -22,15 +22,6 @@ export const mutations: MutationTree<SocketState> = {
       }
     })
   },
-  setFansProbes (state, payload) {
-    if (
-      payload
-    ) {
-      Object.keys(payload).forEach((item) => {
-        Vue.set(state, item, payload[item])
-      })
-    }
-  },
   onSocketOpen (state) {
     state.open = true
   },

@@ -13,11 +13,12 @@
       </v-col>
     </v-row>
 
-    <v-row no-gutters>
-      <v-col cols="12">
+    <v-row>
+      <v-col cols="12" sm="6">
         <!-- Part cooling -->
         <fans-widget></fans-widget>
-
+      </v-col>
+      <v-col cols="12" sm="6">
         <!-- Speed and Flow Adjustments  -->
         <speed-and-flow-adjust-widget></speed-and-flow-adjust-widget>
       </v-col>

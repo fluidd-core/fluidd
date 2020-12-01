@@ -52,7 +52,7 @@
           {{ item.name }}
           <small class="ml-3" v-if="item.target === 0">off</small>
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text text--lighten-1 text-h5">
+        <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
           {{ item.temperature.toFixed(1) }}<small>°C</small>
         </v-col>
         <v-col cols="6" sm="4" class="py-1 px-2">
@@ -65,54 +65,56 @@
         </v-col>
       </v-row>
 
-      <v-row v-for="item in fans" :key="item.name">
-        <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
-          {{ item.name }}
-          <v-icon
-            v-if="item.speed > 0 && item.target > 0"
-            color="grey darken-1"
-            class="ml-2 spin"
-            small>
-            $fan
-          </v-icon>
-          <small v-if="item.speed > 0 && item.target > 0">
-            {{ (item.speed * 100).toFixed(0) }}%
-          </small>
+      <template v-for="item in fans">
+        <v-row :key="item.name" v-if="item.type === 'temperature_fan'">
+          <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+            {{ item.name }}
+            <v-icon
+              v-if="item.speed > 0 && item.target > 0"
+              color="grey darken-1"
+              class="ml-2 spin"
+              small>
+              $fan
+            </v-icon>
+            <small v-if="item.speed > 0 && item.target > 0">
+              {{ (item.speed * 100).toFixed(0) }}%
+            </small>
 
-          <small class="ml-2" v-if="item.speed <= 0 && item.target > 0">
-            standby
-          </small>
-          <small class="ml-2" v-if="item.speed <=0 && item.target <= 0">off</small>
-        </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text text--lighten-1 text-h5">
-          {{ item.temperature.toFixed(1) }}<small>°C</small>
-        </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text text--lighten-1 text-h5">
-          <input-temperature
-            :value="item.target"
-            @input="setFanTargetTemp(item.name, $event)"
-            :max="item.maxTemp"
-            :min="item.minTemp"
-          ></input-temperature>
-        </v-col>
-      </v-row>
+            <small class="ml-2" v-if="item.speed <= 0 && item.target > 0">
+              standby
+            </small>
+            <small class="ml-2" v-if="item.speed <=0 && item.target <= 0">off</small>
+          </v-col>
+          <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+            {{ item.temperature.toFixed(1) }}<small>°C</small>
+          </v-col>
+          <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+            <input-temperature
+              :value="item.target"
+              @input="setFanTargetTemp(item.name, $event)"
+              :max="item.maxTemp"
+              :min="item.minTemp"
+            ></input-temperature>
+          </v-col>
+        </v-row>
+      </template>
 
       <v-row v-for="item in sensors" :key="item.name">
         <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
           {{ item.name }}
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text text--lighten-1 text-h5">
+        <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
             </template>
             <span>
-              <span class="amber--text text--lighten-1">high {{ item.maxMeasuredTemp.toFixed(1) }}°C</span><br />
-              <span class="cyan--text">low {{ item.minMeasuredTemp.toFixed(1) }}°C</span>
+              <span class="amber--text text--lighten-1">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+              <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
             </span>
           </v-tooltip>
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text text--lighten-1 text-h5">
+        <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
         </v-col>
       </v-row>
 
