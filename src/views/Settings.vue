@@ -30,6 +30,7 @@
         <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
       </v-col>
       <v-col cols="12" sm="4" md="6">
+        <temperature-preset-settings-card></temperature-preset-settings-card>
         <macro-settings-card></macro-settings-card>
       </v-col>
     </v-row>
@@ -41,7 +42,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import MacroSettingsCard from '@/components/cards/settings/MacroSettingsCard.vue'
 import GeneralSettingsCard from '@/components/cards/settings/GeneralSettingsCard.vue'
-import TemperaturePresetsSettingsCard from '@/components/cards/settings/TemperaturePresetsSettingsCard.vue'
+import TemperaturePresetSettingsCard from '@/components/cards/settings/TemperaturePresetSettingsCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import CameraSettingsCard from '@/components/cards/settings/CameraSettingsCard.vue'
 import ToolheadSettingsCard from '@/components/cards/settings/ToolheadSettingsCard.vue'
@@ -53,7 +54,7 @@ import EventBus from '@/eventBus'
   components: {
     MacroSettingsCard,
     GeneralSettingsCard,
-    TemperaturePresetsSettingsCard,
+    TemperaturePresetSettingsCard,
     KlippyDisconnectedCard,
     CameraSettingsCard,
     ToolheadSettingsCard,

@@ -38,6 +38,7 @@ export const defaultState = (): ConfigState => {
         flipY: false
       },
       dashboard: {
+        tempPresets: [],
         hiddenMacros: []
       }
     }

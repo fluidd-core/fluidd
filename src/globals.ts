@@ -36,7 +36,6 @@ import {
   mdiViewGridOutline,
   mdiArrowExpandHorizontal,
   mdiRefresh,
-  mdiCheckboxMarkedCircle,
   mdiCheckCircleOutline,
   mdiCheckboxBlankCircleOutline,
   mdiPrinter3dNozzleAlertOutline,
@@ -62,7 +61,13 @@ import {
   mdiUpload,
   mdiFolderUpload,
   mdiProgressUpload,
-  mdiHelp
+  mdiHelp,
+  mdiRadioboxMarked,
+  mdiCheckboxBlankOutline,
+  mdiCheckboxMarkedOutline,
+  mdiMenu,
+  mdiThermometer,
+  mdiThermometerOff
 } from '@mdi/js'
 
 /**
@@ -87,6 +92,7 @@ export const Icons = Object.freeze({
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
   menu: mdiDotsVertical,
+  menuAlt: mdiMenu,
   chart: mdiChartTimelineVariant,
   power: mdiPowerPlug,
   home: mdiHome,
@@ -96,8 +102,10 @@ export const Icons = Object.freeze({
   fireAlert: mdiFireAlert,
   snowflakeAlert: mdiSnowflakeAlert,
   blankCircle: mdiCheckboxBlankCircleOutline,
-  markedCircle: mdiCheckboxMarkedCircle,
+  markedCircle: mdiRadioboxMarked,
   checkedCircle: mdiCheckCircleOutline,
+  checkboxBlank: mdiCheckboxBlankOutline,
+  checkboxMarked: mdiCheckboxMarkedOutline,
   alertCircle: mdiAlertCircle,
   folderAdd: mdiFolderPlus,
   folderUp: mdiFolderUpload,
@@ -146,7 +154,9 @@ export const Icons = Object.freeze({
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
-  bedMesh: mdiViewGridOutline
+  bedMesh: mdiViewGridOutline,
+  thermometer: mdiThermometer,
+  thermometerOff: mdiThermometerOff
 })
 
 export const Waits = Object.freeze({

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig } from './types'
+import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig, TemperaturePreset } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -62,6 +62,19 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async updateHiddenMacros ({ commit }, payload) {
     commit('setUnsavedChanges', true)
     commit('updateHiddenMacros', payload)
+  },
+
+  /**
+   * Add or update a given preset
+   */
+  async updatePreset ({ commit }, payload) {
+    commit('setUnsavedChanges', true)
+    commit('updatePreset', payload)
+  },
+
+  async removePreset ({ commit }, payload) {
+    commit('setUnsavedChanges', true)
+    commit('removePreset', payload)
   },
 
   /**

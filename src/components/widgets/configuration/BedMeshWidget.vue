@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="12" lg="8">
         <span v-if="meshes.length === 0">No existing bed meshes found.</span>
-        <v-simple-table v-if="meshes.length > 0">
+        <v-simple-table v-if="meshes.length > 0" class="no-hover">
           <thead>
             <tr>
               <th>Name</th>
@@ -330,9 +330,3 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .theme--dark.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
-    background-color: transparent;
-  }
-</style>

@@ -11,7 +11,7 @@
     @update:error="onError"
     @keyup.enter="emitChange(newValue)"
     @focus="$event.target.select()"
-    label="target"
+    placeholder="target"
     type="number"
     suffix="°C"
     class="v-text-field-outer-btn">

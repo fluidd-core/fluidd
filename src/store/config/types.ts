@@ -51,6 +51,7 @@ export interface CameraConfig {
 
 export interface DashboardConfig {
   hiddenMacros: string[];
+  tempPresets: TemperaturePreset[];
 }
 
 export interface GenericSave {
@@ -70,5 +71,20 @@ export interface ApiConfig {
 
 export interface InstanceConfig extends ApiConfig {
   name: string;
+  active: boolean;
+}
+
+export interface TemperaturePreset {
+  name: string;
+  values: TemperaturePresetValues;
+}
+
+export interface TemperaturePresetValues {
+  [key: string]: TemperaturePresetValue;
+}
+
+export interface TemperaturePresetValue {
+  value: number;
+  type: 'fan' | 'heater';
   active: boolean;
 }

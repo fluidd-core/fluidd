@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { ConfigState, FileConfig, LocalConfig, GenericSave, InstanceConfig, Config } from './types'
+import { ConfigState, FileConfig, LocalConfig, GenericSave, InstanceConfig, Config, TemperaturePreset } from './types'
 import { Macro } from '../socket/types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
@@ -157,5 +157,25 @@ export const mutations: MutationTree<ConfigState> = {
     if (!macro.visible && i < 0) {
       state.fileConfig.dashboard.hiddenMacros.push(macro.name)
     }
+  },
+
+  /**
+   * Update / Add a temperature preset
+   */
+  updatePreset (state, payload) {
+    const i = payload.index
+    if (i >= 0) {
+      Vue.set(state.fileConfig.dashboard.tempPresets, i, payload.preset)
+    } else {
+      state.fileConfig.dashboard.tempPresets.push(payload.preset)
+    }
+  },
+
+  /**
+   * Remove a preset
+   */
+  removePreset (state, payload) {
+    state.fileConfig.dashboard.tempPresets.splice(payload, 1)
   }
+
 }
