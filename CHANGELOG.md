@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/cadriel/fluidd/compare/v1.0.0...v1.1.0) (2020-12-02)
+
+
+### Features
+
+* drag and drop file uploads ([28328fd](https://github.com/cadriel/fluidd/commit/28328fdfb9f06e2ab487d7b6a8033d2adc89791d))
+* enable print fan adjustment while printing ([bcf6f71](https://github.com/cadriel/fluidd/commit/bcf6f71e9d2f716859d139f965107d76de8deb0c))
+* show controller / hot end fan status ([e47faa9](https://github.com/cadriel/fluidd/commit/e47faa9621ebe2711116a0453b1e42a15926d1d5))
+* temperature presets ([bb72525](https://github.com/cadriel/fluidd/commit/bb725251e484b522d094f0b81a04773682257e6c))
+* upload & print button ([7ae24f8](https://github.com/cadriel/fluidd/commit/7ae24f8aa515a83e0a6dbbba6a908efdc0d1774f))
+
+
+### Bug Fixes
+
+* error loading files when connected directly to moonraker port ([11e18e6](https://github.com/cadriel/fluidd/commit/11e18e6646bde0553fcf7a8d4ba0382afa405a67))
+* extruder warning now a snowflake ([bd59285](https://github.com/cadriel/fluidd/commit/bd592857e5ecd4ad35a8a321863ed1f40a84aa27))
+* files other than .gcode were not updating file list ([d1230ca](https://github.com/cadriel/fluidd/commit/d1230cab4eff4ca754b97a9c9db18cc334651345))
+* hamburger not showing all menu items at sm breakpoint ([b247e7d](https://github.com/cadriel/fluidd/commit/b247e7da8a7ad13951e30f1862c5da8f74934357))
+* re-enable title in mobile format with ellipses ([c046398](https://github.com/cadriel/fluidd/commit/c0463982fb8e541fdf28eb36591d3c3c7ef26644))
+* webcam eagerly renders, avoiding data consumption when collapsed ([e1fa534](https://github.com/cadriel/fluidd/commit/e1fa534b45406017af8cf97e7e5a1f8b276246f9))
+
 ## [1.0.0](https://github.com/cadriel/fluidd/compare/v1.0.0-rc.2...v1.0.0) (2020-11-22)
 
 ## [1.0.0-rc.2](https://github.com/cadriel/fluidd/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2020-11-20)
