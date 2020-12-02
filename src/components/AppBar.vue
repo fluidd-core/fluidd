@@ -4,17 +4,23 @@
     clipped-right
   >
     <v-container fluid class="flex-nowrap constrained-width pa-0 fill-height">
-      <v-img
-        alt="Fluidd"
-        class="shrink mr-4"
-        contain
-        :src="require('@/assets/logo.svg')"
-        transition="scale-transition"
-        width="35"
-        height="40"
-      />
-      <v-toolbar-title class="title text--secondary font-weight-light text-h4 mr-5">
-        {{ instanceName }}
+      <router-link to="/">
+        <v-img
+          alt="Fluidd"
+          class="shrink mr-4"
+          contain
+          :src="require('@/assets/logo.svg')"
+          transition="scale-transition"
+          width="35"
+          height="40"
+        />
+      </router-link>
+      <v-toolbar-title
+        class="printer-title text--secondary font-weight-light text-h4 mr-5"
+      >
+        <router-link to="/">
+          {{ instanceName }}
+        </router-link>
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-items>
@@ -106,15 +112,14 @@ export default class AppBar extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .title {
+  .printer-title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-  // .logo {
-  //   margin-right: 12px;
-  //   max-height: 40px;
-  //   max-width: 40px;
-  //   object-fit: contain;
-  // }
+
+  .printer-title > a {
+    color: inherit;
+    text-decoration: none;
+  }
 </style>
