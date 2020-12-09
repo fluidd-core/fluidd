@@ -57,6 +57,7 @@
             label="Preset Name"
             v-model="preset.name"
             :height="36"
+            :rules="[rules.required]"
             hide-details="auto"
             class="mb-2"
             filled dense>
@@ -66,6 +67,7 @@
               v-for="item in heaters" :key="item.name"
               v-model="preset.values[item.name].value"
               :label="item.name"
+              :rules="[rules.required]"
               :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
               @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
               hide-details="auto"
@@ -78,6 +80,7 @@
               v-for="item in fans" :key="item.name"
               v-model="preset.values[item.name].value"
               :label="item.name"
+              :rules="[rules.required]"
               :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
               @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
               hide-details="auto"
@@ -128,6 +131,10 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   preset: TemperaturePreset = {
     name: '',
     values: {}
+  }
+
+  rules = {
+    required: (v: string) => !!v || 'Required'
   }
 
   openEditDialog (preset: TemperaturePreset, index: number) {
