@@ -2,6 +2,7 @@
 import { Vue, Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import Chart from 'chart.js'
 import { Line, mixins } from 'vue-chartjs'
+import { range } from 'lodash-es'
 import 'chartjs-plugin-colorschemes'
 
 @Component({})
@@ -37,17 +38,38 @@ export default class TemperatureChartWidget extends Mixins(Line, mixins.reactive
     // this.chartTimer = setInterval(this.updateChart, 1000)
   }
 
-  private getXTicks () {
-    const maxTick = new Date()
-    const minTick = new Date().setMinutes(maxTick.getMinutes() - 10)
+  get maxExtruderTemp () {
+    return (this.$store.state.socket.printer.configfile.config.extruder.max_temp)
+      ? parseInt(this.$store.state.socket.printer.configfile.config.extruder.max_temp)
+      : 240 // Default to a sane value
+  }
+
+  private getAxesConfig () {
+    const stepSize = 60
+    const r = range(0, stepSize * 20, stepSize)
+    const xMax = new Date()
+    const xMin = new Date().setMinutes(xMax.getMinutes() - 10)
+
+    let yMax = r.reduce((p, c) => {
+      return (Math.abs(c - this.maxExtruderTemp) < Math.abs(p - this.maxExtruderTemp) ? c : p)
+    })
+    yMax = (yMax < this.maxExtruderTemp) ? yMax + stepSize : yMax
+
     return {
-      min: minTick,
-      max: maxTick
+      x: {
+        min: xMin,
+        max: xMax
+      },
+      y: {
+        min: 0,
+        max: yMax
+      },
+      stepSize
     }
   }
 
   private updateChart () {
-    const ticks = this.getXTicks()
+    const config = this.getAxesConfig()
     if (
       this.chart &&
       this.chart.config &&
@@ -60,15 +82,16 @@ export default class TemperatureChartWidget extends Mixins(Line, mixins.reactive
       this.chart.config.options.scales.yAxes.length &&
       this.chart.config.options.scales.yAxes[0].ticks
     ) {
-      this.chart.config.options.scales.xAxes[0].ticks.min = ticks.min
-      this.chart.config.options.scales.xAxes[0].ticks.max = ticks.max
-      this.chart.config.options.scales.yAxes[0].ticks.max = 300
+      this.chart.config.options.scales.xAxes[0].ticks.min = config.x.min
+      this.chart.config.options.scales.xAxes[0].ticks.max = config.x.max
+      this.chart.config.options.scales.yAxes[0].ticks.min = config.y.min
+      this.chart.config.options.scales.yAxes[0].ticks.max = config.y.max
       // this.chart.update()
     }
   }
 
   private applyDefaultOptions () {
-    const ticks = this.getXTicks()
+    const config = this.getAxesConfig()
     this.options.maintainAspectRatio = false
     this.options.responsive = true
     this.options.scales = {
@@ -86,8 +109,8 @@ export default class TemperatureChartWidget extends Mixins(Line, mixins.reactive
             }
           },
           ticks: {
-            min: ticks.min,
-            max: ticks.max,
+            min: config.x.min,
+            max: config.x.max,
             callback: (value) => {
               return Vue.$dayjs(value, { locale: 'en-chart' }).fromNow(true)
             }
@@ -100,9 +123,9 @@ export default class TemperatureChartWidget extends Mixins(Line, mixins.reactive
             color: '#333333'
           },
           ticks: {
-            min: 0,
-            max: 300,
-            stepSize: 60,
+            min: config.y.min,
+            max: config.y.max,
+            stepSize: config.stepSize,
             callback: (value) => {
               return value + '°C'
             }

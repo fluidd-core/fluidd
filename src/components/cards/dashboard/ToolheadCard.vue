@@ -136,7 +136,7 @@ export default class ToolheadCard extends Mixins(UtilsMixin) {
 
   get minExtrudeTemp () {
     return (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
-      ? this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp
+      ? parseInt(this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
       : 170 // Default to a sane value
   }
 }

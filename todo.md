@@ -1,6 +1,7 @@
 # TODO [fluidd]
 
 ## Next Up
+- self update
 - update panel collapse so these are remembered per instance
 - stage 1 themes (pick a specific theme (red, green etc..)
 - docker image
@@ -8,6 +9,7 @@
 - show mm/s in status
 - auto save printer settings?
 - PID calibrate option via dialog maybe?
+- Drag and Drop move.
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -26,6 +28,7 @@
   at the moment tho. Is this a problem?
 
 ## General Improvements
+- Bulk actions on files
 - finish up update notification / pwa setup
 - figure out https
 - click / tap image camara update option (i.e., not constant image updates)
