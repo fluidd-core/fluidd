@@ -8,7 +8,7 @@ import { Globals, chartConfiguration } from '@/globals'
 export const mutations: MutationTree<SocketState> = {
   resetState (state, fullReset: boolean) {
     const newState = defaultState()
-    const keysToAvoid = ['open', 'connecting', 'macros', 'plugins']
+    const keysToAvoid = ['open', 'connecting', 'plugins']
     Object.keys(newState).forEach((key: string) => {
       // Some properties we may not want to reset.
       // Macros and plugins we don't clear in order to
