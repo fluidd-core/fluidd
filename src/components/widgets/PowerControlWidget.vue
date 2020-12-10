@@ -47,7 +47,6 @@ export default class PowerControlWidget extends Mixins(UtilsMixin) {
 
   toggleDevice (device: Device, wait?: string) {
     const state = (device.status === 'on') ? 'off' : 'on'
-    if (wait) this.$store.dispatch('socket/addWait', wait)
     SocketActions.machineDevicePowerToggle(device.device, state, wait)
   }
 }

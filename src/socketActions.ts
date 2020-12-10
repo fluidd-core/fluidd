@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import store from '@/store'
 import { Waits } from '@/globals'
 
 export const SocketActions = {
@@ -55,6 +56,7 @@ export const SocketActions = {
     const emit = (state === 'on')
       ? 'machine.device_power.on'
       : 'machine.device_power.off'
+    if (wait) store.dispatch('socket/addWait', wait)
     Vue.$socket.emit(
       emit, {
         dispatch: 'devicePower/onToggle',
@@ -103,6 +105,7 @@ export const SocketActions = {
   },
 
   async printerPrintCancel () {
+    store.dispatch('socket/addWait', Waits.onPrintCancel)
     Vue.$socket.emit(
       'printer.print.cancel', {
         dispatch: 'socket/onPrintCancel',
@@ -112,6 +115,7 @@ export const SocketActions = {
   },
 
   async printerPrintPause () {
+    store.dispatch('socket/addWait', Waits.onPrintPause)
     Vue.$socket.emit(
       'printer.print.pause', {
         dispatch: 'socket/onPrintPause',
@@ -121,6 +125,7 @@ export const SocketActions = {
   },
 
   async printerPrintResume () {
+    store.dispatch('socket/addWait', Waits.onPrintResume)
     Vue.$socket.emit(
       'printer.print.resume', {
         dispatch: 'socket/onPrintResume',
@@ -130,6 +135,7 @@ export const SocketActions = {
   },
 
   async printerGcodeScript (gcode: string, wait?: string) {
+    if (wait) store.dispatch('socket/addWait', wait)
     Vue.$socket.emit(
       'printer.gcode.script', {
         dispatch: 'socket/onGcodeScript',
@@ -184,11 +190,13 @@ export const SocketActions = {
    * for brevity.
    */
   async serverFilesGetDirectory (root: string, path: string) {
+    const wait = `${Waits.onGetDirectory}${path}`
+    store.dispatch('socket/addWait', wait)
     Vue.$socket.emit(
       'server.files.get_directory',
       {
         dispatch: 'files/onServerFilesGetDirectory',
-        wait: `${Waits.onGetDirectory}${path}`,
+        wait,
         params: { root, path, extended: true }
       }
     )

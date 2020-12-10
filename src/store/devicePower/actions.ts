@@ -28,11 +28,6 @@ export const actions: ActionTree<DevicePowerState, RootState> = {
    */
   async onToggle ({ commit, dispatch }, payload) {
     dispatch('onStatus', payload)
-
-    // Remove a wait if defined.
-    if (payload.__request__ && payload.__request__.wait && payload.__request__.wait.length) {
-      commit('socket/removeWait', payload.__request__.wait, { root: true })
-    }
   }
 
 }

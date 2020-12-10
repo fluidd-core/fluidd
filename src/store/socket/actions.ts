@@ -50,11 +50,6 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Another case might be during a klippy disconnect.
    */
   async onSocketError ({ commit }, payload) {
-    // clear any associated waits.
-    if (payload.__request__ && payload.__request__.wait) {
-      commit('removeWait', payload.__request__.wait)
-    }
-
     if (payload.code >= 400 && payload.code < 500) {
       // If our message contains json, we should try to parse it.
       // This is pretty bad, should get moonraker to fix this response.
@@ -149,10 +144,6 @@ export const actions: ActionTree<SocketState, RootState> = {
     // If the response is ok, pass it to the console.
     if (payload && payload.result && payload.result === 'ok') {
       dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + 'Ok' })
-    }
-    // Remove a wait if defined.
-    if (payload.__request__ && payload.__request__.wait && payload.__request__.wait.length) {
-      commit('removeWait', payload.__request__.wait)
     }
   },
 

@@ -77,6 +77,11 @@ export class WebSocketClient {
         this.requests.splice(requestIndex, 1)
       }
 
+      // Remove a wait if defined.
+      if (request && request.wait && request.wait.length) {
+        this.store.commit('socket/removeWait', request.wait)
+      }
+
       if (d.error) { // Is it in error?
         if (request) {
           Object.defineProperty(d.error, '__request__', { enumerable: false, value: request })
