@@ -17,6 +17,7 @@
         @click="pausePrint()"
         v-if="!printerPaused && printerPrinting"
         :loading="hasWait(waits.onPrintPause)"
+        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
         small
         color="secondary"
         class="ma-1">
@@ -28,6 +29,7 @@
         @click="confirmDialog.open = true"
         v-if="printerPrinting || printerPaused"
         :loading="hasWait(waits.onPrintCancel)"
+        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
         small
         color="secondary"
         class="ma-1">
@@ -39,6 +41,7 @@
         @click="resumePrint()"
         v-if="printerPaused"
         :loading="hasWait(waits.onPrintResume)"
+        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
         small
         color="secondary"
         class="ma-1">

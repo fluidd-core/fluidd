@@ -437,10 +437,17 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
-   * Determine if we have a wait active or not.
+   * Determine if we have a specific wait, or list of waits active or not.
    */
-  hasWait: (state) => (wait: string): boolean => {
-    return state.waits.includes(wait)
+  hasWait: (state) => (wait: string | string[]): boolean => {
+    if (Array.isArray(wait) && wait.length) {
+      let waits = wait as string[]
+      waits = waits.filter(val => state.waits.includes(val))
+      return (waits.length > 0)
+    } else {
+      wait = wait as string
+      return state.waits.includes(wait)
+    }
   },
 
   /**
