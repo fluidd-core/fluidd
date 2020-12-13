@@ -26,7 +26,7 @@ export const actions: ActionTree<DevicePowerState, RootState> = {
   /**
    * On a toggling a power device.
    */
-  async onToggle ({ commit, dispatch }, payload) {
+  async onToggle ({ dispatch }, payload) {
     dispatch('onStatus', payload)
   }
 

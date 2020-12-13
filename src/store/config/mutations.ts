@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { ConfigState, FileConfig, LocalConfig, GenericSave, InstanceConfig, Config, TemperaturePreset } from './types'
+import { ConfigState, FileConfig, LocalConfig, GenericSave, InstanceConfig, Config } from './types'
 import { Macro } from '../socket/types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'

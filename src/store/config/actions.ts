@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig, TemperaturePreset } from './types'
+import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 

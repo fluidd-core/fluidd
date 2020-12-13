@@ -140,7 +140,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * socket notifies us of the result of
    * the specific request here.
    */
-  async onGcodeScript ({ commit, dispatch }, payload) {
+  async onGcodeScript ({ dispatch }, payload) {
     // If the response is ok, pass it to the console.
     if (payload && payload.result && payload.result === 'ok') {
       dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + 'Ok' })
