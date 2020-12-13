@@ -65,7 +65,8 @@ import {
   mdiRadioboxMarked,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
-  mdiMenuDown
+  mdiMenuDown,
+  mdiFilePlus
 } from '@mdi/js'
 
 /**
@@ -109,6 +110,7 @@ export const Icons = Object.freeze({
   folderUp: mdiFolderUpload,
   folder: mdiFolder,
   fileUpload: mdiUpload,
+  fileAdd: mdiFilePlus,
   progressUpload: mdiProgressUpload,
   up: mdiArrowUp,
   down: mdiArrowDown,

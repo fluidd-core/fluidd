@@ -50,10 +50,11 @@
       :readonly="readOnly"
       :dense="dense"
       :upload-and-print="uploadAndPrint"
+      :file-create="fileCreate"
       @current-path="currentPath = $event"
       @trimmed-path="trimmedPath = $event"
-      @create-file="upload"
-      @create-dir="create"
+      @upload-file="upload"
+      @create-dir="createdir"
       @rename-file="rename"
       @rename-dir="rename"
       @remove-file="removeFile"
@@ -99,7 +100,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, required: false, default: false })
   showMetaData!: boolean;
 
-  @Prop({ type: String, required: false, default: '.gcode' })
+  @Prop({ type: String, required: false })
   accept!: string;
 
   @Prop({ type: String, default: 'Jobs' })
@@ -117,7 +118,10 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   uploadAndPrint!: boolean
 
-currentRoot = ''
+  @Prop({ type: Boolean, default: false })
+  fileCreate!: boolean
+
+  currentRoot = ''
   currentPath = ''
   trimmedPath = ''
 
@@ -149,7 +153,7 @@ currentRoot = ''
         : this.root
   }
 
-  create (path: string) {
+  createdir (path: string) {
     SocketActions.serverFilesPostDirectory(path)
   }
 

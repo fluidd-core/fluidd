@@ -45,9 +45,11 @@
             :readonly="readonly"
             :upload-loading="hasWait(waits.onUploadGcode)"
             :upload-and-print="uploadAndPrint"
+            :file-create="fileCreate"
             @upload="uploadFile"
             @refresh="refreshPath(currentPath)"
             @folder-add="createDirectoryDialog()"
+            @file-add="createFileDialog()"
             >
           </file-system-controls>
         </v-toolbar>
@@ -242,7 +244,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, required: false, default: false })
   showMetaData!: boolean;
 
-  @Prop({ type: String, required: false, default: '.gcode' })
+  @Prop({ type: String, required: false })
   accept!: string;
 
   @Prop({ type: Boolean, default: false })
@@ -250,6 +252,9 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, default: false })
   uploadAndPrint!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  fileCreate!: boolean
 
   @Prop({ type: Boolean, default: false })
   dense!: boolean;
@@ -400,6 +405,12 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
           this.createDirectory(name)
         }
       }
+      if (this.dialog.item && this.dialog.type === 'createfile') {
+        const name = this.dialog.item.name
+        if (name) {
+          this.createFile(name)
+        }
+      }
       this.dialog.active = false
     }
   }
@@ -464,8 +475,36 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     }
   }
 
-  createDirectory (path: string) {
-    this.$emit('create-dir', `${this.currentPath}/${path}`)
+  createDirectory (name: string) {
+    this.$emit('create-dir', `${this.currentPath}/${name}`)
+  }
+
+  createFileDialog () {
+    this.dialog = {
+      type: 'createfile',
+      title: 'Create File',
+      valid: false,
+      formLabel: 'Name',
+      rules: [
+        (v: string) => !!v || 'Required',
+        (v: string) => (v && v.length > 2) || 'Must be greater than 2 characters',
+        (v: string) => {
+          if (v && v.length && this.accept) {
+            const e = this.accept.split(',')
+            const r = e.filter((val) => v.endsWith(val)).length > 0
+            return r || 'Must end with ' + this.accept
+          }
+          return true
+        }
+      ],
+      item: { name: '' },
+      active: true
+    }
+  }
+
+  createFile (name: string) {
+    const file = new File([''], name)
+    this.$emit('upload-file', file, this.currentRoot, this.trimmedPath)
   }
 
   removeItem (item: AppFile | AppDirectory) {
@@ -478,7 +517,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   uploadFile (file: File, andPrint: boolean) {
-    this.$emit('create-file', file, this.currentRoot, this.trimmedPath, andPrint)
+    this.$emit('upload-file', file, this.currentRoot, this.trimmedPath, andPrint)
   }
 
   downloadFile (file: string) {

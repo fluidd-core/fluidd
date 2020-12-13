@@ -20,8 +20,9 @@
       <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
         <file-system-card
           :root="['config', 'config_examples']"
-          accept=".conf,.cfg"
+          accept=".conf,.cfg,.md"
           :upload-and-print="false"
+          :file-create="true"
           dense
           panel-title="Config"
           :show-meta-data="false">

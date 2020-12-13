@@ -19,6 +19,22 @@
       <v-tooltip dense top>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
+            v-if="fileCreate"
+            max-width="42"
+            small
+            v-bind="attrs"
+            v-on="on"
+            color="secondary"
+            @click="$emit('file-add')">
+            <v-icon small>$fileAdd</v-icon>
+          </v-btn>
+        </template>
+        <span>Create File</span>
+      </v-tooltip>
+
+      <v-tooltip dense top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
             max-width="42"
             small
             color="secondary"
@@ -97,19 +113,22 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class FileSystemControls extends Vue {
   @Prop({ type: String, required: false })
-  public accept!: string
+  accept!: string
 
   @Prop({ type: String, required: false })
-  public classes!: string
+  classes!: string
 
   @Prop({ type: Boolean })
-  public uploadLoading!: boolean
+  uploadLoading!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public uploadAndPrint!: boolean
+  uploadAndPrint!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  fileCreate!: boolean
 
   andPrint = false
 
