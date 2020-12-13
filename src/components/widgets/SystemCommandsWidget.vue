@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-list-item @click="restartKlippy">
+    <v-list-item @click="restartKlippy(); $emit('click')">
       <v-list-item-icon>
         <v-icon color="warning">$refresh</v-icon>
       </v-list-item-icon>
@@ -8,7 +8,7 @@
         <v-list-item-title>Restart</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-    <v-list-item @click="firmwareRestartKlippy">
+    <v-list-item @click="firmwareRestartKlippy(); $emit('click')">
       <v-list-item-icon>
         <v-icon color="warning">$refresh</v-icon>
       </v-list-item-icon>
@@ -70,19 +70,15 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
   hostReboot (val: boolean) {
     if (val) {
       SocketActions.machineReboot()
+      this.$emit('click')
     }
-    // this.menu = false
   }
 
   hostShutdown (val: boolean) {
     if (val) {
       SocketActions.machineShutdown()
+      this.$emit('click')
     }
-    // this.menu = false
-  }
-
-  dialogCancel () {
-    // this.menu = false
   }
 }
 </script>

@@ -42,7 +42,7 @@
       </v-list-item>
       <v-divider></v-divider>
 
-      <system-commands-widget></system-commands-widget>
+      <system-commands-widget @click="this.close"></system-commands-widget>
       <v-divider></v-divider>
 
       <v-subheader>Available Printers</v-subheader>
@@ -93,7 +93,7 @@
         </blockquote>
       </template>
 
-      Having trouble? <a :href="docsUrl + '/Multiple-Printers'" target="_blank">See here</a> for more information.<br />
+      Having trouble? <a :href="docsUrl + 'multiple-printers.md'" target="_blank">See here</a> for more information.<br />
 
       <v-form
         class="mt-3"
@@ -108,7 +108,7 @@
           label="Moonraker api url"
           :rules="[rules.required, rules.url]"
           persistent-hint
-          hint="E.g., fluiddpi.local:7125"
+          hint="E.g., fluiddpi.local"
           v-model="instanceDialog.url">
         </v-text-field>
       </v-form>
@@ -180,6 +180,10 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
     this.$emit('input', e)
   }
 
+  close () {
+    this.$emit('input', false)
+  }
+
   addInstanceDialog () {
     this.instanceDialog = {
       valid: false,
@@ -202,12 +206,13 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
         : this.$filters.getApiUrls(this.instanceDialog.url)
       this.instanceDialog.open = false
       this.activateInstance(urls)
+      this.close()
     }
   }
 
   activateInstance (instance: ApiConfig) {
     // Close the drawer.
-    this.emitChange(false)
+    this.close()
 
     // Close the existing socket.
     this.$socket.close()
