@@ -1,9 +1,5 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
-    <vue-headful
-      :title="pageTitle">
-    </vue-headful>
-
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
         <klippy-disconnected-card></klippy-disconnected-card>
@@ -48,7 +44,6 @@ import UtilsMixin from '@/mixins/utils'
   }
 })
 export default class Dashboard extends Mixins(UtilsMixin) {
-  pageName = 'Dashboard'
   get cameraEnabled (): boolean {
     return this.$store.state.config.fileConfig.camera.enabled
   }

@@ -1,9 +1,5 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
-    <vue-headful
-      :title="pageTitle">
-    </vue-headful>
-
     <v-row no-gutters class="mt-0 mt-sm-2">
       <v-col cols="12" class="pa-0">
         <collapsable-card
@@ -63,7 +59,6 @@ import EventBus from '@/eventBus'
   }
 })
 export default class Settings extends Mixins(UtilsMixin) {
-  pageName = 'Settings'
   get hasUnsavedChanges () {
     return this.$store.state.config.unsavedChanges
   }

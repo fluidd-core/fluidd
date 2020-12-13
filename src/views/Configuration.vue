@@ -1,9 +1,5 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
-    <vue-headful
-      :title="pageTitle">
-    </vue-headful>
-
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="7" class="pt-0">
         <klippy-disconnected-card></klippy-disconnected-card>
@@ -54,7 +50,6 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
   }
 })
 export default class Configuration extends Mixins(UtilsMixin) {
-  pageName = 'Configuration'
   get supportsBedMesh () {
     return this.$store.getters['socket/getSupportsBedMesh']
   }

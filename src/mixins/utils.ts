@@ -8,21 +8,6 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios'
 export default class UtilsMixin extends Vue {
   waits = Waits
 
-  get pageTitle () {
-    const instanceName = this.$store.state.config.fileConfig.general.instanceName || ''
-    let progress = this.$store.state.socket.printer.display_status.progress || 0
-    progress = (progress * 100).toFixed()
-    let pageName = ''
-    if (this.$data.pageName) {
-      pageName = this.$data.pageName
-    }
-    if (this.printerPrinting) {
-      return `[${progress}%] | ${pageName} | ${instanceName}`
-    } else {
-      return `${pageName} | ${instanceName}`
-    }
-  }
-
   get apiUrl () {
     return this.$store.state.config.apiUrl
   }
