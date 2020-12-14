@@ -1,6 +1,6 @@
 import { SocketActions } from '@/socketActions'
 import Vue from 'vue'
-import Component from 'vue-class-component'
+import { Component, Watch } from 'vue-property-decorator'
 import { Globals, Waits } from '@/globals'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
@@ -22,6 +22,16 @@ export default class UtilsMixin extends Vue {
 
   get klippyConnected () {
     return this.$store.getters['socket/getKlippyConnected']
+  }
+
+  @Watch('klippyConnected')
+  onKlippyConnectedChange (val: boolean, oldVal: boolean) {
+    if (oldVal && !val) {
+      // Klippy has disconnected, ensure the user doesn't stick around on the jobs page if already.
+      if (this.$router.currentRoute.path === '/jobs') {
+        this.$router.push({ path: Globals.KLIPPY_DISCONNECTED_REDIRECT })
+      }
+    }
   }
 
   get klippyState () {

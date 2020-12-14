@@ -77,6 +77,7 @@ export const Globals = Object.freeze({
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
   KLIPPY_RETRY_DELAY: 2000,
+  KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_APPCONFIG_STORAGE_KEY: 'appConfig',
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
   SETTINGS_FILENAME: '.fluidd.json',

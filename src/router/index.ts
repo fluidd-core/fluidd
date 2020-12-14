@@ -1,11 +1,14 @@
 import Vue from 'vue'
-// import store from '@/store'
+import store from '@/store'
 import VueRouter, { RouteConfig } from 'vue-router'
-import Dashboard from '../views/Dashboard.vue'
-import Jobs from '../views/Jobs.vue'
-import Configuration from '../views/Configuration.vue'
-import Settings from '../views/Settings.vue'
-import NotFound from '../views/NotFound.vue'
+import { Globals } from '@/globals'
+
+// Views
+import Dashboard from '@/views/Dashboard.vue'
+import Jobs from '@/views/Jobs.vue'
+import Configuration from '@/views/Configuration.vue'
+import Settings from '@/views/Settings.vue'
+import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -42,17 +45,17 @@ const router = new VueRouter({
   routes
 })
 
-// router.beforeEach((to, from, next) => {
-//   // If klippy is disconnected, users should not be able to
-//   // go to the dashboard.
-//   if (
-//     store.getters['socket/getKlippyState'] !== true &&
-//     to.name === 'Dashboard'
-//   ) {
-//     next({ name: 'Printer Configuration' })
-//   } else {
-//     next()
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  // If klippy is disconnected, users should not be able to
+  // go to the jobs page, because virtual_sdcard won't be working.
+  if (
+    store.getters['socket/getKlippyConnected'] !== true &&
+    to.name === 'Jobs'
+  ) {
+    next(Globals.KLIPPY_DISCONNECTED_REDIRECT)
+  } else {
+    next()
+  }
+})
 
 export default router

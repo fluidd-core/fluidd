@@ -87,7 +87,7 @@ export default class AppBar extends Mixins(UtilsMixin) {
   }
 
   get jobsInMenu () {
-    return this.$store.state.config.fileConfig.general.jobsInMenu
+    return (this.$store.state.config.fileConfig.general.jobsInMenu && this.klippyConnected)
   }
 
   // Watch currentfile and refresh its metadata to ensure
