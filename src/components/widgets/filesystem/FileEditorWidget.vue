@@ -1,7 +1,8 @@
 <template>
   <prism-editor
+    v-if="code && code.length"
     class="file-editor"
-    :value="newValue"
+    v-model="code"
     @input="emitChange($event)"
     :highlight="highlighter"
     :readonly="readonly"
@@ -36,10 +37,11 @@ export default class FileEditorWidget extends Vue {
 
   @Watch('value')
   onContentsChange (val: string) {
-    this.newValue = val
+    this.code = val
   }
 
-  newValue = ''
+  code: string | null = null
+
   langMap: {[key: string]: string} = {
     md: 'markdown',
     cfg: 'ini',
@@ -48,11 +50,10 @@ export default class FileEditorWidget extends Vue {
   }
 
   mounted () {
-    this.newValue = this.value
+    this.code = this.value
   }
 
   emitChange (val: string) {
-    this.newValue = val
     this.$emit('input', val)
   }
 
