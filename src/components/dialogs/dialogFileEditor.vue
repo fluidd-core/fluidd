@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    @input="emitChange(value)"
+    @input="$emit('input', $event)"
     :value="value"
     :loading="loading"
     hide-overlay
