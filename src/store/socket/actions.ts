@@ -108,6 +108,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     } else {
       // We're good, move on. Start by loading the server data, temperature and console history.
       SocketActions.serverInfo()
+      SocketActions.machineUpdateStatus(true)
       SocketActions.serverGcodeStore()
       SocketActions.serverTemperatureStore()
     }
@@ -325,6 +326,9 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
   async notifyPowerChanged ({ dispatch }, payload) {
     dispatch('devicePower/onStatus', { [payload.device]: payload.status }, { root: true })
+  },
+  async notifyUpdateResponse ({ dispatch }, payload) {
+    dispatch('version/onUpdateResponse', payload, { root: true })
   },
 
   /**

@@ -1,6 +1,13 @@
 import { SocketState, ChartDataSet } from './socket/types'
 import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export const isOfType = <T>(
+  varToBeChecked: any,
+  propertyToCheckFor: keyof T
+): varToBeChecked is T => (varToBeChecked as T)[propertyToCheckFor] !== undefined
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
 /**
  * Return a file thumb if one exists
  * Optionally, pick the largest or smallest image.

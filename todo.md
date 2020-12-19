@@ -1,7 +1,8 @@
 # TODO [fluidd]
 
 ## Next Up
-- self update
+- click on slider position won't update value
+- add log downloads to printer page / elsewhere when not in error state
 - update panel collapse so these are remembered per instance
 - stage 1 themes (pick a specific theme (red, green etc..)
 - docker image
@@ -10,6 +11,7 @@
 - auto save printer settings?
 - PID calibrate option via dialog maybe?
 - Drag and Drop move.
+- Add a way to specify a value for sliders
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data

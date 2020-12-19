@@ -151,6 +151,7 @@ export class WebSocketClient {
       }
       if (options && options.wait) {
         request.wait = options.wait
+        if (this.store) this.store.dispatch('socket/addWait', options.wait)
       }
       if (options && options.params) {
         packet.params = options.params

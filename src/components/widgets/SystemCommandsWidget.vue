@@ -1,37 +1,47 @@
 <template>
   <div>
-    <v-list-item @click="restartKlippy(); $emit('click')">
-      <v-list-item-icon>
-        <v-icon color="warning">$refresh</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
+    <v-list-group
+      prepend-icon="$restart"
+      no-action>
+      <template v-slot:activator>
+        <v-list-item-content>
+          <v-list-item-title>Klipper</v-list-item-title>
+        </v-list-item-content>
+      </template>
+      <v-list-item @click="restartKlippy(); $emit('click')">
         <v-list-item-title>Restart</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <v-list-item @click="firmwareRestartKlippy(); $emit('click')">
-      <v-list-item-icon>
-        <v-icon color="warning">$refresh</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
+        <v-list-item-icon>
+          <v-icon>$restart</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+      <v-list-item @click="firmwareRestartKlippy(); $emit('click')">
         <v-list-item-title>Firmware Restart</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <v-list-item @click="confirmRebootDialog.open = true">
-      <v-list-item-icon>
-        <v-icon color="error">$alert</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>Host Reboot</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
-    <v-list-item @click="confirmShutdownDialog.open = true">
-      <v-list-item-icon>
-        <v-icon color="error">$alert</v-icon>
-      </v-list-item-icon>
-      <v-list-item-content>
-        <v-list-item-title>Host Shutdown</v-list-item-title>
-      </v-list-item-content>
-    </v-list-item>
+        <v-list-item-icon>
+          <v-icon>$restartAlert</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+    </v-list-group>
+    <v-list-group
+      prepend-icon="$power"
+      no-action>
+      <template v-slot:activator>
+        <v-list-item-content>
+          <v-list-item-title>Host</v-list-item-title>
+        </v-list-item-content>
+      </template>
+      <v-list-item @click="confirmRebootDialog.open = true">
+        <v-list-item-title>Reboot</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>$powerCycle</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+      <v-list-item @click="confirmShutdownDialog.open = true">
+        <v-list-item-title>Shutdown</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>$power</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+    </v-list-group>
 
     <dialog-confirm
       v-model="confirmRebootDialog.open"
@@ -44,6 +54,7 @@
       @confirm="hostShutdown">
       <p>Are you sure? This will shutdown your host system.</p>
     </dialog-confirm>
+
   </div>
 </template>
 

@@ -17,9 +17,9 @@
     />
 
     <v-main>
-      <!-- <p v-if="showUpdateUI">UPDATE FOUND. <v-btn @click="accept()">Update</v-btn></p> -->
       <router-view v-if="socketConnected" />
       <socket-disconnected-widget v-if="!socketConnected"></socket-disconnected-widget>
+      <update-status-widget></update-status-widget>
     </v-main>
 
     <app-footer></app-footer>
@@ -36,7 +36,7 @@ import AppDrawer from '@/components/AppDrawer.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
-// import { MetaInfo } from 'vue-meta'
+import UpdateStatusWidget from '@/components/widgets/UpdateStatusWidget.vue'
 
 @Component({
   components: {
@@ -44,7 +44,8 @@ import FlashMessage from '@/components/FlashMessage.vue'
     AppDrawer,
     SocketDisconnectedWidget,
     FlashMessage,
-    AppFooter
+    AppFooter,
+    UpdateStatusWidget
   }
 })
 export default class App extends Mixins(UtilsMixin) {
@@ -81,6 +82,10 @@ export default class App extends Mixins(UtilsMixin) {
   //     await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
   //   }
   // }
+
+  get updating () {
+    return this.$store.state.version.busy
+  }
 
   get progress () {
     let progress = this.$store.state.socket.printer.display_status.progress || 0

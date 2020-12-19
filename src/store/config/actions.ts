@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig } from './types'
+import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig, HostConfig } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -10,6 +10,13 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async initFile ({ commit }, payload: FileConfig) {
     commit('onInitFile', payload)
+  },
+
+  /**
+   * Inits the host configuration.
+   */
+  async initHost ({ commit }, payload: HostConfig) {
+    commit('onInitHost', payload)
   },
 
   /**

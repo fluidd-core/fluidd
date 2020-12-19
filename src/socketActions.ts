@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import store from '@/store'
 import { Waits } from '@/globals'
 
 export const SocketActions = {
@@ -35,6 +34,60 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateStatus (refresh = false) {
+    const wait = Waits.onForceUpdateCheck
+    Vue.$socket.emit(
+      'machine.update.status', {
+        dispatch: 'version/onUpdateStatus',
+        params: { refresh },
+        wait
+      }
+    )
+  },
+
+  async machineUpdateMoonraker () {
+    const wait = Waits.onUpdate
+    Vue.$socket.emit(
+      'machine.update.moonraker', {
+        dispatch: 'version/onUpdatedMoonraker',
+        wait
+      }
+    )
+  },
+
+  async machineUpdateKlipper () {
+    const wait = Waits.onUpdate
+    Vue.$socket.emit(
+      'machine.update.klipper', {
+        dispatch: 'version/onUpdatedKlipper',
+        params: {
+          include_deps: true
+        },
+        wait
+      }
+    )
+  },
+
+  async machineUpdateClient () {
+    const wait = Waits.onUpdate
+    Vue.$socket.emit(
+      'machine.update.client', {
+        dispatch: 'version/onUpdatedClient',
+        wait
+      }
+    )
+  },
+
+  async machineUpdateSystem () {
+    const wait = Waits.onUpdate
+    Vue.$socket.emit(
+      'machine.update.system', {
+        dispatch: 'version/onUpdatedSystem',
+        wait
+      }
+    )
+  },
+
   async machineDevicePowerDevices () {
     Vue.$socket.emit(
       'machine.device_power.devices', {
@@ -56,7 +109,6 @@ export const SocketActions = {
     const emit = (state === 'on')
       ? 'machine.device_power.on'
       : 'machine.device_power.off'
-    if (wait) store.dispatch('socket/addWait', wait)
     Vue.$socket.emit(
       emit, {
         dispatch: 'devicePower/onToggle',
@@ -105,7 +157,6 @@ export const SocketActions = {
   },
 
   async printerPrintCancel () {
-    store.dispatch('socket/addWait', Waits.onPrintCancel)
     Vue.$socket.emit(
       'printer.print.cancel', {
         dispatch: 'socket/onPrintCancel',
@@ -115,7 +166,6 @@ export const SocketActions = {
   },
 
   async printerPrintPause () {
-    store.dispatch('socket/addWait', Waits.onPrintPause)
     Vue.$socket.emit(
       'printer.print.pause', {
         dispatch: 'socket/onPrintPause',
@@ -125,7 +175,6 @@ export const SocketActions = {
   },
 
   async printerPrintResume () {
-    store.dispatch('socket/addWait', Waits.onPrintResume)
     Vue.$socket.emit(
       'printer.print.resume', {
         dispatch: 'socket/onPrintResume',
@@ -135,7 +184,6 @@ export const SocketActions = {
   },
 
   async printerGcodeScript (gcode: string, wait?: string) {
-    if (wait) store.dispatch('socket/addWait', wait)
     Vue.$socket.emit(
       'printer.gcode.script', {
         dispatch: 'socket/onGcodeScript',
@@ -191,7 +239,6 @@ export const SocketActions = {
    */
   async serverFilesGetDirectory (root: string, path: string) {
     const wait = `${Waits.onGetDirectory}${path}`
-    store.dispatch('socket/addWait', wait)
     Vue.$socket.emit(
       'server.files.get_directory',
       {

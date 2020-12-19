@@ -1,12 +1,13 @@
 <template>
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
-      <v-layout v-for="(item, index) in consoleItems" :key="index" class="console-item">
-        <span class="grey--text text--darken-2 mr-3 d-none d-sm-block">{{ getTime(item.time) }} </span>
+      <v-layout v-for="(item, index) in items" :key="index" class="console-item">
+        <span v-if="item.time" class="grey--text text--darken-2 mr-3 d-none d-sm-block">{{ getTime(item.time) }} </span>
         <span :class="consoleClass(item)" v-html="item.message"></span>
       </v-layout>
     </v-card>
     <input-console-command
+      v-if="!readonly"
       v-model="consoleCommand"
       @send="sendCommand"
     >
@@ -15,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 import { ConsoleEntry } from '@/store/socket/types'
@@ -27,9 +28,11 @@ import { Globals } from '@/globals'
   }
 })
 export default class ConsoleWidget extends Mixins(UtilsMixin) {
-  get consoleItems (): ConsoleEntry[] {
-    return this.$store.state.socket.console
-  }
+  @Prop({ type: Array, default: [] })
+  items!: []
+
+  @Prop({ type: Boolean, default: false })
+  readonly!: false
 
   consoleCommand = ''
 
@@ -68,9 +71,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     overflow: hidden;
     height: 100%;
   }
-  .v-input {
-    flex: 0 0 auto;
-  }
+
   .console {
     display: flex;
     flex-direction: column-reverse;
@@ -81,7 +82,12 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     font-weight: 100 !important;
     flex: 1 0 0;
   }
+
   .console-item {
+    flex: 0 0 auto;
+  }
+
+  .v-input {
     flex: 0 0 auto;
   }
 </style>

@@ -51,7 +51,6 @@ import {
   mdiCogs,
   mdiContentSaveOutline,
   mdiAlert,
-  mdiPowerPlug,
   mdiDotsVertical,
   mdiSend,
   mdiArrowHorizontalLock,
@@ -66,7 +65,15 @@ import {
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
   mdiMenuDown,
-  mdiFilePlus
+  mdiFilePlus,
+  mdiBellOutline,
+  mdiPower,
+  mdiPowerCycle,
+  mdiRestart,
+  mdiRestartAlert,
+  mdiUpdate,
+  mdiChevronRight,
+  mdiChevronLeft
 } from '@mdi/js'
 
 /**
@@ -94,11 +101,16 @@ export const Icons = Object.freeze({
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,
   chart: mdiChartTimelineVariant,
-  power: mdiPowerPlug,
+  power: mdiPower,
+  powerCycle: mdiPowerCycle,
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
+  restart: mdiRestart,
+  restartAlert: mdiRestartAlert,
+  update: mdiUpdate,
   alert: mdiAlert,
+  bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
   snowflakeAlert: mdiSnowflakeAlert,
   blankCircle: mdiCheckboxBlankCircleOutline,
@@ -135,6 +147,8 @@ export const Icons = Object.freeze({
   filamentEstimate: mdiFormatLineSpacing,
   chevronUp: mdiChevronUp,
   chevronDown: mdiChevronDown,
+  chevronRight: mdiChevronRight,
+  chevronLeft: mdiChevronLeft,
   timer: mdiTimerSand,
   fileCode: mdiFileCodeOutline,
   files: mdiFileMultipleOutline,
@@ -159,7 +173,9 @@ export const Icons = Object.freeze({
 })
 
 export const Waits = Object.freeze({
+  onForceUpdateCheck: 'onForceUpdateCheck',
   onDevicePowerToggle: 'onDevicePowerToggle',
+  onUpdate: 'onUpdate',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',
   onHomeX: 'onHomeX',

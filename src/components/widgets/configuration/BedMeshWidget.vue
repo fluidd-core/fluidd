@@ -194,7 +194,7 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   get meshLoaded (): boolean {
-    return (this.currentMesh && this.currentMesh.profile_name !== '')
+    return ('profile_name' in this.currentMesh && this.currentMesh.profile_name.length > 0)
   }
 
   get hasDefault (): boolean {

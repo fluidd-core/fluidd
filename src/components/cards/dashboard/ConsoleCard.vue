@@ -7,7 +7,9 @@
     :height="450"
     :collapsed="true">
 
-    <console-widget></console-widget>
+    <console-widget
+      :items="items"
+    ></console-widget>
 
   </collapsable-card>
 </template>
@@ -17,6 +19,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
 import UtilsMixin from '@/mixins/utils'
 import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
+import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -24,5 +27,9 @@ import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
     ConsoleWidget
   }
 })
-export default class ConsoleCard extends Mixins(UtilsMixin) {}
+export default class ConsoleCard extends Mixins(UtilsMixin) {
+  get items (): ConsoleEntry[] {
+    return this.$store.state.socket.console
+  }
+}
 </script>

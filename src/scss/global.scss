@@ -21,7 +21,14 @@
 /* Add a class to help us spin an icon if we need.. */
 .spin {
   animation-name: spin;
-  animation-duration: 2000ms;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.spin-alt {
+  animation-name: spin-alt;
+  animation-duration: 1000ms;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
 }
@@ -34,8 +41,28 @@
   }
 }
 
+@keyframes spin-alt {
+  from {
+    transform: rotate(-360deg);
+  } to {
+    transform: rotate(0deg);
+  }
+}
+
+/* force no pointer events to avoid issues with dragging */
 .no-pointer-events * {
   pointer-events: none !important;
+}
+
+/* Extra dense list items */
+.v-list-item--x-dense .v-list-item__content,
+.v-list--x-dense .v-list-item .v-list-item__content {
+  padding: 6px 0 !important;
+}
+
+.v-list-item--x-dense .v-list-item__action,
+.v-list--x-dense .v-list-item .v-list-item__action {
+  margin: 8px 0;
 }
 
 /* Helps alignment for some outer buttons */

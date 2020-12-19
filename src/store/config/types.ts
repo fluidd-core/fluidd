@@ -20,6 +20,12 @@ export interface FileConfig {
   dashboard: DashboardConfig;
 }
 
+export interface HostConfig {
+  endpoints: string[];
+  blacklist: string[];
+  skipClientUpdates: boolean;
+}
+
 export interface GeneralConfig {
   instanceName: string;
   jobsInMenu: boolean;
@@ -62,6 +68,7 @@ export interface GenericSave {
 export interface Config {
   apiConfig: ApiConfig | InstanceConfig;
   fileConfig: FileConfig | undefined | null;
+  hostConfig?: HostConfig;
 }
 
 export interface ApiConfig {

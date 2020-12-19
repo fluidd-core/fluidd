@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { IgnorePlugin } = require('webpack')
+const GenerateFilePlugin = require('generate-file-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+
+const v = require('./package.json').version
+const h = require('child_process')
+  .execSync('git rev-parse --short HEAD')
+  .toString()
 
 module.exports = {
   pwa: {
@@ -19,8 +25,11 @@ module.exports = {
       symlinks: false // Don't follow symlinks, fixes issues when using npm link.
     },
     plugins: [
-      // new ContextReplacementPlugin(/moment[/\\]locale$/, /de|fr|hu/), // Ignore specific locales.
-      new IgnorePlugin(/^\.\/locale$/, /moment$/) // Ignore all moment locales (comes from chartjs)
+      new IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all moment locales (comes from chartjs)
+      new GenerateFilePlugin({
+        file: '.version',
+        content: v + '\n'
+      })
       // new BundleAnalyzerPlugin({
       //   analyzerMode:
       //     (process.env.NODE_ENV === 'production') ? 'server' : 'disabled'
@@ -28,20 +37,11 @@ module.exports = {
     ]
   },
   chainWebpack: config => {
-    // config
-    //   .resolve
-    //   .alias
-    //   .set('plotly.js/dist/plotly', 'plotly.js/dist/plotly-basic.js')
-
     config
       .plugin('define')
       .tap(args => {
-        const v = JSON.stringify(require('./package.json').version)
-        const h = JSON.stringify(require('child_process')
-          .execSync('git rev-parse --short HEAD')
-          .toString())
-        args[0]['process.env'].VERSION = v
-        args[0]['process.env'].HASH = h
+        args[0]['process.env'].VERSION = JSON.stringify(v)
+        args[0]['process.env'].HASH = JSON.stringify(h)
         return args
       })
   }

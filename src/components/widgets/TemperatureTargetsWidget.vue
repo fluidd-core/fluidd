@@ -1,12 +1,12 @@
 <template>
     <v-container fluid class="py-2 px-6">
-      <v-row class="d-none d-sm-flex" v-if="klippyConnected">
-        <v-col offset="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
-          Actual
+      <v-row class="" v-if="klippyConnected">
+        <v-col sm="4" offset-sm="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
+          <span class="d-none d-sm-inline">Actual</span>
         </v-col>
-        <v-col class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
+        <v-col sm="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
           <v-layout>
-            Target
+            <span class="">Target</span>
             <v-spacer></v-spacer>
             <v-menu bottom left :min-width="150">
               <template v-slot:activator="{ on, attrs }">
