@@ -1,44 +1,43 @@
 <template>
-<div>
-  <v-layout align-end>
-    <div class="grey--text text--darken-1 font-weight-regular">{{ label }}</div>
-    <div class="grey--text focus--text ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
-  </v-layout>
-  <v-slider
-    v-if="!readonly"
-    @end="emitChange(newValue)"
-    @input="updateValue"
-    @update:error="updateError"
-    :value="newValue"
-    :rules="rules"
-    :min="min"
-    :max="max"
-    :readonly="readonly"
-    :disabled="disabled"
-    :loading="loading"
-    :thumb-label="false"
-    dense
-    hide-details
-  >
-    <template v-slot:prepend>
-      <v-icon
-        :disabled="readonly || disabled || newValue === 0"
-        @click="clickChange(newValue - 1)"
-        color="grey lighten-2">
-        $minus
-      </v-icon>
-    </template>
+  <v-form ref="form">
+    <v-layout align-end>
+      <div class="grey--text text--darken-1 font-weight-regular">{{ label }}</div>
+      <div class="grey--text focus--text ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
+    </v-layout>
+    <v-slider
+      v-if="!readonly"
+      @change="emitChange"
+      @input="updateValue"
+      :value="newValue"
+      :rules="rules"
+      :min="min"
+      :max="max"
+      :readonly="readonly"
+      :disabled="disabled"
+      :loading="loading"
+      :thumb-label="false"
+      dense
+      hide-details
+    >
+      <template v-slot:prepend>
+        <v-icon
+          :disabled="readonly || disabled || newValue === 0"
+          @click="clickChange(newValue - 1)"
+          color="grey lighten-2">
+          $minus
+        </v-icon>
+      </template>
 
-    <template v-slot:append>
-      <v-icon
-        :disabled="readonly || disabled || newValue === max"
-        @click="clickChange(newValue + 1)"
-        color="grey lighten-2">
-        $plus
-      </v-icon>
-    </template>
-  </v-slider>
-</div>
+      <template v-slot:append>
+        <v-icon
+          :disabled="readonly || disabled || newValue === max"
+          @click="clickChange(newValue + 1)"
+          color="grey lighten-2">
+          $plus
+        </v-icon>
+      </template>
+    </v-slider>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -81,30 +80,36 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   }
 
   newValue = 0
-  error = false
+
+  mounted () {
+    this.newValue = this.value
+  }
 
   updateValue (e: number) {
     this.newValue = e
   }
 
+  valid () {
+    return (this.$refs.form as Vue & { validate: () => boolean }).validate()
+  }
+
   clickChange (val: number) {
-    this.$emit('input', val)
+    this.newValue = val
+    this.$nextTick(() => {
+      if (this.valid()) {
+        this.$emit('input', val)
+      } else {
+        this.newValue = this.value
+      }
+    })
   }
 
   emitChange (val: number) {
-    if (!this.error) {
+    if (this.valid()) {
       this.$emit('input', val)
     } else {
       this.newValue = this.value
     }
-  }
-
-  updateError (val: boolean) {
-    this.error = val
-  }
-
-  mounted () {
-    this.newValue = this.value
   }
 }
 </script>
