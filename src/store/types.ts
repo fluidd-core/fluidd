@@ -4,6 +4,7 @@ import { SocketState } from './socket/types'
 import { VersionState } from './version/types'
 
 export interface RootState {
+  consoleCommand: string;
   config?: ConfigState;
   files?: FilesState;
   socket?: SocketState;

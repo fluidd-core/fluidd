@@ -34,7 +34,13 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   readonly!: false
 
-  consoleCommand = ''
+  get consoleCommand () {
+    return this.$store.state.consoleCommand
+  }
+
+  set consoleCommand (val: string) {
+    this.$store.commit('setConsoleCommand', val)
+  }
 
   sendCommand (command?: string) {
     if (command && command.length) {

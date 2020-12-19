@@ -12,7 +12,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
-  state: {},
+  state: {
+    consoleCommand: ''
+  },
   modules: {
     config,
     socket,
@@ -20,7 +22,11 @@ export default new Vuex.Store<RootState>({
     devicePower,
     version
   },
-  mutations: {},
+  mutations: {
+    setConsoleCommand (state, payload) {
+      state.consoleCommand = payload
+    }
+  },
   actions: {
     async init ({ dispatch, commit }, payload: Config) {
       // Should init the store, and ensure we've loaded our
