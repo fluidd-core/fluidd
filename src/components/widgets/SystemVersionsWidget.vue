@@ -14,7 +14,7 @@
     <template v-for="(component, i) in versionComponents">
       <v-list-item
         :key="i"
-        v-if="!(i === 'client' && skipClientUpdates) && klippyConnected"
+        v-if="!(i === 'client' && skipClientUpdates)"
         class="v-list-item--x-dense"
       >
         <v-list-item-content>
@@ -42,7 +42,7 @@
       </v-list-item>
     </template>
 
-    <v-list-item class="v-list-item--x-dense" v-if="klippyConnected">
+    <v-list-item class="v-list-item--x-dense">
       <v-list-item-content>
         <v-list-item-title>System</v-list-item-title>
       </v-list-item-content>
@@ -54,7 +54,7 @@
       </v-list-item-action>
     </v-list-item>
 
-    <v-list-item @click="forceCheck()" v-if="klippyConnected">
+    <v-list-item @click="forceCheck()">
       <v-list-item-title>Check for updates</v-list-item-title>
       <v-list-item-icon>
         <v-icon :class="{ 'spin-alt': hasWait(waits.onForceUpdateCheck) }">$refresh</v-icon>
