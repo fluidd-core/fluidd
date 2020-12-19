@@ -4,12 +4,13 @@
       <v-col cols="12" md="7" class="pt-0">
         <klippy-disconnected-card></klippy-disconnected-card>
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
-        <v-row v-if="klippyConnected">
+        <v-row>
           <v-col cols="12" sm="6" class="pt-0">
-            <end-stops-card v-if="klippyConnected"></end-stops-card>
+            <logs-card></logs-card>
           </v-col>
-          <v-col cols="12" sm="6" class="pt-0">
-            <runout-sensors-card v-if="klippyConnected && supportsRunoutSensors"></runout-sensors-card>
+          <v-col cols="12" sm="6" class="pt-0" v-if="klippyConnected">
+            <end-stops-card></end-stops-card>
+            <runout-sensors-card v-if="supportsRunoutSensors"></runout-sensors-card>
           </v-col>
         </v-row>
       </v-col>
@@ -36,6 +37,7 @@ import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCar
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
+import LogsCard from '@/components/cards/configuration/LogsCard.vue'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
@@ -46,7 +48,8 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     EndStopsCard,
     RunoutSensorsCard,
     FileSystemCard,
-    KlippyDisconnectedCard
+    KlippyDisconnectedCard,
+    LogsCard
   }
 })
 export default class Configuration extends Mixins(UtilsMixin) {
