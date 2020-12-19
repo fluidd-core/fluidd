@@ -5,21 +5,33 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Klipper</v-list-item-title>
+          <v-list-item-title>Services</v-list-item-title>
         </v-list-item-content>
       </template>
-      <v-list-item @click="restartKlippy(); $emit('click')">
-        <v-list-item-title>Restart</v-list-item-title>
+      <v-list-item @click="serviceRestartMoonraker">
+        <v-list-item-title>Restart Moonraker</v-list-item-title>
         <v-list-item-icon>
           <v-icon>$restart</v-icon>
         </v-list-item-icon>
       </v-list-item>
-      <v-list-item @click="firmwareRestartKlippy(); $emit('click')">
-        <v-list-item-title>Firmware Restart</v-list-item-title>
+      <v-list-item @click="serviceRestartKlipper">
+        <v-list-item-title>Restart Klipper</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>$restart</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+      <v-list-item @click="serviceFirmwareRestartKlippy">
+        <v-list-item-title>Restart MCU(s)</v-list-item-title>
         <v-list-item-icon>
           <v-icon>$restartAlert</v-icon>
         </v-list-item-icon>
       </v-list-item>
+      <!-- <v-list-item @click="serverRestart">
+        <v-list-item-title>Server Restart</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>$restartAlert</v-icon>
+        </v-list-item-icon>
+      </v-list-item> -->
     </v-list-group>
     <v-list-group
       prepend-icon="$power"
@@ -90,6 +102,21 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
       SocketActions.machineShutdown()
       this.$emit('click')
     }
+  }
+
+  serviceRestartKlipper () {
+    SocketActions.printerRestart()
+    this.$emit('click')
+  }
+
+  serviceFirmwareRestartKlippy () {
+    SocketActions.printerFirmwareRestart()
+    this.$emit('click')
+  }
+
+  serviceRestartMoonraker () {
+    SocketActions.serverRestart()
+    this.$emit('click')
   }
 }
 </script>

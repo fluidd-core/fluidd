@@ -29,7 +29,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Fired when the socket closes.
    */
   async onSocketClose ({ commit }, payload) {
-    commit('resetState', false)
+    commit('resetState', true)
     commit('onSocketClose', payload)
   },
 
@@ -108,7 +108,6 @@ export const actions: ActionTree<SocketState, RootState> = {
     } else {
       // We're good, move on. Start by loading the server data, temperature and console history.
       SocketActions.serverInfo()
-      SocketActions.machineUpdateStatus(true)
       SocketActions.serverGcodeStore()
       SocketActions.serverTemperatureStore()
     }
@@ -117,7 +116,8 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onServerInfo ({ commit }, payload) {
     // This payload should return a list of enabled plugins.
     const plugins = [
-      'power'
+      'power',
+      'update_manager'
     ]
     if (
       payload.plugins &&
@@ -129,6 +129,9 @@ export const actions: ActionTree<SocketState, RootState> = {
           switch (plugin) {
             case 'power':
               SocketActions.machineDevicePowerDevices()
+              break
+            case 'update_manager':
+              SocketActions.machineUpdateStatus()
               break
           }
         }

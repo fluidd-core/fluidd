@@ -174,6 +174,7 @@ export const Icons = Object.freeze({
 
 export const Waits = Object.freeze({
   onForceUpdateCheck: 'onForceUpdateCheck',
+  onServiceRestart: 'onServiceRestart',
   onDevicePowerToggle: 'onDevicePowerToggle',
   onUpdate: 'onUpdate',
   onHomeAll: 'onHomeAll',
@@ -197,8 +198,8 @@ export const Waits = Object.freeze({
   onRetract: 'onRetract',
   onExtrude: 'onExtrude',
   onMeshCalibrate: 'onMeshCalibrate',
-  onRestart: 'restart',
-  onFirmwareRestart: 'restart',
+  onKlipperRestart: 'klipperRestart',
+  onKlipperFirmwareRestart: 'klipperFirmwareRestart',
   onSetVelocity: 'onSetVelocity',
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',

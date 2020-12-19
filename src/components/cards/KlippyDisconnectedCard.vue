@@ -11,8 +11,8 @@
           <v-btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</v-btn>
         </v-col>
         <v-col cols="auto">
-          <v-btn block color="warning" @click="restartKlippy" class="me-2 mb-2">Restart</v-btn>
-          <v-btn block color="warning" @click="firmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</v-btn>
+          <v-btn block color="warning" @click="serviceRestartKlippy" class="me-2 mb-2">Restart</v-btn>
+          <v-btn block color="warning" @click="serviceFirmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</v-btn>
         </v-col>
         <v-col class="subtitle-1">
           <p>If required, you may adjust your printer configuration using the edit tools in <router-link to="/configuration">configuration</router-link> and firmware_restart.</p>
@@ -40,6 +40,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
+import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
 
 @Component({
@@ -91,6 +92,16 @@ export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
 
   reload () {
     window.location.reload()
+  }
+
+  serviceRestartKlippy () {
+    SocketActions.printerRestart()
+    this.$emit('click')
+  }
+
+  serviceFirmwareRestartKlippy () {
+    SocketActions.printerFirmwareRestart()
+    this.$emit('click')
   }
 }
 </script>

@@ -130,14 +130,6 @@ export default class UtilsMixin extends Vue {
     return this.$store.getters['socket/getHomedAxes']('xyz')
   }
 
-  restartKlippy () {
-    this.sendGcode('RESTART', Waits.onRestart)
-  }
-
-  firmwareRestartKlippy () {
-    this.sendGcode('FIRMWARE_RESTART', Waits.onFirmwareRestart)
-  }
-
   /**
    * Send a gcode script.
    */

@@ -1,19 +1,24 @@
 import Vue from 'vue'
 import { Waits } from '@/globals'
 
-export const SocketActions = {
-  async printerInfo () {
-    Vue.$socket.emit(
-      'printer.info', {
-        dispatch: 'socket/onPrinterInfo'
-      }
-    )
-  },
+// /printer/restart (klipper restart) (DONE)
+// /printer/firmware_restart (klipper firmware_restart) (DONE)
+// /server/restart (restart server?)
 
-  async serverInfo () {
+// /machine/shutdown (shutdown host) (DONE)
+// /machine/reboot (reboot host) (DONE)
+
+// /machine/services/restart?service=klipper
+// /machine/services/restart?service=moonraker
+
+export const SocketActions = {
+  async machineServicesRestart (service: string) {
+    const wait = Waits.onServiceRestart
     Vue.$socket.emit(
-      'server.info', {
-        dispatch: 'socket/onServerInfo'
+      'machine.services.restart', {
+        dispatch: 'void',
+        params: { service },
+        wait
       }
     )
   },
@@ -118,6 +123,32 @@ export const SocketActions = {
     )
   },
 
+  async printerInfo () {
+    Vue.$socket.emit(
+      'printer.info', {
+        dispatch: 'socket/onPrinterInfo'
+      }
+    )
+  },
+
+  async printerRestart () {
+    Vue.$socket.emit(
+      'printer.restart', {
+        dispatch: 'void',
+        wait: Waits.onKlipperRestart
+      }
+    )
+  },
+
+  async printerFirmwareRestart () {
+    Vue.$socket.emit(
+      'printer.firmware_restart', {
+        dispatch: 'void',
+        wait: Waits.onKlipperFirmwareRestart
+      }
+    )
+  },
+
   async printerQueryEndstops () {
     Vue.$socket.emit(
       'printer.query_endstops.status', {
@@ -199,6 +230,22 @@ export const SocketActions = {
     Vue.$socket.emit(
       'printer.emergency_stop', {
         dispatch: 'socket/notifyKlippyDisconnected'
+      }
+    )
+  },
+
+  async serverInfo () {
+    Vue.$socket.emit(
+      'server.info', {
+        dispatch: 'socket/onServerInfo'
+      }
+    )
+  },
+
+  async serverRestart () {
+    Vue.$socket.emit(
+      'server.restart', {
+        dispatch: 'void'
       }
     )
   },

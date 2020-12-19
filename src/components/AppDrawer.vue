@@ -42,11 +42,11 @@
       </v-list-item>
 
       <system-commands-widget @click="this.close"></system-commands-widget>
-      <system-versions-widget @click="this.close" class="mt-0 pt-0"></system-versions-widget>
+      <system-versions-widget @click="this.close" v-if="versionsSupported"></system-versions-widget>
     </v-list>
 
     <v-divider></v-divider>
-    <system-printers-widget @click="this.close" class="mt-0 pt-0"></system-printers-widget>
+    <system-printers-widget @click="this.close"></system-printers-widget>
   </v-navigation-drawer>
 </template>
 
@@ -75,6 +75,10 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
 
   get jobsInMenu () {
     return this.$store.state.config.fileConfig.general.jobsInMenu
+  }
+
+  get versionsSupported () {
+    return this.$store.state.socket.plugins.includes('update_manager')
   }
 
   close () {
