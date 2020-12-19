@@ -197,7 +197,8 @@ export default class UtilsMixin extends Vue {
 
   download (file: string, path: string) {
     const filename = file || ''
-    this.getFile(`/server/files/${path}/${file}`, { responseType: 'blob' })
+    const filepath = (path) ? `/server/files/${path}/${file}` : `/server/files/${file}`
+    this.getFile(filepath, { responseType: 'blob' })
       .then((response: AxiosResponse) => {
         const url = window.URL.createObjectURL(new Blob([response.data]))
         const link = document.createElement('a')
