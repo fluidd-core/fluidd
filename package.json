@@ -9,16 +9,21 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve.prod": "serve -s ./dist",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build && npm run build.zip",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
     "inspect": "vue-cli-service inspect",
     "release": "standard-version",
-    "deploy": "npm run copy.host.config && potato -s dist -u -b app.fluidd.xyz",
-    "copy.host.config": "shx cp -f ./public/config.hosted.json ./dist/config.json",
     "start": "vue-cli-service serve",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "release.patch": "npm run release -- release-as patch",
+    "release.minor": "npm run release -- release-as minor",
+    "release.major": "npm run release -- release-as major",
+    "release.rc": "npm run release -- --prerelease rc",
+    "build.zip": "cd ./dist && zip -r fluidd.zip ./ && cd ..",
+    "deploy.host": "npm run copy.host.config && potato -s dist -u -b app.fluidd.xyz",
+    "copy.host.config": "shx cp -f ./public/config.hosted.json ./dist/config.json"
   },
   "main": "index.js",
   "dependencies": {
