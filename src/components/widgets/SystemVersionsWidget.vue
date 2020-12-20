@@ -44,14 +44,8 @@
 
     <v-list-item class="v-list-item--x-dense">
       <v-list-item-content>
-        <v-list-item-title>System</v-list-item-title>
+        <v-btn text outlined x-small @click="updateComponent('system')">update os packages</v-btn>
       </v-list-item-content>
-
-      <v-list-item-action>
-        <v-list-item-action-text>
-          <v-btn x-small text color="warning" @click="updateComponent('system')">UPDATE</v-btn>
-        </v-list-item-action-text>
-      </v-list-item-action>
     </v-list-item>
 
     <v-list-item @click="forceCheck()">
@@ -60,6 +54,7 @@
         <v-icon :class="{ 'spin-alt': hasWait(waits.onForceUpdateCheck) }">$refresh</v-icon>
       </v-list-item-icon>
     </v-list-item>
+
   </v-list-group>
 </template>
 
