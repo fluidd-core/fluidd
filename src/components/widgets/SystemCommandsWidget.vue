@@ -1,6 +1,27 @@
 <template>
   <div>
     <v-list-group
+      prepend-icon="$power"
+      no-action>
+      <template v-slot:activator>
+        <v-list-item-content>
+          <v-list-item-title>Host</v-list-item-title>
+        </v-list-item-content>
+      </template>
+      <v-list-item @click="confirmRebootDialog.open = true">
+        <v-list-item-title>Reboot</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>$powerCycle</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+      <v-list-item @click="confirmShutdownDialog.open = true">
+        <v-list-item-title>Shutdown</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>$power</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+    </v-list-group>
+    <v-list-group
       prepend-icon="$restart"
       no-action>
       <template v-slot:activator>
@@ -32,27 +53,6 @@
           <v-icon>$restartAlert</v-icon>
         </v-list-item-icon>
       </v-list-item> -->
-    </v-list-group>
-    <v-list-group
-      prepend-icon="$power"
-      no-action>
-      <template v-slot:activator>
-        <v-list-item-content>
-          <v-list-item-title>Host</v-list-item-title>
-        </v-list-item-content>
-      </template>
-      <v-list-item @click="confirmRebootDialog.open = true">
-        <v-list-item-title>Reboot</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon>$powerCycle</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-      <v-list-item @click="confirmShutdownDialog.open = true">
-        <v-list-item-title>Shutdown</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon>$power</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
     </v-list-group>
 
     <dialog-confirm
