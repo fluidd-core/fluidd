@@ -33,7 +33,7 @@
       <span>indicates a detached head, not on master or an invalid origin</span>
     </v-tooltip>
 
-    <v-btn v-if="hasUpdate && (!dirty && valid)" :disabled="disabled" :loading="loading" x-small text color="warning" @click="$emit('on-update')">UPDATE</v-btn>
+    <v-btn v-if="hasUpdate && !dirty && valid" :disabled="disabled" :loading="loading" x-small text color="warning" @click="$emit('on-update')">UPDATE</v-btn>
   </div>
 </template>
 

@@ -31,7 +31,7 @@
           <v-list-item-action-text>
             <version-status
               :has-update="hasUpdate(i)"
-              :disabled="hasWait(waits.onUpdate)"
+              :disabled="hasWait(waits.onUpdate) || printerPrinting"
               :loading="hasWait(waits.onUpdate)"
               :dirty="(component.name) ? false : component.is_dirty"
               :valid="(component.name) ? true : component.is_valid"
@@ -44,7 +44,7 @@
 
     <v-list-item class="v-list-item--x-dense">
       <v-list-item-content>
-        <v-btn text outlined x-small @click="updateComponent('system')">update os packages</v-btn>
+        <v-btn text outlined x-small :disabled="printerPrinting" @click="updateComponent('system')">update os packages</v-btn>
       </v-list-item-content>
     </v-list-item>
 

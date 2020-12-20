@@ -8,18 +8,25 @@
           <v-list-item-title>Host</v-list-item-title>
         </v-list-item-content>
       </template>
-      <v-list-item @click="confirmRebootDialog.open = true">
+
+      <v-list-item
+        @click="confirmRebootDialog.open = true"
+        :disabled="printerPrinting">
         <v-list-item-title>Reboot</v-list-item-title>
         <v-list-item-icon>
-          <v-icon>$powerCycle</v-icon>
+          <v-icon color="error">$powerCycle</v-icon>
         </v-list-item-icon>
       </v-list-item>
-      <v-list-item @click="confirmShutdownDialog.open = true">
+
+      <v-list-item
+        @click="confirmShutdownDialog.open = true"
+        :disabled="printerPrinting">
         <v-list-item-title>Shutdown</v-list-item-title>
         <v-list-item-icon>
-          <v-icon>$power</v-icon>
+          <v-icon color="error">$power</v-icon>
         </v-list-item-icon>
       </v-list-item>
+
     </v-list-group>
     <v-list-group
       prepend-icon="$restart"
@@ -32,21 +39,28 @@
       <v-list-item @click="serviceRestartMoonraker">
         <v-list-item-title>Restart Moonraker</v-list-item-title>
         <v-list-item-icon>
-          <v-icon>$restart</v-icon>
+          <v-icon color="warning">$restart</v-icon>
         </v-list-item-icon>
       </v-list-item>
-      <v-list-item @click="serviceRestartKlipper">
+
+      <v-list-item
+        @click="serviceRestartKlipper"
+        :disabled="printerPrinting">
         <v-list-item-title>Restart Klipper</v-list-item-title>
         <v-list-item-icon>
-          <v-icon>$restart</v-icon>
+          <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
       </v-list-item>
-      <v-list-item @click="serviceFirmwareRestartKlippy">
+
+      <v-list-item
+        @click="serviceFirmwareRestartKlippy"
+        :disabled="printerPrinting">
         <v-list-item-title>Restart MCU(s)</v-list-item-title>
         <v-list-item-icon>
-          <v-icon>$restartAlert</v-icon>
+          <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
       </v-list-item>
+
       <!-- <v-list-item @click="serverRestart">
         <v-list-item-title>Server Restart</v-list-item-title>
         <v-list-item-icon>
