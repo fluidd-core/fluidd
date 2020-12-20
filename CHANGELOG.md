@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/cadriel/fluidd/compare/v1.2.0...v1.2.1) (2020-12-20)
+
+
+### Bug Fixes
+
+* version states & add tooltip for brevity ([52a2256](https://github.com/cadriel/fluidd/commit/52a2256b86ed638d5cfcb73bbe876a1bb52adc2b))
+
 ## [1.2.0](https://github.com/cadriel/fluidd/compare/v1.1.0...v1.2.0) (2020-12-20)
 
 
