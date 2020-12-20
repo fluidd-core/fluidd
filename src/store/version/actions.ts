@@ -32,7 +32,8 @@ export const actions: ActionTree<VersionState, RootState> = {
 
   async onUpdatedClient () {
     SocketActions.machineUpdateStatus()
-    console.debug('Finished updating client')
+    console.debug('Finished updating client, reloading')
+    window.location.reload()
   },
 
   async onUpdatedSystem () {
