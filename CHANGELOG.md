@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/cadriel/fluidd/compare/v1.1.0...v1.2.0) (2020-12-20)
+
+
+### Features
+
+* add download log buttons to configuration page ([939e9a8](https://github.com/cadriel/fluidd/commit/939e9a86a5069d48cac535e37172c2aae89ae257))
+* allow creation of new files ([2adc1d0](https://github.com/cadriel/fluidd/commit/2adc1d08ac77713e195b7a9c55233f5badfb3b7b))
+* console entry maintains state ([a913ee6](https://github.com/cadriel/fluidd/commit/a913ee6f3ebddd8fb64c1ce6544b981045f04c87))
+* logo & printer name now link to dashboard ([793ad14](https://github.com/cadriel/fluidd/commit/793ad146196e3c2ae22ec24fdd1601b55a7d475f))
+* self updates ([c9c5d63](https://github.com/cadriel/fluidd/commit/c9c5d63889a1c142430c5d51e2bc58bb469fa926))
+
+
+### Bug Fixes
+
+* ctrl-z working properly in code editor ([4ac441b](https://github.com/cadriel/fluidd/commit/4ac441b7540f70fa8ec419f50c8a57d80d87d35a))
+* downloads now work irrelevant of connected printer port ([aadb6f5](https://github.com/cadriel/fluidd/commit/aadb6f580dfe28428d6ea0524d137cec1989012f))
+* ensure users can't access the jobs page on klippy disconnect ([b95e177](https://github.com/cadriel/fluidd/commit/b95e17745b1c414a5db42a293115569ab89da4d2))
+* fix macros not updating when selecting printers ([0cd4043](https://github.com/cadriel/fluidd/commit/0cd4043a5ac2847fd73d3ba2cc54b02fb2f55365))
+* input sliders now accept clicks properly ([552eff4](https://github.com/cadriel/fluidd/commit/552eff469b11fac2008d1c6322017c7a896b7748))
+* issue when closing file editor with escape ([e79feaf](https://github.com/cadriel/fluidd/commit/e79feaf757ded163f41ec3417ec0ded7ee9a352e))
+* prevent null values being saved to temp presets ([2d4951d](https://github.com/cadriel/fluidd/commit/2d4951d3809ffd8341777e9491db86b138962a13))
+* system versions not reliant on klippy being connected ([a510bfb](https://github.com/cadriel/fluidd/commit/a510bfb8feafa052f055da0e7c93f271b73a1656))
+
 ## [1.1.0](https://github.com/cadriel/fluidd/compare/v1.0.0...v1.1.0) (2020-12-02)
 
 
