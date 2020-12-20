@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.2](https://github.com/cadriel/fluidd/compare/v1.2.1...v1.2.2) (2020-12-20)
+
+
+### Bug Fixes
+
+* refresh on client update ([694d472](https://github.com/cadriel/fluidd/commit/694d4727baae3ef8a52b72665062e79b9efd1500))
+* you should not update or restart services during a print ([e250478](https://github.com/cadriel/fluidd/commit/e250478aa5e9249b0b6e0420c50a207cf8a7446a))
+
 ### [1.2.1](https://github.com/cadriel/fluidd/compare/v1.2.0...v1.2.1) (2020-12-20)
 
 
