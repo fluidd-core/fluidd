@@ -1,8 +1,11 @@
 # TODO [fluidd]
 
 ## Next Up
-- click on slider position won't update value
-- add log downloads to printer page / elsewhere when not in error state
+- draggable panels
+- z-offset configuration + sheet config
+- upload progress indicator
+- add ability to delete bed mesh profile
+- 
 - update panel collapse so these are remembered per instance
 - stage 1 themes (pick a specific theme (red, green etc..)
 - docker image

@@ -115,16 +115,18 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async onServerInfo ({ commit }, payload) {
     // This payload should return a list of enabled plugins.
-    const plugins = [
-      'power',
-      'update_manager'
-    ]
     if (
       payload.plugins &&
       payload.plugins.length > 0
     ) {
       commit('onPlugins', payload.plugins)
-      plugins.forEach((plugin) => {
+
+      // Init any plugins we need.
+      const pluginsToInit = [
+        'power',
+        'update_manager'
+      ]
+      pluginsToInit.forEach((plugin) => {
         if (payload.plugins.includes(plugin)) {
           switch (plugin) {
             case 'power':

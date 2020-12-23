@@ -503,7 +503,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   createFile (name: string) {
-    const file = new File([''], name)
+    const file = new File([`# ${name}\n`], name)
     this.$emit('upload-file', file, this.currentRoot, this.trimmedPath)
   }
 
