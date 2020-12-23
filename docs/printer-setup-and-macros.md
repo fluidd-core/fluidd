@@ -12,7 +12,7 @@ path: ~/gcode_files
 ```
 
 ### [display_status]
-If you don't have a `[display]` block in your configuration, then you'll need this block defined - with no other lines required.
+Required to properly support display updates in fluidd- with no other lines required.
 ```yml
 [display_status]
 ```
