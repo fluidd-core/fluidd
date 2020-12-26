@@ -80,6 +80,7 @@ export const defaultState = (): SocketState => {
         ]
       },
       gcode_move: {
+        gcode_position: [0, 0, 0, 0],
         homing_origin: []
       },
       fan: {
