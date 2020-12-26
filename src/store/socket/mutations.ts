@@ -96,7 +96,9 @@ export const mutations: MutationTree<SocketState> = {
     state.macros[macro.name] = macro
   },
   addWait (state, payload) {
-    state.waits.push(payload)
+    // ensure we can't add a wait that may already exist.
+    const i = state.waits.findIndex(wait => wait === payload)
+    if (i === -1) state.waits.push(payload)
   },
   removeWait (state, payload) {
     if (state.waits.length) {
