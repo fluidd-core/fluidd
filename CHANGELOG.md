@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/cadriel/fluidd/compare/v1.2.2...v1.3.0) (2020-12-26)
+
+
+### Features
+
+* draggable dashboard cards ([5286e8e](https://github.com/cadriel/fluidd/commit/5286e8edf4c086cfc95f4b1a2783be33170280df))
+
+
+### Bug Fixes
+
+* unable to edit new files. ([25aa5b9](https://github.com/cadriel/fluidd/commit/25aa5b94e5648cc8c9f9bc89f2eb41ac41960d32))
+
 ### [1.2.2](https://github.com/cadriel/fluidd/compare/v1.2.1...v1.2.2) (2020-12-20)
 
 
