@@ -73,7 +73,9 @@ import {
   mdiRestartAlert,
   mdiUpdate,
   mdiChevronRight,
-  mdiChevronLeft
+  mdiChevronLeft,
+  mdiDrag,
+  mdiCheckboxMultipleBlank
 } from '@mdi/js'
 
 /**
@@ -85,7 +87,8 @@ export const Globals = Object.freeze({
   CONSOLE_SEND_PREFIX: '$ ',
   KLIPPY_RETRY_DELAY: 2000,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
-  LOCAL_APPCONFIG_STORAGE_KEY: 'appConfig',
+  LOCAL_CARDSTATE_STORAGE_KEY: 'cardState',
+  LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout',
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
   SETTINGS_FILENAME: '.fluidd.json',
   APP_NAME: 'Fluidd',
@@ -98,8 +101,10 @@ export const Icons = Object.freeze({
   help: mdiHelp,
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
+  tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,
+  drag: mdiDrag,
   chart: mdiChartTimelineVariant,
   power: mdiPower,
   powerCycle: mdiPowerCycle,

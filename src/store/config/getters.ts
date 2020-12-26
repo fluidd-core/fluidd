@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { ConfigState } from './types'
+import { CardConfig, ConfigState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<ConfigState, RootState> = {
@@ -13,5 +13,9 @@ export const getters: GetterTree<ConfigState, RootState> = {
       return (a.active) ? -1 : (b.active) ? 1 : 0
     })
     return instances
+  },
+
+  getCards: (state) => (group: string): CardConfig[] => {
+    return state.cardLayout[group]
   }
 }

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, LocalConfig, GenericSave, Config, InstanceConfig, FileConfig, HostConfig } from './types'
+import { ConfigState, GenericSave, Config, InstanceConfig, FileConfig, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -34,17 +34,13 @@ export const actions: ActionTree<ConfigState, RootState> = {
     commit('onInitApiConfig', payload)
   },
 
-  /**
-   * Saves local keys to state and localstorage.
-   * Assumes a flat structure of key value pairs.
-   */
-  async saveLocal ({ commit }, payload: LocalConfig) {
-    commit('onSaveLocal', payload)
+  async saveCardConfig ({ commit }, payload: { group: string; cards: CardConfig[] }) {
+    commit('saveCardConfig', payload)
   },
 
-  // async addInstance ({ commit }, payload: InstanceConfig) {
-  //   commit('addInstance', payload)
-  // },
+  async saveCardState ({ commit }, payload: CardState) {
+    commit('saveCardState', payload)
+  },
 
   async removeInstance ({ commit }, payload: InstanceConfig) {
     commit('removeInstance', payload)

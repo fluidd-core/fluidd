@@ -1,17 +1,28 @@
 export interface ConfigState {
-  [key: string]: string | boolean | LocalConfig | InstanceConfig[] | FileConfig;
+  [key: string]: string | boolean | CardState | InstanceConfig[] | FileConfig | CardLayout;
   apiUrl: string;
   socketUrl: string;
   unsavedChanges: boolean;
-  localConfig: LocalConfig;
+  layoutMode: boolean;
+  cardState: CardState; // if a collapsable card is collapsed or not.
+  cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   fileConfig: FileConfig;
 }
 
-// This defines localstorage data.
-// We should keep these simple, so as to keep local storage to a minimum.
-export interface LocalConfig {
-  [key: string]: string | boolean | number;
+// Saved to local storage.
+export interface CardLayout {
+  [key: string]: CardConfig[];
+}
+
+export interface CardConfig {
+  name: string;
+  enabled: boolean;
+}
+
+// Saved to local storage.
+export interface CardState {
+  [key: string]: boolean;
 }
 
 export interface FileConfig {
@@ -76,6 +87,7 @@ export interface ApiConfig {
   socketUrl: string;
 }
 
+// Saved to localstorage.
 export interface InstanceConfig extends ApiConfig {
   name: string;
   active: boolean;

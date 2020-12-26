@@ -4,7 +4,28 @@
     color="tertiary"
     :rounded="rounded"
     :loading="isLoading">
-    <v-card-title class="card-title quaternary py-1">
+
+    <div v-if="hasTabbedTitleSlot()" :class="{ 'draggable': isInLayout }">
+      <slot
+        name="tabbed-title"
+        v-bind:attrs="{
+          inLayout: isInLayout,
+          enabled,
+          value: isCollapsed,
+          isCollapsed
+        }"
+        v-bind:on="{
+          'input': onCollapseChange,
+          'layout-enabled': onLayoutEnabled
+        }">
+      </slot>
+    </div>
+
+    <v-card-title
+      v-if="!hasTabbedTitleSlot()"
+      class="card-title quaternary py-1"
+      :class="{ 'draggable': isInLayout }"
+    >
       <slot name="title">
         <v-icon left>{{ icon }}</v-icon>
         <span class="font-weight-light">{{ title }}</span>
@@ -12,13 +33,13 @@
       <v-spacer />
 
       <!-- Menu Buttons, desktop + -->
-      <div class="d-none d-lg-flex">
+      <div class="d-none d-lg-flex" v-if="!isInLayout">
         <slot name="menu"></slot>
       </div>
 
       <!-- Menu, mobile / tablet -->
       <v-menu
-        v-if="hasMenuSlot && !hideMenu"
+        v-if="hasMenuSlot && !hideMenu && !isInLayout"
         left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
@@ -37,20 +58,28 @@
 
       <!-- Collapse Control -->
       <slot name="collapse-button">
-        <btn-collapse v-model="isCollapsed"></btn-collapse>
+        <btn-collapse
+          :value="isCollapsed"
+          @input="isCollapsed = $event"
+          :enabled="enabled"
+          :inLayout="isInLayout"
+          @layout-enabled="$emit('enabled', $event)"
+        >
+        </btn-collapse>
       </slot>
     </v-card-title>
+
     <v-divider></v-divider>
 
     <v-expand-transition v-if="!lazy">
       <div
         @transitionend="transitionEvent"
         id="card-content"
-        v-if="!isCollapsed"
+        v-if="!isCollapsed && !isInLayout"
         :class="_contentClasses"
         :style="_contentStyles">
         <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
-          <slot name="subTitle">
+          <slot name="sub-title">
             <span v-html="subTitle"></span>
           </slot>
         </v-card-subtitle>
@@ -65,7 +94,7 @@
       <div
         @transitionend="transitionEvent"
         id="card-content"
-        v-show="!isCollapsed"
+        v-show="!isCollapsed && !isInLayout"
         :class="_contentClasses"
         :style="_contentStyles">
         <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
@@ -87,7 +116,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class ToolheadCard extends Vue {
-  @Prop({ type: String })
+  @Prop({ type: String, required: true })
   title!: string
 
   @Prop({ type: String, required: false })
@@ -99,11 +128,20 @@ export default class ToolheadCard extends Vue {
   @Prop({ type: Boolean, default: true })
   lazy!: boolean // use v-show or v-if
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: false })
   icon!: string
 
   @Prop({ type: Boolean, default: false })
   loading!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  draggable!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  inLayout!: boolean
+
+  @Prop({ type: Boolean, default: true })
+  enabled!: boolean
 
   @Prop({ type: Boolean, default: true })
   collapsable!: boolean
@@ -153,7 +191,8 @@ export default class ToolheadCard extends Vue {
   }
 
   get id (): string {
-    return (this.cardKey) ? this.cardKey : this.title
+    if (this.cardKey) return this.cardKey
+    return this.title.replace(' ', '')
   }
 
   get isLoading (): boolean | string {
@@ -161,41 +200,58 @@ export default class ToolheadCard extends Vue {
   }
 
   get isCollapsed (): boolean {
-    const collapsed = (this.$store.state.config.localConfig[this.id] === undefined)
+    const collapsed = (this.$store.state.config.cardState[this.id] === undefined)
       ? this.collapsed
-      : this.$store.state.config.localConfig[this.id]
+      : this.$store.state.config.cardState[this.id]
 
     return collapsed
   }
 
   set isCollapsed (val: boolean) {
-    this.$store.dispatch('config/saveLocal', { [this.id]: val })
+    this.$store.dispatch('config/saveCardState', { [this.id]: val })
+  }
+
+  get isInLayout (): boolean {
+    return (this.inLayout && this.draggable)
   }
 
   get hasDefaultSlot () {
-    return this.$slots.default || this.$scopedSlots.default
+    return !!this.$slots.default || !!this.$scopedSlots.default
   }
 
   get hasMenuSlot () {
-    return this.$slots.menu || this.$scopedSlots.menu
+    return !!this.$slots.menu || !!this.$scopedSlots.menu
   }
 
   get hasTitleSlot () {
-    return this.$slots.title || this.$scopedSlots.title
+    return !!this.$slots.title || !!this.$scopedSlots.title
   }
 
   get hasSubTitleSlot () {
-    return this.$slots.subTitle || this.$scopedSlots.subTitle
+    return !!this.$slots['sub-title'] || !!this.$scopedSlots['sub-title']
   }
 
   get hasCollapseButtonSlot () {
-    return this.$slots['collapse-button'] || this.$scopedSlots['collapse-button']
+    return !!this.$slots['collapse-button'] || !!this.$scopedSlots['collapse-button']
+  }
+
+  // Moved to a regular function because slots are not reactive.
+  hasTabbedTitleSlot () {
+    return !!this.$slots['tabbed-title'] || !!this.$scopedSlots['tabbed-title']
   }
 
   mounted () {
     if (this.hasCollapseButtonSlot) {
       this.collapsable = false
     }
+  }
+
+  onCollapseChange (e: boolean) {
+    this.isCollapsed = e
+  }
+
+  onLayoutEnabled (e: Event) {
+    this.$emit('enabled', e)
   }
 
   transitionEvent (e: TransitionEvent) {

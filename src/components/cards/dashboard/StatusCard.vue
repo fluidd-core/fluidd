@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :hide-menu="hidePrinterMenu"
-    cardKey="status"
+    title="Status"
     icon="$printer3d">
 
     <template v-slot:title>

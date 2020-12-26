@@ -1,6 +1,7 @@
 <template>
   <collapsable-card
     title="Temperature Presets"
+    cardKey="TemperaturePresetSettings"
     icon="$fire"
     subTitle="Apply predefined temperatures on the dashboard">
     <v-card-text>

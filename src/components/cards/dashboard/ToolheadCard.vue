@@ -2,7 +2,11 @@
   <collapsable-card
     :hide-menu="(printerPrinting)"
     title="Tool"
-    icon="$printer3dNozzle">
+    icon="$printer3dNozzle"
+    :draggable="true"
+    :inLayout="inLayout"
+    :enabled="enabled"
+    @enabled="$emit('enabled', $event)">
 
     <template v-slot:title>
       <v-icon left>$printer3dNozzle</v-icon>
@@ -111,7 +115,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import ToolheadWidget from '@/components/widgets/ToolheadWidget.vue'
 
@@ -121,6 +125,9 @@ import ToolheadWidget from '@/components/widgets/ToolheadWidget.vue'
   }
 })
 export default class ToolheadCard extends Mixins(UtilsMixin) {
+  @Prop({ type: Boolean, default: true })
+  enabled!: boolean
+
   /**
    * Ensures our temps are high enough to extrude or retract.
    */
@@ -138,6 +145,10 @@ export default class ToolheadCard extends Mixins(UtilsMixin) {
     return (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
       ? parseInt(this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
       : 170 // Default to a sane value
+  }
+
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode)
   }
 }
 </script>

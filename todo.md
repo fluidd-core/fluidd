@@ -5,9 +5,9 @@
 - z-offset configuration + sheet config
 - upload progress indicator
 - add ability to delete bed mesh profile
-- 
 - update panel collapse so these are remembered per instance
 - stage 1 themes (pick a specific theme (red, green etc..)
+- ensure users can still download log files when the printer is not in an error state
 - docker image
 - load gcode help and implement in console
 - show mm/s in status
@@ -15,6 +15,15 @@
 - PID calibrate option via dialog maybe?
 - Drag and Drop move.
 - Add a way to specify a value for sliders
+- show known meta data on print dialog?
+
+- self update
+- draggable cards (vue-draggable)
+- side panel hamburger gets notification circle (orange or red) which indicates something new.
+- side panel itself gets an alert notifying of new updates
+- side panel itself gets toggle to allow dragging panels or not
+- side panel itself gets a button to save layouts?
+
 
 ## Refactoring / Core
 - cleanup socket store / move socket out and keep printer data
@@ -37,7 +46,6 @@
 - finish up update notification / pwa setup
 - figure out https
 - click / tap image camara update option (i.e., not constant image updates)
-- dynamic favicon that looks like the percent finished ring (maybe.. ?)
 - probed vs mesh bed level display option
 - should be able to force part speed fan during a print?
 - add UI to filter out temp waits from console

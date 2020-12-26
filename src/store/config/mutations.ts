@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { ConfigState, FileConfig, LocalConfig, GenericSave, InstanceConfig, Config } from './types'
+import { ConfigState, FileConfig, GenericSave, InstanceConfig, Config, CardConfig } from './types'
 import { Macro } from '../socket/types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
@@ -48,9 +48,14 @@ export const mutations: MutationTree<ConfigState> = {
    * This would usually be set once loaded from localStorage.
    */
   onInitLocal (state) {
-    if (Globals.LOCAL_APPCONFIG_STORAGE_KEY in localStorage) {
-      const config = JSON.parse(localStorage[Globals.LOCAL_APPCONFIG_STORAGE_KEY])
-      Vue.set(state, 'localConfig', config)
+    if (Globals.LOCAL_CARDSTATE_STORAGE_KEY in localStorage) {
+      const config = JSON.parse(localStorage[Globals.LOCAL_CARDSTATE_STORAGE_KEY])
+      Vue.set(state, 'cardState', config)
+    }
+
+    if (Globals.LOCAL_CARDLAYOUT_STORAGE_KEY in localStorage) {
+      const config = JSON.parse(localStorage[Globals.LOCAL_CARDLAYOUT_STORAGE_KEY])
+      Vue.set(state, 'cardLayout', config)
     }
   },
 
@@ -130,13 +135,15 @@ export const mutations: MutationTree<ConfigState> = {
     set(state, payload.key, payload.value)
   },
 
-  /**
-   * Explicitly saves to the localConfig and match in localStorage.
-   */
-  onSaveLocal (state, payload: LocalConfig) {
-    const config = { ...state.localConfig, ...payload }
-    Vue.set(state, 'localConfig', config)
-    localStorage.setItem(Globals.LOCAL_APPCONFIG_STORAGE_KEY, JSON.stringify(config))
+  saveCardState (state, payload) {
+    const config = { ...state.cardState, ...payload }
+    Vue.set(state, 'cardState', config)
+    localStorage.setItem(Globals.LOCAL_CARDSTATE_STORAGE_KEY, JSON.stringify(config))
+  },
+
+  saveCardConfig (state, payload: { group: string; cards: CardConfig[] }) {
+    state.cardLayout[payload.group] = payload.cards
+    localStorage.setItem(Globals.LOCAL_CARDLAYOUT_STORAGE_KEY, JSON.stringify(state.cardLayout))
   },
 
   /**
@@ -176,6 +183,10 @@ export const mutations: MutationTree<ConfigState> = {
    */
   removePreset (state, payload) {
     state.fileConfig.dashboard.tempPresets.splice(payload, 1)
+  },
+
+  setLayoutMode (state, payload) {
+    state.layoutMode = payload
   }
 
 }

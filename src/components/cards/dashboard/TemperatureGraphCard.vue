@@ -2,7 +2,11 @@
   <collapsable-card
     :loading="!chartReady"
     title="Temperature"
-    icon="$chart">
+    icon="$chart"
+    :draggable="true"
+    :inLayout="inLayout"
+    :enabled="enabled"
+    @enabled="$emit('enabled', $event)">
 
     <v-card-text class="chart-container">
       <temperature-chart-widget @hook:mounted="chartMounted()" v-if="chartReady" :chart-data="chartData" :styles="chartStyles"></temperature-chart-widget>
@@ -12,7 +16,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Watch, Prop } from 'vue-property-decorator'
 import { ChartData, Chart } from '@/store/socket/types'
 import UtilsMixin from '@/mixins/utils'
 
@@ -24,6 +28,9 @@ const TemperatureChartWidget = () => import(/* webpackChunkName: "tempchart", we
   }
 })
 export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
+  @Prop({ type: Boolean, default: true })
+  enabled!: boolean
+
   private chartData: Chart.ChartData = {}
   private startInterval!: number | undefined
   private ready = false
@@ -64,6 +71,10 @@ export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
   private start () {
     this.chartData = this.allChartData
     this.ready = true
+  }
+
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode)
   }
 }
 </script>

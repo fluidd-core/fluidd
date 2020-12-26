@@ -47,6 +47,30 @@
 
     <v-divider></v-divider>
     <system-printers-widget @click="this.close"></system-printers-widget>
+
+    <v-divider></v-divider>
+    <v-list
+      dense
+      subheader
+      two-line
+      flat
+      v-model="layoutMode">
+      <v-list-item-group
+        multiple
+      >
+        <v-list-item @click.prevent="layoutMode = !layoutMode">
+          <v-list-item-action>
+            <v-checkbox :input-value="layoutMode"></v-checkbox>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Adjust layout</v-list-item-title>
+            <v-list-item-subtitle>Adjust dashboard layout</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+
   </v-navigation-drawer>
 </template>
 
@@ -68,6 +92,15 @@ import UtilsMixin from '@/mixins/utils'
 export default class AppDrawer extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean
+
+  get layoutMode () {
+    return this.$store.state.config.layoutMode
+  }
+
+  set layoutMode (val: boolean) {
+    this.$store.commit('config/setLayoutMode', val)
+    this.close()
+  }
 
   get instanceName () {
     return this.$store.state.config.fileConfig.general.instanceName
