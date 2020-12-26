@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/cadriel/fluidd/compare/v1.3.0...v1.3.1) (2020-12-26)
+
+
+### Bug Fixes
+
+* buttons states now update properly ([36854c4](https://github.com/cadriel/fluidd/commit/36854c4242800d0248e93dafb09725a65366c636))
+* position now reflects gcode position, not toolhead position ([e76bc41](https://github.com/cadriel/fluidd/commit/e76bc41e618c8ebfdac25faf057dbdc1fbe69c3a))
+* revert position back to toolhead position ([b2b83e9](https://github.com/cadriel/fluidd/commit/b2b83e97be21d9a4ccab20d32ee4cb5ba7503582))
+
 ## [1.3.0](https://github.com/cadriel/fluidd/compare/v1.2.2...v1.3.0) (2020-12-26)
 
 
