@@ -19,7 +19,7 @@
     <v-main>
       <router-view v-if="socketConnected" />
       <socket-disconnected-widget v-if="!socketConnected"></socket-disconnected-widget>
-      <update-status-widget></update-status-widget>
+      <dialog-update-status></dialog-update-status>
     </v-main>
 
     <app-footer></app-footer>
@@ -36,7 +36,7 @@ import AppDrawer from '@/components/AppDrawer.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
-import UpdateStatusWidget from '@/components/widgets/UpdateStatusWidget.vue'
+import DialogUpdateStatus from '@/components/dialogs/dialogUpdateStatus.vue'
 
 @Component({
   components: {
@@ -45,7 +45,7 @@ import UpdateStatusWidget from '@/components/widgets/UpdateStatusWidget.vue'
     SocketDisconnectedWidget,
     FlashMessage,
     AppFooter,
-    UpdateStatusWidget
+    DialogUpdateStatus
   }
 })
 export default class App extends Mixins(UtilsMixin) {

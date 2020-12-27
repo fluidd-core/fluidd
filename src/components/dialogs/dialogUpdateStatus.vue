@@ -5,46 +5,50 @@
     persistent
   >
     <v-card
-      color="secondary darken-1"
-      :height="400">
+      color="secondary darken-1">
       <v-card-title>
-        <span class="headline">{{ title }}</span>
+        <span class="headline">Component Update</span>
       </v-card-title>
-      <v-card-text style="height: 270px;">
-
-        <v-progress-linear
-          :value="100"
-          :active="true"
-          :indeterminate="(updating)"
-          class="mb-4"
-          color="warning"
-          rounded
-          height="6"
-        ></v-progress-linear>
-
-        <console-widget
-          v-if="updateResponses"
-          :items="updateResponses"
-          readonly
-        ></console-widget>
-
-        <!-- <v-textarea
-          v-if="updateResponses"
-          readonly
-          class="terminal-response"
-          :value="updateResponses"
+      <v-card-text>
+        <v-row
+          v-if="updating"
+          class="fill-height"
+          align-content="center"
+          justify="center"
         >
-        </v-textarea> -->
+          <v-col
+            class="subtitle-1 text-center"
+            cols="12"
+          >
+            Updating, please wait...
+          </v-col>
+          <v-col cols="6">
+            <v-progress-linear
+              indeterminate
+              class="mb-4"
+              color="warning"
+              rounded
+              height="6"
+            ></v-progress-linear>
+          </v-col>
+        </v-row>
+
+        <v-container style="height: 250px;">
+          <console-widget
+            v-if="updateResponses"
+            :items="updateResponses"
+            readonly
+          ></console-widget>
+        </v-container>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="actions">
-          <v-btn color="secondary" @click="close" :disabled="updating">Close</v-btn>
+          <v-btn color="primary" @click="close" :disabled="updating">Finish</v-btn>
         </slot>
       </v-card-actions>
     </v-card>
   </v-dialog>
-  <!-- <update-in-progress-widget v-if=""></update-in-progress-widget> -->
 </template>
 
 <script lang="ts">
@@ -57,7 +61,7 @@ import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
     ConsoleWidget
   }
 })
-export default class App extends Mixins(UtilsMixin) {
+export default class DialogUpdateStatus extends Mixins(UtilsMixin) {
   invokedDialog = false
   get showDialog () {
     if (
