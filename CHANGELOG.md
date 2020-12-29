@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/cadriel/fluidd/compare/v1.3.1...v1.4.0) (2020-12-29)
+
+
+### Features
+
+* improved upload status ([3da419e](https://github.com/cadriel/fluidd/commit/3da419ee52970694152213e4a12964425f1c086e))
+
+
+### Bug Fixes
+
+* ensure add printer instance url requires protocol ([17c3271](https://github.com/cadriel/fluidd/commit/17c327196966608b2aa2f9f263d02c124cfe5035))
+
 ### [1.3.1](https://github.com/cadriel/fluidd/compare/v1.3.0...v1.3.1) (2020-12-26)
 
 
