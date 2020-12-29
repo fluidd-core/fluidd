@@ -43,11 +43,11 @@
       </template>
 
       <template v-slot:help-tooltip>
-        Enter your moonraker API endpoint.<br />
-        Some examples might include;<br />
+        Enter your API URL.<br />
+        Some examples might be;<br />
         <blockquote>
-          fluidd.local,
-          my_ip_address
+          http://fluidd.local,
+          http://192.168.1.150
         </blockquote>
       </template>
 
@@ -63,10 +63,10 @@
       >
         <v-text-field
           autofocus
-          label="Moonraker api url"
+          label="API URL"
           :rules="[rules.required, rules.url]"
           persistent-hint
-          hint="E.g., fluiddpi.local"
+          hint="E.g., http://fluiddpi.local"
           v-model="instanceDialog.url">
         </v-text-field>
       </v-form>
@@ -95,7 +95,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   docsUrl = Globals.DOCUMENTATION_ROOT
   waits = Waits
 
-  urlRegex = new RegExp('^(https?:\\/\\/)?' + // protocol
+  urlRegex = new RegExp('^(https?:\\/\\/)' + // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
             '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
@@ -142,12 +142,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
 
   addInstance () {
     if (this.instanceDialog.valid) {
-      const urls = (
-        !this.instanceDialog.url.startsWith('http://') ||
-        !this.instanceDialog.url.startsWith('https://')
-      )
-        ? this.$filters.getApiUrls('http://' + this.instanceDialog.url)
-        : this.$filters.getApiUrls(this.instanceDialog.url)
+      const urls = this.$filters.getApiUrls(this.instanceDialog.url)
       this.instanceDialog.open = false
       this.activateInstance(urls)
       this.$emit('click')

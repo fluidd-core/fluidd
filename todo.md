@@ -1,28 +1,24 @@
 # TODO [fluidd]
 
 ## Next Up
-- draggable panels
-- z-offset configuration + sheet config
-- upload progress indicator
-- add ability to delete bed mesh profile
-- update panel collapse so these are remembered per instance
-- stage 1 themes (pick a specific theme (red, green etc..)
-- ensure users can still download log files when the printer is not in an error state
+- i18n (translations)
+- z-offset configuration + sheet config + probe calibration
 - docker image
-- load gcode help and implement in console
-- show mm/s in status
-- auto save printer settings?
-- PID calibrate option via dialog maybe?
+- PID calibrate option for heaters (hotend + bed etc)
 - Drag and Drop move.
 - Add a way to specify a value for sliders
-- show known meta data on print dialog?
+- bulk file actions (bulk remove, bulk move etc..)
+- More macro layout options (categorize macros, ability to define layout in some way, color)
+- ability to reprint after cancel
 
-- self update
-- draggable cards (vue-draggable)
-- side panel hamburger gets notification circle (orange or red) which indicates something new.
-- side panel itself gets an alert notifying of new updates
-- side panel itself gets toggle to allow dragging panels or not
-- side panel itself gets a button to save layouts?
+
+- load gcode help and implement in console
+- themes (pick a specific theme (red, green etc..)
+- auto save printer settings?
+- show known meta data on print dialog?
+- show mm/s in status
+- update panel collapse so these are remembered per instance
+- add ability to delete bed mesh profile
 
 
 ## Refactoring / Core
@@ -43,7 +39,6 @@
 
 ## General Improvements
 - Bulk actions on files
-- finish up update notification / pwa setup
 - figure out https
 - click / tap image camara update option (i.e., not constant image updates)
 - probed vs mesh bed level display option
