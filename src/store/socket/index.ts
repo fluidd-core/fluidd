@@ -12,7 +12,6 @@ export const defaultState = (): SocketState => {
     ready: false, // indicates the socket is ready (and has first dump of data...)
     acceptingNotifications: false,
     error: null,
-    waits: [],
     endstops: {},
     console: [],
     chart: [],

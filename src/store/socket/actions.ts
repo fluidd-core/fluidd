@@ -341,14 +341,6 @@ export const actions: ActionTree<SocketState, RootState> = {
    *  Non specific socket requests
    * ==========================================================================
    */
-
-  /** Not socket related */
-  async addWait ({ commit }, wait) {
-    commit('addWait', wait)
-  },
-  async removeWait ({ commit }, wait) {
-    commit('removeWait', wait)
-  },
   async addConsoleEntry ({ commit }, payload: ConsoleEntry) {
     payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
     if (!payload.time || payload.time <= 0) {

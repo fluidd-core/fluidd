@@ -5,7 +5,6 @@ export interface SocketState {
   ready: boolean;
   acceptingNotifications: boolean;
   error: SocketError | null;
-  waits: string[]; // list of things that we might be waiting on, like a gcode script to finish
   endstops: EndStops;
   macros: Macros;
   plugins: string[]; // active plugins (device_power)

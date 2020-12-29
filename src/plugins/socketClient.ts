@@ -79,7 +79,7 @@ export class WebSocketClient {
 
       // Remove a wait if defined.
       if (request && request.wait && request.wait.length) {
-        this.store.commit('socket/removeWait', request.wait)
+        this.store.commit('wait/removeWait', request.wait)
       }
 
       if (d.error) { // Is it in error?
@@ -151,7 +151,7 @@ export class WebSocketClient {
       }
       if (options && options.wait) {
         request.wait = options.wait
-        if (this.store) this.store.dispatch('socket/addWait', options.wait)
+        if (this.store) this.store.dispatch('wait/addWait', options.wait)
       }
       if (options && options.params) {
         packet.params = options.params

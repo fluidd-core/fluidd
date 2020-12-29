@@ -5,6 +5,7 @@ import { files } from './files'
 import { config } from './config'
 import { devicePower } from './devicePower'
 import { version } from './version'
+import { wait } from './wait'
 import { RootState } from './types'
 import { Config } from './config/types'
 
@@ -20,7 +21,8 @@ export default new Vuex.Store<RootState>({
     socket,
     files,
     devicePower,
-    version
+    version,
+    wait
   },
   mutations: {
     setConsoleCommand (state, payload) {
@@ -45,6 +47,8 @@ export default new Vuex.Store<RootState>({
       this.commit('config/resetState')
       this.commit('files/resetState')
       this.commit('devicePower/resetState')
+      this.commit('version/resetState')
+      this.commit('wait/resetState')
     },
     void () {
       console.debug('void action')

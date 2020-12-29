@@ -100,14 +100,14 @@ export default class UtilsMixin extends Vue {
    * Indicates if we have a valid wait.
    */
   hasWait (wait: string) {
-    return this.$store.getters['socket/hasWait'](wait)
+    return this.$store.getters['wait/hasWait'](wait)
   }
 
   /**
    * Indicates if we have any waits.
    */
   get hasWaits () {
-    return this.$store.getters['socket/hasWaits']
+    return this.$store.getters['wait/hasWaits']
   }
 
   get printerSupportsQgl (): boolean {
