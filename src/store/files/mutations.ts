@@ -66,7 +66,6 @@ export const mutations: MutationTree<FilesState> = {
   updateFileUpload (state, payload) {
     const i = state.uploads.findIndex((u) => u.filename === payload.filename)
     if (i >= 0) {
-      console.log('updating it', { ...state.uploads[i], ...payload })
       Vue.set(state.uploads, i, { ...state.uploads[i], ...payload })
     }
   },
