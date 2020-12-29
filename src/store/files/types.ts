@@ -1,8 +1,9 @@
 export interface FilesState {
-  [key: string]: Files[];
+  [key: string]: Files[] | FilesUpload[];
   gcodes: Files[];
   config: Files[];
   config_examples: Files[];
+  uploads: FilesUpload[];
 }
 
 export interface Files {
@@ -84,4 +85,10 @@ export interface FileUpdate {
   paths: FilePaths;
   file: AppFile | AppFileWithMeta;
   root: string;
+}
+
+export interface FilesUpload {
+  filename: string;
+  percentUploaded: number;
+  processingComplete: boolean; // indicates moonraker is finished with the file.
 }

@@ -9,7 +9,10 @@ export const defaultState = (): FilesState => {
   return {
     gcodes: [],
     config: [],
-    config_examples: []
+    config_examples: [],
+    uploads: [
+      // { filename: 'test.file', percentUploaded: 12, processingComplete: false }
+    ]
   }
 }
 
