@@ -96,7 +96,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   waits = Waits
 
   urlRegex = new RegExp('^(https?:\\/\\/)' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z\\d]{2,}|' + // domain name
             '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
             '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
