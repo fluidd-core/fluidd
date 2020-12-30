@@ -5,7 +5,7 @@
         <klippy-disconnected-card></klippy-disconnected-card>
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
         <v-row>
-          <v-col cols="12" sm="6" class="pt-0">
+          <v-col cols="12" sm="6" class="pt-0" v-if="!printerWarnings.length && klippyConnected">
             <logs-card></logs-card>
           </v-col>
           <v-col cols="12" sm="6" class="pt-0" v-if="klippyConnected">

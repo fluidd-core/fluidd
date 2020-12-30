@@ -70,6 +70,29 @@ export default class UtilsMixin extends Vue {
     return false
   }
 
+  // Return a list of warnings we deem necessary for
+  // correct usage of the web client.
+  get printerWarnings () {
+    const config = this.$store.state.socket.printer.configfile.config
+    const warnings = []
+    if (config && !config.virtual_sdcard) {
+      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+    }
+
+    if (config && !config.pause_resume) {
+      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
+    }
+
+    if (config && !config.display_status) {
+      warnings.push({ message: '[display_status] not found in printer configuration.' })
+    }
+
+    if (config && ('gcode_macro CANCEL_PRINT' in config === false)) {
+      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
+    }
+    return warnings
+  }
+
   get xyHomed (): boolean {
     return this.$store.getters['socket/getHomedAxes']('xy')
   }

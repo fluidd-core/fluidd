@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    v-if="showCard"
+    v-if="printerWarnings.length && !klippyConnected"
     :title="'Klippy: ' + klippyState"
     :collapsable="false"
     icon="$alert">
@@ -47,35 +47,8 @@ import { Globals } from '@/globals'
   components: {}
 })
 export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
-  get showCard () {
-    return (!this.klippyConnected || this.clientWarnings.length)
-  }
-
   get socketReady () {
     return this.$store.state.socket.ready
-  }
-
-  // Return a list of warnings we deem necessary for
-  // correct usage of the web client.
-  get clientWarnings () {
-    const config = this.$store.state.socket.printer.configfile.config
-    const warnings = []
-    if (config && !config.virtual_sdcard) {
-      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
-    }
-
-    if (config && !config.pause_resume) {
-      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
-    }
-
-    if (config && !config.display_status) {
-      warnings.push({ message: '[display_status] not found in printer configuration.' })
-    }
-
-    if (config && ('gcode_macro CANCEL_PRINT' in config === false)) {
-      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
-    }
-    return warnings
   }
 
   get appName () {
