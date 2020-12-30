@@ -3,7 +3,7 @@
     <v-row align="center">
       <v-col cols="auto">
         <v-progress-circular
-            :rotate="180"
+            :rotate="-90"
             :size="90"
             :width="5"
             :value="timeEstimates.progress"

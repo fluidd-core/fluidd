@@ -121,7 +121,7 @@ export default class App extends Mixins(UtilsMixin) {
       const centerY = canvas.height / 2
       const lineWidth = 8
       const radius = favIconSize / 2 - lineWidth / 2
-      const startAngle = 1 * Math.PI
+      const startAngle = 1.5 * Math.PI
       const endAngle = startAngle + (percent * 2 * Math.PI / 100)
 
       /* Draw the initial gray circle */
