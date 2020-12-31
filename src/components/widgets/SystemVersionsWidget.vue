@@ -11,42 +11,41 @@
       </v-list-item-content>
     </template>
 
-    <template v-for="(component, i) in versionComponents">
+    <template v-for="(component) in versionComponents">
       <v-list-item
-        :key="i"
-        v-if="!(i === 'client' && skipClientUpdates)"
+        :key="component.key"
         class="v-list-item--x-dense"
       >
         <v-list-item-content>
-          <v-list-item-title>{{ (component.name) ? component.name : i }}</v-list-item-title>
-          <v-list-item-subtitle>
-            {{ component.version }}
-            <span v-if="component.remote_version && hasUpdate(i)">
-              <v-icon x-small>$chevronRight</v-icon> {{ component.remote_version }}
-            </span>
-          </v-list-item-subtitle>
-        </v-list-item-content>
+          <div class="component-title">{{ packageTitle(component) }}</div>
+          <v-layout align-center justify-space-between>
+            <div class="component-version">
+              {{ ('package_count' in component) ? component.package_count + ' packages' : component.version }}
+              <span v-if="'remote_version' in component && hasUpdate(component.type)">
+                to {{ component.remote_version }}
+              </span>
+            </div>
 
-        <v-list-item-action>
-          <v-list-item-action-text>
             <version-status
-              :has-update="hasUpdate(i)"
+              :has-update="hasUpdate(component.type)"
               :disabled="hasWait(waits.onUpdate) || printerPrinting"
               :loading="hasWait(waits.onUpdate)"
-              :dirty="(component.name) ? false : component.is_dirty"
-              :valid="(component.name) ? true : component.is_valid"
-              @on-update="updateComponent(i)">
+              :dirty="('is_dirty' in component) ? component.is_dirty : false"
+              :valid="('is_valid' in component) ? component.is_valid : true"
+              @on-update="updateComponent(component.type)">
             </version-status>
-          </v-list-item-action-text>
-        </v-list-item-action>
+
+          </v-layout>
+        </v-list-item-content>
+
       </v-list-item>
     </template>
 
-    <v-list-item class="v-list-item--x-dense">
+    <!-- <v-list-item class="v-list-item--x-dense">
       <v-list-item-content>
         <v-btn text outlined x-small :disabled="printerPrinting" @click="updateComponent('system')">update os packages</v-btn>
       </v-list-item-content>
-    </v-list-item>
+    </v-list-item> -->
 
     <v-list-item @click="forceCheck()">
       <v-list-item-title>Check for updates</v-list-item-title>
@@ -64,6 +63,7 @@ import { SocketActions } from '@/socketActions'
 import VersionStatus from '@/components/VersionStatus.vue'
 import UtilsMixin from '@/mixins/utils'
 import { Waits } from '@/globals'
+import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 
 @Component({
   components: {
@@ -78,7 +78,7 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
   }
 
   get versionComponents () {
-    return this.$store.getters['version/getComponents']
+    return this.$store.getters['version/getVisibleComponents']
   }
 
   get hasUpdates () {
@@ -89,8 +89,21 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
     return this.$store.state.version.skipClientUpdates
   }
 
-  hasUpdate (component: 'klipper' | 'moonraker' | 'client') {
+  hasUpdate (component: 'klipper' | 'moonraker' | 'client' | 'system') {
     return this.$store.getters['version/hasUpdate'](component)
+  }
+
+  packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
+    if (component.type === 'client') {
+      component = component as ArtifactVersion
+      return component.name
+    }
+
+    if (component.type === 'system') {
+      return 'os packages'
+    }
+
+    return component.type
   }
 
   updateComponent (component: 'klipper' | 'moonraker' | 'client' | 'system') {
@@ -118,3 +131,17 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .component-title {
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.8125rem;
+    line-height: 1rem;
+  }
+  .component-version {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.8125rem;
+    line-height: 1rem;
+  }
+</style>

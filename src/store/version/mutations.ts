@@ -14,9 +14,14 @@ export const mutations: MutationTree<VersionState> = {
   onUpdateStatus (state, payload) {
     const versionInfo = payload.version_info || undefined
     state.busy = payload.busy || false
+    state.github_limit_reset_time = payload.github_limit_reset_time || 0
+    state.github_rate_limit = payload.github_rate_limit || 0
+    state.github_requests_remaining = payload.github_requests_remaining || 0
+
     if (versionInfo) {
       for (const k in versionInfo) {
-        Vue.set(state.components, k, payload.version_info[k])
+        const type = k
+        Vue.set(state.components, k, { type, ...payload.version_info[k] })
       }
     }
   },

@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex'
 import { isOfType } from '@/store/helpers'
-import { ArtifactVersion, HashVersion, VersionState } from './types'
+import { ArtifactVersion, HashVersion, OSPackage, VersionState } from './types'
 import { RootState } from '../types'
 import { valid, gt } from 'semver'
 
@@ -8,15 +8,22 @@ export const getters: GetterTree<VersionState, RootState> = {
   /**
    * Returns the list of available components
    */
-  getComponents: (state) => {
-    const components = { ...state.components }
-    //   (obj, key) => {
-    //     obj[key] = state.components[key]
-    //     return obj
-    //   }, {}
-    // )
-    // return ordered
-    return components
+  getVisibleComponents: (state) => {
+    const c: Array<HashVersion | ArtifactVersion | OSPackage> = []
+    const skipClient = state.skipClientUpdates
+    for (const key in state.components) {
+      const o = state.components[key]
+      if (key === 'client' && skipClient) continue
+      // if (key === 'system') continue
+      c.push(o)
+    }
+
+    c.sort((a, b) => {
+      const name1 = a.type.toLowerCase()
+      const name2 = b.type.toLowerCase()
+      return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
+    })
+    return c
   },
 
   /**
@@ -46,9 +53,14 @@ export const getters: GetterTree<VersionState, RootState> = {
         return (gt(remoteVersion, version))
       }
       return false
-    } else {
-      const o = state.components[component] as HashVersion
-      return (o.current_hash !== o.remote_hash)
     }
+
+    if (state.components[component] && isOfType<OSPackage>(state.components[component], 'package_count')) {
+      const o = state.components[component] as OSPackage
+      return (o.package_count > 0)
+    }
+
+    const o = state.components[component] as HashVersion
+    return (o.current_hash !== o.remote_hash)
   }
 }

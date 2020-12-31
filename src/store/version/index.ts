@@ -9,6 +9,9 @@ export const defaultState = (): VersionState => {
   return {
     busy: false,
     skipClientUpdates: false,
+    github_limit_reset_time: 0,
+    github_rate_limit: 0,
+    github_requests_remaining: 0,
     responses: [],
     components: {},
     fluidd: {
