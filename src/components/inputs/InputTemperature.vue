@@ -19,6 +19,7 @@
       <v-btn
         :min-width="40"
         :disabled="(value === newValue) || invalid"
+        :elevation="2"
         class="pa-0"
         :color="(value === newValue) ? 'secondary' : 'primary'"
         @click="emitChange(newValue)">

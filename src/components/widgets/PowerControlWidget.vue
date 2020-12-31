@@ -3,6 +3,7 @@
     <v-btn
       v-for="(device, index) in devices"
       :key="index"
+      :elevation="2"
       :disabled="(device.status === 'error' || device.status === 'init')"
       @click="toggleDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
       :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"

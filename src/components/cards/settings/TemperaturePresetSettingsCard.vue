@@ -46,8 +46,8 @@
         v-model="dialog.active"
         :title="(dialog.index >= 0) ? 'Edit preset' : 'Add preset'">
         <template v-slot:actions>
-          <v-btn color="secondary" @click="dialog.active = false">Close</v-btn>
-          <v-btn color="primary" :disabled="!dialog.valid" type="submit" form="form">Save</v-btn>
+          <v-btn color="secondary" :elevation="2" @click="dialog.active = false">Close</v-btn>
+          <v-btn color="primary" :elevation="2" :disabled="!dialog.valid" type="submit" form="form">Save</v-btn>
         </template>
         <v-form
           ref="form"

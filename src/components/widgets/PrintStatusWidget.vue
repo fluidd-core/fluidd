@@ -1,5 +1,5 @@
 <template>
-  <v-container class="py-0">
+  <v-container>
     <v-row align="center">
       <v-col cols="auto">
         <v-progress-circular

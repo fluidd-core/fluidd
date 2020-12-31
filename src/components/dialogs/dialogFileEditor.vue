@@ -25,6 +25,7 @@
         <v-spacer></v-spacer>
         <v-btn
           v-if="!readonly && unsavedChanges"
+          :elevation="2"
           dark
           color="warning"
           class="ml-2"
@@ -33,6 +34,7 @@
         </v-btn>
         <v-btn
           v-if="!readonly && unsavedChanges"
+          :elevation="2"
           dark
           color="warning"
           class="ml-2"

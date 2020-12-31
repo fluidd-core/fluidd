@@ -31,6 +31,7 @@
       <v-btn
         v-if="!printerPrinting"
         @click="sendGcode('M84')"
+        :elevation="2"
         :disabled="hasWaits || !klippyConnected"
         small
         class="ma-1"
@@ -40,6 +41,7 @@
       <v-btn
         v-if="!printerPrinting && printerSupportsBedScrews"
         @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
+        :elevation="2"
         :loading="hasWait(waits.onBedScrewsAdjust)"
         :disabled="hasWaits || !klippyConnected"
         small
@@ -50,6 +52,7 @@
       <v-btn
         v-if="!printerPrinting && printerSupportsBedScrewsCalculate"
         @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
+        :elevation="2"
         :loading="hasWait(waits.onBedScrewsCalculate)"
         :disabled="!allHomed || hasWaits || !klippyConnected"
         small
@@ -60,6 +63,7 @@
       <v-btn
         v-if="!printerPrinting && printerSupportsZtilt"
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
+        :elevation="2"
         :loading="hasWait(waits.onZTilt)"
         :disabled="hasWaits || !klippyConnected"
         small
@@ -70,6 +74,7 @@
       <v-btn
         v-if="!printerPrinting && printerSupportsQgl"
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+        :elevation="2"
         :loading="hasWait(waits.onQGL)"
         :disabled="hasWaits || !klippyConnected"
         small
@@ -81,6 +86,7 @@
       <v-btn
         v-if="!printerPrinting"
         @click="sendGcode('G28', waits.onHomeAll)"
+        :elevation="2"
         :loading="hasWait(waits.onHomeAll)"
         :disabled="hasWaits || !klippyConnected"
         small
@@ -91,6 +97,7 @@
       <v-btn
         v-if="!printerPrinting"
         @click="sendGcode('G28 X', waits.onHomeX)"
+        :elevation="2"
         :loading="hasWait(waits.onHomeX)"
         :disabled="hasWaits || !klippyConnected"
         small
@@ -101,6 +108,7 @@
       <v-btn
         v-if="!printerPrinting"
         @click="sendGcode('G28 Y', waits.onHomeY)"
+        :elevation="2"
         :loading="hasWait(waits.onHomeY)"
         :disabled="hasWaits || !klippyConnected"
         small

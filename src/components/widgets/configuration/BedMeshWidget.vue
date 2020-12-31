@@ -30,6 +30,7 @@
               <td>
                 <v-btn
                   @click="loadProfile(mesh.profile_name)"
+                  :elevation="2"
                   :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
                   color="secondary"
                   small>
@@ -44,6 +45,7 @@
               <td>
                 <v-btn
                   @click="clearMesh()"
+                  :elevation="2"
                   :disabled="!meshLoaded"
                   color="secondary"
                   small>
@@ -63,6 +65,7 @@
               block
               class="mb-2"
               color="secondary"
+              :elevation="2"
               :loading="hasWait(waits.onMeshCalibrate)"
               :disabled="hasWaits || printerPrinting || printerBusy"
               @click="calibrate()">
@@ -75,6 +78,7 @@
           @click="sendGcode('G28', waits.onHomeAll)"
           block
           class="mb-2"
+          :elevation="2"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           :color="(!allHomed) ? 'warning' : 'secondary'">
@@ -83,6 +87,7 @@
         <v-btn
           v-if="!printerPrinting && printerSupportsQgl"
           @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+          :elevation="2"
           :loading="hasWait(waits.onQGL)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           block
@@ -98,6 +103,7 @@
               block
               class="mb-2"
               color="warning"
+              :elevation="2"
               :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
               @click="openSaveDialog()">
               Save Config As...
@@ -114,8 +120,8 @@
       :max-width="450">
 
       <template v-slot:actions>
-        <v-btn color="secondary" @click="saveDialog.open = false">Close</v-btn>
-        <v-btn color="primary" :disabled="!saveDialog.valid" type="submit" form="form">Save</v-btn>
+        <v-btn color="secondary" :elevation="2" @click="saveDialog.open = false">Close</v-btn>
+        <v-btn color="primary" :elevation="2" :disabled="!saveDialog.valid" type="submit" form="form">Save</v-btn>
       </template>
 
       <v-form

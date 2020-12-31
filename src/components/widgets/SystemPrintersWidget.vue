@@ -38,8 +38,8 @@
       v-model="instanceDialog.open">
 
       <template v-slot:actions>
-        <v-btn color="secondary" @click="instanceDialog.open = false">Close</v-btn>
-        <v-btn color="primary" :disabled="!instanceDialog.valid" type="submit" form="form">Save</v-btn>
+        <v-btn color="secondary" :elevation="2" @click="instanceDialog.open = false">Close</v-btn>
+        <v-btn color="primary" :elevation="2" :disabled="!instanceDialog.valid" type="submit" form="form">Save</v-btn>
       </template>
 
       <template v-slot:help-tooltip>

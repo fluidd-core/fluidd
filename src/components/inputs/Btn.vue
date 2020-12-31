@@ -1,13 +1,16 @@
 <template>
   <v-btn
-    :color="(color) ? color : undefined"
+    :elevation="2"
+    :disabled="disabled"
+    :loading="loading"
+    :color="(color) ? color : 'default'"
     :block="block"
-    dark
+    :dark="dark"
     :fab="fab"
     :icon="icon"
-    :loading="loading"
     :outlined="outlined"
     :rounded="rounded"
+    :plain="plain"
     :tile="tile"
     :class="classes"
     @click="$emit('click', $event)"
@@ -28,7 +31,13 @@ export default class Btn extends Vue {
   block!: boolean
 
   @Prop({ default: false })
+  dark!: boolean
+
+  @Prop({ default: false })
   fab!: boolean
+
+  @Prop({ default: false })
+  plain!: boolean
 
   @Prop({ default: false })
   icon!: boolean

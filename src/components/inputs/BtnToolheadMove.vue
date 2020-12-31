@@ -2,6 +2,7 @@
   <v-btn
     @click="$emit('click')"
     :disabled="disabled"
+    :elevation="2"
     :min-width="40"
     :loading="loading"
     :color="color"

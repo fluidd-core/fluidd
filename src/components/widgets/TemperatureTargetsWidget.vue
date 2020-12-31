@@ -1,10 +1,10 @@
 <template>
     <v-container fluid class="py-2 px-6">
-      <v-row class="" v-if="klippyConnected">
-        <v-col sm="4" offset-sm="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
+      <v-row v-if="klippyConnected">
+        <v-col sm="4" offset-sm="4" class="px-2 text-subtitle-1 grey--text text--darken-1">
           <span class="d-none d-sm-inline">Actual</span>
         </v-col>
-        <v-col sm="4" class="py-0 px-2 text-subtitle-1 grey--text text--darken-1">
+        <v-col sm="4" class="px-2 text-subtitle-1 grey--text text--darken-1">
           <v-layout>
             <span class="">Target</span>
             <v-spacer></v-spacer>
@@ -48,14 +48,14 @@
       </v-row>
 
       <v-row v-for="item in heaters" :key="item.name">
-        <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+        <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
           {{ item.name }}
           <small class="ml-3" v-if="item.target === 0">off</small>
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+        <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
           {{ item.temperature.toFixed(1) }}<small>°C</small>
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2">
+        <v-col cols="6" sm="4" class="py-2 px-2">
           <input-temperature
             :value="item.target"
             @input="setHeaterTargetTemp(item.name, $event)"
@@ -67,7 +67,7 @@
 
       <template v-for="item in fans">
         <v-row :key="item.name" v-if="item.type === 'temperature_fan'">
-          <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+          <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
             {{ item.name }}
             <v-icon
               v-if="item.speed > 0 && item.target > 0"
@@ -85,10 +85,10 @@
             </small>
             <small class="ml-2" v-if="item.speed <=0 && item.target <= 0">off</small>
           </v-col>
-          <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+          <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
             {{ item.temperature.toFixed(1) }}<small>°C</small>
           </v-col>
-          <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+          <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
             <input-temperature
               :value="item.target"
               @input="setFanTargetTemp(item.name, $event)"
@@ -100,10 +100,10 @@
       </template>
 
       <v-row v-for="item in sensors" :key="item.name">
-        <v-col cols="12" sm="4" class="py-1 px-2 text-subtitle-1 grey--text text--darken-1">
+        <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
           {{ item.name }}
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+        <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
           <v-tooltip right>
             <template v-slot:activator="{ on, attrs }">
               <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
@@ -114,7 +114,7 @@
             </span>
           </v-tooltip>
         </v-col>
-        <v-col cols="6" sm="4" class="py-1 px-2 grey--text focus--text">
+        <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
         </v-col>
       </v-row>
 

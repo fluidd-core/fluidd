@@ -16,6 +16,7 @@
       <v-btn
         @click="pausePrint()"
         v-if="!printerPaused && printerPrinting"
+        :elevation="2"
         :loading="hasWait(waits.onPrintPause)"
         :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
         small
@@ -28,6 +29,7 @@
       <v-btn
         @click="confirmDialog.open = true"
         v-if="printerPrinting || printerPaused"
+        :elevation="2"
         :loading="hasWait(waits.onPrintCancel)"
         :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
         small
@@ -40,6 +42,7 @@
       <v-btn
         @click="resumePrint()"
         v-if="printerPaused"
+        :elevation="2"
         :loading="hasWait(waits.onPrintResume)"
         :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
         small
@@ -51,6 +54,7 @@
 
       <v-btn
         @click="resetFile()"
+        :elevation="2"
         v-if="!printerPrinting && !printerPaused && filename"
         small
         color="secondary"
@@ -61,6 +65,7 @@
 
       <v-btn
         @click="rePrint()"
+        :elevation="2"
         v-if="!printerPrinting && !printerPaused && filename"
         small
         color="secondary"

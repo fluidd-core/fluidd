@@ -1,10 +1,11 @@
 <template>
   <div>
-    <v-row class="py-0 pb-2">
-      <v-col cols="12" lg="6" class="py-0">
+    <v-row class="pb-2">
+      <v-col cols="12" lg="6">
         <v-btn
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
           :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
+          :elevation="2"
           block
           color="secondary"
           class="mb-2">
@@ -14,6 +15,7 @@
         <v-btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
           :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
+          :elevation="2"
           block
           color="secondary"
           class="mb-2">
@@ -21,7 +23,7 @@
           <v-icon>$chevronDown</v-icon>
         </v-btn>
       </v-col>
-      <v-col cols="12" lg="6" class="py-0">
+      <v-col cols="12" lg="6">
         <v-text-field
           v-model="extrudeLength"
           :disabled="!klippyConnected"

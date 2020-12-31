@@ -4,6 +4,7 @@
       <v-btn
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
         :min-width="80"
+        :elevation="2"
         :loading="hasWait('ZAdjust')"
         class="pa-0 mb-2"
         color="secondary">
@@ -12,6 +13,7 @@
       <v-btn
         @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
         :min-width="80"
+        :elevation="2"
         :loading="hasWait('ZAdjust')"
         class="pa-0"
         color="secondary">
