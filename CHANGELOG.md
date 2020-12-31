@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/cadriel/fluidd/compare/v1.4.0...v1.4.1) (2020-12-31)
+
+
+### Bug Fixes
+
+* allow ending digits for hostnames during validation ([81c1c9a](https://github.com/cadriel/fluidd/commit/81c1c9a1a830208021d0a9141f18cb6617df0282))
+* dialog action buttons now have more reasonable padding ([58c846a](https://github.com/cadriel/fluidd/commit/58c846a035c7cb45e76aa53cebcc5e275916ff9d))
+* ensure logs card isn't shown when client / klippy is in error. ([004ebe0](https://github.com/cadriel/fluidd/commit/004ebe0780b118096fee8009ac98966884521cdf))
+* loader applied only while updating ([f840ccc](https://github.com/cadriel/fluidd/commit/f840cccbdb44fd42078e4250039b54705e315171))
+
 ## [1.4.0](https://github.com/cadriel/fluidd/compare/v1.3.1...v1.4.0) (2020-12-29)
 
 
