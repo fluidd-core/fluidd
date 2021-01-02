@@ -57,8 +57,8 @@
           :title="dialog.title"
           v-model="dialog.active">
           <template v-slot:actions>
-            <v-btn color="secondary" :elevation="2" @click="dialog.active = false">Close</v-btn>
-            <v-btn color="primary" :elevation="2" :disabled="!dialog.valid" type="submit" form="form">Save</v-btn>
+            <v-btn color="warning" text @click="dialog.active = false">Cancel</v-btn>
+            <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
           </template>
           <v-form
             ref="form"
@@ -393,6 +393,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   saveDialog () {
+    (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (this.dialog.valid) {
       if (this.dialog.type === 'rename') {
         const item = this.dialog.item as AppFile | AppDirectory

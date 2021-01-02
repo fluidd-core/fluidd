@@ -46,8 +46,8 @@
         v-model="dialog.active"
         :title="(dialog.index >= 0) ? 'Edit preset' : 'Add preset'">
         <template v-slot:actions>
-          <v-btn color="secondary" :elevation="2" @click="dialog.active = false">Close</v-btn>
-          <v-btn color="primary" :elevation="2" :disabled="!dialog.valid" type="submit" form="form">Save</v-btn>
+          <v-btn color="warning" text @click="dialog.active = false">Cancel</v-btn>
+          <v-btn color="primary" :elevation="2" type="submit" form="form">Add</v-btn>
         </template>
         <v-form
           ref="form"
@@ -68,7 +68,7 @@
               v-for="item in heaters" :key="item.name"
               v-model="preset.values[item.name].value"
               :label="item.name"
-              :rules="[rules.required]"
+              :rules="[rules.numRequired, rules.numMin]"
               :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
               @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
               hide-details="auto"
@@ -81,7 +81,7 @@
               v-for="item in fans" :key="item.name"
               v-model="preset.values[item.name].value"
               :label="item.name"
-              :rules="[rules.required]"
+              :rules="[rules.numRequired, rules.numMin]"
               :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
               @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
               hide-details="auto"
@@ -135,7 +135,9 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   rules = {
-    required: (v: string) => !!v || 'Required'
+    required: (v: string) => !!v || 'Required',
+    numRequired: (v: number | string) => v !== '' || 'Required',
+    numMin: (v: number) => v >= 0 || 'Min 0'
   }
 
   openEditDialog (preset: TemperaturePreset, index: number) {
@@ -166,8 +168,11 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   save (preset: TemperaturePreset) {
-    this.$store.dispatch('config/updatePreset', { preset, index: this.dialog.index })
-    this.dialog.active = false
+    (this.$refs.form as Vue & { validate: () => boolean }).validate()
+    if (this.dialog.valid) {
+      this.$store.dispatch('config/updatePreset', { preset, index: this.dialog.index })
+      this.dialog.active = false
+    }
   }
 
   remove (index: number) {

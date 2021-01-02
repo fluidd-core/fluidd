@@ -120,8 +120,8 @@
       :max-width="450">
 
       <template v-slot:actions>
-        <v-btn color="secondary" :elevation="2" @click="saveDialog.open = false">Close</v-btn>
-        <v-btn color="primary" :elevation="2" :disabled="!saveDialog.valid" type="submit" form="form">Save</v-btn>
+        <v-btn color="warning" text @click="saveDialog.open = false">Cancel</v-btn>
+        <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
       </template>
 
       <v-form
@@ -227,6 +227,7 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   saveToConfig () {
+    (this.$refs.form as Vue & { validate: () => boolean }).validate()
     if (this.saveDialog.valid) {
       if (this.saveDialog.profileName !== this.currentMesh.profile_name) {
         this.sendGcode('BED_MESH_PROFILE SAVE=' + this.saveDialog.profileName)

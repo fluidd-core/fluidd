@@ -32,8 +32,8 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="actions">
-          <v-btn color="secondary" :elevation="2" @click="emitChange(false)">Close</v-btn>
-          <v-btn color="primary" :elevation="2" @click="saveValue()">Save</v-btn>
+          <v-btn color="warning" text @click="emitChange(false)">Cancel</v-btn>
+          <v-btn color="primary" :elevation="2" @click="saveValue()">Ok</v-btn>
         </slot>
       </v-card-actions>
     </v-card>
