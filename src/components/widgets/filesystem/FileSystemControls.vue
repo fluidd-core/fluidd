@@ -41,7 +41,7 @@
             v-bind="attrs"
             v-on="on"
             :loading="uploadLoading"
-            @click="andPrint = false; $refs.uploadFile.click()">
+            @click="emulateClick(false)">
             <v-icon small>$fileUpload</v-icon>
           </v-btn>
         </template>
@@ -58,7 +58,7 @@
             v-bind="attrs"
             v-on="on"
             :loading="uploadLoading"
-            @click="andPrint = true; $refs.uploadFile.click()">
+            @click="emulateClick(true)">
             <v-icon small>$progressUpload</v-icon>
           </v-btn>
         </template>
@@ -132,13 +132,20 @@ export default class FileSystemControls extends Vue {
 
   andPrint = false
 
+  emulateClick (startPrint: boolean) {
+    this.andPrint = startPrint
+    const uploadFile = this.$refs.uploadFile as HTMLInputElement
+    uploadFile.multiple = !startPrint // Can't start print with multiple files
+    uploadFile.click()
+  }
+
   fileChanged (e: Event) {
     const target = e.target as HTMLInputElement
     const files = target.files
+
     if (target && files && files.length > 0) {
-      this.$emit('upload', files[0], this.andPrint)
-      const uploadFile = this.$refs.uploadFile as HTMLInputElement
-      uploadFile.value = ''
+      this.$emit('upload', files, this.andPrint)
+      target.value = ''
     }
   }
 }

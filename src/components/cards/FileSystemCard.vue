@@ -189,33 +189,42 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
       })
   }
 
-  async upload (file: File, root: string, path: string, andPrint: boolean) {
+  ensureFileArray (files: FileList | File): Array<File> {
+    if (files instanceof File) {
+      return [files]
+    }
+    return Array.from(files)
+  }
+
+  async upload (files: FileList | File, andPrint: boolean) {
+    const fileList = this.ensureFileArray(files)
+
     this.$store.dispatch('wait/addWait', Waits.onUploadGcode)
-    await this.doUpload(file, root, path, andPrint)
+    await this.uploadFiles(fileList, this.currentRoot, this.trimmedPath, andPrint)
     this.$store.dispatch('wait/removeWait', Waits.onUploadGcode)
   }
 
   async dropUpload (e: DragEvent) {
     if (e && e.dataTransfer && e.dataTransfer.files.length && !this.readOnly) {
-      this.$store.dispatch('wait/addWait', Waits.onUploadGcode)
+      this.upload(e.dataTransfer.files, false)
+    }
+  }
 
-      const files = e.dataTransfer.files
-      // Async uploads cause issues in moonraker / klipper.
-      // So instead, upload sequentially.
-      for (const file of files) {
-        try {
-          const extension = '.' + file.name.split('.').pop()
-          const accepts = this.accept.split(',')
-          if (extension && accepts.includes(extension)) {
-            await this.doUpload(file, this.currentRoot, this.trimmedPath, false)
-          } else {
-            EventBus.$emit('flashMessage', { type: 'warning', text: `Error uploading ${file.name}, invalid extension.` })
-          }
-        } catch (e) {
-          EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
+  async uploadFiles (files: Array<File>, root: string, path: string, andPrint: boolean) {
+    // Async uploads cause issues in moonraker / klipper.
+    // So instead, upload sequentially.
+    for (const file of files) {
+      try {
+        const extension = '.' + file.name.split('.').pop()
+        const accepts = this.accept.split(',')
+        if (extension && accepts.includes(extension)) {
+          await this.doUpload(file, root, path, andPrint)
+        } else {
+          EventBus.$emit('flashMessage', { type: 'warning', text: `Error uploading ${file.name}, invalid extension.` })
         }
+      } catch (e) {
+        EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
       }
-      this.$store.dispatch('wait/removeWait', Waits.onUploadGcode)
     }
   }
 

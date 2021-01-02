@@ -505,7 +505,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
 
   createFile (name: string) {
     const file = new File([`# ${name}\n`], name)
-    this.$emit('upload-file', file, this.currentRoot, this.trimmedPath)
+    this.$emit('upload-file', file, false)
   }
 
   removeItem (item: AppFile | AppDirectory) {
@@ -518,7 +518,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   uploadFile (file: File, andPrint: boolean) {
-    this.$emit('upload-file', file, this.currentRoot, this.trimmedPath, andPrint)
+    this.$emit('upload-file', file, andPrint)
   }
 
   downloadFile (file: string) {
