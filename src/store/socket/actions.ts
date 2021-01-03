@@ -320,6 +320,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('resetState', false)
     SocketActions.printerInfo()
   },
+  async notifyKlippyShutdown ({ commit }) {
+    commit('resetState', false)
+    SocketActions.printerInfo()
+  },
   async notifyKlippyReady () {
     console.debug('Klippy Ready')
   },
