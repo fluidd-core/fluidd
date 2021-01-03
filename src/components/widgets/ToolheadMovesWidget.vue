@@ -65,7 +65,7 @@
           <v-icon small>$home</v-icon> All
         </v-btn>
         <v-btn
-          :color="(!allHomed) ? 'warning' : 'secondary'"
+          :color="(!xHomed) ? 'warning' : 'secondary'"
           small
           :elevation="2"
           :loading="hasWait(waits.onHomeX)"
@@ -75,7 +75,7 @@
           <v-icon small>$home</v-icon> X
         </v-btn>
         <v-btn
-          :color="(!allHomed) ? 'warning' : 'secondary'"
+          :color="(!yHomed) ? 'warning' : 'secondary'"
           small
           :elevation="2"
           :loading="hasWait(waits.onHomeY)"
@@ -95,14 +95,6 @@
           <v-icon small>$home</v-icon> Z
         </v-btn>
       </v-speed-dial>
-        <!-- <btn-toolhead-move
-          @click="sendGcode('G28 Z', waits.onHomeZ)"
-          :loading="hasWait(waits.onHomeZ)"
-          :disabled="hasWaits || !klippyConnected"
-          :color="(!zHomed) ? 'warning' : 'secondary'"
-          badge="Z"
-          icon="$home">
-        </btn-toolhead-move> -->
       </v-col>
     </v-row>
     <v-row no-gutters justify="start" class="mb-3">
