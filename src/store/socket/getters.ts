@@ -363,7 +363,8 @@ export const getters: GetterTree<SocketState, RootState> = {
       ]
 
     const controllableFans = [
-      'fan'
+      'fan',
+      'fan_generic'
     ]
 
     const fans: Fan[] = []
