@@ -5,7 +5,7 @@
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
-    menu-breakpoint="xl"
+    menu-breakpoint="lg"
     @enabled="$emit('enabled', $event)">
 
     <template v-slot:title>
@@ -80,37 +80,6 @@
         class="ma-1"
         color="secondary">
           QGL
-      </v-btn>
-      <v-divider class="my-2"></v-divider>
-      <v-btn
-        @click="sendGcode('G28', waits.onHomeAll)"
-        :elevation="2"
-        :loading="hasWait(waits.onHomeAll)"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
-        small
-        class="ma-1"
-        :color="(!allHomed) ? 'warning' : 'secondary'">
-          <v-icon small class="mr-1">$home</v-icon> All
-      </v-btn>
-      <v-btn
-        @click="sendGcode('G28 X', waits.onHomeX)"
-        :elevation="2"
-        :loading="hasWait(waits.onHomeX)"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
-        small
-        class="ma-1"
-        :color="(!allHomed) ? 'warning' : 'secondary'">
-          <v-icon small class="mr-1">$home</v-icon> X
-      </v-btn>
-      <v-btn
-        @click="sendGcode('G28 Y', waits.onHomeY)"
-        :elevation="2"
-        :loading="hasWait(waits.onHomeY)"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
-        small
-        class="ma-1"
-        :color="(!allHomed) ? 'warning' : 'secondary'">
-          <v-icon small class="mr-1">$home</v-icon> Y
       </v-btn>
     </template>
 
