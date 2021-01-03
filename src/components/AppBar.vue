@@ -16,11 +16,9 @@
         />
       </router-link>
       <v-toolbar-title
-        class="printer-title text--secondary font-weight-light text-h4 mr-5"
+        class="printer-title text--secondary mr-5"
       >
-        <router-link to="/">
-          {{ instanceName }}
-        </router-link>
+        <router-link to="/" v-html="instanceName"></router-link>
       </v-toolbar-title>
       <v-spacer />
 
@@ -130,9 +128,14 @@ export default class AppBar extends Mixins(UtilsMixin) {
 
 <style lang="scss" scoped>
   .printer-title {
+    font-size: 1.25rem;
+    font-weight: 300;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    @media #{map-get($display-breakpoints, 'sm-and-up')} {
+      font-size: 2.125rem;
+    }
   }
 
   .printer-title > a {
