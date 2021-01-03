@@ -7,7 +7,8 @@ import { RootState } from '../types'
 
 export const defaultState = (): VersionState => {
   return {
-    busy: false,
+    busy: false, // busy doing an update.
+    refreshing: false, // busy refreshing version state.
     skipClientUpdates: false,
     github_limit_reset_time: 0,
     github_rate_limit: 0,

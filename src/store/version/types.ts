@@ -1,6 +1,7 @@
 export interface VersionState {
   [key: string]: boolean | number | VersionComponents | FluiddVersion | UpdateResponse[];
   busy: boolean;
+  refreshing: boolean;
   github_limit_reset_time: number;
   github_rate_limit: number;
   github_requests_remaining: number;

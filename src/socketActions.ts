@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { Waits } from '@/globals'
+import store from './store'
 
 export const SocketActions = {
   async machineServicesRestart (service: string) {
@@ -30,55 +31,46 @@ export const SocketActions = {
   },
 
   async machineUpdateStatus (refresh = false) {
-    const wait = Waits.onForceUpdateCheck
+    store.dispatch('version/refreshing', true)
     Vue.$socket.emit(
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
-        params: { refresh },
-        wait
+        params: { refresh }
       }
     )
   },
 
   async machineUpdateMoonraker () {
-    const wait = Waits.onUpdate
     Vue.$socket.emit(
       'machine.update.moonraker', {
-        dispatch: 'version/onUpdatedMoonraker',
-        wait
+        dispatch: 'version/onUpdatedMoonraker'
       }
     )
   },
 
   async machineUpdateKlipper () {
-    const wait = Waits.onUpdate
     Vue.$socket.emit(
       'machine.update.klipper', {
         dispatch: 'version/onUpdatedKlipper',
         params: {
           include_deps: true
-        },
-        wait
+        }
       }
     )
   },
 
   async machineUpdateClient () {
-    const wait = Waits.onUpdate
     Vue.$socket.emit(
       'machine.update.client', {
-        dispatch: 'version/onUpdatedClient',
-        wait
+        dispatch: 'version/onUpdatedClient'
       }
     )
   },
 
   async machineUpdateSystem () {
-    const wait = Waits.onUpdate
     Vue.$socket.emit(
       'machine.update.system', {
-        dispatch: 'version/onUpdatedSystem',
-        wait
+        dispatch: 'version/onUpdatedSystem'
       }
     )
   },

@@ -178,10 +178,8 @@ export const Icons = Object.freeze({
 })
 
 export const Waits = Object.freeze({
-  onForceUpdateCheck: 'onForceUpdateCheck',
   onServiceRestart: 'onServiceRestart',
   onDevicePowerToggle: 'onDevicePowerToggle',
-  onUpdate: 'onUpdate',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',
   onHomeX: 'onHomeX',

@@ -1,7 +1,6 @@
 import { ActionTree } from 'vuex'
 import { VersionState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
 
 export const actions: ActionTree<VersionState, RootState> = {
   /**
@@ -9,8 +8,16 @@ export const actions: ActionTree<VersionState, RootState> = {
    */
   async onUpdateStatus ({ commit }, payload) {
     console.debug('Finished machine.update.status', payload)
-    // commit('clearUpdateResponse')
+    commit('refreshing', false)
     commit('onUpdateStatus', payload)
+  },
+
+  /**
+   * Tells us if moonraker is in the middle of refreshing
+   * the version state.
+   */
+  async refreshing ({ commit }, payload) {
+    commit('refreshing', payload)
   },
 
   /**
@@ -20,24 +27,24 @@ export const actions: ActionTree<VersionState, RootState> = {
     commit('onUpdateResponse', payload)
   },
 
-  async onUpdatedMoonraker () {
-    SocketActions.machineUpdateStatus()
+  async onUpdatedMoonraker ({ commit }, payload) {
+    commit('onUpdateStatus', payload)
     console.debug('Finished updating moonraker')
   },
 
-  async onUpdatedKlipper () {
-    SocketActions.machineUpdateStatus()
+  async onUpdatedKlipper ({ commit }, payload) {
+    commit('onUpdateStatus', payload)
     console.debug('Finished updating klipper')
   },
 
-  async onUpdatedClient () {
-    SocketActions.machineUpdateStatus()
+  async onUpdatedClient ({ commit }, payload) {
+    commit('onUpdateStatus', payload)
     console.debug('Finished updating client, reloading')
     window.location.reload()
   },
 
-  async onUpdatedSystem () {
-    SocketActions.machineUpdateStatus()
+  async onUpdatedSystem ({ commit }, payload) {
+    commit('onUpdateStatus', payload)
     console.debug('Finished updating system')
   }
 }

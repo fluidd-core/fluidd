@@ -11,6 +11,10 @@ export const mutations: MutationTree<VersionState> = {
     })
   },
 
+  refreshing (state, payload) {
+    state.refreshing = payload
+  },
+
   onUpdateStatus (state, payload) {
     const versionInfo = payload.version_info || undefined
     state.busy = payload.busy || false
@@ -31,7 +35,6 @@ export const mutations: MutationTree<VersionState> = {
     // and set busy to false also.
     if (payload.complete) {
       state.busy = false
-      // state.responses = []
     } else {
       state.responses.unshift(payload)
     }

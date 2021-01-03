@@ -28,8 +28,8 @@
 
             <version-status
               :has-update="hasUpdate(component.type)"
-              :disabled="hasWait(waits.onUpdate) || printerPrinting"
-              :loading="hasWait(waits.onUpdate)"
+              :disabled="isRefreshing || printerPrinting"
+              :loading="isRefreshing"
               :dirty="('is_dirty' in component) ? component.is_dirty : false"
               :valid="('is_valid' in component) ? component.is_valid : true"
               @on-update="updateComponent(component.type)">
@@ -41,16 +41,10 @@
       </v-list-item>
     </template>
 
-    <!-- <v-list-item class="v-list-item--x-dense">
-      <v-list-item-content>
-        <v-btn text outlined x-small :disabled="printerPrinting" @click="updateComponent('system')">update os packages</v-btn>
-      </v-list-item-content>
-    </v-list-item> -->
-
     <v-list-item @click="forceCheck()">
       <v-list-item-title>Check for updates</v-list-item-title>
       <v-list-item-icon>
-        <v-icon :class="{ 'spin-alt': hasWait(waits.onForceUpdateCheck) }">$refresh</v-icon>
+        <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
       </v-list-item-icon>
     </v-list-item>
 
@@ -87,6 +81,10 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
 
   get skipClientUpdates () {
     return this.$store.state.version.skipClientUpdates
+  }
+
+  get isRefreshing () {
+    return this.$store.state.version.refreshing
   }
 
   hasUpdate (component: 'klipper' | 'moonraker' | 'client' | 'system') {
