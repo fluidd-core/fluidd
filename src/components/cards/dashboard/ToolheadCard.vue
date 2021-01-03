@@ -1,11 +1,11 @@
 <template>
   <collapsable-card
-    :hide-menu="(printerPrinting)"
     title="Tool"
     icon="$printer3dNozzle"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
+    menu-breakpoint="xl"
     @enabled="$emit('enabled', $event)">
 
     <template v-slot:title>
@@ -29,54 +29,53 @@
 
     <template v-slot:menu>
       <v-btn
-        v-if="!printerPrinting"
         @click="sendGcode('M84')"
         :elevation="2"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         color="secondary">
           MOTORS OFF
       </v-btn>
       <v-btn
-        v-if="!printerPrinting && printerSupportsBedScrews"
+        v-if="printerSupportsBedScrews"
         @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         :elevation="2"
         :loading="hasWait(waits.onBedScrewsAdjust)"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         color="secondary">
           Bed_Screws_Adjust
       </v-btn>
       <v-btn
-        v-if="!printerPrinting && printerSupportsBedScrewsCalculate"
+        v-if="printerSupportsBedScrewsCalculate"
         @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         :elevation="2"
         :loading="hasWait(waits.onBedScrewsCalculate)"
-        :disabled="!allHomed || hasWaits || !klippyConnected"
+        :disabled="!allHomed || hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         color="secondary">
           Screws_Tilt_Calculate
       </v-btn>
       <v-btn
-        v-if="!printerPrinting && printerSupportsZtilt"
+        v-if="printerSupportsZtilt"
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :elevation="2"
         :loading="hasWait(waits.onZTilt)"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         color="secondary">
           Z_Tilt_Adjust
       </v-btn>
       <v-btn
-        v-if="!printerPrinting && printerSupportsQgl"
+        v-if="printerSupportsQgl"
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         :elevation="2"
         :loading="hasWait(waits.onQGL)"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         color="secondary">
@@ -84,33 +83,30 @@
       </v-btn>
       <v-divider class="my-2"></v-divider>
       <v-btn
-        v-if="!printerPrinting"
         @click="sendGcode('G28', waits.onHomeAll)"
         :elevation="2"
         :loading="hasWait(waits.onHomeAll)"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         :color="(!allHomed) ? 'warning' : 'secondary'">
           <v-icon small class="mr-1">$home</v-icon> All
       </v-btn>
       <v-btn
-        v-if="!printerPrinting"
         @click="sendGcode('G28 X', waits.onHomeX)"
         :elevation="2"
         :loading="hasWait(waits.onHomeX)"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         :color="(!allHomed) ? 'warning' : 'secondary'">
           <v-icon small class="mr-1">$home</v-icon> X
       </v-btn>
       <v-btn
-        v-if="!printerPrinting"
         @click="sendGcode('G28 Y', waits.onHomeY)"
         :elevation="2"
         :loading="hasWait(waits.onHomeY)"
-        :disabled="hasWaits || !klippyConnected"
+        :disabled="hasWaits || !klippyConnected || printerPrinting"
         small
         class="ma-1"
         :color="(!allHomed) ? 'warning' : 'secondary'">

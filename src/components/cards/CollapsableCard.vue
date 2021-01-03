@@ -32,18 +32,18 @@
       </slot>
       <v-spacer />
 
-      <!-- Menu Buttons, desktop + -->
-      <div class="d-none d-lg-flex" v-if="!isInLayout">
+      <!-- Menu Buttons (not condensed) -->
+      <div :class="menuClasses" v-if="!isInLayout && !hideMenu">
         <slot name="menu"></slot>
       </div>
 
-      <!-- Menu, mobile / tablet -->
+      <!-- Menu, (condensed to hamburger) -->
       <v-menu
-        v-if="hasMenuSlot && !hideMenu && !isInLayout"
+        v-if="hasMenuSlot && !isInLayout && !hideMenu"
         left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
-            class="d-flex d-lg-none"
+            :class="hamburgerMenuClasses"
             fab small text
             v-bind="attrs"
             v-on="on">
@@ -116,54 +116,122 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class ToolheadCard extends Vue {
+  /**
+   * Title
+   */
   @Prop({ type: String, required: true })
   title!: string
 
+  /**
+   * Sub title.
+   */
   @Prop({ type: String, required: false })
   subTitle!: string
 
+  /**
+   * Overrides the title being used as the card key.
+   * This is primarily used as the unique key name to
+   * save its state with.
+   */
   @Prop({ type: String })
   cardKey!: string
 
+  /**
+   * If lazy, we use a v-show for card display.
+   * If not lazy, we use a v-if - removing
+   * from the DOM. A good use case for this is
+   * the camera card, whereby we don't want
+   * to be streaming the cam image if not
+   * visible.
+   */
   @Prop({ type: Boolean, default: true })
-  lazy!: boolean // use v-show or v-if
+  lazy!: boolean
 
+  /**
+   * The icon to use in the title.
+   */
   @Prop({ type: String, required: false })
   icon!: string
 
+  /**
+   * Loading state.
+   */
   @Prop({ type: Boolean, default: false })
   loading!: boolean
 
+  /**
+   * Enables dragging of the card.
+   */
   @Prop({ type: Boolean, default: false })
   draggable!: boolean
 
+  /**
+   * If in layout, only the title shows - with no menu.
+   * If draggable is also true, the drag icon is shown.
+   */
   @Prop({ type: Boolean, default: false })
   inLayout!: boolean
 
+  /**
+   * Whether this card is in an enabled state or not.
+   * E.g., in layout mode - you may set it to disabled
+   * in order to prevent its display.
+   */
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
+  /**
+   * Whether this card is collapsable or not.
+   */
   @Prop({ type: Boolean, default: true })
   collapsable!: boolean
 
+  /**
+   * Whether this card is in a collapsed state or not.
+   */
   @Prop({ type: Boolean, default: false })
   collapsed!: boolean // Determines the default state.
 
+  /**
+   * Rounded
+   */
   @Prop({ type: String, default: 'md' })
   rounded!: string
 
+  /**
+   * Optionally set a defined height.
+   */
   @Prop({ type: [Number, String], required: false })
   height!: number | string
 
-  @Prop({ type: Boolean, default: false })
+  /**
+   * Breakpoint at which to condense the menu buttons to a hamburger.
+   * xs, sm, md, lg, xl.
+   */
+  @Prop({ type: String, default: 'lg' })
+  menuBreakpoint!: string
+
+  /**
+   * Forcefully hide the menu btns / hamburger.
+   */
+  @Prop({ type: String, default: false })
   hideMenu!: boolean
 
+  /**
+   * Define any optional classes for the card itself.
+   */
   @Prop({ type: String })
   cardClasses!: string
 
+  /**
+   * Define any option classes for the card content itself.
+   */
   @Prop({ type: String })
   contentClasses!: string
 
+  /**
+   * Base classes.
+   */
   baseCardClasses = 'mb-2 mb-sm-4'
   baseContentClasses = ''
 
@@ -188,6 +256,20 @@ export default class ToolheadCard extends Vue {
     return (this.height)
       ? `height: calc(${this.height}px - 49px);`
       : ''
+  }
+
+  /**
+   * The menu classes associated with the btns not inside a dropdown.
+   */
+  get menuClasses () {
+    return `d-none d-${this.menuBreakpoint}-flex`
+  }
+
+  /**
+   * The hamburger menu classes.
+   */
+  get hamburgerMenuClasses () {
+    return `d-flex d-${this.menuBreakpoint}-none`
   }
 
   get id (): string {
@@ -215,27 +297,48 @@ export default class ToolheadCard extends Vue {
     return (this.inLayout && this.draggable)
   }
 
+  /**
+   * Main content.
+   */
   get hasDefaultSlot () {
     return !!this.$slots.default || !!this.$scopedSlots.default
   }
 
+  /**
+   * Content for the menu. Shows in desktop +, condenses
+   * to a hamburger anything below. Can be forced to a menu
+   * with the forced-menu prop.
+   */
   get hasMenuSlot () {
     return !!this.$slots.menu || !!this.$scopedSlots.menu
   }
 
+  /**
+   * To override the title.
+   */
   get hasTitleSlot () {
     return !!this.$slots.title || !!this.$scopedSlots.title
   }
 
+  /**
+   * To override the sub title.
+   */
   get hasSubTitleSlot () {
     return !!this.$slots['sub-title'] || !!this.$scopedSlots['sub-title']
   }
 
+  /**
+   * To override the collapse button.
+   */
   get hasCollapseButtonSlot () {
     return !!this.$slots['collapse-button'] || !!this.$scopedSlots['collapse-button']
   }
 
-  // Moved to a regular function because slots are not reactive.
+  /**
+   * To overide the title with tabs.
+   * Note, this is not a computed prop because
+   * slots are not reactive.
+   */
   hasTabbedTitleSlot () {
     return !!this.$slots['tabbed-title'] || !!this.$scopedSlots['tabbed-title']
   }
