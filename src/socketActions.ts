@@ -211,7 +211,7 @@ export const SocketActions = {
   async printerEmergencyStop () {
     Vue.$socket.emit(
       'printer.emergency_stop', {
-        dispatch: 'socket/notifyKlippyDisconnected'
+        dispatch: 'void'
       }
     )
   },
