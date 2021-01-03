@@ -75,7 +75,8 @@ import {
   mdiChevronRight,
   mdiChevronLeft,
   mdiDrag,
-  mdiCheckboxMultipleBlank
+  mdiCheckboxMultipleBlank,
+  mdiOpenInApp
 } from '@mdi/js'
 
 /**
@@ -101,6 +102,7 @@ export const Icons = Object.freeze({
   help: mdiHelp,
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
+  open: mdiOpenInApp,
   tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,

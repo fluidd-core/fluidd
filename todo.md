@@ -2,7 +2,6 @@
 
 ## Next Up
 - add filesystem usage
-- add klippy disconnected notify impl so that we can error correctly if say a heater stops working
 - z-offset configuration + sheet config + probe calibration
 - i18n (translations)
 - docker image

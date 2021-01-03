@@ -28,14 +28,39 @@
               </td>
               <td class="grey--text text--lighten-1 text-body-1"><span v-if="mesh.active">{{ variance.toFixed(4) }}</span></td>
               <td>
-                <v-btn
-                  @click="loadProfile(mesh.profile_name)"
-                  :elevation="2"
-                  :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
-                  color="secondary"
-                  small>
-                  Load Profile
-                </v-btn>
+                <v-tooltip left>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      @click="loadProfile(mesh.profile_name)"
+                      :elevation="2"
+                      :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
+                      v-bind="attrs"
+                      v-on="on"
+                      color="secondary"
+                      small
+                      icon>
+                      <v-icon small>$open</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Load Profile</span>
+                </v-tooltip>
+                <v-tooltip right>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      @click="removeProfile(mesh.profile_name)"
+                      :elevation="2"
+                      :disabled="hasWaits || printerPrinting || printerBusy"
+                      v-bind="attrs"
+                      v-on="on"
+                      color="warning"
+                      class="ml-2"
+                      icon
+                      small>
+                      <v-icon small>$delete</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>Delete Profile. This WILL restart your printer.</span>
+                </v-tooltip>
               </td>
             </tr>
             <tr>
@@ -224,6 +249,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
   loadProfile (name: string) {
     this.sendGcode('BED_MESH_PROFILE LOAD=' + name)
+  }
+
+  removeProfile (name: string) {
+    this.sendGcode('BED_MESH_PROFILE REMOVE=' + name)
+    this.sendGcode('SAVE_CONFIG')
   }
 
   saveToConfig () {
