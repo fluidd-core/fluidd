@@ -66,7 +66,7 @@ const getApiConfig = async (): Promise<{ config: ApiConfig | InstanceConfig; hos
   const results = await Promise.all(
     endpoints.map(async endpoint => {
       try {
-        return await Vue.$http.get(endpoint + '/printer/info', { timeout: 500 })
+        return await Vue.$http.get(endpoint + '/printer/info?date=' + new Date().getTime(), { timeout: 500 })
       } catch {
         console.debug('Failed loading endpoint ping', endpoint)
       }
