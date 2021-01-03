@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row no-gutters class="mt-0 mt-sm-2">
-      <v-col cols="12" class="pa-0">
+    <v-row class="mt-0">
+      <v-col cols="12" class="mt-0">
         <collapsable-card
           title="UI Settings"
           icon="$cogs"
