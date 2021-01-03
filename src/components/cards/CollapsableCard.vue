@@ -214,7 +214,7 @@ export default class ToolheadCard extends Vue {
   /**
    * Forcefully hide the menu btns / hamburger.
    */
-  @Prop({ type: String, default: false })
+  @Prop({ type: Boolean, default: false })
   hideMenu!: boolean
 
   /**
