@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { mergeFileUpdate } from '../helpers'
-import { Files, FilesState, FileUpdate, KlipperFile, KlipperFileWithMeta } from './types'
+import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta } from './types'
 import { defaultState } from './index'
+import { Globals } from '@/globals'
 
 export const mutations: MutationTree<FilesState> = {
   resetState (state) {
@@ -32,11 +33,19 @@ export const mutations: MutationTree<FilesState> = {
 
     if (directory) {
       const fileIndex = directory.items.findIndex(file => file.name === paths.filename)
-      const file = directory.items[fileIndex] as KlipperFile | KlipperFileWithMeta
-      if (fileIndex >= 0) {
-        Vue.set(directory.items, fileIndex, mergeFileUpdate(root, file, payload.file))
-      } else {
-        directory.items.push(payload.file)
+      const file = directory.items[fileIndex] as AppFile | AppFileWithMeta
+
+      const isFiltered = (
+        Globals.FILTERED_FILES_PREFIX.some(e => payload.paths.filename.startsWith(e)) ||
+        Globals.FILTERED_FILES_EXTENSION.some(e => payload.paths.filename.endsWith(e))
+      )
+
+      if (!isFiltered) {
+        if (fileIndex >= 0) {
+          Vue.set(directory.items, fileIndex, mergeFileUpdate(root, file, payload.file))
+        } else {
+          directory.items.push(mergeFileUpdate(root, {}, payload.file))
+        }
       }
     }
   },

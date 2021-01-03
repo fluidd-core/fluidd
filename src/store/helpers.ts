@@ -55,7 +55,7 @@ export const getFilePaths = (filePath: string, root: string): FilePaths => {
  * File Updates come in with the filename representing the filepath,
  * so we need to strip the path to reflect what we store.
  */
-export const mergeFileUpdate = (root: string, existing: KlipperFile, updates: KlipperFileWithMeta): KlipperFileWithMeta => {
+export const mergeFileUpdate = (root: string, existing: AppFile | AppFileWithMeta | {}, updates: AppFile | AppFileWithMeta): AppFileWithMeta | AppFile => {
   const paths = getFilePaths(updates.filename, root)
   updates.filename = paths.filename
   return { ...existing, ...updates }
