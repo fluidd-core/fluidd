@@ -339,6 +339,9 @@ export const actions: ActionTree<SocketState, RootState> = {
   async notifyUpdateResponse ({ dispatch }, payload) {
     dispatch('version/onUpdateResponse', payload, { root: true })
   },
+  async notifyUpdateRefreshed ({ dispatch }, payload) {
+    dispatch('version/onUpdateStatus', payload, { root: true })
+  },
 
   /**
    * ==========================================================================
