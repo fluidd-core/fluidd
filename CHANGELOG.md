@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.2](https://github.com/cadriel/fluidd/compare/v1.4.1...v1.4.2) (2021-01-04)
+
+
+### Features
+
+* add ability to remove mesh profiles ([f2830df](https://github.com/cadriel/fluidd/commit/f2830dfee6e10113560b214c8b8c22c061211d22))
+* Allow multiple files upload from upload button. ([15695d1](https://github.com/cadriel/fluidd/commit/15695d1a758a6bb6451fd4f009007fd480c4dd3a))
+* make use of automated update status notifications ([791767d](https://github.com/cadriel/fluidd/commit/791767d88fa478ce03669d2b0b0998d0f642ad2a))
+* moves home controls to a rollout ([c868d50](https://github.com/cadriel/fluidd/commit/c868d50ad704d4d642552df6ebf246037ebb4695))
+* reduce title font size on mobile ([2dbe487](https://github.com/cadriel/fluidd/commit/2dbe487e322ecc0842db2bf09677c5a19dea5bad))
+
+
+### Bug Fixes
+
+* ensure an estop doesn't dispatch disconnected event ([0ec0386](https://github.com/cadriel/fluidd/commit/0ec0386205be5dbeae2a8b0012a97b436176280d))
+* ensure home buttons color correctly ([1226f81](https://github.com/cadriel/fluidd/commit/1226f81a78c33185bd1cd6fe5b60919c39d3a1fc))
+* generic fans now controllable ([34addf3](https://github.com/cadriel/fluidd/commit/34addf3477dbcc16a9d9590b4b6a9d2bcca2fa72))
+* issue when printing freshly uploaded files ([eb8204c](https://github.com/cadriel/fluidd/commit/eb8204c5c26a571b86c148245276a968a29b0a47))
+* minor layout issue on settings page ([84ae80f](https://github.com/cadriel/fluidd/commit/84ae80fba760137ad89a9f1990bba78743a01645))
+* Now watches for klippy shutdown ([d71e513](https://github.com/cadriel/fluidd/commit/d71e513ccf4a9dc2d648e40c41f095a747bce12c))
+* Prop type error ([e1f86d7](https://github.com/cadriel/fluidd/commit/e1f86d77f840df4c03f451e17220ae2306a21eda))
+* temp preset validation ([895c194](https://github.com/cadriel/fluidd/commit/895c194e4e6525913c65f4958552d729364da191))
+* toolhead title buttons overflowing ([292d2b8](https://github.com/cadriel/fluidd/commit/292d2b8bf016c2882bd6d4405a0787ace61a684f))
+* update status no longer effects other waits in the UI ([c2751d5](https://github.com/cadriel/fluidd/commit/c2751d55e61f2e6739937c63b797f7a05e4600fb))
+
 ### [1.4.1](https://github.com/cadriel/fluidd/compare/v1.4.0...v1.4.1) (2020-12-31)
 
 
