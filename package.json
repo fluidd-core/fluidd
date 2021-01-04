@@ -51,6 +51,7 @@
     "vuex": "^3.6.0"
   },
   "devDependencies": {
+    "@0x4447/potato": "^2.4.7",
     "@mdi/js": "^5.8.55",
     "@types/chai": "^4.2.14",
     "@types/lodash-es": "^4.17.4",
