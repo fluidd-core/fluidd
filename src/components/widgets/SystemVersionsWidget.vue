@@ -41,7 +41,7 @@
       </v-list-item>
     </template>
 
-    <v-list-item @click="forceCheck()">
+    <v-list-item @click="forceCheck()" :disabled="printerPrinting">
       <v-list-item-title>Check for updates</v-list-item-title>
       <v-list-item-icon>
         <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
