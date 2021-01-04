@@ -36,7 +36,8 @@
           <v-list-item-title>Services</v-list-item-title>
         </v-list-item-content>
       </template>
-      <v-list-item @click="serviceRestartMoonraker">
+      <v-list-item @click="serviceRestartMoonraker"
+        :disabled="printerPrinting">
         <v-list-item-title>Restart Moonraker</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="warning">$restart</v-icon>
