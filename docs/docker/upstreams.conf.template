@@ -1,0 +1,4 @@
+upstream mjpgstreamer {
+    ip_hash;
+    server ${JPEG_STREAM_HOST}:${JPEG_STREAM_PORT};
+}
