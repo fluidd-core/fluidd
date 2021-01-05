@@ -78,11 +78,12 @@ const Filters = {
   },
 
   /**
-   * Formats a number representing mm to m if > 1000
+   * Formats a number representing mm to human readable distance.
    */
   getReadableLengthString (lengthInMm: number) {
-    if (lengthInMm > 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
-    return (lengthInMm / 1000).toFixed(2) + ' mm'
+    if (lengthInMm >= 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
+    if (lengthInMm > 100) return (lengthInMm / 10).toFixed(1) + ' cm'
+    return `${lengthInMm} mm`
   },
 
   /**
