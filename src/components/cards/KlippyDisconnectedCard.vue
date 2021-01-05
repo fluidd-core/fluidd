@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    v-if="printerWarnings.length && !klippyConnected"
+    v-if="printerWarnings.length || !klippyConnected"
     :title="'Klippy: ' + klippyState"
     :collapsable="false"
     icon="$alert">
@@ -23,13 +23,13 @@
           <v-alert text dense type="error" v-if="klippyStateMessage !== 'Printer is ready'">
             <span v-html=klippyStateMessage></span>
           </v-alert>
-          <v-alert text dense icon="$alert" type="warning" v-if="socketReady && clientWarnings.length && klippyStateMessage === 'Printer is ready'">
+          <v-alert text dense icon="$alert" type="warning" v-if="socketReady && printerWarnings.length && klippyStateMessage === 'Printer is ready'">
             <div class="mb-2">
               {{ appName }} warnings found
             </div>
 
             <!-- <div class="client-warning mb-2" v-for="(warning, index) in clientWarnings" :key="index" v-html="warning.message"></div> -->
-            <div class="client-warning" v-for="(warning, index) in clientWarnings" :key="index" v-html="warning.message"></div>
+            <div class="client-warning" v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></div>
           </v-alert>
         </v-col>
       </v-row>

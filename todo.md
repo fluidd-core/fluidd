@@ -11,6 +11,7 @@
 - bulk file actions (bulk remove, bulk move etc..)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - ability to reprint after cancel
+- update uncontrollable fans to have an obvious on / off state.
 
 
 - load gcode help and implement in console

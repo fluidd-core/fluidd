@@ -90,6 +90,10 @@ export default class UtilsMixin extends Vue {
     if (config && ('gcode_macro CANCEL_PRINT' in config === false)) {
       warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
     }
+
+    if (warnings.length > 0) {
+      warnings.push({ message: 'Printer setup requirements can be found <a target="_blank" href="https://github.com/cadriel/fluidd/blob/develop/docs/printer-setup-and-macros.md">here.</a>' })
+    }
     return warnings
   }
 
