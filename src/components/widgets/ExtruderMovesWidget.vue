@@ -87,25 +87,6 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   set extrudeLength (val: number) {
     this.feedLength = val
   }
-
-  /**
-   * Ensures our temps are high enough to extrude or retract.
-   */
-  get extrudeRetractReady () {
-    return (this.extruder && this.minExtrudeTemp)
-      ? (this.extruder.temperature > this.minExtrudeTemp)
-      : false
-  }
-
-  get extruder () {
-    return this.$store.state.socket.printer.extruder
-  }
-
-  get minExtrudeTemp () {
-    return (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
-      ? this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp
-      : 170 // Default to a sane value
-  }
 }
 </script>
 

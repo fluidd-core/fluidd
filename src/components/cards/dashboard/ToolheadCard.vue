@@ -101,25 +101,6 @@ export default class ToolheadCard extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
-  /**
-   * Ensures our temps are high enough to extrude or retract.
-   */
-  get extrudeRetractReady () {
-    return (this.extruder && this.minExtrudeTemp)
-      ? (this.extruder.temperature > this.minExtrudeTemp)
-      : false
-  }
-
-  get extruder () {
-    return this.$store.state.socket.printer.extruder
-  }
-
-  get minExtrudeTemp () {
-    return (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
-      ? parseInt(this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
-      : 170 // Default to a sane value
-  }
-
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
