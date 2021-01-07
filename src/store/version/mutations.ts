@@ -16,12 +16,12 @@ export const mutations: MutationTree<VersionState> = {
   },
 
   onUpdateStatus (state, payload) {
-    const versionInfo = payload.version_info || undefined
-    state.busy = payload.busy || false
-    state.github_limit_reset_time = payload.github_limit_reset_time || 0
-    state.github_rate_limit = payload.github_rate_limit || 0
-    state.github_requests_remaining = payload.github_requests_remaining || 0
+    if ('busy' in payload) state.busy = payload.busy
+    if ('github_limit_reset_time' in payload) state.github_limit_reset_time = payload.github_limit_reset_time
+    if ('github_rate_limit' in payload) state.github_rate_limit = payload.github_rate_limit
+    if ('github_requests_remaining' in payload) state.github_requests_remaining = payload.github_requests_remaining
 
+    const versionInfo = payload.version_info || undefined
     if (versionInfo) {
       for (const k in versionInfo) {
         const type = k

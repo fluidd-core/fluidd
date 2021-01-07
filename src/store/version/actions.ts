@@ -1,6 +1,7 @@
 import { ActionTree } from 'vuex'
 import { VersionState } from './types'
 import { RootState } from '../types'
+import { SocketActions } from '@/socketActions'
 
 export const actions: ActionTree<VersionState, RootState> = {
   /**
@@ -27,24 +28,23 @@ export const actions: ActionTree<VersionState, RootState> = {
     commit('onUpdateResponse', payload)
   },
 
-  async onUpdatedMoonraker ({ commit }, payload) {
-    commit('onUpdateStatus', payload)
-    console.debug('Finished updating moonraker')
+  async onUpdatedMoonraker (_, payload) {
+    console.debug('Finished updating moonraker', payload)
+    SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedKlipper ({ commit }, payload) {
-    commit('onUpdateStatus', payload)
-    console.debug('Finished updating klipper')
+  async onUpdatedKlipper (_, payload) {
+    console.debug('Finished updating klipper', payload)
+    SocketActions.machineUpdateStatus()
   },
 
-  async onUpdatedClient ({ commit }, payload) {
-    commit('onUpdateStatus', payload)
-    console.debug('Finished updating client, reloading')
+  async onUpdatedClient (_, payload) {
+    console.debug('Finished updating client, reloading', payload)
     window.location.reload()
   },
 
-  async onUpdatedSystem ({ commit }, payload) {
-    commit('onUpdateStatus', payload)
-    console.debug('Finished updating system')
+  async onUpdatedSystem (_, payload) {
+    console.debug('Finished updating system', payload)
+    SocketActions.machineUpdateStatus()
   }
 }
