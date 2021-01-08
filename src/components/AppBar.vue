@@ -26,7 +26,7 @@
         <v-icon small class="mr-md-1">$home</v-icon>
         <span>Dashboard</span>
       </v-btn>
-      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" v-if="jobsInMenu">
+      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" v-if="klippyConnected">
         <v-icon small class="mr-md-1">$files</v-icon>
         <span>Jobs</span>
       </v-btn>
@@ -91,10 +91,6 @@ export default class AppBar extends Mixins(UtilsMixin) {
 
   get currentFile () {
     return this.$store.state.socket.printer.print_stats.filename
-  }
-
-  get jobsInMenu () {
-    return (this.$store.state.config.fileConfig.general.jobsInMenu && this.klippyConnected)
   }
 
   get hasUpdates () {

@@ -6,7 +6,7 @@
     dense>
 
     <v-list dense>
-      <!-- <v-subheader>{{ instanceName }}</v-subheader> -->
+      <v-subheader>{{ instanceName }}</v-subheader>
 
       <v-list-item to="/" class="d-flex d-md-none">
         <v-list-item-icon>
@@ -16,7 +16,7 @@
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/jobs" class="d-flex d-md-none" v-if="jobsInMenu">
+      <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyConnected">
         <v-list-item-icon>
           <v-icon>$files</v-icon>
         </v-list-item-icon>
@@ -44,34 +44,12 @@
       <system-commands-widget @click="this.close"></system-commands-widget>
       <system-versions-widget @click="this.close" v-if="versionsSupported"></system-versions-widget>
     </v-list>
-
     <v-divider></v-divider>
+
     <system-printers-widget @click="this.close"></system-printers-widget>
-
     <v-divider></v-divider>
-    <v-list dense>
-      <v-subheader>Layout</v-subheader>
 
-      <v-list-item @click.prevent="layoutMode = !layoutMode">
-        <v-list-item-action>
-          <v-checkbox :input-value="layoutMode"></v-checkbox>
-        </v-list-item-action>
-
-        <v-list-item-content>
-          <v-list-item-title>Adjust dashboard layout</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item @click="resetLayout">
-        <v-list-item-icon>
-          <v-icon>$refresh</v-icon>
-        </v-list-item-icon>
-
-        <v-list-item-content>
-          <v-list-item-title>Reset dashboard layout</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
+    <system-layout-widget @click="this.close"></system-layout-widget>
 
   </v-navigation-drawer>
 </template>
@@ -81,7 +59,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 import SystemVersionsWidget from '@/components/widgets/SystemVersionsWidget.vue'
 import SystemPrintersWidget from '@/components/widgets/SystemPrintersWidget.vue'
-import { defaultState } from '@/store/config/index'
+import SystemLayoutWidget from '@/components/widgets/SystemLayoutWidget.vue'
 
 import UtilsMixin from '@/mixins/utils'
 
@@ -89,28 +67,16 @@ import UtilsMixin from '@/mixins/utils'
   components: {
     SystemCommandsWidget,
     SystemVersionsWidget,
-    SystemPrintersWidget
+    SystemPrintersWidget,
+    SystemLayoutWidget
   }
 })
 export default class AppDrawer extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean
 
-  get layoutMode () {
-    return this.$store.state.config.layoutMode
-  }
-
-  set layoutMode (val: boolean) {
-    this.$store.commit('config/setLayoutMode', val)
-    this.close()
-  }
-
   get instanceName () {
     return this.$store.state.config.fileConfig.general.instanceName
-  }
-
-  get jobsInMenu () {
-    return this.$store.state.config.fileConfig.general.jobsInMenu
   }
 
   get versionsSupported () {
@@ -119,12 +85,6 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
 
   close () {
     this.$emit('input', false)
-  }
-
-  resetLayout () {
-    const layout = defaultState().cardLayout
-    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard1', cards: layout.dashboard1 })
-    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard2', cards: layout.dashboard2 })
   }
 
   emitChange (e: boolean) {

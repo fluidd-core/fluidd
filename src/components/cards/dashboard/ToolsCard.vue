@@ -16,21 +16,13 @@
       <v-tabs
         v-if="showTabs && !inLayout"
         v-model="tab"
-        fixed-tabs
+        grow
         background-color="quaternary"
         class="rounded-t"
       >
         <v-tab :key="'targets'" :disabled="attrs.inLayout || attrs.isCollapsed">
           <v-icon left>$fire</v-icon>
           Thermals
-        </v-tab>
-        <v-tab :key="'macros'" v-if="hasMacros" :disabled="attrs.inLayout || attrs.isCollapsed">
-          <v-icon left>$fileCode</v-icon>
-          Macros
-        </v-tab>
-        <v-tab :key="'power'" v-if="devicePowerPluginEnabled" :disabled="attrs.inLayout || attrs.isCollapsed">
-          <v-icon left>$power</v-icon>
-          Power
         </v-tab>
         <v-tab :key="'jobs'" v-if="klippyConnected && jobsInDash" :disabled="attrs.inLayout || attrs.isCollapsed">
           <v-icon left>$files</v-icon>
@@ -48,12 +40,6 @@
     <v-tabs-items v-model="tab" class="mb-auto rounded-b">
       <v-tab-item :key="'targets'" class="tertiary rounded-b">
         <temperature-targets-widget></temperature-targets-widget>
-      </v-tab-item>
-      <v-tab-item :key="'macros'" class="tertiary rounded-b" v-if="hasMacros">
-        <macros-widget></macros-widget>
-      </v-tab-item>
-      <v-tab-item :key="'power'" class="tertiary rounded-b" v-if="devicePowerPluginEnabled">
-        <power-control-widget></power-control-widget>
       </v-tab-item>
       <v-tab-item :key="'jobs'" class="tertiary rounded-b max-height" v-if="klippyConnected && jobsInDash">
         <file-system-card
@@ -75,15 +61,11 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
-import PowerControlWidget from '@/components/widgets/PowerControlWidget.vue'
-import MacrosWidget from '@/components/widgets/MacrosWidget.vue'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 
 @Component({
   components: {
     FileSystemCard,
-    PowerControlWidget,
-    MacrosWidget,
     TemperatureTargetsWidget
   }
 })
@@ -92,26 +74,9 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   enabled!: boolean
 
   tab = 0
-  // get activeTab () {
-  //   return (this.$store.state.config.localConfig.dashTab === undefined)
-  //     ? this.tab
-  //     : this.$store.state.config.localConfig.dashTab
-  // }
-
-  // set activeTab (val: string) {
-  //   this.$store.dispatch('config/saveLocal', { dashTab: val })
-  // }
 
   get showTabs () {
-    return (this.hasMacros || this.devicePowerPluginEnabled || this.jobsInDash)
-  }
-
-  get hasMacros () {
-    return (this.$store.getters['socket/getVisibleMacros'].length)
-  }
-
-  get devicePowerPluginEnabled () {
-    return (this.$store.state.socket.plugins.includes('power'))
+    return (this.jobsInDash)
   }
 
   get jobsInDash () {

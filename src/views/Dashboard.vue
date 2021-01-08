@@ -42,6 +42,7 @@ import ToolheadCard from '@/components/cards/dashboard/ToolheadCard.vue'
 import TemperatureTargetsCard from '@/components/cards/dashboard/TemperatureTargetsCard.vue'
 import TemperatureGraphCard from '@/components/cards/dashboard/TemperatureGraphCard.vue'
 import CameraCard from '@/components/cards/dashboard/CameraCard.vue'
+import MacrosCard from '@/components/cards/dashboard/MacrosCard.vue'
 import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
 import PrinterLimitsCard from '@/components/cards/dashboard/PrinterLimitsCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
@@ -55,6 +56,7 @@ import { cloneDeep } from 'lodash-es'
     StatusCard,
     ToolsCard,
     ToolheadCard,
+    MacrosCard,
     TemperatureTargetsCard,
     TemperatureGraphCard,
     CameraCard,
@@ -68,6 +70,10 @@ export default class Dashboard extends Mixins(UtilsMixin) {
 
   get cameraEnabled (): boolean {
     return this.$store.state.config.fileConfig.camera.enabled
+  }
+
+  get hasMacros () {
+    return (this.$store.getters['socket/getVisibleMacros'].length)
   }
 
   get col1 (): CardConfig[] {
@@ -105,6 +111,7 @@ export default class Dashboard extends Mixins(UtilsMixin) {
       // Take care of special cases.
       if (this.inLayout) return true
       if (s.name === 'camera-card' && !this.cameraEnabled) return false
+      if (s.name === 'macros-card' && !this.hasMacros) return false
 
       // Otherwise return whatever the enabled state is.
       return s.enabled

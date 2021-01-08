@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-list-group
-      prepend-icon="$power"
+      prepend-icon="$host"
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
@@ -26,8 +26,34 @@
           <v-icon color="error">$power</v-icon>
         </v-list-item-icon>
       </v-list-item>
+    </v-list-group>
+
+    <v-list-group
+      v-if="devicePowerPluginEnabled"
+      prepend-icon="$power"
+      no-action>
+      <template v-slot:activator>
+        <v-list-item-content>
+          <v-list-item-title>Power Plugin</v-list-item-title>
+        </v-list-item-content>
+      </template>
+
+      <v-list-item
+        v-for="(device, index) in powerDevices"
+        :key="index"
+        :disabled="(device.status === 'error' || device.status === 'init' || printerPrinting)"
+        @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
+        :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
+        :color="(device.status === 'error') ? 'error' : 'secondary'"
+      >
+        <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon>{{ getPowerIcon(device) }}</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
 
     </v-list-group>
+
     <v-list-group
       prepend-icon="$restart"
       no-action>
@@ -90,6 +116,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { SocketActions } from '@/socketActions'
 import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
+import { Device } from '@/store/devicePower/types'
 
 @Component({
   components: {
@@ -103,6 +130,47 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
 
   confirmShutdownDialog = {
     open: false
+  }
+
+  get powerDevices () {
+    return this.$store.state.devicePower.devices
+  }
+
+  get devicePowerPluginEnabled () {
+    return (this.$store.state.socket.plugins.includes('power'))
+  }
+
+  togglePowerDevice (device: Device, wait?: string) {
+    const state = (device.status === 'on') ? 'off' : 'on'
+    SocketActions.machineDevicePowerToggle(device.device, state, wait)
+  }
+
+  getPowerIcon (device: Device) {
+    switch (device.status) {
+      case 'error': {
+        return '$alert'
+      }
+      case 'init': {
+        return '$dots'
+      }
+      case 'on': {
+        return '$powerOn'
+      }
+      case 'off': {
+        return '$powerOff'
+      }
+    }
+  }
+
+  getPowerButtonText (device: Device): string {
+    switch (device.status) {
+      case 'error': {
+        return `${device.device} [error]`
+      }
+      default: {
+        return `${device.device}`
+      }
+    }
   }
 
   hostReboot (val: boolean) {

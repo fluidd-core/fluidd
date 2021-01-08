@@ -21,6 +21,7 @@ export const defaultState = (): ConfigState => {
       ],
       dashboard2: [
         { name: 'tools-card', enabled: true },
+        { name: 'macros-card', enabled: true },
         { name: 'console-card', enabled: true },
         { name: 'temperature-graph-card', enabled: true }
       ]
@@ -29,7 +30,6 @@ export const defaultState = (): ConfigState => {
     fileConfig: {
       general: {
         instanceName: Globals.APP_NAME,
-        jobsInMenu: true,
         jobsInDash: false,
         darkMode: true,
         axis: {

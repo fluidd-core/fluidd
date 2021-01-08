@@ -16,11 +16,6 @@
         hide-details
         v-model="jobsInDash">
       </v-switch>
-      <v-switch
-        label="Enable Jobs Menu"
-        hide-details
-        v-model="jobsInMenu">
-      </v-switch>
     </v-card-text>
   </collapsable-card>
 </template>
@@ -39,14 +34,6 @@ export default class GeneralSettingsCard extends Mixins(UtilsMixin) {
 
   set instanceName (value: string) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.instanceName', value })
-  }
-
-  get jobsInMenu () {
-    return this.$store.state.config.fileConfig.general.jobsInMenu
-  }
-
-  set jobsInMenu (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.jobsInMenu', value })
   }
 
   get jobsInDash () {

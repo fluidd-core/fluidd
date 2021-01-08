@@ -76,7 +76,11 @@ import {
   mdiChevronLeft,
   mdiDrag,
   mdiCheckboxMultipleBlank,
-  mdiOpenInApp
+  mdiOpenInApp,
+  mdiDesktopTower,
+  mdiDotsHorizontal,
+  mdiElectricSwitch,
+  mdiElectricSwitchClosed
 } from '@mdi/js'
 
 /**
@@ -106,10 +110,13 @@ export const Icons = Object.freeze({
   tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,
+  dots: mdiDotsHorizontal,
   drag: mdiDrag,
   chart: mdiChartTimelineVariant,
   power: mdiPower,
   powerCycle: mdiPowerCycle,
+  powerOn: mdiElectricSwitchClosed,
+  powerOff: mdiElectricSwitch,
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
@@ -176,7 +183,8 @@ export const Icons = Object.freeze({
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
-  bedMesh: mdiViewGridOutline
+  bedMesh: mdiViewGridOutline,
+  host: mdiDesktopTower
 })
 
 export const Waits = Object.freeze({

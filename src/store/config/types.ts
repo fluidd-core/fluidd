@@ -39,7 +39,6 @@ export interface HostConfig {
 
 export interface GeneralConfig {
   instanceName: string;
-  jobsInMenu: boolean;
   jobsInDash: boolean;
   darkMode: boolean;
   axis: Axis;
