@@ -16,10 +16,12 @@ import vueHeadful from 'vue-headful'
 
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
+import InlineHelpIcon from '@/components/inputs/InlineHelpIcon.vue'
 
 Vue.component('btn-collapse', BtnCollapse)
 Vue.component('collapsable-card', CollapsableCard)
 Vue.component('vue-headful', vueHeadful)
+Vue.component('inline-help', InlineHelpIcon)
 
 // Use any Plugins
 Vue.use(AxiosPlugin)

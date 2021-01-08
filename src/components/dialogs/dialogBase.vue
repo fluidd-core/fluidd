@@ -9,22 +9,7 @@
       <v-card-title>
         <span class="headline"> {{ title }}</span>
         <v-spacer />
-        <v-tooltip bottom v-if="hasHelpTooltipSlot || helpTooltip">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              v-bind="attrs"
-              v-on="on"
-              small
-              icon>
-              <v-icon
-                small>
-                $help
-              </v-icon>
-            </v-btn>
-          </template>
-          <span v-if="!hasHelpTooltipSlot && helpTooltip">{{ helpTooltip }}</span>
-          <slot name="help-tooltip" v-if="hasHelpTooltipSlot"></slot>
-        </v-tooltip>
+        <slot name="title-icons"></slot>
       </v-card-title>
       <v-card-text>
         <slot></slot>
@@ -77,10 +62,6 @@ export default class DialogBase extends Mixins(UtilsMixin) {
 
   get hasActionsSlot () {
     return this.$slots.actions || this.$scopedSlots.actions
-  }
-
-  get hasHelpTooltipSlot () {
-    return this.$slots['help-tooltip'] || this.$scopedSlots['help-tooltip']
   }
 }
 </script>
