@@ -1,116 +1,104 @@
 <template>
   <div>
-    <v-row no-gutters justify="start" class="mb-3">
-      <v-col cols="auto" class="ml-13 mr-13">
+    <v-row no-gutters justify="start" class="mb-2">
+      <v-col cols="auto" class="ml-12 mr-12">
         <btn-toolhead-move
           @click="sendMoveGcode('Y', toolheadMoveLength)"
           :disabled="hasWaits || !xyHomed || !klippyConnected"
           icon="$up">
         </btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-3">
+      <v-col cols="auto" class="ml-2">
         <btn-toolhead-move
           @click="sendMoveGcode('Z', toolheadMoveLength)"
           :disabled="hasWaits || !zHomed || !klippyConnected"
           icon="$up">
         </btn-toolhead-move>
       </v-col>
+      <v-col class="ml-2">
+        <v-btn
+          :color="(!allHomed) ? 'warning' : 'secondary'"
+          :elevation="2"
+          :loading="hasWait(waits.onHomeAll)"
+          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          @click="sendGcode('G28', waits.onHomeAll)"
+        >
+          <v-icon small left>$home</v-icon> All
+        </v-btn>
+      </v-col>
     </v-row>
-    <v-row no-gutters justify="start" class="mb-3">
-      <v-col cols="auto" class="mr-13">
+    <v-row no-gutters justify="start" class="mb-2">
+      <v-col cols="auto">
         <btn-toolhead-move
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
           :disabled="hasWaits || !xyHomed || !klippyConnected"
           icon="$left">
         </btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-3">
+      <v-col cols="auto" class="ml-2">
+        <btn-toolhead-move
+          :color="(!xyHomed) ? 'warning' : 'secondary'"
+          :loading="hasWait(waits.onHomeXY)"
+          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          @click="sendGcode('G28 X Y', waits.onHomeXY)"
+          tooltip="Home XY"
+          icon="$home">
+        </btn-toolhead-move>
+      </v-col>
+      <v-col cols="auto" class="ml-2">
         <btn-toolhead-move
           @click="sendMoveGcode('X', toolheadMoveLength)"
           :disabled="hasWaits || !xyHomed || !klippyConnected"
           icon="$right">
         </btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-3">
-        <v-speed-dial
-          v-model="fab"
-          direction="right"
-          open-on-hover
-          transition="slide-y-reverse-transition"
-        >
-        <template v-slot:activator>
-          <v-btn
-            v-model="fab"
-            class="px-0"
-            :min-width="40"
-            :loading="hasWait([waits.onHomeAll, waits.onHomeX, waits.onHomeY, waits.onHomeZ])"
-            :color="(!allHomed) ? 'warning' : 'secondary'"
-          >
-            <v-icon v-if="fab">
-              $close
-            </v-icon>
-            <v-icon v-else>
-              $home
-            </v-icon>
-          </v-btn>
-        </template>
-        <v-btn
-          :color="(!allHomed) ? 'warning' : 'secondary'"
-          small
-          :elevation="2"
-          :loading="hasWait(waits.onHomeAll)"
-          :disabled="!klippyConnected || printerPrinting || hasWait([waits.onHomeAll, waits.onHomeX, waits.onHomeY, waits.onHomeZ])"
-          @click="sendGcode('G28', waits.onHomeAll)"
-        >
-          <v-icon small>$home</v-icon> All
-        </v-btn>
+      <v-col cols="auto" class="ml-2">
+        <btn-toolhead-move
+          :color="(!zHomed) ? 'warning' : 'secondary'"
+          :loading="hasWait(waits.onHomeZ)"
+          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          @click="sendGcode('G28 Z', waits.onHomeZ)"
+          tooltip="Home Z"
+          icon="$home">
+        </btn-toolhead-move>
+      </v-col>
+      <v-col class="ml-2">
         <v-btn
           :color="(!xHomed) ? 'warning' : 'secondary'"
-          small
           :elevation="2"
           :loading="hasWait(waits.onHomeX)"
-          :disabled="!klippyConnected || printerPrinting || hasWait([waits.onHomeAll, waits.onHomeX, waits.onHomeY, waits.onHomeZ])"
+          :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 X', waits.onHomeX)"
         >
-          <v-icon small>$home</v-icon> X
+          <v-icon small left>$home</v-icon> X
         </v-btn>
-        <v-btn
-          :color="(!yHomed) ? 'warning' : 'secondary'"
-          small
-          :elevation="2"
-          :loading="hasWait(waits.onHomeY)"
-          :disabled="!klippyConnected || printerPrinting || hasWait([waits.onHomeAll, waits.onHomeX, waits.onHomeY, waits.onHomeZ])"
-          @click="sendGcode('G28 Y', waits.onHomeY)"
-        >
-          <v-icon small>$home</v-icon> Y
-        </v-btn>
-        <v-btn
-          :color="(!zHomed) ? 'warning' : 'secondary'"
-          small
-          :elevation="2"
-          :loading="hasWait(waits.onHomeZ)"
-          :disabled="!klippyConnected || printerPrinting || hasWait([waits.onHomeAll, waits.onHomeX, waits.onHomeY, waits.onHomeZ])"
-          @click="sendGcode('G28 Z', waits.onHomeZ)"
-        >
-          <v-icon small>$home</v-icon> Z
-        </v-btn>
-      </v-speed-dial>
       </v-col>
     </v-row>
-    <v-row no-gutters justify="start" class="mb-3">
-      <v-col cols="auto" class="ml-13 mr-8">
+    <v-row no-gutters justify="start" class="mb-2">
+      <v-col cols="auto" class="ml-12 mr-7">
         <btn-toolhead-move
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
           :disabled="hasWaits || !xyHomed || !klippyConnected"
           icon="$down">
         </btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-8">
+      <v-col cols="auto" class="ml-7">
         <btn-toolhead-move
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
           :disabled="hasWaits || !zHomed || !klippyConnected"
           icon="$down">
         </btn-toolhead-move>
+      </v-col>
+      <v-col class="ml-2">
+        <v-btn
+          :color="(!yHomed) ? 'warning' : 'secondary'"
+          :elevation="2"
+          :loading="hasWait(waits.onHomeY)"
+          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          @click="sendGcode('G28 Y', waits.onHomeY)"
+        >
+          <v-icon small left>$home</v-icon> Y
+        </v-btn>
       </v-col>
     </v-row>
     <v-row no-gutters justify="start" class="mb-2">

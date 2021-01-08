@@ -1,26 +1,34 @@
 <template>
-  <v-badge
-    color="orange"
-    overlap
-    bordered
-    offset-x="15"
-    offset-y="15"
-    left
-    :content="badge"
-    :value="(badge !== '')"
-  >
-    <v-btn
-      @click="$emit('click')"
-      :disabled="disabled"
-      :elevation="2"
-      :min-width="40"
-      :loading="loading"
-      :color="color"
-      class="pa-0">
-      <v-icon :small="hasDefaultSlot">{{ icon }}</v-icon>
-      <slot></slot>
-    </v-btn>
-  </v-badge>
+  <v-tooltip
+    top>
+    <template v-slot:activator="{ on, attrs }">
+      <v-badge
+        color="orange"
+        overlap
+        bordered
+        offset-x="15"
+        offset-y="15"
+        left
+        :content="badge"
+        :value="(badge !== '')"
+      >
+        <v-btn
+          @click="$emit('click')"
+          :disabled="disabled"
+          :elevation="2"
+          :min-width="40"
+          :loading="loading"
+          :color="color"
+          v-bind="(tooltip !== '') ? attrs : undefined"
+          v-on="(tooltip !== '') ? on : undefined"
+          class="pa-0">
+          <v-icon>{{ icon }}</v-icon>
+          <slot></slot>
+        </v-btn>
+      </v-badge>
+    </template>
+    <span>{{ tooltip }}</span>
+  </v-tooltip>
 </template>
 
 <script lang="ts">
@@ -43,8 +51,7 @@ export default class BtnToolheadMove extends Vue {
   @Prop({ type: String, default: '' })
   badge!: string
 
-  get hasDefaultSlot () {
-    return !!this.$slots.default || !!this.$scopedSlots.default
-  }
+  @Prop({ type: String, default: '' })
+  tooltip!: string
 }
 </script>
