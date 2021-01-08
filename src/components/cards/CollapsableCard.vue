@@ -59,6 +59,7 @@
       <!-- Collapse Control -->
       <slot name="collapse-button">
         <btn-collapse
+          v-if="collapsable"
           :value="isCollapsed"
           @input="isCollapsed = $event"
           :enabled="enabled"

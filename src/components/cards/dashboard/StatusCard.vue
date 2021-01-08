@@ -1,6 +1,7 @@
 <template>
   <collapsable-card
     :hide-menu="hidePrinterMenu"
+    :collapsable="printerPrinting"
     title="Status"
     icon="$printer3d">
 
@@ -81,7 +82,7 @@
       <p>Are you sure? This will cancel your print.</p>
     </dialog-confirm>
 
-    <print-status-widget></print-status-widget>
+    <print-status-widget v-if="printerPrinting"></print-status-widget>
 
   </collapsable-card>
 </template>
