@@ -49,26 +49,28 @@
     <system-printers-widget @click="this.close"></system-printers-widget>
 
     <v-divider></v-divider>
-    <v-list
-      dense
-      subheader
-      two-line
-      flat
-      v-model="layoutMode">
-      <v-list-item-group
-        multiple
-      >
-        <v-list-item @click.prevent="layoutMode = !layoutMode">
-          <v-list-item-action>
-            <v-checkbox :input-value="layoutMode"></v-checkbox>
-          </v-list-item-action>
+    <v-list dense>
+      <v-subheader>Layout</v-subheader>
 
-          <v-list-item-content>
-            <v-list-item-title>Adjust layout</v-list-item-title>
-            <v-list-item-subtitle>Adjust dashboard layout</v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
+      <v-list-item @click.prevent="layoutMode = !layoutMode">
+        <v-list-item-action>
+          <v-checkbox :input-value="layoutMode"></v-checkbox>
+        </v-list-item-action>
+
+        <v-list-item-content>
+          <v-list-item-title>Adjust dashboard layout</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-list-item @click="resetLayout">
+        <v-list-item-icon>
+          <v-icon>$refresh</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title>Reset dashboard layout</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
 
   </v-navigation-drawer>
@@ -79,6 +81,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 import SystemVersionsWidget from '@/components/widgets/SystemVersionsWidget.vue'
 import SystemPrintersWidget from '@/components/widgets/SystemPrintersWidget.vue'
+import { defaultState } from '@/store/config/index'
 
 import UtilsMixin from '@/mixins/utils'
 
@@ -116,6 +119,12 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
 
   close () {
     this.$emit('input', false)
+  }
+
+  resetLayout () {
+    const layout = defaultState().cardLayout
+    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard1', cards: layout.dashboard1 })
+    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard2', cards: layout.dashboard2 })
   }
 
   emitChange (e: boolean) {
