@@ -14,8 +14,9 @@ FROM nginx:alpine as image
 ENV JPEG_STREAM_HOST localhost
 ENV JPEG_STREAM_PORT 8080
 
-ADD --chown=101:101 common_vars.conf /etc/nginx/conf.d/common_vars.conf 
-COPY --chown=101:101 upstreams.conf.template /etc/nginx/templates/upstreams.conf.template
-COPY --chown=101:101 client.conf /etc/nginx/conf.d/default.conf 
+#ADD --chown=101:101 common_vars.conf /etc/nginx/conf.d/common_vars.conf 
+#COPY --chown=101:101 upstreams.conf.template /etc/nginx/templates/upstreams.conf.template
+COPY --chown=101:101 server/nginx-site.conf /etc/nginx/conf.d/default.conf
 COPY --from=unzip --chown=101:101 /frontend /usr/share/nginx/html
+COPY --chown=101:101 server/config.json /usr/share/nginx/html/config.json
 EXPOSE 80
