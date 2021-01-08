@@ -38,17 +38,19 @@
       v-model="instanceDialog.open">
 
       <template v-slot:actions>
-        <v-btn color="warning" text @click="instanceDialog.open = false">Cancel</v-btn>
+        <v-btn color="warning" text @click="instanceDialog.open = false" type="button">Cancel</v-btn>
         <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
       </template>
 
-      <template v-slot:help-tooltip>
-        Enter your API URL.<br />
-        Some examples might be;<br />
-        <blockquote>
-          http://fluidd.local,
-          http://192.168.1.150
-        </blockquote>
+      <template v-slot:title-icons>
+        <inline-help bottom small>
+          Enter your API URL.<br />
+          Some examples might be;<br />
+          <blockquote>
+            http://fluidd.local,
+            http://192.168.1.150
+          </blockquote>
+        </inline-help>
       </template>
 
       Having trouble? <a :href="docsUrl + 'multiple-printers.md'" target="_blank">See here</a> for more information.<br />
@@ -58,7 +60,6 @@
         ref="form"
         id="form"
         v-model="instanceDialog.valid"
-        lazy-validation
         @submit="addInstance()"
       >
         <v-text-field
@@ -84,6 +85,7 @@ import UtilsMixin from '@/mixins/utils'
 import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { appInit } from '@/init'
 import { Globals, Waits } from '@/globals'
+import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
@@ -104,7 +106,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
 
   rules = {
     required: (v: string) => !!v || 'Required',
-    url: (v: string) => (this.urlRegex.test(v)) || 'Valid URL'
+    url: (v: string) => (this.urlRegex.test(v)) || 'Invalid URL'
   }
 
   instanceDialog = {
@@ -119,6 +121,10 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
 
   get instances () {
     return this.$store.getters['config/getInstances']
+  }
+
+  get form (): VForm {
+    return this.$refs.form as VForm
   }
 
   mounted () {
@@ -141,8 +147,8 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   }
 
   addInstance () {
-    (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    if (this.instanceDialog.valid) {
+    const valid = this.form.validate()
+    if (valid) {
       const urls = this.$filters.getApiUrls(this.instanceDialog.url)
       this.instanceDialog.open = false
       this.activateInstance(urls)

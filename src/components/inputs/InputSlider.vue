@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form">
+  <v-form ref="form" id="form">
     <v-layout align-end>
       <div class="grey--text text--darken-1 font-weight-regular">{{ label }}</div>
       <div class="grey--text focus--text ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
@@ -44,6 +44,7 @@
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { InputValidationRules } from 'vuetify'
+import { VForm } from '@/types/vuetify'
 
 @Component({})
 export default class InputSlider extends Mixins(UtilsMixin) {
@@ -81,6 +82,14 @@ export default class InputSlider extends Mixins(UtilsMixin) {
 
   newValue = 0
 
+  get form (): VForm {
+    return this.$refs.form as VForm
+  }
+
+  get valid () {
+    return this.form.validate()
+  }
+
   mounted () {
     this.newValue = this.value
   }
@@ -89,14 +98,10 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     this.newValue = e
   }
 
-  valid () {
-    return (this.$refs.form as Vue & { validate: () => boolean }).validate()
-  }
-
   clickChange (val: number) {
     this.newValue = val
     this.$nextTick(() => {
-      if (this.valid()) {
+      if (this.valid) {
         this.$emit('input', val)
       } else {
         this.newValue = this.value
@@ -105,7 +110,7 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   }
 
   emitChange (val: number) {
-    if (this.valid()) {
+    if (this.valid) {
       this.$emit('input', val)
     } else {
       this.newValue = this.value

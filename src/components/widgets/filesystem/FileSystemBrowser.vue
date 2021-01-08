@@ -57,7 +57,7 @@
           :title="dialog.title"
           v-model="dialog.active">
           <template v-slot:actions>
-            <v-btn color="warning" text @click="dialog.active = false">Cancel</v-btn>
+            <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
             <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
           </template>
           <v-form
@@ -230,6 +230,7 @@ import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
 import UtilsMixin from '@/mixins/utils'
 import { DataTableHeader } from 'vuetify'
+import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
@@ -335,6 +336,10 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     return this.$store.state.config.apiUrl
   }
 
+  get form (): VForm {
+    return this.$refs.form as VForm
+  }
+
   mounted () {
     this.currentRoot = this.root
 
@@ -393,8 +398,8 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   saveDialog () {
-    (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    if (this.dialog.valid) {
+    const valid = this.form.validate()
+    if (valid) {
       if (this.dialog.type === 'rename') {
         const item = this.dialog.item as AppFile | AppDirectory
         const original = this.dialog.original as AppFile | AppDirectory

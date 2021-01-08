@@ -1,10 +1,17 @@
 # TODO [fluidd]
 
 ## Next Up
-- add filesystem usage
+
+- a "reset dashboard layout" to default
+- maybe consider rename for Targets since we can include things like host temp, which doesn't have a heater?
+- print instances having data bleed? [github issue]
+
+- adding multiple printers to carry over between devices
+- option to customize color of the logo at top-left (and subsequently on your browser tab and bookmark)
+- option to have Macros in its own little box instead of grouped with Targets and Jobs
+- re-adjust home buttons
 - z-offset configuration + sheet config + probe calibration
 - i18n (translations)
-- docker image
 - PID calibrate option for heaters (hotend + bed etc)
 - Drag and Drop move.
 - Add a way to specify a value for sliders
@@ -12,7 +19,10 @@
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - ability to reprint after cancel
 - update uncontrollable fans to have an obvious on / off state.
-
+- add filesystem usage
+- temperature graph tooltips / hover
+- copying text from console puts seperate outputs in reverse order [github issue]
+- allow deletion of all printers on fluidd.xyz
 
 - load gcode help and implement in console
 - themes (pick a specific theme (red, green etc..)
@@ -21,6 +31,7 @@
 - show mm/s in status
 - update panel collapse so these are remembered per instance
 - add ability to delete bed mesh profile
+- add ability to show / hide mesh irrelevant on if a mesh is loaded (will help those on slower connections..)
 
 
 ## Refactoring / Core

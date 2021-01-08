@@ -145,7 +145,7 @@
       :max-width="450">
 
       <template v-slot:actions>
-        <v-btn color="warning" text @click="saveDialog.open = false">Cancel</v-btn>
+        <v-btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</v-btn>
         <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
       </template>
 
@@ -191,6 +191,7 @@ import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
 import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { Plotly } from '@cadriel/vue-plotly'
+import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
@@ -232,6 +233,10 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
     return (this.meshes.findIndex(mesh => mesh.profile_name === 'default') > -1)
   }
 
+  get form (): VForm {
+    return this.$refs.form as VForm
+  }
+
   @Watch('currentMesh', { deep: true })
   onCurrentMeshChange (val: BedMesh) {
     if (val) {
@@ -257,8 +262,8 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   saveToConfig () {
-    (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    if (this.saveDialog.valid) {
+    const valid = this.form.validate()
+    if (valid) {
       if (this.saveDialog.profileName !== this.currentMesh.profile_name) {
         this.sendGcode('BED_MESH_PROFILE SAVE=' + this.saveDialog.profileName)
       }

@@ -46,7 +46,7 @@
         v-model="dialog.active"
         :title="(dialog.index >= 0) ? 'Edit preset' : 'Add preset'">
         <template v-slot:actions>
-          <v-btn color="warning" text @click="dialog.active = false">Cancel</v-btn>
+          <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
           <v-btn color="primary" :elevation="2" type="submit" form="form">Add</v-btn>
         </template>
         <v-form
@@ -104,6 +104,7 @@ import UtilsMixin from '@/mixins/utils'
 import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/socket/types'
+import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
@@ -121,6 +122,10 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
 
   get presets () {
     return this.$store.state.config.fileConfig.dashboard.tempPresets || []
+  }
+
+  get form (): VForm {
+    return this.$refs.form as VForm
   }
 
   dialog = {
@@ -168,8 +173,8 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   save (preset: TemperaturePreset) {
-    (this.$refs.form as Vue & { validate: () => boolean }).validate()
-    if (this.dialog.valid) {
+    const valid = this.form.validate()
+    if (valid) {
       this.$store.dispatch('config/updatePreset', { preset, index: this.dialog.index })
       this.dialog.active = false
     }
