@@ -295,7 +295,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     formLabel: '',
     rules: [
       (v: string) => !!v || 'Name is required',
-      (v: string) => (v && v.length > 2) || 'Name must be greater than 2 characters'
+      (v: string) => (v && v.length > 1) || 'Name must be greater than 1 character'
     ],
     item: {
       name: ''
@@ -429,8 +429,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
         valid: false,
         formLabel: 'Name',
         rules: [
-          (v: string) => !!v || 'Name is required',
-          (v: string) => (v && v.length > 2) || 'Name must be greater than 2 characters'
+          (v: string) => !!v || 'Name is required'
         ],
         item: clone(item),
         original: item,
@@ -473,8 +472,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
       valid: false,
       formLabel: 'Name',
       rules: [
-        (v: string) => !!v || 'Name is required',
-        (v: string) => (v && v.length > 2) || 'Name must be greater than 2 characters'
+        (v: string) => !!v || 'Name is required'
       ],
       item: { name: '' },
       active: true
