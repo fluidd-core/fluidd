@@ -22,7 +22,7 @@
       >
         <v-tab :key="'targets'" :disabled="attrs.inLayout || attrs.isCollapsed">
           <v-icon left>$fire</v-icon>
-          Targets
+          Thermals
         </v-tab>
         <v-tab :key="'macros'" v-if="hasMacros" :disabled="attrs.inLayout || attrs.isCollapsed">
           <v-icon left>$fileCode</v-icon>
