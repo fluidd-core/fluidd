@@ -1,13 +1,13 @@
 <template>
   <v-card-text>
-    <v-row no-gutters justify="space-between" class="mb-4">
-      <v-col cols="12" lg="6">
+    <v-row justify="space-between" class="mb-4">
+      <v-col cols="auto">
         <!--  Toolhead Moves and Offset Z -->
         <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
         <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
       </v-col>
 
-      <v-col cols="12" lg="6">
+      <v-col cols="auto">
         <toolhead-position-widget></toolhead-position-widget>
         <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
       </v-col>
