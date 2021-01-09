@@ -17,7 +17,7 @@
         :elevation="2"
         block
         color="secondary"
-        class="mb-2">
+        class="mb-0">
         Extrude
         <v-icon>$chevronDown</v-icon>
       </v-btn>

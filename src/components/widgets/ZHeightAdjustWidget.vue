@@ -1,30 +1,25 @@
 <template>
-  <v-row dense class="pt-0">
-    <v-col class="d-flex flex-column pt-0" cols="auto">
+  <v-row align="center" justify="space-between">
+    <v-col cols="auto" class="pt-1">
       <v-btn
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
-        :min-width="80"
-        :elevation="2"
         :loading="hasWait('ZAdjust')"
-        class="pa-0 mb-2"
         color="secondary">
         <v-icon small>$upCollapse</v-icon>
       </v-btn>
       <v-btn
         @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
-        :min-width="80"
-        :elevation="2"
         :loading="hasWait('ZAdjust')"
-        class="pa-0"
+        class="ml-2"
         color="secondary">
         <v-icon small>$downCollapse</v-icon>
       </v-btn>
     </v-col>
-    <v-col class="d-flex flex-column justify-center pt-0" cols="auto">
+    <v-col cols="auto" class="pt-1">
       <div class="grey--text text--darken-1">Offset Z</div>
       <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
     </v-col>
-    <v-col class="d-flex flex-column justify-center pt-0" cols="auto">
+    <v-col cols="auto" class="pt-1">
       <v-btn-toggle mandatory dense v-model="moveDistance">
         <v-btn color="secondary" value="0.01">0.01</v-btn>
         <v-btn color="secondary" value="0.05">0.05</v-btn>

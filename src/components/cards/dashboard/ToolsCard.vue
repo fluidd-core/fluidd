@@ -9,7 +9,7 @@
 
     <template v-slot:title v-if="!showTabs && !inLayout">
       <v-icon left>$fire</v-icon>
-      <span class="font-weight-light">Targets</span>
+      <span class="font-weight-light">Thermals</span>
     </template>
 
     <template v-slot:tabbed-title="{ attrs, on }" v-if="showTabs && !inLayout">
