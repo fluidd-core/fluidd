@@ -54,36 +54,46 @@ export const actions: ActionTree<ConfigState, RootState> = {
    * Saves keys to file storage. Assumes a root[key] structure
    * under state.config
    */
-  async saveGeneric ({ commit }, config: GenericSave) {
-    commit('setUnsavedChanges', true)
+  async saveGeneric ({ commit, dispatch }, config: GenericSave) {
+    // commit('setUnsavedChanges', true)
     commit('onSaveGeneric', config)
+    dispatch('saveFileConfig')
   },
 
   /**
    *
    */
-  async updateHiddenMacros ({ commit }, payload) {
-    commit('setUnsavedChanges', true)
+  async updateHiddenMacros ({ commit, dispatch }, payload) {
+    // commit('setUnsavedChanges', true)
     commit('updateHiddenMacros', payload)
+    dispatch('saveFileConfig')
   },
 
   /**
    * Add or update a given preset
    */
-  async updatePreset ({ commit }, payload) {
+  async updatePreset ({ commit, dispatch }, payload) {
     commit('setUnsavedChanges', true)
     commit('updatePreset', payload)
+    dispatch('saveFileConfig')
   },
 
-  async removePreset ({ commit }, payload) {
+  async removePreset ({ commit, dispatch }, payload) {
     commit('setUnsavedChanges', true)
     commit('removePreset', payload)
+    dispatch('saveFileConfig')
   },
 
   /**
    * Saves fileConfig to file.
    */
-  async saveFileConfig ({ commit, state, rootState }) {
+  async saveFileConfig ({ commit, dispatch, state, rootState, rootGetters }) {
+    let instance = rootGetters['config/getCurrentInstance']
+    if (instance) {
+      instance = { ...instance, ...{ name: state.fileConfig.general.instanceName } }
+      dispatch('updateInstance', instance)
+    }
+
     if (state.fileConfig && Object.keys(state.fileConfig).length > 0) {
       const formData = new FormData()
       const filename = Globals.SETTINGS_FILENAME

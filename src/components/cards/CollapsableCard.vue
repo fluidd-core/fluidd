@@ -40,14 +40,17 @@
       <!-- Menu, (condensed to hamburger) -->
       <v-menu
         v-if="hasMenuSlot && !isInLayout && !hideMenu"
-        left>
+        left
+        offset-y
+        :close-on-content-click="false"
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             :class="hamburgerMenuClasses"
             fab small text
             v-bind="attrs"
             v-on="on">
-            <v-icon>$menu</v-icon>
+            <v-icon>{{ menuIcon }}</v-icon>
           </v-btn>
         </template>
         <v-sheet elevation="0" class="pa-2" color="tertiary">
@@ -211,6 +214,10 @@ export default class ToolheadCard extends Vue {
    */
   @Prop({ type: String, default: 'lg' })
   menuBreakpoint!: string
+
+  /** The menu icon to use when menu items are collapsed  */
+  @Prop({ type: String, default: '$menu' })
+  menuIcon!: string
 
   /**
    * Forcefully hide the menu btns / hamburger.

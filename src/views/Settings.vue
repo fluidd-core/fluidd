@@ -1,31 +1,17 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0">
-      <v-col cols="12" class="mt-0">
-        <collapsable-card
-          title="UI Settings"
-          icon="$cogs"
-          cardClasses="mb-0 mb-sm-2"
-          :collapsable="false">
-          <template v-slot:collapse-button>
-            <v-btn :color="(hasUnsavedChanges) ? 'error' : 'primary'" class="ml-auto" @click="saveFileConfig()"><v-icon class="mr-2">$save</v-icon> Save</v-btn>
-          </template>
-        </collapsable-card>
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col cols="12" sm="4" md="3">
+    <v-row class="mt-0 mt-sm-2">
+      <v-col cols="12" sm="4" md="3" class="pt-0">
         <klippy-disconnected-card></klippy-disconnected-card>
         <general-settings-card></general-settings-card>
         <theme-settings-card></theme-settings-card>
         <print-time-estimate-settings-card></print-time-estimate-settings-card>
       </v-col>
-      <v-col cols="12" sm="4" md="3">
+      <v-col cols="12" sm="4" md="3" class="pt-0">
         <camera-settings-card></camera-settings-card>
         <toolhead-settings-card></toolhead-settings-card>
-        <!-- <temperature-presets-settings-widget></temperature-presets-settings-widget> -->
       </v-col>
-      <v-col cols="12" sm="4" md="6">
+      <v-col cols="12" sm="4" md="6" class="pt-0">
         <temperature-preset-settings-card></temperature-preset-settings-card>
         <macro-settings-card></macro-settings-card>
       </v-col>
@@ -44,7 +30,6 @@ import CameraSettingsCard from '@/components/cards/settings/CameraSettingsCard.v
 import ToolheadSettingsCard from '@/components/cards/settings/ToolheadSettingsCard.vue'
 import PrintTimeEstimateSettingsCard from '@/components/cards/settings/PrintTimeEstimateSettingsCard.vue'
 import ThemeSettingsCard from '@/components/cards/settings/ThemeSettingsCard.vue'
-import EventBus from '@/eventBus'
 
 @Component({
   components: {
@@ -58,19 +43,5 @@ import EventBus from '@/eventBus'
     ThemeSettingsCard
   }
 })
-export default class Settings extends Mixins(UtilsMixin) {
-  get hasUnsavedChanges () {
-    return this.$store.state.config.unsavedChanges
-  }
-
-  saveFileConfig () {
-    EventBus.$emit('flashMessage')
-    let instance = this.$store.getters['config/getCurrentInstance']
-    if (instance) {
-      instance = { ...instance, ...{ name: this.$store.state.config.fileConfig.general.instanceName } }
-      this.$store.dispatch('config/updateInstance', instance)
-    }
-    this.$store.dispatch('config/saveFileConfig')
-  }
-}
+export default class Settings extends Mixins(UtilsMixin) {}
 </script>

@@ -42,56 +42,66 @@
         Add preset
       </v-btn>
 
-      <dialog-base
+      <v-dialog
         v-model="dialog.active"
-        :title="(dialog.index >= 0) ? 'Edit preset' : 'Add preset'">
-        <template v-slot:actions>
-          <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-          <v-btn color="primary" :elevation="2" type="submit" form="tempPresetsform">Add</v-btn>
-        </template>
+        max-width="250px"
+      >
         <v-form
           ref="tempPresetsform"
-          @submit="save(preset)"
-          v-model="dialog.valid">
-          <v-text-field
-            label="Preset Name"
-            v-model="preset.name"
-            :height="36"
-            :rules="[rules.required]"
-            hide-details="auto"
-            class="mb-2"
-            filled dense>
-          </v-text-field>
-          <template v-if="dialog.active">
-            <v-text-field
-              v-for="item in heaters" :key="item.name"
-              v-model="preset.values[item.name].value"
-              :label="item.name"
-              :rules="[rules.numRequired, rules.numMin]"
-              :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
-              @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
-              hide-details="auto"
-              type="number"
-              suffix="°C"
-              class="mb-2"
-              filled dense>
-            </v-text-field>
-            <v-text-field
-              v-for="item in fans" :key="item.name"
-              v-model="preset.values[item.name].value"
-              :label="item.name"
-              :rules="[rules.numRequired, rules.numMin]"
-              :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
-              @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
-              hide-details="auto"
-              type="number"
-              suffix="°C"
-              class="mb-2"
-              filled dense>
-            </v-text-field>
-          </template>
+          @submit.prevent="save(preset)"
+          v-model="dialog.valid"
+        >
+          <v-card color="secondary darken-1">
+            <v-card-title>
+              <span class="headline">{{ (dialog.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+            </v-card-title>
+            <v-card-text>
+              <v-text-field
+                label="Preset Name"
+                v-model="preset.name"
+                :height="36"
+                :rules="[rules.required]"
+                hide-details="auto"
+                class="mb-2"
+                filled dense>
+              </v-text-field>
+              <template v-if="dialog.active">
+                <v-text-field
+                  v-for="item in heaters" :key="item.name"
+                  v-model="preset.values[item.name].value"
+                  :label="item.name"
+                  :rules="[rules.numRequired, rules.numMin]"
+                  :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
+                  @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
+                  hide-details="auto"
+                  type="number"
+                  suffix="°C"
+                  class="mb-2"
+                  filled dense>
+                </v-text-field>
+                <v-text-field
+                  v-for="item in fans" :key="item.name"
+                  v-model="preset.values[item.name].value"
+                  :label="item.name"
+                  :rules="[rules.numRequired, rules.numMin]"
+                  :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
+                  @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
+                  hide-details="auto"
+                  type="number"
+                  suffix="°C"
+                  class="mb-2"
+                  filled dense>
+                </v-text-field>
+              </template>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
+              <v-btn color="primary" type="submit">Add</v-btn>
+            </v-card-actions>
+          </v-card>
         </v-form>
-      </dialog-base>
+      </v-dialog>
     </v-card-text>
   </collapsable-card>
 </template>
@@ -100,16 +110,11 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash-es'
 import UtilsMixin from '@/mixins/utils'
-import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/socket/types'
 import { VForm } from '@/types/vuetify'
 
-@Component({
-  components: {
-    DialogBase
-  }
-})
+@Component({})
 export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   get heaters (): Heater[] {
     return this.$store.getters['socket/getHeaters']
@@ -172,6 +177,7 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   save (preset: TemperaturePreset) {
+    console.log('hitting save...', preset)
     const valid = this.form.validate()
     if (valid) {
       this.$store.dispatch('config/updatePreset', { preset, index: this.dialog.index })

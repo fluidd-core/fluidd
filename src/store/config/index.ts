@@ -32,6 +32,7 @@ export const defaultState = (): ConfigState => {
         instanceName: Globals.APP_NAME,
         jobsInDash: false,
         darkMode: true,
+        hideTempWaits: true,
         axis: {
           x: { inverted: false },
           y: { inverted: false },

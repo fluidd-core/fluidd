@@ -139,45 +139,57 @@
       </v-col>
     </v-row>
 
-    <dialog-base
+    <v-dialog
       title="Save config as..."
       v-model="saveDialog.open"
-      :max-width="450">
-
-      <template v-slot:actions>
-        <v-btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</v-btn>
-        <v-btn color="primary" :elevation="2" type="submit" form="saveMeshForm">Save</v-btn>
-      </template>
+      :max-width="450"
+    >
 
       <v-form
         ref="saveMeshForm"
-        id="saveMeshForm"
         @submit="saveToConfig()"
-        v-model="saveDialog.valid">
-        <v-text-field
-          autofocus
-          filled
-          required
-          class="mb-4"
-          :rules="[value => !!value || 'Required.']"
-          hide-details="auto"
-          label="Profile Name"
-          v-model="saveDialog.profileName">
-        </v-text-field>
+        v-model="saveDialog.valid"
+      >
+        <v-card color="secondary darken-1">
+          <v-card-title>
+            <span class="headline">Save config as...</span>
+          </v-card-title>
+          <v-card-text>
 
-        <v-checkbox
-          :label="`Remove ${currentMesh.profile_name} profile`"
-          hide-details="auto"
-          class="mb-4"
-          v-model="saveDialog.removeDefault"
-          :disabled="saveDialog.profileName === currentMesh.profile_name"
-          ></v-checkbox>
+            <v-text-field
+              autofocus
+              filled
+              required
+              class="mb-4"
+              :rules="[value => !!value || 'Required.']"
+              hide-details="auto"
+              label="Profile Name"
+              v-model="saveDialog.profileName">
+            </v-text-field>
+
+            <v-checkbox
+              :label="`Remove ${currentMesh.profile_name} profile`"
+              hide-details="auto"
+              class="mb-4"
+              v-model="saveDialog.removeDefault"
+              :disabled="saveDialog.profileName === currentMesh.profile_name"
+              ></v-checkbox>
+
+              <p>
+                If saving as something other than {{ currentMesh.profile_name }}, you can choose to
+                also remove the {{ currentMesh.profile_name }} profile.
+              </p>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</v-btn>
+            <v-btn color="primary" :elevation="2" type="submit">Save</v-btn>
+          </v-card-actions>
+
+        </v-card>
       </v-form>
-      <p>
-        If saving as something other than {{ currentMesh.profile_name }}, you can choose to
-        also remove the {{ currentMesh.profile_name }} profile.
-      </p>
-    </dialog-base>
+    </v-dialog>
 
     <Plotly v-if="meshLoaded" :data="data" :layout="layout" :display-mode-bar="false"></Plotly>
   </v-card-text>
@@ -189,14 +201,12 @@ import UtilsMixin from '@/mixins/utils'
 import { BedMesh } from '@/store/socket/types'
 import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
-import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { Plotly } from '@cadriel/vue-plotly'
 import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
-    Plotly,
-    DialogBase
+    Plotly
   }
 })
 export default class BedMeshWidget extends Mixins(UtilsMixin) {

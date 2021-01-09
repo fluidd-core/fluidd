@@ -41,6 +41,7 @@ export interface GeneralConfig {
   instanceName: string;
   jobsInDash: boolean;
   darkMode: boolean;
+  hideTempWaits: boolean;
   axis: Axis;
   invertZControl: boolean;
   defaultExtrudeLength: number;

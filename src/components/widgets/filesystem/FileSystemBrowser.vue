@@ -53,25 +53,43 @@
             >
           </file-system-controls>
         </v-toolbar>
-        <dialog-base
+
+        <v-dialog
           :title="dialog.title"
-          v-model="dialog.active">
-          <template v-slot:actions>
-            <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-            <v-btn color="primary" :elevation="2" type="submit" form="fileSystemForm">Save</v-btn>
-          </template>
+          :max-width="250"
+          v-model="dialog.active"
+        >
+
           <v-form
             ref="fileSystemForm"
             @submit="saveDialog()"
-            v-model="dialog.valid">
-            <v-text-field
-              autofocus
-              v-model="dialog.item.name"
-              :rules="dialog.rules"
-              required>
-            </v-text-field>
+            v-model="dialog.valid"
+          >
+
+            <v-card color="secondary darken-1">
+              <v-card-title>
+                <span class="headline">{{ (dialog.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+              </v-card-title>
+              <v-card-text>
+
+                <v-text-field
+                  autofocus
+                  v-model="dialog.item.name"
+                  :rules="dialog.rules"
+                  required>
+                </v-text-field>
+
+              </v-card-text>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
+                <v-btn color="primary" :elevation="2" type="submit">Save</v-btn>
+              </v-card-actions>
+            </v-card>
+
           </v-form>
-        </dialog-base>
+        </v-dialog>
       </template>
 
       <template v-slot:item="{ item }">
@@ -223,7 +241,6 @@ import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
 import { getThumb } from '@/store/helpers'
-import DialogBase from '@/components/dialogs/dialogBase.vue'
 import FileSystemControls from '@/components/widgets/filesystem/FileSystemControls.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
@@ -233,7 +250,6 @@ import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
-    DialogBase,
     FileSystemControls
   }
 })

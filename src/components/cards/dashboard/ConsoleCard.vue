@@ -4,12 +4,25 @@
     icon="$console"
     cardClasses="mb-2 mb-sm-4 d-flex flex-column"
     contentClasses="flex-grow-1 flow-shrink-0"
+    menuBreakpoint="none"
+    menuIcon="$cog"
     :height="450"
     :collapsed="true"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
     @enabled="$emit('enabled', $event)">
+
+    <template v-slot:menu>
+      <v-checkbox
+        v-model="hideTempWaits"
+        color="primary"
+        class="ma-2"
+        hide-details
+        label="Hide temp waits"
+      >
+      </v-checkbox>
+    </template>
 
     <console-widget
       :items="items"
@@ -36,11 +49,20 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
   enabled!: boolean
 
   get items (): ConsoleEntry[] {
-    return this.$store.state.socket.console
+    return this.$store.getters['socket/getConsoleEntries']
+    // return this.$store.state.socket.console
   }
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get hideTempWaits (): boolean {
+    return this.$store.state.config.fileConfig.general.hideTempWaits
+  }
+
+  set hideTempWaits (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.hideTempWaits', value })
   }
 }
 </script>

@@ -32,46 +32,54 @@
       </v-list-item-content>
     </v-list-item>
 
-    <dialog-base
-      title="Add printer"
+    <v-dialog
       :maxWidth="320"
-      v-model="instanceDialog.open">
-
-      <template v-slot:actions>
-        <v-btn color="warning" text @click="instanceDialog.open = false" type="button">Cancel</v-btn>
-        <v-btn color="primary" :elevation="2" type="submit" form="addInstanceForm">Save</v-btn>
-      </template>
-
-      <template v-slot:title-icons>
-        <inline-help bottom small>
-          Enter your API URL.<br />
-          Some examples might be;<br />
-          <blockquote>
-            http://fluidd.local,
-            http://192.168.1.150
-          </blockquote>
-        </inline-help>
-      </template>
-
-      Having trouble? <a :href="docsUrl + 'multiple-printers.md'" target="_blank">See here</a> for more information.<br />
-
+      v-model="instanceDialog.open"
+    >
       <v-form
         class="mt-3"
         ref="addInstanceForm"
         v-model="instanceDialog.valid"
         @submit="addInstance()"
       >
-        <v-text-field
-          autofocus
-          label="API URL"
-          :rules="[rules.required, rules.url]"
-          persistent-hint
-          hint="E.g., http://fluiddpi.local"
-          v-model="instanceDialog.url">
-        </v-text-field>
-      </v-form>
+        <v-card color="secondary darken-1">
 
-    </dialog-base>
+          <v-card-title>
+            <span class="headline">Add printer</span>
+            <v-spacer></v-spacer>
+            <inline-help bottom small>
+              Enter your API URL.<br />
+              Some examples might be;<br />
+              <blockquote>
+                http://fluidd.local,
+                http://192.168.1.150
+              </blockquote>
+            </inline-help>
+          </v-card-title>
+
+          <v-card-text>
+            Having trouble? <a :href="docsUrl + 'multiple-printers.md'" target="_blank">See here</a> for more information.<br />
+
+            <v-text-field
+              autofocus
+              label="API URL"
+              :rules="[rules.required, rules.url]"
+              persistent-hint
+              hint="E.g., http://fluiddpi.local"
+              v-model="instanceDialog.url">
+            </v-text-field>
+
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="warning" text @click="instanceDialog.open = false" type="button">Cancel</v-btn>
+            <v-btn color="primary" type="submit">Save</v-btn>
+          </v-card-actions>
+
+        </v-card>
+      </v-form>
+    </v-dialog>
 
   </v-list>
 </template>
@@ -81,15 +89,13 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { ApiConfig, Config, InstanceConfig } from '@/store/config/types'
 import VersionStatus from '@/components/VersionStatus.vue'
 import UtilsMixin from '@/mixins/utils'
-import DialogBase from '@/components/dialogs/dialogBase.vue'
 import { appInit } from '@/init'
 import { Globals, Waits } from '@/globals'
 import { VForm } from '@/types/vuetify'
 
 @Component({
   components: {
-    VersionStatus,
-    DialogBase
+    VersionStatus
   }
 })
 export default class SystemPrintersWidget extends Mixins(UtilsMixin) {

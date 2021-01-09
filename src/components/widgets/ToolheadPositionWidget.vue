@@ -43,7 +43,7 @@ export default class ToolheadPositionWidget extends Mixins(UtilsMixin) {
   .coord-col {
     display: flex;
     flex-direction: row;
-    justify-content: start;
+    justify-content: flex-start;
     justify-items: center;
     align-items: center;
     max-height: 36px;

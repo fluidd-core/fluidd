@@ -478,6 +478,18 @@ export const getters: GetterTree<SocketState, RootState> = {
       chartData.datasets.push(defaults)
     })
     return chartData
+  },
+
+  getConsoleEntries: (state, getters, rootState) => {
+    const hideTempWaits = (rootState && rootState.config)
+      ? rootState.config.fileConfig.general.hideTempWaits
+      : true
+
+    const regex = /^(b|t\d+):{1}\d+\.{1}\d+ {1}\/{1}\d+\.+\d+/i
+
+    return (hideTempWaits)
+      ? state.console.filter(entry => !regex.test(entry.message))
+      : state.console
   }
 
 }
