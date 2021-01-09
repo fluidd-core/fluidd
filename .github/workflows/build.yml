@@ -1,0 +1,25 @@
+name: VUE BUILD
+
+on:
+  push:
+    branches:
+      - develop
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '12'
+
+      - name: Install deps
+        run: npm install
+
+      - name: Build
+        run: npm run build

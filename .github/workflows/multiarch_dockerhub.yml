@@ -1,4 +1,4 @@
-name: Build and push multi-arch Docker image to Dockerhub
+name: DOCKER BUILD, DEPLOY
 
 on:
   release:
