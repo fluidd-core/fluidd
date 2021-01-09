@@ -81,7 +81,7 @@ export default class Dashboard extends Mixins(UtilsMixin) {
   }
 
   set col1 (cards: CardConfig[]) {
-    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard1', cards })
+    this.saveCards(cards, 'dashboard1')
   }
 
   get col2 (): CardConfig[] {
@@ -89,7 +89,7 @@ export default class Dashboard extends Mixins(UtilsMixin) {
   }
 
   set col2 (cards: CardConfig[]) {
-    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard2', cards })
+    this.saveCards(cards, 'dashboard2')
   }
 
   get inLayout (): boolean {
@@ -104,6 +104,16 @@ export default class Dashboard extends Mixins(UtilsMixin) {
       disabled: !this.inLayout,
       ghostClass: 'ghost'
     }
+  }
+
+  saveCards (cards: CardConfig[], group: string) {
+    // Take care of special cases.
+    // cards.forEach((card) => {
+    //   if (card.name === 'camera-card') {
+    //     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.enabled', value: card.enabled })
+    //   }
+    // })
+    this.$store.dispatch('config/saveCardConfig', { group, cards })
   }
 
   filterComponents (componentArray: CardConfig[]) {

@@ -263,12 +263,13 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
       })
   }
 
-  async saveEdit (content: string, filename: string, path: string) {
+  async saveEdit (restart: boolean, content: string, filename: string, path: string) {
     const file = new File([content], filename)
     this.dialog.loading = true
     await this.doUpload(file, this.currentRoot, path, false)
     this.dialog.loading = false
     this.dialog.contents = content
+    if (restart) { SocketActions.printerFirmwareRestart() }
   }
 
   dragEnter () {

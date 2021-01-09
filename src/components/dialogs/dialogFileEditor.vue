@@ -29,7 +29,7 @@
           dark
           color="warning"
           class="ml-2"
-          @click="emitSave(false, newContents, filename, path)">
+          @click="emitSave(false, false, newContents, filename, path)">
           Save
         </v-btn>
         <v-btn
@@ -38,8 +38,17 @@
           dark
           color="warning"
           class="ml-2"
-          @click="emitSave(true, newContents, filename, path)">
+          @click="emitSave(true, false, newContents, filename, path)">
           Save &amp; Close
+        </v-btn>
+        <v-btn
+          v-if="!readonly && unsavedChanges"
+          :elevation="2"
+          dark
+          color="error"
+          class="ml-2"
+          @click="emitSave(true, true, newContents, filename, path)">
+          Save &amp; Restart
         </v-btn>
       </v-toolbar>
       <v-card-text>
@@ -105,8 +114,8 @@ export default class DialogFileEditor extends Mixins(UtilsMixin) {
     this.$emit('input', false)
   }
 
-  emitSave (close: boolean, contents?: string, filename?: string, path?: string) {
-    this.$emit('save', contents, filename, path)
+  emitSave (close: boolean, restart: boolean, contents?: string, filename?: string, path?: string) {
+    this.$emit('save', restart, contents, filename, path)
     if (close) this.$emit('input', false)
   }
 }
