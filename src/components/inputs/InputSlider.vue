@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" id="form">
+  <v-form ref="inputSliderForm">
     <v-layout align-end>
       <div class="grey--text text--darken-1 font-weight-regular">{{ label }}</div>
       <div class="grey--text focus--text ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
@@ -83,7 +83,7 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   newValue = 0
 
   get form (): VForm {
-    return this.$refs.form as VForm
+    return this.$refs.inputSliderForm as VForm
   }
 
   get valid () {

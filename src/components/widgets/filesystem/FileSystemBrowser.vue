@@ -58,11 +58,10 @@
           v-model="dialog.active">
           <template v-slot:actions>
             <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-            <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
+            <v-btn color="primary" :elevation="2" type="submit" form="fileSystemForm">Save</v-btn>
           </template>
           <v-form
-            ref="form"
-            id="form"
+            ref="fileSystemForm"
             @submit="saveDialog()"
             v-model="dialog.valid">
             <v-text-field
@@ -337,7 +336,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   get form (): VForm {
-    return this.$refs.form as VForm
+    return this.$refs.fileSystemForm as VForm
   }
 
   mounted () {

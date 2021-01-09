@@ -39,7 +39,7 @@
 
       <template v-slot:actions>
         <v-btn color="warning" text @click="instanceDialog.open = false" type="button">Cancel</v-btn>
-        <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
+        <v-btn color="primary" :elevation="2" type="submit" form="addInstanceForm">Save</v-btn>
       </template>
 
       <template v-slot:title-icons>
@@ -57,8 +57,7 @@
 
       <v-form
         class="mt-3"
-        ref="form"
-        id="form"
+        ref="addInstanceForm"
         v-model="instanceDialog.valid"
         @submit="addInstance()"
       >
@@ -124,7 +123,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   }
 
   get form (): VForm {
-    return this.$refs.form as VForm
+    return this.$refs.addInstanceForm as VForm
   }
 
   mounted () {

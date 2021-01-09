@@ -47,11 +47,10 @@
         :title="(dialog.index >= 0) ? 'Edit preset' : 'Add preset'">
         <template v-slot:actions>
           <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-          <v-btn color="primary" :elevation="2" type="submit" form="form">Add</v-btn>
+          <v-btn color="primary" :elevation="2" type="submit" form="tempPresetsform">Add</v-btn>
         </template>
         <v-form
-          ref="form"
-          id="form"
+          ref="tempPresetsform"
           @submit="save(preset)"
           v-model="dialog.valid">
           <v-text-field
@@ -125,7 +124,7 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   get form (): VForm {
-    return this.$refs.form as VForm
+    return this.$refs.tempPresetsform as VForm
   }
 
   dialog = {

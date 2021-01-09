@@ -40,6 +40,7 @@
           <v-list-item-title>UI Settings</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-divider></v-divider>
 
       <system-commands-widget @click="this.close"></system-commands-widget>
       <system-versions-widget @click="this.close" v-if="versionsSupported"></system-versions-widget>

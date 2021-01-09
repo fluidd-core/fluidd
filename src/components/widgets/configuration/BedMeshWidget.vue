@@ -146,12 +146,12 @@
 
       <template v-slot:actions>
         <v-btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</v-btn>
-        <v-btn color="primary" :elevation="2" type="submit" form="form">Save</v-btn>
+        <v-btn color="primary" :elevation="2" type="submit" form="saveMeshForm">Save</v-btn>
       </template>
 
       <v-form
-        ref="form"
-        id="form"
+        ref="saveMeshForm"
+        id="saveMeshForm"
         @submit="saveToConfig()"
         v-model="saveDialog.valid">
         <v-text-field
@@ -234,7 +234,7 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   get form (): VForm {
-    return this.$refs.form as VForm
+    return this.$refs.saveMeshForm as VForm
   }
 
   @Watch('currentMesh', { deep: true })
