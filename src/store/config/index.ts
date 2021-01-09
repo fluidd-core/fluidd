@@ -42,8 +42,8 @@ export const defaultState = (): ConfigState => {
         defaultExtrudeLength: 10,
         defaultExtrudeSpeed: 5,
         defaultToolheadMoveLength: '1.0',
-        defaultToolheadXYSpeed: 70,
-        defaultToolheadZSpeed: 12
+        defaultToolheadXYSpeed: 130,
+        defaultToolheadZSpeed: 10
       },
       camera: {
         enabled: false,
