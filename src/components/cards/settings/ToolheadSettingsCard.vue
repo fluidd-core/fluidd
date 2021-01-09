@@ -41,6 +41,18 @@
         :items="['0.1', '1.0', '10', '100']"
         v-model="defaultToolheadMoveLength">
       </v-select>
+      <v-text-field
+        filled
+        label="Toolhead XY Move Speed"
+        suffix="mm/s"
+        v-model="defaultToolheadXYSpeed"
+      ></v-text-field>
+      <v-text-field
+        filled
+        label="Toolhead Z Move Speed"
+        suffix="mm/s"
+        v-model="defaultToolheadZSpeed"
+      ></v-text-field>
     </v-card-text>
   </collapsable-card>
 </template>
@@ -75,6 +87,22 @@ export default class ToolHeadSettingsCard extends Mixins(UtilsMixin) {
 
   set defaultToolheadMoveLength (value: number) {
     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadMoveLength', value })
+  }
+
+  get defaultToolheadXYSpeed () {
+    return this.$store.state.config.fileConfig.general.defaultToolheadXYSpeed
+  }
+
+  set defaultToolheadXYSpeed (value: number) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadXYSpeed', value })
+  }
+
+  get defaultToolheadZSpeed () {
+    return this.$store.state.config.fileConfig.general.defaultToolheadZSpeed
+  }
+
+  set defaultToolheadZSpeed (value: number) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadZSpeed', value })
   }
 
   get invertX () {

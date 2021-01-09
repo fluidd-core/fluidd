@@ -186,13 +186,16 @@ export default class UtilsMixin extends Vue {
    */
   sendMoveGcode (axis: string, distance: string, negative = false) {
     axis = axis.toLowerCase()
+    const rate = (axis.toLowerCase() === 'z')
+      ? this.$store.state.config.fileConfig.general.defaultToolheadZSpeed
+      : this.$store.state.config.fileConfig.general.defaultToolheadXYSpeed
     const inverted = this.$store.state.config.fileConfig.general.axis[axis].inverted || false
     distance = ((negative && !inverted) || (!negative && inverted))
       ? '-' + distance
       : distance
 
     this.sendGcode(`G91
-      G1 ${axis}${distance} F6000
+      G1 ${axis}${distance} F${rate * 60}
       G90`)
   }
 

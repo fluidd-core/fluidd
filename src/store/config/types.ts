@@ -46,6 +46,8 @@ export interface GeneralConfig {
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
   defaultToolheadMoveLength: string;
+  defaultToolheadXYSpeed: number;
+  defaultToolheadZSpeed: number;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
 }
 
