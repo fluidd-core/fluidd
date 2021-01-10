@@ -82,7 +82,7 @@
       <v-list-item
         @click="serviceFirmwareRestartKlippy"
         :disabled="printerPrinting">
-        <v-list-item-title>Restart MCU(s)</v-list-item-title>
+        <v-list-item-title>Firmware Restart Klipper</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
