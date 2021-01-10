@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.3](https://github.com/cadriel/fluidd/compare/v1.4.2...v1.4.3) (2021-01-10)
+
+
+### Features
+
+* add Dockerfile & Github workflow ([d7c697d](https://github.com/cadriel/fluidd/commit/d7c697d42c5205a453ca1f2599c076f6abc3d2d0))
+* automated build ([fa92e38](https://github.com/cadriel/fluidd/commit/fa92e38bdecf320d36b74ac3f4e6399de3e45b1b))
+
+
+### Bug Fixes
+
+* add potato to dev deps ([b4badfc](https://github.com/cadriel/fluidd/commit/b4badfced3c3dc55a1b02a1a6da4177309f52b57))
+* client warnings should now show properly ([793d9c9](https://github.com/cadriel/fluidd/commit/793d9c95dd427e43579d9d18b96ea95e91bc7701))
+* ensure you can't check for updates during a print ([a87fe80](https://github.com/cadriel/fluidd/commit/a87fe80f5da393411c2a52488fbedfda23136597))
+* extrude snowflake issues when min_extrude_temp === 0 ([78f2328](https://github.com/cadriel/fluidd/commit/78f2328ac340cf8c6425800e309c2cfc293a307a))
+* Filament reporting under 1m ([b556f46](https://github.com/cadriel/fluidd/commit/b556f463ed8bf375220d961c31d2378a68998ca9)), closes [#70](https://github.com/cadriel/fluidd/issues/70)
+* OS updates should properly update status now ([aed9896](https://github.com/cadriel/fluidd/commit/aed9896e5ae99facffaac2cf60e0e6ced9612377))
+* rename restart mcu's to firmware restart klipper ([a597aa2](https://github.com/cadriel/fluidd/commit/a597aa238535c1d2dce7f72eb412db453c475fc1))
+
 ### [1.4.2](https://github.com/cadriel/fluidd/compare/v1.4.1...v1.4.2) (2021-01-04)
 
 
