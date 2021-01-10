@@ -54,24 +54,13 @@ jobs:
           asset_name: fluidd.zip
           asset_content_type: application/zip
 
+      - name: Prepare Deploy
+        run: |
+          cp ./server/config.json ./dist/config.json
+
       - name: Publish Release
         uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
-
-      - name: Prepare Deploy
-        run: |
-          cp ./server/config.json ./dist/config.json
-
-      - name: Deploy Release
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks --delete
-        env:
-          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-1'
-          SOURCE_DIR: 'dist'
