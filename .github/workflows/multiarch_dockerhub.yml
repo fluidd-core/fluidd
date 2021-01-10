@@ -1,6 +1,10 @@
 name: DOCKER BUILD, DEPLOY
 
 on:
+  workflow_run:
+    workflows: ["RELEASE"]
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:
