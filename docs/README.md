@@ -4,9 +4,9 @@
 
 - Installation
 - How to Update
-- [Multiple Printers](multiple-printers.md)
-- [File Thumbnails](file-thumbnails.md)
-- [Slicer Uploads](slicer-uploads.md)
-- [Printer Setup & Macros](printer-setup-and-macros.md)
+- [How to: Fluidd Setup & Macros](setup-and-macros.md)
+- [How to: Multiple Printers](multiple-printers.md)
+- [How to: File Thumbnails](file-thumbnails.md)
+- [How to: Slicer Uploads](slicer-uploads.md)
 
 Further documentation coming...
