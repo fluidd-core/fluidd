@@ -99,7 +99,7 @@ export const Globals = Object.freeze({
   APP_NAME: 'Fluidd',
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],
-  DOCUMENTATION_ROOT: 'https://github.com/cadriel/fluidd/blob/develop/docs/'
+  DOCUMENTATION_ROOT: 'https://github.com/cadriel/fluidd/tree/develop/docs'
 })
 
 export const Icons = Object.freeze({

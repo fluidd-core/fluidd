@@ -58,7 +58,7 @@
           </v-card-title>
 
           <v-card-text>
-            Having trouble? <a :href="docsUrl + 'multiple-printers.md'" target="_blank">See here</a> for more information.<br />
+            Having trouble? <a :href="docsUrl + '/multiple-printers.md'" target="_blank">See here</a> for more information.<br />
 
             <v-text-field
               autofocus
