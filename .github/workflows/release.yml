@@ -23,11 +23,12 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Generate ChangeLog
-        uses: scottbrenner/generate-changelog-action@master
+      - name: Read ChangeLog
+        uses: mindsers/changelog-reader-action@v2
         id: changelog
-        env:
-          REPO: ${{ github.repository }}
+        width:
+          validation_depth: 10
+          path: ./CHANGELOG.md
 
       - name: Create Release
         id: create_release
@@ -38,7 +39,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: |
-            ${{ steps.changelog.outputs.changelog }}
+            ${{ steps.changelog.outputs.changes }}
           draft: true
           prerelease: false
 
