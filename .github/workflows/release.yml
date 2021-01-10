@@ -24,7 +24,7 @@ jobs:
         run: npm run build
 
       - name: Generate ChangeLog
-        uses: scottbrenner/generate-changelog-action@v1
+        uses: scottbrenner/generate-changelog-action@master
         id: changelog
         env:
           REPO: ${{ github.repository }}
