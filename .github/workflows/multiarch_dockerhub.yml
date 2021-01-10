@@ -1,8 +1,7 @@
 name: DOCKER BUILD, DEPLOY
 
 on:
-  release:
-    types: [ published ]
+  workflow_dispatch:
 
 jobs:
   docker:
