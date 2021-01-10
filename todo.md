@@ -3,18 +3,17 @@
 ## Next Up
 
 - update uncontrollable fans to have an obvious on / off state.
-- option to have Macros in its own little box instead of grouped with Targets and Jobs
-- print instances having data bleed? [github issue]
-- i18n (translations)
+- implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
-- ability to reprint after cancel
 - temperature graph tooltips / hover
-- copying text from console puts seperate outputs in reverse order [github issue]
-- allow deletion of all printers on fluidd.xyz
+- i18n (translations)
 
-- auto save printer settings?
+- allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
 - update panel collapse so these are remembered per instance
+- print instances having data bleed? [github issue]
+- ability to reprint after cancel
+- copying text from console puts seperate outputs in reverse order [github issue]
 
 ## Filesystem Improvements
 
