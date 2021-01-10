@@ -1,7 +1,11 @@
-name: VUE BUILD
+name: BUILD
 
 on:
   push:
+    branches:
+      - develop
+      - master
+  pull_request:
     branches:
       - develop
       - master
