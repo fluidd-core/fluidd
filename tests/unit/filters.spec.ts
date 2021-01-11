@@ -1,6 +1,8 @@
 import { expect } from 'chai'
 
 import { Filters } from '@/plugins/filters'
+import { DayJSPlugin } from '@/plugins/dayjs'
+import Vue from 'vue'
 
 // formatCounterTime
 
@@ -37,11 +39,12 @@ describe('formatCounterTime', () => {
 
 // formatFileDateTime
 
-// describe('formatCounterTime', () => {
-//   it('format negative numbers properly', () => {
-//     expect(Filters.formatFileDateTime(-9999)).to.equal('-2h 46m 39s')
-//   })
-// })
+describe('formatFileDateTime', () => {
+  Vue.use(DayJSPlugin)
+  it('renders numbers as date', () => {
+    expect(Filters.formatFileDateTime(0)).to.equal('Jan 1, 1970 1:00 AM')
+  })
+})
 
 // getReadableLengthString
 
