@@ -264,9 +264,12 @@ export const getters: GetterTree<SocketState, RootState> = {
    */
   getBedMeshes: (state): BedMesh[] => {
     const meshes: BedMesh[] = []
-    let currentProfile = ''
-    if (state.printer.bed_mesh) {
-      currentProfile = state.printer.bed_mesh.profile_name
+    const currentProfile = state.printer.bed_mesh.profile_name || ''
+    if (state.printer.bed_mesh && currentProfile.length > 0) {
+      meshes.push({
+        ...state.printer.bed_mesh,
+        active: true
+      })
     }
     if (state.printer.configfile && state.printer.configfile.config) {
       for (const item in state.printer.configfile.config) {
@@ -274,13 +277,14 @@ export const getters: GetterTree<SocketState, RootState> = {
           const split = item.split(' ')
           if (
             split.length > 0 &&
-            split[0] === 'bed_mesh'
+            split[0] === 'bed_mesh' &&
+            split[1] !== currentProfile
           ) {
             const profile: BedMesh = {
               profile_name: split[1],
               active: false
             }
-            if (currentProfile === split[1]) profile.active = true
+            // if (currentProfile === split[1]) profile.active = true
             meshes.push(profile)
           }
         }
@@ -490,6 +494,21 @@ export const getters: GetterTree<SocketState, RootState> = {
     return (hideTempWaits)
       ? state.console.filter(entry => !regex.test(entry.message))
       : state.console
+  },
+
+  getAvailableCalibrationCommands: (state) => {
+    return Object.keys(state.availableCommands)
+      .filter(key => key.endsWith('CALIBRATE'))
+      .reduce((o, key) => {
+        return {
+          ...o,
+          [key]: state.availableCommands[key]
+        }
+      }, {})
+  },
+
+  getAllGcodeCommands: (state) => {
+    return state.availableCommands
   }
 
 }
