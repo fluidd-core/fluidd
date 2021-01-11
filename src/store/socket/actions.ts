@@ -110,6 +110,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       SocketActions.serverInfo()
       SocketActions.serverGcodeStore()
       SocketActions.serverTemperatureStore()
+      SocketActions.printerGcodeHelp()
     }
   },
 
@@ -151,6 +152,14 @@ export const actions: ActionTree<SocketState, RootState> = {
     if (payload && payload.result && payload.result === 'ok') {
       dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + 'Ok' })
     }
+  },
+
+  /**
+   * Klipper provides us with a list of available gcode commands
+   * based on the current configuration.
+   */
+  async onGcodeHelp ({ commit }, payload) {
+    commit('setGcodeHelp', payload)
   },
 
   /**

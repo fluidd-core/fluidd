@@ -179,7 +179,11 @@ export default class UtilsMixin extends Vue {
    */
   sendGcode (gcode: string, wait?: string) {
     SocketActions.printerGcodeScript(gcode, wait)
-    this.$store.dispatch('socket/addConsoleEntry', { message: `${Globals.CONSOLE_SEND_PREFIX} ${gcode}` })
+    this.addConsoleEntry(gcode)
+  }
+
+  addConsoleEntry (message: string) {
+    this.$store.dispatch('socket/addConsoleEntry', { message: `${Globals.CONSOLE_SEND_PREFIX} ${message}` })
   }
 
   /**

@@ -8,7 +8,7 @@
     solo
     dense
     hide-details
-    placeholder="Send gcode"
+    placeholder="type 'help' for available commands"
     @keyup.enter="emitSend(newValue)"
     @keyup.up="historyUp()"
     @keyup.down="historyDown()">
@@ -21,12 +21,17 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class InputConsoleCommand extends Vue {
-  @Prop({ type: String, required: true })
+  @Prop({ type: String })
   public value!: string
+
+  @Watch('value')
+  onValueChange (val: string) {
+    this.newValue = val.toUpperCase()
+  }
 
   newValue = ''
   history: string[] = []

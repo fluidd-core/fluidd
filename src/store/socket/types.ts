@@ -9,8 +9,13 @@ export interface SocketState {
   macros: Macros;
   plugins: string[]; // active plugins (device_power)
   console: ConsoleEntry[]; // console stream
+  availableCommands: GcodeCommands; // available gcode commands
   chart: ChartDataSet[]; // chart data
   printer: Printer;
+}
+
+export interface GcodeCommands {
+  [key: string]: string;
 }
 
 export interface Printer {

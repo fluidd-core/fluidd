@@ -208,6 +208,14 @@ export const SocketActions = {
     )
   },
 
+  async printerGcodeHelp () {
+    Vue.$socket.emit(
+      'printer.gcode.help', {
+        dispatch: 'socket/onGcodeHelp'
+      }
+    )
+  },
+
   async printerEmergencyStop () {
     Vue.$socket.emit(
       'printer.emergency_stop', {

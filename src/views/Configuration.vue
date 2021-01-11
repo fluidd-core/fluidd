@@ -7,6 +7,7 @@
         <v-row>
           <v-col cols="12" sm="6" v-if="!printerWarnings.length && klippyConnected">
             <logs-card></logs-card>
+            <!-- <bed-adjust-card></bed-adjust-card> -->
           </v-col>
           <v-col cols="12" sm="6" v-if="klippyConnected">
             <end-stops-card></end-stops-card>
@@ -37,6 +38,7 @@ import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCar
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
+import BedAdjustCard from '@/components/cards/configuration/BedAdjustCard.vue'
 import LogsCard from '@/components/cards/configuration/LogsCard.vue'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
@@ -45,6 +47,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
   components: {
     BedMeshCard,
     BedMeshWidget,
+    BedAdjustCard,
     EndStopsCard,
     RunoutSensorsCard,
     FileSystemCard,

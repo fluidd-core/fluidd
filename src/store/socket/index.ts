@@ -14,6 +14,7 @@ export const defaultState = (): SocketState => {
     error: null,
     endstops: {},
     console: [],
+    availableCommands: {},
     chart: [],
     macros: {},
     plugins: [],
@@ -28,6 +29,7 @@ export const defaultState = (): SocketState => {
         state_message: ''
       },
       configfile: {
+        save_config_pending: false,
         config: {
           extruder: {},
           bed_mesh: {},

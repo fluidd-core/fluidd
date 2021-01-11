@@ -1,10 +1,12 @@
 <template>
   <div class="console-wrapper">
     <v-card outlined color="tertiary" class="console pa-1">
-      <v-layout v-for="(item, index) in items" :key="index" class="console-item">
-        <span v-if="item.time" class="grey--text text--darken-2 mr-3 d-none d-sm-block">{{ getTime(item.time) }} </span>
-        <span :class="consoleClass(item)" v-html="item.message"></span>
-      </v-layout>
+        <console-entry-widget
+          v-for="(item, index) in items" :key="index" class="console-item"
+          :value="item"
+          @click="handleEntryClick"
+        >
+        </console-entry-widget>
     </v-card>
     <input-console-command
       v-if="!readonly"
@@ -19,12 +21,12 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
-import { ConsoleEntry } from '@/store/socket/types'
-import { Globals } from '@/globals'
+import ConsoleEntryWidget from '@/components/widgets/ConsoleEntryWidget.vue'
 
 @Component({
   components: {
-    InputConsoleCommand
+    InputConsoleCommand,
+    ConsoleEntryWidget
   }
 })
 export default class ConsoleWidget extends Mixins(UtilsMixin) {
@@ -33,6 +35,10 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly!: false
+
+  get availableCommands () {
+    return this.$store.getters['socket/getAllGcodeCommands']
+  }
 
   get consoleCommand () {
     return this.$store.state.consoleCommand
@@ -48,24 +54,9 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     }
   }
 
-  getTime (item: number) {
-    return this.$dayjs(item * 1000).format('HH:mm:ss')
-  }
-
-  consoleClass (item: ConsoleEntry) {
-    if (item.message.startsWith('!!')) {
-      return { 'error--text': true }
-    }
-
-    if (item.message.startsWith('//')) {
-      return { 'grey--text': true }
-    }
-
-    if (item.message.startsWith(Globals.CONSOLE_SEND_PREFIX.trim())) {
-      return { 'primary--text text--lighten-1': true }
-    }
-
-    return { 'grey--text text--darken-1': true }
+  handleEntryClick (command: string) {
+    console.log('got a command click', command)
+    this.consoleCommand = command
   }
 }
 </script>
@@ -87,10 +78,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
     flex: 1 0 0;
-  }
-
-  .console-item {
-    flex: 0 0 auto;
   }
 
   .v-input {

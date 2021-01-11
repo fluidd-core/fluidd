@@ -134,5 +134,8 @@ export const mutations: MutationTree<SocketState> = {
   resetCurrentFile (state) {
     const newState = defaultState().printer.current_file
     Vue.set(state.printer, 'current_file', newState)
+  },
+  setGcodeHelp (state, payload) {
+    Vue.set(state, 'availableCommands', payload)
   }
 }
