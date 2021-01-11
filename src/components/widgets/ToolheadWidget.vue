@@ -9,6 +9,8 @@
       <v-col cols="auto">
         <toolhead-position-widget></toolhead-position-widget>
         <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
+      </v-col>
+      <v-col cols="auto">
         <z-height-adjust-widget></z-height-adjust-widget>
       </v-col>
     </v-row>
