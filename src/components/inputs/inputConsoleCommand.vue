@@ -1,5 +1,6 @@
 <template>
   <v-text-field
+    ref="input"
     :value="newValue"
     @input="emitChange"
     :items="history"
@@ -30,7 +31,13 @@ export default class InputConsoleCommand extends Vue {
 
   @Watch('value')
   onValueChange (val: string) {
-    this.newValue = val.toUpperCase()
+    if (val) {
+      this.newValue = val.toUpperCase()
+      const input = this.$refs.input as HTMLElement
+      input.focus()
+    } else {
+      this.newValue = ''
+    }
   }
 
   newValue = ''

@@ -148,9 +148,9 @@ export const actions: ActionTree<SocketState, RootState> = {
    * the specific request here.
    */
   async onGcodeScript ({ dispatch }, payload) {
-    // If the response is ok, pass it to the console.
-    if (payload && payload.result && payload.result === 'ok') {
-      dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + 'Ok' })
+    // If the response is not ok, pass it to the console.
+    if (payload && payload.result && payload.result !== 'ok') {
+      dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + payload.result })
     }
   },
 
@@ -361,6 +361,9 @@ export const actions: ActionTree<SocketState, RootState> = {
     payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
     if (!payload.time || payload.time <= 0) {
       payload.time = new Date().getTime() / 1000 | 0
+    }
+    if (!payload.type) {
+      payload.type = 'response'
     }
     commit('addConsoleEntry', payload)
   },

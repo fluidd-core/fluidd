@@ -139,5 +139,6 @@ export interface BedMeshProfile {
 
 export interface ConsoleEntry {
   message: string;
+  type: 'command' | 'response';
   time?: number;
 }

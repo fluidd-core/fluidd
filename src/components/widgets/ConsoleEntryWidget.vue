@@ -39,10 +39,13 @@ export default class ConsoleEntryWidget extends Vue {
   }
 
   get itemMessage () {
-    return this.value.message.replace(/([A-Z0-9_]{2,})/gm, (match, command) => {
+    const message = this.value.message.replace(/([A-Z0-9_]{2,})/gm, (match, command) => {
       if (this.knownCommands.has(command)) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
       return match
     })
+    return (this.value.type === 'command')
+      ? Globals.CONSOLE_SEND_PREFIX + message
+      : message
   }
 
   get itemTime () {
@@ -60,7 +63,7 @@ export default class ConsoleEntryWidget extends Vue {
       return { 'grey--text': true }
     }
 
-    if (this.value.message.startsWith(Globals.CONSOLE_SEND_PREFIX.trim())) {
+    if (this.value.type === 'command') {
       return { 'primary--text text--lighten-1': true }
     }
 

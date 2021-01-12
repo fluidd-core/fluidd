@@ -55,7 +55,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   }
 
   handleEntryClick (command: string) {
-    console.log('got a command click', command)
     this.consoleCommand = command
   }
 }
