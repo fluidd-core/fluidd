@@ -177,7 +177,6 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   save (preset: TemperaturePreset) {
-    console.log('hitting save...', preset)
     const valid = this.form.validate()
     if (valid) {
       this.$store.dispatch('config/updatePreset', { preset, index: this.dialog.index })
