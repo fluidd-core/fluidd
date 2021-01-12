@@ -1,15 +1,15 @@
 <template>
   <v-card-text>
     <v-row justify="space-between" class="mb-4">
-      <v-col cols="auto" v-if="!printerPrinting">
-        <!--  Toolhead Moves and Offset Z -->
+      <v-col cols="auto">
         <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
+        <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
       </v-col>
 
       <v-col cols="auto">
         <toolhead-position-widget></toolhead-position-widget>
         <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
-        <z-height-adjust-widget></z-height-adjust-widget>
+        <z-height-adjust-widget v-if="!printerPrinting"></z-height-adjust-widget>
       </v-col>
     </v-row>
 
