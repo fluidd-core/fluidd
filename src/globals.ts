@@ -80,7 +80,8 @@ import {
   mdiDesktopTower,
   mdiDotsHorizontal,
   mdiElectricSwitch,
-  mdiElectricSwitchClosed
+  mdiElectricSwitchClosed,
+  mdiMotionOutline
 } from '@mdi/js'
 
 /**
@@ -106,6 +107,7 @@ export const Globals = Object.freeze({
 
 export const Icons = Object.freeze({
   help: mdiHelp,
+  motion: mdiMotionOutline,
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
   open: mdiOpenInApp,

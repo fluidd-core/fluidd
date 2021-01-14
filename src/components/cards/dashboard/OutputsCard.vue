@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
-    title="Fans / Outputs"
-    icon="$printer3dNozzle"
+    title="Fans &amp; Outputs"
+    icon="$motion"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
