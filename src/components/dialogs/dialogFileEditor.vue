@@ -42,7 +42,7 @@
           Save &amp; Close
         </v-btn>
         <v-btn
-          v-if="!readonly && unsavedChanges"
+          v-if="!readonly && unsavedChanges && !printerPrinting"
           :elevation="2"
           dark
           color="error"
