@@ -1,12 +1,15 @@
 # Documentation
 
-## Welcome to the fluidd wiki!
+## Welcome to the fluidd documentation
 
-- Installation
-- How to Update
-- [How to: Fluidd Setup & Macros](setup-and-macros.md)
-- [How to: Multiple Printers](multiple-printers.md)
-- [How to: File Thumbnails](file-thumbnails.md)
-- [How to: Slicer Uploads](slicer-uploads.md)
+To quickly get started, please review the required configuration section here.
 
-Further documentation coming...
+- [Required Configuration](required-configuration.md)
+- [FAQ](faq.md)
+- Updates
+  - [Automated Updates](updates/automated-updates.md)
+  - [Manual Updates](updates/manual-updates.md)
+- Configuration
+  - [Multiple Printers](setup/multiple-printers.md)
+  - [File Thumbnails](setup/file-thumbnails.md)
+  - [Slicer Uploads](setup/slicer-uploads.md)

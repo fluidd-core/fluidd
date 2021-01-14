@@ -8,4 +8,4 @@ You can upload your sliced `gcode` from within PrusaSlicer or SuperSlicer.
 - Enter some random characters in the API field.
 - Click test!
 
-<img src="images/PrinterHostExample.png" width="585" />
+![screenshot](../images/slicer-upload.png)

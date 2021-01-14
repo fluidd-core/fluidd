@@ -2,15 +2,18 @@
 
 ## Next Up
 
+- docs for manual / automated updates
 - update uncontrollable fans to have an obvious on / off state.
+- add controls for output pins
 - implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
 - i18n (translations)
+- sync instances across fluidd.json files
+- look into removing the delay with error status card
 
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
-- update panel collapse so these are remembered per instance
 - print instances having data bleed? [github issue]
 - ability to reprint after cancel
 - copying text from console puts seperate outputs in reverse order [github issue]

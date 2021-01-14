@@ -74,7 +74,7 @@ export default class UtilsMixin extends Vue {
   // correct usage of the web client.
   get printerWarnings () {
     const config = this.$store.state.socket.printer.configfile.config
-    const docsRoot = Globals.DOCUMENTATION_ROOT
+    const docsUrl = Globals.DOCS_REQUIRED_CONFIGURATION
     const warnings = []
     if (config && !config.virtual_sdcard) {
       warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
@@ -93,7 +93,7 @@ export default class UtilsMixin extends Vue {
     }
 
     if (warnings.length > 0) {
-      warnings.push({ message: `Fluidd setup requirements can be found <a target="_blank" href="${docsRoot}/setup-and-macros.md">here.</a>` })
+      warnings.push({ message: `Fluidd setup requirements can be found <a target="_blank" href="${docsUrl}">here.</a>` })
     }
     return warnings
   }

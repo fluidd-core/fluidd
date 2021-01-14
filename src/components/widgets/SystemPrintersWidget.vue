@@ -58,7 +58,7 @@
           </v-card-title>
 
           <v-card-text>
-            Having trouble? <a :href="docsUrl + '/multiple-printers.md'" target="_blank">See here</a> for more information.<br />
+            Having trouble? <a :href="docsUrl" target="_blank">See here</a> for more information.<br />
 
             <v-text-field
               autofocus
@@ -99,7 +99,7 @@ import { VForm } from '@/types/vuetify'
   }
 })
 export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
-  docsUrl = Globals.DOCUMENTATION_ROOT
+  docsUrl = Globals.DOCS_MULTIPLE_INSTANCES
   waits = Waits
 
   urlRegex = new RegExp('^(https?:\\/\\/)' + // protocol

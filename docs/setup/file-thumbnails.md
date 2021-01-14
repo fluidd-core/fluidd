@@ -40,4 +40,4 @@ thumbnails = 48x48, 300x300
 - The Color override and Bed on Thumbnail options are personal preference, but having the Bed on Thumbnail option unticked looks the best!
 - Now, restart SuperSlicer, slice a file - and take a look at it in Fluidd!
 
-<img src="images/FluiddThumbsExample.png" width="699" />
+![screenshot](../images/thumbnails.png)

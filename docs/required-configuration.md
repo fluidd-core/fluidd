@@ -1,32 +1,42 @@
 # Printer setup & macros
 
-Fluidd requires some basic configuration to applied in order to function correctly. Fluidd should warn you if these are not found in your configuration upon startup.
+Fluidd requires some basic configuration to be applied in order to function correctly.
+Fluidd should warn you if these are not found in your configuration upon startup.
 
-## Configuration
+Also be sure to take a look at the [moonraker configuration](configuration/moonraker.md) docs if you'd like automated updates.
+
+## Printer Configuration
 
 ### [virtual_sdcard]
+
 Fluidd requires your printer be setup with `virtual_sdcard`. This allows file uploads to work correctly. If you get a geodes path not found error in Fluidd this is generally the first place to look.
-```yml
+
+```ini
 [virtual_sdcard]
 path: ~/gcode_files
 ```
 
 ### [display_status]
+
 Required to properly support display updates in fluidd- with no other lines required.
-```yml
+
+```ini
 [display_status]
 ```
 
 ### [pause_resume]
+
 Enables Pause / Resume functionality within klipper. This is a single block, with no other lines required.
-```yml
+
+```ini
 [pause_resume]
 ```
 
 ## Macros
+
 These can be assumed sane defaults, but should be checked and modified to your own needs.
 
-```yml
+```ini
 [gcode_macro PAUSE]
 rename_existing: BASE_PAUSE
 default_parameter_X: 230    # edit to your preferred park position
@@ -43,7 +53,7 @@ gcode:
     G1 X{X} Y{Y} F6000
 ```
 
-```yml
+```ini
 [gcode_macro RESUME]
 rename_existing: BASE_RESUME
 default_parameter_E: 1      # edit to your preferred retract length
@@ -55,7 +65,7 @@ gcode:
     BASE_RESUME
 ```
 
-```yml
+```ini
 [gcode_macro CANCEL_PRINT]
 rename_existing: BASE_CANCEL_PRINT
 gcode:
