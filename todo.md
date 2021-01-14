@@ -2,9 +2,6 @@
 
 ## Next Up
 
-- update uncontrollable fans to have an obvious on / off state.
-- add controls for output pins
-
 - implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
