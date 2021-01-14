@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { Heater, Fan, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Endstops } from './types'
+import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Endstops } from './types'
 import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
 import { chartConfiguration } from '@/globals'
@@ -353,49 +353,107 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
-  * Return available fans
-  */
-  getFans: (state) => (filter?: string[]): Fan[] => {
-    const supportedFans = (filter && filter.length)
-      ? filter
-      : [
-        'temperature_fan',
-        'controller_fan',
-        'heater_fan',
-        'fan_generic',
-        'fan'
-      ]
+   * Return toolhead fans
+   */
+  getToolHeadFans: (_, getters) => {
+    return getters.getOutputs([
+      'temperature_fan',
+      'controller_fan',
+      'heater_fan',
+      'fan_generic',
+      'fan'
+    ])
+  },
 
-    const controllableFans = [
-      'fan',
+  getOtherFans: (_, getters) => {
+    return getters.getOutputs([
+      'temperature_fan',
+      'controller_fan',
+      // 'heater_fan',
       'fan_generic'
+      // 'fan'
+    ])
+  },
+
+  /**
+   * Return output pins
+   */
+  getPins: (_, getters) => {
+    return getters.getOutputs([
+      'output_pin'
+    ])
+  },
+
+  /**
+  * Return available fans and output pins
+  */
+  getOutputs: (state) => (filter?: string[]): Array<Fan | OutputPin> => {
+    const fans = [
+      'temperature_fan',
+      'controller_fan',
+      'heater_fan',
+      'fan_generic',
+      'fan'
     ]
 
-    const fans: Fan[] = []
+    const outputPins = [
+      'output_pin'
+    ]
 
-    for (const item in state.printer) {
-      const split = item.split(' ')
+    const controllable = [
+      'fan',
+      'fan_generic',
+      'output_pin'
+    ]
 
-      if (supportedFans.includes(split[0])) {
-        const name = (split.length > 1) ? split[1] : item
-        let prettyName = (name === 'fan') ? 'Part Fan' : Vue.$filters.startCase(name)
-        if (!name.endsWith('fan')) prettyName += ' Fan'
-        const type = (split.length) ? split[0] : item
-        const config = (state.printer.configfile.config[item]) ? state.printer.configfile.config[item] : undefined
-        const fan = {
-          ...state.printer[item],
-          ...config,
+    const supportedTypes = (filter && filter.length)
+      ? filter
+      : [...fans, ...outputPins]
+
+    const pins: Array<Fan | OutputPin> = []
+
+    for (const pin in state.printer) {
+      const split = pin.split(' ')
+
+      if (supportedTypes.includes(split[0])) {
+        const name = (split.length > 1) ? split[1] : pin
+
+        let prettyName = Vue.$filters.startCase(name)
+        if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
+
+        const type = (split.length) ? split[0] : pin
+        const config = (state.printer.configfile.config[pin]) ? state.printer.configfile.config[pin] : undefined
+
+        let output: Fan | OutputPin = {
+          ...state.printer[pin],
+          config: { ...config },
           name,
           prettyName,
           type,
-          controllable: (controllableFans.includes(split[0])),
-          minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
-          maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
+          controllable: (controllable.includes(split[0]))
         }
-        fans.push(fan)
+
+        if (fans.includes(type)) {
+          output = {
+            ...output,
+            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : undefined,
+            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : undefined
+          }
+        }
+
+        if (outputPins.includes(type)) {
+          output = {
+            ...output,
+            pwm: (config && config.pwm) ? JSON.parse(config.pwm) : false,
+            scale: (config && config.scale) ? JSON.parse(config.scale) : 1,
+            controllable: (config && config.static_value) ? false : (controllable.includes(split[0]))
+          }
+        }
+
+        pins.push(output)
       }
     }
-    return fans
+    return pins
   },
 
   /**

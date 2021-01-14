@@ -57,6 +57,7 @@ export interface Heater {
 }
 
 export interface Fan {
+  config: FanConfig;
   name: string;
   prettyName: string;
   type: string;
@@ -66,6 +67,32 @@ export interface Fan {
   target?: number;
   minTemp?: number;
   maxTemp?: number;
+}
+
+export interface FanConfig {
+  [index: string]: string | undefined;
+  pin: string;
+}
+
+export interface OutputPin {
+  name: string;
+  prettyName: string;
+  type: string;
+  controllable: boolean;
+  pwm: boolean;
+  scale: number;
+  static: number;
+}
+
+export interface OutputPinConfig {
+  [index: string]: string | undefined;
+  pwm?: string;
+  static_value?: string;
+  value?: string;
+  shutdown_value?: string;
+  cycle_time?: string;
+  hardware_pwm?: string;
+  scale?: string;
 }
 
 export interface Sensor {

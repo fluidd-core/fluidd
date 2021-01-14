@@ -1,8 +1,32 @@
 <template>
   <v-form ref="inputSliderForm">
-    <v-layout align-end>
-      <div class="grey--text text--darken-1 font-weight-regular">{{ label }}</div>
-      <div class="grey--text focus--text ml-auto" :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }">{{ newValue.toFixed() }}<small>{{valueSuffix}}</small></div>
+    <v-layout align-end justify-space-between>
+      <div
+        class="grey--text text--darken-1 font-weight-regular"
+      >
+        {{ label }}
+      </div>
+      <div
+        class="grey--text focus--text ml-auto"
+        :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }"
+      >
+        <span v-if="readonly">
+          {{ newValue }}
+          <small>{{valueSuffix}}</small>
+        </span>
+        <v-text-field
+          v-if="!readonly"
+          :value="newValue"
+          :suffix="valueSuffix"
+          @change="emitChange"
+          :rules="rules"
+          single-line
+          outlined
+          hide-details
+          dense
+        >
+        </v-text-field>
+      </div>
     </v-layout>
     <v-slider
       v-if="!readonly"
@@ -12,6 +36,7 @@
       :rules="rules"
       :min="min"
       :max="max"
+      :step="step"
       :readonly="readonly"
       :disabled="disabled"
       :loading="loading"
@@ -72,6 +97,9 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, default: 100 })
   public max!: number;
 
+  @Prop({ type: Number, default: 1 })
+  public step!: number;
+
   @Prop({ type: String, required: false })
   public valueSuffix!: string;
 
@@ -119,5 +147,17 @@ export default class InputSlider extends Mixins(UtilsMixin) {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+  ::v-deep input {
+    text-align: right;
+    padding: 0;
+  }
+
+  ::v-deep .v-text-field {
+    width: 70px;
+  }
+
+  ::v-deep .v-input__slot {
+    min-height: 25px !important;
+  }
 </style>
