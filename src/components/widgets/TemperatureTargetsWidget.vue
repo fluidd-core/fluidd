@@ -142,7 +142,7 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   }
 
   get fans () {
-    return this.$store.getters['socket/getFans']()
+    return this.$store.getters['socket/getFans']
   }
 
   get sensors () {

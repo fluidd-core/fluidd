@@ -1,11 +1,12 @@
 <template>
   <!-- Fans -->
-  <v-row no-gutters class="mb-4">
+  <div>
+  <v-row>
     <v-col class="">
       <div v-for="(fan, i) in fans" :key="i">
         <input-slider
-          :label="fan.prettyName"
           value-suffix="%"
+          :label="fan.prettyName"
           :value="fan.speed * 100"
           :rules="rules"
           :disabled="!klippyConnected"
@@ -16,6 +17,7 @@
       </div>
     </v-col>
   </v-row>
+  </div>
 </template>
 
 <script lang="ts">
@@ -32,7 +34,7 @@ import { Fan } from '@/store/socket/types'
 })
 export default class FansWidget extends Mixins(UtilsMixin) {
   get fans () {
-    return this.$store.getters['socket/getFans']()
+    return this.$store.getters['socket/getToolHeadFans']
   }
 
   get partFanSpeed () {

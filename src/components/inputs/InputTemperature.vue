@@ -1,9 +1,9 @@
 <template>
   <v-text-field
-    solo
+    outlined
+    single-line
     dense
     hide-details="auto"
-    :height="36"
     :value="value"
     :loading="loading"
     :rules="[rules.max, rules.min]"
@@ -80,5 +80,13 @@ export default class InputTemperature extends Mixins(UtilsMixin) {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+  ::v-deep input {
+    // text-align: right;
+    padding: 0;
+  }
+
+  ::v-deep .v-input__slot {
+    min-height: 36px !important;
+  }
 </style>

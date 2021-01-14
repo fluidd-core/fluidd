@@ -16,6 +16,7 @@ export const defaultState = (): ConfigState => {
     cardLayout: {
       dashboard1: [
         { name: 'toolhead-card', enabled: true },
+        { name: 'outputs-card', enabled: true },
         { name: 'camera-card', enabled: true },
         { name: 'printer-limits-card', enabled: true }
       ],

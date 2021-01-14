@@ -44,6 +44,7 @@ import TemperatureGraphCard from '@/components/cards/dashboard/TemperatureGraphC
 import CameraCard from '@/components/cards/dashboard/CameraCard.vue'
 import MacrosCard from '@/components/cards/dashboard/MacrosCard.vue'
 import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
+import OutputsCard from '@/components/cards/dashboard/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/cards/dashboard/PrinterLimitsCard.vue'
 import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import UtilsMixin from '@/mixins/utils'
@@ -62,7 +63,8 @@ import { cloneDeep } from 'lodash-es'
     CameraCard,
     PrinterLimitsCard,
     KlippyDisconnectedCard,
-    ConsoleCard
+    ConsoleCard,
+    OutputsCard
   }
 })
 export default class Dashboard extends Mixins(UtilsMixin) {

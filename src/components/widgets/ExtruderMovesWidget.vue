@@ -27,21 +27,23 @@
         v-model="extrudeLength"
         :disabled="!klippyConnected"
         @focus="$event.target.select()"
-        solo
+        outlined
         dense
         hide-details
+        single-line
         label="Extrude Length"
         type="number"
         suffix="mm"
-        class="mb-1">
+        class="mb-2">
       </v-text-field>
       <v-text-field
         v-model="extrudeSpeed"
         :disabled="!klippyConnected"
         @focus="$event.target.select()"
-        solo
+        outlined
         dense
         hide-details
+        single-line
         label="Extrude Speed"
         suffix="mm/s"
         class="">
@@ -88,5 +90,13 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
 }
 </script>
 
-<style type="scss" scoped>
+<style scoped lang="scss">
+  ::v-deep input {
+    // text-align: right;
+    padding: 0;
+  }
+
+  ::v-deep .v-input__slot {
+    min-height: 36px !important;
+  }
 </style>

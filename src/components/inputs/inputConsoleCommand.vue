@@ -6,7 +6,8 @@
     :items="history"
     class="ma-4"
     clearable
-    solo
+    outlined
+    single-line
     dense
     hide-details
     placeholder="type 'help' for available commands"
@@ -32,7 +33,7 @@ export default class InputConsoleCommand extends Vue {
   @Watch('value')
   onValueChange (val: string) {
     if (val) {
-      this.newValue = val.toUpperCase()
+      this.newValue = val
       const input = this.$refs.input as HTMLElement
       input.focus()
     } else {
