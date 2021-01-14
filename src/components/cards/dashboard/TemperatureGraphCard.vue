@@ -1,8 +1,9 @@
 <template>
   <collapsable-card
-    :loading="!chartReady"
     title="Thermals Graph"
     icon="$chart"
+    :loading="!chartReady"
+    :lazy="false"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"

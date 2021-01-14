@@ -2,15 +2,16 @@
 
 ## Next Up
 
-- docs for manual / automated updates
 - update uncontrollable fans to have an obvious on / off state.
 - add controls for output pins
+
 - implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
 - i18n (translations)
 - sync instances across fluidd.json files
 - look into removing the delay with error status card
+- fix copy / paste of terminal (adjust how we handle this entirely..)
 
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
