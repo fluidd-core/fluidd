@@ -5,6 +5,6 @@ It will notify you of available updates - and provide buttons to upgrade each in
 
 In order for this feature to be enabled, you need to configure moonraker's update plugin.
 
-Please see here for the [moonraker configuration](../configuration/moonraker.md) docs.
+Please see here for the [moonraker configuration](../setup/moonraker.md) docs.
 
 ![screenshot](../images/automated-updates.png)

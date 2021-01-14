@@ -5,6 +5,15 @@ All three components are required for a healthy printer.
 
 For more detailed instructions, please refer to [Arksine's documentation](https://github.com/Arksine/moonraker/blob/master/docs/installation.md).
 
+## Automated Updates
+
+Automated updates can be configured by ensuring the following is at the bottom of your `moonraker.conf`.
+```ini
+[update_manager]
+client_repo: cadriel/fluidd
+client_path: /home/pi/fluidd
+```
+
 ## Trusted Clients
 
 Trusted clients are a list of ip ranges that moonraker will accept communcation from.
@@ -27,7 +36,6 @@ As an example, if you open fluidd in your browser from here `192.168.1.2:8080` t
 cors_domains:
   http://192.168.1.2:8080
 ```
-
 
 ## Example Configuration
 

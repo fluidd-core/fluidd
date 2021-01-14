@@ -3,7 +3,7 @@
 Fluidd requires some basic configuration to be applied in order to function correctly.
 Fluidd should warn you if these are not found in your configuration upon startup.
 
-Also be sure to take a look at the [moonraker configuration](configuration/moonraker.md) docs if you'd like automated updates.
+Also be sure to take a look at the [moonraker configuration](setup/moonraker.md) docs if you'd like automated updates.
 
 ## Printer Configuration
 
