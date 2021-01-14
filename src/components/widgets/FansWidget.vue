@@ -1,27 +1,23 @@
 <template>
   <!-- Fans -->
   <div>
-  <v-row>
-    <v-col class="">
-      <div v-for="(fan, i) in fans" :key="i">
-        <input-slider
-          value-suffix="%"
-          :label="fan.prettyName"
-          :value="fan.speed * 100"
-          :rules="rules"
-          :disabled="!klippyConnected"
-          :readonly="!fan.controllable"
-          @input="setFanSpeed(fan, $event)">
-        </input-slider>
-        <v-divider class="my-2" v-if="i < fans.length - 1"></v-divider>
-      </div>
-    </v-col>
-  </v-row>
+    <div v-for="(fan, i) in fans" :key="i">
+      <input-slider
+        value-suffix="%"
+        :label="fan.prettyName"
+        :value="fan.speed * 100"
+        :rules="rules"
+        :disabled="!klippyConnected"
+        :readonly="!fan.controllable"
+        @input="setFanSpeed(fan, $event)">
+      </input-slider>
+      <v-divider class="my-2" v-if="(i < fans.length - 1) || forceDivider"></v-divider>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import InputSlider from '@/components/inputs/InputSlider.vue'
 import UtilsMixin from '@/mixins/utils'
 import { Waits } from '@/globals'
@@ -33,8 +29,14 @@ import { Fan } from '@/store/socket/types'
   }
 })
 export default class FansWidget extends Mixins(UtilsMixin) {
+  @Prop({ type: String, default: 'getToolHeadFans' })
+  getter!: string
+
+  @Prop({ type: Boolean, default: false })
+  forceDivider!: boolean
+
   get fans () {
-    return this.$store.getters['socket/getToolHeadFans']
+    return this.$store.getters[`socket/${this.getter}`]
   }
 
   get partFanSpeed () {

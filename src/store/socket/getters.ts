@@ -357,10 +357,10 @@ export const getters: GetterTree<SocketState, RootState> = {
    */
   getToolHeadFans: (_, getters) => {
     return getters.getOutputs([
-      'temperature_fan',
-      'controller_fan',
+      // 'temperature_fan',
+      // 'controller_fan',
       'heater_fan',
-      'fan_generic',
+      // 'fan_generic',
       'fan'
     ])
   },
@@ -379,9 +379,10 @@ export const getters: GetterTree<SocketState, RootState> = {
    * Return output pins
    */
   getPins: (_, getters) => {
-    return getters.getOutputs([
+    const outputs = getters.getOutputs([
       'output_pin'
     ])
+    return outputs.sort((output: OutputPin) => output.pwm ? 1 : 1)
   },
 
   /**

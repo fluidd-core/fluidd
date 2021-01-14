@@ -11,10 +11,16 @@
     <v-card-text>
       <v-row justify="space-between">
         <v-col cols="6">
-          <fans-widget></fans-widget>
+          <fans-widget
+            getter="getToolHeadFans">
+          </fans-widget>
         </v-col>
 
         <v-col cols="6">
+          <fans-widget
+            getter="getOtherFans"
+            force-divider>
+          </fans-widget>
           <output-pins-widget></output-pins-widget>
         </v-col>
       </v-row>
