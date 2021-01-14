@@ -94,7 +94,7 @@ export const Globals = Object.freeze({
   KLIPPY_RETRY_DELAY: 2000,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
-  LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout0', // Specific layout / enabled / disabled
+  LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout1', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
   SETTINGS_FILENAME: '.fluidd.json',
   APP_NAME: 'Fluidd',
