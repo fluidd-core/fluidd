@@ -21,7 +21,8 @@
           value-suffix="mm/s"
           input-sm
           :value="scv.current"
-          :min="1"
+          :min="0"
+          :step="0.1"
           :max="scv.max"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetSQV)"
