@@ -142,7 +142,7 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   }
 
   get fans () {
-    return this.$store.getters['socket/getFans']
+    return this.$store.getters['socket/getOutputs'](['temperature_fan'])
   }
 
   get sensors () {
@@ -150,7 +150,7 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   }
 
   get presets () {
-    return this.$store.state.config.fileConfig.dashboard.tempPresets || []
+    return this.$store.getters['config/getTempPresets']
   }
 
   setHeaterTargetTemp (heater: string, target: number) {

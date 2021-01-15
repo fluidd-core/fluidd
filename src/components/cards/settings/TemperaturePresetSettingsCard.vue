@@ -3,7 +3,8 @@
     title="Temperature Presets"
     cardKey="TemperaturePresetSettings"
     icon="$fire"
-    subTitle="Apply predefined temperatures on the dashboard">
+    subTitle="Apply predefined temperatures on the dashboard"
+  >
     <v-card-text>
 
       <div v-for="(preset, i) in presets" :key="i">
@@ -97,7 +98,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-              <v-btn color="primary" type="submit">Add</v-btn>
+              <v-btn color="primary" type="submit">{{ (dialog.index >= 0) ? 'Save' : 'Add' }}</v-btn>
             </v-card-actions>
           </v-card>
         </v-form>
@@ -121,11 +122,11 @@ export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
   }
 
   get fans (): Fan[] {
-    return this.$store.getters['socket/getFans'](['temperature_fan'])
+    return this.$store.getters['socket/getOutputs'](['temperature_fan'])
   }
 
   get presets () {
-    return this.$store.state.config.fileConfig.dashboard.tempPresets || []
+    return this.$store.getters['config/getTempPresets']
   }
 
   get form (): VForm {

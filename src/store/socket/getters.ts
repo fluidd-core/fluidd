@@ -312,15 +312,22 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
+   * Returns available heater names
+   */
+  // getHeaterNames: (state): string[] => {
+  //   return state.printer.heaters.available_heaters || []
+  // },
+
+  /**
    * Return available heaters
    */
   getHeaters: (state): Heater[] => {
+    const heaters = state.printer.heaters.available_heaters || []
     if (
-      state.printer.heaters.available_heaters &&
-      state.printer.heaters.available_heaters.length
+      heaters.length
     ) {
       const r: Heater[] = []
-      state.printer.heaters.available_heaters.forEach((e: string) => {
+      heaters.forEach((e: string) => {
         const heater = state.printer[e]
         if (heater && Object.keys(heater).length > 0) {
           const config = (state.printer.configfile.config[e]) ? state.printer.configfile.config[e] : undefined
@@ -338,8 +345,8 @@ export const getters: GetterTree<SocketState, RootState> = {
           r.push({
             name,
             ...heater,
-            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
-            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null
+            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : undefined,
+            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : undefined
           })
         }
       })

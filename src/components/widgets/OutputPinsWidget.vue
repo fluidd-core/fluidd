@@ -44,10 +44,6 @@ import { OutputPin } from '@/store/socket/types'
   }
 })
 export default class OutputPinsWidget extends Mixins(UtilsMixin) {
-  get fans () {
-    return this.$store.getters['socket/getFans']
-  }
-
   get pins () {
     return this.$store.getters['socket/getPins']
   }
