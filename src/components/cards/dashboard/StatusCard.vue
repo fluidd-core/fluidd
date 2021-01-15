@@ -82,7 +82,7 @@
       <p>Are you sure? This will cancel your print.</p>
     </dialog-confirm>
 
-    <print-status-widget v-if="printerPrinting"></print-status-widget>
+    <print-status-widget v-if="showStatus"></print-status-widget>
 
   </collapsable-card>
 </template>
@@ -110,6 +110,10 @@ export default class StatusCard extends Mixins(UtilsMixin) {
 
   get hidePrinterMenu () {
     return (!this.printerPrinting && !this.printerPaused && !this.filename)
+  }
+
+  get showStatus () {
+    return (this.printerPrinting || this.printerPaused || this.filename)
   }
 
   get printerMessage () {

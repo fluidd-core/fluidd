@@ -79,14 +79,3 @@ export default class InputTemperature extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style scoped lang="scss">
-  ::v-deep input {
-    // text-align: right;
-    padding: 0;
-  }
-
-  ::v-deep .v-input__slot {
-    min-height: 36px !important;
-  }
-</style>

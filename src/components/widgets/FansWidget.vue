@@ -4,6 +4,7 @@
     <div v-for="(fan, i) in fans" :key="i">
       <input-slider
         value-suffix="%"
+        input-xs
         :label="fan.prettyName"
         :value="fan.speed * 100"
         :rules="rules"
@@ -68,7 +69,3 @@ export default class FansWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style type="scss" scoped>
-
-</style>

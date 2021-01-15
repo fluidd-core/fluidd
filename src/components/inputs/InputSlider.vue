@@ -18,12 +18,14 @@
           v-if="!readonly"
           :value="newValue"
           :suffix="valueSuffix"
-          @change="emitChange"
           :rules="rules"
+          :class="classes"
+          @change="emitChange"
+          @focus="$event.target.select()"
+          class="v-input--x-dense v-input--text-right"
           single-line
           outlined
           hide-details
-          dense
         >
         </v-text-field>
       </div>
@@ -82,6 +84,15 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: String, required: true })
   public label!: string
 
+  @Prop({ type: String, required: false })
+  public inputSm!: string
+
+  @Prop({ type: String, required: false })
+  public inputXs!: string
+
+  @Prop({ type: String, required: false })
+  public inputMd!: string
+
   @Prop({ type: Boolean, required: false, default: false })
   public readonly!: boolean
 
@@ -118,6 +129,14 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     return this.form.validate()
   }
 
+  get classes () {
+    return {
+      'v-input--width-x-small': (this.inputXs !== undefined),
+      'v-input--width-small': (this.inputSm !== undefined),
+      'v-input--width-medium': (this.inputMd !== undefined)
+    }
+  }
+
   mounted () {
     this.newValue = this.value
   }
@@ -146,18 +165,3 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style scoped lang="scss">
-  ::v-deep input {
-    text-align: right;
-    padding: 0;
-  }
-
-  ::v-deep .v-text-field {
-    width: 70px;
-  }
-
-  ::v-deep .v-input__slot {
-    min-height: 25px !important;
-  }
-</style>

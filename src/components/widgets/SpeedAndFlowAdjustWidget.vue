@@ -5,10 +5,11 @@
       <input-slider
         label="Speed"
         value-suffix="%"
+        input-xs
         :value="speed"
         :disabled="!klippyConnected"
         :loading="hasWait(waits.onSetSpeed)"
-        :min="0"
+        :min="1"
         :max="200"
         @input="setSpeed($event, waits.onSetSpeed)">
       </input-slider>
@@ -17,10 +18,11 @@
       <input-slider
         label="Flow"
         value-suffix="%"
+        input-xs
         :value="flow"
         :disabled="!klippyConnected"
         :loading="hasWait(waits.onSetFlow)"
-        :min="0"
+        :min="1"
         :max="200"
         @input="setFlow($event, waits.onSetFlow)">
       </input-slider>
@@ -59,6 +61,3 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style type="scss" scoped>
-</style>

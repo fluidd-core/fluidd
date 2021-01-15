@@ -6,8 +6,9 @@
         <input-slider
           label="Velocity"
           value-suffix="mm/s"
+          input-sm
           :value="velocity.current"
-          :min="0"
+          :min="1"
           :max="velocity.max"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetVelocity)"
@@ -18,8 +19,9 @@
         <input-slider
           label="Square Corner Velocity"
           value-suffix="mm/s"
+          input-sm
           :value="scv.current"
-          :min="0"
+          :min="1"
           :max="scv.max"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetSQV)"
@@ -32,8 +34,9 @@
         <input-slider
           label="Acceleration"
           value-suffix="mm/s^2"
+          input-sm
           :value="accel.current"
-          :min="0"
+          :min="1"
           :max="accel.max"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetAcceleration)"
@@ -44,8 +47,9 @@
         <input-slider
           label="Accel to Decel"
           value-suffix="mm/s^2"
+          input-sm
           :value="decel.current"
-          :min="0"
+          :min="1"
           :max="decel.max"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetDeceleration)"

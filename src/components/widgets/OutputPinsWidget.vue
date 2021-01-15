@@ -5,6 +5,7 @@
       <div v-for="(pin, i) in pins" :key="i">
         <input-slider
           v-if="pin && pin.pwm"
+          input-xs
           :label="pin.prettyName"
           :min="0"
           :max="pin.scale"
@@ -57,7 +58,3 @@ export default class OutputPinsWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style type="scss" scoped>
-
-</style>
