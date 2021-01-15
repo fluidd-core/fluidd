@@ -69,7 +69,7 @@ export const mutations: MutationTree<SocketState> = {
     }
   },
   onPrinterInfo (state, payload) {
-    state.printer.info = payload
+    Vue.set(state.printer, 'info', payload)
   },
   onPlugins (state, payload) {
     Vue.set(

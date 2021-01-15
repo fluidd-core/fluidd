@@ -39,7 +39,11 @@ export const defaultState = (): SocketState => {
             max_accel: 0,
             max_velocity: 0,
             square_corner_velocity: 5
-          }
+          },
+          virtual_sdcard: {},
+          pause_resume: {},
+          display_status: {},
+          'gcode_macro CANCEL_PRINT': {}
         }
       },
       objects: [],

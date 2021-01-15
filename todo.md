@@ -15,6 +15,9 @@
 - print instances having data bleed? [github issue]
 - ability to reprint after cancel
 - copying text from console puts seperate outputs in reverse order [github issue]
+- loading heaters, fans or pins means these are constantly updated - due to temps changing
+  often. Need a more elegant way to load just the names of these items without parts of the
+  reactive data that is changed so often
 
 ## Filesystem Improvements
 

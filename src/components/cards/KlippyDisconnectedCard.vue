@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
-    v-if="printerWarnings.length || !klippyConnected"
-    :title="'Klippy: ' + klippyState"
+    v-if="(printerWarnings && printerWarnings.length) || !klippyConnected"
+    :title="`Klippy: ${klippyState}`"
     :collapsable="false"
     icon="$alert">
     <v-card-text>
@@ -23,12 +23,12 @@
           <v-alert text dense type="error" v-if="klippyStateMessage !== 'Printer is ready'">
             <span v-html=klippyStateMessage></span>
           </v-alert>
-          <v-alert text dense icon="$alert" type="warning" v-if="socketReady && printerWarnings.length && klippyStateMessage === 'Printer is ready'">
+
+          <v-alert text dense icon="$alert" type="warning" v-if="socketReady && printerWarnings.length && klippyConnected">
             <div class="mb-2">
               {{ appName }} warnings found
             </div>
 
-            <!-- <div class="client-warning mb-2" v-for="(warning, index) in clientWarnings" :key="index" v-html="warning.message"></div> -->
             <div class="client-warning" v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></div>
           </v-alert>
         </v-col>
@@ -75,6 +75,34 @@ export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
   serviceFirmwareRestartKlippy () {
     SocketActions.printerFirmwareRestart()
     this.$emit('click')
+  }
+
+  // Return a list of warnings we deem necessary for
+  // correct usage of the web client.
+  get printerWarnings () {
+    const config = this.$store.state.socket.printer.configfile.config
+    const docsUrl = Globals.DOCS_REQUIRED_CONFIGURATION
+    const warnings = []
+    if (config && !config.virtual_sdcard) {
+      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+    }
+
+    if (config && !config.pause_resume) {
+      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
+    }
+
+    if (config && !config.display_status) {
+      warnings.push({ message: '[display_status] not found in printer configuration.' })
+    }
+
+    if (config && ('gcode_macro CANCEL_PRINT' in config === false)) {
+      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
+    }
+
+    if (warnings.length > 0) {
+      warnings.push({ message: `Fluidd setup requirements can be found <a target="_blank" href="${docsUrl}">here.</a>` })
+    }
+    return warnings
   }
 }
 </script>
