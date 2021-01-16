@@ -29,6 +29,7 @@
   "dependencies": {
     "@cadriel/vue-plotly": "github:cadriel/vue-plotly",
     "@ctrl/tinycolor": "^3.3.1",
+    "@fontsource/roboto": "^4.1.0",
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",
     "chartjs-plugin-colorschemes": "^0.4.0",
