@@ -15,7 +15,7 @@
           icon="$up">
         </btn-toolhead-move>
       </v-col>
-      <v-col class="ml-2">
+      <v-col class="ml-2" v-if="canHomeXY">
         <v-btn
           :color="(!allHomed) ? 'warning' : 'secondary'"
           :elevation="2"
@@ -52,7 +52,7 @@
           icon="$right">
         </btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-2">
+      <v-col cols="auto" class="ml-2" v-if="canHomeXY">
         <btn-toolhead-move
           :color="(!zHomed) ? 'warning' : 'secondary'"
           :loading="hasWait(waits.onHomeZ)"
@@ -62,7 +62,7 @@
           icon="$home">
         </btn-toolhead-move>
       </v-col>
-      <v-col class="ml-2">
+      <v-col class="ml-2" v-if="canHomeXY">
         <v-btn
           :color="(!xHomed) ? 'warning' : 'secondary'"
           :elevation="2"
@@ -89,7 +89,7 @@
           icon="$down">
         </btn-toolhead-move>
       </v-col>
-      <v-col class="ml-2">
+      <v-col class="ml-2" v-if="canHomeXY">
         <v-btn
           :color="(!yHomed) ? 'warning' : 'secondary'"
           :elevation="2"
@@ -129,6 +129,14 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   waits = Waits
   moveLength = ''
   fab = false
+
+  get kinematics () {
+    return this.$store.state.socket.printer.configfile.config.printer.kinematics || ''
+  }
+
+  get canHomeXY () {
+    return this.kinematics !== 'delta'
+  }
 
   get toolheadMoveLength () {
     return (this.moveLength === '')

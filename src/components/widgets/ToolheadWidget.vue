@@ -27,7 +27,6 @@ import ToolheadPositionWidget from '@/components/widgets/ToolheadPositionWidget.
 import ZHeightAdjustWidget from '@/components/widgets/ZHeightAdjustWidget.vue'
 import SpeedAndFlowAdjustWidget from '@/components/widgets/SpeedAndFlowAdjustWidget.vue'
 import FansWidget from '@/components/widgets/FansWidget.vue'
-// import OutputPinsWidget from '@/components/widgets/OutputPinsWidget.vue'
 
 @Component({
   components: {
@@ -37,7 +36,6 @@ import FansWidget from '@/components/widgets/FansWidget.vue'
     ZHeightAdjustWidget,
     SpeedAndFlowAdjustWidget,
     FansWidget
-    // OutputPinsWidget
   }
 })
 export default class ToolheadWidget extends Mixins(UtilsMixin) {}

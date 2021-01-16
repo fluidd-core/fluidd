@@ -38,7 +38,8 @@ export const defaultState = (): SocketState => {
             max_accel_to_decel: 0,
             max_accel: 0,
             max_velocity: 0,
-            square_corner_velocity: 5
+            square_corner_velocity: 5,
+            kinematics: 'none'
           },
           virtual_sdcard: {},
           pause_resume: {},
