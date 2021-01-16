@@ -25,6 +25,7 @@
     </template>
 
     <console-widget
+      ref="console"
       :items="items"
     ></console-widget>
 
@@ -32,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
 import UtilsMixin from '@/mixins/utils'
 import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
@@ -50,11 +51,18 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
 
   get items (): ConsoleEntry[] {
     return this.$store.getters['socket/getConsoleEntries']
-    // return this.$store.state.socket.console
   }
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  @Watch('inLayout')
+  inLayoutChange (inLayout: boolean) {
+    if (!inLayout) {
+      const consoleComponent = this.$refs.console as ConsoleWidget
+      consoleComponent.scrollToEnd()
+    }
   }
 
   get hideTempWaits (): boolean {

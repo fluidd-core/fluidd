@@ -12,7 +12,13 @@
           @end.stop="drag = false"
         >
           <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <component v-for="c in col1" :is="c.name" :key="c.name" :enabled="c.enabled" @enabled="onEnabled($event, c, 'dashboard1')"></component>
+            <component
+              v-for="c in col1"
+              :is="c.name"
+              :key="c.name"
+              :enabled="c.enabled"
+              @enabled="onEnabled($event, c, 'dashboard1')">
+            </component>
           </transition-group>
         </draggable>
       </v-col>

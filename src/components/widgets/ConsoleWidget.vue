@@ -22,7 +22,6 @@ import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 import ConsoleEntryWidget from '@/components/widgets/ConsoleEntryWidget.vue'
-import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -50,8 +49,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   }
 
   @Watch('items')
-  onItemsChange (val: ConsoleEntry) {
-    // console.log('items changed', val)
+  onItemsChange () {
     this.scrollToEnd()
   }
 
@@ -60,7 +58,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
       const vel = this.$refs['console-wrapper'] as Vue
       if (vel && vel.$el) {
         const el = vel.$el
-        // console.log('updating scroll', el.scrollHeight, el)
         el.scrollTop = el.scrollHeight
       }
     })

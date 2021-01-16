@@ -39,12 +39,15 @@ export default class ConsoleEntryWidget extends Vue {
   }
 
   get itemMessage () {
-    const message = this.value.message.replace(/([A-Z0-9_]{2,})/gm, (match, command) => {
-      if (this.knownCommands.has(command)) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
-      return match
-    })
+    let message = this.value.message
+    if (this.value.type === 'response') {
+      message = this.value.message.replace(/([A-Z0-9_]{2,})/gm, (match, command) => {
+        if (this.knownCommands.has(command)) return `<a class="primary--text text--lighten-1">${command.toUpperCase()}</a>`
+        return match
+      })
+    }
     return (this.value.type === 'command')
-      ? Globals.CONSOLE_SEND_PREFIX + message
+      ? `<a class="primary--text text--lighten-1">${Globals.CONSOLE_SEND_PREFIX}${message}</a>`
       : message
   }
 
