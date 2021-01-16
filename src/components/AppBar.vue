@@ -26,7 +26,7 @@
         <v-icon small class="mr-md-1">$home</v-icon>
         <span>Dashboard</span>
       </v-btn>
-      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" v-if="klippyConnected">
+      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" :disabled="!klippyConnected">
         <v-icon small class="mr-md-1">$files</v-icon>
         <span>Jobs</span>
       </v-btn>
