@@ -85,9 +85,11 @@ export const mutations: MutationTree<SocketState> = {
   },
   addConsoleEntry (state, entry: ConsoleEntry) {
     while (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
-      state.console.pop()
+      // state.console.pop()
+      state.console.shift()
     }
-    state.console.unshift(entry)
+    // state.console.unshift(entry)
+    state.console.push(entry)
   },
   addMacro (state, macro: Macro) {
     Vue.set(state.macros, macro.name, macro)
