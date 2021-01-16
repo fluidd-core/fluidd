@@ -28,9 +28,8 @@
           <v-col cols="4" class="d-none d-sm-block">
             <v-text-field
               v-model="search"
-              :max-width="130"
               label="Search"
-              solo
+              outlined
               flat
               dense
               single-line
