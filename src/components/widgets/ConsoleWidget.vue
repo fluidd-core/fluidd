@@ -48,6 +48,10 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     this.$store.commit('setConsoleCommand', val)
   }
 
+  mounted () {
+    this.scrollToEnd()
+  }
+
   @Watch('items')
   onItemsChange () {
     this.scrollToEnd()

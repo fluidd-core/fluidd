@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- allow users to show / hide pin outputs
 - implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
@@ -43,15 +44,12 @@
 
 ## General Improvements
 
-- show mm/s in status
+- allow defining more than one camera
 - themes (pick a specific theme (red, green etc..)
-- load gcode help and implement in console
-- Add a way to specify a value for sliders
 - figure out https
 - click / tap image camara update option (i.e., not constant image updates)
 - probed vs mesh bed level display option
 - should be able to force part speed fan during a print?
-- add UI to filter out temp waits from console
 
 ## [Page] Printer Configuration
 
