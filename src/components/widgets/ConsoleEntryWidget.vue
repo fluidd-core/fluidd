@@ -47,7 +47,7 @@ export default class ConsoleEntryWidget extends Vue {
       })
     }
     return (this.value.type === 'command')
-      ? `<a class="primary--text text--lighten-1">${Globals.CONSOLE_SEND_PREFIX}${message}</a>`
+      ? `${Globals.CONSOLE_SEND_PREFIX}<a class="primary--text text--lighten-1">${message}</a>`
       : message
   }
 

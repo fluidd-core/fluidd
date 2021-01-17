@@ -119,10 +119,10 @@ export const getters: GetterTree<SocketState, RootState> = {
    * Returns an object representing the time estimates of a current print.
    */
   getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament' | 'totals'): TimeEstimates => {
-    const progress = (
-      !state.printer.display_status.progress ||
-      isNaN(+state.printer.display_status.progress) ||
-      !isFinite(+state.printer.display_status.progress)
+    let progress = (
+      !state.printer.virtual_sdcard.progress ||
+      isNaN(+state.printer.virtual_sdcard.progress) ||
+      !isFinite(+state.printer.virtual_sdcard.progress)
     )
       ? 0
       : state.printer.display_status.progress
@@ -156,6 +156,14 @@ export const getters: GetterTree<SocketState, RootState> = {
 
     switch (type) {
       case 'slicer': {
+        progress = (
+          !state.printer.display_status.progress ||
+          isNaN(+state.printer.display_status.progress) ||
+          !isFinite(+state.printer.display_status.progress)
+        )
+          ? 0
+          : state.printer.display_status.progress
+
         totalDuration = (state.printer.current_file.estimated_time > 0) ? state.printer.current_file.estimated_time : duration
         timeLeft = totalDuration - duration
         break
