@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/cadriel/fluidd/compare/v1.4.3...v1.5.0) (2021-01-17)
+
+
+### Features
+
+* add basic icons representing types in thermals card ([e6db221](https://github.com/cadriel/fluidd/commit/e6db2211d6c121b196076dc36825d5c275fa6797))
+* add requested speed to toolhead ([066e59f](https://github.com/cadriel/fluidd/commit/066e59f32798c9c9aa2d6b90384f77cd6a2d0104))
+* add UI to control output pins ([5a2d4df](https://github.com/cadriel/fluidd/commit/5a2d4df87956b68f9e7fe2cfaecbb36a6d60b077))
+* adjust layout of fans ([10e9c3c](https://github.com/cadriel/fluidd/commit/10e9c3c5c8ac5614764d0a732ae6a08f67253fad))
+* allow input values for sliders ([7a1c63d](https://github.com/cadriel/fluidd/commit/7a1c63dd2e87761689d89f01b5f55a626c2c37b7))
+* automated deploys ([359af43](https://github.com/cadriel/fluidd/commit/359af43ffb6b42c93c5822cec98fff147a0c93f3))
+* implements console command history ([06560fe](https://github.com/cadriel/fluidd/commit/06560fe2d1534824e39810ea972e64f785f95415))
+* new icon for outputs ([b6613b8](https://github.com/cadriel/fluidd/commit/b6613b8dc3bf05b3d6fbf9a0462d7e4c28be2414))
+* releases are now linked to their respective github pages ([2807559](https://github.com/cadriel/fluidd/commit/280755999e2778ea248e3e9eb2b40d096021fff1))
+* removes unnecessary home buttons for delta kinematics ([ffbe46a](https://github.com/cadriel/fluidd/commit/ffbe46a4d7d81c7cb734e51133a0b7b31b3cc394))
+
+
+### Bug Fixes
+
+* allow a step size of 0.1 for SCV ([5cb148d](https://github.com/cadriel/fluidd/commit/5cb148d2363d95ee284397c352411df26dd3affc))
+* config page margins ([1c8fb90](https://github.com/cadriel/fluidd/commit/1c8fb90f9d898b1d6550c9ab7dbdc62e5f181fdb))
+* console click command included prefix ([538cafb](https://github.com/cadriel/fluidd/commit/538cafb89fd7176080e7e7f3ab17f62cfc0ec9b1))
+* console now copy / pastes as you'd expect ([dedffb4](https://github.com/cadriel/fluidd/commit/dedffb418299f2cbe20c7cf19ea13b3cdb00c3dc))
+* disable the jobs menu on disconnect instead of hide ([c8f5b56](https://github.com/cadriel/fluidd/commit/c8f5b56613d04431e507657b8501a1e80bafa1ec))
+* Doc links updated ([7e9412f](https://github.com/cadriel/fluidd/commit/7e9412f82375a0f14680020b0eaca3314e3d128f))
+* ensure file search style matches other inputs ([c7150be](https://github.com/cadriel/fluidd/commit/c7150bea6c0f373bcca380d1ab9a47e3a1119cb3))
+* ensure save and restart is not usable during a print ([ac9588c](https://github.com/cadriel/fluidd/commit/ac9588c2cacf418ab3a06452f99e542214ed4940))
+* ensures console scroll works during layout changes ([8325c86](https://github.com/cadriel/fluidd/commit/8325c86e4a6cb1dda3bd9efaea1e3adc4902537c))
+* freshly loaded bed meshes now show their variance ([748e46a](https://github.com/cadriel/fluidd/commit/748e46ae6e146668417027cf6fd472d22a51be59))
+* Klippy error card is no longer delayed before being hidden ([9b7aba9](https://github.com/cadriel/fluidd/commit/9b7aba930dbb3fd15aa756eca00a06348f8aab49))
+* minor adjustment to m117 display ([7d198fb](https://github.com/cadriel/fluidd/commit/7d198fbd8f89d29463f17b0624d582f38722510c))
+* release action ([68d0967](https://github.com/cadriel/fluidd/commit/68d0967c26dcee0e0037d77d2cfa6c1c8811be15))
+* removed external dependence on fonts on icon styles ([b454ac8](https://github.com/cadriel/fluidd/commit/b454ac8fc9151b74c3d0ff7538463e5e5dffffef))
+* sliders min 1 + status only hides with no status ([77a9a99](https://github.com/cadriel/fluidd/commit/77a9a99d11427f3188d0222ab0ca2d0d00326bc6))
+* Some items not returning prettified names ([d1472ed](https://github.com/cadriel/fluidd/commit/d1472edf08bff0c1ad9c89c9f39e0c8512d6a3cd))
+* speed in mm/s ([ed4452a](https://github.com/cadriel/fluidd/commit/ed4452aabe88000b1d96457df4be26cf60e46650))
+* Temp graph no longer consumes resources in a collapsed state ([f566190](https://github.com/cadriel/fluidd/commit/f5661906f4f9d2f308048ae86d600ca302e3018d))
+* temp presets no longer error if heaters or fan names change ([1ac6d37](https://github.com/cadriel/fluidd/commit/1ac6d3783730019da58ee987d82fda44c68102d4))
+
 ### [1.4.3](https://github.com/cadriel/fluidd/compare/v1.4.2...v1.4.3) (2021-01-10)
 
 
