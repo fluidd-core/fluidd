@@ -1,6 +1,6 @@
 <template>
   <v-row align="center" justify="space-between">
-    <v-col cols="auto" class="pt-1">
+    <v-col cols="auto" class="pt-1" v-if="!printerPrinting">
       <v-btn
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
         :loading="hasWait('ZAdjust')"
