@@ -26,7 +26,7 @@ jobs:
       - name: Read ChangeLog
         uses: mindsers/changelog-reader-action@v2
         id: changelog
-        width:
+        with:
           validation_depth: 10
           path: ./CHANGELOG.md
 
