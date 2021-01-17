@@ -9,7 +9,7 @@
       <v-icon left>$printer3d</v-icon>
       <span class="font-weight-light">
         {{ printerState }}
-        <span class="font-weight-light text-subtitle-2 ml-4">{{ printerMessage }}</span>
+        <span class="font-weight-light text-subtitle-2 ml-sm-4 d-block d-sm-inline-block" v-show="printerMessage">{{ printerMessage }}</span>
       </span>
     </template>
 
