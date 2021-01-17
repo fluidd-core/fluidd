@@ -49,7 +49,7 @@
 
       <v-row v-for="item in heaters" :key="item.name">
         <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
-          {{ item.name }}
+          {{ item.prettyName }}
           <small class="ml-3" v-if="item.target === 0">off</small>
         </v-col>
         <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
@@ -68,7 +68,7 @@
       <template v-for="item in fans">
         <v-row :key="item.name" v-if="item.type === 'temperature_fan'">
           <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
-            {{ item.name }}
+            {{ item.prettyName }}
             <v-icon
               v-if="item.speed > 0 && item.target > 0"
               color="grey darken-1"
@@ -101,7 +101,7 @@
 
       <v-row v-for="item in sensors" :key="item.name">
         <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
-          {{ item.name }}
+          {{ item.prettyName }}
         </v-col>
         <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
           <v-tooltip right>

@@ -342,9 +342,11 @@ export const getters: GetterTree<SocketState, RootState> = {
             split.shift()
             name = split.join(' ')
           }
+          const prettyName = Vue.$filters.startCase(name)
           r.push({
-            name,
             ...heater,
+            name,
+            prettyName,
             minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : undefined,
             maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : undefined
           })
@@ -478,6 +480,7 @@ export const getters: GetterTree<SocketState, RootState> = {
 
       if (supportedSensors.includes(split[0])) {
         const name = (split.length > 1) ? split[1] : item
+        const prettyName = Vue.$filters.startCase(name)
         const type = (split.length) ? split[0] : item
         const config = (state.printer.configfile.config[item]) ? state.printer.configfile.config[item] : undefined
         const sensor = {
@@ -486,6 +489,7 @@ export const getters: GetterTree<SocketState, RootState> = {
           minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
           maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null,
           name,
+          prettyName,
           type
         }
         sensors.push(sensor)

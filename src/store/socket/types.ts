@@ -50,6 +50,7 @@ export interface Endstops {
 
 export interface Heater {
   name: string;
+  prettyName: string;
   temperature: number;
   target: number;
   minTemp?: number;
@@ -97,6 +98,7 @@ export interface OutputPinConfig {
 
 export interface Sensor {
   name: string;
+  prettyName: string;
   type: string;
   temperature: number;
   target?: number;
