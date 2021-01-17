@@ -17,7 +17,8 @@
         class="v-list-item--x-dense"
       >
         <v-list-item-content>
-          <div class="component-title">{{ packageTitle(component) }}</div>
+          <a v-if="component.type !== 'system'" class="component-title" :href="packageUrl(component)" target="_blank" v-html="packageTitle(component)"></a>
+          <div v-else class="component-title" v-html="packageTitle(component)"></div>
           <v-layout align-center justify-space-between>
             <div class="component-version">
               {{ ('package_count' in component) ? component.package_count + ' packages' : component.version }}
@@ -104,9 +105,15 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
     return component.type
   }
 
-  updateComponent (component: 'klipper' | 'moonraker' | 'client' | 'system') {
+  packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
+    if (component.type === 'klipper') return 'https://github.com/KevinOConnor/klipper/commits/master'
+    if (component.type === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
+    if (component.type === 'client' && 'name' in component && component.name === 'fluidd') return 'https://github.com/cadriel/fluidd/releases'
+  }
+
+  updateComponent (type: 'klipper' | 'moonraker' | 'client' | 'system') {
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
-    switch (component) {
+    switch (type) {
       case 'klipper':
         SocketActions.machineUpdateKlipper()
         break
