@@ -81,7 +81,8 @@ import {
   mdiDotsHorizontal,
   mdiElectricSwitch,
   mdiElectricSwitchClosed,
-  mdiMotionOutline
+  mdiMotionOutline,
+  mdiThermometerLow
 } from '@mdi/js'
 
 /**
@@ -128,6 +129,7 @@ export const Icons = Object.freeze({
   restartAlert: mdiRestartAlert,
   update: mdiUpdate,
   alert: mdiAlert,
+  thermometer: mdiThermometerLow,
   bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
   snowflakeAlert: mdiSnowflakeAlert,
