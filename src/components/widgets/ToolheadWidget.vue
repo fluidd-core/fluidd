@@ -1,6 +1,6 @@
 <template>
   <v-card-text>
-    <v-row justify="space-between" class="mb-4">
+    <v-row justify="space-between" align="center" class="mb-4">
       <v-col cols="auto">
         <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
         <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
