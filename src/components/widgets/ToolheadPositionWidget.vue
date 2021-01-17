@@ -24,7 +24,7 @@
       <v-col cols="12" class="coord-col">
         <span class="grey--text text--darken-1">Requested Speed:</span>
         <span class="grey--text focus--text">
-          {{ requestedSpeed }} mm/2
+          {{ requestedSpeed }} mm/s
         </span>
       </v-col>
     </v-row>
