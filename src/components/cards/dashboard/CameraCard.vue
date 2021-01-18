@@ -3,7 +3,6 @@
     title="Camera"
     icon="$camera"
     :lazy="false"
-    :collapsed="true"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"

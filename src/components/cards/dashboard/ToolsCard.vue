@@ -20,16 +20,18 @@
         background-color="quaternary"
         class="rounded-t"
       >
-        <v-tab :key="'targets'" :disabled="attrs.inLayout || attrs.isCollapsed">
+        <v-tab :key="'targets'" :disabled="inLayout || attrs.isCollapsed">
           <v-icon left>$fire</v-icon>
           Thermals
         </v-tab>
-        <v-tab :key="'jobs'" v-if="klippyConnected && jobsInDash" :disabled="attrs.inLayout || attrs.isCollapsed">
+        <v-tab :key="'jobs'" v-if="klippyConnected && jobsInDash" :disabled="inLayout || attrs.isCollapsed">
           <v-icon left>$files</v-icon>
           Jobs
         </v-tab>
         <btn-collapse
           class="align-self-center ml-1 mr-4"
+          :value="attrs.isCollapsed"
+          :in-layout="inLayout"
           v-bind="attrs"
           v-on="on"
         >

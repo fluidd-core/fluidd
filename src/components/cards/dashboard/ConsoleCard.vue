@@ -7,11 +7,11 @@
     menuBreakpoint="none"
     menuIcon="$cog"
     :height="450"
-    :collapsed="true"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    @enabled="$emit('enabled', $event)"
+    @collapsed="handleCollapseChange">
 
     <template v-slot:menu>
       <v-checkbox
@@ -57,11 +57,20 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
+  get consoleComponent (): ConsoleWidget {
+    return this.$refs.console as ConsoleWidget
+  }
+
   @Watch('inLayout')
   inLayoutChange (inLayout: boolean) {
     if (!inLayout) {
-      const consoleComponent = this.$refs.console as ConsoleWidget
-      consoleComponent.scrollToEnd()
+      this.consoleComponent.scrollToEnd()
+    }
+  }
+
+  handleCollapseChange (collapsed: boolean) {
+    if (!collapsed) {
+      this.consoleComponent.scrollToEnd()
     }
   }
 

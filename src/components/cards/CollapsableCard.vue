@@ -9,9 +9,7 @@
       <slot
         name="tabbed-title"
         v-bind:attrs="{
-          inLayout: isInLayout,
           enabled,
-          value: isCollapsed,
           isCollapsed
         }"
         v-bind:on="{
@@ -116,7 +114,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class ToolheadCard extends Vue {
@@ -189,12 +187,6 @@ export default class ToolheadCard extends Vue {
    */
   @Prop({ type: Boolean, default: true })
   collapsable!: boolean
-
-  /**
-   * Whether this card is in a collapsed state or not.
-   */
-  @Prop({ type: Boolean, default: false })
-  collapsed!: boolean // Determines the default state.
 
   /**
    * Rounded
@@ -291,7 +283,7 @@ export default class ToolheadCard extends Vue {
 
   get isCollapsed (): boolean {
     const collapsed = (this.$store.state.config.cardState[this.id] === undefined)
-      ? this.collapsed
+      ? false
       : this.$store.state.config.cardState[this.id]
 
     return collapsed
@@ -299,6 +291,11 @@ export default class ToolheadCard extends Vue {
 
   set isCollapsed (val: boolean) {
     this.$store.dispatch('config/saveCardState', { [this.id]: val })
+  }
+
+  @Watch('isCollapsed')
+  isCollapsedChange (val: boolean) {
+    this.$emit('collapsed', val)
   }
 
   get isInLayout (): boolean {

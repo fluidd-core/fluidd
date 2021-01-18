@@ -2,7 +2,6 @@
   <collapsable-card
     title="Printer Limits"
     icon="$limits"
-    :collapsed="true"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
