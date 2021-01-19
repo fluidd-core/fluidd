@@ -22,19 +22,19 @@
 
       <btn text to="/" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$home</v-icon>
-        <span>Dashboard</span>
+        <span>{{ $t('Dashboard') }}</span>
       </btn>
       <btn text to="/jobs" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$files</v-icon>
-        <span>Jobs</span>
+        <span>{{ $t('Jobs') }}</span>
       </btn>
       <btn text to="/tune" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$tune</v-icon>
-        <span>Tune</span>
+        <span>{{ $t('Tune') }}</span>
       </btn>
       <btn text to="/configure" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$cogs</v-icon>
-        <span>Configure</span>
+        <span>{{ $t('Configure') }}</span>
       </btn>
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
@@ -48,7 +48,7 @@
             <v-icon>$estop</v-icon>
           </btn>
         </template>
-        Emergency Stop
+        {{ $t('Emergency Stop') }}
       </v-tooltip>
 
       <v-badge

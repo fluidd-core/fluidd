@@ -131,6 +131,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import JobHistoryMenu from './JobHistoryMenu.vue'
 import FilesMixin from '@/mixins/files'
+import { $t } from '@/i18n'
 import { getFilePaths } from '@/store/helpers'
 import { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/socketActions'
@@ -148,12 +149,12 @@ export default class JobHistory extends Mixins(FilesMixin) {
   get headers () {
     return [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: 'name', value: 'filename' },
-      { text: 'status', value: 'status' },
-      { text: 'Started', value: 'start_time' },
-      { text: 'Print Duration', value: 'print_duration' },
-      { text: 'Filament Used', value: 'filament_used' },
-      { text: 'Actions', value: 'actions', sortable: false }
+      { text: $t('name'), value: 'filename' },
+      { text: $t('status'), value: 'status' },
+      { text: $t('Started'), value: 'start_time' },
+      { text: $t('Print Duration'), value: 'print_duration' },
+      { text: $t('Filament Used'), value: 'filament_used' },
+      { text: $t('Actions'), value: 'actions', sortable: false }
     ]
   }
 

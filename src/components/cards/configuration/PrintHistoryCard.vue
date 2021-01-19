@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Job History"
+    :title="$t('Job History')"
     icon="$history">
     <job-history></job-history>
 
@@ -10,7 +10,7 @@
         small
         class="ma-1">
         <v-icon small left>$delete</v-icon>
-        <span>Remove All</span>
+        <span>{{ $t('Remove All') }}</span>
       </btn>
     </template>
 
@@ -29,7 +29,7 @@ import { SocketActions } from '@/socketActions'
 })
 export default class PrinterHistoryCard extends Vue {
   handleRemoveAll () {
-    this.$confirm('Are you sure? This will clear all history, and printer statistics.')
+    this.$confirm(this.$t('Are you sure? This will clear all history, and printer statistics.').toString())
       .then(res => {
         if (res) {
           SocketActions.serverHistoryDeleteJob('all')

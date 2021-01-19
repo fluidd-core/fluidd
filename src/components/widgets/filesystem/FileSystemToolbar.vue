@@ -34,7 +34,7 @@
         </v-btn>
       </template>
       <slot>
-        <span>Low on disk space</span>
+        <span>{{ $t('Low on disk space') }}</span>
       </slot>
     </v-tooltip>
 
@@ -51,7 +51,7 @@
         </v-btn>
       </template>
       <slot>
-        <span>Filesystem disabled. Reconnect klipper.</span>
+        <span>{{ $t('Filesystem disabled. Reconnect klipper.') }}</span>
       </slot>
     </v-tooltip>
 

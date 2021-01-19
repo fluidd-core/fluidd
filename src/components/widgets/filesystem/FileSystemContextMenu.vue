@@ -33,7 +33,7 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$fire</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">Preheat</v-list-item-title>
+              <v-list-item-title class="white--text">{{ $t('Preheat') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -42,7 +42,7 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$pencil</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">Edit</v-list-item-title>
+              <v-list-item-title class="white--text">{{ $t('Edit') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -51,7 +51,7 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$magnify</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">View</v-list-item-title>
+              <v-list-item-title class="white--text">{{ $t('View') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -60,7 +60,7 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$download</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">Download</v-list-item-title>
+              <v-list-item-title class="white--text">{{ $t('Download') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -69,7 +69,7 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$rename</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">Rename</v-list-item-title>
+              <v-list-item-title class="white--text">{{ $t('Rename') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -78,7 +78,7 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$delete</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">Remove</v-list-item-title>
+              <v-list-item-title class="white--text">{{ $t('Remove') }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-col>

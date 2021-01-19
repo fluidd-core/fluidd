@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Tool"
+    :title="$t('Tool')"
     icon="$printer3dNozzle"
     :draggable="true"
     :inLayout="inLayout"
@@ -10,7 +10,7 @@
 
     <template v-slot:title>
       <v-icon left>$printer3dNozzle</v-icon>
-      <span class="font-weight-light">Tool</span>
+      <span class="font-weight-light">{{ $t('Tool') }}</span>
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -23,7 +23,7 @@
             $snowflakeAlert
           </v-icon>
         </template>
-        <span>extruder disabled, below min_extrude_temp ({{ minExtrudeTemp }}<small>°C</small>)</span>
+        <span v-html="$t('extruder disabled, below min_extrude_temp ( %{minExtrudeTemp} <small>°C</small>)', { minExtrudeTemp })"></span>
       </v-tooltip>
     </template>
 

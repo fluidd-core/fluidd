@@ -3,7 +3,7 @@
     <v-col cols="12" sm="6">
       <!-- Speed and Flow Adjust -->
       <input-slider
-        label="Speed"
+        :label="$t('Speed')"
         value-suffix="%"
         input-xs
         v-model.number="speed"
@@ -15,7 +15,7 @@
     </v-col>
     <v-col cols="12" sm="6">
       <input-slider
-        label="Flow"
+        :label="$t('Flow')"
         value-suffix="%"
         input-xs
         v-model.number="flow"

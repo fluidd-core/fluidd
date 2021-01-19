@@ -11,14 +11,14 @@
     >
       <v-card>
         <v-card-title>
-          <span class="headline">{{ (preset.id != -1) ? 'Edit preset' : 'Add preset' }}</span>
+          <span class="headline">{{ (preset.id != -1) ? $t('Edit preset') : $t('Add preset') }}</span>
         </v-card-title>
 
         <v-card-text>
           <v-container>
             <v-row>
               <v-text-field
-                label="Preset Name"
+                :label="$t('Preset Name')"
                 v-model="preset.name"
                 :rules="[rules.required]"
                 hide-details
@@ -85,8 +85,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <btn color="warning" text @click="$emit('input', false)" type="button">Cancel</btn>
-          <btn color="primary" type="submit">{{ (preset.id !== -1) ? 'Save' : 'Add' }}</btn>
+          <btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('Cancel') }}</btn>
+          <btn color="primary" type="submit">{{ (preset.id !== -1) ? $t('Save') : $t('Add') }}</btn>
         </v-card-actions>
       </v-card>
     </v-form>
@@ -117,9 +117,9 @@ export default class FileNameDialog extends Vue {
   }
 
   rules = {
-    required: (v: string) => !!v || 'Required',
-    numRequired: (v: number | string) => v !== '' || 'Required',
-    numMin: (v: number) => v >= 0 || 'Min 0'
+    required: (v: string) => !!v || this.$t('Required'),
+    numRequired: (v: number | string) => v !== '' || this.$t('Required'),
+    numMin: (v: number) => v >= 0 || this.$t('Min 0')
   }
 
   handleSave () {

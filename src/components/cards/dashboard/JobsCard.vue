@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Jobs"
+    :title="$t('Jobs')"
     icon="$files"
     :draggable="true"
     :inLayout="inLayout"
@@ -9,12 +9,12 @@
 
     <template v-slot:title v-if="!enabled">
       <v-icon left>$files</v-icon>
-      <span class="font-weight-light">Jobs</span>
+      <span class="font-weight-light">{{ $t('Jobs') }}</span>
       <inline-help
         type="warning"
         bottom
         small
-        tooltip="Jobs are disabled prior to initial communcation with klippy"
+        :tooltip="$t('Jobs are disabled prior to initial communcation with klippy')"
       ></inline-help>
 
     </template>

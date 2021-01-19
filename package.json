@@ -48,6 +48,7 @@
     "vue-class-component": "^7.2.3",
     "vue-debounce-decorator": "^1.0.1",
     "vue-headful": "^2.1.0",
+    "vue-i18n": "^8.22.4",
     "vue-meta": "^2.4.0",
     "vue-prism-editor": "^1.2.2",
     "vue-property-decorator": "^9.1.2",

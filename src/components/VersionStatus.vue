@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-chip v-if="!hasUpdate && (!dirty && valid)" x-small label outlined color="success">UP TO DATE</v-chip>
+    <v-chip v-if="!hasUpdate && (!dirty && valid)" x-small label outlined color="success">{{ $t('UP TO DATE') }}</v-chip>
     <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">
         <v-chip
@@ -11,10 +11,10 @@
           label
           outlined
           color="error">
-          DIRTY
+          {{ $t('DIRTY') }}
         </v-chip>
       </template>
-      <span>indicates local changes to the repo</span>
+      <span>{{ $t('indicates local changes to the repo') }}</span>
     </v-tooltip>
 
     <v-tooltip left>
@@ -27,10 +27,10 @@
           label
           outlined
           color="error">
-          INVALID
+          {{ $t('INVALID') }}
         </v-chip>
       </template>
-      <span>indicates a detached head, not on master or an invalid origin</span>
+      <span>{{ $t('indicates a detached head, not on master or an invalid origin') }}</span>
     </v-tooltip>
 
     <btn
@@ -41,7 +41,7 @@
       text
       color="warning"
       @click="$emit('on-update')">
-      UPDATE
+      {{ $t('UPDATE') }}
     </btn>
   </div>
 </template>

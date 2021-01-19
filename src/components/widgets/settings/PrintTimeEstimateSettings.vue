@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader>Time estimates</v-subheader>
+    <v-subheader>{{ $t('Time estimates') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -10,7 +10,7 @@
       >
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Time estimates</v-list-item-title>
+            <v-list-item-title>{{ $t('Time estimates') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
 
@@ -20,35 +20,33 @@
               :mandatory="true">
               <v-radio value="totals">
                 <template v-slot:label>
-                  Duration Only
+                  {{ $t('Duration Only') }}
                   <inline-help bottom small class="ml-2">
-                    Similar to a klipper LCD, this only shows duration with no estimates.
+                    {{ $t('Similar to a klipper LCD, this only shows duration with no estimates.') }}
                   </inline-help>
                 </template>
               </v-radio>
               <v-radio value="slicer">
                 <template v-slot:label>
-                  Slicer
+                  {{ $t('Slicer') }}
                   <inline-help bottom small class="ml-2">
-                    Uses the slicer estimates for display. You must enable this in your slicer.
+                    {{ $t('Uses the slicer estimates for display. You must enable this in your slicer.') }}
                   </inline-help>
                 </template>
               </v-radio>
               <v-radio value="file">
                 <template v-slot:label>
-                  File Estimation
+                  {{ $t('File Estimation') }}
                   <inline-help bottom small class="ml-2">
-                    Takes progress percent, and duration to estimate total duration.<br />
-                    More accurate over time.
+                    {{ $t('Takes progress percent, and duration to estimate total duration.<br />More accurate over time.') }}
                   </inline-help>
                 </template>
               </v-radio>
               <v-radio value="filament">
                 <template v-slot:label>
-                  Filament
+                  {{ $t('Filament') }}
                   <inline-help bottom small class="ml-2">
-                    Takes used filament vs estimated filament to estimate total duration.<br />
-                    More accurate over time.
+                    {{ $t('Takes used filament vs estimated filament to estimate total duration.<br />More accurate over time.') }}
                   </inline-help>
                 </template>
               </v-radio>

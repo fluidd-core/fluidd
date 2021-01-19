@@ -11,7 +11,7 @@
           hide-details
           outlined
           dense
-          label="Extrude Length"
+          :label="$t('Extrude Length')"
           suffix="mm">
         </v-text-field>
       </v-col>
@@ -22,7 +22,7 @@
           :elevation="2"
           block
           class="mr-2">
-          Retract
+          {{ $t('Retract') }}
           <v-icon>$chevronUp</v-icon>
         </btn>
       </v-col>
@@ -37,7 +37,7 @@
           hide-details
           outlined
           dense
-          label="Extrude Speed"
+          :label="$t('Extrude Speed')"
           suffix="mm/s">
         </v-text-field>
       </v-col>
@@ -48,7 +48,7 @@
           :elevation="2"
           block
           class="mr-2">
-          Extrude
+          {{ $t('Extrude') }}
           <v-icon>$chevronDown</v-icon>
         </btn>
       </v-col>
@@ -76,13 +76,13 @@ export default class ToolheadMovesWidget extends Mixins(StateMixin, ToolheadMixi
 
   rules = {
     min: (v: number) => {
-      return (v >= 1) || 'Min 1'
+      return (v >= 1) || this.$t('Min 1')
     },
     maxSpeed: (v: number) => {
-      return (v <= this.maxExtrudeSpeed) || 'Max ' + this.maxExtrudeSpeed
+      return (v <= this.maxExtrudeSpeed) || this.$t('Max %{max}', { max: this.maxExtrudeSpeed })
     },
     maxLength: (v: number) => {
-      return (v <= this.maxExtrudeLength) || 'Max ' + this.maxExtrudeLength
+      return (v <= this.maxExtrudeLength) || this.$t('Max %{max}', { max: this.maxExtrudeLength })
     }
   }
 

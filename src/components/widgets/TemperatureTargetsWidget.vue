@@ -2,17 +2,17 @@
   <v-card-text>
     <v-row>
       <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        Item
+        {{ $t('Item') }}
       </v-col>
       <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        Power
+        {{ $t('Power') }}
       </v-col>
       <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
-        Current
+        {{ $t('Current') }}
       </v-col>
       <v-col sm="4" class="text-subtitle-1 grey--text text--darken-1">
         <v-layout>
-          <span class="">Target</span>
+          <span class="">{{ $t('Target') }}</span>
           <v-spacer></v-spacer>
           <v-menu
             bottom
@@ -38,7 +38,7 @@
                 link>
                 <v-list-item-title>
                   <v-icon small left color="cyan">$snowflakeAlert</v-icon>
-                  All off
+                  {{ $t('All off') }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item
@@ -166,8 +166,8 @@
             <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
           </template>
           <span>
-            <span class="amber--text">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
-            <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
+            <span class="amber--text">{{ $t('high') }} {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+            <span class="cyan--text">{{ $t('low') }} {{ item.measured_min_temp.toFixed(1) }}°C</span>
           </span>
         </v-tooltip>
       </v-col>

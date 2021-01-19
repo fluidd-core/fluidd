@@ -2,13 +2,13 @@
   <collapsable-card
     :hide-menu="hidePrinterMenu"
     :collapsable="printerPrinting"
-    title="Status"
+    :title="$t('Status')"
     icon="$printer3d">
 
     <template v-slot:title>
       <v-icon left>$printer3d</v-icon>
       <span class="font-weight-light">
-        {{ printerState }}
+        {{ $t(printerState) }}
         <span class="font-weight-light text-subtitle-2 ml-sm-4 d-block d-sm-inline-block" v-show="printerMessage">{{ printerMessage }}</span>
       </span>
     </template>
@@ -23,7 +23,7 @@
         small
         class="ma-1">
         <v-icon small>$pause</v-icon>
-        <span>Pause</span>
+        <span>{{ $t('Pause') }}</span>
       </btn>
 
       <btn
@@ -35,7 +35,7 @@
         small
         class="ma-1">
         <v-icon small>$cancel</v-icon>
-        <span>Cancel</span>
+        <span>{{ $t('Cancel') }}</span>
       </btn>
 
       <btn
@@ -47,7 +47,7 @@
         small
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>
-        <span>Resume</span>
+        <span>{{ $t('Resume') }}</span>
       </btn>
 
       <btn
@@ -57,7 +57,7 @@
         small
         class="ma-1">
         <v-icon small class="mr-1">$refresh</v-icon>
-        <span>Reset File</span>
+        <span>{{ $t('Reset File') }}</span>
       </btn>
 
       <btn
@@ -66,7 +66,7 @@
         small
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
-        <span>Reprint</span>
+        <span>{{ $t('Reprint') }}</span>
       </btn>
 
       <reprint-menu
@@ -126,7 +126,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   cancelPrint () {
-    this.$confirm('Are you sure?')
+    this.$confirm(this.$t('Are you sure?').toString())
       .then(res => {
         if (res) {
           SocketActions.printerPrintCancel()

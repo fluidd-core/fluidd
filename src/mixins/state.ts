@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { $t } from '@/i18n'
 import { SocketActions } from '@/socketActions'
 import { Component } from 'vue-property-decorator'
 import { Waits } from '@/globals'
@@ -6,6 +7,18 @@ import { Waits } from '@/globals'
 @Component
 export default class UtilsMixin extends Vue {
   waits = Waits
+
+  // Marking strings for extraction
+  STATE_LABELS = {
+    printing: $t('Printing'),
+    busy: $t('Busy'),
+    ready: $t('Ready'),
+    idle: $t('Idle'),
+    paused: $t('Paused'),
+    standby: $t('Standby'),
+    complete: $t('Complete'),
+    loading: $t('Loading')
+  }
 
   get socketConnected () {
     return this.$store.getters['socket/getConnectionState']

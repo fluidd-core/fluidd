@@ -2,13 +2,13 @@
   <v-card-text>
     <v-row>
       <v-col cols="12" lg="8">
-        <span v-if="meshes.length === 0">No existing bed meshes found.</span>
+        <span v-if="meshes.length === 0">{{ $t('No existing bed meshes found.') }}</span>
         <v-simple-table v-if="meshes.length > 0" class="no-hover">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>{{ $t('Name') }}</th>
               <th>&nbsp;</th>
-              <th>Variance</th>
+              <th>{{ $t('Variance') }}</th>
               <th>&nbsp;</th>
             </tr>
           </thead>
@@ -39,7 +39,7 @@
                       <v-icon small class="grey--text">$open</v-icon>
                     </btn>
                   </template>
-                  <span>Load Profile</span>
+                  <span>{{ $t('Load Profile') }}</span>
                 </v-tooltip>
                 <v-tooltip right>
                   <template v-slot:activator="{ on, attrs }">
@@ -55,7 +55,7 @@
                       <v-icon small>$delete</v-icon>
                     </v-btn>
                   </template>
-                  <span>Delete Profile. This WILL restart your printer.</span>
+                  <span>{{ $t('Delete Profile. This WILL restart your printer.') }}</span>
                 </v-tooltip>
               </td>
             </tr>
@@ -68,7 +68,7 @@
                   @click="clearMesh()"
                   :disabled="!meshLoaded"
                   small>
-                  Clear Profile
+                  {{ $t('Clear Profile') }}
                 </btn>
               </td>
             </tr>
@@ -86,10 +86,10 @@
               :loading="hasWait(waits.onMeshCalibrate)"
               :disabled="hasWaits || printerPrinting || printerBusy"
               @click="calibrate()">
-              Calibrate
+              {{ $t('Calibrate') }}
             </btn>
           </template>
-          <span>Begins a new calibration, saving as profile 'default'</span>
+          <span>{{ $t(`Begins a new calibration, saving as profile 'default'`) }}</span>
         </v-tooltip>
         <btn
           @click="sendGcode('G28', waits.onHomeAll)"
@@ -98,7 +98,7 @@
           :loading="hasWait(waits.onHomeAll)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           :color="(!allHomed) ? 'primary' : undefined">
-            <v-icon small class="mr-1">$home</v-icon> All
+            <v-icon small class="mr-1">$home</v-icon> {{ $t('All') }}
         </btn>
         <btn
           v-if="!printerPrinting && printerSupportsQgl"
@@ -120,16 +120,16 @@
               color="primary"
               :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
               @click="openSaveDialog()">
-              Save Config As...
+              {{ $t('Save config as...') }}
             </btn>
           </template>
-          <span>Commits calibrated profile to printer.cfg. This WILL restart your printer.</span>
+          <span>{{ $t('Commits calibrated profile to printer.cfg. This WILL restart your printer.') }}</span>
         </v-tooltip>
       </v-col>
     </v-row>
 
     <v-dialog
-      title="Save config as..."
+      :title="$t('Save config as...')"
       v-model="saveDialog.open"
       :max-width="450"
     >
@@ -141,7 +141,7 @@
       >
         <v-card>
           <v-card-title>
-            <span class="headline">Save config as...</span>
+            <span class="headline">{{ $t('Save config as...') }}</span>
           </v-card-title>
           <v-card-text>
 
@@ -152,12 +152,12 @@
               class="mb-4"
               :rules="rules"
               hide-details="auto"
-              label="Profile Name"
+              :label="$t('Profile Name')"
               v-model="saveDialog.profileName">
             </v-text-field>
 
             <v-checkbox
-              :label="`Remove ${currentMesh.profile_name} profile`"
+              :label="$t('Remove %{profileName} profile', { profileName: currentMesh.profile_name })"
               hide-details="auto"
               class="mb-4"
               v-model="saveDialog.removeDefault"
@@ -165,15 +165,14 @@
               ></v-checkbox>
 
               <p>
-                If saving as something other than {{ currentMesh.profile_name }}, you can choose to
-                also remove the {{ currentMesh.profile_name }} profile.
+                {{ $t('If saving as something other than %{profileName}, you can choose to also remove the %{profileName} profile.', { profileName: currentMesh.profile_name }) }}
               </p>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</btn>
-            <btn color="primary" :elevation="2" type="submit">Save</btn>
+            <btn color="warning" text @click="saveDialog.open = false" type="button">{{ $t('Cancel') }}</btn>
+            <btn color="primary" :elevation="2" type="submit">{{ $t('Save') }}</btn>
           </v-card-actions>
 
         </v-card>
@@ -211,7 +210,7 @@ export default class BedMeshWidget extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   rules = [
-    (v: string) => !!v || 'Required.'
+    (v: string) => !!v || this.$t('Required.')
   ]
 
   @Watch('saveDialog', { deep: true })

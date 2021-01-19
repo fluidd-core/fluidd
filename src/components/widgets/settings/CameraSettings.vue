@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="camera">Camera</v-subheader>
+    <v-subheader id="camera">{{ $t('Camera') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -11,7 +11,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Enable</v-list-item-title>
+            <v-list-item-title>{{ $t('Enable') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -26,7 +26,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Flip horizontally</v-list-item-title>
+            <v-list-item-title>{{ $t('Flip horizontally') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
           <v-switch
@@ -40,7 +40,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Flip vertically</v-list-item-title>
+            <v-list-item-title>{{ $t( 'Flip vertically') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -55,14 +55,14 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Stream type</v-list-item-title>
+            <v-list-item-title class="text-wrap">{{ $t('Stream type') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-select
               filled
               dense
               hide-details="auto"
-              :items="[{ text: 'mjpgstreamer', value: 'mjpgstreamer' }, { text: 'ip camera', value: 'ipcamera' }]"
+              :items="[{ text: $t('mjpgstreamer'), value: 'mjpgstreamer' }, { text: $t('ip camera'), value: 'ipcamera' }]"
               v-model="streamType">
             </v-select>
           </v-list-item-action>
@@ -72,7 +72,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Camera URL</v-list-item-title>
+            <v-list-item-title>{{ $t('Camera URL') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -93,7 +93,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Reset settings</v-list-item-title>
+            <v-list-item-title>{{ $t('Reset settings') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <btn
@@ -102,7 +102,7 @@
               color="primary"
               @click="handleReset"
             >
-              Reset
+              {{ $t('Reset') }}
             </btn>
           </v-list-item-action>
         </v-list-item>

@@ -42,6 +42,7 @@ export interface HostConfig {
 
 export interface GeneralConfig {
   instanceName: string;
+  locale: string;
   chartVisible: boolean;
   hideTempWaits: boolean;
   axis: Axis;

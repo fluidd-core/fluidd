@@ -39,12 +39,12 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 })
 export default class SettingsBar extends Mixins(StateMixin) {
   items = [
-    { name: 'General', icon: '$printer', ref: '#general' },
-    { name: 'Camera', icon: '$camera', ref: '#camera' },
-    { name: 'Theme', icon: '$cogs', ref: '#theme' },
-    { name: 'Toolhead', icon: '$printer3dNozzle', ref: '#toolhead' },
-    { name: 'Macros', icon: '$fileCode', ref: '#macros' },
-    { name: 'Presets', icon: '$fire', ref: '#presets' }
+    { name: this.$t('General'), icon: '$printer', ref: '#general' },
+    { name: this.$t('Camera'), icon: '$camera', ref: '#camera' },
+    { name: this.$t('Theme'), icon: '$cogs', ref: '#theme' },
+    { name: this.$t('Toolhead'), icon: '$printer3dNozzle', ref: '#toolhead' },
+    { name: this.$t('Macros'), icon: '$fileCode', ref: '#macros' },
+    { name: this.$t('Presets'), icon: '$fire', ref: '#presets' }
   ]
 }
 </script>

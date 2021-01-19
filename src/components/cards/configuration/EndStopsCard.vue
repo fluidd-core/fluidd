@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
-    title="Endstops"
-    subTitle="Use the refresh button to update endstop status."
+    :title="$t('Endstops')"
+    :subTitle="$t('Use the refresh button to update endstop status.')"
     :collapsable="false"
     icon="$expandHorizontal">
     <template v-slot:collapse-button>
@@ -25,7 +25,7 @@
           small
           label>
           <v-icon small left>{{ (item === 'open') ? '$blankCircle' : '$markedCircle' }}</v-icon>
-          {{ item.toUpperCase() }}
+          {{ $t(item.toUpperCase()) }}
         </v-chip>
       </v-layout>
     </v-card-text>
@@ -36,11 +36,18 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/socketActions'
+import { $t } from '@/i18n'
 
 @Component({
   components: {}
 })
 export default class EndStopsCard extends Mixins(StateMixin) {
+  // Marking strings for extraction
+  ENDSTOPS_LABELS = {
+    OPEN: $t('OPEN'),
+    TRIGGERED: $t('TRIGGERED')
+  }
+
   get endStops () {
     return this.$store.getters['printer/getEndstops']
   }

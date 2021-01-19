@@ -14,7 +14,7 @@
         v-bind="attrs"
         @click="open = false"
       >
-        Close
+        {{ $t('Close') }}
       </btn>
     </template>
   </v-snackbar>
@@ -23,6 +23,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
+import { $t } from '@/i18n'
 
 @Component({})
 export default class FlashMessage extends Vue {
@@ -32,7 +33,7 @@ export default class FlashMessage extends Vue {
   @Prop({ type: String, default: 'success' })
   type!: string;
 
-  @Prop({ type: String, default: 'Saved!' })
+  @Prop({ type: String, default: $t('Saved!') })
   text!: string;
 
   @Prop({ type: Number, default: 3000 })

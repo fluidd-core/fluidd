@@ -29,8 +29,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <btn color="warning" text @click="$emit('input', false)">Cancel</btn>
-          <btn color="primary" type="submit">Save</btn>
+          <btn color="warning" text @click="$emit('input', false)">{{ $t('Cancel') }}</btn>
+          <btn color="primary" type="submit">{{ $t('Save') }}</btn>
         </v-card-actions>
       </v-card>
     </v-form>

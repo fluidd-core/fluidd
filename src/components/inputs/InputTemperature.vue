@@ -54,8 +54,8 @@ export default class InputTemperature extends Mixins(StateMixin) {
   inputValue = 0;
 
   rules = {
-    min: (v: number | string) => (v >= this.min || v === '0' || v === 0 || this.min === null) || 'Min ' + this.min + ' or 0.',
-    max: (v: number | string) => (v <= this.max || v === '0' || v === 0 || this.min === null) || 'Max ' + this.max
+    min: (v: number | string) => (v >= this.min || v === '0' || v === 0 || this.min === null) || this.$t('Min %{min} or 0.', { min: this.min }),
+    max: (v: number | string) => (v <= this.max || v === '0' || v === 0 || this.min === null) || this.$t('Max %{max}', { max: this.max })
   }
 
   emitChange () {

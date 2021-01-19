@@ -90,6 +90,7 @@ import {
  */
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
+  DEFAULT_LOCALE: 'en',
   NETWORK_REQUEST_TIMEOUT: 500,
   KLIPPY_RETRY_DELAY: 1500,
   SOCKET_RETRY_DELAY: 2000,

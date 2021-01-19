@@ -19,13 +19,14 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
+import { $t } from '@/i18n'
 
 @Component({})
 export default class FluiddIcon extends Vue {
   @Prop({ type: String, default: 'success' })
   width!: string;
 
-  @Prop({ type: String, default: 'Saved!' })
+  @Prop({ type: String, default: $t('Saved!') })
   height!: string;
 
   @Prop({ type: String, required: true })

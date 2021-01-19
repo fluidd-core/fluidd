@@ -3,7 +3,7 @@
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
         <collapsable-card
-          title="Configuration Files"
+          :title="$t('Configuration Files')"
           icon="$files"
           :draggable="false"
         >

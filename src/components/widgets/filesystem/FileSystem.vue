@@ -95,6 +95,7 @@ import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/socketActions'
 import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload } from '@/store/files/types'
 import { Waits } from '@/globals'
+import { $t } from '@/i18n'
 import consola from 'consola'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
@@ -124,7 +125,7 @@ import { AxiosResponse } from 'axios'
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
   // Title. Defaults to Jobs
-  @Prop({ type: String, default: 'Jobs' })
+  @Prop({ type: String, default: $t('Jobs') })
   title!: string | string[];
 
   // Can be a list of roots, or a single root.
@@ -311,14 +312,14 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   */
   handleRenameDialog (item: AppFile | AppFileWithMeta | AppDirectory) {
     if (this.disabled) return
-    let title = 'Rename Directory'
-    let label = 'Directory name'
+    let title = this.$t('Rename Directory')
+    let label = this.$t('Directory name')
     const rules: any = [
-      (v: string) => !!v || 'Required'
+      (v: string) => !!v || this.$t('Required')
     ]
     if (item.type === 'file') {
-      title = 'Rename File'
-      label = 'Filename'
+      title = this.$t('Rename File')
+      label = this.$t('Filename')
     }
     this.fileNameDialogState = {
       open: true,
@@ -334,10 +335,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
     this.fileNameDialogState = {
       open: true,
-      title: 'Add File',
-      label: 'Filename',
+      title: this.$t('Add File'),
+      label: this.$t('Filename'),
       value: '',
-      rules: [(v: string) => !!v || 'Required'],
+      rules: [(v: string) => !!v || this.$t('Required')],
       handler: this.handleAddFile
     }
   }
@@ -346,10 +347,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
     this.fileNameDialogState = {
       open: true,
-      title: 'Add Directory',
-      label: 'Directory name',
+      title: this.$t('Add Directory'),
+      label: this.$t('Directory name'),
       value: '',
-      rules: [(v: string) => !!v || 'Required'],
+      rules: [(v: string) => !!v || this.$t('Required')],
       handler: this.handleAddDir
     }
   }
@@ -438,9 +439,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleRemove (file: AppFile | AppFileWithMeta | AppDirectory) {
     if (this.disabled) return
-    let text = 'Are you sure?'
-    if (file.type === 'directory') text = 'Are you sure? This will delete all files and folders within.'
-    this.$confirm(text)
+    let text = this.$t('Are you sure?')
+    if (file.type === 'directory') text = this.$t('Are you sure? This will delete all files and folders within.')
+    this.$confirm(text.toString())
       .then(res => {
         if (res) {
           if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`)

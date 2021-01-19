@@ -39,7 +39,7 @@
         </btn>
       </v-btn-toggle>
       <div class="mt-1">
-        <span class="grey--text text--darken-1">Z Offset: </span>
+        <span class="grey--text text--darken-1">{{ $t('Z Offset: ') }}</span>
         <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
       </div>
     </v-col>
