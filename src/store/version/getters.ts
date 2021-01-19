@@ -14,7 +14,6 @@ export const getters: GetterTree<VersionState, RootState> = {
     for (const key in state.components) {
       const o = state.components[key]
       if (key === 'client' && skipClient) continue
-      // if (key === 'system') continue
       c.push(o)
     }
 
@@ -31,9 +30,11 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   hasUpdates: (state, getters) => {
     let r = false
-    for (const k in state.components) {
+    const skipClient = state.skipClientUpdates
+    for (const key in state.components) {
+      if (key === 'client' && skipClient) continue
       if (!r) {
-        r = getters.hasUpdate(k)
+        r = getters.hasUpdate(key)
       } else {
         break
       }
@@ -49,7 +50,9 @@ export const getters: GetterTree<VersionState, RootState> = {
       const o = state.components[component] as ArtifactVersion
       const version = valid(o.version)
       const remoteVersion = valid(o.remote_version)
+      console.log('versions', version, remoteVersion)
       if (version && remoteVersion) {
+        console.log('see versions')
         return (gt(remoteVersion, version))
       }
       return false
