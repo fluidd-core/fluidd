@@ -36,7 +36,7 @@ export const mutations: MutationTree<VersionState> = {
     if (payload.complete) {
       state.busy = false
     } else {
-      state.responses.unshift(payload)
+      state.responses.push(payload)
     }
   },
 
