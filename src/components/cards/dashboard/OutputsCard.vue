@@ -8,37 +8,18 @@
     menu-breakpoint="lg"
     @enabled="$emit('enabled', $event)">
 
-    <v-card-text>
-      <v-row justify="space-between">
-        <v-col cols="6">
-          <fans-widget
-            getter="getToolHeadFans">
-          </fans-widget>
-        </v-col>
-
-        <v-col cols="6">
-          <fans-widget
-            getter="getOtherFans"
-            force-divider>
-          </fans-widget>
-          <output-pins-widget></output-pins-widget>
-        </v-col>
-      </v-row>
-    </v-card-text>
-
+    <outputs-widget></outputs-widget>
   </collapsable-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import FansWidget from '@/components/widgets/FansWidget.vue'
-import OutputPinsWidget from '@/components/widgets/OutputPinsWidget.vue'
+import OutputsWidget from '@/components/widgets/OutputsWidget.vue'
 
 @Component({
   components: {
-    FansWidget,
-    OutputPinsWidget
+    OutputsWidget
   }
 })
 export default class OutputsCard extends Mixins(UtilsMixin) {

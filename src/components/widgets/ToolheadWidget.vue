@@ -26,7 +26,6 @@ import ExtruderMovesWidget from '@/components/widgets/ExtruderMovesWidget.vue'
 import ToolheadPositionWidget from '@/components/widgets/ToolheadPositionWidget.vue'
 import ZHeightAdjustWidget from '@/components/widgets/ZHeightAdjustWidget.vue'
 import SpeedAndFlowAdjustWidget from '@/components/widgets/SpeedAndFlowAdjustWidget.vue'
-import FansWidget from '@/components/widgets/FansWidget.vue'
 
 @Component({
   components: {
@@ -34,8 +33,7 @@ import FansWidget from '@/components/widgets/FansWidget.vue'
     ExtruderMovesWidget,
     ToolheadPositionWidget,
     ZHeightAdjustWidget,
-    SpeedAndFlowAdjustWidget,
-    FansWidget
+    SpeedAndFlowAdjustWidget
   }
 })
 export default class ToolheadWidget extends Mixins(UtilsMixin) {}
