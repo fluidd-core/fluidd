@@ -12,5 +12,9 @@ export const getters: GetterTree<FilesState, RootState> = {
       }
     }
     return []
+  },
+
+  isRootAvailable: (state) => (r: string) => {
+    return state.availableRoots.includes(r)
   }
 }

@@ -6,6 +6,10 @@ import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
 
 export const actions: ActionTree<FilesState, RootState> = {
+  async onRegisteredDirectores ({ commit }, payload) {
+    commit('onRegisteredDirectores', payload)
+  },
+
   async onServerFilesGetDirectory ({ commit }, payload) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root

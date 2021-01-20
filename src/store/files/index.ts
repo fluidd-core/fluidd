@@ -7,9 +7,11 @@ import { RootState } from '../types'
 
 export const defaultState = (): FilesState => {
   return {
+    availableRoots: [],
     gcodes: [],
     config: [],
     config_examples: [],
+    docs: [],
     uploads: [
       // { filename: 'test.file', percentUploaded: 12, processingComplete: false }
     ]

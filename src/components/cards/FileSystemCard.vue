@@ -140,7 +140,7 @@ export default class FileSystemCard extends Mixins(UtilsMixin) {
   }
 
   get readOnly () {
-    return (this.currentRoot === 'config_examples')
+    return (this.currentRoot === 'config_examples' || this.currentRoot === 'docs')
   }
 
   mounted () {
