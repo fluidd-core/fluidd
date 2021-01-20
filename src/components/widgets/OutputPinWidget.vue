@@ -51,7 +51,6 @@ export default class OutputPinWidget extends Mixins(UtilsMixin) {
     if (!pin.pwm) {
       target = (target) ? pin.scale : 0
     }
-    console.log('setValue', target)
     this.sendGcode(`SET_PIN PIN=${pin.name} VALUE=${target}`, Waits.onSetOutputPin)
   }
 }

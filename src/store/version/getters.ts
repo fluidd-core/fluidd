@@ -50,9 +50,7 @@ export const getters: GetterTree<VersionState, RootState> = {
       const o = state.components[component] as ArtifactVersion
       const version = valid(o.version)
       const remoteVersion = valid(o.remote_version)
-      console.log('versions', version, remoteVersion)
       if (version && remoteVersion) {
-        console.log('see versions')
         return (gt(remoteVersion, version))
       }
       return false

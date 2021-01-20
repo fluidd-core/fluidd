@@ -48,7 +48,6 @@ export default class InputTemperature extends Mixins(UtilsMixin) {
 
   @Watch('value')
   onValueChange (val: number) {
-    console.log('changing to', val)
     this.inputValue = val
   }
 
