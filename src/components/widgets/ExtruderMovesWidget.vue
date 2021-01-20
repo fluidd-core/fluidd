@@ -53,18 +53,6 @@
         Extrude
         <v-icon>$chevronDown</v-icon>
       </v-btn>
-      <!-- <v-text-field
-        v-model="extrudeSpeed"
-        :disabled="!klippyConnected"
-        @focus="$event.target.select()"
-        outlined
-        dense
-        hide-details
-        single-line
-        label="Extrude Speed"
-        suffix="mm/s"
-        class="">
-      </v-text-field> -->
     </v-col>
   </v-row>
   </div>
@@ -107,18 +95,3 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style scoped lang="scss">
-  ::v-deep input {
-    // text-align: right;
-    padding: 0;
-  }
-
-  ::v-deep .v-input__slot {
-    min-height: 36px !important;
-  }
-
-  // ::v-deep .v-text-field{
-  //   width: 80px;
-  // }
-</style>
