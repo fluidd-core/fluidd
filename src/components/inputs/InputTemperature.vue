@@ -1,32 +1,31 @@
 <template>
-  <v-text-field
-    outlined
-    single-line
-    dense
-    hide-details="auto"
-    :value="value"
-    :loading="loading"
-    :rules="[rules.max, rules.min]"
-    @input="updateValue"
-    @update:error="onError"
-    @keyup.enter="emitChange(newValue)"
-    @focus="$event.target.select()"
-    placeholder="target"
-    type="number"
-    suffix="°C"
-    class="v-text-field-outer-btn">
-    <template v-slot:append-outer>
+  <v-form v-model="valid">
+    <v-layout>
+      <v-text-field
+        outlined
+        dense
+        single-line
+        hide-details="auto"
+        v-model.number="inputValue"
+        :loading="loading"
+        :rules="[rules.max, rules.min]"
+        @keyup.enter="emitChange"
+        @focus="$event.target.select()"
+        type="number"
+        suffix="°C"
+        class="mr-1">
+      </v-text-field>
       <v-btn
         :min-width="40"
-        :disabled="(value === newValue) || invalid"
+        :disabled="(value === inputValue) || !valid"
         :elevation="2"
         class="pa-0"
-        :color="(value === newValue) ? 'secondary' : 'primary'"
-        @click="emitChange(newValue)">
+        :color="(value === inputValue) ? 'secondary' : 'primary'"
+        @click="emitChange">
         <v-icon small>$check</v-icon>
       </v-btn>
-    </template>
-  </v-text-field>
+    </v-layout>
+  </v-form>
 </template>
 
 <script lang="ts">
@@ -49,33 +48,26 @@ export default class InputTemperature extends Mixins(UtilsMixin) {
 
   @Watch('value')
   onValueChange (val: number) {
-    this.newValue = val
+    console.log('changing to', val)
+    this.inputValue = val
   }
 
-  newValue = 0;
-  invalid = false
+  valid = true
+  inputValue = 0;
 
   rules = {
     min: (v: number | string) => (v >= this.min || v === '0' || v === 0 || this.min === null) || 'Min ' + this.min + ' or 0.',
     max: (v: number | string) => (v <= this.max || v === '0' || v === 0 || this.min === null) || 'Max ' + this.max
   }
 
-  onError (invalid: boolean) {
-    this.invalid = invalid
-  }
-
-  updateValue (e: string) {
-    this.newValue = parseInt(e)
-  }
-
-  emitChange (val: number) {
-    if (!this.invalid) {
-      this.$emit('input', val)
+  emitChange () {
+    if (this.valid) {
+      this.$emit('input', this.inputValue)
     }
   }
 
   mounted () {
-    this.newValue = this.value
+    this.inputValue = this.value
   }
 }
 </script>
