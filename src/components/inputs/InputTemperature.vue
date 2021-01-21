@@ -11,9 +11,8 @@
         :rules="[rules.max, rules.min]"
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
-        type="number"
         suffix="°C"
-        class="mr-1">
+        class="mr-1 v-input--width-small">
       </v-text-field>
       <v-btn
         :min-width="40"
