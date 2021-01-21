@@ -81,7 +81,6 @@ export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
   // correct usage of the web client.
   get printerWarnings () {
     const config = this.$store.getters['socket/getPrinterSettings']()
-    console.log('got settings', config)
     const docsUrl = Globals.DOCS_REQUIRED_CONFIGURATION
     const warnings = []
     if (config && !('virtual_sdcard' in config)) {
