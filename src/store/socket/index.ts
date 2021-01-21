@@ -45,6 +45,12 @@ export const defaultState = (): SocketState => {
           pause_resume: {},
           display_status: {},
           'gcode_macro CANCEL_PRINT': {}
+        },
+        settings: {
+          extruder: {
+            max_extrude_only_velocity: 100,
+            max_extrude_only_distance: 100
+          }
         }
       },
       objects: [],

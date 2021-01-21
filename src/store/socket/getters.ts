@@ -597,6 +597,20 @@ export const getters: GetterTree<SocketState, RootState> = {
 
   getAllGcodeCommands: (state) => {
     return state.availableCommands
-  }
+  },
 
+  /**
+   * Return a required setting from the printer.config object.
+   */
+  getPrinterSettings: (state) => (setting: string) => {
+    if (
+      state.printer &&
+      state.printer.configfile &&
+      state.printer.configfile.settings
+    ) {
+      // console.log('has printer config', get(state.printer.configfile.settings, setting, undefined))
+      return get(state.printer.configfile.settings, setting, undefined)
+    }
+    return undefined
+  }
 }

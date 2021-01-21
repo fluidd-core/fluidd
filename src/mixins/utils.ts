@@ -184,24 +184,6 @@ export default class UtilsMixin extends Vue {
     this.sendGcode(gcode, wait)
   }
 
-  /**
-   * Retract.
-   */
-  sendRetractGcode (amount: number, rate: number, wait?: string) {
-    const gcode = `M83
-      G1 E-${amount} F${rate * 60}`
-    this.sendGcode(gcode, wait)
-  }
-
-  /**
-   * Extrude.
-   */
-  sendExtrudeGcode (amount: number, rate: number, wait?: string) {
-    const gcode = `M83
-      G1 E${amount} F${rate * 60}`
-    this.sendGcode(gcode, wait)
-  }
-
   getFile (path: string, options?: AxiosRequestConfig) {
     const o = { ...options }
     return this.$http.get(
