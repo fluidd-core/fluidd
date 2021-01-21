@@ -2,24 +2,23 @@
 
 ## Next Up
 
-- allow users to show / hide pin outputs
 - implement final filesystem features (bulk actions & move)
+- sync instances across fluidd.json files
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
 - i18n (translations)
-- sync instances across fluidd.json files
-- look into removing the delay with error status card
-- fix copy / paste of terminal (adjust how we handle this entirely..)
+
+- refactor store modules
+- loading heaters, fans or pins means these are constantly updated - due to temps changing
+  often. Need a more elegant way to load just the names of these items without parts of the
+  reactive data that is changed so often
 
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
 - print instances having data bleed? [github issue]
 - ability to reprint after cancel
-- copying text from console puts seperate outputs in reverse order [github issue]
-- loading heaters, fans or pins means these are constantly updated - due to temps changing
-  often. Need a more elegant way to load just the names of these items without parts of the
-  reactive data that is changed so often
 - client showing in update menu when swapping printers via fluidd.xyz
+- allow users to show / hide pin outputs
 
 ## Filesystem Improvements
 
