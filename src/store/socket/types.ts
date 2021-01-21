@@ -53,6 +53,7 @@ export interface Heater {
   prettyName: string;
   temperature: number;
   target: number;
+  power: number;
   minTemp?: number;
   maxTemp?: number;
 }

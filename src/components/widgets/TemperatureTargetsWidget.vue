@@ -1,125 +1,140 @@
 <template>
-    <v-container fluid class="py-2 px-6">
-      <v-row v-if="klippyConnected">
-        <v-col sm="4" offset-sm="4" class="px-2 text-subtitle-1 grey--text text--darken-1">
-          <span class="d-none d-sm-inline">Actual</span>
-        </v-col>
-        <v-col sm="4" class="px-2 text-subtitle-1 grey--text text--darken-1">
-          <v-layout>
-            <span class="">Target</span>
-            <v-spacer></v-spacer>
-            <v-menu bottom left :min-width="150">
-              <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                :min-width="40"
-                v-bind="attrs" v-on="on"
-                color="secondary"
-                small
-                class="pa-0">
-                <v-icon>$menuAlt</v-icon>
-              </v-btn>
-              </template>
-              <v-list
+  <v-card-text>
+    <v-row>
+      <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
+        Item
+      </v-col>
+      <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
+        Power
+      </v-col>
+      <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
+        Current
+      </v-col>
+      <v-col sm="4" class="text-subtitle-1 grey--text text--darken-1">
+        <v-layout>
+          <span class="">Target</span>
+          <v-spacer></v-spacer>
+          <v-menu bottom left offset-y :min-width="150">
+            <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              :min-width="40"
+              v-bind="attrs" v-on="on"
+              color="secondary"
+              small
+              class="pa-0">
+              <v-icon>$menuAlt</v-icon>
+            </v-btn>
+            </template>
+            <v-list
+              dense
+              color="secondary">
+              <v-list-item
+                @click="setAllOff"
+                link>
+                <v-list-item-title>
+                  <v-icon small left color="cyan">$snowflakeAlert</v-icon>
+                  All off
+                </v-list-item-title>
+              </v-list-item>
+              <v-list-item
+                link
                 dense
-                color="secondary">
-                <v-list-item
-                  @click="setAllOff"
-                  link>
-                  <v-list-item-title>
-                    <v-icon small left color="cyan">$snowflakeAlert</v-icon>
-                    All off
-                  </v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  link
-                  dense
-                  @click="applyPreset(preset)"
-                  v-for="(preset, i) of presets"
-                  :key="i">
-                  <v-list-item-title>
-                    <v-icon small left color="warning">$fire</v-icon>
-                    {{ preset.name }}
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </v-layout>
-        </v-col>
-      </v-row>
+                @click="applyPreset(preset)"
+                v-for="(preset, i) of presets"
+                :key="i">
+                <v-list-item-title>
+                  <v-icon small left color="warning">$fire</v-icon>
+                  {{ preset.name }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-layout>
+      </v-col>
+    </v-row>
 
-      <v-row v-for="item in heaters" :key="item.name">
-        <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
-          <v-icon small left color="secondary">$fire</v-icon>
-          {{ item.prettyName }}
-          <small class="ml-3" v-if="item.target === 0">off</small>
+    <v-row v-for="item in heaters" :key="item.name" align="center">
+      <v-col cols="6" sm="auto" class="pr-0 d-none d-sm-flex">
+        <v-icon small color="secondary">$fire</v-icon>
+      </v-col>
+      <v-col cols="6" sm="" class="text-subtitle-1 grey--text text--darken-1 pb-0 pb-md-2">
+        {{ item.prettyName }}
+      </v-col>
+      <v-col cols="6" sm="2" class="grey--text pb-0 pb-md-2">
+        <span v-if="item.power <= 0 && item.target <= 0">off</span>
+        <span v-if="item.target > 0">
+          {{ (item.power * 100).toFixed() }}<small>%</small>
+        </span>
+      </v-col>
+      <v-col cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
+        {{ item.temperature.toFixed(1) }}<small>°C</small>
+      </v-col>
+      <v-col cols="6" sm="4" class="pt-0 pt-md-2">
+        <input-temperature
+          :value="item.target"
+          @input="setHeaterTargetTemp(item.name, $event)"
+          :max="item.maxTemp"
+          :min="item.minTemp"
+        ></input-temperature>
+      </v-col>
+    </v-row>
+
+    <template v-for="item in fans">
+      <v-row :key="item.name" v-if="item.type === 'temperature_fan'" align="center">
+        <v-col cols="6" sm="auto" class="pr-0 d-none d-md-flex">
+          <v-icon
+            small
+            :class="{ 'spin': item.speed > 0 && item.target > 0 }"
+            color="secondary">
+            $fan
+          </v-icon>
         </v-col>
-        <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
+        <v-col cols="6" sm="" class="text-subtitle-1 grey--text text--darken-1 pb-0 pb-md-2">
+          {{ item.prettyName }}
+        </v-col>
+        <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2">
+          <span v-if="item.speed > 0 && item.target > 0">
+            {{ (item.speed * 100).toFixed(0) }}<small>%</small>
+          </span>
+          <span v-if="item.speed <= 0 && item.target > 0">
+            standby
+          </span>
+          <span v-if="item.speed <=0 && item.target <= 0">off</span>
+        </v-col>
+        <v-col cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
           {{ item.temperature.toFixed(1) }}<small>°C</small>
         </v-col>
-        <v-col cols="6" sm="4" class="py-2 px-2">
+        <v-col cols="6" sm="4" class="pt-0 pt-md-2">
           <input-temperature
             :value="item.target"
-            @input="setHeaterTargetTemp(item.name, $event)"
+            @input="setFanTargetTemp(item.name, $event)"
             :max="item.maxTemp"
             :min="item.minTemp"
           ></input-temperature>
         </v-col>
       </v-row>
+    </template>
 
-      <template v-for="item in fans">
-        <v-row :key="item.name" v-if="item.type === 'temperature_fan'">
-          <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
-            <v-icon
-              small
-              left
-              :class="{ 'spin': item.speed > 0 && item.target > 0 }"
-              color="secondary">
-              $fan
-            </v-icon>
-            {{ item.prettyName }}
-            <small v-if="item.speed > 0 && item.target > 0">
-              {{ (item.speed * 100).toFixed(0) }}%
-            </small>
-
-            <small class="ml-2" v-if="item.speed <= 0 && item.target > 0">
-              standby
-            </small>
-            <small class="ml-2" v-if="item.speed <=0 && item.target <= 0">off</small>
-          </v-col>
-          <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
-            {{ item.temperature.toFixed(1) }}<small>°C</small>
-          </v-col>
-          <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
-            <input-temperature
-              :value="item.target"
-              @input="setFanTargetTemp(item.name, $event)"
-              :max="item.maxTemp"
-              :min="item.minTemp"
-            ></input-temperature>
-          </v-col>
-        </v-row>
-      </template>
-
-      <v-row v-for="item in sensors" :key="item.name">
-        <v-col cols="12" sm="4" class="py-2 px-2 text-subtitle-1 grey--text text--darken-1">
-          <v-icon small left color="secondary">$thermometer</v-icon>{{ item.prettyName }}
-        </v-col>
-        <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
-          <v-tooltip right>
-            <template v-slot:activator="{ on, attrs }">
-              <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
-            </template>
-            <span>
-              <span class="amber--text text--lighten-1">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
-              <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
-            </span>
-          </v-tooltip>
-        </v-col>
-        <v-col cols="6" sm="4" class="py-2 px-2 grey--text focus--text">
-        </v-col>
-      </v-row>
-
-    </v-container>
+    <v-row v-for="item in sensors" :key="item.name" align="center">
+      <v-col cols="auto" class="pr-0 d-none d-sm-flex">
+        <v-icon small color="secondary">$thermometer</v-icon>
+      </v-col>
+      <v-col class="text-subtitle-1 grey--text text--darken-1">
+        {{ item.prettyName }}
+      </v-col>
+      <v-col cols="6" sm="7" class="grey--text focus--text">
+        <v-tooltip right>
+          <template v-slot:activator="{ on, attrs }">
+            <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
+          </template>
+          <span>
+            <span class="amber--text text--lighten-1">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+            <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
+          </span>
+        </v-tooltip>
+      </v-col>
+    </v-row>
+  </v-card-text>
 </template>
 
 <script lang="ts">
