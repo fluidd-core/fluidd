@@ -3,12 +3,11 @@
     <input-slider
       value-suffix="%"
       input-xs
+      v-model.number="value"
       :label="fan.prettyName"
-      :value="fan.speed * 100"
       :rules="rules"
       :disabled="!klippyConnected"
-      :readonly="!fan.controllable"
-      @input="setFanSpeed(fan, $event)">
+      :readonly="!fan.controllable">
     </input-slider>
     <v-divider class="my-1" v-if="divider"></v-divider>
   </div>
@@ -33,12 +32,25 @@ export default class FanWidget extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   divider!: boolean
 
-  get config () {
-    return this.$store.state.socket.printer.configfile.config[this.fan.name]
+  get value () {
+    return (this.fan.speed) ? this.fan.speed * 100 : 0
+  }
+
+  set value (target: number) {
+    // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
+    if (this.fan.type === 'fan') {
+      target = Math.ceil(target * 2.55)
+      this.sendGcode(`M106 S${target}`, Waits.onSetFanSpeed)
+    }
+    if (this.fan.type === 'fan_generic') {
+      target = target / 100
+      this.sendGcode(`SET_FAN_SPEED FAN=${this.fan.name} SPEED=${target}`, Waits.onSetFanSpeed)
+    }
   }
 
   get offBelow () {
-    const offBelow = parseFloat(this.config.off_below) || 0
+    const config = this.$store.getters['socket/getPrinterSettings'](this.fan.name) || {}
+    const offBelow = config.off_below || 0
     return offBelow * 100
   }
 
@@ -48,17 +60,5 @@ export default class FanWidget extends Mixins(UtilsMixin) {
       return (parseInt(v) >= this.offBelow || parseInt(v) === 0) || 'min error'
     }
   ]
-
-  setFanSpeed (fan: Fan, target: number) {
-    // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
-    if (fan.type === 'fan') {
-      target = Math.ceil(target * 2.55)
-      this.sendGcode(`M106 S${target}`, Waits.onSetFanSpeed)
-    }
-    if (fan.type === 'fan_generic') {
-      target = target / 100
-      this.sendGcode(`SET_FAN_SPEED FAN=${fan.name} SPEED=${target}`, Waits.onSetFanSpeed)
-    }
-  }
 }
 </script>
