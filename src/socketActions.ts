@@ -59,10 +59,11 @@ export const SocketActions = {
     )
   },
 
-  async machineUpdateClient () {
+  async machineUpdateClient (name: string) {
     Vue.$socket.emit(
       'machine.update.client', {
-        dispatch: 'version/onUpdatedClient'
+        dispatch: 'version/onUpdatedClient',
+        params: { name }
       }
     )
   },

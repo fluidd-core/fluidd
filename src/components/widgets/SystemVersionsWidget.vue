@@ -88,16 +88,11 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
     return this.$store.state.version.refreshing
   }
 
-  hasUpdate (component: 'klipper' | 'moonraker' | 'client' | 'system') {
+  hasUpdate (component: string) {
     return this.$store.getters['version/hasUpdate'](component)
   }
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
-    if (component.type === 'client') {
-      component = component as ArtifactVersion
-      return component.name
-    }
-
     if (component.type === 'system') {
       return 'os packages'
     }
@@ -108,10 +103,10 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
   packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
     if (component.type === 'klipper') return 'https://github.com/KevinOConnor/klipper/commits/master'
     if (component.type === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
-    if (component.type === 'client' && 'name' in component && component.name === 'fluidd') return 'https://github.com/cadriel/fluidd/releases'
+    if (component.type === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/cadriel/fluidd/releases'
   }
 
-  updateComponent (type: 'klipper' | 'moonraker' | 'client' | 'system') {
+  updateComponent (type: string) {
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
     switch (type) {
       case 'klipper':
@@ -120,11 +115,11 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
       case 'moonraker':
         SocketActions.machineUpdateMoonraker()
         break
-      case 'client':
-        SocketActions.machineUpdateClient()
-        break
       case 'system':
         SocketActions.machineUpdateSystem()
+        break
+      default: // assume a client update
+        SocketActions.machineUpdateClient(type)
         break
     }
     // Close the drawer

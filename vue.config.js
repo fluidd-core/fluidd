@@ -28,7 +28,7 @@ module.exports = {
       new IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all moment locales (comes from chartjs)
       new GenerateFilePlugin({
         file: '.version',
-        content: v + '\n'
+        content: 'v' + v + '\n'
       })
       // new BundleAnalyzerPlugin({
       //   analyzerMode:

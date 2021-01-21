@@ -13,7 +13,7 @@ export const getters: GetterTree<VersionState, RootState> = {
     const skipClient = state.skipClientUpdates
     for (const key in state.components) {
       const o = state.components[key]
-      if (key === 'client' && skipClient) continue
+      if (key === 'fluidd' && skipClient) continue
       c.push(o)
     }
 
@@ -32,7 +32,7 @@ export const getters: GetterTree<VersionState, RootState> = {
     let r = false
     const skipClient = state.skipClientUpdates
     for (const key in state.components) {
-      if (key === 'client' && skipClient) continue
+      if (key === 'fluidd' && skipClient) continue
       if (!r) {
         r = getters.hasUpdate(key)
       } else {
