@@ -50,7 +50,7 @@
       <template v-slot:prepend>
         <v-icon
           :disabled="readonly || disabled || newValue === 0"
-          @click="clickChange(newValue - 1)"
+          @click="clickChange(newValue - step)"
           color="grey lighten-2">
           $minus
         </v-icon>
@@ -59,7 +59,7 @@
       <template v-slot:append>
         <v-icon
           :disabled="readonly || disabled || newValue === max"
-          @click="clickChange(newValue + 1)"
+          @click="clickChange(newValue + step)"
           color="grey lighten-2">
           $plus
         </v-icon>
