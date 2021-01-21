@@ -49,7 +49,7 @@ router.beforeEach((to, from, next) => {
   // If klippy is disconnected, users should not be able to
   // go to the jobs page, because virtual_sdcard won't be working.
   if (
-    store.getters['socket/getKlippyConnected'] !== true &&
+    store.getters['files/isRootAvailable']('gcodes') !== true &&
     to.name === 'Jobs'
   ) {
     next(Globals.KLIPPY_DISCONNECTED_REDIRECT)

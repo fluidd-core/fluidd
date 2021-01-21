@@ -26,7 +26,7 @@
         <v-icon small class="mr-md-1">$home</v-icon>
         <span>Dashboard</span>
       </v-btn>
-      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" :disabled="!klippyConnected">
+      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" :disabled="!jobsAvailable">
         <v-icon small class="mr-md-1">$files</v-icon>
         <span>Jobs</span>
       </v-btn>
@@ -80,6 +80,10 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 })
 export default class AppBar extends Mixins(UtilsMixin) {
   menu = false
+
+  get jobsAvailable () {
+    return this.$store.getters['files/isRootAvailable']('gcodes')
+  }
 
   get instances () {
     return this.$store.state.config.instances

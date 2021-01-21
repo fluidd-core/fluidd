@@ -17,7 +17,7 @@
       </v-col>
       <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
         <file-system-card
-          :root="['config', 'config_examples']"
+          :root="['config', 'config_examples', 'docs']"
           accept=".conf,.cfg,.md"
           :upload-and-print="false"
           :file-create="true"

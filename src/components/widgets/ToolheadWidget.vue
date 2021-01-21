@@ -1,12 +1,12 @@
 <template>
   <v-card-text>
-    <v-row justify="space-between" align="center" class="mb-4">
+    <v-row justify="space-between" align="start" class="mb-2">
       <v-col cols="auto">
         <toolhead-moves-widget v-if="!printerPrinting"></toolhead-moves-widget>
         <z-height-adjust-widget v-if="printerPrinting"></z-height-adjust-widget>
       </v-col>
 
-      <v-col cols="auto">
+      <v-col style="min-width: 280px; max-width: 420px;">
         <toolhead-position-widget></toolhead-position-widget>
         <extruder-moves-widget v-if="!printerPrinting"></extruder-moves-widget>
         <z-height-adjust-widget v-if="!printerPrinting"></z-height-adjust-widget>
@@ -26,7 +26,6 @@ import ExtruderMovesWidget from '@/components/widgets/ExtruderMovesWidget.vue'
 import ToolheadPositionWidget from '@/components/widgets/ToolheadPositionWidget.vue'
 import ZHeightAdjustWidget from '@/components/widgets/ZHeightAdjustWidget.vue'
 import SpeedAndFlowAdjustWidget from '@/components/widgets/SpeedAndFlowAdjustWidget.vue'
-import FansWidget from '@/components/widgets/FansWidget.vue'
 
 @Component({
   components: {
@@ -34,8 +33,7 @@ import FansWidget from '@/components/widgets/FansWidget.vue'
     ExtruderMovesWidget,
     ToolheadPositionWidget,
     ZHeightAdjustWidget,
-    SpeedAndFlowAdjustWidget,
-    FansWidget
+    SpeedAndFlowAdjustWidget
   }
 })
 export default class ToolheadWidget extends Mixins(UtilsMixin) {}

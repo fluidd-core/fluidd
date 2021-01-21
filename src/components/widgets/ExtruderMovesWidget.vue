@@ -1,28 +1,7 @@
 <template>
-  <v-row>
-    <v-col cols="6" lg="6">
-      <v-btn
-        @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
-        :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
-        :elevation="2"
-        block
-        color="secondary"
-        class="mb-2">
-        Retract
-        <v-icon>$chevronUp</v-icon>
-      </v-btn>
-      <v-btn
-        @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
-        :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
-        :elevation="2"
-        block
-        color="secondary"
-        class="mb-0">
-        Extrude
-        <v-icon>$chevronDown</v-icon>
-      </v-btn>
-    </v-col>
-    <v-col cols="6" lg="6">
+  <div>
+  <v-row justify="end">
+    <v-col cols="6" class="text-right">
       <v-text-field
         v-model="extrudeLength"
         :disabled="!klippyConnected"
@@ -33,9 +12,24 @@
         single-line
         label="Extrude Length"
         type="number"
-        suffix="mm"
-        class="mb-2">
+        suffix="mm">
       </v-text-field>
+    </v-col>
+    <v-col cols="6">
+      <v-btn
+        @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
+        :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
+        :elevation="2"
+        block
+        color="secondary"
+        class="mr-2">
+        Retract
+        <v-icon>$chevronUp</v-icon>
+      </v-btn>
+    </v-col>
+  </v-row>
+  <v-row justify="end">
+    <v-col cols="6" class="text-right">
       <v-text-field
         v-model="extrudeSpeed"
         :disabled="!klippyConnected"
@@ -45,11 +39,23 @@
         hide-details
         single-line
         label="Extrude Speed"
-        suffix="mm/s"
-        class="">
+        suffix="mm/s">
       </v-text-field>
     </v-col>
+    <v-col cols="6">
+      <v-btn
+        @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
+        :disabled="hasWaits || !extrudeRetractReady || !klippyConnected"
+        :elevation="2"
+        block
+        color="secondary"
+        class="mr-2">
+        Extrude
+        <v-icon>$chevronDown</v-icon>
+      </v-btn>
+    </v-col>
   </v-row>
+  </div>
 </template>
 
 <script lang="ts">
@@ -89,14 +95,3 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style scoped lang="scss">
-  ::v-deep input {
-    // text-align: right;
-    padding: 0;
-  }
-
-  ::v-deep .v-input__slot {
-    min-height: 36px !important;
-  }
-</style>

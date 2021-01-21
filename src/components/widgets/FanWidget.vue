@@ -1,19 +1,16 @@
 <template>
-  <!-- Fans -->
   <div>
-    <div v-for="(fan, i) in fans" :key="i">
-      <input-slider
-        value-suffix="%"
-        input-xs
-        :label="fan.prettyName"
-        :value="fan.speed * 100"
-        :rules="rules"
-        :disabled="!klippyConnected"
-        :readonly="!fan.controllable"
-        @input="setFanSpeed(fan, $event)">
-      </input-slider>
-      <v-divider class="my-2" v-if="(i < fans.length - 1) || forceDivider"></v-divider>
-    </div>
+    <input-slider
+      value-suffix="%"
+      input-xs
+      :label="fan.prettyName"
+      :value="fan.speed * 100"
+      :rules="rules"
+      :disabled="!klippyConnected"
+      :readonly="!fan.controllable"
+      @input="setFanSpeed(fan, $event)">
+    </input-slider>
+    <v-divider class="my-1" v-if="divider"></v-divider>
   </div>
 </template>
 
@@ -29,30 +26,26 @@ import { Fan } from '@/store/socket/types'
     InputSlider
   }
 })
-export default class FansWidget extends Mixins(UtilsMixin) {
-  @Prop({ type: String, default: 'getToolHeadFans' })
-  getter!: string
+export default class FanWidget extends Mixins(UtilsMixin) {
+  @Prop({ type: Object, required: true })
+  fan!: Fan
 
   @Prop({ type: Boolean, default: false })
-  forceDivider!: boolean
+  divider!: boolean
 
-  get fans () {
-    return this.$store.getters[`socket/${this.getter}`]
-  }
-
-  get partFanSpeed () {
-    return this.$store.state.socket.printer.fan.speed * 100
+  get config () {
+    return this.$store.state.socket.printer.configfile.config[this.fan.name]
   }
 
   get offBelow () {
-    const offBelow = parseFloat(this.$store.state.socket.printer.configfile.config.fan.off_below) || 0
+    const offBelow = parseFloat(this.config.off_below) || 0
     return offBelow * 100
   }
 
   rules = [
-    (v: number) => {
+    (v: string) => {
       if (this.offBelow <= 0) return true
-      return (v >= this.offBelow || v === 0) || 'min error'
+      return (parseInt(v) >= this.offBelow || parseInt(v) === 0) || 'min error'
     }
   ]
 

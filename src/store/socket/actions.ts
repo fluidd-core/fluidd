@@ -114,8 +114,9 @@ export const actions: ActionTree<SocketState, RootState> = {
     }
   },
 
-  async onServerInfo ({ commit }, payload) {
-    // This payload should return a list of enabled plugins.
+  async onServerInfo ({ commit, dispatch }, payload) {
+    // This payload should return a list of enabled plugins
+    // and root directories that are available.
     if (
       payload.plugins &&
       payload.plugins.length > 0
@@ -139,6 +140,10 @@ export const actions: ActionTree<SocketState, RootState> = {
           }
         }
       })
+    }
+
+    if (payload.registered_directories) {
+      dispatch('files/onRegisteredDirectores', payload.registered_directories, { root: true })
     }
   },
 

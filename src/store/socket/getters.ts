@@ -369,6 +369,16 @@ export const getters: GetterTree<SocketState, RootState> = {
     return []
   },
 
+  getAllFans: (_, getters) => {
+    return getters.getOutputs([
+      'temperature_fan',
+      'controller_fan',
+      'heater_fan',
+      'fan_generic',
+      'fan'
+    ])
+  },
+
   /**
    * Return toolhead fans
    */

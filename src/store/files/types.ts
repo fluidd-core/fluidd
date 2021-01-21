@@ -1,8 +1,10 @@
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[];
+  [key: string]: Files[] | FilesUpload[] | string[];
+  availableRoots: string[];
   gcodes: Files[];
   config: Files[];
   config_examples: Files[];
+  docs: Files[];
   uploads: FilesUpload[];
 }
 

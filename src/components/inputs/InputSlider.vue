@@ -2,7 +2,8 @@
   <v-form ref="inputSliderForm">
     <v-layout align-end justify-space-between>
       <div
-        class="grey--text text--darken-1 font-weight-regular"
+        class="grey--text text--darken-1"
+        :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
       >
         {{ label }}
       </div>

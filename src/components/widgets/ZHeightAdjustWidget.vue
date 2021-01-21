@@ -1,29 +1,33 @@
 <template>
-  <v-row align="center" justify="space-between">
-    <v-col cols="auto" class="pt-1">
+  <v-row align="center" justify="end">
+    <!-- <v-col cols="auto">
+      <div class="grey--text text--darken-1">Offset Z</div>
+      <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
+    </v-col> -->
+    <v-col cols="auto">
       <v-btn
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
         :loading="hasWait('ZAdjust')"
+        small
         color="secondary">
-        <v-icon small>$upCollapse</v-icon>
+        <v-icon small class="mx-0">$upCollapse</v-icon>
       </v-btn>
       <v-btn
         @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
         :loading="hasWait('ZAdjust')"
-        class="ml-2"
+        small
+        class="ml-1"
         color="secondary">
         <v-icon small>$downCollapse</v-icon>
       </v-btn>
-    </v-col>
-    <v-col cols="auto" class="pt-1">
-      <div class="grey--text text--darken-1">Offset Z</div>
-      <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
-    </v-col>
-    <v-col cols="auto" class="pt-1">
-      <v-btn-toggle mandatory dense v-model="moveDistance">
-        <v-btn color="secondary" value="0.01">0.01</v-btn>
-        <v-btn color="secondary" value="0.05">0.05</v-btn>
+      <v-btn-toggle mandatory dense v-model="moveDistance" class="ml-2 d-inline-block">
+        <v-btn color="secondary" small value="0.01" class="px-2">0.01</v-btn>
+        <v-btn color="secondary" small value="0.05" class="px-3">0.05</v-btn>
       </v-btn-toggle>
+      <div class="mt-1">
+        <span class="grey--text text--darken-1">Z Offset: </span>
+        <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
+      </div>
     </v-col>
   </v-row>
 </template>
@@ -53,6 +57,3 @@ export default class ZHeightAdjustWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style type="scss" scoped>
-</style>

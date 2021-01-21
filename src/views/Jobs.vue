@@ -4,7 +4,7 @@
       <v-col cols="12" class="pt-0">
         <file-system-card
           :root="'gcodes'"
-          accept=".gcode, .ufp"
+          accept=".gcode,.ufp"
           :upload-and-print="true"
           :show-meta-data="true">
         </file-system-card>

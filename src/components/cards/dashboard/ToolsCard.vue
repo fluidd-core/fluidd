@@ -43,7 +43,7 @@
       <v-tab-item :key="'targets'" class="tertiary rounded-b">
         <temperature-targets-widget></temperature-targets-widget>
       </v-tab-item>
-      <v-tab-item :key="'jobs'" class="tertiary rounded-b max-height" v-if="klippyConnected && jobsInDash">
+      <v-tab-item :key="'jobs'" class="tertiary rounded-b max-height" v-if="jobsInDash && jobsAvailable">
         <file-system-card
           root="gcodes"
           accept=".gcode,.ufp"
@@ -83,6 +83,10 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
 
   get jobsInDash () {
     return this.$store.state.config.fileConfig.general.jobsInDash
+  }
+
+  get jobsAvailable () {
+    return this.$store.getters['files/isRootAvailable']('gcodes')
   }
 
   get inLayout (): boolean {

@@ -10,6 +10,7 @@
           :value="velocity.current"
           :min="1"
           :max="velocity.max"
+          :rules="[rules.min1, rules.velocityMax]"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetVelocity)"
           @input="setVelocity($event)">
@@ -24,6 +25,7 @@
           :min="0"
           :step="0.1"
           :max="scv.max"
+          :rules="[rules.min0, rules.scvMax]"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetSQV)"
           @input="setSCV($event)">
@@ -39,6 +41,7 @@
           :value="accel.current"
           :min="1"
           :max="accel.max"
+          :rules="[rules.min1, rules.accelMax]"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetAcceleration)"
           @input="setAcceleration($event)">
@@ -52,6 +55,7 @@
           :value="decel.current"
           :min="1"
           :max="decel.max"
+          :rules="[rules.min1, rules.decelMax]"
           :disabled="!klippyConnected"
           :loading="hasWait(waits.onSetDeceleration)"
           @input="setDeceleration($event)">
@@ -74,6 +78,27 @@ import InputSlider from '@/components/inputs/InputSlider.vue'
 })
 export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   waits = Waits
+
+  rules = {
+    min0: (v: string) => {
+      return (parseInt(v) >= 0) || 'min 0'
+    },
+    min1: (v: string) => {
+      return (parseInt(v) >= 1) || 'min 1'
+    },
+    velocityMax: (v: string) => {
+      return (parseInt(v) <= this.velocity.max) || 'max ' + this.velocity.max
+    },
+    scvMax: (v: string) => {
+      return (parseInt(v) <= this.scv.max) || 'min ' + this.scv.max
+    },
+    accelMax: (v: string) => {
+      return (parseInt(v) <= this.accel.max) || 'min ' + this.accel.max
+    },
+    decelMax: (v: string) => {
+      return (parseInt(v) <= this.decel.max) || 'min 0' + this.decel.max
+    }
+  }
 
   get velocity () {
     const max = parseInt(this.$store.state.socket.printer.configfile.config.printer.max_velocity)

@@ -11,6 +11,7 @@
         :loading="hasWait(waits.onSetSpeed)"
         :min="1"
         :max="200"
+        :rules="rules"
         @input="setSpeed($event, waits.onSetSpeed)">
       </input-slider>
     </v-col>
@@ -24,6 +25,7 @@
         :loading="hasWait(waits.onSetFlow)"
         :min="1"
         :max="200"
+        :rules="rules"
         @input="setFlow($event, waits.onSetFlow)">
       </input-slider>
     </v-col>
@@ -43,6 +45,15 @@ import { Waits } from '@/globals'
 })
 export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
   waits = Waits
+
+  rules = [
+    (v: string) => {
+      return (parseInt(v) >= 1) || 'min 1'
+    },
+    (v: string) => {
+      return (parseInt(v) <= 200) || 'max 200'
+    }
+  ]
 
   get flow () {
     return this.$store.state.socket.printer.gcode_move.extrude_factor * 100

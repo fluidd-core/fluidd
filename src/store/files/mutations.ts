@@ -13,6 +13,10 @@ export const mutations: MutationTree<FilesState> = {
     })
   },
 
+  onRegisteredDirectores (state, payload) {
+    state.availableRoots = payload
+  },
+
   onServerFilesGetDirectory (state, payload) {
     const path = payload.directory.path
     const root = payload.root as 'gcodes' | 'config' | 'config_examples'

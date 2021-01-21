@@ -105,6 +105,10 @@
   min-height: 25px !important;
 }
 
+.v-input--dense .v-input__slot {
+  min-height: 36px !important;
+}
+
 /** For those tables where a hover doesn't make sense... */
 .theme--dark.v-data-table.no-hover > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
   background-color: transparent;
@@ -171,4 +175,14 @@
     .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-last-child(2) {
       white-space: nowrap;
   }
+}
+
+
+/* Prevent zoom on mobile devices when furiosly clicking buttons */
+button .v-btn {
+  touch-action: manipulation;
+}
+
+button .v-icon {
+  touch-action: manipulation;
 }
