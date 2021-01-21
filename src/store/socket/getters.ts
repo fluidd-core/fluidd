@@ -472,7 +472,7 @@ export const getters: GetterTree<SocketState, RootState> = {
         if (outputPins.includes(type)) {
           output = {
             ...output,
-            pwm: (config && config.pwm) ? JSON.parse(config.pwm) : false,
+            pwm: (config && config.pwm) ? JSON.parse(config.pwm.toLowerCase()) : false,
             scale: (config && config.scale) ? JSON.parse(config.scale) : 1,
             controllable: (config && config.static_value) ? false : (controllable.includes(split[0]))
           }
