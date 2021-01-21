@@ -263,38 +263,36 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Has this printer been configured for bed meshes?
    */
-  getSupportsBedMesh: (state) => {
-    return (state.printer.configfile.config.bed_mesh)
+  getSupportsBedMesh: (state, getters) => {
+    return getters.getPrinterSettings('bed_mesh') !== undefined
   },
 
   /**
    * Returns all available bed meshes, including those only in memory / currently loaded.
    */
-  getBedMeshes: (state): BedMesh[] => {
+  getBedMeshes: (state, getters): BedMesh[] => {
     const meshes: BedMesh[] = []
     const currentProfile = state.printer.bed_mesh.profile_name || ''
+    const config = getters.getPrinterSettings()
     if (state.printer.bed_mesh && currentProfile.length > 0) {
       meshes.push({
         ...state.printer.bed_mesh,
         active: true
       })
     }
-    if (state.printer.configfile && state.printer.configfile.config) {
-      for (const item in state.printer.configfile.config) {
-        if (item.includes(' ')) {
-          const split = item.split(' ')
-          if (
-            split.length > 0 &&
-            split[0] === 'bed_mesh' &&
-            split[1] !== currentProfile
-          ) {
-            const profile: BedMesh = {
-              profile_name: split[1],
-              active: false
-            }
-            // if (currentProfile === split[1]) profile.active = true
-            meshes.push(profile)
+    if (config) {
+      const meshSettings = Object.keys(config).filter(key => key.startsWith('bed_mesh'))
+      for (const key of meshSettings) {
+        if (key === 'bed_mesh') continue // The mesh configuration.
+        const profile_name = key.split(' ')[1]
+        if (
+          profile_name !== currentProfile
+        ) {
+          const profile: BedMesh = {
+            profile_name,
+            active: false
           }
+          meshes.push(profile)
         }
       }
     }
@@ -329,7 +327,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Return available heaters
    */
-  getHeaters: (state): Heater[] => {
+  getHeaters: (state, getters): Heater[] => {
     const heaters = state.printer.heaters.available_heaters || []
     if (
       heaters.length
@@ -338,7 +336,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       heaters.forEach((e: string) => {
         const heater = state.printer[e]
         if (heater && Object.keys(heater).length > 0) {
-          const config = (state.printer.configfile.config[e]) ? state.printer.configfile.config[e] : undefined
+          const config = getters.getPrinterSettings(e)
           let name = e
           // Some heater items may have a prefix determining type.
           // Check for these and split as necessary.
@@ -355,8 +353,8 @@ export const getters: GetterTree<SocketState, RootState> = {
             ...heater,
             name,
             prettyName,
-            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : undefined,
-            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : undefined
+            minTemp: (config && config.min_temp) ? config.min_temp : undefined,
+            maxTemp: (config && config.max_temp) ? config.max_temp : undefined
           })
         }
       })
@@ -415,7 +413,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
   * Return available fans and output pins
   */
-  getOutputs: (state) => (filter?: string[]): Array<Fan | OutputPin> => {
+  getOutputs: (state, getters) => (filter?: string[]): Array<Fan | OutputPin> => {
     const fans = [
       'temperature_fan',
       'controller_fan',
@@ -450,7 +448,7 @@ export const getters: GetterTree<SocketState, RootState> = {
         if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
 
         const type = (split.length) ? split[0] : pin
-        const config = (state.printer.configfile.config[pin]) ? state.printer.configfile.config[pin] : undefined
+        const config = getters.getPrinterSettings(pin)
 
         let output: Fan | OutputPin = {
           ...state.printer[pin],
@@ -464,16 +462,16 @@ export const getters: GetterTree<SocketState, RootState> = {
         if (fans.includes(type)) {
           output = {
             ...output,
-            minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : undefined,
-            maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : undefined
+            minTemp: (config && config.min_temp) ? config.min_temp : undefined,
+            maxTemp: (config && config.max_temp) ? config.max_temp : undefined
           }
         }
 
         if (outputPins.includes(type)) {
           output = {
             ...output,
-            pwm: (config && config.pwm) ? JSON.parse(config.pwm.toLowerCase()) : false,
-            scale: (config && config.scale) ? JSON.parse(config.scale) : 1,
+            pwm: (config && config.pwm) ? config.pwm : false,
+            scale: (config && config.scale) ? config.scale : 1,
             controllable: (config && config.static_value) ? false : (controllable.includes(split[0]))
           }
         }
@@ -487,7 +485,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Return available temperature probes / sensors.
    */
-  getSensors: (state): Sensor[] => {
+  getSensors: (state, getters): Sensor[] => {
     const supportedSensors = [
       'temperature_sensor',
       'temperature_probe'
@@ -500,12 +498,12 @@ export const getters: GetterTree<SocketState, RootState> = {
         const name = (split.length > 1) ? split[1] : item
         const prettyName = Vue.$filters.startCase(name)
         const type = (split.length) ? split[0] : item
-        const config = (state.printer.configfile.config[item]) ? state.printer.configfile.config[item] : undefined
+        const config = getters.getPrinterSettings(item)
         const sensor = {
           ...state.printer[item],
           ...config,
-          minTemp: (config && config.min_temp) ? parseInt(config.min_temp) : null,
-          maxTemp: (config && config.max_temp) ? parseInt(config.max_temp) : null,
+          minTemp: (config && config.min_temp) ? config.min_temp : null,
+          maxTemp: (config && config.max_temp) ? config.max_temp : null,
           name,
           prettyName,
           type
@@ -608,8 +606,8 @@ export const getters: GetterTree<SocketState, RootState> = {
       state.printer.configfile &&
       state.printer.configfile.settings
     ) {
-      // console.log('has printer config', get(state.printer.configfile.settings, setting, undefined))
-      return get(state.printer.configfile.settings, setting, undefined)
+      if (setting) return get(state.printer.configfile.settings, setting, undefined)
+      return state.printer.configfile.settings
     }
     return undefined
   }

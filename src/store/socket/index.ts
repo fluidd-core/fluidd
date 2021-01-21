@@ -30,8 +30,8 @@ export const defaultState = (): SocketState => {
       },
       configfile: {
         save_config_pending: false,
-        config: {
-          extruder: {},
+        config: {},
+        settings: {
           bed_mesh: {},
           fan: {},
           printer: {
@@ -44,9 +44,7 @@ export const defaultState = (): SocketState => {
           virtual_sdcard: {},
           pause_resume: {},
           display_status: {},
-          'gcode_macro CANCEL_PRINT': {}
-        },
-        settings: {
+          'gcode_macro CANCEL_PRINT': {},
           extruder: {
             max_extrude_only_velocity: 100,
             max_extrude_only_distance: 100

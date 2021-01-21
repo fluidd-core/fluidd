@@ -80,22 +80,23 @@ export default class KlippyDisconnectedCard extends Mixins(UtilsMixin) {
   // Return a list of warnings we deem necessary for
   // correct usage of the web client.
   get printerWarnings () {
-    const config = this.$store.state.socket.printer.configfile.config
+    const config = this.$store.getters['socket/getPrinterSettings']()
+    console.log('got settings', config)
     const docsUrl = Globals.DOCS_REQUIRED_CONFIGURATION
     const warnings = []
-    if (config && !config.virtual_sdcard) {
+    if (config && !('virtual_sdcard' in config)) {
       warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
     }
 
-    if (config && !config.pause_resume) {
+    if (config && !('pause_resume' in config)) {
       warnings.push({ message: '[pause_resume] not found in printer configuration.' })
     }
 
-    if (config && !config.display_status) {
-      warnings.push({ message: '[display_status] not found in printer configuration.' })
+    if (config && !('display' in config)) {
+      warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
     }
 
-    if (config && ('gcode_macro CANCEL_PRINT' in config === false)) {
+    if (config && !('gcode_macro cancel_print' in config)) {
       warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
     }
 

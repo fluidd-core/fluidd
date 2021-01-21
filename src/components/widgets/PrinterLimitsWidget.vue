@@ -101,7 +101,7 @@ export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   }
 
   get velocity () {
-    const max = parseInt(this.$store.state.socket.printer.configfile.config.printer.max_velocity)
+    const max = this.$store.getters['socket/getPrinterSettings']('printer.max_velocity')
     return {
       current: this.$store.state.socket.printer.toolhead.max_velocity,
       max
@@ -109,7 +109,7 @@ export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   }
 
   get accel () {
-    const max = parseInt(this.$store.state.socket.printer.configfile.config.printer.max_accel)
+    const max = this.$store.getters['socket/getPrinterSettings']('printer.max_accel')
     return {
       current: this.$store.state.socket.printer.toolhead.max_accel,
       max
@@ -117,7 +117,7 @@ export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   }
 
   get decel () {
-    const max = parseFloat(this.$store.state.socket.printer.configfile.config.printer.max_accel_to_decel) || this.accel.max / 2 // klippers default is half of accel
+    const max = this.$store.getters['socket/getPrinterSettings']('printer.max_accel_to_decel') || this.accel.max / 2
     return {
       current: this.$store.state.socket.printer.toolhead.max_accel_to_decel,
       max
@@ -125,7 +125,7 @@ export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   }
 
   get scv () {
-    const max = parseInt(this.$store.state.socket.printer.configfile.config.printer.square_corner_velocity) || 5 // klippers default is 5.
+    const max = this.$store.getters['socket/getPrinterSettings']('printer.square_corner_velocity') || 5
     return {
       current: this.$store.state.socket.printer.toolhead.square_corner_velocity,
       max

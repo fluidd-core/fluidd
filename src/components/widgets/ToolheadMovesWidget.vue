@@ -131,7 +131,7 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   fab = false
 
   get kinematics () {
-    return this.$store.state.socket.printer.configfile.config.printer.kinematics || ''
+    return this.$store.getters['socket/getPrinterSettings']('printer.kinematics') || ''
   }
 
   get canHomeXY () {

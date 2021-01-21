@@ -330,9 +330,8 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
       // Define the range for our X and Y axes.
       // If possible, use the actual range from config - otherwise revert to klippers given min and max's.
-      const stepperX = this.$store.state.socket.printer.configfile.config.stepper_x
-      const stepperY = this.$store.state.socket.printer.configfile.config.stepper_y
-      // const stepperZ = this.$store.state.socket.printer.configfile.config.stepper_z
+      const stepperX = this.$store.getters['socket/getPrinterSettings']('stepper_x')
+      const stepperY = this.$store.getters['socket/getPrinterSettings']('stepper_y')
 
       const layout = defaultPlotLayout
 

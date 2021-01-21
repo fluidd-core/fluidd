@@ -110,20 +110,24 @@ export default class UtilsMixin extends Vue {
     return this.$store.getters['wait/hasWaits']
   }
 
+  get printerSettings () {
+    return this.$store.getters['socket/getPrinterSettings']()
+  }
+
   get printerSupportsQgl (): boolean {
-    return 'quad_gantry_level' in this.$store.state.socket.printer.configfile.config
+    return 'quad_gantry_level' in this.printerSettings
   }
 
   get printerSupportsZtilt (): boolean {
-    return 'z_tilt' in this.$store.state.socket.printer.configfile.config
+    return 'z_tilt' in this.printerSettings
   }
 
   get printerSupportsBedScrews (): boolean {
-    return 'bed_screws' in this.$store.state.socket.printer.configfile.config
+    return 'bed_screws' in this.printerSettings
   }
 
   get printerSupportsBedScrewsCalculate (): boolean {
-    return 'screws_tilt_adjust' in this.$store.state.socket.printer.configfile.config
+    return 'screws_tilt_adjust' in this.printerSettings
   }
 
   get allHomed (): boolean {
@@ -134,9 +138,7 @@ export default class UtilsMixin extends Vue {
    * Ensures our temps are high enough to extrude or retract.
    */
   get minExtrudeTemp () {
-    return (this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp !== undefined)
-      ? parseInt(this.$store.state.socket.printer.configfile.config.extruder.min_extrude_temp)
-      : 170 // Default to a sane value
+    return this.$store.getters['socket/getPrinterSettings']('extruder.min_extrude_temp') || 170
   }
 
   get extrudeRetractReady () {

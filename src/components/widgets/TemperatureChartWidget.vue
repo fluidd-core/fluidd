@@ -39,9 +39,7 @@ export default class TemperatureChartWidget extends Mixins(Line, mixins.reactive
   }
 
   get maxExtruderTemp () {
-    return (this.$store.state.socket.printer.configfile.config.extruder.max_temp)
-      ? parseInt(this.$store.state.socket.printer.configfile.config.extruder.max_temp)
-      : 240 // Default to a sane value
+    return this.$store.getters['socket/getPrinterSettings']('extruder.max_temp') || 240
   }
 
   private getAxesConfig () {
