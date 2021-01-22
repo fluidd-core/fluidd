@@ -118,6 +118,13 @@ export const actions: ActionTree<SocketState, RootState> = {
     // This payload should return a list of enabled plugins
     // and root directories that are available.
     if (
+      payload.failed_plugins &&
+      payload.failed_plugins.length
+    ) {
+      commit('onFailedPlugins', payload.failed_plugins)
+    }
+
+    if (
       payload.plugins &&
       payload.plugins.length > 0
     ) {

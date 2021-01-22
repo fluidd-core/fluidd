@@ -2,7 +2,7 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="7" class="pt-0">
-        <klippy-disconnected-card></klippy-disconnected-card>
+        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
         <bed-mesh-card v-if="supportsBedMesh && klippyConnected"></bed-mesh-card>
         <v-row>
           <v-col cols="12" sm="6" v-if="klippyConnected">
@@ -36,7 +36,7 @@ import UtilsMixin from '@/mixins/utils'
 import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
-import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
+import KlippyCard from '@/components/cards/KlippyCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
 import BedAdjustCard from '@/components/cards/configuration/BedAdjustCard.vue'
 import LogsCard from '@/components/cards/configuration/LogsCard.vue'
@@ -51,7 +51,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     EndStopsCard,
     RunoutSensorsCard,
     FileSystemCard,
-    KlippyDisconnectedCard,
+    KlippyCard,
     LogsCard
   }
 })

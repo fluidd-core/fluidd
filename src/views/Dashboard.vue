@@ -2,7 +2,7 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
-        <klippy-disconnected-card></klippy-disconnected-card>
+        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
         <status-card v-if="klippyConnected"></status-card>
         <draggable
           class="list-group"
@@ -52,7 +52,7 @@ import MacrosCard from '@/components/cards/dashboard/MacrosCard.vue'
 import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
 import OutputsCard from '@/components/cards/dashboard/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/cards/dashboard/PrinterLimitsCard.vue'
-import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
+import KlippyCard from '@/components/cards/KlippyCard.vue'
 import UtilsMixin from '@/mixins/utils'
 import { CardConfig } from '@/store/config/types'
 import { cloneDeep } from 'lodash-es'
@@ -68,7 +68,7 @@ import { cloneDeep } from 'lodash-es'
     TemperatureGraphCard,
     CameraCard,
     PrinterLimitsCard,
-    KlippyDisconnectedCard,
+    KlippyCard,
     ConsoleCard,
     OutputsCard
   }

@@ -103,7 +103,8 @@ export const Globals = Object.freeze({
   FILTERED_FILES_EXTENSION: ['.json'],
   DOCS_ROOT: 'https://github.com/cadriel/fluidd/tree/develop/docs',
   DOCS_REQUIRED_CONFIGURATION: 'https://github.com/cadriel/fluidd/tree/develop/docs/required-configuration.md',
-  DOCS_MULTIPLE_INSTANCES: 'https://github.com/cadriel/fluidd/tree/develop/docs/setup/multiple-printers.md'
+  DOCS_MULTIPLE_INSTANCES: 'https://github.com/cadriel/fluidd/tree/develop/docs/setup/multiple-printers.md',
+  DOCS_MOONRAKER_PLUGINS: 'https://github.com/Arksine/moonraker/blob/master/docs/configuration.md#plugin-configuration'
 })
 
 export const Icons = Object.freeze({

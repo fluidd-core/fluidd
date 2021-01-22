@@ -2,7 +2,7 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" sm="4" md="3" class="pt-0">
-        <klippy-disconnected-card></klippy-disconnected-card>
+        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
         <general-settings-card></general-settings-card>
         <theme-settings-card></theme-settings-card>
         <print-time-estimate-settings-card></print-time-estimate-settings-card>
@@ -25,7 +25,7 @@ import UtilsMixin from '@/mixins/utils'
 import MacroSettingsCard from '@/components/cards/settings/MacroSettingsCard.vue'
 import GeneralSettingsCard from '@/components/cards/settings/GeneralSettingsCard.vue'
 import TemperaturePresetSettingsCard from '@/components/cards/settings/TemperaturePresetSettingsCard.vue'
-import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
+import KlippyCard from '@/components/cards/KlippyCard.vue'
 import CameraSettingsCard from '@/components/cards/settings/CameraSettingsCard.vue'
 import ToolheadSettingsCard from '@/components/cards/settings/ToolheadSettingsCard.vue'
 import PrintTimeEstimateSettingsCard from '@/components/cards/settings/PrintTimeEstimateSettingsCard.vue'
@@ -36,7 +36,7 @@ import ThemeSettingsCard from '@/components/cards/settings/ThemeSettingsCard.vue
     MacroSettingsCard,
     GeneralSettingsCard,
     TemperaturePresetSettingsCard,
-    KlippyDisconnectedCard,
+    KlippyCard,
     CameraSettingsCard,
     ToolheadSettingsCard,
     PrintTimeEstimateSettingsCard,

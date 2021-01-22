@@ -34,6 +34,10 @@ export default class UtilsMixin extends Vue {
     }
   }
 
+  get hasWarnings () {
+    return this.$store.getters['socket/getHasWarnings']
+  }
+
   get klippyState () {
     return this.$store.getters['socket/getKlippyState']
   }

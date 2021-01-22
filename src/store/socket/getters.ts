@@ -3,7 +3,7 @@ import { GetterTree } from 'vuex'
 import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Endstops } from './types'
 import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
-import { chartConfiguration } from '@/globals'
+import { Globals, chartConfiguration } from '@/globals'
 import { TinyColor } from '@ctrl/tinycolor'
 import { get, isFinite } from 'lodash-es'
 import { getThumb } from '../helpers'
@@ -610,5 +610,42 @@ export const getters: GetterTree<SocketState, RootState> = {
       return state.printer.configfile.settings
     }
     return undefined
+  },
+
+  getHasWarnings: (state, getters) => {
+    if (
+      (state.open && state.ready) &&
+      (getters.getPrinterWarnings.length > 0 || getters.getMoonrakerWarnings.length > 0)
+    ) {
+      return true
+    } else {
+      return false
+    }
+  },
+
+  getPrinterWarnings: (state, getters) => {
+    const config = getters.getPrinterSettings()
+    const warnings = []
+
+    if (config && !('virtual_sdcard' in config)) {
+      warnings.push({ message: '[virtual_sdcard] not found in printer configuration.' })
+    }
+
+    if (config && !('pause_resume' in config)) {
+      warnings.push({ message: '[pause_resume] not found in printer configuration.' })
+    }
+
+    if (config && !('display' in config)) {
+      warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
+    }
+
+    if (config && !('gcode_macro cancel_print' in config)) {
+      warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
+    }
+    return warnings
+  },
+
+  getMoonrakerWarnings: (state) => {
+    return state.failed_plugins
   }
 }

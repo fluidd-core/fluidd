@@ -19,7 +19,6 @@ import UtilsMixin from '@/mixins/utils'
 import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
-import KlippyDisconnectedCard from '@/components/cards/KlippyDisconnectedCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
@@ -30,8 +29,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     BedMeshWidget,
     EndStopsCard,
     RunoutSensorsCard,
-    FileSystemCard,
-    KlippyDisconnectedCard
+    FileSystemCard
   }
 })
 export default class Configuration extends Mixins(UtilsMixin) {

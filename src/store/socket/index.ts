@@ -18,6 +18,7 @@ export const defaultState = (): SocketState => {
     chart: [],
     macros: {},
     plugins: [],
+    failed_plugins: [],
     printer: {
       bed_mesh: {},
       heaters: {

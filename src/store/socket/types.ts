@@ -8,6 +8,7 @@ export interface SocketState {
   endstops: EndStops;
   macros: Macros;
   plugins: string[]; // active plugins (device_power)
+  failed_plugins: string[];
   console: ConsoleEntry[]; // console stream
   availableCommands: GcodeCommands; // available gcode commands
   chart: ChartDataSet[]; // chart data
