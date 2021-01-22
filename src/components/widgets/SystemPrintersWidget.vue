@@ -47,7 +47,7 @@
           <v-card-title>
             <span class="headline">Add printer</span>
             <v-spacer></v-spacer>
-            <inline-help bottom small>
+            <inline-help bottom>
               Enter your API URL.<br />
               Some examples might be;<br />
               <blockquote>

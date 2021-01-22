@@ -60,7 +60,6 @@ import {
   mdiUpload,
   mdiFolderUpload,
   mdiProgressUpload,
-  mdiHelp,
   mdiRadioboxMarked,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
@@ -82,7 +81,8 @@ import {
   mdiElectricSwitch,
   mdiElectricSwitchClosed,
   mdiMotionOutline,
-  mdiThermometerLow
+  mdiThermometerLow,
+  mdiHelpCircle
 } from '@mdi/js'
 
 /**
@@ -108,7 +108,7 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
-  help: mdiHelp,
+  help: mdiHelpCircle,
   motion: mdiMotionOutline,
   limits: mdiArrowHorizontalLock,
   send: mdiSend,

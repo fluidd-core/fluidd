@@ -2,15 +2,16 @@
   <v-tooltip :bottom="bottom" :top="top" :left="left" :right="right">
     <template v-slot:activator="{ on, attrs }">
       <v-btn
+        :small="small"
         v-bind="attrs"
         v-on="on"
-        :small="small"
-        :x-small="xSmall"
         class="ml-2"
-        icon>
+        color="info"
+        icon
+        >
         <v-icon
-          :small="small"
-          :x-small="xSmall">
+        :small="small"
+        >
           $help
         </v-icon>
       </v-btn>
@@ -43,8 +44,5 @@ export default class BtnToolheadMove extends Vue {
 
   @Prop({ type: Boolean, default: false })
   small!: boolean
-
-  @Prop({ type: Boolean, default: false })
-  xSmall!: boolean
 }
 </script>

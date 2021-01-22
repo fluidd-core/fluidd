@@ -11,7 +11,7 @@
         <v-radio value="totals">
           <template v-slot:label>
             Duration Only
-            <inline-help bottom x-small class="ml-2">
+            <inline-help bottom small class="ml-2">
               Similar to a klipper LCD, this only shows duration with no estimates.
             </inline-help>
           </template>
@@ -19,7 +19,7 @@
         <v-radio value="slicer">
           <template v-slot:label>
             Slicer
-            <inline-help bottom x-small class="ml-2">
+            <inline-help bottom small class="ml-2">
               Uses the slicer estimates for display. You must enable this in your slicer.
             </inline-help>
           </template>
@@ -27,7 +27,7 @@
         <v-radio value="file">
           <template v-slot:label>
             File Estimation
-            <inline-help bottom x-small class="ml-2">
+            <inline-help bottom small class="ml-2">
               Takes progress percent, and duration to estimate total duration.<br />
               More accurate over time.
             </inline-help>
@@ -36,7 +36,7 @@
         <v-radio value="filament">
           <template v-slot:label>
             Filament
-            <inline-help bottom x-small class="ml-2">
+            <inline-help bottom small class="ml-2">
               Takes used filament vs estimated filament to estimate total duration.<br />
               More accurate over time.
             </inline-help>
