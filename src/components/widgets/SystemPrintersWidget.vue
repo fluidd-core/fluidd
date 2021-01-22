@@ -161,19 +161,22 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
     }
   }
 
-  activateInstance (instance: ApiConfig) {
+  activateInstance (apiConfig: ApiConfig) {
     // Close the drawer.
     this.$emit('click')
 
     // Close the existing socket.
     this.$socket.close()
 
+    // Current host config.
+    const hostConfig = this.$store.state.config.hostConfig
+
     // Re-init the app.
-    appInit(instance)
+    appInit(apiConfig, hostConfig)
       .then((config: Config) => {
         // Reconnect the socket with the new instance url.
         console.debug('Activating new instance with config', config)
-        this.$socket.connect(instance.socketUrl)
+        this.$socket.connect(config.apiConfig.socketUrl)
       })
   }
 }

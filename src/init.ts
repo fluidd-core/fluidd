@@ -3,8 +3,6 @@ import vuetify from './plugins/vuetify'
 import store from './store'
 import { Globals } from './globals'
 import { ApiConfig, Config, FileConfig, HostConfig, InstanceConfig } from './store/config/types'
-import { AxiosResponse } from 'axios'
-import { isOfType } from './store/helpers'
 
 // Load API configuration
 /**
@@ -15,20 +13,19 @@ import { isOfType } from './store/helpers'
  * 3. Load the active instance UI config, if it exists and commit to store.
  * 4. Resume Vue Init
  */
-const getApiConfig = async (): Promise<{ config: ApiConfig | InstanceConfig; hostConfig: HostConfig | undefined }> => {
-  // Always start by loading the host configuration.
-  let hostConfigResponse: AxiosResponse
-  let hostConfig: HostConfig | undefined
-  try {
-    hostConfigResponse = await Vue.$http.get('/config.json?date=' + new Date().getTime())
-    if (hostConfigResponse && hostConfigResponse.data) {
-      hostConfig = hostConfigResponse.data
-    }
-    console.debug('Loaded web host configuration', hostConfig)
-  } catch (e) {
-    console.debug('Failed loading web host configuration')
-  }
 
+const getHostConfig = async (): Promise<HostConfig> => {
+  const hostConfigResponse = await Vue.$http.get('/config.json?date=' + new Date().getTime())
+  if (hostConfigResponse && hostConfigResponse.data) {
+    console.debug('Loaded web host configuration', hostConfigResponse.data)
+    return hostConfigResponse.data
+  } else {
+    console.debug('Failed loading web host configuration')
+    throw new Error('Unable to load host configuration. Please check the host.')
+  }
+}
+
+const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
     const instances: InstanceConfig[] = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
@@ -36,7 +33,7 @@ const getApiConfig = async (): Promise<{ config: ApiConfig | InstanceConfig; hos
       for (const config of instances) {
         if (config.active) {
           console.debug('API Config from Local Storage', config)
-          return { config, hostConfig }
+          return config
         }
       }
     }
@@ -75,27 +72,24 @@ const getApiConfig = async (): Promise<{ config: ApiConfig | InstanceConfig; hos
 
   const i = results.findIndex(endpoint => endpoint !== undefined)
   return (i > -1)
-    ? { config: Vue.$filters.getApiUrls(endpoints[i]), hostConfig }
-    : { config: { apiUrl: '', socketUrl: '' }, hostConfig }
+    ? Vue.$filters.getApiUrls(endpoints[i])
+    : { apiUrl: '', socketUrl: '' }
 }
 
-export const appInit = async (config?: ApiConfig, hostConfig?: HostConfig): Promise<Config> => {
+export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<Config> => {
   // Reset the store to its default state.
   store.dispatch('reset', {}, { root: true })
 
-  // Load the API Config
-  let apiConfig: ApiConfig
-  if (config) {
-    apiConfig = config
-  } else {
-    const c = await getApiConfig()
-    apiConfig = c.config
-    if (c.hostConfig && isOfType<HostConfig>(c.hostConfig, 'endpoints')) {
-      hostConfig = c.hostConfig
-    }
+  // Load the Host Config
+  if (!hostConfig) {
+    hostConfig = await getHostConfig()
   }
 
-  // if (hostConfig) store.dispatch('config/onInitHostConfig', hostConfig)
+  // Load the API Config
+  if (!apiConfig) {
+    apiConfig = await getApiConfig(hostConfig)
+  }
+
   // Just sets the api urls.
   store.dispatch('config/onInitApiConfig', apiConfig)
 

@@ -58,6 +58,11 @@ export const defaultState = (): ConfigState => {
         tempPresets: [],
         hiddenMacros: []
       }
+    },
+    hostConfig: {
+      endpoints: [],
+      blacklist: [],
+      skipClientUpdates: false
     }
   }
 }

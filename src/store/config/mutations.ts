@@ -68,6 +68,12 @@ export const mutations: MutationTree<ConfigState> = {
     state.socketUrl = payload.socketUrl
   },
 
+  onInitHostConfig (state, payload) {
+    state.hostConfig.blacklist = payload.blacklist
+    state.hostConfig.endpoints = payload.endpoints
+    state.hostConfig.skipClientUpdates = payload.skipClientUpdates
+  },
+
   onInitInstances (state, payload: Config) {
     let instances: InstanceConfig[] = []
     const apiConfig = payload.apiConfig

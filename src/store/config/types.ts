@@ -1,5 +1,5 @@
 export interface ConfigState {
-  [key: string]: string | boolean | CardState | InstanceConfig[] | FileConfig | CardLayout;
+  [key: string]: string | boolean | CardState | InstanceConfig[] | FileConfig | CardLayout | HostConfig;
   apiUrl: string;
   socketUrl: string;
   unsavedChanges: boolean;
@@ -8,6 +8,7 @@ export interface ConfigState {
   cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   fileConfig: FileConfig;
+  hostConfig: HostConfig;
 }
 
 // Saved to local storage.
