@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="inputSliderForm">
+  <v-form ref="inputSliderForm" v-model="valid">
     <v-layout align-end justify-space-between>
       <div
         class="grey--text text--darken-1"
@@ -21,6 +21,7 @@
           :suffix="valueSuffix"
           :rules="rules"
           :class="classes"
+          :disabled="disabled || loading"
           @change="emitChange"
           @focus="$event.target.select()"
           class="v-input--x-dense v-input--text-right"
@@ -34,15 +35,14 @@
     <v-slider
       v-if="!readonly"
       @change="emitChange"
-      @input="updateValue"
+      @input="newValue = $event"
       :value="newValue"
       :rules="rules"
       :min="min"
       :max="max"
       :step="step"
       :readonly="readonly"
-      :disabled="disabled"
-      :loading="loading"
+      :disabled="disabled || loading"
       :thumb-label="false"
       dense
       hide-details
@@ -79,28 +79,28 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 
-  @Prop({ required: false })
+  @Prop({ type: Array, default: () => { return [] } })
   public rules!: InputValidationRules
 
   @Prop({ type: String, required: true })
   public label!: string
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   public inputSm!: string
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   public inputXs!: string
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   public inputMd!: string
 
-  @Prop({ type: Boolean, required: false, default: false })
+  @Prop({ type: Boolean, default: false })
   public readonly!: boolean
 
-  @Prop({ type: Boolean, required: false, default: false })
+  @Prop({ type: Boolean, default: false })
   public disabled!: boolean
 
-  @Prop({ type: Boolean, required: false, default: false })
+  @Prop({ type: Boolean, default: false })
   public loading!: boolean
 
   @Prop({ type: Number, default: 0 })
@@ -112,7 +112,7 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, default: 1 })
   public step!: number;
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   public valueSuffix!: string;
 
   @Watch('value')
@@ -121,13 +121,10 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   }
 
   newValue = 0
+  valid = true
 
   get form (): VForm {
     return this.$refs.inputSliderForm as VForm
-  }
-
-  get valid () {
-    return this.form.validate()
   }
 
   get classes () {
@@ -142,14 +139,10 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     this.newValue = this.value
   }
 
-  updateValue (e: number) {
-    this.newValue = e
-  }
-
   clickChange (val: number) {
     this.newValue = val
     this.$nextTick(() => {
-      if (this.valid) {
+      if (this.form.validate()) {
         this.$emit('input', val)
       } else {
         this.newValue = this.value
@@ -157,9 +150,9 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     })
   }
 
-  emitChange (val: number) {
+  emitChange (val: number, old: number) {
     if (this.valid) {
-      this.$emit('input', val)
+      if (val !== old) this.$emit('input', val)
     } else {
       this.newValue = this.value
     }
