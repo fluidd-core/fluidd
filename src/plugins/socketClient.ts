@@ -15,7 +15,7 @@ export class WebSocketClient {
   connection: WebSocket | null = null;
   reconnectEnabled = false;
   reconnectInterval = 3000;
-  allowedReconnectAttempts = 2;
+  allowedReconnectAttempts = 3;
   reconnectCount = 0;
   logPrefix = '[WEBSOCKET]';
   requests: Array<Request> = [];
@@ -53,10 +53,11 @@ export class WebSocketClient {
     this.connection.onclose = (e) => {
       console.debug(`${this.logPrefix} Connection closed:`, e)
       if (this.store) this.store.dispatch('socket/onSocketClose', e)
-      if (!e.wasClean && this.reconnectEnabled) {
+      if (e.wasClean && this.reconnectEnabled) {
         this.reconnect()
       } else {
-        if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
+        this.reconnect()
+        // if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
       }
     }
 
