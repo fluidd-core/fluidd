@@ -41,7 +41,7 @@
       <v-list-item
         v-for="(device, index) in powerDevices"
         :key="index"
-        :disabled="(device.status === 'error' || device.status === 'init' || printerPrinting)"
+        :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
         @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
         :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
         :color="(device.status === 'error') ? 'error' : 'secondary'"
