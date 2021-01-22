@@ -50,14 +50,13 @@ export default class FanWidget extends Mixins(UtilsMixin) {
 
   get offBelow () {
     const config = this.$store.getters['socket/getPrinterSettings'](this.fan.name) || {}
-    const offBelow = config.off_below || 0
-    return offBelow * 100
+    return config.off_below * 100 || 0
   }
 
   rules = [
-    (v: string) => {
+    (v: number) => {
       if (this.offBelow <= 0) return true
-      return (parseInt(v) >= this.offBelow || parseInt(v) === 0) || 'min error'
+      return (v >= this.offBelow || v === 0) || 'min error'
     }
   ]
 }

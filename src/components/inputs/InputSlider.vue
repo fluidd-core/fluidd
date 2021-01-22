@@ -120,7 +120,14 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     this.newValue = val
   }
 
-  newValue = 0
+  // TODO: Figure out a better solution here.
+  // Vuetify sets the field invalid for a split second
+  // until this is updated on mount. So, until we can
+  // figure out a better workaround - setting this value
+  // to something we think will pass validation initially
+  // for most use cases will avoid the flashing of this
+  // control from invalid to valid.
+  newValue = 50
   valid = true
 
   get form (): VForm {
@@ -143,16 +150,16 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     this.newValue = val
     this.$nextTick(() => {
       if (this.form.validate()) {
-        this.$emit('input', val)
+        if (val !== this.value) this.$emit('input', val)
       } else {
         this.newValue = this.value
       }
     })
   }
 
-  emitChange (val: number, old: number) {
+  emitChange (val: number) {
     if (this.valid) {
-      if (val !== old) this.$emit('input', val)
+      if (val !== this.value) this.$emit('input', val)
     } else {
       this.newValue = this.value
     }

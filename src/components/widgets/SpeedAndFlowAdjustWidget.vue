@@ -6,13 +6,11 @@
         label="Speed"
         value-suffix="%"
         input-xs
-        :value="speed"
-        :disabled="!klippyConnected"
-        :loading="hasWait(waits.onSetSpeed)"
+        v-model.number="speed"
+        :disabled="!klippyConnected || hasWait(waits.onSetSpeed)"
         :min="1"
         :max="200"
-        :rules="rules"
-        @input="setSpeed($event, waits.onSetSpeed)">
+        :rules="rules">
       </input-slider>
     </v-col>
     <v-col cols="12" sm="6">
@@ -20,13 +18,11 @@
         label="Flow"
         value-suffix="%"
         input-xs
-        :value="flow"
-        :disabled="!klippyConnected"
-        :loading="hasWait(waits.onSetFlow)"
+        v-model.number="flow"
+        :disabled="!klippyConnected || hasWait(waits.onSetFlow)"
         :min="1"
         :max="200"
-        :rules="rules"
-        @input="setFlow($event, waits.onSetFlow)">
+        :rules="rules">
       </input-slider>
     </v-col>
   </v-row>
@@ -47,28 +43,24 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
   waits = Waits
 
   rules = [
-    (v: string) => {
-      return (parseInt(v) >= 1) || 'min 1'
-    },
-    (v: string) => {
-      return (parseInt(v) <= 200) || 'max 200'
-    }
+    (v: number) => (v >= 1) || 'min 1',
+    (v: number) => (v <= 200) || 'max 200'
   ]
 
   get flow () {
-    return this.$store.state.socket.printer.gcode_move.extrude_factor * 100
+    return this.$store.state.socket.printer.gcode_move.extrude_factor * 100 || 100
+  }
+
+  set flow (val: number) {
+    this.sendGcode('M221 S' + val, this.waits.onSetFlow)
   }
 
   get speed () {
-    return this.$store.state.socket.printer.gcode_move.speed_factor * 100
+    return this.$store.state.socket.printer.gcode_move.speed_factor * 100 || 100
   }
 
-  setSpeed (speed: number, wait?: string) {
-    this.sendGcode('M220 S' + speed, wait)
-  }
-
-  setFlow (flow: number, wait?: string) {
-    this.sendGcode('M221 S' + flow, wait)
+  set speed (val: number) {
+    this.sendGcode('M220 S' + val, this.waits.onSetSpeed)
   }
 }
 </script>
