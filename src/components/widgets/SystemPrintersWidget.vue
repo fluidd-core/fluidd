@@ -32,93 +32,33 @@
       </v-list-item-content>
     </v-list-item>
 
-    <v-dialog
-      :maxWidth="320"
-      v-model="instanceDialog.open"
-    >
-      <v-form
-        class="mt-3"
-        ref="addInstanceForm"
-        v-model="instanceDialog.valid"
-        @submit="addInstance()"
-      >
-        <v-card color="secondary darken-1">
-
-          <v-card-title>
-            <span class="headline">Add printer</span>
-            <v-spacer></v-spacer>
-            <inline-help bottom>
-              Enter your API URL.<br />
-              Some examples might be;<br />
-              <blockquote>
-                http://fluidd.local,
-                http://192.168.1.150
-              </blockquote>
-            </inline-help>
-          </v-card-title>
-
-          <v-card-text>
-            Having trouble? <a :href="docsUrl" target="_blank">See here</a> for more information.<br />
-
-            <v-text-field
-              autofocus
-              label="API URL"
-              :rules="[rules.required, rules.url]"
-              persistent-hint
-              hint="E.g., http://fluiddpi.local"
-              v-model="instanceDialog.url">
-            </v-text-field>
-
-          </v-card-text>
-
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="warning" text @click="instanceDialog.open = false" type="button">Cancel</v-btn>
-            <v-btn color="primary" type="submit">Save</v-btn>
-          </v-card-actions>
-
-        </v-card>
-      </v-form>
-    </v-dialog>
+    <dialog-add-instance
+      v-model="instanceDialogOpen"
+      @resolve="activateInstance"
+    ></dialog-add-instance>
 
   </v-list>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { ApiConfig, Config, InstanceConfig } from '@/store/config/types'
+import { Config, InstanceConfig, ApiConfig } from '@/store/config/types'
 import VersionStatus from '@/components/VersionStatus.vue'
+import DialogAddInstance from '@/components/dialogs/dialogAddInstance.vue'
 import UtilsMixin from '@/mixins/utils'
 import { appInit } from '@/init'
-import { Globals, Waits } from '@/globals'
-import { VForm } from '@/types/vuetify'
+import { Waits } from '@/globals'
 
 @Component({
   components: {
-    VersionStatus
+    VersionStatus,
+    DialogAddInstance
   }
 })
 export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
-  docsUrl = Globals.DOCS_MULTIPLE_INSTANCES
   waits = Waits
 
-  urlRegex = new RegExp('^(https?:\\/\\/)' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z\\d]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
-            '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$', 'i')
-
-  rules = {
-    required: (v: string) => !!v || 'Required',
-    url: (v: string) => (this.urlRegex.test(v)) || 'Invalid URL'
-  }
-
-  instanceDialog = {
-    valid: false,
-    open: false,
-    url: ''
-  }
+  instanceDialogOpen = false
 
   get instanceName () {
     return this.$store.state.config.fileConfig.general.instanceName
@@ -128,22 +68,10 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
     return this.$store.getters['config/getInstances']
   }
 
-  get form (): VForm {
-    return this.$refs.addInstanceForm as VForm
-  }
-
   mounted () {
     // If we have no api's configured at all, open the dialog.
     if (this.$store.state.config.apiUrl === '') {
-      this.instanceDialog.open = true
-    }
-  }
-
-  addInstanceDialog () {
-    this.instanceDialog = {
-      valid: false,
-      open: true,
-      url: ''
+      this.instanceDialogOpen = true
     }
   }
 
@@ -151,28 +79,17 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
     this.$store.dispatch('config/removeInstance', instance)
   }
 
-  addInstance () {
-    const valid = this.form.validate()
-    if (valid) {
-      const urls = this.$filters.getApiUrls(this.instanceDialog.url)
-      this.instanceDialog.open = false
-      this.activateInstance(urls)
-      this.$emit('click')
-    }
+  addInstanceDialog () {
+    this.instanceDialogOpen = true
   }
 
   activateInstance (apiConfig: ApiConfig) {
-    // Close the drawer.
+    // Close the drawer and socket.
     this.$emit('click')
-
-    // Close the existing socket.
     this.$socket.close()
 
-    // Current host config.
-    const hostConfig = this.$store.state.config.hostConfig
-
     // Re-init the app.
-    appInit(apiConfig, hostConfig)
+    appInit(apiConfig, this.$store.state.config.hostConfig)
       .then((config: Config) => {
         // Reconnect the socket with the new instance url.
         console.debug('Activating new instance with config', config)
