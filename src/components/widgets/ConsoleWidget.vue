@@ -70,6 +70,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   sendCommand (command?: string) {
     if (command && command.length) {
       this.sendGcode(command)
+      this.consoleCommand = ''
     }
   }
 

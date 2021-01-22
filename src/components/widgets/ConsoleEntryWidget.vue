@@ -75,7 +75,7 @@ export default class ConsoleEntryWidget extends Vue {
 
   itemClick (event: Event) {
     const target = event.target as Element
-    if (target.tagName === 'A') {
+    if (target.tagName.toLowerCase() === 'a') {
       this.$emit('click', target.innerHTML)
     }
   }

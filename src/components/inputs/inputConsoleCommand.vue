@@ -57,7 +57,6 @@ export default class InputConsoleCommand extends Vue {
 
   emitSend (val: string) {
     if (val && val.length > 0) {
-      this.newValue = ''
       if (this.history.length >= 5) {
         this.originalHistory.shift()
       }
