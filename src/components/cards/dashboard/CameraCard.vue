@@ -6,7 +6,8 @@
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    @enabled="$emit('enabled', $event)"
+    @collapsed="onCollapse">
 
     <img :src="cameraUrl" class="webcam" :style="cameraTransforms" v-if="streamType === 'mjpgstreamer'" />
     <video :src="cameraUrl" autoplay class="webcam" :style="cameraTransforms" v-if="streamType === 'ipcamera'" />
@@ -27,12 +28,22 @@ export default class CameraCard extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
-  get streamType () {
-    return this.$store.state.config.fileConfig.camera.type
+  cameraUrl = ''
+
+  beforeDestroy () {
+    this.cameraUrl = ''
   }
 
-  get cameraUrl (): string {
-    return this.$store.state.config.fileConfig.camera.url
+  onCollapse (collapsed: boolean) {
+    if (collapsed) {
+      this.cameraUrl = ''
+    } else {
+      this.cameraUrl = this.$store.state.config.fileConfig.camera.url
+    }
+  }
+
+  get streamType () {
+    return this.$store.state.config.fileConfig.camera.type
   }
 
   get cameraTransforms () {
