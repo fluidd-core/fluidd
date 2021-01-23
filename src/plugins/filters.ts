@@ -83,7 +83,7 @@ const Filters = {
   getReadableLengthString (lengthInMm: number) {
     if (lengthInMm >= 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
     if (lengthInMm > 100) return (lengthInMm / 10).toFixed(1) + ' cm'
-    return `${lengthInMm} mm`
+    return lengthInMm.toFixed(1) + ' mm'
   },
 
   /**
