@@ -70,9 +70,9 @@ export default class FanWidget extends Mixins(UtilsMixin) {
   }
 
   rules = [
-    (v: number) => {
+    (v: string) => {
       if (this.offBelow <= 0) return true
-      return (v >= this.offBelow || v === 0) || 'min error'
+      return (parseFloat(v) >= this.offBelow || parseFloat(v) === 0) || 'min error'
     }
   ]
 }

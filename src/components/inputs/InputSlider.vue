@@ -19,11 +19,11 @@
         <v-text-field
           v-if="!readonly"
           :value="newValue"
+          @change="emitChange"
           :suffix="valueSuffix"
           :rules="rules"
           :class="classes"
           :disabled="disabled || loading"
-          @change="emitChange"
           @focus="$event.target.select()"
           class="v-input--x-dense v-input--text-right"
           single-line
