@@ -1,15 +1,31 @@
 <template>
   <div>
     <input-slider
+      v-if="fan.controllable"
       value-suffix="%"
       input-xs
       v-model.number="value"
       :label="fan.prettyName"
       :rules="rules"
-      :disabled="!klippyConnected"
-      :readonly="!fan.controllable">
+      :disabled="!klippyConnected">
     </input-slider>
-    <v-divider class="my-1" v-if="divider"></v-divider>
+
+    <v-layout
+      v-if="!fan.controllable"
+      align-center
+      justify-space-between
+    >
+      <div class="grey--text text--darken-1 text-body-1">
+        {{ fan.prettyName }}
+      </div>
+      <div class="ml-auto">
+        <span class="grey--text focus--text text--lighten-1">
+          {{ value }}
+          <small>%</small>
+        </span>
+      </div>
+    </v-layout>
+    <v-divider class="my-2" v-if="divider"></v-divider>
   </div>
 </template>
 

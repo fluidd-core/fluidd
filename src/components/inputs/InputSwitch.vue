@@ -1,7 +1,7 @@
 <template>
-  <v-layout justify-space-between align-end>
+  <v-layout justify-space-between align-center>
     <div
-      class="grey--text text--darken-1 font-weight-regular"
+      class="grey--text text--darken-1 text-body-1"
     >
       {{ label }}
     </div>

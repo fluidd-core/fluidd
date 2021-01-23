@@ -22,8 +22,8 @@
         </v-col>
       </v-row>
 
-      <v-row justify="space-between" no-gutters v-show="printerPrinting">
-        <v-col cols="auto" class="grey--text text--darken-1">
+      <v-row justify="space-between" align="center" no-gutters v-show="printerPrinting">
+        <v-col cols="auto" class="secondary--text text--lighten-1">
           Requested Speed:
         </v-col>
         <v-col cols="auto" class="grey--text focus--text">

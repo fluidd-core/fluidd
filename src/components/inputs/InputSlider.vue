@@ -1,17 +1,18 @@
 <template>
   <v-form ref="inputSliderForm" v-model="valid">
-    <v-layout align-end justify-space-between>
+    <v-layout align-center justify-space-between>
       <div
-        class="grey--text text--darken-1"
+        class="grey--text text--darken-1 text-body-1"
         :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
       >
         {{ label }}
       </div>
-      <div
-        class="grey--text focus--text ml-auto"
-        :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }"
-      >
-        <span v-if="readonly">
+      <div class="ml-auto">
+        <span
+          v-if="readonly"
+          class="grey--text focus--text"
+          :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }"
+        >
           {{ newValue }}
           <small>{{valueSuffix}}</small>
         </span>
@@ -33,7 +34,6 @@
       </div>
     </v-layout>
     <v-slider
-      v-if="!readonly"
       @change="emitChange"
       @input="newValue = $event"
       :value="newValue"
@@ -42,7 +42,7 @@
       :max="max"
       :step="step"
       :readonly="readonly"
-      :disabled="disabled || loading"
+      :disabled="disabled || loading || readonly"
       :thumb-label="false"
       dense
       hide-details
