@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/cadriel/fluidd/compare/v1.5.1...v1.6.0) (2021-01-24)
+
+
+### Features
+
+* display heater applied power ([4259e18](https://github.com/cadriel/fluidd/commit/4259e183de7b1ef6fc1211de3486ddbc9f16ae6f))
+* ensures compatibility with latest moonraker changes ([5fbcb63](https://github.com/cadriel/fluidd/commit/5fbcb63053a4b8316085ea3f066ee247189625bb))
+* gcodes now available after first connection to klippy ([c3a89bc](https://github.com/cadriel/fluidd/commit/c3a89bc961957bf796d8d833974f27bbaf5cac42))
+* power plugin now respects locked_while_printing flag ([9034968](https://github.com/cadriel/fluidd/commit/9034968b55e8787f8f7d19911704a6b9826b48db))
+* refactored warnings to include failed moonraker plugins ([069adb5](https://github.com/cadriel/fluidd/commit/069adb51f1abe87684f865c058b7adc960d6cafe))
+* swap tab titles around so the instance name is first ([e7867b5](https://github.com/cadriel/fluidd/commit/e7867b5a7ac13632d5deb21d6446ac32013cf5b4))
+
+
+### Bug Fixes
+
+* add correct validators to extruder length and speed ([046a0da](https://github.com/cadriel/fluidd/commit/046a0da5f33cfc7eae7649d47054515f11ad1e30))
+* ensure klippy card gracefully displays on mobile layout ([e2e1f4c](https://github.com/cadriel/fluidd/commit/e2e1f4cc7a8d42c84c48df1619530e00fbcae554))
+* Ensure the filament mm length is fixed to a single decimal ([a34d149](https://github.com/cadriel/fluidd/commit/a34d1495b826690f24e48f2316000af5b5ba57d0))
+* ensure we clear the cam url on collapse / destroy ([e9dbd2f](https://github.com/cadriel/fluidd/commit/e9dbd2fcb72f807cd28f1d1d9f3dc0df9b500d6f))
+* file editor now won't break if the file is empty ([0d5ae1b](https://github.com/cadriel/fluidd/commit/0d5ae1b451b428544cc5855d6402ee4e5f853e77))
+* minor klippy card layout issue ([fe76e8e](https://github.com/cadriel/fluidd/commit/fe76e8ea753343cdfd45e44df08b8f6a28281c46))
+* no longer shows you have updates if skip client updates === false ([5851669](https://github.com/cadriel/fluidd/commit/5851669e0f624ea727cd955149c073bb43eb5a5b))
+* opening console from a collapsed state fires scroll event properly ([373aea3](https://github.com/cadriel/fluidd/commit/373aea30da9e160a485433d1de00f2b346dc6ad8))
+* part speed fan not allowing a 0 in the input ([1cc404e](https://github.com/cadriel/fluidd/commit/1cc404ea7deaa04a4100915c7d25a520e0e6d680))
+* plus / minus buttons now adhere to step value ([0ef8d4b](https://github.com/cadriel/fluidd/commit/0ef8d4bdff7fbcb62af1aec6e1f007aeb1e45289))
+* pwm boolean case now no longer breaks output pins ([f8e23a8](https://github.com/cadriel/fluidd/commit/f8e23a8ced4016c8f280935cf0f236eba7c36ad9))
+* readjust some tool layout to prevent wrapping at 1280 ([fc577bd](https://github.com/cadriel/fluidd/commit/fc577bd78ee276c750a1b141bff963fe6748491d))
+* rules now properly apply for limits and speed / flow ([ee1191e](https://github.com/cadriel/fluidd/commit/ee1191ee7b5779715330a4258473870939e480cc))
+* some console clicks weren't registering ([98a1e74](https://github.com/cadriel/fluidd/commit/98a1e744589be290cd7855bf10d088f6fd1e5230))
+* temp inputs can no longer send NaN ([5d21718](https://github.com/cadriel/fluidd/commit/5d21718752720d17df834f92f10eb42921ff5c8b))
+* update response output ([f680525](https://github.com/cadriel/fluidd/commit/f680525e5cab9fea77088080aca408f04284e25c))
+
 ### [1.5.1](https://github.com/cadriel/fluidd/compare/v1.5.0...v1.5.1) (2021-01-17)
 
 
