@@ -26,8 +26,8 @@ jobs:
           DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/fluidd
           VERSION=${{ steps.latestrelease.outputs.release }}
           SHORTREF=${GITHUB_SHA::8}
-          TAGS="${DOCKER_IMAGE}:${VERSION}"
-          TAGS="$TAGS,${DOCKER_IMAGE}:latest"
+          TAGS="${DOCKER_IMAGE}:latest"
+          # TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
 
           # Set output parameters.
           echo ::set-output name=tags::${TAGS}
