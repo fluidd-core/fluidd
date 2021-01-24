@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.1](https://github.com/cadriel/fluidd/compare/v1.6.0...v1.6.1) (2021-01-24)
+
+
+### Bug Fixes
+
+* resolve display warning being shown when it should not be ([622c660](https://github.com/cadriel/fluidd/commit/622c66004ea0d09e2b4c31de31b026fe80c93b21))
+
 ## [1.6.0](https://github.com/cadriel/fluidd/compare/v1.5.1...v1.6.0) (2021-01-24)
 
 
