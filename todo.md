@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- print history
 - implement final filesystem features (bulk actions & move)
 - sync instances across fluidd.json files
 - More macro layout options (categorize macros, ability to define layout in some way, color)
