@@ -27,7 +27,7 @@ jobs:
           VERSION=${{ steps.latestrelease.outputs.release }}
           SHORTREF=${GITHUB_SHA::8}
           TAGS="${DOCKER_IMAGE}:latest"
-          # TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
+          TAGS="$TAGS,${DOCKER_IMAGE}:${VERSION}"
 
           # Set output parameters.
           echo ::set-output name=tags::${TAGS}
@@ -60,4 +60,4 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-            FRONTEND_ZIP_URL=https://github.com/cadriel/fluidd/releases/${{ steps.prep.outputs.git_tag }}/download/fluidd.zip
+            FRONTEND_ZIP_URL=https://github.com/cadriel/fluidd/releases/download/${{ steps.prep.outputs.git_tag }}/fluidd.zip
