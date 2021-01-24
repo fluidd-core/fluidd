@@ -1,6 +1,5 @@
 <template>
   <prism-editor
-    v-if="code && code.length"
     class="file-editor"
     v-model="code"
     @input="emitChange($event)"
@@ -40,7 +39,7 @@ export default class FileEditorWidget extends Vue {
     this.code = val
   }
 
-  code: string | null = null
+  code = ''
 
   langMap: {[key: string]: string} = {
     md: 'markdown',

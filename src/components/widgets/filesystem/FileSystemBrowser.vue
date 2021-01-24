@@ -521,7 +521,7 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
   }
 
   createFile (name: string) {
-    const file = new File([`# ${name}\n`], name)
+    const file = new File([], name)
     this.$emit('upload-file', file, false)
   }
 
