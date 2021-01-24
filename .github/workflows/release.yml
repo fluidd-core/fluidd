@@ -29,7 +29,6 @@ jobs:
         with:
           validation_depth: 1
           path: ./CHANGELOG.md
-          version: ${{ github.ref }}
 
       - name: Create Release
         id: create_release
