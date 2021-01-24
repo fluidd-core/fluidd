@@ -612,6 +612,18 @@ export const getters: GetterTree<SocketState, RootState> = {
     return undefined
   },
 
+  getPrinterConfig: (state) => (config: string) => {
+    if (
+      state.printer &&
+      state.printer.configfile &&
+      state.printer.configfile.config
+    ) {
+      if (config) return get(state.printer.configfile.config, config, undefined)
+      return state.printer.configfile.config
+    }
+    return undefined
+  },
+
   getHasWarnings: (state, getters) => {
     if (
       (state.open && state.ready) &&
@@ -624,7 +636,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getPrinterWarnings: (state, getters) => {
-    const config = getters.getPrinterSettings()
+    const config = getters.getPrinterConfig()
     const warnings = []
 
     if (config && !('virtual_sdcard' in config)) {
@@ -635,17 +647,20 @@ export const getters: GetterTree<SocketState, RootState> = {
       warnings.push({ message: '[pause_resume] not found in printer configuration.' })
     }
 
-    if (config && !('display' in config)) {
+    if (
+      config &&
+      !('display' in config) && !('display_status' in config)
+    ) {
       warnings.push({ message: '[display_status] is required if you do not have a [display] defined.' })
     }
 
-    if (config && !('gcode_macro cancel_print' in config)) {
+    if (config && !('gcode_macro CANCEL_PRINT' in config)) {
       warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
     }
     return warnings
   },
 
   getMoonrakerWarnings: (state) => {
-    return state.failed_plugins
+    return state.failed_plugins || []
   }
 }
