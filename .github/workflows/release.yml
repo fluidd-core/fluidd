@@ -27,8 +27,9 @@ jobs:
         uses: mindsers/changelog-reader-action@v2
         id: changelog
         with:
-          validation_depth: 10
+          validation_depth: 1
           path: ./CHANGELOG.md
+          version: ${{ github.ref }}
 
       - name: Create Release
         id: create_release
