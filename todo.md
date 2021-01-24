@@ -2,9 +2,8 @@
 
 ## Next Up
 
-- print history
-- implement final filesystem features (bulk actions & move)
 - sync instances across fluidd.json files
+- implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
 - i18n (translations)
@@ -14,6 +13,7 @@
   often. Need a more elegant way to load just the names of these items without parts of the
   reactive data that is changed so often
 
+- print history
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
 - print instances having data bleed? [github issue]
