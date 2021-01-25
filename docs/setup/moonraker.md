@@ -8,10 +8,13 @@ For more detailed instructions, please refer to [Arksine's documentation](https:
 ## Automated Updates
 
 Automated updates can be configured by ensuring the following is at the bottom of your `moonraker.conf`.
+
 ```ini
 [update_manager]
-client_repo: cadriel/fluidd
-client_path: /home/pi/fluidd
+[update_manager client fluidd]
+type: web
+repo: cadriel/fluidd
+path: ~/fluidd
 ```
 
 ## Trusted Clients
@@ -68,6 +71,8 @@ trusted_clients:
   ::1/128
 
 [update_manager]
-client_repo: cadriel/fluidd
-client_path: /home/pi/fluidd
+[update_manager client fluidd]
+type: web
+repo: cadriel/fluidd
+path: ~/fluidd
 ```
