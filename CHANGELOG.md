@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.2](https://github.com/cadriel/fluidd/compare/v1.6.1...v1.6.2) (2021-02-05)
+
+
+### Bug Fixes
+
+* package-lock ([02d50e1](https://github.com/cadriel/fluidd/commit/02d50e126876054e24586ad23988a4c05101c3cd))
+* temp store with no targets won't break chart ([ddefcf7](https://github.com/cadriel/fluidd/commit/ddefcf7ac287b7fe2c855e333dbc0d2cc505f676))
+
 ### [1.6.1](https://github.com/cadriel/fluidd/compare/v1.6.0...v1.6.1) (2021-01-24)
 
 
