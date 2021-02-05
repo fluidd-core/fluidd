@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Misc"
+    :title="$t('Misc')"
     cardKey="MiscSettings"
     icon="$cogs">
     <v-card-text>
@@ -8,11 +8,11 @@
         filled
         hide-details="auto"
         :rules="instanceNameRules"
-        label="Printer Name"
+        :label="$t('Printer Name')"
         v-model="instanceName"
       ></v-text-field>
       <v-switch
-        label="Enable Jobs on Dashboard"
+        :label="$t('Enable Jobs on Dashboard')"
         hide-details
         v-model="jobsInDash">
       </v-switch>

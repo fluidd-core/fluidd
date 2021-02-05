@@ -13,7 +13,7 @@
             <v-icon small>$folderAdd</v-icon>
           </v-btn>
         </template>
-        <span>Add Folder</span>
+        <span>{{$t('Add Folder')}}</span>
       </v-tooltip>
 
       <v-tooltip dense top>
@@ -29,7 +29,7 @@
             <v-icon small>$fileAdd</v-icon>
           </v-btn>
         </template>
-        <span>Create File</span>
+        <span>{{$t('Create File')}}</span>
       </v-tooltip>
 
       <v-tooltip dense top>
@@ -45,7 +45,7 @@
             <v-icon small>$fileUpload</v-icon>
           </v-btn>
         </template>
-        <span>Upload</span>
+        <span>{{$t('Upload')}}</span>
       </v-tooltip>
 
       <v-tooltip dense top>
@@ -62,7 +62,7 @@
             <v-icon small>$progressUpload</v-icon>
           </v-btn>
         </template>
-        <span>Upload &amp; Print</span>
+        <span>{{$t('Upload Print')}}</span>
       </v-tooltip>
 
       <input
@@ -86,7 +86,7 @@
             <v-icon small>$refresh</v-icon>
           </v-btn>
         </template>
-        <span>Refresh</span>
+        <span>{{$t('Refresh')}}</span>
       </v-tooltip>
     </v-btn-toggle>
 

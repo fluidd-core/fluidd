@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
-    title="Endstops"
-    subTitle="Use the refresh button to update endstop status."
+    :title="$t('Endstops')"
+    :subTitle="$t('Use the refresh button to update endstop status.')"
     :collapsable="false"
     icon="$expandHorizontal">
     <template v-slot:collapse-button>

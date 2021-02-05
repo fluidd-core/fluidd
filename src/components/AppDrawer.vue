@@ -13,7 +13,7 @@
           <v-icon>$home</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Dashboard</v-list-item-title>
+          <v-list-item-title>{{$t('Dashboard')}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyConnected">
@@ -21,7 +21,7 @@
           <v-icon>$files</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Jobs</v-list-item-title>
+          <v-list-item-title>{{$t('Jobs')}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/configuration" class="d-flex d-md-none">
@@ -29,7 +29,7 @@
           <v-icon>$tune</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Printer Configuration</v-list-item-title>
+          <v-list-item-title>{{$t('Printer Configuration')}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/settings">
@@ -37,7 +37,7 @@
           <v-icon>$cog</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>UI Settings</v-list-item-title>
+          <v-list-item-title>{{$t('UI Settings')}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>

@@ -118,7 +118,7 @@
           block
           class="mb-2"
           color="secondary">
-            QGL
+            {{$t('QGL')}}
         </v-btn>
         <v-tooltip right>
           <template v-slot:activator="{ on, attrs }">
@@ -183,8 +183,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</v-btn>
-            <v-btn color="primary" :elevation="2" type="submit">Save</v-btn>
+            <v-btn color="warning" text @click="saveDialog.open = false" type="button">{{$t('Cancel')}}</v-btn>
+            <v-btn color="primary" :elevation="2" type="submit">{{$t('Save')}}</v-btn>
           </v-card-actions>
 
         </v-card>

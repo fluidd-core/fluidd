@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Print Times"
+    :title="$t('Print Times')"
     cardKey="PrintTimeSettings"
     icon="$clock">
     <v-card-text>
@@ -10,35 +10,35 @@
         :mandatory="true">
         <v-radio value="totals">
           <template v-slot:label>
-            Duration Only
+            {{$t('Duration Only')}}
             <inline-help bottom small class="ml-2">
-              Similar to a klipper LCD, this only shows duration with no estimates.
+              {{$t('Similar to a klipper LCD, this only shows duration with no estimates.')}}
             </inline-help>
           </template>
         </v-radio>
         <v-radio value="slicer">
           <template v-slot:label>
-            Slicer
+            {{$t('Slicer')}}
             <inline-help bottom small class="ml-2">
-              Uses the slicer estimates for display. You must enable this in your slicer.
+              {{$t('Uses the slicer estimates for display. You must enable this in your slicer.')}}
             </inline-help>
           </template>
         </v-radio>
         <v-radio value="file">
           <template v-slot:label>
-            File Estimation
+            {{$t('File Estimation')}}
             <inline-help bottom small class="ml-2">
-              Takes progress percent, and duration to estimate total duration.<br />
-              More accurate over time.
+              {{$t('Takes progress percent, and duration to estimate total duration.')}}<br />
+              {{$t('More accurate over time.')}}
             </inline-help>
           </template>
         </v-radio>
         <v-radio value="filament">
           <template v-slot:label>
-            Filament
+            {{$t('Filament')}}
             <inline-help bottom small class="ml-2">
-              Takes used filament vs estimated filament to estimate total duration.<br />
-              More accurate over time.
+              {{$t('Takes used filament vs estimated filament to estimate total duration.')}}<br />
+              {{$t('More accurate over time.')}}
             </inline-help>
           </template>
         </v-radio>

@@ -10,7 +10,7 @@
 
     <template v-slot:title>
       <v-icon left>$printer3dNozzle</v-icon>
-      <span class="font-weight-light">Tool</span>
+      <span class="font-weight-light">{{$t('Tool')}}</span>
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
@@ -35,7 +35,7 @@
         small
         class="ma-1"
         color="secondary">
-          MOTORS OFF
+          {{$t('MOTORS OFF')}}
       </v-btn>
       <v-btn
         v-if="printerSupportsBedScrews"
@@ -79,7 +79,7 @@
         small
         class="ma-1"
         color="secondary">
-          QGL
+          {{$t('QGL')}}
       </v-btn>
     </template>
 

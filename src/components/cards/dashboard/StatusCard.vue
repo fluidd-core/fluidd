@@ -37,7 +37,7 @@
         color="secondary"
         class="ma-1">
         <v-icon small>$cancel</v-icon>
-        <span>Cancel</span>
+        <span>{{$t('Cancel')}}</span>
       </v-btn>
 
       <v-btn

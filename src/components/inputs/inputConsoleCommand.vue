@@ -10,7 +10,7 @@
     single-line
     dense
     hide-details
-    placeholder="type 'help' for available commands"
+    :placeholder="$t('type help for available commands')"
     @keyup.enter="emitSend(newValue)"
     @keyup.up="historyUp()"
     @keyup.down="historyDown()">

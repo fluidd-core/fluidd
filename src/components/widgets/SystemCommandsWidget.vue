@@ -5,14 +5,14 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Host</v-list-item-title>
+          <v-list-item-title>{{$t('Host')}}</v-list-item-title>
         </v-list-item-content>
       </template>
 
       <v-list-item
         @click="confirmRebootDialog.open = true"
         :disabled="printerPrinting">
-        <v-list-item-title>Reboot</v-list-item-title>
+        <v-list-item-title>{{$t('Reboot')}}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$powerCycle</v-icon>
         </v-list-item-icon>
@@ -21,7 +21,7 @@
       <v-list-item
         @click="confirmShutdownDialog.open = true"
         :disabled="printerPrinting">
-        <v-list-item-title>Shutdown</v-list-item-title>
+        <v-list-item-title>{{$t('Shutdown')}}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$power</v-icon>
         </v-list-item-icon>
@@ -34,7 +34,7 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Power Plugin</v-list-item-title>
+          <v-list-item-title>{{$t('Power Plugin')}}</v-list-item-title>
         </v-list-item-content>
       </template>
 
@@ -59,12 +59,12 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Services</v-list-item-title>
+          <v-list-item-title>{{$t('Services')}}</v-list-item-title>
         </v-list-item-content>
       </template>
       <v-list-item @click="serviceRestartMoonraker"
         :disabled="printerPrinting">
-        <v-list-item-title>Restart Moonraker</v-list-item-title>
+        <v-list-item-title>{{$t('Restart Moonraker')}}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="warning">$restart</v-icon>
         </v-list-item-icon>
@@ -73,7 +73,7 @@
       <v-list-item
         @click="serviceRestartKlipper"
         :disabled="printerPrinting">
-        <v-list-item-title>Restart Klipper</v-list-item-title>
+        <v-list-item-title>{{$t('Restart Klipper')}}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
@@ -82,7 +82,7 @@
       <v-list-item
         @click="serviceFirmwareRestartKlippy"
         :disabled="printerPrinting">
-        <v-list-item-title>Firmware Restart Klipper</v-list-item-title>
+        <v-list-item-title>{{$t('Firmware Restart Klipper')}}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
@@ -99,13 +99,13 @@
     <dialog-confirm
       v-model="confirmRebootDialog.open"
       @confirm="hostReboot">
-      <p>Are you sure? This will reboot your host system.</p>
+      <p>{{$t('Are you sure? This will reboot your host system.')}}</p>
     </dialog-confirm>
 
     <dialog-confirm
       v-model="confirmShutdownDialog.open"
       @confirm="hostShutdown">
-      <p>Are you sure? This will shutdown your host system.</p>
+      <p>{{$t('Are you sure? This will shutdown your host system.')}}</p>
     </dialog-confirm>
 
   </div>

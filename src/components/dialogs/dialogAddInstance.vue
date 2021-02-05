@@ -13,11 +13,11 @@
       <v-card color="secondary darken-1">
 
         <v-card-title>
-          <span class="headline">Add printer</span>
+          <span class="headline">{{$t('Add printer')}}</span>
           <v-spacer></v-spacer>
           <inline-help bottom>
-            Enter your API URL.<br />
-            Some examples might be;<br />
+            {{$t('Enter your API URL.')}}<br />
+            {{$t('Some examples might be;')}}<br />
             <blockquote>
               http://fluidd.local,
               http://192.168.1.150
@@ -26,7 +26,7 @@
         </v-card-title>
 
         <v-card-text>
-          Having trouble? <a :href="docsUrl" target="_blank">See here</a> for more information.<br />
+          {{$t('Having trouble?')}} <a :href="docsUrl" target="_blank">{{$t('See here')}}</a> {{$t('for more information.')}}<br />
 
           <v-text-field
             v-model="url"
@@ -48,8 +48,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="warning" text @click="$emit('input', false)" type="button">Cancel</v-btn>
-          <v-btn color="primary" type="submit" :disabled="!verified">Save</v-btn>
+          <v-btn color="warning" text @click="$emit('input', false)" type="button">{{$t('Cancel')}}</v-btn>
+          <v-btn color="primary" type="submit" :disabled="!verified">{{$t('Save')}}</v-btn>
         </v-card-actions>
 
       </v-card>

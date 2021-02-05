@@ -1,6 +1,6 @@
 <template>
   <v-list dense>
-    <v-subheader>Printers</v-subheader>
+    <v-subheader>{{$t('Printers')}}</v-subheader>
 
     <template v-for="(instance, index) in instances">
       <v-list-item
@@ -28,7 +28,7 @@
         <v-icon>$plus</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
-        <v-list-item-title>Add another printer</v-list-item-title>
+        <v-list-item-title>{{$t('Add another printer')}}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 

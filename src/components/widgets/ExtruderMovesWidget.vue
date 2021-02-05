@@ -11,7 +11,7 @@
           hide-details
           outlined
           dense
-          label="Extrude Length"
+          :label="$t('Extrude Length')"
           suffix="mm">
         </v-text-field>
       </v-col>
@@ -23,7 +23,7 @@
           block
           color="secondary"
           class="mr-2">
-          Retract
+          {{$t('Retract')}}
           <v-icon>$chevronUp</v-icon>
         </v-btn>
       </v-col>
@@ -38,7 +38,7 @@
           hide-details
           outlined
           dense
-          label="Extrude Speed"
+          :label="$t('Extrude Speed')"
           suffix="mm/s">
         </v-text-field>
       </v-col>
@@ -50,7 +50,7 @@
           block
           color="secondary"
           class="mr-2">
-          Extrude
+          {{$t('Extrude')}}
           <v-icon>$chevronDown</v-icon>
         </v-btn>
       </v-col>

@@ -11,6 +11,7 @@ import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
+import i18n from './plugins/i18n'
 // import { WorkboxPlugin } from './plugins/workbox'
 import vueHeadful from 'vue-headful'
 
@@ -55,6 +56,7 @@ appInit()
     Vue.config.productionTip = false
     new Vue({
       router,
+      i18n,
       store,
       vuetify,
       render: (h) => h(App)

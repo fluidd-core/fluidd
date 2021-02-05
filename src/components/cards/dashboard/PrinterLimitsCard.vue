@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Printer Limits"
+    :title="$t('Printer Limits')"
     icon="$limits"
     :draggable="true"
     :inLayout="inLayout"

@@ -67,7 +67,7 @@
 
             <v-card color="secondary darken-1">
               <v-card-title>
-                <span class="headline">{{ (dialog.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+                <span class="headline">{{ $t((dialog.index >= 0) ? 'Edit preset' : 'Add preset' )}}</span>
               </v-card-title>
               <v-card-text>
 
@@ -82,8 +82,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-                <v-btn color="primary" :elevation="2" type="submit">Save</v-btn>
+                <v-btn color="warning" text @click="dialog.active = false" type="button">{{$t('Cancel')}}</v-btn>
+                <v-btn color="primary" :elevation="2" type="submit">{{$t('Save')}}</v-btn>
               </v-card-actions>
             </v-card>
 
@@ -173,7 +173,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$printer</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Print</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('Print')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -182,7 +182,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$pencil</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Edit</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('Edit')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -191,7 +191,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$magnify</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">View</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('View')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -200,7 +200,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$download</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Download</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('Download')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -209,7 +209,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$rename</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Rename</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('Rename')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -218,7 +218,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$delete</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Remove</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('Remove')}}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-col>

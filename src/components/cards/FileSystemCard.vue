@@ -14,7 +14,7 @@
 
     <v-card-title class="quaternary rounded-t py-1" v-if="showTitle">
       <v-icon left>$files</v-icon>
-      <span class="font-weight-light">{{ panelTitle }}</span>
+      <span class="font-weight-light">{{ $t(panelTitle) }}</span>
       <v-spacer></v-spacer>
       <v-select
         v-if="isMultiRoot"

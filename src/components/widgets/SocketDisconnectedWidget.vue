@@ -9,8 +9,8 @@
         class="subtitle-1 text-center"
         cols="12"
       >
-        <span v-if="socketConnecting">Connecting to printer...</span>
-        <span v-if="!socketConnecting">No printer connection. Please check moonraker status and / or refresh.</span>
+        <span v-if="socketConnecting">{{$t('Connecting to printer')}}...</span>
+        <span v-if="!socketConnecting">{{$t('No printer connection. Please check moonraker status and / or refresh.')}}</span>
       </v-col>
       <v-col cols="6">
         <v-progress-linear
@@ -21,7 +21,7 @@
           rounded
           height="6"
         ></v-progress-linear>
-        <v-btn block color="warning" :elevation="2" @click="reload()" class="me-2 mb-2">Force Refresh</v-btn>
+        <v-btn block color="warning" :elevation="2" @click="reload()" class="me-2 mb-2">{{$t('Force Refresh')}}</v-btn>
       </v-col>
     </v-row>
   </v-container>

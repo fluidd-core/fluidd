@@ -1,7 +1,7 @@
 
 <template>
   <collapsable-card
-    title="Themes"
+    :title="$t('Themes')"
     cardKey="ThemeSettings"
     icon="$cogs">
     <v-card-text>

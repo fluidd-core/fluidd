@@ -4,7 +4,7 @@
     <v-row class="my-0 mb-4">
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          label="Velocity"
+          :label="$t('Velocity')"
           value-suffix="mm/s"
           input-sm
           :value="velocity.current"
@@ -18,7 +18,7 @@
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          label="Square Corner Velocity"
+          :label="$t('Square Corner Velocity')"
           value-suffix="mm/s"
           input-sm
           :value="scv.current"
@@ -35,7 +35,7 @@
     <v-row class="my-0">
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          label="Acceleration"
+          :label="$t('Acceleration')"
           value-suffix="mm/s^2"
           input-sm
           :value="accel.current"
@@ -49,7 +49,7 @@
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          label="Accel to Decel"
+          :label="$t('Accel to Decel')"
           value-suffix="mm/s^2"
           input-sm
           :value="decel.current"

@@ -1,9 +1,9 @@
 <template>
   <collapsable-card
-    title="Temperature Presets"
+    :title="$t('Temperature Presets')"
     cardKey="TemperaturePresetSettings"
     icon="$fire"
-    subTitle="Apply predefined temperatures on the dashboard"
+    :subTitle="$t('Apply predefined temperatures on the dashboard')"
   >
     <v-card-text>
 
@@ -40,7 +40,7 @@
         class="mt-2"
         color="secondary">
         <v-icon small left>$plus</v-icon>
-        Add preset
+        {{$t('Add preset')}}
       </v-btn>
 
       <v-dialog
@@ -54,7 +54,7 @@
         >
           <v-card color="secondary darken-1">
             <v-card-title>
-              <span class="headline">{{ (dialog.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+              <span class="headline">{{ $t((dialog.index >= 0) ? 'Edit preset' : 'Add preset')}}</span>
             </v-card-title>
             <v-card-text>
               <v-text-field
@@ -97,8 +97,8 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-              <v-btn color="primary" type="submit">{{ (dialog.index >= 0) ? 'Save' : 'Add' }}</v-btn>
+              <v-btn color="warning" text @click="dialog.active = false" type="button">{{$t('Cancel')}}</v-btn>
+              <v-btn color="primary" type="submit">{{ $t((dialog.index >= 0) ? 'Save' : 'Add' )}}</v-btn>
             </v-card-actions>
           </v-card>
         </v-form>

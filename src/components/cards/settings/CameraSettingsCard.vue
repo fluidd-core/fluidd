@@ -1,28 +1,28 @@
 <template>
   <collapsable-card
-    title="Camera"
+    :title="$t('Camera')"
     cardKey="CameraSettings"
     icon="$camera">
     <v-card-text>
       <v-switch
         class="mt-0"
-        label="Enabled"
+        :label="$t('Enabled')"
         hide-details
         v-model="enabled">
       </v-switch>
       <v-switch
-        label="Flip horizontally"
+        :label="$t('Flip horizontally')"
         hide-details
         v-model="flipX">
       </v-switch>
       <v-switch
         class="mb-4"
-        label="Flip vertically"
+        :label="$t('Flip vertically')"
         hide-details
         v-model="flipY">
       </v-switch>
       <v-select
-        label="Stream type"
+        :label="$t('Stream type')"
         hide-details="auto"
         :items="[{ text: 'mjpgstreamer', value: 'mjpgstreamer' }, { text: 'ip camera', value: 'ipcamera' }]"
         v-model="streamType">
@@ -30,7 +30,7 @@
       <v-text-field
         class="mt-5"
         filled
-        label="Camera URL"
+        :label="$t('Camera URL')"
         v-model="url"
       ></v-text-field>
     </v-card-text>
