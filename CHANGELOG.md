@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.6.3](https://github.com/cadriel/fluidd/compare/v1.6.2...v1.6.3) (2021-02-06)
+
+
+### Bug Fixes
+
+* fan value display not having a fixed decimal ([8a14ac6](https://github.com/cadriel/fluidd/commit/8a14ac65828f158176cce49ddc1f796ce025ebec))
+* websocket data bleed ([cff0077](https://github.com/cadriel/fluidd/commit/cff00771988fc240520a4d977ab00fbe2e3bad85))
+
 ### [1.6.2](https://github.com/cadriel/fluidd/compare/v1.6.1...v1.6.2) (2021-02-05)
 
 
