@@ -37,6 +37,7 @@ export class WebSocketClient {
 
   connect (url?: string) {
     if (url) this.url = url
+
     this.connection = new WebSocket(this.url)
     if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
 
@@ -53,11 +54,11 @@ export class WebSocketClient {
     this.connection.onclose = (e) => {
       console.debug(`${this.logPrefix} Connection closed:`, e)
       if (this.store) this.store.dispatch('socket/onSocketClose', e)
-      if (e.wasClean && this.reconnectEnabled) {
-        this.reconnect()
+      if (e.wasClean) {
+        // A clean close indicates we wanted to do this on purpose.
+        if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
       } else {
         this.reconnect()
-        // if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
       }
     }
 
