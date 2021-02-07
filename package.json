@@ -1,6 +1,6 @@
 {
   "name": "fluidd",
-  "version": "1.6.1",
+  "version": "1.6.3",
   "private": true,
   "description": "fluidd, a klipper web client.",
   "author": {
@@ -50,7 +50,7 @@
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
     "vuedraggable": "^2.24.3",
-    "vuetify": "^2.4.0",
+    "vuetify": "^2.4.3",
     "vuex": "^3.6.0"
   },
   "devDependencies": {

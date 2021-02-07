@@ -20,7 +20,7 @@
       </div>
       <div class="ml-auto">
         <span class="grey--text focus--text text--lighten-1">
-          {{ value }}
+          {{ prettyValue }}
           <small>%</small>
         </span>
       </div>
@@ -47,6 +47,10 @@ export default class FanWidget extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, default: false })
   divider!: boolean
+
+  get prettyValue () {
+    return this.value.toFixed()
+  }
 
   get value () {
     return (this.fan.speed) ? this.fan.speed * 100 : 0

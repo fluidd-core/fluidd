@@ -235,7 +235,9 @@ export const actions: ActionTree<SocketState, RootState> = {
         const pad = moonrakerCount - l
         const lastTemp = payload[originalKey].temperatures[0]
         payload[originalKey].temperatures = [...Array.from({ length: pad }, () => lastTemp), ...payload[originalKey].temperatures]
-        payload[originalKey].targets = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].targets]
+        if ('targets' in payload[originalKey]) {
+          payload[originalKey].targets = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].targets]
+        }
       }
 
       const val = payload[originalKey]
@@ -254,10 +256,12 @@ export const actions: ActionTree<SocketState, RootState> = {
           x: date,
           y: val.temperatures[i]
         })
-        data[1].data.push({
-          x: date,
-          y: val.targets[i]
-        })
+        if ('targets' in val) {
+          data[1].data.push({
+            x: date,
+            y: val.targets[i]
+          })
+        }
       }
       commit('addInitialChartData', data)
     }
