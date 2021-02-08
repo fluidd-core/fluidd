@@ -98,7 +98,7 @@ export default class App extends Mixins(UtilsMixin) {
     const pageName = this.$route.name
 
     if (this.printerPrinting) {
-      return `${instanceName} | ${pageName} | [${this.progress}%]`
+      return `[${this.progress}%] | ${instanceName} | ${pageName}`
     } else {
       return `${instanceName} | ${pageName}`
     }
