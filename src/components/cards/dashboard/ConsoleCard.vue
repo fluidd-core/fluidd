@@ -50,6 +50,14 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
+  get hideTempWaits (): boolean {
+    return this.$store.state.config.fileConfig.general.hideTempWaits
+  }
+
+  set hideTempWaits (value: boolean) {
+    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.hideTempWaits', value })
+  }
+
   get items (): ConsoleEntry[] {
     return this.$store.getters['socket/getConsoleEntries']
   }
@@ -73,14 +81,6 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
     if (!collapsed) {
       this.consoleComponent.scrollToEnd()
     }
-  }
-
-  get hideTempWaits (): boolean {
-    return this.$store.state.config.fileConfig.general.hideTempWaits
-  }
-
-  set hideTempWaits (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.hideTempWaits', value })
   }
 }
 </script>

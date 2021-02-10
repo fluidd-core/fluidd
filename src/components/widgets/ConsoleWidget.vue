@@ -10,7 +10,7 @@
       ref="console-wrapper"
     >
       <console-entry-widget
-        v-for="(item, index) in items"
+        v-for="(item, index) in availableItems"
         :key="index"
         class="console-item"
         :value="item"
@@ -32,6 +32,7 @@ import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 import ConsoleEntryWidget from '@/components/widgets/ConsoleEntryWidget.vue'
+import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -49,6 +50,8 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: false })
   padBottom!: boolean
 
+  availableItems: ConsoleEntry[] = []
+
   get availableCommands () {
     return this.$store.getters['socket/getAllGcodeCommands']
   }
@@ -65,9 +68,23 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     this.scrollToEnd()
   }
 
-  @Watch('items')
-  onItemsChange () {
-    this.scrollToEnd()
+  // TODO:
+  // Later, we should be smarter with scrolling.
+  @Watch('items', { immediate: true })
+  onItemsChange (val: ConsoleEntry[]) {
+    let doScroll = true
+    const newArray = val.slice(0) as ConsoleEntry[]
+    if (
+      newArray.length &&
+      this.availableItems.length &&
+      newArray[newArray.length - 1].time &&
+      this.availableItems[this.availableItems.length - 1].time &&
+      newArray[newArray.length - 1].time === this.availableItems[this.availableItems.length - 1].time
+    ) {
+      doScroll = false
+    }
+    this.availableItems = newArray
+    if (doScroll) this.scrollToEnd()
   }
 
   scrollToEnd () {
