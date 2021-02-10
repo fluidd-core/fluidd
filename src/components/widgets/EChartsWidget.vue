@@ -168,7 +168,9 @@ export default class EChartsWidget extends Vue {
   }
 
   destroy () {
-    // this.$root
+    if (this.chart) {
+      this.chart.dispose()
+    }
   }
 
   init () {
