@@ -19,7 +19,7 @@
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <span class="grey--text focus--text text--lighten-1">
+        <span class="grey--text focus--text">
           {{ prettyValue }}
           <small>%</small>
         </span>

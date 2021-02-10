@@ -34,10 +34,17 @@ export default class EChartsWidget extends Vue {
   }
 
   get options () {
+    const darkMode = this.$store.state.config.fileConfig.general.darkMode
     const fontSize = 16
-    const fontColor = 'rgba(255,255,255,0.25)'
-    const lineColor = '#ffffff'
     const lineOpacity = 0.2
+    let labelBackground = 'rgba(10,10,10,0.90)'
+    let fontColor = 'rgba(255,255,255,0.25)'
+    let lineColor = '#ffffff'
+    if (!darkMode) {
+      labelBackground = 'rgba(255,255,255,0.90)'
+      fontColor = 'rgba(0,0,0,0.45)'
+      lineColor = '#000000'
+    }
 
     const options: EChartsOption & any = {
       grid: {
@@ -60,9 +67,10 @@ export default class EChartsWidget extends Vue {
       tooltip: {
         trigger: 'axis',
         confine: true,
-        backgroundColor: 'rgba(10,10,10,0.90)',
-        borderColor: 'rgba(10,10,10,0.90)',
+        backgroundColor: labelBackground,
+        borderColor: labelBackground,
         textStyle: {
+          color: fontColor,
           fontSize
         },
         axisPointer: {
@@ -74,7 +82,7 @@ export default class EChartsWidget extends Vue {
           label: {
             color: fontColor,
             fontSize,
-            backgroundColor: 'rgba(10,10,10,0.90)'
+            backgroundColor: labelBackground
           }
         },
         position: this.tooltipPosition,

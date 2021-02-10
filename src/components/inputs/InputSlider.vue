@@ -51,7 +51,7 @@
         <v-icon
           :disabled="readonly || disabled || newValue === 0"
           @click="clickChange(newValue - step)"
-          color="grey lighten-2">
+          color="grey">
           $minus
         </v-icon>
       </template>
@@ -60,7 +60,7 @@
         <v-icon
           :disabled="readonly || disabled || newValue === max"
           @click="clickChange(newValue + step)"
-          color="grey lighten-2">
+          color="grey">
           $plus
         </v-icon>
       </template>
