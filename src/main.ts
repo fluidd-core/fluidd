@@ -9,8 +9,18 @@ import { appInit } from './init'
 import { Config } from './store/config/types'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
+import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
+import * as echarts from 'echarts'
+import { plugin } from 'echarts-for-vue'
+
+// import { LineChart } from 'echarts/charts'
+// import 'echarts/lib/component/tooltip'
+// import 'echarts/renderers'
+
+// import 'echarts-gl'
+
 // import { WorkboxPlugin } from './plugins/workbox'
 import vueHeadful from 'vue-headful'
 
@@ -18,17 +28,19 @@ import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
 import InlineHelpIcon from '@/components/inputs/InlineHelpIcon.vue'
 
-Vue.component('btn-collapse', BtnCollapse)
-Vue.component('collapsable-card', CollapsableCard)
-Vue.component('vue-headful', vueHeadful)
-Vue.component('inline-help', InlineHelpIcon)
-
 // Use any Plugins
+Vue.use(plugin, { echarts })
 Vue.use(AxiosPlugin)
 Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
+Vue.use(ColorSetPlugin, {})
 // Vue.use(WorkboxPlugin)
+
+Vue.component('btn-collapse', BtnCollapse)
+Vue.component('collapsable-card', CollapsableCard)
+Vue.component('vue-headful', vueHeadful)
+Vue.component('inline-help', InlineHelpIcon)
 
 appInit()
   .then((config: Config) => {

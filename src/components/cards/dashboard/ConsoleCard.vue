@@ -26,6 +26,7 @@
 
     <console-widget
       ref="console"
+      pad-bottom
       :items="items"
     ></console-widget>
 

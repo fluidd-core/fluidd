@@ -1,5 +1,5 @@
 export interface SocketState {
-  [key: string]: boolean | SocketError | EndStops | Macros | ConsoleEntry[] | ChartDataSet[] | string | string[] | Printer | null;
+  [key: string]: boolean | SocketError | EndStops | Macros | ConsoleEntry[] | ChartData[] | string | string[] | Printer | null;
   open: boolean;
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   ready: boolean;
@@ -11,7 +11,7 @@ export interface SocketState {
   failed_plugins: string[];
   console: ConsoleEntry[]; // console stream
   availableCommands: GcodeCommands; // available gcode commands
-  chart: ChartDataSet[]; // chart data
+  chart: ChartData[]; // chart data
   printer: Printer;
 }
 
@@ -52,6 +52,8 @@ export interface Endstops {
 export interface Heater {
   name: string;
   prettyName: string;
+  key: string;
+  color: string;
   temperature: number;
   target: number;
   power: number;
@@ -63,6 +65,8 @@ export interface Fan {
   config: FanConfig;
   name: string;
   prettyName: string;
+  key: string;
+  color: string;
   type: string;
   controllable: boolean;
   speed?: number;
@@ -80,6 +84,8 @@ export interface FanConfig {
 export interface OutputPin {
   name: string;
   prettyName: string;
+  key: string;
+  color: string;
   type: string;
   controllable: boolean;
   pwm: boolean;
@@ -101,6 +107,8 @@ export interface OutputPinConfig {
 export interface Sensor {
   name: string;
   prettyName: string;
+  key: string;
+  color: string;
   type: string;
   temperature: number;
   target?: number;
@@ -110,26 +118,9 @@ export interface Sensor {
   minTemp?: number;
 }
 
-export interface Chart {
-  labels: {}[]; // Filled by chartjs
-  datasets: ChartDataSet[];
-}
-
-export interface ChartDataSet {
-  data: ChartData[];
-  label: string;
-  display?: boolean;
-  radius?: number;
-  spanGaps?: boolean;
-  borderWidth?: number;
-  fill?: boolean;
-  borderColor?: string;
-  backgroundColor?: string;
-}
-
 export interface ChartData {
-  x: Date;
-  y: number;
+  [key: string]: number | Date;
+  date: Date;
 }
 
 export interface EndStops {

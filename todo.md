@@ -7,6 +7,9 @@
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - temperature graph tooltips / hover
 - i18n (translations)
+- filesystem browser to use same scrollbar as console
+- primary color picker
+- macros have inputs via settings, impl a UI dialog for this?
 
 - refactor store modules
 - loading heaters, fans or pins means these are constantly updated - due to temps changing

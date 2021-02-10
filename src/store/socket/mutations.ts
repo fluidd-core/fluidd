@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
-import { SocketState, ChartDataSet, Macro, ConsoleEntry } from './types'
+import { SocketState, ChartData, Macro, ConsoleEntry } from './types'
 import { defaultState } from './index'
 import { Globals, chartConfiguration } from '@/globals'
 
@@ -108,36 +108,18 @@ export const mutations: MutationTree<SocketState> = {
     state.endstops = {}
   },
   addInitialChartData (state, payload) {
-    payload.forEach((item: ChartDataSet) => {
+    payload.forEach((item: ChartData) => {
       state.chart.push(item)
     })
   },
-  addChartValue (state, payload: ChartDataSet) {
+  addChartEntry (state, payload: ChartData) {
     // Dont keep data older than 10 minutes and...
     // Only add if it's at least a second over the prior entry.
-    let chartItem = state.chart.find(item => item.label === payload.label)
-    if (!chartItem) {
-      chartItem = { label: payload.label, data: [], radius: 0 }
-      state.chart.push(chartItem)
-    }
-    if (chartItem) {
-      if (chartItem.data.length) {
-        const date1 = new Date(payload.data[0].x)
-        const date2 = new Date(chartItem.data[chartItem.data.length - 1].x)
-        const diff1 = 1000 // time to wait before adding another entry.
-        const diff2 = chartConfiguration.HISTORY_RETENTION * 60 * 1000 // Truncate items older than this.
-        if (date1.getTime() - date2.getTime() > diff1) {
-          chartItem.data.push(payload.data[0])
-          let i
-          while (
-            (i = chartItem.data.findIndex(item => date1.getTime() - new Date(item.x).getTime() > diff2)) > -1
-          ) {
-            chartItem.data.splice(i, 1)
-          }
-        }
-      } else {
-        chartItem.data.push(payload.data[0])
-      }
+    const retention = chartConfiguration.HISTORY_RETENTION * 60
+    state.chart.push(payload)
+    // console.log('adding chart entry', payload)
+    while (state.chart.length > retention) {
+      state.chart.splice(0, 1)
     }
   },
   resetCurrentFile (state) {

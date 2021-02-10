@@ -1,4 +1,4 @@
-import { SocketState, ChartDataSet } from './socket/types'
+import { SocketState, ChartData } from './socket/types'
 import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -88,47 +88,65 @@ export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | 
 
 /**
  * Prepare packet data for a chart entry.
- * Every packet can have both a current temperature
- * and a target. Determine if they SHOULD have targets by
- * looking at the config object. If this update is the target,
- * use the existing temp. If this update is the temp, use
- * the existing target.
- * @param key The sensor key to update.
- * @param val The value being passed. We can tell if its a temp or target due to its property name.
+ * Every packet should contain an entry for all known sensors we want to track.
  */
-export const configureChartEntry = (key: string, val: {[key: string]: number }, state: SocketState) => {
-  const config = state.printer[key]
-  let label = key
-  if (key.includes(' ')) label = key.split(' ')[1]
-
-  const now = new Date() // Common date for this data.
-  const r: {temperature?: ChartDataSet; target?: ChartDataSet} = {}
-
-  if ('temperature' in val) {
-    r.temperature = {
-      label,
-      data: [{ x: now, y: val.temperature }]
-    }
-  } else {
-    r.temperature = {
-      label,
-      data: [{ x: now, y: config.temperature }]
-    }
+export const configureChartEntry = (state: SocketState, keys: string[]) => {
+  const date = new Date() // Common date for this data.
+  const r: ChartData = {
+    date
   }
 
-  if ('target' in val) {
-    r.target = {
-      label: `${label}Target`,
-      data: [{ x: now, y: val.target }]
-    }
-  } else {
-    if ('target' in config) {
-      r.target = {
-        label: `${label}Target`,
-        data: [{ x: now, y: config.target }]
-      }
-    }
-  }
+  keys.forEach((key) => {
+    let label = key
+    if (key.includes(' ')) label = key.split(' ')[1]
+    const temp = state.printer[key].temperature
+    const target = state.printer[key].target
+    const power = state.printer[key].power
+    const speed = state.printer[key].speed
+    r[label] = temp
+    if (target !== undefined) r[`${label}Target`] = target
+    if (power !== undefined) r[`${label}Power`] = power
+    if (speed !== undefined) r[`${label}Speed`] = speed
+  })
 
   return r
 }
+
+/**
+ * Map object prefixes and names to their generic types.
+ * I.e., temperature_fans and heater_fans are both fans.
+ */
+export const getKlipperType = (name: string) => {
+  const fans = [
+    'temperature_fan',
+    'controller_fan',
+    'heater_fan',
+    'fan_generic',
+    'fan'
+  ]
+
+  const sensors = [
+    'temperature_sensor',
+    'temperature_probe'
+  ]
+
+  const heaters = [
+    'heater_generic',
+    'extruder'
+  ]
+
+  const beds = [
+    'heater_bed'
+  ]
+
+  if (fans.some(s => name.startsWith(s))) return 'fan'
+  if (sensors.some(s => name.startsWith(s))) return 'sensor'
+  if (heaters.some(s => name.startsWith(s))) return 'heater'
+  if (beds.some(s => name.startsWith(s))) return 'bed'
+  return ''
+}
+
+/**
+ * Given a sensor, determine if it has target and power data.
+ */
+// export const

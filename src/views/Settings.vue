@@ -2,7 +2,6 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" sm="4" md="3" class="pt-0">
-        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
         <general-settings-card></general-settings-card>
         <theme-settings-card></theme-settings-card>
         <print-time-estimate-settings-card></print-time-estimate-settings-card>
@@ -12,6 +11,7 @@
         <toolhead-settings-card></toolhead-settings-card>
       </v-col>
       <v-col cols="12" sm="4" md="6" class="pt-0">
+        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
         <temperature-preset-settings-card></temperature-preset-settings-card>
         <macro-settings-card></macro-settings-card>
       </v-col>

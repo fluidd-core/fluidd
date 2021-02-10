@@ -17,21 +17,25 @@ export const defaultState = (): ConfigState => {
       dashboard1: [
         { name: 'toolhead-card', enabled: true },
         { name: 'outputs-card', enabled: true },
-        { name: 'camera-card', enabled: true },
-        { name: 'printer-limits-card', enabled: true }
+        { name: 'macros-card', enabled: true },
+        { name: 'printer-limits-card', enabled: true },
+        { name: 'camera-card', enabled: true }
       ],
       dashboard2: [
-        { name: 'tools-card', enabled: true },
-        { name: 'macros-card', enabled: true },
-        { name: 'console-card', enabled: true },
-        { name: 'temperature-graph-card', enabled: true }
+        { name: 'temperature-card', enabled: true },
+        { name: 'jobs-card', enabled: true },
+        { name: 'console-card', enabled: true }
       ]
+    },
+    appState: {
+      chartSelectedLegends: {}
     },
     instances: [],
     fileConfig: {
       general: {
         instanceName: Globals.APP_NAME,
         jobsInDash: false,
+        chartVisible: true,
         darkMode: true,
         hideTempWaits: true,
         axis: {

@@ -95,7 +95,7 @@ export const Globals = Object.freeze({
   KLIPPY_RETRY_DELAY: 2000,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
-  LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout1', // Specific layout / enabled / disabled
+  LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
   SETTINGS_FILENAME: '.fluidd.json',
   APP_NAME: 'Fluidd',
@@ -229,7 +229,7 @@ export const Waits = Object.freeze({
 })
 
 export const chartConfiguration: ChartConfiguration = Object.freeze({
-  HISTORY_RETENTION: 11, // history in minutes of chart to keep.
+  HISTORY_RETENTION: 10, // history in minutes of chart to keep.
   COLORS: {
     NAMED: {
       heater_bed: '#0095ff',
