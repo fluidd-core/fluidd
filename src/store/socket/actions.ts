@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { SocketState, ConsoleEntry, ChartData } from './types'
+import { SocketState, ConsoleEntry, ChartData, Macro } from './types'
 import { RootState } from '../types'
 import { configureChartEntry } from '../helpers'
-import { Globals, chartConfiguration } from '@/globals'
+import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import EventBus from '@/eventBus'
 
@@ -177,7 +177,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Stores the printers object list.
    */
-  async onPrinterObjectsList ({ commit, dispatch }, payload) {
+  async onPrinterObjectsList ({ commit, rootState }, payload) {
     // Given our object list, subscribe to any data we'd want constant updates for
     // and prepopulate our store.
     // Also ensure we init the chart data with the labels
@@ -189,14 +189,18 @@ export const actions: ActionTree<SocketState, RootState> = {
       }
       let key = k
       if (k.includes(' ')) key = key.replace(' ', '.')
-      if (k.includes('gcode_macro')) {
-        const split: string[] = k.split(' ')
-        split.shift()
-        dispatch('addMacro', split.join(' '))
-      } else {
-        commit('onPrinterObjectsList', key)
-      }
+      commit('onPrinterObjectsList', key)
     })
+
+    const macros: Macro[] = payload.objects
+      .filter((item: string) => item.startsWith('gcode_macro'))
+      .map((item: string) => {
+        const name = item.split(' ')[1]
+        const hidden = rootState.config?.fileConfig?.dashboard?.hiddenMacros.includes(name)
+        return { name, visible: !hidden }
+      })
+    commit('setMacros', macros)
+
     SocketActions.printerObjectsSubscribe(intendedSubscriptions)
   },
 
@@ -215,7 +219,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async onTemperatureStore ({ commit, getters }, payload) {
+  async onTemperatureStore ({ commit }, payload) {
     const now = new Date() // Set a base time to work out the temp data from.
     // On a fresh boot of the host system, moonraker should give us enough data;
     // however, it seems sometimes it does not. So - we should pad this out when
@@ -385,12 +389,6 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('addConsoleEntry', payload)
   },
 
-  async addMacro ({ commit, rootState }, macro) {
-    // Macros should include a property to indicate if they're visible
-    // on the dashboard or not. This comes from the fileConfig.
-    const hidden = rootState.config?.fileConfig?.dashboard?.hiddenMacros.includes(macro)
-    commit('addMacro', { name: macro, visible: !hidden })
-  },
   async updateMacro ({ commit }, macro) {
     commit('updateMacro', macro)
   }

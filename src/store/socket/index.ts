@@ -16,7 +16,7 @@ export const defaultState = (): SocketState => {
     console: [],
     availableCommands: {},
     chart: [],
-    macros: {},
+    macros: [],
     plugins: [],
     failed_plugins: [],
     printer: {

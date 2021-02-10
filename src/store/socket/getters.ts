@@ -3,8 +3,6 @@ import { GetterTree } from 'vuex'
 import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, RunoutSensor, BedMesh, Endstops } from './types'
 import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
-// import { chartConfiguration } from '@/globals'
-// import { TinyColor } from '@ctrl/tinycolor'
 import { get, isFinite } from 'lodash-es'
 import { getThumb, getKlipperType } from '../helpers'
 
@@ -273,7 +271,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   getBedMeshes: (state, getters): BedMesh[] => {
     const meshes: BedMesh[] = []
     const currentProfile = state.printer.bed_mesh.profile_name || ''
-    const config = getters.getPrinterSettings()
+    const config = getters.getPrinterConfig()
     if (state.printer.bed_mesh && currentProfile.length > 0) {
       meshes.push({
         ...state.printer.bed_mesh,
@@ -556,14 +554,14 @@ export const getters: GetterTree<SocketState, RootState> = {
   /**
    * Return macros that are visible on the dashboard.
    */
+  getMacros: (state) => {
+    return state.macros
+  },
+
   getVisibleMacros: (state) => {
-    const macros: string[] = []
-    for (const macro in state.macros) {
-      if (state.macros[macro].visible) {
-        macros.push(macro)
-      }
-    }
-    return macros
+    return (state.macros.length)
+      ? state.macros.filter(macro => macro.visible)
+      : []
   },
 
   getChartData: (state) => {

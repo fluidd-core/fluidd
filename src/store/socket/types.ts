@@ -1,12 +1,12 @@
 export interface SocketState {
-  [key: string]: boolean | SocketError | EndStops | Macros | ConsoleEntry[] | ChartData[] | string | string[] | Printer | null;
+  [key: string]: boolean | SocketError | EndStops | ConsoleEntry[] | ChartData[] | string | string[] | Printer | null;
   open: boolean;
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   ready: boolean;
   acceptingNotifications: boolean;
   error: SocketError | null;
   endstops: EndStops;
-  macros: Macros;
+  macros: Macro[];
   plugins: string[]; // active plugins (device_power)
   failed_plugins: string[];
   console: ConsoleEntry[]; // console stream
@@ -23,13 +23,13 @@ export interface Printer {
   [key: string]: any;
 }
 
-export interface Macros {
-  [key: string]: Macro;
-}
+// export interface Macros {
+//   [key: string]: Macro;
+// }
 
 export interface Macro {
   name: string;
-  visible: boolean;
+  visible?: boolean;
 }
 
 export interface SocketError {

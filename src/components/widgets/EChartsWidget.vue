@@ -6,7 +6,7 @@
 
 <script lang='ts'>
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop } from 'vue-property-decorator'
 import { ECharts, EChartsOption } from 'echarts'
 import { getKlipperType } from '@/store/helpers'
 import { ChartSelectedLegends } from '@/store/config/types'
@@ -302,7 +302,6 @@ export default class EChartsWidget extends Vue {
   tooltipFormatter (params: any) {
     let text = ''
     params.forEach((param: any) => {
-      // console.log(params)
       if (
         !param.seriesName.toLowerCase().endsWith('target') &&
         !param.seriesName.toLowerCase().endsWith('power') &&

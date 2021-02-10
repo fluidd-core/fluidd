@@ -98,11 +98,12 @@ export const mutations: MutationTree<SocketState> = {
     // state.console.unshift(entry)
     state.console.push(entry)
   },
-  addMacro (state, macro: Macro) {
-    Vue.set(state.macros, macro.name, macro)
+  setMacros (state, macros: Macro[]) {
+    Vue.set(state, 'macros', macros)
   },
   updateMacro (state, macro: Macro) {
-    state.macros[macro.name] = macro
+    const i = state.macros.findIndex(m => m.name === macro.name)
+    Vue.set(state.macros, i, macro)
   },
   clearEndStops (state) {
     state.endstops = {}

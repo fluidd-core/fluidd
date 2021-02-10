@@ -31,7 +31,7 @@ import { Macro } from '@/store/socket/types'
 })
 export default class MacroSettingsCard extends Mixins(UtilsMixin) {
   get macros () {
-    return this.$store.state.socket.macros
+    return this.$store.getters['socket/getMacros']
   }
 
   changeMacro (macro: Macro, value: boolean) {
