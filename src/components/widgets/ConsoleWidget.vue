@@ -1,12 +1,22 @@
 <template>
-  <div class="console">
-    <v-card outlined color="tertiary" class="console-wrapper pa-1" ref="console-wrapper">
-        <console-entry-widget
-          v-for="(item, index) in items" :key="index" class="console-item"
-          :value="item"
-          @click="handleEntryClick"
-        >
-        </console-entry-widget>
+  <div
+    class="console"
+    style="height: 100%;">
+    <v-card
+      outlined
+      color="tertiary"
+      class="console-wrapper pa-1"
+      :style="(padBottom) ? 'height: calc(100% - 68px);' : 'height: 100%'"
+      ref="console-wrapper"
+    >
+      <console-entry-widget
+        v-for="(item, index) in availableItems"
+        :key="index"
+        class="console-item"
+        :value="item"
+        @click="handleEntryClick"
+      >
+      </console-entry-widget>
     </v-card>
     <input-console-command
       v-if="!readonly"
@@ -22,6 +32,7 @@ import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 import ConsoleEntryWidget from '@/components/widgets/ConsoleEntryWidget.vue'
+import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({
   components: {
@@ -34,7 +45,12 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   items!: []
 
   @Prop({ type: Boolean, default: false })
-  readonly!: false
+  readonly!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  padBottom!: boolean
+
+  availableItems: ConsoleEntry[] = []
 
   get availableCommands () {
     return this.$store.getters['socket/getAllGcodeCommands']
@@ -52,9 +68,21 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     this.scrollToEnd()
   }
 
-  @Watch('items')
-  onItemsChange () {
-    this.scrollToEnd()
+  // TODO:
+  // Later, we should be smarter with scrolling.
+  @Watch('items', { immediate: true })
+  onItemsChange (val: ConsoleEntry[]) {
+    let doScroll = true
+    const newArray = val.slice(0) as ConsoleEntry[]
+    if (
+      newArray.length &&
+      this.availableItems.length &&
+      newArray[newArray.length - 1] === this.availableItems[this.availableItems.length - 1]
+    ) {
+      doScroll = false
+    }
+    this.availableItems = newArray
+    if (doScroll) this.scrollToEnd()
   }
 
   scrollToEnd () {
@@ -82,7 +110,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
 
 <style lang="scss" scoped>
   .console {
-    height: calc(100% - 12px);
     position: relative;
     display: block;
     font-family: monospace;
@@ -91,7 +118,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   }
 
   .console-wrapper {
-    height: calc(100% - 60px);
     overflow-x: hidden;
   }
 

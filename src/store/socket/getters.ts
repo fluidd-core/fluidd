@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, Chart, ChartDataSet, RunoutSensor, BedMesh, Endstops } from './types'
+import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, RunoutSensor, BedMesh, Endstops } from './types'
 import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
-import { chartConfiguration } from '@/globals'
-import { TinyColor } from '@ctrl/tinycolor'
 import { get, isFinite } from 'lodash-es'
-import { getThumb } from '../helpers'
+import { getThumb, getKlipperType } from '../helpers'
 
 export const getters: GetterTree<SocketState, RootState> = {
   /**
@@ -273,7 +271,7 @@ export const getters: GetterTree<SocketState, RootState> = {
   getBedMeshes: (state, getters): BedMesh[] => {
     const meshes: BedMesh[] = []
     const currentProfile = state.printer.bed_mesh.profile_name || ''
-    const config = getters.getPrinterSettings()
+    const config = getters.getPrinterConfig()
     if (state.printer.bed_mesh && currentProfile.length > 0) {
       meshes.push({
         ...state.printer.bed_mesh,
@@ -337,22 +335,31 @@ export const getters: GetterTree<SocketState, RootState> = {
         const heater = state.printer[e]
         if (heater && Object.keys(heater).length > 0) {
           const config = getters.getPrinterSettings(e)
-          let name = e
           // Some heater items may have a prefix determining type.
           // Check for these and split as necessary.
           const keys = [
             'heater_generic'
           ]
+
+          let name = e
           const split = e.split(' ')
           if (split.length > 1 && keys.includes(split[0])) {
             split.shift()
             name = split.join(' ')
           }
+
+          // const color = (name === 'heater_bed')
+          //   ? Vue.$colorset.next('bed', e)
+          //   : Vue.$colorset.next('heater', e)
+          const color = Vue.$colorset.next(getKlipperType(e), e)
           const prettyName = Vue.$filters.startCase(name)
+
           r.push({
             ...heater,
             name,
+            color,
             prettyName,
+            key: e,
             minTemp: (config && config.min_temp) ? config.min_temp : undefined,
             maxTemp: (config && config.max_temp) ? config.max_temp : undefined
           })
@@ -446,6 +453,7 @@ export const getters: GetterTree<SocketState, RootState> = {
 
         let prettyName = Vue.$filters.startCase(name)
         if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
+        const color = Vue.$colorset.next(getKlipperType(pin), pin)
 
         const type = (split.length) ? split[0] : pin
         const config = getters.getPrinterSettings(pin)
@@ -455,6 +463,8 @@ export const getters: GetterTree<SocketState, RootState> = {
           config: { ...config },
           name,
           prettyName,
+          key: pin,
+          color,
           type,
           controllable: (controllable.includes(split[0]))
         }
@@ -497,6 +507,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       if (supportedSensors.includes(split[0])) {
         const name = (split.length > 1) ? split[1] : item
         const prettyName = Vue.$filters.startCase(name)
+        const color = Vue.$colorset.next(getKlipperType(item), item)
         const type = (split.length) ? split[0] : item
         const config = getters.getPrinterSettings(item)
         const sensor = {
@@ -505,7 +516,9 @@ export const getters: GetterTree<SocketState, RootState> = {
           minTemp: (config && config.min_temp) ? config.min_temp : null,
           maxTemp: (config && config.max_temp) ? config.max_temp : null,
           name,
+          key: item,
           prettyName,
+          color,
           type
         }
         sensors.push(sensor)
@@ -515,59 +528,44 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   /**
-   * Return macros that are visible on the dashboard.
+   * Return a list of keys that represent something we may want
+   * to chart.
    */
-  getVisibleMacros: (state) => {
-    const macros: string[] = []
-    for (const macro in state.macros) {
-      if (state.macros[macro].visible) {
-        macros.push(macro)
+  getChartableSensors: (state) => {
+    let sensors: string[] = []
+    const keys = [
+      'temperature_fan',
+      'temperature_probe',
+      'temperature_sensor'
+    ]
+
+    for (const key of Object.keys(state.printer)) {
+      if (keys.some(e => key.startsWith(e))) {
+        sensors.push(key)
       }
     }
-    return macros
+
+    if (state.printer.heaters.available_heaters.length > 0) {
+      sensors = [...sensors, ...state.printer.heaters.available_heaters]
+    }
+    return sensors
+  },
+
+  /**
+   * Return macros that are visible on the dashboard.
+   */
+  getMacros: (state) => {
+    return state.macros
+  },
+
+  getVisibleMacros: (state) => {
+    return (state.macros.length)
+      ? state.macros.filter(macro => macro.visible)
+      : []
   },
 
   getChartData: (state) => {
-    const chartData: Chart = {
-      labels: [],
-      datasets: []
-    }
-
-    state.chart.forEach((item) => {
-      // Based on the name of this sensor, pick appropriate colors.
-      // Beds should probably be some variation of blue;
-      // Hotends should be some variation of red;
-      // Other sensors can hue off'f green.
-      const defaults: ChartDataSet = {
-        data: item.data,
-        label: item.label,
-        display: false,
-        radius: item.radius,
-        spanGaps: true,
-        borderWidth: 1
-      }
-
-      let isTarget = false
-      let namedColor = chartConfiguration.COLORS.NAMED[item.label]
-
-      if (item.label.includes('Target')) {
-        isTarget = true
-        namedColor = chartConfiguration.COLORS.NAMED[item.label.replace('Target', '')]
-      }
-
-      if (namedColor) {
-        if (isTarget) {
-          defaults.fill = false
-          defaults.borderColor = new TinyColor(namedColor).lighten(25).toRgbString()
-        } else {
-          defaults.fill = true
-          defaults.borderColor = new TinyColor(namedColor).toRgbString()
-          defaults.backgroundColor = new TinyColor(namedColor).setAlpha(0.1).toRgbString()
-        }
-      }
-      chartData.datasets.push(defaults)
-    })
-    return chartData
+    return state.chart
   },
 
   getConsoleEntries: (state, getters, rootState) => {
@@ -594,7 +592,21 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getAllGcodeCommands: (state) => {
-    return state.availableCommands
+    const commands = state.availableCommands
+    const additional = [
+      'TESTZ',
+      'ABORT',
+      'ACCEPT',
+      'ADJUSTED',
+      'GET_POSITION'
+    ]
+    additional.forEach(command => {
+      if (command in commands !== true) {
+        commands[command] = ''
+      }
+    })
+
+    return commands
   },
 
   /**

@@ -40,7 +40,7 @@ export default new Vuex.Store<RootState>({
       const initLocal = await dispatch('config/initLocal', payload)
       return [initFile, initHost, initLocal]
     },
-    reset () {
+    async reset () {
       // Reset the entire store - should be used when swapping instances.
       // extend this so we can pass an object defining what to reset, and if its a full reset or not.
       this.commit('socket/resetState', true)

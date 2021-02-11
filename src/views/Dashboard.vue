@@ -43,10 +43,10 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import draggable from 'vuedraggable'
 import StatusCard from '@/components/cards/dashboard/StatusCard.vue'
-import ToolsCard from '@/components/cards/dashboard/ToolsCard.vue'
+import JobsCard from '@/components/cards/dashboard/JobsCard.vue'
 import ToolheadCard from '@/components/cards/dashboard/ToolheadCard.vue'
 import TemperatureTargetsCard from '@/components/cards/dashboard/TemperatureTargetsCard.vue'
-import TemperatureGraphCard from '@/components/cards/dashboard/TemperatureGraphCard.vue'
+import TemperatureCard from '@/components/cards/dashboard/TemperatureCard.vue'
 import CameraCard from '@/components/cards/dashboard/CameraCard.vue'
 import MacrosCard from '@/components/cards/dashboard/MacrosCard.vue'
 import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
@@ -61,11 +61,11 @@ import { cloneDeep } from 'lodash-es'
   components: {
     draggable,
     StatusCard,
-    ToolsCard,
+    JobsCard,
     ToolheadCard,
     MacrosCard,
     TemperatureTargetsCard,
-    TemperatureGraphCard,
+    TemperatureCard,
     CameraCard,
     PrinterLimitsCard,
     KlippyCard,

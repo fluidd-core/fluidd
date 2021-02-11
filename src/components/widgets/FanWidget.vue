@@ -19,9 +19,7 @@
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <span class="grey--text focus--text text--lighten-1">
-          {{ prettyValue }}
-          <small>%</small>
+        <span class="grey--text focus--text" v-html="prettyValue">
         </span>
       </div>
     </v-layout>
@@ -49,7 +47,9 @@ export default class FanWidget extends Mixins(UtilsMixin) {
   divider!: boolean
 
   get prettyValue () {
-    return this.value.toFixed()
+    return (this.value === 0)
+      ? 'off'
+      : `${this.value.toFixed()}<small>%</small>`
   }
 
   get value () {

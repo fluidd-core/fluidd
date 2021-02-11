@@ -1,14 +1,24 @@
 export interface ConfigState {
-  [key: string]: string | boolean | CardState | InstanceConfig[] | FileConfig | CardLayout | HostConfig;
+  [key: string]: string | boolean | AppState | CardState | InstanceConfig[] | FileConfig | CardLayout | HostConfig;
   apiUrl: string;
   socketUrl: string;
   unsavedChanges: boolean;
   layoutMode: boolean;
+  appState: AppState; // app state, not saved anywhere.
   cardState: CardState; // if a collapsable card is collapsed or not.
   cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   fileConfig: FileConfig;
   hostConfig: HostConfig;
+}
+
+export interface AppState {
+  [key: string]: string | boolean | number | ChartSelectedLegends;
+  chartSelectedLegends: ChartSelectedLegends;
+}
+
+export interface ChartSelectedLegends {
+  [key: string]: boolean;
 }
 
 // Saved to local storage.
@@ -41,6 +51,7 @@ export interface HostConfig {
 export interface GeneralConfig {
   instanceName: string;
   jobsInDash: boolean;
+  chartVisible: boolean;
   darkMode: boolean;
   hideTempWaits: boolean;
   axis: Axis;

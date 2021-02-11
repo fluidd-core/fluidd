@@ -50,8 +50,11 @@ export default class ToolheadPositionWidget extends Mixins(UtilsMixin) {
   }
 
   get requestedSpeed () {
-    const speed = this.$store.state.socket.printer.gcode_move.speed | 0
-    return (speed / 60).toFixed()
+    // Take into account the speed multiplier.
+    const multiplier = this.$store.state.socket.printer.gcode_move.speed_factor | 100
+    let speed = this.$store.state.socket.printer.gcode_move.speed | 0
+    speed = (speed * multiplier) / 60
+    return speed.toFixed()
   }
 }
 </script>

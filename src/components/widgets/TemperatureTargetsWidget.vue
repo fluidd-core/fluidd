@@ -3,9 +3,19 @@
     <v-row>
       <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
         Item
+        <inline-help
+          top
+          small
+          tooltip="Click an item to toggle in the graph"
+        ></inline-help>
       </v-col>
       <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
         Power
+        <inline-help
+          top
+          small
+          tooltip="Click a power to toggle in the graph"
+        ></inline-help>
       </v-col>
       <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
         Current
@@ -53,17 +63,31 @@
       </v-col>
     </v-row>
 
-    <v-row v-for="item in heaters" :key="item.name" align="center">
+    <v-row v-for="item in heaters" :key="item.name" align="center" class="mt-0">
       <v-col cols="6" sm="auto" class="pr-0 d-none d-sm-flex">
-        <v-icon small color="secondary">$fire</v-icon>
+        <v-icon
+          small
+          :color="item.color">
+          $fire
+        </v-icon>
       </v-col>
       <v-col cols="6" sm="" class="text-subtitle-1 grey--text text--darken-1 pb-0 pb-md-2">
-        {{ item.prettyName }}
+        <span
+          @click="$emit('legendClick', item)"
+          :class="{ 'active': chartSelectedLegends[item.name] }"
+          class="legend-item">
+          {{ item.prettyName }}
+        </span>
       </v-col>
       <v-col cols="6" sm="2" class="grey--text pb-0 pb-md-2">
-        <span v-if="item.power <= 0 && item.target <= 0">off</span>
-        <span v-if="item.target > 0">
-          {{ (item.power * 100).toFixed() }}<small>%</small>
+        <span
+          @click="$emit('legendPowerClick', item)"
+          :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
+          class="legend-item">
+          <span v-if="item.power <= 0 && item.target <= 0">off</span>
+          <span v-if="item.target > 0">
+            {{ (item.power * 100).toFixed() }}<small>%</small>
+          </span>
         </span>
       </v-col>
       <v-col cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
@@ -80,31 +104,41 @@
     </v-row>
 
     <template v-for="item in fans">
-      <v-row :key="item.name" v-if="item.type === 'temperature_fan'" align="center">
+      <v-row :key="item.name" align="center" class="mt-0">
         <v-col cols="6" sm="auto" class="pr-0 d-none d-md-flex">
           <v-icon
             small
             :class="{ 'spin': item.speed > 0 && item.target > 0 }"
-            color="secondary">
+            :color="item.color">
             $fan
           </v-icon>
         </v-col>
         <v-col cols="6" sm="" class="text-subtitle-1 grey--text text--darken-1 pb-0 pb-md-2">
-          {{ item.prettyName }}
+          <span
+            @click="$emit('legendClick', item)"
+            :class="{ 'active': chartSelectedLegends[item.name] }"
+            class="legend-item">
+            {{ item.prettyName }}
+          </span>
         </v-col>
         <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2">
-          <span v-if="item.speed > 0 && item.target > 0">
-            {{ (item.speed * 100).toFixed(0) }}<small>%</small>
+          <span
+            @click="$emit('legendPowerClick', item)"
+            :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
+            class="legend-item">
+            <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
+              {{ (item.speed * 100).toFixed(0) }}<small>%</small>
+            </span>
+            <span v-if="item.speed <= 0 && item.target && item.target > 0">
+              standby
+            </span>
+            <span v-if="item.speed <=0 && ((item.target && item.target <= 0) || !item.target)">off</span>
           </span>
-          <span v-if="item.speed <= 0 && item.target > 0">
-            standby
-          </span>
-          <span v-if="item.speed <=0 && item.target <= 0">off</span>
         </v-col>
-        <v-col cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
+        <v-col v-if="item.temperature" cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
           {{ item.temperature.toFixed(1) }}<small>°C</small>
         </v-col>
-        <v-col cols="6" sm="4" class="pt-0 pt-md-2">
+        <v-col v-if="item.type === 'temperature_fan'" cols="6" sm="4" class="pt-0 pt-md-2">
           <input-temperature
             :value="item.target"
             @input="setFanTargetTemp(item.name, $event)"
@@ -115,12 +149,21 @@
       </v-row>
     </template>
 
-    <v-row v-for="item in sensors" :key="item.name" align="center">
+    <v-row v-for="item in sensors" :key="item.name" align="center" class="mt-0">
       <v-col cols="auto" class="pr-0 d-none d-sm-flex">
-        <v-icon small color="secondary">$thermometer</v-icon>
+        <v-icon
+          small
+          :color="item.color">
+          $thermometer
+        </v-icon>
       </v-col>
       <v-col class="text-subtitle-1 grey--text text--darken-1">
-        {{ item.prettyName }}
+        <span
+          @click="$emit('legendClick', item)"
+          :class="{ 'active': chartSelectedLegends[item.name] }"
+          class="legend-item">
+          {{ item.prettyName }}
+        </span>
       </v-col>
       <v-col cols="6" sm="7" class="grey--text focus--text">
         <v-tooltip right>
@@ -128,12 +171,15 @@
             <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
           </template>
           <span>
-            <span class="amber--text text--lighten-1">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+            <span class="amber--text">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
             <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
           </span>
         </v-tooltip>
       </v-col>
     </v-row>
+
+    <!-- <pre>{{ chartSelectedLegends }}</pre> -->
+
   </v-card-text>
 </template>
 
@@ -169,6 +215,14 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
     return this.$store.getters['config/getTempPresets']
   }
 
+  get chartableSensors () {
+    return this.$store.getters['socket/getChartableSensors']
+  }
+
+  get chartSelectedLegends () {
+    return this.$store.state.config.appState.chartSelectedLegends
+  }
+
   setHeaterTargetTemp (heater: string, target: number) {
     this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${heater} TARGET=${target}`)
   }
@@ -196,3 +250,15 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .legend-item {
+    display: inline-block;
+    cursor: pointer;
+    opacity: 0.5
+  }
+
+  .legend-item.active {
+    opacity: 1
+  }
+</style>

@@ -134,13 +134,12 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
 
 <style lang="scss" scoped>
   .component-title {
-    color: #fff;
     font-weight: 500;
     font-size: 0.8125rem;
     line-height: 1rem;
   }
   .component-version {
-    color: rgba(255, 255, 255, 0.7);
+    opacity: 0.7;
     font-size: 0.8125rem;
     line-height: 1rem;
   }

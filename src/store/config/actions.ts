@@ -52,20 +52,25 @@ export const actions: ActionTree<ConfigState, RootState> = {
   },
 
   /**
-   * Saves keys to file storage. Assumes a root[key] structure
-   * under state.config
+   * Saves keys to config. Assumes a root[key] structure
+   * under state.config.
+   *
+   * If the key starts with fileConfig, we'll automatically
+   * save to file too.
+   *
+   * NOTE: These won't be reactive unless the state was predefined.
    */
   async saveGeneric ({ commit, dispatch }, config: GenericSave) {
-    // commit('setUnsavedChanges', true)
     commit('onSaveGeneric', config)
-    dispatch('saveFileConfig')
+    if (config.key.startsWith('fileConfig')) {
+      dispatch('saveFileConfig')
+    }
   },
 
   /**
    *
    */
   async updateHiddenMacros ({ commit, dispatch }, payload) {
-    // commit('setUnsavedChanges', true)
     commit('updateHiddenMacros', payload)
     dispatch('saveFileConfig')
   },
