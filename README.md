@@ -12,6 +12,9 @@ Fluidd is a free and open-source Klipper web interface for managing your 3d prin
 - Full console with history
 - Bed mesh support
 
+## Support
+Join our [Discord!](https://discord.gg/GZ3D5tqfcF).
+
 ## Where to download?
 You can download the latest release [here](https://github.com/cadriel/fluidd/releases/latest).
 
