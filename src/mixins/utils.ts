@@ -142,7 +142,10 @@ export default class UtilsMixin extends Vue {
    * Ensures our temps are high enough to extrude or retract.
    */
   get minExtrudeTemp () {
-    return this.$store.getters['socket/getPrinterSettings']('extruder.min_extrude_temp') || 170
+    const minExtrudeTemp = this.$store.getters['socket/getPrinterSettings']('extruder.min_extrude_temp')
+    return (minExtrudeTemp !== undefined)
+      ? this.$store.getters['socket/getPrinterSettings']('extruder.min_extrude_temp')
+      : 0
   }
 
   get extrudeRetractReady () {
