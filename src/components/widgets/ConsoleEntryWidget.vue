@@ -25,18 +25,7 @@ export default class ConsoleEntryWidget extends Vue {
 
   get knownCommands () {
     const availableCommands = this.$store.getters['socket/getAllGcodeCommands']
-    const commands = new Set(Object.keys(availableCommands))
-    const additional = [
-      'TESTZ',
-      'ABORT',
-      'ACCEPT',
-      'ADJUSTED',
-      'GET_POSITION'
-    ]
-    additional.forEach(command => {
-      if (!commands.has(command)) commands.add(command)
-    })
-    return commands
+    return new Set(Object.keys(availableCommands))
   }
 
   get itemMessage () {

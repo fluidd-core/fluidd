@@ -77,9 +77,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     if (
       newArray.length &&
       this.availableItems.length &&
-      newArray[newArray.length - 1].time &&
-      this.availableItems[this.availableItems.length - 1].time &&
-      newArray[newArray.length - 1].time === this.availableItems[this.availableItems.length - 1].time
+      newArray[newArray.length - 1] === this.availableItems[this.availableItems.length - 1]
     ) {
       doScroll = false
     }

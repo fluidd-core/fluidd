@@ -592,7 +592,21 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getAllGcodeCommands: (state) => {
-    return state.availableCommands
+    const commands = state.availableCommands
+    const additional = [
+      'TESTZ',
+      'ABORT',
+      'ACCEPT',
+      'ADJUSTED',
+      'GET_POSITION'
+    ]
+    additional.forEach(command => {
+      if (command in commands !== true) {
+        commands[command] = ''
+      }
+    })
+
+    return commands
   },
 
   /**
