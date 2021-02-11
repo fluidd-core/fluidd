@@ -29,25 +29,25 @@ export default class CameraCard extends Mixins(UtilsMixin) {
   enabled!: boolean
 
   cameraUrl = ''
+  refresh = new Date().getTime()
 
-  beforeDestroy () {
-    this.cameraUrl = ''
+  get url () {
+    const url = this.$store.state.config.fileConfig.camera.url
+    const params = new URLSearchParams(url)
+    params.set('cacheBust', '' + this.refresh)
+    return decodeURIComponent(params.toString())
   }
 
-  onCollapse (collapsed: boolean) {
-    if (collapsed) {
-      this.cameraUrl = ''
-    } else {
-      this.cameraUrl = this.$store.state.config.fileConfig.camera.url
-    }
+  get config () {
+    return this.$store.state.config.fileConfig.camera
   }
 
   get streamType () {
-    return this.$store.state.config.fileConfig.camera.type
+    return this.config.type
   }
 
   get cameraTransforms () {
-    const config = this.$store.state.config.fileConfig.camera
+    const config = this.config
     let transforms = ''
     transforms += (config && config.flipX) ? ' scaleX(-1)' : ''
     transforms += (config && config.flipY) ? ' scaleY(-1)' : ''
@@ -56,6 +56,32 @@ export default class CameraCard extends Mixins(UtilsMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  created () {
+    document.addEventListener('visibilitychange', this.handleRefreshChange, false)
+  }
+
+  beforeDestroy () {
+    this.cameraUrl = ''
+    document.removeEventListener('visibilitychange', this.handleRefreshChange)
+  }
+
+  onCollapse (collapsed: boolean) {
+    if (collapsed) {
+      this.cameraUrl = ''
+    } else {
+      this.cameraUrl = this.url
+    }
+  }
+
+  handleRefreshChange () {
+    if (!document.hidden) {
+      this.refresh = new Date().getTime()
+      // this.cameraUrl = this.url
+    } else {
+      // this.cameraUrl = ''
+    }
   }
 }
 </script>
