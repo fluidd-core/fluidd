@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="valid">
+  <v-form v-model="valid" @submit.prevent>
     <v-row justify="end">
       <v-col cols="6" class="text-right">
         <v-text-field

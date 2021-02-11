@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="inputSliderForm" v-model="valid">
+  <v-form ref="inputSliderForm" v-model="valid" @submit.prevent>
     <v-layout align-center justify-space-between>
       <div
         class="grey--text text--darken-1 text-body-1"

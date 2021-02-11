@@ -97,7 +97,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
+              <v-btn color="warning" text @click.prevent="dialog.active = false" type="button">Cancel</v-btn>
               <v-btn color="primary" type="submit">{{ (dialog.index >= 0) ? 'Save' : 'Add' }}</v-btn>
             </v-card-actions>
           </v-card>

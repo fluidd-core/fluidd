@@ -8,7 +8,7 @@
       class="mt-3"
       ref="addInstanceForm"
       v-model="valid"
-      @submit="addInstance()"
+      @submit.prevent="addInstance()"
     >
       <v-card color="secondary darken-1">
 

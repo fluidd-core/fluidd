@@ -1,5 +1,5 @@
 <template>
-  <v-form v-model="valid">
+  <v-form v-model="valid" @submit.prevent>
     <v-layout>
       <v-text-field
         outlined
@@ -20,7 +20,7 @@
         :elevation="2"
         class="pa-0"
         :color="(value === inputValue) ? 'secondary' : 'primary'"
-        @click="emitChange">
+        @click.prevent="emitChange">
         <v-icon small>$check</v-icon>
       </v-btn>
     </v-layout>

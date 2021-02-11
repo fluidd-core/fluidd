@@ -61,7 +61,7 @@
 
           <v-form
             ref="fileSystemForm"
-            @submit="saveDialog()"
+            @submit.prevent="saveDialog()"
             v-model="dialog.valid"
           >
 

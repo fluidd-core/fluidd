@@ -147,7 +147,7 @@
 
       <v-form
         ref="saveMeshForm"
-        @submit="saveToConfig()"
+        @submit.prevent="saveToConfig()"
         v-model="saveDialog.valid"
       >
         <v-card color="secondary darken-1">
