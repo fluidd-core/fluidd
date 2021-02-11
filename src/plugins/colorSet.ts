@@ -3,6 +3,7 @@
  * A basic class to manage color steps for our graphs.
  */
 import _Vue from 'vue'
+import tinycolor, { TinyColor } from '@ctrl/tinycolor'
 
 export class ColorSet {
   logPrefix = '[WEBSOCKET]'
@@ -10,11 +11,39 @@ export class ColorSet {
 
   constructor (options: Options) {
     if (options.colorList) {
-      for (const list in options.colorList) {
-        this.colorList[list] = options.colorList[list].map(color => {
-          return { color, used: false }
-        })
+      for (const item in options.colorList) {
+        if ('base' in options.colorList[item]) {
+          const opts = options.colorList[item] as ColorGenOption
+          // this.colorList[item] = tinycolor(opts.base).analogous(opts.count, 20)
+          //   .map((color: TinyColor) => {
+          //     // const color = tinycolor({ h: num, s: 0.8, l: 0.8 }).toHexString()
+          //     return { color: color.toHexString(), used: false }
+          //   })
+          const base = tinycolor(opts.base).toHsl()
+          let h = base.h
+          let l = base.l
+          const s = base.s
+          const hsplit = opts.hsplit || 0
+          const lsplit = (opts.lsplit) ? opts.lsplit / 100 : 0
+          // let start = 100
+          this.colorList[item] = [
+            ...Array(opts.count).keys()
+          ]
+            .map(() => {
+              const color = tinycolor({ h, s, l }).toHexString()
+              h = h + hsplit
+              l = l - lsplit
+              return { color, used: false }
+            })
+          // this.colorList[item].unshift({ color: opts.base, used: false })
+        } else {
+          const opts = options.colorList[item] as string[]
+          this.colorList[item] = opts.map(color => {
+            return { color, used: false }
+          })
+        }
       }
+      console.log('applied opts', this.colorList)
     }
   }
 
@@ -80,12 +109,14 @@ export class ColorSet {
 
 export const ColorSetPlugin = {
   install (Vue: typeof _Vue, options?: Options) {
+    // Provide a specific list, or an option object to
+    // define the color lists.
     const opts: Options = {
       colorList: {
-        heater: ['#ff5252', '#802929', '#E64949', '#BF3D3D'],
-        bed: ['#1fb0ff', '#0F5880'],
-        sensor: ['#fb8c00', '#BA6600', '#7A4300', '#3B2000', '#E07B00'],
-        fan: ['#307032', '#4caf50', '#51BD55', '#6DFC71', '#419644']
+        heater: { base: '#ff5252', hsplit: 20, count: 3 },
+        bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
+        fan: { base: '#3dc25a', hsplit: 16, lsplit: -4, count: 6 },
+        sensor: { base: '#d67600', hsplit: 10, lsplit: -4, count: 5 }
       }
     }
     const colorset = new ColorSet({ ...opts, ...options })
@@ -113,7 +144,14 @@ interface Options {
 }
 
 interface ColorListOption {
-  [index: string]: string[];
+  [index: string]: string[] | ColorGenOption;
+}
+
+interface ColorGenOption {
+  base: string;
+  count: number;
+  hsplit?: number;
+  lsplit?: number;
 }
 
 interface ColorList {

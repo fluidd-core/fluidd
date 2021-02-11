@@ -144,7 +144,7 @@ export default class EChartsWidget extends Vue {
           type: 'value',
           position: 'right',
           splitLine: {
-            show: true,
+            show: false,
             lineStyle: {
               color: lineColor,
               opacity: 0.05

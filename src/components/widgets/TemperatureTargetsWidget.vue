@@ -178,7 +178,12 @@
       </v-col>
     </v-row>
 
-    <!-- <pre>{{ chartSelectedLegends }}</pre> -->
+    <!-- <div v-for="(group, key) in colors" :key="key">
+      <pre>{{ key }}</pre>
+      <div v-for="(value, i) in group" :key="i">
+        <v-icon x-large :color="value.color">$fire</v-icon> {{ value.name }}
+      </div>
+    </div> -->
 
   </v-card-text>
 </template>
@@ -195,6 +200,10 @@ import { TemperaturePreset } from '@/store/config/types'
   }
 })
 export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
+  get colors () {
+    return this.$colorset.colorList
+  }
+
   get extruder () {
     return this.$store.state.socket.printer.extruder
   }

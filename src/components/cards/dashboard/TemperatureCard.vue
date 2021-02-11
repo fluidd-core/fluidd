@@ -8,26 +8,21 @@
     :enabled="enabled"
     @enabled="$emit('enabled', $event)">
 
+    <template v-slot:menu>
+      <v-btn
+        small
+        class="mr-2"
+        color="secondary"
+        @click="chartVisible = !chartVisible">
+        <v-icon left>$chart</v-icon>
+        {{ (chartVisible) ? 'on' : 'off' }}
+      </v-btn>
+    </template>
+
     <temperature-targets-widget
       @legendClick="setLegend"
       @legendPowerClick="setLegendPower">
     </temperature-targets-widget>
-
-    <v-card-text class="py-0" :class="{ 'mb-4': !chartVisible }">
-      <v-btn
-        dark
-        small
-        text
-        outlined
-        block
-        color="secondary"
-        @click="chartVisible = !chartVisible"
-      >
-        <v-icon dark v-if="chartVisible">$minus</v-icon>
-        <v-icon dark v-else>$plus</v-icon>
-        {{ (chartVisible) ? 'hide graph' : 'show graph' }}
-      </v-btn>
-    </v-card-text>
 
     <e-charts-widget v-if="chartReady && chartVisible" :chart-data="chartData" ref="chart"></e-charts-widget>
 
