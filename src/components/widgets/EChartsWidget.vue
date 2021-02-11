@@ -165,6 +165,11 @@ export default class EChartsWidget extends Vue {
       dataset: {
         source: this.chartData
       },
+      dataZoom: [{
+        type: 'inside'
+        // xAxisIndex: 0,
+        // yAxisIndex: 0
+      }],
       series: this.series
     }
     return options
@@ -216,6 +221,7 @@ export default class EChartsWidget extends Vue {
       yAxisIndex: 0,
       showSymbol: false,
       animation: false,
+      smooth: false,
       color,
       emphasis: {
         lineStyle: {
