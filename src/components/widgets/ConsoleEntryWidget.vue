@@ -30,6 +30,7 @@ export default class ConsoleEntryWidget extends Vue {
       'TESTZ',
       'ABORT',
       'ACCEPT',
+      'ADJUSTED',
       'GET_POSITION'
     ]
     additional.forEach(command => {
