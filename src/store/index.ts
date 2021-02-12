@@ -43,6 +43,7 @@ export default new Vuex.Store<RootState>({
     async reset () {
       // Reset the entire store - should be used when swapping instances.
       // extend this so we can pass an object defining what to reset, and if its a full reset or not.
+      Vue.$colorset.resetAll()
       this.commit('socket/resetState', true)
       this.commit('config/resetState')
       this.commit('files/resetState')

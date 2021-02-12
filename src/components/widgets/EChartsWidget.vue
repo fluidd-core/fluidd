@@ -1,31 +1,37 @@
 <template>
-  <div class="chart">
-    <ECharts ref="chart" :option="options" :initOpts="{ renderer: 'svg' }"></ECharts>
+  <div>
+    <div class="chart">
+      <ECharts
+        ref="chart"
+        :option="options"
+        :setOptionOps="{ notMerge: true }"
+        :initOpts="{ renderer: 'svg' }"
+        :events="[
+          ['legendselectchanged', handleLegendSelectChange ],
+          ['legendselected', handleLegendSelectChange ],
+          ['legendunselected', handleLegendSelectChange ],
+        ]">
+      </ECharts>
+    </div>
   </div>
 </template>
 
 <script lang='ts'>
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import { ECharts, EChartsOption } from 'echarts'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { ECharts } from 'echarts'
 import { getKlipperType } from '@/store/helpers'
-import { ChartSelectedLegends } from '@/store/config/types'
 
 @Component({})
 export default class EChartsWidget extends Vue {
   @Prop({ required: true, default: {} })
   public chartData!: any
 
-  ready = false
-  series: EChartsOption[] = []
-  legends: any = []
+  loading = true
+  options: any = {}
 
-  get selectedLegends () {
-    return this.$store.state.config.appState.chartSelectedLegends
-  }
-
-  set selectedLegends (value: ChartSelectedLegends) {
-    this.$store.dispatch('config/saveGeneric', { key: 'appState.chartSelectedLegends', value })
+  handleLegendSelectChange (e: Event) {
+    this.$emit('legend-select-changed', e)
   }
 
   get chart () {
@@ -33,7 +39,57 @@ export default class EChartsWidget extends Vue {
     if (ref) return ref.inst as ECharts
   }
 
-  get options () {
+  // @Watch('chartData')
+  // onDataChange (data: any) {
+  //   if (this.chart && !this.loading) {
+  //     this.chart.setOption({
+  //       dataset: {
+  //         source: data
+  //       }
+  //     })
+  //   }
+  // }
+
+  mounted () {
+    console.log('this.chartData', this.chartData)
+    this.init()
+    this.loading = false
+  }
+
+  destroy () {
+    if (this.chart) {
+      this.chart.dispose()
+    }
+  }
+
+  init () {
+    // Create the base options.
+    this.initOptions()
+
+    // Create the series and associated legends.
+    const dataKeys = Object.keys(this.chartData[0])
+    const keys = this.$store.getters['socket/getChartableSensors'] as string[]
+
+    keys.forEach((key) => {
+      let label = key
+      if (key.includes(' ')) label = key.split(' ')[1]
+
+      const dataIndex = dataKeys.indexOf(label)
+      const targetIndex = dataKeys.indexOf(label + 'Target')
+      const powerIndex = dataKeys.indexOf(label + 'Power')
+      const speedIndex = dataKeys.indexOf(label + 'Speed')
+
+      if (dataIndex >= 0) this.createSeries(dataIndex, label, key)
+      if (targetIndex >= 0) this.createSeries(targetIndex, label + 'Target', key)
+      if (powerIndex >= 0) this.createSeries(powerIndex, label + 'Power', key)
+      if (speedIndex >= 0) this.createSeries(speedIndex, label + 'Speed', key)
+    })
+
+    // Init the legend state in the store.
+    this.$store.dispatch('config/saveGeneric', { key: 'appState.chartSelectedLegends', value: this.options.legend.selected })
+  }
+
+  initOptions () {
     const darkMode = this.$store.state.config.fileConfig.general.darkMode
     const fontSize = 16
     const lineOpacity = 0.2
@@ -46,7 +102,7 @@ export default class EChartsWidget extends Vue {
       lineColor = '#000000'
     }
 
-    const options: EChartsOption & any = {
+    this.options = {
       grid: {
         top: 10,
         left: 70,
@@ -61,8 +117,7 @@ export default class EChartsWidget extends Vue {
           fontSize,
           color: fontColor
         },
-        selected: this.selectedLegends,
-        data: this.legends
+        selected: {}
       },
       tooltip: {
         trigger: 'axis',
@@ -167,56 +222,20 @@ export default class EChartsWidget extends Vue {
       },
       dataZoom: [{
         type: 'inside'
-        // xAxisIndex: 0,
-        // yAxisIndex: 0
       }],
-      series: this.series
-    }
-    return options
-  }
-
-  mounted () {
-    this.init()
-    this.ready = true
-  }
-
-  destroy () {
-    if (this.chart) {
-      this.chart.dispose()
+      series: []
     }
   }
-
-  init () {
-    // Create the series and associated legends.
-    const dataKeys = Object.keys(this.chartData[0])
-    const keys = this.$store.getters['socket/getChartableSensors'] as string[]
-
-    keys.forEach((key) => {
-      let label = key
-      if (key.includes(' ')) label = key.split(' ')[1]
-
-      const dataIndex = dataKeys.indexOf(label)
-      const targetIndex = dataKeys.indexOf(label + 'Target')
-      const powerIndex = dataKeys.indexOf(label + 'Power')
-      const speedIndex = dataKeys.indexOf(label + 'Speed')
-      // const prettyName = Vue.$filters.startCase(label)
-
-      if (dataIndex >= 0) this.createSeries(dataIndex, label, key)
-      if (targetIndex >= 0) this.createSeries(targetIndex, label + 'Target', key)
-      if (powerIndex >= 0) this.createSeries(powerIndex, label + 'Power', key)
-      if (speedIndex >= 0) this.createSeries(speedIndex, label + 'Speed', key)
-    })
-  }
-
-  // removeSeries () {}
 
   createSeries (index: number, label: string, key: string) {
     // Grab the color
     const color = Vue.$colorset.next(getKlipperType(key), key)
+    const id = this.options.series.length + 1
 
     // Base properties
     const series: any = {
       name: label,
+      id,
       type: 'line',
       yAxisIndex: 0,
       showSymbol: false,
@@ -242,6 +261,7 @@ export default class EChartsWidget extends Vue {
 
     // If this is a target, adjust its display.
     if (label.toLowerCase().endsWith('target')) {
+      series.yAxisIndex = 0
       series.lineStyle.type = 'dashed'
       series.lineStyle.opacity = 0.25
       series.areaStyle.opacity = 0
@@ -263,47 +283,40 @@ export default class EChartsWidget extends Vue {
       series.areaStyle.opacity = 0
     }
 
-    if (
+    // Set the initial legend state (power and speed default off)
+    this.options.legend.selected[label] = !(
       label.toLowerCase().endsWith('power') ||
       label.toLowerCase().endsWith('speed')
-    ) {
-      this.legends.push({ name: label })
-      if (label in this.selectedLegends === false) {
-        this.legendUnSelect(label)
-      }
-    } else {
-      this.legends.push({ name: label })
-      if (label in this.selectedLegends === false) {
-        this.legendSelect(label)
-      }
-    }
+    )
 
-    this.series.push(series)
+    // Push the series into our options object.
+    this.options.series.push(series)
   }
 
-  legendToggle (name: string) {
-    if (this.selectedLegends[name] !== undefined) {
-      if (this.selectedLegends[name]) {
-        this.legendUnSelect(name)
-        this.legendUnSelect(name + 'Target')
-        this.legendUnSelect(name + 'Power')
-        this.legendUnSelect(name + 'Speed')
-      } else {
-        this.legendSelect(name)
-        this.legendSelect(name + 'Target')
-      }
-    }
-  }
-
-  legendUnSelect (name: string) {
-    if (this.legends.findIndex((legend: any) => legend.name === name) >= 0) {
-      this.selectedLegends = { ...this.selectedLegends, [name]: false }
+  legendToggleSelect (name: string) {
+    if (this.chart) {
+      this.chart.dispatchAction({
+        type: 'legendToggleSelect',
+        name
+      })
     }
   }
 
   legendSelect (name: string) {
-    if (this.legends.findIndex((legend: any) => legend.name === name) >= 0) {
-      this.selectedLegends = { ...this.selectedLegends, [name]: true }
+    if (this.chart) {
+      this.chart.dispatchAction({
+        type: 'legendSelect',
+        name
+      })
+    }
+  }
+
+  legendUnSelect (name: string) {
+    if (this.chart) {
+      this.chart.dispatchAction({
+        type: 'legendUnSelect',
+        name
+      })
     }
   }
 
@@ -363,12 +376,7 @@ export default class EChartsWidget extends Vue {
 
   yAxisTempMax (value: any) {
     // Need to fix this..
-    // console.log(value)
     return Math.ceil(value.max / 20) * 20
-  }
-
-  get maxExtruderTemp () {
-    return this.$store.getters['socket/getPrinterSettings']('extruder.max_temp') || 240
   }
 }
 

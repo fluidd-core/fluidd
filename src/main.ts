@@ -12,14 +12,13 @@ import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
-import * as echarts from 'echarts'
 import { plugin } from 'echarts-for-vue'
 
+import * as echarts from 'echarts'
+// import * as echarts from 'echarts/core'
 // import { LineChart } from 'echarts/charts'
-// import 'echarts/lib/component/tooltip'
-// import 'echarts/renderers'
-
-// import 'echarts-gl'
+// import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, DataZoomComponent, LegendComponent } from 'echarts/components'
+// import { SVGRenderer } from 'echarts/renderers'
 
 // import { WorkboxPlugin } from './plugins/workbox'
 import vueHeadful from 'vue-headful'
@@ -27,6 +26,9 @@ import vueHeadful from 'vue-headful'
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
 import InlineHelpIcon from '@/components/inputs/InlineHelpIcon.vue'
+
+// Configure echarts
+// echarts.use([LineChart, TitleComponent, ToolboxComponent, LegendComponent, TooltipComponent, GridComponent, DataZoomComponent, SVGRenderer])
 
 // Use any Plugins
 Vue.use(plugin, { echarts })

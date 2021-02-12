@@ -20,11 +20,16 @@
     </template>
 
     <temperature-targets-widget
-      @legendClick="setLegend"
-      @legendPowerClick="setLegendPower">
+      @legendClick="legendToggleSelect"
+      @legendPowerClick="legendTogglePowerSelect">
     </temperature-targets-widget>
 
-    <e-charts-widget v-if="chartReady && chartVisible" :chart-data="chartData" ref="chart"></e-charts-widget>
+    <e-charts-widget
+      v-if="chartReady && chartVisible"
+      :chart-data="chartData"
+      ref="chart"
+      @legend-select-changed="handleLegendSelectChange"
+    ></e-charts-widget>
 
   </collapsable-card>
 </template>
@@ -35,6 +40,7 @@ import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWid
 import EChartsWidget from '@/components/widgets/EChartsWidget.vue'
 import UtilsMixin from '@/mixins/utils'
 import { Fan, Heater } from '@/store/socket/types'
+// import { ChartSelectedLegends } from '@/store/config/types'
 
 @Component({
   components: {
@@ -58,22 +64,25 @@ export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
     )
   }
 
-  setLegend (item: Heater | Fan) {
-    const ref = this.$refs.chart as EChartsWidget
-    ref.legendToggle(item.name)
+  handleLegendSelectChange (legendsSelected: { name: string; type: string; selected: {[index: string]: boolean } }) {
+    this.$store.dispatch('config/saveGeneric', { key: 'appState.chartSelectedLegends', value: legendsSelected.selected })
   }
 
-  setLegendPower (item: Heater | Fan) {
+  legendToggleSelect (item: Heater | Fan) {
+    // If this has a target, toggle that too.
+    const ref = this.$refs.chart as EChartsWidget
+    if ('target' in item) {
+      ref.legendToggleSelect(item.name + 'Target')
+    }
+    ref.legendToggleSelect(item.name)
+  }
+
+  legendTogglePowerSelect (item: Heater | Fan) {
     const ref = this.$refs.chart as EChartsWidget
     const name = ('speed' in item)
       ? item.name + 'Speed'
       : item.name + 'Power'
-    const legend = ref.selectedLegends[name]
-    if (legend) {
-      ref.legendUnSelect(name)
-    } else {
-      ref.legendSelect(name)
-    }
+    ref.legendToggleSelect(name)
   }
 
   get chartVisible () {
