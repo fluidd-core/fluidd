@@ -4,7 +4,7 @@
       <ECharts
         ref="chart"
         :option="options"
-        :setOptionOps="{ notMerge: false }"
+        :setOptionOps="{ notMerge: true }"
         :initOpts="{ renderer: 'svg' }"
         :events="[
           ['legendselectchanged', handleLegendSelectChange ],
@@ -49,6 +49,42 @@ export default class EChartsWidget extends Vue {
       })
     }
   }
+
+  // activated () {
+  //   console.log('activated...')
+  // }
+
+  // deactivated () {
+  //   console.log('deactivated...')
+  // }
+
+  // created () {
+  //   console.log('created')
+  //   document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
+  //   document.addEventListener('freeze', this.handleFreeze, false)
+  //   document.addEventListener('resume', this.handleResume, false)
+  //   document.addEventListener('focus', this.handleFocus, false)
+  // }
+
+  // handleFocus () {
+  //   console.log('document is now in focus')
+  // }
+
+  // handleFreeze () {
+  //   console.log('document has now frozen')
+  // }
+
+  // handleResume () {
+  //   console.log('document has now resumed')
+  // }
+
+  // handleVisibilityChange () {
+  //   if (!document.hidden) {
+  //     console.log('document is now visible')
+  //   } else {
+  //     console.log('document is now hidden')
+  //   }
+  // }
 
   mounted () {
     this.init()
@@ -283,10 +319,15 @@ export default class EChartsWidget extends Vue {
     }
 
     // Set the initial legend state (power and speed default off)
-    this.options.legend.selected[label] = !(
-      label.toLowerCase().endsWith('power') ||
-      label.toLowerCase().endsWith('speed')
-    )
+    const storedLegends = this.$store.state.config.appState.chartSelectedLegends
+    if (storedLegends[label] !== undefined) {
+      this.options.legend.selected[label] = storedLegends[label]
+    } else {
+      this.options.legend.selected[label] = !(
+        label.toLowerCase().endsWith('power') ||
+        label.toLowerCase().endsWith('speed')
+      )
+    }
 
     // Push the series into our options object.
     this.options.series.push(series)

@@ -1,4 +1,5 @@
 import '@/scss/global.scss'
+import './registerComponentHooks'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -14,11 +15,17 @@ import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 import { plugin } from 'echarts-for-vue'
 
-import * as echarts from 'echarts'
-// import * as echarts from 'echarts/core'
-// import { LineChart } from 'echarts/charts'
-// import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, DataZoomComponent, LegendComponent } from 'echarts/components'
-// import { SVGRenderer } from 'echarts/renderers'
+// import * as echarts from 'echarts'
+import * as echarts from 'echarts/core'
+import { LineChart } from 'echarts/charts'
+import {
+  DatasetComponent,
+  TooltipComponent,
+  GridComponent,
+  DataZoomComponent,
+  LegendComponent
+} from 'echarts/components'
+import { SVGRenderer } from 'echarts/renderers'
 
 // import { WorkboxPlugin } from './plugins/workbox'
 import vueHeadful from 'vue-headful'
@@ -28,7 +35,15 @@ import CollapsableCard from '@/components/cards/CollapsableCard.vue'
 import InlineHelpIcon from '@/components/inputs/InlineHelpIcon.vue'
 
 // Configure echarts
-// echarts.use([LineChart, TitleComponent, ToolboxComponent, LegendComponent, TooltipComponent, GridComponent, DataZoomComponent, SVGRenderer])
+echarts.use([
+  DatasetComponent,
+  TooltipComponent,
+  GridComponent,
+  DataZoomComponent,
+  LegendComponent,
+  LineChart,
+  SVGRenderer
+])
 
 // Use any Plugins
 Vue.use(plugin, { echarts })
