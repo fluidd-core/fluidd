@@ -4,7 +4,7 @@
       <ECharts
         ref="chart"
         :option="options"
-        :setOptionOps="{ notMerge: true }"
+        :setOptionOps="{ notMerge: false }"
         :initOpts="{ renderer: 'svg' }"
         :events="[
           ['legendselectchanged', handleLegendSelectChange ],
@@ -39,19 +39,18 @@ export default class EChartsWidget extends Vue {
     if (ref) return ref.inst as ECharts
   }
 
-  // @Watch('chartData')
-  // onDataChange (data: any) {
-  //   if (this.chart && !this.loading) {
-  //     this.chart.setOption({
-  //       dataset: {
-  //         source: data
-  //       }
-  //     })
-  //   }
-  // }
+  @Watch('chartData')
+  onDataChange (data: any) {
+    if (this.chart && !this.loading) {
+      this.chart.setOption({
+        dataset: {
+          source: data
+        }
+      })
+    }
+  }
 
   mounted () {
-    console.log('this.chartData', this.chartData)
     this.init()
     this.loading = false
   }
