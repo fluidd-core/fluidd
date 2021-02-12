@@ -137,7 +137,7 @@ const Filters = {
     const _url = new URL(url)
     const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
     return {
-      apiUrl: `http://${_url.host}`,
+      apiUrl: `${_url.protocol}${_url.host}`,
       socketUrl: `${wsProtocol}${_url.host}/websocket`
     }
   }
