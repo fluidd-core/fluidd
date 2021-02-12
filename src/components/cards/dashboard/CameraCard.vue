@@ -78,9 +78,9 @@ export default class CameraCard extends Mixins(UtilsMixin) {
   handleRefreshChange () {
     if (!document.hidden) {
       this.refresh = new Date().getTime()
-      // this.cameraUrl = this.url
+      this.cameraUrl = this.url
     } else {
-      // this.cameraUrl = ''
+      this.cameraUrl = ''
     }
   }
 }
