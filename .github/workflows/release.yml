@@ -23,6 +23,12 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Create Artifact
+        run: |
+          cd ./dist
+          zip -r fluidd.zip ./
+          cd ..
+
       - name: Read ChangeLog
         uses: mindsers/changelog-reader-action@v2
         id: changelog
@@ -54,13 +60,21 @@ jobs:
           asset_name: fluidd.zip
           asset_content_type: application/zip
 
-      - name: Prepare Deploy
-        run: |
-          cp ./server/config.json ./dist/config.json
-
       - name: Publish Release
         uses: eregon/publish-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           release_id: ${{ steps.create_release.outputs.id }}
+
+      - name: Prepare Deploy
+        run: |
+          rm ./dist/fluidd.zip
+          cp ./server/config.json ./dist/config.json
+
+      - name: Deploy to Host
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          npm run deploy.host

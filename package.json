@@ -9,7 +9,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve.prod": "serve -s ./dist",
-    "build": "vue-cli-service build && npm run build.zip",
+    "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
@@ -21,8 +21,7 @@
     "release.minor": "npm run release -- --release-as minor",
     "release.major": "npm run release -- --release-as major",
     "release.rc": "npm run release -- --prerelease rc",
-    "build.zip": "cd ./dist && zip -r fluidd.zip ./ && cd ..",
-    "deploy.host": "npm run copy.host.config && potato -s dist -u -b app.fluidd.xyz",
+    "deploy.host": "potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
     "copy.host.config": "shx cp -f ./server/config.json ./dist/config.json"
   },
   "main": "index.js",
