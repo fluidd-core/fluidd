@@ -67,7 +67,7 @@
 
             <v-card color="secondary darken-1">
               <v-card-title>
-                <span class="headline">{{ (dialog.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+                <span class="headline">{{ dialog.title }}</span>
               </v-card-title>
               <v-card-text>
 
