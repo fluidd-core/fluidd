@@ -50,42 +50,6 @@ export default class EChartsWidget extends Vue {
     }
   }
 
-  // activated () {
-  //   console.log('activated...')
-  // }
-
-  // deactivated () {
-  //   console.log('deactivated...')
-  // }
-
-  // created () {
-  //   console.log('created')
-  //   document.addEventListener('visibilitychange', this.handleVisibilityChange, false)
-  //   document.addEventListener('freeze', this.handleFreeze, false)
-  //   document.addEventListener('resume', this.handleResume, false)
-  //   document.addEventListener('focus', this.handleFocus, false)
-  // }
-
-  // handleFocus () {
-  //   console.log('document is now in focus')
-  // }
-
-  // handleFreeze () {
-  //   console.log('document has now frozen')
-  // }
-
-  // handleResume () {
-  //   console.log('document has now resumed')
-  // }
-
-  // handleVisibilityChange () {
-  //   if (!document.hidden) {
-  //     console.log('document is now visible')
-  //   } else {
-  //     console.log('document is now hidden')
-  //   }
-  // }
-
   mounted () {
     this.init()
     this.loading = false
@@ -109,15 +73,10 @@ export default class EChartsWidget extends Vue {
       let label = key
       if (key.includes(' ')) label = key.split(' ')[1]
 
-      const dataIndex = dataKeys.indexOf(label)
-      const targetIndex = dataKeys.indexOf(label + 'Target')
-      const powerIndex = dataKeys.indexOf(label + 'Power')
-      const speedIndex = dataKeys.indexOf(label + 'Speed')
-
-      if (dataIndex >= 0) this.createSeries(dataIndex, label, key)
-      if (targetIndex >= 0) this.createSeries(targetIndex, label + 'Target', key)
-      if (powerIndex >= 0) this.createSeries(powerIndex, label + 'Power', key)
-      if (speedIndex >= 0) this.createSeries(speedIndex, label + 'Speed', key)
+      this.createSeries(label, key)
+      if (dataKeys.includes(label + 'Target')) this.createSeries(label + 'Target', key)
+      if (dataKeys.includes(label + 'Power')) this.createSeries(label + 'Power', key)
+      if (dataKeys.includes(label + 'Speed')) this.createSeries(label + 'Speed', key)
     })
 
     // Init the legend state in the store.
@@ -262,7 +221,7 @@ export default class EChartsWidget extends Vue {
     }
   }
 
-  createSeries (index: number, label: string, key: string) {
+  createSeries (label: string, key: string) {
     // Grab the color
     const color = Vue.$colorset.next(getKlipperType(key), key)
     const id = this.options.series.length + 1
@@ -291,7 +250,7 @@ export default class EChartsWidget extends Vue {
       areaStyle: {
         opacity: 0.05
       },
-      encode: { x: 0, y: index }
+      encode: { x: 'date', y: label }
     }
 
     // If this is a target, adjust its display.

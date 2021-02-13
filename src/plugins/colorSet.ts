@@ -43,7 +43,6 @@ export class ColorSet {
           })
         }
       }
-      console.log('applied opts', this.colorList)
     }
   }
 

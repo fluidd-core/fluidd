@@ -118,7 +118,6 @@ export const mutations: MutationTree<SocketState> = {
     // Only add if it's at least a second over the prior entry.
     const retention = chartConfiguration.HISTORY_RETENTION * 60
     state.chart.push(payload)
-    // console.log('adding chart entry', payload)
     while (state.chart.length > retention) {
       state.chart.splice(0, 1)
     }
