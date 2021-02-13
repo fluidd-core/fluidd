@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.7.0](https://github.com/cadriel/fluidd/compare/v1.6.3...v1.7.0) (2021-02-13)
+
+
+### Features
+
+* add cache busting to cam image ([73cf97b](https://github.com/cadriel/fluidd/commit/73cf97b4ecd38445f3454cb1c817671c5ed81e80))
+* Apply speed multiplier to requested speed ([98cac62](https://github.com/cadriel/fluidd/commit/98cac627dae5d2443276d09047351c577242e243))
+* console autocomplete ([9ee61c2](https://github.com/cadriel/fluidd/commit/9ee61c2132d419b8dcf93faf14e30048a67a5f93))
+* graph zoom by way of mouse wheel ([55f9fe0](https://github.com/cadriel/fluidd/commit/55f9fe07ffa783769e2532e2c923cbd06570082e))
+* new thermals chart and layout ([947bac4](https://github.com/cadriel/fluidd/commit/947bac4ed9b7c218d4866fe4dd86207dd2fb5dea))
+* uncontrollable fans read 'Off' when at 0 ([7870738](https://github.com/cadriel/fluidd/commit/7870738ff5c06d8e33c6d269ff564b1b91ff3f44))
+
+
+### Bug Fixes
+
+* Added `ADJUSTED` to the additional command list ([be20dc7](https://github.com/cadriel/fluidd/commit/be20dc79b7bac7939b089e3159537a00f8d2ec21))
+* camera url cleared on visibility change ([7ef6fc2](https://github.com/cadriel/fluidd/commit/7ef6fc2edea7a220b2a8611fe9c2365fb81c0ccf))
+* console shouldn't scroll with hidden temp wait events ([323dda3](https://github.com/cadriel/fluidd/commit/323dda32bd5114270c72a2553c1d5eecf85b1d04))
+* dialog titles in file browser ([b5ede63](https://github.com/cadriel/fluidd/commit/b5ede63c88ce64e6b2a279d91d0b8235b61caa4f))
+* ensure chart state is remembered ([0f55a1a](https://github.com/cadriel/fluidd/commit/0f55a1ad2a24f46505fa2d4738a7964c9dcdc47b))
+* filesystem scrollbar now matches console ([31e8398](https://github.com/cadriel/fluidd/commit/31e83987c8bc3339850875e7881c2e07eb93292a))
+* force merge strategy ([2eb1363](https://github.com/cadriel/fluidd/commit/2eb1363fbc97bcc046ba50430c8e9d35aa4c2330))
+* light theme versions panel ([0411fb9](https://github.com/cadriel/fluidd/commit/0411fb9e71cfca18f0e606db358c4612c5f087de))
+* macros now respect config changes between klippy restarts ([1456f01](https://github.com/cadriel/fluidd/commit/1456f0115fd48f01a54ae239690320002354b1fe))
+* min extrude temp now properly respects a 0 ([3b68d0a](https://github.com/cadriel/fluidd/commit/3b68d0af566538f8e7816b1f02ec154267d11195))
+* remove api hardcoded protocol ([55bc7e7](https://github.com/cadriel/fluidd/commit/55bc7e702237640fba5ba781b49efa33550d0863))
+* resolve page refreshes on first form entry ([c2dc9fd](https://github.com/cadriel/fluidd/commit/c2dc9fd1857d3a32eed03ee2bee20e59b17769ad))
+* speed multiplier ([0ccd46e](https://github.com/cadriel/fluidd/commit/0ccd46e8535ddf8dc3e819a248939b2949389d1c))
+
 ### [1.6.3](https://github.com/cadriel/fluidd/compare/v1.6.2...v1.6.3) (2021-02-06)
 
 
