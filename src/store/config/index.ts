@@ -34,7 +34,6 @@ export const defaultState = (): ConfigState => {
     fileConfig: {
       general: {
         instanceName: Globals.APP_NAME,
-        jobsInDash: false,
         chartVisible: true,
         darkMode: true,
         hideTempWaits: true,

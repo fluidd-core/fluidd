@@ -50,7 +50,6 @@ export interface HostConfig {
 
 export interface GeneralConfig {
   instanceName: string;
-  jobsInDash: boolean;
   chartVisible: boolean;
   darkMode: boolean;
   hideTempWaits: boolean;
