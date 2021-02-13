@@ -392,13 +392,19 @@ export default class EChartsWidget extends Vue {
   }
 
   yAxisTempMin (value: any) {
-    const num1 = Math.floor(value.min / 10) * 10
+    let num1 = Math.floor(value.min / 10) * 10
+    num1 = (num1 === value.min && (num1 - 10) >= 0)
+      ? num1 - 10
+      : num1
     // console.log('min', value.min, num1)
     return num1
   }
 
   yAxisTempMax (value: any) {
-    const num1 = Math.ceil(value.max / 10) * 10
+    let num1 = Math.ceil(value.max / 10) * 10
+    num1 = (num1 === value.max)
+      ? num1 + 10
+      : num1
     // console.log('max', value.max, num1)
     return num1
   }
