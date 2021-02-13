@@ -136,10 +136,12 @@ const Filters = {
   getApiUrls (url: string) {
     const _url = new URL(url)
     const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
-    return {
-      apiUrl: `${_url.protocol}${_url.host}`,
+    const o = {
+      apiUrl: `${_url.protocol}//${_url.host}`,
       socketUrl: `${wsProtocol}${_url.host}/websocket`
     }
+    // console.log('getApiUrls', o)
+    return o
   }
 
   /* eslint-enable @typescript-eslint/no-explicit-any */
