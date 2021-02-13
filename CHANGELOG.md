@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.7.1](https://github.com/cadriel/fluidd/compare/v1.7.0...v1.7.1) (2021-02-13)
+
+
+### Bug Fixes
+
+* apiUrl now properly formats the protocol ([345f55b](https://github.com/cadriel/fluidd/commit/345f55b767553ee0b58093c07d35f39fd979a938))
+
 ## [1.7.0](https://github.com/cadriel/fluidd/compare/v1.6.3...v1.7.0) (2021-02-13)
 
 
