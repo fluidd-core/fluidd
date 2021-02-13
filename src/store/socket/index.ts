@@ -81,7 +81,8 @@ export const defaultState = (): SocketState => {
         max_velocity: 0,
         position: [0, 0, 0, 0],
         print_time: 0,
-        square_corner_velocity: 0
+        square_corner_velocity: 0,
+        extruder: ''
       },
       current_file: {
         estimated_time: 0,

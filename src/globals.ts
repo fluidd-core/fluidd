@@ -225,7 +225,8 @@ export const Waits = Object.freeze({
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
-  onUploadGcode: 'onUploadGcode'
+  onUploadGcode: 'onUploadGcode',
+  onExtruderChange: 'onExtruderChange'
 })
 
 export const defaultPlotLayout = Object.freeze({

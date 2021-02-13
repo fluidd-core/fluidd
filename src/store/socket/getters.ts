@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
-import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, RunoutSensor, BedMesh, Endstops } from './types'
+import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, RunoutSensor, BedMesh, Endstops, Extruder } from './types'
 import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
 import { get, isFinite } from 'lodash-es'
@@ -556,6 +556,27 @@ export const getters: GetterTree<SocketState, RootState> = {
       sensors = [...sensors, ...state.printer.heaters.available_heaters]
     }
     return sensors
+  },
+
+  /**
+   * Return known extruders, giving them a friendly name.
+   */
+  getExtruders: (state) => {
+    const extruders: Extruder[] = []
+    Object.keys(state.printer)
+      .filter(key => key.startsWith('extruder'))
+      .sort()
+      .forEach(key => {
+        if (key.startsWith('extruder')) {
+          if (key === 'extruder') {
+            extruders.push({ name: 'Extruder 0', key })
+          } else {
+            const match = key.match(/\d+$/)
+            if (match) extruders.push({ name: 'Extruder ' + match[0], key })
+          }
+        }
+      })
+    return extruders
   },
 
   /**

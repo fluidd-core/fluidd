@@ -24,6 +24,11 @@ export interface Printer {
   [key: string]: any;
 }
 
+export interface Extruder {
+  name: string;
+  key: string;
+}
+
 // export interface Macros {
 //   [key: string]: Macro;
 // }
