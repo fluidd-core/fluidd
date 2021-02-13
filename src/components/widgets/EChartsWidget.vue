@@ -179,8 +179,10 @@ export default class EChartsWidget extends Vue {
           },
           minInterval: 20,
           maxInterval: 60,
-          min: 0,
+          min: this.yAxisTempMin,
           max: this.yAxisTempMax,
+          // max: 'dataMax',
+          // min: 'dataMin',
           axisLabel: {
             interval: 0,
             margin: 14,
@@ -329,36 +331,38 @@ export default class EChartsWidget extends Vue {
 
   tooltipFormatter (params: any) {
     let text = ''
-    params.forEach((param: any) => {
-      if (
-        !param.seriesName.toLowerCase().endsWith('target') &&
-        !param.seriesName.toLowerCase().endsWith('power') &&
-        !param.seriesName.toLowerCase().endsWith('speed')
-      ) {
-        text += `
-          <div>
-            <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>
-            <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-              ${param.seriesName}:
-            </span>
-            <span style="float:right;margin-left:20px;font-size:16px;color:#666;font-weight:900">
-              ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
+    params
+      .reverse()
+      .forEach((param: any) => {
+        if (
+          !param.seriesName.toLowerCase().endsWith('target') &&
+          !param.seriesName.toLowerCase().endsWith('power') &&
+          !param.seriesName.toLowerCase().endsWith('speed')
+        ) {
+          text += `
+            <div>
+              <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>
+              <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
+                ${param.seriesName}:
+              </span>
+              <span style="float:right;margin-left:20px;font-size:16px;color:#666;font-weight:900">
+                ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
 
-        if (param.seriesName + 'Target' in param.value) {
-          text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+          if (param.seriesName + 'Target' in param.value) {
+            text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+          }
+          if (param.seriesName + 'Power' in param.value) {
+            text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
+          }
+          if (param.seriesName + 'Speed' in param.value) {
+            text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
+          }
+          text += `</span>
+            <div style="clear: both"></div>
+          </div>
+          <div style="clear: both"></div>`
         }
-        if (param.seriesName + 'Power' in param.value) {
-          text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
-        }
-        if (param.seriesName + 'Speed' in param.value) {
-          text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
-        }
-        text += `</span>
-          <div style="clear: both"></div>
-        </div>
-        <div style="clear: both"></div>`
-      }
-    })
+      })
     return text
   }
 
@@ -387,9 +391,16 @@ export default class EChartsWidget extends Vue {
     return `${value * 100}%`
   }
 
+  yAxisTempMin (value: any) {
+    const num1 = Math.floor(value.min / 10) * 10
+    // console.log('min', value.min, num1)
+    return num1
+  }
+
   yAxisTempMax (value: any) {
-    // Need to fix this..
-    return Math.ceil(value.max / 20) * 20
+    const num1 = Math.ceil(value.max / 10) * 10
+    // console.log('max', value.max, num1)
+    return num1
   }
 }
 
