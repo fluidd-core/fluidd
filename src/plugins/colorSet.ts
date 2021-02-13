@@ -3,7 +3,7 @@
  * A basic class to manage color steps for our graphs.
  */
 import _Vue from 'vue'
-import tinycolor, { TinyColor } from '@ctrl/tinycolor'
+import tinycolor from '@ctrl/tinycolor'
 
 export class ColorSet {
   logPrefix = '[WEBSOCKET]'
@@ -114,8 +114,8 @@ export const ColorSetPlugin = {
       colorList: {
         heater: { base: '#ff5252', hsplit: 20, count: 3 },
         bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
-        fan: { base: '#3dc25a', hsplit: 16, lsplit: -4, count: 6 },
-        sensor: { base: '#d67600', hsplit: 10, lsplit: -4, count: 5 }
+        fan: ['#3DC25A', '#58FC7C', '#10EB40', '#7EF297'],
+        sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819']
       }
     }
     const colorset = new ColorSet({ ...opts, ...options })

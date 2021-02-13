@@ -439,6 +439,10 @@ export const getters: GetterTree<SocketState, RootState> = {
       'output_pin'
     ]
 
+    const applyColor = [
+      'temperature_fan'
+    ]
+
     const supportedTypes = (filter && filter.length)
       ? filter
       : [...fans, ...outputPins]
@@ -453,7 +457,10 @@ export const getters: GetterTree<SocketState, RootState> = {
 
         let prettyName = Vue.$filters.startCase(name)
         if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
-        const color = Vue.$colorset.next(getKlipperType(pin), pin)
+
+        const color = (applyColor.includes(split[0]))
+          ? Vue.$colorset.next(getKlipperType(pin), pin)
+          : undefined
 
         const type = (split.length) ? split[0] : pin
         const config = getters.getPrinterSettings(pin)

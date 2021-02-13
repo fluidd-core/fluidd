@@ -1,5 +1,5 @@
 import '@/scss/global.scss'
-import './registerComponentHooks'
+// import './registerComponentHooks'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'

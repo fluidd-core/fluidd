@@ -53,7 +53,7 @@ export interface Heater {
   name: string;
   prettyName: string;
   key: string;
-  color: string;
+  color?: string;
   temperature: number;
   target: number;
   power: number;
@@ -66,7 +66,7 @@ export interface Fan {
   name: string;
   prettyName: string;
   key: string;
-  color: string;
+  color?: string;
   type: string;
   controllable: boolean;
   speed?: number;
@@ -85,7 +85,7 @@ export interface OutputPin {
   name: string;
   prettyName: string;
   key: string;
-  color: string;
+  color?: string;
   type: string;
   controllable: boolean;
   pwm: boolean;
@@ -108,7 +108,7 @@ export interface Sensor {
   name: string;
   prettyName: string;
   key: string;
-  color: string;
+  color?: string;
   type: string;
   temperature: number;
   target?: number;
