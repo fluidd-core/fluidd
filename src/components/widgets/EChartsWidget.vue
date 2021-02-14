@@ -29,6 +29,7 @@ export default class EChartsWidget extends Vue {
 
   loading = true
   options: any = {}
+  // isMobile = false
 
   handleLegendSelectChange (e: Event) {
     this.$emit('legend-select-changed', e)
@@ -55,7 +56,8 @@ export default class EChartsWidget extends Vue {
     this.loading = false
   }
 
-  destroy () {
+  beforeDestroy () {
+    if (typeof window === 'undefined') return
     if (this.chart) {
       this.chart.dispose()
     }
@@ -155,7 +157,7 @@ export default class EChartsWidget extends Vue {
           margin: 14,
           color: fontColor,
           fontSize,
-          formatter: '{hh}:{mm}'
+          formatter: this.xAxisLabelFormatter
         },
         axisPointer: {
           label: {
@@ -358,6 +360,18 @@ export default class EChartsWidget extends Vue {
       }
     })
     return text
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
+  }
+
+  xAxisLabelFormatter (params: any) {
+    if (this.isMobile) {
+      return '{mm}'
+    } else {
+      return '{h}:{mm}'
+    }
   }
 
   xAxisPointerFormatter (params: any) {
