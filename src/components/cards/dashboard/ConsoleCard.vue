@@ -6,7 +6,6 @@
     contentClasses="flex-grow-1 flow-shrink-0"
     menuBreakpoint="none"
     menuIcon="$cog"
-    :height="450"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
@@ -28,6 +27,7 @@
       ref="console"
       pad-bottom
       :items="items"
+      :height="300"
     ></console-widget>
 
   </collapsable-card>
@@ -73,13 +73,13 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
   @Watch('inLayout')
   inLayoutChange (inLayout: boolean) {
     if (!inLayout) {
-      this.consoleComponent.scrollToEnd()
+      this.consoleComponent.scrollToBottom()
     }
   }
 
   handleCollapseChange (collapsed: boolean) {
     if (!collapsed) {
-      this.consoleComponent.scrollToEnd()
+      this.consoleComponent.scrollToBottom()
     }
   }
 }

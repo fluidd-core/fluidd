@@ -20,7 +20,7 @@ import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({})
 export default class ConsoleEntriesWidget extends Vue {
-  @Prop({ type: Object, required: true })
+  @Prop({ type: Object, default: {} })
   value!: ConsoleEntry
 
   get knownCommands () {

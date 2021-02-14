@@ -1,4 +1,5 @@
 import '@/scss/global.scss'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 // import './registerComponentHooks'
 import Vue from 'vue'
 import App from './App.vue'
@@ -14,6 +15,7 @@ import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 import { plugin } from 'echarts-for-vue'
+import VueVirtualScroller from 'vue-virtual-scroller'
 
 // import * as echarts from 'echarts'
 import * as echarts from 'echarts/core'
@@ -48,6 +50,7 @@ echarts.use([
 // Use any Plugins
 Vue.use(plugin, { echarts })
 Vue.use(AxiosPlugin)
+Vue.use(VueVirtualScroller)
 Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
@@ -58,6 +61,7 @@ Vue.component('btn-collapse', BtnCollapse)
 Vue.component('collapsable-card', CollapsableCard)
 Vue.component('vue-headful', vueHeadful)
 Vue.component('inline-help', InlineHelpIcon)
+// Vue.component('virtual-list', VirtualList)
 
 appInit()
   .then((config: Config) => {

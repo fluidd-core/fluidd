@@ -11,13 +11,13 @@
         <span class="headline">{{ title }}</span>
       </v-card-title>
       <v-card-text>
-        <div style="height: 250px;">
-          <console-widget
-            v-if="updateResponses"
-            :items="updateResponses"
-            readonly
-          ></console-widget>
-        </div>
+        <console-widget
+          v-if="updateResponses"
+          :items="updateResponses"
+          key-field="proc_id"
+          :height="250"
+          readonly
+        ></console-widget>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>

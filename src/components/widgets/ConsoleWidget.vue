@@ -1,22 +1,39 @@
 <template>
   <div
-    class="console"
-    style="height: 100%;">
+    class="console">
     <v-card
       outlined
       color="tertiary"
       class="console-wrapper pa-1"
-      :style="(padBottom) ? 'height: calc(100% - 68px);' : 'height: 100%'"
       ref="console-wrapper"
     >
-      <console-item-widget
-        v-for="item in items"
-        :key="item.id"
-        class="console-item"
-        :value="item"
-        @click="handleEntryClick"
+      <DynamicScroller
+        ref="scroller"
+        :items="items"
+        :min-item-size="24"
+        @resize="scrollToBottom()"
+        :style="{ height: height + 'px' }"
+        :key-field="keyField"
       >
-      </console-item-widget>
+        <template v-slot="{ item, index, active }">
+          <DynamicScrollerItem
+            :item="item"
+            :active="active"
+            :size-dependencies="[
+              item.message,
+            ]"
+            :data-index="index"
+          >
+            <console-item-widget
+              :value="item"
+              :key="item[keyField]"
+              @click="handleEntryClick"
+              class="console-item"
+            >
+            </console-item-widget>
+          </DynamicScrollerItem>
+        </template>
+      </DynamicScroller>
     </v-card>
     <input-console-command
       v-if="!readonly"
@@ -44,6 +61,12 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   @Prop({ type: Array, default: [] })
   items!: []
 
+  @Prop({ type: String, default: 'id' })
+  keyField!: string
+
+  @Prop({ type: Number, default: 250 })
+  height!: number
+
   @Prop({ type: Boolean, default: false })
   readonly!: boolean
 
@@ -63,7 +86,7 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   }
 
   mounted () {
-    this.scrollToEnd()
+    this.scrollToBottom()
   }
 
   /**
@@ -83,18 +106,14 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
       (item.id !== oldItem.id) ||
       val.length !== oldVal.length
     ) {
-      this.scrollToEnd()
+      this.scrollToBottom()
     }
   }
 
-  scrollToEnd () {
-    this.$nextTick(() => {
-      const vel = this.$refs['console-wrapper'] as Vue
-      if (vel && vel.$el) {
-        const el = vel.$el
-        el.scrollTop = el.scrollHeight
-      }
-    })
+  scrollToBottom () {
+    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+    const ref = this.$refs.scroller as any
+    if (ref) ref.scrollToBottom()
   }
 
   sendCommand (command?: string) {
