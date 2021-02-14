@@ -8,6 +8,19 @@
     :enabled="enabled"
     @enabled="$emit('enabled', $event)">
 
+    <template v-slot:title>
+      <v-icon left>$fire</v-icon>
+      <span class="font-weight-light">Thermals</span>
+      <inline-help
+        bottom
+        small
+        tooltip="Hold shift to zoom.<br />
+          Click an item to toggle in the graph.<br />
+          Click a power to toggle in the graph."
+      ></inline-help>
+
+    </template>
+
     <template v-slot:menu>
       <v-btn
         small

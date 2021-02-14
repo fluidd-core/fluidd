@@ -217,7 +217,8 @@ export default class EChartsWidget extends Vue {
         source: this.chartData
       },
       dataZoom: [{
-        type: 'inside'
+        type: 'inside',
+        zoomOnMouseWheel: 'shift'
       }],
       series: []
     }
