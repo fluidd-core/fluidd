@@ -10,7 +10,7 @@
     single-line
     dense
     hide-details
-    placeholder="'tab' for autocomplete, 'help' for commands 'arrows' for history"
+    placeholder="'tab' for autocomplete, 'arrows' for history, 'help' for commands"
     @keyup.enter="emitSend(newValue)"
     @keyup.up="historyUp()"
     @keyup.down="historyDown()"

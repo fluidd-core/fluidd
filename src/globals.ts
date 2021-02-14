@@ -88,7 +88,7 @@ import {
  * Global, static constants.
  */
 export const Globals = Object.freeze({
-  CONSOLE_HISTORY_RETENTION: 1000,
+  CONSOLE_HISTORY_RETENTION: 1000, // total count
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
   CHART_HISTORY_RETENTION: 1200,

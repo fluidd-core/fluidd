@@ -584,7 +584,7 @@ export const getters: GetterTree<SocketState, RootState> = {
 
     return (hideTempWaits)
       ? state.console.filter(entry => !regex.test(entry.message))
-      : state.console
+      : [...state.console]
   },
 
   getAvailableCalibrationCommands: (state) => {

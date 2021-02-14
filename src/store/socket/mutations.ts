@@ -91,11 +91,13 @@ export const mutations: MutationTree<SocketState> = {
     }
   },
   addConsoleEntry (state, entry: ConsoleEntry) {
+    if (entry.id === undefined) {
+      state.consoleEntryCount++
+      entry.id = state.consoleEntryCount
+    }
     while (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
-      // state.console.pop()
       state.console.shift()
     }
-    // state.console.unshift(entry)
     state.console.push(entry)
   },
   setMacros (state, macros: Macro[]) {

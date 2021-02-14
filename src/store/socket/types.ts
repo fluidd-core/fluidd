@@ -1,9 +1,10 @@
 export interface SocketState {
-  [key: string]: boolean | SocketError | EndStops | ConsoleEntry[] | ChartData[] | string | string[] | Printer | null;
+  [key: string]: boolean | SocketError | EndStops | ConsoleEntry[] | ChartData[] | number | string | string[] | Printer | null;
   open: boolean;
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   ready: boolean;
   acceptingNotifications: boolean;
+  consoleEntryCount: number; // give each console entry a unique id.
   error: SocketError | null;
   endstops: EndStops;
   macros: Macro[];
@@ -160,6 +161,7 @@ export interface BedMeshProfile {
 }
 
 export interface ConsoleEntry {
+  id?: number;
   message: string;
   type: 'command' | 'response';
   time?: number;

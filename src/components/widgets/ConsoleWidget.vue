@@ -9,14 +9,14 @@
       :style="(padBottom) ? 'height: calc(100% - 68px);' : 'height: 100%'"
       ref="console-wrapper"
     >
-      <console-entry-widget
-        v-for="(item, index) in availableItems"
-        :key="index"
+      <console-item-widget
+        v-for="item in items"
+        :key="item.id"
         class="console-item"
         :value="item"
         @click="handleEntryClick"
       >
-      </console-entry-widget>
+      </console-item-widget>
     </v-card>
     <input-console-command
       v-if="!readonly"
@@ -31,13 +31,13 @@
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
-import ConsoleEntryWidget from '@/components/widgets/ConsoleEntryWidget.vue'
+import ConsoleItemWidget from '@/components/widgets/ConsoleItemWidget.vue'
 import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({
   components: {
     InputConsoleCommand,
-    ConsoleEntryWidget
+    ConsoleItemWidget
   }
 })
 export default class ConsoleWidget extends Mixins(UtilsMixin) {
@@ -49,8 +49,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
 
   @Prop({ type: Boolean, default: false })
   padBottom!: boolean
-
-  availableItems: ConsoleEntry[] = []
 
   get availableCommands () {
     return this.$store.getters['socket/getAllGcodeCommands']
@@ -68,21 +66,25 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
     this.scrollToEnd()
   }
 
-  // TODO:
-  // Later, we should be smarter with scrolling.
+  /**
+   * Scroll if the last item in the array is different from the previous
+   * array.
+   */
   @Watch('items', { immediate: true })
-  onItemsChange (val: ConsoleEntry[]) {
-    let doScroll = true
-    const newArray = val.slice(0) as ConsoleEntry[]
+  onItemsChange (val: ConsoleEntry[], oldVal: ConsoleEntry[]) {
+    const item = (val && val.length)
+      ? val[val.length - 1] as ConsoleEntry
+      : undefined
+    const oldItem = (oldVal && oldVal.length)
+      ? oldVal[oldVal.length - 1] as ConsoleEntry
+      : undefined
     if (
-      newArray.length &&
-      this.availableItems.length &&
-      newArray[newArray.length - 1] === this.availableItems[this.availableItems.length - 1]
+      (!item || !oldItem) ||
+      (item.id !== oldItem.id) ||
+      val.length !== oldVal.length
     ) {
-      doScroll = false
+      this.scrollToEnd()
     }
-    this.availableItems = newArray
-    if (doScroll) this.scrollToEnd()
   }
 
   scrollToEnd () {

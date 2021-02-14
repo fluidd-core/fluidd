@@ -19,7 +19,7 @@ import { Globals } from '@/globals'
 import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({})
-export default class ConsoleEntryWidget extends Vue {
+export default class ConsoleEntriesWidget extends Vue {
   @Prop({ type: Object, required: true })
   value!: ConsoleEntry
 
@@ -27,6 +27,10 @@ export default class ConsoleEntryWidget extends Vue {
     const availableCommands = this.$store.getters['socket/getAllGcodeCommands']
     return new Set(Object.keys(availableCommands))
   }
+
+  // mounted () {
+  //   console.log('console item', this.value.id)
+  // }
 
   get itemMessage () {
     let message = this.value.message
