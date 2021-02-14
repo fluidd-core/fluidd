@@ -29,7 +29,6 @@ export default class EChartsWidget extends Vue {
 
   loading = true
   options: any = {}
-  // isMobile = false
 
   handleLegendSelectChange (e: Event) {
     this.$emit('legend-select-changed', e)
@@ -367,7 +366,7 @@ export default class EChartsWidget extends Vue {
     return this.$vuetify.breakpoint.mobile
   }
 
-  xAxisLabelFormatter (params: any) {
+  xAxisLabelFormatter () {
     if (this.isMobile) {
       return '{mm}'
     } else {
