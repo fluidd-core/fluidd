@@ -231,52 +231,50 @@ export const actions: ActionTree<SocketState, RootState> = {
     // so we have to account for this too.
 
     // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    const count = 600 // The size of the dataset we need.
-    const moonrakerCount = 1200 // The size of the dataset we expect moonraker to provide.
+    const count = Globals.CHART_HISTORY_RETENTION // The size of the dataset we need.
     const targetsToAvoid = [
       'temperature_probe',
       'temperature_sensor'
     ]
 
     for (const originalKey in payload) { // each heater / temp fan
-      // If the dataset is less than 1200, then pad the beginning
+      // If the dataset is less than what we need, then pad the beginning
       // until we get to our intended count
-      const l = payload[originalKey].temperatures.length
-      const pad = moonrakerCount - l
-      if (l < moonrakerCount) {
-        const lastTemp = payload[originalKey].temperatures[0]
-        payload[originalKey].temperatures = [...Array.from({ length: pad }, () => lastTemp), ...payload[originalKey].temperatures]
-        if ('targets' in payload[originalKey]) {
-          payload[originalKey].targets = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].targets]
-        }
-        if ('powers' in payload[originalKey]) {
-          payload[originalKey].powers = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].powers]
-        }
-        if ('speeds' in payload[originalKey]) {
-          payload[originalKey].speeds = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].speeds]
-        }
-      }
       if (targetsToAvoid.some(e => originalKey.startsWith(e))) {
         delete payload[originalKey].targets
       }
+      ['temperatures', 'targets', 'powers', 'speeds'].forEach((k) => {
+        const arr = payload[originalKey][k]
+        if (arr && arr.length) {
+          if (arr.length < count) {
+            const length = count - arr.length
+            const lastValue = payload[originalKey][k][0]
+            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...payload[originalKey][k]]
+          } else {
+            payload[originalKey][k] = payload[originalKey][k].splice(arr.length - count)
+          }
+        }
+      })
     }
 
     const keys = Object.keys(payload)
+    const d: ChartData[] = []
     for (let i = 0; i < count; i++) {
-      const date = new Date(now.getTime() - (1000 * (count - i)) - 1000)
+      const date = new Date(now.getTime() - (1000 * (count - i)) - 2000)
       const r: ChartData = {
         date
       }
       keys.forEach(key => {
         let label = key
         if (key.includes(' ')) label = key.split(' ')[1]
-        r[label] = payload[key].temperatures[i + count]
-        if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i + count]
-        if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i + count]
-        if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i + count]
+        r[label] = payload[key].temperatures[i]
+        if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i]
+        if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i]
+        if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i]
       })
-      commit('addChartEntry', r)
+      d.push(r)
     }
+    commit('addChartStore', d)
 
     // After we've loaded the initial temp data, load and subscribe to the rest.
     SocketActions.printerObjectsList()

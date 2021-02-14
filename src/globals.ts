@@ -1,4 +1,3 @@
-import { ChartConfiguration } from '@/types'
 import {
   mdiHome,
   mdiClose,
@@ -92,6 +91,7 @@ export const Globals = Object.freeze({
   CONSOLE_HISTORY_RETENTION: 1000,
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
+  CHART_HISTORY_RETENTION: 1200,
   KLIPPY_RETRY_DELAY: 2000,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
@@ -226,17 +226,6 @@ export const Waits = Object.freeze({
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
   onUploadGcode: 'onUploadGcode'
-})
-
-export const chartConfiguration: ChartConfiguration = Object.freeze({
-  HISTORY_RETENTION: 10, // history in minutes of chart to keep.
-  COLORS: {
-    NAMED: {
-      heater_bed: '#0095ff',
-      extruder: '#ff0000',
-      chamber: '#00ff00'
-    }
-  }
 })
 
 export const defaultPlotLayout = Object.freeze({
