@@ -1,6 +1,7 @@
 <template>
   <v-select
     :items="extruders"
+    :readonly="printerPrinting"
     v-model="extruder"
     item-value="key"
     item-text="name"
