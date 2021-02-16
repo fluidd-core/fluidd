@@ -51,11 +51,11 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
   enabled!: boolean
 
   get hideTempWaits (): boolean {
-    return this.$store.state.config.fileConfig.general.hideTempWaits
+    return this.$store.state.config.uiSettings.general.hideTempWaits
   }
 
   set hideTempWaits (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.hideTempWaits', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.hideTempWaits', value })
   }
 
   get items (): ConsoleEntry[] {

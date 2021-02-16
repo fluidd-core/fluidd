@@ -196,7 +196,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       .filter((item: string) => item.startsWith('gcode_macro'))
       .map((item: string) => {
         const name = item.split(' ')[1]
-        const hidden = rootState.config?.fileConfig?.dashboard?.hiddenMacros.includes(name)
+        const hidden = rootState.config?.uiSettings?.dashboard?.hiddenMacros.includes(name)
         return { name, visible: !hidden }
       })
     commit('setMacros', macros)

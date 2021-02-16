@@ -24,11 +24,11 @@ import UtilsMixin from '@/mixins/utils'
 })
 export default class GeneralSettingsCard extends Mixins(UtilsMixin) {
   get instanceName () {
-    return this.$store.state.config.fileConfig.general.instanceName
+    return this.$store.state.config.uiSettings.general.instanceName
   }
 
   set instanceName (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.instanceName', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.instanceName', value })
   }
 
   instanceNameRules = [

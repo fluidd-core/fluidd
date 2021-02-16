@@ -12,6 +12,9 @@ export const defaultState = (): ConfigState => {
     socketUrl: '',
     unsavedChanges: false,
     layoutMode: false,
+    appState: {
+      chartSelectedLegends: {}
+    },
     cardState: {},
     cardLayout: {
       dashboard1: [
@@ -27,11 +30,9 @@ export const defaultState = (): ConfigState => {
         { name: 'console-card', enabled: true }
       ]
     },
-    appState: {
-      chartSelectedLegends: {}
-    },
     instances: [],
-    fileConfig: {
+    // saves to file .fluidd
+    uiSettings: {
       general: {
         instanceName: Globals.APP_NAME,
         chartVisible: true,
@@ -62,6 +63,8 @@ export const defaultState = (): ConfigState => {
         hiddenMacros: []
       }
     },
+    // saves to file .fluidd_history
+    consoleHistory: [],
     hostConfig: {
       endpoints: [],
       blacklist: [],

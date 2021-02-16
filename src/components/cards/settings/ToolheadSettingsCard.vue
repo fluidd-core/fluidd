@@ -66,67 +66,67 @@ import UtilsMixin from '@/mixins/utils'
 })
 export default class ToolHeadSettingsCard extends Mixins(UtilsMixin) {
   get defaultExtrudeSpeed () {
-    return this.$store.state.config.fileConfig.general.defaultExtrudeSpeed
+    return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
   }
 
   set defaultExtrudeSpeed (value: number) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultExtrudeSpeed', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.defaultExtrudeSpeed', value })
   }
 
   get defaultExtrudeLength () {
-    return this.$store.state.config.fileConfig.general.defaultExtrudeLength
+    return this.$store.state.config.uiSettings.general.defaultExtrudeLength
   }
 
   set defaultExtrudeLength (value: number) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultExtrudeLength', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.defaultExtrudeLength', value })
   }
 
   get defaultToolheadMoveLength () {
-    return this.$store.state.config.fileConfig.general.defaultToolheadMoveLength
+    return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
   }
 
   set defaultToolheadMoveLength (value: number) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadMoveLength', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.defaultToolheadMoveLength', value })
   }
 
   get defaultToolheadXYSpeed () {
-    return this.$store.state.config.fileConfig.general.defaultToolheadXYSpeed
+    return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
   set defaultToolheadXYSpeed (value: number) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadXYSpeed', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.defaultToolheadXYSpeed', value })
   }
 
   get defaultToolheadZSpeed () {
-    return this.$store.state.config.fileConfig.general.defaultToolheadZSpeed
+    return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
   }
 
   set defaultToolheadZSpeed (value: number) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.defaultToolheadZSpeed', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.defaultToolheadZSpeed', value })
   }
 
   get invertX () {
-    return this.$store.state.config.fileConfig.general.axis.x.inverted
+    return this.$store.state.config.uiSettings.general.axis.x.inverted
   }
 
   set invertX (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.axis.x.inverted', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.axis.x.inverted', value })
   }
 
   get invertY () {
-    return this.$store.state.config.fileConfig.general.axis.y.inverted
+    return this.$store.state.config.uiSettings.general.axis.y.inverted
   }
 
   set invertY (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.axis.y.inverted', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.axis.y.inverted', value })
   }
 
   get invertZ () {
-    return this.$store.state.config.fileConfig.general.axis.z.inverted
+    return this.$store.state.config.uiSettings.general.axis.z.inverted
   }
 
   set invertZ (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.axis.z.inverted', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.axis.z.inverted', value })
   }
 }
 </script>

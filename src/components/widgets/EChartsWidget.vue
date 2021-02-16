@@ -85,7 +85,7 @@ export default class EChartsWidget extends Vue {
   }
 
   initOptions () {
-    const darkMode = this.$store.state.config.fileConfig.general.darkMode
+    const darkMode = this.$store.state.config.uiSettings.general.darkMode
     const fontSize = 16
     const lineOpacity = 0.2
     let labelBackground = 'rgba(10,10,10,0.90)'

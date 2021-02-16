@@ -77,7 +77,7 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
   value!: boolean
 
   get instanceName () {
-    return this.$store.state.config.fileConfig.general.instanceName
+    return this.$store.state.config.uiSettings.general.instanceName
   }
 
   get versionsSupported () {

@@ -69,7 +69,7 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
   waits = Waits
 
   get instanceName () {
-    return this.$store.state.config.fileConfig.general.instanceName
+    return this.$store.state.config.uiSettings.general.instanceName
   }
 
   get versionComponents () {

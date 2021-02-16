@@ -2,7 +2,7 @@ import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 import store from './store'
 import { Globals } from './globals'
-import { ApiConfig, Config, FileConfig, HostConfig, InstanceConfig } from './store/config/types'
+import { ApiConfig, Config, UiSettings, HostConfig, InstanceConfig } from './store/config/types'
 
 // Load API configuration
 /**
@@ -93,14 +93,14 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // Just sets the api urls.
   store.dispatch('config/onInitApiConfig', apiConfig)
 
-  // Load the File Config.
-  let fileConfig: FileConfig | undefined | null
+  // Load the File(s) Config.
+  let uiSettings: UiSettings | undefined | null
   if (
     apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
   ) {
     try {
       const file = await fetch(apiConfig.apiUrl + '/server/files/config/' + Globals.SETTINGS_FILENAME, { cache: 'no-store' })
-      fileConfig = (file.ok)
+      uiSettings = (file.ok)
         ? await file.json()
         : null // no file yet.
     } catch (e) {
@@ -109,16 +109,16 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     }
   }
 
-  // fileConfig could equal;
+  // uiSettings could equal;
   // - null - meaning we made a connection, but no user configuration is saved yet, which is ok.
   // - undefined - meaning the API is likely down..
   // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, fileConfig, hostConfig })
+  await store.dispatch('init', { apiConfig, uiSettings, hostConfig })
 
   // Set vuetify to the correct initial theme.
-  if (store.state.config && store.state.config.fileConfig.general) {
-    vuetify.framework.theme.dark = store.state.config.fileConfig.general.darkMode
+  if (store.state.config && store.state.config.uiSettings.general) {
+    vuetify.framework.theme.dark = store.state.config.uiSettings.general.darkMode
   }
 
-  return { apiConfig, fileConfig, hostConfig }
+  return { apiConfig, uiSettings, hostConfig }
 }

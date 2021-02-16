@@ -97,7 +97,7 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
 
   get extrudeSpeed () {
     return (this.feedSpeed === -1)
-      ? this.$store.state.config.fileConfig.general.defaultExtrudeSpeed
+      ? this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
       : this.feedSpeed
   }
 
@@ -107,7 +107,7 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
 
   get extrudeLength () {
     return (this.feedLength === -1)
-      ? this.$store.state.config.fileConfig.general.defaultExtrudeLength
+      ? this.$store.state.config.uiSettings.general.defaultExtrudeLength
       : this.feedLength
   }
 

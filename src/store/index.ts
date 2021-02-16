@@ -35,7 +35,7 @@ export default new Vuex.Store<RootState>({
       // configuration if there is any.
       commit('version/setVersion', process.env.VERSION)
       commit('version/setHash', process.env.HASH)
-      const initFile = await dispatch('config/initFile', payload.fileConfig)
+      const initFile = await dispatch('config/initFile', payload.uiSettings)
       const initHost = await dispatch('config/initHost', payload.hostConfig)
       const initLocal = await dispatch('config/initLocal', payload)
       return [initFile, initHost, initLocal]

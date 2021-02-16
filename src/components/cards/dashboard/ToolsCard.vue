@@ -82,7 +82,7 @@ export default class ToolsCard extends Mixins(UtilsMixin) {
   }
 
   get jobsInDash () {
-    return this.$store.state.config.fileConfig.general.jobsInDash
+    return this.$store.state.config.uiSettings.general.jobsInDash
   }
 
   get jobsAvailable () {

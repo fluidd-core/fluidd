@@ -31,7 +31,7 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
   // Theme is currently restricted to dark / light.
   // This starts impl thought on more options.
   get theme () {
-    const darkMode = this.$store.state.config.fileConfig.general.darkMode
+    const darkMode = this.$store.state.config.uiSettings.general.darkMode
     return (darkMode)
       ? 'dark'
       : 'light'
@@ -40,7 +40,7 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
   set theme (val: string) {
     const darkMode = (val === 'dark')
     this.$vuetify.theme.dark = darkMode
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.darkMode', value: darkMode })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.darkMode', value: darkMode })
   }
 }
 </script>

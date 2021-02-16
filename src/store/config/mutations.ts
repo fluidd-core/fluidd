@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { ConfigState, FileConfig, GenericSave, InstanceConfig, Config, CardConfig } from './types'
+import { ConfigState, UiSettings, GenericSave, InstanceConfig, Config, CardConfig } from './types'
 import { Macro } from '../socket/types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
@@ -15,16 +15,16 @@ export const mutations: MutationTree<ConfigState> = {
   },
 
   /**
-   * During init of the store, sets fileConfig.
+   * During init of the store, sets uiSettings.
    * This would be set on first app load after we've loaded
    * the configuration JSON (if any.. )
    */
-  onInitFile (state, payload: FileConfig) {
+  onInitFile (state, payload: UiSettings) {
     // this should extend the default config as we
     // don't want to overrite defaults if not defined
     // in the file yet.
     if (payload) {
-      state.fileConfig = merge(state.fileConfig, payload)
+      state.uiSettings = merge(state.uiSettings, payload)
     } else {
       // If the user has not saved their own configuration yet,
       // then set any sane values over and above the base store state
@@ -35,11 +35,11 @@ export const mutations: MutationTree<ConfigState> = {
       let url
       try {
         url = new URL(state.apiUrl)
-        camUrl = `${url.protocol}//${url.hostname}${state.fileConfig.camera.url}`
+        camUrl = `${url.protocol}//${url.hostname}${state.uiSettings.camera.url}`
       } catch {
-        camUrl = state.apiUrl + state.fileConfig.camera.url
+        camUrl = state.apiUrl + state.uiSettings.camera.url
       }
-      state.fileConfig.camera.url = camUrl
+      state.uiSettings.camera.url = camUrl
     }
   },
 
@@ -77,7 +77,7 @@ export const mutations: MutationTree<ConfigState> = {
   onInitInstances (state, payload: Config) {
     let instances: InstanceConfig[] = []
     const apiConfig = payload.apiConfig
-    const fileConfig = payload.fileConfig
+    const uiSettings = payload.uiSettings
     if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
       instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
     }
@@ -85,18 +85,18 @@ export const mutations: MutationTree<ConfigState> = {
     const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiConfig.apiUrl)
     if (i === -1) {
       if (
-        (fileConfig || fileConfig === null) &&
+        (uiSettings || uiSettings === null) &&
         (apiConfig && apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '')
       ) {
         // Ensures we only add instances we've had a successful connection to.
         instances.forEach(instance => { instance.active = false })
-        instances.push({ ...apiConfig, active: true, name: state.fileConfig.general.instanceName })
+        instances.push({ ...apiConfig, active: true, name: state.uiSettings.general.instanceName })
       }
     } else {
       instances.forEach((instance, index) => {
         instance.active = (index === i)
         if (index === i) {
-          instance.name = state.fileConfig.general.instanceName
+          instance.name = state.uiSettings.general.instanceName
         }
       })
     }
@@ -153,12 +153,12 @@ export const mutations: MutationTree<ConfigState> = {
    * Updates the hidden macro list.
    */
   updateHiddenMacros (state, macro: Macro) {
-    const i = state.fileConfig.dashboard.hiddenMacros.indexOf(macro.name, 0)
+    const i = state.uiSettings.dashboard.hiddenMacros.indexOf(macro.name, 0)
     if (macro.visible && i >= 0) {
-      state.fileConfig.dashboard.hiddenMacros.splice(i, 1)
+      state.uiSettings.dashboard.hiddenMacros.splice(i, 1)
     }
     if (!macro.visible && i < 0) {
-      state.fileConfig.dashboard.hiddenMacros.push(macro.name)
+      state.uiSettings.dashboard.hiddenMacros.push(macro.name)
     }
   },
 
@@ -168,9 +168,9 @@ export const mutations: MutationTree<ConfigState> = {
   updatePreset (state, payload) {
     const i = payload.index
     if (i >= 0) {
-      Vue.set(state.fileConfig.dashboard.tempPresets, i, payload.preset)
+      Vue.set(state.uiSettings.dashboard.tempPresets, i, payload.preset)
     } else {
-      state.fileConfig.dashboard.tempPresets.push(payload.preset)
+      state.uiSettings.dashboard.tempPresets.push(payload.preset)
     }
   },
 
@@ -178,7 +178,7 @@ export const mutations: MutationTree<ConfigState> = {
    * Remove a preset
    */
   removePreset (state, payload) {
-    state.fileConfig.dashboard.tempPresets.splice(payload, 1)
+    state.uiSettings.dashboard.tempPresets.splice(payload, 1)
   },
 
   setLayoutMode (state, payload) {

@@ -56,19 +56,19 @@ import UtilsMixin from '@/mixins/utils'
 })
 export default class PrintTimeEstimateSettingsCard extends Mixins(UtilsMixin) {
   get cameraUrl () {
-    return this.$store.state.config.fileConfig.camera.url
+    return this.$store.state.config.uiSettings.camera.url
   }
 
   set cameraUrl (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.url', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.url', value })
   }
 
   get printTimeEstimationsType () {
-    return this.$store.state.config.fileConfig.general.printTimeEstimationsType
+    return this.$store.state.config.uiSettings.general.printTimeEstimationsType
   }
 
   set printTimeEstimationsType (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.printTimeEstimationsType', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.printTimeEstimationsType', value })
   }
 }
 </script>

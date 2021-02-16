@@ -75,7 +75,7 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
   }
 
   get printTimeEstimationsType () {
-    return this.$store.state.config.fileConfig.general.printTimeEstimationsType
+    return this.$store.state.config.uiSettings.general.printTimeEstimationsType
   }
 
   get timeEstimates () {

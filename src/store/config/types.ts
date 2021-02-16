@@ -1,19 +1,20 @@
 export interface ConfigState {
-  [key: string]: string | boolean | AppState | CardState | InstanceConfig[] | FileConfig | CardLayout | HostConfig;
+  [key: string]: any;
   apiUrl: string;
   socketUrl: string;
   unsavedChanges: boolean;
   layoutMode: boolean;
-  appState: AppState; // app state, not saved anywhere.
+  appState: AppState;
   cardState: CardState; // if a collapsable card is collapsed or not.
   cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
-  fileConfig: FileConfig;
+  uiSettings: UiSettings;
   hostConfig: HostConfig;
+  consoleHistory: string[];
 }
 
 export interface AppState {
-  [key: string]: string | boolean | number | ChartSelectedLegends;
+  [key: string]: any;
   chartSelectedLegends: ChartSelectedLegends;
 }
 
@@ -36,7 +37,7 @@ export interface CardState {
   [key: string]: boolean;
 }
 
-export interface FileConfig {
+export interface UiSettings {
   general: GeneralConfig;
   camera: CameraConfig;
   dashboard: DashboardConfig;
@@ -91,7 +92,7 @@ export interface GenericSave {
 
 export interface Config {
   apiConfig: ApiConfig | InstanceConfig;
-  fileConfig: FileConfig | undefined | null;
+  uiSettings: UiSettings | undefined | null;
   hostConfig?: HostConfig;
 }
 

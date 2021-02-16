@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, GenericSave, Config, InstanceConfig, FileConfig, HostConfig, CardConfig, CardState } from './types'
+import { ConfigState, GenericSave, Config, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -8,7 +8,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Inits any file config we may have.
    */
-  async initFile ({ commit }, payload: FileConfig) {
+  async initFile ({ commit }, payload: UiSettings) {
     commit('onInitFile', payload)
   },
 
@@ -55,15 +55,15 @@ export const actions: ActionTree<ConfigState, RootState> = {
    * Saves keys to config. Assumes a root[key] structure
    * under state.config.
    *
-   * If the key starts with fileConfig, we'll automatically
+   * If the key starts with uiSettings, we'll automatically
    * save to file too.
    *
    * NOTE: These won't be reactive unless the state was predefined.
    */
   async saveGeneric ({ commit, dispatch }, config: GenericSave) {
     commit('onSaveGeneric', config)
-    if (config.key.startsWith('fileConfig')) {
-      dispatch('saveFileConfig')
+    if (config.key.startsWith('uiSettings')) {
+      dispatch('saveUiSettings')
     }
   },
 
@@ -72,7 +72,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async updateHiddenMacros ({ commit, dispatch }, payload) {
     commit('updateHiddenMacros', payload)
-    dispatch('saveFileConfig')
+    dispatch('saveUiSettings')
   },
 
   /**
@@ -81,32 +81,32 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async updatePreset ({ commit, dispatch }, payload) {
     commit('setUnsavedChanges', true)
     commit('updatePreset', payload)
-    dispatch('saveFileConfig')
+    dispatch('saveUiSettings')
   },
 
   async removePreset ({ commit, dispatch }, payload) {
     commit('setUnsavedChanges', true)
     commit('removePreset', payload)
-    dispatch('saveFileConfig')
+    dispatch('saveUiSettings')
   },
 
   /**
-   * Saves fileConfig to file.
+   * Saves uiSettings to its file.
    */
-  async saveFileConfig ({ commit, dispatch, state, rootState, rootGetters }) {
+  async saveUiSettings ({ commit, dispatch, state, rootState, rootGetters }) {
     let instance = rootGetters['config/getCurrentInstance']
     if (instance) {
-      instance = { ...instance, ...{ name: state.fileConfig.general.instanceName } }
+      instance = { ...instance, ...{ name: state.uiSettings.general.instanceName } }
       dispatch('updateInstance', instance)
     }
 
-    if (state.fileConfig && Object.keys(state.fileConfig).length > 0) {
+    if (state.uiSettings && Object.keys(state.uiSettings).length > 0) {
       const formData = new FormData()
       const filename = Globals.SETTINGS_FILENAME
-      const file = new File([JSON.stringify(state.fileConfig)], filename)
+      const file = new File([JSON.stringify(state.uiSettings)], filename)
       formData.append('file', file, filename)
       formData.append('root', 'config')
-      console.debug('uploading configuration...', filename, state.fileConfig)
+      console.debug('uploading configuration...', filename, state.uiSettings)
       Vue.$http.post(
         rootState.config?.apiUrl + '/server/files/upload',
         formData,

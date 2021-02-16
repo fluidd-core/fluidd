@@ -61,7 +61,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   instanceDialogOpen = false
 
   get instanceName () {
-    return this.$store.state.config.fileConfig.general.instanceName
+    return this.$store.state.config.uiSettings.general.instanceName
   }
 
   get instances () {

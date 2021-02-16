@@ -99,11 +99,11 @@ export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
   }
 
   get chartVisible () {
-    return this.$store.state.config.fileConfig.general.chartVisible
+    return this.$store.state.config.uiSettings.general.chartVisible
   }
 
   set chartVisible (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.chartVisible', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.chartVisible', value })
   }
 
   get inLayout (): boolean {

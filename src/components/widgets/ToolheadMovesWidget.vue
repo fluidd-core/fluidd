@@ -140,7 +140,7 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
 
   get toolheadMoveLength () {
     return (this.moveLength === '')
-      ? this.$store.state.config.fileConfig.general.defaultToolheadMoveLength
+      ? this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
       : this.moveLength
   }
 

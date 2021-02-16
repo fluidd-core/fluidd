@@ -598,7 +598,7 @@ export const getters: GetterTree<SocketState, RootState> = {
 
   getConsoleEntries: (state, getters, rootState) => {
     const hideTempWaits = (rootState && rootState.config)
-      ? rootState.config.fileConfig.general.hideTempWaits
+      ? rootState.config.uiSettings.general.hideTempWaits
       : true
 
     const regex = /^(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i

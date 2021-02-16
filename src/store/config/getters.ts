@@ -26,7 +26,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
    * after a preset has been saved.
    */
   getTempPresets: (state, getters, rootState, rootGetters) => {
-    const originalPresets: TemperaturePreset[] = state.fileConfig.dashboard.tempPresets
+    const originalPresets: TemperaturePreset[] = state.uiSettings.dashboard.tempPresets
     const presets: TemperaturePreset[] = []
     const heaters = rootGetters['socket/getHeaters']
     const fans = rootGetters['socket/getOutputs'](['temperature_fan'])
