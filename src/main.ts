@@ -67,11 +67,6 @@ appInit()
   .then((config: Config) => {
     console.debug('Loaded App Configuration', config)
 
-    // Set vuetify to the correct initial theme.
-    // if (store.state.config && store.state.config.uiSettings.general) {
-    //   vuetify.framework.theme.dark = store.state.config.uiSettings.general.darkMode
-    // }
-
     // Init the socket plugin
     Vue.use(SocketPlugin, {
       url: config.apiConfig.socketUrl,

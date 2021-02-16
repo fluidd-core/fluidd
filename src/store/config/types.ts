@@ -92,8 +92,14 @@ export interface GenericSave {
 
 export interface Config {
   apiConfig: ApiConfig | InstanceConfig;
-  uiSettings: UiSettings | undefined | null;
+  fileConfig?: FileConfig;
   hostConfig?: HostConfig;
+}
+
+export interface FileConfig {
+  [index: string]: any;
+  uiSettings?: UiSettings;
+  consoleHistory?: string[];
 }
 
 export interface ApiConfig {

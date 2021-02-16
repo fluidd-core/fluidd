@@ -98,7 +98,12 @@ export const Globals = Object.freeze({
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
-  SETTINGS_FILENAME: '.fluidd.json',
+  CONFIG_FILES: {
+    // { name: 'uiSettings', filename: '.fluidd.json' },
+    // { name: 'consoleHistory', filename: '.fluidd_history.json' }
+    uiSettings: '.fluidd.json',
+    consoleHistory: '.fluidd_history.json'
+  },
   APP_NAME: 'Fluidd',
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],

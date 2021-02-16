@@ -2,7 +2,7 @@ import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 import store from './store'
 import { Globals } from './globals'
-import { ApiConfig, Config, UiSettings, HostConfig, InstanceConfig } from './store/config/types'
+import { ApiConfig, Config, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
 
 // Load API configuration
 /**
@@ -93,16 +93,19 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // Just sets the api urls.
   store.dispatch('config/onInitApiConfig', apiConfig)
 
-  // Load the File(s) Config.
-  let uiSettings: UiSettings | undefined | null
+  // Load any file configuration we may have.
+  const fileConfig: {[index: string]: UiSettings | string[]} = {}
+  const files: {[index: string]: string} = Globals.CONFIG_FILES
   if (
     apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
   ) {
     try {
-      const file = await fetch(apiConfig.apiUrl + '/server/files/config/' + Globals.SETTINGS_FILENAME, { cache: 'no-store' })
-      uiSettings = (file.ok)
-        ? await file.json()
-        : null // no file yet.
+      for (const key in files) {
+        const file = await fetch(apiConfig.apiUrl + '/server/files/config/' + files[key], { cache: 'no-store' })
+        fileConfig[key] = (file.ok)
+          ? await file.json()
+          : null // no file yet.
+      }
     } catch (e) {
       // can't connect.
       console.debug('API Down / Not Available:', e)
@@ -113,12 +116,12 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // - null - meaning we made a connection, but no user configuration is saved yet, which is ok.
   // - undefined - meaning the API is likely down..
   // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, uiSettings, hostConfig })
+  await store.dispatch('init', { apiConfig, fileConfig, hostConfig })
 
   // Set vuetify to the correct initial theme.
   if (store.state.config && store.state.config.uiSettings.general) {
     vuetify.framework.theme.dark = store.state.config.uiSettings.general.darkMode
   }
 
-  return { apiConfig, uiSettings, hostConfig }
+  return { apiConfig, hostConfig }
 }

@@ -35,10 +35,14 @@ export default new Vuex.Store<RootState>({
       // configuration if there is any.
       commit('version/setVersion', process.env.VERSION)
       commit('version/setHash', process.env.HASH)
-      const initFile = await dispatch('config/initFile', payload.uiSettings)
+      if (payload.fileConfig !== undefined) {
+        for (const key in payload.fileConfig) {
+          await dispatch('config/init' + key, payload.fileConfig[key])
+        }
+      }
       const initHost = await dispatch('config/initHost', payload.hostConfig)
       const initLocal = await dispatch('config/initLocal', payload)
-      return [initFile, initHost, initLocal]
+      return [initHost, initLocal]
     },
     async reset () {
       // Reset the entire store - should be used when swapping instances.

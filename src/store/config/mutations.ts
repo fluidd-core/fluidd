@@ -19,7 +19,7 @@ export const mutations: MutationTree<ConfigState> = {
    * This would be set on first app load after we've loaded
    * the configuration JSON (if any.. )
    */
-  onInitFile (state, payload: UiSettings) {
+  initUiSettings (state, payload: UiSettings) {
     // this should extend the default config as we
     // don't want to overrite defaults if not defined
     // in the file yet.
@@ -40,6 +40,16 @@ export const mutations: MutationTree<ConfigState> = {
         camUrl = state.apiUrl + state.uiSettings.camera.url
       }
       state.uiSettings.camera.url = camUrl
+    }
+  },
+
+  /**
+   * Inits the console history from file
+   */
+  initConsoleHistory (state, payload: string[]) {
+    if (payload) {
+      state.consoleHistory = [...state.consoleHistory, ...payload]
+      console.log('got initial console history', payload)
     }
   },
 
@@ -77,7 +87,8 @@ export const mutations: MutationTree<ConfigState> = {
   onInitInstances (state, payload: Config) {
     let instances: InstanceConfig[] = []
     const apiConfig = payload.apiConfig
-    const uiSettings = payload.uiSettings
+    // const uiSettings = payload.uiSettings
+    const uiSettings = state.uiSettings
     if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
       instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
     }

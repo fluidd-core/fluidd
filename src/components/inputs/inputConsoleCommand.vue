@@ -1,31 +1,34 @@
 <template>
-  <v-text-field
-    ref="input"
-    :value="newValue"
-    @input="emitChange"
-    :items="history"
-    class="ma-4"
-    clearable
-    outlined
-    single-line
-    dense
-    hide-details
-    placeholder="'tab' for autocomplete, 'arrows' for history, 'help' for commands"
-    @keyup.enter="emitSend(newValue)"
-    @keyup.up="historyUp()"
-    @keyup.down="historyDown()"
-    @keydown.prevent.tab="autoComplete()">
-    <template v-slot:append-outer>
-      <v-icon @click="emitSend(newValue)">$send</v-icon>
-    </template>
-  </v-text-field>
-  <!-- {{ originalHistory}}<br />
-  {{ history }} -->
+  <div>
+    <v-text-field
+      ref="input"
+      :value="newValue"
+      @input="emitChange"
+      :items="history"
+      class="ma-4"
+      clearable
+      outlined
+      single-line
+      dense
+      hide-details
+      placeholder="'tab' for autocomplete, 'arrows' for history, 'help' for commands"
+      @keyup.enter="emitSend(newValue)"
+      @keyup.up="historyUp()"
+      @keyup.down="historyDown()"
+      @keydown.prevent.tab="autoComplete()">
+      <template v-slot:append-outer>
+        <v-icon @click="emitSend(newValue)">$send</v-icon>
+      </template>
+    </v-text-field>
+    <!-- <pre>{{ originalHistory}}</pre>
+    <pre>{{ history }}</pre> -->
+  </div>
 </template>
 
 <script lang="ts">
 import { GcodeCommands } from '@/store/socket/types'
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Globals } from '@/globals'
 
 @Component({})
 export default class InputConsoleCommand extends Vue {
@@ -44,12 +47,16 @@ export default class InputConsoleCommand extends Vue {
   }
 
   newValue = ''
+  commandHistory = Globals.CONSOLE_COMMAND_HISTORY
   history: string[] = []
   originalHistory: string[] = []
   isFirst = true
 
   mounted () {
     this.newValue = this.value
+    const savedHistory = this.$store.state.config.consoleHistory
+    this.history = [...savedHistory]
+    this.originalHistory = [...savedHistory]
   }
 
   emitChange (val: string) {
@@ -59,11 +66,12 @@ export default class InputConsoleCommand extends Vue {
 
   emitSend (val: string) {
     if (val && val.length > 0) {
-      if (this.history.length >= 5) {
-        this.originalHistory.shift()
+      if (this.history.length >= this.commandHistory) {
+        this.originalHistory.pop()
       }
       this.originalHistory.unshift(val)
-      this.history = Object.assign([], this.originalHistory)
+      this.$store.dispatch('config/saveGeneric', { key: 'consoleHistory', value: [...this.originalHistory] })
+      this.history = [...this.originalHistory]
       this.isFirst = true
       this.$emit('send', val)
     }
