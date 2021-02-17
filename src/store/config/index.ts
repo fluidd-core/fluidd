@@ -69,6 +69,13 @@ export const defaultState = (): ConfigState => {
       endpoints: [],
       blacklist: [],
       skipClientUpdates: false
+    },
+    serverConfig: {
+      authorization: {},
+      server: {
+        gcode_store_size: 1000,
+        temperature_store_size: 1200
+      }
     }
   }
 }

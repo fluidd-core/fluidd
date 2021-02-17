@@ -22,7 +22,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
     SocketActions.printerInfo()
-    SocketActions.serverInfo()
+    // SocketActions.serverInfo()
   },
 
   /**
@@ -108,10 +108,20 @@ export const actions: ActionTree<SocketState, RootState> = {
     } else {
       // We're good, move on. Start by loading the server data, temperature and console history.
       SocketActions.serverInfo()
+      SocketActions.serverConfig()
       SocketActions.serverGcodeStore()
-      SocketActions.serverTemperatureStore()
       SocketActions.printerGcodeHelp()
     }
+  },
+
+  /**
+   * Gives us moonrakers configuration.
+   */
+  async onServerConfig ({ commit }, payload) {
+    if (payload.config) {
+      commit('config/onServerConfig', payload.config, { root: true })
+    }
+    SocketActions.serverTemperatureStore()
   },
 
   async onServerInfo ({ commit, dispatch }, payload) {
@@ -219,7 +229,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async onTemperatureStore ({ commit }, payload) {
+  async onTemperatureStore ({ commit, rootState }, payload) {
     const now = new Date() // Set a base time to work out the temp data from.
     // On a fresh boot of the host system, moonraker should give us enough data;
     // however, it seems sometimes it does not. So - we should pad this out when
@@ -231,7 +241,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     // so we have to account for this too.
 
     // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    const count = Globals.CHART_HISTORY_RETENTION // The size of the dataset we need.
+    // const count = Globals.CHART_HISTORY_RETENTION // The size of the dataset we need.
+    const count = (rootState.config)
+      ? rootState.config.serverConfig.server.temperature_store_size
+      : Globals.CHART_HISTORY_RETENTION
     const targetsToAvoid = [
       'temperature_probe',
       'temperature_sensor'
@@ -295,7 +308,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
 
   /** Automated notify events via socket */
-  async notifyStatusUpdate ({ state, commit, getters }, payload) {
+  async notifyStatusUpdate ({ state, rootState, commit, getters }, payload) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
@@ -328,8 +341,11 @@ export const actions: ActionTree<SocketState, RootState> = {
       const diff = 1000 // time to wait before adding another entry.
       if (!date2 || date1.getTime() - date2.getTime() > diff) {
         const keys = getters.getChartableSensors as string[]
-        const r = configureChartEntry(state, keys)
-        commit('addChartEntry', r)
+        const data = configureChartEntry(state, keys)
+        const retention = (rootState.config)
+          ? rootState.config.serverConfig.server.temperature_store_size
+          : Globals.CHART_HISTORY_RETENTION
+        commit('addChartEntry', { data, retention })
       }
 
       // The first notification should have pre-populated any data & chart labels, so mark the socket as ready.

@@ -118,11 +118,10 @@ export const mutations: MutationTree<SocketState> = {
   addChartStore (state, payload: ChartData[]) {
     state.chart = payload
   },
-  addChartEntry (state, payload: ChartData) {
+  addChartEntry (state, payload: { retention: number; data: ChartData }) {
     // Dont keep data older than our set retention
-    const retention = Globals.CHART_HISTORY_RETENTION
-    state.chart.push(payload)
-    while (state.chart.length > retention) {
+    state.chart.push(payload.data)
+    while (state.chart.length > payload.retention) {
       state.chart.splice(0, 1)
     }
   },

@@ -14,7 +14,7 @@
         <console-widget
           v-if="updateResponses"
           :items="updateResponses"
-          key-field="proc_id"
+          key-field="id"
           :height="250"
           readonly
         ></console-widget>
@@ -22,7 +22,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="actions">
-          <v-btn color="primary" text @click="close" :elevation="2" :disabled="updating">{{ buttonTitle }}</v-btn>
+          <v-btn color="primary" text @click="close" :disabled="updating">{{ buttonTitle }}</v-btn>
         </slot>
       </v-card-actions>
     </v-card>

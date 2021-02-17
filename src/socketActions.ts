@@ -233,6 +233,14 @@ export const SocketActions = {
     )
   },
 
+  async serverConfig () {
+    Vue.$socket.emit(
+      'server.config', {
+        dispatch: 'socket/onServerConfig'
+      }
+    )
+  },
+
   async serverRestart () {
     Vue.$socket.emit(
       'server.restart', {

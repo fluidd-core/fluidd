@@ -15,6 +15,13 @@ export const mutations: MutationTree<ConfigState> = {
   },
 
   /**
+   * On initial init we get the server (moonraker) configuration.
+   */
+  onServerConfig (state, payload) {
+    state.serverConfig = { ...state.serverConfig, ...payload }
+  },
+
+  /**
    * During init of the store, sets uiSettings.
    * This would be set on first app load after we've loaded
    * the configuration JSON (if any.. )

@@ -11,6 +11,7 @@ export interface ConfigState {
   uiSettings: UiSettings;
   hostConfig: HostConfig;
   consoleHistory: string[];
+  serverConfig: any;
 }
 
 export interface AppState {
