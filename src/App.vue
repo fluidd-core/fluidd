@@ -88,7 +88,7 @@ export default class App extends Mixins(UtilsMixin) {
   }
 
   get progress () {
-    let progress = this.$store.state.socket.printer.display_status.progress || 0
+    let progress = this.$store.getters['socket/getPrintProgress']
     progress = (progress * 100).toFixed()
     return progress
   }

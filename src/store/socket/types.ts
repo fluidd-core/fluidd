@@ -46,9 +46,9 @@ export interface SocketError {
 export interface TimeEstimates {
   type: 'file' | 'slicer' | 'filament' | 'totals';
   progress: string;
-  timeLeft: string;
-  duration: string;
-  totalDuration: string;
+  remaining: string;
+  current: string;
+  total: string;
 }
 
 export interface Endstops {

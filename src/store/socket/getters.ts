@@ -113,102 +113,81 @@ export const getters: GetterTree<SocketState, RootState> = {
     return thumb
   },
 
+  getPrintProgress: (state, getters, rootState) => {
+    const type = rootState.config?.uiSettings.general.printTimeEstimationsType || 'file'
+    if (type === 'slicer') {
+      return state.printer.display_status.progress || 0
+    } else {
+      return state.printer.virtual_sdcard.progress || 0
+    }
+  },
+
   /**
    * Returns an object representing the time estimates of a current print.
    */
-  getTimeEstimates: (state) => (type: 'slicer' | 'file' | 'filament' | 'totals'): TimeEstimates => {
-    let progress = (
-      !state.printer.virtual_sdcard.progress ||
-      isNaN(+state.printer.virtual_sdcard.progress) ||
-      !isFinite(+state.printer.virtual_sdcard.progress)
+  getTimeEstimates: (state, getters, rootState): TimeEstimates => {
+    const type = rootState.config?.uiSettings.general.printTimeEstimationsType || 'file'
+    const progress = getters.getPrintProgress
+    const current = (
+      'print_stats' in state.printer &&
+      'print_duration' in state.printer.print_stats
     )
-      ? 0
-      : state.printer.display_status.progress
-
-    const duration = (
-      !state.printer.print_stats.print_duration ||
-      isNaN(+state.printer.print_stats.print_duration) ||
-      !isFinite(+state.printer.print_stats.print_duration)
-    )
-      ? 0
-      : state.printer.print_stats.print_duration
-
-    const usedFilament = (
-      !state.printer.print_stats.filament_used ||
-      isNaN(+state.printer.print_stats.filament_used) ||
-      !isFinite(+state.printer.print_stats.filament_used)
-    )
-      ? 0
-      : state.printer.print_stats.filament_used
-
-    const estimatedFilament = (
-      !state.printer.current_file.filament_total ||
-      isNaN(+state.printer.current_file.filament_total) ||
-      !isFinite(+state.printer.current_file.filament_total)
-    )
-      ? 0
-      : state.printer.current_file.filament_total
-
-    let timeLeft = 0
-    let totalDuration = 0
+      ? state.printer.print_stats.print_duration
+      : 0
+    let total = 0
+    let remaining = 0
 
     switch (type) {
       case 'slicer': {
-        progress = (
-          !state.printer.display_status.progress ||
-          isNaN(+state.printer.display_status.progress) ||
-          !isFinite(+state.printer.display_status.progress)
-        )
-          ? 0
-          : state.printer.display_status.progress
-
-        totalDuration = (state.printer.current_file.estimated_time > 0) ? state.printer.current_file.estimated_time : duration
-        timeLeft = totalDuration - duration
+        if (
+          'current_file' in state.printer &&
+          'estimated_time' in state.printer.current_file &&
+          state.printer.current_file.estimated_time > current
+        ) {
+          total = state.printer.current_file.estimated_time
+        }
+        remaining = (total - current)
         break
       }
       case 'filament': {
-        totalDuration = duration / (usedFilament / estimatedFilament)
-        timeLeft = totalDuration - duration
+        if (
+          'print_stats' in state.printer &&
+          'current_file' in state.printer &&
+          'filament_used' in state.printer.print_stats &&
+          'filament_total' in state.printer.current_file &&
+          state.printer.print_stats.filament_used > 0 &&
+          state.printer.current_file.filament_total > state.printer.print_stats.filament_used
+        ) {
+          total = current / (state.printer.print_stats.filament_used / state.printer.current_file.filament_total)
+        }
+        remaining = total - current
         break
       }
       case 'file': {
-        totalDuration = duration / (progress)
-        timeLeft = totalDuration - duration
+        total = (progress > 0 && current > 0)
+          ? current / progress
+          : current
+        remaining = total - current
         break
       }
       case 'totals': { // totals only.
-        totalDuration = 0
-        timeLeft = 0
+        total = 0
+        remaining = 0
         break
       }
       default: { // totals only.
-        totalDuration = 0
-        timeLeft = 0
+        total = 0
+        remaining = 0
       }
     }
 
-    totalDuration = (
-      isNaN(+totalDuration) ||
-      !isFinite(+totalDuration)
-    )
-      ? 0
-      : totalDuration
-
-    timeLeft = (
-      isNaN(+timeLeft) ||
-      !isFinite(+timeLeft)
-    )
-      ? 0
-      : timeLeft
-
-    const o = {
+    return {
       type,
-      progress: (progress * 100).toFixed(),
-      timeLeft: Vue.$filters.formatCounterTime(timeLeft),
-      duration: Vue.$filters.formatCounterTime(duration),
-      totalDuration: Vue.$filters.formatCounterTime(totalDuration) // estimated total duration
+      progress: (progress * 100).toFixed(), // percent
+      total: Vue.$filters.formatCounterTime(total), // total estimated time
+      current: Vue.$filters.formatCounterTime(current), // current duration / time
+      remaining: Vue.$filters.formatCounterTime(remaining) // remaining time
     }
-    return o
   },
 
   /**
