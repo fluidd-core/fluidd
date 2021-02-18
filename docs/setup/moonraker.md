@@ -5,6 +5,19 @@ All three components are required for a healthy printer.
 
 For more detailed instructions, please refer to [Arksine's documentation](https://github.com/Arksine/moonraker/blob/master/docs/installation.md).
 
+## Temperature & Gcode store size.
+Temperature and gcode store sizes can be configured in moonraker.
+This is especially useful for temperature store data, as it
+directly affects how much time data is stored on the X axes of
+the thermals graph.
+
+```sh
+temperature_store_size: 600
+gcode_store_size: 1000
+```
+
+Both values are in seconds.
+
 ## Automated Updates
 
 Automated updates can be configured by ensuring the following is at the bottom of your `moonraker.conf`.
@@ -51,6 +64,8 @@ host: 0.0.0.0
 port: 7125
 enable_debug_logging: True
 config_path: ~/klipper_config
+temperature_store_size: 600
+gcode_store_size: 1000
 
 [authorization]
 enabled: True
