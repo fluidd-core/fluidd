@@ -373,14 +373,16 @@ export default class EChartsWidget extends Vue {
   xAxisLabelFormatter () {
     if (this.isMobile) {
       return '{mm}'
-    } else {
-      return '{h}:{mm}'
     }
+    return '{H}:{mm}'
   }
 
   xAxisPointerFormatter (params: any) {
     const d = this.$dayjs(params.value)
-    return d.format('hh:mm:ss')
+    if (this.isMobile) {
+      return d.format('mm:ss')
+    }
+    return d.format('H:mm:ss')
   }
 
   yAxisPointerFormatter (params: any) {
