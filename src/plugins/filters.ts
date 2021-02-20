@@ -139,7 +139,6 @@ const Filters = {
       apiUrl: `${_url.protocol}//${_url.host}`,
       socketUrl: `${wsProtocol}${_url.host}/websocket`
     }
-    // console.log('getApiUrls', o)
     return o
   }
 }

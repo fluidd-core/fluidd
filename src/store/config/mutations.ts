@@ -64,7 +64,7 @@ export const mutations: MutationTree<ConfigState> = {
    */
   initPrintHistory (state, payload: any) {
     if (payload) {
-      console.log('got some print history', payload)
+      console.debug('got some print history', payload)
     }
   },
 

@@ -30,6 +30,7 @@
     "@ctrl/tinycolor": "^3.3.1",
     "@fontsource/roboto": "^4.1.0",
     "axios": "^0.21.1",
+    "consola": "^2.15.3",
     "core-js": "^3.8.1",
     "dayjs": "^1.9.8",
     "echarts": "^5.0.2",

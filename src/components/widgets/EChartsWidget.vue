@@ -397,7 +397,6 @@ export default class EChartsWidget extends Vue {
     num1 = (num1 === value.min && (num1 - 10) >= 0)
       ? num1 - 10
       : num1
-    // console.log('min', value.min, num1)
     return num1
   }
 
@@ -406,7 +405,6 @@ export default class EChartsWidget extends Vue {
     num1 = (num1 === value.max)
       ? num1 + 10
       : num1
-    // console.log('max', value.max, num1)
     return num1
   }
 }

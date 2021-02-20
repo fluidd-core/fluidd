@@ -31,12 +31,7 @@ export default class ExtruderSelectionWidget extends Mixins(UtilsMixin) {
   }
 
   set extruder (extruder: string) {
-    console.log('extruder', extruder)
     this.sendGcode(`ACTIVATE_EXTRUDER EXTRUDER=${extruder}`, Waits.onExtruderChange)
-  }
-
-  handleChangeExtruder (extruder: string) {
-    console.log('extruder', extruder)
   }
 }
 </script>

@@ -120,7 +120,6 @@ export const actions: ActionTree<ConfigState, RootState> = {
     const formData = new FormData()
     const filename = payload.file
     const data = get(state, payload.objectPath)
-    console.log('got data', payload.objectPath, data)
     const file = new File([JSON.stringify(data)], filename)
     formData.append('file', file, filename)
     formData.append('root', 'config')

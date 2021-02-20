@@ -28,10 +28,6 @@ export default class ConsoleEntriesWidget extends Vue {
     return new Set(Object.keys(availableCommands))
   }
 
-  // mounted () {
-  //   console.log('console item', this.value.id)
-  // }
-
   get itemMessage () {
     let message = this.value.message
     if (this.value.type === 'response') {

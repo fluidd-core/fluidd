@@ -1,6 +1,7 @@
 import '@/scss/global.scss'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 // import './registerComponentHooks'
+import './plugins/consola'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -61,7 +62,6 @@ Vue.component('btn-collapse', BtnCollapse)
 Vue.component('collapsable-card', CollapsableCard)
 Vue.component('vue-headful', vueHeadful)
 Vue.component('inline-help', InlineHelpIcon)
-// Vue.component('virtual-list', VirtualList)
 
 appInit()
   .then((config: Config) => {
