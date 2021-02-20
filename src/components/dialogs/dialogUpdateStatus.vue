@@ -12,8 +12,7 @@
       </v-card-title>
       <v-card-text>
         <console-widget
-          v-if="updateResponses"
-          :items="updateResponses"
+          :items="responses"
           key-field="id"
           :height="250"
           readonly
@@ -72,8 +71,8 @@ export default class DialogUpdateStatus extends Mixins(UtilsMixin) {
     }
   }
 
-  get updateResponses () {
-    return this.$store.state.version.responses
+  get responses () {
+    return this.$store.getters['version/getResponses']
   }
 
   close () {
