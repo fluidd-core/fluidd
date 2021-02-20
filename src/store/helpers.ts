@@ -1,12 +1,11 @@
 import { SocketState, ChartData } from './socket/types'
 import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
+import store from '@/store'
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const isOfType = <T>(
   varToBeChecked: any,
   propertyToCheckFor: keyof T
 ): varToBeChecked is T => (varToBeChecked as T)[propertyToCheckFor] !== undefined
-/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /**
  * Return a file thumb if one exists
@@ -90,26 +89,62 @@ export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | 
  * Prepare packet data for a chart entry.
  * Every packet should contain an entry for all known sensors we want to track.
  */
-export const configureChartEntry = (state: SocketState, keys: string[]) => {
-  const date = new Date() // Common date for this data.
-  const r: ChartData = {
-    date
+export const addChartEntry = (state: SocketState, retention: number, keys: string[]) => {
+  const configureChartEntry = (date: Date) => {
+    const r: ChartData = {
+      date
+    }
+
+    keys.forEach((key) => {
+      let label = key
+      if (key.includes(' ')) label = key.split(' ')[1]
+      const temp = state.printer[key].temperature
+      const target = state.printer[key].target
+      const power = state.printer[key].power
+      const speed = state.printer[key].speed
+      r[label] = temp
+      if (target !== undefined) r[`${label}Target`] = target
+      if (power !== undefined) r[`${label}Power`] = power
+      if (speed !== undefined) r[`${label}Speed`] = speed
+    })
+
+    return r
   }
 
-  keys.forEach((key) => {
-    let label = key
-    if (key.includes(' ')) label = key.split(' ')[1]
-    const temp = state.printer[key].temperature
-    const target = state.printer[key].target
-    const power = state.printer[key].power
-    const speed = state.printer[key].speed
-    r[label] = temp
-    if (target !== undefined) r[`${label}Target`] = target
-    if (power !== undefined) r[`${label}Power`] = power
-    if (speed !== undefined) r[`${label}Speed`] = speed
-  })
+  // Ensure we only add an entry every 1000ms.
+  const diff = 1000 // time to wait before adding another entry.
+  const date1 = new Date()
+  const date2 = (state.chart.length > 0)
+    ? new Date(state.chart[state.chart.length - 1].date)
+    : null
+  if (!date2 || date1.getTime() - date2.getTime() > diff) {
+    const data = configureChartEntry(date1)
+    store.commit('socket/addChartEntry', { data, retention })
+  }
+}
 
-  return r
+export const handlePrintStateChange = (state: SocketState, payload: any) => {
+  // For every notify - if print_stats.state changes from standby -> printing,
+  // then record an entry in our print history.
+  // If the state changes from printing -> complete, then record the finish time.
+  if (
+    'print_stats' in payload &&
+    'state' in payload.print_stats
+  ) {
+    if (
+      state.printer.print_stats.state === 'standby' &&
+      payload.print_stats.state === 'printing'
+    ) {
+      // This is a new print starting...
+      store.dispatch('socket/onPrintStart', payload)
+    } else if (
+      state.printer.print_stats.state === 'printing' &&
+      payload.print_stats.state === 'complete'
+    ) {
+      // This is a completed print...
+      store.dispatch('socket/onPrintEnd', payload)
+    }
+  }
 }
 
 /**

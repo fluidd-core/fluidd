@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import { SocketState, ConsoleEntry, ChartData, Macro } from './types'
 import { RootState } from '../types'
-import { configureChartEntry } from '../helpers'
+import { addChartEntry, handlePrintStateChange } from '../helpers'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import EventBus from '@/eventBus'
@@ -299,6 +299,19 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('notifyStatusUpdate', payload.status)
   },
 
+  async onPrintStart (_, payload) {
+    console.debug('Print start detected', payload)
+    // We should find the file path...
+    // Record an entry incl the path and start time...
+    // Set a null entry for its finish time...
+  },
+
+  async onPrintEnd (_, payload) {
+    console.debug('Print end detected', payload)
+    // We should find the file in our history...
+    // Record the finish time...
+  },
+
   /**
    * ==========================================================================
    * Automated notifications via socket
@@ -314,39 +327,31 @@ export const actions: ActionTree<SocketState, RootState> = {
     // We don't want to miss an update - but also don't need all of them
     // so quickly.
 
-    // Take payload, put it in buffer object.
-    // add setTimeout to empty the buffer and run the below..
-
     // Do NOT accept notification updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
     if (payload && state.acceptingNotifications) {
+      // Detect a printing state change.
+      // We do this prior to commiting the notify so we can
+      // compare the before and after.
+      handlePrintStateChange(state, payload)
+
       for (const key in payload) {
         const val = payload[key]
         // Skip anything we need here.
         if (
           !key.includes('gcode_macro')
         ) {
-          // First, commit the value.
+          // Commit the value.
           commit('onSocketNotify', { key, payload: val })
         }
       }
 
-      // For every notify - configure a chart entry and post it..
-      // But only ever 1000ms.
-      const date1 = new Date()
-      const date2 = (state.chart.length > 0)
-        ? new Date(state.chart[state.chart.length - 1].date)
-        : null
-      const diff = 1000 // time to wait before adding another entry.
-      if (!date2 || date1.getTime() - date2.getTime() > diff) {
-        const keys = getters.getChartableSensors as string[]
-        const data = configureChartEntry(state, keys)
-        const retention = (rootState.config)
-          ? rootState.config.serverConfig.server.temperature_store_size
-          : Globals.CHART_HISTORY_RETENTION
-        commit('addChartEntry', { data, retention })
-      }
+      // Add a chart entry
+      const retention = (rootState.config)
+        ? rootState.config.serverConfig.server.temperature_store_size
+        : Globals.CHART_HISTORY_RETENTION
+      addChartEntry(state, retention, getters.getChartableSensors)
 
       // The first notification should have pre-populated any data & chart labels, so mark the socket as ready.
       if (!state.ready) commit('onSocketReadyState', true)

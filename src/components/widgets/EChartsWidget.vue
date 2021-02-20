@@ -17,7 +17,6 @@
 </template>
 
 <script lang='ts'>
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import { getKlipperType } from '@/store/helpers'

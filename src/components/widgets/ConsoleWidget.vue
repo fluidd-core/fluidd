@@ -111,7 +111,6 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   }
 
   scrollToBottom () {
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
     const ref = this.$refs.scroller as any
     if (ref) ref.scrollToBottom()
   }

@@ -9,11 +9,14 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Init any file configs we may have.
    */
-  async inituiSettings ({ commit }, payload: UiSettings) {
+  async initUiSettings ({ commit }, payload: UiSettings) {
     commit('initUiSettings', payload)
   },
-  async initconsoleHistory ({ commit }, payload: string[]) {
+  async initConsoleHistory ({ commit }, payload: string[]) {
     commit('initConsoleHistory', payload)
+  },
+  async initPrintHistory ({ commit }, payload: string[]) {
+    commit('initPrintHistory', payload)
   },
 
   /**
@@ -70,7 +73,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
       dispatch('saveUiSettings')
     }
     if (config.key.startsWith('consoleHistory')) {
-      dispatch('saveFile', { objectPath: 'consoleHistory', file: Globals.CONFIG_FILES.consoleHistory })
+      dispatch('saveFile', { objectPath: 'consoleHistory', file: Globals.CONFIG_FILES.ConsoleHistory })
     }
   },
 
@@ -105,7 +108,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
     }
 
     if (state.uiSettings && Object.keys(state.uiSettings).length > 0) {
-      dispatch('saveFile', { objectPath: 'uiSettings', file: Globals.CONFIG_FILES.uiSettings })
+      dispatch('saveFile', { objectPath: 'uiSettings', file: Globals.CONFIG_FILES.UiSettings })
     }
     commit('setUnsavedChanges', false)
   },

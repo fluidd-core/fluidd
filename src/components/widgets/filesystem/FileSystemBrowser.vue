@@ -285,7 +285,6 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
     { text: 'size', value: 'size', width: '1%', align: 'end' }
   ]
 
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   contextMenu: any = {
     open: false,
     x: 0,
@@ -298,7 +297,6 @@ export default class FileSystemBrowser extends Mixins(UtilsMixin) {
       size: 0
     }
   }
-  /* eslint-enable @typescript-eslint/no-explicit-any */
 
   uploadDialog = false
   dialog: FileSystemDialogData = {

@@ -90,7 +90,6 @@ const Filters = {
    * The filesystem sorter. This is copied from vuetify, and modified to ensure our directories
    * are always sorted to the top.
    */
-  /* eslint-disable @typescript-eslint/no-explicit-any */
   fileSystemSort (items: any, sortBy: string[], sortDesc: boolean[], locale: string) {
     if (sortBy === null || !sortBy.length) return items
     const stringCollator = new Intl.Collator(locale, { sensitivity: 'accent', usage: 'sort' })
@@ -143,8 +142,6 @@ const Filters = {
     // console.log('getApiUrls', o)
     return o
   }
-
-  /* eslint-enable @typescript-eslint/no-explicit-any */
 }
 
 export const FiltersPlugin = {
@@ -172,8 +169,6 @@ declare module 'vue/types/vue' {
     getReadableFileSizeString(fileSizeInBytes: number): string;
     getReadableLengthString(lengthInMm: number): string;
     getApiUrls(url: string): ApiConfig;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
     fileSystemSort(items: Array<any>, sortBy: string[], sortDesc: boolean[], locale: string): Array<any>;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
   }
 }
