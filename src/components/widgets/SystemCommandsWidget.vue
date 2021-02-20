@@ -44,7 +44,6 @@
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
         @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
         :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
-        :color="(device.status === 'error') ? 'error' : 'secondary'"
       >
         <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
         <v-list-item-icon>

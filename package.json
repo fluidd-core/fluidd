@@ -9,7 +9,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "serve.prod": "serve -s ./dist",
-    "build": "vue-cli-service build && npm run build.zip",
+    "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
@@ -21,8 +21,7 @@
     "release.minor": "npm run release -- --release-as minor",
     "release.major": "npm run release -- --release-as major",
     "release.rc": "npm run release -- --prerelease rc",
-    "build.zip": "cd ./dist && zip -r fluidd.zip ./ && cd ..",
-    "deploy.host": "npm run copy.host.config && potato -s dist -u -b app.fluidd.xyz",
+    "deploy.host": "potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
     "copy.host.config": "shx cp -f ./server/config.json ./dist/config.json"
   },
   "main": "index.js",
@@ -31,6 +30,7 @@
     "@ctrl/tinycolor": "^3.3.1",
     "@fontsource/roboto": "^4.1.0",
     "axios": "^0.21.1",
+    "consola": "^2.15.3",
     "core-js": "^3.8.1",
     "dayjs": "^1.9.8",
     "echarts": "^5.0.2",
@@ -47,6 +47,7 @@
     "vue-prism-editor": "^1.2.2",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.2.0",
+    "vue-virtual-scroller": "^1.0.10",
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.4.3",
     "vuex": "^3.6.0"

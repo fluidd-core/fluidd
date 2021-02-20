@@ -32,14 +32,14 @@ export default class CameraCard extends Mixins(UtilsMixin) {
   refresh = new Date().getTime()
 
   get url () {
-    const url = this.$store.state.config.fileConfig.camera.url
-    const params = new URLSearchParams(url)
-    params.set('cacheBust', '' + this.refresh)
-    return decodeURIComponent(params.toString())
+    const hostUrl = new URL(document.URL)
+    const url = new URL(this.$store.state.config.uiSettings.camera.url, hostUrl.origin)
+    url.searchParams.append('cacheBust', this.refresh.toString())
+    return url.toString()
   }
 
   get config () {
-    return this.$store.state.config.fileConfig.camera
+    return this.$store.state.config.uiSettings.camera
   }
 
   get streamType () {

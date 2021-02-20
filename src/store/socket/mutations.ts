@@ -3,7 +3,7 @@ import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
 import { SocketState, ChartData, Macro, ConsoleEntry } from './types'
 import { defaultState } from './index'
-import { Globals, chartConfiguration } from '@/globals'
+import { Globals } from '@/globals'
 
 export const mutations: MutationTree<SocketState> = {
   resetState (state, fullReset: boolean) {
@@ -91,11 +91,13 @@ export const mutations: MutationTree<SocketState> = {
     }
   },
   addConsoleEntry (state, entry: ConsoleEntry) {
+    if (entry.id === undefined) {
+      state.consoleEntryCount++
+      entry.id = state.consoleEntryCount
+    }
     while (state.console.length >= Globals.CONSOLE_HISTORY_RETENTION) {
-      // state.console.pop()
       state.console.shift()
     }
-    // state.console.unshift(entry)
     state.console.push(entry)
   },
   setMacros (state, macros: Macro[]) {
@@ -113,12 +115,13 @@ export const mutations: MutationTree<SocketState> = {
       state.chart.push(item)
     })
   },
-  addChartEntry (state, payload: ChartData) {
-    // Dont keep data older than 10 minutes and...
-    // Only add if it's at least a second over the prior entry.
-    const retention = chartConfiguration.HISTORY_RETENTION * 60
-    state.chart.push(payload)
-    while (state.chart.length > retention) {
+  addChartStore (state, payload: ChartData[]) {
+    state.chart = payload
+  },
+  addChartEntry (state, payload: { retention: number; data: ChartData }) {
+    // Dont keep data older than our set retention
+    state.chart.push(payload.data)
+    while (state.chart.length > payload.retention) {
       state.chart.splice(0, 1)
     }
   },

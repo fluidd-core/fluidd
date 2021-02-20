@@ -90,7 +90,7 @@ export default class AppBar extends Mixins(UtilsMixin) {
   }
 
   get instanceName () {
-    return this.$store.state.config.fileConfig.general.instanceName
+    return this.$store.state.config.uiSettings.general.instanceName
   }
 
   get currentFile () {

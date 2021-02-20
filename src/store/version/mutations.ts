@@ -36,7 +36,11 @@ export const mutations: MutationTree<VersionState> = {
     if (payload.complete) {
       state.busy = false
     } else {
-      state.responses.push(payload)
+      const id = state.responses.length
+      state.responses.push({
+        ...payload,
+        id
+      })
     }
   },
 

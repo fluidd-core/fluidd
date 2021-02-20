@@ -3,19 +3,9 @@
     <v-row>
       <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
         Item
-        <inline-help
-          top
-          small
-          tooltip="Click an item to toggle in the graph"
-        ></inline-help>
       </v-col>
       <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
         Power
-        <inline-help
-          top
-          small
-          tooltip="Click a power to toggle in the graph"
-        ></inline-help>
       </v-col>
       <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
         Current

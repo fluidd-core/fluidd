@@ -51,6 +51,7 @@ export interface FluiddVersion {
 }
 
 export interface UpdateResponse {
+  id: number;
   message: string;
   application: string;
   proc_id: number;

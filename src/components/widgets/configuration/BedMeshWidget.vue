@@ -14,7 +14,7 @@
           </thead>
           <tbody>
             <tr v-for="mesh in meshes" :key="mesh.profile_name">
-              <td class="grey--text text--lighten-1 text-body-1">
+              <td class="grey--text">
                 {{ mesh.profile_name }}
               </td>
               <td>
@@ -26,7 +26,7 @@
                   active
                 </v-chip>
               </td>
-              <td class="grey--text text--lighten-1 text-body-1"><span v-if="mesh.active">{{ variance.toFixed(4) }}</span></td>
+              <td class="grey--text focus--text"><span v-if="mesh.active">{{ variance.toFixed(4) }}</span></td>
               <td>
                 <v-tooltip left>
                   <template v-slot:activator="{ on, attrs }">
@@ -39,7 +39,7 @@
                       color="secondary"
                       small
                       icon>
-                      <v-icon small>$open</v-icon>
+                      <v-icon small class="grey--text">$open</v-icon>
                     </v-btn>
                   </template>
                   <span>Load Profile</span>
@@ -161,7 +161,7 @@
               filled
               required
               class="mb-4"
-              :rules="[value => !!value || 'Required.']"
+              :rules="rules"
               hide-details="auto"
               label="Profile Name"
               v-model="saveDialog.profileName">
@@ -219,6 +219,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
     profileName: 'default',
     removeDefault: false
   }
+
+  rules = [
+    (v: string) => !!v || 'Required.',
+    (v: string) => v.indexOf(' ') === -1 || 'Spaces are not allowed.'
+  ]
 
   @Watch('saveDialog', { deep: true })
   onSaveDialogChange () {

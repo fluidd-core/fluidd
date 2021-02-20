@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import { SocketState, ConsoleEntry, ChartData, Macro } from './types'
 import { RootState } from '../types'
-import { configureChartEntry } from '../helpers'
+import { addChartEntry, handlePrintStateChange } from '../helpers'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import EventBus from '@/eventBus'
@@ -22,7 +22,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
     SocketActions.printerInfo()
-    SocketActions.serverInfo()
+    // SocketActions.serverInfo()
   },
 
   /**
@@ -108,10 +108,20 @@ export const actions: ActionTree<SocketState, RootState> = {
     } else {
       // We're good, move on. Start by loading the server data, temperature and console history.
       SocketActions.serverInfo()
+      SocketActions.serverConfig()
       SocketActions.serverGcodeStore()
-      SocketActions.serverTemperatureStore()
       SocketActions.printerGcodeHelp()
     }
+  },
+
+  /**
+   * Gives us moonrakers configuration.
+   */
+  async onServerConfig ({ commit }, payload) {
+    if (payload.config) {
+      commit('config/onServerConfig', payload.config, { root: true })
+    }
+    SocketActions.serverTemperatureStore()
   },
 
   async onServerInfo ({ commit, dispatch }, payload) {
@@ -196,7 +206,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       .filter((item: string) => item.startsWith('gcode_macro'))
       .map((item: string) => {
         const name = item.split(' ')[1]
-        const hidden = rootState.config?.fileConfig?.dashboard?.hiddenMacros.includes(name)
+        const hidden = rootState.config?.uiSettings?.dashboard?.hiddenMacros.includes(name)
         return { name, visible: !hidden }
       })
     commit('setMacros', macros)
@@ -219,7 +229,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async onTemperatureStore ({ commit }, payload) {
+  async onTemperatureStore ({ commit, rootState }, payload) {
     const now = new Date() // Set a base time to work out the temp data from.
     // On a fresh boot of the host system, moonraker should give us enough data;
     // however, it seems sometimes it does not. So - we should pad this out when
@@ -231,52 +241,53 @@ export const actions: ActionTree<SocketState, RootState> = {
     // so we have to account for this too.
 
     // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    const count = 600 // The size of the dataset we need.
-    const moonrakerCount = 1200 // The size of the dataset we expect moonraker to provide.
+    // const count = Globals.CHART_HISTORY_RETENTION // The size of the dataset we need.
+    const count = (rootState.config)
+      ? rootState.config.serverConfig.server.temperature_store_size
+      : Globals.CHART_HISTORY_RETENTION
     const targetsToAvoid = [
       'temperature_probe',
       'temperature_sensor'
     ]
 
     for (const originalKey in payload) { // each heater / temp fan
-      // If the dataset is less than 1200, then pad the beginning
+      // If the dataset is less than what we need, then pad the beginning
       // until we get to our intended count
-      const l = payload[originalKey].temperatures.length
-      const pad = moonrakerCount - l
-      if (l < moonrakerCount) {
-        const lastTemp = payload[originalKey].temperatures[0]
-        payload[originalKey].temperatures = [...Array.from({ length: pad }, () => lastTemp), ...payload[originalKey].temperatures]
-        if ('targets' in payload[originalKey]) {
-          payload[originalKey].targets = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].targets]
-        }
-        if ('powers' in payload[originalKey]) {
-          payload[originalKey].powers = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].powers]
-        }
-        if ('speeds' in payload[originalKey]) {
-          payload[originalKey].speeds = [...Array.from({ length: pad }, () => 0), ...payload[originalKey].speeds]
-        }
-      }
       if (targetsToAvoid.some(e => originalKey.startsWith(e))) {
         delete payload[originalKey].targets
       }
+      ['temperatures', 'targets', 'powers', 'speeds'].forEach((k) => {
+        const arr = payload[originalKey][k]
+        if (arr && arr.length) {
+          if (arr.length < count) {
+            const length = count - arr.length
+            const lastValue = payload[originalKey][k][0]
+            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...payload[originalKey][k]]
+          } else {
+            payload[originalKey][k] = payload[originalKey][k].splice(arr.length - count)
+          }
+        }
+      })
     }
 
     const keys = Object.keys(payload)
+    const d: ChartData[] = []
     for (let i = 0; i < count; i++) {
-      const date = new Date(now.getTime() - (1000 * (count - i)) - 1000)
+      const date = new Date(now.getTime() - (1000 * (count - i)) - 2000)
       const r: ChartData = {
         date
       }
       keys.forEach(key => {
         let label = key
         if (key.includes(' ')) label = key.split(' ')[1]
-        r[label] = payload[key].temperatures[i + count]
-        if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i + count]
-        if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i + count]
-        if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i + count]
+        r[label] = payload[key].temperatures[i]
+        if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i]
+        if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i]
+        if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i]
       })
-      commit('addChartEntry', r)
+      d.push(r)
     }
+    commit('addChartStore', d)
 
     // After we've loaded the initial temp data, load and subscribe to the rest.
     SocketActions.printerObjectsList()
@@ -288,6 +299,19 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('notifyStatusUpdate', payload.status)
   },
 
+  async onPrintStart (_, payload) {
+    console.debug('Print start detected', payload)
+    // We should find the file path...
+    // Record an entry incl the path and start time...
+    // Set a null entry for its finish time...
+  },
+
+  async onPrintEnd (_, payload) {
+    console.debug('Print end detected', payload)
+    // We should find the file in our history...
+    // Record the finish time...
+  },
+
   /**
    * ==========================================================================
    * Automated notifications via socket
@@ -297,42 +321,37 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
 
   /** Automated notify events via socket */
-  async notifyStatusUpdate ({ state, commit, getters }, payload) {
+  async notifyStatusUpdate ({ state, rootState, commit, getters }, payload) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
     // so quickly.
 
-    // Take payload, put it in buffer object.
-    // add setTimeout to empty the buffer and run the below..
-
     // Do NOT accept notification updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
     if (payload && state.acceptingNotifications) {
+      // Detect a printing state change.
+      // We do this prior to commiting the notify so we can
+      // compare the before and after.
+      handlePrintStateChange(state, payload)
+
       for (const key in payload) {
         const val = payload[key]
         // Skip anything we need here.
         if (
           !key.includes('gcode_macro')
         ) {
-          // First, commit the value.
+          // Commit the value.
           commit('onSocketNotify', { key, payload: val })
         }
       }
 
-      // For every notify - configure a chart entry and post it..
-      // But only ever 1000ms.
-      const date1 = new Date()
-      const date2 = (state.chart.length > 0)
-        ? new Date(state.chart[state.chart.length - 1].date)
-        : null
-      const diff = 1000 // time to wait before adding another entry.
-      if (!date2 || date1.getTime() - date2.getTime() > diff) {
-        const keys = getters.getChartableSensors as string[]
-        const r = configureChartEntry(state, keys)
-        commit('addChartEntry', r)
-      }
+      // Add a chart entry
+      const retention = (rootState.config)
+        ? rootState.config.serverConfig.server.temperature_store_size
+        : Globals.CHART_HISTORY_RETENTION
+      addChartEntry(state, retention, getters.getChartableSensors)
 
       // The first notification should have pre-populated any data & chart labels, so mark the socket as ready.
       if (!state.ready) commit('onSocketReadyState', true)

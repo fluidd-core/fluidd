@@ -46,43 +46,43 @@ import UtilsMixin from '@/mixins/utils'
 })
 export default class CameraSettingsCard extends Mixins(UtilsMixin) {
   get enabled () {
-    return this.$store.state.config.fileConfig.camera.enabled
+    return this.$store.state.config.uiSettings.camera.enabled
   }
 
   set enabled (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.enabled', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.enabled', value })
   }
 
   get url () {
-    return this.$store.state.config.fileConfig.camera.url
+    return this.$store.state.config.uiSettings.camera.url
   }
 
   set url (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.url', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.url', value })
   }
 
   get flipX () {
-    return this.$store.state.config.fileConfig.camera.flipX
+    return this.$store.state.config.uiSettings.camera.flipX
   }
 
   set flipX (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.flipX', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.flipX', value })
   }
 
   get flipY () {
-    return this.$store.state.config.fileConfig.camera.flipY
+    return this.$store.state.config.uiSettings.camera.flipY
   }
 
   set flipY (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.flipY', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.flipY', value })
   }
 
   get streamType () {
-    return this.$store.state.config.fileConfig.camera.type
+    return this.$store.state.config.uiSettings.camera.type
   }
 
   set streamType (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.type', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.type', value })
   }
 }
 </script>

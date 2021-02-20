@@ -67,7 +67,7 @@ export default class App extends Mixins(UtilsMixin) {
   // }
 
   mounted () {
-    this.$vuetify.theme.dark = this.$store.state.config.fileConfig.general.darkMode
+    this.$vuetify.theme.dark = this.$store.state.config.uiSettings.general.darkMode
     EventBus.$on('flashMessage', (payload: FlashMessageType) => {
       this.flashMessage.text = (payload && payload.text) || undefined
       this.flashMessage.type = (payload && payload.type) || undefined
@@ -88,13 +88,13 @@ export default class App extends Mixins(UtilsMixin) {
   }
 
   get progress () {
-    let progress = this.$store.state.socket.printer.display_status.progress || 0
+    let progress = this.$store.getters['socket/getPrintProgress']
     progress = (progress * 100).toFixed()
     return progress
   }
 
   get pageTitle () {
-    const instanceName = this.$store.state.config.fileConfig.general.instanceName || ''
+    const instanceName = this.$store.state.config.uiSettings.general.instanceName || ''
     const pageName = this.$route.name
 
     if (this.printerPrinting) {

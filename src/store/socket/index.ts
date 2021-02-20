@@ -11,6 +11,7 @@ export const defaultState = (): SocketState => {
     connecting: true, // socket is trying to connect.
     ready: false, // indicates the socket is ready (and has first dump of data...)
     acceptingNotifications: false,
+    consoleEntryCount: 0,
     error: null,
     endstops: {},
     console: [],
@@ -80,7 +81,8 @@ export const defaultState = (): SocketState => {
         max_velocity: 0,
         position: [0, 0, 0, 0],
         print_time: 0,
-        square_corner_velocity: 0
+        square_corner_velocity: 0,
+        extruder: ''
       },
       current_file: {
         estimated_time: 0,

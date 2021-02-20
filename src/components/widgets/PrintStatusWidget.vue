@@ -20,7 +20,7 @@
               </template>
               <span>estimated time left</span>
             </v-tooltip>
-            {{ timeEstimates.timeLeft }}
+            {{ timeEstimates.remaining }}
           </div>
           <div class="mb-1 grey--text text--lighten-1">
             <v-tooltip left>
@@ -29,8 +29,8 @@
               </template>
               {{ (printTimeEstimationsType !== 'totals') ? 'duration &amp; total' : 'duration' }}
             </v-tooltip>
-            <span>{{ timeEstimates.duration }}</span>
-            <span class="grey--text text--darken-2" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.totalDuration }}</span>
+            <span>{{ timeEstimates.current }}</span>
+            <span class="grey--text text--darken-2" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.total }}</span>
           </div>
           <div class="mb-1 grey--text" v-if="filamentEstimates !== ''">
             <v-tooltip left>
@@ -75,11 +75,11 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
   }
 
   get printTimeEstimationsType () {
-    return this.$store.state.config.fileConfig.general.printTimeEstimationsType
+    return this.$store.state.config.uiSettings.general.printTimeEstimationsType
   }
 
   get timeEstimates () {
-    return this.$store.getters['socket/getTimeEstimates'](this.printTimeEstimationsType)
+    return this.$store.getters['socket/getTimeEstimates']
   }
 
   get filamentEstimates () {

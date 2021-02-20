@@ -5,13 +5,10 @@
 - sync instances across fluidd.json files
 - implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
-- temperature graph tooltips / hover
 - i18n (translations)
-- filesystem browser to use same scrollbar as console
 - primary color picker
 - macros have inputs via settings, impl a UI dialog for this?
 
-- refactor store modules
 - loading heaters, fans or pins means these are constantly updated - due to temps changing
   often. Need a more elegant way to load just the names of these items without parts of the
   reactive data that is changed so often
@@ -19,7 +16,6 @@
 - print history
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
-- print instances having data bleed? [github issue]
 - ability to reprint after cancel
 - client showing in update menu when swapping printers via fluidd.xyz
 - allow users to show / hide pin outputs
@@ -36,9 +32,7 @@
 - adding multiple printers to carry over between devices
 - cleanup socket store / move socket out and keep printer data
 - split utils mixin into many mixins, in a logical way
-- add console.log wrapper for dev vs prod
 - add a cached throttle to (socket notifications) temp updates, print timers, position trackers.
-- Performance / memory heap checks
 
 ## Known Bugs
 

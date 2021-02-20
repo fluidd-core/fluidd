@@ -1,5 +1,7 @@
 import '@/scss/global.scss'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 // import './registerComponentHooks'
+import './plugins/consola'
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
@@ -14,6 +16,7 @@ import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 import { plugin } from 'echarts-for-vue'
+import VueVirtualScroller from 'vue-virtual-scroller'
 
 // import * as echarts from 'echarts'
 import * as echarts from 'echarts/core'
@@ -48,6 +51,7 @@ echarts.use([
 // Use any Plugins
 Vue.use(plugin, { echarts })
 Vue.use(AxiosPlugin)
+Vue.use(VueVirtualScroller)
 Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
@@ -62,11 +66,6 @@ Vue.component('inline-help', InlineHelpIcon)
 appInit()
   .then((config: Config) => {
     console.debug('Loaded App Configuration', config)
-
-    // Set vuetify to the correct initial theme.
-    // if (store.state.config && store.state.config.fileConfig.general) {
-    //   vuetify.framework.theme.dark = store.state.config.fileConfig.general.darkMode
-    // }
 
     // Init the socket plugin
     Vue.use(SocketPlugin, {

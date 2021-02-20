@@ -77,7 +77,7 @@ export default class Dashboard extends Mixins(UtilsMixin) {
   drag = false
 
   get cameraEnabled (): boolean {
-    return this.$store.state.config.fileConfig.camera.enabled
+    return this.$store.state.config.uiSettings.camera.enabled
   }
 
   get hasMacros () {
@@ -118,7 +118,7 @@ export default class Dashboard extends Mixins(UtilsMixin) {
     // Take care of special cases.
     // cards.forEach((card) => {
     //   if (card.name === 'camera-card') {
-    //     this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.camera.enabled', value: card.enabled })
+    //     this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.enabled', value: card.enabled })
     //   }
     // })
     this.$store.dispatch('config/saveCardConfig', { group, cards })

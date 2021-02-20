@@ -7,6 +7,7 @@
     :enabled="enabled"
     @enabled="$emit('enabled', $event)">
     <file-system-card
+      v-if="gCodeRootReady"
       root="gcodes"
       accept=".gcode,.ufp"
       dense
@@ -31,6 +32,10 @@ import UtilsMixin from '@/mixins/utils'
 export default class JobsCard extends Mixins(UtilsMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
+
+  get gCodeRootReady (): boolean {
+    return this.$store.getters['files/isRootAvailable']('gcodes')
+  }
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)

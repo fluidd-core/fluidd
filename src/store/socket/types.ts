@@ -1,9 +1,10 @@
 export interface SocketState {
-  [key: string]: boolean | SocketError | EndStops | ConsoleEntry[] | ChartData[] | string | string[] | Printer | null;
+  [key: string]: boolean | SocketError | EndStops | ConsoleEntry[] | ChartData[] | number | string | string[] | Printer | null;
   open: boolean;
   connecting: boolean; // if the socket is down, are we still attempting to reconnect?
   ready: boolean;
   acceptingNotifications: boolean;
+  consoleEntryCount: number; // give each console entry a unique id.
   error: SocketError | null;
   endstops: EndStops;
   macros: Macro[];
@@ -23,6 +24,11 @@ export interface Printer {
   [key: string]: any;
 }
 
+export interface Extruder {
+  name: string;
+  key: string;
+}
+
 // export interface Macros {
 //   [key: string]: Macro;
 // }
@@ -40,9 +46,9 @@ export interface SocketError {
 export interface TimeEstimates {
   type: 'file' | 'slicer' | 'filament' | 'totals';
   progress: string;
-  timeLeft: string;
-  duration: string;
-  totalDuration: string;
+  remaining: string;
+  current: string;
+  total: string;
 }
 
 export interface Endstops {
@@ -160,6 +166,7 @@ export interface BedMeshProfile {
 }
 
 export interface ConsoleEntry {
+  id?: number;
   message: string;
   type: 'command' | 'response';
   time?: number;

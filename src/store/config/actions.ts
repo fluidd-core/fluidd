@@ -1,15 +1,22 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { ConfigState, GenericSave, Config, InstanceConfig, FileConfig, HostConfig, CardConfig, CardState } from './types'
+import { ConfigState, GenericSave, Config, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
+import { get } from 'lodash-es'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
-   * Inits any file config we may have.
+   * Init any file configs we may have.
    */
-  async initFile ({ commit }, payload: FileConfig) {
-    commit('onInitFile', payload)
+  async initUiSettings ({ commit }, payload: UiSettings) {
+    commit('initUiSettings', payload)
+  },
+  async initConsoleHistory ({ commit }, payload: string[]) {
+    commit('initConsoleHistory', payload)
+  },
+  async initPrintHistory ({ commit }, payload: string[]) {
+    commit('initPrintHistory', payload)
   },
 
   /**
@@ -55,15 +62,18 @@ export const actions: ActionTree<ConfigState, RootState> = {
    * Saves keys to config. Assumes a root[key] structure
    * under state.config.
    *
-   * If the key starts with fileConfig, we'll automatically
+   * If the key starts with uiSettings, we'll automatically
    * save to file too.
    *
    * NOTE: These won't be reactive unless the state was predefined.
    */
   async saveGeneric ({ commit, dispatch }, config: GenericSave) {
     commit('onSaveGeneric', config)
-    if (config.key.startsWith('fileConfig')) {
-      dispatch('saveFileConfig')
+    if (config.key.startsWith('uiSettings')) {
+      dispatch('saveUiSettings')
+    }
+    if (config.key.startsWith('consoleHistory')) {
+      dispatch('saveFile', { objectPath: 'consoleHistory', file: Globals.CONFIG_FILES.ConsoleHistory })
     }
   },
 
@@ -72,7 +82,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async updateHiddenMacros ({ commit, dispatch }, payload) {
     commit('updateHiddenMacros', payload)
-    dispatch('saveFileConfig')
+    dispatch('saveUiSettings')
   },
 
   /**
@@ -81,42 +91,47 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async updatePreset ({ commit, dispatch }, payload) {
     commit('setUnsavedChanges', true)
     commit('updatePreset', payload)
-    dispatch('saveFileConfig')
+    dispatch('saveUiSettings')
   },
 
   async removePreset ({ commit, dispatch }, payload) {
     commit('setUnsavedChanges', true)
     commit('removePreset', payload)
-    dispatch('saveFileConfig')
+    dispatch('saveUiSettings')
   },
 
-  /**
-   * Saves fileConfig to file.
-   */
-  async saveFileConfig ({ commit, dispatch, state, rootState, rootGetters }) {
+  async saveUiSettings ({ commit, dispatch, state, rootGetters }) {
     let instance = rootGetters['config/getCurrentInstance']
     if (instance) {
-      instance = { ...instance, ...{ name: state.fileConfig.general.instanceName } }
+      instance = { ...instance, ...{ name: state.uiSettings.general.instanceName } }
       dispatch('updateInstance', instance)
     }
 
-    if (state.fileConfig && Object.keys(state.fileConfig).length > 0) {
-      const formData = new FormData()
-      const filename = Globals.SETTINGS_FILENAME
-      const file = new File([JSON.stringify(state.fileConfig)], filename)
-      formData.append('file', file, filename)
-      formData.append('root', 'config')
-      console.debug('uploading configuration...', filename, state.fileConfig)
-      Vue.$http.post(
-        rootState.config?.apiUrl + '/server/files/upload',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      )
+    if (state.uiSettings && Object.keys(state.uiSettings).length > 0) {
+      dispatch('saveFile', { objectPath: 'uiSettings', file: Globals.CONFIG_FILES.UiSettings })
     }
     commit('setUnsavedChanges', false)
+  },
+
+  /**
+   * Saves object to file.
+   */
+  async saveFile ({ state, rootState }, payload: { objectPath: string; file: string }) {
+    const formData = new FormData()
+    const filename = payload.file
+    const data = get(state, payload.objectPath)
+    const file = new File([JSON.stringify(data)], filename)
+    formData.append('file', file, filename)
+    formData.append('root', 'config')
+    console.debug('uploading configuration...', filename, data)
+    Vue.$http.post(
+      rootState.config?.apiUrl + '/server/files/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
   }
 }

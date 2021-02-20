@@ -19,8 +19,8 @@ import { Globals } from '@/globals'
 import { ConsoleEntry } from '@/store/socket/types'
 
 @Component({})
-export default class ConsoleEntryWidget extends Vue {
-  @Prop({ type: Object, required: true })
+export default class ConsoleEntriesWidget extends Vue {
+  @Prop({ type: Object, default: {} })
   value!: ConsoleEntry
 
   get knownCommands () {

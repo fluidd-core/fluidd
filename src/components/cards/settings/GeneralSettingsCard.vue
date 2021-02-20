@@ -11,11 +11,6 @@
         label="Printer Name"
         v-model="instanceName"
       ></v-text-field>
-      <v-switch
-        label="Enable Jobs on Dashboard"
-        hide-details
-        v-model="jobsInDash">
-      </v-switch>
     </v-card-text>
   </collapsable-card>
 </template>
@@ -29,19 +24,11 @@ import UtilsMixin from '@/mixins/utils'
 })
 export default class GeneralSettingsCard extends Mixins(UtilsMixin) {
   get instanceName () {
-    return this.$store.state.config.fileConfig.general.instanceName
+    return this.$store.state.config.uiSettings.general.instanceName
   }
 
   set instanceName (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.instanceName', value })
-  }
-
-  get jobsInDash () {
-    return this.$store.state.config.fileConfig.general.jobsInDash
-  }
-
-  set jobsInDash (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'fileConfig.general.jobsInDash', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.instanceName', value })
   }
 
   instanceNameRules = [

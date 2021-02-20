@@ -17,7 +17,6 @@
 </template>
 
 <script lang='ts'>
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import { getKlipperType } from '@/store/helpers'
@@ -55,7 +54,8 @@ export default class EChartsWidget extends Vue {
     this.loading = false
   }
 
-  destroy () {
+  beforeDestroy () {
+    if (typeof window === 'undefined') return
     if (this.chart) {
       this.chart.dispose()
     }
@@ -84,7 +84,7 @@ export default class EChartsWidget extends Vue {
   }
 
   initOptions () {
-    const darkMode = this.$store.state.config.fileConfig.general.darkMode
+    const darkMode = this.$store.state.config.uiSettings.general.darkMode
     const fontSize = 16
     const lineOpacity = 0.2
     let labelBackground = 'rgba(10,10,10,0.90)'
@@ -155,7 +155,7 @@ export default class EChartsWidget extends Vue {
           margin: 14,
           color: fontColor,
           fontSize,
-          formatter: '{hh}:{mm}'
+          formatter: this.xAxisLabelFormatter
         },
         axisPointer: {
           label: {
@@ -178,8 +178,10 @@ export default class EChartsWidget extends Vue {
           },
           minInterval: 20,
           maxInterval: 60,
-          min: 0,
+          min: this.yAxisTempMin,
           max: this.yAxisTempMax,
+          // max: 'dataMax',
+          // min: 'dataMin',
           axisLabel: {
             interval: 0,
             margin: 14,
@@ -215,7 +217,8 @@ export default class EChartsWidget extends Vue {
         source: this.chartData
       },
       dataZoom: [{
-        type: 'inside'
+        type: 'inside',
+        zoomOnMouseWheel: 'shift'
       }],
       series: []
     }
@@ -327,42 +330,58 @@ export default class EChartsWidget extends Vue {
 
   tooltipFormatter (params: any) {
     let text = ''
-    params.forEach((param: any) => {
-      if (
-        !param.seriesName.toLowerCase().endsWith('target') &&
-        !param.seriesName.toLowerCase().endsWith('power') &&
-        !param.seriesName.toLowerCase().endsWith('speed')
-      ) {
-        text += `
-          <div>
-            <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>
-            <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-              ${param.seriesName}:
-            </span>
-            <span style="float:right;margin-left:20px;font-size:16px;color:#666;font-weight:900">
-              ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
+    params
+      .reverse()
+      .forEach((param: any) => {
+        if (
+          !param.seriesName.toLowerCase().endsWith('target') &&
+          !param.seriesName.toLowerCase().endsWith('power') &&
+          !param.seriesName.toLowerCase().endsWith('speed')
+        ) {
+          text += `
+            <div>
+              <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>
+              <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
+                ${param.seriesName}:
+              </span>
+              <span style="float:right;margin-left:20px;font-size:16px;color:#666;font-weight:900">
+                ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
 
-        if (param.seriesName + 'Target' in param.value) {
-          text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+          if (param.seriesName + 'Target' in param.value) {
+            text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+          }
+          if (param.seriesName + 'Power' in param.value) {
+            text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
+          }
+          if (param.seriesName + 'Speed' in param.value) {
+            text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
+          }
+          text += `</span>
+            <div style="clear: both"></div>
+          </div>
+          <div style="clear: both"></div>`
         }
-        if (param.seriesName + 'Power' in param.value) {
-          text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
-        }
-        if (param.seriesName + 'Speed' in param.value) {
-          text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
-        }
-        text += `</span>
-          <div style="clear: both"></div>
-        </div>
-        <div style="clear: both"></div>`
-      }
-    })
+      })
     return text
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
+  }
+
+  xAxisLabelFormatter () {
+    if (this.isMobile) {
+      return '{mm}'
+    }
+    return '{H}:{mm}'
   }
 
   xAxisPointerFormatter (params: any) {
     const d = this.$dayjs(params.value)
-    return d.format('hh:mm:ss')
+    if (this.isMobile) {
+      return d.format('mm:ss')
+    }
+    return d.format('H:mm:ss')
   }
 
   yAxisPointerFormatter (params: any) {
@@ -373,9 +392,20 @@ export default class EChartsWidget extends Vue {
     return `${value * 100}%`
   }
 
+  yAxisTempMin (value: any) {
+    let num1 = Math.floor(value.min / 10) * 10
+    num1 = (num1 === value.min && (num1 - 10) >= 0)
+      ? num1 - 10
+      : num1
+    return num1
+  }
+
   yAxisTempMax (value: any) {
-    // Need to fix this..
-    return Math.ceil(value.max / 20) * 20
+    let num1 = Math.ceil(value.max / 10) * 10
+    num1 = (num1 === value.max)
+      ? num1 + 10
+      : num1
+    return num1
   }
 }
 

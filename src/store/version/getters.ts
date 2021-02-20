@@ -63,5 +63,9 @@ export const getters: GetterTree<VersionState, RootState> = {
 
     const o = state.components[component] as HashVersion
     return (o.current_hash !== o.remote_hash)
+  },
+
+  getResponses: (state) => {
+    return [...state.responses]
   }
 }

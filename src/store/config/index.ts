@@ -12,6 +12,9 @@ export const defaultState = (): ConfigState => {
     socketUrl: '',
     unsavedChanges: false,
     layoutMode: false,
+    appState: {
+      chartSelectedLegends: {}
+    },
     cardState: {},
     cardLayout: {
       dashboard1: [
@@ -27,14 +30,11 @@ export const defaultState = (): ConfigState => {
         { name: 'console-card', enabled: true }
       ]
     },
-    appState: {
-      chartSelectedLegends: {}
-    },
     instances: [],
-    fileConfig: {
+    // saves to file .fluidd
+    uiSettings: {
       general: {
         instanceName: Globals.APP_NAME,
-        jobsInDash: false,
         chartVisible: true,
         darkMode: true,
         hideTempWaits: true,
@@ -63,10 +63,19 @@ export const defaultState = (): ConfigState => {
         hiddenMacros: []
       }
     },
+    // saves to file .fluidd_history
+    consoleHistory: [],
     hostConfig: {
       endpoints: [],
       blacklist: [],
       skipClientUpdates: false
+    },
+    serverConfig: {
+      authorization: {},
+      server: {
+        gcode_store_size: 1000,
+        temperature_store_size: 1200
+      }
     }
   }
 }
