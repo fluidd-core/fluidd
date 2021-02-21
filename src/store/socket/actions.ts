@@ -22,7 +22,9 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
     SocketActions.printerInfo()
-    // SocketActions.serverInfo()
+    // We run this here so that we can get the status of power devices
+    // without necessarily having connection to the printer.
+    SocketActions.serverInfo()
   },
 
   /**

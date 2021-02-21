@@ -261,7 +261,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       const meshSettings = Object.keys(config).filter(key => key.startsWith('bed_mesh'))
       for (const key of meshSettings) {
         if (key === 'bed_mesh') continue // The mesh configuration.
-        const profile_name = key.split(' ')[1]
+        const profile_name = key.split(' ').splice(1).join(' ')
         if (
           profile_name !== currentProfile
         ) {
