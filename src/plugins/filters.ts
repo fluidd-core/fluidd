@@ -28,7 +28,7 @@ export const Filters = {
   },
 
   /**
-   * Formats a date in string format into a human readable
+   * Formats a date from unixtime into a human readable
    * datetime.
    */
   formatFileDateTime: (datetime: number) => {

@@ -41,8 +41,12 @@ describe('formatCounterTime', () => {
 
 describe('formatFileDateTime', () => {
   Vue.use(DayJSPlugin)
-  it('renders numbers as date', () => {
-    expect(Filters.formatFileDateTime(0)).to.equal('Jan 1, 1970 1:00 AM')
+  it('renders numbers as date with offset applied', () => {
+    // This should return based on your browsers local time, given unixtime.
+    const d = new Date(0)
+    const offset = d.getTimezoneOffset()
+    const d2 = new Date(d.getTime() + offset * 60)
+    expect(Filters.formatFileDateTime(d2.getTime())).to.equal('Jan 1, 1970 12:00 AM')
   })
 })
 
@@ -50,7 +54,7 @@ describe('formatFileDateTime', () => {
 
 describe('getReadableLengthString', () => {
   it('renders length under 100mm as mm', () => {
-    expect(Filters.getReadableLengthString(99)).to.equal('99 mm')
+    expect(Filters.getReadableLengthString(99)).to.equal('99.0 mm')
   })
 
   it('renders length over 100mm as cm', () => {
