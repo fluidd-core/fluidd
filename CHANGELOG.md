@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.8.1](https://github.com/cadriel/fluidd/compare/v1.8.0...v1.8.1) (2021-02-21)
+
+
+### Bug Fixes
+
+* bed meshes now properly support spaces in their name ([061f3ab](https://github.com/cadriel/fluidd/commit/061f3ab7c05a2873c71dc6b32e4cdba0a0190e2b))
+* regression with power devices not showing state when printer is off ([1374957](https://github.com/cadriel/fluidd/commit/1374957b165f6713a9e8610e991dcf4583e170f2))
+
 ## [1.8.0](https://github.com/cadriel/fluidd/compare/v1.7.1...v1.8.0) (2021-02-20)
 
 
