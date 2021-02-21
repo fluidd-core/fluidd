@@ -221,8 +221,7 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   rules = [
-    (v: string) => !!v || 'Required.',
-    (v: string) => v.indexOf(' ') === -1 || 'Spaces are not allowed.'
+    (v: string) => !!v || 'Required.'
   ]
 
   @Watch('saveDialog', { deep: true })
@@ -268,11 +267,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   loadProfile (name: string) {
-    this.sendGcode('BED_MESH_PROFILE LOAD=' + name)
+    this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
   }
 
   removeProfile (name: string) {
-    this.sendGcode('BED_MESH_PROFILE REMOVE=' + name)
+    this.sendGcode(`BED_MESH_PROFILE REMOVE="${name}"`)
     this.sendGcode('SAVE_CONFIG')
   }
 
@@ -280,10 +279,10 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
     const valid = this.form.validate()
     if (valid) {
       if (this.saveDialog.profileName !== this.currentMesh.profile_name) {
-        this.sendGcode('BED_MESH_PROFILE SAVE=' + this.saveDialog.profileName)
+        this.sendGcode(`BED_MESH_PROFILE SAVE="${this.saveDialog.profileName}"`)
       }
       if (this.saveDialog.removeDefault) {
-        this.sendGcode('BED_MESH_PROFILE REMOVE=' + this.currentMesh.profile_name)
+        this.sendGcode(`BED_MESH_PROFILE REMOVE="${this.currentMesh.profile_name}"`)
       }
       this.sendGcode('SAVE_CONFIG')
     }
