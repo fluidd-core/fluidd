@@ -680,6 +680,6 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getMoonrakerWarnings: (state) => {
-    return state.failed_plugins || []
+    return state.printer.serverInfo.failed_plugins || []
   }
 }

@@ -22,9 +22,6 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
     SocketActions.printerInfo()
-    // We run this here so that we can get the status of power devices
-    // without necessarily having connection to the printer.
-    SocketActions.serverInfo()
   },
 
   /**
@@ -101,6 +98,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async onPrinterInfo ({ commit }, payload) {
     commit('onPrinterInfo', payload)
+    // We run this here so that we can get the status of power devices
+    // without necessarily having connection to the printer.
+    SocketActions.serverInfo()
 
     if (payload.state !== 'ready') {
       clearTimeout(retryTimeout)
@@ -109,7 +109,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
       // We're good, move on. Start by loading the server data, temperature and console history.
-      SocketActions.serverInfo()
+      // SocketActions.serverInfo()
       SocketActions.serverConfig()
       SocketActions.serverGcodeStore()
       SocketActions.printerGcodeHelp()
@@ -129,19 +129,11 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onServerInfo ({ commit, dispatch }, payload) {
     // This payload should return a list of enabled plugins
     // and root directories that are available.
-    if (
-      payload.failed_plugins &&
-      payload.failed_plugins.length
-    ) {
-      commit('onFailedPlugins', payload.failed_plugins)
-    }
-
+    commit('onServerInfo', payload)
     if (
       payload.plugins &&
       payload.plugins.length > 0
     ) {
-      commit('onPlugins', payload.plugins)
-
       // Init any plugins we need.
       const pluginsToInit = [
         'power',

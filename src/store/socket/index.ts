@@ -18,8 +18,6 @@ export const defaultState = (): SocketState => {
     availableCommands: {},
     chart: [],
     macros: [],
-    plugins: [],
-    failed_plugins: [],
     printer: {
       bed_mesh: {},
       heaters: {
@@ -29,6 +27,13 @@ export const defaultState = (): SocketState => {
       info: {
         state: '',
         state_message: ''
+      },
+      serverInfo: {
+        failed_plugins: [],
+        klippy_connected: false, // indicates if klippy is disconnected vs shutdown.
+        klippy_state: '',
+        plugins: [],
+        registered_directories: []
       },
       configfile: {
         save_config_pending: false,

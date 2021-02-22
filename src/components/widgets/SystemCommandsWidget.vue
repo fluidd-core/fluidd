@@ -136,7 +136,7 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
   }
 
   get devicePowerPluginEnabled () {
-    return (this.$store.state.socket.plugins.includes('power'))
+    return (this.$store.state.socket.printer.serverInfo.plugins.includes('power'))
   }
 
   togglePowerDevice (device: Device, wait?: string) {
