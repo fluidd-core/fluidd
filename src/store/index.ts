@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import consola from 'consola'
 import { socket } from './socket'
 import { files } from './files'
 import { config } from './config'
@@ -56,7 +57,7 @@ export default new Vuex.Store<RootState>({
       this.commit('wait/resetState')
     },
     void () {
-      console.debug('void action')
+      consola.debug('void action')
     }
   }
 })

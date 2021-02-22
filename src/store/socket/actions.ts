@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
+import consola from 'consola'
 import { SocketState, ConsoleEntry, ChartData, Macro } from './types'
 import { RootState } from '../types'
 import { addChartEntry, handlePrintStateChange } from '../helpers'
@@ -82,18 +83,18 @@ export const actions: ActionTree<SocketState, RootState> = {
    * Print cancelled confirmation.
    */
   async onPrintCancel () {
-    console.debug('Print Cancelled')
+    consola.debug('Print Cancelled')
   },
 
   /**
    * Print paused confirmation.
    */
   async onPrintPause () {
-    console.debug('Print Paused')
+    consola.debug('Print Paused')
   },
 
   async onPrintResume () {
-    console.debug('Print Resumed')
+    consola.debug('Print Resumed')
   },
 
   async onPrinterInfo ({ commit }, payload) {
@@ -294,14 +295,14 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   async onPrintStart (_, payload) {
-    console.debug('Print start detected', payload)
+    consola.debug('Print start detected', payload)
     // We should find the file path...
     // Record an entry incl the path and start time...
     // Set a null entry for its finish time...
   },
 
   async onPrintEnd (_, payload) {
-    console.debug('Print end detected', payload)
+    consola.debug('Print end detected', payload)
     // We should find the file in our history...
     // Record the finish time...
   },
@@ -368,7 +369,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     SocketActions.printerInfo()
   },
   async notifyKlippyReady () {
-    console.debug('Klippy Ready')
+    consola.debug('Klippy Ready')
   },
   async notifyFilelistChanged ({ dispatch }, payload) {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true })

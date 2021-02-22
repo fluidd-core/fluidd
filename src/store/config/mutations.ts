@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import consola from 'consola'
 import { MutationTree } from 'vuex'
 import { ConfigState, UiSettings, GenericSave, InstanceConfig, Config, CardConfig } from './types'
 import { Macro } from '../socket/types'
@@ -64,7 +65,7 @@ export const mutations: MutationTree<ConfigState> = {
    */
   initPrintHistory (state, payload: any) {
     if (payload) {
-      console.debug('got some print history', payload)
+      consola.debug('got some print history', payload)
     }
   },
 

@@ -22,28 +22,28 @@ export default wb
 // if (process.env.NODE_ENV === 'production') {
 //   register(`${process.env.BASE_URL}service-worker.js`, {
 //     ready () {
-//       console.log(
+//       consola.log(
 //         'App is being served from cache by a service worker.\n' +
 //         'For more details, visit https://goo.gl/AFskqB'
 //       )
 //     },
 //     registered () {
-//       console.log('Service worker has been registered.')
+//       consola.log('Service worker has been registered.')
 //     },
 //     cached () {
-//       console.log('Content has been cached for offline use.')
+//       consola.log('Content has been cached for offline use.')
 //     },
 //     updatefound () {
-//       console.log('New content is downloading.')
+//       consola.log('New content is downloading.')
 //     },
 //     updated () {
-//       console.log('New content is available; please refresh.')
+//       consola.log('New content is available; please refresh.')
 //     },
 //     offline () {
-//       console.log('No internet connection found. App is running in offline mode.')
+//       consola.log('No internet connection found. App is running in offline mode.')
 //     },
 //     error (error) {
-//       console.error('Error during service worker registration:', error)
+//       consola.error('Error during service worker registration:', error)
 //     }
 //   })
 // }

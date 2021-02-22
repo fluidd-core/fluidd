@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import vuetify from './plugins/vuetify'
 import store from './store'
+import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, Config, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
 
@@ -17,10 +18,10 @@ import { ApiConfig, Config, HostConfig, InstanceConfig, UiSettings } from './sto
 const getHostConfig = async (): Promise<HostConfig> => {
   const hostConfigResponse = await Vue.$http.get('/config.json?date=' + new Date().getTime())
   if (hostConfigResponse && hostConfigResponse.data) {
-    console.debug('Loaded web host configuration', hostConfigResponse.data)
+    consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data
   } else {
-    console.debug('Failed loading web host configuration')
+    consola.debug('Failed loading web host configuration')
     throw new Error('Unable to load host configuration. Please check the host.')
   }
 }
@@ -32,7 +33,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     if (instances && instances.length) {
       for (const config of instances) {
         if (config.active) {
-          console.debug('API Config from Local Storage', config)
+          consola.debug('API Config from Local Storage', config)
           return config
         }
       }
@@ -65,7 +66,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
       try {
         return await Vue.$http.get(endpoint + '/printer/info?date=' + new Date().getTime(), { timeout: 500 })
       } catch {
-        console.debug('Failed loading endpoint ping', endpoint)
+        consola.debug('Failed loading endpoint ping', endpoint)
       }
     })
   )
@@ -108,7 +109,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
       }
     } catch (e) {
       // can't connect.
-      console.debug('API Down / Not Available:', e)
+      consola.debug('API Down / Not Available:', e)
     }
   }
 

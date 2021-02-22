@@ -7,6 +7,7 @@
  * and refactored.
  */
 import _Vue from 'vue'
+import consola from 'consola'
 import { camelCase } from 'lodash-es'
 
 export class WebSocketClient {
@@ -51,7 +52,7 @@ export class WebSocketClient {
     }
 
     this.connection.onclose = (e) => {
-      console.debug(`${this.logPrefix} Connection closed:`, e)
+      consola.debug(`${this.logPrefix} Connection closed:`, e)
       if (this.store) this.store.dispatch('socket/onSocketClose', e)
       if (e.wasClean) {
         // A clean close indicates we wanted to do this on purpose.
@@ -62,7 +63,7 @@ export class WebSocketClient {
     }
 
     this.connection.onerror = (e) => {
-      console.error(`${this.logPrefix} Connection error:`, e)
+      consola.error(`${this.logPrefix} Connection error:`, e)
       if (this.store) this.store.dispatch('socket/onSocketError', e)
       // if (this.connection) this.connection.close();
     }
@@ -87,7 +88,7 @@ export class WebSocketClient {
         if (request) {
           Object.defineProperty(d.error, '__request__', { enumerable: false, value: request })
         }
-        console.debug(`${this.logPrefix} Response error:`, d.error)
+        consola.debug(`${this.logPrefix} Response error:`, d.error)
         this.store.dispatch('socket/onSocketError', d.error)
         return
       }
@@ -101,13 +102,13 @@ export class WebSocketClient {
         }
 
         Object.defineProperty(result, '__request__', { enumerable: false, value: request })
-        console.debug(`${this.logPrefix} Response:`, result)
+        consola.debug(`${this.logPrefix} Response:`, result)
         if (request.dispatch) this.store?.dispatch(request.dispatch, result)
         if (request.commit) this.store?.commit(request.commit, result)
       } else {
         // These are socket notifications (i.e., no specific request was made..)
         // Dispatch with the name of the method, converted to camelCase.
-        // console.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
+        // consola.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
         if (d.params && d.params[0]) {
           this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
         } else {
@@ -121,7 +122,7 @@ export class WebSocketClient {
     if (this.reconnectCount <= this.allowedReconnectAttempts) {
       this.reconnectCount += 1
       this.connection = null
-      console.debug(`${this.logPrefix} Reconnecting in ${this.reconnectInterval}`)
+      consola.debug(`${this.logPrefix} Reconnecting in ${this.reconnectInterval}`)
       setTimeout(() => {
         this.connect()
       }, this.reconnectInterval)
@@ -163,7 +164,7 @@ export class WebSocketClient {
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
-      console.debug(`${this.logPrefix} Not ready.`)
+      consola.debug(`${this.logPrefix} Not ready.`)
     }
   }
 }
