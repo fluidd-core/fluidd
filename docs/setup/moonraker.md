@@ -62,7 +62,7 @@ Your moonraker configuration can usually be found here: `~/klipper_config/moonra
 [server]
 host: 0.0.0.0
 port: 7125
-enable_debug_logging: True
+enable_debug_logging: False
 config_path: ~/klipper_config
 temperature_store_size: 600
 gcode_store_size: 1000
