@@ -189,7 +189,7 @@ export default class UtilsMixin extends Vue {
    * Send a Z adjust gcode script.
    */
   sendZAdjustGcode (direction: '+' | '-', distance: string, wait?: string) {
-    const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${distance} MOVE=1`
+    const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${distance} MOVE=${+this.zHomed}`
     this.sendGcode(gcode, wait)
   }
 
