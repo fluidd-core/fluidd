@@ -6,13 +6,13 @@
         v-bind="attrs"
         v-on="on"
         class="ml-2"
-        color="info"
+        :color="type"
         icon
         >
         <v-icon
         :small="small"
         >
-          $help
+          {{ (type === 'info') ? '$help' : '$alert' }}
         </v-icon>
       </v-btn>
     </template>
@@ -29,6 +29,9 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 export default class InlineHelpIcon extends Vue {
   @Prop({ type: String, required: false })
   tooltip!: string
+
+  @Prop({ type: String, default: 'info' })
+  type!: string
 
   @Prop({ type: Boolean, default: false })
   top!: boolean
