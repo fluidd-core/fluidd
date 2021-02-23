@@ -6,6 +6,19 @@
     :inLayout="inLayout"
     :enabled="enabled"
     @enabled="$emit('enabled', $event)">
+
+    <template v-slot:title v-if="!enabled">
+      <v-icon left>$files</v-icon>
+      <span class="font-weight-light">Jobs</span>
+      <inline-help
+        type="warning"
+        bottom
+        small
+        tooltip="Jobs are disabled prior to initial communcation with klippy"
+      ></inline-help>
+
+    </template>
+
     <file-system-card
       v-if="gCodeRootReady"
       root="gcodes"
