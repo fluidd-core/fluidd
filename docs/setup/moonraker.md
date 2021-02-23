@@ -70,12 +70,11 @@ gcode_store_size: 1000
 [authorization]
 enabled: True
 cors_domains:
-  http://*.local
-  https://*.local
-  http://*.lan
-  https://*.lan
-  http://app.fluidd.xyz
-  https://app.fluidd.xyz
+  *.local
+  *.lan
+  *://app.fluidd.xyz
+  *://192.168.*
+
 trusted_clients:
   10.0.0.0/8
   127.0.0.0/8
