@@ -2,6 +2,7 @@
 layout: default
 title: Application Layout
 parent: Features
+nav_order: 6
 permalink: /features/layout
 ---
 

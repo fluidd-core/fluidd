@@ -2,6 +2,7 @@
 layout: default
 title: Thermals Chart
 parent: Features
+nav_order: 9
 permalink: /features/chart
 ---
 

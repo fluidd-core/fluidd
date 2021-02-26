@@ -2,6 +2,7 @@
 layout: default
 title: Automated Updates
 parent: Features
+nav_order: 4
 permalink: /features/updates
 ---
 

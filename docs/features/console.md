@@ -2,6 +2,7 @@
 layout: default
 title: Console
 parent: Features
+nav_order: 8
 permalink: /features/console
 ---
 

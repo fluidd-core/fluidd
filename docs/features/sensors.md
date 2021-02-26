@@ -2,6 +2,7 @@
 layout: default
 title: Sensors
 parent: Features
+nav_order: 7
 permalink: /features/sensors
 ---
 

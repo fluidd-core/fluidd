@@ -2,6 +2,7 @@
 layout: default
 title: Multiple Printers
 parent: Features
+nav_order: 5
 permalink: /features/printers
 ---
 
