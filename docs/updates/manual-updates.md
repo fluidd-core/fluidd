@@ -1,4 +1,21 @@
+---
+layout: default
+title: Manual
+parent: Updates
+nav_order: 2
+permalink: /updates/manual
+---
+
 # Manual Updates
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
 
 On an already configured system, you can manually update as follows;
 
@@ -48,12 +65,15 @@ sudo service moonraker restart
 Note, this guide does not cover MCU updates should one be required after a klipper update.
 
 ```bash
+# Pull the latest code.
 cd ~/klipper
 git pull
+
+# Restart services.
 sudo service klipper restart
 ```
 
-## Host
+## Host Restart
 
 If you wish to restart your host;
 

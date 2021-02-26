@@ -1,6 +1,21 @@
-# File Thumbnails
+---
+layout: default
+title: Thumbnails
+parent: Features
+nav_order: 1
+permalink: /features/thumbnails
+---
 
-## PrusaSlicer & SuperSlicer
+# Thumbnails
+{: .no_toc }
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
+
+---
 
 Both PrusaSlicer and SuperSlicer allow configuration of thumbnails to be generated alongside your `gcode`. Each slicer has a slightly different configuration.
 
@@ -40,4 +55,4 @@ thumbnails = 48x48, 300x300
 - The Color override and Bed on Thumbnail options are personal preference, but having the Bed on Thumbnail option unticked looks the best!
 - Now, restart SuperSlicer, slice a file - and take a look at it in Fluidd!
 
-![screenshot](../images/thumbnails.png)
+![screenshot](/assets/images/thumbnails.png)
