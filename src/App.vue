@@ -66,8 +66,15 @@ export default class App extends Mixins(UtilsMixin) {
   //   }
   // }
 
+  // async accept () {
+  //   this.showUpdateUI = false
+  //   if (this.$workbox) {
+  //     await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
+  //   }
+  // }
+
   mounted () {
-    this.$vuetify.theme.dark = this.$store.state.config.uiSettings.general.darkMode
+    this.$vuetify.theme.dark = this.$store.state.config.uiSettings.theme.darkMode
     EventBus.$on('flashMessage', (payload: FlashMessageType) => {
       this.flashMessage.text = (payload && payload.text) || undefined
       this.flashMessage.type = (payload && payload.type) || undefined
@@ -75,13 +82,6 @@ export default class App extends Mixins(UtilsMixin) {
       this.flashMessage.open = true
     })
   }
-
-  // async accept () {
-  //   this.showUpdateUI = false
-  //   if (this.$workbox) {
-  //     await this.$workbox.messageSW({ type: 'SKIP_WAITING' })
-  //   }
-  // }
 
   get updating () {
     return this.$store.state.version.busy
@@ -105,18 +105,18 @@ export default class App extends Mixins(UtilsMixin) {
   }
 
   get pageIcon () {
-    let iconUrl
-
+    let icon
+    const theme = this.$store.getters['config/getTheme']
     if (this.printerPrinting) {
+      // Render the progress indicator.
       const favIconSize = 64
-      const percent = this.progress
-      const primaryColor = this.$vuetify.theme.currentTheme.primary as string
+      const primaryColor = theme.colors.primary
       const secondaryColor = 'rgba(255, 255, 255, 0.10)'
-
       const canvas = document.createElement('canvas') as HTMLCanvasElement
+      const context = canvas.getContext('2d') as CanvasRenderingContext2D
       canvas.width = favIconSize
       canvas.height = favIconSize
-      const context = canvas.getContext('2d') as CanvasRenderingContext2D
+      const percent = this.progress
       const centerX = canvas.width / 2
       const centerY = canvas.height / 2
       const lineWidth = 8
@@ -141,15 +141,18 @@ export default class App extends Mixins(UtilsMixin) {
       context.lineWidth = lineWidth
       context.stroke()
 
-      iconUrl = canvas.toDataURL('image/png')
+      icon = canvas.toDataURL('image/png')
     }
+
+    // Build a base64 encoded version of our svg with the correct theme color.
+    const svg_xml = 'data:image/svg+xml;base64,' + btoa(`<svg width="56" height="64" viewBox="0 0 314 361" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(-162.000000, -110.000000)"><path d="M234.444,327.531 L309.066,389.594 C309.906,390.313 310.81,390.928 311.759,391.436 L311.759,391.436 L311.771,391.442 L312.055,391.589 L312.163,391.643 L312.356,391.737 L312.534,391.821 L312.668,391.883 L312.902,391.987 L312.974,392.017 C314.656,392.733 316.433,393.128 318.217,393.206 L318.217,393.206 L318.278,393.209 L318.562,393.218 L318.674,393.22 L318.904,393.221 L319.104,393.22 L319.231,393.218 L319.529,393.208 L319.571,393.207 C321.359,393.128 323.142,392.733 324.829,392.013 L324.829,392.013 L324.877,391.993 L325.143,391.875 L325.244,391.829 L325.438,391.737 L325.643,391.638 L325.731,391.593 L326.012,391.447 L326.042,391.432 C326.989,390.925 327.891,390.311 328.729,389.593 L328.729,389.593 L398.493,331.574 L434.768,355.517 L318.896,470.422 L198.4,350.923 L234.444,327.531 Z M237.067,234.697 L310.465,281.908 C313.075,283.623 315.986,284.481 318.897,284.482 C321.805,284.482 324.713,283.626 327.325,281.912 L327.325,281.912 L400.727,234.702 L456.849,263.367 L318.897,378.093 L180.945,263.359 L237.067,234.697 Z M318.897,110.68 L475.771,168.448 L318.897,269.344 L162.024,168.44 L318.897,110.68 Z" id="Combined-Shape" fill="${theme.colors.primaryOffset}"></path><path d="M318.897,110.68 L475.771,168.448 L319,269.278 L319,111 L318.028,111 L318.897,110.68 Z" id="Combined-Shape" fill="${theme.colors.primary}"></path><path d="M400.727,234.702 L456.849,263.367 L319,378.007 L319.000106,284.481641 C321.735222,284.46261 324.467243,283.686291 326.949875,282.151021 L327.325,281.912 L400.727,234.702 Z" id="Combined-Shape" fill="${theme.colors.primary}"></path><path d="M398.493,331.574 L434.768,355.517 L319,470.319 L319,393.22 L319.104,393.22 L319.231,393.218 L319.529,393.208 L319.571,393.207 C321.359,393.128 323.142,392.733 324.829,392.013 L324.829,392.013 L324.877,391.993 L325.143,391.875 L325.244,391.829 L325.438,391.737 L325.643,391.638 L325.731,391.593 L326.012,391.447 L326.042,391.432 C326.989,390.925 327.891,390.311 328.729,389.593 L328.729,389.593 L398.493,331.574 Z" id="Combined-Shape" fill="${theme.colors.primary}"></path></g></svg>`)
 
     return {
       'link[rel="icon"][sizes="32x32"]': {
-        href: iconUrl || `${process.env.BASE_URL}img/icons/favicon-32x32.png`
+        href: icon || svg_xml
       },
       'link[rel="icon"][sizes="16x16"]': {
-        href: iconUrl || `${process.env.BASE_URL}img/icons/favicon-16x16.png`
+        href: icon || svg_xml
       }
     }
   }
@@ -159,18 +162,3 @@ export default class App extends Mixins(UtilsMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .title {
-    background: linear-gradient(45deg, #1970b5, #9accf5);
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .logo {
-    margin-right: 12px;
-    max-height: 40px;
-    max-width: 40px;
-    object-fit: contain;
-  }
-</style>

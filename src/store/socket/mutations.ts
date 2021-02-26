@@ -71,19 +71,8 @@ export const mutations: MutationTree<SocketState> = {
   onPrinterInfo (state, payload) {
     Vue.set(state.printer, 'info', payload)
   },
-  onPlugins (state, payload) {
-    Vue.set(
-      state,
-      'plugins',
-      [...new Set([...state.plugins, ...payload])]
-    )
-  },
-  onFailedPlugins (state, payload) {
-    Vue.set(
-      state,
-      'failed_plugins',
-      [...new Set([...state.failed_plugins, ...payload])]
-    )
+  onServerInfo (state, payload) {
+    Vue.set(state.printer, 'serverInfo', payload)
   },
   onPrinterObjectsList (state, payload) {
     if (!state.printer.objects.includes(payload)) {

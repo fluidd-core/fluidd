@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex'
 import { CardConfig, ConfigState, TemperaturePreset } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../socket/types'
+import tinycolor from '@ctrl/tinycolor'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
@@ -59,5 +60,22 @@ export const getters: GetterTree<ConfigState, RootState> = {
     })
 
     return presets
+  },
+
+  /**
+   * Returns our current theme data.
+   */
+  getTheme: (state) => {
+    const o = state.uiSettings.theme
+    return {
+      ...o,
+      colors: {
+        ...o.colors,
+        primaryOffset: tinycolor(o.colors.primary)
+          .desaturate(5)
+          .darken(10)
+          .toHexString()
+      }
+    }
   }
 }

@@ -2,7 +2,9 @@ import '@/scss/global.scss'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 // import './registerComponentHooks'
 import './plugins/consola'
+
 import Vue from 'vue'
+import consola from 'consola'
 import App from './App.vue'
 import router from './router'
 import store from './store'
@@ -33,9 +35,10 @@ import { SVGRenderer } from 'echarts/renderers'
 // import { WorkboxPlugin } from './plugins/workbox'
 import vueHeadful from 'vue-headful'
 
+import FluiddIcon from '@/components/FluiddIcon.vue'
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
-import InlineHelpIcon from '@/components/inputs/InlineHelpIcon.vue'
+import InlineHelpIcon from '@/components/InlineHelpIcon.vue'
 
 // Configure echarts
 echarts.use([
@@ -62,10 +65,11 @@ Vue.component('btn-collapse', BtnCollapse)
 Vue.component('collapsable-card', CollapsableCard)
 Vue.component('vue-headful', vueHeadful)
 Vue.component('inline-help', InlineHelpIcon)
+Vue.component('fluidd-icon', FluiddIcon)
 
 appInit()
   .then((config: Config) => {
-    console.debug('Loaded App Configuration', config)
+    consola.debug('Loaded App Configuration', config)
 
     // Init the socket plugin
     Vue.use(SocketPlugin, {
@@ -89,5 +93,5 @@ appInit()
     }).$mount('#app')
   })
   .catch((e) => {
-    console.debug('Error attempting to init App:', e)
+    consola.debug('Error attempting to init App:', e)
   })

@@ -80,10 +80,6 @@ export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
     return this.$store.getters['version/hasUpdates']
   }
 
-  get skipClientUpdates () {
-    return this.$store.state.version.skipClientUpdates
-  }
-
   get isRefreshing () {
     return this.$store.state.version.refreshing
   }

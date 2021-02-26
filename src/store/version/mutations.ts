@@ -54,9 +54,9 @@ export const mutations: MutationTree<VersionState> = {
   setHash (state, payload) {
     state.fluidd.hash = payload
   },
-  setSkipClientUpdates (state, payload) {
-    if (payload && 'skipClientUpdates' in payload) {
-      state.skipClientUpdates = payload.skipClientUpdates
+  setHosted (state, payload) {
+    if (payload && 'hosted' in payload) {
+      state.hosted = payload.hosted
     }
   }
 }

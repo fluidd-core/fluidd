@@ -5,7 +5,7 @@ export interface VersionState {
   github_limit_reset_time: number;
   github_rate_limit: number;
   github_requests_remaining: number;
-  skipClientUpdates: boolean;
+  hosted: boolean; // if we're in a hosted environment outside of the print host
   responses: UpdateResponse[];
   components: VersionComponents;
   fluidd: FluiddVersion;

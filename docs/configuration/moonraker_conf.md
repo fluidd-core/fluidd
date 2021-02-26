@@ -1,0 +1,48 @@
+---
+layout: default
+title: moonraker.conf
+parent: Configuration
+nav_order: 4
+permalink: /configuration/moonraker_conf
+---
+
+# moonraker.conf
+{: .no_toc }
+
+---
+
+This is an example configuration, which should apply to most users.
+Your moonraker configuration can usually be found here: `~/klipper_config/moonraker.conf`
+
+```yaml
+[server]
+host: 0.0.0.0
+port: 7125
+enable_debug_logging: False
+config_path: ~/klipper_config
+temperature_store_size: 600
+gcode_store_size: 1000
+
+[authorization]
+enabled: True
+cors_domains:
+  *.local
+  *.lan
+  *://app.fluidd.xyz
+  *://192.168.*
+
+trusted_clients:
+  10.0.0.0/8
+  127.0.0.0/8
+  169.254.0.0/16
+  172.16.0.0/12
+  192.168.0.0/16
+  FE80::/10
+  ::1/128
+
+[update_manager]
+[update_manager client fluidd]
+type: web
+repo: cadriel/fluidd
+path: ~/fluidd
+```

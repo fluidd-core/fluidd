@@ -14,5 +14,5 @@
     "fluidd.xyz",
     "fluidd.net"
   ],
-  "skipClientUpdates": true
+  "hosted": true
 }

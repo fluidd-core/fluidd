@@ -1,4 +1,15 @@
+---
+layout: default
+title: Slicer Uploads
+parent: Features
+nav_order: 2
+permalink: /features/slicer-uploads
+---
+
 # Slicer Uploads
+{: .no_toc }
+
+---
 
 You can upload your sliced `gcode` from within PrusaSlicer or SuperSlicer. 
 
@@ -10,5 +21,5 @@ You can upload your sliced `gcode` from within PrusaSlicer or SuperSlicer.
 - Enter some random characters in the API field.
 - Click test!
 
-![screenshot](../images/physical-printer.png)
-![screenshot](../images/slicer-upload.png)
+![screenshot](/assets/images/physical-printer.png)
+![screenshot](/assets/images/slicer-upload.png)

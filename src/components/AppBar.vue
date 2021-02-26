@@ -5,15 +5,13 @@
   >
     <v-container fluid class="flex-nowrap constrained-width pa-0 fill-height">
       <router-link to="/">
-        <v-img
-          alt="Fluidd"
-          class="shrink mr-4"
-          contain
-          :src="require('@/assets/logo.svg')"
-          transition="scale-transition"
+        <fluidd-icon
+          class="shrink mr-4 mt-1 color-filter"
           width="35"
           height="40"
-        />
+          :primary-color="theme.colors.primary"
+          :secondary-color="theme.colors.primaryOffset"
+        ></fluidd-icon>
       </router-link>
       <v-toolbar-title
         class="printer-title text--secondary mr-5"
@@ -101,6 +99,10 @@ export default class AppBar extends Mixins(UtilsMixin) {
     return this.$store.getters['version/hasUpdates']
   }
 
+  get theme () {
+    return this.$store.getters['config/getTheme']
+  }
+
   hasUpdate (component: 'klipper' | 'moonraker' | 'client') {
     return this.$store.getters['version/hasUpdate'](component)
   }
@@ -127,6 +129,14 @@ export default class AppBar extends Mixins(UtilsMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .fill1 {
+    fill: #2E75AE;
+  }
+
+  .fill2 {
+    fill: #2196F3;
+  }
+
   .printer-title {
     font-size: 1.25rem;
     font-weight: 300;

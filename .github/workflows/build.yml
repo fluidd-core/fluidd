@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,6 +24,9 @@ jobs:
 
       - name: Install deps
         run: npm install
+
+      - name: Run tests
+        run: npm run test:unit
 
       - name: Build
         run: npm run build

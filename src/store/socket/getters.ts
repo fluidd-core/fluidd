@@ -3,7 +3,7 @@ import { GetterTree } from 'vuex'
 import { Heater, Fan, OutputPin, SocketState, TimeEstimates, Sensor, RunoutSensor, BedMesh, Endstops, Extruder } from './types'
 import { Thumbnail } from '@/store/files/types'
 import { RootState } from '../types'
-import { get, isFinite } from 'lodash-es'
+import { get } from 'lodash-es'
 import { getThumb, getKlipperType } from '../helpers'
 
 export const getters: GetterTree<SocketState, RootState> = {
@@ -680,6 +680,6 @@ export const getters: GetterTree<SocketState, RootState> = {
   },
 
   getMoonrakerWarnings: (state) => {
-    return state.failed_plugins || []
+    return state.printer.serverInfo.failed_plugins || []
   }
 }

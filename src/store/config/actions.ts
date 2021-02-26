@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
+import consola from 'consola'
 import { ConfigState, GenericSave, Config, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
@@ -24,7 +25,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async initHost ({ commit }, payload: HostConfig) {
     commit('onInitHostConfig', payload)
-    commit('version/setSkipClientUpdates', payload, { root: true }) // this should move to the config module if we ever add to it.
+    commit('version/setHosted', payload, { root: true }) // this should move to the config module if we ever add to it.
   },
 
   /**
@@ -123,7 +124,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
     const file = new File([JSON.stringify(data)], filename)
     formData.append('file', file, filename)
     formData.append('root', 'config')
-    console.debug('uploading configuration...', filename, data)
+    consola.debug('uploading configuration...', filename, data)
     Vue.$http.post(
       rootState.config?.apiUrl + '/server/files/upload',
       formData,

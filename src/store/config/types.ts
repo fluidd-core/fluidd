@@ -40,6 +40,7 @@ export interface CardState {
 
 export interface UiSettings {
   general: GeneralConfig;
+  theme: ThemeConfig;
   camera: CameraConfig;
   dashboard: DashboardConfig;
 }
@@ -47,13 +48,12 @@ export interface UiSettings {
 export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
-  skipClientUpdates: boolean;
+  hosted: boolean;
 }
 
 export interface GeneralConfig {
   instanceName: string;
   chartVisible: boolean;
-  darkMode: boolean;
   hideTempWaits: boolean;
   axis: Axis;
   invertZControl: boolean;
@@ -63,6 +63,11 @@ export interface GeneralConfig {
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
+}
+
+export interface ThemeConfig {
+  colors: {[index: string]: string };
+  darkMode: boolean;
 }
 
 export interface Axis {

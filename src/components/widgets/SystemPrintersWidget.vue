@@ -5,9 +5,8 @@
     <template v-for="(instance, index) in instances">
       <v-list-item
         :key="index"
-        active-class="instance-item-active"
-        class="instance-item"
-        :class="{ 'instance-item-active': instance.active }"
+        color="primary"
+        :class="{ 'v-item--active v-list-item--active': instance.active }"
         @click.stop="activateInstance(instance)">
         <v-list-item-content>
           <v-list-item-title>
@@ -36,12 +35,12 @@
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
     ></dialog-add-instance>
-
   </v-list>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import consola from 'consola'
 import { Config, InstanceConfig, ApiConfig } from '@/store/config/types'
 import VersionStatus from '@/components/VersionStatus.vue'
 import DialogAddInstance from '@/components/dialogs/dialogAddInstance.vue'
@@ -92,7 +91,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
     appInit(apiConfig, this.$store.state.config.hostConfig)
       .then((config: Config) => {
         // Reconnect the socket with the new instance url.
-        console.debug('Activating new instance with config', config)
+        consola.debug('Activating new instance with config', config)
         this.$socket.connect(config.apiConfig.socketUrl)
       })
   }
@@ -103,7 +102,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   ::v-deep .instance-item .v-list-item__action  {
     margin: 6px 0;
   }
-  ::v-deep .instance-item-active::before {
+  ::v-deep .v-list-item--active::before {
     opacity: 0.08;
   }
 </style>

@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-list-group
+      v-if="!hosted"
       prepend-icon="$host"
       no-action>
       <template v-slot:activator>
@@ -131,12 +132,16 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
     open: false
   }
 
+  get hosted () {
+    return this.$store.state.config.hostConfig.hosted
+  }
+
   get powerDevices () {
     return this.$store.state.devicePower.devices
   }
 
   get devicePowerPluginEnabled () {
-    return (this.$store.state.socket.plugins.includes('power'))
+    return (this.$store.state.socket.printer.serverInfo.plugins.includes('power'))
   }
 
   togglePowerDevice (device: Device, wait?: string) {

@@ -2,7 +2,7 @@ import _Vue from 'vue'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 
-const Filters = {
+export const Filters = {
 
   /**
    * Formats a time to 00h 00m 00s
@@ -28,7 +28,7 @@ const Filters = {
   },
 
   /**
-   * Formats a date in string format into a human readable
+   * Formats a date from unixtime into a human readable
    * datetime.
    */
   formatFileDateTime: (datetime: number) => {
