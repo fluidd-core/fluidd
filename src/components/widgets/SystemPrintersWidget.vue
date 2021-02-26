@@ -5,9 +5,8 @@
     <template v-for="(instance, index) in instances">
       <v-list-item
         :key="index"
-        active-class="instance-item-active"
-        class="instance-item"
-        :class="{ 'instance-item-active': instance.active }"
+        color="primary"
+        :class="{ 'v-item--active v-list-item--active': instance.active }"
         @click.stop="activateInstance(instance)">
         <v-list-item-content>
           <v-list-item-title>
@@ -36,7 +35,6 @@
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
     ></dialog-add-instance>
-
   </v-list>
 </template>
 
@@ -104,7 +102,7 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
   ::v-deep .instance-item .v-list-item__action  {
     margin: 6px 0;
   }
-  ::v-deep .instance-item-active::before {
+  ::v-deep .v-list-item--active::before {
     opacity: 0.08;
   }
 </style>

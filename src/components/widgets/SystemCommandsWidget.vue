@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-list-group
+      v-if="!hosted"
       prepend-icon="$host"
       no-action>
       <template v-slot:activator>
@@ -129,6 +130,10 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
 
   confirmShutdownDialog = {
     open: false
+  }
+
+  get hosted () {
+    return this.$store.state.config.hostConfig.hosted
   }
 
   get powerDevices () {

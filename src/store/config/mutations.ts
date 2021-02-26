@@ -97,7 +97,7 @@ export const mutations: MutationTree<ConfigState> = {
   onInitHostConfig (state, payload) {
     state.hostConfig.blacklist = payload.blacklist
     state.hostConfig.endpoints = payload.endpoints
-    state.hostConfig.skipClientUpdates = payload.skipClientUpdates
+    state.hostConfig.hosted = payload.hosted
   },
 
   onInitInstances (state, payload: Config) {

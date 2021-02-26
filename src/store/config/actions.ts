@@ -25,7 +25,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async initHost ({ commit }, payload: HostConfig) {
     commit('onInitHostConfig', payload)
-    commit('version/setSkipClientUpdates', payload, { root: true }) // this should move to the config module if we ever add to it.
+    commit('version/setHosted', payload, { root: true }) // this should move to the config module if we ever add to it.
   },
 
   /**

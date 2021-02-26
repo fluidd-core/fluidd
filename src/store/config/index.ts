@@ -36,7 +36,6 @@ export const defaultState = (): ConfigState => {
       general: {
         instanceName: Globals.APP_NAME,
         chartVisible: true,
-        darkMode: true,
         hideTempWaits: true,
         axis: {
           x: { inverted: false },
@@ -50,6 +49,12 @@ export const defaultState = (): ConfigState => {
         defaultToolheadMoveLength: '1.0',
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10
+      },
+      theme: {
+        darkMode: true,
+        colors: {
+          primary: '#2196F3'
+        }
       },
       camera: {
         enabled: false,
@@ -68,7 +73,7 @@ export const defaultState = (): ConfigState => {
     hostConfig: {
       endpoints: [],
       blacklist: [],
-      skipClientUpdates: false
+      hosted: false
     },
     serverConfig: {
       authorization: {},

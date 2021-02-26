@@ -12,7 +12,7 @@
         <v-icon
         :small="small"
         >
-          {{ (type === 'info') ? '$help' : '$alert' }}
+          {{ (type === 'error' || type === 'warning') ? '$alert' : '$help' }}
         </v-icon>
       </v-btn>
     </template>
@@ -30,7 +30,7 @@ export default class InlineHelpIcon extends Vue {
   @Prop({ type: String, required: false })
   tooltip!: string
 
-  @Prop({ type: String, default: 'info' })
+  @Prop({ type: String, default: 'primary' })
   type!: string
 
   @Prop({ type: Boolean, default: false })

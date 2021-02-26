@@ -20,6 +20,9 @@ You can download the latest release [here](https://github.com/cadriel/fluidd/rel
 
 Older releases can be found [here](https://github.com/cadriel/fluidd/releases).
 
+## Docker
+We have an official docker image. This is updated for each release.
+https://hub.docker.com/r/cadriel/fluidd
 
 ## How to use?
 Fluidd is distributed as a RaspbiOS image, with Fluidd pre-installed and setup alongside its dependencies.
@@ -29,9 +32,6 @@ The recommended approach is to flash a fresh image using FluiddPI.
 Please see the [docs](/docs/README.md) for help with setup.
 
 Please see https://github.com/cadriel/FluiddPI for further instruction.
-
-### ⏳ Manual Installation
-Coming soon.
 
 ### Credit
 A big thank you to;

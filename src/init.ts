@@ -120,8 +120,9 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   await store.dispatch('init', { apiConfig, fileConfig, hostConfig })
 
   // Set vuetify to the correct initial theme.
-  if (store.state.config && store.state.config.uiSettings.general) {
-    vuetify.framework.theme.dark = store.state.config.uiSettings.general.darkMode
+  if (store.state.config && store.state.config.uiSettings.theme) {
+    vuetify.framework.theme.dark = store.state.config.uiSettings.theme.darkMode
+    vuetify.framework.theme.currentTheme.primary = store.state.config.uiSettings.theme.colors.primary
   }
 
   return { apiConfig, hostConfig }
