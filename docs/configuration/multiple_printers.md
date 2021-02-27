@@ -2,7 +2,7 @@
 layout: default
 title: Multiple Printers
 parent: Configuration
-nav_order: 4
+nav_order: 3
 permalink: /configuration/multiple_printers
 ---
 

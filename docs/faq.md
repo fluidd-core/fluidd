@@ -1,7 +1,7 @@
 ---
 layout: default
 title: FAQ
-nav_order: 7
+nav_order: 8
 permalink: /faq
 ---
 
@@ -15,6 +15,11 @@ permalink: /faq
 {:toc}
 
 ---
+
+## How do I turn on my camera?
+
+- Fluiddpi ships with mjpgstreamer built in. Plug in your camera, navigate to
+  the UI settings page, and enable the webcam.
 
 ## Klipper updated and now my printer has an error
 

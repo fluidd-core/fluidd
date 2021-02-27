@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Themes
-parent: Features
-nav_order: 1
-permalink: /features/themes
+parent: Customize
+nav_order: 2
+permalink: /customize/themes
 ---
 
 # Themes

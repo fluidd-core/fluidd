@@ -107,8 +107,8 @@ export const Globals = Object.freeze({
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',
-  DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/required',
-  DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/features/multiple_printers',
+  DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
+  DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
   DOCS_MOONRAKER_PLUGINS: 'https://github.com/Arksine/moonraker/blob/master/docs/configuration.md#plugin-configuration'
 })
 
