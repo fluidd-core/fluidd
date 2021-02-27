@@ -2,7 +2,7 @@
 layout: default
 title: Moonraker
 parent: Configuration
-nav_order: 3
+nav_order: 2
 permalink: /configuration/moonraker
 ---
 

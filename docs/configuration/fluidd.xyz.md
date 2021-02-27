@@ -2,7 +2,7 @@
 layout: default
 title: fluidd.xyz
 parent: Configuration
-nav_order: 2
+nav_order: 4
 permalink: /configuration/fluidd_xyz
 ---
 

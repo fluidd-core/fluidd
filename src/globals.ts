@@ -106,9 +106,9 @@ export const Globals = Object.freeze({
   APP_NAME: 'Fluidd',
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],
-  DOCS_ROOT: 'https://github.com/cadriel/fluidd/tree/develop/docs',
-  DOCS_REQUIRED_CONFIGURATION: 'https://github.com/cadriel/fluidd/tree/develop/docs/required-configuration.md',
-  DOCS_MULTIPLE_INSTANCES: 'https://github.com/cadriel/fluidd/tree/develop/docs/setup/multiple-printers.md',
+  DOCS_ROOT: 'https://docs.fluidd.xyz',
+  DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
+  DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
   DOCS_MOONRAKER_PLUGINS: 'https://github.com/Arksine/moonraker/blob/master/docs/configuration.md#plugin-configuration'
 })
 

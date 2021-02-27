@@ -1,12 +1,12 @@
 ---
 layout: default
-title: Required
+title: Initial Setup
 parent: Configuration
 nav_order: 1
-permalink: /configuration/required
+permalink: /configuration/initial_setup
 ---
 
-# Required
+# Initial Setup
 {: .no_toc }
 
 ## Table of contents
