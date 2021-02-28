@@ -140,6 +140,7 @@ export default class AppBar extends Mixins(UtilsMixin) {
   .printer-title {
     font-size: 1.25rem;
     font-weight: 300;
+    font-family: raleway, sans-serif;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

@@ -103,7 +103,7 @@ export const Globals = Object.freeze({
     ConsoleHistory: '.fluidd_console_history.json'
     // PrintHistory: '.fluidd_file_history.json'
   },
-  APP_NAME: 'Fluidd',
+  APP_NAME: 'fluidd',
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',
