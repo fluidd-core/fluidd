@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/cadriel/fluidd/compare/v1.8.1...v1.9.0) (2021-02-28)
+
+
+### Features
+
+* allow service restart when klipper service is down ([75b4588](https://github.com/cadriel/fluidd/commit/75b4588d805ee67b9b0e62ab6f124b5606041478))
+* primary theme picker ([b1e38cc](https://github.com/cadriel/fluidd/commit/b1e38ccd70ba0ef97f5e6c017898291fb23e120c))
+
+
+### Bug Fixes
+
+* add z home check to z offset buttons ([611d6b9](https://github.com/cadriel/fluidd/commit/611d6b9faf08f29227a47143f63380b30f3f8718))
+* klippy card buttons layout properly now ([9fa95ee](https://github.com/cadriel/fluidd/commit/9fa95ee62e46a23a2ac00ca6e9816b964248d000))
+* relax url check when adding printer ([6753e8d](https://github.com/cadriel/fluidd/commit/6753e8dba60d713d84b73fab7e6e3a9134e7218c))
+* tz unit tests ([de1de4e](https://github.com/cadriel/fluidd/commit/de1de4e486e797b3a437cf70edab3054ed3d4f4f))
+
 ### [1.8.1](https://github.com/cadriel/fluidd/compare/v1.8.0...v1.8.1) (2021-02-21)
 
 
