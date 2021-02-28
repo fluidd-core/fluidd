@@ -30,3 +30,12 @@ gh_edit_repository: "https://github.com/cadriel/fluidd" # the github URL for you
 gh_edit_branch: "develop" # the branch that your docs is served from
 gh_edit_source: docs # the source that your files originate from
 gh_edit_view_mode: "edit" # "tree" or "edit" if you want the user to jump into the editor immediately
+
+# Use front matter defaults to set og:image
+# https://jekyllrb.com/docs/configuration/front-matter-defaults/
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      image: assets/images/ogfluidd.png
