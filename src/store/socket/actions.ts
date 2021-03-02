@@ -363,7 +363,6 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
   async notifyKlippyShutdown ({ commit }) {
     commit('resetState', false)
-    console.log('klippy shutdown')
     SocketActions.machineInit()
   },
   async notifyKlippyReady () {
