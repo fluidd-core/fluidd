@@ -2,22 +2,17 @@
 
 ## Next Up
 
-- sync instances across fluidd.json files
+- allow users to restart webcamd service if webcam is enabled
+- sync instances across moonraker db
 - implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - i18n (translations)
-- primary color picker
 - macros have inputs via settings, impl a UI dialog for this?
-
-- loading heaters, fans or pins means these are constantly updated - due to temps changing
-  often. Need a more elegant way to load just the names of these items without parts of the
-  reactive data that is changed so often
 
 - print history
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
 - ability to reprint after cancel
-- client showing in update menu when swapping printers via fluidd.xyz
 - allow users to show / hide pin outputs
 
 ## Filesystem Improvements
@@ -28,6 +23,10 @@
 - Drag and Drop move.
 
 ## Refactoring / Core
+
+- loading heaters, fans or pins means these are constantly updated - due to temps changing
+  often. Need a more elegant way to load just the names of these items without parts of the
+  reactive data that is changed so often
 
 - adding multiple printers to carry over between devices
 - cleanup socket store / move socket out and keep printer data

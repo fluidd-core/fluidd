@@ -60,18 +60,20 @@ export const getters: GetterTree<SocketState, RootState> = {
     // If an external source fires an estop, or the client
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
-    let message = ''
+    const regex = /(?:\r\n|\r|\n)/g
+    if (
+      state.printer.info.state_message &&
+      state.printer.info.state_message !== ''
+    ) {
+      return state.printer.info.state_message.trim().replace(regex, '<br />')
+    }
     if (
       state.printer.webhooks.state_message &&
       state.printer.webhooks.state_message !== ''
     ) {
-      message = state.printer.webhooks.state_message
-    } else {
-      if (state.printer.info.state_message) {
-        message = state.printer.info.state_message
-      }
+      return state.printer.webhooks.state_message.trim().replace(regex, '<br />')
     }
-    return message.trim().replace(/(?:\r\n|\r|\n)/g, '<br />')
+    return ''
   },
 
   /**

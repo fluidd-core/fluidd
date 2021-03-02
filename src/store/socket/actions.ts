@@ -22,7 +22,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     */
   async onSocketOpen ({ commit }, payload) {
     commit('onSocketOpen', payload)
-    SocketActions.printerInfo()
+    SocketActions.machineInit()
   },
 
   /**
@@ -47,7 +47,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * We might see an error under code 400 for invalid circumstances, like
    * trying to extrude under temp. Should present the user with an error
    * for these cases.
-   * Another case might be during a klippy disconnect.
+   * Another case might be during a klippy shutdown.
    */
   async onSocketError ({ commit }, payload) {
     if (payload.code >= 400 && payload.code < 500) {
@@ -66,11 +66,12 @@ export const actions: ActionTree<SocketState, RootState> = {
       // This indicates klippy is non-responsive, or there's a configuration error
       // in klipper. We should retry after the set delay.
       // Restart our startup sequence.
-      commit('resetState', false)
-      commit('onPrinterInfo', { state: 'error', state_message: payload.message }) // Forcefully set the printer in error
+
+      // Forcefully set the printer in error
+      commit('onPrinterInfo', { state: 'error', state_message: payload.message })
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
-        SocketActions.printerInfo()
+        SocketActions.machineInit()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
   },
@@ -99,18 +100,14 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async onPrinterInfo ({ commit }, payload) {
     commit('onPrinterInfo', payload)
-    // We run this here so that we can get the status of power devices
-    // without necessarily having connection to the printer.
-    SocketActions.serverInfo()
+    // SocketActions.serverInfo()
 
     if (payload.state !== 'ready') {
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
-        SocketActions.printerInfo()
+        SocketActions.machineInit()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
-      // We're good, move on. Start by loading the server data, temperature and console history.
-      // SocketActions.serverInfo()
       SocketActions.serverConfig()
       SocketActions.serverGcodeStore()
       SocketActions.printerGcodeHelp()
@@ -362,11 +359,12 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
   async notifyKlippyDisconnected ({ commit }) {
     commit('resetState', false)
-    SocketActions.printerInfo()
+    SocketActions.machineInit()
   },
   async notifyKlippyShutdown ({ commit }) {
     commit('resetState', false)
-    SocketActions.printerInfo()
+    console.log('klippy shutdown')
+    SocketActions.machineInit()
   },
   async notifyKlippyReady () {
     consola.debug('Klippy Ready')

@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-list-group
-      v-if="!hosted"
       prepend-icon="$host"
       no-action>
       <template v-slot:activator>
@@ -62,6 +61,7 @@
           <v-list-item-title>Services</v-list-item-title>
         </v-list-item-content>
       </template>
+
       <v-list-item @click="serviceRestartMoonraker"
         :disabled="printerPrinting">
         <v-list-item-title>Restart Moonraker</v-list-item-title>
@@ -71,6 +71,7 @@
       </v-list-item>
 
       <v-list-item
+        v-if="!klipperConnected"
         @click="serviceRestartKlipper"
         :disabled="printerPrinting">
         <v-list-item-title>Restart Klipper</v-list-item-title>
@@ -80,6 +81,17 @@
       </v-list-item>
 
       <v-list-item
+        v-if="klipperConnected"
+        @click="serviceRestartKlippy"
+        :disabled="printerPrinting">
+        <v-list-item-title>Restart Klipper</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon color="error">$restartAlert</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+
+      <v-list-item
+        v-if="klipperConnected"
         @click="serviceFirmwareRestartKlippy"
         :disabled="printerPrinting">
         <v-list-item-title>Firmware Restart Klipper</v-list-item-title>
@@ -130,6 +142,10 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
 
   confirmShutdownDialog = {
     open: false
+  }
+
+  get klipperConnected () {
+    return this.$store.state.socket.printer.serverInfo.klippy_connected
   }
 
   get hosted () {
@@ -192,6 +208,11 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
   }
 
   serviceRestartKlipper () {
+    SocketActions.machineServicesRestart('klipper')
+    this.$emit('click')
+  }
+
+  serviceRestartKlippy () {
     SocketActions.printerRestart()
     this.$emit('click')
   }

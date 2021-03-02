@@ -6,7 +6,7 @@
     <v-card-text>
       <v-row>
         <v-col cols="12" sm="auto">
-          <v-btn v-if="!klipperConnected" block color="warning" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper Service</v-btn>
+          <v-btn v-if="!klipperConnected" block color="warning" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</v-btn>
           <v-btn v-if="klipperConnected" block color="warning" @click="serviceRestartKlippy" class="me-2 mb-2">Restart Klipper</v-btn>
           <v-btn v-if="klipperConnected" block color="warning" @click="serviceFirmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</v-btn>
           <v-btn block color="warning" @click="serviceRestartMoonraker" class="me-2 mb-2">Restart Moonraker</v-btn>
