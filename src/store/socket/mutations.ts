@@ -3,6 +3,7 @@ import { MutationTree } from 'vuex'
 import { get } from 'lodash-es'
 import { SocketState, ChartData, Macro, ConsoleEntry } from './types'
 import { defaultState } from './index'
+import consola from 'consola'
 import { Globals } from '@/globals'
 
 export const mutations: MutationTree<SocketState> = {
@@ -116,6 +117,7 @@ export const mutations: MutationTree<SocketState> = {
   },
   resetCurrentFile (state) {
     const newState = defaultState().printer.current_file
+    consola.debug('resetting current file', newState)
     Vue.set(state.printer, 'current_file', newState)
   },
   setGcodeHelp (state, payload) {

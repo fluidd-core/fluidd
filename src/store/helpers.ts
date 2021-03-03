@@ -1,5 +1,6 @@
 import { SocketState, ChartData } from './socket/types'
 import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
+import { SocketActions } from '@/socketActions'
 import store from '@/store'
 
 export const isOfType = <T>(
@@ -89,7 +90,7 @@ export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | 
  * Prepare packet data for a chart entry.
  * Every packet should contain an entry for all known sensors we want to track.
  */
-export const addChartEntry = (state: SocketState, retention: number, keys: string[]) => {
+export const handleAddChartEntry = (state: SocketState, retention: number, keys: string[]) => {
   const configureChartEntry = (date: Date) => {
     const r: ChartData = {
       date
@@ -143,6 +144,31 @@ export const handlePrintStateChange = (state: SocketState, payload: any) => {
     ) {
       // This is a completed print...
       store.dispatch('socket/onPrintEnd', payload)
+    } else if (
+      state.printer.print_stats.state === 'printing' &&
+      payload.print_stats.state === 'standby'
+    ) {
+      // This is a cancelled print...
+      store.dispatch('socket/onPrintEnd', payload)
+    }
+  }
+}
+
+export const handleCurrentFileChange = (state: SocketState, payload: any) => {
+  if (
+    'print_stats' in payload &&
+    'filename' in payload.print_stats &&
+    payload.print_stats.filename !== state.printer.print_stats.filename
+  ) {
+    store.commit('socket/resetCurrentFile')
+    if (
+      payload.print_stats.filename !== '' &&
+      payload.print_stats.filename !== null
+    ) {
+      // This refreshes the metadata for the current file, which also
+      // ensures we update the current_file with the latest data via
+      // the files/onFileUpdate action.
+      SocketActions.serverFilesMetaData(payload.print_stats.filename)
     }
   }
 }

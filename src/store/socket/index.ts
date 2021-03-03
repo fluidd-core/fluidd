@@ -92,10 +92,7 @@ export const defaultState = (): SocketState => {
       current_file: {
         estimated_time: 0,
         filament_total: 0,
-        thumbnails: [
-          { data: null, size: 0, width: 0, height: 0 },
-          { data: null, size: 0, width: 0, height: 0 }
-        ]
+        thumbnails: []
       },
       gcode_move: {
         gcode_position: [0, 0, 0, 0],

@@ -46,7 +46,7 @@
             <div class="filename ml-1">gcodes/{{ filename }}</div>
           </div>
       </v-col>
-      <v-col cols="auto" class="d-none d-sm-flex" v-if="thumbnail && printerPrinting">
+      <v-col cols="auto" class="d-none d-sm-flex" v-if="thumbnail && thumbnail.data && printerPrinting">
         <img
           class="print-thumb"
           :src="thumbnail.data"

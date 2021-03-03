@@ -3,7 +3,7 @@ import { ActionTree } from 'vuex'
 import consola from 'consola'
 import { SocketState, ConsoleEntry, ChartData, Macro } from './types'
 import { RootState } from '../types'
-import { addChartEntry, handlePrintStateChange } from '../helpers'
+import { handleAddChartEntry, handlePrintStateChange, handleCurrentFileChange } from '../helpers'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import EventBus from '@/eventBus'
@@ -82,6 +82,7 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   /**
    * Print cancelled confirmation.
+   * Fires as a part of a socket action.
    */
   async onPrintCancel () {
     consola.debug('Print Cancelled')
@@ -89,15 +90,39 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   /**
    * Print paused confirmation.
+   * Fires as a part of a socket action.
    */
   async onPrintPause () {
     consola.debug('Print Paused')
   },
 
+  /**
+   * Print resumed confirmation.
+   * Fires as a part of a socket action.
+   */
   async onPrintResume () {
     consola.debug('Print Resumed')
   },
 
+  /**
+   * Print start confirmation.
+   * Fires as a watch on a printer state change.
+   */
+  async onPrintStart (_, payload) {
+    consola.debug('Print start detected', payload)
+  },
+
+  /**
+   * Print end confirmation.
+   * Fires as a watch on a printer state change.
+   */
+  async onPrintEnd (_, payload) {
+    consola.debug('Print end detected', payload)
+  },
+
+  /**
+   * Printer Info
+   */
   async onPrinterInfo ({ commit }, payload) {
     commit('onPrinterInfo', payload)
     // SocketActions.serverInfo()
@@ -291,19 +316,6 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('notifyStatusUpdate', payload.status)
   },
 
-  async onPrintStart (_, payload) {
-    consola.debug('Print start detected', payload)
-    // We should find the file path...
-    // Record an entry incl the path and start time...
-    // Set a null entry for its finish time...
-  },
-
-  async onPrintEnd (_, payload) {
-    consola.debug('Print end detected', payload)
-    // We should find the file in our history...
-    // Record the finish time...
-  },
-
   /**
    * ==========================================================================
    * Automated notifications via socket
@@ -326,6 +338,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       // Detect a printing state change.
       // We do this prior to commiting the notify so we can
       // compare the before and after.
+      handleCurrentFileChange(state, payload)
       handlePrintStateChange(state, payload)
 
       for (const key in payload) {
@@ -343,7 +356,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       const retention = (rootState.config)
         ? rootState.config.serverConfig.server.temperature_store_size
         : Globals.CHART_HISTORY_RETENTION
-      addChartEntry(state, retention, getters.getChartableSensors)
+      handleAddChartEntry(state, retention, getters.getChartableSensors)
 
       // The first notification should have pre-populated any data & chart labels, so mark the socket as ready.
       if (!state.ready) commit('onSocketReadyState', true)

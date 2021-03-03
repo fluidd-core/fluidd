@@ -4,7 +4,7 @@ import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
-import { AxiosError, AxiosResponse } from 'axios'
+import { AxiosError } from 'axios'
 
 // Load API configuration
 /**
