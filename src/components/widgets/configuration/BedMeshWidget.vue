@@ -52,7 +52,7 @@
                       :disabled="hasWaits || printerPrinting || printerBusy"
                       v-bind="attrs"
                       v-on="on"
-                      color="warning"
+                      color="primary"
                       class="ml-2"
                       icon
                       small>
@@ -106,7 +106,7 @@
           :elevation="2"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="hasWaits || printerPrinting || printerBusy"
-          :color="(!allHomed) ? 'warning' : 'secondary'">
+          :color="(!allHomed) ? 'primary' : 'secondary'">
             <v-icon small class="mr-1">$home</v-icon> All
         </v-btn>
         <v-btn
@@ -127,7 +127,7 @@
               v-on="on"
               block
               class="mb-2"
-              color="warning"
+              color="primary"
               :elevation="2"
               :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
               @click="openSaveDialog()">
