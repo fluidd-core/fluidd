@@ -8,7 +8,7 @@ import { devicePower } from './devicePower'
 import { version } from './version'
 import { wait } from './wait'
 import { RootState } from './types'
-import { Config } from './config/types'
+import { InitConfig } from './config/types'
 
 Vue.use(Vuex)
 
@@ -31,7 +31,7 @@ export default new Vuex.Store<RootState>({
     }
   },
   actions: {
-    async init ({ dispatch, commit }, payload: Config) {
+    async init ({ dispatch, commit }, payload: InitConfig) {
       // Should init the store, and ensure we've loaded our
       // configuration if there is any.
       commit('version/setVersion', process.env.VERSION)

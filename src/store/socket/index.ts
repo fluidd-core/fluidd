@@ -8,7 +8,7 @@ import { RootState } from '../types'
 export const defaultState = (): SocketState => {
   return {
     open: false, // socket is open or closed.
-    connecting: true, // socket is trying to connect.
+    connecting: false, // socket is trying to connect.
     ready: false, // indicates the socket is ready (and has first dump of data...)
     acceptingNotifications: false,
     consoleEntryCount: 0,

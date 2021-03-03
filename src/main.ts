@@ -11,7 +11,7 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import VueMeta from 'vue-meta'
 import { appInit } from './init'
-import { Config } from './store/config/types'
+import { InitConfig } from './store/config/types'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
@@ -68,7 +68,7 @@ Vue.component('inline-help', InlineHelpIcon)
 Vue.component('fluidd-icon', FluiddIcon)
 
 appInit()
-  .then((config: Config) => {
+  .then((config: InitConfig) => {
     consola.debug('Loaded App Configuration', config)
 
     // Init the socket plugin
@@ -79,7 +79,7 @@ appInit()
       store
     })
 
-    if (config.apiConfig.socketUrl) {
+    if (config.apiConfig.socketUrl && config.apiConnected) {
       Vue.$socket.connect(config.apiConfig.socketUrl)
     }
 

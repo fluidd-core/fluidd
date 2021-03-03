@@ -3,7 +3,8 @@ import vuetify from './plugins/vuetify'
 import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
-import { ApiConfig, Config, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
+import { ApiConfig, InitConfig, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
+import { AxiosError, AxiosResponse } from 'axios'
 
 // Load API configuration
 /**
@@ -64,7 +65,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   const results = await Promise.all(
     endpoints.map(async endpoint => {
       try {
-        return await Vue.$http.get(endpoint + '/printer/info?date=' + new Date().getTime(), { timeout: 500 })
+        return await Vue.$http.get(endpoint + '/printer/info?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
       } catch {
         consola.debug('Failed loading endpoint ping', endpoint)
       }
@@ -77,7 +78,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     : { apiUrl: '', socketUrl: '' }
 }
 
-export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<Config> => {
+export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
   // Reset the store to its default state.
   store.dispatch('reset', {}, { root: true })
 
@@ -95,25 +96,36 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   store.dispatch('config/onInitApiConfig', apiConfig)
 
   // Load any file configuration we may have.
-  const fileConfig: {[index: string]: UiSettings | string[]} = {}
+  const fileConfig: {[index: string]: UiSettings | string[] | null} | undefined = {}
   const files: {[index: string]: string} = Globals.CONFIG_FILES
+  let apiConnected = true
   if (
     apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
   ) {
-    try {
-      for (const key in files) {
-        const file = await fetch(apiConfig.apiUrl + '/server/files/config/' + files[key], { cache: 'no-store' })
-        fileConfig[key] = (file.ok)
-          ? await file.json()
-          : null // no file yet.
-      }
-    } catch (e) {
-      // can't connect.
-      consola.debug('API Down / Not Available:', e)
+    for (const key in files) {
+      await Vue.$http.get(apiConfig.apiUrl + '/server/files/config/' + files[key] + '?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
+        .then((d) => {
+          consola.debug('setting file data', d.data)
+          fileConfig[key] = d.data
+        })
+        .catch((e: AxiosError) => {
+          // If this is a 404, set the file config to null and move on.
+          // If this is something else, we should set the api connection to
+          // false because we couldn't make contact with moonraker.
+          if (e.response && e.response.status === 404) {
+            fileConfig[key] = null
+          } else {
+            // Otherwise, API is down / not available.
+            // if (e.code === 'ECONNABORTED') {
+            // }
+            apiConnected = false
+            consola.debug('API Down / Not Available:', e.response)
+          }
+        })
     }
   }
 
-  // uiSettings could equal;
+  // fileConfig could equal;
   // - null - meaning we made a connection, but no user configuration is saved yet, which is ok.
   // - undefined - meaning the API is likely down..
   // apiConfig could have empty strings, meaning we have no valid connection.
@@ -125,5 +137,5 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     vuetify.framework.theme.currentTheme.primary = store.state.config.uiSettings.theme.colors.primary
   }
 
-  return { apiConfig, hostConfig }
+  return { apiConfig, hostConfig, apiConnected }
 }

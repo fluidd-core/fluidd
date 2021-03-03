@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import consola from 'consola'
 import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, GenericSave, InstanceConfig, Config, CardConfig } from './types'
+import { ConfigState, UiSettings, GenericSave, InstanceConfig, InitConfig, CardConfig } from './types'
 import { Macro } from '../socket/types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
@@ -100,7 +100,7 @@ export const mutations: MutationTree<ConfigState> = {
     state.hostConfig.hosted = payload.hosted
   },
 
-  onInitInstances (state, payload: Config) {
+  onInitInstances (state, payload: InitConfig) {
     let instances: InstanceConfig[] = []
     const apiConfig = payload.apiConfig
     // const uiSettings = payload.uiSettings

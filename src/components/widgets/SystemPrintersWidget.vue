@@ -41,7 +41,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import consola from 'consola'
-import { Config, InstanceConfig, ApiConfig } from '@/store/config/types'
+import { InitConfig, InstanceConfig, ApiConfig } from '@/store/config/types'
 import VersionStatus from '@/components/VersionStatus.vue'
 import DialogAddInstance from '@/components/dialogs/dialogAddInstance.vue'
 import UtilsMixin from '@/mixins/utils'
@@ -89,10 +89,12 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
 
     // Re-init the app.
     appInit(apiConfig, this.$store.state.config.hostConfig)
-      .then((config: Config) => {
+      .then((config: InitConfig) => {
         // Reconnect the socket with the new instance url.
-        consola.debug('Activating new instance with config', config)
-        this.$socket.connect(config.apiConfig.socketUrl)
+        if (config.apiConnected) {
+          consola.debug('Activating new instance with config', config)
+          this.$socket.connect(config.apiConfig.socketUrl)
+        }
       })
   }
 }
