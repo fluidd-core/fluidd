@@ -24,7 +24,7 @@ likely going to require specific setup in order for this configuration to work.
 This type of setup is also highly dependent on your network environment.
 
 Reading through the documentation surrounding `cors_domains` in the
-[moonraker document]((/configuration/moonraker_conf#cors-domains)) should
+[moonraker config docs](/configuration/moonraker#cors-domains) should
 help explain some requirements.
 
 ### Example
