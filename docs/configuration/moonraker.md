@@ -49,7 +49,7 @@ Normally, this is enabled. Fluidd provides a default configuration that
 applies to most users network requirements, however - sometimes changes are
 required to meet specific needs.
 
-## Cors Domains
+### Cors Domains
 
 Cors Domains are a list of host names that are allowed to communicate with
 moonraker. Generally speaking, the address you type into your browsers URL bar
@@ -78,7 +78,13 @@ from. The default list in the [configuration example](/configuration/moonraker_c
 most user configurations for internal networks. Note these ranges are in CIDR
 format.
 
-## Automated Updates
+## [octoprint_compat] block
+
+This enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer and
+Cura users to directly upload gcodes. See the
+[configuration example](/configuration/moonraker_conf).
+
+## [update_manager] block / Automated Updates
 
 Automated updates can be configured by ensuring the following is in your
 `moonraker.conf`.
