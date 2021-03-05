@@ -128,7 +128,7 @@ export const mutations: MutationTree<ConfigState> = {
    * Update / Add a temperature preset
    */
   setPreset (state, payload) {
-    const i = payload.index
+    const i = payload.preset.index
     if (i >= 0) {
       Vue.set(state.uiSettings.dashboard.tempPresets, i, payload.preset)
     } else {

@@ -7,7 +7,7 @@
   >
     <v-card-text>
 
-      <div v-for="(preset, i) in presets" :key="i">
+      <div v-for="(preset) in presets" :key="preset.index">
         <v-layout align-center >
           <div class="grey--text focus--text mr-4">{{ preset.name }}</div>
           <v-chip
@@ -20,13 +20,13 @@
           </v-chip>
           <div class="ml-auto">
             <btn
-              @click="openEditDialog(preset, i)"
+              @click="openEditDialog(preset)"
               icon
               color="primary">
               <v-icon small>$pencil</v-icon>
             </btn>
             <btn
-              @click="remove(i)"
+              @click="remove(preset.index)"
               icon
               color="error">
               <v-icon small>$delete</v-icon>
@@ -54,7 +54,7 @@
         >
           <v-card color="secondary darken-1">
             <v-card-title>
-              <span class="headline">{{ (dialog.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+              <span class="headline">{{ (preset.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
             </v-card-title>
             <v-card-text>
               <v-text-field
@@ -97,7 +97,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <btn color="warning" text @click.prevent="dialog.active = false" type="button">Cancel</btn>
-              <btn color="primary" type="submit">{{ (dialog.index >= 0) ? 'Save' : 'Add' }}</btn>
+              <btn color="primary" type="submit">{{ (preset.index >= 0) ? 'Save' : 'Add' }}</btn>
             </v-card-actions>
           </v-card>
         </v-form>
@@ -133,12 +133,12 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
   }
 
   dialog = {
-    index: -1, // add or edit
     active: false,
     valid: false
   }
 
   preset: TemperaturePreset = {
+    index: -1,
     name: '',
     values: {}
   }
@@ -149,9 +149,8 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
     numMin: (v: number) => v >= 0 || 'Min 0'
   }
 
-  openEditDialog (preset: TemperaturePreset, index: number) {
+  openEditDialog (preset: TemperaturePreset) {
     this.dialog = {
-      index,
       active: true,
       valid: false
     }
@@ -160,6 +159,7 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
 
   openAddDialog () {
     this.preset = {
+      index: -1,
       name: '',
       values: {}
     }
@@ -170,7 +170,6 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
       this.preset.values[item.name] = { value: 0, type: 'fan', active: true }
     }
     this.dialog = {
-      index: -1,
       active: true,
       valid: false
     }
@@ -179,7 +178,7 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
   save (preset: TemperaturePreset) {
     const valid = this.form.validate()
     if (valid) {
-      this.$store.dispatch('config/updatePreset', { preset, index: this.dialog.index })
+      this.$store.dispatch('config/updatePreset', { preset, index: this.preset.index })
       this.dialog.active = false
     }
   }

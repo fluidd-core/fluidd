@@ -41,8 +41,8 @@
                 link
                 dense
                 @click="applyPreset(preset)"
-                v-for="(preset, i) of presets"
-                :key="i">
+                v-for="(preset) of presets"
+                :key="preset.index">
                 <v-list-item-title>
                   <v-icon small left color="primary">$fire</v-icon>
                   {{ preset.name }}

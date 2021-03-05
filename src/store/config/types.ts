@@ -103,6 +103,7 @@ export interface InstanceConfig extends ApiConfig {
 }
 
 export interface TemperaturePreset {
+  index: number;
   name: string;
   values: TemperaturePresetValues;
 }

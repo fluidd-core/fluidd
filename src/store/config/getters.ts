@@ -37,8 +37,9 @@ export const getters: GetterTree<ConfigState, RootState> = {
     const heaters = rootGetters['printer/getHeaters']
     const fans = rootGetters['printer/getOutputs'](['temperature_fan'])
 
-    originalPresets.forEach((originalPreset: TemperaturePreset) => {
+    originalPresets.forEach((originalPreset: TemperaturePreset, i) => {
       const preset: TemperaturePreset = {
+        index: i,
         name: originalPreset.name,
         values: {}
       }
@@ -64,7 +65,9 @@ export const getters: GetterTree<ConfigState, RootState> = {
       presets.push(preset)
     })
 
-    return presets
+    return presets.sort((a, b) => {
+      return a.name.localeCompare(b.name)
+    })
   },
 
   /**
