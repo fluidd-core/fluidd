@@ -88,6 +88,8 @@ import {
  * Global, static constants.
  */
 export const Globals = Object.freeze({
+  APP_NAME: 'fluidd',
+  NETWORK_REQUEST_TIMEOUT: 500,
   CONSOLE_HISTORY_RETENTION: 1000, // total count
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
@@ -103,7 +105,6 @@ export const Globals = Object.freeze({
     ConsoleHistory: '.fluidd_console_history.json'
     // PrintHistory: '.fluidd_file_history.json'
   },
-  APP_NAME: 'fluidd',
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',

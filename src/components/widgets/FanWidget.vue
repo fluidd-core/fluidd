@@ -5,6 +5,7 @@
       value-suffix="%"
       input-xs
       v-model.number="value"
+      :value-label="(fan.rpm) ? fan.rpm + ' rpm' : ''"
       :label="fan.prettyName"
       :rules="rules"
       :disabled="!klippyConnected">
@@ -19,8 +20,8 @@
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <span class="grey--text focus--text" v-html="prettyValue">
-        </span>
+        <small v-if="fan.rpm" class="grey--text mr-2">{{ fan.rpm }} rpm</small>
+        <span class="grey--text focus--text" v-html="prettyValue"></span>
       </div>
     </v-layout>
     <v-divider class="my-2" v-if="divider"></v-divider>

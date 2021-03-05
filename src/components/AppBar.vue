@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
 import { SocketActions } from '@/socketActions'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
@@ -105,21 +105,6 @@ export default class AppBar extends Mixins(UtilsMixin) {
 
   hasUpdate (component: 'klipper' | 'moonraker' | 'client') {
     return this.$store.getters['version/hasUpdate'](component)
-  }
-
-  // Watch currentfile and refresh its metadata to ensure
-  // our status has the correct data.
-  @Watch('currentFile')
-  onCurrentFileChanged (val: string) {
-    if (val && val.length > 0 && val !== 'standby') {
-      // Print has started, refresh the meta data.
-      // Note, this may fail if users are uploading via slicer and have the 'Start Immediately'
-      // option set - because the metadata may have not been parsed.
-      SocketActions.serverFilesMetaData(val)
-    } else {
-      // Print has stop or the file is cleared.
-      this.$store.commit('socket/resetCurrentFile')
-    }
   }
 
   emergencyStop () {

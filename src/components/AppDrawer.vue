@@ -81,7 +81,12 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
   }
 
   get versionsSupported () {
-    return this.$store.state.socket.printer.serverInfo.plugins.includes('update_manager')
+    return (
+      this.$store.state.socket.printer.serverInfo &&
+      this.$store.state.socket.printer.serverInfo.plugins
+    )
+      ? this.$store.state.socket.printer.serverInfo.plugins.includes('update_manager')
+      : false
   }
 
   close () {

@@ -9,8 +9,20 @@
     @enabled="$emit('enabled', $event)"
     @collapsed="onCollapse">
 
-    <img :src="cameraUrl" class="webcam" :style="cameraTransforms" v-if="streamType === 'mjpgstreamer'" />
-    <video :src="cameraUrl" autoplay class="webcam" :style="cameraTransforms" v-if="streamType === 'ipcamera'" />
+    <img
+      v-if="streamType === 'mjpgstreamer'"
+      :src="cameraUrlCacheBusted"
+      class="webcam"
+      :style="cameraTransforms"
+    />
+
+    <video
+      v-if="streamType === 'ipcamera'"
+      :src="cameraUrl"
+      autoplay
+      class="webcam"
+      :style="cameraTransforms"
+    />
   </collapsable-card>
 </template>
 
@@ -29,13 +41,20 @@ export default class CameraCard extends Mixins(UtilsMixin) {
   enabled!: boolean
 
   cameraUrl = ''
+  cameraUrlCacheBusted = ''
   refresh = new Date().getTime()
 
-  get url () {
+  // Provides a cachebusted Url
+  get cacheBustedUrl () {
     const hostUrl = new URL(document.URL)
-    const url = new URL(this.$store.state.config.uiSettings.camera.url, hostUrl.origin)
+    const url = new URL(this.url, hostUrl.origin)
     url.searchParams.append('cacheBust', this.refresh.toString())
     return url.toString()
+  }
+
+  // Provides the plain Url
+  get url () {
+    return this.config.url
   }
 
   get config () {
@@ -64,14 +83,17 @@ export default class CameraCard extends Mixins(UtilsMixin) {
 
   beforeDestroy () {
     this.cameraUrl = ''
+    this.cameraUrlCacheBusted = ''
     document.removeEventListener('visibilitychange', this.handleRefreshChange)
   }
 
   onCollapse (collapsed: boolean) {
     if (collapsed) {
       this.cameraUrl = ''
+      this.cameraUrlCacheBusted = ''
     } else {
       this.cameraUrl = this.url
+      this.cameraUrlCacheBusted = this.cacheBustedUrl
     }
   }
 
@@ -79,8 +101,10 @@ export default class CameraCard extends Mixins(UtilsMixin) {
     if (!document.hidden) {
       this.refresh = new Date().getTime()
       this.cameraUrl = this.url
+      this.cameraUrlCacheBusted = this.cacheBustedUrl
     } else {
       this.cameraUrl = ''
+      this.cameraUrlCacheBusted = ''
     }
   }
 }

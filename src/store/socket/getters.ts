@@ -60,18 +60,20 @@ export const getters: GetterTree<SocketState, RootState> = {
     // If an external source fires an estop, or the client
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
-    let message = ''
+    const regex = /(?:\r\n|\r|\n)/g
+    if (
+      state.printer.info.state_message &&
+      state.printer.info.state_message !== ''
+    ) {
+      return state.printer.info.state_message.trim().replace(regex, '<br />')
+    }
     if (
       state.printer.webhooks.state_message &&
       state.printer.webhooks.state_message !== ''
     ) {
-      message = state.printer.webhooks.state_message
-    } else {
-      if (state.printer.info.state_message) {
-        message = state.printer.info.state_message
-      }
+      return state.printer.webhooks.state_message.trim().replace(regex, '<br />')
     }
-    return message.trim().replace(/(?:\r\n|\r|\n)/g, '<br />')
+    return ''
   },
 
   /**
@@ -141,8 +143,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       case 'slicer': {
         if (
           'current_file' in state.printer &&
-          'estimated_time' in state.printer.current_file &&
-          state.printer.current_file.estimated_time > current
+          'estimated_time' in state.printer.current_file
         ) {
           total = state.printer.current_file.estimated_time
         }
@@ -155,8 +156,7 @@ export const getters: GetterTree<SocketState, RootState> = {
           'current_file' in state.printer &&
           'filament_used' in state.printer.print_stats &&
           'filament_total' in state.printer.current_file &&
-          state.printer.print_stats.filament_used > 0 &&
-          state.printer.current_file.filament_total > state.printer.print_stats.filament_used
+          state.printer.print_stats.filament_used > 0
         ) {
           total = current / (state.printer.print_stats.filament_used / state.printer.current_file.filament_total)
         }

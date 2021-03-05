@@ -14,7 +14,6 @@
         @update:color="handlePrimaryColorChange"
         mode="hexa"
         hide-mode-switch
-        hide-inputs
         canvas-height="100"
         dot-size="25"
       >

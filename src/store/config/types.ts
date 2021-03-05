@@ -96,10 +96,11 @@ export interface GenericSave {
   value: string | boolean | number;
 }
 
-export interface Config {
+export interface InitConfig {
   apiConfig: ApiConfig | InstanceConfig;
   fileConfig?: FileConfig;
   hostConfig?: HostConfig;
+  apiConnected?: boolean;
 }
 
 export interface FileConfig {

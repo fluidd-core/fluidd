@@ -3,6 +3,11 @@ import { Waits } from '@/globals'
 import store from './store'
 
 export const SocketActions = {
+  async machineInit () {
+    this.printerInfo()
+    this.serverInfo()
+  },
+
   async machineServicesRestart (service: string) {
     const wait = Waits.onServiceRestart
     Vue.$socket.emit(

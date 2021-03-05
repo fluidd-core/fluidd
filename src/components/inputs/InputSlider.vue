@@ -7,7 +7,12 @@
       >
         {{ label }}
       </div>
-      <div class="ml-auto">
+      <div class="ml-auto d-flex align-center">
+        <small
+          class="grey--text mr-2"
+          v-html="valueLabel"
+        >
+        </small>
         <span
           v-if="readonly"
           class="grey--text focus--text"
@@ -71,7 +76,6 @@
 <script lang="ts">
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import UtilsMixin from '@/mixins/utils'
-import { InputValidationRules } from 'vuetify'
 import { VForm } from '@/types/vuetify'
 
 @Component({})
@@ -79,8 +83,11 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 
+  @Prop({ type: String })
+  public valueLabel!: string
+
   @Prop({ type: Array, default: () => { return [] } })
-  public rules!: InputValidationRules
+  public rules!: []
 
   @Prop({ type: String, required: true })
   public label!: string

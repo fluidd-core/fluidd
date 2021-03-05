@@ -21,6 +21,17 @@ permalink: /faq
 - Fluiddpi ships with mjpgstreamer built in. Plug in your camera, navigate to
   the UI settings page, and enable the webcam.
 
+## My camera is delayed, or slow
+
+- Here's a couple of suggestions;
+  - Some users have reported that their webcams were problematic when connected
+    to the Pi4's USB2.0 ports. Try plugging your webcam into the USB3.0 port.
+
+  - Because mjpg streams static images, this can saturate your wifi. Try
+    reducing the fps and resolution of your images. See the `/boot/fluiddpi.txt`
+    folder on your Pi for more information on how to do this. You can also
+    try connecting to wired ethernet.
+
 ## Klipper updated and now my printer has an error
 
 - Klipper likely has configuration changes. Please see

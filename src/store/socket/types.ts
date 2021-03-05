@@ -74,6 +74,7 @@ export interface Fan {
   type: string;
   controllable: boolean;
   speed?: number;
+  rpm?: number | null;
   temperature?: number;
   target?: number;
   minTemp?: number;

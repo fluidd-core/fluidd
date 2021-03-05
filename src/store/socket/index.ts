@@ -8,7 +8,7 @@ import { RootState } from '../types'
 export const defaultState = (): SocketState => {
   return {
     open: false, // socket is open or closed.
-    connecting: true, // socket is trying to connect.
+    connecting: false, // socket is trying to connect.
     ready: false, // indicates the socket is ready (and has first dump of data...)
     acceptingNotifications: false,
     consoleEntryCount: 0,
@@ -92,10 +92,7 @@ export const defaultState = (): SocketState => {
       current_file: {
         estimated_time: 0,
         filament_total: 0,
-        thumbnails: [
-          { data: null, size: 0, width: 0, height: 0 },
-          { data: null, size: 0, width: 0, height: 0 }
-        ]
+        thumbnails: []
       },
       gcode_move: {
         gcode_position: [0, 0, 0, 0],

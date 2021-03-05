@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import consola from 'consola'
-import { ConfigState, GenericSave, Config, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
+import { ConfigState, GenericSave, InitConfig, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 import { get } from 'lodash-es'
@@ -31,7 +31,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Inits any local storage state we may have.
    */
-  async initLocal ({ commit }, payload: Config) {
+  async initLocal ({ commit }, payload: InitConfig) {
     commit('onInitLocal') // Just loads local storage config into the store.
     commit('onInitInstances', payload) // Loads instances from local storage, and also inits the current instance.
   },

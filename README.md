@@ -1,8 +1,7 @@
 # Fluidd
 Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
 
-<img align="left" width="225" src="https://raw.githubusercontent.com/cadriel/fluidd/develop/.github/images/ReadyMobile.png">
-<img width="550" src="https://raw.githubusercontent.com/cadriel/fluidd/develop/.github/images/Ready.png">
+![Fluidd](/.github/images/preview.png?raw=true "Fluidd")
 
 ## Features
 - Desktop, tablet and mobile layouts
@@ -12,7 +11,8 @@ Fluidd is a free and open-source Klipper web interface for managing your 3d prin
 - Full console with history
 - Bed mesh support
 
-## Support
+## Support & Documentation
+See our [Docs](https://docs.fluidd.xyz).
 Join our [Discord!](https://discord.gg/GZ3D5tqfcF).
 
 ## Where to download?
@@ -29,9 +29,7 @@ Fluidd is distributed as a RaspbiOS image, with Fluidd pre-installed and setup a
 
 The recommended approach is to flash a fresh image using FluiddPI.
 
-Please see the [docs](/docs/README.md) for help with setup.
-
-Please see https://github.com/cadriel/FluiddPI for further instruction.
+Please see the [docs](https://docs.fluidd.xyz) for help with installation and configuration.
 
 ### Credit
 A big thank you to;

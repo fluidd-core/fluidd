@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { IgnorePlugin } = require('webpack')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
@@ -25,7 +24,6 @@ module.exports = {
       symlinks: false // Don't follow symlinks, fixes issues when using npm link.
     },
     plugins: [
-      new IgnorePlugin(/^\.\/locale$/, /moment$/), // Ignore all moment locales (comes from chartjs)
       new GenerateFilePlugin({
         file: '.version',
         content: 'v' + v + '\n'

@@ -11,7 +11,11 @@ permalink: /features/slicer-uploads
 
 ---
 
-You can upload your sliced `gcode` from within PrusaSlicer or SuperSlicer. 
+NOTE: Moonraker needs to be configured to support slicer uploads. Simply add
+the `[octoprint_compat]` option to your moonraker config. See moonraker
+[configuration docs](/configuration/moonraker_conf) for an example.
+
+You can upload your sliced `gcode` from within PrusaSlicer or SuperSlicer.
 
 - With PrusaSlicer / SuperSlicer open, click the "cog" icon right of the Printer profiles combo box and select `Add physical printer`
 - Type a descriptive printer name

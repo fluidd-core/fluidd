@@ -16,15 +16,15 @@
         </btn-toolhead-move>
       </v-col>
       <v-col class="ml-2" v-if="canHomeXY">
-        <v-btn
-          :color="(!allHomed) ? 'warning' : 'secondary'"
-          :elevation="2"
+        <btn-toolhead-move
+          :color="(!allHomed) ? 'primary' : 'secondary'"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28', waits.onHomeAll)"
-        >
-          <v-icon small left>$home</v-icon> All
-        </v-btn>
+          icon="$home"
+          small-icon>
+          All
+        </btn-toolhead-move>
       </v-col>
     </v-row>
     <v-row no-gutters justify="start" class="mb-2">
@@ -37,7 +37,7 @@
       </v-col>
       <v-col cols="auto" class="ml-2">
         <btn-toolhead-move
-          :color="(!xyHomed) ? 'warning' : 'secondary'"
+          :color="(!xyHomed) ? 'primary' : 'secondary'"
           :loading="hasWait(waits.onHomeXY)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 X Y', waits.onHomeXY)"
@@ -54,7 +54,7 @@
       </v-col>
       <v-col cols="auto" class="ml-2" v-if="canHomeXY">
         <btn-toolhead-move
-          :color="(!zHomed) ? 'warning' : 'secondary'"
+          :color="(!zHomed) ? 'primary' : 'secondary'"
           :loading="hasWait(waits.onHomeZ)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 Z', waits.onHomeZ)"
@@ -63,15 +63,15 @@
         </btn-toolhead-move>
       </v-col>
       <v-col class="ml-2" v-if="canHomeXY">
-        <v-btn
-          :color="(!xHomed) ? 'warning' : 'secondary'"
-          :elevation="2"
+        <btn-toolhead-move
+          :color="(!xHomed) ? 'primary' : 'secondary'"
           :loading="hasWait(waits.onHomeX)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 X', waits.onHomeX)"
-        >
-          <v-icon small left>$home</v-icon> X
-        </v-btn>
+          icon="$home"
+          small-icon>
+          X
+        </btn-toolhead-move>
       </v-col>
     </v-row>
     <v-row no-gutters justify="start" class="mb-2">
@@ -90,15 +90,15 @@
         </btn-toolhead-move>
       </v-col>
       <v-col class="ml-2" v-if="canHomeXY">
-        <v-btn
-          :color="(!yHomed) ? 'warning' : 'secondary'"
-          :elevation="2"
+        <btn-toolhead-move
+          :color="(!yHomed) ? 'primary' : 'secondary'"
           :loading="hasWait(waits.onHomeY)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 Y', waits.onHomeY)"
-        >
-          <v-icon small left>$home</v-icon> Y
-        </v-btn>
+          icon="$home"
+          small-icon>
+          Y
+        </btn-toolhead-move>
       </v-col>
     </v-row>
     <v-row no-gutters justify="start" class="mb-2">
