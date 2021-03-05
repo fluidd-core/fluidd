@@ -40,6 +40,8 @@ trusted_clients:
   FE80::/10
   ::1/128
 
+[octoprint_compat]
+
 [update_manager]
 [update_manager client fluidd]
 type: web
