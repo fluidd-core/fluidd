@@ -110,7 +110,7 @@ export const Globals = Object.freeze({
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
-  DOCS_MOONRAKER_PLUGINS: 'https://github.com/Arksine/moonraker/blob/master/docs/configuration.md#plugin-configuration'
+  DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker'
 })
 
 export const Icons = Object.freeze({

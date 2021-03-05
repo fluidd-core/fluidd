@@ -20,7 +20,10 @@ permalink: /configuration/moonraker
 Moonraker is the API that fluidd communicates with, which in turn communicates with Klipper.
 All three components are required for a healthy printer.
 
-For more detailed instructions, please refer to [Arksine's documentation](https://github.com/Arksine/moonraker/blob/master/docs/installation.md).
+For more detailed instructions, please refer to Arksine's documentation for
+[installation](https://github.com/Arksine/moonraker/blob/master/docs/installation.md)
+and
+[configuration](https://github.com/Arksine/moonraker/blob/master/docs/configuration.md)
 
 ## [server] block
 
