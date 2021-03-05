@@ -1,5 +1,6 @@
 import { GetterTree } from 'vuex'
-import { CardConfig, ConfigState, TemperaturePreset } from './types'
+import vuetify from '@/plugins/vuetify'
+import { CardConfig, ConfigState, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../socket/types'
 import tinycolor from '@ctrl/tinycolor'
@@ -64,18 +65,27 @@ export const getters: GetterTree<ConfigState, RootState> = {
 
   /**
    * Returns our current theme data.
+   * Should augment vuetifies default.
    */
   getTheme: (state) => {
+    const v = vuetify.framework.theme
     const o = state.uiSettings.theme
-    return {
-      ...o,
-      colors: {
-        ...o.colors,
-        primaryOffset: tinycolor(o.colors.primary)
-          .desaturate(5)
-          .darken(10)
-          .toHexString()
+
+    const r: ThemeConfig = {
+      ...state.uiSettings.theme,
+      currentTheme: {
+        ...v.currentTheme,
+        ...o.currentTheme
       }
     }
+
+    for (const key in r.currentTheme) {
+      // Currently used for the offset in the logo.
+      r.currentTheme[key + 'Offset'] = tinycolor(o.currentTheme.primary as string)
+        .desaturate(5)
+        .darken(10)
+        .toHexString()
+    }
+    return r
   }
 }

@@ -9,8 +9,8 @@
           class="shrink mr-4 mt-1 color-filter"
           width="35"
           height="40"
-          :primary-color="theme.colors.primary"
-          :secondary-color="theme.colors.primaryOffset"
+          :primary-color="theme.currentTheme.primary"
+          :secondary-color="theme.currentTheme.primaryOffset"
         ></fluidd-icon>
       </router-link>
       <v-toolbar-title

@@ -1,18 +1,19 @@
 <template>
   <v-btn
-    :elevation="2"
-    :disabled="disabled"
-    :loading="loading"
-    :color="(color) ? color : 'default'"
     :block="block"
-    :dark="dark"
+    :depressed="depressed"
     :fab="fab"
     :icon="icon"
+    :loading="loading"
     :outlined="outlined"
-    :rounded="rounded"
     :plain="plain"
+    :retainFocusOnClick="retainFocusOnClick"
+    :rounded="rounded"
     :tile="tile"
-    :class="classes"
+    :disabled="disabled"
+    :color="(color) ? color : 'default'"
+    :min-width="minWidth"
+    :class="{ 'grey--text text--darken-3': !colorIsDark, 'grey--text text--lighten-2': colorIsDark }"
     @click="$emit('click', $event)"
   >
     <slot></slot>
@@ -23,21 +24,15 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
-export default class Btn extends Vue {
-  @Prop({ default: false })
-  color!: string
-
+export default class FluiddBtn extends Vue {
   @Prop({ default: false })
   block!: boolean
 
   @Prop({ default: false })
-  dark!: boolean
+  depressed!: boolean
 
   @Prop({ default: false })
   fab!: boolean
-
-  @Prop({ default: false })
-  plain!: boolean
 
   @Prop({ default: false })
   icon!: boolean
@@ -49,17 +44,32 @@ export default class Btn extends Vue {
   outlined!: boolean
 
   @Prop({ default: false })
+  plain!: boolean
+
+  @Prop({ default: false })
+  retainFocusOnClick!: boolean
+
+  @Prop({ default: false })
   rounded!: boolean
 
   @Prop({ default: false })
   tile!: boolean
 
-  get classes () {
-    return ''
+  @Prop({ default: false })
+  disabled!: string
+
+  @Prop({ default: false })
+  color!: string
+
+  @Prop({ type: Number })
+  minWidth!: number
+
+  get theme () {
+    return this.$store.getters['config/getTheme']
   }
 
-  // set classes (val: string) {
-
-  // }
+  get colorIsDark () {
+    return this.$filters.colorDark(this.theme.currentTheme[this.color])
+  }
 }
 </script>

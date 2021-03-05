@@ -51,8 +51,8 @@ export const defaultState = (): ConfigState => {
         defaultToolheadZSpeed: 10
       },
       theme: {
-        darkMode: true,
-        colors: {
+        isDark: true,
+        currentTheme: {
           primary: '#2196F3'
         }
       },

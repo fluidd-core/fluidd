@@ -1,3 +1,5 @@
+import { VuetifyThemeItem } from "vuetify/types/services/theme";
+
 export interface ConfigState {
   [key: string]: any;
   apiUrl: string;
@@ -66,8 +68,8 @@ export interface GeneralConfig {
 }
 
 export interface ThemeConfig {
-  colors: {[index: string]: string };
-  darkMode: boolean;
+  currentTheme: {[index: string]: string | Partial<VuetifyThemeItem> | undefined }; // the color list.
+  isDark: boolean; // inidicates if the theme as a whole is dark or not.
 }
 
 export interface Axis {
