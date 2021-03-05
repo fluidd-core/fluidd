@@ -9,7 +9,7 @@
     outlined
     dense
     class="mb-2 v-input--x-dense"
-    style="max-width: 272px;"
+    style="max-width: 256px;"
   ></v-select>
 </template>
 
