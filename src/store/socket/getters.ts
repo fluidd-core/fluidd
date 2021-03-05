@@ -143,8 +143,7 @@ export const getters: GetterTree<SocketState, RootState> = {
       case 'slicer': {
         if (
           'current_file' in state.printer &&
-          'estimated_time' in state.printer.current_file &&
-          state.printer.current_file.estimated_time > current
+          'estimated_time' in state.printer.current_file
         ) {
           total = state.printer.current_file.estimated_time
         }
@@ -157,8 +156,7 @@ export const getters: GetterTree<SocketState, RootState> = {
           'current_file' in state.printer &&
           'filament_used' in state.printer.print_stats &&
           'filament_total' in state.printer.current_file &&
-          state.printer.print_stats.filament_used > 0 &&
-          state.printer.current_file.filament_total > state.printer.print_stats.filament_used
+          state.printer.print_stats.filament_used > 0
         ) {
           total = current / (state.printer.print_stats.filament_used / state.printer.current_file.filament_total)
         }
