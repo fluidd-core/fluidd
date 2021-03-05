@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/cadriel/fluidd/compare/v1.9.0...v1.10.0) (2021-03-05)
+
+
+### Features
+
+* adds basic support for fan rpm reporting ([5cb82a6](https://github.com/cadriel/fluidd/commit/5cb82a685ea3684d1bc8bfe6016e6818bd953bd7))
+* moves certain buttons colors to primary ([82c53eb](https://github.com/cadriel/fluidd/commit/82c53eb8144310a8985dae95e9b3725bccb3dc7b))
+
+
+### Bug Fixes
+
+* ensures power plugin displays properly on shutdown ([ba7bf6e](https://github.com/cadriel/fluidd/commit/ba7bf6e66aa9ff7433ecdf6f277e5da57ce7fc13))
+* ip camera's no longer append the cachebust param ([8be8dd2](https://github.com/cadriel/fluidd/commit/8be8dd2e2f63243fd9cb513121507f3c6839f790))
+* issue with timers presenting 0's when they shouldn't be ([7374fdb](https://github.com/cadriel/fluidd/commit/7374fdbed9dfe0e5824d5ea5869a2aacfc5c0a59))
+* removes the delay on app init when the printer is off ([1714a14](https://github.com/cadriel/fluidd/commit/1714a14bea5413f19ef74a2e35c9a37484445975))
+
 ## [1.9.0](https://github.com/cadriel/fluidd/compare/v1.8.1...v1.9.0) (2021-02-28)
 
 
