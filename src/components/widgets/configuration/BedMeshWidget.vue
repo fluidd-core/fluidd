@@ -30,9 +30,8 @@
               <td>
                 <v-tooltip left>
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
+                    <btn
                       @click="loadProfile(mesh.profile_name)"
-                      :elevation="2"
                       :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
                       v-bind="attrs"
                       v-on="on"
@@ -40,7 +39,7 @@
                       small
                       icon>
                       <v-icon small class="grey--text">$open</v-icon>
-                    </v-btn>
+                    </btn>
                   </template>
                   <span>Load Profile</span>
                 </v-tooltip>
@@ -48,7 +47,6 @@
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       @click="removeProfile(mesh.profile_name)"
-                      :elevation="2"
                       :disabled="hasWaits || printerPrinting || printerBusy"
                       v-bind="attrs"
                       v-on="on"
@@ -68,14 +66,13 @@
               <td>&nbsp;</td>
               <td>&nbsp;</td>
               <td>
-                <v-btn
+                <btn
                   @click="clearMesh()"
-                  :elevation="2"
                   :disabled="!meshLoaded"
                   color="secondary"
                   small>
                   Clear Profile
-                </v-btn>
+                </btn>
               </td>
             </tr>
           </tbody>
@@ -84,7 +81,7 @@
       <v-col cols="12" lg="4">
         <v-tooltip right>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
+            <btn
               v-bind="attrs"
               v-on="on"
               block
@@ -95,21 +92,21 @@
               :disabled="hasWaits || printerPrinting || printerBusy"
               @click="calibrate()">
               Calibrate
-            </v-btn>
+            </btn>
           </template>
           <span>Begins a new calibration, saving as profile 'default'</span>
         </v-tooltip>
-        <v-btn
+        <btn
           @click="sendGcode('G28', waits.onHomeAll)"
           block
           class="mb-2"
           :elevation="2"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="hasWaits || printerPrinting || printerBusy"
-          :color="(!allHomed) ? 'primary' : 'secondary'">
+          :color="(!allHomed) ? 'primary' : undefined">
             <v-icon small class="mr-1">$home</v-icon> All
-        </v-btn>
-        <v-btn
+        </btn>
+        <btn
           v-if="!printerPrinting && printerSupportsQgl"
           @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
           :elevation="2"
@@ -119,10 +116,10 @@
           class="mb-2"
           color="secondary">
             QGL
-        </v-btn>
+        </btn>
         <v-tooltip right>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn
+            <btn
               v-bind="attrs"
               v-on="on"
               block
@@ -132,7 +129,7 @@
               :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
               @click="openSaveDialog()">
               Save Config As...
-            </v-btn>
+            </btn>
           </template>
           <span>Commits calibrated profile to printer.cfg. This WILL restart your printer.</span>
         </v-tooltip>
@@ -183,8 +180,8 @@
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</v-btn>
-            <v-btn color="primary" :elevation="2" type="submit">Save</v-btn>
+            <btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</btn>
+            <btn color="primary" :elevation="2" type="submit">Save</btn>
           </v-card-actions>
 
         </v-card>

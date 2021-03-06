@@ -21,7 +21,7 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <slot name="actions">
-          <v-btn color="primary" text @click="close" :disabled="updating">{{ buttonTitle }}</v-btn>
+          <btn color="primary" text @click="close" :disabled="updating">{{ buttonTitle }}</btn>
         </slot>
       </v-card-actions>
     </v-card>

@@ -28,12 +28,12 @@
         class="mb-5"
       ></v-switch>
 
-      <v-btn
+      <btn
         color="secondary"
         @click="handleReset"
       >
         Reset to default
-      </v-btn>
+      </btn>
 
     </v-card-text>
   </collapsable-card>

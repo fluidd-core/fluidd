@@ -14,16 +14,16 @@
         dense
         color="secondary"
       >
-        <v-btn
+        <btn
           icon
           dark
           @click="emitClose()"
         >
           <v-icon>$close</v-icon>
-        </v-btn>
+        </btn>
         <v-toolbar-title>{{ filename }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn
+        <btn
           v-if="!readonly && unsavedChanges"
           :elevation="2"
           dark
@@ -31,8 +31,8 @@
           class="ml-2"
           @click="emitSave(false, false, newContents, filename, path)">
           Save
-        </v-btn>
-        <v-btn
+        </btn>
+        <btn
           v-if="!readonly && unsavedChanges"
           :elevation="2"
           dark
@@ -40,8 +40,8 @@
           class="ml-2"
           @click="emitSave(true, false, newContents, filename, path)">
           Save &amp; Close
-        </v-btn>
-        <v-btn
+        </btn>
+        <btn
           v-if="!readonly && unsavedChanges && !printerPrinting"
           :elevation="2"
           dark
@@ -49,7 +49,7 @@
           class="ml-2"
           @click="emitSave(true, true, newContents, filename, path)">
           Save &amp; Restart
-        </v-btn>
+        </btn>
       </v-toolbar>
       <v-card-text>
         <file-editor-widget

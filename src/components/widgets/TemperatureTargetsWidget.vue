@@ -16,14 +16,14 @@
           <v-spacer></v-spacer>
           <v-menu bottom left offset-y :min-width="150">
             <template v-slot:activator="{ on, attrs }">
-            <v-btn
+            <btn
               :min-width="40"
               v-bind="attrs" v-on="on"
               color="secondary"
               small
               class="pa-0">
               <v-icon>$menuAlt</v-icon>
-            </v-btn>
+            </btn>
             </template>
             <v-list
               dense

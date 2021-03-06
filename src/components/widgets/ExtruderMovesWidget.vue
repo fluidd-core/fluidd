@@ -16,7 +16,7 @@
         </v-text-field>
       </v-col>
       <v-col cols="6">
-        <v-btn
+        <btn
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
           :disabled="hasWaits || !extrudeRetractReady || !klippyConnected || !valid"
           :elevation="2"
@@ -25,7 +25,7 @@
           class="mr-2">
           Retract
           <v-icon>$chevronUp</v-icon>
-        </v-btn>
+        </btn>
       </v-col>
     </v-row>
     <v-row justify="end" class="mt-0">
@@ -43,7 +43,7 @@
         </v-text-field>
       </v-col>
       <v-col cols="6">
-        <v-btn
+        <btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
           :disabled="hasWaits || !extrudeRetractReady || !klippyConnected || !valid"
           :elevation="2"
@@ -52,7 +52,7 @@
           class="mr-2">
           Extrude
           <v-icon>$chevronDown</v-icon>
-        </v-btn>
+        </btn>
       </v-col>
     </v-row>
   </v-form>

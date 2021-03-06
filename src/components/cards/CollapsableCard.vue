@@ -43,13 +43,13 @@
         :close-on-content-click="false"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             :class="hamburgerMenuClasses"
             fab small text
             v-bind="attrs"
             v-on="on">
             <v-icon>{{ menuIcon }}</v-icon>
-          </v-btn>
+          </btn>
         </template>
         <v-sheet elevation="0" class="pa-2" color="tertiary">
           <!-- Menu slot -->

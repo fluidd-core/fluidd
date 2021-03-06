@@ -21,7 +21,7 @@
           rounded
           height="6"
         ></v-progress-linear>
-        <v-btn block color="warning" :elevation="2" @click="reload()" class="me-2 mb-2">Force Refresh</v-btn>
+        <btn block color="warning" :elevation="2" @click="reload()" class="me-2 mb-2">Force Refresh</btn>
       </v-col>
     </v-row>
   </v-container>

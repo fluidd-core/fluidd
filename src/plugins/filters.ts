@@ -146,9 +146,9 @@ export const Filters = {
   /**
    * Tells us if a color is considered dark or light
    */
-  colorDark (color: string) {
+  isColorDark (color: string) {
     const t = tinycolor(color).getBrightness()
-    return ((t / 255) * 100) <= 50
+    return ((t / 255) * 100) <= 60
   }
 }
 
@@ -178,6 +178,6 @@ declare module 'vue/types/vue' {
     getReadableLengthString(lengthInMm: number): string;
     getApiUrls(url: string): ApiConfig;
     fileSystemSort(items: Array<any>, sortBy: string[], sortDesc: boolean[], locale: string): Array<any>;
-    colorDark(color: string): boolean;
+    isColorDark(color: string): boolean;
   }
 }

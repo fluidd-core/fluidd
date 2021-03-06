@@ -4,7 +4,7 @@
       <v-col>
         <center>
           <div class="text-h5">404 Not Found</div>
-          <v-btn color="secondary" to="/" class="mt-5">Return to the dashboard</v-btn>
+          <btn color="secondary" to="/" class="mt-5">Return to the dashboard</btn>
         </center>
       </v-col>
     </v-row>

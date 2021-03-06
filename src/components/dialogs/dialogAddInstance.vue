@@ -48,8 +48,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="warning" text @click="$emit('input', false)" type="button">Cancel</v-btn>
-          <v-btn color="primary" type="submit" :disabled="!verified">Save</v-btn>
+          <btn color="warning" text @click="$emit('input', false)" type="button">Cancel</btn>
+          <btn color="primary" type="submit" :disabled="!verified">Save</btn>
         </v-card-actions>
 
       </v-card>

@@ -5,7 +5,7 @@
     <v-card>
       <v-card-title>z-adjust</v-card-title>
       <v-card-text>
-        <v-btn @click="sendGcode('Z_ENDSTOP_CALIBRATE')">adjust-z</v-btn>
+        <btn @click="sendGcode('Z_ENDSTOP_CALIBRATE')">adjust-z</btn>
         <v-chip>{{ pendingSave }}</v-chip>
         <p>
           PROBE_CALIBRATE<br />

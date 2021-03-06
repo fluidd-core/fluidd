@@ -5,11 +5,11 @@
     :collapsable="false"
     icon="$expandHorizontal">
     <template v-slot:collapse-button>
-      <v-btn
+      <btn
         @click="queryEndstops"
         fab small text>
         <v-icon>$refresh</v-icon>
-      </v-btn>
+      </btn>
     </template>
     <v-card-text v-if="hasEndStops">
       <v-layout
