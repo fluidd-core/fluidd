@@ -16,6 +16,20 @@ permalink: /faq
 
 ---
 
+## I have an INVALID status for Fluidd, Moonraker or Klipper on the Update panel
+
+- Updates can sometimes fail and cause this error. Your first option is to try
+  a reset;
+  -
+
+  ```bash
+  # Go to the directory of the component in question;
+  cd moonraker (or klipper)
+  git reset --hard HEAD
+  ```
+
+  If that fails, please reach out in Discord
+
 ## How do I turn on my camera?
 
 - Fluiddpi ships with mjpgstreamer built in. Plug in your camera, navigate to
