@@ -1,6 +1,5 @@
 <template>
   <div>
-    <pre>{{ fan }}</pre>
     <input-slider
       v-if="fan.controllable"
       value-suffix="%"
