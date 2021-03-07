@@ -14,7 +14,7 @@ export class WebSocketClient {
   url = '';
   connection: WebSocket | null = null;
   reconnectEnabled = false;
-  reconnectInterval = 3000;
+  reconnectInterval = 1000;
   allowedReconnectAttempts = 3;
   reconnectCount = 0;
   logPrefix = '[WEBSOCKET]';
@@ -24,7 +24,7 @@ export class WebSocketClient {
   constructor (options: Options) {
     this.url = options.url
     this.reconnectEnabled = options.reconnectEnabled || false
-    this.reconnectInterval = options.reconnectInterval || 3000
+    this.reconnectInterval = options.reconnectInterval || 1000
     this.store = options.store ? options.store : null
   }
 
@@ -164,7 +164,7 @@ export class WebSocketClient {
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
-      consola.debug(`${this.logPrefix} Not ready.`)
+      consola.debug(`${this.logPrefix} Not ready.`, method, options)
     }
   }
 }
