@@ -2,6 +2,7 @@ import _Vue from 'vue'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
+import { Globals } from '@/globals'
 
 export const Filters = {
 
@@ -155,17 +156,21 @@ export const Filters = {
 export const FiltersPlugin = {
   install (Vue: typeof _Vue) {
     Vue.prototype.$filters = Filters
+    Vue.prototype.$globals = Globals
     Vue.$filters = Filters
+    Vue.$globals = Globals
   }
 }
 
 declare module 'vue/types/vue' {
   interface Vue {
     $filters: Filters;
+    $globals: any;
   }
 
   interface VueConstructor {
     $filters: Filters;
+    $globals: any;
   }
 
   interface Filters {
