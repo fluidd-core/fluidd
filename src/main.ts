@@ -35,6 +35,7 @@ import { SVGRenderer } from 'echarts/renderers'
 // import { WorkboxPlugin } from './plugins/workbox'
 import vueHeadful from 'vue-headful'
 
+import FluiddBtn from '@/components/inputs/Btn.vue'
 import FluiddIcon from '@/components/FluiddIcon.vue'
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
@@ -66,6 +67,7 @@ Vue.component('collapsable-card', CollapsableCard)
 Vue.component('vue-headful', vueHeadful)
 Vue.component('inline-help', InlineHelpIcon)
 Vue.component('fluidd-icon', FluiddIcon)
+Vue.component('btn', FluiddBtn)
 
 appInit()
   .then((config: InitConfig) => {

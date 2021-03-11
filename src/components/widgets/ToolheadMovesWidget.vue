@@ -17,7 +17,7 @@
       </v-col>
       <v-col class="ml-2" v-if="canHomeXY">
         <btn-toolhead-move
-          :color="(!allHomed) ? 'primary' : 'secondary'"
+          :color="(!allHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28', waits.onHomeAll)"
@@ -37,7 +37,7 @@
       </v-col>
       <v-col cols="auto" class="ml-2">
         <btn-toolhead-move
-          :color="(!xyHomed) ? 'primary' : 'secondary'"
+          :color="(!xyHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeXY)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 X Y', waits.onHomeXY)"
@@ -54,7 +54,7 @@
       </v-col>
       <v-col cols="auto" class="ml-2" v-if="canHomeXY">
         <btn-toolhead-move
-          :color="(!zHomed) ? 'primary' : 'secondary'"
+          :color="(!zHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeZ)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 Z', waits.onHomeZ)"
@@ -64,7 +64,7 @@
       </v-col>
       <v-col class="ml-2" v-if="canHomeXY">
         <btn-toolhead-move
-          :color="(!xHomed) ? 'primary' : 'secondary'"
+          :color="(!xHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeX)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 X', waits.onHomeX)"
@@ -91,7 +91,7 @@
       </v-col>
       <v-col class="ml-2" v-if="canHomeXY">
         <btn-toolhead-move
-          :color="(!yHomed) ? 'primary' : 'secondary'"
+          :color="(!yHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeY)"
           :disabled="!klippyConnected || printerPrinting || hasWaits"
           @click="sendGcode('G28 Y', waits.onHomeY)"
@@ -104,10 +104,10 @@
     <v-row no-gutters justify="start" class="mb-2">
       <v-col>
         <v-btn-toggle mandatory dense v-model="toolheadMoveLength">
-          <v-btn :min-width="49" color="secondary" value="0.1" :disabled="!klippyConnected">0.1</v-btn>
-          <v-btn :min-width="49" class="pa-0" color="secondary" value="1.0" :disabled="!klippyConnected">1.0</v-btn>
-          <v-btn :min-width="49" class="pa-0" color="secondary" value="10" :disabled="!klippyConnected">10</v-btn>
-          <v-btn :min-width="49" class="pa-0" color="secondary" value="100" :disabled="!klippyConnected">100</v-btn>
+          <btn :min-width="49" color="secondary" value="0.1" :disabled="!klippyConnected">0.1</btn>
+          <btn :min-width="49" class="pa-0" color="secondary" value="1.0" :disabled="!klippyConnected">1.0</btn>
+          <btn :min-width="49" class="pa-0" color="secondary" value="10" :disabled="!klippyConnected">10</btn>
+          <btn :min-width="49" class="pa-0" color="secondary" value="100" :disabled="!klippyConnected">100</btn>
         </v-btn-toggle>
       </v-col>
     </v-row>

@@ -14,7 +14,7 @@
     </template>
 
     <template v-slot:menu>
-      <v-btn
+      <btn
         @click="pausePrint()"
         v-if="!printerPaused && printerPrinting"
         :elevation="2"
@@ -25,9 +25,9 @@
         class="ma-1">
         <v-icon small>$pause</v-icon>
         <span>Pause</span>
-      </v-btn>
+      </btn>
 
-      <v-btn
+      <btn
         @click="confirmDialog.open = true"
         v-if="printerPrinting || printerPaused"
         :elevation="2"
@@ -38,9 +38,9 @@
         class="ma-1">
         <v-icon small>$cancel</v-icon>
         <span>Cancel</span>
-      </v-btn>
+      </btn>
 
-      <v-btn
+      <btn
         @click="resumePrint()"
         v-if="printerPaused"
         :elevation="2"
@@ -51,9 +51,9 @@
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>
         <span>Resume</span>
-      </v-btn>
+      </btn>
 
-      <v-btn
+      <btn
         @click="resetFile()"
         :elevation="2"
         v-if="!printerPrinting && !printerPaused && filename"
@@ -62,9 +62,9 @@
         class="ma-1">
         <v-icon small class="mr-1">$refresh</v-icon>
         <span>Reset File</span>
-      </v-btn>
+      </btn>
 
-      <v-btn
+      <btn
         @click="rePrint()"
         :elevation="2"
         v-if="!printerPrinting && !printerPaused && filename"
@@ -73,7 +73,7 @@
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
         <span>Reprint</span>
-      </v-btn>
+      </btn>
     </template>
 
     <dialog-confirm

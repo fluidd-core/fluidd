@@ -6,12 +6,12 @@
     <v-card-text>
       <v-row>
         <v-col cols="12" sm="auto">
-          <v-btn v-if="!klipperConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</v-btn>
-          <v-btn v-if="klipperConnected" block color="primary" @click="serviceRestartKlippy" class="me-2 mb-2">Restart Klipper</v-btn>
-          <v-btn v-if="klipperConnected" block color="primary" @click="serviceFirmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</v-btn>
-          <v-btn block color="primary" @click="serviceRestartMoonraker" class="me-2 mb-2">Restart Moonraker</v-btn>
-          <v-btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Klippy.log</v-btn>
-          <v-btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</v-btn>
+          <btn v-if="!klipperConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</btn>
+          <btn v-if="klipperConnected" block color="primary" @click="serviceRestartKlippy" class="me-2 mb-2">Restart Klipper</btn>
+          <btn v-if="klipperConnected" block color="primary" @click="serviceFirmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</btn>
+          <btn block color="primary" @click="serviceRestartMoonraker" class="me-2 mb-2">Restart Moonraker</btn>
+          <btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Klippy.log</btn>
+          <btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</btn>
         </v-col>
         <v-col cols="12" sm="">
           <v-alert text dense type="error" v-if="klippyStateMessage !== 'Printer is ready'">

@@ -1,7 +1,7 @@
 <template>
   <v-card-text class="d-flex flex-wrap align-center justify-start pt-5">
     <template v-for="(macro, index) in macros">
-      <v-btn
+      <btn
         v-if="macro.visible"
         :key="index"
         @click="sendGcode(macro.name, `${waits.onMacro}${macro.name}`)"
@@ -10,7 +10,7 @@
         color="secondary"
         class="me-2 mb-2">
         {{ macro.name }}
-      </v-btn>
+      </btn>
     </template>
   </v-card-text>
 </template>

@@ -28,7 +28,7 @@
     </template>
 
     <template v-slot:menu>
-      <v-btn
+      <btn
         @click="sendGcode('M84')"
         :elevation="2"
         :disabled="hasWaits || !klippyConnected || printerPrinting"
@@ -36,8 +36,8 @@
         class="ma-1"
         color="secondary">
           MOTORS OFF
-      </v-btn>
-      <v-btn
+      </btn>
+      <btn
         v-if="printerSupportsBedScrews"
         @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         :elevation="2"
@@ -47,8 +47,8 @@
         class="ma-1"
         color="secondary">
           Bed_Screws_Adjust
-      </v-btn>
-      <v-btn
+      </btn>
+      <btn
         v-if="printerSupportsBedScrewsCalculate"
         @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         :elevation="2"
@@ -58,8 +58,8 @@
         class="ma-1"
         color="secondary">
           Screws_Tilt_Calculate
-      </v-btn>
-      <v-btn
+      </btn>
+      <btn
         v-if="printerSupportsZtilt"
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :elevation="2"
@@ -69,8 +69,8 @@
         class="ma-1"
         color="secondary">
           Z_Tilt_Adjust
-      </v-btn>
-      <v-btn
+      </btn>
+      <btn
         v-if="printerSupportsQgl"
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         :elevation="2"
@@ -80,7 +80,7 @@
         class="ma-1"
         color="secondary">
           QGL
-      </v-btn>
+      </btn>
     </template>
 
     <toolhead-widget></toolhead-widget>

@@ -18,8 +18,8 @@ permalink: /configuration/multiple_printers
 ---
 
 Fluidd allows you to connect to multiple printers from a single host.
-Your moonraker configuration for each printer you wish to connect to is
-likely going to require specific setup in order for this configuration to work.
+Your moonraker configuration for each printer you wish to connect to
+may require specific setup in order for this configuration to work.
 
 This type of setup is also highly dependent on your network environment.
 
@@ -34,24 +34,21 @@ Assuming you have a single host setup with Fluidd, by way of a
 [fluiddpi installation](/installation/fluiddpi);
 
 1. Note the URL you use to access Fluidd
-   - For this example, let's assume you access Fluidd on `http://myfancyprinter`
+   - For this example, let's assume you access Fluidd on `http://fluidd.local`
 
-2. For every printer you wish to connect to, ensure the above URL is in the
-   `cors_domains` section of your `moonraker.conf`.
-   E.g.,
+2. On your fluidd host, when adding a new printer url - add the full address
+   to your printer E.g., `http://myprinter.local`.
 
-   ```yaml
-   cors_domains:
-     http://myfancyprinter
-   ```
-
-3. On your fluidd host, when adding a new printer url - add the full host
-   as per above, E.g., `http://myfancyprinter`.
+3. If step #2 fails
+   - Make sure moonraker is running, and accessable. You can try to directly test
+     moonraker by going here; `http://myprinter.local/server/info`. If this URL
+     works, and you still can't connect - please review the
+     [moonraker config docs](/configuration/moonraker#cors-domains)
 
 The `cors_domains` section does allow for wildcards to make this easier, and
 FluiddPI ships with sane defaults. You can see an example
 [here](/configuration/moonraker_conf) of a configuration that works for
-`http://app.fluidd.xyz` along with many other common network setups.
+`http://app.fluidd.xyz` along with many common network setups.
 
 ### Troubleshooting
 

@@ -9,8 +9,8 @@
           class="shrink mr-4 mt-1 color-filter"
           width="35"
           height="40"
-          :primary-color="theme.colors.primary"
-          :secondary-color="theme.colors.primaryOffset"
+          :primary-color="theme.currentTheme.primary"
+          :secondary-color="theme.currentTheme.primaryOffset"
         ></fluidd-icon>
       </router-link>
       <v-toolbar-title
@@ -20,21 +20,21 @@
       </v-toolbar-title>
       <v-spacer />
 
-      <v-btn text to="/" class="d-none d-md-flex mx-1">
+      <btn text to="/" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$home</v-icon>
         <span>Dashboard</span>
-      </v-btn>
-      <v-btn text to="/jobs" class="d-none d-md-flex mx-1" :disabled="!jobsAvailable">
+      </btn>
+      <btn text to="/jobs" class="d-none d-md-flex mx-1" :disabled="!jobsAvailable">
         <v-icon small class="mr-md-1">$files</v-icon>
         <span>Jobs</span>
-      </v-btn>
-      <v-btn text to="/configuration" class="d-none d-md-flex mx-1">
+      </btn>
+      <btn text to="/configuration" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$tune</v-icon>
         <span>Printer</span>
-      </v-btn>
+      </btn>
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             :disabled="!klippyConnected"
             icon
             color="error"
@@ -42,7 +42,7 @@
             v-bind="attrs"
             v-on="on">
             <v-icon>$estop</v-icon>
-          </v-btn>
+          </btn>
         </template>
         Emergency Stop
       </v-tooltip>
@@ -56,9 +56,9 @@
         :offset-y="15"
         :offset-x="15"
       >
-        <v-btn icon @click="$emit('drawer')">
+        <btn icon @click="$emit('drawer')">
           <v-icon>$menu</v-icon>
-        </v-btn>
+        </btn>
       </v-badge>
 
     </v-container>

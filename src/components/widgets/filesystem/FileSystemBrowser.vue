@@ -82,8 +82,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="warning" text @click="dialog.active = false" type="button">Cancel</v-btn>
-                <v-btn color="primary" :elevation="2" type="submit">Save</v-btn>
+                <btn color="warning" text @click="dialog.active = false" type="button">Cancel</btn>
+                <btn color="primary" :elevation="2" type="submit">Save</btn>
               </v-card-actions>
             </v-card>
 

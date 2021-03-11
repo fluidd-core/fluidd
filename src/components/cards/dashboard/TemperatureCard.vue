@@ -22,14 +22,14 @@
     </template>
 
     <template v-slot:menu>
-      <v-btn
+      <btn
         small
         class="mr-2"
         color="secondary"
         @click="chartVisible = !chartVisible">
         <v-icon left>$chart</v-icon>
         {{ (chartVisible) ? 'on' : 'off' }}
-      </v-btn>
+      </btn>
     </template>
 
     <temperature-targets-widget

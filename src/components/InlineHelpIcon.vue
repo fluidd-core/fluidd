@@ -1,20 +1,19 @@
 <template>
   <v-tooltip :bottom="bottom" :top="top" :left="left" :right="right">
     <template v-slot:activator="{ on, attrs }">
-      <v-btn
+      <btn
         :small="small"
         v-bind="attrs"
         v-on="on"
         class="ml-2"
         :color="type"
-        icon
-        >
+        icon>
         <v-icon
         :small="small"
         >
           {{ (type === 'error' || type === 'warning') ? '$alert' : '$help' }}
         </v-icon>
-      </v-btn>
+      </btn>
     </template>
     <slot>
       <span v-html="tooltip"></span>

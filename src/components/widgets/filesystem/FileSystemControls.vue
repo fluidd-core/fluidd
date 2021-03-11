@@ -3,7 +3,7 @@
     <v-btn-toggle v-if="!readonly">
       <v-tooltip dense top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             max-width="42"
             small
             v-bind="attrs"
@@ -11,14 +11,14 @@
             color="secondary"
             @click="$emit('folder-add')">
             <v-icon small>$folderAdd</v-icon>
-          </v-btn>
+          </btn>
         </template>
         <span>Add Folder</span>
       </v-tooltip>
 
       <v-tooltip dense top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             v-if="fileCreate"
             max-width="42"
             small
@@ -27,14 +27,14 @@
             color="secondary"
             @click="$emit('file-add')">
             <v-icon small>$fileAdd</v-icon>
-          </v-btn>
+          </btn>
         </template>
         <span>Create File</span>
       </v-tooltip>
 
       <v-tooltip dense top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             max-width="42"
             small
             color="secondary"
@@ -43,14 +43,14 @@
             :loading="uploadLoading"
             @click="emulateClick(false)">
             <v-icon small>$fileUpload</v-icon>
-          </v-btn>
+          </btn>
         </template>
         <span>Upload</span>
       </v-tooltip>
 
       <v-tooltip dense top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             v-if="uploadAndPrint"
             max-width="42"
             small
@@ -60,7 +60,7 @@
             :loading="uploadLoading"
             @click="emulateClick(true)">
             <v-icon small>$progressUpload</v-icon>
-          </v-btn>
+          </btn>
         </template>
         <span>Upload &amp; Print</span>
       </v-tooltip>
@@ -76,7 +76,7 @@
 
       <v-tooltip dense top>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
+          <btn
             max-width="42"
             small
             color="secondary"
@@ -84,7 +84,7 @@
             v-on="on"
             @click="$emit('refresh')">
             <v-icon small>$refresh</v-icon>
-          </v-btn>
+          </btn>
         </template>
         <span>Refresh</span>
       </v-tooltip>
@@ -92,7 +92,7 @@
 
     <v-tooltip dense top v-if="readonly">
       <template v-slot:activator="{ on, attrs }">
-        <v-btn
+        <btn
           max-width="42"
           small
           v-bind="attrs"
@@ -100,7 +100,7 @@
           color="secondary"
           @click="$emit('refresh')">
           <v-icon small>$refresh</v-icon>
-        </v-btn>
+        </btn>
       </template>
       <span>Refresh</span>
     </v-tooltip>

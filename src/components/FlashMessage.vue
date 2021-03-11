@@ -8,14 +8,14 @@
     {{ text }}
 
     <template v-slot:action="{ attrs }">
-      <v-btn
+      <btn
         dark
         text
         v-bind="attrs"
         @click="open = false"
       >
         Close
-      </v-btn>
+      </btn>
     </template>
   </v-snackbar>
 </template>

@@ -5,7 +5,7 @@
       value-suffix="%"
       input-xs
       v-model.number="value"
-      :value-label="(fan.rpm) ? fan.rpm + ' rpm' : ''"
+      :value-label="rpm"
       :label="fan.prettyName"
       :rules="rules"
       :disabled="!klippyConnected">
@@ -20,7 +20,7 @@
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <small v-if="fan.rpm" class="grey--text mr-2">{{ fan.rpm }} rpm</small>
+        <small v-if="rpm" class="grey--text mr-2">{{ rpm }}</small>
         <span class="grey--text focus--text" v-html="prettyValue"></span>
       </div>
     </v-layout>
@@ -67,6 +67,12 @@ export default class FanWidget extends Mixins(UtilsMixin) {
       target = target / 100
       this.sendGcode(`SET_FAN_SPEED FAN=${this.fan.name} SPEED=${target}`, Waits.onSetFanSpeed)
     }
+  }
+
+  get rpm () {
+    return (this.fan.rpm)
+      ? this.fan.rpm.toFixed() + ' rpm'
+      : undefined
   }
 
   get offBelow () {

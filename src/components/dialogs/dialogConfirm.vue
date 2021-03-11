@@ -14,8 +14,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="warning" text @click="emitConfirm(false)">No</v-btn>
-        <v-btn color="primary" :elevation="2" @click="emitConfirm(true)">Yes</v-btn>
+        <btn color="warning" text @click="emitConfirm(false)">No</btn>
+        <btn color="primary" :elevation="2" @click="emitConfirm(true)">Yes</btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

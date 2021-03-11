@@ -14,15 +14,14 @@
         suffix="°C"
         class="mr-1 v-input--width-small">
       </v-text-field>
-      <v-btn
+      <btn
         :min-width="40"
         :disabled="(value === inputValue) || !valid"
-        :elevation="2"
         class="pa-0"
         :color="(value === inputValue) ? 'secondary' : 'primary'"
         @click.prevent="emitChange">
         <v-icon small>$check</v-icon>
-      </v-btn>
+      </btn>
     </v-layout>
   </v-form>
 </template>

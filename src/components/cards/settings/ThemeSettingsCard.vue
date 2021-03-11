@@ -10,7 +10,7 @@
       <!-- <pre>{{ color }}</pre> -->
 
       <v-color-picker
-        :value="theme.colors.primary"
+        :value="theme.currentTheme.primary"
         @update:color="handlePrimaryColorChange"
         mode="hexa"
         hide-mode-switch
@@ -22,18 +22,18 @@
       <v-switch
         @click.native.stop
         label="Dark Mode"
-        v-model="theme.darkMode"
+        v-model="theme.isDark"
         @change="handleDarkModeChange"
         hide-details
         class="mb-5"
       ></v-switch>
 
-      <v-btn
+      <btn
         color="secondary"
         @click="handleReset"
       >
         Reset to default
-      </v-btn>
+      </btn>
 
     </v-card-text>
   </collapsable-card>
@@ -54,36 +54,36 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
   }
 
   setTheme (value: ThemeConfig) {
-    this.$vuetify.theme.dark = value.darkMode
-    this.$vuetify.theme.currentTheme.primary = value.colors.primary
+    this.$vuetify.theme.dark = value.isDark
+    this.$vuetify.theme.currentTheme.primary = value.currentTheme.primary
   }
 
   handlePrimaryColorChange = debounce((value: { hex: string }) => {
     this.setTheme({
-      darkMode: this.theme.darkMode,
-      colors: {
+      isDark: this.theme.isDark,
+      currentTheme: {
         primary: value.hex
       }
     })
 
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.theme.colors.primary', value: value.hex })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.theme.currentTheme.primary', value: value.hex })
   }, 500)
 
   handleDarkModeChange (value: boolean) {
     this.setTheme({
-      darkMode: value,
-      colors: {
-        primary: this.theme.colors.primary
+      isDark: value,
+      currentTheme: {
+        primary: this.theme.currentTheme.primary
       }
     })
 
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.theme.darkMode', value })
+    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.theme.isDark', value })
   }
 
   handleReset () {
     const theme: ThemeConfig = {
-      darkMode: true,
-      colors: {
+      isDark: true,
+      currentTheme: {
         primary: '#2196F3'
       }
     }
