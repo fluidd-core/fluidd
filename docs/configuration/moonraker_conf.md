@@ -29,7 +29,6 @@ cors_domains:
   *.local
   *.lan
   *://app.fluidd.xyz
-  *://192.168.*
 
 trusted_clients:
   10.0.0.0/8

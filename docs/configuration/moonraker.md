@@ -55,9 +55,15 @@ required to meet specific needs.
 ### Cors Domains
 
 Cors Domains are a list of host names that are allowed to communicate with
-moonraker. Generally speaking, the address you type into your browsers URL bar
-to communicate with Fluidd, should also exist in moonraker.
-You can enter an address as a wildcard or full host. Again, the
+moonraker.
+
+If your IP address falls under the trusted clients below, moonraker should allow
+your host to connect without changes.
+However, if you're having trouble - or otherwise attempting
+to connect from a unique location, you may want to add an entry into the `cors_domains`
+block.
+
+You can enter an address as a wildcard or full host. The
 [configuration example](/configuration/moonraker_conf) provides configuration that should work
 for most users.
 
