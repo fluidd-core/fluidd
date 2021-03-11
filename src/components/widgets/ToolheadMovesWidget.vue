@@ -4,14 +4,14 @@
       <v-col cols="auto" class="ml-12 mr-12">
         <btn-toolhead-move
           @click="sendMoveGcode('Y', toolheadMoveLength)"
-          :disabled="hasWaits || !xyHomed || !klippyConnected"
+          :disabled="hasWaits || !xyHomed || !klippyReady"
           icon="$up">
         </btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-2">
         <btn-toolhead-move
           @click="sendMoveGcode('Z', toolheadMoveLength)"
-          :disabled="hasWaits || !zHomed || !klippyConnected"
+          :disabled="hasWaits || !zHomed || !klippyReady"
           icon="$up">
         </btn-toolhead-move>
       </v-col>
@@ -19,7 +19,7 @@
         <btn-toolhead-move
           :color="(!allHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeAll)"
-          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28', waits.onHomeAll)"
           icon="$home"
           small-icon>
@@ -31,7 +31,7 @@
       <v-col cols="auto">
         <btn-toolhead-move
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
-          :disabled="hasWaits || !xyHomed || !klippyConnected"
+          :disabled="hasWaits || !xyHomed || !klippyReady"
           icon="$left">
         </btn-toolhead-move>
       </v-col>
@@ -39,7 +39,7 @@
         <btn-toolhead-move
           :color="(!xyHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeXY)"
-          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28 X Y', waits.onHomeXY)"
           tooltip="Home XY"
           icon="$home">
@@ -48,7 +48,7 @@
       <v-col cols="auto" class="ml-2">
         <btn-toolhead-move
           @click="sendMoveGcode('X', toolheadMoveLength)"
-          :disabled="hasWaits || !xyHomed || !klippyConnected"
+          :disabled="hasWaits || !xyHomed || !klippyReady"
           icon="$right">
         </btn-toolhead-move>
       </v-col>
@@ -56,7 +56,7 @@
         <btn-toolhead-move
           :color="(!zHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeZ)"
-          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28 Z', waits.onHomeZ)"
           tooltip="Home Z"
           icon="$home">
@@ -66,7 +66,7 @@
         <btn-toolhead-move
           :color="(!xHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeX)"
-          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28 X', waits.onHomeX)"
           icon="$home"
           small-icon>
@@ -78,14 +78,14 @@
       <v-col cols="auto" class="ml-12 mr-7">
         <btn-toolhead-move
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
-          :disabled="hasWaits || !xyHomed || !klippyConnected"
+          :disabled="hasWaits || !xyHomed || !klippyReady"
           icon="$down">
         </btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-7">
         <btn-toolhead-move
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
-          :disabled="hasWaits || !zHomed || !klippyConnected"
+          :disabled="hasWaits || !zHomed || !klippyReady"
           icon="$down">
         </btn-toolhead-move>
       </v-col>
@@ -93,7 +93,7 @@
         <btn-toolhead-move
           :color="(!yHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeY)"
-          :disabled="!klippyConnected || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28 Y', waits.onHomeY)"
           icon="$home"
           small-icon>
@@ -104,10 +104,10 @@
     <v-row no-gutters justify="start" class="mb-2">
       <v-col>
         <v-btn-toggle mandatory dense v-model="toolheadMoveLength">
-          <btn :min-width="49" color="secondary" value="0.1" :disabled="!klippyConnected">0.1</btn>
-          <btn :min-width="49" class="pa-0" color="secondary" value="1.0" :disabled="!klippyConnected">1.0</btn>
-          <btn :min-width="49" class="pa-0" color="secondary" value="10" :disabled="!klippyConnected">10</btn>
-          <btn :min-width="49" class="pa-0" color="secondary" value="100" :disabled="!klippyConnected">100</btn>
+          <btn :min-width="49" color="secondary" value="0.1" :disabled="!klippyReady">0.1</btn>
+          <btn :min-width="49" class="pa-0" color="secondary" value="1.0" :disabled="!klippyReady">1.0</btn>
+          <btn :min-width="49" class="pa-0" color="secondary" value="10" :disabled="!klippyReady">10</btn>
+          <btn :min-width="49" class="pa-0" color="secondary" value="100" :disabled="!klippyReady">100</btn>
         </v-btn-toggle>
       </v-col>
     </v-row>
@@ -116,7 +116,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
 import { Waits } from '@/globals'
 import BtnToolheadMove from '@/components/inputs/BtnToolheadMove.vue'
 
@@ -125,13 +126,13 @@ import BtnToolheadMove from '@/components/inputs/BtnToolheadMove.vue'
     BtnToolheadMove
   }
 })
-export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
+export default class ToolheadMovesWidget extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   moveLength = ''
   fab = false
 
   get kinematics () {
-    return this.$store.getters['socket/getPrinterSettings']('printer.kinematics') || ''
+    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
   }
 
   get canHomeXY () {
@@ -146,6 +147,24 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
 
   set toolheadMoveLength (val: string) {
     this.moveLength = val
+  }
+
+  /**
+   * Send a move gcode script.
+   */
+  sendMoveGcode (axis: string, distance: string, negative = false) {
+    axis = axis.toLowerCase()
+    const rate = (axis.toLowerCase() === 'z')
+      ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+      : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+    const inverted = this.$store.state.config.uiSettings.general.axis[axis].inverted || false
+    distance = ((negative && !inverted) || (!negative && inverted))
+      ? '-' + distance
+      : distance
+
+    this.sendGcode(`G91
+      G1 ${axis}${distance} F${rate * 60}
+      G90`)
   }
 }
 </script>

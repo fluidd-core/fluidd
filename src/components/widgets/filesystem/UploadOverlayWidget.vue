@@ -52,11 +52,11 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { FilesUpload } from '@/store/files/types'
 
 @Component({})
-export default class UploadOverlayWidget extends Mixins(UtilsMixin) {
+export default class UploadOverlayWidget extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean;
 

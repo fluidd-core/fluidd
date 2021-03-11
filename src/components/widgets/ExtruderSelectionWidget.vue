@@ -15,19 +15,19 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({
   components: {}
 })
-export default class ExtruderSelectionWidget extends Mixins(UtilsMixin) {
+export default class ExtruderSelectionWidget extends Mixins(StateMixin) {
   get extruders () {
-    return this.$store.getters['socket/getExtruders']
+    return this.$store.getters['printer/getExtruders']
   }
 
   get extruder () {
-    return this.$store.state.socket.printer.toolhead.extruder
+    return this.$store.state.printer.printer.toolhead.extruder
   }
 
   set extruder (extruder: string) {

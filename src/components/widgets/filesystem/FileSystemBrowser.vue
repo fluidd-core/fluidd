@@ -243,7 +243,7 @@ import { getThumb } from '@/store/helpers'
 import FileSystemControls from '@/components/widgets/filesystem/FileSystemControls.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { DataTableHeader } from 'vuetify'
 import { VForm } from '@/types/vuetify'
 
@@ -252,7 +252,7 @@ import { VForm } from '@/types/vuetify'
     FileSystemControls
   }
 })
-export default class FileSystemBrowser extends Mixins(UtilsMixin) {
+export default class FileSystemBrowser extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   root!: string;
 

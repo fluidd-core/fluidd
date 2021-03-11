@@ -58,20 +58,20 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({})
-export default class PrintStatusWidget extends Mixins(UtilsMixin) {
+export default class PrintStatusWidget extends Mixins(StateMixin) {
   buttonWidths = 140
   waits = Waits
 
   get filename () {
-    return this.$store.state.socket.printer.print_stats.filename
+    return this.$store.state.printer.printer.print_stats.filename
   }
 
   get thumbnail () {
-    return this.$store.getters['socket/getPrintImage']
+    return this.$store.getters['printer/getPrintImage']
   }
 
   get printTimeEstimationsType () {
@@ -79,12 +79,12 @@ export default class PrintStatusWidget extends Mixins(UtilsMixin) {
   }
 
   get timeEstimates () {
-    return this.$store.getters['socket/getTimeEstimates']
+    return this.$store.getters['printer/getTimeEstimates']
   }
 
   get filamentEstimates () {
-    const filamentUsed = this.$store.state.socket.printer.print_stats.filament_used || 0
-    const filamentTotal = this.$store.state.socket.printer.current_file.filament_total || 0
+    const filamentUsed = this.$store.state.printer.printer.print_stats.filament_used || 0
+    const filamentTotal = this.$store.state.printer.printer.current_file.filament_total || 0
     if (filamentUsed > 0) {
       if (filamentTotal > 0) {
         return `${this.$filters.getReadableLengthString(filamentUsed)} / ${this.$filters.getReadableLengthString(filamentTotal)}`

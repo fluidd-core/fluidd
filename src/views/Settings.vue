@@ -11,7 +11,7 @@
         <toolhead-settings-card></toolhead-settings-card>
       </v-col>
       <v-col cols="12" sm="4" md="6" class="pt-0">
-        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
+        <klippy-card v-if="!klippyReady || hasWarnings"></klippy-card>
         <temperature-preset-settings-card></temperature-preset-settings-card>
         <macro-settings-card></macro-settings-card>
       </v-col>
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import MacroSettingsCard from '@/components/cards/settings/MacroSettingsCard.vue'
 import GeneralSettingsCard from '@/components/cards/settings/GeneralSettingsCard.vue'
 import TemperaturePresetSettingsCard from '@/components/cards/settings/TemperaturePresetSettingsCard.vue'
@@ -43,5 +43,5 @@ import ThemeSettingsCard from '@/components/cards/settings/ThemeSettingsCard.vue
     ThemeSettingsCard
   }
 })
-export default class Settings extends Mixins(UtilsMixin) {}
+export default class Settings extends Mixins(StateMixin) {}
 </script>

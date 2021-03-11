@@ -25,7 +25,7 @@
       :class="{ 'draggable': isInLayout }"
     >
       <slot name="title">
-        <v-icon left>{{ icon }}</v-icon>
+        <v-icon left :color="iconColor">{{ icon }}</v-icon>
         <span class="font-weight-light">{{ title }}</span>
       </slot>
       <v-spacer />
@@ -154,6 +154,12 @@ export default class ToolheadCard extends Vue {
    */
   @Prop({ type: String, required: false })
   icon!: string
+
+  /**
+   * The icon color to use in the title.
+   */
+  @Prop({ type: String, required: false })
+  iconColor!: string
 
   /**
    * Loading state.

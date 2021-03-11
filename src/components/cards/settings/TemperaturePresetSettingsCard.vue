@@ -60,7 +60,6 @@
               <v-text-field
                 label="Preset Name"
                 v-model="preset.name"
-                :height="36"
                 :rules="[rules.required]"
                 hide-details="auto"
                 class="mb-2"
@@ -69,7 +68,7 @@
               <template v-if="dialog.active">
                 <v-text-field
                   v-for="item in heaters" :key="item.name"
-                  v-model="preset.values[item.name].value"
+                  v-model.number="preset.values[item.name].value"
                   :label="item.name"
                   :rules="[rules.numRequired, rules.numMin]"
                   :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
@@ -82,7 +81,7 @@
                 </v-text-field>
                 <v-text-field
                   v-for="item in fans" :key="item.name"
-                  v-model="preset.values[item.name].value"
+                  v-model.number="preset.values[item.name].value"
                   :label="item.name"
                   :rules="[rules.numRequired, rules.numMin]"
                   :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
@@ -110,19 +109,19 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { cloneDeep } from 'lodash-es'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { TemperaturePreset } from '@/store/config/types'
-import { Fan, Heater } from '@/store/socket/types'
+import { Fan, Heater } from '@/store/printer/types'
 import { VForm } from '@/types/vuetify'
 
 @Component({})
-export default class TemperaturePresetSettingsCard extends Mixins(UtilsMixin) {
+export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
   get heaters (): Heater[] {
-    return this.$store.getters['socket/getHeaters']
+    return this.$store.getters['printer/getHeaters']
   }
 
   get fans (): Fan[] {
-    return this.$store.getters['socket/getOutputs'](['temperature_fan'])
+    return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
   get presets () {

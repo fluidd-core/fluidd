@@ -1,13 +1,18 @@
+import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta } from './types'
 import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
+import consola from 'consola'
 
 export const actions: ActionTree<FilesState, RootState> = {
-  async onRegisteredDirectores ({ commit }, payload) {
-    commit('onRegisteredDirectores', payload)
+  /**
+   * Reset our store
+   */
+  async reset ({ commit }) {
+    commit('setReset')
   },
 
   async onServerFilesGetDirectory ({ commit }, payload) {
@@ -52,7 +57,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         }
       })
     }
-    commit('onServerFilesGetDirectory', { root, directory: { path, items } })
+    commit('setServerFilesGetDirectory', { root, directory: { path, items } })
   },
 
   /**
@@ -66,8 +71,8 @@ export const actions: ActionTree<FilesState, RootState> = {
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
-    if (rootState.socket && file.filename === rootState.socket.printer.print_stats.filename) {
-      commit('socket/onSocketNotify', { key: 'current_file', payload: file }, { root: true })
+    if (file.filename === rootState.printer?.printer.print_stats.filename) {
+      commit('printer/setSocketNotify', { key: 'current_file', payload: file }, { root: true })
     }
 
     // Apply the metadata to our specific file.
@@ -76,7 +81,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       root,
       file
     }
-    commit('onFileUpdate', update)
+    commit('setFileUpdate', update)
   },
 
   /**
@@ -122,7 +127,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         root,
         file
       }
-      commit('onFileUpdate', update)
+      commit('setFileUpdate', update)
     }
   },
 
@@ -135,7 +140,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       root,
       file
     }
-    commit('onFileDelete', update)
+    commit('setFileDelete', update)
   },
 
   async notifyCreatedir (_, payload: FileChangeSocketResponse) {
@@ -151,14 +156,36 @@ export const actions: ActionTree<FilesState, RootState> = {
   },
 
   async addFileUpload ({ commit }, payload) {
-    commit('addFileUpload', payload)
+    commit('setAddFileUpload', payload)
   },
 
   async updateFileUpload ({ commit }, payload) {
-    commit('updateFileUpload', payload)
+    commit('setUpdateFileUpload', payload)
   },
 
   async removeFileUpload ({ commit }, payload) {
-    commit('removeFileUpload', payload)
+    commit('setRemoveFileUpload', payload)
+  },
+
+  /**
+   * Saves data to a file.
+   */
+  async saveFile ({ rootState }, payload: { data: any; file: string }) {
+    const formData = new FormData()
+    const filename = payload.file
+    const file = new File([JSON.stringify(payload.data)], filename)
+    formData.append('file', file, filename)
+    formData.append('root', 'config')
+    consola.debug('uploading configuration...', filename, payload.data)
+    Vue.$http.post(
+      rootState.config?.apiUrl + '/server/files/upload',
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    )
   }
+
 }

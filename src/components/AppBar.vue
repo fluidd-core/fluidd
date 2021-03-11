@@ -35,7 +35,7 @@
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
           <btn
-            :disabled="!klippyConnected"
+            :disabled="!klippyReady"
             icon
             color="error"
             @click="emergencyStop()"
@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/socketActions'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 
@@ -76,7 +76,7 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
     SystemCommandsWidget
   }
 })
-export default class AppBar extends Mixins(UtilsMixin) {
+export default class AppBar extends Mixins(StateMixin) {
   menu = false
 
   get jobsAvailable () {
@@ -92,7 +92,7 @@ export default class AppBar extends Mixins(UtilsMixin) {
   }
 
   get currentFile () {
-    return this.$store.state.socket.printer.print_stats.filename
+    return this.$store.state.printer.printer.print_stats.filename
   }
 
   get hasUpdates () {

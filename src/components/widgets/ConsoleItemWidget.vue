@@ -16,7 +16,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import { ConsoleEntry } from '@/store/socket/types'
+import { ConsoleEntry } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleEntriesWidget extends Vue {
@@ -24,7 +24,7 @@ export default class ConsoleEntriesWidget extends Vue {
   value!: ConsoleEntry
 
   get knownCommands () {
-    const availableCommands = this.$store.getters['socket/getAllGcodeCommands']
+    const availableCommands = this.$store.getters['console/getAllGcodeCommands']
     return new Set(Object.keys(availableCommands))
   }
 

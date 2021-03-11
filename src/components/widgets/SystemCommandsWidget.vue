@@ -62,7 +62,7 @@
         </v-list-item-content>
       </template>
 
-      <v-list-item @click="serviceRestartMoonraker"
+      <v-list-item @click="serviceRestartMoonraker(); $emit('click')"
         :disabled="printerPrinting">
         <v-list-item-title>Restart Moonraker</v-list-item-title>
         <v-list-item-icon>
@@ -71,8 +71,8 @@
       </v-list-item>
 
       <v-list-item
-        v-if="!klipperConnected"
-        @click="serviceRestartKlipper"
+        v-if="!klippyConnected"
+        @click="serviceRestartKlipper(); $emit('click')"
         :disabled="printerPrinting">
         <v-list-item-title>Restart Klipper</v-list-item-title>
         <v-list-item-icon>
@@ -81,8 +81,8 @@
       </v-list-item>
 
       <v-list-item
-        v-if="klipperConnected"
-        @click="serviceRestartKlippy"
+        v-if="klippyConnected"
+        @click="restartKlippy(); $emit('click')"
         :disabled="printerPrinting">
         <v-list-item-title>Restart Klipper</v-list-item-title>
         <v-list-item-icon>
@@ -91,32 +91,25 @@
       </v-list-item>
 
       <v-list-item
-        v-if="klipperConnected"
-        @click="serviceFirmwareRestartKlippy"
+        v-if="klippyConnected"
+        @click="firmwareRestartKlippy(); $emit('click')"
         :disabled="printerPrinting">
         <v-list-item-title>Firmware Restart Klipper</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
       </v-list-item>
-
-      <!-- <v-list-item @click="serverRestart">
-        <v-list-item-title>Server Restart</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon>$restartAlert</v-icon>
-        </v-list-item-icon>
-      </v-list-item> -->
     </v-list-group>
 
     <dialog-confirm
       v-model="confirmRebootDialog.open"
-      @confirm="hostReboot">
+      @confirm="handleHostReboot">
       <p>Are you sure? This will reboot your host system.</p>
     </dialog-confirm>
 
     <dialog-confirm
       v-model="confirmShutdownDialog.open"
-      @confirm="hostShutdown">
+      @confirm="handleHostShutdown">
       <p>Are you sure? This will shutdown your host system.</p>
     </dialog-confirm>
 
@@ -125,7 +118,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
+import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/socketActions'
 import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 import { Device } from '@/store/devicePower/types'
@@ -135,7 +129,7 @@ import { Device } from '@/store/devicePower/types'
     DialogConfirm
   }
 })
-export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
+export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMixin) {
   confirmRebootDialog = {
     open: false
   }
@@ -144,8 +138,8 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
     open: false
   }
 
-  get klipperConnected () {
-    return this.$store.state.socket.printer.serverInfo.klippy_connected
+  get serverInfo () {
+    return this.$store.getters['server/getInfo']
   }
 
   get hosted () {
@@ -157,7 +151,21 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
   }
 
   get devicePowerPluginEnabled () {
-    return (this.$store.state.socket.printer.serverInfo.plugins.includes('power'))
+    return (this.serverInfo.plugins.includes('power'))
+  }
+
+  handleHostReboot (val: boolean) {
+    if (val) {
+      this.$emit('click')
+      this.hostReboot()
+    }
+  }
+
+  handleHostShutdown (val: boolean) {
+    if (val) {
+      this.$emit('click')
+      this.hostShutdown()
+    }
   }
 
   togglePowerDevice (device: Device, wait?: string) {
@@ -191,40 +199,6 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
         return `${device.device}`
       }
     }
-  }
-
-  hostReboot (val: boolean) {
-    if (val) {
-      SocketActions.machineReboot()
-      this.$emit('click')
-    }
-  }
-
-  hostShutdown (val: boolean) {
-    if (val) {
-      SocketActions.machineShutdown()
-      this.$emit('click')
-    }
-  }
-
-  serviceRestartKlipper () {
-    SocketActions.machineServicesRestart('klipper')
-    this.$emit('click')
-  }
-
-  serviceRestartKlippy () {
-    SocketActions.printerRestart()
-    this.$emit('click')
-  }
-
-  serviceFirmwareRestartKlippy () {
-    SocketActions.printerFirmwareRestart()
-    this.$emit('click')
-  }
-
-  serviceRestartMoonraker () {
-    SocketActions.serverRestart()
-    this.$emit('click')
   }
 }
 </script>

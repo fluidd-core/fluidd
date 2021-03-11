@@ -1,71 +1,26 @@
 import Vue from 'vue'
-import consola from 'consola'
 import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, GenericSave, InstanceConfig, InitConfig, CardConfig } from './types'
-import { Macro } from '../socket/types'
+import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, CardConfig } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
+import consola from 'consola'
 
 export const mutations: MutationTree<ConfigState> = {
-  resetState (state) {
-    const newState = defaultState()
-    Object.keys(newState).forEach((key: string) => {
-      Vue.set(state, key, newState[key])
-    })
+  /**
+   * Reset state
+   */
+  setReset (state) {
+    Object.assign(state, defaultState())
   },
 
   /**
-   * On initial init we get the server (moonraker) configuration.
+   * Inits UI settings from the db
    */
-  onServerConfig (state, payload) {
-    state.serverConfig = { ...state.serverConfig, ...payload }
-  },
-
-  /**
-   * During init of the store, sets uiSettings.
-   * This would be set on first app load after we've loaded
-   * the configuration JSON (if any.. )
-   */
-  initUiSettings (state, payload: UiSettings) {
-    // this should extend the default config as we
-    // don't want to overrite defaults if not defined
-    // in the file yet.
+  setInitUiSettings (state, payload: UiSettings) {
     if (payload) {
-      state.uiSettings = merge(state.uiSettings, payload)
-    } else {
-      // If the user has not saved their own configuration yet,
-      // then set any sane values over and above the base store state
-      // here.
-      // Get the api URL without a specific port, as the web cam is usually
-      // hosted on 80.
-      let camUrl
-      let url
-      try {
-        url = new URL(state.apiUrl)
-        camUrl = `${url.protocol}//${url.hostname}${state.uiSettings.camera.url}`
-      } catch {
-        camUrl = state.apiUrl + state.uiSettings.camera.url
-      }
-      state.uiSettings.camera.url = camUrl
-    }
-  },
-
-  /**
-   * Inits the console history from file
-   */
-  initConsoleHistory (state, payload: string[]) {
-    if (payload) {
-      state.consoleHistory = [...state.consoleHistory, ...payload]
-    }
-  },
-
-  /**
-   * Inits the print history from file
-   */
-  initPrintHistory (state, payload: any) {
-    if (payload) {
-      consola.debug('got some print history', payload)
+      const settings = merge(state.uiSettings, payload)
+      Vue.set(state, 'uiSettings', settings)
     }
   },
 
@@ -73,7 +28,7 @@ export const mutations: MutationTree<ConfigState> = {
    * During init of the store, sets localConfig.
    * This would usually be set once loaded from localStorage.
    */
-  onInitLocal (state) {
+  setInitLocal (state) {
     if (Globals.LOCAL_CARDSTATE_STORAGE_KEY in localStorage) {
       const config = JSON.parse(localStorage[Globals.LOCAL_CARDSTATE_STORAGE_KEY])
       Vue.set(state, 'cardState', config)
@@ -89,18 +44,19 @@ export const mutations: MutationTree<ConfigState> = {
    * Sets the API and Socket URLS on first load and
    * ensure the instance is configured in local storage
    */
-  onInitApiConfig (state, payload) {
+  setInitApiConfig (state, payload) {
+    // consola.log('initing apis', payload)
     state.apiUrl = payload.apiUrl
     state.socketUrl = payload.socketUrl
   },
 
-  onInitHostConfig (state, payload) {
+  setInitHostConfig (state, payload) {
     state.hostConfig.blacklist = payload.blacklist
     state.hostConfig.endpoints = payload.endpoints
     state.hostConfig.hosted = payload.hosted
   },
 
-  onInitInstances (state, payload: InitConfig) {
+  setInitInstances (state, payload: InitConfig) {
     let instances: InstanceConfig[] = []
     const apiConfig = payload.apiConfig
     // const uiSettings = payload.uiSettings
@@ -131,7 +87,7 @@ export const mutations: MutationTree<ConfigState> = {
     Vue.set(state, 'instances', instances)
   },
 
-  updateInstanceName (state, payload) {
+  setUpdateInstanceName (state, payload) {
     const index = state.instances.findIndex(instance => instance.apiUrl === payload.apiUrl)
     if (index > -1) {
       const instance = state.instances[index]
@@ -140,7 +96,7 @@ export const mutations: MutationTree<ConfigState> = {
     localStorage.setItem(Globals.LOCAL_INSTANCES_STORAGE_KEY, JSON.stringify(state.instances))
   },
 
-  removeInstance (state, payload) {
+  setRemoveInstance (state, payload) {
     const instances = state.instances
     const i = instances.findIndex((instance: InstanceConfig) => instance.apiUrl === payload.apiUrl)
     if (i >= 0) {
@@ -154,45 +110,25 @@ export const mutations: MutationTree<ConfigState> = {
    * This should only be used on properties that have a default state in the store
    * otherwise they will not be reactive.
    */
-  onSaveGeneric (state, payload: GenericSave) {
-    set(state, payload.key, payload.value)
+  setSaveByPath (state, payload: SaveByPath) {
+    set(state, payload.path, payload.value)
   },
 
-  saveCardState (state, payload) {
+  setCardState (state, payload) {
     const config = { ...state.cardState, ...payload }
     Vue.set(state, 'cardState', config)
     localStorage.setItem(Globals.LOCAL_CARDSTATE_STORAGE_KEY, JSON.stringify(config))
   },
 
-  saveCardConfig (state, payload: { group: string; cards: CardConfig[] }) {
+  setCardConfig (state, payload: { group: string; cards: CardConfig[] }) {
     state.cardLayout[payload.group] = payload.cards
     localStorage.setItem(Globals.LOCAL_CARDLAYOUT_STORAGE_KEY, JSON.stringify(state.cardLayout))
   },
 
   /**
-   * Sets unsaved changes for file config.
-   */
-  setUnsavedChanges (state, payload: boolean) {
-    state.unsavedChanges = payload
-  },
-
-  /**
-   * Updates the hidden macro list.
-   */
-  updateHiddenMacros (state, macro: Macro) {
-    const i = state.uiSettings.dashboard.hiddenMacros.indexOf(macro.name, 0)
-    if (macro.visible && i >= 0) {
-      state.uiSettings.dashboard.hiddenMacros.splice(i, 1)
-    }
-    if (!macro.visible && i < 0) {
-      state.uiSettings.dashboard.hiddenMacros.push(macro.name)
-    }
-  },
-
-  /**
    * Update / Add a temperature preset
    */
-  updatePreset (state, payload) {
+  setPreset (state, payload) {
     const i = payload.index
     if (i >= 0) {
       Vue.set(state.uiSettings.dashboard.tempPresets, i, payload.preset)
@@ -204,10 +140,13 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Remove a preset
    */
-  removePreset (state, payload) {
+  setRemovePreset (state, payload) {
     state.uiSettings.dashboard.tempPresets.splice(payload, 1)
   },
 
+  /**
+   * Puts us into layout mode
+   */
   setLayoutMode (state, payload) {
     state.layoutMode = payload
   }

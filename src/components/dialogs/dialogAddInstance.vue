@@ -78,14 +78,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Globals, Waits } from '@/globals'
 import { VForm } from '@/types/vuetify'
 import { AxiosError } from 'axios'
 import consola from 'consola'
 
 @Component({})
-export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
+export default class SystemPrintersWidget extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 

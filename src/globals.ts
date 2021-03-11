@@ -90,20 +90,25 @@ import {
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
   NETWORK_REQUEST_TIMEOUT: 500,
+  KLIPPY_RETRY_DELAY: 1500,
+  SOCKET_RETRY_DELAY: 2000,
   CONSOLE_HISTORY_RETENTION: 1000, // total count
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
-  CONSOLE_COMMAND_HISTORY: 5,
+  CONSOLE_COMMAND_HISTORY: 20,
   CHART_HISTORY_RETENTION: 1200,
-  KLIPPY_RETRY_DELAY: 2000,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
-  CONFIG_FILES: {
-    UiSettings: '.fluidd.json',
-    ConsoleHistory: '.fluidd_console_history.json'
-    // PrintHistory: '.fluidd_file_history.json'
+  MOONRAKER_DB: {
+    NAMESPACE: 'fluidd',
+    ROOTS: {
+      uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
+      macros: { name: 'macros', dispatch: 'macros/initMacros' },
+      console: { name: 'console', dispatch: 'console/initConsole' },
+      charts: { name: 'charts', dispatch: 'charts/initCharts' }
+    }
   },
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],

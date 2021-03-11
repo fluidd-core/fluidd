@@ -24,7 +24,7 @@
           <v-icon left>$fire</v-icon>
           Thermals
         </v-tab>
-        <v-tab :key="'jobs'" v-if="klippyConnected && jobsInDash" :disabled="inLayout || attrs.isCollapsed">
+        <v-tab :key="'jobs'" v-if="klippyReady && jobsInDash" :disabled="inLayout || attrs.isCollapsed">
           <v-icon left>$files</v-icon>
           Jobs
         </v-tab>
@@ -61,7 +61,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 
@@ -71,7 +71,7 @@ import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWid
     TemperatureTargetsWidget
   }
 })
-export default class ToolsCard extends Mixins(UtilsMixin) {
+export default class ToolsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 

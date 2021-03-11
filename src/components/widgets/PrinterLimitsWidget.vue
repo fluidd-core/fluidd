@@ -11,7 +11,7 @@
           :min="1"
           :max="velocity.max"
           :rules="[rules.min1, rules.velocityMax]"
-          :disabled="!klippyConnected"
+          :disabled="!klippyReady"
           :loading="hasWait(waits.onSetVelocity)"
           @input="setVelocity($event)">
         </input-slider>
@@ -26,7 +26,7 @@
           :step="0.1"
           :max="scv.max"
           :rules="[rules.min0, rules.scvMax]"
-          :disabled="!klippyConnected"
+          :disabled="!klippyReady"
           :loading="hasWait(waits.onSetSQV)"
           @input="setSCV($event)">
         </input-slider>
@@ -42,7 +42,7 @@
           :min="1"
           :max="accel.max"
           :rules="[rules.min1, rules.accelMax]"
-          :disabled="!klippyConnected"
+          :disabled="!klippyReady"
           :loading="hasWait(waits.onSetAcceleration)"
           @input="setAcceleration($event)">
         </input-slider>
@@ -56,7 +56,7 @@
           :min="1"
           :max="decel.max"
           :rules="[rules.min1, rules.decelMax]"
-          :disabled="!klippyConnected"
+          :disabled="!klippyReady"
           :loading="hasWait(waits.onSetDeceleration)"
           @input="setDeceleration($event)">
         </input-slider>
@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 import InputSlider from '@/components/inputs/InputSlider.vue'
 
@@ -76,7 +76,7 @@ import InputSlider from '@/components/inputs/InputSlider.vue'
     InputSlider
   }
 })
-export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
+export default class PrinterLimitsWidget extends Mixins(StateMixin) {
   waits = Waits
 
   rules = {
@@ -101,33 +101,33 @@ export default class PrinterLimitsWidget extends Mixins(UtilsMixin) {
   }
 
   get velocity () {
-    const max = this.$store.getters['socket/getPrinterSettings']('printer.max_velocity')
+    const max = this.$store.getters['printer/getPrinterSettings']('printer.max_velocity')
     return {
-      current: this.$store.state.socket.printer.toolhead.max_velocity,
+      current: this.$store.state.printer.printer.toolhead.max_velocity,
       max
     }
   }
 
   get accel () {
-    const max = this.$store.getters['socket/getPrinterSettings']('printer.max_accel')
+    const max = this.$store.getters['printer/getPrinterSettings']('printer.max_accel')
     return {
-      current: this.$store.state.socket.printer.toolhead.max_accel,
+      current: this.$store.state.printer.printer.toolhead.max_accel,
       max
     }
   }
 
   get decel () {
-    const max = this.$store.getters['socket/getPrinterSettings']('printer.max_accel_to_decel') || this.accel.max / 2
+    const max = this.$store.getters['printer/getPrinterSettings']('printer.max_accel_to_decel') || this.accel.max / 2
     return {
-      current: this.$store.state.socket.printer.toolhead.max_accel_to_decel,
+      current: this.$store.state.printer.printer.toolhead.max_accel_to_decel,
       max
     }
   }
 
   get scv () {
-    const max = this.$store.getters['socket/getPrinterSettings']('printer.square_corner_velocity') || 5
+    const max = this.$store.getters['printer/getPrinterSettings']('printer.square_corner_velocity') || 5
     return {
-      current: this.$store.state.socket.printer.toolhead.square_corner_velocity,
+      current: this.$store.state.printer.printer.toolhead.square_corner_velocity,
       max
     }
   }

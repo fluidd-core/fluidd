@@ -26,12 +26,12 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class BedAdjustCard extends Mixins(UtilsMixin) {
+export default class BedAdjustCard extends Mixins(StateMixin) {
   get pendingSave () {
-    return this.$store.state.socket.printer.configfile.save_config_pending
+    return this.$store.state.printer.printer.configfile.save_config_pending
   }
 }
 </script>

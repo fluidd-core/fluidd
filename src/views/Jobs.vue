@@ -4,7 +4,7 @@
       <v-col cols="12" class="pt-0">
         <file-system-card
           :root="'gcodes'"
-          accept=".gcode,.ufp"
+          accept=".gcode,.g,.gc,.gco,.ufp,.nc"
           :upload-and-print="true"
           :show-meta-data="true">
         </file-system-card>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
@@ -32,9 +32,9 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     FileSystemCard
   }
 })
-export default class Configuration extends Mixins(UtilsMixin) {
+export default class Configuration extends Mixins(StateMixin) {
   get supportsBedMesh () {
-    return this.$store.getters['socket/getSupportsBedMesh']
+    return this.$store.getters['printer/getSupportsBedMesh']
   }
 }
 </script>

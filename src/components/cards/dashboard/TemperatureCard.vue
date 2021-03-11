@@ -26,6 +26,7 @@
         small
         class="mr-2"
         color="secondary"
+        :disabled="!klippyReady"
         @click="chartVisible = !chartVisible">
         <v-icon left>$chart</v-icon>
         {{ (chartVisible) ? 'on' : 'off' }}
@@ -41,7 +42,6 @@
       v-if="chartReady && chartVisible"
       :chart-data="chartData"
       ref="chart"
-      @legend-select-changed="handleLegendSelectChange"
     ></e-charts-widget>
 
   </collapsable-card>
@@ -51,9 +51,8 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 import EChartsWidget from '@/components/widgets/EChartsWidget.vue'
-import UtilsMixin from '@/mixins/utils'
-import { Fan, Heater } from '@/store/socket/types'
-// import { ChartSelectedLegends } from '@/store/config/types'
+import StateMixin from '@/mixins/state'
+import { Fan, Heater } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -61,24 +60,21 @@ import { Fan, Heater } from '@/store/socket/types'
     EChartsWidget
   }
 })
-export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
+export default class TemperatureGraphCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
   get chartData () {
-    return this.$store.getters['socket/getChartData']
+    return this.$store.getters['charts/getChartData']
   }
 
   get chartReady () {
     return (
       this.$store.state.socket.acceptingNotifications &&
       this.$store.state.socket.ready &&
-      this.klippyConnected
+      this.$store.state.charts.ready &&
+      this.klippyReady
     )
-  }
-
-  handleLegendSelectChange (legendsSelected: { name: string; type: string; selected: {[index: string]: boolean } }) {
-    this.$store.dispatch('config/saveGeneric', { key: 'appState.chartSelectedLegends', value: legendsSelected.selected })
   }
 
   legendToggleSelect (item: Heater | Fan) {
@@ -103,7 +99,11 @@ export default class TemperatureGraphCard extends Mixins(UtilsMixin) {
   }
 
   set chartVisible (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.chartVisible', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.chartVisible',
+      value,
+      server: true
+    })
   }
 
   get inLayout (): boolean {

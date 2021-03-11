@@ -7,7 +7,7 @@
         value-suffix="%"
         input-xs
         v-model.number="speed"
-        :disabled="!klippyConnected || hasWait(waits.onSetSpeed)"
+        :disabled="!klippyReady || hasWait(waits.onSetSpeed)"
         :min="1"
         :max="200"
         :rules="rules">
@@ -19,7 +19,7 @@
         value-suffix="%"
         input-xs
         v-model.number="flow"
-        :disabled="!klippyConnected || hasWait(waits.onSetFlow)"
+        :disabled="!klippyReady || hasWait(waits.onSetFlow)"
         :min="1"
         :max="200"
         :rules="rules">
@@ -31,7 +31,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import InputSlider from '@/components/inputs/InputSlider.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({
@@ -39,7 +39,7 @@ import { Waits } from '@/globals'
     InputSlider
   }
 })
-export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
+export default class SpeedAndFlowAdjustWidget extends Mixins(StateMixin) {
   waits = Waits
 
   rules = [
@@ -48,7 +48,7 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
   ]
 
   get flow () {
-    return this.$store.state.socket.printer.gcode_move.extrude_factor * 100 || 100
+    return this.$store.state.printer.printer.gcode_move.extrude_factor * 100 || 100
   }
 
   set flow (val: number) {
@@ -56,7 +56,7 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
   }
 
   get speed () {
-    return this.$store.state.socket.printer.gcode_move.speed_factor * 100 || 100
+    return this.$store.state.printer.printer.gcode_move.speed_factor * 100 || 100
   }
 
   set speed (val: number) {

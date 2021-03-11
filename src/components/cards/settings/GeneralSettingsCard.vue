@@ -9,7 +9,8 @@
         hide-details="auto"
         :rules="instanceNameRules"
         label="Printer Name"
-        v-model="instanceName"
+        :value="instanceName"
+        @change="setInstanceName"
       ></v-text-field>
     </v-card-text>
   </collapsable-card>
@@ -17,18 +18,18 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {}
 })
-export default class GeneralSettingsCard extends Mixins(UtilsMixin) {
+export default class GeneralSettingsCard extends Mixins(StateMixin) {
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
-  set instanceName (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.instanceName', value })
+  setInstanceName (value: string) {
+    this.$store.dispatch('config/updateInstance', value)
   }
 
   instanceNameRules = [

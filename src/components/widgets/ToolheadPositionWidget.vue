@@ -37,22 +37,22 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class ToolheadPositionWidget extends Mixins(UtilsMixin) {
+export default class ToolheadPositionWidget extends Mixins(StateMixin) {
   get gcodePosition () {
-    return this.$store.state.socket.printer.gcode_move.gcode_position
+    return this.$store.state.printer.printer.gcode_move.gcode_position
   }
 
   get toolheadPosition () {
-    return this.$store.state.socket.printer.toolhead.position
+    return this.$store.state.printer.printer.toolhead.position
   }
 
   get requestedSpeed () {
     // Take into account the speed multiplier.
-    const multiplier = this.$store.state.socket.printer.gcode_move.speed_factor || 1
-    let speed = this.$store.state.socket.printer.gcode_move.speed || 0
+    const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
+    let speed = this.$store.state.printer.printer.gcode_move.speed || 0
     speed = (speed * multiplier) / 60
     return speed.toFixed()
   }

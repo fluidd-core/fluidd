@@ -23,21 +23,20 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
-import { Macro } from '@/store/socket/types'
+import StateMixin from '@/mixins/state'
+import { Macro } from '@/store/macros/types'
 
 @Component({
   components: {}
 })
-export default class MacroSettingsCard extends Mixins(UtilsMixin) {
+export default class MacroSettingsCard extends Mixins(StateMixin) {
   get macros () {
-    return this.$store.getters['socket/getMacros']
+    return this.$store.getters['macros/getMacros']
   }
 
   changeMacro (macro: Macro, value: boolean) {
     const newMacro = { ...macro, visible: value }
-    this.$store.dispatch('config/updateHiddenMacros', newMacro)
-    this.$store.dispatch('socket/updateMacro', newMacro)
+    this.$store.dispatch('macros/saveMacro', newMacro)
   }
 }
 </script>

@@ -39,8 +39,8 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import FanWidget from '@/components/widgets/FanWidget.vue'
 import OutputPinWidget from '@/components/widgets/OutputPinWidget.vue'
-import UtilsMixin from '@/mixins/utils'
-import { Fan, OutputPin } from '@/store/socket/types'
+import StateMixin from '@/mixins/state'
+import { Fan, OutputPin } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -48,11 +48,11 @@ import { Fan, OutputPin } from '@/store/socket/types'
     OutputPinWidget
   }
 })
-export default class OutputsWidget extends Mixins(UtilsMixin) {
+export default class OutputsWidget extends Mixins(StateMixin) {
   get all () {
     const items: Array<Fan | OutputPin> = [
-      ...this.$store.getters['socket/getAllFans'],
-      ...this.$store.getters['socket/getPins']
+      ...this.$store.getters['printer/getAllFans'],
+      ...this.$store.getters['printer/getPins']
     ]
     let col1: Array<Fan | OutputPin> = []
     let col2: Array<Fan | OutputPin> = []

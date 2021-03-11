@@ -31,7 +31,7 @@
       <btn
         @click="sendGcode('M84')"
         :elevation="2"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
+        :disabled="hasWaits || !klippyReady || printerPrinting"
         small
         class="ma-1"
         color="secondary">
@@ -42,7 +42,7 @@
         @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         :elevation="2"
         :loading="hasWait(waits.onBedScrewsAdjust)"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
+        :disabled="hasWaits || !klippyReady || printerPrinting"
         small
         class="ma-1"
         color="secondary">
@@ -53,7 +53,7 @@
         @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         :elevation="2"
         :loading="hasWait(waits.onBedScrewsCalculate)"
-        :disabled="!allHomed || hasWaits || !klippyConnected || printerPrinting"
+        :disabled="!allHomed || hasWaits || !klippyReady || printerPrinting"
         small
         class="ma-1"
         color="secondary">
@@ -64,7 +64,7 @@
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :elevation="2"
         :loading="hasWait(waits.onZTilt)"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
+        :disabled="hasWaits || !klippyReady || printerPrinting"
         small
         class="ma-1"
         color="secondary">
@@ -75,7 +75,7 @@
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         :elevation="2"
         :loading="hasWait(waits.onQGL)"
-        :disabled="hasWaits || !klippyConnected || printerPrinting"
+        :disabled="hasWaits || !klippyReady || printerPrinting"
         small
         class="ma-1"
         color="secondary">
@@ -89,7 +89,8 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
 import ToolheadWidget from '@/components/widgets/ToolheadWidget.vue'
 
 @Component({
@@ -97,9 +98,29 @@ import ToolheadWidget from '@/components/widgets/ToolheadWidget.vue'
     ToolheadWidget
   }
 })
-export default class ToolheadCard extends Mixins(UtilsMixin) {
+export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
+
+  get printerSettings () {
+    return this.$store.getters['printer/getPrinterSettings']()
+  }
+
+  get printerSupportsQgl (): boolean {
+    return 'quad_gantry_level' in this.printerSettings
+  }
+
+  get printerSupportsZtilt (): boolean {
+    return 'z_tilt' in this.printerSettings
+  }
+
+  get printerSupportsBedScrews (): boolean {
+    return 'bed_screws' in this.printerSettings
+  }
+
+  get printerSupportsBedScrewsCalculate (): boolean {
+    return 'screws_tilt_adjust' in this.printerSettings
+  }
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)

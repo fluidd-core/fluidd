@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
 import { CardConfig, ConfigState, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
-import { Heater, Fan } from '../socket/types'
+import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
 
 export const getters: GetterTree<ConfigState, RootState> = {
@@ -22,6 +22,10 @@ export const getters: GetterTree<ConfigState, RootState> = {
     return state.cardLayout[group]
   },
 
+  getHostConfig: (state) => {
+    return state.hostConfig
+  },
+
   /**
    * Return temp presets. Ensure we only return a preset
    * for a known heater or fan, incase things change
@@ -30,8 +34,8 @@ export const getters: GetterTree<ConfigState, RootState> = {
   getTempPresets: (state, getters, rootState, rootGetters) => {
     const originalPresets: TemperaturePreset[] = state.uiSettings.dashboard.tempPresets
     const presets: TemperaturePreset[] = []
-    const heaters = rootGetters['socket/getHeaters']
-    const fans = rootGetters['socket/getOutputs'](['temperature_fan'])
+    const heaters = rootGetters['printer/getHeaters']
+    const fans = rootGetters['printer/getOutputs'](['temperature_fan'])
 
     originalPresets.forEach((originalPreset: TemperaturePreset) => {
       const preset: TemperaturePreset = {

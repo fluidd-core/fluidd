@@ -56,7 +56,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { SocketActions } from '@/socketActions'
 import VersionStatus from '@/components/VersionStatus.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 
@@ -65,7 +65,7 @@ import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
     VersionStatus
   }
 })
-export default class SystemVersionsWidget extends Mixins(UtilsMixin) {
+export default class SystemVersionsWidget extends Mixins(StateMixin) {
   waits = Waits
 
   get instanceName () {

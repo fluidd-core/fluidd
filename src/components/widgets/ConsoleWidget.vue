@@ -46,10 +46,10 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import InputConsoleCommand from '@/components/inputs/inputConsoleCommand.vue'
 import ConsoleItemWidget from '@/components/widgets/ConsoleItemWidget.vue'
-import { ConsoleEntry } from '@/store/socket/types'
+import { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {
@@ -57,7 +57,7 @@ import { ConsoleEntry } from '@/store/socket/types'
     ConsoleItemWidget
   }
 })
-export default class ConsoleWidget extends Mixins(UtilsMixin) {
+export default class ConsoleWidget extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
   items!: []
 
@@ -74,15 +74,15 @@ export default class ConsoleWidget extends Mixins(UtilsMixin) {
   padBottom!: boolean
 
   get availableCommands () {
-    return this.$store.getters['socket/getAllGcodeCommands']
+    return this.$store.getters['console/getAllGcodeCommands']
   }
 
   get consoleCommand () {
-    return this.$store.state.consoleCommand
+    return this.$store.state.console.consoleCommand
   }
 
   set consoleCommand (val: string) {
-    this.$store.commit('setConsoleCommand', val)
+    this.$store.commit('console/setConsoleCommand', val)
   }
 
   mounted () {

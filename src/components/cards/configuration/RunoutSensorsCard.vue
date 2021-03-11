@@ -30,13 +30,13 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
-import { RunoutSensor } from '@/store/socket/types'
+import StateMixin from '@/mixins/state'
+import { RunoutSensor } from '@/store/printer/types'
 
 @Component({})
-export default class BedMeshCard extends Mixins(UtilsMixin) {
+export default class BedMeshCard extends Mixins(StateMixin) {
   get sensors () {
-    return this.$store.getters['socket/getRunoutSensors']
+    return this.$store.getters['printer/getRunoutSensors']
   }
 
   changeSensor (item: RunoutSensor, value: boolean) {

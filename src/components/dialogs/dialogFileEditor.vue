@@ -64,7 +64,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import FileEditorWidget from '@/components/widgets/filesystem/FileEditorWidget.vue'
 
 @Component({
@@ -72,7 +72,7 @@ import FileEditorWidget from '@/components/widgets/filesystem/FileEditorWidget.v
     FileEditorWidget
   }
 })
-export default class DialogFileEditor extends Mixins(UtilsMixin) {
+export default class DialogFileEditor extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 

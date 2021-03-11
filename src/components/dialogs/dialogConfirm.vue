@@ -23,10 +23,10 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class DialogConfirm extends Mixins(UtilsMixin) {
+export default class DialogConfirm extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 

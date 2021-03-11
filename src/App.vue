@@ -29,7 +29,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import EventBus from '@/eventBus'
-import UtilsMixin from './mixins/utils'
+import StateMixin from './mixins/state'
 import { FlashMessage as FlashMessageType } from '@/types'
 import AppBar from '@/components/AppBar.vue'
 import AppDrawer from '@/components/AppDrawer.vue'
@@ -48,7 +48,7 @@ import DialogUpdateStatus from '@/components/dialogs/dialogUpdateStatus.vue'
     DialogUpdateStatus
   }
 })
-export default class App extends Mixins(UtilsMixin) {
+export default class App extends Mixins(StateMixin) {
   drawer = false
   showUpdateUI = false
 
@@ -87,7 +87,7 @@ export default class App extends Mixins(UtilsMixin) {
   }
 
   get progress () {
-    let progress = this.$store.getters['socket/getPrintProgress']
+    let progress = this.$store.getters['printer/getPrintProgress']
     progress = (progress * 100).toFixed()
     return progress
   }

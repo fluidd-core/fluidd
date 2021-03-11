@@ -19,13 +19,13 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Globals } from '@/globals'
 
 @Component({
   components: {}
 })
-export default class KlippyCard extends Mixins(UtilsMixin) {
+export default class KlippyCard extends Mixins(StateMixin) {
   get docsUrl () {
     return Globals.DOCS_REQUIRED_CONFIGURATION
   }
@@ -39,11 +39,11 @@ export default class KlippyCard extends Mixins(UtilsMixin) {
   }
 
   get printerWarnings () {
-    return this.$store.getters['socket/getPrinterWarnings']
+    return this.$store.getters['printer/getPrinterWarnings']
   }
 
   get moonrakerWarnings () {
-    return this.$store.getters['socket/getMoonrakerWarnings']
+    return this.$store.getters['printer/getMoonrakerWarnings']
   }
 }
 </script>

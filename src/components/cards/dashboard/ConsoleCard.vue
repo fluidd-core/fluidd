@@ -36,9 +36,9 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
-import { ConsoleEntry } from '@/store/socket/types'
+import { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {
@@ -46,7 +46,7 @@ import { ConsoleEntry } from '@/store/socket/types'
     ConsoleWidget
   }
 })
-export default class ConsoleCard extends Mixins(UtilsMixin) {
+export default class ConsoleCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
@@ -55,11 +55,15 @@ export default class ConsoleCard extends Mixins(UtilsMixin) {
   }
 
   set hideTempWaits (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.hideTempWaits', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.hideTempWaits',
+      value,
+      server: true
+    })
   }
 
   get items (): ConsoleEntry[] {
-    return this.$store.getters['socket/getConsoleEntries']
+    return this.$store.getters['console/getConsoleEntries']
   }
 
   get inLayout (): boolean {

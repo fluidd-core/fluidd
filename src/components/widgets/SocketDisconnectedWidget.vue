@@ -29,12 +29,12 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {}
 })
-export default class SocketDisconnectedWidget extends Mixins(UtilsMixin) {
+export default class SocketDisconnectedWidget extends Mixins(StateMixin) {
   reload () {
     window.location.reload()
   }

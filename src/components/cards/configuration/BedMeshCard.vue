@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
 @Component({
@@ -18,7 +18,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     BedMeshWidget
   }
 })
-export default class BedMeshCard extends Mixins(UtilsMixin) {
+export default class BedMeshCard extends Mixins(StateMixin) {
   loading = true
 
   componentMounted () {

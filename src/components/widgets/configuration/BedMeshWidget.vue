@@ -194,8 +194,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
-import { BedMesh } from '@/store/socket/types'
+import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
+import { BedMesh } from '@/store/printer/types'
 import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
 import { Plotly } from '@cadriel/vue-plotly'
@@ -206,7 +207,7 @@ import { VForm } from '@/types/vuetify'
     Plotly
   }
 })
-export default class BedMeshWidget extends Mixins(UtilsMixin) {
+export default class BedMeshWidget extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   layout = defaultPlotLayout
   variance = 0
@@ -229,11 +230,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   get meshes (): BedMesh[] {
-    return this.$store.getters['socket/getBedMeshes']
+    return this.$store.getters['printer/getBedMeshes']
   }
 
   get currentMesh (): BedMesh {
-    return this.$store.state.socket.printer.bed_mesh
+    return this.$store.state.printer.printer.bed_mesh
   }
 
   get meshLoaded (): boolean {
@@ -246,6 +247,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
   get form (): VForm {
     return this.$refs.saveMeshForm as VForm
+  }
+
+  get printerSupportsQgl (): boolean {
+    const printerSettings = this.$store.getters['printer/getPrinterSettings']()
+    return 'quad_gantry_level' in printerSettings
   }
 
   @Watch('currentMesh', { deep: true })
@@ -331,8 +337,8 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
       // Define the range for our X and Y axes.
       // If possible, use the actual range from config - otherwise revert to klippers given min and max's.
-      const stepperX = this.$store.getters['socket/getPrinterSettings']('stepper_x')
-      const stepperY = this.$store.getters['socket/getPrinterSettings']('stepper_y')
+      const stepperX = this.$store.getters['printer/getPrinterSettings']('stepper_x')
+      const stepperY = this.$store.getters['printer/getPrinterSettings']('stepper_y')
 
       const layout = defaultPlotLayout
 

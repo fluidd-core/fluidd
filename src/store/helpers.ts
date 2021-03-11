@@ -1,4 +1,4 @@
-import { SocketState, ChartData } from './socket/types'
+import { ChartData } from './charts/types'
 import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
 import { SocketActions } from '@/socketActions'
 import store from '@/store'
@@ -90,7 +90,7 @@ export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | 
  * Prepare packet data for a chart entry.
  * Every packet should contain an entry for all known sensors we want to track.
  */
-export const handleAddChartEntry = (state: SocketState, retention: number, keys: string[]) => {
+export const handleAddChartEntry = (retention: number, keys: string[]) => {
   const configureChartEntry = (date: Date) => {
     const r: ChartData = {
       date
@@ -99,10 +99,10 @@ export const handleAddChartEntry = (state: SocketState, retention: number, keys:
     keys.forEach((key) => {
       let label = key
       if (key.includes(' ')) label = key.split(' ')[1]
-      const temp = state.printer[key].temperature
-      const target = state.printer[key].target
-      const power = state.printer[key].power
-      const speed = state.printer[key].speed
+      const temp = store.state.printer?.printer[key].temperature
+      const target = store.state.printer?.printer[key].target
+      const power = store.state.printer?.printer[key].power
+      const speed = store.state.printer?.printer[key].speed
       r[label] = temp
       if (target !== undefined) r[`${label}Target`] = target
       if (power !== undefined) r[`${label}Power`] = power
@@ -112,19 +112,21 @@ export const handleAddChartEntry = (state: SocketState, retention: number, keys:
     return r
   }
 
-  // Ensure we only add an entry every 1000ms.
-  const diff = 1000 // time to wait before adding another entry.
-  const date1 = new Date()
-  const date2 = (state.chart.length > 0)
-    ? new Date(state.chart[state.chart.length - 1].date)
-    : null
-  if (!date2 || date1.getTime() - date2.getTime() > diff) {
-    const data = configureChartEntry(date1)
-    store.commit('socket/addChartEntry', { data, retention })
+  if (store.state.charts && store.state.charts.ready) {
+    // Ensure we only add an entry every 1000ms.
+    const diff = 1000 // time to wait before adding another entry.
+    const date1 = new Date()
+    const date2 = (store.state.charts.chart.length > 0)
+      ? new Date(store.state.charts.chart[store.state.charts.chart.length - 1].date)
+      : null
+    if (!date2 || date1.getTime() - date2.getTime() > diff) {
+      const data = configureChartEntry(date1)
+      store.commit('charts/setChartEntry', { data, retention })
+    }
   }
 }
 
-export const handlePrintStateChange = (state: SocketState, payload: any) => {
+export const handlePrintStateChange = (payload: any) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -133,34 +135,34 @@ export const handlePrintStateChange = (state: SocketState, payload: any) => {
     'state' in payload.print_stats
   ) {
     if (
-      state.printer.print_stats.state === 'standby' &&
+      store.state.printer?.printer.print_stats.state === 'standby' &&
       payload.print_stats.state === 'printing'
     ) {
       // This is a new print starting...
-      store.dispatch('socket/onPrintStart', payload)
+      store.dispatch('printer/onPrintStart', payload)
     } else if (
-      state.printer.print_stats.state === 'printing' &&
+      store.state.printer?.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'complete'
     ) {
       // This is a completed print...
-      store.dispatch('socket/onPrintEnd', payload)
+      store.dispatch('printer/onPrintEnd', payload)
     } else if (
-      state.printer.print_stats.state === 'printing' &&
+      store.state.printer?.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'standby'
     ) {
       // This is a cancelled print...
-      store.dispatch('socket/onPrintEnd', payload)
+      store.dispatch('printer/onPrintEnd', payload)
     }
   }
 }
 
-export const handleCurrentFileChange = (state: SocketState, payload: any) => {
+export const handleCurrentFileChange = (payload: any) => {
   if (
     'print_stats' in payload &&
     'filename' in payload.print_stats &&
-    payload.print_stats.filename !== state.printer.print_stats.filename
+    payload.print_stats.filename !== store.state.printer?.printer.print_stats.filename
   ) {
-    store.commit('socket/resetCurrentFile')
+    store.commit('printer/setResetCurrentFile')
     if (
       payload.print_stats.filename !== '' &&
       payload.print_stats.filename !== null

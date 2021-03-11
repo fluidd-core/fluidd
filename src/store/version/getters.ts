@@ -10,10 +10,8 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   getVisibleComponents: (state) => {
     const c: Array<HashVersion | ArtifactVersion | OSPackage> = []
-    const skipClient = state.hosted
     for (const key in state.components) {
       const o = state.components[key]
-      if (key === 'fluidd' && skipClient) continue
       c.push(o)
     }
 
@@ -30,9 +28,7 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   hasUpdates: (state, getters) => {
     let r = false
-    const skipClient = state.hosted
     for (const key in state.components) {
-      if (key === 'fluidd' && skipClient) continue
       if (!r) {
         r = getters.hasUpdate(key)
       } else {

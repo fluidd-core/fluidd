@@ -16,7 +16,7 @@
           <v-list-item-title>Dashboard</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyConnected">
+      <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyReady">
         <v-list-item-icon>
           <v-icon>$files</v-icon>
         </v-list-item-icon>
@@ -62,7 +62,7 @@ import SystemVersionsWidget from '@/components/widgets/SystemVersionsWidget.vue'
 import SystemPrintersWidget from '@/components/widgets/SystemPrintersWidget.vue'
 import SystemLayoutWidget from '@/components/widgets/SystemLayoutWidget.vue'
 
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
@@ -72,7 +72,7 @@ import UtilsMixin from '@/mixins/utils'
     SystemLayoutWidget
   }
 })
-export default class AppDrawer extends Mixins(UtilsMixin) {
+export default class AppDrawer extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean
 
@@ -80,12 +80,16 @@ export default class AppDrawer extends Mixins(UtilsMixin) {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
+  get serverInfo () {
+    return this.$store.getters['server/getInfo']
+  }
+
   get versionsSupported () {
     return (
-      this.$store.state.socket.printer.serverInfo &&
-      this.$store.state.socket.printer.serverInfo.plugins
+      this.serverInfo &&
+      this.serverInfo.plugins
     )
-      ? this.$store.state.socket.printer.serverInfo.plugins.includes('update_manager')
+      ? this.serverInfo.plugins.includes('update_manager')
       : false
   }
 

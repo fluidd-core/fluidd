@@ -40,6 +40,7 @@ import FluiddIcon from '@/components/FluiddIcon.vue'
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
 import InlineHelpIcon from '@/components/InlineHelpIcon.vue'
+import { Globals } from './globals'
 
 // Configure echarts
 echarts.use([
@@ -77,7 +78,7 @@ appInit()
     Vue.use(SocketPlugin, {
       url: config.apiConfig.socketUrl,
       reconnectEnabled: true,
-      reconnectInterval: 3000,
+      reconnectInterval: Globals.SOCKET_RETRY_DELAY,
       store
     })
 

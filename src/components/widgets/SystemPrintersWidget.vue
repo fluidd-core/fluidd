@@ -44,7 +44,7 @@ import consola from 'consola'
 import { InitConfig, InstanceConfig, ApiConfig } from '@/store/config/types'
 import VersionStatus from '@/components/VersionStatus.vue'
 import DialogAddInstance from '@/components/dialogs/dialogAddInstance.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
 import { Waits } from '@/globals'
 
@@ -54,7 +54,7 @@ import { Waits } from '@/globals'
     DialogAddInstance
   }
 })
-export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
+export default class SystemPrintersWidget extends Mixins(StateMixin) {
   waits = Waits
 
   instanceDialogOpen = false

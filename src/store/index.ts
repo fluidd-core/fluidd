@@ -1,63 +1,77 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import consola from 'consola'
+import { RootState } from './types'
+import { InitConfig } from './config/types'
+
+// Modules
 import { socket } from './socket'
-import { files } from './files'
+import { server } from './server'
+import { printer } from './printer'
 import { config } from './config'
+import { files } from './files'
+import { charts } from './charts'
+import { console } from './console'
+import { macros } from './macros'
 import { devicePower } from './devicePower'
 import { version } from './version'
 import { wait } from './wait'
-import { RootState } from './types'
-import { InitConfig } from './config/types'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
-  state: {
-    consoleCommand: ''
-  },
+  state: {},
   modules: {
-    config,
     socket,
+    server,
+    printer,
+    config,
     files,
+    charts,
+    console,
+    macros,
     devicePower,
     version,
     wait
   },
-  mutations: {
-    setConsoleCommand (state, payload) {
-      state.consoleCommand = payload
-    }
-  },
+  mutations: {},
   actions: {
+    /**
+     * Resets all stores
+     */
+    async reset ({ dispatch }, payload: string[]) {
+      // Reset our color set.
+      Vue.$colorset.resetAll()
+
+      // Dispatch a reset for each registered module.
+      const p: Promise<any>[] = []
+      const keys = payload || Object.keys(this.state)
+      keys.forEach((key) => {
+        if (this.hasModule(key)) {
+          p.push(dispatch(key + '/reset'))
+        }
+      })
+      return Promise.all(p)
+    },
+
     async init ({ dispatch, commit }, payload: InitConfig) {
-      // Should init the store, and ensure we've loaded our
-      // configuration if there is any.
+      // Sets the version and hash of Fluidd.
       commit('version/setVersion', process.env.VERSION)
       commit('version/setHash', process.env.HASH)
-      if (payload.fileConfig !== undefined) {
-        for (const key in payload.fileConfig) {
-          await dispatch('config/init' + key, payload.fileConfig[key])
-        }
-      }
-      const initHost = await dispatch('config/initHost', payload.hostConfig)
-      const initLocal = await dispatch('config/initLocal', payload)
-      return [initHost, initLocal]
+
+      // Init the host and local configs..
+      return [
+        await dispatch('config/initHost', payload.hostConfig),
+        await dispatch('config/initLocal', payload)
+      ]
     },
-    async reset () {
-      // Reset the entire store - should be used when swapping instances.
-      // extend this so we can pass an object defining what to reset, and if its a full reset or not.
-      Vue.$colorset.resetAll()
-      this.commit('socket/resetState', true)
-      this.commit('config/resetState')
-      this.commit('files/resetState')
-      this.commit('devicePower/resetState')
-      this.commit('version/resetState')
-      this.commit('wait/resetState')
-    },
-    void () {
-      consola.debug('void action')
+
+    /**
+     * A void action. Some socket commands may not need processing.
+     */
+    void (_, payload) {
+      consola.debug('void action', payload)
     }
   }
 })

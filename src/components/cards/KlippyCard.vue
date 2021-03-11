@@ -2,14 +2,14 @@
   <collapsable-card
     :title="`Klippy: ${klippyState}`"
     :collapsable="false"
-    icon="$alert">
+    icon="$alert"
+    icon-color="error">
     <v-card-text>
       <v-row>
         <v-col cols="12" sm="auto">
-          <btn v-if="!klipperConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</btn>
-          <btn v-if="klipperConnected" block color="primary" @click="serviceRestartKlippy" class="me-2 mb-2">Restart Klipper</btn>
-          <btn v-if="klipperConnected" block color="primary" @click="serviceFirmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</btn>
-          <btn block color="primary" @click="serviceRestartMoonraker" class="me-2 mb-2">Restart Moonraker</btn>
+          <btn v-if="!klippyConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</btn>
+          <btn v-if="klippyConnected" block color="primary" @click="restartKlippy" class="me-2 mb-2">Restart Klipper</btn>
+          <btn v-if="klippyConnected" block color="primary" @click="firmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</btn>
           <btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Klippy.log</btn>
           <btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</btn>
         </v-col>
@@ -26,8 +26,8 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
-import { SocketActions } from '@/socketActions'
+import StateMixin from '@/mixins/state'
+import ServicesMixin from '@/mixins/services'
 import WarningsWidget from '@/components/widgets/WarningsWidget.vue'
 
 @Component({
@@ -35,9 +35,9 @@ import WarningsWidget from '@/components/widgets/WarningsWidget.vue'
     WarningsWidget
   }
 })
-export default class KlippyCard extends Mixins(UtilsMixin) {
+export default class KlippyCard extends Mixins(StateMixin, ServicesMixin) {
   get klipperConnected () {
-    return this.$store.state.socket.printer.serverInfo.klippy_connected
+    return this.$store.getters['server/getInfo'].klippy_connected
   }
 
   getKlippyLog () {
@@ -50,26 +50,6 @@ export default class KlippyCard extends Mixins(UtilsMixin) {
 
   reload () {
     window.location.reload()
-  }
-
-  serviceRestartKlippy () {
-    SocketActions.printerRestart()
-    this.$emit('click')
-  }
-
-  serviceFirmwareRestartKlippy () {
-    SocketActions.printerFirmwareRestart()
-    this.$emit('click')
-  }
-
-  serviceRestartMoonraker () {
-    SocketActions.serverRestart()
-    this.$emit('click')
-  }
-
-  serviceRestartKlipper () {
-    SocketActions.machineServicesRestart('klipper')
-    this.$emit('click')
   }
 }
 </script>

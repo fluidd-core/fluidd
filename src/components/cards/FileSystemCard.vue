@@ -72,7 +72,7 @@ import FileSystemBrowser from '@/components/widgets/filesystem/FileSystemBrowser
 import DialogFileEditor from '@/components/dialogs/dialogFileEditor.vue'
 import DragOverlayWidget from '@/components/widgets/filesystem/DragOverlayWidget.vue'
 import UploadOverlayWidget from '@/components/widgets/filesystem/UploadOverlayWidget.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { AppFile, FilesUpload } from '@/store/files/types'
 import { Waits } from '@/globals'
 import EventBus from '@/eventBus'
@@ -85,7 +85,7 @@ import EventBus from '@/eventBus'
     UploadOverlayWidget
   }
 })
-export default class FileSystemCard extends Mixins(UtilsMixin) {
+export default class FileSystemCard extends Mixins(StateMixin) {
   @Prop({ type: [String, Array], required: true })
   root!: string | string[];
 

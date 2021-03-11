@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
 
 @Component({
@@ -38,7 +38,7 @@ import ConsoleWidget from '@/components/widgets/ConsoleWidget.vue'
     ConsoleWidget
   }
 })
-export default class DialogUpdateStatus extends Mixins(UtilsMixin) {
+export default class DialogUpdateStatus extends Mixins(StateMixin) {
   invokedDialog = false
   get showDialog () {
     if (
@@ -77,7 +77,7 @@ export default class DialogUpdateStatus extends Mixins(UtilsMixin) {
 
   close () {
     this.invokedDialog = false
-    this.$store.commit('version/clearUpdateResponse')
+    this.$store.commit('version/setClearUpdateResponse')
   }
 }
 </script>

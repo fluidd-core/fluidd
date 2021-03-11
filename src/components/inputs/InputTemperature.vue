@@ -7,6 +7,7 @@
         single-line
         hide-details="auto"
         v-model.number="inputValue"
+        :disabled="!klippyReady"
         :loading="loading"
         :rules="[rules.max, rules.min]"
         @keyup.enter="emitChange"
@@ -28,10 +29,10 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class InputTemperature extends Mixins(UtilsMixin) {
+export default class InputTemperature extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 

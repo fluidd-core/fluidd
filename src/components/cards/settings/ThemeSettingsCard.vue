@@ -41,14 +41,14 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { debounce } from 'lodash-es'
-import UtilsMixin from '@/mixins/utils'
+import { Debounce } from 'vue-debounce-decorator'
+import StateMixin from '@/mixins/state'
 import { ThemeConfig } from '@/store/config/types'
 
 @Component({
   components: {}
 })
-export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
+export default class ThemeSettingsCard extends Mixins(StateMixin) {
   get theme () {
     return this.$store.getters['config/getTheme']
   }
@@ -58,7 +58,8 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
     this.$vuetify.theme.currentTheme.primary = value.currentTheme.primary
   }
 
-  handlePrimaryColorChange = debounce((value: { hex: string }) => {
+  @Debounce(500)
+  handlePrimaryColorChange (value: { hex: string }) {
     this.setTheme({
       isDark: this.theme.isDark,
       currentTheme: {
@@ -66,8 +67,12 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
       }
     })
 
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.theme.currentTheme.primary', value: value.hex })
-  }, 500)
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.theme.currentTheme.primary',
+      value: value.hex,
+      server: true
+    })
+  }
 
   handleDarkModeChange (value: boolean) {
     this.setTheme({
@@ -77,7 +82,11 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
       }
     })
 
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.theme.isDark', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.theme.isDark',
+      value,
+      server: true
+    })
   }
 
   handleReset () {
@@ -88,9 +97,10 @@ export default class ThemeSettingsCard extends Mixins(UtilsMixin) {
       }
     }
     this.setTheme(theme)
-    this.$store.dispatch('config/saveGeneric', {
-      key: 'uiSettings.theme',
-      value: theme
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.theme',
+      value: theme,
+      server: true
     })
   }
 }

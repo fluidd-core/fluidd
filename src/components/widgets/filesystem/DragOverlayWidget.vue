@@ -24,10 +24,10 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class DragOverlayWidget extends Mixins(UtilsMixin) {
+export default class DragOverlayWidget extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean;
 }

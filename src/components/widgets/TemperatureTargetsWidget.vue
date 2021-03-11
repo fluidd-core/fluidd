@@ -18,6 +18,7 @@
             <template v-slot:activator="{ on, attrs }">
             <btn
               :min-width="40"
+              :disabled="!klippyReady"
               v-bind="attrs" v-on="on"
               color="secondary"
               small
@@ -181,7 +182,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import InputTemperature from '@/components/inputs/InputTemperature.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { TemperaturePreset } from '@/store/config/types'
 
 @Component({
@@ -189,25 +190,25 @@ import { TemperaturePreset } from '@/store/config/types'
     InputTemperature
   }
 })
-export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
+export default class TemperatureTargetsWidget extends Mixins(StateMixin) {
   get colors () {
     return this.$colorset.colorList
   }
 
   get extruder () {
-    return this.$store.state.socket.printer.extruder
+    return this.$store.state.printer.printer.extruder
   }
 
   get heaters () {
-    return this.$store.getters['socket/getHeaters']
+    return this.$store.getters['printer/getHeaters']
   }
 
   get fans () {
-    return this.$store.getters['socket/getOutputs'](['temperature_fan'])
+    return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
   get sensors () {
-    return this.$store.getters['socket/getSensors']
+    return this.$store.getters['printer/getSensors']
   }
 
   get presets () {
@@ -215,11 +216,11 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   }
 
   get chartableSensors () {
-    return this.$store.getters['socket/getChartableSensors']
+    return this.$store.getters['printer/getChartableSensors']
   }
 
   get chartSelectedLegends () {
-    return this.$store.state.config.appState.chartSelectedLegends
+    return this.$store.getters['charts/getSelectedLegends']
   }
 
   setHeaterTargetTemp (heater: string, target: number) {

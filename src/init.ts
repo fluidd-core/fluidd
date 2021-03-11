@@ -5,6 +5,7 @@ import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
 import { AxiosError } from 'axios'
+import { SocketActions } from './socketActions'
 
 // Load API configuration
 /**
@@ -65,7 +66,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   const results = await Promise.all(
     endpoints.map(async endpoint => {
       try {
-        return await Vue.$http.get(endpoint + '/printer/info?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
+        return await Vue.$http.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
       } catch {
         consola.debug('Failed loading endpoint ping', endpoint)
       }
@@ -80,7 +81,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
 export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
   // Reset the store to its default state.
-  store.dispatch('reset', {}, { root: true })
+  await store.dispatch('reset', undefined, { root: true })
 
   // Load the Host Config
   if (!hostConfig) {
@@ -93,43 +94,86 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   }
 
   // Just sets the api urls.
-  store.dispatch('config/onInitApiConfig', apiConfig)
+  // consola.log('we already have api config', apiConfig)
+  await store.dispatch('config/onInitApiConfig', apiConfig)
+  consola.log('inited apis', store.state.config, apiConfig)
 
-  // Load any file configuration we may have.
-  const fileConfig: {[index: string]: UiSettings | string[] | null} | undefined = {}
-  const files: {[index: string]: string} = Globals.CONFIG_FILES
-  let apiConnected = true
+  // TODO: REMOVE THIS FOR NEXT RELEASE.
+  // Load any file configuration we may have - save it to db, then delete known config files.
+  const files: string[] = [
+    '.fluidd.json',
+    '.fluidd_console_history.json'
+  ]
   if (
     apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
   ) {
-    for (const key in files) {
-      await Vue.$http.get(apiConfig.apiUrl + '/server/files/config/' + files[key] + '?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
+    for (const file of files) {
+      await Vue.$http.get(apiConfig.apiUrl + '/server/files/config/' + file + '?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
         .then((d) => {
-          consola.debug('setting file data', d.data)
-          fileConfig[key] = d.data
+          if (file === '.fluidd.json') {
+            const macros = (d.data.dashboard.hiddenMacros)
+              ? [...d.data.dashboard.hiddenMacros]
+              : undefined
+            delete d.data.dashboard.hiddenMacros
+            consola.debug('got ui data, writing', d.data)
+            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+              key: 'uiSettings',
+              value: d.data
+            })
+            if (macros && macros.length > 0) {
+              const convertedMacros: { name: string; visible: boolean }[] = macros.map(m => { return { name: m, visible: false } })
+              consola.debug('got macros, writing', convertedMacros)
+              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key: 'macros.stored',
+                value: convertedMacros
+              })
+            }
+          }
+          if (file === '.fluidd_console_history.json') {
+            consola.log('got history data, writing', d.data)
+            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+              key: 'console.commandHistory',
+              value: d.data
+            })
+          }
+
+          // Delete the file
+          Vue.$http.delete(apiConfig?.apiUrl + '/server/files/config/' + file)
         })
         .catch((e: AxiosError) => {
-          // If this is a 404, set the file config to null and move on.
-          // If this is something else, we should set the api connection to
-          // false because we couldn't make contact with moonraker.
-          if (e.response && e.response.status === 404) {
-            fileConfig[key] = null
-          } else {
-            // Otherwise, API is down / not available.
-            // if (e.code === 'ECONNABORTED') {
-            // }
-            apiConnected = false
-            consola.debug('API Down / Not Available:', e.response)
-          }
+          // If its not there, fine.
+          consola.debug('File not found, leaving.', e.response)
         })
     }
   }
 
-  // fileConfig could equal;
-  // - null - meaning we made a connection, but no user configuration is saved yet, which is ok.
-  // - undefined - meaning the API is likely down..
+  // Load any configuration we may have in moonrakers db
+  let apiConnected = true
+  if (
+    apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
+  ) {
+    const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
+    for (const key in roots) {
+      const root = roots[key]
+      const d = await Vue.$http.get(apiConfig.apiUrl + `/server/database/item?namespace=${Globals.MOONRAKER_DB.NAMESPACE}&key=${root.name}`)
+        .then(r => {
+          consola.debug('loaded db root', root.name, r.data.result.value)
+          return r.data.result.value
+        })
+        .catch((r: AxiosError) => {
+          if (r.response && r.response.status === 404) {
+            return null // This is ok;
+          }
+          consola.debug('API Down / Not Available:', r)
+          apiConnected = false
+        })
+
+      if (d) store.dispatch(root.dispatch, d)
+    }
+  }
+
   // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, fileConfig, hostConfig })
+  await store.dispatch('init', { apiConfig, hostConfig })
 
   // Set vuetify to the correct initial theme.
   if (store.state.config && store.state.config.uiSettings.theme) {

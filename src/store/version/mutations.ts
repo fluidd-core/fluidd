@@ -4,18 +4,18 @@ import { VersionState } from './types'
 import { defaultState } from './index'
 
 export const mutations: MutationTree<VersionState> = {
-  resetState (state) {
-    const newState = defaultState()
-    Object.keys(newState).forEach((key: string) => {
-      Vue.set(state, key, newState[key])
-    })
+  /**
+   * Reset state
+   */
+  setReset (state) {
+    Object.assign(state, defaultState())
   },
 
-  refreshing (state, payload) {
+  setRefreshing (state, payload) {
     state.refreshing = payload
   },
 
-  onUpdateStatus (state, payload) {
+  setUpdateStatus (state, payload) {
     if ('busy' in payload) state.busy = payload.busy
     if ('github_limit_reset_time' in payload) state.github_limit_reset_time = payload.github_limit_reset_time
     if ('github_rate_limit' in payload) state.github_rate_limit = payload.github_rate_limit
@@ -30,7 +30,7 @@ export const mutations: MutationTree<VersionState> = {
     }
   },
 
-  onUpdateResponse (state, payload) {
+  setUpdateResponse (state, payload) {
     // If we get a complete === true, then assume the update is complete
     // and set busy to false also.
     if (payload.complete) {
@@ -44,7 +44,7 @@ export const mutations: MutationTree<VersionState> = {
     }
   },
 
-  clearUpdateResponse (state) {
+  setClearUpdateResponse (state) {
     state.responses = []
   },
 
@@ -53,10 +53,5 @@ export const mutations: MutationTree<VersionState> = {
   },
   setHash (state, payload) {
     state.fluidd.hash = payload
-  },
-  setHosted (state, payload) {
-    if (payload && 'hosted' in payload) {
-      state.hosted = payload.hosted
-    }
   }
 }

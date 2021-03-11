@@ -5,7 +5,7 @@
         <v-text-field
           ref="lengthfield"
           v-model.number="extrudeLength"
-          :disabled="!klippyConnected"
+          :disabled="!klippyReady"
           :rules="[rules.min, rules.maxLength]"
           @focus="$event.target.select()"
           hide-details
@@ -18,7 +18,7 @@
       <v-col cols="6">
         <btn
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyConnected || !valid"
+          :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
           color="secondary"
@@ -32,7 +32,7 @@
       <v-col cols="6" class="text-right">
         <v-text-field
           v-model.number="extrudeSpeed"
-          :disabled="!klippyConnected"
+          :disabled="!klippyReady"
           :rules="[rules.min, rules.maxSpeed]"
           @focus="$event.target.select()"
           hide-details
@@ -45,7 +45,7 @@
       <v-col cols="6">
         <btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyConnected || !valid"
+          :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
           color="secondary"
@@ -61,7 +61,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import BtnToolheadMove from '@/components/inputs/BtnToolheadMove.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
 import { Waits } from '@/globals'
 
 @Component({
@@ -69,7 +70,7 @@ import { Waits } from '@/globals'
     BtnToolheadMove
   }
 })
-export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
+export default class ToolheadMovesWidget extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   feedSpeed = -1
   feedLength = -1
@@ -88,11 +89,11 @@ export default class ToolheadMovesWidget extends Mixins(UtilsMixin) {
   }
 
   get maxExtrudeSpeed () {
-    return this.$store.getters['socket/getPrinterSettings']('extruder.max_extrude_only_velocity')
+    return this.$store.getters['printer/getPrinterSettings']('extruder.max_extrude_only_velocity')
   }
 
   get maxExtrudeLength () {
-    return this.$store.getters['socket/getPrinterSettings']('extruder.max_extrude_only_distance')
+    return this.$store.getters['printer/getPrinterSettings']('extruder.max_extrude_only_distance')
   }
 
   get extrudeSpeed () {

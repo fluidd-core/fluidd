@@ -26,11 +26,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { defaultState } from '@/store/config/index'
 
 @Component({})
-export default class SystemLayoutWidget extends Mixins(UtilsMixin) {
+export default class SystemLayoutWidget extends Mixins(StateMixin) {
   get layoutMode () {
     return this.$store.state.config.layoutMode
   }

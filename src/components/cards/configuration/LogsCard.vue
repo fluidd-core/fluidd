@@ -11,10 +11,10 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class LogsCard extends Mixins(UtilsMixin) {
+export default class LogsCard extends Mixins(StateMixin) {
   getKlippyLog () {
     this.download('klippy.log', '')
   }

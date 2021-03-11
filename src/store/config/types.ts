@@ -1,28 +1,15 @@
-import { VuetifyThemeItem } from "vuetify/types/services/theme";
+import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export interface ConfigState {
   [key: string]: any;
   apiUrl: string;
   socketUrl: string;
-  unsavedChanges: boolean;
   layoutMode: boolean;
-  appState: AppState;
   cardState: CardState; // if a collapsable card is collapsed or not.
   cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
-  consoleHistory: string[];
-  serverConfig: any;
-}
-
-export interface AppState {
-  [key: string]: any;
-  chartSelectedLegends: ChartSelectedLegends;
-}
-
-export interface ChartSelectedLegends {
-  [key: string]: boolean;
 }
 
 // Saved to local storage.
@@ -58,7 +45,6 @@ export interface GeneralConfig {
   chartVisible: boolean;
   hideTempWaits: boolean;
   axis: Axis;
-  invertZControl: boolean;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
   defaultToolheadMoveLength: string;
@@ -89,26 +75,19 @@ export interface CameraConfig {
 }
 
 export interface DashboardConfig {
-  hiddenMacros: string[];
   tempPresets: TemperaturePreset[];
 }
 
-export interface GenericSave {
-  key: string;
+export interface SaveByPath {
+  path: string;
   value: string | boolean | number;
+  server?: boolean;
 }
 
 export interface InitConfig {
   apiConfig: ApiConfig | InstanceConfig;
-  fileConfig?: FileConfig;
   hostConfig?: HostConfig;
   apiConnected?: boolean;
-}
-
-export interface FileConfig {
-  [index: string]: any;
-  uiSettings?: UiSettings;
-  consoleHistory?: string[];
 }
 
 export interface ApiConfig {

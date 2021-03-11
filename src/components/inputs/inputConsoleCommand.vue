@@ -20,13 +20,13 @@
         <v-icon @click="emitSend(newValue)">$send</v-icon>
       </template>
     </v-text-field>
-    <!-- <pre>{{ originalHistory}}</pre>
+    <!-- <pre>{{ originalHistory }}</pre>
     <pre>{{ history }}</pre> -->
   </div>
 </template>
 
 <script lang="ts">
-import { GcodeCommands } from '@/store/socket/types'
+import { GcodeCommands } from '@/store/console/types'
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 
@@ -47,14 +47,14 @@ export default class InputConsoleCommand extends Vue {
   }
 
   newValue = ''
-  commandHistory = Globals.CONSOLE_COMMAND_HISTORY
+  commandHistoryCount = Globals.CONSOLE_COMMAND_HISTORY
   history: string[] = []
   originalHistory: string[] = []
   isFirst = true
 
   mounted () {
     this.newValue = this.value
-    const savedHistory = this.$store.state.config.consoleHistory
+    const savedHistory = this.$store.state.console.commandHistory
     this.history = [...savedHistory]
     this.originalHistory = [...savedHistory]
   }
@@ -66,11 +66,11 @@ export default class InputConsoleCommand extends Vue {
 
   emitSend (val: string) {
     if (val && val.length > 0) {
-      if (this.history.length >= this.commandHistory) {
+      if (this.history.length >= this.commandHistoryCount) {
         this.originalHistory.pop()
       }
       this.originalHistory.unshift(val)
-      this.$store.dispatch('config/saveGeneric', { key: 'consoleHistory', value: [...this.originalHistory] })
+      this.$store.dispatch('console/onUpdateCommandHistory', [...this.originalHistory])
       this.history = [...this.originalHistory]
       this.isFirst = true
       this.$emit('send', val)
@@ -100,7 +100,7 @@ export default class InputConsoleCommand extends Vue {
   }
 
   autoComplete () {
-    const gcodeCommands: GcodeCommands = this.$store.getters['socket/getAllGcodeCommands']
+    const gcodeCommands: GcodeCommands = this.$store.getters['console/getAllGcodeCommands']
     if (this.newValue.length) {
       const commands = Object.keys(gcodeCommands).filter((c: string) => c.toLowerCase().indexOf(this.newValue.toLowerCase()) === 0)
       if (commands && commands.length === 1) {
@@ -108,7 +108,7 @@ export default class InputConsoleCommand extends Vue {
       } else {
         commands.forEach((c) => {
           const message = `// ${c}: ${gcodeCommands[c]}`
-          this.$store.dispatch('socket/addConsoleEntry', { message, type: 'response' })
+          this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'response' })
         })
       }
     }

@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import ToolheadMovesWidget from '@/components/widgets/ToolheadMovesWidget.vue'
 import ExtruderMovesWidget from '@/components/widgets/ExtruderMovesWidget.vue'
 import ExtruderSelectionWidget from '@/components/widgets/ExtruderSelectionWidget.vue'
@@ -39,9 +39,9 @@ import SpeedAndFlowAdjustWidget from '@/components/widgets/SpeedAndFlowAdjustWid
     SpeedAndFlowAdjustWidget
   }
 })
-export default class ToolheadWidget extends Mixins(UtilsMixin) {
+export default class ToolheadWidget extends Mixins(StateMixin) {
   get multipleExtruders () {
-    return this.$store.getters['socket/getExtruders'].length > 1
+    return this.$store.getters['printer/getExtruders'].length > 1
   }
 }
 </script>

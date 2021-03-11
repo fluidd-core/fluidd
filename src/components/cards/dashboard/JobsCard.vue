@@ -22,7 +22,7 @@
     <file-system-card
       v-if="gCodeRootReady"
       root="gcodes"
-      accept=".gcode,.ufp"
+      accept=".gcode,.g,.gc,.gco,.ufp,.nc"
       dense
       :height="400"
       :show-title="false"
@@ -35,14 +35,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FileSystemCard from '@/components/cards/FileSystemCard.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
     FileSystemCard
   }
 })
-export default class JobsCard extends Mixins(UtilsMixin) {
+export default class JobsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 

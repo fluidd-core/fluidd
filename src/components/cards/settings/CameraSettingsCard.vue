@@ -31,7 +31,8 @@
         class="mt-5"
         filled
         label="Camera URL"
-        v-model="url"
+        :value="url"
+        @change="setUrl"
       ></v-text-field>
     </v-card-text>
   </collapsable-card>
@@ -39,26 +40,34 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {}
 })
-export default class CameraSettingsCard extends Mixins(UtilsMixin) {
+export default class CameraSettingsCard extends Mixins(StateMixin) {
   get enabled () {
     return this.$store.state.config.uiSettings.camera.enabled
   }
 
   set enabled (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.enabled', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.camera.enabled',
+      value,
+      server: true
+    })
   }
 
   get url () {
     return this.$store.state.config.uiSettings.camera.url
   }
 
-  set url (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.url', value })
+  setUrl (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.camera.url',
+      value,
+      server: true
+    })
   }
 
   get flipX () {
@@ -66,7 +75,11 @@ export default class CameraSettingsCard extends Mixins(UtilsMixin) {
   }
 
   set flipX (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.flipX', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.camera.flipX',
+      value,
+      server: true
+    })
   }
 
   get flipY () {
@@ -74,7 +87,11 @@ export default class CameraSettingsCard extends Mixins(UtilsMixin) {
   }
 
   set flipY (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.flipY', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.camera.flipY',
+      value,
+      server: true
+    })
   }
 
   get streamType () {
@@ -82,7 +99,11 @@ export default class CameraSettingsCard extends Mixins(UtilsMixin) {
   }
 
   set streamType (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.type', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.camera.type',
+      value,
+      server: true
+    })
   }
 }
 </script>

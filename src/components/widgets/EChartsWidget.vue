@@ -7,9 +7,7 @@
         :setOptionOps="{ notMerge: true }"
         :initOpts="{ renderer: 'svg' }"
         :events="[
-          ['legendselectchanged', handleLegendSelectChange ],
-          ['legendselected', handleLegendSelectChange ],
-          ['legendunselected', handleLegendSelectChange ],
+          ['legendselectchanged', handleLegendSelectChange ]
         ]">
       </ECharts>
     </div>
@@ -29,8 +27,8 @@ export default class EChartsWidget extends Vue {
   loading = true
   options: any = {}
 
-  handleLegendSelectChange (e: Event) {
-    this.$emit('legend-select-changed', e)
+  handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
+    this.$store.dispatch('charts/saveSelectedLegends', e.selected)
   }
 
   get chart () {
@@ -67,7 +65,7 @@ export default class EChartsWidget extends Vue {
 
     // Create the series and associated legends.
     const dataKeys = Object.keys(this.chartData[0])
-    const keys = this.$store.getters['socket/getChartableSensors'] as string[]
+    const keys = this.$store.getters['printer/getChartableSensors'] as string[]
 
     keys.forEach((key) => {
       let label = key
@@ -79,8 +77,8 @@ export default class EChartsWidget extends Vue {
       if (dataKeys.includes(label + 'Speed')) this.createSeries(label + 'Speed', key)
     })
 
-    // Init the legend state in the store.
-    this.$store.dispatch('config/saveGeneric', { key: 'appState.chartSelectedLegends', value: this.options.legend.selected })
+    // Re-apply the legend state in the store after the series has redefined the legends.
+    this.$store.dispatch('charts/saveSelectedLegends', this.options.legend.selected)
   }
 
   initOptions () {
@@ -281,7 +279,7 @@ export default class EChartsWidget extends Vue {
     }
 
     // Set the initial legend state (power and speed default off)
-    const storedLegends = this.$store.state.config.appState.chartSelectedLegends
+    const storedLegends = this.$store.getters['charts/getSelectedLegends']
     if (storedLegends[label] !== undefined) {
       this.options.legend.selected[label] = storedLegends[label]
     } else {

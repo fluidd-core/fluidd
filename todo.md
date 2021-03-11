@@ -2,6 +2,13 @@
 
 ## Next Up
 
+- load original settings via file, write to db, delete file
+- rename device power
+- fix layout stuff
+
+- sliders sending duplicates, fix.. (old issue.. )
+- TEST EVERYTHING
+
 - allow users to restart webcamd service if webcam is enabled
 - sync instances across moonraker db
 - implement final filesystem features (bulk actions & move)

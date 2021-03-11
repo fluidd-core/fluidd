@@ -10,10 +10,11 @@ export const defaultState = (): ConfigState => {
   return {
     apiUrl: '',
     socketUrl: '',
-    unsavedChanges: false,
     layoutMode: false,
-    appState: {
-      chartSelectedLegends: {}
+    hostConfig: {
+      endpoints: [],
+      blacklist: [],
+      hosted: false
     },
     cardState: {},
     cardLayout: {
@@ -31,7 +32,6 @@ export const defaultState = (): ConfigState => {
       ]
     },
     instances: [],
-    // saves to file .fluidd
     uiSettings: {
       general: {
         instanceName: Globals.APP_NAME,
@@ -42,7 +42,6 @@ export const defaultState = (): ConfigState => {
           y: { inverted: false },
           z: { inverted: false }
         },
-        invertZControl: false,
         printTimeEstimationsType: 'file',
         defaultExtrudeLength: 10,
         defaultExtrudeSpeed: 5,
@@ -64,22 +63,7 @@ export const defaultState = (): ConfigState => {
         flipY: false
       },
       dashboard: {
-        tempPresets: [],
-        hiddenMacros: []
-      }
-    },
-    // saves to file .fluidd_history
-    consoleHistory: [],
-    hostConfig: {
-      endpoints: [],
-      blacklist: [],
-      hosted: false
-    },
-    serverConfig: {
-      authorization: {},
-      server: {
-        gcode_store_size: 1000,
-        temperature_store_size: 1200
+        tempPresets: []
       }
     }
   }

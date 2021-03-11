@@ -49,26 +49,22 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {}
 })
-export default class PrintTimeEstimateSettingsCard extends Mixins(UtilsMixin) {
-  get cameraUrl () {
-    return this.$store.state.config.uiSettings.camera.url
-  }
-
-  set cameraUrl (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.url', value })
-  }
-
+export default class PrintTimeEstimateSettingsCard extends Mixins(StateMixin) {
   get printTimeEstimationsType () {
     return this.$store.state.config.uiSettings.general.printTimeEstimationsType
   }
 
   set printTimeEstimationsType (value: string) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.printTimeEstimationsType', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.printTimeEstimationsType',
+      value,
+      server: true
+    })
   }
 }
 </script>

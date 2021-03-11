@@ -90,7 +90,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/socketActions'
 import { Waits } from '@/globals'
 import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
@@ -101,7 +101,7 @@ import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
     DialogConfirm
   }
 })
-export default class StatusCard extends Mixins(UtilsMixin) {
+export default class StatusCard extends Mixins(StateMixin) {
   waits = Waits
 
   confirmDialog = {
@@ -117,11 +117,11 @@ export default class StatusCard extends Mixins(UtilsMixin) {
   }
 
   get printerMessage () {
-    return this.$store.state.socket.printer.display_status.message
+    return this.$store.state.printer.printer.display_status.message
   }
 
   get filename () {
-    return this.$store.state.socket.printer.print_stats.filename || ''
+    return this.$store.state.printer.printer.print_stats.filename || ''
   }
 
   cancelPrint (val: boolean) {

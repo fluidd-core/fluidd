@@ -3,6 +3,9 @@ import { FilesState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<FilesState, RootState> = {
+  /**
+   * Returns a directory of files and sub-directories.
+   */
   getDirectory: (state) => (r: string, path: string) => {
     const root = r as 'gcodes' | 'config' | 'config_examples'
     if (state && state[root]) {
@@ -14,7 +17,10 @@ export const getters: GetterTree<FilesState, RootState> = {
     return []
   },
 
-  isRootAvailable: (state) => (r: string) => {
-    return state.availableRoots.includes(r)
+  /**
+   * Indicates if a root is available.
+   */
+  isRootAvailable: (state, getters, rootState) => (r: string) => {
+    return rootState.server?.info.registered_directories.includes(r)
   }
 }

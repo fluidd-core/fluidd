@@ -75,11 +75,11 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { VForm } from '@/types/vuetify'
 
 @Component({})
-export default class InputSlider extends Mixins(UtilsMixin) {
+export default class InputSlider extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 
