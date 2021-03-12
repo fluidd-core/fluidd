@@ -24,9 +24,16 @@
       </v-switch>
       <v-switch
         class="mt-0 mb-4"
-        label="Use GCode Coordinates"
         hide-details
         v-model="useGcodeCoords">
+        <template slot="label">
+          Use GCode Coordinates
+          <inline-help
+            small
+            top
+            tooltip="Use GCode position instead of toolhead position on dashboard"
+          ></inline-help>
+        </template>
       </v-switch>
       <v-text-field
         filled
@@ -136,7 +143,11 @@ export default class ToolHeadSettingsCard extends Mixins(StateMixin) {
   }
 
   set useGcodeCoords (value: boolean) {
-    this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.general.useGcodeCoords', value })
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.useGcodeCoords',
+      value,
+      server: true
+    })
   }
 
   get invertX () {
