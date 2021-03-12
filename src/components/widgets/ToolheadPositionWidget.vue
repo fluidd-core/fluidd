@@ -5,19 +5,19 @@
         <v-col cols="auto">
           <span class="secondary--text text--lighten-1">X:</span>
           <span class="grey--text focus--text">
-            {{ toolheadPosition[0].toFixed(2) }}
+            {{ ((useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)) }}
           </span>
         </v-col>
         <v-col cols="auto">
           <span class="secondary--text text--lighten-1">Y:</span>
           <span class="grey--text focus--text">
-            {{ toolheadPosition[1].toFixed(2) }}
+            {{ ((useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)) }}
           </span>
         </v-col>
         <v-col cols="auto">
           <span class="secondary--text text--lighten-1">Z:</span>
           <span class="grey--text focus--text">
-            {{ toolheadPosition[2].toFixed(2) }}
+            {{ ((useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)) }}
           </span>
         </v-col>
       </v-row>
@@ -47,6 +47,10 @@ export default class ToolheadPositionWidget extends Mixins(StateMixin) {
 
   get toolheadPosition () {
     return this.$store.state.printer.printer.toolhead.position
+  }
+  
+  get useGcodeCoords () {
+    return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
 
   get requestedSpeed () {

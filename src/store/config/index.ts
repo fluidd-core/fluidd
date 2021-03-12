@@ -47,7 +47,8 @@ export const defaultState = (): ConfigState => {
         defaultExtrudeSpeed: 5,
         defaultToolheadMoveLength: '1.0',
         defaultToolheadXYSpeed: 130,
-        defaultToolheadZSpeed: 10
+        defaultToolheadZSpeed: 10,
+        useGcodeCoords: false
       },
       theme: {
         isDark: true,
