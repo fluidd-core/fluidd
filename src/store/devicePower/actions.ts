@@ -1,6 +1,7 @@
 import { ActionTree } from 'vuex'
 import { DevicePowerState } from './types'
 import { RootState } from '../types'
+import { SocketActions } from '@/socketActions'
 
 export const actions: ActionTree<DevicePowerState, RootState> = {
   /**
@@ -11,9 +12,16 @@ export const actions: ActionTree<DevicePowerState, RootState> = {
   },
 
   /**
-   * Inits the list of available devices.
+   * Make a socket request to init the power plugin.
    */
-  async init ({ commit }, payload) {
+  async init () {
+    SocketActions.machineDevicePowerDevices()
+  },
+
+  /**
+   * Inits the list of available devices. Notified by init action.
+   */
+  async onInit ({ commit }, payload) {
     if (
       payload.devices &&
       payload.devices.length > 0

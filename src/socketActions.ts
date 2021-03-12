@@ -92,7 +92,7 @@ export const SocketActions = {
   async machineDevicePowerDevices () {
     baseEmit(
       'machine.device_power.devices', {
-        dispatch: 'devicePower/init'
+        dispatch: 'devicePower/onInit'
       }
     )
   },

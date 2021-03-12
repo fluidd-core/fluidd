@@ -14,7 +14,7 @@ export const actions: ActionTree<ServerState, RootState> = {
     commit('setReset')
   },
 
-  async onServerInfo ({ commit }, payload) {
+  async onServerInfo ({ commit, dispatch }, payload) {
     // This payload should return a list of enabled plugins
     // and root directories that are available.
     SocketActions.printerInfo()
@@ -25,23 +25,14 @@ export const actions: ActionTree<ServerState, RootState> = {
       payload.plugins &&
       payload.plugins.length > 0
     ) {
-      // Init defined plugins.
-      const pluginsToInit = [
-        'power',
-        'update_manager'
-      ]
-      pluginsToInit.forEach((plugin) => {
-        if (payload.plugins.includes(plugin)) {
-          switch (plugin) {
-            case 'power':
-              SocketActions.machineDevicePowerDevices()
-              break
-            case 'update_manager':
-              SocketActions.machineUpdateStatus()
-              break
-          }
+      const pluginsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_PLUGINS
+      for (const key in pluginsToInit) {
+        const plugin = pluginsToInit[key]
+        console.log('init pluigin', plugin.name)
+        if (payload.plugins.includes(plugin.name)) {
+          dispatch(plugin.dispatch, undefined, { root: true })
         }
-      })
+      }
     }
 
     if (payload.klippy_state !== 'ready') {

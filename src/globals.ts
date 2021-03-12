@@ -110,6 +110,10 @@ export const Globals = Object.freeze({
       charts: { name: 'charts', dispatch: 'charts/initCharts' }
     }
   },
+  MOONRAKER_PLUGINS: {
+    power: { name: 'power', dispatch: 'devicePower/init' },
+    updateManager: { name: 'update_manager', dispatch: 'version/init' }
+  },
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',

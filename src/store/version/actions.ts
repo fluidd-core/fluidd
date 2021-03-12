@@ -13,6 +13,13 @@ export const actions: ActionTree<VersionState, RootState> = {
   },
 
   /**
+   * Make a socket request to init the power plugin.
+   */
+  async init () {
+    SocketActions.machineUpdateStatus()
+  },
+
+  /**
    * Inits any file config we may have.
    */
   async onUpdateStatus ({ commit }, payload) {
