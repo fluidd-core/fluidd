@@ -3,7 +3,6 @@ import { MutationTree } from 'vuex'
 import { defaultState } from './'
 import { Globals } from '@/globals'
 import { ConsoleEntry, ConsoleState } from './types'
-import { SocketActions } from '@/socketActions'
 
 export const mutations: MutationTree<ConsoleState> = {
   /**
