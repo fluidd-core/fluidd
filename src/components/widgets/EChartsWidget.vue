@@ -83,7 +83,7 @@ export default class EChartsWidget extends Vue {
 
   initOptions () {
     const darkMode = this.$store.state.config.uiSettings.theme.isDark
-    const fontSize = 16
+    const fontSize = (this.isMobile) ? 13 : 15
     const lineOpacity = 0.2
     let labelBackground = 'rgba(10,10,10,0.90)'
     let fontColor = 'rgba(255,255,255,0.25)'
@@ -96,10 +96,10 @@ export default class EChartsWidget extends Vue {
 
     this.options = {
       grid: {
-        top: 10,
-        left: 70,
-        right: 70,
-        bottom: 50
+        top: 30,
+        left: (this.isMobile) ? 35 : 70,
+        right: (this.isMobile) ? 35 : 70,
+        bottom: (this.isMobile) ? 55 : 50
       },
       legend: {
         show: false,
@@ -153,7 +153,8 @@ export default class EChartsWidget extends Vue {
           margin: 14,
           color: fontColor,
           fontSize,
-          formatter: this.xAxisLabelFormatter
+          formatter: '{H}:{mm}',
+          rotate: (this.isMobile) ? 90 : 0
         },
         axisPointer: {
           label: {
@@ -165,6 +166,12 @@ export default class EChartsWidget extends Vue {
       },
       yAxis: [
         {
+          name: (this.isMobile) ? '°C Temperature' : 'Temperature',
+          nameTextStyle: {
+            fontSize,
+            color: fontColor,
+            align: 'left'
+          },
           type: 'value',
           position: 'left',
           splitLine: {
@@ -178,18 +185,23 @@ export default class EChartsWidget extends Vue {
           maxInterval: 60,
           min: this.yAxisTempMin,
           max: this.yAxisTempMax,
-          // max: 'dataMax',
-          // min: 'dataMin',
           axisLabel: {
             interval: 0,
             margin: 14,
             color: fontColor,
             fontSize,
-            formatter: '{value}°C'
+            formatter: (this.isMobile) ? '{value}' : '{value}°C',
+            rotate: (this.isMobile) ? 90 : 0
           },
           boundaryGap: [0, '100%']
         },
         {
+          name: (this.isMobile) ? 'Power %' : 'Power',
+          nameTextStyle: {
+            fontSize,
+            color: fontColor,
+            align: 'right'
+          },
           type: 'value',
           position: 'right',
           splitLine: {
@@ -206,7 +218,8 @@ export default class EChartsWidget extends Vue {
             margin: 14,
             color: fontColor,
             fontSize,
-            formatter: this.yAxisPowerFormatter
+            formatter: this.yAxisPowerFormatter,
+            rotate: (this.isMobile) ? 90 : 0
           },
           boundaryGap: [0, '100%']
         }
@@ -367,18 +380,8 @@ export default class EChartsWidget extends Vue {
     return this.$vuetify.breakpoint.mobile
   }
 
-  xAxisLabelFormatter () {
-    if (this.isMobile) {
-      return '{mm}'
-    }
-    return '{H}:{mm}'
-  }
-
   xAxisPointerFormatter (params: any) {
     const d = this.$dayjs(params.value)
-    if (this.isMobile) {
-      return d.format('mm:ss')
-    }
     return d.format('H:mm:ss')
   }
 
@@ -387,7 +390,7 @@ export default class EChartsWidget extends Vue {
   }
 
   yAxisPowerFormatter (value: any) {
-    return `${value * 100}%`
+    return (this.isMobile) ? `${value * 100}` : `${value * 100}%`
   }
 
   yAxisTempMin (value: any) {
@@ -413,6 +416,6 @@ export default class EChartsWidget extends Vue {
   .chart {
     margin-top: 16px;
     width: 100%;
-    height: 350px;
+    height: 325px;
   }
 </style>

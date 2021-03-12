@@ -2,13 +2,14 @@
 
 ## Next Up
 
-- load original settings via file, write to db, delete file
-- rename device power
-- fix layout stuff
+- reduce font size on graph on mobile
+- cleanup card layout stuff
 
 - sliders sending duplicates, fix.. (old issue.. )
 - TEST EVERYTHING
 
+- fix layout of filesystem buttons on safari
+- rename device power
 - allow users to restart webcamd service if webcam is enabled
 - sync instances across moonraker db
 - implement final filesystem features (bulk actions & move)
