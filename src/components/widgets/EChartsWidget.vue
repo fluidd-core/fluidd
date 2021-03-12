@@ -15,25 +15,58 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import { getKlipperType } from '@/store/helpers'
 
 @Component({})
 export default class EChartsWidget extends Vue {
-  @Prop({ required: true, default: {} })
-  public chartData!: any
-
   loading = true
   options: any = {}
 
   handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
     this.$store.dispatch('charts/saveSelectedLegends', e.selected)
+    if (
+      this.chart &&
+      !this.loading
+    ) {
+      this.chart.setOption({
+        grid: this.grid,
+        yAxis: [
+          {},
+          { show: this.showPowerAxis(e.selected) }
+        ]
+      })
+    }
   }
 
   get chart () {
     const ref = this.$refs.chart as any
     if (ref) return ref.inst as ECharts
+  }
+
+  get chartData () {
+    return this.$store.getters['charts/getChartData']
+  }
+
+  get chartSelectedLegends () {
+    return this.$store.getters['charts/getSelectedLegends']
+  }
+
+  get grid () {
+    let right = 0
+    if (this.showPowerAxis(this.chartSelectedLegends)) {
+      right = (this.isMobile) ? 35 : 70
+    } else {
+      right = (this.isMobile) ? 15 : 24
+    }
+
+    return {
+      top: 30,
+      left: (this.isMobile) ? 35 : 70,
+      right,
+      bottom: (this.isMobile) ? 55 : 50
+    }
   }
 
   @Watch('chartData')
@@ -79,6 +112,11 @@ export default class EChartsWidget extends Vue {
 
     // Re-apply the legend state in the store after the series has redefined the legends.
     this.$store.dispatch('charts/saveSelectedLegends', this.options.legend.selected)
+
+    // Make sure we enable / disable the y axis.
+    if (this.showPowerAxis(this.options.legend.selected)) {
+      this.options.yAxis[1].show = true
+    }
   }
 
   initOptions () {
@@ -95,12 +133,7 @@ export default class EChartsWidget extends Vue {
     }
 
     this.options = {
-      grid: {
-        top: 30,
-        left: (this.isMobile) ? 35 : 70,
-        right: (this.isMobile) ? 35 : 70,
-        bottom: (this.isMobile) ? 55 : 50
-      },
+      grid: this.grid,
       legend: {
         show: false,
         top: 0,
@@ -172,6 +205,7 @@ export default class EChartsWidget extends Vue {
             color: fontColor,
             align: 'left'
           },
+          show: true,
           type: 'value',
           position: 'left',
           splitLine: {
@@ -202,6 +236,7 @@ export default class EChartsWidget extends Vue {
             color: fontColor,
             align: 'right'
           },
+          show: false,
           type: 'value',
           position: 'right',
           splitLine: {
@@ -275,16 +310,11 @@ export default class EChartsWidget extends Vue {
       series.areaStyle.opacity = 0
     }
 
-    // If this is a power, adjust its display.
-    if (label.toLowerCase().endsWith('power')) {
-      series.yAxisIndex = 1
-      series.lineStyle.type = 'dotted'
-      series.lineStyle.opacity = 0.35
-      series.areaStyle.opacity = 0
-    }
-
-    // If this is a speed, adjust its display.
-    if (label.toLowerCase().endsWith('speed')) {
+    // If this is a power or speed, adjust its display.
+    if (
+      label.toLowerCase().endsWith('power') ||
+      label.toLowerCase().endsWith('speed')
+    ) {
       series.yAxisIndex = 1
       series.lineStyle.type = 'dotted'
       series.lineStyle.opacity = 0.35
@@ -304,6 +334,14 @@ export default class EChartsWidget extends Vue {
 
     // Push the series into our options object.
     this.options.series.push(series)
+  }
+
+  showPowerAxis (selected: any) {
+    const filtered = Object.keys(selected)
+      .filter(key => key.toLowerCase().endsWith('power') || key.toLowerCase().endsWith('speed'))
+      .filter(key => selected[key] === true)
+
+    return (filtered.length > 0)
   }
 
   legendToggleSelect (name: string) {

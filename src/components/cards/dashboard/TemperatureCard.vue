@@ -40,7 +40,6 @@
 
     <e-charts-widget
       v-if="chartReady && chartVisible"
-      :chart-data="chartData"
       ref="chart"
     ></e-charts-widget>
 
@@ -63,10 +62,6 @@ import { Fan, Heater } from '@/store/printer/types'
 export default class TemperatureGraphCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
-
-  get chartData () {
-    return this.$store.getters['charts/getChartData']
-  }
 
   get chartReady () {
     return (
