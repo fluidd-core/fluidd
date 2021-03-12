@@ -39,7 +39,7 @@ import FluiddBtn from '@/components/inputs/Btn.vue'
 import FluiddIcon from '@/components/FluiddIcon.vue'
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
-import InlineHelpIcon from '@/components/InlineHelpIcon.vue'
+import InlineHelp from '@/components/InlineHelpIcon.vue'
 import { Globals } from './globals'
 
 // Configure echarts
@@ -66,7 +66,7 @@ Vue.use(ColorSetPlugin, {})
 Vue.component('btn-collapse', BtnCollapse)
 Vue.component('collapsable-card', CollapsableCard)
 Vue.component('vue-headful', vueHeadful)
-Vue.component('inline-help', InlineHelpIcon)
+Vue.component('inline-help', InlineHelp)
 Vue.component('fluidd-icon', FluiddIcon)
 Vue.component('btn', FluiddBtn)
 
