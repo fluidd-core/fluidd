@@ -51,6 +51,7 @@ export interface GeneralConfig {
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
+  useGcodeCoords: boolean;
 }
 
 export interface ThemeConfig {
