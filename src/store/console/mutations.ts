@@ -3,6 +3,7 @@ import { MutationTree } from 'vuex'
 import { defaultState } from './'
 import { Globals } from '@/globals'
 import { ConsoleEntry, ConsoleState } from './types'
+import { SocketActions } from '@/socketActions'
 
 export const mutations: MutationTree<ConsoleState> = {
   /**
@@ -31,6 +32,13 @@ export const mutations: MutationTree<ConsoleState> = {
    */
   setGcodeHelp (state, payload) {
     Vue.set(state, 'availableCommands', payload)
+  },
+
+  /**
+   * Inits the console history from db
+   */
+  setInitConsole (state, payload: ConsoleState) {
+    if (payload) Object.assign(state, payload)
   },
 
   /**

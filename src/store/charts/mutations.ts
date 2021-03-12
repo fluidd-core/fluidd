@@ -11,6 +11,13 @@ export const mutations: MutationTree<ChartState> = {
   },
 
   /**
+   * Init the chart store from db
+   */
+  setInitCharts (state, payload: ChartState) {
+    if (payload) Object.assign(state, payload)
+  },
+
+  /**
    * Inits the chart store from moonraker.
    */
   setChartStore (state, payload: ChartData[]) {

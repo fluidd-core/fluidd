@@ -87,7 +87,7 @@ export const actions: ActionTree<ChartState, RootState> = {
    * Init the chart state from db
    */
   initCharts ({ commit }, payload) {
-    commit('setSelectedLegends', payload.selectedLegends)
+    commit('setInitCharts', payload)
   },
 
   /**

@@ -161,7 +161,12 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
         })
         .catch((r: AxiosError) => {
           if (r.response && r.response.status === 404) {
-            return null // This is ok;
+            // Init the db store with an empty object.
+            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+              key,
+              value: {}
+            })
+            return null
           }
           consola.debug('API Down / Not Available:', r)
           apiConnected = false

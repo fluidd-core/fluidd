@@ -11,9 +11,9 @@ export const mutations: MutationTree<MacrosState> = {
     Object.assign(state, defaultState())
   },
 
-  // Sets stored macro state
+  // Sets macro state from db
   initMacros (state, payload: MacrosState) {
-    Object.assign(state, payload)
+    if (payload) Object.assign(state, payload)
   },
 
   // Updates a singular macro

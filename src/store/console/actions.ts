@@ -16,7 +16,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    * Inits known command history
    */
   async initConsole ({ commit }, payload) {
-    commit('setUpdateCommandHistory', payload.commandHistory)
+    commit('setInitConsole', payload)
   },
 
   /**
