@@ -54,7 +54,7 @@ export default class FanWidget extends Mixins(StateMixin) {
   }
 
   get value () {
-    return (this.fan.speed) ? this.fan.speed * 100 : 0
+    return (this.fan.speed) ? Math.round(this.fan.speed * 100) : 0
   }
 
   set value (target: number) {

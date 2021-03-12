@@ -4,7 +4,6 @@ import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, CardCo
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
-import consola from 'consola'
 
 export const mutations: MutationTree<ConfigState> = {
   /**

@@ -2,12 +2,7 @@
 
 ## Next Up
 
-- reduce font size on graph on mobile
 - cleanup card layout stuff
-
-- sliders sending duplicates, fix.. (old issue.. )
-- TEST EVERYTHING
-
 - fix layout of filesystem buttons on safari
 - rename device power
 - allow users to restart webcamd service if webcam is enabled

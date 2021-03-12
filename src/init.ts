@@ -3,9 +3,8 @@ import vuetify from './plugins/vuetify'
 import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
-import { ApiConfig, InitConfig, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
+import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import { AxiosError } from 'axios'
-import { SocketActions } from './socketActions'
 
 // Load API configuration
 /**

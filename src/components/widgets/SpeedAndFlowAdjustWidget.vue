@@ -48,7 +48,7 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(StateMixin) {
   ]
 
   get flow () {
-    return this.$store.state.printer.printer.gcode_move.extrude_factor * 100 || 100
+    return Math.round(this.$store.state.printer.printer.gcode_move.extrude_factor * 100) || 100
   }
 
   set flow (val: number) {
@@ -56,7 +56,7 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(StateMixin) {
   }
 
   get speed () {
-    return this.$store.state.printer.printer.gcode_move.speed_factor * 100 || 100
+    return Math.round(this.$store.state.printer.printer.gcode_move.speed_factor * 100) || 100
   }
 
   set speed (val: number) {
