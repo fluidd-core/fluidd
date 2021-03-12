@@ -48,7 +48,7 @@ export default class ToolheadPositionWidget extends Mixins(StateMixin) {
   get toolheadPosition () {
     return this.$store.state.printer.printer.toolhead.position
   }
-  
+
   get useGcodeCoords () {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
