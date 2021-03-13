@@ -113,12 +113,27 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
             const macros = (d.data.dashboard.hiddenMacros)
               ? [...d.data.dashboard.hiddenMacros]
               : undefined
+            const theme = (d.data.theme)
+              ? { ...d.data.theme }
+              : undefined
             delete d.data.dashboard.hiddenMacros
+            delete d.data.theme
             consola.debug('got ui data, writing', d.data)
             Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
               key: 'uiSettings',
               value: d.data
             })
+            if (theme) {
+              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key: 'uiSettings.theme',
+                value: {
+                  isDark: theme.darkMode,
+                  currentTheme: {
+                    primary: theme.colors.primary
+                  }
+                }
+              })
+            }
             if (macros && macros.length > 0) {
               const convertedMacros: { name: string; visible: boolean }[] = macros.map(m => { return { name: m, visible: false } })
               consola.debug('got macros, writing', convertedMacros)
