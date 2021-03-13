@@ -43,6 +43,9 @@ export const actions: ActionTree<VersionState, RootState> = {
     commit('setUpdateResponse', payload)
   },
 
+  /**
+   * Notifications of specific updates
+   */
   async onUpdatedMoonraker ({ commit }, payload) {
     consola.debug('Finished updating moonraker', payload)
     SocketActions.machineUpdateStatus()

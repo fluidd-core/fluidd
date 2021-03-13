@@ -1,4 +1,5 @@
 export interface ServerState {
+  klippy_retries: number;
   info: ServerInfo;
   config: ServerConfig;
 }

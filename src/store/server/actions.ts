@@ -14,13 +14,13 @@ export const actions: ActionTree<ServerState, RootState> = {
     commit('setReset')
   },
 
-  async onServerInfo ({ commit, dispatch }, payload) {
-    // This payload should return a list of enabled plugins
-    // and root directories that are available.
-    SocketActions.printerInfo()
-    SocketActions.serverConfig()
-
-    commit('setServerInfo', payload)
+  /**
+   * Init plugins.
+   * During app init, we want to initially init these once, irrelevant
+   * of klippy's state. After that, we'd only ever init once more if
+   * klippy is connected.
+   */
+  async initPlugins ({ dispatch }, payload) {
     if (
       payload.plugins &&
       payload.plugins.length > 0
@@ -28,22 +28,38 @@ export const actions: ActionTree<ServerState, RootState> = {
       const pluginsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_PLUGINS
       for (const key in pluginsToInit) {
         const plugin = pluginsToInit[key]
-        console.log('init pluigin', plugin.name)
+        console.log('init plugin', plugin.name)
         if (payload.plugins.includes(plugin.name)) {
           dispatch(plugin.dispatch, undefined, { root: true })
         }
       }
     }
+  },
+
+  /**
+   * On server info
+   */
+  async onServerInfo ({ commit, dispatch, state }, payload) {
+    // This payload should return a list of enabled plugins
+    // and root directories that are available.
+    SocketActions.printerInfo()
+    SocketActions.serverConfig()
+
+    commit('setServerInfo', payload)
 
     if (payload.klippy_state !== 'ready') {
       // If klippy is not connected, we'll continue to
       // retry the init process.
+      if (state.klippy_retries === 0) dispatch('initPlugins', payload)
+      commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
         SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
       // If klippy is connected, move on.
+      commit('setKlippyRetries', 0)
+      dispatch('initPlugins', payload)
       SocketActions.printerObjectsList()
     }
   },

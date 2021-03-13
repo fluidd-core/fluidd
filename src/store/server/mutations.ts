@@ -20,5 +20,12 @@ export const mutations: MutationTree<ServerState> = {
    */
   setServerConfig (state, payload) {
     state.config = { ...state.config, ...payload }
+  },
+
+  /**
+   * Sets how many times we've retried connecting to klippy.
+   */
+  setKlippyRetries (state, payload: number) {
+    state.klippy_retries = payload
   }
 }
