@@ -2,8 +2,11 @@
   <v-footer app absolute>
     <span class="font-weight-light grey--text">
       &copy; {{ new Date().getFullYear() }}
-      fluidd: v{{ systemInfo.version }}-{{ systemInfo.hash }}
+      fluidd: v{{ appInfo.fluidd.version }}-{{ appInfo.fluidd.hash }},
+      moonraker: {{ appInfo.components.moonraker.current_hash }},
+      klipper: {{ appInfo.components.klipper.current_hash }}
     </span>
+    <!-- <pre>{{ appInfo }}</pre> -->
   </v-footer>
 </template>
 
@@ -13,11 +16,15 @@ import { Component } from 'vue-property-decorator'
 
 @Component({})
 export default class Footer extends Vue {
-  get systemInfo () {
+  get clientInfo () {
     return {
       version: this.$store.state.version.fluidd.version,
       hash: this.$store.state.version.fluidd.hash
     }
+  }
+
+  get appInfo () {
+    return this.$store.state.version
   }
 }
 </script>
