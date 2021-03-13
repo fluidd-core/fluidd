@@ -14,6 +14,7 @@ import { charts } from './charts'
 import { console } from './console'
 import { macros } from './macros'
 import { devicePower } from './devicePower'
+import { history } from './history'
 import { version } from './version'
 import { wait } from './wait'
 
@@ -32,6 +33,7 @@ export default new Vuex.Store<RootState>({
     console,
     macros,
     devicePower,
+    history,
     version,
     wait
   },

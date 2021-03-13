@@ -38,6 +38,7 @@
       <!-- Menu, (condensed to hamburger) -->
       <v-menu
         v-if="hasMenuSlot && !isInLayout && !hideMenu"
+        transition="slide-x-transition"
         left
         offset-y
         :close-on-content-click="false"

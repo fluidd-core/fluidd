@@ -152,6 +152,7 @@
     </v-data-table>
 
     <v-menu
+      transition="slide-x-transition"
       v-model="contextMenu.open"
       :position-x="contextMenu.x"
       :position-y="contextMenu.y"

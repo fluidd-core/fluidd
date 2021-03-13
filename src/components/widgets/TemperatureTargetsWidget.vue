@@ -14,7 +14,13 @@
         <v-layout>
           <span class="">Target</span>
           <v-spacer></v-spacer>
-          <v-menu bottom left offset-y :min-width="150">
+          <v-menu
+            bottom
+            left
+            offset-y
+            transition="slide-x-transition"
+            :min-width="150"
+          >
             <template v-slot:activator="{ on, attrs }">
             <btn
               :min-width="40"

@@ -64,16 +64,40 @@
         <span>Reset File</span>
       </btn>
 
-      <btn
-        @click="rePrint()"
-        :elevation="2"
-        v-if="!printerPrinting && !printerPaused && filename"
-        small
-        color="secondary"
-        class="ma-1">
-        <v-icon small class="mr-1">$reprint</v-icon>
-        <span>Reprint</span>
-      </btn>
+      <!-- v-if="!printerPrinting && !printerPaused && filename" -->
+      <v-menu
+        bottom left
+        transition="slide-x-transition"
+        offset-y
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <btn
+            v-bind="attrs"
+            v-on="on"
+            small
+            color="secondary"
+            class="ma-1">
+            <v-icon small class="mr-1">$reprint</v-icon>
+            <span>Reprint</span>
+            <v-icon small class="ml-1">$chevronDown</v-icon>
+          </btn>
+        </template>
+        <v-list
+          dense
+          color="tertiary"
+        >
+          <v-list-item
+            two-line
+            v-for="file in history"
+            :key="file.id"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ file.filename }}</v-list-item-title>
+              <v-list-item-subtitle>last printed: {{ $filters.formatFileDateTime(file.start_time, 'll') }} - duration: {{ $filters.formatCounterTime(file.print_duration) }} - end state: {{ file.status }}</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </template>
 
     <dialog-confirm
@@ -81,6 +105,8 @@
       @confirm="cancelPrint">
       <p>Are you sure? This will cancel your print.</p>
     </dialog-confirm>
+
+    <!-- <pre>{{ history }}</pre> -->
 
     <print-status-widget v-if="showStatus"></print-status-widget>
 
@@ -108,12 +134,26 @@ export default class StatusCard extends Mixins(StateMixin) {
     open: false
   }
 
+  get history () {
+    // this should allow you to;
+    // if no history plugin, or no history.. reprint the last file if loaded
+    // via print_stats.filename or;
+    // if history plugin, with history.. reprint last file AND
+    // expand to a list of previous prints.
+    return this.$store.getters['history/getHistory'](5)
+  }
+
   get hidePrinterMenu () {
-    return (!this.printerPrinting && !this.printerPaused && !this.filename)
+    // return (!this.printerPrinting && !this.printerPaused && !this.filename)
+    // console.log('printing?', this.printerPrinting)
+    // console.log('paused and printing?', (this.printerPrinting || this.printerPaused))
+    return (this.printerPrinting || this.printerPaused)
+    // return false
   }
 
   get showStatus () {
-    return (this.printerPrinting || this.printerPaused || this.filename)
+    // return (this.printerPrinting || this.printerPaused || this.filename)
+    return true
   }
 
   get printerMessage () {
@@ -127,15 +167,18 @@ export default class StatusCard extends Mixins(StateMixin) {
   cancelPrint (val: boolean) {
     if (val) {
       SocketActions.printerPrintCancel()
+      this.addConsoleEntry('CANCEL_PRINT')
     }
   }
 
   pausePrint () {
     SocketActions.printerPrintPause()
+    this.addConsoleEntry('PAUSE')
   }
 
   resumePrint () {
     SocketActions.printerPrintResume()
+    this.addConsoleEntry('RESUME')
   }
 
   rePrint () {

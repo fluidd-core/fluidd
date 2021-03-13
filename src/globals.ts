@@ -97,6 +97,7 @@ export const Globals = Object.freeze({
   CONSOLE_SEND_PREFIX: '$ ',
   CONSOLE_COMMAND_HISTORY: 20,
   CHART_HISTORY_RETENTION: 1200,
+  HISTORY_RETENTION: 20,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
@@ -112,7 +113,8 @@ export const Globals = Object.freeze({
   },
   MOONRAKER_PLUGINS: {
     power: { name: 'power', dispatch: 'devicePower/init' },
-    updateManager: { name: 'update_manager', dispatch: 'version/init' }
+    updateManager: { name: 'update_manager', dispatch: 'version/init' },
+    history: { name: 'history', dispatch: 'history/init' }
   },
   FILTERED_FILES_PREFIX: ['.', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.json'],

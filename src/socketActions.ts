@@ -293,6 +293,15 @@ export const SocketActions = {
     )
   },
 
+  async serverHistoryList (limit: number) {
+    baseEmit(
+      'server.history.list', {
+        dispatch: 'history/onInit',
+        params: { limit }
+      }
+    )
+  },
+
   /**
    * Loads the metadata for a given filepath.
    * Expects the full path including root.
