@@ -11,7 +11,7 @@ import { RootState } from '../types'
 export const defaultState = (): HistoryState => {
   return {
     count: 0,
-    prints: {}
+    jobs: []
   }
 }
 

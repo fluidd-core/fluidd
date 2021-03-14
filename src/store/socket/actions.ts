@@ -145,5 +145,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyUpdateRefreshed ({ dispatch }, payload) {
     dispatch('version/onUpdateStatus', payload, { root: true })
+  },
+
+  async notifyHistoryChanged ({ dispatch }, payload) {
+    dispatch('history/onHistoryChange', payload, { root: true })
   }
 }
