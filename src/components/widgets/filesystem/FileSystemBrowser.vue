@@ -3,7 +3,7 @@
     <v-data-table
       mobile-breakpoint="0"
       :headers="headers"
-      :items="directory.items"
+      :items="files"
       :dense="dense"
       :disable-pagination="true"
       :loading="loadingDirectory"
@@ -110,7 +110,7 @@
             <img
               v-if="item.thumbnails && item.thumbnails.length"
               class="mr-1 file-icon-thumb"
-              :src="getThumb(item).data"
+              :src="getThumb(item.thumbnails).data"
               :width="(dense) ? 16 : 24"
             />
 
@@ -226,7 +226,7 @@
           <v-col class="px-2 d-none d-sm-flex" v-if="contextMenu.item.thumbnails && contextMenu.item.thumbnails.length">
             <img
               class="mr-2 ml-2"
-              :src="getThumb(contextMenu.item, true).data"
+              :src="getThumb(contextMenu.item.thumbnails, true).data"
               :height="150"
             />
           </v-col>
@@ -240,11 +240,11 @@
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
 import { SocketActions } from '@/socketActions'
-import { getThumb } from '@/store/helpers'
 import FileSystemControls from '@/components/widgets/filesystem/FileSystemControls.vue'
 import { FileSystemDialogData } from '@/types'
 import { clone } from 'lodash-es'
 import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
 import { DataTableHeader } from 'vuetify'
 import { VForm } from '@/types/vuetify'
 
@@ -253,7 +253,7 @@ import { VForm } from '@/types/vuetify'
     FileSystemControls
   }
 })
-export default class FileSystemBrowser extends Mixins(StateMixin) {
+export default class FileSystemBrowser extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: String, required: true })
   root!: string;
 
@@ -329,8 +329,15 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
     this.$emit('trimmed-path', this.trimmedPath)
   }
 
-  get directory (): AppFile[] | AppDirectory[] {
-    return this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
+  get files (): AppFile[] | AppDirectory[] {
+    const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
+    if (
+      dir &&
+      dir.items
+    ) {
+      return dir.items
+    }
+    return []
   }
 
   // Returns the current path with no root.
@@ -389,7 +396,7 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
 
   loadFiles (path: string) {
     this.currentPath = path
-    if (this.directory.length <= 0) {
+    if (this.files.length <= 0) {
       this.refreshPath(path)
     }
   }
@@ -468,14 +475,6 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
 
   viewItem (item: AppFile) {
     this.$emit('view-file', item, this.root, this.trimmedPath)
-  }
-
-  getThumb (item: AppFile | AppFileWithMeta, goLarge: boolean) {
-    if ('thumbnails' in item) {
-      const file = item as AppFileWithMeta
-      return getThumb(file, goLarge)
-    }
-    return null
   }
 
   createDirectoryDialog () {

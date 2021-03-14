@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { FilesState } from './types'
+import { Files, FilesState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<FilesState, RootState> = {
@@ -14,7 +14,6 @@ export const getters: GetterTree<FilesState, RootState> = {
         return dir
       }
     }
-    return []
   },
 
   /**
@@ -22,5 +21,19 @@ export const getters: GetterTree<FilesState, RootState> = {
    */
   isRootAvailable: (state, getters, rootState) => (r: string) => {
     return rootState.server?.info.registered_directories.includes(r)
+  },
+
+  /**
+   * Returns a specific file.
+   */
+  getFile: (state, getters) => (r: string, path: string, filename: string) => {
+    const dir: Files = getters.getDirectory(r, path)
+    console.log('found a dir', r, path, filename, dir)
+    if (
+      dir &&
+      dir.items
+    ) {
+      return dir.items.find(f => f.type === 'file' && f.filename === filename)
+    }
   }
 }

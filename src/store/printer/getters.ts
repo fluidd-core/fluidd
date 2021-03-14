@@ -97,7 +97,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getPrintImage: (state) => {
     let thumb: Thumbnail | undefined
     if (state.printer.current_file) {
-      thumb = getThumb(state.printer.current_file)
+      thumb = getThumb(state.printer.current_file.thumbnails)
     }
     return thumb
   },
