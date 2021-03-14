@@ -16,7 +16,7 @@
         </v-row>
       </v-col>
       <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
-        <file-system-card
+        <file-system
           :root="['config', 'config_examples', 'docs']"
           accept=".conf,.cfg,.md"
           :upload-and-print="false"
@@ -24,7 +24,7 @@
           dense
           panel-title="Config"
           :show-meta-data="false">
-        </file-system-card>
+        </file-system>
       </v-col>
     </v-row>
   </v-container>
@@ -35,7 +35,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
-import FileSystemCard from '@/components/cards/FileSystemCard.vue'
+import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import KlippyCard from '@/components/cards/KlippyCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
 import BedAdjustCard from '@/components/cards/configuration/BedAdjustCard.vue'
@@ -50,7 +50,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     BedAdjustCard,
     EndStopsCard,
     RunoutSensorsCard,
-    FileSystemCard,
+    FileSystem,
     KlippyCard,
     LogsCard
   }

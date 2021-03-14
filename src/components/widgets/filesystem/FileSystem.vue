@@ -85,7 +85,7 @@ import EventBus from '@/eventBus'
     UploadOverlayWidget
   }
 })
-export default class FileSystemCard extends Mixins(StateMixin) {
+export default class FileSystem extends Mixins(StateMixin) {
   @Prop({ type: [String, Array], required: true })
   root!: string | string[];
 

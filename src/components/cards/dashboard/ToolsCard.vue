@@ -44,7 +44,7 @@
         <temperature-targets-widget></temperature-targets-widget>
       </v-tab-item>
       <v-tab-item :key="'jobs'" class="tertiary rounded-b max-height" v-if="jobsInDash && jobsAvailable">
-        <file-system-card
+        <file-system
           root="gcodes"
           accept=".gcode,.ufp"
           dense
@@ -52,7 +52,7 @@
           :show-title="false"
           :show-meta-data="false"
           :upload-and-print="true"
-        ></file-system-card>
+        ></file-system>
       </v-tab-item>
     </v-tabs-items>
 
@@ -62,12 +62,12 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FileSystemCard from '@/components/cards/FileSystemCard.vue'
+import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import TemperatureTargetsWidget from '@/components/widgets/TemperatureTargetsWidget.vue'
 
 @Component({
   components: {
-    FileSystemCard,
+    FileSystem,
     TemperatureTargetsWidget
   }
 })

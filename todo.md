@@ -2,20 +2,24 @@
 
 ## Next Up
 
+- clean up file system
+- add pi filesystem usage to printer page
+- print history
+  - full history / delete/ clear all.
+  - reprint
+- add git history
+
+- implement final filesystem features (bulk actions & move)
 - cleanup card layout stuff
 - fix layout of filesystem buttons on safari
 - rename device power
 - allow users to restart webcamd service if webcam is enabled
 - sync instances across moonraker db
-- implement final filesystem features (bulk actions & move)
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - i18n (translations)
-- macros have inputs via settings, impl a UI dialog for this?
 
-- print history
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?
-- ability to reprint after cancel
 - allow users to show / hide pin outputs
 
 ## Filesystem Improvements

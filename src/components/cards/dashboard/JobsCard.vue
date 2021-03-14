@@ -19,7 +19,7 @@
 
     </template>
 
-    <file-system-card
+    <file-system
       v-if="gCodeRootReady"
       root="gcodes"
       accept=".gcode,.g,.gc,.gco,.ufp,.nc"
@@ -28,18 +28,18 @@
       :show-title="false"
       :show-meta-data="false"
       :upload-and-print="true"
-    ></file-system-card>
+    ></file-system>
   </collapsable-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import FileSystemCard from '@/components/cards/FileSystemCard.vue'
+import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
-    FileSystemCard
+    FileSystem
   }
 })
 export default class JobsCard extends Mixins(StateMixin) {

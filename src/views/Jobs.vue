@@ -2,12 +2,12 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" class="pt-0">
-        <file-system-card
+        <file-system
           :root="'gcodes'"
           accept=".gcode,.g,.gc,.gco,.ufp,.nc"
           :upload-and-print="true"
           :show-meta-data="true">
-        </file-system-card>
+        </file-system>
       </v-col>
     </v-row>
   </v-container>
@@ -18,7 +18,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
-import FileSystemCard from '@/components/cards/FileSystemCard.vue'
+import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
@@ -29,7 +29,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     BedMeshWidget,
     EndStopsCard,
     RunoutSensorsCard,
-    FileSystemCard
+    FileSystem
   }
 })
 export default class Configuration extends Mixins(StateMixin) {
