@@ -16,15 +16,15 @@
         </v-row>
       </v-col>
       <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
-        <file-system
-          :root="['config', 'config_examples', 'docs']"
-          accept=".conf,.cfg,.md"
-          :upload-and-print="false"
-          :file-create="true"
-          dense
-          panel-title="Config"
-          :show-meta-data="false">
-        </file-system>
+        <collapsable-card
+          title="Configuration Files"
+          icon="$files"
+          :draggable="false"
+        >
+          <file-system
+            :roots="['config', 'config_examples']">
+          </file-system>
+        </collapsable-card>
       </v-col>
     </v-row>
   </v-container>

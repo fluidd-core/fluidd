@@ -21,13 +21,9 @@
 
     <file-system
       v-if="gCodeRootReady"
-      root="gcodes"
-      accept=".gcode,.g,.gc,.gco,.ufp,.nc"
+      roots="gcodes"
       dense
       :height="400"
-      :show-title="false"
-      :show-meta-data="false"
-      :upload-and-print="true"
     ></file-system>
   </collapsable-card>
 </template>

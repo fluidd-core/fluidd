@@ -27,7 +27,7 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class DragOverlayWidget extends Mixins(StateMixin) {
+export default class FileSystemDragOverlay extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean;
 }

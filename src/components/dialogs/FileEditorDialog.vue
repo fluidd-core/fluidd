@@ -10,7 +10,6 @@
   >
     <v-card d-flex color="black">
       <v-toolbar
-        dark
         dense
         color="secondary"
       >
@@ -23,33 +22,37 @@
         </btn>
         <v-toolbar-title>{{ filename }}</v-toolbar-title>
         <v-spacer></v-spacer>
-        <btn
-          v-if="!readonly && unsavedChanges"
-          :elevation="2"
-          dark
-          color="warning"
-          class="ml-2"
-          @click="emitSave(false, false, newContents, filename, path)">
-          Save
-        </btn>
-        <btn
-          v-if="!readonly && unsavedChanges"
-          :elevation="2"
-          dark
-          color="warning"
-          class="ml-2"
-          @click="emitSave(true, false, newContents, filename, path)">
-          Save &amp; Close
-        </btn>
-        <btn
-          v-if="!readonly && unsavedChanges && !printerPrinting"
-          :elevation="2"
-          dark
-          color="error"
-          class="ml-2"
-          @click="emitSave(true, true, newContents, filename, path)">
-          Save &amp; Restart
-        </btn>
+        <v-toolbar-items>
+          <btn
+            color="secondary"
+            v-if="!readonly && !printerPrinting"
+            :href="$globals.DOCS_KLIPPER_CONFIG_REF"
+            target="_blank">
+            <v-icon small left>$help</v-icon>
+            Config Reference
+          </btn>
+          <btn
+            color="secondary"
+            v-if="!readonly && !printerPrinting"
+            @click="emitSave(newContents, true)">
+            <v-icon small left>$restart</v-icon>
+            Save &amp; Restart
+          </btn>
+          <btn
+            color="secondary"
+            v-if="!readonly"
+            @click="emitSave(newContents, false)">
+            <v-icon small left>$save</v-icon>
+            Save
+          </btn>
+          <btn
+            color="secondary"
+            v-if="!readonly && !printerPrinting"
+            @click="emitClose()">
+            <v-icon small left>$close</v-icon>
+            Close
+          </btn>
+        </v-toolbar-items>
       </v-toolbar>
       <v-card-text>
         <file-editor-widget
@@ -65,22 +68,19 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FileEditorWidget from '@/components/widgets/filesystem/FileEditorWidget.vue'
+import FileEditorWidget from '@/components/widgets/FileEditorWidget.vue'
 
 @Component({
   components: {
     FileEditorWidget
   }
 })
-export default class DialogFileEditor extends Mixins(StateMixin) {
+export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 
   @Prop({ type: String, required: true })
   public filename!: string;
-
-  @Prop({ type: String, required: true })
-  public path!: string;
 
   @Prop({ type: String, required: true })
   public contents!: string
@@ -114,9 +114,9 @@ export default class DialogFileEditor extends Mixins(StateMixin) {
     this.$emit('input', false)
   }
 
-  emitSave (close: boolean, restart: boolean, contents?: string, filename?: string, path?: string) {
-    this.$emit('save', restart, contents, filename, path)
-    if (close) this.$emit('input', false)
+  emitSave (contents: string, restart: boolean) {
+    this.$emit('save', contents, restart)
+    if (restart) this.$emit('input', false)
   }
 }
 </script>

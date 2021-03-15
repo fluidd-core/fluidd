@@ -27,6 +27,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
 import WarningsWidget from '@/components/widgets/WarningsWidget.vue'
 
@@ -35,17 +36,17 @@ import WarningsWidget from '@/components/widgets/WarningsWidget.vue'
     WarningsWidget
   }
 })
-export default class KlippyCard extends Mixins(StateMixin, ServicesMixin) {
+export default class KlippyCard extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
   get klipperConnected () {
     return this.$store.getters['server/getInfo'].klippy_connected
   }
 
   getKlippyLog () {
-    this.download('klippy.log', '')
+    this.downloadFile('klippy.log', '')
   }
 
   getMoonrakerLog () {
-    this.download('moonraker.log', '')
+    this.downloadFile('moonraker.log', '')
   }
 
   reload () {

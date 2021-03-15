@@ -2,15 +2,10 @@ import Vue from 'vue'
 import { SocketActions } from '@/socketActions'
 import { Component, Watch } from 'vue-property-decorator'
 import { Globals, Waits } from '@/globals'
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 @Component
 export default class UtilsMixin extends Vue {
   waits = Waits
-
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
-  }
 
   get socketConnected () {
     return this.$store.getters['socket/getConnectionState']
@@ -114,27 +109,5 @@ export default class UtilsMixin extends Vue {
 
   addConsoleEntry (message: string) {
     this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'command' })
-  }
-
-  getFile (path: string, options?: AxiosRequestConfig) {
-    const o = { ...options }
-    return this.$http.get(
-      this.apiUrl + path + '?date=' + new Date().getTime(),
-      o
-    )
-  }
-
-  download (file: string, path: string) {
-    const filename = file || ''
-    const filepath = (path) ? `/server/files/${path}/${file}` : `/server/files/${file}`
-    this.getFile(filepath, { responseType: 'blob' })
-      .then((response: AxiosResponse) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', filename)
-        document.body.appendChild(link)
-        link.click()
-      })
   }
 }

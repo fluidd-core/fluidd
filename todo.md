@@ -2,11 +2,17 @@
 
 ## Next Up
 
+remove file dialog warning
+1. reprint option
+2. file browser respects last print time from history
+3. stats panel on printer page with full history so you can
+  - delete entry
+  - clear all entries
+  - see overall print stats, total print time, total filament usage etc
+  - add pi filesystem usage to printer page
+
 - clean up file system
-- add pi filesystem usage to printer page
-- print history
-  - full history / delete/ clear all.
-  - reprint
+  - bulk actions to delete or move?
 - add git history
 
 - implement final filesystem features (bulk actions & move)

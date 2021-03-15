@@ -121,7 +121,8 @@ export const Globals = Object.freeze({
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
-  DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker'
+  DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker',
+  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html'
 })
 
 export const Icons = Object.freeze({
@@ -242,7 +243,7 @@ export const Waits = Object.freeze({
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
-  onUploadGcode: 'onUploadGcode',
+  onUpload: 'onUpload',
   onExtruderChange: 'onExtruderChange'
 })
 

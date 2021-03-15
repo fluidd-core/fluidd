@@ -82,31 +82,7 @@
             <v-icon small class="ml-1">$chevronDown</v-icon>
           </btn>
         </template>
-        <v-list
-          dense
-          color="tertiary"
-        >
-          <v-list-item
-            two-line
-            v-for="job in history"
-            :key="job.id"
-          >
-            <v-list-item-content>
-              <v-list-item-title>
-                <img
-                  v-if="job.metadata.thumbnails && job.metadata.thumbnails.length"
-                  class="mr-1 file-icon-thumb"
-                  :src="getThumb(job.metadata.thumbnails).data"
-                  :width="16"
-                />
-                {{ job.filename }}
-              </v-list-item-title>
-              <v-list-item-subtitle>
-                last printed: {{ $filters.formatFileDateTime(job.start_time, 'll') }} - duration: {{ $filters.formatCounterTime(job.print_duration) }} - end state: {{ job.status }}
-              </v-list-item-subtitle>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
+        <reprint-list></reprint-list>
       </v-menu>
     </template>
 
@@ -126,6 +102,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
+import ReprintList from '@/components/widgets/history/ReprintList.vue'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/socketActions'
@@ -135,7 +112,8 @@ import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 @Component({
   components: {
     PrintStatusWidget,
-    DialogConfirm
+    DialogConfirm,
+    ReprintList
   }
 })
 export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
@@ -143,15 +121,6 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
 
   confirmDialog = {
     open: false
-  }
-
-  get history () {
-    // this should allow you to;
-    // if no history plugin, or no history.. reprint the last file if loaded
-    // via print_stats.filename or;
-    // if history plugin, with history.. reprint last file AND
-    // expand to a list of previous prints.
-    return this.$store.getters['history/getHistory'](3)
   }
 
   get hidePrinterMenu () {

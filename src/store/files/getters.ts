@@ -24,6 +24,51 @@ export const getters: GetterTree<FilesState, RootState> = {
   },
 
   /**
+   * Returns the properties of a root.
+   */
+  getRootProperties: () => (r: string) => {
+    const root = r as 'gcodes' | 'config' | 'config_examples' | 'docs'
+
+    if (root === 'gcodes') {
+      return {
+        readonly: false,
+        accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
+        canEdit: false,
+        canView: false,
+        canPrint: true
+      }
+    }
+
+    if (root === 'config') {
+      return {
+        readonly: false,
+        accepts: ['.conf', '.cfg', '.md'],
+        canEdit: true,
+        canView: false,
+        canPrint: false
+      }
+    }
+
+    if (root === 'config_examples') {
+      return {
+        readonly: true,
+        accepts: [],
+        canEdit: false,
+        canView: true,
+        canPrint: false
+      }
+    }
+
+    return {
+      readonly: true,
+      accepts: [],
+      canEdit: false,
+      canView: true,
+      canPrint: false
+    }
+  },
+
+  /**
    * Returns a specific file.
    */
   getFile: (state, getters) => (r: string, path: string, filename: string) => {

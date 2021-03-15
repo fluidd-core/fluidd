@@ -11,16 +11,16 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
 
 @Component({})
-export default class LogsCard extends Mixins(StateMixin) {
+export default class LogsCard extends Mixins(FilesMixin) {
   getKlippyLog () {
-    this.download('klippy.log', '')
+    this.downloadFile('klippy.log', '')
   }
 
   getMoonrakerLog () {
-    this.download('moonraker.log', '')
+    this.downloadFile('moonraker.log', '')
   }
 }
 </script>
