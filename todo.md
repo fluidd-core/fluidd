@@ -2,23 +2,20 @@
 
 ## Next Up
 
-remove file dialog warning
-1. reprint option
-2. file browser respects last print time from history
-3. stats panel on printer page with full history so you can
+- reprint
+- filesystem to append last print time
+- remove file dialog warning
+- stats panel on printer page with full history so you can
   - delete entry
   - clear all entries
   - see overall print stats, total print time, total filament usage etc
   - add pi filesystem usage to printer page
 
-- clean up file system
-  - bulk actions to delete or move?
+- bulk actions to delete or move?
 - add git history
 
-- implement final filesystem features (bulk actions & move)
 - cleanup card layout stuff
-- fix layout of filesystem buttons on safari
-- rename device power
+- rename device power store
 - allow users to restart webcamd service if webcam is enabled
 - sync instances across moonraker db
 - More macro layout options (categorize macros, ability to define layout in some way, color)

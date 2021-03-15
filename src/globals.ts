@@ -116,8 +116,8 @@ export const Globals = Object.freeze({
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' }
   },
-  FILTERED_FILES_PREFIX: ['.', 'thumbs'],
-  FILTERED_FILES_EXTENSION: ['.json'],
+  FILTERED_FILES_PREFIX: ['thumbs'],
+  FILTERED_FILES_EXTENSION: ['.ignoreme'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
