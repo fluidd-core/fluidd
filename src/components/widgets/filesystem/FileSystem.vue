@@ -414,8 +414,15 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleRemove (file: AppFile | AppFileWithMeta | AppDirectory) {
-    if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`)
-    if (file.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${file.name}`)
+    let text = 'Are you sure?'
+    if (file.type === 'directory') text = 'Are you sure? This will delete all files and folders within.'
+    this.$confirm(text)
+      .then(res => {
+        if (res) {
+          if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`)
+          if (file.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${file.name}`)
+        }
+      })
   }
 
   async handleUpload (files: FileList, print: boolean) {

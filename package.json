@@ -53,6 +53,7 @@
     "vue-virtual-scroller": "^1.0.10",
     "vuedraggable": "^2.24.3",
     "vuetify": "^2.4.6",
+    "vuetify-confirm": "^2.0.6",
     "vuex": "^3.6.0"
   },
   "devDependencies": {

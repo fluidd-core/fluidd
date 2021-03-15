@@ -10,7 +10,7 @@
       </template>
 
       <v-list-item
-        @click="confirmRebootDialog.open = true"
+        @click="handleHostReboot"
         :disabled="printerPrinting">
         <v-list-item-title>Reboot</v-list-item-title>
         <v-list-item-icon>
@@ -19,7 +19,7 @@
       </v-list-item>
 
       <v-list-item
-        @click="confirmShutdownDialog.open = true"
+        @click="handleHostShutdown"
         :disabled="printerPrinting">
         <v-list-item-title>Shutdown</v-list-item-title>
         <v-list-item-icon>
@@ -101,18 +101,6 @@
       </v-list-item>
     </v-list-group>
 
-    <dialog-confirm
-      v-model="confirmRebootDialog.open"
-      @confirm="handleHostReboot">
-      <p>Are you sure? This will reboot your host system.</p>
-    </dialog-confirm>
-
-    <dialog-confirm
-      v-model="confirmShutdownDialog.open"
-      @confirm="handleHostShutdown">
-      <p>Are you sure? This will shutdown your host system.</p>
-    </dialog-confirm>
-
   </div>
 </template>
 
@@ -121,14 +109,9 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/socketActions'
-import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 import { Device } from '@/store/devicePower/types'
 
-@Component({
-  components: {
-    DialogConfirm
-  }
-})
+@Component({})
 export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMixin) {
   confirmRebootDialog = {
     open: false
@@ -154,18 +137,24 @@ export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMix
     return (this.serverInfo.plugins.includes('power'))
   }
 
-  handleHostReboot (val: boolean) {
-    if (val) {
-      this.$emit('click')
-      this.hostReboot()
-    }
+  handleHostReboot () {
+    this.$confirm('Are you sure? This will reboot your host system.')
+      .then(res => {
+        if (res) {
+          this.$emit('click')
+          this.hostReboot()
+        }
+      })
   }
 
-  handleHostShutdown (val: boolean) {
-    if (val) {
-      this.$emit('click')
-      this.hostShutdown()
-    }
+  handleHostShutdown () {
+    this.$confirm('Are you sure? This will shutdown your host system.')
+      .then(res => {
+        if (res) {
+          this.$emit('click')
+          this.hostShutdown()
+        }
+      })
   }
 
   togglePowerDevice (device: Device, wait?: string) {

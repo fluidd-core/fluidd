@@ -28,7 +28,7 @@
       </btn>
 
       <btn
-        @click="confirmDialog.open = true"
+        @click="cancelPrint()"
         v-if="printerPrinting || printerPaused"
         :elevation="2"
         :loading="hasWait(waits.onPrintCancel)"
@@ -86,12 +86,6 @@
       </v-menu>
     </template>
 
-    <dialog-confirm
-      v-model="confirmDialog.open"
-      @confirm="cancelPrint">
-      <p>Are you sure? This will cancel your print.</p>
-    </dialog-confirm>
-
     <!-- <pre>{{ history }}</pre> -->
 
     <print-status-widget v-if="showStatus"></print-status-widget>
@@ -107,21 +101,15 @@ import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/socketActions'
 import { Waits } from '@/globals'
-import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 
 @Component({
   components: {
     PrintStatusWidget,
-    DialogConfirm,
     ReprintList
   }
 })
 export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   waits = Waits
-
-  confirmDialog = {
-    open: false
-  }
 
   get hidePrinterMenu () {
     // return (!this.printerPrinting && !this.printerPaused && !this.filename)
@@ -144,11 +132,14 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     return this.$store.state.printer.printer.print_stats.filename || ''
   }
 
-  cancelPrint (val: boolean) {
-    if (val) {
-      SocketActions.printerPrintCancel()
-      this.addConsoleEntry('CANCEL_PRINT')
-    }
+  cancelPrint () {
+    this.$confirm('Are you sure?')
+      .then(res => {
+        if (res) {
+          SocketActions.printerPrintCancel()
+          this.addConsoleEntry('CANCEL_PRINT')
+        }
+      })
   }
 
   pausePrint () {

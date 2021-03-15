@@ -10,6 +10,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VueMeta from 'vue-meta'
+import VuetifyConfirm from 'vuetify-confirm'
 import { appInit } from './init'
 import { InitConfig } from './store/config/types'
 import { FiltersPlugin } from './plugins/filters'
@@ -61,6 +62,10 @@ Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})
+Vue.use(VuetifyConfirm, {
+  vuetify,
+  buttonFalseText: 'Cancel'
+})
 // Vue.use(WorkboxPlugin)
 
 Vue.component('btn-collapse', BtnCollapse)
