@@ -2,9 +2,9 @@
 
 ## Next Up
 
+- refactor thumbs to use new path prop
 - reprint
 - filesystem to append last print time
-- remove file dialog warning
 - stats panel on printer page with full history so you can
   - delete entry
   - clear all entries
