@@ -13,7 +13,6 @@
       <v-row align="center" justify="center" no-gutters>
         <v-col>
           <v-list
-            nav
             dense
             color="secondary">
             <v-list-item
@@ -23,7 +22,19 @@
               <v-list-item-icon>
                 <v-icon class="white--text">$printer</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">Print</v-list-item-title>
+              <v-list-item-title class="white--text">
+                Print
+                </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              link
+              @click="$emit('preheat', file)"
+              v-if="canPreheat"
+            >
+              <v-list-item-icon>
+                <v-icon class="white--text">$fire</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title class="white--text">Preheat</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -87,13 +98,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
+import StateMixin from '@/mixins/state'
 import { AppFile, AppFileWithMeta } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
  */
 @Component({})
-export default class FileSystemContextMenu extends Mixins(FilesMixin) {
+export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: String, required: true })
   root!: string
 
@@ -111,6 +123,16 @@ export default class FileSystemContextMenu extends Mixins(FilesMixin) {
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
+  }
+
+  get canPreheat () {
+    return (
+      'first_layer_extr_temp' in this.file &&
+      'first_layer_bed_temp' in this.file &&
+      !this.printerPrinting &&
+      !this.printerPaused &&
+      this.klippyReady
+    )
   }
 }
 </script>
