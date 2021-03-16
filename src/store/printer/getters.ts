@@ -2,9 +2,8 @@ import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
 import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, BedMesh, Extruder } from './types'
-import { Thumbnail } from '@/store/files/types'
 import { get } from 'lodash-es'
-import { getThumb, getKlipperType } from '../helpers'
+import { getKlipperType } from '../helpers'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -92,14 +91,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
     } else {
       return 'Loading'
     }
-  },
-
-  getPrintImage: (state) => {
-    let thumb: Thumbnail | undefined
-    if (state.printer.current_file) {
-      thumb = getThumb(state.printer.current_file.thumbnails)
-    }
-    return thumb
   },
 
   getPrintProgress: (state, getters, rootState) => {

@@ -12,10 +12,9 @@ export const isOfType = <T>(
  * Return a file thumb if one exists
  * Optionally, pick the largest or smallest image.
  */
-export const getThumb = (thumbnails: Thumbnail[], goLarge = true) => {
-  if (
-    thumbnails.length
-  ) {
+export const getThumb = (thumbnails: Thumbnail[], path: string, goLarge = true) => {
+  const apiUrl = store.state.config?.apiUrl
+  if (thumbnails.length) {
     let thumb: Thumbnail | undefined
     if (thumbnails) {
       if (goLarge) {
@@ -23,12 +22,24 @@ export const getThumb = (thumbnails: Thumbnail[], goLarge = true) => {
       } else {
         thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)
       }
-      if (thumb && thumb.data && thumb.data !== null) {
-        return { ...thumb, data: 'data:image/gif;base64,' + thumb.data }
+      if (thumb) {
+        if (thumb.relative_path && thumb.relative_path.length > 0) {
+          return {
+            ...thumb,
+            absolute_path: (path === '')
+              ? `${apiUrl}/server/files/gcodes/${thumb.relative_path}`
+              : `${apiUrl}/server/files/gcodes/${path}/${thumb.relative_path}`
+          }
+        }
+        if (thumb.data) {
+          return {
+            ...thumb,
+            data: 'data:image/gif;base64,' + thumb.data
+          }
+        }
       }
     }
   }
-  return undefined
 }
 
 /**
@@ -71,6 +82,7 @@ export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | 
       filename: paths.filename,
       extension: paths.filename.split('.').pop() || '',
       name: paths.filename,
+      path: paths.path,
       size: file.size,
       modified: file.modified
     }
@@ -80,7 +92,8 @@ export const formatAsFile = (root: string, file: FileChangeItem | KlipperFile | 
     ...file,
     type: 'file',
     extension: paths.filename.split('.').pop() || '',
-    name: paths.filename
+    name: paths.filename,
+    path: paths.path
   }
 }
 

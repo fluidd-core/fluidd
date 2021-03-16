@@ -7,7 +7,7 @@
             <img
               v-if="job.metadata.thumbnails && job.metadata.thumbnails.length"
               class="mr-1 file-icon-thumb"
-              :src="getThumb(job.metadata.thumbnails).data"
+              :src="getThumbUrl(job.metadata.thumbnails)"
               :width="16"
             />
             {{ job.filename }}

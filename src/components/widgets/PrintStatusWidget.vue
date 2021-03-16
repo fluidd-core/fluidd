@@ -59,10 +59,11 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
 import { Waits } from '@/globals'
 
 @Component({})
-export default class PrintStatusWidget extends Mixins(StateMixin) {
+export default class PrintStatusWidget extends Mixins(StateMixin, FilesMixin) {
   buttonWidths = 140
   waits = Waits
 
@@ -71,7 +72,13 @@ export default class PrintStatusWidget extends Mixins(StateMixin) {
   }
 
   get thumbnail () {
-    return this.$store.getters['printer/getPrintImage']
+    const current_file = this.$store.state.printer.printer.current_file
+    if (
+      current_file
+    ) {
+      return this.getThumbUrl(current_file.thumnbails, current_file.path, true)
+    }
+    // return this.$store.getters['printer/getPrintImage']
   }
 
   get printTimeEstimationsType () {

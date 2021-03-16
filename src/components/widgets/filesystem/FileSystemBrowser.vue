@@ -45,7 +45,7 @@
             <img
               v-if="item.thumbnails && item.thumbnails.length"
               class="mr-1 file-icon-thumb"
-              :src="getThumb(item.thumbnails).data"
+              :src="getThumbUrl(item.thumbnails, item.path)"
               :width="(dense) ? 16 : 24"
             />
           </td>

@@ -53,6 +53,7 @@ export const actions: ActionTree<FilesState, RootState> = {
           file.name = file.filename
           file.extension = file.filename.split('.').pop() || ''
           file.modified = new Date(file.modified).getTime()
+          file.path = (pathNoRoot === '/') ? '' : pathNoRoot
           items.push(file)
         }
       })

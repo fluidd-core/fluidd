@@ -11,11 +11,19 @@ export default class FilesMixin extends Vue {
     return this.$store.state.config.apiUrl
   }
 
-  getThumb (thumbnails: Thumbnail[], goLarge: boolean) {
+  getThumbUrl (thumbnails: Thumbnail[], path: string, goLarge: boolean) {
     if (thumbnails.length) {
-      return getThumb(thumbnails, goLarge)
+      const thumb = getThumb(thumbnails, path, goLarge)
+      if (
+        thumb &&
+        thumb.absolute_path
+      ) return thumb.absolute_path
+      if (
+        thumb &&
+        thumb.data
+      ) return thumb.data
     }
-    return null
+    return ''
   }
 
   // Retrieves a file from moonraker.

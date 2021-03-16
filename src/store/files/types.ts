@@ -25,6 +25,7 @@ export interface AppFile {
   filename: string;
   modified: number;
   size: number;
+  path: string;
 }
 
 export interface KlipperFile {
@@ -61,6 +62,8 @@ export interface AppDirectory {
 
 export interface Thumbnail {
   data: string;
+  relative_path: string;
+  absolute_path?: string;
   height: number;
   width: number;
   size: number;

@@ -2,8 +2,6 @@
 
 ## Next Up
 
-- preheat option on gcode menu
-- refactor thumbs to use new path prop
 - reprint
 - filesystem to append last print time
 - stats panel on printer page with full history so you can
@@ -11,9 +9,11 @@
   - clear all entries
   - see overall print stats, total print time, total filament usage etc
   - add pi filesystem usage to printer page
+- update docs to mention cura uploads
 
 - bulk actions to delete or move?
 - add git history
+- second webcam
 
 - cleanup card layout stuff
 - rename device power store

@@ -86,7 +86,7 @@
         <v-col class="px-2 d-none d-sm-flex" v-if="file.thumbnails && file.thumbnails.length">
           <img
             class="mr-2 ml-2"
-            :src="getThumb(file.thumbnails, true).data"
+            :src="getThumbUrl(file.thumbnails, file.path, true)"
             :height="150"
           />
         </v-col>
