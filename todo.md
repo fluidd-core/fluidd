@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- preheat option on gcode menu
 - refactor thumbs to use new path prop
 - reprint
 - filesystem to append last print time

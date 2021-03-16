@@ -1,11 +1,16 @@
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[] | string[];
+  [key: string]: Files[] | FilesUpload[] | string[] | CurrentPaths;
   availableRoots: string[];
   gcodes: Files[];
   config: Files[];
   config_examples: Files[];
   docs: Files[];
   uploads: FilesUpload[];
+  currentPaths: CurrentPaths;
+}
+
+export interface CurrentPaths {
+  [index: string]: string;
 }
 
 export interface Files {

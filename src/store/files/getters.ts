@@ -80,5 +80,9 @@ export const getters: GetterTree<FilesState, RootState> = {
     ) {
       return dir.items.find(f => f.type === 'file' && f.filename === filename)
     }
+  },
+
+  getCurrentPathByRoot: (state) => (r: string) => {
+    return state.currentPaths[r] || ''
   }
 }

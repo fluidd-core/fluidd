@@ -167,25 +167,8 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setRemoveFileUpload', payload)
   },
 
-  /**
-   * Saves data to a file.
-   */
-  async saveFile ({ rootState }, payload: { data: any; file: string }) {
-    const formData = new FormData()
-    const filename = payload.file
-    const file = new File([JSON.stringify(payload.data)], filename)
-    formData.append('file', file, filename)
-    formData.append('root', 'config')
-    consola.debug('uploading configuration...', filename, payload.data)
-    Vue.$http.post(
-      rootState.config?.apiUrl + '/server/files/upload',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-    )
+  async updateCurrentPathByRoot ({ commit }, payload) {
+    commit('setCurrentPath', payload)
   }
 
 }

@@ -47,7 +47,7 @@
         <v-tab
           v-for="(root, index) in roots"
           :key="index"
-          @change="$emit('update:root', root)">
+          @change="$emit('root-change', root)">
           {{ root }}
         </v-tab>
       </v-tabs>

@@ -12,9 +12,8 @@ export const defaultState = (): FilesState => {
     config: [],
     config_examples: [],
     docs: [],
-    uploads: [
-      // { filename: 'test.file', percentUploaded: 12, processingComplete: false }
-    ]
+    uploads: [],
+    currentPaths: {}
   }
 }
 

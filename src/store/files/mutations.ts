@@ -84,6 +84,10 @@ export const mutations: MutationTree<FilesState> = {
     if (i >= 0) {
       state.uploads.splice(i, 1)
     }
+  },
+
+  setCurrentPath (state, payload) {
+    Vue.set(state.currentPaths, payload.root, payload.path)
   }
 
 }

@@ -20,9 +20,10 @@
 
     <file-system-toolbar
       :roots="availableRoots"
-      :root.sync="currentRoot"
+      :root="currentRoot"
       :search.sync="search"
       :path="visiblePath"
+      @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"
       @add-dir="handleAddDirDialog"
@@ -54,6 +55,7 @@
       @rename="handleRenameDialog"
       @remove="handleRemove"
       @download="handleDownload"
+      @preheat="handlePreheat"
     >
     </file-system-context-menu>
 
@@ -87,7 +89,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { SocketActions } from '@/socketActions'
 import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload } from '@/store/files/types'
 import { Waits } from '@/globals'
@@ -136,7 +138,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   height!: number | string;
 
   // Maintains the path and root.
-  currentPath = ''
+  // currentPath = ''
   currentRoot = ''
 
   // Maintains search state.
@@ -187,9 +189,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.getters['files/getRootProperties'](this.currentRoot)
   }
 
+  get currentPath () {
+    return this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot) || this.currentRoot
+  }
+
+  set currentPath (path: string) {
+    this.$store.dispatch('files/updateCurrentPathByRoot', { root: this.currentRoot, path })
+  }
+
   // Returns the current path with no root.
   get visiblePath (): string {
-    if (this.currentPath.startsWith(`${this.currentRoot}`)) {
+    if (
+      this.currentPath &&
+      this.currentPath.startsWith(`${this.currentRoot}`)
+    ) {
       const dirs = this.currentPath.split('/')
       dirs.shift()
       return (dirs)
@@ -221,26 +234,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.state.files.uploads
   }
 
-  // Set the initial root and path, and load the dir.
+  // Set the initial root, and load the dir.
   mounted () {
     this.currentRoot = this.availableRoots[0]
-    this.currentPath = ''
-    this.loadFiles(this.currentRoot)
+    this.loadFiles(this.currentPath)
   }
 
   // If the root changes, reset the path and load the root path files.
-  @Watch('currentRoot')
-  onRootChange (root: string) {
-    if (root && root.length) {
-      this.currentPath = ''
+  handleRootChange (root: string) {
+    if (root.length) {
+      this.currentRoot = root
       this.loadFiles(root)
     }
-  }
-
-  // If the path changes, load the path files.
-  @Watch('currentPath')
-  onCurrentPathChange (path: string) {
-    this.loadFiles(path)
   }
 
   // Sets a new path and loads the files if necessary.
@@ -253,8 +258,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Refreshes a path by loading the directory.
   refreshPath (path: string) {
-    this.currentPath = path
-    SocketActions.serverFilesGetDirectory(this.currentRoot, path)
+    if (path) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
   }
 
   // Handles a user clicking a file row.
@@ -443,6 +447,39 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleDownload (file: AppFile | AppFileWithMeta) {
     this.downloadFile(file.filename, this.currentPath)
+  }
+
+  handlePreheat (file: AppFileWithMeta) {
+    if (
+      file.first_layer_extr_temp &&
+      file.first_layer_bed_temp &&
+      !this.printerPrinting &&
+      !this.printerPaused &&
+      this.klippyReady
+    ) {
+      if (file.first_layer_extr_temp > 0) {
+        this.sendGcode(`M104 S${file.first_layer_extr_temp}`)
+      }
+      if (file.first_layer_bed_temp > 0) {
+        this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
+      }
+
+      // 104 for extruder
+      // 140 for bed
+
+      // let gcode = ""
+      // if (this.contextMenu.item.first_layer_extr_temp > 0) {
+      //     gcode = "M104 S"+this.contextMenu.item.first_layer_extr_temp
+      //     this.$store.commit('server/addEvent', { message: gcode, type: 'command' })
+      //   this.$socket.sendObj('printer.gcode.script', { script: gcode })
+      // }
+
+      // if (this.contextMenu.item.first_layer_bed_temp > 0) {
+      //     gcode = "M140 S"+this.contextMenu.item.first_layer_bed_temp
+      //     this.$store.commit('server/addEvent', { message: gcode, type: 'command' })
+      //   this.$socket.sendObj('printer.gcode.script', { script: gcode })
+      // }
+    }
   }
 
   /**
