@@ -73,7 +73,6 @@ export const getters: GetterTree<FilesState, RootState> = {
    */
   getFile: (state, getters) => (r: string, path: string, filename: string) => {
     const dir: Files = getters.getDirectory(r, path)
-    console.log('found a dir', r, path, filename, dir)
     if (
       dir &&
       dir.items

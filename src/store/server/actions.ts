@@ -28,7 +28,6 @@ export const actions: ActionTree<ServerState, RootState> = {
       const pluginsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_PLUGINS
       for (const key in pluginsToInit) {
         const plugin = pluginsToInit[key]
-        console.log('init plugin', plugin.name)
         if (payload.plugins.includes(plugin.name)) {
           dispatch(plugin.dispatch, undefined, { root: true })
         }

@@ -18,8 +18,8 @@
         @click="pausePrint()"
         v-if="!printerPaused && printerPrinting"
         :elevation="2"
-        :loading="hasWait(waits.onPrintPause)"
-        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
+        :loading="hasWait($waits.onPrintPause)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         color="secondary"
         class="ma-1">
@@ -31,8 +31,8 @@
         @click="cancelPrint()"
         v-if="printerPrinting || printerPaused"
         :elevation="2"
-        :loading="hasWait(waits.onPrintCancel)"
-        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
+        :loading="hasWait($waits.onPrintCancel)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         color="secondary"
         class="ma-1">
@@ -44,8 +44,8 @@
         @click="resumePrint()"
         v-if="printerPaused"
         :elevation="2"
-        :loading="hasWait(waits.onPrintResume)"
-        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
+        :loading="hasWait($waits.onPrintResume)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         color="secondary"
         class="ma-1">
@@ -64,30 +64,37 @@
         <span>Reset File</span>
       </btn>
 
-      <!-- v-if="!printerPrinting && !printerPaused && filename" -->
-      <v-menu
-        bottom left
-        transition="slide-x-transition"
-        offset-y
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <btn
-            v-bind="attrs"
-            v-on="on"
-            small
-            color="secondary"
-            class="ma-1">
-            <v-icon small class="mr-1">$reprint</v-icon>
-            <span>Reprint</span>
-            <v-icon small class="ml-1">$chevronDown</v-icon>
-          </btn>
-        </template>
-        <reprint-list></reprint-list>
-      </v-menu>
+      <btn
+        v-if="!supportsHistoryPlugin && !printerPrinting && !printerPaused && filename"
+        @click="handleReprint(this.filename)"
+        small
+        color="secondary"
+        class="ma-1">
+        <v-icon small class="mr-1">$reprint</v-icon>
+        <span>Reprint</span>
+      </btn>
+
+      <btn
+        v-if="supportsHistoryPlugin && !printerPrinting && !printerPaused && history.length > 0"
+        @click="showHistory = !showHistory"
+        small
+        color="secondary"
+        class="ma-1">
+        <v-icon small class="mr-1">$reprint</v-icon>
+        <span>Reprint</span>
+        <v-icon small class="ml-1" v-if="showHistory">$chevronUp</v-icon>
+        <v-icon small class="ml-1" v-else>$chevronDown</v-icon>
+      </btn>
+
+      <!-- <reprint-menu v-if="supportsHistoryPlugin"></reprint-menu> -->
     </template>
 
-    <!-- <pre>{{ history }}</pre> -->
-
+    <v-expand-transition v-if="supportsHistoryPlugin">
+      <reprint-menu
+        v-show="showHistory"
+        @print="handleReprint">
+      </reprint-menu>
+    </v-expand-transition>
     <print-status-widget v-if="showStatus"></print-status-widget>
 
   </collapsable-card>
@@ -96,20 +103,19 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
-import ReprintList from '@/components/widgets/history/ReprintList.vue'
+import ReprintMenu from '@/components/widgets/history/ReprintMenu.vue'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/socketActions'
-import { Waits } from '@/globals'
 
 @Component({
   components: {
     PrintStatusWidget,
-    ReprintList
+    ReprintMenu
   }
 })
 export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
-  waits = Waits
+  showHistory = false
 
   get hidePrinterMenu () {
     // return (!this.printerPrinting && !this.printerPaused && !this.filename)
@@ -117,6 +123,14 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     // console.log('paused and printing?', (this.printerPrinting || this.printerPaused))
     return (this.printerPrinting || this.printerPaused)
     // return false
+  }
+
+  get supportsHistoryPlugin () {
+    return this.$store.getters['server/pluginSupport']('history')
+  }
+
+  get history () {
+    return this.$store.getters['history/getUniqueHistory'](2)
   }
 
   get showStatus () {
@@ -152,10 +166,9 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     this.addConsoleEntry('RESUME')
   }
 
-  rePrint () {
-    if (this.filename && this.filename.length > 0) {
-      SocketActions.printerPrintStart(this.filename)
-    }
+  handleReprint (filename: string) {
+    this.showHistory = false
+    SocketActions.printerPrintStart(filename)
   }
 
   resetFile () {

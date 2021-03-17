@@ -46,10 +46,10 @@
             <div class="filename ml-1">gcodes/{{ filename }}</div>
           </div>
       </v-col>
-      <v-col cols="auto" class="d-none d-sm-flex" v-if="thumbnail && thumbnail.data && printerPrinting">
+      <v-col cols="auto" class="d-none d-sm-flex" v-if="thumbnail">
         <img
           class="print-thumb"
-          :src="thumbnail.data"
+          :src="thumbnail"
         />
       </v-col>
     </v-row>
@@ -74,11 +74,12 @@ export default class PrintStatusWidget extends Mixins(StateMixin, FilesMixin) {
   get thumbnail () {
     const current_file = this.$store.state.printer.printer.current_file
     if (
-      current_file
+      current_file &&
+      current_file.thumbnails
     ) {
-      return this.getThumbUrl(current_file.thumnbails, current_file.path, true)
+      const thumb = this.getThumbUrl(current_file.thumbnails, current_file.path, true)
+      return thumb
     }
-    // return this.$store.getters['printer/getPrintImage']
   }
 
   get printTimeEstimationsType () {

@@ -150,7 +150,6 @@
     background: #b3ada7;
   }
 
-
   // gcode thumbnails in the file list
   .file-icon-thumb {
     align-items: center;
@@ -191,18 +190,8 @@
     padding-left: 12px;
   }
 
-  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:last-child,
-  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:last-child,
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > td:last-child,
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:last-child,
-  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:last-child,
-  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:last-child,
-    .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:nth-last-child(2),
-    .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:nth-last-child(2),
-    .v-data-table > .v-data-table__wrapper > table > thead > tr > td:nth-last-child(2),
-    .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-last-child(2),
-    .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:nth-last-child(2),
-    .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-last-child(2) {
+  // Don't wrap table headers.
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
       white-space: nowrap;
   }
 }

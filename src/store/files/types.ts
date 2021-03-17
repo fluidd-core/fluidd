@@ -1,5 +1,5 @@
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[] | string[] | CurrentPaths;
+  [key: string]: Files[] | FilesUpload[] | string[] | CurrentPaths | DiskUsage;
   availableRoots: string[];
   gcodes: Files[];
   config: Files[];
@@ -7,6 +7,13 @@ export interface FilesState {
   docs: Files[];
   uploads: FilesUpload[];
   currentPaths: CurrentPaths;
+  disk_usage: DiskUsage;
+}
+
+export interface DiskUsage {
+  total: number;
+  used: number;
+  free: number;
 }
 
 export interface CurrentPaths {
@@ -49,7 +56,9 @@ export interface KlipperFileMeta {
   thumbnails?: Thumbnail[];
 }
 
-export interface AppFileWithMeta extends AppFile, KlipperFileMeta {}
+export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
+  start_time?: number;
+}
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
 export interface AppDirectory {

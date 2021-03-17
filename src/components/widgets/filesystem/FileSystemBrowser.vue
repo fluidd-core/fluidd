@@ -39,12 +39,12 @@
               v-if="!item.thumbnails || !item.thumbnails.length"
               :small="dense"
               :color="(item.type === 'file') ? 'grey' : 'primary'"
-              class="mr-1">
+              class="mr-2">
               {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
             </v-icon>
             <img
               v-if="item.thumbnails && item.thumbnails.length"
-              class="mr-1 file-icon-thumb"
+              class="mr-2 file-icon-thumb"
               :src="getThumbUrl(item.thumbnails, item.path)"
               :width="(dense) ? 16 : 24"
             />
@@ -56,31 +56,39 @@
             <span v-if="item.type === 'file' && item.object_height">
               {{ item.object_height }} mm
             </span>
+            <span v-else>--</span>
           </td>
           <td class="grey--text" v-if="showMetaData">
             <span v-if="item.type === 'file' && item.layer_height">
               {{ item.layer_height }} mm
             </span>
+            <span v-else>--</span>
           </td>
           <td class="grey--text" v-if="showMetaData">
             <span v-if="item.type === 'file' && item.filament_total">
               {{ $filters.getReadableLengthString(item.filament_total) }}
             </span>
+            <span v-else>--</span>
           </td>
           <td class="grey--text" v-if="showMetaData">
             <span v-if="item.type === 'file' && item.slicer">
               {{ item.slicer }}
             </span>
+            <span v-else>--</span>
           </td>
-          <td class="grey--text" v-if="showMetaData">
+          <td class="grey--text text-no-wrap" v-if="showMetaData">
             <span v-if="item.type === 'file' && item.estimated_time">
               {{ $filters.formatCounterTime(item.estimated_time) }}
             </span>
+            <span v-else>--</span>
           </td>
-          <td class="grey--text">
+          <td class="grey--text text-no-wrap" v-if="showLastPrinted">
+            {{ (item.type === 'directory' || !item.start_time) ? '--' : $filters.formatFileDateTime(item.start_time) }}
+          </td>
+          <td class="grey--text text-no-wrap">
             {{ (item.type === 'directory' && item.name === '..') ? '--' : $filters.formatFileDateTime(item.modified) }}
           </td>
-          <td class="grey--text text-end">{{ (item.type === 'file') ? $filters.getReadableFileSizeString(item.size) : '--' }}</td>
+          <td class="grey--text text-no-wrap text-end">{{ (item.type === 'file') ? $filters.getReadableFileSizeString(item.size) : '--' }}</td>
         </tr>
       </template>
     </v-data-table>
@@ -113,37 +121,50 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   dragState!: boolean;
 
   get headers () {
-    let headers = [
+    let headers: any = [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: 'name', value: 'name' },
-      { text: 'modified', value: 'modified', width: '1%' },
-      { text: 'size', value: 'size', width: '1%', align: 'end' }
+      { text: 'name', value: 'name' }
     ]
+
     if (this.showMetaData) {
       headers = [
-        ...headers.slice(0, 2),
+        ...headers,
         { text: 'height', value: 'object_height' },
         { text: 'layer height', value: 'layer_height' },
         { text: 'filament', value: 'filament_total' },
         { text: 'slicer', value: 'slicer' },
-        { text: 'estimated time', value: 'estimated_time' },
-        ...headers.slice(2)
+        { text: 'estimated time', value: 'estimated_time' }
       ]
     }
+
+    if (this.showLastPrinted) {
+      headers.push({ text: 'last printed', value: 'start_time' })
+    }
+
+    headers = [
+      ...headers,
+      { text: 'modified', value: 'modified', width: '1%' },
+      { text: 'size', value: 'size', width: '1%', align: 'end' }
+    ]
+
     return headers
   }
 
   draggedItem: null | AppFile | AppFileWithMeta | AppDirectory = null
-
-  // dragState: any = {
-  //   item: null
-  // }
 
   get showMetaData () {
     // Show meta data only for the gcodes root, and only when we are not
     // presenting with dense = true
     if (this.root === 'gcodes' && !this.dense) return true
     return false
+  }
+
+  // Is the history plugin enabled
+  get showLastPrinted () {
+    return (
+      this.$store.getters['server/pluginSupport']('history') &&
+      this.root === 'gcodes'
+    )
   }
 
   // Table row is being dragged
@@ -189,13 +210,3 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .file-path {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    direction: rtl;
-    text-align: left;
-  }
-</style>

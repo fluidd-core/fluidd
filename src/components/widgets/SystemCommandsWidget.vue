@@ -134,7 +134,7 @@ export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMix
   }
 
   get devicePowerPluginEnabled () {
-    return (this.serverInfo.plugins.includes('power'))
+    return this.$store.getters['server/pluginSupport']('power')
   }
 
   handleHostReboot () {

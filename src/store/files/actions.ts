@@ -1,11 +1,10 @@
-import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta } from './types'
+import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, AppFile, DiskUsage } from './types'
 import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
-import consola from 'consola'
+import { HistoryItem } from '../history/types'
 
 export const actions: ActionTree<FilesState, RootState> = {
   /**
@@ -15,12 +14,14 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit }, payload) {
+  async onServerFilesGetDirectory ({ commit, rootGetters }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
     let pathNoRoot = path.replace(root, '')
     if (pathNoRoot.startsWith('/')) pathNoRoot = pathNoRoot.substring(1)
-    const items: (AppFileWithMeta | AppDirectory)[] = []
+
+    const items: (AppFileWithMeta | AppFile | AppDirectory)[] = []
+
     if (path && path.indexOf('/') >= 0) {
       items.push({
         type: 'directory',
@@ -30,8 +31,9 @@ export const actions: ActionTree<FilesState, RootState> = {
         modified: new Date().getTime()
       })
     }
+
     if (payload.dirs) {
-      payload.dirs.forEach((dir: AppDirectory) => {
+      payload.dirs.forEach((dir) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => dir.dirname.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => dir.dirname.endsWith(e))
@@ -43,21 +45,51 @@ export const actions: ActionTree<FilesState, RootState> = {
         }
       })
     }
+
     if (payload.files) {
-      payload.files.forEach((file: AppFileWithMeta) => {
+      // If the history plugin is enabled, append our history data.
+      const historyPluginSupport = rootGetters['server/pluginSupport']('history')
+      const refs: { [index: string]: number } = {}
+      if (historyPluginSupport) {
+        const history: HistoryItem[] = rootGetters['history/getHistory']
+
+        // Iterate history once, recording if we found a file in our directory
+        // list.
+        for (const job of history) {
+          if (
+            job.exists &&
+            !refs[job.filename]
+          ) {
+            const i = payload.files.findIndex(file => {
+              const filepath = (pathNoRoot === '') ? file.filename : `${pathNoRoot}/${file.filename}`
+              return job.filename === filepath
+            })
+            if (i >= 0) {
+              refs[job.filename] = job.start_time
+            }
+          }
+        }
+      }
+
+      payload.files.forEach((file) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
         ) {
-          file.type = 'file'
-          file.name = file.filename
-          file.extension = file.filename.split('.').pop() || ''
-          file.modified = new Date(file.modified).getTime()
-          file.path = (pathNoRoot === '/') ? '' : pathNoRoot
-          items.push(file)
+          const filepath = (pathNoRoot === '') ? file.filename : `${pathNoRoot}/${file.filename}`
+          items.push({
+            ...file,
+            type: 'file',
+            name: file.filename,
+            extension: file.filename.split('.').pop() || '',
+            modified: new Date(file.modified).getTime(),
+            path: (pathNoRoot === '/') ? '' : pathNoRoot,
+            start_time: (refs[filepath]) ? refs[filepath] : undefined
+          })
         }
       })
     }
+    commit('setDiskUsage', payload.disk_usage)
     commit('setServerFilesGetDirectory', { root, directory: { path, items } })
   },
 

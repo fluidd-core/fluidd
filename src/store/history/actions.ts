@@ -3,7 +3,6 @@ import { HistoryItem, HistoryState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
-import { getFilePaths } from '../helpers'
 
 export const actions: ActionTree<HistoryState, RootState> = {
   /**
@@ -26,16 +25,6 @@ export const actions: ActionTree<HistoryState, RootState> = {
   async onInit ({ commit }, payload: { count: number; jobs?: HistoryItem[] }) {
     if (payload) {
       commit('setInitHistory', payload)
-
-      // Ensure we have file data for the items in our history.
-      if (payload.jobs) {
-        payload.jobs.forEach((job) => {
-          // Preload any related dirs.
-          const root = 'gcodes'
-          const filePath = getFilePaths(job.filename, root)
-          SocketActions.serverFilesGetDirectory(root, filePath.rootPath)
-        })
-      }
     }
   },
 

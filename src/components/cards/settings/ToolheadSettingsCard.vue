@@ -100,7 +100,6 @@ export default class ToolHeadSettingsCard extends Mixins(StateMixin) {
   @Watch('defaultExtrudeLength')
   @Debounce(debounceTime)
   onDefaultExtrudeLength (value: number) {
-    console.log('got it', value)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeLength',
       value,
