@@ -37,10 +37,6 @@ import WarningsWidget from '@/components/widgets/WarningsWidget.vue'
   }
 })
 export default class KlippyCard extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
-  get klipperConnected () {
-    return this.$store.getters['server/getInfo'].klippy_connected
-  }
-
   getKlippyLog () {
     this.downloadFile('klippy.log', '')
   }

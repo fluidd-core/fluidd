@@ -26,8 +26,9 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (r: string) => {
+  getRootProperties: (state, getters) => (r: string) => {
     const root = r as 'gcodes' | 'config' | 'config_examples' | 'docs'
+    const disabled = !getters.isRootAvailable(r)
 
     if (root === 'gcodes') {
       return {

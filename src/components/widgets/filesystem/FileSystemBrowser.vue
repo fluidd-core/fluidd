@@ -21,7 +21,11 @@
 
       <template v-slot:item="{ item }">
         <tr
-          :class="{ 'is-directory': (item.type === 'directory'), 'is-file': (item.type === 'file') }"
+          :class="{
+            'is-directory': (item.type === 'directory'),
+            'is-file': (item.type === 'file'),
+            'is-disabled': disabled
+          }"
           class="px-1"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
@@ -119,6 +123,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   @Prop({ type: Boolean, required: true })
   dragState!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  disabled!: boolean
 
   get headers () {
     let headers: any = [

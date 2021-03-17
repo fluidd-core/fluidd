@@ -2,7 +2,6 @@
 
 ## Next Up
 
-- disk space warning + setting to defined when to warn
 - statistics
   - avg filament usage
   - total filament
@@ -10,14 +9,13 @@
   - totale print time
   - total known jobs
   - file system usage
-- check history item being inserted correctly
-- reprint
-- filesystem to append last print time
+
 - stats panel on printer page with full history so you can
   - delete entry
   - clear all entries
   - see overall print stats, total print time, total filament usage etc
   - add pi filesystem usage to printer page
+
 - update docs to mention cura uploads
 - remove disabled jobs stuff and replace with a disabled state with help icon
 

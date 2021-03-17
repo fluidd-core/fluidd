@@ -38,6 +38,7 @@
       </v-list-item>
       <v-list-item
         v-if="!readonly"
+        :disabled="disabled"
         @click="$emit('add-file')">
         <v-list-item-title>
           <v-icon small left>$fileAdd</v-icon>
@@ -46,6 +47,7 @@
       </v-list-item>
       <v-list-item
         v-if="!readonly"
+        :disabled="disabled"
         @click="$emit('add-dir')">
         <v-list-item-title>
           <v-icon small left>$folderAdd</v-icon>

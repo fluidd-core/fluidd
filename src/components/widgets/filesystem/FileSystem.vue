@@ -23,6 +23,7 @@
       :root="currentRoot"
       :search.sync="search"
       :path="visiblePath"
+      :disabled="disabled"
       @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"
@@ -34,6 +35,7 @@
       :root="currentRoot"
       :dense="dense"
       :loading="filesLoading"
+      :disabled="disabled"
       :search="search"
       :files="files"
       :drag-state.sync="dragState.browserState"
@@ -89,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/socketActions'
 import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload } from '@/store/files/types'
 import { Waits } from '@/globals'
@@ -189,6 +191,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.getters['files/getRootProperties'](this.currentRoot)
   }
 
+  get disabled () {
+    return !this.$store.getters['files/isRootAvailable'](this.currentRoot)
+  }
+
+  @Watch('disabled')
+  onDisabledChange (val: boolean) {
+    if (!val) {
+      this.loadFiles(this.currentPath)
+    }
+  }
+
   get currentPath () {
     return this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot) || this.currentRoot
   }
@@ -250,20 +263,22 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Sets a new path and loads the files if necessary.
   loadFiles (path: string) {
-    this.currentPath = path
-    if (this.files.length <= 0) {
-      this.refreshPath(path)
+    if (!this.disabled) {
+      this.currentPath = path
+      if (this.files.length <= 0) {
+        this.refreshPath(path)
+      }
     }
   }
 
   // Refreshes a path by loading the directory.
   refreshPath (path: string) {
-    if (path) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
+    if (path && !this.disabled) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
   }
 
   // Handles a user clicking a file row.
   handleRowClick (item: AppFile | AppDirectory, e: MouseEvent) {
-    if (!this.contextMenuState.open) {
+    if (!this.contextMenuState.open && !this.disabled) {
       if (item.type === 'directory' && e.type !== 'contextmenu') {
         const dir = item as AppDirectory
         if (item.name === '..') {
@@ -295,6 +310,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * ===========================================================================
   */
   handleRenameDialog (item: AppFile | AppFileWithMeta | AppDirectory) {
+    if (this.disabled) return
     let title = 'Rename Directory'
     let label = 'Directory name'
     const rules: any = [
@@ -315,6 +331,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleAddFileDialog () {
+    if (this.disabled) return
     this.fileNameDialogState = {
       open: true,
       title: 'Add File',
@@ -326,6 +343,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleAddDirDialog () {
+    if (this.disabled) return
     this.fileNameDialogState = {
       open: true,
       title: 'Add Directory',
@@ -363,6 +381,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * ===========================================================================
   */
   handlePrint (file: AppFile | AppFileWithMeta) {
+    if (this.disabled) return
     SocketActions.printerPrintStart(`${this.visiblePath}/${file.filename}`)
 
     // If we aren't on the dashboard, push the user back there.
@@ -418,6 +437,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleRemove (file: AppFile | AppFileWithMeta | AppDirectory) {
+    if (this.disabled) return
     let text = 'Are you sure?'
     if (file.type === 'directory') text = 'Are you sure? This will delete all files and folders within.'
     this.$confirm(text)
@@ -450,6 +470,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handlePreheat (file: AppFileWithMeta) {
+    if (this.disabled) return
     if (
       file.first_layer_extr_temp &&
       file.first_layer_bed_temp &&

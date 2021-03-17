@@ -12,6 +12,7 @@
     <div style="max-width: 160px;" class="mr-1">
       <v-text-field
         v-model="search"
+        :disabled="disabled"
         @keyup="$emit('update:search', search);"
         outlined
         dense
@@ -29,8 +30,8 @@
           fab
           text
           small
-          color="error">
-          <v-icon color="error">$error</v-icon>
+          color="warning">
+          <v-icon color="warning">$error</v-icon>
         </v-btn>
       </template>
       <slot>
@@ -38,8 +39,26 @@
       </slot>
     </v-tooltip>
 
+    <v-tooltip bottom v-if="disabled">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          fab
+          text
+          small
+          color="error">
+          <v-icon color="error">$error</v-icon>
+        </v-btn>
+      </template>
+      <slot>
+        <span>Filesystem disabled. Reconnect klipper.</span>
+      </slot>
+    </v-tooltip>
+
     <v-btn
       @click="$emit('refresh')"
+      :disabled="disabled"
       fab
       small
       text>
@@ -73,7 +92,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
+import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
 
 @Component({
@@ -81,7 +101,7 @@ import FileSystemMenu from './FileSystemMenu.vue'
     FileSystemMenu
   }
 })
-export default class FileSystemToolbar extends Vue {
+export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // The currently active root.
   @Prop({ type: String, required: true })
   root!: string
@@ -105,6 +125,7 @@ export default class FileSystemToolbar extends Vue {
   }
 
   get lowOnSpace () {
+    if (!this.klippyReady) return false
     return this.$store.getters['files/getLowOnSpace']
   }
 

@@ -42,11 +42,18 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return state1
   },
 
-  getKlippyStateMessage: (state): string => {
+  getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
+    const regex = /(?:\r\n|\r|\n)/g
+    // If there's absolutely no connection to klipper, then
+    // say so.
+    const serverInfo = rootGetters['server/getInfo']
+    if (serverInfo.klippy_connected === false) {
+      return 'Klippy not connected.'
+    }
+
     // If an external source fires an estop, or the client
     // is refreshed while klipper is down - the webhook data maybe invalid
     // but the printer info should be good.
-    const regex = /(?:\r\n|\r|\n)/g
     if (
       state.printer.info.state_message &&
       state.printer.info.state_message !== ''
