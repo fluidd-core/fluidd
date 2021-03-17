@@ -82,7 +82,18 @@ export const getters: GetterTree<FilesState, RootState> = {
     }
   },
 
+  /**
+   * Gets the currently stored path for any given root.
+   */
   getCurrentPathByRoot: (state) => (r: string) => {
     return state.currentPaths[r] || ''
+  },
+
+  /**
+   * Returns a boolean indicating if we're low on disk space.
+   */
+  getLowOnSpace: (state) => {
+    // 1073741824 = 1gb
+    return state.disk_usage.free < 1073741824
   }
 }

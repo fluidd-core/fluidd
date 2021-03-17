@@ -88,6 +88,10 @@ export const mutations: MutationTree<FilesState> = {
 
   setCurrentPath (state, payload) {
     Vue.set(state.currentPaths, payload.root, payload.path)
+  },
+
+  setDiskUsage (state, payload) {
+    Vue.set(state, 'disk_usage', payload)
   }
 
 }

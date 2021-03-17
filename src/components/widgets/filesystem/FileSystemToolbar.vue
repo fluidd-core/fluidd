@@ -21,6 +21,23 @@
       </v-text-field>
     </div>
 
+    <v-tooltip bottom v-if="lowOnSpace">
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          v-on="on"
+          fab
+          text
+          small
+          color="error">
+          <v-icon color="error">$error</v-icon>
+        </v-btn>
+      </template>
+      <slot>
+        <span>Low on disk space</span>
+      </slot>
+    </v-tooltip>
+
     <v-btn
       @click="$emit('refresh')"
       fab
@@ -85,6 +102,10 @@ export default class FileSystemToolbar extends Vue {
 
   get readonly () {
     return this.$store.getters['files/getRootProperties'](this.root).readonly
+  }
+
+  get lowOnSpace () {
+    return this.$store.getters['files/getLowOnSpace']
   }
 
   handleUpload (files: FileList, print: boolean) {
