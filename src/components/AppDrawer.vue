@@ -24,12 +24,20 @@
           <v-list-item-title>Jobs</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/configuration" class="d-flex d-md-none">
+      <v-list-item to="/tune" class="d-flex d-md-none">
         <v-list-item-icon>
           <v-icon>$tune</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Printer Configuration</v-list-item-title>
+          <v-list-item-title>Tune</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item to="/configure" class="d-flex d-md-none">
+        <v-list-item-icon>
+          <v-icon>$cogs</v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>Configure</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/settings">
@@ -37,7 +45,7 @@
           <v-icon>$cog</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>UI Settings</v-list-item-title>
+          <v-list-item-title>Interface</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>

@@ -4,7 +4,6 @@ import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
-import { HistoryItem } from '../history/types'
 
 export const actions: ActionTree<FilesState, RootState> = {
   /**
@@ -14,7 +13,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit, rootGetters }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
+  async onServerFilesGetDirectory ({ commit }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
     let pathNoRoot = path.replace(root, '')
@@ -47,44 +46,18 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
 
     if (payload.files) {
-      // If the history plugin is enabled, append our history data.
-      const historyPluginSupport = rootGetters['server/pluginSupport']('history')
-      const refs: { [index: string]: number } = {}
-      if (historyPluginSupport) {
-        const history: HistoryItem[] = rootGetters['history/getHistory']
-
-        // Iterate history once, recording if we found a file in our directory
-        // list.
-        for (const job of history) {
-          if (
-            job.exists &&
-            !refs[job.filename]
-          ) {
-            const i = payload.files.findIndex(file => {
-              const filepath = (pathNoRoot === '') ? file.filename : `${pathNoRoot}/${file.filename}`
-              return job.filename === filepath
-            })
-            if (i >= 0) {
-              refs[job.filename] = job.start_time
-            }
-          }
-        }
-      }
-
       payload.files.forEach((file) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
         ) {
-          const filepath = (pathNoRoot === '') ? file.filename : `${pathNoRoot}/${file.filename}`
           items.push({
             ...file,
             type: 'file',
             name: file.filename,
             extension: file.filename.split('.').pop() || '',
             modified: new Date(file.modified).getTime(),
-            path: (pathNoRoot === '/') ? '' : pathNoRoot,
-            start_time: (refs[filepath]) ? refs[filepath] : undefined
+            path: (pathNoRoot === '/') ? '' : pathNoRoot
           })
         }
       })

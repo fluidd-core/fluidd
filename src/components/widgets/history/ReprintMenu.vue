@@ -19,18 +19,18 @@
                 <img
                   v-if="job.metadata.thumbnails && job.metadata.thumbnails.length"
                   class="mr-2 file-icon-thumb"
-                  :src="getThumbUrl(job.metadata.thumbnails, job.path)"
+                  :src="getThumbUrl(job.metadata.thumbnails, getFilePaths(job.filename).path)"
                   :width="24"
                 />
               </td>
               <td class="grey--text">
                 <span>
-                  {{ job.name }}
+                  {{ getFilePaths(job.filename).filename }}
                 </span>
               </td>
               <td class="grey--text">
                 <span>
-                  {{ $filters.formatFileDateTime(job.start_time) }}
+                  {{ $filters.formatDateTime(job.start_time) }}
                 </span>
               </td>
               <td class="text-right">
@@ -48,6 +48,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
+import { getFilePaths } from '@/store/helpers'
 
 @Component({
   components: {
@@ -57,6 +58,10 @@ import FilesMixin from '@/mixins/files'
 export default class ReprintMenu extends Mixins(FilesMixin) {
   get history () {
     return this.$store.getters['history/getUniqueHistory'](2)
+  }
+
+  getFilePaths (filename: string) {
+    return getFilePaths(filename, 'gcodes')
   }
 }
 </script>

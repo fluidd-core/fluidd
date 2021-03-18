@@ -302,6 +302,21 @@ export const SocketActions = {
     )
   },
 
+  async serverHistoryDeleteJob (uid: string) {
+    let params: any = { uid }
+    let dispatch = 'history/onDelete'
+    if (uid === 'all') {
+      params = { all: true }
+      dispatch = 'history/deleteAll'
+    }
+    baseEmit(
+      'server.history.delete_job', {
+        dispatch,
+        params
+      }
+    )
+  },
+
   /**
    * Loads the metadata for a given filepath.
    * Expects the full path including root.

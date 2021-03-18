@@ -4,7 +4,8 @@ import VueRouter, { RouteConfig } from 'vue-router'
 // Views
 import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
-import Configuration from '@/views/Configuration.vue'
+import Configure from '@/views/Configure.vue'
+import Tune from '@/views/Tune.vue'
 import Settings from '@/views/Settings.vue'
 import NotFound from '@/views/NotFound.vue'
 
@@ -22,14 +23,19 @@ const routes: Array<RouteConfig> = [
     component: Jobs
   },
   {
+    path: '/tune',
+    name: 'Tune',
+    component: Tune
+  },
+  {
+    path: '/configure',
+    name: 'Printer Configuration',
+    component: Configure
+  },
+  {
     path: '/settings',
     name: 'App Settings',
     component: Settings
-  },
-  {
-    path: '/configuration',
-    name: 'Printer Configuration',
-    component: Configuration
   },
   {
     path: '*',

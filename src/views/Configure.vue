@@ -1,30 +1,27 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="7" class="pt-0">
-        <klippy-card v-if="!klippyReady || hasWarnings"></klippy-card>
-        <bed-mesh-card v-if="supportsBedMesh && klippyReady"></bed-mesh-card>
-        <v-row>
-          <v-col cols="12" sm="6" v-if="klippyReady">
-            <logs-card></logs-card>
-            <!-- <bed-adjust-card></bed-adjust-card> -->
-          </v-col>
-          <v-col cols="12" sm="6" v-if="klippyReady">
-            <end-stops-card></end-stops-card>
-            <runout-sensors-card v-if="supportsRunoutSensors"></runout-sensors-card>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col cols="12" md="5" class="pt-0 config-files-wrapper">
+      <v-col cols="12" md="6" class="pt-0">
         <collapsable-card
           title="Configuration Files"
           icon="$files"
           :draggable="false"
         >
           <file-system
-            :roots="['config', 'config_examples']">
+            :roots="['config', 'config_examples']"
+            :height="408">
           </file-system>
         </collapsable-card>
+      </v-col>
+      <v-col cols="12" md="6" class="pt-0">
+        <klippy-card v-if="!klippyReady || hasWarnings"></klippy-card>
+        <printer-stats-card v-if="klippyReady"></printer-stats-card>
+        <logs-card v-if="klippyReady"></logs-card>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" class="pt-0">
+        <printer-history-card v-if="klippyReady"></printer-history-card>
       </v-col>
     </v-row>
   </v-container>
@@ -40,6 +37,8 @@ import KlippyCard from '@/components/cards/KlippyCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
 import BedAdjustCard from '@/components/cards/configuration/BedAdjustCard.vue'
 import LogsCard from '@/components/cards/configuration/LogsCard.vue'
+import PrinterStatsCard from '@/components/cards/configuration/PrinterStatsCard.vue'
+import PrinterHistoryCard from '@/components/cards/configuration/PrintHistoryCard.vue'
 
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
@@ -52,10 +51,12 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     RunoutSensorsCard,
     FileSystem,
     KlippyCard,
-    LogsCard
+    LogsCard,
+    PrinterStatsCard,
+    PrinterHistoryCard
   }
 })
-export default class Configuration extends Mixins(StateMixin) {
+export default class Configure extends Mixins(StateMixin) {
   get supportsBedMesh () {
     return this.$store.getters['printer/getSupportsBedMesh']
   }

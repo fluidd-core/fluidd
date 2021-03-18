@@ -26,7 +26,7 @@
             'is-file': (item.type === 'file'),
             'is-disabled': disabled
           }"
-          class="px-1"
+          class="row-select px-1"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
 
@@ -87,10 +87,10 @@
             <span v-else>--</span>
           </td>
           <td class="grey--text text-no-wrap" v-if="showLastPrinted">
-            {{ (item.type === 'directory' || !item.start_time) ? '--' : $filters.formatFileDateTime(item.start_time) }}
+            {{ (item.type === 'directory' || !item.print_start_time) ? '--' : $filters.formatDateTime(item.print_start_time) }}
           </td>
           <td class="grey--text text-no-wrap">
-            {{ (item.type === 'directory' && item.name === '..') ? '--' : $filters.formatFileDateTime(item.modified) }}
+            {{ (item.type === 'directory' && item.name === '..') ? '--' : $filters.formatDateTime(item.modified) }}
           </td>
           <td class="grey--text text-no-wrap text-end">{{ (item.type === 'file') ? $filters.getReadableFileSizeString(item.size) : '--' }}</td>
         </tr>
@@ -145,7 +145,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     if (this.showLastPrinted) {
-      headers.push({ text: 'last printed', value: 'start_time' })
+      headers.push({ text: 'last printed', value: 'print_start_time' })
     }
 
     headers = [

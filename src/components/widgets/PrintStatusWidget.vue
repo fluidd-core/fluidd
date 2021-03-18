@@ -5,7 +5,7 @@
         <v-progress-circular
             :rotate="-90"
             :size="90"
-            :width="5"
+            :width="7"
             :value="timeEstimates.progress"
             color="primary"
           >

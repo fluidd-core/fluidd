@@ -28,9 +28,13 @@
         <v-icon small class="mr-md-1">$files</v-icon>
         <span>Jobs</span>
       </btn>
-      <btn text to="/configuration" class="d-none d-md-flex mx-1">
+      <btn text to="/tune" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$tune</v-icon>
-        <span>Printer</span>
+        <span>Tune</span>
+      </btn>
+      <btn text to="/configure" class="d-none d-md-flex mx-1">
+        <v-icon small class="mr-md-1">$cogs</v-icon>
+        <span>Configure</span>
       </btn>
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">

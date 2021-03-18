@@ -21,7 +21,7 @@ export const mutations: MutationTree<HistoryState> = {
   /**
    * Adds a history item.
    */
-  addHistory (state, payload: HistoryItem) {
+  setAddHistory (state, payload: HistoryItem) {
     if (payload) {
       state.jobs.push(payload)
       state.count++
@@ -31,12 +31,25 @@ export const mutations: MutationTree<HistoryState> = {
   /**
    * Updates a history item.
    */
-  updateHistory (state, payload: HistoryItem) {
+  setUpdateHistory (state, payload: HistoryItem) {
     if (payload) {
       const i = state.jobs.findIndex(job => job.job_id === payload.job_id)
       if (i >= 0) {
         Vue.set(state.jobs, i, payload)
       }
     }
+  },
+
+  setDeleteJob (state, payload: string[]) {
+    if (payload) {
+      payload.forEach((job_id) => {
+        const i = state.jobs.findIndex(job => job.job_id === job_id)
+        if (i >= 0) state.jobs.splice(i, 1)
+      })
+    }
+  },
+
+  setDeleteAllJobs (state) {
+    Object.assign(state, defaultState())
   }
 }

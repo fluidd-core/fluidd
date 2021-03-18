@@ -95,5 +95,12 @@ export const getters: GetterTree<FilesState, RootState> = {
   getLowOnSpace: (state) => {
     // 1073741824 = 1gb
     return state.disk_usage.free < 1073741824
+  },
+
+  /**
+   * Returns curent file system usage.
+   */
+  getUsage: (state) => {
+    return state.disk_usage
   }
 }

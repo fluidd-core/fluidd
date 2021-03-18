@@ -1,8 +1,6 @@
 import { GetterTree } from 'vuex'
 import { HistoryItem, HistoryState } from './types'
 import { RootState } from '../types'
-import { getFilePaths } from '../helpers'
-import consola from 'consola'
 
 export const getters: GetterTree<HistoryState, RootState> = {
   /**
@@ -18,8 +16,6 @@ export const getters: GetterTree<HistoryState, RootState> = {
    * optionally limited by a provided number.
    */
   getUniqueHistory: (state, getters) => (limit = 3) => {
-    // const sdcard_file = rootState.printer?.printer.print_stats.filename || ''
-    const root = 'gcodes'
     const jobs: HistoryItem[] = []
     const history = getters.getHistory
 
@@ -33,16 +29,48 @@ export const getters: GetterTree<HistoryState, RootState> = {
       ) {
         const dupe = jobs.some((j) => job.filename === j.filename)
         if (!dupe) {
-          const filePath = getFilePaths(job.filename, root)
-          jobs.push({
-            ...job,
-            name: filePath.filename,
-            path: filePath.path
-          })
+          jobs.push(job)
         }
         if (jobs.length === limit) break
       }
     }
     return jobs
+  },
+
+  /**
+   * Provide a rollup of data for stat purposes.
+   */
+  getRollUp: (state) => {
+    const rollup: any = {
+      print_duration: 0,
+      total_duration: 0,
+      filament_used: 0,
+      print_duration_avg: 0,
+      total_duration_avg: 0,
+      filament_used_avg: 0,
+      total_jobs: 0
+    }
+    if (state.jobs && state.jobs.length) {
+      const d: any = state.jobs.reduce((prevJob, job) => {
+        return {
+          ...job,
+          print_duration: job.print_duration + prevJob.print_duration,
+          total_duration: job.total_duration + prevJob.total_duration,
+          filament_used: job.filament_used + prevJob.filament_used,
+          longest_duration: (job.total_duration > prevJob.total_duration)
+            ? job.total_duration
+            : prevJob.total_duration
+        }
+      })
+      return {
+        ...rollup,
+        ...d,
+        print_duration_avg: d.print_duration / state.jobs.length,
+        total_duration_avg: d.total_duration / state.jobs.length,
+        filament_used_avg: d.filament_used / state.jobs.length,
+        total_jobs: state.jobs.length
+      }
+    }
+    return rollup
   }
 }

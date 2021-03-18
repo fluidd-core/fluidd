@@ -2,13 +2,14 @@
 
 ## Next Up
 
+- versions to info card
 - statistics
+  - total filament usage
   - avg filament usage
-  - total filament
-  - avg print time
   - totale print time
-  - total known jobs
+  - avg print time
   - file system usage
+  - total known jobs
 
 - stats panel on printer page with full history so you can
   - delete entry
@@ -17,7 +18,6 @@
   - add pi filesystem usage to printer page
 
 - update docs to mention cura uploads
-- remove disabled jobs stuff and replace with a disabled state with help icon
 
 - change card states to db and be driven by getters..
 - bulk actions to delete or move?

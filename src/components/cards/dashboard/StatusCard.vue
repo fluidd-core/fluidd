@@ -118,11 +118,11 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   showHistory = false
 
   get hidePrinterMenu () {
-    // return (!this.printerPrinting && !this.printerPaused && !this.filename)
-    // console.log('printing?', this.printerPrinting)
-    // console.log('paused and printing?', (this.printerPrinting || this.printerPaused))
-    return (this.printerPrinting || this.printerPaused)
-    // return false
+    if (!this.supportsHistoryPlugin) {
+      return (!this.printerPrinting && !this.printerPaused && !this.filename)
+    } else {
+      return (!this.printerPrinting && !this.printerPaused && this.history === 0)
+    }
   }
 
   get supportsHistoryPlugin () {

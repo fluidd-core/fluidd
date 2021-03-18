@@ -39,6 +39,8 @@ export interface KlipperFile {
   filename: string;
   modified: number;
   size: number;
+  print_start_time: number | null;
+  job_id: number | null;
 }
 
 export interface KlipperFileMeta {

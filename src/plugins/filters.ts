@@ -33,13 +33,16 @@ export const Filters = {
    * Formats a date from unixtime into a human readable
    * datetime.
    */
-  formatFileDateTime: (datetime: number) => {
+  formatDateTime: (datetime: number, format?: string) => {
     const date = _Vue.$dayjs(datetime * 1000)
-    if (date.isToday()) {
-      return date.fromNow()
-    } else {
-      return date.format('MMM D, YYYY h:mm A')
+    if (!format) {
+      if (date.isToday()) {
+        return date.fromNow()
+      } else {
+        return date.format('MMM D, YYYY h:mm A')
+      }
     }
+    return date.format(format)
   },
 
   /**
@@ -182,7 +185,7 @@ declare module 'vue/types/vue' {
     camelCase(string: string): string;
     startCase(string: string): string;
     capitalize(string: string): string;
-    formatFileDateTime(datetime: number): string;
+    formatDateTime(datetime: number, format?: string): string;
     getReadableFileSizeString(fileSizeInBytes: number): string;
     getReadableLengthString(lengthInMm: number): string;
     getApiUrls(url: string): ApiConfig;

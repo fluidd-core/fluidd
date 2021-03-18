@@ -5,12 +5,12 @@
   >
     <v-icon
       small
-      left
+      :left="status.length > 0"
       :color="color"
     >
       {{ icon }}
     </v-icon>
-    <span class="grey--text">{{ job.status }}</span>
+    <span class="grey--text">{{ status }}</span>
   </v-chip>
 </template>
 
@@ -24,11 +24,20 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   @Prop({ type: Object, required: true })
   job!: HistoryItem
 
+  get status () {
+    if (this.job.status === HistoryItemStatus.Completed) return ''
+    if (this.job.status === HistoryItemStatus.InProgress) return 'in progress'
+    if (this.job.status.indexOf('_')) {
+      return this.job.status.split('_').pop()
+    }
+    return this.job.status
+  }
+
   get icon () {
     if (!this.inError) {
       return '$check'
     }
-    return '$close'
+    return '$error'
   }
 
   get color () {
