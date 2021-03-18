@@ -11,7 +11,7 @@
       single-line
       dense
       hide-details
-      placeholder="'tab' for autocomplete, 'arrows' for history, 'help' for commands"
+      :placeholder="$t('printer.console.placeHolder')"
       @keyup.enter="emitSend(newValue)"
       @keyup.up="historyUp()"
       @keyup.down="historyDown()"

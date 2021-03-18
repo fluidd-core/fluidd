@@ -14,11 +14,11 @@
       <v-card color="secondary darken-1">
 
         <v-card-title>
-          <span class="headline">Add printer</span>
+          <span class="headline">{{$t('printer.add.title')}}</span>
           <v-spacer></v-spacer>
           <inline-help bottom>
-            Enter your API URL.<br />
-            Some examples might be;<br />
+            {{$t('printer.add.tooltip[0]')}}<br />
+            {{$t('printer.add.tooltip[1]')}}<br />
             <blockquote>
               http://fluidd.local,
               http://192.168.1.150
@@ -27,14 +27,14 @@
         </v-card-title>
 
         <v-card-text>
-          Having trouble? <a :href="$globals.DOCS_MULTIPLE_INSTANCES" target="_blank">See here</a> for more information.<br />
+          {{$t('printer.add.docs[0]')}} <a :href="$globals.DOCS_MULTIPLE_INSTANCES" target="_blank">{{$t('printer.add.docs[1]')}}</a> {{$t('printer.add.docs[2]')}}<br />
 
           <v-text-field
             v-model="url"
             autofocus
-            label="API URL"
+            :label="$t('printer.add.apiUrl')"
             persistent-hint
-            hint="E.g., http://fluiddpi.local"
+            hint="http://fluiddpi.local"
             :loading="verifying"
             :rules="[rules.required, rules.url]"
           >
@@ -66,8 +66,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <btn color="warning" text @click="$emit('input', false)" type="button">Cancel</btn>
-          <btn color="primary" type="submit" :disabled="!verified">Save</btn>
+          <btn color="warning" text @click="$emit('input', false)" type="button">{{$t('app.btn.cancel')}}</btn>
+          <btn color="primary" type="submit" :disabled="!verified">{{$t('app.btn.save')}}</btn>
         </v-card-actions>
 
       </v-card>
@@ -105,8 +105,8 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
             '(\\#[-a-z\\d_]*)?$', 'i')
 
   rules = {
-    required: (v: string) => !!v || 'Required',
-    url: (v: string) => (this.urlRegex.test(v)) || 'Invalid URL'
+    required: (v: string) => !!v || this.$t('app.form.required'),
+    url: (v: string) => (this.urlRegex.test(v)) || this.$t('app.form.invalidUrl')
   }
 
   timer = 0

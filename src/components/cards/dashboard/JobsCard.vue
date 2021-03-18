@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Jobs"
+    :title="$t('printer.jobs.title')"
     icon="$files"
     :draggable="true"
     :inLayout="inLayout"
@@ -14,7 +14,7 @@
         type="warning"
         bottom
         small
-        tooltip="Jobs are disabled prior to initial communcation with klippy"
+        :tooltip="$t('printer.jobs.disabledTooltip')"
       ></inline-help>
 
     </template>

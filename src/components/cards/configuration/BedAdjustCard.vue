@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Bed Adjustments"
+    :title="$t('printer.bed.adjustaments.title')"
     icon="$bedMesh">
     <v-card>
       <v-card-title>z-adjust</v-card-title>

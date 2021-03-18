@@ -6,7 +6,7 @@ export default {
     close: 'Chiudi'
   },
   appBar: {
-    dashboard: 'Dashboard',
+    dashboard: 'Cruscotto',
     jobs: 'Lavori',
     printer: 'Stampante',
     estop: "Blocco d'emergenza"
@@ -26,5 +26,21 @@ export default {
     choose: 'Scegli la Lingua:',
     languages: 'Lingue',
     auto: 'Automatico'
+  },
+  bed: {
+    mesh: {
+      title: 'Mesh Letto',
+      adjustaments: {
+        title: 'Ritocchi Letto'
+      }
+    }
+  },
+  endstops: {
+    title: 'Endstops',
+    subTitle: 'Premi il pulsante di ricarica per aggiornare lo stato degli endstop.',
+    state: {
+      open: 'SPENTO',
+      triggered: 'ATTIVO'
+    }
   }
 }

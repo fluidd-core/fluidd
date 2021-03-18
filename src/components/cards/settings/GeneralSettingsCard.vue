@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Misc"
+    :title="$t('printer.misc.title')"
     cardKey="MiscSettings"
     icon="$cogs">
     <v-card-text>
@@ -8,7 +8,7 @@
         filled
         hide-details="auto"
         :rules="instanceNameRules"
-        label="Printer Name"
+        :label="$t('printer.misc.name')"
         :value="instanceName"
         @change="setInstanceName"
       ></v-text-field>

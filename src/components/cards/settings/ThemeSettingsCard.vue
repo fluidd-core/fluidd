@@ -1,8 +1,8 @@
 
 <template>
   <collapsable-card
-    title="Theme"
-    subTitle="Define a primary color, and whether to show in dark mode or not."
+    :title="$t('app.theme.title')"
+    :subTitle="$t('app.theme.subTitle')"
     cardKey="ThemeSettings"
     icon="$cogs">
     <v-card-text>
@@ -21,7 +21,7 @@
 
       <v-switch
         @click.native.stop
-        label="Dark Mode"
+        :label="$t('app.theme.darkMode')"
         v-model="theme.isDark"
         @change="handleDarkModeChange"
         hide-details
@@ -32,7 +32,7 @@
         color="secondary"
         @click="handleReset"
       >
-        Reset to default
+        {{$t('app.btn.resetDefault')}}
       </btn>
 
     </v-card-text>

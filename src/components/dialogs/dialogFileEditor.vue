@@ -30,7 +30,7 @@
           color="warning"
           class="ml-2"
           @click="emitSave(false, false, newContents, filename, path)">
-          Save
+          {{$t('app.btn.save')}}
         </btn>
         <btn
           v-if="!readonly && unsavedChanges"
@@ -39,7 +39,7 @@
           color="warning"
           class="ml-2"
           @click="emitSave(true, false, newContents, filename, path)">
-          Save &amp; Close
+          {{$t('app.btn.saveClose')}}
         </btn>
         <btn
           v-if="!readonly && unsavedChanges && !printerPrinting"
@@ -48,7 +48,7 @@
           color="error"
           class="ml-2"
           @click="emitSave(true, true, newContents, filename, path)">
-          Save &amp; Restart
+          {{$t('app.btn.saveRestart')}}
         </btn>
       </v-toolbar>
       <v-card-text>

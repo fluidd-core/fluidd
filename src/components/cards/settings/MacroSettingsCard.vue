@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
-    title="Macros"
-    subTitle="Configure which macros appear on the dashboard"
+    :title="$t('printer.macros.title')"
+    :subTitle="$t('printer.macros.subTitle')"
     cardKey="MacroSettings"
     icon="$fileCode">
     <v-card-text>

@@ -1,9 +1,9 @@
 <template>
   <collapsable-card
-    title="Temperature Presets"
+    :title="$t('printer.temperature.preset.title')"
     cardKey="TemperaturePresetSettings"
     icon="$fire"
-    subTitle="Apply predefined temperatures on the dashboard"
+    :subTitle="$t('printer.temperature.preset.subTitle')"
   >
     <v-card-text>
 
@@ -40,7 +40,7 @@
         class="mt-2"
         color="secondary">
         <v-icon small left>$plus</v-icon>
-        Add preset
+        {{$t('printer.temperature.preset.add')}}
       </btn>
 
       <v-dialog
@@ -54,11 +54,11 @@
         >
           <v-card color="secondary darken-1">
             <v-card-title>
-              <span class="headline">{{ (preset.index >= 0) ? 'Edit preset' : 'Add preset' }}</span>
+              <span class="headline">{{ (preset.index >= 0) ? $t('printer.temperature.preset.edit') : $t('printer.temperature.preset.add') }}</span>
             </v-card-title>
             <v-card-text>
               <v-text-field
-                label="Preset Name"
+                :label="$t('printer.temperature.preset.name')"
                 v-model="preset.name"
                 :rules="[rules.required]"
                 hide-details="auto"
@@ -69,26 +69,26 @@
                 <v-text-field
                   v-for="item in heaters" :key="item.name"
                   v-model.number="preset.values[item.name].value"
-                  :label="item.name"
+                  :label="$t('printer.temperature.preset.heaters.'+item.name)"
                   :rules="[rules.numRequired, rules.numMin]"
                   :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
                   @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
                   hide-details="auto"
                   type="number"
-                  suffix="°C"
+                  :suffix="$t('app.degree.celsius')"
                   class="mb-2"
                   filled dense>
                 </v-text-field>
                 <v-text-field
                   v-for="item in fans" :key="item.name"
                   v-model.number="preset.values[item.name].value"
-                  :label="item.name"
+                  :label="$t('printer.temperature.preset.fans.'+item.name)"
                   :rules="[rules.numRequired, rules.numMin]"
                   :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
                   @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
                   hide-details="auto"
                   type="number"
-                  suffix="°C"
+                  :suffix="$t('app.degree.celsius')"
                   class="mb-2"
                   filled dense>
                 </v-text-field>
@@ -96,8 +96,8 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <btn color="warning" text @click.prevent="dialog.active = false" type="button">Cancel</btn>
-              <btn color="primary" type="submit">{{ (preset.index >= 0) ? 'Save' : 'Add' }}</btn>
+              <btn color="warning" text @click.prevent="dialog.active = false" type="button">{{$t('app.btn.cancel')}}</btn>
+              <btn color="primary" type="submit">{{ (preset.index >= 0) ? $t('app.btn.save') : $t('app.btn.add') }}</btn>
             </v-card-actions>
           </v-card>
         </v-form>
@@ -144,9 +144,9 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
   }
 
   rules = {
-    required: (v: string) => !!v || 'Required',
-    numRequired: (v: number | string) => v !== '' || 'Required',
-    numMin: (v: number) => v >= 0 || 'Min 0'
+    required: (v: string) => !!v || this.$t('app.form.required'),
+    numRequired: (v: number | string) => v !== '' || this.$t('app.form.required'),
+    numMin: (v: number) => v >= 0 || this.$t('app.form.min0')
   }
 
   openEditDialog (preset: TemperaturePreset) {

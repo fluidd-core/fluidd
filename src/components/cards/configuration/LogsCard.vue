@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Printer Logs"
+    :title="$t('printer.logs.title')"
     icon="$download">
     <v-card-text>
       <btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon> Klippy.log</btn>

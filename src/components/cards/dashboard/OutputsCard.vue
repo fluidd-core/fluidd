@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Fans &amp; Outputs"
+    :title="$t('printer.outputs.title')"
     icon="$motion"
     :draggable="true"
     :inLayout="inLayout"

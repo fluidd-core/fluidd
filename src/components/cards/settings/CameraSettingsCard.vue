@@ -1,36 +1,36 @@
 <template>
   <collapsable-card
-    title="Camera"
+    :title="$t('printer.camera.title')"
     cardKey="CameraSettings"
     icon="$camera">
     <v-card-text>
       <v-switch
         class="mt-0"
-        label="Enabled"
+        :label="$t('app.btn.enabled')"
         hide-details
         v-model="enabled">
       </v-switch>
       <v-switch
-        label="Flip horizontally"
+        :label="$t('printer.camera.flipH')"
         hide-details
         v-model="flipX">
       </v-switch>
       <v-switch
         class="mb-4"
-        label="Flip vertically"
+        :label="$t('printer.camera.flipV')"
         hide-details
         v-model="flipY">
       </v-switch>
       <v-select
-        label="Stream type"
+        :label="$t('printer.camera.stream.label')"
         hide-details="auto"
-        :items="[{ text: 'mjpgstreamer', value: 'mjpgstreamer' }, { text: 'ip camera', value: 'ipcamera' }]"
+        :items="cameraTypeItems"
         v-model="streamType">
       </v-select>
       <v-text-field
         class="mt-5"
         filled
-        label="Camera URL"
+        :label="$t('printer.camera.stream.url')"
         :value="url"
         @change="setUrl"
       ></v-text-field>
@@ -46,6 +46,16 @@ import StateMixin from '@/mixins/state'
   components: {}
 })
 export default class CameraSettingsCard extends Mixins(StateMixin) {
+  get cameraTypes () {
+    return ['mjpgstreamer', 'ipcamera']
+  }
+
+  get cameraTypeItems () {
+    return this.cameraTypes.slice(0).map((value) => {
+      return { text: this.$t('printer.camera.stream.types.' + value), value }
+    })
+  }
+
   get enabled () {
     return this.$store.state.config.uiSettings.camera.enabled
   }

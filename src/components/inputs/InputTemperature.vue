@@ -12,7 +12,7 @@
         :rules="[rules.max, rules.min]"
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
-        suffix="°C"
+        :suffix="$t('app.degree.celsius')"
         class="mr-1 v-input--width-small">
       </v-text-field>
       <btn

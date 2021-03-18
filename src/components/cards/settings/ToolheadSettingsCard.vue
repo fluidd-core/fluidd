@@ -1,24 +1,24 @@
 <template>
   <collapsable-card
-    title="Tool"
+    :title="$t('printer.tool.title')"
     cardKey="ToolSettings"
     icon="$printer3dNozzle">
     <v-card-text>
       <v-switch
         class="mt-0 mb-4"
-        label="Invert X"
+        :label="$t('printer.tool.invert.x')"
         hide-details
         v-model="invertX">
       </v-switch>
       <v-switch
         class="mt-0 mb-4"
-        label="Invert Y"
+        :label="$t('printer.tool.invert.y')"
         hide-details
         v-model="invertY">
       </v-switch>
       <v-switch
         class="mt-0 mb-4"
-        label="Invert Z"
+        :label="$t('printer.tool.invert.z')"
         hide-details
         v-model="invertZ">
       </v-switch>
@@ -27,42 +27,42 @@
         hide-details
         v-model="useGcodeCoords">
         <template slot="label">
-          Use GCode Coordinates
+          {{$t('printer.tool.useGCodeCoord.text')}}
           <inline-help
             small
             top
-            tooltip="Use GCode position instead of toolhead position on dashboard"
+            :tooltip="$t('printer.tool.useGCodeCoord.tooltip')"
           ></inline-help>
         </template>
       </v-switch>
       <v-text-field
         filled
-        label="Default Extrude Length"
+        :label="$t('printer.tool.default.eLength')"
         suffix="mm"
         v-model.number="defaultExtrudeLength"
       ></v-text-field>
       <v-text-field
         filled
-        label="Default Extrude Speed"
+        :label="$t('printer.tool.default.eSpeed')"
         suffix="mm/s"
         v-model.number="defaultExtrudeSpeed"
       ></v-text-field>
       <v-select
         filled
-        label="Default toolhead move length"
+        :label="$t('printer.tool.default.moveLength')"
         suffix="mm"
         :items="['0.1', '1.0', '10', '100']"
         v-model.number="defaultToolheadMoveLength"
       ></v-select>
       <v-text-field
         filled
-        label="Toolhead XY Move Speed"
+        :label="$t('printer.tool.default.xyMoveSpeed')"
         suffix="mm/s"
         v-model.number="defaultToolheadXYSpeed"
       ></v-text-field>
       <v-text-field
         filled
-        label="Toolhead Z Move Speed"
+        :label="$t('printer.tool.default.zMoveSpeed')"
         suffix="mm/s"
         v-model.number="defaultToolheadZSpeed"
       ></v-text-field>

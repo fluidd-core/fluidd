@@ -2,7 +2,7 @@
   <collapsable-card
     :hide-menu="hidePrinterMenu"
     :collapsable="printerPrinting"
-    title="Status"
+    :title="$t('printer.status.title')"
     icon="$printer3d">
 
     <template v-slot:title>
@@ -24,7 +24,7 @@
         color="secondary"
         class="ma-1">
         <v-icon small>$pause</v-icon>
-        <span>Pause</span>
+        <span>{{$t('app.btn.pause')}}</span>
       </btn>
 
       <btn
@@ -37,7 +37,7 @@
         color="secondary"
         class="ma-1">
         <v-icon small>$cancel</v-icon>
-        <span>Cancel</span>
+        <span>{{$t('app.btn.cancel')}}</span>
       </btn>
 
       <btn
@@ -50,7 +50,7 @@
         color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>
-        <span>Resume</span>
+        <span>{{$t('app.btn.resume')}}</span>
       </btn>
 
       <btn
@@ -61,7 +61,7 @@
         color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$refresh</v-icon>
-        <span>Reset File</span>
+        <span>{{$t('app.btn.resetFile')}}</span>
       </btn>
 
       <btn
@@ -72,14 +72,14 @@
         color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
-        <span>Reprint</span>
+        <span>{{$t('app.btn.reprint')}}</span>
       </btn>
     </template>
 
     <dialog-confirm
       v-model="confirmDialog.open"
       @confirm="cancelPrint">
-      <p>Are you sure? This will cancel your print.</p>
+      <p>{{$t('printer.status.confirmCancel')}}</p>
     </dialog-confirm>
 
     <print-status-widget v-if="showStatus"></print-status-widget>

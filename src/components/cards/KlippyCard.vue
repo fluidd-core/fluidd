@@ -1,15 +1,15 @@
 <template>
   <collapsable-card
-    :title="`Klippy: ${klippyState}`"
+    :title="$t('printer.status.klippy.title',{klippyState})"
     :collapsable="false"
     icon="$alert"
     icon-color="error">
     <v-card-text>
       <v-row>
         <v-col cols="12" sm="auto">
-          <btn v-if="!klippyConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</btn>
-          <btn v-if="klippyConnected" block color="primary" @click="restartKlippy" class="me-2 mb-2">Restart Klipper</btn>
-          <btn v-if="klippyConnected" block color="primary" @click="firmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</btn>
+          <btn v-if="!klippyConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">{{$t('printer.status.klippy.restart.klippy')}}</btn>
+          <btn v-if="klippyConnected" block color="primary" @click="restartKlippy" class="me-2 mb-2">{{$t('printer.status.klippy.restart.klippy')}}</btn>
+          <btn v-if="klippyConnected" block color="primary" @click="firmwareRestartKlippy" class="me-2 mb-2">{{$t('printer.status.klippy.restart.service')}}</btn>
           <btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Klippy.log</btn>
           <btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</btn>
         </v-col>

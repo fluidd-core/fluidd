@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Tool"
+    :title="$t('printer.tool.title')"
     icon="$printer3dNozzle"
     :draggable="true"
     :inLayout="inLayout"
@@ -23,7 +23,7 @@
             $snowflakeAlert
           </v-icon>
         </template>
-        <span>extruder disabled, below min_extrude_temp ({{ minExtrudeTemp }}<small>°C</small>)</span>
+        <span v-html="$t('printer.tool.tooltip',{ minExtrudeTemp, degree: $t('app.degree.celsius') })"></span>
       </v-tooltip>
     </template>
 
@@ -35,7 +35,7 @@
         small
         class="ma-1"
         color="secondary">
-          MOTORS OFF
+          {{$t('printer.tool.motorsOff')}}
       </btn>
       <btn
         v-if="printerSupportsBedScrews"
@@ -46,7 +46,7 @@
         small
         class="ma-1"
         color="secondary">
-          Bed_Screws_Adjust
+          {{$t('printer.tool.bedScrewAdjust')}}
       </btn>
       <btn
         v-if="printerSupportsBedScrewsCalculate"
@@ -57,7 +57,7 @@
         small
         class="ma-1"
         color="secondary">
-          Screws_Tilt_Calculate
+          {{$t('printer.tool.screwsTiltCalculate')}}
       </btn>
       <btn
         v-if="printerSupportsZtilt"
@@ -68,7 +68,7 @@
         small
         class="ma-1"
         color="secondary">
-          Z_Tilt_Adjust
+          {{$t('printer.tool.zTiltAdjust')}}
       </btn>
       <btn
         v-if="printerSupportsQgl"
@@ -79,7 +79,7 @@
         small
         class="ma-1"
         color="secondary">
-          QGL
+          {{$t('printer.tool.qgl')}}
       </btn>
     </template>
 

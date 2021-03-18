@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :loading="loading"
-    title="Bed Mesh"
+    :title="$t('printer.bed.mesh.title')"
     :lazy="false"
     icon="$bedMesh">
     <bed-mesh-widget @hook:mounted="componentMounted"></bed-mesh-widget>

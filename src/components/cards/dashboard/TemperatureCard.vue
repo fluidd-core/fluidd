@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Thermals"
+    :title="$t('printer.temperature.title')"
     icon="$fire"
     :lazy="false"
     :draggable="true"
@@ -10,13 +10,11 @@
 
     <template v-slot:title>
       <v-icon left>$fire</v-icon>
-      <span class="font-weight-light">Thermals</span>
+      <span class="font-weight-light">{{$t('printer.temperature.title')}}</span>
       <inline-help
         bottom
         small
-        tooltip="Hold shift to zoom.<br />
-          Click an item to toggle in the graph.<br />
-          Click a power to toggle in the graph."
+        :tooltip="$t('printer.temperature.tooltip')"
       ></inline-help>
 
     </template>
@@ -29,7 +27,7 @@
         :disabled="!klippyReady"
         @click="chartVisible = !chartVisible">
         <v-icon left>$chart</v-icon>
-        {{ (chartVisible) ? 'on' : 'off' }}
+        {{ (chartVisible) ? $t('app.btn.on') : $t('app.btn.off') }}
       </btn>
     </template>
 

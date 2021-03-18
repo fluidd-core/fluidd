@@ -14,8 +14,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <btn color="warning" text @click="emitConfirm(false)">No</btn>
-        <btn color="primary" :elevation="2" @click="emitConfirm(true)">Yes</btn>
+        <btn color="warning" text @click="emitConfirm(false)">{{$t('app.btn.no')}}</btn>
+        <btn color="primary" :elevation="2" @click="emitConfirm(true)">{{$t('app.btn.yes')}}</btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
