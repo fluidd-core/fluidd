@@ -14,7 +14,7 @@
         v-bind="attrs"
         @click="open = false"
       >
-        Close
+        {{$t("btn.close")}}
       </btn>
     </template>
   </v-snackbar>

@@ -8,12 +8,14 @@
     <v-list dense>
       <v-subheader>{{ instanceName }}</v-subheader>
 
+      <system-localization-widget></system-localization-widget>
+
       <v-list-item to="/" class="d-flex d-md-none">
         <v-list-item-icon>
           <v-icon>$home</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Dashboard</v-list-item-title>
+          <v-list-item-title>{{$t("appBar.dashboard")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyReady">
@@ -21,7 +23,7 @@
           <v-icon>$files</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Jobs</v-list-item-title>
+          <v-list-item-title>{{$t("appBar.jobs")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/configuration" class="d-flex d-md-none">
@@ -29,7 +31,7 @@
           <v-icon>$tune</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>Printer Configuration</v-list-item-title>
+          <v-list-item-title>{{$t("appDrawer.pconfig")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/settings">
@@ -37,7 +39,7 @@
           <v-icon>$cog</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>UI Settings</v-list-item-title>
+          <v-list-item-title>{{$t("appDrawer.uiSettings")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
@@ -61,6 +63,7 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 import SystemVersionsWidget from '@/components/widgets/SystemVersionsWidget.vue'
 import SystemPrintersWidget from '@/components/widgets/SystemPrintersWidget.vue'
 import SystemLayoutWidget from '@/components/widgets/SystemLayoutWidget.vue'
+import SystemLocalizationWidget from '@/components/widgets/SystemLocalizationWidget.vue'
 
 import StateMixin from '@/mixins/state'
 
@@ -69,7 +72,8 @@ import StateMixin from '@/mixins/state'
     SystemCommandsWidget,
     SystemVersionsWidget,
     SystemPrintersWidget,
-    SystemLayoutWidget
+    SystemLayoutWidget,
+    SystemLocalizationWidget
   }
 })
 export default class AppDrawer extends Mixins(StateMixin) {
