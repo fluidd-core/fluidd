@@ -44,6 +44,7 @@ export interface GeneralConfig {
   instanceName: string;
   chartVisible: boolean;
   hideTempWaits: boolean;
+  locale: string;
   axis: Axis;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;

@@ -35,6 +35,7 @@ export const defaultState = (): ConfigState => {
     uiSettings: {
       general: {
         instanceName: Globals.APP_NAME,
+        locale: 'auto',
         chartVisible: true,
         hideTempWaits: true,
         axis: {

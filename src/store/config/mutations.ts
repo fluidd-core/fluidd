@@ -4,6 +4,8 @@ import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, CardCo
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
+import i18n from '@/localization'
+import { defaultLocale } from '@/localization/helper'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -60,6 +62,7 @@ export const mutations: MutationTree<ConfigState> = {
     const apiConfig = payload.apiConfig
     // const uiSettings = payload.uiSettings
     const uiSettings = state.uiSettings
+
     if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
       instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
     }
@@ -148,5 +151,24 @@ export const mutations: MutationTree<ConfigState> = {
    */
   setLayoutMode (state, payload) {
     state.layoutMode = payload
+  },
+
+  setCurrentLocale (state, payload) {
+    if (!(typeof payload === 'undefined') && !(payload === '')) {
+      state.uiSettings.general.locale = payload
+      if (payload === 'auto') {
+        i18n.locale = defaultLocale()
+      } else {
+        i18n.locale = payload
+      }
+    }
+  },
+
+  setInitLocalization (state) {
+    if (state.uiSettings.general.locale === 'auto') {
+      i18n.locale = defaultLocale()
+    } else {
+      i18n.locale = state.uiSettings.general.locale
+    }
   }
 }

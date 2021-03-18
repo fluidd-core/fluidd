@@ -2,8 +2,11 @@ import '@/scss/global.scss'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 // import './registerComponentHooks'
 import './plugins/consola'
-
+// import '@mdi/font/css/materialdesignicons.css'
+import 'flag-icon-css/css/flag-icon.css'
 import Vue from 'vue'
+import i18n from './localization'
+
 import consola from 'consola'
 import App from './App.vue'
 import router from './router'
@@ -61,6 +64,7 @@ Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})
+
 // Vue.use(WorkboxPlugin)
 
 Vue.component('btn-collapse', BtnCollapse)
@@ -89,6 +93,7 @@ appInit()
     // Init Vue
     Vue.config.productionTip = false
     new Vue({
+      i18n,
       router,
       store,
       vuetify,
