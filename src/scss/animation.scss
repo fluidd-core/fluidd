@@ -1,0 +1,30 @@
+/* Add a class to help us spin an icon if we need.. */
+.spin {
+  animation-name: spin;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+.spin-alt {
+  animation-name: spin-alt;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  } to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes spin-alt {
+  from {
+    transform: rotate(-360deg);
+  } to {
+    transform: rotate(0deg);
+  }
+}

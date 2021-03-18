@@ -1,0 +1,8 @@
+/* Prevent zoom on mobile devices when furiosly clicking buttons */
+button .v-btn {
+  touch-action: manipulation;
+}
+
+button .v-icon {
+  touch-action: manipulation;
+}

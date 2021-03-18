@@ -1,0 +1,21 @@
+/* Extra dense list items */
+.v-list-item--x-dense .v-list-item__content,
+.v-list--x-dense .v-list-item .v-list-item__content {
+  padding: 6px 0 !important;
+}
+
+.v-list-item--x-dense .v-list-item__action,
+.v-list--x-dense .v-list-item .v-list-item__action {
+  margin: 8px 0;
+}
+
+/* Helps alignment for some outer buttons */
+.v-text-field-outer-btn {
+  .v-input__control {
+    min-height: 36px !important;
+  }
+  .v-input__prepend-outer, .v-input__append-outer {
+    margin-top: 0px !important;
+    margin-bottom: 0 !important;
+  }
+}

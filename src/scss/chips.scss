@@ -1,0 +1,14 @@
+.chip-group {
+  .v-chip {
+    margin: 2px 2px;
+  }
+  .v-chip:first-child {
+    margin: 0 2px 0 0;
+  }
+  .v-chip:last-child {
+    margin: 0 0 0 2px;
+  }
+  .v-chip:only-child {
+    margin: 0;
+  }
+}
