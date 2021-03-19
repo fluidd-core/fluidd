@@ -16,6 +16,8 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async initUiSettings ({ commit }, payload: UiSettings) {
     commit('setInitUiSettings', payload)
+    console.log('uiSettings init payload:', payload)
+    commit('setInitLocalization') // Load local state locale into i18n (needed to persiste the user choice)
   },
 
   /**
@@ -30,7 +32,6 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async initLocal ({ commit }, payload: InitConfig) {
     commit('setInitLocal') // Just loads local storage config into the store.
-    commit('setInitLocalization') // Load local state locale into i18n (needed to persiste the user choice)
     commit('setInitInstances', payload) // Loads instances from local storage, and also inits the current instance.
   },
 
@@ -80,6 +81,20 @@ export const actions: ActionTree<ConfigState, RootState> = {
       // update the instance item...
       commit('setUpdateInstanceName', instance)
     }
+  },
+
+  /**
+   * Updates locale choose
+   */
+  async updateLocale ({ commit, dispatch }, value: string) {
+    commit('setCurrentLocale', value)
+
+    // update the name in ui settings.
+    dispatch('saveByPath', {
+      path: 'uiSettings.general.locale',
+      value,
+      server: true
+    })
   },
 
   /**
