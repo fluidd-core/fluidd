@@ -2,9 +2,11 @@
 
 ## Next Up
 
+- use components instead of plugins with moonraker
+- fix reprint menu to have correct cursor
+- add job history search
 - review validations on settings pages
 - move config widgets and sort into config vs tune
-- 
 
 - update docs to mention cura uploads
 

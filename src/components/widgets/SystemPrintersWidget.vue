@@ -15,7 +15,7 @@
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-action v-if="!instance.active">
-          <btn icon small @click.stop="removeInstance(instance)">
+          <btn icon small color="" @click.stop="removeInstance(instance)">
             <v-icon small>$delete</v-icon>
           </btn>
         </v-list-item-action>
