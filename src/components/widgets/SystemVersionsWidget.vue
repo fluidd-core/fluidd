@@ -23,7 +23,7 @@
             <div class="component-version">
               {{ ('package_count' in component) ? component.package_count + ' packages' : component.version }}
               <span v-if="'remote_version' in component && hasUpdate(component.type)">
-                to {{ component.remote_version }}
+                {{$t('app.updater.to',{version:component.remote_version})}}
               </span>
             </div>
 
@@ -43,7 +43,7 @@
     </template>
 
     <v-list-item @click="forceCheck()" :disabled="printerPrinting">
-      <v-list-item-title>Check for updates</v-list-item-title>
+      <v-list-item-title>{{ $t('app.updater.check') }}</v-list-item-title>
       <v-list-item-icon>
         <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
       </v-list-item-icon>

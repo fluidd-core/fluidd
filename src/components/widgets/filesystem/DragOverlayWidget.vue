@@ -15,7 +15,7 @@
           class="text-h6 font-weight-light text-center"
           cols="12" sm-cols="6">
           <v-icon x-large>$fileUpload</v-icon>
-          <span><strong>Drag</strong> a file here</span>
+          <span><strong>{{$t('printer.fileSystem.drag[0]')}}</strong> {{$t('printer.fileSystem.drag[1]')}}</span>
         </v-col>
       </v-row>
     </v-container>

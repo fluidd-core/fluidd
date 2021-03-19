@@ -2,17 +2,17 @@
   <v-card-text>
     <v-row>
       <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        Item
+        {{ $t('printer.temperature.status.item') }}
       </v-col>
       <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        Power
+        {{ $t('printer.temperature.status.power') }}
       </v-col>
       <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
-        Current
+        {{ $t('printer.temperature.status.current') }}
       </v-col>
       <v-col sm="4" class="text-subtitle-1 grey--text text--darken-1">
         <v-layout>
-          <span class="">Target</span>
+          <span class="">{{ $t('printer.temperature.status.target') }}</span>
           <v-spacer></v-spacer>
           <v-menu bottom left offset-y :min-width="150">
             <template v-slot:activator="{ on, attrs }">
@@ -34,7 +34,7 @@
                 link>
                 <v-list-item-title>
                   <v-icon small left color="cyan">$snowflakeAlert</v-icon>
-                  All off
+                  {{ $t('printer.temperature.status.allOff') }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item
@@ -67,7 +67,7 @@
           @click="$emit('legendClick', item)"
           :class="{ 'active': chartSelectedLegends[item.name] }"
           class="legend-item">
-          {{ item.prettyName }}
+          {{ $t('printer.temperature.heaters.'+item.name.toLowerCase()) }}
         </span>
       </v-col>
       <v-col cols="6" sm="2" class="grey--text pb-0 pb-md-2">
@@ -109,7 +109,7 @@
             @click="$emit('legendClick', item)"
             :class="{ 'active': chartSelectedLegends[item.name] }"
             class="legend-item">
-            {{ item.prettyName }}
+            {{ $t('printer.outputs.fans.'+item.name.toLowerCase()) }}
           </span>
         </v-col>
         <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2">
@@ -121,9 +121,9 @@
               {{ (item.speed * 100).toFixed(0) }}<small>%</small>
             </span>
             <span v-if="item.speed <= 0 && item.target && item.target > 0">
-              standby
+              {{$t('app.btn.standby')}}
             </span>
-            <span v-if="item.speed <=0 && ((item.target && item.target <= 0) || !item.target)">off</span>
+            <span v-if="item.speed <=0 && ((item.target && item.target <= 0) || !item.target)">{{$t('app.btn.off')}}</span>
           </span>
         </v-col>
         <v-col v-if="item.temperature" cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
@@ -159,11 +159,11 @@
       <v-col cols="6" sm="7" class="grey--text focus--text">
         <v-tooltip right>
           <template v-slot:activator="{ on, attrs }">
-            <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
+            <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>{{$t('app.degree.celsius')}}</small></span>
           </template>
           <span>
-            <span class="amber--text">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
-            <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
+            <span class="amber--text">{{$t('printer.temperature.high',{degree:$t('app.degree.celsius'), temp: item.measured_max_temp.toFixed(1)})}}</span><br />
+            <span class="cyan--text">{{$t('printer.temperature.low',{degree:$t('app.degree.celsius'), temp: item.measured_min_temp.toFixed(1)})}}</span>
           </span>
         </v-tooltip>
       </v-col>

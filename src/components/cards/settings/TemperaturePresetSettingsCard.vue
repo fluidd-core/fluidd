@@ -69,7 +69,7 @@
                 <v-text-field
                   v-for="item in heaters" :key="item.name"
                   v-model.number="preset.values[item.name].value"
-                  :label="$t('printer.temperature.preset.heaters.'+item.name)"
+                  :label="$t('printer.temperature.heaters.'+item.name.toLowerCase())"
                   :rules="[rules.numRequired, rules.numMin]"
                   :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
                   @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
@@ -82,7 +82,7 @@
                 <v-text-field
                   v-for="item in fans" :key="item.name"
                   v-model.number="preset.values[item.name].value"
-                  :label="$t('printer.temperature.preset.fans.'+item.name)"
+                  :label="$t('printer.outputs.fans.'+item.name.toLowerCase())"
                   :rules="[rules.numRequired, rules.numMin]"
                   :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
                   @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
@@ -146,7 +146,7 @@ export default class TemperaturePresetSettingsCard extends Mixins(StateMixin) {
   rules = {
     required: (v: string) => !!v || this.$t('app.form.required'),
     numRequired: (v: number | string) => v !== '' || this.$t('app.form.required'),
-    numMin: (v: number) => v >= 0 || this.$t('app.form.min0')
+    numMin: (v: number) => v >= 0 || this.$t('app.form.min', { min: 0 })
   }
 
   openEditDialog (preset: TemperaturePreset) {

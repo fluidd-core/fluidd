@@ -1,6 +1,6 @@
 <template>
   <v-list dense>
-    <v-subheader>Layout</v-subheader>
+    <v-subheader>{{$t('app.layout.title')}}</v-subheader>
 
     <v-list-item @click.prevent="layoutMode = !layoutMode">
       <v-list-item-action>
@@ -8,7 +8,7 @@
       </v-list-item-action>
 
       <v-list-item-content>
-        <v-list-item-title>Adjust dashboard layout</v-list-item-title>
+        <v-list-item-title>{{$t('app.layout.adjust')}}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
@@ -18,7 +18,7 @@
       </v-list-item-icon>
 
       <v-list-item-content>
-        <v-list-item-title>Reset dashboard layout</v-list-item-title>
+        <v-list-item-title>{{$t('app.layout.reset')}}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>

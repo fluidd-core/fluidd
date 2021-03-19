@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-chip v-if="!hasUpdate && (!dirty && valid)" x-small label outlined color="success">{{$t('versionStatus.updated.msg')}}</v-chip>
+    <v-chip v-if="!hasUpdate && (!dirty && valid)" x-small label outlined color="success">{{$t('printer.versionStatus.updated.msg')}}</v-chip>
     <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">
         <v-chip
@@ -11,10 +11,10 @@
           label
           outlined
           color="error">
-          {{$t('versionStatus.dirty.msg')}}
+          {{$t('printer.versionStatus.dirty.msg')}}
         </v-chip>
       </template>
-      <span>{{$t('versionStatus.dirty.desc')}}</span>
+      <span>{{$t('printer.versionStatus.dirty.desc')}}</span>
     </v-tooltip>
 
     <v-tooltip left>
@@ -27,10 +27,10 @@
           label
           outlined
           color="error">
-          {{$t('versionStatus.invalid.msg')}}
+          {{$t('printer.versionStatus.invalid.msg')}}
         </v-chip>
       </template>
-      <span>{{$t('versionStatus.invalid.desc')}}</span>
+      <span>{{$t('printer.versionStatus.invalid.desc')}}</span>
     </v-tooltip>
 
     <btn
@@ -41,7 +41,7 @@
       text
       color="warning"
       @click="$emit('on-update')">
-      {{$t('versionStatus.update.msg')}}
+      {{$t('printer.versionStatus.update.msg')}}
     </btn>
   </div>
 </template>

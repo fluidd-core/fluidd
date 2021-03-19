@@ -13,7 +13,7 @@
             <v-icon small>$folderAdd</v-icon>
           </btn>
         </template>
-        <span>Add Folder</span>
+        <span>{{$t('printer.fileSystem.action.addFolder')}}</span>
       </v-tooltip>
 
       <v-tooltip dense top>
@@ -29,7 +29,7 @@
             <v-icon small>$fileAdd</v-icon>
           </btn>
         </template>
-        <span>Create File</span>
+        <span>{{$t('printer.fileSystem.action.createFile')}}</span>
       </v-tooltip>
 
       <v-tooltip dense top>
@@ -45,7 +45,7 @@
             <v-icon small>$fileUpload</v-icon>
           </btn>
         </template>
-        <span>Upload</span>
+        <span>{{$t('printer.fileSystem.action.upload')}}</span>
       </v-tooltip>
 
       <v-tooltip dense top>
@@ -62,7 +62,7 @@
             <v-icon small>$progressUpload</v-icon>
           </btn>
         </template>
-        <span>Upload &amp; Print</span>
+        <span>{{$t('printer.fileSystem.action.uploadPrint')}}</span>
       </v-tooltip>
 
       <input
@@ -86,7 +86,7 @@
             <v-icon small>$refresh</v-icon>
           </btn>
         </template>
-        <span>Refresh</span>
+        <span>{{$t('app.btn.refresh')}}</span>
       </v-tooltip>
     </v-btn-toggle>
 
@@ -102,7 +102,7 @@
           <v-icon small>$refresh</v-icon>
         </btn>
       </template>
-      <span>Refresh</span>
+      <span>{{$t('app.btn.refresh')}}</span>
     </v-tooltip>
   </div>
 </template>

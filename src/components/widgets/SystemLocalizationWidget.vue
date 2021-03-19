@@ -4,7 +4,7 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('i18n.title') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.i18n.title') }}</v-list-item-title>
         </v-list-item-content>
       </template>
     <template slot="prependIcon">
@@ -23,12 +23,12 @@
               <v-select
                 :value="currentLocale"
                 :items="selectableLocales"
-                :label="$t('i18n.choose')"
+                :label="$t('app.i18n.choose')"
                 @change="saveI18n"
               >
                 <template v-slot:selection="data">
                   <span v-if="data.item.value === 'auto' ">
-                    {{ $t('i18n.auto') }}
+                    {{ $t('app.i18n.auto') }}
                   </span>
                   <span v-else>
                     {{ data.item.text }}
@@ -40,7 +40,7 @@
                       language
                     </v-icon>
                     <span>
-                    {{ $t('i18n.auto') }}
+                    {{ $t('app.i18n.auto') }}
                     </span>
                   </div>
                   <div v-else>

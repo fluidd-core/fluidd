@@ -18,7 +18,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on" color="grey darken-2">$timer</v-icon>
               </template>
-              <span>estimated time left</span>
+              <span>{{$t('printer.status.etl')}}</span>
             </v-tooltip>
             {{ timeEstimates.remaining }}
           </div>
@@ -27,7 +27,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">$clock</v-icon>
               </template>
-              {{ (printTimeEstimationsType !== 'totals') ? 'duration &amp; total' : 'duration' }}
+              {{ (printTimeEstimationsType !== 'totals') ? $t('printer.status.durationTotal') : $t('printer.status.duration') }}
             </v-tooltip>
             <span>{{ timeEstimates.current }}</span>
             <span class="grey--text text--darken-2" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.total }}</span>
@@ -37,7 +37,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">$filamentEstimate</v-icon>
               </template>
-              used filament
+              {{$t('printer.status.filamentEstimate')}}
             </v-tooltip>
             <span class="grey--text text--darken-2">{{ filamentEstimates }}</span>
           </div>

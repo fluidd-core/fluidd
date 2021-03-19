@@ -15,7 +15,7 @@
           class="text-h6 font-weight-light text-center"
           cols="6">
           <v-icon x-large>$fileUpload</v-icon>
-          <span><strong>Uploading</strong> files</span>
+          <span><strong>{{$t('printer.fileSystem.action.uploadFiles[0]')}}</strong> {{$t('printer.fileSystem.action.uploadFiles[1]')}}</span>
         </v-col>
       </v-row>
       <v-row
@@ -26,7 +26,7 @@
           <v-col cols="6" class="font-weight-light mb-1">
             <div class="mb-1">{{ file.filename }}</div>
             <div v-if="file.percentComplete < 100">
-              <small>Uploading...</small>
+              <small>{{$t('app.btn.uploading')}}</small>
               <v-progress-linear
                 class="mt-1"
                 :height="20"
@@ -36,7 +36,7 @@
               </v-progress-linear>
             </div>
             <div v-if="file.percentComplete >= 100">
-              <small>Processing...</small>
+              <small>{{$t('app.btn.processing')}}</small>
               <v-progress-linear
                 class="mt-1"
                 color="primary"

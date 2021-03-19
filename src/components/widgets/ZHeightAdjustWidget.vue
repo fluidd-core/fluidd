@@ -32,7 +32,7 @@
         <btn :disabled="!klippyReady" color="secondary" small value="0.05" class="px-3">0.05</btn>
       </v-btn-toggle>
       <div class="mt-1">
-        <span class="grey--text text--darken-1">Z Offset: </span>
+        <span class="grey--text text--darken-1">{{$t('printer.tool.current.zOffset')}}</span>
         <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
       </div>
     </v-col>

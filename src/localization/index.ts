@@ -15,7 +15,8 @@ files.keys().forEach(key => {
 const i18n = new VueI18n({
   locale: 'en-US', // set locale
   fallbackLocale: 'en', // set fallback locale
-  messages // set locale messages
+  messages, // set locale messages
+  silentTranslationWarn: true
 })
 
 export default i18n

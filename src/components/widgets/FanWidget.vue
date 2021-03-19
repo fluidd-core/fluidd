@@ -6,7 +6,7 @@
       input-xs
       v-model.number="value"
       :value-label="rpm"
-      :label="fan.prettyName"
+      :label="$t('printer.outputs.fans.'+fan.name)"
       :rules="rules"
       :disabled="!klippyReady">
     </input-slider>
@@ -17,7 +17,7 @@
       justify-space-between
     >
       <div class="grey--text text--darken-1 text-body-1">
-        {{ fan.prettyName }}
+        {{ $t('printer.outputs.fans.'+fan.name) }}
       </div>
       <div class="ml-auto">
         <small v-if="rpm" class="grey--text mr-2">{{ rpm }}</small>
@@ -49,7 +49,7 @@ export default class FanWidget extends Mixins(StateMixin) {
 
   get prettyValue () {
     return (this.value === 0)
-      ? 'off'
+      ? this.$t('app.btn.off')
       : `${this.value.toFixed()}<small>%</small>`
   }
 

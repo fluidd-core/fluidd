@@ -2,7 +2,7 @@
   <div class="file-system">
     <v-data-table
       mobile-breakpoint="0"
-      :headers="headers"
+      :headers="tHeaders"
       :items="directory.items"
       :dense="dense"
       :disable-pagination="true"
@@ -12,8 +12,8 @@
       :search="search"
       item-key="name"
       height="100%"
-      no-data-text="No files"
-      no-results-text="No files found"
+      :no-data-text="$t('printer.fileSystem.empty')"
+      :no-results-text="$t('printer.fileSystem.emptySearch')"
       sort-by="modified"
       hide-default-footer
     >
@@ -82,8 +82,8 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <btn color="warning" text @click="dialog.active = false" type="button">Cancel</btn>
-                <btn color="primary" :elevation="2" type="submit">Save</btn>
+                <btn color="warning" text @click="dialog.active = false" type="button">{{$t('app.btn.cancel')}}</btn>
+                <btn color="primary" :elevation="2" type="submit">{{$t('app.btn.save')}}</btn>
               </v-card-actions>
             </v-card>
 
@@ -173,7 +173,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$printer</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Print</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('printer.fileSystem.action.print')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -182,7 +182,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$pencil</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Edit</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('printer.fileSystem.action.edit')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -191,7 +191,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$magnify</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">View</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('printer.fileSystem.action.view')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -200,7 +200,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$download</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Download</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('printer.fileSystem.action.download')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -209,7 +209,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$rename</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Rename</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('printer.fileSystem.action.rename')}}</v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
@@ -218,7 +218,7 @@
                 <v-list-item-icon>
                   <v-icon class="white--text">$delete</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title class="white--text">Remove</v-list-item-title>
+                <v-list-item-title class="white--text">{{$t('printer.fileSystem.action.remove')}}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-col>
@@ -313,6 +313,15 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
       name: ''
     }
   };
+
+  get tHeaders (): DataTableHeader[] {
+    return this.headers.slice(0).map((item) => {
+      if (item.text !== '') {
+        item.text = '' + this.$t('printer.fileSystem.headers.' + item.text.toLowerCase())
+      }
+      return item
+    })
+  }
 
   @Watch('root')
   onRootChange (root: string) {
@@ -437,9 +446,9 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
     if (item) {
       this.dialog = {
         type: 'rename',
-        title: 'Rename',
+        title: this.$t('printer.fileSystem.action.rename'),
         valid: false,
-        formLabel: 'Name',
+        formLabel: this.$t('printer.fileSystem.headers.name'),
         rules: [
           (v: string) => !!v || 'Name is required'
         ],
@@ -480,9 +489,9 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
   createDirectoryDialog () {
     this.dialog = {
       type: 'createdir',
-      title: 'Create Directory',
+      title: this.$t('printer.fileSystem.action.createDir'),
       valid: false,
-      formLabel: 'Name',
+      formLabel: this.$t('printer.fileSystem.headers.name'),
       rules: [
         (v: string) => !!v || 'Name is required'
       ],
@@ -498,9 +507,9 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
   createFileDialog () {
     this.dialog = {
       type: 'createfile',
-      title: 'Create File',
+      title: this.$t('printer.fileSystem.action.createFile'),
       valid: false,
-      formLabel: 'Name',
+      formLabel: this.$t('printer.fileSystem.headers.name'),
       rules: [
         (v: string) => !!v || 'Required',
         (v: string) => (v && v.length > 2) || 'Must be greater than 2 characters',

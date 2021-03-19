@@ -15,7 +15,7 @@
           <v-icon>$home</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{$t("appBar.dashboard")}}</v-list-item-title>
+          <v-list-item-title>{{$t("app.bar.dashboard")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyReady">
@@ -23,7 +23,7 @@
           <v-icon>$files</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{$t("appBar.jobs")}}</v-list-item-title>
+          <v-list-item-title>{{$t("app.bar.jobs")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/configuration" class="d-flex d-md-none">
@@ -31,7 +31,7 @@
           <v-icon>$tune</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{$t("appDrawer.pconfig")}}</v-list-item-title>
+          <v-list-item-title>{{$t("app.drawer.pconfig")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/settings">
@@ -39,7 +39,7 @@
           <v-icon>$cog</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{$t("appDrawer.uiSettings")}}</v-list-item-title>
+          <v-list-item-title>{{$t("app.drawer.uiSettings")}}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
