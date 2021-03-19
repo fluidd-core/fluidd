@@ -1,7 +1,6 @@
 <template>
   <v-card
     :class="_cardClasses"
-    color="tertiary"
     :rounded="rounded"
     :loading="isLoading">
 
@@ -21,7 +20,7 @@
 
     <v-card-title
       v-if="!hasTabbedTitleSlot()"
-      class="card-title quaternary py-1"
+      class="card-title card-heading py-1"
       :class="{ 'draggable': isInLayout }"
     >
       <slot name="title">
@@ -47,12 +46,13 @@
           <btn
             :class="hamburgerMenuClasses"
             fab small text
+            color=""
             v-bind="attrs"
             v-on="on">
             <v-icon>{{ menuIcon }}</v-icon>
           </btn>
         </template>
-        <v-sheet elevation="0" class="pa-2" color="tertiary">
+        <v-sheet elevation="0" class="pa-2">
           <!-- Menu slot -->
           <slot name="menu"></slot>
         </v-sheet>
@@ -81,7 +81,7 @@
         v-if="!isCollapsed && !isInLayout"
         :class="_contentClasses"
         :style="_contentStyles">
-        <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
+        <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="sub-title">
             <span v-html="subTitle"></span>
           </slot>
@@ -100,7 +100,7 @@
         v-show="!isCollapsed && !isInLayout"
         :class="_contentClasses"
         :style="_contentStyles">
-        <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
+        <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="subTitle">
             <span v-html="subTitle"></span>
           </slot>

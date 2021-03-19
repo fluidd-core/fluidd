@@ -1,7 +1,6 @@
 <template>
   <v-chip
     small
-    color="secondary"
   >
     <v-icon
       small

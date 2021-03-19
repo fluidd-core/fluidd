@@ -1,6 +1,6 @@
 <template>
   <v-btn
-    v-bind="$attrs"
+    v-bind="attrs"
     v-on="$listeners"
     :class="classes"
   >
@@ -23,13 +23,24 @@ export default class FluiddBtn extends Vue {
       (this.$attrs.icon === undefined) &&
       this.$attrs.color === 'primary'
     ) {
-      return { 'grey--text text--darken-3': !this.$filters.isColorDark(this.theme.currentTheme[this.$attrs.color]) }
+      // If the color of the btn isn't dark (i.e., light) then darken the text.
+      return { 'grey--text text--darken-3': !this.colorIsDark }
     }
   }
 
   get colorIsDark () {
-    if (!this.$attrs.color || this.$attrs.color !== 'primary') return true
     return this.$filters.isColorDark(this.theme.currentTheme[this.$attrs.color])
+  }
+
+  get attrs () {
+    let attrs = this.$attrs
+    if (attrs.color === undefined) {
+      attrs = {
+        ...attrs,
+        color: 'btncolor'
+      }
+    }
+    return attrs
   }
 }
 </script>

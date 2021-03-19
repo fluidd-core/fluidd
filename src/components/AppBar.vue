@@ -20,19 +20,19 @@
       </v-toolbar-title>
       <v-spacer />
 
-      <btn text to="/" class="d-none d-md-flex mx-1">
+      <btn text to="/" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$home</v-icon>
         <span>Dashboard</span>
       </btn>
-      <btn text to="/jobs" class="d-none d-md-flex mx-1">
+      <btn text to="/jobs" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$files</v-icon>
         <span>Jobs</span>
       </btn>
-      <btn text to="/tune" class="d-none d-md-flex mx-1">
+      <btn text to="/tune" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$tune</v-icon>
         <span>Tune</span>
       </btn>
-      <btn text to="/configure" class="d-none d-md-flex mx-1">
+      <btn text to="/configure" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$cogs</v-icon>
         <span>Configure</span>
       </btn>
@@ -60,7 +60,7 @@
         :offset-y="15"
         :offset-x="15"
       >
-        <btn icon @click="$emit('drawer')">
+        <btn icon color="" @click="$emit('drawer')">
           <v-icon>$menu</v-icon>
         </btn>
       </v-badge>

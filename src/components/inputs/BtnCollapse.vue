@@ -4,6 +4,7 @@
     <btn
       v-if="!inLayout"
       @click="emitChange(!value)"
+      color=""
       fab small text>
       <v-icon v-if="!value">$chevronUp</v-icon>
       <v-icon v-if="value">$chevronDown</v-icon>

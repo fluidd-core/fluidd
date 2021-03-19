@@ -11,7 +11,7 @@
       v-model="valid"
       @submit.prevent="handleSave"
     >
-      <v-card color="secondary">
+      <v-card>
         <v-card-title>
           <span class="headline">{{ title }}</span>
         </v-card-title>

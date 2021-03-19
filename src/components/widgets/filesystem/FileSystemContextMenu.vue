@@ -9,12 +9,11 @@
     absolute
     right>
 
-    <v-card color="tertiary">
+    <v-card>
       <v-row align="center" justify="center" no-gutters>
         <v-col>
           <v-list
-            dense
-            color="secondary">
+            dense>
             <v-list-item
               link
               @click="$emit('print', file)"

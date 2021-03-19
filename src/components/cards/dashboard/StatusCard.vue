@@ -21,7 +21,6 @@
         :loading="hasWait($waits.onPrintPause)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small>$pause</v-icon>
         <span>Pause</span>
@@ -34,7 +33,6 @@
         :loading="hasWait($waits.onPrintCancel)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small>$cancel</v-icon>
         <span>Cancel</span>
@@ -47,7 +45,6 @@
         :loading="hasWait($waits.onPrintResume)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>
         <span>Resume</span>
@@ -58,7 +55,6 @@
         :elevation="2"
         v-if="!printerPrinting && !printerPaused && filename"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$refresh</v-icon>
         <span>Reset File</span>
@@ -68,7 +64,6 @@
         v-if="!supportsHistoryPlugin && !printerPrinting && !printerPaused && filename"
         @click="handleReprint(this.filename)"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
         <span>Reprint</span>
@@ -78,7 +73,6 @@
         v-if="supportsHistoryPlugin && !printerPrinting && !printerPaused && history.length > 0"
         @click="showHistory = !showHistory"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
         <span>Reprint</span>

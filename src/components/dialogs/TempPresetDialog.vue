@@ -9,7 +9,7 @@
       @submit.prevent="handleSave(preset)"
       v-model="valid"
     >
-      <v-card color="secondary darken-1">
+      <v-card>
         <v-card-title>
           <span class="headline">{{ (preset.id != -1) ? 'Edit preset' : 'Add preset' }}</span>
         </v-card-title>

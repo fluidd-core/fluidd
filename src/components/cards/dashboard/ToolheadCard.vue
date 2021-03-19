@@ -33,8 +33,7 @@
         :elevation="2"
         :disabled="hasWaits || !klippyReady || printerPrinting"
         small
-        class="ma-1"
-        color="secondary">
+        class="ma-1">
           MOTORS OFF
       </btn>
       <btn
@@ -44,8 +43,7 @@
         :loading="hasWait(waits.onBedScrewsAdjust)"
         :disabled="hasWaits || !klippyReady || printerPrinting"
         small
-        class="ma-1"
-        color="secondary">
+        class="ma-1">
           Bed_Screws_Adjust
       </btn>
       <btn
@@ -55,8 +53,7 @@
         :loading="hasWait(waits.onBedScrewsCalculate)"
         :disabled="!allHomed || hasWaits || !klippyReady || printerPrinting"
         small
-        class="ma-1"
-        color="secondary">
+        class="ma-1">
           Screws_Tilt_Calculate
       </btn>
       <btn
@@ -66,8 +63,7 @@
         :loading="hasWait(waits.onZTilt)"
         :disabled="hasWaits || !klippyReady || printerPrinting"
         small
-        class="ma-1"
-        color="secondary">
+        class="ma-1">
           Z_Tilt_Adjust
       </btn>
       <btn
@@ -77,8 +73,7 @@
         :loading="hasWait(waits.onQGL)"
         :disabled="hasWaits || !klippyReady || printerPrinting"
         small
-        class="ma-1"
-        color="secondary">
+        class="ma-1">
           QGL
       </btn>
     </template>

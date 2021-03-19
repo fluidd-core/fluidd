@@ -11,7 +11,6 @@
     <v-card d-flex color="black">
       <v-toolbar
         dense
-        color="secondary"
       >
         <btn
           icon
@@ -24,7 +23,6 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <btn
-            color="secondary"
             v-if="!readonly && !printerPrinting"
             :href="$globals.DOCS_KLIPPER_CONFIG_REF"
             target="_blank">
@@ -32,21 +30,18 @@
             Config Reference
           </btn>
           <btn
-            color="secondary"
             v-if="!readonly && !printerPrinting"
             @click="emitSave(newContents, true)">
             <v-icon small left>$restart</v-icon>
             Save &amp; Restart
           </btn>
           <btn
-            color="secondary"
             v-if="!readonly"
             @click="emitSave(newContents, false)">
             <v-icon small left>$save</v-icon>
             Save
           </btn>
           <btn
-            color="secondary"
             v-if="!readonly && !printerPrinting"
             @click="emitClose()">
             <v-icon small left>$close</v-icon>

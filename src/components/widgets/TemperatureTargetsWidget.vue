@@ -26,15 +26,13 @@
               :min-width="40"
               :disabled="!klippyReady"
               v-bind="attrs" v-on="on"
-              color="secondary"
               small
               class="pa-0">
               <v-icon>$menuAlt</v-icon>
             </btn>
             </template>
             <v-list
-              dense
-              color="secondary">
+              dense>
               <v-list-item
                 @click="setAllOff"
                 link>

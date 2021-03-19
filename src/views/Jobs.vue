@@ -2,19 +2,16 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" class="pt-0">
-        <v-card
-          color="tertiary"
-          class="filesystem-wrapper">
-
-          <v-card-title class="quaternary rounded-t py-1">
-            <v-icon left>$files</v-icon>
-            <span class="font-weight-light">Jobs</span>
-          </v-card-title>
-
+        <collapsable-card
+          title="Jobs"
+          cardKey="JobsPage"
+          icon="$files"
+          :draggable="false"
+        >
           <file-system
             :roots="'gcodes'">
           </file-system>
-        </v-card>
+        </collapsable-card>
       </v-col>
     </v-row>
   </v-container>

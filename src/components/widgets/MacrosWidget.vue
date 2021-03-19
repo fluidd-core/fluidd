@@ -7,7 +7,6 @@
         @click="sendGcode(macro.name, `${waits.onMacro}${macro.name}`)"
         :loading="hasWait(`${waits.onMacro}${macro.name}`)"
         :elevation="2"
-        color="secondary"
         class="me-2 mb-2">
         {{ macro.name }}
       </btn>

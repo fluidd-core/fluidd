@@ -8,7 +8,6 @@
       <btn
         @click="handleRemoveAll"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small left>$delete</v-icon>
         <span>Remove All</span>

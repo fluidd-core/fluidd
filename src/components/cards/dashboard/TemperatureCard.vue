@@ -25,7 +25,6 @@
       <btn
         small
         class="mr-2"
-        color="secondary"
         :disabled="!klippyReady"
         @click="chartVisible = !chartVisible">
         <v-icon left>$chart</v-icon>

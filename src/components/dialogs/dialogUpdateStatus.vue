@@ -5,8 +5,7 @@
     persistent
   >
     <v-card
-      :loading="(updating) ? 'primary' : false"
-      color="secondary darken-1">
+      :loading="(updating) ? 'primary' : false">
       <v-card-title>
         <span class="headline">{{ title }}</span>
       </v-card-title>

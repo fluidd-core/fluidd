@@ -21,7 +21,6 @@
           :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
-          color="secondary"
           class="mr-2">
           Retract
           <v-icon>$chevronUp</v-icon>
@@ -48,7 +47,6 @@
           :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
-          color="secondary"
           class="mr-2">
           Extrude
           <v-icon>$chevronDown</v-icon>

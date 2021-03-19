@@ -14,15 +14,13 @@ export default new Vuetify({
     themes: {
       dark: {
         primary: colors.blue.base,
-        secondary: colors.grey.darken3,
-        tertiary: '#262626',
-        quaternary: '#333333'
+        'card-heading': '#333337',
+        btncolor: '#4A4A4F'
       },
       light: {
         primary: colors.blue.darken2,
-        secondary: colors.grey.base,
-        tertiary: '#ededed',
-        quaternary: '#dbdbdb'
+        'card-heading': '#dbdbdb',
+        btncolor: '#3D3D42'
       }
     }
   }

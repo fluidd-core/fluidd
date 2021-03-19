@@ -1,6 +1,5 @@
 <template>
   <v-card
-    color="tertiary"
     class="filesystem-wrapper"
     :height="height"
     @dragenter.capture.prevent="handleDragEnter"
@@ -24,6 +23,7 @@
       :search.sync="search"
       :path="visiblePath"
       :disabled="disabled"
+      :loading="filesLoading"
       @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"

@@ -1,6 +1,5 @@
 <template>
   <v-toolbar
-    color="tertiary"
     dense
   >
     <v-toolbar-title class="grey--text text--lighten-1 d-none d-sm-block">
@@ -22,7 +21,7 @@
       </v-text-field>
     </div>
 
-    <v-tooltip bottom v-if="lowOnSpace">
+    <v-tooltip bottom v-if="lowOnSpace && !loading">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
@@ -39,7 +38,7 @@
       </slot>
     </v-tooltip>
 
-    <v-tooltip bottom v-if="disabled">
+    <v-tooltip bottom v-if="disabled && !loading">
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
@@ -117,6 +116,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
   disabled!: boolean
+
+  // If the fs is loading or not.
+  @Prop({ type: Boolean, default: false })
+  loading!: boolean
 
   search = ''
 

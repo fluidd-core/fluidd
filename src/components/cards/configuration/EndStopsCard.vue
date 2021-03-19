@@ -7,6 +7,7 @@
     <template v-slot:collapse-button>
       <btn
         @click="queryEndstops"
+        color=""
         fab small text>
         <v-icon>$refresh</v-icon>
       </btn>

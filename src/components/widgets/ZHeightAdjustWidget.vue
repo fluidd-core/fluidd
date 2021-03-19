@@ -9,8 +9,7 @@
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
         :loading="hasWait('ZAdjust')"
         :disabled="!klippyReady"
-        small
-        color="secondary">
+        small>
         <v-icon small class="mx-0">$upCollapse</v-icon>
       </btn>
       <btn
@@ -18,8 +17,7 @@
         :loading="hasWait('ZAdjust')"
         :disabled="!klippyReady"
         small
-        class="ml-1"
-        color="secondary">
+        class="ml-1">
         <v-icon small>$downCollapse</v-icon>
       </btn>
       <v-btn-toggle
@@ -33,14 +31,12 @@
           v-for="(value, i) in zAdjustValues"
           :key="i"
           :disabled="!klippyReady"
-          color="secondary"
           small
           :value="value"
           class="px-2"
         >
           {{ value }}
         </btn>
-        <!-- <btn :disabled="!klippyReady" color="secondary" small value="0.05" class="px-3">0.05</btn> -->
       </v-btn-toggle>
       <div class="mt-1">
         <span class="grey--text text--darken-1">Z Offset: </span>

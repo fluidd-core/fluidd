@@ -20,7 +20,6 @@
               <td>
                 <v-chip
                   v-if="mesh.active"
-                  color="secondary"
                   small
                   block>
                   active
@@ -35,7 +34,6 @@
                       :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
                       v-bind="attrs"
                       v-on="on"
-                      color="secondary"
                       small
                       icon>
                       <v-icon small class="grey--text">$open</v-icon>
@@ -69,7 +67,6 @@
                 <btn
                   @click="clearMesh()"
                   :disabled="!meshLoaded"
-                  color="secondary"
                   small>
                   Clear Profile
                 </btn>
@@ -86,8 +83,6 @@
               v-on="on"
               block
               class="mb-2"
-              color="secondary"
-              :elevation="2"
               :loading="hasWait(waits.onMeshCalibrate)"
               :disabled="hasWaits || printerPrinting || printerBusy"
               @click="calibrate()">
@@ -100,7 +95,6 @@
           @click="sendGcode('G28', waits.onHomeAll)"
           block
           class="mb-2"
-          :elevation="2"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           :color="(!allHomed) ? 'primary' : undefined">
@@ -113,8 +107,7 @@
           :loading="hasWait(waits.onQGL)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           block
-          class="mb-2"
-          color="secondary">
+          class="mb-2">
             QGL
         </btn>
         <v-tooltip right>
@@ -125,7 +118,6 @@
               block
               class="mb-2"
               color="primary"
-              :elevation="2"
               :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
               @click="openSaveDialog()">
               Save Config As...
@@ -147,7 +139,7 @@
         @submit.prevent="saveToConfig()"
         v-model="saveDialog.valid"
       >
-        <v-card color="secondary darken-1">
+        <v-card>
           <v-card-title>
             <span class="headline">Save config as...</span>
           </v-card-title>

@@ -11,7 +11,7 @@
       v-model="valid"
       @submit.prevent="addInstance()"
     >
-      <v-card color="secondary darken-1">
+      <v-card>
 
         <v-card-title>
           <span class="headline">Add printer</span>

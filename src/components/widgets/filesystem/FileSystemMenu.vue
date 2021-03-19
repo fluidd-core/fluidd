@@ -16,8 +16,7 @@
     </template>
 
     <v-list
-      dense
-      color="tertiary">
+      dense>
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"

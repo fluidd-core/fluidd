@@ -18,8 +18,7 @@
               <v-chip
                 v-if="key !== 'thumbnails'"
                 :key="i"
-                small
-                color="secondary">
+                small>
                 {{ key }}: {{ item.metadata[key] }}
               </v-chip>
             </template>

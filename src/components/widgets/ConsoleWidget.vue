@@ -2,8 +2,7 @@
   <div
     class="console">
     <v-card
-      outlined
-      color="tertiary"
+      flat
       class="console-wrapper pa-1"
       ref="console-wrapper"
     >

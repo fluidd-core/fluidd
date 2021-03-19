@@ -152,7 +152,7 @@ export const Filters = {
    */
   isColorDark (color: string) {
     const t = tinycolor(color).getBrightness()
-    return ((t / 255) * 100) <= 60
+    return ((t / 255) * 100) <= 65
   }
 }
 
