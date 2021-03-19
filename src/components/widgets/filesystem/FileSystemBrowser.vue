@@ -446,9 +446,9 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
     if (item) {
       this.dialog = {
         type: 'rename',
-        title: this.$t('printer.fileSystem.action.rename'),
+        title: '' + this.$t('printer.fileSystem.action.rename'),
         valid: false,
-        formLabel: this.$t('printer.fileSystem.headers.name'),
+        formLabel: '' + this.$t('printer.fileSystem.headers.name'),
         rules: [
           (v: string) => !!v || 'Name is required'
         ],
@@ -489,9 +489,9 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
   createDirectoryDialog () {
     this.dialog = {
       type: 'createdir',
-      title: this.$t('printer.fileSystem.action.createDir'),
+      title: '' + this.$t('printer.fileSystem.action.createDir'),
       valid: false,
-      formLabel: this.$t('printer.fileSystem.headers.name'),
+      formLabel: '' + this.$t('printer.fileSystem.headers.name'),
       rules: [
         (v: string) => !!v || 'Name is required'
       ],
@@ -507,9 +507,9 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
   createFileDialog () {
     this.dialog = {
       type: 'createfile',
-      title: this.$t('printer.fileSystem.action.createFile'),
+      title: '' + this.$t('printer.fileSystem.action.createFile'),
       valid: false,
-      formLabel: this.$t('printer.fileSystem.headers.name'),
+      formLabel: '' + this.$t('printer.fileSystem.headers.name'),
       rules: [
         (v: string) => !!v || 'Required',
         (v: string) => (v && v.length > 2) || 'Must be greater than 2 characters',
