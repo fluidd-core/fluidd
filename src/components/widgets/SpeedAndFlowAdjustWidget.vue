@@ -43,8 +43,8 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(StateMixin) {
   waits = Waits
 
   rules = [
-    (v: number) => (v >= 1) || 'min 1',
-    (v: number) => (v <= 200) || 'max 200'
+    (v: number) => (v >= 1) || this.$t('app.form.min', { min: 1 }),
+    (v: number) => (v <= 200) || this.$t('app.form.max', { max: 200 })
   ]
 
   get flow () {

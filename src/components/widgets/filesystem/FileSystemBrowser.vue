@@ -242,7 +242,7 @@ import { SocketActions } from '@/socketActions'
 import { getThumb } from '@/store/helpers'
 import FileSystemControls from '@/components/widgets/filesystem/FileSystemControls.vue'
 import { FileSystemDialogData } from '@/types'
-import { clone } from 'lodash-es'
+import { clone, cloneDeep } from 'lodash-es'
 import StateMixin from '@/mixins/state'
 import { DataTableHeader } from 'vuetify'
 import { VForm } from '@/types/vuetify'
@@ -315,7 +315,7 @@ export default class FileSystemBrowser extends Mixins(StateMixin) {
   };
 
   get tHeaders (): DataTableHeader[] {
-    return this.headers.slice(0).map((item) => {
+    return cloneDeep(this.headers).map((item) => {
       if (item.text !== '') {
         item.text = '' + this.$t('printer.fileSystem.headers.' + item.text.toLowerCase())
       }

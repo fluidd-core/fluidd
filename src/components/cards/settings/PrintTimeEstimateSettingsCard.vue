@@ -8,7 +8,7 @@
         class="mt-0 mb-0"
         v-model="printTimeEstimationsType"
         :mandatory="true">
-        <v-radio v-for="type in printTimeTypes" :key="'print-time-type-'+type" :value="item">
+        <v-radio v-for="type in printTimeTypes" :key="'print-time-type-'+type" :value="type">
           <template v-slot:label>
             {{ $t('printer.timeEstimate.types.'+type+'.text')}}
             <inline-help bottom small class="ml-2" :tooltip="$t('printer.timeEstimate.types.'+type+'.tooltip')"/>

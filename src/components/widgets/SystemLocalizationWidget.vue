@@ -116,7 +116,7 @@ export default class SystemLocalizationWidget extends Mixins() {
   }
 
   set currentLocale (locale: string) {
-    this.$store.commit('config/setCurrentLocale', locale)
+    this.$store.dispatch('config/updateLocale', locale)
   }
 
   isoOf (locale: string) {

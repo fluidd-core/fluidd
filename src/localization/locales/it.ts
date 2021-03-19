@@ -1,7 +1,8 @@
 import { LocaleInfo } from '../helper'
 
-export const info = new LocaleInfo('it', 'it', 'Italiano')
-export default {
+export const info = new LocaleInfo({ title: 'Italiano' })
+export default
+{
   app: {
     updater: {
       title: 'Aggiornamenti Software',
@@ -38,6 +39,7 @@ export default {
     form: {
       required: 'Obbligatorio',
       invalidUrl: 'URL Invalido',
+      invalidMin: 'Valore Minimo Invalido',
       min: 'Minimo {min}',
       max: 'Massimo {max}',
       minOr: 'Minimo {min} o {alt}',
@@ -197,7 +199,7 @@ export default {
       }
     },
     limits: {
-      title: 'Limite Stampa',
+      title: 'Limiti Stampante',
       speed: 'Velocità',
       acceleration: 'Accelerazione',
       squareCornerSpeed: 'Velocità angoli retti',
@@ -216,13 +218,23 @@ export default {
           klippy: 'Riavvia Klipper',
           service: 'Riavvia Firmware'
         }
+      },
+      map: {
+        printing: 'Stampando',
+        busy: 'Occupato',
+        ready: 'Pronto',
+        idle: 'Inattivo',
+        paused: 'In Pausa',
+        standby: 'Stand-by',
+        complete: 'Completo',
+        loading: 'Caricando'
       }
     },
     temperature: {
       title: 'Temperature',
       tooltip: 'Tieni premuto shift per ingrandire.<br />Tocca un elemento per mostrarlo nel grafico<br />Tocca una potenza per mostrarla nel grafico',
       preset: {
-        title: 'Preset Temperature',
+        title: 'Temperature Preimpostate',
         subTitle: 'Applica temperature predefinite nel Cruscotto',
         add: 'Aggiungi',
         edit: 'Modifica',
@@ -327,6 +339,7 @@ export default {
         name: 'Nome',
         modified: 'Modificato',
         size: 'Peso',
+        slicer: 'Slicer',
         filament: 'Filamento',
         height: 'Altezza',
         'layer height': 'Altezza Strato',

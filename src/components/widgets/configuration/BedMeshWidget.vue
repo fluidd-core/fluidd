@@ -218,7 +218,7 @@ export default class BedMeshWidget extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   rules = [
-    (v: string) => !!v || 'Required.'
+    (v: string) => !!v || this.$t('app.form.required')
   ]
 
   @Watch('saveDialog', { deep: true })

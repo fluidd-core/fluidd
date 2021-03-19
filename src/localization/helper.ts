@@ -3,7 +3,7 @@ export class LocaleInfo {
     public flag = ''
     public language = ''
     public title = ''
-    constructor (flag: string, language: string, title: string) {
+    constructor ({ flag = '', language = '', title }: {flag?: string; language?: string; title: string}) {
       this.flag = flag
       this.language = language
       this.title = title

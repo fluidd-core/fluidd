@@ -1,7 +1,8 @@
 import { LocaleInfo } from '../helper'
 
-export const info = new LocaleInfo('us', 'en', 'English')
-export default {
+export const info = new LocaleInfo({ flag: 'us', title: 'English' })
+export default
+{
   app: {
     updater: {
       title: 'Software Updates',
@@ -38,6 +39,7 @@ export default {
     form: {
       required: 'Required',
       invalidUrl: 'Invalid URL',
+      invalidMin: 'Invalid Min Value',
       min: 'Min {min}',
       max: 'Max {max}',
       minOr: 'Min {min} or {alt}',
@@ -216,6 +218,16 @@ export default {
           klippy: 'Restart Klipper',
           service: 'Firmware Restart'
         }
+      },
+      map: {
+        printing: 'Printing',
+        busy: 'Busy',
+        ready: 'Ready',
+        idle: 'Idle',
+        paused: 'Paused',
+        standby: 'Standby',
+        complete: 'Complete',
+        loading: 'Loading'
       }
     },
     temperature: {
@@ -327,6 +339,7 @@ export default {
         name: 'Name',
         modified: 'Modified',
         size: 'Size',
+        slicer: 'Slicer',
         filament: 'Filament',
         height: 'Height',
         'layer height': 'Layer Height',

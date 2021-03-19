@@ -8,7 +8,7 @@
     <template v-slot:title>
       <v-icon left>$printer3d</v-icon>
       <span class="font-weight-light">
-        {{ printerState }}
+        {{ $t('printer.status.map.'+printerState.toLowerCase()) }}
         <span class="font-weight-light text-subtitle-2 ml-sm-4 d-block d-sm-inline-block" v-show="printerMessage">{{ printerMessage }}</span>
       </span>
     </template>

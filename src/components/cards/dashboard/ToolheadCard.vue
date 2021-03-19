@@ -10,7 +10,7 @@
 
     <template v-slot:title>
       <v-icon left>$printer3dNozzle</v-icon>
-      <span class="font-weight-light">Tool</span>
+      <span class="font-weight-light">{{$t('printer.tool.title')}}</span>
 
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">

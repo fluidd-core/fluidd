@@ -33,7 +33,7 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
   }
 
   instanceNameRules = [
-    (v: string) => !!v || 'Required'
+    (v: string) => !!v || this.$t('app.form.required')
   ]
 }
 </script>
