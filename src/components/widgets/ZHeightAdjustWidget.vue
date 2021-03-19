@@ -23,13 +23,24 @@
         <v-icon small>$downCollapse</v-icon>
       </btn>
       <v-btn-toggle
+        v-if="moveDistance"
         mandatory
         dense
         v-model="moveDistance"
         class="ml-2 d-inline-block"
       >
-        <btn :disabled="!klippyReady" color="secondary" small value="0.01" class="px-2">0.01</btn>
-        <btn :disabled="!klippyReady" color="secondary" small value="0.05" class="px-3">0.05</btn>
+        <btn
+          v-for="(value, i) in zAdjustValues"
+          :key="i"
+          :disabled="!klippyReady"
+          color="secondary"
+          small
+          :value="value"
+          class="px-2"
+        >
+          {{ value }}
+        </btn>
+        <!-- <btn :disabled="!klippyReady" color="secondary" small value="0.05" class="px-3">0.05</btn> -->
       </v-btn-toggle>
       <div class="mt-1">
         <span class="grey--text text--darken-1">Z Offset: </span>
@@ -47,7 +58,7 @@ import { Waits } from '@/globals'
 @Component({})
 export default class ZHeightAdjustWidget extends Mixins(StateMixin) {
   waits = Waits
-  moveDistance = '0.1'
+  moveDistance: number | null = null
 
   get ZHomingOrigin () {
     // This is an array of 4 values, representing the homing origin.
@@ -61,6 +72,14 @@ export default class ZHeightAdjustWidget extends Mixins(StateMixin) {
     } else {
       return null
     }
+  }
+
+  get zAdjustValues () {
+    return this.$store.state.config.uiSettings.general.zAdjustDistances
+  }
+
+  mounted () {
+    this.moveDistance = this.zAdjustValues[0]
   }
 
   /**
