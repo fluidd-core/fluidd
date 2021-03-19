@@ -134,8 +134,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get showStatus () {
-    // return (this.printerPrinting || this.printerPaused || this.filename)
-    return true
+    return (this.printerPrinting || this.printerPaused || this.filename)
   }
 
   get printerMessage () {

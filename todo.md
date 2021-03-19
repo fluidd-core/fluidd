@@ -2,6 +2,10 @@
 
 ## Next Up
 
+- review validations on settings pages
+- move config widgets and sort into config vs tune
+- 
+
 - update docs to mention cura uploads
 
 - add git history
