@@ -20,7 +20,7 @@ export default new Vuetify({
       light: {
         primary: colors.blue.darken2,
         'card-heading': '#dbdbdb',
-        btncolor: '#3D3D42'
+        btncolor: '#ccc'
       }
     }
   }
