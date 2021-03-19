@@ -39,6 +39,7 @@
                   class="ma-0"
                 >
                 </v-checkbox>
+
                 <v-text-field
                   v-model.number="preset.values[item.name].value"
                   :label="item.name"
@@ -58,17 +59,22 @@
               v-for="item in fans"
             >
               <v-row align="start" :key="item.name">
+                <v-checkbox
+                  v-model="preset.values[item.name].active"
+                  hide-details
+                  class="ma-0"
+                >
+                </v-checkbox>
+
                 <v-text-field
                   v-model.number="preset.values[item.name].value"
                   :label="item.name"
                   :rules="[rules.numRequired, rules.numMin]"
-                  :append-outer-icon="preset.values[item.name].active ? '$checkboxMarked' : '$checkboxBlank'"
-                  @click:append-outer="preset.values[item.name].active = !preset.values[item.name].active"
                   hide-details="auto"
                   type="number"
                   suffix="°C"
                   class="mb-2"
-                  filled
+                  outlined
                   dense
                 >
                 </v-text-field>
