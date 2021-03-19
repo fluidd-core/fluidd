@@ -40,7 +40,7 @@
           <v-list-item-title>Configure</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/settings">
+      <v-list-item to="/interface">
         <v-list-item-icon>
           <v-icon>$cog</v-icon>
         </v-list-item-icon>

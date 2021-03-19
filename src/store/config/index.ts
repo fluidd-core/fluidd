@@ -48,7 +48,8 @@ export const defaultState = (): ConfigState => {
         defaultToolheadMoveLength: '1.0',
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
-        useGcodeCoords: false
+        useGcodeCoords: false,
+        zAdjustDistances: [0.01, 0.05]
       },
       theme: {
         isDark: true,

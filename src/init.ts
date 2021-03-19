@@ -118,6 +118,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
               : undefined
             delete d.data.dashboard.hiddenMacros
             delete d.data.theme
+            delete d.data.dashboard.tempPresets // remove old presets since we've adjusted their format.
             consola.debug('got ui data, writing', d.data)
             Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
               key: 'uiSettings',

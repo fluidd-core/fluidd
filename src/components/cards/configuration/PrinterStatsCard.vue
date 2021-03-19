@@ -64,6 +64,26 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <!-- <v-card outlined class="stat-square mt-4">
+        <v-card-text>
+          <div class="grey--text d-flex flex-row justify-space-between">
+            <span class="grey--text text--darken-2 mr-2">Fluidd:</span>
+            <span class="">v{{ appInfo.fluidd.version }}-{{ appInfo.fluidd.hash }}</span>
+          </div>
+
+          <div class="grey--text d-flex flex-row justify-space-between">
+            <span class="grey--text text--darken-2 mr-2">Moonraker:</span>
+            <span class="">{{ appInfo.moonraker.version }}-{{ appInfo.moonraker.current_hash }}</span>
+          </div>
+
+          <div class="grey--text d-flex flex-row justify-space-between">
+            <span class="grey--text text--darken-2 mr-2">Klipper:</span>
+            <span class="">{{ appInfo.klipper.version }}-{{ appInfo.klipper.current_hash }}</span>
+          </div>
+        </v-card-text>
+      </v-card> -->
+
     </v-card-text>
   </collapsable-card>
 </template>
@@ -91,6 +111,14 @@ export default class PrinterStatsCard extends Vue {
 
   get fileSystemUsage () {
     return this.$store.getters['files/getUsage']
+  }
+
+  get appInfo () {
+    return {
+      fluidd: this.$store.state.version.fluidd,
+      moonraker: this.$store.state.version.components.moonraker || {},
+      klipper: this.$store.state.version.components.klipper || {}
+    }
   }
 }
 </script>

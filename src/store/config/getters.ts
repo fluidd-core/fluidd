@@ -37,10 +37,9 @@ export const getters: GetterTree<ConfigState, RootState> = {
     const heaters = rootGetters['printer/getHeaters']
     const fans = rootGetters['printer/getOutputs'](['temperature_fan'])
 
-    originalPresets.forEach((originalPreset: TemperaturePreset, i) => {
+    originalPresets.forEach((originalPreset: TemperaturePreset) => {
       const preset: TemperaturePreset = {
-        index: i,
-        name: originalPreset.name,
+        ...originalPreset,
         values: {}
       }
       // Loop through the preset and ensure that;

@@ -2,27 +2,12 @@
 
 ## Next Up
 
-- versions to info card
-- statistics
-  - total filament usage
-  - avg filament usage
-  - totale print time
-  - avg print time
-  - file system usage
-  - total known jobs
-
-- stats panel on printer page with full history so you can
-  - delete entry
-  - clear all entries
-  - see overall print stats, total print time, total filament usage etc
-  - add pi filesystem usage to printer page
-
 - update docs to mention cura uploads
 
-- change card states to db and be driven by getters..
-- bulk actions to delete or move?
 - add git history
 - second webcam
+- change card states to db and be driven by getters..
+- bulk actions to delete or move?
 - move dialog
 - bulk action move
 

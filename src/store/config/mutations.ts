@@ -4,6 +4,7 @@ import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, CardCo
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
+import { v4 as uuidv4 } from 'uuid'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -128,11 +129,14 @@ export const mutations: MutationTree<ConfigState> = {
    * Update / Add a temperature preset
    */
   setPreset (state, payload) {
-    const i = payload.preset.index
-    if (i >= 0) {
-      Vue.set(state.uiSettings.dashboard.tempPresets, i, payload.preset)
+    if (payload.id === -1) {
+      payload.id = uuidv4()
+      state.uiSettings.dashboard.tempPresets.push(payload)
     } else {
-      state.uiSettings.dashboard.tempPresets.push(payload.preset)
+      const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
+      if (i >= 0) {
+        Vue.set(state.uiSettings.dashboard.tempPresets, i, payload)
+      }
     }
   },
 
@@ -140,7 +144,8 @@ export const mutations: MutationTree<ConfigState> = {
    * Remove a preset
    */
   setRemovePreset (state, payload) {
-    state.uiSettings.dashboard.tempPresets.splice(payload, 1)
+    const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
+    state.uiSettings.dashboard.tempPresets.splice(i, 1)
   },
 
   /**

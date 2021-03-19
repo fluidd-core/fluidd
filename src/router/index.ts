@@ -6,7 +6,8 @@ import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
 import Configure from '@/views/Configure.vue'
 import Tune from '@/views/Tune.vue'
-import Settings from '@/views/Settings.vue'
+import Interface from '@/views/Interface.vue'
+import SettingsBar from '@/components/SettingsBar.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -33,9 +34,12 @@ const routes: Array<RouteConfig> = [
     component: Configure
   },
   {
-    path: '/settings',
-    name: 'App Settings',
-    component: Settings
+    path: '/interface',
+    name: 'Interface',
+    components: {
+      default: Interface,
+      navigation: SettingsBar
+    }
   },
   {
     path: '*',

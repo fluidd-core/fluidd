@@ -52,6 +52,7 @@ export interface GeneralConfig {
   defaultToolheadZSpeed: number;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
   useGcodeCoords: boolean;
+  zAdjustDistances: number[];
 }
 
 export interface ThemeConfig {
@@ -103,7 +104,7 @@ export interface InstanceConfig extends ApiConfig {
 }
 
 export interface TemperaturePreset {
-  index: number;
+  id: number;
   name: string;
   values: TemperaturePresetValues;
 }

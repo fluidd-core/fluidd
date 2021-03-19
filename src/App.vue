@@ -9,6 +9,8 @@
     <app-drawer v-model="drawer"></app-drawer>
     <app-bar @drawer="onDrawerChange"></app-bar>
 
+    <router-view name="navigation"></router-view>
+
     <FlashMessage
       v-model="flashMessage.open"
       :text="flashMessage.text"

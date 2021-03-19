@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    clipped-right
+    clipped-left
   >
     <v-container fluid class="flex-nowrap constrained-width pa-0 fill-height">
       <router-link to="/">
