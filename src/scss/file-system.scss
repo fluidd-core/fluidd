@@ -41,15 +41,15 @@
     padding-left: 12px;
   }
 
-  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:nth-child(-n+2),
-  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:nth-child(-n+2),
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > td:nth-child(-n+2),
-  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-child(-n+2),
-  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:nth-child(-n+2),
-  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-child(-n+2) {
-    padding-right: 0;
-    padding-left: 0;
-  }
+  // .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > thead > tr > td:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-child(-n+2) {
+  //   padding-right: 0;
+  //   padding-left: 0;
+  // }
 
   .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:first-child,
   .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:first-child,
@@ -58,6 +58,7 @@
   .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:first-child,
   .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:first-child {
     padding-left: 12px;
+    padding-right: 0;
   }
 
   // Don't wrap table headers.

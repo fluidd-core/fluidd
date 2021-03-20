@@ -42,13 +42,12 @@
             <v-icon
               v-if="!item.thumbnails || !item.thumbnails.length"
               :small="dense"
-              :color="(item.type === 'file') ? 'grey' : 'primary'"
-              class="mr-2">
+              :color="(item.type === 'file') ? 'grey' : 'primary'">
               {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
             </v-icon>
             <img
               v-if="item.thumbnails && item.thumbnails.length"
-              class="mr-2 file-icon-thumb"
+              class="file-icon-thumb"
               :src="getThumbUrl(item.thumbnails, item.path)"
               :width="(dense) ? 16 : 24"
             />

@@ -10,7 +10,10 @@ $dialog-card-actions-padding: 0 24px 16px;
 $tooltip-background-color: rgba(10,10,10,0.90);
 
 $material-dark: (
-  'background': #1E1E20
+  'background': #1E1E20,
+  'table': (
+    'hover': #353539
+  )
 );
 
 $material-dark-elevation-colors: (

@@ -69,26 +69,12 @@
         <span>Reprint</span>
       </btn>
 
-      <btn
+      <reprint-menu
         v-if="supportsHistoryPlugin && !printerPrinting && !printerPaused && history.length > 0"
-        @click="showHistory = !showHistory"
-        small
-        class="ma-1">
-        <v-icon small class="mr-1">$reprint</v-icon>
-        <span>Reprint</span>
-        <v-icon small class="ml-1" v-if="showHistory">$chevronUp</v-icon>
-        <v-icon small class="ml-1" v-else>$chevronDown</v-icon>
-      </btn>
-
-      <!-- <reprint-menu v-if="supportsHistoryPlugin"></reprint-menu> -->
+        @print="handleReprint"
+      ></reprint-menu>
     </template>
 
-    <v-expand-transition v-if="supportsHistoryPlugin">
-      <reprint-menu
-        v-show="showHistory"
-        @print="handleReprint">
-      </reprint-menu>
-    </v-expand-transition>
     <print-status-widget v-if="showStatus"></print-status-widget>
 
   </collapsable-card>
@@ -115,7 +101,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
     if (!this.supportsHistoryPlugin) {
       return (!this.printerPrinting && !this.printerPaused && !this.filename)
     } else {
-      return (!this.printerPrinting && !this.printerPaused && this.history === 0)
+      return (!this.printerPrinting && !this.printerPaused && this.history > 0)
     }
   }
 
@@ -124,7 +110,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get history () {
-    return this.$store.getters['history/getUniqueHistory'](2)
+    return this.$store.getters['history/getUniqueHistory'](3)
   }
 
   get showStatus () {
