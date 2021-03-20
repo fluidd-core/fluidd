@@ -1,7 +1,7 @@
 <template>
   <v-card-text>
     <v-row>
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <div v-for="(item, i) in all.col1" :key="i">
           <output-pin-widget
             v-if="item.type === 'output_pin'"
@@ -16,7 +16,7 @@
           ></fan-widget>
         </div>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <div v-for="(item, i) in all.col2" :key="i">
           <output-pin-widget
             v-if="item.type === 'output_pin'"

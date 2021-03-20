@@ -1,9 +1,9 @@
 <template>
   <v-navigation-drawer
-    permanent
     app
     clipped
     color="transparent"
+    width="210"
   >
     <v-list
       dense

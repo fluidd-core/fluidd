@@ -16,6 +16,8 @@
 - bulk actions to delete or move?
 - move dialog
 - bulk action move
+- multiple cameras
+- docs on configuring a camera
 
 - cleanup card layout stuff
 - rename device power store
