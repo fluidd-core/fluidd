@@ -1,11 +1,25 @@
 <template>
   <div class="file-system">
     <!-- // search here -->
+    <v-row justify="end">
+      <v-col cols="12" sm="4" md="3" class="px-6 pt-5">
+        <v-text-field
+          v-model="search"
+          outlined
+          dense
+          single-line
+          hide-details
+          append-icon="$magnify">
+        </v-text-field>
+      </v-col>
+    </v-row>
+
     <v-data-table
       :items="history"
       :headers="headers"
       :items-per-page="5"
       :single-expand="true"
+      :search="search"
       :expanded="expanded"
       item-key="job_id"
       sort-by="start_time"
@@ -45,7 +59,7 @@
       </template>
 
       <template
-        v-slot:[`item.name`]="{ item }"
+        v-slot:[`item.filename`]="{ item }"
       >
         <span class="grey--text">
           {{ getFilePaths(item.filename).filename }}
@@ -129,11 +143,12 @@ import { SocketActions } from '@/socketActions'
 })
 export default class JobHistory extends Mixins(FilesMixin) {
   expanded: HistoryItem[] = []
+  search = ''
 
   get headers () {
     return [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: 'name', value: 'name' },
+      { text: 'name', value: 'filename' },
       { text: 'status', value: 'status' },
       { text: 'Started', value: 'start_time' },
       { text: 'Print Duration', value: 'print_duration' },

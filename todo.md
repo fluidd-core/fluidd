@@ -2,11 +2,7 @@
 
 ## Next Up
 
-- modify reprint to use existing layout and show other prints on hover
-  maybe
-
 - use components instead of plugins with moonraker
-- fix reprint menu to have correct cursor / cleanup
 - add job history search
 - review validations on settings pages
 - move config widgets and sort into config vs tune
