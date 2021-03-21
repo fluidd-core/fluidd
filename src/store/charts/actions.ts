@@ -16,7 +16,7 @@ export const actions: ActionTree<ChartState, RootState> = {
   /**
    * Loads stored server data for the past 20 minutes.
    */
-  async initTempStore ({ commit, rootState }, payload) {
+  async initTempStore ({ commit, rootGetters, rootState }, payload) {
     const now = new Date() // Set a base time to work out the temp data from.
     // On a fresh boot of the host system, moonraker should give us enough data;
     // however, it seems sometimes it does not. So - we should pad this out when
@@ -28,14 +28,21 @@ export const actions: ActionTree<ChartState, RootState> = {
     // so we have to account for this too.
 
     // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    // const count = Globals.CHART_HISTORY_RETENTION // The size of the dataset we need.
-    const count = (rootState.server)
-      ? rootState.server?.config.server.temperature_store_size
-      : Globals.CHART_HISTORY_RETENTION
+    const retention = rootGetters['charts/getChartRetention']
     const targetsToAvoid = [
       'temperature_probe',
       'temperature_sensor'
     ]
+
+    if (
+      payload &&
+      Object.keys(payload).length === 0
+    ) {
+      // Empty chart data
+      // console.log('got init temp store', payload, rootState)
+      commit('setChartStore', [])
+      return
+    }
 
     for (const originalKey in payload) { // each heater / temp fan
       // If the dataset is less than what we need, then pad the beginning
@@ -46,12 +53,12 @@ export const actions: ActionTree<ChartState, RootState> = {
       ['temperatures', 'targets', 'powers', 'speeds'].forEach((k) => {
         const arr = payload[originalKey][k]
         if (arr && arr.length) {
-          if (arr.length < count) {
-            const length = count - arr.length
+          if (arr.length < retention) {
+            const length = retention - arr.length
             const lastValue = payload[originalKey][k][0]
             payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...payload[originalKey][k]]
           } else {
-            payload[originalKey][k] = payload[originalKey][k].splice(arr.length - count)
+            payload[originalKey][k] = payload[originalKey][k].splice(arr.length - retention)
           }
         }
       })
@@ -59,8 +66,8 @@ export const actions: ActionTree<ChartState, RootState> = {
 
     const keys = Object.keys(payload)
     const d: ChartData[] = []
-    for (let i = 0; i < count; i++) {
-      const date = new Date(now.getTime() - (1000 * (count - i)) - 2000)
+    for (let i = 0; i < retention; i++) {
+      const date = new Date(now.getTime() - (1000 * (retention - i)) - 2000)
       const r: ChartData = {
         date
       }

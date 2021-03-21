@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { ServerInfo, ServerState } from './types'
+import { ServerInfo, ServerConfig, ServerState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<ServerState, RootState> = {
@@ -8,6 +8,13 @@ export const getters: GetterTree<ServerState, RootState> = {
    */
   getInfo: (state): ServerInfo => {
     return state.info
+  },
+
+  /**
+   * Return server config
+   */
+  getConfig: (state): ServerConfig => {
+    return state.config
   },
 
   /**

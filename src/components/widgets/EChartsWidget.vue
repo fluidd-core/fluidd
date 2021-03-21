@@ -53,6 +53,10 @@ export default class EChartsWidget extends Vue {
     return this.$store.getters['charts/getSelectedLegends']
   }
 
+  get chartRetension () {
+    return this.$store.getters['charts/getChartRetention']
+  }
+
   get grid () {
     let right = 0
     if (this.showPowerAxis(this.chartSelectedLegends)) {
@@ -171,6 +175,11 @@ export default class EChartsWidget extends Vue {
       xAxis: {
         type: 'time',
         boundaryGap: false,
+        max: 'dataMax',
+        min: (value: any) => {
+          const serverConfig = this.$store.getters['server/getConfig']
+          return value.max - (serverConfig.server.temperature_store_size * 1000)
+        },
         axisTick: {
           show: false
         },
@@ -385,7 +394,9 @@ export default class EChartsWidget extends Vue {
         if (
           !param.seriesName.toLowerCase().endsWith('target') &&
           !param.seriesName.toLowerCase().endsWith('power') &&
-          !param.seriesName.toLowerCase().endsWith('speed')
+          !param.seriesName.toLowerCase().endsWith('speed') &&
+          param.seriesName &&
+          param.seriesName in param.value
         ) {
           text += `
             <div>
