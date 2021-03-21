@@ -19,7 +19,7 @@
         <logs-card v-if="klippyReady"></logs-card>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="supportsHistoryPlugin">
       <v-col cols="12" class="pt-0">
         <printer-history-card v-if="klippyReady"></printer-history-card>
       </v-col>
@@ -68,6 +68,10 @@ export default class Configure extends Mixins(StateMixin) {
   get supportsEndstops () {
     const endStops = this.$store.getters['printer/getEndstops']
     return (Object.keys(endStops).length > 0)
+  }
+
+  get supportsHistoryPlugin () {
+    return this.$store.getters['server/pluginSupport']('history')
   }
 }
 </script>

@@ -7,8 +7,9 @@ export const getters: GetterTree<HistoryState, RootState> = {
    * Returns all history, sorted by start time.
    */
   getHistory: (state) => {
-    return [...state.jobs]
-      .sort((a, b) => { return b.start_time - a.start_time })
+    return (state.jobs && state.jobs.length)
+      ? [...state.jobs].sort((a, b) => { return b.start_time - a.start_time })
+      : []
   },
 
   /**
