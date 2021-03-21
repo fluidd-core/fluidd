@@ -90,7 +90,7 @@ export const defaultState = (): PrinterState => {
         speed: 0
       },
       webhooks: {
-        state: 'ready',
+        state: '',
         state_message: ''
       }
     }
