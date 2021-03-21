@@ -18,9 +18,14 @@ export default class FluiddBtn extends Vue {
   }
 
   get classes () {
+    // Only apply the text change if this isn't;
+    // - an icon, fab, outlined or text button and
+    // it's the primary color.
     if (
       this.$attrs.fab === undefined &&
       this.$attrs.icon === undefined &&
+      this.$attrs.outlined === undefined &&
+      this.$attrs.text === undefined &&
       this.$attrs.color === 'primary'
     ) {
       // If the color of the btn isn't dark (i.e., light) then darken the text.
