@@ -115,11 +115,23 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('console/onAddConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` }, { root: true })
   },
 
-  async notifyKlippyDisconnected () {
+  async notifyKlippyDisconnected ({ dispatch }) {
+    // Partially reset, since config might have changed.
+    await dispatch('reset', [
+      'printer',
+      'charts',
+      'wait'
+    ], { root: true })
     SocketActions.serverInfo()
   },
 
-  async notifyKlippyShutdown () {
+  async notifyKlippyShutdown ({ dispatch }) {
+    // Partially reset, since config might have changed.
+    await dispatch('reset', [
+      'printer',
+      'charts',
+      'wait'
+    ], { root: true })
     SocketActions.serverInfo()
   },
 
