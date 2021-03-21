@@ -32,7 +32,6 @@ export const actions: ActionTree<HistoryState, RootState> = {
    * History has changed, update the data.
    */
   async onHistoryChange ({ commit }, payload: { action: string; job: HistoryItem }) {
-    console.log('got a change event for history.', payload)
     if (
       payload
     ) {

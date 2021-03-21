@@ -93,7 +93,6 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
   }
 
   setInstanceName (value: string) {
-    console.log('got this', value)
     if (this.instanceNameElement.valid) this.$store.dispatch('config/updateInstance', value)
   }
 

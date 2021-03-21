@@ -307,7 +307,7 @@ export const SocketActions = {
     let dispatch = 'history/onDelete'
     if (uid === 'all') {
       params = { all: true }
-      dispatch = 'history/deleteAll'
+      dispatch = 'history/onDeleteAll'
     }
     baseEmit(
       'server.history.delete_job', {
