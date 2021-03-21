@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { SocketActions } from '@/socketActions'
-import { Component, Watch } from 'vue-property-decorator'
-import { Globals, Waits } from '@/globals'
+import { Component } from 'vue-property-decorator'
+import { Waits } from '@/globals'
 
 @Component
 export default class UtilsMixin extends Vue {
@@ -22,16 +22,6 @@ export default class UtilsMixin extends Vue {
   get klippyConnected () {
     const server = this.$store.getters['server/getInfo']
     return server.klippy_connected
-  }
-
-  @Watch('klippyReady')
-  onklippyReadyChange (val: boolean, oldVal: boolean) {
-    if (oldVal && !val) {
-      // Klippy has disconnected, ensure the user doesn't stick around on the jobs page if already.
-      if (this.$router.currentRoute.path === '/jobs') {
-        this.$router.push({ path: Globals.KLIPPY_DISCONNECTED_REDIRECT })
-      }
-    }
   }
 
   get hasWarnings () {

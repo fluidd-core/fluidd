@@ -47,7 +47,7 @@ export interface GeneralConfig {
   axis: Axis;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
-  defaultToolheadMoveLength: string;
+  defaultToolheadMoveLength: number;
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';

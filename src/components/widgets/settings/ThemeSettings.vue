@@ -41,7 +41,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>Reset</v-list-item-title>
+            <v-list-item-title>Reset settings</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <btn
@@ -50,7 +50,7 @@
               color="primary"
               @click="handleReset"
             >
-              Reset theme
+              Reset
             </btn>
           </v-list-item-action>
         </v-list-item>

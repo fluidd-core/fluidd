@@ -37,6 +37,7 @@ import { SVGRenderer } from 'echarts/renderers'
 import vueHeadful from 'vue-headful'
 
 import FluiddBtn from '@/components/inputs/Btn.vue'
+import FluiddTextField from '@/components/inputs/TextField.vue'
 import FluiddIcon from '@/components/FluiddIcon.vue'
 import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
 import CollapsableCard from '@/components/cards/CollapsableCard.vue'
@@ -74,6 +75,7 @@ Vue.component('vue-headful', vueHeadful)
 Vue.component('inline-help', InlineHelp)
 Vue.component('fluidd-icon', FluiddIcon)
 Vue.component('btn', FluiddBtn)
+Vue.component('text-field', FluiddTextField)
 
 appInit()
   .then((config: InitConfig) => {

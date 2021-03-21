@@ -3,8 +3,6 @@
 ## Next Up
 
 - use components instead of plugins with moonraker
-- add job history search
-- review validations on settings pages
 - move config widgets and sort into config vs tune
   - general component layout re-arrangement
   - rename device power store

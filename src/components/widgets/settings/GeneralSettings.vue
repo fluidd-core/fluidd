@@ -21,6 +21,7 @@
               ref="instanceName"
               :rules="instanceNameRules"
               :value="instanceName"
+              :default-value="$globals.APP_NAME"
               @change="setInstanceName"
             ></v-text-field>
           </v-list-item-action>
@@ -92,6 +93,7 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
   }
 
   setInstanceName (value: string) {
+    console.log('got this', value)
     if (this.instanceNameElement.valid) this.$store.dispatch('config/updateInstance', value)
   }
 

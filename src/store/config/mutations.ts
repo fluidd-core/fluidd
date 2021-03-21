@@ -111,6 +111,30 @@ export const mutations: MutationTree<ConfigState> = {
    * otherwise they will not be reactive.
    */
   setSaveByPath (state, payload: SaveByPath) {
+    // let path = ''
+    // let key: string | undefined = payload.path
+    // let o = state
+    // if (payload.path.indexOf('.') >= 0) {
+    //   const split = payload.path.split('.')
+    //   const i = split.length
+    //   if (i >= 2) {
+    //     key = split.pop()
+    //     path = split.join('.')
+    //     if (key) o = get(state[path], key)
+    //     // console.log(path, key)
+    //   } else {
+    //     key = split[1]
+    //     o = state[split[0]]
+    //   }
+    // }
+
+    // uiSettings.camera
+    // uiSettings.general
+
+    // const o = get(state, payload.path)
+    // console.log('setting', o, key, payload.value)
+    // if (key) Vue.set(o, key, payload.value)
+    console.log('setting', payload.path, payload.value)
     set(state, payload.path, payload.value)
   },
 

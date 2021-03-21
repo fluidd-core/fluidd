@@ -103,11 +103,11 @@
     </v-row>
     <v-row no-gutters justify="start" class="mb-2">
       <v-col>
-        <v-btn-toggle mandatory dense v-model="toolheadMoveLength">
-          <btn :min-width="49" value="0.1" :disabled="!klippyReady">0.1</btn>
-          <btn :min-width="49" class="pa-0" value="1.0" :disabled="!klippyReady">1.0</btn>
-          <btn :min-width="49" class="pa-0" value="10" :disabled="!klippyReady">10</btn>
-          <btn :min-width="49" class="pa-0" value="100" :disabled="!klippyReady">100</btn>
+        <v-btn-toggle mandatory dense v-model.number="toolheadMoveLength">
+          <btn :min-width="49" :value="0.1" :disabled="!klippyReady">0.1</btn>
+          <btn :min-width="49" class="pa-0" :value="1.0" :disabled="!klippyReady">1.0</btn>
+          <btn :min-width="49" class="pa-0" :value="10" :disabled="!klippyReady">10</btn>
+          <btn :min-width="49" class="pa-0" :value="100" :disabled="!klippyReady">100</btn>
         </v-btn-toggle>
       </v-col>
     </v-row>

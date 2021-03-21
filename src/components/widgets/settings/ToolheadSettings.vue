@@ -81,7 +81,9 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
-              v-model.number="defaultExtrudeLength"
+              :value="defaultExtrudeLength"
+              @change="setDefaultExtrudeLength"
+              :rules="[rules.numRequired, rules.numMin]"
               filled
               dense
               single-line
@@ -99,7 +101,9 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
-              v-model.number="defaultExtrudeSpeed"
+              :value="defaultExtrudeSpeed"
+              @change="setDefaultExtrudeSpeed"
+              :rules="[rules.numRequired, rules.numMin]"
               filled
               dense
               single-line
@@ -117,8 +121,10 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-select
-              v-model.number="defaultToolheadMoveLength"
-              :items="['0.1', '1.0', '10', '100']"
+              :value="defaultToolheadMoveLength"
+              :items="[0.1, 1.0, 10, 100]"
+              @change="setDefaultToolheadMoveLength"
+              :rules="[rules.numRequired, rules.numMin]"
               filled
               dense
               single-line
@@ -136,7 +142,9 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
-              v-model.number="defaultToolheadXYSpeed"
+              :value="defaultToolheadXYSpeed"
+              @change="setDefaultToolheadYXSpeed"
+              :rules="[rules.numRequired, rules.numMin]"
               filled
               dense
               single-line
@@ -154,7 +162,9 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
-              v-model.number="defaultToolheadZSpeed"
+              :value="defaultToolheadZSpeed"
+              @change="setDefaultToolheadZSpeed"
+              :rules="[rules.numRequired, rules.numMin]"
               filled
               dense
               single-line
@@ -188,74 +198,98 @@
           </v-list-item-action>
         </v-list-item>
 
+        <v-divider></v-divider>
+
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>Reset settings</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <btn
+              outlined
+              small
+              color="primary"
+              @click="handleReset"
+            >
+              Reset
+            </btn>
+          </v-list-item-action>
+        </v-list-item>
+
       </v-list>
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Watch } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
-import { Debounce } from 'vue-debounce-decorator'
-
-const debounceTime = 250
+import { Component, Vue } from 'vue-property-decorator'
+import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
 })
-export default class ToolHeadSettingsCard extends Mixins(StateMixin) {
-  defaultExtrudeSpeed = this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
-  defaultExtrudeLength = this.$store.state.config.uiSettings.general.defaultExtrudeLength
-  defaultToolheadMoveLength = this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
-  defaultToolheadXYSpeed = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-  defaultToolheadZSpeed = this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+export default class ToolHeadSettingsCard extends Vue {
+  rules = {
+    numRequired: (v: number | string) => v !== '' || 'Required',
+    numMin: (v: number) => v >= 1 || 'Min 1'
+  }
 
-  @Watch('defaultExtrudeSpeed')
-  @Debounce(debounceTime)
-  onDefaultExtrudeSpeed (value: number) {
+  get defaultExtrudeSpeed () {
+    return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
+  }
+
+  setDefaultExtrudeSpeed (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeSpeed',
-      value,
+      value: +value,
       server: true
     })
   }
 
-  @Watch('defaultExtrudeLength')
-  @Debounce(debounceTime)
-  onDefaultExtrudeLength (value: number) {
+  get defaultExtrudeLength () {
+    return this.$store.state.config.uiSettings.general.defaultExtrudeLength
+  }
+
+  setDefaultExtrudeLength (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeLength',
-      value,
+      value: +value,
       server: true
     })
   }
 
-  @Watch('defaultToolheadMoveLength')
-  @Debounce(debounceTime)
-  onDefaultToolheadMoveLength (value: number) {
+  get defaultToolheadMoveLength () {
+    return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
+  }
+
+  setDefaultToolheadMoveLength (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadMoveLength',
-      value,
+      value: +value,
       server: true
     })
   }
 
-  @Watch('defaultToolheadXYSpeed')
-  @Debounce(debounceTime)
-  onDefaultToolheadXYSpeed (value: number) {
+  get defaultToolheadXYSpeed () {
+    return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+  }
+
+  setDefaultToolheadYXSpeed (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadXYSpeed',
-      value,
+      value: +value,
       server: true
     })
   }
 
-  @Watch('defaultToolheadZSpeed')
-  @Debounce(debounceTime)
-  onDefaultToolheadZSpeed (value: number) {
+  get defaultToolheadZSpeed () {
+    return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+  }
+
+  setDefaultToolheadZSpeed (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadZSpeed',
-      value,
+      value: +value,
       server: true
     })
   }
@@ -315,6 +349,23 @@ export default class ToolHeadSettingsCard extends Mixins(StateMixin) {
   set invertZ (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.z.inverted',
+      value,
+      server: true
+    })
+  }
+
+  handleReset () {
+    let value = defaultState().uiSettings.general
+    const current = this.$store.state.config.uiSettings.general
+    value = {
+      ...value,
+      instanceName: current.instanceName,
+      chartVisible: current.chartVisible,
+      hideTempWaits: current.hideTempWaits,
+      printTimeEstimationsType: current.printTimeEstimationsType
+    }
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general',
       value,
       server: true
     })

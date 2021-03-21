@@ -24,5 +24,10 @@ export const mutations: MutationTree<MacrosState> = {
     } else {
       Vue.set(state.stored, i, macro)
     }
+  },
+
+  setUpdateAllVisible (state, payload: { macros: Macro[]; visible: boolean}) {
+    payload.macros.forEach((macro: Macro) => { macro.visible = payload.visible })
+    Vue.set(state, 'stored', payload.macros)
   }
 }

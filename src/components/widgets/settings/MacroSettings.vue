@@ -19,6 +19,36 @@
           </v-col>
         </v-row>
       </v-card-text>
+
+      <v-list
+        color="transparent"
+      >
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>Toggle</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action class="flex-row">
+            <btn
+              outlined
+              small
+              color="primary"
+              @click="handleAllOff"
+            >
+              All off
+            </btn>
+
+            <btn
+              outlined
+              small
+              color="primary"
+              @click="handleAllOn"
+              class="ml-2"
+            >
+              All on
+            </btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </v-card>
   </div>
 </template>
@@ -39,6 +69,14 @@ export default class MacroSettingsCard extends Mixins(StateMixin) {
   changeMacro (macro: Macro, value: boolean) {
     const newMacro = { ...macro, visible: value }
     this.$store.dispatch('macros/saveMacro', newMacro)
+  }
+
+  handleAllOn () {
+    this.$store.dispatch('macros/saveAllOn')
+  }
+
+  handleAllOff () {
+    this.$store.dispatch('macros/saveAllOff')
   }
 }
 </script>

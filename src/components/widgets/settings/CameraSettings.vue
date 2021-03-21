@@ -88,19 +88,38 @@
             ></v-text-field>
           </v-list-item-action>
         </v-list-item>
+
+        <v-divider />
+
+        <v-list-item>
+          <v-list-item-content>
+            <v-list-item-title>Reset settings</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <btn
+              outlined
+              small
+              color="primary"
+              @click="handleReset"
+            >
+              Reset
+            </btn>
+          </v-list-item-action>
+        </v-list-item>
+
       </v-list>
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Ref, Vue } from 'vue-property-decorator'
+import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
 })
-export default class CameraSettingsCard extends Mixins(StateMixin) {
+export default class CameraSettingsCard extends Vue {
   @Ref('cameraUrl') readonly cameraUrlElement!: any
 
   cameraUrlRules = [
@@ -165,6 +184,14 @@ export default class CameraSettingsCard extends Mixins(StateMixin) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.camera.type',
       value,
+      server: true
+    })
+  }
+
+  handleReset () {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.camera',
+      value: defaultState().uiSettings.camera,
       server: true
     })
   }

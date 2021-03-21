@@ -45,7 +45,7 @@ export const defaultState = (): ConfigState => {
         printTimeEstimationsType: 'file',
         defaultExtrudeLength: 10,
         defaultExtrudeSpeed: 5,
-        defaultToolheadMoveLength: '1.0',
+        defaultToolheadMoveLength: 1.0,
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
         useGcodeCoords: false,
