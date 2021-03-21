@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- settings props should all convert to lowercase
 - use components instead of plugins with moonraker
 - move config widgets and sort into config vs tune
   - general component layout re-arrangement
@@ -14,6 +15,7 @@
 
 - update docs to mention cura uploads
 - docs on configuring a camera
+- update docs re: output pins
 
 - bulk actions to delete or move?
 - move dialog

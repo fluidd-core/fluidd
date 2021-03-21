@@ -81,7 +81,7 @@ import { Debounce } from 'vue-debounce-decorator'
 import StateMixin from '@/mixins/state'
 import { Globals, Waits } from '@/globals'
 import { VForm } from '@/types/vuetify'
-import { AxiosError } from 'axios'
+import { AxiosError, Canceler, CancelTokenSource } from 'axios'
 import consola from 'consola'
 
 @Component({})
@@ -111,6 +111,10 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
 
   timer = 0
 
+  cancelSource: CancelTokenSource | undefined = undefined
+  CancelToken = this.$http.CancelToken
+  cancel: Canceler | undefined = undefined
+
   get url () {
     return this.actualUrl
   }
@@ -129,23 +133,30 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
       this.note = null
       this.verifying = true
 
-      // this.$http.options(url + '/server/info?t=optionscall' + new Date().getTime(), {
-      //   headers: {
-      //     'Access-Control-Request-Method': 'GET'
-      //   }
-      // })
-      //   .then((r) => {
-      //     consola.log(r)
-      //   })
+      if (this.cancelSource !== undefined) {
+        this.cancelSource.cancel('Cancelled due to new request.')
+        // console.log('cancel done')
+      }
+
+      this.cancelSource = this.$http.CancelToken.source()
 
       // Start by making a standard request. Maybe it's good?
-      const request = await this.$http.get(url + '/server/info?t=' + new Date().getTime())
+      const request = await this.$http.get(
+        url + '/server/info?t=' + new Date().getTime(), {
+          cancelToken: this.cancelSource.token
+        })
         .then(() => {
           this.verified = true
           this.verifying = false
           return 'ok'
         })
         .catch((e: AxiosError) => {
+          // If it failed because we cancelled, set ok and move on.
+          // console.log('is cancel?', this.$http.isCancel(e), e)
+          if (this.$http.isCancel(e)) {
+            return 'ok'
+          }
+
           // If it failed with a network issue..
           if (e.request) return e.message
 
