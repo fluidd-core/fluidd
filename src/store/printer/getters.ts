@@ -540,7 +540,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       state.printer.configfile &&
       state.printer.configfile.settings
     ) {
-      if (setting) return get(state.printer.configfile.settings, setting, undefined)
+      if (setting) return get(state.printer.configfile.settings, setting.toLowerCase(), undefined)
       return state.printer.configfile.settings
     }
     return undefined

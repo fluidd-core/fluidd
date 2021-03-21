@@ -21,16 +21,6 @@ export const actions: ActionTree<PrinterState, RootState> = {
    */
   async onPrinterInfo ({ commit }, payload) {
     commit('setPrinterInfo', payload)
-    // if (payload.state !== 'ready') {
-    //   clearTimeout(retryTimeout)
-    //   retryTimeout = setTimeout(() => {
-    //     SocketActions.machineInit()
-    //   }, Globals.KLIPPY_RETRY_DELAY)
-    // } else {
-    //   SocketActions.serverConfig()
-    //   SocketActions.serverGcodeStore()
-    //   SocketActions.printerGcodeHelp()
-    // }
   },
 
   /**

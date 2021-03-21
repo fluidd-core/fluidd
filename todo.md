@@ -2,7 +2,6 @@
 
 ## Next Up
 
-- settings props should all convert to lowercase
 - use components instead of plugins with moonraker
 - move config widgets and sort into config vs tune
   - general component layout re-arrangement
