@@ -8,6 +8,14 @@ const h = require('child_process')
   .toString()
 
 module.exports = {
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enabbleInSFC: false
+    }
+  },
   pwa: {
     themeColor: '#2196F3',
     msTileColor: '#000000',

@@ -35,6 +35,10 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-select
+              filled
+              dense
+              single-line
+              hide-details="auto"
               v-model="$i18n.locale"
               :items="languageList"
               :value="locale"
