@@ -154,7 +154,7 @@ export default class App extends Mixins(StateMixin) {
   }
 
   get loading () {
-    return (this.localeLoading && !this.$store.state.socket.ready)
+    return (this.localeLoading)
   }
 
   onLoadLocale (locale: string) {
