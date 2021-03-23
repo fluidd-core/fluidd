@@ -31,6 +31,10 @@ jobs:
       - name: Build
         run: npm run build
 
+  publish:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-20.04
+    steps:
       - name: Create Artifact
         run: |
           cd ./dist
