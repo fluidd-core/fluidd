@@ -55,7 +55,8 @@ app:
       save_as: Save As
       edit_preset: Edit Preset
       add_preset: Add Preset
-
+      extrude_length: Extrude Length
+      extrude_speed: Extrude Speed
     btn:
       all: All
       all_off: All off
@@ -95,7 +96,6 @@ app:
       config_reference: Config Reference
       add_file: Add File
       add_dir: Add Directory
-
     table:
       header:
         filament_used: Filament
@@ -113,13 +113,9 @@ app:
         actions: Actions
     simple_form:
       msg:
-        saved: Saved
         confirm: Are you sure?
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
-      label:
-        extrude_length: Extrude Length
-        extrude_speed: Extrude Speed
       error:
         invalid_url: Invalid URL
         max: Max %{max}
@@ -131,17 +127,18 @@ app:
     error:
       app_warnings_found: '%{appName} warnings found.'
       app_setup_link: >-
-        Fluidd setup requirements can be found <a target=\"_blank\"
-        href=\"%{url}\">here.</a>
+        Fluidd setup requirements can be found <a target="_blank"
+        href="%{url}">here.</a>
       failed_components: >-
         Moonraker has failed plugins, please check your logs, update your
         configuration and restart moonraker.
       components_config: >-
-        Moonraker plugin configuration can be found <a target=\"_blank\"
-        href=\"%{url}\">here.</a>
+        Moonraker plugin configuration can be found <a target="_blank"
+        href="%{url}">here.</a>
   socket:
-    connecting: Connecting to moonraker...
-    no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+    msg:
+      connecting: Connecting to moonraker...
+      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
   version:
     title: Software Updates
     btn:
@@ -304,7 +301,7 @@ app:
       add_printer: E.g., http://fluiddpi.local
     msg:
       trouble: >-
-        Having trouble? <a href=\"%{url}\" target=\"_blank\">See here</a> for
+        Having trouble? <a href="%{url}" target="_blank">See here</a> for
         more information.
     tooltip:
       endpoint_examples: >-
@@ -317,5 +314,5 @@ app:
       cors_error: blocked by CORS policy
       cors_note: >-
         This may mean you need to modify your moonraker configuration. Please
-        see the documentation on multi printer setups <a href=\"%{url}\"
-        target=\"_blank\">here</a>
+        see the documentation on multi printer setups <a href="%{url}"
+        target="_blank">here</a>

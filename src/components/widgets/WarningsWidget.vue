@@ -42,7 +42,7 @@ export default class KlippyCard extends Mixins(StateMixin) {
 
   get printerWarningsTxt () {
     return this.$t('app.general.error.app_setup_link', {
-      Url: this.docsUrl
+      url: this.docsUrl
     })
   }
 

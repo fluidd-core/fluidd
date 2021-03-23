@@ -9,8 +9,8 @@
         class="subtitle-1 text-center"
         cols="12"
       >
-        <span v-if="socketConnecting">{{ $t('app.socket.connecting') }}</span>
-        <span v-if="!socketConnecting">{{ $t('app.socket.no_connection') }}</span>
+        <span v-if="socketConnecting">{{ $t('app.socket.msg.connecting') }}</span>
+        <span v-if="!socketConnecting">{{ $t('app.socket.msg.no_connection') }}</span>
       </v-col>
       <v-col cols="6">
         <v-progress-linear

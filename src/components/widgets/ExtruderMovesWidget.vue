@@ -11,7 +11,7 @@
           hide-details
           outlined
           dense
-          :label="$t('app.general.simple_form.label.extrude_length')"
+          :label="$t('app.general.label.extrude_length')"
           suffix="mm">
         </v-text-field>
       </v-col>
@@ -37,7 +37,7 @@
           hide-details
           outlined
           dense
-          :label="$t('app.general.simple_form.label.extrude_speed')"
+          :label="$t('app.general.label.extrude_speed')"
           suffix="mm/s">
         </v-text-field>
       </v-col>
