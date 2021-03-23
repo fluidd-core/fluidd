@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import vuetify from './plugins/vuetify'
 import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
@@ -194,12 +193,5 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
   // apiConfig could have empty strings, meaning we have no valid connection.
   await store.dispatch('init', { apiConfig, hostConfig })
-
-  // Set vuetify to the correct initial theme.
-  if (store.state.config && store.state.config.uiSettings.theme) {
-    vuetify.framework.theme.dark = store.state.config.uiSettings.theme.isDark
-    vuetify.framework.theme.currentTheme.primary = store.state.config.uiSettings.theme.currentTheme.primary
-  }
-
   return { apiConfig, hostConfig, apiConnected }
 }

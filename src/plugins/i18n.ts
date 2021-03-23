@@ -55,8 +55,5 @@ export const loadLocaleMessagesAsync = async (locale: Locale) => {
 }
 
 loadLocaleMessagesAsync(startingLocale)
-  .then(() => {
-    console.log('startingLocale', startingLocale)
-  })
 
 export default i18n

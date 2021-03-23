@@ -1,7 +1,9 @@
+import vuetify from '@/plugins/vuetify'
 import { ActionTree } from 'vuex'
 import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
+import { loadLocaleMessagesAsync } from '@/plugins/i18n'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
@@ -14,8 +16,20 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Init any file configs we may have.
    */
-  async initUiSettings ({ commit }, payload: UiSettings) {
+  async initUiSettings ({ commit, state }, payload: UiSettings) {
     commit('setInitUiSettings', payload)
+
+    // Set vuetify to the correct initial theme.
+    if (state.uiSettings.theme) {
+      vuetify.framework.theme.dark = state.uiSettings.theme.isDark
+      vuetify.framework.theme.currentTheme.primary = state.uiSettings.theme.currentTheme.primary
+    }
+
+    // Set the correct language.
+    if (state.uiSettings.general.locale !== 'en') {
+      // vuetify.framework.lang.current = state.uiSettings.general.locale
+      loadLocaleMessagesAsync(state.uiSettings.general.locale)
+    }
   },
 
   /**

@@ -161,7 +161,6 @@ export default class App extends Mixins(StateMixin) {
     this.localeLoading = true
     loadLocaleMessagesAsync(locale)
       .then(() => {
-        console.log('loaded, got locale', locale)
         this.localeLoading = false
       })
   }
