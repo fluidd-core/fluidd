@@ -24,7 +24,7 @@
 
       <v-row justify="space-between" align="center" no-gutters v-show="printerPrinting">
         <v-col cols="auto" class="secondary--text text--lighten-1">
-          {{ $t('Requested Speed:') }}
+          {{ $t('app.general.label.requested_speed') }}
         </v-col>
         <v-col cols="auto" class="grey--text focus--text">
           {{ requestedSpeed }} mm/s

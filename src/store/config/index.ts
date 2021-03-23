@@ -14,7 +14,10 @@ export const defaultState = (): ConfigState => {
     hostConfig: {
       endpoints: [],
       blacklist: [],
-      hosted: false
+      hosted: false,
+      locales: [
+        { name: 'English', code: 'en' }
+      ]
     },
     cardState: {},
     cardLayout: {

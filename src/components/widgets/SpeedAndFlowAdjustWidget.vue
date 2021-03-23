@@ -3,7 +3,7 @@
     <v-col cols="12" sm="6">
       <!-- Speed and Flow Adjust -->
       <input-slider
-        :label="$t('Speed')"
+        :label="$t('app.general.label.speed')"
         value-suffix="%"
         input-xs
         v-model.number="speed"
@@ -15,7 +15,7 @@
     </v-col>
     <v-col cols="12" sm="6">
       <input-slider
-        :label="$t('Flow')"
+        :label="$t('app.general.label.flow')"
         value-suffix="%"
         input-xs
         v-model.number="flow"
@@ -43,8 +43,8 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(StateMixin) {
   waits = Waits
 
   rules = [
-    (v: number) => (v >= 1) || 'min 1',
-    (v: number) => (v <= 200) || 'max 200'
+    (v: number) => (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 }),
+    (v: number) => (v <= 200) || this.$t('app.general.simple_form.error.max', { max: 200 })
   ]
 
   get flow () {

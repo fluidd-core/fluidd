@@ -23,7 +23,7 @@
         @click="emulateClick(false)">
         <v-list-item-title>
           <v-icon small left>$fileUpload</v-icon>
-          {{ $t('Upload') }}
+          {{ $t('app.general.btn.upload') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -32,7 +32,7 @@
         @click="emulateClick(true)">
         <v-list-item-title>
           <v-icon small left>$progressUpload</v-icon>
-          {{ $t('Upload & Print') }}
+          {{ $t('app.general.btn.upload_print') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -41,7 +41,7 @@
         @click="$emit('add-file')">
         <v-list-item-title>
           <v-icon small left>$fileAdd</v-icon>
-          {{ $t('Add file') }}
+          {{ $t('app.general.btn.add_file') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -50,7 +50,7 @@
         @click="$emit('add-dir')">
         <v-list-item-title>
           <v-icon small left>$folderAdd</v-icon>
-          {{ $t('Add folder') }}
+          {{ $t('app.general.btn.add_dir') }}
         </v-list-item-title>
       </v-list-item>
     </v-list>

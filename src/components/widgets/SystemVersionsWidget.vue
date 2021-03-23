@@ -6,7 +6,7 @@
     <template v-slot:activator>
       <v-list-item-content>
         <v-list-item-title>
-          {{ $t('Software Updates') }}
+          {{ $t('app.version.title') }}
         </v-list-item-title>
       </v-list-item-content>
     </template>
@@ -23,7 +23,7 @@
             <div class="component-version">
               {{ ('package_count' in component) ? component.package_count + ' packages' : component.version }}
               <span v-if="'remote_version' in component && hasUpdate(component.type)">
-                {{ $t('to %{remoteVersion}', { remoteVersion: component.remote_version }) }}
+                -> {{ component.remote_version }}
               </span>
             </div>
 
@@ -43,7 +43,7 @@
     </template>
 
     <v-list-item @click="forceCheck()" :disabled="printerPrinting">
-      <v-list-item-title>{{ $t('Check for updates') }}</v-list-item-title>
+      <v-list-item-title>{{ $t('app.version.btn.check_for_updates') }}</v-list-item-title>
       <v-list-item-icon>
         <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
       </v-list-item-icon>

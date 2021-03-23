@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="macros">{{ $t('Macros') }}</v-subheader>
+    <v-subheader id="macros">{{ $t('app.setting.title.macros') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -25,7 +25,7 @@
       >
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Toggle') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.toggle') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action class="flex-row">
             <btn
@@ -34,7 +34,7 @@
               color="primary"
               @click="handleAllOff"
             >
-              {{ $t('All off') }}
+              {{ $t('app.setting.label.all_off') }}
             </btn>
 
             <btn
@@ -44,7 +44,7 @@
               @click="handleAllOn"
               class="ml-2"
             >
-              {{ $t('All on') }}
+              {{ $t('app.setting.label.all_on') }}
             </btn>
           </v-list-item-action>
         </v-list-item>

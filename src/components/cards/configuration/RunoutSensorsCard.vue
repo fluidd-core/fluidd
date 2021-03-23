@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    :title="$t('Runout Sensors')"
+    :title="$t('app.general.title.runout_sensors')"
     icon="$printer3dNozzleAlert">
     <v-card-text>
       <v-layout

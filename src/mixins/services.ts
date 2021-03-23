@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { SocketActions } from '@/socketActions'
 import { Component } from 'vue-property-decorator'
+import store from '@/store'
 
 @Component
 export default class ServicesMixin extends Vue {
@@ -21,7 +22,14 @@ export default class ServicesMixin extends Vue {
   /**
    * Restart the klipper service itself.
    */
-  serviceRestartKlipper () {
+  async serviceRestartKlipper () {
+    // Partially reset, since config might have changed.
+    await store.dispatch('reset', [
+      'printer',
+      'charts',
+      'wait'
+    ], { root: true })
+
     SocketActions.machineServicesRestart('klipper')
   }
 
@@ -43,14 +51,26 @@ export default class ServicesMixin extends Vue {
   /**
    * Restart klippy / std restart.
    */
-  restartKlippy () {
+  async restartKlippy () {
+    await store.dispatch('reset', [
+      'printer',
+      'charts',
+      'wait'
+    ], { root: true })
+
     SocketActions.printerRestart()
   }
 
   /**
    * Restart klippy and the mcu's.
    */
-  firmwareRestartKlippy () {
+  async firmwareRestartKlippy () {
+    await store.dispatch('reset', [
+      'printer',
+      'charts',
+      'wait'
+    ], { root: true })
+
     SocketActions.printerFirmwareRestart()
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    :title="$t('Macros')"
+    :title="$t('app.general.title.macros')"
     icon="$fileCode"
     :draggable="true"
     :inLayout="inLayout"

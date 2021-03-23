@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :loading="loading"
-    :title="$t('Bed Mesh')"
+    :title="$t('app.general.title.bedmesh')"
     :lazy="false"
     icon="$bedMesh">
     <bed-mesh-widget @hook:mounted="componentMounted"></bed-mesh-widget>

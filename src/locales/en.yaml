@@ -1,0 +1,321 @@
+app:
+  general:
+    title:
+      camera: Camera
+      console: Console
+      bedmesh: Bed Mesh
+      home: Dashboard
+      add_printer: Add Printer
+      endstops: Endstops
+      fans_outputs: Fans & Outputs
+      jobs: Jobs
+      macros: Macros
+      limits: Printer Limits
+      logs: Printer Logs
+      runout_sensors: Runout Sensors
+      status: Status
+      temperature: Thermals
+      tool: Tool
+      tune: Tune
+      configure: Configure
+      interface: Interface
+      stats: Printer Stats
+      history: Job History
+      config_files: Configuration Files
+    label:
+      accel_to_decel: Accel to Decel
+      acceleration: Acceleration
+      sqv: Square Corner Velocity
+      velocity: Velocity
+      api_url: API URL
+      host: Host
+      layout: Layout
+      name: Name
+      power: Power
+      printers: Printers
+      requested_speed: Requested Speed
+      services: Services
+      speed: Speed
+      flow: Flow
+      z_offset: Z Offset
+      high: High
+      low: Low
+      off: Off
+      used: used
+      free: free
+      total_jobs: Total print jobs
+      longest_job: Longest job
+      total_time: Total time
+      total_time_avg: Avg per print
+      total_print_time: Total print time
+      total_print_time_avg: Avg per print
+      total_filament: Total filament used
+      total_filament_avg: Avg per print
+      variance: Variance
+      save_as: Save As
+      edit_preset: Edit Preset
+      add_preset: Add Preset
+
+    btn:
+      all: All
+      all_off: All off
+      quad_gantry_level: QGL
+      add: Add
+      pause: Pause
+      reboot: Reboot
+      shutdown: Shutdown
+      remove: Remove
+      remove_all: Remove All
+      rename: Rename
+      resume: Resume
+      cancel: Cancel
+      save: Save
+      save_as: Save As
+      upload: Upload
+      upload_print: Upload & Print
+      preheat: Preheat
+      reprint: Reprint
+      save_restart: Save & Restart
+      adjust_layout: Adjust dashboard layout
+      calibrate: Calibrate
+      clear_profile: Clear Profile
+      download: Download
+      add_printer: Add printer
+      edit: Edit
+      extrude: Extrude
+      retract: Retract
+      restart_firmware: Firmware Restart
+      restart_service_klipper: Restart Klipper
+      restart_service_moonraker: Restart Moonraker
+      socket_refresh: Force refresh
+      reset_file: Reset File
+      reset_layout: Reset Layout
+      view: View
+      close: Close
+      config_reference: Config Reference
+      add_file: Add File
+      add_dir: Add Directory
+
+    table:
+      header:
+        filament_used: Filament
+        name: Name
+        slicer: Slicer
+        status: Status
+        height: Height
+        layer_height: Layer height
+        estimated_time: Estimated time
+        last_printed: Last printed
+        modified: Modified
+        size: Size
+        start_time: Started
+        print_duration: Print Duration
+        actions: Actions
+    simple_form:
+      msg:
+        saved: Saved
+        confirm: Are you sure?
+        confirm_reboot_host: Are you sure? This will reboot your host system.
+        confirm_shutdown_host: Are you sure? This will shutdown your host system.
+      label:
+        extrude_length: Extrude Length
+        extrude_speed: Extrude Speed
+      error:
+        invalid_url: Invalid URL
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} or 0
+        required: Required
+    tooltip:
+      estop: Emergency Stop
+    error:
+      app_warnings_found: '%{appName} warnings found.'
+      app_setup_link: >-
+        Fluidd setup requirements can be found <a target=\"_blank\"
+        href=\"%{url}\">here.</a>
+      failed_components: >-
+        Moonraker has failed plugins, please check your logs, update your
+        configuration and restart moonraker.
+      components_config: >-
+        Moonraker plugin configuration can be found <a target=\"_blank\"
+        href=\"%{url}\">here.</a>
+  socket:
+    connecting: Connecting to moonraker...
+    no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+  version:
+    title: Software Updates
+    btn:
+      update: Update
+      finish: Finish
+      check_for_updates: Check for updates
+    label:
+      dirty: DIRTY
+      invalid: INVALID
+      up_to_date: UP TO DATE
+    status:
+      updating: Updating...
+      finished: Updates finished
+    tooltip:
+      dirty: indicates a detached head, not on master or an invalid origin
+      invalid: indicates local changes to the repo
+  console:
+    label:
+      hide_temp_waits: Hide temp waits
+    placeholder:
+      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+    tooltip:
+      home_xy: Home XY
+      home_z: Home Z
+      extruder_disabled: >-
+        extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+  bedmesh:
+    label:
+      profile_name: Profile Name
+      remove_profile: Remove %{name} profile
+    msg:
+      not_found: No existing bed meshes found.
+      hint: >-
+        If saving as something other than %{name}, you can choose to also remove
+        the %{name} profile
+    tooltip:
+      calibrate: Begins a new calibration, saving as profile 'default'
+      delete: Delete Profile. This WILL restart your printer
+      save: >-
+        Commits calibrated profile to printer.cfg. This WILL restart your
+        printer
+      load: Load Profile
+  printer:
+    status:
+      used_filament: used filament
+      time_left: estimated time left
+      duration: duration
+      duration_total: duration & total
+    state:
+      printing: Printing
+      loading: Loading
+      complete: Complete
+      paused: Paused
+      standby: Standby
+      idle: Idle
+      ready: Ready
+      busy: Busy
+  setting:
+    title:
+      camera: Camera
+      macros: Macros
+      general: General
+      theme: Theme
+      tool: Tool
+      thermal_presets: Thermal Presets
+    label:
+      camera_url: Camera Url
+      printer_name: Printer Name
+      language: Display Language
+      default_toolhead_move_length: Default toolhead move length
+      default_extrude_speed: Default extrude speed
+      default_extrude_length: Default extrude length
+      default_toolhead_z_speed: Default toolhead Z speed
+      default_toolhead_xy_speed: Default toolhead XY speed
+      camera_flip_x: Flip horizontally
+      camera_flip_y: Flip vertically
+      camera_stream_type: Stream type
+      thermal_preset_name: Preset Name
+      all_on: All on
+      all_off: All off
+      toggle: Toggle
+      dark_mode: Dark mode
+      primary_color: Primary color
+      reset: Reset settings
+      z_adjust_values: Z Adjust values
+      gcode_coords: Use GCode Coordinates
+      time_estimates: Time estimates
+      invert_z_control: Invert Z control
+      invert_y_control: Invert Y control
+      invert_x_control: Invert X control
+      enable: Enable
+    btn:
+      select_theme: Select Theme
+      add_thermal_preset: Add Preset
+      reset: Reset
+    timer_options:
+      duration: Duration only
+      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
+      file: File Estimation
+      file_description: >-
+        Takes progress percent, and duration to estimate total duration.<br />
+        More accurate over time.
+      filament: Filament Estimation
+      filament_description: >-
+        Takes used filament vs estimated filament to estimate total duration.<br />
+        More accurate over time.
+      slicer: Slicer
+      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
+    camera_type_options:
+      video: ip camera
+      img: mjpgstreamer
+    tooltip:
+      gcode_coords: Use GCode position instead of toolhead position on dashboard
+  chart:
+    tooltip:
+      help: >-
+        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
+        />Click a power to toggle in the graph.
+    label:
+      item: Item
+      current: Current
+      target: Target
+      power: Power
+  file_system:
+    title:
+      rename_file: Rename File
+      rename_dir: Rename Directory
+      add_file: Add File
+      add_dir: Add Directory
+    label:
+      dir_name: Directory name
+      file_name: Filename
+      disk_usage: Disk Usage
+    msg:
+      not_found: No files found
+      uploading: Uploading...
+      processing: Processing...
+      confirm: Are you sure? This will delete all files and folders within.
+    tooltip:
+      disabled: Jobs are disabled prior to initial communcation with klippy
+      low_on_space: Low on disk space
+    overlay:
+      label: <strong>Drag</strong> a file here
+      uploading: <strong>Uploading</strong> files
+  endstop:
+    label:
+      open: OPEN
+      triggered: TRIGGERED
+    msg:
+      subtitle: Use the refresh button to update endstop status.
+  history:
+    msg:
+      confirm: Are you sure? This will clear all history, and printer statistics
+  endpoint:
+    hint:
+      add_printer: E.g., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Having trouble? <a href=\"%{url}\" target=\"_blank\">See here</a> for
+        more information.
+    tooltip:
+      endpoint_examples: >-
+        Enter your API URL.<br />Some examples might be;<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+    error:
+      cant_connect: >-
+        Something went wrong, and fluidd can't reach the destination. Are you
+        sure this is the correct address?
+      cors_error: blocked by CORS policy
+      cors_note: >-
+        This may mean you need to modify your moonraker configuration. Please
+        see the documentation on multi printer setups <a href=\"%{url}\"
+        target=\"_blank\">here</a>

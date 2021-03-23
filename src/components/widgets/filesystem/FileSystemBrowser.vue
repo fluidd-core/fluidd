@@ -12,8 +12,8 @@
       :search="search"
       item-key="name"
       height="100%"
-      :no-data-text="$t('No files')"
-      :no-results-text="$t('No files found')"
+      :no-data-text="$t('app.file_system.msg.not_found')"
+      :no-results-text="$t('app.file_system.msg.not_found')"
       sort-by="modified"
       hide-default-footer
       class="rounded-0"
@@ -129,28 +129,28 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   get headers () {
     let headers: any = [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$t('name'), value: 'name' }
+      { text: this.$t('app.general.table.header.name'), value: 'name' }
     ]
 
     if (this.showMetaData) {
       headers = [
         ...headers,
-        { text: this.$t('height'), value: 'object_height' },
-        { text: this.$t('layer height'), value: 'layer_height' },
-        { text: this.$t('filament'), value: 'filament_total' },
-        { text: this.$t('slicer'), value: 'slicer' },
-        { text: this.$t('estimated time'), value: 'estimated_time' }
+        { text: this.$t('app.general.table.header.height'), value: 'object_height' },
+        { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height' },
+        { text: this.$t('app.general.table.header.filament_used'), value: 'filament_total' },
+        { text: this.$t('app.general.table.header.slicer'), value: 'slicer' },
+        { text: this.$t('app.general.table.header.estimated_time'), value: 'estimated_time' }
       ]
     }
 
     if (this.showLastPrinted) {
-      headers.push({ text: this.$t('last printed'), value: 'print_start_time' })
+      headers.push({ text: this.$t('app.general.table.header.last_printed'), value: 'print_start_time' })
     }
 
     headers = [
       ...headers,
-      { text: this.$t('modified'), value: 'modified', width: '1%' },
-      { text: this.$t('size'), value: 'size', width: '1%', align: 'end' }
+      { text: this.$t('app.general.table.header.modified'), value: 'modified', width: '1%' },
+      { text: this.$t('app.general.table.header.size'), value: 'size', width: '1%', align: 'end' }
     ]
 
     return headers

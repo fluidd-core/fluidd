@@ -11,7 +11,7 @@
           hide-details
           outlined
           dense
-          :label="$t('Extrude Length')"
+          :label="$t('app.general.simple_form.label.extrude_length')"
           suffix="mm">
         </v-text-field>
       </v-col>
@@ -22,7 +22,7 @@
           :elevation="2"
           block
           class="mr-2">
-          {{ $t('Retract') }}
+          {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
         </btn>
       </v-col>
@@ -37,7 +37,7 @@
           hide-details
           outlined
           dense
-          :label="$t('Extrude Speed')"
+          :label="$t('app.general.simple_form.label.extrude_speed')"
           suffix="mm/s">
         </v-text-field>
       </v-col>
@@ -48,7 +48,7 @@
           :elevation="2"
           block
           class="mr-2">
-          {{ $t('Extrude') }}
+          {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
         </btn>
       </v-col>
@@ -76,13 +76,13 @@ export default class ToolheadMovesWidget extends Mixins(StateMixin, ToolheadMixi
 
   rules = {
     min: (v: number) => {
-      return (v >= 1) || this.$t('Min 1')
+      return (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 })
     },
     maxSpeed: (v: number) => {
-      return (v <= this.maxExtrudeSpeed) || this.$t('Max %{max}', { max: this.maxExtrudeSpeed })
+      return (v <= this.maxExtrudeSpeed) || this.$t('app.general.simple_form.error.max', { max: this.maxExtrudeSpeed })
     },
     maxLength: (v: number) => {
-      return (v <= this.maxExtrudeLength) || this.$t('Max %{max}', { max: this.maxExtrudeLength })
+      return (v <= this.maxExtrudeLength) || this.$t('app.general.simple_form.error.max', { max: this.maxExtrudeLength })
     }
   }
 

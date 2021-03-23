@@ -27,25 +27,25 @@
             :href="$globals.DOCS_KLIPPER_CONFIG_REF"
             target="_blank">
             <v-icon small left>$help</v-icon>
-            {{ $t('Config Reference') }}
+            {{ $t('app.general.btn.config_reference') }}
           </btn>
           <btn
             v-if="!readonly && !printerPrinting"
             @click="emitSave(newContents, true)">
             <v-icon small left>$restart</v-icon>
-            {{ $t('Save & Restart') }}
+            {{ $t('app.general.btn.save_restart') }}
           </btn>
           <btn
             v-if="!readonly"
             @click="emitSave(newContents, false)">
             <v-icon small left>$save</v-icon>
-            {{ $t('Save') }}
+            {{ $t('app.general.btn.save') }}
           </btn>
           <btn
             v-if="!readonly && !printerPrinting"
             @click="emitClose()">
             <v-icon small left>$close</v-icon>
-            {{ $t('Close') }}
+            {{ $t('app.general.btn.close') }}
           </btn>
         </v-toolbar-items>
       </v-toolbar>

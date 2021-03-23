@@ -43,6 +43,15 @@ module.exports = {
     ]
   },
   chainWebpack: config => {
+    config.module
+      .rule('i18n-loader')
+      .test(/.\.yaml$/)
+      .use('json')
+      .loader('json-loader')
+      .end()
+      .use('yaml')
+      .loader('yaml-loader')
+      .end()
     config
       .plugin('define')
       .tap(args => {

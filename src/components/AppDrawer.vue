@@ -13,7 +13,7 @@
           <v-icon>$home</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.title.home') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/jobs" class="d-flex d-md-none" v-if="klippyReady">
@@ -21,7 +21,7 @@
           <v-icon>$files</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Jobs') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.title.jobs') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/tune" class="d-flex d-md-none">
@@ -29,7 +29,7 @@
           <v-icon>$tune</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Tune') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.title.tune') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/configure" class="d-flex d-md-none">
@@ -37,7 +37,7 @@
           <v-icon>$cogs</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Configure') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.title.configure') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/interface">
@@ -45,7 +45,7 @@
           <v-icon>$cog</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Interface') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.title.interface') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>

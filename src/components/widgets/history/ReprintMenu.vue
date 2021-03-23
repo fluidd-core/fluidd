@@ -13,7 +13,7 @@
         <v-icon small left>
           $reprint
         </v-icon>
-        Reprint
+        {{ $t('app.general.btn.reprint') }}
         <v-icon small class="ml-1" v-if="value">$chevronUp</v-icon>
         <v-icon small class="ml-1" v-else>$chevronDown</v-icon>
       </btn>

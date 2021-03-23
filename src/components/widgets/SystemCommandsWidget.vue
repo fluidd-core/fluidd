@@ -5,14 +5,14 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Host') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.host') }}</v-list-item-title>
         </v-list-item-content>
       </template>
 
       <v-list-item
         @click="handleHostReboot"
         :disabled="printerPrinting">
-        <v-list-item-title>{{ $t('Reboot') }}</v-list-item-title>
+        <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$powerCycle</v-icon>
         </v-list-item-icon>
@@ -21,7 +21,7 @@
       <v-list-item
         @click="handleHostShutdown"
         :disabled="printerPrinting">
-        <v-list-item-title>{{ $t('Shutdown') }}</v-list-item-title>
+        <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$power</v-icon>
         </v-list-item-icon>
@@ -34,7 +34,7 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Power Plugin') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.power') }}</v-list-item-title>
         </v-list-item-content>
       </template>
 
@@ -58,13 +58,13 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('Services') }}</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.services') }}</v-list-item-title>
         </v-list-item-content>
       </template>
 
       <v-list-item @click="serviceRestartMoonraker(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('Restart Moonraker') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_moonraker') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="warning">$restart</v-icon>
         </v-list-item-icon>
@@ -74,7 +74,7 @@
         v-if="!klippyConnected"
         @click="serviceRestartKlipper(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('Restart Klipper') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_klipper') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
@@ -84,7 +84,7 @@
         v-if="klippyConnected"
         @click="restartKlippy(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('Restart Klipper') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_klipper') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
@@ -94,7 +94,7 @@
         v-if="klippyConnected"
         @click="firmwareRestartKlippy(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('Firmware Restart Klipper') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_firmware') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$restartAlert</v-icon>
         </v-list-item-icon>
@@ -138,7 +138,7 @@ export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMix
   }
 
   handleHostReboot () {
-    this.$confirm('Are you sure? This will reboot your host system.')
+    this.$confirm(this.$t('app.general.simple_form.msg.confirm_reboot_host').toString())
       .then(res => {
         if (res) {
           this.$emit('click')
@@ -148,7 +148,7 @@ export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMix
   }
 
   handleHostShutdown () {
-    this.$confirm('Are you sure? This will shutdown your host system.')
+    this.$confirm(this.$t('app.general.simple_form.msg.confirm_shutdown_host').toString())
       .then(res => {
         if (res) {
           this.$emit('click')

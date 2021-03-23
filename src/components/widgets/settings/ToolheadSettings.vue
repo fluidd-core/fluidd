@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="toolhead">{{ $t('Toolhead') }}</v-subheader>
+    <v-subheader id="toolhead">{{ $t('app.setting.title.tool') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -10,7 +10,7 @@
       >
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Invert X control') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.invert_x_control') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -25,7 +25,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Invert Y control') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.invert_y_control') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -40,7 +40,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Invert Z control') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.invert_z_control') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -56,11 +56,11 @@
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title>
-              {{ $t('Use GCode Coordinates') }}
+              {{ $t('app.setting.label.gcode_coords') }}
               <inline-help
                 small
                 top
-                :tooltip="$t('Use GCode position instead of toolhead position on dashboard')"
+                :tooltip="$t('app.setting.tooltip.gcode_coords')"
               ></inline-help>
             </v-list-item-title>
           </v-list-item-content>
@@ -77,7 +77,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Default extrude length') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.default_extrude_length') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -97,7 +97,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Default extrude speed') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.default_extrude_speed') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -117,7 +117,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Default toolhead move length') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.default_toolhead_move_length') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-select
@@ -138,7 +138,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Default toolhead XY speed') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.default_toolhead_xy_speed') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -158,7 +158,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Default toolhead Z speed') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.default_toolhead_z_speed') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -176,7 +176,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="text-wrap">{{ $t('Z Adjust values') }}</v-list-item-title>
+            <v-list-item-title class="text-wrap">{{ $t('app.setting.label.z_adjust_values') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-combobox
@@ -191,8 +191,8 @@
               deletable-chips
               type="number"
               :rules="[
-                  v => v.length > 0 || $t('Minimum 1 value'),
-                  v => v.length <= 2 || $t('Max 2 values.'),
+                  v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
+                  v => v.length <= 2 || $t('app.general.simple_form.error.max', { max: 2 }),
               ]"
             ></v-combobox>
           </v-list-item-action>
@@ -202,7 +202,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Reset settings') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.reset') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <btn
@@ -211,7 +211,7 @@
               color="primary"
               @click="handleReset"
             >
-              {{ $t('Reset') }}
+              {{ $t('app.setting.btn.reset') }}
             </btn>
           </v-list-item-action>
         </v-list-item>

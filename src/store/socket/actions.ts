@@ -108,30 +108,26 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyStatusUpdate ({ state, commit, dispatch }, payload) {
     dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
-    if (!state.ready) commit('setSocketReadyState', true)
+      .then(() => {
+        if (!state.ready) commit('setSocketReadyState', true)
+      })
   },
 
   async notifyGcodeResponse ({ dispatch }, payload) {
     dispatch('console/onAddConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` }, { root: true })
   },
 
-  async notifyKlippyDisconnected ({ dispatch }) {
-    // Partially reset, since config might have changed.
-    await dispatch('reset', [
-      'printer',
-      'charts',
-      'wait'
-    ], { root: true })
+  /**
+   * This is fired when, for example - the service is stopped.
+   */
+  async notifyKlippyDisconnected () {
     SocketActions.serverInfo()
   },
 
-  async notifyKlippyShutdown ({ dispatch }) {
-    // Partially reset, since config might have changed.
-    await dispatch('reset', [
-      'printer',
-      'charts',
-      'wait'
-    ], { root: true })
+  /**
+   * This is fired when, for example - an estop is emitted.
+   */
+  async notifyKlippyShutdown () {
     SocketActions.serverInfo()
   },
 

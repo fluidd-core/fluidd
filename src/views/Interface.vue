@@ -21,7 +21,6 @@ import GeneralSettings from '@/components/widgets/settings/GeneralSettings.vue'
 import TemperaturePresetSettings from '@/components/widgets/settings/TemperaturePresetSettings.vue'
 import CameraSettings from '@/components/widgets/settings/CameraSettings.vue'
 import ToolheadSettings from '@/components/widgets/settings/ToolheadSettings.vue'
-import PrintTimeEstimateSettings from '@/components/widgets/settings/PrintTimeEstimateSettings.vue'
 import ThemeSettings from '@/components/widgets/settings/ThemeSettings.vue'
 
 @Component({
@@ -31,7 +30,6 @@ import ThemeSettings from '@/components/widgets/settings/ThemeSettings.vue'
     TemperaturePresetSettings,
     CameraSettings,
     ToolheadSettings,
-    PrintTimeEstimateSettings,
     ThemeSettings
   }
 })

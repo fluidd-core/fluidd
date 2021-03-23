@@ -11,7 +11,7 @@
       <v-icon @click="handleReset">$refresh</v-icon>
     </template> -->
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Prop } from 'vue-property-decorator'
 import { VTextField } from 'vuetify/lib'
 
 @Component({

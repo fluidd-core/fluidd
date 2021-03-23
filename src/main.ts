@@ -4,16 +4,14 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import './plugins/consola'
 
 import Vue from 'vue'
+import i18n from '@/plugins/i18n'
 import consola from 'consola'
-import App from './App.vue'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import VueI18n from 'vue-i18n'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
 import { appInit } from './init'
-import { i18n, $t } from './i18n'
 import { InitConfig } from './store/config/types'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
@@ -22,6 +20,7 @@ import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 import { plugin } from 'echarts-for-vue'
 import VueVirtualScroller from 'vue-virtual-scroller'
+import App from './App.vue'
 
 // import * as echarts from 'echarts'
 import * as echarts from 'echarts/core'
@@ -59,7 +58,6 @@ echarts.use([
 
 // Use any Plugins
 Vue.use(plugin, { echarts })
-Vue.use(VueI18n)
 Vue.use(AxiosPlugin)
 Vue.use(VueVirtualScroller)
 Vue.use(DayJSPlugin)
@@ -67,8 +65,7 @@ Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})
 Vue.use(VuetifyConfirm, {
-  vuetify,
-  buttonFalseText: $t('Cancel')
+  vuetify
 })
 // Vue.use(WorkboxPlugin)
 
@@ -96,7 +93,7 @@ appInit()
       Vue.$socket.connect(config.apiConfig.socketUrl)
     }
 
-    i18n.locale = store.state.config?.uiSettings.general.locale || Globals.DEFAULT_LOCALE
+    // i18n.locale = store.state.config?.uiSettings.general.locale || Globals.DEFAULT_LOCALE
 
     // Init Vue
     Vue.config.productionTip = false

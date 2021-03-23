@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    :title="$t('Camera')"
+    :title="$t('app.general.title.camera')"
     icon="$camera"
     :lazy="false"
     :draggable="true"

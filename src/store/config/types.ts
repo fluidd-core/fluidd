@@ -38,6 +38,12 @@ export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
   hosted: boolean;
+  locales: SupportedLocale[];
+}
+
+export interface SupportedLocale {
+  name: string;
+  code: string;
 }
 
 export interface GeneralConfig {

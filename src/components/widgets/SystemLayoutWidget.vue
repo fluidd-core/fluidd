@@ -1,6 +1,6 @@
 <template>
   <v-list dense>
-    <v-subheader>{{ $t('Layout') }}</v-subheader>
+    <v-subheader>{{ $t('app.general.label.layout') }}</v-subheader>
 
     <v-list-item @click.prevent="layoutMode = !layoutMode">
       <v-list-item-action>
@@ -8,7 +8,7 @@
       </v-list-item-action>
 
       <v-list-item-content>
-        <v-list-item-title class="text-wrap">{{ $t('Adjust dashboard layout') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.adjust_layout') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
@@ -18,7 +18,7 @@
       </v-list-item-icon>
 
       <v-list-item-content>
-        <v-list-item-title class="text-wrap">{{ $t('Reset dashboard layout') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.reset_layout') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>

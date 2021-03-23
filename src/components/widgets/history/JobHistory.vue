@@ -129,17 +129,14 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
-import JobHistoryMenu from './JobHistoryMenu.vue'
 import FilesMixin from '@/mixins/files'
-import { $t } from '@/i18n'
 import { getFilePaths } from '@/store/helpers'
 import { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/socketActions'
 
 @Component({
   components: {
-    JobHistoryItemStatus,
-    JobHistoryMenu
+    JobHistoryItemStatus
   }
 })
 export default class JobHistory extends Mixins(FilesMixin) {
@@ -149,12 +146,12 @@ export default class JobHistory extends Mixins(FilesMixin) {
   get headers () {
     return [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: $t('name'), value: 'filename' },
-      { text: $t('status'), value: 'status' },
-      { text: $t('Started'), value: 'start_time' },
-      { text: $t('Print Duration'), value: 'print_duration' },
-      { text: $t('Filament Used'), value: 'filament_used' },
-      { text: $t('Actions'), value: 'actions', sortable: false }
+      { text: this.$t('app.general.table.header.name'), value: 'filename' },
+      { text: this.$t('app.general.table.header.status'), value: 'status' },
+      { text: this.$t('app.general.table.header.start_time'), value: 'start_time' },
+      { text: this.$t('app.general.table.header.print_duration'), value: 'print_duration' },
+      { text: this.$t('app.general.table.header.filament_used'), value: 'filament_used' },
+      { text: this.$t('app.general.table.header.actions'), value: 'actions', sortable: false }
     ]
   }
 

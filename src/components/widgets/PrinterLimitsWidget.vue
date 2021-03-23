@@ -4,7 +4,7 @@
     <v-row class="my-0 mb-4">
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          :label="$t('Velocity')"
+          :label="$t('app.general.label.velocity')"
           value-suffix="mm/s"
           input-sm
           :value="velocity.current"
@@ -18,7 +18,7 @@
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          :label="$t('Square Corner Velocity')"
+          :label="$t('app.general.label.sqv')"
           value-suffix="mm/s"
           input-sm
           :value="scv.current"
@@ -35,7 +35,7 @@
     <v-row class="my-0">
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          :label="$t('Acceleration')"
+          :label="$t('app.general.label.acceleration')"
           value-suffix="mm/s^2"
           input-sm
           :value="accel.current"
@@ -49,7 +49,7 @@
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
         <input-slider
-          :label="$t('Accel to Decel')"
+          :label="$t('app.general.label.accel_to_decel')"
           value-suffix="mm/s^2"
           input-sm
           :value="decel.current"
@@ -81,22 +81,22 @@ export default class PrinterLimitsWidget extends Mixins(StateMixin) {
 
   rules = {
     min0: (v: string) => {
-      return (parseInt(v) >= 0) || this.$t('min 0')
+      return (parseInt(v) >= 0) || this.$t('app.general.simple_form.error.min', { min: 0 })
     },
     min1: (v: string) => {
-      return (parseInt(v) >= 1) || this.$t('min 1')
+      return (parseInt(v) >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 })
     },
     velocityMax: (v: string) => {
-      return (parseInt(v) <= this.velocity.max) || this.$t('max %{velocityMax}', { velocityMax: this.velocity.max })
+      return (parseInt(v) <= this.velocity.max) || this.$t('app.general.simple_form.error.max', { max: this.velocity.max })
     },
     scvMax: (v: string) => {
-      return (parseInt(v) <= this.scv.max) || this.$t('min %{scvMax}', { scvMax: this.scv.max })
+      return (parseInt(v) <= this.scv.max) || this.$t('app.general.simple_form.error.max', { max: this.scv.max })
     },
     accelMax: (v: string) => {
-      return (parseInt(v) <= this.accel.max) || this.$t('min %{accelMax}', { accelMax: this.accel.max })
+      return (parseInt(v) <= this.accel.max) || this.$t('app.general.simple_form.error.max', { max: this.accel.max })
     },
     decelMax: (v: string) => {
-      return (parseInt(v) <= this.decel.max) || this.$t('min 0%{decelMax}', { decelMax: this.decel.max })
+      return (parseInt(v) <= this.decel.max) || this.$t('app.general.simple_form.error.max', { max: this.decel.max })
     }
   }
 

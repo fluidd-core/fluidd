@@ -49,7 +49,7 @@ export default class FanWidget extends Mixins(StateMixin) {
 
   get prettyValue () {
     return (this.value === 0)
-      ? 'off'
+      ? this.$t('app.general.label.off')
       : `${this.value.toFixed()}<small>%</small>`
   }
 
@@ -83,7 +83,7 @@ export default class FanWidget extends Mixins(StateMixin) {
   rules = [
     (v: string) => {
       if (this.offBelow <= 0) return true
-      return (parseFloat(v) >= this.offBelow || parseFloat(v) === 0) || 'min error'
+      return (parseFloat(v) >= this.offBelow || parseFloat(v) === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: this.offBelow })
     }
   ]
 }

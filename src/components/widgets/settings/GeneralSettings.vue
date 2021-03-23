@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="general">{{ $t('General') }}</v-subheader>
+    <v-subheader id="general">{{ $t('app.setting.title.general') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -10,7 +10,7 @@
       >
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Printer name') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.printer_name') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -31,7 +31,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Display Language') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.language') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-select
@@ -40,8 +40,10 @@
               single-line
               hide-details="auto"
               v-model="$i18n.locale"
-              :items="languageList"
+              :items="supportedLocales"
               :value="locale"
+              item-text="name"
+              item-value="code"
               @change="setLocale"
             ></v-select>
           </v-list-item-action>
@@ -52,19 +54,19 @@
         <v-list-item>
           <v-list-item-content>
             <v-list-item-title>
-              <span class="text-wrap">{{ $t('Time estimates') }}</span>
+              <span class="text-wrap">{{ $t('app.setting.label.time_estimates') }}</span>
               <inline-help bottom small class="ml-2">
-                <span>{{ $t('Duration only') }}</span><br />
-                <span>{{ $t('Similar to a klipper LCD, this only shows duration with no estimates.') }}</span><br /><br />
+                <span>{{ $t('app.setting.timer_options.duration') }}</span><br />
+                <span>{{ $t('app.setting.timer_options.duration_description') }}</span><br /><br />
 
-                <span>{{ $t('Slicer') }}</span><br />
-                <span>{{ $t('Uses the slicer estimates for display. You must enable this in your slicer.') }}</span><br /><br />
+                <span>{{ $t('app.setting.timer_options.slicer') }}</span><br />
+                <span>{{ $t('app.setting.timer_options.slicer_description') }}</span><br /><br />
 
-                <span>{{ $t('File') }}</span><br />
-                <span v-html="$t('Takes progress percent, and duration to estimate total duration.<br />More accurate over time.')"></span><br /><br />
+                <span>{{ $t('app.setting.timer_options.file') }}</span><br />
+                <span v-html="$t('app.setting.timer_options.file_description')"></span><br /><br />
 
-                <span>{{ $t('Filament') }}</span><br />
-                <span v-html="$t('Takes used filament vs estimated filament to estimate total duration.<br />More accurate over time.')"></span>
+                <span>{{ $t('app.setting.timer_options.filament') }}</span><br />
+                <span v-html="$t('app.setting.timer_options.filament_description')"></span>
               </inline-help>
             </v-list-item-title>
           </v-list-item-content>
@@ -101,10 +103,10 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
 
   get estimateTypes () {
     return [
-      { name: this.$t('Duration only'), value: 'totals' },
-      { name: this.$t('Slicer'), value: 'slicer' },
-      { name: this.$t('File Estimation'), value: 'file' },
-      { name: this.$t('Filament Estimation'), value: 'filament' }
+      { name: this.$t('app.setting.timer_options.duration'), value: 'totals' },
+      { name: this.$t('app.setting.timer_options.slicer'), value: 'slicer' },
+      { name: this.$t('app.setting.timer_options.file'), value: 'file' },
+      { name: this.$t('app.setting.timer_options.filament'), value: 'filament' }
     ]
   }
 
@@ -120,16 +122,16 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.locale
   }
 
+  get supportedLocales () {
+    return this.$store.state.config.hostConfig.locales
+  }
+
   setLocale (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.locale',
       value,
       server: true
     })
-  }
-
-  get languageList () {
-    return Object.keys(this.$i18n.messages)
   }
 
   get printTimeEstimateType () {

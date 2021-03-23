@@ -1,7 +1,7 @@
 
 <template>
   <div>
-    <v-subheader id="theme">{{ $t('Theme') }}</v-subheader>
+    <v-subheader id="theme">{{ $t('app.setting.title.theme') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -11,7 +11,7 @@
       >
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Primary color') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.primary_color') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <theme-picker
@@ -25,7 +25,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Dark mode') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.dark_mode') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -41,7 +41,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Reset settings') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.reset') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <btn
@@ -50,7 +50,7 @@
               color="primary"
               @click="handleReset"
             >
-              {{ $t('Reset') }}
+              {{ $t('app.setting.btn.reset') }}
             </btn>
           </v-list-item-action>
         </v-list-item>

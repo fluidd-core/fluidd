@@ -1,23 +1,11 @@
 <template>
   <collapsable-card
-    :title="$t('Jobs')"
+    :title="$t('app.general.title.jobs')"
     icon="$files"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
     @enabled="$emit('enabled', $event)">
-
-    <template v-slot:title v-if="!enabled">
-      <v-icon left>$files</v-icon>
-      <span class="font-weight-light">{{ $t('Jobs') }}</span>
-      <inline-help
-        type="warning"
-        bottom
-        small
-        :tooltip="$t('Jobs are disabled prior to initial communcation with klippy')"
-      ></inline-help>
-
-    </template>
 
     <file-system
       roots="gcodes"

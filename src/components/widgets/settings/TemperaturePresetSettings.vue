@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="presets">{{ $t('Temperature Presets') }}</v-subheader>
+    <v-subheader id="presets">{{ $t('app.setting.title.thermal_presets') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -20,7 +20,7 @@
               small
               color="primary">
               <v-icon small left>$plus</v-icon>
-              {{ $t('Add preset') }}
+              {{ $t('app.setting.btn.add_thermal_preset') }}
             </btn>
           </v-list-item-action>
         </v-list-item>

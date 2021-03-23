@@ -48,7 +48,7 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
 
   get status () {
     if (this.job.status === HistoryItemStatus.Completed && !this.dense) return ''
-    if (this.job.status === HistoryItemStatus.InProgress) return 'in progress'
+    if (this.job.status === HistoryItemStatus.InProgress) return HistoryItemStatus.InProgress
     if (this.job.status.indexOf('_')) {
       return this.job.status.split('_').pop()
     }

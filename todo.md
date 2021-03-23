@@ -23,7 +23,6 @@
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - cleanup card layout stuff
 - sync instances across moonraker db
-- i18n (translations)
 
 - allow deletion of all printers on fluidd.xyz
 - show known meta data on print dialog (for dashboard jobs page..)?

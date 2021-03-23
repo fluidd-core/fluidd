@@ -10,36 +10,34 @@ export const getters: GetterTree<PrinterState, RootState> = {
   /**
    * Indicates if klippy is connected or not.
    */
-  getklippyReady: (state): boolean => {
+  getklippyReady: (state, getters, rootState, rootGetters): boolean => {
     // Valid states are;
     // ready, startup, shutdown, error
+    const serverInfo = rootGetters['server/getInfo']
+    const server_klippy_state = serverInfo.klippy_state || ''
     if (
-      state.printer.info.state !== 'ready' ||
-      state.printer.webhooks.state !== 'ready'
-      // state.printer.info.state === 'error' ||
-      // state.printer.info.state === 'shutdown' ||
-      // state.printer.webhooks.state === 'error' ||
-      // state.printer.webhooks.state === 'shutdown'
+      server_klippy_state !== 'ready' ||
+      server_klippy_state !== 'ready'
     ) {
       return false
     }
     return true
   },
 
-  getKlippyState: (state): string => {
-    const state1 = state.printer.webhooks.state || ''
-    const state2 = state.printer.info.state || ''
-
-    if (state1 === state2) {
-      return Vue.$filters.capitalize(state1)
-    }
-    if (state1 !== 'ready') {
-      return Vue.$filters.capitalize(state1)
-    }
-    if (state2 !== 'ready') {
-      return Vue.$filters.capitalize(state2)
-    }
-    return state1
+  getKlippyState: (state, getters, rootState, rootGetters): string => {
+    const serverInfo = rootGetters['server/getInfo']
+    const server_klippy_state = serverInfo.klippy_state || ''
+    return Vue.$filters.capitalize(server_klippy_state)
+    // if (state1 === state2) {
+    //   return Vue.$filters.capitalize(state1)
+    // }
+    // if (state1 !== 'ready' && state1 !== '') {
+    //   return Vue.$filters.capitalize(state1)
+    // }
+    // if (state2 !== 'ready' && state1 !== '') {
+    //   return Vue.$filters.capitalize(state2)
+    // }
+    // return state1
   },
 
   getKlippyStateMessage: (state, getters, rootState, rootGetters): string => {
@@ -66,7 +64,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     ) {
       return state.printer.webhooks.state_message.trim().replace(regex, '<br />')
     }
-    return ''
+    return 'Unknown'
   },
 
   /**
@@ -83,7 +81,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       if (
         state2.toLowerCase() === 'paused'
       ) {
-        return state2
+        return state2.toLowerCase()
       }
       if (
         state1.toLowerCase() === 'printing' &&
@@ -92,11 +90,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
         // The printers idle_timeout changes to printing when it's busy applying
         // some change - but not necessarily printing anything. This state hopefully
         // helps aleviate that confusion.
-        return 'Busy'
+        return 'busy'
       }
-      return state1
+      return state1.toLowerCase()
     } else {
-      return 'Loading'
+      return 'loading'
     }
   },
 

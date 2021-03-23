@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import { $t } from '@/i18n'
 import { SocketActions } from '@/socketActions'
 import { Component } from 'vue-property-decorator'
 import { Waits } from '@/globals'
@@ -7,18 +6,6 @@ import { Waits } from '@/globals'
 @Component
 export default class UtilsMixin extends Vue {
   waits = Waits
-
-  // Marking strings for extraction
-  STATE_LABELS = {
-    printing: $t('Printing'),
-    busy: $t('Busy'),
-    ready: $t('Ready'),
-    idle: $t('Idle'),
-    paused: $t('Paused'),
-    standby: $t('Standby'),
-    complete: $t('Complete'),
-    loading: $t('Loading')
-  }
 
   get socketConnected () {
     return this.$store.getters['socket/getConnectionState']
@@ -51,7 +38,8 @@ export default class UtilsMixin extends Vue {
 
   // Return the printer state
   get printerState () {
-    return this.$filters.startCase(this.$store.getters['printer/getPrinterState'])
+    // return this.$filters.startCase(this.$store.getters['printer/getPrinterState'])
+    return this.$store.getters['printer/getPrinterState']
   }
 
   // Returns a boolean indicating if the printer is busy.
@@ -83,8 +71,7 @@ export default class UtilsMixin extends Vue {
    * (versus busy in some other way...)
    */
   get printerPrinting () {
-    const printerState = this.printerState.toLowerCase()
-    if (printerState === 'printing') return true
+    if (this.printerState === 'printing') return true
     return false
   }
 

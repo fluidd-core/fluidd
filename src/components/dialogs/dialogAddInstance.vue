@@ -14,10 +14,10 @@
       <v-card>
 
         <v-card-title>
-          <span class="headline">{{ $t('Add printer') }}</span>
+          <span class="headline">{{ $t('app.general.title.add_printer') }}</span>
           <v-spacer></v-spacer>
           <inline-help bottom>
-            <span v-html="$t('Enter your API URL.<br />Some examples might be;<br /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>')"></span>
+            <span v-html="$t('app.endpoint.tooltip.endpoint_examples')"></span>
           </inline-help>
         </v-card-title>
 
@@ -27,9 +27,9 @@
           <v-text-field
             v-model="url"
             autofocus
-            :label="$t('API URL')"
+            :label="$t('app.general.label.api_url')"
             persistent-hint
-            :hint="$t('E.g., http://fluiddpi.local')"
+            :hint="$t('app.endpoint.hint.add_printer')"
             :loading="verifying"
             :rules="[rules.required, rules.url]"
           >
@@ -61,8 +61,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('Cancel') }}</btn>
-          <btn color="primary" type="submit" :disabled="!verified">{{ $t('Save') }}</btn>
+          <btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</btn>
+          <btn color="primary" type="submit" :disabled="!verified">{{ $t('app.general.btn.save') }}</btn>
         </v-card-actions>
 
       </v-card>
@@ -100,8 +100,8 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
             '(\\#[-a-z\\d_]*)?$', 'i')
 
   rules = {
-    required: (v: string) => !!v || this.$t('Required'),
-    url: (v: string) => (this.urlRegex.test(v)) || this.$t('Invalid URL')
+    required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
+    url: (v: string) => (this.urlRegex.test(v)) || this.$t('app.general.simple_form.error.invalid_url')
   }
 
   timer = 0
@@ -165,16 +165,16 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
         await fetch(url + '/server/info', { mode: 'no-cors', cache: 'no-cache' })
           .then(() => {
             // likely a cors issue
-            this.error = this.$t('blocked by CORS policy')
-            this.note = this.$t('This may mean you need to modify your moonraker configuration. Please see the documentation on multi printer setups <a href="%{url}" target="_blank">here</a>.', {
+            this.error = this.$t('app.endpoint.error.cors_error')
+            this.note = this.$t('app.endpoint.error.cors_note', {
               url: Globals.DOCS_MULTIPLE_INSTANCES
             })
           })
           .catch(e => {
             // external host not reachable (fetch returns 'failed to fetch')
-            consola.log('Network Error', e, request)
+            consola.debug('Network Error', e, request)
             this.error = request
-            this.note = this.$t('Something went wrong, and fluidd can\'t reach the destination. Are you sure this is the correct address?')
+            this.note = this.$t('app.endpoint.error.cant_connect')
           })
           .finally(() => { this.verifying = false })
       }
@@ -186,7 +186,7 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
   }
 
   get helpTxt () {
-    return this.$t('Having trouble? <a href="%{url}" target="_blank">See here</a> for more information.<br />', {
+    return this.$t('app.endpoint.msg.trouble', {
       url: Globals.DOCS_MULTIPLE_INSTANCES
     })
   }

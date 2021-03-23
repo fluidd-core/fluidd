@@ -3,7 +3,7 @@
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" class="pt-0">
         <collapsable-card
-          :title="$t('Jobs')"
+          :title="$t('app.general.title.jobs')"
           cardKey="JobsPage"
           icon="$files"
           :draggable="false"

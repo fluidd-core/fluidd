@@ -2,17 +2,17 @@
   <v-card-text>
     <v-row>
       <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        {{ $t('Item') }}
+        {{ $t('app.chart.label.item') }}
       </v-col>
       <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        {{ $t('Power') }}
+        {{ $t('app.chart.label.power') }}
       </v-col>
       <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
-        {{ $t('Current') }}
+        {{ $t('app.chart.label.current') }}
       </v-col>
       <v-col sm="4" class="text-subtitle-1 grey--text text--darken-1">
         <v-layout>
-          <span class="">{{ $t('Target') }}</span>
+          <span class="">{{ $t('app.chart.label.target') }}</span>
           <v-spacer></v-spacer>
           <v-menu
             bottom
@@ -38,7 +38,7 @@
                 link>
                 <v-list-item-title>
                   <v-icon small left color="cyan">$snowflakeAlert</v-icon>
-                  {{ $t('All off') }}
+                  {{ $t('app.general.btn.all_off') }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item
@@ -81,15 +81,16 @@
           class="legend-item">
           <span v-if="item.power <= 0 && item.target <= 0">off</span>
           <span v-if="item.target > 0">
-            {{ (item.power * 100).toFixed() }}<small>%</small>
+            {{ (item.power) ? (item.power * 100).toFixed() : 0}}<small>%</small>
           </span>
         </span>
       </v-col>
       <v-col cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
-        {{ item.temperature.toFixed(1) }}<small>°C</small>
+        {{ (item.temperature) ? item.temperature.toFixed(1) : 0 }}<small>°C</small>
       </v-col>
       <v-col cols="6" sm="4" class="pt-0 pt-md-2">
         <input-temperature
+          v-if="klippyReady"
           :value="item.target"
           @input="setHeaterTargetTemp(item.name, $event)"
           :max="item.maxTemp"
@@ -116,7 +117,7 @@
             {{ item.prettyName }}
           </span>
         </v-col>
-        <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2">
+        <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2" v-if="item.speed">
           <span
             @click="$emit('legendPowerClick', item)"
             :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
@@ -135,6 +136,7 @@
         </v-col>
         <v-col v-if="item.type === 'temperature_fan'" cols="6" sm="4" class="pt-0 pt-md-2">
           <input-temperature
+            v-if="klippyReady"
             :value="item.target"
             @input="setFanTargetTemp(item.name, $event)"
             :max="item.maxTemp"
@@ -165,9 +167,9 @@
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
           </template>
-          <span>
-            <span class="amber--text">{{ $t('high') }} {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
-            <span class="cyan--text">{{ $t('low') }} {{ item.measured_min_temp.toFixed(1) }}°C</span>
+          <span v-if="item.measured_max_temp && item.measured_min_temp">
+            <span class="amber--text">{{ $t('app.general.label.high') }} {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+            <span class="cyan--text">{{ $t('app.general.label.low') }} {{ item.measured_min_temp.toFixed(1) }}°C</span>
           </span>
         </v-tooltip>
       </v-col>

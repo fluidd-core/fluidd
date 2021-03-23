@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    :title="$t('Thermals')"
+    :title="$t('app.general.title.temperature')"
     icon="$fire"
     :lazy="false"
     :draggable="true"
@@ -10,11 +10,11 @@
 
     <template v-slot:title>
       <v-icon left>$fire</v-icon>
-      <span class="font-weight-light">{{ $t('Thermals') }}</span>
+      <span class="font-weight-light">{{ $t('app.general.title.temperature') }}</span>
       <inline-help
         bottom
         small
-        :tooltip="$t('Hold shift to zoom.<br />Click an item to toggle in the graph.<br />Click a power to toggle in the graph.')"
+        :tooltip="$t('app.chart.tooltip.help')"
       ></inline-help>
 
     </template>
@@ -73,7 +73,7 @@ export default class TemperatureGraphCard extends Mixins(StateMixin) {
     // If this has a target, toggle that too.
     const ref = this.$refs.chart as EChartsWidget
     if ('target' in item) {
-      ref.legendToggleSelect(item.name + this.$t('Target'))
+      ref.legendToggleSelect(item.name + 'Target')
     }
     ref.legendToggleSelect(item.name)
   }
@@ -81,8 +81,8 @@ export default class TemperatureGraphCard extends Mixins(StateMixin) {
   legendTogglePowerSelect (item: Heater | Fan) {
     const ref = this.$refs.chart as EChartsWidget
     const name = ('speed' in item)
-      ? item.name + this.$t('Speed')
-      : item.name + this.$t('Power')
+      ? item.name + 'Speed'
+      : item.name + 'Power'
     ref.legendToggleSelect(name)
   }
 

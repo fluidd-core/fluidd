@@ -15,7 +15,7 @@
           class="text-h6 font-weight-light text-center"
           cols="12" sm-cols="6">
           <v-icon x-large>$fileUpload</v-icon>
-          <span v-html="$t('<strong>Drag</strong> a file here')"></span>
+          <span v-html="$t('app.file_system.overlay.label')"></span>
         </v-col>
       </v-row>
     </v-container>

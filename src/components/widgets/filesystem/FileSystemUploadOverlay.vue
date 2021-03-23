@@ -15,7 +15,7 @@
           class="text-h6 font-weight-light text-center"
           cols="6">
           <v-icon x-large>$fileUpload</v-icon>
-          <span v-html="$t('<strong>Uploading</strong> files')"></span>
+          <span v-html="$t('app.file_system.overlay.uploading')"></span>
         </v-col>
       </v-row>
       <v-row
@@ -26,7 +26,7 @@
           <v-col cols="6" class="font-weight-light mb-1">
             <div class="mb-1">{{ file.filename }}</div>
             <div v-if="file.percentComplete < 100">
-              <small>{{ $t('Uploading...') }}</small>
+              <small>{{ $t('app.file_system.msg.uploading') }}</small>
               <v-progress-linear
                 class="mt-1"
                 :height="20"
@@ -36,7 +36,7 @@
               </v-progress-linear>
             </div>
             <div v-if="file.percentComplete >= 100">
-              <small>{{ $t('Processing...') }}</small>
+              <small>{{ $t('app.file_system.msg.processing') }}</small>
               <v-progress-linear
                 class="mt-1"
                 color="primary"

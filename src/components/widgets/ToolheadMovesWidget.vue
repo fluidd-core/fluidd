@@ -23,7 +23,7 @@
           @click="sendGcode('G28', waits.onHomeAll)"
           icon="$home"
           small-icon>
-          {{ $t('All') }}
+          {{ $t('app.general.btn.all') }}
         </btn-toolhead-move>
       </v-col>
     </v-row>
@@ -41,7 +41,7 @@
           :loading="hasWait(waits.onHomeXY)"
           :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28 X Y', waits.onHomeXY)"
-          :tooltip="$t('Home XY')"
+          :tooltip="$t('app.tool.tooltip.home_xy')"
           icon="$home">
         </btn-toolhead-move>
       </v-col>
@@ -58,7 +58,7 @@
           :loading="hasWait(waits.onHomeZ)"
           :disabled="!klippyReady || printerPrinting || hasWaits"
           @click="sendGcode('G28 Z', waits.onHomeZ)"
-          :tooltip="$t('Home Z')"
+          :tooltip="$t('app.tool.tooltip.home_z')"
           icon="$home">
         </btn-toolhead-move>
       </v-col>
@@ -70,7 +70,7 @@
           @click="sendGcode('G28 X', waits.onHomeX)"
           icon="$home"
           small-icon>
-          X
+          {{ $t('app.tool.btn.home_x') }}
         </btn-toolhead-move>
       </v-col>
     </v-row>
@@ -97,7 +97,7 @@
           @click="sendGcode('G28 Y', waits.onHomeY)"
           icon="$home"
           small-icon>
-          Y
+          {{ $t('app.tool.btn.home_y') }}
         </btn-toolhead-move>
       </v-col>
     </v-row>

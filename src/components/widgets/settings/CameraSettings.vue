@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="camera">{{ $t('Camera') }}</v-subheader>
+    <v-subheader id="camera">{{ $t('app.setting.title.camera') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -11,7 +11,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Enable') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.enable') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -26,7 +26,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Flip horizontally') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.camera_flip_x') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
           <v-switch
@@ -40,7 +40,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t( 'Flip vertically') }}</v-list-item-title>
+            <v-list-item-title>{{ $t( 'app.setting.label.camera_flip_y') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-switch
@@ -55,14 +55,17 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title class="text-wrap">{{ $t('Stream type') }}</v-list-item-title>
+            <v-list-item-title class="text-wrap">{{ $t('app.setting.label.camera_stream_type') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-select
               filled
               dense
               hide-details="auto"
-              :items="[{ text: $t('mjpgstreamer'), value: 'mjpgstreamer' }, { text: $t('ip camera'), value: 'ipcamera' }]"
+              :items="[
+                { text: $t('app.setting.camera_type_options.img'), value: 'mjpgstreamer' },
+                { text: $t('app.setting.camera_type_options.video'), value: 'ipcamera' }
+              ]"
               v-model="streamType">
             </v-select>
           </v-list-item-action>
@@ -72,7 +75,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Camera URL') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.camera_url') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <v-text-field
@@ -93,7 +96,7 @@
 
         <v-list-item>
           <v-list-item-content>
-            <v-list-item-title>{{ $t('Reset settings') }}</v-list-item-title>
+            <v-list-item-title>{{ $t('app.setting.label.reset') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
             <btn
@@ -102,7 +105,7 @@
               color="primary"
               @click="handleReset"
             >
-              {{ $t('Reset') }}
+              {{ $t('app.setting.btn.reset') }}
             </btn>
           </v-list-item-action>
         </v-list-item>

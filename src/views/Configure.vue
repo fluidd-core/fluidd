@@ -3,7 +3,7 @@
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
         <collapsable-card
-          :title="$t('Configuration Files')"
+          :title="$t('app.general.title.config_files')"
           icon="$files"
           :draggable="false"
         >
@@ -35,7 +35,6 @@ import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCar
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import KlippyCard from '@/components/cards/KlippyCard.vue'
 import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
-import BedAdjustCard from '@/components/cards/configuration/BedAdjustCard.vue'
 import LogsCard from '@/components/cards/configuration/LogsCard.vue'
 import PrinterStatsCard from '@/components/cards/configuration/PrinterStatsCard.vue'
 import PrinterHistoryCard from '@/components/cards/configuration/PrintHistoryCard.vue'
@@ -46,7 +45,6 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
   components: {
     BedMeshCard,
     BedMeshWidget,
-    BedAdjustCard,
     EndStopsCard,
     RunoutSensorsCard,
     FileSystem,
