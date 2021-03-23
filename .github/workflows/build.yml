@@ -31,22 +31,13 @@ jobs:
       - name: Build
         run: npm run build
 
-  publish:
-    if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Create Artifact
-        run: |
-          cd ./dist
-          zip -r fluidd.zip ./
-          cd ..
-
       - name: Prepare Deploy
+        if: github.ref == 'refs/heads/develop'
         run: |
-          rm ./dist/fluidd.zip
           cp ./server/config.json ./dist/config.json
 
       - name: Deploy to Host
+        if: github.ref == 'refs/heads/develop'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
