@@ -247,7 +247,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Set the initial root, and load the dir.
   mounted () {
     this.currentRoot = this.availableRoots[0]
-    this.loadFiles(this.currentPath)
+    // this.loadFiles(this.currentPath)
   }
 
   // If the root changes, reset the path and load the root path files.
@@ -435,9 +435,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleRemove (file: AppFile | AppFileWithMeta | AppDirectory) {
     if (this.disabled) return
-    let text = this.$t('app.general.simple_form.msg.confirm')
-    if (file.type === 'directory') text = this.$t('app.file_system.msg.confirm')
-    this.$confirm(text.toString())
+    let text = this.$tc('app.general.simple_form.msg.confirm')
+    if (file.type === 'directory') text = this.$tc('app.file_system.msg.confirm')
+    this.$confirm(text)
       .then(res => {
         if (res) {
           if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`)

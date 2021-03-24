@@ -8,8 +8,7 @@
     <template v-slot:title>
       <v-icon left>$printer3d</v-icon>
       <span class="font-weight-light">
-        <span v-t="{ path: 'app.printer.state.' + printerState }"></span>
-        <!-- {{ $t('app.printer.state.' + printerState) }} -->
+        {{ $t('app.printer.state.' + printerState) }}
         <span class="font-weight-light text-subtitle-2 ml-sm-4 d-block d-sm-inline-block" v-show="printerMessage">{{ printerMessage }}</span>
       </span>
     </template>
@@ -127,7 +126,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   cancelPrint () {
-    this.$confirm(this.$t('app.general.simple_form.msg.confirm').toString())
+    this.$confirm(this.$tc('app.general.simple_form.msg.confirm'))
       .then(res => {
         if (res) {
           SocketActions.printerPrintCancel()

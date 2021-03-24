@@ -29,7 +29,7 @@ import { SocketActions } from '@/socketActions'
 })
 export default class PrinterHistoryCard extends Vue {
   handleRemoveAll () {
-    this.$confirm(this.$t('app.history.msg.confirm').toString())
+    this.$confirm(this.$tc('app.history.msg.confirm'))
       .then(res => {
         if (res) {
           SocketActions.serverHistoryDeleteJob('all')
