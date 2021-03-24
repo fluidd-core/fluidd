@@ -130,7 +130,6 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
 
       if (this.cancelSource !== undefined) {
         this.cancelSource.cancel('Cancelled due to new request.')
-        // console.log('cancel done')
       }
 
       this.cancelSource = this.$http.CancelToken.source()
@@ -147,7 +146,6 @@ export default class SystemPrintersWidget extends Mixins(StateMixin) {
         })
         .catch((e: AxiosError) => {
           // If it failed because we cancelled, set ok and move on.
-          // console.log('is cancel?', this.$http.isCancel(e), e)
           if (this.$http.isCancel(e)) {
             return 'ok'
           }

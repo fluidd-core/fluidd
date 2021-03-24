@@ -79,7 +79,6 @@ import JobHistory from '@/components/widgets/history/JobHistory.vue'
 })
 export default class PrinterStatsCard extends Vue {
   get rollup () {
-    console.log(this.$store.getters['history/getRollUp'])
     return this.$store.getters['history/getRollUp']
   }
 

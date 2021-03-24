@@ -22,14 +22,12 @@ export default class FluiddTextField extends VTextField {
   defaultValue!: string | number
 
   // handleReset () {
-  //   console.log('resetting to', this.defaultValue)
   //   // this.$emit('input', this.defaultValue)
   //   // this.$emit('change', this.defaultValue)
   // }
 
   // handleChange (e: Event) {
   //   this.$emit('change', e)
-  //   console.log('got change', e)
   // }
 }
 </script>

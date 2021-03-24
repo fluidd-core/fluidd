@@ -39,7 +39,6 @@ export const actions: ActionTree<ChartState, RootState> = {
       Object.keys(payload).length === 0
     ) {
       // Empty chart data
-      // console.log('got init temp store', payload, rootState)
       commit('setChartStore', [])
       return
     }

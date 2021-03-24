@@ -279,7 +279,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (!this.contextMenuState.open && !this.disabled) {
       if (item.type === 'directory' && e.type !== 'contextmenu') {
         const dir = item as AppDirectory
-        // console.log('handling row click')
         if (item.name === '..') {
           const dirs = this.currentPath.split('/')
           const newpath = dirs.slice(0, -1).join('/')
