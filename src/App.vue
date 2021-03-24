@@ -1,5 +1,6 @@
 <template>
-  <v-app v-if="!loading" class="fluidd">
+  <v-app v-if="loading"></v-app>
+  <v-app v-else class="fluidd">
     <vue-headful
       :title="pageTitle"
       :head="pageIcon"
