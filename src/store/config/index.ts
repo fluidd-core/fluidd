@@ -16,7 +16,8 @@ export const defaultState = (): ConfigState => {
       blacklist: [],
       hosted: false,
       locales: [
-        { name: 'English', code: 'en' }
+        { name: 'English', code: 'en' },
+        { name: 'Chinese', code: 'cn' }
       ]
     },
     cardState: {},
