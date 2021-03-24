@@ -194,6 +194,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   @Watch('disabled')
   onDisabledChange (val: boolean) {
+    // We know this always fires on mount, so we rely on it for our initial
+    // load too.
     if (!val) {
       this.loadFiles(this.currentPath)
     }
@@ -247,7 +249,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Set the initial root, and load the dir.
   mounted () {
     this.currentRoot = this.availableRoots[0]
-    // this.loadFiles(this.currentPath)
   }
 
   // If the root changes, reset the path and load the root path files.
@@ -278,6 +279,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (!this.contextMenuState.open && !this.disabled) {
       if (item.type === 'directory' && e.type !== 'contextmenu') {
         const dir = item as AppDirectory
+        // console.log('handling row click')
         if (item.name === '..') {
           const dirs = this.currentPath.split('/')
           const newpath = dirs.slice(0, -1).join('/')

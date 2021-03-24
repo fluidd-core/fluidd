@@ -16,11 +16,6 @@ export const mutations: MutationTree<HistoryState> = {
    */
   setInitHistory (state, payload: HistoryState) {
     if (payload) {
-      // Quick hack because moonraker was returning an empty object for the
-      // jobs array when there was no history.
-      if (
-        payload.count === 0
-      ) payload.jobs = []
       Object.assign(state, payload)
     }
   },

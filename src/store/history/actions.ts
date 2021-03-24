@@ -16,13 +16,17 @@ export const actions: ActionTree<HistoryState, RootState> = {
    * Inits plugin
    */
   async init () {
-    SocketActions.serverHistoryList(Globals.HISTORY_RETENTION)
+    // Get the last 50 history items.
+    SocketActions.serverHistoryList(Globals.JOB_HISTORY_LOAD)
+
+    // Load the known totals.
+    SocketActions.serverHistoryTotals()
   },
 
   /**
    * Init the store with history data
    */
-  async onInit ({ commit }, payload: { count: number; jobs?: HistoryItem[] }) {
+  async onInit ({ commit }, payload) {
     if (payload) {
       commit('setInitHistory', payload)
     }

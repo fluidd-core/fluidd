@@ -1,6 +1,7 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.history')"
+    :sub-title="$t('app.history.msg.load_count', { num: this.$globals.JOB_HISTORY_LOAD })"
     icon="$history">
     <job-history></job-history>
 

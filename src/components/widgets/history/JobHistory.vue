@@ -21,6 +21,7 @@
       :single-expand="true"
       :search="search"
       :expanded="expanded"
+      @update:page="handlePageUpdate"
       item-key="job_id"
       sort-by="start_time"
       sort-desc>
@@ -165,6 +166,10 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   getFilename (filename: string) {
     return filename.split('/').pop() || ''
+  }
+
+  handlePageUpdate (e: Event) {
+    console.log('changing page', e)
   }
 
   handleRemoveJob (job: HistoryItem) {

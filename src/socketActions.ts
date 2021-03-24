@@ -293,11 +293,19 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryList (limit: number) {
+  async serverHistoryList (limit?: number) {
     baseEmit(
       'server.history.list', {
         dispatch: 'history/onInit',
         params: { limit }
+      }
+    )
+  },
+
+  async serverHistoryTotals () {
+    baseEmit(
+      'server.history.totals', {
+        dispatch: 'history/onInit'
       }
     )
   },

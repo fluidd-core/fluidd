@@ -296,6 +296,7 @@ app:
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
+      load_count: Represents the last {num} Jobs
   endpoint:
     hint:
       add_printer: E.g., http://fluiddpi.local
