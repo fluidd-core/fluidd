@@ -40,7 +40,7 @@ import AppFooter from '@/components/AppFooter.vue'
 import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
 import FlashMessage from '@/components/FlashMessage.vue'
 import DialogUpdateStatus from '@/components/dialogs/dialogUpdateStatus.vue'
-import { loadLocaleMessagesAsync } from '@/plugins/i18n'
+import { Waits } from './globals'
 
 @Component({
   components: {
@@ -55,7 +55,6 @@ import { loadLocaleMessagesAsync } from '@/plugins/i18n'
 export default class App extends Mixins(StateMixin) {
   drawer = false
   showUpdateUI = false
-  localeLoading = true
 
   flashMessage: FlashMessageType = {
     open: false,
@@ -140,7 +139,7 @@ export default class App extends Mixins(StateMixin) {
   }
 
   mounted () {
-    this.onLoadLocale(this.$i18n.locale)
+    // this.onLoadLocale(this.$i18n.locale)
     EventBus.$on('flashMessage', (payload: FlashMessageType) => {
       this.flashMessage.text = (payload && payload.text) || undefined
       this.flashMessage.type = (payload && payload.type) || undefined
@@ -154,15 +153,7 @@ export default class App extends Mixins(StateMixin) {
   }
 
   get loading () {
-    return (this.localeLoading)
-  }
-
-  onLoadLocale (locale: string) {
-    this.localeLoading = true
-    loadLocaleMessagesAsync(locale)
-      .then(() => {
-        this.localeLoading = false
-      })
+    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
   }
 }
 </script>

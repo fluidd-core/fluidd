@@ -2,15 +2,21 @@
 
 ## Next Up
 
+- multiple cameras
+  - allow click to expand
+  - up to 4?
+  - figure out rotation?
+
 - use components instead of plugins with moonraker
 - move config widgets and sort into config vs tune
   - general component layout re-arrangement
   - rename device power store
-- multiple cameras
 - add git history
 - change card states to db and be driven by getters..
 - move klipper restarts elsewhere so service restarts are their own thing
   - allow users to restart webcamd service if webcam is enabled
+
+- allow different resolutions with bed mesh viewer
 
 - update docs to mention cura uploads
 - docs on configuring a camera

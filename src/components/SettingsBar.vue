@@ -38,13 +38,15 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
   }
 })
 export default class SettingsBar extends Mixins(StateMixin) {
-  items = [
-    { name: this.$t('app.setting.title.general'), icon: '$printer', ref: '#general' },
-    { name: this.$t('app.setting.title.camera'), icon: '$camera', ref: '#camera' },
-    { name: this.$t('app.setting.title.theme'), icon: '$cogs', ref: '#theme' },
-    { name: this.$t('app.setting.title.tool'), icon: '$printer3dNozzle', ref: '#toolhead' },
-    { name: this.$t('app.setting.title.macros'), icon: '$fileCode', ref: '#macros' },
-    { name: this.$t('app.setting.title.thermal_presets'), icon: '$fire', ref: '#presets' }
-  ]
+  get items () {
+    return [
+      { name: this.$t('app.setting.title.general'), icon: '$printer', ref: '#general' },
+      { name: this.$t('app.setting.title.camera'), icon: '$camera', ref: '#camera' },
+      { name: this.$t('app.setting.title.theme'), icon: '$cogs', ref: '#theme' },
+      { name: this.$t('app.setting.title.tool'), icon: '$printer3dNozzle', ref: '#toolhead' },
+      { name: this.$t('app.setting.title.macros'), icon: '$fileCode', ref: '#macros' },
+      { name: this.$t('app.setting.title.thermal_presets'), icon: '$fire', ref: '#presets' }
+    ]
+  }
 }
 </script>

@@ -39,7 +39,6 @@
               dense
               single-line
               hide-details="auto"
-              v-model="$i18n.locale"
               :items="supportedLocales"
               :value="locale"
               item-text="name"
@@ -127,6 +126,7 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
   }
 
   setLocale (value: string) {
+    this.$store.dispatch('config/onLocaleChange', value)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.locale',
       value,

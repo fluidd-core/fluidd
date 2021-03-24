@@ -4,6 +4,7 @@ import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostCo
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { loadLocaleMessagesAsync } from '@/plugins/i18n'
+import { Waits } from '@/globals'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
@@ -16,7 +17,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Init any file configs we may have.
    */
-  async initUiSettings ({ commit, state }, payload: UiSettings) {
+  async initUiSettings ({ commit, dispatch, state }, payload: UiSettings) {
     commit('setInitUiSettings', payload)
 
     // Set vuetify to the correct initial theme.
@@ -26,10 +27,15 @@ export const actions: ActionTree<ConfigState, RootState> = {
     }
 
     // Set the correct language.
-    if (state.uiSettings.general.locale !== 'en') {
-      // vuetify.framework.lang.current = state.uiSettings.general.locale
-      loadLocaleMessagesAsync(state.uiSettings.general.locale)
-    }
+    dispatch('onLocaleChange', payload.general.locale)
+  },
+
+  async onLocaleChange ({ dispatch }, payload: string) {
+    // Set the correct language.
+    // vuetify.framework.lang.current = state.uiSettings.general.locale
+    dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
+    await loadLocaleMessagesAsync(payload)
+    dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
   },
 
   /**
