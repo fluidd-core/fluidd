@@ -17,7 +17,8 @@ export const defaultState = (): ConfigState => {
       hosted: false,
       locales: [
         { name: 'English', code: 'en' },
-        { name: 'Français', code: 'fr' }
+        { name: 'Français', code: 'fr' },
+        { name: 'Chinese', code: 'cn' }
       ]
     },
     cardState: {},
