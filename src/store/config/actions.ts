@@ -30,12 +30,24 @@ export const actions: ActionTree<ConfigState, RootState> = {
     dispatch('onLocaleChange', payload.general.locale)
   },
 
-  async onLocaleChange ({ dispatch }, payload: string) {
+  /**
+   * Sets, and saves a locale change.
+   */
+  async onLocaleChange ({ dispatch, state }, payload: string) {
     // Set the correct language.
     // vuetify.framework.lang.current = state.uiSettings.general.locale
     dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
-    await loadLocaleMessagesAsync(payload)
+    const locale = await loadLocaleMessagesAsync(payload)
     dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
+
+    // If the locale doesn't match what we have in settings, update it.
+    if (state.uiSettings.general.locale !== locale) {
+      dispatch('saveByPath', {
+        path: 'uiSettings.general.locale',
+        value: locale,
+        server: true
+      })
+    }
   },
 
   /**

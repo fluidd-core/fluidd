@@ -127,11 +127,6 @@ export default class GeneralSettingsCard extends Mixins(StateMixin) {
 
   setLocale (value: string) {
     this.$store.dispatch('config/onLocaleChange', value)
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.locale',
-      value,
-      server: true
-    })
   }
 
   get printTimeEstimateType () {

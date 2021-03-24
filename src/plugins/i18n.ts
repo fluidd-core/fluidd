@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueI18n, { Locale } from 'vue-i18n'
 import store from '@/store'
 import getBrowserLocale from '@/util/get-browser-locale'
-import consola from 'consola'
 
 Vue.use(VueI18n)
 
@@ -44,18 +43,20 @@ export const loadLocaleMessagesAsync = async (locale: Locale) => {
     return Promise.resolve(locale)
   }
 
-  consola.warn('loading locale', locale)
-
   // Not loaded
   return import(
     /* webpackChunkName: "locale-[request]" */ `@/locales/${locale}.yaml`
-  ).then(messages => {
-    i18n.setLocaleMessage(locale, messages.default)
-    loadedLanguages.push(locale)
-    i18n.locale = locale
-    consola.warn('loaded locale', locale)
-    return Promise.resolve(locale)
-  })
+  )
+    .then(messages => {
+      i18n.setLocaleMessage(locale, messages.default)
+      loadedLanguages.push(locale)
+      i18n.locale = locale
+      return Promise.resolve(locale)
+    })
+    .catch(() => {
+      // If we had an issue, resolve with the currently set locale instead.
+      return Promise.resolve(i18n.locale)
+    })
 }
 
 loadLocaleMessagesAsync(startingLocale)
