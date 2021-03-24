@@ -57,6 +57,7 @@ app:
       add_preset: Add Preset
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
+      confirm: Confirm
     btn:
       all: All
       all_off: All off

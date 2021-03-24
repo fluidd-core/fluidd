@@ -126,7 +126,11 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   cancelPrint () {
-    this.$confirm(this.$tc('app.general.simple_form.msg.confirm'))
+    this.$tc('app.general.simple_form.msg.confirm')
+    this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm'),
+      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+    )
       .then(res => {
         if (res) {
           SocketActions.printerPrintCancel()

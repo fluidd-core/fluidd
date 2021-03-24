@@ -438,7 +438,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
     let text = this.$tc('app.general.simple_form.msg.confirm')
     if (file.type === 'directory') text = this.$tc('app.file_system.msg.confirm')
-    this.$confirm(text)
+    this.$confirm(
+      text,
+      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+    )
       .then(res => {
         if (res) {
           if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`)
