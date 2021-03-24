@@ -5,7 +5,7 @@
       x-small
       label
       outlined
-      color="success"
+      :color="(disabled) ? 'grey darken-2' : 'success'"
     >{{ $t('app.version.label.up_to_date') }}</v-chip>
     <v-tooltip left>
       <template v-slot:activator="{ on, attrs }">
@@ -16,7 +16,8 @@
           x-small
           label
           outlined
-          color="error">
+          :disabled="disabled"
+          :color="(disabled) ? 'grey darken-2' : 'error'">
           {{ $t('app.version.label.dirty') }}
         </v-chip>
       </template>
@@ -32,7 +33,7 @@
           x-small
           label
           outlined
-          color="error">
+          :color="(disabled) ? 'grey darken-2' : 'error'">
           {{ $t('app.version.label.invalid') }}
         </v-chip>
       </template>
@@ -42,7 +43,6 @@
     <btn
       v-if="hasUpdate && !dirty && valid"
       :disabled="disabled"
-      :loading="loading"
       x-small
       text
       color="warning"
