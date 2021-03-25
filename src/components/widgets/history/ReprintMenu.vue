@@ -9,6 +9,7 @@
         small
         v-bind="attrs"
         v-on="on"
+        class="ma-1"
       >
         <v-icon small left>
           $reprint
