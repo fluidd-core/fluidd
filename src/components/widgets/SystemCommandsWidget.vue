@@ -70,33 +70,11 @@
         </v-list-item-icon>
       </v-list-item>
 
-      <v-list-item
-        v-if="!klippyConnected"
-        @click="serviceRestartKlipper(); $emit('click')"
+      <v-list-item @click="serviceRestartWebcam(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_klipper') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_webcamd') }}</v-list-item-title>
         <v-list-item-icon>
-          <v-icon color="error">$restartAlert</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-list-item
-        v-if="klippyConnected"
-        @click="restartKlippy(); $emit('click')"
-        :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_klipper') }}</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="error">$restartAlert</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-list-item
-        v-if="klippyConnected"
-        @click="firmwareRestartKlippy(); $emit('click')"
-        :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_firmware') }}</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="error">$restartAlert</v-icon>
+          <v-icon color="warning">$restart</v-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list-group>

@@ -3,6 +3,8 @@
 ## Next Up
 
 - add git history
+  - move versions to configure page
+  - reogranize service restarts / vs klipper firmware restarts
 
 - use components instead of plugins with moonraker
 

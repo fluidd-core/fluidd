@@ -1,32 +1,55 @@
 <template>
-  <v-list-group
-    :value="hasUpdates"
-    prepend-icon="$update"
-    no-action>
-    <template v-slot:activator>
-      <v-list-item-content>
-        <v-list-item-title>
-          {{ $t('app.version.title') }}
-        </v-list-item-title>
-      </v-list-item-content>
+  <collapsable-card
+    :title="$t('app.version.title')"
+    :collapsable="false"
+    icon="$update">
+
+    <template v-slot:collapse-button>
+      <btn
+        @click="forceCheck()"
+        color=""
+        fab small text>
+        <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
+      </btn>
     </template>
 
-    <template v-for="(component) in versionComponents">
-      <v-list-item
-        :key="component.key"
-        class="v-list-item--x-dense"
-      >
-        <v-list-item-content>
-          <a v-if="component.type !== 'system'" class="component-title" :href="packageUrl(component)" target="_blank" v-html="packageTitle(component)"></a>
-          <div v-else class="component-title" v-html="packageTitle(component)"></div>
-          <v-layout align-center justify-space-between>
-            <div class="component-version">
-              {{ ('package_count' in component) ? component.package_count + ' packages' : component.version }}
+    <v-list
+      two-line
+    >
+      <template v-for="(component, i) in versionComponents">
+        <v-list-item
+          :key="`component-${component.type}-${component.name}`"
+          class="v-list-item--x-dense"
+        >
+          <v-list-item-content>
+
+            <!-- <a v-if="component.type !== 'system'" class="component-title" :href="packageUrl(component)" target="_blank" v-html="packageTitle(component)"></a> -->
+            <v-list-item-title>
+              {{ packageTitle(component) }}
+              {{ component.key }}
+            </v-list-item-title>
+
+            <v-list-item-subtitle>
+              <span v-if="component.type !== 'system'">{{ component.version }}</span>
               <span v-if="'remote_version' in component && hasUpdate(component.type)">
                 -> {{ component.remote_version }}
               </span>
-            </div>
+              <v-tooltip
+                 v-if="component.type === 'system' && component.package_count > 0"
+                 max-width="300"
+                 top
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <span v-bind="attrs" v-on="on">
+                    {{ component.package_count }} packages
+                  </span>
+                </template>
+                <span>{{ (component.package_list) ? component.package_list.join(', ') : '' }}</span>
+              </v-tooltip>
+            </v-list-item-subtitle>
+          </v-list-item-content>
 
+          <v-list-item-action>
             <version-status
               :has-update="hasUpdate(component.type)"
               :disabled="isRefreshing || printerPrinting"
@@ -35,27 +58,23 @@
               :valid="('is_valid' in component) ? component.is_valid : true"
               @on-update="updateComponent(component.type)">
             </version-status>
+          </v-list-item-action>
+        </v-list-item>
 
-          </v-layout>
-        </v-list-item-content>
+        <v-divider
+          v-if="i < versionComponents.length - 1"
+          :key="`divider-${component.type}-${component.name}`"
+        />
+      </template>
 
-      </v-list-item>
-    </template>
-
-    <v-list-item @click="forceCheck()" :disabled="printerPrinting">
-      <v-list-item-title>{{ $t('app.version.btn.check_for_updates') }}</v-list-item-title>
-      <v-list-item-icon>
-        <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
-      </v-list-item-icon>
-    </v-list-item>
-
-  </v-list-group>
+    </v-list>
+  </collapsable-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import { SocketActions } from '@/socketActions'
-import VersionStatus from '@/components/VersionStatus.vue'
+import VersionStatus from '@/components/widgets/versions/VersionStatus.vue'
 import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
@@ -65,7 +84,7 @@ import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
     VersionStatus
   }
 })
-export default class SystemVersionsWidget extends Mixins(StateMixin) {
+export default class SystemVersions extends Mixins(StateMixin) {
   waits = Waits
 
   get instanceName () {
@@ -74,10 +93,6 @@ export default class SystemVersionsWidget extends Mixins(StateMixin) {
 
   get versionComponents () {
     return this.$store.getters['version/getVisibleComponents']
-  }
-
-  get hasUpdates () {
-    return this.$store.getters['version/hasUpdates']
   }
 
   get isRefreshing () {
@@ -127,16 +142,3 @@ export default class SystemVersionsWidget extends Mixins(StateMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .component-title {
-    font-weight: 500;
-    font-size: 0.8125rem;
-    line-height: 1rem;
-  }
-  .component-version {
-    opacity: 0.7;
-    font-size: 0.8125rem;
-    line-height: 1rem;
-  }
-</style>

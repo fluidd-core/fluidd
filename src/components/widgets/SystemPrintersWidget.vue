@@ -42,7 +42,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import consola from 'consola'
 import { InitConfig, InstanceConfig, ApiConfig } from '@/store/config/types'
-import VersionStatus from '@/components/VersionStatus.vue'
 import DialogAddInstance from '@/components/dialogs/dialogAddInstance.vue'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
@@ -50,7 +49,6 @@ import { Waits } from '@/globals'
 
 @Component({
   components: {
-    VersionStatus,
     DialogAddInstance
   }
 })

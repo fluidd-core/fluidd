@@ -24,12 +24,15 @@ export const getters: GetterTree<VersionState, RootState> = {
   },
 
   /**
-   * Returns an object indicating if any component has an update.
+   * Returns an object indicating if any component (but system) has an update.
    */
   hasUpdates: (state, getters) => {
     let r = false
     for (const key in state.components) {
-      if (!r) {
+      if (
+        !r ||
+        key !== 'system'
+      ) {
         r = getters.hasUpdate(key)
       } else {
         break

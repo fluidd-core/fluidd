@@ -2,6 +2,7 @@
   <v-card
     class="filesystem-wrapper"
     :height="height"
+    :max-height="maxHeight"
     @dragenter.capture.prevent="handleDragEnter"
     @dragover.prevent
     @dragleave.self.prevent="handleDragLeave"
@@ -137,6 +138,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Constrain height
   @Prop({ type: [Number, String] })
   height!: number | string;
+
+  // Constrain height
+  @Prop({ type: [Number, String] })
+  maxHeight!: number | string;
 
   // Maintains the path and root.
   // currentPath = ''

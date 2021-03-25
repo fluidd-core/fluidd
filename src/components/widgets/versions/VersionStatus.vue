@@ -2,8 +2,7 @@
   <div>
     <v-chip
       v-if="!hasUpdate && (!dirty && valid)"
-      x-small
-      label
+      small
       outlined
       :color="(disabled) ? 'grey darken-2' : 'success'"
     >{{ $t('app.version.label.up_to_date') }}</v-chip>
@@ -13,8 +12,7 @@
           v-if="dirty && valid"
           v-bind="attrs"
           v-on="on"
-          x-small
-          label
+          small
           outlined
           :disabled="disabled"
           :color="(disabled) ? 'grey darken-2' : 'error'">
@@ -30,8 +28,7 @@
           v-if="!valid"
           v-bind="attrs"
           v-on="on"
-          x-small
-          label
+          small
           outlined
           :color="(disabled) ? 'grey darken-2' : 'error'">
           {{ $t('app.version.label.invalid') }}
@@ -43,9 +40,8 @@
     <btn
       v-if="hasUpdate && !dirty && valid"
       :disabled="disabled"
-      x-small
-      text
-      color="warning"
+      small
+      color="primary"
       @click="$emit('on-update')">
       {{ $t('app.version.btn.update') }}
     </btn>

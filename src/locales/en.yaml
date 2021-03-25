@@ -12,6 +12,7 @@ app:
       macros: Macros
       limits: Printer Limits
       logs: Printer Logs
+      system_control: System Control
       runout_sensors: Runout Sensors
       status: Status
       temperature: Thermals
@@ -91,6 +92,7 @@ app:
       restart_firmware: Firmware Restart
       restart_service_klipper: Restart Klipper
       restart_service_moonraker: Restart Moonraker
+      restart_service_webcamd: Restart Webcam
       socket_refresh: Force refresh
       reset_file: Reset File
       reset_layout: Reset Layout

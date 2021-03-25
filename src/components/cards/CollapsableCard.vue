@@ -358,7 +358,7 @@ export default class ToolheadCard extends Vue {
   mounted () {
     this.$emit('collapsed', this.isCollapsed)
     if (this.hasCollapseButtonSlot) {
-      this.collapsable = false
+      // this.collapsable = false
     }
   }
 

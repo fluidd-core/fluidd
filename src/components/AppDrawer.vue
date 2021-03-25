@@ -51,7 +51,6 @@
       <v-divider></v-divider>
 
       <system-commands-widget @click="this.close"></system-commands-widget>
-      <system-versions-widget @click="this.close" v-if="versionsSupported"></system-versions-widget>
     </v-list>
     <v-divider></v-divider>
 
@@ -66,7 +65,6 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
-import SystemVersionsWidget from '@/components/widgets/SystemVersionsWidget.vue'
 import SystemPrintersWidget from '@/components/widgets/SystemPrintersWidget.vue'
 import SystemLayoutWidget from '@/components/widgets/SystemLayoutWidget.vue'
 
@@ -75,7 +73,6 @@ import StateMixin from '@/mixins/state'
 @Component({
   components: {
     SystemCommandsWidget,
-    SystemVersionsWidget,
     SystemPrintersWidget,
     SystemLayoutWidget
   }
@@ -90,15 +87,6 @@ export default class AppDrawer extends Mixins(StateMixin) {
 
   get serverInfo () {
     return this.$store.getters['server/getInfo']
-  }
-
-  get versionsSupported () {
-    return (
-      this.serverInfo &&
-      this.serverInfo.plugins
-    )
-      ? this.serverInfo.plugins.includes('update_manager')
-      : false
   }
 
   close () {
