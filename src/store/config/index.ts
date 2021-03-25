@@ -61,13 +61,6 @@ export const defaultState = (): ConfigState => {
           primary: '#2196F3'
         }
       },
-      camera: {
-        enabled: false,
-        type: 'mjpgstreamer',
-        url: '/webcam/?action=stream',
-        flipX: false,
-        flipY: false
-      },
       dashboard: {
         tempPresets: []
       }

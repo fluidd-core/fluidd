@@ -20,35 +20,28 @@
         </v-row>
       </v-card-text>
 
-      <v-list
-        color="transparent"
-      >
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.toggle') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action class="flex-row">
-            <btn
-              outlined
-              small
-              color="primary"
-              @click="handleAllOff"
-            >
-              {{ $t('app.setting.label.all_off') }}
-            </btn>
+      <v-divider />
 
-            <btn
-              outlined
-              small
-              color="primary"
-              @click="handleAllOn"
-              class="ml-2"
-            >
-              {{ $t('app.setting.label.all_on') }}
-            </btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
+      <fluidd-setting :title="$t('app.setting.label.toggle')">
+        <btn
+          outlined
+          small
+          color="primary"
+          @click="handleAllOff"
+        >
+          {{ $t('app.setting.label.all_off') }}
+        </btn>
+
+        <btn
+          outlined
+          small
+          color="primary"
+          @click="handleAllOn"
+          class="ml-2"
+        >
+          {{ $t('app.setting.label.all_on') }}
+        </btn>
+      </fluidd-setting>
     </v-card>
   </div>
 </template>

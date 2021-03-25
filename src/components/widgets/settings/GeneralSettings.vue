@@ -5,83 +5,66 @@
       :elevation="5"
       dense
       class="mb-4">
-      <v-list
-        color="transparent"
-      >
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.printer_name') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-text-field
-              filled
-              dense
-              single-line
-              hide-details="auto"
-              ref="instanceName"
-              :rules="instanceNameRules"
-              :value="instanceName"
-              :default-value="$globals.APP_NAME"
-              @change="setInstanceName"
-            ></v-text-field>
-          </v-list-item-action>
-        </v-list-item>
 
-        <v-divider></v-divider>
+      <fluidd-setting :title="$t('app.setting.label.printer_name')">
+        <v-text-field
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          ref="instanceName"
+          :rules="instanceNameRules"
+          :value="instanceName"
+          :default-value="$globals.APP_NAME"
+          @change="setInstanceName"
+        ></v-text-field>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.language') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-select
-              filled
-              dense
-              single-line
-              hide-details="auto"
-              :items="supportedLocales"
-              :value="locale"
-              item-text="name"
-              item-value="code"
-              @change="setLocale"
-            ></v-select>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider></v-divider>
 
-        <v-divider></v-divider>
+      <fluidd-setting :title="$t('app.setting.label.language')">
+        <v-select
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="supportedLocales"
+          :value="locale"
+          item-text="name"
+          item-value="code"
+          @change="setLocale"
+        ></v-select>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>
-              <span class="text-wrap">{{ $t('app.setting.label.time_estimates') }}</span>
-              <inline-help bottom small class="ml-2">
-                <span>{{ $t('app.setting.timer_options.duration') }}</span><br />
-                <span>{{ $t('app.setting.timer_options.duration_description') }}</span><br /><br />
+      <v-divider></v-divider>
 
-                <span>{{ $t('app.setting.timer_options.slicer') }}</span><br />
-                <span>{{ $t('app.setting.timer_options.slicer_description') }}</span><br /><br />
+      <fluidd-setting>
+        <template v-slot:title>
+          <span class="text-wrap">{{ $t('app.setting.label.time_estimates') }}</span>
+          <inline-help bottom small class="ml-2">
+            <span>{{ $t('app.setting.timer_options.duration') }}</span><br />
+            <span>{{ $t('app.setting.timer_options.duration_description') }}</span><br /><br />
 
-                <span>{{ $t('app.setting.timer_options.file') }}</span><br />
-                <span v-html="$t('app.setting.timer_options.file_description')"></span><br /><br />
+            <span>{{ $t('app.setting.timer_options.slicer') }}</span><br />
+            <span>{{ $t('app.setting.timer_options.slicer_description') }}</span><br /><br />
 
-                <span>{{ $t('app.setting.timer_options.filament') }}</span><br />
-                <span v-html="$t('app.setting.timer_options.filament_description')"></span>
-              </inline-help>
-            </v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-select
-              filled
-              dense
-              hide-details="auto"
-              :items="estimateTypes"
-              item-text="name"
-              item-value="value"
-              v-model="printTimeEstimateType">
-            </v-select>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
+            <span>{{ $t('app.setting.timer_options.file') }}</span><br />
+            <span v-html="$t('app.setting.timer_options.file_description')"></span><br /><br />
+
+            <span>{{ $t('app.setting.timer_options.filament') }}</span><br />
+            <span v-html="$t('app.setting.timer_options.filament_description')"></span>
+          </inline-help>
+        </template>
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="estimateTypes"
+          item-text="name"
+          item-value="value"
+          v-model="printTimeEstimateType">
+        </v-select>
+      </fluidd-setting>
     </v-card>
   </div>
 </template>

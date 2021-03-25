@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :value="value"
-    :max-width="320"
+    :max-width="500"
     persistent
   >
     <v-form
@@ -10,78 +10,77 @@
       v-model="valid"
     >
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ (preset.id != -1) ? $t('app.general.label.edit_preset') : $t('app.general.label.add_preset') }}</span>
+        <v-card-title class="secondary py-2">
+          <span class="focus--text">{{ (preset.id != -1) ? $t('app.general.label.edit_preset') : $t('app.general.label.add_preset') }}</span>
         </v-card-title>
 
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-text-field
-                :label="$t('app.setting.label.thermal_preset_name')"
-                v-model="preset.name"
-                :rules="[rules.required]"
-                hide-details
-                class="mb-2"
-                outlined
-                dense
-              >
-              </v-text-field>
-            </v-row>
+        <fluidd-setting :title="$t('app.setting.label.thermal_preset_name')">
+          <v-text-field
+            v-model="preset.name"
+            :rules="[rules.required]"
+            hide-details="auto"
+            filled
+            dense
+          >
+          </v-text-field>
+        </fluidd-setting>
 
-            <template
-              v-for="item in heaters"
+        <v-divider></v-divider>
+
+        <template
+          v-for="(item, i) in heaters"
+        >
+          <fluidd-setting :title="item.name" :key="i + 'heater'">
+            <v-checkbox
+              v-model="preset.values[item.name].active"
+              hide-details
+              class="ma-0"
             >
-              <v-row align="start" :key="item.name">
-                <v-checkbox
-                  v-model="preset.values[item.name].active"
-                  hide-details
-                  class="ma-0"
-                >
-                </v-checkbox>
+            </v-checkbox>
 
-                <v-text-field
-                  v-model.number="preset.values[item.name].value"
-                  :label="item.name"
-                  :rules="[rules.numRequired, rules.numMin]"
-                  hide-details="auto"
-                  type="number"
-                  suffix="°C"
-                  class="mb-2"
-                  outlined
-                  dense
-                >
-                </v-text-field>
-              </v-row>
-            </template>
-
-            <template
-              v-for="item in fans"
+            <v-text-field
+              v-model.number="preset.values[item.name].value"
+              :rules="[rules.numRequired, rules.numMin]"
+              hide-details="auto"
+              type="number"
+              suffix="°C"
+              class="mb-2"
+              outlined
+              dense
             >
-              <v-row align="start" :key="item.name">
-                <v-checkbox
-                  v-model="preset.values[item.name].active"
-                  hide-details
-                  class="ma-0"
-                >
-                </v-checkbox>
+            </v-text-field>
+          </fluidd-setting>
 
-                <v-text-field
-                  v-model.number="preset.values[item.name].value"
-                  :label="item.name"
-                  :rules="[rules.numRequired, rules.numMin]"
-                  hide-details="auto"
-                  type="number"
-                  suffix="°C"
-                  class="mb-2"
-                  outlined
-                  dense
-                >
-                </v-text-field>
-              </v-row>
-            </template>
-          </v-container>
-        </v-card-text>
+          <v-divider :key="i + 'heaterd'"></v-divider>
+
+        </template>
+
+        <template
+          v-for="(item, i) in fans"
+        >
+          <fluidd-setting :title="item.name" :key="i + 'fan'">
+            <v-checkbox
+              v-model="preset.values[item.name].active"
+              hide-details
+              class="ma-0"
+            >
+            </v-checkbox>
+
+            <v-text-field
+              v-model.number="preset.values[item.name].value"
+              :rules="[rules.numRequired, rules.numMin]"
+              hide-details="auto"
+              type="number"
+              suffix="°C"
+              class="mb-2"
+              outlined
+              dense
+            >
+            </v-text-field>
+          </fluidd-setting>
+
+          <v-divider :key="i + 'fand'"></v-divider>
+        </template>
 
         <v-card-actions>
           <v-spacer></v-spacer>

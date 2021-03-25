@@ -30,7 +30,6 @@ export interface CardState {
 export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;
-  camera: CameraConfig;
   dashboard: DashboardConfig;
 }
 
@@ -73,14 +72,6 @@ export interface Axis {
 
 export interface AxisConfig {
   inverted: boolean;
-}
-
-export interface CameraConfig {
-  enabled: boolean;
-  type: 'mjpgstreamer' | 'ipcamera';
-  url: string;
-  flipX: boolean;
-  flipY: boolean;
 }
 
 export interface DashboardConfig {

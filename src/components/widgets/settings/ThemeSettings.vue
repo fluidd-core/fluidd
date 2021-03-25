@@ -6,56 +6,37 @@
       :elevation="5"
       dense
       class="mb-4">
-      <v-list
-        color="transparent"
-      >
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.primary_color') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <theme-picker
-              v-if="theme"
-              v-model="themeColor">
-            </theme-picker>
-          </v-list-item-action>
-        </v-list-item>
 
-        <v-divider></v-divider>
+      <fluidd-setting :title="$t('app.setting.label.primary_color')">
+        <theme-picker
+          v-if="theme"
+          v-model="themeColor">
+        </theme-picker>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.dark_mode') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-switch
-              @click.native.stop
-              v-model="isDark"
-              hide-details
-              class="mb-5"
-            ></v-switch>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider></v-divider>
 
-        <v-divider></v-divider>
+      <fluidd-setting :title="$t('app.setting.label.dark_mode')">
+        <v-switch
+          @click.native.stop
+          v-model="isDark"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.reset') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <btn
-              outlined
-              small
-              color="primary"
-              @click="handleReset"
-            >
-              {{ $t('app.setting.btn.reset') }}
-            </btn>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider></v-divider>
 
-      </v-list>
+      <fluidd-setting :title="$t('app.setting.label.reset')">
+        <btn
+          outlined
+          small
+          color="primary"
+          @click="handleReset"
+        >
+          {{ $t('app.setting.btn.reset') }}
+        </btn>
+      </fluidd-setting>
     </v-card>
   </div>
 </template>

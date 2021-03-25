@@ -90,6 +90,9 @@ import {
  */
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
+  DEFAULTS: {
+    CAMERA_URL: '/webcam?action=stream'
+  },
   NETWORK_REQUEST_TIMEOUT: 500,
   KLIPPY_RETRY_DELAY: 1500,
   SOCKET_RETRY_DELAY: 2000,
@@ -109,7 +112,8 @@ export const Globals = Object.freeze({
       uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
       macros: { name: 'macros', dispatch: 'macros/initMacros' },
       console: { name: 'console', dispatch: 'console/initConsole' },
-      charts: { name: 'charts', dispatch: 'charts/initCharts' }
+      charts: { name: 'charts', dispatch: 'charts/initCharts' },
+      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' }
     }
   },
   MOONRAKER_PLUGINS: {

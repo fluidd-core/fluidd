@@ -41,7 +41,7 @@ export default class SettingsBar extends Mixins(StateMixin) {
   get items () {
     return [
       { name: this.$t('app.setting.title.general'), icon: '$printer', ref: '#general' },
-      { name: this.$t('app.setting.title.camera'), icon: '$camera', ref: '#camera' },
+      { name: this.$tc('app.setting.title.camera', 2), icon: '$camera', ref: '#camera' },
       { name: this.$t('app.setting.title.theme'), icon: '$cogs', ref: '#theme' },
       { name: this.$t('app.setting.title.tool'), icon: '$printer3dNozzle', ref: '#toolhead' },
       { name: this.$t('app.setting.title.macros'), icon: '$fileCode', ref: '#macros' },

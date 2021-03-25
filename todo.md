@@ -2,16 +2,15 @@
 
 ## Next Up
 
-- multiple cameras
-  - allow click to expand
-  - up to 4?
-  - figure out rotation?
+- add git history
 
 - use components instead of plugins with moonraker
+
+- More macro layout options (categorize macros, ability to define layout in some way, color)
+
 - move config widgets and sort into config vs tune
   - general component layout re-arrangement
   - rename device power store
-- add git history
 - change card states to db and be driven by getters..
 - move klipper restarts elsewhere so service restarts are their own thing
   - allow users to restart webcamd service if webcam is enabled
@@ -25,8 +24,6 @@
 - bulk actions to delete or move?
 - move dialog
 - bulk action move
-
-- More macro layout options (categorize macros, ability to define layout in some way, color)
 - cleanup card layout stuff
 - sync instances across moonraker db
 

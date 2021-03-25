@@ -5,6 +5,10 @@ import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
+  if (!Vue.$socket) {
+    consola.warn('Socket emit denied, socket not ready.', method, options)
+    return
+  }
   if (
     !store.state.socket?.disconnecting &&
     !store.state.socket?.connecting

@@ -74,8 +74,8 @@ import { cloneDeep } from 'lodash-es'
 export default class Dashboard extends Mixins(StateMixin) {
   drag = false
 
-  get cameraEnabled (): boolean {
-    return this.$store.state.config.uiSettings.camera.enabled
+  get camerasEnabled (): boolean {
+    return this.$store.getters['cameras/getVisibleCameras'].length > 0
   }
 
   get hasMacros () {
@@ -126,7 +126,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     return componentArray.filter((s) => {
       // Take care of special cases.
       if (this.inLayout) return true
-      if (s.name === 'camera-card' && !this.cameraEnabled) return false
+      if (s.name === 'camera-card' && !this.camerasEnabled) return false
       if (s.name === 'macros-card' && !this.hasMacros) return false
 
       // Otherwise return whatever the enabled state is.

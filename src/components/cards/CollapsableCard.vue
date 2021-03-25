@@ -382,9 +382,3 @@ export default class ToolheadCard extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .card-title {
-    min-height: 48px;
-  }
-</style>

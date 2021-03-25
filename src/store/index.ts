@@ -16,6 +16,7 @@ import { macros } from './macros'
 import { devicePower } from './devicePower'
 import { history } from './history'
 import { version } from './version'
+import { cameras } from './cameras'
 import { wait } from './wait'
 
 Vue.use(Vuex)
@@ -35,6 +36,7 @@ export default new Vuex.Store<RootState>({
     devicePower,
     history,
     version,
+    cameras,
     wait
   },
   mutations: {},

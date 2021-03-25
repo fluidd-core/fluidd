@@ -5,218 +5,163 @@
       :elevation="5"
       dense
       class="mb-4">
-      <v-list
-        color="transparent"
-      >
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.invert_x_control') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-switch
-              v-model="invertX"
-              class="mt-0 mb-4"
-            >
-            </v-switch>
-          </v-list-item-action>
-        </v-list-item>
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.invert_x_control')">
+        <v-switch
+          v-model="invertX"
+          class="mt-0 mb-4"
+        >
+        </v-switch>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.invert_y_control') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-switch
-              v-model="invertY"
-              class="mt-0 mb-4"
-            >
-            </v-switch>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.invert_y_control')">
+        <v-switch
+          v-model="invertY"
+          class="mt-0 mb-4"
+        >
+        </v-switch>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.invert_z_control') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-switch
-              v-model="invertZ"
-              class="mt-0 mb-4"
-            >
-            </v-switch>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.invert_z_control')">
+        <v-switch
+          v-model="invertZ"
+          class="mt-0 mb-4"
+        >
+        </v-switch>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ $t('app.setting.label.gcode_coords') }}
-              <inline-help
-                small
-                top
-                :tooltip="$t('app.setting.tooltip.gcode_coords')"
-              ></inline-help>
-            </v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-switch
-              v-model="useGcodeCoords"
-              class="mt-0 mb-4"
-            >
-            </v-switch>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting>
+        <template v-slot:title>
+          {{ $t('app.setting.label.gcode_coords') }}
+          <inline-help
+            small
+            top
+            :tooltip="$t('app.setting.tooltip.gcode_coords')"
+          ></inline-help>
+        </template>
+        <v-switch
+          v-model="useGcodeCoords"
+          class="mt-0 mb-4"
+        >
+        </v-switch>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.default_extrude_length') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-text-field
-              :value="defaultExtrudeLength"
-              @change="setDefaultExtrudeLength"
-              :rules="[rules.numRequired, rules.numMin]"
-              filled
-              dense
-              single-line
-              hide-details
-              suffix="mm"
-            ></v-text-field>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.default_extrude_length')">
+        <v-text-field
+          :value="defaultExtrudeLength"
+          @change="setDefaultExtrudeLength"
+          :rules="[rules.numRequired, rules.numMin]"
+          filled
+          dense
+          single-line
+          hide-details
+          suffix="mm"
+        ></v-text-field>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.default_extrude_speed') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-text-field
-              :value="defaultExtrudeSpeed"
-              @change="setDefaultExtrudeSpeed"
-              :rules="[rules.numRequired, rules.numMin]"
-              filled
-              dense
-              single-line
-              hide-details
-              suffix="mm/s"
-            ></v-text-field>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.default_extrude_speed')">
+        <v-text-field
+          :value="defaultExtrudeSpeed"
+          @change="setDefaultExtrudeSpeed"
+          :rules="[rules.numRequired, rules.numMin]"
+          filled
+          dense
+          single-line
+          hide-details
+          suffix="mm/s"
+        ></v-text-field>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.default_toolhead_move_length') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-select
-              :value="defaultToolheadMoveLength"
-              :items="[0.1, 1.0, 10, 100]"
-              @change="setDefaultToolheadMoveLength"
-              :rules="[rules.numRequired, rules.numMin]"
-              filled
-              dense
-              single-line
-              hide-details
-              suffix="mm"
-            ></v-select>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.default_toolhead_move_length')">
+        <v-select
+          :value="defaultToolheadMoveLength"
+          :items="[0.1, 1.0, 10, 100]"
+          @change="setDefaultToolheadMoveLength"
+          :rules="[rules.numRequired, rules.numMin]"
+          filled
+          dense
+          single-line
+          hide-details
+          suffix="mm"
+        ></v-select>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.default_toolhead_xy_speed') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-text-field
-              :value="defaultToolheadXYSpeed"
-              @change="setDefaultToolheadYXSpeed"
-              :rules="[rules.numRequired, rules.numMin]"
-              filled
-              dense
-              single-line
-              hide-details
-              suffix="mm/s"
-            ></v-text-field>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-divider />
+      <fluidd-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
+        <v-text-field
+          :value="defaultToolheadXYSpeed"
+          @change="setDefaultToolheadYXSpeed"
+          :rules="[rules.numRequired, rules.numMin]"
+          filled
+          dense
+          single-line
+          hide-details
+          suffix="mm/s"
+        ></v-text-field>
+      </fluidd-setting>
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.default_toolhead_z_speed') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-text-field
-              :value="defaultToolheadZSpeed"
-              @change="setDefaultToolheadZSpeed"
-              :rules="[rules.numRequired, rules.numMin]"
-              filled
-              dense
-              single-line
-              hide-details
-              suffix="mm/s"
-            ></v-text-field>
-          </v-list-item-action>
-        </v-list-item>
+      <v-divider />
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title class="text-wrap">{{ $t('app.setting.label.z_adjust_values') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-combobox
-              v-model="zAdjustValues"
-              filled
-              dense
-              hide-selected
-              hide-details="auto"
-              multiple
-              small-chips
-              append-icon=""
-              deletable-chips
-              type="number"
-              :rules="[
-                  v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-                  v => v.length <= 2 || $t('app.general.simple_form.error.max', { max: 2 }),
-              ]"
-            ></v-combobox>
-          </v-list-item-action>
-        </v-list-item>
+      <fluidd-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
+        <v-text-field
+          :value="defaultToolheadZSpeed"
+          @change="setDefaultToolheadZSpeed"
+          :rules="[rules.numRequired, rules.numMin]"
+          filled
+          dense
+          single-line
+          hide-details
+          suffix="mm/s"
+        ></v-text-field>
+      </fluidd-setting>
 
-        <v-divider></v-divider>
+      <v-divider />
 
-        <v-list-item>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.setting.label.reset') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <btn
-              outlined
-              small
-              color="primary"
-              @click="handleReset"
-            >
-              {{ $t('app.setting.btn.reset') }}
-            </btn>
-          </v-list-item-action>
-        </v-list-item>
+      <fluidd-setting :title="$t('app.setting.label.z_adjust_values')">
+        <v-combobox
+          v-model="zAdjustValues"
+          filled
+          dense
+          hide-selected
+          hide-details="auto"
+          multiple
+          small-chips
+          append-icon=""
+          deletable-chips
+          type="number"
+          :rules="[
+              v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
+              v => v.length <= 2 || $t('app.general.simple_form.error.max', { max: 2 }),
+          ]"
+        ></v-combobox>
+      </fluidd-setting>
 
-      </v-list>
+      <v-divider></v-divider>
+
+      <fluidd-setting :title="$t('app.setting.label.reset')">
+        <btn
+          outlined
+          small
+          color="primary"
+          @click="handleReset"
+        >
+          {{ $t('app.setting.btn.reset') }}
+        </btn>
+      </fluidd-setting>
+
     </v-card>
   </div>
 </template>

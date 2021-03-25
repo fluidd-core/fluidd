@@ -4,6 +4,7 @@ import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import { AxiosError } from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 
 // Load API configuration
 /**
@@ -94,7 +95,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // Just sets the api urls.
   // consola.log('we already have api config', apiConfig)
   await store.dispatch('config/onInitApiConfig', apiConfig)
-  consola.log('inited apis', store.state.config, apiConfig)
+  consola.debug('inited apis', store.state.config, apiConfig)
 
   // TODO: REMOVE THIS FOR NEXT RELEASE.
   // Load any file configuration we may have - save it to db, then delete known config files.
@@ -115,14 +116,20 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
             const theme = (d.data.theme)
               ? { ...d.data.theme }
               : undefined
+            const camera = (d.data.camera)
+              ? d.data.camera
+              : undefined
             delete d.data.dashboard.hiddenMacros
             delete d.data.theme
-            delete d.data.dashboard.tempPresets // remove old presets since we've adjusted their format.
-            consola.debug('got ui data, writing', d.data)
+            delete d.data.dashboard.tempPresets
+            delete d.data.camera
+            // transfer base ui settings to db
             Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
               key: 'uiSettings',
               value: d.data
             })
+
+            // if a theme was defined, transfer that to the new format
             if (theme) {
               Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
                 key: 'uiSettings.theme',
@@ -134,6 +141,8 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
                 }
               })
             }
+
+            // if hidden macros were defined, transfer them to the new format.
             if (macros && macros.length > 0) {
               const convertedMacros: { name: string; visible: boolean }[] = macros.map(m => { return { name: m, visible: false } })
               consola.debug('got macros, writing', convertedMacros)
@@ -142,7 +151,29 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
                 value: convertedMacros
               })
             }
+
+            // If the camera was setup, transfer it to the new format.
+            if (camera) {
+              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key: 'cameras',
+                value: {
+                  cameras: [
+                    {
+                      id: uuidv4(),
+                      enabled: camera.enabled,
+                      name: 'Default',
+                      type: 'mjpgadaptive',
+                      fpstarget: 10,
+                      url: camera.url,
+                      flipX: camera.flipX,
+                      flipY: camera.flipY
+                    }
+                  ]
+                }
+              })
+            }
           }
+
           if (file === '.fluidd_console_history.json') {
             consola.log('got history data, writing', d.data)
             Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {

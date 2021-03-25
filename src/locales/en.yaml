@@ -1,7 +1,7 @@
 app:
   general:
     title:
-      camera: Camera
+      camera: Camera | Cameras
       console: Console
       bedmesh: Bed Mesh
       home: Dashboard
@@ -55,6 +55,8 @@ app:
       save_as: Save As
       edit_preset: Edit Preset
       add_preset: Add Preset
+      edit_camera: Edit Camera
+      add_camera: Add Camera
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
       confirm: Confirm
@@ -203,7 +205,7 @@ app:
       busy: Busy
   setting:
     title:
-      camera: Camera
+      camera: Camera | Cameras
       macros: Macros
       general: General
       theme: Theme
@@ -235,7 +237,9 @@ app:
       invert_y_control: Invert Y control
       invert_x_control: Invert X control
       enable: Enable
+      fps_target: FPS Target
     btn:
+      add_camera: Add Camera
       select_theme: Select Theme
       add_thermal_preset: Add Preset
       reset: Reset
@@ -253,8 +257,9 @@ app:
       slicer: Slicer
       slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
     camera_type_options:
-      video: ip camera
-      img: mjpgstreamer
+      video: IP Camera
+      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG Adaptive
     tooltip:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
   chart:
