@@ -8,6 +8,8 @@
 
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 
+- alternate bed mesh scales
+
 - move config widgets and sort into config vs tune
   - general component layout re-arrangement
   - rename device power store

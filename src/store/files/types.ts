@@ -25,7 +25,7 @@ export interface Files {
   items: (AppFile | AppFileWithMeta | AppDirectory)[];
 }
 
-export interface AppFile {
+export interface AppFile extends KlipperFile {
   type: 'file';
   name?: string;
   extension: string;
@@ -39,8 +39,8 @@ export interface KlipperFile {
   filename: string;
   modified: number;
   size: number;
-  print_start_time: number | null;
-  job_id: number | null;
+  print_start_time?: number | null;
+  job_id?: number | null;
 }
 
 export interface KlipperFileMeta {
@@ -58,9 +58,7 @@ export interface KlipperFileMeta {
   thumbnails?: Thumbnail[];
 }
 
-export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
-  start_time?: number;
-}
+export interface AppFileWithMeta extends AppFile, KlipperFileMeta {}
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
 export interface AppDirectory {
@@ -112,4 +110,10 @@ export interface FilesUpload {
   filename: string;
   percentUploaded: number;
   processingComplete: boolean; // indicates moonraker is finished with the file.
+}
+
+export interface FileFilter {
+  value: string;
+  text: string;
+  desc: string;
 }

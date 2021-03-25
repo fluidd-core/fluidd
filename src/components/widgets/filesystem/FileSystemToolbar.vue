@@ -64,13 +64,21 @@
       <v-icon>$refresh</v-icon>
     </v-btn>
 
+    <file-system-filter-menu
+      v-if="!readonly && root === 'gcodes' && supportsHistoryPlugin"
+      :root="root"
+      :disabled="disabled"
+      @change="$emit('filter', $event)"
+    >
+    </file-system-filter-menu>
+
     <file-system-menu
       v-if="!readonly"
       :root="root"
       :disabled="disabled"
       @add-file="$emit('add-file')"
       @add-dir="$emit('add-dir')"
-      @upload="handleUpload"
+      @upload="$emit('upload', files, print)"
     >
     </file-system-menu>
 
@@ -94,10 +102,12 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
+import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 
 @Component({
   components: {
-    FileSystemMenu
+    FileSystemMenu,
+    FileSystemFilterMenu
   }
 })
 export default class FileSystemToolbar extends Mixins(StatesMixin) {
@@ -132,8 +142,8 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.$store.getters['files/getLowOnSpace']
   }
 
-  handleUpload (files: FileList, print: boolean) {
-    this.$emit('upload', files, print)
+  get supportsHistoryPlugin () {
+    return this.$store.getters['server/pluginSupport']('history')
   }
 }
 </script>

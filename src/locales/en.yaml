@@ -293,6 +293,10 @@ app:
     overlay:
       label: <strong>Drag</strong> a file here
       uploading: <strong>Uploading</strong> files
+    filters:
+      label:
+        print_start_time: Filter printed
+        print_start_time_desc: Filters out items you've already printed.
   endstop:
     label:
       open: OPEN

@@ -2,9 +2,11 @@
   <v-menu
     bottom
     left
+    offset-y
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn
+        :disabled="disabled"
         fab small text
         v-bind="attrs"
         v-on="on"

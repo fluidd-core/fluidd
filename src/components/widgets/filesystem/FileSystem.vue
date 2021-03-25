@@ -29,6 +29,7 @@
       @add-file="handleAddFileDialog"
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
+      @filter="handleFilter"
     ></file-system-toolbar>
 
     <file-system-browser
@@ -37,6 +38,7 @@
       :loading="filesLoading"
       :disabled="disabled"
       :search="search"
+      :filters="filters"
       :files="files"
       :drag-state.sync="dragState.browserState"
       @row-click="handleRowClick"
@@ -142,6 +144,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Maintains search state.
   search = ''
+
+  // Maintains filter state.
+  filters = []
 
   // Maintains content menu state.
   contextMenuState: any = {
@@ -272,6 +277,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Refreshes a path by loading the directory.
   refreshPath (path: string) {
     if (path && !this.disabled) SocketActions.serverFilesGetDirectory(this.currentRoot, path)
+  }
+
+  // Handles a user filtering the data.
+  handleFilter (filters: any) {
+    this.filters = filters
   }
 
   // Handles a user clicking a file row.

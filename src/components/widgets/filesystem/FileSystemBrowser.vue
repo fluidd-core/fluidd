@@ -100,7 +100,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
-import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
+import { AppDirectory, AppFile, AppFileWithMeta, FileFilter } from '@/store/files/types'
 import FilesMixin from '@/mixins/files'
 
 @Component({})
@@ -119,6 +119,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   @Prop({ type: String, required: false })
   search!: string;
+
+  @Prop({ type: Array, default: () => { return [] } })
+  filters!: FileFilter[]
 
   @Prop({ type: Boolean, required: true })
   dragState!: boolean;
@@ -144,7 +147,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     if (this.showLastPrinted) {
-      headers.push({ text: this.$t('app.general.table.header.last_printed'), value: 'print_start_time' })
+      headers.push({
+        text: this.$t('app.general.table.header.last_printed'),
+        value: 'print_start_time',
+        filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
+          const filter = this.filters.find(filter => filter.value === 'print_start_time')
+          if (
+            !this.filters ||
+            this.filters.length === 0 ||
+            !filter ||
+            item.type !== 'file'
+          ) return true
+          return item.print_start_time === null
+        }
+      })
     }
 
     headers = [

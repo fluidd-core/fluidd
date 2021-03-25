@@ -82,7 +82,8 @@ import {
   mdiMotionOutline,
   mdiThermometerLow,
   mdiHelpCircle,
-  mdiHistory
+  mdiHistory,
+  mdiFilterOutline
 } from '@mdi/js'
 
 /**
@@ -215,7 +216,8 @@ export const Icons = Object.freeze({
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
   bedMesh: mdiViewGridOutline,
   host: mdiDesktopTower,
-  history: mdiHistory
+  history: mdiHistory,
+  filter: mdiFilterOutline
 })
 
 export const Waits = Object.freeze({
