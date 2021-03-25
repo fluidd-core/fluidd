@@ -17,7 +17,6 @@ export const mutations: MutationTree<CamerasState> = {
    */
   setInitCameras (state, payload) {
     if (payload) {
-      console.log('assigning cameras db', payload)
       if (payload) Object.assign(state, payload)
     }
   },
