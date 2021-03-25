@@ -25,7 +25,7 @@
           small
           label>
           <v-icon small left>{{ (item === 'open') ? '$blankCircle' : '$markedCircle' }}</v-icon>
-          {{ $t('app.endstop.label.' + item) }}
+          {{ $t('app.endstop.label.' + item.toLowerCase()) }}
         </v-chip>
       </v-layout>
     </v-card-text>
