@@ -25,7 +25,7 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
-export default class InlineHelpIcon extends Vue {
+export default class InlineHelp extends Vue {
   @Prop({ type: String, required: false })
   tooltip!: string
 

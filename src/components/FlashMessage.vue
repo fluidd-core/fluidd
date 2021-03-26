@@ -14,7 +14,7 @@
         v-bind="attrs"
         @click="open = false"
       >
-        Close
+        {{ $t('app.general.btn.close') }}
       </btn>
     </template>
   </v-snackbar>
@@ -32,7 +32,7 @@ export default class FlashMessage extends Vue {
   @Prop({ type: String, default: 'success' })
   type!: string;
 
-  @Prop({ type: String, default: 'Saved!' })
+  @Prop({ type: String, required: true })
   text!: string;
 
   @Prop({ type: Number, default: 3000 })

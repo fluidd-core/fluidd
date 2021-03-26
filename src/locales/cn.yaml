@@ -1,0 +1,312 @@
+app:
+  general:
+    title:
+      camera: 摄像头
+      console: 控制台
+      bedmesh: 网床
+      home: 仪表板
+      add_printer: 添加打印机
+      endstops: Endstops
+      fans_outputs: 风扇和输出
+      jobs: 任务
+      macros: 宏
+      limits: 打印机限制
+      logs: 打印机日志
+      runout_sensors: Runout传感器
+      status: 状态
+      temperature: 温度
+      tool: 工具
+      tune: 调整
+      configure: 配置
+      interface: 接口
+      stats: 打印状态
+      history: 任务历史
+      config_files: 配置文件
+    label:
+      accel_to_decel: 加速到减速
+      acceleration: 加速
+      sqv: 角速度
+      velocity: 速度
+      api_url: API URL
+      host: 主机
+      layout: 层
+      name: 名称
+      power: 电源
+      printers: 打印机
+      requested_speed: 请求的速度
+      services: 服务
+      speed: 速度
+      flow: 流量
+      z_offset: Z偏移
+      high: 高
+      low: 低
+      off: 关闭
+      used: used
+      free: 释放
+      total_jobs: 所有打印任务
+      longest_job: 最长的任务
+      total_time: 合计时间
+      total_time_avg: 平均时间
+      total_print_time: 合计打印时间
+      total_print_time_avg: 平均打印时间
+      total_filament: 总消耗耗材
+      total_filament_avg: 平均消耗耗材
+      variance: 方差
+      save_as: 另存为
+      edit_preset: 编辑预设
+      add_preset: 添加预设
+      extrude_length: 挤出长度
+      extrude_speed: 挤出速度
+      confirm: 确认
+    btn:
+      all: 全部
+      all_off: 全部关闭
+      quad_gantry_level: 龙门架调平
+      add: 添加
+      pause: 暂停
+      reboot: 重启
+      shutdown: 关闭
+      remove: 删除
+      remove_all: 全部删除
+      rename: 重命名
+      resume: 恢复
+      cancel: 取消
+      save: 保存
+      save_as: 另存为
+      upload: 上传
+      upload_print: 上传并打印
+      preheat: 预热
+      reprint: 重印
+      save_restart: 保存并重启
+      adjust_layout: 调整仪表板布局
+      calibrate: 校准
+      clear_profile: 清除配置文件
+      download: 下载
+      add_printer: 添加打印机
+      edit: 编辑
+      extrude: 挤出
+      retract: 缩回
+      restart_firmware: 重启Firmware
+      restart_service_klipper: 重启Klipper
+      restart_service_moonraker: 重启Moonraker
+      socket_refresh: 强制刷新
+      reset_file: 重置文件
+      reset_layout: 重置布局
+      view: 视图
+      close: 关闭
+      config_reference: 配置参考
+      add_file: 添加文件
+      add_dir: 添加目录
+    table:
+      header:
+        filament_used: 耗材
+        name: 名称
+        slicer: 切片
+        status: 状态
+        height: 高度
+        layer_height: 层高度
+        estimated_time: 估计时间
+        last_printed: 上次打印时间
+        modified: 修改时间
+        size: 大小
+        start_time: 开始时间
+        print_duration: 打印持续时间
+        actions: 动作
+    simple_form:
+      msg:
+        confirm: 确定吗？
+        confirm_reboot_host: 确定吗？这将重启您的系统。
+        confirm_shutdown_host: 确定吗？这将关闭您的系统。
+      error:
+        invalid_url: 无效的URL
+        max: 最大 %{max}
+        min: 最小 %{min}
+        min_or_0: 最小 %{min} 至 0
+        required: 必填
+    tooltip:
+      estop: 紧急停止
+    error:
+      app_warnings_found: '找到％{appName}条警告。'
+      app_setup_link: >-
+        Fluidd setup requirements can be found <a target="_blank"
+        href="%{url}">here.</a>
+      failed_components: >-
+        Moonraker的插件失败，请检查您的日志，更新您的配置并重新启动moonraker。
+      components_config: >-
+        可以在<a target="_blank" href="%{url}">此处</a>找到Moonraker插件配置。
+  socket:
+    msg:
+      connecting: 连接到moonraker ...
+      no_connection: 没有moonraker连接。请检查moonraker的状态和或刷新。
+  version:
+    title: 软件更新
+    btn:
+      update: 更新
+      finish: 完成
+      check_for_updates: 检查更新
+    label:
+      dirty: 肮脏
+      invalid: 无效
+      up_to_date: 最新
+    status:
+      updating: 正在更新...
+      finished: 更新已完成
+    tooltip:
+      dirty: 本地文件被污染，无法从线上的git库更新最新代码
+      invalid: 本地文件无效，无法从线上的git库更新最新代码
+  console:
+    label:
+      hide_temp_waits: Hide temp waits
+    placeholder:
+      command: '按''tab''自动补全命令，按''上下''键获取历史命令，输入''help'' 获取命令帮助'
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+    tooltip:
+      home_xy: Home XY
+      home_z: Home Z
+      extruder_disabled: >-
+        挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)
+  bedmesh:
+    label:
+      profile_name: 配置文件名称
+      remove_profile: 删除 %{name} 配置文件
+    msg:
+      not_found: 网床信息不存在。
+      hint: >-
+        If saving as something other than %{name}, you can choose to also remove
+        the %{name} profile
+    tooltip:
+      calibrate: Begins a new calibration, saving as profile 'default'
+      delete: 删除配置，这将重新启动打印机
+      save: >-
+        将校准的配置提交给printer.cfg。这将重新启动您的打印机
+      load: 加载配置
+  printer:
+    status:
+      used_filament: 已消耗耗材
+      time_left: 估计剩余时间
+      duration: 时长
+      duration_total: 合计时间
+    state:
+      printing: 打印中
+      loading: 加载中
+      complete: 完成
+      paused: 已暂停
+      standby: 待机
+      idle: 空闲
+      ready: 就绪
+      busy: 忙
+  setting:
+    title:
+      camera: 摄像头
+      macros: 宏
+      general: 一般
+      theme: 主题
+      tool: 工具
+      thermal_presets: 温度预设
+    label:
+      camera_url: 摄像头地址
+      printer_name: 打印机名称
+      language: 显示语言
+      default_toolhead_move_length: 默认打印头移动距离
+      default_extrude_speed: 默认挤出速度
+      default_extrude_length: 默认挤出长度
+      default_toolhead_z_speed: 默认打印头Z轴速度
+      default_toolhead_xy_speed: 默认打印头XY轴速度
+      camera_flip_x: 水平翻转
+      camera_flip_y: 垂直翻转
+      camera_stream_type: 视频流类型
+      thermal_preset_name: 预设名称
+      all_on: 全部打开
+      all_off: 全部关闭
+      toggle: 切换
+      dark_mode: 黑暗模式
+      primary_color: 主色调
+      reset: 重置设定
+      z_adjust_values: Z轴调整值
+      gcode_coords: 使用GCode坐标
+      time_estimates: 时间估计
+      invert_z_control: 反转Z轴控制
+      invert_y_control: 反转Y轴控制
+      invert_x_control: 反转X轴控制
+      enable: 启用
+    btn:
+      select_theme: 选择主题
+      add_thermal_preset: 添加预设
+      reset: 重置
+    timer_options:
+      duration: 仅显示消耗时间
+      duration_description: 与LCD类似, 只显示消耗时间，没有估算时间。
+      file: 通过文件估算
+      file_description: >-
+        根据进度百分比和持续时间估算总时长。<br />
+        随着时间推移会越来越准确。
+      filament: 通过耗材估算
+      filament_description: >-
+        根据耗材的消耗和预估时间估算总时长<br />
+        随着时间推移会越来越准确。
+      slicer: 使用切片文件的时间
+      slicer_description: 使用切片文件中的预估时间，你必须在切片软件中启用相应的功能。
+    camera_type_options:
+      video: ip camera
+      img: mjpgstreamer
+    tooltip:
+      gcode_coords: 使用GCode坐标位置而不是仪表板上的打印头坐标位置
+  chart:
+    tooltip:
+      help: >-
+        按住Shift键可缩放。<br />单击一个项目可在图形中进行切换。<br/>点击Power即可在图形中进行切换。
+    label:
+      item: 项目
+      current: 当前
+      target: 目标
+      power: 电源
+  file_system:
+    title:
+      rename_file: 重命名文件
+      rename_dir: 重命名目录
+      add_file: 添加文件
+      add_dir: 添加目录
+    label:
+      dir_name: 目录名称
+      file_name: 文件名
+      disk_usage: 磁盘使用率
+    msg:
+      not_found: 文件未找到
+      uploading: 上传中...
+      processing: 处理中...
+      confirm: 确定吗？这将删除其中的所有文件和文件夹。
+    tooltip:
+      disabled: 任务在连接klippy之前被禁止
+      low_on_space: 磁盘空间不足
+    overlay:
+      label: <strong>拖动</strong> 一个文件到这里
+      uploading: 文件<strong>上传中</strong>
+  endstop:
+    label:
+      open: 断开
+      triggered: 触发
+    msg:
+      subtitle: 使用“刷新”按钮更新Endstop状态。
+  history:
+    msg:
+      confirm: 确定吗？这将清除所有历史记录和打印机统计信息
+      load_count: 表示最后{num}个任务
+  endpoint:
+    hint:
+      add_printer: 例如：http://fluiddpi.local
+    msg:
+      trouble: >-
+        遇到麻烦？<a href="%{url}" target="_blank">在此处</a> 查看更多信息。
+    tooltip:
+      endpoint_examples: >-
+        输入您的API URL。<br />例如：<br/><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+    error:
+      cant_connect: >-
+        出了点问题，fluidd无法连接到目的地址。你确定这是正确的地址？
+        sure this is the correct address?
+      cors_error: 被CORS政策阻止
+      cors_note: >-
+        这可能意味着您需要修改moonraker配置。请参阅有关多打印机设置的<a href=\"%{url}\" target=\"_blank\">文档</a>

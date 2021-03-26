@@ -1,11 +1,30 @@
-// In theory vuetify bootstraps this automagically?
-
 // Change our grid gutters to 16px.
 $grid-gutter: 16px;
 
 // Standard height rows for our table should be..
 $data-table-regular-row-height: 40px;
+$data-table-border-radius: none;
 
 $dialog-card-actions-padding: 0 24px 16px;
 
-$tooltip-background-color: rgba(10,10,10,0.90)
+$tooltip-background-color: rgba(10,10,10,0.90);
+
+$material-dark: (
+  'background': #1E1E20,
+  'table': (
+    'hover': #353539
+  )
+);
+
+$material-dark-elevation-colors: (
+  '0': #1E1E20,
+  '1': #28282b,
+  '2': #2b2b2d,
+  '3': #2d2d30,
+  '4': #2f2f32,
+  '6': #313134,
+  '8': #333337,
+  '12': #353539,
+  '16': #38383b,
+  '24': #3a3a3e
+);

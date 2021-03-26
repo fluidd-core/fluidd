@@ -8,7 +8,7 @@
       :value-label="rpm"
       :label="fan.prettyName"
       :rules="rules"
-      :disabled="!klippyConnected">
+      :disabled="!klippyReady">
     </input-slider>
 
     <v-layout
@@ -31,16 +31,16 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import InputSlider from '@/components/inputs/InputSlider.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
-import { Fan } from '@/store/socket/types'
+import { Fan } from '@/store/printer/types'
 
 @Component({
   components: {
     InputSlider
   }
 })
-export default class FanWidget extends Mixins(UtilsMixin) {
+export default class FanWidget extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   fan!: Fan
 
@@ -49,12 +49,12 @@ export default class FanWidget extends Mixins(UtilsMixin) {
 
   get prettyValue () {
     return (this.value === 0)
-      ? 'off'
+      ? this.$t('app.general.label.off')
       : `${this.value.toFixed()}<small>%</small>`
   }
 
   get value () {
-    return (this.fan.speed) ? this.fan.speed * 100 : 0
+    return (this.fan.speed) ? Math.round(this.fan.speed * 100) : 0
   }
 
   set value (target: number) {
@@ -76,14 +76,14 @@ export default class FanWidget extends Mixins(UtilsMixin) {
   }
 
   get offBelow () {
-    const config = this.$store.getters['socket/getPrinterSettings'](this.fan.name) || {}
+    const config = this.$store.getters['printer/getPrinterSettings'](this.fan.name) || {}
     return config.off_below * 100 || 0
   }
 
   rules = [
     (v: string) => {
       if (this.offBelow <= 0) return true
-      return (parseFloat(v) >= this.offBelow || parseFloat(v) === 0) || 'min error'
+      return (parseFloat(v) >= this.offBelow || parseFloat(v) === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: this.offBelow })
     }
   ]
 }

@@ -2,7 +2,7 @@
   <v-footer app absolute>
     <span class="font-weight-light grey--text">
       &copy; {{ new Date().getFullYear() }}
-      fluidd: v{{ systemInfo.version }}-{{ systemInfo.hash }}
+      fluidd: v{{ appInfo.version }}-{{ appInfo.hash }}
     </span>
   </v-footer>
 </template>
@@ -13,11 +13,8 @@ import { Component } from 'vue-property-decorator'
 
 @Component({})
 export default class Footer extends Vue {
-  get systemInfo () {
-    return {
-      version: this.$store.state.version.fluidd.version,
-      hash: this.$store.state.version.fluidd.hash
-    }
+  get appInfo () {
+    return this.$store.state.version.fluidd
   }
 }
 </script>

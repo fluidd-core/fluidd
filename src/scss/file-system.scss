@@ -1,0 +1,77 @@
+/** File system specific tweaks **/
+.file-system {
+  tr.row-select td {
+    cursor: pointer;
+    user-select: none;
+  }
+
+  ::-webkit-scrollbar {
+    transition: all .5s;
+    width: 5px;
+    height: 5px;
+    z-index: 10;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #b3ada7;
+  }
+
+  // gcode thumbnails in the file list
+  .file-icon-thumb {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    letter-spacing: normal;
+    line-height: 1;
+    position: relative;
+    vertical-align: middle;
+  }
+
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  // .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > thead > tr > td:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > thead > tr > th:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:nth-child(-n+2),
+  // .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:nth-child(-n+2) {
+  //   padding-right: 0;
+  //   padding-left: 0;
+  // }
+
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > td:first-child,
+  .v-data-table > .v-data-table__wrapper > table > tbody > tr > th:first-child,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > td:first-child,
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th:first-child,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > td:first-child,
+  .v-data-table > .v-data-table__wrapper > table > tfoot > tr > th:first-child {
+    padding-left: 12px;
+    padding-right: 0;
+  }
+
+  // Don't wrap table headers.
+  .v-data-table > .v-data-table__wrapper > table > thead > tr > th {
+    white-space: nowrap;
+  }
+
+  // Remove the border from expanded rows, so they appear combined.
+  .v-data-table__expanded.v-data-table__expanded__row > td {
+    border-bottom: none !important;
+  }
+
+  .v-data-table__expanded.v-data-table__expanded__content {
+    box-shadow: none !important;
+  }
+}

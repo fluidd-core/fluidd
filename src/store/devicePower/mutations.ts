@@ -4,18 +4,18 @@ import { DevicePowerState } from './types'
 import { defaultState } from './index'
 
 export const mutations: MutationTree<DevicePowerState> = {
-  resetState (state) {
-    const newState = defaultState()
-    Object.keys(newState).forEach((key: string) => {
-      Vue.set(state, key, newState[key])
-    })
+  /**
+   * Reset state
+   */
+  setReset (state) {
+    Object.assign(state, defaultState())
   },
 
-  onDevices (state, payload) {
+  setDevices (state, payload) {
     state.devices = payload.devices
   },
 
-  onStatus (state, payload) {
+  setStatus (state, payload) {
     for (const key in payload) {
       const i = state.devices.findIndex(device => device.device === key)
       if (i >= 0) {

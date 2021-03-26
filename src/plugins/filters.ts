@@ -2,7 +2,7 @@ import _Vue from 'vue'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
-import { Globals } from '@/globals'
+import { Globals, Waits } from '@/globals'
 
 export const Filters = {
 
@@ -33,13 +33,16 @@ export const Filters = {
    * Formats a date from unixtime into a human readable
    * datetime.
    */
-  formatFileDateTime: (datetime: number) => {
+  formatDateTime: (datetime: number, format?: string) => {
     const date = _Vue.$dayjs(datetime * 1000)
-    if (date.isToday()) {
-      return date.fromNow()
-    } else {
-      return date.format('MMM D, YYYY h:mm A')
+    if (!format) {
+      if (date.isToday()) {
+        return date.fromNow()
+      } else {
+        return date.format('MMM D, YYYY h:mm A')
+      }
     }
+    return date.format(format)
   },
 
   /**
@@ -149,7 +152,7 @@ export const Filters = {
    */
   isColorDark (color: string) {
     const t = tinycolor(color).getBrightness()
-    return ((t / 255) * 100) <= 60
+    return ((t / 255) * 100) <= 50
   }
 }
 
@@ -157,8 +160,10 @@ export const FiltersPlugin = {
   install (Vue: typeof _Vue) {
     Vue.prototype.$filters = Filters
     Vue.prototype.$globals = Globals
+    Vue.prototype.$waits = Waits
     Vue.$filters = Filters
     Vue.$globals = Globals
+    Vue.$waits = Waits
   }
 }
 
@@ -166,11 +171,13 @@ declare module 'vue/types/vue' {
   interface Vue {
     $filters: Filters;
     $globals: any;
+    $waits: any;
   }
 
   interface VueConstructor {
     $filters: Filters;
     $globals: any;
+    $waits: any;
   }
 
   interface Filters {
@@ -178,7 +185,7 @@ declare module 'vue/types/vue' {
     camelCase(string: string): string;
     startCase(string: string): string;
     capitalize(string: string): string;
-    formatFileDateTime(datetime: number): string;
+    formatDateTime(datetime: number, format?: string): string;
     getReadableFileSizeString(fileSizeInBytes: number): string;
     getReadableLengthString(lengthInMm: number): string;
     getApiUrls(url: string): ApiConfig;

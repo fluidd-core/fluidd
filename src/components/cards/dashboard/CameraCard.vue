@@ -1,110 +1,77 @@
 <template>
   <collapsable-card
-    title="Camera"
+    :title="$tc('app.general.title.camera', 2)"
     icon="$camera"
     :lazy="false"
     :draggable="true"
     :inLayout="inLayout"
     :enabled="enabled"
     @enabled="$emit('enabled', $event)"
-    @collapsed="onCollapse">
+    @collapsed="collapsed = $event">
 
-    <img
-      v-if="streamType === 'mjpgstreamer'"
-      :src="cameraUrlCacheBusted"
-      class="webcam"
-      :style="cameraTransforms"
-    />
+    <camera-dialog
+      v-if="dialogState.camera"
+      v-model="dialogState.open"
+      :camera="dialogState.camera"
+    ></camera-dialog>
 
-    <video
-      v-if="streamType === 'ipcamera'"
-      :src="cameraUrl"
-      autoplay
-      class="webcam"
-      :style="cameraTransforms"
-    />
+    <v-row class="ma-2" justify="space-around">
+      <template v-for="camera in cameras">
+        <v-col
+          v-if="!collapsed"
+          cols="12" :sm="cols"
+          :key="camera.id">
+          <camera
+            :camera="camera"
+            @click="handleCameraClick(camera)"
+          ></camera>
+        </v-col>
+      </template>
+    </v-row>
+
   </collapsable-card>
 </template>
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
-import UtilsMixin from '@/mixins/utils'
+import Camera from '@/components/widgets/camera/Camera.vue'
+import CameraDialog from '@/components/dialogs/CameraDialog.vue'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
-    PrintStatusWidget
+    Camera,
+    CameraDialog
   }
 })
-export default class CameraCard extends Mixins(UtilsMixin) {
+export default class CameraCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
-  cameraUrl = ''
-  cameraUrlCacheBusted = ''
-  refresh = new Date().getTime()
-
-  // Provides a cachebusted Url
-  get cacheBustedUrl () {
-    const hostUrl = new URL(document.URL)
-    const url = new URL(this.url, hostUrl.origin)
-    url.searchParams.append('cacheBust', this.refresh.toString())
-    return url.toString()
+  dialogState: any = {
+    open: false,
+    camera: null
   }
 
-  // Provides the plain Url
-  get url () {
-    return this.config.url
-  }
+  collapsed = false
 
-  get config () {
-    return this.$store.state.config.uiSettings.camera
-  }
-
-  get streamType () {
-    return this.config.type
-  }
-
-  get cameraTransforms () {
-    const config = this.config
-    let transforms = ''
-    transforms += (config && config.flipX) ? ' scaleX(-1)' : ''
-    transforms += (config && config.flipY) ? ' scaleY(-1)' : ''
-    return (transforms.trimLeft().length) ? { transform: transforms.trimLeft() } : {}
+  get cols () {
+    if (this.cameras.length <= 2) return 6
+    if (this.cameras.length > 2) return 4
   }
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
 
-  created () {
-    document.addEventListener('visibilitychange', this.handleRefreshChange, false)
+  get cameras () {
+    return this.$store.getters['cameras/getVisibleCameras']
   }
 
-  beforeDestroy () {
-    this.cameraUrl = ''
-    this.cameraUrlCacheBusted = ''
-    document.removeEventListener('visibilitychange', this.handleRefreshChange)
-  }
-
-  onCollapse (collapsed: boolean) {
-    if (collapsed) {
-      this.cameraUrl = ''
-      this.cameraUrlCacheBusted = ''
-    } else {
-      this.cameraUrl = this.url
-      this.cameraUrlCacheBusted = this.cacheBustedUrl
-    }
-  }
-
-  handleRefreshChange () {
-    if (!document.hidden) {
-      this.refresh = new Date().getTime()
-      this.cameraUrl = this.url
-      this.cameraUrlCacheBusted = this.cacheBustedUrl
-    } else {
-      this.cameraUrl = ''
-      this.cameraUrlCacheBusted = ''
+  handleCameraClick (camera: Camera) {
+    this.dialogState = {
+      open: true,
+      camera
     }
   }
 }
@@ -112,6 +79,7 @@ export default class CameraCard extends Mixins(UtilsMixin) {
 
 <style lang="scss" scoped>
   .webcam {
+    display: block;
     width: 100%;
   }
 </style>

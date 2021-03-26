@@ -1,7 +1,6 @@
 <template>
   <v-card
     :class="_cardClasses"
-    color="tertiary"
     :rounded="rounded"
     :loading="isLoading">
 
@@ -21,11 +20,11 @@
 
     <v-card-title
       v-if="!hasTabbedTitleSlot()"
-      class="card-title quaternary py-1"
+      class="card-title card-heading py-1"
       :class="{ 'draggable': isInLayout }"
     >
       <slot name="title">
-        <v-icon left>{{ icon }}</v-icon>
+        <v-icon left :color="iconColor">{{ icon }}</v-icon>
         <span class="font-weight-light">{{ title }}</span>
       </slot>
       <v-spacer />
@@ -38,6 +37,7 @@
       <!-- Menu, (condensed to hamburger) -->
       <v-menu
         v-if="hasMenuSlot && !isInLayout && !hideMenu"
+        transition="slide-x-transition"
         left
         offset-y
         :close-on-content-click="false"
@@ -46,12 +46,13 @@
           <btn
             :class="hamburgerMenuClasses"
             fab small text
+            color=""
             v-bind="attrs"
             v-on="on">
             <v-icon>{{ menuIcon }}</v-icon>
           </btn>
         </template>
-        <v-sheet elevation="0" class="pa-2" color="tertiary">
+        <v-sheet elevation="0" class="pa-2">
           <!-- Menu slot -->
           <slot name="menu"></slot>
         </v-sheet>
@@ -80,7 +81,7 @@
         v-if="!isCollapsed && !isInLayout"
         :class="_contentClasses"
         :style="_contentStyles">
-        <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
+        <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="sub-title">
             <span v-html="subTitle"></span>
           </slot>
@@ -99,7 +100,7 @@
         v-show="!isCollapsed && !isInLayout"
         :class="_contentClasses"
         :style="_contentStyles">
-        <v-card-subtitle class="tertiary py-2" v-if="subTitle || hasSubTitleSlot">
+        <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
           <slot name="subTitle">
             <span v-html="subTitle"></span>
           </slot>
@@ -154,6 +155,12 @@ export default class ToolheadCard extends Vue {
    */
   @Prop({ type: String, required: false })
   icon!: string
+
+  /**
+   * The icon color to use in the title.
+   */
+  @Prop({ type: String, required: false })
+  iconColor!: string
 
   /**
    * Loading state.
@@ -351,7 +358,7 @@ export default class ToolheadCard extends Vue {
   mounted () {
     this.$emit('collapsed', this.isCollapsed)
     if (this.hasCollapseButtonSlot) {
-      this.collapsable = false
+      // this.collapsable = false
     }
   }
 
@@ -375,9 +382,3 @@ export default class ToolheadCard extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .card-title {
-    min-height: 48px;
-  }
-</style>

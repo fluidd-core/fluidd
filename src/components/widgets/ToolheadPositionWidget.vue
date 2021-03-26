@@ -5,26 +5,26 @@
         <v-col cols="auto">
           <span class="secondary--text text--lighten-1">X:</span>
           <span class="grey--text focus--text">
-            {{ toolheadPosition[0].toFixed(2) }}
+            {{ ((useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)) }}
           </span>
         </v-col>
         <v-col cols="auto">
           <span class="secondary--text text--lighten-1">Y:</span>
           <span class="grey--text focus--text">
-            {{ toolheadPosition[1].toFixed(2) }}
+            {{ ((useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)) }}
           </span>
         </v-col>
         <v-col cols="auto">
           <span class="secondary--text text--lighten-1">Z:</span>
           <span class="grey--text focus--text">
-            {{ toolheadPosition[2].toFixed(2) }}
+            {{ ((useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)) }}
           </span>
         </v-col>
       </v-row>
 
       <v-row justify="space-between" align="center" no-gutters v-show="printerPrinting">
         <v-col cols="auto" class="secondary--text text--lighten-1">
-          Requested Speed:
+          {{ $t('app.general.label.requested_speed') }}
         </v-col>
         <v-col cols="auto" class="grey--text focus--text">
           {{ requestedSpeed }} mm/s
@@ -37,22 +37,26 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class ToolheadPositionWidget extends Mixins(UtilsMixin) {
+export default class ToolheadPositionWidget extends Mixins(StateMixin) {
   get gcodePosition () {
-    return this.$store.state.socket.printer.gcode_move.gcode_position
+    return this.$store.state.printer.printer.gcode_move.gcode_position
   }
 
   get toolheadPosition () {
-    return this.$store.state.socket.printer.toolhead.position
+    return this.$store.state.printer.printer.toolhead.position
+  }
+
+  get useGcodeCoords () {
+    return this.$store.state.config.uiSettings.general.useGcodeCoords
   }
 
   get requestedSpeed () {
     // Take into account the speed multiplier.
-    const multiplier = this.$store.state.socket.printer.gcode_move.speed_factor || 1
-    let speed = this.$store.state.socket.printer.gcode_move.speed || 0
+    const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
+    let speed = this.$store.state.printer.printer.gcode_move.speed || 0
     speed = (speed * multiplier) / 60
     return speed.toFixed()
   }

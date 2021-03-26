@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Fans &amp; Outputs"
+    :title="$t('app.general.title.fans_outputs')"
     icon="$motion"
     :draggable="true"
     :inLayout="inLayout"
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import OutputsWidget from '@/components/widgets/OutputsWidget.vue'
 
 @Component({
@@ -22,7 +22,7 @@ import OutputsWidget from '@/components/widgets/OutputsWidget.vue'
     OutputsWidget
   }
 })
-export default class OutputsCard extends Mixins(UtilsMixin) {
+export default class OutputsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 

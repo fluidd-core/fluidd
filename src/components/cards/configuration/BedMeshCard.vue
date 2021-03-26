@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :loading="loading"
-    title="Bed Mesh"
+    :title="$t('app.general.title.bedmesh')"
     :lazy="false"
     icon="$bedMesh">
     <bed-mesh-widget @hook:mounted="componentMounted"></bed-mesh-widget>
@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
 
 @Component({
@@ -18,7 +18,7 @@ const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefet
     BedMeshWidget
   }
 })
-export default class BedMeshCard extends Mixins(UtilsMixin) {
+export default class BedMeshCard extends Mixins(StateMixin) {
   loading = true
 
   componentMounted () {

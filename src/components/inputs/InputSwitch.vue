@@ -19,10 +19,10 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class InputSlider extends Mixins(UtilsMixin) {
+export default class InputSlider extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 

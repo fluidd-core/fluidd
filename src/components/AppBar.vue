@@ -1,7 +1,7 @@
 <template>
   <v-app-bar
     app
-    clipped-right
+    clipped-left
   >
     <v-container fluid class="flex-nowrap constrained-width pa-0 fill-height">
       <router-link to="/">
@@ -20,22 +20,40 @@
       </v-toolbar-title>
       <v-spacer />
 
-      <btn text to="/" class="d-none d-md-flex mx-1">
+      <btn text to="/" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$home</v-icon>
-        <span>Dashboard</span>
+        <span>{{ $t('app.general.title.home') }}</span>
       </btn>
-      <btn text to="/jobs" class="d-none d-md-flex mx-1" :disabled="!jobsAvailable">
+      <btn text to="/jobs" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$files</v-icon>
-        <span>Jobs</span>
+        <span>{{ $t('app.general.title.jobs') }}</span>
       </btn>
-      <btn text to="/configuration" class="d-none d-md-flex mx-1">
+      <btn text to="/tune" color="" class="d-none d-md-flex mx-1">
         <v-icon small class="mr-md-1">$tune</v-icon>
-        <span>Printer</span>
+        <span>{{ $t('app.general.title.tune') }}</span>
       </btn>
+      <v-badge
+        bordered
+        color="warning"
+        left
+        overlap
+        :value="hasUpdates"
+        offset-y="17"
+        offset-x="22"
+        class="d-none d-md-flex mx-1"
+      >
+        <template v-slot:badge>
+          <strong class="black--text">!</strong>
+        </template>
+        <btn text to="/configure" color="" class="d-none d-md-flex mx-1">
+          <v-icon small class="mr-md-1">$cogs</v-icon>
+          <span>{{ $t('app.general.title.configure') }}</span>
+        </btn>
+      </v-badge>
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
           <btn
-            :disabled="!klippyConnected"
+            :disabled="!klippyReady"
             icon
             color="error"
             @click="emergencyStop()"
@@ -44,22 +62,12 @@
             <v-icon>$estop</v-icon>
           </btn>
         </template>
-        Emergency Stop
+        {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <v-badge
-        bordered
-        color="warning"
-        dot
-        overlap
-        :value="hasUpdates"
-        :offset-y="15"
-        :offset-x="15"
-      >
-        <btn icon @click="$emit('drawer')">
-          <v-icon>$menu</v-icon>
-        </btn>
-      </v-badge>
+      <btn icon color="" @click="$emit('drawer')">
+        <v-icon>$menu</v-icon>
+      </btn>
 
     </v-container>
   </v-app-bar>
@@ -67,7 +75,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/socketActions'
 import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
 
@@ -76,12 +84,8 @@ import SystemCommandsWidget from '@/components/widgets/SystemCommandsWidget.vue'
     SystemCommandsWidget
   }
 })
-export default class AppBar extends Mixins(UtilsMixin) {
+export default class AppBar extends Mixins(StateMixin) {
   menu = false
-
-  get jobsAvailable () {
-    return this.$store.getters['files/isRootAvailable']('gcodes')
-  }
 
   get instances () {
     return this.$store.state.config.instances
@@ -92,7 +96,7 @@ export default class AppBar extends Mixins(UtilsMixin) {
   }
 
   get currentFile () {
-    return this.$store.state.socket.printer.print_stats.filename
+    return this.$store.state.printer.printer.print_stats.filename
   }
 
   get hasUpdates () {

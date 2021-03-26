@@ -25,7 +25,7 @@ export default class FluiddIcon extends Vue {
   @Prop({ type: String, default: 'success' })
   width!: string;
 
-  @Prop({ type: String, default: 'Saved!' })
+  @Prop({ type: String, default: '40' })
   height!: string;
 
   @Prop({ type: String, required: true })

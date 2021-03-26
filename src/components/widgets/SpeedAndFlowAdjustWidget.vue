@@ -3,11 +3,11 @@
     <v-col cols="12" sm="6">
       <!-- Speed and Flow Adjust -->
       <input-slider
-        label="Speed"
+        :label="$t('app.general.label.speed')"
         value-suffix="%"
         input-xs
         v-model.number="speed"
-        :disabled="!klippyConnected || hasWait(waits.onSetSpeed)"
+        :disabled="!klippyReady || hasWait(waits.onSetSpeed)"
         :min="1"
         :max="200"
         :rules="rules">
@@ -15,11 +15,11 @@
     </v-col>
     <v-col cols="12" sm="6">
       <input-slider
-        label="Flow"
+        :label="$t('app.general.label.flow')"
         value-suffix="%"
         input-xs
         v-model.number="flow"
-        :disabled="!klippyConnected || hasWait(waits.onSetFlow)"
+        :disabled="!klippyReady || hasWait(waits.onSetFlow)"
         :min="1"
         :max="200"
         :rules="rules">
@@ -31,7 +31,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import InputSlider from '@/components/inputs/InputSlider.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({
@@ -39,16 +39,16 @@ import { Waits } from '@/globals'
     InputSlider
   }
 })
-export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
+export default class SpeedAndFlowAdjustWidget extends Mixins(StateMixin) {
   waits = Waits
 
   rules = [
-    (v: number) => (v >= 1) || 'min 1',
-    (v: number) => (v <= 200) || 'max 200'
+    (v: number) => (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 }),
+    (v: number) => (v <= 200) || this.$t('app.general.simple_form.error.max', { max: 200 })
   ]
 
   get flow () {
-    return this.$store.state.socket.printer.gcode_move.extrude_factor * 100 || 100
+    return Math.round(this.$store.state.printer.printer.gcode_move.extrude_factor * 100) || 100
   }
 
   set flow (val: number) {
@@ -56,7 +56,7 @@ export default class SpeedAndFlowAdjustWidget extends Mixins(UtilsMixin) {
   }
 
   get speed () {
-    return this.$store.state.socket.printer.gcode_move.speed_factor * 100 || 100
+    return Math.round(this.$store.state.printer.printer.gcode_move.speed_factor * 100) || 100
   }
 
   set speed (val: number) {

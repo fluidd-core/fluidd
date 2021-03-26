@@ -1,28 +1,15 @@
-import { VuetifyThemeItem } from "vuetify/types/services/theme";
+import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export interface ConfigState {
   [key: string]: any;
   apiUrl: string;
   socketUrl: string;
-  unsavedChanges: boolean;
   layoutMode: boolean;
-  appState: AppState;
   cardState: CardState; // if a collapsable card is collapsed or not.
   cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
-  consoleHistory: string[];
-  serverConfig: any;
-}
-
-export interface AppState {
-  [key: string]: any;
-  chartSelectedLegends: ChartSelectedLegends;
-}
-
-export interface ChartSelectedLegends {
-  [key: string]: boolean;
 }
 
 // Saved to local storage.
@@ -43,7 +30,6 @@ export interface CardState {
 export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;
-  camera: CameraConfig;
   dashboard: DashboardConfig;
 }
 
@@ -51,20 +37,28 @@ export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
   hosted: boolean;
+  locales: SupportedLocale[];
+}
+
+export interface SupportedLocale {
+  name: string;
+  code: string;
 }
 
 export interface GeneralConfig {
   instanceName: string;
+  locale: string;
   chartVisible: boolean;
   hideTempWaits: boolean;
   axis: Axis;
-  invertZControl: boolean;
   defaultExtrudeLength: number;
   defaultExtrudeSpeed: number;
-  defaultToolheadMoveLength: string;
+  defaultToolheadMoveLength: number;
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
+  useGcodeCoords: boolean;
+  zAdjustDistances: number[];
 }
 
 export interface ThemeConfig {
@@ -80,35 +74,20 @@ export interface AxisConfig {
   inverted: boolean;
 }
 
-export interface CameraConfig {
-  enabled: boolean;
-  type: 'mjpgstreamer' | 'ipcamera';
-  url: string;
-  flipX: boolean;
-  flipY: boolean;
-}
-
 export interface DashboardConfig {
-  hiddenMacros: string[];
   tempPresets: TemperaturePreset[];
 }
 
-export interface GenericSave {
-  key: string;
+export interface SaveByPath {
+  path: string;
   value: string | boolean | number;
+  server?: boolean;
 }
 
 export interface InitConfig {
   apiConfig: ApiConfig | InstanceConfig;
-  fileConfig?: FileConfig;
   hostConfig?: HostConfig;
   apiConnected?: boolean;
-}
-
-export interface FileConfig {
-  [index: string]: any;
-  uiSettings?: UiSettings;
-  consoleHistory?: string[];
 }
 
 export interface ApiConfig {
@@ -123,6 +102,7 @@ export interface InstanceConfig extends ApiConfig {
 }
 
 export interface TemperaturePreset {
+  id: number;
   name: string;
   values: TemperaturePresetValues;
 }

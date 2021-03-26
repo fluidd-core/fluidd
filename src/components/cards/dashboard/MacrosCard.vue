@@ -1,6 +1,6 @@
 <template>
   <collapsable-card
-    title="Macros"
+    :title="$t('app.general.title.macros')"
     icon="$fileCode"
     :draggable="true"
     :inLayout="inLayout"
@@ -13,14 +13,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import MacrosWidget from '@/components/widgets/MacrosWidget.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
     MacrosWidget
   }
 })
-export default class CameraCard extends Mixins(UtilsMixin) {
+export default class CameraCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 

@@ -7,9 +7,7 @@
         :setOptionOps="{ notMerge: true }"
         :initOpts="{ renderer: 'svg' }"
         :events="[
-          ['legendselectchanged', handleLegendSelectChange ],
-          ['legendselected', handleLegendSelectChange ],
-          ['legendunselected', handleLegendSelectChange ],
+          ['legendselectchanged', handleLegendSelectChange ]
         ]">
       </ECharts>
     </div>
@@ -17,25 +15,62 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import { getKlipperType } from '@/store/helpers'
 
 @Component({})
 export default class EChartsWidget extends Vue {
-  @Prop({ required: true, default: {} })
-  public chartData!: any
-
   loading = true
   options: any = {}
 
-  handleLegendSelectChange (e: Event) {
-    this.$emit('legend-select-changed', e)
+  handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
+    this.$store.dispatch('charts/saveSelectedLegends', e.selected)
+    if (
+      this.chart &&
+      !this.loading
+    ) {
+      this.chart.setOption({
+        grid: this.grid,
+        yAxis: [
+          {},
+          { show: this.showPowerAxis(e.selected) }
+        ]
+      })
+    }
   }
 
   get chart () {
     const ref = this.$refs.chart as any
     if (ref) return ref.inst as ECharts
+  }
+
+  get chartData () {
+    return this.$store.getters['charts/getChartData']
+  }
+
+  get chartSelectedLegends () {
+    return this.$store.getters['charts/getSelectedLegends']
+  }
+
+  get chartRetension () {
+    return this.$store.getters['charts/getChartRetention']
+  }
+
+  get grid () {
+    let right = 0
+    if (this.showPowerAxis(this.chartSelectedLegends)) {
+      right = (this.isMobile) ? 35 : 70
+    } else {
+      right = (this.isMobile) ? 15 : 24
+    }
+
+    return {
+      top: 30,
+      left: (this.isMobile) ? 35 : 70,
+      right,
+      bottom: (this.isMobile) ? 55 : 50
+    }
   }
 
   @Watch('chartData')
@@ -67,7 +102,7 @@ export default class EChartsWidget extends Vue {
 
     // Create the series and associated legends.
     const dataKeys = Object.keys(this.chartData[0])
-    const keys = this.$store.getters['socket/getChartableSensors'] as string[]
+    const keys = this.$store.getters['printer/getChartableSensors'] as string[]
 
     keys.forEach((key) => {
       let label = key
@@ -79,13 +114,18 @@ export default class EChartsWidget extends Vue {
       if (dataKeys.includes(label + 'Speed')) this.createSeries(label + 'Speed', key)
     })
 
-    // Init the legend state in the store.
-    this.$store.dispatch('config/saveGeneric', { key: 'appState.chartSelectedLegends', value: this.options.legend.selected })
+    // Re-apply the legend state in the store after the series has redefined the legends.
+    this.$store.dispatch('charts/saveSelectedLegends', this.options.legend.selected)
+
+    // Make sure we enable / disable the y axis.
+    if (this.showPowerAxis(this.options.legend.selected)) {
+      this.options.yAxis[1].show = true
+    }
   }
 
   initOptions () {
     const darkMode = this.$store.state.config.uiSettings.theme.isDark
-    const fontSize = 16
+    const fontSize = (this.isMobile) ? 13 : 15
     const lineOpacity = 0.2
     let labelBackground = 'rgba(10,10,10,0.90)'
     let fontColor = 'rgba(255,255,255,0.25)'
@@ -97,12 +137,7 @@ export default class EChartsWidget extends Vue {
     }
 
     this.options = {
-      grid: {
-        top: 10,
-        left: 70,
-        right: 70,
-        bottom: 50
-      },
+      grid: this.grid,
       legend: {
         show: false,
         top: 0,
@@ -140,6 +175,11 @@ export default class EChartsWidget extends Vue {
       xAxis: {
         type: 'time',
         boundaryGap: false,
+        max: 'dataMax',
+        min: (value: any) => {
+          const serverConfig = this.$store.getters['server/getConfig']
+          return value.max - (serverConfig.server.temperature_store_size * 1000)
+        },
         axisTick: {
           show: false
         },
@@ -155,7 +195,8 @@ export default class EChartsWidget extends Vue {
           margin: 14,
           color: fontColor,
           fontSize,
-          formatter: this.xAxisLabelFormatter
+          formatter: '{H}:{mm}',
+          rotate: (this.isMobile) ? 90 : 0
         },
         axisPointer: {
           label: {
@@ -167,6 +208,13 @@ export default class EChartsWidget extends Vue {
       },
       yAxis: [
         {
+          name: (this.isMobile) ? '°C Temperature' : 'Temperature',
+          nameTextStyle: {
+            fontSize,
+            color: fontColor,
+            align: 'left'
+          },
+          show: true,
           type: 'value',
           position: 'left',
           splitLine: {
@@ -180,18 +228,24 @@ export default class EChartsWidget extends Vue {
           maxInterval: 60,
           min: this.yAxisTempMin,
           max: this.yAxisTempMax,
-          // max: 'dataMax',
-          // min: 'dataMin',
           axisLabel: {
             interval: 0,
             margin: 14,
             color: fontColor,
             fontSize,
-            formatter: '{value}°C'
+            formatter: (this.isMobile) ? '{value}' : '{value}°C',
+            rotate: (this.isMobile) ? 90 : 0
           },
           boundaryGap: [0, '100%']
         },
         {
+          name: (this.isMobile) ? 'Power %' : 'Power',
+          nameTextStyle: {
+            fontSize,
+            color: fontColor,
+            align: 'right'
+          },
+          show: false,
           type: 'value',
           position: 'right',
           splitLine: {
@@ -208,7 +262,8 @@ export default class EChartsWidget extends Vue {
             margin: 14,
             color: fontColor,
             fontSize,
-            formatter: this.yAxisPowerFormatter
+            formatter: this.yAxisPowerFormatter,
+            rotate: (this.isMobile) ? 90 : 0
           },
           boundaryGap: [0, '100%']
         }
@@ -264,16 +319,11 @@ export default class EChartsWidget extends Vue {
       series.areaStyle.opacity = 0
     }
 
-    // If this is a power, adjust its display.
-    if (label.toLowerCase().endsWith('power')) {
-      series.yAxisIndex = 1
-      series.lineStyle.type = 'dotted'
-      series.lineStyle.opacity = 0.35
-      series.areaStyle.opacity = 0
-    }
-
-    // If this is a speed, adjust its display.
-    if (label.toLowerCase().endsWith('speed')) {
+    // If this is a power or speed, adjust its display.
+    if (
+      label.toLowerCase().endsWith('power') ||
+      label.toLowerCase().endsWith('speed')
+    ) {
       series.yAxisIndex = 1
       series.lineStyle.type = 'dotted'
       series.lineStyle.opacity = 0.35
@@ -281,7 +331,7 @@ export default class EChartsWidget extends Vue {
     }
 
     // Set the initial legend state (power and speed default off)
-    const storedLegends = this.$store.state.config.appState.chartSelectedLegends
+    const storedLegends = this.$store.getters['charts/getSelectedLegends']
     if (storedLegends[label] !== undefined) {
       this.options.legend.selected[label] = storedLegends[label]
     } else {
@@ -293,6 +343,14 @@ export default class EChartsWidget extends Vue {
 
     // Push the series into our options object.
     this.options.series.push(series)
+  }
+
+  showPowerAxis (selected: any) {
+    const filtered = Object.keys(selected)
+      .filter(key => key.toLowerCase().endsWith('power') || key.toLowerCase().endsWith('speed'))
+      .filter(key => selected[key] === true)
+
+    return (filtered.length > 0)
   }
 
   legendToggleSelect (name: string) {
@@ -336,7 +394,9 @@ export default class EChartsWidget extends Vue {
         if (
           !param.seriesName.toLowerCase().endsWith('target') &&
           !param.seriesName.toLowerCase().endsWith('power') &&
-          !param.seriesName.toLowerCase().endsWith('speed')
+          !param.seriesName.toLowerCase().endsWith('speed') &&
+          param.seriesName &&
+          param.seriesName in param.value
         ) {
           text += `
             <div>
@@ -369,18 +429,8 @@ export default class EChartsWidget extends Vue {
     return this.$vuetify.breakpoint.mobile
   }
 
-  xAxisLabelFormatter () {
-    if (this.isMobile) {
-      return '{mm}'
-    }
-    return '{H}:{mm}'
-  }
-
   xAxisPointerFormatter (params: any) {
     const d = this.$dayjs(params.value)
-    if (this.isMobile) {
-      return d.format('mm:ss')
-    }
     return d.format('H:mm:ss')
   }
 
@@ -389,7 +439,7 @@ export default class EChartsWidget extends Vue {
   }
 
   yAxisPowerFormatter (value: any) {
-    return `${value * 100}%`
+    return (this.isMobile) ? `${value * 100}` : `${value * 100}%`
   }
 
   yAxisTempMin (value: any) {
@@ -415,6 +465,6 @@ export default class EChartsWidget extends Vue {
   .chart {
     margin-top: 16px;
     width: 100%;
-    height: 350px;
+    height: 325px;
   }
 </style>

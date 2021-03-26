@@ -2,46 +2,51 @@
   <v-card-text>
     <v-row>
       <v-col class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        Item
+        {{ $t('app.chart.label.item') }}
       </v-col>
       <v-col cols="2" class="text-subtitle-1 grey--text text--darken-1 d-none d-sm-flex">
-        Power
+        {{ $t('app.chart.label.power') }}
       </v-col>
       <v-col cols="6" sm="3" class="text-subtitle-1 grey--text text--darken-1">
-        Current
+        {{ $t('app.chart.label.current') }}
       </v-col>
       <v-col sm="4" class="text-subtitle-1 grey--text text--darken-1">
         <v-layout>
-          <span class="">Target</span>
+          <span class="">{{ $t('app.chart.label.target') }}</span>
           <v-spacer></v-spacer>
-          <v-menu bottom left offset-y :min-width="150">
+          <v-menu
+            bottom
+            left
+            offset-y
+            transition="slide-x-transition"
+            :min-width="150"
+          >
             <template v-slot:activator="{ on, attrs }">
             <btn
               :min-width="40"
+              :disabled="!klippyReady"
               v-bind="attrs" v-on="on"
-              color="secondary"
               small
               class="pa-0">
               <v-icon>$menuAlt</v-icon>
             </btn>
             </template>
             <v-list
-              dense
-              color="secondary">
+              dense>
               <v-list-item
                 @click="setAllOff"
                 link>
                 <v-list-item-title>
                   <v-icon small left color="cyan">$snowflakeAlert</v-icon>
-                  All off
+                  {{ $t('app.general.btn.all_off') }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item
                 link
                 dense
                 @click="applyPreset(preset)"
-                v-for="(preset, i) of presets"
-                :key="i">
+                v-for="(preset) of presets"
+                :key="preset.index">
                 <v-list-item-title>
                   <v-icon small left color="primary">$fire</v-icon>
                   {{ preset.name }}
@@ -76,15 +81,16 @@
           class="legend-item">
           <span v-if="item.power <= 0 && item.target <= 0">off</span>
           <span v-if="item.target > 0">
-            {{ (item.power * 100).toFixed() }}<small>%</small>
+            {{ (item.power) ? (item.power * 100).toFixed() : 0}}<small>%</small>
           </span>
         </span>
       </v-col>
       <v-col cols="6" sm="3" class="grey--text focus--text pt-0 pt-md-2">
-        {{ item.temperature.toFixed(1) }}<small>°C</small>
+        {{ (item.temperature) ? item.temperature.toFixed(1) : 0 }}<small>°C</small>
       </v-col>
       <v-col cols="6" sm="4" class="pt-0 pt-md-2">
         <input-temperature
+          v-if="klippyReady"
           :value="item.target"
           @input="setHeaterTargetTemp(item.name, $event)"
           :max="item.maxTemp"
@@ -111,7 +117,7 @@
             {{ item.prettyName }}
           </span>
         </v-col>
-        <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2">
+        <v-col cols="5" sm="2" class="grey--text pb-0 pb-md-2" v-if="item.speed">
           <span
             @click="$emit('legendPowerClick', item)"
             :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
@@ -130,6 +136,7 @@
         </v-col>
         <v-col v-if="item.type === 'temperature_fan'" cols="6" sm="4" class="pt-0 pt-md-2">
           <input-temperature
+            v-if="klippyReady"
             :value="item.target"
             @input="setFanTargetTemp(item.name, $event)"
             :max="item.maxTemp"
@@ -160,9 +167,9 @@
           <template v-slot:activator="{ on, attrs }">
             <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
           </template>
-          <span>
-            <span class="amber--text">high {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
-            <span class="cyan--text">low {{ item.measured_min_temp.toFixed(1) }}°C</span>
+          <span v-if="item.measured_max_temp && item.measured_min_temp">
+            <span class="amber--text">{{ $t('app.general.label.high') }} {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+            <span class="cyan--text">{{ $t('app.general.label.low') }} {{ item.measured_min_temp.toFixed(1) }}°C</span>
           </span>
         </v-tooltip>
       </v-col>
@@ -181,7 +188,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import InputTemperature from '@/components/inputs/InputTemperature.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { TemperaturePreset } from '@/store/config/types'
 
 @Component({
@@ -189,25 +196,25 @@ import { TemperaturePreset } from '@/store/config/types'
     InputTemperature
   }
 })
-export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
+export default class TemperatureTargetsWidget extends Mixins(StateMixin) {
   get colors () {
     return this.$colorset.colorList
   }
 
   get extruder () {
-    return this.$store.state.socket.printer.extruder
+    return this.$store.state.printer.printer.extruder
   }
 
   get heaters () {
-    return this.$store.getters['socket/getHeaters']
+    return this.$store.getters['printer/getHeaters']
   }
 
   get fans () {
-    return this.$store.getters['socket/getOutputs'](['temperature_fan'])
+    return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
   get sensors () {
-    return this.$store.getters['socket/getSensors']
+    return this.$store.getters['printer/getSensors']
   }
 
   get presets () {
@@ -215,11 +222,11 @@ export default class TemperatureTargetsWidget extends Mixins(UtilsMixin) {
   }
 
   get chartableSensors () {
-    return this.$store.getters['socket/getChartableSensors']
+    return this.$store.getters['printer/getChartableSensors']
   }
 
   get chartSelectedLegends () {
-    return this.$store.state.config.appState.chartSelectedLegends
+    return this.$store.getters['charts/getSelectedLegends']
   }
 
   setHeaterTargetTemp (heater: string, target: number) {

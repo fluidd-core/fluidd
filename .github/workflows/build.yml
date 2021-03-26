@@ -30,3 +30,16 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Prepare Deploy
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          cp ./server/config.json ./dist/config.json
+
+      - name: Deploy to Host
+        if: github.ref == 'refs/heads/develop'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          npm run deploy.host.dev

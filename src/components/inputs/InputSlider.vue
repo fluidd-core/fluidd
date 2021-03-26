@@ -23,8 +23,8 @@
         </span>
         <v-text-field
           v-if="!readonly"
+          @change="handleTextChange"
           :value="newValue"
-          @change="emitChange"
           :suffix="valueSuffix"
           :rules="rules"
           :class="classes"
@@ -39,7 +39,7 @@
       </div>
     </v-layout>
     <v-slider
-      @change="emitChange"
+      @change="handleSliderChange"
       @input="newValue = $event"
       :value="newValue"
       :rules="rules"
@@ -55,7 +55,7 @@
       <template v-slot:prepend>
         <v-icon
           :disabled="readonly || disabled || newValue === 0"
-          @click="clickChange(newValue - step)"
+          @click="handleClickChange(newValue - step)"
           color="grey">
           $minus
         </v-icon>
@@ -64,7 +64,7 @@
       <template v-slot:append>
         <v-icon
           :disabled="readonly || disabled || newValue === max"
-          @click="clickChange(newValue + step)"
+          @click="handleClickChange(newValue + step)"
           color="grey">
           $plus
         </v-icon>
@@ -75,11 +75,11 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { VForm } from '@/types/vuetify'
 
 @Component({})
-export default class InputSlider extends Mixins(UtilsMixin) {
+export default class InputSlider extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 
@@ -123,8 +123,8 @@ export default class InputSlider extends Mixins(UtilsMixin) {
   public valueSuffix!: string;
 
   @Watch('value')
-  onValueChange (val: number) {
-    this.newValue = val
+  onValueChange (val: number, oldVal: number) {
+    if (val !== oldVal) this.newValue = val
   }
 
   // TODO: Figure out a better solution here.
@@ -153,20 +153,31 @@ export default class InputSlider extends Mixins(UtilsMixin) {
     this.newValue = this.value
   }
 
-  clickChange (val: number) {
-    this.newValue = val
+  handleClickChange (val: number) {
+    const num = +val
+    this.newValue = num
     this.$nextTick(() => {
-      if (this.form.validate()) {
-        if (val !== this.value) this.$emit('input', val)
-      } else {
-        this.newValue = this.value
-      }
+      this.handleSliderChange(num)
     })
   }
 
-  emitChange (val: number) {
+  handleTextChange (val: string) {
+    const num = +val
+    if (
+      num !== this.newValue &&
+      this.valid
+    ) {
+      this.newValue = num
+      this.$emit('input', num)
+    }
+  }
+
+  handleSliderChange (val: string | number) {
+    const num = +val
     if (this.valid) {
-      if (val !== this.value) this.$emit('input', val)
+      if (num !== this.value) {
+        this.$emit('input', num)
+      }
     } else {
       this.newValue = this.value
     }

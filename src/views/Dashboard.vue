@@ -2,8 +2,8 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
-        <klippy-card v-if="!klippyConnected || hasWarnings"></klippy-card>
-        <status-card v-if="klippyConnected"></status-card>
+        <klippy-card v-if="!klippyReady || hasWarnings"></klippy-card>
+        <status-card v-if="klippyReady"></status-card>
         <draggable
           class="list-group"
           v-model="col1"
@@ -45,7 +45,6 @@ import draggable from 'vuedraggable'
 import StatusCard from '@/components/cards/dashboard/StatusCard.vue'
 import JobsCard from '@/components/cards/dashboard/JobsCard.vue'
 import ToolheadCard from '@/components/cards/dashboard/ToolheadCard.vue'
-import TemperatureTargetsCard from '@/components/cards/dashboard/TemperatureTargetsCard.vue'
 import TemperatureCard from '@/components/cards/dashboard/TemperatureCard.vue'
 import CameraCard from '@/components/cards/dashboard/CameraCard.vue'
 import MacrosCard from '@/components/cards/dashboard/MacrosCard.vue'
@@ -53,7 +52,7 @@ import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
 import OutputsCard from '@/components/cards/dashboard/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/cards/dashboard/PrinterLimitsCard.vue'
 import KlippyCard from '@/components/cards/KlippyCard.vue'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { CardConfig } from '@/store/config/types'
 import { cloneDeep } from 'lodash-es'
 
@@ -64,7 +63,6 @@ import { cloneDeep } from 'lodash-es'
     JobsCard,
     ToolheadCard,
     MacrosCard,
-    TemperatureTargetsCard,
     TemperatureCard,
     CameraCard,
     PrinterLimitsCard,
@@ -73,15 +71,15 @@ import { cloneDeep } from 'lodash-es'
     OutputsCard
   }
 })
-export default class Dashboard extends Mixins(UtilsMixin) {
+export default class Dashboard extends Mixins(StateMixin) {
   drag = false
 
-  get cameraEnabled (): boolean {
-    return this.$store.state.config.uiSettings.camera.enabled
+  get camerasEnabled (): boolean {
+    return this.$store.getters['cameras/getVisibleCameras'].length > 0
   }
 
   get hasMacros () {
-    return (this.$store.getters['socket/getVisibleMacros'].length)
+    return this.$store.getters['macros/hasVisibleMacros']
   }
 
   get col1 (): CardConfig[] {
@@ -128,7 +126,7 @@ export default class Dashboard extends Mixins(UtilsMixin) {
     return componentArray.filter((s) => {
       // Take care of special cases.
       if (this.inLayout) return true
-      if (s.name === 'camera-card' && !this.cameraEnabled) return false
+      if (s.name === 'camera-card' && !this.camerasEnabled) return false
       if (s.name === 'macros-card' && !this.hasMacros) return false
 
       // Otherwise return whatever the enabled state is.

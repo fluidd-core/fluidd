@@ -8,6 +8,14 @@ const h = require('child_process')
   .toString()
 
 module.exports = {
+  pluginOptions: {
+    i18n: {
+      locale: 'en',
+      fallbackLocale: 'en',
+      localeDir: 'locales',
+      enabbleInSFC: false
+    }
+  },
   pwa: {
     themeColor: '#2196F3',
     msTileColor: '#000000',
@@ -35,6 +43,15 @@ module.exports = {
     ]
   },
   chainWebpack: config => {
+    config.module
+      .rule('i18n-loader')
+      .test(/.\.yaml$/)
+      .use('json')
+      .loader('json-loader')
+      .end()
+      .use('yaml')
+      .loader('yaml-loader')
+      .end()
     config
       .plugin('define')
       .tap(args => {

@@ -38,16 +38,16 @@ export class WebSocketClient {
   connect (url?: string) {
     if (url) this.url = url
 
-    this.connection = new WebSocket(this.url)
     if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
+    this.connection = new WebSocket(this.url)
 
-    this.connection.onopen = (e) => {
+    this.connection.onopen = () => {
       if (this.reconnectEnabled) {
         this.reconnectCount = 1
       }
       if (this.store) {
-        this.store.dispatch('socket/onSocketOpen', e)
         this.store.dispatch('socket/onSocketConnecting', false)
+        this.store.dispatch('socket/onSocketOpen', true)
       }
     }
 
@@ -65,7 +65,6 @@ export class WebSocketClient {
     this.connection.onerror = (e) => {
       consola.error(`${this.logPrefix} Connection error:`, e)
       if (this.store) this.store.dispatch('socket/onSocketError', e)
-      // if (this.connection) this.connection.close();
     }
 
     this.connection.onmessage = (m) => {
@@ -81,7 +80,7 @@ export class WebSocketClient {
 
       // Remove a wait if defined.
       if (request && request.wait && request.wait.length) {
-        this.store.commit('wait/removeWait', request.wait)
+        this.store.commit('wait/setRemoveWait', request.wait)
       }
 
       if (d.error) { // Is it in error?
@@ -164,7 +163,7 @@ export class WebSocketClient {
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
-      consola.debug(`${this.logPrefix} Not ready.`, method, options)
+      consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options)
     }
   }
 }
@@ -205,7 +204,7 @@ interface Options {
   store: any;
 }
 
-interface NotifyOptions {
+export interface NotifyOptions {
   params?: any;
   dispatch?: string;
   commit?: string;

@@ -1,10 +1,10 @@
 import Vue from 'vue'
-import vuetify from './plugins/vuetify'
 import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
-import { ApiConfig, InitConfig, HostConfig, InstanceConfig, UiSettings } from './store/config/types'
+import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import { AxiosError } from 'axios'
+import { v4 as uuidv4 } from 'uuid'
 
 // Load API configuration
 /**
@@ -65,7 +65,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   const results = await Promise.all(
     endpoints.map(async endpoint => {
       try {
-        return await Vue.$http.get(endpoint + '/printer/info?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
+        return await Vue.$http.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
       } catch {
         consola.debug('Failed loading endpoint ping', endpoint)
       }
@@ -80,7 +80,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
 export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): Promise<InitConfig> => {
   // Reset the store to its default state.
-  store.dispatch('reset', {}, { root: true })
+  await store.dispatch('reset', undefined, { root: true })
 
   // Load the Host Config
   if (!hostConfig) {
@@ -93,49 +93,136 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   }
 
   // Just sets the api urls.
-  store.dispatch('config/onInitApiConfig', apiConfig)
+  // consola.log('we already have api config', apiConfig)
+  await store.dispatch('config/onInitApiConfig', apiConfig)
+  consola.debug('inited apis', store.state.config, apiConfig)
 
-  // Load any file configuration we may have.
-  const fileConfig: {[index: string]: UiSettings | string[] | null} | undefined = {}
-  const files: {[index: string]: string} = Globals.CONFIG_FILES
-  let apiConnected = true
+  // TODO: REMOVE THIS FOR NEXT RELEASE.
+  // Load any file configuration we may have - save it to db, then delete known config files.
+  const files: string[] = [
+    '.fluidd.json',
+    '.fluidd_console_history.json'
+  ]
   if (
     apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
   ) {
-    for (const key in files) {
-      await Vue.$http.get(apiConfig.apiUrl + '/server/files/config/' + files[key] + '?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
+    for (const file of files) {
+      await Vue.$http.get(apiConfig.apiUrl + '/server/files/config/' + file + '?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
         .then((d) => {
-          consola.debug('setting file data', d.data)
-          fileConfig[key] = d.data
+          if (file === '.fluidd.json') {
+            const macros = (d.data.dashboard.hiddenMacros)
+              ? [...d.data.dashboard.hiddenMacros]
+              : undefined
+            const theme = (d.data.theme)
+              ? { ...d.data.theme }
+              : undefined
+            const camera = (d.data.camera)
+              ? d.data.camera
+              : undefined
+            delete d.data.dashboard.hiddenMacros
+            delete d.data.theme
+            delete d.data.dashboard.tempPresets
+            delete d.data.camera
+            // transfer base ui settings to db
+            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+              key: 'uiSettings',
+              value: d.data
+            })
+
+            // if a theme was defined, transfer that to the new format
+            if (theme) {
+              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key: 'uiSettings.theme',
+                value: {
+                  isDark: theme.darkMode,
+                  currentTheme: {
+                    primary: theme.colors.primary
+                  }
+                }
+              })
+            }
+
+            // if hidden macros were defined, transfer them to the new format.
+            if (macros && macros.length > 0) {
+              const convertedMacros: { name: string; visible: boolean }[] = macros.map(m => { return { name: m, visible: false } })
+              consola.debug('got macros, writing', convertedMacros)
+              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key: 'macros.stored',
+                value: convertedMacros
+              })
+            }
+
+            // If the camera was setup, transfer it to the new format.
+            if (camera) {
+              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key: 'cameras',
+                value: {
+                  cameras: [
+                    {
+                      id: uuidv4(),
+                      enabled: camera.enabled,
+                      name: 'Default',
+                      type: 'mjpgadaptive',
+                      fpstarget: 10,
+                      url: camera.url,
+                      flipX: camera.flipX,
+                      flipY: camera.flipY
+                    }
+                  ]
+                }
+              })
+            }
+          }
+
+          if (file === '.fluidd_console_history.json') {
+            consola.log('got history data, writing', d.data)
+            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+              key: 'console.commandHistory',
+              value: d.data
+            })
+          }
+
+          // Delete the file
+          Vue.$http.delete(apiConfig?.apiUrl + '/server/files/config/' + file)
         })
         .catch((e: AxiosError) => {
-          // If this is a 404, set the file config to null and move on.
-          // If this is something else, we should set the api connection to
-          // false because we couldn't make contact with moonraker.
-          if (e.response && e.response.status === 404) {
-            fileConfig[key] = null
-          } else {
-            // Otherwise, API is down / not available.
-            // if (e.code === 'ECONNABORTED') {
-            // }
-            apiConnected = false
-            consola.debug('API Down / Not Available:', e.response)
-          }
+          // If its not there, fine.
+          consola.debug('File not found, leaving.', e.response)
         })
     }
   }
 
-  // fileConfig could equal;
-  // - null - meaning we made a connection, but no user configuration is saved yet, which is ok.
-  // - undefined - meaning the API is likely down..
-  // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, fileConfig, hostConfig })
+  // Load any configuration we may have in moonrakers db
+  let apiConnected = true
+  if (
+    apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
+  ) {
+    const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
+    for (const key in roots) {
+      const root = roots[key]
+      const d = await Vue.$http.get(apiConfig.apiUrl + `/server/database/item?namespace=${Globals.MOONRAKER_DB.NAMESPACE}&key=${root.name}`)
+        .then(r => {
+          consola.debug('loaded db root', root.name, r.data.result.value)
+          return r.data.result.value
+        })
+        .catch((r: AxiosError) => {
+          if (r.response && r.response.status === 404) {
+            // Init the db store with an empty object.
+            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+              key,
+              value: {}
+            })
+            return null
+          }
+          consola.debug('API Down / Not Available:', r)
+          apiConnected = false
+        })
 
-  // Set vuetify to the correct initial theme.
-  if (store.state.config && store.state.config.uiSettings.theme) {
-    vuetify.framework.theme.dark = store.state.config.uiSettings.theme.isDark
-    vuetify.framework.theme.currentTheme.primary = store.state.config.uiSettings.theme.currentTheme.primary
+      if (d) store.dispatch(root.dispatch, d)
+    }
   }
 
+  // apiConfig could have empty strings, meaning we have no valid connection.
+  await store.dispatch('init', { apiConfig, hostConfig })
   return { apiConfig, hostConfig, apiConnected }
 }

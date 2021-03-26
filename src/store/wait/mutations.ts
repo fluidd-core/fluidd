@@ -3,20 +3,25 @@ import { WaitState } from './types'
 import { defaultState } from './index'
 
 export const mutations: MutationTree<WaitState> = {
-  resetState (state) {
-    const newState = defaultState()
-    state.waits = newState.waits
-
-    // Object.keys(newState).forEach((key: string) => {
-    //   Vue.set(state, key, newState[key])
-    // })
+  /**
+   * Reset state
+   */
+  setReset (state) {
+    Object.assign(state, defaultState())
   },
-  addWait (state, payload) {
-    // ensure we can't add a wait that may already exist.
+
+  /**
+   * Add a wait, ensuring we don't add dupes.
+   */
+  setAddWait (state, payload) {
     const i = state.waits.findIndex(wait => wait === payload)
     if (i === -1) state.waits.push(payload)
   },
-  removeWait (state, payload) {
+
+  /**
+   * Remove a wait, if found.
+   */
+  setRemoveWait (state, payload) {
     if (state.waits.length) {
       state.waits.splice(state.waits.indexOf(payload, 0), 1)
     }

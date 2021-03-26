@@ -2,13 +2,13 @@
   <v-card-text>
     <v-row>
       <v-col cols="12" lg="8">
-        <span v-if="meshes.length === 0">No existing bed meshes found.</span>
+        <span v-if="meshes.length === 0">{{ $t('app.bedmesh.msg.not_found') }}</span>
         <v-simple-table v-if="meshes.length > 0" class="no-hover">
           <thead>
             <tr>
-              <th>Name</th>
+              <th>{{ $t('app.general.label.name') }}</th>
               <th>&nbsp;</th>
-              <th>Variance</th>
+              <th>{{ $t('app.general.label.variance') }}</th>
               <th>&nbsp;</th>
             </tr>
           </thead>
@@ -20,7 +20,6 @@
               <td>
                 <v-chip
                   v-if="mesh.active"
-                  color="secondary"
                   small
                   block>
                   active
@@ -35,13 +34,12 @@
                       :disabled="mesh.active || hasWaits || printerPrinting || printerBusy"
                       v-bind="attrs"
                       v-on="on"
-                      color="secondary"
                       small
                       icon>
                       <v-icon small class="grey--text">$open</v-icon>
                     </btn>
                   </template>
-                  <span>Load Profile</span>
+                  <span>{{ $t('app.bedmesh.tooltip.load') }}</span>
                 </v-tooltip>
                 <v-tooltip right>
                   <template v-slot:activator="{ on, attrs }">
@@ -57,7 +55,7 @@
                       <v-icon small>$delete</v-icon>
                     </v-btn>
                   </template>
-                  <span>Delete Profile. This WILL restart your printer.</span>
+                  <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
                 </v-tooltip>
               </td>
             </tr>
@@ -69,9 +67,8 @@
                 <btn
                   @click="clearMesh()"
                   :disabled="!meshLoaded"
-                  color="secondary"
                   small>
-                  Clear Profile
+                  {{ $t('app.general.btn.clear_profile') }}
                 </btn>
               </td>
             </tr>
@@ -86,25 +83,22 @@
               v-on="on"
               block
               class="mb-2"
-              color="secondary"
-              :elevation="2"
               :loading="hasWait(waits.onMeshCalibrate)"
               :disabled="hasWaits || printerPrinting || printerBusy"
               @click="calibrate()">
-              Calibrate
+              {{ $t('app.general.btn.calibrate') }}
             </btn>
           </template>
-          <span>Begins a new calibration, saving as profile 'default'</span>
+          <span>{{ $t(`app.bedmesh.tooltip.calibrate`) }}</span>
         </v-tooltip>
         <btn
           @click="sendGcode('G28', waits.onHomeAll)"
           block
           class="mb-2"
-          :elevation="2"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           :color="(!allHomed) ? 'primary' : undefined">
-            <v-icon small class="mr-1">$home</v-icon> All
+            <v-icon small class="mr-1">$home</v-icon> {{ $t('app.general.btn.all') }}
         </btn>
         <btn
           v-if="!printerPrinting && printerSupportsQgl"
@@ -113,9 +107,8 @@
           :loading="hasWait(waits.onQGL)"
           :disabled="hasWaits || printerPrinting || printerBusy"
           block
-          class="mb-2"
-          color="secondary">
-            QGL
+          class="mb-2">
+            {{ $t('app.general.btn.quad_gantry_level') }}
         </btn>
         <v-tooltip right>
           <template v-slot:activator="{ on, attrs }">
@@ -125,19 +118,18 @@
               block
               class="mb-2"
               color="primary"
-              :elevation="2"
               :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
               @click="openSaveDialog()">
-              Save Config As...
+              {{ $t('app.general.btn.save_as') }}
             </btn>
           </template>
-          <span>Commits calibrated profile to printer.cfg. This WILL restart your printer.</span>
+          <span>{{ $t('app.bedmesh.tooltip.save') }}</span>
         </v-tooltip>
       </v-col>
     </v-row>
 
     <v-dialog
-      title="Save config as..."
+      :title="$t('app.general.label.save_as')"
       v-model="saveDialog.open"
       :max-width="450"
     >
@@ -147,9 +139,9 @@
         @submit.prevent="saveToConfig()"
         v-model="saveDialog.valid"
       >
-        <v-card color="secondary darken-1">
+        <v-card>
           <v-card-title>
-            <span class="headline">Save config as...</span>
+            <span class="headline">{{ $t('app.general.label.save_as') }}</span>
           </v-card-title>
           <v-card-text>
 
@@ -160,12 +152,12 @@
               class="mb-4"
               :rules="rules"
               hide-details="auto"
-              label="Profile Name"
+              :label="$t('app.bedmesh.label.profile_name')"
               v-model="saveDialog.profileName">
             </v-text-field>
 
             <v-checkbox
-              :label="`Remove ${currentMesh.profile_name} profile`"
+              :label="$t('app.bedmesh.label.remove_profile', { name: currentMesh.profile_name })"
               hide-details="auto"
               class="mb-4"
               v-model="saveDialog.removeDefault"
@@ -173,15 +165,14 @@
               ></v-checkbox>
 
               <p>
-                If saving as something other than {{ currentMesh.profile_name }}, you can choose to
-                also remove the {{ currentMesh.profile_name }} profile.
+                {{ $t('app.bedmesh.msg.hint', { name: currentMesh.profile_name }) }}
               </p>
           </v-card-text>
 
           <v-card-actions>
             <v-spacer></v-spacer>
-            <btn color="warning" text @click="saveDialog.open = false" type="button">Cancel</btn>
-            <btn color="primary" :elevation="2" type="submit">Save</btn>
+            <btn color="warning" text @click="saveDialog.open = false" type="button">{{ $t('app.general.btn.cancel') }}</btn>
+            <btn color="primary" :elevation="2" type="submit">{{ $t('app.general.btn.save') }}</btn>
           </v-card-actions>
 
         </v-card>
@@ -194,8 +185,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
-import { BedMesh } from '@/store/socket/types'
+import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
+import { BedMesh } from '@/store/printer/types'
 import { MeshData } from '@/types'
 import { defaultPlotLayout, Waits } from '@/globals'
 import { Plotly } from '@cadriel/vue-plotly'
@@ -206,7 +198,7 @@ import { VForm } from '@/types/vuetify'
     Plotly
   }
 })
-export default class BedMeshWidget extends Mixins(UtilsMixin) {
+export default class BedMeshWidget extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   layout = defaultPlotLayout
   variance = 0
@@ -218,7 +210,7 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   rules = [
-    (v: string) => !!v || 'Required.'
+    (v: string) => !!v || this.$t('app.general.simple_form.error.required')
   ]
 
   @Watch('saveDialog', { deep: true })
@@ -229,11 +221,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
   }
 
   get meshes (): BedMesh[] {
-    return this.$store.getters['socket/getBedMeshes']
+    return this.$store.getters['printer/getBedMeshes']
   }
 
   get currentMesh (): BedMesh {
-    return this.$store.state.socket.printer.bed_mesh
+    return this.$store.state.printer.printer.bed_mesh
   }
 
   get meshLoaded (): boolean {
@@ -246,6 +238,11 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
   get form (): VForm {
     return this.$refs.saveMeshForm as VForm
+  }
+
+  get printerSupportsQgl (): boolean {
+    const printerSettings = this.$store.getters['printer/getPrinterSettings']()
+    return 'quad_gantry_level' in printerSettings
   }
 
   @Watch('currentMesh', { deep: true })
@@ -331,8 +328,8 @@ export default class BedMeshWidget extends Mixins(UtilsMixin) {
 
       // Define the range for our X and Y axes.
       // If possible, use the actual range from config - otherwise revert to klippers given min and max's.
-      const stepperX = this.$store.getters['socket/getPrinterSettings']('stepper_x')
-      const stepperY = this.$store.getters['socket/getPrinterSettings']('stepper_y')
+      const stepperX = this.$store.getters['printer/getPrinterSettings']('stepper_x')
+      const stepperY = this.$store.getters['printer/getPrinterSettings']('stepper_y')
 
       const layout = defaultPlotLayout
 

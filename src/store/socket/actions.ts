@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import consola from 'consola'
-import { SocketState, ConsoleEntry, ChartData, Macro } from './types'
+import { SocketState } from './types'
 import { RootState } from '../types'
-import { handleAddChartEntry, handlePrintStateChange, handleCurrentFileChange } from '../helpers'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import EventBus from '@/eventBus'
@@ -12,8 +11,15 @@ let retryTimeout: number
 
 export const actions: ActionTree<SocketState, RootState> = {
   /**
+   * Reset our store
+   */
+  async reset ({ commit }) {
+    commit('setReset')
+  },
+
+  /**
    * ==========================================================================
-   *  Specific requests via socket
+   * Actions called via the socket client
    * ==========================================================================
    */
 
@@ -21,16 +27,32 @@ export const actions: ActionTree<SocketState, RootState> = {
     * Fired when the socket opens.
     */
   async onSocketOpen ({ commit }, payload) {
-    commit('onSocketOpen', payload)
-    SocketActions.machineInit()
+    commit('setSocketOpen', payload)
+    SocketActions.serverInfo()
   },
 
   /**
    * Fired when the socket closes.
    */
-  async onSocketClose ({ commit }, payload) {
-    commit('resetState', true)
-    commit('onSocketClose', payload)
+  async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
+    const retry = state.disconnecting
+    if (e.wasClean && retry) {
+      // This is most likely a moonraker restart, so only partially reset.
+      await dispatch('reset', [
+        'server',
+        'charts',
+        'socket',
+        'wait'
+      ], { root: true })
+      Vue.$socket.connect()
+    }
+
+    if (e.wasClean && !retry) {
+      // Set the socket state to closed.
+      // If we swap printer endpoints, then the init will run
+      // which will reset the state if necessary.
+      commit('setSocketOpen', false)
+    }
   },
 
   /**
@@ -39,7 +61,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    * can invoke a forced refresh.
    */
   async onSocketConnecting ({ commit }, payload) {
-    commit('onSocketConnecting', payload)
+    commit('setSocketConnecting', payload)
   },
 
   /**
@@ -68,252 +90,12 @@ export const actions: ActionTree<SocketState, RootState> = {
       // Restart our startup sequence.
 
       // Forcefully set the printer in error
-      commit('onPrinterInfo', { state: 'error', state_message: payload.message })
+      commit('printer/setPrinterInfo', { state: 'error', state_message: payload.message }, { root: true })
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
-        SocketActions.machineInit()
+        SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
-  },
-
-  async onQueryEndstops ({ commit }, payload) {
-    commit('onQueryEndstops', payload)
-  },
-
-  /**
-   * Print cancelled confirmation.
-   * Fires as a part of a socket action.
-   */
-  async onPrintCancel () {
-    consola.debug('Print Cancelled')
-  },
-
-  /**
-   * Print paused confirmation.
-   * Fires as a part of a socket action.
-   */
-  async onPrintPause () {
-    consola.debug('Print Paused')
-  },
-
-  /**
-   * Print resumed confirmation.
-   * Fires as a part of a socket action.
-   */
-  async onPrintResume () {
-    consola.debug('Print Resumed')
-  },
-
-  /**
-   * Print start confirmation.
-   * Fires as a watch on a printer state change.
-   */
-  async onPrintStart (_, payload) {
-    consola.debug('Print start detected', payload)
-  },
-
-  /**
-   * Print end confirmation.
-   * Fires as a watch on a printer state change.
-   */
-  async onPrintEnd (_, payload) {
-    consola.debug('Print end detected', payload)
-  },
-
-  /**
-   * Printer Info
-   */
-  async onPrinterInfo ({ commit }, payload) {
-    commit('onPrinterInfo', payload)
-    // SocketActions.serverInfo()
-
-    if (payload.state !== 'ready') {
-      clearTimeout(retryTimeout)
-      retryTimeout = setTimeout(() => {
-        SocketActions.machineInit()
-      }, Globals.KLIPPY_RETRY_DELAY)
-    } else {
-      SocketActions.serverConfig()
-      SocketActions.serverGcodeStore()
-      SocketActions.printerGcodeHelp()
-    }
-  },
-
-  /**
-   * Gives us moonrakers configuration.
-   */
-  async onServerConfig ({ commit }, payload) {
-    if (payload.config) {
-      commit('config/onServerConfig', payload.config, { root: true })
-    }
-    SocketActions.serverTemperatureStore()
-  },
-
-  async onServerInfo ({ commit, dispatch }, payload) {
-    // This payload should return a list of enabled plugins
-    // and root directories that are available.
-    commit('onServerInfo', payload)
-    if (
-      payload.plugins &&
-      payload.plugins.length > 0
-    ) {
-      // Init any plugins we need.
-      const pluginsToInit = [
-        'power',
-        'update_manager'
-      ]
-      pluginsToInit.forEach((plugin) => {
-        if (payload.plugins.includes(plugin)) {
-          switch (plugin) {
-            case 'power':
-              SocketActions.machineDevicePowerDevices()
-              break
-            case 'update_manager':
-              SocketActions.machineUpdateStatus()
-              break
-          }
-        }
-      })
-    }
-
-    if (payload.registered_directories) {
-      dispatch('files/onRegisteredDirectores', payload.registered_directories, { root: true })
-    }
-  },
-
-  /**
-   * Once a gcode script has run, the
-   * socket notifies us of the result of
-   * the specific request here.
-   */
-  async onGcodeScript ({ dispatch }, payload) {
-    // If the response is not ok, pass it to the console.
-    if (payload && payload.result && payload.result !== 'ok') {
-      dispatch('addConsoleEntry', { message: Globals.CONSOLE_RECEIVE_PREFIX + payload.result })
-    }
-  },
-
-  /**
-   * Klipper provides us with a list of available gcode commands
-   * based on the current configuration.
-   */
-  async onGcodeHelp ({ commit }, payload) {
-    commit('setGcodeHelp', payload)
-  },
-
-  /**
-   * Stores the printers object list.
-   */
-  async onPrinterObjectsList ({ commit, rootState }, payload) {
-    // Given our object list, subscribe to any data we'd want constant updates for
-    // and prepopulate our store.
-    // Also ensure we init the chart data with the labels
-    // we know we'll need.
-    let intendedSubscriptions = {}
-    payload.objects.forEach((k: string) => {
-      if (!k.includes('menu') && !k.includes('gcode_macro')) {
-        intendedSubscriptions = { ...intendedSubscriptions, [k]: null }
-      }
-      let key = k
-      if (k.includes(' ')) key = key.replace(' ', '.')
-      commit('onPrinterObjectsList', key)
-    })
-
-    const macros: Macro[] = payload.objects
-      .filter((item: string) => item.startsWith('gcode_macro'))
-      .map((item: string) => {
-        const name = item.split(' ')[1]
-        const hidden = rootState.config?.uiSettings?.dashboard?.hiddenMacros.includes(name)
-        return { name, visible: !hidden }
-      })
-    commit('setMacros', macros)
-
-    SocketActions.printerObjectsSubscribe(intendedSubscriptions)
-  },
-
-  /**
-   * On a fresh load of the UI, we load prior gcode / console history
-   */
-  async onGcodeStore ({ dispatch }, payload) {
-    if (payload && payload.gcode_store) {
-      payload.gcode_store.forEach((s: ConsoleEntry) => {
-        s.message = Globals.CONSOLE_RECEIVE_PREFIX + s.message
-        dispatch('addConsoleEntry', s)
-      })
-    }
-  },
-
-  /**
-   * Loads stored server data for the past 20 minutes.
-   */
-  async onTemperatureStore ({ commit, rootState }, payload) {
-    const now = new Date() // Set a base time to work out the temp data from.
-    // On a fresh boot of the host system, moonraker should give us enough data;
-    // however, it seems sometimes it does not. So - we should pad this out when
-    // we need to.
-    // Otherwise, for a system that has been running for a bit - we should expect
-    // enough data from moonraker to start with.
-
-    // Note that some items come back with targets when they should not,
-    // so we have to account for this too.
-
-    // how many datasets to add. Moonraker should give us 20 minutes, in 1 second intervals.. but we only need 10 minutes.
-    // const count = Globals.CHART_HISTORY_RETENTION // The size of the dataset we need.
-    const count = (rootState.config)
-      ? rootState.config.serverConfig.server.temperature_store_size
-      : Globals.CHART_HISTORY_RETENTION
-    const targetsToAvoid = [
-      'temperature_probe',
-      'temperature_sensor'
-    ]
-
-    for (const originalKey in payload) { // each heater / temp fan
-      // If the dataset is less than what we need, then pad the beginning
-      // until we get to our intended count
-      if (targetsToAvoid.some(e => originalKey.startsWith(e))) {
-        delete payload[originalKey].targets
-      }
-      ['temperatures', 'targets', 'powers', 'speeds'].forEach((k) => {
-        const arr = payload[originalKey][k]
-        if (arr && arr.length) {
-          if (arr.length < count) {
-            const length = count - arr.length
-            const lastValue = payload[originalKey][k][0]
-            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...payload[originalKey][k]]
-          } else {
-            payload[originalKey][k] = payload[originalKey][k].splice(arr.length - count)
-          }
-        }
-      })
-    }
-
-    const keys = Object.keys(payload)
-    const d: ChartData[] = []
-    for (let i = 0; i < count; i++) {
-      const date = new Date(now.getTime() - (1000 * (count - i)) - 2000)
-      const r: ChartData = {
-        date
-      }
-      keys.forEach(key => {
-        let label = key
-        if (key.includes(' ')) label = key.split(' ')[1]
-        r[label] = payload[key].temperatures[i]
-        if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i]
-        if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i]
-        if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i]
-      })
-      d.push(r)
-    }
-    commit('addChartStore', d)
-
-    // After we've loaded the initial temp data, load and subscribe to the rest.
-    SocketActions.printerObjectsList()
-  },
-
-  async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
-    // Accept notifications, and commit the first subscribe.
-    commit('onAcceptNotifications')
-    dispatch('notifyStatusUpdate', payload.status)
   },
 
   /**
@@ -324,96 +106,56 @@ export const actions: ActionTree<SocketState, RootState> = {
    * ==========================================================================
    */
 
-  /** Automated notify events via socket */
-  async notifyStatusUpdate ({ state, rootState, commit, getters }, payload) {
-    // TODO: We potentially get many updates here.
-    // Consider caching the updates and sending them every <interval>.
-    // We don't want to miss an update - but also don't need all of them
-    // so quickly.
+  async notifyStatusUpdate ({ state, commit, dispatch }, payload) {
+    dispatch('printer/onNotifyStatusUpdate', payload, { root: true })
+      .then(() => {
+        if (!state.ready) commit('setSocketReadyState', true)
+      })
+  },
 
-    // Do NOT accept notification updates until our subscribe comes back.
-    // This is because moonraker currently sends notification updates
-    // prior to subscribing on browser refresh.
-    if (payload && state.acceptingNotifications) {
-      // Detect a printing state change.
-      // We do this prior to commiting the notify so we can
-      // compare the before and after.
-      handleCurrentFileChange(state, payload)
-      handlePrintStateChange(state, payload)
-
-      for (const key in payload) {
-        const val = payload[key]
-        // Skip anything we need here.
-        if (
-          !key.includes('gcode_macro')
-        ) {
-          // Commit the value.
-          commit('onSocketNotify', { key, payload: val })
-        }
-      }
-
-      // Add a chart entry
-      const retention = (rootState.config)
-        ? rootState.config.serverConfig.server.temperature_store_size
-        : Globals.CHART_HISTORY_RETENTION
-      handleAddChartEntry(state, retention, getters.getChartableSensors)
-
-      // The first notification should have pre-populated any data & chart labels, so mark the socket as ready.
-      if (!state.ready) commit('onSocketReadyState', true)
-    }
+  async notifyGcodeResponse ({ dispatch }, payload) {
+    dispatch('console/onAddConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` }, { root: true })
   },
 
   /**
-   * Any gcode related responses are notified to us here,
-   * irrelevant on if this was a specific request or not.
+   * This is fired when, for example - the service is stopped.
    */
-  async notifyGcodeResponse ({ dispatch }, payload) {
-    dispatch('addConsoleEntry', { message: `${Globals.CONSOLE_RECEIVE_PREFIX}${payload}` })
+  async notifyKlippyDisconnected () {
+    SocketActions.serverInfo()
   },
-  async notifyKlippyDisconnected ({ commit }) {
-    commit('resetState', false)
-    SocketActions.machineInit()
+
+  /**
+   * This is fired when, for example - an estop is emitted.
+   */
+  async notifyKlippyShutdown () {
+    SocketActions.serverInfo()
   },
-  async notifyKlippyShutdown ({ commit }) {
-    commit('resetState', false)
-    SocketActions.machineInit()
-  },
+
   async notifyKlippyReady () {
     consola.debug('Klippy Ready')
   },
+
   async notifyFilelistChanged ({ dispatch }, payload) {
     dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true })
   },
+
   async notifyMetadataUpdate ({ dispatch }, payload) {
     dispatch('files/onFileUpdate', payload, { root: true })
   },
+
   async notifyPowerChanged ({ dispatch }, payload) {
     dispatch('devicePower/onStatus', { [payload.device]: payload.status }, { root: true })
   },
+
   async notifyUpdateResponse ({ dispatch }, payload) {
     dispatch('version/onUpdateResponse', payload, { root: true })
   },
+
   async notifyUpdateRefreshed ({ dispatch }, payload) {
     dispatch('version/onUpdateStatus', payload, { root: true })
   },
 
-  /**
-   * ==========================================================================
-   *  Non specific socket requests
-   * ==========================================================================
-   */
-  async addConsoleEntry ({ commit }, payload: ConsoleEntry) {
-    payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
-    if (!payload.time || payload.time <= 0) {
-      payload.time = new Date().getTime() / 1000 | 0
-    }
-    if (!payload.type) {
-      payload.type = 'response'
-    }
-    commit('addConsoleEntry', payload)
-  },
-
-  async updateMacro ({ commit }, macro) {
-    commit('updateMacro', macro)
+  async notifyHistoryChanged ({ dispatch }, payload) {
+    dispatch('history/onHistoryChange', payload, { root: true })
   }
 }

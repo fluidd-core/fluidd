@@ -1,11 +1,23 @@
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[] | string[];
+  [key: string]: Files[] | FilesUpload[] | string[] | CurrentPaths | DiskUsage;
   availableRoots: string[];
   gcodes: Files[];
   config: Files[];
   config_examples: Files[];
   docs: Files[];
   uploads: FilesUpload[];
+  currentPaths: CurrentPaths;
+  disk_usage: DiskUsage;
+}
+
+export interface DiskUsage {
+  total: number;
+  used: number;
+  free: number;
+}
+
+export interface CurrentPaths {
+  [index: string]: string;
 }
 
 export interface Files {
@@ -13,19 +25,22 @@ export interface Files {
   items: (AppFile | AppFileWithMeta | AppDirectory)[];
 }
 
-export interface AppFile {
+export interface AppFile extends KlipperFile {
   type: 'file';
   name?: string;
   extension: string;
   filename: string;
   modified: number;
   size: number;
+  path: string;
 }
 
 export interface KlipperFile {
   filename: string;
   modified: number;
   size: number;
+  print_start_time?: number | null;
+  job_id?: number | null;
 }
 
 export interface KlipperFileMeta {
@@ -56,6 +71,8 @@ export interface AppDirectory {
 
 export interface Thumbnail {
   data: string;
+  relative_path: string;
+  absolute_path?: string;
   height: number;
   width: number;
   size: number;
@@ -93,4 +110,10 @@ export interface FilesUpload {
   filename: string;
   percentUploaded: number;
   processingComplete: boolean; // indicates moonraker is finished with the file.
+}
+
+export interface FileFilter {
+  value: string;
+  text: string;
+  desc: string;
 }

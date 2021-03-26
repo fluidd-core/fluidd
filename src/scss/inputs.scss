@@ -1,0 +1,39 @@
+/* Extra dense text inputs */
+.v-input--text-right input {
+  text-align: right;
+}
+
+.v-input--width-x-small {
+  width: 70px;
+}
+
+.v-input--width-small {
+  width: 130px;
+}
+
+.v-input--width-medium {
+  width: 180px;
+}
+
+.v-input--x-dense .v-input__slot {
+  min-height: 25px !important;
+}
+
+.v-input--dense .v-input__slot {
+  min-height: 36px !important;
+}
+
+.v-input--x-dense .v-select__selections {
+  padding: 2px 0 !important;
+}
+
+.v-input--x-dense .v-input__append-inner {
+  margin-top: 6px !important;
+}
+
+.v-text-field.v-text-field--solo .v-input__control{
+  min-height: 10px;
+}
+.v-input--dense .v-text-field--box .v-input__slot, .v-text-field--outline .v-input__slot {
+  min-height: 30px !important;
+}

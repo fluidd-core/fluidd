@@ -1,12 +1,13 @@
 <template>
   <collapsable-card
-    title="Endstops"
-    subTitle="Use the refresh button to update endstop status."
+    :title="$t('app.general.title.endstops')"
+    :subTitle="$t('app.endstop.msg.subtitle')"
     :collapsable="false"
     icon="$expandHorizontal">
     <template v-slot:collapse-button>
       <btn
         @click="queryEndstops"
+        color=""
         fab small text>
         <v-icon>$refresh</v-icon>
       </btn>
@@ -24,7 +25,7 @@
           small
           label>
           <v-icon small left>{{ (item === 'open') ? '$blankCircle' : '$markedCircle' }}</v-icon>
-          {{ item.toUpperCase() }}
+          {{ $t('app.endstop.label.' + item.toLowerCase()) }}
         </v-chip>
       </v-layout>
     </v-card-text>
@@ -33,15 +34,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/socketActions'
 
 @Component({
   components: {}
 })
-export default class EndStopsCard extends Mixins(UtilsMixin) {
+export default class EndStopsCard extends Mixins(StateMixin) {
   get endStops () {
-    return this.$store.getters['socket/getEndstops']
+    return this.$store.getters['printer/getEndstops']
   }
 
   // Default state is an empty object.
@@ -54,7 +55,7 @@ export default class EndStopsCard extends Mixins(UtilsMixin) {
   }
 
   destroyed () {
-    this.$store.commit('socket/clearEndStops')
+    this.$store.commit('printer/setClearEndStops')
   }
 }
 </script>

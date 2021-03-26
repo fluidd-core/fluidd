@@ -11,30 +11,25 @@
       v-model="valid"
       @submit.prevent="addInstance()"
     >
-      <v-card color="secondary darken-1">
+      <v-card>
 
         <v-card-title>
-          <span class="headline">Add printer</span>
+          <span class="headline">{{ $t('app.general.title.add_printer') }}</span>
           <v-spacer></v-spacer>
           <inline-help bottom>
-            Enter your API URL.<br />
-            Some examples might be;<br />
-            <blockquote>
-              http://fluidd.local,
-              http://192.168.1.150
-            </blockquote>
+            <span v-html="$t('app.endpoint.tooltip.endpoint_examples')"></span>
           </inline-help>
         </v-card-title>
 
         <v-card-text>
-          Having trouble? <a :href="$globals.DOCS_MULTIPLE_INSTANCES" target="_blank">See here</a> for more information.<br />
+          <span v-html="helpTxt"></span>
 
           <v-text-field
             v-model="url"
             autofocus
-            label="API URL"
+            :label="$t('app.general.label.api_url')"
             persistent-hint
-            hint="E.g., http://fluiddpi.local"
+            :hint="$t('app.endpoint.hint.add_printer')"
             :loading="verifying"
             :rules="[rules.required, rules.url]"
           >
@@ -66,8 +61,8 @@
 
         <v-card-actions>
           <v-spacer></v-spacer>
-          <btn color="warning" text @click="$emit('input', false)" type="button">Cancel</btn>
-          <btn color="primary" type="submit" :disabled="!verified">Save</btn>
+          <btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</btn>
+          <btn color="primary" type="submit" :disabled="!verified">{{ $t('app.general.btn.save') }}</btn>
         </v-card-actions>
 
       </v-card>
@@ -78,14 +73,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Globals, Waits } from '@/globals'
 import { VForm } from '@/types/vuetify'
-import { AxiosError } from 'axios'
+import { AxiosError, Canceler, CancelTokenSource } from 'axios'
 import consola from 'consola'
 
 @Component({})
-export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
+export default class SystemPrintersWidget extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 
@@ -105,11 +100,15 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
             '(\\#[-a-z\\d_]*)?$', 'i')
 
   rules = {
-    required: (v: string) => !!v || 'Required',
-    url: (v: string) => (this.urlRegex.test(v)) || 'Invalid URL'
+    required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
+    url: (v: string) => (this.urlRegex.test(v)) || this.$t('app.general.simple_form.error.invalid_url')
   }
 
   timer = 0
+
+  cancelSource: CancelTokenSource | undefined = undefined
+  CancelToken = this.$http.CancelToken
+  cancel: Canceler | undefined = undefined
 
   get url () {
     return this.actualUrl
@@ -129,23 +128,28 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
       this.note = null
       this.verifying = true
 
-      // this.$http.options(url + '/server/info?t=optionscall' + new Date().getTime(), {
-      //   headers: {
-      //     'Access-Control-Request-Method': 'GET'
-      //   }
-      // })
-      //   .then((r) => {
-      //     consola.log(r)
-      //   })
+      if (this.cancelSource !== undefined) {
+        this.cancelSource.cancel('Cancelled due to new request.')
+      }
+
+      this.cancelSource = this.$http.CancelToken.source()
 
       // Start by making a standard request. Maybe it's good?
-      const request = await this.$http.get(url + '/server/info?t=' + new Date().getTime())
+      const request = await this.$http.get(
+        url + '/server/info?t=' + new Date().getTime(), {
+          cancelToken: this.cancelSource.token
+        })
         .then(() => {
           this.verified = true
           this.verifying = false
           return 'ok'
         })
         .catch((e: AxiosError) => {
+          // If it failed because we cancelled, set ok and move on.
+          if (this.$http.isCancel(e)) {
+            return 'ok'
+          }
+
           // If it failed with a network issue..
           if (e.request) return e.message
 
@@ -159,17 +163,16 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
         await fetch(url + '/server/info', { mode: 'no-cors', cache: 'no-cache' })
           .then(() => {
             // likely a cors issue
-            this.error = 'blocked by CORS policy'
-            this.note = `This may mean you need to modify your moonraker
-                         configuration. Please see the documentation on multi
-                         printer setups <a href="${Globals.DOCS_MULTIPLE_INSTANCES}" target="_blank">here</a>.`
+            this.error = this.$t('app.endpoint.error.cors_error')
+            this.note = this.$t('app.endpoint.error.cors_note', {
+              url: Globals.DOCS_MULTIPLE_INSTANCES
+            })
           })
           .catch(e => {
             // external host not reachable (fetch returns 'failed to fetch')
-            consola.log('Network Error', e, request)
+            consola.debug('Network Error', e, request)
             this.error = request
-            this.note = `Something went wrong, and fluidd can't reach the
-                         destination. Are you sure this is the correct address?`
+            this.note = this.$t('app.endpoint.error.cant_connect')
           })
           .finally(() => { this.verifying = false })
       }
@@ -178,6 +181,12 @@ export default class SystemPrintersWidget extends Mixins(UtilsMixin) {
 
   get form (): VForm {
     return this.$refs.addInstanceForm as VForm
+  }
+
+  get helpTxt () {
+    return this.$t('app.endpoint.msg.trouble', {
+      url: Globals.DOCS_MULTIPLE_INSTANCES
+    })
   }
 
   addInstance () {

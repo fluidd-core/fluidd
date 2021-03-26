@@ -2,16 +2,12 @@
   <collapsable-card
     :title="`Klippy: ${klippyState}`"
     :collapsable="false"
-    icon="$alert">
+    icon="$alert"
+    icon-color="error">
     <v-card-text>
       <v-row>
         <v-col cols="12" sm="auto">
-          <btn v-if="!klipperConnected" block color="primary" @click="serviceRestartKlipper" class="me-2 mb-2">Restart Klipper</btn>
-          <btn v-if="klipperConnected" block color="primary" @click="serviceRestartKlippy" class="me-2 mb-2">Restart Klipper</btn>
-          <btn v-if="klipperConnected" block color="primary" @click="serviceFirmwareRestartKlippy" class="me-2 mb-2">Firmware Restart</btn>
-          <btn block color="primary" @click="serviceRestartMoonraker" class="me-2 mb-2">Restart Moonraker</btn>
-          <btn block color="secondary" @click="getKlippyLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Klippy.log</btn>
-          <btn block color="secondary" @click="getMoonrakerLog()" class="me-2 mb-2"><v-icon left small>$download</v-icon>Moonraker.log</btn>
+          <system-control></system-control>
         </v-col>
         <v-col cols="12" sm="">
           <v-alert text dense type="error" v-if="klippyStateMessage !== 'Printer is ready'">
@@ -26,50 +22,18 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
-import { SocketActions } from '@/socketActions'
+import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
+import ServicesMixin from '@/mixins/services'
 import WarningsWidget from '@/components/widgets/WarningsWidget.vue'
+import SystemControl from '@/components/widgets/configuration/SystemControl.vue'
 
 @Component({
   components: {
-    WarningsWidget
+    WarningsWidget,
+    SystemControl
   }
 })
-export default class KlippyCard extends Mixins(UtilsMixin) {
-  get klipperConnected () {
-    return this.$store.state.socket.printer.serverInfo.klippy_connected
-  }
-
-  getKlippyLog () {
-    this.download('klippy.log', '')
-  }
-
-  getMoonrakerLog () {
-    this.download('moonraker.log', '')
-  }
-
-  reload () {
-    window.location.reload()
-  }
-
-  serviceRestartKlippy () {
-    SocketActions.printerRestart()
-    this.$emit('click')
-  }
-
-  serviceFirmwareRestartKlippy () {
-    SocketActions.printerFirmwareRestart()
-    this.$emit('click')
-  }
-
-  serviceRestartMoonraker () {
-    SocketActions.serverRestart()
-    this.$emit('click')
-  }
-
-  serviceRestartKlipper () {
-    SocketActions.machineServicesRestart('klipper')
-    this.$emit('click')
-  }
+export default class KlippyCard extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
 }
 </script>

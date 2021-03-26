@@ -2,11 +2,11 @@
 layout: default
 title: Development
 nav_order: 7
+has_children: true
 permalink: /development
 ---
 
 # Development
-{: .no_toc }
 
 Fluidd is built using VueJS, and the Vuetify Framework to provide a cohesive,
 easily to implement UI.

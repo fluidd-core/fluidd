@@ -7,6 +7,7 @@
         single-line
         hide-details="auto"
         v-model.number="inputValue"
+        :disabled="!klippyReady"
         :loading="loading"
         :rules="[rules.max, rules.min]"
         @keyup.enter="emitChange"
@@ -28,10 +29,10 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class InputTemperature extends Mixins(UtilsMixin) {
+export default class InputTemperature extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
   public value!: number
 
@@ -53,8 +54,8 @@ export default class InputTemperature extends Mixins(UtilsMixin) {
   inputValue = 0;
 
   rules = {
-    min: (v: number | string) => (v >= this.min || v === '0' || v === 0 || this.min === null) || 'Min ' + this.min + ' or 0.',
-    max: (v: number | string) => (v <= this.max || v === '0' || v === 0 || this.min === null) || 'Max ' + this.max
+    min: (v: number | string) => (v >= this.min || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.min_or_0', { min: this.min }),
+    max: (v: number | string) => (v <= this.max || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.max', { max: this.max })
   }
 
   emitChange () {

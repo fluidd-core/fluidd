@@ -1,16 +1,28 @@
 import Vue from 'vue'
-import { Waits } from '@/globals'
+import { Globals, Waits } from '@/globals'
 import store from './store'
+import { NotifyOptions } from '@/plugins/socketClient'
+import consola from 'consola'
+
+const baseEmit = (method: string, options: NotifyOptions) => {
+  if (!Vue.$socket) {
+    consola.warn('Socket emit denied, socket not ready.', method, options)
+    return
+  }
+  if (
+    !store.state.socket?.disconnecting &&
+    !store.state.socket?.connecting
+  ) {
+    Vue.$socket.emit(method, options)
+  } else {
+    consola.debug('Socket emit denied, in disonnecting state:', method, options)
+  }
+}
 
 export const SocketActions = {
-  async machineInit () {
-    this.printerInfo()
-    this.serverInfo()
-  },
-
   async machineServicesRestart (service: string) {
     const wait = Waits.onServiceRestart
-    Vue.$socket.emit(
+    baseEmit(
       'machine.services.restart', {
         dispatch: 'void',
         params: { service },
@@ -20,7 +32,7 @@ export const SocketActions = {
   },
 
   async machineReboot () {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.reboot', {
         dispatch: 'void'
       }
@@ -28,7 +40,7 @@ export const SocketActions = {
   },
 
   async machineShutdown () {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.shutdown', {
         dispatch: 'void'
       }
@@ -37,7 +49,7 @@ export const SocketActions = {
 
   async machineUpdateStatus (refresh = false) {
     store.dispatch('version/refreshing', true)
-    Vue.$socket.emit(
+    baseEmit(
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
         params: { refresh }
@@ -46,7 +58,7 @@ export const SocketActions = {
   },
 
   async machineUpdateMoonraker () {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.update.moonraker', {
         dispatch: 'version/onUpdatedMoonraker'
       }
@@ -54,7 +66,7 @@ export const SocketActions = {
   },
 
   async machineUpdateKlipper () {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.update.klipper', {
         dispatch: 'version/onUpdatedKlipper',
         params: {
@@ -65,7 +77,7 @@ export const SocketActions = {
   },
 
   async machineUpdateClient (name: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.update.client', {
         dispatch: 'version/onUpdatedClient',
         params: { name }
@@ -74,7 +86,7 @@ export const SocketActions = {
   },
 
   async machineUpdateSystem () {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.update.system', {
         dispatch: 'version/onUpdatedSystem'
       }
@@ -82,15 +94,15 @@ export const SocketActions = {
   },
 
   async machineDevicePowerDevices () {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.device_power.devices', {
-        dispatch: 'devicePower/init'
+        dispatch: 'devicePower/onInit'
       }
     )
   },
 
   async machineDevicePowerStatus (device: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'machine.device_power.status', {
         dispatch: 'devicePower/onStatus',
         params: { [device]: null }
@@ -102,7 +114,7 @@ export const SocketActions = {
     const emit = (state === 'on')
       ? 'machine.device_power.on'
       : 'machine.device_power.off'
-    Vue.$socket.emit(
+    baseEmit(
       emit, {
         dispatch: 'devicePower/onToggle',
         params: { [device]: null },
@@ -112,15 +124,15 @@ export const SocketActions = {
   },
 
   async printerInfo () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.info', {
-        dispatch: 'socket/onPrinterInfo'
+        dispatch: 'printer/onPrinterInfo'
       }
     )
   },
 
   async printerRestart () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.restart', {
         dispatch: 'void',
         wait: Waits.onKlipperRestart
@@ -129,7 +141,7 @@ export const SocketActions = {
   },
 
   async printerFirmwareRestart () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.firmware_restart', {
         dispatch: 'void',
         wait: Waits.onKlipperFirmwareRestart
@@ -138,25 +150,25 @@ export const SocketActions = {
   },
 
   async printerQueryEndstops () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.query_endstops.status', {
-        dispatch: 'socket/onQueryEndstops'
+        dispatch: 'printer/onQueryEndstops'
       }
     )
   },
 
   async printerObjectsList () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.objects.list', {
-        dispatch: 'socket/onPrinterObjectsList'
+        dispatch: 'printer/onPrinterObjectsList'
       }
     )
   },
 
   async printerObjectsSubscribe (objects: {[key: string]: null}) {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.objects.subscribe', {
-        dispatch: 'socket/onPrinterObjectsSubscribe',
+        dispatch: 'printer/onPrinterObjectsSubscribe',
         params: {
           objects
         }
@@ -165,7 +177,7 @@ export const SocketActions = {
   },
 
   async printerPrintStart (path: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.print.start', {
         dispatch: 'void',
         params: {
@@ -176,36 +188,36 @@ export const SocketActions = {
   },
 
   async printerPrintCancel () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.print.cancel', {
-        dispatch: 'socket/onPrintCancel',
+        dispatch: 'printer/onPrintCancel',
         wait: Waits.onPrintCancel
       }
     )
   },
 
   async printerPrintPause () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.print.pause', {
-        dispatch: 'socket/onPrintPause',
+        dispatch: 'printer/onPrintPause',
         wait: Waits.onPrintPause
       }
     )
   },
 
   async printerPrintResume () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.print.resume', {
-        dispatch: 'socket/onPrintResume',
+        dispatch: 'printer/onPrintResume',
         wait: Waits.onPrintResume
       }
     )
   },
 
   async printerGcodeScript (gcode: string, wait?: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.gcode.script', {
-        dispatch: 'socket/onGcodeScript',
+        dispatch: 'console/onGcodeScript',
         params: {
           script: gcode
         },
@@ -215,15 +227,15 @@ export const SocketActions = {
   },
 
   async printerGcodeHelp () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.gcode.help', {
-        dispatch: 'socket/onGcodeHelp'
+        dispatch: 'console/onGcodeHelp'
       }
     )
   },
 
   async printerEmergencyStop () {
-    Vue.$socket.emit(
+    baseEmit(
       'printer.emergency_stop', {
         dispatch: 'void'
       }
@@ -231,23 +243,38 @@ export const SocketActions = {
   },
 
   async serverInfo () {
-    Vue.$socket.emit(
+    baseEmit(
       'server.info', {
-        dispatch: 'socket/onServerInfo'
+        dispatch: 'server/onServerInfo'
       }
     )
   },
 
   async serverConfig () {
-    Vue.$socket.emit(
+    baseEmit(
       'server.config', {
-        dispatch: 'socket/onServerConfig'
+        dispatch: 'server/onServerConfig'
+      }
+    )
+  },
+
+  /**
+   * Writes data to moonraker's DB.
+   */
+  async serverWrite (key: string, value: any) {
+    baseEmit(
+      'server.database.post_item', {
+        params: {
+          namespace: Globals.MOONRAKER_DB.NAMESPACE,
+          key,
+          value
+        }
       }
     )
   },
 
   async serverRestart () {
-    Vue.$socket.emit(
+    baseEmit(
       'server.restart', {
         dispatch: 'void'
       }
@@ -255,17 +282,49 @@ export const SocketActions = {
   },
 
   async serverTemperatureStore () {
-    Vue.$socket.emit(
+    baseEmit(
       'server.temperature_store', {
-        dispatch: 'socket/onTemperatureStore'
+        dispatch: 'charts/initTempStore'
       }
     )
   },
 
   async serverGcodeStore () {
-    Vue.$socket.emit(
+    baseEmit(
       'server.gcode_store', {
-        dispatch: 'socket/onGcodeStore'
+        dispatch: 'console/onGcodeStore'
+      }
+    )
+  },
+
+  async serverHistoryList (limit?: number) {
+    baseEmit(
+      'server.history.list', {
+        dispatch: 'history/onInit',
+        params: { limit }
+      }
+    )
+  },
+
+  async serverHistoryTotals () {
+    baseEmit(
+      'server.history.totals', {
+        dispatch: 'history/onInit'
+      }
+    )
+  },
+
+  async serverHistoryDeleteJob (uid: string) {
+    let params: any = { uid }
+    let dispatch = 'history/onDelete'
+    if (uid === 'all') {
+      params = { all: true }
+      dispatch = 'history/onDeleteAll'
+    }
+    baseEmit(
+      'server.history.delete_job', {
+        dispatch,
+        params
       }
     )
   },
@@ -276,7 +335,7 @@ export const SocketActions = {
    * Optionally pass the just the filename and path.
    */
   async serverFilesMetaData (filepath: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'server.files.metadata', {
         dispatch: 'files/onFileUpdate',
         params: { filename: filepath }
@@ -290,7 +349,7 @@ export const SocketActions = {
    */
   async serverFilesGetDirectory (root: string, path: string) {
     const wait = `${Waits.onGetDirectory}${path}`
-    Vue.$socket.emit(
+    baseEmit(
       'server.files.get_directory',
       {
         dispatch: 'files/onServerFilesGetDirectory',
@@ -300,7 +359,7 @@ export const SocketActions = {
     )
   },
   async serverFilesMove (source: string, dest: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'server.files.move', {
         dispatch: 'void',
         params: {
@@ -316,7 +375,7 @@ export const SocketActions = {
    * Root should be included in the path.
    */
   async serverFilesPostDirectory (path: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'server.files.post_directory', {
         dispatch: 'void',
         params: {
@@ -327,7 +386,7 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteFile (path: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
         params: {
@@ -338,7 +397,7 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteDirectory (path: string) {
-    Vue.$socket.emit(
+    baseEmit(
       'server.files.delete_directory', {
         dispatch: 'void',
         params: {

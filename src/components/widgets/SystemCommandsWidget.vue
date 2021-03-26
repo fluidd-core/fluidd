@@ -5,23 +5,23 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Host</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.host') }}</v-list-item-title>
         </v-list-item-content>
       </template>
 
       <v-list-item
-        @click="confirmRebootDialog.open = true"
+        @click="handleHostReboot"
         :disabled="printerPrinting">
-        <v-list-item-title>Reboot</v-list-item-title>
+        <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$powerCycle</v-icon>
         </v-list-item-icon>
       </v-list-item>
 
       <v-list-item
-        @click="confirmShutdownDialog.open = true"
+        @click="handleHostShutdown"
         :disabled="printerPrinting">
-        <v-list-item-title>Shutdown</v-list-item-title>
+        <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="error">$power</v-icon>
         </v-list-item-icon>
@@ -34,7 +34,7 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Power Plugin</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.power') }}</v-list-item-title>
         </v-list-item-content>
       </template>
 
@@ -58,84 +58,39 @@
       no-action>
       <template v-slot:activator>
         <v-list-item-content>
-          <v-list-item-title>Services</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.services') }}</v-list-item-title>
         </v-list-item-content>
       </template>
 
-      <v-list-item @click="serviceRestartMoonraker"
+      <v-list-item @click="serviceRestartMoonraker(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title>Restart Moonraker</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_moonraker') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="warning">$restart</v-icon>
         </v-list-item-icon>
       </v-list-item>
 
-      <v-list-item
-        v-if="!klipperConnected"
-        @click="serviceRestartKlipper"
+      <v-list-item @click="serviceRestartWebcam(); $emit('click')"
         :disabled="printerPrinting">
-        <v-list-item-title>Restart Klipper</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_webcamd') }}</v-list-item-title>
         <v-list-item-icon>
-          <v-icon color="error">$restartAlert</v-icon>
+          <v-icon color="warning">$restart</v-icon>
         </v-list-item-icon>
       </v-list-item>
-
-      <v-list-item
-        v-if="klipperConnected"
-        @click="serviceRestartKlippy"
-        :disabled="printerPrinting">
-        <v-list-item-title>Restart Klipper</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="error">$restartAlert</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-list-item
-        v-if="klipperConnected"
-        @click="serviceFirmwareRestartKlippy"
-        :disabled="printerPrinting">
-        <v-list-item-title>Firmware Restart Klipper</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="error">$restartAlert</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <!-- <v-list-item @click="serverRestart">
-        <v-list-item-title>Server Restart</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon>$restartAlert</v-icon>
-        </v-list-item-icon>
-      </v-list-item> -->
     </v-list-group>
-
-    <dialog-confirm
-      v-model="confirmRebootDialog.open"
-      @confirm="hostReboot">
-      <p>Are you sure? This will reboot your host system.</p>
-    </dialog-confirm>
-
-    <dialog-confirm
-      v-model="confirmShutdownDialog.open"
-      @confirm="hostShutdown">
-      <p>Are you sure? This will shutdown your host system.</p>
-    </dialog-confirm>
 
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
+import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/socketActions'
-import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 import { Device } from '@/store/devicePower/types'
 
-@Component({
-  components: {
-    DialogConfirm
-  }
-})
-export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
+@Component({})
+export default class SystemCommandsWidget extends Mixins(StateMixin, ServicesMixin) {
   confirmRebootDialog = {
     open: false
   }
@@ -144,8 +99,8 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
     open: false
   }
 
-  get klipperConnected () {
-    return this.$store.state.socket.printer.serverInfo.klippy_connected
+  get serverInfo () {
+    return this.$store.getters['server/getInfo']
   }
 
   get hosted () {
@@ -157,7 +112,33 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
   }
 
   get devicePowerPluginEnabled () {
-    return (this.$store.state.socket.printer.serverInfo.plugins.includes('power'))
+    return this.$store.getters['server/pluginSupport']('power')
+  }
+
+  handleHostReboot () {
+    this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_reboot_host'),
+      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+    )
+      .then(res => {
+        if (res) {
+          this.$emit('click')
+          this.hostReboot()
+        }
+      })
+  }
+
+  handleHostShutdown () {
+    this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
+      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+    )
+      .then(res => {
+        if (res) {
+          this.$emit('click')
+          this.hostShutdown()
+        }
+      })
   }
 
   togglePowerDevice (device: Device, wait?: string) {
@@ -191,40 +172,6 @@ export default class SystemCommandsWidget extends Mixins(UtilsMixin) {
         return `${device.device}`
       }
     }
-  }
-
-  hostReboot (val: boolean) {
-    if (val) {
-      SocketActions.machineReboot()
-      this.$emit('click')
-    }
-  }
-
-  hostShutdown (val: boolean) {
-    if (val) {
-      SocketActions.machineShutdown()
-      this.$emit('click')
-    }
-  }
-
-  serviceRestartKlipper () {
-    SocketActions.machineServicesRestart('klipper')
-    this.$emit('click')
-  }
-
-  serviceRestartKlippy () {
-    SocketActions.printerRestart()
-    this.$emit('click')
-  }
-
-  serviceFirmwareRestartKlippy () {
-    SocketActions.printerFirmwareRestart()
-    this.$emit('click')
-  }
-
-  serviceRestartMoonraker () {
-    SocketActions.serverRestart()
-    this.$emit('click')
   }
 }
 </script>

@@ -7,7 +7,6 @@
         @click="sendGcode(macro.name, `${waits.onMacro}${macro.name}`)"
         :loading="hasWait(`${waits.onMacro}${macro.name}`)"
         :elevation="2"
-        color="secondary"
         class="me-2 mb-2">
         {{ macro.name }}
       </btn>
@@ -17,15 +16,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({})
-export default class MacrosWidget extends Mixins(UtilsMixin) {
+export default class MacrosWidget extends Mixins(StateMixin) {
   waits = Waits
 
   get macros () {
-    return this.$store.getters['socket/getVisibleMacros']
+    return this.$store.getters['macros/getMacros']
   }
 }
 </script>

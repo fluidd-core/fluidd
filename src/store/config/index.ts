@@ -10,10 +10,16 @@ export const defaultState = (): ConfigState => {
   return {
     apiUrl: '',
     socketUrl: '',
-    unsavedChanges: false,
     layoutMode: false,
-    appState: {
-      chartSelectedLegends: {}
+    hostConfig: {
+      endpoints: [],
+      blacklist: [],
+      hosted: false,
+      locales: [
+        { name: 'English', code: 'en' },
+        { name: 'Français', code: 'fr' },
+        { name: 'Chinese', code: 'cn' }
+      ]
     },
     cardState: {},
     cardLayout: {
@@ -31,10 +37,10 @@ export const defaultState = (): ConfigState => {
       ]
     },
     instances: [],
-    // saves to file .fluidd
     uiSettings: {
       general: {
         instanceName: Globals.APP_NAME,
+        locale: 'en',
         chartVisible: true,
         hideTempWaits: true,
         axis: {
@@ -42,13 +48,14 @@ export const defaultState = (): ConfigState => {
           y: { inverted: false },
           z: { inverted: false }
         },
-        invertZControl: false,
         printTimeEstimationsType: 'file',
         defaultExtrudeLength: 10,
         defaultExtrudeSpeed: 5,
-        defaultToolheadMoveLength: '1.0',
+        defaultToolheadMoveLength: 1.0,
         defaultToolheadXYSpeed: 130,
-        defaultToolheadZSpeed: 10
+        defaultToolheadZSpeed: 10,
+        useGcodeCoords: false,
+        zAdjustDistances: [0.01, 0.05]
       },
       theme: {
         isDark: true,
@@ -56,30 +63,8 @@ export const defaultState = (): ConfigState => {
           primary: '#2196F3'
         }
       },
-      camera: {
-        enabled: false,
-        type: 'mjpgstreamer',
-        url: '/webcam/?action=stream',
-        flipX: false,
-        flipY: false
-      },
       dashboard: {
-        tempPresets: [],
-        hiddenMacros: []
-      }
-    },
-    // saves to file .fluidd_history
-    consoleHistory: [],
-    hostConfig: {
-      endpoints: [],
-      blacklist: [],
-      hosted: false
-    },
-    serverConfig: {
-      authorization: {},
-      server: {
-        gcode_store_size: 1000,
-        temperature_store_size: 1200
+        tempPresets: []
       }
     }
   }

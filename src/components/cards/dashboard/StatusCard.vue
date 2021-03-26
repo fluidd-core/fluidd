@@ -2,13 +2,13 @@
   <collapsable-card
     :hide-menu="hidePrinterMenu"
     :collapsable="printerPrinting"
-    title="Status"
+    :title="$t('app.general.title.status')"
     icon="$printer3d">
 
     <template v-slot:title>
       <v-icon left>$printer3d</v-icon>
       <span class="font-weight-light">
-        {{ printerState }}
+        {{ $t('app.printer.state.' + printerState) }}
         <span class="font-weight-light text-subtitle-2 ml-sm-4 d-block d-sm-inline-block" v-show="printerMessage">{{ printerMessage }}</span>
       </span>
     </template>
@@ -18,39 +18,36 @@
         @click="pausePrint()"
         v-if="!printerPaused && printerPrinting"
         :elevation="2"
-        :loading="hasWait(waits.onPrintPause)"
-        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
+        :loading="hasWait($waits.onPrintPause)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small>$pause</v-icon>
-        <span>Pause</span>
+        <span>{{ $t('app.general.btn.pause') }}</span>
       </btn>
 
       <btn
-        @click="confirmDialog.open = true"
+        @click="cancelPrint()"
         v-if="printerPrinting || printerPaused"
         :elevation="2"
-        :loading="hasWait(waits.onPrintCancel)"
-        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
+        :loading="hasWait($waits.onPrintCancel)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small>$cancel</v-icon>
-        <span>Cancel</span>
+        <span>{{ $t('app.general.btn.cancel') }}</span>
       </btn>
 
       <btn
         @click="resumePrint()"
         v-if="printerPaused"
         :elevation="2"
-        :loading="hasWait(waits.onPrintResume)"
-        :disabled="hasWait([waits.onPrintCancel, waits.onPrintResume, waits.onPrintPause])"
+        :loading="hasWait($waits.onPrintResume)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>
-        <span>Resume</span>
+        <span>{{ $t('app.general.btn.resume') }}</span>
       </btn>
 
       <btn
@@ -58,29 +55,25 @@
         :elevation="2"
         v-if="!printerPrinting && !printerPaused && filename"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$refresh</v-icon>
-        <span>Reset File</span>
+        <span>{{ $t('app.general.btn.reset_file') }}</span>
       </btn>
 
       <btn
-        @click="rePrint()"
-        :elevation="2"
-        v-if="!printerPrinting && !printerPaused && filename"
+        v-if="!supportsHistoryPlugin && !printerPrinting && !printerPaused && filename"
+        @click="handleReprint(this.filename)"
         small
-        color="secondary"
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
-        <span>Reprint</span>
+        <span>{{ $t('app.general.btn.reprint') }}</span>
       </btn>
-    </template>
 
-    <dialog-confirm
-      v-model="confirmDialog.open"
-      @confirm="cancelPrint">
-      <p>Are you sure? This will cancel your print.</p>
-    </dialog-confirm>
+      <reprint-menu
+        v-if="supportsHistoryPlugin && !printerPrinting && !printerPaused && history.length > 0"
+        @print="handleReprint"
+      ></reprint-menu>
+    </template>
 
     <print-status-widget v-if="showStatus"></print-status-widget>
 
@@ -90,26 +83,34 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import PrintStatusWidget from '@/components/widgets/PrintStatusWidget.vue'
-import UtilsMixin from '@/mixins/utils'
+import ReprintMenu from '@/components/widgets/history/ReprintMenu.vue'
+import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/socketActions'
-import { Waits } from '@/globals'
-import DialogConfirm from '@/components/dialogs/dialogConfirm.vue'
 
 @Component({
   components: {
     PrintStatusWidget,
-    DialogConfirm
+    ReprintMenu
   }
 })
-export default class StatusCard extends Mixins(UtilsMixin) {
-  waits = Waits
-
-  confirmDialog = {
-    open: false
-  }
+export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
+  showHistory = false
 
   get hidePrinterMenu () {
-    return (!this.printerPrinting && !this.printerPaused && !this.filename)
+    if (!this.supportsHistoryPlugin) {
+      return (!this.printerPrinting && !this.printerPaused && !this.filename)
+    } else {
+      return (!this.printerPrinting && !this.printerPaused && this.history > 0)
+    }
+  }
+
+  get supportsHistoryPlugin () {
+    return this.$store.getters['server/pluginSupport']('history')
+  }
+
+  get history () {
+    return this.$store.getters['history/getUniqueHistory'](3)
   }
 
   get showStatus () {
@@ -117,31 +118,40 @@ export default class StatusCard extends Mixins(UtilsMixin) {
   }
 
   get printerMessage () {
-    return this.$store.state.socket.printer.display_status.message
+    return this.$store.state.printer.printer.display_status.message
   }
 
   get filename () {
-    return this.$store.state.socket.printer.print_stats.filename || ''
+    return this.$store.state.printer.printer.print_stats.filename || ''
   }
 
-  cancelPrint (val: boolean) {
-    if (val) {
-      SocketActions.printerPrintCancel()
-    }
+  cancelPrint () {
+    this.$tc('app.general.simple_form.msg.confirm')
+    this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm'),
+      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+    )
+      .then(res => {
+        if (res) {
+          SocketActions.printerPrintCancel()
+          this.addConsoleEntry('CANCEL_PRINT')
+        }
+      })
   }
 
   pausePrint () {
     SocketActions.printerPrintPause()
+    this.addConsoleEntry('PAUSE')
   }
 
   resumePrint () {
     SocketActions.printerPrintResume()
+    this.addConsoleEntry('RESUME')
   }
 
-  rePrint () {
-    if (this.filename && this.filename.length > 0) {
-      SocketActions.printerPrintStart(this.filename)
-    }
+  handleReprint (filename: string) {
+    this.showHistory = false
+    SocketActions.printerPrintStart(filename)
   }
 
   resetFile () {

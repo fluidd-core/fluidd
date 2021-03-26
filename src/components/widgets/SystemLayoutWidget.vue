@@ -1,6 +1,6 @@
 <template>
   <v-list dense>
-    <v-subheader>Layout</v-subheader>
+    <v-subheader>{{ $t('app.general.label.layout') }}</v-subheader>
 
     <v-list-item @click.prevent="layoutMode = !layoutMode">
       <v-list-item-action>
@@ -8,7 +8,7 @@
       </v-list-item-action>
 
       <v-list-item-content>
-        <v-list-item-title>Adjust dashboard layout</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.adjust_layout') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
@@ -18,7 +18,7 @@
       </v-list-item-icon>
 
       <v-list-item-content>
-        <v-list-item-title>Reset dashboard layout</v-list-item-title>
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.reset_layout') }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>
@@ -26,11 +26,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import UtilsMixin from '@/mixins/utils'
+import StateMixin from '@/mixins/state'
 import { defaultState } from '@/store/config/index'
 
 @Component({})
-export default class SystemLayoutWidget extends Mixins(UtilsMixin) {
+export default class SystemLayoutWidget extends Mixins(StateMixin) {
   get layoutMode () {
     return this.$store.state.config.layoutMode
   }

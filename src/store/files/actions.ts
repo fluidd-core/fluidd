@@ -1,21 +1,26 @@
 import { ActionTree } from 'vuex'
-import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta } from './types'
+import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, AppFile, DiskUsage } from './types'
 import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
 
 export const actions: ActionTree<FilesState, RootState> = {
-  async onRegisteredDirectores ({ commit }, payload) {
-    commit('onRegisteredDirectores', payload)
+  /**
+   * Reset our store
+   */
+  async reset ({ commit }) {
+    commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit }, payload) {
+  async onServerFilesGetDirectory ({ commit }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
     let pathNoRoot = path.replace(root, '')
     if (pathNoRoot.startsWith('/')) pathNoRoot = pathNoRoot.substring(1)
-    const items: (AppFileWithMeta | AppDirectory)[] = []
+
+    const items: (AppFileWithMeta | AppFile | AppDirectory)[] = []
+
     if (path && path.indexOf('/') >= 0) {
       items.push({
         type: 'directory',
@@ -25,8 +30,9 @@ export const actions: ActionTree<FilesState, RootState> = {
         modified: new Date().getTime()
       })
     }
+
     if (payload.dirs) {
-      payload.dirs.forEach((dir: AppDirectory) => {
+      payload.dirs.forEach((dir) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => dir.dirname.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => dir.dirname.endsWith(e))
@@ -38,21 +44,26 @@ export const actions: ActionTree<FilesState, RootState> = {
         }
       })
     }
+
     if (payload.files) {
-      payload.files.forEach((file: AppFileWithMeta) => {
+      payload.files.forEach((file) => {
         if (
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
         ) {
-          file.type = 'file'
-          file.name = file.filename
-          file.extension = file.filename.split('.').pop() || ''
-          file.modified = new Date(file.modified).getTime()
-          items.push(file)
+          items.push({
+            ...file,
+            type: 'file',
+            name: file.filename,
+            extension: file.filename.split('.').pop() || '',
+            modified: new Date(file.modified).getTime(),
+            path: (pathNoRoot === '/') ? '' : pathNoRoot
+          })
         }
       })
     }
-    commit('onServerFilesGetDirectory', { root, directory: { path, items } })
+    commit('setDiskUsage', payload.disk_usage)
+    commit('setServerFilesGetDirectory', { root, directory: { path, items } })
   },
 
   /**
@@ -66,8 +77,8 @@ export const actions: ActionTree<FilesState, RootState> = {
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
-    if (rootState.socket && file.filename === rootState.socket.printer.print_stats.filename) {
-      commit('socket/onSocketNotify', { key: 'current_file', payload: file }, { root: true })
+    if (file.filename === rootState.printer?.printer.print_stats.filename) {
+      commit('printer/setSocketNotify', { key: 'current_file', payload: file }, { root: true })
     }
 
     // Apply the metadata to our specific file.
@@ -76,7 +87,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       root,
       file
     }
-    commit('onFileUpdate', update)
+    commit('setFileUpdate', update)
   },
 
   /**
@@ -122,7 +133,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         root,
         file
       }
-      commit('onFileUpdate', update)
+      commit('setFileUpdate', update)
     }
   },
 
@@ -135,7 +146,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       root,
       file
     }
-    commit('onFileDelete', update)
+    commit('setFileDelete', update)
   },
 
   async notifyCreatedir (_, payload: FileChangeSocketResponse) {
@@ -151,14 +162,19 @@ export const actions: ActionTree<FilesState, RootState> = {
   },
 
   async addFileUpload ({ commit }, payload) {
-    commit('addFileUpload', payload)
+    commit('setAddFileUpload', payload)
   },
 
   async updateFileUpload ({ commit }, payload) {
-    commit('updateFileUpload', payload)
+    commit('setUpdateFileUpload', payload)
   },
 
   async removeFileUpload ({ commit }, payload) {
-    commit('removeFileUpload', payload)
+    commit('setRemoveFileUpload', payload)
+  },
+
+  async updateCurrentPathByRoot ({ commit }, payload) {
+    commit('setCurrentPath', payload)
   }
+
 }

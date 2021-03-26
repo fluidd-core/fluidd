@@ -1,0 +1,16 @@
+/* Force a constrained width for our pages.. */
+.container--fluid.constrained-width {
+  max-width: map-get($container-max-widths, 'xl');
+}
+
+.fluidd.v-application blockquote {
+  font-family: monospace, monospace
+  // background-color: transparent;
+  // color: #C0341D;
+  // padding: 0 0.4rem;
+}
+
+/* force no pointer events to avoid issues with dragging */
+.no-pointer-events * {
+  pointer-events: none !important;
+}

@@ -6,18 +6,14 @@ import { defaultState } from './index'
 import { Globals } from '@/globals'
 
 export const mutations: MutationTree<FilesState> = {
-  resetState (state) {
-    const newState = defaultState()
-    Object.keys(newState).forEach((key: string) => {
-      Vue.set(state, key, newState[key])
-    })
+  /**
+   * Reset state
+   */
+  setReset (state) {
+    Object.assign(state, defaultState())
   },
 
-  onRegisteredDirectores (state, payload) {
-    state.availableRoots = payload
-  },
-
-  onServerFilesGetDirectory (state, payload) {
+  setServerFilesGetDirectory (state, payload) {
     const path = payload.directory.path
     const root = payload.root as 'gcodes' | 'config' | 'config_examples'
     const i = state[root].findIndex(o => o.path === path)
@@ -28,7 +24,7 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  onFileUpdate (state, payload: FileUpdate) {
+  setFileUpdate (state, payload: FileUpdate) {
     const root = payload.root as 'gcodes' | 'config' | 'config_examples'
     const paths = payload.paths
 
@@ -54,7 +50,7 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  onFileDelete (state, payload: FileUpdate) {
+  setFileDelete (state, payload: FileUpdate) {
     const root = payload.root as 'gcodes' | 'config' | 'config_examples'
     const paths = payload.paths
 
@@ -69,25 +65,33 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  addFileUpload (state, payload) {
+  setAddFileUpload (state, payload) {
     state.uploads.push({
       ...payload,
       processingComplete: false
     })
   },
 
-  updateFileUpload (state, payload) {
+  setUpdateFileUpload (state, payload) {
     const i = state.uploads.findIndex((u) => u.filename === payload.filename)
     if (i >= 0) {
       Vue.set(state.uploads, i, { ...state.uploads[i], ...payload })
     }
   },
 
-  removeFileUpload (state, payload) {
+  setRemoveFileUpload (state, payload) {
     const i = state.uploads.findIndex((u) => u.filename === payload)
     if (i >= 0) {
       state.uploads.splice(i, 1)
     }
+  },
+
+  setCurrentPath (state, payload) {
+    Vue.set(state.currentPaths, payload.root, payload.path)
+  },
+
+  setDiskUsage (state, payload) {
+    Vue.set(state, 'disk_usage', payload)
   }
 
 }

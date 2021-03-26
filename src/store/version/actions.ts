@@ -6,12 +6,26 @@ import { SocketActions } from '@/socketActions'
 
 export const actions: ActionTree<VersionState, RootState> = {
   /**
+   * Reset our store
+   */
+  async reset ({ commit }) {
+    commit('setReset')
+  },
+
+  /**
+   * Make a socket request to init the power plugin.
+   */
+  async init () {
+    SocketActions.machineUpdateStatus()
+  },
+
+  /**
    * Inits any file config we may have.
    */
   async onUpdateStatus ({ commit }, payload) {
     consola.debug('Finished machine.update.status', payload)
-    commit('refreshing', false)
-    commit('onUpdateStatus', payload)
+    commit('setRefreshing', false)
+    commit('setUpdateStatus', payload)
   },
 
   /**
@@ -19,19 +33,23 @@ export const actions: ActionTree<VersionState, RootState> = {
    * the version state.
    */
   async refreshing ({ commit }, payload) {
-    commit('refreshing', payload)
+    commit('setRefreshing', payload)
   },
 
   /**
    * As updates happen, we get responses here.
    */
   async onUpdateResponse ({ commit }, payload) {
-    commit('onUpdateResponse', payload)
+    commit('setUpdateResponse', payload)
   },
 
-  async onUpdatedMoonraker (_, payload) {
+  /**
+   * Notifications of specific updates
+   */
+  async onUpdatedMoonraker ({ commit }, payload) {
     consola.debug('Finished updating moonraker', payload)
     SocketActions.machineUpdateStatus()
+    commit('socket/setSocketDisconnecting', true, { root: true })
   },
 
   async onUpdatedKlipper (_, payload) {

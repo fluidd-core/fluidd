@@ -81,7 +81,9 @@ import {
   mdiElectricSwitchClosed,
   mdiMotionOutline,
   mdiThermometerLow,
-  mdiHelpCircle
+  mdiHelpCircle,
+  mdiHistory,
+  mdiFilterOutline
 } from '@mdi/js'
 
 /**
@@ -89,28 +91,44 @@ import {
  */
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
+  DEFAULTS: {
+    CAMERA_URL: '/webcam?action=stream'
+  },
   NETWORK_REQUEST_TIMEOUT: 500,
+  KLIPPY_RETRY_DELAY: 1500,
+  SOCKET_RETRY_DELAY: 2000,
   CONSOLE_HISTORY_RETENTION: 1000, // total count
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
-  CONSOLE_COMMAND_HISTORY: 5,
+  CONSOLE_COMMAND_HISTORY: 20,
   CHART_HISTORY_RETENTION: 1200,
-  KLIPPY_RETRY_DELAY: 2000,
+  JOB_HISTORY_LOAD: 50,
   KLIPPY_DISCONNECTED_REDIRECT: '/configuration',
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
-  CONFIG_FILES: {
-    UiSettings: '.fluidd.json',
-    ConsoleHistory: '.fluidd_console_history.json'
-    // PrintHistory: '.fluidd_file_history.json'
+  MOONRAKER_DB: {
+    NAMESPACE: 'fluidd',
+    ROOTS: {
+      uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
+      macros: { name: 'macros', dispatch: 'macros/initMacros' },
+      console: { name: 'console', dispatch: 'console/initConsole' },
+      charts: { name: 'charts', dispatch: 'charts/initCharts' },
+      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' }
+    }
   },
-  FILTERED_FILES_PREFIX: ['.', 'thumbs'],
-  FILTERED_FILES_EXTENSION: ['.json'],
+  MOONRAKER_PLUGINS: {
+    power: { name: 'power', dispatch: 'devicePower/init' },
+    updateManager: { name: 'update_manager', dispatch: 'version/init' },
+    history: { name: 'history', dispatch: 'history/init' }
+  },
+  FILTERED_FILES_PREFIX: ['thumbs'],
+  FILTERED_FILES_EXTENSION: ['.ignoreme'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
-  DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker'
+  DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker',
+  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html'
 })
 
 export const Icons = Object.freeze({
@@ -197,7 +215,9 @@ export const Icons = Object.freeze({
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
   bedMesh: mdiViewGridOutline,
-  host: mdiDesktopTower
+  host: mdiDesktopTower,
+  history: mdiHistory,
+  filter: mdiFilterOutline
 })
 
 export const Waits = Object.freeze({
@@ -231,8 +251,9 @@ export const Waits = Object.freeze({
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
-  onUploadGcode: 'onUploadGcode',
-  onExtruderChange: 'onExtruderChange'
+  onUpload: 'onUpload',
+  onExtruderChange: 'onExtruderChange',
+  onLoadLanguage: 'onLoadLanguage'
 })
 
 export const defaultPlotLayout = Object.freeze({

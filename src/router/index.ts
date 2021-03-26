@@ -1,13 +1,13 @@
 import Vue from 'vue'
-import store from '@/store'
 import VueRouter, { RouteConfig } from 'vue-router'
-import { Globals } from '@/globals'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
-import Configuration from '@/views/Configuration.vue'
-import Settings from '@/views/Settings.vue'
+import Configure from '@/views/Configure.vue'
+import Tune from '@/views/Tune.vue'
+import Interface from '@/views/Interface.vue'
+import SettingsBar from '@/components/SettingsBar.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -24,14 +24,22 @@ const routes: Array<RouteConfig> = [
     component: Jobs
   },
   {
-    path: '/settings',
-    name: 'App Settings',
-    component: Settings
+    path: '/tune',
+    name: 'Tune',
+    component: Tune
   },
   {
-    path: '/configuration',
+    path: '/configure',
     name: 'Printer Configuration',
-    component: Configuration
+    component: Configure
+  },
+  {
+    path: '/interface',
+    name: 'Interface',
+    components: {
+      default: Interface,
+      navigation: SettingsBar
+    }
   },
   {
     path: '*',
@@ -43,19 +51,6 @@ const routes: Array<RouteConfig> = [
 const router = new VueRouter({
   base: process.env.BASE_URL,
   routes
-})
-
-router.beforeEach((to, from, next) => {
-  // If klippy is disconnected, users should not be able to
-  // go to the jobs page, because virtual_sdcard won't be working.
-  if (
-    store.getters['files/isRootAvailable']('gcodes') !== true &&
-    to.name === 'Jobs'
-  ) {
-    next(Globals.KLIPPY_DISCONNECTED_REDIRECT)
-  } else {
-    next()
-  }
 })
 
 export default router
