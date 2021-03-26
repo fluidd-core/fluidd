@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.11.1](https://github.com/cadriel/fluidd/compare/v1.11.0...v1.11.1) (2021-03-26)
+
+
+### Bug Fixes
+
+* camera when flipped is now position correctly ([1a16fe7](https://github.com/cadriel/fluidd/commit/1a16fe714b186008b0ebcc80f0b2034231bc9068))
+* restart buttons not appearing under certain circumstances ([ed3bfa6](https://github.com/cadriel/fluidd/commit/ed3bfa69a36c78227891e120e8e8561258616ef2))
+* Space now between z-adjust heading and value ([8b663ec](https://github.com/cadriel/fluidd/commit/8b663ec5bf09d9760c6a4dca4f7d35f91b4958ea))
+* upload by button now works correctly ([9fd9d2d](https://github.com/cadriel/fluidd/commit/9fd9d2d8e29286851bce6da2c9bf9046ad021196))
+
 ## [1.11.0](https://github.com/cadriel/fluidd/compare/v1.10.0...v1.11.0) (2021-03-26)
 
 
