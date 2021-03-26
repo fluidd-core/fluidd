@@ -162,7 +162,6 @@ export default class CameraCard extends Vue {
 <style lang="scss" scoped>
   .webcam {
     display: block;
-    transform-origin: top left;
     width: 100%;
     white-space: nowrap;
   }

@@ -1,0 +1,328 @@
+app:
+  general:
+    title:
+      camera: Camera | Camera's
+      console: Console
+      bedmesh: Bed Mesh
+      home: Dashbord
+      add_printer: Printer toevoegen
+      endstops: Endstops
+      fans_outputs: Ventilators & Outputs
+      jobs: Taken
+      macros: Macros
+      limits: Printer Limieten
+      logs: Printer Logs
+      system_control: Systeemcontrole
+      runout_sensors: Runout Sensors
+      status: Status
+      temperature: Temperaturen
+      tool: Werktuig
+      tune: Tunen
+      configure: Configureren
+      interface: UI Instellingen
+      stats: Printer Statistieken
+      history: Takenhistoriek
+      config_files: Configuratie Bestanden
+    label:
+      accel_to_decel: Vertragingssnelheid
+      acceleration: Versnelling
+      sqv: Hoeksnelheid
+      velocity: Snelheid
+      api_url: API URL
+      host: Host
+      layout: Layout
+      name: Name
+      power: Kracht
+      printers: Printers
+      requested_speed: Gevraagde Snelheid
+      services: Services
+      speed: Snelheid
+      flow: Flow
+      z_offset: Z-Offset
+      high: Hoog
+      low: Laag
+      off: Uit
+      used: Gebruikt
+      free: Vrij
+      total_jobs: Totaal aantal taken
+      longest_job: Langste taak
+      total_time: Totale tijd
+      total_time_avg: Gemiddelde tijd
+      total_print_time: Totale printtijd
+      total_print_time_avg: Gemiddelde per print
+      total_filament: Filamenttotaal
+      total_filament_avg: Gemiddelde per print
+      variance: Afwijking
+      save_as: Opslaan als
+      edit_preset: Aanpassen voorkeuren
+      add_preset: Voorkeur toevoegen
+      edit_camera: Camera wijzigen
+      add_camera: Camera toevoegen
+      extrude_length: Extrude lengte
+      extrude_speed: Extrude snelheid
+      confirm: Bevestigen
+    btn:
+      all: Alles
+      all_off: Alles uit
+      quad_gantry_level: QGL
+      add: Toevoegen
+      pause: Pauze
+      reboot: Herstart
+      shutdown: Afsluiten
+      remove: Verwijderen
+      remove_all: Alles verwijderen
+      rename: Hernoemen
+      resume: Verdergaan
+      cancel: Annuleren
+      save: Opslaan
+      save_as: Opslaan als
+      upload: Uploaden
+      upload_print: Uploaden & Printen
+      preheat: Voorverwarmen
+      reprint: Herprinten
+      save_restart: Opslaan & herstarten
+      adjust_layout: Dashboard layout aanpassen
+      calibrate: Calibratie
+      clear_profile: Profiel verwijderen
+      download: Downloaden
+      add_printer: Printer toevoegen
+      edit: Aanpassen
+      extrude: Extrude
+      retract: Retract
+      restart_firmware: Firmware herstart
+      restart_service_klipper: Klipper herstart
+      restart_service_moonraker: Moonraker herstart
+      restart_service_webcamd: Webcam herstart
+      socket_refresh: Forceer verversen
+      reset_file: Reset bestand
+      reset_layout: Reset Layout
+      view: Bekijken
+      close: Sluiten
+      config_reference: Configuratieverwijzing
+      add_file: Bestand toevoegen
+      add_dir: Map toevoegen
+    table:
+      header:
+        filament_used: Filament
+        name: Naam
+        slicer: Slicer
+        status: Status
+        height: Hoogte
+        layer_height: Laaghoogte
+        estimated_time: Geschatte tijd
+        last_printed: Laatst geprint
+        modified: Aangepast
+        size: Grootte
+        start_time: Gestart
+        print_duration: Print duurtijd
+        actions: Acties
+    simple_form:
+      msg:
+        confirm: Ben je zeker?
+        confirm_reboot_host: Ben je zeker? Hierdoor zal je host systeem herstarten.
+        confirm_shutdown_host: Ben je zeker? Hierdoor zal je host systeem afsluiten.
+      error:
+        invalid_url: Invalide URL
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} or 0
+        required: Vereist
+    tooltip:
+      estop: Noodstop
+    error:
+      app_warnings_found: '%{appName} waarschuwingen gevonden.'
+      app_setup_link: >-
+        Fluidd setup vereisten kan je <a target="_blank"
+        href="%{url}">hier</a> vinden.
+      failed_components: >-
+        Moonraker heeft gefaalde plugins, controleer je logs, update je
+        configuratie en herstart moonraker.
+      components_config: >-
+        Moonraker plugin configuratie kan je <a target="_blank"
+        href="%{url}">hier</a> vinden.
+  socket:
+    msg:
+      connecting: Verbinden met Moonraker...
+      no_connection: Geen verbinding met Moonraker, controleer Moonraker status en/of ververs.
+  version:
+    title: Software Updates
+    btn:
+      update: Updaten
+      finish: Klaar
+      check_for_updates: Controleer voor updates
+    label:
+      dirty: DIRTY
+      invalid: INVALID
+      up_to_date: UP TO DATE
+    status:
+      updating: Updaten...
+      finished: Updates klaar
+    tooltip:
+      dirty: Of je head is detached, niet op de master of ergens een invalide origine
+      invalid: duidt op lokale veranderingen in je repo
+  console:
+    label:
+      hide_temp_waits: Verberg temperatuurwachten
+    placeholder:
+      command: '''tab'' voor autocomplete, ''help'' voor commandos ''pijltjes'' voor geschiedenis'
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+    tooltip:
+      home_xy: Home XY
+      home_z: Home Z
+      extruder_disabled: >-
+        extruder uitgeschakeld, onder de min_extrude_temp (%{min}<small>°C</small>)
+  bedmesh:
+    label:
+      profile_name: Profielnaam
+      remove_profile: Verwijder %{name} profiel
+    msg:
+      not_found: Geen bedmeshes gevonden.
+      hint: >-
+        Als je opslaat onder een andere naam dan %{name}, kan je er ook voor kiezen
+        %{name} te verwijderen.
+    tooltip:
+      calibrate: Begint een nieuwe calibratie, opslaand als 'default'
+      delete: Verwijder profiel. Dit zal je printer herstarten
+      save: >-
+        Slaat gecalibreerd profiel op naar printer.cfg. Dit zal je printer herstarten.
+      load: Laad profiel
+  printer:
+    status:
+      used_filament: gebruikt filament
+      time_left: geschatte tijdsspanne
+      duration: tijdsspanne
+      duration_total: tijdsspanne en totaal
+    state:
+      printing: Printen
+      loading: Laden
+      complete: Klaar
+      paused: Gepauzeerd
+      standby: Standby
+      idle: Wachtend
+      ready: Klaar
+      busy: Bezig
+  setting:
+    title:
+      camera: Camera | Camera's
+      macros: Macros
+      general: Algemeen
+      theme: Theme
+      tool: Werktuig
+      thermal_presets: Temperatuurvoorkeuren
+    label:
+      camera_url: Camera Url
+      printer_name: Printer Naam
+      language: Taalinstelling
+      default_toolhead_move_length: Standaard werktuig beweeglengte
+      default_extrude_speed: Standaard extrudesnelheid
+      default_extrude_length: Standaard extrudelengte
+      default_toolhead_z_speed: Standaard z-snelheid
+      default_toolhead_xy_speed: Standaard xy-snelheid
+      camera_flip_x: Flip horizontaal
+      camera_flip_y: Flip vertikaal
+      camera_stream_type: Stream type
+      thermal_preset_name: Voorkeursnaam
+      all_on: Alles aan
+      all_off: Alles uit
+      toggle: Schakelen
+      dark_mode: Donker modus
+      primary_color: Primaire kleur
+      reset: Reset instellingen
+      z_adjust_values: Z Aanpassingswaardes
+      gcode_coords: Gebruik GCode coordinaten
+      time_estimates: Tijdsschattingen
+      invert_z_control: Inverteer Z knop
+      invert_y_control: Inverteer Y knop
+      invert_x_control: Inverteer X knop
+      enable: Inschakelen
+      fps_target: FPS Instelling
+    btn:
+      add_camera: Camera toevoegen
+      select_theme: Selecteer Theme
+      add_thermal_preset: Voorkeur toevoegen
+      reset: Reset
+    timer_options:
+      duration: Alleen tijdsduur
+      duration_description: Zoals op het LCD, dit toont alleen tijdsduur zonder schattingen.
+      file: Bestandsschatting
+      file_description: >-
+        Gebruikt progressie percentage en duurtijd om een schatting te maken.<br />
+        Accurater naargelang tijd.
+      filament: Filamentschatting
+      filament_description: >-
+        Gebruikt het filament gebruik om een schatting te maken.<br />
+        Accurater naargelang tijd.
+      slicer: Slicer
+      slicer_description: Gebruikt de slicerschatting. Dit moet je aanzetten in je slicer.
+    camera_type_options:
+      video: IP Camera
+      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG Adaptive
+    tooltip:
+      gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
+  chart:
+    tooltip:
+      help: >-
+        Shift inhouden om te zoomen.<br />Klik op een item om het aan of uit te schakelen in de grafiek.
+    label:
+      item: Item
+      current: Huidig
+      target: Doelwit
+      power: Kracht
+  file_system:
+    title:
+      rename_file: Hernoem bestand
+      rename_dir: Hernoem map
+      add_file: Bestand toevoegen
+      add_dir: Map toevoegen
+    label:
+      dir_name: Mapnaam
+      file_name: Bestandsnaam
+      disk_usage: Schijfgebruik
+    msg:
+      not_found: Geen bestanden gevonden
+      uploading: Uploaden...
+      processing: Verwerken...
+      confirm: Ben je zeker? Dit zal alle onderliggende bestanden en mappen verwijderen.
+    tooltip:
+      disabled: Taken zijn uitgeschakeld voordat er een verbinding is met klippy
+      low_on_space: Weinig plaats op de Disk
+    overlay:
+      label: <strong>Sleep</strong> een bestand naar hier
+      uploading: <strong>Upload</strong> bestanden
+    filters:
+      label:
+        print_start_time: Filter geprint
+        print_start_time_desc: Filtert de items die je al geprint hebt weg
+  endstop:
+    label:
+      open: OPEN
+      triggered: GETRIGGERD
+    msg:
+      subtitle: Gebruik de verversknop om je endstopstatus te vernieuwen
+  history:
+    msg:
+      confirm: Ben je zeker? Dit zal alle historiek en statistieken verwijderen van de printer
+      load_count: Vertegenwoordigt de laatste {num} taken
+  endpoint:
+    hint:
+      add_printer: V.B, http://fluiddpi.local
+    msg:
+      trouble: >-
+        Is er een probleem? <a href="%{url}" target="_blank">Kijk hier</a> voor
+        meer informatie.
+    tooltip:
+      endpoint_examples: >-
+        Geef je API URL in.<br />Een paar voorbeelden;<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+    error:
+      cant_connect: >-
+        Er is iets mis, Fluidd kan niet met je bestemming communiceren. Ben je zeker dat dit het juiste adres is?
+      cors_error: blocked by CORS policy
+      cors_note: >-
+        Dit betekent dat er iets mis is met je moonraker configuratie. 
+        Bekijk alsjeblieft de documentatie omtrent multiprinter setups <a href="%{url}"
+        target="_blank">hier</a>

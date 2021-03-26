@@ -1,9 +1,10 @@
 <template>
   <div>
-    <v-tooltip right>
+    <v-tooltip right
+      v-if="!klippyConnected"
+    >
       <template v-slot:activator="{ on, attrs }">
         <btn
-          v-if="!klippyConnected"
           v-on="on"
           v-bind="attrs"
           block
@@ -17,10 +18,11 @@
       <span>Restarts the klipper system service.</span>
     </v-tooltip>
 
-    <v-tooltip right>
+    <v-tooltip right
+      v-if="klippyConnected"
+    >
       <template v-slot:activator="{ on, attrs }">
         <btn
-          v-if="klippyConnected"
           v-on="on"
           v-bind="attrs"
           block
@@ -34,10 +36,11 @@
       <span>Reloads klipper configuration.</span>
     </v-tooltip>
 
-    <v-tooltip right>
+    <v-tooltip right
+      v-if="klippyConnected"
+    >
       <template v-slot:activator="{ on, attrs }">
         <btn
-          v-if="klippyConnected"
           v-on="on"
           v-bind="attrs"
           block
