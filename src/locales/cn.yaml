@@ -306,7 +306,6 @@ app:
     error:
       cant_connect: >-
         出了点问题，fluidd无法连接到目的地址。你确定这是正确的地址？
-        sure this is the correct address?
       cors_error: 被CORS政策阻止
       cors_note: >-
         这可能意味着您需要修改moonraker配置。请参阅有关多打印机设置的<a href=\"%{url}\" target=\"_blank\">文档</a>
