@@ -22,6 +22,7 @@ app:
       stats: 打印状态
       history: 任务历史
       config_files: 配置文件
+      system_control: 系统控制
     label:
       accel_to_decel: 加速到减速
       acceleration: 加速
@@ -58,6 +59,8 @@ app:
       extrude_length: 挤出长度
       extrude_speed: 挤出速度
       confirm: 确认
+      edit_camera: 编辑摄像头
+      add_camera: 添加摄像头
     btn:
       all: 全部
       all_off: 全部关闭
@@ -89,6 +92,7 @@ app:
       restart_firmware: 重启Firmware
       restart_service_klipper: 重启Klipper
       restart_service_moonraker: 重启Moonraker
+      restart_service_webcamd: 重启摄像头
       socket_refresh: 强制刷新
       reset_file: 重置文件
       reset_layout: 重置布局
@@ -232,10 +236,12 @@ app:
       invert_y_control: 反转Y轴控制
       invert_x_control: 反转X轴控制
       enable: 启用
+      fps_target: FPS帧率
     btn:
       select_theme: 选择主题
       add_thermal_preset: 添加预设
       reset: 重置
+      add_camera: 添加摄像头
     timer_options:
       duration: 仅显示消耗时间
       duration_description: 与LCD类似, 只显示消耗时间，没有估算时间。
@@ -250,8 +256,9 @@ app:
       slicer: 使用切片文件的时间
       slicer_description: 使用切片文件中的预估时间，你必须在切片软件中启用相应的功能。
     camera_type_options:
-      video: ip camera
-      img: mjpgstreamer
+      video: IP Camera
+      mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
     tooltip:
       gcode_coords: 使用GCode坐标位置而不是仪表板上的打印头坐标位置
   chart:
@@ -284,6 +291,10 @@ app:
     overlay:
       label: <strong>拖动</strong> 一个文件到这里
       uploading: 文件<strong>上传中</strong>
+    filters:
+      label:
+        print_start_time: 过滤已打印
+        print_start_time_desc: 过滤已经打印过的文件。
   endstop:
     label:
       open: 断开
