@@ -78,7 +78,7 @@
       :disabled="disabled"
       @add-file="$emit('add-file')"
       @add-dir="$emit('add-dir')"
-      @upload="$emit('upload', files, print)"
+      @upload="handleUpload"
     >
     </file-system-menu>
 
@@ -144,6 +144,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   get supportsHistoryPlugin () {
     return this.$store.getters['server/pluginSupport']('history')
+  }
+
+  handleUpload (files: FileList, print: boolean) {
+    this.$emit('upload', files, print)
   }
 }
 </script>
