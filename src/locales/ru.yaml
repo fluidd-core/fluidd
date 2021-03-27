@@ -232,7 +232,7 @@ app:
       reset: Сбросить настройки
       z_adjust_values: Значения подстройки оси Z
       gcode_coords: Испрользовать координаты GCode
-      time_estimates: Time estimates
+      time_estimates: Оценки времени
       invert_z_control: Инвертировать управление по оси Z
       invert_y_control: Инвертировать управление по оси Y
       invert_x_control: Инвертировать управление по оси X
