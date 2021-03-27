@@ -187,8 +187,8 @@ app:
       calibrate: Begtint eine neue Kalibrierung und speichert es als 'default'
       delete: Profil löchen. Das startet den Drucker neu
       save: >-
-      Fügt das Mesh Profil der printer.cfg hinzu.
-      Das startet den Drucker neu
+        Fügt das Mesh Profil der printer.cfg hinzu.
+        Das startet den Drucker neu
       load: Lade Profil
   printer:
     status:
