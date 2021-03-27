@@ -3,7 +3,6 @@
       v-model="menu"
       bottom
       left
-      offset-y
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on, attrs }">

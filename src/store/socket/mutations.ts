@@ -23,8 +23,8 @@ export const mutations: MutationTree<SocketState> = {
     state.ready = payload
   },
 
-  setAcceptNotifications (state) {
-    state.acceptingNotifications = true
+  setAcceptNotifications (state, payload) {
+    state.acceptingNotifications = payload
   },
 
   setSocketDisconnecting (state, payload) {
