@@ -20,7 +20,8 @@ export const defaultState = (): ConfigState => {
         { name: 'Français', code: 'fr' },
         { name: 'Chinese', code: 'cn' },
         { name: 'Nederlands', code: 'nl' },
-        { name: 'Русский', code: 'ru' }
+        { name: 'Русский', code: 'ru' },
+        { name: 'Deutsch', code: 'de' }
       ]
     },
     cardState: {},
