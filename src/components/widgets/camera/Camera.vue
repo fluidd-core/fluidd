@@ -1,33 +1,36 @@
 <template>
-  <v-card
-    color="secondary"
-    :elevation="6"
-    v-on="$listeners"
-  >
-    <img
-      v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
-      :src="cameraUrl"
-      class="webcam"
-      :style="cameraTransformStyle"
-      @load="handleImgLoad"
-    />
-
-    <video
-      v-if="camera.type === 'ipstream'"
-      :src="cameraUrl"
-      autoplay
-      class="webcam"
-      :style="cameraTransformStyle"
-    />
-
-    <v-card-text
-      v-if="camera.name"
-      class="card-heading py-1 d-flex align-center justify-space-between"
+  <div>
+    <v-card
+      :elevation="(flat) ? 0 : 6"
+      v-on="$listeners"
+      color="secondary"
+      class="rounded-t-0"
     >
-      <span class="font-weight-light" style="font-size: 1.0rem;">{{ camera.name }}</span>
-      <small v-if="this.camera.type === 'mjpgadaptive' && this.time">FPS: {{ currentFPS }}</small>
-    </v-card-text>
-  </v-card>
+      <img
+        v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
+        :src="cameraUrl"
+        class="webcam"
+        :style="cameraTransformStyle"
+        @load="handleImgLoad"
+      />
+
+      <video
+        v-if="camera.type === 'ipstream'"
+        :src="cameraUrl"
+        autoplay
+        class="webcam"
+        :style="cameraTransformStyle"
+      />
+
+      <v-card-text
+        v-if="camera.name"
+        class="card-heading py-1 d-flex align-center justify-space-between"
+      >
+        <span class="font-weight-light" style="font-size: 1.0rem;">{{ camera.name }}</span>
+        <small v-if="this.camera.type === 'mjpgadaptive' && this.time">FPS: {{ currentFPS }}</small>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -41,6 +44,9 @@ import { CameraConfig } from '@/store/cameras/types'
 export default class CameraCard extends Vue {
   @Prop({ type: Object, required: true })
   camera!: CameraConfig
+
+  @Prop({ type: Boolean, default: false })
+  flat!: boolean
 
   // Adaptive load counters
   request_start_time = performance.now()

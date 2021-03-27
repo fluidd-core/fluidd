@@ -42,5 +42,12 @@ export const mutations: MutationTree<CamerasState> = {
   setRemoveCamera (state, payload) {
     const i = state.cameras.findIndex(camera => camera.id === payload.id)
     state.cameras.splice(i, 1)
+  },
+
+  /**
+   * Sets Fillspace
+   */
+  setFillSpace (state, payload) {
+    state.fillSpace = payload
   }
 }

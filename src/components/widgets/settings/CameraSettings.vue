@@ -18,6 +18,21 @@
         </btn>
       </fluidd-setting>
 
+      <v-divider></v-divider>
+
+      <fluidd-setting
+        :title="$t('app.setting.label.camera_fillspace')"
+        :r-cols="2"
+        :sub-title="$t('app.setting.label.camera_fillspace_help')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="fillSpace"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </fluidd-setting>
+
       <v-divider v-if="cameras.length > 0"></v-divider>
 
       <template v-for="(camera, i) in cameras">
@@ -66,6 +81,14 @@ export default class CameraSettingsCard extends Vue {
   dialogState: any = {
     active: false,
     camera: null
+  }
+
+  get fillSpace () {
+    return this.$store.state.cameras.fillSpace
+  }
+
+  set fillSpace (value: boolean) {
+    this.$store.dispatch('cameras/updateFillSpace', value)
   }
 
   get cameras () {
