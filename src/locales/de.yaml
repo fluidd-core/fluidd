@@ -177,155 +177,155 @@ app:
   bedmesh:
     label:
       profile_name: Profile Name
-      remove_profile: Entferne %{name} profile
+      remove_profile: Entferne %{name} profil
     msg:
       not_found: Keine bed meshes gefunden.
       hint: >-
-        If saving as something other than %{name}, you can choose to also remove
-        the %{name} profile
+        Sepicherst du esanders als %{name}, dann 
+        kannst du auch das %{name} Profil löschen.
     tooltip:
-      calibrate: Begins a new calibration, saving as profile 'default'
-      delete: Delete Profile. This WILL restart your printer
+      calibrate: Begtint eine neue Kalibrierung und speichert es als 'default'
+      delete: Profil löchen. Das startet den Drucker neu
       save: >-
-        Commits calibrated profile to printer.cfg. This WILL restart your
-        printer
-      load: Load Profile
+      Fügt das Mesh Profil der printer.cfg hinzu.
+      Das startet den Drucker neu
+      load: Lade Profil
   printer:
     status:
-      used_filament: used filament
-      time_left: estimated time left
-      duration: duration
-      duration_total: duration & total
+      used_filament: gebrauchtes Filament
+      time_left: geschätzte verbleibende Zeit
+      duration: Dauer
+      duration_total: Dauer & Gesamt
     state:
-      printing: Printing
-      loading: Loading
-      complete: Complete
-      paused: Paused
+      printing: am Drucken
+      loading: Laden
+      complete: Komplett
+      paused: Pausiert
       standby: Standby
-      idle: Idle
-      ready: Ready
-      busy: Busy
+      idle: Untätig
+      ready: Bereit
+      busy: Beschäftigt
   setting:
     title:
-      camera: Camera | Cameras
+      camera: Kamera | Kameras
       macros: Macros
       general: General
-      theme: Theme
+      theme: Themen
       tool: Tool
-      thermal_presets: Thermal Presets
+      thermal_presets: Temperatur Presets
     label:
-      camera_url: Camera Url
-      printer_name: Printer Name
-      language: Display Language
-      default_toolhead_move_length: Default toolhead move length
-      default_extrude_speed: Default extrude speed
-      default_extrude_length: Default extrude length
-      default_toolhead_z_speed: Default toolhead Z speed
-      default_toolhead_xy_speed: Default toolhead XY speed
-      camera_flip_x: Flip horizontally
-      camera_flip_y: Flip vertically
+      camera_url: Kamera Url
+      printer_name: Drucker Name
+      language: Anzeige Sprache
+      default_toolhead_move_length: Standardverfahrlänge des Tools
+      default_extrude_speed: Standard Extrudiergeschwindigkeit
+      default_extrude_length: Standard Extrudierlänge
+      default_toolhead_z_speed: Standard Toolgeschwindigkeit für Z
+      default_toolhead_xy_speed: Standard Toolgeschwindigkeit für XY
+      camera_flip_x: Horizontal spiegeln
+      camera_flip_y: Vertikal spiegeln
       camera_stream_type: Stream type
       thermal_preset_name: Preset Name
-      all_on: All on
-      all_off: All off
-      toggle: Toggle
-      dark_mode: Dark mode
-      primary_color: Primary color
-      reset: Reset settings
-      z_adjust_values: Z Adjust values
-      gcode_coords: Use GCode Coordinates
-      time_estimates: Time estimates
-      invert_z_control: Invert Z control
-      invert_y_control: Invert Y control
-      invert_x_control: Invert X control
-      enable: Enable
-      fps_target: FPS Target
+      all_on: Alle an
+      all_off: Alle aus
+      toggle: Umschalten
+      dark_mode: Dunkler Modus
+      primary_color: Primärfarbe
+      reset: Einstellungen zurücksetzen
+      z_adjust_values: Z Adjust Werte
+      gcode_coords: GCode Koordinaten verwenden
+      time_estimates: geschätze Zeit
+      invert_z_control: Z-Steuerung invertieren
+      invert_y_control: Y-Steuerung invertieren
+      invert_x_control: X-Steuerung invertieren
+      enable: Aktivieren
+      fps_target: FPS Ziel
     btn:
-      add_camera: Add Camera
-      select_theme: Select Theme
-      add_thermal_preset: Add Preset
-      reset: Reset
+      add_camera: Kamera hinzufügen
+      select_theme: Thema auswählen
+      add_thermal_preset: Preset hinzufügen
+      reset: Zurücksetzen
     timer_options:
-      duration: Duration only
-      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
-      file: File Estimation
+      duration: Nur Dauer
+      duration_description: Ähnlich wie bei einem Klipper-LCD wird hier nur die Dauer ohne Schätzungen angezeigt.
+      file: Datei-Schätzung
       file_description: >-
-        Takes progress percent, and duration to estimate total duration.<br />
-        More accurate over time.
-      filament: Filament Estimation
+        Nimmt die Fortschrittsprozent und die Dauer, um die Gesamtdauer zu schätzen.<br />
+        Wird mit der Zeit genauer.
+      filament: Filament-Schätzung
       filament_description: >-
-        Takes used filament vs estimated filament to estimate total duration.<br />
-        More accurate over time.
+        Nimmt das verwendetes Filament vs. das geschätztes Filament, um die Gesamtdauer zu schätzen.<br />
+        Ist mit der Zeit genauer.
       slicer: Slicer
-      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
+      slicer_description: Verwendet Slicer Schätzungen für die Anzeige. Sie müssen dies in Ihrem Slicer aktivieren.
     camera_type_options:
       video: IP Camera
       mjpegstream: MJPEG Stream
       mjpegadaptive: MJPEG Adaptive
     tooltip:
-      gcode_coords: Use GCode position instead of toolhead position on dashboard
+      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard verwenden
   chart:
     tooltip:
       help: >-
-        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
-        />Click a power to toggle in the graph.
+        Halten Sie die Umschalttaste gedrückt, um zu zoomen.<br />Klicken Sie auf ein Element, um es im Diagramm umzuschalten.<br
+        />Klicken Sie auf eine Leistung, um es im Diagramm umzuschalten.
     label:
-      item: Item
-      current: Current
-      target: Target
-      power: Power
+      item: Element
+      current: Aktuell
+      target: Ziel
+      power: Leistung
   file_system:
     title:
-      rename_file: Rename File
-      rename_dir: Rename Directory
-      add_file: Add File
-      add_dir: Add Directory
+      rename_file: Datei umbennen
+      rename_dir: Ordner umbennen
+      add_file: Datei hinzufügen
+      add_dir: Ordner hinzufügen
     label:
-      dir_name: Directory name
-      file_name: Filename
-      disk_usage: Disk Usage
+      dir_name: Ordnername
+      file_name: Dateiname
+      disk_usage: Benutzter Sepicher
     msg:
-      not_found: No files found
-      uploading: Uploading...
-      processing: Processing...
-      confirm: Are you sure? This will delete all files and folders within.
+      not_found: Keine Dateien gefunden
+      uploading: Hochladen...
+      processing: Verarbeitung...
+      confirm: Bist du sicher? Dadurch werden alle darin enthaltenen Dateien und Ordner gelöscht.
     tooltip:
-      disabled: Jobs are disabled prior to initial communcation with klippy
-      low_on_space: Low on disk space
+      disabled: Aufträge werden vor der ersten Kommunikation mit klippy deaktiviert
+      low_on_space: Wenig Speicherplatz auf der Festplatte
     overlay:
-      label: <strong>Drag</strong> a file here
-      uploading: <strong>Uploading</strong> files
+      label: <strong>Ziehen</strong> Sie eine Datei hierher
+      uploading: <strong>Hochladen</strong> von Dateien
     filters:
       label:
-        print_start_time: Filter printed
-        print_start_time_desc: Filters out items you've already printed.
+        print_start_time: Filter gedruckt
+        print_start_time_desc: Filtert Elemente aus, die Sie bereits gedruckt haben.
   endstop:
     label:
-      open: OPEN
-      triggered: TRIGGERED
+      open: Offen
+      triggered: Ausgelöst
     msg:
-      subtitle: Use the refresh button to update endstop status.
+      subtitle: Verwenden Sie die Schaltfläche "Aktualisieren", um den Endstopp-Status zu aktualisieren.
   history:
     msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
-      load_count: Represents the last {num} Jobs
+      confirm: Sind Sie sicher? Dadurch werden der gesamte Verlauf und die Druckerstatistiken gelöscht
+      load_count: Stellt die letzten {num} Jobs dar
   endpoint:
     hint:
-      add_printer: E.g., http://fluiddpi.local
+      add_printer: z.B., http://fluiddpi.local
     msg:
       trouble: >-
-        Having trouble? <a href="%{url}" target="_blank">See here</a> for
-        more information.
+        Haben Sie Probleme? <a href="%{url}" target="_blank">Siehe hier</a> für
+        mehr Informationen.
     tooltip:
       endpoint_examples: >-
-        Enter your API URL.<br />Some examples might be;<br
+        Geben Sie Ihre API-URL ein.<br />Ein paar Beispiele könnten sein:<br
         /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
     error:
       cant_connect: >-
-        Something went wrong, and fluidd can't reach the destination. Are you
-        sure this is the correct address?
-      cors_error: blocked by CORS policy
+        Irgendetwas ist schief gelaufen, und Fluidd kann das Ziel nicht erreichen. Sind Sie
+        sicher, dass dies die richtige Adresse ist?
+      cors_error: durch CORS-Richtlinie blockiert
       cors_note: >-
-        This may mean you need to modify your moonraker configuration. Please
-        see the documentation on multi printer setups <a href="%{url}"
-        target="_blank">here</a>
+        Dies kann bedeuten, dass Sie Ihre Moonraker-Konfiguration ändern müssen. Bitte
+        sehen Sie sich die Dokumentation zur Einrichtung von mehreren Druckern <a href="%{url}"
+        target="_blank">hier</a>
