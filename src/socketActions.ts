@@ -348,7 +348,7 @@ export const SocketActions = {
    * for brevity.
    */
   async serverFilesGetDirectory (root: string, path: string) {
-    const wait = `${Waits.onGetDirectory}${path}`
+    const wait = `${Waits.onFileSystem}${path}`
     baseEmit(
       'server.files.get_directory',
       {
@@ -359,9 +359,11 @@ export const SocketActions = {
     )
   },
   async serverFilesMove (source: string, dest: string) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.move', {
         dispatch: 'void',
+        wait,
         params: {
           source,
           dest
@@ -375,9 +377,11 @@ export const SocketActions = {
    * Root should be included in the path.
    */
   async serverFilesPostDirectory (path: string) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.post_directory', {
         dispatch: 'void',
+        wait,
         params: {
           path
         }
@@ -386,9 +390,11 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteFile (path: string) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
+        wait,
         params: {
           path
         }
@@ -396,13 +402,15 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesDeleteDirectory (path: string) {
+  async serverFilesDeleteDirectory (path: string, force = false) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.delete_directory', {
         dispatch: 'void',
+        wait,
         params: {
           path,
-          force: false
+          force
         }
       }
     )
