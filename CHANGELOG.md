@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.11.2](https://github.com/cadriel/fluidd/compare/v1.11.1...v1.11.2) (2021-03-28)
+
+
+### Features
+
+* add version update notification to collapsed hamburger menu ([bd8cc47](https://github.com/cadriel/fluidd/commit/bd8cc47b1daa1a2633b7456a5b5e58901596f6d9))
+* allow single cams to fill the card space ([be96c50](https://github.com/cadriel/fluidd/commit/be96c5025530e347c08a353f09e42525d36028b0))
+
+
+### Bug Fixes
+
+* ensure history items are updated without needing to refresh ([40f0071](https://github.com/cadriel/fluidd/commit/40f0071f895694d24e0c23495d4f8aa503c5ad2d))
+* error in console when initial locale not set ([d1b0560](https://github.com/cadriel/fluidd/commit/d1b0560c99b853142225fbfee0b28a24d726e66c))
+* now inits plugins when no moonraker db data ([9314fe2](https://github.com/cadriel/fluidd/commit/9314fe23c1dafcf651d00644936ea7d38dce6de5))
+* reprint not working when history is off ([08d2b8b](https://github.com/cadriel/fluidd/commit/08d2b8bafddc253cde5b513dc884b616f403b0ac))
+* thumbs failing to load ([64f3a8f](https://github.com/cadriel/fluidd/commit/64f3a8fd7346ff8b28fa282f38847c14388de559))
+
 ### [1.11.1](https://github.com/cadriel/fluidd/compare/v1.11.0...v1.11.1) (2021-03-26)
 
 
