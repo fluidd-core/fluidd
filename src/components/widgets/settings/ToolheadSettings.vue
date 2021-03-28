@@ -9,6 +9,7 @@
       <fluidd-setting :title="$t('app.setting.label.invert_x_control')">
         <v-switch
           v-model="invertX"
+          hide-details
           class="mt-0 mb-4"
         >
         </v-switch>
@@ -19,6 +20,7 @@
       <fluidd-setting :title="$t('app.setting.label.invert_y_control')">
         <v-switch
           v-model="invertY"
+          hide-details
           class="mt-0 mb-4"
         >
         </v-switch>
@@ -29,6 +31,7 @@
       <fluidd-setting :title="$t('app.setting.label.invert_z_control')">
         <v-switch
           v-model="invertZ"
+          hide-details
           class="mt-0 mb-4"
         >
         </v-switch>
@@ -36,17 +39,13 @@
 
       <v-divider />
 
-      <fluidd-setting>
-        <template v-slot:title>
-          {{ $t('app.setting.label.gcode_coords') }}
-          <inline-help
-            small
-            top
-            :tooltip="$t('app.setting.tooltip.gcode_coords')"
-          ></inline-help>
-        </template>
+      <fluidd-setting
+        :title="$t('app.setting.label.gcode_coords')"
+        :subTitle="$t('app.setting.tooltip.gcode_coords')"
+        :r-cols="2">
         <v-switch
           v-model="useGcodeCoords"
+          hide-details
           class="mt-0 mb-4"
         >
         </v-switch>

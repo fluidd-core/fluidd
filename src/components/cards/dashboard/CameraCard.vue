@@ -15,7 +15,11 @@
       :camera="dialogState.camera"
     ></camera-dialog>
 
-    <v-row class="ma-2" justify="space-around">
+    <v-row
+      v-if="cameras.length > 1 || !fillSpace"
+      class="ma-2"
+      justify="space-around"
+    >
       <template v-for="camera in cameras">
         <v-col
           v-if="!collapsed"
@@ -28,6 +32,12 @@
         </v-col>
       </template>
     </v-row>
+    <camera
+      v-if="!collapsed && fillSpace && cameras.length === 1"
+      :camera="cameras[0]"
+      flat
+      @click="handleCameraClick(cameras[0])"
+    ></camera>
 
   </collapsable-card>
 </template>
@@ -56,8 +66,13 @@ export default class CameraCard extends Mixins(StateMixin) {
   collapsed = false
 
   get cols () {
+    if (this.fillSpace) return 12
     if (this.cameras.length <= 2) return 6
     if (this.cameras.length > 2) return 4
+  }
+
+  get fillSpace (): boolean {
+    return this.$store.state.cameras.fillSpace && this.cameras.length === 1
   }
 
   get inLayout (): boolean {

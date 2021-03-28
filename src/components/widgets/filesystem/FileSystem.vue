@@ -248,7 +248,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Determine if we're waiting for a directory load on our current path.
   get filesLoading () {
-    return this.hasWait(`${Waits.onGetDirectory}${this.currentPath}`)
+    return this.hasWait([
+      `${Waits.onUpload}`,
+      Waits.onFileSystem,
+      `${Waits.onFileSystem}${this.currentPath}`
+    ])
   }
 
   // Get a list of currently active uploads.
@@ -459,7 +463,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     )
       .then(res => {
         if (res) {
-          if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`)
+          if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`, true)
           if (file.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${file.name}`)
         }
       })

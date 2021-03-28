@@ -2,7 +2,7 @@
   <v-dialog
     @input="$emit('input', $event)"
     :value="value"
-    :width="640"
+    max-width="90vh"
   >
     <camera
       :camera="camera"

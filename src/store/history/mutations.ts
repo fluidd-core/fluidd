@@ -12,12 +12,18 @@ export const mutations: MutationTree<HistoryState> = {
   },
 
   /**
-   * Inits the console history from db
+   * Applies currently known history totals
    */
-  setInitHistory (state, payload: HistoryState) {
-    if (payload) {
-      Object.assign(state, payload)
-    }
+  setHistoryTotals (state, payload: HistoryState) {
+    if (payload) Vue.set(state, 'job_totals', payload.job_totals)
+  },
+
+  /**
+   * Applies history list
+   */
+  setHistoryList (state, payload: HistoryState) {
+    if (payload.jobs !== undefined) Vue.set(state, 'jobs', payload.jobs)
+    if (payload.count !== undefined) Vue.set(state, 'count', payload.count)
   },
 
   /**

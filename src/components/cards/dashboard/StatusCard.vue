@@ -62,7 +62,7 @@
 
       <btn
         v-if="!supportsHistoryPlugin && !printerPrinting && !printerPaused && filename"
-        @click="handleReprint(this.filename)"
+        @click="handleReprint(filename)"
         small
         class="ma-1">
         <v-icon small class="mr-1">$reprint</v-icon>
@@ -95,8 +95,6 @@ import { SocketActions } from '@/socketActions'
   }
 })
 export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
-  showHistory = false
-
   get hidePrinterMenu () {
     if (!this.supportsHistoryPlugin) {
       return (!this.printerPrinting && !this.printerPaused && !this.filename)
@@ -150,7 +148,6 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   handleReprint (filename: string) {
-    this.showHistory = false
     SocketActions.printerPrintStart(filename)
   }
 

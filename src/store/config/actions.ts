@@ -27,7 +27,12 @@ export const actions: ActionTree<ConfigState, RootState> = {
     }
 
     // Set the correct language.
-    dispatch('onLocaleChange', payload.general.locale)
+    if (
+      payload.general &&
+      payload.general.locale
+    ) {
+      dispatch('onLocaleChange', payload.general.locale)
+    }
   },
 
   /**

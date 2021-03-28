@@ -32,5 +32,13 @@ export const actions: ActionTree<CamerasState, RootState> = {
   async removeCamera ({ commit, state }, payload) {
     commit('setRemoveCamera', payload)
     SocketActions.serverWrite('cameras.cameras', state.cameras)
+  },
+
+  /**
+   * Sets fillspace
+   */
+  async updateFillSpace ({ commit }, payload) {
+    commit('setFillSpace', payload)
+    SocketActions.serverWrite('cameras.fillSpace', payload)
   }
 }

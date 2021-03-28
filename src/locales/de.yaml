@@ -1,0 +1,331 @@
+app:
+  general:
+    title:
+      camera: Kamera | Kameras
+      console: Konsole
+      bedmesh: Bett Mesh
+      home: Dashboard
+      add_printer: Drucker hinzufügen
+      endstops: Endschalter
+      fans_outputs: Fans & Ausgänge
+      jobs: Aufträge
+      macros: Macros
+      limits: Drucker Limits
+      logs: Drucker Logs
+      system_control: Systemsteuerung
+      runout_sensors: Runout Sensors
+      status: Status
+      temperature: Temperaturen
+      tool: Tool
+      tune: Tune
+      configure: Konfiguration
+      interface: Interface
+      stats: Drucker Status
+      history: Auftragsverlauf
+      config_files: Konfigurations Dateien
+    label:
+      accel_to_decel: Accel zu Decel
+      acceleration: Acceleration
+      sqv: Square Corner Velocity
+      velocity: Velocity
+      api_url: API URL
+      host: Host
+      layout: Layout
+      name: Name
+      power: Power
+      printers: Drucker
+      requested_speed: Gewünschte Geschwindigkeit
+      services: Services
+      speed: Geschwindigkeit
+      flow: Flow
+      z_offset: Z Offset
+      high: High
+      low: Low
+      off: Aus
+      used: gebraucht
+      free: frei
+      total_jobs: Druckaufträge insgesamt
+      longest_job: Längester Auftrag
+      total_time: Gesamtzeit
+      total_time_avg: Durchschnitt pro Druck
+      total_print_time: Gesamte Druckzeit
+      total_print_time_avg: Durchschnitt pro Druck
+      total_filament: Gesamt gebrauchtes Filament
+      total_filament_avg: Durchschnitt pro Druck
+      variance: Abweichung
+      save_as: Speichern als
+      edit_preset: Preset ändern
+      add_preset: Preset hinzufügen
+      edit_camera: Kamera ändern
+      add_camera: Camera hinzufügen
+      extrude_length: Extrusionslänge
+      extrude_speed: Extrusionsgeschwindigkeit
+      confirm: Bestätigen
+    btn:
+      all: Alle
+      all_off: Alle aus
+      quad_gantry_level: QGL
+      add: Hinzufügen
+      pause: Pause
+      reboot: Neustart
+      shutdown: Herunterfahren
+      remove: Entfernen
+      remove_all: Alle Entfernen 
+      rename: umbenennen
+      resume: fortfahren
+      cancel: Abbrechen
+      save: Speichern
+      save_as: Speichern als
+      upload: Upload
+      upload_print: Upload & Drucken
+      preheat: Preheat
+      reprint: Druck wiederholen
+      save_restart: Sepichern & Neustarten
+      adjust_layout: Dashboard layout einstellen
+      calibrate: Kalibrieren
+      clear_profile: Profile reinigen
+      download: Download
+      add_printer: Drucker hinzufügen
+      edit: bearbeiten
+      extrude: Extrudieren
+      retract: Retracten
+      restart_firmware: Firmware Neustarten
+      restart_service_klipper: Klipper Neustarten
+      restart_service_moonraker: Moonraker Neustarten
+      restart_service_webcamd: Webcam Neustarten
+      socket_refresh: Aktualisieren erzwingen
+      reset_file: Datei zurücksetzen
+      reset_layout: Layout zurücksetzen
+      view: Ansicht
+      close: Schließen
+      config_reference: Config Referenz
+      add_file: Datei hinzufügen
+      add_dir: Ordner hinzufügen
+    table:
+      header:
+        filament_used: Filament
+        name: Name
+        slicer: Slicer
+        status: Status
+        height: Höhe
+        layer_height: Layerhöhe
+        estimated_time: Geschätzte Zeit
+        last_printed: Zuletzt gedruckt
+        modified: Geändert
+        size: Größe
+        start_time: Gestartet
+        print_duration: Druckdauer
+        actions: Aktionen
+    simple_form:
+      msg:
+        confirm: Bist du Sicher?
+        confirm_reboot_host: Bist du Sichern? Das wird dein Host-System neustarten.
+        confirm_shutdown_host: Bist du Sichern? Das wird dein Host-System herunterfahren.
+      error:
+        invalid_url: Ungültig URL
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} oder 0
+        required: Erforderlich
+    tooltip:
+      estop: NOT-AUS
+    error:
+      app_warnings_found: '%{appName} gefundene Warnungen.'
+      app_setup_link: >-
+        Die Anforderungen für die Fluidd-Einrichtung finden Sie hier <a target="_blank"
+        href="%{url}">.</a>
+      failed_components: >-
+        Moonraker hat fehlerhafte Plugins, bitte überprüfen Sie Ihre Logs, 
+        aktualisieren Sie Ihre Konfiguration und starten Sie Moonraker neu.
+      components_config: >-
+        Die Konfiguration des Moonraker-Plugins finden Sie hier <a target="_blank"
+        href="%{url}">.</a>
+  socket:
+    msg:
+      connecting: Verbinde mit moonraker...
+      no_connection: Keine moonraker-Verbindung. Bitte überprüfen Sie den Moonraker-Status und / oder aktualisieren Sie Moonraker.
+  version:
+    title: Software Updates
+    btn:
+      update: Aktualisieren
+      finish: Beendet
+      check_for_updates: Check for updates
+    label:
+      dirty: DIRTY
+      invalid: INVALID
+      up_to_date: AKTUELL
+    status:
+      updating: Aktualisieren...
+      finished: Aktualisieren beendet
+    tooltip:
+      dirty: zeigt einen fehlerhaften gitrepo an
+      invalid: zeigt locale änderungen im gitrepo an
+  console:
+    label:
+      hide_temp_waits: Temp-bestätigungen ausblenden
+    placeholder:
+      command: '''tab'' für die Autovervollständigung, ''help'' für die Kommandos ''arrows'' für den Verlauf '
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+    tooltip:
+      home_xy: Home XY
+      home_z: Home Z
+      extruder_disabled: >-
+        Extruder deaktiviert, da unter der min_extrude_temp (%{min}<small>°C</small>)
+  bedmesh:
+    label:
+      profile_name: Profile Name
+      remove_profile: Entferne %{name} profil
+    msg:
+      not_found: Keine bed meshes gefunden.
+      hint: >-
+        Sepicherst du esanders als %{name}, dann 
+        kannst du auch das %{name} Profil löschen.
+    tooltip:
+      calibrate: Begtint eine neue Kalibrierung und speichert es als 'default'
+      delete: Profil löchen. Das startet den Drucker neu
+      save: >-
+        Fügt das Mesh Profil der printer.cfg hinzu.
+        Das startet den Drucker neu
+      load: Lade Profil
+  printer:
+    status:
+      used_filament: gebrauchtes Filament
+      time_left: geschätzte verbleibende Zeit
+      duration: Dauer
+      duration_total: Dauer & Gesamt
+    state:
+      printing: am Drucken
+      loading: Laden
+      complete: Komplett
+      paused: Pausiert
+      standby: Standby
+      idle: Untätig
+      ready: Bereit
+      busy: Beschäftigt
+  setting:
+    title:
+      camera: Kamera | Kameras
+      macros: Macros
+      general: General
+      theme: Themen
+      tool: Tool
+      thermal_presets: Temperatur Presets
+    label:
+      camera_url: Kamera Url
+      printer_name: Drucker Name
+      language: Anzeige Sprache
+      default_toolhead_move_length: Standardverfahrlänge des Tools
+      default_extrude_speed: Standard Extrudiergeschwindigkeit
+      default_extrude_length: Standard Extrudierlänge
+      default_toolhead_z_speed: Standard Toolgeschwindigkeit für Z
+      default_toolhead_xy_speed: Standard Toolgeschwindigkeit für XY
+      camera_flip_x: Horizontal spiegeln
+      camera_flip_y: Vertikal spiegeln
+      camera_stream_type: Stream type
+      thermal_preset_name: Preset Name
+      all_on: Alle an
+      all_off: Alle aus
+      toggle: Umschalten
+      dark_mode: Dunkler Modus
+      primary_color: Primärfarbe
+      reset: Einstellungen zurücksetzen
+      z_adjust_values: Z Adjust Werte
+      gcode_coords: GCode Koordinaten verwenden
+      time_estimates: geschätze Zeit
+      invert_z_control: Z-Steuerung invertieren
+      invert_y_control: Y-Steuerung invertieren
+      invert_x_control: X-Steuerung invertieren
+      enable: Aktivieren
+      fps_target: FPS Ziel
+    btn:
+      add_camera: Kamera hinzufügen
+      select_theme: Thema auswählen
+      add_thermal_preset: Preset hinzufügen
+      reset: Zurücksetzen
+    timer_options:
+      duration: Nur Dauer
+      duration_description: Ähnlich wie bei einem Klipper-LCD wird hier nur die Dauer ohne Schätzungen angezeigt.
+      file: Datei-Schätzung
+      file_description: >-
+        Nimmt die Fortschrittsprozent und die Dauer, um die Gesamtdauer zu schätzen.<br />
+        Wird mit der Zeit genauer.
+      filament: Filament-Schätzung
+      filament_description: >-
+        Nimmt das verwendetes Filament vs. das geschätztes Filament, um die Gesamtdauer zu schätzen.<br />
+        Ist mit der Zeit genauer.
+      slicer: Slicer
+      slicer_description: Verwendet Slicer Schätzungen für die Anzeige. Sie müssen dies in Ihrem Slicer aktivieren.
+    camera_type_options:
+      video: IP Camera
+      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG Adaptive
+    tooltip:
+      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard verwenden
+  chart:
+    tooltip:
+      help: >-
+        Halten Sie die Umschalttaste gedrückt, um zu zoomen.<br />Klicken Sie auf ein Element, um es im Diagramm umzuschalten.<br
+        />Klicken Sie auf eine Leistung, um es im Diagramm umzuschalten.
+    label:
+      item: Element
+      current: Aktuell
+      target: Ziel
+      power: Leistung
+  file_system:
+    title:
+      rename_file: Datei umbennen
+      rename_dir: Ordner umbennen
+      add_file: Datei hinzufügen
+      add_dir: Ordner hinzufügen
+    label:
+      dir_name: Ordnername
+      file_name: Dateiname
+      disk_usage: Benutzter Sepicher
+    msg:
+      not_found: Keine Dateien gefunden
+      uploading: Hochladen...
+      processing: Verarbeitung...
+      confirm: Bist du sicher? Dadurch werden alle darin enthaltenen Dateien und Ordner gelöscht.
+    tooltip:
+      disabled: Aufträge werden vor der ersten Kommunikation mit klippy deaktiviert
+      low_on_space: Wenig Speicherplatz auf der Festplatte
+    overlay:
+      label: <strong>Ziehen</strong> Sie eine Datei hierher
+      uploading: <strong>Hochladen</strong> von Dateien
+    filters:
+      label:
+        print_start_time: Filter gedruckt
+        print_start_time_desc: Filtert Elemente aus, die Sie bereits gedruckt haben.
+  endstop:
+    label:
+      open: Offen
+      triggered: Ausgelöst
+    msg:
+      subtitle: Verwenden Sie die Schaltfläche "Aktualisieren", um den Endstopp-Status zu aktualisieren.
+  history:
+    msg:
+      confirm: Sind Sie sicher? Dadurch werden der gesamte Verlauf und die Druckerstatistiken gelöscht
+      load_count: Stellt die letzten {num} Jobs dar
+  endpoint:
+    hint:
+      add_printer: z.B., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Haben Sie Probleme? <a href="%{url}" target="_blank">Siehe hier</a> für
+        mehr Informationen.
+    tooltip:
+      endpoint_examples: >-
+        Geben Sie Ihre API-URL ein.<br />Ein paar Beispiele könnten sein:<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+    error:
+      cant_connect: >-
+        Irgendetwas ist schief gelaufen, und Fluidd kann das Ziel nicht erreichen. Sind Sie
+        sicher, dass dies die richtige Adresse ist?
+      cors_error: durch CORS-Richtlinie blockiert
+      cors_note: >-
+        Dies kann bedeuten, dass Sie Ihre Moonraker-Konfiguration ändern müssen. Bitte
+        sehen Sie sich die Dokumentation zur Einrichtung von mehreren Druckern <a href="%{url}"
+        target="_blank">hier</a>

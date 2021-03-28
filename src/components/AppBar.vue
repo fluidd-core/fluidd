@@ -32,24 +32,11 @@
         <v-icon small class="mr-md-1">$tune</v-icon>
         <span>{{ $t('app.general.title.tune') }}</span>
       </btn>
-      <v-badge
-        bordered
-        color="warning"
-        left
-        overlap
-        :value="hasUpdates"
-        offset-y="17"
-        offset-x="22"
-        class="d-none d-md-flex mx-1"
-      >
-        <template v-slot:badge>
-          <strong class="black--text">!</strong>
-        </template>
-        <btn text to="/configure" color="" class="d-none d-md-flex mx-1">
-          <v-icon small class="mr-md-1">$cogs</v-icon>
-          <span>{{ $t('app.general.title.configure') }}</span>
-        </btn>
-      </v-badge>
+      <btn text to="/configure" color="" class="d-none d-md-flex mx-1">
+        <v-icon small right color="warning" v-if="hasUpdates">$info</v-icon>
+        <v-icon small class="mr-md-1" v-else>$cogs</v-icon>
+        <span>{{ $t('app.general.title.configure') }}</span>
+      </btn>
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
           <btn

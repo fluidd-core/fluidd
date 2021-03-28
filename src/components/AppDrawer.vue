@@ -37,7 +37,10 @@
           <v-icon>$cogs</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('app.general.title.configure') }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('app.general.title.configure') }}
+            <v-icon small right color="warning" v-if="hasUpdates">$info</v-icon>
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/interface">
@@ -87,6 +90,10 @@ export default class AppDrawer extends Mixins(StateMixin) {
 
   get serverInfo () {
     return this.$store.getters['server/getInfo']
+  }
+
+  get hasUpdates () {
+    return this.$store.getters['version/hasUpdates']
   }
 
   close () {
