@@ -30,7 +30,7 @@ app:
       velocity: Скорость
       api_url: API URL
       host: Хост
-      layout: Копоновка интерфейса
+      layout: Компоновка интерфейса
       name: Имя
       power: Питание
       printers: Принтеры
@@ -75,17 +75,17 @@ app:
       resume: Возобновить
       cancel: Отменить
       save: Сохранить
-      save_as: Сохарнить как
+      save_as: Сохранить как
       upload: Загрузить
       upload_print: Загрузить и напечатать
-      preheat: Предпрогрев
+      preheat: Преднагрев
       reprint: Перепечатать
       save_restart: Сохранить и перезагрузить
-      adjust_layout: Настроить компановку интерфейма панели управления
+      adjust_layout: Настроить компановку интерфейса панели управления
       calibrate: Калибровка
       clear_profile: Очистить профиль
       download: Скачать
-      add_printer: Добваить принетер
+      add_printer: Добавить принтер
       edit: Редактировать
       extrude: Экструдировать
       retract: Откатить
@@ -95,10 +95,10 @@ app:
       restart_service_webcamd: Перезагрузить вебкамеру
       socket_refresh: Принудительно обновление
       reset_file: Сбросить файл
-      reset_layout: Сбпросить компановку интерфейса
+      reset_layout: Сбросить компановку интерфейса
       view: Вид
       close: Закрыть
-      config_reference: Пример конфигурации
+      config_reference: Примеры конфигураций
       add_file: Добавить файл
       add_dir: Добавить папку
     table:
@@ -156,7 +156,7 @@ app:
       up_to_date: Актуальная версия
     status:
       updating: Обновление...
-      finished: Обвноление завершено
+      finished: Обновление завершено
     tooltip:
       dirty: Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке или невалидный оригинальный репозиторий
       invalid: Оповещает о локальных изменениях в репозитории
