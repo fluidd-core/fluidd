@@ -2,11 +2,12 @@
 
 ## Next Up
 
+- hide enabled flag for collapsable card for camera panel on dashboard
+- use components instead of plugins with moonraker
+
 - add git history
   - move versions to configure page
   - reogranize service restarts / vs klipper firmware restarts
-
-- use components instead of plugins with moonraker
 
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 
@@ -26,6 +27,7 @@
 - update docs re: output pins
 
 - bulk actions to delete or move?
+- copy file
 - move dialog
 - bulk action move
 - cleanup card layout stuff

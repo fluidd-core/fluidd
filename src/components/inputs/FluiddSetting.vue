@@ -8,8 +8,10 @@
   >
     <v-col :cols="cols[0]" class="setting-title">
       <slot name="title">{{ title }}</slot>
-      <div v-if="hasSubTitle">
-        <slot name="subtitle"></slot>
+      <div class="setting-sub-title grey--text" v-if="hasSubTitle">
+        <slot name="subtitle">
+            {{ subTitle }}
+        </slot>
       </div>
     </v-col>
     <v-col :cols="cols[1]" class="setting-controls" align-self="center">
@@ -26,6 +28,12 @@ export default class Setting extends Vue {
   @Prop({ type: String, default: '' })
   title!: string;
 
+  @Prop({ type: String })
+  subTitle!: string;
+
+  @Prop({ type: String })
+  help!: string;
+
   @Prop({ type: Number, default: 6 })
   rCols!: number;
 
@@ -38,7 +46,11 @@ export default class Setting extends Vue {
   }
 
   get hasSubTitle () {
-    return (this.$slots.subtitle || this.$scopedSlots.subtitle)
+    return (
+      this.$slots.subtitle ||
+      this.$scopedSlots.subtitle ||
+      this.subTitle
+    )
   }
 
   get classes () {
@@ -71,6 +83,11 @@ export default class Setting extends Vue {
     padding-bottom: 12px;
     padding-right: 12px;
   }
+
+  .col.setting-title > .setting-sub-title {
+    font-size: 0.875rem;
+  }
+
   .setting__link {
     cursor: pointer;
     user-select: none;

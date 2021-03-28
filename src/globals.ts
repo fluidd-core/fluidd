@@ -236,7 +236,6 @@ export const Waits = Object.freeze({
   onPrintCancel: 'onPrintCancel',
   onPrintResume: 'onPrintResume',
   onMacro: 'onMacro',
-  onGetDirectory: 'getDirectory',
   onSetSpeed: 'onSetSpeed',
   onSetFlow: 'onSetFlow',
   onSetFanSpeed: 'onSetFanSpeed',
@@ -251,9 +250,10 @@ export const Waits = Object.freeze({
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
-  onUpload: 'onUpload',
   onExtruderChange: 'onExtruderChange',
-  onLoadLanguage: 'onLoadLanguage'
+  onLoadLanguage: 'onLoadLanguage',
+  onFileSystem: 'onFileSystem',
+  onUpload: 'onUpload'
 })
 
 export const defaultPlotLayout = Object.freeze({

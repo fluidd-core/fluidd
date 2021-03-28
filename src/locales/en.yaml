@@ -214,6 +214,8 @@ app:
       tool: Tool
       thermal_presets: Thermal Presets
     label:
+      camera_fillspace: Fill space
+      camera_fillspace_help: With only one enabled camera, fill the dashboard camera space.
       camera_url: Camera Url
       printer_name: Printer Name
       language: Display Language

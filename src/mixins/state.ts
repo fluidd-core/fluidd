@@ -76,9 +76,10 @@ export default class UtilsMixin extends Vue {
   }
 
   /**
-   * Indicates if we have a valid wait.
+   * Indicates if we have a valid wait(s).
+   * Supports a single string or a list of.
    */
-  hasWait (wait: string) {
+  hasWait (wait: string | string[]) {
     return this.$store.getters['wait/hasWait'](wait)
   }
 
