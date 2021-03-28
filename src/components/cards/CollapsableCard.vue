@@ -4,22 +4,7 @@
     :rounded="rounded"
     :loading="isLoading">
 
-    <div v-if="hasTabbedTitleSlot()" :class="{ 'draggable': isInLayout }">
-      <slot
-        name="tabbed-title"
-        v-bind:attrs="{
-          enabled,
-          isCollapsed
-        }"
-        v-bind:on="{
-          'input': onCollapseChange,
-          'layout-enabled': onLayoutEnabled
-        }">
-      </slot>
-    </div>
-
     <v-card-title
-      v-if="!hasTabbedTitleSlot()"
       class="card-title card-heading py-1"
       :class="{ 'draggable': isInLayout }"
     >
@@ -344,15 +329,6 @@ export default class ToolheadCard extends Vue {
    */
   get hasCollapseButtonSlot () {
     return !!this.$slots['collapse-button'] || !!this.$scopedSlots['collapse-button']
-  }
-
-  /**
-   * To overide the title with tabs.
-   * Note, this is not a computed prop because
-   * slots are not reactive.
-   */
-  hasTabbedTitleSlot () {
-    return !!this.$slots['tabbed-title'] || !!this.$scopedSlots['tabbed-title']
   }
 
   mounted () {
