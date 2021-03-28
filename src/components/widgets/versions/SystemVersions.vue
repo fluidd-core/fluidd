@@ -4,6 +4,12 @@
     :collapsable="false"
     icon="$update">
 
+    <template v-slot:title>
+      <v-icon left color="warning" v-if="hasUpdates">$info</v-icon>
+      <v-icon left v-else>$update</v-icon>
+      <span class="font-weight-light">{{ $t('app.version.title') }}</span>
+    </template>
+
     <template v-slot:collapse-button>
       <btn
         @click="forceCheck()"
@@ -101,6 +107,10 @@ export default class SystemVersions extends Mixins(StateMixin) {
 
   hasUpdate (component: string) {
     return this.$store.getters['version/hasUpdate'](component)
+  }
+
+  get hasUpdates () {
+    return this.$store.getters['version/hasUpdates']
   }
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
