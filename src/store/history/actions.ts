@@ -24,11 +24,20 @@ export const actions: ActionTree<HistoryState, RootState> = {
   },
 
   /**
-   * Init the store with history data
+   * Update the store with history totals data
    */
-  async onInit ({ commit }, payload) {
+  async onHistoryTotals ({ commit }, payload) {
     if (payload) {
-      commit('setInitHistory', payload)
+      commit('setHistoryTotals', payload)
+    }
+  },
+
+  /**
+   * Update the store with history
+   */
+  async onHistoryList ({ commit }, payload) {
+    if (payload) {
+      commit('setHistoryList', payload)
     }
   },
 
@@ -36,6 +45,7 @@ export const actions: ActionTree<HistoryState, RootState> = {
    * History has changed, update the data.
    */
   async onHistoryChange ({ commit }, payload: { action: string; job: HistoryItem }) {
+    SocketActions.serverHistoryTotals()
     if (
       payload
     ) {

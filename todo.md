@@ -2,40 +2,35 @@
 
 ## Next Up
 
-- hide enabled flag for collapsable card for camera panel on dashboard
-- use components instead of plugins with moonraker
+### Features
 
 - add git history
-  - move versions to configure page
-  - reogranize service restarts / vs klipper firmware restarts
-
 - More macro layout options (categorize macros, ability to define layout in some way, color)
-
 - alternate bed mesh scales
+- file system enhancements
+  - bulk actions to delete or move?
+  - copy file
+  - move dialog
+  - bulk action move
+- allow deletion of all printers on fluidd.xyz
+- allow users to show / hide pin outputs
 
-- move config widgets and sort into config vs tune
+### Refactors
+
+- sync instances across moonraker db
+- use components instead of plugins with moonraker
+- rename device power store
+- refactor component file structure
+  - move config widgets and sort into config vs tune
   - general component layout re-arrangement
-  - rename device power store
+- cleanup card layout stuff
+  - hide enabled flag for collapsable card for camera panel on dashboard
 - change card states to db and be driven by getters..
-- move klipper restarts elsewhere so service restarts are their own thing
-  - allow users to restart webcamd service if webcam is enabled
 
-- allow different resolutions with bed mesh viewer
+### Docs
 
 - update docs to mention cura uploads
-- docs on configuring a camera
 - update docs re: output pins
-
-- bulk actions to delete or move?
-- copy file
-- move dialog
-- bulk action move
-- cleanup card layout stuff
-- sync instances across moonraker db
-
-- allow deletion of all printers on fluidd.xyz
-- show known meta data on print dialog (for dashboard jobs page..)?
-- allow users to show / hide pin outputs
 
 ## Filesystem Improvements
 
@@ -58,12 +53,7 @@
 
 ## General Improvements
 
-- allow defining more than one camera
-- themes (pick a specific theme (red, green etc..)
-- figure out https
-- click / tap image camara update option (i.e., not constant image updates)
 - probed vs mesh bed level display option
-- should be able to force part speed fan during a print?
 
 ## [Page] Printer Configuration
 
@@ -76,17 +66,11 @@
 
 ## User wants (not necessarily something we'll implement in the suggested way...)
 
-- option to customize color of the logo at top-left (and subsequently on your browser tab and bookmark)
 - add QUERY_PROBE to endstops widget
-- parse underscores out of macro names
-- another request to have the current temps above the macors etc during a print, but not while not printing.
-- draggable dashboard panels?
 - maybe look at tightening the mobile ui. have fan's as a value, that you can click
   on which then makes a popout to adjust fan?
 - gcode viewer
 - gcode analyser
-- ability to categorise / group macros and expand contract them
-- Dry run. (print without extruding)
 - Cancel object, cancel area,
 - gcode viewer that works with more than 25mb
 - timelapses
