@@ -20,7 +20,7 @@ app:
       tune: Подстройка
       configure: Конфигурация
       interface: Интерфейс
-      stats: Состояние принтера
+      stats: Статистика принтера
       history: История задач
       config_files: Файлы конфигурации
     label:
