@@ -17,10 +17,10 @@ app:
         reiniciar.
   chart:
     label:
-      current: Atual
+      current: Corrente
       item: Item
-      power: Ligar
-      target: Objetivo
+      power: Energia
+      target: Alvo
     tooltip:
       help: >-
         Mantenha a tecla Shift pressionada para aumentar o zoom. <br /> Clique
@@ -89,8 +89,8 @@ app:
       add_file: Adicionar ficheiro
       add_printer: Adicionar impressora
       adjust_layout: Ajuste o layout do painel
-      all: Todos
-      all_off: Todos desligados
+      all: Tudo
+      all_off: Tudo Off
       calibrate: Calibrar
       cancel: Cancelar
       clear_profile: Limpar Perfil
@@ -135,7 +135,7 @@ app:
         O Moonraker tem falhas nos plug-ins, verifique os registros, atualize a
         sua configuração e reinicie o moonraker.
     label:
-      accel_to_decel: Acelerar e Desacelerar
+      accel_to_decel: Acel. e Desacel.
       acceleration: Acelaração
       add_camera: Adicionar Camera
       add_preset: Adicionar predefinição
@@ -154,9 +154,9 @@ app:
       low: Baixo
       name: Nome
       'off': Desligado
-      power: Ligar
+      power: Energia
       printers: Impressoras
-      requested_speed: Requested Speed
+      requested_speed: Velocidade requerida
       save_as: Salvar como
       services: Serviços
       speed: Velocidade
@@ -233,7 +233,7 @@ app:
       complete: Completo
       idle: Inativo
       loading: A carregar
-      paused: Pausa
+      paused: Pausada
       printing: A imprimir
       ready: Preparada
       standby: Standby
@@ -253,8 +253,8 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
     label:
-      all_off: Todos desligados
-      all_on: Todos ligados
+      all_off: Tudo Off
+      all_on: Tudo On
       camera_fillspace: Preencher espaço
       camera_fillspace_help: 'Com apenas uma câmera habilitada, preencha o espaço da câmera do painel.'
       camera_flip_x: Virar horizontal
@@ -314,7 +314,7 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: 'Y'
+      home_y: Y
     tooltip:
       extruder_disabled: 'extruder disabilitado, abaixo min_extrude_temp (%{min}<small>°C</small>)'
       home_xy: Origem XY
