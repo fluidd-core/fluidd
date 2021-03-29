@@ -18,7 +18,7 @@ app:
       tool: 工具
       tune: 调整
       configure: 配置
-      interface: 接口
+      interface: Fluidd设置
       stats: 打印状态
       history: 任务历史
       config_files: 配置文件
@@ -42,8 +42,8 @@ app:
       high: 高
       low: 低
       off: 关闭
-      used: used
-      free: 释放
+      used: 已使用
+      free: 未使用
       total_jobs: 所有打印任务
       longest_job: 最长的任务
       total_time: 合计时间
@@ -52,7 +52,7 @@ app:
       total_print_time_avg: 平均打印时间
       total_filament: 总消耗耗材
       total_filament_avg: 平均消耗耗材
-      variance: 方差
+      variance: 偏差值
       save_as: 另存为
       edit_preset: 编辑预设
       add_preset: 添加预设
@@ -101,6 +101,7 @@ app:
       config_reference: 配置参考
       add_file: 添加文件
       add_dir: 添加目录
+      ok: 确定
     table:
       header:
         filament_used: 耗材
