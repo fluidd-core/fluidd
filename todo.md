@@ -8,6 +8,7 @@
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - alternate bed mesh scales
 - file system enhancements
+  - better file editing
   - bulk actions to delete or move?
   - copy file
   - move dialog

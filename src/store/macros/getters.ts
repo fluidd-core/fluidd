@@ -8,22 +8,22 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * Returns all available macros, transformed.
    */
   getMacros: (state, getters, rootState) => {
-    const macros: Macro[] = []
-    for (const key of rootState.printer?.printer.objects) {
-      if (key.startsWith('gcode_macro')) {
-        const name = key.split('.')[1]
-        const storedMacro = state.stored.find(macro => macro.name === name)
-        const macro = {
+    const macros: Macro[] = Object.keys(rootState.printer?.printer.configfile.config)
+      .filter(key => key.startsWith('gcode_macro'))
+      .map(key => {
+        const name = key.split(' ')[1]
+        return {
           name,
           visible: true,
-          ...storedMacro
+          ...state.stored.find(macro => macro.name === name)
         }
-        macros.push(macro)
-      }
-    }
+      })
     return macros
   },
 
+  /**
+   * Returns a boolean indicating if we have any visible macros.
+   */
   hasVisibleMacros: (state, getters) => {
     return getters.getMacros.filter((macro: Macro) => macro.visible).length
   }
