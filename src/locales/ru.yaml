@@ -281,7 +281,7 @@ app:
     label:
       dir_name: Имя папки
       file_name: Имя файла
-      disk_usage: Использованно дискового пространства
+      disk_usage: Использование дискового пространства
     msg:
       not_found: Файлы не найдены
       uploading: Загрузка...
