@@ -7,7 +7,7 @@ app:
       home: Панель управления
       add_printer: Добавить принтер
       endstops: Точки остановки
-      fans_outputs: Куллеры и Выходы
+      fans_outputs: Кулеры и Выходы
       jobs: Задачи
       macros: Макросы
       limits: Лимиты принтера
@@ -26,11 +26,11 @@ app:
     label:
       accel_to_decel: Ускорения и торможения
       acceleration: Ускорение
-      sqv: Скорость прохождения квадратного угла
+      sqv: Скорость прохождения угла
       velocity: Скорость
       api_url: API URL
       host: Хост
-      layout: Копоновка интерфейса
+      layout: Компоновка интерфейса
       name: Имя
       power: Питание
       printers: Принтеры
@@ -44,13 +44,13 @@ app:
       off: Выключить
       used: Использованно
       free: Свободно
-      total_jobs: Общее количество печатных задач
+      total_jobs: Всего печатей
       longest_job: Самая долгая печать
       total_time: Общее время
-      total_time_avg: Общее среднее время на печать
+      total_time_avg: Среднее время
       total_print_time: Общее время печати
-      total_print_time_avg: Среднее время 
-      total_filament: Общее количество использованного филамента
+      total_print_time_avg: Среднее время печати
+      total_filament: Всего использованно филамента
       total_filament_avg: Среднее на печать
       variance: Различие
       save_as: Сохранить как
@@ -75,17 +75,17 @@ app:
       resume: Возобновить
       cancel: Отменить
       save: Сохранить
-      save_as: Сохарнить как
+      save_as: Сохранить как
       upload: Загрузить
       upload_print: Загрузить и напечатать
-      preheat: Предпрогрев
+      preheat: Преднагрев
       reprint: Перепечатать
       save_restart: Сохранить и перезагрузить
-      adjust_layout: Настроить компановку интерфейма панели управления
+      adjust_layout: Настроить компановку интерфейса панели управления
       calibrate: Калибровка
       clear_profile: Очистить профиль
       download: Скачать
-      add_printer: Добваить принетер
+      add_printer: Добавить принтер
       edit: Редактировать
       extrude: Экструдировать
       retract: Откатить
@@ -95,10 +95,10 @@ app:
       restart_service_webcamd: Перезагрузить вебкамеру
       socket_refresh: Принудительно обновление
       reset_file: Сбросить файл
-      reset_layout: Сбпросить компановку интерфейса
+      reset_layout: Сбросить компановку интерфейса
       view: Вид
       close: Закрыть
-      config_reference: Пример конфигурации
+      config_reference: Примеры конфигураций
       add_file: Добавить файл
       add_dir: Добавить папку
     table:
@@ -156,7 +156,7 @@ app:
       up_to_date: Актуальная версия
     status:
       updating: Обновление...
-      finished: Обвноление завершено
+      finished: Обновление завершено
     tooltip:
       dirty: Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке или невалидный оригинальный репозиторий
       invalid: Оповещает о локальных изменениях в репозитории
@@ -164,7 +164,7 @@ app:
     label:
       hide_temp_waits: Скрыть временные ожидания
     placeholder:
-      command: '''tab'' для автокомплита, ''help'' для списка комманд ''стрелки вверх и вниз'' для перемещения по истории'
+      command: '''tab'' для автокомплита, ''help'' для списка комманд ''стрелки  ↑ и ↓'' история команд'
   tool:
     btn:
       home_x: X
@@ -173,7 +173,7 @@ app:
       home_xy: Домой XY
       home_z: Домой Z
       extruder_disabled: >-
-        экструдер отключён, ниже чем min_extrude_temp (%{min}<small>°C</small>)
+        экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
   bedmesh:
     label:
       profile_name: Имя профиля
@@ -315,7 +315,7 @@ app:
         Столкнулись с проблемами? <a href="%{url}" target="_blank">Посмотрите здесь</a> для получения дополнительной информации.
     tooltip:
       endpoint_examples: >-
-        Введите URL вашего API.<br />В качестве примера, может быть что-то подобное:;<br
+        Введите URL вашего API.<br />В качестве примера, может быть что-то подобное:<br
         /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
     error:
       cant_connect: >-
