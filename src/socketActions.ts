@@ -300,7 +300,7 @@ export const SocketActions = {
   async serverHistoryList (limit?: number) {
     baseEmit(
       'server.history.list', {
-        dispatch: 'history/onInit',
+        dispatch: 'history/onHistoryList',
         params: { limit }
       }
     )
@@ -309,7 +309,7 @@ export const SocketActions = {
   async serverHistoryTotals () {
     baseEmit(
       'server.history.totals', {
-        dispatch: 'history/onInit'
+        dispatch: 'history/onHistoryTotals'
       }
     )
   },

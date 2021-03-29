@@ -212,7 +212,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
               key,
               value: {}
             })
-            return null
+            return {}
           }
           consola.debug('API Down / Not Available:', r)
           apiConnected = false

@@ -27,8 +27,8 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, goLarge = true) 
           return {
             ...thumb,
             absolute_path: (path === '')
-              ? `${apiUrl}/server/files/gcodes/${thumb.relative_path}`
-              : `${apiUrl}/server/files/gcodes/${path}/${thumb.relative_path}`
+              ? encodeURI(`${apiUrl}/server/files/gcodes/${thumb.relative_path}`)
+              : encodeURI(`${apiUrl}/server/files/gcodes/${path}/${thumb.relative_path}`)
           }
         }
         if (thumb.data) {

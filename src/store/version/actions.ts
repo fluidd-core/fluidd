@@ -13,7 +13,7 @@ export const actions: ActionTree<VersionState, RootState> = {
   },
 
   /**
-   * Make a socket request to init the power plugin.
+   * Make a socket request to init the version component.
    */
   async init () {
     SocketActions.machineUpdateStatus()
@@ -23,7 +23,6 @@ export const actions: ActionTree<VersionState, RootState> = {
    * Inits any file config we may have.
    */
   async onUpdateStatus ({ commit }, payload) {
-    consola.debug('Finished machine.update.status', payload)
     commit('setRefreshing', false)
     commit('setUpdateStatus', payload)
   },

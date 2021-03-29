@@ -18,10 +18,7 @@ export const mutations: MutationTree<ConfigState> = {
    * Inits UI settings from the db
    */
   setInitUiSettings (state, payload: UiSettings) {
-    if (payload) {
-      const settings = merge(state.uiSettings, payload)
-      Vue.set(state, 'uiSettings', settings)
-    }
+    if (payload) Vue.set(state, 'uiSettings', merge(state.uiSettings, payload))
   },
 
   /**
