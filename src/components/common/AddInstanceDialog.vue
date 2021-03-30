@@ -72,11 +72,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
-import { Debounce } from 'vue-debounce-decorator'
-import StateMixin from '@/mixins/state'
 import { Globals, Waits } from '@/globals'
-import { VForm } from '@/types/vuetify'
 import { AxiosError, Canceler, CancelTokenSource } from 'axios'
+import StateMixin from '@/mixins/state'
+import { Debounce } from 'vue-debounce-decorator'
+import { VForm } from '@/types/vuetify'
 import consola from 'consola'
 
 @Component({})

@@ -8,8 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Vue } from 'vue-property-decorator'
 import BedMesh from './BedMesh.vue'
 
 @Component({
@@ -17,6 +16,6 @@ import BedMesh from './BedMesh.vue'
     BedMesh
   }
 })
-export default class BedMeshCard extends Mixins(StateMixin) {
+export default class BedMeshCard extends Vue {
 }
 </script>

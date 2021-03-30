@@ -23,10 +23,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FilesMixin from '@/mixins/files'
-import ServicesMixin from '@/mixins/services'
 
 @Component({})
-export default class KlippyStatusCard extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
+export default class KlippyStatusCard extends Mixins(StateMixin) {
 }
 </script>

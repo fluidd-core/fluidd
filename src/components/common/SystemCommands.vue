@@ -84,10 +84,10 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import { Device } from '@/store/devicePower/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/socketActions'
-import { Device } from '@/store/devicePower/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {

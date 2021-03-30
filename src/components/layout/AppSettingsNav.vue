@@ -28,11 +28,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class AppSettingsNav extends Mixins(StateMixin) {
+export default class AppSettingsNav extends Vue {
   get items () {
     return [
       { name: this.$t('app.setting.title.general'), icon: '$printer', ref: '#general' },
