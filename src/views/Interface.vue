@@ -16,12 +16,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import MacroSettings from '@/components/widgets/settings/MacroSettings.vue'
-import GeneralSettings from '@/components/widgets/settings/GeneralSettings.vue'
-import TemperaturePresetSettings from '@/components/widgets/settings/TemperaturePresetSettings.vue'
-import CameraSettings from '@/components/widgets/settings/CameraSettings.vue'
-import ToolheadSettings from '@/components/widgets/settings/ToolheadSettings.vue'
-import ThemeSettings from '@/components/widgets/settings/ThemeSettings.vue'
+
+import MacroSettings from '@/components/settings/MacroSettings.vue'
+import GeneralSettings from '@/components/settings/GeneralSettings.vue'
+import TemperaturePresetSettings from '@/components/settings/TemperaturePresetSettings.vue'
+import CameraSettings from '@/components/settings/CameraSettings.vue'
+import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
+import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 
 @Component({
   components: {

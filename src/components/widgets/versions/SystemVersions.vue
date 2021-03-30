@@ -11,12 +11,12 @@
     </template>
 
     <template v-slot:collapse-button>
-      <btn
+      <app-btn
         @click="forceCheck()"
         color=""
         fab small text>
         <v-icon :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
-      </btn>
+      </app-btn>
     </template>
 
     <v-list
