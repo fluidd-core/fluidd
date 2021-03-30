@@ -56,7 +56,7 @@ import StateMixin from '@/mixins/state'
 import { FilesUpload } from '@/store/files/types'
 
 @Component({})
-export default class UploadOverlayWidget extends Mixins(StateMixin) {
+export default class FileSystemUploadOverlay extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean;
 

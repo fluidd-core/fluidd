@@ -3,6 +3,7 @@
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
 
+        <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
         <collapsable-card
           :title="$t('app.general.title.config_files')"
           icon="$files"
@@ -17,7 +18,6 @@
       </v-col>
       <v-col cols="12" md="6" class="pt-0">
 
-        <klippy-card v-if="!klippyReady || hasWarnings"></klippy-card>
         <printer-stats-card></printer-stats-card>
 
         <v-row>
@@ -55,26 +55,15 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import EndStopsCard from '@/components/cards/configuration/EndStopsCard.vue'
-import RunoutSensorsCard from '@/components/cards/configuration/RunoutSensorsCard.vue'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import KlippyCard from '@/components/cards/KlippyCard.vue'
-import BedMeshCard from '@/components/cards/configuration/BedMeshCard.vue'
-import SystemControl from '@/components/widgets/configuration/SystemControl.vue'
+import SystemControl from '@/components/common/SystemControl.vue'
 import SystemVersions from '@/components/widgets/versions/SystemVersions.vue'
-import PrinterStatsCard from '@/components/cards/configuration/PrinterStatsCard.vue'
-import PrinterHistoryCard from '@/components/cards/configuration/PrintHistoryCard.vue'
-
-const BedMeshWidget = () => import(/* webpackChunkName: "bedmesh", webpackPrefetch: true */ '@/components/widgets/configuration/BedMeshWidget.vue')
+import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
+import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
 
 @Component({
   components: {
-    BedMeshCard,
-    BedMeshWidget,
-    EndStopsCard,
-    RunoutSensorsCard,
     FileSystem,
-    KlippyCard,
     SystemControl,
     PrinterStatsCard,
     PrinterHistoryCard,

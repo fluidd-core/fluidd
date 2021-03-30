@@ -108,8 +108,8 @@ import FileSystemBrowser from './FileSystemBrowser.vue'
 import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemUploadOverlay from './FileSystemUploadOverlay.vue'
-import FileEditorDialog from '@/components/dialogs/FileEditorDialog.vue'
-import FileNameDialog from '@/components/dialogs/FileNameDialog.vue'
+import FileEditorDialog from './FileEditorDialog.vue'
+import FileNameDialog from './FileNameDialog.vue'
 import { AxiosResponse } from 'axios'
 
 /**

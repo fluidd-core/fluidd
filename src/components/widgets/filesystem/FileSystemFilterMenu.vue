@@ -68,7 +68,7 @@ import { FileFilter } from '@/store/files/types'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
-export default class FileSystemMenu extends Vue {
+export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
   root!: string
 

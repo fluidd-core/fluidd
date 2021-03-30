@@ -1,18 +1,26 @@
+// Styles
 import '@/scss/global.scss'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
-// import './registerComponentHooks'
-import './plugins/consola'
 
+// Global Registrations
+// import './registerComponentHooks'
+import './consola'
+// import { WorkboxPlugin } from './plugins/workbox'
+
+// Common
 import Vue from 'vue'
+import { Globals } from './globals'
 import i18n from '@/plugins/i18n'
-import consola from 'consola'
 import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
-import VueMeta from 'vue-meta'
-import VuetifyConfirm from 'vuetify-confirm'
+import consola from 'consola'
+
 import { appInit } from './init'
+
 import { InitConfig } from './store/config/types'
+
+// Import plugins
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
@@ -20,8 +28,10 @@ import { DayJSPlugin } from './plugins/dayjs'
 import { AxiosPlugin } from './plugins/axios'
 import { plugin } from 'echarts-for-vue'
 import VueVirtualScroller from 'vue-virtual-scroller'
-import App from './App.vue'
+import VueMeta from 'vue-meta'
+import VuetifyConfirm from 'vuetify-confirm'
 
+// Import ECharts
 // import * as echarts from 'echarts'
 import * as echarts from 'echarts/core'
 import { LineChart } from 'echarts/charts'
@@ -34,17 +44,19 @@ import {
 } from 'echarts/components'
 import { SVGRenderer } from 'echarts/renderers'
 
-// import { WorkboxPlugin } from './plugins/workbox'
+// Main App component
+import App from './App.vue'
+
+// Globally register all components in our common, layout and ui directories.
+import '@/components/_globals'
+
+// 3rd party
 import vueHeadful from 'vue-headful'
 
-import FluiddBtn from '@/components/inputs/Btn.vue'
-import FluiddSetting from '@/components/inputs/FluiddSetting.vue'
-import FluiddTextField from '@/components/inputs/TextField.vue'
-import FluiddIcon from '@/components/FluiddIcon.vue'
-import BtnCollapse from '@/components/inputs/BtnCollapse.vue'
-import CollapsableCard from '@/components/cards/CollapsableCard.vue'
-import InlineHelp from '@/components/InlineHelpIcon.vue'
-import { Globals } from './globals'
+// 3rd party
+Vue.component('vue-headful', vueHeadful)
+
+// Use any Plugins
 
 // Configure echarts
 echarts.use([
@@ -57,7 +69,6 @@ echarts.use([
   SVGRenderer
 ])
 
-// Use any Plugins
 Vue.use(plugin, { echarts })
 Vue.use(AxiosPlugin)
 Vue.use(VueVirtualScroller)
@@ -69,15 +80,6 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 // Vue.use(WorkboxPlugin)
-
-Vue.component('btn-collapse', BtnCollapse)
-Vue.component('collapsable-card', CollapsableCard)
-Vue.component('vue-headful', vueHeadful)
-Vue.component('inline-help', InlineHelp)
-Vue.component('fluidd-icon', FluiddIcon)
-Vue.component('fluidd-setting', FluiddSetting)
-Vue.component('btn', FluiddBtn)
-Vue.component('text-field', FluiddTextField)
 
 appInit()
   .then((config: InitConfig) => {

@@ -2,6 +2,9 @@
 
 ## Next Up
 
+- new file edit
+- fix filament lengths on history tab
+
 ### Features
 
 - add git history
@@ -21,9 +24,6 @@
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - rename device power store
-- refactor component file structure
-  - move config widgets and sort into config vs tune
-  - general component layout re-arrangement
 - cleanup card layout stuff
   - hide enabled flag for collapsable card for camera panel on dashboard
 - change card states to db and be driven by getters..

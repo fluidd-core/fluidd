@@ -37,14 +37,14 @@
       <span>{{ $t('app.version.tooltip.invalid') }}</span>
     </v-tooltip>
 
-    <btn
+    <app-btn
       v-if="hasUpdate && !dirty && valid"
       :disabled="disabled"
       small
       color="primary"
       @click="$emit('on-update')">
       {{ $t('app.version.btn.update') }}
-    </btn>
+    </app-btn>
   </div>
 </template>
 
@@ -53,7 +53,7 @@ import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 
 @Component({})
-export default class AppDrawer extends Vue {
+export default class VersionStatus extends Vue {
   @Prop({ type: Boolean, default: false })
   hasUpdate!: boolean
 
