@@ -108,8 +108,8 @@ app:
       rename: Renomear
       reprint: Reimprimir
       reset_file: Reiniciar arquivo
-      reset_layout: Reiniciar Layout
-      restart_firmware: Reiniciar Firmware
+      reset_layout: Reiniciar layout
+      restart_firmware: Reiniciar firmware
       restart_service_klipper: Reiniciar Klipper
       restart_service_moonraker: Reiniciar Moonraker
       restart_service_webcamd: Reiniciar Webcam
@@ -141,14 +141,14 @@ app:
       add_preset: Adicionar predefinição
       api_url: URL do API
       confirm: Confirmar
-      edit_camera: Editar Camera
+      edit_camera: Editar camera
       edit_preset: Editar predefinição
-      extrude_length: Comprimento de extrusão
-      extrude_speed: Velocidade de extrusão
+      extrude_length: Comprimento extrusão
+      extrude_speed: Velocidade extrusão
       flow: Fluxo
-      free: grátis
+      free: livre
       high: Alto
-      host: Host
+      host: Anfitrião
       layout: Layout
       longest_job: Maior trabalho
       low: Baixo
