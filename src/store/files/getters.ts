@@ -7,7 +7,7 @@ export const getters: GetterTree<FilesState, RootState> = {
    * Returns a directory of files and sub-directories.
    */
   getDirectory: (state) => (r: string, path: string) => {
-    const root = r as 'gcodes' | 'config' | 'config_examples'
+    const root = r as 'gcodes' | 'config' | 'config_examples' | 'docs'
     if (state && state[root]) {
       const dir = state[root].find(o => o.path === path)
       if (dir) {
@@ -50,6 +50,16 @@ export const getters: GetterTree<FilesState, RootState> = {
     }
 
     if (root === 'config_examples') {
+      return {
+        readonly: true,
+        accepts: [],
+        canEdit: false,
+        canView: true,
+        canPrint: false
+      }
+    }
+
+    if (root === 'docs') {
       return {
         readonly: true,
         accepts: [],

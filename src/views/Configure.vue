@@ -10,7 +10,7 @@
           :draggable="false"
         >
           <file-system
-            :roots="['config', 'config_examples']"
+            :roots="['config', 'config_examples', 'docs']"
             :max-height="620">
           </file-system>
         </collapsable-card>

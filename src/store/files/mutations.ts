@@ -15,7 +15,7 @@ export const mutations: MutationTree<FilesState> = {
 
   setServerFilesGetDirectory (state, payload) {
     const path = payload.directory.path
-    const root = payload.root as 'gcodes' | 'config' | 'config_examples'
+    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
     const i = state[root].findIndex(o => o.path === path)
     if (i >= 0) {
       state[root].splice(i, 1, payload.directory)
@@ -25,7 +25,7 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setFileUpdate (state, payload: FileUpdate) {
-    const root = payload.root as 'gcodes' | 'config' | 'config_examples'
+    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
     const paths = payload.paths
 
     // Find relevant directory.
@@ -51,7 +51,7 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setFileDelete (state, payload: FileUpdate) {
-    const root = payload.root as 'gcodes' | 'config' | 'config_examples'
+    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
     const paths = payload.paths
 
     // Find relevant directory.
