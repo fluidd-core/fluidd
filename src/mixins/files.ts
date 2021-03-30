@@ -30,7 +30,7 @@ export default class FilesMixin extends Vue {
   getFile (path: string, options?: AxiosRequestConfig) {
     const o = { ...options }
     return this.$http.get(
-      this.apiUrl + '/server/files/' + path + '?date=' + new Date().getTime(),
+      encodeURI(this.apiUrl + '/server/files/' + path + '?date=' + new Date().getTime()),
       o
     )
   }
