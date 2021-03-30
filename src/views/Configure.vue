@@ -31,7 +31,7 @@
               </v-card-text>
             </collapsable-card>
           </v-col>
-          <v-col cols="12" sm="7" v-if="supportsVersions && klippyReady">
+          <v-col cols="12" sm="7" v-if="supportsVersions">
             <system-versions
             ></system-versions>
           </v-col>
