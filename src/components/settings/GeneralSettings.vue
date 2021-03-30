@@ -105,7 +105,10 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get supportedLocales () {
-    return this.$store.state.config.hostConfig.locales
+    return [
+      { name: 'Browser default', code: 'default' },
+      ...this.$store.state.config.hostConfig.locales
+    ]
   }
 
   setLocale (value: string) {

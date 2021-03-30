@@ -4,6 +4,7 @@
 
 - new file edit
 - fix filament lengths on history tab
+- impl new component reset
 
 ### Features
 
