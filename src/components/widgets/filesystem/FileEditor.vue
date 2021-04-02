@@ -7,7 +7,8 @@ import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { IGrammarDefinition, Registry } from 'monaco-textmate'
 import { wireTmGrammars } from 'monaco-editor-textmate'
-import theme from '@/monaco/theme/editor.theme.json'
+import themeDark from '@/monaco/theme/editor.dark.theme.json'
+import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 @Component({})
 export default class FileEditor extends Vue {
@@ -31,7 +32,6 @@ export default class FileEditor extends Vue {
     readOnly: this.readonly,
     automaticLayout: true,
     fontSize: 16,
-    theme: 'dark-converted',
     scrollbar: {
       useShadows: false
     }
@@ -81,9 +81,16 @@ export default class FileEditor extends Vue {
       }
     })
 
-    // Set the theme.
-    monaco.editor.defineTheme('dark-converted', theme as any)
-    monaco.editor.setTheme('dark-converted')
+    // Defined the themes.
+    monaco.editor.defineTheme('dark-converted', themeDark as any)
+    monaco.editor.defineTheme('light-converted', themeLight as any)
+
+    // Set the correct theme.
+    if (this.$vuetify.theme.dark) {
+      monaco.editor.setTheme('dark-converted')
+    } else {
+      monaco.editor.setTheme('light-converted')
+    }
 
     // Wire it up.
     await wireTmGrammars(monaco, registry, grammars)

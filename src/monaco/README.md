@@ -13,4 +13,3 @@ A big thank you to;
 
 - Nishkalkashyap for the vscode -> monaco theme converter
   https://github.com/Nishkalkashyap/monaco-vscode-textmate-theme-converter
-  

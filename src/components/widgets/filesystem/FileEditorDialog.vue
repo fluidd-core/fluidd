@@ -16,7 +16,6 @@
       >
         <app-btn
           icon
-          dark
           color=""
           @click="emitClose()"
         >
