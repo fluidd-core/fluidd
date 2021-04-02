@@ -3,12 +3,7 @@
 ## Next Up
 
 - toggle auto scroll on console
-- download indicator for files, also when editing large files.
-- fix json file editing
-- disable on mobile
-- allow toggle minimap
 
-- new file edit
 - fix filament lengths on history tab
 - impl new component reset
 
@@ -18,7 +13,6 @@
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - alternate bed mesh scales
 - file system enhancements
-  - better file editing
   - bulk actions to delete or move?
   - copy file
   - move dialog

@@ -29,31 +29,31 @@
             v-if="!printerPrinting && rootProperties.showConfigRef"
             :href="$globals.DOCS_KLIPPER_CONFIG_REF"
             target="_blank">
-            <v-icon small left>$help</v-icon>
-            {{ $t('app.general.btn.config_reference') }}
+            <v-icon small :left="!isMobile">$help</v-icon>
+            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
             @click="emitSave(true)">
-            <v-icon small left>$restart</v-icon>
-            {{ $t('app.general.btn.save_restart') }}
+            <v-icon small :left="!isMobile">$restart</v-icon>
+            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly"
             @click="emitSave(false)">
-            <v-icon small left>$save</v-icon>
-            {{ $t('app.general.btn.save') }}
+            <v-icon small :left="!isMobile">$save</v-icon>
+            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save') }}</span>
           </app-btn>
           <app-btn
             @click="emitClose()">
-            <v-icon small left>$close</v-icon>
-            {{ $t('app.general.btn.close') }}
+            <v-icon small :left="!isMobile">$close</v-icon>
+            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.close') }}</span>
           </app-btn>
         </v-toolbar-items>
       </v-toolbar>
 
       <file-editor
-        v-if="contents"
+        v-if="contents !== undefined"
         :value="contents"
         @input="updatedContent = $event"
         :filename="filename"
@@ -104,6 +104,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.sm
   }
 
   emitClose () {
