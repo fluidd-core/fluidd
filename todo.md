@@ -3,7 +3,7 @@
 ## Next Up
 
 - fix filament lengths on history tab
-- impl new component reset
+- impl new version recovery
 
 ### Features
 
