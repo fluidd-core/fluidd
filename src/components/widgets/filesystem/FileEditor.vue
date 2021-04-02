@@ -28,7 +28,7 @@ export default class FileEditor extends Vue {
   // Base editor options.
   opts = {
     contextmenu: false,
-    readOnly: false,
+    readOnly: this.readonly,
     automaticLayout: true,
     fontSize: 16,
     theme: 'dark-converted',
