@@ -8,9 +8,11 @@
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
   >
-    <v-card d-flex color="black">
+    <v-card d-flex class="fill-height" style="overflow: hidden;">
       <v-toolbar
         dense
+        :elevation="6"
+        style="z-index: 1"
       >
         <app-btn
           icon
@@ -32,13 +34,13 @@
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting"
-            @click="emitSave(newContents, true)">
+            @click="emitSave(true)">
             <v-icon small left>$restart</v-icon>
             {{ $t('app.general.btn.save_restart') }}
           </app-btn>
           <app-btn
             v-if="!readonly"
-            @click="emitSave(newContents, false)">
+            @click="emitSave(false)">
             <v-icon small left>$save</v-icon>
             {{ $t('app.general.btn.save') }}
           </app-btn>
@@ -49,21 +51,30 @@
           </app-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card-text>
-        <file-editor
-          v-model="newContents"
-          :fileExtension="fileExtension"
-          :readonly="readonly">
-        </file-editor>
-      </v-card-text>
+
+      <file-editor
+        v-if="contents"
+        :value="contents"
+        @input="updatedContent = $event"
+        :filename="filename"
+        :readonly="readonly">
+      </file-editor>
+
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FileEditor from './FileEditor.vue'
+
+// Lazy Load the file editor.
+const FileEditor = () => import(
+  /* webpackPreload: true */
+  /* webpackChunkName: "chunk-fileeditor" */
+  './FileEditor.vue'
+)
+// import FileEditor from './FileEditor.vue'
 
 @Component({
   components: {
@@ -86,44 +97,15 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   public readonly!: boolean
 
-  newContents = ''
-
-  @Watch('contents')
-  onValueChange (val: string) {
-    this.newContents = val
-  }
-
-  mounted () {
-    this.newContents = this.contents
-  }
-
-  get unsavedChanges () {
-    return (this.newContents !== this.contents)
-  }
-
-  get fileExtension () {
-    return this.filename.split('.').pop()
-  }
+  updatedContent = ''
 
   emitClose () {
     this.$emit('input', false)
   }
 
-  emitSave (contents: string, restart: boolean) {
-    this.$emit('save', contents, restart)
+  emitSave (restart: boolean) {
+    this.$emit('save', this.updatedContent, restart)
     if (restart) this.$emit('input', false)
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .config-editor-overlay div.v-card {
-    position: relative;
-    header {
-      position: sticky;
-      top: 0;
-      width: 100%;
-      z-index: 1;
-    }
-  }
-</style>

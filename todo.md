@@ -2,6 +2,12 @@
 
 ## Next Up
 
+- tune filesize
+- download indicator for files, also when editing large files.
+- fix json file editing
+- disable on mobile
+- allow toggle minimap
+
 - new file edit
 - fix filament lengths on history tab
 - impl new component reset

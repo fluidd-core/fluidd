@@ -33,7 +33,7 @@ export const getters: GetterTree<FilesState, RootState> = {
       return {
         readonly: false,
         accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
-        canEdit: false,
+        canEdit: true,
         canView: false,
         canPrint: true
       }

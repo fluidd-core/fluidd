@@ -1,83 +1,152 @@
 <template>
-  <prism-editor
-    class="file-editor"
-    v-model="code"
-    @input="emitChange($event)"
-    :highlight="highlighter"
-    :readonly="readonly"
-    line-numbers>
-  </prism-editor>
+  <div class="editor" ref="monaco-editor"></div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { PrismEditor } from 'vue-prism-editor'
-import 'vue-prism-editor/dist/prismeditor.min.css'
-import 'prismjs/themes/prism-okaidia.css'
+import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import { IGrammarDefinition, Registry } from 'monaco-textmate'
+import { wireTmGrammars } from 'monaco-editor-textmate'
+import theme from '@/monaco/theme/editor.theme.json'
 
-import { highlight, languages } from 'prismjs'
-import 'prismjs/components/prism-ini'
-import 'prismjs/components/prism-markdown'
-
-@Component({
-  components: {
-    PrismEditor
-  }
-})
+@Component({})
 export default class FileEditor extends Vue {
   @Prop({ type: String, required: true })
   value!: string;
 
-  @Prop({ type: String, default: 'cfg' })
-  fileExtension!: string;
+  @Prop({ type: String, required: true })
+  filename!: string;
 
   @Prop({ type: Boolean, default: false })
   readonly!: boolean;
 
-  @Watch('value')
-  onContentsChange (val: string) {
-    this.code = val
+  @Ref('monaco-editor') monacoEditor!: HTMLElement
+
+  // Our editor, once init'd.
+  editor: monaco.editor.IStandaloneCodeEditor | undefined = undefined
+
+  // Base editor options.
+  opts = {
+    contextmenu: false,
+    readOnly: false,
+    automaticLayout: true,
+    fontSize: 16,
+    theme: 'dark-converted',
+    scrollbar: {
+      useShadows: false
+    }
   }
 
-  code = ''
-
-  langMap: {[key: string]: string} = {
-    md: 'markdown',
-    cfg: 'ini',
-    conf: 'ini',
-    gcode: 'gcode'
+  async mounted () {
+    // Init the editor.
+    await this.initEditor()
   }
 
-  mounted () {
-    this.code = this.value
+  async initEditor () {
+    // Register our custom TextMate languages.
+    const registry = new Registry({
+      getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
+        const fileName = scopeName.split('.').pop()
+        return import(
+          /* webpackChunkName: "grammar-[request]" */ `@/monaco/language/${fileName}.tmLanguage.json`
+        )
+          .then(language => {
+            return Promise.resolve({
+              format: 'json',
+              content: language.default
+            })
+          })
+      }
+    })
+
+    // Load our grammars...
+    const grammars = new Map()
+    grammars.set('gcode', 'source.gcode')
+    grammars.set('klipper-config', 'source.klipper-config')
+
+    // ... and our languages
+    monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
+    monaco.languages.register({ id: 'klipper-config', extensions: ['cfg', 'conf'] })
+
+    // Define how commenting works.
+    monaco.languages.setLanguageConfiguration('gcode', {
+      comments: {
+        lineComment: ';'
+      }
+    })
+    monaco.languages.setLanguageConfiguration('klipper-config', {
+      comments: {
+        lineComment: '#'
+      }
+    })
+
+    // Set the theme.
+    monaco.editor.defineTheme('dark-converted', theme as any)
+    monaco.editor.setTheme('dark-converted')
+
+    // Wire it up.
+    await wireTmGrammars(monaco, registry, grammars)
+
+    // Create an editor instance.
+    this.editor = monaco.editor.create(this.monacoEditor, {
+      ...this.opts
+    })
+
+    // Define the model. The filename will map to the supported languages.
+    const model = monaco.editor.createModel(
+      this.value,
+      undefined,
+      monaco.Uri.file(this.filename)
+    )
+    this.editor.setModel(model)
+
+    // Fire the editorMounted call.
+    this.editorMounted()
   }
 
-  emitChange (val: string) {
-    this.$emit('input', val)
+  editorMounted () {
+    if (this.editor) {
+      this.editor.onDidChangeModelContent(event => {
+        const value = this.editor?.getValue()
+        this.emitChange(value, event)
+      })
+    }
   }
 
-  highlighter (code: string) {
-    const lang = this.langMap[this.fileExtension] || 'ini'
-    const extension = this.fileExtension || 'cfg'
-    return highlight(code, languages[lang], extension)
+  // Ensure we dispose of our models and editor.
+  destroyed () {
+    monaco.editor.getModels().forEach(model => model.dispose())
+    if (this.editor) this.editor.dispose()
+  }
+
+  emitChange (value: string | undefined, event: monaco.editor.IModelContentChangedEvent) {
+    this.$emit('change', value, event)
+    this.$emit('input', value)
   }
 }
 </script>
 
 <style lang="scss">
-  .file-editor {
-    background: transparent;
-    color: #ccc;
-
-    /* you must provide font-family font-size line-height. Example: */
-    font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    padding: 5px;
+  .editor {
+    // margin-top: 12px;
+    min-width: 100%;
+    height: 90%;
+    height: calc(100% - 48px);
   }
 
-  /* optional class for removing the outline */
-  .prism-editor__textarea:focus {
-    outline: none;
-  }
+  // .file-editor {
+  //   background: transparent;
+  //   color: #ccc;
+
+  //   /* you must provide font-family font-size line-height. Example: */
+  //   font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
+  //   font-size: 14px;
+  //   line-height: 1.5;
+  //   padding: 5px;
+  // }
+
+  // /* optional class for removing the outline */
+  // .prism-editor__textarea:focus {
+  //   outline: none;
+  // }
 </style>

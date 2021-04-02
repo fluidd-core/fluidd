@@ -36,7 +36,7 @@ export default class FilesMixin extends Vue {
   }
 
   // Download a file.
-  downloadFile (filename: string, path: string) {
+  async downloadFile (filename: string, path: string) {
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
     this.getFile(filepath, { responseType: 'blob' })
       .then((response: AxiosResponse) => {
