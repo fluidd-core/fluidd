@@ -9,15 +9,6 @@
     @drop.prevent.stop="handleDropFile"
     :class="{ 'no-pointer-events': dragState.overlay }">
 
-    <file-system-drag-overlay
-      v-model="dragState.overlay"
-    ></file-system-drag-overlay>
-
-    <file-system-upload-overlay
-      :value="currentUploads.length > 0"
-      :files="currentUploads"
-    ></file-system-upload-overlay>
-
     <file-system-toolbar
       :roots="availableRoots"
       :root="currentRoot"
@@ -87,6 +78,23 @@
     >
     </file-name-dialog>
 
+    <file-system-drag-overlay
+      v-model="dragState.overlay"
+    ></file-system-drag-overlay>
+
+    <file-system-download-dialog
+      :value="currentDownload !== null"
+      :file="currentDownload"
+      @cancel="handleCancelDownload"
+    >
+    </file-system-download-dialog>
+
+    <file-system-upload-dialog
+      :value="currentUploads.length > 0"
+      :files="currentUploads"
+    >
+    </file-system-upload-dialog>
+
     <!-- <pre>roots: {{ availableRoots }}</pre>
     <pre>currentRoot: {{ currentRoot }}<br />currentPath: {{ currentPath }}<br />visiblePath: {{ visiblePath }}</pre>
     <pre>dragState: {{ dragState }}</pre> -->
@@ -95,7 +103,6 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-// import i18n from '@/plugins/i18n'
 import { SocketActions } from '@/socketActions'
 import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload } from '@/store/files/types'
 import { Waits } from '@/globals'
@@ -106,11 +113,12 @@ import ServicesMixin from '@/mixins/services'
 import FileSystemToolbar from './FileSystemToolbar.vue'
 import FileSystemBrowser from './FileSystemBrowser.vue'
 import FileSystemContextMenu from './FileSystemContextMenu.vue'
-import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
-import FileSystemUploadOverlay from './FileSystemUploadOverlay.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
-import { AxiosResponse } from 'axios'
+import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
+import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
+import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
+import { AxiosResponse, CancelTokenSource } from 'axios'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
@@ -121,9 +129,10 @@ import { AxiosResponse } from 'axios'
     FileSystemBrowser,
     FileSystemContextMenu,
     FileSystemDragOverlay,
-    FileSystemUploadOverlay,
     FileEditorDialog,
-    FileNameDialog
+    FileNameDialog,
+    FileSystemDownloadDialog,
+    FileSystemUploadDialog
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -185,6 +194,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     rules: [],
     handler: ''
   }
+
+  // Maintains a cancel token source should we need to disable a request.
+  cancelTokenSource: CancelTokenSource | undefined = undefined
 
   // Gets available roots.
   get availableRoots () {
@@ -258,6 +270,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Get a list of currently active uploads.
   get currentUploads (): FilesUpload[] {
     return this.$store.state.files.uploads
+  }
+
+  // Get the state of a currently file being retrieved.
+  get currentDownload () {
+    return this.$store.state.files.download
   }
 
   // Set the initial root, and load the dir.
@@ -372,24 +389,34 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleFileOpenDialog (file: AppFile | AppFileWithMeta) {
-    // Open the dialog, with no data - in a loading state.
-    this.fileEditorDialogState = {
-      open: true,
-      contents: '',
-      filename: file.filename,
-      loading: true,
-      readonly: this.rootProperties.readonly
-    }
-
-    const filepath = (this.currentPath) ? `${this.currentPath}/${file.filename}` : `${file.filename}`
-    this.getFile(filepath)
+    // Grab the file. This should provide a dialog.
+    this.cancelTokenSource = this.$http.CancelToken.source()
+    this.getFile(
+      file.filename,
+      this.currentPath,
+      file.size,
+      {
+        cancelToken: this.cancelTokenSource.token
+      }
+    )
       .then((response: AxiosResponse) => {
+        // Open the edit dialog.
         this.fileEditorDialogState = {
-          ...this.fileEditorDialogState,
+          open: true,
           contents: response.data,
-          loading: false
+          filename: file.filename,
+          loading: false,
+          readonly: this.rootProperties.readonly
         }
       })
+      .catch(reason => {
+        consola.debug(reason)
+      })
+  }
+
+  handleCancelDownload () {
+    if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
+    this.$store.dispatch('files/removeFileDownload')
   }
 
   /**

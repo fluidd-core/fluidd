@@ -65,25 +65,38 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  setAddFileUpload (state, payload) {
-    state.uploads.push({
-      ...payload,
-      processingComplete: false
-    })
-  },
-
   setUpdateFileUpload (state, payload) {
-    const i = state.uploads.findIndex((u) => u.filename === payload.filename)
+    const i = state.uploads.findIndex((u) => u.filepath === payload.filepath)
     if (i >= 0) {
       Vue.set(state.uploads, i, { ...state.uploads[i], ...payload })
+    } else {
+      state.uploads.push(payload)
     }
   },
 
   setRemoveFileUpload (state, payload) {
-    const i = state.uploads.findIndex((u) => u.filename === payload)
+    const i = state.uploads.findIndex((u) => u.filepath === payload)
     if (i >= 0) {
       state.uploads.splice(i, 1)
     }
+  },
+
+  setUpdateFileDownload (state, payload) {
+    if (
+      !state.download ||
+      state.download === null
+    ) {
+      state.download = payload
+    } else {
+      state.download = {
+        ...state.download,
+        ...payload
+      }
+    }
+  },
+
+  setRemoveFileDownload (state) {
+    state.download = null
   },
 
   setCurrentPath (state, payload) {

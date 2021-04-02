@@ -48,7 +48,8 @@ export default class FileEditor extends Vue {
       getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
         const fileName = scopeName.split('.').pop()
         return import(
-          /* webpackChunkName: "grammar-[request]" */ `@/monaco/language/${fileName}.tmLanguage.json`
+          /* webpackChunkName: "grammar-[request]" */
+          `@/monaco/language/${fileName}.tmLanguage.json`
         )
           .then(language => {
             return Promise.resolve({

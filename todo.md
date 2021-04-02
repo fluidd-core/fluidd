@@ -2,7 +2,7 @@
 
 ## Next Up
 
-- tune filesize
+- toggle auto scroll on console
 - download indicator for files, also when editing large files.
 - fix json file editing
 - disable on mobile
