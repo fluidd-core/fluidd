@@ -25,7 +25,6 @@
 
     <console
       ref="console"
-      pad-bottom
       :items="items"
       :height="300"
     ></console>

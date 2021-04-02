@@ -5,6 +5,7 @@ export interface ConsoleState {
   availableCommands: GcodeCommands; // available gcode commands
   consoleEntryCount: number; // give each console entry a unique id.
   commandHistory: string[];
+  autoScroll: boolean;
 }
 
 export interface ConsoleEntry {

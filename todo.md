@@ -2,8 +2,6 @@
 
 ## Next Up
 
-- toggle auto scroll on console
-
 - fix filament lengths on history tab
 - impl new component reset
 
