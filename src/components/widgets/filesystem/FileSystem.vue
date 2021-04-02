@@ -397,6 +397,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.currentPath,
       file.size,
       {
+        responseType: 'text',
+        transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
       }
     )
