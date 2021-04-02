@@ -38,7 +38,7 @@
             <v-list-item
               link
               @click="$emit('edit', file)"
-              v-if="file.type !== 'directory' && rootProperties.canEdit">
+              v-if="file.type !== 'directory' && rootProperties.canEdit && !isMobile">
               <v-list-item-icon>
                 <v-icon class="white--text">$pencil</v-icon>
               </v-list-item-icon>
@@ -47,7 +47,7 @@
             <v-list-item
               link
               @click="$emit('view', file)"
-              v-if="file.type !== 'directory' && rootProperties.canView">
+              v-if="file.type !== 'directory' && rootProperties.canView && !isMobile">
               <v-list-item-icon>
                 <v-icon class="white--text">$magnify</v-icon>
               </v-list-item-icon>
@@ -122,6 +122,10 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   get canPreheat () {
