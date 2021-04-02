@@ -35,7 +35,9 @@ export const getters: GetterTree<FilesState, RootState> = {
         accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
         canEdit: true,
         canView: false,
-        canPrint: true
+        canPrint: true,
+        showConfigRef: false,
+        showSaveRestart: false
       }
     }
 
@@ -45,7 +47,9 @@ export const getters: GetterTree<FilesState, RootState> = {
         accepts: ['.conf', '.cfg', '.md'],
         canEdit: true,
         canView: false,
-        canPrint: false
+        canPrint: false,
+        showConfigRef: true,
+        showSaveRestart: true
       }
     }
 
@@ -55,7 +59,9 @@ export const getters: GetterTree<FilesState, RootState> = {
         accepts: [],
         canEdit: false,
         canView: true,
-        canPrint: false
+        canPrint: false,
+        showConfigRef: true,
+        showSaveRestart: false
       }
     }
 
@@ -65,7 +71,9 @@ export const getters: GetterTree<FilesState, RootState> = {
         accepts: [],
         canEdit: false,
         canView: true,
-        canPrint: false
+        canPrint: false,
+        showConfigRef: true,
+        showSaveRestart: false
       }
     }
 
@@ -74,7 +82,9 @@ export const getters: GetterTree<FilesState, RootState> = {
       accepts: [],
       canEdit: false,
       canView: true,
-      canPrint: false
+      canPrint: false,
+      showConfigRef: false,
+      showSaveRestart: false
     }
   },
 

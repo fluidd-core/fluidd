@@ -62,6 +62,7 @@
       :filename="fileEditorDialogState.filename"
       :loading="fileEditorDialogState.loading"
       :readonly="fileEditorDialogState.readonly"
+      :root="this.currentRoot"
       @save="handleSaveFileChanges"
     ></file-editor-dialog>
 

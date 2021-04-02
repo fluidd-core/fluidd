@@ -26,14 +26,14 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <app-btn
-            v-if="!readonly && !printerPrinting"
+            v-if="!printerPrinting && rootProperties.showConfigRef"
             :href="$globals.DOCS_KLIPPER_CONFIG_REF"
             target="_blank">
             <v-icon small left>$help</v-icon>
             {{ $t('app.general.btn.config_reference') }}
           </app-btn>
           <app-btn
-            v-if="!readonly && !printerPrinting"
+            v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
             @click="emitSave(true)">
             <v-icon small left>$restart</v-icon>
             {{ $t('app.general.btn.save_restart') }}
@@ -86,6 +86,9 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   public value!: boolean
 
   @Prop({ type: String, required: true })
+  root!: string
+
+  @Prop({ type: String, required: true })
   public filename!: string;
 
   @Prop({ type: String, required: true })
@@ -98,6 +101,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   public readonly!: boolean
 
   updatedContent = ''
+
+  get rootProperties () {
+    return this.$store.getters['files/getRootProperties'](this.root)
+  }
 
   emitClose () {
     this.$emit('input', false)
