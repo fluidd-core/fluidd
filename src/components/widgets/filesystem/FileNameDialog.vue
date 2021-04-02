@@ -12,10 +12,11 @@
       @submit.prevent="handleSave"
     >
       <v-card>
-        <v-card-title>
-          <span class="headline">{{ title }}</span>
+        <v-card-title class="secondary py-2">
+          <span class="focus--text">{{ title }}</span>
         </v-card-title>
-        <v-card-text>
+
+        <v-card-text class="py-4">
 
           <v-text-field
             autofocus
@@ -23,10 +24,14 @@
             v-model="newName"
             :label="label"
             :rules="rules"
+            hide-details="auto"
             required>
           </v-text-field>
 
         </v-card-text>
+
+        <v-divider />
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <app-btn color="warning" text @click="$emit('input', false)">{{ $t('app.general.btn.cancel') }}</app-btn>
