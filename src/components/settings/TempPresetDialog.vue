@@ -10,7 +10,7 @@
       v-model="valid"
     >
       <v-card>
-        <v-card-title class="secondary py-2">
+        <v-card-title class="card-heading py-2">
           <span class="focus--text">{{ (preset.id != -1) ? $t('app.general.label.edit_preset') : $t('app.general.label.add_preset') }}</span>
         </v-card-title>
 

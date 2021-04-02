@@ -6,7 +6,7 @@
   >
     <v-card v-if="file">
 
-      <v-card-title class="secondary py-2 px-5">
+      <v-card-title class="card-heading py-2 px-5">
         <v-icon left>$download</v-icon>
         <span class="focus--text">
           {{ $t('app.file_system.title.download_file') }}

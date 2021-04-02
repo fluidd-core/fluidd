@@ -19,9 +19,9 @@
               @click="$emit('print', file)"
               v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint">
               <v-list-item-icon>
-                <v-icon class="white--text">$printer</v-icon>
+                <v-icon>$printer</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">
+              <v-list-item-title>
                 Print
                 </v-list-item-title>
             </v-list-item>
@@ -31,54 +31,54 @@
               v-if="canPreheat"
             >
               <v-list-item-icon>
-                <v-icon class="white--text">$fire</v-icon>
+                <v-icon>$fire</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">{{ $t('app.general.btn.preheat') }}</v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.preheat') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
               @click="$emit('edit', file)"
               v-if="file.type !== 'directory' && rootProperties.canEdit && !isMobile">
               <v-list-item-icon>
-                <v-icon class="white--text">$pencil</v-icon>
+                <v-icon>$pencil</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">{{ $t('app.general.btn.edit') }}</v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.edit') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
               @click="$emit('view', file)"
               v-if="file.type !== 'directory' && rootProperties.canView && !isMobile">
               <v-list-item-icon>
-                <v-icon class="white--text">$magnify</v-icon>
+                <v-icon>$magnify</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">{{ $t('app.general.btn.view') }}</v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
               @click="$emit('download', file)"
               v-if="file.type !== 'directory'">
               <v-list-item-icon>
-                <v-icon class="white--text">$download</v-icon>
+                <v-icon >$download</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">{{ $t('app.general.btn.download') }}</v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
               @click="$emit('rename', file)"
               v-if="!rootProperties.readonly">
               <v-list-item-icon>
-                <v-icon class="white--text">$rename</v-icon>
+                <v-icon>$rename</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">{{ $t('app.general.btn.rename') }}</v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.rename') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
               @click="$emit('remove', file)"
               v-if="!rootProperties.readonly">
               <v-list-item-icon>
-                <v-icon class="white--text">$delete</v-icon>
+                <v-icon>$delete</v-icon>
               </v-list-item-icon>
-              <v-list-item-title class="white--text">{{ $t('app.general.btn.remove') }}</v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-col>

@@ -12,7 +12,7 @@
       @submit.prevent="handleSave"
     >
       <v-card>
-        <v-card-title class="secondary py-2">
+        <v-card-title class="card-heading py-2">
           <span class="focus--text">{{ title }}</span>
         </v-card-title>
 

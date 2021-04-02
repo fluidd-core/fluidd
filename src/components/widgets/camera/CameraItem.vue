@@ -3,7 +3,6 @@
     <v-card
       :elevation="(flat) ? 0 : 6"
       v-on="$listeners"
-      color="secondary"
       class="rounded-t-0"
     >
       <img

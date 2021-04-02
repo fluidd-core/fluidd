@@ -118,7 +118,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   handleHostReboot () {
     this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_reboot_host'),
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {
@@ -131,7 +131,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   handleHostShutdown () {
     this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {

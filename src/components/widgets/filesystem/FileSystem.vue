@@ -489,7 +489,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (file.type === 'directory') text = this.$tc('app.file_system.msg.confirm')
     this.$confirm(
       text,
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {

@@ -6,7 +6,7 @@
   >
     <v-card v-if="files">
 
-      <v-card-title class="secondary py-2 px-5">
+      <v-card-title class="card-heading py-2 px-5">
         <v-icon left>$fileUpload</v-icon>
           <span class="focus--text">
           {{ $tc('app.file_system.title.upload_file', files.length) }}
