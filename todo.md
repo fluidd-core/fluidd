@@ -2,12 +2,14 @@
 
 ## Next Up
 
-- fix filament lengths on history tab
+- sotware updates to interface screen?
+- add notification in hamburger menu again, and to interface option..
+
 - impl new version recovery
+- impl git commit history
 
 ### Features
 
-- add git history
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - alternate bed mesh scales
 - file system enhancements

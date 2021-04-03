@@ -33,8 +33,7 @@
         <span>{{ $t('app.general.title.tune') }}</span>
       </app-btn>
       <app-btn text to="/configure" color="" class="d-none d-md-flex mx-1">
-        <v-icon small left color="warning" v-if="hasUpdates">$info</v-icon>
-        <v-icon small class="mr-md-1" v-else>$cogs</v-icon>
+        <v-icon small class="mr-md-1">$cogs</v-icon>
         <span>{{ $t('app.general.title.configure') }}</span>
       </app-btn>
       <v-tooltip bottom v-if="socketConnected">
@@ -52,9 +51,19 @@
         {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <app-btn icon color="" @click="$emit('drawer')">
-        <v-icon>$menu</v-icon>
-      </app-btn>
+      <v-badge
+        :value="hasUpdates"
+        bordered
+        dot
+        color="warning"
+        overlap
+        offset-x="15"
+        offset-y="15"
+      >
+        <app-btn icon color="" @click="$emit('drawer')">
+          <v-icon>$menu</v-icon>
+        </app-btn>
+      </v-badge>
 
     </v-container>
   </v-app-bar>
@@ -87,10 +96,6 @@ export default class AppBar extends Mixins(StateMixin) {
 
   get theme () {
     return this.$store.getters['config/getTheme']
-  }
-
-  hasUpdate (component: 'klipper' | 'moonraker' | 'client') {
-    return this.$store.getters['version/hasUpdate'](component)
   }
 
   emergencyStop () {

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="6" class="pt-0">
+      <v-col cols="12" md="7" lg="5" class="pt-0">
 
         <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
         <collapsable-card
@@ -16,12 +16,13 @@
         </collapsable-card>
 
       </v-col>
-      <v-col cols="12" md="6" class="pt-0">
-
-        <printer-stats-card></printer-stats-card>
+      <v-col cols="12" md="5" lg="7" class="pt-0">
 
         <v-row>
-          <v-col cols="12" sm="5" v-if="klippyReady">
+          <v-col :cols="breakpoint">
+            <printer-stats-card></printer-stats-card>
+          </v-col>
+          <v-col :cols="breakpoint" v-if="klippyReady">
             <collapsable-card
               :title="$t('app.general.title.system_control')"
               :collapsable="false"
@@ -31,19 +32,12 @@
               </v-card-text>
             </collapsable-card>
           </v-col>
-          <v-col cols="12" sm="7" v-if="supportsVersions">
-            <system-versions
-            ></system-versions>
-          </v-col>
         </v-row>
 
       </v-col>
     </v-row>
 
     <v-row class="mt-0 mt-sm-2">
-      <!-- <v-col cols="12" lg="4" v-if="klippyReady">
-        <printer-stats-card></printer-stats-card>
-      </v-col> -->
       <v-col cols="12" v-if="supportsHistory && klippyReady" >
         <printer-history-card></printer-history-card>
       </v-col>
@@ -57,7 +51,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import SystemControl from '@/components/common/SystemControl.vue'
-import SystemVersions from '@/components/widgets/versions/SystemVersions.vue'
 import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
 import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
 
@@ -66,30 +59,19 @@ import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vu
     FileSystem,
     SystemControl,
     PrinterStatsCard,
-    PrinterHistoryCard,
-    SystemVersions
+    PrinterHistoryCard
   }
 })
 export default class Configure extends Mixins(StateMixin) {
-  get supportsBedMesh () {
-    return this.$store.getters['printer/getSupportsBedMesh']
-  }
-
-  get supportsRunoutSensors () {
-    return this.$store.getters['printer/getRunoutSensors'].length
-  }
-
-  get supportsEndstops () {
-    const endStops = this.$store.getters['printer/getEndstops']
-    return (Object.keys(endStops).length > 0)
+  get breakpoint () {
+    if (this.$vuetify.breakpoint.mdAndDown) {
+      return 12
+    }
+    return 6
   }
 
   get supportsHistory () {
     return this.$store.getters['server/pluginSupport']('history')
-  }
-
-  get supportsVersions () {
-    return this.$store.getters['server/pluginSupport']('update_manager')
   }
 }
 </script>

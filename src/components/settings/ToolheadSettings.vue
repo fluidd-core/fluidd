@@ -41,7 +41,7 @@
 
       <app-setting
         :title="$t('app.setting.label.gcode_coords')"
-        :subTitle="$t('app.setting.tooltip.gcode_coords')"
+        :sub-title="$t('app.setting.tooltip.gcode_coords')"
         :r-cols="2">
         <v-switch
           v-model="useGcodeCoords"

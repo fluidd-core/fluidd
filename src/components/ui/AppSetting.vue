@@ -9,7 +9,7 @@
     <v-col :cols="cols[0]" class="setting-title">
       <slot name="title">{{ title }}</slot>
       <div class="setting-sub-title grey--text" v-if="hasSubTitle">
-        <slot name="subtitle">
+        <slot name="sub-title">
             {{ subTitle }}
         </slot>
       </div>
@@ -47,8 +47,8 @@ export default class AppSetting extends Vue {
 
   get hasSubTitle () {
     return (
-      this.$slots.subtitle ||
-      this.$scopedSlots.subtitle ||
+      this.$slots['sub-title'] ||
+      this.$scopedSlots['sub-title'] ||
       this.subTitle
     )
   }

@@ -10,19 +10,24 @@
       nav
       color="transparent"
     >
-      <v-list-item
-        @click="$vuetify.goTo(item.ref)"
-        v-for="item in items" :key="item.name"
-        link
+      <template
+        v-for="item in items"
       >
-        <v-list-item-icon>
-          <v-icon class="grey--text">{{ item.icon }}</v-icon>
-        </v-list-item-icon>
+        <v-list-item
+          v-if="item.visible"
+           :key="item.name"
+          @click="$vuetify.goTo(item.ref)"
+          link
+        >
+          <v-list-item-icon>
+            <v-icon class="grey--text">{{ item.icon }}</v-icon>
+          </v-list-item-icon>
 
-        <v-list-item-content>
-          <v-list-item-title class="grey--text">{{ item.name }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+          <v-list-item-content>
+            <v-list-item-title class="grey--text">{{ item.name }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -34,13 +39,18 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class AppSettingsNav extends Vue {
   get items () {
     return [
-      { name: this.$t('app.setting.title.general'), icon: '$printer', ref: '#general' },
-      { name: this.$tc('app.setting.title.camera', 2), icon: '$camera', ref: '#camera' },
-      { name: this.$t('app.setting.title.theme'), icon: '$cogs', ref: '#theme' },
-      { name: this.$t('app.setting.title.tool'), icon: '$printer3dNozzle', ref: '#toolhead' },
-      { name: this.$t('app.setting.title.macros'), icon: '$fileCode', ref: '#macros' },
-      { name: this.$t('app.setting.title.thermal_presets'), icon: '$fire', ref: '#presets' }
+      { name: this.$t('app.setting.title.general'), icon: '$printer', ref: '#general', visible: true },
+      { name: this.$t('app.version.title'), icon: '$refresh', ref: '#versions', visible: this.supportsVersions },
+      { name: this.$tc('app.setting.title.camera', 2), icon: '$camera', ref: '#camera', visible: true },
+      { name: this.$t('app.setting.title.theme'), icon: '$cogs', ref: '#theme', visible: true },
+      { name: this.$t('app.setting.title.tool'), icon: '$printer3dNozzle', ref: '#toolhead', visible: true },
+      { name: this.$t('app.setting.title.macros'), icon: '$fileCode', ref: '#macros', visible: true },
+      { name: this.$t('app.setting.title.thermal_presets'), icon: '$fire', ref: '#presets', visible: true }
     ]
+  }
+
+  get supportsVersions () {
+    return this.$store.getters['server/pluginSupport']('update_manager')
   }
 }
 </script>

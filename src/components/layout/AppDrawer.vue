@@ -37,18 +37,27 @@
           <v-icon>$cogs</v-icon>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>
-            {{ $t('app.general.title.configure') }}
-            <v-icon small right color="warning" v-if="hasUpdates">$info</v-icon>
-          </v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.title.configure') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item to="/interface">
         <v-list-item-icon>
-          <v-icon>$cog</v-icon>
+          <v-badge
+            :value="hasUpdates"
+            bordered
+            dot
+            color="warning"
+            overlap
+            offset-x="7"
+            offset-y="7"
+          >
+            <v-icon>$cog</v-icon>
+          </v-badge>
         </v-list-item-icon>
         <v-list-item-content>
-          <v-list-item-title>{{ $t('app.general.title.interface') }}</v-list-item-title>
+          <v-list-item-title>
+            {{ $t('app.general.title.interface') }}
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>

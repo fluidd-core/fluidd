@@ -296,7 +296,7 @@ app:
       processing: Processing
       confirm: Are you sure? This will delete all files and folders within.
     tooltip:
-      disabled: Jobs are disabled prior to initial communcation with klippy
+      disabled: Jobs require initial communication with klippy and a valid virtual_sdcard path
       low_on_space: Low on disk space
     overlay:
       label: <strong>Drag</strong> a file here

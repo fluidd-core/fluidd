@@ -41,6 +41,7 @@
       v-if="hasUpdate && !dirty && valid"
       :disabled="disabled"
       small
+      text
       color="primary"
       @click="$emit('on-update')">
       {{ $t('app.version.btn.update') }}

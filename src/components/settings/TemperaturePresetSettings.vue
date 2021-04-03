@@ -26,7 +26,7 @@
           :title="preset.name"
           :r-cols="2"
         >
-          <template v-slot:subtitle>
+          <template v-slot:sub-title>
             <span
               v-for="(value, k) in preset.values"
               :key="k"
