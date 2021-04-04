@@ -7,40 +7,40 @@ app:
       home: Dashboard
       add_printer: Drucker hinzufügen
       endstops: Endschalter
-      fans_outputs: Fans & Ausgänge
+      fans_outputs: Lüfter & Ausgänge
       jobs: Aufträge
-      macros: Macros
+      macros: Makros
       limits: Drucker Limits
       logs: Drucker Logs
       system_control: Systemsteuerung
-      runout_sensors: Runout Sensors
+      runout_sensors: Runout Sensoren
       status: Status
       temperature: Temperaturen
-      tool: Tool
+      tool: Druckkopf
       tune: Tune
       configure: Konfiguration
       interface: Interface
-      stats: Drucker Status
+      stats: Druckerstatus
       history: Auftragsverlauf
-      config_files: Konfigurations Dateien
+      config_files: Konfigurationsdateien
     label:
-      accel_to_decel: Accel zu Decel
-      acceleration: Acceleration
-      sqv: Square Corner Velocity
-      velocity: Velocity
-      api_url: API URL
+      accel_to_decel: Beschleunigen zu Bremsen
+      acceleration: Beschleunigung
+      sqv: Geschwindigkeit bei rechtwinkligen Ecken
+      velocity: Geschwindigkeit
+      api_url: API-URL
       host: Host
       layout: Layout
       name: Name
-      power: Power
+      power: Leistung
       printers: Drucker
       requested_speed: Gewünschte Geschwindigkeit
       services: Services
       speed: Geschwindigkeit
       flow: Flow
-      z_offset: Z Offset
-      high: High
-      low: Low
+      z_offset: Z-Offset
+      high: Höchste
+      low: Niedrigste
       off: Aus
       used: gebraucht
       free: frei
@@ -48,16 +48,16 @@ app:
       longest_job: Längester Auftrag
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
-      total_print_time: Gesamte Druckzeit
+      total_print_time: Druckzeit insgesamt
       total_print_time_avg: Durchschnitt pro Druck
-      total_filament: Gesamt gebrauchtes Filament
+      total_filament: Insgesamt verbrauchtes Filament
       total_filament_avg: Durchschnitt pro Druck
       variance: Abweichung
       save_as: Speichern als
-      edit_preset: Preset ändern
-      add_preset: Preset hinzufügen
-      edit_camera: Kamera ändern
-      add_camera: Camera hinzufügen
+      edit_preset: Voreinstellungen bearbeiten
+      add_preset: Voreinstellingen hinzufügen
+      edit_camera: Kamera bearbeiten
+      add_camera: Kamera hinzufügen
       extrude_length: Extrusionslänge
       extrude_speed: Extrusionsgeschwindigkeit
       confirm: Bestätigen
@@ -67,26 +67,26 @@ app:
       quad_gantry_level: QGL
       add: Hinzufügen
       pause: Pause
-      reboot: Neustart
+      reboot: Neustarten
       shutdown: Herunterfahren
       remove: Entfernen
-      remove_all: Alle Entfernen 
-      rename: umbenennen
-      resume: fortfahren
+      remove_all: Alle Entfernen
+      rename: Umbenennen
+      resume: Fortfahren
       cancel: Abbrechen
       save: Speichern
       save_as: Speichern als
-      upload: Upload
-      upload_print: Upload & Drucken
-      preheat: Preheat
+      upload: Hochladen
+      upload_print: Hochladen & Drucken
+      preheat: Vorheizen
       reprint: Druck wiederholen
       save_restart: Sepichern & Neustarten
-      adjust_layout: Dashboard layout einstellen
+      adjust_layout: Dashboard-Layout anpassen
       calibrate: Kalibrieren
-      clear_profile: Profile reinigen
-      download: Download
+      clear_profile: Profil zurücksetzen
+      download: Herunterladen
       add_printer: Drucker hinzufügen
-      edit: bearbeiten
+      edit: Bearbeiten
       extrude: Extrudieren
       retract: Retracten
       restart_firmware: Firmware Neustarten
@@ -108,7 +108,7 @@ app:
         slicer: Slicer
         status: Status
         height: Höhe
-        layer_height: Layerhöhe
+        layer_height: Schichthöhe
         estimated_time: Geschätzte Zeit
         last_printed: Zuletzt gedruckt
         modified: Geändert
@@ -118,11 +118,11 @@ app:
         actions: Aktionen
     simple_form:
       msg:
-        confirm: Bist du Sicher?
-        confirm_reboot_host: Bist du Sichern? Das wird dein Host-System neustarten.
-        confirm_shutdown_host: Bist du Sichern? Das wird dein Host-System herunterfahren.
+        confirm: Sind Sie sicher?
+        confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
+        confirm_shutdown_host: Sind Sie sicher? Das Host-System wird heruntergefahren.
       error:
-        invalid_url: Ungültig URL
+        invalid_url: Ungültige URL
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} oder 0
@@ -130,41 +130,39 @@ app:
     tooltip:
       estop: NOT-AUS
     error:
-      app_warnings_found: '%{appName} gefundene Warnungen.'
+      app_warnings_found: '%{appName} Warnungen gefunden.'
       app_setup_link: >-
-        Die Anforderungen für die Fluidd-Einrichtung finden Sie hier <a target="_blank"
-        href="%{url}">.</a>
+        Die Anforderungen für die Einrichtung von Fluidd finden Sie <a target="_blank" href="%{url}">hier.</a>
       failed_components: >-
-        Moonraker hat fehlerhafte Plugins, bitte überprüfen Sie Ihre Logs, 
+        Moonraker hat fehlerhafte Plugins, bitte überprüfen Sie Ihre Logs,
         aktualisieren Sie Ihre Konfiguration und starten Sie Moonraker neu.
       components_config: >-
-        Die Konfiguration des Moonraker-Plugins finden Sie hier <a target="_blank"
-        href="%{url}">.</a>
+        Die Konfiguration des Moonraker-Plugins finden Sie <a target="_blank" href="%{url}">hier.</a>
   socket:
     msg:
-      connecting: Verbinde mit moonraker...
-      no_connection: Keine moonraker-Verbindung. Bitte überprüfen Sie den Moonraker-Status und / oder aktualisieren Sie Moonraker.
+      connecting: Verbinde mit Moonraker...
+      no_connection: Keine Moonraker-Verbindung. Bitte überprüfen Sie den Moonraker-Status und / oder aktualisieren Sie Moonraker.
   version:
-    title: Software Updates
+    title: Softwareaktualisierungen
     btn:
       update: Aktualisieren
-      finish: Beendet
-      check_for_updates: Check for updates
+      finish: Beenden
+      check_for_updates: Nach Aktualisierungen suchen
     label:
-      dirty: DIRTY
-      invalid: INVALID
+      dirty: VERUNREINIGT
+      invalid: UNZULÄSSIG
       up_to_date: AKTUELL
     status:
       updating: Aktualisieren...
-      finished: Aktualisieren beendet
+      finished: Aktualisierung abgeschlossen
     tooltip:
-      dirty: zeigt einen fehlerhaften gitrepo an
-      invalid: zeigt locale änderungen im gitrepo an
+      dirty: Deutet auf einen Fehler in Bezug auf das Git-Repository hin (z.B. detached head, not on master, invalid origin)
+      invalid: Deutet auf lokale Änderungen im Git-Repository hin
   console:
     label:
-      hide_temp_waits: Temp-bestätigungen ausblenden
+      hide_temp_waits: Temperaturbenachrichtigungen ausblenden
     placeholder:
-      command: '''tab'' für die Autovervollständigung, ''help'' für die Kommandos ''arrows'' für den Verlauf '
+      command: '''tab'' für Autovervollständigung, ''help'' für Befehle, ''arrows'' für Verlauf '
   tool:
     btn:
       home_x: X
@@ -176,30 +174,29 @@ app:
         Extruder deaktiviert, da unter der min_extrude_temp (%{min}<small>°C</small>)
   bedmesh:
     label:
-      profile_name: Profile Name
-      remove_profile: Entferne %{name} profil
+      profile_name: Profilname
+      remove_profile: Profil %{name} löschen
     msg:
-      not_found: Keine bed meshes gefunden.
+      not_found: Keine Bett Meshes gefunden.
       hint: >-
-        Sepicherst du esanders als %{name}, dann 
-        kannst du auch das %{name} Profil löschen.
+        Wird das Profil mit einem anderen Namen als %{name} gespeichert,
+        kann ausgewählt werden das Profil %{name} zu löschen.
     tooltip:
-      calibrate: Begtint eine neue Kalibrierung und speichert es als 'default'
-      delete: Profil löchen. Das startet den Drucker neu
+      calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
+      delete: Profil löschen. Achtung, der Drucker wird neu gestartet
       save: >-
-        Fügt das Mesh Profil der printer.cfg hinzu.
-        Das startet den Drucker neu
-      load: Lade Profil
+        Fügt das Mesh Profil der printer.cfg hinzu. Achtung, der Drucker wird neu gestartet
+      load: Profil laden
   printer:
     status:
-      used_filament: gebrauchtes Filament
+      used_filament: verbrauchtes Filament
       time_left: geschätzte verbleibende Zeit
       duration: Dauer
       duration_total: Dauer & Gesamt
     state:
-      printing: am Drucken
+      printing: Druckt
       loading: Laden
-      complete: Komplett
+      complete: Fertig
       paused: Pausiert
       standby: Standby
       idle: Untätig
@@ -208,33 +205,35 @@ app:
   setting:
     title:
       camera: Kamera | Kameras
-      macros: Macros
-      general: General
-      theme: Themen
-      tool: Tool
-      thermal_presets: Temperatur Presets
+      macros: Makros
+      general: Allgemein
+      theme: Farbschema
+      tool: Druckkopf
+      thermal_presets: Temperatur-Voreinstellungen
     label:
-      camera_url: Kamera Url
-      printer_name: Drucker Name
-      language: Anzeige Sprache
-      default_toolhead_move_length: Standardverfahrlänge des Tools
+      camera_fillspace: Bereich füllen
+      camera_fillspace_help: Den Bereich der Kamera im Dashboard ausfüllen, wenn nur eine Kamera aktiv ist.
+      camera_url: Kamera-Url
+      printer_name: Druckername
+      language: Anzeigesprache
+      default_toolhead_move_length: Standard Bewegungsdistanz des Druckkopfes
       default_extrude_speed: Standard Extrudiergeschwindigkeit
       default_extrude_length: Standard Extrudierlänge
-      default_toolhead_z_speed: Standard Toolgeschwindigkeit für Z
-      default_toolhead_xy_speed: Standard Toolgeschwindigkeit für XY
+      default_toolhead_z_speed: Standard Druckkopfgeschwindigkeit für Z
+      default_toolhead_xy_speed: Standard Druckkopfgeschwindigkeit für XY
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
-      camera_stream_type: Stream type
-      thermal_preset_name: Preset Name
+      camera_stream_type: Art des Kamerastreams
+      thermal_preset_name: Name des Voreinstellungsprofils
       all_on: Alle an
       all_off: Alle aus
       toggle: Umschalten
-      dark_mode: Dunkler Modus
+      dark_mode: Nachtmodus
       primary_color: Primärfarbe
       reset: Einstellungen zurücksetzen
-      z_adjust_values: Z Adjust Werte
+      z_adjust_values: Z-Werte anpassen
       gcode_coords: GCode Koordinaten verwenden
-      time_estimates: geschätze Zeit
+      time_estimates: Zeitschätzung
       invert_z_control: Z-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren
       invert_x_control: X-Steuerung invertieren
@@ -242,33 +241,34 @@ app:
       fps_target: FPS Ziel
     btn:
       add_camera: Kamera hinzufügen
-      select_theme: Thema auswählen
-      add_thermal_preset: Preset hinzufügen
+      select_theme: Farbschema auswählen
+      add_thermal_preset: Voreinstellungen hinzufügen
       reset: Zurücksetzen
     timer_options:
       duration: Nur Dauer
       duration_description: Ähnlich wie bei einem Klipper-LCD wird hier nur die Dauer ohne Schätzungen angezeigt.
       file: Datei-Schätzung
       file_description: >-
-        Nimmt die Fortschrittsprozent und die Dauer, um die Gesamtdauer zu schätzen.<br />
-        Wird mit der Zeit genauer.
+        Schätzt die Gesamtdauer anhand des Datei-Fortschritts in Prozent und der verstrichenen Zeit.
+        <br /> Wird mit der Zeit genauer.
       filament: Filament-Schätzung
       filament_description: >-
-        Nimmt das verwendetes Filament vs. das geschätztes Filament, um die Gesamtdauer zu schätzen.<br />
-        Ist mit der Zeit genauer.
+        Schätzt die Gesamtdauer anhand der Länge des gedruckten Filaments im Vergleich zur Gesamtlänge.
+        <br /> Wird mit der Zeit genauer.
       slicer: Slicer
-      slicer_description: Verwendet Slicer Schätzungen für die Anzeige. Sie müssen dies in Ihrem Slicer aktivieren.
+      slicer_description: Verwendet die Schätzung des Slicers zur Anzeige. Dies muss in Ihrem Slicer aktiviert sein.
     camera_type_options:
       video: IP Camera
       mjpegstream: MJPEG Stream
       mjpegadaptive: MJPEG Adaptive
     tooltip:
-      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard verwenden
+      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard anzeigen
   chart:
     tooltip:
       help: >-
-        Halten Sie die Umschalttaste gedrückt, um zu zoomen.<br />Klicken Sie auf ein Element, um es im Diagramm umzuschalten.<br
-        />Klicken Sie auf eine Leistung, um es im Diagramm umzuschalten.
+        Halten Sie die Umschalttaste gedrückt, um zu zoomen.
+        <br />Klicken Sie auf ein Element, um es im Diagramm ein-/auszublenden.
+        <br />Klicken Sie auf eine Leistung, um sie im Diagramm ein-/auszublenden.
     label:
       item: Element
       current: Aktuell
@@ -283,14 +283,14 @@ app:
     label:
       dir_name: Ordnername
       file_name: Dateiname
-      disk_usage: Benutzter Sepicher
+      disk_usage: Belegter Speicher
     msg:
       not_found: Keine Dateien gefunden
       uploading: Hochladen...
-      processing: Verarbeitung...
-      confirm: Bist du sicher? Dadurch werden alle darin enthaltenen Dateien und Ordner gelöscht.
+      processing: Verarbeiten...
+      confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
     tooltip:
-      disabled: Aufträge werden vor der ersten Kommunikation mit klippy deaktiviert
+      disabled: Druckvorgänge sind vor der ersten Kommunikation mit klippy nicht möglich
       low_on_space: Wenig Speicherplatz auf der Festplatte
     overlay:
       label: <strong>Ziehen</strong> Sie eine Datei hierher
@@ -298,34 +298,34 @@ app:
     filters:
       label:
         print_start_time: Filter gedruckt
-        print_start_time_desc: Filtert Elemente aus, die Sie bereits gedruckt haben.
+        print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
   endstop:
     label:
       open: Offen
       triggered: Ausgelöst
     msg:
-      subtitle: Verwenden Sie die Schaltfläche "Aktualisieren", um den Endstopp-Status zu aktualisieren.
+      subtitle: Verwenden Sie die Schaltfläche "Aktualisieren", um den Endschalter-Status zu aktualisieren.
   history:
     msg:
       confirm: Sind Sie sicher? Dadurch werden der gesamte Verlauf und die Druckerstatistiken gelöscht
       load_count: Stellt die letzten {num} Jobs dar
   endpoint:
     hint:
-      add_printer: z.B., http://fluiddpi.local
+      add_printer: z.B. http://fluiddpi.local
     msg:
       trouble: >-
-        Haben Sie Probleme? <a href="%{url}" target="_blank">Siehe hier</a> für
-        mehr Informationen.
+        Haben Sie Schwierigkeiten? <a href="%{url}" target="_blank">Siehe hier</a> für
+        weitere Informationen.
     tooltip:
       endpoint_examples: >-
-        Geben Sie Ihre API-URL ein.<br />Ein paar Beispiele könnten sein:<br
+        Geben Sie Ihre API-URL ein.<br />Zum Beispiel:<br
         /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
     error:
       cant_connect: >-
-        Irgendetwas ist schief gelaufen, und Fluidd kann das Ziel nicht erreichen. Sind Sie
+        Etwas ist schief gelaufen und Fluidd kann die Adresse nicht erreichen. Sind Sie
         sicher, dass dies die richtige Adresse ist?
       cors_error: durch CORS-Richtlinie blockiert
       cors_note: >-
-        Dies kann bedeuten, dass Sie Ihre Moonraker-Konfiguration ändern müssen. Bitte
-        sehen Sie sich die Dokumentation zur Einrichtung von mehreren Druckern <a href="%{url}"
-        target="_blank">hier</a>
+        Dies kann bedeuten, dass Sie Ihre Moonraker-Konfiguration ändern müssen.
+        Bitte lesen Sie dazu die Dokumentation zur Einrichtung mehrerer Drucker
+        <a href="%{url}" target="_blank">hier</a>
