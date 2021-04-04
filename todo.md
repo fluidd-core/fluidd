@@ -2,11 +2,8 @@
 
 ## Next Up
 
-- sotware updates to interface screen?
-- add notification in hamburger menu again, and to interface option..
-
 - impl new version recovery
-- impl git commit history
+
 
 ### Features
 

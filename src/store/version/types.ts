@@ -16,17 +16,29 @@ export interface VersionComponents {
 
 /** For klipper / moonraker */
 export interface HashVersion {
+  branch: string;
+  commits_behind: CommitItem[];
+  current_hash: string;
+  debug_enabled: boolean;
+  detached: boolean;
+  git_messages: string[];
+  is_dirty: boolean;
+  is_valid: boolean;
+  owner: string;
+  remote_alias: string;
+  remote_hash: string;
+  remote_version: string;
   type: string;
   version: string;
-  remote_version: string;
-  remote_alias: string;
-  current_hash: string;
-  remote_hash: string;
-  branch: string;
-  is_valid: boolean;
-  is_dirty: boolean;
-  detached: boolean;
-  debug_enabled: boolean;
+}
+
+export interface CommitItem {
+  author: string;
+  date: string; // number
+  message: string | null;
+  sha: string;
+  subject: string;
+  tag: string | null;
 }
 
 /** For system OS */
@@ -40,6 +52,7 @@ export interface OSPackage {
 export interface ArtifactVersion {
   type: string;
   name: string;
+  owner: string;
   version: string;
   remote_version: string;
 }

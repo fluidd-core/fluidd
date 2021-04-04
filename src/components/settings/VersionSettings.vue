@@ -31,19 +31,29 @@
             <span v-if="'remote_version' in component && hasUpdate(component.type)">
               -> {{ component.remote_version }}
             </span>
-            <v-tooltip
-                v-if="component.type === 'system' && component.package_count > 0"
-                max-width="300"
-                top
-            >
-              <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">
-                  {{ component.package_count }} packages
-                </span>
-              </template>
-              <span>{{ (component.package_list) ? component.package_list.join(', ') : '' }}</span>
-            </v-tooltip>
+            <span v-if="component.type === 'system' && component.package_count > 0">
+              {{ component.package_count }} packages
+            </span>
           </template>
+
+          <v-tooltip left>
+            <template v-slot:activator="{ attrs, on }">
+              <app-btn
+                v-if="hasUpdate(component.type)"
+                @click="handleInformationDialog(component)"
+                v-on="on"
+                v-bind="attrs"
+                color="primary"
+                icon
+                small
+              >
+                <v-icon small>$info</v-icon>
+              </app-btn>
+            </template>
+            <span v-if="'name' in component">release notes</span>
+            <span v-if="'commits_behind' in component">commits</span>
+            <span v-if="'package_list' in component">packages</span>
+          </v-tooltip>
 
           <version-status
             :has-update="hasUpdate(component.type)"
@@ -60,24 +70,46 @@
       </template>
 
     </v-card>
+
+    <version-commit-history-dialog
+      v-model="informationDialogState.open"
+      :component="informationDialogState.component"
+    >
+    </version-commit-history-dialog>
+
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import VersionStatus from './VersionStatus.vue'
+import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/socketActions'
 import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 
 @Component({
   components: {
-    VersionStatus
+    VersionStatus,
+    VersionCommitHistoryDialog
   }
 })
 export default class VersionSettings extends Mixins(StateMixin) {
+  informationDialogState: any = {
+    open: false,
+    component: null
+  }
+
   get components () {
     return this.$store.getters['version/getVisibleComponents']
+  }
+
+  get isRefreshing () {
+    return this.$store.state.version.refreshing
+  }
+
+  get hasUpdates () {
+    return this.$store.getters['version/hasUpdates']
   }
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
@@ -88,16 +120,8 @@ export default class VersionSettings extends Mixins(StateMixin) {
     return component.type
   }
 
-  get isRefreshing () {
-    return this.$store.state.version.refreshing
-  }
-
   hasUpdate (component: string) {
     return this.$store.getters['version/hasUpdate'](component)
-  }
-
-  get hasUpdates () {
-    return this.$store.getters['version/hasUpdates']
   }
 
   packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
@@ -128,6 +152,27 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   forceCheck () {
     SocketActions.machineUpdateStatus(true)
+  }
+
+  getBaseUrl (component: HashVersion | ArtifactVersion) {
+    if ('owner' in component) {
+      return `https://github.com/${component.owner}/${component.type}`
+    }
+    return ''
+  }
+
+  handleInformationDialog (component: HashVersion | OSPackage | ArtifactVersion) {
+    if (
+      'commits_behind' in component ||
+      'package_list' in component
+    ) {
+      this.informationDialogState = {
+        open: true,
+        component
+      }
+    } else {
+      window.open(`${this.getBaseUrl(component)}/releases`)
+    }
   }
 }
 </script>

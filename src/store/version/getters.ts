@@ -3,6 +3,7 @@ import { isOfType } from '@/store/helpers'
 import { ArtifactVersion, HashVersion, OSPackage, VersionState } from './types'
 import { RootState } from '../types'
 import { valid, gt } from 'semver'
+import _Vue from 'vue'
 
 export const getters: GetterTree<VersionState, RootState> = {
   /**
@@ -66,5 +67,34 @@ export const getters: GetterTree<VersionState, RootState> = {
 
   getResponses: (state) => {
     return [...state.responses]
+  },
+
+  /**
+   * Returns commit history grouped by day.
+   */
+  getCommitHistory: (state) => (component: string) => {
+    // This is only relevant for certain types.
+    if (state.components[component] && isOfType<HashVersion>(state.components[component], 'git_messages')) {
+      const c = state.components[component] as HashVersion
+      const result = [...c.commits_behind]
+        .reduce((result: any, a) => {
+          const d = _Vue.$dayjs(+a.date * 1000).hour(6).minute(0).second(0).unix() * 1000
+          result[d] = result[d] || []
+          result[d].push({
+            ...a,
+            date: +a.date * 1000
+          })
+          return result
+        }, Object.create(null))
+      return {
+        keys: Object
+          .keys(result)
+          .map(key => parseInt(key))
+          .sort()
+          .reverse(),
+        result
+      }
+      // console.log(result)
+    }
   }
 }
