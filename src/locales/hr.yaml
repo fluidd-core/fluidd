@@ -11,11 +11,11 @@ app:
       jobs: Zadani Ispisi
       macros: Makroi
       limits: Printer Limits
-      logs: Printer Logs
+      logs: Logovi Printera
       system_control: Kontrola Sustava
       runout_sensors: Runout Sensors
       status: Status
-      temperature: Temperature
+      temperature: Temperatura
       tool: Alat
       tune: Podešavanje
       configure: Konfiguracija
@@ -24,13 +24,13 @@ app:
       history: Povijest Poslova
       config_files: Konfiguracijske Datoteke
     label:
-      accel_to_decel: Ubrz to Uspor
+      accel_to_decel: Ubrz do Uspor
       acceleration: Ubrzanje
       sqv: Brzina Pravog Kuta
       velocity: Brzina
       api_url: API URL
       host: Poslužitelj
-      layout: LayoutOk
+      layout: Raspored
       name: Ime
       power: Power
       printers: Printeri
@@ -38,7 +38,7 @@ app:
       services: Servisi
       speed: Brzina
       flow: Protok
-      z_offset: Z Offset
+      z_offset: Z Pomak
       high: High
       low: Low
       off: Ugašen
@@ -60,7 +60,7 @@ app:
       add_camera: Dodaj Kameru
       extrude_length: Duljina Ekstruzije
       extrude_speed: Brzina Ekstruzije
-      confirm: Porvrdi
+      confirm: Potvrdi
     btn:
       all: Svi
       all_off: Svi ugašeni
@@ -111,7 +111,7 @@ app:
         layer_height: Visina sloja
         estimated_time: Procijenjeno vrijeme
         last_printed: Zadnje ispisivanje
-        modified: Modificirano
+        modified: Izmijenjeno
         size: Veličina
         start_time: Početno Vrijeme
         print_duration: Duljina Ispisa
@@ -143,7 +143,7 @@ app:
   socket:
     msg:
       connecting: Spajanje na moonraker...
-      no_connection: Nema moonraker veze. Molimo provjerite moonraker status i / ili osvježite.
+      no_connection: Nema veze sa moonraker-om. Molimo provjerite status moonraker-a i / ili osvježite.
   version:
     title: Ažuriranja Softvera
     btn:
@@ -164,7 +164,7 @@ app:
     label:
       hide_temp_waits: Hide temp waits
     placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+      command: '''tab'' za automatsko popunjavanje, ''help'' za naredbe ''strelice'' za povijest'
   tool:
     btn:
       home_x: X
@@ -173,7 +173,7 @@ app:
       home_xy: Home XY
       home_z: Home Z
       extruder_disabled: >-
-        extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+        ekstruzija onemogućena, ispod min_extrude_temp (%{min}<small>°C</small>)
   bedmesh:
     label:
       profile_name: Ime Profila
