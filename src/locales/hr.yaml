@@ -1,0 +1,333 @@
+app:
+  general:
+    title:
+      camera: Kamera | Kamere
+      console: Konzola
+      bedmesh: Bed Mesh
+      home: Nadzorna Ploča
+      add_printer: Dodaj Printer
+      endstops: Endstops
+      fans_outputs: Ventilatori i Izlazi
+      jobs: Zadani Ispisi
+      macros: Makroi
+      limits: Printer Limits
+      logs: Printer Logs
+      system_control: Kontrola Sustava
+      runout_sensors: Runout Sensors
+      status: Status
+      temperature: Temperature
+      tool: Alat
+      tune: Podešavanje
+      configure: Konfiguracija
+      interface: Sučelje
+      stats: Statistike Printera
+      history: Povijest Poslova
+      config_files: Konfiguracijske Datoteke
+    label:
+      accel_to_decel: Ubrz to Uspor
+      acceleration: Ubrzanje
+      sqv: Brzina Pravog Kuta
+      velocity: Brzina
+      api_url: API URL
+      host: Poslužitelj
+      layout: LayoutOk
+      name: Ime
+      power: Power
+      printers: Printeri
+      requested_speed: Tražena Brzina
+      services: Servisi
+      speed: Brzina
+      flow: Protok
+      z_offset: Z Offset
+      high: High
+      low: Low
+      off: Ugašen
+      used: korišteno
+      free: slobodno
+      total_jobs: Svi ispisi
+      longest_job: Najdulji ispis
+      total_time: Ukupno vrijeme
+      total_time_avg: Prosjecno po ispisu
+      total_print_time: Ukupno vrijeme ispisa
+      total_print_time_avg: Prosjecno po ispisu
+      total_filament: Ukupna upotrijebljena nit
+      total_filament_avg: Ukupna upotrijebljena nit
+      variance: Varijacija
+      save_as: Spremi Kao
+      edit_preset: Uredi Predložak
+      add_preset: Dodaj Predložak
+      edit_camera: Uredi Kameru
+      add_camera: Dodaj Kameru
+      extrude_length: Duljina Ekstruzije
+      extrude_speed: Brzina Ekstruzije
+      confirm: Porvrdi
+    btn:
+      all: Svi
+      all_off: Svi ugašeni
+      quad_gantry_level: QGL
+      add: Dodaj
+      pause: Pauziraj
+      reboot: Ponovno Pokreni
+      shutdown: Ugasi
+      remove: Ukloni
+      remove_all: Ukloni Sve
+      rename: Preimenuj
+      resume: Nastavi
+      cancel: Poništi
+      save: Spremi
+      save_as: Spremi Kao
+      upload: Učitaj
+      upload_print: Učitaj i Ispiši
+      preheat: Predgrij
+      reprint: Ponovno Ispiši
+      save_restart: Spremi i Ponovno Pokreni
+      adjust_layout: Podesi izgled nadzorne ploče
+      calibrate: Kalibriraj
+      clear_profile: Obriši Profil
+      download: Preuzmi
+      add_printer: Dodaj printer
+      edit: Uredu
+      extrude: Ekstrudaj
+      retract: Uvuci
+      restart_firmware: Ponovno Pokreni Firmver
+      restart_service_klipper: Ponovno Pokreni Klipper
+      restart_service_moonraker: Ponovno Pokreni Moonraker
+      restart_service_webcamd: Ponovno Pokreni Kameru
+      socket_refresh: Prisilno osvježi
+      reset_file: Poništi Datoteku
+      reset_layout: Poništi Layout
+      view: Pregled
+      close: Zatvori
+      config_reference: Referenca Konfiguracije
+      add_file: Dodaj Datoteku
+      add_dir: Dodaj Direktorij
+    table:
+      header:
+        filament_used: Nit
+        name: Ime
+        slicer: Slicer
+        status: Status
+        height: Visina
+        layer_height: Visina sloja
+        estimated_time: Procijenjeno vrijeme
+        last_printed: Zadnje ispisivanje
+        modified: Modificirano
+        size: Veličina
+        start_time: Početno Vrijeme
+        print_duration: Duljina Ispisa
+        actions: Akcije
+    simple_form:
+      msg:
+        confirm: Jeste li sigurni?
+        confirm_reboot_host: Jeste li sigurni? Ovo će ponovno pokrenuti poslužitelja.
+        confirm_shutdown_host: Jeste li sigurni? Ovo će ponovno pokrenuti poslužitelja.
+      error:
+        invalid_url: Nevažeći URL
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} ili 0
+        required: Neophodno
+    tooltip:
+      estop: Hitno Zaustavljanje
+    error:
+      app_warnings_found: '%{appName} pronađena upozorenja.'
+      app_setup_link: >-
+        Zahtjevi za postavljanje Fluidd-a <a target="_blank"
+        href="%{url}">ovdje.</a>
+      failed_components: >-
+        Moonraker nije uspio dodati dodatke, provjerite svoje logove, ažurirajte svoju 
+        konfiguraciju i ponovo pokrenite moonraker.
+      components_config: >-
+        Konfiguracija moonraker dodataka može se naći na <a target="_blank"
+        href="%{url}">.</a>
+  socket:
+    msg:
+      connecting: Spajanje na moonraker...
+      no_connection: Nema moonraker veze. Molimo provjerite moonraker status i / ili osvježite.
+  version:
+    title: Ažuriranja Softvera
+    btn:
+      update: Ažuriraj
+      finish: Završi
+      check_for_updates: Provjera ažuriranja
+    label:
+      dirty: DIRTY
+      invalid: INVALID
+      up_to_date: UP TO DATE
+    status:
+      updating: Ažuriranje...
+      finished: Ažurirano
+    tooltip:
+      dirty: indicates a detached head, not on master or an invalid origin
+      invalid: indicates local changes to the repo
+  console:
+    label:
+      hide_temp_waits: Hide temp waits
+    placeholder:
+      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+    tooltip:
+      home_xy: Home XY
+      home_z: Home Z
+      extruder_disabled: >-
+        extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+  bedmesh:
+    label:
+      profile_name: Ime Profila
+      remove_profile: Ukloni %{name} profil
+    msg:
+      not_found: No existing bed meshes found.
+      hint: >-
+        If saving as something other than %{name}, you can choose to also remove
+        the %{name} profile
+    tooltip:
+      calibrate: Pokreće novu kalibraciju, sprema kao profil 'default'
+      delete: Ukloni Profil. Ovo će PONOVNO POKRENUTI Vaš printer
+      save: >-
+        Commits calibrated profile to printer.cfg. This WILL restart your
+        printer
+      load: Učitaj Profil
+  printer:
+    status:
+      used_filament: korištena nit
+      time_left: procijenjeno preostalo vrijeme
+      duration: trajanje
+      duration_total: trajanje i ukupno
+    state:
+      printing: Ispis
+      loading: Učitavanje
+      complete: Završeno
+      paused: Pauzirano
+      standby: U Pripravnosti
+      idle: Na Čekanju
+      ready: Spreman
+      busy: Zauzet
+  setting:
+    title:
+      camera: Kamera | Kamere
+      macros: Makroi
+      general: Općenito
+      theme: Tema
+      tool: Alat
+      thermal_presets: Termalni Predlošsci
+    label:
+      camera_fillspace: Popuni prostor
+      camera_fillspace_help: Sa jednom kamerom popuni dio nadzorne ploče za kameru.
+      camera_url: URL Kamere
+      printer_name: Ime Printera
+      language: Jezik Prikaza
+      default_toolhead_move_length: Zadana duljina pomicanja alatne glave
+      default_extrude_speed: Zadana brzina ekstruzije
+      default_extrude_length: Zadana duljina ekstruzije
+      default_toolhead_z_speed: Zadana Z brzina alatne glave
+      default_toolhead_xy_speed: Zadana XY brzine
+      camera_flip_x: Zrcali vodoravno
+      camera_flip_y: Zrcali vertikalno
+      camera_stream_type: Vrsta streama
+      thermal_preset_name: Unaprijed postavljeno ime
+      all_on: Upali sve
+      all_off: Ugasi sve
+      toggle: Toggle
+      dark_mode: Tamna tema
+      primary_color: Primarna boja
+      reset: Vrati na zadane postavke
+      z_adjust_values: Z Adjust values
+      gcode_coords: Koristi GCode Koordinate
+      time_estimates: Procjene vremena
+      invert_z_control: Izokreni Z kontrolu
+      invert_y_control: Izokreni Y kontrolu
+      invert_x_control: Izokreni X kontrolu
+      enable: Omogući
+      fps_target: FPS Cilj
+    btn:
+      add_camera: Dodaj Kameru
+      select_theme: Odaberi Temu
+      add_thermal_preset: Dodaj Predložak
+      reset: Poništi
+    timer_options:
+      duration: Samo trajanje
+      duration_description: Slično Klipper LCD-u, samo pokazuje trajanje bez procjene.
+      file: Procjena Datoteke
+      file_description: >-
+        Takes progress percent, and duration to estimate total duration.<br />
+        More accurate over time.
+      filament: Procjena Niti
+      filament_description: >-
+        Takes used filament vs estimated filament to estimate total duration.<br />
+        More accurate over time.
+      slicer: Slicer
+      slicer_description: Koristi procjene slicer-a za prikaz. Morate omogućiti ovo u Vašem slicer-u.
+    camera_type_options:
+      video: IP Kamera
+      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG Adaptive
+    tooltip:
+      gcode_coords: Koristi GCode položaj umjesto položaja alatne glave na nadzornoj ploči
+  chart:
+    tooltip:
+      help: >-
+        Držite shift za povećanje.<br />Kliknite stavku za uključivanje/isključivanje na grafikonu.<br
+        />Click a power to toggle in the graph.
+    label:
+      item: Stavka
+      current: Trenutno
+      target: Cilj
+      power: Power
+  file_system:
+    title:
+      rename_file: Preimenuj Datoteku
+      rename_dir: Preimenuj Direktorij
+      add_file: Dodaj Datoteku
+      add_dir: Dodaj Direktorij
+    label:
+      dir_name: Ime Direktorija
+      file_name: Ime Datoteke
+      disk_usage: Zauzetost Diska
+    msg:
+      not_found: Ni jedna datoteka nije pronađena
+      uploading: Učitavanje...
+      processing: Obrada...
+      confirm: Jeste li sigurni? Ovo će obrisati sve datoteke i direktorije.
+    tooltip:
+      disabled: Poslovi su isključeni prije početne komunikacije sa Klippy-jem
+      low_on_space: Nema dovoljno prostora na disku
+    overlay:
+      label: <strong>Povuci</strong> datoteku ovdje
+      uploading: <strong>Učitavanje</strong> datoteka
+    filters:
+      label:
+        print_start_time: Filtriraj isprintano
+        print_start_time_desc: Filtriraj već isprintane stavke.
+  endstop:
+    label:
+      open: OPEN
+      triggered: TRIGGERED
+    msg:
+      subtitle: Use the refresh button to update endstop status.
+  history:
+    msg:
+      confirm: Jeste li sigurni? Ovo će poništi svu povijest i statistike printanja
+      load_count: Predstavlja zadnjih {num} Poslova
+  endpoint:
+    hint:
+      add_printer: Npr., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Imate problema? <a href="%{url}" target="_blank">Idite ovdje</a> za
+        više informacija.
+    tooltip:
+      endpoint_examples: >-
+        Unesite svoj API URL.<br />Neki primjeri bi mogli biti;<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+    error:
+      cant_connect: >-
+        Nešto nije u redu i fluidd ne može pristupiti unesenoj adresi. Jeste li
+        sigurni da je točna?
+      cors_error: Blokirano CORS politkom
+      cors_note: >-
+        Ovo znači da možda morate urediti Vašu moonraker konfiguraciju. Molimo
+        da pogledate dokumentaciju u postavljanju više printera <a href="%{url}"
+        target="_blank">ovdje</a>
