@@ -40,11 +40,11 @@ module.exports = {
       new GenerateFilePlugin({
         file: '.version',
         content: 'v' + v + '\n'
-      }),
-      new BundleAnalyzerPlugin({
-        analyzerMode:
-          (process.env.NODE_ENV === 'production') ? 'server' : 'disabled'
       })
+      // new BundleAnalyzerPlugin({
+      //   analyzerMode:
+      //     (process.env.NODE_ENV === 'production') ? 'server' : 'disabled'
+      // })
     ]
   },
   chainWebpack: config => {
