@@ -38,13 +38,14 @@
       v-if="!readonly"
       v-model="consoleCommand"
       @send="sendCommand"
+      @autoScrollChange="handleAutoScrollChange"
     >
     </console-command>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Watch, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
@@ -69,8 +70,7 @@ export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   readonly!: boolean
 
-  @Prop({ type: Boolean, default: false })
-  padBottom!: boolean
+  @Ref('scroller') dynamicScroller: any
 
   get availableCommands () {
     return this.$store.getters['console/getAllGcodeCommands']
@@ -109,9 +109,23 @@ export default class Console extends Mixins(StateMixin) {
     }
   }
 
+  handleAutoScrollChange (autoScroll: boolean) {
+    if (autoScroll) {
+      this.scrollToBottom()
+    }
+  }
+
   scrollToBottom () {
-    const ref = this.$refs.scroller as any
-    if (ref) ref.scrollToBottom()
+    // If we have auto scroll turned off, then don't do this
+    // unless it's readonly.
+    if (this.dynamicScroller) {
+      if (
+        this.$store.state.console.autoScroll ||
+        this.readonly
+      ) {
+        this.dynamicScroller.scrollToBottom()
+      }
+    }
   }
 
   sendCommand (command?: string) {
@@ -131,13 +145,13 @@ export default class Console extends Mixins(StateMixin) {
   .console {
     position: relative;
     display: block;
-    font-family: monospace;
-    font-size: 1rem; // 15 px
-    font-weight: 100 !important;
   }
 
   .console-wrapper {
     overflow-x: hidden;
+    font-family: monospace;
+    font-size: 1rem; // 15 px
+    font-weight: 100 !important;
   }
 
   .v-input {

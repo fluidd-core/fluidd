@@ -19,7 +19,7 @@ app:
       tool: Tool
       tune: Tune
       configure: Configure
-      interface: Interface
+      settings: Settings
       stats: Printer Stats
       history: Job History
       config_files: Configuration Files
@@ -154,12 +154,20 @@ app:
       dirty: DIRTY
       invalid: INVALID
       up_to_date: UP TO DATE
+      commit_history: Commit History
+      package_list: Package List
+      commits_on: commits on
+      committed: Committed
     status:
       updating: Updating...
       finished: Updates finished
     tooltip:
       dirty: indicates a detached head, not on master or an invalid origin
       invalid: indicates local changes to the repo
+      release_notes: Release notes
+      packages: Packages
+      commit_history: Commit history
+      commits: Commits
   console:
     label:
       hide_temp_waits: Hide temp waits
@@ -282,17 +290,21 @@ app:
       rename_dir: Rename Directory
       add_file: Add File
       add_dir: Add Directory
+      download_file: Retrieving file
+      upload_file: Uploading file | Uploading files
     label:
       dir_name: Directory name
       file_name: Filename
       disk_usage: Disk Usage
+      downloaded: Downloaded
+      uploaded: Uploaded
+      transfer_rate: Transfer rate
     msg:
       not_found: No files found
-      uploading: Uploading...
-      processing: Processing...
+      processing: Processing
       confirm: Are you sure? This will delete all files and folders within.
     tooltip:
-      disabled: Jobs are disabled prior to initial communcation with klippy
+      disabled: Jobs require initial communication with klippy and a valid virtual_sdcard path
       low_on_space: Low on disk space
     overlay:
       label: <strong>Drag</strong> a file here

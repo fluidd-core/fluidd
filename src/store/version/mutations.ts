@@ -16,17 +16,18 @@ export const mutations: MutationTree<VersionState> = {
   },
 
   setUpdateStatus (state, payload) {
-    if ('busy' in payload) state.busy = payload.busy
-    if ('github_limit_reset_time' in payload) state.github_limit_reset_time = payload.github_limit_reset_time
-    if ('github_rate_limit' in payload) state.github_rate_limit = payload.github_rate_limit
-    if ('github_requests_remaining' in payload) state.github_requests_remaining = payload.github_requests_remaining
+    if (payload) {
+      if ('busy' in payload) state.busy = payload.busy
+      if ('github_limit_reset_time' in payload) state.github_limit_reset_time = payload.github_limit_reset_time
+      if ('github_rate_limit' in payload) state.github_rate_limit = payload.github_rate_limit
+      if ('github_requests_remaining' in payload) state.github_requests_remaining = payload.github_requests_remaining
 
-    const versionInfo = payload.version_info || undefined
-    if (versionInfo) {
-      for (const k in versionInfo) {
-        const type = k
-        Vue.set(state.components, k, { type, ...payload.version_info[k] })
-      }
+      const o = Object.assign(
+        {},
+        state.version_info,
+        payload.version_info
+      )
+      Vue.set(state, 'version_info', o)
     }
   },
 

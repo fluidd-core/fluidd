@@ -2,17 +2,14 @@
 
 ## Next Up
 
-- new file edit
-- fix filament lengths on history tab
-- impl new component reset
+- impl new version recovery
+
 
 ### Features
 
-- add git history
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - alternate bed mesh scales
 - file system enhancements
-  - better file editing
   - bulk actions to delete or move?
   - copy file
   - move dialog

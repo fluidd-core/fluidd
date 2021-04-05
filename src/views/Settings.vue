@@ -3,6 +3,7 @@
     <v-row justify="center">
       <v-col cols="12" md="6">
         <general-settings></general-settings>
+        <version-settings v-if="supportsVersions"></version-settings>
         <camera-settings></camera-settings>
         <theme-settings></theme-settings>
         <toolhead-settings></toolhead-settings>
@@ -23,6 +24,7 @@ import TemperaturePresetSettings from '@/components/settings/TemperaturePresetSe
 import CameraSettings from '@/components/settings/CameraSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
+import VersionSettings from '@/components/settings/VersionSettings.vue'
 
 @Component({
   components: {
@@ -31,8 +33,13 @@ import ThemeSettings from '@/components/settings/ThemeSettings.vue'
     TemperaturePresetSettings,
     CameraSettings,
     ToolheadSettings,
-    ThemeSettings
+    ThemeSettings,
+    VersionSettings
   }
 })
-export default class Settings extends Mixins(StateMixin) {}
+export default class Settings extends Mixins(StateMixin) {
+  get supportsVersions () {
+    return this.$store.getters['server/pluginSupport']('update_manager')
+  }
+}
 </script>

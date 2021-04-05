@@ -127,7 +127,7 @@ export default class PrinterStatusCard extends Mixins(StateMixin, FilesMixin) {
     this.$tc('app.general.simple_form.msg.confirm')
     this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm'),
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {

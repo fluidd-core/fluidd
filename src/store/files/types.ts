@@ -1,11 +1,12 @@
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[] | string[] | CurrentPaths | DiskUsage;
+  [key: string]: Files[] | FilesUpload[] | FileDownload | string[] | CurrentPaths | DiskUsage | null;
   availableRoots: string[];
   gcodes: Files[];
   config: Files[];
   config_examples: Files[];
   docs: Files[];
   uploads: FilesUpload[];
+  download: FileDownload | null;
   currentPaths: CurrentPaths;
   disk_usage: DiskUsage;
 }
@@ -106,10 +107,17 @@ export interface FileUpdate {
   root: string;
 }
 
-export interface FilesUpload {
-  filename: string;
-  percentUploaded: number;
-  processingComplete: boolean; // indicates moonraker is finished with the file.
+export interface FileDownload {
+  filepath: string;
+  size: number;
+  loaded: number;
+  percent: number;
+  speed: number;
+  unit: string;
+}
+
+export interface FilesUpload extends FileDownload {
+  complete: boolean; // indicates moonraker is finished with the file.
 }
 
 export interface FileFilter {

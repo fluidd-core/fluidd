@@ -32,7 +32,7 @@ export default class PrinterHistoryCard extends Vue {
   handleRemoveAll () {
     this.$confirm(
       this.$tc('app.history.msg.confirm'),
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {

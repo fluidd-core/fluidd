@@ -15,6 +15,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import consola from 'consola'
+import { loadWASM } from 'onigasm'
 
 import { appInit } from './init'
 
@@ -80,6 +81,13 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 // Vue.use(WorkboxPlugin)
+
+const loadOnigasm = async (): Promise<void> => {
+  const wasm = await require('onigasm/lib/onigasm.wasm')
+  await loadWASM(wasm.default)
+}
+
+loadOnigasm()
 
 appInit()
   .then((config: InitConfig) => {

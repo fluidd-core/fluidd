@@ -83,7 +83,8 @@ import {
   mdiThermometerLow,
   mdiHelpCircle,
   mdiHistory,
-  mdiFilterOutline
+  mdiFilterOutline,
+  mdiSourceCommit
 } from '@mdi/js'
 
 /**
@@ -217,7 +218,8 @@ export const Icons = Object.freeze({
   bedMesh: mdiViewGridOutline,
   host: mdiDesktopTower,
   history: mdiHistory,
-  filter: mdiFilterOutline
+  filter: mdiFilterOutline,
+  commit: mdiSourceCommit
 })
 
 export const Waits = Object.freeze({

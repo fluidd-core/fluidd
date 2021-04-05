@@ -1,28 +1,44 @@
 <template>
-  <div>
-    <v-text-field
-      ref="input"
-      :value="newValue"
-      @input="emitChange"
-      :items="history"
-      class="ma-4"
-      clearable
-      outlined
-      single-line
-      dense
-      hide-details
-      :placeholder="$t(`app.console.placeholder.command`)"
-      @keyup.enter="emitSend(newValue)"
-      @keyup.up="historyUp()"
-      @keyup.down="historyDown()"
-      @keydown.prevent.tab="autoComplete()">
-      <template v-slot:append-outer>
-        <v-icon @click="emitSend(newValue)">$send</v-icon>
-      </template>
-    </v-text-field>
+  <v-container>
+    <v-row align="center">
+      <v-col>
+        <v-text-field
+          ref="input"
+          :value="newValue"
+          @input="emitChange"
+          :items="history"
+          clearable
+          outlined
+          single-line
+          dense
+          hide-details
+          :placeholder="$t(`app.console.placeholder.command`)"
+          @keyup.enter="emitSend(newValue)"
+          @keyup.up="historyUp()"
+          @keyup.down="historyDown()"
+          @keydown.prevent.tab="autoComplete()">
+        </v-text-field>
+      </v-col>
+      <v-col cols="auto">
+        <app-btn
+          @click="emitSend(newValue)"
+        >
+          Send
+        </app-btn>
+      </v-col>
+      <v-col cols="auto">
+        <v-checkbox
+          v-model="autoScroll"
+          hide-details
+          label="Auto scroll"
+          class="mt-0 pt-0"
+        >
+        </v-checkbox>
+      </v-col>
+    </v-row>
+  </v-container>
     <!-- <pre>{{ originalHistory }}</pre>
     <pre>{{ history }}</pre> -->
-  </div>
 </template>
 
 <script lang="ts">
@@ -51,6 +67,15 @@ export default class ConsoleCommand extends Vue {
   history: string[] = []
   originalHistory: string[] = []
   isFirst = true
+
+  get autoScroll () {
+    return this.$store.state.console.autoScroll
+  }
+
+  set autoScroll (value: boolean) {
+    this.$store.dispatch('console/onUpdateAutoScroll', value)
+    this.$emit('autoScrollChange', value)
+  }
 
   mounted () {
     this.newValue = this.value

@@ -16,6 +16,7 @@
           class="my-1"
         >
         </v-progress-linear>
+
         <v-layout justify-space-between>
           <div class="grey--text">
             <span class="focus--text">
@@ -31,7 +32,7 @@
       </div>
 
       <v-row v-if="supportsHistoryPlugin">
-        <v-col cols="3">
+        <v-col cols="6">
           <v-card outlined class="px-2 py-1 text-center stat-square">
             <div class="grey--text text--darken-2">{{ $t('app.general.label.total_jobs') }}</div>
             <div class="grey--text focus--text">{{ rollup.total_jobs }}</div>
@@ -39,7 +40,7 @@
             <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.longest_job) }}</div>
           </v-card>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="6">
           <v-card outlined class="px-2 py-1 text-center stat-square">
             <div class="grey--text text--darken-2">{{ $t('app.general.label.total_time') }}</div>
             <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.total_time) }}</div>
@@ -47,7 +48,7 @@
             <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.total_avg) }}</div>
           </v-card>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="6">
           <v-card outlined class="px-2 py-1 text-center stat-square">
             <div class="grey--text text--darken-2">{{ $t('app.general.label.total_print_time') }}</div>
             <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.total_print_time) }}</div>
@@ -55,7 +56,7 @@
             <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.print_avg) }}</div>
           </v-card>
         </v-col>
-        <v-col cols="3">
+        <v-col cols="6">
           <v-card outlined class="px-2 py-1 text-center stat-square">
             <div class="grey--text text--darken-2">{{ $t('app.general.label.total_filament') }}</div>
             <div class="grey--text focus--text">{{ $filters.getReadableLengthString(rollup.total_filament_used) }}</div>

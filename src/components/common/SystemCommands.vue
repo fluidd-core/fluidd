@@ -70,6 +70,14 @@
         </v-list-item-icon>
       </v-list-item>
 
+      <v-list-item @click="serviceRestartKlipper(); $emit('click')"
+        :disabled="printerPrinting">
+        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_klipper') }}</v-list-item-title>
+        <v-list-item-icon>
+          <v-icon color="warning">$restart</v-icon>
+        </v-list-item-icon>
+      </v-list-item>
+
       <v-list-item @click="serviceRestartWebcam(); $emit('click')"
         :disabled="printerPrinting">
         <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_webcamd') }}</v-list-item-title>
@@ -118,7 +126,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   handleHostReboot () {
     this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_reboot_host'),
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {
@@ -131,7 +139,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   handleHostShutdown () {
     this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
-      { title: this.$tc('app.general.label.confirm'), color: 'secondary', icon: '$error' }
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
         if (res) {

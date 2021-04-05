@@ -2,7 +2,7 @@ import { Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import { AxiosRequestConfig } from 'axios'
 import EventBus from '@/eventBus'
 
 @Component
@@ -26,49 +26,106 @@ export default class FilesMixin extends Vue {
     return ''
   }
 
-  // Retrieves a file from moonraker.
-  getFile (path: string, options?: AxiosRequestConfig) {
-    const o = { ...options }
+  /**
+   * Will retrieve a file blob for independent processing.
+   * @param filename The filename to retrieve
+   * @param path The path to the file
+   */
+  async getFile (filename: string, path: string, size: number, options?: AxiosRequestConfig) {
+    // Sort out the filepath
+    const filepath = (path) ? `${path}/${filename}` : `${filename}`
+
+    // Add an entry to vuex indicating we're downloading a file.
+    const startTime = performance.now()
+    this.$store.dispatch('files/updateFileDownload', {
+      // starttime: performance.now(),
+      filepath,
+      size,
+      loaded: 0,
+      percent: 0,
+      speed: 0,
+      unit: 'kB'
+    })
+
+    // Append any additional options.
+    const o = {
+      ...options,
+      onDownloadProgress: (progressEvent: ProgressEvent) => {
+        const units = ['kB', 'MB', 'GB']
+        let speed = progressEvent.loaded / (performance.now() - startTime)
+        let i = 0
+        while (speed > 1024) {
+          speed /= 1024.0
+          i = Math.min(2, i + 1)
+        }
+        this.$store.dispatch('files/updateFileDownload', {
+          filepath,
+          loaded: progressEvent.loaded,
+          percent: Math.round(progressEvent.loaded / size * 100),
+          speed,
+          unit: units[i]
+        })
+      }
+    }
+
     return this.$http.get(
-      encodeURI(this.apiUrl + '/server/files/' + path + '?date=' + new Date().getTime()),
+      encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()),
       o
     )
+      .then((response) => {
+        this.$store.dispatch('files/removeFileDownload')
+        return response
+      })
   }
 
-  // Download a file.
+  /**
+   * Will download a file by filepath via a standard browser link.
+   * @param filename The filename to retrieve.
+   * @param path The path to the file.
+   */
   downloadFile (filename: string, path: string) {
+    // Sort out the filepath and url.
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
-    this.getFile(filepath, { responseType: 'blob' })
-      .then((response: AxiosResponse) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', filename)
-        document.body.appendChild(link)
-        link.click()
-      })
+    const url = encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime())
+
+    // Create a link, handle its click - and finally remove it again.
+    const link = document.createElement('a')
+    link.href = url
+    link.setAttribute('download', filename)
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   /**
    * Uploads a single file via moonraker.
    * @param file The file object. Contains the filename.
-   * @param path The path we're uploading to, incl root.
+   * @param path The path we're uploading to.
+   * @param root The root we're downloading from.
    * @param andPrint If we should attempt to print this file or not.
    */
   async uploadFile (file: File, path: string, root: string, andPrint: boolean) {
     const formData = new FormData()
-    let filename = file.name.replace(' ', '_')
-    filename = `${path}/${filename}`
-    filename = (filename.startsWith('/'))
-      ? filename
-      : '/' + filename
-    formData.append('file', file, filename)
+    // let filename = file.name.replace(' ', '_')
+    let filepath = `${path}/${file.name}`
+    filepath = (filepath.startsWith('/'))
+      ? filepath
+      : '/' + filepath
+    formData.append('file', file, filepath)
     formData.append('root', root)
     if (andPrint) {
       formData.append('print', 'true')
     }
 
-    this.$store.dispatch('files/addFileUpload', { filename, percentComplete: 0 })
+    const startTime = performance.now()
+    this.$store.dispatch('files/updateFileUpload', {
+      filepath,
+      size: file.size,
+      loaded: 0,
+      percent: 0,
+      speed: 0,
+      unit: 'kB'
+    })
 
     return this.$http
       .post(
@@ -78,21 +135,50 @@ export default class FilesMixin extends Vue {
             'Content-Type': 'multipart/form-data'
           },
           onUploadProgress: (progressEvent: ProgressEvent) => {
-            const percentComplete = Math.round(progressEvent.loaded / progressEvent.total * 100)
-            this.$store.dispatch('files/updateFileUpload', { filename, percentComplete })
+            const units = ['kB', 'MB', 'GB']
+            let speed = progressEvent.loaded / (performance.now() - startTime)
+            let i = 0
+            while (speed > 1024) {
+              speed /= 1024.0
+              i = Math.min(2, i + 1)
+            }
+            this.$store.dispatch('files/updateFileUpload', {
+              filepath,
+              loaded: progressEvent.loaded,
+              percent: Math.round(progressEvent.loaded / progressEvent.total * 100),
+              speed,
+              unit: units[i]
+            })
           }
         }
       )
       .then((response) => {
-        this.$store.dispatch('files/removeFileUpload', filename)
+        this.$store.dispatch('files/removeFileUpload', filepath)
         return response
       })
   }
 
   // Upload some files.
   async uploadFiles (files: FileList, path: string, root: string, andPrint: boolean) {
+    // Add a file upload for each intended file.
+    for (const file of files) {
+      let filepath = `${path}/${file.name}`
+      filepath = (filepath.startsWith('/'))
+        ? filepath
+        : '/' + filepath
+      this.$store.dispatch('files/updateFileUpload', {
+        filepath,
+        size: file.size,
+        loaded: 0,
+        percent: 0,
+        speed: 0,
+        unit: 'kB'
+      })
+    }
+
     // Async uploads cause issues in moonraker / klipper.
-    // So instead, upload sequentially.
+    // So instead, upload sequentially waiting for moonraker to finish
+    // processing of each file.
     if (files.length > 1) andPrint = false
     for (const file of files) {
       try {

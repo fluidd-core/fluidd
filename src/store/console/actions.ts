@@ -69,5 +69,13 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    */
   async onGcodeHelp ({ commit }, payload) {
     commit('setGcodeHelp', payload)
+  },
+
+  /**
+   * Updates auto scroll value
+   */
+  async onUpdateAutoScroll ({ commit }, payload) {
+    commit('setAutoScroll', payload)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.autoScroll', payload)
   }
 }

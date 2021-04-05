@@ -1,0 +1,349 @@
+app:
+  bedmesh:
+    label:
+      profile_name: Profil neve
+      remove_profile: '%{name} profil eltávolítása'
+    msg:
+      hint: >-
+        Ha nem a (z) %{name}fájlként menti, választhatja a (z) %{name} profil
+        eltávolítását is
+      not_found: Nem találhatóak meglévő ágy Meshek.
+    tooltip:
+      calibrate: 'Új kalibrálás indítása, "alapértelmezett"  profilként mentve'
+      delete: Törlöm a profilt. Ezután ÚJRAIDÍTOM a nyomtatót!
+      load: Profil betöltése
+      save: >-
+        A kalibrált profilt a printer.cfg fájlba írom. Ezután ÚJRAIDÍTOM a
+        nyomtatót!
+  chart:
+    label:
+      current: Aktuális
+      item: Tétel
+      power: Erősség
+      target: Cél
+    tooltip:
+      help: >-
+        A nagyításhoz tartsd lenyomva a Shift billentyűt.<br />Kattints egy
+        elemre a grafikonon való megjelenítéshez.<br />Kattints az erősségre a
+        grafikonon való megjelenítéshez.
+  console:
+    label:
+      hide_temp_waits: Felfűtésre várás elrejtése
+    placeholder:
+      command: >-
+        Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
+        'help'-et, az előzményekhez 'arrows'-t.
+  endpoint:
+    error:
+      cant_connect: >-
+        Valamilyen hiba történt, és a Fluidd nem tudja elérni a célját. Biztos,
+        hogy ez a helyes cím?
+      cors_error: a CORS-irányelvek blokkolták
+      cors_note: >-
+        Ez azt jelentheti, hogy módosítanod kell a Moonraker konfigurációját.
+        Kérlek, olvasd el a több nyomtató beállítására vonatkozó <a
+        href="%{url}" target="_blank">dokumentációt itt</a>
+    hint:
+      add_printer: 'Pl.: Http://fluiddpi.local'
+    msg:
+      trouble: >-
+        Problémád akadt? További információt <a href="%{url}"
+        target="_blank">itt találsz</a> .
+    tooltip:
+      endpoint_examples: >-
+        Írd be az API URL-jét.<br />Néhány példa:<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: NYITVA
+      triggered: AKTIVÁLVA
+    msg:
+      subtitle: Az endstop állapotának frissítéséhez használd a Frissítés gombot.
+  file_system:
+    filters:
+      label:
+        print_start_time: Nyomtatottak szűrése
+        print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
+    label:
+      dir_name: Könyvtár neve
+      disk_usage: Lemez használat
+      file_name: Fájl név
+    msg:
+      confirm: Biztos vagy benne? Ez ki fogja törölni az összes fájlt és mappát.
+      not_found: Nem találhatóak fájlok.
+      processing: '1'
+      uploading: Feltöltés...
+    overlay:
+      label: Húzza <strong>ide</strong> a fájlt
+      uploading: 'Fájlok <strong>feltöltése</strong> '
+    title:
+      add_dir: Könyvtár hozzáadása
+      add_file: Fájl hozzáadása
+      rename_dir: Könyvtár átnevezése
+      rename_file: Fájl átnevezése
+    tooltip:
+      disabled: >-
+        A munkák le vannak tiltva a klippy-vel való kommunikáció megkezdése
+        előtt
+      low_on_space: Kevés lemezterület
+  general:
+    btn:
+      add: Hozzáad
+      add_dir: Könyvtár hozzáadása
+      add_file: Fájl hozzáadása
+      add_printer: Nyomtató hozzáadása
+      adjust_layout: Az irányítópult elrendezésének beállítása
+      all: Mindegyik
+      all_off: Minden ki
+      calibrate: Kalibrálás
+      cancel: Mégsem
+      clear_profile: Profil törlése
+      close: Bezárás
+      config_reference: Beállítási referencia
+      download: Letöltés
+      edit: Szerkeszt
+      extrude: Extrudálás
+      pause: Szünet
+      preheat: Előfűtés
+      quad_gantry_level: QGL
+      reboot: Újraindít
+      remove: Eltávolít
+      remove_all: Összes eltávolítása
+      rename: Átnevezés
+      reprint: Újranyomtat
+      reset_file: Fájl alaphelyzetbe állítása
+      reset_layout: Elrendezés alaphelyzetbe állítása
+      restart_firmware: Firmware újraindítása
+      restart_service_klipper: Klipper újraindítása
+      restart_service_moonraker: Moonraker újraindítása
+      restart_service_webcamd: Webkamera újraindítása
+      resume: Folytatás
+      retract: Retract/Visszahúzás
+      save: Mentés
+      save_as: Mentés másként
+      save_restart: Mentés és újraindítás
+      shutdown: Leállítás
+      socket_refresh: Frissítés kényszerítése
+      upload: Feltöltés
+      upload_print: Feltöltés és nyomtatás
+      view: Nézet
+    error:
+      app_setup_link: >-
+        A fluid telepítési követelményeit <a target="_blank" href="%{url}">itt
+        találja.</a>
+      app_warnings_found: '%{appName} figyelmeztetés található.'
+      components_config: >-
+        A Moonraker plugin konfigurációja <a target="_blank" href="%{url}">itt
+        található.</a>
+      failed_components: >-
+        A Moonraker moduljai hibásak. Kérlek, ellenőrizd a naplókat, frissítsd a
+        konfigurációt és indítsd újra a Moonrakert.
+    label:
+      accel_to_decel: Gyorsulás és lassulás
+      acceleration: Gyorsulás
+      add_camera: Kamera hozzáadása
+      add_preset: Előre beállított érték hozzáadása
+      api_url: API URL címe
+      confirm: Megerősítés
+      edit_camera: Kamera szerkesztése
+      edit_preset: Előre beállított érték szerkesztése
+      extrude_length: Extrudálás hossza
+      extrude_speed: Extrudálás sebessége
+      flow: Átfolyás
+      free: szabad
+      high: Magas
+      host: Gazda
+      layout: Elrendezés
+      longest_job: Leghosszab meló
+      low: Alacsony
+      name: Név
+      'off': Ki
+      power: Táp
+      printers: Nyomtatók
+      requested_speed: Kért sebesség
+      save_as: Mentés másként
+      services: Szolgáltatások
+      speed: Sebesség
+      sqv: Sebesség a Négyzet sarkainál
+      total_filament: A felhasznált összes filament
+      total_filament_avg: Átlag nyomtatásonként
+      total_jobs: Összes nyomtatási feladat
+      total_print_time: Teljes nyomtatási idő
+      total_print_time_avg: Átlag nyomtatásonként
+      total_time: Teljes idő
+      total_time_avg: Átlag nyomtatásonként
+      used: használt
+      variance: Variálás
+      velocity: Sebesség
+      z_offset: Z eltolás
+    simple_form:
+      error:
+        invalid_url: Érvénytelen URL
+        max: 'Max. %{max}'
+        min: 'Min. %{min}'
+        min_or_0: 'Min. %{min} or 0'
+        required: Megkívánt
+      msg:
+        confirm: Biztos vagy benne?
+        confirm_reboot_host: Biztos vagy benne? Ez újra fogja indítani a gazda rendszert.
+        confirm_shutdown_host: Biztos vagy benne? Ez le fogja állítani a gazda rendszert.
+    table:
+      header:
+        actions: Lehetőségek
+        estimated_time: Becsült idő
+        filament_used: Filament
+        height: Magasság
+        last_printed: Utoljára kinyomtatva
+        layer_height: Rétegmagasság
+        modified: Módosítva
+        name: Név
+        print_duration: Nyomtatás időtartama
+        size: Méret
+        slicer: Slicer/Szeletelő
+        start_time: Elindítva
+        status: Állapot
+    title:
+      add_printer: Nyomtató hozzáadása
+      bedmesh: Ágy Mesh-e
+      camera: Kamera | Kamerák
+      config_files: Konfigurációs fájlok
+      configure: Beállítás
+      console: Konzol
+      endstops: Végállások
+      fans_outputs: Ventilátorok és kimenetek
+      history: Munkák története
+      home: Műszerfal
+      interface: Interfész
+      jobs: Munkák
+      limits: Nyomtató korlátai
+      logs: Nomtatási naplók
+      macros: Makrók
+      runout_sensors: Kifutásérzékelők
+      stats: Nyomtató statisztikák
+      status: Állapot
+      system_control: Rendszer vezérlés
+      temperature: Hőértékek
+      tool: Szerszám
+      tune: Állítás
+    tooltip:
+      estop: Vészstop
+  history:
+    msg:
+      confirm: 'Biztos? Ez a nyomtató teljes előéletét, és statisztikáit törölni fogja.'
+      load_count: 'Az utolsó {num} munka alapján'
+  printer:
+    state:
+      busy: Elfoglalt
+      complete: Kész
+      idle: Tétlen
+      loading: Betöltés
+      paused: Szünetel
+      printing: Nyomtatás
+      ready: Kész
+      standby: Készenlétben
+    status:
+      duration: futási idő
+      duration_total: futási és teljes időtartam
+      time_left: becsült hátralévő idő
+      used_filament: felhasznált filament
+  setting:
+    btn:
+      add_camera: Kamera hozzáadása
+      add_thermal_preset: Adjon hozzá előre beállított értéket
+      reset: Visszaállítás
+      select_theme: Válassz témát
+    camera_type_options:
+      mjpegadaptive: MJPEG adaptív
+      mjpegstream: MJPEG Stream
+      video: IP kamera
+    label:
+      all_off: Mindent ki
+      all_on: Mindent be
+      camera_fillspace: Helykitöltés
+      camera_fillspace_help: Csak 1 engedélyezett kamera esetén az átnézeti kép kitöltése.
+      camera_flip_x: Vízszintes elforgatás
+      camera_flip_y: Függőleges elforgatás
+      camera_stream_type: Stream típusa
+      camera_url: Kamera URL
+      dark_mode: Sötét mód
+      default_extrude_length: Alapértelmezett extrudálási hossz
+      default_extrude_speed: Alapértelmezett extrudálási sebesség
+      default_toolhead_move_length: Alap szerszámfej elmozdulási hossza
+      default_toolhead_xy_speed: Alap szerszámfej XY sebessége
+      default_toolhead_z_speed: Alap szerszámfej Z sebessége
+      enable: Engedélyez
+      fps_target: FPS Cél
+      gcode_coords: GCode koordináták használata
+      invert_x_control: X vezérlés invertálása
+      invert_y_control: Y vezérlés invertálása
+      invert_z_control: Z vezérlés invertálása
+      language: Megjelenítési nyelv
+      primary_color: Elsődleges szín
+      printer_name: Nyomtató neve
+      reset: Beállítások alaphelyzetbe állítása
+      thermal_preset_name: Előre beállított név
+      time_estimates: Időbecslések
+      toggle: Kapcsoló
+      z_adjust_values: Z Beállított értékei
+    timer_options:
+      duration: Csak időtartam
+      duration_description: >-
+        A klipper LCD-hez hasonlóan ez is csak az időtartamot mutatja becslés
+        nélkül.
+      filament: Filament becslése
+      filament_description: >-
+        A felhasznált, és a becsült filament igény alapján várható időtartam
+        becslése.<br /> Az idő múlásával egyre pontosabb.
+      file: Fájl becslése
+      file_description: >-
+        Hátralévő időtartam becslése (előrehaladás és eltelt idő alapján).<br
+        />  Az idő múlásával egyre pontosabb.
+      slicer: Slicer/szeletelő
+      slicer_description: >-
+        Slicer becslések használata a megjelenítéshez (Slicerben engedélyezni
+        kell).
+    title:
+      camera: Kamera | Kamerák
+      general: Általános
+      macros: Makrók
+      theme: Téma
+      thermal_presets: Hőbeállítások
+      tool: Szerszám
+    tooltip:
+      gcode_coords: >-
+        GCode pozíció használata  szerszámfej pozíciója helyett az
+        irányítópulton
+  socket:
+    msg:
+      connecting: Csatlakozás a moonracker-hez ..
+      no_connection: >-
+        Nincs kapcsolat a moonracker-rel. Kérlek ellenőrizd a státuszt és/vagy
+        frissíts.
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+    tooltip:
+      extruder_disabled: >-
+        extruder letiltva, min_extrude_temp alatti hőmérséklet (%{min}<small>°
+        C</small>)
+      home_xy: XY Haza
+      home_z: Z haza
+  version:
+    btn:
+      check_for_updates: Frissítések keresése
+      finish: Befejezés
+      update: Frissítés
+    label:
+      dirty: NEM TISZTA
+      invalid: ÉRVÉNYTELEN
+      up_to_date: NAPRAKÉSZ
+    status:
+      finished: Frissítések befejeződtek
+      updating: Frissítés...
+    title: Szoftver Frissítések
+    tooltip:
+      dirty: >-
+        a fej nincsen csatlakoztatva, vagy nem a masterre van kötve, vagy
+        érvénytelen forrás
+      invalid: a repoban történt helyi változásokat jelzi

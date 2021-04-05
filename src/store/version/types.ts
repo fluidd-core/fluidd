@@ -5,8 +5,8 @@ export interface VersionState {
   github_limit_reset_time: number;
   github_rate_limit: number;
   github_requests_remaining: number;
+  version_info: VersionComponents;
   responses: UpdateResponse[];
-  components: VersionComponents;
   fluidd: FluiddVersion;
 }
 
@@ -16,30 +16,43 @@ export interface VersionComponents {
 
 /** For klipper / moonraker */
 export interface HashVersion {
-  type: string;
-  version: string;
-  remote_version: string;
-  remote_alias: string;
-  current_hash: string;
-  remote_hash: string;
+  key: string;
   branch: string;
-  is_valid: boolean;
-  is_dirty: boolean;
-  detached: boolean;
+  commits_behind: CommitItem[];
+  current_hash: string;
   debug_enabled: boolean;
+  detached: boolean;
+  git_messages: string[];
+  is_dirty: boolean;
+  is_valid: boolean;
+  owner: string;
+  remote_alias: string;
+  remote_hash: string;
+  remote_version: string;
+  version: string;
+}
+
+export interface CommitItem {
+  author: string;
+  date: string; // number
+  message: string | null;
+  sha: string;
+  subject: string;
+  tag: string | null;
 }
 
 /** For system OS */
 export interface OSPackage {
-  type: string;
+  key: string;
   package_count: number;
   package_list: string[];
 }
 
 /** For clients */
 export interface ArtifactVersion {
-  type: string;
+  key: string;
   name: string;
+  owner: string;
   version: string;
   remote_version: string;
 }
