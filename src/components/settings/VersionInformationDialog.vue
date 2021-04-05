@@ -7,8 +7,8 @@
   >
     <v-card v-if="component">
       <v-card-title class="card-heading py-2">
-        <span class="focus--text" v-if="'commits_behind' in component">Commit History</span>
-        <span class="focus--text" v-else>Package List</span>
+        <span class="focus--text" v-if="'commits_behind' in component">{{ $t('app.version.label.commit_history') }}</span>
+        <span class="focus--text" v-else>{{ $t('app.version.label.package_list') }}</span>
 
         <v-spacer />
         <app-btn
@@ -41,7 +41,7 @@
               </template>
 
               <div class="secondary--text mb-4">
-                Commits on {{ $dayjs(key).format('ll') }}
+                {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
               </div>
 
               <ol class="commit-history">
@@ -62,7 +62,7 @@
                       >
                         <strong>{{ commit.author }}</strong>
                       </a>
-                      commited {{ $dayjs(commit.date).fromNow() }}
+                      {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
                     </div>
                   </div>
                   <div>

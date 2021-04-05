@@ -53,9 +53,9 @@
                 <v-icon small>$info</v-icon>
               </app-btn>
             </template>
-            <span v-if="'name' in component">release notes</span>
-            <span v-if="'commits_behind' in component">commits</span>
-            <span v-if="'package_list' in component">packages</span>
+            <span v-if="'name' in component">{{ $t('app.version.tooltip.release_notes') }}</span>
+            <span v-if="'commits_behind' in component">{{ $t('app.version.tooltip.commits') }}</span>
+            <span v-if="'package_list' in component">{{ $t('app.version.tooltip.packages') }}</span>
           </v-tooltip>
 
           <version-status

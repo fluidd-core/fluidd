@@ -154,12 +154,20 @@ app:
       dirty: DIRTY
       invalid: INVALID
       up_to_date: UP TO DATE
+      commit_history: Commit History
+      package_list: Package List
+      commits_on: commits on
+      committed: Committed
     status:
       updating: Updating...
       finished: Updates finished
     tooltip:
       dirty: indicates a detached head, not on master or an invalid origin
       invalid: indicates local changes to the repo
+      release_notes: Release notes
+      packages: Packages
+      commit_history: Commit history
+      commits: Commits
   console:
     label:
       hide_temp_waits: Hide temp waits
