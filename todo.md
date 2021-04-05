@@ -2,9 +2,6 @@
 
 ## Next Up
 
-- impl new version recovery
-
-
 ### Features
 
 - More macro layout options (categorize macros, ability to define layout in some way, color)

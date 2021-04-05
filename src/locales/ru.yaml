@@ -1,327 +1,341 @@
 app:
-  general:
-    title:
-      camera: Камера | Камеры
-      console: Консоль
-      bedmesh: Сетка стола
-      home: Панель управления
-      add_printer: Добавить принтер
-      endstops: Точки остановки
-      fans_outputs: Кулеры и Выходы
-      jobs: Задачи
-      macros: Макросы
-      limits: Лимиты принтера
-      logs: Логи принтера
-      system_control: Управление системой
-      runout_sensors: Датчик контроля филамента
-      status: Статус
-      temperature: Температуры
-      tool: Инструмент
-      tune: Подстройка
-      configure: Конфигурация
-      interface: Интерфейс
-      stats: Статистика принтера
-      history: История задач
-      config_files: Файлы конфигурации
-    label:
-      accel_to_decel: Ускорения и торможения
-      acceleration: Ускорение
-      sqv: Скорость прохождения угла
-      velocity: Скорость
-      api_url: API URL
-      host: Хост
-      layout: Компоновка интерфейса
-      name: Имя
-      power: Питание
-      printers: Принтеры
-      requested_speed: Запрошенная скорость
-      services: Сервисы
-      speed: Скорость
-      flow: Поток
-      z_offset: Смещение Z
-      high: Выше
-      low: Ниже
-      off: Выключить
-      used: Использованно
-      free: Свободно
-      total_jobs: Всего печатей
-      longest_job: Самая долгая печать
-      total_time: Общее время
-      total_time_avg: Среднее время
-      total_print_time: Общее время печати
-      total_print_time_avg: Среднее время печати
-      total_filament: Всего использованно филамента
-      total_filament_avg: Среднее на печать
-      variance: Различие
-      save_as: Сохранить как
-      edit_preset: Редактировать предустановку
-      add_preset: Добавить предустановку
-      edit_camera: Редактировать камеру
-      add_camera: Добавить камеру
-      extrude_length: Длинна экструзии
-      extrude_speed: Скорость эуструзии
-      confirm: Подтвердить
-    btn:
-      all: Все
-      all_off: Отключить все
-      quad_gantry_level: QGL
-      add: Добавить
-      pause: Пауза
-      reboot: Перезагрузка
-      shutdown: Отключение
-      remove: Удалить
-      remove_all: Удалить всё
-      rename: Переименовать
-      resume: Возобновить
-      cancel: Отменить
-      save: Сохранить
-      save_as: Сохранить как
-      upload: Загрузить
-      upload_print: Загрузить и напечатать
-      preheat: Преднагрев
-      reprint: Перепечатать
-      save_restart: Сохранить и перезагрузить
-      adjust_layout: Настроить компановку интерфейса панели управления
-      calibrate: Калибровка
-      clear_profile: Очистить профиль
-      download: Скачать
-      add_printer: Добавить принтер
-      edit: Редактировать
-      extrude: Экструдировать
-      retract: Откатить
-      restart_firmware: Перезагрузить прошивку
-      restart_service_klipper: Перезагрузить Klipper
-      restart_service_moonraker: Перезагрузить Moonraker
-      restart_service_webcamd: Перезагрузить вебкамеру
-      socket_refresh: Принудительно обновление
-      reset_file: Сбросить файл
-      reset_layout: Сбросить компановку интерфейса
-      view: Вид
-      close: Закрыть
-      config_reference: Примеры конфигураций
-      add_file: Добавить файл
-      add_dir: Добавить папку
-    table:
-      header:
-        filament_used: Филамент
-        name: Имя
-        slicer: Слайсер
-        status: Статус
-        height: Высота
-        layer_height: Высота слоя
-        estimated_time: Ожидаемое время
-        last_printed: Последняя печать
-        modified: Изменён
-        size: Размер
-        start_time: Время начала
-        print_duration: Продолжительность печати
-        actions: Действия
-    simple_form:
-      msg:
-        confirm: Вы уверены?
-        confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
-        confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
-      error:
-        invalid_url: Невалидный URL
-        max: Макс %{max}
-        min: Мин %{min}
-        min_or_0: Мин %{min} или 0
-        required: Требуется
-    tooltip:
-      estop: Немедленная Остановка
-    error:
-      app_warnings_found: '%{appName} Найдены предупреждения.'
-      app_setup_link: >-
-        Требования для установки Fluidd можно посмотреть <a target="_blank"
-        href="%{url}">здесь.</a>
-      failed_components: >-
-        Moonraker не смог запустить некоторые плагины, пожалуйста проверьте логи, обновите конфигурацию
-        и перезагрузите moonraker.
-      components_config: >-
-        Конфигруцию для плагинов Moonraker можно посмотреть <a target="_blank"
-        href="%{url}">здесь.</a>
-  socket:
-    msg:
-      connecting: Подключение к moonraker...
-      no_connection: Нет подключения к moonraker. Пожалуйста проеверьте статус работы moonraker и / или перезагрузите страницу.
-  version:
-    title: Обновления ПО
-    btn:
-      update: Обновление
-      finish: Закончено
-      check_for_updates: Проверить обновления
-    label:
-      dirty: DIRTY
-      invalid: Ошибка
-      up_to_date: Актуальная версия
-    status:
-      updating: Обновление...
-      finished: Обновление завершено
-    tooltip:
-      dirty: Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке или невалидный оригинальный репозиторий
-      invalid: Оповещает о локальных изменениях в репозитории
-  console:
-    label:
-      hide_temp_waits: Скрыть временные ожидания
-    placeholder:
-      command: '''tab'' для автокомплита, ''help'' для списка комманд ''стрелки  ↑ и ↓'' история команд'
-  tool:
-    btn:
-      home_x: X
-      home_y: Y
-    tooltip:
-      home_xy: Домой XY
-      home_z: Домой Z
-      extruder_disabled: >-
-        экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
   bedmesh:
     label:
       profile_name: Имя профиля
       remove_profile: Удалить %{name} профиль
     msg:
-      not_found: Не найдённо существующих сеток стола.
       hint: >-
-        Если сохранить не как %{name}, вы так же можете выбрать - удалить %{name} профиль
+        Если сохранить не как %{name}, вы так же можете выбрать - удалить
+        %{name} профиль
+      not_found: Не найдённо существующих сеток стола.
     tooltip:
       calibrate: Начать новую калибровку, будет сохранено как профиль 'default'
       delete: Удалить профиль. Это приведёт к ПЕРЕЗАГРУЗКЕ вашего принтера
-      save: >-
-        Сохранить откалиброванный профиль в printer.cfg. Это приведёт к ПЕРЕЗАГРУЗКЕ вашего принтера
       load: Загрузить профиль
-  printer:
-    status:
-      used_filament: использованно филамента
-      time_left: осталось расчётного времени
-      duration: длительность
-      duration_total: продолжительность и общее время
-    state:
-      printing: Идёт печать
-      loading: Загрузка
-      complete: Готово
-      paused: Пауза
-      standby: Режим ожидания
-      idle: Ждёт задачу
-      ready: Готов
-      busy: Занят
-  setting:
-    title:
-      camera: Камера | Камеры
-      macros: Макросы
-      general: Общие
-      theme: Тема
-      tool: Инструмент
-      thermal_presets: Температурные профили
-    label:
-      camera_url: URL камеры
-      printer_name: Имя принтера
-      language: Язык интерфейса
-      default_toolhead_move_length: Длина перемещения инструментальной головки по умолчанию
-      default_extrude_speed: Скорость экструдера по умолчанию
-      default_extrude_length: Длина экструдирования по умолчанию
-      default_toolhead_z_speed: Скорость инструмента для оси Z по умолчанию
-      default_toolhead_xy_speed: Скорость инструмента для осей XY по умолчанию
-      camera_flip_x: Отразить по горизонтали
-      camera_flip_y: Отразить по вертикали
-      camera_stream_type: Тип потока
-      thermal_preset_name: Имя профиля
-      all_on: Всё включить
-      all_off: Всё выключить
-      toggle: Переключатель
-      dark_mode: Тёмная тема
-      primary_color: Основной цвет
-      reset: Сбросить настройки
-      z_adjust_values: Значения подстройки оси Z
-      gcode_coords: Испрользовать координаты GCode
-      time_estimates: Оценки времени
-      invert_z_control: Инвертировать управление по оси Z
-      invert_y_control: Инвертировать управление по оси Y
-      invert_x_control: Инвертировать управление по оси X
-      enable: Включить
-      fps_target: Целевой FPS
-    btn:
-      add_camera: Добавить камеру
-      select_theme: Выбрать тему
-      add_thermal_preset: Добавить пресет температур
-      reset: Сбросить
-    timer_options:
-      duration: Только продолжительность
-      duration_description: Подобно ЖК-дисплею klipper, он показывает только продолжительность без каких-либо оценок.
-      file: Оценка времени на основе файла
-      file_description: >-
-        Использует процент прогресса печати и длительность из файла для оценки общей длительности.<br />
-        Точность повышается в течение времени печати.
-      filament: Оценка филамента
-      filament_description: >-
-        Используется отношение значения потраченного филамента к расчётному значению, для расчёта общей продолжительности.<br />
-        Точность повышается в течение времени печати.
-      slicer: Слайсер
-      slicer_description: Использует оценку слайсера для отображения. Вы должны включить эту опцию в вашем слайсере.
-    camera_type_options:
-      video: IP Камера
-      mjpegstream: MJPEG поток
-      mjpegadaptive: MJPEG Адаптивный
-    tooltip:
-      gcode_coords: Использовать GCode положение вместо положение инструментальной головки на панели управления
+      save: >-
+        Сохранить откалиброванный профиль в printer.cfg. Это приведёт к
+        ПЕРЕЗАГРУЗКЕ вашего принтера
   chart:
+    label:
+      current: Текущее значение
+      item: Элемент
+      power: Мощность
+      target: Цель
     tooltip:
       help: >-
-        Удерживайте shift для увеличения.<br />Кликните на элемент, чтобы изменить его видимость на графике.<br
-        />Кликните на мощность чтобы изменить видимость шкалы на графике.
+        Удерживайте shift для увеличения.<br />Кликните на элемент, чтобы
+        изменить его видимость на графике.<br />Кликните на мощность чтобы
+        изменить видимость шкалы на графике.
+  console:
     label:
-      item: Элемент
-      current: Текущее значение
-      target: Цель
-      power: Мощность
-  file_system:
-    title:
-      rename_file: Переименовать файл
-      rename_dir: Переименовать папку
-      add_file: Добавить файл
-      add_dir: Добавить папку
-    label:
-      dir_name: Имя папки
-      file_name: Имя файла
-      disk_usage: Использование дискового пространства
+      hide_temp_waits: Скрыть временные ожидания
+    placeholder:
+      command: >-
+        'tab' для автокомплита, 'help' для списка комманд 'стрелки  ↑ и ↓'
+        история команд
+  endpoint:
+    error:
+      cant_connect: >-
+        Что-то пошло не так, fluidd не может подключиться. Вы уверены, что это
+        правильный адрес?
+      cors_error: Заблокировано CORS политикой
+      cors_note: >-
+        Это значит, что вы должны изменить вашу конфигурацию для moonraker.
+        Пожалуйста посмотрите документацию для установки нескольких принтеров <a
+        href="%{url}" target="_blank">здесь</a>
+    hint:
+      add_printer: Например, http://fluiddpi.local
     msg:
-      not_found: Файлы не найдены
-      uploading: Загрузка...
-      processing: Обработка...
-      confirm: Вы уверены? Это приведет к удалению всех файлов и папок внутри.
+      trouble: >-
+        Столкнулись с проблемами? <a href="%{url}" target="_blank">Посмотрите
+        здесь</a> для получения дополнительной информации.
     tooltip:
-      disabled: Задания на печать отключены до подключения к klippy
-      low_on_space: Мало места на диске
-    overlay:
-      label: <strong>Перетащите</strong> файл сюда
-      uploading: <strong>Загрузка</strong> файлов
-    filters:
-      label:
-        print_start_time: Отфильтровать напечатанное
-        print_start_time_desc: Отфильтровывает уже напечатанные элементы.
+      endpoint_examples: >-
+        Введите URL вашего API.<br />В качестве примера, может быть что-то
+        подобное:<br /><blockquote>http://fluidd.local,
+        http://192.168.1.150</blockquote>
   endstop:
     label:
       open: Открыто
       triggered: Есть контакт
     msg:
       subtitle: Используйте кнопку обновить, чтобы обновить состояние концевика.
+  file_system:
+    filters:
+      label:
+        print_start_time: Отфильтровать напечатанное
+        print_start_time_desc: Отфильтровывает уже напечатанные элементы.
+    label:
+      dir_name: Имя папки
+      disk_usage: Использование дискового пространства
+      file_name: Имя файла
+    msg:
+      confirm: Вы уверены? Это приведет к удалению всех файлов и папок внутри.
+      not_found: Файлы не найдены
+      processing: Обработка...
+    overlay:
+      label: <strong>Перетащите</strong> файл сюда
+    title:
+      add_dir: Добавить папку
+      add_file: Добавить файл
+      rename_dir: Переименовать папку
+      rename_file: Переименовать файл
+    tooltip:
+      disabled: Задания на печать отключены до подключения к klippy
+      low_on_space: Мало места на диске
+  general:
+    btn:
+      add: Добавить
+      add_dir: Добавить папку
+      add_file: Добавить файл
+      add_printer: Добавить принтер
+      adjust_layout: Настроить компановку интерфейса панели управления
+      all: Все
+      all_off: Отключить все
+      calibrate: Калибровка
+      cancel: Отменить
+      clear_profile: Очистить профиль
+      close: Закрыть
+      config_reference: Примеры конфигураций
+      download: Скачать
+      edit: Редактировать
+      extrude: Экструдировать
+      pause: Пауза
+      preheat: Преднагрев
+      quad_gantry_level: QGL
+      reboot: Перезагрузка
+      remove: Удалить
+      remove_all: Удалить всё
+      rename: Переименовать
+      reprint: Перепечатать
+      reset_file: Сбросить файл
+      reset_layout: Сбросить компановку интерфейса
+      restart_firmware: Перезагрузить прошивку
+      restart_service_klipper: Перезагрузить Klipper
+      restart_service_moonraker: Перезагрузить Moonraker
+      restart_service_webcamd: Перезагрузить вебкамеру
+      resume: Возобновить
+      retract: Откатить
+      save: Сохранить
+      save_as: Сохранить как
+      save_restart: Сохранить и перезагрузить
+      shutdown: Отключение
+      socket_refresh: Принудительно обновление
+      upload: Загрузить
+      upload_print: Загрузить и напечатать
+      view: Вид
+    error:
+      app_setup_link: >-
+        Требования для установки Fluidd можно посмотреть <a target="_blank"
+        href="%{url}">здесь.</a>
+      app_warnings_found: '%{appName} Найдены предупреждения.'
+      components_config: >-
+        Конфигруцию для плагинов Moonraker можно посмотреть <a target="_blank"
+        href="%{url}">здесь.</a>
+      failed_components: >-
+        Moonraker не смог запустить некоторые плагины, пожалуйста проверьте
+        логи, обновите конфигурацию и перезагрузите moonraker.
+    label:
+      accel_to_decel: Ускорения и торможения
+      acceleration: Ускорение
+      add_camera: Добавить камеру
+      add_preset: Добавить предустановку
+      api_url: API URL
+      confirm: Подтвердить
+      edit_camera: Редактировать камеру
+      edit_preset: Редактировать предустановку
+      extrude_length: Длинна экструзии
+      extrude_speed: Скорость эуструзии
+      flow: Поток
+      free: Свободно
+      high: Выше
+      host: Хост
+      layout: Компоновка интерфейса
+      longest_job: Самая долгая печать
+      low: Ниже
+      name: Имя
+      'off': Выключить
+      power: Питание
+      printers: Принтеры
+      requested_speed: Запрошенная скорость
+      save_as: Сохранить как
+      services: Сервисы
+      speed: Скорость
+      sqv: Скорость прохождения угла
+      total_filament: Всего использованно филамента
+      total_filament_avg: Среднее на печать
+      total_jobs: Всего печатей
+      total_print_time: Общее время печати
+      total_print_time_avg: Среднее время печати
+      total_time: Общее время
+      total_time_avg: Среднее время
+      used: Использованно
+      variance: Различие
+      velocity: Скорость
+      z_offset: Смещение Z
+    simple_form:
+      error:
+        invalid_url: Невалидный URL
+        max: Макс %{max}
+        min: Мин %{min}
+        min_or_0: Мин %{min} или 0
+        required: Требуется
+      msg:
+        confirm: Вы уверены?
+        confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
+        confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
+    table:
+      header:
+        actions: Действия
+        estimated_time: Ожидаемое время
+        filament_used: Филамент
+        height: Высота
+        last_printed: Последняя печать
+        layer_height: Высота слоя
+        modified: Изменён
+        name: Имя
+        print_duration: Продолжительность печати
+        size: Размер
+        slicer: Слайсер
+        start_time: Время начала
+        status: Статус
+    title:
+      add_printer: Добавить принтер
+      bedmesh: Сетка стола
+      camera: Камера | Камеры
+      config_files: Файлы конфигурации
+      configure: Конфигурация
+      console: Консоль
+      endstops: Точки остановки
+      fans_outputs: Кулеры и Выходы
+      history: История задач
+      home: Панель управления
+      jobs: Задачи
+      limits: Лимиты принтера
+      macros: Макросы
+      runout_sensors: Датчик контроля филамента
+      stats: Статистика принтера
+      status: Статус
+      system_control: Управление системой
+      temperature: Температуры
+      tool: Инструмент
+      tune: Подстройка
+    tooltip:
+      estop: Немедленная Остановка
   history:
     msg:
       confirm: Вы уверены? Это очистит историю и сбросит статистику принтера
       load_count: Представляет последние {num} заданий
-  endpoint:
-    hint:
-      add_printer: Например, http://fluiddpi.local
-    msg:
-      trouble: >-
-        Столкнулись с проблемами? <a href="%{url}" target="_blank">Посмотрите здесь</a> для получения дополнительной информации.
+  printer:
+    state:
+      busy: Занят
+      complete: Готово
+      idle: Ждёт задачу
+      loading: Загрузка
+      paused: Пауза
+      printing: Идёт печать
+      ready: Готов
+      standby: Режим ожидания
+    status:
+      duration: длительность
+      duration_total: продолжительность и общее время
+      time_left: осталось расчётного времени
+      used_filament: использованно филамента
+  setting:
+    btn:
+      add_camera: Добавить камеру
+      add_thermal_preset: Добавить пресет температур
+      reset: Сбросить
+      select_theme: Выбрать тему
+    camera_type_options:
+      mjpegadaptive: MJPEG Адаптивный
+      mjpegstream: MJPEG поток
+      video: IP Камера
+    label:
+      all_off: Всё выключить
+      all_on: Всё включить
+      camera_flip_x: Отразить по горизонтали
+      camera_flip_y: Отразить по вертикали
+      camera_stream_type: Тип потока
+      camera_url: URL камеры
+      dark_mode: Тёмная тема
+      default_extrude_length: Длина экструдирования по умолчанию
+      default_extrude_speed: Скорость экструдера по умолчанию
+      default_toolhead_move_length: Длина перемещения инструментальной головки по умолчанию
+      default_toolhead_xy_speed: Скорость инструмента для осей XY по умолчанию
+      default_toolhead_z_speed: Скорость инструмента для оси Z по умолчанию
+      enable: Включить
+      fps_target: Целевой FPS
+      gcode_coords: Испрользовать координаты GCode
+      invert_x_control: Инвертировать управление по оси X
+      invert_y_control: Инвертировать управление по оси Y
+      invert_z_control: Инвертировать управление по оси Z
+      language: Язык интерфейса
+      primary_color: Основной цвет
+      printer_name: Имя принтера
+      reset: Сбросить настройки
+      thermal_preset_name: Имя профиля
+      time_estimates: Оценки времени
+      toggle: Переключатель
+      z_adjust_values: Значения подстройки оси Z
+    timer_options:
+      duration: Только продолжительность
+      duration_description: >-
+        Подобно ЖК-дисплею klipper, он показывает только продолжительность без
+        каких-либо оценок.
+      filament: Оценка филамента
+      filament_description: >-
+        Используется отношение значения потраченного филамента к расчётному
+        значению, для расчёта общей продолжительности.<br /> Точность повышается
+        в течение времени печати.
+      file: Оценка времени на основе файла
+      file_description: >-
+        Использует процент прогресса печати и длительность из файла для оценки
+        общей длительности.<br /> Точность повышается в течение времени печати.
+      slicer: Слайсер
+      slicer_description: >-
+        Использует оценку слайсера для отображения. Вы должны включить эту опцию
+        в вашем слайсере.
+    title:
+      camera: Камера | Камеры
+      general: Общие
+      macros: Макросы
+      theme: Тема
+      thermal_presets: Температурные профили
+      tool: Инструмент
     tooltip:
-      endpoint_examples: >-
-        Введите URL вашего API.<br />В качестве примера, может быть что-то подобное:<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
-    error:
-      cant_connect: >-
-        Что-то пошло не так, fluidd не может подключиться. Вы уверены,
-        что это правильный адрес?
-      cors_error: Заблокировано CORS политикой
-      cors_note: >-
-        Это значит, что вы должны изменить вашу конфигурацию для moonraker. Пожалуйста посмотрите документацию для установки нескольких принтеров <a href="%{url}"
-        target="_blank">здесь</a>
+      gcode_coords: >-
+        Использовать GCode положение вместо положение инструментальной головки
+        на панели управления
+  socket:
+    msg:
+      connecting: Подключение к moonraker...
+      no_connection: >-
+        Нет подключения к moonraker. Пожалуйста проеверьте статус работы
+        moonraker и / или перезагрузите страницу.
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+    tooltip:
+      extruder_disabled: экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
+      home_xy: Домой XY
+      home_z: Домой Z
+  version:
+    btn:
+      check_for_updates: Проверить обновления
+      finish: Закончено
+      update: Обновление
+    label:
+      dirty: DIRTY
+      invalid: Ошибка
+      up_to_date: Актуальная версия
+    status:
+      finished: Обновление завершено
+      updating: Обновление...
+    title: Обновления ПО
+    tooltip:
+      dirty: >-
+        Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке
+        или невалидный оригинальный репозиторий
+      invalid: Оповещает о локальных изменениях в репозитории

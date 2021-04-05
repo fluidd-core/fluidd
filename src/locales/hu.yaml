@@ -9,7 +9,7 @@ app:
         eltávolítását is
       not_found: Nem találhatóak meglévő ágy Meshek.
     tooltip:
-      calibrate: 'Új kalibrálás indítása, "alapértelmezett"  profilként mentve'
+      calibrate: Új kalibrálás indítása, "alapértelmezett"  profilként mentve
       delete: Törlöm a profilt. Ezután ÚJRAIDÍTOM a nyomtatót!
       load: Profil betöltése
       save: >-
@@ -72,10 +72,8 @@ app:
       confirm: Biztos vagy benne? Ez ki fogja törölni az összes fájlt és mappát.
       not_found: Nem találhatóak fájlok.
       processing: '1'
-      uploading: Feltöltés...
     overlay:
       label: Húzza <strong>ide</strong> a fájlt
-      uploading: 'Fájlok <strong>feltöltése</strong> '
     title:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
@@ -179,9 +177,9 @@ app:
     simple_form:
       error:
         invalid_url: Érvénytelen URL
-        max: 'Max. %{max}'
-        min: 'Min. %{min}'
-        min_or_0: 'Min. %{min} or 0'
+        max: Max. %{max}
+        min: Min. %{min}
+        min_or_0: Min. %{min} or 0
         required: Megkívánt
       msg:
         confirm: Biztos vagy benne?
@@ -213,10 +211,8 @@ app:
       fans_outputs: Ventilátorok és kimenetek
       history: Munkák története
       home: Műszerfal
-      interface: Interfész
       jobs: Munkák
       limits: Nyomtató korlátai
-      logs: Nomtatási naplók
       macros: Makrók
       runout_sensors: Kifutásérzékelők
       stats: Nyomtató statisztikák
@@ -229,8 +225,8 @@ app:
       estop: Vészstop
   history:
     msg:
-      confirm: 'Biztos? Ez a nyomtató teljes előéletét, és statisztikáit törölni fogja.'
-      load_count: 'Az utolsó {num} munka alapján'
+      confirm: Biztos? Ez a nyomtató teljes előéletét, és statisztikáit törölni fogja.
+      load_count: Az utolsó {num} munka alapján
   printer:
     state:
       busy: Elfoglalt

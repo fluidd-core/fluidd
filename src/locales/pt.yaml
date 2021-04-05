@@ -2,14 +2,14 @@ app:
   bedmesh:
     label:
       profile_name: Perfil
-      remove_profile: 'Remover perfil %{name}'
+      remove_profile: Remover perfil %{name}
     msg:
       hint: >-
         Se salvar algo diferente de % {name},  pode escolher remover também o
         perfi % {name}
       not_found: Não foram encontrados nivelamentos da mesa.
     tooltip:
-      calibrate: 'Nova calibração, salvando o perfil como ''default'''
+      calibrate: Nova calibração, salvando o perfil como 'default'
       delete: Eliminar perfil. A impressora irá reiniciar.
       load: Carregar perfil
       save: >-
@@ -42,7 +42,7 @@ app:
         moonraker. Consulte a documentação sobre configurações de várias
         impressoras <a href="%{url}" target="_blank"> aqui </a>
     hint:
-      add_printer: 'Ex., http://fluiddpi.local'
+      add_printer: Ex., http://fluiddpi.local
     msg:
       trouble: >-
         Está com problemas? <a href="%{url}" target="_blank"> Veja aqui </a>
@@ -70,10 +70,8 @@ app:
       confirm: Tem a certeza? Vai excluir todos os arquivos e pastas existentes.
       not_found: Não foram encontrados ficheiros
       processing: A processar...
-      uploading: A enviar...
     overlay:
       label: <strong>Largar</strong> um ficheiro aqui.
-      uploading: <strong>Enviar</strong> ficheiros
     title:
       add_dir: Adicionar diretório
       add_file: Adicionar ficheiro
@@ -175,9 +173,9 @@ app:
     simple_form:
       error:
         invalid_url: URL inválido
-        max: 'Max. %{max}'
-        min: 'Min. %{min}'
-        min_or_0: 'Min %{min} ou 0'
+        max: Max. %{max}
+        min: Min. %{min}
+        min_or_0: Min %{min} ou 0
         required: Obrigatório
       msg:
         confirm: Tem a certeza?
@@ -209,10 +207,8 @@ app:
       fans_outputs: Ventoinhas e saídas
       history: Histórico trabalhos
       home: Painel
-      interface: Interface
       jobs: Trabalhos
       limits: Limites impressora
-      logs: Logs impressora
       macros: Macros
       runout_sensors: Sensores filamento
       stats: Estatísticas da impressora
@@ -226,7 +222,7 @@ app:
   history:
     msg:
       confirm: Tem certeza? Isso limpará todo o histórico e estatísticas da impressora
-      load_count: 'Representa os últimos {num} trabalhos'
+      load_count: Representa os últimos {num} trabalhos
   printer:
     state:
       busy: Ocupada
@@ -256,7 +252,7 @@ app:
       all_off: Tudo Off
       all_on: Tudo On
       camera_fillspace: Preencher espaço
-      camera_fillspace_help: 'Com apenas uma câmera habilitada, preencha o espaço da câmera do painel.'
+      camera_fillspace_help: Com apenas uma câmera habilitada, preencha o espaço da câmera do painel.
       camera_flip_x: Virar horizontal
       camera_flip_y: Virar vertical
       camera_stream_type: Tipo stream
@@ -283,7 +279,7 @@ app:
       z_adjust_values: Ajustar valores Z
     timer_options:
       duration: Só duração
-      duration_description: 'Semelhante ao LCD klipper, mostra apenas a duração, sem estimativas.'
+      duration_description: Semelhante ao LCD klipper, mostra apenas a duração, sem estimativas.
       filament: Estimativas filamento.
       filament_description: >-
         Compara filamento usado versus filamento estimado, para calcular a
@@ -314,9 +310,9 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: Y
+      home_y: 'Y'
     tooltip:
-      extruder_disabled: 'extruder disabilitado, abaixo min_extrude_temp (%{min}<small>°C</small>)'
+      extruder_disabled: extruder disabilitado, abaixo min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Origem XY
       home_z: Origem Z
   version:
@@ -337,4 +333,3 @@ app:
         indicação de erro no cabeçalho, não existente na fonte ou fonte
         inválida.
       invalid: indicação de alteração do local da repo
-
