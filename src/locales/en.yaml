@@ -19,7 +19,7 @@ app:
       tool: Tool
       tune: Tune
       configure: Configure
-      interface: Interface
+      settings: Settings
       stats: Printer Stats
       history: Job History
       config_files: Configuration Files

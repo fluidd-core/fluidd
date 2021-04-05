@@ -40,7 +40,7 @@
           <v-list-item-title>{{ $t('app.general.title.configure') }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item to="/interface">
+      <v-list-item to="/settings">
         <v-list-item-icon>
           <v-badge
             :value="hasUpdates"
@@ -56,7 +56,7 @@
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title>
-            {{ $t('app.general.title.interface') }}
+            {{ $t('app.general.title.settings') }}
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
