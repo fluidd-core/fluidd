@@ -12,6 +12,16 @@
     @enabled="$emit('enabled', $event)"
     @collapsed="handleCollapseChange">
 
+    <template v-slot:title>
+      <v-icon left>$console</v-icon>
+      <span class="font-weight-light">{{ $t('app.general.title.console') }}</span>
+      <app-inline-help
+        bottom
+        small
+        :tooltip="$t('app.console.placeholder.command')"
+      ></app-inline-help>
+    </template>
+
     <template v-slot:menu>
       <v-checkbox
         v-model="hideTempWaits"

@@ -12,7 +12,6 @@
           single-line
           dense
           hide-details
-          :placeholder="$t(`app.console.placeholder.command`)"
           @keyup.enter="emitSend(newValue)"
           @keyup.up="historyUp()"
           @keyup.down="historyDown()"
