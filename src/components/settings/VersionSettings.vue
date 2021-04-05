@@ -23,23 +23,26 @@
 
       <template v-for="(component, i) in components">
         <app-setting
-          :key="`component-${component.type}-${component.name}`"
+          :key="`component-${component.key}-${component.name}`"
           :title="packageTitle(component)"
         >
           <template v-slot:sub-title>
-            <span v-if="component.type !== 'system'">{{ component.version }}</span>
-            <span v-if="'remote_version' in component && hasUpdate(component.type)">
+            <span v-if="component.key !== 'system'">{{ component.version }}</span>
+            <span v-if="'remote_version' in component && hasUpdate(component.key)">
               -> {{ component.remote_version }}
             </span>
-            <span v-if="component.type === 'system' && component.package_count > 0">
+            <span v-if="component.key === 'system' && component.package_count > 0">
               {{ component.package_count }} packages
             </span>
           </template>
 
-          <v-tooltip left>
+          <v-tooltip
+            left
+            v-if="hasUpdate(component.key) && !inError(component)"
+          >
             <template v-slot:activator="{ attrs, on }">
               <app-btn
-                v-if="hasUpdate(component.type)"
+                v-if="hasUpdate(component.key) && !inError(component)"
                 @click="handleInformationDialog(component)"
                 v-on="on"
                 v-bind="attrs"
@@ -56,17 +59,18 @@
           </v-tooltip>
 
           <version-status
-            :has-update="hasUpdate(component.type)"
+            :has-update="hasUpdate(component.key)"
             :disabled="isRefreshing || printerPrinting"
             :loading="isRefreshing"
             :dirty="('is_dirty' in component) ? component.is_dirty : false"
             :valid="('is_valid' in component) ? component.is_valid : true"
-            @on-update="updateComponent(component.type)">
+            @on-update="handleUpdateComponent(component.key)"
+            @on-recover="handleRecoverComponent(component)">
           </version-status>
 
         </app-setting>
 
-        <v-divider :key="`component-${component.type}-${component.name}-_divider`" v-if="i < components.length - 1 && components.length > 0"></v-divider>
+        <v-divider :key="`component-${component.key}-${component.name}-_divider`" v-if="i < components.length - 1 && components.length > 0"></v-divider>
       </template>
 
     </v-card>
@@ -113,26 +117,33 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
-    if (component.type === 'system') {
+    if (component.key === 'system') {
       return 'os packages'
     }
 
-    return component.type
+    return component.key
   }
 
   hasUpdate (component: string) {
     return this.$store.getters['version/hasUpdate'](component)
   }
 
-  packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
-    if (component.type === 'klipper') return 'https://github.com/KevinOConnor/klipper/commits/master'
-    if (component.type === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
-    if (component.type === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/cadriel/fluidd/releases'
+  inError (component: HashVersion | OSPackage | ArtifactVersion) {
+    const dirty = ('is_dirty' in component) ? component.is_dirty : false
+    const valid = ('is_valid' in component) ? component.is_valid : true
+    return (dirty || !valid)
   }
 
-  updateComponent (type: string) {
+  packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
+    if (component.key === 'klipper') return 'https://github.com/KevinOConnor/klipper/commits/master'
+    if (component.key === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
+    if (component.key === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/cadriel/fluidd/releases'
+  }
+
+  // Will attempt to update the requirec component based on its type.
+  handleUpdateComponent (key: string) {
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
-    switch (type) {
+    switch (key) {
       case 'klipper':
         SocketActions.machineUpdateKlipper()
         break
@@ -143,11 +154,25 @@ export default class VersionSettings extends Mixins(StateMixin) {
         SocketActions.machineUpdateSystem()
         break
       default: // assume a client update
-        SocketActions.machineUpdateClient(type)
+        SocketActions.machineUpdateClient(key)
         break
     }
     // Close the drawer
     this.$emit('click')
+  }
+
+  // Will attempt to recover a component based on its type and current status.
+  handleRecoverComponent (component: HashVersion | OSPackage | ArtifactVersion) {
+    this.$store.dispatch('version/onUpdateStatus', { busy: true })
+    const dirty = ('is_dirty' in component) ? component.is_dirty : false
+    const valid = ('is_valid' in component) ? component.is_valid : true
+    // console.log('attempting recovery...', component.type)
+    if (dirty) {
+      SocketActions.machineUpdateRecover(component.key, false)
+    }
+    if (!valid) {
+      SocketActions.machineUpdateRecover(component.key, true)
+    }
   }
 
   forceCheck () {
@@ -156,7 +181,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   getBaseUrl (component: HashVersion | ArtifactVersion) {
     if ('owner' in component) {
-      return `https://github.com/${component.owner}/${component.type}`
+      return `https://github.com/${component.owner}/${component.key}`
     }
     return ''
   }

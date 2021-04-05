@@ -7,21 +7,22 @@ import _Vue from 'vue'
 
 export const getters: GetterTree<VersionState, RootState> = {
   /**
-   * Returns the list of available components
+   * Returns an array list of available components
    */
   getVisibleComponents: (state) => {
-    const c: Array<HashVersion | ArtifactVersion | OSPackage> = []
-    for (const key in state.components) {
-      const o = state.components[key]
-      c.push(o)
-    }
+    const o = Object.keys(state.version_info)
+      .map(k => {
+        const r = state.version_info[k]
+        r.key = k
+        return r
+      })
 
-    c.sort((a, b) => {
-      const name1 = a.type.toLowerCase()
-      const name2 = b.type.toLowerCase()
+    o.sort((a, b) => {
+      const name1 = a.key.toLowerCase()
+      const name2 = b.key.toLowerCase()
       return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
     })
-    return c
+    return o
   },
 
   /**
@@ -29,7 +30,7 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   hasUpdates: (state, getters) => {
     let r = false
-    for (const key in state.components) {
+    for (const key in state.version_info) {
       if (
         !r ||
         key !== 'system'
@@ -46,8 +47,8 @@ export const getters: GetterTree<VersionState, RootState> = {
    * Returns a boolean indicating if a given component has an update.
    */
   hasUpdate: (state) => (component: string): boolean => {
-    if (state.components[component] && isOfType<ArtifactVersion>(state.components[component], 'name')) {
-      const o = state.components[component] as ArtifactVersion
+    if (state.version_info[component] && isOfType<ArtifactVersion>(state.version_info[component], 'name')) {
+      const o = state.version_info[component] as ArtifactVersion
       const version = valid(o.version)
       const remoteVersion = valid(o.remote_version)
       if (version && remoteVersion) {
@@ -56,12 +57,12 @@ export const getters: GetterTree<VersionState, RootState> = {
       return false
     }
 
-    if (state.components[component] && isOfType<OSPackage>(state.components[component], 'package_count')) {
-      const o = state.components[component] as OSPackage
+    if (state.version_info[component] && isOfType<OSPackage>(state.version_info[component], 'package_count')) {
+      const o = state.version_info[component] as OSPackage
       return (o.package_count > 0)
     }
 
-    const o = state.components[component] as HashVersion
+    const o = state.version_info[component] as HashVersion
     return (o.current_hash !== o.remote_hash)
   },
 
@@ -74,8 +75,8 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   getCommitHistory: (state) => (component: string) => {
     // This is only relevant for certain types.
-    if (state.components[component] && isOfType<HashVersion>(state.components[component], 'git_messages')) {
-      const c = state.components[component] as HashVersion
+    if (state.version_info[component] && isOfType<HashVersion>(state.version_info[component], 'git_messages')) {
+      const c = state.version_info[component] as HashVersion
       const result = [...c.commits_behind]
         .reduce((result: any, a) => {
           const d = _Vue.$dayjs(+a.date * 1000).hour(6).minute(0).second(0).unix() * 1000

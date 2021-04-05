@@ -123,12 +123,12 @@ export default class VersionInformationDialog extends Vue {
   // For type client, just show the release notes if we can.
 
   get commitHistory () {
-    return this.$store.getters['version/getCommitHistory'](this.component.type)
+    return this.$store.getters['version/getCommitHistory'](this.component.key)
   }
 
   get baseUrl () {
     if ('owner' in this.component) {
-      return `https://github.com/${this.component.owner}/${this.component.type}`
+      return `https://github.com/${this.component.owner}/${this.component.key}`
     }
     return ''
   }
