@@ -2,7 +2,7 @@ app:
   general:
     title:
       camera: Webcam
-      console: Console
+      console: Terminale
       bedmesh: Mesh Letto
       home: Cruscotto
       add_printer: Aggiungi Stampante
