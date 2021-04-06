@@ -1,0 +1,360 @@
+app:
+  general:
+    title:
+      camera: Webcam
+      console: Console
+      bedmesh: Mesh Letto
+      home: Cruscotto
+      add_printer: Aggiungi Stampante
+      endstops: Endstops
+      fans_outputs: Ventole e Uscite
+      jobs: Lavori
+      macros: Macro
+      limits: Limiti Stampante
+      system_control: Controlli di Sistema
+      runout_sensors: Sensori Runout
+      status: Stato
+      temperature: Temperature
+      tool: Strumenti
+      tune: Regolazioni
+      configure: Configurazioni
+      stats: Statistiche Stampante
+      history: Cronologia Lavori
+      config_files: File di configurazione
+      settings: Impostazioni
+    label:
+      accel_to_decel: Da Accellerazione a Decellerazione
+      acceleration: Accelerazione
+      sqv: Velocità Angoli Retti
+      velocity: Velocità
+      api_url: URL API
+      host: Host
+      layout: Layout
+      name: Nome
+      power: Potenza
+      printers: Stampanti
+      requested_speed: Velocità richiesta
+      services: Servizi
+      speed: Velocità
+      flow: Flusso
+      z_offset: Z Offset
+      high: Alto
+      low: Basso
+      'off': Spento
+      used: usato
+      free: libero
+      total_jobs: Totali lavori di stampa
+      longest_job: Lavoro più lungo
+      total_time: Tempo Totale
+      total_time_avg: Tempo Medio
+      total_print_time: Tempo Totale per stampa
+      total_print_time_avg: Tempo Medio per stampa
+      total_filament: '@.capitalize:app.general.table.header.filament_used Totale usato'
+      total_filament_avg: '@.capitalize:app.general.table.header.filament_used Medio usato'
+      variance: Varianza
+      save_as: '@.capitalize:app.general.btn.save Come'
+      edit_preset: '@.capitalize:app.general.btn.edit Preset'
+      add_preset: '@.capitalize:app.general.btn.add Preset'
+      edit_camera: '@.capitalize:app.general.btn.edit Webcam'
+      add_camera: Aggiungi Webcam
+      extrude_length: Lunghezza Estrusione
+      extrude_speed: Velocità Estrusione
+      confirm: Conferma
+    btn:
+      all: Tutti
+      all_off: '@.capitalize:app.general.btn.all @.capitalize:app.general.label.off'
+      quad_gantry_level: QGL
+      add: Aggiungi
+      pause: Pausa
+      reboot: Riavvia
+      shutdown: Spegni
+      remove: Rimuovi
+      remove_all: '@.capitalize:app.general.btn.remove @.capitalize:app.general.btn.all'
+      rename: Rinomina
+      resume: Riprendi
+      cancel: Annulla
+      save: Salva
+      save_as: '@.capitalize:app.general.label.save_as'
+      upload: Carica
+      upload_print: '@.capitalize:app.general.btn.upload e Stampa'
+      preheat: Preriscalda
+      reprint: Ristampa
+      save_restart: '@.capitalize:app.general.btn.save e @.capitalize:app.general.btn.reboot'
+      adjust_layout: >-
+        @.capitalize:app.general.btn.edit layout
+        @.capitalize:app.general.title.home
+      calibrate: Calibra
+      clear_profile: Pulisci Profilo
+      download: Scarica
+      add_printer: '@.capitalize:app.general.btn.add printer'
+      edit: Modifica
+      extrude: Estrudi
+      retract: Ritrai
+      restart_firmware: '@.capitalize:app.general.btn.reboot Firmware'
+      restart_service_klipper: '@.capitalize:app.general.btn.reboot Klipper'
+      restart_service_moonraker: '@.capitalize:app.general.btn.reboot Moonraker'
+      restart_service_webcamd: '@.capitalize:app.general.btn.reboot Webcam'
+      socket_refresh: Ricarica forzata
+      reset_file: Reimposta File
+      reset_layout: Reimposta Layout
+      view: Guarda
+      close: Chiudi
+      config_reference: Riferimento Impostazioni
+      add_file: '@.capitalize:app.general.btn.add File'
+      add_dir: '@.capitalize:app.general.btn.add Directory'
+    table:
+      header:
+        filament_used: Filamento
+        name: '@.capitalize:app.general.label.name'
+        slicer: Slicer
+        status: '@.capitalize:app.general.title.status'
+        height: Altezza
+        layer_height: '@.capitalize:app.general.table.header.height Layer'
+        estimated_time: Tempo stimato
+        last_printed: Ultima Stampa
+        modified: Modificato
+        size: Peso
+        start_time: Iniziato
+        print_duration: Durata Stampa
+        actions: Azioni
+    simple_form:
+      msg:
+        confirm: Sei sicuro?
+        confirm_reboot_host: >-
+          @.capitalize:app.general.simple_form.msg.confirm Quest'azione
+          riavvierà il tuo sistema host.
+        confirm_shutdown_host: >-
+          @.capitalize:app.general.simple_form.msg.confirm Quest'azione spegnerà
+          il tuo sistema host.
+      error:
+        invalid_url: URL Invalido
+        max: Massimo %{max}
+        min: Minimo %{min}
+        min_or_0: Minimo %{min} o 0
+        required: Richiesto
+    tooltip:
+      estop: Fermata d'emergenza
+      reload_klipper_config: Ricarica la configurazione di klipper.
+      reload_klipper_config_and_restart: Ricarica la configurazione di klipper e riavvia il Firmware.
+      restart_klipper: Riavvia il servizio di klipper.
+    error:
+      app_warnings_found: '%{appName} trovati warning.'
+      app_setup_link: >-
+        I requisiti per impostare Fluidd li trovi <a target="_blank"
+        href="%{url}">qua.</a>
+      failed_components: >-
+        Moonraker ha problemi con alcuni plugin, perfavore controlla i tuoi log,
+        aggiorna la tua configurazione e riavvia Moonraker.
+      components_config: >-
+        La configurazione dei plugin di Moonraker la trovi <a target="_blank"
+        href="%{url}">qua.</a>
+  socket:
+    msg:
+      connecting: Connettendomi a Moonraker...
+      no_connection: >-
+        Nessuna connessione a Moonraker. Perfavore controllane lo stato e / o
+        prova a ricaricare.
+  version:
+    title: Aggiornamenti
+    btn:
+      update: Aggiorna
+      finish: Fine
+      check_for_updates: Controlla gli Aggiornamenti
+    label:
+      dirty: SPORCO
+      invalid: INVALIDO
+      up_to_date: AGGIORNATO
+      commit_history: Cronologia Commit
+      commits_on: Abilita Commit
+      committed: Committed
+      package_list: Lista Pacchetti
+    status:
+      updating: Aggiornando...
+      finished: Aggiornamenti finiti.
+    tooltip:
+      dirty: indica un head staccato, non è un master o ha un origine invalida
+      invalid: indica cambiamenti locali alla repo
+      commit_history: Cronologia Commit
+      packages: Pacchetti
+      release_notes: Note di Rilascio
+  console:
+    label:
+      hide_temp_waits: Nascondi pause temporanee
+    placeholder:
+      command: >-
+        'tab' per l'autocompletamento, 'help' per i comandi 'freccia su / giu'
+        per la cronologia
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+    tooltip:
+      home_xy: Home XY
+      home_z: Home Z
+      extruder_disabled: >-
+        Estrusore disattivato, temperatura inferiore a min_extrude_temp
+        (%{min}<small>°C</small>)
+  bedmesh:
+    label:
+      profile_name: Nome Profilo
+      remove_profile: 'Rimuovi il profilo: %{name}'
+    msg:
+      not_found: Nessuna mesh per il letto trovata.
+      hint: >-
+        Se lo salvi con un nome diverso da %{name},  puoi anche rimuovere il
+        profilo: %{name}
+    tooltip:
+      calibrate: Inizia una nuova calibratura, salvato come profilo 'default'
+      delete: Elimina il profilo. RIAVVIERÀ la tua stampante
+      save: Salva la calibrazione in printer.cfg. RIAVVIERÀ la tua stampante
+      load: Carica profilo
+  printer:
+    status:
+      used_filament: filamento usato
+      time_left: tempo stimato rimanente
+      duration: durata
+      duration_total: durata e totale
+    state:
+      printing: Stampando
+      loading: Caricando
+      complete: Finito
+      paused: In Pausa
+      standby: In Stand-by
+      idle: Inattiva
+      ready: Pronta
+      busy: Occupata
+  setting:
+    title:
+      camera: Webcam
+      macros: Macro
+      general: Generale
+      theme: Tema
+      tool: Strumenti
+      thermal_presets: Profili Temperature
+    label:
+      camera_fillspace: Riempi spazio
+      camera_fillspace_help: Con una sola Webcam attiva, riempi lo spazio della webcam sul cruscotto.
+      camera_url: Webcam Url
+      printer_name: Nome della Stampante
+      language: Lingua di Visualizzazione
+      default_toolhead_move_length: Lunghezza di Default movimento della Testina
+      default_extrude_speed: Velocità di Default di estrusione
+      default_extrude_length: Lunghezza di Default di estrusione
+      default_toolhead_z_speed: Velocità di Default testina sull'asse Z
+      default_toolhead_xy_speed: Velocità di Default testina sull'asse XY
+      camera_flip_x: Capovolgi orizzontalmente
+      camera_flip_y: Capovolgi verticalmente
+      camera_stream_type: Tipo di Stream
+      thermal_preset_name: Nome profilo
+      all_on: Tutto acceso
+      all_off: Tutto spento
+      toggle: Accendi / Spegni
+      dark_mode: Modalità Scura
+      primary_color: Colore Primario
+      reset: Ripristina Impostazioni
+      z_adjust_values: Valori regolazione Z
+      gcode_coords: Usa Coordinate GCode
+      time_estimates: Tempo stimato
+      invert_z_control: Inverti Z
+      invert_y_control: Inverti Y
+      invert_x_control: Inverti X
+      enable: Attiva
+      fps_target: Target FPS
+    btn:
+      add_camera: Aggiungi Webcam
+      select_theme: Seleziona Tema
+      add_thermal_preset: Aggiungi Profilo
+      reset: Ripristina
+    timer_options:
+      duration: Solo Durata
+      duration_description: Simile all'LCD di klipper, mostra solo la durata senza stime.
+      file: Stima da File
+      file_description: >-
+        Usa la percentuale di progresso e la durata per stimare la durata
+        totale.<br /> Diventa più preciso con il tempo.
+      filament: Stima dal Filamento
+      filament_description: >-
+        Usa il conteggio del filamento usato e lo compara con il totale stimato
+        di filamento<br/> necessario per stimare la durata totale.<br/> Diventa
+        più preciso con il tempo.
+      slicer: Slicer
+      slicer_description: Usa la stima dello slicer. Devi attivarla nel tuo slicer.
+    camera_type_options:
+      video: IP Webcam
+      mjpegstream: MJPEG Stream
+      mjpegadaptive: MJPEG Adaptive
+    tooltip:
+      gcode_coords: >-
+        Usa il posizionamento GCode invece del posizionamento della testina nel
+        cruscotto.
+  chart:
+    tooltip:
+      help: >-
+        Tieni premuto shift per zommare.<br /> Clicca un elemento da mostrare /
+        nascondere sul grafico.<br /> Clicca una potenza da mostrare /
+        nascondere sul grafico.
+    label:
+      item: Elemento
+      current: Attuale
+      target: Target
+      power: Potenza
+  file_system:
+    title:
+      rename_file: Rinomina File
+      rename_dir: Rinomina Cartella
+      add_file: Aggiungi File
+      add_dir: Aggiungi Cartella
+      download_file: Recupero file
+      upload_file: Caricando il File | Caricando i File
+    label:
+      dir_name: Nome Cartella
+      file_name: Nome File
+      disk_usage: Uso del Disco
+      downloaded: Scaricati
+      transfer_rate: Velocità Trasferimento
+      uploaded: Caricato
+    msg:
+      not_found: Nessun File Trovato
+      processing: Processsando...
+      confirm: Sei sicuro? Questo eliminerà tutti i file e le cartelle all'interno.
+    tooltip:
+      disabled: I Lavori sono disattivati prima della comunicazione iniziale con klippy
+      low_on_space: Poco Spazio su Disco
+    overlay:
+      label: <strong>Trascina</strong> un file qua.
+    filters:
+      label:
+        print_start_time: Filtra stampati
+        print_start_time_desc: Filtra elementi che hai già stampato.
+  endstop:
+    label:
+      open: LIBERO
+      triggered: ATTIVATO
+    msg:
+      subtitle: Usa il pulsante di ricarica per aggiornare lo stato degli endstop.
+  history:
+    msg:
+      confirm: >-
+        Sei Sicuro? Cancellerà tutta la cronologia, e le statistiche della
+        stampante
+      load_count: Rappresenta gli ultimi {num} Lavori
+  endpoint:
+    hint:
+      add_printer: P.e., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Problemi?  <a href="%{url}" target="_blank">Guarda qua</a> per maggiori
+        informazioni.
+    tooltip:
+      endpoint_examples: >-
+        Immetti l'URL delle tue API.<br />Qualche esempio può essere;<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+    error:
+      cant_connect: >-
+        Qualcosa è andato storto, fluidd non riesce a raggiungere la
+        destinazione. Sicuro che sia l'URL corretto?
+      cors_error: bloccato dalla politica CORS
+      cors_note: >-
+        Potrebbe voler dire che devi modificare la configurazione di moonraker.
+        Controlla la documentazione per configurare stampanti multiple <a
+        href="%{url}" target="_blank">qua</a>

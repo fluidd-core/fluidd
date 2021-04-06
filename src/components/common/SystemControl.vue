@@ -17,7 +17,7 @@
           {{ $t('app.general.btn.restart_service_klipper') }}
         </app-btn>
       </template>
-      <span>Restarts the klipper system service.</span>
+      <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
     </v-tooltip>
 
     <v-tooltip
@@ -37,7 +37,7 @@
           {{ $t('app.general.btn.restart_service_klipper') }}
         </app-btn>
       </template>
-      <span>Reloads klipper configuration.</span>
+      <span>{{ $t('app.general.tooltip.reload_klipper_config') }}</span>
     </v-tooltip>
 
     <v-tooltip
@@ -57,7 +57,7 @@
           {{ $t('app.general.btn.restart_firmware') }}
         </app-btn>
       </template>
-      <span>Reloads klipper configuration and restarts MCU's.</span>
+      <span>{{ $t('app.general.tooltip.reload_klipper_config_and_restart') }}</span>
     </v-tooltip>
 
     <app-btn
