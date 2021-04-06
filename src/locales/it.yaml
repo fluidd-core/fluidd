@@ -179,7 +179,7 @@ app:
       release_notes: Note di Rilascio
   console:
     label:
-      hide_temp_waits: Nascondi pause temporanee
+      hide_temp_waits: Nascondi Temperature di Riscaldamento
     placeholder:
       command: >-
         'tab' per l'autocompletamento, 'help' per i comandi 'freccia su / giu'
