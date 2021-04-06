@@ -1,339 +1,36 @@
 app:
-  general:
-    title:
-      camera: Camera | Cameras
-      console: Console
-      bedmesh: Bed Mesh
-      home: Dashboard
-      add_printer: Add Printer
-      endstops: Endstops
-      fans_outputs: Fans & Outputs
-      jobs: Jobs
-      macros: Macros
-      limits: Printer Limits
-      logs: Printer Logs
-      system_control: System Control
-      runout_sensors: Runout Sensors
-      status: Status
-      temperature: Thermals
-      tool: Tool
-      tune: Tune
-      configure: Configure
-      settings: Settings
-      stats: Printer Stats
-      history: Job History
-      config_files: Configuration Files
-    label:
-      accel_to_decel: Accel to Decel
-      acceleration: Acceleration
-      sqv: Square Corner Velocity
-      velocity: Velocity
-      api_url: API URL
-      host: Host
-      layout: Layout
-      name: Name
-      power: Power
-      printers: Printers
-      requested_speed: Requested Speed
-      services: Services
-      speed: Speed
-      flow: Flow
-      z_offset: Z Offset
-      high: High
-      low: Low
-      off: Off
-      used: used
-      free: free
-      total_jobs: Total print jobs
-      longest_job: Longest job
-      total_time: Total time
-      total_time_avg: Avg per print
-      total_print_time: Total print time
-      total_print_time_avg: Avg per print
-      total_filament: Total filament used
-      total_filament_avg: Avg per print
-      variance: Variance
-      save_as: Save As
-      edit_preset: Edit Preset
-      add_preset: Add Preset
-      edit_camera: Edit Camera
-      add_camera: Add Camera
-      extrude_length: Extrude Length
-      extrude_speed: Extrude Speed
-      confirm: Confirm
-    btn:
-      all: All
-      all_off: All off
-      quad_gantry_level: QGL
-      add: Add
-      pause: Pause
-      reboot: Reboot
-      shutdown: Shutdown
-      remove: Remove
-      remove_all: Remove All
-      rename: Rename
-      resume: Resume
-      cancel: Cancel
-      save: Save
-      save_as: Save As
-      upload: Upload
-      upload_print: Upload & Print
-      preheat: Preheat
-      reprint: Reprint
-      save_restart: Save & Restart
-      adjust_layout: Adjust dashboard layout
-      calibrate: Calibrate
-      clear_profile: Clear Profile
-      download: Download
-      add_printer: Add printer
-      edit: Edit
-      extrude: Extrude
-      retract: Retract
-      restart_firmware: Firmware Restart
-      restart_service_klipper: Restart Klipper
-      restart_service_moonraker: Restart Moonraker
-      restart_service_webcamd: Restart Webcam
-      socket_refresh: Force refresh
-      reset_file: Reset File
-      reset_layout: Reset Layout
-      view: View
-      close: Close
-      config_reference: Config Reference
-      add_file: Add File
-      add_dir: Add Directory
-    table:
-      header:
-        filament_used: Filament
-        name: Name
-        slicer: Slicer
-        status: Status
-        height: Height
-        layer_height: Layer height
-        estimated_time: Estimated time
-        last_printed: Last printed
-        modified: Modified
-        size: Size
-        start_time: Started
-        print_duration: Print Duration
-        actions: Actions
-    simple_form:
-      msg:
-        confirm: Are you sure?
-        confirm_reboot_host: Are you sure? This will reboot your host system.
-        confirm_shutdown_host: Are you sure? This will shutdown your host system.
-      error:
-        invalid_url: Invalid URL
-        max: Max %{max}
-        min: Min %{min}
-        min_or_0: Min %{min} or 0
-        required: Required
-    tooltip:
-      estop: Emergency Stop
-    error:
-      app_warnings_found: '%{appName} warnings found.'
-      app_setup_link: >-
-        Fluidd setup requirements can be found <a target="_blank"
-        href="%{url}">here.</a>
-      failed_components: >-
-        Moonraker has failed plugins, please check your logs, update your
-        configuration and restart moonraker.
-      components_config: >-
-        Moonraker plugin configuration can be found <a target="_blank"
-        href="%{url}">here.</a>
-  socket:
-    msg:
-      connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
-  version:
-    title: Software Updates
-    btn:
-      update: Update
-      finish: Finish
-      check_for_updates: Check for updates
-    label:
-      dirty: DIRTY
-      invalid: INVALID
-      up_to_date: UP TO DATE
-      commit_history: Commit History
-      package_list: Package List
-      commits_on: commits on
-      committed: Committed
-    status:
-      updating: Updating...
-      finished: Updates finished
-    tooltip:
-      dirty: indicates a detached head, not on master or an invalid origin
-      invalid: indicates local changes to the repo
-      release_notes: Release notes
-      packages: Packages
-      commit_history: Commit history
-      commits: Commits
-  console:
-    label:
-      hide_temp_waits: Hide temp waits
-    placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
-  tool:
-    btn:
-      home_x: X
-      home_y: Y
-    tooltip:
-      home_xy: Home XY
-      home_z: Home Z
-      extruder_disabled: >-
-        extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
   bedmesh:
     label:
       profile_name: Profile Name
       remove_profile: Remove %{name} profile
     msg:
-      not_found: No existing bed meshes found.
       hint: >-
         If saving as something other than %{name}, you can choose to also remove
         the %{name} profile
+      not_found: No existing bed meshes found.
     tooltip:
       calibrate: Begins a new calibration, saving as profile 'default'
       delete: Delete Profile. This WILL restart your printer
+      load: Load Profile
       save: >-
         Commits calibrated profile to printer.cfg. This WILL restart your
         printer
-      load: Load Profile
-  printer:
-    status:
-      used_filament: used filament
-      time_left: estimated time left
-      duration: duration
-      duration_total: duration & total
-    state:
-      printing: Printing
-      loading: Loading
-      complete: Complete
-      paused: Paused
-      standby: Standby
-      idle: Idle
-      ready: Ready
-      busy: Busy
-  setting:
-    title:
-      camera: Camera | Cameras
-      macros: Macros
-      general: General
-      theme: Theme
-      tool: Tool
-      thermal_presets: Thermal Presets
-    label:
-      camera_fillspace: Fill space
-      camera_fillspace_help: With only one enabled camera, fill the dashboard camera space.
-      camera_url: Camera Url
-      printer_name: Printer Name
-      language: Display Language
-      default_toolhead_move_length: Default toolhead move length
-      default_extrude_speed: Default extrude speed
-      default_extrude_length: Default extrude length
-      default_toolhead_z_speed: Default toolhead Z speed
-      default_toolhead_xy_speed: Default toolhead XY speed
-      camera_flip_x: Flip horizontally
-      camera_flip_y: Flip vertically
-      camera_stream_type: Stream type
-      thermal_preset_name: Preset Name
-      all_on: All on
-      all_off: All off
-      toggle: Toggle
-      dark_mode: Dark mode
-      primary_color: Primary color
-      reset: Reset settings
-      z_adjust_values: Z Adjust values
-      gcode_coords: Use GCode Coordinates
-      time_estimates: Time estimates
-      invert_z_control: Invert Z control
-      invert_y_control: Invert Y control
-      invert_x_control: Invert X control
-      enable: Enable
-      fps_target: FPS Target
-    btn:
-      add_camera: Add Camera
-      select_theme: Select Theme
-      add_thermal_preset: Add Preset
-      reset: Reset
-    timer_options:
-      duration: Duration only
-      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
-      file: File Estimation
-      file_description: >-
-        Takes progress percent, and duration to estimate total duration.<br />
-        More accurate over time.
-      filament: Filament Estimation
-      filament_description: >-
-        Takes used filament vs estimated filament to estimate total duration.<br />
-        More accurate over time.
-      slicer: Slicer
-      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
-    camera_type_options:
-      video: IP Camera
-      mjpegstream: MJPEG Stream
-      mjpegadaptive: MJPEG Adaptive
-    tooltip:
-      gcode_coords: Use GCode position instead of toolhead position on dashboard
   chart:
+    label:
+      current: Current
+      item: Item
+      power: Power
+      target: Target
     tooltip:
       help: >-
         Hold shift to zoom.<br />Click an item to toggle in the graph.<br
         />Click a power to toggle in the graph.
+  console:
     label:
-      item: Item
-      current: Current
-      target: Target
-      power: Power
-  file_system:
-    title:
-      rename_file: Rename File
-      rename_dir: Rename Directory
-      add_file: Add File
-      add_dir: Add Directory
-      download_file: Retrieving file
-      upload_file: Uploading file | Uploading files
-    label:
-      dir_name: Directory name
-      file_name: Filename
-      disk_usage: Disk Usage
-      downloaded: Downloaded
-      uploaded: Uploaded
-      transfer_rate: Transfer rate
-    msg:
-      not_found: No files found
-      processing: Processing
-      confirm: Are you sure? This will delete all files and folders within.
-    tooltip:
-      disabled: Jobs require initial communication with klippy and a valid virtual_sdcard path
-      low_on_space: Low on disk space
-    overlay:
-      label: <strong>Drag</strong> a file here
-      uploading: <strong>Uploading</strong> files
-    filters:
-      label:
-        print_start_time: Filter printed
-        print_start_time_desc: Filters out items you've already printed.
-  endstop:
-    label:
-      open: OPEN
-      triggered: TRIGGERED
-    msg:
-      subtitle: Use the refresh button to update endstop status.
-  history:
-    msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
-      load_count: Represents the last {num} Jobs
+      hide_temp_waits: Hide temp waits
+    placeholder:
+      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
   endpoint:
-    hint:
-      add_printer: E.g., http://fluiddpi.local
-    msg:
-      trouble: >-
-        Having trouble? <a href="%{url}" target="_blank">See here</a> for
-        more information.
-    tooltip:
-      endpoint_examples: >-
-        Enter your API URL.<br />Some examples might be;<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
     error:
       cant_connect: >-
         Something went wrong, and fluidd can't reach the destination. Are you
@@ -343,3 +40,304 @@ app:
         This may mean you need to modify your moonraker configuration. Please
         see the documentation on multi printer setups <a href="%{url}"
         target="_blank">here</a>
+    hint:
+      add_printer: E.g., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Having trouble? <a href="%{url}" target="_blank">See here</a> for more
+        information.
+    tooltip:
+      endpoint_examples: >-
+        Enter your API URL.<br />Some examples might be;<br
+        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: OPEN
+      triggered: TRIGGERED
+    msg:
+      subtitle: Use the refresh button to update endstop status.
+  file_system:
+    filters:
+      label:
+        print_start_time: Filter printed
+        print_start_time_desc: Filters out items you've already printed.
+    label:
+      dir_name: Directory name
+      disk_usage: Disk Usage
+      downloaded: Downloaded
+      file_name: Filename
+      transfer_rate: Transfer rate
+      uploaded: Uploaded
+    msg:
+      confirm: Are you sure? This will delete all files and folders within.
+      not_found: No files found
+      processing: Processing
+    overlay:
+      label: <strong>Drag</strong> a file here
+    title:
+      add_dir: Add Directory
+      add_file: Add File
+      download_file: Retrieving file
+      rename_dir: Rename Directory
+      rename_file: Rename File
+      upload_file: Uploading file | Uploading files
+    tooltip:
+      disabled: >-
+        Jobs require initial communication with klippy and a valid
+        virtual_sdcard path
+      low_on_space: Low on disk space
+  general:
+    btn:
+      add: Add
+      add_dir: Add Directory
+      add_file: Add File
+      add_printer: Add printer
+      adjust_layout: Adjust dashboard layout
+      all: All
+      all_off: All off
+      calibrate: Calibrate
+      cancel: Cancel
+      clear_profile: Clear Profile
+      close: Close
+      config_reference: Config Reference
+      download: Download
+      edit: Edit
+      extrude: Extrude
+      pause: Pause
+      preheat: Preheat
+      quad_gantry_level: QGL
+      reboot: Reboot
+      remove: Remove
+      remove_all: Remove All
+      rename: Rename
+      reprint: Reprint
+      reset_file: Reset File
+      reset_layout: Reset Layout
+      restart_firmware: Firmware Restart
+      restart_service_klipper: Restart Klipper
+      restart_service_moonraker: Restart Moonraker
+      restart_service_webcamd: Restart Webcam
+      resume: Resume
+      retract: Retract
+      save: Save
+      save_as: Save As
+      save_restart: Save & Restart
+      shutdown: Shutdown
+      socket_refresh: Force refresh
+      upload: Upload
+      upload_print: Upload & Print
+      view: View
+    error:
+      app_setup_link: >-
+        Fluidd setup requirements can be found <a target="_blank"
+        href="%{url}">here.</a>
+      app_warnings_found: '%{appName} warnings found.'
+      components_config: >-
+        Moonraker plugin configuration can be found <a target="_blank"
+        href="%{url}">here.</a>
+      failed_components: >-
+        Moonraker has failed plugins, please check your logs, update your
+        configuration and restart moonraker.
+    label:
+      accel_to_decel: Accel to Decel
+      acceleration: Acceleration
+      add_camera: Add Camera
+      add_preset: Add Preset
+      api_url: API URL
+      confirm: Confirm
+      edit_camera: Edit Camera
+      edit_preset: Edit Preset
+      extrude_length: Extrude Length
+      extrude_speed: Extrude Speed
+      flow: Flow
+      free: free
+      high: High
+      host: Host
+      layout: Layout
+      longest_job: Longest job
+      low: Low
+      name: Name
+      'off': 'Off'
+      power: Power
+      printers: Printers
+      requested_speed: Requested Speed
+      save_as: Save As
+      services: Services
+      speed: Speed
+      sqv: Square Corner Velocity
+      total_filament: Total filament used
+      total_filament_avg: Avg per print
+      total_jobs: Total print jobs
+      total_print_time: Total print time
+      total_print_time_avg: Avg per print
+      total_time: Total time
+      total_time_avg: Avg per print
+      used: used
+      variance: Variance
+      velocity: Velocity
+      z_offset: Z Offset
+    simple_form:
+      error:
+        invalid_url: Invalid URL
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} or 0
+        required: Required
+      msg:
+        confirm: Are you sure?
+        confirm_reboot_host: Are you sure? This will reboot your host system.
+        confirm_shutdown_host: Are you sure? This will shutdown your host system.
+    table:
+      header:
+        actions: Actions
+        estimated_time: Estimated time
+        filament_used: Filament
+        height: Height
+        last_printed: Last printed
+        layer_height: Layer height
+        modified: Modified
+        name: Name
+        print_duration: Print Duration
+        size: Size
+        slicer: Slicer
+        start_time: Started
+        status: Status
+    title:
+      add_printer: Add Printer
+      bedmesh: Bed Mesh
+      camera: Camera | Cameras
+      config_files: Configuration Files
+      configure: Configure
+      console: Console
+      endstops: Endstops
+      fans_outputs: Fans & Outputs
+      history: Job History
+      home: Dashboard
+      jobs: Jobs
+      limits: Printer Limits
+      macros: Macros
+      runout_sensors: Runout Sensors
+      settings: Settings
+      stats: Printer Stats
+      status: Status
+      system_control: System Control
+      temperature: Thermals
+      tool: Tool
+      tune: Tune
+    tooltip:
+      estop: Emergency Stop
+  history:
+    msg:
+      confirm: Are you sure? This will clear all history, and printer statistics
+      load_count: Represents the last {num} Jobs
+  printer:
+    state:
+      busy: Busy
+      complete: Complete
+      idle: Idle
+      loading: Loading
+      paused: Paused
+      printing: Printing
+      ready: Ready
+      standby: Standby
+    status:
+      duration: duration
+      duration_total: duration & total
+      time_left: estimated time left
+      used_filament: used filament
+  setting:
+    btn:
+      add_camera: Add Camera
+      add_thermal_preset: Add Preset
+      reset: Reset
+      select_theme: Select Theme
+    camera_type_options:
+      mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
+      video: IP Camera
+    label:
+      all_off: All off
+      all_on: All on
+      camera_fillspace: Fill space
+      camera_fillspace_help: With only one enabled camera, fill the dashboard camera space.
+      camera_flip_x: Flip horizontally
+      camera_flip_y: Flip vertically
+      camera_stream_type: Stream type
+      camera_url: Camera Url
+      dark_mode: Dark mode
+      default_extrude_length: Default extrude length
+      default_extrude_speed: Default extrude speed
+      default_toolhead_move_length: Default toolhead move length
+      default_toolhead_xy_speed: Default toolhead XY speed
+      default_toolhead_z_speed: Default toolhead Z speed
+      enable: Enable
+      fps_target: FPS Target
+      gcode_coords: Use GCode Coordinates
+      invert_x_control: Invert X control
+      invert_y_control: Invert Y control
+      invert_z_control: Invert Z control
+      language: Display Language
+      primary_color: Primary color
+      printer_name: Printer Name
+      reset: Reset settings
+      thermal_preset_name: Preset Name
+      time_estimates: Time estimates
+      toggle: Toggle
+      z_adjust_values: Z Adjust values
+    timer_options:
+      duration: Duration only
+      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
+      filament: Filament Estimation
+      filament_description: >-
+        Takes used filament vs estimated filament to estimate total duration.<br
+        /> More accurate over time.
+      file: File Estimation
+      file_description: >-
+        Takes progress percent, and duration to estimate total duration.<br />
+        More accurate over time.
+      slicer: Slicer
+      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
+    title:
+      camera: Camera | Cameras
+      general: General
+      macros: Macros
+      theme: Theme
+      thermal_presets: Thermal Presets
+      tool: Tool
+    tooltip:
+      gcode_coords: Use GCode position instead of toolhead position on dashboard
+  socket:
+    msg:
+      connecting: Connecting to moonraker...
+      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+    tooltip:
+      extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+      home_xy: Home XY
+      home_z: Home Z
+  version:
+    btn:
+      check_for_updates: Check for updates
+      finish: Finish
+      update: Update
+    label:
+      commit_history: Commit History
+      commits_on: commits on
+      committed: Committed
+      dirty: DIRTY
+      invalid: INVALID
+      package_list: Package List
+      up_to_date: UP TO DATE
+    status:
+      finished: Updates finished
+      updating: Updating...
+    title: Software Updates
+    tooltip:
+      commit_history: Commit history
+      dirty: indicates a detached head, not on master or an invalid origin
+      invalid: indicates local changes to the repo
+      packages: Packages
+      release_notes: Release notes

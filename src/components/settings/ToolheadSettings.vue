@@ -143,7 +143,7 @@
           type="number"
           :rules="[
               v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-              v => v.length <= 2 || $t('app.general.simple_form.error.max', { max: 2 }),
+              v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
           ]"
         ></v-combobox>
       </app-setting>
