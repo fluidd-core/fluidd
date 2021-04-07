@@ -1,6 +1,9 @@
 <template>
   <div>
-    <v-subheader id="versions">{{ $t('app.version.title') }}</v-subheader>
+    <v-subheader id="versions">
+      {{ $t('app.version.title') }}
+      <v-icon small color="warning" class="ml-2" v-if="hasUpdates">$error</v-icon>
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
@@ -17,6 +20,19 @@
           <v-icon left :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
           {{ $t('app.version.btn.check_for_updates') }}
         </app-btn>
+      </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        title="Enable notifications"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="enableNotifications"
+          hide-details
+          class="mb-5"
+        ></v-switch>
       </app-setting>
 
       <v-divider></v-divider>
@@ -113,7 +129,21 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get hasUpdates () {
-    return this.$store.getters['version/hasUpdates']
+    const d = this.$store.getters['version/hasUpdates']
+    console.log('d', d)
+    return d
+  }
+
+  get enableNotifications () {
+    return this.$store.state.config.uiSettings.general.enableNotifications
+  }
+
+  set enableNotifications (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.enableNotifications',
+      value,
+      server: true
+    })
   }
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
