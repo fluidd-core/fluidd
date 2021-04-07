@@ -1,0 +1,90 @@
+<template>
+  <v-dialog
+    :title="$t('app.general.label.save_as')"
+    :value="value"
+    @input="$emit('input', $event)"
+    :max-width="450"
+  >
+
+    <v-form
+      ref="saveMeshForm"
+      @submit.prevent="handleSubmit()"
+      v-model="valid"
+    >
+      <v-card>
+        <v-card-title class="card-heading py-2">
+          <span class="focus--text">{{ $t('app.general.label.save_as') }}</span>
+        </v-card-title>
+
+        <v-card-text class="mt-4">
+          <v-text-field
+            autofocus
+            filled
+            required
+            class="mb-4"
+            :rules="rules"
+            hide-details="auto"
+            :label="$t('app.bedmesh.label.profile_name')"
+            v-model="name">
+          </v-text-field>
+
+          <v-checkbox
+            :label="$t('app.bedmesh.label.remove_profile', { name: existingName })"
+            hide-details="auto"
+            class="mb-4"
+            v-model="removeDefault"
+            :disabled="name === existingName"
+            ></v-checkbox>
+
+            <p>
+              {{ $t('app.bedmesh.msg.hint', { name: existingName }) }}
+            </p>
+        </v-card-text>
+
+        <v-divider />
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
+          <app-btn color="primary" :elevation="2" type="submit">{{ $t('app.general.btn.save') }}</app-btn>
+        </v-card-actions>
+
+      </v-card>
+    </v-form>
+  </v-dialog>
+</template>
+
+<script lang="ts">
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
+
+@Component({})
+export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
+  @Prop({ type: Boolean, default: false })
+  value!: string;
+
+  @Prop({ type: String })
+  existingName!: string;
+
+  mounted () {
+    this.name = 'default'
+    this.removeDefault = false
+  }
+
+  valid = true
+  name = 'default'
+  removeDefault = false
+
+  rules = [
+    (v: string) => !!v || this.$t('app.general.simple_form.error.required')
+  ]
+
+  handleSubmit () {
+    if (this.valid) {
+      this.$emit('save', { name: this.name, removeDefault: this.removeDefault })
+      this.$emit('input', false)
+    }
+  }
+}
+</script>

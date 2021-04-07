@@ -5,7 +5,6 @@
 ### Features
 
 - More macro layout options (categorize macros, ability to define layout in some way, color)
-- alternate bed mesh scales
 - file system enhancements
   - bulk actions to delete or move?
   - copy file
@@ -48,8 +47,6 @@
   - the metadata load fails because the file is no longer there.
 
 ## General Improvements
-
-- probed vs mesh bed level display option
 
 ## [Page] Printer Configuration
 

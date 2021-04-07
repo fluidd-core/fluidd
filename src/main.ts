@@ -36,14 +36,18 @@ import VuetifyConfirm from 'vuetify-confirm'
 // import * as echarts from 'echarts'
 import * as echarts from 'echarts/core'
 import { LineChart } from 'echarts/charts'
+import { Grid3DComponent } from 'echarts-gl/components'
+import { SurfaceChart } from 'echarts-gl/charts'
 import {
   DatasetComponent,
   TooltipComponent,
   GridComponent,
   DataZoomComponent,
-  LegendComponent
+  LegendComponent,
+  VisualMapComponent
 } from 'echarts/components'
-import { SVGRenderer } from 'echarts/renderers'
+
+import { SVGRenderer, CanvasRenderer } from 'echarts/renderers'
 
 // Main App component
 import App from './App.vue'
@@ -67,7 +71,11 @@ echarts.use([
   DataZoomComponent,
   LegendComponent,
   LineChart,
-  SVGRenderer
+  VisualMapComponent,
+  SurfaceChart,
+  Grid3DComponent,
+  SVGRenderer,
+  CanvasRenderer
 ])
 
 Vue.use(plugin, { echarts })
