@@ -2,6 +2,154 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.11.2](https://github.com/cadriel/fluidd/compare/v1.11.1...v1.11.2) (2021-03-28)
+
+
+### Features
+
+* add version update notification to collapsed hamburger menu ([bd8cc47](https://github.com/cadriel/fluidd/commit/bd8cc47b1daa1a2633b7456a5b5e58901596f6d9))
+* allow single cams to fill the card space ([be96c50](https://github.com/cadriel/fluidd/commit/be96c5025530e347c08a353f09e42525d36028b0))
+
+
+### Bug Fixes
+
+* ensure history items are updated without needing to refresh ([40f0071](https://github.com/cadriel/fluidd/commit/40f0071f895694d24e0c23495d4f8aa503c5ad2d))
+* error in console when initial locale not set ([d1b0560](https://github.com/cadriel/fluidd/commit/d1b0560c99b853142225fbfee0b28a24d726e66c))
+* now inits plugins when no moonraker db data ([9314fe2](https://github.com/cadriel/fluidd/commit/9314fe23c1dafcf651d00644936ea7d38dce6de5))
+* reprint not working when history is off ([08d2b8b](https://github.com/cadriel/fluidd/commit/08d2b8bafddc253cde5b513dc884b616f403b0ac))
+* thumbs failing to load ([64f3a8f](https://github.com/cadriel/fluidd/commit/64f3a8fd7346ff8b28fa282f38847c14388de559))
+
+### [1.11.1](https://github.com/cadriel/fluidd/compare/v1.11.0...v1.11.1) (2021-03-26)
+
+
+### Bug Fixes
+
+* camera when flipped is now position correctly ([1a16fe7](https://github.com/cadriel/fluidd/commit/1a16fe714b186008b0ebcc80f0b2034231bc9068))
+* restart buttons not appearing under certain circumstances ([ed3bfa6](https://github.com/cadriel/fluidd/commit/ed3bfa69a36c78227891e120e8e8561258616ef2))
+* Space now between z-adjust heading and value ([8b663ec](https://github.com/cadriel/fluidd/commit/8b663ec5bf09d9760c6a4dca4f7d35f91b4958ea))
+* upload by button now works correctly ([9fd9d2d](https://github.com/cadriel/fluidd/commit/9fd9d2d8e29286851bce6da2c9bf9046ad021196))
+
+## [1.11.0](https://github.com/cadriel/fluidd/compare/v1.10.0...v1.11.0) (2021-03-26)
+
+
+### Features
+
+* add automated dev build ([c78999d](https://github.com/cadriel/fluidd/commit/c78999d1ffccee88b6777deb41f163c411c77ce3))
+* add basic error reporting to add instance dialog ([7799c1f](https://github.com/cadriel/fluidd/commit/7799c1f2f43627704a0dc2ae0ea2b75cfedb036b))
+* add file-system filtering ([acd29ca](https://github.com/cadriel/fluidd/commit/acd29cad02586a9c06c570c04aa6fb11b9dac270))
+* add preheat option to context menu ([0c42439](https://github.com/cadriel/fluidd/commit/0c42439b84148b4a4934def6ead6823cbcc6a1e4))
+* allow file / folder moves ([aa08241](https://github.com/cadriel/fluidd/commit/aa08241c71aea19c4452b39d04deb696d51fcd69))
+* btn override ([bb3ba73](https://github.com/cadriel/fluidd/commit/bb3ba739b354d1c48a1e78509d3a2445bfc8a0ac))
+* btn text now properly reacts to background changes ([a3a5256](https://github.com/cadriel/fluidd/commit/a3a5256cf58367238ddbb224483b8ce9cacc4d35))
+* configure available z-height adjustment values ([966ec8b](https://github.com/cadriel/fluidd/commit/966ec8b2c2e00d51fe10d81673fc1a858e242e12))
+* expands re-print options when history plugin is enabled ([7fdf0a8](https://github.com/cadriel/fluidd/commit/7fdf0a8519cff89fd6b61b9a9119fe55ed5e85c6))
+* filesystem path stored in memory ([656c1e1](https://github.com/cadriel/fluidd/commit/656c1e1d3ae445d7416d5b4cb2734e8b83650a51))
+* Gcode position ([814f72d](https://github.com/cadriel/fluidd/commit/814f72d68e61e31c9576130d343c824ba146255e))
+* Gcode position ([519148b](https://github.com/cadriel/fluidd/commit/519148bcd7e2e2bbdf385b8465e1500a59d6b2c2))
+* incl full hash of moonraker and klipper in footer ([85b6e84](https://github.com/cadriel/fluidd/commit/85b6e84841fb6f9a03cbd4077d810010c5c20d89))
+* load appropriate locale from user settings ([7968aee](https://github.com/cadriel/fluidd/commit/7968aee81a844138f381fb491e2d7e66ccbf62ab))
+* low on space warning in file browser ([66fb0ad](https://github.com/cadriel/fluidd/commit/66fb0adbeb212292bbc843d8a895c086ff80be35))
+* multiple cameras + adaptive streams ([98ff167](https://github.com/cadriel/fluidd/commit/98ff1674c9493f97139942d3d3ab18771b300445))
+* printer stats + history ([aa71c7a](https://github.com/cadriel/fluidd/commit/aa71c7a44233f670d02b3cf28bbd78c5179decc2))
+* Show gcode position instead of toolhead position ([776528b](https://github.com/cadriel/fluidd/commit/776528b32372aad73ad7546823036272d0c38628))
+* sort TemperaturePresets ([4f0a30a](https://github.com/cadriel/fluidd/commit/4f0a30a56e17efcf4401c87fa440f15f9238b875))
+* updates settings layout ([6d5149b](https://github.com/cadriel/fluidd/commit/6d5149be7a8bc6ccdbdd5907f227ab049dad4e3d))
+
+
+### Bug Fixes
+
+* **endstops-label:** Fix end triggered label not being displayed ([13a0875](https://github.com/cadriel/fluidd/commit/13a0875519e6a7185b05bccc64e784203345a4fe))
+* **reprint-menu-glitch:** Fixed a small glitch in the reprint menu ([190e20b](https://github.com/cadriel/fluidd/commit/190e20b44dbfdaac45434e7b34f9f09f2b22211a))
+* add printer dialog no longer returns the result from a previous request ([f43de9f](https://github.com/cadriel/fluidd/commit/f43de9f63ee8ddd1d33427aea1b11ec417c6e6f0))
+* disable filesystem root (instead of redirecting user from jobs) ([9a8a463](https://github.com/cadriel/fluidd/commit/9a8a4631b8d0050001fdddf7841f06521ae70f13))
+* ensure settings are ref'd with their lowercase equivalent ([3fe192f](https://github.com/cadriel/fluidd/commit/3fe192f863f04c347a796ffb68afa85460977901))
+* ensure theme is upgraded to db properly ([d05544b](https://github.com/cadriel/fluidd/commit/d05544b17cfed79ebcd3e13c73accd5f71526903))
+* klipper disconnect / shutdown resets printer store ([c76112c](https://github.com/cadriel/fluidd/commit/c76112c28313cbffd2ca4c09ef61dd54cca3e81d))
+* klippy default state now not ready ([81995af](https://github.com/cadriel/fluidd/commit/81995af1ea9946c49d1e3709552bb080c62d7826))
+* layout tweaks to chart for mobile ([ee7fab1](https://github.com/cadriel/fluidd/commit/ee7fab1ae90f7f0ba3d4976a212157ba1e025622))
+* locale change after refresh now sticks ([1cad1b2](https://github.com/cadriel/fluidd/commit/1cad1b29d34e4b74cd2381da5e123aa1317b9a5b))
+* no longer hide hidden files / folders ([018e3a1](https://github.com/cadriel/fluidd/commit/018e3a1cc9d7522c016b9ca29e8fc85bcb35f914))
+* now hides the power axes if not showing power data. ([61a4577](https://github.com/cadriel/fluidd/commit/61a4577f2b16f5a12f6c15862edbe4ac23359a2b))
+* removed unnecessary decimals from fan rpm ([cf8c0b1](https://github.com/cadriel/fluidd/commit/cf8c0b19810ff76ce612f7449f11b08389119bc2))
+* slider minor slider issues re: dupe emits ([de3a2cd](https://github.com/cadriel/fluidd/commit/de3a2cdbd37162b30bb53815f88d0008b970370e))
+* version status enters a disabled state when checking for updates ([06071d5](https://github.com/cadriel/fluidd/commit/06071d5775f151054fcd905825846d08edceaa87))
+
+## [1.10.0](https://github.com/cadriel/fluidd/compare/v1.9.0...v1.10.0) (2021-03-05)
+
+
+### Features
+
+* adds basic support for fan rpm reporting ([5cb82a6](https://github.com/cadriel/fluidd/commit/5cb82a685ea3684d1bc8bfe6016e6818bd953bd7))
+* moves certain buttons colors to primary ([82c53eb](https://github.com/cadriel/fluidd/commit/82c53eb8144310a8985dae95e9b3725bccb3dc7b))
+
+
+### Bug Fixes
+
+* ensures power plugin displays properly on shutdown ([ba7bf6e](https://github.com/cadriel/fluidd/commit/ba7bf6e66aa9ff7433ecdf6f277e5da57ce7fc13))
+* ip camera's no longer append the cachebust param ([8be8dd2](https://github.com/cadriel/fluidd/commit/8be8dd2e2f63243fd9cb513121507f3c6839f790))
+* issue with timers presenting 0's when they shouldn't be ([7374fdb](https://github.com/cadriel/fluidd/commit/7374fdbed9dfe0e5824d5ea5869a2aacfc5c0a59))
+* removes the delay on app init when the printer is off ([1714a14](https://github.com/cadriel/fluidd/commit/1714a14bea5413f19ef74a2e35c9a37484445975))
+
+## [1.9.0](https://github.com/cadriel/fluidd/compare/v1.8.1...v1.9.0) (2021-02-28)
+
+
+### Features
+
+* allow service restart when klipper service is down ([75b4588](https://github.com/cadriel/fluidd/commit/75b4588d805ee67b9b0e62ab6f124b5606041478))
+* primary theme picker ([b1e38cc](https://github.com/cadriel/fluidd/commit/b1e38ccd70ba0ef97f5e6c017898291fb23e120c))
+
+
+### Bug Fixes
+
+* add z home check to z offset buttons ([611d6b9](https://github.com/cadriel/fluidd/commit/611d6b9faf08f29227a47143f63380b30f3f8718))
+* klippy card buttons layout properly now ([9fa95ee](https://github.com/cadriel/fluidd/commit/9fa95ee62e46a23a2ac00ca6e9816b964248d000))
+* relax url check when adding printer ([6753e8d](https://github.com/cadriel/fluidd/commit/6753e8dba60d713d84b73fab7e6e3a9134e7218c))
+* tz unit tests ([de1de4e](https://github.com/cadriel/fluidd/commit/de1de4e486e797b3a437cf70edab3054ed3d4f4f))
+
+### [1.8.1](https://github.com/cadriel/fluidd/compare/v1.8.0...v1.8.1) (2021-02-21)
+
+
+### Bug Fixes
+
+* bed meshes now properly support spaces in their name ([061f3ab](https://github.com/cadriel/fluidd/commit/061f3ab7c05a2873c71dc6b32e4cdba0a0190e2b))
+* regression with power devices not showing state when printer is off ([1374957](https://github.com/cadriel/fluidd/commit/1374957b165f6713a9e8610e991dcf4583e170f2))
+
+## [1.8.0](https://github.com/cadriel/fluidd/compare/v1.7.1...v1.8.0) (2021-02-20)
+
+
+### Features
+
+* Actions should now deploy to app.fluidd.xyz ([cd908db](https://github.com/cadriel/fluidd/commit/cd908db87421d855628a9038c706bc4bcd97bba3))
+* allow selecting current extruder ([6e618ef](https://github.com/cadriel/fluidd/commit/6e618ef69b3977b62e4fc5b20f2a32bef2d67b4f))
+* chart x axes is now configurable via moonraker ([d4c1853](https://github.com/cadriel/fluidd/commit/d4c18530c9f07512428beeee6e2ea1fb7575e3ee))
+* Data zoom now requires the user to hold SHIFT. ([38e6d76](https://github.com/cadriel/fluidd/commit/38e6d769d965ecde2e502b1aa83f4e8f2729404e))
+* implements virtual scrolling for the console ([0f35777](https://github.com/cadriel/fluidd/commit/0f357777a8923634a7947f6920b10bf988916ea9))
+
+
+### Bug Fixes
+
+* Add validator to avoid spaces in bed mesh names ([d7c7d94](https://github.com/cadriel/fluidd/commit/d7c7d945d4195318de4491583a876bacac5987b0))
+* additions to the console array now no longer cause re-render ([ea35827](https://github.com/cadriel/fluidd/commit/ea3582772c35f2784a5e5111dbcbe494e70d4624))
+* adjust min max + tooltip order ([bed29eb](https://github.com/cadriel/fluidd/commit/bed29eb1d964a11d22ef617be50940cb74d40660))
+* adjust xaxis label for mobile ([42e17b5](https://github.com/cadriel/fluidd/commit/42e17b5683a3a3499d11fb596f97fcf90ceaeb9f))
+* bump plotly version. ([e127e2d](https://github.com/cadriel/fluidd/commit/e127e2d19dda4c94854a2840a05a8ee216a8159a))
+* camera cachebust no longer breaks certain urls. ([96cc695](https://github.com/cadriel/fluidd/commit/96cc6953f5f8673f137b700cb25e3c60272dd1a2))
+* ensure chart returns 24h formatted dates ([17fef35](https://github.com/cadriel/fluidd/commit/17fef35dff7ae49c3c8e5af39b6a64e13ae6cd87))
+* ensure dashboard jobs isn't visible if gcode root isnt ready ([4cb07d7](https://github.com/cadriel/fluidd/commit/4cb07d773752bc045bddd54312b4d719e0f6ed75))
+* initial load of chart data should now be faster + retention of 1200 ([0dee1c1](https://github.com/cadriel/fluidd/commit/0dee1c19e8e14cadc40caadf7fb47d35996ffbce))
+* minor style changes to bed mesh profile names ([eb60ed2](https://github.com/cadriel/fluidd/commit/eb60ed20a8a684b28475ee04d9e1423cc5a83b22))
+* power devices disabled state should now match others ([51e09d2](https://github.com/cadriel/fluidd/commit/51e09d29e38c35e2b424a12893b7a1fe23f05e60))
+* remove option to hide jobs in dash via ui settings ([46ee3ab](https://github.com/cadriel/fluidd/commit/46ee3ab75aecdc9a25c31fa0c084f150deeab2ff))
+* should not change extruder during a print ([2af8d49](https://github.com/cadriel/fluidd/commit/2af8d49c350c869040076ebd8498b19ead307efb))
+* update responses now properly scroll the console ([17e70ce](https://github.com/cadriel/fluidd/commit/17e70ce7a94797fe64ee982a02c9f3e65590a463))
+
+### [1.7.1](https://github.com/cadriel/fluidd/compare/v1.7.0...v1.7.1) (2021-02-13)
+
+
+### Bug Fixes
+
+* apiUrl now properly formats the protocol ([345f55b](https://github.com/cadriel/fluidd/commit/345f55b767553ee0b58093c07d35f39fd979a938))
+
 ## [1.7.0](https://github.com/cadriel/fluidd/compare/v1.6.3...v1.7.0) (2021-02-13)
 
 
