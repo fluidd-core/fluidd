@@ -273,6 +273,7 @@ app:
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
       enable: Enable
+      enable_notifications: Enable notifications
       fps_target: FPS Target
       gcode_coords: Use GCode Coordinates
       invert_x_control: Invert X control

@@ -25,7 +25,7 @@
       <v-divider></v-divider>
 
       <app-setting
-        title="Enable notifications"
+        :title="$t('app.setting.label.enable_notifications')"
       >
         <v-switch
           @click.native.stop
