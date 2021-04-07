@@ -13,6 +13,7 @@ export const defaultState = (): MeshState => {
     variance: 0,
     wireframe: false,
     scale: false,
+    flatSurface: false,
     matrix: 'mesh_matrix'
   }
 }

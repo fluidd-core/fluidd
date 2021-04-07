@@ -98,7 +98,6 @@ export const getters: GetterTree<VersionState, RootState> = {
           .reverse(),
         result
       }
-      // console.log(result)
     }
   }
 }

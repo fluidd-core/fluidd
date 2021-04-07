@@ -130,7 +130,6 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   get hasUpdates () {
     const d = this.$store.getters['version/hasUpdates']
-    console.log('d', d)
     return d
   }
 
@@ -196,7 +195,6 @@ export default class VersionSettings extends Mixins(StateMixin) {
     this.$store.dispatch('version/onUpdateStatus', { busy: true })
     const dirty = ('is_dirty' in component) ? component.is_dirty : false
     const valid = ('is_valid' in component) ? component.is_valid : true
-    // console.log('attempting recovery...', component.type)
     if (dirty) {
       SocketActions.machineUpdateRecover(component.key, false)
     }

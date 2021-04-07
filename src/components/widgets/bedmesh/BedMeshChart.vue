@@ -3,15 +3,19 @@
     <ECharts
       ref="chart"
       :option="opts"
-      :setOptionOps="{ notMerge: true }"
+      :setOptionOps="{ notMerge: false }"
       :initOpts="{ renderer: 'canvas' }"
     >
     </ECharts>
+
+    <!-- <pre>legends: {{ opts.legend }}</pre> -->
+
+    <!-- <pre>series: {{ opts.series.length }}</pre> -->
   </div>
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import { merge } from 'lodash-es'
 
@@ -29,6 +33,26 @@ export default class EChartsBedMesh extends Vue {
   get chart () {
     const ref = this.$refs.chart as any
     if (ref) return ref.inst as ECharts
+  }
+
+  get flatSurface () {
+    return this.$store.state.mesh.flatSurface
+  }
+
+  @Watch('flatSurface')
+  onFlatSurfaceChange (value: boolean) {
+    if (this.chart) {
+      let type = 'legendUnSelect'
+      if (value) type = 'legendSelect'
+      this.chart.dispatchAction({
+        type,
+        name: 'mesh_matrix_flat'
+      })
+      this.chart.dispatchAction({
+        type,
+        name: 'probed_matrix_flat'
+      })
+    }
   }
 
   beforeDestroy () {
@@ -64,7 +88,7 @@ export default class EChartsBedMesh extends Vue {
       axisPointer: {
         lineStyle: {
           color: lineColor,
-          opacity: 0.20
+          opacity: 0.65
         },
         label: {
           margin: 16,
@@ -100,6 +124,9 @@ export default class EChartsBedMesh extends Vue {
     }
 
     const opts = {
+      legend: {
+        show: false
+      },
       darkMode,
       tooltip: {
         backgroundColor: labelBackground,
@@ -148,20 +175,12 @@ export default class EChartsBedMesh extends Vue {
       },
       grid3D: {
         viewControl: {
-          distance: 150,
-          alpha: 35,
+          // distance: 100,
           rotateMouseButton: 'left',
           panMouseButton: 'right'
         }
       },
-      series: [{
-        type: 'surface',
-        name: 'mesh point',
-        wireframe: {
-          show: false
-        },
-        data: this.data
-      }]
+      series: [...this.data]
     }
 
     // Merge the default options with the given prop.

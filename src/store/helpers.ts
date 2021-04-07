@@ -221,7 +221,11 @@ export const getKlipperType = (name: string) => {
   return ''
 }
 
-export const transformMesh = (mesh: KlipperMesh, meshMatrix: string): ProcessedMesh => {
+// export const flatMesh = (mesh: KlipperMesh) => {
+//   const bed_mesh = mesh
+// }
+
+export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = false): ProcessedMesh => {
   const bed_mesh = mesh
   const matrix = bed_mesh[meshMatrix] as number[][]
   const coordinates = []
@@ -248,7 +252,16 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string): ProcessedM
       for (const z_coord of x_axis) {
         const x_coord = bed_mesh.mesh_min[0] + (x_idx * x_distance)
         x_idx++
-        coordinates.push({ name: `x${x_idx}_y${y_idx}`, value: [x_coord, y_coord, z_coord] })
+        coordinates.push(
+          {
+            name: `x${x_idx}_y${y_idx}`,
+            value: [
+              x_coord,
+              y_coord,
+              (makeFlat) ? 0 : z_coord
+            ]
+          }
+        )
       }
       y_idx++
     }

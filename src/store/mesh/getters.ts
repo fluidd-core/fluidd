@@ -55,7 +55,9 @@ export const getters: GetterTree<MeshState, RootState> = {
   getCurrentMeshData: (state, getters, rootState): AppMeshes => {
     return {
       mesh_matrix: transformMesh(rootState.printer?.printer.bed_mesh, 'mesh_matrix'),
-      probed_matrix: transformMesh(rootState.printer?.printer.bed_mesh, 'probed_matrix')
+      probed_matrix: transformMesh(rootState.printer?.printer.bed_mesh, 'probed_matrix'),
+      mesh_matrix_flat: transformMesh(rootState.printer?.printer.bed_mesh, 'mesh_matrix', true),
+      probed_matrix_flat: transformMesh(rootState.printer?.printer.bed_mesh, 'probed_matrix', true)
     }
   }
 }

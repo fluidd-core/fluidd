@@ -150,9 +150,29 @@
 
       <v-row>
         <v-col>
+          <v-radio-group
+            :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+            v-model="matrix"
+            column
+            hide-details
+            class="mt-0 pt-1"
+          >
+            <v-radio
+              :label="$t('app.bedmesh.label.probed_matrix')"
+              color="primary"
+              value="probed_matrix"
+            ></v-radio>
+            <v-radio
+              :label="$t('app.bedmesh.label.mesh_matrix')"
+              color="primary"
+              value="mesh_matrix"
+            ></v-radio>
+          </v-radio-group>
+        </v-col>
+        <v-col>
           <v-checkbox
             :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
-            label="Wireframe"
+            :label="$t('app.bedmesh.label.wireframe')"
             v-model="wireframe"
             hide-details
             class="mt-0"
@@ -161,34 +181,23 @@
 
           <v-checkbox
             :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
-            label="Scale by min / max"
+            :label="$t('app.bedmesh.label.scale')"
             v-model="scale"
             hide-details
             class="mt-0"
           >
           </v-checkbox>
 
-        </v-col>
-        <v-col>
-          <v-radio-group
+          <v-checkbox
             :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
-            v-model="matrix"
-            column
+            :label="$t('app.bedmesh.label.flat_surface')"
+            v-model="flatSurface"
             hide-details
-            class="mt-0 pt-0"
+            class="mt-0"
           >
-            <v-radio
-              label="Probed matrix"
-              color="primary"
-              value="probed_matrix"
-            ></v-radio>
-            <v-radio
-              label="Mesh matrix"
-              color="primary"
-              value="mesh_matrix"
-            ></v-radio>
-          </v-radio-group>
+          </v-checkbox>
         </v-col>
+
       </v-row>
 
     </v-card-text>
@@ -246,6 +255,14 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   set wireframe (val: string) {
     this.$store.dispatch('mesh/onWireframe', val)
+  }
+
+  get flatSurface () {
+    return this.$store.state.mesh.flatSurface
+  }
+
+  set flatSurface (val: boolean) {
+    this.$store.dispatch('mesh/onFlatSurface', val)
   }
 
   // The available meshes.

@@ -20,5 +20,9 @@ export const mutations: MutationTree<MeshState> = {
 
   setWireframe (state, payload) {
     state.wireframe = payload
+  },
+
+  setFlatSurface (state, payload) {
+    state.flatSurface = payload
   }
 }

@@ -2,6 +2,7 @@ export interface MeshState {
   variance: number;
   wireframe: boolean;
   scale: boolean;
+  flatSurface: boolean;
   matrix: 'probed_matrix' | 'mesh_matrix';
 }
 

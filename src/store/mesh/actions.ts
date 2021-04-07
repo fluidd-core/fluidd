@@ -20,6 +20,9 @@ export const actions: ActionTree<MeshState, RootState> = {
 
   async onWireframe ({ commit }, payload) {
     commit('setWireframe', payload)
-  }
+  },
 
+  async onFlatSurface ({ commit }, payload) {
+    commit('setFlatSurface', payload)
+  }
 }

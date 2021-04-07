@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- load all history data button
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - cleanup card layout stuff
@@ -11,6 +12,7 @@
 ### Features
 
 - better multi-printer management
+  - improve multi-webcam setup
   - overview
   - easy change
 - More macro layout options (categorize macros, ability to define layout in some way, color)
