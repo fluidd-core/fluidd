@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, BedMesh, Extruder } from './types'
+import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder } from './types'
 import { get } from 'lodash-es'
 import { getKlipperType } from '../helpers'
 
@@ -218,50 +218,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
       }
     }
     return sensors
-  },
-
-  /**
-   * Has this printer been configured for bed meshes?
-   */
-  getSupportsBedMesh: (state, getters) => {
-    return getters.getPrinterSettings('bed_mesh') !== undefined
-  },
-
-  /**
-   * Returns all available bed meshes, including those only in memory / currently loaded.
-   */
-  getBedMeshes: (state, getters): BedMesh[] => {
-    const meshes: BedMesh[] = []
-    const currentProfile = state.printer.bed_mesh.profile_name || ''
-    const config = getters.getPrinterConfig()
-    if (state.printer.bed_mesh && currentProfile.length > 0) {
-      meshes.push({
-        ...state.printer.bed_mesh,
-        active: true
-      })
-    }
-    if (config) {
-      const meshSettings = Object.keys(config).filter(key => key.startsWith('bed_mesh'))
-      for (const key of meshSettings) {
-        if (key === 'bed_mesh') continue // The mesh configuration.
-        const profile_name = key.split(' ').splice(1).join(' ')
-        if (
-          profile_name !== currentProfile
-        ) {
-          const profile: BedMesh = {
-            profile_name,
-            active: false
-          }
-          meshes.push(profile)
-        }
-      }
-    }
-    return meshes.sort((a: BedMesh, b: BedMesh) => {
-      const name1 = a.profile_name.toLowerCase()
-      const name2 = b.profile_name.toLowerCase()
-      if (a.profile_name === 'default' || b.profile_name === 'default') return 1
-      return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-    })
   },
 
   getEndstops: (state) => {

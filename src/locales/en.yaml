@@ -3,11 +3,17 @@ app:
     label:
       profile_name: Profile Name
       remove_profile: Remove %{name} profile
+      probed_matrix: Probed matrix
+      mesh_matrix: Mesh matrix
+      wireframe: Wireframe
+      scale: Scale by min / max
+      flat_surface: Show flat plane
     msg:
       hint: >-
         If saving as something other than %{name}, you can choose to also remove
         the %{name} profile
       not_found: No existing bed meshes found.
+      not_loaded: No mesh loaded
     tooltip:
       calibrate: Begins a new calibration, saving as profile 'default'
       delete: Delete Profile. This WILL restart your printer
@@ -205,6 +211,7 @@ app:
     title:
       add_printer: Add Printer
       bedmesh: Bed Mesh
+      bedmesh_controls: Bed Mesh Controls
       camera: Camera | Cameras
       config_files: Configuration Files
       configure: Configure
@@ -274,6 +281,7 @@ app:
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
       enable: Enable
+      enable_notifications: Enable notifications
       fps_target: FPS Target
       gcode_coords: Use GCode Coordinates
       invert_x_control: Invert X control

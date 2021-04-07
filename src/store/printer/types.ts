@@ -94,29 +94,3 @@ export interface RunoutSensor {
   enabled: boolean;
   filament_detected: boolean;
 }
-
-export interface BedMesh {
-  profile_name: string;
-  active: boolean;
-  markedForRemoval?: boolean;
-  markedForSave?: boolean;
-  mesh_max?: number[];
-  mesh_min?: number[];
-  mesh_matrix?: number[][];
-  probed_matrix?: number[][];
-}
-
-export interface BedMeshProfile {
-  algo: string;
-  max_x: string;
-  max_y: string;
-  mesh_x_pps: string;
-  mesh_y_pps: string;
-  min_x: string;
-  min_y: string;
-  points: string;
-  tension: string;
-  version: string;
-  x_count: string;
-  y_count: string;
-}

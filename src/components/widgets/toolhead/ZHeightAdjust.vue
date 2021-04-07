@@ -10,7 +10,7 @@
         :loading="hasWait('ZAdjust')"
         :disabled="!klippyReady"
         small>
-        <v-icon small class="mx-0">$upCollapse</v-icon>
+        <v-icon small class="mx-0">$zUp</v-icon>
       </app-btn>
       <app-btn
         @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
@@ -18,7 +18,7 @@
         :disabled="!klippyReady"
         small
         class="ml-1">
-        <v-icon small>$downCollapse</v-icon>
+        <v-icon small>$zDown</v-icon>
       </app-btn>
       <v-btn-toggle
         v-if="moveDistance"

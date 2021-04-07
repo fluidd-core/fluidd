@@ -6,7 +6,6 @@
     persistent
   >
     <v-form
-      class="mt-3"
       ref="addInstanceForm"
       v-model="valid"
       @submit.prevent="addInstance()"
