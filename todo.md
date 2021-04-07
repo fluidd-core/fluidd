@@ -2,8 +2,17 @@
 
 ## Next Up
 
+- sync instances across moonraker db
+- use components instead of plugins with moonraker
+- cleanup card layout stuff
+  - hide enabled flag for collapsable card for camera panel on dashboard
+- change card states to db and be driven by getters..
+
 ### Features
 
+- better multi-printer management
+  - overview
+  - easy change
 - More macro layout options (categorize macros, ability to define layout in some way, color)
 - file system enhancements
   - bulk actions to delete or move?
@@ -15,12 +24,7 @@
 
 ### Refactors
 
-- sync instances across moonraker db
-- use components instead of plugins with moonraker
 - rename device power store
-- cleanup card layout stuff
-  - hide enabled flag for collapsable card for camera panel on dashboard
-- change card states to db and be driven by getters..
 
 ### Docs
 
