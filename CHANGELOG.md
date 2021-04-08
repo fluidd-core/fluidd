@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.12.1](https://github.com/cadriel/fluidd/compare/v1.12.0...v1.12.1) (2021-04-08)
+
+
+### Bug Fixes
+
+* further sanity checks for file saves ([13e8fb4](https://github.com/cadriel/fluidd/commit/13e8fb4844caac21012b5e75cafec81c13b531e4))
+* resolve file load / ready state issues ([645741e](https://github.com/cadriel/fluidd/commit/645741e048471be1b5eb90f4acb3924ec4df3595))
+* sets default mesh scale to a more sane value ([73e03e4](https://github.com/cadriel/fluidd/commit/73e03e45c2e69fe099c442afbba1bd45badb9de8))
+
 ## [1.12.0](https://github.com/cadriel/fluidd/compare/v1.11.2...v1.12.0) (2021-04-08)
 
 
