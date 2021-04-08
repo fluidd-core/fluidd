@@ -25,9 +25,8 @@ export const defaultState = (): ConfigState => {
         { name: 'Portuguese', code: 'pt' },
         { name: 'Русский', code: 'ru' },
         { name: '한국어', code: 'ko' }
-        { name: 'Español', code: 'es' }
       ]
-        },
+    },
     cardState: {},
     cardLayout: {
       dashboard1: [
@@ -89,3 +88,18 @@ export const config: Module<ConfigState, RootState> = {
   actions,
   mutations
 }
+
+    © 2021 GitHub, Inc.
+    Terms
+    Privacy
+    Security
+    Status
+    Docs
+
+    Contact GitHub
+    Pricing
+    API
+    Training
+    Blog
+    About
+
