@@ -27,6 +27,8 @@ import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
+const DEFAULT_SCALE = 0.05
+
 @Component({
   components: {
     EChartsBedMesh
@@ -34,16 +36,16 @@ import ToolheadMixin from '@/mixins/toolhead'
 })
 export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   get options () {
-    let zMin = -0.1
-    let zMax = 0.1
+    let zMin = -Math.abs(DEFAULT_SCALE)
+    let zMax = DEFAULT_SCALE
     if (this.scale) {
       zMin = this.mesh[this.matrix].min
       zMax = this.mesh[this.matrix].max
       // If the zmin and zmax don't exceed -1 and 1 respectively - then
       // set the min and maxes to -1 and 1 - effectively ensuring we don't
       // have a min max smaller than -1 and larger than 1.
-      if (zMin < -0.1) zMin = -0.1
-      if (zMax > 0.1) zMax = 0.1
+      if (zMin < -0.1) zMin = -Math.abs(DEFAULT_SCALE)
+      if (zMax > 0.1) zMax = DEFAULT_SCALE
     }
 
     const legends = this.series.reduce((obj, series: any) => {
