@@ -13,7 +13,7 @@ export const defaultState = (): VersionState => {
     github_rate_limit: 0,
     github_requests_remaining: 0,
     responses: [],
-    components: {},
+    version_info: {},
     fluidd: {
       version: '',
       hash: ''

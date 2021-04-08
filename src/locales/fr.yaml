@@ -61,6 +61,10 @@ app:
     msg:
       subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut . '
   file_system:
+    filters:
+      label:
+        print_start_time: Filtrer les impressions passées
+        print_start_time_desc: Filtrer les fichiers déjà imprimés
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque
@@ -71,10 +75,8 @@ app:
         .
       not_found: Aucun fichier trouvé
       processing: Traitement en cours ...
-      uploading: Upload en cours ...
     overlay:
       label: <strong>Glissez-déposez</strong> un fichier ici
-      uploading: <strong>Envoi</strong> des fichiers"
     title:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
@@ -83,10 +85,6 @@ app:
     tooltip:
       disabled: Les fichiers sont désactivés avant la communication initiale avec klippy
       low_on_space: Espace disque limité
-    filters:
-      label:
-        print_start_time: Filtrer les impressions passées
-        print_start_time_desc: Filtrer les fichiers déjà imprimés
   general:
     btn:
       add: Ajouter
@@ -117,6 +115,7 @@ app:
       restart_firmware: Redémarrer le firmware
       restart_service_klipper: Redémarrer Klipper
       restart_service_moonraker: Redémarrer Moonraker
+      restart_service_webcamd: Redémarrer le service Webcam
       resume: Reprendre
       retract: Rétracter
       save: Enregistrer
@@ -127,7 +126,6 @@ app:
       upload: Uploaded
       upload_print: Uploaded & imprimer
       view: Voir
-      restart_service_webcamd: Redémarrer le service Webcam
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
@@ -142,9 +140,11 @@ app:
     label:
       accel_to_decel: Accel. à Décel.
       acceleration: Acceleration
+      add_camera: Ajouter une caméra
       add_preset: Ajouter un pré-réglage
       api_url: URL de l'API
       confirm: Confirmation
+      edit_camera: Éditer une caméra
       edit_preset: Editer le pré-réglage
       extrude_length: Longueur d'extrusion
       extrude_speed: Vitesse d'extrusion
@@ -175,8 +175,6 @@ app:
       variance: Variance
       velocity: Velocité
       z_offset: Z Offset
-      add_camera: Ajouter une caméra
-      edit_camera: Éditer une caméra
     simple_form:
       error:
         invalid_url: URL invalide
@@ -214,18 +212,16 @@ app:
       fans_outputs: Ventilateur & sorties
       history: Historique des impressions
       home: Tableau de bord
-      interface: Interface
       jobs: Fichiers
       limits: Limites de l'imprimante
-      logs: Logs de l'imprimante
       macros: Macros
       runout_sensors: Capteurs de filament
       stats: Statistiques de l'imprimante
       status: Statut
+      system_control: Contrôle du système
       temperature: Température
       tool: Outil
       tune: Réglages
-      system_control: Contrôle du système
     tooltip:
       estop: Arrêt d'urgence
   history:
@@ -251,14 +247,14 @@ app:
       used_filament: filament utilisé
   setting:
     btn:
+      add_camera: Ajouter une caméra
       add_thermal_preset: Ajouter un pré-réglage
       reset: RAZ
       select_theme: Sélectionner le thème
-      add_camera: Ajouter une caméra
     camera_type_options:
-      video: caméra ip
-      mjpegstream: MJPEG Stream
       mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
+      video: caméra ip
     label:
       all_off: Tout éteindre
       all_on: Tout allumer
@@ -273,6 +269,7 @@ app:
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
       enable: Activer
+      fps_target: Nombre d'images par seconde
       gcode_coords: Utiliser les coordonnées GCode
       invert_x_control: Inverser les contrôles en X
       invert_y_control: Inverser les contrôles en Y
@@ -285,7 +282,6 @@ app:
       time_estimates: Estimation de temps
       toggle: Basculer
       z_adjust_values: Valeurs de Z Adjust
-      fps_target: Nombre d'images par seconde
     timer_options:
       duration: Durée uniquement
       duration_description: 'Similaire au LCD klipper, affiche une durée sans estimation . '

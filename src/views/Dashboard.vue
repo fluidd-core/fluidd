@@ -2,8 +2,8 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
-        <klippy-card v-if="!klippyReady || hasWarnings"></klippy-card>
-        <status-card v-if="klippyReady"></status-card>
+        <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
+        <printer-status-card v-if="klippyReady"></printer-status-card>
         <draggable
           class="list-group"
           v-model="col1"
@@ -41,32 +41,31 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import draggable from 'vuedraggable'
-import StatusCard from '@/components/cards/dashboard/StatusCard.vue'
-import JobsCard from '@/components/cards/dashboard/JobsCard.vue'
-import ToolheadCard from '@/components/cards/dashboard/ToolheadCard.vue'
-import TemperatureCard from '@/components/cards/dashboard/TemperatureCard.vue'
-import CameraCard from '@/components/cards/dashboard/CameraCard.vue'
-import MacrosCard from '@/components/cards/dashboard/MacrosCard.vue'
-import ConsoleCard from '@/components/cards/dashboard/ConsoleCard.vue'
-import OutputsCard from '@/components/cards/dashboard/OutputsCard.vue'
-import PrinterLimitsCard from '@/components/cards/dashboard/PrinterLimitsCard.vue'
-import KlippyCard from '@/components/cards/KlippyCard.vue'
 import StateMixin from '@/mixins/state'
 import { CardConfig } from '@/store/config/types'
 import { cloneDeep } from 'lodash-es'
+import draggable from 'vuedraggable'
+
+import PrinterStatusCard from '@/components/widgets/status/PrinterStatusCard.vue'
+import JobsCard from '@/components/widgets/jobs/JobsCard.vue'
+import ToolheadCard from '@/components/widgets/toolhead/ToolheadCard.vue'
+import TemperatureCard from '@/components/widgets/thermals/TemperatureCard.vue'
+import CameraCard from '@/components/widgets/camera/CameraCard.vue'
+import MacrosCard from '@/components/widgets/macros/MacrosCard.vue'
+import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
+import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
+import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 
 @Component({
   components: {
     draggable,
-    StatusCard,
+    PrinterStatusCard,
     JobsCard,
     ToolheadCard,
     MacrosCard,
     TemperatureCard,
     CameraCard,
     PrinterLimitsCard,
-    KlippyCard,
     ConsoleCard,
     OutputsCard
   }

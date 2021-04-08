@@ -48,6 +48,7 @@ export const actions: ActionTree<VersionState, RootState> = {
   async onUpdatedMoonraker ({ commit }, payload) {
     consola.debug('Finished updating moonraker', payload)
     SocketActions.machineUpdateStatus()
+    // We do this because moonraker is expected to restart.
     commit('socket/setSocketDisconnecting', true, { root: true })
   },
 
@@ -57,7 +58,12 @@ export const actions: ActionTree<VersionState, RootState> = {
   },
 
   async onUpdatedClient (_, payload) {
-    consola.debug('Finished updating client, reloading', payload)
+    consola.debug('Finished updating a client', payload)
+    SocketActions.machineUpdateStatus()
+  },
+
+  async onUpdatedFluidd (_, payload) {
+    consola.debug('Finished updating fluidd, reloading', payload)
     window.location.reload()
   },
 

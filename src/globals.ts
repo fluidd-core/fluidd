@@ -30,7 +30,6 @@ import {
   mdiArrowDown,
   mdiArrowLeft,
   mdiArrowRight,
-  mdiArrowCollapseUp,
   mdiArrowCollapseDown,
   mdiViewGridOutline,
   mdiArrowExpandHorizontal,
@@ -83,7 +82,9 @@ import {
   mdiThermometerLow,
   mdiHelpCircle,
   mdiHistory,
-  mdiFilterOutline
+  mdiFilterOutline,
+  mdiSourceCommit,
+  mdiArrowExpandUp
 } from '@mdi/js'
 
 /**
@@ -175,8 +176,8 @@ export const Icons = Object.freeze({
   left: mdiArrowLeft,
   right: mdiArrowRight,
   tune: mdiTune,
-  upCollapse: mdiArrowCollapseUp,
-  downCollapse: mdiArrowCollapseDown,
+  zUp: mdiArrowExpandUp,
+  zDown: mdiArrowCollapseDown,
   expandHorizontal: mdiArrowExpandHorizontal,
   cog: mdiCog,
   cogs: mdiCogs,
@@ -217,7 +218,8 @@ export const Icons = Object.freeze({
   bedMesh: mdiViewGridOutline,
   host: mdiDesktopTower,
   history: mdiHistory,
-  filter: mdiFilterOutline
+  filter: mdiFilterOutline,
+  commit: mdiSourceCommit
 })
 
 export const Waits = Object.freeze({

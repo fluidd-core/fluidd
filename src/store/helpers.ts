@@ -2,6 +2,7 @@ import { ChartData } from './charts/types'
 import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
 import { SocketActions } from '@/socketActions'
 import store from '@/store'
+import { KlipperMesh, ProcessedMesh } from './mesh/types'
 
 export const isOfType = <T>(
   varToBeChecked: any,
@@ -220,7 +221,60 @@ export const getKlipperType = (name: string) => {
   return ''
 }
 
-/**
- * Given a sensor, determine if it has target and power data.
- */
-// export const
+// export const flatMesh = (mesh: KlipperMesh) => {
+//   const bed_mesh = mesh
+// }
+
+export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = false): ProcessedMesh => {
+  const bed_mesh = mesh
+  const matrix = bed_mesh[meshMatrix] as number[][]
+  const coordinates = []
+  let min = 0
+  let max = 0
+  let variance = 0
+
+  if (
+    matrix &&
+    matrix.length >= 3 &&
+    matrix[0] &&
+    matrix[0].length >= 3 &&
+    bed_mesh.mesh_min &&
+    bed_mesh.mesh_max
+  ) {
+    const x_distance = (bed_mesh.mesh_max[0] - bed_mesh.mesh_min[0]) / (matrix[0].length - 1)
+    const y_distance = (bed_mesh.mesh_max[1] - bed_mesh.mesh_min[1]) / (matrix.length - 1)
+    let x_idx = 0
+    let y_idx = 0
+
+    for (const x_axis of matrix) {
+      x_idx = 0
+      const y_coord = bed_mesh.mesh_min[1] + (y_idx * y_distance)
+      for (const z_coord of x_axis) {
+        const x_coord = bed_mesh.mesh_min[0] + (x_idx * x_distance)
+        x_idx++
+        coordinates.push(
+          {
+            name: `x${x_idx}_y${y_idx}`,
+            value: [
+              x_coord,
+              y_coord,
+              (makeFlat) ? 0 : z_coord
+            ]
+          }
+        )
+      }
+      y_idx++
+    }
+
+    min = Math.min(...matrix.map(row => Math.min(...row)))
+    max = Math.max(...matrix.map(row => Math.max(...row)))
+    variance = Math.abs(min - max)
+  }
+
+  return {
+    coordinates,
+    min,
+    max,
+    variance
+  }
+}

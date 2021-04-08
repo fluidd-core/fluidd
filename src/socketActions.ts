@@ -57,6 +57,18 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateRecover (name: string, hard = false) {
+    let dispatch = 'version/onUpdatedClient'
+    if (name === 'moonraker') dispatch = 'version/onUpdatedMoonraker'
+    if (name === 'klipper') dispatch = 'version/onUpdatedKlipper'
+    baseEmit(
+      'machine.update.recover', {
+        dispatch,
+        params: { name, hard }
+      }
+    )
+  },
+
   async machineUpdateMoonraker () {
     baseEmit(
       'machine.update.moonraker', {
@@ -77,9 +89,11 @@ export const SocketActions = {
   },
 
   async machineUpdateClient (name: string) {
+    let dispatch = 'version/onUpdatedClient'
+    if (name === 'fluidd') dispatch = 'version/onUpdatedFluidd'
     baseEmit(
       'machine.update.client', {
-        dispatch: 'version/onUpdatedClient',
+        dispatch,
         params: { name }
       }
     )
@@ -297,11 +311,11 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryList (limit?: number) {
+  async serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }) {
     baseEmit(
       'server.history.list', {
         dispatch: 'history/onHistoryList',
-        params: { limit }
+        params
       }
     )
   },
