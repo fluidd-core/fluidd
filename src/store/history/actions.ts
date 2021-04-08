@@ -17,7 +17,7 @@ export const actions: ActionTree<HistoryState, RootState> = {
    */
   async init () {
     // Get the last 50 history items.
-    SocketActions.serverHistoryList(Globals.JOB_HISTORY_LOAD)
+    SocketActions.serverHistoryList({ limit: Globals.JOB_HISTORY_LOAD })
 
     // Load the known totals.
     SocketActions.serverHistoryTotals()
