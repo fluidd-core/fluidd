@@ -12,7 +12,7 @@
 
     <router-view name="navigation"></router-view>
 
-    <FlashMessage
+    <flash-message
       v-if="flashMessage"
       v-model="flashMessage.open"
       :text="flashMessage.text"
@@ -22,8 +22,8 @@
 
     <v-main>
       <router-view v-if="socketConnected" />
-      <socket-disconnected-widget v-if="!socketConnected"></socket-disconnected-widget>
-      <dialog-update-status></dialog-update-status>
+      <socket-disconnected v-if="!socketConnected"></socket-disconnected>
+      <updating-dialog></updating-dialog>
     </v-main>
 
     <app-footer></app-footer>
@@ -34,25 +34,10 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import EventBus from '@/eventBus'
 import StateMixin from './mixins/state'
-import { FlashMessage as FlashMessageType } from '@/types'
-import AppBar from '@/components/AppBar.vue'
-import AppDrawer from '@/components/AppDrawer.vue'
-import AppFooter from '@/components/AppFooter.vue'
-import SocketDisconnectedWidget from '@/components/widgets/SocketDisconnectedWidget.vue'
-import FlashMessage from '@/components/FlashMessage.vue'
-import DialogUpdateStatus from '@/components/dialogs/dialogUpdateStatus.vue'
 import { Waits } from './globals'
+import { FlashMessage as FlashMessageType } from '@/types'
 
-@Component({
-  components: {
-    AppBar,
-    AppDrawer,
-    SocketDisconnectedWidget,
-    FlashMessage,
-    AppFooter,
-    DialogUpdateStatus
-  }
-})
+@Component({})
 export default class App extends Mixins(StateMixin) {
   drawer = false
   showUpdateUI = false

@@ -161,16 +161,20 @@ export const actions: ActionTree<FilesState, RootState> = {
     SocketActions.serverFilesGetDirectory(root, paths.rootPath)
   },
 
-  async addFileUpload ({ commit }, payload) {
-    commit('setAddFileUpload', payload)
-  },
-
   async updateFileUpload ({ commit }, payload) {
     commit('setUpdateFileUpload', payload)
   },
 
   async removeFileUpload ({ commit }, payload) {
     commit('setRemoveFileUpload', payload)
+  },
+
+  async updateFileDownload ({ commit }, payload) {
+    commit('setUpdateFileDownload', payload)
+  },
+
+  async removeFileDownload ({ commit }, payload) {
+    commit('setRemoveFileDownload', payload)
   },
 
   async updateCurrentPathByRoot ({ commit }, payload) {

@@ -93,7 +93,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   }
 
   // Just sets the api urls.
-  // consola.log('we already have api config', apiConfig)
   await store.dispatch('config/onInitApiConfig', apiConfig)
   consola.debug('inited apis', store.state.config, apiConfig)
 
@@ -194,13 +193,12 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
   // Load any configuration we may have in moonrakers db
   let apiConnected = true
-  if (
-    apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
-  ) {
-    const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
-    for (const key in roots) {
-      const root = roots[key]
-      const d = await Vue.$http.get(apiConfig.apiUrl + `/server/database/item?namespace=${Globals.MOONRAKER_DB.NAMESPACE}&key=${root.name}`)
+  const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
+  for (const key in roots) {
+    const root = roots[key]
+    let d = {}
+    if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {
+      d = await Vue.$http.get(apiConfig.apiUrl + `/server/database/item?namespace=${Globals.MOONRAKER_DB.NAMESPACE}&key=${root.name}`)
         .then(r => {
           consola.debug('loaded db root', root.name, r.data.result.value)
           return r.data.result.value
@@ -212,14 +210,13 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
               key,
               value: {}
             })
-            return null
+            return {}
           }
           consola.debug('API Down / Not Available:', r)
           apiConnected = false
         })
-
-      if (d) store.dispatch(root.dispatch, d)
     }
+    if (d) store.dispatch(root.dispatch, d)
   }
 
   // apiConfig could have empty strings, meaning we have no valid connection.

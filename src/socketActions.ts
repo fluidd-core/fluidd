@@ -57,6 +57,18 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateRecover (name: string, hard = false) {
+    let dispatch = 'version/onUpdatedClient'
+    if (name === 'moonraker') dispatch = 'version/onUpdatedMoonraker'
+    if (name === 'klipper') dispatch = 'version/onUpdatedKlipper'
+    baseEmit(
+      'machine.update.recover', {
+        dispatch,
+        params: { name, hard }
+      }
+    )
+  },
+
   async machineUpdateMoonraker () {
     baseEmit(
       'machine.update.moonraker', {
@@ -77,9 +89,11 @@ export const SocketActions = {
   },
 
   async machineUpdateClient (name: string) {
+    let dispatch = 'version/onUpdatedClient'
+    if (name === 'fluidd') dispatch = 'version/onUpdatedFluidd'
     baseEmit(
       'machine.update.client', {
-        dispatch: 'version/onUpdatedClient',
+        dispatch,
         params: { name }
       }
     )
@@ -300,7 +314,7 @@ export const SocketActions = {
   async serverHistoryList (limit?: number) {
     baseEmit(
       'server.history.list', {
-        dispatch: 'history/onInit',
+        dispatch: 'history/onHistoryList',
         params: { limit }
       }
     )
@@ -309,7 +323,7 @@ export const SocketActions = {
   async serverHistoryTotals () {
     baseEmit(
       'server.history.totals', {
-        dispatch: 'history/onInit'
+        dispatch: 'history/onHistoryTotals'
       }
     )
   },
@@ -348,7 +362,7 @@ export const SocketActions = {
    * for brevity.
    */
   async serverFilesGetDirectory (root: string, path: string) {
-    const wait = `${Waits.onGetDirectory}${path}`
+    const wait = `${Waits.onFileSystem}${path}`
     baseEmit(
       'server.files.get_directory',
       {
@@ -359,9 +373,11 @@ export const SocketActions = {
     )
   },
   async serverFilesMove (source: string, dest: string) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.move', {
         dispatch: 'void',
+        wait,
         params: {
           source,
           dest
@@ -375,9 +391,11 @@ export const SocketActions = {
    * Root should be included in the path.
    */
   async serverFilesPostDirectory (path: string) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.post_directory', {
         dispatch: 'void',
+        wait,
         params: {
           path
         }
@@ -386,9 +404,11 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteFile (path: string) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
+        wait,
         params: {
           path
         }
@@ -396,13 +416,15 @@ export const SocketActions = {
     )
   },
 
-  async serverFilesDeleteDirectory (path: string) {
+  async serverFilesDeleteDirectory (path: string, force = false) {
+    const wait = Waits.onFileSystem
     baseEmit(
       'server.files.delete_directory', {
         dispatch: 'void',
+        wait,
         params: {
           path,
-          force: false
+          force
         }
       }
     )

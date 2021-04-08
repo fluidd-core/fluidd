@@ -13,6 +13,7 @@ export const defaultState = (): FilesState => {
     config_examples: [],
     docs: [],
     uploads: [],
+    download: null,
     currentPaths: {},
     disk_usage: {
       total: 0,

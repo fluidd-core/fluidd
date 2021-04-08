@@ -17,7 +17,14 @@ export const defaultState = (): ConfigState => {
       hosted: false,
       locales: [
         { name: 'English', code: 'en' },
-        { name: 'Chinese', code: 'cn' }
+        { name: 'Chinese', code: 'cn' },
+        { name: 'Deutsch', code: 'de' },
+        { name: 'Français', code: 'fr' },
+        { name: 'Magyar', code: 'hu' },
+        { name: 'Nederlands', code: 'nl' },
+        { name: 'Portuguese', code: 'pt' },
+        { name: 'Русский', code: 'ru' },
+        { name: '한국어', code: 'ko' }
       ]
     },
     cardState: {},
@@ -54,7 +61,8 @@ export const defaultState = (): ConfigState => {
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
         useGcodeCoords: false,
-        zAdjustDistances: [0.01, 0.05]
+        zAdjustDistances: [0.001, 0.005, 0.010, 0.050],
+        enableNotifications: true
       },
       theme: {
         isDark: true,

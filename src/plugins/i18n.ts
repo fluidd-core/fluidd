@@ -8,7 +8,7 @@ Vue.use(VueI18n)
 /**
  * Loads the starting locale for the user.
  */
-const getStartingLocale = () => {
+export const getStartingLocale = () => {
   const browserLocale = getBrowserLocale({ countryCodeOnly: true })
   const supportedLocales = store.state.config?.hostConfig.locales
   if (

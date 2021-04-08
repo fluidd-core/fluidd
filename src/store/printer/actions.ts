@@ -97,7 +97,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
     // Accept notifications, and commit the first subscribe.
-    commit('socket/setAcceptNotifications', {}, { root: true })
+    commit('socket/setAcceptNotifications', true, { root: true })
     await dispatch('onNotifyStatusUpdate', payload.status)
 
     SocketActions.serverGcodeStore()

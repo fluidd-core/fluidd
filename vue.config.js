@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
-// const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const v = require('./package.json').version
 const h = require('child_process')
@@ -32,6 +33,10 @@ module.exports = {
       symlinks: false // Don't follow symlinks, fixes issues when using npm link.
     },
     plugins: [
+      new MonacoEditorPlugin({
+        languages: ['markdown'],
+        features: ['!contextmenu', '!snippets', '!multicursor']
+      }),
       new GenerateFilePlugin({
         file: '.version',
         content: 'v' + v + '\n'
@@ -44,6 +49,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.module
+      // Allows us to load yaml and have it loaded as json for locales.
       .rule('i18n-loader')
       .test(/.\.yaml$/)
       .use('json')
@@ -51,6 +57,14 @@ module.exports = {
       .end()
       .use('yaml')
       .loader('yaml-loader')
+      .end()
+    config.module
+      // Loads the onigasm web assembly file directly
+      .rule('wasm-loader')
+      .test(/.\.wasm$/)
+      .type('javascript/auto')
+      .use('file-loader')
+      .loader('file-loader')
       .end()
     config
       .plugin('define')

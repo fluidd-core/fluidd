@@ -1,0 +1,309 @@
+app:
+  bedmesh:
+    label:
+      profile_name: 프로파일 명
+      remove_profile: '%{name} 프로파일을 제거합니다.'
+    msg:
+      hint: '%{name}이 아닌 다른 항목으로 저장하는 경우에는, %{name} 프로파일을 제거하도록 선택할 수 있습니다.'
+      not_found: 적용된 베드 메쉬를 찾을 수 없습니다.
+    tooltip:
+      calibrate: 프로파일을 'default'로 저장하여 신규 칼리브레이션을 시작합니다.
+      delete: 프로파일을 삭제합니다. 프린터가 다시 시작되게 됩니다.
+      load: 프로파일 불러오기
+      save: 칼리브레이션이 된 프로파일을 printer.cfg에 적용합니다. 프린터가 다시 시작되게 됩니다.
+  chart:
+    label:
+      current: 현재 온도
+      item: 항목
+      power: 전원
+      target: 목표 온도
+    tooltip:
+      help: >-
+        쉬프트키를 누르고 있으면 확대됩니다.<br />항목을 클릭하면 그래프가 전환됩니다.<br /> 전원을 클릭하면 그래프가
+        전환됩니다.
+  console:
+    label:
+      hide_temp_waits: 온도변화 숨김
+    placeholder:
+      command: '''TAB''키는 자동완성, ''help''는 명령어 확인 ''키보드 화살표''는 history 보기'
+  endpoint:
+    error:
+      cant_connect: 어떤 부분이 잘못되어 Fluidd가 접속할 수 없습니다.  이것이 맞는 주소인지 확실합니까?
+      cors_error: CORS 정책에 의해 블록되었습니다.
+      cors_note: >-
+        이는 당신의 Moonraker 설정을 수정해야 함을 의미할 수 있습니다. <a href="%{url}"
+        target="_blank">여기에서</a> 다중 프린터 설정에 대한 문서를 참조하십시오.
+    hint:
+      add_printer: 예시) http://fluiddpi.local
+    msg:
+      trouble: '문제가 있습니까? 자세한 정보는 <a href="%{url}" target="_blank">여기를</a> 참조하십시오. '
+    tooltip:
+      endpoint_examples: >-
+        API URL을 입력하십시오.<br />몇가지 예시는 다음과 같습니다;<br />
+        <blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: 열림
+      triggered: 닫힘
+    msg:
+      subtitle: 새로고침 버튼을 사용해서 엔드스탑 상태를 업데이트 합니다.
+  file_system:
+    filters:
+      label:
+        print_start_time: Filter printed
+        print_start_time_desc: Filters out items you've already printed.
+    label:
+      dir_name: 폴더명
+      disk_usage: 디스크 사용량
+      file_name: 파일명
+    msg:
+      confirm: 확실합니까? 모든 파일 및 폴더가 삭제됩니다.
+      not_found: 파일을 찾을 수 없습니다.
+      processing: 처리중...
+    overlay:
+      label: 여기에 파일 <strong>끌어오기</strong>
+    title:
+      add_dir: 폴더 추가
+      add_file: 파일 추가
+      rename_dir: 폴더명 변경
+      rename_file: 파일명 변경
+    tooltip:
+      disabled: klippy와 첫 통신전에 작업이 비활성 되었습니다.
+      low_on_space: 디스크 공간 부족
+  general:
+    btn:
+      add: 추가
+      add_dir: 폴더 추가
+      add_file: 파일 추가
+      add_printer: 프린터 추가
+      adjust_layout: 대시보드 레이아웃 조정
+      all: ALL
+      all_off: ALL OFF
+      calibrate: 칼리브레이션
+      cancel: 취소
+      clear_profile: 프로파일 적용해제
+      close: 닫기
+      config_reference: 참조 콘픽
+      download: 다운로드
+      edit: 수정
+      extrude: 압출
+      pause: 일시중지
+      preheat: 예열
+      quad_gantry_level: 쿼드겐트리 레벨링
+      reboot: 재부팅
+      remove: 제거
+      remove_all: 모두 제거
+      rename: 이름 변경
+      reprint: 재출력
+      reset_file: 파일 초기화
+      reset_layout: 레이아웃 초기화
+      restart_firmware: 펌웨어 재시작
+      restart_service_klipper: Klipper 재시작
+      restart_service_moonraker: Moonraker 재시작
+      restart_service_webcamd: 웹캠 재시작
+      resume: 재개
+      retract: 리트랙션
+      save: 저장
+      save_as: 다른이름으로 저장
+      save_restart: 저장&다시시작
+      shutdown: 종료
+      socket_refresh: 강제 새로고침
+      upload: 업로드
+      upload_print: 업로드&출력
+      view: 보기
+    error:
+      app_setup_link: <a target="_blank" href="%{url}">여기서.</a> Fluidd 설치 요구조건을 찾을 수 있습니다.
+      app_warnings_found: '%{appName} 경고 발견.'
+      components_config: <a target="_blank" href="%{url}">여기서</a> Moonraker 플러그인 설정을 찾을 수 있습니다.
+      failed_components: Moonraker에서 플러그인에 실패했습니다. 로그를 확인하고 설정을 업데이트 후 Moonraker를 재시작 하십시오.
+    label:
+      accel_to_decel: 감속도
+      acceleration: 가속도
+      add_camera: 카메라 추가
+      add_preset: 사전설정 추가
+      api_url: API URL
+      confirm: 확인
+      edit_camera: 카메라 수정
+      edit_preset: 사전설정 수정
+      extrude_length: 압출 길이
+      extrude_speed: 압출 속도
+      flow: 필라멘트 공급량
+      free: 사용가능
+      high: 높음
+      host: 호스트
+      layout: 레이아웃
+      longest_job: 가장 긴 출력작업
+      low: 낮음
+      name: 이름
+      'off': 꺼짐
+      power: 전원
+      printers: 프린터
+      requested_speed: 요청 속도
+      save_as: 다른이름으로 저장
+      services: 서비스
+      speed: 프린팅 속도
+      sqv: 코너 속도
+      total_filament: 총 필라멘트 사용량
+      total_filament_avg: 총 평균 필라멘트 사용량
+      total_jobs: 총 출력작업 수
+      total_print_time: 총 출력시간
+      total_print_time_avg: 총 출력 평균시간
+      total_time: 총 시간
+      total_time_avg: 총 평균시간
+      used: 사용중
+      variance: 변화량
+      velocity: 속도
+      z_offset: Z Offset
+    simple_form:
+      error:
+        invalid_url: 잘못된 URL
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} or 0
+        required: 필수기재
+      msg:
+        confirm: 확실합니까?
+        confirm_reboot_host: 확실합니까? 호스트 시스템이 재부팅됩니다.
+        confirm_shutdown_host: 확실합니까? 호스트 시스템이 종료됩니다.
+    table:
+      header:
+        actions: 동작
+        estimated_time: 예상 시간
+        filament_used: 필라멘트
+        height: 높이
+        last_printed: 마지막 출력
+        layer_height: 레이어 높이
+        modified: 수정 시간
+        name: 이름
+        print_duration: 프린팅 기간
+        size: 사이즈
+        slicer: 슬라이서
+        start_time: 시작 시간
+        status: 상태
+    title:
+      add_printer: 프린터 추가
+      bedmesh: 베드 메쉬
+      camera: 카메라 | 카메라
+      config_files: CONFIG 파일
+      configure: 환경설정
+      console: 명령어 창
+      endstops: 엔드스탑
+      fans_outputs: 팬 컨트롤
+      history: 작업 기록
+      home: 대시보드
+      jobs: 작업
+      limits: 프린터 속도 제한
+      macros: 매크로
+      runout_sensors: 필라멘트 런아웃 센서
+      stats: 프린터 상태
+      status: 상태
+      system_control: 시스템 컨트롤
+      temperature: 온도
+      tool: 툴헤드
+      tune: 튜닝
+    tooltip:
+      estop: 비상 정지
+  history:
+    msg:
+      confirm: 확실합니까? 모든 기록 및 프린터 통계가 삭제됩니다.
+      load_count: 마지막{num}개의 작업을 나타냅니다.
+  printer:
+    state:
+      busy: 바쁨
+      complete: 완료
+      idle: 아이들
+      loading: 로딩중
+      paused: 일시정지
+      printing: 출력중
+      ready: 준비
+      standby: 대기
+    status:
+      duration: duration
+      duration_total: duration & total
+      time_left: 추정된 남은 시간
+      used_filament: 사용된 필라멘트
+  setting:
+    btn:
+      add_camera: 카메라 추가
+      add_thermal_preset: 설정온도 추가
+      reset: 초기화
+      select_theme: 테마 선택
+    camera_type_options:
+      mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
+      video: IP 카메라
+    label:
+      all_off: All off
+      all_on: All on
+      camera_fillspace: 공간 채움
+      camera_fillspace_help: 활성화된 카메라 하나만을 사용해서 대시보드 카메라 공간을 채웁니다.
+      camera_flip_x: 수평 반전
+      camera_flip_y: 수직 반전
+      camera_stream_type: 스트림 유형
+      camera_url: 카메라 URL
+      dark_mode: 다크 모드
+      default_extrude_length: 기본 압출 길이
+      default_extrude_speed: 기본 압출 속도
+      default_toolhead_move_length: 기본 툴헤드 이동 길이
+      default_toolhead_xy_speed: 기본 툴헤드 XY 속도
+      default_toolhead_z_speed: 기본 툴헤드 Z 속도
+      enable: 활성화
+      fps_target: 목표 FPS
+      gcode_coords: G코드 좌표 사용
+      invert_x_control: X 반전 컨트롤
+      invert_y_control: Y 반전 컨트롤
+      invert_z_control: Z 반전 컨트롤
+      language: 표시 언어
+      primary_color: 주 컬러
+      printer_name: 프린터 이름
+      reset: 환경설정 초기화
+      thermal_preset_name: 설정온도명칭
+      time_estimates: 예상 시간
+      toggle: Toggle
+      z_adjust_values: Z 조정 값
+    timer_options:
+      duration: 기간만
+      duration_description: Klipper LCD와 비슷하게 추정치가 없는 기간만 표시됩니다.
+      filament: 필라멘트로 추정
+      filament_description: 총 기간을 추정하기위해 사용된 필라멘트 양과 추정된 필라멘트 양을 이용합니다.<br /> 시간이 지남에 따라 더 정확해집니다.
+      file: 파일로 추정
+      file_description: 진행율과 기간을 사용하여 총 기간을 표시합니다.<br /> 시간이 지남에 따라 더 정확해집니다.
+      slicer: 슬라이서
+      slicer_description: 슬라이서 추정치를 사용합니다. 슬라이서에서 이 기능을 활성화 해야합니다.
+    title:
+      camera: 카메라 | 카메라
+      general: 일반
+      macros: 매크로
+      theme: 테마
+      thermal_presets: 온도설정
+      tool: 툴헤드
+    tooltip:
+      gcode_coords: 대시보드의 툴헤드 위치 대신에 G코드 위치를 사용합니다.
+  socket:
+    msg:
+      connecting: Moonraker에 접속중...
+      no_connection: Moonraker에 연결되지 않습니다. Moonraker의 상태를 확인하거나 새로고침 하십시오.
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+    tooltip:
+      extruder_disabled: 보다 온도가 낮아 익스투르더가 비활성화 되었습니다. (%{min}<small>°C</small>)
+      home_xy: 호밍 XY
+      home_z: 호밍 Z
+  version:
+    btn:
+      check_for_updates: 업데이트 확인
+      finish: 마침
+      update: 업데이트
+    label:
+      dirty: 변경 상태
+      invalid: 유효하지 않은 상태
+      up_to_date: 최신 상태
+    status:
+      finished: 업데이트 완료
+      updating: 업데이트중...
+    title: 소프트웨어 업데이트
+    tooltip:
+      dirty: 마스터가 아닌 또는 유효하지 않은 원점을 나타내거나 헤드가 분리되었습니다.
+      invalid: 저장소의 내부 변경으로 유효하지 않습니다.

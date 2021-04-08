@@ -4,10 +4,10 @@ import VueRouter, { RouteConfig } from 'vue-router'
 // Views
 import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
-import Configure from '@/views/Configure.vue'
 import Tune from '@/views/Tune.vue'
-import Interface from '@/views/Interface.vue'
-import SettingsBar from '@/components/SettingsBar.vue'
+import Configure from '@/views/Configure.vue'
+import Settings from '@/views/Settings.vue'
+import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -34,11 +34,11 @@ const routes: Array<RouteConfig> = [
     component: Configure
   },
   {
-    path: '/interface',
-    name: 'Interface',
+    path: '/settings',
+    name: 'Settings',
     components: {
-      default: Interface,
-      navigation: SettingsBar
+      default: Settings,
+      navigation: AppSettingsNav
     }
   },
   {

@@ -86,7 +86,7 @@
         v-slot:[`item.filament_used`]="{ item }"
       >
         <span class="grey--text text-no-wrap">
-          {{ $filters.getReadableLengthString(item.print_duration) }}
+          {{ $filters.getReadableLengthString(item.filament_used) }}
         </span>
       </template>
 

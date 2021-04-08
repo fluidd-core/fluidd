@@ -87,6 +87,13 @@ from. The default list in the [configuration example](/configuration/moonraker_c
 most user configurations for internal networks. Note these ranges are in CIDR
 format.
 
+## [history] block
+
+Enables job history. Also provides benefits such as being able to reprint
+failed or cancelled prints, and sorting your filesystem by last print time.
+
+See the [feature docs](/features/print_history) for more explanation of these features.
+
 ## [octoprint_compat] block
 
 This enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer and

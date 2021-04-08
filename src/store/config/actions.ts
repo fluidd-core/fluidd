@@ -3,7 +3,7 @@ import { ActionTree } from 'vuex'
 import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
-import { loadLocaleMessagesAsync } from '@/plugins/i18n'
+import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
 
 export const actions: ActionTree<ConfigState, RootState> = {
@@ -27,7 +27,12 @@ export const actions: ActionTree<ConfigState, RootState> = {
     }
 
     // Set the correct language.
-    dispatch('onLocaleChange', payload.general.locale)
+    if (
+      payload.general &&
+      payload.general.locale
+    ) {
+      dispatch('onLocaleChange', payload.general.locale)
+    }
   },
 
   /**
@@ -36,18 +41,29 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async onLocaleChange ({ dispatch, state }, payload: string) {
     // Set the correct language.
     // vuetify.framework.lang.current = state.uiSettings.general.locale
+
+    // Add the wait.
     dispatch('wait/addWait', Waits.onLoadLanguage, { root: true })
-    const locale = await loadLocaleMessagesAsync(payload)
-    dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
+
+    // Grab the browsers starting locale.
+    const startingLocale = getStartingLocale()
+
+    // Set the locale. If its set as default, use the starting locale.
+    const locale = (payload !== 'default')
+      ? await loadLocaleMessagesAsync(payload)
+      : await loadLocaleMessagesAsync(startingLocale)
 
     // If the locale doesn't match what we have in settings, update it.
-    if (state.uiSettings.general.locale !== locale) {
+    if (
+      state.uiSettings.general.locale !== payload
+    ) {
       dispatch('saveByPath', {
         path: 'uiSettings.general.locale',
-        value: locale,
+        value: (payload !== 'default') ? locale : payload,
         server: true
       })
     }
+    dispatch('wait/removeWait', Waits.onLoadLanguage, { root: true })
   },
 
   /**

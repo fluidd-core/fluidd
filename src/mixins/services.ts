@@ -23,8 +23,9 @@ export default class ServicesMixin extends Vue {
    * Restart the klipper service itself.
    */
   async serviceRestartKlipper () {
-    // Partially reset, since config might have changed.
+    this.$store.commit('socket/setAcceptNotifications', false)
     await store.dispatch('reset', [
+      'server',
       'printer',
       'charts',
       'wait'
@@ -52,7 +53,9 @@ export default class ServicesMixin extends Vue {
    * Restart klippy / std restart.
    */
   async restartKlippy () {
+    this.$store.commit('socket/setAcceptNotifications', false)
     await store.dispatch('reset', [
+      'server',
       'printer',
       'charts',
       'wait'
@@ -65,7 +68,9 @@ export default class ServicesMixin extends Vue {
    * Restart klippy and the mcu's.
    */
   async firmwareRestartKlippy () {
+    this.$store.commit('socket/setAcceptNotifications', false)
     await store.dispatch('reset', [
+      'server',
       'printer',
       'charts',
       'wait'

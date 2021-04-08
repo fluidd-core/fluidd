@@ -54,5 +54,12 @@ export const mutations: MutationTree<ConsoleState> = {
    */
   setConsoleCommand (state, payload) {
     state.consoleCommand = payload
+  },
+
+  /**
+   * Sets auto scroll
+   */
+  setAutoScroll (state, payload) {
+    state.autoScroll = payload
   }
 }
