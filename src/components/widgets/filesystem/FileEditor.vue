@@ -117,6 +117,7 @@ export default class FileEditor extends Vue {
 
   editorMounted () {
     if (this.editor) {
+      this.$emit('ready')
       this.editor.onDidChangeModelContent(event => {
         const value = this.editor?.getValue()
         this.emitChange(value, event)
