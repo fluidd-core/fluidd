@@ -17,6 +17,7 @@ import { devicePower } from './devicePower'
 import { history } from './history'
 import { version } from './version'
 import { cameras } from './cameras'
+import { mesh } from './mesh'
 import { wait } from './wait'
 
 Vue.use(Vuex)
@@ -37,6 +38,7 @@ export default new Vuex.Store<RootState>({
     history,
     version,
     cameras,
+    mesh,
     wait
   },
   mutations: {},

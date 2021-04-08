@@ -1,26 +1,27 @@
 <template>
-  <div>
-    <div class="chart">
-      <ECharts
-        ref="chart"
-        :option="options"
-        :setOptionOps="{ notMerge: true }"
-        :initOpts="{ renderer: 'svg' }"
-        :events="[
-          ['legendselectchanged', handleLegendSelectChange ]
-        ]">
-      </ECharts>
-    </div>
+  <div class="chart" :style="{ 'height': height }">
+    <ECharts
+      ref="chart"
+      :option="options"
+      :setOptionOps="{ notMerge: true }"
+      :initOpts="{ renderer: 'svg' }"
+      :events="[
+        ['legendselectchanged', handleLegendSelectChange ]
+      ]">
+    </ECharts>
   </div>
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component, Watch, Prop } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import { getKlipperType } from '@/store/helpers'
 
 @Component({})
 export default class ThermalChart extends Vue {
+  @Prop({ type: String, default: '100%' })
+  height!: string;
+
   loading = true
   options: any = {}
 
@@ -465,6 +466,6 @@ export default class ThermalChart extends Vue {
   .chart {
     margin-top: 16px;
     width: 100%;
-    height: 325px;
+    // height: 325px;
   }
 </style>

@@ -2,10 +2,20 @@
 
 ## Next Up
 
+- load all history data button
+- sync instances across moonraker db
+- use components instead of plugins with moonraker
+- cleanup card layout stuff
+  - hide enabled flag for collapsable card for camera panel on dashboard
+- change card states to db and be driven by getters..
+
 ### Features
 
+- better multi-printer management
+  - improve multi-webcam setup
+  - overview
+  - easy change
 - More macro layout options (categorize macros, ability to define layout in some way, color)
-- alternate bed mesh scales
 - file system enhancements
   - bulk actions to delete or move?
   - copy file
@@ -16,12 +26,7 @@
 
 ### Refactors
 
-- sync instances across moonraker db
-- use components instead of plugins with moonraker
 - rename device power store
-- cleanup card layout stuff
-  - hide enabled flag for collapsable card for camera panel on dashboard
-- change card states to db and be driven by getters..
 
 ### Docs
 
@@ -48,8 +53,6 @@
   - the metadata load fails because the file is no longer there.
 
 ## General Improvements
-
-- probed vs mesh bed level display option
 
 ## [Page] Printer Configuration
 

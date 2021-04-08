@@ -84,7 +84,8 @@ import {
   mdiHelpCircle,
   mdiHistory,
   mdiFilterOutline,
-  mdiSourceCommit
+  mdiSourceCommit,
+  mdiArrowExpandUp
 } from '@mdi/js'
 
 /**
@@ -176,8 +177,8 @@ export const Icons = Object.freeze({
   left: mdiArrowLeft,
   right: mdiArrowRight,
   tune: mdiTune,
-  upCollapse: mdiArrowCollapseUp,
-  downCollapse: mdiArrowCollapseDown,
+  zUp: mdiArrowExpandUp,
+  zDown: mdiArrowCollapseDown,
   expandHorizontal: mdiArrowExpandHorizontal,
   cog: mdiCog,
   cogs: mdiCogs,

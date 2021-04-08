@@ -30,7 +30,6 @@
   },
   "main": "index.js",
   "dependencies": {
-    "@cadriel/vue-plotly": "github:cadriel/vue-plotly",
     "@ctrl/tinycolor": "^3.3.1",
     "@fontsource/raleway": "^4.2.1",
     "@fontsource/roboto": "^4.1.0",
@@ -41,6 +40,7 @@
     "dayjs": "^1.9.8",
     "echarts": "^5.0.2",
     "echarts-for-vue": "^1.1.1",
+    "echarts-gl": "^2.0.2",
     "lodash-es": "^4.17.20",
     "monaco-editor": "^0.23.0",
     "monaco-editor-textmate": "^2.2.2",

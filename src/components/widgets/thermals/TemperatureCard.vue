@@ -38,6 +38,7 @@
     <thermal-chart
       v-if="chartReady && chartVisible"
       ref="thermalchart"
+      :height="(isMobile) ? '225px' : '325px'"
     ></thermal-chart>
 
   </collapsable-card>
@@ -101,6 +102,10 @@ export default class TemperatureCard extends Mixins(StateMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>
