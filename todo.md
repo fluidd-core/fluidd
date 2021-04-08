@@ -2,8 +2,6 @@
 
 ## Next Up
 
-- fix swap printer bug where sometimes themes aren't properly swapped (+ more?)
-
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - cleanup card layout stuff
