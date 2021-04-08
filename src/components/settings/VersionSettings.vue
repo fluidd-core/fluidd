@@ -40,7 +40,7 @@
       <template v-for="(component, i) in components">
         <app-setting
           :key="`component-${component.key}-${component.name}`"
-          :title="packageTitle(component)"
+          :title="$t(packageTitle(component))"
         >
           <template v-slot:sub-title>
             <span v-if="component.key !== 'system'">{{ component.version }}</span>
@@ -147,10 +147,10 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
     if (component.key === 'system') {
-      return 'os packages'
+      return 'app.setting.label.os_packages' // to make this translatable we use the i18n key here
     }
 
-    return component.key
+    return component.key // we use the fact that non existent key in i18n are displayed as text
   }
 
   hasUpdate (component: string) {

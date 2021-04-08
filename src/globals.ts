@@ -84,7 +84,9 @@ import {
   mdiHistory,
   mdiFilterOutline,
   mdiSourceCommit,
-  mdiArrowExpandUp
+  mdiArrowExpandUp,
+  mdiArrowVerticalLock,
+  mdiArrowUpDown
 } from '@mdi/js'
 
 /**
@@ -219,7 +221,9 @@ export const Icons = Object.freeze({
   host: mdiDesktopTower,
   history: mdiHistory,
   filter: mdiFilterOutline,
-  commit: mdiSourceCommit
+  commit: mdiSourceCommit,
+  lock: mdiArrowVerticalLock,
+  unlock: mdiArrowUpDown
 })
 
 export const Waits = Object.freeze({

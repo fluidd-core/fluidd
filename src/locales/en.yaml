@@ -34,6 +34,7 @@ app:
   console:
     label:
       hide_temp_waits: Hide temp waits
+      auto_scroll: Auto Scroll
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
   endpoint:
@@ -134,6 +135,7 @@ app:
       upload: Upload
       upload_print: Upload & Print
       view: View
+      send: Send
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -209,6 +211,7 @@ app:
         slicer: Slicer
         start_time: Started
         status: Status
+        actual_time: Actual Time
     title:
       add_printer: Add Printer
       bedmesh: Bed Mesh
@@ -296,6 +299,7 @@ app:
       time_estimates: Time estimates
       toggle: Toggle
       z_adjust_values: Z Adjust values
+      os_packages: os packages
     timer_options:
       duration: Duration only
       duration_description: Similar to a klipper LCD, this only shows duration with no estimates.

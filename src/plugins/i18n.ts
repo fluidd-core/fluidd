@@ -26,7 +26,8 @@ const startingLocale = getStartingLocale()
 const i18n: VueI18n = new VueI18n({
   locale: startingLocale,
   fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  messages: {}
+  messages: {},
+  silentFallbackWarn: true
 })
 
 const loadedLanguages: Locale[] = []

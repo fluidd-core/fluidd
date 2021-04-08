@@ -153,7 +153,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     if (this.showHistory) {
-      if (!this.dense) headers.push({ text: 'Actual Time', value: 'history.print_duration' })
+      if (!this.dense) headers.push({ text: this.$t('app.general.table.header.actual_time'), value: 'history.print_duration' })
       headers.push(
         {
           text: this.$t('app.general.table.header.last_printed'),

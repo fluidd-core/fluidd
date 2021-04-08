@@ -22,17 +22,32 @@
         <app-btn
           @click="emitSend(newValue)"
         >
-          Send
+          {{$t('app.general.btn.send')}}
         </app-btn>
       </v-col>
       <v-col cols="auto">
-        <v-checkbox
-          v-model="autoScroll"
-          hide-details
-          label="Auto scroll"
-          class="mt-0 pt-0"
-        >
-        </v-checkbox>
+        <v-tooltip top :color="autoScroll ? 'success' : 'error'">
+          <template v-slot:activator="{ on }">
+            <v-btn
+              v-on="on"
+              @click.stop="autoScroll = !autoScroll"
+              icon
+              class="mt-0 pt-0 btncolor"
+            >
+              <v-scale-transition origin="center center">
+                <v-icon key="lockBtn" v-show="autoScroll">
+                  $lock
+                </v-icon>
+              </v-scale-transition>
+              <v-scale-transition origin="center center">
+                <v-icon key="unlockBtn" v-show="!autoScroll">
+                  $unlock
+                </v-icon>
+              </v-scale-transition>
+            </v-btn>
+          </template>
+          {{$t('app.console.label.auto_scroll')}}
+        </v-tooltip>
       </v-col>
     </v-row>
   </v-container>
