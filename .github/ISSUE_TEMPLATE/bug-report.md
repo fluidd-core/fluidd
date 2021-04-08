@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Having issues? Start here!
-title: '[BUG]'
+title: ''
 labels: 'bug'
 assignees: ''
 
@@ -10,33 +10,40 @@ assignees: ''
 <!--
 Please try to fill in the form with as much detail, it makes the whole process easier for everyone, you included!
 
+Also include your version number before the title, e.g. []
+
 Thank you for using fluidd!
 -->
 
-## fluidd version
-(The version of the application this issue occurs with.)
+## Affected Version(s):
+(The versions of fluidd this issue occurs on.)
+- klipper version:
+- moonraker version:
+- fluidd version:
 
-**Platform**
-(Information about the operating system or devicethe issue occurs on.)
+## Platform:
+(Information about your platform, like the OS or browser you are using.)
 
-**Hardware Configuration**
-(Which printer was selected in Cura?)
+## Hardware Configuration:
+(Information about your hardware configuration. Like MCU, host and setup)
 
-**Reproduction Steps**
+## Reproduction Steps:
 1. (Something you did.)
 2. (Something you did next.)
 
-**Screenshot(s)**
-(Image showing the problem, perhaps before/after images.) 
+## Actual Results:
+(What happens after the reproduction steps have been followed.)
 
-**Actual results**
-(What happens after the above steps have been followed.)
+## Screenshot(s):
+(Images or gifs showing the problem, perhaps before/after.) 
 
-**Expected results**
-(What should happen after the above steps have been followed.)
+## Expected Results:
+(What *should* happen after the reproduction steps have been followed.)
 
-**Log file**
-(See https://github.com/Ultimaker/Cura#logging-issues to find the log file to upload, or copy a relevant snippet from it.)
+## Log Files:
+(The log files fluidd provides at Configure > System Control.)
+- klipper log:
+- moonraker log:
 
-**Additional information**
-(Extra information relevant to the issue.)
+## Additional information
+(Extra information relevant to the issue, links to similar issues.)
