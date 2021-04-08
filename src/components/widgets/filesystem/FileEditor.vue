@@ -108,6 +108,9 @@ export default class FileEditor extends Vue {
     )
     this.editor.setModel(model)
 
+    // Focus the editor.
+    this.editor.focus()
+
     // Fire the editorMounted call.
     this.editorMounted()
   }
