@@ -12,7 +12,7 @@ export interface HistoryItem {
   end_time: string | null;
   filament_used: number;
   filename: string;
-  metadata: KlipperFileMeta;
+  metadata?: KlipperFileMeta;
   print_duration: number;
   status: HistoryItemStatus;
   start_time: number;

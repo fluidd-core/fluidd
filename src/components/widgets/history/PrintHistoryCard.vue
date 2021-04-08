@@ -7,6 +7,13 @@
 
     <template v-slot:menu>
       <app-btn
+        @click="handleLoadAll"
+        small
+        class="ma-1">
+        <v-icon small left>$download</v-icon>
+        <span>{{ $t('app.general.btn.load_all') }}</span>
+      </app-btn>
+      <app-btn
         @click="handleRemoveAll"
         small
         class="ma-1">
@@ -39,6 +46,10 @@ export default class PrinterHistoryCard extends Vue {
           SocketActions.serverHistoryDeleteJob('all')
         }
       })
+  }
+
+  handleLoadAll () {
+    SocketActions.serverHistoryList()
   }
 }
 </script>

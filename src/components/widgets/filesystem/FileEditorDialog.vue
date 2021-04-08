@@ -5,6 +5,7 @@
     :loading="loading"
     hide-overlay
     fullscreen
+    persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
   >

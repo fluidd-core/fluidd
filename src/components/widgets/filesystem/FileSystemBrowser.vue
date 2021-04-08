@@ -85,7 +85,13 @@
             </span>
             <span v-else>--</span>
           </td>
-          <td class="grey--text text-no-wrap" v-if="showLastPrinted">
+          <td class="grey--text text-no-wrap" v-if="showHistory && !dense">
+            <span v-if="item.type === 'file' && item.history && item.history.print_duration">
+              {{ $filters.formatCounterTime(item.history.print_duration) }}
+            </span>
+            <span v-else>--</span>
+          </td>
+          <td class="grey--text text-no-wrap" v-if="showHistory">
             {{ (item.type === 'directory' || !item.print_start_time) ? '--' : $filters.formatDateTime(item.print_start_time) }}
           </td>
           <td class="grey--text text-no-wrap">
@@ -146,21 +152,24 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       ]
     }
 
-    if (this.showLastPrinted) {
-      headers.push({
-        text: this.$t('app.general.table.header.last_printed'),
-        value: 'print_start_time',
-        filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
-          const filter = this.filters.find(filter => filter.value === 'print_start_time')
-          if (
-            !this.filters ||
-            this.filters.length === 0 ||
-            !filter ||
-            item.type !== 'file'
-          ) return true
-          return item.print_start_time === null
+    if (this.showHistory) {
+      if (!this.dense) headers.push({ text: 'Actual Time', value: 'history.print_duration' })
+      headers.push(
+        {
+          text: this.$t('app.general.table.header.last_printed'),
+          value: 'print_start_time',
+          filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
+            const filter = this.filters.find(filter => filter.value === 'print_start_time')
+            if (
+              !this.filters ||
+              this.filters.length === 0 ||
+              !filter ||
+              item.type !== 'file'
+            ) return true
+            return item.print_start_time === null
+          }
         }
-      })
+      )
     }
 
     headers = [
@@ -177,12 +186,14 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   get showMetaData () {
     // Show meta data only for the gcodes root, and only when we are not
     // presenting with dense = true
-    if (this.root === 'gcodes' && !this.dense) return true
-    return false
+    return (
+      !this.dense &&
+      this.root === 'gcodes'
+    )
   }
 
   // Is the history plugin enabled
-  get showLastPrinted () {
+  get showHistory () {
     return (
       this.$store.getters['server/pluginSupport']('history') &&
       this.root === 'gcodes'

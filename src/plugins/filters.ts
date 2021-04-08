@@ -4,6 +4,38 @@ import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
 import { Globals, Waits } from '@/globals'
 
+/**
+ * credit: taken from Vuetify source
+ */
+const getNestedValue = (obj: any, path: (string | number)[], fallback?: any): any => {
+  const last = path.length - 1
+
+  if (last < 0) return obj === undefined ? fallback : obj
+
+  for (let i = 0; i < last; i++) {
+    if (obj == null) {
+      return fallback
+    }
+    obj = obj[path[i]]
+  }
+
+  if (obj == null) return fallback
+
+  return obj[path[last]] === undefined ? fallback : obj[path[last]]
+}
+
+/**
+ * credit: taken from Vuetify source
+ */
+const getObjectValueByPath = (obj: any, path: string, fallback?: any): any => {
+  // credit: http://stackoverflow.com/questions/6491463/accessing-nested-javascript-objects-with-string-key#comment55278413_6491621
+  if (obj == null || !path || typeof path !== 'string') return fallback
+  if (obj[path] !== undefined) return obj[path]
+  path = path.replace(/\[(\w+)\]/g, '.$1') // convert indexes to properties
+  path = path.replace(/^\./, '') // strip a leading dot
+  return getNestedValue(obj, path.split('.'), fallback)
+}
+
 export const Filters = {
 
   /**
@@ -95,15 +127,20 @@ export const Filters = {
    * The filesystem sorter. This is copied from vuetify, and modified to ensure our directories
    * are always sorted to the top.
    */
-  fileSystemSort (items: any, sortBy: string[], sortDesc: boolean[], locale: string) {
+  fileSystemSort (
+    items: any,
+    sortBy: string[],
+    sortDesc: boolean[],
+    locale: string
+  ) {
     if (sortBy === null || !sortBy.length) return items
     const stringCollator = new Intl.Collator(locale, { sensitivity: 'accent', usage: 'sort' })
-    items.sort((a: any, b: any) => {
+    return items.sort((a: any, b: any) => {
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
-        let sortA = a[sortKey]
-        let sortB = b[sortKey]
+        let sortA = getObjectValueByPath(a, sortKey)
+        let sortB = getObjectValueByPath(b, sortKey)
 
         if (sortDesc[i]) {
           [sortA, sortB] = [sortB, sortA]
@@ -131,7 +168,6 @@ export const Filters = {
       }
       return 0
     })
-    return items
   },
 
   /**

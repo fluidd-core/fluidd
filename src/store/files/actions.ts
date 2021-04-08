@@ -4,6 +4,7 @@ import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
+import { HistoryItem } from '../history/types'
 
 export const actions: ActionTree<FilesState, RootState> = {
   /**
@@ -13,7 +14,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
+  async onServerFilesGetDirectory ({ commit, rootState }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
     let pathNoRoot = path.replace(root, '')
@@ -51,13 +52,19 @@ export const actions: ActionTree<FilesState, RootState> = {
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
         ) {
+          let history: HistoryItem | {} = {}
+          if (file.job_id) {
+            const h = rootState.history?.jobs.find(job => job.job_id === file.job_id)
+            if (h) history = h
+          }
           items.push({
             ...file,
             type: 'file',
             name: file.filename,
             extension: file.filename.split('.').pop() || '',
             modified: new Date(file.modified).getTime(),
-            path: (pathNoRoot === '/') ? '' : pathNoRoot
+            path: (pathNoRoot === '/') ? '' : pathNoRoot,
+            history
           })
         }
       })
