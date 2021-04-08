@@ -30,7 +30,6 @@ import {
   mdiArrowDown,
   mdiArrowLeft,
   mdiArrowRight,
-  mdiArrowCollapseUp,
   mdiArrowCollapseDown,
   mdiViewGridOutline,
   mdiArrowExpandHorizontal,

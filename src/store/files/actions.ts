@@ -4,7 +4,7 @@ import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
-import { HistoryItem, HistoryItemStatus } from '../history/types'
+import { HistoryItem } from '../history/types'
 
 export const actions: ActionTree<FilesState, RootState> = {
   /**
