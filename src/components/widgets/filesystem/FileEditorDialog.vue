@@ -17,6 +17,7 @@
       >
         <app-btn
           icon
+          :disabled="!ready"
           color=""
           @click="emitClose()"
         >
@@ -34,14 +35,14 @@
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
-            :disabled="loading || !editorReady"
+            :disabled="!ready"
             @click="emitSave(true)">
             <v-icon small :left="!isMobile">$restart</v-icon>
             <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly"
-            :disabled="loading || !editorReady"
+            :disabled="!ready"
             @click="emitSave(false)">
             <v-icon small :left="!isMobile">$save</v-icon>
             <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save') }}</span>
@@ -105,6 +106,18 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   updatedContent = this.contents
   editorReady = false
 
+  get ready () {
+    return (
+      !this.loading &&
+      this.editorReady &&
+      !this.isUploading
+    )
+  }
+
+  get isUploading (): boolean {
+    return this.$store.state.files.uploads.length > 0
+  }
+
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
   }
@@ -122,8 +135,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   }
 
   emitSave (restart: boolean) {
-    this.$emit('save', this.updatedContent, restart)
-    if (restart) this.$emit('input', false)
+    if (this.editorReady) {
+      this.$emit('save', this.updatedContent, restart)
+      if (restart) this.$emit('input', false)
+    }
   }
 }
 </script>
