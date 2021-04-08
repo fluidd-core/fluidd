@@ -1,3 +1,5 @@
+import { HistoryItem } from '@/store/history/types'
+
 export interface FilesState {
   [key: string]: Files[] | FilesUpload[] | FileDownload | string[] | CurrentPaths | DiskUsage | null;
   availableRoots: string[];
@@ -41,7 +43,7 @@ export interface KlipperFile {
   modified: number;
   size: number;
   print_start_time?: number | null;
-  job_id?: number | null;
+  job_id?: string | null;
 }
 
 export interface KlipperFileMeta {
@@ -59,7 +61,9 @@ export interface KlipperFileMeta {
   thumbnails?: Thumbnail[];
 }
 
-export interface AppFileWithMeta extends AppFile, KlipperFileMeta {}
+export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
+  history: HistoryItem | {};
+}
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
 export interface AppDirectory {
