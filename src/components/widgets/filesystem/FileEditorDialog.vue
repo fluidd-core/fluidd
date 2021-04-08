@@ -34,12 +34,14 @@
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
+            :disabled="loading || !editorReady"
             @click="emitSave(true)">
             <v-icon small :left="!isMobile">$restart</v-icon>
             <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly"
+            :disabled="loading || !editorReady"
             @click="emitSave(false)">
             <v-icon small :left="!isMobile">$save</v-icon>
             <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save') }}</span>
@@ -54,10 +56,10 @@
 
       <file-editor
         v-if="contents !== undefined"
-        :value="contents"
-        @input="updatedContent = $event"
+        v-model="updatedContent"
         :filename="filename"
-        :readonly="readonly">
+        :readonly="readonly"
+        @ready="editorReady = true">
       </file-editor>
 
     </v-card>
@@ -69,12 +71,12 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 // Lazy Load the file editor.
-const FileEditor = () => import(
-  /* webpackPreload: true */
-  /* webpackChunkName: "chunk-fileeditor" */
-  './FileEditor.vue'
-)
-// import FileEditor from './FileEditor.vue'
+// const FileEditor = () => import(
+//   /* webpackPreload: true */
+//   /* webpackChunkName: "chunk-fileeditor" */
+//   './FileEditor.vue'
+// )
+import FileEditor from './FileEditor.vue'
 
 @Component({
   components: {
@@ -100,7 +102,8 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   public readonly!: boolean
 
-  updatedContent = ''
+  updatedContent = this.contents
+  editorReady = false
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
@@ -108,6 +111,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get isMobile () {
     return this.$vuetify.breakpoint.sm
+  }
+
+  mounted () {
+    this.updatedContent = this.contents
   }
 
   emitClose () {
