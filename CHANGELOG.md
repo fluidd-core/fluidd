@@ -2,6 +2,47 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.12.0](https://github.com/cadriel/fluidd/compare/v1.11.2...v1.12.0) (2021-04-08)
+
+
+### Features
+
+* adds actual print time to job page ([2dd0c94](https://github.com/cadriel/fluidd/commit/2dd0c94323e98c96583db76069a098565d54fbce))
+* adjust print stats layout for tablet & down ([95815ca](https://github.com/cadriel/fluidd/commit/95815ca21a4aae5a2782ed5e6cdd2611d0757cca))
+* allow klipper service restart from slide-out menu ([a6158c7](https://github.com/cadriel/fluidd/commit/a6158c758ef08a262a7420a50c8f5d95ff5a9c5c))
+* allow loading all history ([2316776](https://github.com/cadriel/fluidd/commit/23167761dae14eaa2b9c6633ea0e786e34ca6d31))
+* allow toggling a flat plane on new mesh ([edd28a5](https://github.com/cadriel/fluidd/commit/edd28a52b37bf22dacb855b8154a2522ebf2c385))
+* allow toggling auto scroll with console ([a30bdb2](https://github.com/cadriel/fluidd/commit/a30bdb2ea4fb02682fe8bb459a5855337605cd27))
+* allows disabling new version notifications ([8206671](https://github.com/cadriel/fluidd/commit/8206671b8360c2b2017c7c12cdb4f3e7a041426a))
+* enable docs root under configuration ([6e86b6e](https://github.com/cadriel/fluidd/commit/6e86b6eb807fddb059fd6dd74a53adc7f2615ab2))
+* hide editor buttons based on root path ([7ed1866](https://github.com/cadriel/fluidd/commit/7ed18660fccb4cf38d80f9c4a3d8b15cd880c861))
+* impl light editor theme ([defc236](https://github.com/cadriel/fluidd/commit/defc2369a0eec21b9c794440cb00d5375f62a5ea))
+* impl moonraker version recovery ([39efb0d](https://github.com/cadriel/fluidd/commit/39efb0d0450bb03426a4e6f208b6aea87c67d1fc))
+* increase allowed z-adjust values ([0ce53b6](https://github.com/cadriel/fluidd/commit/0ce53b6a6d3869f3100e73214d41b89513fba3c6))
+* new bed mesh lib and layout ([31260cd](https://github.com/cadriel/fluidd/commit/31260cd403c0450bdcbf9807e59dbf7a1acb3444))
+* **console-help:** Moved console help to a tooltip ([2651c8b](https://github.com/cadriel/fluidd/commit/2651c8bf076215d4fe01cd698103764f47ec65a1))
+* moves software updates to interface settings page ([33951a5](https://github.com/cadriel/fluidd/commit/33951a5e550fdd02028ce1ecc3074bd4ea81b7fd))
+* rename interface to settings ([4da9c67](https://github.com/cadriel/fluidd/commit/4da9c6778e18a5bb17c1ed2ad2fb924eafad3afb))
+* upload / download dialogs ([233ce67](https://github.com/cadriel/fluidd/commit/233ce6705575c88958e8212d6ebf71de2ed988dc))
+* version commit history ([971fbb0](https://github.com/cadriel/fluidd/commit/971fbb016c36bb119636246b20463ea4b33c2e1d))
+* VSCode file editor ([b81dec4](https://github.com/cadriel/fluidd/commit/b81dec4cc21bd6b6c59b35f97237d32ac85e7b7e))
+
+
+### Bug Fixes
+
+* adjust z-up icon ([c53f51f](https://github.com/cadriel/fluidd/commit/c53f51f97013a11e440b5af34b414a1a08a2cd88))
+* Allow resetting lang to browser default ([657250c](https://github.com/cadriel/fluidd/commit/657250c82db3a1c1bcef9e2dff43db2ac574b0d3))
+* Allow version updates in a disconnected state ([f5bfce0](https://github.com/cadriel/fluidd/commit/f5bfce0a1a617fc062562845776a93acfacbe42b))
+* downloads with % in the filename now work ([4b5e081](https://github.com/cadriel/fluidd/commit/4b5e0817bec7add3c70207b355511d1d9c8ce74d))
+* ensure editor is readonly when appropriate ([725f5b3](https://github.com/cadriel/fluidd/commit/725f5b37b335195b72c1de3fcfa27db692026ee7))
+* ensure stores still init with no defined moonraker endpoints ([253cab4](https://github.com/cadriel/fluidd/commit/253cab4386471c09942ffdbbb31b4041a28d17d6))
+* ensure the editor recieves the raw text of the file being edited ([122bc85](https://github.com/cadriel/fluidd/commit/122bc857a0396f76f1e9d831f7d7585e6d29023d))
+* History now represents actual filament used properly. ([6631c44](https://github.com/cadriel/fluidd/commit/6631c44c4ec1cff218311757258552e8c1f625e2))
+* increase height of vertical scroll ([6d83ba1](https://github.com/cadriel/fluidd/commit/6d83ba13683ab1a2991a8ed3bc9aab7c11d39bce))
+* macro's with a decimal in their name should now show properly ([ae1dcd6](https://github.com/cadriel/fluidd/commit/ae1dcd606007d24779932691a48a27e5b4a5e653))
+* remove edit / view file if on mobile ([c143786](https://github.com/cadriel/fluidd/commit/c14378622a2b92b299df76e064b4b7a653888ae8))
+* shrink edit dialog buttons on smaller displays ([d5111a9](https://github.com/cadriel/fluidd/commit/d5111a976d01ea688046ff10d0b0351f8058bde7))
+
 ### [1.11.2](https://github.com/cadriel/fluidd/compare/v1.11.1...v1.11.2) (2021-03-28)
 
 
