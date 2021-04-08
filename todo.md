@@ -3,7 +3,7 @@
 ## Next Up
 
 - fix swap printer bug where sometimes themes aren't properly swapped (+ more?)
-- load all history data button
+
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - cleanup card layout stuff
@@ -13,6 +13,9 @@
 
 ### Features
 
+- history enhancements
+  - graphing over time
+  - move to its own page?
 - better multi-printer management
   - improve multi-webcam setup
   - overview

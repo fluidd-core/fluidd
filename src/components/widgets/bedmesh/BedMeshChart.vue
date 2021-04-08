@@ -176,6 +176,8 @@ export default class EChartsBedMesh extends Vue {
       grid3D: {
         viewControl: {
           // distance: 100,
+          rotateSensitivity: 1.8,
+          zoomSensitivity: 2,
           rotateMouseButton: 'left',
           panMouseButton: 'right'
         }
