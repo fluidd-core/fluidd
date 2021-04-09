@@ -34,7 +34,15 @@ export default class FileEditor extends Vue {
     fontSize: 16,
     scrollbar: {
       useShadows: false
-    }
+    },
+    minimap: {
+      enabled: (!this.isMobile)
+    },
+    rulers: (this.isMobile) ? [80, 120] : []
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   async mounted () {
@@ -145,20 +153,4 @@ export default class FileEditor extends Vue {
     height: 90%;
     height: calc(100% - 48px);
   }
-
-  // .file-editor {
-  //   background: transparent;
-  //   color: #ccc;
-
-  //   /* you must provide font-family font-size line-height. Example: */
-  //   font-family: Fira code, Fira Mono, Consolas, Menlo, Courier, monospace;
-  //   font-size: 14px;
-  //   line-height: 1.5;
-  //   padding: 5px;
-  // }
-
-  // /* optional class for removing the outline */
-  // .prism-editor__textarea:focus {
-  //   outline: none;
-  // }
 </style>
