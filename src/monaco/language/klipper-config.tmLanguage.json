@@ -50,14 +50,17 @@
 		"config_block": {
 			"contentName": "keyword.control",
 			"begin": "^\\[",
-			"end": "\\]$",
+			"end": "\\]",
 			"patterns": [
-				{
-					"include": "#known_config_block_name"
-				},
-				{
-					"include": "#known_driver_type"
-				}
+					{
+							"include": "#known_config_block_name"
+					},
+					{
+							"include": "#known_driver_type"
+					},
+					{
+							"include": "#single_line_comment"
+					}
 			]
 		},
 		"known_config_block_name": {
