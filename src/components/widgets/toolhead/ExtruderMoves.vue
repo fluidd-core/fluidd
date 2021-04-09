@@ -71,7 +71,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   rules = {
     min: (v: number) => {
-      return (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 })
+      return (v >= 0.1) || this.$t('app.general.simple_form.error.min', { min: 0.1 })
     },
     maxSpeed: (v: number) => {
       return (v <= this.maxExtrudeSpeed) || this.$t('app.general.simple_form.error.max', { max: this.maxExtrudeSpeed })
