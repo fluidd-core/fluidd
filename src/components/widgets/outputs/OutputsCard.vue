@@ -3,7 +3,7 @@
     :title="$t('app.general.title.fans_outputs')"
     icon="$motion"
     :draggable="true"
-    :layout-path="`dashboard.${$options.name}`"
+    layout-path="dashboard.outputs-card"
     menu-breakpoint="lg">
     <outputs></outputs>
   </collapsable-card>

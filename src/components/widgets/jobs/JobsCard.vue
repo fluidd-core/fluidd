@@ -3,7 +3,7 @@
     :title="$t('app.general.title.jobs')"
     icon="$files"
     :draggable="true"
-    :layout-path="`dashboard.${$options.name}`">
+    layout-path="dashboard.jobs-card">
 
     <file-system
       roots="gcodes"

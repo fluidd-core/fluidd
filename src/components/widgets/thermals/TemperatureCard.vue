@@ -4,7 +4,7 @@
     icon="$fire"
     :lazy="false"
     :draggable="true"
-    :layout-path="`dashboard.${$options.name}`">
+    layout-path="dashboard.temperature-card">
 
     <template v-slot:title>
       <v-icon left>$fire</v-icon>

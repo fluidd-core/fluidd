@@ -3,7 +3,7 @@
     :title="$t('app.general.title.tool')"
     icon="$printer3dNozzle"
     :draggable="true"
-    :layout-path="`dashboard.${$options.name}`"
+    layout-path="dashboard.toolhead-card"
     menu-breakpoint="lg">
 
     <template v-slot:title>

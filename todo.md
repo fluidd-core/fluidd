@@ -2,19 +2,9 @@
 
 ## Next Up
 
-## generic props for a draggable card
-
-- position
-- enabled
-
-## generic props for a collapsible card
-
-- collapsed
-
+- unshift pings and make sure we start with the local host first.
+- clicking legend items when no chart throws error, fix.
 - sync instances across moonraker db
-- cleanup card layout stuff
-  - hide enabled flag for collapsable card for camera panel on dashboard
-  - change card states to db and be driven by getters..
 - field selector for filesystem / history
 - use components instead of plugins with moonraker
 

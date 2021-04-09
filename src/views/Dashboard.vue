@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import draggable from 'vuedraggable'
 
@@ -82,9 +82,8 @@ export default class Dashboard extends Mixins(StateMixin) {
   container2 = []
 
   mounted () {
-    const layout = this.$store.getters['layout/getLayout']('dashboard')
-    this.container1 = layout.container1
-    this.container2 = layout.container2
+    this.container1 = this.layout.container1
+    this.container2 = this.layout.container2
   }
 
   get hasCameras (): boolean {
@@ -97,6 +96,16 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get layout () {
+    return this.$store.getters['layout/getLayout']('dashboard')
+  }
+
+  @Watch('layout')
+  onLayoutChange () {
+    this.container1 = this.layout.container1
+    this.container2 = this.layout.container2
   }
 
   get dragOptions () {

@@ -3,7 +3,7 @@
     :title="$t('app.general.title.macros')"
     icon="$fileCode"
     :draggable="true"
-    :layout-path="`dashboard.${$options.name}`">
+    layout-path="dashboard.macros-card">
     <macros></macros>
   </collapsable-card>
 </template>

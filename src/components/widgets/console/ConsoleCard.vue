@@ -7,7 +7,7 @@
     menuBreakpoint="none"
     menuIcon="$cog"
     :draggable="true"
-    :layout-path="`dashboard.${$options.name}`"
+    layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange">
 
     <template v-slot:title>
