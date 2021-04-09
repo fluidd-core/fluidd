@@ -3,9 +3,7 @@
     :title="$t('app.general.title.limits')"
     icon="$limits"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    :layout-path="`dashboard.${$options.name}`">
     <printer-limits></printer-limits>
   </collapsable-card>
 </template>

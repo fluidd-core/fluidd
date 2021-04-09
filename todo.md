@@ -2,12 +2,21 @@
 
 ## Next Up
 
+## generic props for a draggable card
+
+- position
+- enabled
+
+## generic props for a collapsible card
+
+- collapsed
+
 - sync instances across moonraker db
-- use components instead of plugins with moonraker
 - cleanup card layout stuff
   - hide enabled flag for collapsable card for camera panel on dashboard
-- change card states to db and be driven by getters..
+  - change card states to db and be driven by getters..
 - field selector for filesystem / history
+- use components instead of plugins with moonraker
 
 ### Features
 

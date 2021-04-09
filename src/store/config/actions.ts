@@ -1,6 +1,6 @@
 import vuetify from '@/plugins/vuetify'
 import { ActionTree } from 'vuex'
-import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostConfig, CardConfig, CardState } from './types'
+import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostConfig } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
@@ -86,20 +86,6 @@ export const actions: ActionTree<ConfigState, RootState> = {
    */
   async onInitApiConfig ({ commit }, payload) {
     commit('setInitApiConfig', payload)
-  },
-
-  /**
-   * Saves the card configuration, i.e., their position.
-   */
-  async saveCardConfig ({ commit }, payload: { group: string; cards: CardConfig[] }) {
-    commit('setCardConfig', payload)
-  },
-
-  /**
-   * Saves the card state, i.e., if collapsed or not.
-   */
-  async saveCardState ({ commit }, payload: CardState) {
-    commit('setCardState', payload)
   },
 
   /**

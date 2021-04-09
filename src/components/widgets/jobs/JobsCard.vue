@@ -3,9 +3,7 @@
     :title="$t('app.general.title.jobs')"
     icon="$files"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    :layout-path="`dashboard.${$options.name}`">
 
     <file-system
       roots="gcodes"

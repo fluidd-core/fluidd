@@ -7,9 +7,7 @@
     menuBreakpoint="none"
     menuIcon="$cog"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)"
+    :layout-path="`dashboard.${$options.name}`"
     @collapsed="handleCollapseChange">
 
     <template v-slot:title>

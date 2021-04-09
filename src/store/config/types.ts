@@ -5,26 +5,9 @@ export interface ConfigState {
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
-  cardState: CardState; // if a collapsable card is collapsed or not.
-  cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
-}
-
-// Saved to local storage.
-export interface CardLayout {
-  [key: string]: CardConfig[];
-}
-
-export interface CardConfig {
-  name: string;
-  enabled: boolean;
-}
-
-// Saved to local storage.
-export interface CardState {
-  [key: string]: boolean;
 }
 
 export interface UiSettings {

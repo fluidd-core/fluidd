@@ -1,7 +1,6 @@
 <template>
   <collapsable-card
     :title="`Klippy: ${klippyState}`"
-    :collapsable="false"
     icon="$alert"
     icon-color="error">
     <v-card-text>

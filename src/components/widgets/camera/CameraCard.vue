@@ -4,9 +4,7 @@
     icon="$camera"
     :lazy="false"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)"
+    :layout-path="`dashboard.${$options.name}`"
     @collapsed="collapsed = $event">
 
     <camera-dialog
