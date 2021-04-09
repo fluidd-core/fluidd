@@ -125,11 +125,9 @@ app:
       msg:
         confirm: Sei sicuro?
         confirm_reboot_host: >-
-          @.capitalize:app.general.simple_form.msg.confirm Quest'azione
-          riavvierà il tuo sistema host.
+          @.capitalize:app.general.simple_form.msg.confirm Verrà riavviato il tuo sistema host.
         confirm_shutdown_host: >-
-          @.capitalize:app.general.simple_form.msg.confirm Quest'azione spegnerà
-          il tuo sistema host.
+          @.capitalize:app.general.simple_form.msg.confirm Verrà spento il tuo sistema host.
       error:
         invalid_url: URL Invalido
         max: Massimo %{max}
@@ -215,12 +213,12 @@ app:
       not_loaded: Nessuna Mesh Caricata
     tooltip:
       calibrate: Inizia una nuova calibratura, salvato come profilo 'default'
-      delete: Elimina il profilo. RIAVVIERÀ la tua stampante
-      save: Salva la calibrazione in printer.cfg. RIAVVIERÀ la tua stampante
+      delete: Elimina il profilo. Verrà RIAVVIATA la tua stampante
+      save: Salva la calibrazione in printer.cfg. Verrà RIAVVIATA la tua stampante
       load: Carica profilo
   printer:
     status:
-      used_filament: filamento usato
+      used_filament: filamento utilizzato
       time_left: tempo stimato rimanente
       duration: durata
       duration_total: durata e totale
@@ -330,7 +328,7 @@ app:
     msg:
       not_found: Nessun File Trovato
       processing: Processsando...
-      confirm: Sei sicuro? Eliminerà tutti i file e le cartelle all'interno.
+      confirm: Sei sicuro? Verranno eliminati tutti i file e le cartelle all'interno.
     tooltip:
       disabled: Le stampe sono disattivate prima della comunicazione iniziale con klippy
       low_on_space: Rimane poco Spazio sul Disco
@@ -349,7 +347,7 @@ app:
   history:
     msg:
       confirm: >-
-        Sei Sicuro? Cancellerà tutta la cronologia, e le statistiche della
+        Sei Sicuro? Verrà cancelleta tutta la cronologia, e le statistiche della
         stampante
       load_count: Rappresenta gli ultimi {num} Lavori
   endpoint:
