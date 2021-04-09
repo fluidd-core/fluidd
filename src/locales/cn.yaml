@@ -34,7 +34,7 @@ app:
       command: 按'tab'自动补全命令，按'上下'键获取历史命令，输入'help' 获取命令帮助
   endpoint:
     error:
-      cant_connect: 出了点问题，fluidd无法连接到目的地址。你确定这是正确的地址？ sure this is the correct address?
+      cant_connect: 出了点问题，fluidd无法连接到目的地址。你确定这是正确的地址？
       cors_error: 被CORS政策阻止
       cors_note: >-
         这可能意味着您需要修改moonraker配置。请参阅有关多打印机设置的<a href=\"%{url}\"
@@ -105,7 +105,7 @@ app:
       remove: 删除
       remove_all: 全部删除
       rename: 重命名
-      reprint: 重印
+      reprint: 重新打印
       reset_file: 重置文件
       reset_layout: 重置布局
       restart_firmware: 重启Firmware
