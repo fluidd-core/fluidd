@@ -16,6 +16,7 @@
         style="z-index: 1"
       >
         <app-btn
+          v-if="!$vuetify.breakpoint.smAndDown"
           icon
           :disabled="!ready"
           color=""
@@ -30,27 +31,27 @@
             v-if="!printerPrinting && rootProperties.showConfigRef"
             :href="$globals.DOCS_KLIPPER_CONFIG_REF"
             target="_blank">
-            <v-icon small :left="!isMobile">$help</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.config_reference') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$help</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
             :disabled="!ready"
             @click="emitSave(true)">
-            <v-icon small :left="!isMobile">$restart</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save_restart') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$restart</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly"
             :disabled="!ready"
             @click="emitSave(false)">
-            <v-icon small :left="!isMobile">$save</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$save</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save') }}</span>
           </app-btn>
           <app-btn
             @click="emitClose()">
-            <v-icon small :left="!isMobile">$close</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.close') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$close</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.close') }}</span>
           </app-btn>
         </v-toolbar-items>
       </v-toolbar>
@@ -120,10 +121,6 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.sm
   }
 
   mounted () {
