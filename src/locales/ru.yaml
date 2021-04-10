@@ -1,13 +1,19 @@
 app:
   bedmesh:
     label:
+      flat_surface: Показать базовую плоскость
+      mesh_matrix: Сетчатая матрица
+      probed_matrix: Зондируемая матрица
       profile_name: Имя профиля
       remove_profile: Удалить %{name} профиль
+      scale: Масштаб по мин / макс
+      wireframe: Каркасная сетка
     msg:
       hint: >-
         Если сохранить не как %{name}, вы так же можете выбрать - удалить
         %{name} профиль
       not_found: Не найдённо существующих сеток стола.
+      not_loaded: Сетка не загружена
     tooltip:
       calibrate: Начать новую калибровку, будет сохранено как профиль 'default'
       delete: Удалить профиль. Это приведёт к ПЕРЕЗАГРУЗКЕ вашего принтера
@@ -68,7 +74,10 @@ app:
     label:
       dir_name: Имя папки
       disk_usage: Использование дискового пространства
+      downloaded: Скачан
       file_name: Имя файла
+      transfer_rate: Скорость передачи данных
+      uploaded: Загружен
     msg:
       confirm: Вы уверены? Это приведет к удалению всех файлов и папок внутри.
       not_found: Файлы не найдены
@@ -78,8 +87,10 @@ app:
     title:
       add_dir: Добавить папку
       add_file: Добавить файл
+      download_file: Получение файла
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
+      upload_file: Загрузка файла | Загрузка файлов
     tooltip:
       disabled: Задания на печать отключены до подключения к klippy
       low_on_space: Мало места на диске
@@ -100,6 +111,7 @@ app:
       download: Скачать
       edit: Редактировать
       extrude: Экструдировать
+      load_all: Загрузить все
       pause: Пауза
       preheat: Преднагрев
       quad_gantry_level: QGL
@@ -202,6 +214,7 @@ app:
     title:
       add_printer: Добавить принтер
       bedmesh: Сетка стола
+      bedmesh_controls: Управление сеткой стола
       camera: Камера | Камеры
       config_files: Файлы конфигурации
       configure: Конфигурация
@@ -214,6 +227,7 @@ app:
       limits: Лимиты принтера
       macros: Макросы
       runout_sensors: Датчик контроля филамента
+      settings: Настройки
       stats: Статистика принтера
       status: Статус
       system_control: Управление системой
@@ -254,6 +268,8 @@ app:
     label:
       all_off: Всё выключить
       all_on: Всё включить
+      camera_fillspace: Вывести на панели управления
+      camera_fillspace_help: Если включена хотя бы одна камера, выведет в блоке камеры на панели управления.
       camera_flip_x: Отразить по горизонтали
       camera_flip_y: Отразить по вертикали
       camera_stream_type: Тип потока
@@ -265,6 +281,7 @@ app:
       default_toolhead_xy_speed: Скорость инструмента для осей XY по умолчанию
       default_toolhead_z_speed: Скорость инструмента для оси Z по умолчанию
       enable: Включить
+      enable_notifications: Включить оповещения
       fps_target: Целевой FPS
       gcode_coords: Испрользовать координаты GCode
       invert_x_control: Инвертировать управление по оси X
@@ -327,15 +344,21 @@ app:
       finish: Закончено
       update: Обновление
     label:
+      commit_history: История коммитов
+      commits_on: Коммиты на 
+      committed: Закоммичено
       dirty: DIRTY
       invalid: Ошибка
+      package_list: Список пакетов
       up_to_date: Актуальная версия
     status:
       finished: Обновление завершено
       updating: Обновление...
     title: Обновления ПО
     tooltip:
-      dirty: >-
-        Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке
+      commit_history: История коммитов
+      dirty: Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке
         или невалидный оригинальный репозиторий
       invalid: Оповещает о локальных изменениях в репозитории
+      packages: Пакеты
+      release_notes: Примечания к релизу
