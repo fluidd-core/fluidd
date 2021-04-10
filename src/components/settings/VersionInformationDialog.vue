@@ -171,7 +171,7 @@ export default class VersionInformationDialog extends Vue {
     }
   }
   .commit-table {
-    border: solid 1px #ccc;
+    border-bottom: thin solid rgba(map-get($shades, 'white'), 0.12);
     border-radius: 6px;
   }
 

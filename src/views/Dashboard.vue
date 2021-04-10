@@ -1,7 +1,7 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="6" class="pt-0">
+      <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
         <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
         <draggable
           v-if="container1"
@@ -22,7 +22,7 @@
           </transition-group>
         </draggable>
       </v-col>
-      <v-col cols="12" md="6" class="pt-0">
+      <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
         <draggable
           v-if="container2"
           class="list-group"
@@ -157,11 +157,19 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   .list-group {
-    min-height: 20px;
+    height: 100%;
 
     span {
       display: flex;
       flex-direction: column;
+      height: 100%;
+    }
+  }
+
+  .drag {
+    .list-group {
+      padding: 6px;
+      border: thin dashed rgba(map-get($shades, 'white'), 0.12);
     }
   }
 
