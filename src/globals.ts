@@ -130,7 +130,8 @@ export const Globals = Object.freeze({
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
   DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker',
-  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html'
+  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html',
+  DOCS_MOONRAKER_CONFIG_REF: 'https://moonraker.readthedocs.io/en/latest/configuration/'
 })
 
 export const Icons = Object.freeze({
