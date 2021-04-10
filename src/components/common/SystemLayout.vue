@@ -27,7 +27,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { defaultState } from '@/store/config/index'
+import { defaultState } from '@/store/layout/index'
 
 @Component({})
 export default class SystemLayout extends Mixins(StateMixin) {
@@ -45,9 +45,14 @@ export default class SystemLayout extends Mixins(StateMixin) {
   }
 
   resetLayout () {
-    const layout = defaultState().cardLayout
-    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard1', cards: layout.dashboard1 })
-    this.$store.dispatch('config/saveCardConfig', { group: 'dashboard2', cards: layout.dashboard2 })
+    const layout = defaultState()
+    this.$store.dispatch('layout/onLayoutChange', {
+      name: 'dashboard',
+      value: {
+        container1: layout.layouts.dashboard.container1,
+        container2: layout.layouts.dashboard.container2
+      }
+    })
   }
 }
 </script>

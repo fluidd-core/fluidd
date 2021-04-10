@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, CardConfig } from './types'
+import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
@@ -109,17 +109,6 @@ export const mutations: MutationTree<ConfigState> = {
    */
   setSaveByPath (state, payload: SaveByPath) {
     set(state, payload.path, payload.value)
-  },
-
-  setCardState (state, payload) {
-    const config = { ...state.cardState, ...payload }
-    Vue.set(state, 'cardState', config)
-    localStorage.setItem(Globals.LOCAL_CARDSTATE_STORAGE_KEY, JSON.stringify(config))
-  },
-
-  setCardConfig (state, payload: { group: string; cards: CardConfig[] }) {
-    state.cardLayout[payload.group] = payload.cards
-    localStorage.setItem(Globals.LOCAL_CARDLAYOUT_STORAGE_KEY, JSON.stringify(state.cardLayout))
   },
 
   /**

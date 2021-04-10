@@ -28,21 +28,6 @@ export const defaultState = (): ConfigState => {
         { name: '한국어', code: 'ko' }
       ]
     },
-    cardState: {},
-    cardLayout: {
-      dashboard1: [
-        { name: 'toolhead-card', enabled: true },
-        { name: 'outputs-card', enabled: true },
-        { name: 'macros-card', enabled: true },
-        { name: 'printer-limits-card', enabled: true },
-        { name: 'camera-card', enabled: true }
-      ],
-      dashboard2: [
-        { name: 'temperature-card', enabled: true },
-        { name: 'jobs-card', enabled: true },
-        { name: 'console-card', enabled: true }
-      ]
-    },
     instances: [],
     uiSettings: {
       general: {

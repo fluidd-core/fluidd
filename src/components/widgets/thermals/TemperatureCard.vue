@@ -4,9 +4,7 @@
     icon="$fire"
     :lazy="false"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    layout-path="dashboard.temperature-card">
 
     <template v-slot:title>
       <v-icon left>$fire</v-icon>

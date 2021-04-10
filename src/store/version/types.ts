@@ -30,6 +30,7 @@ export interface HashVersion {
   remote_hash: string;
   remote_version: string;
   version: string;
+  full_version_string: string;
 }
 
 export interface CommitItem {
