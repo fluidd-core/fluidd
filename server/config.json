@@ -1,15 +1,4 @@
 {
-  "endpoints": [
-    "http://fluiddpi",
-    "http://mainsailos",
-    "http://octopi",
-    "http://fluiddpi.local",
-    "http://mainsailos.local",
-    "http://octopi.local",
-    "http://fluiddpi.local:7125",
-    "http://mainsailos.local:7125",
-    "http://octopi.local:7125"
-  ],
   "blacklist": [
     "fluidd.xyz",
     "fluidd.net"

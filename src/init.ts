@@ -4,7 +4,6 @@ import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import { AxiosError } from 'axios'
-import { v4 as uuidv4 } from 'uuid'
 
 // Load API configuration
 /**
@@ -41,14 +40,9 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     }
   }
 
-  // If local storage not set, then ping some defaults if configured,
-  // including the browser url.
-  let endpoints: string[] = []
+  // If local storage not set, then ping the browser url.
+  const endpoints: string[] = []
   let blacklist: string[] = []
-
-  if (hostConfig && 'endpoints' in hostConfig && hostConfig.endpoints.length) {
-    endpoints = hostConfig.endpoints
-  }
 
   if (hostConfig && 'blacklist' in hostConfig && hostConfig.blacklist.length) {
     blacklist = hostConfig.blacklist
@@ -56,8 +50,8 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // Add the browsers url to our endpoints list, unless black listed.
   if (blacklist.findIndex(s => s.includes(document.location.hostname)) === -1) {
-    endpoints.push(`${document.location.protocol}//${document.location.hostname}:7125`)
     endpoints.push(`${document.location.protocol}//${document.location.hostname}`)
+    endpoints.push(`${document.location.protocol}//${document.location.hostname}:7125`)
   }
 
   // For each endpoint we have, ping each one to determine if any are active.
@@ -95,101 +89,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   // Just sets the api urls.
   await store.dispatch('config/onInitApiConfig', apiConfig)
   consola.debug('inited apis', store.state.config, apiConfig)
-
-  // TODO: REMOVE THIS FOR NEXT RELEASE.
-  // Load any file configuration we may have - save it to db, then delete known config files.
-  const files: string[] = [
-    '.fluidd.json',
-    '.fluidd_console_history.json'
-  ]
-  if (
-    apiConfig.apiUrl !== '' && apiConfig.socketUrl !== ''
-  ) {
-    for (const file of files) {
-      await Vue.$http.get(apiConfig.apiUrl + '/server/files/config/' + file + '?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
-        .then((d) => {
-          if (file === '.fluidd.json') {
-            const macros = (d.data.dashboard.hiddenMacros)
-              ? [...d.data.dashboard.hiddenMacros]
-              : undefined
-            const theme = (d.data.theme)
-              ? { ...d.data.theme }
-              : undefined
-            const camera = (d.data.camera)
-              ? d.data.camera
-              : undefined
-            delete d.data.dashboard.hiddenMacros
-            delete d.data.theme
-            delete d.data.dashboard.tempPresets
-            delete d.data.camera
-            // transfer base ui settings to db
-            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
-              key: 'uiSettings',
-              value: d.data
-            })
-
-            // if a theme was defined, transfer that to the new format
-            if (theme) {
-              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
-                key: 'uiSettings.theme',
-                value: {
-                  isDark: theme.darkMode,
-                  currentTheme: {
-                    primary: theme.colors.primary
-                  }
-                }
-              })
-            }
-
-            // if hidden macros were defined, transfer them to the new format.
-            if (macros && macros.length > 0) {
-              const convertedMacros: { name: string; visible: boolean }[] = macros.map(m => { return { name: m, visible: false } })
-              consola.debug('got macros, writing', convertedMacros)
-              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
-                key: 'macros.stored',
-                value: convertedMacros
-              })
-            }
-
-            // If the camera was setup, transfer it to the new format.
-            if (camera) {
-              Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
-                key: 'cameras',
-                value: {
-                  cameras: [
-                    {
-                      id: uuidv4(),
-                      enabled: camera.enabled,
-                      name: 'Default',
-                      type: 'mjpgadaptive',
-                      fpstarget: 10,
-                      url: camera.url,
-                      flipX: camera.flipX,
-                      flipY: camera.flipY
-                    }
-                  ]
-                }
-              })
-            }
-          }
-
-          if (file === '.fluidd_console_history.json') {
-            consola.log('got history data, writing', d.data)
-            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
-              key: 'console.commandHistory',
-              value: d.data
-            })
-          }
-
-          // Delete the file
-          Vue.$http.delete(apiConfig?.apiUrl + '/server/files/config/' + file)
-        })
-        .catch((e: AxiosError) => {
-          // If its not there, fine.
-          consola.debug('File not found, leaving.', e.response)
-        })
-    }
-  }
 
   // Load any configuration we may have in moonrakers db
   let apiConnected = true
