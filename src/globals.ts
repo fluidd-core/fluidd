@@ -115,7 +115,8 @@ export const Globals = Object.freeze({
       macros: { name: 'macros', dispatch: 'macros/initMacros' },
       console: { name: 'console', dispatch: 'console/initConsole' },
       charts: { name: 'charts', dispatch: 'charts/initCharts' },
-      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' }
+      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' },
+      layout: { name: 'layout', dispatch: 'layout/initLayout' }
     }
   },
   MOONRAKER_PLUGINS: {

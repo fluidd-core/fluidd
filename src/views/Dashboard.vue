@@ -3,35 +3,42 @@
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0">
         <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
-        <printer-status-card v-if="klippyReady"></printer-status-card>
         <draggable
+          v-if="container1"
           class="list-group"
-          v-model="col1"
+          v-model="container1"
           v-bind="dragOptions"
           @start.stop="drag = true"
-          @end.stop="drag = false"
+          @end.stop="handleStopDrag"
         >
           <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <component
-              v-for="c in col1"
-              :is="c.name"
-              :key="c.name"
-              :enabled="c.enabled"
-              @enabled="onEnabled($event, c, 'dashboard1')">
-            </component>
+            <template v-for="c in container1">
+              <component
+                v-if="(c.enabled && !filtered(c)) || inLayout"
+                :is="c.id"
+                :key="c.id">
+              </component>
+            </template>
           </transition-group>
         </draggable>
       </v-col>
       <v-col cols="12" md="6" class="pt-0">
         <draggable
+          v-if="container2"
           class="list-group"
-          v-model="col2"
+          v-model="container2"
           v-bind="dragOptions"
           @start.stop="drag = true"
-          @end.stop="drag = false"
+          @end.stop="handleStopDrag"
         >
           <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <component v-for="c in col2" :is="c.name" :key="c.name" :enabled="c.enabled" @enabled="onEnabled($event, c, 'dashboard2')"></component>
+            <template v-for="c in container2">
+              <component
+                v-if="(c.enabled && !filtered(c)) || inLayout"
+                :is="c.id"
+                :key="c.id">
+              </component>
+            </template>
           </transition-group>
         </draggable>
       </v-col>
@@ -40,10 +47,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { CardConfig } from '@/store/config/types'
-import { cloneDeep } from 'lodash-es'
 import draggable from 'vuedraggable'
 
 import PrinterStatusCard from '@/components/widgets/status/PrinterStatusCard.vue'
@@ -55,6 +60,7 @@ import MacrosCard from '@/components/widgets/macros/MacrosCard.vue'
 import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
+import { LayoutConfig } from '@/store/layout/types'
 
 @Component({
   components: {
@@ -72,33 +78,34 @@ import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue
 })
 export default class Dashboard extends Mixins(StateMixin) {
   drag = false
+  container1 = []
+  container2 = []
 
-  get camerasEnabled (): boolean {
-    return this.$store.getters['cameras/getVisibleCameras'].length > 0
+  mounted () {
+    this.container1 = this.layout.container1
+    this.container2 = this.layout.container2
+  }
+
+  get hasCameras (): boolean {
+    return this.$store.getters['cameras/getVisibleCameras'].length
   }
 
   get hasMacros () {
     return this.$store.getters['macros/hasVisibleMacros']
   }
 
-  get col1 (): CardConfig[] {
-    return this.filterComponents(this.$store.getters['config/getCards']('dashboard1'))
-  }
-
-  set col1 (cards: CardConfig[]) {
-    this.saveCards(cards, 'dashboard1')
-  }
-
-  get col2 (): CardConfig[] {
-    return this.filterComponents(this.$store.getters['config/getCards']('dashboard2'))
-  }
-
-  set col2 (cards: CardConfig[]) {
-    this.saveCards(cards, 'dashboard2')
-  }
-
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get layout () {
+    return this.$store.getters['layout/getLayout']('dashboard')
+  }
+
+  @Watch('layout')
+  onLayoutChange () {
+    this.container1 = this.layout.container1
+    this.container2 = this.layout.container2
   }
 
   get dragOptions () {
@@ -111,35 +118,26 @@ export default class Dashboard extends Mixins(StateMixin) {
     }
   }
 
-  saveCards (cards: CardConfig[], group: string) {
-    // Take care of special cases.
-    // cards.forEach((card) => {
-    //   if (card.name === 'camera-card') {
-    //     this.$store.dispatch('config/saveGeneric', { key: 'uiSettings.camera.enabled', value: card.enabled })
-    //   }
-    // })
-    this.$store.dispatch('config/saveCardConfig', { group, cards })
-  }
-
-  filterComponents (componentArray: CardConfig[]) {
-    return componentArray.filter((s) => {
-      // Take care of special cases.
-      if (this.inLayout) return true
-      if (s.name === 'camera-card' && !this.camerasEnabled) return false
-      if (s.name === 'macros-card' && !this.hasMacros) return false
-
-      // Otherwise return whatever the enabled state is.
-      return s.enabled
+  handleStopDrag () {
+    this.drag = false
+    this.$store.dispatch('layout/onLayoutChange', {
+      name: 'dashboard',
+      value: {
+        container1: this.container1,
+        container2: this.container2
+      }
     })
   }
 
-  onEnabled (enabled: boolean, c: CardConfig, group: string) {
-    const cards = cloneDeep(this.$store.getters['config/getCards'](group))
-    const card = cards.find((card: CardConfig) => c.name === card.name)
-    if (card) {
-      card.enabled = enabled
-      this.$store.dispatch('config/saveCardConfig', { group, cards })
-    }
+  filtered (item: LayoutConfig) {
+    // Take care of special cases.
+    if (this.inLayout) return false
+    if (item.id === 'camera-card' && !this.hasCameras) return true
+    if (item.id === 'macros-card' && !this.hasMacros) return true
+    if (item.id === 'printer-status-card' && !this.klippyReady) return true
+
+    // Otherwise return the opposite of whatever the enabled state is.
+    return !item.enabled
   }
 }
 </script>

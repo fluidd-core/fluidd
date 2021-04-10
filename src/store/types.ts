@@ -9,12 +9,16 @@ import { MacrosState } from './macros/types'
 import { DevicePowerState } from './devicePower/types'
 import { HistoryState } from './history/types'
 import { VersionState } from './version/types'
+import { LayoutState } from './layout/types'
+import { MeshState } from './mesh/types'
 
 export interface RootState {
   socket?: SocketState;
   server?: ServerState;
   printer?: PrinterState;
   config?: ConfigState;
+  layout?: LayoutState;
+  mesh?: MeshState;
   files?: FilesState;
   charts?: ChartState;
   console?: ConsoleState;

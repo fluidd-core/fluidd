@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
-import { CardConfig, ConfigState, TemperaturePreset, ThemeConfig } from './types'
+import { ConfigState, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
@@ -16,10 +16,6 @@ export const getters: GetterTree<ConfigState, RootState> = {
       return (a.active) ? -1 : (b.active) ? 1 : 0
     })
     return instances
-  },
-
-  getCards: (state) => (group: string): CardConfig[] => {
-    return state.cardLayout[group]
   },
 
   getHostConfig: (state) => {

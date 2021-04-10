@@ -6,7 +6,7 @@
 
     <v-card-title
       class="card-title card-heading py-1"
-      :class="{ 'draggable': isInLayout }"
+      :class="{ 'draggable': inLayout }"
     >
       <slot name="title">
         <v-icon left :color="iconColor">{{ icon }}</v-icon>
@@ -15,13 +15,13 @@
       <v-spacer />
 
       <!-- Menu Buttons (not condensed) -->
-      <div :class="menuClasses" v-if="!isInLayout && !hideMenu">
+      <div :class="menuClasses" v-if="!inLayout && !hideMenu">
         <slot name="menu"></slot>
       </div>
 
       <!-- Menu, (condensed to hamburger) -->
       <v-menu
-        v-if="hasMenuSlot && !isInLayout && !hideMenu"
+        v-if="hasMenuSlot && !inLayout && !hideMenu"
         transition="slide-x-transition"
         left
         offset-y
@@ -46,12 +46,10 @@
       <!-- Collapse Control -->
       <slot name="collapse-button">
         <app-btn-collapse
-          v-if="collapsable"
-          :value="isCollapsed"
-          @input="isCollapsed = $event"
-          :enabled="enabled"
-          :inLayout="isInLayout"
-          @layout-enabled="$emit('enabled', $event)"
+          v-if="_collapsable || inLayout"
+          :collapsed.sync="isCollapsed"
+          :enabled.sync="isEnabled"
+          :inLayout="inLayout"
         >
         </app-btn-collapse>
       </slot>
@@ -63,7 +61,7 @@
       <div
         @transitionend="transitionEvent"
         id="card-content"
-        v-if="!isCollapsed && !isInLayout"
+        v-if="!isCollapsed && !inLayout"
         :class="_contentClasses"
         :style="_contentStyles">
         <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
@@ -82,7 +80,7 @@
       <div
         @transitionend="transitionEvent"
         id="card-content"
-        v-show="!isCollapsed && !isInLayout"
+        v-show="!isCollapsed && !inLayout"
         :class="_contentClasses"
         :style="_contentStyles">
         <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
@@ -100,6 +98,8 @@
 </template>
 
 <script lang="ts">
+import { LayoutConfig } from '@/store/layout/types'
+import { kebabCase } from 'lodash'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
@@ -117,12 +117,15 @@ export default class CollapsableCard extends Vue {
   subTitle!: string
 
   /**
-   * Overrides the title being used as the card key.
-   * This is primarily used as the unique key name to
-   * save its state with.
+   * Required to bind to a layout.
+   * Used to ref specific layout items.
+   * Should include a path to the layout, e.g.,
+   * dashboard.toolhead-card
+   * Container is irrelevant as configs can not have
+   * duplicate id's across containers for any given layout.
    */
   @Prop({ type: String })
-  cardKey!: string
+  layoutPath!: string
 
   /**
    * If lazy, we use a v-show for card display.
@@ -154,25 +157,11 @@ export default class CollapsableCard extends Vue {
   loading!: boolean
 
   /**
-   * Enables dragging of the card.
+   * Enables dragging of the card. Also causes the card
+   * to react to layoutMode state.
    */
   @Prop({ type: Boolean, default: false })
   draggable!: boolean
-
-  /**
-   * If in layout, only the title shows - with no menu.
-   * If draggable is also true, the drag icon is shown.
-   */
-  @Prop({ type: Boolean, default: false })
-  inLayout!: boolean
-
-  /**
-   * Whether this card is in an enabled state or not.
-   * E.g., in layout mode - you may set it to disabled
-   * in order to prevent its display.
-   */
-  @Prop({ type: Boolean, default: true })
-  enabled!: boolean
 
   /**
    * Whether this card is collapsable or not.
@@ -250,6 +239,31 @@ export default class CollapsableCard extends Vue {
       : ''
   }
 
+  get _collapsable () {
+    if (!this.collapsable) return false
+    return (this.layout) ? this.collapsable : false
+  }
+
+  get _layoutPath () {
+    if (this.layoutPath) {
+      if (this.layoutPath.includes('.')) {
+        const split = this.layoutPath.split('.')
+        return {
+          name: split[0],
+          id: kebabCase(split[1])
+        }
+      } else {
+        throw new Error('invalid layout path')
+      }
+    }
+  }
+
+  get layout (): LayoutConfig | undefined {
+    if (this._layoutPath) {
+      return this.$store.getters['layout/getConfig'](this._layoutPath.name, this._layoutPath.id)
+    }
+  }
+
   /**
    * The menu classes associated with the btns not inside a dropdown.
    */
@@ -264,25 +278,25 @@ export default class CollapsableCard extends Vue {
     return `d-flex d-${this.menuBreakpoint}-none`
   }
 
-  get id (): string {
-    if (this.cardKey) return this.cardKey
-    return this.title.replace(' ', '')
-  }
-
   get isLoading (): boolean | string {
     return (this.loading) ? 'primary' : false
   }
 
+  /**
+   * Whether this card is in a collapsed state or not.
+   * E.g., in layout mode - you may set it to collapsed.
+   * If the layout isn't defined, then this should always be disabled.
+   */
   get isCollapsed (): boolean {
-    const collapsed = (this.$store.state.config.cardState[this.id] === undefined)
-      ? false
-      : this.$store.state.config.cardState[this.id]
-
-    return collapsed
+    return (this.layout) ? this.layout.collapsed : false
   }
 
-  set isCollapsed (val: boolean) {
-    this.$store.dispatch('config/saveCardState', { [this.id]: val })
+  set isCollapsed (collapsed: boolean) {
+    const value = this.layout
+    if (value && this._layoutPath) {
+      value.collapsed = collapsed
+      this.$store.dispatch('layout/onUpdateConfig', { name: this._layoutPath.name, value })
+    }
   }
 
   @Watch('isCollapsed')
@@ -290,8 +304,26 @@ export default class CollapsableCard extends Vue {
     this.$emit('collapsed', val)
   }
 
-  get isInLayout (): boolean {
-    return (this.inLayout && this.draggable)
+  /**
+   * Whether this card is in an enabled state or not.
+   * E.g., in layout mode - you may set it to disabled
+   * in order to prevent its display.
+   * If the layout isn't defined, then this should always be enabled.
+   */
+  get isEnabled (): boolean {
+    return (this.layout) ? this.layout.enabled : true
+  }
+
+  set isEnabled (enabled: boolean) {
+    const value = this.layout
+    if (value && this._layoutPath) {
+      value.enabled = enabled
+      this.$store.dispatch('layout/onUpdateConfig', { name: this._layoutPath.name, value })
+    }
+  }
+
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode && this.draggable)
   }
 
   /**
