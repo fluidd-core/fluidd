@@ -4,9 +4,6 @@
 
 - fix color swap when changing printers
 - add cpu time
-- add full version string
-- remove old config loads
-- unshift pings and make sure we start with the local host first.
 - clicking legend items when no chart throws error, fix.
 - sync instances across moonraker db
 - field selector for filesystem / history
