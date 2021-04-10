@@ -120,5 +120,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
   // apiConfig could have empty strings, meaning we have no valid connection.
   await store.dispatch('init', { apiConfig, hostConfig })
+
   return { apiConfig, hostConfig, apiConnected }
 }

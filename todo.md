@@ -2,7 +2,6 @@
 
 ## Next Up
 
-- fix color swap when changing printers
 - add cpu time
 - clicking legend items when no chart throws error, fix.
 - sync instances across moonraker db
