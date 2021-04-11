@@ -49,7 +49,7 @@ export default class PrinterHistoryCard extends Vue {
   }
 
   handleLoadAll () {
-    SocketActions.serverHistoryList()
+    SocketActions.serverHistoryList({ limit: 0 })
   }
 }
 </script>
