@@ -24,7 +24,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
   /**
    * Returns a boolean indicating if we have any visible macros.
    */
-  hasVisibleMacros: (state, getters) => {
-    return getters.getMacros.filter((macro: Macro) => macro.visible).length
+  hasVisibleMacros: (state, getters): boolean => {
+    return (getters.getMacros.filter((macro: Macro) => macro.visible).length)
   }
 }

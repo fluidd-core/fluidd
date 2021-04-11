@@ -10,6 +10,7 @@ import { server } from './server'
 import { printer } from './printer'
 import { config } from './config'
 import { files } from './files'
+import { layout } from './layout'
 import { charts } from './charts'
 import { console } from './console'
 import { macros } from './macros'
@@ -31,6 +32,7 @@ export default new Vuex.Store<RootState>({
     printer,
     config,
     files,
+    layout,
     charts,
     console,
     macros,
@@ -48,7 +50,7 @@ export default new Vuex.Store<RootState>({
      */
     async reset ({ dispatch }, payload: string[]) {
       // Reset our color set.
-      Vue.$colorset.resetAll()
+      Vue.$colorset.forceResetAll()
 
       // Dispatch a reset for each registered module.
       const p: Promise<any>[] = []

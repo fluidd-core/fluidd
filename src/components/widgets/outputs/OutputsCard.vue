@@ -3,11 +3,8 @@
     :title="$t('app.general.title.fans_outputs')"
     icon="$motion"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    menu-breakpoint="lg"
-    @enabled="$emit('enabled', $event)">
-
+    layout-path="dashboard.outputs-card"
+    menu-breakpoint="lg">
     <outputs></outputs>
   </collapsable-card>
 </template>

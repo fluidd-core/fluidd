@@ -3,7 +3,9 @@
     :hide-menu="hidePrinterMenu"
     :collapsable="printerPrinting"
     :title="$t('app.general.title.status')"
-    icon="$printer3d">
+    icon="$printer3d"
+    :draggable="true"
+    layout-path="dashboard.printer-status-card">
 
     <template v-slot:title>
       <v-icon left>$printer3d</v-icon>

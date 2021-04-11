@@ -2,7 +2,6 @@
   <collapsable-card
     :title="$t('app.general.title.endstops')"
     :subTitle="$t('app.endstop.msg.subtitle')"
-    :collapsable="false"
     icon="$expandHorizontal">
     <template v-slot:collapse-button>
       <app-btn

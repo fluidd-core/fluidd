@@ -3,10 +3,8 @@
     :title="$t('app.general.title.tool')"
     icon="$printer3dNozzle"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    menu-breakpoint="lg"
-    @enabled="$emit('enabled', $event)">
+    layout-path="dashboard.toolhead-card"
+    menu-breakpoint="lg">
 
     <template v-slot:title>
       <v-icon left>$printer3dNozzle</v-icon>
@@ -19,7 +17,7 @@
             v-on="on"
             v-show="!extrudeRetractReady"
             class="ml-3"
-            color="cyan">
+            color="info">
             $snowflakeAlert
           </v-icon>
         </template>
@@ -83,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
@@ -94,9 +92,6 @@ import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: true })
-  enabled!: boolean
-
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
   }
@@ -115,10 +110,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsBedScrewsCalculate (): boolean {
     return 'screws_tilt_adjust' in this.printerSettings
-  }
-
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
   }
 }
 </script>

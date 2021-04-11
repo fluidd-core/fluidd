@@ -23,8 +23,8 @@ app:
         printer
   chart:
     label:
-      current: Current
-      item: Item
+      current: Actual
+      item: Name
       power: Power
       target: Target
     tooltip:

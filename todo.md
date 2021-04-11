@@ -2,12 +2,19 @@
 
 ## Next Up
 
+- field selector for filesystem / history
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
-- cleanup card layout stuff
-  - hide enabled flag for collapsable card for camera panel on dashboard
-- change card states to db and be driven by getters..
-- field selector for filesystem / history
+- add cpu time / resource monitor
+- allow re-ordering temp presets and cameras
+- better way to handle overall warnings
+  - warn on over temp for pi cpu
+  - warn on undervoltage for pi cpu? (is this reported?)
+  - warn on gcode root not active
+  - warn on mem low
+  - warn on cputime too high
+  - warn on systeim too high
+  - allow a way to configure if a warning is persistent or not
 
 ### Features
 
