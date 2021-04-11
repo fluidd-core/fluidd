@@ -17,7 +17,7 @@
             v-on="on"
             v-show="!extrudeRetractReady"
             class="ml-3"
-            color="cyan">
+            color="info">
             $snowflakeAlert
           </v-icon>
         </template>
