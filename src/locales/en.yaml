@@ -197,18 +197,25 @@ app:
     table:
       header:
         actions: Actions
+        end_time: Ended
         estimated_time: Estimated time
-        filament_used: Filament
+        filament: Filament
+        filament_used: Used filament
+        first_layer_bed_temp: First layer bed temp
+        first_layer_extr_temp: First layer extruder temp
+        first_layer_height: First layer height
         height: Height
         last_printed: Last printed
         layer_height: Layer height
         modified: Modified
         name: Name
-        print_duration: Print Duration
+        print_duration: Print duration
         size: Size
         slicer: Slicer
+        slicer_version: Slicer version
         start_time: Started
         status: Status
+        total_duration: Total duration
     title:
       add_printer: Add Printer
       bedmesh: Bed Mesh

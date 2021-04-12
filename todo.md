@@ -2,13 +2,14 @@
 
 ## Next Up
 
-- field selector for filesystem / history
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - add cpu time / resource monitor
 - allow re-ordering temp presets and cameras
+- add layer height :/
+- flow calculation?
 - better way to handle overall warnings
-  - warn on over temp for pi cpu
+  - warn on over temp for pi cpu / throttled (see moonraker docs for CPU Throttled)
   - warn on undervoltage for pi cpu? (is this reported?)
   - warn on gcode root not active
   - warn on mem low

@@ -20,7 +20,7 @@ export interface DiskUsage {
 }
 
 export interface CurrentPaths {
-  [index: string]: string;
+  [root: string]: string;
 }
 
 export interface Files {

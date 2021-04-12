@@ -57,6 +57,35 @@ export const defaultState = (): ConfigState => {
       },
       dashboard: {
         tempPresets: []
+      },
+      tableHeaders: {
+        gcodes_dashboard: [
+          { value: 'first_layer_extr_temp', visible: false },
+          { value: 'first_layer_bed_temp', visible: false },
+          { value: 'history.total_duration', visible: false },
+          { value: 'history.print_duration', visible: false },
+          { value: 'estimated_time', visible: false },
+          { value: 'slicer_version', visible: false },
+          { value: 'slicer', visible: false },
+          { value: 'history.filament_used', visible: false },
+          { value: 'filament_total', visible: false },
+          { value: 'object_height', visible: false },
+          { value: 'first_layer_height', visible: false },
+          { value: 'layer_height', visible: false }
+        ],
+        gcodes_jobs: [
+          { value: 'first_layer_height', visible: false },
+          { value: 'history.filament_used', visible: false },
+          { value: 'slicer_version', visible: false },
+          { value: 'history.print_duration', visible: false },
+          { value: 'first_layer_extr_temp', visible: false },
+          { value: 'first_layer_bed_temp', visible: false }
+        ],
+        history: [
+          { value: 'end_time', visible: false },
+          { value: 'print_duration', visible: false },
+          { value: 'filament_used', visible: false }
+        ]
       }
     }
   }

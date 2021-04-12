@@ -7,6 +7,7 @@
 
     <file-system
       roots="gcodes"
+      name="dashboard"
       dense
       :height="400"
     ></file-system>

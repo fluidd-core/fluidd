@@ -1,22 +1,32 @@
 <template>
   <div class="file-system">
-    <!-- // search here -->
-    <v-row justify="end">
-      <v-col cols="12" sm="4" md="3" class="px-6 pt-5">
+    <v-toolbar
+      dense
+    >
+      <v-spacer></v-spacer>
+
+      <div style="max-width: 160px;" class="mr-1">
         <v-text-field
           v-model="search"
+          @keyup="$emit('update:search', search);"
           outlined
           dense
           single-line
           hide-details
           append-icon="$magnify">
         </v-text-field>
-      </v-col>
-    </v-row>
+      </div>
+
+      <app-column-picker
+        v-if="headers"
+        key-name="history"
+        :headers="headers"
+      ></app-column-picker>
+    </v-toolbar>
 
     <v-data-table
       :items="history"
-      :headers="headers"
+      :headers="visibleHeaders"
       :items-per-page="5"
       :single-expand="true"
       :search="search"
@@ -75,10 +85,26 @@
       </template>
 
       <template
+        v-slot:[`item.end_time`]="{ item }"
+      >
+        <span class="grey--text text-no-wrap">
+          {{ $filters.formatDateTime(item.end_time, 'lll') }}
+        </span>
+      </template>
+
+      <template
         v-slot:[`item.print_duration`]="{ item }"
       >
         <span class="grey--text text-no-wrap">
           {{ $filters.formatCounterTime(item.print_duration) }}
+        </span>
+      </template>
+
+      <template
+        v-slot:[`item.total_duration`]="{ item }"
+      >
+        <span class="grey--text text-no-wrap">
+          {{ $filters.formatCounterTime(item.total_duration) }}
         </span>
       </template>
 
@@ -133,6 +159,7 @@ import FilesMixin from '@/mixins/files'
 import { getFilePaths } from '@/store/helpers'
 import { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/socketActions'
+import { AppTableHeader } from '@/types'
 
 @Component({
   components: {
@@ -143,16 +170,24 @@ export default class JobHistory extends Mixins(FilesMixin) {
   expanded: HistoryItem[] = []
   search = ''
 
-  get headers () {
-    return [
+  get headers (): AppTableHeader[] {
+    const headers = [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$t('app.general.table.header.name'), value: 'filename' },
-      { text: this.$t('app.general.table.header.status'), value: 'status' },
-      { text: this.$t('app.general.table.header.start_time'), value: 'start_time' },
-      { text: this.$t('app.general.table.header.print_duration'), value: 'print_duration' },
-      { text: this.$t('app.general.table.header.filament_used'), value: 'filament_used' },
-      { text: this.$t('app.general.table.header.actions'), value: 'actions', sortable: false }
+      { text: this.$tc('app.general.table.header.name'), value: 'filename' },
+      { text: this.$tc('app.general.table.header.status'), value: 'status', configurable: true },
+      { text: this.$tc('app.general.table.header.start_time'), value: 'start_time', configurable: true },
+      { text: this.$tc('app.general.table.header.end_time'), value: 'end_time', configurable: true },
+      { text: this.$tc('app.general.table.header.print_duration'), value: 'print_duration', configurable: true },
+      { text: this.$tc('app.general.table.header.total_duration'), value: 'total_duration', configurable: true },
+      { text: this.$tc('app.general.table.header.filament_used'), value: 'filament_used', configurable: true },
+      { text: this.$tc('app.general.table.header.actions'), value: 'actions', sortable: false, align: 'end' }
     ]
+    const key = 'history'
+    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+  }
+
+  get visibleHeaders (): AppTableHeader[] {
+    return this.headers.filter(header => header.visible || header.visible === undefined)
   }
 
   get history () {

@@ -82,6 +82,12 @@
     >
     </file-system-menu>
 
+    <app-column-picker
+      v-if="headers && rootProperties.canConfigure"
+      :key-name="`${root}_${name}`"
+      :headers="headers"
+    ></app-column-picker>
+
     <template
       v-if="roots.length > 1"
       v-slot:extension
@@ -103,6 +109,7 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
+import { AppTableHeader } from '@/types'
 
 @Component({
   components: {
@@ -115,9 +122,16 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   @Prop({ type: String, required: true })
   root!: string
 
+  @Prop({ type: String, required: false })
+  name!: string;
+
   // Can be a list of roots, or a single root.
   @Prop({ type: Array, required: false })
   roots!: string[];
+
+  // Currently defined list of headers.
+  @Prop({ type: Array, required: false })
+  headers!: AppTableHeader[];
 
   // The current path
   @Prop({ type: String, required: false })
@@ -144,6 +158,11 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   get supportsHistoryPlugin () {
     return this.$store.getters['server/pluginSupport']('history')
+  }
+
+  // Properties of the current root.
+  get rootProperties () {
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   handleUpload (files: FileList, print: boolean) {

@@ -12,7 +12,7 @@
         v-on="on"
       >
         <v-icon>
-          $menu
+          $plus
         </v-icon>
       </v-btn>
     </template>
