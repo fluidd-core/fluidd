@@ -1,6 +1,15 @@
 .v-card .v-card__title.collapsable-card-title {
-  // background-color: #1E1E20 !important;
-  min-height: 42px;
+  font-size: 1rem;
+  min-height: 36px;
   padding-top: 0;
   padding-bottom: 0;
+  @media #{map-get($display-breakpoints, 'sm-and-up')} {
+    font-size: 1.125rem;
+    min-height: 42px;
+  }
+}
+
+.v-card.collapsable-card.collapsed .v-card__title.collapsable-card-title {
+  // background-color: #1E1E20 !important;
+  opacity: 0.65;
 }

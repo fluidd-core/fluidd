@@ -2,8 +2,8 @@
   <collapsable-card
     :title="$t('app.general.title.console')"
     icon="$console"
-    cardClasses="mb-2 mb-sm-4 d-flex flex-column"
-    contentClasses="flex-grow-1 flow-shrink-0"
+    card-classes="d-flex flex-column"
+    content-classes="flex-grow-1 flow-shrink-0"
     menuBreakpoint="none"
     menuIcon="$cog"
     :draggable="true"

@@ -205,7 +205,7 @@ export default class CollapsableCard extends Vue {
   cardClasses!: string
 
   /**
-   * Define any option classes for the card content itself.
+   * Define any optional classes for the card content itself.
    */
   @Prop({ type: String })
   contentClasses!: string
@@ -213,13 +213,22 @@ export default class CollapsableCard extends Vue {
   /**
    * Base classes.
    */
-  baseCardClasses = 'mb-2 mb-sm-4'
+  baseCardClasses = { 'mb-2': true, 'mb-sm-4': true, 'collapsable-card': true }
   baseContentClasses = ''
 
   get _cardClasses () {
-    return (this.cardClasses)
-      ? this.cardClasses
-      : this.baseCardClasses
+    // If user defined, format to an object based on the input.
+    const classes: any = {}
+    if (this.cardClasses) {
+      this.cardClasses.split(' ').forEach(s => {
+        classes[s] = true
+      })
+    }
+    return {
+      ...classes,
+      ...this.baseCardClasses,
+      collapsed: this.isCollapsed
+    }
   }
 
   get _contentClasses () {

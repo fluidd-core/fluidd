@@ -204,7 +204,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     .temp-actual {
       color: rgba(map-deep-get($material-theme, 'text', 'theme'), 0.55);
       font-weight: 300;
-      font-size: 1.25rem;
+      font-size: 1.125rem;
     }
 
     > thead > tr > th {
