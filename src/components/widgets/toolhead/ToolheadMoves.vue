@@ -4,14 +4,14 @@
       <v-col cols="auto" class="ml-12 mr-12">
         <app-btn-toolhead-move
           @click="sendMoveGcode('Y', toolheadMoveLength)"
-          :disabled="hasWaits || !xyHomed || !klippyReady"
+          :disabled="!xyHomed || !klippyReady"
           icon="$up">
         </app-btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-2">
         <app-btn-toolhead-move
           @click="sendMoveGcode('Z', toolheadMoveLength)"
-          :disabled="hasWaits || !zHomed || !klippyReady"
+          :disabled="!zHomed || !klippyReady"
           icon="$up">
         </app-btn-toolhead-move>
       </v-col>
@@ -19,7 +19,7 @@
         <app-btn-toolhead-move
           :color="(!allHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeAll)"
-          :disabled="!klippyReady || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting"
           @click="sendGcode('G28', waits.onHomeAll)"
           icon="$home"
           small-icon>
@@ -31,7 +31,7 @@
       <v-col cols="auto">
         <app-btn-toolhead-move
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
-          :disabled="hasWaits || !xyHomed || !klippyReady"
+          :disabled="!xyHomed || !klippyReady"
           icon="$left">
         </app-btn-toolhead-move>
       </v-col>
@@ -39,7 +39,7 @@
         <app-btn-toolhead-move
           :color="(!xyHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeXY)"
-          :disabled="!klippyReady || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting"
           @click="sendGcode('G28 X Y', waits.onHomeXY)"
           :tooltip="$t('app.tool.tooltip.home_xy')"
           icon="$home">
@@ -48,7 +48,7 @@
       <v-col cols="auto" class="ml-2">
         <app-btn-toolhead-move
           @click="sendMoveGcode('X', toolheadMoveLength)"
-          :disabled="hasWaits || !xyHomed || !klippyReady"
+          :disabled="!xyHomed || !klippyReady"
           icon="$right">
         </app-btn-toolhead-move>
       </v-col>
@@ -56,7 +56,7 @@
         <app-btn-toolhead-move
           :color="(!zHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeZ)"
-          :disabled="!klippyReady || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting"
           @click="sendGcode('G28 Z', waits.onHomeZ)"
           :tooltip="$t('app.tool.tooltip.home_z')"
           icon="$home">
@@ -66,7 +66,7 @@
         <app-btn-toolhead-move
           :color="(!xHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeX)"
-          :disabled="!klippyReady || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting"
           @click="sendGcode('G28 X', waits.onHomeX)"
           icon="$home"
           small-icon>
@@ -78,14 +78,14 @@
       <v-col cols="auto" class="ml-12 mr-7">
         <app-btn-toolhead-move
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
-          :disabled="hasWaits || !xyHomed || !klippyReady"
+          :disabled="!xyHomed || !klippyReady"
           icon="$down">
         </app-btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-7">
         <app-btn-toolhead-move
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
-          :disabled="hasWaits || !zHomed || !klippyReady"
+          :disabled="!zHomed || !klippyReady"
           icon="$down">
         </app-btn-toolhead-move>
       </v-col>
@@ -93,7 +93,7 @@
         <app-btn-toolhead-move
           :color="(!yHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeY)"
-          :disabled="!klippyReady || printerPrinting || hasWaits"
+          :disabled="!klippyReady || printerPrinting"
           @click="sendGcode('G28 Y', waits.onHomeY)"
           icon="$home"
           small-icon>

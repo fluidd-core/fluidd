@@ -2,7 +2,6 @@
 
 ## Next Up
 
-- cancel uploads
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - add cpu time / resource monitor
@@ -17,6 +16,7 @@
   - warn on cputime too high
   - warn on systeim too high
   - allow a way to configure if a warning is persistent or not
+- cancel uploads
 
 ### Features
 

@@ -29,7 +29,7 @@
       <app-btn
         @click="sendGcode('M84')"
         :elevation="2"
-        :disabled="hasWaits || !klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting"
         small
         class="ma-1">
           MOTORS OFF
@@ -39,7 +39,7 @@
         @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         :elevation="2"
         :loading="hasWait(waits.onBedScrewsAdjust)"
-        :disabled="hasWaits || !klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting"
         small
         class="ma-1">
           Bed_Screws_Adjust
@@ -49,7 +49,7 @@
         @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         :elevation="2"
         :loading="hasWait(waits.onBedScrewsCalculate)"
-        :disabled="!allHomed || hasWaits || !klippyReady || printerPrinting"
+        :disabled="!allHomed || !klippyReady || printerPrinting"
         small
         class="ma-1">
           Screws_Tilt_Calculate
@@ -59,7 +59,7 @@
         @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         :elevation="2"
         :loading="hasWait(waits.onZTilt)"
-        :disabled="hasWaits || !klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting"
         small
         class="ma-1">
           Z_Tilt_Adjust
@@ -69,7 +69,7 @@
         @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         :elevation="2"
         :loading="hasWait(waits.onQGL)"
-        :disabled="hasWaits || !klippyReady || printerPrinting"
+        :disabled="!klippyReady || printerPrinting"
         small
         class="ma-1">
           QGL

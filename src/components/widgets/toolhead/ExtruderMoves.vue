@@ -18,7 +18,7 @@
       <v-col cols="6">
         <app-btn
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
+          :disabled="!extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
           class="mr-2">
@@ -44,7 +44,7 @@
       <v-col cols="6">
         <app-btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
+          :disabled="!extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
           class="mr-2">
