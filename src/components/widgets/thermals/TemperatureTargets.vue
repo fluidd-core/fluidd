@@ -136,7 +136,7 @@
         </tr>
       </tbody>
     </v-simple-table>
-    <!-- <v-divider /> -->
+    <v-divider v-if="chartVisible" />
   </div>
 </template>
 
@@ -179,6 +179,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   get chartSelectedLegends () {
     return this.$store.getters['charts/getSelectedLegends']
+  }
+
+  get chartVisible () {
+    return this.$store.state.config.uiSettings.general.chartVisible
   }
 
   setHeaterTargetTemp (heater: string, target: number) {
