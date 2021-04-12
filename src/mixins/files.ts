@@ -103,8 +103,9 @@ export default class FilesMixin extends Vue {
    * @param path The path we're uploading to.
    * @param root The root we're downloading from.
    * @param andPrint If we should attempt to print this file or not.
+   * @param options Axios request options
    */
-  async uploadFile (file: File, path: string, root: string, andPrint: boolean) {
+  async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
     const formData = new FormData()
     // let filename = file.name.replace(' ', '_')
     let filepath = `${path}/${file.name}`
@@ -131,6 +132,7 @@ export default class FilesMixin extends Vue {
       .post(
         this.apiUrl + '/server/files/upload',
         formData, {
+          ...options,
           headers: {
             'Content-Type': 'multipart/form-data'
           },
@@ -159,7 +161,7 @@ export default class FilesMixin extends Vue {
   }
 
   // Upload some files.
-  async uploadFiles (files: FileList, path: string, root: string, andPrint: boolean) {
+  async uploadFiles (files: FileList | File[], path: string, root: string, andPrint: boolean) {
     // Add a file upload for each intended file.
     for (const file of files) {
       let filepath = `${path}/${file.name}`

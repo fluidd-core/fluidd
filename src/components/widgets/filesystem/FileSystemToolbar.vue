@@ -165,7 +165,7 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.$store.getters['files/getRootProperties'](this.root)
   }
 
-  handleUpload (files: FileList, print: boolean) {
+  handleUpload (files: FileList | File[], print: boolean) {
     this.$emit('upload', files, print)
   }
 }

@@ -572,7 +572,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       })
   }
 
-  async handleUpload (files: FileList, print: boolean) {
+  async handleUpload (files: FileList | File[], print: boolean) {
     this.$store.dispatch('wait/addWait', Waits.onUpload)
     this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
     this.$store.dispatch('wait/removeWait', Waits.onUpload)

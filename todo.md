@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- cancel uploads
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
 - add cpu time / resource monitor
