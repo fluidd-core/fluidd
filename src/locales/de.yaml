@@ -119,7 +119,7 @@ app:
       retract: Retracten
       save: Speichern
       save_as: Speichern als
-      save_restart: Sepichern & Neustarten
+      save_restart: Speichern & Neustarten
       shutdown: Herunterfahren
       socket_refresh: Aktualisieren erzwingen
       upload: Hochladen
