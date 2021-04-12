@@ -12,10 +12,12 @@
     <file-system-toolbar
       :roots="availableRoots"
       :root="currentRoot"
+      :name="name"
       :search.sync="search"
       :path="visiblePath"
       :disabled="disabled"
       :loading="filesLoading"
+      :headers="headers"
       @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"
@@ -25,6 +27,8 @@
     ></file-system-toolbar>
 
     <file-system-browser
+      v-if="headers"
+      :headers="visibleHeaders"
       :root="currentRoot"
       :dense="dense"
       :loading="filesLoading"
@@ -105,7 +109,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/socketActions'
-import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload } from '@/store/files/types'
+import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilter } from '@/store/files/types'
 import { Waits } from '@/globals'
 import consola from 'consola'
 import StateMixin from '@/mixins/state'
@@ -120,8 +124,12 @@ import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import { AxiosResponse, CancelTokenSource } from 'axios'
+import { AppTableHeader } from '@/types'
 
 /**
+ * Represents the filesystem, bound to moonrakers supplied roots.
+ * Can be configured via props to look at a specific root, or many.
+ *
  * NOTE: Generally, moonraker expects the paths to include the root.
  */
 @Component({
@@ -141,6 +149,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: [String, Array], required: true })
   roots!: string | string[];
 
+  @Prop({ type: String, required: false })
+  name!: string;
+
   // If dense, hide the meta and reduce the overall size.
   @Prop({ type: Boolean, default: false })
   dense!: boolean
@@ -154,14 +165,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   maxHeight!: number | string;
 
   // Maintains the path and root.
-  // currentPath = ''
   currentRoot = ''
 
   // Maintains search state.
   search = ''
 
   // Maintains filter state.
-  filters = []
+  filters: FileFilter[] = []
 
   // Maintains content menu state.
   contextMenuState: any = {
@@ -207,10 +217,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.roots
   }
 
+  // Properties of the current root.
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.currentRoot)
   }
 
+  // If this root is available or not.
   get disabled () {
     return !this.$store.getters['files/isRootAvailable'](this.currentRoot)
   }
@@ -224,6 +236,65 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
+  // The available headers, based on the current root and system configuration.
+  get headers (): AppTableHeader[] {
+    // Base headers. All roots have these.
+    let headers: any = [
+      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
+      { text: this.$t('app.general.table.header.name'), value: 'name' }
+    ]
+
+    // If this is a gcode root, then metadata is available, including potentially history data.
+    if (this.currentRoot === 'gcodes') {
+      headers = [
+        ...headers,
+        { text: this.$t('app.general.table.header.height'), value: 'object_height', configurable: true },
+        { text: this.$t('app.general.table.header.first_layer_height'), value: 'first_layer_height', configurable: true },
+        { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height', configurable: true },
+        { text: this.$t('app.general.table.header.filament'), value: 'filament_total', configurable: true },
+        { text: this.$t('app.general.table.header.filament_used'), value: 'history.filament_used', configurable: true },
+        { text: this.$t('app.general.table.header.slicer'), value: 'slicer', configurable: true },
+        { text: this.$t('app.general.table.header.slicer_version'), value: 'slicer_version', configurable: true },
+        { text: this.$t('app.general.table.header.estimated_time'), value: 'estimated_time', configurable: true },
+        { text: this.$t('app.general.table.header.print_duration'), value: 'history.print_duration', configurable: true },
+        { text: this.$t('app.general.table.header.total_duration'), value: 'history.total_duration', configurable: true },
+        { text: this.$t('app.general.table.header.first_layer_bed_temp'), value: 'first_layer_bed_temp', configurable: true },
+        { text: this.$t('app.general.table.header.first_layer_extr_temp'), value: 'first_layer_extr_temp', configurable: true },
+        {
+          text: this.$t('app.general.table.header.last_printed'),
+          value: 'print_start_time',
+          filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
+            const filter = this.filters.find(filter => filter.value === 'print_start_time')
+            if (
+              !this.filters ||
+              this.filters.length === 0 ||
+              !filter ||
+              item.type !== 'file'
+            ) return true
+            return item.print_start_time === null
+          },
+          configurable: true
+        }
+      ]
+    }
+
+    // Final headers. All roots have these.
+    headers = [
+      ...headers,
+      { text: this.$t('app.general.table.header.modified'), value: 'modified', width: '1%', configurable: true },
+      { text: this.$t('app.general.table.header.size'), value: 'size', width: '1%', align: 'end' }
+    ]
+
+    // Return headers
+    const key = `${this.currentRoot}_${this.name}`
+    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+  }
+
+  get visibleHeaders (): AppTableHeader[] {
+    return this.headers.filter(header => header.visible || header.visible === undefined)
+  }
+
+  // The current path for the given root.
   get currentPath () {
     return this.$store.getters['files/getCurrentPathByRoot'](this.currentRoot) || this.currentRoot
   }

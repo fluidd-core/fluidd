@@ -5,6 +5,7 @@ import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
+import { AppTableHeader } from '@/types'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
@@ -140,5 +141,15 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async removePreset ({ commit, state }, payload) {
     commit('setRemovePreset', payload)
     SocketActions.serverWrite('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
+  },
+
+  /**
+   * Toggle a tables header state based on its name and key.
+   */
+  async updateHeader ({ commit, state }, payload: { name: string; header: AppTableHeader }) {
+    commit('setUpdateHeader', payload)
+    if (state.uiSettings.tableHeaders[payload.name]) {
+      SocketActions.serverWrite(`uiSettings.tableHeaders.${payload.name}`, state.uiSettings.tableHeaders[payload.name])
+    }
   }
 }

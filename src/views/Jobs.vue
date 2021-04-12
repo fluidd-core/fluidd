@@ -9,7 +9,8 @@
           :draggable="false"
         >
           <file-system
-            :roots="'gcodes'">
+            :roots="'gcodes'"
+            name="jobs">
           </file-system>
         </collapsable-card>
       </v-col>

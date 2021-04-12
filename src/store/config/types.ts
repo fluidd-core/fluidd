@@ -1,3 +1,4 @@
+import { AppTablePartialHeader } from '@/types/tableheaders'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export interface ConfigState {
@@ -14,6 +15,7 @@ export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;
   dashboard: DashboardConfig;
+  tableHeaders: AppTableConfiguredHeaders;
 }
 
 export interface HostConfig {
@@ -99,4 +101,8 @@ export interface TemperaturePresetValue {
   value: number;
   type: 'fan' | 'heater';
   active: boolean;
+}
+
+export interface AppTableConfiguredHeaders {
+  [root: string]: AppTablePartialHeader[];
 }

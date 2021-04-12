@@ -1,9 +1,12 @@
 import { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
-import { ConfigState, TemperaturePreset, ThemeConfig } from './types'
+import { AppTableConfiguredHeaders, ConfigState, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
+import { AppTableHeader } from '@/types'
+import { filter } from 'vue/types/umd'
+import { AppTablePartialHeader } from '@/types/tableheaders'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
@@ -89,5 +92,32 @@ export const getters: GetterTree<ConfigState, RootState> = {
         .toHexString()
     }
     return r
+  },
+
+  getMergedTableHeaders: (state, getters) => (headers: AppTableHeader[], key: string) => {
+    const configured: AppTablePartialHeader[] = getters.getConfiguredTableHeaders(key)
+    if (!configured) {
+      return headers
+    }
+    const merged: AppTableHeader[] = []
+    headers.forEach(header => {
+      const keyBy = (header.key)
+        ? 'key'
+        : 'value'
+
+      const o = {
+        visible: true,
+        configurable: false,
+        ...header,
+        ...configured.find(p => p[keyBy] === header[keyBy])
+      }
+
+      merged.push(o)
+    })
+    return merged
+  },
+
+  getConfiguredTableHeaders: (state) => (key: string) => {
+    return state.uiSettings.tableHeaders[key]
   }
 }

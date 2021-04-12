@@ -11,6 +11,7 @@
         >
           <file-system
             :roots="['config', 'config_examples', 'docs']"
+            name="configure"
             :max-height="620">
           </file-system>
         </collapsable-card>

@@ -5,7 +5,7 @@
     :loading="isLoading">
 
     <v-card-title
-      class="card-title card-heading py-1"
+      class="collapsable-card-title card-heading"
       :class="{ 'draggable': inLayout }"
     >
       <slot name="title">
@@ -30,7 +30,7 @@
         <template v-slot:activator="{ on, attrs }">
           <app-btn
             :class="hamburgerMenuClasses"
-            fab small text
+            fab x-small text
             color=""
             v-bind="attrs"
             v-on="on">

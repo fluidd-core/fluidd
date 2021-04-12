@@ -248,6 +248,7 @@ app:
       default_toolhead_xy_speed: 기본 툴헤드 XY 속도
       default_toolhead_z_speed: 기본 툴헤드 Z 속도
       enable: 활성화
+      enable_notifications: 알림 활성화
       fps_target: 목표 FPS
       gcode_coords: G코드 좌표 사용
       invert_x_control: X 반전 컨트롤
