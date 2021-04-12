@@ -5,7 +5,8 @@
       v-if="!inLayout"
       @click="$emit('update:collapsed', !collapsed)"
       color=""
-      fab small text>
+      class="ml-1"
+      fab x-small text>
       <v-icon v-if="!collapsed">$chevronUp</v-icon>
       <v-icon v-if="collapsed">$chevronDown</v-icon>
     </app-btn>

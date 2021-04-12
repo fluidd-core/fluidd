@@ -5,7 +5,7 @@
     :loading="isLoading">
 
     <v-card-title
-      class="card-title card-heading py-1"
+      class="collapsable-card-title card-heading"
       :class="{ 'draggable': inLayout }"
     >
       <slot name="title">

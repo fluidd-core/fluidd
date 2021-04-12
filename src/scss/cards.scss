@@ -1,3 +1,5 @@
-.card-title {
-  min-height: 48px;
+.v-card .v-card__title.collapsable-card-title {
+  min-height: 42px;
+  padding-top: 0;
+  padding-bottom: 0;
 }
