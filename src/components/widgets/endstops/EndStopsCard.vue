@@ -7,7 +7,7 @@
       <app-btn
         @click="queryEndstops"
         color=""
-        fab small text>
+        fab x-small text>
         <v-icon>$refresh</v-icon>
       </app-btn>
     </template>

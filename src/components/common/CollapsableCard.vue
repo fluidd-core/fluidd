@@ -30,7 +30,7 @@
         <template v-slot:activator="{ on, attrs }">
           <app-btn
             :class="hamburgerMenuClasses"
-            fab small text
+            fab x-small text
             color=""
             v-bind="attrs"
             v-on="on">
