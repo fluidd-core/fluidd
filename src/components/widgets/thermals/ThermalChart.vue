@@ -317,8 +317,10 @@ export default class ThermalChart extends Vue {
     // If this is a target, adjust its display.
     if (label.toLowerCase().endsWith('target')) {
       series.yAxisIndex = 0
+      series.emphasis.lineStyle.width = 1
+      series.lineStyle.width = 1
       series.lineStyle.type = 'dashed'
-      series.lineStyle.opacity = 0.35
+      series.lineStyle.opacity = 0.8
       series.areaStyle.opacity = 0
     }
 
@@ -328,8 +330,10 @@ export default class ThermalChart extends Vue {
       label.toLowerCase().endsWith('speed')
     ) {
       series.yAxisIndex = 1
+      series.emphasis.lineStyle.width = 1
+      series.lineStyle.width = 1
       series.lineStyle.type = 'dotted'
-      series.lineStyle.opacity = 0.5
+      series.lineStyle.opacity = 1
       series.areaStyle.opacity = 0
     }
 

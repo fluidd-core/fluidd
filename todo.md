@@ -20,6 +20,7 @@
 
 ### Features
 
+- Authentication
 - history enhancements
   - graphing over time
   - move to its own page?
