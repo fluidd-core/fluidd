@@ -549,6 +549,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
-    return rootGetters['server/getInfo'].failed_plugins || []
+    return rootGetters['server/getInfo'].failed_components || []
   }
 }

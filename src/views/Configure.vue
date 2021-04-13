@@ -71,7 +71,7 @@ export default class Configure extends Mixins(StateMixin) {
   }
 
   get supportsHistory () {
-    return this.$store.getters['server/pluginSupport']('history')
+    return this.$store.getters['server/componentSupport']('history')
   }
 }
 </script>

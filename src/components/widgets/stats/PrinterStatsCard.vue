@@ -31,7 +31,7 @@
         </v-layout>
       </div>
 
-      <v-row v-if="supportsHistoryPlugin">
+      <v-row v-if="supportsHistoryComponent">
         <v-col cols="6">
           <v-card outlined class="px-2 py-1 text-center stat-square">
             <div class="grey--text text--darken-2">{{ $t('app.general.label.total_jobs') }}</div>
@@ -102,8 +102,8 @@ export default class PrinterStatsCard extends Vue {
     }
   }
 
-  get supportsHistoryPlugin () {
-    return this.$store.getters['server/pluginSupport']('history')
+  get supportsHistoryComponent () {
+    return this.$store.getters['server/componentSupport']('history')
   }
 }
 </script>

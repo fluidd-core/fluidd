@@ -12,7 +12,7 @@ export const actions: ActionTree<DevicePowerState, RootState> = {
   },
 
   /**
-   * Make a socket request to init the power plugin.
+   * Make a socket request to init the moonraker power component.
    */
   async init () {
     SocketActions.machineDevicePowerDevices()

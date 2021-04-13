@@ -5,10 +5,10 @@ export interface ServerState {
 }
 
 export interface ServerInfo {
-  failed_plugins: string[];
+  failed_components: string[];
   klippy_connected: boolean;
   klippy_state: string;
-  plugins: string[];
+  components: string[];
   registered_directories: string[];
 }
 

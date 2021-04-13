@@ -39,7 +39,7 @@ import VersionSettings from '@/components/settings/VersionSettings.vue'
 })
 export default class Settings extends Mixins(StateMixin) {
   get supportsVersions () {
-    return this.$store.getters['server/pluginSupport']('update_manager')
+    return this.$store.getters['server/componentSupport']('update_manager')
   }
 }
 </script>

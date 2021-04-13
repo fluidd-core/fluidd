@@ -9,10 +9,10 @@ export const defaultState = (): ServerState => {
   return {
     klippy_retries: 0, // how many times have we attempted to reconnect to klippy.
     info: {
-      failed_plugins: [],
+      failed_components: [],
       klippy_connected: false, // indicates if klippy is disconnected vs shutdown.
       klippy_state: '',
-      plugins: [],
+      components: [],
       registered_directories: []
     },
     config: {

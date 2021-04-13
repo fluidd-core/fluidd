@@ -15,21 +15,21 @@ export const actions: ActionTree<ServerState, RootState> = {
   },
 
   /**
-   * Init plugins.
+   * Init moonraker components.
    * During app init, we want to initially init these once, irrelevant
    * of klippy's state. After that, we'd only ever init once more if
    * klippy is connected.
    */
-  async initPlugins ({ dispatch }, payload) {
+  async initComponents ({ dispatch }, payload) {
     if (
-      payload.plugins &&
-      payload.plugins.length > 0
+      payload.components &&
+      payload.components.length > 0
     ) {
-      const pluginsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_PLUGINS
-      for (const key in pluginsToInit) {
-        const plugin = pluginsToInit[key]
-        if (payload.plugins.includes(plugin.name)) {
-          dispatch(plugin.dispatch, undefined, { root: true })
+      const componentsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_COMPONENTS
+      for (const key in componentsToInit) {
+        const component = componentsToInit[key]
+        if (payload.components.includes(component.name)) {
+          dispatch(component.dispatch, undefined, { root: true })
         }
       }
     }
@@ -39,7 +39,7 @@ export const actions: ActionTree<ServerState, RootState> = {
    * On server info
    */
   async onServerInfo ({ commit, dispatch, state }, payload) {
-    // This payload should return a list of enabled plugins
+    // This payload should return a list of enabled components
     // and root directories that are available.
     SocketActions.printerInfo()
     SocketActions.serverConfig()
@@ -49,7 +49,7 @@ export const actions: ActionTree<ServerState, RootState> = {
     if (payload.klippy_state !== 'ready') {
       // If klippy is not connected, we'll continue to
       // retry the init process.
-      if (state.klippy_retries === 0) dispatch('initPlugins', payload)
+      if (state.klippy_retries === 0) dispatch('initComponents', payload)
       commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
@@ -58,7 +58,7 @@ export const actions: ActionTree<ServerState, RootState> = {
     } else {
       // If klippy is connected, move on.
       commit('setKlippyRetries', 0)
-      dispatch('initPlugins', payload)
+      dispatch('initComponents', payload)
       SocketActions.printerObjectsList()
     }
   },

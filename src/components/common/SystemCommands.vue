@@ -29,7 +29,7 @@
     </v-list-group>
 
     <v-list-group
-      v-if="devicePowerPluginEnabled"
+      v-if="devicePowerComponentEnabled"
       prepend-icon="$power"
       no-action>
       <template v-slot:activator>
@@ -119,8 +119,8 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.state.power.devices
   }
 
-  get devicePowerPluginEnabled () {
-    return this.$store.getters['server/pluginSupport']('power')
+  get devicePowerComponentEnabled () {
+    return this.$store.getters['server/componentSupport']('power')
   }
 
   handleHostReboot () {

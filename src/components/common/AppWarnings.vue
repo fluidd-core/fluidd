@@ -37,7 +37,7 @@ export default class AppWarnings extends Mixins(StateMixin) {
   }
 
   get moonrakerDocsUrl () {
-    return Globals.DOCS_MOONRAKER_PLUGINS
+    return Globals.DOCS_MOONRAKER_COMPONENTS
   }
 
   get printerWarningsTxt () {

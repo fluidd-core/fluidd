@@ -50,7 +50,7 @@ export default class AppSettingsNav extends Vue {
   }
 
   get supportsVersions () {
-    return this.$store.getters['server/pluginSupport']('update_manager')
+    return this.$store.getters['server/componentSupport']('update_manager')
   }
 }
 </script>

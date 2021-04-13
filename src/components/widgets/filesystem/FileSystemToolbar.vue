@@ -65,7 +65,7 @@
     </v-btn>
 
     <file-system-filter-menu
-      v-if="!readonly && root === 'gcodes' && supportsHistoryPlugin"
+      v-if="!readonly && root === 'gcodes' && supportsHistoryComponent"
       :root="root"
       :disabled="disabled"
       @change="$emit('filter', $event)"
@@ -156,8 +156,8 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.$store.getters['files/getLowOnSpace']
   }
 
-  get supportsHistoryPlugin () {
-    return this.$store.getters['server/pluginSupport']('history')
+  get supportsHistoryComponent () {
+    return this.$store.getters['server/componentSupport']('history')
   }
 
   // Properties of the current root.

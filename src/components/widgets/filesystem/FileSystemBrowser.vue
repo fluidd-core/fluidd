@@ -206,10 +206,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     )
   }
 
-  // Is the history plugin enabled
+  // Is the history component enabled
   get showHistory () {
     return (
-      this.$store.getters['server/pluginSupport']('history') &&
+      this.$store.getters['server/componentSupport']('history') &&
       this.root === 'gcodes'
     )
   }
