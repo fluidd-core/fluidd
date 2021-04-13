@@ -79,8 +79,8 @@ app:
       low_on_space: 磁盘空间不足
     filters:
       label:
-        print_start_time: 打印开始时间
-        print_start_time_desc: 打印开始时间说明
+        print_start_time: 过滤已打印
+        print_start_time_desc: 过滤掉已经打印的项目
   general:
     btn:
       add: 添加
@@ -122,6 +122,7 @@ app:
       upload: 上传
       upload_print: 上传并打印
       view: 视图
+      load_all: 全部加载
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -182,7 +183,7 @@ app:
       header:
         actions: 动作
         estimated_time: 估计时间
-        filament_used: 耗材
+        filament_used: 使用长度
         height: 高度
         last_printed: 上次打印时间
         layer_height: 层高度
@@ -193,6 +194,13 @@ app:
         slicer: 切片
         start_time: 开始时间
         status: 状态
+        first_layer_height: 首层高度
+        filament: 耗材长度
+        slicer_version: 切片版本
+        total_duration: 总时长
+        first_layer_bed_temp: 首层热床温度
+        first_layer_extr_temp: 首层挤出温度
+        end_time: 结束时间
     title:
       add_printer: 添加打印机
       bedmesh: 网床
