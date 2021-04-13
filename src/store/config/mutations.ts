@@ -21,16 +21,17 @@ export const mutations: MutationTree<ConfigState> = {
    * Inits UI settings from the db
    */
   setInitUiSettings (state, payload: UiSettings) {
-    // Most settings should be merged, so start there.
-    const processed = merge(state.uiSettings, payload)
+    if (payload) {
+      // Most settings should be merged, so start there.
+      const processed = merge(state.uiSettings, payload)
 
-    // Apply overrides.
-    if (payload.general.zAdjustDistances) {
-      Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
+      // Apply overrides.
+      if (payload.general && payload.general.zAdjustDistances) {
+        Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
+      }
+
+      Vue.set(state, 'uiSettings', processed)
     }
-
-    if (payload) Vue.set(state, 'uiSettings', processed)
-    consola.log(cloneDeep(state.uiSettings))
   },
 
   /**
