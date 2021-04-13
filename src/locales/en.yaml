@@ -184,6 +184,7 @@ app:
       z_offset: Z Offset
     simple_form:
       error:
+        arrayofnums: Only numbers
         invalid_url: Invalid URL
         max: Max %{max}
         min: Min %{min}

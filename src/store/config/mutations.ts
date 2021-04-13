@@ -3,10 +3,11 @@ import { MutationTree } from 'vuex'
 import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
-import { merge, set } from 'lodash-es'
+import { merge, set, cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
+import consola from 'consola'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -21,8 +22,15 @@ export const mutations: MutationTree<ConfigState> = {
    */
   setInitUiSettings (state, payload: UiSettings) {
     // Most settings should be merged, so start there.
-    const newState = merge(state.uiSettings, payload)
-    if (payload) Vue.set(state, 'uiSettings', newState)
+    const processed = merge(state.uiSettings, payload)
+
+    // Apply overrides.
+    if (payload.general.zAdjustDistances) {
+      Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
+    }
+
+    if (payload) Vue.set(state, 'uiSettings', processed)
+    consola.log(cloneDeep(state.uiSettings))
   },
 
   /**

@@ -140,10 +140,10 @@
           small-chips
           append-icon=""
           deletable-chips
-          type="number"
           :rules="[
               v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
               v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
+              v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
           ]"
         ></v-combobox>
       </app-setting>
