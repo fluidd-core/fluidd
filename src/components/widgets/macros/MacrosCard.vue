@@ -3,9 +3,7 @@
     :title="$t('app.general.title.macros')"
     icon="$fileCode"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    layout-path="dashboard.macros-card">
     <macros></macros>
   </collapsable-card>
 </template>

@@ -1,13 +1,13 @@
 app:
   bedmesh:
     label:
+      flat_surface: Show flat plane
+      mesh_matrix: Mesh matrix
+      probed_matrix: Probed matrix
       profile_name: Profile Name
       remove_profile: Remove %{name} profile
-      probed_matrix: Probed matrix
-      mesh_matrix: Mesh matrix
-      wireframe: Wireframe
       scale: Scale by min / max
-      flat_surface: Show flat plane
+      wireframe: Wireframe
     msg:
       hint: >-
         If saving as something other than %{name}, you can choose to also remove
@@ -23,8 +23,8 @@ app:
         printer
   chart:
     label:
-      current: Current
-      item: Item
+      current: Actual
+      item: Name
       power: Power
       target: Target
     tooltip:
@@ -109,6 +109,7 @@ app:
       download: Download
       edit: Edit
       extrude: Extrude
+      load_all: Load all
       pause: Pause
       preheat: Preheat
       quad_gantry_level: QGL
@@ -196,18 +197,25 @@ app:
     table:
       header:
         actions: Actions
+        end_time: Ended
         estimated_time: Estimated time
-        filament_used: Filament
+        filament: Filament
+        filament_used: Used filament
+        first_layer_bed_temp: First layer bed temp
+        first_layer_extr_temp: First layer extruder temp
+        first_layer_height: First layer height
         height: Height
         last_printed: Last printed
         layer_height: Layer height
         modified: Modified
         name: Name
-        print_duration: Print Duration
+        print_duration: Print duration
         size: Size
         slicer: Slicer
+        slicer_version: Slicer version
         start_time: Started
         status: Status
+        total_duration: Total duration
     title:
       add_printer: Add Printer
       bedmesh: Bed Mesh

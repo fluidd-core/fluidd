@@ -3,6 +3,7 @@
     bottom
     left
     offset-y
+    transition="slide-x-transition"
   >
     <template v-slot:activator="{ on, attrs, value }">
       <app-btn

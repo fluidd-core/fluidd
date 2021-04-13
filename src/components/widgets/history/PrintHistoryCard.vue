@@ -1,11 +1,17 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.history')"
-    :sub-title="$t('app.history.msg.load_count', { num: this.$globals.JOB_HISTORY_LOAD })"
     icon="$history">
     <job-history></job-history>
 
     <template v-slot:menu>
+      <app-btn
+        @click="handleLoadAll"
+        small
+        class="ma-1">
+        <v-icon small left>$download</v-icon>
+        <span>{{ $t('app.general.btn.load_all') }}</span>
+      </app-btn>
       <app-btn
         @click="handleRemoveAll"
         small
@@ -39,6 +45,10 @@ export default class PrinterHistoryCard extends Vue {
           SocketActions.serverHistoryDeleteJob('all')
         }
       })
+  }
+
+  handleLoadAll () {
+    SocketActions.serverHistoryList({ limit: 0 })
   }
 }
 </script>

@@ -311,11 +311,11 @@ export const SocketActions = {
     )
   },
 
-  async serverHistoryList (limit?: number) {
+  async serverHistoryList (params?: { start?: number; limit?: number; before?: number; since?: number; order?: string }) {
     baseEmit(
       'server.history.list', {
         dispatch: 'history/onHistoryList',
-        params: { limit }
+        params
       }
     )
   },

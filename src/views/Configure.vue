@@ -11,6 +11,7 @@
         >
           <file-system
             :roots="['config', 'config_examples', 'docs']"
+            name="configure"
             :max-height="620">
           </file-system>
         </collapsable-card>
@@ -25,7 +26,6 @@
           <v-col :cols="breakpoint" v-if="klippyReady">
             <collapsable-card
               :title="$t('app.general.title.system_control')"
-              :collapsable="false"
               icon="$cogs">
               <v-card-text>
                 <system-control></system-control>

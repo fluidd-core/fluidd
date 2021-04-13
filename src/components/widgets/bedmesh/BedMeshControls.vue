@@ -29,13 +29,13 @@
           <td class="grey--text focus--text"><span v-if="item.active && mesh.variance">{{ mesh.variance.toFixed(4) }}</span></td>
           <td class="text-right">
             <v-tooltip
-              v-if="!item.active && !hasWaits && !printerPrinting && !printerBusy"
+              v-if="!item.active && !printerPrinting && !printerBusy"
               bottom
             >
               <template v-slot:activator="{ on, attrs }">
                 <app-btn
                   @click="loadProfile(item.profile_name)"
-                  v-if="!item.active && !hasWaits && !printerPrinting && !printerBusy"
+                  v-if="!item.active && !printerPrinting && !printerBusy"
                   v-bind="attrs"
                   v-on="on"
                   x-small
@@ -53,7 +53,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <app-btn
                   @click="removeProfile(item.profile_name)"
-                  :disabled="hasWaits || printerPrinting || printerBusy"
+                  :disabled="printerPrinting || printerBusy"
                   v-bind="attrs"
                   v-on="on"
                   color=""
@@ -96,7 +96,7 @@
                 block
                 class="mb-2"
                 :loading="hasWait(waits.onMeshCalibrate)"
-                :disabled="hasWaits || printerPrinting || printerBusy"
+                :disabled="printerPrinting || printerBusy"
                 @click="calibrate()">
                 {{ $t('app.general.btn.calibrate') }}
               </app-btn>
@@ -112,7 +112,7 @@
                 block
                 small
                 color="primary"
-                :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+                :disabled="!meshLoaded || printerPrinting || printerBusy"
                 @click="handleOpenSaveDialog()">
                 {{ $t('app.general.btn.save_as') }}
               </app-btn>
@@ -128,7 +128,7 @@
             small
             class="mb-2"
             :loading="hasWait(waits.onHomeAll)"
-            :disabled="hasWaits || printerPrinting || printerBusy"
+            :disabled="printerPrinting || printerBusy"
             :color="(!allHomed) ? 'primary' : undefined">
               <v-icon small class="mr-1">$home</v-icon> {{ $t('app.general.btn.all') }}
           </app-btn>
@@ -138,7 +138,7 @@
             @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
             :elevation="2"
             :loading="hasWait(waits.onQGL)"
-            :disabled="hasWaits || printerPrinting || printerBusy"
+            :disabled="printerPrinting || printerBusy"
             block
             class="mb-2"
             small>
@@ -151,7 +151,7 @@
       <v-row>
         <v-col>
           <v-radio-group
-            :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             v-model="matrix"
             column
             hide-details
@@ -171,7 +171,7 @@
         </v-col>
         <v-col>
           <v-checkbox
-            :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             :label="$t('app.bedmesh.label.wireframe')"
             v-model="wireframe"
             hide-details
@@ -180,7 +180,7 @@
           </v-checkbox>
 
           <v-checkbox
-            :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             :label="$t('app.bedmesh.label.scale')"
             v-model="scale"
             hide-details
@@ -189,7 +189,7 @@
           </v-checkbox>
 
           <v-checkbox
-            :disabled="!meshLoaded || hasWaits || printerPrinting || printerBusy"
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             :label="$t('app.bedmesh.label.flat_surface')"
             v-model="flatSurface"
             hide-details

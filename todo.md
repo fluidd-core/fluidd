@@ -2,15 +2,27 @@
 
 ## Next Up
 
-- load all history data button
 - sync instances across moonraker db
 - use components instead of plugins with moonraker
-- cleanup card layout stuff
-  - hide enabled flag for collapsable card for camera panel on dashboard
-- change card states to db and be driven by getters..
+- add cpu time / resource monitor
+- allow re-ordering temp presets and cameras
+- add layer height :/
+- flow calculation?
+- better way to handle overall warnings
+  - warn on over temp for pi cpu / throttled (see moonraker docs for CPU Throttled)
+  - warn on undervoltage for pi cpu? (is this reported?)
+  - warn on gcode root not active
+  - warn on mem low
+  - warn on cputime too high
+  - warn on systeim too high
+  - allow a way to configure if a warning is persistent or not
+- cancel uploads
 
 ### Features
 
+- history enhancements
+  - graphing over time
+  - move to its own page?
 - better multi-printer management
   - improve multi-webcam setup
   - overview

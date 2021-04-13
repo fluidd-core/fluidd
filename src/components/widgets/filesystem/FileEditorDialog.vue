@@ -5,6 +5,7 @@
     :loading="loading"
     hide-overlay
     fullscreen
+    persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
   >
@@ -15,7 +16,9 @@
         style="z-index: 1"
       >
         <app-btn
+          v-if="!$vuetify.breakpoint.smAndDown"
           icon
+          :disabled="!ready"
           color=""
           @click="emitClose()"
         >
@@ -26,37 +29,39 @@
         <v-toolbar-items>
           <app-btn
             v-if="!printerPrinting && rootProperties.showConfigRef"
-            :href="$globals.DOCS_KLIPPER_CONFIG_REF"
+            :href="configRefUrl"
             target="_blank">
-            <v-icon small :left="!isMobile">$help</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.config_reference') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$help</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
+            :disabled="!ready"
             @click="emitSave(true)">
-            <v-icon small :left="!isMobile">$restart</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save_restart') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$restart</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly"
+            :disabled="!ready"
             @click="emitSave(false)">
-            <v-icon small :left="!isMobile">$save</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.save') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$save</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save') }}</span>
           </app-btn>
           <app-btn
             @click="emitClose()">
-            <v-icon small :left="!isMobile">$close</v-icon>
-            <span class="d-none d-md-inline-block">{{ $t('app.general.btn.close') }}</span>
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$close</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.close') }}</span>
           </app-btn>
         </v-toolbar-items>
       </v-toolbar>
 
       <file-editor
         v-if="contents !== undefined"
-        :value="contents"
-        @input="updatedContent = $event"
+        v-model="updatedContent"
         :filename="filename"
-        :readonly="readonly">
+        :readonly="readonly"
+        @ready="editorReady = true">
       </file-editor>
 
     </v-card>
@@ -66,14 +71,15 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { Globals } from '@/globals'
 
 // Lazy Load the file editor.
-const FileEditor = () => import(
-  /* webpackPreload: true */
-  /* webpackChunkName: "chunk-fileeditor" */
-  './FileEditor.vue'
-)
-// import FileEditor from './FileEditor.vue'
+// const FileEditor = () => import(
+//   /* webpackPreload: true */
+//   /* webpackChunkName: "chunk-fileeditor" */
+//   './FileEditor.vue'
+// )
+import FileEditor from './FileEditor.vue'
 
 @Component({
   components: {
@@ -99,14 +105,35 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   public readonly!: boolean
 
-  updatedContent = ''
+  updatedContent = this.contents
+  editorReady = false
+
+  get ready () {
+    return (
+      !this.loading &&
+      this.editorReady &&
+      !this.isUploading
+    )
+  }
+
+  get isUploading (): boolean {
+    return this.$store.state.files.uploads.length > 0
+  }
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
   }
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.sm
+  get configRefUrl () {
+    if (this.filename && this.filename.includes('moonraker.conf')) {
+      return Globals.DOCS_MOONRAKER_CONFIG_REF
+    } else {
+      return Globals.DOCS_KLIPPER_CONFIG_REF
+    }
+  }
+
+  mounted () {
+    this.updatedContent = this.contents
   }
 
   emitClose () {
@@ -114,8 +141,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   }
 
   emitSave (restart: boolean) {
-    this.$emit('save', this.updatedContent, restart)
-    if (restart) this.$emit('input', false)
+    if (this.editorReady) {
+      this.$emit('save', this.updatedContent, restart)
+      if (restart) this.$emit('input', false)
+    }
   }
 }
 </script>

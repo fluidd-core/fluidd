@@ -36,6 +36,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: true,
+        canConfigure: true,
         showConfigRef: false,
         showSaveRestart: false
       }
@@ -48,6 +49,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: false,
+        canConfigure: false,
         showConfigRef: true,
         showSaveRestart: true
       }
@@ -60,6 +62,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
+        canConfigure: false,
         showConfigRef: true,
         showSaveRestart: false
       }
@@ -72,6 +75,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
+        canConfigure: false,
         showConfigRef: true,
         showSaveRestart: false
       }
@@ -83,6 +87,7 @@ export const getters: GetterTree<FilesState, RootState> = {
       canEdit: false,
       canView: true,
       canPrint: false,
+      canConfigure: false,
       showConfigRef: false,
       showSaveRestart: false
     }

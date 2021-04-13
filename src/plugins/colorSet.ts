@@ -75,12 +75,11 @@ export class ColorSet {
    */
   reset (list: string, force = false): void {
     if (this.colorList[list] === undefined) return // not found
-    this.colorList[list].map(color => {
-      if (color.name && !force) {
-        // don't reset colors that have a name.
-        return color
-      } else {
-        return { ...color, used: false }
+    this.colorList[list].forEach(color => {
+      // don't reset colors that have a name, unless forced.
+      if (!color.name || force) {
+        color.used = false
+        delete color.name
       }
     })
   }

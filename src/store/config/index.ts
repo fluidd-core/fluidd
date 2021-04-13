@@ -27,21 +27,6 @@ export const defaultState = (): ConfigState => {
         { name: '한국어', code: 'ko' }
       ]
     },
-    cardState: {},
-    cardLayout: {
-      dashboard1: [
-        { name: 'toolhead-card', enabled: true },
-        { name: 'outputs-card', enabled: true },
-        { name: 'macros-card', enabled: true },
-        { name: 'printer-limits-card', enabled: true },
-        { name: 'camera-card', enabled: true }
-      ],
-      dashboard2: [
-        { name: 'temperature-card', enabled: true },
-        { name: 'jobs-card', enabled: true },
-        { name: 'console-card', enabled: true }
-      ]
-    },
     instances: [],
     uiSettings: {
       general: {
@@ -72,6 +57,35 @@ export const defaultState = (): ConfigState => {
       },
       dashboard: {
         tempPresets: []
+      },
+      tableHeaders: {
+        gcodes_dashboard: [
+          { value: 'first_layer_extr_temp', visible: false },
+          { value: 'first_layer_bed_temp', visible: false },
+          { value: 'history.total_duration', visible: false },
+          { value: 'history.print_duration', visible: false },
+          { value: 'estimated_time', visible: false },
+          { value: 'slicer_version', visible: false },
+          { value: 'slicer', visible: false },
+          { value: 'history.filament_used', visible: false },
+          { value: 'filament_total', visible: false },
+          { value: 'object_height', visible: false },
+          { value: 'first_layer_height', visible: false },
+          { value: 'layer_height', visible: false }
+        ],
+        gcodes_jobs: [
+          { value: 'first_layer_height', visible: false },
+          { value: 'history.filament_used', visible: false },
+          { value: 'slicer_version', visible: false },
+          { value: 'history.print_duration', visible: false },
+          { value: 'first_layer_extr_temp', visible: false },
+          { value: 'first_layer_bed_temp', visible: false }
+        ],
+        history: [
+          { value: 'end_time', visible: false },
+          { value: 'print_duration', visible: false },
+          { value: 'filament_used', visible: false }
+        ]
       }
     }
   }

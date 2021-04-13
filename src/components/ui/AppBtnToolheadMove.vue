@@ -35,7 +35,7 @@ export default class AppBtnToolheadMove extends Vue {
   @Prop()
   disabled!: boolean
 
-  @Prop({ type: String, default: 'secondary' })
+  @Prop({ type: String, default: 'btncolor' })
   color!: string
 
   @Prop({ type: Boolean, default: false })
