@@ -3,14 +3,16 @@
     v-model="open"
     :color="type"
     :timeout="timeout"
+    elevation="24"
+    multi-line
     top
+    centered
   >
-    {{ text }}
+    <span v-html="text"></span>
 
     <template v-slot:action="{ attrs }">
       <app-btn
         dark
-        text
         v-bind="attrs"
         @click="open = false"
       >
@@ -29,13 +31,13 @@ export default class FlashMessage extends Vue {
   @Prop({ type: Boolean })
   value!: boolean;
 
-  @Prop({ type: String, default: 'success' })
+  @Prop({ type: String, default: 'dark' })
   type!: string;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, default: 'Saved!' })
   text!: string;
 
-  @Prop({ type: Number, default: 3000 })
+  @Prop({ type: Number, default: 1500 })
   timeout!: number;
 
   get open () {
@@ -47,3 +49,10 @@ export default class FlashMessage extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .v-snack__wrapper .v-snack__content {
+    overflow: hidden;
+    overflow-wrap: break-word;
+  }
+</style>

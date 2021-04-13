@@ -32,19 +32,18 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import EventBus from '@/eventBus'
+import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from './mixins/state'
 import { Waits } from './globals'
-import { FlashMessage as FlashMessageType } from '@/types'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
   drawer = false
   showUpdateUI = false
 
-  flashMessage: FlashMessageType = {
+  flashMessage: FlashMessage = {
     open: false,
-    text: '',
+    text: undefined,
     type: undefined
   }
 
@@ -126,7 +125,7 @@ export default class App extends Mixins(StateMixin) {
 
   mounted () {
     // this.onLoadLocale(this.$i18n.locale)
-    EventBus.$on('flashMessage', (payload: FlashMessageType) => {
+    EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
       this.flashMessage.text = (payload && payload.text) || undefined
       this.flashMessage.type = (payload && payload.type) || undefined
       this.flashMessage.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined

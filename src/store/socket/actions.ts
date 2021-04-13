@@ -5,7 +5,7 @@ import { SocketState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
-import EventBus from '@/eventBus'
+import { EventBus, FlashMessageTypes } from '@/eventBus'
 
 let retryTimeout: number
 
@@ -82,7 +82,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         message = payload.message
       }
 
-      EventBus.$emit('flashMessage', { type: 'error', text: message })
+      EventBus.$emit(message, FlashMessageTypes.error, 5000)
     }
     if (payload.code === 503) {
       // This indicates klippy is non-responsive, or there's a configuration error

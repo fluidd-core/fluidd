@@ -3,7 +3,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
 import { AxiosRequestConfig } from 'axios'
-import EventBus from '@/eventBus'
+// import { EventBus, FlashMessageTypes } from '@/eventBus'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -72,9 +72,14 @@ export default class FilesMixin extends Vue {
       encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()),
       o
     )
-      .then((response) => {
-        this.$store.dispatch('files/removeFileDownload')
+      .then(response => {
         return response
+      })
+      .catch(e => {
+        return e
+      })
+      .finally(() => {
+        this.$store.dispatch('files/removeFileDownload')
       })
   }
 
@@ -155,8 +160,13 @@ export default class FilesMixin extends Vue {
         }
       )
       .then((response) => {
-        this.$store.dispatch('files/removeFileUpload', filepath)
         return response
+      })
+      .catch(e => {
+        return e
+      })
+      .finally(() => {
+        this.$store.dispatch('files/removeFileUpload', filepath)
       })
   }
 
@@ -186,7 +196,8 @@ export default class FilesMixin extends Vue {
       try {
         await this.uploadFile(file, path, root, andPrint)
       } catch (e) {
-        EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
+        return e
+        // EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
       }
     }
   }
