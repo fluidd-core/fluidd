@@ -15,7 +15,7 @@ export const state = defaultState()
 
 const namespaced = true
 
-export const devicePower: Module<DevicePowerState, RootState> = {
+export const power: Module<DevicePowerState, RootState> = {
   namespaced,
   state,
   getters,

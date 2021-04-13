@@ -295,7 +295,6 @@ export default class ThermalChart extends Vue {
       yAxisIndex: 0,
       showSymbol: false,
       animation: false,
-      smooth: false,
       color,
       emphasis: {
         lineStyle: {

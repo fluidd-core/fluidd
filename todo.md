@@ -2,12 +2,13 @@
 
 ## Next Up
 
-- sync instances across moonraker db
 - use components instead of plugins with moonraker
 - add cpu time / resource monitor
 - allow re-ordering temp presets and cameras
 - add layer height :/
 - flow calculation?
+- status layout changes
+- sync instances across moonraker db
 - better way to handle overall warnings
   - warn on over temp for pi cpu / throttled (see moonraker docs for CPU Throttled)
   - warn on undervoltage for pi cpu? (is this reported?)

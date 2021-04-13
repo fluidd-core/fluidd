@@ -6,7 +6,7 @@ import { FilesState } from './files/types'
 import { ChartState } from './charts/types'
 import { ConsoleState } from './console/types'
 import { MacrosState } from './macros/types'
-import { DevicePowerState } from './devicePower/types'
+import { DevicePowerState } from './power/types'
 import { HistoryState } from './history/types'
 import { VersionState } from './version/types'
 import { LayoutState } from './layout/types'
@@ -23,7 +23,7 @@ export interface RootState {
   charts?: ChartState;
   console?: ConsoleState;
   macros?: MacrosState;
-  devicePower?: DevicePowerState;
+  power?: DevicePowerState;
   history?: HistoryState;
   version?: VersionState;
 }

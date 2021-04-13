@@ -144,7 +144,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   async notifyPowerChanged ({ dispatch }, payload) {
-    dispatch('devicePower/onStatus', { [payload.device]: payload.status }, { root: true })
+    dispatch('power/onStatus', { [payload.device]: payload.status }, { root: true })
   },
 
   async notifyUpdateResponse ({ dispatch }, payload) {

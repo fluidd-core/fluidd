@@ -92,7 +92,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { Device } from '@/store/devicePower/types'
+import { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/socketActions'
@@ -116,7 +116,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 
   get powerDevices () {
-    return this.$store.state.devicePower.devices
+    return this.$store.state.power.devices
   }
 
   get devicePowerPluginEnabled () {

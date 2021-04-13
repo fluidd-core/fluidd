@@ -120,7 +120,7 @@ export const Globals = Object.freeze({
     }
   },
   MOONRAKER_PLUGINS: {
-    power: { name: 'power', dispatch: 'devicePower/init' },
+    power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' }
   },
