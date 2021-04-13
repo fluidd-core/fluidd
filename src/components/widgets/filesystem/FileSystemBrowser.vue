@@ -197,15 +197,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   draggedItem: null | AppFile | AppFileWithMeta | AppDirectory = null
 
-  get showMetaData () {
-    // Show meta data only for the gcodes root, and only when we are not
-    // presenting with dense = true
-    return (
-      !this.dense &&
-      this.root === 'gcodes'
-    )
-  }
-
   // Is the history component enabled
   get showHistory () {
     return (
