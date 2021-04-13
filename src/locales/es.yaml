@@ -1,26 +1,23 @@
 app:
   bedmesh:
     label:
-      flat_surface:
-      mesh_matrix:
-      probed_matrix:
       profile_name: Nombre del Perfil
       remove_profile: Borrar el  perfil %{name}
-      scale:
-      wireframe:
     msg:
       hint: >-
-        Si guarda el perfil con un nombre que no sea "% {profileName}"
-        También puede eliminar el perfil "% {profileName}".
+        Si guarda el perfil con un nombre que no sea "% {profileName}" También
+        puede eliminar el perfil "% {profileName}".
       not_found: Ninguno mesh bed encuentrado
       not_loaded: No mesh loaded
     tooltip:
-      calibrate: Inicie una nueva calibración, el perfil se guardará con el nombre 'defecto'
+      calibrate: >-
+        Inicie una nueva calibración, el perfil se guardará con el nombre
+        'defecto'
       delete: Elimine el perfil, esto REINICIARÁ su maquina .
       load: Cargar el perfil
       save: >-
-        Cargue el perfil de calibracion  en el archivo printer.cfg. La impresora va se 
-        reiniciar.
+        Cargue el perfil de calibracion  en el archivo printer.cfg. La impresora
+        va se  reiniciar.
   chart:
     label:
       current: Corriente
@@ -29,23 +26,26 @@ app:
       target: Objectivo
     tooltip:
       help: >-
-        Mantén presionada la tecla Mayús para hacer zoom. <br /> Haz clic en un elemento para mostrarlo. <br />
-        Haga clic en una potencia para mostrarla.
+        Mantén presionada la tecla Mayús para hacer zoom. <br /> Haz clic en un
+        elemento para mostrarlo. <br /> Haga clic en una potencia para
+        mostrarla.
   console:
     label:
       hide_temp_waits: Esconder los mensajes de temperaturas
     placeholder:
-      command: "'tabulador' para autocompletar, 'ayuda' para comandos, 'flechas' para historia"
+      command: >-
+        'tabulador' para autocompletar, 'ayuda' para comandos, 'flechas' para
+        historia
   endpoint:
     error:
       cant_connect: >-
-        Se ha producido un error y Fluidd no puede comunicarse. Es usted
-        ¿Seguro que es la dirección es  correcta?
+        Se ha producido un error y Fluidd no puede comunicarse. Es usted ¿Seguro
+        que es la dirección es  correcta?
       cors_error: bloqueado por la configuración de CORS
       cors_note: >-
         Esto puede indicar que necesita modificar su configuración de Moonraker.
-        Consulte la documentación de configuración
-        varios <a href="% représentationurlariens" target="_blank"> aquí </a>.
+        Consulte la documentación de configuración varios <a href="%
+        représentationurlariens" target="_blank"> aquí </a>.
     hint:
       add_printer: Ex., http://fluiddpi.local
     msg:
@@ -54,14 +54,14 @@ app:
         para mas informaçiones .
     tooltip:
       endpoint_examples: >-
-        Ingrese la URL de la API. <br /> Por ejemplo
-        <blockquote> http: //fluidd.local, http://192.168.1.150 </blockquote>
+        Ingrese la URL de la API. <br /> Por ejemplo <blockquote> http:
+        //fluidd.local, http://192.168.1.150 </blockquote>
   endstop:
     label:
       open: ABIERTO
       triggered: ACTIVADO
     msg:
-      subtitle: "Presione el botón 'Actualizar' para actualizar el estado."
+      subtitle: Presione el botón 'Actualizar' para actualizar el estado.
   file_system:
     filters:
       label:
@@ -70,10 +70,7 @@ app:
     label:
       dir_name: Nombre de la carpeta
       disk_usage: Uso del disco
-      downloaded:
       file_name: Nombre del archivo
-      transfer_rate:
-      uploaded:
     msg:
       confirm: Está seguro) ? Esto borrará todos los subarchivos y subcarpetas.
       not_found: No se encontraron archivos
@@ -89,8 +86,8 @@ app:
       upload_file: Uploading file | Uploading files
     tooltip:
       disabled: >-
-        Los archivos se desactivan antes de la comunicación inicial
-        con klippy y un virtual_sdcard válido
+        Los archivos se desactivan antes de la comunicación inicial con klippy y
+        un virtual_sdcard válido
       low_on_space: Espacio en disco limitado
   general:
     btn:
@@ -100,7 +97,6 @@ app:
       add_printer: Agregar una impresora
       adjust_layout: Ajustar el diseño del tablero
       all: Todo
-      all_off: Apagar todo
       calibrate: Calibrar
       cancel: Cancelar
       clear_profile: Limpar Perfil
@@ -137,13 +133,13 @@ app:
       app_setup_link: >-
         Las instrucciones de instalación de Fluidd están disponibles <a
         target="_blank" href="%{url}"> aqui. </a>
-      app_warnings_found: "%{appName} advertencias encuentradas."
+      app_warnings_found: '%{appName} advertencias encuentradas.'
       components_config: >-
         La configuración del complemento moonraker está disponible <a
         target="_blank" href="%{url}"> aqui. </a>
       failed_components: >-
-        Moonraker ha fallado en los complementos, verifique los registros, pone al dia 
-        la configuración y reinicia Moonraker.
+        Moonraker ha fallado en los complementos, verifique los registros, pone
+        al dia  la configuración y reinicia Moonraker.
     label:
       accel_to_decel: Acel. e Desacel.
       acceleration: Aceleracione
@@ -163,7 +159,7 @@ app:
       longest_job: mas largo trabajo
       low: Baja
       name: Nombre
-      "off": Desligado
+      'off': Desligado
       power: Energia
       printers: Impresoras
       requested_speed: Velocidad solicitada
@@ -200,10 +196,6 @@ app:
         estimated_time: Tiempo estimado
         filament: Filamento
         filament_used: Filamento ocupado
-        first_layer_bed_temp:
-        first_layer_extr_temp:
-        first_layer_height:
-        height:
         last_printed: Ultima impresione
         layer_height: Altura da capa
         modified: Modificado
@@ -211,14 +203,12 @@ app:
         print_duration: Duracion de la impresion
         size: Tamano
         slicer: Laminador
-        slicer_version:
+        slicer_version: Ocupar el perfil del slicer. Necesita la activacione en su slicer.
         start_time: Iniciar
         status: Estado
-        total_duration:
     title:
       add_printer: Añadir  impresora
       bedmesh: Nivelacion de la  cama caliente
-      bedmesh_controls:
       camera: Camera | Cameras
       config_files: Archivo de configuracione
       configure: Configurar
@@ -231,7 +221,6 @@ app:
       limits: Limitas de la impresora
       macros: Macros
       runout_sensors: Sensores de filamento
-      settings:
       stats: Estatísticas de la  impressora
       status: Estado
       system_control: Control del sistema
@@ -242,7 +231,9 @@ app:
       estop: Parada de emergencia
   history:
     msg:
-      confirm: Está seguro) ? Toda la historia y estadísticas de la impresora se borrará.
+      confirm: >-
+        Está seguro) ? Toda la historia y estadísticas de la impresora se
+        borrará.
   printer:
     state:
       busy: Ocupada
@@ -256,7 +247,7 @@ app:
     status:
       duration: Duracion
       duration_total: Duracion total
-      time_left: "tiempo restante estimado "
+      time_left: 'tiempo restante estimado '
       used_filament: filamento usado
   setting:
     btn:
@@ -276,7 +267,7 @@ app:
       camera_flip_x: Girar  horizontal
       camera_flip_y: Girar  vertical
       camera_stream_type: Tipo de flujo
-      camera_url: "Url Camera "
+      camera_url: 'Url Camera '
       dark_mode: Modo obscuro
       default_extrude_length: Ancho de la extrusion por defecto
       default_extrude_speed: Velocidade de la extrusion por defecto
@@ -284,7 +275,6 @@ app:
       default_toolhead_xy_speed: Velocidad XY del cabezal de la herramienta por defecto
       default_toolhead_z_speed: Velocidad Z del cabezal de la herramienta por defecto
       enable: Activar
-      enable_notifications:
       fps_target: Frames por segundo
       gcode_coords: Usar Coordenadas GCode
       invert_x_control: Inversar control X
@@ -300,17 +290,15 @@ app:
       z_adjust_values: Ajustar valores Z
     timer_options:
       duration: Duracion
-      duration_description: "Similar al klipper LCD, muestra una duración sin estimación. "
+      duration_description: 'Similar al klipper LCD, muestra una duración sin estimación. '
       filament: Estimacion del filamento.
       filament_description: >-
-        "Compare el filamento utilizado con la estimación para estimar una duración
-        total. <br /> La precisión aumenta a medida que avanza. "
+        "Compare el filamento utilizado con la estimación para estimar una
+        duración total. <br /> La precisión aumenta a medida que avanza. "
       file: Estimacion basada en archivo
       file_description: >-
-        Utilice el porcentaje de progreso y el tiempo para estimar un
-        tiempo total. <br /> La precisión aumenta a medida que avanza.
-    slicer: Laminador
-    slicer_description: Ocupar el perfil del slicer. Necesita la activacione en su slicer.
+        Utilice el porcentaje de progreso y el tiempo para estimar un tiempo
+        total. <br /> La precisión aumenta a medida que avanza.
     title:
       camera: Camera | Cameras
       general: General
@@ -319,17 +307,23 @@ app:
       thermal_presets: Pré-ajustes térmicos
       tool: Herremienta
     tooltip:
-      gcode_coords: Ocupar la posicione GCode al lugar  de la posicione de la herremienta  sobre el panel de control
+      gcode_coords: >-
+        Ocupar la posicione GCode al lugar  de la posicione de la herremienta 
+        sobre el panel de control
   socket:
     msg:
       connecting: Coneccion con Moonraker ...
-      no_connection: No hay coneccione con  Moonraker. Compruebe el estado de Moonraker y / o ctualizar.
+      no_connection: >-
+        No hay coneccione con  Moonraker. Compruebe el estado de Moonraker y / o
+        ctualizar.
   tool:
     btn:
       home_x: X
-      home_y: "Y"
+      home_y: 'Y'
     tooltip:
-      extruder_disabled: Extruder disabilitado, a bajo del min_extrude_temp ( %{min} <small>°C</small>)
+      extruder_disabled: >-
+        Extruder disabilitado, a bajo del min_extrude_temp ( %{min}
+        <small>°C</small>)
       home_xy: Origen XY
       home_z: Origen Z
   version:
@@ -338,20 +332,13 @@ app:
       finish: terminar
       update: Actualizar
     label:
-    commit_history:
-      commits_on:
-      committed:
       dirty: SUCIO
       invalid: INVALIDO
-      package_list:
       up_to_date: A HOY
     status:
       finished: Atualizaciones terminadas
       updating: Actualizando...
     title: Actualizaciones  de software
     tooltip:
-      commit_history:
       dirty: avisa del estado 'detached head', no sobre 'master' o 'origin' invalido
       invalid: indicacion  de la alteracione del local de la repo
-      packages:
-      release_notes:
