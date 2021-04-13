@@ -201,7 +201,7 @@ app:
         end_time: Beendet
         estimated_time: Geschätzte Zeit
         filament: Filament
-        filament_used: Used verbraucht
+        filament_used: Filament verbraucht
         first_layer_bed_temp: Erster Layer Bett Temparatur
         first_layer_extr_temp: Erster Layer Extruder Temparatiur
         first_layer_height: Erster Layer höhe
