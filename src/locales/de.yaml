@@ -1,6 +1,11 @@
 app:
   bedmesh:
     label:
+      flat_surface: Ebene Flächen anzeigen
+      mesh_matrix: Mesh matrix
+      probed_matrix: Probed matrix
+      scale: Skaliere bei min / max
+      wireframe: Drahtmodell
       profile_name: Profilname
       remove_profile: Profil %{name} löschen
     msg:
@@ -8,6 +13,7 @@ app:
         Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann
         ausgewählt werden das Profil %{name} zu löschen.
       not_found: Keine Bett Meshes gefunden.
+      not_loaded: Kein mesh geladen
     tooltip:
       calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
       delete: Profil löschen. Achtung, der Drucker wird neu gestartet
@@ -30,9 +36,7 @@ app:
     label:
       hide_temp_waits: Temperaturbenachrichtigungen ausblenden
     placeholder:
-      command: >-
-        'tab' für Autovervollständigung, 'help' für Befehle, 'arrows' für
-        Verlauf 
+      command: '''tab'' für Autovervollständigung, ''help'' für Befehle ''arrows'' für Verlauf'
   endpoint:
     error:
       cant_connect: >-
@@ -69,7 +73,10 @@ app:
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
+      downloaded: Heruntergeladen
       file_name: Dateiname
+      transfer_rate: Transferrate
+      uploaded: Hochgeladen
     msg:
       confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
       not_found: Keine Dateien gefunden
@@ -79,8 +86,10 @@ app:
     title:
       add_dir: Ordner hinzufügen
       add_file: Datei hinzufügen
+      download_file: Empfange Datei
       rename_dir: Ordner umbennen
       rename_file: Datei umbennen
+      upload_file: Datei hochladen | Dateien hochladen
     tooltip:
       disabled: Druckvorgänge sind vor der ersten Kommunikation mit klippy nicht möglich
       low_on_space: Wenig Speicherplatz auf der Festplatte
@@ -101,6 +110,7 @@ app:
       download: Herunterladen
       edit: Bearbeiten
       extrude: Extrudieren
+      load_all: Alle laden
       pause: Pause
       preheat: Vorheizen
       quad_gantry_level: QGL
@@ -152,7 +162,7 @@ app:
       high: Höchste
       host: Host
       layout: Layout
-      longest_job: Längester Auftrag
+      longest_job: Längster Auftrag
       low: Niedrigste
       name: Name
       'off': Aus
@@ -188,8 +198,13 @@ app:
     table:
       header:
         actions: Aktionen
+        end_time: Beendet
         estimated_time: Geschätzte Zeit
-        filament_used: Filament
+        filament: Filament
+        filament_used: Used verbraucht
+        first_layer_bed_temp: Erster Layer Bett Temparatur
+        first_layer_extr_temp: Erster Layer Extruder Temparatiur
+        first_layer_height: Erster Layer höhe
         height: Höhe
         last_printed: Zuletzt gedruckt
         layer_height: Schichthöhe
@@ -198,11 +213,14 @@ app:
         print_duration: Druckdauer
         size: Größe
         slicer: Slicer
+        slicer_version: Slicer version
         start_time: Gestartet
         status: Status
+        total_duration: Total Dauer
     title:
       add_printer: Drucker hinzufügen
       bedmesh: Bett Mesh
+      bedmesh_controls: Bett Mesh Kontroller
       camera: Kamera | Kameras
       config_files: Konfigurationsdateien
       configure: Konfiguration
@@ -215,6 +233,7 @@ app:
       limits: Drucker Limits
       macros: Makros
       runout_sensors: Runout Sensoren
+      settings: Einstellungen
       stats: Druckerstatus
       status: Status
       system_control: Systemsteuerung
@@ -272,6 +291,7 @@ app:
       default_toolhead_xy_speed: Standard Druckkopfgeschwindigkeit für XY
       default_toolhead_z_speed: Standard Druckkopfgeschwindigkeit für Z
       enable: Aktivieren
+      enable_notifications: Aktiviere Benachrichtigung
       fps_target: FPS Ziel
       gcode_coords: GCode Koordinaten verwenden
       invert_x_control: X-Steuerung invertieren
@@ -333,15 +353,22 @@ app:
       finish: Beenden
       update: Aktualisieren
     label:
+      commit_history: Commit Vergangenheit
+      commits_on: commits ein
+      committed: Committed
       dirty: VERUNREINIGT
       invalid: UNZULÄSSIG
+      package_list: Packet Liste
       up_to_date: AKTUELL
     status:
       finished: Aktualisierung abgeschlossen
       updating: Aktualisieren...
     title: Softwareaktualisierungen
     tooltip:
+      commit_history: Commit Vergangenheit
       dirty: >-
         Deutet auf einen Fehler in Bezug auf das Git-Repository hin (z.B.
         detached head, not on master, invalid origin)
       invalid: Deutet auf lokale Änderungen im Git-Repository hin
+      packages: Pakete
+      release_notes: Veröffentlichungs Notizen
