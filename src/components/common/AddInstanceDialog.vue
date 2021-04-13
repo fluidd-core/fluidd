@@ -34,8 +34,8 @@
           >
             <template v-slot:append-outer>
               <v-icon v-if="verifying" class="spin" color="primary">$loading</v-icon>
-              <v-icon v-if="!verified && !verifying" color="error">$close</v-icon>
-              <v-icon v-if="verified && !verifying" color="success">$check</v-icon>
+              <v-icon v-if="!verified && !verifying" color="error">$cloudAlert</v-icon>
+              <v-icon v-if="verified && !verifying" color="success">$cloudCheck</v-icon>
             </template>
           </v-text-field>
 
