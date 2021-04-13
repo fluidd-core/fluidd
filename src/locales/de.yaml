@@ -4,10 +4,10 @@ app:
       flat_surface: Ebene Flächen anzeigen
       mesh_matrix: Mesh matrix
       probed_matrix: Probed matrix
-      scale: Skaliere bei min / max
-      wireframe: Drahtmodell
       profile_name: Profilname
       remove_profile: Profil %{name} löschen
+      scale: Skaliere bei min / max
+      wireframe: Drahtmodell
     msg:
       hint: >-
         Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann
@@ -101,7 +101,6 @@ app:
       add_printer: Drucker hinzufügen
       adjust_layout: Dashboard-Layout anpassen
       all: Alle
-      all_off: Alle aus
       calibrate: Kalibrieren
       cancel: Abbrechen
       clear_profile: Profil zurücksetzen
@@ -247,7 +246,6 @@ app:
       confirm: >-
         Sind Sie sicher? Dadurch werden der gesamte Verlauf und die
         Druckerstatistiken gelöscht
-      load_count: Stellt die letzten {num} Jobs dar
   printer:
     state:
       busy: Beschäftigt

@@ -88,7 +88,6 @@ app:
       add_printer: Adicionar impressora
       adjust_layout: Ajuste o layout do painel
       all: Tudo
-      all_off: Tudo Off
       calibrate: Calibrar
       cancel: Cancelar
       clear_profile: Limpar Perfil
@@ -222,7 +221,6 @@ app:
   history:
     msg:
       confirm: Tem certeza? Isso limpará todo o histórico e estatísticas da impressora
-      load_count: Representa os últimos {num} trabalhos
   printer:
     state:
       busy: Ocupada

@@ -100,7 +100,6 @@ app:
       add_printer: Add printer
       adjust_layout: Adjust dashboard layout
       all: All
-      all_off: All off
       calibrate: Calibrate
       cancel: Cancel
       clear_profile: Clear Profile
@@ -244,7 +243,6 @@ app:
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
-      load_count: Represents the last {num} Jobs
   printer:
     state:
       busy: Busy

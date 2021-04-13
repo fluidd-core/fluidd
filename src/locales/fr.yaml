@@ -93,7 +93,6 @@ app:
       add_printer: Ajouter une imprimante
       adjust_layout: Ajuster la disposition du tableau de bord
       all: Tout
-      all_off: Tout éteindre
       calibrate: Calibrer
       cancel: Annuler
       clear_profile: Effacer le profile
@@ -229,7 +228,6 @@ app:
       confirm: >-
         Êtes vous sûr(e) ? Toute l'historique et les statistiques de
         l'imprimante seront éffacées .
-      load_count: Représente les {num} dernières impressions
   printer:
     state:
       busy: Occupée

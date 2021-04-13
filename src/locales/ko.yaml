@@ -78,7 +78,6 @@ app:
       add_printer: 프린터 추가
       adjust_layout: 대시보드 레이아웃 조정
       all: ALL
-      all_off: ALL OFF
       calibrate: 칼리브레이션
       cancel: 취소
       clear_profile: 프로파일 적용해제
@@ -206,7 +205,6 @@ app:
   history:
     msg:
       confirm: 확실합니까? 모든 기록 및 프린터 통계가 삭제됩니다.
-      load_count: 마지막{num}개의 작업을 나타냅니다.
   printer:
     state:
       busy: 바쁨
