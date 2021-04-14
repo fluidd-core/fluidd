@@ -2,13 +2,10 @@
 
 ## Next Up
 
-- use components instead of plugins with moonraker
 - add cpu time / resource monitor
-- allow re-ordering temp presets and cameras
-- add layer height :/
-- flow calculation?
-- status layout changes
-- sync instances across moonraker db
+- status card updates
+  - add layer height :/
+  - flow calculation?
 - better way to handle overall warnings
   - warn on over temp for pi cpu / throttled (see moonraker docs for CPU Throttled)
   - warn on undervoltage for pi cpu? (is this reported?)
@@ -17,7 +14,9 @@
   - warn on cputime too high
   - warn on systeim too high
   - allow a way to configure if a warning is persistent or not
+- allow re-ordering temp presets and cameras
 - cancel uploads
+- sync instances across moonraker db
 
 ### Features
 
@@ -30,6 +29,8 @@
   - overview
   - easy change
 - More macro layout options (categorize macros, ability to define layout in some way, color)
+  - implement UI against default params
+  - can activate with default, or enter params..
 - file system enhancements
   - bulk actions to delete or move?
   - copy file
