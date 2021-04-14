@@ -1,13 +1,19 @@
 app:
   bedmesh:
     label:
+      flat_surface: Afficher une surface de ref.
+      mesh_matrix: Matrice interpolée
+      probed_matrix: Matrice réelle
       profile_name: Nom du profil
       remove_profile: Supprimer le profile %{name}
+      scale: Échelle au min / max
+      wireframe: Armature
     msg:
       hint: >-
         Si vous enregistrez le profil sous un autre nom que '%{profileName}',
-        vous pourrez également supprimer le profil '%{profileName}' . 
-      not_found: 'Aucun bed mesh trouvé . '
+        vous pourrez également supprimer le profil '%{profileName}' .
+      not_found: "Aucun bed mesh trouvé . "
+      not_loaded: Pas de bed mesh chargé
     tooltip:
       calibrate: >-
         Démarrer une nouvelle calibration, le profil sera sauvegardé sous le nom
@@ -21,14 +27,17 @@ app:
     label:
       current: Courant
       item: Élément
+      off: Graphique activé
+      on: Graphique désactivé
       power: Puissance
       target: Cible
     tooltip:
       help: >-
         Maintenez shift pour zoomer.<br />Cliquez un élément pour l'afficher
-        .<br />Cliquez une puissance pour l'afficher . 
+        .<br />Cliquez une puissance pour l'afficher .
   console:
     label:
+      auto_scroll: Scroll auto
       hide_temp_waits: Cacher les messages de température
     placeholder:
       command: >-
@@ -38,18 +47,18 @@ app:
     error:
       cant_connect: >-
         Une erreur s'est produite et fluidd ne peut pas communiquer . Êtes-vous
-        sûr(e) qu'il s'agisse de la bonne adresse ? 
+        sûr(e) qu'il s'agisse de la bonne adresse ?
       cors_error: blocké par la configuration CORS
       cors_note: >-
         Cela peut indiquer qu'il faille modifier votre configuration Moonraker .
         Veuillez vous réferer à la documentation relative à la configuration
         multiple  <a href="%{url}" target="_blank">ici</a> .
     hint:
-      add_printer: 'Ex: http://fluiddpi.local'
+      add_printer: "Ex: http://fluiddpi.local"
     msg:
       trouble: >-
         Un soucis ? <a href=\"%{url}\" target=\"_blank\">Cliquez ici</a> pour
-        plus d'infos . 
+        plus d'infos .
     tooltip:
       endpoint_examples: >-
         Saissizez l'URL de l'API .<br />Par exemple;<br
@@ -59,7 +68,7 @@ app:
       open: OUVERT
       triggered: ACTIF
     msg:
-      subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut . '
+      subtitle: "Appuyez sur le bouton 'Rafraîchir' pour mettre à jour le statut . "
   file_system:
     filters:
       label:
@@ -68,7 +77,10 @@ app:
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque
+      downloaded: Téléchargé
       file_name: Nom du fichier
+      transfer_rate: Vitesse de transfert
+      uploaded: Téléchargé
     msg:
       confirm: >-
         Êtes vous sûr(e) ? Ceci effacera tous les sous-fichiers et sous-dossiers
@@ -80,8 +92,10 @@ app:
     title:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
+      download_file: Téléchargement en cours
       rename_dir: Renommer le dossier
       rename_file: Renommer le fichier
+      upload_file: Upload en cours
     tooltip:
       disabled: Les fichiers sont désactivés avant la communication initiale avec klippy
       low_on_space: Espace disque limité
@@ -101,8 +115,11 @@ app:
       download: Télécharger
       edit: Editer
       extrude: Extruder
+      heaters_off: Tout éteindre
+      load_all: Tout charger
       pause: Pause
       preheat: Préchauffe
+      presets: Préréglage
       quad_gantry_level: QGL
       reboot: Redémarrer
       remove: Supprimer
@@ -120,6 +137,7 @@ app:
       save: Enregistrer
       save_as: Sauvegarder sous ...
       save_restart: Enregister et redémarrer
+      send: Envoyer
       shutdown: Éteindre
       socket_refresh: Forcer le rafraichissement
       upload: Uploaded
@@ -129,7 +147,7 @@ app:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
         target=\"_blank\" href=\"%{url}\">ici</a> .
-      app_warnings_found: '%{appName} avertissements .'
+      app_warnings_found: "%{appName} avertissements ."
       components_config: >-
         La configuration du plugin moonraker est disponible <a target=\"_blank\"
         href=\"%{url}\">ici . </a>
@@ -155,7 +173,7 @@ app:
       longest_job: Plus longue impr.
       low: Min
       name: Nom
-      'off': 'Off'
+      "off": "Off"
       power: Puissance
       printers: Imprimantes
       requested_speed: Vitesse demandée
@@ -176,6 +194,7 @@ app:
       z_offset: Z Offset
     simple_form:
       error:
+        arrayofnums: Seulement des nombres
         invalid_url: URL invalide
         max: Max %{max}
         min: Min %{min}
@@ -188,8 +207,13 @@ app:
     table:
       header:
         actions: Actions
+        end_time: Terminé
         estimated_time: Temps estimé
+        filament: Filament
         filament_used: Filament
+        first_layer_bed_temp: Temp. initiale du lit
+        first_layer_extr_temp: Temp. initiale de l'extrudeur
+        first_layer_height: Hauteur première couche
         height: Hauteur
         last_printed: Dernière impression
         layer_height: Hauteur de couche
@@ -198,11 +222,14 @@ app:
         print_duration: Durée d'impression
         size: Taille
         slicer: Slicer
+        slicer_version: Version du slicer
         start_time: Démarré
         status: Statut
+        total_duration: Durée totale
     title:
       add_printer: Ajouter une imprimante
       bedmesh: Bed Mesh
+      bedmesh_controls: Options du Bed Mesh
       camera: Webcam
       config_files: Fichiers de configuration
       configure: Configuration
@@ -215,6 +242,7 @@ app:
       limits: Limites de l'imprimante
       macros: Macros
       runout_sensors: Capteurs de filament
+      settings: Paramètres
       stats: Statistiques de l'imprimante
       status: Statut
       system_control: Contrôle du système
@@ -223,6 +251,9 @@ app:
       tune: Réglages
     tooltip:
       estop: Arrêt d'urgence
+      restart_klipper: Redémarre le service sytème Klipper.
+      reload_klipper: Recharge la configuration Klipper.
+      reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
   history:
     msg:
       confirm: >-
@@ -256,6 +287,8 @@ app:
     label:
       all_off: Tout éteindre
       all_on: Tout allumer
+      camera_fillspace: Utiliser tout l'espace
+      camera_fillspace_help: Si une seule caméra est activée, tout l'espace disponible est utilisé.
       camera_flip_x: Retourner horizontalement
       camera_flip_y: Retourner verticalement
       camera_stream_type: Type de flux
@@ -267,6 +300,7 @@ app:
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
       enable: Activer
+      enable_notifications: Activer les notifications
       fps_target: Nombre d'images par seconde
       gcode_coords: Utiliser les coordonnées GCode
       invert_x_control: Inverser les contrôles en X
@@ -282,7 +316,7 @@ app:
       z_adjust_values: Valeurs de Z Adjust
     timer_options:
       duration: Durée uniquement
-      duration_description: 'Similaire au LCD klipper, affiche une durée sans estimation . '
+      duration_description: "Similaire au LCD klipper, affiche une durée sans estimation . "
       filament: Estimation de filament
       filament_description: >-
         "Compare le filament utilisé avec l'estimation pour  estimer une durée
@@ -295,13 +329,13 @@ app:
       slicer: Slicer
       slicer_description: >-
         Utilise les estimations du slicer . Nécessite l'activation dans votre
-        slicer . 
+        slicer .
     title:
       camera: Webcam
       general: Général
       macros: Macros
       theme: Thème
-      thermal_presets: Pré-réglages de chauffe
+      thermal_presets: Pré-réglages de température
       tool: Outil
     tooltip:
       gcode_coords: >-
@@ -312,11 +346,11 @@ app:
       connecting: Connexion à Moonraker ..."
       no_connection: >-
         Pas de connection à Moonraker . Vérifiez l'état de Moonraker et / ou
-        rafraichissez . 
+        rafraichissez .
   tool:
     btn:
       home_x: X
-      home_y: 'Y'
+      home_y: "Y"
     tooltip:
       extruder_disabled: >-
         extrudeur désactivé, en dessous de min_extrude_temp( %{min}
@@ -329,15 +363,21 @@ app:
       finish: Terminer
       update: Mettre à jour
     label:
+      commit_history: Historique des commits
+      commits_on: commité le
+      committed: Commité
       dirty: SOUILLÉ
       invalid: INVALIDE
+      os_packages: Paquets du système d'exploitation
+      package_list: Liste des paquets
       up_to_date: A JOUR
     status:
       finished: Mises à jour terminées
       updating: Mise à jour ...
-    title: Mises à jour logiciel
+    title: Mises à jour disponibles
     tooltip:
-      dirty: >-
-        indique un état 'detached head', pas sur 'master' ou une 'origin'
-        invalide
+      commit_history: Historique des commits
+      dirty: indique un état 'detached head', pas sur 'master' ou une 'origin' invalide
       invalid: indique des changements locaux dans le répo
+      packages: Paquets
+      release_notes:

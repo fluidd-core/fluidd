@@ -153,7 +153,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
     if (component.key === 'system') {
-      return 'os packages'
+      return this.$t('app.version.label.os_packages')
     }
 
     return component.key

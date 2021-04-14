@@ -24,7 +24,7 @@
         :disabled="!klippyReady"
         @click="chartVisible = !chartVisible">
         <v-icon left>$chart</v-icon>
-        chart {{ (chartVisible) ? 'off' : 'on' }}
+        {{  (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
       </app-btn>
 
       <temperature-presets-menu

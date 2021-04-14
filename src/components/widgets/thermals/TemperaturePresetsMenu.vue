@@ -13,7 +13,7 @@
       small
     >
       <v-icon small class="mr-1">$fire</v-icon>
-      Presets
+      {{ $t('app.general.btn.presets') }}
       <v-icon small class="ml-1" v-if="value">$chevronUp</v-icon>
       <v-icon small class="ml-1" v-else>$chevronDown</v-icon>
     </app-btn>
@@ -27,7 +27,7 @@
     >
       <v-list-item-title>
         <v-icon small left color="info">$snowflakeAlert</v-icon>
-        Heaters off
+        {{ $t('app.general.btn.heaters_off') }}
       </v-list-item-title>
     </v-list-item>
     <v-list-item

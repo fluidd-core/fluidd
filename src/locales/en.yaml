@@ -25,6 +25,8 @@ app:
     label:
       current: Actual
       item: Name
+      off: Chart off
+      on: Chart on
       power: Power
       target: Target
     tooltip:
@@ -33,9 +35,10 @@ app:
         />Click a power to toggle in the graph.
   console:
     label:
+      auto_scroll: Auto scroll
       hide_temp_waits: Hide temp waits
     placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+      command: "'tab' for autocomplete, 'help' for commands 'arrows' for history"
   endpoint:
     error:
       cant_connect: >-
@@ -108,9 +111,11 @@ app:
       download: Download
       edit: Edit
       extrude: Extrude
+      heaters_off: Heaters off
       load_all: Load all
       pause: Pause
       preheat: Preheat
+      presets: Presets
       quad_gantry_level: QGL
       reboot: Reboot
       remove: Remove
@@ -128,6 +133,7 @@ app:
       save: Save
       save_as: Save As
       save_restart: Save & Restart
+      send: Send
       shutdown: Shutdown
       socket_refresh: Force refresh
       upload: Upload
@@ -137,7 +143,7 @@ app:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
         href="%{url}">here.</a>
-      app_warnings_found: '%{appName} warnings found.'
+      app_warnings_found: "%{appName} warnings found."
       components_config: >-
         Moonraker plugin configuration can be found <a target="_blank"
         href="%{url}">here.</a>
@@ -163,7 +169,7 @@ app:
       longest_job: Longest job
       low: Low
       name: Name
-      'off': 'Off'
+      "off": "Off"
       power: Power
       printers: Printers
       requested_speed: Requested Speed
@@ -241,6 +247,9 @@ app:
       tune: Tune
     tooltip:
       estop: Emergency Stop
+      restart_klipper: Restarts the klipper system service.
+      reload_klipper: Reloads klipper configuration.
+      reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
@@ -328,7 +337,7 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: 'Y'
+      home_y: "Y"
     tooltip:
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
@@ -344,6 +353,7 @@ app:
       committed: Committed
       dirty: DIRTY
       invalid: INVALID
+      os_packages: OS Packages
       package_list: Package List
       up_to_date: UP TO DATE
     status:

@@ -19,17 +19,15 @@
         </v-text-field>
       </v-col>
       <v-col cols="auto">
-        <app-btn
-          @click="emitSend(newValue)"
-        >
-          Send
+        <app-btn @click="emitSend(newValue)">
+          {{ $t('app.general.btn.send') }}
         </app-btn>
       </v-col>
       <v-col cols="auto">
         <v-checkbox
           v-model="autoScroll"
           hide-details
-          label="Auto scroll"
+          :label="$t('app.console.label.auto_scroll')"
           class="mt-0 pt-0"
         >
         </v-checkbox>
