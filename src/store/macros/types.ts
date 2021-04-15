@@ -5,4 +5,5 @@ export interface MacrosState {
 export interface Macro {
   name: string;
   visible?: boolean;
+  config?: any;
 }

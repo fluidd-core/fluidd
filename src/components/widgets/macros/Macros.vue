@@ -1,16 +1,18 @@
 <template>
   <v-card-text class="d-flex flex-wrap align-center justify-start pt-5">
     <template v-for="(macro, index) in macros">
-      <app-btn
+      <app-macro-btn
         v-if="macro.visible"
+        :macro="macro"
         :key="index"
-        @click="sendGcode(macro.name, `${waits.onMacro}${macro.name}`)"
+        @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
         :loading="hasWait(`${waits.onMacro}${macro.name}`)"
         :elevation="2"
         class="me-2 mb-2">
         {{ macro.name }}
-      </app-btn>
+      </app-macro-btn>
     </template>
+    <!-- <pre>{{ macros }}</pre> -->
   </v-card-text>
 </template>
 

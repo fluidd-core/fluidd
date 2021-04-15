@@ -19,10 +19,14 @@ export const mutations: MutationTree<MacrosState> = {
   // Updates a singular macro
   setUpdateMacro (state, macro: Macro) {
     const i = state.stored.findIndex(m => m.name === macro.name)
+    const processed = {
+      name: macro.name,
+      visible: macro.visible
+    }
     if (i < 0) {
-      state.stored.push(macro)
+      state.stored.push(processed)
     } else {
-      Vue.set(state.stored, i, macro)
+      Vue.set(state.stored, i, processed)
     }
   },
 
