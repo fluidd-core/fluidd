@@ -12,15 +12,15 @@
     >
       <v-card>
 
-        <v-card-title>
-          <span class="headline">{{ $t('app.general.title.add_printer') }}</span>
+        <v-card-title class="card-heading py-2">
+          <span class="focus--text">{{ $t('app.general.title.add_printer') }}</span>
           <v-spacer></v-spacer>
           <app-inline-help bottom>
             <span v-html="$t('app.endpoint.tooltip.endpoint_examples')"></span>
           </app-inline-help>
         </v-card-title>
 
-        <v-card-text>
+        <v-card-text class="mt-4">
           <span v-html="helpTxt"></span>
 
           <v-text-field
