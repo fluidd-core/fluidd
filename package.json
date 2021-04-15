@@ -104,6 +104,7 @@
     "serve": "^11.3.2",
     "shx": "^0.3.3",
     "standard-version": "^9.2.0",
+    "string-replace-loader": "^3.0.1",
     "typescript": "~3.9.3",
     "vue-cli-plugin-i18n": "^2.0.2",
     "vue-cli-plugin-vuetify": "^2.0.9",
