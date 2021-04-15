@@ -97,6 +97,7 @@ export default class FilesMixin extends Vue {
     const link = document.createElement('a')
     link.href = url
     link.setAttribute('download', filename)
+    link.setAttribute('target', '_blank')
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
