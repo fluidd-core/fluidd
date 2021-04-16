@@ -13,6 +13,9 @@ permalink: /features/cameras
 
 Fluidd (and FluiddPI) has built in support for web cameras.
 
+To configure FluiddPI, edit the file found here `/boot/fluiddpi.txt`.
+Instructions are contained within.
+
 You can add up to three cameras to display on your dashboard.
 
 Currently supported types are;
