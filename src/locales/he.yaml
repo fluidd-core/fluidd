@@ -1,0 +1,347 @@
+app:
+  bedmesh:
+    label:
+      flat_surface: הצג מישור שטוח
+      mesh_matrix: מטריצת רשת
+      probed_matrix: מטריצה לאחר מידוד
+      profile_name: שם פרופיל
+      remove_profile: "הסר את פרופיל %{name} "
+      scale: קנה המידה לפי מינימום / מקסימום
+      wireframe: מסגרת חוט
+    msg:
+      hint: "אם אתה שומר כמשהו אחר מ %{name}, תוכל לבחור להסיר גם את פרופיל %{name} "
+      not_found: לא נמצאה מפת מידוד קיימת
+      not_loaded: מפת מידוד לא טעונה
+    tooltip:
+      calibrate: להתחיל כיול חדש ושומר כפרופיל 'ברירת מחדל'
+      delete: מחק פרופיל. זה יגורם לאתחול המדפסת
+      load: טען פרופיל
+      save: שומר פרופיל מכויל ל- printer.cfg. פעולה זו תפעיל מחדש את המדפסת שלך
+  chart:
+    label:
+      current: נוכחי
+      item: שם
+      power: הפעלה
+      target: יעד
+    tooltip:
+      help: >-
+        החזק את המקש shift לזום.<br />לחץ על פריט להציג/להסתיר בתרשים.<br />לחץ
+        על עוצמה להציג/להסתיר בתרשים.
+  console:
+    label:
+      hide_temp_waits: הסתר טמפ' בהמתנה
+    placeholder:
+      command: >-
+        TAB עבור השלמה אוטומטית, HELP להצגת פקודות, חצים למעלה או למטה להיסטורית
+        הקלדה
+  endpoint:
+    error:
+      cant_connect: "משהו השתבש, פלואיד לא יכול להגיע ליעד. האם אתה בטוח שזו הכתובת הנכונה?"
+      cors_error: חסום על ידי מדיניות CORS - MOONRAKER
+      cors_note: >-
+        פירוש הדבר שעליך לשנות את תצורת המונרייקר שלך. עיין בדוקומנטציה בנושא
+        הגדרות מדפסות מרובות <a href="%{url}" target="_blank">כאן</a>
+    hint:
+      add_printer: "למשל, http: //fluiddpi.local"
+    msg:
+      trouble: 'נתקל בבעיות? <a href="%{url}" target="_blank">ראה כאן</a> למידע נוסף.'
+    tooltip:
+      endpoint_examples: >-
+        הזן את כתובת ה- API שלך.<br />כמה דוגמאות יכולות להיות;<br
+        /><blockquote>http: //fluidd.local, http://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: פתוח
+      triggered: סגור
+    msg:
+      subtitle: השתמש בלחצן הרענון כדי לעדכן את מצב מפסק התנועה
+  file_system:
+    filters:
+      label:
+        print_start_time: מסנן מודפס
+        print_start_time_desc: מסנן פריטים שכבר הודפסו
+    label:
+      dir_name: שם התיקייה
+      disk_usage: שימוש בזיכרון
+      downloaded: הורד
+      file_name: שם קובץ
+      transfer_rate: קצב העברה
+      uploaded: הועלה
+    msg:
+      confirm: האם אתה בטוח? פעולה זו תמחק את כל הקבצים והתיקיות בתוך.
+      not_found: לא נמצאו קבצים
+      processing: מעבד
+    overlay:
+      label: <strong>גרור</strong> קובץ לכאן
+    title:
+      add_dir: הוסף תיקייה
+      add_file: הוסף קובץ
+      download_file: מאחזר קובץ
+      rename_dir: שנה את שם התיקייה
+      rename_file: שנה את שם הקובץ
+      upload_file: מעלה קובץ | מעלה קבצים
+    tooltip:
+      disabled: משימות דורשות תקשורת ראשונית עם השירות klippy ונתיב virtual_sdcard חוקי
+      low_on_space: אין די שטח זיכרון פנוי
+  general:
+    btn:
+      add: הוסף
+      add_dir: הוסף תיקייה
+      add_file: הוסף קובץ
+      add_printer: הוסף מדפסת
+      adjust_layout: התאם פריסת מסך בית
+      all: כל
+      calibrate: כייל
+      cancel: בטל
+      clear_profile: נקה פרופיל
+      close: סגור
+      config_reference: תצורות ברירת מחדל
+      download: הורד
+      edit: ערוך
+      extrude: שחל
+      load_all: טען הכל
+      pause: השהייה
+      preheat: חימום מראש
+      quad_gantry_level: כיול גשר בעל 4 קורות
+      reboot: אתחול מחדש
+      remove: הסר
+      remove_all: הסר הכל
+      rename: שנה שם
+      reprint: הדפס מחדש
+      reset_file: איפוס קובץ
+      reset_layout: איפוס פריסה
+      restart_firmware: הפעל מחדש את הקושחה
+      restart_service_klipper: הפעל מחדש את קליפר
+      restart_service_moonraker: הפעל מחדש את Moonraker
+      restart_service_webcamd: הפעל מחדש את מצלמת האינטרנט
+      resume: המשך
+      retract: שיחול לאחור
+      save: שמור
+      save_as: שמור בשם
+      save_restart: שמור והפעל מחדש
+      shutdown: כיבוי
+      socket_refresh: רענון מאולץ
+      upload: העלה
+      upload_print: העלה והדפס
+      view: הצג
+    error:
+      app_setup_link: 'ניתן למצוא דרישות התקנה <a target="_blank" href="%{url}">כאן.</a>'
+      app_warnings_found: " נמצאו אזהרות%{appName} ."
+      components_config: >-
+        תצורת תוסף Moonraker ניתן למצוא <a target="_blank"
+        href="%{url}">כאן.</a>
+      failed_components: >-
+        במונרקר נכשלו תוספים, נא לבדוק את הלוגים שלך, עדכן את התצורה שלך והפעל
+        מחדש מונרקר.
+    label:
+      accel_to_decel: האצה להאטה
+      acceleration: האצה
+      add_camera: הוסף מצלמת רשת
+      add_preset: הוסף התאמה אישית
+      api_url: כתובת API
+      confirm: אשר
+      edit_camera: ערוך מצלמת רשת
+      edit_preset: ערוך התאמה אישית
+      extrude_length: אורך שיחול
+      extrude_speed: מהירות שיחול
+      flow: זרימה
+      free: שחרר
+      high: גבוה
+      host: מארח
+      layout: פריסה
+      longest_job: העבודה הארוכה ביותר
+      low: נמוך
+      name: שם
+      "off": כיבוי
+      power: הפעל
+      printers: מדפסות
+      requested_speed: מהירות דרושה
+      save_as: שמור בשם
+      services: שירותים
+      speed: מהירות
+      sqv: מהירות פינתית ישר זווית
+      total_filament: סה''כ פילמנט בשימוש
+      total_filament_avg: ממוצע להדפסה
+      total_jobs: סה"כ עבודות הדפסה
+      total_print_time: זמן הדפסה כולל
+      total_print_time_avg: ממוצע להדפסה
+      total_time: סה"כ זמן
+      total_time_avg: ממוצע להדפסה
+      used: בשימוש
+      variance: שונות
+      velocity: מְהִירוּת
+      z_offset: קיזוז Z
+    simple_form:
+      error:
+        arrayofnums: רק מספרים
+        invalid_url: כתובת לא חוקית
+        max: "מקסימום %{max}"
+        min: "מינימום %{min}"
+        min_or_0: "מינימום %{min} או 0"
+        required: נדרש
+      msg:
+        confirm: האם אתה בטוח?
+        confirm_reboot_host: האם אתה בטוח? זה יאתחל את מערכת ההפעלה שלך מחדש.
+        confirm_shutdown_host: האם אתה בטוח? פעולה זו תכבה את מערכת ההפעלה שלך.
+    table:
+      header:
+        actions: פעולות
+        end_time: הסתיים
+        estimated_time: זמן משוער
+        filament: פילמנט
+        filament_used: פילמנט בשימוש
+        first_layer_bed_temp: טמפ' מיטה שכבה ראשונה
+        first_layer_extr_temp: טמפ' נחיר שכבה ראשונה
+        first_layer_height: גובה השכבה הראשונה
+        height: גובה
+        last_printed: הודפס לאחרונה
+        layer_height: גובה השכבה
+        modified: השתנה
+        name: שם
+        print_duration: משך ההדפסה
+        size: גודל
+        slicer: סלייסר
+        slicer_version: גרסאת סלייסר
+        start_time: התחיל
+        status: סטטוס
+        total_duration: משך זמן כולל
+    title:
+      add_printer: הוסף מדפסת
+      bedmesh: רשת מיטה
+      bedmesh_controls: פקדי רשת מיטה
+      camera: מצלמה | מצלמות
+      config_files: קבצי תצורה
+      configure: הגדר
+      console: מסוף
+      endstops: מפסקי תנועה
+      fans_outputs: מאווררים ופקים
+      history: היסטוריית עבודה
+      home: מסך בית
+      jobs: עבודות
+      limits: מגבלות מדפסת
+      macros: פקודות מאקרו
+      runout_sensors: חיישני גמר
+      settings: הגדרות
+      stats: סטטיסטיקות מדפסת
+      status: סטטוס
+      system_control: בקרת מערכת
+      temperature: הגדרות טרמיות
+      tool: כלי
+      tune: כוון
+    tooltip:
+      estop: עצירת חירום
+  history:
+    msg:
+      confirm: האם אתה בטוח? פעולה זו תנקה את כל ההיסטוריה והסטטיסטיקות המדפסת
+  printer:
+    state:
+      busy: עסוק
+      complete: השלם
+      idle: סרק
+      loading: טוען
+      paused: מושהה
+      printing: מדפיס
+      ready: מוכן
+      standby: המתנה
+    status:
+      duration: משך
+      duration_total: משך וסה''כ
+      time_left: זמן משוער שנשאר
+      used_filament: פילמנט ששומש
+  setting:
+    btn:
+      add_camera: הוסף מצלמה
+      add_thermal_preset: הוסף התאמה אישית
+      reset: אפס
+      select_theme: בחר ערכת נושא
+    camera_type_options:
+      mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
+      video: IP Camera
+    label:
+      all_off: כבה הכל
+      all_on: הפעל הכל
+      camera_fillspace: השלם שטח
+      camera_fillspace_help: "עם מצלמה אחת מופעלת, מלא את שטח המצלמה במסך הבית"
+      camera_flip_x: סובב אופקית
+      camera_flip_y: סובב אנכית
+      camera_stream_type: סוג תזרים
+      camera_url: נתיב למצלמה
+      dark_mode: מצב מושחר
+      default_extrude_length: אורך שיחול ברירת מחדל
+      default_extrude_speed: מהירות שיחול ברירת מחדל
+      default_toolhead_move_length: אורך תזוזת ראש הדפסה ברירת מחדל
+      default_toolhead_xy_speed: מהירות ראש הדפסה XY ברירת מחדל
+      default_toolhead_z_speed: מהירות ראש הדפסה Z ברירת מחדל
+      enable: אפשר
+      enable_notifications: אפשר התראות
+      fps_target: יעד פריימים לשניה
+      gcode_coords: השתמש בקואורדינטות ג'יקוד
+      invert_x_control: היפוך שליטת ציר X
+      invert_y_control: היפוך שליטת ציר Y
+      invert_z_control: היפוך שליטת ציר Z
+      language: שפת תצוגה
+      primary_color: צבע ראשי
+      printer_name: שם מדפסת
+      reset: אפס הגדרות
+      thermal_preset_name: שם התאמה אישית
+      time_estimates: שיעורי הזמן
+      toggle: הפעל/כבה
+      z_adjust_values: ערכי קיזוז Z
+    timer_options:
+      duration: אורך בלבד
+      duration_description: "בדומה לתצוגת LCD, רק מראה זמנים ללא שיעור"
+      filament: שיעור פילמנט
+      filament_description: >-
+        לוקח פילמנט ששומש אל מול פילמנט משוער כדי לשער זמן הדפסה כולל. </br>
+        מדייק יותר עם הזמן.
+      file: שיעור לפי קובץ
+      file_description: >-
+        לוקח את ההתקדמות לפי אחוז, ומשך זמן הדפסה כדי לשער זמן הדפסה כולל.</br>
+        מדייק יותר עם הזמן.
+      slicer: סלייסר
+      slicer_description: משתמש בשיעור מהסליסר כדי להציג. חובה להפעיל את התכונה בסלייסר M73.
+    title:
+      camera: מצלמה | מצלמות
+      general: כללי
+      macros: פקודות מאקרו
+      theme: ערכת נושא
+      thermal_presets: חימום מותאם אישית
+      tool: כלי
+    tooltip:
+      gcode_coords: השתמש במיקום ג'יקוד במקום מיקום ראש הדפסה במסך הבית
+  socket:
+    msg:
+      connecting: מתחבר למונרקר...
+      no_connection: אין חיבור למונרקר. אנא וודא סטטוס מונרקר ו/אן רענן.
+  tool:
+    btn:
+      home_x: X
+      home_y: "Y"
+    tooltip:
+      extruder_disabled: "מנגנון שיחול מבוטל, טמפרטורה מתחת למינימום (%{min}<small>°C</small>)"
+      home_xy: אפס XY
+      home_z: אפס Z
+  version:
+    btn:
+      check_for_updates: בדוק עדכונים
+      finish: נגמר
+      update: עדכן
+    label:
+      commit_history: היסטוריית קומיטים
+      commits_on: קומיטים ב
+      committed: בוצע קומיט
+      dirty: מלוכלך
+      invalid: לא תקף
+      package_list: רשימת חבילות
+      up_to_date: מעודכן
+    status:
+      finished: העדכונים הסתיימו
+      updating: מעדכן...
+    title: עדכוני תוכנה
+    tooltip:
+      commit_history: היסטוריית קומיטים
+      dirty: "מורה על תיקייה מנותקת מהמקור, או לא מקושת למסטר או מקור לא תקף"
+      invalid: מורה על שינויים מקומיים לתיקיית המקור
+      packages: חבילות
+      release_notes: הערות שחרור גרסא
