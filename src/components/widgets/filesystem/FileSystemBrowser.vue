@@ -141,7 +141,7 @@
             </span>
           </file-row-item>
 
-          <file-row-item right :headers="headers" item-value="size">
+          <file-row-item :headers="headers" item-value="size">
             <span v-if="item.size !== undefined">
               {{ $filters.getReadableFileSizeString(item.size) }}
             </span>

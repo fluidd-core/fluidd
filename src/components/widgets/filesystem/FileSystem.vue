@@ -282,7 +282,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     headers = [
       ...headers,
       { text: this.$t('app.general.table.header.modified'), value: 'modified', width: '1%', configurable: true },
-      { text: this.$t('app.general.table.header.size'), value: 'size', width: '1%', align: 'end' }
+      { text: this.$t('app.general.table.header.size'), value: 'size', width: '1%', configurable: true }
     ]
 
     // Return headers

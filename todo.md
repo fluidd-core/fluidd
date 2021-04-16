@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- warning close with no save
 - add cpu time / resource monitor
 - status card updates
   - add layer height :/
