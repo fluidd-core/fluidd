@@ -9,7 +9,7 @@
       :class="{ 'draggable': inLayout }"
     >
       <slot name="title">
-        <v-icon left :color="iconColor">{{ icon }}</v-icon>
+        <v-icon left>{{ icon }}</v-icon>
         <span class="font-weight-light">{{ title }}</span>
       </slot>
       <v-spacer />

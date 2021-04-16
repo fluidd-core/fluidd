@@ -13,7 +13,17 @@ $material-dark: (
   'background': #1E1E20,
   'table': (
     'hover': #353539
-  )
+  ),
+  'text': (
+    'theme': rgba(#ffffff, 0.87),
+    'primary': rgba(#ffffff, 0.87),
+    'secondary': rgba(#ffffff, 0.87)
+  ),
+  'icons': (
+    'active': rgba(#ffffff, 0.87)
+  ),
+  'text-color': rgba(#ffffff, 0.87),
+  'fg-color': rgba(#ffffff, 0.87)
 );
 
 $material-dark-elevation-colors: (
