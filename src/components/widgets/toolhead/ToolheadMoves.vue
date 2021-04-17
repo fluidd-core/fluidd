@@ -104,10 +104,12 @@
     <v-row no-gutters justify="start" class="mb-2">
       <v-col>
         <v-btn-toggle mandatory dense v-model.number="toolheadMoveLength">
-          <app-btn :min-width="49" :value="0.1" :disabled="!klippyReady">0.1</app-btn>
-          <app-btn :min-width="49" class="pa-0" :value="1.0" :disabled="!klippyReady">1.0</app-btn>
-          <app-btn :min-width="49" class="pa-0" :value="10" :disabled="!klippyReady">10</app-btn>
-          <app-btn :min-width="49" class="pa-0" :value="100" :disabled="!klippyReady">100</app-btn>
+          <app-btn small :min-width="40" :value="0.1" :disabled="!klippyReady">0.1</app-btn>
+          <app-btn small :min-width="40" class="pa-0" :value="1.0" :disabled="!klippyReady">1.0</app-btn>
+          <app-btn small :min-width="40" class="pa-0" :value="10" :disabled="!klippyReady">10</app-btn>
+          <app-btn small :min-width="40" class="pa-0" :value="25" :disabled="!klippyReady">25</app-btn>
+          <app-btn small :min-width="40" class="pa-0" :value="50" :disabled="!klippyReady">50</app-btn>
+          <app-btn small :min-width="40" class="pa-0" :value="100" :disabled="!klippyReady">100</app-btn>
         </v-btn-toggle>
       </v-col>
     </v-row>

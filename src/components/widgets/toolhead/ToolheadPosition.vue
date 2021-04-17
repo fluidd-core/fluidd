@@ -1,24 +1,54 @@
 <template>
-  <v-card outlined class="mb-2">
-    <div style="line-height: 32px; padding: 0 12px;">
+  <div class="mb-2">
+    <!-- <div style="line-height: 32px; padding: 0 12px;"> -->
       <v-row justify="space-between" no-gutters>
-        <v-col cols="auto">
-          <span class="secondary--text text--lighten-1">X:</span>
-          <span class="grey--text focus--text">
+        <v-col cols="4" class="pr-1">
+          <v-text-field
+            label="X"
+            outlined
+            hide-details
+            dense
+            class="v-input--width-small"
+            @change="moveTo('X', $event)"
+            :readonly="printerBusy"
+            :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
+          ></v-text-field>
+          <!-- <span class="secondary--text text--lighten-1">X:</span> -->
+          <!-- <span class="grey--text focus--text">
             {{ ((useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)) }}
-          </span>
+          </span> -->
         </v-col>
-        <v-col cols="auto">
-          <span class="secondary--text text--lighten-1">Y:</span>
-          <span class="grey--text focus--text">
+        <v-col cols="4" class="pr-1 pl-1">
+          <v-text-field
+            label="Y"
+            outlined
+            hide-details
+            dense
+            class="v-input--width-small"
+            @change="moveTo('Y', $event)"
+            :readonly="printerBusy"
+            :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
+          ></v-text-field>
+          <!-- <span class="secondary--text text--lighten-1">Y:</span> -->
+          <!-- <span class="grey--text focus--text">
             {{ ((useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)) }}
-          </span>
+          </span> -->
         </v-col>
-        <v-col cols="auto">
-          <span class="secondary--text text--lighten-1">Z:</span>
+        <v-col cols="4" class="pl-1">
+          <v-text-field
+            label="Z"
+            outlined
+            hide-details
+            dense
+            class="v-input--width-small"
+            @change="moveTo('Z', $event)"
+            :readonly="printerBusy"
+            :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
+          ></v-text-field>
+          <!-- <span class="secondary--text text--lighten-1">Z:</span>
           <span class="grey--text focus--text">
             {{ ((useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)) }}
-          </span>
+          </span> -->
         </v-col>
       </v-row>
 
@@ -31,8 +61,8 @@
         </v-col>
       </v-row>
 
-    </div>
-  </v-card>
+    <!-- </div> -->
+  </div>
 </template>
 
 <script lang="ts">
@@ -59,6 +89,19 @@ export default class ToolheadPosition extends Mixins(StateMixin) {
     let speed = this.$store.state.printer.printer.gcode_move.speed || 0
     speed = (speed * multiplier) / 60
     return speed.toFixed()
+  }
+
+  moveTo (axis: string, pos: string) {
+    const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
+    const currentPos = (this.useGcodeCoords)
+      ? this.gcodePosition[axisIndexMap[axis]]
+      : this.toolheadPosition[axisIndexMap[axis]]
+    if (parseInt(currentPos) !== parseInt(pos)) {
+      const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+      // console.log(`G90 G1 ${axis}${pos} F${rate * 60}`)
+      this.sendGcode(`G90
+        G1 ${axis}${pos} F${rate * 60}`)
+    }
   }
 }
 </script>

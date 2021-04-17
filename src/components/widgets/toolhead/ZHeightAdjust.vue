@@ -1,25 +1,6 @@
 <template>
-  <v-row align="center" justify="end">
-    <!-- <v-col cols="auto">
-      <div class="grey--text text--darken-1">Offset Z</div>
-      <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
-    </v-col> -->
-    <v-col cols="auto">
-      <app-btn
-        @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
-        :loading="hasWait('ZAdjust')"
-        :disabled="!klippyReady"
-        small>
-        <v-icon small class="mx-0">$zUp</v-icon>
-      </app-btn>
-      <app-btn
-        @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
-        :loading="hasWait('ZAdjust')"
-        :disabled="!klippyReady"
-        small
-        class="ml-1">
-        <v-icon small>$zDown</v-icon>
-      </app-btn>
+  <v-row align="start" justify="end">
+    <v-col cols="6" class="text-right">
       <v-btn-toggle
         v-if="moveDistance"
         mandatory
@@ -42,6 +23,23 @@
         <span class="grey--text text--darken-1">{{ $t('app.general.label.z_offset') }}&nbsp;</span>
         <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
       </div>
+    </v-col>
+    <v-col cols="6">
+      <app-btn
+        @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
+        :loading="hasWait('ZAdjust')"
+        :disabled="!klippyReady"
+        small>
+        <v-icon small class="mx-0">$zUp</v-icon>
+      </app-btn>
+      <app-btn
+        @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
+        :loading="hasWait('ZAdjust')"
+        :disabled="!klippyReady"
+        small
+        class="ml-1">
+        <v-icon small>$zDown</v-icon>
+      </app-btn>
     </v-col>
   </v-row>
 </template>
