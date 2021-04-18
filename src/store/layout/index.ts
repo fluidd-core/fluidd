@@ -20,12 +20,12 @@ export const defaultState = (): LayoutState => {
           { id: 'printer-status-card', enabled: true, collapsed: false },
           { id: 'toolhead-card', enabled: true, collapsed: false },
           { id: 'outputs-card', enabled: true, collapsed: false },
-          { id: 'macros-card', enabled: true, collapsed: false },
           { id: 'printer-limits-card', enabled: true, collapsed: false },
           { id: 'camera-card', enabled: true, collapsed: false }
         ],
         container2: [
           { id: 'temperature-card', enabled: true, collapsed: false },
+          { id: 'macros-card', enabled: true, collapsed: false },
           { id: 'jobs-card', enabled: true, collapsed: false },
           { id: 'console-card', enabled: true, collapsed: false }
         ]
