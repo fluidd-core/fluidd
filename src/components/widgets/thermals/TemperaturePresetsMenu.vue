@@ -14,8 +14,7 @@
     >
       <v-icon small class="mr-1">$fire</v-icon>
       {{ $t('app.general.btn.presets') }}
-      <v-icon small class="ml-1" v-if="value">$chevronUp</v-icon>
-      <v-icon small class="ml-1" v-else>$chevronDown</v-icon>
+      <v-icon small class="ml-1" :class="{ 'rotate-180': value }">$chevronDown</v-icon>
     </app-btn>
   </template>
   <v-list

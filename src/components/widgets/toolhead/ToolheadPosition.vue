@@ -98,7 +98,6 @@ export default class ToolheadPosition extends Mixins(StateMixin) {
       : this.toolheadPosition[axisIndexMap[axis]]
     if (parseInt(currentPos) !== parseInt(pos)) {
       const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-      // console.log(`G90 G1 ${axis}${pos} F${rate * 60}`)
       this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)
     }

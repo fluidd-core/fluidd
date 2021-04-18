@@ -3,6 +3,6 @@
 import Component from 'vue-class-component'
 
 Component.registerHooks([
-  'activated',
-  'deactivated'
+  'beforeRouteEnter',
+  'beforeRouteUpdate'
 ])

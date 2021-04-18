@@ -38,7 +38,6 @@ export default class UtilsMixin extends Vue {
 
   // Return the printer state
   get printerState () {
-    // return this.$filters.startCase(this.$store.getters['printer/getPrinterState'])
     return this.$store.getters['printer/getPrinterState']
   }
 

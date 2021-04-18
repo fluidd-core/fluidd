@@ -7,14 +7,23 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
+          v-if="!dot"
           color="primary"
           outlined
           small
           v-bind="attrs"
           v-on="on"
         >
-          {{ $t('app.setting.btn.select_theme') }}
+          {{ title }}
         </v-btn>
+        <v-icon
+          v-else
+          v-bind="attrs"
+          v-on="on"
+          :color="value"
+        >
+          $circle
+        </v-icon>
       </template>
       <v-color-picker
         :value="value"
@@ -35,9 +44,15 @@ import { Debounce } from 'vue-debounce-decorator'
 @Component({
   components: {}
 })
-export default class ThemePicker extends Vue {
+export default class AppColorPicker extends Vue {
   @Prop({ type: String, required: true })
   value!: string
+
+  @Prop({ type: String, default: '' })
+  title!: string
+
+  @Prop({ type: Boolean, default: false })
+  dot!: boolean
 
   menu = false
 

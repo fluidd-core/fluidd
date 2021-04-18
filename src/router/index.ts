@@ -8,6 +8,7 @@ import Tune from '@/views/Tune.vue'
 import Configure from '@/views/Configure.vue'
 import Settings from '@/views/Settings.vue'
 import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
+import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -39,7 +40,17 @@ const routes: Array<RouteConfig> = [
     components: {
       default: Settings,
       navigation: AppSettingsNav
-    }
+    },
+    children: [
+      {
+        path: '/settings/macros/:category',
+        name: 'Macros',
+        components: {
+          default: MacroSettings,
+          navigation: AppSettingsNav
+        }
+      }
+    ]
   },
   {
     path: '*',
@@ -50,7 +61,18 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) return savedPosition
+    if (to.hash) {
+      return {
+        selector: to.hash,
+        offset: { x: 0, y: 60 },
+        behavior: 'smooth'
+      }
+    }
+    return { x: 0, y: 0 }
+  }
 })
 
 export default router

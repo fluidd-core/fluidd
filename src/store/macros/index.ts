@@ -10,7 +10,9 @@ import { RootState } from '../types'
  */
 export const defaultState = (): MacrosState => {
   return {
-    stored: []
+    stored: [],
+    categories: [],
+    expanded: []
   }
 }
 

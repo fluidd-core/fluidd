@@ -25,8 +25,8 @@ app:
     label:
       current: Actual
       item: Name
-      off: Chart off
-      on: Chart on
+      'off': Chart off
+      'on': Chart on
       power: Power
       target: Target
     tooltip:
@@ -38,7 +38,7 @@ app:
       auto_scroll: Auto scroll
       hide_temp_waits: Hide temp waits
     placeholder:
-      command: "'tab' for autocomplete, 'help' for commands 'arrows' for history"
+      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
   endpoint:
     error:
       cant_connect: >-
@@ -143,7 +143,7 @@ app:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
         href="%{url}">here.</a>
-      app_warnings_found: "%{appName} warnings found."
+      app_warnings_found: '%{appName} warnings found.'
       components_config: >-
         Moonraker plugin configuration can be found <a target="_blank"
         href="%{url}">here.</a>
@@ -154,6 +154,7 @@ app:
       accel_to_decel: Accel to Decel
       acceleration: Acceleration
       add_camera: Add Camera
+      add_category: Add category
       add_preset: Add Preset
       api_url: API URL
       confirm: Confirm
@@ -168,8 +169,9 @@ app:
       layout: Layout
       longest_job: Longest job
       low: Low
+      move_macro: Move macro %{name}
       name: Name
-      "off": "Off"
+      'off': 'Off'
       power: Power
       printers: Printers
       requested_speed: Requested Speed
@@ -184,6 +186,7 @@ app:
       total_print_time_avg: Avg per print
       total_time: Total time
       total_time_avg: Avg per print
+      uncategorized: Uncategorized
       used: used
       variance: Variance
       velocity: Velocity
@@ -191,6 +194,7 @@ app:
     simple_form:
       error:
         arrayofnums: Only numbers
+        exists: Already exists
         invalid_url: Invalid URL
         max: Max %{max}
         min: Min %{min}
@@ -247,9 +251,9 @@ app:
       tune: Tune
     tooltip:
       estop: Emergency Stop
-      restart_klipper: Restarts the klipper system service.
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
+      restart_klipper: Restarts the klipper system service.
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
@@ -325,6 +329,7 @@ app:
       camera: Camera | Cameras
       general: General
       macros: Macros
+      manage_macros: Manage Macros
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool
@@ -337,7 +342,7 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: "Y"
+      home_y: 'Y'
     tooltip:
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY

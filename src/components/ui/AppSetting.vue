@@ -6,7 +6,7 @@
     :class="classes"
     class="setting"
   >
-    <v-col :cols="cols[0]" class="setting-title">
+    <v-col :cols="cols[0]" class="setting-title" align-self="center">
       <slot name="title">{{ title }}</slot>
       <div class="setting-sub-title grey--text" v-if="hasSubTitle">
         <slot name="sub-title">
@@ -79,7 +79,11 @@ export default class AppSetting extends Vue {
   }
 
   .col.setting-title {
-    padding-top: 18px;
+    // display: flex;
+    // flex: 0 1 auto;
+    // justify-content: space-between;
+    // align-items: center;
+    padding-top: 12px;
     padding-bottom: 12px;
     padding-right: 12px;
   }
@@ -114,6 +118,7 @@ export default class AppSetting extends Vue {
     display: inline-flex;
     align-self: center;
     justify-content: flex-end;
+    align-items: center;
   }
 
   .setting-controls .v-input {

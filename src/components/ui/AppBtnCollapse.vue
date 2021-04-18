@@ -7,8 +7,7 @@
       color=""
       class="ml-1"
       fab x-small text>
-      <v-icon v-if="!collapsed">$chevronUp</v-icon>
-      <v-icon v-if="collapsed">$chevronDown</v-icon>
+      <v-icon :class="{ 'rotate-180': collapsed }">$chevronDown</v-icon>
     </app-btn>
 
     <!-- In layout -->

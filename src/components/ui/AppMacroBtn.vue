@@ -7,7 +7,6 @@
   </app-btn>
   <app-btn-group
     v-else
-    class=""
     :elevation="6"
   >
     <app-btn
@@ -18,9 +17,10 @@
     <v-menu
       left
       offset-y
+      transition="slide-x-transition"
       :close-on-content-click="false"
     >
-      <template v-slot:activator="{ on, attrs, active }">
+      <template v-slot:activator="{ on, attrs, value }">
         <app-btn
           v-if="params.length > 0"
           v-on="on"
@@ -28,15 +28,14 @@
           :min-width="24"
           class="px-0"
         >
-          <v-icon small v-if="!active">$chevronDown</v-icon>
-          <v-icon small v-else>$chevronUp</v-icon>
+          <v-icon small :class="{ 'rotate-180': value }">$chevronDown</v-icon>
         </app-btn>
       </template>
       <v-card>
         <!-- <v-card-title class="card-heading py-2">
           <span class="focus--text">params</span>
         </v-card-title> -->
-        <v-card-text class="pb-2">
+        <v-card-text class="pb-3 px-3">
           <v-text-field
             v-for="(param, i) in params"
             :key="param.name"
@@ -46,17 +45,17 @@
             hide-details="auto"
             v-model="param.value"
             class="v-input--width-small"
-            :class="{ 'mb-2': (i < params.length - 1) }">
+            :class="{ 'mb-3': (i < params.length - 1) }">
           </v-text-field>
         </v-card-text>
         <v-divider />
-        <v-card-actions class="pa-4 py-2">
+        <v-card-actions class="px-3 py-3">
           <!-- <app-btn block>{{ macro.name }}</app-btn> -->
           <app-btn
             block
             @click="$emit('click', runCommand)"
           >
-            Run
+            Send
           </app-btn>
         </v-card-actions>
       </v-card>

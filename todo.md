@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- add indicator on camera list for enabled / disabled
 - warning close with no save
 - add cpu time / resource monitor
 - status card updates

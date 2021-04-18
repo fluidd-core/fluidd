@@ -86,7 +86,9 @@ import {
   mdiSourceCommit,
   mdiArrowExpandUp,
   mdiCloudCheck,
-  mdiCloudAlert
+  mdiCloudAlert,
+  mdiCircle,
+  mdiFolderMove
 } from '@mdi/js'
 
 /**
@@ -142,6 +144,7 @@ export const Icons = Object.freeze({
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
   open: mdiOpenInApp,
+  move: mdiFolderMove,
   tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,
@@ -163,6 +166,7 @@ export const Icons = Object.freeze({
   bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
   snowflakeAlert: mdiSnowflakeAlert,
+  circle: mdiCircle,
   blankCircle: mdiCheckboxBlankCircleOutline,
   markedCircle: mdiRadioboxMarked,
   checkedCircle: mdiCheckCircleOutline,
