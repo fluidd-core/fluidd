@@ -1,5 +1,4 @@
 import { GetterTree } from 'vuex'
-import { groupBy, sortBy, mapValues } from 'lodash-es'
 import { Macro, MacroCategory, MacrosState } from './types'
 import { RootState } from '../types'
 import i18n from '@/plugins/i18n'
@@ -26,9 +25,15 @@ export const getters: GetterTree<MacrosState, RootState> = {
           ...{ config }
         }
 
-        // Handle categories that no longer exist.
-        if (stored && stored.category && !state.categories.includes(stored.category)) {
-          delete r.category
+        // Handle categories, incl those that no longer exist.
+        let category: MacroCategory | undefined
+        if (stored && stored.categoryId) {
+          category = state.categories.find(category => category.id === stored.categoryId)
+          if (category) {
+            r.category = category
+          } else {
+            delete r.categoryId
+          }
         }
 
         return r
@@ -48,17 +53,15 @@ export const getters: GetterTree<MacrosState, RootState> = {
     const macros: Macro[] = getters.getMacros.filter((macro: Macro) => (macro.visible === undefined || macro.visible === true))
     const categories: MacroCategory[] = getters.getCategories
     for (const category of categories) {
-      result.push({
-        name: category.name,
-        macros: macros
-          .filter((macro: Macro) => (macro.category === category.name))
-      })
+      const m = macros.filter((macro: Macro) => (macro.categoryId === category.id))
+      if (m.length > 0) {
+        result.push({
+          id: category.id,
+          name: category.name,
+          macros: m
+        })
+      }
     }
-    result.push({
-      name: i18n.t('app.general.label.uncategorized'),
-      macros: macros.filter((macro: Macro) => (macro.category === undefined))
-    })
-    // const grouped = groupBy(macros, macro => macro.category)
     return result
   },
 
@@ -66,19 +69,19 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * Returns all macros, transformed - given a category.
    * If no category is passed, return all those that are uncategorized.
    */
-  getMacrosByCategory: (state, getters) => (category?: string) => {
-    const cat = (!category)
+  getMacrosByCategory: (state, getters) => (categoryId?: string) => {
+    const id = (!categoryId || categoryId === '0')
       ? undefined
-      : category
+      : categoryId
     return getters.getMacros.filter((macro: Macro) => {
       // If we have both categories, return if they match.
-      if (macro.category && cat) {
-        return (macro.category === cat)
+      if (macro.categoryId && id) {
+        return (macro.categoryId === id)
       }
 
       // If we're given no category, only return those that have none, being
       // uncategorized.
-      if (!cat) return (macro.category === '' || macro.category === undefined)
+      if (!id) return (!macro.categoryId)
 
       // Otherwise return false
       return false
@@ -92,11 +95,12 @@ export const getters: GetterTree<MacrosState, RootState> = {
   getCategories: (state, getters) => {
     const categories = state.categories
       .map(category => {
-        const macros = getters.getMacrosByCategory(category)
+        const macros = getters.getMacrosByCategory(category.id)
         const count = macros.length
         const visible = macros.filter((macro: Macro) => macro.visible).length
         return {
-          name: category,
+          id: category.id,
+          name: category.name,
           visible,
           count
         }

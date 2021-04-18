@@ -25,12 +25,12 @@
         v-for="category in categories"
       >
         <app-setting
-          @click="handleCategoryClick(category.name)"
+          @click="handleCategoryClick(category)"
           :key="`category-${category.name}`"
           :r-cols="3"
         >
           <template v-slot:title>
-            {{ $filters.capitalize(category.name) }}
+            {{ category.name }}
             <v-chip x-small class="mr-4">{{ category.visible }} / {{ category.count }}</v-chip>
           </template>
 
@@ -60,7 +60,8 @@
 
       <!-- Add the uncategorized macros.. -->
       <app-setting
-        @click="handleCategoryClick('uncategorized')"
+        v-if="uncategorizedMacros.count > 0"
+        @click="handleCategoryClick()"
         :key="`category-uncategorized`"
         :r-cols="3"
       >
@@ -101,6 +102,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
     open: false,
     title: 'add',
     label: '',
+    category: null,
     name: '',
     rules: [],
     handler: this.handleAddCategory
@@ -125,6 +127,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
       open: true,
       title: 'Add category',
       label: this.$t('app.general.label.name'),
+      category: null,
       name: '',
       rules: [
         (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
@@ -139,6 +142,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
       open: true,
       title: 'Edit category',
       label: this.$t('app.general.label.name'),
+      category,
       name: category.name,
       rules: [
         (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
@@ -149,19 +153,24 @@ export default class MacroSettings extends Mixins(StateMixin) {
   }
 
   handleRemoveCategory (category: MacroCategory) {
-    this.$store.dispatch('macros/removeCategory', category.name)
+    this.$store.dispatch('macros/removeCategory', category)
   }
 
   handleAddCategory (category: string) {
     this.$store.dispatch('macros/addCategory', category)
   }
 
-  handleEditCategory (category: string) {
-    this.$store.dispatch('macros/editCategory', { previous: this.categoryDialogState.name, category })
+  handleEditCategory (name: string) {
+    const category = {
+      ...this.categoryDialogState.category,
+      name
+    }
+    this.$store.dispatch('macros/editCategory', category)
   }
 
-  handleCategoryClick (category: string) {
-    this.$router.push(`/settings/macros/${category.toLowerCase()}`)
+  handleCategoryClick (category: MacroCategory) {
+    const id = (category) ? category.id : 0
+    this.$router.push(`/settings/macros/${id}`)
   }
 }
 </script>

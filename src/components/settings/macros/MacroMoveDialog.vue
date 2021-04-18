@@ -25,9 +25,10 @@
         ></v-select>
       </v-card-text>
 
-    </v-card>
+      <!-- <pre>{{ currentCategory }}</pre>
+      <pre>{{ categories }}</pre> -->
 
-    <pre> {{ currentCategory }} </pre>
+    </v-card>
   </v-dialog>
 </template>
 
@@ -43,19 +44,19 @@ export default class MacroMoveDialog extends Vue {
   @Prop({ type: Object, required: true })
   macro!: Macro
 
-  @Prop({ type: String, required: false })
-  currentCategory!: string
+  @Prop({ type: Object, required: false })
+  currentCategory!: MacroCategory
 
   selected = null
 
   get categories () {
     // Grabs all categories and filters by the currently defined one.
     const categories = this.$store.getters['macros/getCategories']
-      .filter((category: MacroCategory) => category.name !== this.currentCategory)
+      .filter((category: MacroCategory) => category.id !== this.currentCategory.id)
 
     // Adds an uncategorized category if a category is defined.
-    if (this.currentCategory) {
-      categories.unshift({ name: this.$t('app.general.label.uncategorized'), count: -1 })
+    if (this.currentCategory.id !== '0') {
+      categories.push({ name: this.$t('app.general.label.uncategorized'), id: '0' })
     }
 
     return categories

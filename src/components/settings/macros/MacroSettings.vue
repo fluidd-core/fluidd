@@ -9,10 +9,10 @@
         exact
         @click="handleBack"
       >
-        <!-- :to="{ path: '/settings', hash: 'macros', params: { behavior: 'auto' } }" -->
         <v-icon small>$left</v-icon>
       </app-btn>
-      {{ category }} {{ $t('app.setting.title.macros') }}
+
+      {{ category.name }} {{ $t('app.setting.title.macros') }}
 
       <v-spacer />
 
@@ -98,7 +98,7 @@
     <macro-move-dialog
       v-if="this.category && moveDialogState.macro"
       v-model="moveDialogState.open"
-      :current-category="(category !== 'uncategorized') ? category : undefined"
+      :current-category="category"
       :macro="moveDialogState.macro"
       @change="handleMacroMove($event)"
     ></macro-move-dialog>
@@ -113,10 +113,10 @@ import store from '@/store'
 
 const routeGuard = (to: any) => {
   // No need to translate here, these are just used for the route.
-  const category = to.params.category || 'uncategorized'
+  const id = to.params.categoryId
   const categories = store.getters['macros/getCategories']
-  const i = categories.findIndex((c: MacroCategory) => c.name.toLowerCase() === category.toLowerCase())
-  return (i > -1 || category === 'uncategorized')
+  const i = categories.findIndex((c: MacroCategory) => c.id === id)
+  return (i > -1 || id === '0')
     ? true
     : { path: '/settings', hash: 'macros' }
 }
@@ -128,7 +128,7 @@ const routeGuard = (to: any) => {
 })
 export default class MacroSettings extends Vue {
   search = ''
-  category = ''
+  categoryId: string | undefined = undefined
 
   moveDialogState: any = {
     open: false,
@@ -136,14 +136,19 @@ export default class MacroSettings extends Vue {
   }
 
   get macros () {
-    const cat = (this.category !== 'uncategorized') ? this.category : undefined
-    const cats = this.$store.getters['macros/getMacrosByCategory'](cat)
-      .filter((macro: Macro) => (!this.search || this.search === '') ? true : macro.name.includes(this.search.toLowerCase()))
-    return cats
+    const id = this.categoryId
+    const categories = this.$store.getters['macros/getMacrosByCategory'](id)
+      .filter((macro: Macro) => (!this.search || this.search === '') ? true : macro.name.toLowerCase().includes(this.search.toLowerCase()))
+    return categories
   }
 
-  get categories () {
+  get categories (): MacroCategory[] {
     return this.$store.getters['macros/getCategories']
+  }
+
+  get category (): MacroCategory | undefined {
+    if (this.categoryId === '0') return { id: '0', name: this.$tc('app.general.label.uncategorized') }
+    return this.categories.find(category => category.id === this.categoryId)
   }
 
   beforeRouteEnter (to: any, from: any, next: any) {
@@ -156,7 +161,7 @@ export default class MacroSettings extends Vue {
 
   created () {
     this.search = ''
-    this.category = this.$route.params.category
+    this.categoryId = this.$route.params.categoryId
   }
 
   handleBack () {
@@ -190,10 +195,10 @@ export default class MacroSettings extends Vue {
     }
 
     // Are we moving to a category, or uncategorizing it?
-    if (category) {
-      newMacro.category = category.name
+    if (category.id === '0') {
+      delete newMacro.categoryId
     } else {
-      delete newMacro.category
+      newMacro.categoryId = category.id
     }
     this.$store.dispatch('macros/saveMacro', newMacro)
     this.moveDialogState.open = false

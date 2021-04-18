@@ -1,19 +1,21 @@
 export interface MacrosState {
   stored: Macro[];
-  categories: string[];
+  categories: MacroCategory[];
   expanded: number[];
 }
 
 export interface Macro {
   name: string;
-  visible?: boolean;
-  category?: string;
+  visible: boolean;
+  categoryId?: string;
+  category?: MacroCategory;
   color?: string;
   config?: any;
 }
 
 export interface MacroCategory {
+  id: string;
   name: string;
-  count: number;
-  visible: number;
+  count?: number;
+  visible?: number;
 }

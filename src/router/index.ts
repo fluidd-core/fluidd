@@ -43,7 +43,7 @@ const routes: Array<RouteConfig> = [
     },
     children: [
       {
-        path: '/settings/macros/:category',
+        path: '/settings/macros/:categoryId',
         name: 'Macros',
         components: {
           default: MacroSettings,

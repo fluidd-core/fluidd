@@ -1,7 +1,8 @@
 import Vue from 'vue'
+import { v4 as uuidv4 } from 'uuid'
 import { MutationTree } from 'vuex'
 import { defaultState } from './'
-import { Macro, MacrosState } from './types'
+import { Macro, MacroCategory, MacrosState } from './types'
 
 export const mutations: MutationTree<MacrosState> = {
   /**
@@ -19,9 +20,10 @@ export const mutations: MutationTree<MacrosState> = {
   // Updates a singular macro
   setUpdateMacro (state, macro: Macro) {
     const i = state.stored.findIndex(m => m.name === macro.name)
+    console.log('updating macro', macro, i)
     const processed = {
       name: macro.name,
-      category: macro.category?.toLowerCase(),
+      categoryId: macro.categoryId,
       color: macro.color,
       visible: macro.visible
     }
@@ -39,31 +41,33 @@ export const mutations: MutationTree<MacrosState> = {
     })
   },
 
-  setAddCategory (state, category: string) {
-    state.categories.push(category.toLowerCase())
+  setAddCategory (state, name: string) {
+    state.categories.push({ id: uuidv4(), name })
   },
 
-  setEditCategory (state, payload: { previous: string; category: string }) {
+  setEditCategory (state, payload: MacroCategory) {
     // Edit the category in the category list, and then update all macros.
-    const i = state.categories.indexOf(payload.previous)
-    const category = payload.category.toLowerCase()
-    Vue.set(state.categories, i, category)
+    const i = state.categories.findIndex(category => category.id === payload.id)
+    console.log('edit cat', i, payload)
+    Vue.set(state.categories, i, {
+      id: payload.id,
+      name: payload.name
+    })
     state.stored.forEach((macro, i) => {
-      if (macro.category === payload.previous) {
-        Vue.set(state.stored, i, { ...macro, category })
+      if (macro.categoryId === payload.id) {
+        Vue.set(state.stored, i, { ...macro, categoryId: payload.id })
       }
     })
   },
 
-  setRemoveCategory (state, payload: string) {
-    const category = payload.toLowerCase()
-    const i = state.categories.indexOf(category)
+  setRemoveCategory (state, payload: MacroCategory) {
+    const i = state.categories.findIndex(category => category.id === payload.id)
     if (i >= 0) {
       state.categories.splice(i, 1)
       state.stored.forEach((macro, i) => {
-        if (macro.category === category) {
+        if (macro.categoryId === payload.id) {
           const m = { ...macro }
-          delete m.category
+          delete m.categoryId
           Vue.set(state.stored, i, m)
         }
       })
@@ -71,6 +75,6 @@ export const mutations: MutationTree<MacrosState> = {
   },
 
   setExpanded (state, expanded: number[]) {
-    state.expanded = expanded
+    Vue.set(state, 'expanded', expanded)
   }
 }

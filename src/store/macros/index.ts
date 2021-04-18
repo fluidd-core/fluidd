@@ -12,7 +12,7 @@ export const defaultState = (): MacrosState => {
   return {
     stored: [],
     categories: [],
-    expanded: []
+    expanded: [0]
   }
 }
 

@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { Macro, MacrosState } from './types'
+import { Macro, MacroCategory, MacrosState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
@@ -32,18 +32,18 @@ export const actions: ActionTree<MacrosState, RootState> = {
 
   saveAllOn ({ state, commit }, macros) {
     // Commit the change...
-    commit('setUpdateAllVisible', { macros, visible: true })
+    // commit('setUpdateAllVisible', { macros, visible: true })
 
     // Save to moonraker.
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
+    // SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
   },
 
   saveAllOff ({ state, commit }, macros) {
     // Commit the change...
-    commit('setUpdateAllVisible', { macros, visible: false })
+    // commit('setUpdateAllVisible', { macros, visible: false })
 
     // Save to moonraker.
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
+    // SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
   },
 
   addCategory ({ commit, state }, category: string) {
@@ -53,14 +53,14 @@ export const actions: ActionTree<MacrosState, RootState> = {
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.categories', state.categories)
   },
 
-  editCategory ({ commit, state }, payload: { previous: string; category: string}) {
+  editCategory ({ commit, state }, payload: MacroCategory) {
     commit('setEditCategory', payload)
 
     // Save to moonraker.
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name, state)
   },
 
-  removeCategory ({ commit, state }, category: string) {
+  removeCategory ({ commit, state }, category: MacroCategory) {
     commit('setRemoveCategory', category)
 
     // Save to moonraker.
