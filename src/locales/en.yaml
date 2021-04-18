@@ -329,7 +329,6 @@ app:
       camera: Camera | Cameras
       general: General
       macros: Macros
-      manage_macros: Manage Macros
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="macros">{{ $t('app.setting.title.manage_macros') }}</v-subheader>
+    <v-subheader id="macros">{{ $t('app.setting.title.macros') }}</v-subheader>
     <v-card
       :elevation="5"
       dense
