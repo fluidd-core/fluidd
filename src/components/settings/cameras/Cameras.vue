@@ -38,10 +38,12 @@
       <template v-for="(camera, i) in cameras">
         <app-setting
           :key="camera.id"
-          :title="camera.name"
           @click="handleEditDialog(camera)"
           :r-cols="2"
         >
+          <template v-slot:title>
+            {{ camera.name }} <v-icon v-if="!camera.enabled" right small color="error">$error</v-icon>
+          </template>
           <app-btn
             @click.stop="handleRemoveCamera(camera)"
             fab
