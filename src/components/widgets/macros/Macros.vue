@@ -47,7 +47,7 @@
       </v-expansion-panel>
 
       <v-expansion-panel
-        v-if="uncategorizedMacros && uncategorizedMacros.macros.length > 0"
+        v-if="uncategorizedMacros && uncategorizedMacros.length > 0"
       >
         <v-expansion-panel-header>
           <template v-slot:actions>
@@ -57,7 +57,7 @@
           </template>
           <div>
             {{ $t('app.general.label.uncategorized') }}
-            <v-chip x-small class="ml-2">{{ uncategorizedMacros.visible }}</v-chip>
+            <v-chip x-small class="ml-2">{{ uncategorizedMacros.length }}</v-chip>
             <app-btn
               @click.prevent.stop="handleEditCategory('0')"
               icon
@@ -72,9 +72,8 @@
         </v-expansion-panel-header>
 
         <v-expansion-panel-content>
-          <template v-for="macro in uncategorizedMacros.macros">
+          <template v-for="macro in uncategorizedMacros">
             <app-macro-btn
-              v-if="macro.visible"
               :macro="macro"
               :key="`category-${macro.name}`"
               @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
@@ -110,13 +109,7 @@ export default class Macros extends Mixins(StateMixin) {
 
   get uncategorizedMacros () {
     const macros = this.$store.getters['macros/getMacrosByCategory']()
-    const count = macros.length
-    const visible = macros.filter((macro: Macro) => macro.visible).length
-    return {
-      macros,
-      count,
-      visible
-    }
+    return macros.filter((macro: Macro) => macro.visible)
   }
 
   get expanded () {
