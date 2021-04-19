@@ -57,16 +57,16 @@
           </template>
           <div>
             {{ $t('app.general.label.uncategorized') }}
-            <v-chip x-small class="ml-2">{{ uncategorizedMacros.length }}</v-chip>
+            <v-chip small class="ml-2">{{ uncategorizedMacros.length }}</v-chip>
             <app-btn
               @click.prevent.stop="handleEditCategory('0')"
               icon
               text
-              x-small
+              small
               color=""
               class="ml-2"
             >
-              <v-icon x-small>$cog</v-icon>
+              <v-icon small>$cog</v-icon>
             </app-btn>
           </div>
         </v-expansion-panel-header>

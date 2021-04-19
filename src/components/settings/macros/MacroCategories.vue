@@ -31,7 +31,7 @@
         >
           <template v-slot:title>
             {{ category.name }}
-            <v-chip x-small class="mr-4">{{ category.visible }} / {{ category.count }}</v-chip>
+            <v-chip small class="mr-4">{{ category.visible }} / {{ category.count }}</v-chip>
           </template>
 
           <app-btn
@@ -67,7 +67,7 @@
       >
         <template v-slot:title>
           {{ $t('app.general.label.uncategorized') }}
-          <v-chip x-small>{{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}</v-chip>
+          <v-chip small>{{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}</v-chip>
         </template>
         <v-icon>$chevronRight</v-icon>
       </app-setting>
