@@ -17,7 +17,7 @@
           </template>
           <div>
             {{ category.name }}
-            <v-chip x-small>{{ category.macros.length }}</v-chip>
+            <v-chip small>{{ category.macros.length }}</v-chip>
             <app-btn
               @click.prevent.stop="handleEditCategory(category.id)"
               icon
@@ -26,7 +26,7 @@
               color=""
               class="ml-2"
             >
-              <v-icon x-small>$cog</v-icon>
+              <v-icon small>$cog</v-icon>
             </app-btn>
           </div>
         </v-expansion-panel-header>
