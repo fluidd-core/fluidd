@@ -111,6 +111,7 @@ app:
       close: Close
       config_reference: Config Reference
       download: Download
+      preview_gcode: Preview Gcode
       edit: Edit
       extrude: Extrude
       heaters_off: Heaters off
@@ -244,6 +245,7 @@ app:
       fans_outputs: Fans & Outputs
       history: History
       home: Home
+      gcode_preview: Gcode Preview
       jobs: Jobs
       limits: Printer Limits
       macros: Macros
@@ -319,6 +321,12 @@ app:
       time_estimates: Time estimates
       toggle: Toggle
       z_adjust_values: Z Adjust values
+      extrusion_line_width: Extrusion Line Width
+      move_line_width: Move Line Width
+      retraction_icon_size: Retraction Icon Size
+      flip_horizontal: Horizontal Flip
+      flip_vertical: Vertical Flip
+      draw_background: Draw Background
     timer_options:
       duration: Duration only
       duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
@@ -338,6 +346,7 @@ app:
       macros: Macros
       theme: Theme
       thermal_presets: Thermal Presets
+      gcode_preview: Gcode Preview
       tool: Tool
     tooltip:
       gcode_coords: Use GCode position instead of toolhead position on dashboard

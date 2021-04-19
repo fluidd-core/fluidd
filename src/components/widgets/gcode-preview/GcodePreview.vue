@@ -1,0 +1,269 @@
+<template>
+  <div style="border: 1px solid black; overflow: hidden;">
+    <svg :viewBox="svgViewBox" :height="height" :width="width" ref="svg"
+         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+      <defs>
+        <svg id="retraction" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
+          <path d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9"/>
+        </svg>
+        <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="10" height="10">
+          <rect width="10" height="10" stroke-width=".1"
+                :stroke="themeIsDark ? 'black' : 'white'"
+                :fill="themeIsDark ? '#555' : 'lightgrey'"/>
+        </pattern>
+      </defs>
+      <g :transform="groupTransform">
+        <g id="background" v-if="drawBackground">
+          <rect :height="viewBox.y.max - viewBox.y.min"
+                :width="viewBox.x.max - viewBox.x.min"
+                style="fill: url(#backgroundPattern);"
+                :x="viewBox.x.min" :y="viewBox.y.min"/>
+        </g>
+        <g id="previousLayer" class="layer" v-if="getViewerOption('showPreviousLayer')">
+          <path stroke="lightgrey" :stroke-width="extrusionLineWidth" stroke-opacity="0.6"
+                :d="svgPathPrevious.extrusions"/>
+        </g>
+        <g id="currentLayer" class="layer">
+          <path :d="svgPathCurrent.extrusions" v-if="getViewerOption('showExtrusions')"
+                :stroke="themeIsDark ? 'white' : 'black'"
+                :stroke-width="extrusionLineWidth"/>
+          <path :d="svgPathCurrent.moves" v-if="getViewerOption('showMoves')"
+                stroke="gray"
+                :stroke-width="moveLineWidth"/>
+
+          <circle id="toolhead" fill="green" r=".6"
+                  :cx="svgPathCurrent.toolhead.x" :cy="svgPathCurrent.toolhead.y"/>
+
+          <g id="retractions" v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0">
+            <use v-for="({x, y}, index) of svgPathCurrent.retractions"
+                 :key="`retraction-${index + 1}`" xlink:href="#retraction"
+                 :x="x - (retractionIconSize / 2)" :y="y - retractionIconSize"/>
+            <!-- Calculate anchor to be bottom-center of the triangle -->
+          </g>
+        </g>
+        <g id="nextLayer" class="layer" v-if="getViewerOption('showNextLayer')">
+          <path stroke="lightgrey" stroke-opacity="0.6"
+                :d="svgPathNext.extrusions"
+                :stroke-width="extrusionLineWidth"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+</template>
+
+<script lang="ts">
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import StateMixin from '@/mixins/state'
+import panzoom, { PanZoom } from 'panzoom'
+import { LayerPaths } from '@/store/gcodePreview/types'
+
+@Component({})
+export default class GcodePreview extends Mixins(StateMixin) {
+  @Prop({
+    type: Boolean,
+    default: true
+  })
+  enabled!: boolean
+
+  @Prop({
+    type: String,
+    default: 'auto'
+  })
+  width!: string
+
+  @Prop({
+    type: String,
+    default: 'auto'
+  })
+  height!: string
+
+  @Prop({
+    type: Number,
+    default: Infinity
+  })
+  progress!: number
+
+  // todo: fix layerNr and layerHeight naming
+  @Prop({
+    type: Number,
+    default: 0
+  })
+  layer!: number
+
+  panzoom?: PanZoom
+
+  get themeIsDark (): boolean {
+    return this.$store.state.config.uiSettings.theme.isDark
+  }
+
+  get filePosition (): number {
+    return this.$store.state.printer.printer.virtual_sdcard.file_position
+  }
+
+  get extrusionLineWidth () {
+    return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
+  }
+
+  get moveLineWidth () {
+    return this.$store.state.config.uiSettings.gcodePreview.moveLineWidth
+  }
+
+  get retractionIconSize () {
+    return this.$store.state.config.uiSettings.gcodePreview.retractionIconSize
+  }
+
+  get drawBackground () {
+    return this.$store.state.config.uiSettings.gcodePreview.drawBackground
+  }
+
+  get groupTransform () {
+    const {
+      vertical,
+      horizontal
+    } = this.$store.state.config.uiSettings.gcodePreview.flip
+
+    const scale = [
+      horizontal ? -1 : 1,
+      vertical ? -1 : 1
+    ]
+
+    const {
+      stepper_x: stepperX,
+      stepper_y: stepperY
+    } = this.$store.getters['printer/getPrinterSettings']()
+
+    if (!stepperX || !stepperY) {
+      return ''
+    }
+
+    const transform = [
+      horizontal ? -(stepperX.position_max - stepperX.position_min) : 0,
+      vertical ? -(stepperY.position_max - stepperY.position_min) : 0
+    ]
+
+    return `scale(${scale.join()}) translate(${transform.join()})`
+  }
+
+  get viewBox () {
+    const {
+      stepper_x: stepperX,
+      stepper_y: stepperY
+    } = this.$store.getters['printer/getPrinterSettings']()
+
+    if (stepperX === undefined || stepperY === undefined) {
+      return {
+        x: {
+          min: 0,
+          max: 100
+        },
+        y: {
+          min: 0,
+          max: 100
+        }
+      }
+    }
+
+    return {
+      x: {
+        min: stepperX.position_min,
+        max: stepperX.position_max
+      },
+      y: {
+        min: stepperY.position_min,
+        max: stepperY.position_max
+      }
+    }
+  }
+
+  get svgViewBox () {
+    const {
+      x,
+      y
+    } = this.viewBox
+
+    return `${x.min} ${y.min} ${x.max} ${y.max}`
+  }
+
+  get defaultLayerPaths (): LayerPaths {
+    return {
+      extrusions: '',
+      moves: '',
+      retractions: [],
+      toolhead: {
+        x: 0,
+        y: 0
+      }
+    }
+  }
+
+  get svgPathCurrent (): LayerPaths {
+    if (!this.enabled) {
+      return this.defaultLayerPaths
+    }
+
+    const layerNr = Math.max(this.layer, 1)
+    const layer = this.$store.getters['gcodePreview/getLayers'][layerNr - 1]
+
+    // todo: fix this naming hell
+    if (this.getViewerOption('followProgress')) {
+      return this.$store.getters['gcodePreview/getLayerPaths'](layer, this.filePosition)
+    }
+
+    return this.$store.getters['gcodePreview/getLayerPaths'](layer, this.progress)
+  }
+
+  get svgPathPrevious (): LayerPaths {
+    if (!this.enabled || this.layer <= 1) {
+      return this.defaultLayerPaths
+    }
+
+    const layer = this.$store.getters['gcodePreview/getLayers'][this.layer - 2]
+
+    return this.$store.getters['gcodePreview/getLayerPaths'](layer)
+  }
+
+  get svgPathNext (): LayerPaths {
+    const layers = this.$store.getters['gcodePreview/getLayers']
+
+    if (!this.enabled || this.layer >= layers.length) {
+      return this.defaultLayerPaths
+    }
+
+    return this.$store.getters['gcodePreview/getLayerPaths'](layers[this.layer])
+  }
+
+  mounted () {
+    this.panzoom = panzoom(this.$refs.svg as SVGElement, {
+      maxZoom: 20,
+      minZoom: 0.98,
+      bounds: true,
+      boundsPadding: 0.9
+    })
+  }
+
+  reset () {
+    // eslint-disable-next-line no-unused-expressions
+    this.panzoom?.zoomTo(0, 0, 1)
+  }
+
+  getViewerOption (name: string) {
+    return this.$store.getters['gcodePreview/getViewerOption'](name)
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+.layer > path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.flipX {
+  transform: scaleX(-1)
+}
+
+.flipY {
+  transform: scaleY(-1)
+}
+</style>

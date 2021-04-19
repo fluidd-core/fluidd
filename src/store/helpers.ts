@@ -1,11 +1,20 @@
 import { ChartData } from './charts/types'
-import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, KlipperFileWithMeta, Thumbnail } from './files/types'
+import {
+  AppFile,
+  AppFileWithMeta,
+  FileChangeItem,
+  FilePaths,
+  KlipperFile,
+  KlipperFileWithMeta,
+  Thumbnail
+} from './files/types'
 import { SocketActions } from '@/socketActions'
 import store from '@/store'
 import { KlipperMesh, ProcessedMesh } from './mesh/types'
+import { Point } from '@/store/gcodePreview/types'
 import { LayoutConfig, Layouts } from './layout/types'
 
-export const isOfType = <T>(
+export const isOfType = <T> (
   varToBeChecked: any,
   propertyToCheckFor: keyof T
 ): varToBeChecked is T => (varToBeChecked as T)[propertyToCheckFor] !== undefined
@@ -134,7 +143,10 @@ export const handleAddChartEntry = (retention: number, keys: string[]) => {
       : null
     if (!date2 || date1.getTime() - date2.getTime() > diff) {
       const data = configureChartEntry(date1)
-      store.commit('charts/setChartEntry', { data, retention })
+      store.commit('charts/setChartEntry', {
+        data,
+        retention
+      })
     }
   }
 }
@@ -285,6 +297,95 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
     max,
     variance
   }
+}
+
+export const parseGcode = (line: string) => {
+  const [, command, args = ''] = line
+    .trim()
+    .split(';', 2)[0]
+    .split(/^([a-z][0-9]+)\s+/i)
+
+  if (!/^(G|M)\d+$/.test(command)) {
+    return null
+  }
+
+  const argMap: any = {}
+
+  for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?\d+(?:\.\d+)?)/ig)) {
+    argMap[key.toLowerCase()] = Number(value)
+  }
+
+  return {
+    command: command.toUpperCase(),
+    args: argMap
+  }
+}
+
+export const filterObject = (obj: any, keys: string[]) => {
+  const entries = Object
+    .entries(obj)
+    .filter(([key]) => keys.includes(key))
+
+  return Object.fromEntries(entries)
+}
+
+export const binarySearch = (arr: any[], comp: Function, approx = false): number => {
+  if (arr.length <= 1) {
+    return 0
+  }
+
+  let index = Math.floor(arr.length / 2)
+  let topBound = arr.length - 1
+  let bottomBound = 0
+
+  while (true) {
+    const result = comp(arr[index], index, arr)
+
+    if (result > 0) {
+      if (topBound === index) {
+        return approx ? index : -1
+      }
+
+      bottomBound = index
+      index = Math.ceil((topBound - index) / 2 + index)
+    } else if (result < 0) {
+      if (bottomBound === index) {
+        return approx ? index : -1
+      }
+
+      topBound = index
+      index = Math.floor((index - bottomBound) / 2 + bottomBound)
+    } else {
+      return index
+    }
+  }
+}
+
+/**
+ * Taken from https://stackoverflow.com/a/18473154
+ */
+export function polarToCartesian (center: Point, radius: number, angleInDegrees: number): Point {
+  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0
+
+  return {
+    x: center.x + (radius * Math.cos(angleInRadians)),
+    y: center.y + (radius * Math.sin(angleInRadians))
+  }
+}
+
+/**
+ * Taken from https://stackoverflow.com/a/18473154
+ */
+export function describeSvgArc (center: Point, radius: number, startAngle: number, endAngle: number): string {
+  const start = polarToCartesian(center, radius, endAngle)
+  const end = polarToCartesian(center, radius, startAngle)
+
+  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1'
+
+  return [
+    'M', start.x, start.y,
+    'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
+  ].join(' ')
 }
 
 // export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = false): ProcessedMesh => {

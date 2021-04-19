@@ -55,6 +55,7 @@
       @rename="handleRenameDialog"
       @remove="handleRemove"
       @download="handleDownload"
+      @preview-gcode="handlePreviewGcode"
       @preheat="handlePreheat"
     >
     </file-system-context-menu>
@@ -146,23 +147,29 @@ import { AppTableHeader } from '@/types'
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
   // Can be a list of roots, or a single root.
-  @Prop({ type: [String, Array], required: true })
-  roots!: string | string[];
+  @Prop({
+    type: [String, Array],
+    required: true
+  })
+  roots!: string | string[]
 
   @Prop({ type: String, required: false })
   name!: string;
 
   // If dense, hide the meta and reduce the overall size.
-  @Prop({ type: Boolean, default: false })
+  @Prop({
+    type: Boolean,
+    default: false
+  })
   dense!: boolean
 
   // Constrain height
   @Prop({ type: [Number, String] })
-  height!: number | string;
+  height!: number | string
 
   // Constrain height
   @Prop({ type: [Number, String] })
-  maxHeight!: number | string;
+  maxHeight!: number | string
 
   // Maintains the path and root.
   currentRoot = ''
@@ -298,7 +305,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   set currentPath (path: string) {
-    this.$store.dispatch('files/updateCurrentPathByRoot', { root: this.currentRoot, path })
+    this.$store.dispatch('files/updateCurrentPathByRoot', {
+      root: this.currentRoot,
+      path
+    })
   }
 
   // Returns the current path with no root.
@@ -412,7 +422,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * ===========================================================================
    * Dialog handling.
    * ===========================================================================
-  */
+   */
   handleRenameDialog (item: AppFile | AppFileWithMeta | AppDirectory) {
     if (this.disabled) return
     let title = this.$t('app.file_system.title.rename_dir')
@@ -494,7 +504,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * ===========================================================================
    * Core file handling.
    * ===========================================================================
-  */
+   */
   handlePrint (file: AppFile | AppFileWithMeta) {
     if (this.disabled) return
     SocketActions.printerPrintStart(`${this.visiblePath}/${file.filename}`)
@@ -559,7 +569,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (file.type === 'directory') text = this.$tc('app.file_system.msg.confirm')
     this.$confirm(
       text,
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      {
+        title: this.$tc('app.general.label.confirm'),
+        color: 'card-heading',
+        icon: '$error'
+      }
     )
       .then(res => {
         if (res) {
@@ -605,6 +619,15 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.downloadFile(file.filename, this.currentPath)
   }
 
+  async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
+    const { data } = await this.getFile(file.filename, this.currentPath, file.size)
+
+    this.$store.dispatch('gcodePreview/loadGcode', {
+      file,
+      gcode: data
+    })
+  }
+
   handlePreheat (file: AppFileWithMeta) {
     if (this.disabled) return
     if (
@@ -627,7 +650,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * ===========================================================================
    * Drag handling.
    * ===========================================================================
-  */
+   */
   handleDragEnter () {
     if (!this.rootProperties.readonly && !this.dragState.browserState) {
       this.dragState.overlay = true
@@ -648,24 +671,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 </script>
 
 <style lang="scss" scoped>
-  .filesystem-wrapper,
-  .file-system,
-  .file-system ::v-deep .v-data-table {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    height: 100%;
-  }
+.filesystem-wrapper,
+.file-system,
+.file-system ::v-deep .v-data-table {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
 
-  .v-text-field .v-select__slot .v-select__selection--comma {
-    min-width: min-content;
-  }
+.v-text-field .v-select__slot .v-select__selection--comma {
+  min-width: min-content;
+}
 
-  .dragOverlay.v-overlay--active {
-    border: dashed 3px #616161;
-  }
+.dragOverlay.v-overlay--active {
+  border: dashed 3px #616161;
+}
 
-  ::v-deep .dragOverlay > .v-overlay__content {
-    width: 100%;
-  }
+::v-deep .dragOverlay > .v-overlay__content {
+  width: 100%;
+}
 </style>

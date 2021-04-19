@@ -55,7 +55,7 @@ app:
     msg:
       trouble: >-
         Está com problemas? <a href="%{url}" target="_blank"> Veja aqui </a>
-        para mais informações. 
+        para mais informações.
     tooltip:
       endpoint_examples: >-
         Insira o URL da API. <br /> Alguns exemplos podem ser; <br />
