@@ -14,6 +14,9 @@ export const mutations: MutationTree<MacrosState> = {
 
   // Sets macro state from db
   initMacros (state, payload: MacrosState) {
+    if (payload && payload.categories) {
+      if (typeof payload.categories[0] === 'string') payload.categories = []
+    }
     if (payload) Object.assign(state, payload)
   },
 
