@@ -88,7 +88,8 @@ import {
   mdiCloudCheck,
   mdiCloudAlert,
   mdiCircle,
-  mdiFolderMove
+  mdiFolderMove,
+  mdiKeyboard
 } from '@mdi/js'
 
 /**
@@ -229,7 +230,8 @@ export const Icons = Object.freeze({
   filter: mdiFilterOutline,
   commit: mdiSourceCommit,
   cloudCheck: mdiCloudCheck,
-  cloudAlert: mdiCloudAlert
+  cloudAlert: mdiCloudAlert,
+  keyboard: mdiKeyboard
 })
 
 export const Waits = Object.freeze({

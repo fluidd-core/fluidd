@@ -29,6 +29,13 @@
         <v-toolbar-items>
           <app-btn
             v-if="!printerPrinting && rootProperties.showConfigRef"
+            @click="handleKeyboardShortcuts"
+            target="_blank">
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$keyboard</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.keyboard_shortcuts') }}</span>
+          </app-btn>
+          <app-btn
+            v-if="!printerPrinting && rootProperties.showConfigRef"
             :href="configRefUrl"
             target="_blank">
             <v-icon small :left="!$vuetify.breakpoint.smAndDown">$help</v-icon>
@@ -63,6 +70,11 @@
         :readonly="readonly"
         @ready="editorReady = true">
       </file-editor>
+
+      <keyboard-shortcuts-dialog
+        v-model="shortcutsDialog"
+      >
+      </keyboard-shortcuts-dialog>
 
     </v-card>
   </v-dialog>
@@ -107,6 +119,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   updatedContent = this.contents
   editorReady = false
+  shortcutsDialog = false
 
   get ready () {
     return (
@@ -145,6 +158,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
       this.$emit('save', this.updatedContent, restart)
       if (restart) this.$emit('input', false)
     }
+  }
+
+  handleKeyboardShortcuts () {
+    this.shortcutsDialog = true
   }
 }
 </script>

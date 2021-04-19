@@ -87,6 +87,7 @@ app:
       add_dir: Add Directory
       add_file: Add File
       download_file: Retrieving file
+      keyboard_shortcuts: Keyboard Shortcuts
       rename_dir: Rename Directory
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
