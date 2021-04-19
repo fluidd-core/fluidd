@@ -145,7 +145,7 @@ export default class AppSlider extends Mixins(StateMixin) {
 
   @Watch('newValue')
   onNewValueChange (val: number) {
-    if (this.valid) {
+    if (this.instant && this.valid) {
       this.$emit('input', val)
     }
   }
