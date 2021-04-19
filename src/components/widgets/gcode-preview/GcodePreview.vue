@@ -237,7 +237,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
       maxZoom: 20,
       minZoom: 0.98,
       bounds: true,
-      boundsPadding: 0.9
+      boundsPadding: 0.8
     })
   }
 

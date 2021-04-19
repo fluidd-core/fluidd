@@ -33,7 +33,7 @@
         <v-col>
           <app-slider
             label="Progress"
-            :value="currentLayerFileRange[1]"
+            :value="layerProgress"
             :min="currentLayerFileRange[0]"
             :max="currentLayerFileRange[1]"
             :disabled="currentLayerFileRange[1] === 0"
@@ -100,12 +100,22 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     if (this.followProgress && this.currentLayer !== this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])) {
       this.followProgress = false
     }
+
+    if (!this.followProgress) {
+      this.layerProgress = this.currentLayerFileRange[1]
+    }
   }
 
   @Watch('filePosition')
   onFilePositionChanged () {
     if (this.followProgress) {
       this.layerProgress = this.filePosition
+
+      const [min, max] = this.currentLayerFileRange
+
+      if (this.filePosition < min || this.filePosition > max) {
+        this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
+      }
     }
   }
 

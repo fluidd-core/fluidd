@@ -154,6 +154,10 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   getCurrentMoveIndex: (state, getters, rootState): number => {
     const filePosition = rootState.printer?.printer.virtual_sdcard.file_position
 
+    if (filePosition <= 0) {
+      return 0
+    }
+
     return binarySearch(getters.getMoves, (val: Move) => filePosition - (val.filePosition ?? 0), true)
   },
 

@@ -24,14 +24,8 @@ import GcodePreviewControlCheckbox from '@/components/widgets/gcode-preview/Gcod
 })
 export default class GcodePreviewControls extends Mixins(StateMixin) {
   get showFollowProgress () {
-    const printerState = this.$store.getters['printer/getPrinterState']
-
-    if (!['printing', 'paused'].includes(printerState)) {
-      return false
-    }
-
     const printerFile = this.$store.state.printer.printer.print_stats.filename
-    const gcodePreviewFile = this.$store.getters['gcodePreview/getFile'].filename
+    const gcodePreviewFile = this.$store.getters['gcodePreview/getFile']?.filename
 
     return gcodePreviewFile === printerFile
   }
