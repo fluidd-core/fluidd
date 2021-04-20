@@ -23,7 +23,6 @@ export const mutations: MutationTree<MacrosState> = {
   // Updates a singular macro
   setUpdateMacro (state, macro: Macro) {
     const i = state.stored.findIndex(m => m.name === macro.name)
-    console.log('updating macro', macro, i)
     const processed = {
       name: macro.name,
       categoryId: macro.categoryId,
@@ -51,7 +50,6 @@ export const mutations: MutationTree<MacrosState> = {
   setEditCategory (state, payload: MacroCategory) {
     // Edit the category in the category list, and then update all macros.
     const i = state.categories.findIndex(category => category.id === payload.id)
-    console.log('edit cat', i, payload)
     Vue.set(state.categories, i, {
       id: payload.id,
       name: payload.name

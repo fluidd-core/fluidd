@@ -2,7 +2,8 @@
 
 ## Next Up
 
-- add cpu time / resource monitor
+- Authorization
+- add cpu time / resource monitoring
 - status card updates
   - add layer height :/
   - flow calculation?
@@ -12,10 +13,9 @@
   - warn on gcode root not active
   - warn on mem low
   - warn on cputime too high
-  - warn on systeim too high
+  - warn on systime too high
   - allow a way to configure if a warning is persistent or not
 - allow re-ordering temp presets and cameras
-- cancel uploads
 - sync instances across moonraker db
 - warning close with no save in file editor
 

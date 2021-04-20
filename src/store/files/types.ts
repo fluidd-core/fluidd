@@ -122,6 +122,7 @@ export interface FileDownload {
 
 export interface FilesUpload extends FileDownload {
   complete: boolean; // indicates moonraker is finished with the file.
+  cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
 export interface FileFilter {

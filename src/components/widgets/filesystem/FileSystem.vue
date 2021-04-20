@@ -97,6 +97,7 @@
     <file-system-upload-dialog
       :value="currentUploads.length > 0"
       :files="currentUploads"
+      @cancel="handleCancelUpload"
     >
     </file-system-upload-dialog>
 
@@ -205,9 +206,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     rules: [],
     handler: ''
   }
-
-  // Maintains a cancel token source should we need to disable a request.
-  cancelTokenSource: CancelTokenSource | undefined = undefined
 
   // Gets available roots.
   get availableRoots () {
@@ -578,13 +576,29 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.$store.dispatch('wait/removeWait', Waits.onUpload)
   }
 
+  handleCancelUpload (file: FilesUpload) {
+    if (!file.complete) {
+      // Hasn't started uploading...
+      if (file.loaded === 0) {
+        this.$store.dispatch('files/updateFileUpload', {
+          filepath: file.filepath,
+          cancelled: true
+        })
+      }
+
+      // Started uploading, but not complete.
+      if (file.loaded > 0 && file.loaded < file.size) {
+        if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
+      }
+    }
+  }
+
   handleAddDir (name: string) {
     SocketActions.serverFilesPostDirectory(`${this.currentPath}/${name}`)
   }
 
   handleAddFile (name: string) {
     const file = new File([], name)
-    consola.log('handle add file', name, this.currentPath)
     this.uploadFile(file, this.visiblePath, this.currentRoot, false)
   }
 
