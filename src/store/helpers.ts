@@ -330,43 +330,21 @@ export const binarySearch = (arr: any[], comp: Function, approx = false): number
   let topBound = arr.length - 1
   let bottomBound = 0
 
-  while (true) {
+  while (bottomBound <= topBound) {
     const result = comp(arr[index], index, arr)
 
     if (result > 0) {
-      if (topBound === index) {
-        return approx ? index : -1
-      }
-
-      bottomBound = index
-      index = Math.round((topBound - index) / 2 + index)
-
-      if (index === bottomBound) {
-        index++
-
-        if (index === topBound) {
-          return index
-        }
-      }
+      bottomBound = index + 1
     } else if (result < 0) {
-      if (bottomBound === index) {
-        return approx ? index : -1
-      }
-
-      topBound = index
-      index = Math.round((index - bottomBound) / 2 + bottomBound)
-
-      if (index === topBound) {
-        index--
-
-        if (index === bottomBound) {
-          return index
-        }
-      }
+      topBound = index - 1
     } else {
       return index
     }
+
+    index = Math.round((bottomBound + topBound) / 2)
   }
+
+  return approx ? index : -1
 }
 
 /**
