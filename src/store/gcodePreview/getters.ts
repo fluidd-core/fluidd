@@ -1,8 +1,9 @@
 import { GetterTree } from 'vuex'
-import { GcodePreviewState, LayerPaths, Move, Point } from './types'
+import { GcodePreviewState, LayerHeight, LayerPaths, Move, Point } from './types'
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch } from '@/store/helpers'
+import consola from 'consola'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -20,7 +21,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return (state.viewer as any)[key]
   },
 
-  getLayers: (state, getters): number[] => {
+  getLayers: (state, getters): LayerHeight[] => {
     return Array.from(getters.getAllLayerStarts.keys())
   },
 
@@ -52,7 +53,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     }
   },
 
-  getLayerPaths: (state, getters) => (layer: number, filePosition = getters.getLayerEnd(layer)): LayerPaths => {
+  getLayerPaths: (state, getters) => (layer: LayerHeight, filePosition = getters.getLayerEnd(layer)): LayerPaths => {
     let index = getters.getLayerStart(layer)
     const moves = getters.getMoves
     const toolhead = {
@@ -110,7 +111,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return path
   },
 
-  getAllLayerStarts: (state, getters): Map<number, number> => {
+  getAllLayerStarts: (state, getters): Map<LayerHeight, number> => {
     let z = -Infinity
     let zStart = 0
     const output = new Map()
@@ -130,12 +131,12 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return output
   },
 
-  getLayerStart: (state, getters) => (layer: number): number => {
+  getLayerStart: (state, getters) => (layer: LayerHeight): number => {
     return getters.getAllLayerStarts.get(layer) ?? -1
   },
 
-  getLayerEnd: (state, getters) => (layer: number): number => {
-    const layerStarts: [number, number][] = Array.from(getters.getAllLayerStarts.entries())
+  getLayerEnd: (state, getters) => (layer: LayerHeight): number => {
+    const layerStarts: [LayerHeight, number][] = Array.from(getters.getAllLayerStarts.entries())
     const layerIndex = layerStarts.findIndex(value => value[0] === layer)
 
     if (layerIndex === -1) {
@@ -161,7 +162,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return binarySearch(getters.getMoves, (val: Move) => filePosition - (val.filePosition ?? 0), true)
   },
 
-  getCurrentLayer: (state, getters): number => {
+  getCurrentLayer: (state, getters): LayerHeight => {
     const currentIndex = getters.getCurrentMoveIndex
     const layerStarts: [number, number][] = Array.from(getters.getAllLayerStarts.entries())
 
