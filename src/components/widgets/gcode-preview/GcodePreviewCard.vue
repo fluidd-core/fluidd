@@ -92,6 +92,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   onFollowProgressChanged () {
     if (this.followProgress) {
       this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
+      this.layerProgress = this.filePosition
     }
   }
 
@@ -116,6 +117,13 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       if (this.filePosition < min || this.filePosition > max) {
         this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
       }
+    }
+  }
+
+  @Watch('layerProgress')
+  onLayerProgressChanged () {
+    if (this.followProgress && this.layerProgress !== this.filePosition) {
+      this.followProgress = false
     }
   }
 
