@@ -1,7 +1,8 @@
 import { ActionTree } from 'vuex'
 import { ArcMove, GcodePreviewState, LinearMove, Move, PositioningMode, Rotation } from './types'
 import { RootState } from '../types'
-import { filterObject, parseGcode } from '@/store/helpers'
+import { parseGcode } from '@/store/helpers'
+import { pick } from 'lodash-es'
 import { AppFile } from '@/store/files/types'
 
 /* eslint no-fallthrough: 0 */
@@ -41,14 +42,14 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
       switch (command) {
         case 'G0':
         case 'G1':
-          move = filterObject(args, [
+          move = pick(args, [
             'x', 'y', 'z', 'e'
           ]) as LinearMove
           break
         case 'G2':
         case 'G3':
           move = {
-            ...filterObject(args, [
+            ...pick(args, [
               'x', 'y', 'z', 'e',
               'i', 'j', 'r'
             ]),

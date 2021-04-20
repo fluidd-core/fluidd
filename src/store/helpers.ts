@@ -321,14 +321,6 @@ export const parseGcode = (line: string) => {
   }
 }
 
-export const filterObject = (obj: any, keys: string[]) => {
-  const entries = Object
-    .entries(obj)
-    .filter(([key]) => keys.includes(key))
-
-  return Object.fromEntries(entries)
-}
-
 export const binarySearch = (arr: any[], comp: Function, approx = false): number => {
   if (arr.length <= 1) {
     return 0
