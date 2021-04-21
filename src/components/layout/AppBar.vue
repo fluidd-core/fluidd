@@ -2,13 +2,13 @@
   <v-app-bar
     app
     clipped-left
+    :height="52"
   >
     <div class="toolbar-title">
       <router-link to="/">
         <app-icon
-          class="shrink mr-4 mt-1 color-filter float-left"
-          width="35"
-          height="40"
+          class="shrink mr-3 color-filter float-left"
+          width="30"
           :primary-color="theme.currentTheme.primary"
           :secondary-color="theme.currentTheme.primaryOffset"
         ></app-icon>
@@ -23,33 +23,35 @@
         icon="$home"
         exact
         to="/">
-        Home
+        {{ $t('app.general.title.home') }}
       </app-nav-item>
 
       <app-nav-item
         icon="$files"
         to="/jobs">
-        Jobs
+        {{ $t('app.general.title.jobs') }}
       </app-nav-item>
 
       <app-nav-item
         icon="$history"
         to="/history">
-        History
+        {{ $t('app.general.title.history') }}
       </app-nav-item>
 
       <app-nav-item
         icon="$tune"
         to="/tune">
-        Tune
+        {{ $t('app.general.title.tune') }}
       </app-nav-item>
 
       <app-nav-item
         icon="$cogs"
         to="/configure">
-        System
+        {{ $t('app.general.title.configure') }}
       </app-nav-item>
+    </div>
 
+    <div class="toolbar-suplimental">
       <v-tooltip bottom v-if="socketConnected">
         <template v-slot:activator="{ on, attrs }">
           <app-btn
@@ -130,13 +132,13 @@ export default class AppBar extends Mixins(StateMixin) {
     align-items: center;
     height: inherit;
     @media #{map-get($display-breakpoints, 'md-and-up')} {
-      // flex: 0 0 33.3333333333%;
-      // max-width: 33.3333333333%;
+      flex: 0 0 33.3333333333%;
+      max-width: 33.3333333333%;
     }
   }
 
   .toolbar-nav {
-    justify-content: flex-end;
+    justify-content: center;
     @media #{map-get($display-breakpoints, 'sm-and-down')} {
       display: none;
     }
@@ -154,7 +156,7 @@ export default class AppBar extends Mixins(StateMixin) {
     white-space: nowrap;
     text-overflow: ellipsis;
     @media #{map-get($display-breakpoints, 'sm-and-up')} {
-      font-size: 2.125rem;
+      font-size: 1.875rem;
     }
   }
 

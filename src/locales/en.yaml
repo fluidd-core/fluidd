@@ -237,8 +237,8 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs
-      history: Job History
-      home: Dashboard
+      history: History
+      home: Home
       jobs: Jobs
       limits: Printer Limits
       macros: Macros
