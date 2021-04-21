@@ -46,6 +46,7 @@
     "monaco-editor-textmate": "^2.2.2",
     "monaco-textmate": "^3.0.1",
     "onigasm": "^2.2.5",
+    "panzoom": "^9.4.2",
     "register-service-worker": "^1.7.2",
     "semver": "^7.3.5",
     "uuid": "^8.3.2",
