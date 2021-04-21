@@ -11,7 +11,7 @@ import {
 import { SocketActions } from '@/socketActions'
 import store from '@/store'
 import { KlipperMesh, ProcessedMesh } from './mesh/types'
-import { Point } from '@/store/gcodePreview/types'
+import { ArcMove, Move, Point, Rotation } from '@/store/gcodePreview/types'
 import { LayoutConfig, Layouts } from './layout/types'
 
 export const isOfType = <T> (
@@ -347,31 +347,112 @@ export const binarySearch = (arr: any[], comp: Function, approx = false): number
   return approx ? index : -1
 }
 
-/**
- * Taken from https://stackoverflow.com/a/18473154
- */
-export function polarToCartesian (center: Point, radius: number, angleInDegrees: number): Point {
-  const angleInRadians = (angleInDegrees - 90) * Math.PI / 180.0
+function distance (a: Point, b: Point): number {
+  const diffX = Math.abs(a.x - b.x)
+  const diffY = Math.abs(a.y - b.y)
 
-  return {
-    x: center.x + (radius * Math.cos(angleInRadians)),
-    y: center.y + (radius * Math.sin(angleInRadians))
+  return Math.sqrt(diffX ** 2 + diffY ** 2)
+}
+
+function angleBetween (a: Point, b: Point) {
+  return Math.atan2(b.y - a.y, b.x - a.x) * (180 / Math.PI)
+}
+
+function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
+  const destination = {
+    x: move.x ?? toolhead.x,
+    y: move.y ?? toolhead.y
+  }
+
+  const center = {
+    x: toolhead.x + (move.i ?? 0),
+    y: toolhead.y + (move.j ?? 0)
+  }
+
+  const radius = distance(toolhead, center)
+  let angleCw = angleBetween(center, toolhead) - angleBetween(center, destination)
+
+  if (angleCw > 180) {
+    angleCw -= 360
+  } else if (angleCw < -180) {
+    angleCw += 360
+  }
+
+  switch (move.direction) {
+    case Rotation.Clockwise:
+      return [
+        'A', radius, radius, 0, Number(angleCw < 0), 0, destination.x, destination.y,
+        'M', destination.x, destination.y
+      ].join(' ')
+    case Rotation.CounterClockwise:
+      return [
+        'M', destination.x, destination.y,
+        'A', radius, radius, 0, Number(angleCw > 0), 0, toolhead.x, toolhead.y,
+        'M', destination.x, destination.y
+      ].join(' ')
+    default:
+      throw new TypeError('move has no direction')
   }
 }
 
 /**
- * Taken from https://stackoverflow.com/a/18473154
+ * Taken from https://stackoverflow.com/a/42803692
  */
-export function describeSvgArc (center: Point, radius: number, startAngle: number, endAngle: number): string {
-  const start = polarToCartesian(center, radius, endAngle)
-  const end = polarToCartesian(center, radius, startAngle)
+function findIntersections (center1: Point, center2: Point, radius: number) {
+  const d = Math.sqrt((center2.x - center1.x) ** 2 + (center2.y - center1.y) ** 2)
+  const a = (d ** 2) / (2 * d)
+  const h = Math.sqrt(radius ** 2 - a ** 2)
+  const x2 = center1.x + a * (center2.x - center1.x) / d
+  const y2 = center1.y + a * (center2.y - center1.y) / d
 
-  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1'
+  const x3 = x2 + h * (center2.y - center1.y) / d
+  const y3 = y2 - h * (center2.x - center1.x) / d
 
-  return [
-    'M', start.x, start.y,
-    'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y
-  ].join(' ')
+  const x4 = x2 - h * (center2.y - center1.y) / d
+  const y4 = y2 + h * (center2.x - center1.x) / d
+
+  return [{
+    x: x3,
+    y: y3
+  }, {
+    x: x4,
+    y: y4
+  }]
+}
+
+function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
+  const intersections = findIntersections(
+    toolhead,
+    {
+      x: move.x ?? toolhead.x,
+      y: move.y ?? toolhead.y
+    },
+    move.r ?? NaN
+  )
+
+  throw new Error('todo')
+}
+
+export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
+  if (move.i !== undefined && move.j !== undefined) {
+    return arcIJMoveToSVGPath(toolhead, move)
+  }
+
+  if (move.r !== undefined) {
+    return arcRMoveToSVGPath(toolhead, move)
+  }
+
+  throw new TypeError('Move is not a valid arc')
+}
+
+// Assumes the path is pr
+export function moveToSVGPath (toolhead: Point, move: Move) {
+  // todo figure out if I can just typecheck this
+  if (Object.hasOwnProperty.call(move, 'direction')) {
+    return arcMoveToSvgPath(toolhead, move as ArcMove)
+  } else {
+    return `L ${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
+  }
 }
 
 // export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = false): ProcessedMesh => {

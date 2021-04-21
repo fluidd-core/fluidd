@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import { GcodePreviewState, LayerHeight, LayerPaths, Move, Point } from './types'
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
-import { binarySearch } from '@/store/helpers'
+import { binarySearch, moveToSVGPath } from '@/store/helpers'
 import consola from 'consola'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
@@ -73,7 +73,6 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
     let traveling = true
 
-    // todo: arcs
     for (; index < moves.length && moves[index].filePosition <= filePosition; index++) {
       const move = moves[index]
 
@@ -83,8 +82,8 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
           traveling = false
         }
 
+        path.extrusions += moveToSVGPath(toolhead, move)
         Object.assign(toolhead, move)
-        path.extrusions += `L ${toolhead.x},${toolhead.y} `
       } else {
         if (!traveling) {
           path.moves += `M ${toolhead.x},${toolhead.y}`
@@ -98,8 +97,8 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
           })
         }
 
+        path.moves += moveToSVGPath(toolhead, move)
         Object.assign(toolhead, move)
-        path.moves += `L ${toolhead.x},${toolhead.y}`
       }
     }
 
