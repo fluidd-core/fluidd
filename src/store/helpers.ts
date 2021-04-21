@@ -370,24 +370,23 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
   }
 
   const radius = distance(toolhead, center)
-  let angleCw = angleBetween(center, toolhead) - angleBetween(center, destination)
+  let angle = angleBetween(center, toolhead) - angleBetween(center, destination)
 
-  if (angleCw > 180) {
-    angleCw -= 360
-  } else if (angleCw < -180) {
-    angleCw += 360
+  if (angle > 180) {
+    angle -= 360
+  } else if (angle < -180) {
+    angle += 360
   }
 
   switch (move.direction) {
     case Rotation.Clockwise:
       return [
-        'A', radius, radius, 0, Number(angleCw < 0), 0, destination.x, destination.y,
-        'M', destination.x, destination.y
+        'A', radius, radius, 0, Number(angle < 0), 0, destination.x, destination.y
       ].join(' ')
     case Rotation.CounterClockwise:
       return [
         'M', destination.x, destination.y,
-        'A', radius, radius, 0, Number(angleCw > 0), 0, toolhead.x, toolhead.y,
+        'A', radius, radius, 0, Number(angle > 0), 0, toolhead.x, toolhead.y,
         'M', destination.x, destination.y
       ].join(' ')
     default:
