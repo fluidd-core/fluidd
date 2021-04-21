@@ -7,8 +7,11 @@
     >
     </vue-headful>
 
-    <app-drawer v-model="drawer"></app-drawer>
-    <app-bar @drawer="onDrawerChange"></app-bar>
+    <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
+    <app-nav-drawer v-model="navdrawer"></app-nav-drawer>
+    <app-bar
+      @toolsdrawer="handleToolsDrawerChange"
+    ></app-bar>
 
     <router-view name="navigation"></router-view>
 
@@ -38,7 +41,7 @@ import { Waits } from './globals'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
-  drawer = false
+  toolsdrawer = false
   showUpdateUI = false
 
   flashMessage: FlashMessage = {
@@ -133,8 +136,8 @@ export default class App extends Mixins(StateMixin) {
     })
   }
 
-  onDrawerChange () {
-    this.drawer = !this.drawer
+  handleToolsDrawerChange () {
+    this.toolsdrawer = !this.toolsdrawer
   }
 
   get loading () {

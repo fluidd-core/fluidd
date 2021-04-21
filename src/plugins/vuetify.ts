@@ -14,6 +14,9 @@ export default new Vuetify({
     values: Icons
   },
   theme: {
+    options: {
+      customProperties: true
+    },
     themes: {
       dark: {
         primary: colors.blue.base,

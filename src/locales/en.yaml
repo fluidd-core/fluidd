@@ -233,7 +233,7 @@ app:
       bedmesh_controls: Bed Mesh Controls
       camera: Camera | Cameras
       config_files: Configuration Files
-      configure: Configure
+      configure: System
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs

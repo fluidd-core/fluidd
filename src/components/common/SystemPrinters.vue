@@ -35,6 +35,8 @@
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
     ></add-instance-dialog>
+
+    <v-divider></v-divider>
   </v-list>
 </template>
 
