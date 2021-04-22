@@ -19,13 +19,13 @@
         <v-col>
           <app-slider
             label="Layer nr"
-            :value="currentLayer"
+            :value="currentLayer + 1"
             :min="1"
             :max="layerCount"
             :disabled="layerCount === 0"
             instant
             input-md
-            @input="currentLayer = $event">
+            @input="currentLayer = $event - 1">
           </app-slider>
         </v-col>
       </v-row>
@@ -33,20 +33,21 @@
         <v-col>
           <app-slider
             label="Progress"
-            :value="layerProgress"
-            :min="currentLayerFileRange[0]"
-            :max="currentLayerFileRange[1]"
-            :disabled="currentLayerFileRange[1] === 0"
-            valueSuffix="bytes"
+            :value="moveProgress - currentLayerMoveRange[0]"
+            :min="0"
+            :max="currentLayerMoveRange[1] - currentLayerMoveRange[0]"
+            :disabled="currentLayerMoveRange[0] === currentLayerMoveRange[1]"
+            valueSuffix="moves"
             instant
             input-md
-            @input="layerProgress = $event">
+            @input="moveProgress = $event + currentLayerMoveRange[0]">
           </app-slider>
         </v-col>
       </v-row>
       <v-row>
         <v-col cols="8">
-          <gcode-preview width="100%" :layer="currentLayer" :progress="layerProgress" :enabled="layerCount > 0"></gcode-preview>
+          <gcode-preview width="100%" :layer="currentLayer" :progress="moveProgress"
+                         :enabled="layerCount > 0"></gcode-preview>
         </v-col>
         <v-col cols="4">
           <p>{{ layerCount }} Layers</p>
@@ -81,7 +82,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   enabled!: boolean
 
   currentLayer = 1
-  layerProgress = Infinity
+  moveProgress = 0
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -92,7 +93,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   onFollowProgressChanged () {
     if (this.followProgress) {
       this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
-      this.layerProgress = this.filePosition
+      this.syncMoveProgress()
     }
   }
 
@@ -103,27 +104,32 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
 
     if (!this.followProgress) {
-      this.layerProgress = this.currentLayerFileRange[1]
+      this.moveProgress = this.currentLayerMoveRange[1]
     }
   }
 
   @Watch('filePosition')
   onFilePositionChanged () {
     if (this.followProgress) {
-      this.layerProgress = this.filePosition
+      this.syncMoveProgress()
 
-      const [min, max] = this.currentLayerFileRange
+      const moves = this.$store.getters['gcodePreview/getMoves']
+      const [min, max] = this.currentLayerMoveRange
 
-      if (this.filePosition < min || this.filePosition > max) {
+      if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
         this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
       }
     }
   }
 
-  @Watch('layerProgress')
-  onLayerProgressChanged () {
-    if (this.followProgress && this.layerProgress !== this.filePosition) {
-      this.followProgress = false
+  @Watch('moveProgress')
+  onMoveProgressChanged () {
+    if (this.followProgress) {
+      const fileMovePosition = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+
+      if (fileMovePosition !== this.moveProgress) {
+        this.followProgress = false
+      }
     }
   }
 
@@ -150,7 +156,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get currentLayerHeight () {
-    return this.$store.getters['gcodePreview/getLayers'][this.currentLayer - 1] ?? 0
+    return this.$store.getters['gcodePreview/getLayers'][this.currentLayer - 1]?.z ?? 0
   }
 
   get followProgress () {
@@ -161,25 +167,29 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     this.$store.commit('gcodePreview/setViewerState', { followProgress: value })
   }
 
-  get currentLayerFileRange (): [number, number] {
+  get currentLayerMoveRange (): [number, number] {
     const moves = this.$store.getters['gcodePreview/getMoves']
 
     if (moves.length === 0) {
       return [0, 0]
     }
 
-    const layerHeight = this.$store.getters['gcodePreview/getLayers'][this.currentLayer]
+    const layers = this.$store.getters['gcodePreview/getLayers']
 
     return [
-      this.$store.getters['gcodePreview/getLayerStart'](layerHeight),
-      this.$store.getters['gcodePreview/getLayerEnd'](layerHeight)
+      layers[this.currentLayer].move,
+      layers[this.currentLayer + 1]?.move ?? moves.length - 1
     ]
   }
 
   findLayerNumber (layer: number) {
-    const layers: number[] = this.$store.getters['gcodePreview/getLayers']
+    const layers = this.$store.getters['gcodePreview/getLayers']
 
-    return layers.findIndex(value => value === layer) + 1
+    return layers.findIndex((value: { z: number }) => value.z === layer) + 1
+  }
+
+  syncMoveProgress () {
+    this.moveProgress = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
   }
 }
 </script>

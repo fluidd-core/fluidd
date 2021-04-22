@@ -201,25 +201,23 @@ export default class GcodePreview extends Mixins(StateMixin) {
       return this.defaultLayerPaths
     }
 
-    const layerNr = Math.max(this.layer, 1)
-    const layer = this.$store.getters['gcodePreview/getLayers'][layerNr - 1]
+    const layer = this.$store.getters['gcodePreview/getLayers'][this.layer]
 
-    // todo: fix this naming hell
     if (this.getViewerOption('followProgress')) {
-      return this.$store.getters['gcodePreview/getLayerPaths'](layer, this.filePosition)
+      const end = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+
+      return this.$store.getters['gcodePreview/getPaths'](layer?.move ?? 0, end)
     }
 
-    return this.$store.getters['gcodePreview/getLayerPaths'](layer, this.progress)
+    return this.$store.getters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
   }
 
   get svgPathPrevious (): LayerPaths {
-    if (!this.enabled || this.layer <= 1) {
+    if (!this.enabled || this.layer <= 0) {
       return this.defaultLayerPaths
     }
 
-    const layer = this.$store.getters['gcodePreview/getLayers'][this.layer - 2]
-
-    return this.$store.getters['gcodePreview/getLayerPaths'](layer)
+    return this.$store.getters['gcodePreview/getLayerPaths'](this.layer - 1)
   }
 
   get svgPathNext (): LayerPaths {
@@ -229,7 +227,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
       return this.defaultLayerPaths
     }
 
-    return this.$store.getters['gcodePreview/getLayerPaths'](layers[this.layer])
+    return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
   mounted () {

@@ -52,7 +52,16 @@ export interface Point {
   y: number;
 }
 
+export interface Point3D extends Point {
+  z: number;
+}
+
 export enum PositioningMode {
   Relative = 'relative',
   Absolute = 'absolute'
+}
+
+export interface Layer {
+  move: number;
+  z: LayerHeight;
 }
