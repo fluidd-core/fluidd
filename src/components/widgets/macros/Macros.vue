@@ -22,7 +22,7 @@
               @click.prevent.stop="handleEditCategory(category.id)"
               icon
               text
-              x-small
+              small
               color=""
               class="ml-2"
             >
