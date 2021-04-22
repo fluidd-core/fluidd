@@ -55,7 +55,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
-import { LayerPaths } from '@/store/gcodePreview/types'
+import { LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 
 @Component({})
 export default class GcodePreview extends Mixins(StateMixin) {
@@ -83,12 +83,11 @@ export default class GcodePreview extends Mixins(StateMixin) {
   })
   progress!: number
 
-  // todo: fix layerNr and layerHeight naming
   @Prop({
     type: Number,
     default: 0
   })
-  layer!: number
+  layer!: LayerNr
 
   panzoom?: PanZoom
 

@@ -116,6 +116,7 @@ app:
       extrude: Extrude
       heaters_off: Heaters off
       load_all: Load all
+      load_current_file: Load current file
       more_information: More information
       pause: Pause
       preheat: Preheat

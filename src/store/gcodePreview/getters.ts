@@ -67,7 +67,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       z: NaN
     }
 
-    for (let i = moveIndex; i >= 0 && isNaN(output.x) && isNaN(output.y); i--) {
+    for (let i = moveIndex; i >= 0 && isNaN(output.x) && isNaN(output.y) && isNaN(output.z); i--) {
       if (isNaN(output.x) && moves[i].x !== undefined) {
         output.x = moves[i].x
       }

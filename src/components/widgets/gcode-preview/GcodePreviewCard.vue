@@ -16,42 +16,50 @@
 
     <v-card-text>
       <v-row>
-        <v-col>
-          <app-slider
-            label="Layer nr"
-            :value="currentLayer + 1"
-            :min="1"
-            :max="layerCount"
-            :disabled="layerCount === 0"
-            instant
-            input-md
-            @input="currentLayer = $event - 1">
-          </app-slider>
+        <v-col cols="12" lg="9" md="7">
+          <v-row>
+            <v-col>
+              <app-slider
+                label="Layer nr"
+                :value="currentLayer + 1"
+                :min="1"
+                :max="layerCount"
+                :disabled="layerCount === 0"
+                instant
+                input-md
+                @input="currentLayer = $event - 1">
+              </app-slider>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <app-slider
+                label="Progress"
+                :value="moveProgress - currentLayerMoveRange.min"
+                :min="0"
+                :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
+                :disabled="currentLayerMoveRange.min === currentLayerMoveRange.max"
+                valueSuffix="moves"
+                instant
+                input-md
+                @input="moveProgress = $event + currentLayerMoveRange.min">
+              </app-slider>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <gcode-preview width="100%" :layer="currentLayer" :progress="moveProgress"
+                             :enabled="layerCount > 0"></gcode-preview>
+            </v-col>
+          </v-row>
         </v-col>
-      </v-row>
-      <v-row>
-        <v-col>
-          <app-slider
-            label="Progress"
-            :value="moveProgress - currentLayerMoveRange[0]"
-            :min="0"
-            :max="currentLayerMoveRange[1] - currentLayerMoveRange[0]"
-            :disabled="currentLayerMoveRange[0] === currentLayerMoveRange[1]"
-            valueSuffix="moves"
-            instant
-            input-md
-            @input="moveProgress = $event + currentLayerMoveRange[0]">
-          </app-slider>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols="8">
-          <gcode-preview width="100%" :layer="currentLayer" :progress="moveProgress"
-                         :enabled="layerCount > 0"></gcode-preview>
-        </v-col>
-        <v-col cols="4">
-          <p>{{ layerCount }} Layers</p>
-          <p>Current Layer: {{ currentLayer }}({{ currentLayerHeight }})</p>
+        <v-col cols="12" lg="3" md="5">
+          <v-card outlined class="px-2 py-1 text-center stat-square">
+            <div class="grey--text text--darken-2">Layers</div>
+            <div class="grey--text focus--text">{{ layerCount }}</div>
+            <div class="grey--text text--darken-2">Current Layer</div>
+            <div class="grey--text focus--text">{{ currentLayerHeight }}</div>
+          </v-card>
           <GcodePreviewControls/>
         </v-col>
       </v-row>
@@ -104,7 +112,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
 
     if (!this.followProgress) {
-      this.moveProgress = this.currentLayerMoveRange[1]
+      this.moveProgress = this.currentLayerMoveRange.max
     }
   }
 
@@ -114,7 +122,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       this.syncMoveProgress()
 
       const moves = this.$store.getters['gcodePreview/getMoves']
-      const [min, max] = this.currentLayerMoveRange
+      const {
+        min,
+        max
+      } = this.currentLayerMoveRange
 
       if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
         this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
@@ -167,19 +178,22 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     this.$store.commit('gcodePreview/setViewerState', { followProgress: value })
   }
 
-  get currentLayerMoveRange (): [number, number] {
+  get currentLayerMoveRange (): { min: number; max: number } {
     const moves = this.$store.getters['gcodePreview/getMoves']
 
     if (moves.length === 0) {
-      return [0, 0]
+      return {
+        min: 0,
+        max: 0
+      }
     }
 
     const layers = this.$store.getters['gcodePreview/getLayers']
 
-    return [
-      layers[this.currentLayer].move,
-      layers[this.currentLayer + 1]?.move ?? moves.length - 1
-    ]
+    return {
+      min: layers[this.currentLayer].move,
+      max: layers[this.currentLayer + 1]?.move ?? moves.length - 1
+    }
   }
 
   findLayerNumber (layer: number) {
