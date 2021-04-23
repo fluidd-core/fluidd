@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
+const ThreadsPlugin = require('threads-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const v = require('./package.json').version
@@ -42,7 +43,8 @@ module.exports = {
       new GenerateFilePlugin({
         file: '.version',
         content: 'v' + v + '\n'
-      })
+      }),
+      new ThreadsPlugin()
       // new BundleAnalyzerPlugin({
       //   analyzerMode:
       //     (process.env.NODE_ENV === 'production') ? 'server' : 'disabled'

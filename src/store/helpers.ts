@@ -299,28 +299,6 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
   }
 }
 
-export const parseGcode = (line: string) => {
-  const [, command, args = ''] = line
-    .trim()
-    .split(';', 2)[0]
-    .split(/^([a-z][0-9]+)\s+/i)
-
-  if (!/^(G|M)\d+$/.test(command)) {
-    return null
-  }
-
-  const argMap: any = {}
-
-  for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?\d+(?:\.\d+)?)/ig)) {
-    argMap[key.toLowerCase()] = Number(value)
-  }
-
-  return {
-    command: command.toUpperCase(),
-    args: argMap
-  }
-}
-
 export const binarySearch = (arr: any[], comp: Function, approx = false): number => {
   if (arr.length <= 1) {
     return 0
