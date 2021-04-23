@@ -26,5 +26,9 @@ export const mutations: MutationTree<GcodePreviewState> = {
         Vue.set(state.viewer, key, payload[key])
       }
     }
+  },
+
+  setParserProgress (state, payload: number) {
+    state.parserProgress = payload
   }
 }

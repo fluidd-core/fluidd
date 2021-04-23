@@ -1,6 +1,7 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
 import { pick } from 'lodash-es'
+import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
   const [, command, args = ''] = line
@@ -24,8 +25,9 @@ function parseLine (line: string) {
   }
 }
 
-export default function parseGcode (gcode: string) {
+export default function parseGcode (gcode: string, subject: Subject<unknown>) {
   const moves: Move[] = []
+  const lines = gcode.split('\n')
 
   let extrusionMode = PositioningMode.Relative
   let positioningMode = PositioningMode.Absolute
@@ -37,11 +39,11 @@ export default function parseGcode (gcode: string) {
     filePosition: 0
   }
 
-  for (const line of gcode.split('\n')) {
+  for (let i = 0; i < lines.length; i++) {
     const {
       command,
       args
-    } = parseLine(line) ?? {}
+    } = parseLine(lines[i]) ?? {}
 
     if (!command) {
       continue
@@ -122,8 +124,15 @@ export default function parseGcode (gcode: string) {
       moves.push(Object.freeze(move))
     }
 
-    toolhead.filePosition += line.length + 1
+    // todo figure out better way of doing this, maybe timings or something
+    if (i % 10_000 === 0) {
+      subject.next(toolhead.filePosition)
+    }
+
+    toolhead.filePosition += lines[i].length + 1 // + 1 for newline
   }
+
+  subject.next(toolhead.filePosition)
 
   return moves
 }

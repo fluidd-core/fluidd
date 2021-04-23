@@ -15,6 +15,11 @@
     </template>
 
     <v-card-text>
+      <GcodePreviewParserProgressDialog
+        :value="showParserProgressDialog"
+        :progress="parserProgress"
+        :file="file"/>
+
       <v-row>
         <v-col cols="12" lg="9" md="7">
           <v-row>
@@ -75,9 +80,11 @@ import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePreviewControls.vue'
 import { AppFile } from '@/store/files/types'
+import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 
 @Component({
   components: {
+    GcodePreviewParserProgressDialog,
     GcodePreview,
     GcodePreviewControls
   }
@@ -89,12 +96,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   })
   enabled!: boolean
 
-  currentLayer = 1
+  currentLayer = 0
   moveProgress = 0
 
   @Watch('layerCount')
   onLayerCountChanged () {
-    this.currentLayer = 1
+    this.currentLayer = 0
   }
 
   @Watch('followProgress')
@@ -146,6 +153,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get file (): AppFile | undefined {
     return this.$store.getters['gcodePreview/getFile']
+  }
+
+  get parserProgress (): number {
+    return this.$store.getters['gcodePreview/getParserProgress']
+  }
+
+  get showParserProgressDialog (): boolean {
+    return this.file !== undefined && this.parserProgress !== this.file.size
   }
 
   get filePosition (): number {

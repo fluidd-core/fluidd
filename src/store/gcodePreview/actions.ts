@@ -16,8 +16,16 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
   async loadGcode ({ commit }, payload: { file: AppFile; gcode: string }) {
     const parseGcode = await spawn(new Worker('@/workers/parseGcode.worker'))
 
-    commit('setMoves', await parseGcode(payload.gcode))
+    parseGcode.progress().subscribe((filePosition: number) => {
+      commit('setParserProgress', filePosition)
+    })
+
+    commit('setParserProgress', 0)
+    commit('setMoves', [])
+
     commit('setFile', payload.file)
+    commit('setMoves', await parseGcode.parse(payload.gcode))
+    commit('setParserProgress', payload.file.size ?? payload.gcode.length)
 
     await Thread.terminate(parseGcode)
   }

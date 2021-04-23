@@ -6,6 +6,7 @@ export type LayerNr = number
 export interface GcodePreviewState {
   moves: Move[];
   file?: AppFile;
+  parserProgress: number;
 
   viewer: {
     showNextLayer: boolean;

@@ -13,7 +13,7 @@ module.exports = {
   },
   ignorePatterns: [
     // Transpiled before they are analysed
-    'workers/*.worker.js'
+    '*.worker.js'
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',

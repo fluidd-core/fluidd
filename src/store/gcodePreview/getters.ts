@@ -27,6 +27,10 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return (state.viewer as any)[key]
   },
 
+  getParserProgress: (state): number => {
+    return state.parserProgress
+  },
+
   getLayers: (state, getters): Layer[] => {
     const output = []
     const moves = getters.getMoves
