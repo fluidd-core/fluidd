@@ -32,16 +32,6 @@
           </tr>
         </table>
       </v-card-text>
-
-      <v-divider/>
-
-      <v-card-actions class="py-2 px-5">
-        <v-spacer></v-spacer>
-        <app-btn color="error" text @click="$emit('cancel'); $emit('input', false)">
-          {{ $t('app.general.btn.cancel') }}
-        </app-btn>
-      </v-card-actions>
-
     </v-card>
   </v-dialog>
 </template>
