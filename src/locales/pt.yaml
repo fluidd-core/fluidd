@@ -359,7 +359,6 @@ app:
       dirty: DIRTY
       invalid: INVÁLIDO
       up_to_date: ATUALIZADO
-      commit_history: ''
       os_packages: Pacotes de SO
       package_list: Lista de Pacotes
     status:
