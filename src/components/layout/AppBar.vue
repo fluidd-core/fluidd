@@ -2,7 +2,6 @@
   <v-app-bar
     app
     clipped-left
-    :height="52"
   >
     <div class="toolbar-title">
       <router-link to="/">
