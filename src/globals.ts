@@ -91,7 +91,9 @@ import {
   mdiDotsGrid,
   mdiHammerWrench,
   mdiAccount,
-  mdiFileTableOutline
+  mdiFileTableOutline,
+  mdiLock,
+  mdiLockOpenVariant
 } from '@mdi/js'
 
 /**
@@ -235,7 +237,9 @@ export const Icons = Object.freeze({
   commit: mdiSourceCommit,
   cloudCheck: mdiCloudCheck,
   cloudAlert: mdiCloudAlert,
-  keyboard: mdiKeyboard
+  keyboard: mdiKeyboard,
+  lock: mdiLock,
+  lockOpen: mdiLockOpenVariant
 })
 
 export const Waits = Object.freeze({

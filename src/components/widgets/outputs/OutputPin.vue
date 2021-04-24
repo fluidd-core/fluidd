@@ -10,6 +10,7 @@
       :step="0.01"
       :value="(pin.value * pin.scale) / 1"
       :disabled="!klippyReady"
+      :locked="!klippyReady || isMobile"
       :readonly="!pin.controllable"
       @input="setValue(pin, $event)">
     </app-slider>
@@ -46,6 +47,10 @@ export default class OutputPin extends Mixins(StateMixin) {
       target = (target) ? pin.scale : 0
     }
     this.sendGcode(`SET_PIN PIN=${pin.name} VALUE=${target}`, Waits.onSetOutputPin)
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- Locking mechanism for sliders
 - Authorization
 - add cpu time / resource monitoring
 - status card updates
@@ -18,6 +19,9 @@
 - allow re-ordering temp presets and cameras
 - sync instances across moonraker db
 - warning close with no save in file editor
+- console
+  - raw output option for the console, so users can easily copy / paste larger portions of the output.
+  - move autoscroll
 
 ### Features
 
