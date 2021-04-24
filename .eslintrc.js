@@ -11,10 +11,6 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2020
   },
-  ignorePatterns: [
-    // Transpiled before they are analysed
-    '*.worker.js'
-  ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
