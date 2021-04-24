@@ -89,7 +89,6 @@
 
     </v-expansion-panels>
 
-    <!-- <pre>expanded: {{ expanded }}</pre> -->
   </div>
 </template>
 

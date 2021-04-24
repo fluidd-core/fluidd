@@ -61,6 +61,7 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
+import { Macro } from '@/store/macros/types'
 
 @Component({
   components: {
@@ -90,8 +91,13 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['cameras/getVisibleCameras'].length
   }
 
-  get hasMacros () {
-    return this.$store.getters['macros/hasVisibleMacros']
+  get macros () {
+    return this.$store.getters['macros/getVisibleMacros']
+  }
+
+  get uncategorizedMacros () {
+    const macros = this.$store.getters['macros/getMacrosByCategory']()
+    return macros.filter((macro: Macro) => macro.visible)
   }
 
   get inLayout (): boolean {
@@ -133,7 +139,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     // Take care of special cases.
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true
-    if (item.id === 'macros-card' && !this.hasMacros) return true
+    if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
