@@ -65,4 +65,5 @@ export enum PositioningMode {
 export interface Layer {
   move: number;
   z: LayerHeight;
+  filePosition: number;
 }

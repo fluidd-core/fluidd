@@ -107,14 +107,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   @Watch('followProgress')
   onFollowProgressChanged () {
     if (this.followProgress) {
-      this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
+      this.currentLayer = this.$store.getters['gcodePreview/getCurrentLayerNr']
       this.syncMoveProgress()
     }
   }
 
   @Watch('currentLayer')
   onCurrentLayerChanged () {
-    if (this.followProgress && this.currentLayer !== this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])) {
+    if (this.followProgress && this.currentLayer !== this.$store.getters['gcodePreview/getCurrentLayerNr']) {
       this.followProgress = false
     }
 
@@ -135,7 +135,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       } = this.currentLayerMoveRange
 
       if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
-        this.currentLayer = this.findLayerNumber(this.$store.getters['gcodePreview/getCurrentLayer'])
+        this.currentLayer = this.$store.getters['gcodePreview/getCurrentLayerNr']
       }
     }
   }
@@ -209,12 +209,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       min: layers[this.currentLayer].move,
       max: layers[this.currentLayer + 1]?.move ?? moves.length - 1
     }
-  }
-
-  findLayerNumber (layer: number) {
-    const layers = this.$store.getters['gcodePreview/getLayers']
-
-    return layers.findIndex((value: { z: number }) => value.z === layer) + 1
   }
 
   syncMoveProgress () {
