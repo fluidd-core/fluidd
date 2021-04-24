@@ -1,10 +1,11 @@
 import { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
-import { ConfigState, TemperaturePreset, ThemeConfig } from './types'
+import { AppTableConfiguredHeaders, ConfigState, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
 import { AppTableHeader } from '@/types'
+import { filter } from 'vue/types/umd'
 import { AppTablePartialHeader } from '@/types/tableheaders'
 
 export const getters: GetterTree<ConfigState, RootState> = {
