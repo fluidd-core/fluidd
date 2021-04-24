@@ -124,8 +124,7 @@ export default function parseGcode (gcode: string, subject: Subject<unknown>) {
       moves.push(Object.freeze(move))
     }
 
-    // todo figure out better way of doing this, maybe timings or something
-    if (i % 10_000 === 0) {
+    if (i % Math.floor(lines.length / 100) === 0) {
       subject.next(toolhead.filePosition)
     }
 
