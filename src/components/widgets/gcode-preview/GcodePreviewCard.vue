@@ -30,7 +30,7 @@
                 :min="1"
                 :max="layerCount"
                 :disabled="layerCount === 0"
-                instant
+                :instant="!isMobile"
                 input-md
                 @input="currentLayer = $event - 1">
               </app-slider>
@@ -45,7 +45,7 @@
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="currentLayerMoveRange.min === currentLayerMoveRange.max"
                 valueSuffix="moves"
-                instant
+                :instant="!isMobile"
                 input-md
                 @input="moveProgress = $event + currentLayerMoveRange.min">
               </app-slider>
@@ -62,7 +62,7 @@
           <v-card outlined class="px-2 py-1 text-center stat-square">
             <div class="grey--text text--darken-2">Layers</div>
             <div class="grey--text focus--text">{{ layerCount }}</div>
-            <div class="grey--text text--darken-2">Current Layer</div>
+            <div class="grey--text text--darken-2">Current Layer Height</div>
             <div class="grey--text focus--text">{{ currentLayerHeight }}</div>
           </v-card>
           <GcodePreviewControls/>
@@ -153,6 +153,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get file (): AppFile | undefined {
     return this.$store.getters['gcodePreview/getFile']
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   get parserProgress (): number {
