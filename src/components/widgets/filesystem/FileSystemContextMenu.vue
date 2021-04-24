@@ -65,7 +65,7 @@
             <v-list-item
               link
               @click="$emit('preview-gcode', file)"
-              v-if="file.type !== 'directory'">
+              v-if="file.type !== 'directory' && canPreviewGcode">
               <v-list-item-icon>
                 <v-icon>$magnify</v-icon>
               </v-list-item-icon>
@@ -108,6 +108,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import { AppFile, AppFileWithMeta } from '@/store/files/types'
+import { LayoutConfig } from '@/store/layout/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
@@ -141,6 +142,13 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
       !this.printerPaused &&
       this.klippyReady
     )
+  }
+
+  get canPreviewGcode () {
+    const dashboard = this.$store.getters['layout/getLayout']('dashboard')
+    const cards = Object.values(dashboard).flat() as LayoutConfig[]
+
+    return cards.find(card => card.id === 'gcode-preview-card')?.enabled ?? false
   }
 }
 </script>
