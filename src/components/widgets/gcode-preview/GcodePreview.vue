@@ -63,7 +63,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
     type: Boolean,
     default: true
   })
-  enabled!: boolean
+  disabled!: boolean
 
   @Prop({
     type: String,
@@ -196,7 +196,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   get svgPathCurrent (): LayerPaths {
-    if (!this.enabled) {
+    if (!this.disabled) {
       return this.defaultLayerPaths
     }
 
@@ -212,7 +212,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   get svgPathPrevious (): LayerPaths {
-    if (!this.enabled || this.layer <= 0) {
+    if (!this.disabled || this.layer <= 0) {
       return this.defaultLayerPaths
     }
 
@@ -222,7 +222,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   get svgPathNext (): LayerPaths {
     const layers = this.$store.getters['gcodePreview/getLayers']
 
-    if (!this.enabled || this.layer >= layers.length) {
+    if (!this.disabled || this.layer >= layers.length) {
       return this.defaultLayerPaths
     }
 

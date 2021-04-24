@@ -29,7 +29,7 @@
                 :value="currentLayer + 1"
                 :min="1"
                 :max="layerCount"
-                :disabled="layerCount === 0"
+                :disabled="!fileLoaded"
                 :instant="!isMobile"
                 input-md
                 @input="currentLayer = $event - 1">
@@ -43,7 +43,7 @@
                 :value="moveProgress - currentLayerMoveRange.min"
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
-                :disabled="currentLayerMoveRange.min === currentLayerMoveRange.max"
+                :disabled="!fileLoaded"
                 valueSuffix="moves"
                 :instant="!isMobile"
                 input-md
@@ -54,7 +54,7 @@
           <v-row>
             <v-col>
               <gcode-preview width="100%" :layer="currentLayer" :progress="moveProgress"
-                             :enabled="layerCount > 0"></gcode-preview>
+                             :disabled="!fileLoaded"></gcode-preview>
             </v-col>
           </v-row>
         </v-col>
@@ -65,7 +65,7 @@
             <div class="grey--text text--darken-2">Current Layer Height</div>
             <div class="grey--text focus--text">{{ currentLayerHeight }}</div>
           </v-card>
-          <GcodePreviewControls :disabled="layerCount === 0"/>
+          <GcodePreviewControls :disabled="!fileLoaded"/>
         </v-col>
       </v-row>
     </v-card-text>
@@ -153,6 +153,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get file (): AppFile | undefined {
     return this.$store.getters['gcodePreview/getFile']
+  }
+
+  get fileLoaded (): boolean {
+    return this.$store.getters['gcodePreview/getMoves'].length > 0
   }
 
   get isMobile () {
