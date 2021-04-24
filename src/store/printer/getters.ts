@@ -112,6 +112,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
    */
   getTimeEstimates: (state, getters, rootState): TimeEstimates => {
     const type = rootState.config?.uiSettings.general.printTimeEstimationsType || 'file'
+    const speedCorrection = rootState.config?.uiSettings.general.accountForSpeed || false
     const progress = getters.getPrintProgress
     const current = (
       'print_stats' in state.printer &&
@@ -162,6 +163,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
         total = 0
         remaining = 0
       }
+    }
+
+    if (speedCorrection) { // Account for the speed.
+      const speed = state.printer.gcode_move.speed_factor - 1
+      remaining = remaining - (remaining * speed)
     }
 
     return {

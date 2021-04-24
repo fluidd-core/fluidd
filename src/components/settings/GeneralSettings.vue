@@ -65,6 +65,19 @@
           v-model="printTimeEstimateType">
         </v-select>
       </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        :title="$t('app.setting.label.account_for_speed')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="accountForSpeed"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -122,6 +135,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set printTimeEstimateType (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.printTimeEstimationsType',
+      value,
+      server: true
+    })
+  }
+
+  get accountForSpeed () {
+    return this.$store.state.config.uiSettings.general.accountForSpeed
+  }
+
+  set accountForSpeed (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.accountForSpeed',
       value,
       server: true
     })

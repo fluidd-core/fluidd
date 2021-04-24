@@ -45,6 +45,7 @@ export interface GeneralConfig {
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableNotifications: boolean;
+  accountForSpeed: boolean;
 }
 
 export interface ThemeConfig {

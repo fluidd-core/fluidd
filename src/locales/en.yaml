@@ -284,6 +284,7 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
     label:
+      account_for_speed: Account for speed
       all_off: All off
       all_on: All on
       camera_fillspace: Fill space
