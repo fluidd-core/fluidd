@@ -23,6 +23,11 @@ export const defaultState = (): ServerState => {
         gcode_store_size: 1000,
         temperature_store_size: 1200
       }
+    },
+    moonraker_stats: [],
+    throttled_state: {
+      bits: 0,
+      flags: []
     }
   }
 }

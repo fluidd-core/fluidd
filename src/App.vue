@@ -8,7 +8,7 @@
     </vue-headful>
 
     <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
-    <app-nav-drawer v-model="navdrawer"></app-nav-drawer>
+
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
     ></app-bar>
