@@ -65,7 +65,7 @@
             <div class="grey--text text--darken-2">Current Layer Height</div>
             <div class="grey--text focus--text">{{ currentLayerHeight }}</div>
           </v-card>
-          <GcodePreviewControls/>
+          <GcodePreviewControls :disabled="layerCount === 0"/>
         </v-col>
       </v-row>
     </v-card-text>
