@@ -66,14 +66,12 @@ export default class GcodePreview extends Mixins(StateMixin) {
   disabled!: boolean
 
   @Prop({
-    type: String,
-    default: 'auto'
+    type: String
   })
   width!: string
 
   @Prop({
-    type: String,
-    default: 'auto'
+    type: String
   })
   height!: string
 
