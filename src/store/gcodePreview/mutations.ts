@@ -13,7 +13,7 @@ export const mutations: MutationTree<GcodePreviewState> = {
   },
 
   setMoves (state, payload) {
-    Vue.set(state, 'moves', Object.freeze(payload))
+    Vue.set(state, 'moves', Object.freeze(payload.map(Object.freeze)))
   },
 
   setFile (state, file: AppFile) {
