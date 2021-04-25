@@ -28,7 +28,7 @@ export default class GcodePreviewControls extends Mixins(StateMixin) {
     type: Boolean,
     default: false
   })
-  disabled: boolean
+  disabled!: boolean
 
   get enableFollowProgress () {
     const printerFile = this.$store.state.printer.printer.print_stats.filename

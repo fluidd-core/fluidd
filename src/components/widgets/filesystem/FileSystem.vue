@@ -625,6 +625,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
+    // If we aren't on the dashboard, push the user back there.
+    if (this.$router.currentRoute.path !== '/') {
+      this.$router.push({ path: '/' })
+    }
+
     const { data } = await this.getFile(file.filename, this.currentPath, file.size)
     this.$store.dispatch('gcodePreview/loadGcode', {
       file,

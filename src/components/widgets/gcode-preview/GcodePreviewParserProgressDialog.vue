@@ -24,7 +24,7 @@
         ></v-progress-linear>
         <table>
           <tr>
-            <td class="pr-2">{{ $t }}:</td>
+            <td class="pr-2">Parsed:</td>
             <td>{{ percent }}%
               ({{ $filters.getReadableFileSizeString(progress) }} /
               {{ $filters.getReadableFileSizeString(file.size) }})
