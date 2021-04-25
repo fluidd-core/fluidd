@@ -14,7 +14,7 @@
           @click="lockState = !lockState"
         >
           <v-icon small v-if="isLocked">$pencil</v-icon>
-          <v-icon small v-else>$pencilLock</v-icon>
+          <v-icon small v-else>$lockReset</v-icon>
         </v-btn>
       </div>
       <div class="ml-auto d-flex align-center">
