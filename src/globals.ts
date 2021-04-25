@@ -93,7 +93,8 @@ import {
   mdiAccount,
   mdiFileTableOutline,
   mdiLock,
-  mdiLockOpenVariant
+  mdiLockOpenVariant,
+  mdiPencilLock
 } from '@mdi/js'
 
 /**
@@ -226,6 +227,7 @@ export const Icons = Object.freeze({
   camera: mdiCamera,
   fan: mdiFan,
   pencil: mdiPencil,
+  pencilLock: mdiPencilLock,
   magnify: mdiMagnify,
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,

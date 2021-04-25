@@ -13,8 +13,8 @@
           :disabled="disabled"
           @click="lockState = !lockState"
         >
-          <v-icon small v-if="isLocked">$lock</v-icon>
-          <v-icon small v-else>$lockOpen</v-icon>
+          <v-icon small v-if="isLocked">$pencil</v-icon>
+          <v-icon small v-else>$pencilLock</v-icon>
         </v-btn>
       </div>
       <div class="ml-auto d-flex align-center">
