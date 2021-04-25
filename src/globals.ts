@@ -94,7 +94,8 @@ import {
   mdiFileTableOutline,
   mdiLock,
   mdiLockOpenVariant,
-  mdiPencilLock
+  mdiPencilLock,
+  mdiLockReset
 } from '@mdi/js'
 
 /**
@@ -241,7 +242,8 @@ export const Icons = Object.freeze({
   cloudAlert: mdiCloudAlert,
   keyboard: mdiKeyboard,
   lock: mdiLock,
-  lockOpen: mdiLockOpenVariant
+  lockOpen: mdiLockOpenVariant,
+  lockReset: mdiLockReset
 })
 
 export const Waits = Object.freeze({
