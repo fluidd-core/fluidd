@@ -1,5 +1,5 @@
 <template>
-  <div style="border: 1px solid black; overflow: hidden;">
+  <div class="container">
     <svg :viewBox="svgViewBox" :height="height" :width="width" ref="svg"
          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
@@ -256,5 +256,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
   fill: none;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.container {
+  border: 1px solid black;
+  overflow: hidden;
 }
 </style>
