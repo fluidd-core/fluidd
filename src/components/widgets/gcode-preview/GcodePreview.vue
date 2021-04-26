@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div :class="{container: true, dark: themeIsDark}">
     <svg :viewBox="svgViewBox" :height="height" :width="width" ref="svg"
          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
@@ -264,7 +264,18 @@ export default class GcodePreview extends Mixins(StateMixin) {
 }
 
 .container {
-  border: 1px solid black;
+  outline: none;
   overflow: hidden;
+
+  border: 1px solid black;
+}
+
+.container:focus {
+  border-color: grey;
+  box-shadow: 0 0 4px 0 black;
+}
+
+.container.dark:focus {
+  box-shadow: 0 0 4px 0 lightgrey;
 }
 </style>
