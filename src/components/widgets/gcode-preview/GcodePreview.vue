@@ -266,16 +266,15 @@ export default class GcodePreview extends Mixins(StateMixin) {
 .container {
   outline: none;
   overflow: hidden;
-
   border: 1px solid black;
-}
-
-.container:focus {
-  border-color: grey;
-  box-shadow: 0 0 4px 0 black;
-}
-
-.container.dark:focus {
-  box-shadow: 0 0 4px 0 lightgrey;
+  &:focus {
+    border-color: grey;
+    box-shadow: 0 0 4px 0 black;
+  }
+  .dark {
+    &:focus {
+      box-shadow: 0 0 4px 0 lightgrey;
+    }
+  }
 }
 </style>
