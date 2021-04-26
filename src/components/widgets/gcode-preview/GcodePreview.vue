@@ -3,16 +3,17 @@
     <svg :viewBox="svgViewBox" :height="height" :width="width" ref="svg"
          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
-        <svg id="retraction" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
-          <path d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9"/>
-        </svg>
         <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="10" height="10">
           <rect width="10" height="10" stroke-width=".1"
                 :stroke="themeIsDark ? 'black' : 'white'"
                 :fill="themeIsDark ? '#555' : 'lightgrey'"/>
         </pattern>
+        <svg id="retraction" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
+          <path v-if="flipY" d="M 0,0 L 5,10 L 10,0 Z" fill="red" fill-opacity="0.9"/>
+          <path v-else d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9"/>
+        </svg>
       </defs>
-      <g :transform="groupTransform">
+      <g :transform="flipTransform">
         <g id="background" v-if="drawBackground">
           <rect :height="viewBox.y.max - viewBox.y.min"
                 :width="viewBox.x.max - viewBox.x.min"
@@ -37,7 +38,7 @@
           <g id="retractions" v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0">
             <use v-for="({x, y}, index) of svgPathCurrent.retractions"
                  :key="`retraction-${index + 1}`" xlink:href="#retraction"
-                 :x="x - (retractionIconSize / 2)" :y="y - retractionIconSize"/>
+                 :x="x - (retractionIconSize / 2)" :y="flipY ? y : y - retractionIconSize"/>
             <!-- Calculate anchor to be bottom-center of the triangle -->
           </g>
         </g>
@@ -113,17 +114,15 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.gcodePreview.drawBackground
   }
 
-  get groupTransform () {
-    const {
-      vertical,
-      horizontal
-    } = this.$store.state.config.uiSettings.gcodePreview.flip
+  get flipX (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.flip.horizontal
+  }
 
-    const scale = [
-      horizontal ? -1 : 1,
-      vertical ? -1 : 1
-    ]
+  get flipY (): boolean {
+    return this.$store.state.config.uiSettings.gcodePreview.flip.vertical
+  }
 
+  get flipTransform () {
     const {
       stepper_x: stepperX,
       stepper_y: stepperY
@@ -133,9 +132,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
       return ''
     }
 
+    const scale = [
+      this.flipX ? -1 : 1,
+      this.flipY ? -1 : 1
+    ]
+
     const transform = [
-      horizontal ? -(stepperX.position_max - stepperX.position_min) : 0,
-      vertical ? -(stepperY.position_max - stepperY.position_min) : 0
+      this.flipX ? -(stepperX.position_max - stepperX.position_min) : 0,
+      this.flipY ? -(stepperY.position_max - stepperY.position_min) : 0
     ]
 
     return `scale(${scale.join()}) translate(${transform.join()})`
