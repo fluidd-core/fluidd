@@ -64,7 +64,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getToolHeadPosition: (state, getters) => (moveIndex: number): Point3D => {
-    const isNaN = Number.isNaN
+    const isFinite = Number.isFinite
     const moves = getters.getMoves
     const output = {
       x: NaN,
@@ -72,24 +72,24 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       z: NaN
     }
 
-    for (let i = moveIndex; i >= 0 && isNaN(output.x) && isNaN(output.y) && isNaN(output.z); i--) {
-      if (isNaN(output.x) && moves[i].x !== undefined) {
+    for (let i = moveIndex; i >= 0 && (!isFinite(output.x) || !isFinite(output.y) || !isFinite(output.z)); i--) {
+      if (!isFinite(output.x) && moves[i].x !== undefined) {
         output.x = moves[i].x
       }
 
-      if (isNaN(output.y) && moves[i].y !== undefined) {
+      if (!isFinite(output.y) && moves[i].y !== undefined) {
         output.y = moves[i].y
       }
 
-      if (isNaN(output.z) && moves[i].z !== undefined) {
+      if (!isFinite(output.z) && moves[i].z !== undefined) {
         output.z = moves[i].z
       }
     }
 
     return {
-      x: output.x ?? 0,
-      y: output.y ?? 0,
-      z: output.z ?? 0
+      x: isFinite(output.x) ? output.x : 0,
+      y: isFinite(output.y) ? output.y : 0,
+      z: isFinite(output.z) ? output.z : 0
     }
   },
 
