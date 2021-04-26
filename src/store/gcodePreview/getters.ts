@@ -114,7 +114,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
       if (move.e > 0) {
         if (traveling) {
-          path.extrusions += `M${toolhead.x} ${toolhead.y}`
+          path.extrusions += `M${toolhead.x},${toolhead.y}`
           traveling = false
         }
 
@@ -122,7 +122,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
         Object.assign(toolhead, move)
       } else {
         if (!traveling) {
-          path.moves += `M${toolhead.x} ${toolhead.y}`
+          path.moves += `M${toolhead.x},${toolhead.y}`
           traveling = true
         }
 

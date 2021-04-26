@@ -145,10 +145,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    const dashboard = this.$store.getters['layout/getLayout']('dashboard')
-    const cards = Object.values(dashboard).flat() as LayoutConfig[]
-
-    return cards.find(card => card.id === 'gcode-preview-card')?.enabled ?? false
+    return this.$store.getters['layout/isEnabledInLayout']('dashboard', 'gcode-preview-card')
   }
 }
 </script>

@@ -27,6 +27,12 @@ export const getters: GetterTree<LayoutState, RootState> = {
     }
   },
 
+  isEnabledInLayout: (state, getters) => (layout: string, id: string) => {
+    const configs = Object.values(getters.getLayout(layout) ?? {}).flat() as LayoutConfig[]
+
+    return configs.find(configs => configs.id === id)?.enabled ?? false
+  },
+
   /**
    * Return a layout's container given a layout name and container name.
    */

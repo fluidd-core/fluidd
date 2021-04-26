@@ -265,7 +265,18 @@ app:
       restart_klipper: Restarts the klipper system service.
   gcode:
     label:
+      layers: Layers
+      current_layer_height: Current Layer Height
       parsed: Parsed
+      show_retractions: Show retractions
+      show_extrusions: Show extrusions
+      show_moves: Show moves
+      show_previous_layer: Show previous layer
+      show_next_layer: Show next layer
+      follow_progress: Follow progress
+    btn:
+      reset_file: Reset File
+      load_current_file: Load Current File
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics

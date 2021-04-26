@@ -1,16 +1,26 @@
 <template>
   <div>
-    <gcode-preview-control-checkbox :disabled="disabled || !enableFollowProgress"
-                                    name="followProgress" label="Follow progress"/>
-    <gcode-preview-control-checkbox :disabled="disabled" name="showNextLayer" label="Show next layer"/>
-    <gcode-preview-control-checkbox :disabled="disabled" name="showPreviousLayer" label="Show previous layer"/>
-    <gcode-preview-control-checkbox :disabled="disabled" name="showMoves" label="Show moves"/>
-    <gcode-preview-control-checkbox :disabled="disabled" name="showExtrusions" label="Show extrusions"/>
-    <gcode-preview-control-checkbox :disabled="disabled" name="showRetractions" label="Show retractions"/>
+    <gcode-preview-control-checkbox :disabled="disabled || !enableFollowProgress" name="followProgress"
+                                    :label="$t('app.gcode.label.follow_progress')"/>
+    <gcode-preview-control-checkbox :disabled="disabled" name="showNextLayer"
+                                    :label="$t('app.gcode.label.show_next_layer')"/>
+    <gcode-preview-control-checkbox :disabled="disabled" name="showPreviousLayer"
+                                    :label="$t('app.gcode.label.show_previous_layer')"/>
+    <gcode-preview-control-checkbox :disabled="disabled" name="showMoves"
+                                    :label="$t('app.gcode.label.show_moves')"/>
+    <gcode-preview-control-checkbox :disabled="disabled" name="showExtrusions"
+                                    :label="$t('app.gcode.label.show_extrusions')"/>
+    <gcode-preview-control-checkbox :disabled="disabled" name="showRetractions"
+                                    :label="$t('app.gcode.label.show_retractions')"/>
+
+    <app-btn :disabled="!printerFile" @click="loadCurrent"
+             color="primary" class="mt-3" block small>
+      {{ $t('app.gcode.btn.load_current_file') }}
+    </app-btn>
 
     <app-btn :disabled="!resetEnabled" @click="resetFile"
              color="secondary" class="mt-3" block>
-      {{ $t('app.general.btn.reset_file') }}
+      {{ $t('app.gcode.btn.reset_file') }}
     </app-btn>
   </div>
 </template>
@@ -19,26 +29,42 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import GcodePreviewControlCheckbox from '@/components/widgets/gcode-preview/GcodePreviewControlCheckbox.vue'
+import FilesMixin from '@/mixins/files'
 
 @Component({
   components: { GcodePreviewControlCheckbox }
 })
-export default class GcodePreviewControls extends Mixins(StateMixin) {
+export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin) {
   @Prop({
     type: Boolean,
     default: false
   })
   disabled!: boolean
 
+  get printerFile () {
+    return this.$store.state.printer.printer.print_stats.filename
+  }
+
   get enableFollowProgress () {
-    const printerFile = this.$store.state.printer.printer.print_stats.filename
     const gcodePreviewFile = this.$store.getters['gcodePreview/getFile']?.filename
 
-    return gcodePreviewFile === printerFile
+    return gcodePreviewFile === this.printerFile
   }
 
   get resetEnabled () {
     return this.$store.getters['gcodePreview/getMoves'].length > 0
+  }
+
+  async loadCurrent () {
+    const [, dir, fileName] = this.printerFile.match(/(.*)(?:\/|^)(.+)/)
+
+    const file = this.$store.getters['files/getFile']('gcodes', dir, fileName)
+    const { data } = await this.getFile(file.filename, 'gcodes', file.size) // todo: Make sure the file download dialog is present
+
+    this.$store.dispatch('gcodePreview/loadGcode', {
+      file,
+      gcode: data
+    })
   }
 
   resetFile () {

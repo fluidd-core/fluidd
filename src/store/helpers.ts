@@ -358,15 +358,14 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
 
   switch (move.direction) {
     case Rotation.Clockwise:
-      return [
-        'A', radius, radius, 0, Number(angle < 0), 0, destination.x, destination.y
-      ].join(' ')
+      return 'A' + [
+        radius, radius, 0, Number(angle < 0), 0, destination.x, destination.y
+      ].join(',')
     case Rotation.CounterClockwise:
-      return [
-        'M', destination.x, destination.y,
-        'A', radius, radius, 0, Number(angle > 0), 0, toolhead.x, toolhead.y,
-        'M', destination.x, destination.y
-      ].join(' ')
+      return '' +
+        'M' + [destination.x, destination.y].join(',') +
+        'A' + [radius, radius, 0, Number(angle > 0), 0, toolhead.x, toolhead.y].join(',') +
+        'M' + [destination.x, destination.y].join(',')
     default:
       throw new TypeError('move has no direction')
   }
@@ -428,7 +427,7 @@ export function moveToSVGPath (toolhead: Point, move: Move) {
   if (Object.hasOwnProperty.call(move, 'direction')) {
     return arcMoveToSvgPath(toolhead, move as ArcMove)
   } else {
-    return `L${move.x ?? toolhead.x} ${move.y ?? toolhead.y}`
+    return `L${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
   }
 }
 
