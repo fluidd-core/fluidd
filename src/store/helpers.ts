@@ -428,7 +428,7 @@ export function moveToSVGPath (toolhead: Point, move: Move) {
   if (Object.hasOwnProperty.call(move, 'direction')) {
     return arcMoveToSvgPath(toolhead, move as ArcMove)
   } else {
-    return `L ${move.x ?? toolhead.x},${move.y ?? toolhead.y}`
+    return `L${move.x ?? toolhead.x} ${move.y ?? toolhead.y}`
   }
 }
 

@@ -9,8 +9,8 @@
                 :fill="themeIsDark ? '#555' : 'lightgrey'"/>
         </pattern>
         <svg id="retraction" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
-          <path v-if="flipY" d="M 0,0 L 5,10 L 10,0 Z" fill="red" fill-opacity="0.9"/>
-          <path v-else d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9"/>
+          <path v-if="flipY" d="M 0,0 L 5,10 L 10,0 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
+          <path v-else d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
         </svg>
       </defs>
       <g :transform="flipTransform">
@@ -22,15 +22,17 @@
         </g>
         <g id="previousLayer" class="layer" v-if="getViewerOption('showPreviousLayer')">
           <path stroke="lightgrey" :stroke-width="extrusionLineWidth" stroke-opacity="0.6"
-                :d="svgPathPrevious.extrusions"/>
+                :d="svgPathPrevious.extrusions" :shape-rendering="shapeRendering"/>
         </g>
         <g id="currentLayer" class="layer">
           <path :d="svgPathCurrent.extrusions" v-if="getViewerOption('showExtrusions')"
                 :stroke="themeIsDark ? 'white' : 'black'"
-                :stroke-width="extrusionLineWidth"/>
+                :stroke-width="extrusionLineWidth"
+                :shape-rendering="shapeRendering"/>
           <path :d="svgPathCurrent.moves" v-if="getViewerOption('showMoves')"
                 stroke="gray"
-                :stroke-width="moveLineWidth"/>
+                :stroke-width="moveLineWidth"
+                :shape-rendering="shapeRendering"/>
 
           <circle id="toolhead" fill="green" r=".6"
                   :cx="svgPathCurrent.toolhead.x" :cy="svgPathCurrent.toolhead.y"/>
@@ -90,6 +92,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   panzoom?: PanZoom
 
+  panning = false
+
   get themeIsDark (): boolean {
     return this.$store.state.config.uiSettings.theme.isDark
   }
@@ -112,6 +116,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get drawBackground () {
     return this.$store.state.config.uiSettings.gcodePreview.drawBackground
+  }
+
+  get shapeRendering () {
+    return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
 
   get flipX (): boolean {
@@ -238,6 +246,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
       bounds: true,
       boundsPadding: 0.8
     })
+
+    this.panzoom.on('panstart', () => {
+      this.panning = true
+    })
+
+    this.panzoom.on('panend', () => {
+      this.panning = false
+    })
   }
 
   beforeDestroy () {
@@ -267,14 +283,20 @@ export default class GcodePreview extends Mixins(StateMixin) {
   outline: none;
   overflow: hidden;
   border: 1px solid black;
+
   &:focus {
     border-color: grey;
     box-shadow: 0 0 4px 0 black;
   }
+
   .dark {
     &:focus {
       box-shadow: 0 0 4px 0 lightgrey;
     }
   }
+}
+
+svg {
+  shape-rendering: geometricPrecision;
 }
 </style>
