@@ -212,6 +212,7 @@ app:
         estimated_time: Estimated time
         filament: Filament
         filament_used: Used filament
+        filament_weight_total: Filament weight
         first_layer_bed_temp: First layer bed temp
         first_layer_extr_temp: First layer extruder temp
         first_layer_height: First layer height

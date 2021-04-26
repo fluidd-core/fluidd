@@ -2,7 +2,6 @@
 
 ## Next Up
 
-- Locking mechanism for sliders
 - Authorization
 - add cpu time / resource monitoring
 - status card updates

@@ -70,6 +70,7 @@ export const defaultState = (): ConfigState => {
           { value: 'slicer', visible: false },
           { value: 'history.filament_used', visible: false },
           { value: 'filament_total', visible: false },
+          { value: 'filament_weight_total', visible: false },
           { value: 'object_height', visible: false },
           { value: 'first_layer_height', visible: false },
           { value: 'layer_height', visible: false }

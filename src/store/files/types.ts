@@ -49,6 +49,7 @@ export interface KlipperFile {
 export interface KlipperFileMeta {
   estimated_time?: number;
   filament_total?: number;
+  filament_weight_total?: number;
   first_layer_bed_temp?: number;
   first_layer_extr_temp?: number;
   first_layer_height?: number;
