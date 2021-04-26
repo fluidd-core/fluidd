@@ -132,13 +132,9 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get flipTransform () {
     const {
-      stepper_x: stepperX,
-      stepper_y: stepperY
-    } = this.$store.getters['printer/getPrinterSettings']()
-
-    if (!stepperX || !stepperY) {
-      return ''
-    }
+      x,
+      y
+    } = this.viewBox
 
     const scale = [
       this.flipX ? -1 : 1,
@@ -146,8 +142,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
     ]
 
     const transform = [
-      this.flipX ? -(stepperX.position_max - stepperX.position_min) : 0,
-      this.flipY ? -(stepperY.position_max - stepperY.position_min) : 0
+      this.flipX ? -(x.max - x.min) : 0,
+      this.flipY ? -(y.max - y.min) : 0
     ]
 
     return `scale(${scale.join()}) translate(${transform.join()})`
@@ -172,14 +168,26 @@ export default class GcodePreview extends Mixins(StateMixin) {
       }
     }
 
+    const bounds = this.$store.getters['gcodePreview/getBounds']
+
+    console.log('bounds', bounds)
+    console.log('stepperX', {
+      min: stepperX.position_min,
+      max: stepperX.position_max
+    })
+    console.log('stepperY', {
+      min: stepperY.position_min,
+      max: stepperY.position_max
+    })
+
     return {
       x: {
-        min: stepperX.position_min,
-        max: stepperX.position_max
+        min: Math.min(stepperX.position_min, bounds.xMin),
+        max: Math.max(stepperX.position_max, bounds.xMax)
       },
       y: {
-        min: stepperY.position_min,
-        max: stepperY.position_max
+        min: Math.min(stepperY.position_min, bounds.yMin),
+        max: Math.max(stepperY.position_max, bounds.yMax)
       }
     }
   }

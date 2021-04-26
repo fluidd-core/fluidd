@@ -67,3 +67,10 @@ export interface Layer {
   z: LayerHeight;
   filePosition: number;
 }
+
+export interface BBox {
+  xMin: number;
+  xMax: number;
+  yMin: number;
+  yMax: number;
+}

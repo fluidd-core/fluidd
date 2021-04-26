@@ -1,5 +1,6 @@
 import { GetterTree } from 'vuex'
 import {
+  BBox,
   GcodePreviewState,
   Layer,
   LayerNr,
@@ -61,6 +62,54 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
   getLayerCount: (state, getters): number => {
     return getters.getLayers.length
+  },
+
+  getBounds: (state, getters): BBox => {
+    const moves = getters.getMoves
+    const bounds = {
+      xMin: NaN,
+      xMax: NaN,
+      yMin: NaN,
+      yMax: NaN
+    }
+
+    const isFinite = Number.isFinite
+    let index = 0
+
+    for (; index < moves.length && !Object.values(bounds).every(isFinite); index++) {
+      const move = moves[index]
+
+      if (isFinite(move.x)) {
+        bounds.xMin = isFinite(bounds.xMin) ? Math.min(bounds.xMin, move.x) : move.x
+        bounds.xMax = isFinite(bounds.xMax) ? Math.max(bounds.xMax, move.x) : move.x
+      }
+
+      if (isFinite(move.y)) {
+        bounds.yMin = isFinite(bounds.yMin) ? Math.min(bounds.yMin, move.y) : move.y
+        bounds.yMax = isFinite(bounds.yMax) ? Math.max(bounds.yMax, move.y) : move.y
+      }
+    }
+
+    for (; index < moves.length; index++) {
+      const move = moves[index]
+
+      if (isFinite(move.x)) {
+        bounds.xMin = Math.min(bounds.xMin, move.x)
+        bounds.xMax = Math.max(bounds.xMax, move.x)
+      }
+
+      if (isFinite(move.y)) {
+        bounds.yMin = Math.min(bounds.yMin, move.y)
+        bounds.yMax = Math.max(bounds.yMax, move.y)
+      }
+    }
+
+    return {
+      xMin: isFinite(bounds.xMin) ? bounds.xMin : 0,
+      xMax: isFinite(bounds.xMax) ? bounds.xMax : 0,
+      yMin: isFinite(bounds.yMin) ? bounds.yMin : 0,
+      yMax: isFinite(bounds.yMax) ? bounds.yMax : 0
+    }
   },
 
   getToolHeadPosition: (state, getters) => (moveIndex: number): Point3D => {
