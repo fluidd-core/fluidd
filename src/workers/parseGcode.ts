@@ -3,8 +3,6 @@ import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gc
 import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
-let failed: string[] = []
-
 function parseLine (line: string) {
   const [, command, args = ''] = line
     .trim()
@@ -18,13 +16,7 @@ function parseLine (line: string) {
   const argMap: any = {}
 
   for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?\d+(?:\.\d+)?)/ig)) {
-    const _value = Number(value)
-
-    if (Number.isNaN(_value)) {
-      failed.push(`${value} => ${line}`)
-    } else {
-      argMap[key.toLowerCase()] = _value
-    }
+    argMap[key.toLowerCase()] = Number(value)
   }
 
   return {
@@ -140,11 +132,6 @@ export default function parseGcode (gcode: string, subject: Subject<unknown>) {
   }
 
   subject.next(toolhead.filePosition)
-
-  if (failed.length > 0) {
-    console.log('Some lines failed to parse properly', failed)
-    failed = []
-  }
 
   return moves
 }
