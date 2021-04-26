@@ -257,12 +257,4 @@ export default class GcodePreview extends Mixins(StateMixin) {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-
-.flipX {
-  transform: scaleX(-1)
-}
-
-.flipY {
-  transform: scaleY(-1)
-}
 </style>
