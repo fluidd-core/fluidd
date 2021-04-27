@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- Power on graph toggles back off on a klipper restart
 - Authorization
 - add cpu time / resource monitoring
 - status card updates
