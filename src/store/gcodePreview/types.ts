@@ -45,6 +45,7 @@ export interface LayerPaths {
   moves: string;
   extrusions: string;
   retractions: Point[];
+  extrusionStarts: Point[];
   toolhead: Point;
 }
 

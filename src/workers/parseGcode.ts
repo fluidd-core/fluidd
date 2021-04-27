@@ -39,6 +39,15 @@ export default function parseGcode (gcode: string, subject: Subject<unknown>) {
     filePosition: 0
   }
 
+  // todo get from firmware
+  // store path: printer.printer.configFile.settings.firmware_retraction
+  // { retract_length: number; unretract_extra_length: number }
+  const fwretraction = {
+    length: 1,
+    extrudeExtra: 0,
+    z: 0
+  }
+
   for (let i = 0; i < lines.length; i++) {
     const {
       command,
@@ -69,6 +78,24 @@ export default function parseGcode (gcode: string, subject: Subject<unknown>) {
             ? Rotation.Clockwise : Rotation.CounterClockwise
         } as ArcMove
         break
+      case 'G10':
+        move = {
+          e: -fwretraction.length
+        }
+
+        if (fwretraction.z !== 0) {
+          move.z = toolhead.z + fwretraction.z
+        }
+        break
+      case 'G11':
+        move = {
+          e: fwretraction.length + fwretraction.extrudeExtra
+        }
+
+        if (fwretraction.z !== 0) {
+          move.z = toolhead.z - fwretraction.z
+        }
+        break
       case 'G90':
         positioningMode = PositioningMode.Absolute
       case 'M82':
@@ -90,6 +117,11 @@ export default function parseGcode (gcode: string, subject: Subject<unknown>) {
           toolhead.y = args.y ?? toolhead.y
           toolhead.z = args.z ?? toolhead.z
         }
+        break
+      case 'M207':
+        fwretraction.length = args.s ?? fwretraction.length
+        fwretraction.extrudeExtra = args.s ?? fwretraction.extrudeExtra
+        fwretraction.z = args.z ?? fwretraction.z
         break
     }
 

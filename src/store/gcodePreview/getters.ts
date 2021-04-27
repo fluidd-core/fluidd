@@ -150,6 +150,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       extrusions: '',
       moves: `M${toolhead.x},${toolhead.y}`,
       retractions: [],
+      extrusionStarts: [],
       toolhead: {
         x: 0,
         y: 0
@@ -164,6 +165,11 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       if (move.e > 0) {
         if (traveling) {
           path.extrusions += `M${toolhead.x},${toolhead.y}`
+          path.extrusionStarts.push({
+            x: toolhead.x,
+            y: toolhead.y
+          })
+
           traveling = false
         }
 

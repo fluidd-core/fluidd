@@ -12,6 +12,10 @@
           <path v-if="flipY" d="M 0,0 L 5,10 L 10,0 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
           <path v-else d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
         </svg>
+        <svg id="extrusionStart" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
+          <path v-if="flipY" d="M 10,10 L 5,0 L 0,10 Z" fill="green" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
+          <path v-else d="M 0,0 L 5,10 L 10,0 Z" fill="green" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
+        </svg>
       </defs>
       <g :transform="flipTransform">
         <g id="background" v-if="drawBackground">
@@ -40,6 +44,13 @@
           <g id="retractions" v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0">
             <use v-for="({x, y}, index) of svgPathCurrent.retractions"
                  :key="`retraction-${index + 1}`" xlink:href="#retraction"
+                 :x="x - (retractionIconSize / 2)" :y="flipY ? y : y - retractionIconSize"/>
+            <!-- Calculate anchor to be bottom-center of the triangle -->
+          </g>
+
+          <g id="extrusionStarts" v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0">
+            <use v-for="({x, y}, index) of svgPathCurrent.extrusionStarts"
+                 :key="`extrusion-start-${index + 1}`" xlink:href="#extrusionStart"
                  :x="x - (retractionIconSize / 2)" :y="flipY ? y : y - retractionIconSize"/>
             <!-- Calculate anchor to be bottom-center of the triangle -->
           </g>
@@ -227,6 +238,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
       extrusions: '',
       moves: '',
       retractions: [],
+      extrusionStarts: [],
       toolhead: {
         x: 0,
         y: 0
