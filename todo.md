@@ -21,6 +21,10 @@
 - console
   - raw output option for the console, so users can easily copy / paste larger portions of the output.
   - move autoscroll
+- macros
+  - allow ordering of categories and macros
+  - allow assignment of a color?
+  - allow placing macros in specific cards (console, bed mesh etc..)
 
 ### Features
 

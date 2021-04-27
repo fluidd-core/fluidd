@@ -83,7 +83,7 @@
 
           <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="filament_weight_total">
             <span v-if="item.filament_weight_total !== undefined">
-              {{ $filters.getReadableLengthString(item.filament_weight_total) }}
+              {{ item.filament_weight_total }} g
             </span>
           </file-row-item>
 
