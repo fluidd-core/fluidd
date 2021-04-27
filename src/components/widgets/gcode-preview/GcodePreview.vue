@@ -15,10 +15,10 @@
       </defs>
       <g :transform="flipTransform">
         <g id="background" v-if="drawBackground">
-          <rect :height="viewBox.y.max - viewBox.y.min"
-                :width="viewBox.x.max - viewBox.x.min"
+          <rect :height="bedSize.y.max - bedSize.y.min"
+                :width="bedSize.x.max - bedSize.x.min"
                 style="fill: url(#backgroundPattern);"
-                :x="viewBox.x.min" :y="viewBox.y.min"/>
+                :x="bedSize.x.min" :y="bedSize.y.min"/>
         </g>
         <g id="previousLayer" class="layer" v-if="getViewerOption('showPreviousLayer')">
           <path stroke="lightgrey" :stroke-width="extrusionLineWidth" stroke-opacity="0.6"
@@ -149,7 +149,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return `scale(${scale.join()}) translate(${transform.join()})`
   }
 
-  get viewBox () {
+  get bedSize () {
     const {
       stepper_x: stepperX,
       stepper_y: stepperY
@@ -168,17 +168,38 @@ export default class GcodePreview extends Mixins(StateMixin) {
       }
     }
 
+    return {
+      x: {
+        min: stepperX.position_min,
+        max: stepperX.position_max
+      },
+      y: {
+        min: stepperY.position_min,
+        max: stepperY.position_max
+      }
+    }
+  }
+
+  get viewBox () {
     const bounds = this.$store.getters['gcodePreview/getBounds']
 
-    console.log('bounds', bounds)
-    console.log('stepperX', {
-      min: stepperX.position_min,
-      max: stepperX.position_max
-    })
-    console.log('stepperY', {
-      min: stepperY.position_min,
-      max: stepperY.position_max
-    })
+    const {
+      stepper_x: stepperX,
+      stepper_y: stepperY
+    } = this.$store.getters['printer/getPrinterSettings']()
+
+    if (stepperX === undefined || stepperY === undefined) {
+      return {
+        x: {
+          min: bounds.xMin,
+          max: bounds.xMax
+        },
+        y: {
+          min: bounds.yMin,
+          max: bounds.yMax
+        }
+      }
+    }
 
     return {
       x: {
