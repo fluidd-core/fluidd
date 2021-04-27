@@ -59,8 +59,22 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
     const [, dir, fileName] = this.printerFile.match(/(.*)(?:\/|^)(.+)/)
 
     const file = this.$store.getters['files/getFile']('gcodes', dir, fileName)
-    const { data } = await this.getFile(file.filename, 'gcodes', file.size) // todo: Make sure the file download dialog is present
+    const sizeInMB = file.size / 1024 / 1024
 
+    if (sizeInMB >= 100) {
+      const confirmed = await this.$confirm(
+        // todo i18n
+        `The file "${file.filename}" is ${this.$filters.getReadableFileSizeString(file.size)}, this might be resource intensive for your system. Are you sure?`,
+        { title: this.$tc('app.general.title.gcode_preview'), color: 'card-heading', icon: '$error' }
+      )
+
+      if (!confirmed) {
+        return
+      }
+    }
+
+    // todo: Make sure the file download dialog is present
+    const { data } = await this.getFile(file.filename, 'gcodes', file.size)
     this.$store.dispatch('gcodePreview/loadGcode', {
       file,
       gcode: data
