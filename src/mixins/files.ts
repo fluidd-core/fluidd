@@ -64,13 +64,13 @@ export default class FilesMixin extends Vue {
         const payload: any = {
           filepath,
           loaded: progressEvent.loaded,
-          percent: Math.round(progressEvent.loaded / progressEvent.total * 100),
+          percent: Math.round(progressEvent.loaded / size * 100),
           speed,
           unit: units[i]
         }
 
         if (progressEvent.lengthComputable) {
-          payload.size = progressEvent.total
+          size = payload.size = progressEvent.total
         }
 
         this.$store.dispatch('files/updateFileDownload', payload)

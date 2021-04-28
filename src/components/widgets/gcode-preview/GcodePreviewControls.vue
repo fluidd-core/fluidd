@@ -30,6 +30,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import GcodePreviewControlCheckbox from '@/components/widgets/gcode-preview/GcodePreviewControlCheckbox.vue'
 import FilesMixin from '@/mixins/files'
+import { AppFile } from '@/store/files/types'
 
 @Component({
   components: { GcodePreviewControlCheckbox }
@@ -42,7 +43,7 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
   disabled!: boolean
 
   get printerFile () {
-    return this.$store.state.printer.printer.print_stats.filename
+    return this.$store.state.printer.printer.current_file.filename
   }
 
   get printerFileLoaded () {
@@ -60,14 +61,8 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
   }
 
   async loadCurrent () {
-    let [, dir, fileName] = this.printerFile.match(/(.*)(?:\/|^)(.+)/)
-
-    dir = dir ? `gcodes/${dir}` : 'gcodes'
-
-    // todo figure out a fallback for when file info isn't currently loaded locally
-    const file = this.$store.getters['files/getFile']('gcodes', dir, fileName)
-
-    const sizeInMB = (file?.size ?? 0) / 1024 / 1024
+    const file = this.$store.state.printer.printer.current_file as AppFile
+    const sizeInMB = file.size / 1024 / 1024
 
     if (sizeInMB >= 100) {
       const confirmed = await this.$confirm(
@@ -85,7 +80,8 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
       }
     }
 
-    const { data } = await this.getFile(fileName, dir, file?.size ?? 0)
+    const path = file.path ? `${file.path}/${file.filename}` : file.filename
+    const { data } = await this.getFile(path, 'gcodes', file.size)
 
     this.$store.dispatch('gcodePreview/loadGcode', {
       file,

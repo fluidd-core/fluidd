@@ -319,7 +319,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   getUiSetting (name: keyof GcodePreviewConfig) {
-    return this.$store.state.config.uiSettings.gcodePreview[name];
+    return this.$store.state.config.uiSettings.gcodePreview[name]
   }
 }
 </script>
