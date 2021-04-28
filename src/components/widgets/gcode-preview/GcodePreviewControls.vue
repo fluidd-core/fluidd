@@ -42,18 +42,23 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
   })
   disabled!: boolean
 
-  get printerFile () {
-    return this.$store.state.printer.printer.current_file.filename
+  get printerFile (): AppFile | undefined {
+    const currentFile = this.$store.state.printer.printer.current_file
+
+    if (currentFile.filename) {
+      return currentFile
+    }
   }
 
   get printerFileLoaded () {
     const file = this.$store.getters['gcodePreview/getFile']
+    const printerFile = this.printerFile
 
-    if (!file) {
+    if (!file || !printerFile) {
       return false
     }
 
-    return (file.path + '/' + file.filename) === this.printerFile
+    return (file.path + '/' + file.filename) === (printerFile.path + '/' + printerFile.filename)
   }
 
   get noMoves () {
