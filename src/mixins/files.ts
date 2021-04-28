@@ -33,7 +33,7 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile (filename: string, path: string, size: number, options?: AxiosRequestConfig) {
+  async getFile (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
     // Sort out the filepath
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
 
@@ -60,13 +60,20 @@ export default class FilesMixin extends Vue {
           speed /= 1024.0
           i = Math.min(2, i + 1)
         }
-        this.$store.dispatch('files/updateFileDownload', {
+
+        const payload: any = {
           filepath,
           loaded: progressEvent.loaded,
-          percent: Math.round(progressEvent.loaded / size * 100),
+          percent: Math.round(progressEvent.loaded / progressEvent.total * 100),
           speed,
           unit: units[i]
-        })
+        }
+
+        if (progressEvent.lengthComputable) {
+          payload.size = progressEvent.total
+        }
+
+        this.$store.dispatch('files/updateFileDownload', payload)
       }
     }
 

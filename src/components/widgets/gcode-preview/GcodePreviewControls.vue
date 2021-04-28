@@ -1,6 +1,6 @@
 <template>
   <div>
-    <gcode-preview-control-checkbox :disabled="disabled || !enableFollowProgress" name="followProgress"
+    <gcode-preview-control-checkbox :disabled="disabled || !printerFileLoaded" name="followProgress"
                                     :label="$t('app.gcode.label.follow_progress')"/>
     <gcode-preview-control-checkbox :disabled="disabled" name="showNextLayer"
                                     :label="$t('app.gcode.label.show_next_layer')"/>
@@ -13,12 +13,12 @@
     <gcode-preview-control-checkbox :disabled="disabled" name="showRetractions"
                                     :label="$t('app.gcode.label.show_retractions')"/>
 
-    <app-btn :disabled="!printerFile" @click="loadCurrent"
+    <app-btn :disabled="!printerFile || printerFileLoaded" @click="loadCurrent"
              color="primary" class="mt-3" block small>
       {{ $t('app.gcode.btn.load_current_file') }}
     </app-btn>
 
-    <app-btn :disabled="!resetEnabled" @click="resetFile"
+    <app-btn :disabled="noMoves" @click="resetFile"
              color="secondary" class="mt-3" block>
       {{ $t('app.gcode.btn.reset_file') }}
     </app-btn>
@@ -45,27 +45,39 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
     return this.$store.state.printer.printer.print_stats.filename
   }
 
-  get enableFollowProgress () {
-    const gcodePreviewFile = this.$store.getters['gcodePreview/getFile']?.filename
+  get printerFileLoaded () {
+    const file = this.$store.getters['gcodePreview/getFile']
 
-    return gcodePreviewFile === this.printerFile
+    if (!file) {
+      return false
+    }
+
+    return (file.path + '/' + file.filename) === this.printerFile
   }
 
-  get resetEnabled () {
-    return this.$store.getters['gcodePreview/getMoves'].length > 0
+  get noMoves () {
+    return this.$store.getters['gcodePreview/getMoves'].length === 0
   }
 
   async loadCurrent () {
-    const [, dir, fileName] = this.printerFile.match(/(.*)(?:\/|^)(.+)/)
+    let [, dir, fileName] = this.printerFile.match(/(.*)(?:\/|^)(.+)/)
 
+    dir = dir ? `gcodes/${dir}` : 'gcodes'
+
+    // todo figure out a fallback for when file info isn't currently loaded locally
     const file = this.$store.getters['files/getFile']('gcodes', dir, fileName)
-    const sizeInMB = file.size / 1024 / 1024
+
+    const sizeInMB = (file?.size ?? 0) / 1024 / 1024
 
     if (sizeInMB >= 100) {
       const confirmed = await this.$confirm(
         // todo i18n
         `The file "${file.filename}" is ${this.$filters.getReadableFileSizeString(file.size)}, this might be resource intensive for your system. Are you sure?`,
-        { title: this.$tc('app.general.title.gcode_preview'), color: 'card-heading', icon: '$error' }
+        {
+          title: this.$tc('app.general.title.gcode_preview'),
+          color: 'card-heading',
+          icon: '$error'
+        }
       )
 
       if (!confirmed) {
@@ -73,8 +85,8 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
       }
     }
 
-    // todo: Make sure the file download dialog is present
-    const { data } = await this.getFile(file.filename, 'gcodes', file.size)
+    const { data } = await this.getFile(fileName, dir, file?.size ?? 0)
+
     this.$store.dispatch('gcodePreview/loadGcode', {
       file,
       gcode: data
