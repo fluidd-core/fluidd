@@ -22,7 +22,7 @@
         <g id="background" v-if="drawBackground">
           <rect :height="bedSize.y.max - bedSize.y.min"
                 :width="bedSize.x.max - bedSize.x.min"
-                style="fill: url(#backgroundPattern);"
+                fill="url(#backgroundPattern)"
                 :x="bedSize.x.min" :y="bedSize.y.min"/>
         </g>
         <g id="previousLayer" class="layer" v-if="getViewerOption('showPreviousLayer')">
