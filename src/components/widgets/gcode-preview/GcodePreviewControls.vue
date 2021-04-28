@@ -81,6 +81,8 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
     }
 
     const path = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    // todo: getFile depends on the jobs card being present
     const { data } = await this.getFile(path, 'gcodes', file.size)
 
     this.$store.dispatch('gcodePreview/loadGcode', {
