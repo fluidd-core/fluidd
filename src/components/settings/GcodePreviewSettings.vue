@@ -6,6 +6,17 @@
       dense
       class="mb-4">
 
+      <app-setting :title="$t('app.setting.label.show_animations')">
+        <v-switch
+          @click.native.stop
+          v-model="showAnimations"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
+
+      <v-divider/>
+
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
           @click.native.stop
@@ -178,6 +189,18 @@ export default class GcodePreviewSettings extends Vue {
   set drawBackground (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.drawBackground',
+      value,
+      server: true
+    })
+  }
+
+  get showAnimations () {
+    return this.$store.state.config.uiSettings.gcodePreview.showAnimations
+  }
+
+  set showAnimations (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.showAnimations',
       value,
       server: true
     })

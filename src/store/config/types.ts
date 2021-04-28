@@ -114,6 +114,7 @@ export interface GcodePreviewConfig {
   moveLineWidth: number;
   retractionIconSize: number;
   drawBackground: boolean;
+  showAnimations: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;

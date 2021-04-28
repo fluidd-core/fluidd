@@ -129,6 +129,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.gcodePreview.drawBackground
   }
 
+  get showAnimations () {
+    return this.$store.state.config.uiSettings.gcodePreview.showAnimations
+  }
+
   get shapeRendering () {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
@@ -285,7 +289,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
       maxZoom: 20,
       minZoom: 0.98,
       bounds: true,
-      boundsPadding: 0.8
+      boundsPadding: 0.8,
+      smoothScroll: this.showAnimations
     })
 
     this.panzoom.on('panstart', () => {

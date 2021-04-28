@@ -96,6 +96,7 @@ export const defaultState = (): ConfigState => {
         moveLineWidth: 0.1,
         retractionIconSize: 0.6,
         drawBackground: true,
+        showAnimations: true,
         flip: {
           horizontal: false,
           vertical: true
