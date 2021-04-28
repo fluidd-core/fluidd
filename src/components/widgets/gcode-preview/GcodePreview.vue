@@ -13,7 +13,8 @@
           <path v-else d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
         </svg>
         <svg id="extrusionStart" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
-          <path v-if="flipY" d="M 10,10 L 5,0 L 0,10 Z" fill="green" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
+          <path v-if="flipY" d="M 10,10 L 5,0 L 0,10 Z" fill="green" fill-opacity="0.9"
+                :shape-rendering="shapeRendering"/>
           <path v-else d="M 0,0 L 5,10 L 10,0 Z" fill="green" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
         </svg>
       </defs>
@@ -70,6 +71,7 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { LayerNr, LayerPaths } from '@/store/gcodePreview/types'
+import { GcodePreviewConfig } from '@/store/config/types'
 
 @Component({})
 export default class GcodePreview extends Mixins(StateMixin) {
@@ -114,23 +116,23 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   get extrusionLineWidth () {
-    return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
+    return this.getUiSetting('extrusionLineWidth')
   }
 
   get moveLineWidth () {
-    return this.$store.state.config.uiSettings.gcodePreview.moveLineWidth
+    return this.getUiSetting('moveLineWidth')
   }
 
   get retractionIconSize () {
-    return this.$store.state.config.uiSettings.gcodePreview.retractionIconSize
+    return this.getUiSetting('retractionIconSize')
   }
 
   get drawBackground () {
-    return this.$store.state.config.uiSettings.gcodePreview.drawBackground
+    return this.getUiSetting('drawBackground')
   }
 
   get showAnimations () {
-    return this.$store.state.config.uiSettings.gcodePreview.showAnimations
+    return this.getUiSetting('showAnimations')
   }
 
   get shapeRendering () {
@@ -314,6 +316,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   getViewerOption (name: string) {
     return this.$store.getters['gcodePreview/getViewerOption'](name)
+  }
+
+  getUiSetting (name: keyof GcodePreviewConfig) {
+    return this.$store.state.config.uiSettings.gcodePreview[name];
   }
 }
 </script>
