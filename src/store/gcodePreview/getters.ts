@@ -67,10 +67,14 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   getBounds: (state, getters): BBox => {
     const moves = getters.getMoves
     const bounds = {
-      xMin: NaN,
-      xMax: NaN,
-      yMin: NaN,
-      yMax: NaN
+      x: {
+        min: NaN,
+        max: NaN
+      },
+      y: {
+        min: NaN,
+        max: NaN
+      }
     }
 
     const isFinite = Number.isFinite
@@ -80,13 +84,13 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       const move = moves[index]
 
       if (isFinite(move.x)) {
-        bounds.xMin = isFinite(bounds.xMin) ? Math.min(bounds.xMin, move.x) : move.x
-        bounds.xMax = isFinite(bounds.xMax) ? Math.max(bounds.xMax, move.x) : move.x
+        bounds.x.min = isFinite(bounds.x.min) ? Math.min(bounds.x.min, move.x) : move.x
+        bounds.x.max = isFinite(bounds.x.max) ? Math.max(bounds.x.max, move.x) : move.x
       }
 
       if (isFinite(move.y)) {
-        bounds.yMin = isFinite(bounds.yMin) ? Math.min(bounds.yMin, move.y) : move.y
-        bounds.yMax = isFinite(bounds.yMax) ? Math.max(bounds.yMax, move.y) : move.y
+        bounds.y.min = isFinite(bounds.y.min) ? Math.min(bounds.y.min, move.y) : move.y
+        bounds.y.max = isFinite(bounds.y.max) ? Math.max(bounds.y.max, move.y) : move.y
       }
     }
 
@@ -94,21 +98,25 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       const move = moves[index]
 
       if (isFinite(move.x)) {
-        bounds.xMin = Math.min(bounds.xMin, move.x)
-        bounds.xMax = Math.max(bounds.xMax, move.x)
+        bounds.x.min = Math.min(bounds.x.min, move.x)
+        bounds.x.max = Math.max(bounds.x.max, move.x)
       }
 
       if (isFinite(move.y)) {
-        bounds.yMin = Math.min(bounds.yMin, move.y)
-        bounds.yMax = Math.max(bounds.yMax, move.y)
+        bounds.y.min = Math.min(bounds.y.min, move.y)
+        bounds.y.max = Math.max(bounds.y.max, move.y)
       }
     }
 
     return {
-      xMin: isFinite(bounds.xMin) ? bounds.xMin : 0,
-      xMax: isFinite(bounds.xMax) ? bounds.xMax : 0,
-      yMin: isFinite(bounds.yMin) ? bounds.yMin : 0,
-      yMax: isFinite(bounds.yMax) ? bounds.yMax : 0
+      x: {
+        min: isFinite(bounds.x.min) ? bounds.x.min : 0,
+        max: isFinite(bounds.x.max) ? bounds.x.max : 0
+      },
+      y: {
+        min: isFinite(bounds.y.min) ? bounds.y.min : 0,
+        max: isFinite(bounds.y.max) ? bounds.y.max : 0
+      }
     }
   },
 

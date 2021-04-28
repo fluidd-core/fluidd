@@ -70,8 +70,13 @@ export interface Layer {
 }
 
 export interface BBox {
-  xMin: number;
-  xMax: number;
-  yMin: number;
-  yMax: number;
+  x: {
+    min: number;
+    max: number;
+  };
+
+  y: {
+    min: number;
+    max: number;
+  };
 }

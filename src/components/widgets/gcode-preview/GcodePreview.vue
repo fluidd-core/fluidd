@@ -197,7 +197,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
     }
   }
 
-  get viewBox () {
+  get viewBox (): BBox {
     const bounds = this.$store.getters['gcodePreview/getBounds']
 
     const {
@@ -208,24 +208,24 @@ export default class GcodePreview extends Mixins(StateMixin) {
     if (stepperX === undefined || stepperY === undefined) {
       return {
         x: {
-          min: bounds.xMin,
-          max: bounds.xMax
+          min: bounds.x.min,
+          max: bounds.x.max
         },
         y: {
-          min: bounds.yMin,
-          max: bounds.yMax
+          min: bounds.y.min,
+          max: bounds.y.max
         }
       }
     }
 
     return {
       x: {
-        min: Math.min(stepperX.position_min, bounds.xMin),
-        max: Math.max(stepperX.position_max, bounds.xMax)
+        min: Math.min(stepperX.position_min, bounds.x.min),
+        max: Math.max(stepperX.position_max, bounds.x.max)
       },
       y: {
-        min: Math.min(stepperY.position_min, bounds.yMin),
-        max: Math.max(stepperY.position_max, bounds.yMax)
+        min: Math.min(stepperY.position_min, bounds.y.min),
+        max: Math.max(stepperY.position_max, bounds.y.max)
       }
     }
   }
