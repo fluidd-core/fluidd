@@ -70,7 +70,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
-import { LayerNr, LayerPaths } from '@/store/gcodePreview/types'
+import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
 
 @Component({})
@@ -166,7 +166,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return `scale(${scale.join()}) translate(${transform.join()})`
   }
 
-  get bedSize () {
+  get bedSize (): BBox {
     const {
       stepper_x: stepperX,
       stepper_y: stepperY
