@@ -18,7 +18,8 @@
       <GcodePreviewParserProgressDialog
         :value="showParserProgressDialog"
         :progress="parserProgress"
-        :file="file"/>
+        :file="file"
+        @cancel="abortParser"/>
 
       <v-row>
         <v-col cols="12" lg="9" md="7">
@@ -221,6 +222,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   syncMoveProgress () {
     this.moveProgress = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
+  }
+
+  abortParser () {
+    this.$store.dispatch('gcodePreview/terminateParserWorker')
   }
 }
 </script>

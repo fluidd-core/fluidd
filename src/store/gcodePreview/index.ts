@@ -13,6 +13,7 @@ export const defaultState = (): GcodePreviewState => {
     moves: [],
     file: undefined,
     parserProgress: 0,
+    parserWorker: null,
 
     viewer: {
       showNextLayer: false,
