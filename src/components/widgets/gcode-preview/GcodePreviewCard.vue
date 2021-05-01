@@ -82,6 +82,7 @@ import GcodePreview from './GcodePreview.vue'
 import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePreviewControls.vue'
 import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
+import { MinMax } from '@/store/gcodePreview/types'
 
 @Component({
   components: {
@@ -160,7 +161,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     return this.$store.getters['gcodePreview/getMoves'].length > 0
   }
 
-  get isMobile () {
+  get isMobile (): boolean {
     return this.$vuetify.breakpoint.mobile
   }
 
@@ -176,8 +177,8 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     return this.$store.state.printer.printer.virtual_sdcard.file_position
   }
 
-  get cardTitle () {
-    const title = this.$t('app.general.title.gcode_preview')
+  get cardTitle (): string {
+    const title = this.$tc('app.general.title.gcode_preview')
 
     if (!this.file) {
       return title
@@ -186,15 +187,15 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     return `${title} - ${this.file.name}`
   }
 
-  get layerCount () {
+  get layerCount (): number {
     return this.$store.getters['gcodePreview/getLayerCount']
   }
 
-  get currentLayerHeight () {
+  get currentLayerHeight (): number {
     return this.$store.getters['gcodePreview/getLayers'][this.currentLayer - 1]?.z ?? 0
   }
 
-  get followProgress () {
+  get followProgress (): boolean {
     return this.$store.getters['gcodePreview/getViewerOption']('followProgress')
   }
 
@@ -202,7 +203,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     this.$store.commit('gcodePreview/setViewerState', { followProgress: value })
   }
 
-  get currentLayerMoveRange (): { min: number; max: number } {
+  get currentLayerMoveRange (): MinMax {
     const moves = this.$store.getters['gcodePreview/getMoves']
 
     if (moves.length === 0) {

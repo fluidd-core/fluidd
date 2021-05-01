@@ -71,14 +71,12 @@ export interface Layer {
   filePosition: number;
 }
 
-export interface BBox {
-  x: {
-    min: number;
-    max: number;
-  };
+export interface MinMax {
+  min: number;
+  max: number;
+}
 
-  y: {
-    min: number;
-    max: number;
-  };
+export interface BBox {
+  x: MinMax;
+  y: MinMax;
 }
