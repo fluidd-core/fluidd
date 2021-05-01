@@ -406,7 +406,8 @@ function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
     move.r ?? NaN
   )
 
-  throw new Error('todo')
+  throw new Error('Arcs with the R parameter are currently not supported. ' +
+    'Please make a Github issue with some sample gcode so we can resolve this')
 }
 
 export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
