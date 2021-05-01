@@ -30,6 +30,7 @@ module.exports = {
     'vuetify'
   ],
   configureWebpack: {
+    devtool: 'source-map',
     resolve: {
       symlinks: false // Don't follow symlinks, fixes issues when using npm link.
     },

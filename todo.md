@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- Update mesh box to center on mesh center if no relative index set
 - Power on graph toggles back off on a klipper restart
 - Authorization
 - add cpu time / resource monitoring

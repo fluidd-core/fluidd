@@ -51,9 +51,10 @@
     </div>
 
     <div class="toolbar-suplimental">
-      <v-tooltip bottom v-if="socketConnected">
+      <v-tooltip bottom v-if="socketConnected && !isMobile">
         <template v-slot:activator="{ on, attrs }">
           <app-btn
+            v-if="!isMobile"
             :disabled="!klippyReady"
             icon
             class="ml-4"
@@ -113,6 +114,10 @@ export default class AppBar extends Mixins(StateMixin) {
 
   get theme () {
     return this.$store.getters['config/getTheme']
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   emergencyStop () {

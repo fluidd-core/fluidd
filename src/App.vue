@@ -23,6 +23,18 @@
       :timeout="flashMessage.timeout"
     />
 
+    <v-btn
+      v-if="isMobile"
+      x-small
+      fab
+      fixed
+      bottom left
+      color="error"
+      @click="emergencyStop()"
+    >
+      <v-icon>$estop</v-icon>
+    </v-btn>
+
     <v-main>
       <router-view v-if="socketConnected" />
       <socket-disconnected v-if="!socketConnected"></socket-disconnected>
@@ -38,6 +50,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from './mixins/state'
 import { Waits } from './globals'
+import { SocketActions } from './socketActions'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
@@ -60,6 +73,10 @@ export default class App extends Mixins(StateMixin) {
     let progress = this.$store.getters['printer/getPrintProgress']
     progress = (progress * 100).toFixed()
     return progress
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   get pageTitle () {
@@ -134,6 +151,10 @@ export default class App extends Mixins(StateMixin) {
       this.flashMessage.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
       this.flashMessage.open = true
     })
+  }
+
+  emergencyStop () {
+    SocketActions.printerEmergencyStop()
   }
 
   handleToolsDrawerChange () {
