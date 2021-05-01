@@ -25,7 +25,7 @@ function parseLine (line: string) {
   }
 }
 
-export default function parseGcode (gcode: string, subject: Subject<unknown>) {
+export default function parseGcode (gcode: string, subject: Subject<number>) {
   const moves: Move[] = []
   const lines = gcode.split('\n')
 

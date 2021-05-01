@@ -1,19 +1,19 @@
 import { expose } from 'threads/worker'
 import parseGcode from './parseGcode'
-import { Subject } from 'threads/observable'
+import { Subject, Observable } from 'threads/observable'
 
-let progress = new Subject()
+let progress = new Subject<number>()
 
 expose({
   parse (gcode: string) {
     const moves = parseGcode(gcode, progress)
 
     progress.complete()
-    progress = new Subject()
+    progress = new Subject<number>()
 
     return moves
   },
-  progress () {
-    return progress
+  progress (): Observable<number> {
+    return Observable.from(progress)
   }
 })
