@@ -633,10 +633,14 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const sizeInMB = file.size / 1024 / 1024
     if (sizeInMB >= 100) {
       const confirmed = await this.$confirm(
-        // todo i18n
-        `The file "${file.filename}" is ${this.$filters.getReadableFileSizeString(file.size)}, this might be resource intensive for your system. Are you sure?`,
-        { title: this.$tc('app.general.title.gcode_preview'), color: 'card-heading', icon: '$error' }
-      )
+        this.$t('app.gcode.msg.confirm', {
+          filename: file.filename,
+          size: this.$filters.getReadableFileSizeString(file.size)
+        }).toString(), {
+          title: this.$tc('app.general.title.gcode_preview'),
+          color: 'card-heading',
+          icon: '$error'
+        })
 
       if (!confirmed) {
         return

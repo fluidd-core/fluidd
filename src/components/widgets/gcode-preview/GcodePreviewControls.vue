@@ -20,7 +20,7 @@
 
     <app-btn :disabled="noMoves" @click="resetFile"
              color="secondary" class="mt-3" block>
-      {{ $t('app.gcode.btn.reset_file') }}
+      {{ $t('app.general.btn.reset_file') }}
     </app-btn>
   </div>
 </template>
@@ -71,14 +71,14 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
 
     if (sizeInMB >= 100) {
       const confirmed = await this.$confirm(
-        // todo i18n
-        `The file "${file.filename}" is ${this.$filters.getReadableFileSizeString(file.size)}, this might be resource intensive for your system. Are you sure?`,
-        {
+        this.$t('app.gcode.msg.confirm', {
+          filename: file.filename,
+          size: this.$filters.getReadableFileSizeString(file.size)
+        }).toString(), {
           title: this.$tc('app.general.title.gcode_preview'),
           color: 'card-heading',
           icon: '$error'
-        }
-      )
+        })
 
       if (!confirmed) {
         return
