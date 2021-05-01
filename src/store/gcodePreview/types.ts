@@ -1,7 +1,6 @@
 import { AppFile } from '@/store/files/types'
 import { Thread } from 'threads'
 
-export type LayerHeight = number
 export type LayerNr = number
 
 export interface GcodePreviewState {
@@ -67,7 +66,7 @@ export enum PositioningMode {
 
 export interface Layer {
   move: number;
-  z: LayerHeight;
+  z: number;
   filePosition: number;
 }
 

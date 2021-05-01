@@ -5,7 +5,6 @@ import { AppFile } from '@/store/files/types'
 import { spawn, Thread, Worker } from 'threads'
 import consola from 'consola'
 
-/* eslint no-fallthrough: 0 */
 export const actions: ActionTree<GcodePreviewState, RootState> = {
   /**
    * Reset our store

@@ -188,7 +188,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get layerCount (): number {
-    return this.$store.getters['gcodePreview/getLayerCount']
+    return this.$store.getters['gcodePreview/getLayers'].length
   }
 
   get currentLayerHeight (): number {

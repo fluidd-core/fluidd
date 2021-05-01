@@ -60,10 +60,6 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return output
   },
 
-  getLayerCount: (state, getters): number => {
-    return getters.getLayers.length
-  },
-
   getBounds: (state, getters): BBox => {
     const moves = getters.getMoves
     const bounds = {
@@ -212,7 +208,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
     const layers = getters.getLayers
 
-    return getters.getPaths(layers[layerNr]?.move ?? 0, layers[layerNr + 1]?.move ?? Infinity)
+    return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1)
   },
 
   getMoveIndexByFilePosition: (state, getters) => (filePosition: number): number => {
