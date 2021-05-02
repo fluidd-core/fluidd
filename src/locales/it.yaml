@@ -1,346 +1,407 @@
 app:
   bedmesh:
     label:
-      flat_surface: ''
-      mesh_matrix: ''
-      probed_matrix: ''
-      profile_name: ''
-      remove_profile: ''
-      scale: ''
-      wireframe: ''
+      flat_surface: Mostra il Piano
+      mesh_matrix: Matrice della Mesh
+      probed_matrix: Matrice Sondata
+      profile_name: Nome del Profilo
+      remove_profile: Rimuovi il profilo %{name}
+      scale: Riscala in min / max
+      wireframe: Wireframe
     msg:
-      hint: ''
-      not_found: ''
-      not_loaded: ''
+      hint: >-
+        Se salvi come qualcosa di diverso da %{name}, puoi scegliere di
+        rimuovere anche il profilo %{name}
+      not_found: Nessuna mesh del letto esistente trovata.
+      not_loaded: Nessuna mesh caricata
     tooltip:
-      calibrate: ''
-      delete: ''
-      load: ''
-      save: ''
+      calibrate: Comincia una nuova calibrazione, salvando il profilo come 'predefinito'
+      delete: |-
+        Elimina profilo
+        Questa azione riavvierà la stampante
+      load: Carica profilo
+      save: |-
+        Salva il profilo calibrato in printer.cfg. 
+        Questa azione riavvierà la stampante
   chart:
     label:
-      current: ''
-      item: ''
-      'off': ''
-      'on': ''
-      power: ''
-      target: ''
+      current: Effettivo
+      item: Nome
+      'off': Disattiva Grafico
+      'on': Attiva Grafico
+      power: Energia
+      target: Target
     tooltip:
-      help: ''
+      help: >-
+        Tieni premuto MAIUSC per ingrandire. <br /> Fai clic su un elemento per
+        attivare / disattivare il grafico. <br /> Fai clic su un valore energetico per
+        attivare / disattivare il grafico.
   console:
     label:
-      auto_scroll: ''
-      hide_temp_waits: ''
+      auto_scroll: Scorrimento automatico
+      hide_temp_waits: Nascondi i wwait di temperatura
     placeholder:
-      command: ''
+      command: >-
+        "scheda" per il completamento automatico, "aiuto" per i comandi "frecce"
+        per la cronologia
   endpoint:
     error:
-      cant_connect: ''
-      cors_error: ''
-      cors_note: ''
+      cant_connect: >-
+        Qualcosa è andato storto e fluidd non riesce a raggiungere la
+        destinazione. 
+
+        Sei sicuro che questo sia l'indirizzo corretto?
+      cors_error: bloccato dalla CORS policy
+      cors_note: >-
+        Potrebbe significare che devi modificare la tua configurazione
+        di moonraker. 
+
+        Consulta la documentazione sulle configurazioni di più stampanti contemporanee
+        <a href="%{url}" target="_blank"> qui </a>
     hint:
-      add_printer: ''
+      add_printer: 'Ad esempio, http://fluiddpi.local'
     msg:
-      trouble: ''
+      trouble: >-
+        Stai avendo problemi? 
+
+        <a href="%{url}" target="_blank"> Fai clic qui </a> per ulteriori
+        informazioni.
     tooltip:
-      endpoint_examples: ''
+      endpoint_examples: >-
+        Inserisci l'URL dell'API. <br /> Ad esempio: <br />
+        <blockquote> http: //fluidd.local, http://192.168.1.150 </blockquote>
   endstop:
     label:
-      open: ''
-      triggered: ''
+      open: APERTO
+      triggered: ATTIVATO
     msg:
-      subtitle: ''
+      subtitle: >-
+        Utilizza il pulsante di aggiornamento per aggiornare lo stato dei
+        finecorsa.
   file_system:
     filters:
       label:
-        print_start_time: ''
-        print_start_time_desc: ''
+        print_start_time: Filtra per inizio di stampa
+        print_start_time_desc: Non mostrare gli elementi che hai già stampato.
     label:
-      dir_name: ''
-      disk_usage: ''
-      downloaded: ''
-      file_name: ''
-      transfer_rate: ''
-      uploaded: ''
+      dir_name: Nome della directory
+      disk_usage: Utilizzo del disco
+      downloaded: Scaricato
+      file_name: Nome del file
+      transfer_rate: Rateo di trasferimento
+      uploaded: Caricato
     msg:
-      confirm: ''
-      not_found: ''
-      processing: ''
+      confirm: |-
+        Sei sicuro? 
+        Questa azione eliminerà tutti i file e le cartelle.
+      not_found: Nessun file trovato
+      processing: Calcolando
     overlay:
-      label: ''
+      label: <strong> Trascina </strong> un file qui
     title:
-      add_dir: ''
-      add_file: ''
-      download_file: ''
-      keyboard_shortcuts: ''
-      rename_dir: ''
-      rename_file: ''
-      upload_file: ''
+      add_dir: Aggiungi Directory
+      add_file: Aggiungi File
+      download_file: Recupero file in corso
+      keyboard_shortcuts: Tasti rapidi (shortcut)
+      rename_dir: Rinomina Directory
+      rename_file: Rinomina il File
+      upload_file: |-
+        Caricamento file | 
+        Caricamento files
     tooltip:
-      disabled: ''
-      low_on_space: ''
+      disabled: >-
+        I lavori richiedono una comunicazione valida con klippy e un percorso
+        virtual_sdcard valido
+      low_on_space: Spazio su disco insufficiente
   general:
     btn:
-      add: ''
-      add_dir: ''
-      add_file: ''
-      add_printer: ''
-      adjust_layout: ''
-      all: ''
-      calibrate: ''
-      cancel: ''
-      clear_profile: ''
-      close: ''
-      config_reference: ''
-      download: ''
-      edit: ''
-      extrude: ''
-      heaters_off: ''
-      load_all: ''
-      pause: ''
-      preheat: ''
-      presets: ''
-      quad_gantry_level: ''
-      reboot: ''
-      remove: ''
-      remove_all: ''
-      rename: ''
-      reprint: ''
-      reset_file: ''
-      reset_layout: ''
-      restart_firmware: ''
-      restart_service_klipper: ''
-      restart_service_moonraker: ''
-      restart_service_webcamd: ''
-      resume: ''
-      retract: ''
-      save: ''
-      save_as: ''
-      save_restart: ''
-      send: ''
-      shutdown: ''
-      socket_refresh: ''
-      upload: ''
-      upload_print: ''
-      view: ''
+      add: Aggiungi
+      add_dir: Aggiungi Directory
+      add_file: Aggiungi File
+      add_printer: Aggiungi Stampante
+      adjust_layout: Personalizza il layout della dashboard
+      all: Tutti
+      calibrate: Calibrar
+      cancel: Annulla
+      clear_profile: Cancella Profilo
+      close: Vicino
+      config_reference: Risorse Configurazione
+      download: Scarica
+      edit: Modifica
+      extrude: Estrudi
+      heaters_off: Riscaldatori spenti
+      load_all: Carica tutto
+      pause: Pausa
+      preheat: Preriscalda
+      presets: Preset
+      quad_gantry_level: QGL
+      reboot: Riavvia
+      remove: Rimuovi
+      remove_all: Rimuovi Tutto
+      rename: Rinomina
+      reprint: Ristampa
+      reset_file: Reimposta File
+      reset_layout: Ripristina Layout
+      restart_firmware: Riavvia il firmware
+      restart_service_klipper: Riavvia Klipper
+      restart_service_moonraker: Riavvia Moonraker
+      restart_service_webcamd: Riavvia la Webcam
+      resume: Riprendi
+      retract: Retrai
+      save: Salva
+      save_as: Salva Come
+      save_restart: Salva & Riavvia
+      send: Invia
+      shutdown: Spegnimento
+      socket_refresh: Forza Refresh
+      upload: Carica
+      upload_print: Carica & Stampa
+      view: Visualizza
     error:
-      app_setup_link: ''
-      app_warnings_found: ''
-      components_config: ''
-      failed_components: ''
+      app_setup_link: >-
+        Puoi trovare i requisiti di configurazione di Fluidd <a
+        target="_blank" href="%{url}"> qui </a>.
+      app_warnings_found: '% {appName} avvisi trovati.'
+      components_config: >-
+        Puoi trovare la configurazione dei plug-in Moonraker <a
+        target="_blank" href="%{url}"> qui </a>.
+      failed_components: >-
+        Moonraker ha problemi con dei plugin. Controlla i tuoi log, aggiorna la tua
+        configurazione e riavvia moonraker.
     label:
-      accel_to_decel: ''
-      acceleration: ''
-      add_camera: ''
-      add_category: ''
-      add_preset: ''
-      api_url: ''
-      confirm: ''
-      edit_camera: ''
-      edit_preset: ''
-      extrude_length: ''
-      extrude_speed: ''
-      flow: ''
-      free: ''
-      high: ''
-      host: ''
-      layout: ''
-      longest_job: ''
-      low: ''
-      move_macro: ''
-      name: ''
-      'off': ''
-      power: ''
-      printers: ''
-      requested_speed: ''
-      save_as: ''
-      services: ''
-      speed: ''
-      sqv: ''
-      total_filament: ''
-      total_filament_avg: ''
-      total_jobs: ''
-      total_print_time: ''
-      total_print_time_avg: ''
-      total_time: ''
-      total_time_avg: ''
-      uncategorized: ''
-      used: ''
-      variance: ''
-      velocity: ''
-      z_offset: ''
+      accel_to_decel: Accel to Decel
+      acceleration: Accelerazione
+      add_camera: Aggiungi Camera
+      add_category: Aggiungi Categoria
+      add_preset: Aggiungi Preset
+      api_url: URL API
+      confirm: Conferma
+      edit_camera: Modifica Camera
+      edit_preset: Modifica Preset
+      extrude_length: Lunghezza di Estrusione
+      extrude_speed: Velocità di Estrusione
+      flow: Flusso
+      free: free
+      high: Alto
+      host: Ospite
+      layout: Pisposizione
+      longest_job: Lavoro più lungo
+      low: Basso
+      move_macro: Sposta la macro %{name}
+      name: Nome
+      'off': 'Off'
+      power: Energia
+      printers: Stampanti
+      requested_speed: Velocità Richiesta
+      save_as: Salva Come
+      services: Servizi
+      speed: Velocità
+      sqv: Velocità 'Square Corner'
+      total_filament: Filamento totale utilizzato
+      total_filament_avg: Media per stampa
+      total_jobs: Lavori di stampa totali
+      total_print_time: Tempo di stampa totale
+      total_print_time_avg: Media per stampa
+      total_time: Tempo totale
+      total_time_avg: Media per stampa
+      uncategorized: Non categorizzato
+      used: Utilizzato
+      variance: Varianza
+      velocity: Velocità
+      z_offset: Offset Z
     simple_form:
       error:
-        arrayofnums: ''
-        exists: ''
-        invalid_url: ''
-        max: ''
-        min: ''
-        min_or_0: ''
-        required: ''
+        arrayofnums: Solo numeri
+        exists: Preesistente
+        invalid_url: URL non valido
+        max: Max% {max}
+        min: Min% {min}
+        min_or_0: Min% {min} o 0
+        required: Richiesto
       msg:
-        confirm: ''
-        confirm_reboot_host: ''
-        confirm_shutdown_host: ''
+        confirm: Sei sicuro?
+        confirm_reboot_host: |-
+          Sei sicuro? 
+          Questa azione raivvierà il tuo host.
+        confirm_shutdown_host: |-
+          Sei sicuro? 
+          Questa azione spegnerà il tuo host.
     table:
       header:
-        actions: ''
-        end_time: ''
-        estimated_time: ''
-        filament: ''
-        filament_used: ''
-        first_layer_bed_temp: ''
-        first_layer_extr_temp: ''
-        first_layer_height: ''
-        height: ''
-        last_printed: ''
-        layer_height: ''
-        modified: ''
-        name: ''
-        print_duration: ''
-        size: ''
-        slicer: ''
-        slicer_version: ''
-        start_time: ''
-        status: ''
-        total_duration: ''
+        actions: Azioni
+        end_time: Fine
+        estimated_time: Tempo stimato
+        filament: Filamento
+        filament_used: Filamento utilizzato
+        first_layer_bed_temp: Temp. Piatto nel primo strato
+        first_layer_extr_temp: Temp. Estrusore nel primo strato
+        first_layer_height: Altezza del primo strato
+        height: Altezza
+        last_printed: Ultima stampa
+        layer_height: Altezza dello strato
+        modified: Modificato
+        name: Nome
+        print_duration: Durata della stampa
+        size: Dimensione
+        slicer: Slicer
+        slicer_version: Versione Slicer
+        start_time: Iniziato
+        status: Stato
+        total_duration: Durata totale
     title:
-      add_printer: ''
-      bedmesh: ''
-      bedmesh_controls: ''
-      camera: ''
-      config_files: ''
-      configure: ''
-      console: ''
-      endstops: ''
-      fans_outputs: ''
-      history: ''
-      home: ''
-      jobs: ''
-      limits: ''
-      macros: ''
-      runout_sensors: ''
-      settings: ''
-      stats: ''
-      status: ''
-      system_control: ''
-      temperature: ''
-      tool: ''
-      tune: ''
+      add_printer: Aggiungi Stampante
+      bedmesh: Matrice Piatto
+      bedmesh_controls: Controlla la matrice del piatto
+      camera: Camera | Camere
+      config_files: Files di Configurazione
+      configure: Configura
+      console: Terminale
+      endstops: Finecorsa
+      fans_outputs: Ventole & Output
+      history: Cronologia dei lavori
+      home: Pannello di Controllo
+      jobs: Lavori
+      limits: Limiti della Stampante
+      macros: Macro
+      runout_sensors: Sensori Fine Spola
+      settings: Impostazioni
+      stats: Statistiche Stampante
+      status: Stato
+      system_control: Controllo del sistema
+      temperature: Termiche
+      tool: Attrezzo
+      tune: Calibrazioni
     tooltip:
-      estop: ''
-      reload_klipper: ''
-      reload_restart_klipper: ''
-      restart_klipper: ''
+      estop: Arresto di Emergenza
+      reload_klipper: Ricarica la configurazione di Klipper.
+      reload_restart_klipper: Ricarica la configurazione di Klipper e riavvia la MCU.
+      restart_klipper: Riavvia il servizio di Klipper.
   history:
     msg:
-      confirm: ''
+      confirm: |-
+        Sei sicuro? 
+        Questa azione cancellerà tutta la cronologia e le statistiche della stampante
   printer:
     state:
-      busy: ''
-      complete: ''
-      idle: ''
-      loading: ''
-      paused: ''
-      printing: ''
-      ready: ''
-      standby: ''
+      busy: Occupato
+      complete: Completato
+      idle: Inattivo
+      loading: Caricamento
+      paused: In Pausa
+      printing: Stampando
+      ready: Pronto
+      standby: Pausa
     status:
-      duration: ''
-      duration_total: ''
-      time_left: ''
-      used_filament: ''
+      duration: durata
+      duration_total: durata & totali
+      time_left: tempo rimanente stimato
+      used_filament: filamento utilizzato
   setting:
     btn:
-      add_camera: ''
-      add_thermal_preset: ''
-      reset: ''
-      select_theme: ''
+      add_camera: Aggiungi Camera
+      add_thermal_preset: Aggiungi Preset
+      reset: Ripristina
+      select_theme: Seleziona il Tema
     camera_type_options:
-      mjpegadaptive: ''
-      mjpegstream: ''
-      video: ''
+      mjpegadaptive: MJPEG Adattivo
+      mjpegstream: MJPEG Stream
+      video: IP Camera
     label:
-      all_off: ''
-      all_on: ''
-      camera_fillspace: ''
-      camera_fillspace_help: ''
-      camera_flip_x: ''
-      camera_flip_y: ''
-      camera_stream_type: ''
-      camera_url: ''
-      dark_mode: ''
-      default_extrude_length: ''
-      default_extrude_speed: ''
-      default_toolhead_move_length: ''
-      default_toolhead_xy_speed: ''
-      default_toolhead_z_speed: ''
-      enable: ''
-      enable_notifications: ''
-      fps_target: ''
-      gcode_coords: ''
-      invert_x_control: ''
-      invert_y_control: ''
-      invert_z_control: ''
-      language: ''
-      primary_color: ''
-      printer_name: ''
-      reset: ''
-      thermal_preset_name: ''
-      time_estimates: ''
-      toggle: ''
-      z_adjust_values: ''
+      all_off: Tutti Off
+      all_on: Tutto On
+      camera_fillspace: Riempi lo Spazio
+      camera_fillspace_help: >-
+        Con una sola videocamera abilitata, riempi lo spazio della videocamera
+        della dashboard.
+      camera_flip_x: Capovolgi orizzontalmente
+      camera_flip_y: Capovolgi verticalmente
+      camera_stream_type: Tipo di Stream
+      camera_url: URL Camera
+      dark_mode: Dark Mode
+      default_extrude_length: Lunghezza di estrusione predefinita
+      default_extrude_speed: Velocità di estrusione predefinita
+      default_toolhead_move_length: Lunghezza di spostamento testa di stampa predefinita
+      default_toolhead_xy_speed: Velocità XY della testa di stampa predefinita
+      default_toolhead_z_speed: Velocità Z predefinita della testa di stampa
+      enable: Abilita
+      enable_notifications: Attiva le notifiche
+      fps_target: Target FPS
+      gcode_coords: Usa Coordinate GCode
+      invert_x_control: Inverti controllo X.
+      invert_y_control: Inverti controllo Y.
+      invert_z_control: Inverti controllo Z.
+      language: Lingua
+      primary_color: Colore primario
+      printer_name: Nome della Stampante
+      reset: Ripristina le impostazioni
+      thermal_preset_name: Nome Preset
+      time_estimates: Stime di tempo
+      toggle: Attiva / Disattiva
+      z_adjust_values: Valori Z di fino 
     timer_options:
-      duration: ''
-      duration_description: ''
-      filament: ''
-      filament_description: ''
-      file: ''
-      file_description: ''
-      slicer: ''
-      slicer_description: ''
+      duration: Solo Durata
+      duration_description: Simile a un LCD per Klipper, mostra solo la durata senza stime.
+      filament: Stima in base al Filamento
+      filament_description: >-
+        Utilizza il filamento utilizzato rispetto al filamento stimato per
+        stimare la durata totale. <br /> Più accurato con il passare del tempo.
+      file: Stima in base al File
+      file_description: >-
+        Utilizza la percentuale di avanzamento e la durata per stimare la durata
+        totale. <br /> Più accurato con il passare del tempo.
+      slicer: Stima in base allo Slicer
+      slicer_description: |-
+        Utilizza la stima nativa del tuo Slicer. 
+        Deve essere supportato dal tuo Slicer.
     title:
-      camera: ''
-      general: ''
-      macros: ''
-      theme: ''
-      thermal_presets: ''
-      tool: ''
+      camera: |-
+        Camera | Camere
+      general: Generale
+      macros: Macro
+      theme: Tema
+      thermal_presets: Preset Termici
+      tool: Attrezzo
     tooltip:
-      gcode_coords: ''
+      gcode_coords: >-
+        Visualizza la posizione del GCode invece della posizione della testata sulla
+        dashboard
   socket:
     msg:
-      connecting: ''
-      no_connection: ''
+      connecting: Connessione a Moonraker...
+      no_connection: |-
+        Nessuna connessione Moonraker. 
+        Controlla lo stato di Moonraker e / o aggiorna.
   tool:
     btn:
-      home_x: ''
-      home_y: ''
+      home_x: X
+      home_y: 'Y'
     tooltip:
-      extruder_disabled: ''
-      home_xy: ''
-      home_z: ''
+      extruder_disabled: >-
+        estrusore disabilitato, al di sotto di min_extrude_temp (% {min} <small>
+        ° C </small>)
+      home_xy: Home XY
+      home_z: Home Z
   version:
     btn:
-      check_for_updates: ''
-      finish: ''
-      update: ''
+      check_for_updates: Controlla gli aggiornamenti
+      finish: Finisci
+      update: Aggiorna
     label:
-      commit_history: ''
-      commits_on: ''
-      committed: ''
-      dirty: ''
-      invalid: ''
-      os_packages: ''
-      package_list: ''
-      up_to_date: ''
+      commit_history: Cronologia Commit
+      commits_on: Commit su
+      committed: Committed
+      dirty: SPORCO
+      invalid: NON VALIDO
+      os_packages: Pacchetti OS
+      package_list: Elenco dei Pacchetti
+      up_to_date: AGGIORNATO
     status:
-      finished: ''
-      updating: ''
-    title: ''
+      finished: Aggiornamenti terminati
+      updating: Aggiornando...
+    title: Aggiornamenti Software
     tooltip:
-      commit_history: ''
-      dirty: ''
-      invalid: ''
-      packages: ''
-      release_notes: ''
+      commit_history: Cronologia dei Commit
+      dirty: indica una head staccata, non su master o una origin non valida
+      invalid: indica modifiche locali alla repo
+      packages: Pacchetti
+      release_notes: Note di Rilascio
