@@ -39,7 +39,7 @@ app:
   console:
     label:
       auto_scroll: Scorrimento automatico
-      hide_temp_waits: Nascondi i wwait di temperatura
+      hide_temp_waits: Nascondi i wait di temperatura
     placeholder:
       command: >-
         "scheda" per il completamento automatico, "aiuto" per i comandi "frecce"
