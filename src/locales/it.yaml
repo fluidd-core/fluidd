@@ -121,10 +121,10 @@ app:
       add_printer: Aggiungi Stampante
       adjust_layout: Personalizza il layout della dashboard
       all: Tutti
-      calibrate: Calibrar
+      calibrate: Calibra
       cancel: Annulla
       clear_profile: Cancella Profilo
-      close: Vicino
+      close: Chiudi
       config_reference: Risorse Configurazione
       download: Scarica
       edit: Modifica
@@ -184,7 +184,7 @@ app:
       free: free
       high: Alto
       host: Ospite
-      layout: Pisposizione
+      layout: Disposizione
       longest_job: Lavoro più lungo
       low: Basso
       move_macro: Sposta la macro %{name}
@@ -263,12 +263,12 @@ app:
       jobs: Lavori
       limits: Limiti della Stampante
       macros: Macro
-      runout_sensors: Sensori Fine Spola
+      runout_sensors: Sensori Fine Filamento
       settings: Impostazioni
       stats: Statistiche Stampante
       status: Stato
       system_control: Controllo del sistema
-      temperature: Termiche
+      temperature: Temperature
       tool: Attrezzo
       tune: Calibrazioni
     tooltip:
