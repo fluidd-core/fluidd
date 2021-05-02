@@ -12,6 +12,7 @@
           :max="velocity.max"
           :rules="[rules.min1, rules.velocityMax]"
           :disabled="!klippyReady"
+          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetVelocity)"
           @input="setVelocity($event)">
         </app-slider>
@@ -27,6 +28,7 @@
           :max="scv.max"
           :rules="[rules.min0, rules.scvMax]"
           :disabled="!klippyReady"
+          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetSQV)"
           @input="setSCV($event)">
         </app-slider>
@@ -43,6 +45,7 @@
           :max="accel.max"
           :rules="[rules.min1, rules.accelMax]"
           :disabled="!klippyReady"
+          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetAcceleration)"
           @input="setAcceleration($event)">
         </app-slider>
@@ -57,6 +60,7 @@
           :max="decel.max"
           :rules="[rules.min1, rules.decelMax]"
           :disabled="!klippyReady"
+          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetDeceleration)"
           @input="setDeceleration($event)">
         </app-slider>
@@ -125,6 +129,10 @@ export default class PrinterLimits extends Mixins(StateMixin) {
       current: this.$store.state.printer.printer.toolhead.square_corner_velocity,
       max
     }
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   setVelocity (val: number) {

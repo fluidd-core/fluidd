@@ -35,13 +35,15 @@
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
     ></add-instance-dialog>
+
+    <v-divider></v-divider>
   </v-list>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import consola from 'consola'
-import { InitConfig, InstanceConfig, ApiConfig } from '@/store/config/types'
+import { InitConfig, InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
 import { Waits } from '@/globals'

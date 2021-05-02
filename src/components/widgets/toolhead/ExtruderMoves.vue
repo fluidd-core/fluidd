@@ -21,7 +21,7 @@
           :disabled="!extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
-          class="mr-2">
+        >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
         </app-btn>
@@ -47,7 +47,7 @@
           :disabled="!extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
-          class="mr-2">
+        >
           {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
         </app-btn>

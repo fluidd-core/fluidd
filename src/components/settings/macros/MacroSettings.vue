@@ -137,9 +137,9 @@ export default class MacroSettings extends Vue {
 
   get macros () {
     const id = this.categoryId
-    const categories = this.$store.getters['macros/getMacrosByCategory'](id)
+    const macros = this.$store.getters['macros/getMacrosByCategory'](id)
       .filter((macro: Macro) => (!this.search || this.search === '') ? true : macro.name.toLowerCase().includes(this.search.toLowerCase()))
-    return categories
+    return macros
   }
 
   get categories (): MacroCategory[] {

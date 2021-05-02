@@ -87,6 +87,8 @@
       </v-list-item>
     </v-list-group>
 
+    <v-divider></v-divider>
+
   </div>
 </template>
 

@@ -59,25 +59,31 @@ These can be assumed sane defaults, but should be checked and modified to your o
 ```yaml
 [gcode_macro PAUSE]
 rename_existing: BASE_PAUSE
-default_parameter_E: 1.7
-gcode:{% raw %}
+# change this if you need more or less extrusion
+variable_extrude: 1.0
+gcode:
+  ##### read E from pause macro #####
+  {% set E = printer["gcode_macro PAUSE"].extrude|float %}
+  ##### set park positon for x and y #####
+  # default is your max posion from your printer.cfg
   {% set x_park = printer.toolhead.axis_maximum.x|float - 5.0 %}
   {% set y_park = printer.toolhead.axis_maximum.y|float - 5.0 %}
+  ##### calculate save lift position #####
   {% set max_z = printer.toolhead.axis_maximum.z|float %}
   {% set act_z = printer.toolhead.position.z|float %}
   {% if act_z < (max_z - 2.0) %}
       {% set z_safe = 2.0 %}
   {% else %}
       {% set z_safe = max_z - act_z %}
-  {% endif %}{% endraw %}
+  {% endif %}
+  ##### end of definitions #####
   SAVE_GCODE_STATE NAME=PAUSE_state
   BASE_PAUSE
   G91
   G1 E-{E} F2100
   G1 Z{z_safe} F900
   G90
-  G0 X{x_park} Y{y_park} F6000
-  G91
+  G1 X{x_park} Y{y_park} F6000
 ```
 
 ### RESUME
@@ -85,13 +91,14 @@ gcode:{% raw %}
 ```yaml
 [gcode_macro RESUME]
 rename_existing: BASE_RESUME
-default_parameter_E: 1      # edit to your preferred retract length
 gcode:
-    G91
-    G1 E{E} F2100
-    G90
-    RESTORE_GCODE_STATE NAME=PAUSE_state MOVE=1
-    BASE_RESUME
+  ##### read E from pause macro #####
+  {% set E = printer["gcode_macro PAUSE"].extrude|float %}
+  ##### end of definitions #####
+  G91
+  G1 E{E} F2100
+  RESTORE_GCODE_STATE NAME=PAUSE_state
+  BASE_RESUME
 ```
 
 ### CANCEL_PRINT
@@ -100,8 +107,8 @@ gcode:
 [gcode_macro CANCEL_PRINT]
 rename_existing: BASE_CANCEL_PRINT
 gcode:
-    TURN_OFF_HEATERS
-    CLEAR_PAUSE
-    SDCARD_RESET_FILE
-    BASE_CANCEL_PRINT
+  TURN_OFF_HEATERS
+  CLEAR_PAUSE
+  SDCARD_RESET_FILE
+  BASE_CANCEL_PRINT
 ```

@@ -3,8 +3,6 @@ import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, Klipp
 import { SocketActions } from '@/socketActions'
 import store from '@/store'
 import { KlipperMesh, ProcessedMesh } from './mesh/types'
-import { AppTableHeader } from '@/types'
-import { AppTablePartialHeader } from '@/types/tableheaders'
 
 export const isOfType = <T>(
   varToBeChecked: any,

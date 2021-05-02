@@ -8,6 +8,7 @@
         input-xs
         v-model.number="speed"
         :disabled="!klippyReady || hasWait(waits.onSetSpeed)"
+        :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
         :rules="rules">
@@ -20,6 +21,7 @@
         input-xs
         v-model.number="flow"
         :disabled="!klippyReady || hasWait(waits.onSetFlow)"
+        :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
         :rules="rules">
@@ -56,6 +58,10 @@ export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
 
   set speed (val: number) {
     this.sendGcode('M220 S' + val, this.waits.onSetSpeed)
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

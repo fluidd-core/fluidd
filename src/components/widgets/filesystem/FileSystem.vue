@@ -124,7 +124,7 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
-import { AxiosResponse, CancelTokenSource } from 'axios'
+import { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
 
 /**
@@ -250,6 +250,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         { text: this.$t('app.general.table.header.first_layer_height'), value: 'first_layer_height', configurable: true },
         { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height', configurable: true },
         { text: this.$t('app.general.table.header.filament'), value: 'filament_total', configurable: true },
+        { text: this.$t('app.general.table.header.filament_weight_total'), value: 'filament_weight_total', configurable: true },
         { text: this.$t('app.general.table.header.filament_used'), value: 'history.filament_used', configurable: true },
         { text: this.$t('app.general.table.header.slicer'), value: 'slicer', configurable: true },
         { text: this.$t('app.general.table.header.slicer_version'), value: 'slicer_version', configurable: true },

@@ -2,6 +2,8 @@
 
 ## Next Up
 
+- Update mesh box to center on mesh center if no relative index set
+- Power on graph toggles back off on a klipper restart
 - Authorization
 - add cpu time / resource monitoring
 - status card updates
@@ -18,6 +20,13 @@
 - allow re-ordering temp presets and cameras
 - sync instances across moonraker db
 - warning close with no save in file editor
+- console
+  - raw output option for the console, so users can easily copy / paste larger portions of the output.
+  - move autoscroll
+- macros
+  - allow ordering of categories and macros
+  - allow assignment of a color?
+  - allow placing macros in specific cards (console, bed mesh etc..)
 
 ### Features
 

@@ -13,6 +13,7 @@
         @resize="scrollToBottom()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
+        :buffer="600"
       >
         <template v-slot="{ item, index, active }">
           <DynamicScrollerItem

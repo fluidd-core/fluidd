@@ -3,7 +3,6 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
 import { AxiosRequestConfig, CancelTokenSource } from 'axios'
-import consola from 'consola'
 
 @Component
 export default class FilesMixin extends Vue {

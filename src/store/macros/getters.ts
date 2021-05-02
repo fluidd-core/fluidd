@@ -1,7 +1,6 @@
 import { GetterTree } from 'vuex'
 import { Macro, MacroCategory, MacrosState } from './types'
 import { RootState } from '../types'
-import i18n from '@/plugins/i18n'
 
 export const getters: GetterTree<MacrosState, RootState> = {
 
@@ -20,8 +19,9 @@ export const getters: GetterTree<MacrosState, RootState> = {
         const r: Macro = {
           name,
           visible: true,
-          ...stored,
           color: '',
+          categoryId: '0',
+          ...stored,
           ...{ config }
         }
 
@@ -32,7 +32,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
           if (category) {
             r.category = category
           } else {
-            delete r.categoryId
+            r.categoryId = '0'
           }
         }
 
@@ -70,8 +70,8 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * If no category is passed, return all those that are uncategorized.
    */
   getMacrosByCategory: (state, getters) => (categoryId?: string) => {
-    const id = (!categoryId || categoryId === '0')
-      ? undefined
+    const id = (!categoryId)
+      ? '0'
       : categoryId
     return getters.getMacros.filter((macro: Macro) => {
       // If we have both categories, return if they match.
@@ -81,7 +81,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
       // If we're given no category, only return those that have none, being
       // uncategorized.
-      if (!id) return (!macro.categoryId)
+      // if (!id) return (!macro.categoryId)
 
       // Otherwise return false
       return false
@@ -112,12 +112,5 @@ export const getters: GetterTree<MacrosState, RootState> = {
       })
 
     return categories
-  },
-
-  /**
-   * Returns a boolean indicating if we have any visible macros.
-   */
-  hasVisibleMacros: (state, getters): boolean => {
-    return (getters.getMacros.filter((macro: Macro) => macro.visible).length)
   }
 }

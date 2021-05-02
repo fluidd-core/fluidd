@@ -5,6 +5,7 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
+import History from '@/views/History.vue'
 import Configure from '@/views/Configure.vue'
 import Settings from '@/views/Settings.vue'
 import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
@@ -28,6 +29,11 @@ const routes: Array<RouteConfig> = [
     path: '/tune',
     name: 'Tune',
     component: Tune
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: History
   },
   {
     path: '/configure',

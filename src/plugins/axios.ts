@@ -1,6 +1,7 @@
 import _Vue from 'vue'
 import Axios, { AxiosResponse, AxiosStatic } from 'axios'
 import { EventBus, FlashMessageTypes } from '@/eventBus'
+import consola from 'consola'
 
 export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
   const responseInterceptor = (response: AxiosResponse) => {
@@ -21,7 +22,7 @@ export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
     if (!error.response) {
       // Network / Server Error.
       if (error.message) message = error.message
-      console.error(message || 'Network error')
+      consola.error(message || 'Network error')
       return Promise.reject(error)
     }
 
@@ -29,14 +30,14 @@ export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
     if (error.response.data) message = error.response.data
     switch (error.response.status) {
       case 400:
-        console.error(error.response.status, error.message, message)
+        consola.error(error.response.status, error.message, message)
         EventBus.$emit(message || 'Server error', FlashMessageTypes.error, 5000)
         break
       case 404:
-        console.error(error.response.status, error.message, message)
+        consola.error(error.response.status, error.message, message)
         break
       default:
-        console.error(error.response.status, error.message)
+        consola.error(error.response.status, error.message)
         EventBus.$emit(message || 'Server error', FlashMessageTypes.error, -1)
     }
 

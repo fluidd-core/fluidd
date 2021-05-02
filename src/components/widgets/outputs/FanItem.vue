@@ -8,7 +8,9 @@
       :value-label="rpm"
       :label="fan.prettyName"
       :rules="rules"
-      :disabled="!klippyReady">
+      :disabled="!klippyReady"
+      :locked="!klippyReady || isMobile"
+    >
     </app-slider>
 
     <v-layout
@@ -73,6 +75,10 @@ export default class FanItem extends Mixins(StateMixin) {
   get offBelow () {
     const config = this.$store.getters['printer/getPrinterSettings'](this.fan.name) || {}
     return config.off_below * 100 || 0
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   rules = [

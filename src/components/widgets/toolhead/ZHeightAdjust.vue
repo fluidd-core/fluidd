@@ -10,11 +10,12 @@
       >
         <app-btn
           v-for="(value, i) in zAdjustValues"
+          small
+          class="px-1"
           :key="i"
           :disabled="!klippyReady"
-          small
+          :min-width="36"
           :value="value"
-          class="px-2"
         >
           {{ value }}
         </app-btn>

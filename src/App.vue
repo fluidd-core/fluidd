@@ -7,8 +7,11 @@
     >
     </vue-headful>
 
-    <app-drawer v-model="drawer"></app-drawer>
-    <app-bar @drawer="onDrawerChange"></app-bar>
+    <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
+
+    <app-bar
+      @toolsdrawer="handleToolsDrawerChange"
+    ></app-bar>
 
     <router-view name="navigation"></router-view>
 
@@ -19,6 +22,18 @@
       :type="flashMessage.type"
       :timeout="flashMessage.timeout"
     />
+
+    <v-btn
+      v-if="isMobile"
+      x-small
+      fab
+      fixed
+      bottom left
+      color="error"
+      @click="emergencyStop()"
+    >
+      <v-icon>$estop</v-icon>
+    </v-btn>
 
     <v-main>
       <router-view v-if="socketConnected" />
@@ -35,10 +50,11 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from './mixins/state'
 import { Waits } from './globals'
+import { SocketActions } from './socketActions'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
-  drawer = false
+  toolsdrawer = false
   showUpdateUI = false
 
   flashMessage: FlashMessage = {
@@ -57,6 +73,10 @@ export default class App extends Mixins(StateMixin) {
     let progress = this.$store.getters['printer/getPrintProgress']
     progress = (progress * 100).toFixed()
     return progress
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   get pageTitle () {
@@ -133,8 +153,12 @@ export default class App extends Mixins(StateMixin) {
     })
   }
 
-  onDrawerChange () {
-    this.drawer = !this.drawer
+  emergencyStop () {
+    SocketActions.printerEmergencyStop()
+  }
+
+  handleToolsDrawerChange () {
+    this.toolsdrawer = !this.toolsdrawer
   }
 
   get loading () {

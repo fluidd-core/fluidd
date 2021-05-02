@@ -81,6 +81,12 @@
             </span>
           </file-row-item>
 
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="filament_weight_total">
+            <span v-if="item.filament_weight_total !== undefined">
+              {{ item.filament_weight_total }} g
+            </span>
+          </file-row-item>
+
           <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.filament_used">
             <span v-if="item.history && item.history.filament_used !== undefined">
               {{ $filters.getReadableLengthString(item.history.filament_used) }}

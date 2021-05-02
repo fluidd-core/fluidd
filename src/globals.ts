@@ -11,9 +11,7 @@ import {
   mdiPrinter3d,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
-  mdiTools,
   mdiConsole,
-  mdiFileMultipleOutline,
   mdiChevronUp,
   mdiChevronDown,
   mdiTimerSand,
@@ -89,7 +87,15 @@ import {
   mdiCloudAlert,
   mdiCircle,
   mdiFolderMove,
-  mdiKeyboard
+  mdiKeyboard,
+  mdiDotsGrid,
+  mdiHammerWrench,
+  mdiAccount,
+  mdiFileTableOutline,
+  mdiLock,
+  mdiLockOpenVariant,
+  mdiPencilLock,
+  mdiLockReset
 } from '@mdi/js'
 
 /**
@@ -140,6 +146,7 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
+  account: mdiAccount,
   help: mdiHelpCircle,
   motion: mdiMotionOutline,
   limits: mdiArrowHorizontalLock,
@@ -150,6 +157,7 @@ export const Icons = Object.freeze({
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,
   dots: mdiDotsHorizontal,
+  dotsGrid: mdiDotsGrid,
   drag: mdiDrag,
   chart: mdiChartTimelineVariant,
   power: mdiPower,
@@ -193,7 +201,7 @@ export const Icons = Object.freeze({
   save: mdiContentSaveOutline,
   estop: mdiCarBrakeAlert,
   fire: mdiFire,
-  tools: mdiTools,
+  tools: mdiHammerWrench,
   minus: mdiMinus,
   plus: mdiPlus,
   check: mdiCheck,
@@ -206,7 +214,7 @@ export const Icons = Object.freeze({
   chevronLeft: mdiChevronLeft,
   timer: mdiTimerSand,
   fileCode: mdiFileCodeOutline,
-  files: mdiFileMultipleOutline,
+  files: mdiFileTableOutline,
   fileDocument: mdiFileDocumentOutline,
   file: mdiFile,
   pause: mdiPause,
@@ -220,6 +228,7 @@ export const Icons = Object.freeze({
   camera: mdiCamera,
   fan: mdiFan,
   pencil: mdiPencil,
+  pencilLock: mdiPencilLock,
   magnify: mdiMagnify,
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
@@ -231,7 +240,10 @@ export const Icons = Object.freeze({
   commit: mdiSourceCommit,
   cloudCheck: mdiCloudCheck,
   cloudAlert: mdiCloudAlert,
-  keyboard: mdiKeyboard
+  keyboard: mdiKeyboard,
+  lock: mdiLock,
+  lockOpen: mdiLockOpenVariant,
+  lockReset: mdiLockReset
 })
 
 export const Waits = Object.freeze({

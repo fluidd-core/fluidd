@@ -1,6 +1,6 @@
 <template>
   <app-btn
-    v-if="params.length === 0"
+    v-if="params.length === 0 || !enableParams"
     @click="$emit('click', macro.name)"
   >
     <slot></slot>
@@ -71,6 +71,9 @@ import { Macro } from '@/store/macros/types'
 export default class AppMacroBtn extends Vue {
   @Prop({ type: Object, required: true })
   macro!: Macro
+
+  @Prop({ type: Boolean, default: false })
+  enableParams!: boolean;
 
   params: { name: string; value: any }[] = []
 

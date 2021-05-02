@@ -22,24 +22,31 @@ export const mutations: MutationTree<MacrosState> = {
 
   // Updates a singular macro
   setUpdateMacro (state, macro: Macro) {
+    const m = { ...macro }
+    delete m.config // Saving a macro should never include its config.
+    delete m.category
     const i = state.stored.findIndex(m => m.name === macro.name)
-    const processed = {
-      name: macro.name,
-      categoryId: macro.categoryId,
-      color: macro.color,
-      visible: macro.visible
-    }
     if (i < 0) {
-      state.stored.push(processed)
+      state.stored.push(m)
     } else {
-      Vue.set(state.stored, i, processed)
+      Vue.set(state.stored, i, m)
     }
   },
 
   setUpdateAllVisible (state, payload: { macros: Macro[]; visible: boolean }) {
     payload.macros.forEach((macro: Macro) => {
       const i = state.stored.findIndex(m => m.name === macro.name)
-      if (i >= 0) Vue.set(state.stored, i, { ...state.stored[i], visible: payload.visible })
+      const processed = {
+        ...macro,
+        visible: payload.visible
+      }
+      delete processed.config // Saving a macro should never include its config.
+      delete processed.category
+      if (i < 0) {
+        state.stored.push(processed)
+      } else {
+        Vue.set(state.stored, i, processed)
+      }
     })
   },
 
