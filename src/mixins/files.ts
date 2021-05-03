@@ -1,4 +1,4 @@
-import { FilesUpload, Thumbnail } from '@/store/files/types'
+import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
@@ -26,6 +26,32 @@ export default class FilesMixin extends Vue {
       ) return thumb.data
     }
     return ''
+  }
+
+  async getGcode(file: AppFile): string | undefined {
+    const sizeInMB = file.size / 1024 / 1024
+
+    if (sizeInMB >= 100) {
+      const confirmed = await this.$confirm(
+        this.$t('app.gcode.msg.confirm', {
+          filename: file.filename,
+          size: this.$filters.getReadableFileSizeString(file.size)
+        }).toString(), {
+          title: this.$tc('app.general.title.gcode_preview'),
+          color: 'card-heading',
+          icon: '$error'
+        })
+
+      if (!confirmed) {
+        return
+      }
+    }
+
+    const path = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    const { data } = await this.getFile(path, 'gcodes', file.size)
+
+    return data
   }
 
   /**

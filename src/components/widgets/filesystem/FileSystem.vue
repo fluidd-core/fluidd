@@ -625,33 +625,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
-    // If we aren't on the dashboard, push the user back there.
-    if (this.$router.currentRoute.path !== '/') {
-      this.$router.push({ path: '/' })
-    }
+    // todo: getGcode depends on the jobs card being present
+    const gcode = await this.getGcode(file)
 
-    const sizeInMB = file.size / 1024 / 1024
-    if (sizeInMB >= 100) {
-      const confirmed = await this.$confirm(
-        this.$t('app.gcode.msg.confirm', {
-          filename: file.filename,
-          size: this.$filters.getReadableFileSizeString(file.size)
-        }).toString(), {
-          title: this.$tc('app.general.title.gcode_preview'),
-          color: 'card-heading',
-          icon: '$error'
-        })
-
-      if (!confirmed) {
-        return
+    if (gcode) {
+      // If we aren't on the dashboard, push the user back there.
+      if (this.$router.currentRoute.path !== '/') {
+        this.$router.push({ path: '/' })
       }
-    }
 
-    const { data } = await this.getFile(file.filename, this.currentPath, file.size)
-    this.$store.dispatch('gcodePreview/loadGcode', {
-      file,
-      gcode: data
-    })
+      this.$store.dispatch('gcodePreview/loadGcode', {
+        file,
+        gcode
+      })
+    }
   }
 
   /**
