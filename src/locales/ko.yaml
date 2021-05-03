@@ -1,11 +1,17 @@
 app:
   bedmesh:
     label:
+      flat_surface: Show flat plane
+      mesh_matrix: 메쉬 매트릭스
+      probed_matrix: 측정된 매트릭스
       profile_name: 프로파일 명
       remove_profile: '%{name} 프로파일을 제거합니다.'
+      scale: Scale by min / max
+      wireframe: 와이어프레임
     msg:
       hint: '%{name}이 아닌 다른 항목으로 저장하는 경우에는, %{name} 프로파일을 제거하도록 선택할 수 있습니다.'
       not_found: 적용된 베드 메쉬를 찾을 수 없습니다.
+      not_loaded: No mesh loaded
     tooltip:
       calibrate: 프로파일을 'default'로 저장하여 신규 칼리브레이션을 시작합니다.
       delete: 프로파일을 삭제합니다. 프린터가 다시 시작되게 됩니다.
@@ -15,6 +21,8 @@ app:
     label:
       current: 현재 온도
       item: 항목
+      'off': Chart off
+      'on': Chart on
       power: 전원
       target: 목표 온도
     tooltip:
@@ -23,6 +31,7 @@ app:
         전환됩니다.
   console:
     label:
+      auto_scroll: 자동 스크롤
       hide_temp_waits: 온도변화 숨김
     placeholder:
       command: '''TAB''키는 자동완성, ''help''는 명령어 확인 ''키보드 화살표''는 history 보기'
@@ -55,7 +64,10 @@ app:
     label:
       dir_name: 폴더명
       disk_usage: 디스크 사용량
+      downloaded: Downloaded
       file_name: 파일명
+      transfer_rate: 전송 속도
+      uploaded: Uploaded
     msg:
       confirm: 확실합니까? 모든 파일 및 폴더가 삭제됩니다.
       not_found: 파일을 찾을 수 없습니다.
@@ -65,8 +77,11 @@ app:
     title:
       add_dir: 폴더 추가
       add_file: 파일 추가
+      download_file: Retrieving file
+      keyboard_shortcuts: 키보드 단축키
       rename_dir: 폴더명 변경
       rename_file: 파일명 변경
+      upload_file: Uploading file | Uploading files
     tooltip:
       disabled: klippy와 첫 통신전에 작업이 비활성 되었습니다.
       low_on_space: 디스크 공간 부족
@@ -86,8 +101,11 @@ app:
       download: 다운로드
       edit: 수정
       extrude: 압출
+      heaters_off: Heaters off
+      load_all: Load all
       pause: 일시중지
       preheat: 예열
+      presets: 프리셋
       quad_gantry_level: 쿼드겐트리 레벨링
       reboot: 재부팅
       remove: 제거
@@ -105,6 +123,7 @@ app:
       save: 저장
       save_as: 다른이름으로 저장
       save_restart: 저장&다시시작
+      send: Send
       shutdown: 종료
       socket_refresh: 강제 새로고침
       upload: 업로드
@@ -119,6 +138,7 @@ app:
       accel_to_decel: 감속도
       acceleration: 가속도
       add_camera: 카메라 추가
+      add_category: Add category
       add_preset: 사전설정 추가
       api_url: API URL
       confirm: 확인
@@ -133,6 +153,7 @@ app:
       layout: 레이아웃
       longest_job: 가장 긴 출력작업
       low: 낮음
+      move_macro: Move macro %{name}
       name: 이름
       'off': 꺼짐
       power: 전원
@@ -149,12 +170,15 @@ app:
       total_print_time_avg: 총 출력 평균시간
       total_time: 총 시간
       total_time_avg: 총 평균시간
+      uncategorized: Uncategorized
       used: 사용중
       variance: 변화량
       velocity: 속도
       z_offset: Z Offset
     simple_form:
       error:
+        arrayofnums: Only numbers
+        exists: Already exists
         invalid_url: 잘못된 URL
         max: Max %{max}
         min: Min %{min}
@@ -168,7 +192,13 @@ app:
       header:
         actions: 동작
         estimated_time: 예상 시간
-        filament_used: 필라멘트
+        end_time: 종료 시간
+        filament: 필라멘트
+        filament_used: 사용된 필라멘트
+        filament_weight_total: 필라멘트 무게
+        first_layer_bed_temp: 첫 레이어 베드 온도
+        first_layer_extr_temp: 첫 레이어 익스트루더 온도
+        first_layer_height: 첫레이어 높이
         height: 높이
         last_printed: 마지막 출력
         layer_height: 레이어 높이
@@ -177,11 +207,14 @@ app:
         print_duration: 프린팅 기간
         size: 사이즈
         slicer: 슬라이서
+        slicer_version: 슬라이서 버전
         start_time: 시작 시간
         status: 상태
+        total_duration: 전체 기간
     title:
       add_printer: 프린터 추가
       bedmesh: 베드 메쉬
+      bedmesh_controls: 베드 메쉬 제어
       camera: 카메라 | 카메라
       config_files: CONFIG 파일
       configure: 환경설정
@@ -194,6 +227,7 @@ app:
       limits: 프린터 속도 제한
       macros: 매크로
       runout_sensors: 필라멘트 런아웃 센서
+      settings: 설정
       stats: 프린터 상태
       status: 상태
       system_control: 시스템 컨트롤
@@ -202,6 +236,9 @@ app:
       tune: 튜닝
     tooltip:
       estop: 비상 정지
+      reload_klipper: Klipper 설정을 다시 불러 옵니다. 
+      reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU(s)를 재시작 합니다.
+      restart_klipper: Klipper 시스템 서비스를 다시 시작합니다.
   history:
     msg:
       confirm: 확실합니까? 모든 기록 및 프린터 통계가 삭제됩니다.
@@ -296,13 +333,22 @@ app:
       finish: 마침
       update: 업데이트
     label:
+      commit_history: Commit 이력
+      commits_on: commits on
+      committed: Committed
       dirty: 변경 상태
       invalid: 유효하지 않은 상태
       up_to_date: 최신 상태
+      os_packages: OS 패키지
+      package_list: 패키지 목록
+      up_to_date: UP TO DATE
     status:
       finished: 업데이트 완료
       updating: 업데이트중...
     title: 소프트웨어 업데이트
     tooltip:
+      commit_history: Commit 이력
       dirty: 마스터가 아닌 또는 유효하지 않은 원점을 나타내거나 헤드가 분리되었습니다.
       invalid: 저장소의 내부 변경으로 유효하지 않습니다.
+      packages: 패키지
+      release_notes: 릴리즈 노트
