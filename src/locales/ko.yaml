@@ -341,7 +341,6 @@ app:
       up_to_date: 최신 상태
       os_packages: OS 패키지
       package_list: 패키지 목록
-      up_to_date: UP TO DATE
     status:
       finished: 업데이트 완료
       updating: 업데이트중...
