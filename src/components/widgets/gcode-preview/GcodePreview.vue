@@ -172,27 +172,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
       stepper_y: stepperY
     } = this.$store.getters['printer/getPrinterSettings']()
 
-    if (stepperX === undefined || stepperY === undefined) {
-      return {
-        x: {
-          min: 0,
-          max: 100
-        },
-        y: {
-          min: 0,
-          max: 100
-        }
-      }
-    }
-
     return {
       x: {
-        min: stepperX.position_min,
-        max: stepperX.position_max
+        min: stepperX?.position_min ?? 0,
+        max: stepperX?.position_max ?? 100
       },
       y: {
-        min: stepperY.position_min,
-        max: stepperY.position_max
+        min: stepperY?.position_min ?? 0,
+        max: stepperY?.position_max ?? 100
       }
     }
   }
@@ -289,9 +276,9 @@ export default class GcodePreview extends Mixins(StateMixin) {
   mounted () {
     this.panzoom = panzoom(this.$refs.svg as SVGElement, {
       maxZoom: 20,
-      minZoom: 0.98,
+      minZoom: 0.95,
       bounds: true,
-      boundsPadding: 0.8,
+      boundsPadding: 0.6,
       smoothScroll: this.showAnimations
     })
 

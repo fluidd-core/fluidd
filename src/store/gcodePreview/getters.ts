@@ -219,12 +219,6 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return binarySearch(getters.getMoves, (val: Move) => filePosition - (val.filePosition ?? 0), true)
   },
 
-  getCurrentMoveIndex: (state, getters, rootState): number => {
-    const filePosition = rootState.printer?.printer.virtual_sdcard.file_position
-
-    return getters.getMoveIndexByFilePosition(filePosition)
-  },
-
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {
     const layers = getters.getLayers
 
@@ -235,11 +229,5 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     }
 
     return layers.length - 1
-  },
-
-  getCurrentLayerNr: (state, getters, rootState): LayerNr => {
-    const filePosition = rootState.printer?.printer.virtual_sdcard.file_position
-
-    return getters.getLayerNrByFilePosition(filePosition)
   }
 }

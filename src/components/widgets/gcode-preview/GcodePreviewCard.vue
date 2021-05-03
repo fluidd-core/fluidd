@@ -109,14 +109,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   @Watch('followProgress')
   onFollowProgressChanged () {
     if (this.followProgress) {
-      this.currentLayer = this.$store.getters['gcodePreview/getCurrentLayerNr']
+      this.currentLayer = this.fileProgressLayerNr
       this.syncMoveProgress()
     }
   }
 
   @Watch('currentLayer')
   onCurrentLayerChanged () {
-    if (this.followProgress && this.currentLayer !== this.$store.getters['gcodePreview/getCurrentLayerNr']) {
+    if (this.followProgress && this.currentLayer !== this.fileProgressLayerNr) {
       this.followProgress = false
     }
 
@@ -137,7 +137,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       } = this.currentLayerMoveRange
 
       if (this.filePosition < moves[min].filePosition || this.filePosition > moves[max].filePosition) {
-        this.currentLayer = this.$store.getters['gcodePreview/getCurrentLayerNr']
+        this.currentLayer = this.fileProgressLayerNr
       }
     }
   }
@@ -175,6 +175,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get filePosition (): number {
     return this.$store.state.printer.printer.virtual_sdcard.file_position
+  }
+
+  get fileProgressLayerNr (): number {
+    return this.$store.getters['gcodePreview/getLayerNrByFilePosition'](this.filePosition)
   }
 
   get cardTitle (): string {
