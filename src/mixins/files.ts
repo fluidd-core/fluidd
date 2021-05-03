@@ -28,7 +28,7 @@ export default class FilesMixin extends Vue {
     return ''
   }
 
-  async getGcode(file: AppFile): string | undefined {
+  async getGcode (file: AppFile): Promise<string | undefined> {
     const sizeInMB = file.size / 1024 / 1024
 
     if (sizeInMB >= 100) {
