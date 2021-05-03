@@ -424,7 +424,6 @@ export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
 
 // Assumes the path is pr
 export function moveToSVGPath (toolhead: Point, move: Move) {
-  // todo figure out if I can just typecheck this
   if (Object.hasOwnProperty.call(move, 'direction')) {
     return arcMoveToSvgPath(toolhead, move as ArcMove)
   } else {
