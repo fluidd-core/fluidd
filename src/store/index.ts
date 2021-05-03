@@ -19,6 +19,7 @@ import { history } from './history'
 import { version } from './version'
 import { cameras } from './cameras'
 import { mesh } from './mesh'
+import { notifications } from './notifications'
 import { wait } from './wait'
 
 Vue.use(Vuex)
@@ -41,6 +42,7 @@ export default new Vuex.Store<RootState>({
     version,
     cameras,
     mesh,
+    notifications,
     wait
   },
   mutations: {},

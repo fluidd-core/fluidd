@@ -1,8 +1,9 @@
 import Vue from 'vue'
+import { AppNotificationType } from '@/store/types'
 
 export const EventBus = {
   bus: new Vue(),
-  $emit: (text?: string, type?: FlashMessageTypes, timeout?: number): void => {
+  $emit: (text?: string, type?: AppNotificationType, timeout?: number): void => {
     const opts: FlashMessage = {
       open: true
     }
@@ -15,16 +16,8 @@ export const EventBus = {
 }
 
 export interface FlashMessage {
-  type?: FlashMessageTypes;
+  type?: AppNotificationType;
   open: boolean;
   text?: string;
   timeout?: number;
-}
-
-export enum FlashMessageTypes {
-  success = 'success',
-  error = 'error',
-  warning = 'warning',
-  primary = 'primary',
-  secondary = 'secondary'
 }

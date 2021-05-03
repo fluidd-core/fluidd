@@ -1,5 +1,5 @@
 <template>
-  <v-alert text dense icon="$alert" type="warning">
+  <v-alert text dense icon="$warning" type="warning">
     <div class="text-body-1 mb-2">
       {{ $t('app.general.error.app_warnings_found', { appName }) }}
     </div>

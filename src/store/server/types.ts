@@ -4,6 +4,7 @@ export interface ServerState {
   config: ServerConfig;
   moonraker_stats: ServerSystemStat[];
   throttled_state: ServerThrottledState | null;
+  cpu_temp: number | null;
 }
 
 export interface ServerSystemStat {

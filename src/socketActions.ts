@@ -107,6 +107,14 @@ export const SocketActions = {
     )
   },
 
+  async machineProcStats () {
+    baseEmit(
+      'machine.proc_stats', {
+        dispatch: 'server/onMachineProcStats'
+      }
+    )
+  },
+
   async machineDevicePowerDevices () {
     baseEmit(
       'machine.device_power.devices', {

@@ -36,7 +36,7 @@ export const state = defaultState()
 
 const namespaced = true
 
-export const macros: Module<NotificationsState, RootState> = {
+export const notifications: Module<NotificationsState, RootState> = {
   namespaced,
   state,
   getters,

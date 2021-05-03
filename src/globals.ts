@@ -95,7 +95,9 @@ import {
   mdiLock,
   mdiLockOpenVariant,
   mdiPencilLock,
-  mdiLockReset
+  mdiLockReset,
+  mdiHandRight,
+  mdiThermometerAlert
 } from '@mdi/js'
 
 /**
@@ -170,7 +172,8 @@ export const Icons = Object.freeze({
   restart: mdiRestart,
   restartAlert: mdiRestartAlert,
   update: mdiUpdate,
-  alert: mdiAlert,
+  warning: mdiAlert,
+  error: mdiHandRight,
   thermometer: mdiThermometerLow,
   bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
@@ -243,7 +246,8 @@ export const Icons = Object.freeze({
   keyboard: mdiKeyboard,
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,
-  lockReset: mdiLockReset
+  lockReset: mdiLockReset,
+  tempError: mdiThermometerAlert
 })
 
 export const Waits = Object.freeze({

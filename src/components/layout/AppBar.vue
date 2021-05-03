@@ -56,29 +56,43 @@
           <app-btn
             v-if="!isMobile"
             :disabled="!klippyReady"
-            icon
-            class="ml-4"
-            color="error"
-            @click="emergencyStop()"
             v-bind="attrs"
-            v-on="on">
-            <v-icon>$estop</v-icon>
+            v-on="on"
+            fab
+            small
+            class="mx-1"
+            color="transparent"
+            :elevation="0"
+            @click="emergencyStop()"
+          >
+            <v-icon color="error">$estop</v-icon>
           </app-btn>
         </template>
         {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <!-- <app-notification-menu></app-notification-menu> -->
+      <app-notification-menu></app-notification-menu>
 
       <app-btn
-        icon
-        color=""
-        @click="$router.push({ path: '/settings'})"
+        v-if="!isMobile"
+        fab
+        small
+        :elevation="0"
+        class="mx-1"
+        color="transparent"
+        :to="{ path: '/settings' }"
       >
         <v-icon>$cog</v-icon>
       </app-btn>
 
-      <app-btn icon color="" @click="$emit('toolsdrawer')">
+      <app-btn
+        fab
+        small
+        :elevation="0"
+        class="mx-1"
+        color="transparent"
+        @click="$emit('toolsdrawer')"
+      >
         <v-icon>$menu</v-icon>
       </app-btn>
 

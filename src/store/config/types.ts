@@ -44,7 +44,7 @@ export interface GeneralConfig {
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
-  enableNotifications: boolean;
+  enableVersionNotifications: boolean;
 }
 
 export interface ThemeConfig {

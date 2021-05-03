@@ -14,15 +14,13 @@
 - add cpu time / resource monitoring
 - status card updates
   - add layer height :/
+  - add total layers
   - flow calculation?
 - better way to handle overall warnings
-  - warn on over temp for pi cpu / throttled (see moonraker docs for CPU Throttled)
-  - warn on undervoltage for pi cpu? (is this reported?)
   - warn on gcode root not active
   - warn on mem low
   - warn on cputime too high
   - warn on systime too high
-  - allow a way to configure if a warning is persistent or not
 - allow re-ordering temp presets and cameras
 - sync instances across moonraker db
 - warning close with no save in file editor

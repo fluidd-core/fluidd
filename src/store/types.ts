@@ -11,6 +11,7 @@ import { HistoryState } from './history/types'
 import { VersionState } from './version/types'
 import { LayoutState } from './layout/types'
 import { MeshState } from './mesh/types'
+import { NotificationsState } from './notifications/types'
 
 export interface RootState {
   socket?: SocketState;
@@ -26,4 +27,7 @@ export interface RootState {
   power?: DevicePowerState;
   history?: HistoryState;
   version?: VersionState;
+  notifications?: NotificationsState;
 }
+
+export type AppNotificationType = 'success' | 'info' | 'warning' | 'error'

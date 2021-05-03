@@ -28,3 +28,20 @@
     transform: rotate(0deg);
   }
 }
+
+.wiggle {
+  animation-name: wiggle;
+  animation-duration: 5000ms;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+/* Notification wiggle */
+@keyframes wiggle {
+  0% { transform: rotate(0deg); }
+  2% { transform: rotate(-15deg); }
+  4% { transform: rotate(15deg); }
+  6% { transform: rotate(-15deg); }
+  8% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}

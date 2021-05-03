@@ -28,7 +28,8 @@ export const defaultState = (): ServerState => {
     throttled_state: {
       bits: 0,
       flags: []
-    }
+    },
+    cpu_temp: null
   }
 }
 

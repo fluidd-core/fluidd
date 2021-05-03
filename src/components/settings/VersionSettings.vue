@@ -2,7 +2,7 @@
   <div>
     <v-subheader id="versions">
       {{ $t('app.version.title') }}
-      <v-icon small color="warning" class="ml-2" v-if="hasUpdates">$error</v-icon>
+      <!-- <v-icon small color="info" class="ml-2" v-if="hasUpdates">$warning</v-icon> -->
     </v-subheader>
     <v-card
       :elevation="5"
@@ -140,12 +140,12 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get enableNotifications () {
-    return this.$store.state.config.uiSettings.general.enableNotifications
+    return this.$store.state.config.uiSettings.general.enableVersionNotifications
   }
 
   set enableNotifications (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.enableNotifications',
+      path: 'uiSettings.general.enableVersionNotifications',
       value,
       server: true
     })

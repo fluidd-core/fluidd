@@ -158,7 +158,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   getPowerIcon (device: Device) {
     switch (device.status) {
       case 'error': {
-        return '$alert'
+        return '$error'
       }
       case 'init': {
         return '$dots'

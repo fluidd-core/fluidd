@@ -1,6 +1,6 @@
 import _Vue from 'vue'
 import Axios, { AxiosResponse, AxiosStatic } from 'axios'
-import { EventBus, FlashMessageTypes } from '@/eventBus'
+import { EventBus } from '@/eventBus'
 import consola from 'consola'
 
 export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
@@ -31,14 +31,14 @@ export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
     switch (error.response.status) {
       case 400:
         consola.debug(error.response.status, error.message, message)
-        EventBus.$emit(message || 'Server error', FlashMessageTypes.error, 5000)
+        EventBus.$emit(message || 'Server error', 'error', 5000)
         break
       case 404:
         consola.debug(error.response.status, error.message, message)
         break
       default:
         consola.debug(error.response.status, error.message)
-        EventBus.$emit(message || 'Server error', FlashMessageTypes.error, -1)
+        EventBus.$emit(message || 'Server error', 'error', -1)
     }
 
     return Promise.reject(error)
