@@ -78,8 +78,7 @@
         </v-list-item-icon>
       </v-list-item>
 
-      <v-list-item @click="serviceRestartWebcam(); $emit('click')"
-        :disabled="printerPrinting">
+      <v-list-item @click="serviceRestartWebcam(); $emit('click')">
         <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_webcamd') }}</v-list-item-title>
         <v-list-item-icon>
           <v-icon color="warning">$restart</v-icon>
