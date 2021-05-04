@@ -47,9 +47,15 @@ export default class FilesMixin extends Vue {
       }
     }
 
+    this.cancelTokenSource = this.$http.CancelToken.source()
+
     const path = file.path ? `${file.path}/${file.filename}` : file.filename
 
-    const { data } = await this.getFile(path, 'gcodes', file.size)
+    const { data } = await this.getFile(path, 'gcodes', file.size, {
+      responseType: 'text',
+      transformResponse: [v => v],
+      cancelToken: this.cancelTokenSource.token
+    })
 
     return data
   }
@@ -103,7 +109,11 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    try {
+      return await this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    } finally {
+      this.$store.dispatch('files/removeFileDownload')
+    }
   }
 
   /**

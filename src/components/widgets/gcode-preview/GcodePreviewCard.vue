@@ -33,7 +33,7 @@
                 :disabled="!fileLoaded"
                 :instant="!isMobile"
                 input-md
-                @input="currentLayer = $event - 1">
+                @input="setCurrentLayerThrottled($event - 1)">
               </app-slider>
             </v-col>
           </v-row>
@@ -48,7 +48,7 @@
                 valueSuffix="moves"
                 :instant="!isMobile"
                 input-md
-                @input="moveProgress = $event + currentLayerMoveRange.min">
+                @input="setMoveProgressThrottled($event + currentLayerMoveRange.min)">
               </app-slider>
             </v-col>
           </v-row>
@@ -83,6 +83,7 @@ import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePrevie
 import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
+import { throttle } from 'lodash-es'
 
 @Component({
   components: {
@@ -100,6 +101,9 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   currentLayer = 0
   moveProgress = 0
+
+  setCurrentLayerThrottled?: (value: number) => void
+  setMoveProgressThrottled?: (value: number) => void
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -231,6 +235,16 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   abortParser () {
     this.$store.dispatch('gcodePreview/terminateParserWorker')
+  }
+
+  mounted () {
+    this.setCurrentLayerThrottled = throttle(value => {
+      this.currentLayer = value
+    }, 100)
+
+    this.setMoveProgressThrottled = throttle(value => {
+      this.moveProgress = value
+    }, 100)
   }
 }
 </script>
