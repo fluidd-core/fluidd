@@ -70,19 +70,7 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return this.$http.get(
-      encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()),
-      o
-    )
-      .then(response => {
-        return response
-      })
-      .catch(e => {
-        return e
-      })
-      .finally(() => {
-        this.$store.dispatch('files/removeFileDownload')
-      })
+    return this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
   }
 
   /**

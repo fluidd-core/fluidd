@@ -22,7 +22,7 @@ export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
     if (!error.response) {
       // Network / Server Error.
       if (error.message) message = error.message
-      consola.error(message || 'Network error')
+      consola.debug(message || 'Network error')
       return Promise.reject(error)
     }
 
@@ -30,14 +30,14 @@ export function AxiosPlugin<AxiosPlugOptions> (Vue: typeof _Vue): void {
     if (error.response.data) message = error.response.data
     switch (error.response.status) {
       case 400:
-        consola.error(error.response.status, error.message, message)
+        consola.debug(error.response.status, error.message, message)
         EventBus.$emit(message || 'Server error', FlashMessageTypes.error, 5000)
         break
       case 404:
-        consola.error(error.response.status, error.message, message)
+        consola.debug(error.response.status, error.message, message)
         break
       default:
-        consola.error(error.response.status, error.message)
+        consola.debug(error.response.status, error.message)
         EventBus.$emit(message || 'Server error', FlashMessageTypes.error, -1)
     }
 
