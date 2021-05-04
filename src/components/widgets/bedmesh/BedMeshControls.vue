@@ -26,8 +26,13 @@
               active
             </v-chip>
           </td>
-          <td class="grey--text focus--text"><span v-if="item.active && mesh.variance">{{ mesh.variance.toFixed(4) }}</span></td>
-          <td class="text-right">
+          <td class="grey--text focus--text">
+            <span v-if="item.active && mesh.variance">
+              {{ mesh.variance.toFixed(4) }}
+               <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
+            </span>
+          </td>
+          <td class="text-right" nowrap>
             <v-tooltip
               v-if="!item.active && !printerPrinting && !printerBusy"
               bottom
@@ -155,7 +160,7 @@
             v-model="matrix"
             column
             hide-details
-            class="mt-0 pt-1"
+            class="mt-0 mb-2"
           >
             <v-radio
               :label="$t('app.bedmesh.label.probed_matrix')"
@@ -168,8 +173,7 @@
               value="mesh_matrix"
             ></v-radio>
           </v-radio-group>
-        </v-col>
-        <v-col>
+
           <v-checkbox
             :disabled="!meshLoaded || printerPrinting || printerBusy"
             :label="$t('app.bedmesh.label.wireframe')"
@@ -181,21 +185,48 @@
 
           <v-checkbox
             :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :label="$t('app.bedmesh.label.flat_surface')"
+            v-model="flatSurface"
+            hide-details
+            class="mt-1"
+          >
+          </v-checkbox>
+
+        </v-col>
+        <v-col>
+          <v-slider
+            :label="$t('app.bedmesh.label.scale')"
+            v-model="mapScale"
+            :tick-labels="mapScaleLabels"
+            :min="0"
+            :max="0.2"
+            step="0.1"
+            ticks="always"
+            tick-size="4"
+          >
+          </v-slider>
+
+          <v-slider
+            :label="$t('app.bedmesh.label.boxScale')"
+            v-model="boxScale"
+            :tick-labels="boxScaleLabels"
+            :min="1"
+            :max="2"
+            step="0.5"
+            ticks="always"
+            tick-size="4"
+          >
+          </v-slider>
+
+          <!-- <v-checkbox
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             :label="$t('app.bedmesh.label.scale')"
             v-model="scale"
             hide-details
             class="mt-0"
           >
-          </v-checkbox>
+          </v-checkbox> -->
 
-          <v-checkbox
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
-            :label="$t('app.bedmesh.label.flat_surface')"
-            v-model="flatSurface"
-            hide-details
-            class="mt-0"
-          >
-          </v-checkbox>
         </v-col>
 
       </v-row>
@@ -228,6 +259,9 @@ import { Waits } from '@/globals'
 export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
 
+  mapScaleLabels = ['min', '0.1', '0.2']
+  boxScaleLabels = ['1.0', '1.5', '2.0']
+
   saveDialogState = {
     open: false,
     existingName: 'default'
@@ -241,12 +275,20 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     this.$store.dispatch('mesh/onMatrix', val)
   }
 
-  get scale () {
+  get mapScale () {
     return this.$store.state.mesh.scale
   }
 
-  set scale (val: string) {
+  set mapScale (val: string) {
     this.$store.dispatch('mesh/onScale', val)
+  }
+
+  get boxScale () {
+    return this.$store.state.mesh.boxScale
+  }
+
+  set boxScale (val: string) {
+    this.$store.dispatch('mesh/onBoxScale', val)
   }
 
   get wireframe () {
@@ -331,3 +373,9 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .v-input__slider .v-input__slot .v-label {
+    min-width: 82px;
+  }
+</style>

@@ -2,6 +2,12 @@
 
 ## Next Up
 
+- notification translations
+- fix new entries for layout not showing by default
+
+- add machine.system_info
+- add checksum option to file upload
+
 - Update mesh box to center on mesh center if no relative index set
 - Power on graph toggles back off on a klipper restart
 - Authorization

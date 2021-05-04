@@ -230,6 +230,7 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
   const matrix = bed_mesh[meshMatrix] as number[][]
   const coordinates = []
   let min = 0
+  let mid = 0
   let max = 0
   let variance = 0
 
@@ -246,6 +247,15 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
     let x_idx = 0
     let y_idx = 0
 
+    min = Math.min(...matrix.map(row => Math.min(...row)))
+    max = Math.max(...matrix.map(row => Math.max(...row)))
+    if (min <= 0 && max >= 0) {
+      mid = 0
+    } else {
+      mid = (max + min) / 2
+    }
+    variance = Math.abs(min - max)
+
     for (const x_axis of matrix) {
       x_idx = 0
       const y_coord = bed_mesh.mesh_min[1] + (y_idx * y_distance)
@@ -258,22 +268,19 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
             value: [
               x_coord,
               y_coord,
-              (makeFlat) ? 0 : z_coord
+              (makeFlat) ? mid : z_coord
             ]
           }
         )
       }
       y_idx++
     }
-
-    min = Math.min(...matrix.map(row => Math.min(...row)))
-    max = Math.max(...matrix.map(row => Math.max(...row)))
-    variance = Math.abs(min - max)
   }
 
   return {
     coordinates,
     min,
+    mid,
     max,
     variance
   }

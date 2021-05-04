@@ -1,12 +1,13 @@
 app:
   bedmesh:
     label:
+      boxScale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
       probed_matrix: Probed matrix
       profile_name: Profile Name
       remove_profile: Remove %{name} profile
-      scale: Scale by min / max
+      scale: Color scale
       wireframe: Wireframe
     msg:
       hint: >-

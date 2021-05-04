@@ -1,7 +1,8 @@
 export interface MeshState {
   variance: number;
   wireframe: boolean;
-  scale: boolean;
+  scale: number;
+  boxScale: number;
   flatSurface: boolean;
   matrix: 'probed_matrix' | 'mesh_matrix';
 }
@@ -26,6 +27,7 @@ export interface ProcessedMesh {
   coordinates: MeshCoordinates[];
   variance: number;
   min: number;
+  mid: number;
   max: number;
 }
 
