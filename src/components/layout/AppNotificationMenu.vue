@@ -40,7 +40,7 @@
           v-if="notifications.length === 0"
         >
           <v-list-item-content>
-            <v-list-item-title>No notifications</v-list-item-title>
+            <v-list-item-title>{{ $t('app.general.label.no_notifications') }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -50,7 +50,7 @@
           :disabled="clearableNotifications.length <= 0"
         >
           <v-list-item-content>
-            <v-list-item-title>Clear all</v-list-item-title>
+            <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action class="notification-clear-all">
             <v-icon small>$close</v-icon>
@@ -75,7 +75,7 @@
                   x-small
                   :to="n.to"
                   @click="menu = false"
-                  v-html="(n.btnText) ? n.btnText : 'More information'">
+                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')">
                 </app-btn>
                 <app-btn
                   v-else
@@ -83,7 +83,7 @@
                   :href="n.to"
                   target="_blank"
                   @click="menu = false"
-                  v-html="(n.btnText) ? n.btnText : 'More information'">
+                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')">
                 </app-btn>
               </v-list-item-subtitle>
             </v-list-item-content>

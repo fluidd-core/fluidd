@@ -115,6 +115,7 @@ app:
       extrude: Extrude
       heaters_off: Heaters off
       load_all: Load all
+      more_information: More information
       pause: Pause
       preheat: Preheat
       presets: Presets
@@ -159,6 +160,7 @@ app:
       add_category: Add category
       add_preset: Add Preset
       api_url: API URL
+      clear_all: Clear all
       confirm: Confirm
       edit_camera: Edit Camera
       edit_preset: Edit Preset
@@ -173,6 +175,7 @@ app:
       low: Low
       move_macro: Move macro %{name}
       name: Name
+      no_notifications: No notifications
       'off': 'Off'
       power: Power
       printers: Printers
@@ -354,6 +357,7 @@ app:
       check_for_updates: Check for updates
       finish: Finish
       update: Update
+      view_versions: View versions
     label:
       commit_history: Commit History
       commits_on: commits on
@@ -363,6 +367,7 @@ app:
       os_packages: OS Packages
       package_list: Package List
       up_to_date: UP TO DATE
+      updates_available: Updates are available
     status:
       finished: Updates finished
       updating: Updating...
