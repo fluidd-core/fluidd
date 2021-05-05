@@ -56,6 +56,7 @@
       @remove="handleRemove"
       @download="handleDownload"
       @preheat="handlePreheat"
+      @preview-gcode="handlePreviewGcode"
     >
     </file-system-context-menu>
 
@@ -482,7 +483,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         }
       })
       .catch(e => e)
-      .finally(() => this.$store.dispatch('files/removeFileDownload'))
   }
 
   handleCancelDownload () {
@@ -620,6 +620,23 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (file.first_layer_bed_temp > 0) {
         this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
       }
+    }
+  }
+
+  async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
+    // todo: getGcode depends on the jobs card being present
+    const gcode = await this.getGcode(file)
+
+    if (gcode) {
+      // If we aren't on the dashboard, push the user back there.
+      if (this.$router.currentRoute.path !== '/') {
+        this.$router.push({ path: '/' })
+      }
+
+      this.$store.dispatch('gcodePreview/loadGcode', {
+        file,
+        gcode
+      })
     }
   }
 

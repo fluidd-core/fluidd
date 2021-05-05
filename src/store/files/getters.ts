@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { Files, FilesState } from './types'
+import { AppFile, Files, FilesState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<FilesState, RootState> = {
@@ -96,13 +96,17 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters) => (r: string, path: string, filename: string) => {
+  getFile: (state, getters) => (r: string, path: string, filename: string): AppFile | undefined => {
     const dir: Files = getters.getDirectory(r, path)
     if (
       dir &&
       dir.items
     ) {
-      return dir.items.find(f => f.type === 'file' && f.filename === filename)
+      const file = dir.items.find(f => f.type === 'file' && f.filename === filename)
+
+      if (file) {
+        return file as AppFile
+      }
     }
   },
 

@@ -90,6 +90,17 @@ export const defaultState = (): ConfigState => {
           { value: 'print_duration', visible: false },
           { value: 'filament_used', visible: false }
         ]
+      },
+      gcodePreview: {
+        extrusionLineWidth: 0.3,
+        moveLineWidth: 0.1,
+        retractionIconSize: 0.6,
+        drawBackground: true,
+        showAnimations: true,
+        flip: {
+          horizontal: false,
+          vertical: true
+        }
       }
     }
   }

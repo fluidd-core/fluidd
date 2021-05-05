@@ -16,6 +16,7 @@ export interface UiSettings {
   theme: ThemeConfig;
   dashboard: DashboardConfig;
   tableHeaders: AppTableConfiguredHeaders;
+  gcodePreview: GcodePreviewConfig;
 }
 
 export interface HostConfig {
@@ -106,4 +107,16 @@ export interface TemperaturePresetValue {
 
 export interface AppTableConfiguredHeaders {
   [root: string]: AppTablePartialHeader[];
+}
+
+export interface GcodePreviewConfig {
+  extrusionLineWidth: number;
+  moveLineWidth: number;
+  retractionIconSize: number;
+  drawBackground: boolean;
+  showAnimations: boolean;
+  flip: {
+    horizontal: boolean;
+    vertical: boolean;
+  };
 }

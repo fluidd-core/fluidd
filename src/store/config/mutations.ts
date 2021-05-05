@@ -3,10 +3,11 @@ import { MutationTree } from 'vuex'
 import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
-import { merge, set } from 'lodash-es'
+import { merge, set, cloneDeep } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
+import consola from 'consola'
 
 export const mutations: MutationTree<ConfigState> = {
   /**

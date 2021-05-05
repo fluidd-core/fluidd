@@ -96,6 +96,7 @@ import {
   mdiLockOpenVariant,
   mdiPencilLock,
   mdiLockReset,
+  mdiCubeScan,
   mdiHandRight,
   mdiThermometerAlert
 } from '@mdi/js'
@@ -243,6 +244,7 @@ export const Icons = Object.freeze({
   commit: mdiSourceCommit,
   cloudCheck: mdiCloudCheck,
   cloudAlert: mdiCloudAlert,
+  cubeScan: mdiCubeScan,
   keyboard: mdiKeyboard,
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,

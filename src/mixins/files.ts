@@ -1,4 +1,4 @@
-import { FilesUpload, Thumbnail } from '@/store/files/types'
+import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
@@ -28,12 +28,44 @@ export default class FilesMixin extends Vue {
     return ''
   }
 
+  async getGcode (file: AppFile): Promise<string | undefined> {
+    const sizeInMB = file.size / 1024 / 1024
+
+    if (sizeInMB >= 100) {
+      const confirmed = await this.$confirm(
+        this.$t('app.gcode.msg.confirm', {
+          filename: file.filename,
+          size: this.$filters.getReadableFileSizeString(file.size)
+        }).toString(), {
+          title: this.$tc('app.general.title.gcode_preview'),
+          color: 'card-heading',
+          icon: '$error'
+        })
+
+      if (!confirmed) {
+        return
+      }
+    }
+
+    this.cancelTokenSource = this.$http.CancelToken.source()
+
+    const path = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    const { data } = await this.getFile(path, 'gcodes', file.size, {
+      responseType: 'text',
+      transformResponse: [v => v],
+      cancelToken: this.cancelTokenSource.token
+    })
+
+    return data
+  }
+
   /**
    * Will retrieve a file blob for independent processing.
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile (filename: string, path: string, size: number, options?: AxiosRequestConfig) {
+  async getFile (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
     // Sort out the filepath
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
 
@@ -60,17 +92,28 @@ export default class FilesMixin extends Vue {
           speed /= 1024.0
           i = Math.min(2, i + 1)
         }
-        this.$store.dispatch('files/updateFileDownload', {
+
+        const payload: any = {
           filepath,
           loaded: progressEvent.loaded,
           percent: Math.round(progressEvent.loaded / size * 100),
           speed,
           unit: units[i]
-        })
+        }
+
+        if (progressEvent.lengthComputable) {
+          size = payload.size = progressEvent.total
+        }
+
+        this.$store.dispatch('files/updateFileDownload', payload)
       }
     }
 
-    return this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    try {
+      return await this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    } finally {
+      this.$store.dispatch('files/removeFileDownload')
+    }
   }
 
   /**
