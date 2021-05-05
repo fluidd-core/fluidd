@@ -1,5 +1,5 @@
 <template>
-  <div :class="{container: true, dark: themeIsDark}">
+  <div :class="{container: true, dark: themeIsDark}" @focus="focused = true" @blur="focused = false">
     <svg :viewBox="svgViewBox" :height="height" :width="width" ref="svg"
          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
@@ -67,7 +67,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
@@ -103,6 +103,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
   })
   layer!: LayerNr
 
+  focused = false
+
   panzoom?: PanZoom
 
   panning = false
@@ -113,6 +115,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get filePosition (): number {
     return this.$store.state.printer.printer.virtual_sdcard.file_position
+  }
+
+  get isMobile (): boolean {
+    return this.$vuetify.breakpoint.mobile
   }
 
   get extrusionLineWidth () {
@@ -273,13 +279,37 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
+  @Watch('isMobile')
+  onIsMobileChanged () {
+    if (this.panzoom) {
+      if (this.isMobile) {
+        this.panzoom.pause()
+      } else {
+        this.panzoom.resume()
+      }
+    }
+  }
+
+  @Watch('focused')
+  onFocusedChanged () {
+    if (this.isMobile && this.panzoom) {
+      if (this.focused) {
+        this.panzoom.resume()
+      } else {
+        this.panzoom.pause()
+      }
+    }
+  }
+
   mounted () {
     this.panzoom = panzoom(this.$refs.svg as SVGElement, {
       maxZoom: 20,
       minZoom: 0.95,
       bounds: true,
       boundsPadding: 0.6,
-      smoothScroll: this.showAnimations
+      smoothScroll: this.showAnimations,
+
+      beforeWheel: () => !this.focused
     })
 
     this.panzoom.on('panstart', () => {
