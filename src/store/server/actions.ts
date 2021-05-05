@@ -95,9 +95,9 @@ export const actions: ActionTree<ServerState, RootState> = {
               title: flag,
               description: 'This may lead to a throttle condition and result in a failed print',
               to: 'https://www.raspberrypi.org/documentation/hardware/raspberrypi/frequency-management.md',
-              type: 'error',
+              type: (previousEvent) ? 'info' : 'error',
               snackbar: !previousEvent, // Snackbar only if not a previously encountered event.
-              merge: previousEvent, // Merge if it was a previously encountered event.
+              merge: true, // Merge if it was a previously encountered event.
               clear: !previousEvent // Dont allow the user to clear if it was a previously encountered event.
             }
 

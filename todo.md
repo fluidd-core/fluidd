@@ -2,6 +2,7 @@
 
 ## Next Up
 
+- add option to enable confirm dialog on estop
 - notification translations
 - fix new entries for layout not showing by default
 
