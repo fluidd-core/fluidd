@@ -240,11 +240,11 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   mounted () {
     this.setCurrentLayerThrottled = throttle(value => {
       this.currentLayer = value
-    }, 100)
+    }, 1000 / 24)
 
     this.setMoveProgressThrottled = throttle(value => {
       this.moveProgress = value
-    }, 100)
+    }, 1000 / 24)
   }
 }
 </script>
