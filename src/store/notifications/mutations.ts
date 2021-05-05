@@ -16,7 +16,9 @@ export const mutations: MutationTree<NotificationsState> = {
   },
 
   setMergeNotification (state, options: { n: AppNotification; i: number }) {
-    Vue.set(state.notifications, options.i, options.n)
+    if (options && options.n && options.i >= 0) {
+      Vue.set(state.notifications, options.i, options.n)
+    }
   },
 
   setClearNotification (state, notification: AppNotification | string) {

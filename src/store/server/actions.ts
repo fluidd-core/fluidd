@@ -89,7 +89,7 @@ export const actions: ActionTree<ServerState, RootState> = {
         // Fire notifications.
         payload.flags.forEach((flag) => {
           // Only apply a notification if the flag changed state.
-          if (!state.throttled_state?.flags.includes(flag)) {
+          if (state.throttled_state && !state.throttled_state.flags.includes(flag)) {
             const previousEvent = flag.toLowerCase().startsWith('previously')
             let n: AppPushNotification = {
               title: flag,

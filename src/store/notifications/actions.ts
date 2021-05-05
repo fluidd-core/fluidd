@@ -35,16 +35,19 @@ export const actions: ActionTree<NotificationsState, RootState> = {
       ...payload
     }
 
-    const i = state.notifications.findIndex(n => n.title === payload.title)
-    if (n.merge && i >= 0) {
-      commit('setMergeNotification', { n, i })
-    } else {
-      commit('setPushNotification', n)
-    }
+    // Sanity check...
+    if (n.title && n.title !== '?' && n.id) {
+      const i = state.notifications.findIndex(n => n.title === payload.title)
+      if (n.merge && i >= 0) {
+        commit('setMergeNotification', { n, i })
+      } else {
+        commit('setPushNotification', n)
+      }
 
-    if (payload.snackbar) {
-      // Emit if snackbar is true.
-      EventBus.$emit(n.title, 'error', -1)
+      if (payload.snackbar) {
+        // Emit if snackbar is true.
+        EventBus.$emit(n.title, 'error', -1)
+      }
     }
   },
 
