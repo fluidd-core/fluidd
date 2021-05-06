@@ -24,7 +24,7 @@ app:
         printer
   chart:
     label:
-      current: Actual
+      current: Temp
       item: Name
       'off': Chart off
       'on': Chart on
