@@ -133,10 +133,6 @@ export default class AppBar extends Mixins(StateMixin) {
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
   }
-
-  emergencyStop () {
-    SocketActions.printerEmergencyStop()
-  }
 }
 </script>
 

@@ -153,10 +153,6 @@ export default class App extends Mixins(StateMixin) {
     })
   }
 
-  emergencyStop () {
-    SocketActions.printerEmergencyStop()
-  }
-
   handleToolsDrawerChange () {
     this.toolsdrawer = !this.toolsdrawer
   }

@@ -297,6 +297,7 @@ app:
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
       camera_url: Camera Url
+      confirm_on_estop: Require confirm on Emergency Stop
       dark_mode: Dark mode
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed

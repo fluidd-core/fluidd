@@ -45,6 +45,7 @@ export interface GeneralConfig {
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
+  confirmOnEstop: boolean;
 }
 
 export interface ThemeConfig {
