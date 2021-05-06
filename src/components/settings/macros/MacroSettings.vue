@@ -24,7 +24,6 @@
         single-line
         hide-details
         append-icon="$magnify"
-        class="v-input--width-small"
       >
       </v-text-field>
 
