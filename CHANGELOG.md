@@ -2,6 +2,63 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.13.0](https://github.com/cadriel/fluidd/compare/v1.12.2...v1.13.0) (2021-05-07)
+
+
+### Features
+
+* **i18n-IT:** add Italian translations ([6ef58c6](https://github.com/cadriel/fluidd/commit/6ef58c651bf1c0a512e0e765570af92c20db89f0))
+* **i18n-IT:** add missing keys to IT translation ([292d04c](https://github.com/cadriel/fluidd/commit/292d04ce7d0c3db675bd3fa227d17d1522f3303d))
+* add feature request and bug report templates ([6db9968](https://github.com/cadriel/fluidd/commit/6db9968d854b41fb0380a8871dbf146f3eb44a65))
+* add filament weight to job views ([bb389c3](https://github.com/cadriel/fluidd/commit/bb389c3f17167810a1f8ace968504992b8f191b5))
+* add icon when camera disabled in settings ([95f63e5](https://github.com/cadriel/fluidd/commit/95f63e5ae9a82bed11a5f66f758b2bdedb995340))
+* Add keyboard shortcuts dialog to file editor ([c527e76](https://github.com/cadriel/fluidd/commit/c527e76ed0d15655d6cac1528a16dc12394f0ead))
+* allow cancelling uploads ([3ac295b](https://github.com/cadriel/fluidd/commit/3ac295bf96249b6e06067466dfb86cdc6fca86ec))
+* allow users to require a confirm when clicking estop ([26a8ea6](https://github.com/cadriel/fluidd/commit/26a8ea644febcefd97591d127b1feac84111245c))
+* card layouts saved to moonraker db ([37040a9](https://github.com/cadriel/fluidd/commit/37040a91832ad8854eb1125c120566b532daea3e))
+* column picker for tabular data ([c1722a3](https://github.com/cadriel/fluidd/commit/c1722a346ac640158a51198a0cc1cc996288fbdc))
+* console m112 invokes machine.emergency_stop ([4e54bf1](https://github.com/cadriel/fluidd/commit/4e54bf17ab13a17a2cd95e9ed0fa374225b0833f))
+* link to correct config docs dependent on file being edited ([09db189](https://github.com/cadriel/fluidd/commit/09db18911f8f2f8bf1e1fc873379823f83315701))
+* nav changes ([5ec057b](https://github.com/cadriel/fluidd/commit/5ec057bfcf74f12ca90ae5794f1574bb598a2c48))
+* New macro management UI ([df61127](https://github.com/cadriel/fluidd/commit/df611276c6c619d1f7a9aa7685ff7203af36d0fc))
+* notification menu + Pi throttle notifications ([613ab51](https://github.com/cadriel/fluidd/commit/613ab510a5cf7459fcb3a2715e2bbf872cddd342))
+* now displays the full version string where applicable ([fdd7527](https://github.com/cadriel/fluidd/commit/fdd75278e8681fb2a2d59c4f77b66794a746e544))
+* reduce the brightness of text a tad ([fa0930b](https://github.com/cadriel/fluidd/commit/fa0930bb7d84aa3d3948e8d298ad981fdeab0086))
+* run macros with params ([9078e10](https://github.com/cadriel/fluidd/commit/9078e10222b92b541d21cbf63f52c19261e630f8))
+* toolhead position axis are now inputs ([0630ecb](https://github.com/cadriel/fluidd/commit/0630ecb3c818dd5a9150373500baef42f4c20858))
+* update cn translation ([66283a2](https://github.com/cadriel/fluidd/commit/66283a272c5cdb8464585c0bb2f87c85c8300864))
+
+
+### Bug Fixes
+
+* added visual aid and increased drag area when in layout mode ([655204f](https://github.com/cadriel/fluidd/commit/655204f1b8dc06194169a7d2fe5110069c2146b6))
+* adds cachebust to thumbnail url ([1b17434](https://github.com/cadriel/fluidd/commit/1b17434e8651c4b6c02671a0da7cb6e681eb9cc4))
+* Bed mesh now renders offset meshes properly + extra scale control ([d9c3b6e](https://github.com/cadriel/fluidd/commit/d9c3b6e249103521d18232a7103e46236587a50b))
+* better handle network related errors ([397ad64](https://github.com/cadriel/fluidd/commit/397ad6495fb1b6c1c34f94aa5749770e5c81f25c))
+* buttons no longer flicker during file actions ([5e395ad](https://github.com/cadriel/fluidd/commit/5e395ad5b4960aee5a64742dc0ada1948ee6a89a))
+* card collapses now work properly ([df3c58c](https://github.com/cadriel/fluidd/commit/df3c58c4d5388c3016b08365302c986e508b7212))
+* de language translation ([096565a](https://github.com/cadriel/fluidd/commit/096565a7cf6e1b8063738f9e578b6ff2876c5fd3))
+* Don't disable webcamd restart during printing ([43afc3e](https://github.com/cadriel/fluidd/commit/43afc3e7a7245f3e8bf1a6aef63305016ea516fe))
+* ensure light theme doesn't default on when no connection ([c72299d](https://github.com/cadriel/fluidd/commit/c72299deb80c3024a4f3cfe1f228d7b6179dbe6a))
+* ensure moonraker returns all jobs when loading all ([28b5ac3](https://github.com/cadriel/fluidd/commit/28b5ac3e8635ceb873cffa94a976b410c805a138))
+* Ensure sliders are default locked in a mobile environment ([19e5271](https://github.com/cadriel/fluidd/commit/19e5271706e5e7695a85ea4ce5d63e7c4dc0b126))
+* File uploads via btn should now work properly ([add9272](https://github.com/cadriel/fluidd/commit/add9272cd488de12fd370f4a52722082f09885bb))
+* getFile cancellation now works properly ([b955bfd](https://github.com/cadriel/fluidd/commit/b955bfda28a58bf07c13ab32f7fcc1a02a6bdf14))
+* graph colors now properly reset when swapping printers ([8beb201](https://github.com/cadriel/fluidd/commit/8beb2013f913bd8f0184a27dfa3bec588737b39f))
+* Increase default buffer for the console. ([e19cdaf](https://github.com/cadriel/fluidd/commit/e19cdaf3e12d7c5d12b0171a0839532b1c925adc))
+* issue on initial startup merging uiSettings ([2ab89f4](https://github.com/cadriel/fluidd/commit/2ab89f4b7f060602f8cbd995a8179df87f5ea1a2))
+* mesh layout controls on mobile ([60f2866](https://github.com/cadriel/fluidd/commit/60f2866432bf02ed435efcd4df75c30c149b56c9))
+* moves estop to floating button in mobile view ([0d0cb68](https://github.com/cadriel/fluidd/commit/0d0cb68ba6b60538a44e1839c2fed39482581b3b))
+* new dashboard components / removal should now be graceful ([d6c1031](https://github.com/cadriel/fluidd/commit/d6c103123e00c113265c5ddd7b1b9174707f9605))
+* remove duplicate key ([be1eae6](https://github.com/cadriel/fluidd/commit/be1eae6c6dba21f66fe5fe20545e565125007ba8))
+* resolves a monaco issue ([9a7f2b6](https://github.com/cadriel/fluidd/commit/9a7f2b6cb932fa5ffe082d2df4c1005192284e07))
+* **firefox-download:** Fix ws disconnecting when downloading ([dd2ef81](https://github.com/cadriel/fluidd/commit/dd2ef81828f59d61eba2a796083739a46dc5416a))
+* resolves highlighting issues for comments on config blocks ([a0c9e75](https://github.com/cadriel/fluidd/commit/a0c9e758b0eae2459c59837f90a52cf444f09242))
+* send estop api endpoint AND m112 gcode via console ([c8681da](https://github.com/cadriel/fluidd/commit/c8681da592103ce47f879e7df6d2fbc53be8a35a))
+* set a pwa start url ([98dc495](https://github.com/cadriel/fluidd/commit/98dc4950881fb629884be6aa8e0c416e08bd1d14))
+* set min val to 0.1 for extruder length and speed vals ([88c9e42](https://github.com/cadriel/fluidd/commit/88c9e424dfb6c34325f09a4b23a32e082337f38e))
+* Z adjust values now apply properly ([87dc3dc](https://github.com/cadriel/fluidd/commit/87dc3dcc4d3e9c045dbefcf685df7df88c8e6701))
+
 ### [1.12.2](https://github.com/cadriel/fluidd/compare/v1.12.1...v1.12.2) (2021-04-09)
 
 
