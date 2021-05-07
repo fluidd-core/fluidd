@@ -29,7 +29,7 @@ export const getters: GetterTree<VersionState, RootState> = {
    * Returns an object indicating if any component (but system) has an update.
    */
   hasUpdates: (state, getters, rootState) => {
-    const enableNotifications = rootState.config?.uiSettings.general.enableNotifications
+    const enableNotifications = rootState.config?.uiSettings.general.enableVersionNotifications
     let r = false
     for (const key in state.version_info) {
       if (!r) {

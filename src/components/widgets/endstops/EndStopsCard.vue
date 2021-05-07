@@ -2,13 +2,12 @@
   <collapsable-card
     :title="$t('app.general.title.endstops')"
     :subTitle="$t('app.endstop.msg.subtitle')"
-    :collapsable="false"
     icon="$expandHorizontal">
     <template v-slot:collapse-button>
       <app-btn
         @click="queryEndstops"
         color=""
-        fab small text>
+        fab x-small text>
         <v-icon>$refresh</v-icon>
       </app-btn>
     </template>

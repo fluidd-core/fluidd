@@ -1,12 +1,14 @@
-import { Thumbnail } from '@/store/files/types'
+import { FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
-import { AxiosRequestConfig } from 'axios'
-import EventBus from '@/eventBus'
+import { AxiosRequestConfig, CancelTokenSource } from 'axios'
 
 @Component
 export default class FilesMixin extends Vue {
+  // Maintains a cancel token source should we need to disable a request.
+  cancelTokenSource: CancelTokenSource | undefined = undefined
+
   get apiUrl () {
     return this.$store.state.config.apiUrl
   }
@@ -68,14 +70,7 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return this.$http.get(
-      encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()),
-      o
-    )
-      .then((response) => {
-        this.$store.dispatch('files/removeFileDownload')
-        return response
-      })
+    return this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
   }
 
   /**
@@ -92,6 +87,7 @@ export default class FilesMixin extends Vue {
     const link = document.createElement('a')
     link.href = url
     link.setAttribute('download', filename)
+    link.setAttribute('target', '_blank')
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -103,8 +99,9 @@ export default class FilesMixin extends Vue {
    * @param path The path we're uploading to.
    * @param root The root we're downloading from.
    * @param andPrint If we should attempt to print this file or not.
+   * @param options Axios request options
    */
-  async uploadFile (file: File, path: string, root: string, andPrint: boolean) {
+  async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
     const formData = new FormData()
     // let filename = file.name.replace(' ', '_')
     let filepath = `${path}/${file.name}`
@@ -124,13 +121,15 @@ export default class FilesMixin extends Vue {
       loaded: 0,
       percent: 0,
       speed: 0,
-      unit: 'kB'
+      unit: 'kB',
+      cancelled: false
     })
 
     return this.$http
       .post(
         this.apiUrl + '/server/files/upload',
         formData, {
+          ...options,
           headers: {
             'Content-Type': 'multipart/form-data'
           },
@@ -153,14 +152,19 @@ export default class FilesMixin extends Vue {
         }
       )
       .then((response) => {
-        this.$store.dispatch('files/removeFileUpload', filepath)
         return response
+      })
+      .catch(e => {
+        return e
+      })
+      .finally(() => {
+        this.$store.dispatch('files/removeFileUpload', filepath)
       })
   }
 
   // Upload some files.
-  async uploadFiles (files: FileList, path: string, root: string, andPrint: boolean) {
-    // Add a file upload for each intended file.
+  async uploadFiles (files: FileList | File[], path: string, root: string, andPrint: boolean) {
+    // For each file, adds the associated state.
     for (const file of files) {
       let filepath = `${path}/${file.name}`
       filepath = (filepath.startsWith('/'))
@@ -172,7 +176,8 @@ export default class FilesMixin extends Vue {
         loaded: 0,
         percent: 0,
         speed: 0,
-        unit: 'kB'
+        unit: 'kB',
+        cancelled: false
       })
     }
 
@@ -181,10 +186,23 @@ export default class FilesMixin extends Vue {
     // processing of each file.
     if (files.length > 1) andPrint = false
     for (const file of files) {
-      try {
-        await this.uploadFile(file, path, root, andPrint)
-      } catch (e) {
-        EventBus.$emit('flashMessage', { type: 'error', text: `Error uploading ${file.name}<br />${e}` })
+      let filepath = `${path}/${file.name}`
+      filepath = (filepath.startsWith('/'))
+        ? filepath
+        : '/' + filepath
+      const fileState = this.$store.state.files.uploads.find((u: FilesUpload) => u.filepath === filepath)
+      // consola.error('about to process...', fileState)
+      if (!fileState.cancelled) {
+        try {
+          this.cancelTokenSource = this.$http.CancelToken.source()
+          await this.uploadFile(file, path, root, andPrint, {
+            cancelToken: this.cancelTokenSource.token
+          })
+        } catch (e) {
+          return e
+        }
+      } else {
+        this.$store.dispatch('files/removeFileUpload', filepath)
       }
     }
   }

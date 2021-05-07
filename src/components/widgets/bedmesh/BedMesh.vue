@@ -27,8 +27,6 @@ import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
-const DEFAULT_SCALE = 0.05
-
 @Component({
   components: {
     EChartsBedMesh
@@ -36,17 +34,21 @@ const DEFAULT_SCALE = 0.05
 })
 export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   get options () {
-    let zMin = -Math.abs(DEFAULT_SCALE)
-    let zMax = DEFAULT_SCALE
-    if (this.scale) {
+    const map_scale = this.scale / 2
+    const box_scale = this.boxScale / 2
+
+    // These define the visualMap scaling.
+    let zMin = -Math.abs(map_scale - this.mesh[this.matrix].min)
+    let zMax = map_scale + this.mesh[this.matrix].max
+    if (this.scale === 0) {
+      // Applies the scale based on the min and max of the mesh.
       zMin = this.mesh[this.matrix].min
       zMax = this.mesh[this.matrix].max
-      // If the zmin and zmax don't exceed -1 and 1 respectively - then
-      // set the min and maxes to -1 and 1 - effectively ensuring we don't
-      // have a min max smaller than -1 and larger than 1.
-      if (zMin < -0.1) zMin = -Math.abs(DEFAULT_SCALE)
-      if (zMax > 0.1) zMax = DEFAULT_SCALE
     }
+
+    // These define the 3d box scaling.
+    const zBoxMin = -Math.abs(this.mesh[this.matrix].mid - box_scale)
+    const zBoxMax = this.mesh[this.matrix].mid + box_scale
 
     const legends = this.series.reduce((obj, series: any) => {
       return Object.assign(
@@ -73,6 +75,10 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
         max: zMax,
         dimension: 2,
         seriesIndex: 0
+      },
+      zAxis3D: {
+        min: zBoxMin,
+        max: zBoxMax
       }
     }
     return opts
@@ -123,6 +129,10 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   get scale () {
     return this.$store.state.mesh.scale
+  }
+
+  get boxScale () {
+    return this.$store.state.mesh.boxScale
   }
 
   get wireframe () {

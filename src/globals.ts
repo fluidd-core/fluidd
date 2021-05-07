@@ -11,9 +11,7 @@ import {
   mdiPrinter3d,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
-  mdiTools,
   mdiConsole,
-  mdiFileMultipleOutline,
   mdiChevronUp,
   mdiChevronDown,
   mdiTimerSand,
@@ -84,7 +82,22 @@ import {
   mdiHistory,
   mdiFilterOutline,
   mdiSourceCommit,
-  mdiArrowExpandUp
+  mdiArrowExpandUp,
+  mdiCloudCheck,
+  mdiCloudAlert,
+  mdiCircle,
+  mdiFolderMove,
+  mdiKeyboard,
+  mdiDotsGrid,
+  mdiHammerWrench,
+  mdiAccount,
+  mdiFileTableOutline,
+  mdiLock,
+  mdiLockOpenVariant,
+  mdiPencilLock,
+  mdiLockReset,
+  mdiHandRight,
+  mdiThermometerAlert
 } from '@mdi/js'
 
 /**
@@ -115,11 +128,12 @@ export const Globals = Object.freeze({
       macros: { name: 'macros', dispatch: 'macros/initMacros' },
       console: { name: 'console', dispatch: 'console/initConsole' },
       charts: { name: 'charts', dispatch: 'charts/initCharts' },
-      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' }
+      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' },
+      layout: { name: 'layout', dispatch: 'layout/initLayout' }
     }
   },
-  MOONRAKER_PLUGINS: {
-    power: { name: 'power', dispatch: 'devicePower/init' },
+  MOONRAKER_COMPONENTS: {
+    power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' }
   },
@@ -128,20 +142,24 @@ export const Globals = Object.freeze({
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
-  DOCS_MOONRAKER_PLUGINS: 'https://docs.fluidd.xyz/configuration/moonraker',
-  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html'
+  DOCS_MOONRAKER_COMPONENTS: 'https://docs.fluidd.xyz/configuration/moonraker',
+  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html',
+  DOCS_MOONRAKER_CONFIG_REF: 'https://moonraker.readthedocs.io/en/latest/configuration/'
 })
 
 export const Icons = Object.freeze({
+  account: mdiAccount,
   help: mdiHelpCircle,
   motion: mdiMotionOutline,
   limits: mdiArrowHorizontalLock,
   send: mdiSend,
   open: mdiOpenInApp,
+  move: mdiFolderMove,
   tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
   menuAlt: mdiMenuDown,
   dots: mdiDotsHorizontal,
+  dotsGrid: mdiDotsGrid,
   drag: mdiDrag,
   chart: mdiChartTimelineVariant,
   power: mdiPower,
@@ -154,11 +172,13 @@ export const Icons = Object.freeze({
   restart: mdiRestart,
   restartAlert: mdiRestartAlert,
   update: mdiUpdate,
-  alert: mdiAlert,
+  warning: mdiAlert,
+  error: mdiHandRight,
   thermometer: mdiThermometerLow,
   bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
   snowflakeAlert: mdiSnowflakeAlert,
+  circle: mdiCircle,
   blankCircle: mdiCheckboxBlankCircleOutline,
   markedCircle: mdiRadioboxMarked,
   checkedCircle: mdiCheckCircleOutline,
@@ -184,7 +204,7 @@ export const Icons = Object.freeze({
   save: mdiContentSaveOutline,
   estop: mdiCarBrakeAlert,
   fire: mdiFire,
-  tools: mdiTools,
+  tools: mdiHammerWrench,
   minus: mdiMinus,
   plus: mdiPlus,
   check: mdiCheck,
@@ -197,7 +217,7 @@ export const Icons = Object.freeze({
   chevronLeft: mdiChevronLeft,
   timer: mdiTimerSand,
   fileCode: mdiFileCodeOutline,
-  files: mdiFileMultipleOutline,
+  files: mdiFileTableOutline,
   fileDocument: mdiFileDocumentOutline,
   file: mdiFile,
   pause: mdiPause,
@@ -211,6 +231,7 @@ export const Icons = Object.freeze({
   camera: mdiCamera,
   fan: mdiFan,
   pencil: mdiPencil,
+  pencilLock: mdiPencilLock,
   magnify: mdiMagnify,
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
@@ -219,7 +240,14 @@ export const Icons = Object.freeze({
   host: mdiDesktopTower,
   history: mdiHistory,
   filter: mdiFilterOutline,
-  commit: mdiSourceCommit
+  commit: mdiSourceCommit,
+  cloudCheck: mdiCloudCheck,
+  cloudAlert: mdiCloudAlert,
+  keyboard: mdiKeyboard,
+  lock: mdiLock,
+  lockOpen: mdiLockOpenVariant,
+  lockReset: mdiLockReset,
+  tempError: mdiThermometerAlert
 })
 
 export const Waits = Object.freeze({

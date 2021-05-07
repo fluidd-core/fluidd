@@ -14,5 +14,4 @@ permalink: /features/presets
 Fluidd supports setting your own thermal presets. Click through to the UI
 settings page to add your own presets.
 
-![screenshot](/assets/images/preset1.png)
-![screenshot](/assets/images/preset2.png)
+![screenshot](/assets/images/presets.png)

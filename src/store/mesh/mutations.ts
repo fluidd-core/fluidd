@@ -18,6 +18,10 @@ export const mutations: MutationTree<MeshState> = {
     state.scale = payload
   },
 
+  setBoxScale (state, payload) {
+    state.boxScale = payload
+  },
+
   setWireframe (state, payload) {
     state.wireframe = payload
   },

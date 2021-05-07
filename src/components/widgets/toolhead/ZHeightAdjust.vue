@@ -1,10 +1,31 @@
 <template>
-  <v-row align="center" justify="end">
-    <!-- <v-col cols="auto">
-      <div class="grey--text text--darken-1">Offset Z</div>
-      <div class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</div>
-    </v-col> -->
-    <v-col cols="auto">
+  <v-row align="start" justify="end">
+    <v-col cols="6" class="text-right">
+      <v-btn-toggle
+        v-if="moveDistance"
+        mandatory
+        dense
+        v-model="moveDistance"
+        class="ml-2 d-inline-block"
+      >
+        <app-btn
+          v-for="(value, i) in zAdjustValues"
+          small
+          class="px-1"
+          :key="i"
+          :disabled="!klippyReady"
+          :min-width="36"
+          :value="value"
+        >
+          {{ value }}
+        </app-btn>
+      </v-btn-toggle>
+      <div class="mt-1">
+        <span class="grey--text text--darken-1">{{ $t('app.general.label.z_offset') }}&nbsp;</span>
+        <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
+      </div>
+    </v-col>
+    <v-col cols="6">
       <app-btn
         @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
         :loading="hasWait('ZAdjust')"
@@ -20,28 +41,6 @@
         class="ml-1">
         <v-icon small>$zDown</v-icon>
       </app-btn>
-      <v-btn-toggle
-        v-if="moveDistance"
-        mandatory
-        dense
-        v-model="moveDistance"
-        class="ml-2 d-inline-block"
-      >
-        <app-btn
-          v-for="(value, i) in zAdjustValues"
-          :key="i"
-          :disabled="!klippyReady"
-          small
-          :value="value"
-          class="px-2"
-        >
-          {{ value }}
-        </app-btn>
-      </v-btn-toggle>
-      <div class="mt-1">
-        <span class="grey--text text--darken-1">{{ $t('app.general.label.z_offset') }}&nbsp;</span>
-        <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
-      </div>
     </v-col>
   </v-row>
 </template>

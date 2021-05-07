@@ -3,7 +3,7 @@ import '@/scss/global.scss'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 // Global Registrations
-// import './registerComponentHooks'
+import './registerComponentHooks'
 import './consola'
 // import { WorkboxPlugin } from './plugins/workbox'
 

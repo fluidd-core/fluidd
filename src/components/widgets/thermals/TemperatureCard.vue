@@ -4,9 +4,7 @@
     icon="$fire"
     :lazy="false"
     :draggable="true"
-    :inLayout="inLayout"
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
+    layout-path="dashboard.temperature-card">
 
     <template v-slot:title>
       <v-icon left>$fire</v-icon>
@@ -26,8 +24,13 @@
         :disabled="!klippyReady"
         @click="chartVisible = !chartVisible">
         <v-icon left>$chart</v-icon>
-        {{ (chartVisible) ? 'on' : 'off' }}
+        {{  (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
       </app-btn>
+
+      <temperature-presets-menu
+        @applyOff="handleApplyOff"
+        @applyPreset="handleApplyPreset"
+      ></temperature-presets-menu>
     </template>
 
     <temperature-targets
@@ -38,7 +41,7 @@
     <thermal-chart
       v-if="chartReady && chartVisible"
       ref="thermalchart"
-      :height="(isMobile) ? '225px' : '325px'"
+      :height="(isMobile) ? '160px' : '260px'"
     ></thermal-chart>
 
   </collapsable-card>
@@ -51,11 +54,14 @@ import { Fan, Heater } from '@/store/printer/types'
 
 import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets.vue'
+import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
+import { TemperaturePreset } from '@/store/config/types'
 
 @Component({
   components: {
     ThermalChart,
-    TemperatureTargets
+    TemperatureTargets,
+    TemperaturePresetsMenu
   }
 })
 export default class TemperatureCard extends Mixins(StateMixin) {
@@ -75,17 +81,21 @@ export default class TemperatureCard extends Mixins(StateMixin) {
 
   legendToggleSelect (item: Heater | Fan) {
     // If this has a target, toggle that too.
-    if ('target' in item) {
-      this.thermalChart.legendToggleSelect(item.name + 'Target')
+    if (this.chartVisible) {
+      if ('target' in item) {
+        this.thermalChart.legendToggleSelect(item.name + 'Target')
+      }
+      this.thermalChart.legendToggleSelect(item.name)
     }
-    this.thermalChart.legendToggleSelect(item.name)
   }
 
   legendTogglePowerSelect (item: Heater | Fan) {
-    const name = ('speed' in item)
-      ? item.name + 'Speed'
-      : item.name + 'Power'
-    this.thermalChart.legendToggleSelect(name)
+    if (this.chartVisible) {
+      const name = ('speed' in item)
+        ? item.name + 'Speed'
+        : item.name + 'Power'
+      this.thermalChart.legendToggleSelect(name)
+    }
   }
 
   get chartVisible () {
@@ -106,6 +116,24 @@ export default class TemperatureCard extends Mixins(StateMixin) {
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
+  }
+
+  handleApplyPreset (preset: TemperaturePreset) {
+    if (preset && preset.values) {
+      for (const key in preset.values) {
+        const item = preset.values[key]
+        if (item.type === 'heater' && item.active && item.value > -1) {
+          this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${key} TARGET=${item.value}`)
+        }
+        if (item.type === 'fan' && item.active && item.value > -1) {
+          this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${key} TARGET=${item.value}`)
+        }
+      }
+    }
+  }
+
+  handleApplyOff () {
+    this.sendGcode('TURN_OFF_HEATERS')
   }
 }
 </script>

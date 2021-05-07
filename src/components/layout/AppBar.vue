@@ -3,76 +3,107 @@
     app
     clipped-left
   >
-    <v-container fluid class="flex-nowrap constrained-width pa-0 fill-height">
+    <div class="toolbar-title">
       <router-link to="/">
         <app-icon
-          class="shrink mr-4 mt-1 color-filter"
-          width="35"
-          height="40"
+          class="shrink mr-3 color-filter float-left"
+          width="30"
           :primary-color="theme.currentTheme.primary"
           :secondary-color="theme.currentTheme.primaryOffset"
         ></app-icon>
       </router-link>
-      <v-toolbar-title
-        class="printer-title text--secondary mr-5"
-      >
+      <v-toolbar-title class="printer-title text--secondary">
         <router-link to="/" v-html="instanceName"></router-link>
       </v-toolbar-title>
-      <v-spacer />
+    </div>
 
-      <app-btn text to="/" color="" class="d-none d-md-flex mx-1">
-        <v-icon small class="mr-md-1">$home</v-icon>
-        <span>{{ $t('app.general.title.home') }}</span>
-      </app-btn>
-      <app-btn text to="/jobs" color="" class="d-none d-md-flex mx-1">
-        <v-icon small class="mr-md-1">$files</v-icon>
-        <span>{{ $t('app.general.title.jobs') }}</span>
-      </app-btn>
-      <app-btn text to="/tune" color="" class="d-none d-md-flex mx-1">
-        <v-icon small class="mr-md-1">$tune</v-icon>
-        <span>{{ $t('app.general.title.tune') }}</span>
-      </app-btn>
-      <app-btn text to="/configure" color="" class="d-none d-md-flex mx-1">
-        <v-icon small class="mr-md-1">$cogs</v-icon>
-        <span>{{ $t('app.general.title.configure') }}</span>
-      </app-btn>
-      <v-tooltip bottom v-if="socketConnected">
+    <div class="toolbar-nav">
+      <app-nav-item
+        icon="$home"
+        exact
+        to="/">
+        {{ $t('app.general.title.home') }}
+      </app-nav-item>
+
+      <app-nav-item
+        icon="$files"
+        to="/jobs">
+        {{ $t('app.general.title.jobs') }}
+      </app-nav-item>
+
+      <app-nav-item
+        icon="$history"
+        to="/history">
+        {{ $t('app.general.title.history') }}
+      </app-nav-item>
+
+      <app-nav-item
+        icon="$tune"
+        to="/tune">
+        {{ $t('app.general.title.tune') }}
+      </app-nav-item>
+
+      <app-nav-item
+        icon="$cogs"
+        to="/configure">
+        {{ $t('app.general.title.configure') }}
+      </app-nav-item>
+    </div>
+
+    <div class="toolbar-suplimental">
+      <v-tooltip bottom v-if="socketConnected && !isMobile">
         <template v-slot:activator="{ on, attrs }">
           <app-btn
+            v-if="!isMobile"
             :disabled="!klippyReady"
-            icon
-            color="error"
-            @click="emergencyStop()"
             v-bind="attrs"
-            v-on="on">
-            <v-icon>$estop</v-icon>
+            v-on="on"
+            fab
+            small
+            class="mx-1"
+            color="transparent"
+            :elevation="0"
+            @click="emergencyStop()"
+          >
+            <v-icon color="error">$estop</v-icon>
           </app-btn>
         </template>
         {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <v-badge
-        :value="hasUpdates"
-        bordered
-        dot
-        color="warning"
-        overlap
-        offset-x="15"
-        offset-y="15"
-      >
-        <app-btn icon color="" @click="$emit('drawer')">
-          <v-icon>$menu</v-icon>
-        </app-btn>
-      </v-badge>
+      <app-notification-menu></app-notification-menu>
 
-    </v-container>
+      <app-btn
+        v-if="!isMobile"
+        fab
+        small
+        :elevation="0"
+        class="mx-1"
+        color="transparent"
+        :to="{ path: '/settings' }"
+      >
+        <v-icon>$cog</v-icon>
+      </app-btn>
+
+      <app-btn
+        fab
+        small
+        :elevation="0"
+        class="mx-1"
+        color="transparent"
+        @click="$emit('toolsdrawer')"
+      >
+        <v-icon>$menu</v-icon>
+      </app-btn>
+
+    </div>
+
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { SocketActions } from '@/socketActions'
 
 @Component({})
 export default class AppBar extends Mixins(StateMixin) {
@@ -98,19 +129,36 @@ export default class AppBar extends Mixins(StateMixin) {
     return this.$store.getters['config/getTheme']
   }
 
-  emergencyStop () {
-    SocketActions.printerEmergencyStop()
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>
 
 <style lang="scss" scoped>
-  .fill1 {
-    fill: #2E75AE;
+  .toolbar-title,
+  .toolbar-nav,
+  .toolbar-suplimental {
+    display: flex;
+    flex: 0 0 50%;
+    max-width: 50%;
+    align-items: center;
+    height: inherit;
+    @media #{map-get($display-breakpoints, 'md-and-up')} {
+      flex: 0 0 33.3333333333%;
+      max-width: 33.3333333333%;
+    }
   }
 
-  .fill2 {
-    fill: #2196F3;
+  .toolbar-nav {
+    justify-content: center;
+    @media #{map-get($display-breakpoints, 'sm-and-down')} {
+      display: none;
+    }
+  }
+
+  .toolbar-suplimental {
+    justify-content: flex-end;
   }
 
   .printer-title {
@@ -121,7 +169,7 @@ export default class AppBar extends Mixins(StateMixin) {
     white-space: nowrap;
     text-overflow: ellipsis;
     @media #{map-get($display-breakpoints, 'sm-and-up')} {
-      font-size: 2.125rem;
+      font-size: 1.875rem;
     }
   }
 

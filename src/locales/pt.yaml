@@ -3,11 +3,17 @@ app:
     label:
       profile_name: Perfil
       remove_profile: Remover perfil %{name}
+      flat_surface: Mostrar plano plano
+      mesh_matrix: Matriz de malha
+      probed_matrix: Matriz sondada
+      scale: Escala por min / max
+      wireframe: Wireframe
     msg:
       hint: >-
         Se salvar algo diferente de % {name},  pode escolher remover também o
         perfi % {name}
       not_found: Não foram encontrados nivelamentos da mesa.
+      not_loaded: Nenhuma malha carregada
     tooltip:
       calibrate: Nova calibração, salvando o perfil como 'default'
       delete: Eliminar perfil. A impressora irá reiniciar.
@@ -21,6 +27,8 @@ app:
       item: Item
       power: Energia
       target: Alvo
+      'off': Gráfico desligado
+      'on': Gráfico ligado
     tooltip:
       help: >-
         Mantenha a tecla Shift pressionada para aumentar o zoom. <br /> Clique
@@ -29,6 +37,7 @@ app:
   console:
     label:
       hide_temp_waits: Ocultar temperaturas
+      auto_scroll: Auto scroll
     placeholder:
       command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para histórico'
   endpoint:
@@ -66,6 +75,9 @@ app:
       dir_name: Nome diretório
       disk_usage: Disco usado
       file_name: Nome ficheiro
+      downloaded: Descarregado
+      transfer_rate: Taxa de transferência
+      uploaded: Carregado
     msg:
       confirm: Tem a certeza? Vai excluir todos os arquivos e pastas existentes.
       not_found: Não foram encontrados ficheiros
@@ -77,6 +89,9 @@ app:
       add_file: Adicionar ficheiro
       rename_dir: Renomear diretório
       rename_file: Renomear ficheiro
+      download_file: Recuperando ficheiro
+      keyboard_shortcuts: Atalhos do teclado
+      upload_file: Carregando ficheiro | Carregando ficheiros
     tooltip:
       disabled: Os trabalhos são desativados antes da comunicação inicial com o klippy
       low_on_space: Pouco espaço em disco
@@ -88,7 +103,6 @@ app:
       add_printer: Adicionar impressora
       adjust_layout: Ajuste o layout do painel
       all: Tudo
-      all_off: Tudo Off
       calibrate: Calibrar
       cancel: Cancelar
       clear_profile: Limpar Perfil
@@ -121,6 +135,10 @@ app:
       upload: Envio
       upload_print: Envio e impressão
       view: Ver
+      heaters_off: Heaters desligados
+      load_all: Carregar tudo
+      presets: Presets
+      send: Enviar
     error:
       app_setup_link: >-
         Os requisitos de configuração do Fluidd podem ser encontrados <a
@@ -170,6 +188,9 @@ app:
       variance: Variação
       velocity: Velocidade
       z_offset: Z Offset
+      add_category: Adicionar categoria
+      move_macro: Mover macro %{name}
+      uncategorized: Sem categoria
     simple_form:
       error:
         invalid_url: URL inválido
@@ -177,6 +198,8 @@ app:
         min: Min. %{min}
         min_or_0: Min %{min} ou 0
         required: Obrigatório
+        arrayofnums: Apenas números
+        exists: Já existe
       msg:
         confirm: Tem a certeza?
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
@@ -196,6 +219,13 @@ app:
         slicer: Slicer
         start_time: Iniciado
         status: Estado
+        end_time: Terminado
+        filament: Filamento
+        first_layer_bed_temp: Temperature da mesa na primeira camada
+        first_layer_extr_temp: Temperatura da extrusora na primeira camada
+        first_layer_height: Altura da primeira camada
+        slicer_version: Versão Slicer
+        total_duration: Duração total
     title:
       add_printer: Adicionar impressora
       bedmesh: Nivelamento cama
@@ -217,12 +247,16 @@ app:
       temperature: Temperatura
       tool: Ferramentas
       tune: Afinação
+      bedmesh_controls: Controlos de malha de mesa
+      settings: Definições
     tooltip:
       estop: Paragem emergência
+      reload_klipper: Recarrega a configuração do klipper.
+      reload_restart_klipper: Recarrega a configuração do klipper e reinicia os MCUs.
+      restart_klipper: Reinicia o serviço do sistema klipper.
   history:
     msg:
       confirm: Tem certeza? Isso limpará todo o histórico e estatísticas da impressora
-      load_count: Representa os últimos {num} trabalhos
   printer:
     state:
       busy: Ocupada
@@ -277,6 +311,7 @@ app:
       time_estimates: Estimativas de tempo
       toggle: Alternar
       z_adjust_values: Ajustar valores Z
+      enable_notifications: Ativar notificações
     timer_options:
       duration: Só duração
       duration_description: Semelhante ao LCD klipper, mostra apenas a duração, sem estimativas.
@@ -324,6 +359,8 @@ app:
       dirty: DIRTY
       invalid: INVÁLIDO
       up_to_date: ATUALIZADO
+      os_packages: Pacotes de SO
+      package_list: Lista de Pacotes
     status:
       finished: Atualizações terminadas
       updating: A atualizar...
@@ -333,3 +370,5 @@ app:
         indicação de erro no cabeçalho, não existente na fonte ou fonte
         inválida.
       invalid: indicação de alteração do local da repo
+      packages: Pacotes
+      release_notes: Notas de lançamento

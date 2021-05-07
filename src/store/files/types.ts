@@ -20,7 +20,7 @@ export interface DiskUsage {
 }
 
 export interface CurrentPaths {
-  [index: string]: string;
+  [root: string]: string;
 }
 
 export interface Files {
@@ -49,6 +49,7 @@ export interface KlipperFile {
 export interface KlipperFileMeta {
   estimated_time?: number;
   filament_total?: number;
+  filament_weight_total?: number;
   first_layer_bed_temp?: number;
   first_layer_extr_temp?: number;
   first_layer_height?: number;
@@ -122,6 +123,7 @@ export interface FileDownload {
 
 export interface FilesUpload extends FileDownload {
   complete: boolean; // indicates moonraker is finished with the file.
+  cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
 export interface FileFilter {

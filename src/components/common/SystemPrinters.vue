@@ -35,13 +35,15 @@
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
     ></add-instance-dialog>
+
+    <v-divider></v-divider>
   </v-list>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import consola from 'consola'
-import { InitConfig, InstanceConfig, ApiConfig } from '@/store/config/types'
+import { InitConfig, InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
 import { Waits } from '@/globals'
@@ -75,20 +77,23 @@ export default class SystemPrinters extends Mixins(StateMixin) {
     this.instanceDialogOpen = true
   }
 
-  activateInstance (apiConfig: ApiConfig) {
-    // Close the drawer and socket.
+  activateInstance (instance: InstanceConfig) {
+    // Close the drawer
     this.$emit('click')
-    this.$socket.close()
+    if (!instance.active) {
+      // Close the socket.
+      this.$socket.close()
 
-    // Re-init the app.
-    appInit(apiConfig, this.$store.state.config.hostConfig)
-      .then((config: InitConfig) => {
-        // Reconnect the socket with the new instance url.
-        if (config.apiConnected) {
-          consola.debug('Activating new instance with config', config)
-          this.$socket.connect(config.apiConfig.socketUrl)
-        }
-      })
+      // Re-init the app.
+      appInit(instance, this.$store.state.config.hostConfig)
+        .then((config: InitConfig) => {
+          // Reconnect the socket with the new instance url.
+          if (config.apiConnected) {
+            consola.debug('Activating new instance with config', config)
+            this.$socket.connect(config.apiConfig.socketUrl)
+          }
+        })
+    }
   }
 }
 </script>

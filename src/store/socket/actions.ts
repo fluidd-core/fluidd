@@ -5,7 +5,7 @@ import { SocketState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
-import EventBus from '@/eventBus'
+import { EventBus } from '@/eventBus'
 
 let retryTimeout: number
 
@@ -82,7 +82,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         message = payload.message
       }
 
-      EventBus.$emit('flashMessage', { type: 'error', text: message })
+      EventBus.$emit(message, 'error', 5000)
     }
     if (payload.code === 503) {
       // This indicates klippy is non-responsive, or there's a configuration error
@@ -144,7 +144,7 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   async notifyPowerChanged ({ dispatch }, payload) {
-    dispatch('devicePower/onStatus', { [payload.device]: payload.status }, { root: true })
+    dispatch('power/onStatus', { [payload.device]: payload.status }, { root: true })
   },
 
   async notifyUpdateResponse ({ dispatch }, payload) {
@@ -157,5 +157,13 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyHistoryChanged ({ dispatch }, payload) {
     dispatch('history/onHistoryChange', payload, { root: true })
+  },
+
+  async notifyCpuThrottled ({ dispatch }, payload) {
+    dispatch('server/onMachineThrottledState', payload, { root: true })
+  },
+
+  async notifyProcStatUpdate ({ dispatch }, payload) {
+    dispatch('server/onMachineProcStats', payload, { root: true })
   }
 }

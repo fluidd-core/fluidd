@@ -18,10 +18,10 @@
       <v-col cols="6">
         <app-btn
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
+          :disabled="!extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
-          class="mr-2">
+        >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
         </app-btn>
@@ -44,10 +44,10 @@
       <v-col cols="6">
         <app-btn
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
-          :disabled="hasWaits || !extrudeRetractReady || !klippyReady || !valid"
+          :disabled="!extrudeRetractReady || !klippyReady || !valid"
           :elevation="2"
           block
-          class="mr-2">
+        >
           {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
         </app-btn>
@@ -71,7 +71,7 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   rules = {
     min: (v: number) => {
-      return (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 })
+      return (v >= 0.1) || this.$t('app.general.simple_form.error.min', { min: 0.1 })
     },
     maxSpeed: (v: number) => {
       return (v <= this.maxExtrudeSpeed) || this.$t('app.general.simple_form.error.max', { max: this.maxExtrudeSpeed })

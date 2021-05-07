@@ -12,7 +12,7 @@
         v-on="on"
       >
         <v-icon>
-          $menu
+          $plus
         </v-icon>
       </v-btn>
     </template>
@@ -62,6 +62,7 @@
       :id="`${_uid}BtnFileUpload`"
       :accept="accepts"
       style="display: none"
+      multiple
       @change="fileChanged"
     >
   </v-menu>
@@ -99,9 +100,14 @@ export default class FileSystemMenu extends Vue {
   fileChanged (e: Event) {
     const target = e.target as HTMLInputElement
     const files = target.files
+    const fileList = []
 
     if (target && files && files.length > 0) {
-      this.$emit('upload', files, this.andPrint)
+      for (let i = 0; i < files.length; i++) {
+        fileList.push(files[i])
+      }
+
+      this.$emit('upload', fileList, this.andPrint)
       target.value = ''
     }
   }

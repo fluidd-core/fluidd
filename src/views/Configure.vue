@@ -1,9 +1,22 @@
 <template>
   <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="7" lg="5" class="pt-0">
 
-        <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
+    <v-row class="mt-0 mt-sm-2">
+      <v-col cols="12" md="6" class="pt-0" v-if="!klippyReady || hasWarnings">
+        <klippy-status-card></klippy-status-card>
+      </v-col>
+      <v-col cols="12" md="3" lg="3" class="pt-0" v-if="klippyReady && !hasWarnings">
+        <disk-usage-card>
+        </disk-usage-card>
+        <collapsable-card
+          :title="$t('app.general.title.system_control')"
+          icon="$cogs">
+          <v-card-text>
+            <system-control></system-control>
+          </v-card-text>
+        </collapsable-card>
+      </v-col>
+      <v-col class="pt-0">
         <collapsable-card
           :title="$t('app.general.title.config_files')"
           icon="$files"
@@ -11,35 +24,10 @@
         >
           <file-system
             :roots="['config', 'config_examples', 'docs']"
+            name="configure"
             :max-height="620">
           </file-system>
         </collapsable-card>
-
-      </v-col>
-      <v-col cols="12" md="5" lg="7" class="pt-0">
-
-        <v-row>
-          <v-col :cols="breakpoint">
-            <printer-stats-card></printer-stats-card>
-          </v-col>
-          <v-col :cols="breakpoint" v-if="klippyReady">
-            <collapsable-card
-              :title="$t('app.general.title.system_control')"
-              :collapsable="false"
-              icon="$cogs">
-              <v-card-text>
-                <system-control></system-control>
-              </v-card-text>
-            </collapsable-card>
-          </v-col>
-        </v-row>
-
-      </v-col>
-    </v-row>
-
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" v-if="supportsHistory && klippyReady" >
-        <printer-history-card></printer-history-card>
       </v-col>
     </v-row>
 
@@ -51,15 +39,13 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import SystemControl from '@/components/common/SystemControl.vue'
-import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
-import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
+import DiskUsageCard from '@/components/widgets/stats/DiskUsageCard.vue'
 
 @Component({
   components: {
     FileSystem,
     SystemControl,
-    PrinterStatsCard,
-    PrinterHistoryCard
+    DiskUsageCard
   }
 })
 export default class Configure extends Mixins(StateMixin) {
@@ -71,7 +57,7 @@ export default class Configure extends Mixins(StateMixin) {
   }
 
   get supportsHistory () {
-    return this.$store.getters['server/pluginSupport']('history')
+    return this.$store.getters['server/componentSupport']('history')
   }
 }
 </script>

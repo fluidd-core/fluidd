@@ -7,8 +7,11 @@
     >
     </vue-headful>
 
-    <app-drawer v-model="drawer"></app-drawer>
-    <app-bar @drawer="onDrawerChange"></app-bar>
+    <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
+
+    <app-bar
+      @toolsdrawer="handleToolsDrawerChange"
+    ></app-bar>
 
     <router-view name="navigation"></router-view>
 
@@ -19,6 +22,18 @@
       :type="flashMessage.type"
       :timeout="flashMessage.timeout"
     />
+
+    <v-btn
+      v-if="isMobile"
+      x-small
+      fab
+      fixed
+      bottom left
+      color="error"
+      @click="emergencyStop()"
+    >
+      <v-icon>$estop</v-icon>
+    </v-btn>
 
     <v-main>
       <router-view v-if="socketConnected" />
@@ -32,19 +47,18 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import EventBus from '@/eventBus'
+import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from './mixins/state'
 import { Waits } from './globals'
-import { FlashMessage as FlashMessageType } from '@/types'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
-  drawer = false
+  toolsdrawer = false
   showUpdateUI = false
 
-  flashMessage: FlashMessageType = {
+  flashMessage: FlashMessage = {
     open: false,
-    text: '',
+    text: undefined,
     type: undefined
   }
 
@@ -58,6 +72,10 @@ export default class App extends Mixins(StateMixin) {
     let progress = this.$store.getters['printer/getPrintProgress']
     progress = (progress * 100).toFixed()
     return progress
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   get pageTitle () {
@@ -126,7 +144,7 @@ export default class App extends Mixins(StateMixin) {
 
   mounted () {
     // this.onLoadLocale(this.$i18n.locale)
-    EventBus.$on('flashMessage', (payload: FlashMessageType) => {
+    EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
       this.flashMessage.text = (payload && payload.text) || undefined
       this.flashMessage.type = (payload && payload.type) || undefined
       this.flashMessage.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
@@ -134,8 +152,8 @@ export default class App extends Mixins(StateMixin) {
     })
   }
 
-  onDrawerChange () {
-    this.drawer = !this.drawer
+  handleToolsDrawerChange () {
+    this.toolsdrawer = !this.toolsdrawer
   }
 
   get loading () {

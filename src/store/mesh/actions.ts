@@ -18,6 +18,10 @@ export const actions: ActionTree<MeshState, RootState> = {
     commit('setScale', payload)
   },
 
+  async onBoxScale ({ commit }, payload) {
+    commit('setBoxScale', payload)
+  },
+
   async onWireframe ({ commit }, payload) {
     commit('setWireframe', payload)
   },

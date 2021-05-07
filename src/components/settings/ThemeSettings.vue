@@ -8,10 +8,12 @@
       class="mb-4">
 
       <app-setting :title="$t('app.setting.label.primary_color')">
-        <theme-picker
+        <app-color-picker
           v-if="theme"
-          v-model="themeColor">
-        </theme-picker>
+          v-model="themeColor"
+          :title="$t('app.setting.btn.select_theme')"
+        >
+        </app-color-picker>
       </app-setting>
 
       <v-divider></v-divider>
@@ -45,7 +47,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { ThemeConfig } from '@/store/config/types'
-import ThemePicker from './ThemePicker.vue'
+import ThemePicker from '../ui/AppColorPicker.vue'
 
 @Component({
   components: {

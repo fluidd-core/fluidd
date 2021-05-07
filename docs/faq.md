@@ -16,17 +16,16 @@ permalink: /faq
 
 ---
 
+## I'd like to setup multiple cameras, how?
+
+- FluiddPI works very similarly to OctoPrint. Take a look at the following link
+  for some hints, or try a google search.
+  https://www.makersmashup.com/post/outside-the-box-multiple-webcam-setup-with-octoprint
+
 ## I have an INVALID status for Fluidd, Moonraker or Klipper on the Update panel
 
 - Updates can sometimes fail and cause this error. Your first option is to try
-  a reset;
-  -
-
-  ```bash
-  # Go to the directory of the component in question;
-  cd moonraker (or klipper)
-  git reset --hard HEAD
-  ```
+  Fluidd now provides a recovery option.
 
   If that fails, please reach out in Discord
 

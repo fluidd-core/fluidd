@@ -65,6 +65,19 @@
           v-model="printTimeEstimateType">
         </v-select>
       </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_on_estop')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="confirmOnEstop"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -122,6 +135,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set printTimeEstimateType (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.printTimeEstimationsType',
+      value,
+      server: true
+    })
+  }
+
+  get confirmOnEstop () {
+    return this.$store.state.config.uiSettings.general.confirmOnEstop
+  }
+
+  set confirmOnEstop (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmOnEstop',
       value,
       server: true
     })

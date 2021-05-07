@@ -3,11 +3,11 @@
     <!-- Expand / Contract -->
     <app-btn
       v-if="!inLayout"
-      @click="emitChange(!value)"
+      @click="$emit('update:collapsed', !collapsed)"
       color=""
-      fab small text>
-      <v-icon v-if="!value">$chevronUp</v-icon>
-      <v-icon v-if="value">$chevronDown</v-icon>
+      class="ml-1"
+      fab x-small text>
+      <v-icon :class="{ 'rotate-180': collapsed }">$chevronDown</v-icon>
     </app-btn>
 
     <!-- In layout -->
@@ -15,7 +15,7 @@
       <v-checkbox
         v-if="inLayout"
         :input-value="enabled"
-        @change="$emit('layout-enabled', $event)"
+        @change="$emit('update:enabled', $event)"
         hide-details
         class="mt-0 pt-0">
       </v-checkbox>
@@ -30,17 +30,17 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnCollapse extends Vue {
   @Prop({ type: Boolean, default: false })
-  value!: boolean
-
-  @Prop({ type: Boolean, default: false })
-  inLayout!: boolean
+  collapsed!: boolean
 
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
-  emitChange (value: boolean) {
-    this.$emit('input', value)
-  }
+  @Prop({ type: Boolean, default: false })
+  inLayout!: boolean
+
+  // emitChange (value: boolean) {
+  //   this.$emit('input', value)
+  // }
 }
 </script>
 

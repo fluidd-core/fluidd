@@ -5,9 +5,11 @@ import VueRouter, { RouteConfig } from 'vue-router'
 import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
+import History from '@/views/History.vue'
 import Configure from '@/views/Configure.vue'
 import Settings from '@/views/Settings.vue'
 import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
+import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import NotFound from '@/views/NotFound.vue'
 
 Vue.use(VueRouter)
@@ -29,6 +31,11 @@ const routes: Array<RouteConfig> = [
     component: Tune
   },
   {
+    path: '/history',
+    name: 'History',
+    component: History
+  },
+  {
     path: '/configure',
     name: 'Printer Configuration',
     component: Configure
@@ -39,7 +46,17 @@ const routes: Array<RouteConfig> = [
     components: {
       default: Settings,
       navigation: AppSettingsNav
-    }
+    },
+    children: [
+      {
+        path: '/settings/macros/:categoryId',
+        name: 'Macros',
+        components: {
+          default: MacroSettings,
+          navigation: AppSettingsNav
+        }
+      }
+    ]
   },
   {
     path: '*',
@@ -50,7 +67,18 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   base: process.env.BASE_URL,
-  routes
+  routes,
+  scrollBehavior: (to, from, savedPosition) => {
+    if (savedPosition) return savedPosition
+    if (to.hash) {
+      return {
+        selector: to.hash,
+        offset: { x: 0, y: 60 },
+        behavior: 'smooth'
+      }
+    }
+    return { x: 0, y: 0 }
+  }
 })
 
 export default router

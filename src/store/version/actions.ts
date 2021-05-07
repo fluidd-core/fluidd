@@ -3,6 +3,7 @@ import consola from 'consola'
 import { VersionState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
+import i18n from '@/plugins/i18n'
 
 export const actions: ActionTree<VersionState, RootState> = {
   /**
@@ -22,9 +23,22 @@ export const actions: ActionTree<VersionState, RootState> = {
   /**
    * Inits any file config we may have.
    */
-  async onUpdateStatus ({ commit }, payload) {
+  async onUpdateStatus ({ commit, dispatch, getters }, payload) {
     commit('setRefreshing', false)
     commit('setUpdateStatus', payload)
+
+    if (getters.hasUpdates) {
+      dispatch('notifications/pushNotification', {
+        id: 'updates-available',
+        title: i18n.t('app.version.label.updates_available'),
+        to: '/settings#versions',
+        btnText: i18n.t('app.version.btn.view_versions'),
+        type: 'info',
+        merge: true
+      }, { root: true })
+    } else {
+      dispatch('notifications/clearNotification', i18n.t('app.version.label.updates_available'), { root: true })
+    }
   },
 
   /**

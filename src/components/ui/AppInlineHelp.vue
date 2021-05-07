@@ -11,7 +11,7 @@
         <v-icon
         :small="small"
         >
-          {{ (type === 'error' || type === 'warning') ? '$alert' : '$help' }}
+          {{ (type === 'error' || type === 'warning') ? '$warning' : '$help' }}
         </v-icon>
       </app-btn>
     </template>

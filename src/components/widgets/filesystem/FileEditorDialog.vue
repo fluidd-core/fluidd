@@ -29,7 +29,14 @@
         <v-toolbar-items>
           <app-btn
             v-if="!printerPrinting && rootProperties.showConfigRef"
-            :href="$globals.DOCS_KLIPPER_CONFIG_REF"
+            @click="handleKeyboardShortcuts"
+            target="_blank">
+            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$keyboard</v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.keyboard_shortcuts') }}</span>
+          </app-btn>
+          <app-btn
+            v-if="!printerPrinting && rootProperties.showConfigRef"
+            :href="configRefUrl"
             target="_blank">
             <v-icon small :left="!$vuetify.breakpoint.smAndDown">$help</v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
@@ -64,6 +71,11 @@
         @ready="editorReady = true">
       </file-editor>
 
+      <keyboard-shortcuts-dialog
+        v-model="shortcutsDialog"
+      >
+      </keyboard-shortcuts-dialog>
+
     </v-card>
   </v-dialog>
 </template>
@@ -71,6 +83,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { Globals } from '@/globals'
 
 // Lazy Load the file editor.
 // const FileEditor = () => import(
@@ -106,6 +119,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   updatedContent = this.contents
   editorReady = false
+  shortcutsDialog = false
 
   get ready () {
     return (
@@ -123,6 +137,14 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     return this.$store.getters['files/getRootProperties'](this.root)
   }
 
+  get configRefUrl () {
+    if (this.filename && this.filename.includes('moonraker.conf')) {
+      return Globals.DOCS_MOONRAKER_CONFIG_REF
+    } else {
+      return Globals.DOCS_KLIPPER_CONFIG_REF
+    }
+  }
+
   mounted () {
     this.updatedContent = this.contents
   }
@@ -136,6 +158,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
       this.$emit('save', this.updatedContent, restart)
       if (restart) this.$emit('input', false)
     }
+  }
+
+  handleKeyboardShortcuts () {
+    this.shortcutsDialog = true
   }
 }
 </script>

@@ -2,13 +2,38 @@ export interface ServerState {
   klippy_retries: number;
   info: ServerInfo;
   config: ServerConfig;
+  moonraker_stats: ServerSystemStat[];
+  throttled_state: ServerThrottledState | null;
+  cpu_temp: number | null;
 }
 
+export interface ServerSystemStat {
+  time: number;
+  cpu_usage: number;
+  memory: number;
+  mem_units: string;
+}
+
+export interface ServerThrottledState {
+  bits: number;
+  flags: ServerFlags[];
+}
+
+export type ServerFlags =
+  'Under-Voltage Detected' |
+  'Frequency Capped' |
+  'Currently Throttled' |
+  'Temperature Limit Active' |
+  'Previously Under-Volted' |
+  'Previously Frequency Capped' |
+  'Previously Throttled' |
+  'Previously Temperature Limited'
+
 export interface ServerInfo {
-  failed_plugins: string[];
+  failed_components: string[];
   klippy_connected: boolean;
   klippy_state: string;
-  plugins: string[];
+  components: string[];
   registered_directories: string[];
 }
 

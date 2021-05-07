@@ -13,16 +13,8 @@
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
         suffix="°C"
-        class="mr-1 v-input--width-small">
+        class="v-input--width-small">
       </v-text-field>
-      <app-btn
-        :min-width="40"
-        :disabled="(value === inputValue) || !valid"
-        class="pa-0"
-        :color="(value === inputValue) ? 'secondary' : 'primary'"
-        @click.prevent="emitChange">
-        <v-icon small>$check</v-icon>
-      </app-btn>
     </v-layout>
   </v-form>
 </template>

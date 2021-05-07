@@ -92,7 +92,6 @@ app:
       add_printer: Nyomtató hozzáadása
       adjust_layout: Az irányítópult elrendezésének beállítása
       all: Mindegyik
-      all_off: Minden ki
       calibrate: Kalibrálás
       cancel: Mégsem
       clear_profile: Profil törlése
@@ -226,7 +225,6 @@ app:
   history:
     msg:
       confirm: Biztos? Ez a nyomtató teljes előéletét, és statisztikáit törölni fogja.
-      load_count: Az utolsó {num} munka alapján
   printer:
     state:
       busy: Elfoglalt

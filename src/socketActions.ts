@@ -107,10 +107,18 @@ export const SocketActions = {
     )
   },
 
+  async machineProcStats () {
+    baseEmit(
+      'machine.proc_stats', {
+        dispatch: 'server/onMachineProcStats'
+      }
+    )
+  },
+
   async machineDevicePowerDevices () {
     baseEmit(
       'machine.device_power.devices', {
-        dispatch: 'devicePower/onInit'
+        dispatch: 'power/onInit'
       }
     )
   },
@@ -118,7 +126,7 @@ export const SocketActions = {
   async machineDevicePowerStatus (device: string) {
     baseEmit(
       'machine.device_power.status', {
-        dispatch: 'devicePower/onStatus',
+        dispatch: 'power/onStatus',
         params: { [device]: null }
       }
     )
@@ -130,7 +138,7 @@ export const SocketActions = {
       : 'machine.device_power.off'
     baseEmit(
       emit, {
-        dispatch: 'devicePower/onToggle',
+        dispatch: 'power/onToggle',
         params: { [device]: null },
         wait
       }

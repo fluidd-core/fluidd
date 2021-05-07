@@ -13,6 +13,7 @@
         @resize="scrollToBottom()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
+        :buffer="600"
       >
         <template v-slot="{ item, index, active }">
           <DynamicScrollerItem
@@ -50,6 +51,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { ConsoleEntry } from '@/store/console/types'
+import { SocketActions } from '@/socketActions'
 
 @Component({
   components: {
@@ -130,6 +132,10 @@ export default class Console extends Mixins(StateMixin) {
 
   sendCommand (command?: string) {
     if (command && command.length) {
+      // If clients detect M112 input from the console, we should invoke the emergency_stop endpoint
+      if (command && command.trim().toLowerCase() === 'm112') {
+        SocketActions.printerEmergencyStop()
+      }
       this.sendGcode(command)
       this.consoleCommand = ''
     }

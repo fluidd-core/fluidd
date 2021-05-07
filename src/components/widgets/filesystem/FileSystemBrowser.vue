@@ -52,52 +52,107 @@
               :width="(dense) ? 16 : 24"
             />
           </td>
-          <td class="grey--text">
+
+          <file-row-item :nowrap="false">
             {{ item.name }}
-          </td>
-          <td class="grey--text" v-if="showMetaData">
-            <span v-if="item.type === 'file' && item.object_height">
-              {{ item.object_height }} mm
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="object_height">
+            <span v-if="item.object_height !== undefined">
+              {{ $filters.getReadableLengthString(item.object_height) }}
             </span>
-            <span v-else>--</span>
-          </td>
-          <td class="grey--text" v-if="showMetaData">
-            <span v-if="item.type === 'file' && item.layer_height">
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="first_layer_height">
+            <span v-if="item.first_layer_height !== undefined">
+              {{ item.first_layer_height }} mm
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="layer_height">
+            <span v-if="item.layer_height !== undefined">
               {{ item.layer_height }} mm
             </span>
-            <span v-else>--</span>
-          </td>
-          <td class="grey--text" v-if="showMetaData">
-            <span v-if="item.type === 'file' && item.filament_total">
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="filament_total">
+            <span v-if="item.filament_total !== undefined">
               {{ $filters.getReadableLengthString(item.filament_total) }}
             </span>
-            <span v-else>--</span>
-          </td>
-          <td class="grey--text" v-if="showMetaData">
-            <span v-if="item.type === 'file' && item.slicer">
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="filament_weight_total">
+            <span v-if="item.filament_weight_total !== undefined">
+              {{ item.filament_weight_total }} g
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.filament_used">
+            <span v-if="item.history && item.history.filament_used !== undefined">
+              {{ $filters.getReadableLengthString(item.history.filament_used) }}
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="slicer">
+            <span v-if="item.slicer !== undefined">
               {{ item.slicer }}
             </span>
-            <span v-else>--</span>
-          </td>
-          <td class="grey--text text-no-wrap" v-if="showMetaData">
-            <span v-if="item.type === 'file' && item.estimated_time">
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="slicer_version">
+            <span v-if="item.slicer_version !== undefined">
+              {{ item.slicer_version }}
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="estimated_time">
+            <span v-if="item.estimated_time !== undefined">
               {{ $filters.formatCounterTime(item.estimated_time) }}
             </span>
-            <span v-else>--</span>
-          </td>
-          <td class="grey--text text-no-wrap" v-if="showHistory && !dense">
-            <span v-if="item.type === 'file' && item.history && item.history.print_duration">
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.print_duration">
+            <span v-if="item.history && item.history.print_duration !== undefined">
               {{ $filters.formatCounterTime(item.history.print_duration) }}
             </span>
-            <span v-else>--</span>
-          </td>
-          <td class="grey--text text-no-wrap" v-if="showHistory">
-            {{ (item.type === 'directory' || !item.print_start_time) ? '--' : $filters.formatDateTime(item.print_start_time) }}
-          </td>
-          <td class="grey--text text-no-wrap">
-            {{ (item.type === 'directory' && item.name === '..') ? '--' : $filters.formatDateTime(item.modified) }}
-          </td>
-          <td class="grey--text text-no-wrap text-end">{{ (item.type === 'file') ? $filters.getReadableFileSizeString(item.size) : '--' }}</td>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.total_duration">
+            <span v-if="item.history && item.history.total_duration !== undefined">
+              {{ $filters.formatCounterTime(item.history.total_duration) }}
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="first_layer_bed_temp">
+            <span v-if="item.first_layer_bed_temp !== undefined">
+              {{ item.first_layer_bed_temp }}<small>°C</small>
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="first_layer_extr_temp">
+            <span v-if="item.first_layer_extr_temp !== undefined">
+              {{ item.first_layer_extr_temp }}<small>°C</small>
+            </span>
+          </file-row-item>
+
+          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="print_start_time">
+            <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
+              {{ $filters.formatDateTime(item.print_start_time) }}
+            </span>
+          </file-row-item>
+
+          <file-row-item :headers="headers" item-value="modified">
+            <span v-if="item.modified !== undefined">
+              {{ $filters.formatDateTime(item.modified) }}
+            </span>
+          </file-row-item>
+
+          <file-row-item :headers="headers" item-value="size">
+            <span v-if="item.size !== undefined">
+              {{ $filters.getReadableFileSizeString(item.size) }}
+            </span>
+          </file-row-item>
+
         </tr>
       </template>
     </v-data-table>
@@ -107,9 +162,16 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { AppDirectory, AppFile, AppFileWithMeta, FileFilter } from '@/store/files/types'
+import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
-@Component({})
+import FileRowItem from './FileRowItem.vue'
+
+@Component({
+  components: {
+    FileRowItem
+  }
+})
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: String, required: true })
   root!: string;
@@ -123,6 +185,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Boolean, default: false })
   loading!: boolean;
 
+  // Currently defined list of headers.
+  @Prop({ type: Array, required: true })
+  headers!: AppTableHeader[]
+
   @Prop({ type: String, required: false })
   search!: string;
 
@@ -135,67 +201,12 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Boolean, default: false })
   disabled!: boolean
 
-  get headers () {
-    let headers: any = [
-      { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$t('app.general.table.header.name'), value: 'name' }
-    ]
-
-    if (this.showMetaData) {
-      headers = [
-        ...headers,
-        { text: this.$t('app.general.table.header.height'), value: 'object_height' },
-        { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height' },
-        { text: this.$t('app.general.table.header.filament_used'), value: 'filament_total' },
-        { text: this.$t('app.general.table.header.slicer'), value: 'slicer' },
-        { text: this.$t('app.general.table.header.estimated_time'), value: 'estimated_time' }
-      ]
-    }
-
-    if (this.showHistory) {
-      if (!this.dense) headers.push({ text: 'Actual Time', value: 'history.print_duration' })
-      headers.push(
-        {
-          text: this.$t('app.general.table.header.last_printed'),
-          value: 'print_start_time',
-          filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
-            const filter = this.filters.find(filter => filter.value === 'print_start_time')
-            if (
-              !this.filters ||
-              this.filters.length === 0 ||
-              !filter ||
-              item.type !== 'file'
-            ) return true
-            return item.print_start_time === null
-          }
-        }
-      )
-    }
-
-    headers = [
-      ...headers,
-      { text: this.$t('app.general.table.header.modified'), value: 'modified', width: '1%' },
-      { text: this.$t('app.general.table.header.size'), value: 'size', width: '1%', align: 'end' }
-    ]
-
-    return headers
-  }
-
   draggedItem: null | AppFile | AppFileWithMeta | AppDirectory = null
 
-  get showMetaData () {
-    // Show meta data only for the gcodes root, and only when we are not
-    // presenting with dense = true
-    return (
-      !this.dense &&
-      this.root === 'gcodes'
-    )
-  }
-
-  // Is the history plugin enabled
+  // Is the history component enabled
   get showHistory () {
     return (
-      this.$store.getters['server/pluginSupport']('history') &&
+      this.$store.getters['server/componentSupport']('history') &&
       this.root === 'gcodes'
     )
   }

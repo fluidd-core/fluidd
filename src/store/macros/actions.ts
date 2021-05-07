@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { Macro, MacrosState } from './types'
+import { Macro, MacroCategory, MacrosState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
@@ -30,19 +30,47 @@ export const actions: ActionTree<MacrosState, RootState> = {
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
   },
 
-  saveAllOn ({ state, commit, getters }) {
+  saveAllOn ({ state, commit }, macros) {
     // Commit the change...
-    commit('setUpdateAllVisible', { macros: getters.getMacros, visible: true })
+    commit('setUpdateAllVisible', { macros, visible: true })
 
     // Save to moonraker.
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
   },
 
-  saveAllOff ({ state, commit, getters }) {
+  saveAllOff ({ state, commit }, macros) {
     // Commit the change...
-    commit('setUpdateAllVisible', { macros: getters.getMacros, visible: false })
+    commit('setUpdateAllVisible', { macros, visible: false })
 
     // Save to moonraker.
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.stored', state.stored)
+  },
+
+  addCategory ({ commit, state }, category: string) {
+    commit('setAddCategory', category)
+
+    // Save to moonraker.
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.categories', state.categories)
+  },
+
+  editCategory ({ commit, state }, payload: MacroCategory) {
+    commit('setEditCategory', payload)
+
+    // Save to moonraker.
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name, state)
+  },
+
+  removeCategory ({ commit, state }, category: MacroCategory) {
+    commit('setRemoveCategory', category)
+
+    // Save to moonraker.
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name, state)
+  },
+
+  saveExpanded ({ commit, state }, expanded: number[]) {
+    commit('setExpanded', expanded)
+
+    // Save to moonraker.
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.macros.name + '.expanded', state.expanded)
   }
 }

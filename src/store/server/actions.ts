@@ -1,8 +1,9 @@
 import { ActionTree } from 'vuex'
-import { ServerState } from './types'
+import { ServerState, ServerThrottledState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/socketActions'
 import { Globals } from '@/globals'
+import { AppPushNotification } from '../notifications/types'
 
 let retryTimeout: number
 
@@ -15,21 +16,21 @@ export const actions: ActionTree<ServerState, RootState> = {
   },
 
   /**
-   * Init plugins.
+   * Init moonraker components.
    * During app init, we want to initially init these once, irrelevant
    * of klippy's state. After that, we'd only ever init once more if
    * klippy is connected.
    */
-  async initPlugins ({ dispatch }, payload) {
+  async initComponents ({ dispatch }, payload) {
     if (
-      payload.plugins &&
-      payload.plugins.length > 0
+      payload.components &&
+      payload.components.length > 0
     ) {
-      const pluginsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_PLUGINS
-      for (const key in pluginsToInit) {
-        const plugin = pluginsToInit[key]
-        if (payload.plugins.includes(plugin.name)) {
-          dispatch(plugin.dispatch, undefined, { root: true })
+      const componentsToInit: { [index: string]: { name: string; dispatch: string } } = Globals.MOONRAKER_COMPONENTS
+      for (const key in componentsToInit) {
+        const component = componentsToInit[key]
+        if (payload.components.includes(component.name)) {
+          dispatch(component.dispatch, undefined, { root: true })
         }
       }
     }
@@ -39,17 +40,18 @@ export const actions: ActionTree<ServerState, RootState> = {
    * On server info
    */
   async onServerInfo ({ commit, dispatch, state }, payload) {
-    // This payload should return a list of enabled plugins
+    // This payload should return a list of enabled components
     // and root directories that are available.
     SocketActions.printerInfo()
     SocketActions.serverConfig()
+    SocketActions.machineProcStats()
 
     commit('setServerInfo', payload)
 
     if (payload.klippy_state !== 'ready') {
       // If klippy is not connected, we'll continue to
       // retry the init process.
-      if (state.klippy_retries === 0) dispatch('initPlugins', payload)
+      if (state.klippy_retries === 0) dispatch('initComponents', payload)
       commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
       retryTimeout = setTimeout(() => {
@@ -58,17 +60,74 @@ export const actions: ActionTree<ServerState, RootState> = {
     } else {
       // If klippy is connected, move on.
       commit('setKlippyRetries', 0)
-      dispatch('initPlugins', payload)
+      dispatch('initComponents', payload)
       SocketActions.printerObjectsList()
     }
   },
 
   /**
-   * Gives us moonrakers configuration.
+   * Gives us moonrakers configuration./
    */
   async onServerConfig ({ commit }, payload) {
     if (payload.config) {
       commit('setServerConfig', payload.config)
+    }
+  },
+
+  async onMachineProcStats ({ commit, dispatch }, payload) {
+    if (payload && payload.throttled_state) {
+      await dispatch('onMachineThrottledState', payload.throttled_state)
+    // } else {
+    }
+    commit('setMoonrakerStats', payload)
+  },
+
+  async onMachineThrottledState ({ commit, dispatch, state }, payload: ServerThrottledState) {
+    if (payload) {
+      // If we have a throttled condition.
+      if (payload && payload.flags.length > 0) {
+        // Fire notifications.
+        payload.flags.forEach((flag) => {
+          // Only apply a notification if the flag changed state.
+          if (state.throttled_state && !state.throttled_state.flags.includes(flag)) {
+            const previousEvent = flag.toLowerCase().startsWith('previously')
+            let n: AppPushNotification = {
+              id: flag,
+              title: flag,
+              description: 'This may lead to a throttle condition and result in a failed print',
+              to: 'https://www.raspberrypi.org/documentation/hardware/raspberrypi/frequency-management.md',
+              type: (previousEvent) ? 'info' : 'error',
+              snackbar: !previousEvent, // Snackbar only if not a previously encountered event.
+              merge: true, // Merge if it was a previously encountered event.
+              clear: !previousEvent // Dont allow the user to clear if it was a previously encountered event.
+            }
+
+            // Add the temperature icon.
+            if (
+              (flag === 'Temperature Limit Active' || flag === 'Frequency Capped') &&
+              state.cpu_temp
+            ) {
+              n = {
+                ...n,
+                suffix: `${state.cpu_temp.toFixed(0)}<small>°C</small>`,
+                suffixIcon: '$tempError'
+              }
+            }
+
+            // Not a previous event, adjust the description.
+            if (!previousEvent) {
+              n = {
+                ...n,
+                description: 'This may lead to a failed print'
+              }
+            }
+
+            dispatch('notifications/pushNotification', n, { root: true })
+          }
+        })
+      }
+
+      commit('setMoonrakerStats', { throttled_state: payload })
     }
   }
 }

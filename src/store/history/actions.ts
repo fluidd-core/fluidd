@@ -13,7 +13,7 @@ export const actions: ActionTree<HistoryState, RootState> = {
   },
 
   /**
-   * Inits plugin
+   * Inits moonraker component
    */
   async init () {
     // Get the last 50 history items.

@@ -1,8 +1,8 @@
 <template>
   <v-dialog
     :value="value"
+    @input="$emit('input', $event)"
     :max-width="500"
-    persistent
   >
     <v-form
       ref="form"

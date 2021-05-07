@@ -38,7 +38,6 @@ export default class UtilsMixin extends Vue {
 
   // Return the printer state
   get printerState () {
-    // return this.$filters.startCase(this.$store.getters['printer/getPrinterState'])
     return this.$store.getters['printer/getPrinterState']
   }
 
@@ -100,5 +99,19 @@ export default class UtilsMixin extends Vue {
 
   addConsoleEntry (message: string) {
     this.$store.dispatch('console/onAddConsoleEntry', { message, type: 'command' })
+  }
+
+  async emergencyStop () {
+    const confirmOnEstop = this.$store.state.config.uiSettings.general.confirmOnEstop
+    let res: boolean | undefined = true
+    if (confirmOnEstop) {
+      res = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+    }
+    if (res) {
+      SocketActions.printerEmergencyStop()
+    }
   }
 }

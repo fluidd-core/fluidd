@@ -6,6 +6,16 @@
         :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
       >
         {{ label }}
+        <v-btn
+          v-if="isMobile"
+          icon
+          small
+          :disabled="disabled"
+          @click="lockState = !lockState"
+        >
+          <v-icon small v-if="isLocked">$pencil</v-icon>
+          <v-icon small v-else>$lockReset</v-icon>
+        </v-btn>
       </div>
       <div class="ml-auto d-flex align-center">
         <small
@@ -16,7 +26,7 @@
         <span
           v-if="readonly"
           class="grey--text focus--text"
-          :class="{ 'text--darken-2': disabled, 'text--lighten-1': !disabled }"
+          :class="{ 'text--darken-2': isDisabled, 'text--lighten-1': !isDisabled }"
         >
           {{ newValue }}
           <small>{{valueSuffix}}</small>
@@ -28,7 +38,7 @@
           :suffix="valueSuffix"
           :rules="rules"
           :class="classes"
-          :disabled="disabled || loading"
+          :disabled="isDisabled || loading"
           @focus="$event.target.select()"
           class="v-input--x-dense v-input--text-right"
           single-line
@@ -47,14 +57,14 @@
       :max="max"
       :step="step"
       :readonly="readonly"
-      :disabled="disabled || loading || readonly"
+      :disabled="isDisabled || loading || readonly"
       :thumb-label="false"
       dense
       hide-details
     >
       <template v-slot:prepend>
         <v-icon
-          :disabled="readonly || disabled || newValue === 0"
+          :disabled="readonly || isDisabled || newValue === 0"
           @click="handleClickChange(newValue - step)"
           color="grey">
           $minus
@@ -63,7 +73,7 @@
 
       <template v-slot:append>
         <v-icon
-          :disabled="readonly || disabled || newValue === max"
+          :disabled="readonly || isDisabled || newValue === max"
           @click="handleClickChange(newValue + step)"
           color="grey">
           $plus
@@ -108,6 +118,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   public disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
+  public locked!: boolean
+
+  @Prop({ type: Boolean, default: false })
   public loading!: boolean
 
   @Prop({ type: Number, default: 0 })
@@ -136,6 +149,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   // control from invalid to valid.
   newValue = 50
   valid = true
+  lockState = false
 
   get form (): VForm {
     return this.$refs.inputSliderForm as VForm
@@ -149,9 +163,34 @@ export default class AppSlider extends Mixins(StateMixin) {
     }
   }
 
+  get isDisabled () {
+    if (this.disabled) return true
+    if (this.lockState) return true
+    return false
+  }
+
+  get isLocked () {
+    return this.lockState
+  }
+
+  set isLocked (val: boolean) {
+    this.lockState = val
+    this.$emit('update:locked', val)
+  }
+
+  @Watch('locked')
+  onLockedChange (val: boolean) {
+    this.lockState = val
+  }
+
   mounted () {
+    this.lockState = this.locked
     this.newValue = this.value
   }
+
+  // handleLockChange (val: boolean) {
+
+  // }
 
   handleClickChange (val: number) {
     const num = +val
@@ -169,6 +208,7 @@ export default class AppSlider extends Mixins(StateMixin) {
     ) {
       this.newValue = num
       this.$emit('input', num)
+      this.lockState = this.locked
     }
   }
 
@@ -177,10 +217,15 @@ export default class AppSlider extends Mixins(StateMixin) {
     if (this.valid) {
       if (num !== this.value) {
         this.$emit('input', num)
+        this.lockState = this.locked
       }
     } else {
       this.newValue = this.value
     }
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

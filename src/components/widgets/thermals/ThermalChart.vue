@@ -61,16 +61,16 @@ export default class ThermalChart extends Vue {
   get grid () {
     let right = 0
     if (this.showPowerAxis(this.chartSelectedLegends)) {
-      right = (this.isMobile) ? 35 : 70
+      right = (this.isMobile) ? 25 : 45
     } else {
-      right = (this.isMobile) ? 15 : 24
+      right = (this.isMobile) ? 15 : 20
     }
 
     return {
-      top: 30,
-      left: (this.isMobile) ? 35 : 70,
+      top: 20,
+      left: (this.isMobile) ? 25 : 45,
       right,
-      bottom: (this.isMobile) ? 55 : 50
+      bottom: (this.isMobile) ? 52 : 38
     }
   }
 
@@ -126,13 +126,13 @@ export default class ThermalChart extends Vue {
 
   initOptions () {
     const darkMode = this.$store.state.config.uiSettings.theme.isDark
-    const fontSize = (this.isMobile) ? 13 : 15
+    const fontSize = (this.isMobile) ? 13 : 14
     const lineOpacity = 0.2
-    let labelBackground = 'rgba(10,10,10,0.90)'
+    let labelBackground = 'rgba(10,10,10,0.85)'
     let fontColor = 'rgba(255,255,255,0.25)'
     let lineColor = '#ffffff'
     if (!darkMode) {
-      labelBackground = 'rgba(255,255,255,0.90)'
+      labelBackground = 'rgba(255,255,255,0.85)'
       fontColor = 'rgba(0,0,0,0.45)'
       lineColor = '#000000'
     }
@@ -151,7 +151,7 @@ export default class ThermalChart extends Vue {
       },
       tooltip: {
         trigger: 'axis',
-        confine: true,
+        confine: false,
         backgroundColor: labelBackground,
         borderColor: labelBackground,
         textStyle: {
@@ -209,12 +209,13 @@ export default class ThermalChart extends Vue {
       },
       yAxis: [
         {
-          name: (this.isMobile) ? '°C Temperature' : 'Temperature',
+          name: 'Temperature °C',
           nameTextStyle: {
             fontSize,
             color: fontColor,
             align: 'left'
           },
+          nameGap: 8,
           show: true,
           type: 'value',
           position: 'left',
@@ -231,21 +232,22 @@ export default class ThermalChart extends Vue {
           max: this.yAxisTempMax,
           axisLabel: {
             interval: 0,
-            margin: 14,
+            margin: 8,
             color: fontColor,
             fontSize,
-            formatter: (this.isMobile) ? '{value}' : '{value}°C',
+            formatter: '{value}',
             rotate: (this.isMobile) ? 90 : 0
           },
           boundaryGap: [0, '100%']
         },
         {
-          name: (this.isMobile) ? 'Power %' : 'Power',
+          name: 'Power %',
           nameTextStyle: {
             fontSize,
             color: fontColor,
             align: 'right'
           },
+          nameGap: 8,
           show: false,
           type: 'value',
           position: 'right',
@@ -260,7 +262,7 @@ export default class ThermalChart extends Vue {
           max: 1,
           axisLabel: {
             interval: 0,
-            margin: 14,
+            margin: 8,
             color: fontColor,
             fontSize,
             formatter: this.yAxisPowerFormatter,
@@ -293,18 +295,17 @@ export default class ThermalChart extends Vue {
       yAxisIndex: 0,
       showSymbol: false,
       animation: false,
-      smooth: false,
       color,
       emphasis: {
         lineStyle: {
-          width: 2
+          width: 1.5
         }
       },
       lineStyle: {
         color,
         type: 'solid',
-        width: 2,
-        opacity: 0.85
+        width: 1.5,
+        opacity: 1
       },
       areaStyle: {
         opacity: 0.05
@@ -315,8 +316,10 @@ export default class ThermalChart extends Vue {
     // If this is a target, adjust its display.
     if (label.toLowerCase().endsWith('target')) {
       series.yAxisIndex = 0
+      series.emphasis.lineStyle.width = 1
+      series.lineStyle.width = 1
       series.lineStyle.type = 'dashed'
-      series.lineStyle.opacity = 0.25
+      series.lineStyle.opacity = 0.8
       series.areaStyle.opacity = 0
     }
 
@@ -326,8 +329,10 @@ export default class ThermalChart extends Vue {
       label.toLowerCase().endsWith('speed')
     ) {
       series.yAxisIndex = 1
+      series.emphasis.lineStyle.width = 1
+      series.lineStyle.width = 1
       series.lineStyle.type = 'dotted'
-      series.lineStyle.opacity = 0.35
+      series.lineStyle.opacity = 1
       series.areaStyle.opacity = 0
     }
 
@@ -383,7 +388,7 @@ export default class ThermalChart extends Vue {
 
   tooltipPosition (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
     const obj: { [index: string]: any } = { top: 0 }
-    obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30
+    obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
     return obj
   }
 
@@ -440,7 +445,7 @@ export default class ThermalChart extends Vue {
   }
 
   yAxisPowerFormatter (value: any) {
-    return (this.isMobile) ? `${value * 100}` : `${value * 100}%`
+    return `${value * 100}`
   }
 
   yAxisTempMin (value: any) {

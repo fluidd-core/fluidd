@@ -18,9 +18,9 @@ export const getters: GetterTree<ServerState, RootState> = {
   },
 
   /**
-   * Indicates if a plugin is enabled
+   * Indicates if a component is enabled
    */
-  pluginSupport: (state) => (plugin: string) => {
-    return (state.info.plugins.includes(plugin))
+  componentSupport: (state) => (component: string) => {
+    return (state.info.components.includes(component))
   }
 }

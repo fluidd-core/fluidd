@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig, CardConfig } from './types'
+import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
+import { AppTableHeader } from '@/types'
+import { AppTablePartialHeader } from '@/types/tableheaders'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -18,7 +20,17 @@ export const mutations: MutationTree<ConfigState> = {
    * Inits UI settings from the db
    */
   setInitUiSettings (state, payload: UiSettings) {
-    if (payload) Vue.set(state, 'uiSettings', merge(state.uiSettings, payload))
+    if (payload) {
+      // Most settings should be merged, so start there.
+      const processed = merge(state.uiSettings, payload)
+
+      // Apply overrides.
+      if (payload.general && payload.general.zAdjustDistances) {
+        Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
+      }
+
+      Vue.set(state, 'uiSettings', processed)
+    }
   },
 
   /**
@@ -111,17 +123,6 @@ export const mutations: MutationTree<ConfigState> = {
     set(state, payload.path, payload.value)
   },
 
-  setCardState (state, payload) {
-    const config = { ...state.cardState, ...payload }
-    Vue.set(state, 'cardState', config)
-    localStorage.setItem(Globals.LOCAL_CARDSTATE_STORAGE_KEY, JSON.stringify(config))
-  },
-
-  setCardConfig (state, payload: { group: string; cards: CardConfig[] }) {
-    state.cardLayout[payload.group] = payload.cards
-    localStorage.setItem(Globals.LOCAL_CARDLAYOUT_STORAGE_KEY, JSON.stringify(state.cardLayout))
-  },
-
   /**
    * Update / Add a temperature preset
    */
@@ -150,5 +151,37 @@ export const mutations: MutationTree<ConfigState> = {
    */
   setLayoutMode (state, payload) {
     state.layoutMode = payload
+  },
+
+  /**
+   * Toggle a tables header state based on its name and key.
+   */
+  setUpdateHeader (state, payload: { name: string; header: AppTableHeader }) {
+    const header = payload.header
+    const keyBy = (header.key)
+      ? 'key'
+      : 'value'
+
+    const key = header[keyBy]
+    const headers: AppTablePartialHeader[] = state.uiSettings.tableHeaders[payload.name]
+
+    if (headers) {
+      const i = headers.findIndex(item => {
+        return item[keyBy] === key
+      })
+      if (i >= 0) {
+        Vue.set(headers, i, {
+          ...headers[i],
+          visible: header.visible
+        })
+      } else {
+        const o: AppTablePartialHeader = {
+          value: header.value,
+          visible: header.visible
+        }
+        if (keyBy === 'key') o.key = header.key
+        headers.push(o)
+      }
+    }
   }
 }

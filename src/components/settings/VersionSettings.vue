@@ -2,7 +2,7 @@
   <div>
     <v-subheader id="versions">
       {{ $t('app.version.title') }}
-      <v-icon small color="warning" class="ml-2" v-if="hasUpdates">$error</v-icon>
+      <!-- <v-icon small color="info" class="ml-2" v-if="hasUpdates">$warning</v-icon> -->
     </v-subheader>
     <v-card
       :elevation="5"
@@ -43,7 +43,13 @@
           :title="packageTitle(component)"
         >
           <template v-slot:sub-title>
-            <span v-if="component.key !== 'system'">{{ component.version }}</span>
+            <span v-if="component.key !== 'system' && 'full_version_string' in component">
+              {{ component.full_version_string }}
+            </span>
+            <span v-else>
+              {{ component.version }}
+            </span>
+
             <span v-if="'remote_version' in component && hasUpdate(component.key)">
               -> {{ component.remote_version }}
             </span>
@@ -134,12 +140,12 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get enableNotifications () {
-    return this.$store.state.config.uiSettings.general.enableNotifications
+    return this.$store.state.config.uiSettings.general.enableVersionNotifications
   }
 
   set enableNotifications (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.enableNotifications',
+      path: 'uiSettings.general.enableVersionNotifications',
       value,
       server: true
     })
@@ -147,7 +153,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
 
   packageTitle (component: HashVersion | OSPackage | ArtifactVersion) {
     if (component.key === 'system') {
-      return 'os packages'
+      return this.$t('app.version.label.os_packages')
     }
 
     return component.key

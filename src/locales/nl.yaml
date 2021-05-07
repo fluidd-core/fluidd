@@ -91,7 +91,6 @@ app:
       add_printer: Printer toevoegen
       adjust_layout: Dashboard layout aanpassen
       all: Alles
-      all_off: Alles uit
       calibrate: Calibratie
       cancel: Annuleren
       clear_profile: Profiel verwijderen
@@ -227,7 +226,6 @@ app:
       confirm: >-
         Ben je zeker? Dit zal alle historiek en statistieken verwijderen van de
         printer
-      load_count: Vertegenwoordigt de laatste {num} taken
   printer:
     state:
       busy: Bezig

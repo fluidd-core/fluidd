@@ -13,7 +13,17 @@ $material-dark: (
   'background': #1E1E20,
   'table': (
     'hover': #353539
-  )
+  ),
+  'text': (
+    'theme': rgba(#ffffff, 0.87),
+    'primary': rgba(#ffffff, 0.87),
+    'secondary': rgba(#ffffff, 0.87)
+  ),
+  'icons': (
+    'active': rgba(#ffffff, 0.87)
+  ),
+  'text-color': rgba(#ffffff, 0.87),
+  'fg-color': rgba(#ffffff, 0.87)
 );
 
 $material-dark-elevation-colors: (
@@ -30,3 +40,9 @@ $material-dark-elevation-colors: (
 );
 
 $timeline-divider-width: 48px;
+
+$expansion-panel-active-margin: 16px;
+$expansion-panel-header-padding: 12px 16px;
+$expansion-panel-content-padding: 0 16px 16px;
+$expansion-panel-header-min-height: none;
+$expansion-panel-active-header-min-height: none;

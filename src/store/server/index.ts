@@ -9,10 +9,10 @@ export const defaultState = (): ServerState => {
   return {
     klippy_retries: 0, // how many times have we attempted to reconnect to klippy.
     info: {
-      failed_plugins: [],
+      failed_components: [],
       klippy_connected: false, // indicates if klippy is disconnected vs shutdown.
       klippy_state: '',
-      plugins: [],
+      components: [],
       registered_directories: []
     },
     config: {
@@ -23,7 +23,13 @@ export const defaultState = (): ServerState => {
         gcode_store_size: 1000,
         temperature_store_size: 1200
       }
-    }
+    },
+    moonraker_stats: [],
+    throttled_state: {
+      bits: 0,
+      flags: []
+    },
+    cpu_temp: null
   }
 }
 

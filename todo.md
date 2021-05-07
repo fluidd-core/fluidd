@@ -2,15 +2,39 @@
 
 ## Next Up
 
+- top bar indicating save_state
+  - "klipper has possible pending changes it'd like to save.. "
+
+- add machine.system_info
+- add checksum option to file upload
+
+- Update mesh box to center on mesh center if no relative index set
+- Power on graph toggles back off on a klipper restart
+- Authorization
+- add cpu time / resource monitoring
+- status card updates
+  - add layer height :/
+  - add total layers
+  - flow calculation?
+- better way to handle overall warnings
+  - warn on gcode root not active
+  - warn on mem low
+  - warn on cputime too high
+  - warn on systime too high
+- allow re-ordering temp presets and cameras
 - sync instances across moonraker db
-- use components instead of plugins with moonraker
-- cleanup card layout stuff
-  - hide enabled flag for collapsable card for camera panel on dashboard
-- change card states to db and be driven by getters..
-- field selector for filesystem / history
+- warning close with no save in file editor
+- console
+  - raw output option for the console, so users can easily copy / paste larger portions of the output.
+  - move autoscroll
+- macros
+  - allow ordering of categories and macros
+  - allow assignment of a color?
+  - allow placing macros in specific cards (console, bed mesh etc..)
 
 ### Features
 
+- Authentication
 - history enhancements
   - graphing over time
   - move to its own page?
@@ -19,6 +43,8 @@
   - overview
   - easy change
 - More macro layout options (categorize macros, ability to define layout in some way, color)
+  - implement UI against default params
+  - can activate with default, or enter params..
 - file system enhancements
   - bulk actions to delete or move?
   - copy file

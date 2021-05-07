@@ -1,3 +1,4 @@
+import { AppTablePartialHeader } from '@/types/tableheaders'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
 
 export interface ConfigState {
@@ -5,32 +6,16 @@ export interface ConfigState {
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
-  cardState: CardState; // if a collapsable card is collapsed or not.
-  cardLayout: CardLayout; // position and state of draggable cards.
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
-}
-
-// Saved to local storage.
-export interface CardLayout {
-  [key: string]: CardConfig[];
-}
-
-export interface CardConfig {
-  name: string;
-  enabled: boolean;
-}
-
-// Saved to local storage.
-export interface CardState {
-  [key: string]: boolean;
 }
 
 export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;
   dashboard: DashboardConfig;
+  tableHeaders: AppTableConfiguredHeaders;
 }
 
 export interface HostConfig {
@@ -59,7 +44,8 @@ export interface GeneralConfig {
   printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
-  enableNotifications: boolean;
+  enableVersionNotifications: boolean;
+  confirmOnEstop: boolean;
 }
 
 export interface ThemeConfig {
@@ -116,4 +102,8 @@ export interface TemperaturePresetValue {
   value: number;
   type: 'fan' | 'heater';
   active: boolean;
+}
+
+export interface AppTableConfiguredHeaders {
+  [root: string]: AppTablePartialHeader[];
 }
