@@ -50,7 +50,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from './mixins/state'
 import { Waits } from './globals'
-import { SocketActions } from './socketActions'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {

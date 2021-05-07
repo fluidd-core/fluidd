@@ -27,9 +27,6 @@ import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
-const DEFAULT_BOX_SCALE = 1 // or 2
-const DEFAULT_MAP_SCALE = 0.1 // or .2?
-
 @Component({
   components: {
     EChartsBedMesh

@@ -122,8 +122,8 @@ export default class Macros extends Mixins(StateMixin) {
     this.$store.dispatch('macros/saveExpanded', val)
   }
 
-  handleEditCategory (id: number) {
-    this.$router.push(`/settings/macros/${id}`)
+  handleEditCategory () {
+    this.$router.push('/settings/#macros')
   }
 }
 </script>
