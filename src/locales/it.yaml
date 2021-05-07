@@ -8,6 +8,7 @@ app:
       remove_profile: Rimuovi il profilo %{name}
       scale: Riscala in min / max
       wireframe: Wireframe
+      boxScale: Scala Volume
     msg:
       hint: >-
         Se salvi come qualcosa di diverso da %{name}, puoi scegliere di
@@ -34,8 +35,8 @@ app:
     tooltip:
       help: >-
         Tieni premuto MAIUSC per ingrandire. <br /> Fai clic su un elemento per
-        attivare / disattivare il grafico. <br /> Fai clic su un valore energetico per
-        attivare / disattivare il grafico.
+        attivare / disattivare il grafico. <br /> Fai clic su un valore
+        energetico per attivare / disattivare il grafico.
   console:
     label:
       auto_scroll: Scorrimento automatico
@@ -53,13 +54,13 @@ app:
         Sei sicuro che questo sia l'indirizzo corretto?
       cors_error: bloccato dalla CORS policy
       cors_note: >-
-        Potrebbe significare che devi modificare la tua configurazione
-        di moonraker. 
+        Potrebbe significare che devi modificare la tua configurazione di
+        moonraker. 
 
-        Consulta la documentazione sulle configurazioni di più stampanti contemporanee
-        <a href="%{url}" target="_blank"> qui </a>
+        Consulta la documentazione sulle configurazioni di più stampanti
+        contemporanee <a href="%{url}" target="_blank"> qui </a>
     hint:
-      add_printer: 'Ad esempio, http://fluiddpi.local'
+      add_printer: Ad esempio, http://fluiddpi.local
     msg:
       trouble: >-
         Stai avendo problemi? 
@@ -68,8 +69,8 @@ app:
         informazioni.
     tooltip:
       endpoint_examples: >-
-        Inserisci l'URL dell'API. <br /> Ad esempio: <br />
-        <blockquote> http: //fluidd.local, http://192.168.1.150 </blockquote>
+        Inserisci l'URL dell'API. <br /> Ad esempio: <br /> <blockquote> http:
+        //fluidd.local, http://192.168.1.150 </blockquote>
   endstop:
     label:
       open: APERTO
@@ -157,17 +158,18 @@ app:
       upload: Carica
       upload_print: Carica & Stampa
       view: Visualizza
+      more_information: Più informazioni
     error:
       app_setup_link: >-
-        Puoi trovare i requisiti di configurazione di Fluidd <a
-        target="_blank" href="%{url}"> qui </a>.
+        Puoi trovare i requisiti di configurazione di Fluidd <a target="_blank"
+        href="%{url}"> qui </a>.
       app_warnings_found: '% {appName} avvisi trovati.'
       components_config: >-
-        Puoi trovare la configurazione dei plug-in Moonraker <a
-        target="_blank" href="%{url}"> qui </a>.
+        Puoi trovare la configurazione dei plug-in Moonraker <a target="_blank"
+        href="%{url}"> qui </a>.
       failed_components: >-
-        Moonraker ha problemi con dei plugin. Controlla i tuoi log, aggiorna la tua
-        configurazione e riavvia moonraker.
+        Moonraker ha problemi con dei plugin. Controlla i tuoi log, aggiorna la
+        tua configurazione e riavvia moonraker.
     label:
       accel_to_decel: Accel to Decel
       acceleration: Accelerazione
@@ -209,6 +211,8 @@ app:
       variance: Varianza
       velocity: Velocità
       z_offset: Offset Z
+      clear_all: Rimuovi tutte
+      no_notifications: Disabilita Notifiche
     simple_form:
       error:
         arrayofnums: Solo numeri
@@ -248,6 +252,7 @@ app:
         start_time: Iniziato
         status: Stato
         total_duration: Durata totale
+        filament_weight_total: Peso totale filamento
     title:
       add_printer: Aggiungi Stampante
       bedmesh: Matrice Piatto
@@ -278,9 +283,11 @@ app:
       restart_klipper: Riavvia il servizio di Klipper.
   history:
     msg:
-      confirm: |-
+      confirm: >-
         Sei sicuro? 
-        Questa azione cancellerà tutta la cronologia e le statistiche della stampante
+
+        Questa azione cancellerà tutta la cronologia e le statistiche della
+        stampante
   printer:
     state:
       busy: Occupato
@@ -337,7 +344,8 @@ app:
       thermal_preset_name: Nome Preset
       time_estimates: Stime di tempo
       toggle: Attiva / Disattiva
-      z_adjust_values: Valori Z di fino 
+      z_adjust_values: Valori Z di fino
+      confirm_on_estop: Conferma prima di arrestare
     timer_options:
       duration: Solo Durata
       duration_description: Simile a un LCD per Klipper, mostra solo la durata senza stime.
@@ -354,8 +362,7 @@ app:
         Utilizza la stima nativa del tuo Slicer. 
         Deve essere supportato dal tuo Slicer.
     title:
-      camera: |-
-        Camera | Camere
+      camera: Camera | Camere
       general: Generale
       macros: Macro
       theme: Tema
@@ -363,8 +370,8 @@ app:
       tool: Attrezzo
     tooltip:
       gcode_coords: >-
-        Visualizza la posizione del GCode invece della posizione della testata sulla
-        dashboard
+        Visualizza la posizione del GCode invece della posizione della testata
+        sulla dashboard
   socket:
     msg:
       connecting: Connessione a Moonraker...
@@ -386,6 +393,7 @@ app:
       check_for_updates: Controlla gli aggiornamenti
       finish: Finisci
       update: Aggiorna
+      view_versions: Visualizza Versioni
     label:
       commit_history: Cronologia Commit
       commits_on: Commit su
@@ -395,6 +403,7 @@ app:
       os_packages: Pacchetti OS
       package_list: Elenco dei Pacchetti
       up_to_date: AGGIORNATO
+      updates_available: Aggiornamenti Disponibili
     status:
       finished: Aggiornamenti terminati
       updating: Aggiornando...
