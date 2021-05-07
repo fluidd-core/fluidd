@@ -2,9 +2,6 @@
 
 ## Next Up
 
-- id's for notifications, set for known.
-  - clear by id, or name.
-
 - top bar indicating save_state
   - "klipper has possible pending changes it'd like to save.. "
 
