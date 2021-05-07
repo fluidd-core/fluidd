@@ -2,7 +2,6 @@
 
 ## Next Up
 
-- add option to enable confirm dialog on estop
 - fix new entries for layouts (merge strategy - gcode viewer) not showing by default
 
 - add machine.system_info

@@ -3,6 +3,7 @@ import { FileChangeItem, FilePaths, AppFile, AppFileWithMeta, KlipperFile, Klipp
 import { SocketActions } from '@/socketActions'
 import store from '@/store'
 import { KlipperMesh, ProcessedMesh } from './mesh/types'
+import { LayoutConfig, Layouts } from './layout/types'
 
 export const isOfType = <T>(
   varToBeChecked: any,
@@ -284,4 +285,24 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
     max,
     variance
   }
+}
+
+// export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = false): ProcessedMesh => {
+// export const getKnownComponents = () => {
+//   return []
+// }
+export const getAllLayouts = (layouts: Layouts) => {
+  let knownComponents: LayoutConfig[] = []
+  for (const _layout in layouts) {
+    const layout = layouts[_layout]
+    for (const _container in layout) {
+      const container = layouts[_layout][_container]
+        .map(config => ({ ...config, container: _container, layout: _layout }))
+      knownComponents = [
+        ...knownComponents,
+        ...container
+      ]
+    }
+  }
+  return knownComponents
 }

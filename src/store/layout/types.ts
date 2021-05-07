@@ -20,4 +20,6 @@ export interface LayoutConfig {
   id: string;
   enabled: boolean;
   collapsed: boolean;
+  layout?: string;
+  container?: string;
 }
