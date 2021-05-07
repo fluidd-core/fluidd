@@ -107,6 +107,8 @@ Automated updates can be configured by ensuring the following is in your
 
 ```yaml
 [update_manager]
+enable_auto_refresh: True
+
 [update_manager client fluidd]
 type: web
 repo: cadriel/fluidd
