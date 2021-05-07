@@ -20,6 +20,7 @@ export interface AppNotification {
 }
 
 export interface AppPushNotification {
+  id?: string;
   type: AppNotificationType;
   title: string;
   description?: string;

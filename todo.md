@@ -2,7 +2,11 @@
 
 ## Next Up
 
-- fix new entries for layouts (merge strategy - gcode viewer) not showing by default
+- id's for notifications, set for known.
+  - clear by id, or name.
+
+- top bar indicating save_state
+  - "klipper has possible pending changes it'd like to save.. "
 
 - add machine.system_info
 - add checksum option to file upload

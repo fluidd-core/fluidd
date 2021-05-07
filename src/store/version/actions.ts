@@ -29,6 +29,7 @@ export const actions: ActionTree<VersionState, RootState> = {
 
     if (getters.hasUpdates) {
       dispatch('notifications/pushNotification', {
+        id: 'updates-available',
         title: i18n.t('app.version.label.updates_available'),
         to: '/settings#versions',
         btnText: i18n.t('app.version.btn.view_versions'),

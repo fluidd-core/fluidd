@@ -92,6 +92,7 @@ export const actions: ActionTree<ServerState, RootState> = {
           if (state.throttled_state && !state.throttled_state.flags.includes(flag)) {
             const previousEvent = flag.toLowerCase().startsWith('previously')
             let n: AppPushNotification = {
+              id: flag,
               title: flag,
               description: 'This may lead to a throttle condition and result in a failed print',
               to: 'https://www.raspberrypi.org/documentation/hardware/raspberrypi/frequency-management.md',

@@ -24,7 +24,7 @@ export const mutations: MutationTree<NotificationsState> = {
   setClearNotification (state, notification: AppNotification | string) {
     let i = -1
     if (typeof notification === 'string') {
-      i = state.notifications.findIndex(n => n.title === notification)
+      i = state.notifications.findIndex(n => n.id === notification)
     } else {
       i = state.notifications.findIndex(n => n === notification)
     }
