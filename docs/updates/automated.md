@@ -27,4 +27,4 @@ In order for this feature to be enabled, you need to configure moonraker's updat
 
 Please see here for the [moonraker configuration](/configuration/moonraker_conf) docs.
 
-![screenshot](../assets/images/automated-updates.png)
+![screenshot](../assets/images/updates.png)

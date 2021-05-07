@@ -56,6 +56,7 @@ These can be assumed sane defaults, but should be checked and modified to your o
 
 ### PAUSE
 
+{% raw %}
 ```yaml
 [gcode_macro PAUSE]
 rename_existing: BASE_PAUSE
@@ -100,6 +101,7 @@ gcode:
   RESTORE_GCODE_STATE NAME=PAUSE_state
   BASE_RESUME
 ```
+{% endraw %}
 
 ### CANCEL_PRINT
 

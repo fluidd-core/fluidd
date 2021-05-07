@@ -16,12 +16,32 @@ firmware.
 {: .fs-6 .fw-300 }
 
 [Get Started](/installation){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View on GitHub](https://github.com/cadriel/fluidd){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View on GitHub](https://github.com/cadriel/fluidd){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Release Notes](https://github.com/cadriel/fluidd/releases){: .btn .fs-5 .mb-4 .mb-md-0 }
+
+![screenshot](/assets/images/preview_sliced.png)
+
+## Features
+
+- Responsive UI, supports desktop, tablets and mobile
+- [Customizable layouts](/customize/layout). Move any panel where YOU want
+- Built-in [color themes](/customize/themes)
+- Manage [multiple printers](/features/printers) from one Fluidd install
+- [Notifications](/features/notifications) on Pi throttling + more
+- [Macro organization](/features/macros)
+- Full [localization](/development/localization) (i18n) support
+- View and Edit your Klipper Config AND Gcode files in app
+- [Bed Mesh](/features/bed_mesh) levelling
+- [Thermal Presets](/features/presets)
+- [Multiple web cam](/features/cameras) support
+- Control power devices - GPIO (relays), TPLink Smartplug, and Tasmota
+- [Print history](/features/print_history)
+- [Version management](/updates/automated) and upgrades
 
 ## Supporting Fluidd
 
 Fluidd is developed and maintained by [Craig Bassett](https://github.com/cadriel/fluidd)
-with support from the entire Klipper Team, and various printer communities.
+and our contributors - along with support from the entire Klipper Team, associated printer communities and you, the user.
 
 - [Make a recurring payment with Patreon](https://patreon.com/cadriel)
 - [Make a one time payment with Ko-Fi](https://ko-fi.com/cadriel)
