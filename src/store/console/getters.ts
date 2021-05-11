@@ -36,7 +36,8 @@ export const getters: GetterTree<ConsoleState, RootState> = {
       'ABORT',
       'ACCEPT',
       'ADJUSTED',
-      'GET_POSITION'
+      'GET_POSITION',
+      'SET_RETRACTION'
     ]
     additional.forEach(command => {
       if (command in commands !== true) {
