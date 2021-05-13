@@ -32,6 +32,7 @@
       </app-nav-item>
 
       <app-nav-item
+        v-if="supportsHistory"
         icon="$history"
         to="/history">
         {{ $t('app.general.title.history') }}
@@ -108,6 +109,10 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppBar extends Mixins(StateMixin) {
   menu = false
+
+  get supportsHistory () {
+    return this.$store.getters['server/componentSupport']('history')
+  }
 
   get instances () {
     return this.$store.state.config.instances
