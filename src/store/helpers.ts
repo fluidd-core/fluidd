@@ -374,41 +374,41 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
 /**
  * Taken from https://stackoverflow.com/a/42803692
  */
-function findIntersections (center1: Point, center2: Point, radius: number) {
-  const d = Math.sqrt((center2.x - center1.x) ** 2 + (center2.y - center1.y) ** 2)
-  const a = (d ** 2) / (2 * d)
-  const h = Math.sqrt(radius ** 2 - a ** 2)
-  const x2 = center1.x + a * (center2.x - center1.x) / d
-  const y2 = center1.y + a * (center2.y - center1.y) / d
+// function findIntersections (center1: Point, center2: Point, radius: number) {
+//   const d = Math.sqrt((center2.x - center1.x) ** 2 + (center2.y - center1.y) ** 2)
+//   const a = (d ** 2) / (2 * d)
+//   const h = Math.sqrt(radius ** 2 - a ** 2)
+//   const x2 = center1.x + a * (center2.x - center1.x) / d
+//   const y2 = center1.y + a * (center2.y - center1.y) / d
 
-  const x3 = x2 + h * (center2.y - center1.y) / d
-  const y3 = y2 - h * (center2.x - center1.x) / d
+//   const x3 = x2 + h * (center2.y - center1.y) / d
+//   const y3 = y2 - h * (center2.x - center1.x) / d
 
-  const x4 = x2 - h * (center2.y - center1.y) / d
-  const y4 = y2 + h * (center2.x - center1.x) / d
+//   const x4 = x2 - h * (center2.y - center1.y) / d
+//   const y4 = y2 + h * (center2.x - center1.x) / d
 
-  return [{
-    x: x3,
-    y: y3
-  }, {
-    x: x4,
-    y: y4
-  }]
-}
+//   return [{
+//     x: x3,
+//     y: y3
+//   }, {
+//     x: x4,
+//     y: y4
+//   }]
+// }
 
-function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
-  const intersections = findIntersections(
-    toolhead,
-    {
-      x: move.x ?? toolhead.x,
-      y: move.y ?? toolhead.y
-    },
-    move.r ?? NaN
-  )
+// function arcRMoveToSVGPath (toolhead: Point, move: ArcMove): string {
+//   const intersections = findIntersections(
+//     toolhead,
+//     {
+//       x: move.x ?? toolhead.x,
+//       y: move.y ?? toolhead.y
+//     },
+//     move.r ?? NaN
+//   )
 
-  throw new Error('Arcs with the R parameter are currently not supported. ' +
-    'Please make a Github issue with some sample gcode so we can resolve this')
-}
+//   throw new Error('Arcs with the R parameter are currently not supported. ' +
+//     'Please make a Github issue with some sample gcode so we can resolve this')
+// }
 
 export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
   if (move.i !== undefined && move.j !== undefined) {
@@ -416,7 +416,9 @@ export function arcMoveToSvgPath (toolhead: Point, move: ArcMove): string {
   }
 
   if (move.r !== undefined) {
-    return arcRMoveToSVGPath(toolhead, move)
+    // return arcRMoveToSVGPath(toolhead, move)
+    throw new Error('Arcs with the R parameter are currently not supported. ' +
+    'Please make a Github issue with some sample gcode so we can resolve this')
   }
 
   throw new TypeError('Move is not a valid arc')

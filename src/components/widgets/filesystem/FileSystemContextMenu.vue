@@ -108,7 +108,6 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import { AppFile, AppFileWithMeta } from '@/store/files/types'
-import { LayoutConfig } from '@/store/layout/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
