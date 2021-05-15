@@ -490,6 +490,25 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.$store.dispatch('files/removeFileDownload')
   }
 
+  async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
+    this.getGcode(file)
+      .then(response => response?.data)
+      .then((gcode) => {
+        // If we aren't on the dashboard, push the user back there.
+        if (this.$router.currentRoute.path !== '/') {
+          this.$router.push({ path: '/' })
+        }
+        this.$store.dispatch('gcodePreview/loadGcode', {
+          file,
+          gcode
+        })
+      })
+      .catch(e => e)
+      .finally(() => {
+        this.$store.dispatch('files/removeFileDownload')
+      })
+  }
+
   /**
    * ===========================================================================
    * Core file handling.
@@ -620,23 +639,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (file.first_layer_bed_temp > 0) {
         this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
       }
-    }
-  }
-
-  async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
-    // todo: getGcode depends on the jobs card being present
-    const gcode = await this.getGcode(file)
-
-    if (gcode) {
-      // If we aren't on the dashboard, push the user back there.
-      if (this.$router.currentRoute.path !== '/') {
-        this.$router.push({ path: '/' })
-      }
-
-      this.$store.dispatch('gcodePreview/loadGcode', {
-        file,
-        gcode
-      })
     }
   }
 

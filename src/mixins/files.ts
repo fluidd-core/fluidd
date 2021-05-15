@@ -28,11 +28,15 @@ export default class FilesMixin extends Vue {
     return ''
   }
 
-  async getGcode (file: AppFile): Promise<string | undefined> {
+  /**
+   * Loads a gcode file and parses for the gcode-viewer.
+   */
+  async getGcode (file: AppFile) {
     const sizeInMB = file.size / 1024 / 1024
+    let res: boolean | undefined = true
 
     if (sizeInMB >= 100) {
-      const confirmed = await this.$confirm(
+      res = await this.$confirm(
         this.$t('app.gcode.msg.confirm', {
           filename: file.filename,
           size: this.$filters.getReadableFileSizeString(file.size)
@@ -41,23 +45,17 @@ export default class FilesMixin extends Vue {
           color: 'card-heading',
           icon: '$error'
         })
-
-      if (!confirmed) {
-        return
-      }
     }
 
-    this.cancelTokenSource = this.$http.CancelToken.source()
-
-    const path = file.path ? `${file.path}/${file.filename}` : file.filename
-
-    const { data } = await this.getFile(path, 'gcodes', file.size, {
-      responseType: 'text',
-      transformResponse: [v => v],
-      cancelToken: this.cancelTokenSource.token
-    })
-
-    return data
+    if (res) {
+      this.cancelTokenSource = this.$http.CancelToken.source()
+      const path = file.path ? `${file.path}/${file.filename}` : file.filename
+      return await this.getFile(path, 'gcodes', file.size, {
+        responseType: 'text',
+        transformResponse: [v => v],
+        cancelToken: this.cancelTokenSource.token
+      })
+    }
   }
 
   /**
@@ -109,11 +107,7 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    try {
-      return await this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
-    } finally {
-      this.$store.dispatch('files/removeFileDownload')
-    }
+    return await this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
   }
 
   /**

@@ -31,6 +31,7 @@ import StateMixin from '@/mixins/state'
 import GcodePreviewControlCheckbox from '@/components/widgets/gcode-preview/GcodePreviewControlCheckbox.vue'
 import FilesMixin from '@/mixins/files'
 import { AppFile } from '@/store/files/types'
+import { AxiosResponse } from 'axios'
 
 @Component({
   components: { GcodePreviewControlCheckbox }
@@ -67,15 +68,18 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
 
   async loadCurrent () {
     const file = this.$store.state.printer.printer.current_file as AppFile
-    // todo: getGcode depends on the jobs card being present
-    const gcode = await this.getGcode(file)
-
-    if (gcode) {
-      this.$store.dispatch('gcodePreview/loadGcode', {
-        file,
-        gcode
+    this.getGcode(file)
+      .then(response => response?.data)
+      .then((gcode: AxiosResponse) => {
+        this.$store.dispatch('gcodePreview/loadGcode', {
+          file,
+          gcode
+        })
       })
-    }
+      .catch(e => e)
+      .finally(() => {
+        this.$store.dispatch('files/removeFileDownload')
+      })
   }
 
   resetFile () {
