@@ -74,10 +74,9 @@ export const actions: ActionTree<FilesState, RootState> = {
   },
 
   /**
-   * This handles when a file is uploaded or metadata is updated for a file
-   * in the browser, or the current file.
+   * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileUpdate ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
+  async onFileMetaData ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
     const paths = getFilePaths(payload.filename, root)
     const file = formatAsFile(root, payload)
@@ -98,10 +97,15 @@ export const actions: ActionTree<FilesState, RootState> = {
   },
 
   /**
-   * The socket has notified that a file or folder has moved,
-   * or - in the case of a folder, has been renamed.
+   * Automated notifications from moonraker.
    */
-  async notifyCopyitem (_, payload: FileChangeSocketResponse) {
+  async notifyRootUpdate ({ commit }, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    commit('setResetRoot', root)
+    SocketActions.serverFilesGetDirectory(root, root)
+  },
+
+  async notifyModifyFile (_, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const itemPaths = getFilePaths(payload.item.path, root)
 
@@ -112,28 +116,13 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  /**
-   * Move a file or directory.
-   */
-  async notifyMoveitem (_, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const itemPaths = getFilePaths(payload.item.path, root)
-
-    SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
-    if (payload.source_item) {
-      const sourcePaths = getFilePaths(payload.source_item.path, root)
-      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
-    }
-  },
-
-  async notifyUploadfile ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyCreateFile ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const file = formatAsFile(root, payload.item)
     if (file.extension === 'gcode') {
       // For gcode files, get the metadata and the meta update will take care of the rest.
       SocketActions.serverFilesMetaData(payload.item.path)
     } else {
-      // For other files, just add it here.
       const paths = getFilePaths(payload.item.path, root)
       const update: FileUpdate = {
         paths,
@@ -144,7 +133,35 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyDeletefile ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyCreateDir (_, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const paths = getFilePaths(payload.item.path, root)
+    SocketActions.serverFilesGetDirectory(root, paths.rootPath)
+  },
+
+  async notifyMoveFile (_, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const itemPaths = getFilePaths(payload.item.path, root)
+
+    SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
+    if (payload.source_item) {
+      const sourcePaths = getFilePaths(payload.source_item.path, root)
+      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+    }
+  },
+
+  async notifyMoveDir (_, payload: FileChangeSocketResponse) {
+    const root = payload.item.root
+    const itemPaths = getFilePaths(payload.item.path, root)
+
+    SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
+    if (payload.source_item) {
+      const sourcePaths = getFilePaths(payload.source_item.path, root)
+      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+    }
+  },
+
+  async notifyDeleteFile ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const paths = getFilePaths(payload.item.path, root)
     const file = formatAsFile(root, payload.item)
@@ -156,18 +173,15 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setFileDelete', update)
   },
 
-  async notifyCreatedir (_, payload: FileChangeSocketResponse) {
+  async notifyDeleteDir (_, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const paths = getFilePaths(payload.item.path, root)
     SocketActions.serverFilesGetDirectory(root, paths.rootPath)
   },
 
-  async notifyDeletedir (_, payload: FileChangeSocketResponse) {
-    const root = payload.item.root
-    const paths = getFilePaths(payload.item.path, root)
-    SocketActions.serverFilesGetDirectory(root, paths.rootPath)
-  },
-
+  /**
+   * Handles the state of current uploads and downloads.
+   */
   async updateFileUpload ({ commit }, payload) {
     commit('setUpdateFileUpload', payload)
   },

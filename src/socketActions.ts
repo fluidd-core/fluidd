@@ -359,7 +359,7 @@ export const SocketActions = {
   async serverFilesMetaData (filepath: string) {
     baseEmit(
       'server.files.metadata', {
-        dispatch: 'files/onFileUpdate',
+        dispatch: 'files/onFileMetaData',
         params: { filename: filepath }
       }
     )
