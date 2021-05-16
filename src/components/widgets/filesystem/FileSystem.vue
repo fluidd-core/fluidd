@@ -482,6 +482,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           readonly: this.rootProperties.readonly
         }
       })
+      .finally(() => this.$store.dispatch('files/removeFileDownload'))
       .catch(e => e)
   }
 
