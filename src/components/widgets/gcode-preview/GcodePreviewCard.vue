@@ -2,17 +2,8 @@
   <collapsable-card
     :title="cardTitle"
     icon="$cubeScan"
-    cardClasses="mb-2 mb-sm-4 d-flex flex-column"
-    contentClasses="flex-grow-1 flow-shrink-0"
     layout-path="dashboard.gcode-preview-card"
-    draggable
-    :enabled="enabled"
-    @enabled="$emit('enabled', $event)">
-
-    <template v-slot:title>
-      <v-icon left>$cubeScan</v-icon>
-      <span class="font-weight-light">{{ cardTitle }}</span>
-    </template>
+    draggable>
 
     <v-card-text>
       <GcodePreviewParserProgressDialog
@@ -26,12 +17,13 @@
           <v-row>
             <v-col>
               <app-slider
-                label="Layer nr"
+                :label="$t('app.gcode.label.layer')"
                 :value="currentLayer + 1"
                 :min="1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
                 :instant="!isMobile"
+                :locked="isMobile"
                 input-md
                 @input="setCurrentLayerThrottled($event - 1)">
               </app-slider>
@@ -40,13 +32,13 @@
           <v-row>
             <v-col>
               <app-slider
-                label="Progress"
+                :label="$t('app.gcode.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
                 valueSuffix="moves"
-                :instant="!isMobile"
+                :locked="isMobile"
                 input-md
                 @input="setMoveProgressThrottled($event + currentLayerMoveRange.min)">
               </app-slider>
@@ -54,8 +46,11 @@
           </v-row>
           <v-row>
             <v-col>
-              <gcode-preview width="100%" :layer="currentLayer" :progress="moveProgress"
-                             :disabled="!fileLoaded"></gcode-preview>
+              <gcode-preview
+                width="100%"
+                :layer="currentLayer"
+                :progress="moveProgress"
+                :disabled="!fileLoaded"></gcode-preview>
             </v-col>
           </v-row>
         </v-col>

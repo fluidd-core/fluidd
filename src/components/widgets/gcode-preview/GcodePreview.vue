@@ -4,9 +4,12 @@
          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
       <defs>
         <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="10" height="10">
-          <rect width="10" height="10" stroke-width=".1"
-                :stroke="themeIsDark ? 'black' : 'white'"
-                :fill="themeIsDark ? '#555' : 'lightgrey'"/>
+          <rect
+            width="10"
+            height="10"
+            stroke-width=".1"
+            :stroke="themeIsDark ? 'black' : 'white'"
+            :fill="themeIsDark ? '#555' : 'lightgrey'"/>
         </pattern>
         <svg id="retraction" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
           <path v-if="flipY" d="M 0,0 L 5,10 L 10,0 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
