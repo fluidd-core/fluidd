@@ -22,5 +22,13 @@ export const getters: GetterTree<WaitState, RootState> = {
    */
   hasWaits: (state) => {
     return state.waits.length > 0
+  },
+
+  /**
+   * Determine if we have any waits prefixed with...
+   */
+  hasWaitsBy: (state) => (prefix: string) => {
+    const waits = state.waits.filter(wait => wait.startsWith(prefix))
+    return waits.length > 0
   }
 }

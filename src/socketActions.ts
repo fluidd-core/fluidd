@@ -380,6 +380,7 @@ export const SocketActions = {
       }
     )
   },
+
   async serverFilesMove (source: string, dest: string) {
     const wait = Waits.onFileSystem
     baseEmit(

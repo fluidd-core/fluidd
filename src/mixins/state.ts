@@ -90,6 +90,13 @@ export default class UtilsMixin extends Vue {
   }
 
   /**
+   * Indicates if we have any waits prefixed by.
+   */
+  hasWaitsBy (prefix: string) {
+    return this.$store.getters['wait/hasWaitsBy'](prefix)
+  }
+
+  /**
    * Send a gcode script.
    */
   sendGcode (gcode: string, wait?: string) {

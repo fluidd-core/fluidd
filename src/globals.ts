@@ -284,8 +284,7 @@ export const Waits = Object.freeze({
   onSetSCV: 'onSetSCV',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem',
-  onUpload: 'onUpload'
+  onFileSystem: 'onFileSystem'
 })
 
 export const defaultPlotLayout = Object.freeze({

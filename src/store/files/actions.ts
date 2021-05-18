@@ -119,7 +119,9 @@ export const actions: ActionTree<FilesState, RootState> = {
     SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
     if (payload.source_item) {
       const sourcePaths = getFilePaths(payload.source_item.path, root)
-      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+      if (itemPaths.rootPath !== sourcePaths.rootPath) {
+        SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+      }
     }
   },
 
@@ -153,7 +155,9 @@ export const actions: ActionTree<FilesState, RootState> = {
     SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
     if (payload.source_item) {
       const sourcePaths = getFilePaths(payload.source_item.path, root)
-      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+      if (itemPaths.rootPath !== sourcePaths.rootPath) {
+        SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+      }
     }
   },
 
@@ -164,7 +168,9 @@ export const actions: ActionTree<FilesState, RootState> = {
     SocketActions.serverFilesGetDirectory(root, itemPaths.rootPath)
     if (payload.source_item) {
       const sourcePaths = getFilePaths(payload.source_item.path, root)
-      SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+      if (itemPaths.rootPath !== sourcePaths.rootPath) {
+        SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+      }
     }
   },
 
