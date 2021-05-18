@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.14.0](https://github.com/cadriel/fluidd/compare/v1.13.0...v1.14.0) (2021-05-18)
+
+
+### Features
+
+* append set_retraction to console autocompletion ([a81c1b7](https://github.com/cadriel/fluidd/commit/a81c1b76a6cb7951f642f7690a01ee932a8ce33e))
+* gcode viewer ([d6675ae](https://github.com/cadriel/fluidd/commit/d6675ae925268fbfd19df644812ba0c60179c01d))
+* implements inotify support via moonraker ([2208ea5](https://github.com/cadriel/fluidd/commit/2208ea5af44931fd70dad95797ddb318515fa899))
+* support filament motion sensor ([33eddb2](https://github.com/cadriel/fluidd/commit/33eddb268808c8da99b5fdbd3ff9cd919c58a42d))
+* support old notifications ([1ca6f64](https://github.com/cadriel/fluidd/commit/1ca6f64f8e68818f301bd6fe22f9348966c61b96))
+
+
+### Bug Fixes
+
+* filter thumbs ([5f28384](https://github.com/cadriel/fluidd/commit/5f2838413d0824fab1fae6676ef02329ef8c5246))
+* history nav not shown when not enabled ([00d2b53](https://github.com/cadriel/fluidd/commit/00d2b53dd1051df309d243d4a9f483a4a3711ca1))
+* stop restart buttons from swapping around ([137343a](https://github.com/cadriel/fluidd/commit/137343a888bf34a19d7cd36f796b1628721f8da5))
+* white space when klippy is in error ([637b29a](https://github.com/cadriel/fluidd/commit/637b29adc779d32e1911a800d1b3777c2af0f4cd))
+
 ## [1.13.0](https://github.com/cadriel/fluidd/compare/v1.12.2...v1.13.0) (2021-05-07)
 
 
