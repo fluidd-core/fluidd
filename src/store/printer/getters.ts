@@ -188,29 +188,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return false
   },
 
-  /**
-   * Return a runout sensor's data by name
-   */
-  getRunoutSensorByName: (state) => (name: string): RunoutSensor | undefined => {
-    const sensor = get(state.printer, 'filament_switch_sensor ' + name, undefined)
-    if (sensor) {
-      return {
-        name,
-        ...sensor
-      }
-    }
-    return undefined
-  },
-
   getRunoutSensors: (state): RunoutSensor[] => {
-    const supportedSensors = ['filament_switch_sensor']
+    const supportedSensors = ['filament_switch_sensor', 'filament_motion_sensor']
     const sensors: RunoutSensor[] = []
     for (const item in state.printer) {
       const split = item.split(' ')
 
       if (supportedSensors.includes(split[0])) {
         const name = (split.length > 1) ? split[1] : item
-        const sensor = get(state.printer, 'filament_switch_sensor ' + name, undefined)
+        const sensor = get(state.printer, item, undefined)
         sensors.push({
           name,
           ...sensor
