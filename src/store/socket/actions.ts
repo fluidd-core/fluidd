@@ -140,6 +140,11 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('files/notify' + upperFirst(camelCase(payload.action)), payload, { root: true })
   },
 
+  // Next release, remove.
+  async notifyMetadataUpdate ({ dispatch }, payload) {
+    dispatch('files/onFileMetaData', payload, { root: true })
+  },
+
   async notifyPowerChanged ({ dispatch }, payload) {
     dispatch('power/onStatus', { [payload.device]: payload.status }, { root: true })
   },

@@ -99,6 +99,13 @@ export const actions: ActionTree<FilesState, RootState> = {
   /**
    * Automated notifications from moonraker.
    */
+
+  // Old notifications for backwards compat
+  async notifyCopyItem ({ dispatch }, payload) { dispatch('notifyModifyFile', payload) },
+  async notifyMoveItem ({ dispatch }, payload) { dispatch('notifyMoveFile', payload) },
+  async notifyUploadFile ({ dispatch }, payload) { dispatch('notifyCreateFile', payload) },
+
+  // New notifications
   async notifyRootUpdate ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     commit('setResetRoot', root)
