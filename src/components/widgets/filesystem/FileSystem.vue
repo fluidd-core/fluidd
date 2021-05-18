@@ -331,11 +331,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Determine if we're waiting for a directory load on our current path.
   get filesLoading () {
-    return this.hasWait([
-      `${Waits.onUpload}`,
-      Waits.onFileSystem,
-      `${Waits.onFileSystem}${this.currentPath}`
-    ])
+    return this.hasWaitsBy(Waits.onFileSystem)
   }
 
   // Get a list of currently active uploads.
@@ -590,9 +586,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   async handleUpload (files: FileList | File[], print: boolean) {
-    this.$store.dispatch('wait/addWait', Waits.onUpload)
+    this.$store.dispatch('wait/addWait', Waits.onFileSystem)
     this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
-    this.$store.dispatch('wait/removeWait', Waits.onUpload)
+    this.$store.dispatch('wait/removeWait', Waits.onFileSystem)
   }
 
   handleCancelUpload (file: FilesUpload) {
