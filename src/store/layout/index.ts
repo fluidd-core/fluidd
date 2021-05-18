@@ -28,6 +28,7 @@ export const defaultState = (): LayoutState => {
           { id: 'macros-card', enabled: true, collapsed: false },
           { id: 'jobs-card', enabled: true, collapsed: false },
           { id: 'console-card', enabled: true, collapsed: false }
+          // { id: 'gcode-preview-card', enabled: true, collapsed: false }
         ]
       }
     }

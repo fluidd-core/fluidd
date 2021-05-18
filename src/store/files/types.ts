@@ -89,6 +89,7 @@ export interface FileMetaDataSocketResponse {
 }
 
 export interface FileChangeSocketResponse {
+  action: string;
   item: FileChangeItem;
   source_item?: FileChangeItem;
 }

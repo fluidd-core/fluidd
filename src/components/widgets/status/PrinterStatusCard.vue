@@ -18,10 +18,10 @@
     <template v-slot:menu>
       <app-btn
         @click="pausePrint()"
-        v-if="!printerPaused && printerPrinting"
+        v-if="printerPrinting || printerPaused"
         :elevation="2"
         :loading="hasWait($waits.onPrintPause)"
-        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
+        :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         class="ma-1">
         <v-icon small>$pause</v-icon>
@@ -42,10 +42,10 @@
 
       <app-btn
         @click="resumePrint()"
-        v-if="printerPaused"
+        v-if="printerPrinting || printerPaused"
         :elevation="2"
         :loading="hasWait($waits.onPrintResume)"
-        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
+        :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         class="ma-1">
         <v-icon small class="mr-1">$resume</v-icon>

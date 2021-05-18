@@ -13,6 +13,13 @@ export const mutations: MutationTree<FilesState> = {
     Object.assign(state, defaultState())
   },
 
+  setResetRoot (state, root) {
+    Vue.set(state, root, [])
+    if (state.currentPaths[root]) {
+      Vue.set(state.currentPaths, root, undefined)
+    }
+  },
+
   setServerFilesGetDirectory (state, payload) {
     const path = payload.directory.path
     const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'

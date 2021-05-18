@@ -42,6 +42,8 @@ trusted_clients:
 [octoprint_compat]
 
 [update_manager]
+enable_auto_refresh: True
+
 [update_manager client fluidd]
 type: web
 repo: cadriel/fluidd

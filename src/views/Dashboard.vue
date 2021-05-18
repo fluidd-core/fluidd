@@ -2,7 +2,7 @@
   <v-container fluid class="constrained-width px-2 px-sm-4">
     <v-row class="mt-0 mt-sm-2">
       <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
-        <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
+        <klippy-status-card v-if="(!klippyReady || hasWarnings) && !inLayout"></klippy-status-card>
         <draggable
           v-if="container1"
           class="list-group"
@@ -61,6 +61,7 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
+import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import { Macro } from '@/store/macros/types'
 
 @Component({
@@ -74,7 +75,8 @@ import { Macro } from '@/store/macros/types'
     CameraCard,
     PrinterLimitsCard,
     ConsoleCard,
-    OutputsCard
+    OutputsCard,
+    GcodePreviewCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
@@ -163,11 +165,12 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   .list-group {
-    height: 100%;
+    flex: 1 1 auto;
 
     span {
       display: flex;
       flex-direction: column;
+      min-height: 50vh;
       height: 100%;
     }
   }

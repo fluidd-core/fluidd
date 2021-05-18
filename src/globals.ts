@@ -96,6 +96,7 @@ import {
   mdiLockOpenVariant,
   mdiPencilLock,
   mdiLockReset,
+  mdiCubeScan,
   mdiHandRight,
   mdiThermometerAlert
 } from '@mdi/js'
@@ -137,7 +138,7 @@ export const Globals = Object.freeze({
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' }
   },
-  FILTERED_FILES_PREFIX: ['thumbs'],
+  FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
@@ -243,6 +244,7 @@ export const Icons = Object.freeze({
   commit: mdiSourceCommit,
   cloudCheck: mdiCloudCheck,
   cloudAlert: mdiCloudAlert,
+  cubeScan: mdiCubeScan,
   keyboard: mdiKeyboard,
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,
@@ -282,8 +284,7 @@ export const Waits = Object.freeze({
   onSetSCV: 'onSetSCV',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem',
-  onUpload: 'onUpload'
+  onFileSystem: 'onFileSystem'
 })
 
 export const defaultPlotLayout = Object.freeze({

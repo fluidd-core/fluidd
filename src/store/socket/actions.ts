@@ -6,6 +6,7 @@ import { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/socketActions'
 import { EventBus } from '@/eventBus'
+import { upperFirst, camelCase } from 'lodash-es'
 
 let retryTimeout: number
 
@@ -136,11 +137,12 @@ export const actions: ActionTree<SocketState, RootState> = {
   },
 
   async notifyFilelistChanged ({ dispatch }, payload) {
-    dispatch('files/notify' + Vue.$filters.capitalize(payload.action), payload, { root: true })
+    dispatch('files/notify' + upperFirst(camelCase(payload.action)), payload, { root: true })
   },
 
+  // Next release, remove.
   async notifyMetadataUpdate ({ dispatch }, payload) {
-    dispatch('files/onFileUpdate', payload, { root: true })
+    dispatch('files/onFileMetaData', payload, { root: true })
   },
 
   async notifyPowerChanged ({ dispatch }, payload) {

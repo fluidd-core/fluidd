@@ -1,64 +1,64 @@
 <template>
   <div>
-    <v-tooltip
-      right
-      v-if="!klippyConnected"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <app-btn
-          v-if="!klippyConnected"
-          v-on="on"
-          v-bind="attrs"
-          block
-          color="primary"
-          @click="serviceRestartKlipper"
-          class="me-2 mb-2"
-        >
-          {{ $t('app.general.btn.restart_service_klipper') }}
-        </app-btn>
-      </template>
-      <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
-    </v-tooltip>
+    <div v-if="klippyConnected">
+      <v-tooltip
+        right
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <app-btn
+            v-on="on"
+            v-bind="attrs"
+            block
+            color="primary"
+            @click="restartKlippy"
+            class="me-2 mb-2"
+          >
+            {{ $t('app.general.btn.restart_service_klipper') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.reload_klipper') }}</span>
+      </v-tooltip>
+    </div>
 
-    <v-tooltip
-      right
-      v-if="klippyConnected"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <app-btn
-          v-if="klippyConnected"
-          v-on="on"
-          v-bind="attrs"
-          block
-          color="primary"
-          @click="restartKlippy"
-          class="me-2 mb-2"
-        >
-          {{ $t('app.general.btn.restart_service_klipper') }}
-        </app-btn>
-      </template>
-      <span>{{ $t('app.general.tooltip.reload_klipper') }}</span>
-    </v-tooltip>
+    <div v-else>
+      <v-tooltip
+        right
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <app-btn
+            v-on="on"
+            v-bind="attrs"
+            block
+            color="primary"
+            @click="serviceRestartKlipper"
+            class="me-2 mb-2"
+          >
+            {{ $t('app.general.btn.restart_service_klipper') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.restart_klipper') }}</span>
+      </v-tooltip>
+    </div>
 
-    <v-tooltip
-      right
-      v-if="klippyConnected"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <app-btn
-          v-if="klippyConnected"
-          v-on="on"
-          v-bind="attrs"
-          block
-          color="primary"
-          @click="firmwareRestartKlippy"
-          class="me-2 mb-2"
-        >
-          {{ $t('app.general.btn.restart_firmware') }}
-        </app-btn>
-      </template>
-      <span>{{ $t('app.general.tooltip.reload_restart_klipper') }}</span>
-    </v-tooltip>
+    <div v-if="klippyConnected">
+      <v-tooltip
+        right
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <app-btn
+            v-on="on"
+            v-bind="attrs"
+            block
+            color="primary"
+            @click="firmwareRestartKlippy"
+            class="me-2 mb-2"
+          >
+            {{ $t('app.general.btn.restart_firmware') }}
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.reload_restart_klipper') }}</span>
+      </v-tooltip>
+    </div>
 
     <app-btn
       block

@@ -11,6 +11,7 @@
           <theme-settings></theme-settings>
           <toolhead-settings></toolhead-settings>
           <temperature-preset-settings></temperature-preset-settings>
+          <gcode-preview-settings></gcode-preview-settings>
         </div>
       </v-col>
     </v-row>
@@ -28,6 +29,7 @@ import Cameras from '@/components/settings/cameras/Cameras.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
+import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue'
 
 @Component({
   components: {
@@ -37,7 +39,8 @@ import VersionSettings from '@/components/settings/VersionSettings.vue'
     Cameras,
     ToolheadSettings,
     ThemeSettings,
-    VersionSettings
+    VersionSettings,
+    GcodePreviewSettings
   }
 })
 export default class Settings extends Mixins(StateMixin) {

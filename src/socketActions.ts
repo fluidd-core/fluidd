@@ -359,7 +359,7 @@ export const SocketActions = {
   async serverFilesMetaData (filepath: string) {
     baseEmit(
       'server.files.metadata', {
-        dispatch: 'files/onFileUpdate',
+        dispatch: 'files/onFileMetaData',
         params: { filename: filepath }
       }
     )
@@ -380,6 +380,7 @@ export const SocketActions = {
       }
     )
   },
+
   async serverFilesMove (source: string, dest: string) {
     const wait = Waits.onFileSystem
     baseEmit(

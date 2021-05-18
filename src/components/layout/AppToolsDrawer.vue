@@ -27,7 +27,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item to="/history" class="d-sm-flex d-md-none">
+      <v-list-item to="/history" class="d-sm-flex d-md-none" v-if="supportsHistory">
         <v-list-item-icon>
           <v-icon>$history</v-icon>
         </v-list-item-icon>
@@ -86,6 +86,10 @@ import StateMixin from '@/mixins/state'
 export default class AppToolsDrawer extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   value!: boolean
+
+  get supportsHistory () {
+    return this.$store.getters['server/componentSupport']('history')
+  }
 
   get instanceName () {
     return this.$store.state.config.uiSettings.general.instanceName
