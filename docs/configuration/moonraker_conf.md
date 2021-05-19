@@ -24,7 +24,6 @@ temperature_store_size: 600
 gcode_store_size: 1000
 
 [authorization]
-enabled: True
 cors_domains:
   *.local
   *.lan
