@@ -68,6 +68,14 @@ export default class App extends Mixins(StateMixin) {
     return this.$store.state.version.busy
   }
 
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode)
+  }
+
+  get loading () {
+    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
+  }
+
   get progress () {
     let progress = this.$store.getters['printer/getPrintProgress']
     progress = (progress * 100).toFixed()
@@ -154,10 +162,6 @@ export default class App extends Mixins(StateMixin) {
 
   handleToolsDrawerChange () {
     this.toolsdrawer = !this.toolsdrawer
-  }
-
-  get loading () {
-    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
   }
 }
 </script>

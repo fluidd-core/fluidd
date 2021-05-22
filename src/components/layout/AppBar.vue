@@ -2,6 +2,7 @@
   <v-app-bar
     app
     clipped-left
+    extension-height="46"
   >
     <div class="toolbar-title">
       <router-link to="/">
@@ -99,11 +100,31 @@
 
     </div>
 
+    <template v-slot:extension v-if="inLayout">
+      <app-btn
+        @click.stop="handleExitLayout"
+        small
+        class="mx-2"
+        color="primary"
+        v-html="$t('app.general.btn.exit_layout')"
+      >
+      </app-btn>
+      <app-btn
+        @click.stop="handleResetLayout"
+        small
+        class="mx-2"
+        color="primary"
+        v-html="$t('app.general.btn.reset_layout')"
+      >
+      </app-btn>
+    </template>
+
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
 
 @Component({})
@@ -136,6 +157,25 @@ export default class AppBar extends Mixins(StateMixin) {
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
+  }
+
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode)
+  }
+
+  handleExitLayout () {
+    this.$store.commit('config/setLayoutMode', false)
+  }
+
+  handleResetLayout () {
+    const layout = defaultState()
+    this.$store.dispatch('layout/onLayoutChange', {
+      name: 'dashboard',
+      value: {
+        container1: layout.layouts.dashboard.container1,
+        container2: layout.layouts.dashboard.container2
+      }
+    })
   }
 }
 </script>
@@ -181,5 +221,16 @@ export default class AppBar extends Mixins(StateMixin) {
   .printer-title > a {
     color: inherit;
     text-decoration: none;
+  }
+
+  .v-toolbar--extended ::v-deep .v-toolbar__content {
+    box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
+  }
+
+  ::v-deep .v-toolbar__extension {
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
   }
 </style>

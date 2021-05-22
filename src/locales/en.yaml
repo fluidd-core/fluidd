@@ -131,6 +131,7 @@ app:
       config_reference: Config Reference
       download: Download
       edit: Edit
+      exit_layout: Exit layout mode
       extrude: Extrude
       heaters_off: Heaters off
       load_all: Load all
