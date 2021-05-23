@@ -11,7 +11,7 @@
           <theme-settings></theme-settings>
           <toolhead-settings></toolhead-settings>
           <temperature-preset-settings></temperature-preset-settings>
-          <gcode-preview-settings></gcode-preview-settings>
+          <!-- <gcode-preview-settings></gcode-preview-settings> -->
         </div>
       </v-col>
     </v-row>
