@@ -205,6 +205,8 @@ export default class AppSlider extends Mixins(StateMixin) {
   handleClickChange (val: number) {
     const num = +val
     this.newValue = num
+    if (num < this.min) return
+    if (num > this.max) return
     this.$nextTick(() => {
       this.handleSliderChange(num)
     })
