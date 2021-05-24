@@ -10,7 +10,13 @@ export const getters: GetterTree<MacrosState, RootState> = {
    */
   getMacros: (state, getters, rootState) => {
     const macros: Macro[] = Object.keys(rootState.printer?.printer.configfile.settings)
-      .filter(key => key.startsWith('gcode_macro'))
+      .filter(key => {
+        const name = key.split(' ')[1]
+        return (
+          key.startsWith('gcode_macro') &&
+          !name.startsWith('_')
+        )
+      })
       .map(key => {
         const name = key.split(' ')[1]
         const config = rootState.printer?.printer.configfile.settings[key]

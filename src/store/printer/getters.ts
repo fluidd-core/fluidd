@@ -313,6 +313,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   * Return available fans and output pins
   */
   getOutputs: (state, getters) => (filter?: string[]): Array<Fan | OutputPin> => {
+    // Fans..
     const fans = [
       'temperature_fan',
       'controller_fan',
@@ -321,18 +322,30 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'fan'
     ]
 
+    // Generic pins...
     const outputPins = [
       'output_pin'
     ]
 
+    // Are they controllable?
     const controllable = [
       'fan',
       'fan_generic',
       'output_pin'
     ]
 
+    // Should we apply a color?
     const applyColor = [
       'temperature_fan'
+    ]
+
+    // Should we filter visiblity based on the _ prefix?
+    const filterByPrefix = [
+      'output_pin',
+      'temperature_fan',
+      'controller_fan',
+      'heater_fan',
+      'fan_generic'
     ]
 
     const supportedTypes = (filter && filter.length)
@@ -343,18 +356,23 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     for (const pin in state.printer) {
       const split = pin.split(' ')
+      const name = (split.length > 1) ? split[1] : pin
+      const type = (split.length) ? split[0] : pin
 
-      if (supportedTypes.includes(split[0])) {
-        const name = (split.length > 1) ? split[1] : pin
-
+      if (
+        supportedTypes.includes(type) &&
+        (
+          (filterByPrefix.includes(type) && !name.startsWith('_')) ||
+          !filterByPrefix.includes(type)
+        )
+      ) {
         let prettyName = Vue.$filters.startCase(name)
         if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
 
-        const color = (applyColor.includes(split[0]))
+        const color = (applyColor.includes(type))
           ? Vue.$colorset.next(getKlipperType(pin), pin)
           : undefined
 
-        const type = (split.length) ? split[0] : pin
         const config = getters.getPrinterSettings(pin)
 
         let output: Fan | OutputPin = {
@@ -365,7 +383,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           key: pin,
           color,
           type,
-          controllable: (controllable.includes(split[0]))
+          controllable: (controllable.includes(type))
         }
 
         if (fans.includes(type)) {
