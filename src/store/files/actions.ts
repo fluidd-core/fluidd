@@ -183,13 +183,20 @@ export const actions: ActionTree<FilesState, RootState> = {
       root,
       file
     }
-    commit('setFileDelete', update)
+    commit('setItemDelete', update)
   },
 
-  async notifyDeleteDir (_, payload: FileChangeSocketResponse) {
+  async notifyDeleteDir ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const paths = getFilePaths(payload.item.path, root)
-    SocketActions.serverFilesGetDirectory(root, paths.rootPath)
+    const dir = formatAsFile(root, payload.item)
+    const update: FileUpdate = {
+      paths,
+      root,
+      file: dir
+    }
+    commit('setItemDelete', update)
+    commit('setPathDelete', { path: `${paths.rootPath}/${paths.filename}`, root })
   },
 
   /**

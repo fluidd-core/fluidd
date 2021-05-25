@@ -10,7 +10,9 @@
         >
           <file-system
             :roots="'gcodes'"
-            name="jobs">
+            name="jobs"
+            bulk-actions
+          >
           </file-system>
         </collapsable-card>
       </v-col>

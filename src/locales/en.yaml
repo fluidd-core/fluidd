@@ -79,7 +79,7 @@ app:
       transfer_rate: Transfer rate
       uploaded: Uploaded
     msg:
-      confirm: Are you sure? This will delete all files and folders within.
+      confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
       processing: Processing
     overlay:

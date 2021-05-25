@@ -60,3 +60,20 @@
     box-shadow: none !important;
   }
 }
+
+.bulk-drag {
+  font-family: "Roboto", sans-serif;
+  color: map-deep-get($material-theme, 'text', 'theme');
+  line-height: 1.5;
+  display: flex;
+  flex: 1 1 auto;
+  position: absolute;
+  top: -1000px;
+  right: 0;
+  width: 170px;
+  height: 40px;
+  align-items: center;
+  padding: 0 16px 0 32px;
+  border-radius: 6px;
+  background-color: rgba(map-deep-get($material-theme, 'table', 'active'), 0.15);
+}

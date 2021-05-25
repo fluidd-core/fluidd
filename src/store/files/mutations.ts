@@ -57,7 +57,7 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  setFileDelete (state, payload: FileUpdate) {
+  setItemDelete (state, payload: FileUpdate) {
     const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
     const paths = payload.paths
 
@@ -70,6 +70,20 @@ export const mutations: MutationTree<FilesState> = {
         directory.items.splice(fileIndex, 1)
       }
     }
+  },
+
+  setPathDelete (state, payload: { root: string; path: string }) {
+    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
+    const path = payload.path
+
+    // Find relevant directories.
+    const folders = state[root].filter(f => (f.path.startsWith(path)))
+    folders.forEach((folder) => {
+      const i = state[root].findIndex((f: Files) => (folder === f))
+      if (i >= 0) {
+        state[root].splice(i, 1)
+      }
+    })
   },
 
   setUpdateFileUpload (state, payload) {

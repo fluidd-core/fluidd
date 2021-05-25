@@ -10,6 +10,7 @@
     :class="{ 'no-pointer-events': dragState.overlay }">
 
     <file-system-toolbar
+      v-if="selected.length <= 0"
       :roots="availableRoots"
       :root="currentRoot"
       :name="name"
@@ -26,6 +27,13 @@
       @filter="handleFilter"
     ></file-system-toolbar>
 
+    <file-system-bulk-actions
+      v-if="selected.length > 0"
+      :path="visiblePath"
+      @remove="handleRemove(selected)"
+    >
+    </file-system-bulk-actions>
+
     <file-system-browser
       v-if="headers"
       :headers="visibleHeaders"
@@ -37,6 +45,8 @@
       :filters="filters"
       :files="files"
       :drag-state.sync="dragState.browserState"
+      :bulk-actions="bulkActions"
+      :selected.sync="selected"
       @row-click="handleRowClick"
       @move="handleMove"
     >
@@ -117,6 +127,7 @@ import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
 import FileSystemToolbar from './FileSystemToolbar.vue'
+import FileSystemBulkActions from './FileSystemBulkActions.vue'
 import FileSystemBrowser from './FileSystemBrowser.vue'
 import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
@@ -136,6 +147,7 @@ import { AppTableHeader } from '@/types'
 @Component({
   components: {
     FileSystemToolbar,
+    FileSystemBulkActions,
     FileSystemBrowser,
     FileSystemContextMenu,
     FileSystemDragOverlay,
@@ -165,6 +177,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: [Number, String] })
   maxHeight!: number | string;
 
+  // Allow bulk-actions
+  @Prop({ type: Boolean, default: false })
+  bulkActions!: boolean;
+
   // Maintains the path and root.
   currentRoot = ''
 
@@ -187,6 +203,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     browserState: false, // indicates if our browser is in a drag state.
     overlay: false // toggles our overlay for file drops.
   }
+
+  // Maintains any selected items and their state.
+  selected: (AppFile | AppFileWithMeta | AppDirectory)[] = []
 
   // Maintains the file editor dialog state.
   fileEditorDialogState: any = {
@@ -329,6 +348,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return []
   }
 
+  @Watch('files')
+  onFilesChange () {
+    // If our file list changes, reset selected files.
+    this.selected = []
+  }
+
   // Determine if we're waiting for a directory load on our current path.
   get filesLoading () {
     return this.hasWaitsBy(Waits.onFileSystem)
@@ -393,6 +418,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         } else {
           this.loadFiles(`${this.currentPath}/${dir.dirname}`)
         }
+        // Clear selected bulk items if we're navigating folders.
+        this.selected = []
       } else {
         // Open the context menu
         this.contextMenuState.x = e.clientX
@@ -540,7 +567,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleMove (source: AppFile | AppFileWithMeta | AppDirectory, destination: AppDirectory) {
+  handleMove (source: AppFile | AppFileWithMeta | AppDirectory | (AppFile | AppFileWithMeta | AppDirectory)[], destination: AppDirectory) {
     let destinationPath = `${this.currentPath}/${destination.dirname}`
     if (destination.dirname === '..') {
       const arr = this.currentPath.split('/')
@@ -548,19 +575,23 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       destinationPath = arr.join('/')
     }
 
-    if (source.type === 'file') {
-      const src = `${this.currentPath}/${source.filename}`
-      const dest = (destinationPath)
-        ? `${destinationPath}/${source.filename}`
-        : `${source.filename}`
-      SocketActions.serverFilesMove(src, dest)
-    } else {
-      const src = `${this.currentPath}/${source.dirname}`
-      const dest = (destinationPath)
-        ? `${destinationPath}/${source.dirname}`
-        : `${source.dirname}`
-      SocketActions.serverFilesMove(src, dest)
-    }
+    const items = (Array.isArray(source)) ? source.filter(item => (item.name !== '..')) : [source]
+
+    items.forEach((item) => {
+      if (item.type === 'file') {
+        const src = `${this.currentPath}/${item.filename}`
+        const dest = (destinationPath)
+          ? `${destinationPath}/${item.filename}`
+          : `${item.filename}`
+        SocketActions.serverFilesMove(src, dest)
+      } else {
+        const src = `${this.currentPath}/${item.dirname}`
+        const dest = (destinationPath)
+          ? `${destinationPath}/${item.dirname}`
+          : `${item.dirname}`
+        SocketActions.serverFilesMove(src, dest)
+      }
+    })
   }
 
   handleRename (name: string) {
@@ -569,19 +600,23 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.serverFilesMove(src, dest)
   }
 
-  handleRemove (file: AppFile | AppFileWithMeta | AppDirectory) {
+  handleRemove (file: AppFile | AppFileWithMeta | AppDirectory | (AppFile | AppFileWithMeta | AppDirectory)[]) {
     if (this.disabled) return
-    let text = this.$tc('app.general.simple_form.msg.confirm')
-    if (file.type === 'directory') text = this.$tc('app.file_system.msg.confirm')
+
+    const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
+
+    const text = this.$tc('app.file_system.msg.confirm')
     this.$confirm(
       text,
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
-        if (res) {
-          if (file.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${file.name}`, true)
-          if (file.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${file.name}`)
-        }
+        items.forEach((item) => {
+          if (res) {
+            if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.name}`, true)
+            if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.name}`)
+          }
+        })
       })
   }
 

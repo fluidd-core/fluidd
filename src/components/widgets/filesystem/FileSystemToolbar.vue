@@ -10,9 +10,9 @@
 
     <div style="max-width: 160px;" class="mr-1">
       <v-text-field
-        v-model="search"
+        v-model="textSearch"
         :disabled="disabled"
-        @keyup="$emit('update:search', search);"
+        @keyup="$emit('update:search', textSearch);"
         outlined
         dense
         single-line
@@ -145,7 +145,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   @Prop({ type: Boolean, default: false })
   loading!: boolean
 
-  search = ''
+  @Prop({ type: String, default: '' })
+  search!: string
+
+  textSearch = ''
 
   get readonly () {
     return this.$store.getters['files/getRootProperties'](this.root).readonly
@@ -163,6 +166,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Properties of the current root.
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
+  }
+
+  mounted () {
+    this.textSearch = this.search
   }
 
   handleUpload (files: FileList | File[], print: boolean) {

@@ -12,6 +12,7 @@ $tooltip-background-color: rgba(10,10,10,0.90);
 $material-dark: (
   'background': #1E1E20,
   'table': (
+    'active':#313134, 
     'hover': #353539
   ),
   'text': (
@@ -20,7 +21,7 @@ $material-dark: (
     'secondary': rgba(#ffffff, 0.87)
   ),
   'icons': (
-    'active': rgba(#ffffff, 0.87)
+    'active': rgba(#ffffff, 0.87) // incl checkboxes
   ),
   'text-color': rgba(#ffffff, 0.87),
   'fg-color': rgba(#ffffff, 0.87)
