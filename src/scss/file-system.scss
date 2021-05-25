@@ -5,21 +5,6 @@
     user-select: none;
   }
 
-  ::-webkit-scrollbar {
-    transition: all .5s;
-    width: 5px;
-    height: 10px;
-    z-index: 10;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #b3ada7;
-  }
-
   // gcode thumbnails in the file list
   .file-icon-thumb {
     align-items: center;
