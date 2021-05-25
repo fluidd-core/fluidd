@@ -154,7 +154,6 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   .console-wrapper {
-    overflow-x: hidden;
     font-family: monospace;
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
@@ -164,19 +163,8 @@ export default class Console extends Mixins(StateMixin) {
     flex: 0 0 auto;
   }
 
-  .console ::-webkit-scrollbar {
-    transition: all .5s;
-    width: 5px;
-    height: 1px;
-    z-index: 10;
-  }
-
-  .console ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .console ::-webkit-scrollbar-thumb {
-    background: #b3ada7;
+  ::v-deep .vue-recycle-scroller__item-wrapper {
+    overflow: revert;
   }
 
 </style>
