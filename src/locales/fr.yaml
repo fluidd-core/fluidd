@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      boxScale: Amplifier la visualisation
       flat_surface: Afficher une surface de ref.
       mesh_matrix: Matrice interpolée
       probed_matrix: Matrice réelle
@@ -12,7 +13,7 @@ app:
       hint: >-
         Si vous enregistrez le profil sous un autre nom que '%{profileName}',
         vous pourrez également supprimer le profil '%{profileName}' .
-      not_found: "Aucun bed mesh trouvé . "
+      not_found: Aucun bed mesh trouvé
       not_loaded: Pas de bed mesh chargé
     tooltip:
       calibrate: >-
@@ -27,8 +28,8 @@ app:
     label:
       current: Courant
       item: Élément
-      off: Graphique activé
-      on: Graphique désactivé
+      'off': Désactiver le graphique
+      'on': Activer le graphique
       power: Puissance
       target: Cible
     tooltip:
@@ -54,7 +55,7 @@ app:
         Veuillez vous réferer à la documentation relative à la configuration
         multiple  <a href="%{url}" target="_blank">ici</a> .
     hint:
-      add_printer: "Ex: http://fluiddpi.local"
+      add_printer: 'Ex: http://fluiddpi.local'
     msg:
       trouble: >-
         Un soucis ? <a href=\"%{url}\" target=\"_blank\">Cliquez ici</a> pour
@@ -68,7 +69,7 @@ app:
       open: OUVERT
       triggered: ACTIF
     msg:
-      subtitle: "Appuyez sur le bouton 'Rafraîchir' pour mettre à jour le statut . "
+      subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut . '
   file_system:
     filters:
       label:
@@ -93,12 +94,32 @@ app:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
       download_file: Téléchargement en cours
+      keyboard_shortcuts: Raccourcis de clavier
       rename_dir: Renommer le dossier
       rename_file: Renommer le fichier
       upload_file: Upload en cours
     tooltip:
       disabled: Les fichiers sont désactivés avant la communication initiale avec klippy
       low_on_space: Espace disque limité
+  gcode:
+    btn:
+      load_current_file: Charger le fichier actuel
+    label:
+      current_layer_height: Hauteur de couche actuelle
+      follow_progress: Suivre la progression
+      layer: Couche
+      layers: Couches
+      parsed: Analysé
+      progress: Progression
+      show_extrusions: Afficher les extrusions
+      show_moves: Afficher les déplacements
+      show_next_layer: Afficher la couche suivante
+      show_previous_layer: Afficher la couche précédente
+      show_retractions: Aficher les rétractations
+    msg:
+      confirm: >-
+        La taille du fichier "%{filename}" est de %{size}, cela peut causer une
+        utilisation excessive des ressources du système. Êtes-vous sûr?
   general:
     btn:
       add: Ajouter
@@ -143,14 +164,18 @@ app:
       upload: Uploaded
       upload_print: Uploaded & imprimer
       view: Voir
+      exit_layout: Quitter le mode de mise en page
+      preview_gcode: Prévisualiser le Gcode
+      load_current_file: Charger le fichier actuel
+      more_information: Plus d'informations
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
-        target=\"_blank\" href=\"%{url}\">ici</a> .
-      app_warnings_found: "%{appName} avertissements ."
+        target="_blank" href="%{url}">ici</a>.
+      app_warnings_found: '%{appName} avertissements .'
       components_config: >-
-        La configuration du plugin moonraker est disponible <a target=\"_blank\"
-        href=\"%{url}\">ici . </a>
+        La configuration du plugin moonraker est disponible <a target="_blank"
+        href="%{url}">ici</a>.
       failed_components: >-
         Moonraker a des plugins en échec, veuillez vérifier les logs, mettre à
         jour la configuration et redémarrer moonraker .
@@ -158,8 +183,10 @@ app:
       accel_to_decel: Accel. à Décel.
       acceleration: Acceleration
       add_camera: Ajouter une caméra
+      add_category: Ajouter une catégorie
       add_preset: Ajouter un pré-réglage
       api_url: URL de l'API
+      clear_all: Effacer tout
       confirm: Confirmation
       edit_camera: Éditer une caméra
       edit_preset: Editer le pré-réglage
@@ -172,29 +199,33 @@ app:
       layout: Disposition
       longest_job: Plus longue impr.
       low: Min
+      move_macro: Déplacer la macro %{name}
       name: Nom
-      "off": "Off"
+      no_notifications: Aucune notification
+      'off': 'Off'
       power: Puissance
       printers: Imprimantes
       requested_speed: Vitesse demandée
       save_as: Sauvegarder sous
       services: Services
       speed: Vitesse
-      sqv: Square Corner Velocity
+      sqv: Vitesse angle droit
       total_filament: Total filament
-      total_filament_avg: Moy par impression
+      total_filament_avg: Moy. par impression
       total_jobs: Nombre total d'impr.
       total_print_time: Temps total d'impr.
-      total_print_time_avg: Moy par impression
+      total_print_time_avg: Moy. par impression
       total_time: Temps total
-      total_time_avg: Moy par impression
-      used: occupés
+      total_time_avg: Temps moyen
+      uncategorized: Non catégorisé
+      used: occupé
       variance: Variance
       velocity: Velocité
       z_offset: Z Offset
     simple_form:
       error:
-        arrayofnums: Seulement des nombres
+        arrayofnums: Nombres uniquement
+        exists: Existe déja
         invalid_url: URL invalide
         max: Max %{max}
         min: Min %{min}
@@ -210,7 +241,8 @@ app:
         end_time: Terminé
         estimated_time: Temps estimé
         filament: Filament
-        filament_used: Filament
+        filament_used: Filament utilisé
+        filament_weight_total: Poids total
         first_layer_bed_temp: Temp. initiale du lit
         first_layer_extr_temp: Temp. initiale de l'extrudeur
         first_layer_height: Hauteur première couche
@@ -236,6 +268,7 @@ app:
       console: Console
       endstops: Fin de course
       fans_outputs: Ventilateur & sorties
+      gcode_preview: Prévisualisation du Gcode
       history: Historique des impressions
       home: Tableau de bord
       jobs: Fichiers
@@ -293,30 +326,38 @@ app:
       camera_flip_y: Retourner verticalement
       camera_stream_type: Type de flux
       camera_url: URL de la webcam
+      confirm_on_estop: Demander une confirmation en cas d'arrêt d'urgence
       dark_mode: Mode sombre
       default_extrude_length: Longueur d'extrusion par défaut
       default_extrude_speed: Vitesse d'extrusion par défaut
       default_toolhead_move_length: Longueur de déplacement de la tête d'outil par défaut
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
+      draw_background: Afficher le fond d'écran
       enable: Activer
+      enable_animations: Activer les animations
       enable_notifications: Activer les notifications
+      extrusion_line_width: Largeur de ligne d'extrusion
+      flip_horizontal: Retourner horizontalement
+      flip_vertical: Retourner verticalement
       fps_target: Nombre d'images par seconde
       gcode_coords: Utiliser les coordonnées GCode
       invert_x_control: Inverser les contrôles en X
       invert_y_control: Inverser les contrôles en Y
       invert_z_control: Inverser les contrôles en Z
       language: Langue d'affichage
+      move_line_width: Largeur de ligne de déplacement
       primary_color: Couleur primaire
       printer_name: Nom de l'imprimante
       reset: Remettre à zéro
+      retraction_icon_size: Taille de l'icone de rétractation
       thermal_preset_name: Nom du pré-réglage
       time_estimates: Estimation de temps
       toggle: Basculer
       z_adjust_values: Valeurs de Z Adjust
     timer_options:
       duration: Durée uniquement
-      duration_description: "Similaire au LCD klipper, affiche une durée sans estimation . "
+      duration_description: 'Similaire au LCD klipper, affiche une durée sans estimation . '
       filament: Estimation de filament
       filament_description: >-
         "Compare le filament utilisé avec l'estimation pour  estimer une durée
@@ -332,6 +373,7 @@ app:
         slicer .
     title:
       camera: Webcam
+      gcode_preview: Prévisualiser le Gcode
       general: Général
       macros: Macros
       theme: Thème
@@ -350,7 +392,7 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: "Y"
+      home_y: 'Y'
     tooltip:
       extruder_disabled: >-
         extrudeur désactivé, en dessous de min_extrude_temp( %{min}
@@ -362,6 +404,7 @@ app:
       check_for_updates: Vérifier les mises à jour
       finish: Terminer
       update: Mettre à jour
+      view_versions: Voir les versions
     label:
       commit_history: Historique des commits
       commits_on: commité le
@@ -371,13 +414,16 @@ app:
       os_packages: Paquets du système d'exploitation
       package_list: Liste des paquets
       up_to_date: A JOUR
+      updates_available: Mises à jour disponnibles
     status:
       finished: Mises à jour terminées
       updating: Mise à jour ...
-    title: Mises à jour disponibles
+    title: Mises à jour
     tooltip:
       commit_history: Historique des commits
-      dirty: indique un état 'detached head', pas sur 'master' ou une 'origin' invalide
+      dirty: >-
+        indique un état 'detached head', pas sur 'master' ou une 'origin'
+        invalide
       invalid: indique des changements locaux dans le répo
       packages: Paquets
-      release_notes:
+      release_notes: Notes de mise à jour
