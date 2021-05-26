@@ -2,15 +2,16 @@ import { HistoryItem } from '@/store/history/types'
 
 export interface FilesState {
   [key: string]: Files[] | FilesUpload[] | FileDownload | string[] | CurrentPaths | DiskUsage | null;
-  availableRoots: string[];
-  gcodes: Files[];
-  config: Files[];
-  config_examples: Files[];
-  docs: Files[];
   uploads: FilesUpload[];
   download: FileDownload | null;
   currentPaths: CurrentPaths;
   disk_usage: DiskUsage;
+
+  gcodes: Files[];
+  config: Files[];
+  config_examples: Files[];
+  docs: Files[];
+  logs: Files[];
 }
 
 export interface DiskUsage {
@@ -132,3 +133,5 @@ export interface FileFilter {
   text: string;
   desc: string;
 }
+
+export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs'

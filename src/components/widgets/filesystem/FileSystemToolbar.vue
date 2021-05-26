@@ -94,7 +94,7 @@
     >
       <v-tabs>
         <v-tab
-          v-for="(root, index) in roots"
+          v-for="(root, index) in registeredRoots"
           :key="index"
           @change="$emit('root-change', root)">
           {{ root }}
@@ -170,6 +170,11 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   mounted () {
     this.textSearch = this.search
+  }
+
+  // Only show roots that have been registered.
+  get registeredRoots () {
+    return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
   }
 
   handleUpload (files: FileList | File[], print: boolean) {

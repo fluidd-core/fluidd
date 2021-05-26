@@ -23,7 +23,7 @@
           :draggable="false"
         >
           <file-system
-            :roots="['config', 'config_examples', 'docs']"
+            :roots="['config', 'config_examples', 'docs', 'logs']"
             name="configure"
             :max-height="620">
           </file-system>
