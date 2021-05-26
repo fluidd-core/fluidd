@@ -72,12 +72,12 @@ export default class FileEditor extends Vue {
     const grammars = new Map()
     grammars.set('gcode', 'source.gcode')
     grammars.set('klipper-config', 'source.klipper-config')
-    // grammars.set('log', 'text.log')
+    grammars.set('log', 'text.log')
 
     // ... and our languages
     monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
     monaco.languages.register({ id: 'klipper-config', extensions: ['cfg', 'conf'] })
-    // monaco.languages.register({ id: 'log', extensions: ['log'] })
+    monaco.languages.register({ id: 'log', extensions: ['log'] })
 
     // Define how commenting works.
     monaco.languages.setLanguageConfiguration('gcode', {
