@@ -15,7 +15,8 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import consola from 'consola'
-import { loadWASM } from 'onigasm'
+import { loadWASM } from 'vscode-oniguruma'
+// import { loadWASM } from 'onigasm'
 
 import { appInit } from './init'
 
@@ -90,12 +91,13 @@ Vue.use(VuetifyConfirm, {
 })
 // Vue.use(WorkboxPlugin)
 
-const loadOnigasm = async (): Promise<void> => {
-  const wasm = await require('onigasm/lib/onigasm.wasm')
-  await loadWASM(wasm.default)
-}
+// const loadOnigasm = async (): Promise<void> => {
+//   const wasm = await require('vscode-oniguruma/release/onig.wasm')
+//   // await response.arrayBuffer()
+//   await loadWASM(wasm.default.arrayBuffer)
+// }
 
-loadOnigasm()
+// loadOnigasm()
 
 appInit()
   .then((config: InitConfig) => {
