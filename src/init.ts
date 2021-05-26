@@ -1,9 +1,11 @@
 import Vue from 'vue'
+import httpClient from '@/api/httpClient'
 import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import { AxiosError } from 'axios'
+import router from './router'
 
 // Load API configuration
 /**
@@ -16,7 +18,7 @@ import { AxiosError } from 'axios'
  */
 
 const getHostConfig = async (): Promise<HostConfig> => {
-  const hostConfigResponse = await Vue.$http.get('/config.json?date=' + new Date().getTime())
+  const hostConfigResponse = await httpClient.get('/config.json?date=' + new Date().getTime())
   if (hostConfigResponse && hostConfigResponse.data) {
     consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data
@@ -56,17 +58,22 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // For each endpoint we have, ping each one to determine if any are active.
   // If none are, we'll force the instance add dialog.
+  // A 401 would indicate a good ping, since it's potentially an authenticated,
+  // endpoint but working instance.
   const results = await Promise.all(
     endpoints.map(async endpoint => {
-      try {
-        return await Vue.$http.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: Globals.NETWORK_REQUEST_TIMEOUT })
-      } catch {
-        consola.debug('Failed loading endpoint ping', endpoint)
-      }
+      return httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
+        .then(() => true)
+        .catch((response) => (response.status === 401))
+      // try {
+      //   return await httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
+      // } catch {
+      //   consola.debug('Failed loading endpoint ping', endpoint)
+      // }
     })
   )
 
-  const i = results.findIndex(endpoint => endpoint !== undefined)
+  const i = results.findIndex(endpoint => endpoint)
   return (i > -1)
     ? Vue.$filters.getApiUrls(endpoints[i])
     : { apiUrl: '', socketUrl: '' }
@@ -86,40 +93,61 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     apiConfig = await getApiConfig(hostConfig)
   }
 
-  // Just sets the api urls.
+  // Setup axios
+  if (apiConfig.apiUrl) httpClient.defaults.baseURL = apiConfig.apiUrl
+
+  // Just sets the api urls
   await store.dispatch('config/onInitApiConfig', apiConfig)
   consola.debug('inited apis', store.state.config, apiConfig)
 
+  // Init authentication
+  await store.dispatch('auth/initAuth')
+
   // Load any configuration we may have in moonrakers db
   let apiConnected = true
+  let apiAuthenticated = true
   const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
   for (const key in roots) {
-    const root = roots[key]
-    let d = {}
-    if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {
-      d = await Vue.$http.get(apiConfig.apiUrl + `/server/database/item?namespace=${Globals.MOONRAKER_DB.NAMESPACE}&key=${root.name}`)
-        .then(r => {
-          consola.debug('loaded db root', root.name, r.data.result.value)
-          return r.data.result.value
-        })
-        .catch((r: AxiosError) => {
-          if (r.response && r.response.status === 404) {
-            // Init the db store with an empty object.
-            Vue.$http.post(apiConfig?.apiUrl + '/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
-              key,
-              value: {}
-            })
-          }
-          consola.debug('API Down / Not Available:', r)
-          apiConnected = false
-          return {}
-        })
+    if (apiConnected && apiAuthenticated) {
+      const root = roots[key]
+      let d = {}
+      if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {
+        d = await httpClient.get(`/server/database/item?namespace=${Globals.MOONRAKER_DB.NAMESPACE}&key=${root.name}`)
+          .then(r => {
+            consola.debug('loaded db root', root.name, r.data.result.value)
+            return r.data.result.value
+          })
+          .catch((r: AxiosError) => {
+            if (r.response && r.response.status === 404) {
+              // Init the db store with an empty object.
+              httpClient.post('/server/database/item?namespace=' + Globals.MOONRAKER_DB.NAMESPACE, {
+                key,
+                value: {}
+              })
+            }
+            if (r.response && r.response.status === 401) {
+              // The API is technically connected, but we're un-authenticated.
+              apiConnected = true
+              apiAuthenticated = false
+            } else {
+              consola.debug('API Down / Not Available:', r)
+              apiConnected = false
+            }
+            return {}
+          })
+      } else {
+        apiConnected = false
+        apiAuthenticated = false
+      }
+      if (d) store.dispatch(root.dispatch, d)
     }
-    if (d) store.dispatch(root.dispatch, d)
   }
 
   // apiConfig could have empty strings, meaning we have no valid connection.
-  await store.dispatch('init', { apiConfig, hostConfig })
+  await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
 
-  return { apiConfig, hostConfig, apiConnected }
+  // Ensure users start on the dash.
+  if (router.currentRoute.path !== '/' && store.state.auth?.authenticated) router.push('/')
+
+  return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 }

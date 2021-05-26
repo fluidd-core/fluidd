@@ -42,7 +42,7 @@
           :r-cols="2"
         >
           <template v-slot:title>
-            {{ camera.name }} <v-icon v-if="!camera.enabled" right small color="error">$error</v-icon>
+            {{ camera.name }} <v-icon v-if="!camera.enabled" right small color="warning">$warning</v-icon>
           </template>
           <app-btn
             @click.stop="handleRemoveCamera(camera)"

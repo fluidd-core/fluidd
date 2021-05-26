@@ -41,7 +41,6 @@ export const mutations: MutationTree<LayoutState> = {
       }
 
       // Missing compontents? Add'em.
-      // console.log(supportedComponents)
       supportedComponents.forEach(o => {
         if (o.layout && o.container) {
           payload.layouts[o.layout][o.container].push(o)

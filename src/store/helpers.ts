@@ -8,7 +8,7 @@ import {
   KlipperFileWithMeta,
   Thumbnail
 } from './files/types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import store from '@/store'
 import { KlipperMesh, ProcessedMesh } from './mesh/types'
 import { ArcMove, Move, Point, Rotation } from '@/store/gcodePreview/types'

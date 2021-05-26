@@ -24,7 +24,7 @@
     />
 
     <v-btn
-      v-if="isMobile"
+      v-if="isMobile && authenticated"
       x-small
       fab
       fixed
@@ -36,8 +36,9 @@
     </v-btn>
 
     <v-main>
-      <router-view v-if="socketConnected" />
-      <socket-disconnected v-if="!socketConnected"></socket-disconnected>
+      <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
+      <router-view v-if="(apiConnected && socketConnected) || (!authenticated && apiConnected)" />
+      <socket-disconnected v-if="!socketConnected && authenticated"></socket-disconnected>
       <updating-dialog></updating-dialog>
     </v-main>
 

@@ -88,8 +88,8 @@ export default class SystemPrinters extends Mixins(StateMixin) {
       appInit(instance, this.$store.state.config.hostConfig)
         .then((config: InitConfig) => {
           // Reconnect the socket with the new instance url.
-          if (config.apiConnected) {
-            consola.debug('Activating new instance with config', config)
+          if (config.apiConnected && config.apiAuthenticated) {
+            consola.debug('Activating socket with config', config)
             this.$socket.connect(config.apiConfig.socketUrl)
           }
         })

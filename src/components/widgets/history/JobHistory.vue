@@ -158,7 +158,7 @@ import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
 import { getFilePaths } from '@/store/helpers'
 import { HistoryItem } from '@/store/history/types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'
 
 @Component({

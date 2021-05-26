@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, AppFile, DiskUsage } from './types'
 import { RootState } from '../types'
 import { formatAsFile, getFilePaths } from '../helpers'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { HistoryItem } from '../history/types'
 

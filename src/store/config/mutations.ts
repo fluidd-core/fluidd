@@ -34,29 +34,14 @@ export const mutations: MutationTree<ConfigState> = {
   },
 
   /**
-   * During init of the store, sets localConfig.
-   * This would usually be set once loaded from localStorage.
-   */
-  setInitLocal (state) {
-    if (Globals.LOCAL_CARDSTATE_STORAGE_KEY in localStorage) {
-      const config = JSON.parse(localStorage[Globals.LOCAL_CARDSTATE_STORAGE_KEY])
-      Vue.set(state, 'cardState', config)
-    }
-
-    if (Globals.LOCAL_CARDLAYOUT_STORAGE_KEY in localStorage) {
-      const config = JSON.parse(localStorage[Globals.LOCAL_CARDLAYOUT_STORAGE_KEY])
-      Vue.set(state, 'cardLayout', config)
-    }
-  },
-
-  /**
    * Sets the API and Socket URLS on first load and
    * ensure the instance is configured in local storage
    */
   setInitApiConfig (state, payload) {
-    // consola.log('initing apis', payload)
     state.apiUrl = payload.apiUrl
     state.socketUrl = payload.socketUrl
+    console.log('setting instance name.')
+    if (payload.name && payload.name !== '') state.uiSettings.general.instanceName = payload.name
   },
 
   setInitHostConfig (state, payload) {
@@ -87,7 +72,7 @@ export const mutations: MutationTree<ConfigState> = {
     } else {
       instances.forEach((instance, index) => {
         instance.active = (index === i)
-        if (index === i) {
+        if (index === i && instance.name !== '') {
           instance.name = state.uiSettings.general.instanceName
         }
       })

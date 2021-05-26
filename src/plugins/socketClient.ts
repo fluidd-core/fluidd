@@ -9,9 +9,12 @@
 import _Vue from 'vue'
 import consola from 'consola'
 import { camelCase } from 'lodash-es'
+// import { getTokenKeys } from '@/store/auth/helpers'
+import { authApi } from '@/api/auth.api'
 
 export class WebSocketClient {
   url = '';
+  // token: string | null = null;
   connection: WebSocket | null = null;
   reconnectEnabled = false;
   reconnectInterval = 1000;
@@ -35,86 +38,95 @@ export class WebSocketClient {
     }
   }
 
-  connect (url?: string) {
+  async connect (url?: string) {
     if (url) this.url = url
 
-    if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
-    this.connection = new WebSocket(this.url)
+    await authApi.getOneShot()
+      .then(response => response.data.result)
+      .then((token) => {
+        // Good. Move on swith setting up the socket.
+        if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
+        this.connection = new WebSocket(`${this.url}?token=${token}`)
 
-    this.connection.onopen = () => {
-      if (this.reconnectEnabled) {
-        this.reconnectCount = 1
-      }
-      if (this.store) {
-        this.store.dispatch('socket/onSocketConnecting', false)
-        this.store.dispatch('socket/onSocketOpen', true)
-      }
-    }
-
-    this.connection.onclose = (e) => {
-      consola.debug(`${this.logPrefix} Connection closed:`, e)
-      if (this.store) this.store.dispatch('socket/onSocketClose', e)
-      if (e.wasClean) {
-        // A clean close indicates we wanted to do this on purpose.
-        if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
-      } else {
-        this.reconnect()
-      }
-    }
-
-    this.connection.onerror = (e) => {
-      consola.error(`${this.logPrefix} Connection error:`, e)
-      if (this.store) this.store.dispatch('socket/onSocketError', e)
-    }
-
-    this.connection.onmessage = (m) => {
-      const d: SocketResponse = JSON.parse(m.data)
-
-      // Is this a socket notification, or an answer to a specific request?
-      let request: Request | undefined
-      const requestIndex = this.requests.findIndex(request => request.id === d.id)
-      if (requestIndex > -1) {
-        request = this.requests[requestIndex]
-        this.requests.splice(requestIndex, 1)
-      }
-
-      // Remove a wait if defined.
-      if (request && request.wait && request.wait.length) {
-        this.store.commit('wait/setRemoveWait', request.wait)
-      }
-
-      if (d.error) { // Is it in error?
-        if (request) {
-          Object.defineProperty(d.error, '__request__', { enumerable: false, value: request })
-        }
-        consola.debug(`${this.logPrefix} Response error:`, d.error)
-        this.store.dispatch('socket/onSocketError', d.error)
-        return
-      }
-
-      if (request) {
-        // these are specific answers to a request we've made.
-        // Build the response, including a non-enumerable ref of the original request.
-        let result = (d.result) ? d.result : d.params
-        if (typeof result === 'string') {
-          result = { result }
+        this.connection.onopen = () => {
+          if (this.reconnectEnabled) {
+            this.reconnectCount = 1
+          }
+          if (this.store) {
+            this.store.dispatch('socket/onSocketConnecting', false)
+            this.store.dispatch('socket/onSocketOpen', true)
+          }
         }
 
-        Object.defineProperty(result, '__request__', { enumerable: false, value: request })
-        consola.debug(`${this.logPrefix} Response:`, result)
-        if (request.dispatch) this.store?.dispatch(request.dispatch, result)
-        if (request.commit) this.store?.commit(request.commit, result)
-      } else {
-        // These are socket notifications (i.e., no specific request was made..)
-        // Dispatch with the name of the method, converted to camelCase.
-        // consola.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
-        if (d.params && d.params[0]) {
-          this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
-        } else {
-          this.store.dispatch('socket/' + camelCase(d.method))
+        this.connection.onclose = (e) => {
+          consola.debug(`${this.logPrefix} Connection closed:`, e)
+          if (this.store) this.store.dispatch('socket/onSocketClose', e)
+          if (e.wasClean) {
+            // A clean close indicates we wanted to do this on purpose.
+            if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
+          } else {
+            this.reconnect()
+          }
         }
-      }
-    }
+
+        this.connection.onerror = (e) => {
+          consola.error(`${this.logPrefix} Connection error:`, e)
+          if (this.store) this.store.dispatch('socket/onSocketError', e)
+        }
+
+        this.connection.onmessage = (m) => {
+          const d: SocketResponse = JSON.parse(m.data)
+
+          // Is this a socket notification, or an answer to a specific request?
+          let request: Request | undefined
+          const requestIndex = this.requests.findIndex(request => request.id === d.id)
+          if (requestIndex > -1) {
+            request = this.requests[requestIndex]
+            this.requests.splice(requestIndex, 1)
+          }
+
+          // Remove a wait if defined.
+          if (request && request.wait && request.wait.length) {
+            this.store.commit('wait/setRemoveWait', request.wait)
+          }
+
+          if (d.error) { // Is it in error?
+            if (request) {
+              Object.defineProperty(d.error, '__request__', { enumerable: false, value: request })
+            }
+            consola.debug(`${this.logPrefix} Response error:`, d.error)
+            this.store.dispatch('socket/onSocketError', d.error)
+            return
+          }
+
+          if (request) {
+            // these are specific answers to a request we've made.
+            // Build the response, including a non-enumerable ref of the original request.
+            let result = (d.result) ? d.result : d.params
+            if (typeof result === 'string') {
+              result = { result }
+            }
+
+            Object.defineProperty(result, '__request__', { enumerable: false, value: request })
+            consola.debug(`${this.logPrefix} Response:`, result)
+            if (request.dispatch) this.store?.dispatch(request.dispatch, result)
+            if (request.commit) this.store?.commit(request.commit, result)
+          } else {
+            // These are socket notifications (i.e., no specific request was made..)
+            // Dispatch with the name of the method, converted to camelCase.
+            // consola.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
+            if (d.params && d.params[0]) {
+              this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
+            } else {
+              this.store.dispatch('socket/' + camelCase(d.method))
+            }
+          }
+        }
+      })
+      .catch((err) => {
+        // Bad. If this is a 401, then don't retry. Otherwise do.
+        if (err.response?.status !== 401) this.reconnect()
+      })
   }
 
   reconnect () {
@@ -199,6 +211,7 @@ interface SocketClient {
 
 interface Options {
   url: string;
+  token?: string;
   reconnectEnabled?: boolean;
   reconnectInterval?: number;
   store: any;

@@ -6,6 +6,7 @@ import { InitConfig } from './config/types'
 
 // Modules
 import { socket } from './socket'
+import { auth } from './auth'
 import { server } from './server'
 import { printer } from './printer'
 import { config } from './config'
@@ -30,6 +31,7 @@ export default new Vuex.Store<RootState>({
   state: {},
   modules: {
     socket,
+    auth,
     server,
     printer,
     config,
@@ -72,9 +74,13 @@ export default new Vuex.Store<RootState>({
       commit('version/setVersion', process.env.VERSION)
       commit('version/setHash', process.env.HASH)
 
+      // Set the api connection state..
+      consola.log('store init', payload)
+      commit('socket/setApiConnected', payload.apiConnected)
+
       // Init the host and local configs..
       return [
-        await dispatch('config/initHost', payload.hostConfig),
+        await dispatch('config/initHost', payload),
         await dispatch('config/initLocal', payload)
       ]
     },

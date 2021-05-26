@@ -13,9 +13,11 @@ import { GcodePreviewState } from './gcodePreview/types'
 import { LayoutState } from './layout/types'
 import { MeshState } from './mesh/types'
 import { NotificationsState } from './notifications/types'
+import { AuthState } from './auth/types'
 
 export interface RootState {
   socket?: SocketState;
+  auth?: AuthState;
   server?: ServerState;
   printer?: PrinterState;
   config?: ConfigState;

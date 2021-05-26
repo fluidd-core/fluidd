@@ -100,7 +100,10 @@ import {
   mdiCubeScan,
   mdiHandRight,
   mdiThermometerAlert,
-  mdiApps
+  mdiShieldAccount,
+  mdiContentCopy,
+  mdiApps,
+  mdiAccountPlus
 } from '@mdi/js'
 
 /**
@@ -111,7 +114,7 @@ export const Globals = Object.freeze({
   DEFAULTS: {
     CAMERA_URL: '/webcam?action=stream'
   },
-  NETWORK_REQUEST_TIMEOUT: 500,
+  NETWORK_REQUEST_TIMEOUT: 5000,
   KLIPPY_RETRY_DELAY: 1500,
   SOCKET_RETRY_DELAY: 2000,
   CONSOLE_HISTORY_RETENTION: 1000, // total count
@@ -136,6 +139,7 @@ export const Globals = Object.freeze({
     }
   },
   MOONRAKER_COMPONENTS: {
+    auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' }
@@ -152,6 +156,7 @@ export const Globals = Object.freeze({
 
 export const Icons = Object.freeze({
   account: mdiAccount,
+  addAccount: mdiAccountPlus,
   help: mdiHelpCircle,
   motion: mdiMotionOutline,
   limits: mdiArrowHorizontalLock,
@@ -252,7 +257,9 @@ export const Icons = Object.freeze({
   lockOpen: mdiLockOpenVariant,
   lockReset: mdiLockReset,
   tempError: mdiThermometerAlert,
+  contentCopy: mdiContentCopy,
   apps: mdiApps,
+  shieldAccount: mdiShieldAccount,
   retract: mdiAlphaRCircleOutline
 })
 

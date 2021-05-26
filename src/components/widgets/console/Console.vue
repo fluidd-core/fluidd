@@ -51,7 +51,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { ConsoleEntry } from '@/store/console/types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {

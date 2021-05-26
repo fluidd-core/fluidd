@@ -2,9 +2,10 @@
   <v-menu
     offset-y
     left
-    :close-on-content-click="false"
     :max-width="(isMobile) ? 220 : 420"
     v-model="menu"
+    :close-on-content-click="false"
+    :close-delay="300"
   >
     <template v-slot:activator="{ on, attrs }">
       <v-badge

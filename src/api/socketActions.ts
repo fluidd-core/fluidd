@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
-import store from './store'
+import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
 

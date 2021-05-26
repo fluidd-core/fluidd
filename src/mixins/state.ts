@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
 import { Waits } from '@/globals'
 
@@ -7,8 +7,17 @@ import { Waits } from '@/globals'
 export default class UtilsMixin extends Vue {
   waits = Waits
 
+  get authenticated () {
+    const auth = this.$store.getters['auth/getAuthenticated']
+    return auth
+  }
+
   get socketConnected () {
     return this.$store.getters['socket/getConnectionState']
+  }
+
+  get apiConnected () {
+    return this.$store.getters['socket/getApiConnected']
   }
 
   get socketConnecting () {

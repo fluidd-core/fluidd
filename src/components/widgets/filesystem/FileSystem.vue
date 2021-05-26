@@ -110,7 +110,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilter } from '@/store/files/types'
 import { Waits } from '@/globals'
 import StateMixin from '@/mixins/state'
@@ -124,7 +124,7 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
-import { AxiosResponse } from 'axios'
+import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
 
 /**
@@ -457,7 +457,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleFileOpenDialog (file: AppFile | AppFileWithMeta) {
     // Grab the file. This should provide a dialog.
-    this.cancelTokenSource = this.$http.CancelToken.source()
+    this.cancelTokenSource = Axios.CancelToken.source()
     this.getFile(
       file.filename,
       this.currentPath,

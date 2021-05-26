@@ -18,7 +18,7 @@
       </v-toolbar-title>
     </div>
 
-    <div class="toolbar-nav">
+    <div class="toolbar-nav" v-if="authenticated && socketConnected">
       <app-nav-item
         icon="$home"
         exact
@@ -51,9 +51,10 @@
         {{ $t('app.general.title.configure') }}
       </app-nav-item>
     </div>
+    <div class="toolbar-nav" v-else></div>
 
     <div class="toolbar-suplimental">
-      <v-tooltip bottom v-if="socketConnected && !isMobile">
+      <v-tooltip bottom v-if="socketConnected && !isMobile && authenticated">
         <template v-slot:activator="{ on, attrs }">
           <app-btn
             v-if="!isMobile"
@@ -73,19 +74,26 @@
         {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <app-notification-menu></app-notification-menu>
+      <app-notification-menu v-if="authenticated && socketConnected"></app-notification-menu>
 
       <app-btn
-        v-if="!isMobile"
+        v-if="!isMobile && authenticated && socketConnected"
         fab
         small
         :elevation="0"
         class="mx-1"
         color="transparent"
-        :to="{ path: '/settings' }"
+        :is-active="false"
+        @click.stop="$filters.routeTo('/settings')"
       >
+      <!-- @click.stop="(router.currentRoute.path !== '/settings') router.push('/settings')"-->
         <v-icon>$cog</v-icon>
       </app-btn>
+
+      <app-user-menu
+        v-if="supportsAuth && authenticated"
+        @change-password="dialog = true"
+      ></app-user-menu>
 
       <app-btn
         fab
@@ -119,20 +127,34 @@
       </app-btn>
     </template>
 
+    <user-password-dialog
+      v-model="dialog">
+    </user-password-dialog>
+
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
 import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
 
-@Component({})
+@Component({
+  components: {
+    UserPasswordDialog
+  }
+})
 export default class AppBar extends Mixins(StateMixin) {
   menu = false
+  dialog = false
 
   get supportsHistory () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  get supportsAuth () {
+    return this.$store.getters['server/componentSupport']('authorization')
   }
 
   get instances () {

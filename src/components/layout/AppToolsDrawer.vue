@@ -5,7 +5,7 @@
     app right clipped temporary
     dense>
 
-    <v-list dense>
+    <v-list dense v-if="authenticated">
       <v-subheader>{{ instanceName }}</v-subheader>
       <v-divider></v-divider>
 
@@ -72,7 +72,7 @@
 
     <system-printers @click="this.close"></system-printers>
 
-    <system-layout @click="this.close"></system-layout>
+    <system-layout @click="this.close" v-if="authenticated"></system-layout>
 
   </v-navigation-drawer>
 </template>

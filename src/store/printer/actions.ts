@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { PrinterState } from './types'
 import { RootState } from '../types'
 import { handleAddChartEntry, handlePrintStateChange, handleCurrentFileChange } from '../helpers'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import consola from 'consola'
 

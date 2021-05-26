@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { LayoutConfig, LayoutState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 
 export const actions: ActionTree<LayoutState, RootState> = {

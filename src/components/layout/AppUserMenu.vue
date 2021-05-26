@@ -1,56 +1,88 @@
 <template>
   <v-menu
-    :nudge-width="100"
+    :nudge-width="260"
     offset-y
+    :close-delay="300"
   >
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         v-bind="attrs"
         v-on="on"
-        icon
+        fab text small
         @click="$emit('drawer')">
         <v-icon>$account</v-icon>
       </v-btn>
     </template>
 
     <v-card>
+      <v-card-text class="text-center">
+        <div>
+          <v-icon large>$account</v-icon>
+        </div>
+        <span class="text-h5">{{ currentUser }}</span>
+
+        <div class="mt-3" v-if="!isTrustedOnly">
+          <app-btn small @click="$emit('change-password')">Change password</app-btn>
+        </div>
+      </v-card-text>
+
+      <v-divider />
+
       <v-list class="py-0">
-
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-icon>$account</v-icon>
-          </v-list-item-avatar>
-
-          <v-list-item-content>
-            <v-list-item-title>User Account</v-list-item-title>
-          </v-list-item-content>
-
-          <v-list-item-action>
-            <v-btn
-              class="red--text"
-              icon
-              @click="$emit('logout')"
-            >
-              <v-icon>mdi-heart</v-icon>
-            </v-btn>
-          </v-list-item-action>
+        <v-list-item
+          dense
+          @click="$filters.routeTo('/settings#auth')"
+        >
+          <v-list-item-icon>
+            <v-icon>$addAccount</v-icon>
+          </v-list-item-icon>
+          <v-list-item-title>Manage accounts</v-list-item-title>
         </v-list-item>
 
-        <v-divider></v-divider>
+        <v-divider v-if="!isTrustedOnly" />
 
+        <v-list-item v-if="!isTrustedOnly">
+          <v-list-item-content class="justify-center">
+            <app-btn @click="handleLogout">Logout</app-btn>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
-      <v-card-actions>
-        <v-spacer></v-spacer>
-
-        <v-btn
-          color="primary"
-          text
-          @click="$emit('logout')"
-        >
-          Logout
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-menu>
 </template>
+
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator'
+
+@Component({})
+export default class AppNotificationMenu extends Vue {
+  get user () {
+    return this.$store.getters['auth/getCurrentUser']
+  }
+
+  get currentUser () {
+    if (!this.user) return ''
+    if (
+      this.user.username === '_TRUSTED_USER_' ||
+      this.user.username === '_API__API_KEY_USER_USER_'
+    ) {
+      return Vue.$filters.startCase(this.user.username)
+    } else {
+      return this.user.username
+    }
+  }
+
+  get isTrustedOnly () {
+    if (!this.user) return false
+    return (
+      this.user.username === '_TRUSTED_USER_' ||
+      this.user.username === '_API__API_KEY_USER_USER_'
+    )
+  }
+
+  async handleLogout () {
+    await this.$store.dispatch('auth/checkTrust')
+  }
+}
+</script>

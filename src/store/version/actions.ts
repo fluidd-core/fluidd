@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import consola from 'consola'
 import { VersionState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import i18n from '@/plugins/i18n'
 
 export const actions: ActionTree<VersionState, RootState> = {

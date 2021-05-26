@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {}

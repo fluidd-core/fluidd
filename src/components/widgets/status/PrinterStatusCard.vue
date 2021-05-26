@@ -88,7 +88,7 @@ import PrintStatus from './PrintStatus.vue'
 import ReprintMenu from './ReprintMenu.vue'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {

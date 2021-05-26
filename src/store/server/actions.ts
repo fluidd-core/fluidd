@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { ServerState, ServerThrottledState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { AppPushNotification } from '../notifications/types'
 
@@ -54,7 +54,7 @@ export const actions: ActionTree<ServerState, RootState> = {
       if (state.klippy_retries === 0) dispatch('initComponents', payload)
       commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
-      retryTimeout = setTimeout(() => {
+      retryTimeout = window.setTimeout(() => {
         SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {

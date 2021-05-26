@@ -41,6 +41,7 @@ export default class AppSettingsNav extends Vue {
   get items () {
     return [
       { name: this.$t('app.setting.title.general'), icon: '$printer', hash: '#general', visible: true },
+      { name: this.$t('app.setting.title.authentication'), icon: '$shieldAccount', hash: '#auth', visible: true },
       { name: this.$t('app.version.title'), icon: '$refresh', hash: '#versions', visible: this.supportsVersions },
       { name: this.$t('app.setting.title.macros'), icon: '$fileCode', hash: '#macros', visible: true },
       { name: this.$tc('app.setting.title.camera', 2), icon: '$camera', hash: '#camera', visible: true },

@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { EventBus } from '@/eventBus'
+import { EventBus, FlashMessageTypes } from '@/eventBus'
 import { v4 as uuidv4 } from 'uuid'
 import { NotificationsState, AppPushNotification, AppNotification } from './types'
 import { RootState } from '../types'
@@ -46,7 +46,7 @@ export const actions: ActionTree<NotificationsState, RootState> = {
 
       if (payload.snackbar) {
         // Emit if snackbar is true.
-        EventBus.$emit(n.title, 'error', -1)
+        EventBus.$emit(n.title, { type: FlashMessageTypes.error })
       }
     }
   },

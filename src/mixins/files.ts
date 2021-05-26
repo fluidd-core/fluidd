@@ -1,8 +1,10 @@
 import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
+import httpClient from '@/api/httpClient'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
-import { AxiosRequestConfig, CancelTokenSource } from 'axios'
+import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
+import { authApi } from '@/api/auth.api'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -48,7 +50,7 @@ export default class FilesMixin extends Vue {
     }
 
     if (res) {
-      this.cancelTokenSource = this.$http.CancelToken.source()
+      this.cancelTokenSource = Axios.CancelToken.source()
       const path = file.path ? `${file.path}/${file.filename}` : file.filename
       return await this.getFile(path, 'gcodes', file.size, {
         responseType: 'text',
@@ -111,27 +113,40 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return await this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    return await httpClient.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
   }
 
   /**
    * Will download a file by filepath via a standard browser link.
+   * Implements a oneshot.
    * @param filename The filename to retrieve.
    * @param path The path to the file.
    */
   downloadFile (filename: string, path: string) {
-    // Sort out the filepath and url.
-    const filepath = (path) ? `${path}/${filename}` : `${filename}`
-    const url = encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime())
+    // Grab a oneshot.
+    authApi.getOneShot()
+      .then(response => response.data.result)
+      .then((token) => {
+        // Sort out the filepath and url.
+        const filepath = (path) ? `${path}/${filename}` : `${filename}`
+        const url = encodeURI(
+          this.apiUrl +
+          '/server/files/' + filepath +
+          '?token=' + token +
+          '&date=' + new Date().getTime())
 
-    // Create a link, handle its click - and finally remove it again.
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', filename)
-    link.setAttribute('target', '_blank')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+        // Create a link, handle its click - and finally remove it again.
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', filename)
+        link.setAttribute('target', '_blank')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      })
+      .catch(() => {
+        // Likely a 401.
+      })
   }
 
   /**
@@ -166,7 +181,7 @@ export default class FilesMixin extends Vue {
       cancelled: false
     })
 
-    return this.$http
+    return httpClient
       .post(
         this.apiUrl + '/server/files/upload',
         formData, {
@@ -239,7 +254,7 @@ export default class FilesMixin extends Vue {
       // consola.error('about to process...', fileState)
       if (!fileState.cancelled) {
         try {
-          this.cancelTokenSource = this.$http.CancelToken.source()
+          this.cancelTokenSource = Axios.CancelToken.source()
           await this.uploadFile(file, path, root, andPrint, {
             cancelToken: this.cancelTokenSource.token
           })

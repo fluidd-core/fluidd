@@ -143,6 +143,7 @@ app:
       preview_gcode: Preview Gcode
       quad_gantry_level: QGL
       reboot: Reboot
+      refresh: Refresh
       remove: Remove
       remove_all: Remove All
       rename: Rename
@@ -181,13 +182,18 @@ app:
       add_camera: Add Camera
       add_category: Add category
       add_preset: Add Preset
+      add_user: Add user
+      api_key: Api Key
       api_url: API URL
       category: Category
+      change_password: Change password
       clear_all: Clear all
       confirm: Confirm
       disabled_while_printing: Disabled while printing
+      current_password: Current password
       edit_camera: Edit Camera
       edit_preset: Edit Preset
+      edit_user: Edit user
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
       flow: Flow
@@ -198,8 +204,10 @@ app:
       longest_job: Longest job
       low: Low
       name: Name
+      new_password: New password
       no_notifications: No notifications
       'off': 'Off'
+      password: Password
       power: Power
       printers: Printers
       retract_length: Retract Length
@@ -223,6 +231,9 @@ app:
       velocity: Velocity
       visible: Visible
       z_offset: Z Offset
+    msg:
+      password_changed: Password changed
+      wrong_password: Oops, something went wrong. Is your password correct?
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -231,6 +242,7 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
+        password_username: Cannot match username
         required: Required
       msg:
         confirm: Are you sure?
@@ -311,6 +323,7 @@ app:
     btn:
       add_camera: Add Camera
       add_thermal_preset: Add Preset
+      add_user: Add user
       reset: Reset
       select_theme: Select Theme
     camera_type_options:
@@ -351,6 +364,7 @@ app:
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
+      show_animations: Show animations
       thermal_preset_name: Preset Name
       time_estimates: Time estimates
       toggle: Toggle
@@ -369,6 +383,7 @@ app:
       slicer: Slicer
       slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
     title:
+      authentication: Authentication
       camera: Camera | Cameras
       gcode_preview: Gcode Preview
       general: General
