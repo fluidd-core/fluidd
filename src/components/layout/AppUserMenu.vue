@@ -54,6 +54,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { startCase, capitalize } from 'lodash-es'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {
@@ -67,7 +68,7 @@ export default class AppNotificationMenu extends Vue {
       this.user.username === '_TRUSTED_USER_' ||
       this.user.username === '_API__API_KEY_USER_USER_'
     ) {
-      return Vue.$filters.startCase(this.user.username)
+      return capitalize(startCase(this.user.username))
     } else {
       return this.user.username
     }
