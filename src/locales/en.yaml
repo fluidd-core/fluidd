@@ -182,8 +182,10 @@ app:
       add_category: Add category
       add_preset: Add Preset
       api_url: API URL
+      category: Category
       clear_all: Clear all
       confirm: Confirm
+      disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_preset: Edit Preset
       extrude_length: Extrude Length
@@ -195,7 +197,6 @@ app:
       layout: Layout
       longest_job: Longest job
       low: Low
-      move_macro: Move macro %{name}
       name: Name
       no_notifications: No notifications
       'off': 'Off'
@@ -217,6 +218,7 @@ app:
       used: used
       variance: Variance
       velocity: Velocity
+      visible: Visible
       z_offset: Z Offset
     simple_form:
       error:

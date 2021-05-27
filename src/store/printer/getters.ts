@@ -174,6 +174,56 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   /**
+ * Return known extruders, giving them a friendly name.
+ */
+  getExtruders: (state) => {
+    const extruders: Extruder[] = []
+    Object.keys(state.printer)
+      .filter(key => key.startsWith('extruder'))
+      .sort()
+      .forEach(key => {
+        if (key.startsWith('extruder')) {
+          if (key === 'extruder') {
+            extruders.push({ name: 'Extruder 0', key })
+          } else {
+            const match = key.match(/\d+$/)
+            if (match) extruders.push({ name: 'Extruder ' + match[0], key })
+          }
+        }
+      })
+    return extruders
+  },
+
+  // Return the current extruder along with its configuration.
+  getActiveExtruder: (state, getters) => {
+    const name = state.printer.toolhead.extruder || 'extruder'
+    return getters.getExtruderByName(name)
+  },
+
+  // Returns an extruder by name.
+  getExtruderByName: (state, getters) => (name: string) => {
+    const e = state.printer[name] || undefined
+    const c = getters.getPrinterSettings(name)
+
+    // If we can't find what we need..
+    if (!e || !c) return {}
+
+    // The first extruder should include all we need.
+    if (name === 'extruder' && e && c) return { ...e, ...c }
+
+    // If we have other extruders, they may inherit some properties
+    // from the first depending how they're defined.
+    const d = getters.getPrinterSettings('extruder')
+    return {
+      ...{
+        min_extrude_temp: d.min_extrude_temp
+      },
+      ...e,
+      ...c
+    }
+  },
+
+  /**
    * Given axes, returns a boolean indicating if the axes are homed.
    */
   getHomedAxes: (state) => (axes?: string): boolean => {
@@ -466,27 +516,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
       sensors = [...sensors, ...state.printer.heaters.available_heaters]
     }
     return sensors
-  },
-
-  /**
-   * Return known extruders, giving them a friendly name.
-   */
-  getExtruders: (state) => {
-    const extruders: Extruder[] = []
-    Object.keys(state.printer)
-      .filter(key => key.startsWith('extruder'))
-      .sort()
-      .forEach(key => {
-        if (key.startsWith('extruder')) {
-          if (key === 'extruder') {
-            extruders.push({ name: 'Extruder 0', key })
-          } else {
-            const match = key.match(/\d+$/)
-            if (match) extruders.push({ name: 'Extruder ' + match[0], key })
-          }
-        }
-      })
-    return extruders
   },
 
   /**

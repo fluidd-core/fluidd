@@ -1,6 +1,7 @@
 <template>
   <app-btn
     v-if="params.length === 0 || !enableParams"
+    :disabled="macro.disabledWhilePrinting && printerPrinting"
     @click="$emit('click', macro.name)"
   >
     <slot></slot>
@@ -10,6 +11,7 @@
     :elevation="6"
   >
     <app-btn
+      :disabled="macro.disabledWhilePrinting && printerPrinting"
       @click="$emit('click', macro.name)"
     >
       <slot></slot>
@@ -64,11 +66,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
+import StateMixin from '@/mixins/state'
 import { Macro } from '@/store/macros/types'
 
 @Component({})
-export default class AppMacroBtn extends Vue {
+export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   macro!: Macro
 

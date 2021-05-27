@@ -15,13 +15,13 @@
           <v-icon
             v-bind="attrs"
             v-on="on"
-            v-show="!extrudeRetractReady"
+            v-show="!extruderReady"
             class="ml-3"
             color="info">
             $snowflakeAlert
           </v-icon>
         </template>
-        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: minExtrudeTemp })"></span>
+        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })"></span>
       </v-tooltip>
     </template>
 

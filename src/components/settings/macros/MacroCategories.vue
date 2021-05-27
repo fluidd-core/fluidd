@@ -20,6 +20,8 @@
 
       <v-divider />
 
+      <!-- <pre>{{ categories }}</pre> -->
+
       <!-- Look through user categories.. -->
       <template
         v-for="category in categories"
