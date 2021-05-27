@@ -24,7 +24,7 @@ export const mutations: MutationTree<MacrosState> = {
   setUpdateMacro (state, macro: Macro) {
     const m = { ...macro }
     delete m.config // Saving a macro should never include its config.
-    delete m.category
+    delete m.category // we don't need the category prop (we use categoryid)
     const i = state.stored.findIndex(m => m.name === macro.name)
     if (i < 0) {
       state.stored.push(m)
@@ -41,7 +41,7 @@ export const mutations: MutationTree<MacrosState> = {
         visible: payload.visible
       }
       delete processed.config // Saving a macro should never include its config.
-      delete processed.category
+      delete processed.category // we don't need the category prop (we use categoryid)
       if (i < 0) {
         state.stored.push(processed)
       } else {
