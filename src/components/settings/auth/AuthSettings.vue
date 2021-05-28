@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-subheader id="macros">{{ $t('app.setting.title.authentication') }}</v-subheader>
+    <v-subheader id="auth">{{ $t('app.setting.title.authentication') }}</v-subheader>
     <v-card
       :elevation="5"
       dense

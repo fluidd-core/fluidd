@@ -1,59 +1,19 @@
 <template>
   <v-app-bar
+    color="#1E1E20"
     app
-    clipped-left
+    height="60"
     extension-height="46"
   >
     <div class="toolbar-title">
-      <router-link to="/">
-        <app-icon
-          class="shrink mr-3 color-filter float-left"
-          width="30"
-          :primary-color="theme.currentTheme.primary"
-          :secondary-color="theme.currentTheme.primaryOffset"
-        ></app-icon>
-      </router-link>
       <v-toolbar-title class="printer-title text--secondary">
         <router-link to="/" v-html="instanceName"></router-link>
       </v-toolbar-title>
     </div>
 
-    <div class="toolbar-nav" v-if="authenticated && socketConnected">
-      <app-nav-item
-        icon="$home"
-        exact
-        to="/">
-        {{ $t('app.general.title.home') }}
-      </app-nav-item>
+    <v-spacer />
 
-      <app-nav-item
-        icon="$files"
-        to="/jobs">
-        {{ $t('app.general.title.jobs') }}
-      </app-nav-item>
-
-      <app-nav-item
-        v-if="supportsHistory"
-        icon="$history"
-        to="/history">
-        {{ $t('app.general.title.history') }}
-      </app-nav-item>
-
-      <app-nav-item
-        icon="$tune"
-        to="/tune">
-        {{ $t('app.general.title.tune') }}
-      </app-nav-item>
-
-      <app-nav-item
-        icon="$cogs"
-        to="/configure">
-        {{ $t('app.general.title.configure') }}
-      </app-nav-item>
-    </div>
-    <div class="toolbar-nav" v-else></div>
-
-    <div class="toolbar-suplimental">
+    <div class="toolbar-supplemental">
       <v-tooltip bottom v-if="socketConnected && !isMobile && authenticated">
         <template v-slot:activator="{ on, attrs }">
           <app-btn
@@ -75,20 +35,6 @@
       </v-tooltip>
 
       <app-notification-menu v-if="authenticated && socketConnected"></app-notification-menu>
-
-      <app-btn
-        v-if="!isMobile && authenticated && socketConnected"
-        fab
-        small
-        :elevation="0"
-        class="mx-1"
-        color="transparent"
-        :is-active="false"
-        @click.stop="$filters.routeTo('/settings')"
-      >
-      <!-- @click.stop="(router.currentRoute.path !== '/settings') router.push('/settings')"-->
-        <v-icon>$cog</v-icon>
-      </app-btn>
 
       <app-user-menu
         v-if="supportsAuth && authenticated"
@@ -149,10 +95,6 @@ export default class AppBar extends Mixins(StateMixin) {
   menu = false
   dialog = false
 
-  get supportsHistory () {
-    return this.$store.getters['server/componentSupport']('history')
-  }
-
   get supportsAuth () {
     return this.$store.getters['server/componentSupport']('authorization')
   }
@@ -205,26 +147,19 @@ export default class AppBar extends Mixins(StateMixin) {
 <style lang="scss" scoped>
   .toolbar-title,
   .toolbar-nav,
-  .toolbar-suplimental {
+  .toolbar-supplemental {
     display: flex;
     flex: 0 0 50%;
     max-width: 50%;
     align-items: center;
     height: inherit;
     @media #{map-get($display-breakpoints, 'md-and-up')} {
-      flex: 0 0 33.3333333333%;
-      max-width: 33.3333333333%;
+      flex: 0 0 50%;
+      max-width: 50%;
     }
   }
 
-  .toolbar-nav {
-    justify-content: center;
-    @media #{map-get($display-breakpoints, 'sm-and-down')} {
-      display: none;
-    }
-  }
-
-  .toolbar-suplimental {
+  .toolbar-supplemental {
     justify-content: flex-end;
   }
 

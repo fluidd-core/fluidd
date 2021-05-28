@@ -1,5 +1,4 @@
 import {
-  mdiHome,
   mdiClose,
   mdiTune,
   mdiMinus,
@@ -103,7 +102,9 @@ import {
   mdiShieldAccount,
   mdiContentCopy,
   mdiApps,
-  mdiAccountPlus
+  mdiAccountPlus,
+  mdiViewDashboardOutline,
+  mdiHome
 } from '@mdi/js'
 
 /**
@@ -155,6 +156,7 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
+  dash: mdiViewDashboardOutline,
   account: mdiAccount,
   addAccount: mdiAccountPlus,
   help: mdiHelpCircle,
