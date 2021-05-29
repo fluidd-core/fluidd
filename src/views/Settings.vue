@@ -5,13 +5,13 @@
         <router-view v-if="authenticated && socketConnected" />
         <div v-if="$route.matched.length === 1">
           <general-settings></general-settings>
+          <theme-settings></theme-settings>
           <auth-settings v-if="supportsAuth"></auth-settings>
-          <version-settings v-if="supportsVersions"></version-settings>
           <macro-categories></macro-categories>
           <cameras></cameras>
-          <theme-settings></theme-settings>
           <toolhead-settings></toolhead-settings>
           <temperature-preset-settings></temperature-preset-settings>
+          <version-settings v-if="supportsVersions"></version-settings>
           <!-- <gcode-preview-settings></gcode-preview-settings> -->
         </div>
       </v-col>

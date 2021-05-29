@@ -24,6 +24,7 @@ export interface HostConfig {
   blacklist: string[];
   hosted: boolean;
   locales: SupportedLocale[];
+  themePresets: SupportedTheme[];
 }
 
 export interface SupportedLocale {
@@ -49,9 +50,26 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
 }
 
+// Config stored in moonraker db
 export interface ThemeConfig {
   currentTheme: {[index: string]: string | Partial<VuetifyThemeItem> | undefined }; // the color list.
   isDark: boolean; // inidicates if the theme as a whole is dark or not.
+  logo: SupportedThemeLogo; // Current logo to use.
+}
+
+// Config defined in host
+export interface SupportedTheme {
+  name: string;
+  logo: SupportedThemeLogo;
+  color: string;
+  isDark: boolean;
+}
+
+export interface SupportedThemeLogo {
+  src: string;
+  dynamic: boolean;
+  dark?: string;
+  light?: string;
 }
 
 export interface Axis {

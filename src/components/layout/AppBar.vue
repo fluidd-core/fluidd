@@ -1,9 +1,9 @@
 <template>
   <v-app-bar
-    color="#1E1E20"
     app
-    height="60"
     extension-height="46"
+    :color="theme.currentTheme.appbar"
+    :height="$globals.HEADER_HEIGHT"
   >
     <div class="toolbar-title">
       <v-toolbar-title class="printer-title text--secondary">

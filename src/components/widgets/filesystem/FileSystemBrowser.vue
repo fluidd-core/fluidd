@@ -291,6 +291,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     if (e.dataTransfer) {
       this.ghost = document.createElement('div')
       this.ghost.classList.add('bulk-drag')
+      this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
       this.ghost.innerHTML = (this.selected.length > 0)
         ? `Move ${this.selected.length} items`
         : 'Move item'
@@ -355,10 +356,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
 <style lang="scss" scoped>
   @import '~vuetify/src/styles/styles.sass';
-  // @import '@/scss/variables';
 
-  ::v-deep .v-simple-checkbox .v-icon {
-    color: rgba(255, 255, 255, 0.5) !important;
+  // Lighten up dark mode checkboxes.
+  .theme--dark ::v-deep .v-simple-checkbox .v-icon {
+    color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
   }
 
 </style>

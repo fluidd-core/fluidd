@@ -112,6 +112,7 @@ import {
  */
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
+  HEADER_HEIGHT: 60,
   DEFAULTS: {
     CAMERA_URL: '/webcam?action=stream'
   },
@@ -301,37 +302,4 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem'
-})
-
-export const defaultPlotLayout = Object.freeze({
-  showScale: true,
-  plot_bgcolor: 'transparent',
-  paper_bgcolor: 'transparent',
-  margin: {
-    l: 0,
-    r: 100,
-    b: 0,
-    t: 0
-  },
-  scene: {
-    camera: {
-      eye: {
-        x: -1.25,
-        y: -1.25,
-        z: 0.5
-      }
-    },
-    xaxis: {
-      color: '#999',
-      range: [0, 200]
-    },
-    yaxis: {
-      color: '#999',
-      range: [0, 200]
-    },
-    zaxis: {
-      color: '#999',
-      range: [-1, 1]
-    }
-  }
 })

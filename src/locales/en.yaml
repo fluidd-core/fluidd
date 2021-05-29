@@ -189,8 +189,8 @@ app:
       change_password: Change password
       clear_all: Clear all
       confirm: Confirm
-      disabled_while_printing: Disabled while printing
       current_password: Current password
+      disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_preset: Edit Preset
       edit_user: Edit user
@@ -365,6 +365,7 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      theme_preset: Community preset
       thermal_preset_name: Preset Name
       time_estimates: Time estimates
       toggle: Toggle

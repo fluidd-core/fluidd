@@ -7,18 +7,25 @@ import './registerComponentHooks'
 import './consola'
 // import { WorkboxPlugin } from './plugins/workbox'
 
-// Common
+// Common, 1st party.
 import Vue from 'vue'
 import { Globals } from './globals'
 import i18n from '@/plugins/i18n'
 import router from './router'
 import store from './store'
-import vuetify from './plugins/vuetify'
 import consola from 'consola'
+
+// 3rd party.
+import vuetify from './plugins/vuetify'
+import VueVirtualScroller from 'vue-virtual-scroller'
+import VueMeta from 'vue-meta'
+import VuetifyConfirm from 'vuetify-confirm'
+import vueHeadful from 'vue-headful'
+import { InlineSvgPlugin } from 'vue-inline-svg'
 import { loadWASM } from 'onigasm'
 
+// Init.
 import { appInit } from './init'
-
 import { InitConfig } from './store/config/types'
 
 // Import plugins
@@ -27,9 +34,6 @@ import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
 import { plugin } from 'echarts-for-vue'
-import VueVirtualScroller from 'vue-virtual-scroller'
-import VueMeta from 'vue-meta'
-import VuetifyConfirm from 'vuetify-confirm'
 
 // Import ECharts
 // import * as echarts from 'echarts'
@@ -54,15 +58,13 @@ import App from './App.vue'
 // Globally register all components in our common, layout and ui directories.
 import '@/components/_globals'
 
-// 3rd party
-import vueHeadful from 'vue-headful'
-
 // Register global directives.
 import Blur from '@/directives/blur'
 
+// Directives...
 Vue.directive('blur', Blur)
 
-// 3rd party
+// ...and 3rd party
 Vue.component('vue-headful', vueHeadful)
 
 // Use any Plugins
@@ -91,6 +93,7 @@ Vue.use(ColorSetPlugin, {})
 Vue.use(VuetifyConfirm, {
   vuetify
 })
+Vue.use(InlineSvgPlugin)
 // Vue.use(WorkboxPlugin)
 
 const loadOnigasm = async (): Promise<void> => {

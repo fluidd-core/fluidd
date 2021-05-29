@@ -48,6 +48,22 @@ export const mutations: MutationTree<ConfigState> = {
     state.hostConfig.blacklist = payload.blacklist
     state.hostConfig.endpoints = payload.endpoints
     state.hostConfig.hosted = payload.hosted
+    state.hostConfig.themePresets = payload.themePresets
+
+    // Ensure the default (first item..) is applied for fresh setups.
+    if (payload.themePresets && payload.themePresets.length >= 1) {
+      const d = payload.themePresets[0]
+      Vue.set(state.uiSettings, 'theme', {
+        ...{
+          isDark: d.isDark,
+          logo: d.logo,
+          currentTheme: {
+            primary: d.color
+          }
+        },
+        ...state.uiSettings.theme
+      })
+    }
   },
 
   setInitInstances (state, payload: InitConfig) {

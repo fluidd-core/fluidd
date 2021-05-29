@@ -28,7 +28,8 @@ export const defaultState = (): ConfigState => {
         { name: 'Русский', code: 'ru' },
         { name: 'Українська', code: 'uk' },
         { name: '한국어', code: 'ko' }
-      ]
+      ],
+      themePresets: []
     },
     instances: [],
     uiSettings: {
@@ -55,6 +56,10 @@ export const defaultState = (): ConfigState => {
       },
       theme: {
         isDark: true,
+        logo: {
+          src: '/logo_fluidd.svg',
+          dynamic: true
+        },
         currentTheme: {
           primary: '#2196F3'
         }

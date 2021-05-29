@@ -1,19 +1,17 @@
 <template>
   <v-navigation-drawer
     app
-    color="#28282b"
+    :color="theme.currentTheme.drawer"
     mini-variant
   >
-    <v-list-item class="px-2">
+    <div
+      :style="`height: ${$globals.HEADER_HEIGHT}px;`"
+      class="app-icon"
+    >
       <router-link to="/">
-        <app-icon
-          class="ml-1 mt-3 color-filter"
-          width="30"
-          :primary-color="theme.currentTheme.primary"
-          :secondary-color="theme.currentTheme.primaryOffset"
-        ></app-icon>
+        <app-icon></app-icon>
       </router-link>
-    </v-list-item>
+    </div>
 
     <v-divider></v-divider>
 
@@ -85,6 +83,12 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .app-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
   ::v-deep .v-navigation-drawer.no-subnav > .v-navigation-drawer__border {
      display: none;
   }

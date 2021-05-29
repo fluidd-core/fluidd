@@ -47,10 +47,18 @@ export default class AppCodeView extends Vue {
 <style lang="scss" scoped>
   @import '~vuetify/src/styles/styles.sass';
 
+  .theme--light .code-view {
+    background-color: rgba(map-get($material-light, 'bg-color'), 0.08);
+    border: solid thin rgba(map-get($material-light, 'bg-color'), 0.14);
+  }
+
+  .theme--dark .code-view {
+    background-color: rgba(map-get($material-dark, 'bg-color'), 0.08);
+    border: solid thin rgba(map-get($material-dark, 'bg-color'), 0.14);
+  }
+
   .code-view {
     position: relative;
-    background-color: rgba(map-get($material-theme, 'bg-color'), 0.08);
-    border: solid thin rgba(map-get($material-theme, 'bg-color'), 0.14);
     border-radius: 6px;
     min-height: 48px;
 

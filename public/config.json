@@ -3,5 +3,65 @@
     "fluidd.xyz",
     "fluidd.net"
   ],
-  "hosted": false
+  "hosted": false,
+  "themePresets": [
+    {
+      "name": "Fluidd",
+      "color": "#2196F3",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_fluidd.svg",
+        "dynamic": true
+      }
+    },
+    {
+      "name": "Annex",
+      "color": "#96CC4A",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_annex.svg",
+        "dynamic": true
+      }
+    },
+    {
+      "name": "EVA",
+      "color": "#76FB00",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_eva.svg",
+        "dark": "#232323",
+        "light": "#ffffff",
+        "dynamic": false
+      }
+    },
+    {
+      "name": "Klipper",
+      "color": "#B12F36",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_klipper.svg",
+        "dynamic": false
+      }
+    },
+    {
+      "name": "RatRig",
+      "color": "#76FB00",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_ratrig.svg",
+        "dark": "#232323",
+        "light": "#ffffff",
+        "dynamic": false
+      }
+    },
+    {
+      "name": "Voron",
+      "color": "#FF2300",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_voron.svg",
+        "dynamic": true
+      }
+    }
+  ]
 }
