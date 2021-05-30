@@ -133,7 +133,6 @@ export default class MacroMoveDialog extends Vue {
   }
 
   handleSave () {
-    console.log('handling a save')
     this.$store.dispatch('macros/saveMacro', this.newMacro)
     this.$emit('input', false)
   }

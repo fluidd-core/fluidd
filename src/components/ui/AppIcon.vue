@@ -56,7 +56,6 @@ export default class AppIcon extends Vue {
         }
       })
     })
-    console.log(this.$vuetify.theme)
   }
 }
 </script>

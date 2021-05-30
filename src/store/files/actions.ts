@@ -108,7 +108,6 @@ export const actions: ActionTree<FilesState, RootState> = {
   // New notifications
   async notifyRootUpdate ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
-    console.log('got root update', payload)
     commit('setResetRoot', root)
     SocketActions.serverFilesGetDirectory(root, root)
   },

@@ -115,6 +115,14 @@ export const SocketActions = {
     )
   },
 
+  async machineSystemInfo () {
+    baseEmit(
+      'machine.system_info', {
+        dispatch: 'server/onMachineSystemInfo'
+      }
+    )
+  },
+
   async machineDevicePowerDevices () {
     baseEmit(
       'machine.device_power.devices', {

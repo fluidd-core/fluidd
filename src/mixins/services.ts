@@ -42,10 +42,10 @@ export default class ServicesMixin extends Vue {
   }
 
   /**
-   * Restart the webcamd service itself.
+   * Restart a service by name.
    */
-  serviceRestartWebcam () {
-    SocketActions.machineServicesRestart('webcamd')
+  serviceRestartByName (name: string) {
+    SocketActions.machineServicesRestart(name)
   }
 
   /**

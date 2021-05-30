@@ -45,6 +45,7 @@ export const actions: ActionTree<ServerState, RootState> = {
     SocketActions.printerInfo()
     SocketActions.serverConfig()
     SocketActions.machineProcStats()
+    SocketActions.machineSystemInfo()
 
     commit('setServerInfo', payload)
 
@@ -77,9 +78,12 @@ export const actions: ActionTree<ServerState, RootState> = {
   async onMachineProcStats ({ commit, dispatch }, payload) {
     if (payload && payload.throttled_state) {
       await dispatch('onMachineThrottledState', payload.throttled_state)
-    // } else {
     }
     commit('setMoonrakerStats', payload)
+  },
+
+  async onMachineSystemInfo ({ commit }, payload) {
+    commit('setSystemInfo', payload)
   },
 
   async onMachineThrottledState ({ commit, dispatch, state }, payload: ServerThrottledState) {

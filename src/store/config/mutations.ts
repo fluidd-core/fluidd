@@ -40,7 +40,6 @@ export const mutations: MutationTree<ConfigState> = {
   setInitApiConfig (state, payload) {
     state.apiUrl = payload.apiUrl
     state.socketUrl = payload.socketUrl
-    console.log('setting instance name.')
     if (payload.name && payload.name !== '') state.uiSettings.general.instanceName = payload.name
   },
 

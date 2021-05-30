@@ -548,21 +548,22 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleSaveFileChanges (contents: string, restart: boolean) {
+  async handleSaveFileChanges (contents: string, restart: string) {
     if (contents.length > 0) {
       const file = new File([contents], this.fileEditorDialogState.filename)
       if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
       await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
       this.fileEditorDialogState.loading = false
       if (restart) {
-        if (
-          this.fileEditorDialogState.filename &&
-          this.fileEditorDialogState.filename === 'moonraker.conf'
-        ) {
+        if (restart === 'moonraker') {
           this.serviceRestartMoonraker()
-        } else {
-          this.firmwareRestartKlippy()
+          return
         }
+        if (restart === 'klipper') {
+          this.firmwareRestartKlippy()
+          return
+        }
+        this.serviceRestartByName(restart)
       }
     }
   }

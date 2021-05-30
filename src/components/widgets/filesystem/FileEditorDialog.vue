@@ -28,21 +28,21 @@
         <v-spacer></v-spacer>
         <v-toolbar-items>
           <app-btn
-            v-if="!printerPrinting && rootProperties.showConfigRef"
+            v-if="!printerPrinting"
             @click="handleKeyboardShortcuts"
             target="_blank">
             <v-icon small :left="!$vuetify.breakpoint.smAndDown">$keyboard</v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.keyboard_shortcuts') }}</span>
           </app-btn>
           <app-btn
-            v-if="!printerPrinting && rootProperties.showConfigRef"
-            :href="configRefUrl"
+            v-if="!printerPrinting && configMap.link"
+            :href="configMap.link"
             target="_blank">
             <v-icon small :left="!$vuetify.breakpoint.smAndDown">$help</v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
-            v-if="!readonly && !printerPrinting && rootProperties.showSaveRestart"
+            v-if="!readonly && !printerPrinting && configMap.serviceSupported"
             :disabled="!ready"
             @click="emitSave(true)">
             <v-icon small :left="!$vuetify.breakpoint.smAndDown">$restart</v-icon>
@@ -83,14 +83,6 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Globals } from '@/globals'
-
-// Lazy Load the file editor.
-// const FileEditor = () => import(
-//   /* webpackPreload: true */
-//   /* webpackChunkName: "chunk-fileeditor" */
-//   './FileEditor.vue'
-// )
 import FileEditor from './FileEditor.vue'
 
 @Component({
@@ -137,13 +129,17 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     return this.$store.getters['files/getRootProperties'](this.root)
   }
 
-  get configRefUrl () {
-    if (this.filename && this.filename.includes('moonraker.conf')) {
-      return Globals.DOCS_MOONRAKER_CONFIG_REF
-    } else {
-      return Globals.DOCS_KLIPPER_CONFIG_REF
-    }
+  get configMap () {
+    return this.$store.getters['server/getConfigMapByFilename'](this.filename)
   }
+
+  // get configRefUrl () {
+  //   if (this.filename && this.filename.includes('moonraker.conf')) {
+  //     return Globals.DOCS_MOONRAKER_CONFIG_REF
+  //   } else {
+  //     return Globals.DOCS_KLIPPER_CONFIG_REF
+  //   }
+  // }
 
   mounted () {
     this.updatedContent = this.contents
@@ -155,8 +151,12 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   emitSave (restart: boolean) {
     if (this.editorReady) {
-      this.$emit('save', this.updatedContent, restart)
-      if (restart) this.$emit('input', false)
+      if (this.configMap.serviceSupported && restart) {
+        this.$emit('save', this.updatedContent, this.configMap.service)
+        this.$emit('input', false)
+      } else {
+        this.$emit('save', this.updatedContent)
+      }
     }
   }
 

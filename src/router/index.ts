@@ -25,7 +25,6 @@ const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>)
     next()
     return
   }
-  console.log('doing this.. ')
   next('/login')
 }
 

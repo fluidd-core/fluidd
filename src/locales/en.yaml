@@ -151,9 +151,9 @@ app:
       reset_file: Reset File
       reset_layout: Reset Layout
       restart_firmware: Firmware Restart
+      restart_service: Restart %{service}
       restart_service_klipper: Restart Klipper
       restart_service_moonraker: Restart Moonraker
-      restart_service_webcamd: Restart Webcam
       resume: Resume
       retract: Retract
       save: Save
