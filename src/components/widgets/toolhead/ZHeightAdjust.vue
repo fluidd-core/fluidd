@@ -21,8 +21,8 @@
         </app-btn>
       </v-btn-toggle>
       <div class="mt-1">
-        <span class="grey--text text--darken-1">{{ $t('app.general.label.z_offset') }}&nbsp;</span>
-        <span class="grey--text text--lighten-1">{{ ZHomingOrigin }}mm</span>
+        <span class="dim--text">{{ $t('app.general.label.z_offset') }}&nbsp;</span>
+        <span class="dim--text">{{ ZHomingOrigin }}mm</span>
       </div>
     </v-col>
     <v-col cols="6">

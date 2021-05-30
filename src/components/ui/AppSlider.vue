@@ -2,35 +2,36 @@
   <v-form ref="inputSliderForm" v-model="valid" @submit.prevent>
     <v-layout align-center justify-space-between>
       <div
-        class="grey--text text--darken-1 text-body-1"
+        class="dim--text text-body-1"
         :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
       >
         {{ label }}
+      </div>
+      <div class="ml-auto d-flex align-center">
+        <small
+          class="dim--text mr-2"
+          v-html="valueLabel"
+        >
+        </small>
+        <span
+          v-if="readonly"
+          class="dim--text focus--text"
+          :class="{ 'text--darken-2': isDisabled, 'text--lighten-1': !isDisabled }"
+        >
+          {{ newValue }}
+          <small>{{valueSuffix}}</small>
+        </span>
         <v-btn
           v-if="isMobile"
           icon
           small
           :disabled="disabled"
           @click="lockState = !lockState"
+          class="mr-2"
         >
           <v-icon small v-if="isLocked">$pencil</v-icon>
           <v-icon small v-else>$lockReset</v-icon>
         </v-btn>
-      </div>
-      <div class="ml-auto d-flex align-center">
-        <small
-          class="grey--text mr-2"
-          v-html="valueLabel"
-        >
-        </small>
-        <span
-          v-if="readonly"
-          class="grey--text focus--text"
-          :class="{ 'text--darken-2': isDisabled, 'text--lighten-1': !isDisabled }"
-        >
-          {{ newValue }}
-          <small>{{valueSuffix}}</small>
-        </span>
         <v-text-field
           v-if="!readonly"
           @change="handleTextChange"

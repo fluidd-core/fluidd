@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="item in meshes" :key="item.profile_name">
-          <td class="grey--text">
+          <td class="dim--text">
             {{ item.profile_name }}
           </td>
           <td>
@@ -26,7 +26,7 @@
               active
             </v-chip>
           </td>
-          <td class="grey--text focus--text">
+          <td class="dim--text focus--text">
             <span v-if="item.active && mesh.variance">
               {{ mesh.variance.toFixed(4) }}
                <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
@@ -66,7 +66,7 @@
                   fab
                   text
                   x-small>
-                  <v-icon color="grey--text">$close</v-icon>
+                  <v-icon color="dim--text">$close</v-icon>
                 </app-btn>
               </template>
               <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>

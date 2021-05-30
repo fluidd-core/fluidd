@@ -34,34 +34,34 @@
       <v-row v-if="supportsHistoryComponent">
         <v-col cols="3">
           <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_jobs') }}</div>
-            <div class="grey--text focus--text">{{ rollup.total_jobs }}</div>
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.longest_job') }}</div>
-            <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.longest_job) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_jobs') }}</div>
+            <div class="dim--text focus--text">{{ rollup.total_jobs }}</div>
+            <div class="dim--text">{{ $t('app.general.label.longest_job') }}</div>
+            <div class="dim--text focus--text">{{ $filters.formatCounterTime(rollup.longest_job) }}</div>
           </v-card>
         </v-col>
         <v-col cols="3">
           <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_time') }}</div>
-            <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.total_time) }}</div>
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_time_avg') }}</div>
-            <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.total_avg) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_time') }}</div>
+            <div class="dim--text focus--text">{{ $filters.formatCounterTime(rollup.total_time) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_time_avg') }}</div>
+            <div class="dim--text focus--text">{{ $filters.formatCounterTime(rollup.total_avg) }}</div>
           </v-card>
         </v-col>
         <v-col cols="3">
           <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_print_time') }}</div>
-            <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.total_print_time) }}</div>
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_print_time_avg') }}</div>
-            <div class="grey--text focus--text">{{ $filters.formatCounterTime(rollup.print_avg) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_print_time') }}</div>
+            <div class="dim--text focus--text">{{ $filters.formatCounterTime(rollup.total_print_time) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_print_time_avg') }}</div>
+            <div class="dim--text focus--text">{{ $filters.formatCounterTime(rollup.print_avg) }}</div>
           </v-card>
         </v-col>
         <v-col cols="3">
           <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_filament') }}</div>
-            <div class="grey--text focus--text">{{ $filters.getReadableLengthString(rollup.total_filament_used) }}</div>
-            <div class="grey--text text--darken-2">{{ $t('app.general.label.total_filament_avg') }}</div>
-            <div class="grey--text focus--text">{{ $filters.getReadableLengthString(rollup.filament_avg) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_filament') }}</div>
+            <div class="dim--text focus--text">{{ $filters.getReadableLengthString(rollup.total_filament_used) }}</div>
+            <div class="dim--text">{{ $t('app.general.label.total_filament_avg') }}</div>
+            <div class="dim--text focus--text">{{ $filters.getReadableLengthString(rollup.filament_avg) }}</div>
           </v-card>
         </v-col>
       </v-row>

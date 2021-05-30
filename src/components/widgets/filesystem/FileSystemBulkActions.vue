@@ -2,7 +2,7 @@
   <v-toolbar
     dense
   >
-    <v-toolbar-title class="grey--text text--lighten-1 d-none d-sm-block">
+    <v-toolbar-title class="dim--text d-none d-sm-block">
       <div class="file-path">&lrm;/{{ path }}</div>
     </v-toolbar-title>
 

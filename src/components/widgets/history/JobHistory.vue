@@ -71,7 +71,7 @@
       <template
         v-slot:[`item.filename`]="{ item }"
       >
-        <span class="grey--text">
+        <span class="dim--text">
           {{ getFilePaths(item.filename).filename }}
         </span>
       </template>
@@ -79,7 +79,7 @@
       <template
         v-slot:[`item.start_time`]="{ item }"
       >
-        <span class="grey--text text-no-wrap">
+        <span class="dim--text text-no-wrap">
           {{ $filters.formatDateTime(item.start_time, 'lll') }}
         </span>
       </template>
@@ -87,7 +87,7 @@
       <template
         v-slot:[`item.end_time`]="{ item }"
       >
-        <span class="grey--text text-no-wrap">
+        <span class="dim--text text-no-wrap">
           {{ $filters.formatDateTime(item.end_time, 'lll') }}
         </span>
       </template>
@@ -95,7 +95,7 @@
       <template
         v-slot:[`item.print_duration`]="{ item }"
       >
-        <span class="grey--text text-no-wrap">
+        <span class="dim--text text-no-wrap">
           {{ $filters.formatCounterTime(item.print_duration) }}
         </span>
       </template>
@@ -103,7 +103,7 @@
       <template
         v-slot:[`item.total_duration`]="{ item }"
       >
-        <span class="grey--text text-no-wrap">
+        <span class="dim--text text-no-wrap">
           {{ $filters.formatCounterTime(item.total_duration) }}
         </span>
       </template>
@@ -111,7 +111,7 @@
       <template
         v-slot:[`item.filament_used`]="{ item }"
       >
-        <span class="grey--text text-no-wrap">
+        <span class="dim--text text-no-wrap">
           {{ $filters.getReadableLengthString(item.filament_used) }}
         </span>
       </template>

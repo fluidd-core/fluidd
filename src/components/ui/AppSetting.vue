@@ -8,7 +8,7 @@
   >
     <v-col :cols="cols[0]" class="setting-title" align-self="center">
       <slot name="title">{{ title }}</slot>
-      <div class="setting-sub-title grey--text" v-if="hasSubTitle">
+      <div class="setting-sub-title dim--text" v-if="hasSubTitle">
         <slot name="sub-title">
             {{ subTitle }}
         </slot>

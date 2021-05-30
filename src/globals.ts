@@ -104,7 +104,8 @@ import {
   mdiApps,
   mdiAccountPlus,
   mdiViewDashboardOutline,
-  mdiHome
+  mdiHome,
+  mdiRestore
 } from '@mdi/js'
 
 /**
@@ -266,6 +267,7 @@ export const Icons = Object.freeze({
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,
   lockReset: mdiLockReset,
+  reset: mdiRestore,
   tempError: mdiThermometerAlert,
   contentCopy: mdiContentCopy,
   apps: mdiApps,

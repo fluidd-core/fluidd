@@ -18,12 +18,12 @@
       align-center
       justify-space-between
     >
-      <div class="grey--text text--darken-1 text-body-1">
+      <div class="dim--text text-body-1">
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <small v-if="rpm" class="grey--text mr-2">{{ rpm }}</small>
-        <span class="grey--text focus--text" v-html="prettyValue"></span>
+        <small v-if="rpm" class="dim--text mr-2">{{ rpm }}</small>
+        <span class="dim--text focus--text" v-html="prettyValue"></span>
       </div>
     </v-layout>
     <v-divider class="my-2" v-if="divider"></v-divider>

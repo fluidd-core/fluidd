@@ -39,6 +39,7 @@ export interface ServerInfo {
 }
 
 export interface SystemInfo {
+  available_services?: string[];
   cpu_info?: CpuInfo;
   sd_info?: SDInfo;
   distribution?: DistroInfo;

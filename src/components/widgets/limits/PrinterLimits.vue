@@ -3,67 +3,58 @@
   <v-card-text>
     <v-row class="my-0 mb-4">
       <v-col cols="12" sm="6" class="py-0">
-        <app-slider
+        <app-named-input
           :label="$t('app.general.label.velocity')"
-          value-suffix="mm/s"
-          input-sm
           :value="velocity.current"
-          :min="1"
-          :max="velocity.max"
-          :rules="[rules.min1, rules.velocityMax]"
+          :reset-value="velocity.max"
+          :rules="[rules.min1]"
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetVelocity)"
-          @input="setVelocity($event)">
-        </app-slider>
+          suffix="mm/s"
+          @change="setVelocity($event)"
+        >
+        </app-named-input>
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
-        <app-slider
+        <app-named-input
           :label="$t('app.general.label.sqv')"
-          value-suffix="mm/s"
-          input-sm
           :value="scv.current"
-          :min="0"
-          :step="0.1"
-          :max="scv.max"
-          :rules="[rules.min0, rules.scvMax]"
+          :reset-value="scv.max"
+          :rules="[rules.min0]"
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetSQV)"
-          @input="setSCV($event)">
-        </app-slider>
+          suffix="mm/s"
+          @change="setSCV($event)"
+        >
+        </app-named-input>
       </v-col>
     </v-row>
     <v-row class="my-0">
       <v-col cols="12" sm="6" class="py-0">
-        <app-slider
+        <app-named-input
           :label="$t('app.general.label.acceleration')"
-          value-suffix="mm/s^2"
-          input-sm
           :value="accel.current"
-          :min="1"
-          :max="accel.max"
-          :rules="[rules.min1, rules.accelMax]"
+          :reset-value="accel.max"
+          :rules="[rules.min1]"
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetAcceleration)"
-          @input="setAcceleration($event)">
-        </app-slider>
+          suffix="mm/s^2"
+          @change="setAcceleration($event)"
+        >
+        </app-named-input>
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
-        <app-slider
+        <app-named-input
           :label="$t('app.general.label.accel_to_decel')"
-          value-suffix="mm/s^2"
-          input-sm
           :value="decel.current"
-          :min="1"
-          :max="decel.max"
-          :rules="[rules.min1, rules.decelMax]"
+          :reset-value="decel.max"
+          :rules="[rules.min1]"
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetDeceleration)"
-          @input="setDeceleration($event)">
-        </app-slider>
+          suffix="mm/s^2"
+          @change="setDeceleration($event)"
+        >
+        </app-named-input>
       </v-col>
     </v-row>
   </v-card-text>

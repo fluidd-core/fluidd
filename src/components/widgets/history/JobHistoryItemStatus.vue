@@ -28,7 +28,7 @@
       >
         {{ icon }}
       </v-icon>
-      <span class="grey--text">{{ status }}</span>
+      <span class="dim--text">{{ status }}</span>
     </v-chip>
   </span>
 </template>

@@ -17,7 +17,7 @@
         class="py-1"
         v-for="(item, name) in endStops"
         :key="name">
-        <span class="grey--text focus--text mr-5">{{ name }}</span>
+        <span class="dim--text focus--text mr-5">{{ name }}</span>
         <v-chip
           :color="(item === 'open') ? 'secondary' : 'warning'"
           class="ml-2"
