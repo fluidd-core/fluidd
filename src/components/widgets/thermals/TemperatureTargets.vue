@@ -265,7 +265,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   .legend-item {
     display: inline-block;
     cursor: pointer;
-    opacity: 0.5
+    opacity: 0.45
   }
 
   .legend-item.active {

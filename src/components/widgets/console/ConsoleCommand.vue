@@ -23,15 +23,6 @@
           {{ $t('app.general.btn.send') }}
         </app-btn>
       </v-col>
-      <v-col cols="auto">
-        <v-checkbox
-          v-model="autoScroll"
-          hide-details
-          :label="$t('app.console.label.auto_scroll')"
-          class="mt-0 pt-0"
-        >
-        </v-checkbox>
-      </v-col>
     </v-row>
   </v-container>
     <!-- <pre>{{ originalHistory }}</pre>
@@ -64,15 +55,6 @@ export default class ConsoleCommand extends Vue {
   history: string[] = []
   originalHistory: string[] = []
   isFirst = true
-
-  get autoScroll () {
-    return this.$store.state.console.autoScroll
-  }
-
-  set autoScroll (value: boolean) {
-    this.$store.dispatch('console/onUpdateAutoScroll', value)
-    this.$emit('autoScrollChange', value)
-  }
 
   mounted () {
     this.newValue = this.value
