@@ -21,11 +21,8 @@
             :disabled="!klippyReady"
             v-bind="attrs"
             v-on="on"
-            fab
-            small
             class="mx-1"
-            color="transparent"
-            :elevation="0"
+            color=""
             @click="emergencyStop()"
           >
             <v-icon color="error">$estop</v-icon>
