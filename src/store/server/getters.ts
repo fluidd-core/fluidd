@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex'
 import { ServerInfo, ServerConfig, ServerState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
+import { state } from '../socket'
 
 export const getters: GetterTree<ServerState, RootState> = {
   /**
@@ -29,14 +30,8 @@ export const getters: GetterTree<ServerState, RootState> = {
    * Return a list of supported services.
    * (will come from state.system_info with a moonraker update..)
    */
-  getSupportedServices: () => {
-    return [
-      'webcamd',
-      'moonraker',
-      'klipper',
-      'KlipperScreen',
-      'MoonCord'
-    ]
+  getSupportedServices: (state) => {
+    return state.system_info?.available_services || []
   },
 
   /**
