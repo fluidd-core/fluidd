@@ -2,17 +2,16 @@
   <v-row
     no-gutters
     justify-space-between
-    class="mb-2"
   >
     <v-col
       align-self="center"
       cols="5"
-      class="text-body-1 dim--text"
+      class="text-body-1 dim--text py-0"
       :class="{ 'disabled--text': disabled }"
     >
       {{ label }}
     </v-col>
-    <v-col class="ml-auto">
+    <v-col class="ml-auto py-0">
       <v-text-field
         :value="value"
         @input="$emit('input', $event)"

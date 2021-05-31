@@ -2,34 +2,50 @@
   <v-card-text>
     <v-row>
       <v-col cols="12" md="6">
-        <div v-for="(item, i) in all.col1" :key="i">
+        <template v-for="(item, i) in all.col1">
           <output-pin
             v-if="item.type === 'output_pin'"
+            :key="`pin-0${i}`"
             :pin="item"
             :divider="(i < all.col1.length -1)"
           >
           </output-pin>
           <fan-item
             v-if="item.type !== 'output_pin'"
+            :key="`fan-0${i}`"
             :fan="item"
             :divider="(i < all.col1.length -1)"
           ></fan-item>
-        </div>
+
+          <v-divider
+            v-if="i < all.col1.length - 1 || $vuetify.breakpoint.mdAndDown"
+            :key="`divider-0${i}`"
+            class="my-2">
+          </v-divider>
+        </template>
       </v-col>
       <v-col cols="12" md="6">
-        <div v-for="(item, i) in all.col2" :key="i">
+        <template v-for="(item, i) in all.col2">
           <output-pin
             v-if="item.type === 'output_pin'"
+            :key="`pin-1${i}`"
             :pin="item"
             :divider="(i < all.col2.length -1)"
           >
           </output-pin>
           <fan-item
             v-if="item.type !== 'output_pin'"
+            :key="`fan-1${i}`"
             :fan="item"
             :divider="(i < all.col2.length -1)"
           ></fan-item>
-        </div>
+
+          <v-divider
+            v-if="i < all.col2.length - 1"
+            :key="`divider-1${i}`"
+            class="my-2">
+          </v-divider>
+        </template>
       </v-col>
     </v-row>
   </v-card-text>

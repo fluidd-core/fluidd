@@ -22,7 +22,6 @@
                 :min="1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
-                :instant="!isMobile"
                 :locked="isMobile"
                 input-md
                 @input="setCurrentLayerThrottled($event - 1)">
@@ -96,6 +95,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   currentLayer = 0
   moveProgress = 0
+
+  get visibleLayer () {
+    return this.currentLayer + 1
+  }
 
   setCurrentLayerThrottled?: (value: number) => void
   setMoveProgressThrottled?: (value: number) => void

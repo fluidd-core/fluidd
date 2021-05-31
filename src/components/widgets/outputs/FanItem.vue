@@ -2,11 +2,12 @@
   <div>
     <app-slider
       v-if="fan.controllable"
-      value-suffix="%"
+      suffix="%"
       input-xs
-      v-model.number="value"
-      :value-label="rpm"
-      :label="fan.prettyName"
+      :value="value"
+      :reset-value="0"
+      @change="handleChange"
+      :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
       :rules="rules"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
@@ -26,7 +27,7 @@
         <span class="dim--text focus--text" v-html="prettyValue"></span>
       </div>
     </v-layout>
-    <v-divider class="my-2" v-if="divider"></v-divider>
+
   </div>
 </template>
 
@@ -41,9 +42,6 @@ export default class FanItem extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   fan!: Fan
 
-  @Prop({ type: Boolean, default: false })
-  divider!: boolean
-
   get prettyValue () {
     return (this.value === 0)
       ? this.$t('app.general.label.off')
@@ -54,7 +52,7 @@ export default class FanItem extends Mixins(StateMixin) {
     return (this.fan.speed) ? Math.round(this.fan.speed * 100) : 0
   }
 
-  set value (target: number) {
+  handleChange (target: number) {
     // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
     if (this.fan.type === 'fan') {
       target = Math.ceil(target * 2.55)

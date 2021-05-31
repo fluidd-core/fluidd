@@ -1,63 +1,66 @@
 <template>
   <!-- Speed and Flow Adjust -->
-  <v-card-text>
-    <v-row class="my-0 mb-4">
-      <v-col cols="12" sm="6" class="py-0">
-        <app-named-input
-          :label="$t('app.general.label.velocity')"
-          :value="velocity.current"
-          :reset-value="velocity.max"
-          :rules="[rules.min1]"
-          :disabled="!klippyReady"
-          :loading="hasWait(waits.onSetVelocity)"
-          suffix="mm/s"
-          @change="setVelocity($event)"
-        >
-        </app-named-input>
-      </v-col>
-      <v-col cols="12" sm="6" class="py-0">
-        <app-named-input
-          :label="$t('app.general.label.sqv')"
-          :value="scv.current"
-          :reset-value="scv.max"
-          :rules="[rules.min0]"
-          :disabled="!klippyReady"
-          :loading="hasWait(waits.onSetSQV)"
-          suffix="mm/s"
-          @change="setSCV($event)"
-        >
-        </app-named-input>
-      </v-col>
-    </v-row>
-    <v-row class="my-0">
-      <v-col cols="12" sm="6" class="py-0">
-        <app-named-input
-          :label="$t('app.general.label.acceleration')"
-          :value="accel.current"
-          :reset-value="accel.max"
-          :rules="[rules.min1]"
-          :disabled="!klippyReady"
-          :loading="hasWait(waits.onSetAcceleration)"
-          suffix="mm/s^2"
-          @change="setAcceleration($event)"
-        >
-        </app-named-input>
-      </v-col>
-      <v-col cols="12" sm="6" class="py-0">
-        <app-named-input
-          :label="$t('app.general.label.accel_to_decel')"
-          :value="decel.current"
-          :reset-value="decel.max"
-          :rules="[rules.min1]"
-          :disabled="!klippyReady"
-          :loading="hasWait(waits.onSetDeceleration)"
-          suffix="mm/s^2"
-          @change="setDeceleration($event)"
-        >
-        </app-named-input>
-      </v-col>
-    </v-row>
-  </v-card-text>
+  <div>
+    <v-card-text class="mb-0">
+      <v-row>
+        <v-col cols="12" sm="6">
+          <app-named-input
+            :label="$t('app.general.label.velocity')"
+            :value="velocity.current"
+            :reset-value="velocity.max"
+            :rules="[rules.min1]"
+            :disabled="!klippyReady"
+            :loading="hasWait(waits.onSetVelocity)"
+            suffix="mm/s"
+            @change="setVelocity($event)"
+          >
+          </app-named-input>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <app-named-input
+            :label="$t('app.general.label.sqv')"
+            :value="scv.current"
+            :reset-value="scv.max"
+            :rules="[rules.min0]"
+            :disabled="!klippyReady"
+            :loading="hasWait(waits.onSetSQV)"
+            suffix="mm/s"
+            @change="setSCV($event)"
+          >
+          </app-named-input>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col cols="12" sm="6">
+          <app-named-input
+            :label="$t('app.general.label.acceleration')"
+            :value="accel.current"
+            :reset-value="accel.max"
+            :rules="[rules.min1]"
+            :disabled="!klippyReady"
+            :loading="hasWait(waits.onSetAcceleration)"
+            suffix="mm/s^2"
+            @change="setAcceleration($event)"
+          >
+          </app-named-input>
+        </v-col>
+        <v-col cols="12" sm="6">
+          <app-named-input
+            :label="$t('app.general.label.accel_to_decel')"
+            :value="decel.current"
+            :reset-value="decel.max"
+            :rules="[rules.min1]"
+            :disabled="!klippyReady"
+            :loading="hasWait(waits.onSetDeceleration)"
+            suffix="mm/s^2"
+            @change="setDeceleration($event)"
+          >
+          </app-named-input>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </div>
 </template>
 
 <script lang="ts">
