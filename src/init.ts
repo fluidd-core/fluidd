@@ -53,7 +53,9 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // Add the browsers url to our endpoints list, unless black listed.
   if (blacklist.findIndex(s => s.includes(document.location.hostname)) === -1) {
     endpoints.push(`${document.location.protocol}//${document.location.hostname}`)
-    endpoints.push(`${document.location.protocol}//${document.location.hostname}:7125`)
+    let port = '7125'
+    if (document.location.protocol === 'https:') port = '7130'
+    endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
   }
 
   // For each endpoint we have, ping each one to determine if any are active.
@@ -65,11 +67,6 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
       return httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
         .then(() => true)
         .catch((response) => (response.status === 401))
-      // try {
-      //   return await httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
-      // } catch {
-      //   consola.debug('Failed loading endpoint ping', endpoint)
-      // }
     })
   )
 
