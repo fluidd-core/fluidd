@@ -1,6 +1,8 @@
 <template>
   <v-navigation-drawer
     app
+    :value="value"
+    @input="emitChange"
     :color="theme.currentTheme.drawer"
     mini-variant
   >
@@ -78,6 +80,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsVersions () {
     return this.$store.getters['server/componentSupport']('update_manager')
+  }
+
+  emitChange (e: boolean) {
+    this.$emit('input', e)
   }
 }
 </script>

@@ -105,7 +105,8 @@ import {
   mdiAccountPlus,
   mdiViewDashboardOutline,
   mdiHome,
-  mdiRestore
+  mdiRestore,
+  mdiMenu
 } from '@mdi/js'
 
 /**
@@ -176,7 +177,7 @@ export const Icons = Object.freeze({
   move: mdiFolderMove,
   tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
-  menuAlt: mdiMenuDown,
+  menuAlt: mdiMenu,
   dots: mdiDotsHorizontal,
   dotsGrid: mdiDotsGrid,
   drag: mdiDrag,

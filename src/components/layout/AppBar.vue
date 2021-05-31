@@ -6,6 +6,18 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <div class="toolbar-title">
+      <app-btn
+        v-if="isMobile"
+        fab
+        small
+        :elevation="0"
+        class="mx-1"
+        color="transparent"
+        @click="$emit('navdrawer')"
+      >
+        <v-icon>$menuAlt</v-icon>
+      </app-btn>
+
       <v-toolbar-title class="printer-title text--secondary">
         <router-link to="/" v-html="instanceName"></router-link>
       </v-toolbar-title>

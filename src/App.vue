@@ -8,10 +8,11 @@
     </vue-headful>
 
     <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
-    <app-nav-drawer></app-nav-drawer>
+    <app-nav-drawer v-model="navdrawer"></app-nav-drawer>
 
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
+      @navdrawer="handleNavDrawerChange"
     ></app-bar>
 
     <flash-message
@@ -54,7 +55,8 @@ import { Waits } from './globals'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
-  toolsdrawer = false
+  toolsdrawer: boolean | null = null
+  navdrawer: boolean | null = null
   showUpdateUI = false
 
   flashMessage: FlashMessage = {
@@ -162,7 +164,13 @@ export default class App extends Mixins(StateMixin) {
   }
 
   handleToolsDrawerChange () {
+    console.log('got tool drawer')
     this.toolsdrawer = !this.toolsdrawer
+  }
+
+  handleNavDrawerChange () {
+    console.log('got nav drawer')
+    this.navdrawer = !this.navdrawer
   }
 }
 </script>
