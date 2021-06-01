@@ -12,6 +12,7 @@
             :max="velocity.max"
             :disabled="!klippyReady"
             :override="true"
+            :locked="!klippyReady || isMobile"
             suffix="mm/s"
             @change="setVelocity($event)"
           >
@@ -27,6 +28,7 @@
             :step="0.1"
             :disabled="!klippyReady"
             :override="true"
+            :locked="!klippyReady || isMobile"
             suffix="mm/s"
             @change="setSCV($event)"
           >
@@ -44,6 +46,7 @@
             :max="accel.max"
             :disabled="!klippyReady"
             :override="true"
+            :locked="!klippyReady || isMobile"
             suffix="mm/s^2"
             @change="setAcceleration($event)"
           >
@@ -58,6 +61,7 @@
             :max="decel.max"
             :disabled="!klippyReady"
             :override="true"
+            :locked="!klippyReady || isMobile"
             suffix="mm/s^2"
             @change="setDeceleration($event)"
           >
