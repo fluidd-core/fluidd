@@ -85,6 +85,7 @@ const errorInterceptor = (error: AxiosError) => {
       break
     case 400:
       consola.debug(error.response.status, error.message, message)
+      EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
       break
     case 401:
       if (error.config.withAuth) {
@@ -94,6 +95,7 @@ const errorInterceptor = (error: AxiosError) => {
       break
     case 404:
       consola.debug(error.response.status, error.message, message)
+      // EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.warning })
       break
     default:
       consola.debug(error.response.status, error.message)
