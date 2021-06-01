@@ -4,59 +4,64 @@
     <v-card-text class="mb-0">
       <v-row>
         <v-col cols="12" sm="6">
-          <app-named-input
+          <app-slider
             :label="$t('app.general.label.velocity')"
             :value="velocity.current"
             :reset-value="velocity.max"
-            :rules="[rules.min1]"
+            :min="1"
+            :max="velocity.max"
             :disabled="!klippyReady"
-            :loading="hasWait(waits.onSetVelocity)"
+            :override="true"
             suffix="mm/s"
             @change="setVelocity($event)"
           >
-          </app-named-input>
+          </app-slider>
         </v-col>
         <v-col cols="12" sm="6">
-          <app-named-input
+          <app-slider
             :label="$t('app.general.label.sqv')"
             :value="scv.current"
             :reset-value="scv.max"
-            :rules="[rules.min0]"
+            :min="0"
+            :max="scv.max"
+            :step="0.1"
             :disabled="!klippyReady"
-            :loading="hasWait(waits.onSetSQV)"
+            :override="true"
             suffix="mm/s"
             @change="setSCV($event)"
           >
-          </app-named-input>
+          </app-slider>
         </v-col>
       </v-row>
 
       <v-row>
         <v-col cols="12" sm="6">
-          <app-named-input
+          <app-slider
             :label="$t('app.general.label.acceleration')"
             :value="accel.current"
             :reset-value="accel.max"
-            :rules="[rules.min1]"
+            :min="1"
+            :max="accel.max"
             :disabled="!klippyReady"
-            :loading="hasWait(waits.onSetAcceleration)"
+            :override="true"
             suffix="mm/s^2"
             @change="setAcceleration($event)"
           >
-          </app-named-input>
+          </app-slider>
         </v-col>
         <v-col cols="12" sm="6">
-          <app-named-input
+          <app-slider
             :label="$t('app.general.label.accel_to_decel')"
             :value="decel.current"
             :reset-value="decel.max"
-            :rules="[rules.min1]"
+            :min="1"
+            :max="decel.max"
             :disabled="!klippyReady"
-            :loading="hasWait(waits.onSetDeceleration)"
+            :override="true"
             suffix="mm/s^2"
             @change="setDeceleration($event)"
           >
-          </app-named-input>
+          </app-slider>
         </v-col>
       </v-row>
     </v-card-text>
@@ -71,27 +76,6 @@ import { Waits } from '@/globals'
 @Component({})
 export default class PrinterLimits extends Mixins(StateMixin) {
   waits = Waits
-
-  rules = {
-    min0: (v: string) => {
-      return (parseInt(v) >= 0) || this.$t('app.general.simple_form.error.min', { min: 0 })
-    },
-    min1: (v: string) => {
-      return (parseInt(v) >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 })
-    },
-    velocityMax: (v: string) => {
-      return (parseInt(v) <= this.velocity.max) || this.$t('app.general.simple_form.error.max', { max: this.velocity.max })
-    },
-    scvMax: (v: string) => {
-      return (parseInt(v) <= this.scv.max) || this.$t('app.general.simple_form.error.max', { max: this.scv.max })
-    },
-    accelMax: (v: string) => {
-      return (parseInt(v) <= this.accel.max) || this.$t('app.general.simple_form.error.max', { max: this.accel.max })
-    },
-    decelMax: (v: string) => {
-      return (parseInt(v) <= this.decel.max) || this.$t('app.general.simple_form.error.max', { max: this.decel.max })
-    }
-  }
 
   get velocity () {
     const max = this.$store.getters['printer/getPrinterSettings']('printer.max_velocity')

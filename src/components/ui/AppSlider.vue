@@ -26,6 +26,7 @@
           :readonly="isLocked"
           :disabled="disabled || loading || isLocked"
           @focus="$event.target.select()"
+          @blur="handleTextBlur"
           class="v-input--text-right"
           dense
           single-line
@@ -63,13 +64,14 @@
     </v-row>
 
     <v-slider
-      v-model="intendedValue"
+      :value="intendedValue"
       :rules="rules"
       :min="min"
       :max="max"
       :step="step"
-      :disabled="disabled || loading || isLocked"
+      :disabled="disabled || loading || isLocked || intendedValue > max || value > max"
       @change="handleChange"
+      @input="handleSliderInput"
       ref="slider"
       dense
       hide-details
@@ -114,6 +116,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   @Prop({ type: Number, default: 100 })
   public max!: number;
 
+  @Prop({ type: Boolean, default: false })
+  public override!: boolean;
+
   @Prop({ type: Number, default: 1 })
   public step!: number;
 
@@ -126,19 +131,16 @@ export default class AppSlider extends Mixins(StateMixin) {
   @Ref('form')
   form!: VForm;
 
+  pendingChange = false
   valid = true
   lockState = false
   intendedValue: string | number = this.value
 
   @Watch('value')
   onValue (value: string | number) {
+    // console.log('got value change', value)
+    this.pendingChange = false
     this.intendedValue = +value
-  }
-
-  @Watch('intendedValue')
-  async onIntendedValue (value: string | number) {
-    await this.$nextTick()
-    if (this.valid) this.$emit('input', +value)
   }
 
   get isLocked () {
@@ -156,11 +158,16 @@ export default class AppSlider extends Mixins(StateMixin) {
 
   get textRules () {
     // Apply a min and max rule as per the slider.
-    return [
+    const rules = [
       ...this.rules,
-      (v: string) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min }),
-      (v: string) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
+      (v: string) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
     ]
+    if (!this.override) {
+      rules.push(
+        (v: string) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
+      )
+    }
+    return rules
   }
 
   @Watch('locked')
@@ -175,20 +182,47 @@ export default class AppSlider extends Mixins(StateMixin) {
 
   handleChange (val: string | number) {
     val = +val
-    this.$emit('input', val)
-    if (this.valid && val !== this.value) {
+    // console.log('got handle change', val)
+    if (this.valid && val !== this.value && !this.pendingChange) {
+      // console.log('it was valid')
+      this.pendingChange = true
       this.intendedValue = val
+      this.$emit('input', val)
       this.$emit('change', val)
     } else {
+      // console.log('it was invalid or same')
       this.intendedValue = this.value
     }
   }
 
+  handleSliderInput (val: string | number) {
+    val = +val
+    if (this.valid) {
+      this.$emit('input', val)
+      if (
+        !this.pendingChange &&
+        this.value <= this.max &&
+        val <= this.max &&
+        val !== this.value
+      ) {
+        // console.log('applying intendedValue change', val)
+        this.intendedValue = val
+      }
+    }
+  }
+
   handleReset () {
-    this.$emit('input', this.resetValue)
     if (this.valid && this.value !== this.resetValue) {
       this.intendedValue = this.resetValue
+      this.$emit('input', this.resetValue)
       this.$emit('change', this.resetValue)
+    }
+  }
+
+  handleTextBlur () {
+    if (!this.valid) {
+      console.log('got blur', this.valid, this.value)
+      this.intendedValue = 1500
     }
   }
 }
