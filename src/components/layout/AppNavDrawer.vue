@@ -17,7 +17,7 @@
 
     <v-divider></v-divider>
 
-    <div class="nav-items">
+    <div class="nav-items" v-show="authenticated">
       <app-nav-item
         icon="$dash"
         exact
