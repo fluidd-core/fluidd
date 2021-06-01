@@ -164,12 +164,10 @@ export default class App extends Mixins(StateMixin) {
   }
 
   handleToolsDrawerChange () {
-    console.log('got tool drawer')
     this.toolsdrawer = !this.toolsdrawer
   }
 
   handleNavDrawerChange () {
-    console.log('got nav drawer')
     this.navdrawer = !this.navdrawer
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip right>
+  <v-tooltip right :disabled="isMobile">
     <template v-slot:activator="{ attrs, on }">
       <router-link
         :to="to"
@@ -40,6 +40,10 @@ export default class AppNavItem extends Mixins(StateMixin) {
 
   @Prop({ type: String })
   icon!: string
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
+  }
 }
 
 </script>
