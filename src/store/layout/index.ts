@@ -21,6 +21,7 @@ export const defaultState = (): LayoutState => {
           { id: 'toolhead-card', enabled: true, collapsed: false },
           { id: 'outputs-card', enabled: true, collapsed: false },
           { id: 'printer-limits-card', enabled: true, collapsed: false },
+          { id: 'retract-card', enabled: true, collapsed: false },
           { id: 'camera-card', enabled: true, collapsed: false }
         ],
         container2: [

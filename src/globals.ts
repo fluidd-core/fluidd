@@ -22,6 +22,7 @@ import {
   mdiWindowClose,
   mdiPlayBoxOutline,
   mdiPrinter,
+  mdiAlphaRCircleOutline,
   mdiCamera,
   mdiFan,
   mdiArrowUp,
@@ -251,7 +252,8 @@ export const Icons = Object.freeze({
   lockOpen: mdiLockOpenVariant,
   lockReset: mdiLockReset,
   tempError: mdiThermometerAlert,
-  apps: mdiApps
+  apps: mdiApps,
+  retract: mdiAlphaRCircleOutline
 })
 
 export const Waits = Object.freeze({
@@ -284,6 +286,9 @@ export const Waits = Object.freeze({
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
+  onSetRetractLength: 'onSetRetractLength',
+  onSetRetractSpeed: 'onSetRetractSpeed',
+  onSetUnretractSpeed: 'onSetUnretractSpeed',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem'
