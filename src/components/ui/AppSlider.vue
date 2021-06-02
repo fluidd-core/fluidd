@@ -19,15 +19,16 @@
       >
 
         <v-text-field
-          :value="intendedValue"
-          @change="handleChange"
+          v-model="internalValue"
           :suffix="suffix"
           :rules="textRules"
           :readonly="isLocked"
           :disabled="disabled || loading || isLocked"
+          :step="step"
+          @change="handleChange($event)"
           @focus="$event.target.select()"
-          @blur="handleTextBlur"
           class="v-input--text-right"
+          type="number"
           dense
           single-line
           outlined
@@ -64,14 +65,13 @@
     </v-row>
 
     <v-slider
-      :value="intendedValue"
+      v-model="internalValue"
       :rules="rules"
       :min="min"
-      :max="max"
+      :max="internalMax"
       :step="step"
-      :disabled="disabled || loading || isLocked || intendedValue > max || value > max"
-      @change="handleChange"
-      @input="handleSliderInput"
+      :disabled="disabled || loading || isLocked || overridden"
+      @change="handleChange($event)"
       ref="slider"
       dense
       hide-details
@@ -117,7 +117,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   public max!: number;
 
   @Prop({ type: Boolean, default: false })
-  public override!: boolean;
+  public overridable!: boolean;
 
   @Prop({ type: Number, default: 1 })
   public step!: number;
@@ -131,16 +131,43 @@ export default class AppSlider extends Mixins(StateMixin) {
   @Ref('form')
   form!: VForm;
 
-  pendingChange = false
   valid = true
   lockState = false
-  intendedValue: string | number = this.value
+  overridden = false
+  internalValue = this.value
+  internalMax = this.max
+  pending = false
 
+  // If the parent updates the value.
   @Watch('value')
   onValue (value: string | number) {
-    // console.log('got value change', value)
-    this.pendingChange = false
-    this.intendedValue = +value
+    value = +value
+    if (value !== this.internalValue) {
+      this.internalValue = +value
+    }
+    this.pending = false
+  }
+
+  // If one of our controls updates the value.
+  @Watch('internalValue')
+  onInternalValue (value: string | number) {
+    if (this.valid) {
+      if (
+        value > this.max &&
+        this.overridable
+      ) {
+        // This is overridable, and the user wants to increase
+        // past the given max. So, disable the slider - and let it be.
+        this.overridden = true
+        this.internalMax = +value
+      } else {
+        // This is not overridable, or the user has reverted back to a value
+        // within the given max. So, re-enable the slider - and let it be.
+        this.overridden = false
+        this.internalMax = this.max
+      }
+      this.$emit('input', +value)
+    }
   }
 
   get isLocked () {
@@ -150,6 +177,11 @@ export default class AppSlider extends Mixins(StateMixin) {
   set isLocked (val: boolean) {
     this.lockState = val
     this.$emit('update:locked', val)
+  }
+
+  @Watch('locked')
+  onLockedChange (val: boolean) {
+    this.lockState = val
   }
 
   get isMobile () {
@@ -162,7 +194,7 @@ export default class AppSlider extends Mixins(StateMixin) {
       ...this.rules,
       (v: string) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
     ]
-    if (!this.override) {
+    if (!this.overridable) {
       rules.push(
         (v: string) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
       )
@@ -170,60 +202,24 @@ export default class AppSlider extends Mixins(StateMixin) {
     return rules
   }
 
-  @Watch('locked')
-  onLockedChange (val: boolean) {
-    this.lockState = val
-  }
-
-  mounted () {
-    this.lockState = this.locked
-    this.intendedValue = this.value
-  }
-
-  handleChange (val: string | number) {
-    val = +val
-    // console.log('got handle change', val)
-    if (this.valid && val !== this.value && !this.pendingChange) {
-      // console.log('it was valid')
-      this.pendingChange = true
-      this.intendedValue = val
-      this.$emit('input', val)
-      this.$emit('change', val)
-    } else {
-      // console.log('it was invalid or same')
-      this.intendedValue = this.value
-    }
-  }
-
-  handleSliderInput (val: string | number) {
-    val = +val
-    if (this.valid) {
-      this.$emit('input', val)
-      if (
-        !this.pendingChange &&
-        this.value <= this.max &&
-        val <= this.max &&
-        val !== this.value
-      ) {
-        // console.log('applying intendedValue change', val)
-        this.intendedValue = val
+  handleChange (value: string | number) {
+    value = +value
+    if (
+      value !== this.value &&
+      !this.pending
+    ) {
+      if (this.valid) {
+        this.pending = true
+        this.$emit('change', value)
+      } else {
+        this.internalValue = this.value
       }
     }
   }
 
   handleReset () {
-    if (this.valid && this.value !== this.resetValue) {
-      this.intendedValue = this.resetValue
-      this.$emit('input', this.resetValue)
-      this.$emit('change', this.resetValue)
-    }
-  }
-
-  handleTextBlur () {
-    if (!this.valid) {
-      console.log('got blur', this.valid, this.value)
-      this.intendedValue = 1500
-    }
+    this.internalValue = this.resetValue
+    this.$emit('change', this.resetValue)
   }
 }
 </script>
