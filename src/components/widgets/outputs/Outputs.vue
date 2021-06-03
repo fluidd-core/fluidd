@@ -3,19 +3,11 @@
     <v-row>
       <v-col cols="12" md="6">
         <template v-for="(item, i) in all.col1">
-          <output-pin
-            v-if="item.type === 'output_pin'"
-            :key="`pin-0${i}`"
-            :pin="item"
-            :divider="(i < all.col1.length -1)"
+          <OutputItem
+            :key="item.key"
+            :item="item"
           >
-          </output-pin>
-          <fan-item
-            v-if="item.type !== 'output_pin'"
-            :key="`fan-0${i}`"
-            :fan="item"
-            :divider="(i < all.col1.length -1)"
-          ></fan-item>
+          </OutputItem>
 
           <v-divider
             v-if="i < all.col1.length - 1 || $vuetify.breakpoint.mdAndDown"
@@ -26,19 +18,11 @@
       </v-col>
       <v-col cols="12" md="6">
         <template v-for="(item, i) in all.col2">
-          <output-pin
-            v-if="item.type === 'output_pin'"
-            :key="`pin-1${i}`"
-            :pin="item"
-            :divider="(i < all.col2.length -1)"
+          <OutputItem
+            :key="item.key"
+            :item="item"
           >
-          </output-pin>
-          <fan-item
-            v-if="item.type !== 'output_pin'"
-            :key="`fan-1${i}`"
-            :fan="item"
-            :divider="(i < all.col2.length -1)"
-          ></fan-item>
+          </OutputItem>
 
           <v-divider
             v-if="i < all.col2.length - 1"
@@ -53,25 +37,24 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import FanItem from '@/components/widgets/outputs/FanItem.vue'
-import OutputPin from '@/components/widgets/outputs/OutputPin.vue'
+import OutputItem from '@/components/widgets/outputs/OutputItem.vue'
 import StateMixin from '@/mixins/state'
-import { Fan as IFan, OutputPin as IOutputPin } from '@/store/printer/types'
+import { Fan, OutputPin } from '@/store/printer/types'
 
 @Component({
   components: {
-    FanItem,
-    OutputPin
+    OutputItem
   }
 })
 export default class Outputs extends Mixins(StateMixin) {
   get all () {
-    const items: Array<IFan | IOutputPin> = [
+    const items: Array<Fan | OutputPin> = [
       ...this.$store.getters['printer/getAllFans'],
-      ...this.$store.getters['printer/getPins']
+      ...this.$store.getters['printer/getPins'],
+      ...this.$store.getters['printer/getAllLeds']
     ]
-    let col1: Array<IFan | IOutputPin> = []
-    let col2: Array<IFan | IOutputPin> = []
+    let col1: Array<Fan | OutputPin> = []
+    let col2: Array<Fan | OutputPin> = []
     if (items.length > 1) {
       const half = Math.ceil(items.length / 2)
       col1 = items.splice(0, half)

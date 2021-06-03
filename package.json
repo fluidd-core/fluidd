@@ -33,6 +33,7 @@
     "@ctrl/tinycolor": "^3.4.0",
     "@fontsource/raleway": "^4.2.2",
     "@fontsource/roboto": "^4.2.2",
+    "@jaames/iro": "^5.5.1",
     "@types/uuid": "^8.3.0",
     "axios": "^0.21.1",
     "consola": "^2.15.3",

@@ -2,7 +2,6 @@ import { GetterTree } from 'vuex'
 import { ServerInfo, ServerConfig, ServerState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
-import { state } from '../socket'
 
 export const getters: GetterTree<ServerState, RootState> = {
   /**

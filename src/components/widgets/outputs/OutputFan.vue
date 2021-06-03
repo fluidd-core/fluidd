@@ -38,7 +38,7 @@ import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({})
-export default class FanItem extends Mixins(StateMixin) {
+export default class OutputFan extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   fan!: Fan
 

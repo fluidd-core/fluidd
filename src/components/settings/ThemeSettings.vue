@@ -36,7 +36,8 @@
 
         <app-color-picker
           v-if="theme"
-          v-model="themeColor"
+          :value="themeColor"
+          @change="handleChangeThemeColor"
           :title="$t('app.setting.btn.select_theme')"
         >
         </app-color-picker>
@@ -73,7 +74,6 @@ export default class ThemeSettings extends Mixins(StateMixin) {
 
   get themePreset () {
     return this.$store.getters['config/getCurrentThemePreset']
-    // return this.themePresets.find((preset: SupportedTheme) => preset.logo.src === this.theme.logo.src)
   }
 
   set themePreset (d: SupportedTheme) {
@@ -101,11 +101,11 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     return this.theme.currentTheme.primary
   }
 
-  set themeColor (value: string) {
-    this.setTheme(value, this.isDark)
+  handleChangeThemeColor (value: any) {
+    this.setTheme(value.hexString, this.isDark)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.theme.currentTheme.primary',
-      value,
+      value: value.hexString,
       server: true
     })
   }

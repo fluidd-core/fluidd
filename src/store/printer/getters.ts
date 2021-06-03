@@ -322,6 +322,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return []
   },
 
+  getAllLeds: (_, getters) => {
+    return getters.getOutputs([
+      'neopixel',
+      'dotstar'
+    ])
+  },
+
   getAllFans: (_, getters) => {
     return getters.getOutputs([
       'temperature_fan',
@@ -383,11 +390,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'output_pin'
     ]
 
+    // LEDs...
+    const leds = [
+      'neopixel',
+      'dotstar'
+    ]
+
     // Are they controllable?
     const controllable = [
       'fan',
       'fan_generic',
-      'output_pin'
+      'output_pin',
+      'neopixel',
+      'dotstar'
     ]
 
     // Should we apply a color?
@@ -401,12 +416,14 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'temperature_fan',
       'controller_fan',
       'heater_fan',
-      'fan_generic'
+      'fan_generic',
+      'neopixel',
+      'dotstar'
     ]
 
     const supportedTypes = (filter && filter.length)
       ? filter
-      : [...fans, ...outputPins]
+      : [...fans, ...outputPins, ...leds]
 
     const pins: Array<Fan | OutputPin> = []
 
