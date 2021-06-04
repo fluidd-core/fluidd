@@ -114,7 +114,7 @@ import {
  */
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
-  HEADER_HEIGHT: 60,
+  HEADER_HEIGHT: 56,
   DEFAULTS: {
     CAMERA_URL: '/webcam?action=stream'
   },

@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import iro from '@jaames/iro'
 import { IroColor, IroColorValue } from '@irojs/iro-core'
@@ -202,7 +202,16 @@ export default class AppColorPicker extends Vue {
     return 'standard'
   }
 
+  @Watch('value')
+  onValue () {
+    this.apply()
+  }
+
   created () {
+    this.apply()
+  }
+
+  apply () {
     // Set the initial color to the hex value of our set color.
     const c = new iro.Color(this.value)
     this.colors.standard = {
