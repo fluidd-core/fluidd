@@ -164,7 +164,9 @@ export const Globals = Object.freeze({
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
-  DOCS_MOONRAKER_COMPONENTS: 'https://docs.fluidd.xyz/configuration/moonraker'
+  DOCS_MOONRAKER_COMPONENTS: 'https://docs.fluidd.xyz/configuration/moonraker',
+  DOCS_AUTH_LOST_PASSWORD: 'https://docs.fluidd.xyz/authorization#lost-password',
+  DOCS_AUTH: 'https://docs.fluidd.xyz/authorization'
 })
 
 export const Icons = Object.freeze({

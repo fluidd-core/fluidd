@@ -50,6 +50,8 @@
               color=""
               plain
               class="custom-transform-class text-none"
+              :href="$globals.DOCS_AUTH_LOST_PASSWORD"
+              target="_blank"
             >
               Forgotten your password?
             </app-btn>
@@ -58,6 +60,8 @@
               color=""
               plain
               class="custom-transform-class text-none"
+              :href="$globals.DOCS_AUTH"
+              target="_blank"
             >
               Unsure why you're seeing this?
             </app-btn>
