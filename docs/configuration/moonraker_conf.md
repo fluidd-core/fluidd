@@ -40,6 +40,8 @@ trusted_clients:
   FE80::/10
   ::1/128
 
+[history]
+
 [octoprint_compat]
 
 [update_manager]
