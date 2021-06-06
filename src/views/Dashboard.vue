@@ -92,7 +92,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['cameras/getVisibleCameras'].length
+    return this.$store.getters['cameras/getEnabledCameras'].length
   }
 
   get frimwareRetractionEnabled (): boolean {
