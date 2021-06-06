@@ -202,6 +202,10 @@ export default class AppSlider extends Mixins(StateMixin) {
     return rules
   }
 
+  mounted () {
+    this.lockState = this.locked
+  }
+
   handleChange (value: string | number) {
     value = +value
     if (
@@ -214,11 +218,13 @@ export default class AppSlider extends Mixins(StateMixin) {
       } else {
         this.internalValue = this.value
       }
+      this.lockState = this.locked
     }
   }
 
   handleReset () {
     this.internalValue = this.resetValue
+    this.lockState = this.locked
     this.$emit('change', this.resetValue)
   }
 }
