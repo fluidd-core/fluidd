@@ -37,7 +37,7 @@
 
     <v-main>
       <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
-      <router-view name="navigation"></router-view>
+      <!-- <router-view name="navigation"></router-view> -->
       <router-view v-if="(apiConnected && socketConnected) || (!authenticated && apiConnected)" />
       <socket-disconnected v-if="!socketConnected && authenticated"></socket-disconnected>
       <updating-dialog></updating-dialog>

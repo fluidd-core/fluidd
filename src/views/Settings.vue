@@ -1,8 +1,7 @@
 <template>
   <v-container fluid class="constrained-width">
     <v-row justify="center">
-      <v-col cols="12" md="6">
-        <router-view v-if="authenticated && socketConnected" />
+      <v-col cols="12" lg="8">
         <div v-if="$route.matched.length === 1">
           <general-settings></general-settings>
           <theme-settings></theme-settings>

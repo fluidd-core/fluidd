@@ -1,10 +1,15 @@
 <template>
   <v-app-bar
     app
+    clipped-left
     extension-height="46"
     :color="theme.currentTheme.appbar"
     :height="$globals.HEADER_HEIGHT"
   >
+    <router-link to="/" class="toolbar-logo" v-show="!isMobile">
+      <app-icon></app-icon>
+    </router-link>
+
     <div class="toolbar-title">
       <app-btn
         v-if="isMobile"
@@ -23,7 +28,7 @@
       </v-toolbar-title>
     </div>
 
-    <v-spacer />
+    <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
       <v-tooltip bottom v-if="socketConnected && !isMobile && authenticated">
@@ -154,10 +159,36 @@ export default class AppBar extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .toolbar-title,
-  .toolbar-nav,
+  .toolbar-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 56px;
+    height: inherit;
+  }
+
+  .theme--dark .toolbar-logo {
+    border-right: thin solid rgba(map-get($shades, 'white'), 0.12);
+    background-color: #28282b;
+  }
+
+  .theme--light .toolbar-logo {
+    border-right: thin solid rgba(map-get($shades, 'black'), 0.12);
+    background-color: #FFFFFF;
+  }
+
+  .toolbar-title {
+    display: flex;
+    flex: 1 1;
+    max-width: 50%;
+    height: inherit;
+    align-items: center;
+    padding-left: 16px;
+  }
+
   .toolbar-supplemental {
     display: flex;
+    justify-content: flex-end;
     flex: 0 0 50%;
     max-width: 50%;
     align-items: center;
@@ -166,10 +197,6 @@ export default class AppBar extends Mixins(StateMixin) {
       flex: 0 0 50%;
       max-width: 50%;
     }
-  }
-
-  .toolbar-supplemental {
-    justify-content: flex-end;
   }
 
   .printer-title {
@@ -198,5 +225,9 @@ export default class AppBar extends Mixins(StateMixin) {
     align-items: center;
     justify-content: center;
     padding: 0;
+  }
+
+  ::v-deep .v-toolbar__content {
+    padding-left: 0;
   }
 </style>

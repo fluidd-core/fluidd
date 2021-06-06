@@ -1,39 +1,26 @@
 <template>
-  <v-navigation-drawer
-    :value="isVisible"
-    floating
-    stateless
-    fixed
-    clipped
+  <v-list
+    dense
     width="180"
-    color="transparent"
-    class=""
-    style="margin-left: 56px; margin-top: 52px;"
+    class="grow pt-0"
+    :color="($vuetify.theme.isDark) ? '#1E1E20' : '#FFFFFF'"
   >
-
-    <v-list
-      dense
-      width="180"
-      class="grow"
-      color="transparent"
+    <template
+      v-for="item in items"
     >
-      <template
-        v-for="item in items"
+      <v-list-item
+        v-if="item.visible"
+          :key="item.name"
+        :to="`/settings${item.hash}`"
+        :exact="false"
+        link
       >
-        <v-list-item
-          v-if="item.visible"
-            :key="item.name"
-          :to="`/settings${item.hash}`"
-          :exact="false"
-          link
-        >
-          <v-list-item-content>
-            <v-list-item-title class="dim--text">{{ item.name }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
-    </v-list>
-  </v-navigation-drawer>
+        <v-list-item-content>
+          <v-list-item-title class="dim--text">{{ item.name }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+  </v-list>
 </template>
 
 <script lang="ts">

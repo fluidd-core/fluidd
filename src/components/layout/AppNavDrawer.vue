@@ -1,62 +1,160 @@
 <template>
   <v-navigation-drawer
-    app
     :value="value"
-    @input="emitChange"
     :color="theme.currentTheme.drawer"
-    mini-variant
+    :mini-variant="!hasSubNavigation"
+    :floating="!hasSubNavigation"
+    @input="emitChange"
+    clipped
+    app
   >
-    <div
-      :style="`height: ${$globals.HEADER_HEIGHT}px;`"
-      class="app-icon"
+    <v-row
+      class="fill-height"
+      no-gutters
     >
-      <router-link to="/">
-        <app-icon></app-icon>
-      </router-link>
-    </div>
+      <v-navigation-drawer
+        :color="theme.currentTheme.drawer"
+        :mini-variant="true"
+        :value="value"
+      >
+        <div
+          v-show="isMobile"
+          :style="`height: ${$globals.HEADER_HEIGHT}px;`"
+          class="app-icon"
+        >
+          <router-link to="/">
+            <app-icon></app-icon>
+          </router-link>
+        </div>
 
-    <v-divider></v-divider>
+        <!-- <v-divider></v-divider> -->
 
-    <div class="nav-items" v-show="authenticated">
-      <app-nav-item
-        icon="$dash"
-        exact
-        to="/">
-        {{ $t('app.general.title.home') }}
-      </app-nav-item>
+        <!-- <v-list v-show="authenticated">
+          <v-list-item
+            to="/"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>$dash</v-icon>
+            </v-list-item-icon>
 
-      <app-nav-item
-        icon="$files"
-        to="/jobs">
-        {{ $t('app.general.title.jobs') }}
-      </app-nav-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.title.home') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-      <app-nav-item
-        v-if="supportsHistory"
-        icon="$history"
-        to="/history">
-        {{ $t('app.general.title.history') }}
-      </app-nav-item>
+          <v-list-item
+            to="/jobs"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>$files</v-icon>
+            </v-list-item-icon>
 
-      <app-nav-item
-        icon="$tune"
-        to="/tune">
-        {{ $t('app.general.title.tune') }}
-      </app-nav-item>
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.title.jobs') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
-      <app-nav-item
-        icon="$cogs"
-        to="/configure">
-        {{ $t('app.general.title.configure') }}
-      </app-nav-item>
+          <v-list-item
+            v-if="supportsHistory"
+            to="/history"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>$history</v-icon>
+            </v-list-item-icon>
 
-      <app-nav-item
-        icon="$cog"
-        to="/settings">
-        {{ $t('app.general.title.settings') }}
-      </app-nav-item>
-    </div>
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.title.history') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
 
+          <v-list-item
+            to="/tune"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>$tune</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.title.tune') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            to="/system"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>$cogs</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.title.configure') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item
+            to="/settings"
+            link
+          >
+            <v-list-item-icon>
+              <v-icon>$cog</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.title.settings') }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+        </v-list> -->
+
+        <div class="nav-items" v-show="authenticated">
+          <app-nav-item
+            icon="$dash"
+            exact
+            to="/">
+            {{ $t('app.general.title.home') }}
+          </app-nav-item>
+
+          <app-nav-item
+            icon="$files"
+            to="/jobs">
+            {{ $t('app.general.title.jobs') }}
+          </app-nav-item>
+
+          <app-nav-item
+            v-if="supportsHistory"
+            icon="$history"
+            to="/history">
+            {{ $t('app.general.title.history') }}
+          </app-nav-item>
+
+          <app-nav-item
+            icon="$tune"
+            to="/tune">
+            {{ $t('app.general.title.tune') }}
+          </app-nav-item>
+
+          <app-nav-item
+            icon="$cogs"
+            to="/system">
+            {{ $t('app.general.title.configure') }}
+          </app-nav-item>
+
+          <app-nav-item
+            icon="$cog"
+            to="/settings">
+            {{ $t('app.general.title.settings') }}
+          </app-nav-item>
+        </div>
+
+      </v-navigation-drawer>
+
+      <router-view name="navigation"></router-view>
+    </v-row>
   </v-navigation-drawer>
 </template>
 
@@ -80,6 +178,14 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsVersions () {
     return this.$store.getters['server/componentSupport']('update_manager')
+  }
+
+  get hasSubNavigation () {
+    return this.$route.meta.hasSubNavigation
+  }
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 
   emitChange (e: boolean) {

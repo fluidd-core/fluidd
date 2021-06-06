@@ -54,8 +54,8 @@ const routes: Array<RouteConfig> = [
     beforeEnter: ifAuthenticated
   },
   {
-    path: '/configure',
-    name: 'Printer Configuration',
+    path: '/system',
+    name: 'System',
     component: Configure,
     beforeEnter: ifAuthenticated
   },
@@ -63,6 +63,9 @@ const routes: Array<RouteConfig> = [
     path: '/settings',
     name: 'Settings',
     beforeEnter: ifAuthenticated,
+    meta: {
+      hasSubNavigation: true
+    },
     components: {
       default: Settings,
       navigation: AppSettingsNav
