@@ -69,3 +69,4 @@ In the case of the example, it's [http://100.99.160.51](http://100.99.160.51)
 
 Then you just need to add your printer with Tailscale IP
 ![screenshot](/assets/images/tailscale2.png)
+
