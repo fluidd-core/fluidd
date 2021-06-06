@@ -6,7 +6,7 @@
     <v-card-text>
       <div class="mb-4">
         <v-layout justify-space-between>
-          <div class="dim--text">{{ $t('app.file_system.label.disk_usage') }}</div>
+          <div class="">{{ $t('app.file_system.label.disk_usage') }}</div>
         </v-layout>
         <v-progress-linear
           :size="90"
@@ -18,15 +18,17 @@
         </v-progress-linear>
 
         <v-layout justify-space-between>
-          <div class="dim--text">
+          <div class="">
             <span class="focus--text">
               {{ $filters.getReadableFileSizeString(fileSystemUsage.used) }}
-            </span> {{ $t('app.general.label.used') }}
+            </span>
+            <span class="secondary--text">{{ $t('app.general.label.used') }}</span>
           </div>
-          <div class="dim--text">
+          <div class="">
             <span class="focus--text">
               {{ $filters.getReadableFileSizeString(fileSystemUsage.free) }}
-            </span> {{ $t('app.general.label.free') }}
+            </span>
+            <span class="secondary--text">{{ $t('app.general.label.free') }}</span>
           </div>
         </v-layout>
       </div>

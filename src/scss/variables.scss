@@ -17,11 +17,11 @@ $material-dark: (
   ),
   'text': (
     'theme': rgba(#ffffff, 0.87),
-    'primary': rgba(#ffffff, 0.87),
-    'secondary': rgba(#ffffff, 0.87)
+    'primary': rgba(#ffffff, 0.67), // standard text color (when not specifically set to primary--text)
+    'secondary': rgba(#ffffff, 0.57) // secondary text color
   ),
   'icons': (
-    'active': rgba(#ffffff, 0.87) // incl checkboxes
+    'active': rgba(#ffffff, 0.77) // incl checkboxes
   ),
   'text-color': rgba(#ffffff, 0.87),
   'fg-color': rgba(#ffffff, 0.87)

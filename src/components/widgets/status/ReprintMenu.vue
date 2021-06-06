@@ -41,7 +41,7 @@
                   :width="16"
                 />
               </td>
-              <td class="dim--text">
+              <td>
                 <span>
                   <job-history-item-status :job="job" dense></job-history-item-status>
                   {{ getFilePaths(job.filename).filename }}

@@ -6,7 +6,7 @@
     <v-col
       align-self="center"
       cols="5"
-      class="text-body-1 dim--text py-0"
+      class="text-body-1 py-0"
     >
       {{ led.prettyName }}
     </v-col>

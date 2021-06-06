@@ -9,7 +9,7 @@
       <v-col
         cols="5"
         align-self="center"
-        class="dim--text text-body-1 py-0"
+        class="text-body-1 py-0"
         v-html="label">
       </v-col>
 

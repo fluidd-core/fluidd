@@ -50,7 +50,7 @@
             text
             x-small
             color="">
-            <v-icon color="dim--text">$close</v-icon>
+            <v-icon color="">$close</v-icon>
           </app-btn>
         </app-setting>
 

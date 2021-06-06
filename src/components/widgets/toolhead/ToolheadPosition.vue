@@ -13,10 +13,6 @@
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           ></v-text-field>
-          <!-- <span class="secondary--text text--lighten-1">X:</span> -->
-          <!-- <span class="dim--text focus--text">
-            {{ ((useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)) }}
-          </span> -->
         </v-col>
         <v-col cols="4" class="pr-1 pl-1">
           <v-text-field
@@ -29,10 +25,6 @@
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           ></v-text-field>
-          <!-- <span class="secondary--text text--lighten-1">Y:</span> -->
-          <!-- <span class="dim--text focus--text">
-            {{ ((useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)) }}
-          </span> -->
         </v-col>
         <v-col cols="4" class="pl-1">
           <v-text-field
@@ -45,10 +37,6 @@
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           ></v-text-field>
-          <!-- <span class="secondary--text text--lighten-1">Z:</span>
-          <span class="dim--text focus--text">
-            {{ ((useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)) }}
-          </span> -->
         </v-col>
       </v-row>
 
@@ -56,7 +44,7 @@
         <v-col cols="auto" class="secondary--text text--lighten-1">
           {{ $t('app.general.label.requested_speed') }}
         </v-col>
-        <v-col cols="auto" class="dim--text focus--text">
+        <v-col cols="auto" class="focus--text">
           {{ requestedSpeed }} mm/s
         </v-col>
       </v-row>

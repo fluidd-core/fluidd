@@ -1,7 +1,6 @@
 <template>
   <td
     v-if="isVisible"
-    class="dim--text"
     :nowrap="nowrap"
     :class="{ 'text-end': right }"
   >

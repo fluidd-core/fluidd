@@ -16,7 +16,7 @@
         link
       >
         <v-list-item-content>
-          <v-list-item-title class="dim--text">{{ item.name }}</v-list-item-title>
+          <v-list-item-title>{{ item.name }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </template>

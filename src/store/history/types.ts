@@ -30,12 +30,12 @@ export interface HistoryRollUp {
 }
 
 export enum HistoryItemStatus {
-  Printing = 'printing',
   Completed = 'completed',
-  InProgress = 'in_progress',
-  Standby = 'standby',
   Cancelled = 'cancelled',
   Error = 'error',
+  Printing = 'printing',
+  InProgress = 'in_progress',
+  Server_Exit = 'server_exit',
   Klippy_Shutdown = 'klippy_shutdown',
   Klippy_Disconnect = 'klippy_disconnect'
 }

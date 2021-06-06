@@ -55,10 +55,10 @@
         </v-col>
         <v-col cols="12" lg="3" md="5">
           <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="dim--text">{{ $t('app.gcode.label.layers') }}</div>
-            <div class="dim--text focus--text">{{ layerCount }}</div>
-            <div class="dim--text">{{ $t('app.gcode.label.current_layer_height') }}</div>
-            <div class="dim--text focus--text">{{ currentLayerHeight }}</div>
+            <div class="">{{ $t('app.gcode.label.layers') }}</div>
+            <div class="focus--text">{{ layerCount }}</div>
+            <div class="">{{ $t('app.gcode.label.current_layer_height') }}</div>
+            <div class="focus--text">{{ currentLayerHeight }}</div>
           </v-card>
           <GcodePreviewControls :disabled="!fileLoaded"/>
         </v-col>

@@ -1,35 +1,19 @@
 <template>
   <span>
-    <v-tooltip
-      bottom
-      v-if="dense && status"
-    >
+    <v-tooltip top>
       <template v-slot:activator="{ on, attrs }">
         <v-icon
           v-on="on"
           v-bind="attrs"
           small
-          :color="color"
+          :color="(job.exists) ? state : 'secondary'"
           class="mr-1"
         >
           {{ icon }}
         </v-icon>
       </template>
-      <span>{{ status }}</span>
+      <span>{{ job.status }}</span>
     </v-tooltip>
-    <v-chip
-      v-if="!dense"
-      small
-    >
-      <v-icon
-        small
-        :left="status.length > 0"
-        :color="color"
-      >
-        {{ icon }}
-      </v-icon>
-      <span class="dim--text">{{ status }}</span>
-    </v-chip>
   </span>
 </template>
 
@@ -43,36 +27,54 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   @Prop({ type: Object, required: true })
   job!: HistoryItem
 
-  @Prop({ type: Boolean, default: false })
-  dense!: boolean
-
-  get status () {
-    if (this.job.status === HistoryItemStatus.Completed && !this.dense) return ''
-    if (this.job.status === HistoryItemStatus.InProgress) return HistoryItemStatus.InProgress
-    if (this.job.status.indexOf('_')) {
-      return this.job.status.split('_').pop()
-    }
-    return this.job.status
-  }
+  // get status () {
+  //   if (this.job.status === HistoryItemStatus.Completed) return HistoryItemStatus.Completed
+  //   if (this.job.status === HistoryItemStatus.InProgress) return HistoryItemStatus.InProgress
+  //   if (this.job.status.indexOf('_')) {
+  //     return this.job.status.split('_').pop()
+  //   }
+  //   return this.job.status
+  // }
 
   get icon () {
-    if (!this.inError) {
-      return '$check'
+    const iconMap: { [index: string]: string } = {
+      completed: '$checkedCircle',
+      printing: '$inProgress',
+      in_progress: '$inProgress',
+      standby: '$inProgress',
+      cancelled: '$cancelled'
     }
-    return '$error'
+
+    const icon = iconMap[this.job.status]
+
+    // Default to the warning symbol
+    return icon || '$warning'
   }
 
-  get color () {
-    if (!this.inError) {
-      return 'success'
-    }
-    return 'error'
+  get state () {
+    if (
+      this.job.status === HistoryItemStatus.Cancelled ||
+      this.job.status === HistoryItemStatus.Error ||
+      this.job.status === HistoryItemStatus.Server_Exit
+    ) return 'error'
+
+    if (
+      this.job.status === HistoryItemStatus.Printing ||
+      this.job.status === HistoryItemStatus.Completed ||
+      this.job.status === HistoryItemStatus.InProgress
+    ) return 'success'
+
+    if (
+      this.job.status === HistoryItemStatus.Klippy_Shutdown ||
+      this.job.status === HistoryItemStatus.Klippy_Disconnect
+    ) return 'warning'
+
+    return 'success'
   }
 
   get inError () {
     return (
       this.job.status !== HistoryItemStatus.Completed &&
-      this.job.status !== HistoryItemStatus.Standby &&
       this.job.status !== HistoryItemStatus.InProgress
     )
   }

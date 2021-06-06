@@ -5,7 +5,7 @@
     inset
     color="#28282b"
   >
-    <span class="font-weight-light dim--text">
+    <span class="font-weight-light secondary--text">
       &copy; {{ new Date().getFullYear() }}
       fluidd: v{{ appInfo.version }}-{{ appInfo.hash }}
     </span>

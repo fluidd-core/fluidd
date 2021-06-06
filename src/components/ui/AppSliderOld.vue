@@ -2,20 +2,20 @@
   <v-form ref="inputSliderForm" v-model="valid" @submit.prevent>
     <v-layout align-center justify-space-between>
       <div
-        class="dim--text text-body-1"
+        class="text-body-1"
         :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
       >
         {{ label }}
       </div>
       <div class="ml-auto d-flex align-center">
         <small
-          class="dim--text mr-2"
+          class="mr-2"
           v-html="valueLabel"
         >
         </small>
         <span
           v-if="readonly"
-          class="dim--text focus--text"
+          class="focus--text"
           :class="{ 'text--darken-2': isDisabled, 'text--lighten-1': !isDisabled }"
         >
           {{ newValue }}

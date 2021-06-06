@@ -74,6 +74,9 @@ const routes: Array<RouteConfig> = [
       {
         path: '/settings/macros/:categoryId',
         name: 'Macros',
+        meta: {
+          hasSubNavigation: true
+        },
         components: {
           default: MacroSettings,
           navigation: AppSettingsNav

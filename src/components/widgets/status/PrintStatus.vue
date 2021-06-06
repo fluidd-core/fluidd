@@ -9,41 +9,41 @@
             :value="timeEstimates.progress"
             color="primary"
           >
-          <span class="percentComplete dim--text focus--text">{{ timeEstimates.progress }}%</span>
+          <span class="percentComplete focus--text">{{ timeEstimates.progress }}%</span>
         </v-progress-circular>
       </v-col>
       <v-col class="d-flex flex-column" style="overflow: hidden;" align="start">
-          <div class="mb-1 dim--text" v-if="printTimeEstimationsType !== 'totals'">
+          <div class="mb-1" v-if="printTimeEstimationsType !== 'totals'">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="">$timer</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary">$timer</v-icon>
               </template>
               <span>{{ $t('app.printer.status.time_left') }}</span>
             </v-tooltip>
             <span>{{ timeEstimates.remaining }}</span>
             <span class="grey--text text--darken-2" v-if="printerPrinting && printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.endTime }}</span>
           </div>
-          <div class="mb-1 dim--text">
+          <div class="mb-1">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="" class="mr-1">$clock</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary" class="mr-1">$clock</v-icon>
               </template>
               {{ (printTimeEstimationsType !== 'totals') ? $t('app.printer.status.duration_total') : $t('app.printer.status.duration') }}
             </v-tooltip>
             <span>{{ timeEstimates.current }}</span>
-            <span class="dim--text" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.total }}</span>
+            <span class="secondary--text" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.total }}</span>
           </div>
-          <div class="mb-1 dim--text" v-if="filamentEstimates !== ''">
+          <div class="mb-1 secondary--text" v-if="filamentEstimates !== ''">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="" class="mr-1">$filamentEstimate</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary" class="mr-1">$filamentEstimate</v-icon>
               </template>
               {{ $t('app.printer.status.used_filament') }}
             </v-tooltip>
-            <span class="dim--text">{{ filamentEstimates }}</span>
+            <span class="secondary--text">{{ filamentEstimates }}</span>
           </div>
-          <div class="d-flex dim--text" v-if="filename">
-            <v-icon color="">$fileDocument</v-icon>
+          <div class="d-flex secondary--text" v-if="filename">
+            <v-icon color="secondary">$fileDocument</v-icon>
             <div class="filename ml-1">gcodes/{{ filename }}</div>
           </div>
       </v-col>

@@ -15,7 +15,7 @@
         </v-card-title>
         <v-card-subtitle
           v-if="newMacro.config.description"
-          class="card-heading dim--text pb-2"
+          class="card-heading pb-2"
         >
           {{ newMacro.config.description }}
         </v-card-subtitle>

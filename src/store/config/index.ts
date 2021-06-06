@@ -92,7 +92,6 @@ export const defaultState = (): ConfigState => {
           { value: 'first_layer_bed_temp', visible: false }
         ],
         history: [
-          { value: 'end_time', visible: false },
           { value: 'print_duration', visible: false },
           { value: 'filament_used', visible: false }
         ]

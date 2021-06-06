@@ -59,7 +59,6 @@ import {
   mdiRadioboxMarked,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
-  mdiMenuDown,
   mdiFilePlus,
   mdiBellOutline,
   mdiPower,
@@ -106,7 +105,10 @@ import {
   mdiViewDashboardOutline,
   mdiHome,
   mdiRestore,
-  mdiMenu
+  mdiMenu,
+  mdiFileCancel,
+  mdiCancel,
+  mdiCircleSlice3
 } from '@mdi/js'
 
 /**
@@ -210,6 +212,7 @@ export const Icons = Object.freeze({
   folder: mdiFolder,
   fileUpload: mdiUpload,
   fileAdd: mdiFilePlus,
+  inProgress: mdiCircleSlice3,
   progressUpload: mdiProgressUpload,
   up: mdiArrowUp,
   down: mdiArrowDown,
@@ -240,8 +243,10 @@ export const Icons = Object.freeze({
   files: mdiFileTableOutline,
   fileDocument: mdiFileDocumentOutline,
   file: mdiFile,
+  fileCancel: mdiFileCancel,
   pause: mdiPause,
   cancel: mdiWindowClose,
+  cancelled: mdiCancel,
   resume: mdiPlayBoxOutline,
   reprint: mdiPrinter,
   printer: mdiPrinter,
