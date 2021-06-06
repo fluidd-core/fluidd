@@ -296,9 +296,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
             name = split.join(' ')
           }
 
-          // const color = (name === 'heater_bed')
-          //   ? Vue.$colorset.next('bed', e)
-          //   : Vue.$colorset.next('heater', e)
           const color = Vue.$colorset.next(getKlipperType(e), e)
           const prettyName = Vue.$filters.startCase(name)
 
@@ -308,8 +305,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
             color,
             prettyName,
             key: e,
-            minTemp: (config && config.min_temp) ? config.min_temp : undefined,
-            maxTemp: (config && config.max_temp) ? config.max_temp : undefined
+            minTemp: (config && config.min_temp !== undefined) ? config.min_temp : undefined,
+            maxTemp: (config && config.max_temp !== undefined) ? config.max_temp : undefined
           })
         }
       })

@@ -9,7 +9,7 @@
         v-model.number="inputValue"
         :disabled="!klippyReady"
         :loading="loading"
-        :rules="[rules.max, rules.min]"
+        :rules="[rules.min, rules.max]"
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
         suffix="°C"
@@ -46,12 +46,13 @@ export default class InputTemperature extends Mixins(StateMixin) {
   inputValue = 0;
 
   rules = {
-    min: (v: number | string) => (v >= this.min || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.min_or_0', { min: this.min }),
-    max: (v: number | string) => (v <= this.max || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.max', { max: this.max })
+    min: (v: number | string) => (v >= this.min || v === '' || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.min_or_0', { min: this.min }),
+    max: (v: number | string) => (v <= this.max || v === '' || v === '0' || v === 0 || this.max === null) || this.$t('app.general.simple_form.error.max', { max: this.max })
   }
 
   emitChange () {
     if (this.valid) {
+      if (!this.inputValue) this.inputValue = 0
       this.$emit('input', this.inputValue)
     }
   }
