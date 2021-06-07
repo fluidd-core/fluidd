@@ -73,7 +73,7 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import httpClient from '@/api/httpClient'
 import { Globals, Waits } from '@/globals'
-import Axios, { AxiosError, Canceler, CancelTokenSource } from 'axios'
+import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
 import { VForm } from '@/types/vuetify'
@@ -105,10 +105,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   timer = 0
-
-  cancelSource: CancelTokenSource | undefined = undefined
-  CancelToken = Axios.CancelToken
-  cancel: Canceler | undefined = undefined
+  actualUrl = ''
 
   get url () {
     return this.actualUrl
@@ -119,7 +116,12 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     this.actualUrl = url
   }
 
-  actualUrl = ''
+  // Axios cancels.
+  cancelSource: CancelTokenSource | undefined = undefined
+
+  // Fetch cancels.
+  controller: AbortController | undefined = undefined
+
   @Watch('actualUrl')
   @Debounce(500)
   async onUrlChange (url: string) {
@@ -128,6 +130,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.note = null
       this.verifying = true
 
+      // Handle cancelling axios requests.
       if (this.cancelSource !== undefined) {
         this.cancelSource.cancel('Cancelled due to new request.')
       }
@@ -168,7 +171,14 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       // The initial request failed with a network issue..
       if (request !== 'ok') {
-        await fetch(url + '/server/info', { mode: 'no-cors', cache: 'no-cache' })
+        // Handle cancelling fetch requests.
+        if (this.controller !== undefined) {
+          this.controller.abort()
+        }
+        this.controller = new AbortController()
+        const { signal } = this.controller
+
+        await fetch(url + '/server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
           .then(() => {
             // likely a cors issue
             this.error = this.$t('app.endpoint.error.cors_error')

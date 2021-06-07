@@ -79,7 +79,6 @@ export const actions: ActionTree<AuthState, RootState> = {
         return false
       }
     }
-    console.debug('checkToken - no token')
     return false
   },
 
