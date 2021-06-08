@@ -62,6 +62,15 @@
         "src": "/logo_voron.svg",
         "dynamic": true
       }
+    },
+    {
+      "name": "VzBot",
+      "color": "#FF2300",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_vzbot.svg",
+        "dynamic": false
+      }
     }
   ]
 }
