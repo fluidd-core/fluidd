@@ -22,7 +22,7 @@ export class WebSocketClient {
   logPrefix = '[WEBSOCKET]';
   requests: Array<Request> = [];
   store: any | null = null;
-  pingInterval = 2000;
+  pingInterval = 5000;
   pingTimeout: any;
 
   constructor (options: Options) {
