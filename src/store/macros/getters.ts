@@ -25,6 +25,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
         const r: Macro = {
           name,
           visible: true,
+          disabledWhilePrinting: false,
           color: '',
           categoryId: '0',
           ...stored,
@@ -93,6 +94,14 @@ export const getters: GetterTree<MacrosState, RootState> = {
       return false
     })
   },
+
+  // getMacrosByAssignment: (state, getters) => (assignment: string) => {
+
+  // },
+
+  // getAssignments: (state, getters) => {
+  //   return ['console', 't  ool', 'Bed mesh controls']
+  // },
 
   /**
    * Returns a list of configured categories, and the count of macros inside of

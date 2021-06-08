@@ -9,6 +9,8 @@ export interface Macro {
   visible: boolean;
   categoryId?: string;
   category?: MacroCategory;
+  assignTo?: string;
+  disabledWhilePrinting?: boolean;
   color?: string;
   config?: any;
 }

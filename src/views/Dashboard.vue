@@ -60,6 +60,7 @@ import MacrosCard from '@/components/widgets/macros/MacrosCard.vue'
 import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
+import RetractCard from '@/components/widgets/retract/RetractCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import { Macro } from '@/store/macros/types'
@@ -74,6 +75,7 @@ import { Macro } from '@/store/macros/types'
     TemperatureCard,
     CameraCard,
     PrinterLimitsCard,
+    RetractCard,
     ConsoleCard,
     OutputsCard,
     GcodePreviewCard
@@ -91,6 +93,10 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get hasCameras (): boolean {
     return this.$store.getters['cameras/getVisibleCameras'].length
+  }
+
+  get frimwareRetractionEnabled (): boolean {
+    return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
   }
 
   get macros () {
@@ -143,6 +149,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'camera-card' && !this.hasCameras) return true
     if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
+    if (item.id === 'retract-card' && !this.frimwareRetractionEnabled) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled

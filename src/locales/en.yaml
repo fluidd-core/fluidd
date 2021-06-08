@@ -182,8 +182,10 @@ app:
       add_category: Add category
       add_preset: Add Preset
       api_url: API URL
+      category: Category
       clear_all: Clear all
       confirm: Confirm
+      disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_preset: Edit Preset
       extrude_length: Extrude Length
@@ -195,12 +197,13 @@ app:
       layout: Layout
       longest_job: Longest job
       low: Low
-      move_macro: Move macro %{name}
       name: Name
       no_notifications: No notifications
       'off': 'Off'
       power: Power
       printers: Printers
+      retract_length: Retract Length
+      retract_speed: Retract Speed
       requested_speed: Requested Speed
       save_as: Save As
       services: Services
@@ -214,9 +217,11 @@ app:
       total_time: Total time
       total_time_avg: Avg per print
       uncategorized: Uncategorized
+      unretract_speed: Unretract Speed
       used: used
       variance: Variance
       velocity: Velocity
+      visible: Visible
       z_offset: Z Offset
     simple_form:
       error:
@@ -269,6 +274,7 @@ app:
       home: Home
       jobs: Jobs
       limits: Printer Limits
+      retract: Firmware Retraction
       macros: Macros
       runout_sensors: Runout Sensors
       settings: Settings

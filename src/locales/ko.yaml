@@ -153,7 +153,6 @@ app:
       layout: 레이아웃
       longest_job: 가장 긴 출력작업
       low: 낮음
-      move_macro: Move macro %{name}
       name: 이름
       'off': 꺼짐
       power: 전원
@@ -191,8 +190,8 @@ app:
     table:
       header:
         actions: 동작
-        estimated_time: 예상 시간
         end_time: 종료 시간
+        estimated_time: 예상 시간
         filament: 필라멘트
         filament_used: 사용된 필라멘트
         filament_weight_total: 필라멘트 무게
@@ -236,7 +235,7 @@ app:
       tune: 튜닝
     tooltip:
       estop: 비상 정지
-      reload_klipper: Klipper 설정을 다시 불러 옵니다. 
+      reload_klipper: Klipper 설정을 다시 불러 옵니다.
       reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU(s)를 재시작 합니다.
       restart_klipper: Klipper 시스템 서비스를 다시 시작합니다.
   history:
@@ -338,9 +337,9 @@ app:
       committed: Committed
       dirty: 변경 상태
       invalid: 유효하지 않은 상태
-      up_to_date: 최신 상태
       os_packages: OS 패키지
       package_list: 패키지 목록
+      up_to_date: 최신 상태
     status:
       finished: 업데이트 완료
       updating: 업데이트중...

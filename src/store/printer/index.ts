@@ -81,6 +81,12 @@ export const defaultState = (): PrinterState => {
         square_corner_velocity: 0,
         extruder: ''
       },
+      firmware_retraction: {
+        retract_length: 0,
+        unretract_extra_length: 0,
+        unretract_speed: 0,
+        retract_speed: 0
+      },
       current_file: {
         estimated_time: 0,
         filament_total: 0,

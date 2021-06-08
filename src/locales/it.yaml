@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      boxScale: Scala Volume
       flat_surface: Mostra il Piano
       mesh_matrix: Matrice della Mesh
       probed_matrix: Matrice Sondata
@@ -8,7 +9,6 @@ app:
       remove_profile: Rimuovi il profilo %{name}
       scale: Riscala in min / max
       wireframe: Wireframe
-      boxScale: Scala Volume
     msg:
       hint: >-
         Se salvi come qualcosa di diverso da %{name}, puoi scegliere di
@@ -132,6 +132,7 @@ app:
       extrude: Estrudi
       heaters_off: Riscaldatori spenti
       load_all: Carica tutto
+      more_information: Più informazioni
       pause: Pausa
       preheat: Preriscalda
       presets: Preset
@@ -158,7 +159,6 @@ app:
       upload: Carica
       upload_print: Carica & Stampa
       view: Visualizza
-      more_information: Più informazioni
     error:
       app_setup_link: >-
         Puoi trovare i requisiti di configurazione di Fluidd <a target="_blank"
@@ -177,6 +177,7 @@ app:
       add_category: Aggiungi Categoria
       add_preset: Aggiungi Preset
       api_url: URL API
+      clear_all: Rimuovi tutte
       confirm: Conferma
       edit_camera: Modifica Camera
       edit_preset: Modifica Preset
@@ -189,8 +190,8 @@ app:
       layout: Disposizione
       longest_job: Lavoro più lungo
       low: Basso
-      move_macro: Sposta la macro %{name}
       name: Nome
+      no_notifications: Disabilita Notifiche
       'off': 'Off'
       power: Energia
       printers: Stampanti
@@ -211,8 +212,6 @@ app:
       variance: Varianza
       velocity: Velocità
       z_offset: Offset Z
-      clear_all: Rimuovi tutte
-      no_notifications: Disabilita Notifiche
     simple_form:
       error:
         arrayofnums: Solo numeri
@@ -237,6 +236,7 @@ app:
         estimated_time: Tempo stimato
         filament: Filamento
         filament_used: Filamento utilizzato
+        filament_weight_total: Peso totale filamento
         first_layer_bed_temp: Temp. Piatto nel primo strato
         first_layer_extr_temp: Temp. Estrusore nel primo strato
         first_layer_height: Altezza del primo strato
@@ -252,7 +252,6 @@ app:
         start_time: Iniziato
         status: Stato
         total_duration: Durata totale
-        filament_weight_total: Peso totale filamento
     title:
       add_printer: Aggiungi Stampante
       bedmesh: Matrice Piatto
@@ -324,6 +323,7 @@ app:
       camera_flip_y: Capovolgi verticalmente
       camera_stream_type: Tipo di Stream
       camera_url: URL Camera
+      confirm_on_estop: Conferma prima di arrestare
       dark_mode: Dark Mode
       default_extrude_length: Lunghezza di estrusione predefinita
       default_extrude_speed: Velocità di estrusione predefinita
@@ -345,7 +345,6 @@ app:
       time_estimates: Stime di tempo
       toggle: Attiva / Disattiva
       z_adjust_values: Valori Z di fino
-      confirm_on_estop: Conferma prima di arrestare
     timer_options:
       duration: Solo Durata
       duration_description: Simile a un LCD per Klipper, mostra solo la durata senza stime.

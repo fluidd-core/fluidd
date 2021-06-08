@@ -99,6 +99,27 @@ app:
     tooltip:
       disabled: Taken zijn uitgeschakeld voordat er een verbinding is met klippy
       low_on_space: Weinig plaats op de Disk
+  gcode:
+    btn:
+      load_current_file: Laad huidig ​​bestand
+    label:
+      current_layer_height: Huidige laaghoogte
+      follow_progress: Volg voortgang
+      layer: Laag
+      layers: Lagen
+      parsed: Geparsed
+      progress: Vooruitgang
+      show_extrusions: Toon extrusies
+      show_moves: Toon bewegingen
+      show_next_layer: Toon volgende laag
+      show_previous_layer: Toon vorige laag
+      show_retractions: Toon retracts
+    msg:
+      confirm: >-
+        Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
+        voor uw systeem. 
+
+        Weet je het zeker?
   general:
     btn:
       add: Toevoegen
@@ -117,10 +138,12 @@ app:
       extrude: Extrude
       heaters_off: Verwarmingen uit
       load_all: Alles laden
+      load_current_file: Laad het huidige bestand
       more_information: Meer informatie
       pause: Pauze
       preheat: Voorverwarmen
       presets: Voorinstellingen
+      preview_gcode: Voorbeeld van Gcode
       quad_gantry_level: QGL
       reboot: Herstart
       remove: Verwijderen
@@ -144,8 +167,6 @@ app:
       upload: Uploaden
       upload_print: Uploaden & Printen
       view: Bekijken
-      load_current_file: Laad het huidige bestand
-      preview_gcode: Voorbeeld van Gcode
     error:
       app_setup_link: >-
         Fluidd setup vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -177,7 +198,6 @@ app:
       layout: Layout
       longest_job: Langste taak
       low: Laag
-      move_macro: Marco verplaatsen %{name}
       name: Naam
       no_notifications: Geen notificaties
       'off': Uit
@@ -246,6 +266,7 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Ventilators & Outputs
+      gcode_preview: Gcode-voorbeeld
       history: Takenhistoriek
       home: Dashbord
       jobs: Taken
@@ -259,7 +280,6 @@ app:
       temperature: Temperaturen
       tool: Werktuig
       tune: Tunen
-      gcode_preview: Gcode-voorbeeld
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
@@ -311,28 +331,28 @@ app:
       default_toolhead_move_length: Standaard werktuig beweeglengte
       default_toolhead_xy_speed: Standaard xy-snelheid
       default_toolhead_z_speed: Standaard z-snelheid
+      draw_background: Teken achtergrond
       enable: Inschakelen
+      enable_animations: Animaties inschakelen
       enable_notifications: Notificaties aanzetten
+      extrusion_line_width: Breedte extrusielijn
+      flip_horizontal: Horizontaal spiegelen
+      flip_vertical: Verticaal spiegelen
       fps_target: FPS Instelling
       gcode_coords: Gebruik GCode coordinaten
       invert_x_control: Inverteer X knop
       invert_y_control: Inverteer Y knop
       invert_z_control: Inverteer Z knop
       language: Taalinstelling
+      move_line_width: Lijnbreedte verplaatsen
       primary_color: Primaire kleur
       printer_name: Printer Naam
       reset: Reset instellingen
+      retraction_icon_size: Grootte van pictogram voor intrekken
       thermal_preset_name: Voorkeursnaam
       time_estimates: Tijdsschattingen
       toggle: Schakelen
       z_adjust_values: Z Aanpassingswaardes
-      draw_background: Teken achtergrond
-      enable_animations: Animaties inschakelen
-      extrusion_line_width: Breedte extrusielijn
-      flip_horizontal: Horizontaal spiegelen
-      flip_vertical: Verticaal spiegelen
-      move_line_width: Lijnbreedte verplaatsen
-      retraction_icon_size: Grootte van pictogram voor intrekken
     timer_options:
       duration: Alleen tijdsduur
       duration_description: Zoals op het LCD, dit toont alleen tijdsduur zonder schattingen.
@@ -348,12 +368,12 @@ app:
       slicer_description: Gebruikt de slicerschatting. Dit moet je aanzetten in je slicer.
     title:
       camera: Camera | Camera's
+      gcode_preview: Gcode-voorbeeld
       general: Algemeen
       macros: Macros
       theme: Theme
       thermal_presets: Temperatuurvoorkeuren
       tool: Werktuig
-      gcode_preview: Gcode-voorbeeld
     tooltip:
       gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
   socket:
@@ -398,24 +418,3 @@ app:
       invalid: duidt op lokale veranderingen in je repo
       packages: Pakketten
       release_notes: Release notities
-  gcode:
-    btn:
-      load_current_file: Laad huidig ​​bestand
-    label:
-      current_layer_height: Huidige laaghoogte
-      follow_progress: Volg voortgang
-      layer: Laag
-      layers: Lagen
-      parsed: Geparsed
-      progress: Vooruitgang
-      show_extrusions: Toon extrusies
-      show_moves: Toon bewegingen
-      show_next_layer: Toon volgende laag
-      show_previous_layer: Toon vorige laag
-      show_retractions: Toon retracts
-    msg:
-      confirm: >-
-        Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
-        voor uw systeem. 
-
-        Weet je het zeker?
