@@ -111,7 +111,7 @@
 
         </v-list> -->
 
-        <div class="nav-items" v-show="authenticated">
+        <div class="nav-items" v-show="authenticated && socketConnected">
           <app-nav-item
             icon="$dash"
             exact
