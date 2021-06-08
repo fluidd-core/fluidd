@@ -142,13 +142,13 @@
           </file-row-item>
 
           <file-row-item :headers="headers" item-value="modified">
-            <span v-if="item.modified !== undefined">
+            <span v-if="item.modified !== undefined && item.modified !== null">
               {{ $filters.formatDateTime(item.modified) }}
             </span>
           </file-row-item>
 
           <file-row-item :headers="headers" item-value="size">
-            <span v-if="item.size !== undefined">
+            <span v-if="item.size !== undefined && item.size !== 0">
               {{ $filters.getReadableFileSizeString(item.size) }}
             </span>
           </file-row-item>

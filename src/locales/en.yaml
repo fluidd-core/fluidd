@@ -202,6 +202,8 @@ app:
       'off': 'Off'
       power: Power
       printers: Printers
+      retract_length: Retract Length
+      retract_speed: Retract Speed
       requested_speed: Requested Speed
       save_as: Save As
       services: Services
@@ -215,6 +217,7 @@ app:
       total_time: Total time
       total_time_avg: Avg per print
       uncategorized: Uncategorized
+      unretract_speed: Unretract Speed
       used: used
       variance: Variance
       velocity: Velocity
@@ -271,6 +274,7 @@ app:
       home: Home
       jobs: Jobs
       limits: Printer Limits
+      retract: Firmware Retraction
       macros: Macros
       runout_sensors: Runout Sensors
       settings: Settings

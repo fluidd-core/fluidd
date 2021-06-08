@@ -13,7 +13,12 @@
         <v-card-title class="card-heading py-2">
           <span class="focus--text">{{ newMacro.name.toUpperCase() }}</span>
         </v-card-title>
-        <v-card-subtitle class="card-heading grey--text pb-2">{{ newMacro.config.description }}</v-card-subtitle>
+        <v-card-subtitle
+          v-if="newMacro.config.description"
+          class="card-heading grey--text pb-2"
+        >
+          {{ newMacro.config.description }}
+        </v-card-subtitle>
 
         <v-divider />
 

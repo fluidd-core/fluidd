@@ -71,7 +71,7 @@ export interface AppDirectory {
   type: 'directory';
   name?: string;
   dirname: string;
-  modified: number;
+  modified: number | null;
   size: number;
 }
 

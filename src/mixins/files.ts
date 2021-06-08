@@ -84,11 +84,15 @@ export default class FilesMixin extends Vue {
       ...options,
       onDownloadProgress: (progressEvent: ProgressEvent) => {
         const units = ['kB', 'MB', 'GB']
-        let speed = progressEvent.loaded / (performance.now() - startTime)
+        let speed = 0
         let i = 0
-        while (speed > 1024) {
-          speed /= 1024.0
-          i = Math.min(2, i + 1)
+        const delta = performance.now() - startTime
+        if (delta > 0) {
+          speed = progressEvent.loaded / delta
+          while (speed > 1024) {
+            speed /= 1024
+            i = Math.min(2, i + 1)
+          }
         }
 
         const payload: any = {
@@ -172,11 +176,15 @@ export default class FilesMixin extends Vue {
           },
           onUploadProgress: (progressEvent: ProgressEvent) => {
             const units = ['kB', 'MB', 'GB']
-            let speed = progressEvent.loaded / (performance.now() - startTime)
+            let speed = 0
             let i = 0
-            while (speed > 1024) {
-              speed /= 1024.0
-              i = Math.min(2, i + 1)
+            const delta = performance.now() - startTime
+            if (delta > 0) {
+              speed = progressEvent.loaded / delta
+              while (speed > 1024) {
+                speed /= 1024
+                i = Math.min(2, i + 1)
+              }
             }
             this.$store.dispatch('files/updateFileUpload', {
               filepath,

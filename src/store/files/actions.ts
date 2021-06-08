@@ -28,7 +28,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         dirname: '..',
         name: '..',
         size: 0,
-        modified: new Date().getTime()
+        modified: null
       })
     }
 
@@ -40,7 +40,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         ) {
           dir.type = 'directory'
           dir.name = dir.dirname
-          dir.modified = new Date(dir.modified).getTime()
+          dir.modified = (dir.modified) ? new Date(dir.modified).getTime() : null
           items.push(dir)
         }
       })
