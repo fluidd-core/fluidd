@@ -29,7 +29,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     */
   async onSocketOpen ({ commit }, payload) {
     commit('setSocketOpen', payload)
-    SocketActions.serverInfo()
+    if (payload === true) SocketActions.serverInfo()
   },
 
   /**
@@ -37,6 +37,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
   async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
     const retry = state.disconnecting
+
     if (e.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
       await dispatch('reset', [
@@ -45,13 +46,16 @@ export const actions: ActionTree<SocketState, RootState> = {
         'socket',
         'wait'
       ], { root: true })
+      commit('setSocketConnecting', true)
       Vue.$socket.connect()
     }
 
     if (e.wasClean && !retry) {
+      console.log('should have hit in here...')
       // Set the socket state to closed.
       // If we swap printer endpoints, then the init will run
       // which will reset the state if necessary.
+      commit('setSocketConnecting', false)
       commit('setSocketOpen', false)
     }
   },

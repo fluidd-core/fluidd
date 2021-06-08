@@ -14,7 +14,6 @@ import { authApi } from '@/api/auth.api'
 
 export class WebSocketClient {
   url = '';
-  // token: string | null = null;
   connection: WebSocket | null = null;
   reconnectEnabled = false;
   reconnectInterval = 1000;
@@ -23,12 +22,36 @@ export class WebSocketClient {
   logPrefix = '[WEBSOCKET]';
   requests: Array<Request> = [];
   store: any | null = null;
+  pingInterval = 2000;
+  pingTimeout: any;
 
   constructor (options: Options) {
     this.url = options.url
     this.reconnectEnabled = options.reconnectEnabled || false
     this.reconnectInterval = options.reconnectInterval || 1000
     this.store = options.store ? options.store : null
+  }
+
+  pong () {
+    // Valid response from the socket.
+    clearTimeout(this.pingTimeout)
+
+    if (
+      !this.store.state.socket?.disconnecting
+    ) {
+      // We have a connection again, so set the socket properties
+      // appropriately.
+      this.store.commit('socket/setSocketOpen', true)
+      this.store.dispatch('socket/onSocketConnecting', false)
+
+      this.pingTimeout = setTimeout(() => {
+        // In the event our socket stops responding, set the socket properties
+        // appropriately.
+        consola.debug(`${this.logPrefix} Connection timeout, pong failed`)
+        if (this.store) this.store.commit('socket/setSocketOpen', false)
+        if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
+      }, this.pingInterval)
+    }
   }
 
   close () {
@@ -44,7 +67,7 @@ export class WebSocketClient {
     await authApi.getOneShot()
       .then(response => response.data.result)
       .then((token) => {
-        // Good. Move on swith setting up the socket.
+        // Good. Move on with setting up the socket.
         if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
         this.connection = new WebSocket(`${this.url}?token=${token}`)
 
@@ -60,11 +83,9 @@ export class WebSocketClient {
 
         this.connection.onclose = (e) => {
           consola.debug(`${this.logPrefix} Connection closed:`, e)
+          clearTimeout(this.pingTimeout)
           if (this.store) this.store.dispatch('socket/onSocketClose', e)
-          if (e.wasClean) {
-            // A clean close indicates we wanted to do this on purpose.
-            if (this.store) this.store.dispatch('socket/onSocketConnecting', false)
-          } else {
+          if (!e.wasClean) {
             this.reconnect()
           }
         }
@@ -75,6 +96,7 @@ export class WebSocketClient {
         }
 
         this.connection.onmessage = (m) => {
+          // Parse the data packet.
           const d: SocketResponse = JSON.parse(m.data)
 
           // Is this a socket notification, or an answer to a specific request?
@@ -86,7 +108,7 @@ export class WebSocketClient {
           }
 
           // Remove a wait if defined.
-          if (request && request.wait && request.wait.length) {
+          if (this.store && request && request.wait && request.wait.length) {
             this.store.commit('wait/setRemoveWait', request.wait)
           }
 
@@ -95,7 +117,7 @@ export class WebSocketClient {
               Object.defineProperty(d.error, '__request__', { enumerable: false, value: request })
             }
             consola.debug(`${this.logPrefix} Response error:`, d.error)
-            this.store.dispatch('socket/onSocketError', d.error)
+            if (this.store) this.store.dispatch('socket/onSocketError', d.error)
             return
           }
 
@@ -109,16 +131,20 @@ export class WebSocketClient {
 
             Object.defineProperty(result, '__request__', { enumerable: false, value: request })
             consola.debug(`${this.logPrefix} Response:`, result)
-            if (request.dispatch) this.store?.dispatch(request.dispatch, result)
-            if (request.commit) this.store?.commit(request.commit, result)
+            if (request.dispatch && this.store) this.store?.dispatch(request.dispatch, result)
+            if (request.commit && this.store) this.store?.commit(request.commit, result)
           } else {
             // These are socket notifications (i.e., no specific request was made..)
             // Dispatch with the name of the method, converted to camelCase.
             // consola.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
+
+            // we're still alive.
+            this.pong()
+
             if (d.params && d.params[0]) {
-              this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
+              if (this.store) this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
             } else {
-              this.store.dispatch('socket/' + camelCase(d.method))
+              if (this.store) this.store.dispatch('socket/' + camelCase(d.method))
             }
           }
         }

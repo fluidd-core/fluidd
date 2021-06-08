@@ -17,10 +17,9 @@ import store from '@/store'
 Vue.use(VueRouter)
 
 const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
-  // console.log(store.state.config?.apiUrl)
   if (
     store.getters['auth/getAuthenticated'] ||
-    store.state.config?.apiUrl === ''
+    !store.state.socket?.apiConnected
   ) {
     next()
     return
