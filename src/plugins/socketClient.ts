@@ -7,9 +7,9 @@
  * and refactored.
  */
 import _Vue from 'vue'
+import { Globals } from '@/globals'
 import consola from 'consola'
 import { camelCase } from 'lodash-es'
-// import { getTokenKeys } from '@/store/auth/helpers'
 import { authApi } from '@/api/auth.api'
 
 export class WebSocketClient {
@@ -22,7 +22,6 @@ export class WebSocketClient {
   logPrefix = '[WEBSOCKET]';
   requests: Array<Request> = [];
   store: any | null = null;
-  pingInterval = 5000;
   pingTimeout: any;
 
   constructor (options: Options) {
@@ -36,22 +35,28 @@ export class WebSocketClient {
     // Valid response from the socket.
     clearTimeout(this.pingTimeout)
 
+    // We have a connection again, so set the socket properties
+    // appropriately.
     if (
-      !this.store.state.socket?.disconnecting
+      !this.store.state.socket?.disconnecting && // We arent about to disonnect and..
+      !this.store.state.files.download // We're not in the middle of a download.
     ) {
-      // We have a connection again, so set the socket properties
-      // appropriately.
       this.store.commit('socket/setSocketOpen', true)
       this.store.dispatch('socket/onSocketConnecting', false)
+    }
 
-      this.pingTimeout = setTimeout(() => {
+    this.pingTimeout = setTimeout(() => {
+      if (
+        !this.store.state.socket?.disconnecting && // We arent about to disonnect and..
+        !this.store.state.files.download // We're not in the middle of a download.
+      ) {
         // In the event our socket stops responding, set the socket properties
         // appropriately.
         consola.debug(`${this.logPrefix} Connection timeout, pong failed`)
         if (this.store) this.store.commit('socket/setSocketOpen', false)
         if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
-      }, this.pingInterval)
-    }
+      }
+    }, Globals.SOCKET_PING_INTERVAL)
   }
 
   close () {

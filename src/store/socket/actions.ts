@@ -51,7 +51,6 @@ export const actions: ActionTree<SocketState, RootState> = {
     }
 
     if (e.wasClean && !retry) {
-      console.log('should have hit in here...')
       // Set the socket state to closed.
       // If we swap printer endpoints, then the init will run
       // which will reset the state if necessary.
