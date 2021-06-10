@@ -20,7 +20,7 @@ export default new Vuetify({
     themes: {
       dark: {
         primary: colors.blue.base,
-        secondary: colors.grey.darken1,
+        secondary: '#888888', // colors.grey.darken1,
         'card-heading': '#333337',
         btncolor: '#4A4A4F',
         drawer: '#28282B',

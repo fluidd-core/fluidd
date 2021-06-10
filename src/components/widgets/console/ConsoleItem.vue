@@ -52,9 +52,9 @@ export default class ConsoleItem extends Vue {
       return { 'error--text': true }
     }
 
-    if (this.value.message.startsWith('//')) {
-      return { 'secondary--text': true }
-    }
+    // if (this.value.message.startsWith('//')) {
+    //   return { 'secondary--text': true }
+    // }
 
     if (this.value.type === 'command') {
       return { 'primary--text': true }

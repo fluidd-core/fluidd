@@ -17,8 +17,7 @@ $material-dark: (
   ),
   'text': (
     'theme': rgba(#ffffff, 0.87),
-    'primary': rgba(#ffffff, 0.67), // standard text color (when not specifically set to primary--text)
-    'secondary': rgba(#ffffff, 0.57) // secondary text color
+    'primary': rgba(#ffffff, 0.80), // standard text color (when not specifically set to primary--text)
   ),
   'icons': (
     'active': rgba(#ffffff, 0.77) // incl checkboxes
@@ -29,7 +28,7 @@ $material-dark: (
 
 $material-dark-elevation-colors: (
   '0': #1E1E20,
-  '1': #28282b,
+  '1': #262629,
   '2': #2b2b2d,
   '3': #2d2d30,
   '4': #2f2f32,
