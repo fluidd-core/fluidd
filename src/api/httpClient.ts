@@ -12,9 +12,16 @@ const httpClient = Axios.create({
 httpClient.prototype.CancelToken = Axios.CancelToken
 httpClient.prototype.isCancel = Axios.isCancel
 
+// For these paths, we force remove the withAuth flag.
 const unauthenticatedPaths = [
   '/access/login',
   '/access/refresh_token'
+]
+
+// For these paths, we don't emit an error because we handle them
+// downstream.
+const handledErrorRequests = [
+  '/access/login'
 ]
 
 const requestInterceptor = async (config: AxiosRequestConfig) => {
@@ -78,6 +85,8 @@ const errorInterceptor = (error: AxiosError) => {
   // All other errors
   if (error.response.data) message = error.response.data
   if (error.response.data.error.message) message = error.response.data.error.message
+
+  const url = error.config.url || ''
   switch (error.response.status) {
     case 500:
       consola.debug(error.response.status, error.message, message)
@@ -85,7 +94,9 @@ const errorInterceptor = (error: AxiosError) => {
       break
     case 400:
       consola.debug(error.response.status, error.message, message)
-      EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
+      if (!handledErrorRequests.includes(url)) {
+        EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
+      }
       break
     case 401:
       if (error.config.withAuth) {
