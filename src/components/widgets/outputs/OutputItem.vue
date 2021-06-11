@@ -8,7 +8,7 @@
     </output-pin>
 
     <output-fan
-      v-if="item.type.endsWith('fan')"
+      v-if="fanTypes.includes(item.type)"
       :key="item.key"
       :fan="item"
     ></output-fan>
@@ -39,5 +39,15 @@ import OutputLed from '@/components/widgets/outputs/OutputLed.vue'
 export default class Outputs extends Vue {
   @Prop({ type: Object, required: true })
   item!: object
+
+  get fanTypes () {
+    return [
+      'temperature_fan',
+      'controller_fan',
+      'heater_fan',
+      'fan_generic',
+      'fan'
+    ]
+  }
 }
 </script>
