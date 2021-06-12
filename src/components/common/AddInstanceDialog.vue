@@ -137,6 +137,11 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       this.cancelSource = Axios.CancelToken.source()
 
+      // filter trailing slashes
+      url = (url.endsWith('/'))
+        ? url.slice(0, -1)
+        : url
+
       // Start by making a standard request. Maybe it's good?
       const request = await httpClient.get(
         url + '/server/info?t=' + new Date().getTime(), {
