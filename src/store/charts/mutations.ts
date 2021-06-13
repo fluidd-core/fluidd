@@ -8,6 +8,12 @@ export const mutations: MutationTree<ChartState> = {
    * Reset state
    */
   setReset (state) {
+    // Remove unknown keys first.
+    const d = defaultState()
+    Object.keys(state).forEach(key => {
+      if (!Object.keys(d).includes(key)) delete state[key]
+    })
+
     Object.assign(state, defaultState())
   },
 
