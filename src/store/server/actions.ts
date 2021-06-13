@@ -80,6 +80,23 @@ export const actions: ActionTree<ServerState, RootState> = {
       await dispatch('onMachineThrottledState', payload.throttled_state)
     }
     commit('setMoonrakerStats', payload)
+
+    // Add a chart entry
+    if (
+      payload.moonraker_stats &&
+      'cpu_usage' in payload.moonraker_stats &&
+      !Array.isArray(payload.moonraker_stats)
+    ) {
+      const d = payload.moonraker_stats
+      commit('charts/setChartEntry', {
+        type: 'moonraker',
+        retention: 600,
+        data: {
+          date: new Date(d.time * 1000),
+          load: d.cpu_usage.toFixed(2)
+        }
+      }, { root: true })
+    }
   },
 
   async onMachineSystemInfo ({ commit }, payload) {

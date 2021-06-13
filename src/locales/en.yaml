@@ -74,6 +74,7 @@ app:
     label:
       dir_name: Directory name
       disk_usage: Disk Usage
+      diskinfo: Disk Information
       downloaded: Downloaded
       file_name: Filename
       transfer_rate: Transfer rate
@@ -293,6 +294,7 @@ app:
       stats: Printer Stats
       status: Status
       system_control: System Control
+      system_overview: System Information
       temperature: Thermals
       tool: Tool
       tune: Tune
@@ -398,6 +400,29 @@ app:
     msg:
       connecting: Connecting to moonraker...
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+  system_info:
+    label:
+      capacity: Capacity
+      cpu_desc: CPU Description
+      distribution_codename: Codename
+      distribution_like: Distribution Like
+      distribution_name: Distribution
+      hardware_desc: Hardware Description
+      hostname: Hostname
+      klipper_load: Klipper Load
+      manufactured: Manufactured
+      manufacturer: Manufacturer
+      mcu_awake: '{mcu} Awake'
+      mcu_load: '{mcu} Load'
+      model: CPU Model
+      moonraker_load: Moonraker Load
+      processor_desc: Processor
+      product_name: Product Name
+      serial_number: Serial Number
+      system_load: System Load
+      system_memory: System Memory
+      system_utilization: System Utilization
+      total_memory: Total Memory
   tool:
     btn:
       home_x: X

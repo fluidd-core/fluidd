@@ -52,6 +52,7 @@ export interface CpuInfo {
   cpu_desc: string;
   hardware_desc: string;
   model: string;
+  total_memory: number;
 }
 
 export interface SDInfo {

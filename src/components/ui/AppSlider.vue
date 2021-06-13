@@ -15,7 +15,7 @@
 
       <!-- Current value -->
       <v-col
-        class="ml-auto py-0"
+        class="py-0"
       >
 
         <v-text-field

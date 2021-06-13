@@ -144,6 +144,7 @@ export const handleAddChartEntry = (retention: number, keys: string[]) => {
     if (!date2 || date1.getTime() - date2.getTime() > diff) {
       const data = configureChartEntry(date1)
       store.commit('charts/setChartEntry', {
+        type: 'chart',
         data,
         retention
       })
@@ -451,4 +452,94 @@ export const getAllLayouts = (layouts: Layouts) => {
     }
   }
   return knownComponents
+}
+
+export const handleSystemStatsChange = (payload: any) => {
+  if (
+    'system_stats' in payload
+  ) {
+    // Combine existing with the update.
+    const stats = {
+      ...store.state.printer?.printer.system_stats,
+      ...payload.system_stats
+    }
+
+    // Set a datetime.
+    const date = new Date()
+
+    // Add an entry for the memory graph.
+    if (
+      'memavail' in stats &&
+      store.state.server?.system_info?.cpu_info?.total_memory
+    ) {
+      const total_memory = store.state.server?.system_info?.cpu_info?.total_memory || 0
+      const mem_used = total_memory - stats.memavail
+      const percent_mem_used = mem_used / total_memory * 100
+
+      // Commit the formatted result to our chart data.
+      store.commit('charts/setChartEntry', {
+        type: 'memory',
+        retention: 600,
+        data: {
+          date,
+          memused: percent_mem_used.toFixed(2)
+        }
+      })
+    }
+
+    // Add an entry for the cpu time and sysload.
+    if (
+      'cputime' in stats &&
+      'sysload' in stats
+    ) {
+      const cores = store.state.server?.system_info?.cpu_info?.cpu_count || 1
+
+      const cputime = stats.cputime
+      const last_cputime = store.state.printer?.printer.system_stats?.cputime || stats.cputime || 0
+
+      // Commit the formatted result to our chart data.
+      store.commit('charts/setChartEntry', {
+        type: 'klipper',
+        retention: 600,
+        data: {
+          date,
+          load: (stats.sysload / cores * 100).toFixed(2),
+          cputime_change: ((cputime - last_cputime) * 100).toFixed(2)
+        }
+      })
+    }
+  }
+}
+
+export const handleMcuStatsChange = (payload: any) => {
+  const keys = Object.keys(payload).filter(key => key.startsWith('mcu'))
+  if (keys.length > 0) {
+    keys.forEach(key => {
+      // swap underscores for spaces.
+      const name = key.replace(' ', '_')
+
+      // Combine existing with the update.
+      const stats = {
+        ...store.state.printer?.printer[key],
+        ...payload[key]
+      }
+
+      if (stats.last_stats) {
+        const date = new Date()
+        const load = 100 * (stats.last_stats.mcu_task_avg + (3 * stats.last_stats.mcu_task_stddev) / 0.0025)
+        const awake = 100 * (stats.last_stats.mcu_awake / 5)
+
+        // Commit the formatted result to our chart data.
+        store.commit('charts/setChartEntry', {
+          type: name,
+          retention: 600,
+          data: {
+            date,
+            load: load.toFixed(2),
+            awake: awake.toFixed(2)
+          }
+        })
+      }
+    })
+  }
 }

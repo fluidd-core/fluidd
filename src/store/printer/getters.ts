@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder } from './types'
+import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder, MCU } from './types'
 import { get } from 'lodash-es'
 import { getKlipperType } from '../helpers'
 
@@ -181,6 +181,30 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   /**
+   * Return system stats
+   */
+  getSystemStats: (state) => {
+    return state.printer.system_stats
+  },
+
+  /**
+   * Return MCU's and their state
+   */
+  getMcus: (state) => {
+    const mcus: MCU[] = []
+    Object.keys(state.printer)
+      .filter(key => key.startsWith('mcu'))
+      .sort()
+      .forEach(key => {
+        mcus.push({
+          name: key,
+          ...state.printer[key]
+        })
+      })
+    return mcus
+  },
+
+  /**
  * Return known extruders, giving them a friendly name.
  */
   getExtruders: (state) => {
@@ -189,13 +213,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .filter(key => key.startsWith('extruder'))
       .sort()
       .forEach(key => {
-        if (key.startsWith('extruder')) {
-          if (key === 'extruder') {
-            extruders.push({ name: 'Extruder 0', key })
-          } else {
-            const match = key.match(/\d+$/)
-            if (match) extruders.push({ name: 'Extruder ' + match[0], key })
-          }
+        if (key === 'extruder') {
+          extruders.push({ name: 'Extruder 0', key })
+        } else {
+          const match = key.match(/\d+$/)
+          if (match) extruders.push({ name: 'Extruder ' + match[0], key })
         }
       })
     return extruders

@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { ServerInfo, ServerConfig, ServerState } from './types'
+import { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -12,10 +12,24 @@ export const getters: GetterTree<ServerState, RootState> = {
   },
 
   /**
+   * Gets the current system info
+   */
+  getSystemInfo: (state): SystemInfo | null => {
+    return state.system_info
+  },
+
+  /**
    * Return server config
    */
   getConfig: (state): ServerConfig => {
     return state.config
+  },
+
+  /**
+   * Return server process stats
+   */
+  getProcessStats: (state): ServerSystemStat[] => {
+    return state.moonraker_stats
   },
 
   /**

@@ -11,6 +11,17 @@ export interface Extruder {
   key: string;
 }
 
+export interface MCU {
+  last_stats: MCUData;
+  mcu_build_versions: string;
+  mcu_constants: MCUData;
+  mcu_version: string;
+}
+
+export interface MCUData {
+  [index: string]: string | number;
+}
+
 export interface TimeEstimates {
   type: 'file' | 'slicer' | 'filament' | 'totals';
   progress: string;
