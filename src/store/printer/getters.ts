@@ -72,14 +72,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
    */
   getPrinterState: (state): string => {
     const state1 = state.printer.idle_timeout.state // printing, ready, idle
-    const state2 = state.printer.print_stats.state // printing, paused, standby, complete
-    // If the idle state says we're printing, bnut the print_stats say otherwise - then
+    const state2 = state.printer.print_stats.state // printing, paused, standby, complete, cancelled, error
+    // If the idle state says we're printing, but the print_stats say otherwise - then
     // we're probably busy moving the toolhead or doing some other process.
     // Possible values are;
     // printing, busy, paused, ready, idle, standby
     if (state1 && state2) {
       if (
-        state2.toLowerCase() === 'paused'
+        state2.toLowerCase() === 'paused' ||
+        state2.toLowerCase() === 'cancelled'
       ) {
         return state2.toLowerCase()
       }
