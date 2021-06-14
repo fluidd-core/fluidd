@@ -61,7 +61,7 @@ export const getters: GetterTree<ChartState, RootState> = {
     }
 
     const tooltip = {
-      backgroundColor: (isDark) ? 'rgba(15,15,15,0.65)' : 'rgba(255,255,255,0.65)',
+      backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
       borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
       textStyle: {
         color: fontColor,
@@ -82,12 +82,12 @@ export const getters: GetterTree<ChartState, RootState> = {
         ...tooltip,
         show: true,
         trigger: 'axis',
-        // position: ['0%', '0%'],
-        position (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
-          const obj: { [index: string]: any } = { top: 0 }
-          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 0
-          return obj
-        },
+        position: ['-8px', '-8px'],
+        // position (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
+        //   const obj: { [index: string]: any } = { top: 0 }
+        //   obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 0
+        //   return obj
+        // },
         formatter: (params: any) => {
           let title = false
           let text = '<div>'
@@ -128,24 +128,14 @@ export const getters: GetterTree<ChartState, RootState> = {
           text += '</div>'
           return text
         }
-        // axisPointer: { type: 'cross' }
-        // tooltipPosition: (pos: any, params: any, el: HTMLElement, elRect: any, size: any) => {
-        //   const obj: { [index: string]: any } = { top: 0 }
-        //   obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
-        //   return obj
-        // }
       },
-      // axisPointer: {
-      //   type: 'axis',
-      //   lineStyle,
-      //   label
-      // },
       xAxis: {
         type: 'time',
         boundaryGap: false,
-        min: (value: any) => {
-          return value.max - (600 * 1000)
-        },
+        // min: (value: any) => {
+        //   return value.max - (600 * 1000)
+        // },
+        min: 'dataMin',
         max: 'dataMax',
         axisLine: { show: false },
         axisTick: { show: false },
@@ -163,7 +153,6 @@ export const getters: GetterTree<ChartState, RootState> = {
         },
         axisLabel: { show: false, formatter: '{value}%' },
         splitLine: { show: true, lineStyle }
-        // axisPointer: { label: { show: true } }
       }
     }
   },
@@ -175,20 +164,13 @@ export const getters: GetterTree<ChartState, RootState> = {
     const o = {
       type: 'line',
       smooth: true,
+      animation: false,
+      showSymbol: false,
       symbol: 'none',
-      areaStyle: {
-        type: 'solid',
-        opacity: 0.3
-      },
-      lineStyle: {
-        type: 'solid',
-        width: 1.5,
-        opacity: 1
-      },
+      areaStyle: { type: 'solid', opacity: 0.3 },
+      lineStyle: { type: 'solid', width: 1.5, opacity: 1 },
       emphasis: {
-        lineStyle: {
-          width: 1.5
-        }
+        lineStyle: { width: 1.5 }
       },
       ...options
     }

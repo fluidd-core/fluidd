@@ -2,6 +2,7 @@
   <div class="chart" :style="{ 'height': height }">
     <ECharts
       ref="chart"
+      style="overflow: initial;"
       :option="options"
       :setOptionOps="{ notMerge: true }"
       :initOpts="{ renderer: 'svg' }"
@@ -99,17 +100,20 @@ export default class ThermalChart extends Vue {
   }
 
   get options () {
-    const darkMode = this.$store.state.config.uiSettings.theme.isDark
-    const fontSize = (this.isMobile) ? 13 : 14
-    const lineOpacity = 0.2
-    let labelBackground = 'rgba(10,10,10,0.65)'
-    const borderColor = (darkMode) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)'
-    let fontColor = 'rgba(255,255,255,0.25)'
-    let lineColor = '#ffffff'
-    if (!darkMode) {
-      labelBackground = 'rgba(255,255,255,0.85)'
-      fontColor = 'rgba(0,0,0,0.45)'
-      lineColor = '#000000'
+    const isDark = this.$store.state.config.uiSettings.theme.isDark
+    const isMobile = this.isMobile
+
+    const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
+    const fontSize = (isMobile) ? 13 : 14
+
+    const lineStyle = {
+      color: (isDark) ? '#ffffff' : '#000000',
+      opacity: 0.05
+    }
+
+    const pointerStyle = {
+      color: (isDark) ? '#ffffff' : '#000000',
+      opacity: 0.5
     }
 
     let right = (this.isMobile) ? 15 : 20
@@ -123,41 +127,80 @@ export default class ThermalChart extends Vue {
       bottom: (this.isMobile) ? 52 : 38
     }
 
+    const tooltip = {
+      backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
+      borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
+      textStyle: {
+        color: fontColor,
+        fontSize
+      }
+    }
+
+    const theme = this.$store.getters['config/getTheme']
+    const color = [
+      theme.currentTheme.primary,
+      theme.currentTheme.secondary
+    ]
+
     const options = {
       grid,
+      color,
       legend: {
         show: false,
-        top: 0,
-        icon: 'circle',
-        textStyle: {
-          fontSize,
-          color: fontColor
-        },
         selected: this.initialSelected
       },
       tooltip: {
+        ...tooltip,
         trigger: 'axis',
         confine: false,
-        backgroundColor: labelBackground,
-        borderColor,
-        textStyle: {
-          color: fontColor,
-          fontSize
-        },
         axisPointer: {
           type: 'line',
-          lineStyle: {
-            color: lineColor,
-            opacity: lineOpacity
-          },
+          lineStyle: pointerStyle,
           label: {
             color: fontColor,
             fontSize,
-            backgroundColor: labelBackground
+            backgroundColor: tooltip.backgroundColor
           }
         },
         position: this.tooltipPosition,
-        formatter: this.tooltipFormatter
+        formatter: (params: any) => {
+          let text = ''
+          params
+            .reverse()
+            .forEach((param: any) => {
+              if (
+                !param.seriesName.toLowerCase().endsWith('target') &&
+                !param.seriesName.toLowerCase().endsWith('power') &&
+                !param.seriesName.toLowerCase().endsWith('speed') &&
+                param.seriesName &&
+                param.seriesName in param.value
+              ) {
+                text += `
+                  <div>
+                    ${param.marker}
+                    <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
+                      ${param.seriesName}:
+                    </span>
+                    <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
+                      ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
+
+                if (param.seriesName + 'Target' in param.value) {
+                  text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+                }
+                if (param.seriesName + 'Power' in param.value) {
+                  text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
+                }
+                if (param.seriesName + 'Speed' in param.value) {
+                  text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
+                }
+                text += `</span>
+                  <div style="clear: both"></div>
+                </div>
+                <div style="clear: both"></div>`
+              }
+            })
+          return text
+        }
       },
       xAxis: {
         type: 'time',
@@ -172,15 +215,12 @@ export default class ThermalChart extends Vue {
         },
         splitLine: {
           show: true,
-          lineStyle: {
-            color: lineColor,
-            opacity: 0.05
-          }
+          lineStyle
         },
         axisLabel: {
           interval: 0,
           margin: 14,
-          color: fontColor,
+          color: tooltip.textStyle.color,
           fontSize,
           formatter: '{H}:{mm}',
           rotate: (this.isMobile) ? 90 : 0
@@ -205,13 +245,7 @@ export default class ThermalChart extends Vue {
           show: true,
           type: 'value',
           position: 'left',
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: lineColor,
-              opacity: 0.05
-            }
-          },
+          splitLine: { show: true, lineStyle },
           minInterval: 20,
           maxInterval: 60,
           min: this.yAxisTempMin,
@@ -237,13 +271,7 @@ export default class ThermalChart extends Vue {
           show: this.showPowerAxis(this.initialSelected),
           type: 'value',
           position: 'right',
-          splitLine: {
-            show: false,
-            lineStyle: {
-              color: lineColor,
-              opacity: 0.05
-            }
-          },
+          splitLine: { show: false, lineStyle },
           min: 0,
           max: 1,
           axisLabel: {
@@ -270,7 +298,6 @@ export default class ThermalChart extends Vue {
   createSeries (label: string, key: string) {
     // Grab the color
     const color = Vue.$colorset.next(getKlipperType(key), key)
-    // const id = options.series.length + 1
 
     // Base properties
     const series: any = {
@@ -292,9 +319,7 @@ export default class ThermalChart extends Vue {
         width: 1.5,
         opacity: 1
       },
-      areaStyle: {
-        opacity: 0.05
-      },
+      areaStyle: { opacity: 0.05 },
       encode: { x: 'date', y: label }
     }
 
@@ -354,48 +379,9 @@ export default class ThermalChart extends Vue {
   }
 
   tooltipPosition (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
-    const obj: { [index: string]: any } = { top: 0 }
+    const obj: { [index: string]: any } = { top: -10 }
     obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
     return obj
-  }
-
-  tooltipFormatter (params: any) {
-    let text = ''
-    params
-      .reverse()
-      .forEach((param: any) => {
-        if (
-          !param.seriesName.toLowerCase().endsWith('target') &&
-          !param.seriesName.toLowerCase().endsWith('power') &&
-          !param.seriesName.toLowerCase().endsWith('speed') &&
-          param.seriesName &&
-          param.seriesName in param.value
-        ) {
-          text += `
-            <div>
-              ${param.marker}
-              <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-                ${param.seriesName}:
-              </span>
-              <span style="float:right;margin-left:20px;font-size:16px;color:#666;font-weight:900">
-                ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
-
-          if (param.seriesName + 'Target' in param.value) {
-            text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
-          }
-          if (param.seriesName + 'Power' in param.value) {
-            text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
-          }
-          if (param.seriesName + 'Speed' in param.value) {
-            text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
-          }
-          text += `</span>
-            <div style="clear: both"></div>
-          </div>
-          <div style="clear: both"></div>`
-        }
-      })
-    return text
   }
 
   get isMobile () {
