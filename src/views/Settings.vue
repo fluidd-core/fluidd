@@ -11,8 +11,8 @@
           <cameras></cameras>
           <toolhead-settings></toolhead-settings>
           <temperature-preset-settings></temperature-preset-settings>
+          <gcode-preview-settings></gcode-preview-settings>
           <version-settings v-if="supportsVersions"></version-settings>
-          <!-- <gcode-preview-settings></gcode-preview-settings> -->
         </div>
       </v-col>
     </v-row>

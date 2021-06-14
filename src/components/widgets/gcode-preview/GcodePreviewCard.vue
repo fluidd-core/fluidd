@@ -1,9 +1,15 @@
 <template>
   <collapsable-card
-    :title="cardTitle"
+    :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
     layout-path="dashboard.gcode-preview-card"
     draggable>
+
+    <v-card-text v-if="file">
+      {{ file.name }}
+    </v-card-text>
+
+    <v-divider v-if="file" />
 
     <v-card-text>
       <GcodePreviewParserProgressDialog
@@ -19,12 +25,13 @@
               <app-slider
                 :label="$t('app.gcode.label.layer')"
                 :value="currentLayer + 1"
-                :min="1"
+                @input="setCurrentLayerThrottled($event - 1)"
+                :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
                 :locked="isMobile"
                 input-md
-                @input="setCurrentLayerThrottled($event - 1)">
+              >
               </app-slider>
             </v-col>
           </v-row>
@@ -33,13 +40,14 @@
               <app-slider
                 :label="$t('app.gcode.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
+                @input="setMoveProgressThrottled($event + currentLayerMoveRange.min)"
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
                 valueSuffix="moves"
                 :locked="isMobile"
                 input-md
-                @input="setMoveProgressThrottled($event + currentLayerMoveRange.min)">
+              >
               </app-slider>
             </v-col>
           </v-row>
@@ -181,16 +189,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get fileProgressLayerNr (): number {
     return this.$store.getters['gcodePreview/getLayerNrByFilePosition'](this.filePosition)
-  }
-
-  get cardTitle (): string {
-    const title = this.$tc('app.general.title.gcode_preview')
-
-    if (!this.file) {
-      return title
-    }
-
-    return `${title} - ${this.file.name}`
   }
 
   get layerCount (): number {

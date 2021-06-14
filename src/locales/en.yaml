@@ -210,9 +210,9 @@ app:
       password: Password
       power: Power
       printers: Printers
+      requested_speed: Requested Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
-      requested_speed: Requested Speed
       save_as: Save As
       services: Services
       speed: Speed
@@ -281,13 +281,13 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs
-      gcode_preview: Gcode Preview
+      gcode_preview: Gcode Preview [ Beta ]
       history: History
       home: Home
       jobs: Jobs
       limits: Printer Limits
-      retract: Firmware Retraction
       macros: Macros
+      retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
       stats: Printer Stats
