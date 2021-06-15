@@ -5,6 +5,7 @@
     v-if="chartData"
   >
     <app-chart
+      v-if="chartData"
       :data="chartData"
       :options="options"
       height="120px"

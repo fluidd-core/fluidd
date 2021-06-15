@@ -5,7 +5,8 @@
     v-if="chartData"
   >
     <app-chart
-      :data="this.$store.state.charts[name] || []"
+      v-if="chartData"
+      :data="chartData || []"
       :options="options"
       height="120px"
     >
@@ -21,8 +22,12 @@
         <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.toUpperCase() })}}</span>
         <span>{{ chartData[chartData.length - 1].awake }}%</span>
       </div>
-    </div>
 
+      <div v-if="chartData && chartData.length" class="chart-label">
+        <span>{{ $t('app.system_info.label.mcu_bandwidth', { mcu: mcu.toUpperCase() })}}</span>
+        <span>{{ chartData[chartData.length - 1].bw }}%</span>
+      </div>
+    </div>
   </v-col>
 </template>
 
@@ -35,11 +40,7 @@ export default class McuLoadChart extends Vue {
   mcu!: string
 
   get chartData () {
-    return this.$store.state.charts[this.name]
-  }
-
-  get name () {
-    return this.mcu.replace(' ', '_')
+    return this.$store.state.charts[this.mcu]
   }
 
   get options () {
@@ -75,7 +76,12 @@ export default class McuLoadChart extends Vue {
       encode: { x: 'date', y: 'awake' }
     })
 
-    return [load, awake]
+    const bw = this.$store.getters['charts/getBaseSeries']({
+      name: 'bandwidth',
+      encode: { x: 'date', y: 'bw' }
+    })
+
+    return [load, awake, bw]
   }
 }
 </script>

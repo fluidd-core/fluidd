@@ -29,7 +29,6 @@ export default class ThermalChart extends Vue {
   initialSelected: any = {}
 
   handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
-    console.log('legends changed')
     this.$store.dispatch('charts/saveSelectedLegends', e.selected)
 
     let right = (this.isMobile) ? 15 : 20

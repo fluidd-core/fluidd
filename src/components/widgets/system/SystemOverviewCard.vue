@@ -19,9 +19,9 @@
               <th>{{ $t('app.system_info.label.cpu_desc') }}</th>
               <td>{{ cpuInfo.cpu_desc }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.total_memory">
               <th>{{ $t('app.system_info.label.total_memory') }}</th>
-              <td>{{ cpuInfo.total_memory }} {{ cpuInfo.memory_units }}</td>
+              <td>{{ this.$filters.getReadableFileSizeString(cpuInfo.total_memory * 1000) }}</td>
             </tr>
             <tr>
               <th>{{ $t('app.system_info.label.hardware_desc') }}</th>
@@ -42,6 +42,10 @@
             <tr>
               <th>{{ $t('app.system_info.label.distribution_like') }}</th>
               <td>{{ distribution.like }}</td>
+            </tr>
+            <tr v-for="mcu in mcus" :key="mcu.name">
+              <th>{{ mcu.name }}</th>
+              <td>{{ mcu.mcu_version }}</td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -66,6 +70,10 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
+  get mcus () {
+    return this.$store.getters['printer/getMcus']
+  }
+
   get cpuInfo () {
     const info = this.$store.getters['server/getSystemInfo']
     return info?.cpu_info || {}

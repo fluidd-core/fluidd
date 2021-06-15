@@ -413,6 +413,7 @@ app:
       manufactured: Manufactured
       manufacturer: Manufacturer
       mcu_awake: '{mcu} Awake'
+      mcu_bandwidth: '{mcu} Bandwidth'
       mcu_load: '{mcu} Load'
       model: CPU Model
       moonraker_load: Moonraker Load

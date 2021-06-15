@@ -6,7 +6,7 @@ export const handleMcuStatsChange = (payload: any) => {
   if (keys.length > 0) {
     keys.forEach(key => {
       // swap underscores for spaces.
-      const name = key.replace(' ', '_')
+      // const name = key.replace(' ', '_')
 
       // Combine existing with the update.
       const stats = {
@@ -15,18 +15,40 @@ export const handleMcuStatsChange = (payload: any) => {
       }
 
       if (stats.last_stats) {
+        // Datestamp for this chart entry.
         const date = new Date()
-        const load = 100 * (stats.last_stats.mcu_task_avg + (3 * stats.last_stats.mcu_task_stddev) / 0.0025)
-        const awake = 100 * (stats.last_stats.mcu_awake / 5)
+
+        // The last entry in our chart data.
+        let lastEntry: any
+        if (store.state.charts && store.state.charts[key]) {
+          lastEntry = store.state.charts[key][store.state.charts[key].length - 1]
+        }
+
+        // The time delta between the last and this entry.
+        const timedelta = (lastEntry) ? date.getTime() - lastEntry.date.getTime() : 1000
+
+        // Load & Awake times
+        const task_max = 0.0025
+        const stats_interval = 5
+        const load = 100 * (stats.last_stats.mcu_task_avg + (3 * stats.last_stats.mcu_task_stddev)) / task_max
+        const awake = 100 * (stats.last_stats.mcu_awake / stats_interval)
+
+        // Bandwidth
+        const maxbw = 25000
+        let bw = stats.last_stats.bytes_write + stats.last_stats.bytes_retransmit
+        let lastbw = (lastEntry) ? parseFloat(lastEntry.bw) : bw
+        if (bw < lastbw) lastbw = bw
+        bw = 100 * (bw - lastbw) / (maxbw * timedelta)
 
         // Commit the formatted result to our chart data.
         store.commit('charts/setChartEntry', {
-          type: name,
+          type: key,
           retention: 600,
           data: {
             date,
             load: load.toFixed(2),
-            awake: awake.toFixed(2)
+            awake: awake.toFixed(2),
+            bw: bw.toFixed(2)
           }
         })
       }
@@ -44,7 +66,7 @@ export const handleSystemStatsChange = (payload: any) => {
       ...payload.system_stats
     }
 
-    // Set a datetime.
+    // Datestamp for this chart entry.
     const date = new Date()
 
     // Add an entry for the memory graph.

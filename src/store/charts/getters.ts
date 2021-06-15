@@ -72,7 +72,8 @@ export const getters: GetterTree<ChartState, RootState> = {
     const theme = rootGetters['config/getTheme']
     const color = [
       theme.currentTheme.primary,
-      theme.currentTheme.secondary
+      theme.currentTheme.accent,
+      theme.currentTheme.info
     ]
 
     return {
@@ -83,11 +84,6 @@ export const getters: GetterTree<ChartState, RootState> = {
         show: true,
         trigger: 'axis',
         position: ['-8px', '-8px'],
-        // position (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
-        //   const obj: { [index: string]: any } = { top: 0 }
-        //   obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 0
-        //   return obj
-        // },
         formatter: (params: any) => {
           let title = false
           let text = '<div>'

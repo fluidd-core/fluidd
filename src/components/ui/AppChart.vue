@@ -1,8 +1,12 @@
 <template>
   <div>
     <div v-if="title" v-html="title"></div>
-    <div class="chart" :style="{ 'height': height }">
+    <div
+      class="chart"
+      :style="{ 'height': height }"
+    >
       <ECharts
+        v-if="ready"
         style="overflow: initial;"
         ref="chart"
         :option="opts"
@@ -34,6 +38,7 @@ export default class AppChart extends Vue {
   height!: string;
 
   events = []
+  ready = false
 
   get chart () {
     const ref = this.$refs.chart as any
@@ -50,20 +55,14 @@ export default class AppChart extends Vue {
 
   @Watch('data')
   onData (data: any) {
-    if (this.chart) {
+    if (this.chart && data) {
       this.chart.setOption({
         dataset: {
           source: data
         }
       })
     }
-  }
-
-  beforeDestroy () {
-    if (typeof window === 'undefined') return
-    if (this.chart) {
-      this.chart.dispose()
-    }
+    if (data && !this.ready) this.ready = true
   }
 
   get opts () {
@@ -78,6 +77,17 @@ export default class AppChart extends Vue {
 
     const options = merge(baseOptions, this.options)
     return options
+  }
+
+  mounted () {
+    if (this.data && !this.ready) this.ready = true
+  }
+
+  beforeDestroy () {
+    if (typeof window === 'undefined') return
+    if (this.chart) {
+      this.chart.dispose()
+    }
   }
 }
 
