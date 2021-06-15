@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    transition="slide-x-transition"
+    transition="slide-y-transition"
     :value="open"
     @input="$emit('update:open', $event)"
     :position-x="positionX"

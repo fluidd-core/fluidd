@@ -22,7 +22,7 @@
       <!-- Menu, (condensed to hamburger) -->
       <v-menu
         v-if="hasMenuSlot && !inLayout && !hideMenu"
-        transition="slide-x-transition"
+        transition="slide-y-transition"
         left
         offset-y
         :close-on-content-click="false"
