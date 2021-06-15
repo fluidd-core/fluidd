@@ -198,15 +198,12 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 <style lang="scss" scoped>
   @import '~vuetify/src/styles/styles.sass';
   ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
-    color: rgba(map-deep-get($material-theme, 'text', 'theme'), 0.55);
-
     .temp-name,
     .temp-power {
       font-size: 1rem;
     }
 
     .temp-actual {
-      color: rgba(map-deep-get($material-theme, 'text', 'theme'), 0.55);
       font-weight: 300;
       font-size: 1.125rem;
     }
