@@ -17,7 +17,7 @@
 <script lang='ts'>
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
-import { getKlipperType } from '@/store/helpers'
+import getKlipperType from '@/util/get-klipper-type'
 
 @Component({})
 export default class ThermalChart extends Vue {

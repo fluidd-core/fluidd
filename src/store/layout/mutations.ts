@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { getAllLayouts } from '@/store/helpers'
+import getAllLayouts from '@/util/get-all-layouts'
 import { defaultState } from './'
 import { LayoutConfig, LayoutState, Layouts } from './types'
 

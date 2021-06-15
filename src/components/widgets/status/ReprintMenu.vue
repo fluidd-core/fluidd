@@ -57,7 +57,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
-import { getFilePaths } from '@/store/helpers'
+import getFilePaths from '@/util/get-file-paths'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 
 @Component({

@@ -174,7 +174,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
-import { getFilePaths } from '@/store/helpers'
+import getFilePaths from '@/util/get-file-paths'
 import { HistoryItem } from '@/store/history/types'
 import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'

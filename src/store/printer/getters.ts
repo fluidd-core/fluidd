@@ -3,7 +3,7 @@ import { GetterTree } from 'vuex'
 import { RootState } from '../types'
 import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder, MCU } from './types'
 import { get } from 'lodash-es'
-import { getKlipperType } from '../helpers'
+import getKlipperType from '@/util/get-klipper-type'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 

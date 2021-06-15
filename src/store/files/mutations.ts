@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { mergeFileUpdate } from '../helpers'
+import mergeFileUpdate from '@/util/merge-file-update'
 import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta, FileRoot } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
