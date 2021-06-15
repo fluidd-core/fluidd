@@ -17,6 +17,7 @@ export interface TimeEstimates {
   remaining: string;
   current: string;
   total: string;
+  endTime: string;
 }
 
 export interface Heater {

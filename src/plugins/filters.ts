@@ -78,6 +78,20 @@ export const Filters = {
   },
 
   /**
+   * Formats a date from unixtime into a human readable
+   * datetime with optional formats for today and
+   * future datetimes
+   */
+  formatAbsoluteDateTime: (datetime: number, todayFormat?: string, futureFormat?: string) => {
+    const date = _Vue.$dayjs(datetime * 1000)
+    // Including a year doesn't make sense as that'll be clear from context (even on newyears-related edge cases)
+    const defaultFormat = 'MMM D, h:mm A'
+    const appropriateSpecifiedFormat = date.isToday() ? todayFormat : futureFormat
+
+    return date.format(appropriateSpecifiedFormat || defaultFormat)
+  },
+
+  /**
    * Formats a string into camel case.
    */
   camelCase: (string: string) => {
@@ -223,6 +237,7 @@ declare module 'vue/types/vue' {
     startCase(string: string): string;
     capitalize(string: string): string;
     formatDateTime(datetime: number, format?: string): string;
+    formatAbsoluteDateTime(datetime: number, todayFormat?: string, futureFormat?: string): string;
     getReadableFileSizeString(fileSizeInBytes: number): string;
     getReadableLengthString(lengthInMm: number): string;
     getApiUrls(url: string): ApiConfig;

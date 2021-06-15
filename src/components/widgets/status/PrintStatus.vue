@@ -20,7 +20,8 @@
               </template>
               <span>{{ $t('app.printer.status.time_left') }}</span>
             </v-tooltip>
-            {{ timeEstimates.remaining }}
+            <span>{{ timeEstimates.remaining }}</span>
+            <span class="grey--text text--darken-2" v-if="printerPrinting && printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.endTime }}</span>
           </div>
           <div class="mb-1 grey--text text--lighten-1">
             <v-tooltip left>

@@ -121,6 +121,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       : 0
     let total = 0
     let remaining = 0
+    // Current time as a Unix timestamp (in seconds)
+    let endTime = Math.floor(Date.now() / 1000)
 
     switch (type) {
       case 'slicer': {
@@ -130,7 +132,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
         ) {
           total = state.printer.current_file.estimated_time
         }
-        remaining = (total - current)
+        remaining = total - current
+        endTime = endTime + remaining
         break
       }
       case 'filament': {
@@ -144,6 +147,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           total = current / (state.printer.print_stats.filament_used / state.printer.current_file.filament_total)
         }
         remaining = total - current
+        endTime = endTime + remaining
         break
       }
       case 'file': {
@@ -151,6 +155,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           ? current / progress
           : current
         remaining = total - current
+        endTime = endTime + remaining
         break
       }
       case 'totals': { // totals only.
@@ -169,7 +174,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       progress: (progress * 100).toFixed(), // percent
       total: Vue.$filters.formatCounterTime(total), // total estimated time
       current: Vue.$filters.formatCounterTime(current), // current duration / time
-      remaining: Vue.$filters.formatCounterTime(remaining) // remaining time
+      remaining: Vue.$filters.formatCounterTime(remaining), // remaining time
+      endTime: Vue.$filters.formatAbsoluteDateTime(endTime, 'h:mm A') // estimated completion datetime
     }
   },
 
