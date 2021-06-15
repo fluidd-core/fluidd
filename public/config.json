@@ -35,6 +35,15 @@
       }
     },
     {
+      "name": "HevORT",
+      "color": "#dfff3e",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_hevort.svg",
+        "dynamic": true
+      }
+    },
+    {
       "name": "Klipper",
       "color": "#B12F36",
       "isDark": true,

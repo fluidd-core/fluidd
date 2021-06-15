@@ -50,7 +50,11 @@ export default class AppIcon extends Vue {
 
     supportedQueries.forEach((query) => {
       this.$el.querySelectorAll(query.query).forEach((e) => {
-        if (e.tagName === 'path') {
+        if (
+          e.tagName === 'path' ||
+          e.tagName === 'polygon' ||
+          e.tagName === 'g'
+        ) {
           const path = e as SVGPathElement
           path.style.fill = query.color
         }
