@@ -19,7 +19,7 @@
     <v-menu
       left
       offset-y
-      transition="slide-x-transition"
+      transition="slide-y-transition"
       :close-on-content-click="false"
     >
       <template v-slot:activator="{ on, attrs, value }">
@@ -34,9 +34,6 @@
         </app-btn>
       </template>
       <v-card>
-        <!-- <v-card-title class="card-heading py-2">
-          <span class="focus--text">params</span>
-        </v-card-title> -->
         <v-card-text class="pb-3 px-3">
           <v-text-field
             v-for="(param, i) in params"
@@ -48,11 +45,24 @@
             v-model="param.value"
             class="v-input--width-small"
             :class="{ 'mb-3': (i < params.length - 1) }">
+
+          <template v-slot:append>
+            <app-btn
+              @click="param.value = param.reset"
+              style="margin-top: -4px; margin-right: -6px;"
+              color=""
+              icon
+              small
+            >
+              <v-icon small>$reset</v-icon>
+            </app-btn>
+
+          </template>
+
           </v-text-field>
         </v-card-text>
         <v-divider />
         <v-card-actions class="px-3 py-3">
-          <!-- <app-btn block>{{ macro.name }}</app-btn> -->
           <app-btn
             block
             @click="$emit('click', runCommand)"
@@ -78,7 +88,7 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   enableParams!: boolean;
 
-  params: { name: string; value: any }[] = []
+  params: { name: string; value: any; reset: any }[] = []
 
   /**
    * The formatted run command for a macro.
@@ -94,16 +104,21 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   }
 
   mounted () {
-    if (!this.macro.config) return []
-    const params = Object.keys(this.macro.config)
-      .filter(key => key.startsWith('default_parameter_'))
-      .map(key => {
-        return {
-          name: key.substring(18).toUpperCase(),
-          value: this.macro.config[key]
+    if (!this.macro.config || !this.macro.config.gcode) return []
+    if (this.macro.config.gcode) {
+      const regex = /params\.(\w*)\|?(default\('?(\w*)'?\))?/gmi
+      let match = regex.exec(this.macro.config.gcode)
+      do {
+        // console.log(match)
+        if (match && match[1]) {
+          const name = match[1]
+          const value = match[3] || ''
+          this.params.push({ name, value, reset: value })
         }
-      })
-    this.params = params
+      } while (
+        (match = regex.exec(this.macro.config.gcode)) !== null
+      )
+    }
   }
 }
 </script>
