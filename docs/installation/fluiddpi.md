@@ -39,7 +39,7 @@ you'd like to keep from it.
 
 For windows users, the recommended tool for flashing is [Balena Etcher](https://www.balena.io/etcher/).
 
-For macOs users, the recommended tool for flashing is [Raspberry Pi Imager](https://www.raspberrypi.org/software/).
+For Linux or macOs users, the recommended tool for flashing is [Raspberry Pi Imager](https://www.raspberrypi.org/software/).
 
 ## Configure
 
