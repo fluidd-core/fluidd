@@ -144,7 +144,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    return this.$store.getters['layout/isEnabledInLayout']('dashboard', 'gcode-preview-card')
+    return (this.$store.getters['layout/isEnabledInLayout']('dashboard', 'gcode-preview-card') && this.root === 'gcodes')
   }
 }
 </script>
