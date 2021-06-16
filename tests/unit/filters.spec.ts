@@ -108,7 +108,7 @@ describe('capitalize', () => {
 describe('getReadableFileSizeString', () => {
   it('rounds smaller numbers properly', () => {
     expect(Filters.getReadableFileSizeString(-1000)).to.equal('0.1 kB')
-    expect(Filters.getReadableFileSizeString(0)).to.equal('0.1 kB')
+    expect(Filters.getReadableFileSizeString(0)).to.equal('0 kB')
   })
 
   it('renders Yoddabytes properly', () => {
