@@ -33,7 +33,9 @@ export default class KlipperLoadChart extends Vue {
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions'](),
+      ...this.$store.getters['charts/getBaseChartOptions']({
+        cputime_change: '%'
+      }),
       series: this.series
     }
     return o

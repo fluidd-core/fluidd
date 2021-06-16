@@ -33,7 +33,9 @@ export default class SystemMemoryChart extends Vue {
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions'](),
+      ...this.$store.getters['charts/getBaseChartOptions']({
+        memused: '%'
+      }),
       series: this.series
     }
     return o

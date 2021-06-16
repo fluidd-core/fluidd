@@ -20,13 +20,13 @@
 
       <div v-if="chartData && chartData.length" class="chart-label">
         <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.toUpperCase() })}}</span>
-        <span>{{ chartData[chartData.length - 1].awake }}%</span>
+        <span>{{ chartData[chartData.length - 1].awake }}s</span>
       </div>
 
-      <div v-if="chartData && chartData.length" class="chart-label">
+      <!-- <div v-if="chartData && chartData.length" class="chart-label">
         <span>{{ $t('app.system_info.label.mcu_bandwidth', { mcu: mcu.toUpperCase() })}}</span>
-        <span>{{ chartData[chartData.length - 1].bw }}%</span>
-      </div>
+        <span>{{ chartData[chartData.length - 1].bw }}b</span>
+      </div> -->
     </div>
   </v-col>
 </template>
@@ -45,7 +45,11 @@ export default class McuLoadChart extends Vue {
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions'](),
+      ...this.$store.getters['charts/getBaseChartOptions']({
+        load: '%',
+        awake: 's',
+        bw: 'b'
+      }),
       series: this.series
     }
     o.yAxis.max = (value: any) => {
@@ -76,12 +80,12 @@ export default class McuLoadChart extends Vue {
       encode: { x: 'date', y: 'awake' }
     })
 
-    const bw = this.$store.getters['charts/getBaseSeries']({
-      name: 'bandwidth',
-      encode: { x: 'date', y: 'bw' }
-    })
+    // const bw = this.$store.getters['charts/getBaseSeries']({
+    //   name: 'bandwidth',
+    //   encode: { x: 'date', y: 'bw' }
+    // })
 
-    return [load, awake, bw]
+    return [load, awake]
   }
 }
 </script>

@@ -36,7 +36,7 @@ export const getters: GetterTree<ChartState, RootState> = {
   /**
    * Return base chart options given a chart type.
    */
-  getBaseChartOptions: (state, getters, rootState, rootGetters) => () => {
+  getBaseChartOptions: (state, getters, rootState, rootGetters) => (tooltipSuffix: { [index: string]: string } = {}) => {
     // Common properties across all chart types.
     const isDark = rootState.config?.uiSettings.theme.isDark
     const isMobile = vuetify.framework.breakpoint.mobile
@@ -90,8 +90,9 @@ export const getters: GetterTree<ChartState, RootState> = {
           params
             .forEach((param: any) => {
               // console.log(param)
-              const yDimension = param.dimensionNames[param.encode.y]
               const xDimension = param.dimensionNames[param.encode.x]
+              const yDimension = param.dimensionNames[param.encode.y]
+              const ySuffix = tooltipSuffix[yDimension] || ''
               if (
                 xDimension &&
                 yDimension &&
@@ -113,7 +114,7 @@ export const getters: GetterTree<ChartState, RootState> = {
                       ${param.seriesName}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[yDimension]}%
+                      ${param.value[yDimension]}${ySuffix}
                     </span>
                     <div style="clear: both"></div>
                   </div>

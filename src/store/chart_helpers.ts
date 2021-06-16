@@ -24,9 +24,6 @@ export const handleMcuStatsChange = (payload: any) => {
           lastEntry = store.state.charts[key][store.state.charts[key].length - 1]
         }
 
-        // The time delta between the last and this entry.
-        const timedelta = (lastEntry) ? date.getTime() - lastEntry.date.getTime() : 1000
-
         // Load & Awake times
         const task_max = 0.0025
         const stats_interval = 5
@@ -34,7 +31,16 @@ export const handleMcuStatsChange = (payload: any) => {
         const awake = 100 * (stats.last_stats.mcu_awake / stats_interval)
 
         // Bandwidth
+        // We really need the time passed on from klipper, and the a known
+        // max for serial, usb or can to accurately chart this.
+        // 25000 === 250,0000 bps is a guess and not accurate.
+        // The time delta below is innacurate since its not reflective of when
+        // klipper recorded the data.
         const maxbw = 25000
+
+        // The time delta between the last and this entry.
+        const timedelta = (lastEntry) ? date.getTime() - lastEntry.date.getTime() : 1000
+
         let bw = stats.last_stats.bytes_write + stats.last_stats.bytes_retransmit
         let lastbw = (lastEntry) ? parseFloat(lastEntry.bw) : bw
         if (bw < lastbw) lastbw = bw

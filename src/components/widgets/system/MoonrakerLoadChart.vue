@@ -33,7 +33,9 @@ export default class MoonrakerLoadChart extends Vue {
 
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions'](),
+      ...this.$store.getters['charts/getBaseChartOptions']({
+        load: '%'
+      }),
       series: this.series
     }
     return o

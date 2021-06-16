@@ -35,31 +35,36 @@
       </template>
       <v-card>
         <v-card-text class="pb-3 px-3">
-          <v-text-field
-            v-for="(param, i) in params"
-            :key="param.name"
-            :label="param.name"
-            outlined
-            dense
-            hide-details="auto"
-            v-model="param.value"
-            class="v-input--width-small"
-            :class="{ 'mb-3': (i < params.length - 1) }">
 
-          <template v-slot:append>
-            <app-btn
-              @click="param.value = param.reset"
-              style="margin-top: -4px; margin-right: -6px;"
-              color=""
-              icon
-              small
-            >
-              <v-icon small>$reset</v-icon>
-            </app-btn>
+          <v-layout wrap style="max-width: 150px;">
 
-          </template>
+            <v-text-field
+              v-for="(param, i) in params"
+              :key="param.name"
+              :label="param.name"
+              outlined
+              dense
+              hide-details="auto"
+              v-model="param.value"
+              class=""
+              :class="{ 'mb-3': (i < params.length - 1) }">
 
-          </v-text-field>
+            <template v-slot:append>
+              <app-btn
+                @click="param.value = param.reset"
+                style="margin-top: -4px; margin-right: -6px;"
+                color=""
+                icon
+                small
+              >
+                <v-icon small>$reset</v-icon>
+              </app-btn>
+
+            </template>
+            </v-text-field>
+
+          </v-layout>
+
         </v-card-text>
         <v-divider />
         <v-card-actions class="px-3 py-3">
@@ -122,3 +127,15 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .macro-params {
+    height: 160px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+  .macro-params > * {
+    flex: 1 1 40px;
+  }
+</style>
