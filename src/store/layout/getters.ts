@@ -1,7 +1,7 @@
 import { GetterTree } from 'vuex'
 import { LayoutState, LayoutContainer, LayoutConfig } from './types'
 import { RootState } from '../types'
-import { cloneDeep } from 'lodash-es'
+import { cloneDeep } from 'lodash'
 
 export const getters: GetterTree<LayoutState, RootState> = {
   /**

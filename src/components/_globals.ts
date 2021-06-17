@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { camelCase } from 'lodash-es'
+import { camelCase } from 'lodash'
 
 const requireComponent = require.context(
   // The relative path of the components folder

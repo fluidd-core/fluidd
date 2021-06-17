@@ -20,7 +20,8 @@
 
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
-import { merge } from 'lodash-es'
+import { ECharts } from 'echarts'
+import { merge } from 'lodash'
 
 @Component({})
 export default class AppChart extends Vue {

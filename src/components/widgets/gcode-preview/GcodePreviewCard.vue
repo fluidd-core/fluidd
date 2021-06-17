@@ -85,7 +85,7 @@ import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePrevie
 import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
-import { throttle } from 'lodash-es'
+import { throttle } from 'lodash'
 
 @Component({
   components: {

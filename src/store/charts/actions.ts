@@ -3,7 +3,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { ChartData, ChartState } from './types'
 import { RootState } from '../types'
-import { isEqual } from 'lodash-es'
+import { isEqual } from 'lodash'
 
 export const actions: ActionTree<ChartState, RootState> = {
   /**

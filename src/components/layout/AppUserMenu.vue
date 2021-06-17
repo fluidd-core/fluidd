@@ -31,7 +31,7 @@
       <v-list class="py-0">
         <v-list-item
           dense
-          @click="$filters.routeTo('/settings#auth')"
+          @click="$filters.routeTo($router, '/settings#auth')"
         >
           <v-list-item-icon>
             <v-icon>$addAccount</v-icon>
@@ -54,7 +54,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { startCase, capitalize } from 'lodash-es'
+import { startCase, capitalize } from 'lodash'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {

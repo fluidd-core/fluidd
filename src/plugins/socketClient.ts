@@ -9,7 +9,7 @@
 import _Vue from 'vue'
 import { Globals } from '@/globals'
 import consola from 'consola'
-import { camelCase } from 'lodash-es'
+import { camelCase } from 'lodash'
 import { authApi } from '@/api/auth.api'
 
 export class WebSocketClient {

@@ -1,9 +1,11 @@
 import _Vue from 'vue'
-import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
+import VueRouter from 'vue-router'
+import { camelCase, startCase, capitalize, isFinite } from 'lodash'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
 import { Globals, Waits } from '@/globals'
-import router from '@/router'
+
+// import router from '@/router'
 
 /**
  * credit: taken from Vuetify source
@@ -211,7 +213,7 @@ export const Filters = {
    * Simple approach to route somewhere when we don't necessarily want
    * route matching via :to
    */
-  routeTo (path: string) {
+  routeTo (router: VueRouter, path: string) {
     if (router.currentRoute.fullPath !== path) router.push(path)
   }
 }
@@ -252,6 +254,6 @@ declare module 'vue/types/vue' {
     getApiUrls(url: string): ApiConfig;
     fileSystemSort(items: Array<any>, sortBy: string[], sortDesc: boolean[], locale: string): Array<any>;
     isColorDark(color: string): boolean;
-    routeTo(path: string): void;
+    routeTo(router: VueRouter, path: string): void;
   }
 }
