@@ -12,17 +12,18 @@
           v-if="!dot"
           v-bind="attrs"
           v-on="on"
-          :color="colors.standard.hexString"
+          :color="primaryColor.hexString"
           outlined
           small
         >
           {{ title }}
         </v-btn>
+
         <v-icon
           v-else
           v-bind="attrs"
           v-on="on"
-          :color="colors.standard.hexString"
+          :color="primaryColor.hexString"
         >
           $circle
         </v-icon>
@@ -31,47 +32,51 @@
       <v-card>
         <v-card-text>
 
-          <!-- <pre>{{ colors }}</pre> -->
-
           <v-icon
-            :color="colors.standard.hexString"
+            :color="primaryColor.hexString"
             large
           >
             $circle
           </v-icon>
 
           <v-icon
-            v-if="pickerType === 'rgbw'"
-            :color="colors.white.hexString"
+            v-if="this.white"
+            :color="whiteColor.hexString"
             large
           >
             $circle
           </v-icon>
 
           <v-layout align-center column>
+            <!-- <pre>{{primaryColor.hexString}}</pre> -->
             <!-- standard full color picker -->
             <app-iro-color-picker
-              @color:change="handleColorChange('standard', $event)"
-              :options="pickerOptions.standard"
+              v-if="primaryColor"
+              :color="primaryColor.hexString"
+              :options="primaryOptions"
+              @color:change="handleColorChange('primary', $event)"
             >
             </app-iro-color-picker>
 
             <!-- white channel color picker -->
             <app-iro-color-picker
-              v-if="pickerType === 'rgbw' || pickerType === 'rgb'"
+              v-if="this.white"
               class="mt-4"
+              :color="whiteColor.hexString"
+              :options="whiteOptions"
               @color:change="handleColorChange('white', $event)"
-              :options="pickerOptions.white"
             >
             </app-iro-color-picker>
           </v-layout>
 
+          <!-- <pre>{{ primaryColor }}</pre>
+          <pre v-if="this.white">{{ whiteColor }}</pre> -->
           <v-layout class="mt-4" justify-space-between>
             <div class="color-input">
               <v-text-field
                 dense
                 hide-details
-                v-model="colors.standard.rgb.r"
+                v-model.number="primaryColor.rgb.r"
                 outlined
               ></v-text-field>
               <div>R</div>
@@ -80,7 +85,7 @@
               <v-text-field
                 dense
                 hide-details
-                v-model="colors.standard.rgb.g"
+                v-model.number="primaryColor.rgb.g"
                 outlined
               ></v-text-field>
               <div>G</div>
@@ -89,16 +94,16 @@
               <v-text-field
                 dense
                 hide-details
-                v-model="colors.standard.rgb.b"
+                v-model.number="primaryColor.rgb.b"
                 outlined
               ></v-text-field>
               <div>B</div>
             </div>
-            <div v-if="pickerType === 'rgbw' || pickerType === 'rgb'" class="color-input">
+            <div v-if="this.white" class="color-input">
               <v-text-field
                 dense
                 hide-details
-                v-model="colors.white.rgb.r"
+                v-model="whiteColor.rgb.r"
                 outlined
               ></v-text-field>
               <div>W</div>
@@ -113,21 +118,29 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import iro from '@jaames/iro'
-import { IroColor, IroColorValue } from '@irojs/iro-core'
+import { IroColor } from '@irojs/iro-core'
 
 interface RgbwColor {
     r: number;
     g: number;
     b: number;
-    w: number;
+}
+
+interface AppColor {
+  hexString: string;
+  rgb: RgbwColor;
 }
 
 @Component({
   components: {}
 })
 export default class AppColorPicker extends Vue {
-  @Prop({ type: [String, Object], required: true })
-  value!: IroColorValue | RgbwColor
+  // Expected color input. Can be a hex, rgbw etc.
+  @Prop({ type: String, required: true })
+  primary!: string
+
+  @Prop({ type: String, required: false })
+  white!: string
 
   @Prop({ type: String, default: '' })
   title!: string
@@ -137,118 +150,133 @@ export default class AppColorPicker extends Vue {
 
   menu = false
 
-  colors: { [index: string]: any } = {
-    standard: {
-      rgb: {},
-      hexString: ''
-    },
-    white: {
-      rgb: {},
-      rgbw: {},
-      hexString: ''
-    }
+  primaryColor: AppColor = {
+    hexString: '#ffffff',
+    rgb: { r: 255, g: 255, b: 255 }
   }
 
-  get pickerOptions (): any {
-    const opts = {
-      width: 208
-    }
-    return {
-      standard: {
-        ...opts,
-        color: this.colors.standard.rgb,
-        layout: [
-          {
-            component: iro.ui.Wheel,
-            options: {
-              wheelLightness: false,
-              wheelAngle: 270,
-              wheelDirection: 'clockwise'
-            }
-          },
-          {
-            component: iro.ui.Slider,
-            options: {
-              sliderType: 'value'
-            }
-          }
-        ]
-      },
-      white: {
-        ...opts,
-        color: this.colors.white.rgb,
-        layout: [
-          {
-            component: iro.ui.Slider,
-            options: {
-              sliderType: 'value'
-            }
-          }
-        ]
-      }
-    }
+  whiteColor: AppColor = {
+    hexString: '#ffffff',
+    rgb: { r: 255, g: 255, b: 255 }
   }
 
-  // If the value is a string, assume a single color picker.
-  // If the value is rgb, assume a single color picker.
-  // If the value is rgbw, assume it has a white channel.
-  get pickerType () {
-    if (
-      Object.keys(this.value).includes('w') ||
-      Object.keys(this.value).includes('W')
-    ) {
-      return 'rgbw'
-    }
-    return 'standard'
+  @Watch('primaryColor', { deep: true })
+  onPrimaryColorChange (value: AppColor) {
+    // Update the hex to reflect changes. This covers off users adjusting
+    // the rgb values independently.
+    const c = new IroColor(value.rgb)
+    if (c.hexString !== value.hexString) this.primaryColor.hexString = c.hexString
   }
 
-  @Watch('value')
-  onValue () {
-    this.apply()
+  @Watch('whiteColor', { deep: true })
+  onWhiteColorChange (value: AppColor) {
+    // Update the hex to reflect changes. This covers off users adjusting
+    // the rgb values independently.
+    const c = new IroColor({ r: value.rgb.r, g: value.rgb.r, b: value.rgb.r })
+    if (c.hexString !== value.hexString) this.whiteColor.hexString = c.hexString
   }
 
   created () {
-    this.apply()
+    this.primaryColor = this.getColor(this.primary)
+    if (this.whiteColor) this.whiteColor = this.getColor(this.white)
   }
 
-  apply () {
-    // Set the initial color to the hex value of our set color.
-    const c = new iro.Color(this.value)
-    this.colors.standard = {
-      hexString: c.hexString,
-      rgb: c.rgb
-    }
+  primaryOptions = {
+    color: this.primaryColor,
+    width: 208,
+    layout: [
+      {
+        component: iro.ui.Wheel,
+        options: {
+          wheelLightness: false,
+          wheelAngle: 270,
+          wheelDirection: 'clockwise'
+        }
+      },
+      {
+        component: iro.ui.Slider,
+        options: {
+          sliderType: 'value'
+        }
+      }
+    ]
+  }
 
-    // If we have a white channel, set our white channel.
-    if (this.pickerType === 'rgbw') {
-      const value = this.value as RgbwColor
-      const b = new iro.Color({ r: value.w, g: value.w, b: value.w })
-      this.colors.white = {
-        hexString: b.hexString,
-        rgb: b.rgb
+  whiteOptions = {
+    color: this.whiteColor,
+    width: 208,
+    layout: [
+      {
+        component: iro.ui.Slider,
+        options: {
+          sliderType: 'value'
+        }
+      }
+    ]
+  }
+
+  // apply () {
+  //   // Set the initial color to the hex value of our set color.
+  //   const c = new iro.Color(this.value)
+  //   this.colors.standard = {
+  //     hexString: c.hexString,
+  //     rgb: c.rgb
+  //   }
+
+  //   // If we have a white channel, set our white channel.
+  //   if (this.pickerType === 'rgbw') {
+  //     const value = this.value as RgbwColor
+  //     const b = new iro.Color({ r: value.w, g: value.w, b: value.w })
+  //     this.colors.white = {
+  //       hexString: b.hexString,
+  //       rgb: b.rgb
+  //     }
+  //   }
+  // }
+
+  // handleColorChange (channel: string, e: IroColor) {
+  //   // console.log('got change', channel, e)
+  //   this.colors[channel] = {
+  //     hexString: e.hexString,
+  //     rgb: e.rgb
+  //   }
+
+  //   // If we have a white channel, emit with it included.
+  //   const r = this.colors.standard
+  //   if (this.pickerType === 'rgbw') {
+  //     r.rgb.w = this.colors.white.rgb.r
+  //   }
+  //   this.$emit('input', r)
+  //   this.debouncedChange(r)
+  // }
+
+  getColor (color: string) {
+    const base = new iro.Color(color)
+    return {
+      hexString: base.hexString,
+      rgb: {
+        r: base.rgb.r,
+        g: base.rgb.g,
+        b: base.rgb.b
       }
     }
   }
 
-  handleColorChange (channel: string, e: IroColor) {
-    // console.log('got change', channel, e)
-    this.colors[channel] = {
-      hexString: e.hexString,
-      rgb: e.rgb
+  handleColorChange (channel: string, color: IroColor) {
+    const c = this.getColor(color.hexString)
+    if (channel === 'primary') {
+      this.primaryColor = c
+    } else {
+      this.whiteColor = c
     }
 
-    // If we have a white channel, emit with it included.
-    const r = this.colors.standard
-    if (this.pickerType === 'rgbw') {
-      r.rgb.w = this.colors.white.rgb.r
-    }
-    this.$emit('input', r)
-    this.debouncedChange(r)
+    this.$emit(`update:${channel}`, color)
+    this.debouncedChange(channel, color)
   }
 
   @Debounce(500)
-  debouncedChange (e: IroColor) {
-    this.$emit('change', e)
+  debouncedChange (channel: string, color: IroColor) {
+    this.$emit('change', { channel, color })
   }
 }
 </script>

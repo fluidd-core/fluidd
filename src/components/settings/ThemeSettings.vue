@@ -36,7 +36,7 @@
 
         <app-color-picker
           v-if="theme"
-          :value="themeColor"
+          :primary="themeColor"
           @change="handleChangeThemeColor"
           :title="$t('app.setting.btn.select_theme')"
         >
@@ -61,6 +61,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { IroColor } from '@irojs/iro-core'
 import { SupportedTheme, ThemeConfig } from '@/store/config/types'
 import ThemePicker from '../ui/AppColorPicker.vue'
 
@@ -101,11 +102,11 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     return this.theme.currentTheme.primary
   }
 
-  handleChangeThemeColor (value: any) {
-    this.setTheme(value.hexString, this.isDark)
+  handleChangeThemeColor (value: { channel: string; color: IroColor }) {
+    this.setTheme(value.color.hexString, this.isDark)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.theme.currentTheme.primary',
-      value: value.hexString,
+      value: value.color.hexString,
       server: true
     })
   }

@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
+import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
 import { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
@@ -30,6 +30,9 @@ import { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
   components: {}
 })
 export default class AppColorPicker extends Vue {
+  @Prop({ type: [Object, String], default: '#ffffff' })
+  color!: IroColor;
+
   @Prop({ type: Object, default: () => ({}) })
   options!: ColorPickerProps
 
@@ -39,18 +42,24 @@ export default class AppColorPicker extends Vue {
   supportedEvents = [
     'mount',
     'color:init',
-    'color:setActive',
-    'color:change',
-    'color:remove',
-    'input:change',
-    'input:start',
-    'input:move',
-    'input:end'
+    // 'color:setActive',
+    'color:change'
+    // 'color:remove',
+    // 'input:change',
+    // 'input:start',
+    // 'input:move',
+    // 'input:end'
   ]
+
+  @Watch('color', { deep: true })
+  onColorChange (value: string) {
+    if (this.colorPicker) this.colorPicker.color.hexString = value
+  }
 
   get opts () {
     const opts: ColorPickerProps = {
       ...this.options,
+      color: this.color,
       // borderWidth: 1,
       // borderColor: '#000000',
       // handleRadius: 20,
@@ -79,6 +88,12 @@ export default class AppColorPicker extends Vue {
     if (this.colorPicker) {
       this.colorPicker.off(this.supportedEvents, this.eventHandler)
     }
+  }
+
+  handleColorChange (color: IroColor, changes: IroColor) {
+    // console.log('emitting', color, changes)
+    this.$emit('change', color)
+    this.$emit('update:color', color)
   }
 
   eventHandler (e: string, c: IroColor) {

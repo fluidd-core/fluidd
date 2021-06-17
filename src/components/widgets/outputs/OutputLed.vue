@@ -12,7 +12,8 @@
     </v-col>
     <v-col class="ml-auto py-0 text-right">
         <app-color-picker
-          :value="value"
+          :primary="primaryColor"
+          :white="whiteColor"
           @change="handleColorChange"
           dot
         >
@@ -23,6 +24,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { IroColor } from '@irojs/iro-core'
 import StateMixin from '@/mixins/state'
 
 @Component({})
@@ -30,21 +32,43 @@ export default class OutputLed extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   led!: any
 
-  get value () {
+  get primaryColor () {
     const vals = this.convertTo(this.led.color_data[0])
-    return vals
+    const c = new IroColor(vals)
+    return c.hexString
+  }
+
+  get whiteColor () {
+    const vals = this.convertTo(this.led.color_data[0])
+    if (!vals.w) return undefined
+    const c = new IroColor({ r: vals.w, g: vals.w, b: vals.w })
+    return c.hexString
   }
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
   }
 
-  handleColorChange (val: any) {
+  handleColorChange (value: { channel: string; color: IroColor }) {
+    // Will return an update to either the primary or white channel.
+    // Gather the existing values..
+    const currentVals = this.led.color_data[0]
+    const newVals = this.convertFrom(value.color.rgb)
+
+    if (value.channel === 'primary') {
+      if (this.whiteColor) newVals.w = currentVals.W
+    } else {
+      if (this.whiteColor) newVals.w = newVals.r
+      newVals.r = currentVals.R
+      newVals.g = currentVals.G
+      newVals.b = currentVals.B
+    }
+
     const map: { [index: string]: string } = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
-    const rgb = this.convertFrom(val.rgb)
     let s = `SET_LED LED=${this.led.name}`
-    Object.keys(rgb).forEach((key) => {
-      s += ` ${map[key]}=${rgb[key]}`
+
+    Object.keys(newVals).forEach((key) => {
+      s += ` ${map[key]}=${newVals[key]}`
     })
     this.sendGcode(s)
   }
