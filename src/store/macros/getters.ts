@@ -86,22 +86,10 @@ export const getters: GetterTree<MacrosState, RootState> = {
         return (macro.categoryId === id)
       }
 
-      // If we're given no category, only return those that have none, being
-      // uncategorized.
-      // if (!id) return (!macro.categoryId)
-
       // Otherwise return false
       return false
     })
   },
-
-  // getMacrosByAssignment: (state, getters) => (assignment: string) => {
-
-  // },
-
-  // getAssignments: (state, getters) => {
-  //   return ['console', 't  ool', 'Bed mesh controls']
-  // },
 
   /**
    * Returns a list of configured categories, and the count of macros inside of

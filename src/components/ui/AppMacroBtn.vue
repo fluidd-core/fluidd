@@ -4,6 +4,7 @@
     :disabled="macro.disabledWhilePrinting && printerPrinting"
     @click="$emit('click', macro.name)"
   >
+    <div class="color-accent" :style="`background-color: ${color};`"></div>
     <slot></slot>
   </app-btn>
   <app-btn-group
@@ -14,6 +15,7 @@
       :disabled="macro.disabledWhilePrinting && printerPrinting"
       @click="$emit('click', macro.name)"
     >
+      <div class="color-accent" :style="`background-color: ${color};`"></div>
       <slot></slot>
     </app-btn>
     <v-menu
@@ -108,6 +110,14 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
     return s
   }
 
+  get color () {
+    if (this.macro && this.macro.color !== '') {
+      return this.macro.color
+    }
+    const theme = this.$store.getters['config/getTheme']
+    return theme.currentTheme.btncolor
+  }
+
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
     if (this.macro.config.gcode) {
@@ -129,6 +139,17 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .color-accent {
+    border-radius: 4px 0 0 4px;
+    content: "";
+    top: -10px;
+    left: -16px;
+    position: absolute;
+    width: 4px;
+    height: 36px;
+    opacity: 1;
+  }
+
   .macro-params {
     height: 160px;
     display: flex;

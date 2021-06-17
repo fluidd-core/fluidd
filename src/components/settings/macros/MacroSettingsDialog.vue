@@ -40,12 +40,18 @@
 
         <v-divider />
 
-        <!-- <app-color-picker
-          v-if="macro"
-          v-model="macro.color"
-          dot
+        <app-setting
+          :title="$t('app.general.label.color')"
         >
-        </app-color-picker> -->
+          <app-color-picker
+            :title="$t('app.general.btn.set_color')"
+            :primary="color"
+            @change="handleColorChange"
+          >
+          </app-color-picker>
+        </app-setting>
+
+        <v-divider />
 
         <!-- <app-setting
           title="Assign to"
@@ -111,14 +117,17 @@ export default class MacroMoveDialog extends Vue {
   @Prop({ type: Object, required: true })
   macro!: Macro
 
-  category = null
   assign = null
   valid = false
   newMacro: Macro | null = null
 
-  @Watch('macro')
-  onMacro (macro: Macro) {
-    this.newMacro = macro
+  created () {
+    this.newMacro = { ...this.macro }
+  }
+
+  @Watch('value')
+  onOpen () {
+    this.newMacro = { ...this.macro }
   }
 
   get categories () {
@@ -128,8 +137,16 @@ export default class MacroMoveDialog extends Vue {
     return categories
   }
 
-  created () {
-    this.newMacro = { ...this.macro }
+  get color () {
+    const theme = this.$store.getters['config/getTheme']
+    if (this.newMacro && this.newMacro.color !== '') {
+      return this.newMacro.color
+    }
+    return theme.currentTheme.secondary
+  }
+
+  handleColorChange (color: any) {
+    if (this.newMacro) this.newMacro.color = color.color.hexString
   }
 
   handleSave () {

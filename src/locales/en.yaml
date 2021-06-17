@@ -161,6 +161,7 @@ app:
       save_as: Save As
       save_restart: Save & Restart
       send: Send
+      set_color: Set Color
       shutdown: Shutdown
       socket_refresh: Force refresh
       upload: Upload
@@ -189,6 +190,7 @@ app:
       category: Category
       change_password: Change password
       clear_all: Clear all
+      color: Color
       confirm: Confirm
       current_password: Current password
       disabled_while_printing: Disabled while printing

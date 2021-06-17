@@ -9,7 +9,7 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          v-if="!dot"
+          v-show="!dot"
           v-bind="attrs"
           v-on="on"
           :color="primaryColor.hexString"
@@ -20,7 +20,7 @@
         </v-btn>
 
         <v-icon
-          v-else
+          v-show="dot"
           v-bind="attrs"
           v-on="on"
           :color="primaryColor.hexString"
@@ -160,27 +160,6 @@ export default class AppColorPicker extends Vue {
     rgb: { r: 255, g: 255, b: 255 }
   }
 
-  @Watch('primaryColor', { deep: true })
-  onPrimaryColorChange (value: AppColor) {
-    // Update the hex to reflect changes. This covers off users adjusting
-    // the rgb values independently.
-    const c = new IroColor(value.rgb)
-    if (c.hexString !== value.hexString) this.primaryColor.hexString = c.hexString
-  }
-
-  @Watch('whiteColor', { deep: true })
-  onWhiteColorChange (value: AppColor) {
-    // Update the hex to reflect changes. This covers off users adjusting
-    // the rgb values independently.
-    const c = new IroColor({ r: value.rgb.r, g: value.rgb.r, b: value.rgb.r })
-    if (c.hexString !== value.hexString) this.whiteColor.hexString = c.hexString
-  }
-
-  created () {
-    this.primaryColor = this.getColor(this.primary)
-    if (this.whiteColor) this.whiteColor = this.getColor(this.white)
-  }
-
   primaryOptions = {
     color: this.primaryColor,
     width: 208,
@@ -215,40 +194,40 @@ export default class AppColorPicker extends Vue {
     ]
   }
 
-  // apply () {
-  //   // Set the initial color to the hex value of our set color.
-  //   const c = new iro.Color(this.value)
-  //   this.colors.standard = {
-  //     hexString: c.hexString,
-  //     rgb: c.rgb
-  //   }
+  @Watch('primaryColor', { deep: true })
+  onPrimaryColorChange (value: AppColor) {
+    // Update the hex to reflect changes. This covers off users adjusting
+    // the rgb values independently.
+    const c = new IroColor(value.rgb)
+    if (c.hexString !== value.hexString) this.primaryColor.hexString = c.hexString
+  }
 
-  //   // If we have a white channel, set our white channel.
-  //   if (this.pickerType === 'rgbw') {
-  //     const value = this.value as RgbwColor
-  //     const b = new iro.Color({ r: value.w, g: value.w, b: value.w })
-  //     this.colors.white = {
-  //       hexString: b.hexString,
-  //       rgb: b.rgb
-  //     }
-  //   }
-  // }
+  @Watch('whiteColor', { deep: true })
+  onWhiteColorChange (value: AppColor) {
+    // Update the hex to reflect changes. This covers off users adjusting
+    // the rgb values independently.
+    const c = new IroColor({ r: value.rgb.r, g: value.rgb.r, b: value.rgb.r })
+    if (c.hexString !== value.hexString) this.whiteColor.hexString = c.hexString
+  }
 
-  // handleColorChange (channel: string, e: IroColor) {
-  //   // console.log('got change', channel, e)
-  //   this.colors[channel] = {
-  //     hexString: e.hexString,
-  //     rgb: e.rgb
-  //   }
+  @Watch('primary')
+  onPrimaryChange (value: string) {
+    if (value) {
+      this.primaryColor = this.getColor(value)
+    }
+  }
 
-  //   // If we have a white channel, emit with it included.
-  //   const r = this.colors.standard
-  //   if (this.pickerType === 'rgbw') {
-  //     r.rgb.w = this.colors.white.rgb.r
-  //   }
-  //   this.$emit('input', r)
-  //   this.debouncedChange(r)
-  // }
+  @Watch('white')
+  onWhiteChange (value: string) {
+    if (value) {
+      this.whiteColor = this.getColor(value)
+    }
+  }
+
+  created () {
+    this.primaryColor = this.getColor(this.primary)
+    if (this.whiteColor) this.whiteColor = this.getColor(this.white)
+  }
 
   getColor (color: string) {
     const base = new iro.Color(color)
