@@ -15,7 +15,7 @@
         </v-card-title>
         <v-card-subtitle
           v-if="newMacro.config.description"
-          class="card-heading grey--text pb-2"
+          class="card-heading pb-2"
         >
           {{ newMacro.config.description }}
         </v-card-subtitle>
@@ -133,7 +133,6 @@ export default class MacroMoveDialog extends Vue {
   }
 
   handleSave () {
-    console.log('handling a save')
     this.$store.dispatch('macros/saveMacro', this.newMacro)
     this.$emit('input', false)
   }

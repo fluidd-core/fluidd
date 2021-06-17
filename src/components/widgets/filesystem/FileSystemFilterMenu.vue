@@ -3,6 +3,7 @@
     bottom
     left
     offset-y
+    transition="slide-y-transition"
     :close-on-content-click="false"
   >
     <template v-slot:activator="{ on, attrs }">

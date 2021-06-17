@@ -2,24 +2,11 @@
   <v-toolbar
     dense
   >
-    <v-toolbar-title class="grey--text text--lighten-1 d-none d-sm-block">
+    <v-toolbar-title class="d-none d-sm-block">
       <div class="file-path">&lrm;/{{ path }}</div>
     </v-toolbar-title>
 
     <v-spacer></v-spacer>
-
-    <div style="max-width: 160px;" class="mr-1">
-      <v-text-field
-        v-model="search"
-        :disabled="disabled"
-        @keyup="$emit('update:search', search);"
-        outlined
-        dense
-        single-line
-        hide-details
-        append-icon="$magnify">
-      </v-text-field>
-    </div>
 
     <v-tooltip bottom v-if="lowOnSpace && !loading">
       <template v-slot:activator="{ on, attrs }">
@@ -55,14 +42,11 @@
       </slot>
     </v-tooltip>
 
-    <v-btn
-      @click="$emit('refresh')"
-      :disabled="disabled"
-      fab
-      small
-      text>
-      <v-icon>$refresh</v-icon>
-    </v-btn>
+    <app-column-picker
+      v-if="headers && rootProperties.canConfigure"
+      :key-name="`${root}_${name}`"
+      :headers="headers"
+    ></app-column-picker>
 
     <file-system-filter-menu
       v-if="!readonly && root === 'gcodes' && supportsHistoryComponent"
@@ -82,11 +66,27 @@
     >
     </file-system-menu>
 
-    <app-column-picker
-      v-if="headers && rootProperties.canConfigure"
-      :key-name="`${root}_${name}`"
-      :headers="headers"
-    ></app-column-picker>
+    <v-btn
+      @click="$emit('refresh')"
+      :disabled="disabled"
+      fab
+      small
+      text>
+      <v-icon>$refresh</v-icon>
+    </v-btn>
+
+    <div style="max-width: 160px;" class="ml-1">
+      <v-text-field
+        v-model="textSearch"
+        :disabled="disabled"
+        @keyup="$emit('update:search', textSearch);"
+        outlined
+        dense
+        single-line
+        hide-details
+        append-icon="$magnify">
+      </v-text-field>
+    </div>
 
     <template
       v-if="roots.length > 1"
@@ -94,7 +94,7 @@
     >
       <v-tabs>
         <v-tab
-          v-for="(root, index) in roots"
+          v-for="(root, index) in registeredRoots"
           :key="index"
           @change="$emit('root-change', root)">
           {{ root }}
@@ -145,7 +145,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   @Prop({ type: Boolean, default: false })
   loading!: boolean
 
-  search = ''
+  @Prop({ type: String, default: '' })
+  search!: string
+
+  textSearch = ''
 
   get readonly () {
     return this.$store.getters['files/getRootProperties'](this.root).readonly
@@ -163,6 +166,15 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Properties of the current root.
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)
+  }
+
+  mounted () {
+    this.textSearch = this.search
+  }
+
+  // Only show roots that have been registered.
+  get registeredRoots () {
+    return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
   }
 
   handleUpload (files: FileList | File[], print: boolean) {

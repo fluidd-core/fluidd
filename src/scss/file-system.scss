@@ -60,3 +60,28 @@
     box-shadow: none !important;
   }
 }
+
+.theme--light.bulk-drag {
+  color: map-get($material-light, 'text-color');
+  background-color: rgba(map-deep-get($material-light, 'table', 'active'), 1);
+}
+
+.theme--dark.bulk-drag {
+  color: map-get($material-dark, 'text-color');
+  background-color: rgba(map-deep-get($material-dark, 'table', 'active'), 1);
+}
+
+.bulk-drag {
+  font-family: "Roboto", sans-serif;
+  line-height: 1.5;
+  display: flex;
+  flex: 1 1 auto;
+  position: absolute;
+  top: -1000px;
+  right: 0;
+  width: 170px;
+  height: 40px;
+  align-items: center;
+  padding: 0 16px 0 32px;
+  border-radius: 6px;
+}

@@ -34,10 +34,10 @@ export const defaultState = (): PrinterState => {
           bed_mesh: {},
           fan: {},
           printer: {
-            max_accel_to_decel: 0,
-            max_accel: 0,
-            max_velocity: 0,
-            square_corner_velocity: 5,
+            max_accel_to_decel: 500,
+            max_accel: 1000,
+            max_velocity: 100,
+            square_corner_velocity: 3,
             kinematics: 'none'
           },
           virtual_sdcard: {},

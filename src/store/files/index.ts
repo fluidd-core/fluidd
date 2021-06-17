@@ -7,11 +7,6 @@ import { RootState } from '../types'
 
 export const defaultState = (): FilesState => {
   return {
-    availableRoots: [],
-    gcodes: [],
-    config: [],
-    config_examples: [],
-    docs: [],
     uploads: [],
     download: null,
     currentPaths: {},
@@ -19,7 +14,12 @@ export const defaultState = (): FilesState => {
       total: 0,
       used: 0,
       free: 0
-    }
+    },
+    gcodes: [],
+    config: [],
+    config_examples: [],
+    docs: [],
+    logs: []
   }
 }
 

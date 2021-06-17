@@ -14,7 +14,6 @@
         small
         :tooltip="$t('app.chart.tooltip.help')"
       ></app-inline-help>
-
     </template>
 
     <template v-slot:menu>

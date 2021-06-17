@@ -39,6 +39,7 @@
             @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
             :loading="hasWait(`${waits.onMacro}${macro.name}`)"
             :elevation="2"
+            enable-params
             class="me-2 mb-2 float-left">
             {{ macro.name }}
           </app-macro-btn>
@@ -79,6 +80,7 @@
               @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
               :loading="hasWait(`${waits.onMacro}${macro.name}`)"
               :elevation="2"
+              enable-params
               class="me-2 mb-2 float-left">
               {{ macro.name }}
             </app-macro-btn>

@@ -39,7 +39,6 @@
       v-if="!readonly"
       v-model="consoleCommand"
       @send="sendCommand"
-      @autoScrollChange="handleAutoScrollChange"
     >
     </console-command>
   </div>
@@ -51,7 +50,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { ConsoleEntry } from '@/store/console/types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
@@ -107,12 +106,6 @@ export default class Console extends Mixins(StateMixin) {
       (item.id !== oldItem.id) ||
       val.length !== oldVal.length
     ) {
-      this.scrollToBottom()
-    }
-  }
-
-  handleAutoScrollChange (autoScroll: boolean) {
-    if (autoScroll) {
       this.scrollToBottom()
     }
   }

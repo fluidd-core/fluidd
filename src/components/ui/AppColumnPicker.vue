@@ -3,7 +3,7 @@
     bottom
     left
     offset-y
-    transition="slide-x-transition"
+    transition="slide-y-transition"
     :min-width="150"
     :close-on-content-click="false"
   >

@@ -1,6 +1,11 @@
 <template>
-  <v-footer app absolute>
-    <span class="font-weight-light grey--text">
+  <v-footer
+    app
+    absolute
+    inset
+    color="#28282b"
+  >
+    <span class="font-weight-light secondary--text">
       &copy; {{ new Date().getFullYear() }}
       fluidd: v{{ appInfo.version }}-{{ appInfo.hash }}
     </span>

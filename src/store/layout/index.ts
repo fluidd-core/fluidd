@@ -18,18 +18,18 @@ export const defaultState = (): LayoutState => {
       dashboard: {
         container1: [
           { id: 'printer-status-card', enabled: true, collapsed: false },
+          { id: 'camera-card', enabled: true, collapsed: false },
           { id: 'toolhead-card', enabled: true, collapsed: false },
+          { id: 'macros-card', enabled: true, collapsed: false },
           { id: 'outputs-card', enabled: true, collapsed: false },
           { id: 'printer-limits-card', enabled: true, collapsed: false },
-          { id: 'retract-card', enabled: true, collapsed: false },
-          { id: 'camera-card', enabled: true, collapsed: false }
+          { id: 'retract-card', enabled: true, collapsed: false }
         ],
         container2: [
           { id: 'temperature-card', enabled: true, collapsed: false },
-          { id: 'macros-card', enabled: true, collapsed: false },
+          { id: 'console-card', enabled: true, collapsed: false },
           { id: 'jobs-card', enabled: true, collapsed: false },
-          { id: 'console-card', enabled: true, collapsed: false }
-          // { id: 'gcode-preview-card', enabled: true, collapsed: false }
+          { id: 'gcode-preview-card', enabled: false, collapsed: false }
         ]
       }
     }

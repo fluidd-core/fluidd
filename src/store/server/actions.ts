@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { ServerState, ServerThrottledState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { AppPushNotification } from '../notifications/types'
 
@@ -45,6 +45,7 @@ export const actions: ActionTree<ServerState, RootState> = {
     SocketActions.printerInfo()
     SocketActions.serverConfig()
     SocketActions.machineProcStats()
+    SocketActions.machineSystemInfo()
 
     commit('setServerInfo', payload)
 
@@ -54,7 +55,7 @@ export const actions: ActionTree<ServerState, RootState> = {
       if (state.klippy_retries === 0) dispatch('initComponents', payload)
       commit('setKlippyRetries', state.klippy_retries + 1)
       clearTimeout(retryTimeout)
-      retryTimeout = setTimeout(() => {
+      retryTimeout = window.setTimeout(() => {
         SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     } else {
@@ -77,9 +78,29 @@ export const actions: ActionTree<ServerState, RootState> = {
   async onMachineProcStats ({ commit, dispatch }, payload) {
     if (payload && payload.throttled_state) {
       await dispatch('onMachineThrottledState', payload.throttled_state)
-    // } else {
     }
     commit('setMoonrakerStats', payload)
+
+    // Add a chart entry
+    if (
+      payload.moonraker_stats &&
+      'cpu_usage' in payload.moonraker_stats &&
+      !Array.isArray(payload.moonraker_stats)
+    ) {
+      const d = payload.moonraker_stats
+      commit('charts/setChartEntry', {
+        type: 'moonraker',
+        retention: 600,
+        data: {
+          date: new Date(d.time * 1000),
+          load: d.cpu_usage.toFixed(2)
+        }
+      }, { root: true })
+    }
+  },
+
+  async onMachineSystemInfo ({ commit }, payload) {
+    commit('setSystemInfo', payload)
   },
 
   async onMachineThrottledState ({ commit, dispatch, state }, payload: ServerThrottledState) {

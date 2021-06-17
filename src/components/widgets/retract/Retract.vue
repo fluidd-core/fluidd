@@ -4,16 +4,16 @@
       <v-col cols="12" sm="12" class="py-0">
         <app-slider
           :label="$t('app.general.label.retract_length')"
-          value-suffix="mm"
-          input-sm
+          suffix="mm"
           :value="retract_length"
+          :reset-value="defaults.retract_length"
           :min="0"
-          :max="10"
+          :max="15"
           :step="0.1"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetRetractLength)"
-          @input="setRetractLength($event)">
+          @change="setRetractLength">
         </app-slider>
       </v-col>
     </v-row>
@@ -21,31 +21,31 @@
       <v-col cols="12" sm="6" class="py-0">
         <app-slider
           :label="$t('app.general.label.retract_speed')"
-          value-suffix="mm/s"
-          input-sm
+          suffix="mm/s"
           :value="retract_speed"
+          :reset-value="defaults.retract_speed"
           :min="0"
           :step="1"
-          :max="50"
+          :max="60"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetRetractSpeed)"
-          @input="setRetractSpeed($event)">
+          @change="setRetractSpeed">
         </app-slider>
       </v-col>
       <v-col cols="12" sm="6" class="py-0">
         <app-slider
           :label="$t('app.general.label.unretract_speed')"
-          value-suffix="mm/s"
-          input-sm
+          suffix="mm/s"
           :value="unretract_speed"
+          :reset-value="defaults.unretract_speed"
           :min="0"
           :step="1"
-          :max="50"
+          :max="60"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetUnretractSpeed)"
-          @input="setUnretractSpeed($event)">
+          @change="setUnretractSpeed">
         </app-slider>
       </v-col>
     </v-row>
@@ -71,6 +71,10 @@ export default class Retract extends Mixins(StateMixin) {
 
   get unretract_speed () {
     return this.$store.state.printer.printer.firmware_retraction.unretract_speed
+  }
+
+  get defaults () {
+    return this.$store.getters['printer/getPrinterSettings']('firmware_retraction') || {}
   }
 
   get isMobile () {

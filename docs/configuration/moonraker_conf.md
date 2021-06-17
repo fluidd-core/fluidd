@@ -24,6 +24,8 @@ temperature_store_size: 600
 gcode_store_size: 1000
 
 [authorization]
+force_logins: true
+
 cors_domains:
   *.local
   *.lan
@@ -37,6 +39,8 @@ trusted_clients:
   192.168.0.0/16
   FE80::/10
   ::1/128
+
+[history]
 
 [octoprint_compat]
 

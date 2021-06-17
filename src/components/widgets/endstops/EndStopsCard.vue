@@ -17,7 +17,7 @@
         class="py-1"
         v-for="(item, name) in endStops"
         :key="name">
-        <span class="grey--text focus--text mr-5">{{ name }}</span>
+        <span class="focus--text mr-5">{{ name }}</span>
         <v-chip
           :color="(item === 'open') ? 'secondary' : 'warning'"
           class="ml-2"
@@ -34,7 +34,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {}

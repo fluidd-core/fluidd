@@ -21,9 +21,9 @@ Moonraker is the API that fluidd communicates with, which in turn communicates w
 All three components are required for a healthy printer.
 
 For more detailed instructions, please refer to Arksine's documentation for
-[installation](https://github.com/Arksine/moonraker/blob/master/docs/installation.md)
+[installation](https://moonraker.readthedocs.io/en/latest/installation/)
 and
-[configuration](https://github.com/Arksine/moonraker/blob/master/docs/configuration.md)
+[configuration](https://moonraker.readthedocs.io/en/latest/configuration/)
 
 ## [server] block
 
@@ -48,7 +48,7 @@ gcode_store_size: 1000
 ## [authorization] block
 
 This configures the authorization required to access the moonraker API.
-Normally, this is enabled. Fluidd provides a default configuration that
+Normally, this is enabled. Fluiddpi provides a default configuration that
 applies to most users network requirements, however - sometimes changes are
 required to meet specific needs.
 
@@ -57,10 +57,10 @@ required to meet specific needs.
 Cors Domains are a list of host names that are allowed to communicate with
 moonraker.
 
-If your IP address falls under the trusted clients below, moonraker should allow
+If your IP address falls under the trusted clients, moonraker should allow
 your host to connect without changes.
 However, if you're having trouble - or otherwise attempting
-to connect from a unique location, you may want to add an entry into the `cors_domains`
+to connect from a unique location, you may need to add an entry into the `cors_domains`
 block.
 
 You can enter an address as a wildcard or full host. The
@@ -69,22 +69,11 @@ for most users.
 
 Protocols are required, but can be ommitted with the use of wildcards.
 
-If you access your printer by ip address, or on an otherwise non-standard port,
-you may need to add that address into your configuration.
-
-As an example, if you open fluidd in your browser from here `192.168.1.2:8080`
-then you'd need this line under `cors_domains:`
-
-```yaml
-cors_domains:
-  http://192.168.1.2:8080
-```
-
 ### Trusted Clients
 
 Trusted clients are a list of ip ranges that moonraker will accept communication
 from. The default list in the [configuration example](/configuration/moonraker_conf) covers
-most user configurations for internal networks. Note these ranges are in CIDR
+most user configurations for internal networks. Note that these ranges are in CIDR
 format.
 
 ## [history] block

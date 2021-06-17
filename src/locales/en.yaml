@@ -74,12 +74,13 @@ app:
     label:
       dir_name: Directory name
       disk_usage: Disk Usage
+      diskinfo: Disk Information
       downloaded: Downloaded
       file_name: Filename
       transfer_rate: Transfer rate
       uploaded: Uploaded
     msg:
-      confirm: Are you sure? This will delete all files and folders within.
+      confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
       processing: Processing
     overlay:
@@ -143,6 +144,7 @@ app:
       preview_gcode: Preview Gcode
       quad_gantry_level: QGL
       reboot: Reboot
+      refresh: Refresh
       remove: Remove
       remove_all: Remove All
       rename: Rename
@@ -150,9 +152,9 @@ app:
       reset_file: Reset File
       reset_layout: Reset Layout
       restart_firmware: Firmware Restart
+      restart_service: Restart %{service}
       restart_service_klipper: Restart Klipper
       restart_service_moonraker: Restart Moonraker
-      restart_service_webcamd: Restart Webcam
       resume: Resume
       retract: Retract
       save: Save
@@ -181,13 +183,18 @@ app:
       add_camera: Add Camera
       add_category: Add category
       add_preset: Add Preset
+      add_user: Add user
+      api_key: Api Key
       api_url: API URL
       category: Category
+      change_password: Change password
       clear_all: Clear all
       confirm: Confirm
+      current_password: Current password
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_preset: Edit Preset
+      edit_user: Edit user
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
       flow: Flow
@@ -198,13 +205,15 @@ app:
       longest_job: Longest job
       low: Low
       name: Name
+      new_password: New password
       no_notifications: No notifications
       'off': 'Off'
+      password: Password
       power: Power
       printers: Printers
+      requested_speed: Requested Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
-      requested_speed: Requested Speed
       save_as: Save As
       services: Services
       speed: Speed
@@ -223,6 +232,9 @@ app:
       velocity: Velocity
       visible: Visible
       z_offset: Z Offset
+    msg:
+      password_changed: Password changed
+      wrong_password: Oops, something went wrong. Is your password correct?
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -231,6 +243,7 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
+        password_username: Cannot match username
         required: Required
       msg:
         confirm: Are you sure?
@@ -269,18 +282,19 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs
-      gcode_preview: Gcode Preview
+      gcode_preview: Gcode Preview [ Beta ]
       history: History
       home: Home
       jobs: Jobs
       limits: Printer Limits
-      retract: Firmware Retraction
       macros: Macros
+      retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
       stats: Printer Stats
       status: Status
       system_control: System Control
+      system_overview: System Information
       temperature: Thermals
       tool: Tool
       tune: Tune
@@ -311,6 +325,7 @@ app:
     btn:
       add_camera: Add Camera
       add_thermal_preset: Add Preset
+      add_user: Add user
       reset: Reset
       select_theme: Select Theme
     camera_type_options:
@@ -351,6 +366,8 @@ app:
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
+      show_animations: Show animations
+      theme_preset: Community preset
       thermal_preset_name: Preset Name
       time_estimates: Time estimates
       toggle: Toggle
@@ -369,6 +386,7 @@ app:
       slicer: Slicer
       slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
     title:
+      authentication: Authentication
       camera: Camera | Cameras
       gcode_preview: Gcode Preview
       general: General
@@ -382,6 +400,30 @@ app:
     msg:
       connecting: Connecting to moonraker...
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+  system_info:
+    label:
+      capacity: Capacity
+      cpu_desc: CPU Description
+      distribution_codename: Codename
+      distribution_like: Distribution Like
+      distribution_name: Distribution
+      hardware_desc: Hardware Description
+      hostname: Hostname
+      klipper_load: Klipper Load
+      manufactured: Manufactured
+      manufacturer: Manufacturer
+      mcu_awake: '{mcu} Awake Time'
+      mcu_bandwidth: '{mcu} Bandwidth'
+      mcu_load: '{mcu} Load'
+      model: CPU Model
+      moonraker_load: Moonraker Load
+      processor_desc: Processor
+      product_name: Product Name
+      serial_number: Serial Number
+      system_load: System Load
+      system_memory: System Memory
+      system_utilization: System Utilization
+      total_memory: Total Memory
   tool:
     btn:
       home_x: X

@@ -8,7 +8,7 @@
         class="py-1"
         v-for="item in sensors"
         :key="item.name">
-        <span class="grey--text text--lighten-1 text-subtitle-1">{{ item.name }}</span>
+        <span class="text-subtitle-1">{{ item.name }}</span>
         <v-icon
           :color="(item.filament_detected) ? 'success' : 'warning'"
           class="ml-3"

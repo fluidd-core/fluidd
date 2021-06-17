@@ -3,7 +3,7 @@
     bottom
     left
     offset-y
-    transition="slide-x-transition"
+    transition="slide-y-transition"
   >
     <template v-slot:activator="{ on, attrs, value }">
       <app-btn
@@ -41,7 +41,7 @@
                   :width="16"
                 />
               </td>
-              <td class="grey--text">
+              <td>
                 <span>
                   <job-history-item-status :job="job" dense></job-history-item-status>
                   {{ getFilePaths(job.filename).filename }}
@@ -57,7 +57,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
-import { getFilePaths } from '@/store/helpers'
+import getFilePaths from '@/util/get-file-paths'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 
 @Component({

@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 export const defaultState = (): CamerasState => {
   return {
-    fillSpace: true,
+    activeCamera: 'all',
     cameras: [
       {
         id: uuidv4(),

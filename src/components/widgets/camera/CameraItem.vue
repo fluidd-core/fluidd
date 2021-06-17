@@ -1,14 +1,15 @@
 <template>
   <div>
-    <v-card
-      :elevation="(flat) ? 0 : 6"
+    <v-sheet
+      :elevation="0"
+      rounded
       v-on="$listeners"
-      class="rounded-t-0"
+      class="camera-container"
     >
       <img
         v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
         :src="cameraUrl"
-        class="webcam"
+        class="camera-image"
         :style="cameraTransformStyle"
         @load="handleImgLoad"
       />
@@ -17,18 +18,23 @@
         v-if="camera.type === 'ipstream'"
         :src="cameraUrl"
         autoplay
-        class="webcam"
+        class="camera-image"
         :style="cameraTransformStyle"
       />
 
-      <v-card-text
+      <div
         v-if="camera.name"
-        class="card-heading py-1 d-flex align-center justify-space-between"
+        class="camera-name"
       >
-        <span class="font-weight-light" style="font-size: 1.0rem;">{{ camera.name }}</span>
-        <small v-if="this.camera.type === 'mjpgadaptive' && this.time">FPS: {{ currentFPS }}</small>
-      </v-card-text>
-    </v-card>
+        {{ camera.name }}
+      </div>
+      <div
+        v-if="this.camera.type === 'mjpgadaptive' && this.time"
+        class="camera-frames"
+      >
+        fps: {{ currentFPS }}
+      </div>
+    </v-sheet>
   </div>
 </template>
 
@@ -44,9 +50,6 @@ export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
   camera!: CameraConfig
 
-  @Prop({ type: Boolean, default: false })
-  flat!: boolean
-
   // Adaptive load counters
   request_start_time = performance.now()
   start_time = performance.now()
@@ -54,7 +57,7 @@ export default class CameraItem extends Vue {
   request_time = 0
   time_smoothing = 0.6
   request_time_smoothing = 0.1
-  currentFPS = 0
+  currentFPS = '0'
 
   // URL used by camera
   cameraUrl = ''
@@ -151,7 +154,7 @@ export default class CameraItem extends Vue {
       this.request_start_time = performance.now()
       url.searchParams.append('cacheBust', this.refresh.toString())
       url.searchParams.set('action', 'snapshot')
-      this.currentFPS = Math.round(1000 / this.time)
+      this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
       this.$nextTick(() => {
         this.cameraUrl = url.toString()
       })
@@ -165,9 +168,33 @@ export default class CameraItem extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .webcam {
+  .camera-image {
     display: block;
     width: 100%;
     white-space: nowrap;
+  }
+
+  .camera-container {
+    position: relative;
+  }
+
+  .camera-name,
+  .camera-frames {
+    position: absolute;
+    bottom: 0;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.75);
+    font-weight: 100;
+  }
+
+  .camera-name {
+    left: 0;
+    border-top-right-radius: 4px;
+  }
+
+  .camera-frames {
+    text-align: right;
+    right: 0;
+    border-top-left-radius: 4px;
   }
 </style>

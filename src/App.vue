@@ -8,12 +8,12 @@
     </vue-headful>
 
     <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
+    <app-nav-drawer v-model="navdrawer"></app-nav-drawer>
 
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
+      @navdrawer="handleNavDrawerChange"
     ></app-bar>
-
-    <router-view name="navigation"></router-view>
 
     <flash-message
       v-if="flashMessage"
@@ -24,7 +24,7 @@
     />
 
     <v-btn
-      v-if="isMobile"
+      v-if="isMobile && authenticated && socketConnected"
       x-small
       fab
       fixed
@@ -36,8 +36,20 @@
     </v-btn>
 
     <v-main>
-      <router-view v-if="socketConnected" />
-      <socket-disconnected v-if="!socketConnected"></socket-disconnected>
+      <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
+
+      <router-view
+        v-if="
+          (socketConnected && apiConnected) ||
+          (!authenticated && apiConnected)"
+      ></router-view>
+
+      <socket-disconnected
+        v-if="
+          (!socketConnected && !apiConnected) ||
+          (!socketConnected && authenticated)"
+      ></socket-disconnected>
+
       <updating-dialog></updating-dialog>
     </v-main>
 
@@ -53,7 +65,8 @@ import { Waits } from './globals'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
-  toolsdrawer = false
+  toolsdrawer: boolean | null = null
+  navdrawer: boolean | null = null
   showUpdateUI = false
 
   flashMessage: FlashMessage = {
@@ -162,6 +175,10 @@ export default class App extends Mixins(StateMixin) {
 
   handleToolsDrawerChange () {
     this.toolsdrawer = !this.toolsdrawer
+  }
+
+  handleNavDrawerChange () {
+    this.navdrawer = !this.navdrawer
   }
 }
 </script>

@@ -40,6 +40,9 @@ themeDark.inherit = true
 themeDark.colors['editor.background'] = '#28282b'
 themeDark.colors['editor.lineHighlightBackground'] = '#3a3a3e'
 themeDark.colors['minimap.background'] = themeDark.colors['editor.background']
+themeDark.rules.forEach(rule => {
+  if (rule.foreground === '#5C6773') rule.foreground = '#7C8A99'
+})
 
 themeLight.inherit = false
 themeLight.colors['minimap.background'] = themeLight.colors['editor.background']

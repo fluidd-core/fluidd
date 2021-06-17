@@ -27,7 +27,8 @@
     <v-data-table
       :items="history"
       :headers="visibleHeaders"
-      :items-per-page="5"
+      :items-per-page="15"
+      :item-class="getRowClasses"
       :single-expand="true"
       :search="search"
       :expanded="expanded"
@@ -53,66 +54,35 @@
       <template
         v-slot:[`item.data-table-icons`]="{ item }"
       >
+        <!-- If the item no longer exists. -->
         <v-icon
-          v-if="!item.metadata.thumbnails || !item.metadata.thumbnails.length"
-          small
-          color="grey darken-2"
+          v-if="!item.exists"
+          class="mr-2"
+          color="secondary">
+          $fileCancel
+        </v-icon>
+
+        <!-- If the item exists, but has no thumbnail data. -->
+        <v-icon
+          v-if="item.exists && !item.metadata.thumbnails"
           class="mr-2">
           $fileDocument
         </v-icon>
+
+        <!-- If the item exists, and we have thumbnail data. -->
         <img
-          v-if="item.metadata.thumbnails && item.metadata.thumbnails.length"
+          v-if="item.exists && item.metadata.thumbnails && item.metadata.thumbnails.length"
           class="mr-2 file-icon-thumb"
           :src="getThumbUrl(item.metadata.thumbnails, getFilePaths(item.filename).path)"
-          :width="16"
+          :width="24"
         />
       </template>
 
       <template
         v-slot:[`item.filename`]="{ item }"
       >
-        <span class="grey--text">
+        <span class="">
           {{ getFilePaths(item.filename).filename }}
-        </span>
-      </template>
-
-      <template
-        v-slot:[`item.start_time`]="{ item }"
-      >
-        <span class="grey--text text-no-wrap">
-          {{ $filters.formatDateTime(item.start_time, 'lll') }}
-        </span>
-      </template>
-
-      <template
-        v-slot:[`item.end_time`]="{ item }"
-      >
-        <span class="grey--text text-no-wrap">
-          {{ $filters.formatDateTime(item.end_time, 'lll') }}
-        </span>
-      </template>
-
-      <template
-        v-slot:[`item.print_duration`]="{ item }"
-      >
-        <span class="grey--text text-no-wrap">
-          {{ $filters.formatCounterTime(item.print_duration) }}
-        </span>
-      </template>
-
-      <template
-        v-slot:[`item.total_duration`]="{ item }"
-      >
-        <span class="grey--text text-no-wrap">
-          {{ $filters.formatCounterTime(item.total_duration) }}
-        </span>
-      </template>
-
-      <template
-        v-slot:[`item.filament_used`]="{ item }"
-      >
-        <span class="grey--text text-no-wrap">
-          {{ $filters.getReadableLengthString(item.filament_used) }}
         </span>
       </template>
 
@@ -120,6 +90,54 @@
         v-slot:[`item.status`]="{ item }"
       >
         <job-history-item-status :job="item"></job-history-item-status>
+      </template>
+
+      <template
+        v-slot:[`item.start_time`]="{ item }"
+      >
+        <span class="text-no-wrap">
+          {{ $filters.formatDateTime(item.start_time, 'lll') }}
+        </span>
+      </template>
+
+      <template
+        v-slot:[`item.end_time`]="{ item }"
+      >
+        <span class="text-no-wrap">
+          {{ $filters.formatDateTime(item.end_time, 'lll') }}
+        </span>
+      </template>
+
+      <template
+        v-slot:[`item.print_duration`]="{ item }"
+      >
+        <span class="text-no-wrap">
+          {{ $filters.formatCounterTime(item.print_duration) }}
+        </span>
+      </template>
+
+      <template
+        v-slot:[`item.total_duration`]="{ item }"
+      >
+        <span class="text-no-wrap">
+          {{ $filters.formatCounterTime(item.total_duration) }}
+        </span>
+      </template>
+
+      <template
+        v-slot:[`item.filament_used`]="{ item }"
+      >
+        <span class="text-no-wrap">
+          {{ $filters.getReadableLengthString(item.filament_used) }}
+        </span>
+      </template>
+
+      <template
+        v-slot:[`item.metadata.size`]="{ item }"
+      >
+        <span class="text-no-wrap">
+          {{ $filters.getReadableFileSizeString(item.metadata.size) }}
+        </span>
       </template>
 
       <template
@@ -131,14 +149,14 @@
             icon
             small
           >
-            <v-icon small color="grey">
+            <v-icon small color="">
               $delete
             </v-icon>
           </v-btn>
           <v-btn
             @click.prevent.stop="toggleRowExpand(item)"
             class="v-data-table__expand-icon"
-            color="grey"
+            color=""
             :class="{ 'v-data-table__expand-icon--active': isExpanded(item) }"
             icon
             small
@@ -156,9 +174,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import JobHistoryItemStatus from './JobHistoryItemStatus.vue'
 import FilesMixin from '@/mixins/files'
-import { getFilePaths } from '@/store/helpers'
+import getFilePaths from '@/util/get-file-paths'
 import { HistoryItem } from '@/store/history/types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'
 
 @Component({
@@ -180,6 +198,7 @@ export default class JobHistory extends Mixins(FilesMixin) {
       { text: this.$tc('app.general.table.header.print_duration'), value: 'print_duration', configurable: true },
       { text: this.$tc('app.general.table.header.total_duration'), value: 'total_duration', configurable: true },
       { text: this.$tc('app.general.table.header.filament_used'), value: 'filament_used', configurable: true },
+      { text: this.$t('app.general.table.header.size'), value: 'metadata.size', width: '1%', configurable: true },
       { text: this.$tc('app.general.table.header.actions'), value: 'actions', sortable: false, align: 'end' }
     ]
     const key = 'history'
@@ -192,6 +211,11 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   get history () {
     return this.$store.getters['history/getHistory']
+  }
+
+  getRowClasses (item: HistoryItem) {
+    if (!item.exists) return 'v-data-table__inactive'
+    return ''
   }
 
   getFilePaths (filename: string) {

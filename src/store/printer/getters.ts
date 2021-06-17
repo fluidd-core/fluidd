@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder } from './types'
+import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder, MCU } from './types'
 import { get } from 'lodash-es'
-import { getKlipperType } from '../helpers'
+import getKlipperType from '@/util/get-klipper-type'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -72,14 +72,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
    */
   getPrinterState: (state): string => {
     const state1 = state.printer.idle_timeout.state // printing, ready, idle
-    const state2 = state.printer.print_stats.state // printing, paused, standby, complete
-    // If the idle state says we're printing, bnut the print_stats say otherwise - then
+    const state2 = state.printer.print_stats.state // printing, paused, standby, complete, cancelled, error
+    // If the idle state says we're printing, but the print_stats say otherwise - then
     // we're probably busy moving the toolhead or doing some other process.
     // Possible values are;
     // printing, busy, paused, ready, idle, standby
     if (state1 && state2) {
       if (
-        state2.toLowerCase() === 'paused'
+        state2.toLowerCase() === 'paused' ||
+        state2.toLowerCase() === 'cancelled'
       ) {
         return state2.toLowerCase()
       }
@@ -121,6 +122,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
       : 0
     let total = 0
     let remaining = 0
+    // Current time as a Unix timestamp (in seconds)
+    let endTime = Math.floor(Date.now() / 1000)
 
     switch (type) {
       case 'slicer': {
@@ -130,7 +133,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
         ) {
           total = state.printer.current_file.estimated_time
         }
-        remaining = (total - current)
+        remaining = total - current
+        endTime = endTime + remaining
         break
       }
       case 'filament': {
@@ -144,6 +148,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           total = current / (state.printer.print_stats.filament_used / state.printer.current_file.filament_total)
         }
         remaining = total - current
+        endTime = endTime + remaining
         break
       }
       case 'file': {
@@ -151,6 +156,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           ? current / progress
           : current
         remaining = total - current
+        endTime = endTime + remaining
         break
       }
       case 'totals': { // totals only.
@@ -169,8 +175,33 @@ export const getters: GetterTree<PrinterState, RootState> = {
       progress: (progress * 100).toFixed(), // percent
       total: Vue.$filters.formatCounterTime(total), // total estimated time
       current: Vue.$filters.formatCounterTime(current), // current duration / time
-      remaining: Vue.$filters.formatCounterTime(remaining) // remaining time
+      remaining: Vue.$filters.formatCounterTime(remaining), // remaining time
+      endTime: Vue.$filters.formatAbsoluteDateTime(endTime, 'h:mm A') // estimated completion datetime
     }
+  },
+
+  /**
+   * Return system stats
+   */
+  getSystemStats: (state) => {
+    return state.printer.system_stats
+  },
+
+  /**
+   * Return MCU's and their state
+   */
+  getMcus: (state) => {
+    const mcus: MCU[] = []
+    Object.keys(state.printer)
+      .filter(key => key.startsWith('mcu'))
+      .sort()
+      .forEach(key => {
+        mcus.push({
+          name: key,
+          ...state.printer[key]
+        })
+      })
+    return mcus
   },
 
   /**
@@ -182,13 +213,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .filter(key => key.startsWith('extruder'))
       .sort()
       .forEach(key => {
-        if (key.startsWith('extruder')) {
-          if (key === 'extruder') {
-            extruders.push({ name: 'Extruder 0', key })
-          } else {
-            const match = key.match(/\d+$/)
-            if (match) extruders.push({ name: 'Extruder ' + match[0], key })
-          }
+        if (key === 'extruder') {
+          extruders.push({ name: 'Extruder 0', key })
+        } else {
+          const match = key.match(/\d+$/)
+          if (match) extruders.push({ name: 'Extruder ' + match[0], key })
         }
       })
     return extruders
@@ -290,9 +319,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
             name = split.join(' ')
           }
 
-          // const color = (name === 'heater_bed')
-          //   ? Vue.$colorset.next('bed', e)
-          //   : Vue.$colorset.next('heater', e)
           const color = Vue.$colorset.next(getKlipperType(e), e)
           const prettyName = Vue.$filters.startCase(name)
 
@@ -302,8 +328,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
             color,
             prettyName,
             key: e,
-            minTemp: (config && config.min_temp) ? config.min_temp : undefined,
-            maxTemp: (config && config.max_temp) ? config.max_temp : undefined
+            minTemp: (config && config.min_temp !== undefined) ? config.min_temp : undefined,
+            maxTemp: (config && config.max_temp !== undefined) ? config.max_temp : undefined
           })
         }
       })
@@ -314,6 +340,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
       })
     }
     return []
+  },
+
+  getAllLeds: (_, getters) => {
+    return getters.getOutputs([
+      'neopixel',
+      'dotstar'
+    ])
   },
 
   getAllFans: (_, getters) => {
@@ -377,11 +410,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'output_pin'
     ]
 
+    // LEDs...
+    const leds = [
+      'neopixel',
+      'dotstar'
+    ]
+
     // Are they controllable?
     const controllable = [
       'fan',
       'fan_generic',
-      'output_pin'
+      'output_pin',
+      'neopixel',
+      'dotstar'
     ]
 
     // Should we apply a color?
@@ -395,12 +436,14 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'temperature_fan',
       'controller_fan',
       'heater_fan',
-      'fan_generic'
+      'fan_generic',
+      'neopixel',
+      'dotstar'
     ]
 
     const supportedTypes = (filter && filter.length)
       ? filter
-      : [...fans, ...outputPins]
+      : [...fans, ...outputPins, ...leds]
 
     const pins: Array<Fan | OutputPin> = []
 

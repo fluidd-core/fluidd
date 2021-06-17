@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { Globals } from '@/globals'
 import { ConsoleEntry, ConsoleState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 export const actions: ActionTree<ConsoleState, RootState> = {
   /**

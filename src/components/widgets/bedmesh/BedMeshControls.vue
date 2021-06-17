@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="item in meshes" :key="item.profile_name">
-          <td class="grey--text">
+          <td class="">
             {{ item.profile_name }}
           </td>
           <td>
@@ -26,7 +26,7 @@
               active
             </v-chip>
           </td>
-          <td class="grey--text focus--text">
+          <td class="focus--text">
             <span v-if="item.active && mesh.variance">
               {{ mesh.variance.toFixed(4) }}
                <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
@@ -66,7 +66,7 @@
                   fab
                   text
                   x-small>
-                  <v-icon color="grey--text">$close</v-icon>
+                  <v-icon color="">$close</v-icon>
                 </app-btn>
               </template>
               <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
@@ -196,6 +196,7 @@
         <v-col cols="12" md="6">
           <v-slider
             :label="$t('app.bedmesh.label.scale')"
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             v-model="mapScale"
             :tick-labels="mapScaleLabels"
             :min="0"
@@ -208,6 +209,7 @@
 
           <v-slider
             :label="$t('app.bedmesh.label.boxScale')"
+            :disabled="!meshLoaded || printerPrinting || printerBusy"
             v-model="boxScale"
             :tick-labels="boxScaleLabels"
             :min="1"

@@ -3,68 +3,43 @@
     app
     clipped-left
     extension-height="46"
+    :color="theme.currentTheme.appbar"
+    :height="$globals.HEADER_HEIGHT"
   >
+    <router-link to="/" class="toolbar-logo" v-show="!isMobile">
+      <app-icon></app-icon>
+    </router-link>
+
     <div class="toolbar-title">
-      <router-link to="/">
-        <app-icon
-          class="shrink mr-3 color-filter float-left"
-          width="30"
-          :primary-color="theme.currentTheme.primary"
-          :secondary-color="theme.currentTheme.primaryOffset"
-        ></app-icon>
-      </router-link>
+      <app-btn
+        v-if="isMobile"
+        fab
+        small
+        :elevation="0"
+        class="mx-1"
+        color="transparent"
+        @click="$emit('navdrawer')"
+      >
+        <v-icon>$menuAlt</v-icon>
+      </app-btn>
+
       <v-toolbar-title class="printer-title text--secondary">
         <router-link to="/" v-html="instanceName"></router-link>
       </v-toolbar-title>
     </div>
 
-    <div class="toolbar-nav">
-      <app-nav-item
-        icon="$home"
-        exact
-        to="/">
-        {{ $t('app.general.title.home') }}
-      </app-nav-item>
+    <!-- <v-spacer /> -->
 
-      <app-nav-item
-        icon="$files"
-        to="/jobs">
-        {{ $t('app.general.title.jobs') }}
-      </app-nav-item>
-
-      <app-nav-item
-        v-if="supportsHistory"
-        icon="$history"
-        to="/history">
-        {{ $t('app.general.title.history') }}
-      </app-nav-item>
-
-      <app-nav-item
-        icon="$tune"
-        to="/tune">
-        {{ $t('app.general.title.tune') }}
-      </app-nav-item>
-
-      <app-nav-item
-        icon="$cogs"
-        to="/configure">
-        {{ $t('app.general.title.configure') }}
-      </app-nav-item>
-    </div>
-
-    <div class="toolbar-suplimental">
-      <v-tooltip bottom v-if="socketConnected && !isMobile">
+    <div class="toolbar-supplemental">
+      <v-tooltip bottom v-if="socketConnected && !isMobile && authenticated">
         <template v-slot:activator="{ on, attrs }">
           <app-btn
             v-if="!isMobile"
             :disabled="!klippyReady"
             v-bind="attrs"
             v-on="on"
-            fab
-            small
             class="mx-1"
-            color="transparent"
-            :elevation="0"
+            color=""
             @click="emergencyStop()"
           >
             <v-icon color="error">$estop</v-icon>
@@ -73,19 +48,12 @@
         {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <app-notification-menu></app-notification-menu>
+      <app-notification-menu v-if="authenticated && socketConnected"></app-notification-menu>
 
-      <app-btn
-        v-if="!isMobile"
-        fab
-        small
-        :elevation="0"
-        class="mx-1"
-        color="transparent"
-        :to="{ path: '/settings' }"
-      >
-        <v-icon>$cog</v-icon>
-      </app-btn>
+      <app-user-menu
+        v-if="supportsAuth && authenticated"
+        @change-password="dialog = true"
+      ></app-user-menu>
 
       <app-btn
         fab
@@ -119,20 +87,30 @@
       </app-btn>
     </template>
 
+    <user-password-dialog
+      v-model="dialog">
+    </user-password-dialog>
+
   </v-app-bar>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
 import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
 
-@Component({})
+@Component({
+  components: {
+    UserPasswordDialog
+  }
+})
 export default class AppBar extends Mixins(StateMixin) {
   menu = false
+  dialog = false
 
-  get supportsHistory () {
-    return this.$store.getters['server/componentSupport']('history')
+  get supportsAuth () {
+    return this.$store.getters['server/componentSupport']('authorization')
   }
 
   get instances () {
@@ -181,29 +159,44 @@ export default class AppBar extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .toolbar-title,
-  .toolbar-nav,
-  .toolbar-suplimental {
+  .toolbar-logo {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 56px;
+    height: inherit;
+  }
+
+  .theme--dark .toolbar-logo {
+    border-right: thin solid rgba(map-get($shades, 'white'), 0.12);
+    background-color: #28282b;
+  }
+
+  .theme--light .toolbar-logo {
+    border-right: thin solid rgba(map-get($shades, 'black'), 0.12);
+    background-color: #FFFFFF;
+  }
+
+  .toolbar-title {
+    display: flex;
+    flex: 1 1;
+    max-width: 50%;
+    height: inherit;
+    align-items: center;
+    padding-left: 16px;
+  }
+
+  .toolbar-supplemental {
+    display: flex;
+    justify-content: flex-end;
     flex: 0 0 50%;
     max-width: 50%;
     align-items: center;
     height: inherit;
     @media #{map-get($display-breakpoints, 'md-and-up')} {
-      flex: 0 0 33.3333333333%;
-      max-width: 33.3333333333%;
+      flex: 0 0 50%;
+      max-width: 50%;
     }
-  }
-
-  .toolbar-nav {
-    justify-content: center;
-    @media #{map-get($display-breakpoints, 'sm-and-down')} {
-      display: none;
-    }
-  }
-
-  .toolbar-suplimental {
-    justify-content: flex-end;
   }
 
   .printer-title {
@@ -232,5 +225,9 @@ export default class AppBar extends Mixins(StateMixin) {
     align-items: center;
     justify-content: center;
     padding: 0;
+  }
+
+  ::v-deep .v-toolbar__content {
+    padding-left: 0;
   }
 </style>

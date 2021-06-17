@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { CamerasState, CameraConfig } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 export const actions: ActionTree<CamerasState, RootState> = {
   /**
@@ -35,10 +35,10 @@ export const actions: ActionTree<CamerasState, RootState> = {
   },
 
   /**
-   * Sets fillspace
+   * Sets active camera
    */
-  async updateFillSpace ({ commit }, payload) {
-    commit('setFillSpace', payload)
-    SocketActions.serverWrite('cameras.fillSpace', payload)
+  async updateActiveCamera ({ commit }, payload) {
+    commit('setActiveCamera', payload)
+    SocketActions.serverWrite('cameras.activeCamera', payload)
   }
 }

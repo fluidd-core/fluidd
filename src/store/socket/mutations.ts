@@ -29,5 +29,9 @@ export const mutations: MutationTree<SocketState> = {
 
   setSocketDisconnecting (state, payload) {
     state.disconnecting = payload
+  },
+
+  setApiConnected (state, payload) {
+    state.apiConnected = payload
   }
 }

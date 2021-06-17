@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { ChartData, ChartState } from './types'
 import { RootState } from '../types'

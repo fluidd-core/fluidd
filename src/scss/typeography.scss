@@ -6,3 +6,15 @@
   letter-spacing: 0.0125em !important;
   line-height: auto;
 }
+
+.theme--light .dim--text {
+  color: rgba(map-get($material-light, 'text-color'), 0.45);
+}
+
+.theme--dark .dim--text {
+  color: rgba(map-get($material-dark, 'text-color'), 0.45);
+}
+
+// .disabled--text {
+//   opacity: 0.45;
+// }

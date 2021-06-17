@@ -34,35 +34,35 @@ export const mutations: MutationTree<ConfigState> = {
   },
 
   /**
-   * During init of the store, sets localConfig.
-   * This would usually be set once loaded from localStorage.
-   */
-  setInitLocal (state) {
-    if (Globals.LOCAL_CARDSTATE_STORAGE_KEY in localStorage) {
-      const config = JSON.parse(localStorage[Globals.LOCAL_CARDSTATE_STORAGE_KEY])
-      Vue.set(state, 'cardState', config)
-    }
-
-    if (Globals.LOCAL_CARDLAYOUT_STORAGE_KEY in localStorage) {
-      const config = JSON.parse(localStorage[Globals.LOCAL_CARDLAYOUT_STORAGE_KEY])
-      Vue.set(state, 'cardLayout', config)
-    }
-  },
-
-  /**
    * Sets the API and Socket URLS on first load and
    * ensure the instance is configured in local storage
    */
   setInitApiConfig (state, payload) {
-    // consola.log('initing apis', payload)
     state.apiUrl = payload.apiUrl
     state.socketUrl = payload.socketUrl
+    if (payload.name && payload.name !== '') state.uiSettings.general.instanceName = payload.name
   },
 
   setInitHostConfig (state, payload) {
     state.hostConfig.blacklist = payload.blacklist
     state.hostConfig.endpoints = payload.endpoints
     state.hostConfig.hosted = payload.hosted
+    state.hostConfig.themePresets = payload.themePresets
+
+    // Ensure the default (first item..) is applied for fresh setups.
+    if (payload.themePresets && payload.themePresets.length >= 1) {
+      const d = payload.themePresets[0]
+      Vue.set(state.uiSettings, 'theme', {
+        ...{
+          isDark: d.isDark,
+          logo: d.logo,
+          currentTheme: {
+            primary: d.color
+          }
+        },
+        ...state.uiSettings.theme
+      })
+    }
   },
 
   setInitInstances (state, payload: InitConfig) {
@@ -87,7 +87,7 @@ export const mutations: MutationTree<ConfigState> = {
     } else {
       instances.forEach((instance, index) => {
         instance.active = (index === i)
-        if (index === i) {
+        if (index === i && instance.name !== '') {
           instance.name = state.uiSettings.general.instanceName
         }
       })

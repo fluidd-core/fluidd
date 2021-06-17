@@ -20,21 +20,6 @@
 
       <v-divider></v-divider>
 
-      <app-setting
-        :title="$t('app.setting.label.camera_fillspace')"
-        :r-cols="2"
-        :sub-title="$t('app.setting.label.camera_fillspace_help')"
-      >
-        <v-switch
-          @click.native.stop
-          v-model="fillSpace"
-          hide-details
-          class="mb-5"
-        ></v-switch>
-      </app-setting>
-
-      <v-divider v-if="cameras.length > 0"></v-divider>
-
       <template v-for="(camera, i) in cameras">
         <app-setting
           :key="camera.id"
@@ -42,7 +27,7 @@
           :r-cols="2"
         >
           <template v-slot:title>
-            {{ camera.name }} <v-icon v-if="!camera.enabled" right small color="error">$error</v-icon>
+            {{ camera.name }} <v-icon v-if="!camera.enabled" right small color="warning">$warning</v-icon>
           </template>
           <app-btn
             @click.stop="handleRemoveCamera(camera)"
@@ -50,7 +35,7 @@
             text
             x-small
             color="">
-            <v-icon color="grey--text">$close</v-icon>
+            <v-icon color="">$close</v-icon>
           </app-btn>
         </app-setting>
 
@@ -83,14 +68,6 @@ export default class CameraSettings extends Vue {
   dialogState: any = {
     active: false,
     camera: null
-  }
-
-  get fillSpace () {
-    return this.$store.state.cameras.fillSpace
-  }
-
-  set fillSpace (value: boolean) {
-    this.$store.dispatch('cameras/updateFillSpace', value)
   }
 
   get cameras () {

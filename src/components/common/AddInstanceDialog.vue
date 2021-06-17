@@ -71,8 +71,9 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import httpClient from '@/api/httpClient'
 import { Globals, Waits } from '@/globals'
-import { AxiosError, Canceler, CancelTokenSource } from 'axios'
+import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
 import { VForm } from '@/types/vuetify'
@@ -104,10 +105,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   timer = 0
-
-  cancelSource: CancelTokenSource | undefined = undefined
-  CancelToken = this.$http.CancelToken
-  cancel: Canceler | undefined = undefined
+  actualUrl = ''
 
   get url () {
     return this.actualUrl
@@ -118,7 +116,12 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     this.actualUrl = url
   }
 
-  actualUrl = ''
+  // Axios cancels.
+  cancelSource: CancelTokenSource | undefined = undefined
+
+  // Fetch cancels.
+  controller: AbortController | undefined = undefined
+
   @Watch('actualUrl')
   @Debounce(500)
   async onUrlChange (url: string) {
@@ -127,15 +130,22 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.note = null
       this.verifying = true
 
+      // Handle cancelling axios requests.
       if (this.cancelSource !== undefined) {
         this.cancelSource.cancel('Cancelled due to new request.')
       }
 
-      this.cancelSource = this.$http.CancelToken.source()
+      this.cancelSource = Axios.CancelToken.source()
+
+      // filter trailing slashes
+      url = (url.endsWith('/'))
+        ? url.slice(0, -1)
+        : url
 
       // Start by making a standard request. Maybe it's good?
-      const request = await this.$http.get(
+      const request = await httpClient.get(
         url + '/server/info?t=' + new Date().getTime(), {
+          withAuth: false,
           cancelToken: this.cancelSource.token
         })
         .then(() => {
@@ -145,7 +155,14 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
         })
         .catch((e: AxiosError) => {
           // If it failed because we cancelled, set ok and move on.
-          if (this.$http.isCancel(e)) {
+          if (Axios.isCancel(e)) {
+            return 'ok'
+          }
+
+          // If it failed because of a 401, set ok and move on.
+          if (e.response?.status === 401) {
+            this.verified = true
+            this.verifying = false
             return 'ok'
           }
 
@@ -159,7 +176,14 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       // The initial request failed with a network issue..
       if (request !== 'ok') {
-        await fetch(url + '/server/info', { mode: 'no-cors', cache: 'no-cache' })
+        // Handle cancelling fetch requests.
+        if (this.controller !== undefined) {
+          this.controller.abort()
+        }
+        this.controller = new AbortController()
+        const { signal } = this.controller
+
+        await fetch(url + '/server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
           .then(() => {
             // likely a cors issue
             this.error = this.$t('app.endpoint.error.cors_error')

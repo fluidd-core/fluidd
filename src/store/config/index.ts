@@ -28,7 +28,8 @@ export const defaultState = (): ConfigState => {
         { name: 'Русский', code: 'ru' },
         { name: 'Українська', code: 'uk' },
         { name: '한국어', code: 'ko' }
-      ]
+      ],
+      themePresets: []
     },
     instances: [],
     uiSettings: {
@@ -55,6 +56,10 @@ export const defaultState = (): ConfigState => {
       },
       theme: {
         isDark: true,
+        logo: {
+          src: '/logo_fluidd.svg',
+          dynamic: true
+        },
         currentTheme: {
           primary: '#2196F3'
         }
@@ -87,7 +92,6 @@ export const defaultState = (): ConfigState => {
           { value: 'first_layer_bed_temp', visible: false }
         ],
         history: [
-          { value: 'end_time', visible: false },
           { value: 'print_duration', visible: false },
           { value: 'filament_used', visible: false }
         ]

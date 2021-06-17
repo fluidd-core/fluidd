@@ -2,7 +2,7 @@
   <div>
     <div v-if="klippyConnected">
       <v-tooltip
-        right
+        bottom
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
@@ -22,7 +22,7 @@
 
     <div v-else>
       <v-tooltip
-        right
+        bottom
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
@@ -42,7 +42,7 @@
 
     <div v-if="klippyConnected">
       <v-tooltip
-        right
+        bottom
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn

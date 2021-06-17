@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
-import { ConfigState, TemperaturePreset, ThemeConfig } from './types'
+import { ConfigState, SupportedTheme, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
@@ -91,6 +91,29 @@ export const getters: GetterTree<ConfigState, RootState> = {
         .toHexString()
     }
     return r
+  },
+
+  /**
+   * Returns a default theme preset for first init / when reset
+   */
+  getDefaultThemePreset: (state) => {
+    if (state.hostConfig.themePresets.length > 0) {
+      return state.hostConfig.themePresets[0] // First entry represents default
+    }
+    return {
+      name: 'Fluidd',
+      logo: {
+        src: '/logo_fluidd.svg',
+        changeWithTheme: true
+      },
+      color: '#2196F3'
+    }
+  },
+
+  getCurrentThemePreset: (state, getters) => {
+    const presets = state.hostConfig.themePresets
+    const theme = getters.getTheme
+    return presets.find((preset: SupportedTheme) => preset.logo.src === theme.logo.src)
   },
 
   getMergedTableHeaders: (state, getters) => (headers: AppTableHeader[], key: string) => {

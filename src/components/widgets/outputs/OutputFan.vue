@@ -2,11 +2,12 @@
   <div>
     <app-slider
       v-if="fan.controllable"
-      value-suffix="%"
+      suffix="%"
       input-xs
-      v-model.number="value"
-      :value-label="rpm"
-      :label="fan.prettyName"
+      :value="value"
+      :reset-value="0"
+      @change="handleChange"
+      :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
       :rules="rules"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
@@ -18,15 +19,15 @@
       align-center
       justify-space-between
     >
-      <div class="grey--text text--darken-1 text-body-1">
+      <div class="text-body-1">
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <small v-if="rpm" class="grey--text mr-2">{{ rpm }}</small>
-        <span class="grey--text focus--text" v-html="prettyValue"></span>
+        <small v-if="rpm" class="mr-2">{{ rpm }}</small>
+        <span class="focus--text" v-html="prettyValue"></span>
       </div>
     </v-layout>
-    <v-divider class="my-2" v-if="divider"></v-divider>
+
   </div>
 </template>
 
@@ -37,12 +38,9 @@ import StateMixin from '@/mixins/state'
 import { Waits } from '@/globals'
 
 @Component({})
-export default class FanItem extends Mixins(StateMixin) {
+export default class OutputFan extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   fan!: Fan
-
-  @Prop({ type: Boolean, default: false })
-  divider!: boolean
 
   get prettyValue () {
     return (this.value === 0)
@@ -54,7 +52,7 @@ export default class FanItem extends Mixins(StateMixin) {
     return (this.fan.speed) ? Math.round(this.fan.speed * 100) : 0
   }
 
-  set value (target: number) {
+  handleChange (target: number) {
     // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
     if (this.fan.type === 'fan') {
       target = Math.ceil(target * 2.55)

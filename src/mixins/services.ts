@@ -1,7 +1,6 @@
 import Vue from 'vue'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
-import store from '@/store'
 
 @Component
 export default class ServicesMixin extends Vue {
@@ -24,7 +23,7 @@ export default class ServicesMixin extends Vue {
    */
   async serviceRestartKlipper () {
     this.$store.commit('socket/setAcceptNotifications', false)
-    await store.dispatch('reset', [
+    await this.$store.dispatch('reset', [
       'server',
       'printer',
       'charts',
@@ -43,10 +42,10 @@ export default class ServicesMixin extends Vue {
   }
 
   /**
-   * Restart the webcamd service itself.
+   * Restart a service by name.
    */
-  serviceRestartWebcam () {
-    SocketActions.machineServicesRestart('webcamd')
+  serviceRestartByName (name: string) {
+    SocketActions.machineServicesRestart(name)
   }
 
   /**
@@ -54,7 +53,7 @@ export default class ServicesMixin extends Vue {
    */
   async restartKlippy () {
     this.$store.commit('socket/setAcceptNotifications', false)
-    await store.dispatch('reset', [
+    await this.$store.dispatch('reset', [
       'server',
       'printer',
       'charts',
@@ -69,7 +68,7 @@ export default class ServicesMixin extends Vue {
    */
   async firmwareRestartKlippy () {
     this.$store.commit('socket/setAcceptNotifications', false)
-    await store.dispatch('reset', [
+    await this.$store.dispatch('reset', [
       'server',
       'printer',
       'charts',

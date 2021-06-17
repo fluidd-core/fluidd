@@ -57,6 +57,19 @@ describe('formatDateTime', () => {
   })
 })
 
+// formatAbsoluteDateTime
+
+describe('formatAbsoluteDateTime', () => {
+  Vue.use(DayJSPlugin)
+  it('renders numbers as date with offset applied', () => {
+    // This should return based on your browsers local time, given unixtime.
+    const d = new Date(0)
+    const offset = d.getTimezoneOffset()
+    const d2 = new Date(d.getTime() + offset * 60)
+    expect(Filters.formatAbsoluteDateTime(d2.getTime())).to.equal('Jan 1, 12:00 AM')
+  })
+})
+
 // getReadableLengthString
 
 describe('getReadableLengthString', () => {
@@ -95,7 +108,7 @@ describe('capitalize', () => {
 describe('getReadableFileSizeString', () => {
   it('rounds smaller numbers properly', () => {
     expect(Filters.getReadableFileSizeString(-1000)).to.equal('0.1 kB')
-    expect(Filters.getReadableFileSizeString(0)).to.equal('0.1 kB')
+    expect(Filters.getReadableFileSizeString(0)).to.equal('0 kB')
   })
 
   it('renders Yoddabytes properly', () => {
