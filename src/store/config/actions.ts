@@ -1,6 +1,6 @@
 import vuetify from '@/plugins/vuetify'
 import { ActionTree } from 'vuex'
-import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostConfig } from './types'
+import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'

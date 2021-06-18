@@ -90,7 +90,7 @@ export default class AppColorPicker extends Vue {
     }
   }
 
-  handleColorChange (color: IroColor, changes: IroColor) {
+  handleColorChange (color: IroColor) {
     // console.log('emitting', color, changes)
     this.$emit('change', color)
     this.$emit('update:color', color)
