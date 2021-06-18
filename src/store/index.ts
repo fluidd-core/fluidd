@@ -75,7 +75,6 @@ export default new Vuex.Store<RootState>({
       commit('version/setHash', process.env.HASH)
 
       // Set the api connection state..
-      consola.log('store init', payload)
       commit('socket/setApiConnected', payload.apiConnected)
 
       // Init the host and local configs..

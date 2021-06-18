@@ -32,7 +32,7 @@ const i18n: VueI18n = new VueI18n({
 
 // Pre apply the en language for fallback.
 i18n.setLocaleMessage('en', messages)
-const loadedLanguages: Locale[] = ['en']
+const loadedLanguages: Locale[] = []
 
 export const loadLocaleMessagesAsync = async (locale: Locale) => {
   // If already loaded, and currently selected.
