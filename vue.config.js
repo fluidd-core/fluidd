@@ -52,14 +52,17 @@ module.exports = {
     ]
   },
   chainWebpack: config => {
+    config.resolve.extensions
+      .add('.yml')
+      .add('yaml')
     config.module
       // Allows us to load yaml and have it loaded as json for locales.
-      .rule('i18n-loader')
+      .rule('yaml-loader')
       .test(/.\.yaml$/)
-      .use('json')
+      .use('json-loader')
       .loader('json-loader')
       .end()
-      .use('yaml')
+      .use('yaml-loader')
       .loader('yaml-loader')
       .end()
     config.module
