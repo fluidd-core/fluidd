@@ -22,6 +22,7 @@ enable_debug_logging: False
 config_path: ~/klipper_config
 temperature_store_size: 600
 gcode_store_size: 1000
+log_path: ~/klipper_logs
 
 [authorization]
 force_logins: true

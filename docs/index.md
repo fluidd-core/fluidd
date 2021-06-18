@@ -37,6 +37,7 @@ firmware.
 - Control power devices - GPIO (relays), TPLink Smartplug, and Tasmota
 - [Print history](/features/print_history)
 - [Version management](/updates/automated) and upgrades
+- Utilization graphs
 
 ## Supporting Fluidd
 

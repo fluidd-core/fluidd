@@ -18,9 +18,7 @@ permalink: /faq
 
 ## I'd like to setup multiple cameras, how?
 
-- FluiddPI works very similarly to OctoPrint. Take a look at the following link
-  for some hints, or try a google search.
-  https://www.makersmashup.com/post/outside-the-box-multiple-webcam-setup-with-octoprint
+- Please see the [cameras feature](/features/cameras)
 
 ## I have an INVALID status for Fluidd, Moonraker or Klipper on the Update panel
 
@@ -73,5 +71,4 @@ permalink: /faq
   
 ## Why can't I see a total layer count in Fluidd?
 
-- Klipper and Moonraker would need to expose this data to Fluidd in order for it to reliably present this
-  information. Once this happens - Fluidd will show it.
+- Coming soon!
