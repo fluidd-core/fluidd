@@ -7,6 +7,7 @@ import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import History from '@/views/History.vue'
 import Configure from '@/views/Configure.vue'
+import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
 import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
@@ -55,6 +56,12 @@ const routes: Array<RouteConfig> = [
   {
     path: '/system',
     name: 'System',
+    component: System,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/configure',
+    name: 'Configuration',
     component: Configure,
     beforeEnter: ifAuthenticated
   },

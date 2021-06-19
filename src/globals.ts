@@ -108,7 +108,8 @@ import {
   mdiMenu,
   mdiFileCancel,
   mdiCancel,
-  mdiCircleSlice3
+  mdiCircleSlice3,
+  mdiCodeJson
 } from '@mdi/js'
 
 /**
@@ -281,7 +282,8 @@ export const Icons = Object.freeze({
   contentCopy: mdiContentCopy,
   apps: mdiApps,
   shieldAccount: mdiShieldAccount,
-  retract: mdiAlphaRCircleOutline
+  retract: mdiAlphaRCircleOutline,
+  codeJson: mdiCodeJson
 })
 
 export const Waits = Object.freeze({

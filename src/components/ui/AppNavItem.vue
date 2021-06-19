@@ -1,6 +1,28 @@
 <template>
   <v-tooltip right :disabled="isMobile">
     <template v-slot:activator="{ attrs, on }">
+      <v-list-item
+        :to="to"
+        :exact="exact"
+        link
+        color="secondary"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-list-item-icon>
+          <v-icon>{{ icon }}</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title><slot></slot></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+    <span><slot></slot></span>
+  </v-tooltip>
+
+  <!-- <v-tooltip right :disabled="isMobile">
+    <template v-slot:activator="{ attrs, on }">
       <router-link
         :to="to"
         :exact="exact"
@@ -19,7 +41,7 @@
       </router-link>
     </template>
     <slot></slot>
-  </v-tooltip>
+  </v-tooltip> -->
 </template>
 
 <script lang="ts">

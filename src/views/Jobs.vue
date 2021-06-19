@@ -12,6 +12,7 @@
             :roots="'gcodes'"
             name="jobs"
             bulk-actions
+            :max-height="816"
           >
           </file-system>
         </collapsable-card>

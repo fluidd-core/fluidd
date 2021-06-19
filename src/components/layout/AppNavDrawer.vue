@@ -27,90 +27,6 @@
           </router-link>
         </div>
 
-        <!-- <v-divider></v-divider> -->
-
-        <!-- <v-list v-show="authenticated">
-          <v-list-item
-            to="/"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>$dash</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.title.home') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item
-            to="/jobs"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>$files</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.title.jobs') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item
-            v-if="supportsHistory"
-            to="/history"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>$history</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.title.history') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item
-            to="/tune"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>$tune</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.title.tune') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item
-            to="/system"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>$cogs</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.title.configure') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-          <v-list-item
-            to="/settings"
-            link
-          >
-            <v-list-item-icon>
-              <v-icon>$cog</v-icon>
-            </v-list-item-icon>
-
-            <v-list-item-content>
-              <v-list-item-title>{{ $t('app.general.title.settings') }}</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-
-        </v-list> -->
-
         <div class="nav-items" v-show="authenticated && socketConnected">
           <app-nav-item
             icon="$dash"
@@ -139,9 +55,15 @@
           </app-nav-item>
 
           <app-nav-item
-            icon="$cogs"
-            to="/system">
+            icon="$codeJson"
+            to="/configure">
             {{ $t('app.general.title.configure') }}
+          </app-nav-item>
+
+          <app-nav-item
+            icon="$chart"
+            to="/system">
+            {{ $t('app.general.title.system') }}
           </app-nav-item>
 
           <app-nav-item
