@@ -6,6 +6,11 @@
     :class="classes"
     class="setting"
   >
+    <div
+      v-if="accentColor && accentColor !== ''"
+      :style="`background-color: ${accentColor};`"
+      class="setting__accent-color">
+    </div>
     <v-col :cols="cols[0]" class="setting-title" align-self="center">
       <slot name="title">{{ title }}</slot>
       <div class="setting-sub-title secondary--text" v-if="hasSubTitle">
@@ -33,6 +38,9 @@ export default class AppSetting extends Vue {
 
   @Prop({ type: String })
   help!: string;
+
+  @Prop({ type: String })
+  accentColor!: string;
 
   @Prop({ type: Number, default: 6 })
   rCols!: number;
@@ -113,6 +121,15 @@ export default class AppSetting extends Vue {
     top: 0;
     transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
   }
+
+  .setting__accent-color {
+    display: block;
+    position: absolute;
+    left: 0;
+    width: 3px;
+    height: 100%;
+    // border-radius: 6px 0 0 6px;
+ }
 
   .setting-controls {
     display: inline-flex;

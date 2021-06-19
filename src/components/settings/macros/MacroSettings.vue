@@ -60,6 +60,7 @@
         <app-setting
           :key="`macro-${macro.name}`"
           :title="macro.name.toUpperCase()"
+          :accent-color="macro.color"
           :r-cols="2"
           @click="handleSettingsDialog(macro)"
         >
