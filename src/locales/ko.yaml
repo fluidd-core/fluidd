@@ -1,7 +1,8 @@
 app:
   bedmesh:
     label:
-      flat_surface: Show flat plane
+      box_scale: 박스 크기
+      flat_surface: 평면 보이기
       mesh_matrix: 메쉬 매트릭스
       probed_matrix: 측정된 매트릭스
       profile_name: 프로파일 명
@@ -11,7 +12,7 @@ app:
     msg:
       hint: '%{name}이 아닌 다른 항목으로 저장하는 경우에는, %{name} 프로파일을 제거하도록 선택할 수 있습니다.'
       not_found: 적용된 베드 메쉬를 찾을 수 없습니다.
-      not_loaded: No mesh loaded
+      not_loaded: 메쉬가 로드되지 않았습니다.
     tooltip:
       calibrate: 프로파일을 'default'로 저장하여 신규 칼리브레이션을 시작합니다.
       delete: 프로파일을 삭제합니다. 프린터가 다시 시작되게 됩니다.
@@ -21,8 +22,8 @@ app:
     label:
       current: 현재 온도
       item: 항목
-      'off': Chart off
-      'on': Chart on
+      'off': 차트 끄기
+      'on': 차트 켜기
       power: 전원
       target: 목표 온도
     tooltip:
@@ -64,10 +65,11 @@ app:
     label:
       dir_name: 폴더명
       disk_usage: 디스크 사용량
-      downloaded: Downloaded
+      diskinfo: 디스크 정보
+      downloaded: 다운로드 완료
       file_name: 파일명
       transfer_rate: 전송 속도
-      uploaded: Uploaded
+      uploaded: 업로드 완료
     msg:
       confirm: 확실합니까? 모든 파일 및 폴더가 삭제됩니다.
       not_found: 파일을 찾을 수 없습니다.
@@ -85,6 +87,25 @@ app:
     tooltip:
       disabled: klippy와 첫 통신전에 작업이 비활성 되었습니다.
       low_on_space: 디스크 공간 부족
+  gcode:
+    btn:
+      load_current_file: 현재 파일 불러오기
+    label:
+      current_layer_height: 현재 레이어 높이
+      follow_progress: 진행상황 따라가기
+      layer: 레이어
+      layers: 레이어들
+      parsed: 분석완료
+      progress: 진행상황
+      show_extrusions: 압출 보이기
+      show_moves: 움직임 보이기
+      show_next_layer: 다음 레이어 보기
+      show_previous_layer: 이전 레이어 보기
+      show_retractions: 리트렉션 보이기
+    msg:
+      confirm: >-
+        The file "%{filename}" is %{size}, this might be resource intensive for
+        your system. Are you sure?
   general:
     btn:
       add: 추가
@@ -92,7 +113,7 @@ app:
       add_file: 파일 추가
       add_printer: 프린터 추가
       adjust_layout: 대시보드 레이아웃 조정
-      all: ALL
+      all: 모두
       calibrate: 칼리브레이션
       cancel: 취소
       clear_profile: 프로파일 적용해제
@@ -100,14 +121,19 @@ app:
       config_reference: 참조 콘픽
       download: 다운로드
       edit: 수정
+      exit_layout: 레이아웃 모드 나가기
       extrude: 압출
-      heaters_off: Heaters off
+      heaters_off: 히터 꺼짐
       load_all: Load all
+      load_current_file: 현재파일 불러오기
+      more_information: 추가정보
       pause: 일시중지
       preheat: 예열
       presets: 프리셋
+      preview_gcode: Gcode 미리보기
       quad_gantry_level: 쿼드겐트리 레벨링
       reboot: 재부팅
+      refresh: 새로고침
       remove: 제거
       remove_all: 모두 제거
       rename: 이름 변경
@@ -115,15 +141,16 @@ app:
       reset_file: 파일 초기화
       reset_layout: 레이아웃 초기화
       restart_firmware: 펌웨어 재시작
+      restart_service: %{service} 재시작
       restart_service_klipper: Klipper 재시작
       restart_service_moonraker: Moonraker 재시작
-      restart_service_webcamd: 웹캠 재시작
       resume: 재개
       retract: 리트랙션
       save: 저장
       save_as: 다른이름으로 저장
       save_restart: 저장&다시시작
       send: Send
+      set_color: Set Color
       shutdown: 종료
       socket_refresh: 강제 새로고침
       upload: 업로드
@@ -138,12 +165,21 @@ app:
       accel_to_decel: 감속도
       acceleration: 가속도
       add_camera: 카메라 추가
-      add_category: Add category
+      add_category: 카테고리 추가
       add_preset: 사전설정 추가
+      add_user: Add 사용자
+      api_key: Api 키
       api_url: API URL
+      category: 카테고리
+      change_password: 비밀번호 변경
+      clear_all: 모두 지우기
+      color: 색깔
       confirm: 확인
+      current_password: 현재 비밀번호
+      disabled_while_printing: 프린팅중 비활성화됨
       edit_camera: 카메라 수정
       edit_preset: 사전설정 수정
+      edit_user: 사용자 수정
       extrude_length: 압출 길이
       extrude_speed: 압출 속도
       flow: 필라멘트 공급량
@@ -154,10 +190,15 @@ app:
       longest_job: 가장 긴 출력작업
       low: 낮음
       name: 이름
+      new_password: 새 비밀번호
+      no_notifications: 알림 없음
       'off': 꺼짐
+      password: 비밀번호
       power: 전원
       printers: 프린터
       requested_speed: 요청 속도
+      retract_length: 압출 길이
+      retract_speed: 압출 속도
       save_as: 다른이름으로 저장
       services: 서비스
       speed: 프린팅 속도
@@ -169,19 +210,25 @@ app:
       total_print_time_avg: 총 출력 평균시간
       total_time: 총 시간
       total_time_avg: 총 평균시간
-      uncategorized: Uncategorized
+      uncategorized: 카테고리 없음
+      unretract_speed: Unretract 속도
       used: 사용중
       variance: 변화량
       velocity: 속도
-      z_offset: Z Offset
+      visible: 보이기
+      z_offset: Z 오프셋
+    msg:
+      password_changed: 비밀번호 변경됨
+      wrong_password: 무언가 잘못되었습니다. 비밀번호가 일치합니까?
     simple_form:
       error:
-        arrayofnums: Only numbers
-        exists: Already exists
+        arrayofnums: 숫자만 입력 가능합니다
+        exists: 이미 존재합니다.
         invalid_url: 잘못된 URL
-        max: Max %{max}
-        min: Min %{min}
-        min_or_0: Min %{min} or 0
+        max: 최대 %{max}
+        min: 최소 %{min}
+        min_or_0: 최소 %{min} or 0
+        password_username: 사용자 이름이 일치하지 않습니다.
         required: 필수기재
       msg:
         confirm: 확실합니까?
@@ -220,16 +267,19 @@ app:
       console: 명령어 창
       endstops: 엔드스탑
       fans_outputs: 팬 컨트롤
+      gcode_preview: Gcode 미리보기 [ 베타 ]
       history: 작업 기록
       home: 대시보드
       jobs: 작업
       limits: 프린터 속도 제한
       macros: 매크로
+      retract: 펌웨어 리트렉션
       runout_sensors: 필라멘트 런아웃 센서
       settings: 설정
       stats: 프린터 상태
       status: 상태
       system_control: 시스템 컨트롤
+      system_overview: 시스템 정보
       temperature: 온도
       tool: 툴헤드
       tune: 튜닝
@@ -252,14 +302,15 @@ app:
       ready: 준비
       standby: 대기
     status:
-      duration: duration
-      duration_total: duration & total
+      duration: 출력시간
+      duration_total: 출력시간 & 총 시간
       time_left: 추정된 남은 시간
       used_filament: 사용된 필라멘트
   setting:
     btn:
       add_camera: 카메라 추가
       add_thermal_preset: 설정온도 추가
+      add_user: 사용자 추가
       reset: 초기화
       select_theme: 테마 선택
     camera_type_options:
@@ -267,31 +318,41 @@ app:
       mjpegstream: MJPEG Stream
       video: IP 카메라
     label:
-      all_off: All off
-      all_on: All on
+      all_off: 모두 끄기
+      all_on: 모두 켜기
       camera_fillspace: 공간 채움
       camera_fillspace_help: 활성화된 카메라 하나만을 사용해서 대시보드 카메라 공간을 채웁니다.
       camera_flip_x: 수평 반전
       camera_flip_y: 수직 반전
       camera_stream_type: 스트림 유형
       camera_url: 카메라 URL
+      confirm_on_estop: 비상정지시 확인하기
       dark_mode: 다크 모드
       default_extrude_length: 기본 압출 길이
       default_extrude_speed: 기본 압출 속도
       default_toolhead_move_length: 기본 툴헤드 이동 길이
       default_toolhead_xy_speed: 기본 툴헤드 XY 속도
       default_toolhead_z_speed: 기본 툴헤드 Z 속도
+      draw_background: 배경 그리기
       enable: 활성화
+      enable_animations: 애니메이션 활성화
       enable_notifications: 알림 활성화
+      extrusion_line_width: 압출 라인 폭
+      flip_horizontal: 수평 반전
+      flip_vertical: 수평반전
       fps_target: 목표 FPS
       gcode_coords: G코드 좌표 사용
       invert_x_control: X 반전 컨트롤
       invert_y_control: Y 반전 컨트롤
       invert_z_control: Z 반전 컨트롤
       language: 표시 언어
+      move_line_width: Move Line Width
       primary_color: 주 컬러
       printer_name: 프린터 이름
       reset: 환경설정 초기화
+      retraction_icon_size: 리트랙선 아이콘 크기
+      show_animations: 애니메이션 보이기
+      theme_preset: 커뮤니티 프리셋
       thermal_preset_name: 설정온도명칭
       time_estimates: 예상 시간
       toggle: Toggle
@@ -306,7 +367,9 @@ app:
       slicer: 슬라이서
       slicer_description: 슬라이서 추정치를 사용합니다. 슬라이서에서 이 기능을 활성화 해야합니다.
     title:
+      authentication: 인증
       camera: 카메라 | 카메라
+      gcode_preview: Gcode 미리보기
       general: 일반
       macros: 매크로
       theme: 테마
@@ -318,6 +381,30 @@ app:
     msg:
       connecting: Moonraker에 접속중...
       no_connection: Moonraker에 연결되지 않습니다. Moonraker의 상태를 확인하거나 새로고침 하십시오.
+  system_info:
+    label:
+      capacity: 용량
+      cpu_desc: CPU 설명
+      distribution_codename: 코드명
+      distribution_like: 배포판 Like
+      distribution_name: 배포판 이름
+      hardware_desc: 하드웨어 설명
+      hostname: 호스트명
+      klipper_load: Klipper 로드
+      manufactured: 생산됨
+      manufacturer: 제조자
+      mcu_awake: '{mcu} 활성시간'
+      mcu_bandwidth: '{mcu} 대역폭'
+      mcu_load: '{mcu} 로드'
+      model: CPU 모델
+      moonraker_load: Moonraker 로드
+      processor_desc: 프로세서
+      product_name: 제품명
+      serial_number: 시리얼 번호
+      system_load: 시스템 로드
+      system_memory: 시스템 메모리
+      system_utilization: 시스템 사용
+      total_memory: 총 메모리
   tool:
     btn:
       home_x: X
@@ -331,10 +418,11 @@ app:
       check_for_updates: 업데이트 확인
       finish: 마침
       update: 업데이트
+      view_versions: 버전 보기
     label:
-      commit_history: Commit 이력
+      commit_history: 커밋 이력
       commits_on: commits on
-      committed: Committed
+      committed: 커밋됨
       dirty: 변경 상태
       invalid: 유효하지 않은 상태
       os_packages: OS 패키지
@@ -345,7 +433,7 @@ app:
       updating: 업데이트중...
     title: 소프트웨어 업데이트
     tooltip:
-      commit_history: Commit 이력
+      commit_history: 커밋 이력
       dirty: 마스터가 아닌 또는 유효하지 않은 원점을 나타내거나 헤드가 분리되었습니다.
       invalid: 저장소의 내부 변경으로 유효하지 않습니다.
       packages: 패키지
