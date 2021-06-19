@@ -78,8 +78,8 @@ export default class PrintStatus extends Mixins(StateMixin, FilesMixin) {
       current_file &&
       current_file.thumbnails
     ) {
-      const thumb = this.getThumbUrl(current_file.thumbnails, current_file.path, true)
-      return thumb
+      const url = this.getThumbUrl(current_file.thumbnails, current_file.path, true, current_file.modified)
+      return url
     }
   }
 

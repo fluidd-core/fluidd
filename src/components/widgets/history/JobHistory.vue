@@ -73,7 +73,7 @@
         <img
           v-if="item.exists && item.metadata.thumbnails && item.metadata.thumbnails.length"
           class="mr-2 file-icon-thumb"
-          :src="getThumbUrl(item.metadata.thumbnails, getFilePaths(item.filename).path)"
+          :src="getThumbUrl(item.metadata.thumbnails, getFilePaths(item.filename).path, false, item.metadata.modified)"
           :width="24"
         />
       </template>

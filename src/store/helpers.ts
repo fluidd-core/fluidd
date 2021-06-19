@@ -13,12 +13,12 @@ export const isOfType = <T> (
  * Return a file thumb if one exists
  * Optionally, pick the largest or smallest image.
  */
-export const getThumb = (thumbnails: Thumbnail[], path: string, goLarge = true) => {
+export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) => {
   const apiUrl = store.state.config?.apiUrl
   if (thumbnails.length) {
     let thumb: Thumbnail | undefined
     if (thumbnails) {
-      if (goLarge) {
+      if (large) {
         thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size > c.size)) ? a : c)
       } else {
         thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)

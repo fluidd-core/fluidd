@@ -15,13 +15,14 @@ export default class FilesMixin extends Vue {
     return this.$store.state.config.apiUrl
   }
 
-  getThumbUrl (thumbnails: Thumbnail[], path: string, goLarge: boolean) {
+  getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, cachebust?: number) {
     if (thumbnails.length) {
-      const thumb = getThumb(thumbnails, path, goLarge)
+      if (!cachebust) cachebust = new Date().getTime()
+      const thumb = getThumb(thumbnails, path, large)
       if (
         thumb &&
         thumb.absolute_path
-      ) return thumb.absolute_path
+      ) return `${thumb.absolute_path}?cachebust=${cachebust}`
       if (
         thumb &&
         thumb.data

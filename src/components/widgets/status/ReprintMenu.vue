@@ -37,7 +37,7 @@
                 <img
                   v-if="job.metadata.thumbnails && job.metadata.thumbnails.length"
                   class="file-icon-thumb"
-                  :src="getThumbUrl(job.metadata.thumbnails, getFilePaths(job.filename).path)"
+                  :src="getThumbUrl(job.metadata.thumbnails, getFilePaths(job.filename).path, false, job.metadata.modified)"
                   :width="16"
                 />
               </td>
