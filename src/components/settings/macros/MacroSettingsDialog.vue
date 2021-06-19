@@ -3,6 +3,7 @@
     :value="value"
     @input="$emit('input', $event)"
     :max-width="480"
+    persistent
   >
     <v-form
       ref="form"
@@ -43,6 +44,15 @@
         <app-setting
           :title="$t('app.general.label.color')"
         >
+          <app-btn
+            outlined
+            small
+            color="primary"
+            @click="handleResetColor"
+            class="mr-1"
+          >
+            {{ $t('app.setting.btn.reset') }}
+          </app-btn>
           <app-color-picker
             :title="$t('app.general.btn.set_color')"
             :primary="color"
@@ -73,7 +83,7 @@
         >
           <v-switch
             class="mt-0 pt-0"
-            v-model="macro.disabledWhilePrinting"
+            v-model="newMacro.disabledWhilePrinting"
             color="primary"
             hide-details
           ></v-switch>
@@ -147,6 +157,10 @@ export default class MacroMoveDialog extends Vue {
 
   handleColorChange (color: any) {
     if (this.newMacro) this.newMacro.color = color.color.hexString
+  }
+
+  handleResetColor () {
+    if (this.newMacro) this.newMacro.color = ''
   }
 
   handleSave () {
