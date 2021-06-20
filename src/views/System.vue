@@ -5,8 +5,8 @@
       <disk-usage-card></disk-usage-card>
     </v-col>
 
-    <v-col cols="12" md="6">
-      <system-usage-card v-if="hasGraphData"></system-usage-card>
+    <v-col cols="12" md="6" v-if="hasGraphData">
+      <system-usage-card></system-usage-card>
     </v-col>
   </v-row>
 </template>

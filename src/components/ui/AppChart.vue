@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div v-if="title" v-html="title"></div>
     <div
       class="chart"
       :style="{ 'height': height }"
@@ -19,15 +18,11 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { ECharts } from 'echarts'
+import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import { merge } from 'lodash-es'
 
 @Component({})
 export default class AppChart extends Vue {
-  @Prop({ type: String, required: false })
-  title!: string
-
   @Prop({ type: Array, required: true })
   data!: any
 
@@ -37,13 +32,11 @@ export default class AppChart extends Vue {
   @Prop({ type: String, default: '100%' })
   height!: string;
 
+  @Ref('chart')
+  chart!: any
+
   events = []
   ready = false
-
-  get chart () {
-    const ref = this.$refs.chart as any
-    if (ref) return ref.inst as ECharts
-  }
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
@@ -55,14 +48,13 @@ export default class AppChart extends Vue {
 
   @Watch('data')
   onData (data: any) {
-    if (this.chart && data) {
-      this.chart.setOption({
+    if (this.chart && data && data.length) {
+      this.chart.inst.setOption({
         dataset: {
           source: data
         }
       })
     }
-    if (data && !this.ready) this.ready = true
   }
 
   get opts () {
@@ -86,7 +78,7 @@ export default class AppChart extends Vue {
   beforeDestroy () {
     if (typeof window === 'undefined') return
     if (this.chart) {
-      this.chart.dispose()
+      this.chart.inst.dispose()
     }
   }
 }

@@ -2,10 +2,9 @@
   <v-col
     cols="4"
     class="chart-wrapper"
-    v-if="chartData"
+    v-if="ready"
   >
     <app-chart
-      v-if="chartData"
       :data="chartData"
       :options="options"
       height="120px"
@@ -13,9 +12,9 @@
     </app-chart>
 
     <div class="chart-label-wrapper">
-      <div v-if="chartData && chartData.length" class="chart-label">
+      <div class="chart-label">
         <span>{{ $t('app.system_info.label.system_load') }}</span>
-        <span>{{ chartData[chartData.length - 1].load }}%</span>
+        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
       </div>
     </div>
 
@@ -27,8 +26,10 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class SystemLoadChart extends Vue {
+  ready = false
+
   get chartData () {
-    return this.$store.state.charts.klipper
+    return this.$store.state.charts.klipper || []
   }
 
   get options () {
@@ -46,6 +47,10 @@ export default class SystemLoadChart extends Vue {
       name: 'load',
       encode: { x: 'date', y: 'load' }
     })
+  }
+
+  mounted () {
+    if (this.chartData && this.chartData.length > 0) this.ready = true
   }
 }
 </script>

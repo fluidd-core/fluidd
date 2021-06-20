@@ -2,10 +2,9 @@
   <v-col
     cols="4"
     class="chart-wrapper"
-    v-if="chartData"
+    v-if="ready"
   >
     <app-chart
-      v-if="chartData"
       :data="chartData || []"
       :options="options"
       height="120px"
@@ -13,14 +12,14 @@
     </app-chart>
 
     <div class="chart-label-wrapper">
-      <div v-if="chartData && chartData.length" class="chart-label">
+      <div class="chart-label">
         <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.toUpperCase() })}}</span>
-        <span>{{ chartData[chartData.length - 1].load }}%</span>
+        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
       </div>
 
-      <div v-if="chartData && chartData.length" class="chart-label">
+      <div class="chart-label">
         <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.toUpperCase() })}}</span>
-        <span>{{ chartData[chartData.length - 1].awake }}s</span>
+        <span v-if="chartData.length">{{ chartData[chartData.length - 1].awake }}s</span>
       </div>
 
       <!-- <div v-if="chartData && chartData.length" class="chart-label">
@@ -36,11 +35,13 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class McuLoadChart extends Vue {
+  ready = false
+
   @Prop({ type: String, required: true })
   mcu!: string
 
   get chartData () {
-    return this.$store.state.charts[this.mcu]
+    return this.$store.state.charts[this.mcu] || []
   }
 
   get options () {
@@ -86,6 +87,10 @@ export default class McuLoadChart extends Vue {
     // })
 
     return [load, awake]
+  }
+
+  mounted () {
+    if (this.chartData && this.chartData.length > 0) this.ready = true
   }
 }
 </script>
