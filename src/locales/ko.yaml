@@ -141,7 +141,7 @@ app:
       reset_file: 파일 초기화
       reset_layout: 레이아웃 초기화
       restart_firmware: 펌웨어 재시작
-      restart_service: %{service} 재시작
+      restart_service: '%{service} 재시작'
       restart_service_klipper: Klipper 재시작
       restart_service_moonraker: Moonraker 재시작
       resume: 재개
