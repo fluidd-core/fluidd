@@ -110,7 +110,8 @@ import {
   mdiCancel,
   mdiCircleSlice3,
   mdiCodeJson,
-  mdiHarddisk
+  mdiHarddisk,
+  mdiLayersTripleOutline
 } from '@mdi/js'
 
 /**
@@ -238,7 +239,8 @@ export const Icons = Object.freeze({
   check: mdiCheck,
   console: mdiConsole,
   clock: mdiClockOutline,
-  filamentEstimate: mdiFormatLineSpacing,
+  formatLineSpacing: mdiFormatLineSpacing,
+  layersTripleOutline: mdiLayersTripleOutline,
   chevronUp: mdiChevronUp,
   chevronDown: mdiChevronDown,
   chevronRight: mdiChevronRight,

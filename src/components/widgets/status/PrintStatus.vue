@@ -21,7 +21,7 @@
               <span>{{ $t('app.printer.status.time_left') }}</span>
             </v-tooltip>
             <span>{{ timeEstimates.remaining }}</span>
-            <span class="grey--text text--darken-2" v-if="printerPrinting && printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.endTime }}</span>
+            <span class="secondary--text" v-if="printerPrinting && printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.endTime }}</span>
           </div>
           <div class="mb-1">
             <v-tooltip left>
@@ -36,11 +36,15 @@
           <div class="mb-1 secondary--text" v-if="filamentEstimates !== ''">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="secondary" class="mr-1">$filamentEstimate</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary" class="mr-1">$formatLineSpacing</v-icon>
               </template>
               {{ $t('app.printer.status.used_filament') }}
             </v-tooltip>
             <span class="secondary--text">{{ filamentEstimates }}</span>
+          </div>
+          <div class="mb-1" v-if="layers">
+            <v-icon color="secondary" class="mr-1">$layersTripleOutline</v-icon>
+            <span v-html="layers"></span>
           </div>
           <div class="d-flex secondary--text" v-if="filename">
             <v-icon color="secondary">$fileDocument</v-icon>
@@ -89,6 +93,19 @@ export default class PrintStatus extends Mixins(StateMixin, FilesMixin) {
 
   get timeEstimates () {
     return this.$store.getters['printer/getTimeEstimates']
+  }
+
+  get layers () {
+    const h = this.$store.state.printer.printer.current_file.object_height
+    const flh = this.$store.state.printer.printer.current_file.first_layer_height
+    const lh = this.$store.state.printer.printer.current_file.layer_height
+    const z = this.$store.state.printer.printer.gcode_move.gcode_position[2]
+
+    const layers = Math.ceil(((h - flh) / lh) + 1) || 0
+    const current = Math.ceil((z - flh) / lh + 1) || 0
+
+    if (layers !== 0 && current !== 0) return `${current} / <span class="secondary--text">${layers}</span>`
+    return ''
   }
 
   get filamentEstimates () {
