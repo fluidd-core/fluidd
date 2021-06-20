@@ -6,11 +6,19 @@
     scrollable
   >
     <v-card>
-
       <v-card-title class="card-heading py-2 px-5">
         <span class="focus--text">
           {{ $t('app.file_system.title.keyboard_shortcuts') }}
         </span>
+        <v-spacer />
+        <app-btn
+          v-if="!$vuetify.breakpoint.smAndDown"
+          icon
+          color=""
+          @click="$emit('input', false)"
+        >
+          <v-icon>$close</v-icon>
+        </app-btn>
       </v-card-title>
 
       <v-card-text class="pa-0">
