@@ -9,7 +9,7 @@
           :reset-value="defaults.retract_length"
           :min="0"
           :max="15"
-          :step="0.1"
+          :step="0.01"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait(waits.onSetRetractLength)"
