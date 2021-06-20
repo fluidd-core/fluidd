@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.system_overview')"
-    icon="$chart">
+    icon="$desktopTower">
 
     <v-row no-gutters>
       <v-col>

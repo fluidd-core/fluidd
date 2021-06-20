@@ -13,6 +13,7 @@ import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
+import Icons from '@/views/Icons.vue'
 import store from '@/store'
 
 Vue.use(VueRouter)
@@ -93,7 +94,15 @@ const routes: Array<RouteConfig> = [
   {
     path: '/login',
     name: 'Login',
-    component: Login
+    component: Login,
+    meta: {
+      fillHeight: true
+    }
+  },
+  {
+    path: '/icons',
+    name: 'Icons',
+    component: Icons
   },
   {
     path: '*',

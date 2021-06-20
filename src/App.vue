@@ -37,12 +37,26 @@
 
     <v-main>
       <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
+      <v-container fluid :class="{ 'fill-height': $route.meta.fillHeight }" class="constrained-width px-2 px-sm-4 pt-2 pt-sm-4">
 
-      <router-view
-        v-if="
-          (socketConnected && apiConnected) ||
-          (!authenticated && apiConnected)"
-      ></router-view>
+        <v-row v-if="
+          (!klippyReady || hasWarnings) &&
+          !inLayout &&
+          $route.path !== '/login'
+        ">
+          <v-col>
+            <klippy-status-card></klippy-status-card>
+          </v-col>
+        </v-row>
+
+        <router-view
+          v-if="
+            (socketConnected && apiConnected) ||
+            (!authenticated && apiConnected)
+          ">
+        </router-view>
+
+      </v-container>
 
       <socket-disconnected
         v-if="
@@ -164,6 +178,7 @@ export default class App extends Mixins(StateMixin) {
   }
 
   mounted () {
+    console.log(this.$route.path)
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
       this.flashMessage.text = (payload && payload.text) || undefined

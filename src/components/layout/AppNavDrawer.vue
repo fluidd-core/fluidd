@@ -61,7 +61,7 @@
           </app-nav-item>
 
           <app-nav-item
-            icon="$chart"
+            icon="$desktopTower"
             to="/system">
             {{ $t('app.general.title.system') }}
           </app-nav-item>

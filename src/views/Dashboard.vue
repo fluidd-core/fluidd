@@ -1,49 +1,48 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
-        <klippy-status-card v-if="(!klippyReady || hasWarnings) && !inLayout"></klippy-status-card>
-        <draggable
-          v-if="container1"
-          class="list-group"
-          v-model="container1"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
-        >
-          <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <template v-for="c in container1">
-              <component
-                v-if="(c.enabled && !filtered(c)) || inLayout"
-                :is="c.id"
-                :key="c.id">
-              </component>
-            </template>
-          </transition-group>
-        </draggable>
-      </v-col>
-      <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
-        <draggable
-          v-if="container2"
-          class="list-group"
-          v-model="container2"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
-        >
-          <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <template v-for="c in container2">
-              <component
-                v-if="(c.enabled && !filtered(c)) || inLayout"
-                :is="c.id"
-                :key="c.id">
-              </component>
-            </template>
-          </transition-group>
-        </draggable>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row>
+    <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
+      <draggable
+        v-if="container1"
+        class="list-group"
+        v-model="container1"
+        v-bind="dragOptions"
+        @start.stop="drag = true"
+        @end.stop="handleStopDrag"
+      >
+        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+          <template v-for="c in container1">
+            <component
+              v-if="(c.enabled && !filtered(c)) || inLayout"
+              :is="c.id"
+              :key="c.id"
+              class="mb-4">
+            </component>
+          </template>
+        </transition-group>
+      </draggable>
+    </v-col>
+    <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
+      <draggable
+        v-if="container2"
+        class="list-group"
+        v-model="container2"
+        v-bind="dragOptions"
+        @start.stop="drag = true"
+        @end.stop="handleStopDrag"
+      >
+        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+          <template v-for="c in container2">
+            <component
+              v-if="(c.enabled && !filtered(c)) || inLayout"
+              :is="c.id"
+              :key="c.id"
+              class="mb-4">
+            </component>
+          </template>
+        </transition-group>
+      </draggable>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

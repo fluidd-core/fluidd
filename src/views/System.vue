@@ -1,19 +1,14 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
+  <v-row>
+    <v-col cols="12" md="6">
+      <system-overview-card class="mb-4"></system-overview-card>
+      <disk-usage-card></disk-usage-card>
+    </v-col>
 
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="6" class="pt-0">
-        <system-overview-card></system-overview-card>
-        <disk-usage-card></disk-usage-card>
-      </v-col>
-
-      <v-col cols="12" md="6" class="pt-0">
-        <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
-        <system-usage-card v-if="hasGraphData"></system-usage-card>
-      </v-col>
-    </v-row>
-
-  </v-container>
+    <v-col cols="12" md="6">
+      <system-usage-card v-if="hasGraphData"></system-usage-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

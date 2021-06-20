@@ -213,7 +213,7 @@ export default class CollapsableCard extends Vue {
   /**
    * Base classes.
    */
-  baseCardClasses = { 'mb-2': true, 'mb-sm-4': true, 'collapsable-card': true }
+  baseCardClasses = { 'collapsable-card': true }
   baseContentClasses = ''
 
   get _cardClasses () {

@@ -1,76 +1,74 @@
 <template>
-  <v-container fill-height fluid class="constrained-width px-2 px-sm-4">
-    <v-row justify="center" align="center" class="mt-0 mt-sm-2">
-      <v-col cols="12" md="4" lg="3" xl="2">
-        <v-form
-          ref="form"
-          @submit.prevent="handleLogin"
-          v-model="valid"
-        >
-          <div class="text-center">
-            <p>Welcome back.<br />Sign in below to stay in touch with your printer.</p>
+  <v-row justify="center" align="center">
+    <v-col cols="12" md="4" lg="3" xl="2">
+      <v-form
+        ref="form"
+        @submit.prevent="handleLogin"
+        v-model="valid"
+      >
+        <div class="text-center">
+          <p>Welcome back.<br />Sign in below to stay in touch with your printer.</p>
 
-            <v-alert type="error" v-if="error">Invalid credentials</v-alert>
+          <v-alert type="error" v-if="error">Invalid credentials</v-alert>
 
-            <v-text-field
-              label="Username"
-              autocomplete="username"
-              filled
-              dense
-              hide-details="auto"
-              :disabled="loading"
-              v-model="username"
-              class="mb-4">
-            </v-text-field>
+          <v-text-field
+            label="Username"
+            autocomplete="username"
+            filled
+            dense
+            hide-details="auto"
+            :disabled="loading"
+            v-model="username"
+            class="mb-4">
+          </v-text-field>
 
-            <v-text-field
-              label="Password"
-              autocomplete="current-password"
-              filled
-              dense
-              type="password"
-              hide-details="auto"
-              :disabled="loading"
-              v-model="password"
-              class="mb-4">
-            </v-text-field>
+          <v-text-field
+            label="Password"
+            autocomplete="current-password"
+            filled
+            dense
+            type="password"
+            hide-details="auto"
+            :disabled="loading"
+            v-model="password"
+            class="mb-4">
+          </v-text-field>
 
-            <app-btn
-              type="submit"
-              :disabled="loading"
-              large
-              block
-              class="mb-6"
-            >
-              <v-icon class="spin mr-2" v-if="loading">$loading</v-icon>
-              Login
-            </app-btn>
+          <app-btn
+            type="submit"
+            :disabled="loading"
+            large
+            block
+            class="mb-6"
+          >
+            <v-icon class="spin mr-2" v-if="loading">$loading</v-icon>
+            Login
+          </app-btn>
 
-            <app-btn
-              color=""
-              plain
-              class="custom-transform-class text-none"
-              :href="$globals.DOCS_AUTH_LOST_PASSWORD"
-              target="_blank"
-            >
-              Forgotten your password?
-            </app-btn>
+          <app-btn
+            color=""
+            plain
+            class="custom-transform-class text-none"
+            :href="$globals.DOCS_AUTH_LOST_PASSWORD"
+            target="_blank"
+          >
+            Forgotten your password?
+          </app-btn>
 
-            <app-btn
-              color=""
-              plain
-              class="custom-transform-class text-none"
-              :href="$globals.DOCS_AUTH"
-              target="_blank"
-            >
-              Unsure why you're seeing this?
-            </app-btn>
-          </div>
-        </v-form>
+          <app-btn
+            color=""
+            plain
+            class="custom-transform-class text-none"
+            :href="$globals.DOCS_AUTH"
+            target="_blank"
+          >
+            Unsure why you're seeing this?
+          </app-btn>
+        </div>
+      </v-form>
 
-      </v-col>
-    </v-row>
-  </v-container>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

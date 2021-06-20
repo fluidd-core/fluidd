@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :title="$t('app.file_system.label.diskinfo')"
-    icon="$chart">
+    icon="$harddisk">
 
     <v-card-text>
       <v-layout justify-space-between>

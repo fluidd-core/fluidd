@@ -1,36 +1,32 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="6" class="pt-0">
-        <collapsable-card
-          :title="$t('app.general.title.config_files')"
-          icon="$files"
-          :draggable="false"
-        >
-          <file-system
-            :roots="['config']"
-            :max-height="816"
-            name="configure">
-          </file-system>
-        </collapsable-card>
-      </v-col>
-      <v-col cols="12" md="6" class="pt-0">
-        <collapsable-card
-          title="Other Files"
-          icon="$files"
-          :draggable="false"
-        >
-          <file-system
-            :roots="['logs', 'docs', 'config_examples']"
-            :max-height="816"
-            name="configure">
-          </file-system>
-        </collapsable-card>
-      </v-col>
-    </v-row>
-
-  </v-container>
+  <v-row>
+    <v-col cols="12" md="6">
+      <collapsable-card
+        :title="$t('app.general.title.config_files')"
+        icon="$codeJson"
+        :draggable="false"
+      >
+        <file-system
+          :roots="['config']"
+          :max-height="816"
+          name="configure">
+        </file-system>
+      </collapsable-card>
+    </v-col>
+    <v-col cols="12" md="6">
+      <collapsable-card
+        title="Other Files"
+        icon="$files"
+        :draggable="false"
+      >
+        <file-system
+          :roots="['logs', 'docs', 'config_examples']"
+          :max-height="816"
+          name="configure">
+        </file-system>
+      </collapsable-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

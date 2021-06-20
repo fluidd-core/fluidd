@@ -1,22 +1,20 @@
 <template>
-  <v-container fluid class="constrained-width">
-    <v-row justify="center">
-      <v-col cols="12" lg="8">
-        <router-view v-if="authenticated && socketConnected" />
-        <div v-if="$route.matched.length === 1">
-          <general-settings></general-settings>
-          <theme-settings></theme-settings>
-          <auth-settings v-if="supportsAuth"></auth-settings>
-          <macro-categories></macro-categories>
-          <cameras></cameras>
-          <toolhead-settings></toolhead-settings>
-          <temperature-preset-settings></temperature-preset-settings>
-          <gcode-preview-settings></gcode-preview-settings>
-          <version-settings v-if="supportsVersions"></version-settings>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row justify="center">
+    <v-col cols="12" lg="8">
+      <router-view v-if="authenticated && socketConnected" />
+      <div v-if="$route.matched.length === 1">
+        <general-settings></general-settings>
+        <theme-settings></theme-settings>
+        <auth-settings v-if="supportsAuth"></auth-settings>
+        <macro-categories></macro-categories>
+        <cameras></cameras>
+        <toolhead-settings></toolhead-settings>
+        <temperature-preset-settings></temperature-preset-settings>
+        <gcode-preview-settings></gcode-preview-settings>
+        <version-settings v-if="supportsVersions"></version-settings>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
