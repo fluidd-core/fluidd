@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center" align="center">
+  <v-row :dense="$vuetify.breakpoint.smAndDown" justify="center" align="center">
     <v-col cols="12" md="4" lg="3" xl="2">
       <v-form
         ref="form"

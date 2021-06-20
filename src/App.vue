@@ -37,7 +37,10 @@
 
     <v-main>
       <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
-      <v-container fluid :class="{ 'fill-height': $route.meta.fillHeight }" class="constrained-width px-2 px-sm-4 pt-2 pt-sm-4">
+      <v-container
+        fluid
+        :class="{ 'fill-height': $route.meta.fillHeight }"
+        class="constrained-width pa-2 pa-sm-4">
 
         <v-row v-if="
           (!klippyReady || hasWarnings) &&

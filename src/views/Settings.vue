@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row :dense="$vuetify.breakpoint.smAndDown" justify="center">
     <v-col cols="12" lg="8">
       <router-view v-if="authenticated && socketConnected" />
       <div v-if="$route.matched.length === 1">

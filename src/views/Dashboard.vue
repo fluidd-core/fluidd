@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
       <draggable
         v-if="container1"
@@ -15,7 +15,7 @@
               v-if="(c.enabled && !filtered(c)) || inLayout"
               :is="c.id"
               :key="c.id"
-              class="mb-4">
+              class="mb-2 mb-sm-4">
             </component>
           </template>
         </transition-group>
@@ -36,7 +36,7 @@
               v-if="(c.enabled && !filtered(c)) || inLayout"
               :is="c.id"
               :key="c.id"
-              class="mb-4">
+              class="mb-2 mb-sm-4">
             </component>
           </template>
         </transition-group>

@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12" md="6">
       <collapsable-card
         :title="$t('app.general.title.config_files')"

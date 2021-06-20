@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12">
 
       <h1>All configured icons</h1>

@@ -1,7 +1,7 @@
 <template>
-  <v-row>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12" md="6">
-      <system-overview-card class="mb-4"></system-overview-card>
+      <system-overview-card class="mb-2 mb-sm-4"></system-overview-card>
       <disk-usage-card></disk-usage-card>
     </v-col>
 

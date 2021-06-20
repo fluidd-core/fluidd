@@ -1,11 +1,11 @@
 <template>
-  <v-row>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12" md="8" v-if="supportsBedMesh && klippyReady">
       <bed-mesh></bed-mesh>
     </v-col>
     <v-col cols="12" md="4">
-      <bed-mesh-controls v-if="supportsBedMesh && klippyReady" class="mb-4"></bed-mesh-controls>
-      <end-stops-card class="mb-4"></end-stops-card>
+      <bed-mesh-controls v-if="supportsBedMesh && klippyReady" class="mb-2 mb-sm-4"></bed-mesh-controls>
+      <end-stops-card class="mb-2 mb-sm-4"></end-stops-card>
       <runout-sensors-card v-if="supportsRunoutSensors"></runout-sensors-card>
     </v-col>
   </v-row>

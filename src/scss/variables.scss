@@ -1,5 +1,16 @@
 // Change our grid gutters to 16px.
 $grid-gutter: 16px;
+$container-padding-x: 16px;
+$container-padding-y: 16px;
+
+$grid-gutters:
+  (
+    'xs': 2,
+    'sm': 3,
+    'md': 4,
+    'lg': 8,
+    'xl': 16
+  );
 
 // Standard height rows for our table should be..
 $data-table-regular-row-height: 40px;
