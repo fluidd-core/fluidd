@@ -11,7 +11,8 @@
         :option="opts"
         :setOptionOps="{ notMerge: true }"
         :initOpts="{ renderer: 'svg' }"
-        :events="events">
+        :events="events"
+      >
       </ECharts>
     </div>
   </div>
@@ -32,10 +33,12 @@ export default class AppChart extends Vue {
   @Prop({ type: String, default: '100%' })
   height!: string;
 
+  @Prop({ type: Array, default: () => [] })
+  events!: any;
+
   @Ref('chart')
   chart!: any
 
-  events = []
   ready = false
 
   get isMobile () {

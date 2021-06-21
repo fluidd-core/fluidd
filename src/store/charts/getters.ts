@@ -163,7 +163,7 @@ export const getters: GetterTree<ChartState, RootState> = {
       smooth: true,
       animation: false,
       showSymbol: false,
-      symbol: 'none',
+      symbol: 'emptyCircle',
       areaStyle: { type: 'solid', opacity: 0.3 },
       lineStyle: { type: 'solid', width: 1.5, opacity: 1 },
       emphasis: {
