@@ -1,21 +1,20 @@
 <template>
   <v-card-text>
     <v-row justify="space-between" align="start" class="mb-2">
-      <v-col cols="auto">
+      <v-col cols="6">
         <extruder-selection v-if="multipleExtruders"></extruder-selection>
         <toolhead-moves v-if="!printerPrinting"></toolhead-moves>
         <z-height-adjust v-if="printerPrinting"></z-height-adjust>
+        <speed-and-flow-adjust></speed-and-flow-adjust>
       </v-col>
 
-      <v-col style="min-width: 280px; max-width: 420px;">
+      <v-col cols="6">
         <toolhead-position></toolhead-position>
         <extruder-moves v-if="!printerPrinting"></extruder-moves>
         <z-height-adjust v-if="!printerPrinting"></z-height-adjust>
       </v-col>
     </v-row>
 
-    <!-- Speed and Flow Adjustments  -->
-    <speed-and-flow-adjust></speed-and-flow-adjust>
   </v-card-text>
 </template>
 

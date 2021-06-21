@@ -1,6 +1,6 @@
 <template>
   <v-row>
-    <v-col cols="12" sm="6">
+    <v-col>
       <app-slider
         :label="$t('app.general.label.speed')"
         suffix="%"
@@ -10,10 +10,9 @@
         :disabled="!klippyReady || hasWait(waits.onSetSpeed)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
-        :max="200">
+        :max="200"
+        class="mb-2">
       </app-slider>
-    </v-col>
-    <v-col cols="12" sm="6">
       <app-slider
         :label="$t('app.general.label.flow')"
         suffix="%"

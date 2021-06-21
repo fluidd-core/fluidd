@@ -1,53 +1,77 @@
 <template>
   <div class="mb-2">
     <!-- <div style="line-height: 32px; padding: 0 12px;"> -->
-      <v-row justify="space-between" no-gutters>
-        <v-col cols="4" class="pr-1">
+      <v-row no-gutters class="mb-2">
+        <v-col cols="auto" align-self="center" class="focus--text mr-2">
+          X
+        </v-col>
+        <v-col cols="auto" align-self="center" class="mr-2">
           <v-text-field
-            label="X"
             outlined
             hide-details
+            single-line
             dense
             class="v-input--width-small"
             @change="moveTo('X', $event)"
             :readonly="printerBusy"
-            :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
+            :value="gcodePosition[0].toFixed(2)"
           ></v-text-field>
         </v-col>
-        <v-col cols="4" class="pr-1 pl-1">
+        <v-col cols="auto" align-self="center" class="focus--text">
+          {{ toolheadPosition[0].toFixed(2) }}
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters class="mb-2">
+        <v-col cols="auto" align-self="center" class="focus--text mr-2">
+          Y
+        </v-col>
+        <v-col cols="auto" align-self="center" class="mr-2">
           <v-text-field
-            label="Y"
             outlined
             hide-details
+            single-line
             dense
             class="v-input--width-small"
             @change="moveTo('Y', $event)"
             :readonly="printerBusy"
-            :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
+            :value="gcodePosition[1].toFixed(2)"
           ></v-text-field>
         </v-col>
-        <v-col cols="4" class="pl-1">
+        <v-col cols="auto" align-self="center" class="focus--text">
+          {{ toolheadPosition[1].toFixed(2) }}
+        </v-col>
+      </v-row>
+
+      <v-row no-gutters>
+        <v-col cols="auto" align-self="center" class="focus--text mr-2">
+          Z
+        </v-col>
+        <v-col cols="auto" align-self="center" class="mr-2">
           <v-text-field
-            label="Z"
             outlined
             hide-details
+            single-line
             dense
             class="v-input--width-small"
             @change="moveTo('Z', $event)"
             :readonly="printerBusy"
-            :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
+            :value="gcodePosition[2].toFixed(2)"
           ></v-text-field>
+        </v-col>
+        <v-col cols="auto" align-self="center" class="focus--text">
+          {{ toolheadPosition[2].toFixed(2) }}
         </v-col>
       </v-row>
 
-      <v-row justify="space-between" align="center" no-gutters v-show="printerPrinting">
+      <!-- <v-row justify="space-between" align="center" no-gutters v-show="printerPrinting">
         <v-col cols="auto" class="secondary--text text--lighten-1">
           {{ $t('app.general.label.requested_speed') }}
         </v-col>
         <v-col cols="auto" class="focus--text">
           {{ requestedSpeed }} mm/s
         </v-col>
-      </v-row>
+      </v-row> -->
 
     <!-- </div> -->
   </div>
