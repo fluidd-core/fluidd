@@ -43,6 +43,7 @@
         class="constrained-width pa-2 pa-sm-4">
 
         <v-row v-if="
+          (socketConnected && apiConnected) &&
           (!klippyReady || hasWarnings) &&
           !inLayout &&
           $route.path !== '/login'
