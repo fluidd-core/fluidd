@@ -1,7 +1,12 @@
 <template>
   <div class="file-system">
+    <!-- <pre>selected: {{ selected }}</pre> -->
+    <!-- <div class="bulk-actions" v-if="selected.length > 0">
+      Some bulk actions.
+    </div> -->
+
     <v-data-table
-      mobile-breakpoint="0"
+      v-model="selectedItems"
       :headers="headers"
       :items="files"
       :dense="dense"
@@ -10,33 +15,47 @@
       :sort-desc="true"
       :custom-sort="$filters.fileSystemSort"
       :search="search"
-      item-key="name"
-      height="100%"
+      :show-select="bulkActions"
       :no-data-text="$t('app.file_system.msg.not_found')"
       :no-results-text="$t('app.file_system.msg.not_found')"
+      @input="handleSelected"
+      @item-selected="handleItemSelected"
+      item-key="name"
+      height="100%"
+      mobile-breakpoint="0"
       sort-by="modified"
       hide-default-footer
       class="rounded-0"
     >
-
-      <template v-slot:item="{ item }">
+      <template v-slot:item="{ item, isSelected, select }">
         <tr
           :class="{
             'is-directory': (item.type === 'directory'),
             'is-file': (item.type === 'file'),
-            'is-disabled': disabled
+            'is-disabled': disabled,
+            'v-data-table__selected': (isSelected && item.name !== '..')
           }"
           class="row-select px-1"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
-
-          :draggable="(item.name !== '..')"
+          :draggable="draggable(item)"
           @drag="handleDrag(item)"
+          @dragstart="handleDragStart"
           @dragend="handleDragEnd"
           @drop.prevent.stop="handleDrop(item, $event)"
           @dragover.prevent="handleDragOver($event)"
           @dragleave.prevent="handleDragLeave($event)"
         >
+          <td v-if="bulkActions">
+            <v-simple-checkbox
+              v-if="item.name !== '..'"
+              :value="isSelected"
+              color=""
+              class="mt-1"
+              v-ripple
+              @click.stop="select(!isSelected)"
+            ></v-simple-checkbox>
+          </td>
           <td>
             <!-- icons are 16px small, or 24px for standard size. -->
             <v-icon
@@ -48,7 +67,7 @@
             <img
               v-if="item.thumbnails && item.thumbnails.length"
               class="file-icon-thumb"
-              :src="getThumbUrl(item.thumbnails, item.path)"
+              :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
               :width="(dense) ? 16 : 24"
             />
           </td>
@@ -142,13 +161,13 @@
           </file-row-item>
 
           <file-row-item :headers="headers" item-value="modified">
-            <span v-if="item.modified !== undefined">
+            <span v-if="item.modified !== undefined && item.modified !== null">
               {{ $filters.formatDateTime(item.modified) }}
             </span>
           </file-row-item>
 
           <file-row-item :headers="headers" item-value="size">
-            <span v-if="item.size !== undefined">
+            <span v-if="item.size !== undefined && item.size !== 0">
               {{ $filters.getReadableFileSizeString(item.size) }}
             </span>
           </file-row-item>
@@ -160,7 +179,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { AppDirectory, AppFile, AppFileWithMeta, FileFilter } from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
@@ -201,7 +220,15 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Boolean, default: false })
   disabled!: boolean
 
-  draggedItem: null | AppFile | AppFileWithMeta | AppDirectory = null
+  @Prop({ type: Boolean, default: false })
+  bulkActions!: boolean;
+
+  @Prop({ type: Array, required: true })
+  selected!: (AppFile | AppFileWithMeta | AppDirectory)[]
+
+  dragItem: AppFile | AppFileWithMeta | AppDirectory | null = null
+  ghost: HTMLDivElement | undefined = undefined
+  selectedItems: (AppFile | AppFileWithMeta | AppDirectory)[] = []
 
   // Is the history component enabled
   get showHistory () {
@@ -211,10 +238,73 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     )
   }
 
+  mounted () {
+    this.selectedItems = this.selected
+  }
+
+  // Make sure we update the selected items if it's changed.
+  @Watch('selected')
+  onSelected (selected: (AppFile | AppFileWithMeta | AppDirectory)[]) {
+    this.selectedItems = selected
+  }
+
+  // When the selected items change, update the parent.
+  handleSelected (selected: (AppFile | AppFileWithMeta | AppDirectory)[]) {
+    this.$emit('update:selected', selected)
+  }
+
+  // We ignore our [..] dir, so handle faking our checkbox states.
+  handleItemSelected (item: { item: AppFile | AppFileWithMeta | AppDirectory; value: boolean }) {
+    // If last two, and filtered results in 0 - set to 0.
+    if (
+      !item.value &&
+      this.selectedItems.length <= 2 &&
+      this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..' && item.item !== fileOrFolder)).length === 0
+    ) {
+      this.selectedItems = []
+    }
+
+    // If top two, and filtered results in count -1, set to all.
+    if (
+      item.value &&
+      this.selectedItems.length + 1 >= (this.files.length - 1) &&
+      this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..')).length + 1 === this.files.length - 1
+    ) {
+      this.selectedItems = this.files
+    }
+  }
+
+  // Determines if a row is currently in a draggable state or not.
+  draggable (item: AppFile | AppFileWithMeta | AppDirectory) {
+    return (
+      item.name !== '..' &&
+      this.files.length > 0 &&
+      (
+        this.selected.length === 0 ||
+        this.selected.includes(item)
+      )
+    )
+  }
+
+  // Fake a drag image when the user drags a file or folder.
+  handleDragStart (e: DragEvent) {
+    if (e.dataTransfer) {
+      this.ghost = document.createElement('div')
+      this.ghost.classList.add('bulk-drag')
+      this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
+      this.ghost.innerHTML = (this.selected.length > 0)
+        ? `Move ${this.selected.length} items`
+        : 'Move item'
+      document.body.appendChild(this.ghost)
+      e.dataTransfer.dropEffect = 'move'
+      e.dataTransfer.setDragImage(this.ghost, 0, 0)
+    }
+  }
+
   // Table row is being dragged
   handleDrag (item: AppFile | AppFileWithMeta | AppDirectory) {
     if (this.dragState !== true) {
-      this.draggedItem = item
+      this.dragItem = item
       this.$emit('update:dragState', true)
     }
   }
@@ -222,8 +312,15 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   // File was dropped on another table row.
   handleDrop (destination: AppFile | AppFileWithMeta | AppDirectory, e: { target: HTMLElement}) {
     this.handleDragLeave(e)
-    if (destination.type === 'directory' && this.draggedItem) {
-      const source = this.draggedItem
+    if (
+      destination.type === 'directory' &&
+      this.dragItem &&
+      this.dragItem !== destination &&
+      !this.selected.includes(destination)
+    ) {
+      const source = (this.selected.length === 0)
+        ? [this.dragItem]
+        : this.selected.filter(item => (item.name !== '..'))
       this.$emit('move', source, destination)
     }
   }
@@ -249,8 +346,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   // Drag ended
   handleDragEnd () {
-    this.draggedItem = null
+    const e = this.ghost as HTMLDivElement
+    document.body.removeChild(e)
+    this.dragItem = null
     this.$emit('update:dragState', false)
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  @import '~vuetify/src/styles/styles.sass';
+
+  // Lighten up dark mode checkboxes.
+  .theme--dark ::v-deep .v-simple-checkbox .v-icon {
+    color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
+  }
+
+</style>

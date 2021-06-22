@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueI18n, { Locale } from 'vue-i18n'
 import store from '@/store'
 import getBrowserLocale from '@/util/get-browser-locale'
+import messages from '@/locales/en.yaml'
 
 Vue.use(VueI18n)
 
@@ -29,6 +30,8 @@ const i18n: VueI18n = new VueI18n({
   messages: {}
 })
 
+// Pre apply the en language for fallback.
+i18n.setLocaleMessage('en', messages)
 const loadedLanguages: Locale[] = []
 
 export const loadLocaleMessagesAsync = async (locale: Locale) => {

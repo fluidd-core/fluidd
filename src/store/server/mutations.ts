@@ -15,6 +15,10 @@ export const mutations: MutationTree<ServerState> = {
     Vue.set(state, 'info', payload)
   },
 
+  setSystemInfo (state, payload) {
+    if (payload.system_info) Vue.set(state, 'system_info', payload.system_info)
+  },
+
   /**
    * On initial init we get the server (moonraker) configuration.
    */

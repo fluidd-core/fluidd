@@ -4,17 +4,17 @@ app:
       boxScale: Schaal
       flat_surface: Toon vlak
       mesh_matrix: Mesh matrix
-      probed_matrix: Geprobed matrix                         
+      probed_matrix: Geprobed matrix
       profile_name: Profielnaam
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
-      wireframe: Draadframe              
+      wireframe: Draadframe
     msg:
       hint: >-
         Als je opslaat onder een andere naam dan %{name}, kan je er ook voor
         kiezen %{name} te verwijderen.
       not_found: Geen bedmeshes gevonden.
-      not_loaded: Geen meshes geladen                          
+      not_loaded: Geen meshes geladen
     tooltip:
       calibrate: Begint een nieuwe calibratie, opslaand als 'default'
       delete: Verwijder profiel. Dit zal je printer herstarten
@@ -36,7 +36,7 @@ app:
         schakelen in de grafiek.
   console:
     label:
-      auto_scroll: Automatisch scrollen                              
+      auto_scroll: Automatisch scrollen
       hide_temp_waits: Verberg temperatuurwachten
     placeholder:
       command: >-
@@ -76,10 +76,10 @@ app:
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
-      downloaded: Gedownload                      
+      downloaded: Gedownload
       file_name: Bestandsnaam
-      transfer_rate: Snelheid                            
-      uploaded: Geüpload                  
+      transfer_rate: Snelheid
+      uploaded: Geüpload
     msg:
       confirm: >-
         Ben je zeker? Dit zal alle onderliggende bestanden en mappen
@@ -91,14 +91,35 @@ app:
     title:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
-      download_file: Bestand downloaden                              
-      keyboard_shortcuts: Toetsenbordcommando's                                      
+      download_file: Bestand downloaden
+      keyboard_shortcuts: Toetsenbordcommando's
       rename_dir: Hernoem map
       rename_file: Hernoem bestand
-      upload_file: Bestand uploaden | Bestanden uploaden                                             
+      upload_file: Bestand uploaden | Bestanden uploaden
     tooltip:
       disabled: Taken zijn uitgeschakeld voordat er een verbinding is met klippy
       low_on_space: Weinig plaats op de Disk
+  gcode:
+    btn:
+      load_current_file: Laad huidig ​​bestand
+    label:
+      current_layer_height: Huidige laaghoogte
+      follow_progress: Volg voortgang
+      layer: Laag
+      layers: Lagen
+      parsed: Geparsed
+      progress: Vooruitgang
+      show_extrusions: Toon extrusies
+      show_moves: Toon bewegingen
+      show_next_layer: Toon volgende laag
+      show_previous_layer: Toon vorige laag
+      show_retractions: Toon retracts
+    msg:
+      confirm: >-
+        Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
+        voor uw systeem. 
+
+        Weet je het zeker?
   general:
     btn:
       add: Toevoegen
@@ -115,12 +136,14 @@ app:
       download: Downloaden
       edit: Aanpassen
       extrude: Extrude
-      heaters_off: Verwarmingen uit                        
-      load_all: Alles laden                  
-      more_information: Meer informatie                                  
+      heaters_off: Verwarmingen uit
+      load_all: Alles laden
+      load_current_file: Laad het huidige bestand
+      more_information: Meer informatie
       pause: Pauze
       preheat: Voorverwarmen
-      presets: Voorinstellingen                
+      presets: Voorinstellingen
+      preview_gcode: Voorbeeld van Gcode
       quad_gantry_level: QGL
       reboot: Herstart
       remove: Verwijderen
@@ -138,7 +161,7 @@ app:
       save: Opslaan
       save_as: Opslaan als
       save_restart: Opslaan & herstarten
-      send: Verzenden          
+      send: Verzenden
       shutdown: Afsluiten
       socket_refresh: Forceer verversen
       upload: Uploaden
@@ -159,10 +182,10 @@ app:
       accel_to_decel: Vertragingssnelheid
       acceleration: Versnelling
       add_camera: Camera toevoegen
-      add_category: Categorie toevoegen                          
+      add_category: Categorie toevoegen
       add_preset: Voorkeur toevoegen
       api_url: API URL
-      clear_all: Alles verwijderen                    
+      clear_all: Alles verwijderen
       confirm: Bevestigen
       edit_camera: Camera wijzigen
       edit_preset: Aanpassen voorkeuren
@@ -175,9 +198,8 @@ app:
       layout: Layout
       longest_job: Langste taak
       low: Laag
-      move_macro: Marco verplaatsen %{name}                             
       name: Naam
-      no_notifications: Geen notificaties                                  
+      no_notifications: Geen notificaties
       'off': Uit
       power: Kracht
       printers: Printers
@@ -193,15 +215,15 @@ app:
       total_print_time_avg: Gemiddelde per print
       total_time: Totale tijd
       total_time_avg: Gemiddelde tijd
-      uncategorized: Zonder categorie                            
+      uncategorized: Zonder categorie
       used: Gebruikt
       variance: Afwijking
       velocity: Snelheid
       z_offset: Z-Offset
     simple_form:
       error:
-        arrayofnums: Alleen nummers                        
-        exists: Bestaat al                      
+        arrayofnums: Alleen nummers
+        exists: Bestaat al
         invalid_url: Invalide URL
         max: Max %{max}
         min: Min %{min}
@@ -214,9 +236,9 @@ app:
     table:
       header:
         actions: Acties
-        end_time: Beindigd               
+        end_time: Beindigd
         estimated_time: Geschatte tijd
-        filament: Filament                  
+        filament: Filament
         filament_used: Gebruikt filament
         filament_weight_total: Filament gewicht
         first_layer_bed_temp: Eerste laag bed temperatuur
@@ -230,27 +252,28 @@ app:
         print_duration: Print duurtijd
         size: Grootte
         slicer: Slicer
-        slicer_version: Slicer versie                              
+        slicer_version: Slicer versie
         start_time: Gestart
         status: Status
-        total_duration: Totale tijd                              
+        total_duration: Totale tijd
     title:
       add_printer: Printer toevoegen
       bedmesh: Bed Mesh
-      bedmesh_controls: Bed Mesh instellingen                                   
+      bedmesh_controls: Bed Mesh instellingen
       camera: Camera | Camera's
       config_files: Configuratie Bestanden
       configure: Configureren
       console: Console
       endstops: Endstops
       fans_outputs: Ventilators & Outputs
+      gcode_preview: Gcode-voorbeeld
       history: Takenhistoriek
       home: Dashbord
       jobs: Taken
       limits: Printer Limieten
       macros: Macros
       runout_sensors: Runout Sensors
-      settings: Instellingen                  
+      settings: Instellingen
       stats: Printer Statistieken
       status: Status
       system_control: Systeemcontrole
@@ -259,9 +282,9 @@ app:
       tune: Tunen
     tooltip:
       estop: Noodstop
-      reload_klipper: Herlaad de klipper configuratie.                                              
-      reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.                                                                         
-      restart_klipper: Herstart de klipper service.                                                     
+      reload_klipper: Herlaad de klipper configuratie.
+      reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
+      restart_klipper: Herstart de klipper service.
   history:
     msg:
       confirm: >-
@@ -301,24 +324,31 @@ app:
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
       camera_url: Camera Url
-      confirm_on_estop: Bent u zeker?                                                   
+      confirm_on_estop: Bent u zeker?
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte
       default_extrude_speed: Standaard extrudesnelheid
       default_toolhead_move_length: Standaard werktuig beweeglengte
       default_toolhead_xy_speed: Standaard xy-snelheid
       default_toolhead_z_speed: Standaard z-snelheid
+      draw_background: Teken achtergrond
       enable: Inschakelen
-      enable_notifications: Notificaties aanzetten                                          
+      enable_animations: Animaties inschakelen
+      enable_notifications: Notificaties aanzetten
+      extrusion_line_width: Breedte extrusielijn
+      flip_horizontal: Horizontaal spiegelen
+      flip_vertical: Verticaal spiegelen
       fps_target: FPS Instelling
       gcode_coords: Gebruik GCode coordinaten
       invert_x_control: Inverteer X knop
       invert_y_control: Inverteer Y knop
       invert_z_control: Inverteer Z knop
       language: Taalinstelling
+      move_line_width: Lijnbreedte verplaatsen
       primary_color: Primaire kleur
       printer_name: Printer Naam
       reset: Reset instellingen
+      retraction_icon_size: Grootte van pictogram voor intrekken
       thermal_preset_name: Voorkeursnaam
       time_estimates: Tijdsschattingen
       toggle: Schakelen
@@ -338,6 +368,7 @@ app:
       slicer_description: Gebruikt de slicerschatting. Dit moet je aanzetten in je slicer.
     title:
       camera: Camera | Camera's
+      gcode_preview: Gcode-voorbeeld
       general: Algemeen
       macros: Macros
       theme: Theme
@@ -366,7 +397,7 @@ app:
       check_for_updates: Controleer voor updates
       finish: Klaar
       update: Updaten
-      view_versions: Bekijk versies                            
+      view_versions: Bekijk versies
     label:
       commit_history: Versiehistoriek
       commits_on: commits op

@@ -2,12 +2,14 @@
   <div class="chart" :style="{ 'height': height }">
     <ECharts
       ref="chart"
+      style="overflow: initial;"
       :option="options"
       :setOptionOps="{ notMerge: true }"
       :initOpts="{ renderer: 'svg' }"
       :events="[
         ['legendselectchanged', handleLegendSelectChange ]
-      ]">
+      ]"
+    >
     </ECharts>
   </div>
 </template>
@@ -15,24 +17,31 @@
 <script lang='ts'>
 import { Vue, Component, Watch, Prop } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
-import { getKlipperType } from '@/store/helpers'
+import getKlipperType from '@/util/get-klipper-type'
 
 @Component({})
 export default class ThermalChart extends Vue {
   @Prop({ type: String, default: '100%' })
   height!: string;
 
-  loading = true
-  options: any = {}
+  loading = false
+  series: any[] = []
+  initialSelected: any = {}
 
   handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
     this.$store.dispatch('charts/saveSelectedLegends', e.selected)
+
+    let right = (this.isMobile) ? 15 : 20
+    if (this.showPowerAxis(e.selected)) {
+      right = (this.isMobile) ? 25 : 45
+    }
+
     if (
       this.chart &&
       !this.loading
     ) {
       this.chart.setOption({
-        grid: this.grid,
+        grid: { right },
         yAxis: [
           {},
           { show: this.showPowerAxis(e.selected) }
@@ -48,30 +57,6 @@ export default class ThermalChart extends Vue {
 
   get chartData () {
     return this.$store.getters['charts/getChartData']
-  }
-
-  get chartSelectedLegends () {
-    return this.$store.getters['charts/getSelectedLegends']
-  }
-
-  get chartRetension () {
-    return this.$store.getters['charts/getChartRetention']
-  }
-
-  get grid () {
-    let right = 0
-    if (this.showPowerAxis(this.chartSelectedLegends)) {
-      right = (this.isMobile) ? 25 : 45
-    } else {
-      right = (this.isMobile) ? 15 : 20
-    }
-
-    return {
-      top: 20,
-      left: (this.isMobile) ? 25 : 45,
-      right,
-      bottom: (this.isMobile) ? 52 : 38
-    }
   }
 
   @Watch('chartData')
@@ -98,9 +83,6 @@ export default class ThermalChart extends Vue {
   }
 
   init () {
-    // Create the base options.
-    this.initOptions()
-
     // Create the series and associated legends.
     const dataKeys = Object.keys(this.chartData[0])
     const keys = this.$store.getters['printer/getChartableSensors'] as string[]
@@ -109,69 +91,115 @@ export default class ThermalChart extends Vue {
       let label = key
       if (key.includes(' ')) label = key.split(' ')[1]
 
-      this.createSeries(label, key)
-      if (dataKeys.includes(label + 'Target')) this.createSeries(label + 'Target', key)
-      if (dataKeys.includes(label + 'Power')) this.createSeries(label + 'Power', key)
-      if (dataKeys.includes(label + 'Speed')) this.createSeries(label + 'Speed', key)
+      this.series.push(this.createSeries(label, key))
+      if (dataKeys.includes(label + 'Target')) this.series.push(this.createSeries(label + 'Target', key))
+      if (dataKeys.includes(label + 'Power')) this.series.push(this.createSeries(label + 'Power', key))
+      if (dataKeys.includes(label + 'Speed')) this.series.push(this.createSeries(label + 'Speed', key))
     })
-
-    // Re-apply the legend state in the store after the series has redefined the legends.
-    this.$store.dispatch('charts/saveSelectedLegends', this.options.legend.selected)
-
-    // Make sure we enable / disable the y axis.
-    if (this.showPowerAxis(this.options.legend.selected)) {
-      this.options.yAxis[1].show = true
-    }
   }
 
-  initOptions () {
-    const darkMode = this.$store.state.config.uiSettings.theme.isDark
-    const fontSize = (this.isMobile) ? 13 : 14
-    const lineOpacity = 0.2
-    let labelBackground = 'rgba(10,10,10,0.85)'
-    let fontColor = 'rgba(255,255,255,0.25)'
-    let lineColor = '#ffffff'
-    if (!darkMode) {
-      labelBackground = 'rgba(255,255,255,0.85)'
-      fontColor = 'rgba(0,0,0,0.45)'
-      lineColor = '#000000'
+  get options () {
+    const isDark = this.$store.state.config.uiSettings.theme.isDark
+    const isMobile = this.isMobile
+
+    const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
+    const fontSize = (isMobile) ? 13 : 14
+
+    const lineStyle = {
+      color: (isDark) ? '#ffffff' : '#000000',
+      opacity: 0.05
     }
 
-    this.options = {
-      grid: this.grid,
+    const pointerStyle = {
+      color: (isDark) ? '#ffffff' : '#000000',
+      opacity: 0.5
+    }
+
+    let right = (this.isMobile) ? 15 : 20
+    if (this.showPowerAxis(this.initialSelected)) {
+      right = (this.isMobile) ? 25 : 45
+    }
+    const grid = {
+      top: 20,
+      left: (this.isMobile) ? 25 : 45,
+      right,
+      bottom: (this.isMobile) ? 52 : 38
+    }
+
+    const tooltip = {
+      backgroundColor: (isDark) ? 'rgba(15,15,15,0.75)' : 'rgba(255,255,255,0.75)',
+      borderColor: (isDark) ? 'rgba(0,0,0,0.85)' : 'rgba(255,255,255,0.85)',
+      textStyle: {
+        color: fontColor,
+        fontSize
+      }
+    }
+
+    const theme = this.$store.getters['config/getTheme']
+    const color = [
+      theme.currentTheme.primary,
+      theme.currentTheme.secondary
+    ]
+
+    const options = {
+      grid,
+      color,
       legend: {
         show: false,
-        top: 0,
-        icon: 'circle',
-        textStyle: {
-          fontSize,
-          color: fontColor
-        },
-        selected: {}
+        selected: this.initialSelected
       },
       tooltip: {
+        ...tooltip,
         trigger: 'axis',
         confine: false,
-        backgroundColor: labelBackground,
-        borderColor: labelBackground,
-        textStyle: {
-          color: fontColor,
-          fontSize
-        },
         axisPointer: {
           type: 'line',
-          lineStyle: {
-            color: lineColor,
-            opacity: lineOpacity
-          },
+          lineStyle: pointerStyle,
           label: {
             color: fontColor,
             fontSize,
-            backgroundColor: labelBackground
+            backgroundColor: tooltip.backgroundColor
           }
         },
         position: this.tooltipPosition,
-        formatter: this.tooltipFormatter
+        formatter: (params: any) => {
+          let text = ''
+          params
+            .reverse()
+            .forEach((param: any) => {
+              if (
+                !param.seriesName.toLowerCase().endsWith('target') &&
+                !param.seriesName.toLowerCase().endsWith('power') &&
+                !param.seriesName.toLowerCase().endsWith('speed') &&
+                param.seriesName &&
+                param.seriesName in param.value
+              ) {
+                text += `
+                  <div>
+                    ${param.marker}
+                    <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
+                      ${param.seriesName}:
+                    </span>
+                    <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
+                      ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
+
+                if (param.seriesName + 'Target' in param.value) {
+                  text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
+                }
+                if (param.seriesName + 'Power' in param.value) {
+                  text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
+                }
+                if (param.seriesName + 'Speed' in param.value) {
+                  text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
+                }
+                text += `</span>
+                  <div style="clear: both"></div>
+                </div>
+                <div style="clear: both"></div>`
+              }
+            })
+          return text
+        }
       },
       xAxis: {
         type: 'time',
@@ -186,15 +214,12 @@ export default class ThermalChart extends Vue {
         },
         splitLine: {
           show: true,
-          lineStyle: {
-            color: lineColor,
-            opacity: 0.05
-          }
+          lineStyle
         },
         axisLabel: {
           interval: 0,
           margin: 14,
-          color: fontColor,
+          color: tooltip.textStyle.color,
           fontSize,
           formatter: '{H}:{mm}',
           rotate: (this.isMobile) ? 90 : 0
@@ -219,13 +244,7 @@ export default class ThermalChart extends Vue {
           show: true,
           type: 'value',
           position: 'left',
-          splitLine: {
-            show: true,
-            lineStyle: {
-              color: lineColor,
-              opacity: 0.05
-            }
-          },
+          splitLine: { show: true, lineStyle },
           minInterval: 20,
           maxInterval: 60,
           min: this.yAxisTempMin,
@@ -248,16 +267,10 @@ export default class ThermalChart extends Vue {
             align: 'right'
           },
           nameGap: 8,
-          show: false,
+          show: this.showPowerAxis(this.initialSelected),
           type: 'value',
           position: 'right',
-          splitLine: {
-            show: false,
-            lineStyle: {
-              color: lineColor,
-              opacity: 0.05
-            }
-          },
+          splitLine: { show: false, lineStyle },
           min: 0,
           max: 1,
           axisLabel: {
@@ -271,26 +284,24 @@ export default class ThermalChart extends Vue {
           boundaryGap: [0, '100%']
         }
       ],
-      dataset: {
-        source: this.chartData
-      },
       dataZoom: [{
         type: 'inside',
         zoomOnMouseWheel: 'shift'
       }],
-      series: []
+      series: this.series
     }
+
+    return options
   }
 
   createSeries (label: string, key: string) {
     // Grab the color
     const color = Vue.$colorset.next(getKlipperType(key), key)
-    const id = this.options.series.length + 1
 
     // Base properties
     const series: any = {
       name: label,
-      id,
+      // id,
       type: 'line',
       yAxisIndex: 0,
       showSymbol: false,
@@ -307,9 +318,7 @@ export default class ThermalChart extends Vue {
         width: 1.5,
         opacity: 1
       },
-      areaStyle: {
-        opacity: 0.05
-      },
+      areaStyle: { opacity: 0.05 },
       encode: { x: 'date', y: label }
     }
 
@@ -339,16 +348,16 @@ export default class ThermalChart extends Vue {
     // Set the initial legend state (power and speed default off)
     const storedLegends = this.$store.getters['charts/getSelectedLegends']
     if (storedLegends[label] !== undefined) {
-      this.options.legend.selected[label] = storedLegends[label]
+      this.initialSelected[label] = storedLegends[label]
     } else {
-      this.options.legend.selected[label] = !(
+      this.initialSelected[label] = !(
         label.toLowerCase().endsWith('power') ||
         label.toLowerCase().endsWith('speed')
       )
     }
 
     // Push the series into our options object.
-    this.options.series.push(series)
+    return series
   }
 
   showPowerAxis (selected: any) {
@@ -368,67 +377,10 @@ export default class ThermalChart extends Vue {
     }
   }
 
-  legendSelect (name: string) {
-    if (this.chart) {
-      this.chart.dispatchAction({
-        type: 'legendSelect',
-        name
-      })
-    }
-  }
-
-  legendUnSelect (name: string) {
-    if (this.chart) {
-      this.chart.dispatchAction({
-        type: 'legendUnSelect',
-        name
-      })
-    }
-  }
-
   tooltipPosition (pos: any, params: any, el: HTMLElement, elRect: any, size: any) {
-    const obj: { [index: string]: any } = { top: 0 }
+    const obj: { [index: string]: any } = { top: -10 }
     obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
     return obj
-  }
-
-  tooltipFormatter (params: any) {
-    let text = ''
-    params
-      .reverse()
-      .forEach((param: any) => {
-        if (
-          !param.seriesName.toLowerCase().endsWith('target') &&
-          !param.seriesName.toLowerCase().endsWith('power') &&
-          !param.seriesName.toLowerCase().endsWith('speed') &&
-          param.seriesName &&
-          param.seriesName in param.value
-        ) {
-          text += `
-            <div>
-              <span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${param.color};"></span>
-              <span style="font-size:16px;color:#666;font-weight:400;margin-left:2px">
-                ${param.seriesName}:
-              </span>
-              <span style="float:right;margin-left:20px;font-size:16px;color:#666;font-weight:900">
-                ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
-
-          if (param.seriesName + 'Target' in param.value) {
-            text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
-          }
-          if (param.seriesName + 'Power' in param.value) {
-            text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
-          }
-          if (param.seriesName + 'Speed' in param.value) {
-            text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
-          }
-          text += `</span>
-            <div style="clear: both"></div>
-          </div>
-          <div style="clear: both"></div>`
-        }
-      })
-    return text
   }
 
   get isMobile () {

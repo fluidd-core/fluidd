@@ -23,10 +23,18 @@
     <template v-slot:menu>
       <v-checkbox
         v-model="hideTempWaits"
-        color="primary"
-        class="ma-2"
-        hide-details
         :label="$t('app.console.label.hide_temp_waits')"
+        color="primary"
+        hide-details
+        class="mx-2 mt-2"
+      >
+      </v-checkbox>
+      <v-checkbox
+        v-model="autoScroll"
+        :label="$t('app.console.label.auto_scroll')"
+        color="primary"
+        hide-details
+        class="mx-2 mb-2"
       >
       </v-checkbox>
     </template>
@@ -75,6 +83,17 @@ export default class ConsoleCard extends Mixins(StateMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get autoScroll () {
+    return this.$store.state.console.autoScroll
+  }
+
+  set autoScroll (value: boolean) {
+    this.$store.dispatch('console/onUpdateAutoScroll', value)
+    if (value) {
+      this.console.scrollToBottom()
+    }
   }
 
   @Watch('inLayout')

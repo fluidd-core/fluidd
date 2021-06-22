@@ -15,13 +15,13 @@
           <v-icon
             v-bind="attrs"
             v-on="on"
-            v-show="!extrudeRetractReady"
+            v-show="!extruderReady"
             class="ml-3"
             color="info">
             $snowflakeAlert
           </v-icon>
         </template>
-        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: minExtrudeTemp })"></span>
+        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })"></span>
       </v-tooltip>
     </template>
 
@@ -31,7 +31,7 @@
         :elevation="2"
         :disabled="!klippyReady || printerPrinting"
         small
-        class="ma-1">
+        class="ml-1">
           MOTORS OFF
       </app-btn>
       <app-btn
@@ -41,7 +41,7 @@
         :loading="hasWait(waits.onBedScrewsAdjust)"
         :disabled="!klippyReady || printerPrinting"
         small
-        class="ma-1">
+        class="ml-1">
           Bed_Screws_Adjust
       </app-btn>
       <app-btn
@@ -51,7 +51,7 @@
         :loading="hasWait(waits.onBedScrewsCalculate)"
         :disabled="!allHomed || !klippyReady || printerPrinting"
         small
-        class="ma-1">
+        class="ml-1">
           Screws_Tilt_Calculate
       </app-btn>
       <app-btn
@@ -61,7 +61,7 @@
         :loading="hasWait(waits.onZTilt)"
         :disabled="!klippyReady || printerPrinting"
         small
-        class="ma-1">
+        class="ml-1">
           Z_Tilt_Adjust
       </app-btn>
       <app-btn
@@ -71,7 +71,7 @@
         :loading="hasWait(waits.onQGL)"
         :disabled="!klippyReady || printerPrinting"
         small
-        class="ma-1">
+        class="ml-1">
           QGL
       </app-btn>
     </template>

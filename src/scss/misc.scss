@@ -14,3 +14,35 @@
 .no-pointer-events * {
   pointer-events: none !important;
 }
+
+// Apply a common scrollbar application to all elements inside the app
+.v-application--wrap ::-webkit-scrollbar {
+  transition: all .5s;
+  width: 5px;
+  height: 8px;
+  z-index: 10;
+}
+
+.v-application--wrap ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.v-application--wrap ::-webkit-scrollbar-thumb {
+  background: #b3ada7;
+}
+
+.v-application--wrap ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}

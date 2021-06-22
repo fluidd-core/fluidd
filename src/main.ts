@@ -7,18 +7,25 @@ import './registerComponentHooks'
 import './consola'
 // import { WorkboxPlugin } from './plugins/workbox'
 
-// Common
+// Common, 1st party.
 import Vue from 'vue'
 import { Globals } from './globals'
 import i18n from '@/plugins/i18n'
 import router from './router'
 import store from './store'
-import vuetify from './plugins/vuetify'
 import consola from 'consola'
+
+// 3rd party.
+import vuetify from './plugins/vuetify'
+import VueVirtualScroller from 'vue-virtual-scroller'
+import VueMeta from 'vue-meta'
+import VuetifyConfirm from 'vuetify-confirm'
+import vueHeadful from 'vue-headful'
+import { InlineSvgPlugin } from 'vue-inline-svg'
 import { loadWASM } from 'onigasm'
 
+// Init.
 import { appInit } from './init'
-
 import { InitConfig } from './store/config/types'
 
 // Import plugins
@@ -26,11 +33,7 @@ import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
-import { AxiosPlugin } from './plugins/axios'
 import { plugin } from 'echarts-for-vue'
-import VueVirtualScroller from 'vue-virtual-scroller'
-import VueMeta from 'vue-meta'
-import VuetifyConfirm from 'vuetify-confirm'
 
 // Import ECharts
 // import * as echarts from 'echarts'
@@ -55,10 +58,13 @@ import App from './App.vue'
 // Globally register all components in our common, layout and ui directories.
 import '@/components/_globals'
 
-// 3rd party
-import vueHeadful from 'vue-headful'
+// Register global directives.
+import Blur from '@/directives/blur'
 
-// 3rd party
+// Directives...
+Vue.directive('blur', Blur)
+
+// ...and 3rd party
 Vue.component('vue-headful', vueHeadful)
 
 // Use any Plugins
@@ -79,7 +85,6 @@ echarts.use([
 ])
 
 Vue.use(plugin, { echarts })
-Vue.use(AxiosPlugin)
 Vue.use(VueVirtualScroller)
 Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
@@ -88,6 +93,7 @@ Vue.use(ColorSetPlugin, {})
 Vue.use(VuetifyConfirm, {
   vuetify
 })
+Vue.use(InlineSvgPlugin)
 // Vue.use(WorkboxPlugin)
 
 const loadOnigasm = async (): Promise<void> => {
@@ -109,11 +115,9 @@ appInit()
       store
     })
 
-    if (config.apiConfig.socketUrl && config.apiConnected) {
+    if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
       Vue.$socket.connect(config.apiConfig.socketUrl)
     }
-
-    // i18n.locale = store.state.config?.uiSettings.general.locale || Globals.DEFAULT_LOCALE
 
     // Init Vue
     Vue.config.productionTip = false

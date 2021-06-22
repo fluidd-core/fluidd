@@ -11,6 +11,10 @@ permalink: /customize/themes
 
 ---
 
-Fluidd supports picking a primary color, and setting the theme to dark or light.
+Fluidd lets you choose a community preset, apply a color of your
+choosing - along with either a dark or light theme.
+
+Community presets are a way for Fluidd to support 3d printing communities. If
+you'd like to see your logo supported here, let us know!
 
 ![screenshot](/assets/images/theme.png)

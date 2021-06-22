@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { mergeFileUpdate } from '../helpers'
-import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta } from './types'
+import mergeFileUpdate from '@/util/merge-file-update'
+import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta, FileRoot } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
 
@@ -22,7 +22,7 @@ export const mutations: MutationTree<FilesState> = {
 
   setServerFilesGetDirectory (state, payload) {
     const path = payload.directory.path
-    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
+    const root = payload.root as FileRoot
     const i = state[root].findIndex(o => o.path === path)
     if (i >= 0) {
       state[root].splice(i, 1, payload.directory)
@@ -32,7 +32,7 @@ export const mutations: MutationTree<FilesState> = {
   },
 
   setFileUpdate (state, payload: FileUpdate) {
-    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
+    const root = payload.root as FileRoot
     const paths = payload.paths
 
     // Find relevant directory.
@@ -57,8 +57,8 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
-  setFileDelete (state, payload: FileUpdate) {
-    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
+  setItemDelete (state, payload: FileUpdate) {
+    const root = payload.root as FileRoot
     const paths = payload.paths
 
     // Find relevant directory.
@@ -70,6 +70,20 @@ export const mutations: MutationTree<FilesState> = {
         directory.items.splice(fileIndex, 1)
       }
     }
+  },
+
+  setPathDelete (state, payload: { root: string; path: string }) {
+    const root = payload.root as 'gcodes' | 'config' | 'config_examples' | 'docs'
+    const path = payload.path
+
+    // Find relevant directories.
+    const folders = state[root].filter(f => (f.path.startsWith(path)))
+    folders.forEach((folder) => {
+      const i = state[root].findIndex((f: Files) => (folder === f))
+      if (i >= 0) {
+        state[root].splice(i, 1)
+      }
+    })
   },
 
   setUpdateFileUpload (state, payload) {

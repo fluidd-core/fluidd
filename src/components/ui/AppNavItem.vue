@@ -1,17 +1,47 @@
 <template>
-  <router-link
-    :to="to"
-    :exact="exact"
-    custom
-    v-slot="{ navigate, isActive }"
-  >
-    <button v-ripple @click="navigate" :class="{ 'active': isActive }">
-      <v-icon>{{ icon }}</v-icon>
-      <span>
-        <slot></slot>
-      </span>
-    </button>
-  </router-link>
+  <v-tooltip right :disabled="isMobile">
+    <template v-slot:activator="{ attrs, on }">
+      <v-list-item
+        :to="to"
+        :exact="exact"
+        link
+        color="secondary"
+        v-bind="attrs"
+        v-on="on"
+      >
+        <v-list-item-icon>
+          <v-icon>{{ icon }}</v-icon>
+        </v-list-item-icon>
+
+        <v-list-item-content>
+          <v-list-item-title><slot></slot></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+    </template>
+    <span><slot></slot></span>
+  </v-tooltip>
+
+  <!-- <v-tooltip right :disabled="isMobile">
+    <template v-slot:activator="{ attrs, on }">
+      <router-link
+        :to="to"
+        :exact="exact"
+        custom
+        v-slot="{ navigate, isActive }"
+      >
+        <button
+          v-bind="attrs"
+          v-on="on"
+          v-ripple
+          @click="navigate"
+          :class="{ 'active': isActive }"
+        >
+          <v-icon>{{ icon }}</v-icon>
+        </button>
+      </router-link>
+    </template>
+    <slot></slot>
+  </v-tooltip> -->
 </template>
 
 <script lang="ts">
@@ -22,6 +52,9 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNavItem extends Mixins(StateMixin) {
   @Prop({ type: String })
+  title!: string
+
+  @Prop({ type: String })
   to!: string
 
   @Prop({ type: Boolean, default: false })
@@ -29,6 +62,10 @@ export default class AppNavItem extends Mixins(StateMixin) {
 
   @Prop({ type: String })
   icon!: string
+
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
+  }
 }
 
 </script>
@@ -37,14 +74,14 @@ export default class AppNavItem extends Mixins(StateMixin) {
   @import '~vuetify/src/styles/styles.sass';
 
   button {
-    font-size: 0.875rem;
-    font-family: raleway, sans-serif;
-    font-weight: 300;
-    text-decoration: none;
+    // font-size: 0.875rem;
+    // font-family: raleway, sans-serif;
+    // font-weight: 300;
+    // text-decoration: none;
 
     height: inherit;
-    padding: 1px 12px;
-    min-width: 80px;
+    padding: 16px 0px;
+    width: 100%;
 
     overflow: hidden;
     display: inline-flex;

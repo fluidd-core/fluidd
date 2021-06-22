@@ -1,19 +1,14 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="8" class="pt-0" v-if="!klippyReady || hasWarnings">
-        <klippy-status-card></klippy-status-card>
-      </v-col>
-      <v-col cols="12" md="8" class="pt-0" v-if="supportsBedMesh && klippyReady">
-        <bed-mesh></bed-mesh>
-      </v-col>
-      <v-col cols="12" md="4" class="pt-0">
-        <bed-mesh-controls v-if="supportsBedMesh && klippyReady"></bed-mesh-controls>
-        <end-stops-card></end-stops-card>
-        <runout-sensors-card v-if="supportsRunoutSensors"></runout-sensors-card>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
+    <v-col cols="12" md="8" v-if="supportsBedMesh && klippyReady">
+      <bed-mesh></bed-mesh>
+    </v-col>
+    <v-col cols="12" md="4">
+      <bed-mesh-controls v-if="supportsBedMesh && klippyReady" class="mb-2 mb-sm-4"></bed-mesh-controls>
+      <end-stops-card class="mb-2 mb-sm-4"></end-stops-card>
+      <runout-sensors-card v-if="supportsRunoutSensors"></runout-sensors-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

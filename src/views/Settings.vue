@@ -1,21 +1,20 @@
 <template>
-  <v-container fluid class="constrained-width">
-    <v-row justify="center">
-      <v-col cols="12" md="6">
-        <router-view />
-        <div v-if="$route.matched.length === 1">
-          <general-settings></general-settings>
-          <version-settings v-if="supportsVersions"></version-settings>
-          <macro-categories></macro-categories>
-          <cameras></cameras>
-          <theme-settings></theme-settings>
-          <toolhead-settings></toolhead-settings>
-          <temperature-preset-settings></temperature-preset-settings>
-          <gcode-preview-settings></gcode-preview-settings>
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row :dense="$vuetify.breakpoint.smAndDown" justify="center">
+    <v-col cols="12" lg="8">
+      <router-view v-if="authenticated && socketConnected" />
+      <div v-if="$route.matched.length === 1">
+        <general-settings></general-settings>
+        <theme-settings></theme-settings>
+        <auth-settings v-if="supportsAuth"></auth-settings>
+        <macro-categories></macro-categories>
+        <cameras></cameras>
+        <toolhead-settings></toolhead-settings>
+        <temperature-preset-settings></temperature-preset-settings>
+        <gcode-preview-settings></gcode-preview-settings>
+        <version-settings v-if="supportsVersions"></version-settings>
+      </div>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -30,6 +29,7 @@ import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
 import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue'
+import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
 
 @Component({
   components: {
@@ -40,12 +40,17 @@ import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue
     ToolheadSettings,
     ThemeSettings,
     VersionSettings,
-    GcodePreviewSettings
+    GcodePreviewSettings,
+    AuthSettings
   }
 })
 export default class Settings extends Mixins(StateMixin) {
   get supportsVersions () {
     return this.$store.getters['server/componentSupport']('update_manager')
+  }
+
+  get supportsAuth () {
+    return this.$store.getters['server/componentSupport']('authorization')
   }
 }
 </script>

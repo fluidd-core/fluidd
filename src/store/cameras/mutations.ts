@@ -45,9 +45,9 @@ export const mutations: MutationTree<CamerasState> = {
   },
 
   /**
-   * Sets Fillspace
+   * Sets active camera
    */
-  setFillSpace (state, payload) {
-    state.fillSpace = payload
+  setActiveCamera (state, payload) {
+    state.activeCamera = payload
   }
 }

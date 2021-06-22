@@ -1,16 +1,16 @@
-.v-dialog--scrollable > .v-card > .v-card__text {
-  &::-webkit-scrollbar {
-    transition: all .5s;
-    width: 5px;
-    height: 5px;
-    z-index: 10;
-  }
+// .v-dialog--scrollable > .v-card > .v-card__text {
+//   &::-webkit-scrollbar {
+//     transition: all .5s;
+//     width: 5px;
+//     height: 5px;
+//     z-index: 10;
+//   }
 
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
+//   &::-webkit-scrollbar-track {
+//     background: transparent;
+//   }
 
-  &::-webkit-scrollbar-thumb {
-    background: #b3ada7;
-  }
-}
+//   &::-webkit-scrollbar-thumb {
+//     background: #b3ada7;
+//   }
+// }

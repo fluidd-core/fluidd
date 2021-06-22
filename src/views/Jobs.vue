@@ -1,21 +1,22 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" class="pt-0">
-        <collapsable-card
-          :title="$t('app.general.title.jobs')"
-          cardKey="JobsPage"
-          icon="$files"
-          :draggable="false"
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
+    <v-col cols="12">
+      <collapsable-card
+        :title="$t('app.general.title.jobs')"
+        cardKey="JobsPage"
+        icon="$files"
+        :draggable="false"
+      >
+        <file-system
+          :roots="'gcodes'"
+          name="jobs"
+          bulk-actions
+          :max-height="816"
         >
-          <file-system
-            :roots="'gcodes'"
-            name="jobs">
-          </file-system>
-        </collapsable-card>
-      </v-col>
-    </v-row>
-  </v-container>
+        </file-system>
+      </collapsable-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

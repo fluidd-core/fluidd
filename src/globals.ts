@@ -1,5 +1,4 @@
 import {
-  mdiHome,
   mdiClose,
   mdiTune,
   mdiMinus,
@@ -22,6 +21,7 @@ import {
   mdiWindowClose,
   mdiPlayBoxOutline,
   mdiPrinter,
+  mdiAlphaRCircleOutline,
   mdiCamera,
   mdiFan,
   mdiArrowUp,
@@ -59,7 +59,6 @@ import {
   mdiRadioboxMarked,
   mdiCheckboxBlankOutline,
   mdiCheckboxMarkedOutline,
-  mdiMenuDown,
   mdiFilePlus,
   mdiBellOutline,
   mdiPower,
@@ -98,7 +97,21 @@ import {
   mdiLockReset,
   mdiCubeScan,
   mdiHandRight,
-  mdiThermometerAlert
+  mdiThermometerAlert,
+  mdiShieldAccount,
+  mdiContentCopy,
+  mdiApps,
+  mdiAccountPlus,
+  mdiViewDashboardOutline,
+  mdiHome,
+  mdiRestore,
+  mdiMenu,
+  mdiFileCancel,
+  mdiCancel,
+  mdiCircleSlice3,
+  mdiCodeJson,
+  mdiHarddisk,
+  mdiLayersTripleOutline
 } from '@mdi/js'
 
 /**
@@ -106,12 +119,14 @@ import {
  */
 export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
+  HEADER_HEIGHT: 56,
   DEFAULTS: {
     CAMERA_URL: '/webcam?action=stream'
   },
-  NETWORK_REQUEST_TIMEOUT: 500,
+  NETWORK_REQUEST_TIMEOUT: 0,
   KLIPPY_RETRY_DELAY: 1500,
   SOCKET_RETRY_DELAY: 2000,
+  SOCKET_PING_INTERVAL: 5000,
   CONSOLE_HISTORY_RETENTION: 1000, // total count
   CONSOLE_RECEIVE_PREFIX: '',
   CONSOLE_SEND_PREFIX: '$ ',
@@ -134,22 +149,34 @@ export const Globals = Object.freeze({
     }
   },
   MOONRAKER_COMPONENTS: {
+    auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' }
   },
+  // Ordered by weight.
+  CONFIG_SERVICE_MAP: [
+    { filename: 'moonraker.conf', service: 'moonraker', link: 'https://moonraker.readthedocs.io/en/latest/configuration/' },
+    { filename: 'webcam.txt', service: 'webcamd' },
+    { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
+    { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
+    { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
+    { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
+  ],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],
   DOCS_ROOT: 'https://docs.fluidd.xyz',
   DOCS_REQUIRED_CONFIGURATION: 'https://docs.fluidd.xyz/configuration/initial_setup',
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
   DOCS_MOONRAKER_COMPONENTS: 'https://docs.fluidd.xyz/configuration/moonraker',
-  DOCS_KLIPPER_CONFIG_REF: 'https://www.klipper3d.org/Config_Reference.html',
-  DOCS_MOONRAKER_CONFIG_REF: 'https://moonraker.readthedocs.io/en/latest/configuration/'
+  DOCS_AUTH_LOST_PASSWORD: 'https://docs.fluidd.xyz/authorization#lost-password',
+  DOCS_AUTH: 'https://docs.fluidd.xyz/authorization'
 })
 
 export const Icons = Object.freeze({
+  dash: mdiViewDashboardOutline,
   account: mdiAccount,
+  addAccount: mdiAccountPlus,
   help: mdiHelpCircle,
   motion: mdiMotionOutline,
   limits: mdiArrowHorizontalLock,
@@ -158,7 +185,7 @@ export const Icons = Object.freeze({
   move: mdiFolderMove,
   tabs: mdiCheckboxMultipleBlank,
   menu: mdiDotsVertical,
-  menuAlt: mdiMenuDown,
+  menuAlt: mdiMenu,
   dots: mdiDotsHorizontal,
   dotsGrid: mdiDotsGrid,
   drag: mdiDrag,
@@ -191,6 +218,7 @@ export const Icons = Object.freeze({
   folder: mdiFolder,
   fileUpload: mdiUpload,
   fileAdd: mdiFilePlus,
+  inProgress: mdiCircleSlice3,
   progressUpload: mdiProgressUpload,
   up: mdiArrowUp,
   down: mdiArrowDown,
@@ -211,7 +239,8 @@ export const Icons = Object.freeze({
   check: mdiCheck,
   console: mdiConsole,
   clock: mdiClockOutline,
-  filamentEstimate: mdiFormatLineSpacing,
+  formatLineSpacing: mdiFormatLineSpacing,
+  layersTripleOutline: mdiLayersTripleOutline,
   chevronUp: mdiChevronUp,
   chevronDown: mdiChevronDown,
   chevronRight: mdiChevronRight,
@@ -221,8 +250,10 @@ export const Icons = Object.freeze({
   files: mdiFileTableOutline,
   fileDocument: mdiFileDocumentOutline,
   file: mdiFile,
+  fileCancel: mdiFileCancel,
   pause: mdiPause,
   cancel: mdiWindowClose,
+  cancelled: mdiCancel,
   resume: mdiPlayBoxOutline,
   reprint: mdiPrinter,
   printer: mdiPrinter,
@@ -249,7 +280,15 @@ export const Icons = Object.freeze({
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,
   lockReset: mdiLockReset,
-  tempError: mdiThermometerAlert
+  reset: mdiRestore,
+  tempError: mdiThermometerAlert,
+  contentCopy: mdiContentCopy,
+  apps: mdiApps,
+  shieldAccount: mdiShieldAccount,
+  retract: mdiAlphaRCircleOutline,
+  codeJson: mdiCodeJson,
+  desktopTower: mdiDesktopTower,
+  harddisk: mdiHarddisk
 })
 
 export const Waits = Object.freeze({
@@ -282,40 +321,10 @@ export const Waits = Object.freeze({
   onSetAcceleration: 'onSetAcceleration',
   onSetDeceleration: 'onSetDeceleration',
   onSetSCV: 'onSetSCV',
+  onSetRetractLength: 'onSetRetractLength',
+  onSetRetractSpeed: 'onSetRetractSpeed',
+  onSetUnretractSpeed: 'onSetUnretractSpeed',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem'
-})
-
-export const defaultPlotLayout = Object.freeze({
-  showScale: true,
-  plot_bgcolor: 'transparent',
-  paper_bgcolor: 'transparent',
-  margin: {
-    l: 0,
-    r: 100,
-    b: 0,
-    t: 0
-  },
-  scene: {
-    camera: {
-      eye: {
-        x: -1.25,
-        y: -1.25,
-        z: 0.5
-      }
-    },
-    xaxis: {
-      color: '#999',
-      range: [0, 200]
-    },
-    yaxis: {
-      color: '#999',
-      range: [0, 200]
-    },
-    zaxis: {
-      color: '#999',
-      range: [-1, 1]
-    }
-  }
 })

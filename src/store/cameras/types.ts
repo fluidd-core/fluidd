@@ -1,5 +1,5 @@
 export interface CamerasState {
-  fillSpace: boolean;
+  activeCamera: string;
   cameras: CameraConfig[];
 }
 

@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { ChartData, ChartState } from './types'
 import { defaultState } from './'
@@ -7,6 +8,12 @@ export const mutations: MutationTree<ChartState> = {
    * Reset state
    */
   setReset (state) {
+    // Remove unknown keys first.
+    const d = defaultState()
+    Object.keys(state).forEach(key => {
+      if (!Object.keys(d).includes(key)) delete state[key]
+    })
+
     Object.assign(state, defaultState())
   },
 
@@ -28,11 +35,16 @@ export const mutations: MutationTree<ChartState> = {
   /**
    * Adds a single chart entry.
    */
-  setChartEntry (state, payload: { retention: number; data: ChartData }) {
+  setChartEntry (state, payload: { type: string; retention: number; data: ChartData }) {
     // Dont keep data older than our set retention
-    state.chart.push(payload.data)
-    while (state.chart.length > payload.retention) {
-      state.chart.splice(0, 1)
+    if (!state[payload.type]) {
+      Vue.set(state, payload.type, [])
+      // console.log('created new array', payload.type)
+    }
+    state[payload.type].push(payload.data)
+    // console.log('set data', payload.type, payload.data)
+    while (state[payload.type].length > payload.retention) {
+      state[payload.type].splice(0, 1)
     }
   },
 

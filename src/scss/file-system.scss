@@ -5,21 +5,6 @@
     user-select: none;
   }
 
-  ::-webkit-scrollbar {
-    transition: all .5s;
-    width: 5px;
-    height: 10px;
-    z-index: 10;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: #b3ada7;
-  }
-
   // gcode thumbnails in the file list
   .file-icon-thumb {
     align-items: center;
@@ -74,4 +59,29 @@
   .v-data-table__expanded.v-data-table__expanded__content {
     box-shadow: none !important;
   }
+}
+
+.theme--light.bulk-drag {
+  color: map-get($material-light, 'text-color');
+  background-color: rgba(map-deep-get($material-light, 'table', 'active'), 1);
+}
+
+.theme--dark.bulk-drag {
+  color: map-get($material-dark, 'text-color');
+  background-color: rgba(map-deep-get($material-dark, 'table', 'active'), 1);
+}
+
+.bulk-drag {
+  font-family: "Roboto", sans-serif;
+  line-height: 1.5;
+  display: flex;
+  flex: 1 1 auto;
+  position: absolute;
+  top: -1000px;
+  right: 0;
+  width: 170px;
+  height: 40px;
+  align-items: center;
+  padding: 0 16px 0 32px;
+  border-radius: 6px;
 }

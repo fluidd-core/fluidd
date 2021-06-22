@@ -1,16 +1,10 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" class="pt-0">
-        <klippy-status-card v-if="!klippyReady || hasWarnings"></klippy-status-card>
-        <printer-stats-card></printer-stats-card>
-      </v-col>
-      <v-col cols="12" v-if="supportsHistory && klippyReady" >
-        <printer-history-card></printer-history-card>
-      </v-col>
-    </v-row>
-
-  </v-container>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
+    <v-col cols="12">
+      <printer-stats-card class="mb-2 mb-sm-4"></printer-stats-card>
+      <printer-history-card></printer-history-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">

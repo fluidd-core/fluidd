@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { getAllLayouts } from '@/store/helpers'
+import getAllLayouts from '@/util/get-all-layouts'
 import { defaultState } from './'
 import { LayoutConfig, LayoutState, Layouts } from './types'
 
@@ -41,7 +41,6 @@ export const mutations: MutationTree<LayoutState> = {
       }
 
       // Missing compontents? Add'em.
-      // console.log(supportedComponents)
       supportedComponents.forEach(o => {
         if (o.layout && o.container) {
           payload.layouts[o.layout][o.container].push(o)

@@ -57,9 +57,11 @@ These can be assumed sane defaults, but should be checked and modified to your o
 ### PAUSE
 
 {% raw %}
-```yaml
+
+```sh
 [gcode_macro PAUSE]
-rename_existing: BASE_PAUSE
+description: Pause the actual running print
+rename_existing: PAUSE_BASE
 # change this if you need more or less extrusion
 variable_extrude: 1.0
 gcode:
@@ -78,39 +80,56 @@ gcode:
       {% set z_safe = max_z - act_z %}
   {% endif %}
   ##### end of definitions #####
-  SAVE_GCODE_STATE NAME=PAUSE_state
-  BASE_PAUSE
+  PAUSE_BASE
   G91
-  G1 E-{E} F2100
-  G1 Z{z_safe} F900
-  G90
-  G1 X{x_park} Y{y_park} F6000
+  {% if printer.extruder.can_extrude|lower == 'true' %}
+    G1 E-{E} F2100
+  {% else %}
+    {action_respond_info("Extruder not hot enough")}
+  {% endif %}
+  {% if "xyz" in printer.toolhead.homed_axes %}
+    G1 Z{z_safe} F900
+    G90
+    G1 X{x_park} Y{y_park} F6000
+  {% else %}
+    {action_respond_info("Printer not homed")}
+  {% endif %} 
 ```
 
 ### RESUME
 
-```yaml
+```sh
 [gcode_macro RESUME]
-rename_existing: BASE_RESUME
+description: Resume the actual running print
+rename_existing: RESUME_BASE
 gcode:
   ##### read E from pause macro #####
   {% set E = printer["gcode_macro PAUSE"].extrude|float %}
+  #### get VELOCITY parameter if specified ####
+  {% if 'VELOCITY' in params|upper %}
+    {% set get_params = ('VELOCITY=' + params.VELOCITY)  %}
+  {%else %}
+    {% set get_params = "" %}
+  {% endif %}
   ##### end of definitions #####
-  G91
-  G1 E{E} F2100
-  RESTORE_GCODE_STATE NAME=PAUSE_state
-  BASE_RESUME
+  {% if printer.extruder.can_extrude|lower == 'true' %}
+    G91
+    G1 E{E} F2100
+  {% else %}
+    {action_respond_info("Extruder not hot enough")}
+  {% endif %}  
+  RESUME_BASE {get_params}
 ```
-{% endraw %}
 
 ### CANCEL_PRINT
 
-```yaml
+```sh
 [gcode_macro CANCEL_PRINT]
-rename_existing: BASE_CANCEL_PRINT
+description: Cancel the actual running print
+rename_existing: CANCEL_PRINT_BASE
 gcode:
   TURN_OFF_HEATERS
-  CLEAR_PAUSE
-  SDCARD_RESET_FILE
-  BASE_CANCEL_PRINT
+  CANCEL_PRINT_BASE
 ```
+
+{% endraw %}

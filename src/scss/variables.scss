@@ -1,5 +1,16 @@
 // Change our grid gutters to 16px.
 $grid-gutter: 16px;
+$container-padding-x: 16px;
+$container-padding-y: 16px;
+
+$grid-gutters:
+  (
+    'xs': 2px,
+    'sm': 3px,
+    'md': 4px,
+    'lg': 8px,
+    'xl': 16px
+  );
 
 // Standard height rows for our table should be..
 $data-table-regular-row-height: 40px;
@@ -12,15 +23,15 @@ $tooltip-background-color: rgba(10,10,10,0.90);
 $material-dark: (
   'background': #1E1E20,
   'table': (
+    'active':#313134, 
     'hover': #353539
   ),
   'text': (
     'theme': rgba(#ffffff, 0.87),
-    'primary': rgba(#ffffff, 0.87),
-    'secondary': rgba(#ffffff, 0.87)
+    'primary': rgba(#ffffff, 0.80), // standard text color (when not specifically set to primary--text)
   ),
   'icons': (
-    'active': rgba(#ffffff, 0.87)
+    'active': rgba(#ffffff, 0.77) // incl checkboxes
   ),
   'text-color': rgba(#ffffff, 0.87),
   'fg-color': rgba(#ffffff, 0.87)
@@ -28,7 +39,7 @@ $material-dark: (
 
 $material-dark-elevation-colors: (
   '0': #1E1E20,
-  '1': #28282b,
+  '1': #262629,
   '2': #2b2b2d,
   '3': #2d2d30,
   '4': #2f2f32,

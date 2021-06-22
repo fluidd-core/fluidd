@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { Macro, MacroCategory, MacrosState } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 
 export const actions: ActionTree<MacrosState, RootState> = {

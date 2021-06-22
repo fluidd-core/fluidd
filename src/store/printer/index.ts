@@ -34,10 +34,10 @@ export const defaultState = (): PrinterState => {
           bed_mesh: {},
           fan: {},
           printer: {
-            max_accel_to_decel: 0,
-            max_accel: 0,
-            max_velocity: 0,
-            square_corner_velocity: 5,
+            max_accel_to_decel: 500,
+            max_accel: 1000,
+            max_velocity: 100,
+            square_corner_velocity: 3,
             kinematics: 'none'
           },
           virtual_sdcard: {},
@@ -80,6 +80,12 @@ export const defaultState = (): PrinterState => {
         print_time: 0,
         square_corner_velocity: 0,
         extruder: ''
+      },
+      firmware_retraction: {
+        retract_length: 0,
+        unretract_extra_length: 0,
+        unretract_speed: 0,
+        retract_speed: 0
       },
       current_file: {
         estimated_time: 0,

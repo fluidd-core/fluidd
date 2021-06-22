@@ -1,11 +1,11 @@
 app:
   bedmesh:
     label:
-      profile_name: Perfil
-      remove_profile: Remover perfil %{name}
       flat_surface: Mostrar plano plano
       mesh_matrix: Matriz de malha
       probed_matrix: Matriz sondada
+      profile_name: Perfil
+      remove_profile: Remover perfil %{name}
       scale: Escala por min / max
       wireframe: Wireframe
     msg:
@@ -25,10 +25,10 @@ app:
     label:
       current: Corrente
       item: Item
-      power: Energia
-      target: Alvo
       'off': Gráfico desligado
       'on': Gráfico ligado
+      power: Energia
+      target: Alvo
     tooltip:
       help: >-
         Mantenha a tecla Shift pressionada para aumentar o zoom. <br /> Clique
@@ -36,8 +36,8 @@ app:
         no gráfico.
   console:
     label:
-      hide_temp_waits: Ocultar temperaturas
       auto_scroll: Auto scroll
+      hide_temp_waits: Ocultar temperaturas
     placeholder:
       command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para histórico'
   endpoint:
@@ -74,8 +74,8 @@ app:
     label:
       dir_name: Nome diretório
       disk_usage: Disco usado
-      file_name: Nome ficheiro
       downloaded: Descarregado
+      file_name: Nome ficheiro
       transfer_rate: Taxa de transferência
       uploaded: Carregado
     msg:
@@ -87,10 +87,10 @@ app:
     title:
       add_dir: Adicionar diretório
       add_file: Adicionar ficheiro
-      rename_dir: Renomear diretório
-      rename_file: Renomear ficheiro
       download_file: Recuperando ficheiro
       keyboard_shortcuts: Atalhos do teclado
+      rename_dir: Renomear diretório
+      rename_file: Renomear ficheiro
       upload_file: Carregando ficheiro | Carregando ficheiros
     tooltip:
       disabled: Os trabalhos são desativados antes da comunicação inicial com o klippy
@@ -111,8 +111,11 @@ app:
       download: Download
       edit: Editar
       extrude: Extrudir
+      heaters_off: Heaters desligados
+      load_all: Carregar tudo
       pause: Pausa
       preheat: Pré aquecer
+      presets: Presets
       quad_gantry_level: QGL
       reboot: Reiniciar
       remove: Remover
@@ -130,15 +133,12 @@ app:
       save: Salvar
       save_as: Salvar como
       save_restart: Salvar e reiniciar
+      send: Enviar
       shutdown: Desligar
       socket_refresh: Forçar atualização
       upload: Envio
       upload_print: Envio e impressão
       view: Ver
-      heaters_off: Heaters desligados
-      load_all: Carregar tudo
-      presets: Presets
-      send: Enviar
     error:
       app_setup_link: >-
         Os requisitos de configuração do Fluidd podem ser encontrados <a
@@ -154,6 +154,7 @@ app:
       accel_to_decel: Acel. e Desacel.
       acceleration: Acelaração
       add_camera: Adicionar Camera
+      add_category: Adicionar categoria
       add_preset: Adicionar predefinição
       api_url: URL do API
       confirm: Confirmar
@@ -184,22 +185,20 @@ app:
       total_print_time_avg: Média por impressão
       total_time: Tempo total
       total_time_avg: Média por impressão
+      uncategorized: Sem categoria
       used: usado
       variance: Variação
       velocity: Velocidade
       z_offset: Z Offset
-      add_category: Adicionar categoria
-      move_macro: Mover macro %{name}
-      uncategorized: Sem categoria
     simple_form:
       error:
+        arrayofnums: Apenas números
+        exists: Já existe
         invalid_url: URL inválido
         max: Max. %{max}
         min: Min. %{min}
         min_or_0: Min %{min} ou 0
         required: Obrigatório
-        arrayofnums: Apenas números
-        exists: Já existe
       msg:
         confirm: Tem a certeza?
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
@@ -207,8 +206,13 @@ app:
     table:
       header:
         actions: Ações
+        end_time: Terminado
         estimated_time: Tempo estimado
+        filament: Filamento
         filament_used: Filamento
+        first_layer_bed_temp: Temperature da mesa na primeira camada
+        first_layer_extr_temp: Temperatura da extrusora na primeira camada
+        first_layer_height: Altura da primeira camada
         height: Altura
         last_printed: Ultima impressão
         layer_height: Altura da camada
@@ -217,18 +221,14 @@ app:
         print_duration: Duração da impressão
         size: Tamanho
         slicer: Slicer
+        slicer_version: Versão Slicer
         start_time: Iniciado
         status: Estado
-        end_time: Terminado
-        filament: Filamento
-        first_layer_bed_temp: Temperature da mesa na primeira camada
-        first_layer_extr_temp: Temperatura da extrusora na primeira camada
-        first_layer_height: Altura da primeira camada
-        slicer_version: Versão Slicer
         total_duration: Duração total
     title:
       add_printer: Adicionar impressora
       bedmesh: Nivelamento cama
+      bedmesh_controls: Controlos de malha de mesa
       camera: Camera | Cameras
       config_files: Ficheiros configuração
       configure: Configurar
@@ -241,14 +241,13 @@ app:
       limits: Limites impressora
       macros: Macros
       runout_sensors: Sensores filamento
+      settings: Definições
       stats: Estatísticas da impressora
       status: Estado
       system_control: Controlo sistema
       temperature: Temperatura
       tool: Ferramentas
       tune: Afinação
-      bedmesh_controls: Controlos de malha de mesa
-      settings: Definições
     tooltip:
       estop: Paragem emergência
       reload_klipper: Recarrega a configuração do klipper.
@@ -298,6 +297,7 @@ app:
       default_toolhead_xy_speed: Velocidade XY do toolhead padrão
       default_toolhead_z_speed: Velocidade Z do toolhead  padrão
       enable: Habilitar
+      enable_notifications: Ativar notificações
       fps_target: Frames por segundo
       gcode_coords: Usar Coordenadas GCode
       invert_x_control: Inverter controlo X
@@ -311,7 +311,6 @@ app:
       time_estimates: Estimativas de tempo
       toggle: Alternar
       z_adjust_values: Ajustar valores Z
-      enable_notifications: Ativar notificações
     timer_options:
       duration: Só duração
       duration_description: Semelhante ao LCD klipper, mostra apenas a duração, sem estimativas.
@@ -358,9 +357,9 @@ app:
     label:
       dirty: DIRTY
       invalid: INVÁLIDO
-      up_to_date: ATUALIZADO
       os_packages: Pacotes de SO
       package_list: Lista de Pacotes
+      up_to_date: ATUALIZADO
     status:
       finished: Atualizações terminadas
       updating: A atualizar...

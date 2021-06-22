@@ -1,8 +1,9 @@
 import { ActionTree } from 'vuex'
 import { PrinterState } from './types'
 import { RootState } from '../types'
-import { handleAddChartEntry, handlePrintStateChange, handleCurrentFileChange } from '../helpers'
-import { SocketActions } from '@/socketActions'
+import { handlePrintStateChange, handleCurrentFileChange } from '../helpers'
+import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import consola from 'consola'
 
@@ -129,6 +130,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // compare the before and after.
       handleCurrentFileChange(payload)
       handlePrintStateChange(payload)
+      handleSystemStatsChange(payload)
+      handleMcuStatsChange(payload)
 
       for (const key in payload) {
         const val = payload[key]
@@ -141,7 +144,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
         }
       }
 
-      // Add a chart entry
+      // Add a temp chart entry
       const retention = (rootState.server)
         ? rootState.server.config.server.temperature_store_size
         : Globals.CHART_HISTORY_RETENTION

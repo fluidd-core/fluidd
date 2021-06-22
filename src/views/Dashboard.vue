@@ -1,49 +1,48 @@
 <template>
-  <v-container fluid class="constrained-width px-2 px-sm-4">
-    <v-row class="mt-0 mt-sm-2">
-      <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
-        <klippy-status-card v-if="(!klippyReady || hasWarnings) && !inLayout"></klippy-status-card>
-        <draggable
-          v-if="container1"
-          class="list-group"
-          v-model="container1"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
-        >
-          <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <template v-for="c in container1">
-              <component
-                v-if="(c.enabled && !filtered(c)) || inLayout"
-                :is="c.id"
-                :key="c.id">
-              </component>
-            </template>
-          </transition-group>
-        </draggable>
-      </v-col>
-      <v-col cols="12" md="6" class="pt-0" :class="{ 'drag': inLayout }">
-        <draggable
-          v-if="container2"
-          class="list-group"
-          v-model="container2"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
-        >
-          <transition-group type="transition" :name="!drag ? 'flip-list' : null">
-            <template v-for="c in container2">
-              <component
-                v-if="(c.enabled && !filtered(c)) || inLayout"
-                :is="c.id"
-                :key="c.id">
-              </component>
-            </template>
-          </transition-group>
-        </draggable>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
+    <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
+      <draggable
+        v-if="container1"
+        class="list-group"
+        v-model="container1"
+        v-bind="dragOptions"
+        @start.stop="drag = true"
+        @end.stop="handleStopDrag"
+      >
+        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+          <template v-for="c in container1">
+            <component
+              v-if="(c.enabled && !filtered(c)) || inLayout"
+              :is="c.id"
+              :key="c.id"
+              class="mb-2 mb-sm-4">
+            </component>
+          </template>
+        </transition-group>
+      </draggable>
+    </v-col>
+    <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
+      <draggable
+        v-if="container2"
+        class="list-group"
+        v-model="container2"
+        v-bind="dragOptions"
+        @start.stop="drag = true"
+        @end.stop="handleStopDrag"
+      >
+        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+          <template v-for="c in container2">
+            <component
+              v-if="(c.enabled && !filtered(c)) || inLayout"
+              :is="c.id"
+              :key="c.id"
+              class="mb-2 mb-sm-4">
+            </component>
+          </template>
+        </transition-group>
+      </draggable>
+    </v-col>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -60,6 +59,7 @@ import MacrosCard from '@/components/widgets/macros/MacrosCard.vue'
 import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
+import RetractCard from '@/components/widgets/retract/RetractCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import { Macro } from '@/store/macros/types'
@@ -74,6 +74,7 @@ import { Macro } from '@/store/macros/types'
     TemperatureCard,
     CameraCard,
     PrinterLimitsCard,
+    RetractCard,
     ConsoleCard,
     OutputsCard,
     GcodePreviewCard
@@ -90,7 +91,11 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['cameras/getVisibleCameras'].length
+    return this.$store.getters['cameras/getEnabledCameras'].length
+  }
+
+  get frimwareRetractionEnabled (): boolean {
+    return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
   }
 
   get macros () {
@@ -143,6 +148,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'camera-card' && !this.hasCameras) return true
     if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
+    if (item.id === 'retract-card' && !this.frimwareRetractionEnabled) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled

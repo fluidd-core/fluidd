@@ -1,4 +1,5 @@
 export interface ChartState {
+  [index: string]: any;
   ready: boolean; // chart is ready, and we've process the initial store data.
   chart: ChartData[]; // chart data
   selectedLegends: ChartSelectedLegends;

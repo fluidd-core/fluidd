@@ -20,6 +20,8 @@
 
       <v-divider />
 
+      <!-- <pre>{{ categories }}</pre> -->
+
       <!-- Look through user categories.. -->
       <template
         v-for="category in categories"
@@ -40,7 +42,7 @@
             text
             x-small
             color="">
-            <v-icon color="grey--text">$edit</v-icon>
+            <v-icon color="">$edit</v-icon>
           </app-btn>
 
           <app-btn
@@ -49,7 +51,7 @@
             text
             x-small
             color="">
-            <v-icon color="grey--text">$close</v-icon>
+            <v-icon color="">$close</v-icon>
           </app-btn>
 
           <!-- <v-icon>$chevronRight</v-icon> -->

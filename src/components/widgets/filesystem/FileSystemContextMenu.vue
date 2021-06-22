@@ -1,6 +1,6 @@
 <template>
   <v-menu
-    transition="slide-x-transition"
+    transition="slide-y-transition"
     :value="open"
     @input="$emit('update:open', $event)"
     :position-x="positionX"
@@ -62,7 +62,7 @@
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
             </v-list-item>
-            <!-- <v-list-item
+            <v-list-item
               link
               @click="$emit('preview-gcode', file)"
               v-if="file.type !== 'directory' && canPreviewGcode">
@@ -70,7 +70,7 @@
                 <v-icon>$magnify</v-icon>
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
-            </v-list-item> -->
+            </v-list-item>
             <v-list-item
               link
               @click="$emit('rename', file)"
@@ -94,7 +94,7 @@
         <v-col class="px-2 d-none d-sm-flex" v-if="file.thumbnails && file.thumbnails.length">
           <img
             class="mr-2 ml-2"
-            :src="getThumbUrl(file.thumbnails, file.path, true)"
+            :src="getThumbUrl(file.thumbnails, file.path, true, file.modified)"
             :height="150"
           />
         </v-col>
@@ -144,7 +144,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    return this.$store.getters['layout/isEnabledInLayout']('dashboard', 'gcode-preview-card')
+    return (this.$store.getters['layout/isEnabledInLayout']('dashboard', 'gcode-preview-card') && this.root === 'gcodes')
   }
 }
 </script>

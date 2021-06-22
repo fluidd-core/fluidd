@@ -2,7 +2,7 @@
   <v-layout class="console-item">
     <span
       v-if="value.time"
-      class="grey--text text--darken-2 mr-3 d-none d-sm-block">
+      class="secondary--text mr-3 d-none d-sm-block">
       {{ itemTime }}&nbsp;
     </span>
     <span
@@ -52,15 +52,15 @@ export default class ConsoleItem extends Vue {
       return { 'error--text': true }
     }
 
-    if (this.value.message.startsWith('//')) {
-      return { 'grey--text': true }
-    }
+    // if (this.value.message.startsWith('//')) {
+    //   return { 'secondary--text': true }
+    // }
 
     if (this.value.type === 'command') {
-      return { 'primary--text text--lighten-1': true }
+      return { 'primary--text': true }
     }
 
-    return { 'grey--text text--darken-1': true }
+    return { 'secondary--text': true }
   }
 
   itemClick (event: Event) {

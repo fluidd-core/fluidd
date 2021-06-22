@@ -1,8 +1,10 @@
 import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
+import httpClient from '@/api/httpClient'
 import { Component } from 'vue-property-decorator'
 import { getThumb } from '@/store/helpers'
-import { AxiosRequestConfig, CancelTokenSource } from 'axios'
+import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
+import { authApi } from '@/api/auth.api'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -13,13 +15,14 @@ export default class FilesMixin extends Vue {
     return this.$store.state.config.apiUrl
   }
 
-  getThumbUrl (thumbnails: Thumbnail[], path: string, goLarge: boolean) {
+  getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, cachebust?: number) {
     if (thumbnails.length) {
-      const thumb = getThumb(thumbnails, path, goLarge)
+      if (!cachebust) cachebust = new Date().getTime()
+      const thumb = getThumb(thumbnails, path, large)
       if (
         thumb &&
         thumb.absolute_path
-      ) return thumb.absolute_path
+      ) return `${thumb.absolute_path}?cachebust=${cachebust}`
       if (
         thumb &&
         thumb.data
@@ -48,7 +51,7 @@ export default class FilesMixin extends Vue {
     }
 
     if (res) {
-      this.cancelTokenSource = this.$http.CancelToken.source()
+      this.cancelTokenSource = Axios.CancelToken.source()
       const path = file.path ? `${file.path}/${file.filename}` : file.filename
       return await this.getFile(path, 'gcodes', file.size, {
         responseType: 'text',
@@ -84,11 +87,15 @@ export default class FilesMixin extends Vue {
       ...options,
       onDownloadProgress: (progressEvent: ProgressEvent) => {
         const units = ['kB', 'MB', 'GB']
-        let speed = progressEvent.loaded / (performance.now() - startTime)
+        let speed = 0
         let i = 0
-        while (speed > 1024) {
-          speed /= 1024.0
-          i = Math.min(2, i + 1)
+        const delta = performance.now() - startTime
+        if (delta > 0) {
+          speed = progressEvent.loaded / delta
+          while (speed > 1024) {
+            speed /= 1024
+            i = Math.min(2, i + 1)
+          }
         }
 
         const payload: any = {
@@ -107,27 +114,40 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return await this.$http.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    return await httpClient.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
   }
 
   /**
    * Will download a file by filepath via a standard browser link.
+   * Implements a oneshot.
    * @param filename The filename to retrieve.
    * @param path The path to the file.
    */
   downloadFile (filename: string, path: string) {
-    // Sort out the filepath and url.
-    const filepath = (path) ? `${path}/${filename}` : `${filename}`
-    const url = encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime())
+    // Grab a oneshot.
+    authApi.getOneShot()
+      .then(response => response.data.result)
+      .then((token) => {
+        // Sort out the filepath and url.
+        const filepath = (path) ? `${path}/${filename}` : `${filename}`
+        const url = encodeURI(
+          this.apiUrl +
+          '/server/files/' + filepath +
+          '?token=' + token +
+          '&date=' + new Date().getTime())
 
-    // Create a link, handle its click - and finally remove it again.
-    const link = document.createElement('a')
-    link.href = url
-    link.setAttribute('download', filename)
-    link.setAttribute('target', '_blank')
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+        // Create a link, handle its click - and finally remove it again.
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', filename)
+        link.setAttribute('target', '_blank')
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      })
+      .catch(() => {
+        // Likely a 401.
+      })
   }
 
   /**
@@ -162,7 +182,7 @@ export default class FilesMixin extends Vue {
       cancelled: false
     })
 
-    return this.$http
+    return httpClient
       .post(
         this.apiUrl + '/server/files/upload',
         formData, {
@@ -172,11 +192,15 @@ export default class FilesMixin extends Vue {
           },
           onUploadProgress: (progressEvent: ProgressEvent) => {
             const units = ['kB', 'MB', 'GB']
-            let speed = progressEvent.loaded / (performance.now() - startTime)
+            let speed = 0
             let i = 0
-            while (speed > 1024) {
-              speed /= 1024.0
-              i = Math.min(2, i + 1)
+            const delta = performance.now() - startTime
+            if (delta > 0) {
+              speed = progressEvent.loaded / delta
+              while (speed > 1024) {
+                speed /= 1024
+                i = Math.min(2, i + 1)
+              }
             }
             this.$store.dispatch('files/updateFileUpload', {
               filepath,
@@ -231,7 +255,7 @@ export default class FilesMixin extends Vue {
       // consola.error('about to process...', fileState)
       if (!fileState.cancelled) {
         try {
-          this.cancelTokenSource = this.$http.CancelToken.source()
+          this.cancelTokenSource = Axios.CancelToken.source()
           await this.uploadFile(file, path, root, andPrint, {
             cancelToken: this.cancelTokenSource.token
           })

@@ -39,7 +39,6 @@
       v-if="!readonly"
       v-model="consoleCommand"
       @send="sendCommand"
-      @autoScrollChange="handleAutoScrollChange"
     >
     </console-command>
   </div>
@@ -51,7 +50,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { ConsoleEntry } from '@/store/console/types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
@@ -111,12 +110,6 @@ export default class Console extends Mixins(StateMixin) {
     }
   }
 
-  handleAutoScrollChange (autoScroll: boolean) {
-    if (autoScroll) {
-      this.scrollToBottom()
-    }
-  }
-
   scrollToBottom () {
     // If we have auto scroll turned off, then don't do this
     // unless it's readonly.
@@ -154,7 +147,6 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   .console-wrapper {
-    overflow-x: hidden;
     font-family: monospace;
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
@@ -164,19 +156,8 @@ export default class Console extends Mixins(StateMixin) {
     flex: 0 0 auto;
   }
 
-  .console ::-webkit-scrollbar {
-    transition: all .5s;
-    width: 5px;
-    height: 1px;
-    z-index: 10;
-  }
-
-  .console ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .console ::-webkit-scrollbar-thumb {
-    background: #b3ada7;
+  ::v-deep .vue-recycle-scroller__item-wrapper {
+    overflow: revert;
   }
 
 </style>

@@ -3,7 +3,7 @@ import { MutationTree } from 'vuex'
 import { PrinterState } from './types'
 import { defaultState } from './index'
 import consola from 'consola'
-import { get } from 'lodash-es'
+import { get } from 'lodash'
 
 export const mutations: MutationTree<PrinterState> = {
   /**

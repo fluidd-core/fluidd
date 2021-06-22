@@ -1,13 +1,13 @@
 import { GetterTree } from 'vuex'
-import { AppFile, Files, FilesState } from './types'
+import { AppFile, FileRoot, Files, FilesState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a directory of files and sub-directories.
    */
-  getDirectory: (state) => (r: string, path: string) => {
-    const root = r as 'gcodes' | 'config' | 'config_examples' | 'docs'
+  getDirectory: (state) => (r: FileRoot, path: string) => {
+    const root = r
     if (state && state[root]) {
       const dir = state[root].find(o => o.path === path)
       if (dir) {
@@ -26,8 +26,8 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (r: string) => {
-    const root = r as 'gcodes' | 'config' | 'config_examples' | 'docs'
+  getRootProperties: () => (r: FileRoot) => {
+    const root = r
 
     if (root === 'gcodes') {
       return {
@@ -36,9 +36,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: true,
-        canConfigure: true,
-        showConfigRef: false,
-        showSaveRestart: false
+        canConfigure: true
       }
     }
 
@@ -49,9 +47,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: false,
-        canConfigure: false,
-        showConfigRef: true,
-        showSaveRestart: true
+        canConfigure: false
       }
     }
 
@@ -62,9 +58,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false,
-        showConfigRef: true,
-        showSaveRestart: false
+        canConfigure: false
       }
     }
 
@@ -75,9 +69,18 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false,
-        showConfigRef: true,
-        showSaveRestart: false
+        canConfigure: false
+      }
+    }
+
+    if (root === 'logs') {
+      return {
+        readonly: true,
+        accepts: [],
+        canEdit: false,
+        canView: true,
+        canPrint: false,
+        canConfigure: false
       }
     }
 
@@ -87,9 +90,7 @@ export const getters: GetterTree<FilesState, RootState> = {
       canEdit: false,
       canView: true,
       canPrint: false,
-      canConfigure: false,
-      showConfigRef: false,
-      showSaveRestart: false
+      canConfigure: false
     }
   },
 

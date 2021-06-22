@@ -1,8 +1,8 @@
 import vuetify from '@/plugins/vuetify'
 import { ActionTree } from 'vuex'
-import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings, HostConfig } from './types'
+import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings } from './types'
 import { RootState } from '../types'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
 import { AppTableHeader } from '@/types'
@@ -70,15 +70,14 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Inits the host configuration.
    */
-  async initHost ({ commit }, payload: HostConfig) {
-    commit('setInitHostConfig', payload)
+  async initHost ({ commit }, payload: InitConfig) {
+    commit('setInitHostConfig', payload.hostConfig)
   },
 
   /**
    * Inits any local storage state we may have.
    */
   async initLocal ({ commit }, payload: InitConfig) {
-    commit('setInitLocal') // Just loads local storage config into the store.
     commit('setInitInstances', payload) // Loads instances from local storage, and also inits the current instance.
   },
 

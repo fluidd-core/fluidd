@@ -4,9 +4,9 @@ import consola from 'consola'
 import { SocketState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
-import { SocketActions } from '@/socketActions'
-import { EventBus } from '@/eventBus'
-import { upperFirst, camelCase } from 'lodash-es'
+import { SocketActions } from '@/api/socketActions'
+import { EventBus, FlashMessageTypes } from '@/eventBus'
+import { upperFirst, camelCase } from 'lodash'
 
 let retryTimeout: number
 
@@ -29,7 +29,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     */
   async onSocketOpen ({ commit }, payload) {
     commit('setSocketOpen', payload)
-    SocketActions.serverInfo()
+    if (payload === true) SocketActions.serverInfo()
   },
 
   /**
@@ -37,6 +37,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
   async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
     const retry = state.disconnecting
+
     if (e.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
       await dispatch('reset', [
@@ -45,6 +46,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         'socket',
         'wait'
       ], { root: true })
+      commit('setSocketConnecting', true)
       Vue.$socket.connect()
     }
 
@@ -52,6 +54,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       // Set the socket state to closed.
       // If we swap printer endpoints, then the init will run
       // which will reset the state if necessary.
+      commit('setSocketConnecting', false)
       commit('setSocketOpen', false)
     }
   },
@@ -83,7 +86,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         message = payload.message
       }
 
-      EventBus.$emit(message, 'error', 5000)
+      EventBus.$emit(message, { type: FlashMessageTypes.error })
     }
     if (payload.code === 503) {
       // This indicates klippy is non-responsive, or there's a configuration error
@@ -93,7 +96,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       // Forcefully set the printer in error
       commit('printer/setPrinterInfo', { state: 'error', state_message: payload.message }, { root: true })
       clearTimeout(retryTimeout)
-      retryTimeout = setTimeout(() => {
+      retryTimeout = window.setTimeout(() => {
         SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
@@ -167,5 +170,13 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyProcStatUpdate ({ dispatch }, payload) {
     dispatch('server/onMachineProcStats', payload, { root: true })
+  },
+
+  async notifyUserCreated ({ dispatch }, payload) {
+    dispatch('auth/onUserCreated', payload, { root: true })
+  },
+
+  async notifyUserDeleted ({ dispatch }, payload) {
+    dispatch('auth/onUserDeleted', payload, { root: true })
   }
 }

@@ -15,10 +15,13 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Install deps
         run: npm install
+
+      - name: Run tests
+        run: npm run test:unit
 
       - name: Build
         run: npm run build
@@ -77,4 +80,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          npm run deploy.host
+          npm run deploy:host

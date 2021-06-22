@@ -3,20 +3,14 @@ import { Component } from 'vue-property-decorator'
 
 @Component
 export default class ToolheadMixin extends Vue {
-  /**
-   * Ensures our temps are high enough to extrude or retract.
-   */
-  get minExtrudeTemp () {
-    const minExtrudeTemp = this.$store.getters['printer/getPrinterSettings']('extruder.min_extrude_temp')
-    return (minExtrudeTemp !== undefined)
-      ? this.$store.getters['printer/getPrinterSettings']('extruder.min_extrude_temp')
-      : 0
+  get activeExtruder () {
+    return this.$store.getters['printer/getActiveExtruder']
   }
 
-  get extrudeRetractReady () {
-    const extruder = this.$store.state.printer.printer.extruder || undefined
-    return (extruder && extruder.temperature >= 0 && this.minExtrudeTemp >= 0)
-      ? (extruder.temperature >= this.minExtrudeTemp)
+  get extruderReady () {
+    const extruder = this.$store.getters['printer/getActiveExtruder']
+    return (extruder && extruder.temperature >= 0 && extruder.min_extrude_temp >= 0)
+      ? (extruder.temperature >= extruder.min_extrude_temp)
       : false
   }
 

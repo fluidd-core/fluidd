@@ -197,8 +197,23 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
 <style lang="scss" scoped>
   @import '~vuetify/src/styles/styles.sass';
+  @import '@/scss/variables.scss';
+
+  .theme--light ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+    color: rgba(map-get($material-light, 'text-color'), 1);
+    .temp-actual {
+      color: rgba(map-get($material-light, 'text-color'), 1);
+    }
+  }
+
+  .theme--dark ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+    color: rgba(map-get($material-dark, 'text-color'), 1);
+    .temp-actual {
+      color: rgba(map-get($material-dark, 'text-color'), 1);
+    }
+  }
+
   ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
-    color: rgba(map-deep-get($material-theme, 'text', 'theme'), 0.55);
 
     .temp-name,
     .temp-power {
@@ -206,7 +221,6 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     }
 
     .temp-actual {
-      color: rgba(map-deep-get($material-theme, 'text', 'theme'), 0.55);
       font-weight: 300;
       font-size: 1.125rem;
     }
@@ -251,7 +265,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   .legend-item {
     display: inline-block;
     cursor: pointer;
-    opacity: 0.5
+    opacity: 0.45
   }
 
   .legend-item.active {

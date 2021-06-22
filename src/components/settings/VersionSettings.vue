@@ -111,7 +111,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import VersionStatus from './VersionStatus.vue'
 import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
 import StateMixin from '@/mixins/state'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 
 @Component({

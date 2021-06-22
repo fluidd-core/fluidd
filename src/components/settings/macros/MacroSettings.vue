@@ -60,29 +60,23 @@
         <app-setting
           :key="`macro-${macro.name}`"
           :title="macro.name.toUpperCase()"
+          :accent-color="macro.color"
           :r-cols="2"
+          @click="handleSettingsDialog(macro)"
         >
-          <!-- <app-color-picker
-            v-if="macro"
-            v-model="macro.color"
-            dot
-          >
-          </app-color-picker> -->
-
-          <v-btn
-            v-if="categories.length > 0"
-            fab
-            x-small
-            text
-            @click="handleMoveDialog(macro)"
-            class="mr-2"
-          >
-            <v-icon>$move</v-icon>
-          </v-btn>
+          <template v-slot:sub-title v-if="macro.config.description && macro.config.description !== 'G-Code macro'">
+            <span
+              v-show="true"
+              class="mr-2"
+            >
+              {{ macro.config.description }}
+            </span>
+          </template>
 
           <v-switch
             class="mt-0 pt-0"
             :input-value="macro.visible"
+            @click.stop
             @change="handleMacroVisible(macro, $event)"
             color="primary"
             hide-details
@@ -94,19 +88,17 @@
 
     </v-card>
 
-    <macro-move-dialog
-      v-if="this.category && moveDialogState.macro"
-      v-model="moveDialogState.open"
-      :current-category="category"
-      :macro="moveDialogState.macro"
-      @change="handleMacroMove($event)"
-    ></macro-move-dialog>
+    <macro-settings-dialog
+      v-if="dialogState.macro"
+      v-model="dialogState.open"
+      :macro="dialogState.macro"
+    ></macro-settings-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import MacroMoveDialog from './MacroMoveDialog.vue'
+import MacroSettingsDialog from './MacroSettingsDialog.vue'
 import { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
 
@@ -122,14 +114,14 @@ const routeGuard = (to: any) => {
 
 @Component({
   components: {
-    MacroMoveDialog
+    MacroSettingsDialog
   }
 })
 export default class MacroSettings extends Vue {
   search = ''
   categoryId: string | undefined = undefined
 
-  moveDialogState: any = {
+  dialogState: any = {
     open: false,
     macro: null
   }
@@ -167,9 +159,9 @@ export default class MacroSettings extends Vue {
     this.$router.go(-1)
   }
 
-  handleMoveDialog (macro: Macro) {
-    this.moveDialogState.open = true
-    this.moveDialogState.macro = macro
+  handleSettingsDialog (macro: Macro) {
+    this.dialogState.macro = macro
+    this.dialogState.open = true
   }
 
   handleAllOn () {
@@ -185,23 +177,6 @@ export default class MacroSettings extends Vue {
       ...macro, visible: value
     }
     this.$store.dispatch('macros/saveMacro', newMacro)
-  }
-
-  handleMacroMove (category: MacroCategory) {
-    // Define a copy of the macro.
-    const newMacro = {
-      ...this.moveDialogState.macro
-    }
-
-    // Are we moving to a category, or uncategorizing it?
-    if (category.id === '0') {
-      delete newMacro.categoryId
-    } else {
-      newMacro.categoryId = category.id
-    }
-    this.$store.dispatch('macros/saveMacro', newMacro)
-    this.moveDialogState.open = false
-    this.moveDialogState.macro = null
   }
 }
 </script>

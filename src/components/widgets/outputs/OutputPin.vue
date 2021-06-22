@@ -1,6 +1,6 @@
 <template>
-  <!-- Output Pins -->
   <div>
+    <!-- Output Pins -->
     <app-slider
       v-if="pin && pin.pwm"
       input-xs
@@ -9,10 +9,10 @@
       :max="pin.scale"
       :step="0.01"
       :value="(pin.value * pin.scale) / 1"
+      :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
-      :readonly="!pin.controllable"
-      @input="setValue(pin, $event)">
+      @change="setValue(pin, $event)">
     </app-slider>
 
     <app-switch
@@ -24,7 +24,6 @@
     >
     </app-switch>
 
-    <v-divider class="my-2" v-if="divider"></v-divider>
   </div>
 </template>
 
@@ -38,9 +37,6 @@ import { OutputPin as IOutputPin } from '@/store/printer/types'
 export default class OutputPin extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   pin!: IOutputPin
-
-  @Prop({ type: Boolean, default: false })
-  divider!: boolean
 
   setValue (pin: IOutputPin, target: number) {
     if (!pin.pwm) {

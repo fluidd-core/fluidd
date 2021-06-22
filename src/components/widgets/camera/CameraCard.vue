@@ -7,16 +7,16 @@
     layout-path="dashboard.camera-card"
     @collapsed="collapsed = $event">
 
-    <camera-dialog
-      v-if="dialogState.camera"
-      v-model="dialogState.open"
-      :camera="dialogState.camera"
-    ></camera-dialog>
+    <template v-slot:menu>
+      <camera-menu
+        @select="handleCameraSelect"
+      ></camera-menu>
+    </template>
 
     <v-row
-      v-if="cameras.length > 1 || !fillSpace"
-      class="ma-2"
+      v-if="cameras.length > 1"
       justify="space-around"
+      class="ma-2"
     >
       <template v-for="camera in cameras">
         <v-col
@@ -25,16 +25,14 @@
           :key="camera.id">
           <camera-item
             :camera="camera"
-            @click="handleCameraClick(camera)"
           ></camera-item>
         </v-col>
       </template>
     </v-row>
+
     <camera-item
-      v-if="!collapsed && fillSpace && cameras.length === 1"
+      v-if="!collapsed && cameras.length === 1"
       :camera="cameras[0]"
-      flat
-      @click="handleCameraClick(cameras[0])"
     ></camera-item>
 
   </collapsable-card>
@@ -43,14 +41,14 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import CameraDialog from '@/components/widgets/camera/CameraDialog.vue'
+import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
-import { CameraConfig } from '@/store/cameras/types'
+// import { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: {
     CameraItem,
-    CameraDialog
+    CameraMenu
   }
 })
 export default class CameraCard extends Mixins(StateMixin) {
@@ -65,13 +63,9 @@ export default class CameraCard extends Mixins(StateMixin) {
   collapsed = false
 
   get cols () {
-    if (this.fillSpace) return 12
+    if (this.cameras.length === 1) return 12
     if (this.cameras.length <= 2) return 6
     if (this.cameras.length > 2) return 4
-  }
-
-  get fillSpace (): boolean {
-    return this.$store.state.cameras.fillSpace && this.cameras.length === 1
   }
 
   get inLayout (): boolean {
@@ -82,18 +76,8 @@ export default class CameraCard extends Mixins(StateMixin) {
     return this.$store.getters['cameras/getVisibleCameras']
   }
 
-  handleCameraClick (camera: CameraConfig) {
-    this.dialogState = {
-      open: true,
-      camera
-    }
+  handleCameraSelect (cam: string) {
+    this.$store.dispatch('cameras/updateActiveCamera', cam)
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .webcam {
-    display: block;
-    width: 100%;
-  }
-</style>

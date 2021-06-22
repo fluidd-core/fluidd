@@ -7,6 +7,9 @@ A big thank you to;
 - Applied Engineering & Design for the gcode TextMate grammar definition
   https://github.com/appliedengdesign/vscode-gcode-syntax
 
+- Microsoft for the log grammar definition
+  https://github.com/microsoft/vscode/blob/main/extensions/log/syntaxes/log.tmLanguage.json
+
 - NeekSandhu for the monaco textmate documentation and libs
   https://github.com/NeekSandhu/monaco-textmate
   https://github.com/NeekSandhu/monaco-editor-textmate

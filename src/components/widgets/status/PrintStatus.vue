@@ -9,40 +9,45 @@
             :value="timeEstimates.progress"
             color="primary"
           >
-          <span class="percentComplete grey--text focus--text">{{ timeEstimates.progress }}%</span>
+          <span class="percentComplete focus--text">{{ timeEstimates.progress }}%</span>
         </v-progress-circular>
       </v-col>
       <v-col class="d-flex flex-column" style="overflow: hidden;" align="start">
-          <div class="mb-1 grey--text text--lighten-1" v-if="printTimeEstimationsType !== 'totals'">
+          <div class="mb-1" v-if="printTimeEstimationsType !== 'totals'">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2">$timer</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary">$timer</v-icon>
               </template>
               <span>{{ $t('app.printer.status.time_left') }}</span>
             </v-tooltip>
-            {{ timeEstimates.remaining }}
+            <span>{{ timeEstimates.remaining }}</span>
+            <span class="secondary--text" v-if="printerPrinting && printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.endTime }}</span>
           </div>
-          <div class="mb-1 grey--text text--lighten-1">
+          <div class="mb-1">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">$clock</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary" class="mr-1">$clock</v-icon>
               </template>
               {{ (printTimeEstimationsType !== 'totals') ? $t('app.printer.status.duration_total') : $t('app.printer.status.duration') }}
             </v-tooltip>
             <span>{{ timeEstimates.current }}</span>
-            <span class="grey--text text--darken-2" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.total }}</span>
+            <span class="secondary--text" v-if="printTimeEstimationsType !== 'totals'"> / {{ timeEstimates.total }}</span>
           </div>
-          <div class="mb-1 grey--text" v-if="filamentEstimates !== ''">
+          <div class="mb-1 secondary--text" v-if="filamentEstimates !== ''">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <v-icon v-bind="attrs" v-on="on" color="grey darken-2" class="mr-1">$filamentEstimate</v-icon>
+                <v-icon v-bind="attrs" v-on="on" color="secondary" class="mr-1">$formatLineSpacing</v-icon>
               </template>
               {{ $t('app.printer.status.used_filament') }}
             </v-tooltip>
-            <span class="grey--text text--darken-2">{{ filamentEstimates }}</span>
+            <span class="secondary--text">{{ filamentEstimates }}</span>
           </div>
-          <div class="d-flex grey--text text--darken-2" v-if="filename">
-            <v-icon color="grey darken-2">$fileDocument</v-icon>
+          <div class="mb-1" v-if="layers">
+            <v-icon color="secondary" class="mr-1">$layersTripleOutline</v-icon>
+            <span v-html="layers"></span>
+          </div>
+          <div class="d-flex secondary--text" v-if="filename">
+            <v-icon color="secondary">$fileDocument</v-icon>
             <div class="filename ml-1">gcodes/{{ filename }}</div>
           </div>
       </v-col>
@@ -77,8 +82,8 @@ export default class PrintStatus extends Mixins(StateMixin, FilesMixin) {
       current_file &&
       current_file.thumbnails
     ) {
-      const thumb = this.getThumbUrl(current_file.thumbnails, current_file.path, true)
-      return thumb
+      const url = this.getThumbUrl(current_file.thumbnails, current_file.path, true, current_file.modified)
+      return url
     }
   }
 
@@ -88,6 +93,19 @@ export default class PrintStatus extends Mixins(StateMixin, FilesMixin) {
 
   get timeEstimates () {
     return this.$store.getters['printer/getTimeEstimates']
+  }
+
+  get layers () {
+    const h = this.$store.state.printer.printer.current_file.object_height
+    const flh = this.$store.state.printer.printer.current_file.first_layer_height
+    const lh = this.$store.state.printer.printer.current_file.layer_height
+    const z = this.$store.state.printer.printer.gcode_move.gcode_position[2]
+
+    const layers = Math.ceil(((h - flh) / lh) + 1) || 0
+    const current = Math.ceil((z - flh) / lh + 1) || 0
+
+    if (layers !== 0 && current !== 0) return `${current} / <span class="secondary--text">${layers}</span>`
+    return ''
   }
 
   get filamentEstimates () {

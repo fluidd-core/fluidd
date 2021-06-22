@@ -11,7 +11,7 @@ export const getters: GetterTree<ConsoleState, RootState> = {
       ? rootState.config.uiSettings.general.hideTempWaits
       : true
 
-    const regex = /^(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
+    const regex = /^(?:ok\s+)?(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
 
     return (hideTempWaits)
       ? state.console.filter(entry => !regex.test(entry.message))

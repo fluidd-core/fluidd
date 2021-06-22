@@ -78,12 +78,19 @@
         </v-list-item-icon>
       </v-list-item>
 
-      <v-list-item @click="serviceRestartWebcam(); $emit('click')">
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_webcamd') }}</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="warning">$restart</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
+      <template v-for="service in supportedServices">
+        <v-list-item
+         :key="service"
+         v-if="service !== 'moonraker' && service !== 'klipper'"
+         @click="serviceRestartByName(service);
+         $emit('click')"
+        >
+          <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service', { service }) }}</v-list-item-title>
+          <v-list-item-icon>
+            <v-icon color="warning">$restart</v-icon>
+          </v-list-item-icon>
+        </v-list-item>
+      </template>
     </v-list-group>
 
     <v-divider></v-divider>
@@ -96,7 +103,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
-import { SocketActions } from '@/socketActions'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
@@ -122,6 +129,10 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
   get devicePowerComponentEnabled () {
     return this.$store.getters['server/componentSupport']('power')
+  }
+
+  get supportedServices () {
+    return this.$store.getters['server/getSupportedServices']
   }
 
   handleHostReboot () {

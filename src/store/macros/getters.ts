@@ -10,7 +10,13 @@ export const getters: GetterTree<MacrosState, RootState> = {
    */
   getMacros: (state, getters, rootState) => {
     const macros: Macro[] = Object.keys(rootState.printer?.printer.configfile.settings)
-      .filter(key => key.startsWith('gcode_macro'))
+      .filter(key => {
+        const name = key.split(' ')[1]
+        return (
+          key.startsWith('gcode_macro') &&
+          !name.startsWith('_')
+        )
+      })
       .map(key => {
         const name = key.split(' ')[1]
         const config = rootState.printer?.printer.configfile.settings[key]
@@ -19,6 +25,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
         const r: Macro = {
           name,
           visible: true,
+          disabledWhilePrinting: false,
           color: '',
           categoryId: '0',
           ...stored,
@@ -78,10 +85,6 @@ export const getters: GetterTree<MacrosState, RootState> = {
       if (macro.categoryId && id) {
         return (macro.categoryId === id)
       }
-
-      // If we're given no category, only return those that have none, being
-      // uncategorized.
-      // if (!id) return (!macro.categoryId)
 
       // Otherwise return false
       return false

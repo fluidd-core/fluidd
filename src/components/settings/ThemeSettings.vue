@@ -7,10 +7,37 @@
       dense
       class="mb-4">
 
+      <app-setting :title="$t('app.setting.label.theme_preset')">
+        <v-select
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="themePresets"
+          item-value="icon.src"
+          item-text="name"
+          v-model="themePreset"
+          return-object
+        ></v-select>
+      </app-setting>
+
+      <v-divider></v-divider>
+
       <app-setting :title="$t('app.setting.label.primary_color')">
+        <app-btn
+          outlined
+          small
+          color="primary"
+          class="mr-2"
+          @click="handleReset"
+        >
+          {{ $t('app.setting.btn.reset') }}
+        </app-btn>
+
         <app-color-picker
           v-if="theme"
-          v-model="themeColor"
+          :primary="themeColor"
+          @change="handleChangeThemeColor"
           :title="$t('app.setting.btn.select_theme')"
         >
         </app-color-picker>
@@ -27,18 +54,6 @@
         ></v-switch>
       </app-setting>
 
-      <v-divider></v-divider>
-
-      <app-setting :title="$t('app.setting.label.reset')">
-        <app-btn
-          outlined
-          small
-          color="primary"
-          @click="handleReset"
-        >
-          {{ $t('app.setting.btn.reset') }}
-        </app-btn>
-      </app-setting>
     </v-card>
   </div>
 </template>
@@ -46,7 +61,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { ThemeConfig } from '@/store/config/types'
+import { IroColor } from '@irojs/iro-core'
+import { SupportedTheme, ThemeConfig } from '@/store/config/types'
 import ThemePicker from '../ui/AppColorPicker.vue'
 
 @Component({
@@ -55,6 +71,29 @@ import ThemePicker from '../ui/AppColorPicker.vue'
   }
 })
 export default class ThemeSettings extends Mixins(StateMixin) {
+  preset: SupportedTheme | null = null
+
+  get themePreset () {
+    return this.$store.getters['config/getCurrentThemePreset']
+  }
+
+  set themePreset (d: SupportedTheme) {
+    const value: ThemeConfig = {
+      isDark: d.isDark,
+      logo: d.logo,
+      currentTheme: {
+        primary: d.color
+      }
+    }
+
+    this.setTheme(d.color, d.isDark)
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.theme',
+      value,
+      server: true
+    })
+  }
+
   get theme () {
     return this.$store.getters['config/getTheme']
   }
@@ -63,11 +102,11 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     return this.theme.currentTheme.primary
   }
 
-  set themeColor (value: string) {
-    this.setTheme(value, this.isDark)
+  handleChangeThemeColor (value: { channel: string; color: IroColor }) {
+    this.setTheme(value.color.hexString, this.isDark)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.theme.currentTheme.primary',
-      value,
+      value: value.color.hexString,
       server: true
     })
   }
@@ -85,19 +124,25 @@ export default class ThemeSettings extends Mixins(StateMixin) {
     })
   }
 
+  get themePresets () {
+    return this.$store.state.config.hostConfig.themePresets
+  }
+
   setTheme (primary: string, isDark: boolean) {
     this.$vuetify.theme.dark = isDark
     this.$vuetify.theme.currentTheme.primary = primary
   }
 
   handleReset () {
+    const d = this.$store.getters['config/getCurrentThemePreset']
     const value: ThemeConfig = {
-      isDark: true,
+      isDark: d.isDark,
+      logo: d.logo,
       currentTheme: {
-        primary: '#2196F3'
+        primary: d.color
       }
     }
-    this.setTheme('#2196F3', true)
+    this.setTheme(d.color, true)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.theme',
       value,

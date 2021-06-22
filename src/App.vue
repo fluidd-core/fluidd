@@ -8,12 +8,12 @@
     </vue-headful>
 
     <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
+    <app-nav-drawer v-model="navdrawer"></app-nav-drawer>
 
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
+      @navdrawer="handleNavDrawerChange"
     ></app-bar>
-
-    <router-view name="navigation"></router-view>
 
     <flash-message
       v-if="flashMessage"
@@ -24,7 +24,7 @@
     />
 
     <v-btn
-      v-if="isMobile"
+      v-if="isMobile && authenticated && socketConnected"
       x-small
       fab
       fixed
@@ -36,8 +36,38 @@
     </v-btn>
 
     <v-main>
-      <router-view v-if="socketConnected" />
-      <socket-disconnected v-if="!socketConnected"></socket-disconnected>
+      <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
+      <v-container
+        fluid
+        :class="{ 'fill-height': $route.meta.fillHeight }"
+        class="constrained-width pa-2 pa-sm-4">
+
+        <v-row v-if="
+          (socketConnected && apiConnected) &&
+          (!klippyReady || hasWarnings) &&
+          !inLayout &&
+          $route.path !== '/login'
+        ">
+          <v-col>
+            <klippy-status-card></klippy-status-card>
+          </v-col>
+        </v-row>
+
+        <router-view
+          v-if="
+            (socketConnected && apiConnected) ||
+            (!authenticated && apiConnected)
+          ">
+        </router-view>
+
+      </v-container>
+
+      <socket-disconnected
+        v-if="
+          (!socketConnected && !apiConnected) ||
+          (!socketConnected && authenticated)"
+      ></socket-disconnected>
+
       <updating-dialog></updating-dialog>
     </v-main>
 
@@ -53,7 +83,8 @@ import { Waits } from './globals'
 
 @Component({})
 export default class App extends Mixins(StateMixin) {
-  toolsdrawer = false
+  toolsdrawer: boolean | null = null
+  navdrawer: boolean | null = null
   showUpdateUI = false
 
   flashMessage: FlashMessage = {
@@ -66,6 +97,14 @@ export default class App extends Mixins(StateMixin) {
   // our translations are loading.
   get updating () {
     return this.$store.state.version.busy
+  }
+
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode)
+  }
+
+  get loading () {
+    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
   }
 
   get progress () {
@@ -156,8 +195,8 @@ export default class App extends Mixins(StateMixin) {
     this.toolsdrawer = !this.toolsdrawer
   }
 
-  get loading () {
-    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
+  handleNavDrawerChange () {
+    this.navdrawer = !this.navdrawer
   }
 }
 </script>

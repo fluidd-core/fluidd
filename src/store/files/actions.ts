@@ -1,8 +1,9 @@
 import { ActionTree } from 'vuex'
 import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, AppFile, DiskUsage } from './types'
 import { RootState } from '../types'
-import { formatAsFile, getFilePaths } from '../helpers'
-import { SocketActions } from '@/socketActions'
+import formatAsFile from '@/util/format-as-file'
+import getFilePaths from '@/util/get-file-paths'
+import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { HistoryItem } from '../history/types'
 
@@ -28,7 +29,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         dirname: '..',
         name: '..',
         size: 0,
-        modified: new Date().getTime()
+        modified: null
       })
     }
 
@@ -40,7 +41,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         ) {
           dir.type = 'directory'
           dir.name = dir.dirname
-          dir.modified = new Date(dir.modified).getTime()
+          dir.modified = (dir.modified) ? new Date(dir.modified).getTime() : null
           items.push(dir)
         }
       })
@@ -183,13 +184,20 @@ export const actions: ActionTree<FilesState, RootState> = {
       root,
       file
     }
-    commit('setFileDelete', update)
+    commit('setItemDelete', update)
   },
 
-  async notifyDeleteDir (_, payload: FileChangeSocketResponse) {
+  async notifyDeleteDir ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const paths = getFilePaths(payload.item.path, root)
-    SocketActions.serverFilesGetDirectory(root, paths.rootPath)
+    const dir = formatAsFile(root, payload.item)
+    const update: FileUpdate = {
+      paths,
+      root,
+      file: dir
+    }
+    commit('setItemDelete', update)
+    commit('setPathDelete', { path: `${paths.rootPath}/${paths.filename}`, root })
   },
 
   /**

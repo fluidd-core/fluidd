@@ -15,6 +15,7 @@ export const defaultState = (): ServerState => {
       components: [],
       registered_directories: []
     },
+    system_info: null,
     config: {
       authorization: {
         enabled: true
