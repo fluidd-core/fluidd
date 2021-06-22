@@ -15,10 +15,13 @@ jobs:
       - name: Install node
         uses: actions/setup-node@v2
         with:
-          node-version: '12'
+          node-version: '14'
 
       - name: Install deps
         run: npm install
+
+      - name: Run tests
+        run: npm run test:unit
 
       - name: Build
         run: npm run build
