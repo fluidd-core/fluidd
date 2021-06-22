@@ -2,6 +2,73 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.15.0](https://github.com/cadriel/fluidd/compare/v1.14.0...v1.15.0) (2021-06-22)
+
+
+### Features
+
+* Absolute end time estimate. ([54e6d01](https://github.com/cadriel/fluidd/commit/54e6d0176f7c64ee579ed77990ef52cc95f5a15d))
+* add layer count to print status ([7ccc457](https://github.com/cadriel/fluidd/commit/7ccc457d4f8e4d6de000f4d3575b89c0723dd675))
+* add nav btn in mobile ([1d11de4](https://github.com/cadriel/fluidd/commit/1d11de4891cc54e25d6521bf9fb6aaa026a5e83a))
+* Add vzbot community logo ([63eedfd](https://github.com/cadriel/fluidd/commit/63eedfd7ba0c0440d257d52f8606361816ff0864))
+* added HevORT to community presets ([2364b5e](https://github.com/cadriel/fluidd/commit/2364b5ea33a32d19511e283cbc1702035403d2a1))
+* allow disabling a macro while printing ([caa88b3](https://github.com/cadriel/fluidd/commit/caa88b30bd16912750b0af76d5e35f2187f11e5f))
+* authentication ([48ed03b](https://github.com/cadriel/fluidd/commit/48ed03b9831b9618f8a77cc4764d030266d77110))
+* bulk file actions ([a38a8fa](https://github.com/cadriel/fluidd/commit/a38a8fa29502f4de2c16185854bca8ea50d7284a))
+* community affiliations + light theme cleanup ([6fd07b8](https://github.com/cadriel/fluidd/commit/6fd07b895eb0f821480a23048ce90482969fff0f))
+* estop is now a button ([656abb7](https://github.com/cadriel/fluidd/commit/656abb70f7625703cc3df02e98fc63ed312c09ad))
+* filter fans, pins and macros from the UI with an _ ([81a72d8](https://github.com/cadriel/fluidd/commit/81a72d86c57d4a45d39651d555528329ac2b07db))
+* firmware retractions ([52d6dad](https://github.com/cadriel/fluidd/commit/52d6dad25fbe096b26c51c862d1b473371b734be))
+* impl log grammar ([86bff7c](https://github.com/cadriel/fluidd/commit/86bff7cb78169cff065d75e1e7948067bfaa3bc8))
+* impl logs root ([180b991](https://github.com/cadriel/fluidd/commit/180b99150b181b5fe8ab070e613f3a5f6f8f0d0d))
+* limits now allow setting over the max ([1798196](https://github.com/cadriel/fluidd/commit/1798196a91a7f198ee1676e9fd450012b274cd24))
+* macro button color accents ([c660e2f](https://github.com/cadriel/fluidd/commit/c660e2ff1beba772beff2e21141e0d1be9f95cb9))
+* macro list now shows set color ([4eb24fc](https://github.com/cadriel/fluidd/commit/4eb24fc3ab89f0c59340bc599eb1b17882e90d52))
+* macros now allow param input ([2cbf0ee](https://github.com/cadriel/fluidd/commit/2cbf0ee8f182b9ea5bbef6b0f472e31502ea0151))
+* minor adjustments to layout actions ([852d615](https://github.com/cadriel/fluidd/commit/852d615c05bbe56303b7750703ca9f11e3d9147c))
+* move auto-scroll to cog ([984de6f](https://github.com/cadriel/fluidd/commit/984de6f040f90cf5e60980bc680b3f741b3a1a92))
+* neopixel support + new color picker ([8ef0453](https://github.com/cadriel/fluidd/commit/8ef04530a331d26a542f0daea30c86dc66533012))
+* Replaced Mocha and Chai with Jest ([066d713](https://github.com/cadriel/fluidd/commit/066d71370e2e88499ee6d35d33c6b6488718f73f))
+* **i18n-IT:** update Italian translations ([eb175cc](https://github.com/cadriel/fluidd/commit/eb175cc1c4382608b9ef2bed5b7f4dce4081ae2b))
+* new nav ([f38407c](https://github.com/cadriel/fluidd/commit/f38407c1bf0233c03b2169bd0e0d0f3ba69783fd))
+* re-enable g-code preview ([bfba301](https://github.com/cadriel/fluidd/commit/bfba30192add06585e8e36a7ffd0fa9f27ff5442))
+* re-enable gcode preview ([63af077](https://github.com/cadriel/fluidd/commit/63af07764b5bfd892a1189aa48bb69bee8e443d0))
+* reset btn for sliders, plus cleanup ([98545d5](https://github.com/cadriel/fluidd/commit/98545d50d5cf338077fb710b3b66e3a564a80804))
+* sub-nav routes ([2e9db23](https://github.com/cadriel/fluidd/commit/2e9db234f29838870d9c8144d16fa5b4d7d83529))
+* submitting an empty temp value resets to 0 ([f3153d4](https://github.com/cadriel/fluidd/commit/f3153d44eb881f4c5f86adb01167b9f82e732ab3))
+* suffix graph tooltips mapped by dimension name ([881b43e](https://github.com/cadriel/fluidd/commit/881b43e1a30e084ef06d26ef8fd2e46f568989d4))
+* support custom services, their config files & doc links ([f9540ca](https://github.com/cadriel/fluidd/commit/f9540cacf4001f0e05a006f0f549a2becb53a5ae))
+* system utilization charts ([a167d14](https://github.com/cadriel/fluidd/commit/a167d1477ec566a45026c76ccf5f5bf25b4f8014))
+* Ukrainian translation ([66df939](https://github.com/cadriel/fluidd/commit/66df9391dadb0c4b8522228ea68d152d45543353))
+
+
+### Bug Fixes
+
+* Add close icon to keyboard shortcuts dialog ([28309c4](https://github.com/cadriel/fluidd/commit/28309c4fb50dccb07c72a9b2289488233ef3881a))
+* adjust mesh control layout plus define better scale defaults ([e2d8203](https://github.com/cadriel/fluidd/commit/e2d820390c8f96f9041dff8768d3d62b64234311))
+* App slider now properly validates min / max on click ([883b0d1](https://github.com/cadriel/fluidd/commit/883b0d1ae7d549bf0581fcc9e2f7cf254b9075d9))
+* cachebust thumbs ([324c69c](https://github.com/cadriel/fluidd/commit/324c69c980388cea90a3b7ebcc55d347910be7f0))
+* chevron now reflects actual state for card collapse btn ([2a4858c](https://github.com/cadriel/fluidd/commit/2a4858c4040a1b47b480a224a6f65824d2b0047c))
+* color presets now update picker ([9fe780f](https://github.com/cadriel/fluidd/commit/9fe780ff93d9babe7258feb2ff88af8e46839ed9))
+* division by zero and infinite loop in file upload/download dialogs ([7e8785d](https://github.com/cadriel/fluidd/commit/7e8785d8c30afd80ce85d981a82f9992b525254c))
+* don't show klippy card when socket or api not connected ([1bd6d96](https://github.com/cadriel/fluidd/commit/1bd6d9679eac571456328321ad176bf65e4b3e0d))
+* ensure fetches are cancelled during add dialog ([950440d](https://github.com/cadriel/fluidd/commit/950440d92c6d749713f397ae51bae3a46517d5ab))
+* estop on mobile now wont show when not connected ([f55fe57](https://github.com/cadriel/fluidd/commit/f55fe57ebe201da10b1d3056ca44768426afdd4b))
+* extruder temp settings now respect selected extruder ([dea2c1d](https://github.com/cadriel/fluidd/commit/dea2c1dd34a4d7120b0179068b1ed9f87fcdce17))
+* filter trailing slashes when adding printer urls ([47fcb54](https://github.com/cadriel/fluidd/commit/47fcb5494d1f0839a8c6b7240bb3afcb7f4be556))
+* fix the i18 fix :D ([96bc9f2](https://github.com/cadriel/fluidd/commit/96bc9f26790988d1498f31811ee2fab0ba342dd5))
+* long lines with no spaces in console are now visible ([fa99cc1](https://github.com/cadriel/fluidd/commit/fa99cc1bea17b09bfadeeece662dcce3eeb5b345))
+* macro disabled while print now saves ([caa9b57](https://github.com/cadriel/fluidd/commit/caa9b57ba60989c8f2e13205ebdb46f607cc515f))
+* mesh box and color scales now disabled appropriately ([df1cfff](https://github.com/cadriel/fluidd/commit/df1cfff65ad1b2fa1fd7ce013cf02952403e59f5))
+* new color picker allows rgb input ([b5b87e9](https://github.com/cadriel/fluidd/commit/b5b87e9e117a02fa84b3fad2a4df6dafbf970951))
+* parent folder no longer shows wonky size / modified ([943d395](https://github.com/cadriel/fluidd/commit/943d395a34911df0c1e0e134ed5cced10fe13bb6))
+* preload the en locale for fallback ([accfde4](https://github.com/cadriel/fluidd/commit/accfde4d32a74136dd77877876c1536eb2c9db0b))
+* readableFileSize test ([46a5375](https://github.com/cadriel/fluidd/commit/46a537590e40103e05d12555d0364ddef7078ff6))
+* retraction resolution set to 0.01 ([c1a16dc](https://github.com/cadriel/fluidd/commit/c1a16dca347c78871704e0b7579ada94d906b241))
+* syntax issue ([03c61e8](https://github.com/cadriel/fluidd/commit/03c61e8f62d6086889e6a30af7d7fa6a3a3327a2))
+* temp chart selected legends now work properly after echarts upgrade ([8906abd](https://github.com/cadriel/fluidd/commit/8906abd93d9bcc09f5a949a0831bd9095e82eeb7))
+* temp waits now idea items prefixed with 'ok' ([35a38c5](https://github.com/cadriel/fluidd/commit/35a38c5bb6fce591579b01c22b0e95281f520bab))
+
 ## [1.14.0](https://github.com/cadriel/fluidd/compare/v1.13.0...v1.14.0) (2021-05-18)
 
 
