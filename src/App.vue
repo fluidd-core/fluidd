@@ -182,7 +182,6 @@ export default class App extends Mixins(StateMixin) {
   }
 
   mounted () {
-    console.log(this.$route.path)
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
       this.flashMessage.text = (payload && payload.text) || undefined

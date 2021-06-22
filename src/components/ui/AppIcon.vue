@@ -3,7 +3,6 @@
     <inline-svg
       :src="theme.logo.src"
       @loaded="handleLogoLoad"
-      @error="handleLogoError"
     >
     </inline-svg>
   </div>
@@ -26,10 +25,6 @@ export default class AppIcon extends Vue {
 
   handleLogoLoad () {
     this.setData()
-  }
-
-  handleLogoError (e: any) {
-    console.error('Failed loading logo', e)
   }
 
   setData () {
