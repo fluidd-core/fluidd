@@ -1,7 +1,7 @@
 <template>
   <v-card-text>
     <v-row class="my-0 mb-4">
-      <v-col cols="12" sm="12" class="py-0">
+      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
         <app-slider
           :label="$t('app.general.label.retract_length')"
           suffix="mm"
@@ -18,7 +18,7 @@
       </v-col>
     </v-row>
     <v-row class="my-0 mb-4">
-      <v-col cols="12" sm="6" class="py-0">
+      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
         <app-slider
           :label="$t('app.general.label.retract_speed')"
           suffix="mm/s"
@@ -33,7 +33,7 @@
           @change="setRetractSpeed">
         </app-slider>
       </v-col>
-      <v-col cols="12" sm="6" class="py-0">
+      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
         <app-slider
           :label="$t('app.general.label.unretract_speed')"
           suffix="mm/s"

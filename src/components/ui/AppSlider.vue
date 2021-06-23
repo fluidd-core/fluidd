@@ -7,7 +7,8 @@
     <v-row no-gutters>
       <!-- Label -->
       <v-col
-        cols="5"
+        cols="12"
+        sm="5"
         align-self="center"
         class="text-body-1 py-0"
         v-html="label">
