@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class SystemLoadChart extends Vue {
@@ -53,8 +53,9 @@ export default class SystemLoadChart extends Vue {
     })
   }
 
-  mounted () {
-    if (this.chartData && this.chartData.length > 0) this.ready = true
+  @Watch('chartData', { immediate: true })
+  onChartData (data: any) {
+    if (data && data.length > 0) this.ready = true
   }
 }
 </script>

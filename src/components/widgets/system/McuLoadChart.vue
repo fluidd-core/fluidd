@@ -31,7 +31,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class McuLoadChart extends Vue {
@@ -89,8 +89,9 @@ export default class McuLoadChart extends Vue {
     return [load, awake]
   }
 
-  mounted () {
-    if (this.chartData && this.chartData.length > 0) this.ready = true
+  @Watch('chartData', { immediate: true })
+  onChartData (data: any) {
+    if (data && data.length > 0) this.ready = true
   }
 }
 </script>
