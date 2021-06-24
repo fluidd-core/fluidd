@@ -156,7 +156,7 @@
       <v-row>
         <v-col cols="12" md="6">
           <v-radio-group
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :disabled="!meshLoaded"
             v-model="matrix"
             column
             hide-details
@@ -177,7 +177,7 @@
         </v-col>
         <v-col cols="12" md="6">
           <v-checkbox
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.wireframe')"
             v-model="wireframe"
             hide-details
@@ -186,7 +186,7 @@
           </v-checkbox>
 
           <v-checkbox
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.flat_surface')"
             v-model="flatSurface"
             hide-details
@@ -200,7 +200,7 @@
         <v-col>
           <v-slider
             :label="$t('app.bedmesh.label.scale')"
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :disabled="!meshLoaded"
             v-model="mapScale"
             :tick-labels="mapScaleLabels"
             :min="0"
@@ -213,7 +213,7 @@
 
           <v-slider
             :label="$t('app.bedmesh.label.boxScale')"
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :disabled="!meshLoaded"
             v-model="boxScale"
             :tick-labels="boxScaleLabels"
             :min="1"
