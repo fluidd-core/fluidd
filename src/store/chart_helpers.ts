@@ -82,7 +82,7 @@ export const handleSystemStatsChange = (payload: any) => {
     ) {
       const total_memory = store.state.server?.system_info?.cpu_info?.total_memory || 0
       const mem_used = total_memory - stats.memavail
-      const percent_mem_used = mem_used / total_memory * 100
+      const percent_mem_used = Math.ceil(mem_used / total_memory * 100)
 
       // Commit the formatted result to our chart data.
       store.commit('charts/setChartEntry', {
@@ -100,8 +100,6 @@ export const handleSystemStatsChange = (payload: any) => {
       'cputime' in stats &&
       'sysload' in stats
     ) {
-      const cores = store.state.server?.system_info?.cpu_info?.cpu_count || 1
-
       const cputime = stats.cputime
       const last_cputime = store.state.printer?.printer.system_stats?.cputime || stats.cputime || 0
 
@@ -111,7 +109,7 @@ export const handleSystemStatsChange = (payload: any) => {
         retention: 600,
         data: {
           date,
-          load: (stats.sysload / cores * 100).toFixed(2),
+          load: stats.sysload.toFixed(2),
           cputime_change: ((cputime - last_cputime) * 100).toFixed(2)
         }
       })

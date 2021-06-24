@@ -14,7 +14,7 @@
     <div class="chart-label-wrapper">
       <div class="chart-label">
         <span>{{ $t('app.system_info.label.system_load') }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
+        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}</span>
       </div>
     </div>
 
@@ -33,11 +33,15 @@ export default class SystemLoadChart extends Vue {
   }
 
   get options () {
+    const cores = this.$store.state.server?.system_info?.cpu_info?.cpu_count || 1
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions']({
-        load: '%'
-      }),
+      ...this.$store.getters['charts/getBaseChartOptions'](),
       series: this.series
+    }
+    o.yAxis.max = (value: any) => {
+      return (value.max <= cores)
+        ? cores
+        : value.max
     }
     return o
   }
