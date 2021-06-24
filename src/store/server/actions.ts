@@ -88,14 +88,16 @@ export const actions: ActionTree<ServerState, RootState> = {
       !Array.isArray(payload.moonraker_stats)
     ) {
       const d = payload.moonraker_stats
-      commit('charts/setChartEntry', {
-        type: 'moonraker',
-        retention: 600,
-        data: {
-          date: new Date(d.time * 1000),
-          load: d.cpu_usage.toFixed(2)
-        }
-      }, { root: true })
+      if (d.cpu_usage <= 100) {
+        commit('charts/setChartEntry', {
+          type: 'moonraker',
+          retention: 600,
+          data: {
+            date: new Date(d.time * 1000),
+            load: d.cpu_usage.toFixed(2)
+          }
+        }, { root: true })
+      }
     }
   },
 
