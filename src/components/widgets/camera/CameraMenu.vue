@@ -53,10 +53,16 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class CamerasMenu extends Mixins(StateMixin) {
   get activeCamera () {
-    const id = this.$store.getters['cameras/getActiveCamera']
+    let id = this.$store.getters['cameras/getActiveCamera']
+    const camera = this.$store.getters['cameras/getCameraById'](id)
+
+    // If no cam was found, the active id probably no longer exists - so
+    // we'll set it to all.
+    if (!camera) id = 'all'
+
     return (id === 'all')
       ? this.$t('app.general.btn.all')
-      : this.$store.getters['cameras/getCameraById'](id).name
+      : camera.name
   }
 
   get cameras () {
