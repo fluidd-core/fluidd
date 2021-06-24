@@ -37,7 +37,7 @@ export const actions: ActionTree<VersionState, RootState> = {
         merge: true
       }, { root: true })
     } else {
-      dispatch('notifications/clearNotification', i18n.t('app.version.label.updates_available'), { root: true })
+      dispatch('notifications/clearNotification', 'updates-available', { root: true })
     }
   },
 
