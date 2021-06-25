@@ -112,6 +112,7 @@ export interface TemperaturePreset {
   id: number;
   name: string;
   values: TemperaturePresetValues;
+  gcode?: string;
 }
 
 export interface TemperaturePresetValues {

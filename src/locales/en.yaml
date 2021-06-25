@@ -371,6 +371,7 @@ app:
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
       theme_preset: Community preset
+      thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
       time_estimates: Time estimates
       toggle: Toggle
