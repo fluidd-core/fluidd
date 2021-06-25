@@ -157,8 +157,13 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     if (this.followProgress) {
       const fileMovePosition = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
 
+      // In some (yet unclear) cases, fileMovePosition can get out of sync with
+      // the component's notion of moveProgress.  This seems to happen during
+      // layer changes, but not every time.  Possibly some gcode command is getting
+      // misinterpreted.
+      // This "fix" simply forces a re-sync of progress if they get out of sync
       if (fileMovePosition !== this.moveProgress) {
-        this.followProgress = false
+        this.syncMoveProgress()
       }
     }
   }
