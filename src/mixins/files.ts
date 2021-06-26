@@ -52,7 +52,7 @@ export default class FilesMixin extends Vue {
 
     if (res) {
       this.cancelTokenSource = Axios.CancelToken.source()
-      const path = file.path ? `${file.path}/${file.filename}` : file.filename
+      const path = file.path ? `${file.path}/${file.name}` : file.name
       return await this.getFile(path, 'gcodes', file.size, {
         responseType: 'text',
         transformResponse: [v => v],
