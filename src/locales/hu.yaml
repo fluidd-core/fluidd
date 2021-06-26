@@ -80,9 +80,6 @@ app:
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
     tooltip:
-      disabled: >-
-        A munkák le vannak tiltva a klippy-vel való kommunikáció megkezdése
-        előtt
       low_on_space: Kevés lemezterület
   general:
     btn:

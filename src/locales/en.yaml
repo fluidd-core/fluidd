@@ -94,10 +94,8 @@ app:
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
     tooltip:
-      disabled: >-
-        Jobs require initial communication with klippy and a valid
-        virtual_sdcard path
       low_on_space: Low on disk space
+      root_disabled: Root is not available. Please check your logs.
   gcode:
     btn:
       load_current_file: Load Current File

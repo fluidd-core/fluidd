@@ -97,7 +97,6 @@ app:
       rename_file: Hernoem bestand
       upload_file: Bestand uploaden | Bestanden uploaden
     tooltip:
-      disabled: Taken zijn uitgeschakeld voordat er een verbinding is met klippy
       low_on_space: Weinig plaats op de Disk
   gcode:
     btn:

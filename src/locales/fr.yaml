@@ -99,7 +99,6 @@ app:
       rename_file: Renommer le fichier
       upload_file: Upload en cours
     tooltip:
-      disabled: Les fichiers sont désactivés avant la communication initiale avec klippy
       low_on_space: Espace disque limité
   gcode:
     btn:
@@ -135,12 +134,16 @@ app:
       config_reference: Référence de configuration
       download: Télécharger
       edit: Editer
+      exit_layout: Quitter le mode de mise en page
       extrude: Extruder
       heaters_off: Tout éteindre
       load_all: Tout charger
+      load_current_file: Charger le fichier actuel
+      more_information: Plus d'informations
       pause: Pause
       preheat: Préchauffe
       presets: Préréglage
+      preview_gcode: Prévisualiser le Gcode
       quad_gantry_level: QGL
       reboot: Redémarrer
       remove: Supprimer
@@ -164,10 +167,6 @@ app:
       upload: Uploaded
       upload_print: Uploaded & imprimer
       view: Voir
-      exit_layout: Quitter le mode de mise en page
-      preview_gcode: Prévisualiser le Gcode
-      load_current_file: Charger le fichier actuel
-      more_information: Plus d'informations
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
@@ -284,9 +283,9 @@ app:
       tune: Réglages
     tooltip:
       estop: Arrêt d'urgence
-      restart_klipper: Redémarre le service sytème Klipper.
       reload_klipper: Recharge la configuration Klipper.
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
+      restart_klipper: Redémarre le service sytème Klipper.
   history:
     msg:
       confirm: >-

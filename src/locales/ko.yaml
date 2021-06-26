@@ -85,7 +85,6 @@ app:
       rename_file: 파일명 변경
       upload_file: Uploading file | Uploading files
     tooltip:
-      disabled: klippy와 첫 통신전에 작업이 비활성 되었습니다.
       low_on_space: 디스크 공간 부족
   gcode:
     btn:

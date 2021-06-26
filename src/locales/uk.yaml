@@ -16,7 +16,7 @@ app:
       not_found: Не знайдено існуючих сіток столу.
       not_loaded: Сітка не завантажена
     tooltip:
-      calibrate: 'Почати нове калібрування, буде збережено як профіль ''default'''
+      calibrate: Почати нове калібрування, буде збережено як профіль 'default'
       delete: Видалити профіль. Це призведе до ПЕРЕЗАВАНТАЖЕННЯ вашого принтеру
       load: Завантажити профіль
       save: >-
@@ -54,7 +54,7 @@ app:
         Будь-ласка перегляньте документацію налаштування декількох принтерів <a
         href="%{url}" target="_blank">тут</a>
     hint:
-      add_printer: 'Наприклад, http://fluiddpi.local'
+      add_printer: Наприклад, http://fluiddpi.local
     msg:
       trouble: >-
         Виникли проблеми? Перейдіть <a href="%{url}" target="_blank">сюди</a>
@@ -96,9 +96,6 @@ app:
       rename_file: Перейменувати файл
       upload_file: Завантаження файлу | Завантаження файлів
     tooltip:
-      disabled: >-
-        Завдання вимагають початкового зв'язку з klippy та дійсного
-        virtual_sdcard шляху
       low_on_space: Мало місця на диску
   gcode:
     btn:
@@ -171,7 +168,7 @@ app:
       app_setup_link: >-
         Вимоги для встановлення Fluidd можна переглянути <a target="_blank"
         href="%{url}">тут.</a>
-      app_warnings_found: 'Знайдено попередження у %{appName}.'
+      app_warnings_found: Знайдено попередження у %{appName}.
       components_config: >-
         Конфігурація для плагінів Moonraker можна переглянути <a target="_blank"
         href="%{url}">тут.</a>
@@ -231,9 +228,9 @@ app:
         arrayofnums: Тільки цифри
         exists: Вже існує
         invalid_url: Недійсна URL-адреса
-        max: 'Max %{max}'
-        min: 'Min %{min}'
-        min_or_0: 'Min %{min} або 0'
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} або 0
         required: Вимагається
       msg:
         confirm: Ви впевнені?
@@ -434,4 +431,3 @@ app:
       invalid: вказує на локальні зміни в репозиторії
       packages: Пакети
       release_notes: Примітки до релізу
-

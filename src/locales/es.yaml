@@ -85,9 +85,6 @@ app:
       rename_file: Cambiar el nombre del archivo
       upload_file: Uploading file | Uploading files
     tooltip:
-      disabled: >-
-        Los archivos se desactivan antes de la comunicación inicial con klippy y
-        un virtual_sdcard válido
       low_on_space: Espacio en disco limitado
   general:
     btn:

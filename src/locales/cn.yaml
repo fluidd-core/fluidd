@@ -79,7 +79,6 @@ app:
       rename_file: 重命名文件
       upload_file: 上传文件
     tooltip:
-      disabled: 任务在连接klippy之前被禁止
       low_on_space: 磁盘空间不足
   general:
     btn:

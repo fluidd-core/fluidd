@@ -93,7 +93,6 @@ app:
       rename_file: Renomear ficheiro
       upload_file: Carregando ficheiro | Carregando ficheiros
     tooltip:
-      disabled: Os trabalhos são desativados antes da comunicação inicial com o klippy
       low_on_space: Pouco espaço em disco
   general:
     btn:
