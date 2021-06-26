@@ -122,7 +122,8 @@ export const actions: ActionTree<ServerState, RootState> = {
               type: (previousEvent) ? 'info' : 'error',
               snackbar: !previousEvent, // Snackbar only if not a previously encountered event.
               merge: true, // Merge if it was a previously encountered event.
-              clear: !previousEvent // Dont allow the user to clear if it was a previously encountered event.
+              clear: !previousEvent, // Dont allow the user to clear if it was a previously encountered event.
+              noCount: previousEvent // Dont add to the counter if it was a previously encountered event.
             }
 
             // Add the temperature icon.

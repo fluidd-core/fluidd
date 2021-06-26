@@ -82,6 +82,17 @@
           <v-divider :key="i + 'fand'"></v-divider>
         </template>
 
+        <app-setting :title="$t('app.setting.label.thermal_preset_gcode')">
+          <v-textarea
+            v-model="preset.gcode"
+            rows="2"
+            hide-details="auto"
+            class="mb-2"
+            outlined
+          >
+          </v-textarea>
+        </app-setting>
+
         <v-card-actions>
           <v-spacer></v-spacer>
           <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>

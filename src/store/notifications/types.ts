@@ -15,8 +15,9 @@ export interface AppNotification {
   btnText?: string;
   icon?: string;
   timestamp: number;
-  clear: boolean;
-  merge: boolean;
+  clear: boolean; // user can clear the notification.
+  merge: boolean; // try to merge into an existing notification.
+  noCount?: boolean; // if true, don't increment the count.
 }
 
 export interface AppPushNotification {
@@ -33,4 +34,5 @@ export interface AppPushNotification {
   snackbar?: boolean;
   clear?: boolean;
   merge?: boolean;
+  noCount?: boolean;
 }

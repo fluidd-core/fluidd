@@ -9,8 +9,8 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <v-badge
-        :value="notifications.length"
-        :content="notifications.length"
+        :value="notificationsCounter"
+        :content="notificationsCounter"
         offset-x="17"
         offset-y="17"
         bordered
@@ -127,6 +127,11 @@ export default class AppNotificationMenu extends Vue {
 
   get notifications (): AppNotification[] {
     return this.$store.getters['notifications/getNotifications']
+  }
+
+  get notificationsCounter (): number {
+    const notifications: AppNotification[] = this.notifications.filter(n => !n.noCount)
+    return notifications.length
   }
 
   get clearableNotifications (): AppNotification[] {

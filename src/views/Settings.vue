@@ -9,7 +9,7 @@
         <macro-categories></macro-categories>
         <cameras></cameras>
         <toolhead-settings></toolhead-settings>
-        <temperature-preset-settings></temperature-preset-settings>
+        <preset-settings></preset-settings>
         <gcode-preview-settings></gcode-preview-settings>
         <version-settings v-if="supportsVersions"></version-settings>
       </div>
@@ -23,7 +23,7 @@ import StateMixin from '@/mixins/state'
 
 import MacroCategories from '@/components/settings/macros/MacroCategories.vue'
 import GeneralSettings from '@/components/settings/GeneralSettings.vue'
-import TemperaturePresetSettings from '@/components/settings/TemperaturePresetSettings.vue'
+import PresetSettings from '@/components/settings/presets/PresetSettings.vue'
 import Cameras from '@/components/settings/cameras/Cameras.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
@@ -35,7 +35,7 @@ import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
   components: {
     MacroCategories,
     GeneralSettings,
-    TemperaturePresetSettings,
+    PresetSettings,
     Cameras,
     ToolheadSettings,
     ThemeSettings,
