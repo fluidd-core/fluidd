@@ -92,7 +92,6 @@ app:
       rename_file: Переименовать файл
       upload_file: Загрузка файла | Загрузка файлов
     tooltip:
-      disabled: Задания на печать отключены до подключения к klippy
       low_on_space: Мало места на диске
   general:
     btn:

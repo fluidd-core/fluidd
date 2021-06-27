@@ -91,7 +91,6 @@ app:
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen
     tooltip:
-      disabled: Druckvorgänge sind vor der ersten Kommunikation mit klippy nicht möglich
       low_on_space: Wenig Speicherplatz auf der Festplatte
   general:
     btn:
