@@ -9,6 +9,7 @@ app:
       remove_profile: Supprimer le profile %{name}
       scale: Échelle au min / max
       wireframe: Armature
+      box_scale: Amplifier la visualisation
     msg:
       hint: >-
         Si vous enregistrez le profil sous un autre nom que '%{profileName}',
@@ -28,8 +29,8 @@ app:
     label:
       current: Courant
       item: Élément
-      'off': Désactiver le graphique
-      'on': Activer le graphique
+      'off': Masquer le graphique
+      'on': Afficher le graphique
       power: Puissance
       target: Cible
     tooltip:
@@ -82,6 +83,7 @@ app:
       file_name: Nom du fichier
       transfer_rate: Vitesse de transfert
       uploaded: Téléchargé
+      diskinfo: Informations sur le disque
     msg:
       confirm: >-
         Êtes vous sûr(e) ? Ceci effacera tous les sous-fichiers et sous-dossiers
@@ -167,6 +169,9 @@ app:
       upload: Uploaded
       upload_print: Uploaded & imprimer
       view: Voir
+      restart_service: Redémarrer %{service}
+      set_color: Définir la couleur
+      refresh: Rafraîchir
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
@@ -221,6 +226,20 @@ app:
       variance: Variance
       velocity: Velocité
       z_offset: Z Offset
+      category: Catégorie
+      change_password: Changer le mot de passe
+      current_password: Mot de passe actuel
+      disabled_while_printing: Désactiver durant l'impression
+      edit_user: Modifier l'utilisateur
+      new_password: Nouveau mot de passe
+      password: Mot de passe
+      retract_length: Longueur de retractation
+      retract_speed: Vitesse de rétractation
+      unretract_speed: Vitesse de dérétractation
+      visible: Visible
+      color: Couleur
+      add_user: Ajouter un utilisateur
+      api_key: Clé API
     simple_form:
       error:
         arrayofnums: Nombres uniquement
@@ -230,6 +249,7 @@ app:
         min: Min %{min}
         min_or_0: Min %{min} ou 0
         required: Requis
+        password_username: Le nom d'utilisateur ne correspond pas
       msg:
         confirm: Êtes-vous sûr(e) ?
         confirm_reboot_host: Êtes-vous sûr(e)? Ceci va redémarrer le système hôte .
@@ -281,11 +301,16 @@ app:
       temperature: Température
       tool: Outil
       tune: Réglages
+      retract: Rétractation Firmware
+      system: Système
+      system_overview: Information système
     tooltip:
       estop: Arrêt d'urgence
       reload_klipper: Recharge la configuration Klipper.
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
-      restart_klipper: Redémarre le service sytème Klipper.
+    msg:
+      password_changed: Mot de passe modifié
+      wrong_password: Oops, il y a eu un problème. Le mot de passe est il correct?
   history:
     msg:
       confirm: >-
@@ -312,6 +337,7 @@ app:
       add_thermal_preset: Ajouter un pré-réglage
       reset: RAZ
       select_theme: Sélectionner le thème
+      add_user: Ajouter un utilisateur
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -354,6 +380,8 @@ app:
       time_estimates: Estimation de temps
       toggle: Basculer
       z_adjust_values: Valeurs de Z Adjust
+      show_animations: Afficher les animations
+      theme_preset: Préréglage communautaire
     timer_options:
       duration: Durée uniquement
       duration_description: 'Similaire au LCD klipper, affiche une durée sans estimation . '
@@ -378,6 +406,7 @@ app:
       theme: Thème
       thermal_presets: Pré-réglages de température
       tool: Outil
+      authentication: Authentification
     tooltip:
       gcode_coords: >-
         Utiliser la posistion GCode au lieu de la position de l'outil sur le
@@ -426,3 +455,27 @@ app:
       invalid: indique des changements locaux dans le répo
       packages: Paquets
       release_notes: Notes de mise à jour
+  system_info:
+    label:
+      capacity: Capacité
+      cpu_desc: Description du processeur
+      distribution_codename: Nom de code
+      distribution_like: Distribution comme
+      hardware_desc: Description du matériel
+      hostname: Nom d'hôte
+      klipper_load: Charge de Klipper
+      distribution_name: Distribution
+      manufactured: Fabriqué
+      manufacturer: Fabricant
+      mcu_awake: '{mcu} Temps de fonctionnement'
+      serial_number: Numéro de série
+      product_name: Nom du produit
+      system_memory: Mémoire système
+      system_load: Charge du système
+      system_utilization: Utilisation du système
+      total_memory: Mémoire totale
+      processor_desc: Processeur
+      moonraker_load: Charge de Moonraker
+      mcu_load: '{mcu} Charge'
+      model: Modèle de processeur
+      mcu_bandwidth: '{mcu} Bande passante'
