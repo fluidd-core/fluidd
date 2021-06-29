@@ -18,10 +18,12 @@ export default (root: string, file: FileChangeItem | KlipperFile | KlipperFileWi
       modified: file.modified
     }
   }
+
   const paths = getFilePaths(file.filename, root)
   return {
     ...file,
     type: 'file',
+    filename: paths.filename,
     extension: paths.filename.split('.').pop() || '',
     name: paths.filename,
     path: paths.path

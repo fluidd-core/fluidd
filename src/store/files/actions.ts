@@ -81,10 +81,11 @@ export const actions: ActionTree<FilesState, RootState> = {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
     const paths = getFilePaths(payload.filename, root)
     const file = formatAsFile(root, payload)
+    const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
-    if (file.filename === rootState.printer?.printer.print_stats.filename) {
+    if (filepath === rootState.printer?.printer.print_stats.filename) {
       commit('printer/setSocketNotify', { key: 'current_file', payload: file }, { root: true })
     }
 
