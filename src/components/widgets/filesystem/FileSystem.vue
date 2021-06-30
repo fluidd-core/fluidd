@@ -181,6 +181,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: Boolean, default: false })
   bulkActions!: boolean;
 
+  // Ready. True once the available roots have loaded from moonraker.
+  ready = false
+
   // Maintains the path and root.
   currentRoot = ''
 
@@ -369,9 +372,22 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.state.files.download
   }
 
+  get registeredRoots () {
+    return this.$store.state.server.info.registered_directories || []
+  }
+
   // Set the initial root, and load the dir.
-  mounted () {
-    this.currentRoot = this.availableRoots[0]
+  @Watch('registeredRoots', { immediate: true })
+  onRegisteredRoots (roots: string[]) {
+    if (roots.length > 0 && !this.ready) {
+      for (const root of this.availableRoots) {
+        if (roots.includes(root)) {
+          this.currentRoot = root
+          this.ready = true
+          break
+        }
+      }
+    }
   }
 
   // If the root changes, reset the path and load the root path files.

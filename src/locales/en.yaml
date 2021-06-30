@@ -95,7 +95,7 @@ app:
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space
-      root_disabled: Root is not available. Please check your logs.
+      root_disabled: '{root} root is not available. Please check your logs.'
   gcode:
     btn:
       load_current_file: Load Current File

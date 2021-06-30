@@ -38,7 +38,7 @@
         </v-btn>
       </template>
       <slot>
-        <span>{{ $t('app.file_system.tooltip.root_disabled') }}</span>
+        <span>{{ $t('app.file_system.tooltip.root_disabled', { root }) }}</span>
       </slot>
     </v-tooltip>
 
