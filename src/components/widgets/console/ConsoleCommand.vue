@@ -2,21 +2,23 @@
   <v-container>
     <v-row align="center">
       <v-col>
-        <v-text-field
+        <v-textarea
           ref="input"
+          :rows="1"
           :value="newValue"
           @input="emitChange"
           :items="history"
+          auto-grow
           clearable
           outlined
           single-line
           dense
           hide-details
-          @keyup.enter="emitSend(newValue)"
+          @keyup.enter.exact="emitSend(newValue)"
           @keyup.up="historyUp()"
           @keyup.down="historyDown()"
           @keydown.prevent.tab="autoComplete()">
-        </v-text-field>
+        </v-textarea>
       </v-col>
       <v-col cols="auto">
         <app-btn @click="emitSend(newValue)">
