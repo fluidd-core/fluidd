@@ -15,34 +15,7 @@
       </slot>
       <v-spacer />
 
-      <!-- Menu Buttons (not condensed) -->
-      <div :class="menuClasses" v-if="!inLayout && !hideMenu">
-        <slot name="menu"></slot>
-      </div>
-
-      <!-- Menu, (condensed to hamburger) -->
-      <v-menu
-        v-if="hasMenuSlot && !inLayout && !hideMenu"
-        transition="slide-y-transition"
-        left
-        offset-y
-        :close-on-content-click="false"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <app-btn
-            :class="hamburgerMenuClasses"
-            fab x-small text
-            color=""
-            v-bind="attrs"
-            v-on="on">
-            <v-icon>{{ menuIcon }}</v-icon>
-          </app-btn>
-        </template>
-        <v-sheet elevation="0" class="pa-2">
-          <!-- Menu slot -->
-          <slot name="menu"></slot>
-        </v-sheet>
-      </v-menu>
+      <slot name="menu"></slot>
 
       <!-- Collapse Control -->
       <slot name="collapse-button">
@@ -195,16 +168,6 @@ export default class CollapsableCard extends Vue {
   @Prop({ type: String, default: 'lg' })
   menuBreakpoint!: string
 
-  /** The menu icon to use when menu items are collapsed  */
-  @Prop({ type: String, default: '$menu' })
-  menuIcon!: string
-
-  /**
-   * Forcefully hide the menu btns / hamburger.
-   */
-  @Prop({ type: Boolean, default: false })
-  hideMenu!: boolean
-
   /**
    * Define any optional classes for the card itself.
    */
@@ -287,13 +250,6 @@ export default class CollapsableCard extends Vue {
     return `d-none d-${this.menuBreakpoint}-flex`
   }
 
-  /**
-   * The hamburger menu classes.
-   */
-  get hamburgerMenuClasses () {
-    return `d-flex d-${this.menuBreakpoint}-none`
-  }
-
   get isLoading (): boolean | string {
     return (this.loading) ? 'primary' : false
   }
@@ -347,15 +303,6 @@ export default class CollapsableCard extends Vue {
    */
   get hasDefaultSlot () {
     return !!this.$slots.default || !!this.$scopedSlots.default
-  }
-
-  /**
-   * Content for the menu. Shows in desktop +, condenses
-   * to a hamburger anything below. Can be forced to a menu
-   * with the forced-menu prop.
-   */
-  get hasMenuSlot () {
-    return !!this.$slots.menu || !!this.$scopedSlots.menu
   }
 
   /**

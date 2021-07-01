@@ -1,8 +1,8 @@
 <template>
   <v-card-text>
-    <v-row class="flex-nowrap">
+    <v-row>
       <!-- progress & image -->
-      <v-col cols="auto">
+      <v-col cols="auto" class="">
         <v-progress-circular
             :rotate="-90"
             :size="90"
@@ -12,6 +12,12 @@
           >
           <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
         </v-progress-circular>
+
+        <img
+          v-if="thumbnail"
+          class="print-thumb mt-2 d-flex d-sm-none d-md-flex d-lg-none"
+          :src="thumbnail"
+        />
       </v-col>
 
       <v-col>
@@ -30,7 +36,7 @@
 
         <!-- During a print. -->
         <v-row no-gutters v-if="printerPrinting">
-          <v-col>
+          <v-col cols="12" sm="6">
             <status-label label="Speed">
               <span v-if="requestedSpeed > 0 && printerPrinting">{{ requestedSpeed }} mm/s</span>
             </status-label>
@@ -48,7 +54,7 @@
             </status-label>
           </v-col>
 
-          <v-col>
+          <v-col cols="12" sm="6">
             <status-label label="Actual" v-if="estimates.actual > 0">
               <span v-if="estimates.actual > 0">{{ $filters.formatCounterTime(estimates.actual) }}</span>
             </status-label>
@@ -99,8 +105,9 @@
       </v-col>
 
       <!-- Visible if we have a thumb -->
-      <v-col cols="auto" class="pa-0" v-if="thumbnail">
+      <v-col cols="auto" class="pa-0 d-none d-sm-flex d-md-none d-lg-flex d-xl-flex" v-if="thumbnail">
         <img
+          v-if="thumbnail"
           class="print-thumb"
           :src="thumbnail"
         />

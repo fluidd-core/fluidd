@@ -17,19 +17,22 @@
     </template>
 
     <template v-slot:menu>
-      <app-btn
-        small
-        class="mr-2"
-        :disabled="!klippyReady"
-        @click="chartVisible = !chartVisible">
-        <v-icon left>$chart</v-icon>
-        {{  (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
-      </app-btn>
+      <app-btn-collapse-group>
+        <app-btn
+          small
+          class="ma-1"
+          :disabled="!klippyReady"
+          @click="chartVisible = !chartVisible">
+          <v-icon left>$chart</v-icon>
+          {{  (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
+        </app-btn>
 
-      <temperature-presets-menu
-        @applyOff="handleApplyOff"
-        @applyPreset="handleApplyPreset"
-      ></temperature-presets-menu>
+        <temperature-presets-menu
+          class="ma-1"
+          @applyOff="handleApplyOff"
+          @applyPreset="handleApplyPreset"
+        ></temperature-presets-menu>
+      </app-btn-collapse-group>
     </template>
 
     <temperature-targets

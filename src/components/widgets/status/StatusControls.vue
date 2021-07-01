@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <app-btn-collapse-group>
     <app-btn
       @click="cancelPrint()"
       v-if="printerPrinting || printerPaused"
@@ -50,7 +50,7 @@
       <v-icon small left>$reprint</v-icon>
       <span>{{ $t('app.general.btn.reprint') }}</span>
     </app-btn>
-  </div>
+  </app-btn-collapse-group>
 </template>
 
 <script lang="ts">

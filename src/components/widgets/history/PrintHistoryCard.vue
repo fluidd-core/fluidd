@@ -5,20 +5,22 @@
     <job-history></job-history>
 
     <template v-slot:menu>
-      <app-btn
-        @click="handleLoadAll"
-        small
-        class="ma-1">
-        <v-icon small left>$download</v-icon>
-        <span>{{ $t('app.general.btn.load_all') }}</span>
-      </app-btn>
-      <app-btn
-        @click="handleRemoveAll"
-        small
-        class="ma-1">
-        <v-icon small left>$delete</v-icon>
-        <span>{{ $t('app.general.btn.remove_all') }}</span>
-      </app-btn>
+      <app-btn-collapse-group>
+        <app-btn
+          @click="handleLoadAll"
+          small
+          class="ma-1">
+          <v-icon small left>$download</v-icon>
+          <span>{{ $t('app.general.btn.load_all') }}</span>
+        </app-btn>
+        <app-btn
+          @click="handleRemoveAll"
+          small
+          class="ma-1">
+          <v-icon small left>$delete</v-icon>
+          <span>{{ $t('app.general.btn.remove_all') }}</span>
+        </app-btn>
+      </app-btn-collapse-group>
     </template>
 
   </collapsable-card>

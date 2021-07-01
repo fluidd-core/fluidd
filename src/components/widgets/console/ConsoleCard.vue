@@ -21,22 +21,27 @@
     </template>
 
     <template v-slot:menu>
-      <v-checkbox
-        v-model="hideTempWaits"
-        :label="$t('app.console.label.hide_temp_waits')"
-        color="primary"
-        hide-details
-        class="mx-2 mt-2"
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
       >
-      </v-checkbox>
-      <v-checkbox
-        v-model="autoScroll"
-        :label="$t('app.console.label.auto_scroll')"
-        color="primary"
-        hide-details
-        class="mx-2 mb-2"
-      >
-      </v-checkbox>
+        <v-checkbox
+          v-model="hideTempWaits"
+          :label="$t('app.console.label.hide_temp_waits')"
+          color="primary"
+          hide-details
+          class="mx-2 mt-2"
+        >
+        </v-checkbox>
+        <v-checkbox
+          v-model="autoScroll"
+          :label="$t('app.console.label.auto_scroll')"
+          color="primary"
+          hide-details
+          class="mx-2 mb-2"
+        >
+        </v-checkbox>
+      </app-btn-collapse-group>
     </template>
 
     <console
