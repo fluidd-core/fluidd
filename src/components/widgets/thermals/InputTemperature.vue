@@ -13,7 +13,7 @@
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
         suffix="°C"
-        class="v-input--width-small">
+        class="v-input--width-x-small">
       </v-text-field>
     </v-layout>
   </v-form>
