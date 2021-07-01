@@ -305,8 +305,7 @@ export default class ToolHeadSettings extends Vue {
       ...value,
       instanceName: current.instanceName,
       chartVisible: current.chartVisible,
-      hideTempWaits: current.hideTempWaits,
-      printTimeEstimationsType: current.printTimeEstimationsType
+      hideTempWaits: current.hideTempWaits
     }
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general',

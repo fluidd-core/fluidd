@@ -2,7 +2,8 @@
   <v-card
     :class="_cardClasses"
     :rounded="rounded"
-    :loading="isLoading">
+    :loading="isLoading"
+    :color="color">
 
     <v-card-title
       class="collapsable-card-title card-heading"
@@ -109,6 +110,12 @@ export default class CollapsableCard extends Vue {
    */
   @Prop({ type: String, required: true })
   title!: string
+
+  /**
+   * Card color.
+   */
+  @Prop({ type: String })
+  color!: string
 
   /**
    * Sub title.

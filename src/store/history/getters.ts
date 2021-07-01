@@ -20,6 +20,21 @@ export const getters: GetterTree<HistoryState, RootState> = {
   },
 
   /**
+   * Return a history item given a filename. Only return
+   * items that have a status of completed, and that still
+   * exist.
+   */
+  getHistoryByFilename: (state) => (filename: string) => {
+    return state.jobs.find(job => {
+      return (
+        job.filename === filename &&
+        job.status === 'completed' &&
+        job.exists === true
+      )
+    })
+  },
+
+  /**
    * Returns a list of history entries, sorted by their start dates and
    * optionally limited by a provided number.
    */

@@ -38,36 +38,6 @@
 
       <v-divider></v-divider>
 
-      <app-setting>
-        <template v-slot:title>
-          <span class="text-wrap">{{ $t('app.setting.label.time_estimates') }}</span>
-          <app-inline-help bottom small class="ml-2">
-            <span>{{ $t('app.setting.timer_options.duration') }}</span><br />
-            <span>{{ $t('app.setting.timer_options.duration_description') }}</span><br /><br />
-
-            <span>{{ $t('app.setting.timer_options.slicer') }}</span><br />
-            <span>{{ $t('app.setting.timer_options.slicer_description') }}</span><br /><br />
-
-            <span>{{ $t('app.setting.timer_options.file') }}</span><br />
-            <span v-html="$t('app.setting.timer_options.file_description')"></span><br /><br />
-
-            <span>{{ $t('app.setting.timer_options.filament') }}</span><br />
-            <span v-html="$t('app.setting.timer_options.filament_description')"></span>
-          </app-inline-help>
-        </template>
-        <v-select
-          filled
-          dense
-          hide-details="auto"
-          :items="estimateTypes"
-          item-text="name"
-          item-value="value"
-          v-model="printTimeEstimateType">
-        </v-select>
-      </app-setting>
-
-      <v-divider></v-divider>
-
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
@@ -126,18 +96,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
 
   setLocale (value: string) {
     this.$store.dispatch('config/onLocaleChange', value)
-  }
-
-  get printTimeEstimateType () {
-    return this.$store.state.config.uiSettings.general.printTimeEstimationsType
-  }
-
-  set printTimeEstimateType (value: string) {
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.printTimeEstimationsType',
-      value,
-      server: true
-    })
   }
 
   get confirmOnEstop () {

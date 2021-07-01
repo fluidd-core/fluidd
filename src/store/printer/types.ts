@@ -22,15 +22,6 @@ export interface MCUData {
   [index: string]: string | number;
 }
 
-export interface TimeEstimates {
-  type: 'file' | 'slicer' | 'filament' | 'totals';
-  progress: string;
-  remaining: string;
-  current: string;
-  total: string;
-  endTime: string;
-}
-
 export interface Heater {
   name: string;
   prettyName: string;

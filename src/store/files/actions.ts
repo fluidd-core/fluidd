@@ -77,15 +77,23 @@ export const actions: ActionTree<FilesState, RootState> = {
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
+  async onFileMetaData ({ commit, rootState, rootGetters }, payload: KlipperFile | KlipperFileWithMeta) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
     const paths = getFilePaths(payload.filename, root)
-    const file = formatAsFile(root, payload)
+    let file = formatAsFile(root, payload)
     const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
     if (filepath === rootState.printer?.printer.print_stats.filename) {
+      // Find an completed history item for this file, if it exists.
+      const history = rootGetters['history/getHistoryByFilename'](filepath)
+      if (history) {
+        file = {
+          ...file,
+          history
+        }
+      }
       commit('printer/setSocketNotify', { key: 'current_file', payload: file }, { root: true })
     }
 

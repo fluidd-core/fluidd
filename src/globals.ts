@@ -111,7 +111,8 @@ import {
   mdiCircleSlice3,
   mdiCodeJson,
   mdiHarddisk,
-  mdiLayersTripleOutline
+  mdiLayersTripleOutline,
+  mdiMessageTextOutline
 } from '@mdi/js'
 
 /**
@@ -288,7 +289,8 @@ export const Icons = Object.freeze({
   retract: mdiAlphaRCircleOutline,
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
-  harddisk: mdiHarddisk
+  harddisk: mdiHarddisk,
+  message: mdiMessageTextOutline
 })
 
 export const Waits = Object.freeze({

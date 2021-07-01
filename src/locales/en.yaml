@@ -147,7 +147,7 @@ app:
       remove_all: Remove All
       rename: Rename
       reprint: Reprint
-      reset_file: Reset File
+      reset_file: Clear File
       reset_layout: Reset Layout
       restart_firmware: Firmware Restart
       restart_service: Restart %{service}
