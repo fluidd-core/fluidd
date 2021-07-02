@@ -206,7 +206,7 @@ export class WebSocketClient {
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
-      consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options)
+      consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
     }
   }
 }
