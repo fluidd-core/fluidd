@@ -161,6 +161,7 @@ app:
       send: Send
       set_color: Set Color
       shutdown: Shutdown
+      socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload
       upload_print: Upload & Print

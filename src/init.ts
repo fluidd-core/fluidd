@@ -104,8 +104,8 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   let apiConnected = true
   let apiAuthenticated = true
   const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
-  for (const key in roots) {
-    if (apiConnected && apiAuthenticated) {
+  if (apiConnected && apiAuthenticated) {
+    for (const key in roots) {
       const root = roots[key]
       let d = {}
       if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {

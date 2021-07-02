@@ -42,7 +42,6 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import consola from 'consola'
 import { InitConfig, InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
@@ -88,8 +87,7 @@ export default class SystemPrinters extends Mixins(StateMixin) {
       appInit(instance, this.$store.state.config.hostConfig)
         .then((config: InitConfig) => {
           // Reconnect the socket with the new instance url.
-          if (config.apiConnected && config.apiAuthenticated) {
-            consola.debug('Activating socket with config', config)
+          if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
             this.$socket.connect(config.apiConfig.socketUrl)
           }
         })

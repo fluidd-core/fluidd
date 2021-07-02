@@ -14,6 +14,7 @@ export default new Vuetify({
     values: Icons
   },
   theme: {
+    dark: true,
     options: {
       customProperties: true
     },
