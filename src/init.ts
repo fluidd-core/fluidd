@@ -52,7 +52,10 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // Add the browsers url to our endpoints list, unless black listed.
   if (blacklist.findIndex(s => s.includes(document.location.hostname)) === -1) {
-    endpoints.push(`${document.location.protocol}//${document.location.hostname}`)
+    // Add the browser url.
+    endpoints.push(`${document.location.protocol}//${document.location.host}`)
+
+    // Add the moonraker endpoints...
     let port = '7125'
     if (document.location.protocol === 'https:') port = '7130'
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
