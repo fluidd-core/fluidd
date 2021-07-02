@@ -15,9 +15,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // ready, startup, shutdown, error
     const serverInfo = rootGetters['server/getInfo']
     const server_klippy_state = serverInfo.klippy_state || ''
+    const connected = serverInfo.klippy_connected || false
     if (
       server_klippy_state !== 'ready' ||
-      server_klippy_state !== 'ready'
+      !connected
     ) {
       return false
     }
