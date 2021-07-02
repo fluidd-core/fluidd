@@ -4,6 +4,7 @@
       :items="history"
       :headers="headers"
       :items-per-page="5"
+      mobile-breakpoint="0"
       hide-default-footer
       item-key="job_id"
       sort-by="start_time"

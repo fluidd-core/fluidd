@@ -32,6 +32,7 @@
       :single-expand="true"
       :search="search"
       :expanded="expanded"
+      mobile-breakpoint="0"
       item-key="job_id"
       sort-by="start_time"
       sort-desc>
