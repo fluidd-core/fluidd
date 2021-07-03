@@ -104,9 +104,10 @@
       <template
         v-slot:[`item.end_time`]="{ item }"
       >
-        <span class="text-no-wrap">
+        <span class="text-no-wrap" v-if="item.status !== 'in_progress'">
           {{ $filters.formatDateTime(item.end_time, 'lll') }}
         </span>
+        <span v-else>--</span>
       </template>
 
       <template
