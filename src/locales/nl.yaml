@@ -9,6 +9,7 @@ app:
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
       wireframe: Draadframe
+      box_scale: Schaal
     msg:
       hint: >-
         Als je opslaat onder een andere naam dan %{name}, kan je er ook voor
@@ -80,6 +81,7 @@ app:
       file_name: Bestandsnaam
       transfer_rate: Snelheid
       uploaded: Geüpload
+      diskinfo: Schijfinformatie
     msg:
       confirm: >-
         Ben je zeker? Dit zal alle onderliggende bestanden en mappen
@@ -98,6 +100,7 @@ app:
       upload_file: Bestand uploaden | Bestanden uploaden
     tooltip:
       low_on_space: Weinig plaats op de Disk
+      root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
   gcode:
     btn:
       load_current_file: Laad huidig ​​bestand
@@ -166,6 +169,10 @@ app:
       upload: Uploaden
       upload_print: Uploaden & Printen
       view: Bekijken
+      restart_service: Start %{service} opnieuw
+      set_color: Kleur instellen
+      exit_layout: Sluit layourmanager
+      refresh: Ververs
     error:
       app_setup_link: >-
         Fluidd setup vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -219,6 +226,21 @@ app:
       variance: Afwijking
       velocity: Snelheid
       z_offset: Z-Offset
+      add_user: Voeg gebruiker toe
+      api_key: API sleutel
+      category: Categorie
+      move_macro: Verplaats Macro
+      change_password: Verander wachtwoord
+      color: Kleur
+      current_password: Huidig wachtwoord
+      edit_user: Pas gebruiker aan
+      new_password: Nieuw wachtwoord
+      password: Wachtwoord
+      retract_speed: Retract snelheid
+      retract_length: Retract lengte
+      unretract_speed: De-retract lengte
+      visible: Zichtbaar
+      disabled_while_printing: Vergrendeld tijdens printen
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -228,6 +250,7 @@ app:
         min: Min %{min}
         min_or_0: Min %{min} or 0
         required: Vereist
+        password_username: Gebruikersnaam past niet
       msg:
         confirm: Ben je zeker?
         confirm_reboot_host: Ben je zeker? Hierdoor zal je host systeem herstarten.
@@ -279,11 +302,17 @@ app:
       temperature: Temperaturen
       tool: Werktuig
       tune: Tunen
+      system: Systeem
+      retract: Firmware retractie
+      system_overview: Systeeminformatie
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
       restart_klipper: Herstart de klipper service.
+    msg:
+      wrong_password: Oeps! Er ging iets verkeerd, is je wachtwoord wel correct?
+      password_changed: Wachtwoord aangepast
   history:
     msg:
       confirm: >-
@@ -310,6 +339,7 @@ app:
       add_thermal_preset: Voorkeur toevoegen
       reset: Reset
       select_theme: Selecteer Theme
+      add_user: Voeg gebruiker toe
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -352,6 +382,9 @@ app:
       time_estimates: Tijdsschattingen
       toggle: Schakelen
       z_adjust_values: Z Aanpassingswaardes
+      show_animations: Toon animaties
+      thermal_preset_gcode: GCode
+      theme_preset: Community thema
     timer_options:
       duration: Alleen tijdsduur
       duration_description: Zoals op het LCD, dit toont alleen tijdsduur zonder schattingen.
@@ -373,6 +406,7 @@ app:
       theme: Theme
       thermal_presets: Temperatuurvoorkeuren
       tool: Werktuig
+      authentication: Authentificatie
     tooltip:
       gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
   socket:
@@ -417,3 +451,27 @@ app:
       invalid: duidt op lokale veranderingen in je repo
       packages: Pakketten
       release_notes: Release notities
+  system_info:
+    label:
+      cpu_desc: CPU Beschrijving
+      capacity: Capaciteit
+      distribution_like: Distributie Like
+      hardware_desc: Hardwarebeschrijving
+      distribution_name: Distributie
+      klipper_load: Klipper Load
+      manufacturer: Maker
+      manufactured: Gemaakt
+      mcu_bandwidth: MCU bandbreedte
+      mcu_awake: '{mcu} Awake Tijd'
+      hostname: Hostnaam
+      mcu_load: '{mcu} Load'
+      moonraker_load: Moonraker Load
+      product_name: Productnaam
+      processor_desc: Processor
+      system_load: Systeem Load
+      serial_number: Serienummer
+      model: CPU model
+      system_utilization: Systeemgebruik
+      total_memory: Totaal geheugen
+      system_memory: Systeemgeheugen
+      distribution_codename: Codenaam
