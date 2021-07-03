@@ -1,12 +1,12 @@
 <template>
   <!-- not collapsed -->
-  <div v-if="!isCollapsed">
+  <div v-if="!isCollapsed && hasDefaultSlot">
     <slot></slot>
   </div>
 
   <!-- collapsed to hamburger -->
   <v-menu
-    v-else
+    v-else-if="isCollapsed && hasDefaultSlot"
     transition="slide-y-transition"
     left
     offset-y
@@ -43,6 +43,10 @@ export default class AppBtnCollapseGroup extends Vue {
   get isCollapsed () {
     if (this.collapsed) return true
     return this.$vuetify.breakpoint.smAndDown
+  }
+
+  get hasDefaultSlot () {
+    return !!this.$slots.default
   }
 }
 </script>
