@@ -8,12 +8,29 @@
           :value="retract_length"
           :reset-value="defaults.retract_length"
           :min="0"
-          :max="15"
+          :max="retract_length_max"
           :step="0.01"
+          :overridable="true"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
-          :loading="hasWait(waits.onSetRetractLength)"
+          :loading="hasWait($waits.onSetRetractLength)"
           @change="setRetractLength">
+        </app-slider>
+      </v-col>
+      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
+        <app-slider
+          :label="$t('app.general.label.unretract_extra_length')"
+          suffix="mm"
+          :value="unretract_extra_length"
+          :reset-value="defaults.unretract_extra_length"
+          :min="0"
+          :max="unretract_extra_length_max"
+          :step="0.01"
+          :overridable="true"
+          :disabled="!klippyReady"
+          :locked="!klippyReady || isMobile"
+          :loading="hasWait($waits.onSetRetractLength)"
+          @change="setUnRetractExtraLength">
         </app-slider>
       </v-col>
     </v-row>
@@ -26,10 +43,11 @@
           :reset-value="defaults.retract_speed"
           :min="0"
           :step="1"
-          :max="100"
+          :max="retract_speed_max"
+          :overridable="true"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
-          :loading="hasWait(waits.onSetRetractSpeed)"
+          :loading="hasWait($waits.onSetRetractSpeed)"
           @change="setRetractSpeed">
         </app-slider>
       </v-col>
@@ -41,10 +59,11 @@
           :reset-value="defaults.unretract_speed"
           :min="0"
           :step="1"
-          :max="100"
+          :max="unretract_speed_max"
+          :overridable="true"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
-          :loading="hasWait(waits.onSetUnretractSpeed)"
+          :loading="hasWait($waits.onSetUnretractSpeed)"
           @change="setUnretractSpeed">
         </app-slider>
       </v-col>
@@ -59,18 +78,40 @@ import { Waits } from '@/globals'
 
 @Component({})
 export default class Retract extends Mixins(StateMixin) {
-  waits = Waits
-
   get retract_length () {
     return this.$store.state.printer.printer.firmware_retraction.retract_length
+  }
+
+  get retract_length_max () {
+    if (this.defaults.retract_length <= 0) return 15
+    return Math.round(this.defaults.retract_length * 2)
   }
 
   get retract_speed () {
     return this.$store.state.printer.printer.firmware_retraction.retract_speed
   }
 
+  get retract_speed_max () {
+    if (this.defaults.retract_speed <= 0) return 100
+    return Math.round(this.defaults.retract_speed * 2)
+  }
+
   get unretract_speed () {
     return this.$store.state.printer.printer.firmware_retraction.unretract_speed
+  }
+
+  get unretract_speed_max () {
+    if (this.defaults.unretract_speed <= 0) return 100
+    return Math.round(this.defaults.unretract_speed * 2)
+  }
+
+  get unretract_extra_length () {
+    return this.$store.state.printer.printer.firmware_retraction.unretract_extra_length
+  }
+
+  get unretract_extra_length_max () {
+    if (this.defaults.unretract_extra_length <= 0) return 15
+    return Math.round(this.defaults.unretract_extra_length * 2)
   }
 
   get defaults () {
@@ -91,6 +132,10 @@ export default class Retract extends Mixins(StateMixin) {
 
   setUnretractSpeed (val: number) {
     this.sendGcode(`SET_RETRACTION UNRETRACT_SPEED=${val}`, Waits.onSetUnretractSpeed)
+  }
+
+  setUnRetractExtraLength (val: number) {
+    this.sendGcode(`SET_RETRACTION UNRETRACT_EXTRA_LENGTH=${val}`, Waits.onSetUnretractExtraLength)
   }
 }
 </script>

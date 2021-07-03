@@ -227,6 +227,7 @@ app:
       total_time: Total time
       total_time_avg: Avg per print
       uncategorized: Uncategorized
+      unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       used: used
       variance: Variance
