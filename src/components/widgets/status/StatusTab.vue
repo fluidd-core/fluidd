@@ -84,11 +84,11 @@
               <span v-if="current_file.history.filament_used">{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
             </status-label>
 
-            <status-label label="Filament" v-else>
+            <status-label label="Filament" v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used">
               <span v-if="current_file.filament_total">{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
             </status-label>
 
-            <status-label label="Slicer">
+            <status-label label="Slicer" v-if="current_file.estimated_time">
               <span v-if="current_file.estimated_time > 0">{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
             </status-label>
 

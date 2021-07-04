@@ -9,7 +9,6 @@
           >
             <v-tab
               key="status"
-              :disabled="(!printerPrinting && !printerPaused) && filename === ''"
             >
               Status
             </v-tab>
