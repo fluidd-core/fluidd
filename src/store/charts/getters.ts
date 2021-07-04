@@ -129,10 +129,10 @@ export const getters: GetterTree<ChartState, RootState> = {
       xAxis: {
         type: 'time',
         boundaryGap: false,
-        // min: (value: any) => {
-        //   return value.max - (600 * 1000)
-        // },
-        min: 'dataMin',
+        min: (value: any) => {
+          return value.max - (600 * 1000)
+        },
+        // min: 'dataMin',
         max: 'dataMax',
         axisLine: { show: false },
         axisTick: { show: false },
