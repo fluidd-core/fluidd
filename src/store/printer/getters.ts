@@ -119,7 +119,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     let file = 0
     let fileLeft = 0
-    let fileEndTime = endTime
+    let fileEndTime = 0
     if (progress > 0 && duration > 0) {
       file = duration / progress
       fileLeft = (file - duration) / multiplier
@@ -129,7 +129,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     let actual = 0
     let actualTotal = 0
     let actualLeft = 0
-    let actualEndTime = endTime
+    let actualEndTime = 0
     if (
       'current_file' in state.printer &&
       'history' in state.printer.current_file &&
