@@ -9,27 +9,34 @@
       class="collapsable-card-title card-heading"
       :class="{ 'draggable': inLayout }"
     >
-      <slot name="title">
-        <v-icon left>{{ icon }}</v-icon>
-        <span class="font-weight-light">{{ title }}</span>
-      </slot>
-      <v-spacer />
+      <v-row no-gutters class="flex-nowrap">
 
-      <slot name="menu"></slot>
+        <v-col align-self="center" class="text-no-wrap">
+          <slot name="title">
+            <v-icon left>{{ icon }}</v-icon>
+            <span class="font-weight-light">{{ title }}</span>
+          </slot>
+        </v-col>
 
-      <!-- Collapse Control -->
-      <slot name="collapse-button">
-        <app-btn-collapse
-          v-if="_collapsable || inLayout"
-          :collapsed.sync="isCollapsed"
-          :enabled.sync="isEnabled"
-          :inLayout="inLayout"
-        >
-        </app-btn-collapse>
-      </slot>
+        <v-col cols="auto" align-self="center">
+          <slot name="menu"></slot>
+        </v-col>
+
+        <v-col cols="auto" align-self="center">
+          <!-- Collapse Control -->
+          <slot name="collapse-button">
+            <app-btn-collapse
+              v-if="_collapsable || inLayout"
+              :collapsed.sync="isCollapsed"
+              :enabled.sync="isEnabled"
+              :inLayout="inLayout"
+            >
+            </app-btn-collapse>
+          </slot>
+        </v-col>
+
+      </v-row>
     </v-card-title>
-
-    <v-divider></v-divider>
 
     <v-expand-transition v-if="!lazy">
       <div
