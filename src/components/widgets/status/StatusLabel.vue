@@ -25,6 +25,10 @@ export default class AppSwitch extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .layout {
+    margin: 0 0 2px 0;
+  }
+
   span.value {
     // flex: 0 0 auto;
     // min-width: 0;

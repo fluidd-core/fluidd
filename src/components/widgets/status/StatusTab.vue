@@ -1,120 +1,150 @@
 <template>
-  <v-card-text>
-    <v-row>
-      <!-- progress & image -->
-      <v-col cols="auto" class="">
-        <v-progress-circular
-            :rotate="-90"
-            :size="90"
-            :width="7"
-            :value="estimates.progress"
-            color="primary"
-          >
-          <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
-        </v-progress-circular>
+  <div>
 
-        <img
-          v-if="thumbnail"
-          class="print-thumb mt-2 d-flex d-sm-none d-md-flex d-lg-none"
-          :src="thumbnail"
-        />
-      </v-col>
+    <!-- Only show the linear progress for mdAndDown -->
+    <v-progress-linear
+      v-if="
+        progressVisible &&
+        $vuetify.breakpoint.mdAndDown
+      "
+      :height="6"
+      :value="estimates.progress"
+      color="primary"
+    >
+      <!-- <small v-if="estimates.progress">{{ estimates.progress }}%</small> -->
+    </v-progress-linear>
 
-      <v-col>
-        <!-- Visible dependent on knowing the fileor message -->
-        <v-row no-gutters v-if="message || filename !== ''">
-          <v-col>
-            <status-label label="M117" v-if="message">
-              <span>{{ message }}</span>
-            </status-label>
+    <v-card-text v-if="visible">
+      <v-row>
+        <!-- Only show the circular progress for lgAndUp -->
+        <v-col
+          cols="auto"
+          align-self="center"
+          v-if="progressVisible && $vuetify.breakpoint.lgAndUp"
+        >
+          <v-progress-circular
+              :rotate="-90"
+              :size="90"
+              :width="7"
+              :value="estimates.progress"
+              color="primary"
+            >
+            <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
+          </v-progress-circular>
+        </v-col>
 
-            <status-label label="File" v-if="filename !== ''">
-              <span>{{ filename }}</span>
-            </status-label>
-          </v-col>
-        </v-row>
+        <v-col align-self="center">
+          <!-- Visible dependent on knowing the file, message or mdAndDown -->
+          <v-row
+            no-gutters
+            v-if="
+              message ||
+              filename !== '' ||
+              (progressVisible && $vuetify.breakpoint.mdAndDown)
+          ">
+            <v-col>
+              <status-label
+                label="Progress"
+                v-if="progressVisible && $vuetify.breakpoint.mdAndDown">
+                <span>{{ estimates.progress }}%</span>
+              </status-label>
 
-        <!-- During a print. -->
-        <v-row no-gutters v-if="printerPrinting">
-          <v-col cols="12" sm="6">
-            <status-label label="Speed">
-              <span v-if="requestedSpeed > 0 && printerPrinting">{{ requestedSpeed }} mm/s</span>
-            </status-label>
+              <status-label label="M117" v-if="message">
+                <span>{{ message }}</span>
+              </status-label>
 
-            <status-label label="Flow">
-              <span v-if="flow.value > 0 && printerPrinting">{{ flow.value.toFixed(1) }} mm&sup3;/s</span>
-            </status-label>
+              <status-label label="File" v-if="filename !== ''">
+                <span>{{ filename }}</span>
+              </status-label>
+            </v-col>
+          </v-row>
 
-            <status-label label="Filament">
-              <span v-if="filament_used > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }}</span>
-            </status-label>
+          <!-- During a print. -->
+          <v-row no-gutters v-if="printerPrinting">
+            <v-col cols="12" sm="6">
+              <status-label label="Speed">
+                <span v-if="requestedSpeed > 0 && printerPrinting">{{ requestedSpeed }} mm/s</span>
+              </status-label>
 
-            <status-label label="Layer">
-              <span v-if="layers && printerPrinting">{{ layer }} / {{ layers }}</span>
-            </status-label>
-          </v-col>
+              <status-label label="Flow">
+                <span v-if="flow.value > 0 && printerPrinting">{{ flow.value.toFixed(1) }} mm&sup3;/s</span>
+              </status-label>
 
-          <v-col cols="12" sm="6">
-            <status-label label="Actual" v-if="estimates.actual > 0">
-              <span v-if="estimates.actual > 0">{{ $filters.formatCounterTime(estimates.actual) }}</span>
-            </status-label>
+              <status-label label="Filament">
+                <span v-if="filament_used > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }}</span>
+              </status-label>
 
-            <status-label label="File" v-else>
-              <span v-if="estimates.file > 0">{{ $filters.formatCounterTime(estimates.file) }}</span>
-            </status-label>
+              <status-label label="Layer">
+                <span v-if="layers && printerPrinting">{{ layer }} / {{ layers }}</span>
+              </status-label>
+            </v-col>
 
-            <status-label label="Slicer">
-              <span v-if="estimates.slicer > 0 && printerPrinting">{{ $filters.formatCounterTime(estimates.slicer) }}</span>
-            </status-label>
+            <v-col cols="12" sm="6">
+              <status-label label="Actual" v-if="estimates.actual > 0">
+                <span v-if="estimates.actual > 0">{{ $filters.formatCounterTime(estimates.actual) }}</span>
+              </status-label>
 
-            <status-label label="Total">
-              <span v-if="estimates.duration > 0 && printerPrinting">{{ $filters.formatCounterTime(estimates.duration) }}</span>
-            </status-label>
+              <status-label label="File" v-else>
+                <span v-if="estimates.file > 0">{{ $filters.formatCounterTime(estimates.file) }}</span>
+              </status-label>
 
-            <status-label label="Finish">
-              <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta, 'h:mm A') }}</span>
-            </status-label>
-          </v-col>
-        </v-row>
+              <status-label label="Slicer">
+                <span v-if="estimates.slicer > 0 && printerPrinting">{{ $filters.formatCounterTime(estimates.slicer) }}</span>
+              </status-label>
 
-        <!-- After a completed print, with file data and potentially history. -->
-        <v-row no-gutters v-if="current_file && !printerPrinting">
-          <v-col>
-            <status-label label="Filament" v-if="current_file.history && current_file.history.filament_used">
-              <span v-if="current_file.history.filament_used">{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
-            </status-label>
+              <status-label label="Total">
+                <span v-if="estimates.duration > 0 && printerPrinting">{{ $filters.formatCounterTime(estimates.duration) }}</span>
+              </status-label>
 
-            <status-label label="Filament" v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used">
-              <span v-if="current_file.filament_total">{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
-            </status-label>
+              <status-label label="Finish">
+                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta, 'h:mm a') }}</span>
+              </status-label>
+            </v-col>
+          </v-row>
 
-            <status-label label="Slicer" v-if="current_file.estimated_time">
-              <span v-if="current_file.estimated_time > 0">{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
-            </status-label>
+          <!-- After a completed print, with file data and potentially history. -->
+          <v-row no-gutters v-if="overviewVisible">
+            <v-col>
+              <status-label label="Filament" v-if="current_file.history && current_file.history.filament_used">
+                <span v-if="current_file.history.filament_used">{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
+              </status-label>
 
-            <status-label label="Actual" v-if="current_file.history && current_file.history.print_duration">
-              <span v-if="current_file.history.print_duration > 0">{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
-            </status-label>
+              <status-label label="Filament" v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used">
+                <span v-if="current_file.filament_total">{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
+              </status-label>
 
-            <status-label label="Total" v-if="current_file.history && current_file.history.total_duration">
-              <span v-if="current_file.history.total_duration > 0">{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
-            </status-label>
-          </v-col>
-        </v-row>
+              <status-label label="Slicer" v-if="current_file.estimated_time">
+                <span v-if="current_file.estimated_time > 0">{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
+              </status-label>
 
-      </v-col>
+              <status-label label="Actual" v-if="current_file.history && current_file.history.print_duration">
+                <span v-if="current_file.history.print_duration > 0">{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
+              </status-label>
 
-      <!-- Visible if we have a thumb -->
-      <v-col cols="auto" class="pa-0 d-none d-sm-flex d-md-none d-lg-flex d-xl-flex" v-if="thumbnail">
-        <img
-          v-if="thumbnail"
-          class="print-thumb"
-          :src="thumbnail"
-        />
-      </v-col>
+              <status-label label="Total" v-if="current_file.history && current_file.history.total_duration">
+                <span v-if="current_file.history.total_duration > 0">{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
+              </status-label>
+            </v-col>
+          </v-row>
 
-    </v-row>
-  </v-card-text>
+        </v-col>
+
+        <!-- Only show the thumb if we're lgAndUp and have a thumb to show -->
+        <v-col
+          v-if="thumbVisible"
+          cols="auto"
+          align-self="center"
+          class="pa-0 d-none"
+        >
+          <img
+            class="print-thumb"
+            :src="thumbnail"
+          />
+        </v-col>
+
+      </v-row>
+    </v-card-text>
+  </div>
 </template>
 
 <script lang="ts">
@@ -135,6 +165,52 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
     lastExtruderPosition: 0,
     value: 0,
     max: 0
+  }
+
+  get visible () {
+    // Content is visible if;
+    // We are printing or,
+    // We have a message or,
+    // We have a current filename or,
+    // We have a thumbnail and are lgAndUp or,
+    // Progress is visible and we're mdAndDown
+    return (
+      this.printerPrinting ||
+      this.message ||
+      (this.current_file && this.current_file.filename) ||
+      this.thumbVisible ||
+      (this.progressVisible && this.$vuetify.breakpoint.mdAndDown)
+    )
+  }
+
+  get progressVisible () {
+    // Progress is visible if;
+    // We are printing or,
+    // We have a current filename
+    return (
+      this.printerPrinting ||
+      this.filename !== ''
+    )
+  }
+
+  get overviewVisible () {
+    // Overview is visible if;
+    // We are not printing and,
+    // We have a current filename
+    return (
+      !this.printerPrinting &&
+      this.current_file &&
+      this.current_file.filename
+    )
+  }
+
+  get thumbVisible () {
+    return (
+      this.current_file &&
+      this.current_file.filename &&
+      this.thumbnail &&
+      this.$vuetify.breakpoint.lgAndUp
+    )
   }
 
   /**

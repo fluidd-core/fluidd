@@ -42,7 +42,7 @@ export default class AppBtnCollapseGroup extends Vue {
 
   get isCollapsed () {
     if (this.collapsed) return true
-    return this.$vuetify.breakpoint.smAndDown
+    return this.$vuetify.breakpoint.mdAndDown
   }
 
   get hasDefaultSlot () {
