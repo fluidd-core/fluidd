@@ -39,6 +39,7 @@
     "consola": "^2.15.3",
     "core-js": "^3.14.0",
     "dayjs": "^1.10.5",
+    "deepmerge": "^4.2.2",
     "echarts": "^5.1.2",
     "echarts-for-vue": "^1.4.1",
     "echarts-gl": "^2.0.6",

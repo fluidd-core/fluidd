@@ -122,7 +122,8 @@ export const handleSystemStatsChange = (payload: any) => {
  * Every packet should contain an entry for all known sensors we want to track.
  */
 export const handleAddChartEntry = (retention: number, keys: string[]) => {
-  const configureChartEntry = (date: Date) => {
+  const configureChartEntry = () => {
+    const date = new Date()
     const r: ChartData = {
       date
     }
@@ -144,19 +145,11 @@ export const handleAddChartEntry = (retention: number, keys: string[]) => {
   }
 
   if (store.state.charts && store.state.charts.ready) {
-    // Ensure we only add an entry every 1000ms.
-    const diff = 1000 // time to wait before adding another entry.
-    const date1 = new Date()
-    const date2 = (store.state.charts.chart.length > 0)
-      ? new Date(store.state.charts.chart[store.state.charts.chart.length - 1].date)
-      : null
-    if (!date2 || date1.getTime() - date2.getTime() > diff) {
-      const data = configureChartEntry(date1)
-      store.commit('charts/setChartEntry', {
-        type: 'chart',
-        data,
-        retention
-      })
-    }
+    const data = configureChartEntry()
+    store.commit('charts/setChartEntry', {
+      type: 'chart',
+      data,
+      retention
+    })
   }
 }
