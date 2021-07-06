@@ -134,7 +134,7 @@
           v-if="thumbVisible"
           cols="auto"
           align-self="center"
-          class="pa-0 d-none"
+          class="pa-0"
         >
           <img
             class="print-thumb"
