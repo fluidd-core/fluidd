@@ -27,7 +27,8 @@ export const defaultState = (): ConfigState => {
         { name: 'Portuguese', code: 'pt' },
         { name: 'Русский', code: 'ru' },
         { name: 'Українська', code: 'uk' },
-        { name: '한국어', code: 'ko' }
+        { name: '한국어', code: 'ko' },
+        { name: 'العربية', code: 'ar' }
       ],
       themePresets: []
     },
