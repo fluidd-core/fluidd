@@ -92,29 +92,36 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   error: any = null
   note: any = null
 
-  urlRegex = new RegExp('^(https?:\\/\\/)' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z\\d-]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port
-            '(\\?[;&amp;a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$', 'i')
-
   rules = {
     required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-    url: (v: string) => (this.urlRegex.test(v)) || this.$t('app.general.simple_form.error.invalid_url')
+    url: (v: string) => (this.validUrl(v)) || this.$t('app.general.simple_form.error.invalid_url')
+  }
+
+  /**
+   * Validates a URL
+   */
+  validUrl (url: string) {
+    try {
+      this.buildUrl(url)
+    } catch {
+      return false
+    }
+    return true
+  }
+
+  /**
+   * Builds the URL using the browsers URL class
+   * Assume http:// if no protocol is given.
+  */
+  buildUrl (url: string) {
+    if (
+      !url.startsWith('http://') && !url.startsWith('https://')
+    ) url = `http://${url}`
+    return new URL(url)
   }
 
   timer = 0
-  actualUrl = ''
-
-  get url () {
-    return this.actualUrl
-  }
-
-  set url (url: string) {
-    this.verified = false
-    this.actualUrl = url
-  }
+  url = ''
 
   // Axios cancels.
   cancelSource: CancelTokenSource | undefined = undefined
@@ -122,13 +129,16 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   // Fetch cancels.
   controller: AbortController | undefined = undefined
 
-  @Watch('actualUrl')
-  @Debounce(500)
-  async onUrlChange (url: string) {
+  @Watch('url')
+  @Debounce(750)
+  async onUrlChange (value: string) {
     if (this.valid) {
+      this.verified = false
       this.error = null
       this.note = null
       this.verifying = true
+
+      const url = this.buildUrl(value)
 
       // Handle cancelling axios requests.
       if (this.cancelSource !== undefined) {
@@ -137,14 +147,9 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       this.cancelSource = Axios.CancelToken.source()
 
-      // filter trailing slashes
-      url = (url.endsWith('/'))
-        ? url.slice(0, -1)
-        : url
-
       // Start by making a standard request. Maybe it's good?
       const request = await httpClient.get(
-        url + '/server/info?t=' + new Date().getTime(), {
+        url + 'server/info?t=' + new Date().getTime(), {
           withAuth: false,
           cancelToken: this.cancelSource.token
         })
@@ -183,7 +188,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
         this.controller = new AbortController()
         const { signal } = this.controller
 
-        await fetch(url + '/server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
+        await fetch(url + 'server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
           .then(() => {
             // likely a cors issue
             this.error = this.$t('app.endpoint.error.cors_error')
@@ -213,9 +218,9 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   addInstance () {
-    const valid = this.form.validate()
-    if (valid) {
-      const apiConfig = this.$filters.getApiUrls(this.url)
+    if (this.valid) {
+      const url = this.buildUrl(this.url)
+      const apiConfig = this.$filters.getApiUrls(url.toString())
       this.$emit('input', false)
       this.$emit('resolve', apiConfig)
     }
