@@ -86,7 +86,7 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
         <v-select
           :value="defaultToolheadMoveLength"
-          :items="[0.1, 1.0, 10, 100]"
+          :items="[0.1, 1.0, 10, 25, 50, 100]"
           @change="setDefaultToolheadMoveLength"
           :rules="[rules.numRequired, rules.numMin]"
           filled
