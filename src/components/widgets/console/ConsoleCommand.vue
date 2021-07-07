@@ -15,6 +15,7 @@
           dense
           hide-details
           @keyup.enter.exact="emitSend(newValue)"
+          @keydown.enter.exact.prevent
           @keyup.up="historyUp()"
           @keyup.down="historyDown()"
           @keydown.prevent.tab="autoComplete()">
