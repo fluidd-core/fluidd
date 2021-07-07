@@ -1,10 +1,10 @@
 <template>
   <app-btn
-    v-if="params.length === 0 || !enableParams"
+    v-if="paramList.length === 0 || !enableParams"
     :disabled="macro.disabledWhilePrinting && printerPrinting"
     @click="$emit('click', macro.name)"
+    :style="borderStyle"
   >
-    <div class="color-accent" :style="`background-color: ${color};`"></div>
     <slot></slot>
   </app-btn>
   <app-btn-group
@@ -14,8 +14,8 @@
     <app-btn
       :disabled="macro.disabledWhilePrinting && printerPrinting"
       @click="$emit('click', macro.name)"
+      :style="borderStyle"
     >
-      <div class="color-accent" :style="`background-color: ${color};`"></div>
       <slot></slot>
     </app-btn>
     <v-menu
@@ -26,7 +26,7 @@
     >
       <template v-slot:activator="{ on, attrs, value }">
         <app-btn
-          v-if="params.length > 0"
+          v-if="paramList.length > 0"
           v-on="on"
           v-bind="attrs"
           :min-width="24"
@@ -41,19 +41,19 @@
           <v-layout wrap style="max-width: 150px;">
 
             <v-text-field
-              v-for="(param, i) in params"
-              :key="param.name"
-              :label="param.name"
+              v-for="(param, i) in paramList"
+              :key="param"
+              :label="param"
               outlined
               dense
               hide-details="auto"
-              v-model="param.value"
+              v-model="params[param].value"
               class=""
-              :class="{ 'mb-3': (i < params.length - 1) }">
+              :class="{ 'mb-3': (i < paramList.length - 1) }">
 
             <template v-slot:append>
               <app-btn
-                @click="param.value = param.reset"
+                @click="params[param].value = params[param].reset"
                 style="margin-top: -4px; margin-right: -6px;"
                 color=""
                 icon
@@ -95,7 +95,11 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   enableParams!: boolean;
 
-  params: { name: string; value: any; reset: any }[] = []
+  params: { [index: string]: { value: string | number; reset: string | number }} = {}
+
+  get paramList () {
+    return Object.keys(this.params)
+  }
 
   /**
    * The formatted run command for a macro.
@@ -103,19 +107,18 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   get runCommand () {
     let s = this.macro.name
     if (this.params) {
-      this.params.forEach((param) => {
-        s += ` ${param.name}=${param.value}`
-      })
+      for (const param of Object.keys(this.params)) {
+        s += ` ${param}=${this.params[param].value}`
+      }
     }
     return s
   }
 
-  get color () {
+  get borderStyle () {
     if (this.macro && this.macro.color !== '') {
-      return this.macro.color
+      return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
-    const theme = this.$store.getters['config/getTheme']
-    return theme.currentTheme.btncolor
+    return ''
   }
 
   mounted () {
@@ -124,11 +127,12 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
       const regex = /params\.(\w*)\|?(default\('?(\w*)'?\))?/gmi
       let match = regex.exec(this.macro.config.gcode)
       do {
-        // console.log(match)
         if (match && match[1]) {
           const name = match[1]
           const value = match[3] || ''
-          this.params.push({ name, value, reset: value })
+          if (!this.params[name]) {
+            this.$set(this.params, name, { value, reset: value })
+          }
         }
       } while (
         (match = regex.exec(this.macro.config.gcode)) !== null
@@ -139,17 +143,6 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .color-accent {
-    border-radius: 4px 0 0 4px;
-    content: "";
-    top: -10px;
-    left: -16px;
-    position: absolute;
-    width: 4px;
-    height: 36px;
-    opacity: 1;
-  }
-
   .macro-params {
     height: 160px;
     display: flex;
