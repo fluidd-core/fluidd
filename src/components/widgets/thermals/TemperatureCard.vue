@@ -43,7 +43,7 @@
     <thermal-chart
       v-if="chartReady && chartVisible"
       ref="thermalchart"
-      :height="(isMobile) ? '160px' : '260px'"
+      :height="(isMobile) ? '180px' : '260px'"
     ></thermal-chart>
 
   </collapsable-card>
