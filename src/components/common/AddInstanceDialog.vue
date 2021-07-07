@@ -129,9 +129,15 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   // Fetch cancels.
   controller: AbortController | undefined = undefined
 
+  // Watch for valid url changes.
   @Watch('url')
+  onUrlChange (value: string, oldVal: string) {
+    if (value === oldVal) return
+    if (this.valid) this.handleUrlChange(value)
+  }
+
   @Debounce(750)
-  async onUrlChange (value: string) {
+  async handleUrlChange (value: string) {
     if (this.valid) {
       this.verified = false
       this.error = null
