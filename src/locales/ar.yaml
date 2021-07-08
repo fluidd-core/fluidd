@@ -149,7 +149,7 @@ app:
       reset_file: اعادة تعيين الملف
       reset_layout: اعادة تعيين التخطيط
       restart_firmware: اعادة تشغيل برنامج الطابعة
-      restart_service: %{service} اعادة تشغيل
+      restart_service: '%{service} اعادة تشغيل'
       restart_service_klipper: Klipper اعادة تشغيل
       restart_service_moonraker: Moonraker اعادة تشغيل
       resume: متابعة
@@ -239,8 +239,8 @@ app:
         arrayofnums: ارقام فقط
         exists: موجود مسبقا
         invalid_url: الرابط غير صحيح
-        max: %{max} اعلى
-        min: %{min} اقل
+        max: '%{max} اعلى'
+        min: '%{min} اقل'
         min_or_0: Min %{min} or 0
         password_username: Cannot match username
         required: مطلوب
