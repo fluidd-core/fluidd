@@ -88,7 +88,7 @@ export const Filters = {
   formatAbsoluteDateTime: (datetime: number, todayFormat?: string, futureFormat?: string) => {
     const date = _Vue.$dayjs(datetime * 1000)
     // Including a year doesn't make sense as that'll be clear from context (even on newyears-related edge cases)
-    const defaultFormat = 'MMM D, h:mm A'
+    const defaultFormat = 'MMM D, h:mm a'
     const appropriateSpecifiedFormat = date.isToday() ? todayFormat : futureFormat
 
     return date.format(appropriateSpecifiedFormat || defaultFormat)

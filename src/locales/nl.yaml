@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: Schaal
+      box_scale: Schaal
       flat_surface: Toon vlak
       mesh_matrix: Mesh matrix
       probed_matrix: Geprobed matrix
@@ -76,6 +76,7 @@ app:
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
+      diskinfo: Schijfinformatie
       downloaded: Gedownload
       file_name: Bestandsnaam
       transfer_rate: Snelheid
@@ -97,8 +98,8 @@ app:
       rename_file: Hernoem bestand
       upload_file: Bestand uploaden | Bestanden uploaden
     tooltip:
-      disabled: Taken zijn uitgeschakeld voordat er een verbinding is met klippy
       low_on_space: Weinig plaats op de Disk
+      root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
   gcode:
     btn:
       load_current_file: Laad huidig ​​bestand
@@ -108,7 +109,6 @@ app:
       layer: Laag
       layers: Lagen
       parsed: Geparsed
-      progress: Vooruitgang
       show_extrusions: Toon extrusies
       show_moves: Toon bewegingen
       show_next_layer: Toon volgende laag
@@ -135,10 +135,10 @@ app:
       config_reference: Configuratieverwijzing
       download: Downloaden
       edit: Aanpassen
+      exit_layout: Sluit layourmanager
       extrude: Extrude
       heaters_off: Verwarmingen uit
       load_all: Alles laden
-      load_current_file: Laad het huidige bestand
       more_information: Meer informatie
       pause: Pauze
       preheat: Voorverwarmen
@@ -146,6 +146,7 @@ app:
       preview_gcode: Voorbeeld van Gcode
       quad_gantry_level: QGL
       reboot: Herstart
+      refresh: Ververs
       remove: Verwijderen
       remove_all: Alles verwijderen
       rename: Hernoemen
@@ -153,15 +154,16 @@ app:
       reset_file: Reset bestand
       reset_layout: Reset Layout
       restart_firmware: Firmware herstart
+      restart_service: Start %{service} opnieuw
       restart_service_klipper: Klipper herstart
       restart_service_moonraker: Moonraker herstart
-      restart_service_webcamd: Webcam herstart
       resume: Verdergaan
       retract: Retract
       save: Opslaan
       save_as: Opslaan als
       save_restart: Opslaan & herstarten
       send: Verzenden
+      set_color: Kleur instellen
       shutdown: Afsluiten
       socket_refresh: Forceer verversen
       upload: Uploaden
@@ -182,13 +184,20 @@ app:
       accel_to_decel: Vertragingssnelheid
       acceleration: Versnelling
       add_camera: Camera toevoegen
-      add_category: Categorie toevoegen
       add_preset: Voorkeur toevoegen
+      add_user: Voeg gebruiker toe
+      api_key: API sleutel
       api_url: API URL
+      category: Categorie
+      change_password: Verander wachtwoord
       clear_all: Alles verwijderen
+      color: Kleur
       confirm: Bevestigen
+      current_password: Huidig wachtwoord
+      disabled_while_printing: Vergrendeld tijdens printen
       edit_camera: Camera wijzigen
       edit_preset: Aanpassen voorkeuren
+      edit_user: Pas gebruiker aan
       extrude_length: Extrude lengte
       extrude_speed: Extrude snelheid
       flow: Flow
@@ -199,11 +208,16 @@ app:
       longest_job: Langste taak
       low: Laag
       name: Naam
+      new_password: Nieuw wachtwoord
       no_notifications: Geen notificaties
       'off': Uit
+      password: Wachtwoord
       power: Kracht
       printers: Printers
+      progress: Vooruitgang
       requested_speed: Gevraagde Snelheid
+      retract_length: Retract lengte
+      retract_speed: Retract snelheid
       save_as: Opslaan als
       services: Services
       speed: Snelheid
@@ -216,10 +230,15 @@ app:
       total_time: Totale tijd
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
+      unretract_speed: De-retract lengte
       used: Gebruikt
       variance: Afwijking
       velocity: Snelheid
+      visible: Zichtbaar
       z_offset: Z-Offset
+    msg:
+      password_changed: Wachtwoord aangepast
+      wrong_password: Oeps! Er ging iets verkeerd, is je wachtwoord wel correct?
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -228,6 +247,7 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
+        password_username: Gebruikersnaam past niet
         required: Vereist
       msg:
         confirm: Ben je zeker?
@@ -272,11 +292,12 @@ app:
       jobs: Taken
       limits: Printer Limieten
       macros: Macros
+      retract: Firmware retractie
       runout_sensors: Runout Sensors
       settings: Instellingen
       stats: Printer Statistieken
-      status: Status
-      system_control: Systeemcontrole
+      system: Systeem
+      system_overview: Systeeminformatie
       temperature: Temperaturen
       tool: Werktuig
       tune: Tunen
@@ -300,15 +321,11 @@ app:
       printing: Printen
       ready: Klaar
       standby: Standby
-    status:
-      duration: tijdsspanne
-      duration_total: tijdsspanne en totaal
-      time_left: geschatte tijdsspanne
-      used_filament: gebruikt filament
   setting:
     btn:
       add_camera: Camera toevoegen
       add_thermal_preset: Voorkeur toevoegen
+      add_user: Voeg gebruiker toe
       reset: Reset
       select_theme: Selecteer Theme
     camera_type_options:
@@ -318,8 +335,6 @@ app:
     label:
       all_off: Alles uit
       all_on: Alles aan
-      camera_fillspace: Vul beeld
-      camera_fillspace_help: Met maar een camera vult dit het hele beeld.
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
@@ -333,7 +348,6 @@ app:
       default_toolhead_z_speed: Standaard z-snelheid
       draw_background: Teken achtergrond
       enable: Inschakelen
-      enable_animations: Animaties inschakelen
       enable_notifications: Notificaties aanzetten
       extrusion_line_width: Breedte extrusielijn
       flip_horizontal: Horizontaal spiegelen
@@ -349,24 +363,18 @@ app:
       printer_name: Printer Naam
       reset: Reset instellingen
       retraction_icon_size: Grootte van pictogram voor intrekken
+      show_animations: Toon animaties
+      theme_preset: Community thema
+      thermal_preset_gcode: GCode
       thermal_preset_name: Voorkeursnaam
-      time_estimates: Tijdsschattingen
-      toggle: Schakelen
       z_adjust_values: Z Aanpassingswaardes
     timer_options:
       duration: Alleen tijdsduur
-      duration_description: Zoals op het LCD, dit toont alleen tijdsduur zonder schattingen.
       filament: Filamentschatting
-      filament_description: >-
-        Gebruikt het filament gebruik om een schatting te maken.<br /> Accurater
-        naargelang tijd.
       file: Bestandsschatting
-      file_description: >-
-        Gebruikt progressie percentage en duurtijd om een schatting te maken.<br
-        /> Accurater naargelang tijd.
       slicer: Slicer
-      slicer_description: Gebruikt de slicerschatting. Dit moet je aanzetten in je slicer.
     title:
+      authentication: Authentificatie
       camera: Camera | Camera's
       gcode_preview: Gcode-voorbeeld
       general: Algemeen
@@ -382,6 +390,30 @@ app:
       no_connection: >-
         Geen verbinding met Moonraker, controleer Moonraker status en/of
         ververs.
+  system_info:
+    label:
+      capacity: Capaciteit
+      cpu_desc: CPU Beschrijving
+      distribution_codename: Codenaam
+      distribution_like: Distributie Like
+      distribution_name: Distributie
+      hardware_desc: Hardwarebeschrijving
+      hostname: Hostnaam
+      klipper_load: Klipper Load
+      manufactured: Gemaakt
+      manufacturer: Maker
+      mcu_awake: '{mcu} Awake Tijd'
+      mcu_bandwidth: MCU bandbreedte
+      mcu_load: '{mcu} Load'
+      model: CPU model
+      moonraker_load: Moonraker Load
+      processor_desc: Processor
+      product_name: Productnaam
+      serial_number: Serienummer
+      system_load: Systeem Load
+      system_memory: Systeemgeheugen
+      system_utilization: Systeemgebruik
+      total_memory: Totaal geheugen
   tool:
     btn:
       home_x: X

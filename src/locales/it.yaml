@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: Scala Volume
+      box_scale: Scala Volume
       flat_surface: Mostra il Piano
       mesh_matrix: Matrice della Mesh
       probed_matrix: Matrice Sondata
@@ -87,11 +87,11 @@ app:
     label:
       dir_name: Nome della directory
       disk_usage: Utilizzo del disco
+      diskinfo: Informazioni Disco
       downloaded: Scaricato
       file_name: Nome del file
       transfer_rate: Rateo di trasferimento
       uploaded: Caricato
-      diskinfo: Informazioni Disco
     msg:
       confirm: |-
         Sei sicuro? 
@@ -111,10 +111,25 @@ app:
         Caricamento file | 
         Caricamento files
     tooltip:
-      disabled: >-
-        I lavori richiedono una comunicazione valida con klippy e un percorso
-        virtual_sdcard valido
       low_on_space: Spazio su disco insufficiente
+  gcode:
+    btn:
+      load_current_file: Carica file attuale
+    label:
+      current_layer_height: Altezza layer attuale
+      follow_progress: Segui il Progresso
+      layer: Layer
+      layers: Layers
+      parsed: Analizzati
+      show_extrusions: Mostra estrusioni
+      show_moves: Mostra movimenti
+      show_next_layer: Mostra il prossimo Layer
+      show_previous_layer: Mostra il Layer precedente
+      show_retractions: Mostra ritrazioni
+    msg:
+      confirm: >-
+        Il file "%{filename}" è di %{size}, potrebbe essere intensivo sulle
+        risorse del tuo sistema. Sei sicuro?
   general:
     btn:
       add: Aggiungi
@@ -130,6 +145,7 @@ app:
       config_reference: Risorse Configurazione
       download: Scarica
       edit: Modifica
+      exit_layout: Esci dalla modalità layout
       extrude: Estrudi
       heaters_off: Riscaldatori spenti
       load_all: Carica tutto
@@ -137,8 +153,10 @@ app:
       pause: Pausa
       preheat: Preriscalda
       presets: Preset
+      preview_gcode: Anteprima GCode
       quad_gantry_level: QGL
       reboot: Riavvia
+      refresh: ricarica
       remove: Rimuovi
       remove_all: Rimuovi Tutto
       rename: Rinomina
@@ -146,26 +164,21 @@ app:
       reset_file: Reimposta File
       reset_layout: Ripristina Layout
       restart_firmware: Riavvia il firmware
+      restart_service: Riavvia %{servizio}
       restart_service_klipper: Riavvia Klipper
       restart_service_moonraker: Riavvia Moonraker
-      restart_service_webcamd: Riavvia la Webcam
       resume: Riprendi
       retract: Retrai
       save: Salva
       save_as: Salva Come
       save_restart: Salva & Riavvia
       send: Invia
+      set_color: Imposta colore
       shutdown: Spegnimento
       socket_refresh: Forza Refresh
       upload: Carica
       upload_print: Carica & Stampa
       view: Visualizza
-      exit_layout: Esci dalla modalità layout
-      load_current_file: Carica il file corrente
-      preview_gcode: Anteprima GCode
-      refresh: ricarica
-      restart_service: Riavvia %{servizio}
-      set_color: Imposta colore
     error:
       app_setup_link: >-
         Puoi trovare i requisiti di configurazione di Fluidd <a target="_blank"
@@ -181,13 +194,20 @@ app:
       accel_to_decel: Accel to Decel
       acceleration: Accelerazione
       add_camera: Aggiungi Camera
-      add_category: Aggiungi Categoria
       add_preset: Aggiungi Preset
+      add_user: Aggiungi utente
+      api_key: Chiave API
       api_url: URL API
+      category: Categoria
+      change_password: Cambia la password
       clear_all: Rimuovi tutte
+      color: Colore
       confirm: Conferma
+      current_password: Password attuale
+      disabled_while_printing: Disabilitato durante la stampa
       edit_camera: Modifica Camera
       edit_preset: Modifica Preset
+      edit_user: Modifica utente
       extrude_length: Lunghezza di Estrusione
       extrude_speed: Velocità di Estrusione
       flow: Flusso
@@ -198,11 +218,16 @@ app:
       longest_job: Lavoro più lungo
       low: Basso
       name: Nome
+      new_password: Nuova password
       no_notifications: Disabilita Notifiche
       'off': 'Off'
+      password: Password
       power: Energia
       printers: Stampanti
+      progress: Progresso
       requested_speed: Velocità Richiesta
+      retract_length: Lunghezza di ritrazione
+      retract_speed: Velocità di ritrazione
       save_as: Salva Come
       services: Servizi
       speed: Velocità
@@ -215,25 +240,17 @@ app:
       total_time: Tempo totale
       total_time_avg: Media per stampa
       uncategorized: Non categorizzato
+      unretract_speed: Velocità di de-ritrazione
       used: Utilizzato
       variance: Varianza
       velocity: Velocità
-      z_offset: Offset Z
-      add_user: Aggiungi utente
-      api_key: Chiave API
-      category: Categoria
-      change_password: Cambia la password
-      color: Colore
-      current_password: Password attuale
-      disabled_while_printing: Disabilitato durante la stampa
-      edit_user: Modifica utente
-      move_macro: Macro Movimento
-      new_password: Nuova password
-      password: Password
-      retract_length: Lunghezza di ritrazione
-      retract_speed: Velocità di ritrazione
-      unretract_speed: Velocità di de-ritrazione
       visible: Visibile
+      z_offset: Offset Z
+    msg:
+      password_changed: Password cambiata
+      wrong_password: |-
+        Oops! Qualcosa è andato storto. 
+        La tua password è corretta?
     simple_form:
       error:
         arrayofnums: Solo numeri
@@ -242,8 +259,8 @@ app:
         max: Max% {max}
         min: Min% {min}
         min_or_0: Min% {min} o 0
-        required: Richiesto
         password_username: Impossibile abbinare il nome utente
+        required: Richiesto
       msg:
         confirm: Sei sicuro?
         confirm_reboot_host: |-
@@ -285,33 +302,26 @@ app:
       console: Terminale
       endstops: Finecorsa
       fans_outputs: Ventole & Output
+      gcode_preview: Anteprima GCode [ Beta ]
       history: Cronologia dei lavori
       home: Pannello di Controllo
       jobs: Lavori
       limits: Limiti della Stampante
       macros: Macro
+      retract: Ritrazioni firmware
       runout_sensors: Sensori Fine Filamento
       settings: Impostazioni
       stats: Statistiche Stampante
-      status: Stato
-      system_control: Controllo del sistema
+      system: Sistema
+      system_overview: Informazioni di sistema
       temperature: Temperature
       tool: Attrezzo
       tune: Calibrazioni
-      gcode_preview: Anteprima GCode [ Beta ]
-      retract: Ritrazioni firmware
-      system: Sistema
-      system_overview: Informazioni di sistema
     tooltip:
       estop: Arresto di Emergenza
       reload_klipper: Ricarica la configurazione di Klipper.
       reload_restart_klipper: Ricarica la configurazione di Klipper e riavvia la MCU.
       restart_klipper: Riavvia il servizio di Klipper.
-    msg:
-      password_changed: Password cambiata
-      wrong_password: |-
-        Oops! Qualcosa è andato storto. 
-        La tua password è corretta?
   history:
     msg:
       confirm: >-
@@ -329,18 +339,13 @@ app:
       printing: Stampando
       ready: Pronto
       standby: Pausa
-    status:
-      duration: durata
-      duration_total: durata & totali
-      time_left: tempo rimanente stimato
-      used_filament: filamento utilizzato
   setting:
     btn:
       add_camera: Aggiungi Camera
       add_thermal_preset: Aggiungi Preset
+      add_user: Aggiungi utente
       reset: Ripristina
       select_theme: Seleziona il Tema
-      add_user: Aggiungi utente
     camera_type_options:
       mjpegadaptive: MJPEG Adattivo
       mjpegstream: MJPEG Stream
@@ -348,10 +353,6 @@ app:
     label:
       all_off: Tutti Off
       all_on: Tutto On
-      camera_fillspace: Riempi lo Spazio
-      camera_fillspace_help: >-
-        Con una sola videocamera abilitata, riempi lo spazio della videocamera
-        della dashboard.
       camera_flip_x: Capovolgi orizzontalmente
       camera_flip_y: Capovolgi verticalmente
       camera_stream_type: Tipo di Stream
@@ -363,54 +364,41 @@ app:
       default_toolhead_move_length: Lunghezza di spostamento testa di stampa predefinita
       default_toolhead_xy_speed: Velocità XY della testa di stampa predefinita
       default_toolhead_z_speed: Velocità Z predefinita della testa di stampa
+      draw_background: Mostra sfondo
       enable: Abilita
       enable_notifications: Attiva le notifiche
+      extrusion_line_width: Larghezza linea di estrusione
+      flip_horizontal: Capovolgi orizzontalmente
+      flip_vertical: Capovolgi verticalmente
       fps_target: Target FPS
       gcode_coords: Usa Coordinate GCode
       invert_x_control: Inverti controllo X.
       invert_y_control: Inverti controllo Y.
       invert_z_control: Inverti controllo Z.
       language: Lingua
+      move_line_width: Larghezza linea in movimento
       primary_color: Colore primario
       printer_name: Nome della Stampante
       reset: Ripristina le impostazioni
-      thermal_preset_name: Nome Preset
-      time_estimates: Stime di tempo
-      toggle: Attiva / Disattiva
-      z_adjust_values: Valori Z di fino
-      draw_background: Mostra sfondo
-      enable_animations: Abilita animazioni
-      extrusion_line_width: Larghezza linea di estrusione
-      flip_horizontal: Capovolgi orizzontalmente
-      flip_vertical: Capovolgi verticalmente
-      move_line_width: Larghezza linea in movimento
       retraction_icon_size: Dimensione dell'icona di ritrazione
       show_animations: Mostra animazioni
       theme_preset: Temi della community
+      thermal_preset_name: Nome Preset
+      z_adjust_values: Valori Z di fino
     timer_options:
       duration: Solo Durata
-      duration_description: Simile a un LCD per Klipper, mostra solo la durata senza stime.
       filament: Stima in base al Filamento
-      filament_description: >-
-        Utilizza il filamento utilizzato rispetto al filamento stimato per
-        stimare la durata totale. <br /> Più accurato con il passare del tempo.
       file: Stima in base al File
-      file_description: >-
-        Utilizza la percentuale di avanzamento e la durata per stimare la durata
-        totale. <br /> Più accurato con il passare del tempo.
       slicer: Stima in base allo Slicer
-      slicer_description: |-
-        Utilizza la stima nativa del tuo Slicer. 
-        Deve essere supportato dal tuo Slicer.
     title:
+      authentication: Autenticazione
       camera: Camera | Camere
+      gcode_preview: Anteprima GCode
       general: Generale
       macros: Macro
       theme: Tema
       thermal_presets: Preset Termici
       tool: Attrezzo
-      authentication: Autenticazione
-      gcode_preview: Anteprima GCode
     tooltip:
       gcode_coords: >-
         Visualizza la posizione del GCode invece della posizione della testata
@@ -421,6 +409,30 @@ app:
       no_connection: |-
         Nessuna connessione Moonraker. 
         Controlla lo stato di Moonraker e / o aggiorna.
+  system_info:
+    label:
+      capacity: Capacità
+      cpu_desc: Descrizione della CPU
+      distribution_codename: Nome in codice
+      distribution_like: Like Distribuzione
+      distribution_name: Distribuzione
+      hardware_desc: Descrizione dell'hardware
+      hostname: Nome host
+      klipper_load: Carico di Klipper
+      manufactured: Prodotto
+      manufacturer: Produttore
+      mcu_awake: Awake Time {mcu}
+      mcu_bandwidth: Banda Utilizzata {mcu}
+      mcu_load: Carico {mcu}
+      model: Modello CPU
+      moonraker_load: Carico di Moonraker
+      processor_desc: Processore
+      product_name: nome del prodotto
+      serial_number: Numero di serie
+      system_load: Carico di sistema
+      system_memory: Memoria di sistema
+      system_utilization: Utilizzo del sistema
+      total_memory: Memoria totale
   tool:
     btn:
       home_x: X
@@ -457,46 +469,3 @@ app:
       invalid: indica modifiche locali alla repo
       packages: Pacchetti
       release_notes: Note di Rilascio
-  gcode:
-    btn:
-      load_current_file: Carica file attuale
-    label:
-      current_layer_height: Altezza layer attuale
-      follow_progress: Segui il Progresso
-      layer: Layer
-      layers: Layers
-      parsed: Analizzati
-      progress: Progresso
-      show_extrusions: Mostra estrusioni
-      show_moves: Mostra movimenti
-      show_next_layer: Mostra il prossimo Layer
-      show_previous_layer: Mostra il Layer precedente
-      show_retractions: Mostra ritrazioni
-    msg:
-      confirm: >-
-        Il file "%{filename}" è di %{size}, potrebbe essere intensivo sulle
-        risorse del tuo sistema. Sei sicuro?
-  system_info:
-    label:
-      capacity: Capacità
-      cpu_desc: Descrizione della CPU
-      distribution_codename: Nome in codice
-      distribution_like: Like Distribuzione
-      distribution_name: Distribuzione
-      hardware_desc: Descrizione dell'hardware
-      hostname: Nome host
-      klipper_load: Carico di Klipper
-      manufactured: Prodotto
-      manufacturer: Produttore
-      mcu_awake: 'Awake Time {mcu}'
-      mcu_bandwidth: 'Banda Utilizzata {mcu}'
-      mcu_load: 'Carico {mcu}'
-      model: Modello CPU
-      moonraker_load: Carico di Moonraker
-      processor_desc: Processore
-      product_name: nome del prodotto
-      serial_number: Numero di serie
-      system_load: Carico di sistema
-      system_memory: Memoria di sistema
-      system_utilization: Utilizzo del sistema
-      total_memory: Memoria totale

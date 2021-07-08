@@ -88,14 +88,16 @@ export const actions: ActionTree<ServerState, RootState> = {
       !Array.isArray(payload.moonraker_stats)
     ) {
       const d = payload.moonraker_stats
-      commit('charts/setChartEntry', {
-        type: 'moonraker',
-        retention: 600,
-        data: {
-          date: new Date(d.time * 1000),
-          load: d.cpu_usage.toFixed(2)
-        }
-      }, { root: true })
+      if (d.cpu_usage <= 100) {
+        commit('charts/setChartEntry', {
+          type: 'moonraker',
+          retention: 600,
+          data: {
+            date: new Date(d.time * 1000),
+            load: d.cpu_usage.toFixed(2)
+          }
+        }, { root: true })
+      }
     }
   },
 
@@ -120,7 +122,8 @@ export const actions: ActionTree<ServerState, RootState> = {
               type: (previousEvent) ? 'info' : 'error',
               snackbar: !previousEvent, // Snackbar only if not a previously encountered event.
               merge: true, // Merge if it was a previously encountered event.
-              clear: !previousEvent // Dont allow the user to clear if it was a previously encountered event.
+              clear: !previousEvent, // Dont allow the user to clear if it was a previously encountered event.
+              noCount: previousEvent // Dont add to the counter if it was a previously encountered event.
             }
 
             // Add the temperature icon.

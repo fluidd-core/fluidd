@@ -17,19 +17,22 @@
     </template>
 
     <template v-slot:menu>
-      <app-btn
-        small
-        class="mr-2"
-        :disabled="!klippyReady"
-        @click="chartVisible = !chartVisible">
-        <v-icon left>$chart</v-icon>
-        {{  (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
-      </app-btn>
+      <app-btn-collapse-group>
+        <app-btn
+          small
+          class="ma-1"
+          :disabled="!klippyReady"
+          @click="chartVisible = !chartVisible">
+          <v-icon left>$chart</v-icon>
+          {{  (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
+        </app-btn>
 
-      <temperature-presets-menu
-        @applyOff="handleApplyOff"
-        @applyPreset="handleApplyPreset"
-      ></temperature-presets-menu>
+        <temperature-presets-menu
+          class="ma-1"
+          @applyOff="handleApplyOff"
+          @applyPreset="handleApplyPreset"
+        ></temperature-presets-menu>
+      </app-btn-collapse-group>
     </template>
 
     <temperature-targets
@@ -40,7 +43,7 @@
     <thermal-chart
       v-if="chartReady && chartVisible"
       ref="thermalchart"
-      :height="(isMobile) ? '160px' : '260px'"
+      :height="(isMobile) ? '180px' : '260px'"
     ></thermal-chart>
 
   </collapsable-card>
@@ -118,15 +121,21 @@ export default class TemperatureCard extends Mixins(StateMixin) {
   }
 
   handleApplyPreset (preset: TemperaturePreset) {
-    if (preset && preset.values) {
-      for (const key in preset.values) {
-        const item = preset.values[key]
-        if (item.type === 'heater' && item.active && item.value > -1) {
-          this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${key} TARGET=${item.value}`)
+    if (preset) {
+      if (preset.values) {
+        for (const key in preset.values) {
+          const item = preset.values[key]
+          if (item.type === 'heater' && item.active && item.value > -1) {
+            this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${key} TARGET=${item.value}`)
+          }
+          if (item.type === 'fan' && item.active && item.value > -1) {
+            this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${key} TARGET=${item.value}`)
+          }
         }
-        if (item.type === 'fan' && item.active && item.value > -1) {
-          this.sendGcode(`SET_TEMPERATURE_FAN_TARGET TEMPERATURE_FAN=${key} TARGET=${item.value}`)
-        }
+      }
+
+      if (preset.gcode) {
+        this.sendGcode(preset.gcode)
       }
     }
   }

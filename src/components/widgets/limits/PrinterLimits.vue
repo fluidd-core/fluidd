@@ -3,7 +3,7 @@
   <div>
     <v-card-text class="mb-0">
       <v-row>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" md="12" lg="6">
           <app-slider
             :label="$t('app.general.label.velocity')"
             :value="velocity.current"
@@ -18,7 +18,7 @@
           >
           </app-slider>
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" md="12" lg="6">
           <app-slider
             :label="$t('app.general.label.sqv')"
             :value="scv.current"
@@ -37,7 +37,7 @@
       </v-row>
 
       <v-row>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" md="12" lg="6">
           <app-slider
             :label="$t('app.general.label.acceleration')"
             :value="accel.current"
@@ -52,7 +52,7 @@
           >
           </app-slider>
         </v-col>
-        <v-col cols="12" sm="6">
+        <v-col cols="12" sm="6" md="12" lg="6">
           <app-slider
             :label="$t('app.general.label.accel_to_decel')"
             :value="decel.current"

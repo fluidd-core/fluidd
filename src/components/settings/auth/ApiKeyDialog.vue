@@ -12,7 +12,7 @@
       <v-divider></v-divider>
 
       <v-card-text class="px-4 pt-4">
-        <app-code-view :value="apiKey"></app-code-view>
+        <v-text-field readonly outlined :value="apiKey"></v-text-field>
       </v-card-text>
 
       <v-divider />

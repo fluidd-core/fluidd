@@ -27,6 +27,14 @@ export const mutations: MutationTree<ConsoleState> = {
   },
 
   /**
+   * Sets all console entries from moonraker store.
+   */
+  setAllEntries (state, payload: ConsoleEntry[]) {
+    state.consoleEntryCount = payload.length
+    state.console = payload
+  },
+
+  /**
    * Defines the list of available commands
    */
   setGcodeHelp (state, payload) {

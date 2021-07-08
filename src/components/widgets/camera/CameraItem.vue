@@ -146,14 +146,14 @@ export default class CameraItem extends Vue {
 
     if (type === 'mjpgstream') {
       url.searchParams.append('cacheBust', this.refresh.toString())
-      url.searchParams.set('action', 'stream')
+      if (!url.searchParams.get('action')) url.searchParams.set('action', 'stream')
       this.cameraUrl = url.toString()
     }
 
     if (type === 'mjpgadaptive') {
       this.request_start_time = performance.now()
       url.searchParams.append('cacheBust', this.refresh.toString())
-      url.searchParams.set('action', 'snapshot')
+      if (!url.searchParams.get('action')) url.searchParams.set('action', 'snapshot')
       this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
       this.$nextTick(() => {
         this.cameraUrl = url.toString()

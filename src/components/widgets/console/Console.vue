@@ -3,7 +3,7 @@
     class="console">
     <v-card
       flat
-      class="console-wrapper pa-1"
+      class="console-wrapper"
       ref="console-wrapper"
     >
       <DynamicScroller
@@ -150,6 +150,7 @@ export default class Console extends Mixins(StateMixin) {
     font-family: monospace;
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
+    padding-left: 4px;
   }
 
   .v-input {

@@ -11,12 +11,12 @@ export const mutations: MutationTree<SocketState> = {
   },
 
   setSocketOpen (state, payload) {
-    state.open = payload
-    state.disconnecting = false
+    if (state.open !== payload) state.open = payload
+    if (state.disconnecting) state.disconnecting = false
   },
 
   setSocketConnecting (state, payload) {
-    state.connecting = payload
+    if (state.connecting !== payload) state.connecting = payload
   },
 
   setSocketReadyState (state, payload) {

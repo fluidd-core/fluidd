@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      box_scale: Масштаб
       flat_surface: Показать базовую плоскость
       mesh_matrix: Сетчатая матрица
       probed_matrix: Зондируемая матрица
@@ -25,6 +26,8 @@ app:
     label:
       current: Текущее значение
       item: Элемент
+      'off': Выключить график
+      'on': Включить график
       power: Мощность
       target: Цель
     tooltip:
@@ -34,6 +37,7 @@ app:
         изменить видимость шкалы на графике.
   console:
     label:
+      auto_scroll: Автоматическое пролистывание
       hide_temp_waits: Скрыть временные ожидания
     placeholder:
       command: >-
@@ -74,6 +78,7 @@ app:
     label:
       dir_name: Имя папки
       disk_usage: Использование дискового пространства
+      diskinfo: Информация о диске
       downloaded: Скачан
       file_name: Имя файла
       transfer_rate: Скорость передачи данных
@@ -88,12 +93,31 @@ app:
       add_dir: Добавить папку
       add_file: Добавить файл
       download_file: Получение файла
+      keyboard_shortcuts: Сочетания клавиш
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
       upload_file: Загрузка файла | Загрузка файлов
     tooltip:
-      disabled: Задания на печать отключены до подключения к klippy
       low_on_space: Мало места на диске
+      root_disabled: Root недоступен. Проверьте файлы логов.
+  gcode:
+    btn:
+      load_current_file: Загрузить текущий файл
+    label:
+      current_layer_height: Текущая высота слоя
+      follow_progress: Следить за процессом
+      layer: Слой
+      layers: Слои
+      parsed: Считано
+      show_extrusions: Показывать
+      show_moves: Показывать перемещения
+      show_next_layer: Показывать следующий слой
+      show_previous_layer: Отображать предыдущий слой
+      show_retractions: Отображать ретракты
+    msg:
+      confirm: >-
+        Файл "%{filename}" имеет размер %{size}, это может быть ресурсоемким для
+        вашей системы. Вы уверены?
   general:
     btn:
       add: Добавить
@@ -109,12 +133,18 @@ app:
       config_reference: Примеры конфигураций
       download: Скачать
       edit: Редактировать
+      exit_layout: Выйти из режима редактирования
       extrude: Экструдировать
+      heaters_off: Отключить нагрев
       load_all: Загрузить все
+      more_information: Больше информации
       pause: Пауза
       preheat: Преднагрев
+      presets: Предустановки
+      preview_gcode: Предпросмотр GCode
       quad_gantry_level: QGL
       reboot: Перезагрузка
+      refresh: Обновить
       remove: Удалить
       remove_all: Удалить всё
       rename: Переименовать
@@ -122,14 +152,16 @@ app:
       reset_file: Сбросить файл
       reset_layout: Сбросить компановку интерфейса
       restart_firmware: Перезагрузить прошивку
+      restart_service: Перезапустить %{service}
       restart_service_klipper: Перезагрузить Klipper
       restart_service_moonraker: Перезагрузить Moonraker
-      restart_service_webcamd: Перезагрузить вебкамеру
       resume: Возобновить
-      retract: Откатить
+      retract: Ретракт
       save: Сохранить
       save_as: Сохранить как
       save_restart: Сохранить и перезагрузить
+      send: Отправить
+      set_color: Установить цвет
       shutdown: Отключение
       socket_refresh: Принудительно обновление
       upload: Загрузить
@@ -151,10 +183,19 @@ app:
       acceleration: Ускорение
       add_camera: Добавить камеру
       add_preset: Добавить предустановку
+      add_user: Добавить пользователя
+      api_key: Ключ API
       api_url: API URL
+      category: Категория
+      change_password: Изменить пароль
+      clear_all: Очистить все
+      color: Цвет
       confirm: Подтвердить
+      current_password: Текущий пароль
+      disabled_while_printing: Отключено во время печати
       edit_camera: Редактировать камеру
       edit_preset: Редактировать предустановку
+      edit_user: Редактирование пользователя
       extrude_length: Длинна экструзии
       extrude_speed: Скорость эуструзии
       flow: Поток
@@ -165,10 +206,16 @@ app:
       longest_job: Самая долгая печать
       low: Ниже
       name: Имя
+      new_password: Новый пароль
+      no_notifications: Нет уведомлений
       'off': Выключить
+      password: Пароль
       power: Питание
       printers: Принтеры
+      progress: Прогресс
       requested_speed: Запрошенная скорость
+      retract_length: Длина ретракта
+      retract_speed: Скорость ретракта
       save_as: Сохранить как
       services: Сервисы
       speed: Скорость
@@ -180,16 +227,25 @@ app:
       total_print_time_avg: Среднее время печати
       total_time: Общее время
       total_time_avg: Среднее время
+      uncategorized: Вне категории
+      unretract_speed: Скорость деретракта
       used: Использованно
       variance: Различие
       velocity: Скорость
+      visible: Видимый
       z_offset: Смещение Z
+    msg:
+      password_changed: Пароль изменен
+      wrong_password: Ой, что-то пошло не так. Пароль введен верно?
     simple_form:
       error:
+        arrayofnums: Только цифры
+        exists: Уже существует
         invalid_url: Невалидный URL
         max: Макс %{max}
         min: Мин %{min}
         min_or_0: Мин %{min} или 0
+        password_username: Не совпадает имя пользователя
         required: Требуется
       msg:
         confirm: Вы уверены?
@@ -198,8 +254,14 @@ app:
     table:
       header:
         actions: Действия
+        end_time: Завершено
         estimated_time: Ожидаемое время
-        filament_used: Филамент
+        filament: Филамент
+        filament_used: Использованный филамент
+        filament_weight_total: Вес филамента
+        first_layer_bed_temp: Температура стола на первом слое
+        first_layer_extr_temp: Температура экструдера на первом слое
+        first_layer_height: Высота первого слоя
         height: Высота
         last_printed: Последняя печать
         layer_height: Высота слоя
@@ -208,8 +270,10 @@ app:
         print_duration: Продолжительность печати
         size: Размер
         slicer: Слайсер
+        slicer_version: Версия слайсера
         start_time: Время начала
         status: Статус
+        total_duration: Общая продолжительность
     title:
       add_printer: Добавить принтер
       bedmesh: Сетка стола
@@ -219,22 +283,27 @@ app:
       configure: Конфигурация
       console: Консоль
       endstops: Точки остановки
-      fans_outputs: Кулеры и Выходы
+      fans_outputs: Кулеры и выходы
+      gcode_preview: Предпросмотр GCode [ Бета ]
       history: История задач
       home: Панель управления
       jobs: Задачи
       limits: Лимиты принтера
       macros: Макросы
+      retract: Настройки ретракта
       runout_sensors: Датчик контроля филамента
       settings: Настройки
       stats: Статистика принтера
-      status: Статус
-      system_control: Управление системой
+      system: Система
+      system_overview: Информация о системе
       temperature: Температуры
       tool: Инструмент
       tune: Подстройка
     tooltip:
-      estop: Немедленная Остановка
+      estop: Немедленная остановка
+      reload_klipper: Перезагружает конфигурацию Klipper.
+      reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
+      restart_klipper: Перезагружает сервис Klipper.
   history:
     msg:
       confirm: Вы уверены? Это очистит историю и сбросит статистику принтера
@@ -248,73 +317,62 @@ app:
       printing: Идёт печать
       ready: Готов
       standby: Режим ожидания
-    status:
-      duration: длительность
-      duration_total: продолжительность и общее время
-      time_left: осталось расчётного времени
-      used_filament: использованно филамента
   setting:
     btn:
       add_camera: Добавить камеру
       add_thermal_preset: Добавить пресет температур
+      add_user: Добавить пользователя
       reset: Сбросить
       select_theme: Выбрать тему
     camera_type_options:
-      mjpegadaptive: MJPEG Адаптивный
+      mjpegadaptive: Адаптивный MJPEG
       mjpegstream: MJPEG поток
       video: IP Камера
     label:
       all_off: Всё выключить
       all_on: Всё включить
-      camera_fillspace: Вывести на панели управления
-      camera_fillspace_help: >-
-        Если включена хотя бы одна камера, выведет в блоке камеры на панели
-        управления.
       camera_flip_x: Отразить по горизонтали
       camera_flip_y: Отразить по вертикали
       camera_stream_type: Тип потока
       camera_url: URL камеры
+      confirm_on_estop: Требовать подтверждение при аварийной остановке
       dark_mode: Тёмная тема
       default_extrude_length: Длина экструдирования по умолчанию
       default_extrude_speed: Скорость экструдера по умолчанию
       default_toolhead_move_length: Длина перемещения инструментальной головки по умолчанию
       default_toolhead_xy_speed: Скорость инструмента для осей XY по умолчанию
       default_toolhead_z_speed: Скорость инструмента для оси Z по умолчанию
+      draw_background: Отображать фон
       enable: Включить
       enable_notifications: Включить оповещения
+      extrusion_line_width: Ширина линии экструзии
+      flip_horizontal: Сдвиг по горизонтали
+      flip_vertical: Сдвиг по вертикали
       fps_target: Целевой FPS
       gcode_coords: Испрользовать координаты GCode
       invert_x_control: Инвертировать управление по оси X
       invert_y_control: Инвертировать управление по оси Y
       invert_z_control: Инвертировать управление по оси Z
       language: Язык интерфейса
+      move_line_width: Ширина линии движения
       primary_color: Основной цвет
       printer_name: Имя принтера
       reset: Сбросить настройки
+      retraction_icon_size: Размер иконки ретракта
+      show_animations: Показывать анимации
+      theme_preset: Цветовая схема
+      thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
-      time_estimates: Оценки времени
-      toggle: Переключатель
       z_adjust_values: Значения подстройки оси Z
     timer_options:
       duration: Только продолжительность
-      duration_description: >-
-        Подобно ЖК-дисплею klipper, он показывает только продолжительность без
-        каких-либо оценок.
       filament: Оценка филамента
-      filament_description: >-
-        Используется отношение значения потраченного филамента к расчётному
-        значению, для расчёта общей продолжительности.<br /> Точность повышается
-        в течение времени печати.
       file: Оценка времени на основе файла
-      file_description: >-
-        Использует процент прогресса печати и длительность из файла для оценки
-        общей длительности.<br /> Точность повышается в течение времени печати.
       slicer: Слайсер
-      slicer_description: >-
-        Использует оценку слайсера для отображения. Вы должны включить эту опцию
-        в вашем слайсере.
     title:
+      authentication: Аутентификация
       camera: Камера | Камеры
+      gcode_preview: Предпросмотр GCode
       general: Общие
       macros: Макросы
       theme: Тема
@@ -330,6 +388,30 @@ app:
       no_connection: >-
         Нет подключения к moonraker. Пожалуйста проеверьте статус работы
         moonraker и / или перезагрузите страницу.
+  system_info:
+    label:
+      capacity: Вместимость
+      cpu_desc: Описание CPU
+      distribution_codename: Кодовое название
+      distribution_like: Тип дистрибьютива
+      distribution_name: Дистрибьютив
+      hardware_desc: Описание оборудования
+      hostname: Имя в сети
+      klipper_load: Klipper
+      manufactured: Произведено
+      manufacturer: Производитель
+      mcu_awake: Время работы {mcu}
+      mcu_bandwidth: Частота {mcu}
+      mcu_load: Загрузка {mcu}
+      model: Модель CPU
+      moonraker_load: Moonraker
+      processor_desc: Процессор
+      product_name: Название
+      serial_number: Серийный номер
+      system_load: CPU
+      system_memory: Оперативная память
+      system_utilization: Загрузка системы
+      total_memory: Всего памяти
   tool:
     btn:
       home_x: X
@@ -343,14 +425,17 @@ app:
       check_for_updates: Проверить обновления
       finish: Закончено
       update: Обновление
+      view_versions: Новые версии
     label:
       commit_history: История коммитов
       commits_on: Коммиты на
       committed: Закоммичено
       dirty: DIRTY
       invalid: Ошибка
+      os_packages: Системные пакеты
       package_list: Список пакетов
       up_to_date: Актуальная версия
+      updates_available: Доступны обновления
     status:
       finished: Обновление завершено
       updating: Обновление...

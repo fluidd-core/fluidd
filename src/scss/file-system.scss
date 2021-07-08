@@ -59,6 +59,43 @@
   .v-data-table__expanded.v-data-table__expanded__content {
     box-shadow: none !important;
   }
+
+  // Quick actions hover
+  .v-data-table tr > td.actions {
+    position: relative;
+    width: 0px;
+    right: 0;
+    padding: 0 !important;
+    display: none;
+    border-bottom: none !important;
+    background: transparent;
+    div {
+      position: absolute;
+      display: flex;
+      top: 0;
+      right: 0;
+      align-items: center;
+      padding: 0 16px;
+      vertical-align: middle;
+      height: calc(100% - 1px);
+      background: map-deep-get($material-dark, 'table', 'hover');
+      border: none;
+    }
+
+    div:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -32px;
+      width: 32px;
+      height: inherit;
+      background: linear-gradient(90deg, rgba(53,53,57,0) 0%, rgba(53,53,57,1) 100%);
+    }
+  }
+
+  .v-data-table tr:hover > td.actions {
+    display: table-cell;
+  }
 }
 
 .theme--light.bulk-drag {

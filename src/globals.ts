@@ -21,7 +21,6 @@ import {
   mdiWindowClose,
   mdiPlayBoxOutline,
   mdiPrinter,
-  mdiAlphaRCircleOutline,
   mdiCamera,
   mdiFan,
   mdiArrowUp,
@@ -111,7 +110,9 @@ import {
   mdiCircleSlice3,
   mdiCodeJson,
   mdiHarddisk,
-  mdiLayersTripleOutline
+  mdiLayersTripleOutline,
+  mdiMessageTextOutline,
+  mdiSwapVertical
 } from '@mdi/js'
 
 /**
@@ -285,10 +286,11 @@ export const Icons = Object.freeze({
   contentCopy: mdiContentCopy,
   apps: mdiApps,
   shieldAccount: mdiShieldAccount,
-  retract: mdiAlphaRCircleOutline,
+  retract: mdiSwapVertical,
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
-  harddisk: mdiHarddisk
+  harddisk: mdiHarddisk,
+  message: mdiMessageTextOutline
 })
 
 export const Waits = Object.freeze({
@@ -324,6 +326,7 @@ export const Waits = Object.freeze({
   onSetRetractLength: 'onSetRetractLength',
   onSetRetractSpeed: 'onSetRetractSpeed',
   onSetUnretractSpeed: 'onSetUnretractSpeed',
+  onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem'

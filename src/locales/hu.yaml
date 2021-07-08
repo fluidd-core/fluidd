@@ -80,9 +80,6 @@ app:
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
     tooltip:
-      disabled: >-
-        A munkák le vannak tiltva a klippy-vel való kommunikáció megkezdése
-        előtt
       low_on_space: Kevés lemezterület
   general:
     btn:
@@ -113,7 +110,6 @@ app:
       restart_firmware: Firmware újraindítása
       restart_service_klipper: Klipper újraindítása
       restart_service_moonraker: Moonraker újraindítása
-      restart_service_webcamd: Webkamera újraindítása
       resume: Folytatás
       retract: Retract/Visszahúzás
       save: Mentés
@@ -215,8 +211,6 @@ app:
       macros: Makrók
       runout_sensors: Kifutásérzékelők
       stats: Nyomtató statisztikák
-      status: Állapot
-      system_control: Rendszer vezérlés
       temperature: Hőértékek
       tool: Szerszám
       tune: Állítás
@@ -235,11 +229,6 @@ app:
       printing: Nyomtatás
       ready: Kész
       standby: Készenlétben
-    status:
-      duration: futási idő
-      duration_total: futási és teljes időtartam
-      time_left: becsült hátralévő idő
-      used_filament: felhasznált filament
   setting:
     btn:
       add_camera: Kamera hozzáadása
@@ -253,8 +242,6 @@ app:
     label:
       all_off: Mindent ki
       all_on: Mindent be
-      camera_fillspace: Helykitöltés
-      camera_fillspace_help: Csak 1 engedélyezett kamera esetén az átnézeti kép kitöltése.
       camera_flip_x: Vízszintes elforgatás
       camera_flip_y: Függőleges elforgatás
       camera_stream_type: Stream típusa
@@ -276,26 +263,12 @@ app:
       printer_name: Nyomtató neve
       reset: Beállítások alaphelyzetbe állítása
       thermal_preset_name: Előre beállított név
-      time_estimates: Időbecslések
-      toggle: Kapcsoló
       z_adjust_values: Z Beállított értékei
     timer_options:
       duration: Csak időtartam
-      duration_description: >-
-        A klipper LCD-hez hasonlóan ez is csak az időtartamot mutatja becslés
-        nélkül.
       filament: Filament becslése
-      filament_description: >-
-        A felhasznált, és a becsült filament igény alapján várható időtartam
-        becslése.<br /> Az idő múlásával egyre pontosabb.
       file: Fájl becslése
-      file_description: >-
-        Hátralévő időtartam becslése (előrehaladás és eltelt idő alapján).<br
-        />  Az idő múlásával egyre pontosabb.
       slicer: Slicer/szeletelő
-      slicer_description: >-
-        Slicer becslések használata a megjelenítéshez (Slicerben engedélyezni
-        kell).
     title:
       camera: Kamera | Kamerák
       general: Általános

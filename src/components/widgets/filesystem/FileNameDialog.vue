@@ -3,7 +3,6 @@
     :value="value"
     @input="$emit('input', value)"
     :max-width="320"
-    persistent
   >
     <v-form
       class="mt-3"

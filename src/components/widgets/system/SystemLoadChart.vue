@@ -14,7 +14,7 @@
     <div class="chart-label-wrapper">
       <div class="chart-label">
         <span>{{ $t('app.system_info.label.system_load') }}</span>
-        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
+        <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }} / {{ cores }}</span>
       </div>
     </div>
 
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class SystemLoadChart extends Vue {
@@ -32,12 +32,19 @@ export default class SystemLoadChart extends Vue {
     return this.$store.state.charts.klipper || []
   }
 
+  get cores () {
+    return this.$store.state.server?.system_info?.cpu_info?.cpu_count || 1
+  }
+
   get options () {
     const o = {
-      ...this.$store.getters['charts/getBaseChartOptions']({
-        load: '%'
-      }),
+      ...this.$store.getters['charts/getBaseChartOptions'](),
       series: this.series
+    }
+    o.yAxis.max = (value: any) => {
+      return (value.max <= this.cores)
+        ? this.cores
+        : value.max
     }
     return o
   }
@@ -49,8 +56,9 @@ export default class SystemLoadChart extends Vue {
     })
   }
 
-  mounted () {
-    if (this.chartData && this.chartData.length > 0) this.ready = true
+  @Watch('chartData', { immediate: true })
+  onChartData (data: any) {
+    if (data && data.length > 0) this.ready = true
   }
 }
 </script>

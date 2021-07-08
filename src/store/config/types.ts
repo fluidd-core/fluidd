@@ -43,7 +43,6 @@ export interface GeneralConfig {
   defaultToolheadMoveLength: number;
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
-  printTimeEstimationsType: 'file' | 'slicer' | 'filament' | 'totals';
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
@@ -112,6 +111,7 @@ export interface TemperaturePreset {
   id: number;
   name: string;
   values: TemperaturePresetValues;
+  gcode?: string;
 }
 
 export interface TemperaturePresetValues {

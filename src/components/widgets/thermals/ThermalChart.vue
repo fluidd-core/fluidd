@@ -117,11 +117,11 @@ export default class ThermalChart extends Vue {
 
     let right = (this.isMobile) ? 15 : 20
     if (this.showPowerAxis(this.initialSelected)) {
-      right = (this.isMobile) ? 25 : 45
+      right = (this.isMobile) ? 35 : 45
     }
     const grid = {
       top: 20,
-      left: (this.isMobile) ? 25 : 45,
+      left: (this.isMobile) ? 35 : 45,
       right,
       bottom: (this.isMobile) ? 52 : 38
     }
@@ -222,7 +222,7 @@ export default class ThermalChart extends Vue {
           color: tooltip.textStyle.color,
           fontSize,
           formatter: '{H}:{mm}',
-          rotate: (this.isMobile) ? 90 : 0
+          rotate: (this.isMobile) ? 45 : 0
         },
         axisPointer: {
           label: {
@@ -254,8 +254,7 @@ export default class ThermalChart extends Vue {
             margin: 8,
             color: fontColor,
             fontSize,
-            formatter: '{value}',
-            rotate: (this.isMobile) ? 90 : 0
+            formatter: '{value}'
           },
           boundaryGap: [0, '100%']
         },
@@ -278,8 +277,7 @@ export default class ThermalChart extends Vue {
             margin: 8,
             color: fontColor,
             fontSize,
-            formatter: this.yAxisPowerFormatter,
-            rotate: (this.isMobile) ? 90 : 0
+            formatter: this.yAxisPowerFormatter
           },
           boundaryGap: [0, '100%']
         }

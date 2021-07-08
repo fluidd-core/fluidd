@@ -2,60 +2,41 @@
   <v-card
     :class="_cardClasses"
     :rounded="rounded"
-    :loading="isLoading">
+    :loading="isLoading"
+    :color="color">
 
     <v-card-title
       class="collapsable-card-title card-heading"
       :class="{ 'draggable': inLayout }"
     >
-      <slot name="title">
-        <v-icon left>{{ icon }}</v-icon>
-        <span class="font-weight-light">{{ title }}</span>
-      </slot>
-      <v-spacer />
+      <v-row no-gutters class="flex-nowrap">
 
-      <!-- Menu Buttons (not condensed) -->
-      <div :class="menuClasses" v-if="!inLayout && !hideMenu">
-        <slot name="menu"></slot>
-      </div>
+        <v-col align-self="center" class="text-no-wrap">
+          <slot name="title">
+            <v-icon left>{{ icon }}</v-icon>
+            <span class="font-weight-light">{{ title }}</span>
+          </slot>
+        </v-col>
 
-      <!-- Menu, (condensed to hamburger) -->
-      <v-menu
-        v-if="hasMenuSlot && !inLayout && !hideMenu"
-        transition="slide-y-transition"
-        left
-        offset-y
-        :close-on-content-click="false"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <app-btn
-            :class="hamburgerMenuClasses"
-            fab x-small text
-            color=""
-            v-bind="attrs"
-            v-on="on">
-            <v-icon>{{ menuIcon }}</v-icon>
-          </app-btn>
-        </template>
-        <v-sheet elevation="0" class="pa-2">
-          <!-- Menu slot -->
+        <v-col cols="auto" align-self="center">
           <slot name="menu"></slot>
-        </v-sheet>
-      </v-menu>
+        </v-col>
 
-      <!-- Collapse Control -->
-      <slot name="collapse-button">
-        <app-btn-collapse
-          v-if="_collapsable || inLayout"
-          :collapsed.sync="isCollapsed"
-          :enabled.sync="isEnabled"
-          :inLayout="inLayout"
-        >
-        </app-btn-collapse>
-      </slot>
+        <v-col cols="auto" align-self="center">
+          <!-- Collapse Control -->
+          <slot name="collapse-button">
+            <app-btn-collapse
+              v-if="_collapsable || inLayout"
+              :collapsed.sync="isCollapsed"
+              :enabled.sync="isEnabled"
+              :inLayout="inLayout"
+            >
+            </app-btn-collapse>
+          </slot>
+        </v-col>
+
+      </v-row>
     </v-card-title>
-
-    <v-divider></v-divider>
 
     <v-expand-transition v-if="!lazy">
       <div
@@ -109,6 +90,12 @@ export default class CollapsableCard extends Vue {
    */
   @Prop({ type: String, required: true })
   title!: string
+
+  /**
+   * Card color.
+   */
+  @Prop({ type: String })
+  color!: string
 
   /**
    * Sub title.
@@ -187,16 +174,6 @@ export default class CollapsableCard extends Vue {
    */
   @Prop({ type: String, default: 'lg' })
   menuBreakpoint!: string
-
-  /** The menu icon to use when menu items are collapsed  */
-  @Prop({ type: String, default: '$menu' })
-  menuIcon!: string
-
-  /**
-   * Forcefully hide the menu btns / hamburger.
-   */
-  @Prop({ type: Boolean, default: false })
-  hideMenu!: boolean
 
   /**
    * Define any optional classes for the card itself.
@@ -280,13 +257,6 @@ export default class CollapsableCard extends Vue {
     return `d-none d-${this.menuBreakpoint}-flex`
   }
 
-  /**
-   * The hamburger menu classes.
-   */
-  get hamburgerMenuClasses () {
-    return `d-flex d-${this.menuBreakpoint}-none`
-  }
-
   get isLoading (): boolean | string {
     return (this.loading) ? 'primary' : false
   }
@@ -340,15 +310,6 @@ export default class CollapsableCard extends Vue {
    */
   get hasDefaultSlot () {
     return !!this.$slots.default || !!this.$scopedSlots.default
-  }
-
-  /**
-   * Content for the menu. Shows in desktop +, condenses
-   * to a hamburger anything below. Can be forced to a menu
-   * with the forced-menu prop.
-   */
-  get hasMenuSlot () {
-    return !!this.$slots.menu || !!this.$scopedSlots.menu
   }
 
   /**

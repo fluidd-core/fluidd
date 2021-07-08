@@ -25,7 +25,7 @@
               <app-slider
                 :label="$t('app.gcode.label.layer')"
                 :value="currentLayer + 1"
-                @input="setCurrentLayerThrottled($event - 1)"
+                @input="setCurrentLayer($event - 1)"
                 :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
@@ -38,9 +38,9 @@
           <v-row>
             <v-col>
               <app-slider
-                :label="$t('app.gcode.label.progress')"
+                :label="$t('app.general.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
-                @input="setMoveProgressThrottled($event + currentLayerMoveRange.min)"
+                @input="setMoveProgress($event + currentLayerMoveRange.min)"
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
@@ -85,7 +85,6 @@ import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePrevie
 import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
-import { throttle } from 'lodash'
 
 @Component({
   components: {
@@ -107,9 +106,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   get visibleLayer () {
     return this.currentLayer + 1
   }
-
-  setCurrentLayerThrottled?: (value: number) => void
-  setMoveProgressThrottled?: (value: number) => void
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -157,8 +153,13 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     if (this.followProgress) {
       const fileMovePosition = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
 
+      // In some (yet unclear) cases, fileMovePosition can get out of sync with
+      // the component's notion of moveProgress.  This seems to happen during
+      // layer changes, but not every time.  Possibly some gcode command is getting
+      // misinterpreted.
+      // This "fix" simply forces a re-sync of progress if they get out of sync
       if (fileMovePosition !== this.moveProgress) {
-        this.followProgress = false
+        this.syncMoveProgress()
       }
     }
   }
@@ -225,22 +226,20 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
   }
 
+  setCurrentLayer (value: number) {
+    if (value > 0) this.currentLayer = value
+  }
+
+  setMoveProgress (value: number) {
+    if (value >= 0) this.moveProgress = value
+  }
+
   syncMoveProgress () {
     this.moveProgress = this.$store.getters['gcodePreview/getMoveIndexByFilePosition'](this.filePosition)
   }
 
   abortParser () {
     this.$store.dispatch('gcodePreview/terminateParserWorker')
-  }
-
-  mounted () {
-    this.setCurrentLayerThrottled = throttle(value => {
-      this.currentLayer = value
-    }, 1000 / 24)
-
-    this.setMoveProgressThrottled = throttle(value => {
-      this.moveProgress = value
-    }, 1000 / 24)
   }
 }
 </script>

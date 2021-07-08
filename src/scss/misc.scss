@@ -35,6 +35,7 @@
   background: transparent;
 }
 
+// Ensure the number arrows don't appear on text inputs.
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -45,4 +46,9 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+// Disable double-tap zoom effects on buttons.
+.v-btn {
+  touch-action: manipulation;
 }

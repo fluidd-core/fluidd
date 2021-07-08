@@ -81,7 +81,7 @@
       <template v-for="service in supportedServices">
         <v-list-item
          :key="service"
-         v-if="service !== 'moonraker' && service !== 'klipper'"
+         v-if="!service.startsWith('moonraker') && !service.startsWith('klipper')"
          @click="serviceRestartByName(service);
          $emit('click')"
         >

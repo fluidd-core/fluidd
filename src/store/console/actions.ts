@@ -54,12 +54,15 @@ export const actions: ActionTree<ConsoleState, RootState> = {
   /**
    * On a fresh load of the UI, we load prior gcode / console history
    */
-  async onGcodeStore ({ dispatch }, payload) {
+  async onGcodeStore ({ commit }, payload) {
     if (payload && payload.gcode_store) {
-      payload.gcode_store.forEach((s: ConsoleEntry) => {
+      const entries = payload.gcode_store.map((s: ConsoleEntry, i: number) => {
         s.message = Globals.CONSOLE_RECEIVE_PREFIX + s.message
-        dispatch('onAddConsoleEntry', s)
+        s.message = s.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
+        s.id = i
+        return s
       })
+      commit('setAllEntries', entries)
     }
   },
 

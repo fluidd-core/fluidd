@@ -91,7 +91,6 @@ app:
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen
     tooltip:
-      disabled: Druckvorgänge sind vor der ersten Kommunikation mit klippy nicht möglich
       low_on_space: Wenig Speicherplatz auf der Festplatte
   general:
     btn:
@@ -123,7 +122,6 @@ app:
       restart_firmware: Firmware Neustarten
       restart_service_klipper: Klipper Neustarten
       restart_service_moonraker: Moonraker Neustarten
-      restart_service_webcamd: Webcam Neustarten
       resume: Fortfahren
       retract: Retracten
       save: Speichern
@@ -234,8 +232,6 @@ app:
       runout_sensors: Runout Sensoren
       settings: Einstellungen
       stats: Druckerstatus
-      status: Status
-      system_control: Systemsteuerung
       temperature: Temperaturen
       tool: Druckkopf
       tune: Tune
@@ -256,11 +252,6 @@ app:
       printing: Druckt
       ready: Bereit
       standby: Standby
-    status:
-      duration: Dauer
-      duration_total: Dauer & Gesamt
-      time_left: geschätzte verbleibende Zeit
-      used_filament: verbrauchtes Filament
   setting:
     btn:
       add_camera: Kamera hinzufügen
@@ -274,10 +265,6 @@ app:
     label:
       all_off: Alle aus
       all_on: Alle an
-      camera_fillspace: Bereich füllen
-      camera_fillspace_help: >-
-        Den Bereich der Kamera im Dashboard ausfüllen, wenn nur eine Kamera
-        aktiv ist.
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_stream_type: Art des Kamerastreams
@@ -300,26 +287,12 @@ app:
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
       thermal_preset_name: Name des Voreinstellungsprofils
-      time_estimates: Zeitschätzung
-      toggle: Umschalten
       z_adjust_values: Z-Werte anpassen
     timer_options:
       duration: Nur Dauer
-      duration_description: >-
-        Ähnlich wie bei einem Klipper-LCD wird hier nur die Dauer ohne
-        Schätzungen angezeigt.
       filament: Filament-Schätzung
-      filament_description: >-
-        Schätzt die Gesamtdauer anhand der Länge des gedruckten Filaments im
-        Vergleich zur Gesamtlänge. <br /> Wird mit der Zeit genauer.
       file: Datei-Schätzung
-      file_description: >-
-        Schätzt die Gesamtdauer anhand des Datei-Fortschritts in Prozent und der
-        verstrichenen Zeit. <br /> Wird mit der Zeit genauer.
       slicer: Slicer
-      slicer_description: >-
-        Verwendet die Schätzung des Slicers zur Anzeige. Dies muss in Ihrem
-        Slicer aktiviert sein.
     title:
       camera: Kamera | Kameras
       general: Allgemein

@@ -19,7 +19,7 @@ export const mutations: MutationTree<LayoutState> = {
    * have in their moonraker db.
    */
   setInitLayout (state, payload) {
-    if (payload) {
+    if (payload && Object.keys(payload).length > 0) {
       const defaultComponents = Object.assign({}, defaultState())
       const supportedComponents = getAllLayouts(defaultComponents.layouts)
 

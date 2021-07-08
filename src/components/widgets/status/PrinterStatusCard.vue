@@ -1,160 +1,128 @@
 <template>
   <collapsable-card
-    :hide-menu="hidePrinterMenu"
-    :collapsable="printerPrinting"
-    :title="$t('app.general.title.status')"
+    :title="$t('app.printer.state.' + printerState)"
     icon="$printer3d"
     :draggable="true"
+    :collapsable="collapsable"
     layout-path="dashboard.printer-status-card">
 
     <template v-slot:title>
-      <v-icon left>$printer3d</v-icon>
-      <span class="font-weight-light">
-        {{ $t('app.printer.state.' + printerState) }}
-        <span class="font-weight-light text-subtitle-2 ml-sm-4 d-block d-sm-inline-block" v-show="printerMessage">{{ printerMessage }}</span>
-      </span>
+      <v-tabs
+        v-model="tab"
+        background-color="transparent"
+        mobile-breakpoint="0"
+        height="41"
+        hide-slider
+      >
+        <v-tab
+          key="status"
+        >
+          <v-icon left>$printer3d</v-icon>
+          {{ printerState }}
+        </v-tab>
+        <v-tab
+          v-if="supportsHistoryComponent"
+          key="reprint"
+        >
+          {{ $t('app.general.btn.reprint') }}
+        </v-tab>
+      </v-tabs>
     </template>
 
     <template v-slot:menu>
-      <app-btn
-        @click="pausePrint()"
-        v-if="printerPrinting || printerPaused"
-        :elevation="2"
-        :loading="hasWait($waits.onPrintPause)"
-        :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-        small
-        class="ma-1">
-        <v-icon small>$pause</v-icon>
-        <span>{{ $t('app.general.btn.pause') }}</span>
-      </app-btn>
-
-      <app-btn
-        @click="cancelPrint()"
-        v-if="printerPrinting || printerPaused"
-        :elevation="2"
-        :loading="hasWait($waits.onPrintCancel)"
-        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-        small
-        class="ma-1">
-        <v-icon small>$cancel</v-icon>
-        <span>{{ $t('app.general.btn.cancel') }}</span>
-      </app-btn>
-
-      <app-btn
-        @click="resumePrint()"
-        v-if="printerPrinting || printerPaused"
-        :elevation="2"
-        :loading="hasWait($waits.onPrintResume)"
-        :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-        small
-        class="ma-1">
-        <v-icon small class="mr-1">$resume</v-icon>
-        <span>{{ $t('app.general.btn.resume') }}</span>
-      </app-btn>
-
-      <app-btn
-        @click="resetFile()"
-        :elevation="2"
-        v-if="!printerPrinting && !printerPaused && filename"
-        small
-        class="ma-1">
-        <v-icon small class="mr-1">$refresh</v-icon>
-        <span>{{ $t('app.general.btn.reset_file') }}</span>
-      </app-btn>
-
-      <app-btn
-        v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
-        @click="handleReprint(filename)"
-        small
-        class="ma-1">
-        <v-icon small class="mr-1">$reprint</v-icon>
-        <span>{{ $t('app.general.btn.reprint') }}</span>
-      </app-btn>
-
-      <reprint-menu
-        v-if="supportsHistoryComponent && !printerPrinting && !printerPaused && history.length > 0"
-        @print="handleReprint"
-      ></reprint-menu>
+      <status-controls
+        v-if="printerPrinting || printerPaused || filename"
+        @print="handlePrint($event)">
+      </status-controls>
     </template>
 
-    <print-status v-if="showStatus"></print-status>
+    <v-tabs-items
+      v-model="tab"
+      style="background-color: transparent;"
+      touchless
+    >
+      <v-tab-item
+        key="status"
+      >
+        <status-tab></status-tab>
+      </v-tab-item>
+
+      <v-tab-item
+        v-if="supportsHistoryComponent"
+        key="reprint"
+      >
+        <reprint-tab
+          @print="handlePrint($event)">
+        </reprint-tab>
+      </v-tab-item>
+    </v-tabs-items>
 
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import PrintStatus from './PrintStatus.vue'
-import ReprintMenu from './ReprintMenu.vue'
-import StateMixin from '@/mixins/state'
-import FilesMixin from '@/mixins/files'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
+import StatusControls from './StatusControls.vue'
+import StatusTab from './StatusTab.vue'
+import ReprintTab from './ReprintTab.vue'
 
 @Component({
   components: {
-    PrintStatus,
-    ReprintMenu
+    StatusControls,
+    StatusTab,
+    ReprintTab
   }
 })
-export default class PrinterStatusCard extends Mixins(StateMixin, FilesMixin) {
-  get hidePrinterMenu () {
-    if (!this.supportsHistoryComponent) {
-      return (!this.printerPrinting && !this.printerPaused && !this.filename)
-    } else {
-      return (!this.printerPrinting && !this.printerPaused && this.history > 0)
-    }
-  }
+export default class PrinterStatusCard extends Mixins(StateMixin) {
+  tab = 0
 
+  // If the user has no history plugin, and there's no print running..
+  // then hide the collapse control.
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
   }
 
-  get history () {
-    return this.$store.getters['history/getUniqueHistory'](3)
-  }
-
-  get showStatus () {
-    return (this.printerPrinting || this.printerPaused || this.filename)
-  }
-
-  get printerMessage () {
-    return this.$store.state.printer.printer.display_status.message
+  get collapsable () {
+    const filename = this.$store.state.printer.printer.print_stats.filename
+    return (
+      this.printerPrinting ||
+      this.supportsHistoryComponent ||
+      filename !== ''
+    )
   }
 
   get filename () {
-    return this.$store.state.printer.printer.print_stats.filename || ''
+    return this.$store.state.printer.printer.print_stats.filename
   }
 
-  cancelPrint () {
-    this.$tc('app.general.simple_form.msg.confirm')
-    this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
-      .then(res => {
-        if (res) {
-          SocketActions.printerPrintCancel()
-          this.addConsoleEntry('CANCEL_PRINT')
-        }
-      })
+  @Watch('filename')
+  onPrinterPrinting (val: string) {
+    this.init(val)
   }
 
-  pausePrint () {
-    SocketActions.printerPrintPause()
-    this.addConsoleEntry('PAUSE')
+  mounted () {
+    this.init(this.filename)
   }
 
-  resumePrint () {
-    SocketActions.printerPrintResume()
-    this.addConsoleEntry('RESUME')
+  init (filename: string) {
+    if (filename !== '') {
+      this.tab = 0
+    } else {
+      this.tab = 1
+    }
   }
 
-  handleReprint (filename: string) {
+  handlePrint (filename: string) {
     SocketActions.printerPrintStart(filename)
-  }
-
-  resetFile () {
-    this.sendGcode('SDCARD_RESET_FILE')
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .v-slide-group__prev,
+  ::v-deep .v-slide-group__next {
+    display: none;
+  }
+</style>

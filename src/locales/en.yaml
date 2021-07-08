@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: Box scale
+      box_scale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
       probed_matrix: Probed matrix
@@ -59,7 +59,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Enter your API URL.<br />Some examples might be;<br
-        /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
       open: OPEN
@@ -94,10 +94,8 @@ app:
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
     tooltip:
-      disabled: >-
-        Jobs require initial communication with klippy and a valid
-        virtual_sdcard path
       low_on_space: Low on disk space
+      root_disabled: '{root} root is not available. Please check your logs.'
   gcode:
     btn:
       load_current_file: Load Current File
@@ -107,7 +105,6 @@ app:
       layer: Layer
       layers: Layers
       parsed: Parsed
-      progress: Progress
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
@@ -136,7 +133,6 @@ app:
       extrude: Extrude
       heaters_off: Heaters off
       load_all: Load all
-      load_current_file: Load current file
       more_information: More information
       pause: Pause
       preheat: Preheat
@@ -148,8 +144,8 @@ app:
       remove: Remove
       remove_all: Remove All
       rename: Rename
-      reprint: Reprint
-      reset_file: Reset File
+      reprint: Re-Print
+      reset_file: Clear File
       reset_layout: Reset Layout
       restart_firmware: Firmware Restart
       restart_service: Restart %{service}
@@ -163,6 +159,7 @@ app:
       send: Send
       set_color: Set Color
       shutdown: Shutdown
+      socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload
       upload_print: Upload & Print
@@ -181,8 +178,8 @@ app:
     label:
       accel_to_decel: Accel to Decel
       acceleration: Acceleration
+      actual_time: Actual
       add_camera: Add Camera
-      add_category: Add category
       add_preset: Add Preset
       add_user: Add user
       api_key: Api Key
@@ -199,13 +196,18 @@ app:
       edit_user: Edit user
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
+      filament: Filament
+      file: File
+      finish_time: Finish
       flow: Flow
       free: free
       high: High
       host: Host
+      layer: Layer
       layout: Layout
       longest_job: Longest job
       low: Low
+      m117: M117
       name: Name
       new_password: New password
       no_notifications: No notifications
@@ -213,13 +215,16 @@ app:
       password: Password
       power: Power
       printers: Printers
-      requested_speed: Requested Speed
+      progress: Progress
+      requested_speed: Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
       save_as: Save As
       services: Services
+      slicer: Slicer
       speed: Speed
       sqv: Square Corner Velocity
+      total: Total
       total_filament: Total filament used
       total_filament_avg: Avg per print
       total_jobs: Total print jobs
@@ -228,6 +233,7 @@ app:
       total_time: Total time
       total_time_avg: Avg per print
       uncategorized: Uncategorized
+      unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       used: used
       variance: Variance
@@ -294,9 +300,7 @@ app:
       runout_sensors: Runout Sensors
       settings: Settings
       stats: Printer Stats
-      status: Status
       system: System
-      system_control: System Control
       system_overview: System Information
       temperature: Thermals
       tool: Tool
@@ -319,11 +323,6 @@ app:
       printing: Printing
       ready: Ready
       standby: Standby
-    status:
-      duration: duration
-      duration_total: duration & total
-      time_left: estimated time left
-      used_filament: used filament
   setting:
     btn:
       add_camera: Add Camera
@@ -338,8 +337,6 @@ app:
     label:
       all_off: All off
       all_on: All on
-      camera_fillspace: Fill space
-      camera_fillspace_help: With only one enabled camera, fill the dashboard camera space.
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
@@ -353,7 +350,6 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       draw_background: Draw Background
       enable: Enable
-      enable_animations: Enable Animations
       enable_notifications: Enable notifications
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
@@ -371,23 +367,14 @@ app:
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
       theme_preset: Community preset
+      thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
-      time_estimates: Time estimates
-      toggle: Toggle
       z_adjust_values: Z Adjust values
     timer_options:
       duration: Duration only
-      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
       filament: Filament Estimation
-      filament_description: >-
-        Takes used filament vs estimated filament to estimate total duration.<br
-        /> More accurate over time.
       file: File Estimation
-      file_description: >-
-        Takes progress percent, and duration to estimate total duration.<br />
-        More accurate over time.
       slicer: Slicer
-      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
     title:
       authentication: Authentication
       camera: Camera | Cameras

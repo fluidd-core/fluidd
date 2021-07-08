@@ -49,12 +49,12 @@
         <v-divider :key="preset.id" v-if="i < presets.length - 1 && presets.length > 0"></v-divider>
       </template>
 
-      <temperature-preset-dialog
+      <preset-dialog
         v-if="dialogState.preset"
         v-model="dialogState.active"
         :preset="dialogState.preset"
         @save="handleSavePreset"
-      ></temperature-preset-dialog>
+      ></preset-dialog>
 
     </v-card>
   </div>
@@ -62,16 +62,15 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
+import PresetDialog from './PresetDialog.vue'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
 import { VForm } from '@/types/vuetify'
 
-import TemperaturePresetDialog from './TempPresetDialog.vue'
-
 @Component({
   components: {
-    TemperaturePresetDialog
+    PresetDialog
   }
 })
 export default class TemperaturePresetSettings extends Mixins(StateMixin) {

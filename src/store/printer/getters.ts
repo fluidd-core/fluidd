@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, OutputPin, TimeEstimates, Sensor, RunoutSensor, Extruder, MCU } from './types'
+import { PrinterState, Heater, Fan, OutputPin, Sensor, RunoutSensor, Extruder, MCU } from './types'
 import { get } from 'lodash'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -15,9 +15,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // ready, startup, shutdown, error
     const serverInfo = rootGetters['server/getInfo']
     const server_klippy_state = serverInfo.klippy_state || ''
+    const connected = serverInfo.klippy_connected || false
     if (
       server_klippy_state !== 'ready' ||
-      server_klippy_state !== 'ready'
+      !connected
     ) {
       return false
     }
@@ -99,84 +100,70 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
-  getPrintProgress: (state, getters, rootState) => {
-    const type = rootState.config?.uiSettings.general.printTimeEstimationsType || 'file'
-    if (type === 'slicer') {
-      return state.printer.display_status.progress || 0
-    } else {
-      return state.printer.virtual_sdcard.progress || 0
-    }
+  getPrintProgress: (state) => {
+    return state.printer.display_status.progress || 0
   },
 
-  /**
-   * Returns an object representing the time estimates of a current print.
-   */
-  getTimeEstimates: (state, getters, rootState): TimeEstimates => {
-    const type = rootState.config?.uiSettings.general.printTimeEstimationsType || 'file'
+  getTimeEstimates: (state, getters) => {
     const progress = getters.getPrintProgress
-    const current = (
+    const endTime = Math.floor(Date.now() / 1000)
+
+    const duration = (
       'print_stats' in state.printer &&
       'print_duration' in state.printer.print_stats
     )
       ? state.printer.print_stats.print_duration
       : 0
-    let total = 0
-    let remaining = 0
-    // Current time as a Unix timestamp (in seconds)
-    let endTime = Math.floor(Date.now() / 1000)
 
-    switch (type) {
-      case 'slicer': {
-        if (
-          'current_file' in state.printer &&
-          'estimated_time' in state.printer.current_file
-        ) {
-          total = state.printer.current_file.estimated_time
-        }
-        remaining = total - current
-        endTime = endTime + remaining
-        break
-      }
-      case 'filament': {
-        if (
-          'print_stats' in state.printer &&
-          'current_file' in state.printer &&
-          'filament_used' in state.printer.print_stats &&
-          'filament_total' in state.printer.current_file &&
-          state.printer.print_stats.filament_used > 0
-        ) {
-          total = current / (state.printer.print_stats.filament_used / state.printer.current_file.filament_total)
-        }
-        remaining = total - current
-        endTime = endTime + remaining
-        break
-      }
-      case 'file': {
-        total = (progress > 0 && current > 0)
-          ? current / progress
-          : current
-        remaining = total - current
-        endTime = endTime + remaining
-        break
-      }
-      case 'totals': { // totals only.
-        total = 0
-        remaining = 0
-        break
-      }
-      default: { // totals only.
-        total = 0
-        remaining = 0
-      }
+    const multiplier = state.printer.gcode_move.speed_factor || 1
+
+    let file = 0
+    let fileLeft = 0
+    let fileEndTime = 0
+    if (progress > 0 && duration > 0) {
+      file = duration / progress
+      fileLeft = (file - duration) / multiplier
+      fileEndTime = endTime + fileLeft
     }
 
+    let actual = 0
+    let actualTotal = 0
+    let actualLeft = 0
+    let actualEndTime = 0
+    if (
+      'current_file' in state.printer &&
+      'history' in state.printer.current_file &&
+      state.printer.current_file.history.status === 'completed'
+    ) {
+      actual = state.printer.current_file.history.print_duration
+      actualTotal = state.printer.current_file.history.total_duration
+      actualLeft = (actual - duration) / multiplier
+      actualEndTime = endTime + (actualTotal - duration)
+    }
+
+    let slicer = 0
+    let slicerLeft = 0
+    let slicerEndTime = 0
+    if (
+      'current_file' in state.printer &&
+      'estimated_time' in state.printer.current_file
+    ) {
+      slicer = state.printer.current_file.estimated_time
+      slicerLeft = (slicer - duration) / multiplier
+      slicerEndTime = endTime + slicerLeft
+    }
+
+    let eta = fileEndTime
+    if (slicerEndTime > 0) eta = slicerEndTime
+    if (actualEndTime > 0) eta = actualEndTime
+
     return {
-      type,
-      progress: (progress * 100).toFixed(), // percent
-      total: Vue.$filters.formatCounterTime(total), // total estimated time
-      current: Vue.$filters.formatCounterTime(current), // current duration / time
-      remaining: Vue.$filters.formatCounterTime(remaining), // remaining time
-      endTime: Vue.$filters.formatAbsoluteDateTime(endTime, 'h:mm A') // estimated completion datetime
+      progress: (progress * 100).toFixed(),
+      duration: duration,
+      slicer: slicerLeft,
+      file: fileLeft,
+      actual: actualLeft,
+      eta
     }
   },
 

@@ -34,11 +34,11 @@
           text
           small
           color="error">
-          <v-icon color="error">$error</v-icon>
+          <v-icon color="error">$warning</v-icon>
         </v-btn>
       </template>
       <slot>
-        <span>{{ $t('app.file_system.tooltip.disabled') }}</span>
+        <span>{{ $t('app.file_system.tooltip.root_disabled', { root }) }}</span>
       </slot>
     </v-tooltip>
 
@@ -168,13 +168,13 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.$store.getters['files/getRootProperties'](this.root)
   }
 
-  mounted () {
-    this.textSearch = this.search
-  }
-
   // Only show roots that have been registered.
   get registeredRoots () {
     return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
+  }
+
+  mounted () {
+    this.textSearch = this.search
   }
 
   handleUpload (files: FileList | File[], print: boolean) {

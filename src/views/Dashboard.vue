@@ -176,8 +176,14 @@ export default class Dashboard extends Mixins(StateMixin) {
     span {
       display: flex;
       flex-direction: column;
-      min-height: 50vh;
       height: 100%;
+      min-height: 50vh;
+    }
+  }
+
+  @media #{map-get($display-breakpoints, 'sm-and-down')} {
+    .list-group span {
+      min-height: auto;
     }
   }
 

@@ -66,7 +66,8 @@ export default class ConsoleItem extends Vue {
   itemClick (event: Event) {
     const target = event.target as Element
     if (target.tagName.toLowerCase() === 'a') {
-      this.$emit('click', target.innerHTML)
+      const c = target.innerHTML.replaceAll(/<br>/g, '\n').replace(/^\s+|\s+$/gm, '')
+      this.$emit('click', c)
     }
   }
 }

@@ -52,7 +52,10 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // Add the browsers url to our endpoints list, unless black listed.
   if (blacklist.findIndex(s => s.includes(document.location.hostname)) === -1) {
-    endpoints.push(`${document.location.protocol}//${document.location.hostname}`)
+    // Add the browser url.
+    endpoints.push(`${document.location.protocol}//${document.location.host}`)
+
+    // Add the moonraker endpoints...
     let port = '7125'
     if (document.location.protocol === 'https:') port = '7130'
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
@@ -104,8 +107,8 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   let apiConnected = true
   let apiAuthenticated = true
   const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
-  for (const key in roots) {
-    if (apiConnected && apiAuthenticated) {
+  if (apiConnected && apiAuthenticated) {
+    for (const key in roots) {
       const root = roots[key]
       let d = {}
       if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {

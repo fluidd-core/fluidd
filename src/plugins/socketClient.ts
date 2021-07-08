@@ -11,6 +11,7 @@ import { Globals } from '@/globals'
 import consola from 'consola'
 import { camelCase } from 'lodash'
 import { authApi } from '@/api/auth.api'
+import deepMerge from 'deepmerge'
 
 export class WebSocketClient {
   url = '';
@@ -23,6 +24,7 @@ export class WebSocketClient {
   requests: Array<Request> = [];
   store: any | null = null;
   pingTimeout: any;
+  cache: CachedParams | null = null;
 
   constructor (options: Options) {
     this.url = options.url
@@ -61,6 +63,7 @@ export class WebSocketClient {
 
   close () {
     if (this.connection) {
+      this.cache = null
       this.connection.close()
       this.reconnectCount = 0
     }
@@ -68,6 +71,7 @@ export class WebSocketClient {
 
   async connect (url?: string) {
     if (url) this.url = url
+    this.cache = null
 
     await authApi.getOneShot()
       .then(response => response.data.result)
@@ -141,14 +145,35 @@ export class WebSocketClient {
           } else {
             // These are socket notifications (i.e., no specific request was made..)
             // Dispatch with the name of the method, converted to camelCase.
-            // consola.debug(`${this.logPrefix} Response:`, d) // TODO: add a proper logger to turn these on.
 
             // we're still alive.
             this.pong()
 
             if (d.params && d.params[0]) {
-              if (this.store) this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
+              if (d.method !== 'notify_status_update') {
+                // Normally, we let notifications through with no cache...
+                if (this.store) this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
+              } else {
+                // ...However, status notifications come throug thicc and fast,
+                // so we cache these and send them through every second.
+                const date: number = (
+                  d.params[1] === 2 &&
+                  isNaN(d.params[1])
+                )
+                  ? d.params[1]
+                  : new Date().getTime()
+                this.cache = (!this.cache)
+                  ? { timestamp: date, params: d.params[0] }
+                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, d.params[0]) }
+
+                // If there's a second or more difference, flush the cache.
+                if (this.cache && date - this.cache.timestamp >= 1000) {
+                  if (this.store) this.store.dispatch('socket/' + camelCase(d.method), this.cache.params)
+                  this.cache = { timestamp: date, params: {} }
+                }
+              }
             } else {
+              // No params? Let it through.
               if (this.store) this.store.dispatch('socket/' + camelCase(d.method))
             }
           }
@@ -206,7 +231,7 @@ export class WebSocketClient {
       this.requests.push(request)
       this.connection.send(JSON.stringify(packet))
     } else {
-      consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options)
+      consola.debug(`${this.logPrefix} Not ready, or closed.`, method, options, this.connection?.readyState)
     }
   }
 }
@@ -214,7 +239,6 @@ export class WebSocketClient {
 export const SocketPlugin = {
   install (Vue: typeof _Vue, options?: any) {
     const socket = new WebSocketClient(options)
-    // socket.connect()
     Vue.prototype.$socket = socket
     Vue.$socket = socket
   }
@@ -226,11 +250,6 @@ declare module 'vue/types/vue' {
 
   interface VueConstructor {
     $socket: SocketClient;
-  }
-}
-declare module 'vue/types/options' {
-  interface ComponentOptions<V extends Vue> {
-      $socket?: SocketClient;
   }
 }
 
@@ -273,7 +292,7 @@ interface SocketRequest {
 interface SocketResponse {
   jsonrpc: string; // always available
   method?: string; // generic responses
-  params?: Array<object>; // generic responses
+  params?: [object, number?]; // generic responses
   id?: number; // specific response
   result?: object; // specific response
   error?: string | SocketError; // specific response
@@ -282,4 +301,9 @@ interface SocketResponse {
 interface SocketError {
   code: number;
   message: string;
+}
+
+interface CachedParams {
+  timestamp: number;
+  params: object;
 }

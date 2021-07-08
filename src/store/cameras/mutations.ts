@@ -42,6 +42,7 @@ export const mutations: MutationTree<CamerasState> = {
   setRemoveCamera (state, payload) {
     const i = state.cameras.findIndex(camera => camera.id === payload.id)
     state.cameras.splice(i, 1)
+    if (state.activeCamera === payload.id) state.activeCamera = 'all'
   },
 
   /**

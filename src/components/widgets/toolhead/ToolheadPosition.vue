@@ -9,6 +9,7 @@
             hide-details
             dense
             class="v-input--width-small"
+            type="number"
             @change="moveTo('X', $event)"
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
@@ -21,6 +22,7 @@
             hide-details
             dense
             class="v-input--width-small"
+            type="number"
             @change="moveTo('Y', $event)"
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
@@ -33,6 +35,7 @@
             hide-details
             dense
             class="v-input--width-small"
+            type="number"
             @change="moveTo('Z', $event)"
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
