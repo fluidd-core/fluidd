@@ -80,6 +80,15 @@
         "src": "/logo_vzbot.svg",
         "dynamic": false
       }
+    },
+    {
+      "name": "ZeroG",
+      "color": "#e34234",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_zerog.svg",
+        "dynamic": true
+      }
     }
   ]
 }
