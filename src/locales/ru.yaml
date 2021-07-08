@@ -6,7 +6,7 @@ app:
       mesh_matrix: Сетчатая матрица
       probed_matrix: Зондируемая матрица
       profile_name: Имя профиля
-      remove_profile: 'Удалить %{name} профиль'
+      remove_profile: Удалить %{name} профиль
       scale: Масштаб по мин / макс
       wireframe: Каркасная сетка
     msg:
@@ -16,7 +16,7 @@ app:
       not_found: Не найдённо существующих сеток стола.
       not_loaded: Сетка не загружена
     tooltip:
-      calibrate: 'Начать новую калибровку, будет сохранено как профиль ''default'''
+      calibrate: Начать новую калибровку, будет сохранено как профиль 'default'
       delete: Удалить профиль. Это приведёт к ПЕРЕЗАГРУЗКЕ вашего принтера
       load: Загрузить профиль
       save: >-
@@ -54,7 +54,7 @@ app:
         Пожалуйста посмотрите документацию для установки нескольких принтеров <a
         href="%{url}" target="_blank">здесь</a>
     hint:
-      add_printer: 'Например, http://fluiddpi.local'
+      add_printer: Например, http://fluiddpi.local
     msg:
       trouble: >-
         Столкнулись с проблемами? <a href="%{url}" target="_blank">Посмотрите
@@ -69,7 +69,7 @@ app:
       open: Открыто
       triggered: Есть контакт
     msg:
-      subtitle: 'Используйте кнопку обновить, чтобы обновить состояние концевика.'
+      subtitle: Используйте кнопку обновить, чтобы обновить состояние концевика.
   file_system:
     filters:
       label:
@@ -109,7 +109,6 @@ app:
       layer: Слой
       layers: Слои
       parsed: Считано
-      progress: Прогресс
       show_extrusions: Показывать
       show_moves: Показывать перемещения
       show_next_layer: Показывать следующий слой
@@ -154,9 +153,10 @@ app:
       reset_file: Сбросить файл
       reset_layout: Сбросить компановку интерфейса
       restart_firmware: Перезагрузить прошивку
-      restart_service: 'Перезапустить %{service}'
+      restart_service: Перезапустить %{service}
       restart_service_klipper: Перезагрузить Klipper
       restart_service_moonraker: Перезагрузить Moonraker
+      restart_service_webcamd: ''
       resume: Возобновить
       retract: Ретракт
       save: Сохранить
@@ -169,7 +169,6 @@ app:
       upload: Загрузить
       upload_print: Загрузить и напечатать
       view: Вид
-      restart_service_webcamd: ''
     error:
       app_setup_link: >-
         Требования для установки Fluidd можно посмотреть <a target="_blank"
@@ -216,6 +215,7 @@ app:
       password: Пароль
       power: Питание
       printers: Принтеры
+      progress: Прогресс
       requested_speed: Запрошенная скорость
       retract_length: Длина ретракта
       retract_speed: Скорость ретракта
@@ -239,15 +239,15 @@ app:
       z_offset: Смещение Z
     msg:
       password_changed: Пароль изменен
-      wrong_password: 'Ой, что-то пошло не так. Пароль введен верно?'
+      wrong_password: Ой, что-то пошло не так. Пароль введен верно?
     simple_form:
       error:
         arrayofnums: Только цифры
         exists: Уже существует
         invalid_url: Невалидный URL
-        max: 'Макс %{max}'
-        min: 'Мин %{min}'
-        min_or_0: 'Мин %{min} или 0'
+        max: Макс %{max}
+        min: Мин %{min}
+        min_or_0: Мин %{min} или 0
         password_username: Не совпадает имя пользователя
         required: Требуется
       msg:
@@ -287,7 +287,7 @@ app:
       console: Консоль
       endstops: Точки остановки
       fans_outputs: Кулеры и выходы
-      gcode_preview: 'Предпросмотр GCode [ Бета ]'
+      gcode_preview: Предпросмотр GCode [ Бета ]
       history: История задач
       home: Панель управления
       jobs: Задачи
@@ -430,9 +430,9 @@ app:
       klipper_load: Klipper
       manufactured: Произведено
       manufacturer: Производитель
-      mcu_awake: 'Время работы {mcu}'
-      mcu_bandwidth: 'Частота {mcu}'
-      mcu_load: 'Загрузка {mcu}'
+      mcu_awake: Время работы {mcu}
+      mcu_bandwidth: Частота {mcu}
+      mcu_load: Загрузка {mcu}
       model: Модель CPU
       moonraker_load: Moonraker
       processor_desc: Процессор
@@ -447,7 +447,7 @@ app:
       home_x: X
       home_y: 'Y'
     tooltip:
-      extruder_disabled: 'экструдер отключён, температура ниже чем (%{min}<small>°C</small>)'
+      extruder_disabled: экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
       home_xy: Домой XY
       home_z: Домой Z
   version:

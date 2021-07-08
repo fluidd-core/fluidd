@@ -24,7 +24,7 @@
           v-if="supportsHistoryComponent"
           key="reprint"
         >
-          Re-print
+          {{ $t('app.general.btn.reprint') }}
         </v-tab>
       </v-tabs>
     </template>

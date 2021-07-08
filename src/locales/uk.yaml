@@ -106,7 +106,6 @@ app:
       layer: Шар
       layers: Шари
       parsed: Проаналізовано
-      progress: Прогрес
       show_extrusions: Показувати екструзію
       show_moves: Показувати переміщення
       show_next_layer: Показувати наступний шар
@@ -202,6 +201,7 @@ app:
       'off': Вимкнути
       power: Живлення
       printers: Принтери
+      progress: Прогрес
       requested_speed: Запит швидкості
       retract_length: Довжина відкату
       retract_speed: Швидкість відкату

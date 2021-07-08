@@ -121,7 +121,6 @@ app:
       layer: Layer
       layers: Layers
       parsed: Analizzati
-      progress: Progresso
       show_extrusions: Mostra estrusioni
       show_moves: Mostra movimenti
       show_next_layer: Mostra il prossimo Layer
@@ -229,6 +228,7 @@ app:
       password: Password
       power: Energia
       printers: Stampanti
+      progress: Progresso
       requested_speed: Velocità Richiesta
       retract_length: Lunghezza di ritrazione
       retract_speed: Velocità di ritrazione

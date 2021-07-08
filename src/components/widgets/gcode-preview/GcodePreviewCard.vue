@@ -38,7 +38,7 @@
           <v-row>
             <v-col>
               <app-slider
-                :label="$t('app.gcode.label.progress')"
+                :label="$t('app.general.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
                 @input="setMoveProgress($event + currentLayerMoveRange.min)"
                 :min="0"

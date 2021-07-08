@@ -95,7 +95,6 @@ app:
       layer: 레이어
       layers: 레이어들
       parsed: 분석완료
-      progress: 진행상황
       show_extrusions: 압출 보이기
       show_moves: 움직임 보이기
       show_next_layer: 다음 레이어 보기
@@ -195,6 +194,7 @@ app:
       password: 비밀번호
       power: 전원
       printers: 프린터
+      progress: 진행상황
       requested_speed: 요청 속도
       retract_length: 압출 길이
       retract_speed: 압출 속도

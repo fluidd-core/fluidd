@@ -105,7 +105,6 @@ app:
       layer: Layer
       layers: Layers
       parsed: Parsed
-      progress: Progress
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
@@ -146,7 +145,7 @@ app:
       remove: Remove
       remove_all: Remove All
       rename: Rename
-      reprint: Reprint
+      reprint: Re-Print
       reset_file: Clear File
       reset_layout: Reset Layout
       restart_firmware: Firmware Restart
@@ -180,6 +179,7 @@ app:
     label:
       accel_to_decel: Accel to Decel
       acceleration: Acceleration
+      actual_time: Actual
       add_camera: Add Camera
       add_category: Add category
       add_preset: Add Preset
@@ -198,13 +198,18 @@ app:
       edit_user: Edit user
       extrude_length: Extrude Length
       extrude_speed: Extrude Speed
+      filament: Filament
+      file: File
+      finish_time: Finish
       flow: Flow
       free: free
       high: High
       host: Host
+      layer: Layer
       layout: Layout
       longest_job: Longest job
       low: Low
+      m117: M117
       name: Name
       new_password: New password
       no_notifications: No notifications
@@ -212,13 +217,16 @@ app:
       password: Password
       power: Power
       printers: Printers
-      requested_speed: Requested Speed
+      progress: Progress
+      requested_speed: Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
       save_as: Save As
       services: Services
+      slicer: Slicer
       speed: Speed
       sqv: Square Corner Velocity
+      total: Total
       total_filament: Total filament used
       total_filament_avg: Avg per print
       total_jobs: Total print jobs

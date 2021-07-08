@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       boxScale: Amplifier la visualisation
+      box_scale: Amplifier la visualisation
       flat_surface: Afficher une surface de ref.
       mesh_matrix: Matrice interpolée
       probed_matrix: Matrice réelle
@@ -9,7 +10,6 @@ app:
       remove_profile: Supprimer le profile %{name}
       scale: Échelle au min / max
       wireframe: Armature
-      box_scale: Amplifier la visualisation
     msg:
       hint: >-
         Si vous enregistrez le profil sous un autre nom que '%{profileName}',
@@ -79,11 +79,11 @@ app:
     label:
       dir_name: Nom du dossier
       disk_usage: Utilisation du disque
+      diskinfo: Informations sur le disque
       downloaded: Téléchargé
       file_name: Nom du fichier
       transfer_rate: Vitesse de transfert
       uploaded: Téléchargé
-      diskinfo: Informations sur le disque
     msg:
       confirm: >-
         Êtes vous sûr(e) ? Ceci effacera tous les sous-fichiers et sous-dossiers
@@ -111,7 +111,6 @@ app:
       layer: Couche
       layers: Couches
       parsed: Analysé
-      progress: Progression
       show_extrusions: Afficher les extrusions
       show_moves: Afficher les déplacements
       show_next_layer: Afficher la couche suivante
@@ -148,6 +147,7 @@ app:
       preview_gcode: Prévisualiser le Gcode
       quad_gantry_level: QGL
       reboot: Redémarrer
+      refresh: Rafraîchir
       remove: Supprimer
       remove_all: Tout supprimer
       rename: Renommer
@@ -155,6 +155,7 @@ app:
       reset_file: Réinitialiser le fichier
       reset_layout: Remettre la disposition à zéro
       restart_firmware: Redémarrer le firmware
+      restart_service: Redémarrer %{service}
       restart_service_klipper: Redémarrer Klipper
       restart_service_moonraker: Redémarrer Moonraker
       restart_service_webcamd: Redémarrer le service Webcam
@@ -164,14 +165,12 @@ app:
       save_as: Sauvegarder sous ...
       save_restart: Enregister et redémarrer
       send: Envoyer
+      set_color: Définir la couleur
       shutdown: Éteindre
       socket_refresh: Forcer le rafraichissement
       upload: Uploaded
       upload_print: Uploaded & imprimer
       view: Voir
-      restart_service: Redémarrer %{service}
-      set_color: Définir la couleur
-      refresh: Rafraîchir
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
@@ -189,11 +188,19 @@ app:
       add_camera: Ajouter une caméra
       add_category: Ajouter une catégorie
       add_preset: Ajouter un pré-réglage
+      add_user: Ajouter un utilisateur
+      api_key: Clé API
       api_url: URL de l'API
+      category: Catégorie
+      change_password: Changer le mot de passe
       clear_all: Effacer tout
+      color: Couleur
       confirm: Confirmation
+      current_password: Mot de passe actuel
+      disabled_while_printing: Désactiver durant l'impression
       edit_camera: Éditer une caméra
       edit_preset: Editer le pré-réglage
+      edit_user: Modifier l'utilisateur
       extrude_length: Longueur d'extrusion
       extrude_speed: Vitesse d'extrusion
       flow: Flow
@@ -205,11 +212,16 @@ app:
       low: Min
       move_macro: Déplacer la macro %{name}
       name: Nom
+      new_password: Nouveau mot de passe
       no_notifications: Aucune notification
       'off': 'Off'
+      password: Mot de passe
       power: Puissance
       printers: Imprimantes
+      progress: Progression
       requested_speed: Vitesse demandée
+      retract_length: Longueur de retractation
+      retract_speed: Vitesse de rétractation
       save_as: Sauvegarder sous
       services: Services
       speed: Vitesse
@@ -222,24 +234,15 @@ app:
       total_time: Temps total
       total_time_avg: Temps moyen
       uncategorized: Non catégorisé
+      unretract_speed: Vitesse de dérétractation
       used: occupé
       variance: Variance
       velocity: Velocité
-      z_offset: Z Offset
-      category: Catégorie
-      change_password: Changer le mot de passe
-      current_password: Mot de passe actuel
-      disabled_while_printing: Désactiver durant l'impression
-      edit_user: Modifier l'utilisateur
-      new_password: Nouveau mot de passe
-      password: Mot de passe
-      retract_length: Longueur de retractation
-      retract_speed: Vitesse de rétractation
-      unretract_speed: Vitesse de dérétractation
       visible: Visible
-      color: Couleur
-      add_user: Ajouter un utilisateur
-      api_key: Clé API
+      z_offset: Z Offset
+    msg:
+      password_changed: Mot de passe modifié
+      wrong_password: Oops, il y a eu un problème. Le mot de passe est il correct?
     simple_form:
       error:
         arrayofnums: Nombres uniquement
@@ -248,8 +251,8 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} ou 0
-        required: Requis
         password_username: Le nom d'utilisateur ne correspond pas
+        required: Requis
       msg:
         confirm: Êtes-vous sûr(e) ?
         confirm_reboot_host: Êtes-vous sûr(e)? Ceci va redémarrer le système hôte .
@@ -293,24 +296,21 @@ app:
       jobs: Fichiers
       limits: Limites de l'imprimante
       macros: Macros
+      retract: Rétractation Firmware
       runout_sensors: Capteurs de filament
       settings: Paramètres
       stats: Statistiques de l'imprimante
       status: Statut
+      system: Système
       system_control: Contrôle du système
+      system_overview: Information système
       temperature: Température
       tool: Outil
       tune: Réglages
-      retract: Rétractation Firmware
-      system: Système
-      system_overview: Information système
     tooltip:
       estop: Arrêt d'urgence
       reload_klipper: Recharge la configuration Klipper.
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
-    msg:
-      password_changed: Mot de passe modifié
-      wrong_password: Oops, il y a eu un problème. Le mot de passe est il correct?
   history:
     msg:
       confirm: >-
@@ -335,9 +335,9 @@ app:
     btn:
       add_camera: Ajouter une caméra
       add_thermal_preset: Ajouter un pré-réglage
+      add_user: Ajouter un utilisateur
       reset: RAZ
       select_theme: Sélectionner le thème
-      add_user: Ajouter un utilisateur
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -376,12 +376,12 @@ app:
       printer_name: Nom de l'imprimante
       reset: Remettre à zéro
       retraction_icon_size: Taille de l'icone de rétractation
+      show_animations: Afficher les animations
+      theme_preset: Préréglage communautaire
       thermal_preset_name: Nom du pré-réglage
       time_estimates: Estimation de temps
       toggle: Basculer
       z_adjust_values: Valeurs de Z Adjust
-      show_animations: Afficher les animations
-      theme_preset: Préréglage communautaire
     timer_options:
       duration: Durée uniquement
       duration_description: 'Similaire au LCD klipper, affiche une durée sans estimation . '
@@ -399,6 +399,7 @@ app:
         Utilise les estimations du slicer . Nécessite l'activation dans votre
         slicer .
     title:
+      authentication: Authentification
       camera: Webcam
       gcode_preview: Prévisualiser le Gcode
       general: Général
@@ -406,7 +407,6 @@ app:
       theme: Thème
       thermal_presets: Pré-réglages de température
       tool: Outil
-      authentication: Authentification
     tooltip:
       gcode_coords: >-
         Utiliser la posistion GCode au lieu de la position de l'outil sur le
@@ -417,6 +417,30 @@ app:
       no_connection: >-
         Pas de connection à Moonraker . Vérifiez l'état de Moonraker et / ou
         rafraichissez .
+  system_info:
+    label:
+      capacity: Capacité
+      cpu_desc: Description du processeur
+      distribution_codename: Nom de code
+      distribution_like: Distribution comme
+      distribution_name: Distribution
+      hardware_desc: Description du matériel
+      hostname: Nom d'hôte
+      klipper_load: Charge de Klipper
+      manufactured: Fabriqué
+      manufacturer: Fabricant
+      mcu_awake: '{mcu} Temps de fonctionnement'
+      mcu_bandwidth: '{mcu} Bande passante'
+      mcu_load: '{mcu} Charge'
+      model: Modèle de processeur
+      moonraker_load: Charge de Moonraker
+      processor_desc: Processeur
+      product_name: Nom du produit
+      serial_number: Numéro de série
+      system_load: Charge du système
+      system_memory: Mémoire système
+      system_utilization: Utilisation du système
+      total_memory: Mémoire totale
   tool:
     btn:
       home_x: X
@@ -455,27 +479,3 @@ app:
       invalid: indique des changements locaux dans le répo
       packages: Paquets
       release_notes: Notes de mise à jour
-  system_info:
-    label:
-      capacity: Capacité
-      cpu_desc: Description du processeur
-      distribution_codename: Nom de code
-      distribution_like: Distribution comme
-      hardware_desc: Description du matériel
-      hostname: Nom d'hôte
-      klipper_load: Charge de Klipper
-      distribution_name: Distribution
-      manufactured: Fabriqué
-      manufacturer: Fabricant
-      mcu_awake: '{mcu} Temps de fonctionnement'
-      serial_number: Numéro de série
-      product_name: Nom du produit
-      system_memory: Mémoire système
-      system_load: Charge du système
-      system_utilization: Utilisation du système
-      total_memory: Mémoire totale
-      processor_desc: Processeur
-      moonraker_load: Charge de Moonraker
-      mcu_load: '{mcu} Charge'
-      model: Modèle de processeur
-      mcu_bandwidth: '{mcu} Bande passante'

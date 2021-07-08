@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       boxScale: Schaal
+      box_scale: Schaal
       flat_surface: Toon vlak
       mesh_matrix: Mesh matrix
       probed_matrix: Geprobed matrix
@@ -9,7 +10,6 @@ app:
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
       wireframe: Draadframe
-      box_scale: Schaal
     msg:
       hint: >-
         Als je opslaat onder een andere naam dan %{name}, kan je er ook voor
@@ -77,11 +77,11 @@ app:
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
+      diskinfo: Schijfinformatie
       downloaded: Gedownload
       file_name: Bestandsnaam
       transfer_rate: Snelheid
       uploaded: Geüpload
-      diskinfo: Schijfinformatie
     msg:
       confirm: >-
         Ben je zeker? Dit zal alle onderliggende bestanden en mappen
@@ -110,7 +110,6 @@ app:
       layer: Laag
       layers: Lagen
       parsed: Geparsed
-      progress: Vooruitgang
       show_extrusions: Toon extrusies
       show_moves: Toon bewegingen
       show_next_layer: Toon volgende laag
@@ -137,6 +136,7 @@ app:
       config_reference: Configuratieverwijzing
       download: Downloaden
       edit: Aanpassen
+      exit_layout: Sluit layourmanager
       extrude: Extrude
       heaters_off: Verwarmingen uit
       load_all: Alles laden
@@ -148,6 +148,7 @@ app:
       preview_gcode: Voorbeeld van Gcode
       quad_gantry_level: QGL
       reboot: Herstart
+      refresh: Ververs
       remove: Verwijderen
       remove_all: Alles verwijderen
       rename: Hernoemen
@@ -155,6 +156,7 @@ app:
       reset_file: Reset bestand
       reset_layout: Reset Layout
       restart_firmware: Firmware herstart
+      restart_service: Start %{service} opnieuw
       restart_service_klipper: Klipper herstart
       restart_service_moonraker: Moonraker herstart
       restart_service_webcamd: Webcam herstart
@@ -164,15 +166,12 @@ app:
       save_as: Opslaan als
       save_restart: Opslaan & herstarten
       send: Verzenden
+      set_color: Kleur instellen
       shutdown: Afsluiten
       socket_refresh: Forceer verversen
       upload: Uploaden
       upload_print: Uploaden & Printen
       view: Bekijken
-      restart_service: Start %{service} opnieuw
-      set_color: Kleur instellen
-      exit_layout: Sluit layourmanager
-      refresh: Ververs
     error:
       app_setup_link: >-
         Fluidd setup vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -190,11 +189,19 @@ app:
       add_camera: Camera toevoegen
       add_category: Categorie toevoegen
       add_preset: Voorkeur toevoegen
+      add_user: Voeg gebruiker toe
+      api_key: API sleutel
       api_url: API URL
+      category: Categorie
+      change_password: Verander wachtwoord
       clear_all: Alles verwijderen
+      color: Kleur
       confirm: Bevestigen
+      current_password: Huidig wachtwoord
+      disabled_while_printing: Vergrendeld tijdens printen
       edit_camera: Camera wijzigen
       edit_preset: Aanpassen voorkeuren
+      edit_user: Pas gebruiker aan
       extrude_length: Extrude lengte
       extrude_speed: Extrude snelheid
       flow: Flow
@@ -204,12 +211,18 @@ app:
       layout: Layout
       longest_job: Langste taak
       low: Laag
+      move_macro: Verplaats Macro
       name: Naam
+      new_password: Nieuw wachtwoord
       no_notifications: Geen notificaties
       'off': Uit
+      password: Wachtwoord
       power: Kracht
       printers: Printers
+      progress: Vooruitgang
       requested_speed: Gevraagde Snelheid
+      retract_length: Retract lengte
+      retract_speed: Retract snelheid
       save_as: Opslaan als
       services: Services
       speed: Snelheid
@@ -222,25 +235,15 @@ app:
       total_time: Totale tijd
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
+      unretract_speed: De-retract lengte
       used: Gebruikt
       variance: Afwijking
       velocity: Snelheid
-      z_offset: Z-Offset
-      add_user: Voeg gebruiker toe
-      api_key: API sleutel
-      category: Categorie
-      move_macro: Verplaats Macro
-      change_password: Verander wachtwoord
-      color: Kleur
-      current_password: Huidig wachtwoord
-      edit_user: Pas gebruiker aan
-      new_password: Nieuw wachtwoord
-      password: Wachtwoord
-      retract_speed: Retract snelheid
-      retract_length: Retract lengte
-      unretract_speed: De-retract lengte
       visible: Zichtbaar
-      disabled_while_printing: Vergrendeld tijdens printen
+      z_offset: Z-Offset
+    msg:
+      password_changed: Wachtwoord aangepast
+      wrong_password: Oeps! Er ging iets verkeerd, is je wachtwoord wel correct?
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -249,8 +252,8 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
-        required: Vereist
         password_username: Gebruikersnaam past niet
+        required: Vereist
       msg:
         confirm: Ben je zeker?
         confirm_reboot_host: Ben je zeker? Hierdoor zal je host systeem herstarten.
@@ -294,25 +297,22 @@ app:
       jobs: Taken
       limits: Printer Limieten
       macros: Macros
+      retract: Firmware retractie
       runout_sensors: Runout Sensors
       settings: Instellingen
       stats: Printer Statistieken
       status: Status
+      system: Systeem
       system_control: Systeemcontrole
+      system_overview: Systeeminformatie
       temperature: Temperaturen
       tool: Werktuig
       tune: Tunen
-      system: Systeem
-      retract: Firmware retractie
-      system_overview: Systeeminformatie
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
       restart_klipper: Herstart de klipper service.
-    msg:
-      wrong_password: Oeps! Er ging iets verkeerd, is je wachtwoord wel correct?
-      password_changed: Wachtwoord aangepast
   history:
     msg:
       confirm: >-
@@ -337,9 +337,9 @@ app:
     btn:
       add_camera: Camera toevoegen
       add_thermal_preset: Voorkeur toevoegen
+      add_user: Voeg gebruiker toe
       reset: Reset
       select_theme: Selecteer Theme
-      add_user: Voeg gebruiker toe
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -378,13 +378,13 @@ app:
       printer_name: Printer Naam
       reset: Reset instellingen
       retraction_icon_size: Grootte van pictogram voor intrekken
+      show_animations: Toon animaties
+      theme_preset: Community thema
+      thermal_preset_gcode: GCode
       thermal_preset_name: Voorkeursnaam
       time_estimates: Tijdsschattingen
       toggle: Schakelen
       z_adjust_values: Z Aanpassingswaardes
-      show_animations: Toon animaties
-      thermal_preset_gcode: GCode
-      theme_preset: Community thema
     timer_options:
       duration: Alleen tijdsduur
       duration_description: Zoals op het LCD, dit toont alleen tijdsduur zonder schattingen.
@@ -399,6 +399,7 @@ app:
       slicer: Slicer
       slicer_description: Gebruikt de slicerschatting. Dit moet je aanzetten in je slicer.
     title:
+      authentication: Authentificatie
       camera: Camera | Camera's
       gcode_preview: Gcode-voorbeeld
       general: Algemeen
@@ -406,7 +407,6 @@ app:
       theme: Theme
       thermal_presets: Temperatuurvoorkeuren
       tool: Werktuig
-      authentication: Authentificatie
     tooltip:
       gcode_coords: Gebruik GCode positie in plaats van toolhead positie op het dashboard.
   socket:
@@ -415,6 +415,30 @@ app:
       no_connection: >-
         Geen verbinding met Moonraker, controleer Moonraker status en/of
         ververs.
+  system_info:
+    label:
+      capacity: Capaciteit
+      cpu_desc: CPU Beschrijving
+      distribution_codename: Codenaam
+      distribution_like: Distributie Like
+      distribution_name: Distributie
+      hardware_desc: Hardwarebeschrijving
+      hostname: Hostnaam
+      klipper_load: Klipper Load
+      manufactured: Gemaakt
+      manufacturer: Maker
+      mcu_awake: '{mcu} Awake Tijd'
+      mcu_bandwidth: MCU bandbreedte
+      mcu_load: '{mcu} Load'
+      model: CPU model
+      moonraker_load: Moonraker Load
+      processor_desc: Processor
+      product_name: Productnaam
+      serial_number: Serienummer
+      system_load: Systeem Load
+      system_memory: Systeemgeheugen
+      system_utilization: Systeemgebruik
+      total_memory: Totaal geheugen
   tool:
     btn:
       home_x: X
@@ -451,27 +475,3 @@ app:
       invalid: duidt op lokale veranderingen in je repo
       packages: Pakketten
       release_notes: Release notities
-  system_info:
-    label:
-      cpu_desc: CPU Beschrijving
-      capacity: Capaciteit
-      distribution_like: Distributie Like
-      hardware_desc: Hardwarebeschrijving
-      distribution_name: Distributie
-      klipper_load: Klipper Load
-      manufacturer: Maker
-      manufactured: Gemaakt
-      mcu_bandwidth: MCU bandbreedte
-      mcu_awake: '{mcu} Awake Tijd'
-      hostname: Hostnaam
-      mcu_load: '{mcu} Load'
-      moonraker_load: Moonraker Load
-      product_name: Productnaam
-      processor_desc: Processor
-      system_load: Systeem Load
-      serial_number: Serienummer
-      model: CPU model
-      system_utilization: Systeemgebruik
-      total_memory: Totaal geheugen
-      system_memory: Systeemgeheugen
-      distribution_codename: Codenaam
