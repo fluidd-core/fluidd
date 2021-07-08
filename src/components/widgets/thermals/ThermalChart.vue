@@ -181,7 +181,7 @@ export default class ThermalChart extends Vue {
                       ${param.seriesName}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[param.seriesName].toFixed(2)}<small>${param.value[param.seriesName].toFixed(2)}<small>${(param.seriesName.includes('usage')) ? 'W' : ((param.seriesName.includes('humidity')) ? '%' : '°C')}</small>`
+                      ${param.value[param.seriesName].toFixed(2)}<small>${(param.seriesName.includes('usage')) ? 'W' : ((param.seriesName.includes('humidity')) ? '%' : '°C')}</small>`
 
                 if (param.seriesName + 'Target' in param.value) {
                   text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
