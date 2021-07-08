@@ -105,11 +105,9 @@
         </tr>
         <tr v-for="item in sensors" :key="item.name">
           <td>
-            <v-icon
-              small
-              :color="item.color">
-              $thermometer
-            </v-icon>
+            <v-icon v-if="item.name.includes('usage')" small :color="item.color">              $powerline            </v-icon>
+            <v-icon v-else-if="item.name.includes('humidity')" small :color="item.color">              $waterpercent            </v-icon>
+            <v-icon v-else small :color="item.color">              $thermometer            </v-icon>
           </td>
           <td class="temp-name">
             <span
@@ -123,12 +121,10 @@
           <td class="temp-actual">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
-              </template>
+                 <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>{{ (item.name.includes('usage')) ? 'W' : ((item.name.includes('humidity')) ? '%' : '°C') }}</small></span>              </template>
               <span v-if="item.measured_max_temp && item.measured_min_temp">
-                <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
-                <span class="">{{ $t('app.general.label.low') }}: {{ item.measured_min_temp.toFixed(1) }}°C</span>
-              </span>
+                <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}{{ (item.name.includes('usage')) ? 'W' : ((item.name.includes('humidity')) ? '%' : '°C') }}</span><br />
+                <span class="">{{ $t('app.general.label.low') }}: {{ item.measured_min_temp.toFixed(1) }}{{ (item.name.includes('usage')) ? 'W' : ((item.name.includes('humidity')) ? '%' : '°C') }}</span>              </span>
             </v-tooltip>
           </td>
           <td>&nbsp;</td>
