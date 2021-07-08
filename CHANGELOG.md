@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.16.0](https://github.com/cadriel/fluidd/compare/v1.15.0...v1.16.0) (2021-07-08)
+
+
+### Features
+
+* Add Arabic Language Support ([88caeae](https://github.com/cadriel/fluidd/commit/88caeae6e5a550cf61dad59d9b696b6a8a22ead5))
+* add reconnect option to disconnected screen ([48e770b](https://github.com/cadriel/fluidd/commit/48e770b70989c570809767ba312a800f8eacb32b))
+* add un-retract extra length ([e6c2d07](https://github.com/cadriel/fluidd/commit/e6c2d077f88df6029917a1a6acee58e9d80f6d28))
+* allow custom gcode to run with thermal presets ([782cfd4](https://github.com/cadriel/fluidd/commit/782cfd427a650887a43c78c90cef74869277e7e2))
+* allow multi-line console entry ([2150221](https://github.com/cadriel/fluidd/commit/2150221a1b8726d9c75fcd028a87342afcf52d6e))
+* allow some notifications to not add to the counter ([5100793](https://github.com/cadriel/fluidd/commit/5100793c548059ac9f50069590cabbc12cad8652))
+* allow speed / flow to be overridden ([80da599](https://github.com/cadriel/fluidd/commit/80da599c2e99a15184f86e1724f7b4783fe1230e))
+* assume http when adding printers ([d5d6bcb](https://github.com/cadriel/fluidd/commit/d5d6bcb5d8d28108a00f6d9a847955b01807456a))
+* socket cache ([6bd05fd](https://github.com/cadriel/fluidd/commit/6bd05fd30db5508c0d5fea43ce1126d42b137918))
+* status refactor ([ebe7fa2](https://github.com/cadriel/fluidd/commit/ebe7fa297413ce5e62056604df0fc0cce8b3e823))
+* ZeroG Theme ([a021e19](https://github.com/cadriel/fluidd/commit/a021e19c3d7edf7913a8232137dfaac6520b9a03))
+* **i18n-FR:** update french translations - Biorn1950 ([e4893c1](https://github.com/cadriel/fluidd/commit/e4893c1bfb8022098da1894c6deb562c4088b194))
+
+
+### Bug Fixes
+
+* Added 25 and 50 to default toolhead move lengths ([29248a6](https://github.com/cadriel/fluidd/commit/29248a664f03417f1db6b3d7d1781af8a511dcda))
+* better handle cases where socket proxy disappears ([77895e4](https://github.com/cadriel/fluidd/commit/77895e41bcd29449cc29c3f17cf5a1898625da65))
+* charts all properly load on page refresh ([8b70c2f](https://github.com/cadriel/fluidd/commit/8b70c2f7fda9069aac0d89022702ce0677719dc5))
+* console error when input invalid val on layer gcode preview ([6e6af02](https://github.com/cadriel/fluidd/commit/6e6af02af1a2b6d13985a06fb5f4958ad2a51fba))
+* disable double-tap to zoom on btn's for mobile ([5f0d572](https://github.com/cadriel/fluidd/commit/5f0d572bb0b8254d0ad5f98130b8175ae82a2ce3))
+* disable mobile breakpoint for history and reprint tables ([8e76ee2](https://github.com/cadriel/fluidd/commit/8e76ee215743883858111f7aea1221a0c9de2175))
+* disable tab swiped on reprint tab ([0003f60](https://github.com/cadriel/fluidd/commit/0003f6019af2da5ec19d9f624ecb4a62330d7e6a))
+* don't add unrealistic load values ([e938e07](https://github.com/cadriel/fluidd/commit/e938e07f822561ed8526319916fb6bd42e0a1711))
+* don't override url params for cameras ([a67758e](https://github.com/cadriel/fluidd/commit/a67758e2b3fbf5ff4b9d78815361a4039914a84c))
+* don't show redundant klipper / moonraker services ([1215eb7](https://github.com/cadriel/fluidd/commit/1215eb7072e8b211aeec3f018b35191f83e9c1c7))
+* don't show status fields with irrelevant data ([7106422](https://github.com/cadriel/fluidd/commit/71064225df2f06afe49a887741111842e0c46ee2))
+* don't show the end time for history items in progress ([4870da7](https://github.com/cadriel/fluidd/commit/4870da7b2694d7a280898bf39f34e0ffb50eaa46))
+* editing a gcode mid-string in console now works as expected ([6a3ca62](https://github.com/cadriel/fluidd/commit/6a3ca6219b10ed8705a5e50764d9291d940258a2))
+* enable mesh controls during a print ([35e5eec](https://github.com/cadriel/fluidd/commit/35e5eec809b18eb18331a58a6184f1953d2f263b))
+* end time now works ([570baf4](https://github.com/cadriel/fluidd/commit/570baf47be194a40d45c9d5c3e5fd6c0bcd96c11))
+* ensure initial addition of printer is added with non-std ports ([c0ec9dd](https://github.com/cadriel/fluidd/commit/c0ec9ddc309abe020e781d12590472e7ba9f0e64))
+* ensure klippy card shows when klippy not connected ([a41d422](https://github.com/cadriel/fluidd/commit/a41d422753590b7e319cff7e2af8b0e633e73104))
+* Have system load represent actual load average number ([4bc85f4](https://github.com/cadriel/fluidd/commit/4bc85f436d4cf78d7d100272fa9f67980d174b59))
+* improve gcode viewer sync on layer changes ([7a7484d](https://github.com/cadriel/fluidd/commit/7a7484d0e6420c68ecac3a0f52893153eb0e9cc6))
+* increase retract / unretract limits ([4a1e218](https://github.com/cadriel/fluidd/commit/4a1e2186f6c9666b01ab14cbeef5410f71e00039))
+* invalid ar values ([cbb2426](https://github.com/cadriel/fluidd/commit/cbb242664404730542cc734b22664cb782ec8921))
+* layouts on smaller screens with sliders ([1d335b5](https://github.com/cadriel/fluidd/commit/1d335b55d84df23c1a2bf3ffa11a7af11e46be2e))
+* macro entry no longer produces duplicate params ([668586c](https://github.com/cadriel/fluidd/commit/668586c272e158d7c2385aa655f12c5e3b6fad6c))
+* minor display tweaks for charts on mobile ([5c5a8ec](https://github.com/cadriel/fluidd/commit/5c5a8ecabd356a7012d9b806e2be8fa0f1d65aa5))
+* mobile layout no longer has wonky margins with condensed cards ([3900b26](https://github.com/cadriel/fluidd/commit/3900b2612fb21ccc4dd1a63278d0fd8c72a22714))
+* multi-root file-systems correctly load when root[0] is unavailable ([df664d3](https://github.com/cadriel/fluidd/commit/df664d3dc05d97fee8b9c5dec535bc6229d0ef0c))
+* pathing issue with file updates ([32563d3](https://github.com/cadriel/fluidd/commit/32563d37c457d32f2e8e455062eb351a4e9a1ff6))
+* reduce temp input to reduce scrollbar showing up ([2766157](https://github.com/cadriel/fluidd/commit/27661579b2b15f68ff0bc114294212a410ec8414))
+* remove api key copy btn ([4603a33](https://github.com/cadriel/fluidd/commit/4603a33866ad6efdf137ac72ab0ab9611294eb9f))
+* removing all cams now won't break the dash ([51be9f8](https://github.com/cadriel/fluidd/commit/51be9f895f9475fdcece0a7fdbc7da727d6be30a))
+* rename dialog is no longer persistent ([43536e2](https://github.com/cadriel/fluidd/commit/43536e2dda1fb7d510dc628d6d728f1a90b784c0))
+* resolve slowdown when loading gcode store ([5146e4f](https://github.com/cadriel/fluidd/commit/5146e4f4059601b36c505c8eb5284e8e59f97bd8))
+* server deploy now has theme options by default ([7700386](https://github.com/cadriel/fluidd/commit/7700386b285fb4b7dd0116439080288bc502e7de))
+* update notification now properly clears after an update ([598a258](https://github.com/cadriel/fluidd/commit/598a258e4b9f96ad4baba6d9f28509990117a7fd))
+
 ## [1.15.0](https://github.com/cadriel/fluidd/compare/v1.14.0...v1.15.0) (2021-06-22)
 
 
