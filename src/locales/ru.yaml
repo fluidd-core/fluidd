@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: Масштаб
+      box_scale: Масштаб
       flat_surface: Показать базовую плоскость
       mesh_matrix: Сетчатая матрица
       probed_matrix: Зондируемая матрица
@@ -137,7 +137,6 @@ app:
       extrude: Экструдировать
       heaters_off: Отключить нагрев
       load_all: Загрузить все
-      load_current_file: Загрузить текущий файл
       more_information: Больше информации
       pause: Пауза
       preheat: Преднагрев
@@ -156,7 +155,6 @@ app:
       restart_service: Перезапустить %{service}
       restart_service_klipper: Перезагрузить Klipper
       restart_service_moonraker: Перезагрузить Moonraker
-      restart_service_webcamd: ''
       resume: Возобновить
       retract: Ретракт
       save: Сохранить
@@ -184,7 +182,6 @@ app:
       accel_to_decel: Ускорения и торможения
       acceleration: Ускорение
       add_camera: Добавить камеру
-      add_category: Добавить категорию
       add_preset: Добавить предустановку
       add_user: Добавить пользователя
       api_key: Ключ API
@@ -297,9 +294,7 @@ app:
       runout_sensors: Датчик контроля филамента
       settings: Настройки
       stats: Статистика принтера
-      status: Статус
       system: Система
-      system_control: Управление системой
       system_overview: Информация о системе
       temperature: Температуры
       tool: Инструмент
@@ -322,11 +317,6 @@ app:
       printing: Идёт печать
       ready: Готов
       standby: Режим ожидания
-    status:
-      duration: длительность
-      duration_total: продолжительность и общее время
-      time_left: осталось расчётного времени
-      used_filament: использованно филамента
   setting:
     btn:
       add_camera: Добавить камеру
@@ -341,10 +331,6 @@ app:
     label:
       all_off: Всё выключить
       all_on: Всё включить
-      camera_fillspace: Вывести на панели управления
-      camera_fillspace_help: >-
-        Если включена хотя бы одна камера, выведет в блоке камеры на панели
-        управления.
       camera_flip_x: Отразить по горизонтали
       camera_flip_y: Отразить по вертикали
       camera_stream_type: Тип потока
@@ -358,7 +344,6 @@ app:
       default_toolhead_z_speed: Скорость инструмента для оси Z по умолчанию
       draw_background: Отображать фон
       enable: Включить
-      enable_animations: Включить анимации
       enable_notifications: Включить оповещения
       extrusion_line_width: Ширина линии экструзии
       flip_horizontal: Сдвиг по горизонтали
@@ -378,27 +363,12 @@ app:
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
-      time_estimates: Оценки времени
-      toggle: Переключатель
       z_adjust_values: Значения подстройки оси Z
     timer_options:
       duration: Только продолжительность
-      duration_description: >-
-        Подобно ЖК-дисплею Klipper, он показывает только продолжительность без
-        каких-либо оценок.
       filament: Оценка филамента
-      filament_description: >-
-        Используется отношение значения потраченного филамента к расчётному
-        значению, для расчёта общей продолжительности.<br /> Точность повышается
-        в течение времени печати.
       file: Оценка времени на основе файла
-      file_description: >-
-        Использует процент прогресса печати и длительность из файла для оценки
-        общей длительности.<br /> Точность повышается в течение времени печати.
       slicer: Слайсер
-      slicer_description: >-
-        Использует оценку слайсера для отображения. Вы должны включить эту опцию
-        в вашем слайсере.
     title:
       authentication: Аутентификация
       camera: Камера | Камеры

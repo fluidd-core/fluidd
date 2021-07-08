@@ -126,7 +126,6 @@ app:
       restart_firmware: Reiniciar firmware
       restart_service_klipper: Reiniciar Klipper
       restart_service_moonraker: Reiniciar Moonraker
-      restart_service_webcamd: Reiniciar Webcam
       resume: Retomar
       retract: Retração
       save: Salvar
@@ -153,7 +152,6 @@ app:
       accel_to_decel: Acel. e Desacel.
       acceleration: Acelaração
       add_camera: Adicionar Camera
-      add_category: Adicionar categoria
       add_preset: Adicionar predefinição
       api_url: URL do API
       confirm: Confirmar
@@ -242,8 +240,6 @@ app:
       runout_sensors: Sensores filamento
       settings: Definições
       stats: Estatísticas da impressora
-      status: Estado
-      system_control: Controlo sistema
       temperature: Temperatura
       tool: Ferramentas
       tune: Afinação
@@ -265,11 +261,6 @@ app:
       printing: A imprimir
       ready: Preparada
       standby: Standby
-    status:
-      duration: duração
-      duration_total: duração e total
-      time_left: 'tempo restante estimado '
-      used_filament: filamento usado
   setting:
     btn:
       add_camera: Adicionar Camera
@@ -283,8 +274,6 @@ app:
     label:
       all_off: Tudo Off
       all_on: Tudo On
-      camera_fillspace: Preencher espaço
-      camera_fillspace_help: Com apenas uma câmera habilitada, preencha o espaço da câmera do painel.
       camera_flip_x: Virar horizontal
       camera_flip_y: Virar vertical
       camera_stream_type: Tipo stream
@@ -307,24 +296,12 @@ app:
       printer_name: Nome impressora
       reset: Redefinir as configurações
       thermal_preset_name: Nome predefinição
-      time_estimates: Estimativas de tempo
-      toggle: Alternar
       z_adjust_values: Ajustar valores Z
     timer_options:
       duration: Só duração
-      duration_description: Semelhante ao LCD klipper, mostra apenas a duração, sem estimativas.
       filament: Estimativas filamento.
-      filament_description: >-
-        Compara filamento usado versus filamento estimado, para calcular a
-        duração total.n.<br /> Mais preciso ao longo do tempo.
       file: Estimativa do ficheiro
-      file_description: >-
-        Compara o progresso da % e a duração para calcular a duração total.<br
-        /> Mais preciso ao longo do tempo.
       slicer: Slicer
-      slicer_description: >-
-        Usa estimativas do Slicer para exibição. Deve habilitar isso no seu
-        Slicer.
     title:
       camera: Camera | Cameras
       general: Geral

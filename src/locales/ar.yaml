@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: مقياس الصندوق
+      box_scale: مقياس الصندوق
       flat_surface: عرض سطح مستوي
       mesh_matrix: مصفوفة شبكة
       probed_matrix: مصفوفة Probed
@@ -27,7 +27,7 @@ app:
       current: درجة الحرارة
       item: الاسم
       'off': اخفاء الرسم البياني
-      'on':  عرض الرسم البياني
+      'on': عرض الرسم البياني
       power: الطاقة
       target: الهدف
     tooltip:
@@ -54,7 +54,8 @@ app:
       add_printer: مثلا http://fluiddpi.local
     msg:
       trouble: >-
-        لديك مشكلة؟  <a href="%{url}" target="_blank">انظر هنا</a> لمزيد من المعلومات
+        لديك مشكلة؟  <a href="%{url}" target="_blank">انظر هنا</a> لمزيد من
+        المعلومات
     tooltip:
       endpoint_examples: >-
         Enter your API URL.<br />Some examples might be;<br
@@ -104,7 +105,6 @@ app:
       layer: طبقة
       layers: طبقات
       parsed: Parsed
-      progress: التقدم
       show_extrusions: عرض التدفقات
       show_moves: عرض التنقلات
       show_next_layer: عرض الطبقة التالية
@@ -133,7 +133,6 @@ app:
       extrude: اخراج
       heaters_off: اغلاق المسخنات
       load_all: تحميل الكل
-      load_current_file: تحميل الملف الحالي
       more_information: المزيد من المعلومات
       pause: ايقاف مؤقت
       preheat: تسخين
@@ -179,7 +178,6 @@ app:
       accel_to_decel: التسارع الى التباطؤ
       acceleration: التسارع
       add_camera: اضافة كاميرا
-      add_category: اضافة تصنيف
       add_preset: اضافة اعداد مسبق
       add_user: اضافة مستخدم
       api_key: مفتاح API
@@ -291,9 +289,7 @@ app:
       runout_sensors: حساسات انقطاع الخيط
       settings: الاعدادات
       stats: حالة الطابعة
-      status: الحالة
       system: النظام
-      system_control: التحكم بالنظام
       system_overview: معلومات النظام
       temperature: مؤشرات حرارية
       tool: الفوهة
@@ -316,11 +312,6 @@ app:
       printing: جاري الطباعة
       ready: جاهزة
       standby: وضع الانتظار
-    status:
-      duration: المدة
-      duration_total: المدة والاجمالي
-      time_left: الوقت الباقي المتوقع
-      used_filament: الخيط المستخدم
   setting:
     btn:
       add_camera: اضافة كاميرا
@@ -335,8 +326,6 @@ app:
     label:
       all_off: ايقاف الكل
       all_on: تشغيل الكل
-      camera_fillspace: ملئ المساحة
-      camera_fillspace_help: فقط عند تفعيل كاميرا واحدة. سيتم ملئ مساحة الكاميرا في لوحة المعلومات.
       camera_flip_x: عكس افقي
       camera_flip_y: عكس عمودي
       camera_stream_type: نوع البث
@@ -350,7 +339,6 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       draw_background: رسم خلفية
       enable: تفعيل
-      enable_animations: تفعيل الحركات
       enable_notifications: تفعيل التنبيهات
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: عكس افقي
@@ -366,26 +354,16 @@ app:
       printer_name: اسم الطابعة
       reset: اعادة تعيين الاعدادات
       retraction_icon_size: Retraction Icon Size
-      show_animations: عرض الحركات 
+      show_animations: عرض الحركات
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: اسم الاعداد المسبق
-      time_estimates: تقديرات الوقت
-      toggle: تبديل
       z_adjust_values: Z Adjust values
     timer_options:
       duration: المدة فقط
-      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
       filament: تقدير الخيط
-      filament_description: >-
-        Takes used filament vs estimated filament to estimate total duration.<br
-        /> More accurate over time.
       file: File Estimation
-      file_description: >-
-        Takes progress percent, and duration to estimate total duration.<br />
-        More accurate over time.
       slicer: Slicer
-      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
     title:
       authentication: المصادقة
       camera: الكاميرا | الكاميرات

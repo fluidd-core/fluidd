@@ -115,7 +115,6 @@ app:
       restart_firmware: Reiniciar firmware
       restart_service_klipper: Reiniciar Klipper
       restart_service_moonraker: Reiniciar Moonraker
-      restart_service_webcamd: Reiniciar Webcam
       resume: Retomar
       retract: Retraccione
       save: guardar
@@ -219,8 +218,6 @@ app:
       macros: Macros
       runout_sensors: Sensores de filamento
       stats: Estatísticas de la  impressora
-      status: Estado
-      system_control: Control del sistema
       temperature: Temperatura
       tool: Herremienta
       tune: calibrar
@@ -241,11 +238,6 @@ app:
       printing: Imprimiendo
       ready: lista
       standby: Stand-by
-    status:
-      duration: Duracion
-      duration_total: Duracion total
-      time_left: 'tiempo restante estimado '
-      used_filament: filamento usado
   setting:
     btn:
       add_camera: Añadir  Camera
@@ -259,8 +251,6 @@ app:
     label:
       all_off: Apaga todo
       all_on: Encender todo
-      camera_fillspace: Preencher espaço
-      camera_fillspace_help: Com apenas uma câmera habilitada, preencha o espaço da câmera do painel.
       camera_flip_x: Girar  horizontal
       camera_flip_y: Girar  vertical
       camera_stream_type: Tipo de flujo
@@ -282,20 +272,11 @@ app:
       printer_name: Nombre de la impresora
       reset: Volver al punto de partida
       thermal_preset_name: Nombre de la preseleccion
-      time_estimates: Estimacion  del tempo
-      toggle: Alternar
       z_adjust_values: Ajustar valores Z
     timer_options:
       duration: Duracion
-      duration_description: 'Similar al klipper LCD, muestra una duración sin estimación. '
       filament: Estimacion del filamento.
-      filament_description: >-
-        "Compare el filamento utilizado con la estimación para estimar una
-        duración total. <br /> La precisión aumenta a medida que avanza. "
       file: Estimacion basada en archivo
-      file_description: >-
-        Utilice el porcentaje de progreso y el tiempo para estimar un tiempo
-        total. <br /> La precisión aumenta a medida que avanza.
     title:
       camera: Camera | Cameras
       general: General

@@ -110,7 +110,6 @@ app:
       restart_firmware: 重启Firmware
       restart_service_klipper: 重启Klipper
       restart_service_moonraker: 重启Moonraker
-      restart_service_webcamd: 重启Webcam
       resume: 恢复
       retract: 缩回
       save: 保存
@@ -217,8 +216,6 @@ app:
       runout_sensors: Runout传感器
       settings: 设置
       stats: 打印状态
-      status: 状态
-      system_control: 系统控制
       temperature: 温度
       tool: 工具
       tune: 调整
@@ -237,11 +234,6 @@ app:
       printing: 打印中
       ready: 就绪
       standby: 待机
-    status:
-      duration: 时长
-      duration_total: 合计时间
-      time_left: 估计剩余时间
-      used_filament: 已消耗耗材
   setting:
     btn:
       add_camera: 添加摄像头
@@ -255,8 +247,6 @@ app:
     label:
       all_off: 全部关闭
       all_on: 全部打开
-      camera_fillspace: 填充摄像头
-      camera_fillspace_help: 按照窗口大小填充摄像头画面
       camera_flip_x: 水平翻转
       camera_flip_y: 垂直翻转
       camera_stream_type: 视频流类型
@@ -279,18 +269,12 @@ app:
       printer_name: 打印机名称
       reset: 重置设定
       thermal_preset_name: 预设名称
-      time_estimates: 时间估计
-      toggle: 切换
       z_adjust_values: Z轴调整值
     timer_options:
       duration: 仅显示消耗时间
-      duration_description: 与LCD类似, 只显示消耗时间，没有估算时间。
       filament: 通过耗材估算
-      filament_description: 根据耗材的消耗和预估时间估算总时长<br /> 随着时间推移会越来越准确。
       file: 通过文件估算
-      file_description: 根据进度百分比和持续时间估算总时长。<br /> 随着时间推移会越来越准确。
       slicer: 使用切片文件的时间
-      slicer_description: 使用切片文件中的预估时间，你必须在切片软件中启用相应的功能。
     title:
       camera: 摄像头
       general: 一般

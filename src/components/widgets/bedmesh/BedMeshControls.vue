@@ -212,7 +212,7 @@
           </v-slider>
 
           <v-slider
-            :label="$t('app.bedmesh.label.boxScale')"
+            :label="$t('app.bedmesh.label.box_scale')"
             :disabled="!meshLoaded"
             v-model="boxScale"
             :tick-labels="boxScaleLabels"

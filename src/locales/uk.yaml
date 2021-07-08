@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: Масштаб коробки
+      box_scale: Масштаб коробки
       flat_surface: Показати базову площину
       mesh_matrix: Сітчаста матриця
       probed_matrix: Зондована матриця
@@ -134,7 +134,6 @@ app:
       extrude: Вичавити
       heaters_off: Нагрівачі ВИМК.
       load_all: Завантажити все
-      load_current_file: Завантажити поточний файл
       more_information: Більше інформації
       pause: Пауза
       preheat: Переднагрів
@@ -151,7 +150,6 @@ app:
       restart_firmware: Перезавантажити прошивку
       restart_service_klipper: Перезавантажити Klipper
       restart_service_moonraker: Перезавантажити Moonraker
-      restart_service_webcamd: Перезавантажити веб-камеру
       resume: Продовжити
       retract: Відкат
       save: Зберегти
@@ -178,7 +176,6 @@ app:
       accel_to_decel: Прискорення і сповільнення
       acceleration: Прискорення
       add_camera: Додати камеру
-      add_category: Додати категорію
       add_preset: Додати шаблон
       api_url: API URL
       category: Категорія
@@ -279,8 +276,6 @@ app:
       runout_sensors: Давач закінчення пластику
       settings: Налаштування
       stats: Статистика принтеру
-      status: Статус
-      system_control: Керування системою
       temperature: Температури
       tool: Інструмент
       tune: Тонке налаштування
@@ -302,11 +297,6 @@ app:
       printing: Йде друк
       ready: Готовий
       standby: Режим очікування
-    status:
-      duration: тривалість
-      duration_total: тривалість і загальний час
-      time_left: приблизно залишилось часу
-      used_filament: використано філаменту
   setting:
     btn:
       add_camera: Додати камеру
@@ -320,10 +310,6 @@ app:
     label:
       all_off: Вимкнути все
       all_on: Увімкнути все
-      camera_fillspace: Заповнити простір
-      camera_fillspace_help: >-
-        Заповнить місце для камери на панелі приладів, якщо включена хоча б одна
-        камера.
       camera_flip_x: Перевернути горизонтально
       camera_flip_y: Перевернути вертикально
       camera_stream_type: Тип потоку
@@ -337,7 +323,6 @@ app:
       default_toolhead_z_speed: Швидкість головки по осі Z за замовчуванням
       draw_background: Задній фон
       enable: Увімкнути
-      enable_animations: Увімкнути анімації
       enable_notifications: Увімкнути сповіщення
       extrusion_line_width: Ширина лінії екструзії
       flip_horizontal: Горизонтально відобразити
@@ -354,27 +339,12 @@ app:
       reset: Скинути налаштування
       retraction_icon_size: Розмір іконки відкату
       thermal_preset_name: Ім'я шаблону
-      time_estimates: Оцінка часу
-      toggle: Перемикач
       z_adjust_values: Значення підстроювання осі Z
     timer_options:
       duration: Тільки тривалість
-      duration_description: >-
-        Подібно до РК-дисплею klipper, тут тільки відображаються тривалість без
-        ніяких оцінок часу.
       filament: Оцінка використання філаменту
-      filament_description: >-
-        Використовується співвідношення значення витраченого філаменту до
-        розрахункового значення, для розрахунку загальної тривалості.<br />
-        Точність підвищується протягом часу друку.
       file: Оцінка часу на основі файлу
-      file_description: >-
-        Використовується відсоток прогресу і тривалість з файлу для оцінки
-        загальної тривалості.<br /> Точність підвищується протягом часу друку.
       slicer: Слайсер
-      slicer_description: >-
-        Використовується оцінка слайсера для відображення. Ви повинні увімкнути
-        цю опцію у вашому слайсері.
     title:
       camera: Камера | Камери
       gcode_preview: Попередній перегляд GCode

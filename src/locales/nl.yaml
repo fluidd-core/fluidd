@@ -1,7 +1,6 @@
 app:
   bedmesh:
     label:
-      boxScale: Schaal
       box_scale: Schaal
       flat_surface: Toon vlak
       mesh_matrix: Mesh matrix
@@ -140,7 +139,6 @@ app:
       extrude: Extrude
       heaters_off: Verwarmingen uit
       load_all: Alles laden
-      load_current_file: Laad het huidige bestand
       more_information: Meer informatie
       pause: Pauze
       preheat: Voorverwarmen
@@ -159,7 +157,6 @@ app:
       restart_service: Start %{service} opnieuw
       restart_service_klipper: Klipper herstart
       restart_service_moonraker: Moonraker herstart
-      restart_service_webcamd: Webcam herstart
       resume: Verdergaan
       retract: Retract
       save: Opslaan
@@ -187,7 +184,6 @@ app:
       accel_to_decel: Vertragingssnelheid
       acceleration: Versnelling
       add_camera: Camera toevoegen
-      add_category: Categorie toevoegen
       add_preset: Voorkeur toevoegen
       add_user: Voeg gebruiker toe
       api_key: API sleutel
@@ -211,7 +207,6 @@ app:
       layout: Layout
       longest_job: Langste taak
       low: Laag
-      move_macro: Verplaats Macro
       name: Naam
       new_password: Nieuw wachtwoord
       no_notifications: Geen notificaties
@@ -301,9 +296,7 @@ app:
       runout_sensors: Runout Sensors
       settings: Instellingen
       stats: Printer Statistieken
-      status: Status
       system: Systeem
-      system_control: Systeemcontrole
       system_overview: Systeeminformatie
       temperature: Temperaturen
       tool: Werktuig
@@ -328,11 +321,6 @@ app:
       printing: Printen
       ready: Klaar
       standby: Standby
-    status:
-      duration: tijdsspanne
-      duration_total: tijdsspanne en totaal
-      time_left: geschatte tijdsspanne
-      used_filament: gebruikt filament
   setting:
     btn:
       add_camera: Camera toevoegen
@@ -347,8 +335,6 @@ app:
     label:
       all_off: Alles uit
       all_on: Alles aan
-      camera_fillspace: Vul beeld
-      camera_fillspace_help: Met maar een camera vult dit het hele beeld.
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
@@ -362,7 +348,6 @@ app:
       default_toolhead_z_speed: Standaard z-snelheid
       draw_background: Teken achtergrond
       enable: Inschakelen
-      enable_animations: Animaties inschakelen
       enable_notifications: Notificaties aanzetten
       extrusion_line_width: Breedte extrusielijn
       flip_horizontal: Horizontaal spiegelen
@@ -382,22 +367,12 @@ app:
       theme_preset: Community thema
       thermal_preset_gcode: GCode
       thermal_preset_name: Voorkeursnaam
-      time_estimates: Tijdsschattingen
-      toggle: Schakelen
       z_adjust_values: Z Aanpassingswaardes
     timer_options:
       duration: Alleen tijdsduur
-      duration_description: Zoals op het LCD, dit toont alleen tijdsduur zonder schattingen.
       filament: Filamentschatting
-      filament_description: >-
-        Gebruikt het filament gebruik om een schatting te maken.<br /> Accurater
-        naargelang tijd.
       file: Bestandsschatting
-      file_description: >-
-        Gebruikt progressie percentage en duurtijd om een schatting te maken.<br
-        /> Accurater naargelang tijd.
       slicer: Slicer
-      slicer_description: Gebruikt de slicerschatting. Dit moet je aanzetten in je slicer.
     title:
       authentication: Authentificatie
       camera: Camera | Camera's

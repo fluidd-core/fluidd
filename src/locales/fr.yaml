@@ -1,7 +1,6 @@
 app:
   bedmesh:
     label:
-      boxScale: Amplifier la visualisation
       box_scale: Amplifier la visualisation
       flat_surface: Afficher une surface de ref.
       mesh_matrix: Matrice interpolée
@@ -139,7 +138,6 @@ app:
       extrude: Extruder
       heaters_off: Tout éteindre
       load_all: Tout charger
-      load_current_file: Charger le fichier actuel
       more_information: Plus d'informations
       pause: Pause
       preheat: Préchauffe
@@ -158,7 +156,6 @@ app:
       restart_service: Redémarrer %{service}
       restart_service_klipper: Redémarrer Klipper
       restart_service_moonraker: Redémarrer Moonraker
-      restart_service_webcamd: Redémarrer le service Webcam
       resume: Reprendre
       retract: Rétracter
       save: Enregistrer
@@ -186,7 +183,6 @@ app:
       accel_to_decel: Accel. à Décel.
       acceleration: Acceleration
       add_camera: Ajouter une caméra
-      add_category: Ajouter une catégorie
       add_preset: Ajouter un pré-réglage
       add_user: Ajouter un utilisateur
       api_key: Clé API
@@ -210,7 +206,6 @@ app:
       layout: Disposition
       longest_job: Plus longue impr.
       low: Min
-      move_macro: Déplacer la macro %{name}
       name: Nom
       new_password: Nouveau mot de passe
       no_notifications: Aucune notification
@@ -300,9 +295,7 @@ app:
       runout_sensors: Capteurs de filament
       settings: Paramètres
       stats: Statistiques de l'imprimante
-      status: Statut
       system: Système
-      system_control: Contrôle du système
       system_overview: Information système
       temperature: Température
       tool: Outil
@@ -326,11 +319,6 @@ app:
       printing: Impression en cours
       ready: Prêt
       standby: Stand-by
-    status:
-      duration: durée
-      duration_total: durée & total
-      time_left: temps restant
-      used_filament: filament utilisé
   setting:
     btn:
       add_camera: Ajouter une caméra
@@ -345,8 +333,6 @@ app:
     label:
       all_off: Tout éteindre
       all_on: Tout allumer
-      camera_fillspace: Utiliser tout l'espace
-      camera_fillspace_help: Si une seule caméra est activée, tout l'espace disponible est utilisé.
       camera_flip_x: Retourner horizontalement
       camera_flip_y: Retourner verticalement
       camera_stream_type: Type de flux
@@ -360,7 +346,6 @@ app:
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
       draw_background: Afficher le fond d'écran
       enable: Activer
-      enable_animations: Activer les animations
       enable_notifications: Activer les notifications
       extrusion_line_width: Largeur de ligne d'extrusion
       flip_horizontal: Retourner horizontalement
@@ -379,25 +364,12 @@ app:
       show_animations: Afficher les animations
       theme_preset: Préréglage communautaire
       thermal_preset_name: Nom du pré-réglage
-      time_estimates: Estimation de temps
-      toggle: Basculer
       z_adjust_values: Valeurs de Z Adjust
     timer_options:
       duration: Durée uniquement
-      duration_description: 'Similaire au LCD klipper, affiche une durée sans estimation . '
       filament: Estimation de filament
-      filament_description: >-
-        "Compare le filament utilisé avec l'estimation pour  estimer une durée
-        totale .<br /> La précision augmente à mesure de la progression . "
       file: Estimation basée sur le fichier
-      file_description: >-
-        "Utilise la progression en pourcentage et la durée pour estimer une
-        durée totale .<br /> La précision augmente à mesure de la progression .
-        "
       slicer: Slicer
-      slicer_description: >-
-        Utilise les estimations du slicer . Nécessite l'activation dans votre
-        slicer .
     title:
       authentication: Authentification
       camera: Webcam

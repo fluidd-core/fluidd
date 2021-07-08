@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      boxScale: Box scale
+      box_scale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
       probed_matrix: Probed matrix
@@ -133,7 +133,6 @@ app:
       extrude: Extrude
       heaters_off: Heaters off
       load_all: Load all
-      load_current_file: Load current file
       more_information: More information
       pause: Pause
       preheat: Preheat
@@ -181,7 +180,6 @@ app:
       acceleration: Acceleration
       actual_time: Actual
       add_camera: Add Camera
-      add_category: Add category
       add_preset: Add Preset
       add_user: Add user
       api_key: Api Key
@@ -302,9 +300,7 @@ app:
       runout_sensors: Runout Sensors
       settings: Settings
       stats: Printer Stats
-      status: Status
       system: System
-      system_control: System Control
       system_overview: System Information
       temperature: Thermals
       tool: Tool
@@ -327,11 +323,6 @@ app:
       printing: Printing
       ready: Ready
       standby: Standby
-    status:
-      duration: duration
-      duration_total: duration & total
-      time_left: estimated time left
-      used_filament: used filament
   setting:
     btn:
       add_camera: Add Camera
@@ -346,8 +337,6 @@ app:
     label:
       all_off: All off
       all_on: All on
-      camera_fillspace: Fill space
-      camera_fillspace_help: With only one enabled camera, fill the dashboard camera space.
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
@@ -361,7 +350,6 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       draw_background: Draw Background
       enable: Enable
-      enable_animations: Enable Animations
       enable_notifications: Enable notifications
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
@@ -381,22 +369,12 @@ app:
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
-      time_estimates: Time estimates
-      toggle: Toggle
       z_adjust_values: Z Adjust values
     timer_options:
       duration: Duration only
-      duration_description: Similar to a klipper LCD, this only shows duration with no estimates.
       filament: Filament Estimation
-      filament_description: >-
-        Takes used filament vs estimated filament to estimate total duration.<br
-        /> More accurate over time.
       file: File Estimation
-      file_description: >-
-        Takes progress percent, and duration to estimate total duration.<br />
-        More accurate over time.
       slicer: Slicer
-      slicer_description: Uses slicer estimates for display. You must enable this in your slicer.
     title:
       authentication: Authentication
       camera: Camera | Cameras

@@ -123,7 +123,6 @@ app:
       extrude: 압출
       heaters_off: 히터 꺼짐
       load_all: Load all
-      load_current_file: 현재파일 불러오기
       more_information: 추가정보
       pause: 일시중지
       preheat: 예열
@@ -163,7 +162,6 @@ app:
       accel_to_decel: 감속도
       acceleration: 가속도
       add_camera: 카메라 추가
-      add_category: 카테고리 추가
       add_preset: 사전설정 추가
       add_user: Add 사용자
       api_key: Api 키
@@ -276,8 +274,6 @@ app:
       runout_sensors: 필라멘트 런아웃 센서
       settings: 설정
       stats: 프린터 상태
-      status: 상태
-      system_control: 시스템 컨트롤
       system_overview: 시스템 정보
       temperature: 온도
       tool: 툴헤드
@@ -300,11 +296,6 @@ app:
       printing: 출력중
       ready: 준비
       standby: 대기
-    status:
-      duration: 출력시간
-      duration_total: 출력시간 & 총 시간
-      time_left: 추정된 남은 시간
-      used_filament: 사용된 필라멘트
   setting:
     btn:
       add_camera: 카메라 추가
@@ -319,8 +310,6 @@ app:
     label:
       all_off: 모두 끄기
       all_on: 모두 켜기
-      camera_fillspace: 공간 채움
-      camera_fillspace_help: 활성화된 카메라 하나만을 사용해서 대시보드 카메라 공간을 채웁니다.
       camera_flip_x: 수평 반전
       camera_flip_y: 수직 반전
       camera_stream_type: 스트림 유형
@@ -334,7 +323,6 @@ app:
       default_toolhead_z_speed: 기본 툴헤드 Z 속도
       draw_background: 배경 그리기
       enable: 활성화
-      enable_animations: 애니메이션 활성화
       enable_notifications: 알림 활성화
       extrusion_line_width: 압출 라인 폭
       flip_horizontal: 수평 반전
@@ -353,18 +341,12 @@ app:
       show_animations: 애니메이션 보이기
       theme_preset: 커뮤니티 프리셋
       thermal_preset_name: 설정온도명칭
-      time_estimates: 예상 시간
-      toggle: Toggle
       z_adjust_values: Z 조정 값
     timer_options:
       duration: 기간만
-      duration_description: Klipper LCD와 비슷하게 추정치가 없는 기간만 표시됩니다.
       filament: 필라멘트로 추정
-      filament_description: 총 기간을 추정하기위해 사용된 필라멘트 양과 추정된 필라멘트 양을 이용합니다.<br /> 시간이 지남에 따라 더 정확해집니다.
       file: 파일로 추정
-      file_description: 진행율과 기간을 사용하여 총 기간을 표시합니다.<br /> 시간이 지남에 따라 더 정확해집니다.
       slicer: 슬라이서
-      slicer_description: 슬라이서 추정치를 사용합니다. 슬라이서에서 이 기능을 활성화 해야합니다.
     title:
       authentication: 인증
       camera: 카메라 | 카메라
