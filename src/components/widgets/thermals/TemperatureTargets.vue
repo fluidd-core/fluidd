@@ -121,7 +121,7 @@
           <td class="temp-actual">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                 <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>{{ (item.name.includes('usage')) ? 'W' : ((item.name.includes('humidity')) ? '%' : '°C') }}</small></span>
+                <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>{{ (item.name.includes('usage')) ? 'W' : ((item.name.includes('humidity')) ? '%' : '°C') }}</small></span>
               </template>
               <span v-if="item.measured_max_temp && item.measured_min_temp">
                 <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}{{ (item.name.includes('usage')) ? 'W' : ((item.name.includes('humidity')) ? '%' : '°C') }}</span><br />
