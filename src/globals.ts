@@ -1,4 +1,6 @@
 import {
+  mdiWaterPercent,
+  mdiTransmissionTower,
   mdiClose,
   mdiTune,
   mdiMinus,
@@ -175,6 +177,8 @@ export const Globals = Object.freeze({
 })
 
 export const Icons = Object.freeze({
+  waterpercent: mdiWaterPercent,
+  powerline: mdiTransmissionTower,
   dash: mdiViewDashboardOutline,
   account: mdiAccount,
   addAccount: mdiAccountPlus,
