@@ -124,6 +124,8 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
                 key,
                 value: {}
               })
+              apiConnected = true
+              return {}
             }
             if (r.response && r.response.status === 401) {
               // The API is technically connected, but we're un-authenticated.
