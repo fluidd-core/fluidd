@@ -67,9 +67,9 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // endpoint but working instance.
   const results = await Promise.all(
     endpoints.map(async endpoint => {
-      return httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
+      return httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000, withAuth: false })
         .then(() => true)
-        .catch((response) => (response.status === 401))
+        .catch((e) => (e.response.status === 401))
     })
   )
 
@@ -89,8 +89,17 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   }
 
   // Load the API Config
+  let apiConnected = true
+  let apiAuthenticated = true
   if (!apiConfig) {
     apiConfig = await getApiConfig(hostConfig)
+    apiConnected = (apiConfig.apiUrl !== '')
+  } else {
+    apiConnected = await httpClient.get(apiConfig.apiUrl + '/server/info?date=' + new Date().getTime(), { timeout: 1000, withAuth: false })
+      .then(() => true)
+      .catch((e) => {
+        return (e.response.status === 401)
+      })
   }
 
   // Setup axios
@@ -104,8 +113,6 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   await store.dispatch('auth/initAuth')
 
   // Load any configuration we may have in moonrakers db
-  let apiConnected = true
-  let apiAuthenticated = true
   const roots: { [index: string]: any } = Globals.MOONRAKER_DB.ROOTS
   for (const key in roots) {
     if (apiConnected && apiAuthenticated) {
