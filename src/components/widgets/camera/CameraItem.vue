@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 
 /**
@@ -77,12 +77,16 @@ export default class CameraItem extends Vue {
     return (transforms.trimLeft().length) ? { transform: transforms.trimLeft() } : {}
   }
 
+  @Watch('camera', { immediate: true })
+  onCameraChange () {
+    this.setUrl()
+  }
+
   /**
    * On creation, set the initial urls and bind the visibility listener.
    */
   created () {
-    this.setUrl()
-    document.addEventListener('visibilitychange', this.handleRefresh, false)
+    document.addEventListener('visibilitychange', this.setUrl, false)
   }
 
   /**
@@ -91,7 +95,7 @@ export default class CameraItem extends Vue {
    */
   beforeDestroy () {
     this.cameraUrl = ''
-    document.removeEventListener('visibilitychange', this.handleRefresh)
+    document.removeEventListener('visibilitychange', this.setUrl)
   }
 
   /**
@@ -101,7 +105,14 @@ export default class CameraItem extends Vue {
   handleRefresh () {
     if (!document.hidden) {
       this.refresh = new Date().getTime()
-      this.setUrl()
+      // this.setUrl()
+      this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
+      this.$nextTick(() => {
+        const hostUrl = new URL(document.URL)
+        const url = new URL(this.cameraUrl, hostUrl.origin)
+        url.searchParams.set('cacheBust', this.refresh.toString())
+        this.cameraUrl = url.toString()
+      })
     } else {
       this.cameraUrl = ''
     }
@@ -139,29 +150,34 @@ export default class CameraItem extends Vue {
    * Sets the correct (cachebusted if applicable) camera url.
    */
   setUrl () {
-    const type = this.camera.type
-    const baseUrl = this.camera.url
-    const hostUrl = new URL(document.URL)
-    const url = new URL(baseUrl, hostUrl.origin)
+    if (!document.hidden) {
+      const type = this.camera.type
+      const baseUrl = this.camera.url
+      const hostUrl = new URL(document.URL)
+      const url = new URL(baseUrl, hostUrl.origin)
 
-    if (type === 'mjpgstream') {
-      url.searchParams.append('cacheBust', this.refresh.toString())
-      if (!url.searchParams.get('action')) url.searchParams.set('action', 'stream')
-      this.cameraUrl = url.toString()
-    }
-
-    if (type === 'mjpgadaptive') {
-      this.request_start_time = performance.now()
-      url.searchParams.append('cacheBust', this.refresh.toString())
-      if (!url.searchParams.get('action')) url.searchParams.set('action', 'snapshot')
-      this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
-      this.$nextTick(() => {
+      if (type === 'mjpgstream') {
+        url.searchParams.append('cacheBust', this.refresh.toString())
+        if (!url.searchParams.get('action')?.startsWith('stream')) {
+          url.searchParams.set('action', 'stream')
+        }
         this.cameraUrl = url.toString()
-      })
-    }
+      }
 
-    if (type === 'ipstream') {
-      this.cameraUrl = baseUrl
+      if (type === 'mjpgadaptive') {
+        this.request_start_time = performance.now()
+        url.searchParams.append('cacheBust', this.refresh.toString())
+        if (!url.searchParams.get('action')?.startsWith('snapshot')) {
+          url.searchParams.set('action', 'snapshot')
+        }
+        this.cameraUrl = url.toString()
+      }
+
+      if (type === 'ipstream') {
+        this.cameraUrl = baseUrl
+      }
+    } else {
+      this.cameraUrl = ''
     }
   }
 }

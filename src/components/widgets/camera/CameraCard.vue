@@ -22,7 +22,8 @@
         <v-col
           v-if="!collapsed"
           cols="12" :sm="cols"
-          :key="camera.id">
+          :key="camera.id"
+        >
           <camera-item
             :camera="camera"
           ></camera-item>
