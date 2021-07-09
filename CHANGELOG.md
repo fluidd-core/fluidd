@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.16.1](https://github.com/cadriel/fluidd/compare/v1.16.0...v1.16.1) (2021-07-09)
+
+
+### Bug Fixes
+
+* camera urls no longer cause performance issues ([2a63d79](https://github.com/cadriel/fluidd/commit/2a63d7928375db9af589b289474073dc9345d008))
+* don't retry roots if our first failed ([4f86713](https://github.com/cadriel/fluidd/commit/4f86713363dd36f61d748bff9c244c0897d6721f))
+
 ## [1.16.0](https://github.com/cadriel/fluidd/compare/v1.15.0...v1.16.0) (2021-07-08)
 
 
