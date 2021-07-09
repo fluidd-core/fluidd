@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.16.2](https://github.com/cadriel/fluidd/compare/v1.16.1...v1.16.2) (2021-07-09)
+
+
+### Bug Fixes
+
+* don't block connection on fresh moonraker databases ([cc39708](https://github.com/cadriel/fluidd/commit/cc397081627e8dba76be6ea46bdc41fa40ad85d5))
+
 ### [1.16.1](https://github.com/cadriel/fluidd/compare/v1.16.0...v1.16.1) (2021-07-09)
 
 
