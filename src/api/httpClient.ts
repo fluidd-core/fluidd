@@ -3,6 +3,7 @@ import { EventBus, FlashMessageTypes } from '@/eventBus'
 import consola from 'consola'
 import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Globals } from '@/globals'
+import { getTokenKeys } from '@/store/auth/helpers'
 
 // Create a base instance with sane defaults.
 const httpClient = Axios.create({
@@ -11,12 +12,6 @@ const httpClient = Axios.create({
 })
 httpClient.prototype.CancelToken = Axios.CancelToken
 httpClient.prototype.isCancel = Axios.isCancel
-
-// For these paths, we force remove the withAuth flag.
-const unauthenticatedPaths = [
-  '/access/login',
-  '/access/refresh_token'
-]
 
 // For these paths, we don't emit an error because we handle them
 // downstream.
@@ -29,24 +24,22 @@ const requestInterceptor = async (config: AxiosRequestConfig) => {
   config.headers.Accept = 'application/json'
   config.headers['Content-Type'] = 'application/json'
 
-  // Check our auth token.
-  // If the token is about to expire...
-  // Attempt to refresh the token.
-  // This would only run if we have tokens defined. Otherwise it's
-  // assumed we're trusted by moonraker.
-  // Don't check for the refresh token path
-  if (config.url !== '/access/refresh_jwt') {
+  if (config.withAuth) {
+    // Check our auth token.
+    // If the token is about to expire...
+    // Attempt to refresh the token.
+    // This would only run if we have tokens defined. Otherwise it's
+    // assumed we're trusted by moonraker.
     const isExpiring = await store.dispatch('auth/checkToken')
     if (isExpiring) {
-      const token = await store.dispatch('auth/refreshTokens')
-      if (token) config.headers.Authorization = `Bearer ${token}`
+      await store.dispatch('auth/refreshTokens')
     }
-  }
 
-  // If this is a request for an api path known to not be authenticated, then
-  // remove the withAuth flag.
-  const path = config.url || ''
-  if (unauthenticatedPaths.includes(path)) config.withAuth = false
+    // Ensure we append the bearer token for authorized requests.
+    const keys = getTokenKeys()
+    const token = localStorage.getItem(keys['user-token'])
+    if (token) config.headers.Authorization = `Bearer ${token}`
+  }
 
   return config
 }
@@ -106,7 +99,6 @@ const errorInterceptor = (error: AxiosError) => {
       break
     case 404:
       consola.debug(error.response.status, error.message, message)
-      // EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.warning })
       break
     default:
       consola.debug(error.response.status, error.message)
