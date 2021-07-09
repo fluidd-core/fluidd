@@ -85,6 +85,7 @@ export default class FilesMixin extends Vue {
     // Append any additional options.
     const o = {
       ...options,
+      timeout: 0,
       onDownloadProgress: (progressEvent: ProgressEvent) => {
         const units = ['kB', 'MB', 'GB']
         let speed = 0
@@ -187,6 +188,7 @@ export default class FilesMixin extends Vue {
         this.apiUrl + '/server/files/upload',
         formData, {
           ...options,
+          timeout: 0,
           headers: {
             'Content-Type': 'multipart/form-data'
           },

@@ -124,7 +124,7 @@ export const Globals = Object.freeze({
   DEFAULTS: {
     CAMERA_URL: '/webcam?action=stream'
   },
-  NETWORK_REQUEST_TIMEOUT: 0,
+  NETWORK_REQUEST_TIMEOUT: 5000,
   KLIPPY_RETRY_DELAY: 1500,
   SOCKET_RETRY_DELAY: 2000,
   SOCKET_PING_INTERVAL: 5000,
