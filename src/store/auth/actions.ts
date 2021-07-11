@@ -175,8 +175,8 @@ export const actions: ActionTree<AuthState, RootState> = {
    * them out which bumps them to the login page.
    */
   async checkTrust ({ dispatch, commit }) {
-    const keys = getTokenKeys()
-    const token = localStorage.getItem(keys['user-token'])
+    // const keys = getTokenKeys()
+    // const token = localStorage.getItem(keys['user-token'])
 
     // Clear the token.
     // delete httpClient.defaults.headers.common.Authorization
