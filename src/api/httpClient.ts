@@ -36,8 +36,9 @@ const requestInterceptor = async (config: AxiosRequestConfig) => {
     }
 
     // Ensure we append the bearer token for authorized requests.
-    const keys = getTokenKeys()
-    const token = localStorage.getItem(keys['user-token'])
+    // const keys = getTokenKeys()
+    // const token = localStorage.getItem(keys['user-token'])
+    const token = store.getters['auth/getToken']
     if (token) config.headers.Authorization = `Bearer ${token}`
   }
 

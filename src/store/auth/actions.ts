@@ -56,10 +56,6 @@ export const actions: ActionTree<AuthState, RootState> = {
       // header.
       commit('setToken', token)
       commit('setRefreshToken', refreshToken)
-      // httpClient.defaults.headers.common.Authorization = `Bearer ${token}`
-    } else {
-      // No tokens, delete auth header.
-      // delete httpClient.defaults.headers.common.Authorization
     }
   },
 
@@ -67,15 +63,14 @@ export const actions: ActionTree<AuthState, RootState> = {
    * Inspects the auth token to determine its validity.
    */
   async checkToken ({ state }) {
-    if (state.token?.exp) {
-      const exp = state.token.exp
+    if (state.token_decoded?.exp) {
+      const exp = state.token_decoded.exp
       const now = Date.now() / 1000 // now in unixtime.
       const isExpiring = (exp - now) < 300 // refresh within 5 minutes / 5 * 60
       if (isExpiring) {
         consola.debug('checkToken - isExpiring', Vue.$dayjs(now * 1000), Vue.$dayjs(exp * 1000))
         return true
       } else {
-        // console.debug('checkToken - not isExpiring', Vue.$dayjs(now * 1000), Vue.$dayjs(exp * 1000))
         return false
       }
     }
@@ -95,7 +90,7 @@ export const actions: ActionTree<AuthState, RootState> = {
         // store data, and move on.
         localStorage.setItem(keys['user-token'], response.token)
         commit('setToken', response.token)
-        // httpClient.defaults.headers.common.Authorization = `Bearer ${response.token}`
+
         return Promise.resolve(response.token)
       })
       .catch(() => {
@@ -113,7 +108,7 @@ export const actions: ActionTree<AuthState, RootState> = {
         // Successful login. Set the tokens and auth status and move on.
         localStorage.setItem(keys['user-token'], user.token)
         localStorage.setItem(keys['refresh-token'], user.refresh_token)
-        // httpClient.defaults.headers.common.Authorization = `Bearer ${user.token}`
+
         commit('setAuthenticated', true)
         commit('setCurrentUser', user.username)
         commit('setToken', user.token)
@@ -124,7 +119,7 @@ export const actions: ActionTree<AuthState, RootState> = {
         // Unsuccessful login. Remove any existing keys, set auth and move on.
         localStorage.removeItem(keys['user-token'])
         localStorage.removeItem(keys['refresh-token'])
-        // delete httpClient.defaults.headers.common.Authorization
+
         return Promise.reject(err)
       })
   },
@@ -151,9 +146,6 @@ export const actions: ActionTree<AuthState, RootState> = {
     localStorage.removeItem(keys['user-token'])
     localStorage.removeItem(keys['refresh-token'])
 
-    // Remove the authentication header.
-    // delete httpClient.defaults.headers.common.Authorization
-
     // Clear the in memory store.
     commit('setCurrentUser', null)
     commit('setToken', null)
@@ -175,18 +167,9 @@ export const actions: ActionTree<AuthState, RootState> = {
    * them out which bumps them to the login page.
    */
   async checkTrust ({ dispatch, commit }) {
-    // const keys = getTokenKeys()
-    // const token = localStorage.getItem(keys['user-token'])
-
-    // Clear the token.
-    // delete httpClient.defaults.headers.common.Authorization
-
     // Make the request.
     await authApi.getCurrentUser({ withAuth: false })
       .then((user) => {
-        // Re-apply the token.
-        // httpClient.defaults.headers.common.Authorization = `Bearer ${token}`
-
         // no error, so must be trusted. partial logout.
         dispatch('logout', { partial: true })
         commit('setCurrentUser', user.data.result)

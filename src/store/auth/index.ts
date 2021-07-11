@@ -12,7 +12,9 @@ export const defaultState = (): AuthState => {
   return {
     authenticated: false,
     token: null,
+    token_decoded: null,
     refresh_token: null,
+    refresh_token_decoded: null,
     currentUser: null,
     users: [],
     apiKey: ''

@@ -16,11 +16,13 @@ export const mutations: MutationTree<AuthState> = {
   },
 
   setToken (state, token) {
-    state.token = (token) ? jwtDecode(token) : null
+    state.token = token || null
+    state.token_decoded = (token) ? jwtDecode(token) : null
   },
 
   setRefreshToken (state, token) {
-    state.refresh_token = (token) ? jwtDecode(token) : null
+    state.refresh_token = token || null
+    state.refresh_token_decoded = (token) ? jwtDecode(token) : null
   },
 
   setAuthenticated (state, authenticated) {
