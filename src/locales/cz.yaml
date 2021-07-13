@@ -128,7 +128,7 @@ app:
       download: Stáhnout
       edit: Upravit
       exit_layout: Uložit rozložení
-      extrude: Extruse
+      extrude: Extruze
       heaters_off: Vypnout vyhřívání
       load_all: Načíst vše
       more_information: Více informací
@@ -192,8 +192,8 @@ app:
       edit_camera: Upravit kameru
       edit_preset: Upravit přednastavení
       edit_user: Upravit uživatele
-      extrude_length: Délka extruse
-      extrude_speed: Rychlost extruse
+      extrude_length: Délka extruze
+      extrude_speed: Rychlost extruze
       filament: Filament
       file: Soubor
       finish_time: Konec
@@ -341,15 +341,15 @@ app:
       camera_url: URL kamery
       confirm_on_estop: Požadovat potvrzení při nouzovém zastavení
       dark_mode: Tmavý režim
-      default_extrude_length: Výchozí délka extruse
-      default_extrude_speed: Výchozí rychlost extruse
+      default_extrude_length: Výchozí délka extruze
+      default_extrude_speed: Výchozí rychlost extruze
       default_toolhead_move_length: Výchozí délka pohybu nástroje
       default_toolhead_xy_speed: Výchozí XY rychlost nástroje
       default_toolhead_z_speed: Výchozí Z rychlost nástroje
       draw_background: Vykreslovat pozadí
       enable: Povolit
       enable_notifications: Zapnout notifikace
-      extrusion_line_width: Šířka linky extruse
+      extrusion_line_width: Šířka linky extruze
       flip_horizontal: Překlopit horizontálně
       flip_vertical: Překlopit vertikálně
       fps_target: Cílové FPS
@@ -417,7 +417,7 @@ app:
       home_x: X
       home_y: 'Y'
     tooltip:
-      extruder_disabled: Extruse zakázána pod min_extrude_temp (%{min}<small>°C</small>)
+      extruder_disabled: Extruze zakázána pod min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Výchozí pozice XY
       home_z: Výchozí pozice Z
   version:
