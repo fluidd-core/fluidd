@@ -47,6 +47,8 @@ export interface GeneralConfig {
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
+  dateformat: string;
+  timeformat: string;
 }
 
 // Config stored in moonraker db

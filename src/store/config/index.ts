@@ -52,7 +52,9 @@ export const defaultState = (): ConfigState => {
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
-        confirmOnEstop: false
+        confirmOnEstop: false,
+        dateformat: 'MMM. DD',
+        timeformat: 'h:mm a'
       },
       theme: {
         isDark: true,

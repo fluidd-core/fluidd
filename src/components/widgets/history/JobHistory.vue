@@ -97,7 +97,7 @@
         v-slot:[`item.start_time`]="{ item }"
       >
         <span class="text-no-wrap">
-          {{ $filters.formatDateTime(item.start_time, 'lll') }}
+          {{ $filters.formatDateTime(item.start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
         </span>
       </template>
 
@@ -105,7 +105,7 @@
         v-slot:[`item.end_time`]="{ item }"
       >
         <span class="text-no-wrap" v-if="item.status !== 'in_progress'">
-          {{ $filters.formatDateTime(item.end_time, 'lll') }}
+          {{ $filters.formatDateTime(item.end_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
         </span>
         <span v-else>--</span>
       </template>

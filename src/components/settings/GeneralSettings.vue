@@ -38,6 +38,35 @@
 
       <v-divider></v-divider>
 
+      <app-setting :title="$t('app.setting.label.formatdatetime')">
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="[
+            { text: $t('app.setting.dateformat.monthdayyear'), value: 'MMM. DD' },
+            { text: $t('app.setting.dateformat.daymonthyear'), value: 'DD MMM.' }
+          ]"
+          item-value="value"
+          item-text="text"
+          v-model="dateformat">
+        </v-select>
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="[
+            { text: 'am/pm', value: 'h:mm a' },
+            { text: '24h', value: 'HH:mm' }
+          ]"
+          item-value="value"
+          item-text="text"
+          v-model="timeformat">
+        </v-select>
+      </app-setting>
+
+      <v-divider></v-divider>
+
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
@@ -96,6 +125,30 @@ export default class GeneralSettings extends Mixins(StateMixin) {
 
   setLocale (value: string) {
     this.$store.dispatch('config/onLocaleChange', value)
+  }
+
+  get dateformat () {
+    return this.$store.state.config.uiSettings.general.dateformat
+  }
+
+  set dateformat (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.dateformat',
+      value,
+      server: true
+    })
+  }
+
+  get timeformat () {
+    return this.$store.state.config.uiSettings.general.timeformat
+  }
+
+  set timeformat (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.timeformat',
+      value,
+      server: true
+    })
   }
 
   get confirmOnEstop () {
