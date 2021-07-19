@@ -195,8 +195,8 @@ export const Filters = {
     const _url = new URL(url)
     const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
     const o = {
-      apiUrl: `${_url.protocol}//${_url.host}`,
-      socketUrl: `${wsProtocol}${_url.host}/websocket`
+      apiUrl: `${_url.protocol}//${_url.host}${_url.pathname}`,
+      socketUrl: `${wsProtocol}${_url.host}${_url.pathname}/websocket`
     }
     return o
   },
