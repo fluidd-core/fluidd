@@ -11,6 +11,7 @@ import { RootState } from '../types'
 export const defaultState = (): GcodePreviewState => {
   return {
     moves: [],
+    parts: {},
     file: undefined,
     parserProgress: 0,
     parserWorker: null,

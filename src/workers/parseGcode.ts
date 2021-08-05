@@ -1,13 +1,34 @@
 /* eslint-disable no-fallthrough */
-import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
+import { ArcMove, LinearMove, Move, Part, PositioningMode, Rotation } from '@/store/gcodePreview/types'
 import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
+  const startObjMatch = line.match(/; printing object (.*)/)
+  if (startObjMatch) {
+    console.log('starting object')
+    return {
+      command: 'START_OBJ',
+      args: { name: startObjMatch[1] ?? '' }
+    }
+  }
+  const endObjMatch = line.match('; stop printing object (.*)')
+  if (endObjMatch) {
+    console.log('ending object')
+    return {
+      command: 'END_OBJ',
+      args: {}
+    }
+  }
+
   const [, command, args = ''] = line
     .trim()
     .split(';', 2)[0]
     .split(/^([a-z][0-9]+)\s+/i)
+
+  if (!command) {
+    return
+  }
 
   if (!/^(G|M)\d+$/.test(command)) {
     return null
@@ -25,9 +46,28 @@ function parseLine (line: string) {
   }
 }
 
+function workingPart (name: string, parts: any) {
+  let part = parts[name]
+  if (!part) {
+    part = {
+      name: name,
+      xmin: 1000000,
+      ymin: 1000000,
+      xmax: 0,
+      ymax: 0
+    }
+    parts[name] = part
+    return part
+  }
+  return part
+}
+
 export default function parseGcode (gcode: string, subject: Subject<number>) {
   const moves: Move[] = []
+  const parts: { [key: string]: Part} = {}
   const lines = gcode.split('\n')
+  let lpx = 0
+  let lpy = 0
 
   let extrusionMode = PositioningMode.Relative
   let positioningMode = PositioningMode.Absolute
@@ -48,6 +88,7 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     z: 0
   }
 
+  let part: Part | null = null
   for (let i = 0; i < lines.length; i++) {
     const {
       command,
@@ -63,6 +104,14 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     let move: Move | null = null
 
     switch (command) {
+      case 'START_OBJ':
+        part = workingPart(args.name, parts)
+        console.log(part)
+        move = null
+        break
+      case 'END_OBJ':
+        part = null
+        break
       case 'G0':
       case 'G1':
         move = pick(args, [
@@ -157,6 +206,15 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
       move.filePosition = toolhead.filePosition
 
       moves.push(Object.freeze(move))
+
+      if (part?.xmin && toolhead.x !== lpx && toolhead.y !== lpy) {
+        part.xmin = Math.min(part.xmin, toolhead.x)
+        part.ymin = Math.min(part.ymin, toolhead.y)
+        part.xmax = Math.max(part.xmax, toolhead.x)
+        part.ymax = Math.max(part.ymax, toolhead.y)
+      }
+      lpx = toolhead.x
+      lpy = toolhead.y
     }
 
     if (i % Math.floor(lines.length / 100) === 0) {
@@ -167,6 +225,49 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
   }
 
   subject.next(toolhead.filePosition)
+  /*
+  moves.push({
+    x: 1,
+    y: 1,
+    z: 0.0001,
+    e: 0.0
+  } as LinearMove)
+  for (const key in parts) {
+    const p = parts[key]
+    console.log(p)
+    moves.push({
+      x: p.xmin,
+      y: p.ymin,
+      z: 0.001,
+      e: 0.0
+    } as LinearMove)
+    moves.push({
+      x: p.xmax,
+      y: p.ymin,
+      z: 0.001,
+      e: 0.5
+    } as LinearMove)
+    moves.push({
+      x: p.xmax,
+      y: p.ymax,
+      z: 0.001,
+      e: 0.5
+    } as LinearMove)
+    moves.push({
+      x: p.xmin,
+      y: p.ymax,
+      z: 0.001,
+      e: 0.5
+    } as LinearMove)
+    moves.push({
+      x: p.xmin,
+      y: p.ymin,
+      z: 0.001,
+      e: 0.5
+    } as LinearMove)
+  }
+ */
 
-  return moves
+  console.log(moves)
+  return [moves, parts]
 }

@@ -6,12 +6,12 @@ let progress = new Subject<number>()
 
 expose({
   parse (gcode: string) {
-    const moves = parseGcode(gcode, progress)
+    const movesAndParts = parseGcode(gcode, progress)
 
     progress.complete()
     progress = new Subject<number>()
 
-    return moves
+    return movesAndParts
   },
   progress (): Observable<number> {
     return Observable.from(progress)
