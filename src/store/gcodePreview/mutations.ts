@@ -14,13 +14,10 @@ export const mutations: MutationTree<GcodePreviewState> = {
   },
 
   setMoves (state, payload) {
-    console.log(payload)
     Vue.set(state, 'moves', Object.freeze(payload.map(Object.freeze)))
   },
 
   setParts (state, payload) {
-    console.log(payload)
-    console.log(Object.freeze(payload))
     Vue.set(state, 'parts', Object.freeze(payload))
   },
 

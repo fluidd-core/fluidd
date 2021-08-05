@@ -6,7 +6,6 @@ import { Subject } from 'threads/observable'
 function parseLine (line: string) {
   const startObjMatch = line.match(/; printing object (.*)/)
   if (startObjMatch) {
-    console.log('starting object')
     return {
       command: 'START_OBJ',
       args: { name: startObjMatch[1] ?? '' }
@@ -14,7 +13,6 @@ function parseLine (line: string) {
   }
   const endObjMatch = line.match('; stop printing object (.*)')
   if (endObjMatch) {
-    console.log('ending object')
     return {
       command: 'END_OBJ',
       args: {}
@@ -106,7 +104,6 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     switch (command) {
       case 'START_OBJ':
         part = workingPart(args.name, parts)
-        console.log(part)
         move = null
         break
       case 'END_OBJ':
@@ -225,49 +222,6 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
   }
 
   subject.next(toolhead.filePosition)
-  /*
-  moves.push({
-    x: 1,
-    y: 1,
-    z: 0.0001,
-    e: 0.0
-  } as LinearMove)
-  for (const key in parts) {
-    const p = parts[key]
-    console.log(p)
-    moves.push({
-      x: p.xmin,
-      y: p.ymin,
-      z: 0.001,
-      e: 0.0
-    } as LinearMove)
-    moves.push({
-      x: p.xmax,
-      y: p.ymin,
-      z: 0.001,
-      e: 0.5
-    } as LinearMove)
-    moves.push({
-      x: p.xmax,
-      y: p.ymax,
-      z: 0.001,
-      e: 0.5
-    } as LinearMove)
-    moves.push({
-      x: p.xmin,
-      y: p.ymax,
-      z: 0.001,
-      e: 0.5
-    } as LinearMove)
-    moves.push({
-      x: p.xmin,
-      y: p.ymin,
-      z: 0.001,
-      e: 0.5
-    } as LinearMove)
-  }
- */
 
-  console.log(moves)
   return [moves, parts]
 }

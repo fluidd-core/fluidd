@@ -53,7 +53,6 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
 
     try {
       const rv = await Promise.race([abort, worker.parse(payload.gcode)])
-      console.log(rv)
       commit('setMoves', rv[0])
       commit('setParts', rv[1])
       commit('setParserProgress', payload.file.size ?? payload.gcode.length)
