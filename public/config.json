@@ -89,6 +89,15 @@
         "src": "/logo_zerog.svg",
         "dynamic": true
       }
+    },
+    {
+      "name": "SnakeOil",
+      "color": "#4bc3ca",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_snakeoil.svg",
+        "dynamic": false
+      }
     }
   ]
 }
