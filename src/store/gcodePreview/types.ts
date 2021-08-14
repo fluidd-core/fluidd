@@ -5,7 +5,6 @@ export type LayerNr = number
 
 export interface GcodePreviewState {
   moves: Move[];
-  parts: { [key: string]: Part};
   file?: AppFile;
   parserProgress: number;
   parserWorker: Thread | null;
@@ -19,14 +18,6 @@ export interface GcodePreviewState {
     showRetractions: boolean;
     followProgress: boolean;
   };
-}
-
-export interface Part {
-   name: string;
-   xmin: number;
-   ymin: number;
-   xmax: number;
-   ymax: number;
 }
 
 export interface LinearMove {

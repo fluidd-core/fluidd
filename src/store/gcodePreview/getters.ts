@@ -6,7 +6,6 @@ import {
   LayerNr,
   LayerPaths,
   Move,
-  Part,
   Point3D
 } from './types'
 import { RootState } from '../types'
@@ -20,10 +19,6 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
    */
   getMoves: (state): Move[] => {
     return state.moves
-  },
-
-  getParts: (state): {[key: string]: Part} => {
-    return state.parts
   },
 
   getFile: (state): AppFile | undefined => {
@@ -71,27 +66,6 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     }
 
     return output
-  },
-
-  getPartsSVG: (state, getters): any[] => {
-    const psvg = []
-    const parts = getters.getParts
-    console.log('in getPartsSVG')
-    console.log(parts)
-    for (const key in parts) {
-      let svg = ''
-      const p = parts[key]
-      svg += `M${p.xmin},${p.ymin}`
-      svg += `L${p.xmax},${p.ymin}`
-      svg += `L${p.xmax},${p.ymax}`
-      svg += `L${p.xmin},${p.ymax}`
-      svg += `L${p.xmin},${p.ymin}`
-      psvg.push({
-        name: p.name,
-        svg: svg
-      })
-    }
-    return psvg
   },
 
   getBounds: (state, getters): BBox => {

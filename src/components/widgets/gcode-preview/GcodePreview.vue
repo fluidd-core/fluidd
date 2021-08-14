@@ -195,6 +195,7 @@
         </g>
         <g id="parts" class="layer">
           <path v-for="item in svgParts" :key="item.name" stroke="red" :stroke-width="extrusionLineWidth" stroke-opacity="0.6" pointer-events="fill"
+                 :class="isPartExcluded(item.name) ? 'partExcluded' : ''"
                 :d=item.svg :shape-rendering="shapeRendering" v-on:click="onPartClick(item.name, $event)"/>
         </g>
       </g>
@@ -455,8 +456,12 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   get svgParts () {
-    const svg = this.$store.getters['gcodePreview/getPartsSVG']
+    const svg = this.$store.getters['parts/getPartsSVG']
     return svg
+  }
+
+  isPartExcluded (name: string) {
+    return this.$store.getters['parts/getIsPartExcluded'](name)
   }
 
   @Watch('isMobile')
@@ -471,17 +476,9 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   onPartClick (id: string, e?: any) {
-    // Let's pick a random color between #000000 and #FFFFFF
-    const color = Math.round(Math.random() * 0xFFFFFF)
-
-    // Let's format the color to fit CSS requirements
-    const fill = '#' + color.toString(16).padStart(6, '0')
-
-    // Let's apply our color in the
-    // element we actually clicked on
-    e.target.style.fill = fill
     const reqId = id.toUpperCase().replace(/\s/g, '_')
-    this.sendGcode('CANCEL_OBJECT NAME=' + reqId)
+    this.sendGcode('EXCLUDE_OBJECT NAME=' + reqId)
+    this.$store.dispatch('parts/addExcludedPart', { partname: id })
   }
 
   @Watch('focused')
@@ -561,5 +558,9 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
 svg {
   shape-rendering: geometricPrecision;
+}
+
+.layer .partExcluded {
+  fill: green
 }
 </style>

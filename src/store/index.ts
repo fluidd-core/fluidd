@@ -25,6 +25,7 @@ import { announcements } from './announcements'
 import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
+import { parts } from './parts'
 
 Vue.use(Vuex)
 
@@ -51,7 +52,8 @@ export default new Vuex.Store<RootState>({
     announcements,
     wait,
     gcodePreview,
-    timelapse
+    timelapse,
+    parts
   },
   mutations: {},
   actions: {
