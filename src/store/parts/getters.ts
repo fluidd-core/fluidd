@@ -7,8 +7,13 @@ export const getters: GetterTree<PartsState, RootState> = {
     return state.parts
   },
 
-  getIsPartExcluded: (state, getters) => (partName: string): boolean => {
+  getIsPartExcluded: (state) => (partName: string): boolean => {
     return state.excludedParts.includes(partName)
+  },
+
+  getPartPos: (state, getters) => (partName: string): string => {
+    const p = getters.getParts[partName]
+    return `${p.xtarget},${p.ytarget - 12}`
   },
 
   getPartsSVG: (state, getters): any[] => {
