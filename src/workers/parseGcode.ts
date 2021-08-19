@@ -8,14 +8,14 @@ function parseLine (line: string) {
   const startObjMatch = line.match(/; printing object (.*)/)
   if (startObjMatch) {
     return {
-      command: 'START_OBJ',
+      command: 'START_CURRENT_OBJECT',
       args: { name: startObjMatch[1] ?? '' }
     }
   }
   const endObjMatch = line.match('; stop printing object (.*)')
   if (endObjMatch) {
     return {
-      command: 'END_OBJ',
+      command: 'END_CURRENT_OBJECT',
       args: {}
     }
   }
@@ -45,28 +45,12 @@ function parseLine (line: string) {
   }
 }
 
-function workingPart (name: string, parts: any) {
-  let part = parts[name]
-  if (!part) {
-    part = {
-      name: name,
-      xmin: 1000000,
-      ymin: 1000000,
-      xmax: 0,
-      ymax: 0
-    }
-    parts[name] = part
-    return part
-  }
-  return part
-}
-
 export default function parseGcode (gcode: string, subject: Subject<number>) {
   const moves: Move[] = []
-  const parts: { [key: string]: Part} = {}
   const lines = gcode.split('\n')
   let lpx = 0
   let lpy = 0
+  let partName = null
 
   let extrusionMode = PositioningMode.Relative
   let positioningMode = PositioningMode.Absolute
@@ -87,7 +71,6 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     z: 0
   }
 
-  let part: Part | null = null
   for (let i = 0; i < lines.length; i++) {
     const {
       command,
@@ -103,12 +86,13 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     let move: Move | null = null
 
     switch (command) {
-      case 'START_OBJ':
-        part = workingPart(args.name, parts)
+      case 'START_CURRENT_OBJECT':
+        partName = args.name
         move = null
         break
-      case 'END_OBJ':
-        part = null
+      case 'END_CURRENT_OBJECT':
+        partName = null
+        move = null
         break
       case 'G0':
       case 'G1':
@@ -202,15 +186,10 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
       toolhead.z = move.z ?? toolhead.z
 
       move.filePosition = toolhead.filePosition
+      move.part = partName
 
       moves.push(Object.freeze(move))
 
-      if (part?.xmin && toolhead.x !== lpx && toolhead.y !== lpy) {
-        part.xmin = Math.min(part.xmin, toolhead.x)
-        part.ymin = Math.min(part.ymin, toolhead.y)
-        part.xmax = Math.max(part.xmax, toolhead.x)
-        part.ymax = Math.max(part.ymax, toolhead.y)
-      }
       lpx = toolhead.x
       lpy = toolhead.y
     }
@@ -224,5 +203,5 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
 
   subject.next(toolhead.filePosition)
 
-  return [moves, Object.values(parts)]
+  return moves
 }

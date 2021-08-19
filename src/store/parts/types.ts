@@ -9,4 +9,6 @@ export interface Part {
    ymin: number;
    xmax: number;
    ymax: number;
+   xtarget: number;
+   ytarget: number;
 }

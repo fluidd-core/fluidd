@@ -193,11 +193,7 @@
             :stroke-width="extrusionLineWidth"
           />
         </g>
-        <g id="parts" class="layer">
-          <path v-for="item in svgParts" :key="item.name" stroke="red" :stroke-width="extrusionLineWidth" stroke-opacity="0.6" pointer-events="fill"
-                 :class="isPartExcluded(item.name) ? 'partExcluded' : ''"
-                :d=item.svg :shape-rendering="shapeRendering" v-on:click="onPartClick(item.name, $event)"/>
-        </g>
+        <exclude-objects />
       </g>
     </svg>
   </div>
@@ -209,8 +205,13 @@ import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
+import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 
-@Component({})
+@Component({
+  components: {
+    ExcludeObjects
+  }
+})
 export default class GcodePreview extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   public disabled!: boolean
@@ -455,15 +456,6 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
-  get svgParts () {
-    const svg = this.$store.getters['parts/getPartsSVG']
-    return svg
-  }
-
-  isPartExcluded (name: string) {
-    return this.$store.getters['parts/getIsPartExcluded'](name)
-  }
-
   @Watch('isMobile')
   onIsMobileChanged () {
     if (this.panzoom) {
@@ -473,12 +465,6 @@ export default class GcodePreview extends Mixins(StateMixin) {
         this.panzoom.resume()
       }
     }
-  }
-
-  onPartClick (id: string, e?: any) {
-    const reqId = id.toUpperCase().replace(/\s/g, '_')
-    this.sendGcode('EXCLUDE_OBJECT NAME=' + reqId)
-    this.$store.dispatch('parts/addExcludedPart', { partname: id })
   }
 
   @Watch('focused')

@@ -1,5 +1,6 @@
 import { ActionTree } from 'vuex'
-import { Part, PartsState } from './types'
+import { PartsState } from './types'
+import { Move } from '../gcodePreview/types'
 import { RootState } from '../types'
 
 export const actions: ActionTree<PartsState, RootState> = {
@@ -10,8 +11,8 @@ export const actions: ActionTree<PartsState, RootState> = {
     commit('setReset')
   },
 
-  async setParts ({ commit }, payload: { parts: Part[] }) {
-    commit('setParts', payload.parts)
+  async setParts ({ commit }, payload: { moves: Move[] }) {
+    commit('setParts', payload.moves)
   },
 
   async addExcludedPart ({ commit }, payload: { partname: string }) {
