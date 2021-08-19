@@ -4,6 +4,24 @@ import { Part, PartsState } from './types'
 import { Move } from '../gcodePreview/types'
 import Vue from 'vue'
 
+function workingPart (name: string, parts: {[key: string]: Part}) {
+  let part = parts[name]
+  if (!part) {
+    part = {
+      name: name,
+      xmin: 1000000,
+      ymin: 1000000,
+      xmax: 0,
+      ymax: 0,
+      ytarget: 0,
+      xtarget: 1000000
+    }
+    parts[name] = part
+    return part
+  }
+  return part
+}
+
 export const mutations: MutationTree<PartsState> = {
   /**
    * Reset state
@@ -16,7 +34,7 @@ export const mutations: MutationTree<PartsState> = {
     const partMap: { [key: string]: Part} = {}
 
     moves.forEach(move => {
-      if (move.part !== undefined) {
+      if (move.part) {
         const part = workingPart(move.part, partMap)
 
         if (part && move.y && move.x) {
@@ -36,27 +54,13 @@ export const mutations: MutationTree<PartsState> = {
     Vue.set(state, 'excludedParts', [])
   },
 
+  resetExcludedPartList (state) {
+    Vue.set(state, 'excludedParts', [])
+  },
+
   addExcludedPart (state, partName: string) {
     const newList = [...state.excludedParts]
     newList.push(partName)
     Vue.set(state, 'excludedParts', Object.freeze(newList))
   }
-}
-
-function workingPart (name: string, parts: {[key: string]: Part}) {
-  let part = parts[name]
-  if (!part) {
-    part = {
-      name: name,
-      xmin: 1000000,
-      ymin: 1000000,
-      xmax: 0,
-      ymax: 0,
-      ytarget: 0,
-      xtarget: 1000000
-    }
-    parts[name] = part
-    return part
-  }
-  return part
 }

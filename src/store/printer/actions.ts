@@ -59,8 +59,9 @@ export const actions: ActionTree<PrinterState, RootState> = {
    * Print start confirmation.
    * Fires as a watch on a printer state change.
    */
-  async onPrintStart (_, payload) {
+  async onPrintStart ({ dispatch }, payload) {
     consola.debug('Print start detected', payload)
+    dispatch('parts/onPrintStart', null, { root: true })
   },
 
   /**
@@ -115,7 +116,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters }, payload) {
+  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
@@ -129,7 +130,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // We do this prior to commiting the notify so we can
       // compare the before and after.
       handleCurrentFileChange(payload)
-      handlePrintStateChange(payload)
+      handlePrintStateChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload)
       handleMcuStatsChange(payload)
 

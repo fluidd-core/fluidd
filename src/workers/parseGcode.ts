@@ -1,6 +1,5 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
-import { Part } from '@/store/parts/types'
 import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
@@ -25,10 +24,6 @@ function parseLine (line: string) {
     .split(';', 2)[0]
     .split(/^([a-z][0-9]+)\s+/i)
 
-  if (!command) {
-    return
-  }
-
   if (!/^(G|M)\d+$/.test(command)) {
     return null
   }
@@ -48,8 +43,6 @@ function parseLine (line: string) {
 export default function parseGcode (gcode: string, subject: Subject<number>) {
   const moves: Move[] = []
   const lines = gcode.split('\n')
-  let lpx = 0
-  let lpy = 0
   let partName = null
 
   let extrusionMode = PositioningMode.Relative
@@ -189,9 +182,6 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
       move.part = partName
 
       moves.push(Object.freeze(move))
-
-      lpx = toolhead.x
-      lpy = toolhead.y
     }
 
     if (i % Math.floor(lines.length / 100) === 0) {

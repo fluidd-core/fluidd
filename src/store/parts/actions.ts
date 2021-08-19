@@ -11,6 +11,10 @@ export const actions: ActionTree<PartsState, RootState> = {
     commit('setReset')
   },
 
+  async onPrintStart ({ commit }) {
+    commit('resetExcludedPartList')
+  },
+
   async setParts ({ commit }, payload: { moves: Move[] }) {
     commit('setParts', payload.moves)
   },
