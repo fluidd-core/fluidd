@@ -4,20 +4,6 @@ import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
-  const startObjMatch = line.match(/; printing object (.*)/)
-  if (startObjMatch) {
-    return {
-      command: 'START_CURRENT_OBJECT',
-      args: { name: startObjMatch[1] ?? '' }
-    }
-  }
-  const endObjMatch = line.match('; stop printing object (.*)')
-  if (endObjMatch) {
-    return {
-      command: 'END_CURRENT_OBJECT',
-      args: {}
-    }
-  }
 
   const [, command, args = ''] = line
     .trim()
