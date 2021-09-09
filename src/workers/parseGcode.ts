@@ -4,26 +4,41 @@ import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
-
-  const [, command, args = ''] = line
+  let [, command, args = ''] = line
     .trim()
     .split(';', 2)[0]
     .split(/^([a-z][0-9]+)\s+/i)
 
-  if (!/^(G|M)\d+$/.test(command)) {
-    return null
-  }
-
   const argMap: any = {}
 
-  for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
-    argMap[key.toLowerCase()] = Number(value)
+  if (/^(G|M)\d+$/.test(command)) {
+    for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
+      argMap[key.toLowerCase()] = Number(value)
+    }
+
+    return {
+      command: command.toUpperCase(),
+      args: argMap
+    }
   }
 
-  return {
-    command: command.toUpperCase(),
-    args: argMap
+  [, command, args = ''] = line
+    .trim()
+    .split(';', 2)[0]
+    .split(/^([^\s]+)/i)
+
+  if (/^START_CURRENT_OBJECT|END_CURRENT_OBJECT/.test(command)) {
+    for (const [, key, value] of args.matchAll(/([a-z]+)=(.+)?/ig)) {
+      argMap[key.toLowerCase()] = value
+    }
+
+    console.log(argMap)
+    return {
+      command: command.toUpperCase(),
+      args: argMap
+    }
   }
+  return null
 }
 
 export default function parseGcode (gcode: string, subject: Subject<number>) {
