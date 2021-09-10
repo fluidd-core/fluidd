@@ -47,7 +47,6 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
       .then(res => {
         if (res) {
           this.sendGcode('EXCLUDE_OBJECT NAME=' + reqId)
-          this.$store.dispatch('parts/addExcludedPart', { partname: id })
         }
       })
   }

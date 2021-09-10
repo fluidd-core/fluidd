@@ -49,6 +49,15 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) =>
   }
 }
 
+export const handleExcludeObjectChange = (payload: any, state: any, dispatch: any) => {
+  // For every notify - if print_stats.state changes from standby -> printing,
+  // then record an entry in our print history.
+  // If the state changes from printing -> complete, then record the finish time.
+  if ('exclude_region' in payload) {
+    dispatch('parts/onPartUpdate', payload.exclude_region, { root: true })
+  }
+}
+
 export const handlePrintStateChange = (payload: any, state: any, dispatch: any) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.

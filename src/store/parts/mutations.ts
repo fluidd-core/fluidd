@@ -30,6 +30,46 @@ export const mutations: MutationTree<PartsState> = {
     Object.assign(state, defaultState())
   },
 
+  partUpdate (state, payload) {
+    console.log('In partUpdate')
+    console.log(payload)
+
+    if ('excluded_objects' in payload) {
+      Vue.set(state, 'excludedParts', JSON.parse(payload.excluded_objects))
+    }
+
+    if ('objects' in payload) {
+      const partMap: { [key: string]: Part} = {}
+      JSON.parse(payload.objects).forEach(obj => {
+        const name = obj.name
+        let xmin = 100000
+        let ymin = 100000
+        let xmax = 0
+        let ymax = 0
+        obj.outline.forEach(p => {
+          const x = p[0]
+          const y = p[1]
+          xmin = Math.min(xmin, x)
+          ymin = Math.min(ymin, y)
+          xmax = Math.max(xmax, x)
+          ymax = Math.max(ymax, y)
+        })
+        const part: Part = {
+          name: name,
+          xmin: xmin,
+          ymin: ymin,
+          xmax: xmax,
+          ymax: ymax,
+          xtarget: obj.center[0],
+          ytarget: obj.center[1]
+        }
+        console.log(obj)
+        partMap[name] = part
+      })
+      Vue.set(state, 'parts', Object.freeze(partMap))
+    }
+  },
+
   setParts (state, moves: Move[]) {
     const partMap: { [key: string]: Part} = {}
 
@@ -51,10 +91,10 @@ export const mutations: MutationTree<PartsState> = {
       }
     })
     Vue.set(state, 'parts', Object.freeze(partMap))
-    Vue.set(state, 'excludedParts', [])
   },
 
   resetExcludedPartList (state) {
+    Vue.set(state, 'excludedParts', [])
     Vue.set(state, 'excludedParts', [])
   },
 

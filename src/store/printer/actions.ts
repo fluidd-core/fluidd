@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { PrinterState } from './types'
 import { RootState } from '../types'
-import { handlePrintStateChange, handleCurrentFileChange } from '../helpers'
+import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -61,7 +61,6 @@ export const actions: ActionTree<PrinterState, RootState> = {
    */
   async onPrintStart ({ dispatch }, payload) {
     consola.debug('Print start detected', payload)
-    dispatch('parts/onPrintStart', null, { root: true })
   },
 
   /**
@@ -131,6 +130,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // compare the before and after.
       handleCurrentFileChange(payload)
       handlePrintStateChange(payload, rootState, dispatch)
+      handleExcludeObjectChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload)
       handleMcuStatsChange(payload)
 

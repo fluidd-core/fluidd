@@ -54,7 +54,6 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     try {
       const moves = await Promise.race([abort, worker.parse(payload.gcode)])
       commit('setMoves', moves)
-      dispatch('parts/setParts', { moves: moves }, { root: true })
       commit('setParserProgress', payload.file.size ?? payload.gcode.length)
     } catch (error) {
       consola.error('Parser worker error', error)

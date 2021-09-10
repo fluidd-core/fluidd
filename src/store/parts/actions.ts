@@ -15,6 +15,10 @@ export const actions: ActionTree<PartsState, RootState> = {
     commit('resetExcludedPartList')
   },
 
+  async onPartUpdate ({ commit }, payload) {
+    commit('partUpdate', payload)
+  },
+
   async setParts ({ commit }, payload: { moves: Move[] }) {
     commit('setParts', payload.moves)
   },
