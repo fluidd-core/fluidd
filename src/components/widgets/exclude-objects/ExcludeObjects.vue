@@ -9,7 +9,7 @@
         <path
                 :class="isPartExcluded(name) ? 'partIcon partExcluded' : 'partIcon'"
                 :d="icon(name)" pointer-events="all"
-         v-on:click="onPartClick(ame, $event)"
+         v-on:click="onPartClick(name, $event)"
         />
         </svg>
     </g>
