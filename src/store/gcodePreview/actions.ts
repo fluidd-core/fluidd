@@ -23,7 +23,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     }
   },
 
-  async loadGcode ({ dispatch, commit, getters, state, rootState }, payload: { file: AppFile; gcode: string }) {
+  async loadGcode ({ commit, getters, state, rootState }, payload: { file: AppFile; gcode: string }) {
     const worker = await spawn(new Worker(new URL('@/workers/parseGcode.worker.ts', import.meta.url) as any))
 
     commit('setParserWorker', worker)
@@ -52,8 +52,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     }
 
     try {
-      const moves = await Promise.race([abort, worker.parse(payload.gcode)])
-      commit('setMoves', moves)
+      commit('setMoves', await Promise.race([abort, worker.parse(payload.gcode)]))
       commit('setParserProgress', payload.file.size ?? payload.gcode.length)
     } catch (error) {
       consola.error('Parser worker error', error)

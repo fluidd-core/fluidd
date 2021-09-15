@@ -62,7 +62,6 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
     const printerFile = this.$store.state.printer.printer.current_file
 
     return file && printerFile && (file.path + '/' + file.filename) === (printerFile.path + '/' + printerFile.filename)
-    this.$store.dispatch('parts/reset')
   }
 }
 </script>

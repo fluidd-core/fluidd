@@ -4,47 +4,30 @@ import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
-  let [, command, args = ''] = line
+  const [, command, args = ''] = line
     .trim()
     .split(';', 2)[0]
     .split(/^([a-z][0-9]+)\s+/i)
 
+  if (!/^(G|M)\d+$/.test(command)) {
+    return null
+  }
+
   const argMap: any = {}
 
-  if (/^(G|M)\d+$/.test(command)) {
-    for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
-      argMap[key.toLowerCase()] = Number(value)
-    }
-
-    return {
-      command: command.toUpperCase(),
-      args: argMap
-    }
+  for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
+    argMap[key.toLowerCase()] = Number(value)
   }
 
-  [, command, args = ''] = line
-    .trim()
-    .split(';', 2)[0]
-    .split(/^([^\s]+)/i)
-
-  if (/^START_CURRENT_OBJECT|END_CURRENT_OBJECT/.test(command)) {
-    for (const [, key, value] of args.matchAll(/([a-z]+)=(.+)?/ig)) {
-      argMap[key.toLowerCase()] = value
-    }
-
-    console.log(argMap)
-    return {
-      command: command.toUpperCase(),
-      args: argMap
-    }
+  return {
+    command: command.toUpperCase(),
+    args: argMap
   }
-  return null
 }
 
 export default function parseGcode (gcode: string, subject: Subject<number>) {
   const moves: Move[] = []
   const lines = gcode.split('\n')
-  let partName = null
 
   let extrusionMode = PositioningMode.Relative
   let positioningMode = PositioningMode.Absolute
@@ -80,14 +63,6 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     let move: Move | null = null
 
     switch (command) {
-      case 'START_CURRENT_OBJECT':
-        partName = args.name
-        move = null
-        break
-      case 'END_CURRENT_OBJECT':
-        partName = null
-        move = null
-        break
       case 'G0':
       case 'G1':
         move = pick(args, [
@@ -180,7 +155,6 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
       toolhead.z = move.z ?? toolhead.z
 
       move.filePosition = toolhead.filePosition
-      move.part = partName
 
       moves.push(Object.freeze(move))
     }

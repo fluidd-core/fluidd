@@ -1,6 +1,5 @@
 import { ActionTree } from 'vuex'
 import { PartsState } from './types'
-import { Move } from '../gcodePreview/types'
 import { RootState } from '../types'
 
 export const actions: ActionTree<PartsState, RootState> = {
@@ -11,19 +10,7 @@ export const actions: ActionTree<PartsState, RootState> = {
     commit('setReset')
   },
 
-  async onPrintStart ({ commit }) {
-    commit('resetExcludedPartList')
-  },
-
   async onPartUpdate ({ commit }, payload) {
     commit('partUpdate', payload)
-  },
-
-  async setParts ({ commit }, payload: { moves: Move[] }) {
-    commit('setParts', payload.moves)
-  },
-
-  async addExcludedPart ({ commit }, payload: { partname: string }) {
-    commit('addExcludedPart', payload.partname)
   }
 }

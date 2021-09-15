@@ -3,12 +3,13 @@ export interface PartsState {
   excludedParts: string[];
 }
 
+export interface Point {
+  x: number;
+  y: number;
+}
+
 export interface Part {
    name: string;
-   xmin: number;
-   ymin: number;
-   xmax: number;
-   ymax: number;
-   xtarget: number;
-   ytarget: number;
+   outline: Point[];
+   target: Point;
 }

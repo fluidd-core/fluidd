@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { Part, PartsState } from './types'
+import { Point, Part, PartsState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<PartsState, RootState> = {
@@ -11,29 +11,26 @@ export const getters: GetterTree<PartsState, RootState> = {
     return state.excludedParts.includes(partName)
   },
 
-  getPartPos: (state, getters) => (partName: string): string => {
+  getPartPos: (state, getters) => (partName: string): Point => {
     const p = getters.getParts[partName]
-    return `${p.xtarget},${p.ytarget - 12}`
+    return p.target
   },
 
-  getPartsSVG: (state, getters): any[] => {
-    const psvg = []
-    const parts = getters.getParts
+  getPartSVG: (state, getters) => (partName: string): string => {
+    const part = getters.getParts[partName]
     console.log('in getPartsSVG')
-    console.log(parts)
-    for (const key in parts) {
-      let svg = ''
-      const p = parts[key]
-      svg += `M${p.xmin},${p.ymin}`
-      svg += `L${p.xmax},${p.ymin}`
-      svg += `L${p.xmax},${p.ymax}`
-      svg += `L${p.xmin},${p.ymax}`
-      svg += `L${p.xmin},${p.ymin}`
-      psvg.push({
-        name: p.name,
-        svg: svg
-      })
-    }
-    return psvg
+    console.log(part)
+
+    let svg = ''
+    let op = 'M'
+
+    part.outline.forEach(p => {
+      svg += `${op}${p.x},${p.y}`
+      op = 'L'
+    })
+
+    svg += 'z'
+
+    return svg
   }
 }
