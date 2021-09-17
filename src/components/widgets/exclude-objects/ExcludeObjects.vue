@@ -7,7 +7,7 @@
         <svg width="7" height="7" viewBox="0 0 24 24"
           v-for="name in partNames" :key="name+'icon'" :x="partPos(name).x-3.5" :y="partPos(name).y-3.5">
         <path
-                :class="isPartExcluded(name) ? 'partIcon partExcluded' : 'partIcon'"
+                :class="`partIcon ${isPartExcluded(name) ? 'partExcluded' : ''} ${isPartCurrent(name) ? 'partCurrent' : ''}`"
                 :d="icon(name)" pointer-events="all"
          v-on:click="onPartClick(name, $event)"
         />
@@ -44,6 +44,10 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
     return this.$store.getters['parts/getPartPos'](name)
   }
 
+  isPartCurrent (name: string) {
+    return this.$store.getters['parts/getIsPartCurrent'](name)
+  }
+
   isPartExcluded (name: string) {
     return this.$store.getters['parts/getIsPartExcluded'](name)
   }
@@ -76,14 +80,19 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 .layer .partIcon {
   filter: brightness(150%);
   fill: var(--v-success-base);
-  fill-opacity: 15%
+  fill-opacity: 15%;
+}
+
+.layer .partIcon.partCurrent {
+  fill: var(--v-info-base);
+  fill-opacity: 30%;
 }
 
 .layer .partIcon:hover {
   fill-opacity: 50%;
 }
 
-.layer .partIcon .partExcluded {
+.layer .partIcon.partExcluded {
   filter: brightness(75%);
 }
 

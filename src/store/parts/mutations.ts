@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { defaultState } from '.'
-import { Part, PartsState } from './types'
+import { Part, PartObject, PartsState } from './types'
 import Vue from 'vue'
 
 export const mutations: MutationTree<PartsState> = {
@@ -15,13 +15,17 @@ export const mutations: MutationTree<PartsState> = {
     console.log('In partUpdate')
     console.log(payload)
 
+    if ('current_object' in payload) {
+      Vue.set(state, 'currentPart', payload.current_object)
+    }
+
     if ('excluded_objects' in payload) {
-      Vue.set(state, 'excludedParts', JSON.parse(payload.excluded_objects))
+      Vue.set(state, 'excludedParts', payload.excluded_objects)
     }
 
     if ('objects' in payload) {
       const partMap: { [key: string]: Part} = {}
-      JSON.parse(payload.objects).forEach(obj => {
+      payload.objects.forEach((obj: PartObject) => {
         const name = obj.name
         const outline = obj.outline.map(p => {
           return { x: p[0], y: p[1] }

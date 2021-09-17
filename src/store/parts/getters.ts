@@ -7,6 +7,10 @@ export const getters: GetterTree<PartsState, RootState> = {
     return state.parts
   },
 
+  getIsPartCurrent: (state) => (partName: string): boolean => {
+    return state.currentPart === partName
+  },
+
   getIsPartExcluded: (state) => (partName: string): boolean => {
     return state.excludedParts.includes(partName)
   },
@@ -24,7 +28,7 @@ export const getters: GetterTree<PartsState, RootState> = {
     let svg = ''
     let op = 'M'
 
-    part.outline.forEach(p => {
+    part.outline.forEach((p: Point) => {
       svg += `${op}${p.x},${p.y}`
       op = 'L'
     })
