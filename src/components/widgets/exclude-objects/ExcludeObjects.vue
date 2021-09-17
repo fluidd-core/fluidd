@@ -1,14 +1,14 @@
 <template>
     <g id="parts" class="layer">
-        <path v-for="name in partNames" :key="name+'bounds'"
+        <path v-for="name in outlineNames" :key="name+'bounds'"
                 :class="isPartExcluded(name) ? 'partOutline partExcluded' : 'partOutline'"
             :d="partSVG(name)"
         />
-        <svg width="7" height="7" viewBox="0 0 24 24"
-          v-for="name in partNames" :key="name+'icon'" :x="partPos(name).x-3.5" :y="partPos(name).y-3.5">
+        <svg width="7" height="7" viewBox="0 0 24 24" class="partIcon"
+          v-for="name in iconNames" :key="name+'icon'" :x="partPos(name).x-3.5" :y="partPos(name).y-3.5">
         <path
-                :class="`partIcon ${isPartExcluded(name) ? 'partExcluded' : ''} ${isPartCurrent(name) ? 'partCurrent' : ''}`"
-                :d="icon(name)" pointer-events="all"
+                :class="iconClasses(name)"
+                :d="icon(name)"
          v-on:click="onPartClick(name, $event)"
         />
         </svg>
@@ -22,13 +22,34 @@ import { Icons } from '@/globals'
 
 @Component({})
 export default class ExcludeObjects extends Mixins(StateMixin) {
-  get partNames () {
+  get outlineNames () {
     const parts = this.$store.getters['parts/getParts']
     const names = []
     for (const name in parts) {
-      names.push(name)
+      if (parts[name].outline.length >= 3) {
+        names.push(name)
+      }
     }
     return names
+  }
+
+  get iconNames () {
+    const parts = this.$store.getters['parts/getParts']
+    const state = this.$store.getters['parts/getPrintState']
+    const names = []
+    for (const name in parts) {
+      const excluded = this.isPartExcluded(name)
+      if (parts[name].target &&
+        ((state === 'printing' || state === 'paused') ||
+        ((state === 'complete' || state === 'cancelled' || state === 'error') && excluded))) {
+        names.push(name)
+      }
+    }
+    return names
+  }
+
+  iconClasses (name: string) {
+    return this.isPartExcluded(name) ? 'partExcluded' : 'partIncluded'
   }
 
   partSVG (name: string) {
@@ -79,7 +100,6 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 
 .layer .partIcon {
   filter: brightness(150%);
-  fill: var(--v-success-base);
   fill-opacity: 15%;
 }
 
@@ -88,12 +108,18 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   fill-opacity: 30%;
 }
 
-.layer .partIcon:hover {
-  fill-opacity: 50%;
+.layer .partIcon .partIncluded {
+  pointer-events: all;
+  fill: var(--v-success-base);
 }
 
 .layer .partIcon.partExcluded {
   filter: brightness(75%);
+  pointer-events: none;
+}
+
+.layer .partIcon .partIncluded:hover {
+  fill-opacity: 50%;
 }
 
 .layer .partOutline {

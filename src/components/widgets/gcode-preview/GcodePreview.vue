@@ -283,7 +283,16 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   get showExcludeObjects () {
-    return true
+    const file = this.$store.getters['gcodePreview/getFile']
+    if (!file) {
+      return true
+    }
+    const printerFile = this.$store.state.printer.printer.current_file
+
+    if (printerFile.filename) {
+      return (file.path + '/' + file.filename) === (printerFile.path + '/' + printerFile.filename)
+    }
+    return false
   }
 
   get flipX (): boolean {

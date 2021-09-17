@@ -27,18 +27,31 @@ export const mutations: MutationTree<PartsState> = {
       const partMap: { [key: string]: Part} = {}
       payload.objects.forEach((obj: PartObject) => {
         const name = obj.name
-        const outline = obj.outline.map(p => {
-          return { x: p[0], y: p[1] }
-        })
         const part: Part = {
           name: name,
-          outline: outline,
-          target: { x: obj.center[0], y: obj.center[1] }
+          outline: [],
+          target: null
+        }
+        if ('center' in obj && obj.center.length === 2) {
+          part.target = { x: obj.center[0], y: obj.center[1] }
+        }
+        if ('polygon' in obj) {
+          part.outline = obj.polygon.map(p => {
+            return { x: p[0], y: p[1] }
+          })
         }
         console.log(obj)
         partMap[name] = part
       })
       Vue.set(state, 'parts', Object.freeze(partMap))
+    }
+  },
+
+  printStatsUpdate (state, payload) {
+    console.log('In printStatsUpdate')
+    console.log(payload)
+    if ('state' in payload) {
+      Vue.set(state, 'printState', payload.state)
     }
   }
 }

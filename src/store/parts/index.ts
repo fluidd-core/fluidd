@@ -11,7 +11,8 @@ import { RootState } from '../types'
 export const defaultState = (): PartsState => {
   return {
     parts: {},
-    excludedParts: []
+    excludedParts: [],
+    printState: 'unknown'
   }
 }
 

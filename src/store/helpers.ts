@@ -53,8 +53,14 @@ export const handleExcludeObjectChange = (payload: any, state: any, dispatch: an
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
-  if ('exclude_region' in payload) {
-    dispatch('parts/onPartUpdate', payload.exclude_region, { root: true })
+  if ('exclude_object' in payload) {
+    dispatch('parts/onPartUpdate', payload.exclude_object, { root: true })
+  }
+  if (
+    'print_stats' in payload &&
+    ('state' in payload.print_stats || 'filename' in payload.print_stats)
+  ) {
+    dispatch('parts/onPrintStatsUpdate', payload.print_stats, { root: true })
   }
 }
 

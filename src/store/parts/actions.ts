@@ -12,5 +12,9 @@ export const actions: ActionTree<PartsState, RootState> = {
 
   async onPartUpdate ({ commit }, payload) {
     commit('partUpdate', payload)
+  },
+
+  async onPrintStatsUpdate ({ commit }, payload) {
+    commit('printStatsUpdate', payload)
   }
 }

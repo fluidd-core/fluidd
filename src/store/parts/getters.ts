@@ -36,5 +36,9 @@ export const getters: GetterTree<PartsState, RootState> = {
     svg += 'z'
 
     return svg
+  },
+
+  getPrintState: (state): string => {
+    return state.printState
   }
 }
