@@ -18,6 +18,6 @@ export interface Part {
 
 export interface PartObject {
   name: string;
-  outline: [number, number][];
-  center: [number, number];
+  polygon: [number, number][];
+  center: [number, number] | [number, number, number];
 }
