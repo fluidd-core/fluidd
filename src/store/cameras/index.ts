@@ -18,7 +18,8 @@ export const defaultState = (): CamerasState => {
         fpstarget: 15,
         url: '/webcam/?action=stream',
         flipX: false,
-        flipY: false
+        flipY: false,
+        height: 720
       }
     ]
   }
