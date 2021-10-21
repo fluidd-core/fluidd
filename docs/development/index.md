@@ -12,4 +12,49 @@ Fluidd is built using VueJS, and the Vuetify Framework to provide a cohesive,
 easily to implement UI.
 {: .fs-6 .fw-300 }
 
-Further details on development environments will come at a later date.
+## Running Fluidd locally
+
+### Install Node v14
+
+Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v14.x.
+
+For example, on Ubuntu flavored Linux distributions,
+follow the instructions from [NodeSource](https://github.com/nodesource/distributions/blob/master/README.md#deb)
+under "Node.js v14.x":
+
+```bash
+# Using Ubuntu
+$ curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+$ sudo apt-get install -y nodejs
+```
+
+Check that Node.js was installed properly:
+
+```bash
+$ node --version
+v14.18.1
+$ npm --version
+6.14.15
+```
+
+### Install dependencies
+
+```bash
+$ cd .../path/to/fluidd
+$ npm install
+```
+
+### Run a local development server
+
+```bash
+$ npm run-script serve
+```
+
+Browse to [http://localhost:8080/](http://localhost:8080/) and type in the URL
+of your Moonraker instance, e.g. `http://192.168.0.101:7125`.
+
+### Run unit tests
+
+```bash
+$ npm run test:unit
+```
