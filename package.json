@@ -127,9 +127,9 @@
   },
   "_id": "fluidd@0.0.3",
   "bugs": {
-    "url": "https://github.com/cadriel/fluidd/issues"
+    "url": "https://github.com/fluidd-core/fluidd/issues"
   },
-  "homepage": "https://github.com/cadriel/fluidd#readme",
+  "homepage": "https://github.com/fluidd-core/fluidd#readme",
   "keywords": [
     "klipper"
   ],
@@ -137,6 +137,6 @@
   "readme": "README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cadriel/fluidd.git"
+    "url": "git+https://github.com/fluidd-core/fluidd.git"
   }
 }

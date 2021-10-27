@@ -16,8 +16,8 @@ firmware.
 {: .fs-6 .fw-300 }
 
 [Get Started](/installation){: .btn .btn-primary .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[View on GitHub](https://github.com/cadriel/fluidd){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[Release Notes](https://github.com/cadriel/fluidd/releases){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View on GitHub](https://github.com/fluidd-core/fluidd){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
+[Release Notes](https://github.com/fluidd-core/fluidd/releases){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ![screenshot](/assets/images/preview_sliced.png)
 
@@ -41,7 +41,7 @@ firmware.
 
 ## Supporting Fluidd
 
-Fluidd is developed and maintained by [Craig Bassett](https://github.com/cadriel/fluidd)
+Fluidd is developed and maintained by [Craig Bassett](https://github.com/fluidd-core/fluidd)
 and our contributors - along with support from the entire Klipper Team, associated printer communities and you, the user.
 
 - [Make a recurring payment with Patreon](https://patreon.com/cadriel)
@@ -58,7 +58,7 @@ Fluidd ships with Docker support built in. The official docker can be found
 Primary support is provided via Discord, or Github Issues.
 
 [Discord](https://discord.gg/GZ3D5tqfcF){: .btn .fs-5 .mb-4 .mb-md-0 .mr-2 }
-[GitHub Issues](https://github.com/cadriel/fluidd/issues){: .btn .fs-5 .mb-4 .mb-md-0 }
+[GitHub Issues](https://github.com/fluidd-core/fluidd/issues){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ## Did you know?
 
