@@ -3,7 +3,7 @@ app:
     label:
       box_scale: Měřítko boxu
       flat_surface: Zobrazit plochou rovinu
-      mesh_matrix: Mesh matice
+      mesh_matrix: Síťová matice
       probed_matrix: Změřená matice
       profile_name: Název profilu
       remove_profile: Odstranit %{name} profil
@@ -13,8 +13,8 @@ app:
       hint: >-
         Pokud uložíte pod jiným názvem než %{name}, 
         můžete původní profil %{name} odstranit.
-      not_found: Žádné meshe nenalezeny.
-      not_loaded: Žádný mesh nenačten.
+      not_found: Síť bodů nenalezena.
+      not_loaded: Síť bodů nenačtena.
     tooltip:
       calibrate: Zahájí novou kalibraci, uloží se jako profil 'default'
       delete: Smazat profil. Toto RESTARTUJE vaši tiskárnu!
@@ -45,7 +45,7 @@ app:
         Jste si jistí že je adresa správně zadaná?
       cors_error: Zablokováno CORS politikou
       cors_note: >-
-        Což znamená, že bude třeba upravit konfiguraci moonrakeru. Prosím
+        To znamená, že bude třeba upravit konfiguraci moonrakeru. Prosím
         pročtěte si dokumentaci ohledně multi printer nastavení 
         <a href="%{url}" target="_blank">zde</a>
     hint:
@@ -327,7 +327,7 @@ app:
       add_thermal_preset: Přidat přednastavení
       add_user: Přidat uživatele
       reset: Resetovat
-      select_theme: Vybrat téma
+      select_theme: Vybrat motiv
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -415,7 +415,7 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: 'Y'
+      home_y: Y
     tooltip:
       extruder_disabled: Extruze zakázána pod min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Výchozí pozice XY
@@ -438,7 +438,7 @@ app:
       updates_available: Dostupné aktualizace 
     status:
       finished: Aktualizace hotova
-      updating: Aktualizuju...
+      updating: Aktualizuji...
     title: Aktualizace programů
     tooltip:
       commit_history: Historie commitů
