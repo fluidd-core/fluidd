@@ -307,7 +307,7 @@ app:
       estop: Nouzové zastavení
       reload_klipper: Obnoví konfiguraci klipperu.
       reload_restart_klipper: Obnoví konfiguraci klipperu a restartne MCU.
-      restart_klipper: Restartne systémovou službu klipper.
+      restart_klipper: Restartuje systémovou službu klipper.
   history:
     msg:
       confirm: Jste si jistí? Toto smaže veškerou historii a statistiky tiskárny
