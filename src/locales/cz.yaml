@@ -306,7 +306,7 @@ app:
     tooltip:
       estop: Nouzové zastavení
       reload_klipper: Obnoví konfiguraci klipperu.
-      reload_restart_klipper: Obnoví konfiguraci klipperu a restartne MCU.
+      reload_restart_klipper: Obnoví konfiguraci klipperu a restartuje MCU.
       restart_klipper: Restartuje systémovou službu klipper.
   history:
     msg:
