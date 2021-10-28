@@ -103,7 +103,7 @@ app:
       layer: Vrstva
       layers: Vrstvy
       parsed: Analyzována(y)
-      show_extrusions: Zobrazit extrusi
+      show_extrusions: Zobrazit extruzi
       show_moves: Zobrazit pohyby
       show_next_layer: Následující vrstva
       show_previous_layer: Předchozí vrstva
