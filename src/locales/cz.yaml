@@ -317,7 +317,7 @@ app:
       complete: Kompletní
       idle: Nečinný
       loading: Nahrávání
-      paused: Pausa
+      paused: Pauza
       printing: Tiskne
       ready: Připraven
       standby: Pohotovostní
