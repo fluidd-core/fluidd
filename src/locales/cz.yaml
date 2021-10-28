@@ -237,7 +237,7 @@ app:
       variance: Rozptyl
       velocity: Rychlost
       visible: Viditelné
-      z_offset: Ofset Z
+      z_offset: Odchylka Z
     msg:
       password_changed: Heslo změněno
       wrong_password: Sakriš, něco se pokazilo. Zadáváte správné heslo?
