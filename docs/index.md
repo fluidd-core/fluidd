@@ -41,7 +41,7 @@ firmware.
 
 ## Supporting Fluidd
 
-Fluidd is developed and maintained by [Craig Bassett](https://github.com/fluidd-core/fluidd)
+Fluidd is developed and maintained by [Craig Bassett](https://github.com/cadriel)
 and our contributors - along with support from the entire Klipper Team, associated printer communities and you, the user.
 
 - [Make a recurring payment with Patreon](https://patreon.com/cadriel)
