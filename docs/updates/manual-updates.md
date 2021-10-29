@@ -26,7 +26,7 @@ On an already configured system, you can manually update as follows;
 cd ~/fluidd
 rm -R ./*
 rm .version
-wget -q -O fluidd.zip https://github.com/cadriel/fluidd/releases/latest/download/fluidd.zip
+wget -q -O fluidd.zip https://github.com/fluidd-core/fluidd/releases/latest/download/fluidd.zip
 unzip fluidd.zip
 rm fluidd.zip
 
