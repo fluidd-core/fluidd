@@ -26,7 +26,7 @@ upon startup.
 ### [virtual_sdcard]
 
 Fluidd requires your printer be setup with `virtual_sdcard`. This allows
-file uploads to work correctly. If you get a geodes path not found error in
+file uploads to work correctly. If you get a gcodes path not found error in
 Fluidd this is generally the first place to look.
 
 ```yaml
