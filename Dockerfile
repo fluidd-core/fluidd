@@ -1,6 +1,6 @@
 FROM debian as unzip
 
-ARG FRONTEND_ZIP_URL=https://github.com/cadriel/fluidd/releases/latest/download/fluidd.zip
+ARG FRONTEND_ZIP_URL=https://github.com/fluidd-core/fluidd/releases/latest/download/fluidd.zip
 
 ARG DEBIAN_FRONTEND=noninteractive
 WORKDIR /frontend
