@@ -1,6 +1,6 @@
 FROM alpine:latest as unzip
 
-ARG FRONTEND_ZIP_URL=https://github.com/cadriel/fluidd/releases/latest/download/fluidd.zip
+ARG FRONTEND_ZIP_URL=https://github.com/fluidd-core/fluidd/releases/latest/download/fluidd.zip
 
 WORKDIR /frontend
 
