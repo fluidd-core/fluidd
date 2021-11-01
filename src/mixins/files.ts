@@ -35,7 +35,7 @@ export default class FilesMixin extends Vue {
    * Loads a gcode file and parses for the gcode-viewer.
    */
   async getGcode (file: AppFile) {
-    const sizeInMB = file.size / 1024 / 1024
+    const sizeInMB = file.size / 1000 / 1000
     let res: boolean | undefined = true
 
     if (sizeInMB >= 100) {
@@ -92,8 +92,8 @@ export default class FilesMixin extends Vue {
         const delta = performance.now() - startTime
         if (delta > 0) {
           speed = progressEvent.loaded / delta
-          while (speed > 1024) {
-            speed /= 1024
+          while (speed > 1000) {
+            speed /= 1000
             i = Math.min(2, i + 1)
           }
         }
@@ -197,8 +197,8 @@ export default class FilesMixin extends Vue {
             const delta = performance.now() - startTime
             if (delta > 0) {
               speed = progressEvent.loaded / delta
-              while (speed > 1024) {
-                speed /= 1024
+              while (speed > 1000) {
+                speed /= 1000
                 i = Math.min(2, i + 1)
               }
             }

@@ -125,9 +125,9 @@ export const Filters = {
     const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
     if (fileSizeInBytes === 0) return `0${byteUnits[0]}`
     do {
-      fileSizeInBytes = fileSizeInBytes / 1024
+      fileSizeInBytes = fileSizeInBytes / 1000
       i++
-    } while (fileSizeInBytes > 1024)
+    } while (fileSizeInBytes > 1000)
 
     return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i]
   },
