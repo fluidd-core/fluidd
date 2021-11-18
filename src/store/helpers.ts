@@ -25,11 +25,14 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) =>
       }
       if (thumb) {
         if (thumb.relative_path && thumb.relative_path.length > 0) {
+          const url = new URL(apiUrl ?? document.location.origin)
+          url.pathname = (path === '')
+            ? `/server/files/gcodes/${thumb.relative_path}`
+            : `/server/files/gcodes/${path}/${thumb.relative_path}`
+
           return {
             ...thumb,
-            absolute_path: (path === '')
-              ? encodeURI(`${apiUrl}/server/files/gcodes/${thumb.relative_path}`)
-              : encodeURI(`${apiUrl}/server/files/gcodes/${path}/${thumb.relative_path}`)
+            absolute_path: url.toString()
           }
         }
         if (thumb.data) {

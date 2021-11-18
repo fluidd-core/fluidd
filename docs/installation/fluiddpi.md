@@ -72,5 +72,5 @@ the warnings in the file.
      `fluiddpi.local` but rather `yourhostname.local`.
 4. *You should not need to expand the filesystem.*
    *You should not need to manually enable the RaspiCam. This is done for you.*
-5. You should now be able to access Fluidd through `http://fluidd.local` or
+5. You should now be able to access Fluidd through `http://fluiddpi.local` or
    `http://yourhostname.local`.
