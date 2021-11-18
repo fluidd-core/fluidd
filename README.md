@@ -15,9 +15,9 @@ See our [Docs](https://docs.fluidd.xyz).
 Join our [Discord!](https://discord.gg/GZ3D5tqfcF).
 
 ## Where to download?
-You can download the latest release [here](https://github.com/cadriel/fluidd/releases/latest).
+You can download the latest release [here](https://github.com/fluidd-core/fluidd/releases/latest).
 
-Older releases can be found [here](https://github.com/cadriel/fluidd/releases).
+Older releases can be found [here](https://github.com/fluidd-core/fluidd/releases).
 
 ## Docker
 We have an official docker image. This is updated for each release.
