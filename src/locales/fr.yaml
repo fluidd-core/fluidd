@@ -101,6 +101,7 @@ app:
       upload_file: Upload en cours
     tooltip:
       low_on_space: Espace disque limité
+      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier vos logs.
   gcode:
     btn:
       load_current_file: Charger le fichier actuel
@@ -168,6 +169,7 @@ app:
       upload: Uploaded
       upload_print: Uploaded & imprimer
       view: Voir
+      socket_reconnect: Se reconnecter
     error:
       app_setup_link: >-
         Les instructions d'installation de Fluidd sont disponibles <a
@@ -235,6 +237,15 @@ app:
       velocity: Velocité
       visible: Visible
       z_offset: Z Offset
+      finish_time: Fin
+      unretract_extra_length: Longueur de rétractation supplémentaire
+      layer: Couche
+      actual_time: Réel
+      file: Fichier
+      filament: Filament
+      m117: M117
+      slicer: Slicer
+      total: Total
     msg:
       password_changed: Mot de passe modifié
       wrong_password: Oops, il y a eu un problème. Le mot de passe est il correct?
@@ -304,6 +315,7 @@ app:
       estop: Arrêt d'urgence
       reload_klipper: Recharge la configuration Klipper.
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
+      restart_klipper: Redémarre le service klipper
   history:
     msg:
       confirm: >-
@@ -365,6 +377,7 @@ app:
       theme_preset: Préréglage communautaire
       thermal_preset_name: Nom du pré-réglage
       z_adjust_values: Valeurs de Z Adjust
+      thermal_preset_gcode: GCode
     timer_options:
       duration: Durée uniquement
       filament: Estimation de filament
