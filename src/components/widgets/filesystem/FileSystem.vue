@@ -67,6 +67,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
+      @enqueue="handleEnqueue"
     >
     </file-system-context-menu>
 
@@ -253,6 +254,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // load too.
     if (!val) {
       this.loadFiles(this.currentPath)
+      if (this.$store.getters['server/componentSupport']('job_queue')) {
+        SocketActions.jobQueueList()
+      }
     }
   }
 
@@ -689,6 +693,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
       }
     }
+  }
+
+  handleEnqueue (file: AppFileWithMeta) {
+    if (this.disabled) return
+    this.enqueueFile(file.filename, this.currentPath)
   }
 
   /**

@@ -230,6 +230,17 @@ export const actions: ActionTree<FilesState, RootState> = {
 
   async updateCurrentPathByRoot ({ commit }, payload) {
     commit('setCurrentPath', payload)
-  }
+  },
 
+  async updateQueueStatus ({ commit }, payload) {
+    commit('setQueue', payload)
+  },
+
+  async onjobQueueDelete ({ commit }, payload) {
+    commit('setDeleteJob', payload.deleted_jobs)
+  },
+
+  async onjobQueueDeleteAll ({ commit }) {
+    commit('setDeleteAllJobs')
+  }
 }

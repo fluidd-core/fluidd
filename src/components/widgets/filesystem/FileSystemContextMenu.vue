@@ -27,6 +27,17 @@
             </v-list-item>
             <v-list-item
               link
+              @click="$emit('enqueue', file)"
+              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint">
+              <v-list-item-icon>
+                <v-icon>$printer</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>
+                Queue File
+                </v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              link
               @click="$emit('preheat', file)"
               v-if="canPreheat"
             >
@@ -89,6 +100,7 @@
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
             </v-list-item>
+
           </v-list>
         </v-col>
         <v-col class="px-2 d-none d-sm-flex" v-if="file.thumbnails && file.thumbnails.length">

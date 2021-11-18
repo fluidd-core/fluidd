@@ -3,6 +3,7 @@ import { Globals, Waits } from '@/globals'
 import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
+import { QueueJob } from '@/store/files/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -355,6 +356,65 @@ export const SocketActions = {
       'server.history.delete_job', {
         dispatch,
         params
+      }
+    )
+  },
+  async jobQueueRemoveJob (uid: string) {
+    let params: any = { job_ids: [uid] }
+    let dispatch = 'files/onjobQueueDelete'
+    if (uid === 'all') {
+      params = { all: true }
+      dispatch = 'files/onjobQueueDeleteAll'
+    }
+    baseEmit(
+      'server.job_queue.delete_job', {
+        dispatch,
+        params
+      }
+    )
+  },
+  async jobQueueSetQueue (queue: QueueJob[]) {
+    const filenames: string[] = []
+    baseEmit(
+      'server.job_queue.delete_job', {
+        params: { all: true }
+      }
+    )
+
+    queue.forEach((job: QueueJob) => {
+      filenames.push(job.filename)
+    })
+
+    const params = { filenames: filenames }
+    baseEmit(
+      'server.job_queue.post_job', {
+        dispatch: 'files/updateQueueStatus',
+        params
+      }
+    )
+  },
+
+  async jobQueueList () {
+    baseEmit(
+      'server.job_queue.status', {
+        dispatch: 'files/updateQueueStatus'
+
+      }
+    )
+  },
+  async pauseJobQueue () {
+    baseEmit(
+      'server.job_queue.pause', {
+        dispatch: 'files/updateQueueStatus'
+
+      }
+    )
+  },
+  async resumeJobQueue () {
+    baseEmit(
+      'server.job_queue.resume', {
+        dispatch: 'files/updateQueueStatus'
+
       }
     )
   },

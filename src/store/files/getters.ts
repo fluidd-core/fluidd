@@ -131,5 +131,9 @@ export const getters: GetterTree<FilesState, RootState> = {
    */
   getUsage: (state) => {
     return state.disk_usage
+  },
+
+  getQueue: (state) => {
+    return state.queue
   }
 }

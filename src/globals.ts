@@ -112,6 +112,7 @@ import {
   mdiHarddisk,
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
+  mdiFormatListBulleted,
   mdiSwapVertical
 } from '@mdi/js'
 
@@ -290,7 +291,8 @@ export const Icons = Object.freeze({
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
-  message: mdiMessageTextOutline
+  message: mdiMessageTextOutline,
+  list: mdiFormatListBulleted
 })
 
 export const Waits = Object.freeze({
