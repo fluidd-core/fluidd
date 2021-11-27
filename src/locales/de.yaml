@@ -262,9 +262,16 @@ app:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       video: IP Camera
+    camera_rotate_options:
+      none: Keine
+      90: 90°
+      180: 180°
+      270: 270°
+      360: 360°
     label:
       all_off: Alle aus
       all_on: Alle an
+      camera_rotate_by: Rotieren um
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_stream_type: Art des Kamerastreams
