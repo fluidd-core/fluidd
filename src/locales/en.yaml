@@ -335,9 +335,16 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
       iframe: HTTP page
+    camera_rotate_options:
+      none: None
+      90: 90°
+      180: 180°
+      270: 270°
+      360: 360°
     label:
       all_off: All off
       all_on: All on
+      camera_rotate_by: Rotate By
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type

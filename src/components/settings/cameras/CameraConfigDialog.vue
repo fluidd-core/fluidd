@@ -58,6 +58,40 @@
 
         <v-divider />
 
+        <app-setting :title="$t('app.setting.label.camera_rotate_by')">
+          <v-select
+            filled
+            dense
+            hide-details="auto"
+            initial-value="false"
+            :items="[
+              {
+                text: $t('app.setting.camera_rotate_options.none'),
+                value: '',
+              },
+              { text: $t('app.setting.camera_rotate_options.90'), value: '90' },
+              {
+                text: $t('app.setting.camera_rotate_options.180'),
+                value: '180',
+              },
+              {
+                text: $t('app.setting.camera_rotate_options.270'),
+                value: '270',
+              },
+              {
+                text: $t('app.setting.camera_rotate_options.360'),
+                value: '360',
+              },
+            ]"
+            item-value="value"
+            item-text="text"
+            v-model="camera.rotate"
+          >
+          </v-select>
+        </app-setting>
+
+        <v-divider />
+
         <app-setting :title="$t('app.setting.label.camera_stream_type')">
           <v-select
             filled

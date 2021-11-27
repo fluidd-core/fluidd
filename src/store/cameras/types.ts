@@ -12,5 +12,6 @@ export interface CameraConfig {
   fpstarget?: number;
   flipX: boolean;
   flipY: boolean;
+  rotate?: '90' | '180' | '270' | '360';
   height?: number;
 }
