@@ -412,7 +412,7 @@ export const SocketActions = {
   },
   async resumeJobQueue () {
     baseEmit(
-      'server.job_queue.resume', {
+      'server.job_queue.start', {
         dispatch: 'files/updateQueueStatus'
 
       }
