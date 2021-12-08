@@ -8,86 +8,91 @@ app:
       remove_profile: 删除 %{name} 配置文件
       scale: 显示偏差值
       wireframe: 显示网格线
+      box_scale: 显示比例
     msg:
-      hint: >-
-        If saving as something other than %{name}, you can choose to also remove
-        the %{name} profile
-      not_found: 网床信息不存在。
-      not_loaded: 没有加载
+      hint: 如果将 %{name} 另存, 你也可以删除此 %{name} 配置
+      not_found: 网床信息不存在
+      not_loaded: 没有加载网床
     tooltip:
       calibrate: 开始校准，该校准信息会默认保存为'defalut'
       delete: 删除配置，这将重新启动打印机
       load: 加载配置
-      save: 将校准的配置提交给printer.cfg。这将重新启动您的打印机
+      save: 将校准的配置提交到printer.cfg。这将重新启动您的打印机
   chart:
     label:
       current: 当前
-      item: 项目
-      power: 电源
+      item: 名称
+      power: 功率
       target: 目标
+      'off': 关闭图表
+      'on': 开启图表
     tooltip:
-      help: 按住Shift键可缩放。<br />单击一个项目可在图形中进行切换。<br/>点击Power即可在图形中进行切换。
+      help: 按住Shift键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
     label:
-      hide_temp_waits: Hide temp waits
+      hide_temp_waits: 隐藏温度等待信息
+      auto_scroll: 自动滚动
     placeholder:
-      command: 按'tab'自动补全命令，按'上下'键获取历史命令，输入'help' 获取命令帮助
+      command: 按'tab'自动补全命令，按'↑↓'键获取历史命令，输入'help' 获取命令帮助
   endpoint:
     error:
-      cant_connect: 出了点问题，fluidd无法连接到目的地址。你确定这是正确的地址？
-      cors_error: 被CORS政策阻止
+      cant_connect: 出了点问题，Fluidd 无法连接到目标地址。你确定这是正确的设备地址？
+      cors_error: 被 CORS 政策阻止，请查看 Moonraker 帮助
       cors_note: >-
-        这可能意味着您需要修改moonraker配置。请参阅有关多打印机设置的<a href=\"%{url}\"
+        这可能意味着您需要修改 Moonraker 配置。请参阅有关多打印机设置的<a href=\"%{url}\"
         target=\"_blank\">文档</a>
     hint:
       add_printer: 例如：http://fluiddpi.local
     msg:
-      trouble: 遇到麻烦？<a href="%{url}" target="_blank">在此处</a> 查看更多信息。
+      trouble: 遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。
     tooltip:
       endpoint_examples: >-
-        输入您的API URL。<br />例如：<br/><blockquote>http://fluidd.local,
+        输入您的 API 地址。<br />例如：<br/><blockquote>http://fluidd.local,
         http://192.168.1.150</blockquote>
   endstop:
     label:
       open: 断开
       triggered: 触发
     msg:
-      subtitle: 使用“刷新”按钮更新Endstop状态。
+      subtitle: 使用“刷新”按钮更新限位开关状态。
   file_system:
     filters:
       label:
-        print_start_time: 过滤已打印
-        print_start_time_desc: 过滤掉已经打印的项目
+        print_start_time: 隐藏已打印项目
+        print_start_time_desc: 隐藏已经打印的项目文件
     label:
       dir_name: 目录名称
       disk_usage: 磁盘使用率
       downloaded: 下载完成
       file_name: 文件名
-      transfer_rate: 传输速率
+      transfer_rate: 传输速度
       uploaded: 上传完成
+      diskinfo: 磁盘信息
     msg:
-      confirm: 确定吗？这将删除其中的所有文件和文件夹。
+      confirm: 确定吗？这将删除选中的文件和目录。
       not_found: 文件未找到
       processing: 处理中...
     overlay:
       label: <strong>拖动</strong> 一个文件到这里
     title:
-      add_dir: 添加目录
-      add_file: 添加文件
+      add_dir: 新建目录
+      add_file: 新建文件
       download_file: 下载文件
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
+      keyboard_shortcuts: 快捷键
     tooltip:
       low_on_space: 磁盘空间不足
+      root_disabled: '{root} root 不可用，请检查日志'
   general:
     btn:
       add: 添加
-      add_dir: 添加目录
-      add_file: 添加文件
+      add_dir: 新建目录
+      add_file: 新建文件
       add_printer: 添加打印机
       adjust_layout: 调整仪表板布局
-      all: 全部
+      all: 全部归零
       calibrate: 校准
       cancel: 取消
       clear_profile: 清除配置文件
@@ -111,7 +116,7 @@ app:
       restart_service_klipper: 重启Klipper
       restart_service_moonraker: 重启Moonraker
       resume: 恢复
-      retract: 缩回
+      retract: 回抽
       save: 保存
       save_as: 另存为
       save_restart: 保存并重启
@@ -119,108 +124,156 @@ app:
       socket_refresh: 强制刷新
       upload: 上传
       upload_print: 上传并打印
-      view: 视图
+      view: 查看
+      exit_layout: 退出修改模式
+      heaters_off: 停止加热
+      more_information: 更多信息
+      presets: 预设
+      preview_gcode: 预览G代码
+      refresh: 刷新
+      restart_service: 重启 %{service}
+      send: 发送
+      set_color: 设置颜色
+      socket_reconnect: 重新连接
     error:
-      app_setup_link: >-
-        Fluidd setup requirements can be found <a target="_blank"
-        href="%{url}">here.</a>
-      app_warnings_found: 找到％{appName}条警告。
-      components_config: 可以在<a target="_blank" href="%{url}">此处</a>找到Moonraker插件配置。
-      failed_components: Moonraker的插件失败，请检查您的日志，更新您的配置并重新启动moonraker。
+      app_setup_link: Fluidd 配置需求可以在 <a target="_blank" href="%{url}"> 处找到.</a>
+      app_warnings_found: '找到％{appName}条警告。'
+      components_config: 可以在<a target="_blank" href="%{url}"> 处 </a>找到Moonraker插件配置。
+      failed_components: Moonraker插件启用失败，请检查您的日志，更新您的配置并重新启动moonraker。
     label:
-      accel_to_decel: 加速到减速
-      acceleration: 加速
+      accel_to_decel: 加速到减速度
+      acceleration: 加速度
       add_camera: 添加摄像头
       add_preset: 添加预设
-      api_url: API URL
+      api_url: API 地址
       confirm: 确认
-      edit_camera: 编辑摄像头
+      edit_camera: 编辑摄像头设置
       edit_preset: 编辑预设
-      extrude_length: 挤出长度
+      extrude_length: 挤出距离
       extrude_speed: 挤出速度
       flow: 流量
-      free: 释放
+      free: 可用
       high: 高
       host: 主机
-      layout: 层
-      longest_job: 最长的任务
+      layout: 布局
+      longest_job: 单次耗时最长
       low: 低
       name: 名称
       'off': 关闭
       power: 电源
-      printers: 打印机
-      requested_speed: 请求的速度
+      printers: 打印机列表
+      requested_speed: 请求速度
       save_as: 另存为
       services: 服务
       speed: 速度
-      sqv: 角速度
+      sqv: 转角速度
       total_filament: 总消耗耗材
       total_filament_avg: 平均消耗耗材
-      total_jobs: 所有打印任务
-      total_print_time: 合计打印时间
+      total_jobs: 打印总数
+      total_print_time: 总打印时间
       total_print_time_avg: 平均打印时间
-      total_time: 合计时间
+      total_time: 总时间
       total_time_avg: 平均时间
-      used: 已使用
+      used: 已用
       variance: 偏差值
       velocity: 速度
       z_offset: Z偏移
+      actual_time: 实际剩余
+      add_user: 添加用户
+      api_key: API 密钥
+      category: 分类
+      change_password: 更改密码
+      clear_all: 全部清除
+      color: 颜色
+      current_password: 当前密码
+      disabled_while_printing: 打印时禁用
+      edit_user: 编辑用户
+      filament: 已用耗材
+      file: 文件名称
+      finish_time: 完成时间
+      m117: 消息
+      new_password: 新密码
+      no_notifications: 暂无通知
+      password: 密码
+      progress: 当前层进度
+      retract_length: 回抽距离
+      retract_speed: 回抽速度
+      slicer: 切片剩余
+      total: 已用时间
+      uncategorized: 未分类
+      unretract_extra_length: 回抽额外装填量
+      unretract_speed: 回抽装填速度
+      visible: 可见性
+      layer: 层数
     simple_form:
       error:
-        invalid_url: 无效的URL
+        invalid_url: 无效的URL地址
         max: 最大 %{max}
         min: 最小 %{min}
-        min_or_0: 最小 %{min} 至 0
+        min_or_0: 最小 %{min} 或 0
         required: 必填
+        password_username: 用户名密码不匹配
+        exists: 用户已存在
       msg:
         confirm: 确定吗？
         confirm_reboot_host: 确定吗？这将重启您的系统。
         confirm_shutdown_host: 确定吗？这将关闭您的系统。
     table:
       header:
-        actions: 动作
+        actions: 展开
         end_time: 结束时间
         estimated_time: 估计时间
         filament: 耗材长度
-        filament_used: 使用长度
-        first_layer_bed_temp: 首层热床温度
-        first_layer_extr_temp: 首层挤出温度
-        first_layer_height: 首层高度
-        height: 高度
+        filament_used: 耗材使用长度
+        first_layer_bed_temp: 起始层热床温度
+        first_layer_extr_temp: 起始层挤出温度
+        first_layer_height: 起始层高
+        height: 模型高度
         last_printed: 上次打印时间
-        layer_height: 层高度
+        layer_height: 层高
         modified: 修改时间
         name: 名称
         print_duration: 打印时间
-        size: 大小
-        slicer: 切片
-        slicer_version: 切片版本
+        size: 文件大小
+        slicer: 切片软件
+        slicer_version: 软件版本
         start_time: 开始时间
         status: 状态
-        total_duration: 总时长
+        total_duration: 总耗时
+        filament_weight_total: 耗材重量
     title:
       add_printer: 添加打印机
-      bedmesh: 网床
-      bedmesh_controls: 网床控制
+      bedmesh: 热床网格补偿
+      bedmesh_controls: 热床网格控制
       camera: 摄像头
       config_files: 配置文件
       configure: 配置
       console: 控制台
-      endstops: Endstops
+      endstops: 限位开关
       fans_outputs: 风扇和输出
       history: 任务历史
       home: 仪表板
-      jobs: 任务
+      jobs: 任务列表
       limits: 打印机限制
       macros: 宏
-      runout_sensors: Runout传感器
+      runout_sensors: 断料检测传感器
       settings: 设置
       stats: 打印状态
       temperature: 温度
       tool: 工具
       tune: 调整
+      gcode_preview: G代码预览
+      retract: 固件回抽
+      system_overview: 系统信息
+      system: 系统
     tooltip:
       estop: 紧急停止
+      reload_restart_klipper: 重新载入 Klipper 配置并重启 MCU
+      reload_klipper: 重新载入 Klipper 配置文件
+      restart_klipper: 重启 Klipper 服务
+    msg:
+      password_changed: 密码已更改
+      wrong_password: 密码错误
   history:
     msg:
       confirm: 确定吗？这将清除所有历史记录和打印机统计信息
@@ -239,28 +292,30 @@ app:
       add_camera: 添加摄像头
       add_thermal_preset: 添加预设
       reset: 重置
-      select_theme: 选择主题
+      select_theme: 选择颜色
+      add_user: 添加用户
     camera_type_options:
       mjpegadaptive: MJpegAdaptive
       mjpegstream: MJpegStream
-      video: IpCamera
+      video: IP 摄像头
+      iframe: HTTP 页面
     label:
-      all_off: 全部关闭
-      all_on: 全部打开
+      all_off: 全部禁用
+      all_on: 全部启用
       camera_flip_x: 水平翻转
       camera_flip_y: 垂直翻转
       camera_stream_type: 视频流类型
       camera_url: 摄像头地址
-      dark_mode: 黑暗模式
+      dark_mode: 深色模式
       default_extrude_length: 默认挤出长度
       default_extrude_speed: 默认挤出速度
       default_toolhead_move_length: 默认打印头移动距离
       default_toolhead_xy_speed: 默认打印头XY轴速度
       default_toolhead_z_speed: 默认打印头Z轴速度
       enable: 启用
-      enable_notifications: 更新提示
+      enable_notifications: 更新通知
       fps_target: FPS
-      gcode_coords: 使用GCode坐标
+      gcode_coords: 使用G代码坐标
       invert_x_control: 反转X轴控制
       invert_y_control: 反转Y轴控制
       invert_z_control: 反转Z轴控制
@@ -269,7 +324,18 @@ app:
       printer_name: 打印机名称
       reset: 重置设定
       thermal_preset_name: 预设名称
-      z_adjust_values: Z轴调整值
+      z_adjust_values: Z偏移调整值
+      draw_background: 显示背景
+      extrusion_line_width: 挤出线宽
+      confirm_on_estop: 紧急停止需要确认
+      flip_horizontal: 水平翻转
+      flip_vertical: 垂直翻转
+      move_line_width: 移动线宽
+      retraction_icon_size: 回抽图标大小
+      show_animations: 显示动画
+      theme_preset: 预设主题
+      thermal_preset_gcode: G代码
+      height: 高度
     timer_options:
       duration: 仅显示消耗时间
       filament: 通过耗材估算
@@ -277,38 +343,43 @@ app:
       slicer: 使用切片文件的时间
     title:
       camera: 摄像头
-      general: 一般
+      general: 常规
       macros: 宏
       theme: 主题
       thermal_presets: 温度预设
       tool: 工具
+      authentication: 安全认证
+      gcode_preview: G代码预览
     tooltip:
-      gcode_coords: 使用GCode坐标位置而不是仪表板上的打印头坐标位置
+      gcode_coords: 使用G代码坐标位置而不是仪表板上的打印头坐标位置
   socket:
     msg:
       connecting: 连接到moonraker ...
-      no_connection: 没有moonraker连接。请检查moonraker的状态和或刷新。
+      no_connection: 没有连接moonraker。请检查moonraker的状态和/或刷新。
   tool:
     btn:
       home_x: X
       home_y: 'Y'
     tooltip:
       extruder_disabled: 挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)
-      home_xy: Home XY
-      home_z: Home Z
+      home_xy: 归零 XY
+      home_z: 归零 Z
   version:
     btn:
       check_for_updates: 检查更新
       finish: 完成
       update: 更新
+      view_versions: 查看版本
     label:
       commit_history: 提交历史
       commits_on: 提交于
       committed: 提交完成
-      dirty: 肮脏
+      dirty: 被污染
       invalid: 无效
-      package_list: 包列表
+      package_list: 软件包列表
       up_to_date: 最新
+      os_packages: 系统组件
+      updates_available: 有可用更新
     status:
       finished: 更新已完成
       updating: 正在更新...
@@ -317,5 +388,45 @@ app:
       commit_history: 提交历史
       dirty: 本地文件被污染，无法从线上的git库更新最新代码
       invalid: 本地文件无效，无法从线上的git库更新最新代码
-      packages: 包
-      release_notes: 发布通知
+      packages: 软件包
+      release_notes: 发行说明
+  gcode:
+    label:
+      current_layer_height: 当前层高
+      layer: 当前层数
+      layers: 总层数
+      show_extrusions: 显示已打印部分
+      show_next_layer: 显示下一层
+      follow_progress: 跟随打印进度
+      parsed: 已解析
+      show_moves: 显示移动走线
+      show_previous_layer: 显示上一层
+      show_retractions: 显示回抽
+    btn:
+      load_current_file: 载入当前文件
+    msg:
+      confirm: 文件 "%{filename}" 大小为 %{size}，这可能会导致系统短暂失去响应，是否确认？
+  system_info:
+    label:
+      capacity: 容量
+      cpu_desc: CPU
+      distribution_codename: 开发代号
+      distribution_like: 基于发行版
+      distribution_name: 发行版
+      hardware_desc: 硬件描述
+      hostname: 主机名
+      klipper_load: Klipper 负载
+      manufactured: 生产日期
+      manufacturer: 制造商
+      mcu_awake: '{mcu} 唤醒时间'
+      mcu_bandwidth: '{mcu} 带宽占用'
+      mcu_load: '{mcu} 负载'
+      model: 型号
+      moonraker_load: Moonraker 负载
+      processor_desc: 处理器描述
+      product_name: 产品名称
+      serial_number: 序列号
+      system_load: 系统负载
+      system_memory: 系统内存
+      system_utilization: 系统利用率
+      total_memory: 内存
