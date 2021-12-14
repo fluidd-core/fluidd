@@ -66,7 +66,8 @@
             :items="[
               { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpgadaptive' },
               { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpgstream' },
-              { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' }
+              { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
+              { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
             ]"
             item-value="value"
             item-text="text"
@@ -98,6 +99,20 @@
             single-line
             hide-details="auto"
             v-model="camera.url"
+            :rules="[rules.required]"
+          ></v-text-field>
+        </app-setting>
+
+        <v-divider />
+
+        <app-setting v-if="camera.type === 'iframe'" :title="$t('app.setting.label.height')">
+          <v-text-field
+            class="mt-5"
+            filled
+            dense
+            single-line
+            hide-details="auto"
+            v-model.number="camera.height"
             :rules="[rules.required]"
           ></v-text-field>
         </app-setting>
