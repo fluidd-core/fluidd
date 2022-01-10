@@ -22,6 +22,15 @@
         :style="cameraTransformStyle"
       />
 
+      <iframe
+        v-if="camera.type === 'iframe'"
+        :src="cameraUrl"
+        class="camera-image"
+        :style="cameraTransformStyle"
+        :height="cameraHeight"
+        frameBorder="0"
+      />
+
       <div
         v-if="camera.name"
         class="camera-name"
@@ -61,6 +70,9 @@ export default class CameraItem extends Vue {
 
   // URL used by camera
   cameraUrl = ''
+
+  // iframe height
+  cameraHeight = 720
 
   // Maintains the last cachebust string
   refresh = new Date().getTime()
@@ -156,6 +168,8 @@ export default class CameraItem extends Vue {
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
 
+      this.cameraHeight = this.camera.height || 720
+
       if (type === 'mjpgstream') {
         url.searchParams.append('cacheBust', this.refresh.toString())
         if (!url.searchParams.get('action')?.startsWith('stream')) {
@@ -173,7 +187,7 @@ export default class CameraItem extends Vue {
         this.cameraUrl = url.toString()
       }
 
-      if (type === 'ipstream') {
+      if (type === 'ipstream' || type === 'iframe') {
         this.cameraUrl = baseUrl
       }
     } else {
