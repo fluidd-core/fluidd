@@ -172,7 +172,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
     if (component.key === 'klipper') return 'https://github.com/KevinOConnor/klipper/commits/master'
     if (component.key === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
-    if (component.key === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/cadriel/fluidd/releases'
+    if (component.key === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/fluidd-core/fluidd/releases'
   }
 
   // Will attempt to update the requirec component based on its type.

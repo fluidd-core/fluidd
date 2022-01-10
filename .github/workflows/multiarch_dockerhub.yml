@@ -60,4 +60,4 @@ jobs:
           push: true
           tags: ${{ steps.prep.outputs.tags }}
           build-args: |
-            FRONTEND_ZIP_URL=https://github.com/cadriel/fluidd/releases/download/${{ steps.prep.outputs.git_tag }}/fluidd.zip
+            FRONTEND_ZIP_URL=https://github.com/fluidd-core/fluidd/releases/download/${{ steps.prep.outputs.git_tag }}/fluidd.zip
