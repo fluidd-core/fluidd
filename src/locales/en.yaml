@@ -368,6 +368,7 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      group_lower: Group lower layers
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name

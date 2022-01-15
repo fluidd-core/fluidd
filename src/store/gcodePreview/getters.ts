@@ -32,7 +32,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return state.parserProgress
   },
 
-  getLayers: (state, getters): Layer[] => {
+  getLayers: (state, getters, rootState): Layer[] => {
     const output = []
     const moves = getters.getMoves
 
@@ -40,13 +40,21 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     let zStart = 0
     let zLast = NaN
 
+    const groupLower = (rootState && rootState.config)
+      ? rootState.config.uiSettings.gcodePreview.groupLower
+      : false
+
+    const zCmp = groupLower
+      ? (a: number, b: number) => Number.isNaN(a) || a < b
+      : (a: number, b: number) => a !== b
+
     for (let index = 0; index < moves.length; index++) {
       if (moves[index].z !== undefined && z !== moves[index].z) {
         z = moves[index].z
         zStart = index
       }
 
-      if (moves[index].e > 0 && z !== zLast) {
+      if (moves[index].e > 0 && zCmp(zLast, z)) {
         zLast = z
 
         output.push({

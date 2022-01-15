@@ -134,6 +134,7 @@ export interface GcodePreviewConfig {
   retractionIconSize: number;
   drawBackground: boolean;
   showAnimations: boolean;
+  groupLower: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;
