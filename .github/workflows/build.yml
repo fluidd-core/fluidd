@@ -2,19 +2,14 @@ name: BUILD
 
 on:
   push:
-    branches:
-      - develop
-      - master
   pull_request:
-    branches:
-      - develop
-      - master
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    name: Build
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Install node
@@ -22,8 +17,8 @@ jobs:
         with:
           node-version: '14'
 
-      - name: Install deps
-        run: npm install
+      - name: Install dependencies
+        run: npm ci --ignore-scripts --no-optional
 
       - name: Run tests
         run: npm run test:unit
@@ -31,15 +26,45 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Prepare Deploy
-        if: github.ref == 'refs/heads/develop'
-        run: |
-          cp ./server/config.json ./dist/config.json
+      - name: Prepare Docker image metadata
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push'
+        id: docker_meta
+        uses: docker/metadata-action@v3
+        with:
+          images: |
+            ghcr.io/${{ github.repository }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,format=long
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+            type=raw,value=latest-dev,enable=${{ github.ref == 'refs/heads/develop' }}
 
-      - name: Deploy to Host
-        if: github.ref == 'refs/heads/develop'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          npm run deploy:host:dev
+      - name: Set up QEMU
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push'
+        uses: docker/setup-qemu-action@v1
+
+      - name: Set up Docker Buildx
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push'
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to the Container registry
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push'
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
