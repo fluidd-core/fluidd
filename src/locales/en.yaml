@@ -335,6 +335,7 @@ app:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       video: IP Camera
+      iframe: HTTP page
     label:
       all_off: All off
       all_on: All on
@@ -357,6 +358,7 @@ app:
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
       fps_target: FPS Target
+      height: Height
       gcode_coords: Use GCode Coordinates
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
