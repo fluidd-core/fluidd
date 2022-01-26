@@ -345,7 +345,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
    * Total filament weight according to the current file / slicer.
    */
   get filament_weight_needed () {
-    let filament_weight_total = this.$store.state.printer.printer.current_file.filament_weight_total || 0
+    const filament_weight_total = this.$store.state.printer.printer.current_file.filament_weight_total || 0
     if (this.filament_used > 0 && this.filament_total > 0 && filament_weight_total > 0) {
       return (1 - this.filament_used / this.filament_total) * filament_weight_total
     } else {
