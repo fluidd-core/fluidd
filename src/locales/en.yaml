@@ -257,6 +257,7 @@ app:
         confirm: Are you sure?
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
+        confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
     table:
       header:
         actions: Actions
@@ -334,6 +335,7 @@ app:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       video: IP Camera
+      iframe: HTTP page
     label:
       all_off: All off
       all_on: All on
@@ -342,6 +344,7 @@ app:
       camera_stream_type: Stream type
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
+      confirm_on_power_device_change: Require confirm on Device Power changes
       dark_mode: Dark mode
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
@@ -355,6 +358,7 @@ app:
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
       fps_target: FPS Target
+      height: Height
       gcode_coords: Use GCode Coordinates
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
