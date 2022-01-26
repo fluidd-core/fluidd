@@ -54,6 +54,7 @@ export const defaultState = (): ConfigState => {
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
         confirmOnEstop: false,
+        confirmOnPowerDeviceChange: false,
         confirmDirtyEditorClose: true
       },
       theme: {

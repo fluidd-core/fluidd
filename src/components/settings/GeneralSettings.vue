@@ -52,6 +52,19 @@
       <v-divider></v-divider>
 
       <app-setting
+        :title="$t('app.setting.label.confirm_on_power_device_change')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="confirmOnPowerDeviceChange"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
         :title="$t('app.setting.label.confirm_dirty_editor_close')"
       >
         <v-switch
@@ -118,6 +131,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnEstop (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnEstop',
+      value,
+      server: true
+    })
+  }
+
+  get confirmOnPowerDeviceChange () {
+    return this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+  }
+
+  set confirmOnPowerDeviceChange (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmOnPowerDeviceChange',
       value,
       server: true
     })

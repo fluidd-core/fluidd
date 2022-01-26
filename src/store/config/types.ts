@@ -47,6 +47,7 @@ export interface GeneralConfig {
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
+  confirmOnPowerDeviceChange: boolean;
   confirmDirtyEditorClose: boolean;
 }
 
