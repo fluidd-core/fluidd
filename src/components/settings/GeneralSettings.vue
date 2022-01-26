@@ -91,6 +91,19 @@
           class="mb-5"
         ></v-switch>
       </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_dirty_editor_close')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="confirmDirtyEditorClose"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -184,6 +197,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnPowerDeviceChange (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
+      value,
+      server: true
+    })
+  }
+
+  get confirmDirtyEditorClose () {
+    return this.$store.state.config.uiSettings.general.confirmDirtyClose
+  }
+
+  set confirmDirtyEditorClose (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmDirtyEditorClose',
       value,
       server: true
     })

@@ -240,6 +240,7 @@ app:
       velocity: Velocity
       visible: Visible
       z_offset: Z Offset
+      unsaved_changes: Unsaved Changes
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -258,6 +259,7 @@ app:
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
+        unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
     table:
       header:
         actions: Actions
@@ -345,6 +347,7 @@ app:
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
+      confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
       dark_mode: Dark mode
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
