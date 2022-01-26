@@ -48,6 +48,8 @@ export interface GeneralConfig {
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
+  dateformat: string;
+  timeformat: string;
   confirmDirtyEditorClose: boolean;
 }
 
