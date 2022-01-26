@@ -71,7 +71,7 @@ app:
       subtitle: Presione el botón 'Actualizar' para actualizar el estado.
   file_system:
     filters:
-      label:e
+      label:
         print_start_time: Filtrar ya impresos
         print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
     label:
@@ -125,7 +125,6 @@ app:
       adjust_layout: Ajustar la disposición del tablero
       all: Todo
       calibrate: Calibrar
-      clear_profile: Despejar perfil
       cancel: Cancelar
       clear_profile: Limpar Perfil
       close: Cerrar
