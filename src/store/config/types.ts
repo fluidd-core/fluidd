@@ -48,6 +48,7 @@ export interface GeneralConfig {
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
+  confirmDirtyEditorClose: boolean;
 }
 
 // Config stored in moonraker db
