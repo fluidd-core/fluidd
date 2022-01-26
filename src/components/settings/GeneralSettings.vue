@@ -51,6 +51,7 @@
           item-text="text"
           v-model="dateformat">
         </v-select>
+        &nbsp;
         <v-select
           filled
           dense
