@@ -137,8 +137,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
     ) {
       actual = state.printer.current_file.history.print_duration
       actualTotal = state.printer.current_file.history.total_duration
-      actualLeft = (actual - duration) / multiplier
-      actualEndTime = endTime + (actualTotal - duration)
+      actualLeft = (actualTotal - duration) / multiplier
+      actualEndTime = endTime + actualLeft
     }
 
     let slicer = 0
