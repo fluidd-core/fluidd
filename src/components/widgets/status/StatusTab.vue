@@ -71,7 +71,7 @@
               </status-label>
 
               <status-label :label="$t('app.general.label.filament')">
-                <span v-if="filament_used > 0 && filament_total > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }} / {{ $filters.getReadableLengthString(filament_total) }} <br /> remaining: {{filament_weight_needed.toFixed(2)}} g  </span>
+                <span v-if="filament_used > 0 && printerPrinting">{{ $filters.getReadableLengthString(filament_used) }} / {{ $filters.getReadableLengthString(filament_total) }} <br /> remaining: {{filament_weight_needed.toFixed(2)}} g  </span>
               </status-label>
 
               <status-label :label="$t('app.general.label.layer')">
