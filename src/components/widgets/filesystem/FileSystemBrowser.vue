@@ -267,8 +267,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     // If top two, and filtered results in count -1, set to all.
     if (
       item.value &&
-      this.selectedItems.length + 1 >= (this.files.length - 1) &&
-      this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..')).length + 1 === this.files.length - 1
+      this.selectedItems.length + 1 >= this.files.length &&
+      this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..')).length + 1 === this.files.length
     ) {
       this.selectedItems = this.files
     }

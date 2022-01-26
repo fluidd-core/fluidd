@@ -22,11 +22,11 @@ permalink: /installation/fluiddpi
 FluiddPI is a Raspberry Pi OS Lite image, preconfigured with Klipper, Moonraker and
 Fluidd. It is the recommended way to install Fluidd.
 
-[View on GitHub](https://github.com/cadriel/FluiddPI){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View on GitHub](https://github.com/fluidd-core/FluiddPi){: .btn .fs-5 .mb-4 .mb-md-0 }
 
 ## Download
 
-Start by downloading the latest release of [FluiddPI](https://github.com/cadriel/FluiddPI/releases/latest).
+Start by downloading the latest release of [FluiddPI](https://github.com/fluidd-core/FluiddPi/releases/latest).
 
 ## Flash
 
@@ -72,5 +72,5 @@ the warnings in the file.
      `fluiddpi.local` but rather `yourhostname.local`.
 4. *You should not need to expand the filesystem.*
    *You should not need to manually enable the RaspiCam. This is done for you.*
-5. You should now be able to access Fluidd through `http://fluidd.local` or
+5. You should now be able to access Fluidd through `http://fluiddpi.local` or
    `http://yourhostname.local`.
