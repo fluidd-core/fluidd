@@ -242,6 +242,7 @@ app:
       visible: Visible
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
+      alias: Alias
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
