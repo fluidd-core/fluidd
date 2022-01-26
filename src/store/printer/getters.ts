@@ -611,5 +611,14 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
     return rootGetters['server/getInfo'].failed_components || []
+  },
+
+  getHasHomingOverride: (state, getters) => {
+    const config = getters.getPrinterConfig()
+    if (config && ('homing_override' in config)) {
+      return true
+    } else {
+      return false
+    }
   }
 }
