@@ -211,6 +211,7 @@ app:
       name: Name
       new_password: New password
       no_notifications: No notifications
+      'on': 'On'
       'off': 'Off'
       password: Password
       power: Power
@@ -377,6 +378,7 @@ app:
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
       z_adjust_values: Z Adjust values
+      formatdatetime: Date/Time format
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -393,6 +395,9 @@ app:
       tool: Tool
     tooltip:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
+    dateformat:
+      monthdayyear: month/day/year
+      daymonthyear: day/month/year
   socket:
     msg:
       connecting: Connecting to moonraker...

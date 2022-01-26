@@ -45,7 +45,7 @@ export default class OutputFan extends Mixins(StateMixin) {
   get prettyValue () {
     return (this.value === 0)
       ? this.$t('app.general.label.off')
-      : `${this.value.toFixed()}<small>%</small>`
+      : this.$t('app.general.label.on')
   }
 
   get value () {
