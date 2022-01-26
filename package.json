@@ -138,5 +138,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fluidd-core/fluidd.git"
+  },
+  "engines": {
+    "node": "^16"
   }
 }
