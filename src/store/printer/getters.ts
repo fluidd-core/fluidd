@@ -126,7 +126,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
       fileEndTime = endTime + fileLeft
     }
 
-    let actual = 0
     let actualTotal = 0
     let actualLeft = 0
     let actualEndTime = 0
@@ -135,10 +134,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'history' in state.printer.current_file &&
       state.printer.current_file.history.status === 'completed'
     ) {
-      actual = state.printer.current_file.history.print_duration
       actualTotal = state.printer.current_file.history.total_duration
-      actualLeft = (actual - duration) / multiplier
-      actualEndTime = endTime + (actualTotal - duration)
+      actualLeft = (actualTotal - duration) / multiplier
+      actualEndTime = endTime + actualLeft
     }
 
     let slicer = 0
@@ -578,7 +576,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getHasWarnings: (state, getters, rootState) => {
     if (
       (rootState.socket && rootState.socket.open && rootState.socket.ready) &&
-      (getters.getPrinterWarnings.length > 0 || getters.getMoonrakerWarnings.length > 0)
+      (getters.getPrinterWarnings.length > 0 || getters.getMoonrakerFailedComponents.length > 0 || getters.getMoonrakerWarnings.length > 0)
     ) {
       return true
     } else {
@@ -611,7 +609,20 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return warnings
   },
 
-  getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
+  getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
     return rootGetters['server/getInfo'].failed_components || []
+  },
+
+  getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
+    return rootGetters['server/getInfo'].warnings || []
+  },
+
+  getHasHomingOverride: (state, getters) => {
+    const config = getters.getPrinterConfig()
+    if (config && ('homing_override' in config)) {
+      return true
+    } else {
+      return false
+    }
   }
 }

@@ -38,12 +38,68 @@
 
       <v-divider></v-divider>
 
+      <app-setting :title="$t('app.setting.label.formatdatetime')">
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="[
+            { text: $t('app.setting.dateformat.monthdayyear'), value: 'MMM. DD' },
+            { text: $t('app.setting.dateformat.daymonthyear'), value: 'DD MMM.' }
+          ]"
+          item-value="value"
+          item-text="text"
+          v-model="dateformat">
+        </v-select>
+        &nbsp;
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="[
+            { text: 'am/pm', value: 'h:mm a' },
+            { text: '24h', value: 'HH:mm' }
+          ]"
+          item-value="value"
+          item-text="text"
+          v-model="timeformat">
+        </v-select>
+      </app-setting>
+
+      <v-divider></v-divider>
+
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
         <v-switch
           @click.native.stop
           v-model="confirmOnEstop"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_on_power_device_change')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="confirmOnPowerDeviceChange"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_dirty_editor_close')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="confirmDirtyEditorClose"
           hide-details
           class="mb-5"
         ></v-switch>
@@ -98,6 +154,30 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/onLocaleChange', value)
   }
 
+  get dateformat () {
+    return this.$store.state.config.uiSettings.general.dateformat
+  }
+
+  set dateformat (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.dateformat',
+      value,
+      server: true
+    })
+  }
+
+  get timeformat () {
+    return this.$store.state.config.uiSettings.general.timeformat
+  }
+
+  set timeformat (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.timeformat',
+      value,
+      server: true
+    })
+  }
+
   get confirmOnEstop () {
     return this.$store.state.config.uiSettings.general.confirmOnEstop
   }
@@ -105,6 +185,30 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnEstop (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnEstop',
+      value,
+      server: true
+    })
+  }
+
+  get confirmOnPowerDeviceChange () {
+    return this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+  }
+
+  set confirmOnPowerDeviceChange (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmOnPowerDeviceChange',
+      value,
+      server: true
+    })
+  }
+
+  get confirmDirtyEditorClose () {
+    return this.$store.state.config.uiSettings.general.confirmDirtyClose
+  }
+
+  set confirmDirtyEditorClose (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmDirtyEditorClose',
       value,
       server: true
     })
