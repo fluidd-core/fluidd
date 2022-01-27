@@ -1,11 +1,13 @@
 <template>
   <v-alert text dense icon="$warning" type="warning">
-    <div class="text-body-1 mb-2">
-      {{ $t('app.general.error.app_warnings_found', { appName }) }}
+    <div v-if="printerWarnings.length > 0">
+      <div class="mb-2">
+        {{ $t('app.general.error.app_warnings_found', { appName }) }}
+      </div>
+      <ul class="mb-4">
+        <li v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></li>
+      </ul>
     </div>
-    <ul class="mb-4" v-if="printerWarnings.length > 0">
-      <li v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></li>
-    </ul>
 
     <div v-if="moonrakerFailedComponents.length > 0">
       <div class="mb-2">{{ $t('app.general.error.failed_components') }}</div>
