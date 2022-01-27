@@ -36,6 +36,7 @@ export interface ServerInfo {
   klippy_state: string;
   components: string[];
   registered_directories: string[];
+  warnings: string[];
 }
 
 export interface SystemInfo {
