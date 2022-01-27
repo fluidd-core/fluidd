@@ -10,7 +10,7 @@
         ref="chart"
         :option="opts"
         :setOptionOps="{ notMerge: true }"
-        :initOpts="{ renderer: 'svg' }"
+        :init-options="{ renderer: 'svg' }"
         :events="events"
       >
       </ECharts>
