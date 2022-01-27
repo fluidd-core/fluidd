@@ -1,14 +1,23 @@
 <template>
   <v-alert text dense icon="$warning" type="warning">
-    <div class="text-body-1 mb-2">
-      {{ $t('app.general.error.app_warnings_found', { appName }) }}
+    <div v-if="printerWarnings.length > 0">
+      <div class="mb-2">
+        {{ $t('app.general.error.app_warnings_found', { appName }) }}
+      </div>
+      <ul class="mb-4">
+        <li v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></li>
+      </ul>
     </div>
-    <ul class="mb-4" v-if="printerWarnings.length > 0">
-      <li v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></li>
-    </ul>
+
+    <div v-if="moonrakerFailedComponents.length > 0">
+      <div class="mb-2">{{ $t('app.general.error.failed_components') }}</div>
+      <ul class="mb-4">
+        <li v-for="(failedComponent, index) in moonrakerFailedComponents" :key="index" v-html="failedComponent"></li>
+      </ul>
+    </div>
 
     <div v-if="moonrakerWarnings.length > 0">
-      <div class="mb-2">{{ $t('app.general.error.failed_components') }}</div>
+      <div class="mb-2">{{ $t('app.general.error.app_warnings_found', { appName: 'Moonraker' }) }}</div>
       <ul class="mb-4">
         <li v-for="(warning, index) in moonrakerWarnings" :key="index" v-html="warning"></li>
       </ul>
@@ -17,8 +26,8 @@
     <div v-if="printerWarnings.length > 0">
       <span v-html="printerWarningsTxt"></span>
     </div>
-    <div v-if="moonrakerWarnings.length > 0">
-      <span v-html="moonrakerWarningsTxt"></span>
+    <div v-if="moonrakerFailedComponents.length > 0">
+      <span v-html="moonrakerFailedComponentsTxt"></span>
     </div>
   </v-alert>
 </template>
@@ -46,7 +55,7 @@ export default class AppWarnings extends Mixins(StateMixin) {
     })
   }
 
-  get moonrakerWarningsTxt () {
+  get moonrakerFailedComponentsTxt () {
     return this.$t('app.general.error.components_config', {
       url: this.moonrakerDocsUrl
     })
@@ -58,6 +67,10 @@ export default class AppWarnings extends Mixins(StateMixin) {
 
   get printerWarnings () {
     return this.$store.getters['printer/getPrinterWarnings']
+  }
+
+  get moonrakerFailedComponents () {
+    return this.$store.getters['printer/getMoonrakerFailedComponents']
   }
 
   get moonrakerWarnings () {

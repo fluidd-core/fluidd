@@ -110,6 +110,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   public readonly!: boolean
 
   updatedContent = this.contents
+  lastSavedContent = this.updatedContent
   editorReady = false
   shortcutsDialog = false
 
@@ -143,9 +144,22 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   mounted () {
     this.updatedContent = this.contents
+    this.lastSavedContent = this.updatedContent
   }
 
-  emitClose () {
+  async emitClose () {
+    const confirmDirtyEditorClose = this.$store.state.config.uiSettings.general.confirmDirtyEditorClose
+    if (confirmDirtyEditorClose && this.updatedContent !== this.lastSavedContent) {
+      const result = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.unsaved_changes'),
+        { title: this.$tc('app.general.label.unsaved_changes'), color: 'card-heading', icon: '$error' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
     this.$emit('input', false)
   }
 
@@ -157,6 +171,8 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
       } else {
         this.$emit('save', this.updatedContent)
       }
+
+      this.lastSavedContent = this.updatedContent
     }
   }
 
