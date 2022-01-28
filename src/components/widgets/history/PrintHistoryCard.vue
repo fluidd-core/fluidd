@@ -39,7 +39,7 @@ import { SocketActions } from '@/api/socketActions'
 export default class PrinterHistoryCard extends Vue {
   handleRemoveAll () {
     this.$confirm(
-      this.$tc('app.history.msg.confirm'),
+      this.$tc('app.history.msg.confirm_jobs'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
       .then(res => {
