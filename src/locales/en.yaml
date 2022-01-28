@@ -243,6 +243,7 @@ app:
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
       alias: Alias
+      apply_z_offset: Apply and Save Z_Offset
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -262,6 +263,12 @@ app:
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
         unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
+        apply_z_offset_endstop: >-
+          Endstop Z-Offset will be calculated and updated from the current
+          Z-Offset.
+        apply_z_offset_probe: >-
+          Probe/Bltouch Z-Offset will be calculated and updated from the current
+          Z-Offset.
     table:
       header:
         actions: Actions

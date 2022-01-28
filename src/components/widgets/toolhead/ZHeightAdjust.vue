@@ -41,6 +41,14 @@
         class="ml-1">
         <v-icon small>$zDown</v-icon>
       </app-btn>
+      <app-btn
+        @click="handleZApplyDialog"
+        :disabled="!klippyReady || printerPrinting || (ZHomingOrigin == 0)"
+        small
+        class="ml-3">
+        <v-icon small>$save</v-icon>
+        Z
+      </app-btn>
     </v-col>
   </v-row>
 </template>
@@ -84,6 +92,42 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
     const zHomed = this.$store.getters['printer/getHomedAxes']('z')
     const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${distance} MOVE=${+zHomed}`
     this.sendGcode(gcode, wait)
+  }
+
+  get printerSettings () {
+    return this.$store.getters['printer/getPrinterSettings']()
+  }
+
+  get printerHasProbe (): boolean {
+    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+  }
+
+  handleZApplyDialog () {
+    let msg = this.$tc('app.general.simple_form.msg.apply_z_offset_endstop')
+    let gcode = 'Z_OFFSET_APPLY_ENDSTOP'
+
+    if (this.printerHasProbe) {
+      msg = this.$tc('app.general.simple_form.msg.apply_z_offset_probe')
+      gcode = 'Z_OFFSET_APPLY_PROBE'
+    }
+
+    this.$confirm(
+      msg,
+      {
+        title: this.$tc('app.general.label.apply_z_offset'),
+        color: 'card-heading',
+        icon: '$error',
+        buttonTrueText: this.$tc('app.general.btn.save_restart'),
+        buttonTrueColor: 'primary',
+        buttonFalseText: this.$tc('app.general.btn.cancel')
+      }
+    )
+      .then(res => {
+        if (res) {
+          this.sendGcode(gcode, this.waits.onZApply)
+          this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
+        }
+      })
   }
 }
 </script>
