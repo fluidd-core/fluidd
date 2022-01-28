@@ -576,7 +576,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getHasWarnings: (state, getters, rootState) => {
     if (
       (rootState.socket && rootState.socket.open && rootState.socket.ready) &&
-      (getters.getPrinterWarnings.length > 0 || getters.getMoonrakerWarnings.length > 0)
+      (getters.getPrinterWarnings.length > 0 || getters.getMoonrakerFailedComponents.length > 0 || getters.getMoonrakerWarnings.length > 0)
     ) {
       return true
     } else {
@@ -609,8 +609,12 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return warnings
   },
 
-  getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
+  getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
     return rootGetters['server/getInfo'].failed_components || []
+  },
+
+  getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
+    return rootGetters['server/getInfo'].warnings || []
   },
 
   getHasHomingOverride: (state, getters) => {
