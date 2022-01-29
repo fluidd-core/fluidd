@@ -7,6 +7,7 @@ export interface ConsoleState {
   commandHistory: string[];
   autoScroll: boolean;
   consoleFilters: ConsoleFilter[];
+  consoleFiltersRegexp: RegExp[];
 }
 
 export interface ConsoleEntry {
@@ -25,5 +26,4 @@ export interface ConsoleFilter {
   name: string;
   expression: string;
   enabled: boolean;
-  regex?: RegExp;       // should not be serialized
 }

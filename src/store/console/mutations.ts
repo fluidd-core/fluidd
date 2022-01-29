@@ -48,7 +48,7 @@ export const mutations: MutationTree<ConsoleState> = {
   setInitConsole (state, payload: ConsoleState) {
     if (payload) {
       if (payload.consoleFilters) {
-        payload.consoleFilters.forEach(f => { f.regex = new RegExp(f.expression) })
+        payload.consoleFiltersRegexp = payload.consoleFilters.map(f => new RegExp(f.expression))
       }
       Object.assign(state, payload)
     }
@@ -78,16 +78,18 @@ export const mutations: MutationTree<ConsoleState> = {
   },
 
   setFilter (state, filter: ConsoleFilter) {
-    filter.regex = new RegExp(filter.expression)
+    const filterRegex = new RegExp(filter.expression)
 
     if (filter.id) {
       const i = state.consoleFilters.findIndex(c => c.id === filter.id)
       if (i >= 0) {
         Vue.set(state.consoleFilters, i, filter)
+        Vue.set(state.consoleFiltersRegexp, i, filterRegex)
       }
     } else {
       filter.id = uuidv4()
       state.consoleFilters.push(filter)
+      state.consoleFiltersRegexp.push(filterRegex)
     }
   },
 

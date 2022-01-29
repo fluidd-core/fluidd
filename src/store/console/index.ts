@@ -16,7 +16,8 @@ export const defaultState = (): ConsoleState => {
     availableCommands: {},
     commandHistory: [],
     autoScroll: true,
-    consoleFilters: []
+    consoleFilters: [],
+    consoleFiltersRegexp: []
   }
 }
 

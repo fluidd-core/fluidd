@@ -4,12 +4,6 @@ import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
-const _persistConsoleFilters = async (filters: ConsoleFilter[]) => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const f = filters.map(f => (({ regex, ...o }) => o)(f))
-  SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', f)
-}
-
 export const actions: ActionTree<ConsoleState, RootState> = {
   /**
    * Reset our store
@@ -93,7 +87,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    */
   async onRemoveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setRemoveFilter', filter)
-    _persistConsoleFilters(state.consoleFilters)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   },
 
   /**
@@ -101,6 +95,6 @@ export const actions: ActionTree<ConsoleState, RootState> = {
     */
   async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setFilter', filter)
-    _persistConsoleFilters(state.consoleFilters)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   }
 }
