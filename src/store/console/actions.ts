@@ -1,8 +1,14 @@
 import { ActionTree } from 'vuex'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleState } from './types'
+import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
+
+const _persistConsoleFilters = async (filters: ConsoleFilter[]) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const f = filters.map(f => (({ regex, ...o }) => o)(f))
+  SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', f)
+}
 
 export const actions: ActionTree<ConsoleState, RootState> = {
   /**
@@ -80,5 +86,21 @@ export const actions: ActionTree<ConsoleState, RootState> = {
   async onUpdateAutoScroll ({ commit }, payload) {
     commit('setAutoScroll', payload)
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.autoScroll', payload)
+  },
+
+  /**
+   * Remove a filter
+   */
+  async onRemoveFilter ({ commit, state }, filter: ConsoleFilter) {
+    commit('setRemoveFilter', filter)
+    _persistConsoleFilters(state.consoleFilters)
+  },
+
+  /**
+    * Add/Edit a filter
+    */
+  async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
+    commit('setFilter', filter)
+    _persistConsoleFilters(state.consoleFilters)
   }
 }

@@ -1,8 +1,9 @@
 import Vue from 'vue'
+import { v4 as uuidv4 } from 'uuid'
 import { MutationTree } from 'vuex'
 import { defaultState } from './'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleState } from './types'
+import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
 
 export const mutations: MutationTree<ConsoleState> = {
   /**
@@ -45,7 +46,12 @@ export const mutations: MutationTree<ConsoleState> = {
    * Inits the console history from db
    */
   setInitConsole (state, payload: ConsoleState) {
-    if (payload) Object.assign(state, payload)
+    if (payload) {
+      if (payload.consoleFilters) {
+        payload.consoleFilters.forEach(f => { f.regex = new RegExp(f.expression) })
+      }
+      Object.assign(state, payload)
+    }
   },
 
   /**
@@ -69,5 +75,26 @@ export const mutations: MutationTree<ConsoleState> = {
    */
   setAutoScroll (state, payload) {
     state.autoScroll = payload
+  },
+
+  setFilter (state, filter: ConsoleFilter) {
+    filter.regex = new RegExp(filter.expression)
+
+    if (filter.id) {
+      const i = state.consoleFilters.findIndex(c => c.id === filter.id)
+      if (i >= 0) {
+        Vue.set(state.consoleFilters, i, filter)
+      }
+    } else {
+      filter.id = uuidv4()
+      state.consoleFilters.push(filter)
+    }
+  },
+
+  setRemoveFilter (state, filter: ConsoleFilter) {
+    const i = state.consoleFilters.findIndex(c => c.id === filter.id)
+    if (i >= 0) {
+      state.consoleFilters.splice(i, 1)
+    }
   }
 }

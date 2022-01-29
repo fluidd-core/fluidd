@@ -6,6 +6,7 @@ export interface ConsoleState {
   consoleEntryCount: number; // give each console entry a unique id.
   commandHistory: string[];
   autoScroll: boolean;
+  consoleFilters: ConsoleFilter[];
 }
 
 export interface ConsoleEntry {
@@ -17,4 +18,12 @@ export interface ConsoleEntry {
 
 export interface GcodeCommands {
   [key: string]: string;
+}
+
+export interface ConsoleFilter {
+  id: string;
+  name: string;
+  expression: string;
+  enabled: boolean;
+  regex?: RegExp;       // should not be serialized
 }
