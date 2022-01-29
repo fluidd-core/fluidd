@@ -157,6 +157,9 @@ export const Filters = {
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
+        if (a !== null && a.type === 'directory' && a.name === '..') return -1
+        if (b !== null && b.type === 'directory' && b.name === '..') return 1
+
         let sortA = getObjectValueByPath(a, sortKey)
         let sortB = getObjectValueByPath(b, sortKey)
 
