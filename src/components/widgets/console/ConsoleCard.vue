@@ -21,6 +21,24 @@
     </template>
 
     <template v-slot:menu>
+
+      <v-tooltip
+        v-if="scrollingPaused"
+        top>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            @click="console.scrollToBottom(true)"
+            v-bind="attrs"
+            v-on="on"
+            fab
+            small
+            text>
+            <v-icon>$down</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.console.placeholder.scroll') }}</span>
+      </v-tooltip>
+
       <app-btn-collapse-group
         :collapsed="true"
         menu-icon="$cog"
@@ -61,6 +79,7 @@
 
     <console
       ref="console"
+      :scrollingPaused.sync="scrollingPaused"
       :items="items"
       :height="300"
     ></console>
@@ -84,6 +103,8 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   enabled!: boolean
 
   @Ref('console') console!: Console
+
+  scrollingPaused = false
 
   get filters () {
     return this.$store.getters['console/getFilters']
