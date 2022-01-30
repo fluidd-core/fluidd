@@ -78,10 +78,6 @@
                 text: $t('app.setting.camera_rotate_options.270'),
                 value: '270',
               },
-              {
-                text: $t('app.setting.camera_rotate_options.360'),
-                value: '360',
-              },
             ]"
             item-value="value"
             item-text="text"

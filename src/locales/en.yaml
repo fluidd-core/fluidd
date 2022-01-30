@@ -340,7 +340,6 @@ app:
       90: 90°
       180: 180°
       270: 270°
-      360: 360°
     label:
       all_off: All off
       all_on: All on
