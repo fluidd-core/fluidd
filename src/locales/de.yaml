@@ -281,6 +281,7 @@ app:
       enable: Aktivieren
       enable_notifications: Aktiviere Benachrichtigung
       fps_target: FPS Ziel
+      fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode Koordinaten verwenden
       invert_x_control: X-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren

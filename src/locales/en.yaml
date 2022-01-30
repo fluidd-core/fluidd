@@ -363,6 +363,7 @@ app:
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
       fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
       invert_x_control: Invert X control
