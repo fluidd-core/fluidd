@@ -38,14 +38,14 @@
 
       <v-divider></v-divider>
 
-      <app-setting :title="$t('app.setting.label.formatdatetime')">
+      <app-setting :title="$t('app.setting.label.date_time_format')">
         <v-select
           filled
           dense
           hide-details="auto"
           :items="[
-            { text: $t('app.setting.dateformat.monthdayyear'), value: 'MMM. DD' },
-            { text: $t('app.setting.dateformat.daymonthyear'), value: 'DD MMM.' }
+            { text: $filters.formatDateTime(current_time, 'MMM. DD, YYYY'), value: 'MMM. DD,' },
+            { text: $filters.formatDateTime(current_time, 'DD MMM. YYYY'), value: 'DD MMM.' }
           ]"
           item-value="value"
           item-text="text"
@@ -57,8 +57,8 @@
           dense
           hide-details="auto"
           :items="[
-            { text: 'am/pm', value: 'h:mm a' },
-            { text: '24h', value: 'HH:mm' }
+            { text: $filters.formatDateTime(current_time, 'h:mm a'), value: 'hh:mm a' },
+            { text: $filters.formatDateTime(current_time, 'HH:mm'), value: 'HH:mm' }
           ]"
           item-value="value"
           item-text="text"
@@ -212,6 +212,10 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
+  }
+
+  get current_time () {
+    return Math.floor(Date.now() / 1000)
   }
 }
 </script>
