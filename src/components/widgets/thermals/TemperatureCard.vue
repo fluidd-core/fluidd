@@ -18,6 +18,20 @@
 
     <template v-slot:menu>
       <app-btn-collapse-group>
+        <app-btn-collapse-group
+          :collapsed="true"
+          menu-icon="$cog"
+        >
+          <v-checkbox
+            v-model="showRateOfChange"
+            :label="$t('app.setting.label.show_rate_of_change')"
+            color="primary"
+            hide-details
+            class="mx-2 mt-2 mb-2"
+          >
+          </v-checkbox>
+        </app-btn-collapse-group>
+
         <app-btn
           small
           class="ma-1"
@@ -107,6 +121,18 @@ export default class TemperatureCard extends Mixins(StateMixin) {
   set chartVisible (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.chartVisible',
+      value,
+      server: true
+    })
+  }
+
+  get showRateOfChange () {
+    return this.$store.state.config.uiSettings.general.showRateOfChange
+  }
+
+  set showRateOfChange (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showRateOfChange',
       value,
       server: true
     })

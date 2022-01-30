@@ -51,6 +51,7 @@ export interface GeneralConfig {
   dateformat: string;
   timeformat: string;
   confirmDirtyEditorClose: boolean;
+  showRateOfChange: boolean;
 }
 
 // Config stored in moonraker db

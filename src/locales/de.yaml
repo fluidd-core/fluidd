@@ -27,6 +27,7 @@ app:
       item: Element
       power: Leistung
       target: Ziel
+      rate_of_change: Änderung
     tooltip:
       help: >-
         Halten Sie die Umschalttaste gedrückt, um zu zoomen. <br />Klicken Sie
@@ -289,6 +290,7 @@ app:
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
+      show_rate_of_change: Temperatur-Änderungsrate anzeigen
       thermal_preset_name: Name des Voreinstellungsprofils
       z_adjust_values: Z-Werte anpassen
     timer_options:
