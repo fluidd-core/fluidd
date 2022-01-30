@@ -42,6 +42,13 @@
           </app-nav-item>
 
           <app-nav-item
+            v-if="hasCameras"
+            icon="$camera"
+            to="/camera">
+            {{ $tc('app.general.title.camera', 2) }}
+          </app-nav-item>
+
+          <app-nav-item
             v-if="supportsHistory"
             icon="$history"
             to="/history">
@@ -108,6 +115,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
+  }
+
+  get hasCameras (): boolean {
+    return this.$store.getters['cameras/getEnabledCameras']?.length
   }
 
   emitChange (e: boolean) {

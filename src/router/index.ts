@@ -4,6 +4,7 @@ import VueRouter, { NavigationGuardNext, Route, RouteConfig } from 'vue-router'
 // Views
 import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
+import Cameras from '@/views/Cameras.vue'
 import Tune from '@/views/Tune.vue'
 import History from '@/views/History.vue'
 import Configure from '@/views/Configure.vue'
@@ -40,6 +41,12 @@ const routes: Array<RouteConfig> = [
     path: '/jobs',
     name: 'Jobs',
     component: Jobs,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/camera',
+    name: 'Cameras',
+    component: Cameras,
     beforeEnter: ifAuthenticated
   },
   {

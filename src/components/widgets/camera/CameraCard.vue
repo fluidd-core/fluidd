@@ -4,7 +4,8 @@
     icon="$camera"
     :lazy="false"
     :draggable="true"
-    layout-path="dashboard.camera-card"
+    :collapsable="collapsable"
+    :layoutPath="layoutPath"
     @collapsed="collapsed = $event">
 
     <template v-slot:menu>
@@ -44,7 +45,6 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
-// import { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: {
@@ -56,10 +56,14 @@ export default class CameraCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
-  dialogState: any = {
-    open: false,
-    camera: null
-  }
+  @Prop({ type: Boolean, default: true })
+  expandable!: boolean
+
+  @Prop({ type: Boolean, default: true })
+  collapsable!: boolean
+
+  @Prop({ type: String, default: 'dashboard.camera-card' })
+  layoutPath!: string
 
   collapsed = false
 
