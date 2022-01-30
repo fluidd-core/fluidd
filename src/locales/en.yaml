@@ -343,7 +343,7 @@ app:
     label:
       all_off: All off
       all_on: All on
-      camera_rotate_by: Rotate By
+      camera_rotate_by: Rotate by
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
