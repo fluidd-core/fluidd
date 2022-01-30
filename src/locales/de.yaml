@@ -263,7 +263,7 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
     camera_rotate_options:
-      none: Keine
+      none: Keine Drehung
       90: 90°
       180: 180°
       270: 270°
