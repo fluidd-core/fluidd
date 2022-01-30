@@ -123,6 +123,7 @@ export default class CameraItem extends Vue {
         const hostUrl = new URL(document.URL)
         const url = new URL(this.cameraUrl, hostUrl.origin)
         url.searchParams.set('cacheBust', this.refresh.toString())
+        this.request_start_time = performance.now()
         this.cameraUrl = url.toString()
       })
     } else {
