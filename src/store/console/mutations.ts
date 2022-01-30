@@ -3,7 +3,22 @@ import { v4 as uuidv4 } from 'uuid'
 import { MutationTree } from 'vuex'
 import { defaultState } from './'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
+import { ConsoleEntry, ConsoleFilter, ConsoleFilterType, ConsoleState } from './types'
+
+const _compileExpression = (filter: ConsoleFilter): RegExp => {
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+  function escapeRegExp (s: string) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  }
+  switch (filter.type) {
+    case ConsoleFilterType.Contains:
+      return new RegExp(`.*${escapeRegExp(filter.value)}.*`, 'i')
+    case ConsoleFilterType.StartsWith:
+      return new RegExp(`^${escapeRegExp(filter.value)}.*`, 'i')
+    case ConsoleFilterType.Expression:
+      return new RegExp(filter.value)
+  }
+}
 
 export const mutations: MutationTree<ConsoleState> = {
   /**
@@ -48,7 +63,7 @@ export const mutations: MutationTree<ConsoleState> = {
   setInitConsole (state, payload: ConsoleState) {
     if (payload) {
       if (payload.consoleFilters) {
-        payload.consoleFiltersRegexp = payload.consoleFilters.map(f => new RegExp(f.expression))
+        payload.consoleFiltersRegexp = payload.consoleFilters.map(f => _compileExpression(f))
       }
       Object.assign(state, payload)
     }
@@ -78,7 +93,7 @@ export const mutations: MutationTree<ConsoleState> = {
   },
 
   setFilter (state, filter: ConsoleFilter) {
-    const filterRegex = new RegExp(filter.expression)
+    const filterRegex = _compileExpression(filter)
 
     if (filter.id) {
       const i = state.consoleFilters.findIndex(c => c.id === filter.id)

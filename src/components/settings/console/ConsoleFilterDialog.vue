@@ -2,7 +2,7 @@
   <v-dialog
     :value="value"
     @input="$emit('input', $event)"
-    :max-width="350"
+    :max-width="500"
   >
     <v-form
       class="mt-3"
@@ -17,7 +17,7 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.enable')">
+        <app-setting :title="$t('app.setting.label.enable')" rCols="8">
           <v-switch
             class="mt-0"
             hide-details="auto"
@@ -27,7 +27,7 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.general.label.name')">
+        <app-setting :title="$t('app.general.label.name')" rCols="8">
           <v-text-field
             filled
             dense
@@ -40,14 +40,29 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.expression')">
+        <app-setting :title="$t('app.setting.label.type')" rCols="8">
+          <v-select
+            filled
+            dense
+            single-line
+            hide-details="auto"
+            :items="types"
+            item-value="value"
+            item-text="text"
+            v-model="filter.type"
+          ></v-select>
+        </app-setting>
+
+        <v-divider />
+
+        <app-setting :title="type.text" rCols="8">
           <v-text-field
             filled
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.validExpression]"
-            v-model="filter.expression">
+            :rules="type.rules"
+            v-model="filter.value">
           </v-text-field>
         </app-setting>
 
@@ -64,7 +79,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { ConsoleFilter } from '@/store/console/types'
+import { ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleFilterDialog extends Vue {
@@ -78,6 +93,28 @@ export default class ConsoleFilterDialog extends Vue {
   filter!: ConsoleFilter
 
   valid = true
+
+  types = [
+    {
+      text: this.$t('app.setting.label.contains'),
+      value: ConsoleFilterType.Contains,
+      rules: [this.rules.required]
+    },
+    {
+      text: this.$t('app.setting.label.starts_with'),
+      value: ConsoleFilterType.StartsWith,
+      rules: [this.rules.required]
+    },
+    {
+      text: this.$t('app.setting.label.expression'),
+      value: ConsoleFilterType.Expression,
+      rules: [this.rules.required, this.rules.validExpression]
+    }
+  ]
+
+  get type () {
+    return this.types.find(f => f.value === this.filter?.type) || this.types[0]
+  }
 
   handleSave () {
     if (this.valid) {

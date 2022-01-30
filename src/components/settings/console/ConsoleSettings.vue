@@ -68,7 +68,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { ConsoleFilter } from '@/store/console/types'
+import { ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
 import ConsoleFilterDialog from './ConsoleFilterDialog.vue'
 
 @Component({
@@ -94,7 +94,8 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
         id: '',
         enabled: true,
         name: '',
-        expression: ''
+        type: ConsoleFilterType.Contains,
+        value: ''
       }
 
     this.dialogState = {
