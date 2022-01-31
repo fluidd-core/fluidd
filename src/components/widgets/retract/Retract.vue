@@ -111,7 +111,7 @@ export default class Retract extends Mixins(StateMixin) {
 
   get unretract_extra_length_max () {
     if (this.defaults.unretract_extra_length <= 0) return 15
-    return Math.round(this.defaults.retract_length * 2 * 100) / 100
+    return Math.round(this.defaults.unretract_extra_length * 2 * 100) / 100
   }
 
   get defaults () {
