@@ -84,9 +84,12 @@ export default class CameraItem extends Vue {
       transforms += config && config.flipX ? ' scaleX(-1)' : ''
       transforms += config && config.flipY ? ' scaleY(-1)' : ''
     } else {
-      let scaling = element.clientHeight / element.clientWidth
-      if (scaling > 1) {
-        scaling = element.clientWidth / element.clientHeight
+      let scaling = 1
+      if (config.rotate !== '180') {
+        scaling = element.clientHeight / element.clientWidth
+        if (scaling > 1) {
+          scaling = element.clientWidth / element.clientHeight
+        }
       }
 
       transforms += config && config.flipX ? ` scaleX(-${scaling})` : ` scaleX(${scaling})`
