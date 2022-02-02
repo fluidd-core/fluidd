@@ -120,9 +120,9 @@ export default class CameraItem extends Vue {
    * component.
    */
   beforeDestroy () {
+    this.cancelCameraTransform()
     this.cameraUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
-    this.cancelCameraTransform()
   }
 
   /**
@@ -219,15 +219,17 @@ export default class CameraItem extends Vue {
     let animating = true
 
     const animate = () => {
-      if (!animating) {
-        return
-      }
-
       requestAnimationFrame(() => {
-        const image = this.$refs.camera_image as HTMLElement
+        if (!animating) {
+          return
+        }
 
-        // Call to Object.assign() might not be suitable here.
-        Object.assign(image.style, this.cameraTransformStyle(image))
+        const image = this.$refs.camera_image as HTMLElement | undefined
+
+        if (image) {
+          // Call to Object.assign() might not be suitable here.
+          Object.assign(image.style, this.cameraTransformStyle(image))
+        }
 
         animate()
       })
