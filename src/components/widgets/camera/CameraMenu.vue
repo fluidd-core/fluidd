@@ -8,7 +8,6 @@
   >
   <template v-slot:activator="{ on, attrs, value }">
     <app-btn
-      :disabled="!klippyReady"
       v-bind="attrs" v-on="on"
       small
     >
