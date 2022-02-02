@@ -7,20 +7,21 @@ permalink: /features/cameras
 ---
 
 # Cameras
+
 {: .no_toc }
 
 ---
 
-Fluidd (and FluiddPI) has built in support for web cameras.
+Fluidd (and FluiddPI) have built-in support for web cameras.
 
-On older versions of FluiddPI (pre 1.15) you can edit the file found here;
+On older versions of FluiddPI (1.14 and earlier) you can edit the file found at
 `/boot/fluiddpi.txt`.
 
-Versions of FluiddPI after 1.14 allow configuring your cameras from the same
-place as your other configuration files, and can be found in the `webcam.txt`
-file. If you are using the Pi camera, and want to make changes to the default settings, you may need to uncomment and set camera="raspi" instead of auto. Otherwise, it might detect it as a USB camera and apply the settings for the USB camera. This link outlines some of the changes you can make to it: https://community.octoprint.org/t/available-mjpg-streamer-configuration-options/1106
+With FluiddPI 1.15 and later, you may configure your cameras from the same
+place as your other configuration files. The file to edit is the `webcam.txt`
+file.
 
-In both cases, Instructions are contained within the files.
+In both cases, instructions are contained within the files.
 
 You can add up to four cameras to display on your dashboard.
 
@@ -41,6 +42,8 @@ Currently supported types are;
   for a `<video>` tag. You should only use this if you can provide a URL
   that supports native HTML5 video tags.
 
-Head on over to the UI Settings page to define your cameras.
+A note about Raspberry Pi cameras that use the MIPI CSI Camera Port: if you are using the Pi camera, and want to make changes to the default settings, you may need to uncomment and set `camera="raspi"` instead of `auto`. Otherwise, it might detect it as a USB camera and apply the settings for the USB camera. This link outlines some of the changes you can make to it: <https://community.octoprint.org/t/available-mjpg-streamer-configuration-options/1106>
 
-![screenshot](/assets/images/camera_settings.png)
+Once you have configured `webcam.txt`, head on over to the UI Settings page to define your cameras.
+
+![screenshot](../assets/images/camera_settings.png)
