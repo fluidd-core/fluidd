@@ -17,7 +17,7 @@
 
       <v-divider/>
 
-      <app-setting :title="$t('app.setting.label.group_lower')">
+      <app-setting :title="$t('app.setting.label.group_lower_layers')">
         <v-switch
           @click.native.stop
           v-model="groupLowerLayers"
