@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleState } from './types'
+import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
@@ -80,5 +80,21 @@ export const actions: ActionTree<ConsoleState, RootState> = {
   async onUpdateAutoScroll ({ commit }, payload) {
     commit('setAutoScroll', payload)
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.autoScroll', payload)
+  },
+
+  /**
+   * Remove a filter
+   */
+  async onRemoveFilter ({ commit, state }, filter: ConsoleFilter) {
+    commit('setRemoveFilter', filter)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+  },
+
+  /**
+    * Add/Edit a filter
+    */
+  async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
+    commit('setFilter', filter)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   }
 }
