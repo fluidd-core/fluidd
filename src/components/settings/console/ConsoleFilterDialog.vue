@@ -17,7 +17,7 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.enable')" rCols="8">
+        <app-setting :title="$t('app.setting.label.enable')" :r-cols="8">
           <v-switch
             class="mt-0"
             hide-details="auto"
@@ -27,7 +27,7 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.general.label.name')" rCols="8">
+        <app-setting :title="$t('app.general.label.name')" :r-cols="8">
           <v-text-field
             filled
             dense
@@ -40,7 +40,7 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.type')" rCols="8">
+        <app-setting :title="$t('app.setting.label.type')" :r-cols="8">
           <v-select
             filled
             dense
@@ -55,7 +55,7 @@
 
         <v-divider />
 
-        <app-setting :title="type.text" rCols="8">
+        <app-setting :title="type.text" :r-cols="8">
           <v-text-field
             filled
             dense
