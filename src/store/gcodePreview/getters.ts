@@ -11,6 +11,7 @@ import {
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
+import { state as configState } from '@/store/config/index'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -40,9 +41,8 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     let zStart = 0
     let zLast = NaN
 
-    const groupLowerLayers = (rootState && rootState.config)
-      ? rootState.config.uiSettings.gcodePreview.groupLowerLayers
-      : false
+    const { uiSettings } = (rootState && rootState.config) ? rootState.config : configState
+    const groupLowerLayers = uiSettings.gcodePreview.groupLowerLayers
 
     const zCmp = groupLowerLayers
       ? (a: number, b: number) => Number.isNaN(a) || a < b
