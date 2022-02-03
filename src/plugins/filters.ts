@@ -154,6 +154,9 @@ export const Filters = {
     if (sortBy === null || !sortBy.length) return items
     const stringCollator = new Intl.Collator(locale, { sensitivity: 'accent', usage: 'sort' })
     return items.sort((a: any, b: any) => {
+      if (a !== null && a.type === 'directory' && a.name === '..') return -1
+      if (b !== null && b.type === 'directory' && b.name === '..') return 1
+
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
