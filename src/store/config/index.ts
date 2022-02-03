@@ -103,7 +103,7 @@ export const defaultState = (): ConfigState => {
         retractionIconSize: 0.6,
         drawBackground: true,
         showAnimations: true,
-        groupLower: true,
+        groupLowerLayers: true,
         flip: {
           horizontal: false,
           vertical: true

@@ -40,11 +40,11 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     let zStart = 0
     let zLast = NaN
 
-    const groupLower = (rootState && rootState.config)
-      ? rootState.config.uiSettings.gcodePreview.groupLower
+    const groupLowerLayers = (rootState && rootState.config)
+      ? rootState.config.uiSettings.gcodePreview.groupLowerLayers
       : false
 
-    const zCmp = groupLower
+    const zCmp = groupLowerLayers
       ? (a: number, b: number) => Number.isNaN(a) || a < b
       : (a: number, b: number) => a !== b
 

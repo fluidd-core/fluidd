@@ -20,7 +20,7 @@
       <app-setting :title="$t('app.setting.label.group_lower')">
         <v-switch
           @click.native.stop
-          v-model="groupLower"
+          v-model="groupLowerLayers"
           hide-details
           class="mb-5"
         ></v-switch>
@@ -217,13 +217,13 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get groupLower () {
-    return this.$store.state.config.uiSettings.gcodePreview.groupLower
+  get groupLowerLayers () {
+    return this.$store.state.config.uiSettings.gcodePreview.groupLowerLayers
   }
 
-  set groupLower (value: boolean) {
+  set groupLowerLayers (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.gcodePreview.groupLower',
+      path: 'uiSettings.gcodePreview.groupLowerLayers',
       value,
       server: true
     })
