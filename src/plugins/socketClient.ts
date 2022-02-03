@@ -154,6 +154,20 @@ export class WebSocketClient {
                 // Normally, we let notifications through with no cache...
                 if (this.store) this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
               } else {
+                // bypass cache for toolhead position
+                if (d.params[0].toolhead?.position) {
+                  const toolhead = { toolhead: { position: [...d.params[0].toolhead.position] } }
+                  delete d.params[0].toolhead?.position
+                  if (this.store) this.store.dispatch('socket/' + camelCase(d.method), toolhead)
+                }
+
+                // bypass cache for motion_report
+                if (d.params[0].motion_report?.live_position) {
+                  const motionReport = { motion_report: { live_position: [...d.params[0].motion_report.live_position] } }
+                  delete d.params[0].motion_report.live_position
+                  if (this.store) this.store.dispatch('socket/' + camelCase(d.method), motionReport)
+                }
+
                 // ...However, status notifications come throug thicc and fast,
                 // so we cache these and send them through every second.
                 const date: number = (
@@ -292,7 +306,7 @@ interface SocketRequest {
 interface SocketResponse {
   jsonrpc: string; // always available
   method?: string; // generic responses
-  params?: [object, number?]; // generic responses
+  params?: [PrinterObjects, number?]; // generic responses
   id?: number; // specific response
   result?: object; // specific response
   error?: string | SocketError; // specific response
@@ -306,4 +320,9 @@ interface SocketError {
 interface CachedParams {
   timestamp: number;
   params: object;
+}
+
+interface PrinterObjects{
+  toolhead?: {position?: []};
+  motion_report?: {live_position?: []};
 }
