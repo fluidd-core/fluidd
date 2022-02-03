@@ -156,13 +156,13 @@
 
           <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="print_start_time">
             <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
-              {{ $filters.formatDateTime(item.print_start_time) }}
+              {{ $filters.formatDateTime(item.print_start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
             </span>
           </file-row-item>
 
           <file-row-item :headers="headers" item-value="modified">
             <span v-if="item.modified !== undefined && item.modified !== null">
-              {{ $filters.formatDateTime(item.modified) }}
+              {{ $filters.formatDateTime(item.modified, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
             </span>
           </file-row-item>
 
