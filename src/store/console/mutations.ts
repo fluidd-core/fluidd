@@ -112,6 +112,7 @@ export const mutations: MutationTree<ConsoleState> = {
     const i = state.consoleFilters.findIndex(c => c.id === filter.id)
     if (i >= 0) {
       state.consoleFilters.splice(i, 1)
+      state.consoleFiltersRegexp.splice(i, 1)
     }
   }
 }
