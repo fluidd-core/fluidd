@@ -157,20 +157,17 @@ export class WebSocketClient {
                 // ...However, status notifications come throug thicc and fast,
                 // so we cache these and send them through every second.
 
-                // bypass cache for toolhead position
-                if (d.params[0].toolhead?.position) {
-                  const toolhead = { toolhead: { position: [...d.params[0].toolhead.position] } }
-                  delete d.params[0].toolhead?.position
-                  if (this.store) this.store.dispatch('socket/' + camelCase(d.method), toolhead)
+                // bypass cache for toolhead's position and live_position
+                const position = d.params[0].toolhead?.position
+                const live_position = d.params[0].motion_report?.live_position
+                if (position || live_position) {
+                  const data: PrinterObjects = {}
+                  if (position) data.toolhead = { position }
+                  if (live_position) data.motion_report = { live_position }
+                  this.store.dispatch('socket/' + camelCase(d.method), data)
                 }
 
-                // bypass cache for live_position
-                if (d.params[0].motion_report?.live_position) {
-                  const livePosition = { motion_report: { live_position: [...d.params[0].motion_report.live_position] } }
-                  delete d.params[0].motion_report.live_position
-                  if (this.store) this.store.dispatch('socket/' + camelCase(d.method), livePosition)
-                }
-                //caching the rest of status notifications
+                // caching the rest of status notifications
                 const date: number = (
                   d.params[1] === 2 &&
                   isNaN(d.params[1])
