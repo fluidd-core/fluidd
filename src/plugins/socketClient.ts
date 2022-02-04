@@ -176,7 +176,7 @@ export class WebSocketClient {
                   : new Date().getTime()
                 this.cache = (!this.cache)
                   ? { timestamp: date, params: d.params[0] }
-                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, d.params[0]) }
+                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, d.params[0], { arrayMerge: (x, y) => y }) }
 
                 // If there's a second or more difference, flush the cache.
                 if (this.cache && date - this.cache.timestamp >= 1000) {
