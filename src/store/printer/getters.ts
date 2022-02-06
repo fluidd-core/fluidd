@@ -576,7 +576,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getHasWarnings: (state, getters, rootState) => {
     if (
       (rootState.socket && rootState.socket.open && rootState.socket.ready) &&
-      (getters.getPrinterWarnings.length > 0 || getters.getMoonrakerFailedComponents.length > 0 || getters.getMoonrakerWarnings.length > 0)
+      (getters.getPrinterWarnings.length > 0 || getters.getKlipperWarnings.length > 0 ||
+        getters.getMoonrakerFailedComponents.length > 0 || getters.getMoonrakerWarnings.length > 0)
     ) {
       return true
     } else {
@@ -607,6 +608,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
       warnings.push({ message: 'CANCEL_PRINT macro not found in configuration.' })
     }
     return warnings
+  },
+
+  getKlipperWarnings: (state) => {
+    return state.printer?.configfile?.warnings || []
   },
 
   getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
