@@ -115,7 +115,7 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
     let gcode = 'Z_OFFSET_APPLY_ENDSTOP'
 
     if (this.printerHasProbe) {
-      msg = this.$tc('app.general.simple_form.msg.apply_z_offset_probe')
+      msg = this.$tc('app.general.simple_form.msg.apply_z_offset_probe ')
       gcode = 'Z_OFFSET_APPLY_PROBE'
     }
 
