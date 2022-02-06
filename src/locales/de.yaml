@@ -263,7 +263,7 @@ app:
         required: Erforderlich
       msg:
         confirm: Sind Sie sicher?
-        confirm_power_device_toggle: Sind Sie sicher? Dies schaltet den Status des Geräts um
+        confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
         confirm_shutdown_host: Sind Sie sicher? Das Host-System wird heruntergefahren.
         unsaved_changes: >-
@@ -320,7 +320,7 @@ app:
     tooltip:
       estop: NOT-AUS
       reload_klipper: Lädt die Klipper-Konfiguration neu.
-      reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs.
+      reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
   history:
     msg:
