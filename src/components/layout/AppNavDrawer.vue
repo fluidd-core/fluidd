@@ -114,7 +114,7 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
   }
 
   get hasSubNavigation () {
-    return this.$route.meta.hasSubNavigation
+    return this.$route.meta?.hasSubNavigation ?? false
   }
 
   get isMobile () {

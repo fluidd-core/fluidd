@@ -316,6 +316,8 @@ export const Waits = Object.freeze({
   onSetFanSpeed: 'onSetFanSpeed',
   onSetOutputPin: 'onSetOutputPin',
   onZAdjust: 'onZAdjust',
+  onZApply: 'onZApply',
+  onSaveConfig: 'onSaveConfig',
   onRetract: 'onRetract',
   onExtrude: 'onExtrude',
   onMeshCalibrate: 'onMeshCalibrate',
