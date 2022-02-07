@@ -57,7 +57,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     path: '/queue',
-    name: 'Qeuue',
+    name: 'Queue',
     component: Queue,
     beforeEnter: ifAuthenticated
   },

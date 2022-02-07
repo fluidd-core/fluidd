@@ -65,9 +65,7 @@ export default class JobQueueCard extends Vue {
   }
 
   get queueStatus () {
-    const status = this.$store.getters['files/getQueue'].status
-    console.log(status)
-    return status
+    return this.$store.getters['files/getQueue'].status
   }
 
   handleLoadAll () {
