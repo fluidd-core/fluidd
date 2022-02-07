@@ -194,7 +194,7 @@ app:
       edit_user: Editar usuario
       extrude_length: Longitud de extrusión
       extrude_speed: Velocidad de extrusión
-      filamnet: Filamento
+      filament: Filamento
       file: Archivo
       finish_time: Final
       flow: Flujo

@@ -11,6 +11,7 @@
             class="v-input--width-small"
             type="number"
             @change="moveTo('X', $event)"
+            :disabled="!xHomed"
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           ></v-text-field>
@@ -24,6 +25,7 @@
             class="v-input--width-small"
             type="number"
             @change="moveTo('Y', $event)"
+            :disabled="!yHomed"
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           ></v-text-field>
@@ -37,6 +39,7 @@
             class="v-input--width-small"
             type="number"
             @change="moveTo('Z', $event)"
+            :disabled="!zHomed"
             :readonly="printerBusy"
             :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           ></v-text-field>
@@ -59,9 +62,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
-export default class ToolheadPosition extends Mixins(StateMixin) {
+export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
   get gcodePosition () {
     return this.$store.state.printer.printer.gcode_move.gcode_position
   }
