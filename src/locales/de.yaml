@@ -373,6 +373,7 @@ app:
       flip_horizontal: Horizontal spiegeln
       flip_vertical: Vertikal spiegeln
       fps_target: FPS Ziel
+      fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode Koordinaten verwenden
       height: Höhe
       invert_x_control: X-Steuerung invertieren

@@ -377,6 +377,7 @@ app:
       flip_vertical: Vertical Flip
       filter: Filter | Filters
       fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
       group_lower_layers: Group lower layers
