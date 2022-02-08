@@ -138,6 +138,7 @@ export interface GcodePreviewConfig {
   retractionIconSize: number;
   drawBackground: boolean;
   showAnimations: boolean;
+  groupLowerLayers: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;
