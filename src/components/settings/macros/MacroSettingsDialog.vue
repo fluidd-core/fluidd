@@ -26,6 +26,21 @@
         <!-- <pre>{{ newMacro }}</pre> -->
 
         <app-setting
+          :title="$t('app.general.label.alias')"
+        >
+          <v-text-field
+            outlined
+            v-model="newMacro.alias"
+            filled
+            dense
+            single-line
+            hide-details
+          ></v-text-field>
+        </app-setting>
+
+        <v-divider />
+
+        <app-setting
           :title="$t('app.general.label.category')"
         >
           <v-select

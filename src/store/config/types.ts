@@ -47,6 +47,10 @@ export interface GeneralConfig {
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
+  confirmOnPowerDeviceChange: boolean;
+  dateformat: string;
+  timeformat: string;
+  confirmDirtyEditorClose: boolean;
 }
 
 // Config stored in moonraker db
@@ -134,6 +138,7 @@ export interface GcodePreviewConfig {
   retractionIconSize: number;
   drawBackground: boolean;
   showAnimations: boolean;
+  groupLowerLayers: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;

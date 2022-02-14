@@ -45,11 +45,13 @@ export default class OutputFan extends Mixins(StateMixin) {
   get prettyValue () {
     return (this.value === 0)
       ? this.$t('app.general.label.off')
-      : `${this.value.toFixed()}<small>%</small>`
+      : this.$t('app.general.label.on')
   }
 
   get value () {
-    return (this.fan.speed) ? Math.round(this.fan.speed * 100) : 0
+    if (!this.fan.speed) return 0
+    const speed = this.fan.speed / (this.fan.config.max_power || 1)
+    return Math.round(speed * 100)
   }
 
   handleChange (target: number) {
