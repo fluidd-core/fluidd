@@ -14,17 +14,17 @@ easily to implement UI.
 
 ## Running Fluidd locally
 
-### Install Node v14
+### Install Node v16
 
-Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v14.x.
+Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v16.x.
 
 For example, on Ubuntu flavored Linux distributions,
 follow the instructions from [NodeSource](https://github.com/nodesource/distributions/blob/master/README.md#deb)
-under "Node.js v14.x":
+under "Node.js v16.x":
 
 ```bash
 # Using Ubuntu
-$ curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+$ curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 $ sudo apt-get install -y nodejs
 ```
 
@@ -32,9 +32,9 @@ Check that Node.js was installed properly:
 
 ```bash
 $ node --version
-v14.18.1
+v16.13.2
 $ npm --version
-6.14.15
+8.3.2
 ```
 
 ### Install dependencies
