@@ -11,9 +11,27 @@
 
       <v-divider></v-divider>
 
-      <v-card-text class="px-4 pt-4">
-        <v-text-field readonly outlined :value="apiKey"></v-text-field>
+      <v-card-text class="py-4">
+        <v-text-field
+          :value="apiKey"
+          filled
+          dense
+          single-line
+          hide-details
+          readonly
+          outlined
+        ></v-text-field>
       </v-card-text>
+
+      <v-layout
+        align-center
+        column
+      >
+        <app-qr-code
+          :value="apiKey"
+          centered
+        ></app-qr-code>
+      </v-layout>
 
       <v-divider />
 
