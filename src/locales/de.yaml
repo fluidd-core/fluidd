@@ -267,6 +267,7 @@ app:
     label:
       all_off: Alle aus
       all_on: Alle an
+      auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_stream_type: Art des Kamerastreams
@@ -299,6 +300,7 @@ app:
     title:
       camera: Kamera | Kameras
       general: Allgemein
+      file_editor: Datei-Editor
       macros: Makros
       theme: Farbschema
       thermal_presets: Temperatur-Voreinstellungen
