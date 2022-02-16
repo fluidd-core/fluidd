@@ -41,6 +41,14 @@
           class="mx-2 mb-2"
         >
         </v-checkbox>
+        <v-checkbox
+          v-model="flipLayout"
+          :label="$t('app.console.label.flip_layout')"
+          color="primary"
+          hide-details
+          class="mx-2 mb-2"
+        >
+        </v-checkbox>
 
         <template v-for="(filter, index) in filters">
           <v-divider
@@ -96,6 +104,18 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   set hideTempWaits (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.hideTempWaits',
+      value,
+      server: true
+    })
+  }
+
+  get flipLayout (): boolean {
+    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+  }
+
+  set flipLayout (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.flipConsoleLayout',
       value,
       server: true
     })

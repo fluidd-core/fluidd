@@ -1,6 +1,12 @@
 <template>
   <div
     class="console">
+    <console-command
+      v-if="!readonly && flipLayout"
+      v-model="consoleCommand"
+      @send="sendCommand"
+    >
+    </console-command>
     <v-card
       flat
       class="console-wrapper"
@@ -36,7 +42,7 @@
       </DynamicScroller>
     </v-card>
     <console-command
-      v-if="!readonly"
+      v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
     >
@@ -83,6 +89,10 @@ export default class Console extends Mixins(StateMixin) {
 
   set consoleCommand (val: string) {
     this.$store.commit('console/setConsoleCommand', val)
+  }
+
+  get flipLayout (): boolean {
+    return this.$store.state.config.uiSettings.general.flipConsoleLayout
   }
 
   mounted () {

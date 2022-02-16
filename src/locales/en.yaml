@@ -37,6 +37,7 @@ app:
   console:
     label:
       auto_scroll: Auto scroll
+      flip_layout: Flip layout
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'

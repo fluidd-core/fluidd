@@ -51,6 +51,7 @@ export interface GeneralConfig {
   confirmOnPowerDeviceChange: boolean;
   dateformat: string;
   timeformat: string;
+  flipConsoleLayout: boolean;
 }
 
 // Config stored in moonraker db
