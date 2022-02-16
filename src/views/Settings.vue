@@ -4,6 +4,7 @@
       <router-view v-if="authenticated && socketConnected" />
       <div v-if="$route.matched.length === 1">
         <general-settings></general-settings>
+        <console-settings></console-settings>
         <theme-settings></theme-settings>
         <file-editor-settings></file-editor-settings>
         <auth-settings v-if="supportsAuth"></auth-settings>
@@ -31,6 +32,7 @@ import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
 import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue'
 import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
+import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
 import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
 
 @Component({
@@ -44,6 +46,7 @@ import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
     VersionSettings,
     GcodePreviewSettings,
     AuthSettings,
+    ConsoleSettings,
     FileEditorSettings
   }
 })

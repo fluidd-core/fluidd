@@ -1,19 +1,20 @@
 app:
   bedmesh:
     label:
-      flat_surface: Ebene Flächen anzeigen
-      mesh_matrix: Mesh matrix
-      probed_matrix: Probed matrix
+      box_scale: Skalierung
+      flat_surface: Ebene anzeigen
+      mesh_matrix: Mesh-Matrix
+      probed_matrix: Testpunktmatrix
       profile_name: Profilname
       remove_profile: Profil %{name} löschen
-      scale: Skaliere bei min / max
+      scale: Farbskala
       wireframe: Drahtmodell
     msg:
       hint: >-
         Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann
         ausgewählt werden das Profil %{name} zu löschen.
-      not_found: Keine Bett Meshes gefunden.
-      not_loaded: Kein mesh geladen
+      not_found: Keine Bett-Meshes gefunden.
+      not_loaded: Kein Mesh geladen
     tooltip:
       calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
       delete: Profil löschen. Achtung, der Drucker wird neu gestartet
@@ -25,6 +26,8 @@ app:
     label:
       current: Aktuell
       item: Element
+      'off': Graph aus
+      'on': Graph an
       power: Leistung
       target: Ziel
     tooltip:
@@ -34,9 +37,12 @@ app:
         auf eine Leistung, um sie im Diagramm ein-/auszublenden.
   console:
     label:
+      auto_scroll: Automatisches Scrollen
       hide_temp_waits: Temperaturbenachrichtigungen ausblenden
     placeholder:
-      command: '''tab'' für Autovervollständigung, ''help'' für Befehle ''arrows'' für Verlauf'
+      command: >-
+        Tab für Autovervollständigung, 'help' für Befehle, Pfeiltasten für
+        Verlauf
   endpoint:
     error:
       cant_connect: >-
@@ -68,11 +74,12 @@ app:
   file_system:
     filters:
       label:
-        print_start_time: Filter gedruckt
+        print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
+      diskinfo: Speicherinformationen
       downloaded: Heruntergeladen
       file_name: Dateiname
       transfer_rate: Transferrate
@@ -87,11 +94,31 @@ app:
       add_dir: Ordner hinzufügen
       add_file: Datei hinzufügen
       download_file: Empfange Datei
+      keyboard_shortcuts: Tastaturkürzel
       rename_dir: Ordner umbennen
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
+      root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
+  gcode:
+    btn:
+      load_current_file: Aktuelle Datei laden
+    label:
+      current_layer_height: Aktuelle Schichthöhe
+      follow_progress: Fortschritt folgen
+      layer: Schicht
+      layers: Schichten
+      parsed: Verarbeitet
+      show_extrusions: Extrusionen zeigen
+      show_moves: Bewegungen zeigen
+      show_next_layer: Nächste Schicht zeigen
+      show_previous_layer: Vorherige Schicht zeigen
+      show_retractions: Retracten zeigen
+    msg:
+      confirm: >-
+        Die Datei "%{filename}" ist %{size} groß, dies kann sehr
+        Ressourcenintensiv für Ihr System sein. Sind Sie sicher?
   general:
     btn:
       add: Hinzufügen
@@ -107,12 +134,18 @@ app:
       config_reference: Config Referenz
       download: Herunterladen
       edit: Bearbeiten
+      exit_layout: Layout-Modus verlassen
       extrude: Extrudieren
+      heaters_off: Heizelemente aus
       load_all: Alle laden
+      more_information: Mehr Informationen
       pause: Pause
       preheat: Vorheizen
+      presets: Voreinstellungen
+      preview_gcode: Gcode-Vorschau
       quad_gantry_level: QGL
       reboot: Neustarten
+      refresh: Aktualisieren
       remove: Entfernen
       remove_all: Alle Entfernen
       rename: Umbenennen
@@ -120,14 +153,18 @@ app:
       reset_file: Datei zurücksetzen
       reset_layout: Layout zurücksetzen
       restart_firmware: Firmware Neustarten
-      restart_service_klipper: Klipper Neustarten
-      restart_service_moonraker: Moonraker Neustarten
+      restart_service: '%{service} neustarten'
+      restart_service_klipper: Klipper neustarten
+      restart_service_moonraker: Moonraker neustarten
       resume: Fortfahren
       retract: Retracten
       save: Speichern
       save_as: Speichern als
       save_restart: Speichern & Neustarten
+      send: Senden
+      set_color: Farbe setzen
       shutdown: Herunterfahren
+      socket_reconnect: Neu verbinden
       socket_refresh: Aktualisieren erzwingen
       upload: Hochladen
       upload_print: Hochladen & Drucken
@@ -146,30 +183,55 @@ app:
     label:
       accel_to_decel: Beschleunigen zu Bremsen
       acceleration: Beschleunigung
+      actual_time: Tatsächlich
       add_camera: Kamera hinzufügen
       add_preset: Voreinstellingen hinzufügen
+      add_user: Benutzer hinzufügen
+      alias: Alias
+      api_key: API-Schlüssel
       api_url: API-URL
+      category: Kategorie
+      change_password: Passwort ändern
+      clear_all: Alle schließen
+      color: Farbe
       confirm: Bestätigen
+      current_password: Aktuelles Passwort
+      disabled_while_printing: Während Druck deaktiviert
       edit_camera: Kamera bearbeiten
       edit_preset: Voreinstellungen bearbeiten
+      edit_user: Benutzer bearbeiten
       extrude_length: Extrusionslänge
       extrude_speed: Extrusionsgeschwindigkeit
+      filament: Filament
+      file: Datei
+      finish_time: Fertig um
       flow: Flow
       free: frei
       high: Höchste
       host: Host
+      layer: Schicht
       layout: Layout
       longest_job: Längster Auftrag
       low: Niedrigste
+      m117: M117
       name: Name
+      new_password: Neues Passwort
+      no_notifications: Keine Benachrichtigungen
       'off': Aus
+      'on': An
+      password: Passwort
       power: Leistung
       printers: Drucker
+      progress: Fortschritt
       requested_speed: Gewünschte Geschwindigkeit
+      retract_length: Retract-Länge
+      retract_speed: Retract-Geschwindigkeit
       save_as: Speichern als
       services: Services
+      slicer: Slicer
       speed: Geschwindigkeit
       sqv: Geschwindigkeit bei rechtwinkligen Ecken
+      total: Gesamt
       total_filament: Insgesamt verbrauchtes Filament
       total_filament_avg: Durchschnitt pro Druck
       total_jobs: Druckaufträge insgesamt
@@ -177,23 +239,36 @@ app:
       total_print_time_avg: Durchschnitt pro Druck
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
+      uncategorized: Unkategorisiert
+      unretract_extra_length: Unretract-Extralänge
+      unretract_speed: Unretract-Geschwindigkeit
+      unsaved_changes: Ungespeicherte Änderungen
       used: gebraucht
       variance: Abweichung
       velocity: Geschwindigkeit
+      visible: Sichtbar
       z_offset: Z-Offset
-      unsaved_changes: Ungespeicherte Änderungen
+    msg:
+      password_changed: Passwort geändert
+      wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
     simple_form:
       error:
+        arrayofnums: Nur Zahlen
+        exists: Existiert bereits
         invalid_url: Ungültige URL
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} oder 0
+        password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
       msg:
         confirm: Sind Sie sicher?
+        confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
         confirm_shutdown_host: Sind Sie sicher? Das Host-System wird heruntergefahren.
-        unsaved_changes: Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie den Editor schließen möchten?
+        unsaved_changes: >-
+          Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie den
+          Editor schließen möchten?
     table:
       header:
         actions: Aktionen
@@ -201,6 +276,7 @@ app:
         estimated_time: Geschätzte Zeit
         filament: Filament
         filament_used: Filament verbraucht
+        filament_weight_total: Filamentgewicht
         first_layer_bed_temp: Erster Layer Bett Temparatur
         first_layer_extr_temp: Erster Layer Extruder Temparatiur
         first_layer_height: Erster Layer höhe
@@ -215,30 +291,37 @@ app:
         slicer_version: Slicer version
         start_time: Gestartet
         status: Status
-        total_duration: Total Dauer
+        total_duration: Gesamtdauer
     title:
       add_printer: Drucker hinzufügen
-      bedmesh: Bett Mesh
-      bedmesh_controls: Bett Mesh Kontroller
+      bedmesh: Bettnivellierung
+      bedmesh_controls: Bettnivellierungs-Einstellungen
       camera: Kamera | Kameras
       config_files: Konfigurationsdateien
       configure: Konfiguration
       console: Konsole
       endstops: Endschalter
       fans_outputs: Lüfter & Ausgänge
+      gcode_preview: Gcode-Vorschau [ Beta ]
       history: Auftragsverlauf
       home: Dashboard
       jobs: Aufträge
       limits: Drucker Limits
       macros: Makros
+      retract: Firmware-Retraction
       runout_sensors: Runout Sensoren
       settings: Einstellungen
       stats: Druckerstatus
+      system: System
+      system_overview: Systeminformationen
       temperature: Temperaturen
       tool: Druckkopf
       tune: Tune
     tooltip:
       estop: NOT-AUS
+      reload_klipper: Lädt die Klipper-Konfiguration neu.
+      reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
+      restart_klipper: Starten den Klipper-Systemdienst neu.
   history:
     msg:
       confirm: >-
@@ -258,10 +341,12 @@ app:
     btn:
       add_camera: Kamera hinzufügen
       add_thermal_preset: Voreinstellungen hinzufügen
+      add_user: Benutzer hinzufügen
       reset: Zurücksetzen
       select_theme: Farbschema auswählen
     camera_type_options:
-      mjpegadaptive: MJPEG Adaptive
+      iframe: HTTP-Seite
+      mjpegadaptive: Adaptives MJPEG
       mjpegstream: MJPEG Stream
       video: IP Camera
     label:
@@ -273,23 +358,37 @@ app:
       camera_stream_type: Art des Kamerastreams
       camera_url: Kamera-Url
       confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen bestätigen
+      confirm_on_estop: Bestätigung bei Notaus anfordern
+      confirm_on_power_device_change: Bestätigung bei Änderung eines Gerätestatus anfordern
       dark_mode: Nachtmodus
+      date_time_format: Datum- und Zeitformat
       default_extrude_length: Standard Extrudierlänge
       default_extrude_speed: Standard Extrudiergeschwindigkeit
       default_toolhead_move_length: Standard Bewegungsdistanz des Druckkopfes
       default_toolhead_xy_speed: Standard Druckkopfgeschwindigkeit für XY
       default_toolhead_z_speed: Standard Druckkopfgeschwindigkeit für Z
+      draw_background: Hintergrund anzeigen
       enable: Aktivieren
       enable_notifications: Aktiviere Benachrichtigung
+      extrusion_line_width: Extrusionslinien-Dicke
+      flip_horizontal: Horizontal spiegeln
+      flip_vertical: Vertikal spiegeln
       fps_target: FPS Ziel
+      fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode Koordinaten verwenden
+      height: Höhe
       invert_x_control: X-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren
       invert_z_control: Z-Steuerung invertieren
       language: Anzeigesprache
+      move_line_width: Bewegungslinien-Dicke
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
+      retraction_icon_size: Retraction-Symbolgröße
+      show_animations: Animationen anzeigen
+      theme_preset: Community-Voreinstellung
+      thermal_preset_gcode: GCode
       thermal_preset_name: Name des Voreinstellungsprofils
       z_adjust_values: Z-Werte anpassen
     timer_options:
@@ -298,7 +397,9 @@ app:
       file: Datei-Schätzung
       slicer: Slicer
     title:
+      authentication: Authentifizierung
       camera: Kamera | Kameras
+      gcode_preview: Gcode-Vorschau
       general: Allgemein
       file_editor: Datei-Editor
       macros: Makros
@@ -313,6 +414,30 @@ app:
       no_connection: >-
         Keine Moonraker-Verbindung. Bitte überprüfen Sie den Moonraker-Status
         und / oder aktualisieren Sie Moonraker.
+  system_info:
+    label:
+      capacity: Gesamtgröße
+      cpu_desc: CPU-Beschreibung
+      distribution_codename: Codename
+      distribution_like: Distribution wie
+      distribution_name: Distribution
+      hardware_desc: Hardwarebeschreibung
+      hostname: Hostname
+      klipper_load: Klipper-Last
+      manufactured: Hergestellt
+      manufacturer: Hersteller
+      mcu_awake: '{mcu} Zeit im Wachzustand'
+      mcu_bandwidth: '{mcu}-Bandbreite'
+      mcu_load: '{mcu}-Last'
+      model: CPU-Modell
+      moonraker_load: Moonraker-Last
+      processor_desc: Prozessor
+      product_name: Produktname
+      serial_number: Seriennummer
+      system_load: Systemlast
+      system_memory: Systemspeicher
+      system_utilization: Auslastung
+      total_memory: Gesamtspeicherplatz
   tool:
     btn:
       home_x: X
@@ -328,23 +453,26 @@ app:
       check_for_updates: Nach Aktualisierungen suchen
       finish: Beenden
       update: Aktualisieren
+      view_versions: Versionen anzeigen
     label:
-      commit_history: Commit Vergangenheit
-      commits_on: commits ein
+      commit_history: Commit-Verlauf
+      commits_on: Commit am
       committed: Committed
       dirty: VERUNREINIGT
       invalid: UNZULÄSSIG
+      os_packages: Betriebssystem-Pakete
       package_list: Packet Liste
       up_to_date: AKTUELL
+      updates_available: Updates sind verfügbar
     status:
       finished: Aktualisierung abgeschlossen
       updating: Aktualisieren...
     title: Softwareaktualisierungen
     tooltip:
-      commit_history: Commit Vergangenheit
+      commit_history: Commit-Vergangenheit
       dirty: >-
         Deutet auf einen Fehler in Bezug auf das Git-Repository hin (z.B.
         detached head, not on master, invalid origin)
       invalid: Deutet auf lokale Änderungen im Git-Repository hin
       packages: Pakete
-      release_notes: Veröffentlichungs Notizen
+      release_notes: Veröffentlichungsnotizen
