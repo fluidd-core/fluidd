@@ -354,6 +354,7 @@ app:
     label:
       all_off: All off
       all_on: All on
+      auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
@@ -407,6 +408,7 @@ app:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
       macros: Macros

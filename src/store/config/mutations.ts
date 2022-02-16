@@ -29,6 +29,10 @@ export const mutations: MutationTree<ConfigState> = {
         Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
       }
 
+      if (payload.editor && payload.editor.autoEditExtensions) {
+        Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
+      }
+
       Vue.set(state, 'uiSettings', processed)
     }
   },

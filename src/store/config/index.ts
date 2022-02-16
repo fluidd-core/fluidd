@@ -56,8 +56,7 @@ export const defaultState = (): ConfigState => {
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
         dateformat: 'MMM. DD,',
-        timeformat: 'hh:mm a',
-        confirmDirtyEditorClose: true
+        timeformat: 'hh:mm a'
       },
       theme: {
         isDark: true,
@@ -68,6 +67,10 @@ export const defaultState = (): ConfigState => {
         currentTheme: {
           primary: '#2196F3'
         }
+      },
+      editor: {
+        confirmDirtyEditorClose: true,
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt']
       },
       dashboard: {
         tempPresets: []
