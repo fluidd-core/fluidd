@@ -44,7 +44,7 @@ import StateMixin from '@/mixins/state'
 })
 export default class FileEditorSettings extends Mixins(StateMixin) {
   get confirmDirtyEditorClose (): boolean {
-    return this.$store.state.config.uiSettings.editor.confirmDirtyClose
+    return this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose
   }
 
   set confirmDirtyEditorClose (value: boolean) {
