@@ -30,6 +30,7 @@ app:
       'on': Chart on
       power: Power
       target: Target
+      rate_of_change: Change
     tooltip:
       help: >-
         Hold shift to zoom.<br />Click an item to toggle in the graph.<br
@@ -392,6 +393,7 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      show_rate_of_change: Show temperature rate of change
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
