@@ -137,7 +137,7 @@ app:
       socket_reconnect: 重新连接
     error:
       app_setup_link: Fluidd 配置需求可以在 <a target="_blank" href="%{url}"> 处找到.</a>
-      app_warnings_found: '找到％{appName}条警告。'
+      app_warnings_found: 找到％{appName}条警告。
       components_config: 可以在<a target="_blank" href="%{url}"> 处 </a>找到Moonraker插件配置。
       failed_components: Moonraker插件启用失败，请检查您的日志，更新您的配置并重新启动moonraker。
     label:
@@ -275,8 +275,7 @@ app:
       password_changed: 密码已更改
       wrong_password: 密码错误
   history:
-    msg:
-      confirm: 确定吗？这将清除所有历史记录和打印机统计信息
+    msg: {}
   printer:
     state:
       busy: 忙

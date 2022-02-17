@@ -324,10 +324,7 @@ app:
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
   history:
-    msg:
-      confirm: >-
-        Sind Sie sicher? Dadurch werden der gesamte Verlauf und die
-        Druckerstatistiken gelöscht
+    msg: {}
   printer:
     state:
       busy: Beschäftigt

@@ -249,8 +249,7 @@ app:
       reload_restart_klipper: Recarrega a configuração do klipper e reinicia os MCUs.
       restart_klipper: Reinicia o serviço do sistema klipper.
   history:
-    msg:
-      confirm: Tem certeza? Isso limpará todo o histórico e estatísticas da impressora
+    msg: {}
   printer:
     state:
       busy: Ocupada

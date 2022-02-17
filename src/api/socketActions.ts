@@ -346,15 +346,21 @@ export const SocketActions = {
 
   async serverHistoryDeleteJob (uid: string) {
     let params: any = { uid }
-    let dispatch = 'history/onDelete'
     if (uid === 'all') {
       params = { all: true }
-      dispatch = 'history/onDeleteAll'
     }
     baseEmit(
       'server.history.delete_job', {
-        dispatch,
+        dispatch: 'history/onDelete',
         params
+      }
+    )
+  },
+
+  async serverHistoryResetTotals () {
+    baseEmit(
+      'server.history.reset_totals', {
+        dispatch: 'history/onHistoryChange'
       }
     )
   },
