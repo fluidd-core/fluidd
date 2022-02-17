@@ -2,7 +2,7 @@
   <qrcode-vue
     :value="value"
     :size="size"
-    level="H"
+    level="L"
   ></qrcode-vue>
 </template>
 
@@ -19,7 +19,17 @@ export default class AppQrCode extends Vue {
   @Prop({ type: String, default: '' })
   value!: string;
 
-  @Prop({ type: Number, default: 300 })
+  @Prop({ type: Number, default: 260 })
   size!: number;
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep {
+    canvas, svg {
+      display: block;
+      padding: 10px;
+      background: #fff;
+    }
+  }
+</style>

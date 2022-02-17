@@ -26,6 +26,7 @@
       <v-layout
         align-center
         column
+        class="pb-4"
       >
         <app-qr-code
           :value="apiKey"
