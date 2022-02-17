@@ -33,21 +33,19 @@
           @applyPreset="handleApplyPreset"
         ></temperature-presets-menu>
 
-        <span class="ml-2">
-          <app-btn-collapse-group
-            :collapsed="true"
-            menu-icon="$cog"
+        <app-btn-collapse-group
+          :collapsed="true"
+          menu-icon="$cog"
+        >
+          <v-checkbox
+            v-model="showRateOfChange"
+            :label="$t('app.setting.label.show_rate_of_change')"
+            color="primary"
+            hide-details
+            class="mx-2 mt-2 mb-2"
           >
-            <v-checkbox
-              v-model="showRateOfChange"
-              :label="$t('app.setting.label.show_rate_of_change')"
-              color="primary"
-              hide-details
-              class="mx-2 mt-2 mb-2"
-            >
-            </v-checkbox>
-          </app-btn-collapse-group>
-        </span>
+          </v-checkbox>
+        </app-btn-collapse-group>
       </app-btn-collapse-group>
     </template>
 
