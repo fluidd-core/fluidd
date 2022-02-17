@@ -19,7 +19,8 @@
         text
         color=""
         v-bind="attrs"
-        v-on="on">
+        v-on="on"
+        class="ml-1">
         <v-icon>{{ menuIcon }}</v-icon>
       </app-btn>
     </template>
