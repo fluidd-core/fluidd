@@ -9,6 +9,13 @@
       </ul>
     </div>
 
+    <div v-if="klipperWarnings.length > 0">
+      <div class="mb-2">{{ $t('app.general.error.app_warnings_found', { appName: 'Klipper' }) }}</div>
+      <ul class="mb-4">
+        <li v-for="(warning, index) in klipperWarnings" :key="index" v-html="warning.message"></li>
+      </ul>
+    </div>
+
     <div v-if="moonrakerFailedComponents.length > 0">
       <div class="mb-2">{{ $t('app.general.error.failed_components') }}</div>
       <ul class="mb-4">
@@ -67,6 +74,10 @@ export default class AppWarnings extends Mixins(StateMixin) {
 
   get printerWarnings () {
     return this.$store.getters['printer/getPrinterWarnings']
+  }
+
+  get klipperWarnings () {
+    return this.$store.getters['printer/getKlipperWarnings']
   }
 
   get moonrakerFailedComponents () {
