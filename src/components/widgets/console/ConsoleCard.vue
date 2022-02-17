@@ -22,22 +22,13 @@
 
     <template v-slot:menu>
 
-      <v-tooltip
+      <app-btn
         v-if="scrollingPaused"
-        top>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            @click="console.scrollToBottom(true)"
-            v-bind="attrs"
-            v-on="on"
-            fab
-            small
-            text>
-            <v-icon>$down</v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t('app.console.placeholder.scroll') }}</span>
-      </v-tooltip>
+        @click="console.scrollToBottom(true)"
+        color=""
+        fab x-small text>
+        <v-icon>$down</v-icon>
+      </app-btn>
 
       <app-btn-collapse-group
         :collapsed="true"
