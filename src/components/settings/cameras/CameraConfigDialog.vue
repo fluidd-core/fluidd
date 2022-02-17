@@ -91,6 +91,20 @@
 
         <v-divider v-if="camera.type === 'mjpgadaptive'" />
 
+        <app-setting v-if="camera.type === 'mjpgadaptive'" :title="$t('app.setting.label.fps_idle_target')">
+          <v-text-field
+            class="mt-5"
+            filled
+            dense
+            single-line
+            hide-details="auto"
+            v-model.number="camera.fpsidletarget"
+            :rules="[rules.required]"
+          ></v-text-field>
+        </app-setting>
+
+        <v-divider v-if="camera.type === 'mjpgadaptive'" />
+
         <app-setting :title="$t('app.setting.label.camera_url')">
           <v-text-field
             class="mt-5"

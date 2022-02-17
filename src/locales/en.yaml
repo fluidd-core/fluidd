@@ -355,6 +355,7 @@ app:
     label:
       all_off: All off
       all_on: All on
+      auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
@@ -378,8 +379,10 @@ app:
       flip_vertical: Vertical Flip
       filter: Filter | Filters
       fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
+      group_lower_layers: Group lower layers
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -407,6 +410,7 @@ app:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
       macros: Macros

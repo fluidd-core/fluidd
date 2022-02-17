@@ -4,7 +4,7 @@
       ref="chart"
       :option="opts"
       :setOptionOps="{ notMerge: false }"
-      :init-options="{ renderer: 'canvas' }"
+      :initOpts="{ renderer: 'canvas' }"
     >
     </ECharts>
 

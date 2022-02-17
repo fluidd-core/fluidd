@@ -353,6 +353,7 @@ app:
     label:
       all_off: Alle aus
       all_on: Alle an
+      auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_stream_type: Art des Kamerastreams
@@ -374,6 +375,7 @@ app:
       flip_horizontal: Horizontal spiegeln
       flip_vertical: Vertikal spiegeln
       fps_target: FPS Ziel
+      fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode Koordinaten verwenden
       height: Höhe
       invert_x_control: X-Steuerung invertieren
@@ -401,6 +403,7 @@ app:
       camera: Kamera | Kameras
       gcode_preview: Gcode-Vorschau
       general: Allgemein
+      file_editor: Datei-Editor
       macros: Makros
       theme: Farbschema
       thermal_presets: Temperatur-Voreinstellungen

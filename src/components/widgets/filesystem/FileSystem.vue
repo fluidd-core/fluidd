@@ -437,13 +437,21 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         // Clear selected bulk items if we're navigating folders.
         this.selected = []
       } else {
-        // Open the context menu
-        this.contextMenuState.x = e.clientX
-        this.contextMenuState.y = e.clientY
-        this.contextMenuState.file = item
-        this.$nextTick(() => {
-          this.contextMenuState.open = true
-        })
+        if (
+          e.type === 'click' && item.type === 'file' &&
+          this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)
+        ) {
+          // Open the file editor
+          this.handleFileOpenDialog(item)
+        } else {
+          // Open the context menu
+          this.contextMenuState.x = e.clientX
+          this.contextMenuState.y = e.clientY
+          this.contextMenuState.file = item
+          this.$nextTick(() => {
+            this.contextMenuState.open = true
+          })
+        }
       }
     }
   }

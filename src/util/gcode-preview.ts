@@ -20,7 +20,7 @@ export const binarySearch = (arr: any[], comp: Function, approx = false): number
       return index
     }
 
-    index = Math.round((bottomBound + topBound) / 2)
+    index = Math.floor((bottomBound + topBound) / 2)
   }
 
   return approx ? index : -1

@@ -17,6 +17,17 @@
 
       <v-divider/>
 
+      <app-setting :title="$t('app.setting.label.group_lower_layers')">
+        <v-switch
+          @click.native.stop
+          v-model="groupLowerLayers"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
+
+      <v-divider/>
+
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
           @click.native.stop
@@ -201,6 +212,18 @@ export default class GcodePreviewSettings extends Vue {
   set showAnimations (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showAnimations',
+      value,
+      server: true
+    })
+  }
+
+  get groupLowerLayers () {
+    return this.$store.state.config.uiSettings.gcodePreview.groupLowerLayers
+  }
+
+  set groupLowerLayers (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.groupLowerLayers',
       value,
       server: true
     })
