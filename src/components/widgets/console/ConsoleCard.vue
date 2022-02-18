@@ -27,7 +27,7 @@
         @click="console.scrollToLatest(true)"
         color=""
         fab x-small text>
-        <v-icon>$down</v-icon>
+        <v-icon>{{flipLayout ? '$up' : '$down'}}</v-icon>
       </app-btn>
 
       <app-btn-collapse-group

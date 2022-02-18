@@ -140,16 +140,16 @@ export default class Console extends Mixins(StateMixin) {
   watchScroll () {
     this.dynamicScroller.$el.addEventListener('scroll', (e: any) => {
       const el = e.target
-      if (el.scrollTop < this._lastScroll) {
+      if (this.flipLayout ? (el.scrollTop > this._lastScroll) : (el.scrollTop < this._lastScroll)) {
         this.updateScrollingPaused(true)
       } else {
         if (this._pauseScroll) {
-          if (el.scrollHeight - el.scrollTop - el.clientHeight < 1) {
+          if (this.flipLayout ? (el.scrollTop < 1) : (el.scrollHeight - el.scrollTop - el.clientHeight < 1)) {
             this.updateScrollingPaused(false)
           }
         }
       }
-      this._lastScroll = el.scrollTop <= 0 ? 0 : el.scrollTop
+      this._lastScroll = el.scrollTop
     })
   }
 
@@ -163,7 +163,8 @@ export default class Console extends Mixins(StateMixin) {
         this.readonly ||
         force
       ) {
-        this.dynamicScroller[this.flipLayout ? 'scrollToElement' : 'scrollToBottom'](0)
+        this.dynamicScroller[this.flipLayout ? 'scrollToItem' : 'scrollToBottom'](0)
+        this.updateScrollingPaused(false)
       }
     }
   }
