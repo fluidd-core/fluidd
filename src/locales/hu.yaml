@@ -217,8 +217,7 @@ app:
     tooltip:
       estop: Vészstop
   history:
-    msg:
-      confirm: Biztos? Ez a nyomtató teljes előéletét, és statisztikáit törölni fogja.
+    msg: {}
   printer:
     state:
       busy: Elfoglalt
