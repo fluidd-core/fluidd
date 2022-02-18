@@ -79,6 +79,9 @@ export default class Console extends Mixins(StateMixin) {
 
   @Ref('scroller') dynamicScroller: any
 
+  _lastScroll = 0
+  _pauseScroll = false
+
   get availableCommands () {
     return this.$store.getters['console/getAllGcodeCommands']
   }
@@ -96,7 +99,10 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   mounted () {
-    this.scrollToBottom()
+    this.$nextTick(() => {
+      this.scrollToBottom()
+      this.watchScroll()
+    })
   }
 
   /**
@@ -120,10 +126,38 @@ export default class Console extends Mixins(StateMixin) {
     }
   }
 
-  scrollToBottom () {
+  updateScrollingPaused (value: boolean) {
+    if (this._pauseScroll !== value) {
+      this._pauseScroll = value
+      this.$emit('update:scrollingPaused', value)
+    }
+  }
+
+  watchScroll () {
+    this.dynamicScroller.$el.addEventListener('scroll', (e: any) => {
+      const el = e.target
+      if (el.scrollTop < this._lastScroll) {
+        this.updateScrollingPaused(true)
+      } else {
+        if (this._pauseScroll) {
+          if (el.scrollHeight - el.scrollTop - el.clientHeight < 1) {
+            this.updateScrollingPaused(false)
+          }
+        }
+      }
+      this._lastScroll = el.scrollTop <= 0 ? 0 : el.scrollTop
+    })
+  }
+
+  scrollToBottom (force?: boolean) {
     // If we have auto scroll turned off, then don't do this
     // unless it's readonly.
     if (this.dynamicScroller) {
+      if (force) {
+        this.dynamicScroller.scrollToBottom()
+        return
+      }
+      if (this._pauseScroll) return
       if (
         this.$store.state.console.autoScroll ||
         this.readonly
