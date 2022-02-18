@@ -14,9 +14,9 @@
     >
       <DynamicScroller
         ref="scroller"
-        :items="items"
+        :items="flipLayout ? [...items].reverse() : items"
         :min-item-size="24"
-        @resize="scrollToBottom()"
+        @resize="scrollToLatest()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
         :buffer="600"
@@ -98,9 +98,13 @@ export default class Console extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.flipConsoleLayout
   }
 
+  set flipLayout (_) {
+    this.scrollToLatest(true)
+  }
+
   mounted () {
     this.$nextTick(() => {
-      this.scrollToBottom()
+      this.scrollToLatest()
       this.watchScroll()
     })
   }
@@ -122,7 +126,7 @@ export default class Console extends Mixins(StateMixin) {
       (item.id !== oldItem.id) ||
       val.length !== oldVal.length
     ) {
-      this.scrollToBottom()
+      this.scrollToLatest()
     }
   }
 
@@ -149,20 +153,17 @@ export default class Console extends Mixins(StateMixin) {
     })
   }
 
-  scrollToBottom (force?: boolean) {
+  scrollToLatest (force?: boolean) {
     // If we have auto scroll turned off, then don't do this
-    // unless it's readonly.
+    // unless it's readonly or forced.
     if (this.dynamicScroller) {
-      if (force) {
-        this.dynamicScroller.scrollToBottom()
-        return
-      }
-      if (this._pauseScroll) return
+      if (this._pauseScroll && !force) return
       if (
         this.$store.state.console.autoScroll ||
-        this.readonly
+        this.readonly ||
+        force
       ) {
-        this.dynamicScroller.scrollToBottom()
+        this.dynamicScroller[this.flipLayout ? 'scrollToElement' : 'scrollToBottom'](0)
       }
     }
   }

@@ -24,7 +24,7 @@
 
       <app-btn
         v-if="scrollingPaused"
-        @click="console.scrollToBottom(true)"
+        @click="console.scrollToLatest(true)"
         color=""
         fab x-small text>
         <v-icon>$down</v-icon>
@@ -131,6 +131,8 @@ export default class ConsoleCard extends Mixins(StateMixin) {
       value,
       server: true
     })
+
+    this.console.flipLayout = value
   }
 
   get items (): ConsoleEntry[] {
@@ -148,20 +150,20 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   set autoScroll (value: boolean) {
     this.$store.dispatch('console/onUpdateAutoScroll', value)
     if (value) {
-      this.console.scrollToBottom()
+      this.console.scrollToLatest()
     }
   }
 
   @Watch('inLayout')
   inLayoutChange (inLayout: boolean) {
     if (!inLayout) {
-      this.console.scrollToBottom()
+      this.console.scrollToLatest()
     }
   }
 
   handleCollapseChange (collapsed: boolean) {
     if (!collapsed) {
-      this.console.scrollToBottom()
+      this.console.scrollToLatest()
     }
   }
 }
