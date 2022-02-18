@@ -57,6 +57,7 @@ export const defaultState = (): ConfigState => {
         confirmOnPowerDeviceChange: false,
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
+        showRateOfChange: false,
         flipConsoleLayout: false
       },
       theme: {

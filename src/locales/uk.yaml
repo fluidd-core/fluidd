@@ -285,8 +285,7 @@ app:
       reload_restart_klipper: Перезавантажує налаштування klipper і перезавантажує MCU
       restart_klipper: Перезавантажує сервіс klipper
   history:
-    msg:
-      confirm: Ви впевнені? Це очистить історію і скине статистику принтера
+    msg: {}
   printer:
     state:
       busy: Зайняти

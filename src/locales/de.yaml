@@ -30,6 +30,7 @@ app:
       'on': Graph an
       power: Leistung
       target: Ziel
+      rate_of_change: Änderung
     tooltip:
       help: >-
         Halten Sie die Umschalttaste gedrückt, um zu zoomen. <br />Klicken Sie
@@ -324,10 +325,7 @@ app:
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
   history:
-    msg:
-      confirm: >-
-        Sind Sie sicher? Dadurch werden der gesamte Verlauf und die
-        Druckerstatistiken gelöscht
+    msg: {}
   printer:
     state:
       busy: Beschäftigt
@@ -388,6 +386,7 @@ app:
       reset: Einstellungen zurücksetzen
       retraction_icon_size: Retraction-Symbolgröße
       show_animations: Animationen anzeigen
+      show_rate_of_change: Temperatur-Änderungsrate anzeigen
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode
       thermal_preset_name: Name des Voreinstellungsprofils

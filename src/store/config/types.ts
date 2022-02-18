@@ -51,6 +51,7 @@ export interface GeneralConfig {
   confirmOnPowerDeviceChange: boolean;
   dateformat: string;
   timeformat: string;
+  showRateOfChange: boolean;
   flipConsoleLayout: boolean;
 }
 

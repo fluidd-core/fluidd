@@ -3,6 +3,18 @@
     :title="$t('app.general.title.stats')"
     icon="$chart">
 
+    <template v-slot:menu>
+      <app-btn-collapse-group>
+        <app-btn
+          @click="handleResetStats"
+          small
+          class="ma-1">
+          <v-icon small left>$delete</v-icon>
+          <span>{{ $t('app.general.btn.reset_stats') }}</span>
+        </app-btn>
+      </app-btn-collapse-group>
+    </template>
+
     <v-card-text>
       <!-- <div class="mb-4">
         <v-layout justify-space-between>
@@ -72,6 +84,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import JobHistory from '@/components/widgets/history/JobHistory.vue'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
@@ -104,6 +117,18 @@ export default class PrinterStatsCard extends Vue {
 
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  handleResetStats () {
+    this.$confirm(
+      this.$tc('app.history.msg.confirm_stats'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+      .then(res => {
+        if (res) {
+          SocketActions.serverHistoryResetTotals()
+        }
+      })
   }
 }
 </script>
