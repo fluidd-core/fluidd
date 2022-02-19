@@ -5,7 +5,7 @@
       style="overflow: initial;"
       :option="options"
       :setOptionOps="{ notMerge: true }"
-      :init-options="{ renderer: 'svg' }"
+      :initOpts="{ renderer: 'svg' }"
       :events="[
         ['legendselectchanged', handleLegendSelectChange ]
       ]"

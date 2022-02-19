@@ -124,12 +124,12 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
     if (this.macro.config.gcode) {
-      const regex = /params\.(\w*)\|?(default\('?(\w*)'?\))?/gmi
+      const regex = /params\.(\w+).*\|\s*default\s*\(\s*([^,)]+)/gmi
       let match = regex.exec(this.macro.config.gcode)
       do {
         if (match && match[1]) {
           const name = match[1]
-          const value = match[3] || ''
+          const value = (match[2] || '').trim()
           if (!this.params[name]) {
             this.$set(this.params, name, { value, reset: value })
           }

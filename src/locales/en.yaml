@@ -30,6 +30,7 @@ app:
       'on': Chart on
       power: Power
       target: Target
+      rate_of_change: Change
     tooltip:
       help: >-
         Hold shift to zoom.<br />Click an item to toggle in the graph.<br
@@ -40,6 +41,7 @@ app:
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+      scroll: Scroll to bottom
   endpoint:
     error:
       cant_connect: >-
@@ -164,6 +166,7 @@ app:
       upload: Upload
       upload_print: Upload & Print
       view: View
+      reset_stats: Reset Stats
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -245,6 +248,7 @@ app:
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
       alias: Alias
+      apply_z_offset: Apply and Save Z_Offset
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -267,6 +271,12 @@ app:
         confirm_service_stop: Are you sure you want to stop the %{name} service?
         confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
         unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
+        apply_z_offset_endstop: >-
+          Endstop Z-Offset will be calculated and updated from the current
+          Z-Offset.
+        apply_z_offset_probe: >-
+          Probe/Bltouch Z-Offset will be calculated and updated from the current
+          Z-Offset.
     table:
       header:
         actions: Actions
@@ -322,7 +332,8 @@ app:
       restart_klipper: Restarts the klipper system service.
   history:
     msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
+      confirm_jobs: Are you sure? This will clear all jobs.
+      confirm_stats: Are you sure? This will clear all stats.
   printer:
     state:
       busy: Busy
@@ -349,6 +360,7 @@ app:
     label:
       all_off: All off
       all_on: All on
+      auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_stream_type: Stream type
@@ -372,8 +384,10 @@ app:
       flip_vertical: Vertical Flip
       filter: Filter | Filters
       fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
+      group_lower_layers: Group lower layers
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -384,6 +398,7 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      show_rate_of_change: Show temperature rate of change
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
@@ -400,6 +415,7 @@ app:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
       macros: Macros
