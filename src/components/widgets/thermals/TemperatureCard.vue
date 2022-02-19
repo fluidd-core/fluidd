@@ -166,7 +166,18 @@ export default class TemperatureCard extends Mixins(StateMixin) {
     }
   }
 
-  handleApplyOff () {
+  async handleApplyOff () {
+    if (this.$store.getters['printer/getPrinterState'] === 'busy') {
+      const result = await this.$confirm(
+        this.$tc('app.general.label.heaters_busy'),
+        { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
     this.sendGcode('TURN_OFF_HEATERS')
   }
 }

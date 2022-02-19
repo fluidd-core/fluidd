@@ -206,6 +206,7 @@ app:
       finish_time: Finish
       flow: Flow
       free: free
+      heaters_busy: The printer is currently busy. Turning off the heaters may result in a failed print.
       high: High
       host: Host
       layer: Layer
