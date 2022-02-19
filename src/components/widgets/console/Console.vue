@@ -80,6 +80,7 @@ export default class Console extends Mixins(StateMixin) {
   @Ref('scroller') dynamicScroller: any
 
   _lastScroll = 0
+  _lastHeight = 0
   _pauseScroll = false
 
   get availableCommands () {
@@ -127,6 +128,14 @@ export default class Console extends Mixins(StateMixin) {
       val.length !== oldVal.length
     ) {
       this.scrollToLatest()
+      if (this.dynamicScroller) {
+        if (this.flipLayout && this._pauseScroll) {
+          const el = this.dynamicScroller.$el
+          el.scrollTop += el.scrollHeight - this._lastHeight
+        }
+
+        this._lastHeight = this.dynamicScroller.$el.scrollHeight
+      }
     }
   }
 
