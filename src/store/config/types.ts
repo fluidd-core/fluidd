@@ -52,6 +52,7 @@ export interface GeneralConfig {
   dateformat: string;
   timeformat: string;
   showRateOfChange: boolean;
+  flipConsoleLayout: boolean;
 }
 
 // Config stored in moonraker db

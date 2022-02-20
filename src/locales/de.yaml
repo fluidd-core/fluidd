@@ -39,6 +39,7 @@ app:
   console:
     label:
       auto_scroll: Automatisches Scrollen
+      flip_layout: Layout umkehren
       hide_temp_waits: Temperaturbenachrichtigungen ausblenden
     placeholder:
       command: >-
