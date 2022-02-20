@@ -24,6 +24,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
         const r: Macro = {
           name,
+          alias: '',
           visible: true,
           disabledWhilePrinting: false,
           color: '',

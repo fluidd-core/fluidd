@@ -30,6 +30,7 @@ app:
       'on': Chart on
       power: Power
       target: Target
+      rate_of_change: Change
     tooltip:
       help: >-
         Hold shift to zoom.<br />Click an item to toggle in the graph.<br
@@ -40,6 +41,7 @@ app:
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+      scroll: Scroll to bottom
   endpoint:
     error:
       cant_connect: >-
@@ -164,6 +166,7 @@ app:
       upload: Upload
       upload_print: Upload & Print
       view: View
+      reset_stats: Reset Stats
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -180,6 +183,7 @@ app:
       acceleration: Acceleration
       actual_time: Actual
       add_camera: Add Camera
+      add_filter: Add Filter
       add_preset: Add Preset
       add_user: Add user
       api_key: Api Key
@@ -192,6 +196,7 @@ app:
       current_password: Current password
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
+      edit_filter: Edit Filter
       edit_preset: Edit Preset
       edit_user: Edit user
       extrude_length: Extrude Length
@@ -211,6 +216,7 @@ app:
       name: Name
       new_password: New password
       no_notifications: No notifications
+      'on': 'On'
       'off': 'Off'
       password: Password
       power: Power
@@ -240,6 +246,9 @@ app:
       velocity: Velocity
       visible: Visible
       z_offset: Z Offset
+      unsaved_changes: Unsaved Changes
+      alias: Alias
+      apply_z_offset: Apply and Save Z_Offset
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -248,6 +257,7 @@ app:
         arrayofnums: Only numbers
         exists: Already exists
         invalid_url: Invalid URL
+        invalid_expression: Invalid Expression
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
@@ -257,6 +267,14 @@ app:
         confirm: Are you sure?
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
+        confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
+        unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
+        apply_z_offset_endstop: >-
+          Endstop Z-Offset will be calculated and updated from the current
+          Z-Offset.
+        apply_z_offset_probe: >-
+          Probe/Bltouch Z-Offset will be calculated and updated from the current
+          Z-Offset.
     table:
       header:
         actions: Actions
@@ -312,7 +330,8 @@ app:
       restart_klipper: Restarts the klipper system service.
   history:
     msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
+      confirm_jobs: Are you sure? This will clear all jobs.
+      confirm_stats: Are you sure? This will clear all stats.
   printer:
     state:
       busy: Busy
@@ -326,6 +345,7 @@ app:
   setting:
     btn:
       add_camera: Add Camera
+      add_filter: Add Filter
       add_thermal_preset: Add Preset
       add_user: Add user
       reset: Reset
@@ -343,12 +363,16 @@ app:
     label:
       all_off: All off
       all_on: All on
-      camera_rotate_by: Rotate by
+      auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
+      confirm_on_power_device_change: Require confirm on Device Power changes
+      confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
+      contains: Contains
       dark_mode: Dark mode
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
@@ -358,12 +382,16 @@ app:
       draw_background: Draw Background
       enable: Enable
       enable_notifications: Enable notifications
+      expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
+      filter: Filter | Filters
       fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
+      group_lower_layers: Group lower layers
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -374,10 +402,14 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      show_rate_of_change: Show temperature rate of change
+      starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
+      type: Type
       z_adjust_values: Z Adjust values
+      date_time_format: Date and Time format
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -385,7 +417,9 @@ app:
       slicer: Slicer
     title:
       authentication: Authentication
+      console: Console
       camera: Camera | Cameras
+      file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
       macros: Macros

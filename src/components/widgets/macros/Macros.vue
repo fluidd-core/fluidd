@@ -41,7 +41,7 @@
             :elevation="2"
             enable-params
             class="me-2 mb-2 float-left">
-            {{ macro.name }}
+            {{ macro.alias || macro.name }}
           </app-macro-btn>
         </v-expansion-panel-content>
 

@@ -21,6 +21,15 @@
     </template>
 
     <template v-slot:menu>
+
+      <app-btn
+        v-if="scrollingPaused"
+        @click="console.scrollToBottom(true)"
+        color=""
+        fab x-small text>
+        <v-icon>$down</v-icon>
+      </app-btn>
+
       <app-btn-collapse-group
         :collapsed="true"
         menu-icon="$cog"
@@ -41,11 +50,27 @@
           class="mx-2 mb-2"
         >
         </v-checkbox>
+
+        <template v-for="(filter, index) in filters">
+          <v-divider
+            :key="index"
+            v-if="index === 0" />
+          <v-checkbox
+            v-model="filter.enabled"
+            :label="filter.name"
+            :key="filter.id"
+            color="primary"
+            hide-details
+            class="mx-2 mt-2">
+          </v-checkbox>
+        </template>
+
       </app-btn-collapse-group>
     </template>
 
     <console
       ref="console"
+      :scrollingPaused.sync="scrollingPaused"
       :items="items"
       :height="300"
     ></console>
@@ -69,6 +94,12 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   enabled!: boolean
 
   @Ref('console') console!: Console
+
+  scrollingPaused = false
+
+  get filters () {
+    return this.$store.getters['console/getFilters']
+  }
 
   get hideTempWaits (): boolean {
     return this.$store.state.config.uiSettings.general.hideTempWaits

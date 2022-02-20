@@ -112,7 +112,8 @@ import {
   mdiHarddisk,
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
-  mdiSwapVertical
+  mdiSwapVertical,
+  mdiFullscreen
 } from '@mdi/js'
 
 /**
@@ -290,7 +291,8 @@ export const Icons = Object.freeze({
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
-  message: mdiMessageTextOutline
+  message: mdiMessageTextOutline,
+  fullScreen: mdiFullscreen
 })
 
 export const Waits = Object.freeze({
@@ -314,6 +316,8 @@ export const Waits = Object.freeze({
   onSetFanSpeed: 'onSetFanSpeed',
   onSetOutputPin: 'onSetOutputPin',
   onZAdjust: 'onZAdjust',
+  onZApply: 'onZApply',
+  onSaveConfig: 'onSaveConfig',
   onRetract: 'onRetract',
   onExtrude: 'onExtrude',
   onMeshCalibrate: 'onMeshCalibrate',
