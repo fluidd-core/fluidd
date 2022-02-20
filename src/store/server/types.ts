@@ -51,7 +51,7 @@ export interface ServiceState {
   [id: string]: {
     active_state?: string;
     sub_state?: string;
-  }
+  };
 }
 
 export interface ServiceInfo {
