@@ -209,6 +209,9 @@ app:
       finish_time: Fertig um
       flow: Flow
       free: frei
+      heaters_busy: >-
+        Der Drucker ist momentan beschäftigt.
+        Das Ausschalten der Heizelemente könnte zu einem fehlgeschlagenen Druck führen.
       high: Höchste
       host: Host
       layer: Schicht
@@ -348,12 +351,18 @@ app:
       mjpegadaptive: Adaptives MJPEG
       mjpegstream: MJPEG Stream
       video: IP Camera
+    camera_rotate_options:
+      none: Keine Drehung
+      90: 90°
+      180: 180°
+      270: 270°
     label:
       all_off: Alle aus
       all_on: Alle an
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
+      camera_rotate_by: Rotieren um
       camera_stream_type: Art des Kamerastreams
       camera_url: Kamera-Url
       confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen bestätigen

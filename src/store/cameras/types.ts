@@ -13,5 +13,6 @@ export interface CameraConfig {
   fpsidletarget?: number;
   flipX: boolean;
   flipY: boolean;
+  rotate?: '90' | '180' | '270';
   height?: number;
 }
