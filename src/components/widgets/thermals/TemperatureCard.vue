@@ -167,7 +167,7 @@ export default class TemperatureCard extends Mixins(StateMixin) {
   }
 
   async handleApplyOff () {
-    if (this.$store.getters['printer/getPrinterState'] === 'busy') {
+    if (['printing', 'busy', 'paused'].includes(this.$store.getters['printer/getPrinterState'])) {
       const result = await this.$confirm(
         this.$tc('app.general.label.heaters_busy'),
         { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }
