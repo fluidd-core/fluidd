@@ -73,7 +73,7 @@
   },
   "devDependencies": {
     "@0x4447/potato": "^2.4.7",
-    "@mdi/js": "^5.9.55",
+    "@mdi/js": "^6.5.95",
     "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.170",
     "@types/md5": "^2.3.0",
