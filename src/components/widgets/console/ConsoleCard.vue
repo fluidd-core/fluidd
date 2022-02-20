@@ -24,10 +24,10 @@
 
       <app-btn
         v-if="scrollingPaused"
-        @click="console.scrollToBottom(true)"
+        @click="console.scrollToLatest(true)"
         color=""
         fab x-small text>
-        <v-icon>$down</v-icon>
+        <v-icon>{{flipLayout ? '$up' : '$down'}}</v-icon>
       </app-btn>
 
       <app-btn-collapse-group
@@ -45,6 +45,14 @@
         <v-checkbox
           v-model="autoScroll"
           :label="$t('app.console.label.auto_scroll')"
+          color="primary"
+          hide-details
+          class="mx-2 mb-2"
+        >
+        </v-checkbox>
+        <v-checkbox
+          v-model="flipLayout"
+          :label="$t('app.console.label.flip_layout')"
           color="primary"
           hide-details
           class="mx-2 mb-2"
@@ -113,6 +121,20 @@ export default class ConsoleCard extends Mixins(StateMixin) {
     })
   }
 
+  get flipLayout (): boolean {
+    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+  }
+
+  set flipLayout (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.flipConsoleLayout',
+      value,
+      server: true
+    })
+
+    this.console.flipLayout = value
+  }
+
   get items (): ConsoleEntry[] {
     return this.$store.getters['console/getConsoleEntries']
   }
@@ -128,20 +150,20 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   set autoScroll (value: boolean) {
     this.$store.dispatch('console/onUpdateAutoScroll', value)
     if (value) {
-      this.console.scrollToBottom()
+      this.console.scrollToLatest()
     }
   }
 
   @Watch('inLayout')
   inLayoutChange (inLayout: boolean) {
     if (!inLayout) {
-      this.console.scrollToBottom()
+      this.console.scrollToLatest()
     }
   }
 
   handleCollapseChange (collapsed: boolean) {
     if (!collapsed) {
-      this.console.scrollToBottom()
+      this.console.scrollToLatest()
     }
   }
 }
