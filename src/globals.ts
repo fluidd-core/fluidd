@@ -113,6 +113,7 @@ import {
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
   mdiSwapVertical,
+  mdiFullscreen,
   mdiStop,
   mdiPlay
 } from '@mdi/js'
@@ -294,7 +295,8 @@ export const Icons = Object.freeze({
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
-  message: mdiMessageTextOutline
+  message: mdiMessageTextOutline,
+  fullScreen: mdiFullscreen
 })
 
 export const Waits = Object.freeze({

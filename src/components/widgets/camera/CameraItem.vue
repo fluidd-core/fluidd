@@ -43,6 +43,14 @@
       >
         fps: {{ currentFPS }}
       </div>
+      <div
+        v-if="cameraFullScreenUrl"
+        class="camera-fullscreen"
+      >
+        <a :href="cameraFullScreenUrl" target="_blank">
+          <v-icon>$fullScreen</v-icon>
+        </a>
+      </div>
     </v-sheet>
   </div>
 </template>
@@ -70,6 +78,7 @@ export default class CameraItem extends Vue {
 
   // URL used by camera
   cameraUrl = ''
+  cameraFullScreenUrl = ''
 
   // iframe height
   cameraHeight = 720
@@ -107,6 +116,7 @@ export default class CameraItem extends Vue {
    */
   beforeDestroy () {
     this.cameraUrl = ''
+    this.cameraFullScreenUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
   }
 
@@ -177,6 +187,7 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'stream')
         }
         this.cameraUrl = url.toString()
+        this.cameraFullScreenUrl = this.cameraUrl
       }
 
       if (type === 'mjpgadaptive') {
@@ -186,13 +197,17 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'snapshot')
         }
         this.cameraUrl = url.toString()
+        url.searchParams.set('action', 'stream')
+        this.cameraFullScreenUrl = url.toString()
       }
 
       if (type === 'ipstream' || type === 'iframe') {
         this.cameraUrl = baseUrl
+        this.cameraFullScreenUrl = baseUrl
       }
     } else {
       this.cameraUrl = ''
+      this.cameraFullScreenUrl = ''
     }
   }
 }
@@ -216,6 +231,15 @@ export default class CameraItem extends Vue {
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.75);
     font-weight: 100;
+  }
+
+  .camera-fullscreen {
+    position: absolute;
+    text-align: right;
+    top: 0;
+    right: 0;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.75);
   }
 
   .camera-name {
