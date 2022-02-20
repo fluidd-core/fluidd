@@ -1,6 +1,12 @@
 <template>
   <div
     class="console">
+    <console-command
+      v-if="!readonly && flipLayout"
+      v-model="consoleCommand"
+      @send="sendCommand"
+    >
+    </console-command>
     <v-card
       flat
       class="console-wrapper"
@@ -8,9 +14,9 @@
     >
       <DynamicScroller
         ref="scroller"
-        :items="items"
+        :items="flipLayout ? [...items].reverse() : items"
         :min-item-size="24"
-        @resize="scrollToBottom()"
+        @resize="scrollToLatest()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
         :buffer="600"
@@ -36,7 +42,7 @@
       </DynamicScroller>
     </v-card>
     <console-command
-      v-if="!readonly"
+      v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
     >
@@ -74,6 +80,7 @@ export default class Console extends Mixins(StateMixin) {
   @Ref('scroller') dynamicScroller: any
 
   _lastScroll = 0
+  _lastHeight = 0
   _pauseScroll = false
 
   get availableCommands () {
@@ -88,9 +95,17 @@ export default class Console extends Mixins(StateMixin) {
     this.$store.commit('console/setConsoleCommand', val)
   }
 
+  get flipLayout (): boolean {
+    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+  }
+
+  set flipLayout (_) {
+    this.scrollToLatest(true)
+  }
+
   mounted () {
     this.$nextTick(() => {
-      this.scrollToBottom()
+      this.scrollToLatest()
       this.watchScroll()
     })
   }
@@ -112,7 +127,15 @@ export default class Console extends Mixins(StateMixin) {
       (item.id !== oldItem.id) ||
       val.length !== oldVal.length
     ) {
-      this.scrollToBottom()
+      this.scrollToLatest()
+      if (this.dynamicScroller) {
+        if (this.flipLayout && this._pauseScroll) {
+          const el = this.dynamicScroller.$el
+          el.scrollTop += el.scrollHeight - this._lastHeight
+        }
+
+        this._lastHeight = this.dynamicScroller.$el.scrollHeight
+      }
     }
   }
 
@@ -126,33 +149,31 @@ export default class Console extends Mixins(StateMixin) {
   watchScroll () {
     this.dynamicScroller.$el.addEventListener('scroll', (e: any) => {
       const el = e.target
-      if (el.scrollTop < this._lastScroll) {
+      if (this.flipLayout ? (el.scrollTop > this._lastScroll) : (el.scrollTop < this._lastScroll)) {
         this.updateScrollingPaused(true)
       } else {
         if (this._pauseScroll) {
-          if (el.scrollHeight - el.scrollTop - el.clientHeight < 1) {
+          if (this.flipLayout ? (el.scrollTop < 1) : (el.scrollHeight - el.scrollTop - el.clientHeight < 1)) {
             this.updateScrollingPaused(false)
           }
         }
       }
-      this._lastScroll = el.scrollTop <= 0 ? 0 : el.scrollTop
+      this._lastScroll = el.scrollTop
     })
   }
 
-  scrollToBottom (force?: boolean) {
+  scrollToLatest (force?: boolean) {
     // If we have auto scroll turned off, then don't do this
-    // unless it's readonly.
+    // unless it's readonly or forced.
     if (this.dynamicScroller) {
-      if (force) {
-        this.dynamicScroller.scrollToBottom()
-        return
-      }
-      if (this._pauseScroll) return
+      if (this._pauseScroll && !force) return
       if (
         this.$store.state.console.autoScroll ||
-        this.readonly
+        this.readonly ||
+        force
       ) {
-        this.dynamicScroller.scrollToBottom()
+        this.dynamicScroller[this.flipLayout ? 'scrollToItem' : 'scrollToBottom'](0)
+        this.updateScrollingPaused(false)
       }
     }
   }

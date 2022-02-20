@@ -38,6 +38,7 @@ app:
   console:
     label:
       auto_scroll: Auto scroll
+      flip_layout: Flip layout
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
@@ -357,12 +358,18 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
       iframe: HTTP page
+    camera_rotate_options:
+      none: None
+      90: 90°
+      180: 180°
+      270: 270°
     label:
       all_off: All off
       all_on: All on
       auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
