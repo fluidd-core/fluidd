@@ -50,6 +50,6 @@ enable_auto_refresh: True
 
 [update_manager client fluidd]
 type: web
-repo: cadriel/fluidd
+repo: fluidd-core/fluidd
 path: ~/fluidd
 ```
