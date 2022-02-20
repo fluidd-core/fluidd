@@ -1,16 +1,11 @@
 <template>
   <div>
-    <v-sheet
-      :elevation="0"
-      rounded
-      v-on="$listeners"
-      class="camera-container"
-    >
+    <v-sheet :elevation="0" rounded v-on="$listeners" class="camera-container">
       <img
         v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
         :src="cameraUrl"
         class="camera-image"
-        :style="cameraTransformStyle"
+        ref="camera_image"
         @load="handleImgLoad"
       />
 
@@ -19,22 +14,19 @@
         :src="cameraUrl"
         autoplay
         class="camera-image"
-        :style="cameraTransformStyle"
+        ref="camera_image"
       />
 
       <iframe
         v-if="camera.type === 'iframe'"
         :src="cameraUrl"
         class="camera-image"
-        :style="cameraTransformStyle"
+        ref="camera_image"
         :height="cameraHeight"
         frameBorder="0"
       />
 
-      <div
-        v-if="camera.name"
-        class="camera-name"
-      >
+      <div v-if="camera.name" class="camera-name">
         {{ camera.name }}
       </div>
       <div
@@ -58,6 +50,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
+import { noop } from 'vue-class-component/lib/util'
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -86,16 +79,36 @@ export default class CameraItem extends Vue {
   // Maintains the last cachebust string
   refresh = new Date().getTime()
 
+  // Callback to cancel requestAnimationFrame() when component is being destroyed.
+  cancelCameraTransform = noop
+
   /**
    * Handle any transforms the user may have set on the camera image.
    */
-  get cameraTransformStyle () {
+  cameraTransformStyle (element: HTMLElement) {
     const config = this.camera
     let transforms = ''
-    transforms += (config && config.flipX) ? ' scaleX(-1)' : ''
-    transforms += (config && config.flipY) ? ' scaleY(-1)' : ''
-    // transforms += ` rotate(${config.rotate}deg)`
-    return (transforms.trimLeft().length) ? { transform: transforms.trimLeft() } : {}
+
+    if (!config.rotate) {
+      transforms += config && config.flipX ? ' scaleX(-1)' : ''
+      transforms += config && config.flipY ? ' scaleY(-1)' : ''
+    } else {
+      let scaling = 1
+      if (config.rotate !== '180') {
+        scaling = element.clientHeight / element.clientWidth
+        if (scaling > 1) {
+          scaling = element.clientWidth / element.clientHeight
+        }
+      }
+
+      transforms += config && config.flipX ? ` scaleX(-${scaling})` : ` scaleX(${scaling})`
+      transforms += config && config.flipY ? ` scaleY(-${scaling})` : ` scaleY(${scaling})`
+      transforms += ` rotate(${config.rotate}deg)`
+    }
+
+    return transforms.trimLeft().length
+      ? { transform: transforms.trimLeft() }
+      : {}
   }
 
   @Watch('camera', { immediate: true })
@@ -108,6 +121,7 @@ export default class CameraItem extends Vue {
    */
   created () {
     document.addEventListener('visibilitychange', this.setUrl, false)
+    this.cancelCameraTransform = this.createTransformAnimation()
   }
 
   /**
@@ -115,6 +129,7 @@ export default class CameraItem extends Vue {
    * component.
    */
   beforeDestroy () {
+    this.cancelCameraTransform()
     this.cameraUrl = ''
     this.cameraFullScreenUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
@@ -210,6 +225,38 @@ export default class CameraItem extends Vue {
       this.cameraFullScreenUrl = ''
     }
   }
+
+  /**
+   * Calls `requestAnimationFrame` indefinitely to apply camera transformations.
+   * The call to `requestAnimationFrame` is required because of the dependency
+   * on loaded node sizes in the document.
+   */
+  createTransformAnimation () {
+    let animating = true
+
+    const animate = () => {
+      requestAnimationFrame(() => {
+        if (!animating) {
+          return
+        }
+
+        const image = this.$refs.camera_image as HTMLElement | undefined
+
+        if (image) {
+          // Call to Object.assign() might not be suitable here.
+          Object.assign(image.style, this.cameraTransformStyle(image))
+        }
+
+        animate()
+      })
+    }
+
+    animate()
+
+    return () => {
+      animating = false
+    }
+  }
 }
 </script>
 
@@ -222,6 +269,7 @@ export default class CameraItem extends Vue {
 
   .camera-container {
     position: relative;
+    background: rgba(0, 0, 0, 1);
   }
 
   .camera-name,
