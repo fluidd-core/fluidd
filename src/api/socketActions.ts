@@ -31,6 +31,28 @@ export const SocketActions = {
     )
   },
 
+  async machineServicesStart (service: string) {
+    const wait = Waits.onServiceStart
+    baseEmit(
+      'machine.services.start', {
+        dispatch: 'void',
+        params: { service },
+        wait
+      }
+    )
+  },
+
+  async machineServicesStop (service: string) {
+    const wait = Waits.onServiceStop
+    baseEmit(
+      'machine.services.stop', {
+        dispatch: 'void',
+        params: { service },
+        wait
+      }
+    )
+  },
+
   async machineReboot () {
     baseEmit(
       'machine.reboot', {

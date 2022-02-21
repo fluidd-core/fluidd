@@ -41,9 +41,23 @@ export interface ServerInfo {
 
 export interface SystemInfo {
   available_services?: string[];
+  service_state?: ServiceState;
   cpu_info?: CpuInfo;
   sd_info?: SDInfo;
   distribution?: DistroInfo;
+}
+
+export interface ServiceState {
+  [id: string]: {
+    active_state?: string;
+    sub_state?: string;
+  };
+}
+
+export interface ServiceInfo {
+  name: string;
+  active_state?: string;
+  sub_state?: string;
 }
 
 export interface CpuInfo {

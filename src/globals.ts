@@ -113,7 +113,9 @@ import {
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
   mdiSwapVertical,
-  mdiFullscreen
+  mdiFullscreen,
+  mdiStop,
+  mdiPlay
 } from '@mdi/js'
 
 /**
@@ -256,7 +258,9 @@ export const Icons = Object.freeze({
   pause: mdiPause,
   cancel: mdiWindowClose,
   cancelled: mdiCancel,
+  play: mdiPlay,
   resume: mdiPlayBoxOutline,
+  stop: mdiStop,
   reprint: mdiPrinter,
   printer: mdiPrinter,
   download: mdiDownload,
@@ -297,6 +301,8 @@ export const Icons = Object.freeze({
 
 export const Waits = Object.freeze({
   onServiceRestart: 'onServiceRestart',
+  onServiceStop: 'onServiceStop',
+  onServiceStart: 'onServiceStart',
   onDevicePowerToggle: 'onDevicePowerToggle',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',

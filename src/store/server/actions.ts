@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { ServerState, ServerThrottledState } from './types'
+import { ServerState, ServerThrottledState, ServiceState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -103,6 +103,10 @@ export const actions: ActionTree<ServerState, RootState> = {
 
   async onMachineSystemInfo ({ commit }, payload) {
     commit('setSystemInfo', payload)
+  },
+
+  async onServiceStateChanged ({ commit }, payload: ServiceState) {
+    commit('setServiceState', payload)
   },
 
   async onMachineThrottledState ({ commit, dispatch, state }, payload: ServerThrottledState) {
