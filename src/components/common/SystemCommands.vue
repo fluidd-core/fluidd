@@ -55,7 +55,7 @@
 
     <v-list-group
       prepend-icon="$restart"
-      >
+      no-action>
       <template v-slot:activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.services') }}</v-list-item-title>
