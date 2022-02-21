@@ -209,6 +209,9 @@ app:
       finish_time: Fertig um
       flow: Flow
       free: frei
+      heaters_busy: >-
+        Der Drucker ist momentan beschäftigt.
+        Das Ausschalten der Heizelemente könnte zu einem fehlgeschlagenen Druck führen.
       high: Höchste
       host: Host
       layer: Schicht
