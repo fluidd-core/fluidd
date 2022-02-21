@@ -65,33 +65,37 @@
         <v-list-item
          :key="service.name"
         >
-          <v-list-item-title>
-              <v-tooltip left>
-                  <template v-slot:activator="{ on, attrs }">
-                      <span
-                        v-bind="attrs"
-                        v-on="on"
-                        class="text-wrap" style="text-transform: capitalize;">{{ service.name }}</span>
-                  </template>
-                  <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
-              </v-tooltip>
-          </v-list-item-title>
-          <v-btn
-            icon
-            v-if="service.active_state === 'inactive'"
-            @click="checkDialog(serviceStart, service, 'start')"
-          ><v-icon>$play</v-icon></v-btn>
-          <v-btn
-            icon
-            v-else
-            @click="checkDialog(serviceRestart, service, 'restart')"
-          ><v-icon color="warning">$restart</v-icon></v-btn>
-          <v-btn
-            icon
-            @click="checkDialog(serviceStop, service, 'stop')"
-            :disabled="service.active_state === 'inactive'"
-            :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
-          ><v-icon color="error">$stop</v-icon></v-btn>
+          <v-list-item-content>
+            <v-list-item-title>
+                <v-tooltip left>
+                    <template v-slot:activator="{ on, attrs }">
+                        <span
+                          v-bind="attrs"
+                          v-on="on"
+                          class="text-wrap" style="text-transform: capitalize;">{{ service.name }}</span>
+                    </template>
+                    <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
+                </v-tooltip>
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn
+              icon
+              v-if="service.active_state === 'inactive'"
+              @click="checkDialog(serviceStart, service, 'start')"
+            ><v-icon>$play</v-icon></v-btn>
+            <v-btn
+              icon
+              v-else
+              @click="checkDialog(serviceRestart, service, 'restart')"
+            ><v-icon color="warning">$restart</v-icon></v-btn>
+            <v-btn
+              icon
+              @click="checkDialog(serviceStop, service, 'stop')"
+              :disabled="service.active_state === 'inactive'"
+              :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
+            ><v-icon color="error">$stop</v-icon></v-btn>
+          </v-list-item-action>
         </v-list-item>
       </template>
     </v-list-group>
@@ -231,3 +235,11 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .v-list-item__action--stack  {
+    margin: 6px 0;
+    margin-right: -6px;
+    flex-direction: row;
+  }
+</style>
