@@ -12,7 +12,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
-    "prepare": "husky install",
+    "bootstrap": "husky install",
     "copy:host:config": "shx cp -f ./server/config.json ./dist/config.json",
     "deploy:host": "potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
     "deploy:host:dev": "potato -s dist -u -b dev-app.fluidd.xyz",
