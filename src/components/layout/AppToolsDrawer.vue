@@ -3,6 +3,7 @@
     :value="value"
     @input="emitChange"
     app right clipped temporary
+    width="300"
     dense>
 
     <v-list dense v-if="authenticated">

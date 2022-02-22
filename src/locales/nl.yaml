@@ -307,10 +307,7 @@ app:
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
       restart_klipper: Herstart de klipper service.
   history:
-    msg:
-      confirm: >-
-        Ben je zeker? Dit zal alle historiek en statistieken verwijderen van de
-        printer
+    msg: {}
   printer:
     state:
       busy: Bezig

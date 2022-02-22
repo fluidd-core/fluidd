@@ -55,9 +55,5 @@ export const mutations: MutationTree<HistoryState> = {
         if (i >= 0) state.jobs.splice(i, 1)
       })
     }
-  },
-
-  setDeleteAllJobs (state) {
-    Object.assign(state, defaultState())
   }
 }

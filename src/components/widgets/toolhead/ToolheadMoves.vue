@@ -3,13 +3,15 @@
     <v-row no-gutters justify="start" class="mb-2">
       <v-col cols="auto" class="ml-12 mr-12">
         <app-btn-toolhead-move
+          :color="(yHomed) ? 'primary' : undefined"
           @click="sendMoveGcode('Y', toolheadMoveLength)"
-          :disabled="!xyHomed || !klippyReady"
+          :disabled="!yHomed || !klippyReady"
           icon="$up">
         </app-btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-2">
         <app-btn-toolhead-move
+          :color="(zHomed) ? 'primary' : undefined"
           @click="sendMoveGcode('Z', toolheadMoveLength)"
           :disabled="!zHomed || !klippyReady"
           icon="$up">
@@ -30,8 +32,9 @@
     <v-row no-gutters justify="start" class="mb-2">
       <v-col cols="auto">
         <app-btn-toolhead-move
+          :color="(xHomed) ? 'primary' : undefined"
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
-          :disabled="!xyHomed || !klippyReady"
+          :disabled="!xHomed || !klippyReady"
           icon="$left">
         </app-btn-toolhead-move>
       </v-col>
@@ -45,14 +48,15 @@
           icon="$home">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-2">
+      <v-col cols="auto" class="ml-2" justify="end">
         <app-btn-toolhead-move
+          :color="(xHomed) ? 'primary' : undefined"
           @click="sendMoveGcode('X', toolheadMoveLength)"
-          :disabled="!xyHomed || !klippyReady"
+          :disabled="!xHomed || !klippyReady"
           icon="$right">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" class="ml-2" v-if="canHomeXY">
+      <v-col cols="auto" v-if="canHomeXY" class="ml-2">
         <app-btn-toolhead-move
           :color="(!zHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeZ)"
@@ -62,7 +66,7 @@
           icon="$home">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col class="ml-2" v-if="canHomeXY">
+      <v-col v-if="canHomeXY"  class="ml-2">
         <app-btn-toolhead-move
           :color="(!xHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeX)"
@@ -77,19 +81,21 @@
     <v-row no-gutters justify="start" class="mb-2">
       <v-col cols="auto" class="ml-12 mr-7">
         <app-btn-toolhead-move
+          :color="(yHomed) ? 'primary' : undefined"
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
-          :disabled="!xyHomed || !klippyReady"
+          :disabled="!yHomed || !klippyReady"
           icon="$down">
         </app-btn-toolhead-move>
       </v-col>
       <v-col cols="auto" class="ml-7">
         <app-btn-toolhead-move
+          :color="(zHomed) ? 'primary' : undefined"
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
           :disabled="!zHomed || !klippyReady"
           icon="$down">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col class="ml-2" v-if="canHomeXY">
+      <v-col v-if="canHomeXY" class="ml-2">
         <app-btn-toolhead-move
           :color="(!yHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeY)"

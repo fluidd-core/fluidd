@@ -11,8 +11,8 @@ app:
       wireframe: Wireframe
     msg:
       hint: >-
-        Si guarda el perfil con un nombre que no sea %{name}, también
-        puede elegir eliminar el perfil %{name}.
+        Si guarda el perfil con un nombre que no sea %{name}, también puede
+        elegir eliminar el perfil %{name}.
       not_found: No se ha encontrado ninguna malla de la cama.
       not_loaded: No está cargada ninguna malla.
     tooltip:
@@ -20,8 +20,8 @@ app:
       delete: Elimina el perfil. Esto REINICIARÁ su impresora
       load: Cargar el perfil
       save: >-
-        Carga el perfil de calibracion en el archivo printer.cfg. 
-        Esto REINICIARÁ su impresora
+        Carga el perfil de calibracion en el archivo printer.cfg.  Esto
+        REINICIARÁ su impresora
   chart:
     label:
       current: Tª
@@ -32,8 +32,8 @@ app:
       target: Objetivo
     tooltip:
       help: >-
-        Mantenga presionada la tecla Mayús para hacer zoom. <br /> Haga clic en un
-        elemento para mostrarlo. <br /> Haga clic en una potencia para
+        Mantenga presionada la tecla Mayús para hacer zoom. <br /> Haga clic en
+        un elemento para mostrarlo. <br /> Haga clic en una potencia para
         mostrarla.
   console:
     label:
@@ -41,18 +41,18 @@ app:
       hide_temp_waits: Esconder los mensajes de temperatura
     placeholder:
       command: >-
-        ''tabulador'' para autocompletar, ''help'' para comandos, ''flechas'' para
-        historia
+        ''tabulador'' para autocompletar, ''help'' para comandos, ''flechas''
+        para historia
   endpoint:
     error:
       cant_connect: >-
-        Se ha producido un error y Fluidd no puede comunicarse con el destino. ¿Está seguro
-        de que la dirección es correcta?
+        Se ha producido un error y Fluidd no puede comunicarse con el destino.
+        ¿Está seguro de que la dirección es correcta?
       cors_error: bloqueado por la configuración de CORS
       cors_note: >-
         Esto puede indicar que necesita modificar su configuración de Moonraker.
-        Consulte la documentación sobre las configuraciones con varias impresoras <a href="%{url}"
-        target="_blank">aquí</a>.
+        Consulte la documentación sobre las configuraciones con varias
+        impresoras <a href="%{url}" target="_blank">aquí</a>.
     hint:
       add_printer: Ex., http://fluiddpi.local
     msg:
@@ -71,7 +71,7 @@ app:
       subtitle: Presione el botón 'Actualizar' para actualizar el estado.
   file_system:
     filters:
-      label:e
+      label:
         print_start_time: Filtrar ya impresos
         print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
     label:
@@ -125,7 +125,6 @@ app:
       adjust_layout: Ajustar la disposición del tablero
       all: Todo
       calibrate: Calibrar
-      clear_profile: Despejar perfil
       cancel: Cancelar
       clear_profile: Limpar Perfil
       close: Cerrar
@@ -172,12 +171,12 @@ app:
         La configuración de complementos de Moonraker está disponible <a
         target="_blank" href="%{url}">aquí.</a>
       failed_components: >-
-        Moonraker ha fallado en los complementos. Verifique los registros, actualice
-        su configuración y reinicie Moonraker.
+        Moonraker ha fallado en los complementos. Verifique los registros,
+        actualice su configuración y reinicie Moonraker.
     label:
       accel_to_decel: Aceleración a deceleración
       acceleration: Aceleración
-      actual_time: Real #no estoy seguro del contexto
+      actual_time: Real
       add_camera: Añadir cámara
       add_preset: Añadir preajuste
       add_user: Añadir usuario
@@ -195,7 +194,7 @@ app:
       edit_user: Editar usuario
       extrude_length: Longitud de extrusión
       extrude_speed: Velocidad de extrusión
-      filamnet: Filamento
+      filament: Filamento
       file: Archivo
       finish_time: Final
       flow: Flujo
@@ -210,7 +209,7 @@ app:
       name: Nombre
       new_password: Nueva contraseña
       no_notifications: Ninguna notificación
-      'off': 'Apagado'
+      'off': Apagado
       password: Contraseña
       power: Energia
       printers: Impresoras
@@ -310,8 +309,7 @@ app:
       reload_restart_klipper: Recarga la configuración de Klipper y reinicia los MCUs.
       restart_klipper: Reinicia el servicio de sistema de Klipper.
   history:
-    msg:
-      confirm: ¿Está seguro? Esto borrará todo el historial y las estadísticas de la impresora
+    msg: {}
   printer:
     state:
       busy: Ocupada
@@ -384,11 +382,15 @@ app:
       thermal_presets: Preajustes térmicos
       tool: Herramienta
     tooltip:
-      gcode_coords: Usar la posición del GCode en lugar de la posición del cabezal en el tablero
+      gcode_coords: >-
+        Usar la posición del GCode en lugar de la posición del cabezal en el
+        tablero
   socket:
     msg:
       connecting: Conectando con Moonraker...
-      no_connection: No hay conexión con Moonraker. Compruebe el estado de Moonraker y/o actualice la página.
+      no_connection: >-
+        No hay conexión con Moonraker. Compruebe el estado de Moonraker y/o
+        actualice la página.
   system_info:
     label:
       capacity: Capacidad
@@ -401,9 +403,9 @@ app:
       klipper_load: Carga de Klipper
       manufactured: Fabricado
       manufacturer: Fabricante
-      mcu_awake: 'Tiempo despierto del {mcu}'
-      mcu_bandwidth: 'Ancho de banda del {mcu}'
-      mcu_load: 'Carga del {mcu}'
+      mcu_awake: Tiempo despierto del {mcu}
+      mcu_bandwidth: Ancho de banda del {mcu}
+      mcu_load: Carga del {mcu}
       model: Modelo de CPU
       moonraker_load: Carga de Moonraker
       processor_desc: Procesador
@@ -418,7 +420,9 @@ app:
       home_x: X
       home_y: 'Y'
     tooltip:
-      extruder_disabled: Extrusor deshabilidado, por debajo de min_extrude_temp (%{min}<small>°C</small>)
+      extruder_disabled: >-
+        Extrusor deshabilidado, por debajo de min_extrude_temp
+        (%{min}<small>°C</small>)
       home_xy: Origen XY
       home_z: Origen Z
   version:
@@ -441,7 +445,9 @@ app:
     title: Actualizaciones de software
     tooltip:
       commit_history: Historial de commits
-      dirty: avisa del estado 'detached head', no sobre 'master' o con origen no válido
+      dirty: >-
+        avisa del estado 'detached head', no sobre 'master' o con origen no
+        válido
       invalid: indica cambios locales a la repo
       packages: Paquetes
       release_notes: Notas de lanzamiento

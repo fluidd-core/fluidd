@@ -1,16 +1,11 @@
 <template>
   <div>
-    <v-sheet
-      :elevation="0"
-      rounded
-      v-on="$listeners"
-      class="camera-container"
-    >
+    <v-sheet :elevation="0" rounded v-on="$listeners" class="camera-container">
       <img
         v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
         :src="cameraUrl"
         class="camera-image"
-        :style="cameraTransformStyle"
+        ref="camera_image"
         @load="handleImgLoad"
       />
 
@@ -19,22 +14,19 @@
         :src="cameraUrl"
         autoplay
         class="camera-image"
-        :style="cameraTransformStyle"
+        ref="camera_image"
       />
 
       <iframe
         v-if="camera.type === 'iframe'"
         :src="cameraUrl"
         class="camera-image"
-        :style="cameraTransformStyle"
+        ref="camera_image"
         :height="cameraHeight"
         frameBorder="0"
       />
 
-      <div
-        v-if="camera.name"
-        class="camera-name"
-      >
+      <div v-if="camera.name" class="camera-name">
         {{ camera.name }}
       </div>
       <div
@@ -43,6 +35,14 @@
       >
         fps: {{ currentFPS }}
       </div>
+      <div
+        v-if="cameraFullScreenUrl"
+        class="camera-fullscreen"
+      >
+        <a :href="cameraFullScreenUrl" target="_blank">
+          <v-icon>$fullScreen</v-icon>
+        </a>
+      </div>
     </v-sheet>
   </div>
 </template>
@@ -50,6 +50,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
+import { noop } from 'vue-class-component/lib/util'
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -70,6 +71,7 @@ export default class CameraItem extends Vue {
 
   // URL used by camera
   cameraUrl = ''
+  cameraFullScreenUrl = ''
 
   // iframe height
   cameraHeight = 720
@@ -77,16 +79,36 @@ export default class CameraItem extends Vue {
   // Maintains the last cachebust string
   refresh = new Date().getTime()
 
+  // Callback to cancel requestAnimationFrame() when component is being destroyed.
+  cancelCameraTransform = noop
+
   /**
    * Handle any transforms the user may have set on the camera image.
    */
-  get cameraTransformStyle () {
+  cameraTransformStyle (element: HTMLElement) {
     const config = this.camera
     let transforms = ''
-    transforms += (config && config.flipX) ? ' scaleX(-1)' : ''
-    transforms += (config && config.flipY) ? ' scaleY(-1)' : ''
-    // transforms += ` rotate(${config.rotate}deg)`
-    return (transforms.trimLeft().length) ? { transform: transforms.trimLeft() } : {}
+
+    if (!config.rotate) {
+      transforms += config && config.flipX ? ' scaleX(-1)' : ''
+      transforms += config && config.flipY ? ' scaleY(-1)' : ''
+    } else {
+      let scaling = 1
+      if (config.rotate !== '180') {
+        scaling = element.clientHeight / element.clientWidth
+        if (scaling > 1) {
+          scaling = element.clientWidth / element.clientHeight
+        }
+      }
+
+      transforms += config && config.flipX ? ` scaleX(-${scaling})` : ` scaleX(${scaling})`
+      transforms += config && config.flipY ? ` scaleY(-${scaling})` : ` scaleY(${scaling})`
+      transforms += ` rotate(${config.rotate}deg)`
+    }
+
+    return transforms.trimLeft().length
+      ? { transform: transforms.trimLeft() }
+      : {}
   }
 
   @Watch('camera', { immediate: true })
@@ -99,6 +121,7 @@ export default class CameraItem extends Vue {
    */
   created () {
     document.addEventListener('visibilitychange', this.setUrl, false)
+    this.cancelCameraTransform = this.createTransformAnimation()
   }
 
   /**
@@ -106,7 +129,9 @@ export default class CameraItem extends Vue {
    * component.
    */
   beforeDestroy () {
+    this.cancelCameraTransform()
     this.cameraUrl = ''
+    this.cameraFullScreenUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
   }
 
@@ -123,6 +148,7 @@ export default class CameraItem extends Vue {
         const hostUrl = new URL(document.URL)
         const url = new URL(this.cameraUrl, hostUrl.origin)
         url.searchParams.set('cacheBust', this.refresh.toString())
+        this.request_start_time = performance.now()
         this.cameraUrl = url.toString()
       })
     } else {
@@ -140,7 +166,7 @@ export default class CameraItem extends Vue {
       this.camera &&
       this.camera.type === 'mjpgadaptive'
     ) {
-      const fpsTarget = this.camera.fpstarget || 10
+      const fpsTarget = document.hasFocus() ? (this.camera.fpstarget || 10) : (this.camera.fpsidletarget || 1)
       const end_time = performance.now()
       const current_time = end_time - this.start_time
       this.time = (this.time * this.time_smoothing) + (current_time * (1.0 - this.time_smoothing))
@@ -176,6 +202,7 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'stream')
         }
         this.cameraUrl = url.toString()
+        this.cameraFullScreenUrl = this.cameraUrl
       }
 
       if (type === 'mjpgadaptive') {
@@ -185,13 +212,49 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'snapshot')
         }
         this.cameraUrl = url.toString()
+        url.searchParams.set('action', 'stream')
+        this.cameraFullScreenUrl = url.toString()
       }
 
       if (type === 'ipstream' || type === 'iframe') {
         this.cameraUrl = baseUrl
+        this.cameraFullScreenUrl = baseUrl
       }
     } else {
       this.cameraUrl = ''
+      this.cameraFullScreenUrl = ''
+    }
+  }
+
+  /**
+   * Calls `requestAnimationFrame` indefinitely to apply camera transformations.
+   * The call to `requestAnimationFrame` is required because of the dependency
+   * on loaded node sizes in the document.
+   */
+  createTransformAnimation () {
+    let animating = true
+
+    const animate = () => {
+      requestAnimationFrame(() => {
+        if (!animating) {
+          return
+        }
+
+        const image = this.$refs.camera_image as HTMLElement | undefined
+
+        if (image) {
+          // Call to Object.assign() might not be suitable here.
+          Object.assign(image.style, this.cameraTransformStyle(image))
+        }
+
+        animate()
+      })
+    }
+
+    animate()
+
+    return () => {
+      animating = false
     }
   }
 }
@@ -206,6 +269,7 @@ export default class CameraItem extends Vue {
 
   .camera-container {
     position: relative;
+    background: rgba(0, 0, 0, 1);
   }
 
   .camera-name,
@@ -215,6 +279,15 @@ export default class CameraItem extends Vue {
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.75);
     font-weight: 100;
+  }
+
+  .camera-fullscreen {
+    position: absolute;
+    text-align: right;
+    top: 0;
+    right: 0;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.75);
   }
 
   .camera-name {

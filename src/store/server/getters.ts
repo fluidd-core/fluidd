@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat } from './types'
+import { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat, ServiceInfo, ServiceState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 
@@ -40,11 +40,20 @@ export const getters: GetterTree<ServerState, RootState> = {
   },
 
   /**
-   * Return a list of supported services.
+   * Return a list of services.
    * (will come from state.system_info with a moonraker update..)
    */
-  getSupportedServices: (state) => {
-    return state.system_info?.available_services || []
+  getServices: (state): ServiceInfo[] => {
+    const available_services: string[] = state.system_info?.available_services || []
+    const service_states: ServiceState = state.system_info?.service_state || {}
+
+    const services: ServiceInfo[] = [...available_services].sort().map((name: string) => {
+      return name in service_states
+        ? { name: name, ...service_states[name] }
+        : { name: name }
+    })
+
+    return services
   },
 
   /**
@@ -76,9 +85,8 @@ export const getters: GetterTree<ServerState, RootState> = {
     }
 
     if (item) {
-      // console.log('found item', item)
       return {
-        serviceSupported: getters.getSupportedServices.includes(item.service),
+        serviceSupported: getters.getServices.some((i: ServiceInfo) => i.name === item?.service),
         ...item
       }
     }
