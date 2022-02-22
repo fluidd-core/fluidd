@@ -58,6 +58,36 @@
 
         <v-divider />
 
+        <app-setting :title="$t('app.setting.label.camera_rotate_by')">
+          <v-select
+            filled
+            dense
+            hide-details="auto"
+            initial-value="false"
+            :items="[
+              {
+                text: $t('app.setting.camera_rotate_options.none'),
+                value: '',
+              },
+              { text: $t('app.setting.camera_rotate_options.90'), value: '90' },
+              {
+                text: $t('app.setting.camera_rotate_options.180'),
+                value: '180',
+              },
+              {
+                text: $t('app.setting.camera_rotate_options.270'),
+                value: '270',
+              },
+            ]"
+            item-value="value"
+            item-text="text"
+            v-model="camera.rotate"
+          >
+          </v-select>
+        </app-setting>
+
+        <v-divider />
+
         <app-setting :title="$t('app.setting.label.camera_stream_type')">
           <v-select
             filled
@@ -85,6 +115,20 @@
             single-line
             hide-details="auto"
             v-model.number="camera.fpstarget"
+            :rules="[rules.required]"
+          ></v-text-field>
+        </app-setting>
+
+        <v-divider v-if="camera.type === 'mjpgadaptive'" />
+
+        <app-setting v-if="camera.type === 'mjpgadaptive'" :title="$t('app.setting.label.fps_idle_target')">
+          <v-text-field
+            class="mt-5"
+            filled
+            dense
+            single-line
+            hide-details="auto"
+            v-model.number="camera.fpsidletarget"
             :rules="[rules.required]"
           ></v-text-field>
         </app-setting>

@@ -38,9 +38,8 @@
           icon="$left">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" :class="(!hasHomingOverride) ? 'ml-2' : 'ml-12'">
+      <v-col cols="auto" class="ml-2">
         <app-btn-toolhead-move
-          v-if="!hasHomingOverride"
           :color="(!xyHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeXY)"
           :disabled="!klippyReady || printerPrinting"
@@ -57,9 +56,8 @@
           icon="$right">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col cols="auto" v-if="canHomeXY" :class="(!hasHomingOverride) ? 'ml-2' : 'ml-12'">
+      <v-col cols="auto" v-if="canHomeXY" class="ml-2">
         <app-btn-toolhead-move
-          v-if="!hasHomingOverride"
           :color="(!zHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeZ)"
           :disabled="!klippyReady || printerPrinting"
@@ -68,9 +66,8 @@
           icon="$home">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col v-if="canHomeXY"  :class="(!hasHomingOverride) ? 'ml-2' : 'ml-12'">
+      <v-col v-if="canHomeXY"  class="ml-2">
         <app-btn-toolhead-move
-          v-if="!hasHomingOverride"
           :color="(!xHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeX)"
           :disabled="!klippyReady || printerPrinting"
@@ -98,9 +95,8 @@
           icon="$down">
         </app-btn-toolhead-move>
       </v-col>
-      <v-col v-if="canHomeXY" :class="(!hasHomingOverride) ? 'ml-2' : 'ml-12'">
+      <v-col v-if="canHomeXY" class="ml-2">
         <app-btn-toolhead-move
-          v-if="!hasHomingOverride"
           :color="(!yHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeY)"
           :disabled="!klippyReady || printerPrinting"

@@ -2,6 +2,8 @@ import { GetterTree } from 'vuex'
 import { ConsoleState } from './types'
 import { RootState } from '../types'
 
+const _tempWaitExpr = new RegExp(/^(?:ok\s+)?(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i)
+
 export const getters: GetterTree<ConsoleState, RootState> = {
   /**
    * Return a list of all available console entries, filtered appropriately.
@@ -11,11 +13,16 @@ export const getters: GetterTree<ConsoleState, RootState> = {
       ? rootState.config.uiSettings.general.hideTempWaits
       : true
 
-    const regex = /^(?:ok\s+)?(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
+    const items = state.console.filter(entry => {
+      return (hideTempWaits ? !_tempWaitExpr.test(entry.message) : true) &&
+      (!state.consoleFilters.some((f, i) => f.enabled && state.consoleFiltersRegexp[i].test(entry.message)))
+    })
 
-    return (hideTempWaits)
-      ? state.console.filter(entry => !regex.test(entry.message))
-      : [...state.console]
+    return items
+  },
+
+  getFilters: (state) => {
+    return state.consoleFilters
   },
 
   getAvailableCalibrationCommands: (state) => {

@@ -57,7 +57,8 @@ export const defaultState = (): ConfigState => {
         confirmOnPowerDeviceChange: false,
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
-        confirmDirtyEditorClose: true
+        showRateOfChange: false,
+        flipConsoleLayout: false
       },
       theme: {
         isDark: true,
@@ -68,6 +69,10 @@ export const defaultState = (): ConfigState => {
         currentTheme: {
           primary: '#2196F3'
         }
+      },
+      editor: {
+        confirmDirtyEditorClose: true,
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt']
       },
       dashboard: {
         tempPresets: []
@@ -107,6 +112,7 @@ export const defaultState = (): ConfigState => {
         retractionIconSize: 0.6,
         drawBackground: true,
         showAnimations: true,
+        groupLowerLayers: false,
         flip: {
           horizontal: false,
           vertical: true

@@ -300,8 +300,7 @@ app:
       reload_restart_klipper: اعادة تحميل تكوين klipper واعادة تشغيل الطابعة.
       restart_klipper: اعادة تشغيل خدمة klipper الخاصة بالنظام
   history:
-    msg:
-      confirm: هل انت متأكد؟ سيتم مسح التاريخ واحصائيات الطابعة
+    msg: {}
   printer:
     state:
       busy: مشغولة

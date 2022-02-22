@@ -56,9 +56,5 @@ export const actions: ActionTree<HistoryState, RootState> = {
 
   async onDelete ({ commit }, payload) {
     commit('setDeleteJob', payload.deleted_jobs)
-  },
-
-  async onDeleteAll ({ commit }) {
-    commit('setDeleteAllJobs')
   }
 }

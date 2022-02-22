@@ -317,10 +317,7 @@ app:
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
       restart_klipper: Redémarre le service klipper
   history:
-    msg:
-      confirm: >-
-        Êtes vous sûr(e) ? Toute l'historique et les statistiques de
-        l'imprimante seront éffacées .
+    msg: {}
   printer:
     state:
       busy: Occupée
