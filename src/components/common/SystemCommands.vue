@@ -238,8 +238,9 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
 <style lang="scss" scoped>
   ::v-deep .v-list-item__action--stack  {
-    margin: 6px 0;
+    margin: 2px 0;
     margin-right: -6px;
     flex-direction: row;
+    align-items: center;
   }
 </style>
