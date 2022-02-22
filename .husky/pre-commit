@@ -1,0 +1,8 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+FILES_TO_LINT=$(git diff --cached --name-only --diff-filter=ACM | grep -iE "\.(js|jsx|ts|tsx|vue)$" || true)
+
+if [ -n "$FILES_TO_LINT" ]; then
+  npx --no-install vue-cli-service lint --no-fix $FILES_TO_LINT
+fi
