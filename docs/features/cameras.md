@@ -50,9 +50,9 @@ Head on over to the UI Settings page to define your cameras.
 Up to four cameras are supported by the stock configuration.
 In order to make them work, you need to
 
-1. Copy `webcam.txt` configuration file into a new one 
-   matching `webcam*.txt` wildcard.
-   Make sure each configuration file to a different camera.
+1. Copy the `webcam.txt` configuration file into a new one 
+   matching the `webcam*.txt` wildcard.
+   Make sure each configuration file points to a different camera.
    For example, one configuration file might have `camera="usb"` and
    the other one `camera="auto"`.
    Make any other adjustments if needed.
@@ -60,9 +60,10 @@ In order to make them work, you need to
    By default `mjpg_streamer` will listen on port `8080`.
    Up to four cameras are supported by the default nginx configuration,
    from port `8080` to `8083`. Configure it by setting up
-   `camera_http_options` parameter.
+   the `camera_http_options` parameter.
    Example: `camera_http_options="-n -p 8081"`
-4. Restart webcamd via SSH: `sudo systemctl restart webcamd`.
+4. Restart webcamd either via the tools drawer in the top right of the UI
+   or via SSH: `sudo systemctl restart webcamd`.
    Alternatively, you could restart your device.
 6. Add a new camera in the fluidd web interface.
    Camera URL should be `webcam1/?action=stream` for the streamer on port 8081;
