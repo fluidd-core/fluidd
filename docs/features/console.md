@@ -27,8 +27,9 @@ Fluidd's console has a bunch of hidden features;
 5. You can filter the console output the way you'd like!
    Head on over to the console settings tab to configure custom filters.
    Currently, the following types of filters are supported:
-   * `contains` - Outputs only messages that contain the given string (case insensitive)
-   * `starts with` - Outputs only messages that start with the given string (case insensitive)
-   * `expression` - Outputs only messages that match the given [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp) (e.g. `Klipper state: .*`) (case sensitive)
+   * `contains` - Hides messages that contain the given string (case insensitive)
+   * `starts with` - Hides messages that start with the given string (case insensitive)
+   * `expression` - Hides messages that match the given [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)  
+     (e.g. `probe at [\d\.,]+ is z=[01]\.\d+`) (case sensitive)
 
 ![screenshot](/assets/images/console.png)
