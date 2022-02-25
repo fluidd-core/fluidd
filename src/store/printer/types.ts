@@ -51,8 +51,10 @@ export interface Fan {
 }
 
 export interface FanConfig {
-  [index: string]: string | undefined;
+  [index: string]: string | number | undefined;
   pin: string;
+  max_power: number;
+  off_below: number;
 }
 
 export interface OutputPin {

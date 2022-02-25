@@ -61,34 +61,41 @@
           <v-list-item-title>{{ $t('app.general.label.services') }}</v-list-item-title>
         </v-list-item-content>
       </template>
-
-      <v-list-item @click="serviceRestartMoonraker(); $emit('click')"
-        :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_moonraker') }}</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="warning">$restart</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <v-list-item @click="serviceRestartKlipper(); $emit('click')"
-        :disabled="printerPrinting">
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service_klipper') }}</v-list-item-title>
-        <v-list-item-icon>
-          <v-icon color="warning">$restart</v-icon>
-        </v-list-item-icon>
-      </v-list-item>
-
-      <template v-for="service in supportedServices">
+      <template v-for="service in services">
         <v-list-item
-         :key="service"
-         v-if="!service.startsWith('moonraker') && !service.startsWith('klipper')"
-         @click="serviceRestartByName(service);
-         $emit('click')"
+         :key="service.name"
         >
-          <v-list-item-title class="text-wrap">{{ $t('app.general.btn.restart_service', { service }) }}</v-list-item-title>
-          <v-list-item-icon>
-            <v-icon color="warning">$restart</v-icon>
-          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+                <v-tooltip left>
+                    <template v-slot:activator="{ on, attrs }">
+                        <span
+                          v-bind="attrs"
+                          v-on="on"
+                          class="text-wrap" style="text-transform: capitalize;">{{ service.name }}</span>
+                    </template>
+                    <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
+                </v-tooltip>
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn
+              icon
+              v-if="service.active_state === 'inactive'"
+              @click="checkDialog(serviceStart, service, 'start')"
+            ><v-icon>$play</v-icon></v-btn>
+            <v-btn
+              icon
+              v-else
+              @click="checkDialog(serviceRestart, service, 'restart')"
+            ><v-icon color="warning">$restart</v-icon></v-btn>
+            <v-btn
+              icon
+              @click="checkDialog(serviceStop, service, 'stop')"
+              :disabled="service.active_state === 'inactive'"
+              :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
+            ><v-icon color="error">$stop</v-icon></v-btn>
+          </v-list-item-action>
         </v-list-item>
       </template>
     </v-list-group>
@@ -104,17 +111,10 @@ import { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
+import { ServiceInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
-  confirmRebootDialog = {
-    open: false
-  }
-
-  confirmShutdownDialog = {
-    open: false
-  }
-
   get serverInfo () {
     return this.$store.getters['server/getInfo']
   }
@@ -131,8 +131,38 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.getters['server/componentSupport']('power')
   }
 
-  get supportedServices () {
-    return this.$store.getters['server/getSupportedServices']
+  get services () {
+    return this.$store.getters['server/getServices'].filter((service: ServiceInfo) => service.name !== 'klipper_mcu')
+  }
+
+  async checkDialog (executableFunction: any, service: ServiceInfo, action: string) {
+    if (this.printerPrinting || ['restart', 'stop'].includes(action)) {
+      const res = await this.$confirm(
+        this.$t(
+          `app.general.simple_form.msg.confirm_service_${action}`,
+          { name: service.name })?.toString(),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+      if (res) {
+        this.$emit('click')
+        await executableFunction(service)
+      }
+    } else {
+      this.$emit('click')
+      await executableFunction(service)
+    }
+  }
+
+  async serviceRestart (service: ServiceInfo) {
+    await this.serviceRestartByName(service.name)
+  }
+
+  async serviceStart (service: ServiceInfo) {
+    await this.serviceStartByName(service.name)
+  }
+
+  async serviceStop (service: ServiceInfo) {
+    await this.serviceStopByName(service.name)
   }
 
   handleHostReboot () {
@@ -161,9 +191,19 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
       })
   }
 
-  togglePowerDevice (device: Device, wait?: string) {
-    const state = (device.status === 'on') ? 'off' : 'on'
-    SocketActions.machineDevicePowerToggle(device.device, state, wait)
+  async togglePowerDevice (device: Device, wait?: string) {
+    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    let res: boolean | undefined = true
+    if (confirmOnPowerDeviceChange) {
+      res = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+    }
+    if (res) {
+      const state = (device.status === 'on') ? 'off' : 'on'
+      SocketActions.machineDevicePowerToggle(device.device, state, wait)
+    }
   }
 
   getPowerIcon (device: Device) {
@@ -195,3 +235,12 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  ::v-deep .v-list-item__action--stack  {
+    margin: 2px 0;
+    margin-right: -6px;
+    flex-direction: row;
+    align-items: center;
+  }
+</style>

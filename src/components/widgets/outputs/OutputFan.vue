@@ -45,11 +45,13 @@ export default class OutputFan extends Mixins(StateMixin) {
   get prettyValue () {
     return (this.value === 0)
       ? this.$t('app.general.label.off')
-      : `${this.value.toFixed()}<small>%</small>`
+      : this.$t('app.general.label.on')
   }
 
   get value () {
-    return (this.fan.speed) ? Math.round(this.fan.speed * 100) : 0
+    if (!this.fan.speed) return 0
+    const speed = this.fan.speed / (this.fan.config.max_power || 1)
+    return Math.round(speed * 100)
   }
 
   handleChange (target: number) {
@@ -70,19 +72,17 @@ export default class OutputFan extends Mixins(StateMixin) {
       : undefined
   }
 
-  get offBelow () {
-    const config = this.$store.getters['printer/getPrinterSettings'](this.fan.name) || {}
-    return config.off_below * 100 || 0
-  }
-
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
   }
 
   rules = [
-    (v: string) => {
-      if (this.offBelow <= 0) return true
-      return (parseFloat(v) >= this.offBelow || parseFloat(v) === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: this.offBelow })
+    (v: number) => {
+      const off_below = (this.fan.config?.off_below)
+        ? this.fan.config.off_below * 100
+        : 0
+      if (!off_below) return true
+      return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
     }
   ]
 }

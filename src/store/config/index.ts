@@ -17,6 +17,7 @@ export const defaultState = (): ConfigState => {
       hosted: false,
       locales: [
         { name: 'English', code: 'en' },
+        { name: 'Čeština', code: 'cz' },
         { name: 'Chinese', code: 'cn' },
         { name: 'Deutsch', code: 'de' },
         { name: 'Español', code: 'es' },
@@ -52,7 +53,12 @@ export const defaultState = (): ConfigState => {
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
-        confirmOnEstop: false
+        confirmOnEstop: false,
+        confirmOnPowerDeviceChange: false,
+        dateformat: 'MMM. DD,',
+        timeformat: 'hh:mm a',
+        showRateOfChange: false,
+        flipConsoleLayout: false
       },
       theme: {
         isDark: true,
@@ -63,6 +69,10 @@ export const defaultState = (): ConfigState => {
         currentTheme: {
           primary: '#2196F3'
         }
+      },
+      editor: {
+        confirmDirtyEditorClose: true,
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt']
       },
       dashboard: {
         tempPresets: []
@@ -102,6 +112,7 @@ export const defaultState = (): ConfigState => {
         retractionIconSize: 0.6,
         drawBackground: true,
         showAnimations: true,
+        groupLowerLayers: false,
         flip: {
           horizontal: false,
           vertical: true

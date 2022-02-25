@@ -182,5 +182,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyUserDeleted ({ dispatch }, payload) {
     dispatch('auth/onUserDeleted', payload, { root: true })
+  },
+
+  async notifyServiceStateChanged ({ dispatch }, payload) {
+    dispatch('server/onServiceStateChanged', payload, { root: true })
   }
 }

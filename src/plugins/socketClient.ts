@@ -130,6 +130,9 @@ export class WebSocketClient {
             return
           }
 
+          // we're still alive.
+          this.pong()
+
           if (request) {
             // these are specific answers to a request we've made.
             // Build the response, including a non-enumerable ref of the original request.
@@ -146,9 +149,6 @@ export class WebSocketClient {
             // These are socket notifications (i.e., no specific request was made..)
             // Dispatch with the name of the method, converted to camelCase.
 
-            // we're still alive.
-            this.pong()
-
             if (d.params && d.params[0]) {
               if (d.method !== 'notify_status_update') {
                 // Normally, we let notifications through with no cache...
@@ -164,7 +164,7 @@ export class WebSocketClient {
                   : new Date().getTime()
                 this.cache = (!this.cache)
                   ? { timestamp: date, params: d.params[0] }
-                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, d.params[0]) }
+                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, d.params[0], { arrayMerge: (x, y) => y }) }
 
                 // If there's a second or more difference, flush the cache.
                 if (this.cache && date - this.cache.timestamp >= 1000) {

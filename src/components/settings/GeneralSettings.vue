@@ -38,12 +38,55 @@
 
       <v-divider></v-divider>
 
+      <app-setting :title="$t('app.setting.label.date_time_format')">
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="[
+            { text: $filters.formatDateTime(current_time, 'MMM. DD, YYYY'), value: 'MMM. DD,' },
+            { text: $filters.formatDateTime(current_time, 'DD MMM. YYYY'), value: 'DD MMM.' }
+          ]"
+          item-value="value"
+          item-text="text"
+          v-model="dateformat">
+        </v-select>
+        &nbsp;
+        <v-select
+          filled
+          dense
+          hide-details="auto"
+          :items="[
+            { text: $filters.formatDateTime(current_time, 'h:mm a'), value: 'hh:mm a' },
+            { text: $filters.formatDateTime(current_time, 'HH:mm'), value: 'HH:mm' }
+          ]"
+          item-value="value"
+          item-text="text"
+          v-model="timeformat">
+        </v-select>
+      </app-setting>
+
+      <v-divider></v-divider>
+
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
         <v-switch
           @click.native.stop
           v-model="confirmOnEstop"
+          hide-details
+          class="mb-5"
+        ></v-switch>
+      </app-setting>
+
+      <v-divider></v-divider>
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_on_power_device_change')"
+      >
+        <v-switch
+          @click.native.stop
+          v-model="confirmOnPowerDeviceChange"
           hide-details
           class="mb-5"
         ></v-switch>
@@ -98,6 +141,30 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/onLocaleChange', value)
   }
 
+  get dateformat () {
+    return this.$store.state.config.uiSettings.general.dateformat
+  }
+
+  set dateformat (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.dateformat',
+      value,
+      server: true
+    })
+  }
+
+  get timeformat () {
+    return this.$store.state.config.uiSettings.general.timeformat
+  }
+
+  set timeformat (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.timeformat',
+      value,
+      server: true
+    })
+  }
+
   get confirmOnEstop () {
     return this.$store.state.config.uiSettings.general.confirmOnEstop
   }
@@ -108,6 +175,22 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
+  }
+
+  get confirmOnPowerDeviceChange () {
+    return this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+  }
+
+  set confirmOnPowerDeviceChange (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmOnPowerDeviceChange',
+      value,
+      server: true
+    })
+  }
+
+  get current_time () {
+    return Math.floor(Date.now() / 1000)
   }
 }
 </script>

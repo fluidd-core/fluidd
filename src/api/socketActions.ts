@@ -31,6 +31,28 @@ export const SocketActions = {
     )
   },
 
+  async machineServicesStart (service: string) {
+    const wait = Waits.onServiceStart
+    baseEmit(
+      'machine.services.start', {
+        dispatch: 'void',
+        params: { service },
+        wait
+      }
+    )
+  },
+
+  async machineServicesStop (service: string) {
+    const wait = Waits.onServiceStop
+    baseEmit(
+      'machine.services.stop', {
+        dispatch: 'void',
+        params: { service },
+        wait
+      }
+    )
+  },
+
   async machineReboot () {
     baseEmit(
       'machine.reboot', {
@@ -346,15 +368,21 @@ export const SocketActions = {
 
   async serverHistoryDeleteJob (uid: string) {
     let params: any = { uid }
-    let dispatch = 'history/onDelete'
     if (uid === 'all') {
       params = { all: true }
-      dispatch = 'history/onDeleteAll'
     }
     baseEmit(
       'server.history.delete_job', {
-        dispatch,
+        dispatch: 'history/onDelete',
         params
+      }
+    )
+  },
+
+  async serverHistoryResetTotals () {
+    baseEmit(
+      'server.history.reset_totals', {
+        dispatch: 'history/onHistoryChange'
       }
     )
   },

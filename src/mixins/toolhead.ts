@@ -33,4 +33,8 @@ export default class ToolheadMixin extends Vue {
   get zHomed (): boolean {
     return this.$store.getters['printer/getHomedAxes']('z')
   }
+
+  get hasHomingOverride (): boolean {
+    return this.$store.getters['printer/getHasHomingOverride']
+  }
 }

@@ -32,6 +32,20 @@
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
         ></temperature-presets-menu>
+
+        <app-btn-collapse-group
+          :collapsed="true"
+          menu-icon="$cog"
+        >
+          <v-checkbox
+            v-model="showRateOfChange"
+            :label="$t('app.setting.label.show_rate_of_change')"
+            color="primary"
+            hide-details
+            class="mx-2 mt-2 mb-2"
+          >
+          </v-checkbox>
+        </app-btn-collapse-group>
       </app-btn-collapse-group>
     </template>
 
@@ -112,6 +126,18 @@ export default class TemperatureCard extends Mixins(StateMixin) {
     })
   }
 
+  get showRateOfChange () {
+    return this.$store.state.config.uiSettings.general.showRateOfChange
+  }
+
+  set showRateOfChange (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showRateOfChange',
+      value,
+      server: true
+    })
+  }
+
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
@@ -140,7 +166,18 @@ export default class TemperatureCard extends Mixins(StateMixin) {
     }
   }
 
-  handleApplyOff () {
+  async handleApplyOff () {
+    if (['printing', 'busy', 'paused'].includes(this.$store.getters['printer/getPrinterState'])) {
+      const result = await this.$confirm(
+        this.$tc('app.general.label.heaters_busy'),
+        { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
     this.sendGcode('TURN_OFF_HEATERS')
   }
 }

@@ -12,6 +12,7 @@
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint",
+    "bootstrap": "husky install",
     "copy:host:config": "shx cp -f ./server/config.json ./dist/config.json",
     "deploy:host": "potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
     "deploy:host:dev": "potato -s dist -u -b dev-app.fluidd.xyz",
@@ -46,11 +47,12 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
-    "monaco-editor": "^0.25.2",
+    "monaco-editor": "^0.31.1",
     "monaco-editor-textmate": "^3.0.0",
     "monaco-textmate": "^3.0.1",
     "onigasm": "^2.2.5",
     "panzoom": "^9.4.2",
+    "qrcode.vue": "^1.7.0",
     "register-service-worker": "^1.7.2",
     "semver": "^7.3.5",
     "threads": "1.6.3",
@@ -72,8 +74,8 @@
   },
   "devDependencies": {
     "@0x4447/potato": "^2.4.7",
-    "@mdi/js": "^5.9.55",
-    "@types/jest": "^26.0.23",
+    "@mdi/js": "^6.5.95",
+    "@types/jest": "^26.0.24",
     "@types/lodash": "^4.14.170",
     "@types/md5": "^2.3.0",
     "@types/semver": "^7.3.6",
@@ -92,7 +94,6 @@
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/eslint-config-typescript": "^5.0.2",
     "@vue/test-utils": "^1.2.1",
-    "babel-core": "^7.0.0-bridge.0",
     "eslint": "^6.8.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-node": "^11.1.0",
@@ -101,19 +102,19 @@
     "eslint-plugin-vue": "^6.2.2",
     "file-loader": "^6.2.0",
     "generate-file-webpack-plugin": "^1.0.1",
+    "husky": "^7.0.4",
     "jest-junit": "^12.0.0",
     "json-loader": "^0.5.7",
     "mockdate": "^3.0.5",
-    "monaco-editor-webpack-plugin": "^4.0.0",
-    "monaco-vscode-textmate-theme-converter": "^0.1.1",
+    "monaco-editor-webpack-plugin": "^7.0.1",
+    "monaco-vscode-textmate-theme-converter": "^0.1.7",
     "sass": "~1.32.8",
     "sass-loader": "^10.2.0",
     "serve": "^11.3.2",
     "shx": "^0.3.3",
     "standard-version": "^9.3.0",
-    "string-replace-loader": "^3.0.2",
     "threads-plugin": "^1.4.0",
-    "ts-jest": "^27.0.3",
+    "ts-jest": "^26.5.6",
     "typescript": "^3.9.9",
     "vue-cli-plugin-i18n": "^2.1.1",
     "vue-cli-plugin-vuetify": "^2.4.1",
@@ -127,9 +128,9 @@
   },
   "_id": "fluidd@0.0.3",
   "bugs": {
-    "url": "https://github.com/cadriel/fluidd/issues"
+    "url": "https://github.com/fluidd-core/fluidd/issues"
   },
-  "homepage": "https://github.com/cadriel/fluidd#readme",
+  "homepage": "https://github.com/fluidd-core/fluidd#readme",
   "keywords": [
     "klipper"
   ],
@@ -137,6 +138,9 @@
   "readme": "README.md",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cadriel/fluidd.git"
+    "url": "git+https://github.com/fluidd-core/fluidd.git"
+  },
+  "engines": {
+    "node": "^16"
   }
 }
