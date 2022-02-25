@@ -2,6 +2,58 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.17.0](https://github.com/fluidd-core/fluidd/compare/v1.16.2...v1.17.0) (2022-02-25)
+
+
+### Features
+
+* Add full-screen button to camera view ([#525](https://github.com/fluidd-core/fluidd/issues/525)) ([183e136](https://github.com/fluidd-core/fluidd/commit/183e1361e2c33e802351d62fc7ca2218072a6d57))
+* add reset history ([#483](https://github.com/fluidd-core/fluidd/issues/483)) ([3d379d1](https://github.com/fluidd-core/fluidd/commit/3d379d1bbf6fc511732e6da06c467efeb22e9e53))
+* adds optional confirmation for power device toggle ([#388](https://github.com/fluidd-core/fluidd/issues/388)) ([bc32627](https://github.com/fluidd-core/fluidd/commit/bc32627267ea9565f3350315b7b552c086cbf4cb))
+* adjust page title order when printing ([#493](https://github.com/fluidd-core/fluidd/issues/493)) ([ed83f5c](https://github.com/fluidd-core/fluidd/commit/ed83f5cc9c5b5e4ca9b181fbd4cf24b108706773))
+* alias for macro ([#479](https://github.com/fluidd-core/fluidd/issues/479)) ([e33839b](https://github.com/fluidd-core/fluidd/commit/e33839b1f81fb96423a3210e7cda90707e2ee410))
+* Date/Time format ([#362](https://github.com/fluidd-core/fluidd/issues/362)) ([e6c5a9b](https://github.com/fluidd-core/fluidd/commit/e6c5a9b35c4c6e1ceb67de43ebb78e0fbedbb8ce))
+* disable position field if not homed ([#507](https://github.com/fluidd-core/fluidd/issues/507)) ([003c25a](https://github.com/fluidd-core/fluidd/commit/003c25a661d87872918979aedad4711ddf6327ce))
+* edit on click ([#514](https://github.com/fluidd-core/fluidd/issues/514)) ([17e9dfc](https://github.com/fluidd-core/fluidd/commit/17e9dfc312de6f887f41495adeac9e51a812caeb))
+* editor close confirmation when dirty ([#441](https://github.com/fluidd-core/fluidd/issues/441)) ([8729e45](https://github.com/fluidd-core/fluidd/commit/8729e457c2142e6f8af3cabae0df2b1f645cbaaf))
+* enhanced console filtering ([#486](https://github.com/fluidd-core/fluidd/issues/486)) ([9f45879](https://github.com/fluidd-core/fluidd/commit/9f458791c7580db6e1fb6c4075f9f017f2747576))
+* Expanded Service State ([#504](https://github.com/fluidd-core/fluidd/issues/504)) ([6a7b23b](https://github.com/fluidd-core/fluidd/commit/6a7b23b2856572189686f95cb360239956f04c61))
+* gcode viewer group lower layers ([#469](https://github.com/fluidd-core/fluidd/issues/469)) ([68248a8](https://github.com/fluidd-core/fluidd/commit/68248a8a6860ec250672136dff9058a07549019e))
+* idle camera FPS ([#500](https://github.com/fluidd-core/fluidd/issues/500)) ([28925b2](https://github.com/fluidd-core/fluidd/commit/28925b2d6893e4efbaea9c7d7682f0e1fa476adc))
+* make each axis controllable after homing ([#478](https://github.com/fluidd-core/fluidd/issues/478)) ([d931646](https://github.com/fluidd-core/fluidd/commit/d9316467e172738a855e42d08fe2db2bbff1bb50))
+* Non-controllable fan On/Off ([#477](https://github.com/fluidd-core/fluidd/issues/477)) ([2795e7b](https://github.com/fluidd-core/fluidd/commit/2795e7b6d52d3b9f56435ec95c335a748a530df2))
+* option to flip console direction ([#522](https://github.com/fluidd-core/fluidd/issues/522)) ([79cf350](https://github.com/fluidd-core/fluidd/commit/79cf35070dfb0f23e45afc347550e962fda7b01b))
+* pause autoscroll when back scrolling ([#495](https://github.com/fluidd-core/fluidd/issues/495)) ([bf353fd](https://github.com/fluidd-core/fluidd/commit/bf353fd60faf399fb5afbe2aa6b3afcca2b40e8a))
+* save z-offset changes ([#489](https://github.com/fluidd-core/fluidd/issues/489)) ([0cf6c87](https://github.com/fluidd-core/fluidd/commit/0cf6c87cc661edfc533d62d009ad43a31b2e1886))
+* show klipper warnings ([#505](https://github.com/fluidd-core/fluidd/issues/505)) ([7cf3ce3](https://github.com/fluidd-core/fluidd/commit/7cf3ce3c53b7a0b049883a41c7659bb196e36d56))
+* show moonraker warnings ([#481](https://github.com/fluidd-core/fluidd/issues/481)) ([7355c28](https://github.com/fluidd-core/fluidd/commit/7355c287433bb29930e14b5c21a246375b3cbe98))
+* show qr-code with api key ([#523](https://github.com/fluidd-core/fluidd/issues/523)) ([6eab704](https://github.com/fluidd-core/fluidd/commit/6eab704f7eab599035419cf9a28365f493b2f8a5)), closes [#411](https://github.com/fluidd-core/fluidd/issues/411)
+* SnakeOil theme ([#382](https://github.com/fluidd-core/fluidd/issues/382)) ([7dd941c](https://github.com/fluidd-core/fluidd/commit/7dd941c7f7251e32542f77dbb84973b6ce640ec5))
+* temperature rate of change ([#496](https://github.com/fluidd-core/fluidd/issues/496)) ([30a2628](https://github.com/fluidd-core/fluidd/commit/30a26287d3a3a33743e03186745cee0a70ce6d53))
+* TURN_OFF_HEATERS confirmation in temperature presets ([#527](https://github.com/fluidd-core/fluidd/issues/527)) ([fec1f88](https://github.com/fluidd-core/fluidd/commit/fec1f88311e8bfb34be9fbeb4421ecb648ba1d19))
+* **i18n-RU:** update ru.yaml ([#513](https://github.com/fluidd-core/fluidd/issues/513)) ([a81ba12](https://github.com/fluidd-core/fluidd/commit/a81ba12b8cc6dd69f936e23c92d173a12fde308c))
+
+
+### Bug Fixes
+
+* actual end time calculation ([#379](https://github.com/fluidd-core/fluidd/issues/379)) ([4f2940b](https://github.com/fluidd-core/fluidd/commit/4f2940b4932680e9327ec88a08111a7f4bcecaa9))
+* add missing type ([a0dcf61](https://github.com/fluidd-core/fluidd/commit/a0dcf61c561946a4583b6dd98433b96bc505a29f))
+* directory sorting ([#492](https://github.com/fluidd-core/fluidd/issues/492)) ([a2cb15e](https://github.com/fluidd-core/fluidd/commit/a2cb15ee5cbe382a62624c4274d0ba8688ed84de))
+* display correct fan speed when using 'fan max_power' setting ([#391](https://github.com/fluidd-core/fluidd/issues/391)) ([b809a2c](https://github.com/fluidd-core/fluidd/commit/b809a2c92415de728a00ac0fdecc64441d42200f))
+* firmware retractation length stuck at 0 ([#497](https://github.com/fluidd-core/fluidd/issues/497)) ([ad8f636](https://github.com/fluidd-core/fluidd/commit/ad8f636fe712649fe8d1feed418e232353eee51a))
+* generic fans with off_below set now apply validators correctly ([a0e6234](https://github.com/fluidd-core/fluidd/commit/a0e6234f1fb2791216931e3ed3b717f8ab5d8873))
+* improves macro param default value handling ([#524](https://github.com/fluidd-core/fluidd/issues/524)) ([06c05d2](https://github.com/fluidd-core/fluidd/commit/06c05d2cc21722a5dd77c0f53e355050357c6f47))
+* IPv6 support for thumbnails ([#439](https://github.com/fluidd-core/fluidd/issues/439)) ([e1968ea](https://github.com/fluidd-core/fluidd/commit/e1968ea8fa2fd7ffe780952ae55d72ece1501fb9))
+* keep camera select menu always enabled ([#503](https://github.com/fluidd-core/fluidd/issues/503)) ([7122b9e](https://github.com/fluidd-core/fluidd/commit/7122b9ef6795f96430eb97bd7a1fe5f0c20f488f))
+* revert ECharts changes previously introduced ([#512](https://github.com/fluidd-core/fluidd/issues/512)) ([5a7796a](https://github.com/fluidd-core/fluidd/commit/5a7796a5a66ea13a8b6cbe9a0f8e8c96b8e39e2d)), closes [#482](https://github.com/fluidd-core/fluidd/issues/482)
+* reverts homing override checks in ToolheadMoves.vue ([#529](https://github.com/fluidd-core/fluidd/issues/529)) ([cc000e0](https://github.com/fluidd-core/fluidd/commit/cc000e05f855e85ea9293033095efbec9e5098f6)), closes [#528](https://github.com/fluidd-core/fluidd/issues/528)
+* service state item layout balance ([#535](https://github.com/fluidd-core/fluidd/issues/535)) ([08c00cc](https://github.com/fluidd-core/fluidd/commit/08c00cc584df1e1ea8ff83a2d53ccbccb1af5c30))
+* Spanish translate file ([#475](https://github.com/fluidd-core/fluidd/issues/475)) ([a908306](https://github.com/fluidd-core/fluidd/commit/a908306272e9ad070de7fd329eeabecdbc627f73))
+* tipo Date Time Format ([#487](https://github.com/fluidd-core/fluidd/issues/487)) ([cfb6661](https://github.com/fluidd-core/fluidd/commit/cfb6661d861f87563798cccc7e3d247b595c781c))
+* typo in spanish translation ([80acaea](https://github.com/fluidd-core/fluidd/commit/80acaeaac281e99b993a7986bcc6411cc2d72d28))
+* websocket cache issue with arrays ([#510](https://github.com/fluidd-core/fluidd/issues/510)) ([731d67e](https://github.com/fluidd-core/fluidd/commit/731d67ecc6d0611d576a18e6c03eddb9fcf7feed))
+* z move speed issue ([#488](https://github.com/fluidd-core/fluidd/issues/488)) ([dbd100a](https://github.com/fluidd-core/fluidd/commit/dbd100ab1a4761191b34134442d1f6951bf5fbaf))
+
 ### [1.16.2](https://github.com/cadriel/fluidd/compare/v1.16.1...v1.16.2) (2021-07-09)
 
 
