@@ -1,21 +1,21 @@
 <template>
   <div class="chart" :style="{ 'height': height }">
-    <ECharts
+    <v-chart
       ref="chart"
       style="overflow: initial;"
       :option="options"
-      :setOptionOps="{ notMerge: true }"
-      :initOpts="{ renderer: 'svg' }"
+      :update-options="{ notMerge: true }"
+      :init-options="{ renderer: 'svg' }"
       :events="[
         ['legendselectchanged', handleLegendSelectChange ]
       ]"
     >
-    </ECharts>
+    </v-chart>
   </div>
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Watch, Prop } from 'vue-property-decorator'
+import { Vue, Component, Watch, Prop, Ref } from 'vue-property-decorator'
 import { ECharts } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -23,6 +23,9 @@ import getKlipperType from '@/util/get-klipper-type'
 export default class ThermalChart extends Vue {
   @Prop({ type: String, default: '100%' })
   height!: string;
+
+  @Ref('chart')
+  chart!: ECharts
 
   loading = false
   series: any[] = []
@@ -48,11 +51,6 @@ export default class ThermalChart extends Vue {
         ]
       })
     }
-  }
-
-  get chart () {
-    const ref = this.$refs.chart as any
-    if (ref) return ref.inst as ECharts
   }
 
   get chartData () {

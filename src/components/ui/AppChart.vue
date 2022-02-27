@@ -4,22 +4,23 @@
       class="chart"
       :style="{ 'height': height }"
     >
-      <ECharts
+      <v-chart
         v-if="ready"
         style="overflow: initial;"
         ref="chart"
         :option="opts"
-        :setOptionOps="{ notMerge: true }"
-        :initOpts="{ renderer: 'svg' }"
+        :update-options="{ notMerge: true }"
+        :init-options="{ renderer: 'svg' }"
         :events="events"
       >
-      </ECharts>
+      </v-chart>
     </div>
   </div>
 </template>
 
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
+import { ECharts } from 'echarts'
 import { merge } from 'lodash'
 
 @Component({})
@@ -37,7 +38,7 @@ export default class AppChart extends Vue {
   events!: any;
 
   @Ref('chart')
-  chart!: any
+  chart!: ECharts
 
   ready = false
 
@@ -52,7 +53,7 @@ export default class AppChart extends Vue {
   @Watch('data')
   onData (data: any) {
     if (this.chart && data && data.length) {
-      this.chart.inst.setOption({
+      this.chart.setOption({
         dataset: {
           source: data
         }
@@ -81,7 +82,7 @@ export default class AppChart extends Vue {
   beforeDestroy () {
     if (typeof window === 'undefined') return
     if (this.chart) {
-      this.chart.inst.dispose()
+      this.chart.dispose()
     }
   }
 }
