@@ -54,7 +54,7 @@
               </status-label>
 
               <status-label :label="$t('app.general.label.file')" v-if="filename !== ''">
-                <span>{{ filename }}</span>
+                <span style="word-break: break-all">{{ filename }}</span>
               </status-label>
             </v-col>
           </v-row>
