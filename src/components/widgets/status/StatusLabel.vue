@@ -35,7 +35,6 @@ export default class AppSwitch extends Mixins(StateMixin) {
     > span {
       display: block;
       // white-space: nowrap;
-      text-overflow: ellipsis;
       overflow: hidden;
       word-break: break-all;
       width: auto;
