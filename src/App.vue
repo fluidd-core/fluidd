@@ -29,6 +29,7 @@
       fab
       fixed
       bottom left
+      class="ml-2 mb-2"
       color="error"
       @click="emergencyStop()"
     >
