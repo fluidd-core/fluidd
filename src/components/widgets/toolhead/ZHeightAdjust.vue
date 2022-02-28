@@ -102,19 +102,15 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
     this.sendGcode(gcode, wait)
   }
 
-  get printerSettings () {
-    return this.$store.getters['printer/getPrinterSettings']()
-  }
-
-  get printerHasProbe (): boolean {
-    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+  get printerUsesProbeAsEndstop (): boolean {
+    return this.$store.getters['printer/getPrinterSettings']('stepper_z.endstop_pin') === 'probe:z_virtual_endstop'
   }
 
   handleZApplyDialog () {
     let msg = this.$tc('app.general.simple_form.msg.apply_z_offset_endstop')
     let gcode = 'Z_OFFSET_APPLY_ENDSTOP'
 
-    if (this.printerHasProbe) {
+    if (this.printerUsesProbeAsEndstop) {
       msg = this.$tc('app.general.simple_form.msg.apply_z_offset_probe')
       gcode = 'Z_OFFSET_APPLY_PROBE'
     }
