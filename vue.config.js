@@ -44,7 +44,9 @@ module.exports = {
         file: '.version',
         content: 'v' + v + '\n'
       }),
-      new ThreadsPlugin()
+      new ThreadsPlugin({
+        globalObject: "(typeof self!='undefined'?self:this)"
+      })
       // new BundleAnalyzerPlugin({
       //   analyzerMode:
       //     (process.env.NODE_ENV === 'production') ? 'server' : 'disabled'
