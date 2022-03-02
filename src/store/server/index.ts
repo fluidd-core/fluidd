@@ -21,10 +21,7 @@ export const defaultState = (): ServerState => {
       authorization: {
         enabled: true
       },
-      server: {
-        gcode_store_size: 1000,
-        temperature_store_size: 1200
-      }
+      server: {}
     },
     moonraker_stats: [],
     throttled_state: {
