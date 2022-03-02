@@ -25,12 +25,9 @@ export const getters: GetterTree<ChartState, RootState> = {
    */
   getChartRetention: (state, getters, rootState, rootGetters) => {
     const config = rootGetters['server/getConfig']
-    return (
-      'server' in config &&
-      'temperature_store_size' in config.server
-    )
-      ? config.server.temperature_store_size
-      : Globals.CHART_HISTORY_RETENTION
+    return config.data_store?.temperature_store_size ??
+      config.server?.temperature_store_size ??
+      Globals.CHART_HISTORY_RETENTION
   },
 
   /**

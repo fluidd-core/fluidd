@@ -1,6 +1,6 @@
-import { expose } from 'threads/worker'
+import { expose } from 'threads/dist/worker'
 import parseGcode from './parseGcode'
-import { Subject, Observable } from 'threads/observable'
+import { Subject, Observable } from 'threads/dist/observable'
 
 let progress = new Subject<number>()
 

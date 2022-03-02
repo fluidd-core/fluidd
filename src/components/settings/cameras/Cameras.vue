@@ -90,6 +90,7 @@ export default class CameraSettings extends Vue {
       name: '',
       type: 'mjpgadaptive',
       fpstarget: 15,
+      fpsidletarget: 5,
       url: Globals.DEFAULTS.CAMERA_URL
     }
 
