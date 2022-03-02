@@ -113,6 +113,6 @@ export interface ServerConfiguration {
 }
 
 export interface DataStoreConfiguration {
-  gcode_store_size: number;
-  temperature_store_size: number;
+  gcode_store_size?: number;
+  temperature_store_size?: number;
 }
