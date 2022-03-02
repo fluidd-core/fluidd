@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.17.1](https://github.com/fluidd-core/fluidd/compare/v1.17.0...v1.17.1) (2022-03-02)
+
+
+### Bug Fixes
+
+* add missing default for idle fps input ([#543](https://github.com/fluidd-core/fluidd/issues/543)) ([21475cf](https://github.com/fluidd-core/fluidd/commit/21475cf6178fbf020d91b5ac377710dadcc27625))
+* Alias for uncategorized macro ([#548](https://github.com/fluidd-core/fluidd/issues/548)) ([b01248e](https://github.com/fluidd-core/fluidd/commit/b01248ee86b4764c5740de93f4be1c7b34902b0f))
+* attempt to fix temp chart issues ([#551](https://github.com/fluidd-core/fluidd/issues/551)) ([5ba5160](https://github.com/fluidd-core/fluidd/commit/5ba5160fb8586c8dcbbc84a585db48c8249c494e))
+* emergency stop button outside iphone safe zone ([#549](https://github.com/fluidd-core/fluidd/issues/549)) ([1139c2a](https://github.com/fluidd-core/fluidd/commit/1139c2ac79a4d0cface1b58daed57c123d6a8746))
+* filename wrap in status window ([#544](https://github.com/fluidd-core/fluidd/issues/544)) ([a034190](https://github.com/fluidd-core/fluidd/commit/a03419083adcbc0c7e2fbb745c01bc6bb57e6a00))
+* gcode preview loading ([#552](https://github.com/fluidd-core/fluidd/issues/552)) ([c59a28c](https://github.com/fluidd-core/fluidd/commit/c59a28ce9109f93e6057f8e3f2475cf770f5d757))
+* idle fps behavior ([#553](https://github.com/fluidd-core/fluidd/issues/553)) ([2a551a4](https://github.com/fluidd-core/fluidd/commit/2a551a4c4f03ea119329de0372f02fb0c6870f71))
+* use correct temperature_store_size for temps ([#555](https://github.com/fluidd-core/fluidd/issues/555)) ([f4ebfab](https://github.com/fluidd-core/fluidd/commit/f4ebfab3e3fd1ece2fc3ebf05fa20e24d051d4ec))
+* z-offset apply ([#547](https://github.com/fluidd-core/fluidd/issues/547)) ([e63a73e](https://github.com/fluidd-core/fluidd/commit/e63a73ed2ed9adbf9e2e3a8f7838efb4ee7da94f))
+
 ## [1.17.0](https://github.com/fluidd-core/fluidd/compare/v1.16.2...v1.17.0) (2022-02-25)
 
 
