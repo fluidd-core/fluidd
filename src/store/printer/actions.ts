@@ -145,9 +145,11 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
 
       // Add a temp chart entry
-      const retention = (rootState.server)
-        ? rootState.server.config.server.temperature_store_size
-        : Globals.CHART_HISTORY_RETENTION
+      const rootStateServerConfig = rootState.server?.config
+      const retention =
+        rootStateServerConfig?.data_store?.temperature_store_size ??
+        rootStateServerConfig?.server?.temperature_store_size ??
+        Globals.CHART_HISTORY_RETENTION
       handleAddChartEntry(retention, getters.getChartableSensors)
     }
   }
