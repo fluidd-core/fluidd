@@ -38,6 +38,7 @@ provide a gracefull upgrade path in order to re-arrange all of your logs into
 the same place for this to be most benifical.
 
 ```yaml
+[file_manager]
 log_path: ~/klipper_logs
 ```
 
@@ -54,6 +55,7 @@ Temperature store size is in seconds, while the gcode store size is defined
 in an entry count.
 
 ```yaml
+[data_store]
 temperature_store_size: 600
 gcode_store_size: 1000
 ```
