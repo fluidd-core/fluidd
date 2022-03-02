@@ -166,7 +166,7 @@ export default class CameraItem extends Vue {
       this.camera &&
       this.camera.type === 'mjpgadaptive'
     ) {
-      const fpsTarget = document.hasFocus() ? (this.camera.fpstarget || 10) : (this.camera.fpsidletarget || 1)
+      const fpsTarget = (!document.hasFocus() && this.camera.fpsidletarget) || this.camera.fpstarget || 10
       const end_time = performance.now()
       const current_time = end_time - this.start_time
       this.time = (this.time * this.time_smoothing) + (current_time * (1.0 - this.time_smoothing))
