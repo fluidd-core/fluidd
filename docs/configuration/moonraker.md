@@ -30,18 +30,20 @@ and
 This configures the general configuration of your moonraker instance. In most
 cases, you shouldn't need to touch anything here.
 
+## [file_manager] block
+
 If you have a FluiddPI installation of `1.14` or below, it may be worth adding a
 logs path, which will expose all logs inside of Fluidd. [KIUAH](/installation/kiauh) can
 provide a gracefull upgrade path in order to re-arrange all of your logs into
 the same place for this to be most benifical.
 
-```sh
+```yaml
 log_path: ~/klipper_logs
 ```
 
 See the [configuration example](/configuration/moonraker_conf) where this belongs.
 
-### Temperature & GCODE store size
+## [data_store] block
 
 Temperature and gcode store sizes can be configured in moonraker.
 This is especially useful for temperature store data, as it
