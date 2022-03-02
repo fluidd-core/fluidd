@@ -129,7 +129,6 @@
             single-line
             hide-details="auto"
             v-model.number="camera.fpsidletarget"
-            :rules="[rules.required]"
           ></v-text-field>
         </app-setting>
 
