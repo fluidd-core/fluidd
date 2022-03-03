@@ -321,6 +321,7 @@ app:
       jobs: Задачи
       limits: Лимиты принтера
       macros: Макросы
+      other_files: Другие Файлы
       retract: Настройки ретракта
       runout_sensors: Датчик контроля филамента
       settings: Настройки
@@ -350,6 +351,7 @@ app:
   setting:
     btn:
       add_camera: Добавить камеру
+      add_category: Добавить категорию
       add_filter: Добавить фильтр
       add_thermal_preset: Добавить пресет температур
       add_user: Добавить пользователя
