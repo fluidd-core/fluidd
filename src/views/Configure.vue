@@ -15,7 +15,7 @@
     </v-col>
     <v-col cols="12" md="6">
       <collapsable-card
-        title="Other Files"
+        :title="$t('app.general.title.other_files')"
         icon="$files"
         :draggable="false"
       >
