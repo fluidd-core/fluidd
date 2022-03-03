@@ -39,7 +39,7 @@ app:
   console:
     label:
       auto_scroll: Автоматическое пролистывание
-      flip_layout: Flip layout
+      flip_layout: Перевернутое отображение
       hide_temp_waits: Скрыть временные ожидания
     placeholder:
       command: >-
@@ -273,7 +273,7 @@ app:
         confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
         confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
         confirm_service_restart: Вы уверены, что хотите перезапустить службу %{name}?
-        confirm_service_stop: Вы уверены, что хотите остановить службу %{name} ?
+        confirm_service_stop: Вы уверены, что хотите остановить службу %{name}?
         confirm_power_device_toggle: Вы уверены? Это позволит переключить питание этого устройства.
         unsaved_changes: У вас есть несохраненные изменения. Вы уверены, что хотите закрыть файл?
         apply_z_offset_endstop: >-
