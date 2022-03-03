@@ -100,6 +100,7 @@ export interface DistroVersionParts {
 export interface ServerConfig {
   authorization: ServerAuthorization;
   server: ServerConfiguration;
+  data_store?: DataStoreConfiguration;
 }
 
 export interface ServerAuthorization {
@@ -107,6 +108,11 @@ export interface ServerAuthorization {
 }
 
 export interface ServerConfiguration {
-  gcode_store_size: number;
-  temperature_store_size: number;
+  gcode_store_size?: number;
+  temperature_store_size?: number;
+}
+
+export interface DataStoreConfiguration {
+  gcode_store_size?: number;
+  temperature_store_size?: number;
 }

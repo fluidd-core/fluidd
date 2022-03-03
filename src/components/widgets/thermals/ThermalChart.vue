@@ -204,8 +204,8 @@ export default class ThermalChart extends Vue {
         boundaryGap: false,
         max: 'dataMax',
         min: (value: any) => {
-          const serverConfig = this.$store.getters['server/getConfig']
-          return value.max - (serverConfig.server.temperature_store_size * 1000)
+          const temperature_store_size = this.$store.getters['charts/getChartRetention']
+          return value.max - (temperature_store_size * 1000)
         },
         axisTick: {
           show: false
