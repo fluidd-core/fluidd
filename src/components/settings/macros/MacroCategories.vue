@@ -14,7 +14,7 @@
           @click="handleAddCategoryDialog"
         >
           <v-icon small left>$plus</v-icon>
-          Add Category
+          {{ $t('app.setting.btn.add_category') }}
         </app-btn>
       </app-setting>
 
