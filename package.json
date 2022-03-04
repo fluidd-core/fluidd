@@ -60,7 +60,6 @@
     "vue-class-component": "^7.2.3",
     "vue-debounce-decorator": "^1.0.1",
     "vue-echarts": "^6.0.2",
-    "vue-headful": "^2.1.0",
     "vue-i18n": "^8.24.5",
     "vue-inline-svg": "^2.0.0",
     "vue-meta": "^2.4.0",
