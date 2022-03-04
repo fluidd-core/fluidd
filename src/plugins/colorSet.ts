@@ -131,8 +131,8 @@ declare module 'vue/types/vue' {
   }
 }
 declare module 'vue/types/options' {
-  interface ComponentOptions<V extends Vue> {
-      $colorset?: ColorSet;
+  interface ComponentOptions<V extends _Vue> {
+    $colorset?: ColorSet;
   }
 }
 
