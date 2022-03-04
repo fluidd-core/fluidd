@@ -39,6 +39,7 @@ app:
   console:
     label:
       auto_scroll: Автоматическое пролистывание
+      flip_layout: Перевернутое отображение
       hide_temp_waits: Скрыть временные ожидания
     placeholder:
       command: >-
@@ -169,6 +170,7 @@ app:
       upload: Загрузить
       upload_print: Загрузить и напечатать
       view: Вид
+      reset_stats: Сбросить Статистику
     error:
       app_setup_link: >-
         Требования для установки Fluidd можно посмотреть <a target="_blank"
@@ -208,6 +210,7 @@ app:
       finish_time: Конец
       flow: Поток
       free: Свободно
+      heaters_busy: Принтер в данный момент занят. Выключение нагревателей может привести к сбою печати.
       high: Выше
       host: Хост
       layer: Слой
@@ -269,7 +272,9 @@ app:
         confirm: Вы уверены?
         confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
         confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
-        confirm_power_device_toggle: Вы уверен? Это позволит переключить питание этого устройства.
+        confirm_service_restart: Вы уверены, что хотите перезапустить службу %{name}?
+        confirm_service_stop: Вы уверены, что хотите остановить службу %{name}?
+        confirm_power_device_toggle: Вы уверены? Это позволит переключить питание этого устройства.
         unsaved_changes: У вас есть несохраненные изменения. Вы уверены, что хотите закрыть файл?
         apply_z_offset_endstop: >-
           Z-смещение конечной точки будет рассчитано и обновлено по текущему
@@ -316,6 +321,7 @@ app:
       jobs: Задачи
       limits: Лимиты принтера
       macros: Макросы
+      other_files: Другие Файлы
       retract: Настройки ретракта
       runout_sensors: Датчик контроля филамента
       settings: Настройки
@@ -345,6 +351,7 @@ app:
   setting:
     btn:
       add_camera: Добавить камеру
+      add_category: Добавить категорию
       add_filter: Добавить фильтр
       add_thermal_preset: Добавить пресет температур
       add_user: Добавить пользователя
@@ -355,11 +362,18 @@ app:
       mjpegstream: MJPEG поток
       video: IP Камера
       iframe: Страница HTTP
+    camera_rotate_options:
+      none: Нет
+      90: 90°
+      180: 180°
+      270: 270°
     label:
       all_off: Всё выключить
       all_on: Всё включить
+      auto_edit_extensions: Расширения для автоматического открытия в режиме редактирования
       camera_flip_x: Отразить по горизонтали
       camera_flip_y: Отразить по вертикали
+      camera_rotate_by: Повернуть на
       camera_stream_type: Тип потока
       camera_url: URL камеры
       confirm_on_estop: Требовать подтверждение при аварийной остановке
@@ -395,6 +409,7 @@ app:
       reset: Сбросить настройки
       retraction_icon_size: Размер иконки ретракта
       show_animations: Показывать анимации
+      show_rate_of_change: Показать скорость изменения температуры
       starts_with: Начинается с
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
@@ -411,6 +426,7 @@ app:
       authentication: Аутентификация
       console: Консоль
       camera: Камера | Камеры
+      file_editor: Редактор файлов
       gcode_preview: Предпросмотр GCode
       general: Общие
       macros: Макросы
