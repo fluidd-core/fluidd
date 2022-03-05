@@ -1,52 +1,66 @@
 <template>
   <div>
-    <v-subheader id="presets">{{ $t('app.setting.title.thermal_presets') }}</v-subheader>
+    <v-subheader id="presets">
+      {{ $t('app.setting.title.thermal_presets') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting>
         <app-btn
-          @click="openAddDialog"
           outlined
           small
-          color="primary">
-          <v-icon small left>$plus</v-icon>
+          color="primary"
+          @click="openAddDialog"
+        >
+          <v-icon
+            small
+            left
+          >
+            $plus
+          </v-icon>
           {{ $t('app.setting.btn.add_thermal_preset') }}
         </app-btn>
       </app-setting>
 
-      <v-divider v-if="presets.length > 0"></v-divider>
+      <v-divider v-if="presets.length > 0" />
 
       <template v-for="(preset, i) in presets">
         <app-setting
           :key="preset.index"
-          @click="openEditDialog(preset)"
           :title="preset.name"
           :r-cols="2"
+          @click="openEditDialog(preset)"
         >
           <template v-slot:sub-title>
             <span
               v-for="(value, k) in preset.values"
-              :key="k"
               v-show="value.active"
+              :key="k"
               class="mr-2"
             >
               {{ k }}: {{ value.value }}<small>°C</small>
             </span>
           </template>
           <app-btn
-            @click.stop="handleRemovePreset(preset)"
             fab
             text
             x-small
-            color="">
-            <v-icon color="">$close</v-icon>
+            color=""
+            @click.stop="handleRemovePreset(preset)"
+          >
+            <v-icon color="">
+              $close
+            </v-icon>
           </app-btn>
         </app-setting>
 
-        <v-divider :key="preset.id" v-if="i < presets.length - 1 && presets.length > 0"></v-divider>
+        <v-divider
+          v-if="i < presets.length - 1 && presets.length > 0"
+          :key="preset.id"
+        />
       </template>
 
       <preset-dialog
@@ -54,8 +68,7 @@
         v-model="dialogState.active"
         :preset="dialogState.preset"
         @save="handleSavePreset"
-      ></preset-dialog>
-
+      />
     </v-card>
   </div>
 </template>

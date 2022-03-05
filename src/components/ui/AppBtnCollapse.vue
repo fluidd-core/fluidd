@@ -3,11 +3,16 @@
     <!-- Expand / Contract -->
     <app-btn
       v-if="!inLayout"
-      @click="$emit('update:collapsed', !collapsed)"
       color=""
       class="ml-1"
-      fab x-small text>
-      <v-icon :class="{ 'rotate-180': collapsed }">$chevronUp</v-icon>
+      fab
+      x-small
+      text
+      @click="$emit('update:collapsed', !collapsed)"
+    >
+      <v-icon :class="{ 'rotate-180': collapsed }">
+        $chevronUp
+      </v-icon>
     </app-btn>
 
     <!-- In layout -->
@@ -15,11 +20,17 @@
       <v-checkbox
         v-if="inLayout"
         :input-value="enabled"
-        @change="$emit('update:enabled', $event)"
         hide-details
-        class="mt-0 pt-0">
-      </v-checkbox>
-      <v-icon class="handle" left v-if="inLayout">$drag</v-icon>
+        class="mt-0 pt-0"
+        @change="$emit('update:enabled', $event)"
+      />
+      <v-icon
+        v-if="inLayout"
+        class="handle"
+        left
+      >
+        $drag
+      </v-icon>
     </v-layout>
   </div>
 </template>

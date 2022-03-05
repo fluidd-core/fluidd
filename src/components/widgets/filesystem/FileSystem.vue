@@ -3,12 +3,12 @@
     class="filesystem-wrapper"
     :height="height"
     :max-height="maxHeight"
+    :class="{ 'no-pointer-events': dragState.overlay }"
     @dragenter.capture.prevent="handleDragEnter"
     @dragover.prevent
     @dragleave.self.prevent="handleDragLeave"
     @drop.prevent.stop="handleDropFile"
-    :class="{ 'no-pointer-events': dragState.overlay }">
-
+  >
     <file-system-toolbar
       v-if="selected.length <= 0"
       :roots="availableRoots"
@@ -25,14 +25,13 @@
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
       @filter="handleFilter"
-    ></file-system-toolbar>
+    />
 
     <file-system-bulk-actions
       v-if="selected.length > 0"
       :path="visiblePath"
       @remove="handleRemove(selected)"
-    >
-    </file-system-bulk-actions>
+    />
 
     <file-system-browser
       v-if="headers"
@@ -49,8 +48,7 @@
       :selected.sync="selected"
       @row-click="handleRowClick"
       @move="handleMove"
-    >
-    </file-system-browser>
+    />
 
     <file-system-context-menu
       v-if="contextMenuState.open"
@@ -67,8 +65,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
-    >
-    </file-system-context-menu>
+    />
 
     <file-editor-dialog
       v-if="fileEditorDialogState.open"
@@ -77,9 +74,9 @@
       :filename="fileEditorDialogState.filename"
       :loading="fileEditorDialogState.loading"
       :readonly="fileEditorDialogState.readonly"
-      :root="this.currentRoot"
+      :root="currentRoot"
       @save="handleSaveFileChanges"
-    ></file-editor-dialog>
+    />
 
     <!-- A generic dialog to define the name of a file, or folder.
          Used to create, or rename a file or folder. -->
@@ -91,26 +88,23 @@
       :label="fileNameDialogState.label"
       :rules="fileNameDialogState.rules"
       @save="fileNameDialogState.handler"
-    >
-    </file-name-dialog>
+    />
 
     <file-system-drag-overlay
       v-model="dragState.overlay"
-    ></file-system-drag-overlay>
+    />
 
     <file-system-download-dialog
       :value="currentDownload !== null"
       :file="currentDownload"
       @cancel="handleCancelDownload"
-    >
-    </file-system-download-dialog>
+    />
 
     <file-system-upload-dialog
       :value="currentUploads.length > 0"
       :files="currentUploads"
       @cancel="handleCancelUpload"
-    >
-    </file-system-upload-dialog>
+    />
 
     <!-- <pre>roots: {{ availableRoots }}</pre>
     <pre>currentRoot: {{ currentRoot }}<br />currentPath: {{ currentPath }}<br />visiblePath: {{ visiblePath }}</pre>

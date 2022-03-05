@@ -6,12 +6,12 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
-            v-on="on"
             v-bind="attrs"
             block
             color="primary"
-            @click="restartKlippy"
             class="me-2 mb-2"
+            v-on="on"
+            @click="restartKlippy"
           >
             {{ $t('app.general.btn.restart_service_klipper') }}
           </app-btn>
@@ -26,12 +26,12 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
-            v-on="on"
             v-bind="attrs"
             block
             color="primary"
-            @click="serviceRestartKlipper"
             class="me-2 mb-2"
+            v-on="on"
+            @click="serviceRestartKlipper"
           >
             {{ $t('app.general.btn.restart_service_klipper') }}
           </app-btn>
@@ -46,12 +46,12 @@
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
-            v-on="on"
             v-bind="attrs"
             block
             color="primary"
-            @click="firmwareRestartKlippy"
             class="me-2 mb-2"
+            v-on="on"
+            @click="firmwareRestartKlippy"
           >
             {{ $t('app.general.btn.restart_firmware') }}
           </app-btn>
@@ -62,19 +62,29 @@
 
     <app-btn
       block
-      @click="getKlippyLog()"
       class="me-2 mb-2"
+      @click="getKlippyLog()"
     >
-      <v-icon left small>$download</v-icon>
+      <v-icon
+        left
+        small
+      >
+        $download
+      </v-icon>
       Klippy.log
     </app-btn>
 
     <app-btn
       block
-      @click="getMoonrakerLog()"
       class="me-2 mb-2"
+      @click="getMoonrakerLog()"
     >
-      <v-icon left small>$download</v-icon>
+      <v-icon
+        left
+        small
+      >
+        $download
+      </v-icon>
       Moonraker.log
     </app-btn>
   </div>

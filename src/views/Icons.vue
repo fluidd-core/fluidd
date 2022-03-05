@@ -1,7 +1,6 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col cols="12">
-
       <h1>All configured icons</h1>
 
       <v-tooltip
@@ -13,15 +12,14 @@
         <template v-slot:activator="{ attrs, on }">
           <v-icon
             v-bind="attrs"
-            v-on="on"
             class="ma-2"
+            v-on="on"
           >
             ${{ icon }}
           </v-icon>
         </template>
         {{ icon }}
       </v-tooltip>
-
     </v-col>
   </v-row>
 </template>

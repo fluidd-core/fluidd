@@ -3,21 +3,29 @@
     dense
   >
     <v-toolbar-title class="d-none d-sm-block">
-      <div class="file-path">&lrm;/{{ path }}</div>
+      <div class="file-path">
+        &lrm;/{{ path }}
+      </div>
     </v-toolbar-title>
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
-    <v-tooltip bottom v-if="lowOnSpace && !loading">
+    <v-tooltip
+      v-if="lowOnSpace && !loading"
+      bottom
+    >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
-          v-on="on"
           fab
           text
           small
-          color="warning">
-          <v-icon color="warning">$error</v-icon>
+          color="warning"
+          v-on="on"
+        >
+          <v-icon color="warning">
+            $error
+          </v-icon>
         </v-btn>
       </template>
       <slot>
@@ -25,16 +33,22 @@
       </slot>
     </v-tooltip>
 
-    <v-tooltip bottom v-if="disabled && !loading">
+    <v-tooltip
+      v-if="disabled && !loading"
+      bottom
+    >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
-          v-on="on"
           fab
           text
           small
-          color="error">
-          <v-icon color="error">$warning</v-icon>
+          color="error"
+          v-on="on"
+        >
+          <v-icon color="error">
+            $warning
+          </v-icon>
         </v-btn>
       </template>
       <slot>
@@ -46,15 +60,14 @@
       v-if="headers && rootProperties.canConfigure"
       :key-name="`${root}_${name}`"
       :headers="headers"
-    ></app-column-picker>
+    />
 
     <file-system-filter-menu
       v-if="!readonly && root === 'gcodes' && supportsHistoryComponent"
       :root="root"
       :disabled="disabled"
       @change="$emit('filter', $event)"
-    >
-    </file-system-filter-menu>
+    />
 
     <file-system-menu
       v-if="!readonly"
@@ -63,29 +76,32 @@
       @add-file="$emit('add-file')"
       @add-dir="$emit('add-dir')"
       @upload="handleUpload"
-    >
-    </file-system-menu>
+    />
 
     <v-btn
-      @click="$emit('refresh')"
       :disabled="disabled"
       fab
       small
-      text>
+      text
+      @click="$emit('refresh')"
+    >
       <v-icon>$refresh</v-icon>
     </v-btn>
 
-    <div style="max-width: 160px;" class="ml-1">
+    <div
+      style="max-width: 160px;"
+      class="ml-1"
+    >
       <v-text-field
         v-model="textSearch"
         :disabled="disabled"
-        @keyup="$emit('update:search', textSearch);"
         outlined
         dense
         single-line
         hide-details
-        append-icon="$magnify">
-      </v-text-field>
+        append-icon="$magnify"
+        @keyup="$emit('update:search', textSearch);"
+      />
     </div>
 
     <template
@@ -96,7 +112,8 @@
         <v-tab
           v-for="(root, index) in registeredRoots"
           :key="index"
-          @change="$emit('root-change', root)">
+          @change="$emit('root-change', root)"
+        >
           {{ root }}
         </v-tab>
       </v-tabs>

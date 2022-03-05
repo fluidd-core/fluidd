@@ -1,8 +1,8 @@
 <template>
   <v-select
+    v-model="extruder"
     :items="extruders"
     :readonly="printerPrinting"
-    v-model="extruder"
     item-value="key"
     item-text="name"
     hide-details
@@ -10,7 +10,7 @@
     dense
     class="mb-2 v-input--x-dense"
     style="max-width: 256px;"
-  ></v-select>
+  />
 </template>
 
 <script lang="ts">

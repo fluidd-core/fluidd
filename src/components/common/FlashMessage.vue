@@ -8,7 +8,7 @@
     top
     centered
   >
-    <span v-html="text"></span>
+    <span v-html="text" />
 
     <template v-slot:action="{ attrs }">
       <app-btn

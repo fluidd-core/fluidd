@@ -1,12 +1,14 @@
 <template>
-  <div class="chart" :style="{ 'height': height }">
+  <div
+    class="chart"
+    :style="{ 'height': height }"
+  >
     <v-chart
       ref="chart"
       :option="opts"
       :update-options="{ notMerge: false }"
       :init-options="{ renderer: 'canvas' }"
-    >
-    </v-chart>
+    />
 
     <!-- <pre>legends: {{ opts.legend }}</pre> -->
 

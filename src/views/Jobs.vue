@@ -3,7 +3,7 @@
     <v-col cols="12">
       <collapsable-card
         :title="$t('app.general.title.jobs')"
-        cardKey="JobsPage"
+        card-key="JobsPage"
         icon="$files"
         :draggable="false"
       >
@@ -12,8 +12,7 @@
           name="jobs"
           bulk-actions
           :max-height="816"
-        >
-        </file-system>
+        />
       </collapsable-card>
     </v-col>
   </v-row>

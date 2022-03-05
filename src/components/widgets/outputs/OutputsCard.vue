@@ -4,8 +4,9 @@
     icon="$motion"
     :draggable="true"
     layout-path="dashboard.outputs-card"
-    menu-breakpoint="lg">
-    <outputs></outputs>
+    menu-breakpoint="lg"
+  >
+    <outputs />
   </collapsable-card>
 </template>
 

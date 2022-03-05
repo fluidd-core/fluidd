@@ -15,7 +15,10 @@
         <span v-if="socketConnecting">{{ $t('app.socket.msg.connecting') }}</span>
         <span v-if="!socketConnecting">{{ $t('app.socket.msg.no_connection') }}</span>
       </v-col>
-      <v-col cols="6" lg="4">
+      <v-col
+        cols="6"
+        lg="4"
+      >
         <v-progress-linear
           v-if="socketConnecting"
           class="mb-4"
@@ -23,9 +26,24 @@
           indeterminate
           rounded
           height="6"
-        ></v-progress-linear>
-        <app-btn v-if="!socketConnecting" block color="info" @click="reconnect()" class="me-2 mb-2">{{ $t('app.general.btn.socket_reconnect') }}</app-btn>
-        <app-btn block color="warning" @click="reload()" class="me-2 mb-2">{{ $t('app.general.btn.socket_refresh') }}</app-btn>
+        />
+        <app-btn
+          v-if="!socketConnecting"
+          block
+          color="info"
+          class="me-2 mb-2"
+          @click="reconnect()"
+        >
+          {{ $t('app.general.btn.socket_reconnect') }}
+        </app-btn>
+        <app-btn
+          block
+          color="warning"
+          class="me-2 mb-2"
+          @click="reload()"
+        >
+          {{ $t('app.general.btn.socket_refresh') }}
+        </app-btn>
       </v-col>
     </v-row>
   </v-container>

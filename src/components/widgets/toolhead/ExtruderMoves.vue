@@ -1,52 +1,64 @@
 <template>
-  <v-form v-model="valid" @submit.prevent>
+  <v-form
+    v-model="valid"
+    @submit.prevent
+  >
     <v-row justify="end">
-      <v-col cols="6" class="text-right">
+      <v-col
+        cols="6"
+        class="text-right"
+      >
         <v-text-field
           ref="lengthfield"
           v-model.number="extrudeLength"
           :disabled="!klippyReady"
           :rules="[rules.min, rules.maxLength]"
-          @focus="$event.target.select()"
           hide-details
           outlined
           dense
           :label="$t('app.general.label.extrude_length')"
-          suffix="mm">
-        </v-text-field>
+          suffix="mm"
+          @focus="$event.target.select()"
+        />
       </v-col>
       <v-col cols="6">
         <app-btn
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
           :disabled="!extruderReady || !klippyReady || !valid"
           :elevation="2"
           block
+          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
         >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
         </app-btn>
       </v-col>
     </v-row>
-    <v-row justify="end" class="mt-0">
-      <v-col cols="6" class="text-right">
+    <v-row
+      justify="end"
+      class="mt-0"
+    >
+      <v-col
+        cols="6"
+        class="text-right"
+      >
         <v-text-field
           v-model.number="extrudeSpeed"
           :disabled="!klippyReady"
           :rules="[rules.min, rules.maxSpeed]"
-          @focus="$event.target.select()"
           hide-details
           outlined
           dense
           :label="$t('app.general.label.extrude_speed')"
-          suffix="mm/s">
-        </v-text-field>
+          suffix="mm/s"
+          @focus="$event.target.select()"
+        />
       </v-col>
       <v-col cols="6">
         <app-btn
-          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
           :disabled="!extruderReady || !klippyReady || !valid"
           :elevation="2"
           block
+          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
         >
           {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
