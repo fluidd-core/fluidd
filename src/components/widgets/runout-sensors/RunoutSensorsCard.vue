@@ -1,18 +1,22 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.runout_sensors')"
-    icon="$printer3dNozzleAlert">
+    icon="$printer3dNozzleAlert"
+  >
     <v-card-text>
       <v-layout
-        align-center justify-start
+        align-center
+        justify-start
         class="py-1"
         v-for="item in sensors"
-        :key="item.name">
+        :key="item.name"
+      >
         <span class="text-subtitle-1">{{ item.name }}</span>
         <v-icon
           :color="(item.filament_detected) ? 'success' : 'warning'"
           class="ml-3"
-          left>
+          left
+        >
           {{ (item.filament_detected) ? '$checkedCircle' : '$alertCircle' }}
         </v-icon>
         <v-switch
@@ -20,11 +24,9 @@
           color="success"
           :input-value="item.enabled"
           @change="changeSensor(item, $event)"
-          >
-        </v-switch>
+        />
       </v-layout>
     </v-card-text>
-
   </collapsable-card>
 </template>
 

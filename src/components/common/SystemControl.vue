@@ -65,7 +65,12 @@
       @click="getKlippyLog()"
       class="me-2 mb-2"
     >
-      <v-icon left small>$download</v-icon>
+      <v-icon
+        left
+        small
+      >
+        $download
+      </v-icon>
       Klippy.log
     </app-btn>
 
@@ -74,7 +79,12 @@
       @click="getMoonrakerLog()"
       class="me-2 mb-2"
     >
-      <v-icon left small>$download</v-icon>
+      <v-icon
+        left
+        small
+      >
+        $download
+      </v-icon>
       Moonraker.log
     </app-btn>
   </div>

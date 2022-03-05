@@ -1,13 +1,18 @@
 <template>
   <div>
-    <v-sheet :elevation="0" rounded v-on="$listeners" class="camera-container">
+    <v-sheet
+      :elevation="0"
+      rounded
+      v-on="$listeners"
+      class="camera-container"
+    >
       <img
         v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
         :src="cameraUrl"
         class="camera-image"
         ref="camera_image"
         @load="handleImgLoad"
-      />
+      >
 
       <video
         v-if="camera.type === 'ipstream'"
@@ -26,7 +31,10 @@
         frameBorder="0"
       />
 
-      <div v-if="camera.name" class="camera-name">
+      <div
+        v-if="camera.name"
+        class="camera-name"
+      >
         {{ camera.name }}
       </div>
       <div
@@ -39,7 +47,10 @@
         v-if="cameraFullScreenUrl"
         class="camera-fullscreen"
       >
-        <a :href="cameraFullScreenUrl" target="_blank">
+        <a
+          :href="cameraFullScreenUrl"
+          target="_blank"
+        >
           <v-icon>$fullScreen</v-icon>
         </a>
       </div>

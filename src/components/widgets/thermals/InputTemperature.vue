@@ -1,5 +1,8 @@
 <template>
-  <v-form v-model="valid" @submit.prevent>
+  <v-form
+    v-model="valid"
+    @submit.prevent
+  >
     <v-layout>
       <v-text-field
         outlined
@@ -13,8 +16,8 @@
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
         suffix="°C"
-        class="v-input--width-x-small">
-      </v-text-field>
+        class="v-input--width-x-small"
+      />
     </v-layout>
   </v-form>
 </template>

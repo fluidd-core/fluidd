@@ -1,18 +1,19 @@
 <template>
   <div>
-    <v-subheader id="toolhead">{{ $t('app.setting.title.tool') }}</v-subheader>
+    <v-subheader id="toolhead">
+      {{ $t('app.setting.title.tool') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.invert_x_control')">
         <v-switch
           v-model="invertX"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -22,8 +23,7 @@
           v-model="invertY"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -33,8 +33,7 @@
           v-model="invertZ"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -42,13 +41,13 @@
       <app-setting
         :title="$t('app.setting.label.gcode_coords')"
         :sub-title="$t('app.setting.tooltip.gcode_coords')"
-        :r-cols="2">
+        :r-cols="2"
+      >
         <v-switch
           v-model="useGcodeCoords"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -63,7 +62,7 @@
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+        />
       </app-setting>
 
       <v-divider />
@@ -78,7 +77,7 @@
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+        />
       </app-setting>
 
       <v-divider />
@@ -94,7 +93,7 @@
           single-line
           hide-details
           suffix="mm"
-        ></v-select>
+        />
       </app-setting>
 
       <v-divider />
@@ -109,7 +108,7 @@
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+        />
       </app-setting>
 
       <v-divider />
@@ -124,7 +123,7 @@
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+        />
       </app-setting>
 
       <v-divider />
@@ -141,14 +140,14 @@
           append-icon=""
           deletable-chips
           :rules="[
-              v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-              v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
-              v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
+            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
+            v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
+            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
           ]"
-        ></v-combobox>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
@@ -160,7 +159,6 @@
           {{ $t('app.setting.btn.reset') }}
         </app-btn>
       </app-setting>
-
     </v-card>
   </div>
 </template>

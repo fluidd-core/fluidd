@@ -5,7 +5,6 @@
     @input="$emit('input', $event)"
     :max-width="450"
   >
-
     <v-form
       ref="saveMeshForm"
       @submit.prevent="handleSubmit()"
@@ -25,8 +24,8 @@
             :rules="rules"
             hide-details="auto"
             :label="$t('app.bedmesh.label.profile_name')"
-            v-model="name">
-          </v-text-field>
+            v-model="name"
+          />
 
           <v-checkbox
             :label="$t('app.bedmesh.label.remove_profile', { name: existingName })"
@@ -34,21 +33,33 @@
             class="mb-4"
             v-model="removeDefault"
             :disabled="name === existingName"
-            ></v-checkbox>
+          />
 
-            <p>
-              {{ $t('app.bedmesh.msg.hint', { name: existingName }) }}
-            </p>
+          <p>
+            {{ $t('app.bedmesh.msg.hint', { name: existingName }) }}
+          </p>
         </v-card-text>
 
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" :elevation="2" type="submit">{{ $t('app.general.btn.save') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            @click="$emit('input', false)"
+            type="button"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            :elevation="2"
+            type="submit"
+          >
+            {{ $t('app.general.btn.save') }}
+          </app-btn>
         </v-card-actions>
-
       </v-card>
     </v-form>
   </v-dialog>

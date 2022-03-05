@@ -2,14 +2,15 @@
   <v-layout class="console-item">
     <span
       v-if="value.time"
-      class="secondary--text mr-3 d-none d-sm-block">
+      class="secondary--text mr-3 d-none d-sm-block"
+    >
       {{ itemTime }}&nbsp;
     </span>
     <span
       @click.capture="itemClick"
       :class="itemClass"
-      v-html="itemMessage">
-    </span>
+      v-html="itemMessage"
+    />
   </v-layout>
 </template>
 

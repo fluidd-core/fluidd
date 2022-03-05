@@ -10,7 +10,7 @@
     dense
     class="mb-2 v-input--x-dense"
     style="max-width: 256px;"
-  ></v-select>
+  />
 </template>
 
 <script lang="ts">

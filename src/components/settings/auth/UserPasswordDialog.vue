@@ -11,12 +11,18 @@
     >
       <v-card>
         <v-card-title class="card-heading py-2">
-          <span class="focus--text" v-html="$t('app.general.label.change_password')"></span>
+          <span
+            class="focus--text"
+            v-html="$t('app.general.label.change_password')"
+          />
         </v-card-title>
 
         <v-divider />
 
-        <v-card-text class="mb-0" v-if="error">
+        <v-card-text
+          class="mb-0"
+          v-if="error"
+        >
           <v-alert
             type="error"
             text
@@ -35,8 +41,8 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required]"
-            v-model="currentPassword">
-          </v-text-field>
+            v-model="currentPassword"
+          />
         </app-setting>
 
         <v-divider />
@@ -50,14 +56,14 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.password, rules.min]"
-            v-model="password">
-          </v-text-field>
+            v-model="password"
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-icon
             v-if="loading"
             class="spin"
@@ -81,8 +87,7 @@
             color="primary"
             type="submit"
             v-html="$t('app.general.btn.save')"
-          >
-          </app-btn>
+          />
         </v-card-actions>
       </v-card>
     </v-form>

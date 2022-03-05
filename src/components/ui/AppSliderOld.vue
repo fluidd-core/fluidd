@@ -1,6 +1,13 @@
 <template>
-  <v-form ref="inputSliderForm" v-model="valid" @submit.prevent>
-    <v-layout align-center justify-space-between>
+  <v-form
+    ref="inputSliderForm"
+    v-model="valid"
+    @submit.prevent
+  >
+    <v-layout
+      align-center
+      justify-space-between
+    >
       <div
         class="text-body-1"
         :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
@@ -11,15 +18,14 @@
         <small
           class="mr-2"
           v-html="valueLabel"
-        >
-        </small>
+        />
         <span
           v-if="readonly"
           class="focus--text"
           :class="{ 'text--darken-2': isDisabled, 'text--lighten-1': !isDisabled }"
         >
           {{ newValue }}
-          <small>{{valueSuffix}}</small>
+          <small>{{ valueSuffix }}</small>
         </span>
         <v-btn
           v-if="isMobile"
@@ -29,8 +35,18 @@
           @click="lockState = !lockState"
           class="mr-2"
         >
-          <v-icon small v-if="isLocked">$pencil</v-icon>
-          <v-icon small v-else>$lockReset</v-icon>
+          <v-icon
+            small
+            v-if="isLocked"
+          >
+            $pencil
+          </v-icon>
+          <v-icon
+            small
+            v-else
+          >
+            $lockReset
+          </v-icon>
         </v-btn>
         <v-text-field
           v-if="!readonly"
@@ -45,8 +61,7 @@
           single-line
           outlined
           hide-details
-        >
-        </v-text-field>
+        />
       </div>
     </v-layout>
     <v-slider
@@ -67,7 +82,8 @@
         <v-icon
           :disabled="readonly || isDisabled || newValue === 0"
           @click="handleClickChange(newValue - step)"
-          color="grey">
+          color="grey"
+        >
           $minus
         </v-icon>
       </template>
@@ -76,7 +92,8 @@
         <v-icon
           :disabled="readonly || isDisabled || newValue === max"
           @click="handleClickChange(newValue + step)"
-          color="grey">
+          color="grey"
+        >
           $plus
         </v-icon>
       </template>

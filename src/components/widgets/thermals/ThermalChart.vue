@@ -1,5 +1,8 @@
 <template>
-  <div class="chart" :style="{ 'height': height }">
+  <div
+    class="chart"
+    :style="{ 'height': height }"
+  >
     <v-chart
       ref="chart"
       style="overflow: initial;"
@@ -9,8 +12,7 @@
       :events="[
         ['legendselectchanged', handleLegendSelectChange ]
       ]"
-    >
-    </v-chart>
+    />
   </div>
 </template>
 

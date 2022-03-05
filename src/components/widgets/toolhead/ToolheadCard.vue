@@ -4,10 +4,12 @@
     icon="$printer3dNozzle"
     :draggable="true"
     layout-path="dashboard.toolhead-card"
-    menu-breakpoint="lg">
-
+    menu-breakpoint="lg"
+  >
     <template v-slot:title>
-      <v-icon left>$printer3dNozzle</v-icon>
+      <v-icon left>
+        $printer3dNozzle
+      </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.tool') }}</span>
 
       <v-tooltip bottom>
@@ -17,11 +19,12 @@
             v-on="on"
             v-show="!extruderReady"
             class="ml-3"
-            color="info">
+            color="info"
+          >
             $snowflakeAlert
           </v-icon>
         </template>
-        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })"></span>
+        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })" />
       </v-tooltip>
     </template>
 
@@ -32,8 +35,9 @@
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            MOTORS OFF
+          class="ml-1"
+        >
+          MOTORS OFF
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
@@ -42,8 +46,9 @@
           :loading="hasWait(waits.onBedScrewsAdjust)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            Bed_Screws_Adjust
+          class="ml-1"
+        >
+          Bed_Screws_Adjust
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
@@ -52,8 +57,9 @@
           :loading="hasWait(waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
-          class="ml-1">
-            Screws_Tilt_Calculate
+          class="ml-1"
+        >
+          Screws_Tilt_Calculate
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
@@ -62,8 +68,9 @@
           :loading="hasWait(waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            Z_Tilt_Adjust
+          class="ml-1"
+        >
+          Z_Tilt_Adjust
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
@@ -72,13 +79,14 @@
           :loading="hasWait(waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            QGL
+          class="ml-1"
+        >
+          QGL
         </app-btn>
       </app-btn-collapse-group>
     </template>
 
-    <toolhead></toolhead>
+    <toolhead />
   </collapsable-card>
 </template>
 

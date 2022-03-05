@@ -4,16 +4,35 @@
 
     <v-btn
       small
-      fab text
+      fab
+      text
       absolute
       v-blur
       @click="handleCopyClick"
     >
-      <v-fade-transition mode="in-out" leave-absolute>
-        <v-icon v-show="!copied" dense color="grey">$contentCopy</v-icon>
+      <v-fade-transition
+        mode="in-out"
+        leave-absolute
+      >
+        <v-icon
+          v-show="!copied"
+          dense
+          color="grey"
+        >
+          $contentCopy
+        </v-icon>
       </v-fade-transition>
-      <v-fade-transition mode="in-out" leave-absolute>
-        <v-icon v-show="copied" dense color="grey">$check</v-icon>
+      <v-fade-transition
+        mode="in-out"
+        leave-absolute
+      >
+        <v-icon
+          v-show="copied"
+          dense
+          color="grey"
+        >
+          $check
+        </v-icon>
       </v-fade-transition>
     </v-btn>
   </div>

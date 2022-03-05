@@ -7,16 +7,24 @@
         :key="index"
         color="primary"
         :class="{ 'v-item--active v-list-item--active': instance.active }"
-        @click.stop="activateInstance(instance)">
+        @click.stop="activateInstance(instance)"
+      >
         <v-list-item-content>
           <v-list-item-title>
-            {{ instance.name }}<br />
+            {{ instance.name }}<br>
             <small>{{ instance.apiUrl }}</small>
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-action v-if="!instance.active">
-          <app-btn icon small color="" @click.stop="removeInstance(instance)">
-            <v-icon small>$delete</v-icon>
+          <app-btn
+            icon
+            small
+            color=""
+            @click.stop="removeInstance(instance)"
+          >
+            <v-icon small>
+              $delete
+            </v-icon>
           </app-btn>
         </v-list-item-action>
       </v-list-item>
@@ -27,16 +35,18 @@
         <v-icon>$plus</v-icon>
       </v-list-item-icon>
       <v-list-item-content>
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.add_printer') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">
+          {{ $t('app.general.btn.add_printer') }}
+        </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
 
     <add-instance-dialog
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
-    ></add-instance-dialog>
+    />
 
-    <v-divider></v-divider>
+    <v-divider />
   </v-list>
 </template>
 

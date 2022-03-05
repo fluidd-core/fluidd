@@ -25,16 +25,27 @@
             :label="label"
             :rules="rules"
             hide-details="auto"
-            required>
-          </v-text-field>
+            required
+          />
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit">{{ $t('app.general.btn.save') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            @click="$emit('input', false)"
+            type="button"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+          >
+            {{ $t('app.general.btn.save') }}
+          </app-btn>
         </v-card-actions>
-
       </v-card>
     </v-form>
   </v-dialog>

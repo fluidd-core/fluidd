@@ -1,12 +1,12 @@
 <template>
   <div
-    class="console">
+    class="console"
+  >
     <console-command
       v-if="!readonly && flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
-    >
-    </console-command>
+    />
     <v-card
       flat
       class="console-wrapper"
@@ -35,8 +35,7 @@
               :key="item[keyField]"
               @click="handleEntryClick"
               class="console-item"
-            >
-            </console-item>
+            />
           </DynamicScrollerItem>
         </template>
       </DynamicScroller>
@@ -45,8 +44,7 @@
       v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
-    >
-    </console-command>
+    />
   </div>
 </template>
 

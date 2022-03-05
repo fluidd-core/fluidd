@@ -1,116 +1,121 @@
 <template>
   <v-menu
-      v-model="menu"
-      ref="menu"
-      bottom
-      left
-      :max-width="260"
-      :close-on-content-click="false"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          v-show="!dot"
-          v-bind="attrs"
-          v-on="on"
-          :color="primaryColor.hexString"
-          outlined
-          small
-        >
-          {{ title }}
-        </v-btn>
+    v-model="menu"
+    ref="menu"
+    bottom
+    left
+    :max-width="260"
+    :close-on-content-click="false"
+  >
+    <template v-slot:activator="{ on, attrs }">
+      <v-btn
+        v-show="!dot"
+        v-bind="attrs"
+        v-on="on"
+        :color="primaryColor.hexString"
+        outlined
+        small
+      >
+        {{ title }}
+      </v-btn>
 
+      <v-icon
+        v-show="dot"
+        v-bind="attrs"
+        v-on="on"
+        :color="primaryColor.hexString"
+      >
+        $circle
+      </v-icon>
+    </template>
+    <v-card>
+      <v-card-text>
         <v-icon
-          v-show="dot"
-          v-bind="attrs"
-          v-on="on"
           :color="primaryColor.hexString"
+          large
         >
           $circle
         </v-icon>
 
-      </template>
-      <v-card>
-        <v-card-text>
+        <v-icon
+          v-if="this.white"
+          :color="whiteColor.hexString"
+          large
+        >
+          $circle
+        </v-icon>
 
-          <v-icon
+        <v-layout
+          align-center
+          column
+        >
+          <!-- <pre>{{primaryColor.hexString}}</pre> -->
+          <!-- standard full color picker -->
+          <app-iro-color-picker
+            v-if="primaryColor"
             :color="primaryColor.hexString"
-            large
-          >
-            $circle
-          </v-icon>
+            :options="primaryOptions"
+            @color:change="handleColorChange('primary', $event)"
+          />
 
-          <v-icon
+          <!-- white channel color picker -->
+          <app-iro-color-picker
             v-if="this.white"
+            class="mt-4"
             :color="whiteColor.hexString"
-            large
-          >
-            $circle
-          </v-icon>
+            :options="whiteOptions"
+            @color:change="handleColorChange('white', $event)"
+          />
+        </v-layout>
 
-          <v-layout align-center column>
-            <!-- <pre>{{primaryColor.hexString}}</pre> -->
-            <!-- standard full color picker -->
-            <app-iro-color-picker
-              v-if="primaryColor"
-              :color="primaryColor.hexString"
-              :options="primaryOptions"
-              @color:change="handleColorChange('primary', $event)"
-            >
-            </app-iro-color-picker>
-
-            <!-- white channel color picker -->
-            <app-iro-color-picker
-              v-if="this.white"
-              class="mt-4"
-              :color="whiteColor.hexString"
-              :options="whiteOptions"
-              @color:change="handleColorChange('white', $event)"
-            >
-            </app-iro-color-picker>
-          </v-layout>
-
-          <!-- <pre>{{ primaryColor }}</pre>
+        <!-- <pre>{{ primaryColor }}</pre>
           <pre v-if="this.white">{{ whiteColor }}</pre> -->
-          <v-layout class="mt-4" justify-space-between>
-            <div class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model.number="primaryColor.rgb.r"
-                outlined
-              ></v-text-field>
-              <div>R</div>
-            </div>
-            <div class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model.number="primaryColor.rgb.g"
-                outlined
-              ></v-text-field>
-              <div>G</div>
-            </div>
-            <div class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model.number="primaryColor.rgb.b"
-                outlined
-              ></v-text-field>
-              <div>B</div>
-            </div>
-            <div v-if="this.white" class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model="whiteColor.rgb.r"
-                outlined
-              ></v-text-field>
-              <div>W</div>
-            </div>
-          </v-layout>
-        </v-card-text>
-      </v-card>
+        <v-layout
+          class="mt-4"
+          justify-space-between
+        >
+          <div class="color-input">
+            <v-text-field
+              dense
+              hide-details
+              v-model.number="primaryColor.rgb.r"
+              outlined
+            />
+            <div>R</div>
+          </div>
+          <div class="color-input">
+            <v-text-field
+              dense
+              hide-details
+              v-model.number="primaryColor.rgb.g"
+              outlined
+            />
+            <div>G</div>
+          </div>
+          <div class="color-input">
+            <v-text-field
+              dense
+              hide-details
+              v-model.number="primaryColor.rgb.b"
+              outlined
+            />
+            <div>B</div>
+          </div>
+          <div
+            v-if="this.white"
+            class="color-input"
+          >
+            <v-text-field
+              dense
+              hide-details
+              v-model="whiteColor.rgb.r"
+              outlined
+            />
+            <div>W</div>
+          </div>
+        </v-layout>
+      </v-card-text>
+    </v-card>
   </v-menu>
 </template>
 

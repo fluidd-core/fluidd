@@ -7,8 +7,14 @@
   >
     <v-card v-if="component">
       <v-card-title class="card-heading py-2">
-        <span class="focus--text" v-if="'commits_behind' in component">{{ $t('app.version.label.commit_history') }}</span>
-        <span class="focus--text" v-else>{{ $t('app.version.label.package_list') }}</span>
+        <span
+          class="focus--text"
+          v-if="'commits_behind' in component"
+        >{{ $t('app.version.label.commit_history') }}</span>
+        <span
+          class="focus--text"
+          v-else
+        >{{ $t('app.version.label.package_list') }}</span>
 
         <v-spacer />
         <app-btn
@@ -22,8 +28,10 @@
 
       <v-divider />
 
-      <v-card-text class="py-0 pl-0" v-if="commitHistory">
-
+      <v-card-text
+        class="py-0 pl-0"
+        v-if="commitHistory"
+      >
         <!-- History Items. -->
         <template>
           <v-timeline
@@ -37,7 +45,12 @@
               small
             >
               <template v-slot:icon>
-                <v-icon class="rotate-90" color="secondary">$commit</v-icon>
+                <v-icon
+                  class="rotate-90"
+                  color="secondary"
+                >
+                  $commit
+                </v-icon>
               </template>
 
               <div class="secondary--text mb-4">
@@ -46,44 +59,42 @@
 
               <ol class="commit-history">
                 <template v-for="commit in commitHistory.result[key]">
-                <li
-                  :key="commit.sha"
-                >
-                  <div>
-                    <div class="commit-subject">
-                      {{ commit.subject }}
+                  <li
+                    :key="commit.sha"
+                  >
+                    <div>
+                      <div class="commit-subject">
+                        {{ commit.subject }}
+                      </div>
+                      <div class="secondary--text">
+                        <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
+                        <a
+                          class="secondary--text"
+                          :href="`${baseUrl}/commits/${component.branch}`"
+                          target="_blank"
+                        >
+                          <strong>{{ commit.author }}</strong>
+                        </a>
+                        {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
+                      </div>
                     </div>
-                    <div class="secondary--text">
-                      <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
-                      <a
-                         class="secondary--text"
-                        :href="`${baseUrl}/commits/${component.branch}`"
+                    <div>
+                      <app-btn
+                        small
+                        outlined
+                        color="secondary"
+                        :href="`${baseUrl}/commit/${commit.sha}`"
                         target="_blank"
                       >
-                        <strong>{{ commit.author }}</strong>
-                      </a>
-                      {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
+                        <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
+                      </app-btn>
                     </div>
-                  </div>
-                  <div>
-                    <app-btn
-                      small
-                      outlined
-                      color="secondary"
-                      :href="`${baseUrl}/commit/${commit.sha}`"
-                      target="_blank"
-                    >
-                      <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
-                    </app-btn>
-                  </div>
-                </li>
+                  </li>
                 </template>
               </ol>
             </v-timeline-item>
           </v-timeline>
-
         </template>
-
       </v-card-text>
 
       <v-card-text
@@ -101,7 +112,6 @@
           </v-chip>
         </div>
       </v-card-text>
-
     </v-card>
   </v-dialog>
 </template>

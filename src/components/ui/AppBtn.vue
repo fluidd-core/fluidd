@@ -4,7 +4,7 @@
     v-on="$listeners"
     :class="classes"
   >
-    <slot></slot>
+    <slot />
   </v-btn>
 </template>
 

@@ -35,7 +35,7 @@
             dense
             single-line
             hide-details
-          ></v-text-field>
+          />
         </app-setting>
 
         <v-divider />
@@ -51,7 +51,7 @@
             filled
             item-value="id"
             item-text="name"
-          ></v-select>
+          />
         </app-setting>
 
         <v-divider />
@@ -72,8 +72,7 @@
             :title="$t('app.general.btn.set_color')"
             :primary="color"
             @change="handleColorChange"
-          >
-          </app-color-picker>
+          />
         </app-setting>
 
         <v-divider />
@@ -101,7 +100,7 @@
             v-model="newMacro.disabledWhilePrinting"
             color="primary"
             hide-details
-          ></v-switch>
+          />
         </app-setting>
 
         <v-divider />
@@ -114,17 +113,26 @@
             v-model="newMacro.visible"
             color="primary"
             hide-details
-          ></v-switch>
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions class="px-4">
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button" v-html="$t('app.general.btn.cancel')"></app-btn>
-          <app-btn color="primary" type="submit" v-html="$t('app.general.btn.save')"></app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            @click="$emit('input', false)"
+            type="button"
+            v-html="$t('app.general.btn.cancel')"
+          />
+          <app-btn
+            color="primary"
+            type="submit"
+            v-html="$t('app.general.btn.save')"
+          />
         </v-card-actions>
-
       </v-card>
     </v-form>
   </v-dialog>

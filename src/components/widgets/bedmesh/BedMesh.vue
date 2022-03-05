@@ -2,22 +2,19 @@
   <collapsable-card
     :title="$t('app.general.title.bedmesh')"
     :lazy="false"
-    icon="$bedMesh">
-
+    icon="$bedMesh"
+  >
     <v-card-text>
-
       <e-charts-bed-mesh
         v-if="mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0"
         :options="options"
         :data="series"
         :height="(isMobile) ? '225px' : '525px'"
-        ref="chart">
-      </e-charts-bed-mesh>
+        ref="chart"
+      />
 
       <span v-else>{{ $t('app.bedmesh.msg.not_loaded') }}</span>
-
     </v-card-text>
-
   </collapsable-card>
 </template>
 

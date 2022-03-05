@@ -1,5 +1,10 @@
 <template>
-  <v-tooltip :bottom="bottom" :top="top" :left="left" :right="right">
+  <v-tooltip
+    :bottom="bottom"
+    :top="top"
+    :left="left"
+    :right="right"
+  >
     <template v-slot:activator="{ on, attrs }">
       <app-btn
         :small="small"
@@ -7,16 +12,17 @@
         v-on="on"
         class="ml-2"
         :color="type"
-        icon>
+        icon
+      >
         <v-icon
-        :small="small"
+          :small="small"
         >
           {{ (type === 'error' || type === 'warning') ? '$warning' : '$help' }}
         </v-icon>
       </app-btn>
     </template>
     <slot>
-      <span v-html="tooltip"></span>
+      <span v-html="tooltip" />
     </slot>
   </v-tooltip>
 </template>

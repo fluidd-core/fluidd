@@ -2,7 +2,8 @@
   <div>
     <v-list-group
       prepend-icon="$host"
-      no-action>
+      no-action
+    >
       <template v-slot:activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.host') }}</v-list-item-title>
@@ -11,19 +12,25 @@
 
       <v-list-item
         @click="handleHostReboot"
-        :disabled="printerPrinting">
+        :disabled="printerPrinting"
+      >
         <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
         <v-list-item-icon>
-          <v-icon color="error">$powerCycle</v-icon>
+          <v-icon color="error">
+            $powerCycle
+          </v-icon>
         </v-list-item-icon>
       </v-list-item>
 
       <v-list-item
         @click="handleHostShutdown"
-        :disabled="printerPrinting">
+        :disabled="printerPrinting"
+      >
         <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
         <v-list-item-icon>
-          <v-icon color="error">$power</v-icon>
+          <v-icon color="error">
+            $power
+          </v-icon>
         </v-list-item-icon>
       </v-list-item>
     </v-list-group>
@@ -31,7 +38,8 @@
     <v-list-group
       v-if="devicePowerComponentEnabled"
       prepend-icon="$power"
-      no-action>
+      no-action
+    >
       <template v-slot:activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.power') }}</v-list-item-title>
@@ -50,12 +58,12 @@
           <v-icon>{{ getPowerIcon(device) }}</v-icon>
         </v-list-item-icon>
       </v-list-item>
-
     </v-list-group>
 
     <v-list-group
       prepend-icon="$restart"
-      no-action>
+      no-action
+    >
       <template v-slot:activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.services') }}</v-list-item-title>
@@ -63,19 +71,21 @@
       </template>
       <template v-for="service in services">
         <v-list-item
-         :key="service.name"
+          :key="service.name"
         >
           <v-list-item-content>
             <v-list-item-title>
-                <v-tooltip left>
-                    <template v-slot:activator="{ on, attrs }">
-                        <span
-                          v-bind="attrs"
-                          v-on="on"
-                          class="text-wrap" style="text-transform: capitalize;">{{ service.name }}</span>
-                    </template>
-                    <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
-                </v-tooltip>
+              <v-tooltip left>
+                <template v-slot:activator="{ on, attrs }">
+                  <span
+                    v-bind="attrs"
+                    v-on="on"
+                    class="text-wrap"
+                    style="text-transform: capitalize;"
+                  >{{ service.name }}</span>
+                </template>
+                <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
+              </v-tooltip>
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
@@ -83,25 +93,34 @@
               icon
               v-if="service.active_state === 'inactive'"
               @click="checkDialog(serviceStart, service, 'start')"
-            ><v-icon>$play</v-icon></v-btn>
+            >
+              <v-icon>$play</v-icon>
+            </v-btn>
             <v-btn
               icon
               v-else
               @click="checkDialog(serviceRestart, service, 'restart')"
-            ><v-icon color="warning">$restart</v-icon></v-btn>
+            >
+              <v-icon color="warning">
+                $restart
+              </v-icon>
+            </v-btn>
             <v-btn
               icon
               @click="checkDialog(serviceStop, service, 'stop')"
               :disabled="service.active_state === 'inactive'"
               :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
-            ><v-icon color="error">$stop</v-icon></v-btn>
+            >
+              <v-icon color="error">
+                $stop
+              </v-icon>
+            </v-btn>
           </v-list-item-action>
         </v-list-item>
       </template>
     </v-list-group>
 
-    <v-divider></v-divider>
-
+    <v-divider />
   </div>
 </template>
 

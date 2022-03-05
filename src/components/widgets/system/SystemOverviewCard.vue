@@ -1,8 +1,8 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.system_overview')"
-    icon="$desktopTower">
-
+    icon="$desktopTower"
+  >
     <v-row no-gutters>
       <v-col>
         <v-simple-table dense>
@@ -43,7 +43,10 @@
               <th>{{ $t('app.system_info.label.distribution_like') }}</th>
               <td>{{ distribution.like }}</td>
             </tr>
-            <tr v-for="mcu in mcus" :key="mcu.name">
+            <tr
+              v-for="mcu in mcus"
+              :key="mcu.name"
+            >
               <th>{{ mcu.name }}</th>
               <td>{{ mcu.mcu_version }}</td>
             </tr>
@@ -52,7 +55,7 @@
       </v-col>
       <v-col>
         <v-card-text>
-          <system-control></system-control>
+          <system-control />
         </v-card-text>
       </v-col>
     </v-row>
@@ -61,7 +64,6 @@
     <!-- <pre>{{ sdInfo }}</pre> -->
     <!-- <pre>{{ distribution }}</pre> -->
     <!-- <pre>{{ printerInfo }}</pre> -->
-
   </collapsable-card>
 </template>
 

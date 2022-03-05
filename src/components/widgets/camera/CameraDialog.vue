@@ -6,8 +6,7 @@
   >
     <camera-item
       :camera="camera"
-    >
-    </camera-item>
+    />
   </v-dialog>
 </template>
 

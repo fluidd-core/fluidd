@@ -20,8 +20,8 @@
           <v-switch
             class="mt-0"
             hide-details="auto"
-            v-model="camera.enabled">
-          </v-switch>
+            v-model="camera.enabled"
+          />
         </app-setting>
 
         <v-divider />
@@ -33,8 +33,8 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required]"
-            v-model="camera.name">
-          </v-text-field>
+            v-model="camera.name"
+          />
         </app-setting>
 
         <v-divider />
@@ -42,8 +42,8 @@
         <app-setting :title="$t('app.setting.label.camera_flip_x')">
           <v-switch
             hide-details
-            v-model="camera.flipX">
-          </v-switch>
+            v-model="camera.flipX"
+          />
         </app-setting>
 
         <v-divider />
@@ -52,8 +52,8 @@
           <v-switch
             class="mb-4"
             hide-details
-            v-model="camera.flipY">
-          </v-switch>
+            v-model="camera.flipY"
+          />
         </app-setting>
 
         <v-divider />
@@ -82,8 +82,7 @@
             item-value="value"
             item-text="text"
             v-model="camera.rotate"
-          >
-          </v-select>
+          />
         </app-setting>
 
         <v-divider />
@@ -101,13 +100,16 @@
             ]"
             item-value="value"
             item-text="text"
-            v-model="camera.type">
-          </v-select>
+            v-model="camera.type"
+          />
         </app-setting>
 
         <v-divider />
 
-        <app-setting v-if="camera.type === 'mjpgadaptive'" :title="$t('app.setting.label.fps_target')">
+        <app-setting
+          v-if="camera.type === 'mjpgadaptive'"
+          :title="$t('app.setting.label.fps_target')"
+        >
           <v-text-field
             class="mt-5"
             filled
@@ -116,12 +118,15 @@
             hide-details="auto"
             v-model.number="camera.fpstarget"
             :rules="[rules.required]"
-          ></v-text-field>
+          />
         </app-setting>
 
         <v-divider v-if="camera.type === 'mjpgadaptive'" />
 
-        <app-setting v-if="camera.type === 'mjpgadaptive'" :title="$t('app.setting.label.fps_idle_target')">
+        <app-setting
+          v-if="camera.type === 'mjpgadaptive'"
+          :title="$t('app.setting.label.fps_idle_target')"
+        >
           <v-text-field
             class="mt-5"
             filled
@@ -129,7 +134,7 @@
             single-line
             hide-details="auto"
             v-model.number="camera.fpsidletarget"
-          ></v-text-field>
+          />
         </app-setting>
 
         <v-divider v-if="camera.type === 'mjpgadaptive'" />
@@ -143,12 +148,15 @@
             hide-details="auto"
             v-model="camera.url"
             :rules="[rules.required]"
-          ></v-text-field>
+          />
         </app-setting>
 
         <v-divider />
 
-        <app-setting v-if="camera.type === 'iframe'" :title="$t('app.setting.label.height')">
+        <app-setting
+          v-if="camera.type === 'iframe'"
+          :title="$t('app.setting.label.height')"
+        >
           <v-text-field
             class="mt-5"
             filled
@@ -157,15 +165,27 @@
             hide-details="auto"
             v-model.number="camera.height"
             :rules="[rules.required]"
-          ></v-text-field>
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit">{{ (camera.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            @click="$emit('input', false)"
+            type="button"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+          >
+            {{ (camera.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+          </app-btn>
         </v-card-actions>
       </v-card>
     </v-form>

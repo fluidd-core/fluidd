@@ -6,8 +6,13 @@
       @click="$emit('update:collapsed', !collapsed)"
       color=""
       class="ml-1"
-      fab x-small text>
-      <v-icon :class="{ 'rotate-180': collapsed }">$chevronUp</v-icon>
+      fab
+      x-small
+      text
+    >
+      <v-icon :class="{ 'rotate-180': collapsed }">
+        $chevronUp
+      </v-icon>
     </app-btn>
 
     <!-- In layout -->
@@ -17,9 +22,15 @@
         :input-value="enabled"
         @change="$emit('update:enabled', $event)"
         hide-details
-        class="mt-0 pt-0">
-      </v-checkbox>
-      <v-icon class="handle" left v-if="inLayout">$drag</v-icon>
+        class="mt-0 pt-0"
+      />
+      <v-icon
+        class="handle"
+        left
+        v-if="inLayout"
+      >
+        $drag
+      </v-icon>
     </v-layout>
   </div>
 </template>

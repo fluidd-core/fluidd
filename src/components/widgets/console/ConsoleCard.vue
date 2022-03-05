@@ -4,30 +4,34 @@
     icon="$console"
     card-classes="d-flex flex-column"
     content-classes="flex-grow-1 flow-shrink-0"
-    menuBreakpoint="none"
-    menuIcon="$cog"
+    menu-breakpoint="none"
+    menu-icon="$cog"
     :draggable="true"
     layout-path="dashboard.console-card"
-    @collapsed="handleCollapseChange">
-
+    @collapsed="handleCollapseChange"
+  >
     <template v-slot:title>
-      <v-icon left>$console</v-icon>
+      <v-icon left>
+        $console
+      </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.console') }}</span>
       <app-inline-help
         bottom
         small
         :tooltip="$t('app.console.placeholder.command')"
-      ></app-inline-help>
+      />
     </template>
 
     <template v-slot:menu>
-
       <app-btn
         v-if="scrollingPaused"
         @click="console.scrollToLatest(true)"
         color=""
-        fab x-small text>
-        <v-icon>{{flipLayout ? '$up' : '$down'}}</v-icon>
+        fab
+        x-small
+        text
+      >
+        <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
       </app-btn>
 
       <app-btn-collapse-group
@@ -40,49 +44,45 @@
           color="primary"
           hide-details
           class="mx-2 mt-2"
-        >
-        </v-checkbox>
+        />
         <v-checkbox
           v-model="autoScroll"
           :label="$t('app.console.label.auto_scroll')"
           color="primary"
           hide-details
           class="mx-2 mb-2"
-        >
-        </v-checkbox>
+        />
         <v-checkbox
           v-model="flipLayout"
           :label="$t('app.console.label.flip_layout')"
           color="primary"
           hide-details
           class="mx-2 mb-2"
-        >
-        </v-checkbox>
+        />
 
         <template v-for="(filter, index) in filters">
           <v-divider
             :key="index"
-            v-if="index === 0" />
+            v-if="index === 0"
+          />
           <v-checkbox
             v-model="filter.enabled"
             :label="filter.name"
             :key="filter.id"
             color="primary"
             hide-details
-            class="mx-2 mt-2">
-          </v-checkbox>
+            class="mx-2 mt-2"
+          />
         </template>
-
       </app-btn-collapse-group>
     </template>
 
     <console
       ref="console"
-      :scrollingPaused.sync="scrollingPaused"
+      :scrolling-paused.sync="scrollingPaused"
       :items="items"
       :height="300"
-    ></console>
-
+    />
   </collapsable-card>
 </template>
 

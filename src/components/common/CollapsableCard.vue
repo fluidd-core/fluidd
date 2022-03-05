@@ -3,38 +3,49 @@
     :class="_cardClasses"
     :rounded="rounded"
     :loading="isLoading"
-    :color="color">
-
+    :color="color"
+  >
     <v-card-title
       class="collapsable-card-title card-heading"
       :class="{ 'draggable': inLayout }"
     >
-      <v-row no-gutters class="flex-nowrap">
-
-        <v-col align-self="center" class="text-no-wrap">
+      <v-row
+        no-gutters
+        class="flex-nowrap"
+      >
+        <v-col
+          align-self="center"
+          class="text-no-wrap"
+        >
           <slot name="title">
-            <v-icon left>{{ icon }}</v-icon>
+            <v-icon left>
+              {{ icon }}
+            </v-icon>
             <span class="font-weight-light">{{ title }}</span>
           </slot>
         </v-col>
 
-        <v-col cols="auto" align-self="center">
-          <slot name="menu"></slot>
+        <v-col
+          cols="auto"
+          align-self="center"
+        >
+          <slot name="menu" />
         </v-col>
 
-        <v-col cols="auto" align-self="center">
+        <v-col
+          cols="auto"
+          align-self="center"
+        >
           <!-- Collapse Control -->
           <slot name="collapse-button">
             <app-btn-collapse
               v-if="_collapsable || inLayout"
               :collapsed.sync="isCollapsed"
               :enabled.sync="isEnabled"
-              :inLayout="inLayout"
-            >
-            </app-btn-collapse>
+              :in-layout="inLayout"
+            />
           </slot>
         </v-col>
-
       </v-row>
     </v-card-title>
 
@@ -44,16 +55,20 @@
         id="card-content"
         v-if="!isCollapsed && !inLayout"
         :class="_contentClasses"
-        :style="_contentStyles">
-        <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
+        :style="_contentStyles"
+      >
+        <v-card-subtitle
+          class="py-2"
+          v-if="subTitle || hasSubTitleSlot"
+        >
           <slot name="sub-title">
-            <span v-html="subTitle"></span>
+            <span v-html="subTitle" />
           </slot>
         </v-card-subtitle>
-        <v-divider v-if="subTitle || hasSubTitleSlot"></v-divider>
+        <v-divider v-if="subTitle || hasSubTitleSlot" />
 
         <!-- Primary Content slot -->
-        <slot></slot>
+        <slot />
       </div>
     </v-expand-transition>
 
@@ -63,16 +78,20 @@
         id="card-content"
         v-show="!isCollapsed && !inLayout"
         :class="_contentClasses"
-        :style="_contentStyles">
-        <v-card-subtitle class="py-2" v-if="subTitle || hasSubTitleSlot">
+        :style="_contentStyles"
+      >
+        <v-card-subtitle
+          class="py-2"
+          v-if="subTitle || hasSubTitleSlot"
+        >
           <slot name="subTitle">
-            <span v-html="subTitle"></span>
+            <span v-html="subTitle" />
           </slot>
         </v-card-subtitle>
-        <v-divider v-if="subTitle || hasSubTitleSlot"></v-divider>
+        <v-divider v-if="subTitle || hasSubTitleSlot" />
 
         <!-- Primary Content slot -->
-        <slot></slot>
+        <slot />
       </div>
     </v-expand-transition>
   </v-card>

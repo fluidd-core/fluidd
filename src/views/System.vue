@@ -1,12 +1,19 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
-    <v-col cols="12" md="6">
-      <system-overview-card class="mb-2 mb-sm-4"></system-overview-card>
-      <disk-usage-card></disk-usage-card>
+    <v-col
+      cols="12"
+      md="6"
+    >
+      <system-overview-card class="mb-2 mb-sm-4" />
+      <disk-usage-card />
     </v-col>
 
-    <v-col cols="12" md="6" v-if="hasGraphData">
-      <system-usage-card></system-usage-card>
+    <v-col
+      cols="12"
+      md="6"
+      v-if="hasGraphData"
+    >
+      <system-usage-card />
     </v-col>
   </v-row>
 </template>

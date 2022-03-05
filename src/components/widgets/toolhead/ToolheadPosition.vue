@@ -1,59 +1,82 @@
 <template>
   <div class="mb-2">
     <!-- <div style="line-height: 32px; padding: 0 12px;"> -->
-      <v-row justify="space-between" no-gutters>
-        <v-col cols="4" class="pr-1">
-          <v-text-field
-            label="X"
-            outlined
-            hide-details
-            dense
-            class="v-input--width-small"
-            type="number"
-            @change="moveTo('X', $event)"
-            :disabled="!xHomed"
-            :readonly="printerBusy"
-            :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="4" class="pr-1 pl-1">
-          <v-text-field
-            label="Y"
-            outlined
-            hide-details
-            dense
-            class="v-input--width-small"
-            type="number"
-            @change="moveTo('Y', $event)"
-            :disabled="!yHomed"
-            :readonly="printerBusy"
-            :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="4" class="pl-1">
-          <v-text-field
-            label="Z"
-            outlined
-            hide-details
-            dense
-            class="v-input--width-small"
-            type="number"
-            @change="moveTo('Z', $event)"
-            :disabled="!zHomed"
-            :readonly="printerBusy"
-            :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
-          ></v-text-field>
-        </v-col>
-      </v-row>
+    <v-row
+      justify="space-between"
+      no-gutters
+    >
+      <v-col
+        cols="4"
+        class="pr-1"
+      >
+        <v-text-field
+          label="X"
+          outlined
+          hide-details
+          dense
+          class="v-input--width-small"
+          type="number"
+          @change="moveTo('X', $event)"
+          :disabled="!xHomed"
+          :readonly="printerBusy"
+          :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
+        />
+      </v-col>
+      <v-col
+        cols="4"
+        class="pr-1 pl-1"
+      >
+        <v-text-field
+          label="Y"
+          outlined
+          hide-details
+          dense
+          class="v-input--width-small"
+          type="number"
+          @change="moveTo('Y', $event)"
+          :disabled="!yHomed"
+          :readonly="printerBusy"
+          :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
+        />
+      </v-col>
+      <v-col
+        cols="4"
+        class="pl-1"
+      >
+        <v-text-field
+          label="Z"
+          outlined
+          hide-details
+          dense
+          class="v-input--width-small"
+          type="number"
+          @change="moveTo('Z', $event)"
+          :disabled="!zHomed"
+          :readonly="printerBusy"
+          :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
+        />
+      </v-col>
+    </v-row>
 
-      <v-row justify="space-between" align="center" no-gutters v-show="printerPrinting">
-        <v-col cols="auto" class="secondary--text text--lighten-1">
-          {{ $t('app.general.label.requested_speed') }}
-        </v-col>
-        <v-col cols="auto" class="focus--text">
-          {{ requestedSpeed }} mm/s
-        </v-col>
-      </v-row>
+    <v-row
+      justify="space-between"
+      align="center"
+      no-gutters
+      v-show="printerPrinting"
+    >
+      <v-col
+        cols="auto"
+        class="secondary--text text--lighten-1"
+      >
+        {{ $t('app.general.label.requested_speed') }}
+      </v-col>
+      <v-col
+        cols="auto"
+        class="focus--text"
+      >
+        {{ requestedSpeed }} mm/s
+      </v-col>
+    </v-row>
 
     <!-- </div> -->
   </div>

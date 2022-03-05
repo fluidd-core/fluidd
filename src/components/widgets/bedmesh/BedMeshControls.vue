@@ -2,9 +2,12 @@
   <collapsable-card
     :title="$t('app.general.title.bedmesh_controls')"
     :lazy="false"
-    icon="$bedMesh">
-
-    <v-simple-table v-if="meshes.length > 0" class="no-hover">
+    icon="$bedMesh"
+  >
+    <v-simple-table
+      v-if="meshes.length > 0"
+      class="no-hover"
+    >
       <thead>
         <tr>
           <th>{{ $t('app.general.label.name') }}</th>
@@ -14,7 +17,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in meshes" :key="item.profile_name">
+        <tr
+          v-for="item in meshes"
+          :key="item.profile_name"
+        >
           <td class="">
             {{ item.profile_name }}
           </td>
@@ -22,17 +28,21 @@
             <v-chip
               v-if="item.active"
               small
-              block>
+              block
+            >
               active
             </v-chip>
           </td>
           <td class="focus--text">
             <span v-if="item.active && mesh.variance">
               {{ mesh.variance.toFixed(4) }}
-               <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
+              <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
             </span>
           </td>
-          <td class="text-right" nowrap>
+          <td
+            class="text-right"
+            nowrap
+          >
             <v-tooltip
               v-if="!item.active && !printerPrinting && !printerBusy"
               bottom
@@ -65,8 +75,11 @@
                   class="ml-2"
                   fab
                   text
-                  x-small>
-                  <v-icon color="">$close</v-icon>
+                  x-small
+                >
+                  <v-icon color="">
+                    $close
+                  </v-icon>
                 </app-btn>
               </template>
               <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
@@ -79,7 +92,12 @@
     <v-divider />
 
     <v-card-text>
-      <div class="mb-4" v-if="meshes.length === 0">{{ $t('app.bedmesh.msg.not_found') }}</div>
+      <div
+        class="mb-4"
+        v-if="meshes.length === 0"
+      >
+        {{ $t('app.bedmesh.msg.not_found') }}
+      </div>
       <v-row>
         <v-col cols="6">
           <app-btn
@@ -102,7 +120,8 @@
                 class="mb-2"
                 :loading="hasWait(waits.onMeshCalibrate)"
                 :disabled="printerPrinting || printerBusy"
-                @click="calibrate()">
+                @click="calibrate()"
+              >
                 {{ $t('app.general.btn.calibrate') }}
               </app-btn>
             </template>
@@ -118,13 +137,13 @@
                 small
                 color="primary"
                 :disabled="!meshLoaded || printerPrinting || printerBusy"
-                @click="handleOpenSaveDialog()">
+                @click="handleOpenSaveDialog()"
+              >
                 {{ $t('app.general.btn.save_as') }}
               </app-btn>
             </template>
             <span>{{ $t('app.bedmesh.tooltip.save') }}</span>
           </v-tooltip>
-
         </v-col>
         <v-col cols="6">
           <app-btn
@@ -134,8 +153,14 @@
             class="mb-2"
             :loading="hasWait(waits.onHomeAll)"
             :disabled="printerPrinting || printerBusy"
-            :color="(!allHomed) ? 'primary' : undefined">
-              <v-icon small class="mr-1">$home</v-icon> {{ $t('app.general.btn.all') }}
+            :color="(!allHomed) ? 'primary' : undefined"
+          >
+            <v-icon
+              small
+              class="mr-1"
+            >
+              $home
+            </v-icon> {{ $t('app.general.btn.all') }}
           </app-btn>
 
           <app-btn
@@ -146,15 +171,18 @@
             :disabled="printerPrinting || printerBusy"
             block
             class="mb-2"
-            small>
-              {{ $t('app.general.btn.quad_gantry_level') }}
+            small
+          >
+            {{ $t('app.general.btn.quad_gantry_level') }}
           </app-btn>
-
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-radio-group
             :disabled="!meshLoaded"
             v-model="matrix"
@@ -166,24 +194,25 @@
               :label="$t('app.bedmesh.label.probed_matrix')"
               color="primary"
               value="probed_matrix"
-            ></v-radio>
+            />
             <v-radio
               :label="$t('app.bedmesh.label.mesh_matrix')"
               color="primary"
               value="mesh_matrix"
-            ></v-radio>
+            />
           </v-radio-group>
-
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-checkbox
             :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.wireframe')"
             v-model="wireframe"
             hide-details
             class="mt-0"
-          >
-          </v-checkbox>
+          />
 
           <v-checkbox
             :disabled="!meshLoaded"
@@ -191,8 +220,7 @@
             v-model="flatSurface"
             hide-details
             class="mt-1"
-          >
-          </v-checkbox>
+          />
         </v-col>
       </v-row>
 
@@ -208,8 +236,7 @@
             step="0.1"
             ticks="always"
             tick-size="4"
-          >
-          </v-slider>
+          />
 
           <v-slider
             :label="$t('app.bedmesh.label.box_scale')"
@@ -221,11 +248,9 @@
             step="0.5"
             ticks="always"
             tick-size="4"
-          >
-          </v-slider>
+          />
         </v-col>
       </v-row>
-
     </v-card-text>
 
     <save-mesh-dialog
@@ -233,8 +258,7 @@
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
       @save="handleMeshSave"
-    >
-    </save-mesh-dialog>
+    />
   </collapsable-card>
 </template>
 

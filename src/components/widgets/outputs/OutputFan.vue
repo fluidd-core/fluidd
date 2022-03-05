@@ -11,8 +11,7 @@
       :rules="rules"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
-    >
-    </app-slider>
+    />
 
     <v-layout
       v-if="!fan.controllable"
@@ -23,11 +22,16 @@
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <small v-if="rpm" class="mr-2">{{ rpm }}</small>
-        <span class="focus--text" v-html="prettyValue"></span>
+        <small
+          v-if="rpm"
+          class="mr-2"
+        >{{ rpm }}</small>
+        <span
+          class="focus--text"
+          v-html="prettyValue"
+        />
       </div>
     </v-layout>
-
   </div>
 </template>
 

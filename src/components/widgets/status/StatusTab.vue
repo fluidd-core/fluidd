@@ -1,11 +1,10 @@
 <template>
   <div>
-
     <!-- Only show the linear progress for mdAndDown -->
     <v-progress-linear
       v-if="
         progressVisible &&
-        $vuetify.breakpoint.mdAndDown
+          $vuetify.breakpoint.mdAndDown
       "
       :height="6"
       :value="estimates.progress"
@@ -23,12 +22,12 @@
           v-if="progressVisible && $vuetify.breakpoint.lgAndUp"
         >
           <v-progress-circular
-              :rotate="-90"
-              :size="90"
-              :width="7"
-              :value="estimates.progress"
-              color="primary"
-            >
+            :rotate="-90"
+            :size="90"
+            :width="7"
+            :value="estimates.progress"
+            color="primary"
+          >
             <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
           </v-progress-circular>
         </v-col>
@@ -39,29 +38,43 @@
             no-gutters
             v-if="
               message ||
-              filename !== '' ||
-              (progressVisible && $vuetify.breakpoint.mdAndDown)
-          ">
+                filename !== '' ||
+                (progressVisible && $vuetify.breakpoint.mdAndDown)
+            "
+          >
             <v-col>
               <status-label
                 :label="$t('app.general.label.progress')"
-                v-if="progressVisible && $vuetify.breakpoint.mdAndDown">
+                v-if="progressVisible && $vuetify.breakpoint.mdAndDown"
+              >
                 <span>{{ estimates.progress }}%</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.m117')" v-if="message">
+              <status-label
+                :label="$t('app.general.label.m117')"
+                v-if="message"
+              >
                 <span>{{ message }}</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.file')" v-if="filename !== ''">
+              <status-label
+                :label="$t('app.general.label.file')"
+                v-if="filename !== ''"
+              >
                 <span style="word-break: break-all">{{ filename }}</span>
               </status-label>
             </v-col>
           </v-row>
 
           <!-- During a print. -->
-          <v-row no-gutters v-if="printerPrinting">
-            <v-col cols="12" sm="6">
+          <v-row
+            no-gutters
+            v-if="printerPrinting"
+          >
+            <v-col
+              cols="12"
+              sm="6"
+            >
               <status-label :label="$t('app.general.label.requested_speed')">
                 <span v-if="requestedSpeed > 0 && printerPrinting">{{ requestedSpeed }} mm/s</span>
               </status-label>
@@ -79,12 +92,21 @@
               </status-label>
             </v-col>
 
-            <v-col cols="12" sm="6">
-              <status-label :label="$t('app.general.label.actual_time')" v-if="estimates.actual > 0">
+            <v-col
+              cols="12"
+              sm="6"
+            >
+              <status-label
+                :label="$t('app.general.label.actual_time')"
+                v-if="estimates.actual > 0"
+              >
                 <span v-if="estimates.actual > 0">{{ $filters.formatCounterTime(estimates.actual) }}</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.file')" v-else>
+              <status-label
+                :label="$t('app.general.label.file')"
+                v-else
+              >
                 <span v-if="estimates.file > 0">{{ $filters.formatCounterTime(estimates.file) }}</span>
               </status-label>
 
@@ -103,30 +125,47 @@
           </v-row>
 
           <!-- After a completed print, with file data and potentially history. -->
-          <v-row no-gutters v-if="overviewVisible">
+          <v-row
+            no-gutters
+            v-if="overviewVisible"
+          >
             <v-col>
-              <status-label :label="$t('app.general.label.filament')" v-if="current_file.history && current_file.history.filament_used">
+              <status-label
+                :label="$t('app.general.label.filament')"
+                v-if="current_file.history && current_file.history.filament_used"
+              >
                 <span v-if="current_file.history.filament_used">{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.filament')" v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used">
+              <status-label
+                :label="$t('app.general.label.filament')"
+                v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used"
+              >
                 <span v-if="current_file.filament_total">{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.slicer')" v-if="current_file.estimated_time">
+              <status-label
+                :label="$t('app.general.label.slicer')"
+                v-if="current_file.estimated_time"
+              >
                 <span v-if="current_file.estimated_time > 0">{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.actual_time')" v-if="current_file.history && current_file.history.print_duration">
+              <status-label
+                :label="$t('app.general.label.actual_time')"
+                v-if="current_file.history && current_file.history.print_duration"
+              >
                 <span v-if="current_file.history.print_duration > 0">{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
               </status-label>
 
-              <status-label :label="$t('app.general.label.total')" v-if="current_file.history && current_file.history.total_duration">
+              <status-label
+                :label="$t('app.general.label.total')"
+                v-if="current_file.history && current_file.history.total_duration"
+              >
                 <span v-if="current_file.history.total_duration > 0">{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
               </status-label>
             </v-col>
           </v-row>
-
         </v-col>
 
         <!-- Only show the thumb if we're lgAndUp and have a thumb to show -->
@@ -139,9 +178,8 @@
           <img
             class="print-thumb"
             :src="thumbnail"
-          />
+          >
         </v-col>
-
       </v-row>
     </v-card-text>
   </div>

@@ -18,8 +18,8 @@
           @keydown.enter.exact.prevent
           @keyup.up="historyUp()"
           @keyup.down="historyDown()"
-          @keydown.prevent.tab="autoComplete()">
-        </v-textarea>
+          @keydown.prevent.tab="autoComplete()"
+        />
       </v-col>
       <v-col cols="auto">
         <app-btn @click="emitSend(newValue)">
@@ -28,7 +28,7 @@
       </v-col>
     </v-row>
   </v-container>
-    <!-- <pre>{{ originalHistory }}</pre>
+  <!-- <pre>{{ originalHistory }}</pre>
     <pre>{{ history }}</pre> -->
 </template>
 

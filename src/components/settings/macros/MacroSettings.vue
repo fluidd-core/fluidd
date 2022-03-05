@@ -9,7 +9,9 @@
         exact
         @click="handleBack"
       >
-        <v-icon small>$left</v-icon>
+        <v-icon small>
+          $left
+        </v-icon>
       </app-btn>
 
       {{ category.name }} {{ $t('app.setting.title.macros') }}
@@ -24,15 +26,13 @@
         single-line
         hide-details
         append-icon="$magnify"
-      >
-      </v-text-field>
-
+      />
     </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting>
         <app-btn
           outlined
@@ -64,7 +64,10 @@
           :r-cols="2"
           @click="handleSettingsDialog(macro)"
         >
-          <template v-slot:sub-title v-if="macro.config.description && macro.config.description !== 'G-Code macro'">
+          <template
+            v-slot:sub-title
+            v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
+          >
             <span
               v-show="true"
               class="mr-2"
@@ -80,19 +83,21 @@
             @change="handleMacroVisible(macro, $event)"
             color="primary"
             hide-details
-          ></v-switch>
+          />
         </app-setting>
 
-        <v-divider :key="`divider-${macro.name}`" v-if="i < macros.length - 1 && macros.length > 0"></v-divider>
+        <v-divider
+          :key="`divider-${macro.name}`"
+          v-if="i < macros.length - 1 && macros.length > 0"
+        />
       </template>
-
     </v-card>
 
     <macro-settings-dialog
       v-if="dialogState.macro"
       v-model="dialogState.open"
       :macro="dialogState.macro"
-    ></macro-settings-dialog>
+    />
   </div>
 </template>
 

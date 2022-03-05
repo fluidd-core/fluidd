@@ -1,29 +1,41 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.endstops')"
-    :subTitle="$t('app.endstop.msg.subtitle')"
-    icon="$expandHorizontal">
+    :sub-title="$t('app.endstop.msg.subtitle')"
+    icon="$expandHorizontal"
+  >
     <template v-slot:collapse-button>
       <app-btn
         @click="queryEndstops"
         color=""
-        fab x-small text>
+        fab
+        x-small
+        text
+      >
         <v-icon>$refresh</v-icon>
       </app-btn>
     </template>
     <v-card-text v-if="hasEndStops">
       <v-layout
-        align-center justify-start
+        align-center
+        justify-start
         class="py-1"
         v-for="(item, name) in endStops"
-        :key="name">
+        :key="name"
+      >
         <span class="focus--text mr-5">{{ name }}</span>
         <v-chip
           :color="(item === 'open') ? 'secondary' : 'warning'"
           class="ml-2"
           small
-          label>
-          <v-icon small left>{{ (item === 'open') ? '$blankCircle' : '$markedCircle' }}</v-icon>
+          label
+        >
+          <v-icon
+            small
+            left
+          >
+            {{ (item === 'open') ? '$blankCircle' : '$markedCircle' }}
+          </v-icon>
           {{ $t('app.endstop.label.' + item.toLowerCase()) }}
         </v-chip>
       </v-layout>

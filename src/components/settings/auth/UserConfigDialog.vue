@@ -25,8 +25,8 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.max]"
-            v-model="user.username">
-          </v-text-field>
+            v-model="user.username"
+          />
         </app-setting>
 
         <v-divider />
@@ -40,16 +40,28 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.min, rules.password]"
-            v-model="user.password">
-          </v-text-field>
+            v-model="user.password"
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit">{{ (user.created_on) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            @click="$emit('input', false)"
+            type="button"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+          >
+            {{ (user.created_on) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+          </app-btn>
         </v-card-actions>
       </v-card>
     </v-form>

@@ -38,7 +38,9 @@
             icon
             small
           >
-            <v-icon small>$reset</v-icon>
+            <v-icon small>
+              $reset
+            </v-icon>
           </app-btn>
         </template>
       </v-text-field>

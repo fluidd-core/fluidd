@@ -3,8 +3,8 @@
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
     layout-path="dashboard.gcode-preview-card"
-    draggable>
-
+    draggable
+  >
     <v-card-text v-if="file">
       {{ file.name }}
     </v-card-text>
@@ -16,10 +16,15 @@
         :value="showParserProgressDialog"
         :progress="parserProgress"
         :file="file"
-        @cancel="abortParser"/>
+        @cancel="abortParser"
+      />
 
       <v-row>
-        <v-col cols="12" lg="9" md="7">
+        <v-col
+          cols="12"
+          lg="9"
+          md="7"
+        >
           <v-row>
             <v-col>
               <app-slider
@@ -31,8 +36,7 @@
                 :disabled="!fileLoaded"
                 :locked="isMobile"
                 input-md
-              >
-              </app-slider>
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -44,11 +48,10 @@
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
-                valueSuffix="moves"
+                value-suffix="moves"
                 :locked="isMobile"
                 input-md
-              >
-              </app-slider>
+              />
             </v-col>
           </v-row>
           <v-row>
@@ -57,22 +60,37 @@
                 width="100%"
                 :layer="currentLayer"
                 :progress="moveProgress"
-                :disabled="!fileLoaded"></gcode-preview>
+                :disabled="!fileLoaded"
+              />
             </v-col>
           </v-row>
         </v-col>
-        <v-col cols="12" lg="3" md="5">
-          <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="">{{ $t('app.gcode.label.layers') }}</div>
-            <div class="focus--text">{{ layerCount }}</div>
-            <div class="">{{ $t('app.gcode.label.current_layer_height') }}</div>
-            <div class="focus--text">{{ currentLayerHeight }}</div>
+        <v-col
+          cols="12"
+          lg="3"
+          md="5"
+        >
+          <v-card
+            outlined
+            class="px-2 py-1 text-center stat-square"
+          >
+            <div class="">
+              {{ $t('app.gcode.label.layers') }}
+            </div>
+            <div class="focus--text">
+              {{ layerCount }}
+            </div>
+            <div class="">
+              {{ $t('app.gcode.label.current_layer_height') }}
+            </div>
+            <div class="focus--text">
+              {{ currentLayerHeight }}
+            </div>
           </v-card>
-          <GcodePreviewControls :disabled="!fileLoaded"/>
+          <GcodePreviewControls :disabled="!fileLoaded" />
         </v-col>
       </v-row>
     </v-card-text>
-
   </collapsable-card>
 </template>
 

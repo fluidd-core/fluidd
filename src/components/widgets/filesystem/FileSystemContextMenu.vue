@@ -7,23 +7,29 @@
     :position-y="positionY"
     min-width="180"
     absolute
-    right>
-
+    right
+  >
     <v-card>
-      <v-row align="center" justify="center" no-gutters>
+      <v-row
+        align="center"
+        justify="center"
+        no-gutters
+      >
         <v-col>
           <v-list
-            dense>
+            dense
+          >
             <v-list-item
               link
               @click="$emit('print', file)"
-              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint">
+              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint"
+            >
               <v-list-item-icon>
                 <v-icon>$printer</v-icon>
               </v-list-item-icon>
               <v-list-item-title>
                 Print
-                </v-list-item-title>
+              </v-list-item-title>
             </v-list-item>
             <v-list-item
               link
@@ -38,7 +44,8 @@
             <v-list-item
               link
               @click="$emit('edit', file)"
-              v-if="file.type !== 'directory' && rootProperties.canEdit">
+              v-if="file.type !== 'directory' && rootProperties.canEdit"
+            >
               <v-list-item-icon>
                 <v-icon>$pencil</v-icon>
               </v-list-item-icon>
@@ -47,7 +54,8 @@
             <v-list-item
               link
               @click="$emit('view', file)"
-              v-if="file.type !== 'directory' && rootProperties.canView">
+              v-if="file.type !== 'directory' && rootProperties.canView"
+            >
               <v-list-item-icon>
                 <v-icon>$magnify</v-icon>
               </v-list-item-icon>
@@ -56,16 +64,18 @@
             <v-list-item
               link
               @click="$emit('download', file)"
-              v-if="file.type !== 'directory'">
+              v-if="file.type !== 'directory'"
+            >
               <v-list-item-icon>
-                <v-icon >$download</v-icon>
+                <v-icon>$download</v-icon>
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               link
               @click="$emit('preview-gcode', file)"
-              v-if="file.type !== 'directory' && canPreviewGcode">
+              v-if="file.type !== 'directory' && canPreviewGcode"
+            >
               <v-list-item-icon>
                 <v-icon>$magnify</v-icon>
               </v-list-item-icon>
@@ -74,7 +84,8 @@
             <v-list-item
               link
               @click="$emit('rename', file)"
-              v-if="!rootProperties.readonly">
+              v-if="!rootProperties.readonly"
+            >
               <v-list-item-icon>
                 <v-icon>$rename</v-icon>
               </v-list-item-icon>
@@ -83,7 +94,8 @@
             <v-list-item
               link
               @click="$emit('remove', file)"
-              v-if="!rootProperties.readonly">
+              v-if="!rootProperties.readonly"
+            >
               <v-list-item-icon>
                 <v-icon>$delete</v-icon>
               </v-list-item-icon>
@@ -91,12 +103,15 @@
             </v-list-item>
           </v-list>
         </v-col>
-        <v-col class="px-2 d-none d-sm-flex" v-if="file.thumbnails && file.thumbnails.length">
+        <v-col
+          class="px-2 d-none d-sm-flex"
+          v-if="file.thumbnails && file.thumbnails.length"
+        >
           <img
             class="mr-2 ml-2"
             :src="getThumbUrl(file.thumbnails, file.path, true, file.modified)"
             :height="150"
-          />
+          >
         </v-col>
       </v-row>
     </v-card>

@@ -12,8 +12,7 @@
         :update-options="{ notMerge: true }"
         :init-options="{ renderer: 'svg' }"
         :events="events"
-      >
-      </v-chart>
+      />
     </div>
   </div>
 </template>

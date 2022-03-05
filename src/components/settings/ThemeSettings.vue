@@ -1,12 +1,14 @@
 
 <template>
   <div>
-    <v-subheader id="theme">{{ $t('app.setting.title.theme') }}</v-subheader>
+    <v-subheader id="theme">
+      {{ $t('app.setting.title.theme') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.theme_preset')">
         <v-select
           filled
@@ -18,10 +20,10 @@
           item-text="name"
           v-model="themePreset"
           return-object
-        ></v-select>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.primary_color')">
         <app-btn
@@ -39,11 +41,10 @@
           :primary="themeColor"
           @change="handleChangeThemeColor"
           :title="$t('app.setting.btn.select_theme')"
-        >
-        </app-color-picker>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.dark_mode')">
         <v-switch
@@ -51,9 +52,8 @@
           v-model="isDark"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
-
     </v-card>
   </div>
 </template>

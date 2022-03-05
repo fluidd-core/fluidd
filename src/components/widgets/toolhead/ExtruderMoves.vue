@@ -1,7 +1,13 @@
 <template>
-  <v-form v-model="valid" @submit.prevent>
+  <v-form
+    v-model="valid"
+    @submit.prevent
+  >
     <v-row justify="end">
-      <v-col cols="6" class="text-right">
+      <v-col
+        cols="6"
+        class="text-right"
+      >
         <v-text-field
           ref="lengthfield"
           v-model.number="extrudeLength"
@@ -12,8 +18,8 @@
           outlined
           dense
           :label="$t('app.general.label.extrude_length')"
-          suffix="mm">
-        </v-text-field>
+          suffix="mm"
+        />
       </v-col>
       <v-col cols="6">
         <app-btn
@@ -27,8 +33,14 @@
         </app-btn>
       </v-col>
     </v-row>
-    <v-row justify="end" class="mt-0">
-      <v-col cols="6" class="text-right">
+    <v-row
+      justify="end"
+      class="mt-0"
+    >
+      <v-col
+        cols="6"
+        class="text-right"
+      >
         <v-text-field
           v-model.number="extrudeSpeed"
           :disabled="!klippyReady"
@@ -38,8 +50,8 @@
           outlined
           dense
           :label="$t('app.general.label.extrude_speed')"
-          suffix="mm/s">
-        </v-text-field>
+          suffix="mm/s"
+        />
       </v-col>
       <v-col cols="6">
         <app-btn

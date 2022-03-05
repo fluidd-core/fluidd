@@ -1,6 +1,10 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
-    <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
+    <v-col
+      cols="12"
+      md="6"
+      :class="{ 'drag': inLayout }"
+    >
       <draggable
         v-if="container1"
         class="list-group"
@@ -9,19 +13,26 @@
         @start.stop="drag = true"
         @end.stop="handleStopDrag"
       >
-        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+        <transition-group
+          type="transition"
+          :name="!drag ? 'flip-list' : null"
+        >
           <template v-for="c in container1">
             <component
               v-if="(c.enabled && !filtered(c)) || inLayout"
               :is="c.id"
               :key="c.id"
-              class="mb-2 mb-sm-4">
-            </component>
+              class="mb-2 mb-sm-4"
+            />
           </template>
         </transition-group>
       </draggable>
     </v-col>
-    <v-col cols="12" md="6" :class="{ 'drag': inLayout }">
+    <v-col
+      cols="12"
+      md="6"
+      :class="{ 'drag': inLayout }"
+    >
       <draggable
         v-if="container2"
         class="list-group"
@@ -30,14 +41,17 @@
         @start.stop="drag = true"
         @end.stop="handleStopDrag"
       >
-        <transition-group type="transition" :name="!drag ? 'flip-list' : null">
+        <transition-group
+          type="transition"
+          :name="!drag ? 'flip-list' : null"
+        >
           <template v-for="c in container2">
             <component
               v-if="(c.enabled && !filtered(c)) || inLayout"
               :is="c.id"
               :key="c.id"
-              class="mb-2 mb-sm-4">
-            </component>
+              class="mb-2 mb-sm-4"
+            />
           </template>
         </transition-group>
       </draggable>

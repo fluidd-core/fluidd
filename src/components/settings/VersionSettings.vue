@@ -7,8 +7,8 @@
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting>
         <app-btn
           outlined
@@ -17,12 +17,17 @@
           @click="forceCheck()"
           :disabled="isRefreshing"
         >
-          <v-icon left :class="{ 'spin-alt': isRefreshing }">$refresh</v-icon>
+          <v-icon
+            left
+            :class="{ 'spin-alt': isRefreshing }"
+          >
+            $refresh
+          </v-icon>
           {{ $t('app.version.btn.check_for_updates') }}
         </app-btn>
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting
         :title="$t('app.setting.label.enable_notifications')"
@@ -32,10 +37,10 @@
           v-model="enableNotifications"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <template v-for="(component, i) in components">
         <app-setting
@@ -72,7 +77,9 @@
                 icon
                 small
               >
-                <v-icon small>$info</v-icon>
+                <v-icon small>
+                  $info
+                </v-icon>
               </app-btn>
             </template>
             <span v-if="'name' in component">{{ $t('app.version.tooltip.release_notes') }}</span>
@@ -87,22 +94,21 @@
             :dirty="('is_dirty' in component) ? component.is_dirty : false"
             :valid="('is_valid' in component) ? component.is_valid : true"
             @on-update="handleUpdateComponent(component.key)"
-            @on-recover="handleRecoverComponent(component)">
-          </version-status>
-
+            @on-recover="handleRecoverComponent(component)"
+          />
         </app-setting>
 
-        <v-divider :key="`component-${component.key}-${component.name}-_divider`" v-if="i < components.length - 1 && components.length > 0"></v-divider>
+        <v-divider
+          :key="`component-${component.key}-${component.name}-_divider`"
+          v-if="i < components.length - 1 && components.length > 0"
+        />
       </template>
-
     </v-card>
 
     <version-commit-history-dialog
       v-model="informationDialogState.open"
       :component="informationDialogState.component"
-    >
-    </version-commit-history-dialog>
-
+    />
   </div>
 </template>
 

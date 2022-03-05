@@ -1,11 +1,13 @@
 <template>
   <div>
-    <v-subheader id="auth">{{ $t('app.setting.title.authentication') }}</v-subheader>
+    <v-subheader id="auth">
+      {{ $t('app.setting.title.authentication') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting>
         <app-btn
           outlined
@@ -14,7 +16,12 @@
           @click="handleApiKeyDialog"
           class="mr-2"
         >
-          <v-icon small left>$edit</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $edit
+          </v-icon>
           {{ $t('app.general.label.api_key') }}
         </app-btn>
 
@@ -24,7 +31,12 @@
           color="primary"
           @click="handleAddUserDialog"
         >
-          <v-icon small left>$plus</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $plus
+          </v-icon>
           {{ $t('app.setting.btn.add_user') }}
         </app-btn>
       </app-setting>
@@ -48,10 +60,12 @@
             fab
             text
             x-small
-            color="">
-            <v-icon color="">$close</v-icon>
+            color=""
+          >
+            <v-icon color="">
+              $close
+            </v-icon>
           </app-btn>
-
         </app-setting>
 
         <v-divider
@@ -65,13 +79,12 @@
         v-model="userDialogState.open"
         :user="userDialogState.user"
         @save="userDialogState.handler"
-      ></user-config-dialog>
+      />
 
       <api-key-dialog
         v-if="apiKeyDialogState.open"
         v-model="apiKeyDialogState.open"
-      ></api-key-dialog>
-
+      />
     </v-card>
   </div>
 </template>

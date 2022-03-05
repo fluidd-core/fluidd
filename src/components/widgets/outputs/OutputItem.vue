@@ -4,21 +4,19 @@
       v-if="item.type === 'output_pin'"
       :key="item.key"
       :pin="item"
-    >
-    </output-pin>
+    />
 
     <output-fan
       v-if="fanTypes.includes(item.type)"
       :key="item.key"
       :fan="item"
-    ></output-fan>
+    />
 
     <output-led
       v-if="item.type === 'neopixel' || item.type === 'dotstar'"
       :key="item.key"
       :led="item"
-    >
-    </output-led>
+    />
   </div>
 </template>
 

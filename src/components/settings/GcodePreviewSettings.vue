@@ -1,21 +1,23 @@
 <template>
   <div>
-    <v-subheader id="gcodePreview">{{ $t('app.setting.title.gcode_preview') }}</v-subheader>
+    <v-subheader id="gcodePreview">
+      {{ $t('app.setting.title.gcode_preview') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.show_animations')">
         <v-switch
           @click.native.stop
           v-model="showAnimations"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.group_lower_layers')">
         <v-switch
@@ -23,10 +25,10 @@
           v-model="groupLowerLayers"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
@@ -34,10 +36,10 @@
           v-model="drawBackground"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
         <v-text-field
@@ -49,10 +51,10 @@
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.move_line_width')">
         <v-text-field
@@ -64,10 +66,10 @@
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
         <v-text-field
@@ -79,10 +81,10 @@
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.flip_horizontal')">
         <v-switch
@@ -90,10 +92,10 @@
           v-model="flipHorizontal"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.flip_vertical')">
         <v-switch
@@ -101,10 +103,10 @@
           v-model="flipVertical"
           hide-details
           class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn

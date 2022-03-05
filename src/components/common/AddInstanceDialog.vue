@@ -2,7 +2,7 @@
   <v-dialog
     @input="$emit('input', $event)"
     :value="value"
-    :maxWidth="320"
+    :max-width="320"
     persistent
   >
     <v-form
@@ -11,17 +11,16 @@
       @submit.prevent="addInstance()"
     >
       <v-card>
-
         <v-card-title class="card-heading py-2">
           <span class="focus--text">{{ $t('app.general.title.add_printer') }}</span>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <app-inline-help bottom>
-            <span v-html="$t('app.endpoint.tooltip.endpoint_examples')"></span>
+            <span v-html="$t('app.endpoint.tooltip.endpoint_examples')" />
           </app-inline-help>
         </v-card-title>
 
         <v-card-text class="mt-4">
-          <span v-html="helpTxt"></span>
+          <span v-html="helpTxt" />
 
           <v-text-field
             v-model="url"
@@ -33,9 +32,25 @@
             :rules="[rules.required, rules.url]"
           >
             <template v-slot:append-outer>
-              <v-icon v-if="verifying" class="spin" color="primary">$loading</v-icon>
-              <v-icon v-if="!verified && !verifying" color="error">$cloudAlert</v-icon>
-              <v-icon v-if="verified && !verifying" color="success">$cloudCheck</v-icon>
+              <v-icon
+                v-if="verifying"
+                class="spin"
+                color="primary"
+              >
+                $loading
+              </v-icon>
+              <v-icon
+                v-if="!verified && !verifying"
+                color="error"
+              >
+                $cloudAlert
+              </v-icon>
+              <v-icon
+                v-if="verified && !verifying"
+                color="success"
+              >
+                $cloudCheck
+              </v-icon>
             </template>
           </v-text-field>
 
@@ -46,24 +61,33 @@
             type="error"
             class="mt-3 mb-2"
             v-html="error"
-          >
-          </v-alert>
+          />
 
           <p
             v-if="note"
             v-html="note"
             class="mb-0"
-          >
-          </p>
-
+          />
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit" :disabled="!verified">{{ $t('app.general.btn.save') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            @click="$emit('input', false)"
+            type="button"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+            :disabled="!verified"
+          >
+            {{ $t('app.general.btn.save') }}
+          </app-btn>
         </v-card-actions>
-
       </v-card>
     </v-form>
   </v-dialog>

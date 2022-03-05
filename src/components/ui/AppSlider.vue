@@ -11,14 +11,13 @@
         sm="5"
         align-self="center"
         class="text-body-1 py-0"
-        v-html="label">
-      </v-col>
+        v-html="label"
+      />
 
       <!-- Current value -->
       <v-col
         class="py-0"
       >
-
         <v-text-field
           v-model="internalValue"
           :suffix="suffix"
@@ -44,8 +43,18 @@
               @click="lockState = !lockState"
               style="margin-top: -4px;"
             >
-              <v-icon small v-if="isLocked">$pencil</v-icon>
-              <v-icon small v-else>$lockReset</v-icon>
+              <v-icon
+                small
+                v-if="isLocked"
+              >
+                $pencil
+              </v-icon>
+              <v-icon
+                small
+                v-else
+              >
+                $lockReset
+              </v-icon>
             </v-btn>
 
             <app-btn
@@ -57,9 +66,10 @@
               icon
               small
             >
-              <v-icon small>$reset</v-icon>
+              <v-icon small>
+                $reset
+              </v-icon>
             </app-btn>
-
           </template>
         </v-text-field>
       </v-col>
@@ -76,9 +86,7 @@
       ref="slider"
       dense
       hide-details
-    >
-    </v-slider>
-
+    />
   </v-form>
 </template>
 

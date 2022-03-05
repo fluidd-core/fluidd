@@ -11,13 +11,18 @@
       >
         <v-expansion-panel-header>
           <template v-slot:actions>
-            <v-icon small class="mr-2">
+            <v-icon
+              small
+              class="mr-2"
+            >
               $expand
             </v-icon>
           </template>
           <div>
             {{ category.name }}
-            <v-chip small>{{ category.macros.length }}</v-chip>
+            <v-chip small>
+              {{ category.macros.length }}
+            </v-chip>
             <app-btn
               @click.prevent.stop="handleEditCategory(category.id)"
               icon
@@ -26,7 +31,9 @@
               color=""
               class="ml-2"
             >
-              <v-icon small>$cog</v-icon>
+              <v-icon small>
+                $cog
+              </v-icon>
             </app-btn>
           </div>
         </v-expansion-panel-header>
@@ -40,11 +47,11 @@
             :loading="hasWait(`${waits.onMacro}${macro.name}`)"
             :elevation="2"
             enable-params
-            class="me-2 mb-2 float-left">
+            class="me-2 mb-2 float-left"
+          >
             {{ macro.alias || macro.name }}
           </app-macro-btn>
         </v-expansion-panel-content>
-
       </v-expansion-panel>
 
       <v-expansion-panel
@@ -52,13 +59,21 @@
       >
         <v-expansion-panel-header>
           <template v-slot:actions>
-            <v-icon small class="mr-2">
+            <v-icon
+              small
+              class="mr-2"
+            >
               $expand
             </v-icon>
           </template>
           <div>
             {{ $t('app.general.label.uncategorized') }}
-            <v-chip small class="ml-2">{{ uncategorizedMacros.length }}</v-chip>
+            <v-chip
+              small
+              class="ml-2"
+            >
+              {{ uncategorizedMacros.length }}
+            </v-chip>
             <app-btn
               @click.prevent.stop="handleEditCategory('0')"
               icon
@@ -67,7 +82,9 @@
               color=""
               class="ml-2"
             >
-              <v-icon small>$cog</v-icon>
+              <v-icon small>
+                $cog
+              </v-icon>
             </app-btn>
           </div>
         </v-expansion-panel-header>
@@ -81,16 +98,14 @@
               :loading="hasWait(`${waits.onMacro}${macro.name}`)"
               :elevation="2"
               enable-params
-              class="me-2 mb-2 float-left">
+              class="me-2 mb-2 float-left"
+            >
               {{ macro.alias || macro.name }}
             </app-macro-btn>
           </template>
         </v-expansion-panel-content>
-
       </v-expansion-panel>
-
     </v-expansion-panels>
-
   </div>
 </template>
 

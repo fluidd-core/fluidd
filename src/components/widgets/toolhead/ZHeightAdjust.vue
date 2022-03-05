@@ -1,6 +1,12 @@
 <template>
-  <v-row align="start" justify="end">
-    <v-col cols="6" class="text-right">
+  <v-row
+    align="start"
+    justify="end"
+  >
+    <v-col
+      cols="6"
+      class="text-right"
+    >
       <v-btn-toggle
         v-if="moveDistance"
         mandatory
@@ -26,34 +32,56 @@
       </div>
     </v-col>
     <v-col cols="6">
-      <v-row justify="space-between" no-gutters class="mr-n1">
-        <v-col cols="4" class="pr-1">
+      <v-row
+        justify="space-between"
+        no-gutters
+        class="mr-n1"
+      >
+        <v-col
+          cols="4"
+          class="pr-1"
+        >
           <app-btn
             @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
             :loading="hasWait('ZAdjust')"
             :disabled="!klippyReady"
             small
-            block>
-            <v-icon small>$zUp</v-icon>
+            block
+          >
+            <v-icon small>
+              $zUp
+            </v-icon>
           </app-btn>
         </v-col>
-        <v-col cols="4" class="pr-1">
+        <v-col
+          cols="4"
+          class="pr-1"
+        >
           <app-btn
             @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
             :loading="hasWait('ZAdjust')"
             :disabled="!klippyReady"
             small
-            block>
-            <v-icon small>$zDown</v-icon>
+            block
+          >
+            <v-icon small>
+              $zDown
+            </v-icon>
           </app-btn>
         </v-col>
-        <v-col cols="4" class="pr-1">
+        <v-col
+          cols="4"
+          class="pr-1"
+        >
           <app-btn
             @click="handleZApplyDialog"
             :disabled="!klippyReady || printerPrinting || (ZHomingOrigin == 0)"
             small
-            block>
-            <v-icon small>$save</v-icon>
+            block
+          >
+            <v-icon small>
+              $save
+            </v-icon>
           </app-btn>
         </v-col>
       </v-row>

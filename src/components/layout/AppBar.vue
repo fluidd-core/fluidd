@@ -6,8 +6,12 @@
     :color="theme.currentTheme.appbar"
     :height="$globals.HEADER_HEIGHT"
   >
-    <router-link to="/" class="toolbar-logo" v-show="!isMobile">
-      <app-icon></app-icon>
+    <router-link
+      to="/"
+      class="toolbar-logo"
+      v-show="!isMobile"
+    >
+      <app-icon />
     </router-link>
 
     <div class="toolbar-title">
@@ -24,14 +28,20 @@
       </app-btn>
 
       <v-toolbar-title class="printer-title text--secondary">
-        <router-link to="/" v-html="instanceName"></router-link>
+        <router-link
+          to="/"
+          v-html="instanceName"
+        />
       </v-toolbar-title>
     </div>
 
     <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
-      <v-tooltip bottom v-if="socketConnected && !isMobile && authenticated">
+      <v-tooltip
+        bottom
+        v-if="socketConnected && !isMobile && authenticated"
+      >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
             v-if="!isMobile"
@@ -42,18 +52,20 @@
             color=""
             @click="emergencyStop()"
           >
-            <v-icon color="error">$estop</v-icon>
+            <v-icon color="error">
+              $estop
+            </v-icon>
           </app-btn>
         </template>
         {{ $t('app.general.tooltip.estop') }}
       </v-tooltip>
 
-      <app-notification-menu v-if="authenticated && socketConnected"></app-notification-menu>
+      <app-notification-menu v-if="authenticated && socketConnected" />
 
       <app-user-menu
         v-if="supportsAuth && authenticated"
         @change-password="dialog = true"
-      ></app-user-menu>
+      />
 
       <app-btn
         fab
@@ -65,32 +77,31 @@
       >
         <v-icon>$menu</v-icon>
       </app-btn>
-
     </div>
 
-    <template v-slot:extension v-if="inLayout">
+    <template
+      v-slot:extension
+      v-if="inLayout"
+    >
       <app-btn
         @click.stop="handleExitLayout"
         small
         class="mx-2"
         color="primary"
         v-html="$t('app.general.btn.exit_layout')"
-      >
-      </app-btn>
+      />
       <app-btn
         @click.stop="handleResetLayout"
         small
         class="mx-2"
         color="primary"
         v-html="$t('app.general.btn.reset_layout')"
-      >
-      </app-btn>
+      />
     </template>
 
     <user-password-dialog
-      v-model="dialog">
-    </user-password-dialog>
-
+      v-model="dialog"
+    />
   </v-app-bar>
 </template>
 
