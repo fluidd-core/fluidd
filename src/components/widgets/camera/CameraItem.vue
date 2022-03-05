@@ -3,30 +3,30 @@
     <v-sheet
       :elevation="0"
       rounded
-      v-on="$listeners"
       class="camera-container"
+      v-on="$listeners"
     >
       <img
         v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
+        ref="camera_image"
         :src="cameraUrl"
         class="camera-image"
-        ref="camera_image"
         @load="handleImgLoad"
       >
 
       <video
         v-if="camera.type === 'ipstream'"
+        ref="camera_image"
         :src="cameraUrl"
         autoplay
         class="camera-image"
-        ref="camera_image"
       />
 
       <iframe
         v-if="camera.type === 'iframe'"
+        ref="camera_image"
         :src="cameraUrl"
         class="camera-image"
-        ref="camera_image"
         :height="cameraHeight"
         frameBorder="0"
       />
@@ -38,7 +38,7 @@
         {{ camera.name }}
       </div>
       <div
-        v-if="this.camera.type === 'mjpgadaptive' && this.time"
+        v-if="camera.type === 'mjpgadaptive' && time"
         class="camera-frames"
       >
         fps: {{ currentFPS }}

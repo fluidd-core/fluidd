@@ -12,8 +12,8 @@
         <template v-slot:activator="{ attrs, on }">
           <v-icon
             v-bind="attrs"
-            v-on="on"
             class="ma-2"
+            v-on="on"
           >
             ${{ icon }}
           </v-icon>

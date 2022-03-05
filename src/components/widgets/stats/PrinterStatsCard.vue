@@ -6,9 +6,9 @@
     <template v-slot:menu>
       <app-btn-collapse-group>
         <app-btn
-          @click="handleResetStats"
           small
           class="ma-1"
+          @click="handleResetStats"
         >
           <v-icon
             small

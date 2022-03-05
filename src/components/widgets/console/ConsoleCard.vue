@@ -25,11 +25,11 @@
     <template v-slot:menu>
       <app-btn
         v-if="scrollingPaused"
-        @click="console.scrollToLatest(true)"
         color=""
         fab
         x-small
         text
+        @click="console.scrollToLatest(true)"
       >
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
       </app-btn>
@@ -62,13 +62,13 @@
 
         <template v-for="(filter, index) in filters">
           <v-divider
-            :key="index"
             v-if="index === 0"
+            :key="index"
           />
           <v-checkbox
+            :key="filter.id"
             v-model="filter.enabled"
             :label="filter.name"
-            :key="filter.id"
             color="primary"
             hide-details
             class="mx-2 mt-2"

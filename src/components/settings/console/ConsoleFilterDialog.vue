@@ -1,13 +1,13 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-form
-      class="mt-3"
       ref="addInstanceForm"
       v-model="valid"
+      class="mt-3"
       @submit.prevent="handleSave"
     >
       <v-card>
@@ -22,9 +22,9 @@
           :r-cols="8"
         >
           <v-switch
+            v-model="filter.enabled"
             class="mt-0"
             hide-details="auto"
-            v-model="filter.enabled"
           />
         </app-setting>
 
@@ -35,12 +35,12 @@
           :r-cols="8"
         >
           <v-text-field
+            v-model="filter.name"
             filled
             dense
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.uniqueName]"
-            v-model="filter.name"
           />
         </app-setting>
 
@@ -51,6 +51,7 @@
           :r-cols="8"
         >
           <v-select
+            v-model="filter.type"
             filled
             dense
             single-line
@@ -58,7 +59,6 @@
             :items="types"
             item-value="value"
             item-text="text"
-            v-model="filter.type"
           />
         </app-setting>
 
@@ -69,12 +69,12 @@
           :r-cols="8"
         >
           <v-text-field
+            v-model="filter.value"
             filled
             dense
             class="mt-0"
             hide-details="auto"
             :rules="type.rules"
-            v-model="filter.value"
           />
         </app-setting>
 
@@ -83,8 +83,8 @@
           <app-btn
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>

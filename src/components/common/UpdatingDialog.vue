@@ -24,8 +24,8 @@
           <app-btn
             color="primary"
             text
-            @click="close"
             :disabled="updating"
+            @click="close"
           >
             {{ buttonTitle }}
           </app-btn>

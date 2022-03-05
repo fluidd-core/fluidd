@@ -6,11 +6,11 @@
       input-xs
       :value="value"
       :reset-value="0"
-      @change="handleChange"
       :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
       :rules="rules"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
+      @change="handleChange"
     />
 
     <v-layout

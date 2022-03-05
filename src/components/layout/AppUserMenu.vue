@@ -7,10 +7,10 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         v-bind="attrs"
-        v-on="on"
         fab
         text
         small
+        v-on="on"
         @click="$emit('drawer')"
       >
         <v-icon>$account</v-icon>
@@ -27,8 +27,8 @@
         <span class="text-h5">{{ currentUser }}</span>
 
         <div
-          class="mt-3"
           v-if="!isTrustedOnly"
+          class="mt-3"
         >
           <app-btn
             small

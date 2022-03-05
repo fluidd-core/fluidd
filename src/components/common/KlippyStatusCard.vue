@@ -17,10 +17,10 @@
           sm=""
         >
           <v-alert
+            v-if="klippyStateMessage !== 'Printer is ready'"
             text
             dense
             type="error"
-            v-if="klippyStateMessage !== 'Printer is ready'"
           >
             <span v-html="klippyStateMessage" />
           </v-alert>

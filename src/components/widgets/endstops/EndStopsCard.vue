@@ -6,22 +6,22 @@
   >
     <template v-slot:collapse-button>
       <app-btn
-        @click="queryEndstops"
         color=""
         fab
         x-small
         text
+        @click="queryEndstops"
       >
         <v-icon>$refresh</v-icon>
       </app-btn>
     </template>
     <v-card-text v-if="hasEndStops">
       <v-layout
+        v-for="(item, name) in endStops"
+        :key="name"
         align-center
         justify-start
         class="py-1"
-        v-for="(item, name) in endStops"
-        :key="name"
       >
         <span class="focus--text mr-5">{{ name }}</span>
         <v-chip

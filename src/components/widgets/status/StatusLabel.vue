@@ -7,8 +7,8 @@
     />
     <span class="value"><slot /></span>
     <span
-      class="value"
       v-if="!this.$slots.default"
+      class="value"
     >--</span>
   </v-layout>
 </template>

@@ -14,29 +14,29 @@
     <v-col class="ml-auto py-0">
       <v-text-field
         :value="value"
-        @input="$emit('input', $event)"
-        @change="handleChange"
         :disabled="disabled"
         :readonly="readonly"
         :suffix="suffix"
         :rules="rules"
         :loading="loading"
-        @focus="$event.target.select()"
         class="v-input--text-right"
         dense
         single-line
         hide-details
         outlined
+        @input="$emit('input', $event)"
+        @change="handleChange"
+        @focus="$event.target.select()"
       >
         <template v-slot:prepend>
           <app-btn
             v-if="resetValue"
-            @click="handleReset"
             :disabled="disabled"
             style="margin-top: -4px;"
             color=""
             icon
             small
+            @click="handleReset"
           >
             <v-icon small>
               $reset

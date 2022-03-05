@@ -1,7 +1,7 @@
 <template>
   <v-menu
-    v-model="menu"
     ref="menu"
+    v-model="menu"
     bottom
     left
     :max-width="260"
@@ -11,10 +11,10 @@
       <v-btn
         v-show="!dot"
         v-bind="attrs"
-        v-on="on"
         :color="primaryColor.hexString"
         outlined
         small
+        v-on="on"
       >
         {{ title }}
       </v-btn>
@@ -22,8 +22,8 @@
       <v-icon
         v-show="dot"
         v-bind="attrs"
-        v-on="on"
         :color="primaryColor.hexString"
+        v-on="on"
       >
         $circle
       </v-icon>
@@ -38,7 +38,7 @@
         </v-icon>
 
         <v-icon
-          v-if="this.white"
+          v-if="white"
           :color="whiteColor.hexString"
           large
         >
@@ -60,7 +60,7 @@
 
           <!-- white channel color picker -->
           <app-iro-color-picker
-            v-if="this.white"
+            v-if="white"
             class="mt-4"
             :color="whiteColor.hexString"
             :options="whiteOptions"
@@ -76,39 +76,39 @@
         >
           <div class="color-input">
             <v-text-field
+              v-model.number="primaryColor.rgb.r"
               dense
               hide-details
-              v-model.number="primaryColor.rgb.r"
               outlined
             />
             <div>R</div>
           </div>
           <div class="color-input">
             <v-text-field
+              v-model.number="primaryColor.rgb.g"
               dense
               hide-details
-              v-model.number="primaryColor.rgb.g"
               outlined
             />
             <div>G</div>
           </div>
           <div class="color-input">
             <v-text-field
+              v-model.number="primaryColor.rgb.b"
               dense
               hide-details
-              v-model.number="primaryColor.rgb.b"
               outlined
             />
             <div>B</div>
           </div>
           <div
-            v-if="this.white"
+            v-if="white"
             class="color-input"
           >
             <v-text-field
+              v-model="whiteColor.rgb.r"
               dense
               hide-details
-              v-model="whiteColor.rgb.r"
               outlined
             />
             <div>W</div>

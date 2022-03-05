@@ -1,7 +1,7 @@
 <template>
   <div
-    class="editor"
     ref="monaco-editor"
+    class="editor"
   />
 </template>
 

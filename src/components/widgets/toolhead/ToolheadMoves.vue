@@ -11,9 +11,9 @@
       >
         <app-btn-toolhead-move
           :color="(yHomed) ? 'primary' : undefined"
-          @click="sendMoveGcode('Y', toolheadMoveLength)"
           :disabled="!yHomed || !klippyReady"
           icon="$up"
+          @click="sendMoveGcode('Y', toolheadMoveLength)"
         />
       </v-col>
       <v-col
@@ -22,22 +22,22 @@
       >
         <app-btn-toolhead-move
           :color="(zHomed) ? 'primary' : undefined"
-          @click="sendMoveGcode('Z', toolheadMoveLength)"
           :disabled="!zHomed || !klippyReady"
           icon="$up"
+          @click="sendMoveGcode('Z', toolheadMoveLength)"
         />
       </v-col>
       <v-col
-        class="ml-2"
         v-if="canHomeXY"
+        class="ml-2"
       >
         <app-btn-toolhead-move
           :color="(!allHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeAll)"
           :disabled="!klippyReady || printerPrinting"
-          @click="sendGcode('G28', waits.onHomeAll)"
           icon="$home"
           small-icon
+          @click="sendGcode('G28', waits.onHomeAll)"
         >
           {{ $t('app.general.btn.all') }}
         </app-btn-toolhead-move>
@@ -51,9 +51,9 @@
       <v-col cols="auto">
         <app-btn-toolhead-move
           :color="(xHomed) ? 'primary' : undefined"
-          @click="sendMoveGcode('X', toolheadMoveLength, true)"
           :disabled="!xHomed || !klippyReady"
           icon="$left"
+          @click="sendMoveGcode('X', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -64,9 +64,9 @@
           :color="(!xyHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeXY)"
           :disabled="!klippyReady || printerPrinting"
-          @click="sendGcode('G28 X Y', waits.onHomeXY)"
           :tooltip="$t('app.tool.tooltip.home_xy')"
           icon="$home"
+          @click="sendGcode('G28 X Y', waits.onHomeXY)"
         />
       </v-col>
       <v-col
@@ -76,23 +76,23 @@
       >
         <app-btn-toolhead-move
           :color="(xHomed) ? 'primary' : undefined"
-          @click="sendMoveGcode('X', toolheadMoveLength)"
           :disabled="!xHomed || !klippyReady"
           icon="$right"
+          @click="sendMoveGcode('X', toolheadMoveLength)"
         />
       </v-col>
       <v-col
-        cols="auto"
         v-if="canHomeXY"
+        cols="auto"
         class="ml-2"
       >
         <app-btn-toolhead-move
           :color="(!zHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeZ)"
           :disabled="!klippyReady || printerPrinting"
-          @click="sendGcode('G28 Z', waits.onHomeZ)"
           :tooltip="$t('app.tool.tooltip.home_z')"
           icon="$home"
+          @click="sendGcode('G28 Z', waits.onHomeZ)"
         />
       </v-col>
       <v-col
@@ -103,9 +103,9 @@
           :color="(!xHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeX)"
           :disabled="!klippyReady || printerPrinting"
-          @click="sendGcode('G28 X', waits.onHomeX)"
           icon="$home"
           small-icon
+          @click="sendGcode('G28 X', waits.onHomeX)"
         >
           {{ $t('app.tool.btn.home_x') }}
         </app-btn-toolhead-move>
@@ -122,9 +122,9 @@
       >
         <app-btn-toolhead-move
           :color="(yHomed) ? 'primary' : undefined"
-          @click="sendMoveGcode('Y', toolheadMoveLength, true)"
           :disabled="!yHomed || !klippyReady"
           icon="$down"
+          @click="sendMoveGcode('Y', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -133,9 +133,9 @@
       >
         <app-btn-toolhead-move
           :color="(zHomed) ? 'primary' : undefined"
-          @click="sendMoveGcode('Z', toolheadMoveLength, true)"
           :disabled="!zHomed || !klippyReady"
           icon="$down"
+          @click="sendMoveGcode('Z', toolheadMoveLength, true)"
         />
       </v-col>
       <v-col
@@ -146,9 +146,9 @@
           :color="(!yHomed) ? 'primary' : undefined"
           :loading="hasWait(waits.onHomeY)"
           :disabled="!klippyReady || printerPrinting"
-          @click="sendGcode('G28 Y', waits.onHomeY)"
           icon="$home"
           small-icon
+          @click="sendGcode('G28 Y', waits.onHomeY)"
         >
           {{ $t('app.tool.btn.home_y') }}
         </app-btn-toolhead-move>
@@ -161,9 +161,9 @@
     >
       <v-col>
         <v-btn-toggle
+          v-model.number="toolheadMoveLength"
           mandatory
           dense
-          v-model.number="toolheadMoveLength"
         >
           <app-btn
             small

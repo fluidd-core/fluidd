@@ -4,14 +4,14 @@
   >
     <template v-slot:activator="{ on, attrs }">
       <app-btn
-        @click="$emit('click')"
         :disabled="disabled"
         :min-width="40"
         :loading="loading"
         :color="color"
         v-bind="(tooltip !== '') ? attrs : undefined"
-        v-on="(tooltip !== '') ? on : undefined"
         class="px-2"
+        @click="$emit('click')"
+        v-on="(tooltip !== '') ? on : undefined"
       >
         <v-icon
           v-if="icon"

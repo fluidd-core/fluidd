@@ -1,8 +1,8 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-card>
       <v-card-title class="card-heading py-2">
@@ -57,8 +57,8 @@
         <app-btn
           color="warning"
           text
-          @click="$emit('input', false)"
           type="button"
+          @click="$emit('input', false)"
         >
           {{ $t('app.general.btn.close') }}
         </app-btn>

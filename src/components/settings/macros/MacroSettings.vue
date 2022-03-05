@@ -47,8 +47,8 @@
           outlined
           small
           color="primary"
-          @click="handleAllOn"
           class="ml-2"
+          @click="handleAllOn"
         >
           {{ $t('app.setting.label.all_on') }}
         </app-btn>
@@ -65,8 +65,8 @@
           @click="handleSettingsDialog(macro)"
         >
           <template
-            v-slot:sub-title
             v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
+            v-slot:sub-title
           >
             <span
               v-show="true"
@@ -79,16 +79,16 @@
           <v-switch
             class="mt-0 pt-0"
             :input-value="macro.visible"
-            @click.stop
-            @change="handleMacroVisible(macro, $event)"
             color="primary"
             hide-details
+            @click.stop
+            @change="handleMacroVisible(macro, $event)"
           />
         </app-setting>
 
         <v-divider
-          :key="`divider-${macro.name}`"
           v-if="i < macros.length - 1 && macros.length > 0"
+          :key="`divider-${macro.name}`"
         />
       </template>
     </v-card>

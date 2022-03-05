@@ -1,13 +1,13 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave(user)"
       v-model="valid"
+      @submit.prevent="handleSave(user)"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -18,6 +18,7 @@
 
         <app-setting :title="$t('app.general.label.name')">
           <v-text-field
+            v-model="user.username"
             autocomplete="username"
             :disabled="(user.created_on)"
             filled
@@ -25,7 +26,6 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.max]"
-            v-model="user.username"
           />
         </app-setting>
 
@@ -33,6 +33,7 @@
 
         <app-setting :title="$t('app.general.label.password')">
           <v-text-field
+            v-model="user.password"
             autocomplete="current-password"
             filled
             dense
@@ -40,7 +41,6 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.min, rules.password]"
-            v-model="user.password"
           />
         </app-setting>
 
@@ -51,8 +51,8 @@
           <app-btn
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>

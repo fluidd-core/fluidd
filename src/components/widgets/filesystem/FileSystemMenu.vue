@@ -85,9 +85,9 @@
       </v-list-item>
     </v-list>
     <input
-      type="file"
-      ref="uploadFile"
       :id="`${_uid}BtnFileUpload`"
+      ref="uploadFile"
+      type="file"
       :accept="accepts"
       style="display: none"
       multiple

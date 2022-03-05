@@ -11,12 +11,12 @@
       >
         <v-text-field
           v-model="search"
-          @keyup="$emit('update:search', search);"
           outlined
           dense
           single-line
           hide-details
           append-icon="$magnify"
+          @keyup="$emit('update:search', search);"
         />
       </div>
 
@@ -114,8 +114,8 @@
         v-slot:[`item.end_time`]="{ item }"
       >
         <span
-          class="text-no-wrap"
           v-if="item.status !== 'in_progress'"
+          class="text-no-wrap"
         >
           {{ $filters.formatDateTime(item.end_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
         </span>
@@ -159,9 +159,9 @@
       >
         <div class="text-no-wrap">
           <v-btn
-            @click="handleRemoveJob(item)"
             icon
             small
+            @click="handleRemoveJob(item)"
           >
             <v-icon
               small
@@ -171,12 +171,12 @@
             </v-icon>
           </v-btn>
           <v-btn
-            @click.prevent.stop="toggleRowExpand(item)"
             class="v-data-table__expand-icon"
             color=""
             :class="{ 'v-data-table__expand-icon--active': isExpanded(item) }"
             icon
             small
+            @click.prevent.stop="toggleRowExpand(item)"
           >
             <v-icon>$chevronDown</v-icon>
           </v-btn>

@@ -12,31 +12,32 @@
     >
       <v-form
         ref="form"
-        @submit.prevent="handleLogin"
         v-model="valid"
+        @submit.prevent="handleLogin"
       >
         <div class="text-center">
           <p>Welcome back.<br>Sign in below to stay in touch with your printer.</p>
 
           <v-alert
-            type="error"
             v-if="error"
+            type="error"
           >
             Invalid credentials
           </v-alert>
 
           <v-text-field
+            v-model="username"
             label="Username"
             autocomplete="username"
             filled
             dense
             hide-details="auto"
             :disabled="loading"
-            v-model="username"
             class="mb-4"
           />
 
           <v-text-field
+            v-model="password"
             label="Password"
             autocomplete="current-password"
             filled
@@ -44,7 +45,6 @@
             type="password"
             hide-details="auto"
             :disabled="loading"
-            v-model="password"
             class="mb-4"
           />
 
@@ -56,8 +56,8 @@
             class="mb-6"
           >
             <v-icon
-              class="spin mr-2"
               v-if="loading"
+              class="spin mr-2"
             >
               $loading
             </v-icon>

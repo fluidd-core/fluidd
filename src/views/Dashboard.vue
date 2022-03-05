@@ -7,8 +7,8 @@
     >
       <draggable
         v-if="container1"
-        class="list-group"
         v-model="container1"
+        class="list-group"
         v-bind="dragOptions"
         @start.stop="drag = true"
         @end.stop="handleStopDrag"
@@ -19,8 +19,8 @@
         >
           <template v-for="c in container1">
             <component
-              v-if="(c.enabled && !filtered(c)) || inLayout"
               :is="c.id"
+              v-if="(c.enabled && !filtered(c)) || inLayout"
               :key="c.id"
               class="mb-2 mb-sm-4"
             />
@@ -35,8 +35,8 @@
     >
       <draggable
         v-if="container2"
-        class="list-group"
         v-model="container2"
+        class="list-group"
         v-bind="dragOptions"
         @start.stop="drag = true"
         @end.stop="handleStopDrag"
@@ -47,8 +47,8 @@
         >
           <template v-for="c in container2">
             <component
-              v-if="(c.enabled && !filtered(c)) || inLayout"
               :is="c.id"
+              v-if="(c.enabled && !filtered(c)) || inLayout"
               :key="c.id"
               class="mb-2 mb-sm-4"
             />

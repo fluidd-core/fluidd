@@ -13,8 +13,8 @@
           outlined
           small
           color="primary"
-          @click="handleApiKeyDialog"
           class="mr-2"
+          @click="handleApiKeyDialog"
         >
           <v-icon
             small
@@ -56,11 +56,11 @@
 
           <app-btn
             :disabled="user.username === currentUser"
-            @click.stop="handleRemoveUser(user)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleRemoveUser(user)"
           >
             <v-icon color="">
               $close

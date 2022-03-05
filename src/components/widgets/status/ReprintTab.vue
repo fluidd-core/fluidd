@@ -56,8 +56,8 @@
 
           <td>
             <span
-              class="text-no-wrap"
               v-if="item.print_duration > 0"
+              class="text-no-wrap"
             >
               {{ $filters.formatCounterTime(item.print_duration) }}
             </span>
@@ -78,14 +78,14 @@
           </td> -->
 
           <td
-            class="actions"
             v-if="!printerPrinting"
+            class="actions"
           >
             <div>
               <app-btn
-                @click="$emit('print', item.filename)"
                 color=""
                 icon
+                @click="$emit('print', item.filename)"
               >
                 <v-icon>$printer</v-icon>
               </app-btn>

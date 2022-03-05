@@ -2,8 +2,8 @@
   <app-btn
     v-if="paramList.length === 0 || !enableParams"
     :disabled="macro.disabledWhilePrinting && printerPrinting"
-    @click="$emit('click', macro.name)"
     :style="borderStyle"
+    @click="$emit('click', macro.name)"
   >
     <slot />
   </app-btn>
@@ -13,8 +13,8 @@
   >
     <app-btn
       :disabled="macro.disabledWhilePrinting && printerPrinting"
-      @click="$emit('click', macro.name)"
       :style="borderStyle"
+      @click="$emit('click', macro.name)"
     >
       <slot />
     </app-btn>
@@ -27,10 +27,10 @@
       <template v-slot:activator="{ on, attrs, value }">
         <app-btn
           v-if="paramList.length > 0"
-          v-on="on"
           v-bind="attrs"
           :min-width="24"
           class="px-0"
+          v-on="on"
         >
           <v-icon
             small
@@ -49,21 +49,21 @@
             <v-text-field
               v-for="(param, i) in paramList"
               :key="param"
+              v-model="params[param].value"
               :label="param"
               outlined
               dense
               hide-details="auto"
-              v-model="params[param].value"
               class=""
               :class="{ 'mb-3': (i < paramList.length - 1) }"
             >
               <template v-slot:append>
                 <app-btn
-                  @click="params[param].value = params[param].reset"
                   style="margin-top: -4px; margin-right: -6px;"
                   color=""
                   icon
                   small
+                  @click="params[param].value = params[param].reset"
                 >
                   <v-icon small>
                     $reset

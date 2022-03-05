@@ -1,9 +1,9 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="850"
     scrollable
+    @input="$emit('input', $event)"
   >
     <v-card>
       <v-card-title class="card-heading py-2 px-5">

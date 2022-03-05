@@ -2,13 +2,13 @@
   <v-dialog
     :title="$t('app.general.label.save_as')"
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="450"
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="saveMeshForm"
-      @submit.prevent="handleSubmit()"
       v-model="valid"
+      @submit.prevent="handleSubmit()"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -17,6 +17,7 @@
 
         <v-card-text class="mt-4">
           <v-text-field
+            v-model="name"
             autofocus
             filled
             required
@@ -24,14 +25,13 @@
             :rules="rules"
             hide-details="auto"
             :label="$t('app.bedmesh.label.profile_name')"
-            v-model="name"
           />
 
           <v-checkbox
+            v-model="removeDefault"
             :label="$t('app.bedmesh.label.remove_profile', { name: existingName })"
             hide-details="auto"
             class="mb-4"
-            v-model="removeDefault"
             :disabled="name === existingName"
           />
 
@@ -47,8 +47,8 @@
           <app-btn
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>

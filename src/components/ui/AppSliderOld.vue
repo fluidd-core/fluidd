@@ -32,41 +32,39 @@
           icon
           small
           :disabled="disabled"
-          @click="lockState = !lockState"
           class="mr-2"
+          @click="lockState = !lockState"
         >
           <v-icon
-            small
             v-if="isLocked"
+            small
           >
             $pencil
           </v-icon>
           <v-icon
-            small
             v-else
+            small
           >
             $lockReset
           </v-icon>
         </v-btn>
         <v-text-field
           v-if="!readonly"
-          @change="handleTextChange"
           :value="newValue"
           :suffix="valueSuffix"
           :rules="rules"
           :class="classes"
           :disabled="isDisabled || loading"
-          @focus="$event.target.select()"
           class="v-input--x-dense v-input--text-right"
           single-line
           outlined
           hide-details
+          @change="handleTextChange"
+          @focus="$event.target.select()"
         />
       </div>
     </v-layout>
     <v-slider
-      @change="handleSliderChange"
-      @input="newValue = $event"
       :value="newValue"
       :rules="rules"
       :min="min"
@@ -77,12 +75,14 @@
       :thumb-label="false"
       dense
       hide-details
+      @change="handleSliderChange"
+      @input="newValue = $event"
     >
       <template v-slot:prepend>
         <v-icon
           :disabled="readonly || isDisabled || newValue === 0"
-          @click="handleClickChange(newValue - step)"
           color="grey"
+          @click="handleClickChange(newValue - step)"
         >
           $minus
         </v-icon>
@@ -91,8 +91,8 @@
       <template v-slot:append>
         <v-icon
           :disabled="readonly || isDisabled || newValue === max"
-          @click="handleClickChange(newValue + step)"
           color="grey"
+          @click="handleClickChange(newValue + step)"
         >
           $plus
         </v-icon>

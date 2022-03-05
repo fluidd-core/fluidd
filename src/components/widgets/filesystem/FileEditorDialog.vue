@@ -1,6 +1,5 @@
 <template>
   <v-dialog
-    @input="$emit('input', $event)"
     :value="value"
     :loading="loading"
     hide-overlay
@@ -8,6 +7,7 @@
     persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
+    @input="$emit('input', $event)"
   >
     <v-card
       d-flex
@@ -33,8 +33,8 @@
         <v-toolbar-items>
           <app-btn
             v-if="!printerPrinting"
-            @click="handleKeyboardShortcuts"
             target="_blank"
+            @click="handleKeyboardShortcuts"
           >
             <v-icon
               small

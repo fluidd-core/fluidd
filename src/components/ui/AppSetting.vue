@@ -1,10 +1,10 @@
 <template>
   <v-row
     no-gutters
-    v-on="$listeners"
     v-bind="$attrs"
     :class="classes"
     class="setting"
+    v-on="$listeners"
   >
     <div
       v-if="accentColor && accentColor !== ''"
@@ -20,8 +20,8 @@
         {{ title }}
       </slot>
       <div
-        class="setting-sub-title secondary--text"
         v-if="hasSubTitle"
+        class="setting-sub-title secondary--text"
       >
         <slot name="sub-title">
           {{ subTitle }}

@@ -34,9 +34,9 @@
         v-for="category in categories"
       >
         <app-setting
-          @click="handleCategoryClick(category)"
           :key="`category-${category.name}`"
           :r-cols="3"
+          @click="handleCategoryClick(category)"
         >
           <template v-slot:title>
             {{ category.name }}
@@ -49,11 +49,11 @@
           </template>
 
           <app-btn
-            @click.stop="handleEditCategoryDialog(category)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleEditCategoryDialog(category)"
           >
             <v-icon color="">
               $edit
@@ -61,11 +61,11 @@
           </app-btn>
 
           <app-btn
-            @click.stop="handleRemoveCategory(category)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleRemoveCategory(category)"
           >
             <v-icon color="">
               $close
@@ -81,9 +81,9 @@
       <!-- Add the uncategorized macros.. -->
       <app-setting
         v-if="uncategorizedMacros.count > 0"
-        @click="handleCategoryClick()"
         :key="`category-uncategorized`"
         :r-cols="3"
+        @click="handleCategoryClick()"
       >
         <template v-slot:title>
           {{ $t('app.general.label.uncategorized') }}

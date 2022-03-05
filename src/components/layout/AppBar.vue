@@ -7,9 +7,9 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
+      v-show="!isMobile"
       to="/"
       class="toolbar-logo"
-      v-show="!isMobile"
     >
       <app-icon />
     </router-link>
@@ -39,17 +39,17 @@
 
     <div class="toolbar-supplemental">
       <v-tooltip
-        bottom
         v-if="socketConnected && !isMobile && authenticated"
+        bottom
       >
         <template v-slot:activator="{ on, attrs }">
           <app-btn
             v-if="!isMobile"
             :disabled="!klippyReady"
             v-bind="attrs"
-            v-on="on"
             class="mx-1"
             color=""
+            v-on="on"
             @click="emergencyStop()"
           >
             <v-icon color="error">
@@ -80,21 +80,21 @@
     </div>
 
     <template
-      v-slot:extension
       v-if="inLayout"
+      v-slot:extension
     >
       <app-btn
-        @click.stop="handleExitLayout"
         small
         class="mx-2"
         color="primary"
+        @click.stop="handleExitLayout"
         v-html="$t('app.general.btn.exit_layout')"
       />
       <app-btn
-        @click.stop="handleResetLayout"
         small
         class="mx-2"
         color="primary"
+        @click.stop="handleResetLayout"
         v-html="$t('app.general.btn.reset_layout')"
       />
     </template>

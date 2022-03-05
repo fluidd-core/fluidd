@@ -11,17 +11,17 @@
     <v-spacer />
 
     <v-tooltip
-      bottom
       v-if="lowOnSpace && !loading"
+      bottom
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
-          v-on="on"
           fab
           text
           small
           color="warning"
+          v-on="on"
         >
           <v-icon color="warning">
             $error
@@ -34,17 +34,17 @@
     </v-tooltip>
 
     <v-tooltip
-      bottom
       v-if="disabled && !loading"
+      bottom
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
-          v-on="on"
           fab
           text
           small
           color="error"
+          v-on="on"
         >
           <v-icon color="error">
             $warning
@@ -79,11 +79,11 @@
     />
 
     <v-btn
-      @click="$emit('refresh')"
       :disabled="disabled"
       fab
       small
       text
+      @click="$emit('refresh')"
     >
       <v-icon>$refresh</v-icon>
     </v-btn>
@@ -95,12 +95,12 @@
       <v-text-field
         v-model="textSearch"
         :disabled="disabled"
-        @keyup="$emit('update:search', textSearch);"
         outlined
         dense
         single-line
         hide-details
         append-icon="$magnify"
+        @keyup="$emit('update:search', textSearch);"
       />
     </div>
 

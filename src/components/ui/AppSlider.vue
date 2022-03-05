@@ -25,14 +25,14 @@
           :readonly="isLocked"
           :disabled="disabled || loading || isLocked"
           :step="step"
-          @change="handleChange($event)"
-          @focus="$event.target.select()"
           class="v-input--text-right"
           type="number"
           dense
           single-line
           outlined
           hide-details
+          @change="handleChange($event)"
+          @focus="$event.target.select()"
         >
           <template v-slot:prepend>
             <v-btn
@@ -40,18 +40,18 @@
               icon
               small
               :disabled="false"
-              @click="lockState = !lockState"
               style="margin-top: -4px;"
+              @click="lockState = !lockState"
             >
               <v-icon
-                small
                 v-if="isLocked"
+                small
               >
                 $pencil
               </v-icon>
               <v-icon
-                small
                 v-else
+                small
               >
                 $lockReset
               </v-icon>
@@ -59,12 +59,12 @@
 
             <app-btn
               v-if="resetValue !== undefined"
-              @click="handleReset"
               :disabled="disabled"
               style="margin-top: -4px;"
               color=""
               icon
               small
+              @click="handleReset"
             >
               <v-icon small>
                 $reset
@@ -76,16 +76,16 @@
     </v-row>
 
     <v-slider
+      ref="slider"
       v-model="internalValue"
       :rules="rules"
       :min="min"
       :max="internalMax"
       :step="step"
       :disabled="disabled || loading || isLocked || overridden"
-      @change="handleChange($event)"
-      ref="slider"
       dense
       hide-details
+      @change="handleChange($event)"
     />
   </v-form>
 </template>

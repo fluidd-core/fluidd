@@ -1,13 +1,13 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave"
       v-model="valid"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -20,8 +20,8 @@
         <v-divider />
 
         <v-card-text
-          class="mb-0"
           v-if="error"
+          class="mb-0"
         >
           <v-alert
             type="error"
@@ -34,6 +34,7 @@
 
         <app-setting :title="$t('app.general.label.current_password')">
           <v-text-field
+            v-model="currentPassword"
             autocomplete="current-password"
             filled
             dense
@@ -41,7 +42,6 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required]"
-            v-model="currentPassword"
           />
         </app-setting>
 
@@ -49,6 +49,7 @@
 
         <app-setting :title="$t('app.general.label.new_password')">
           <v-text-field
+            v-model="password"
             autocomplete="current-password"
             filled
             dense
@@ -56,7 +57,6 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.password, rules.min]"
-            v-model="password"
           />
         </app-setting>
 
@@ -76,8 +76,8 @@
             :disabled="loading"
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>

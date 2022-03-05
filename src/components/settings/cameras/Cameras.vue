@@ -10,11 +10,11 @@
     >
       <app-setting>
         <app-btn
-          @click="handleAddDialog"
           :disabled="cameras.length >= 3"
           outlined
           small
           color="primary"
+          @click="handleAddDialog"
         >
           <v-icon
             small
@@ -31,8 +31,8 @@
       <template v-for="(camera, i) in cameras">
         <app-setting
           :key="camera.id"
-          @click="handleEditDialog(camera)"
           :r-cols="2"
+          @click="handleEditDialog(camera)"
         >
           <template v-slot:title>
             {{ camera.name }} <v-icon
@@ -45,11 +45,11 @@
             </v-icon>
           </template>
           <app-btn
-            @click.stop="handleRemoveCamera(camera)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleRemoveCamera(camera)"
           >
             <v-icon color="">
               $close
@@ -58,8 +58,8 @@
         </app-setting>
 
         <v-divider
-          :key="camera.id + '_divider'"
           v-if="i < cameras.length - 1 && cameras.length > 0"
+          :key="camera.id + '_divider'"
         />
       </template>
 

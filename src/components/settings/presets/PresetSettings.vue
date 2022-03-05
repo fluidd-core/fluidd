@@ -10,10 +10,10 @@
     >
       <app-setting>
         <app-btn
-          @click="openAddDialog"
           outlined
           small
           color="primary"
+          @click="openAddDialog"
         >
           <v-icon
             small
@@ -30,26 +30,26 @@
       <template v-for="(preset, i) in presets">
         <app-setting
           :key="preset.index"
-          @click="openEditDialog(preset)"
           :title="preset.name"
           :r-cols="2"
+          @click="openEditDialog(preset)"
         >
           <template v-slot:sub-title>
             <span
               v-for="(value, k) in preset.values"
-              :key="k"
               v-show="value.active"
+              :key="k"
               class="mr-2"
             >
               {{ k }}: {{ value.value }}<small>°C</small>
             </span>
           </template>
           <app-btn
-            @click.stop="handleRemovePreset(preset)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleRemovePreset(preset)"
           >
             <v-icon color="">
               $close
@@ -58,8 +58,8 @@
         </app-setting>
 
         <v-divider
-          :key="preset.id"
           v-if="i < presets.length - 1 && presets.length > 0"
+          :key="preset.id"
         />
       </template>
 

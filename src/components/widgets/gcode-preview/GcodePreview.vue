@@ -5,10 +5,10 @@
     @blur="focused = false"
   >
     <svg
+      ref="svg"
       :viewBox="svgViewBox"
       :height="height"
       :width="width"
-      ref="svg"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
     >
@@ -72,8 +72,8 @@
       </defs>
       <g :transform="flipTransform">
         <g
-          id="background"
           v-if="drawBackground"
+          id="background"
         >
           <rect
             :height="bedSize.y.max - bedSize.y.min"
@@ -84,9 +84,9 @@
           />
         </g>
         <g
+          v-if="getViewerOption('showPreviousLayer')"
           id="previousLayer"
           class="layer"
-          v-if="getViewerOption('showPreviousLayer')"
         >
           <path
             stroke="lightgrey"
@@ -101,15 +101,15 @@
           class="layer"
         >
           <path
-            :d="svgPathCurrent.extrusions"
             v-if="getViewerOption('showExtrusions')"
+            :d="svgPathCurrent.extrusions"
             :stroke="themeIsDark ? 'white' : 'black'"
             :stroke-width="extrusionLineWidth"
             :shape-rendering="shapeRendering"
           />
           <path
-            :d="svgPathCurrent.moves"
             v-if="getViewerOption('showMoves')"
+            :d="svgPathCurrent.moves"
             stroke="gray"
             :stroke-width="moveLineWidth"
             :shape-rendering="shapeRendering"
@@ -124,8 +124,8 @@
           />
 
           <g
-            id="retractions"
             v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0"
+            id="retractions"
           >
             <use
               v-for="({x, y}, index) of svgPathCurrent.retractions"
@@ -138,8 +138,8 @@
           </g>
 
           <g
-            id="extrusionStarts"
             v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0"
+            id="extrusionStarts"
           >
             <use
               v-for="({x, y}, index) of svgPathCurrent.extrusionStarts"
@@ -152,9 +152,9 @@
           </g>
         </g>
         <g
+          v-if="getViewerOption('showNextLayer')"
           id="nextLayer"
           class="layer"
-          v-if="getViewerOption('showNextLayer')"
         >
           <path
             stroke="lightgrey"

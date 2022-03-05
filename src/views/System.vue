@@ -9,9 +9,9 @@
     </v-col>
 
     <v-col
+      v-if="hasGraphData"
       cols="12"
       md="6"
-      v-if="hasGraphData"
     >
       <system-usage-card />
     </v-col>

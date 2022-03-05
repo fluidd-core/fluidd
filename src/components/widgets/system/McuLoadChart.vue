@@ -1,8 +1,8 @@
 <template>
   <v-col
+    v-if="ready"
     cols="4"
     class="chart-wrapper"
-    v-if="ready"
   >
     <app-chart
       :data="chartData || []"

@@ -10,8 +10,8 @@
       <app-btn
         :disabled="!klippyReady"
         v-bind="attrs"
-        v-on="on"
         small
+        v-on="on"
       >
         <v-icon
           small
@@ -33,9 +33,9 @@
       dense
     >
       <v-list-item
-        @click="$emit('applyOff')"
         link
         dense
+        @click="$emit('applyOff')"
       >
         <v-list-item-title>
           <v-icon
@@ -51,9 +51,9 @@
       <v-list-item
         v-for="(preset) of presets"
         :key="preset.index"
-        @click="$emit('applyPreset', preset)"
         link
         dense
+        @click="$emit('applyPreset', preset)"
       >
         <v-list-item-title>
           <v-icon

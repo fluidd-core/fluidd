@@ -10,10 +10,10 @@
     >
       <app-setting :title="$t('app.setting.label.show_animations')">
         <v-switch
-          @click.native.stop
           v-model="showAnimations"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 
@@ -21,10 +21,10 @@
 
       <app-setting :title="$t('app.setting.label.group_lower_layers')">
         <v-switch
-          @click.native.stop
           v-model="groupLowerLayers"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 
@@ -32,10 +32,10 @@
 
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
-          @click.native.stop
           v-model="drawBackground"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 
@@ -44,13 +44,13 @@
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
         <v-text-field
           :value="extrusionLineWidth"
-          @change="setExtrusionLineWidth"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
+          @change="setExtrusionLineWidth"
         />
       </app-setting>
 
@@ -59,13 +59,13 @@
       <app-setting :title="$t('app.setting.label.move_line_width')">
         <v-text-field
           :value="moveLineWidth"
-          @change="setMoveLineWidth"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
+          @change="setMoveLineWidth"
         />
       </app-setting>
 
@@ -74,13 +74,13 @@
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
         <v-text-field
           :value="retractionIconSize"
-          @change="setRetractionIconSize"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
+          @change="setRetractionIconSize"
         />
       </app-setting>
 
@@ -88,10 +88,10 @@
 
       <app-setting :title="$t('app.setting.label.flip_horizontal')">
         <v-switch
-          @click.native.stop
           v-model="flipHorizontal"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 
@@ -99,10 +99,10 @@
 
       <app-setting :title="$t('app.setting.label.flip_vertical')">
         <v-switch
-          @click.native.stop
           v-model="flipVertical"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 

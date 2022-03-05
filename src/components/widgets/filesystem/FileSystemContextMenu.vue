@@ -2,12 +2,12 @@
   <v-menu
     transition="slide-y-transition"
     :value="open"
-    @input="$emit('update:open', $event)"
     :position-x="positionX"
     :position-y="positionY"
     min-width="180"
     absolute
     right
+    @input="$emit('update:open', $event)"
   >
     <v-card>
       <v-row
@@ -20,9 +20,9 @@
             dense
           >
             <v-list-item
+              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint"
               link
               @click="$emit('print', file)"
-              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint"
             >
               <v-list-item-icon>
                 <v-icon>$printer</v-icon>
@@ -32,9 +32,9 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="canPreheat"
               link
               @click="$emit('preheat', file)"
-              v-if="canPreheat"
             >
               <v-list-item-icon>
                 <v-icon>$fire</v-icon>
@@ -42,9 +42,9 @@
               <v-list-item-title>{{ $t('app.general.btn.preheat') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="file.type !== 'directory' && rootProperties.canEdit"
               link
               @click="$emit('edit', file)"
-              v-if="file.type !== 'directory' && rootProperties.canEdit"
             >
               <v-list-item-icon>
                 <v-icon>$pencil</v-icon>
@@ -52,9 +52,9 @@
               <v-list-item-title>{{ $t('app.general.btn.edit') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="file.type !== 'directory' && rootProperties.canView"
               link
               @click="$emit('view', file)"
-              v-if="file.type !== 'directory' && rootProperties.canView"
             >
               <v-list-item-icon>
                 <v-icon>$magnify</v-icon>
@@ -62,9 +62,9 @@
               <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="file.type !== 'directory'"
               link
               @click="$emit('download', file)"
-              v-if="file.type !== 'directory'"
             >
               <v-list-item-icon>
                 <v-icon>$download</v-icon>
@@ -72,9 +72,9 @@
               <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="file.type !== 'directory' && canPreviewGcode"
               link
               @click="$emit('preview-gcode', file)"
-              v-if="file.type !== 'directory' && canPreviewGcode"
             >
               <v-list-item-icon>
                 <v-icon>$magnify</v-icon>
@@ -82,9 +82,9 @@
               <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="!rootProperties.readonly"
               link
               @click="$emit('rename', file)"
-              v-if="!rootProperties.readonly"
             >
               <v-list-item-icon>
                 <v-icon>$rename</v-icon>
@@ -92,9 +92,9 @@
               <v-list-item-title>{{ $t('app.general.btn.rename') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="!rootProperties.readonly"
               link
               @click="$emit('remove', file)"
-              v-if="!rootProperties.readonly"
             >
               <v-list-item-icon>
                 <v-icon>$delete</v-icon>
@@ -104,8 +104,8 @@
           </v-list>
         </v-col>
         <v-col
-          class="px-2 d-none d-sm-flex"
           v-if="file.thumbnails && file.thumbnails.length"
+          class="px-2 d-none d-sm-flex"
         >
           <img
             class="mr-2 ml-2"

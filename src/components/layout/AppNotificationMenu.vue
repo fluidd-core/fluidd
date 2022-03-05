@@ -1,9 +1,9 @@
 <template>
   <v-menu
+    v-model="menu"
     offset-y
     left
     :max-width="(isMobile) ? 220 : 420"
-    v-model="menu"
     :close-on-content-click="false"
     :close-delay="300"
   >
@@ -19,12 +19,12 @@
       >
         <v-btn
           v-bind="attrs"
-          v-on="on"
           fab
           small
           class="mx-1"
           :color="color"
           :elevation="0"
+          v-on="on"
         >
           <v-icon :class="{ 'wiggle': color === 'error'}">
             $bell
@@ -48,8 +48,8 @@
 
         <v-list-item
           v-if="notifications.length > 0"
-          @click="handleClearAll"
           :disabled="clearableNotifications.length <= 0"
+          @click="handleClearAll"
         >
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
@@ -73,8 +73,8 @@
             <v-list-item-content>
               <v-list-item-title v-html="n.title" />
               <v-list-item-subtitle
-                class="notification-description"
                 v-if="n.description"
+                class="notification-description"
                 v-html="n.description"
               />
               <v-list-item-subtitle class="notification-timestamp">
@@ -114,8 +114,8 @@
             </v-list-item-action>
             <v-list-item-action
               v-if="n.clear"
-              @click="handleClear(n)"
               class="notification-clear"
+              @click="handleClear(n)"
             >
               <v-btn
                 icon

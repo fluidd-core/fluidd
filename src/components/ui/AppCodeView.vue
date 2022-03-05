@@ -3,11 +3,11 @@
     <pre>{{ value }}</pre>
 
     <v-btn
+      v-blur
       small
       fab
       text
       absolute
-      v-blur
       @click="handleCopyClick"
     >
       <v-fade-transition

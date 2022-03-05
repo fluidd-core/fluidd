@@ -49,14 +49,14 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <app-btn
-                  @click="loadProfile(item.profile_name)"
                   v-if="!item.active && !printerPrinting && !printerBusy"
                   v-bind="attrs"
-                  v-on="on"
                   x-small
                   color=""
                   fab
                   text
+                  @click="loadProfile(item.profile_name)"
+                  v-on="on"
                 >
                   <v-icon>$open</v-icon>
                 </app-btn>
@@ -67,15 +67,15 @@
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <app-btn
-                  @click="removeProfile(item.profile_name)"
                   :disabled="printerPrinting || printerBusy"
                   v-bind="attrs"
-                  v-on="on"
                   color=""
                   class="ml-2"
                   fab
                   text
                   x-small
+                  @click="removeProfile(item.profile_name)"
+                  v-on="on"
                 >
                   <v-icon color="">
                     $close
@@ -93,19 +93,19 @@
 
     <v-card-text>
       <div
-        class="mb-4"
         v-if="meshes.length === 0"
+        class="mb-4"
       >
         {{ $t('app.bedmesh.msg.not_found') }}
       </div>
       <v-row>
         <v-col cols="6">
           <app-btn
-            @click="clearMesh()"
             :disabled="!meshLoaded || printerPrinting || printerBusy"
             small
             block
             class="mb-2"
+            @click="clearMesh()"
           >
             {{ $t('app.general.btn.clear_profile') }}
           </app-btn>
@@ -114,12 +114,12 @@
             <template v-slot:activator="{ on, attrs }">
               <app-btn
                 v-bind="attrs"
-                v-on="on"
                 small
                 block
                 class="mb-2"
                 :loading="hasWait(waits.onMeshCalibrate)"
                 :disabled="printerPrinting || printerBusy"
+                v-on="on"
                 @click="calibrate()"
               >
                 {{ $t('app.general.btn.calibrate') }}
@@ -132,11 +132,11 @@
             <template v-slot:activator="{ on, attrs }">
               <app-btn
                 v-bind="attrs"
-                v-on="on"
                 block
                 small
                 color="primary"
                 :disabled="!meshLoaded || printerPrinting || printerBusy"
+                v-on="on"
                 @click="handleOpenSaveDialog()"
               >
                 {{ $t('app.general.btn.save_as') }}
@@ -147,13 +147,13 @@
         </v-col>
         <v-col cols="6">
           <app-btn
-            @click="sendGcode('G28', waits.onHomeAll)"
             block
             small
             class="mb-2"
             :loading="hasWait(waits.onHomeAll)"
             :disabled="printerPrinting || printerBusy"
             :color="(!allHomed) ? 'primary' : undefined"
+            @click="sendGcode('G28', waits.onHomeAll)"
           >
             <v-icon
               small
@@ -165,13 +165,13 @@
 
           <app-btn
             v-if="!printerPrinting && printerSupportsQgl"
-            @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
             :elevation="2"
             :loading="hasWait(waits.onQGL)"
             :disabled="printerPrinting || printerBusy"
             block
             class="mb-2"
             small
+            @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
           >
             {{ $t('app.general.btn.quad_gantry_level') }}
           </app-btn>
@@ -184,8 +184,8 @@
           md="6"
         >
           <v-radio-group
-            :disabled="!meshLoaded"
             v-model="matrix"
+            :disabled="!meshLoaded"
             column
             hide-details
             class="mt-0 mb-2"
@@ -207,17 +207,17 @@
           md="6"
         >
           <v-checkbox
+            v-model="wireframe"
             :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.wireframe')"
-            v-model="wireframe"
             hide-details
             class="mt-0"
           />
 
           <v-checkbox
+            v-model="flatSurface"
             :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.flat_surface')"
-            v-model="flatSurface"
             hide-details
             class="mt-1"
           />
@@ -227,9 +227,9 @@
       <v-row>
         <v-col>
           <v-slider
+            v-model="mapScale"
             :label="$t('app.bedmesh.label.scale')"
             :disabled="!meshLoaded"
-            v-model="mapScale"
             :tick-labels="mapScaleLabels"
             :min="0"
             :max="0.2"
@@ -239,9 +239,9 @@
           />
 
           <v-slider
+            v-model="boxScale"
             :label="$t('app.bedmesh.label.box_scale')"
             :disabled="!meshLoaded"
-            v-model="boxScale"
             :tick-labels="boxScaleLabels"
             :min="1"
             :max="2"

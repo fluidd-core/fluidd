@@ -7,8 +7,8 @@
       {{ itemTime }}&nbsp;
     </span>
     <span
-      @click.capture="itemClick"
       :class="itemClass"
+      @click.capture="itemClick"
       v-html="itemMessage"
     />
   </v-layout>

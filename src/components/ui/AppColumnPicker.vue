@@ -29,11 +29,11 @@
         v-for="header in headers"
       >
         <v-list-item
-          @click="handleToggleHeader(header)"
-          :key="header.value"
           v-if="header.text !== '' && header.configurable"
+          :key="header.value"
           link
           dense
+          @click="handleToggleHeader(header)"
         >
           <v-list-item-action class="my-0">
             <v-checkbox

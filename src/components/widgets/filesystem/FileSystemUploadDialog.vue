@@ -19,8 +19,8 @@
       >
         <v-card-text
           v-if="(file.percent !== 100 || !file.complete) && !file.cancelled"
-          class="py-2 px-5"
           :key="file.filepath"
+          class="py-2 px-5"
         >
           <v-row>
             <v-col>

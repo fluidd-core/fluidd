@@ -11,8 +11,8 @@
             {{ $t('app.chart.label.power') }}
           </th>
           <th
-            width="1%"
             v-if="showRateOfChange"
+            width="1%"
           >
             {{ $t('app.chart.label.rate_of_change') }}
           </th>
@@ -40,18 +40,18 @@
           </td>
           <td class="temp-name">
             <span
-              @click="$emit('legendClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name] }"
               class="legend-item"
+              @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
             </span>
           </td>
           <td class="temp-power">
             <span
-              @click="$emit('legendPowerClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
               class="legend-item"
+              @click="$emit('legendPowerClick', item)"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
@@ -60,8 +60,8 @@
             </span>
           </td>
           <td
-            class="rate-of-change"
             v-if="showRateOfChange"
+            class="rate-of-change"
           >
             <span
               :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
@@ -78,9 +78,9 @@
             <input-temperature
               v-if="klippyReady"
               :value="item.target"
-              @input="setHeaterTargetTemp(item.name, $event)"
               :max="item.maxTemp"
               :min="item.minTemp"
+              @input="setHeaterTargetTemp(item.name, $event)"
             />
           </td>
         </tr>
@@ -99,9 +99,9 @@
           </td>
           <td class="temp-name">
             <span
-              @click="$emit('legendClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name] }"
               class="legend-item"
+              @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
             </span>
@@ -109,9 +109,9 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              @click="$emit('legendPowerClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
               class="legend-item"
+              @click="$emit('legendPowerClick', item)"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
@@ -132,9 +132,9 @@
             <input-temperature
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
-              @input="setFanTargetTemp(item.name, $event)"
               :max="item.maxTemp"
               :min="item.minTemp"
+              @input="setFanTargetTemp(item.name, $event)"
             />
           </td>
         </tr>
@@ -152,9 +152,9 @@
           </td>
           <td class="temp-name">
             <span
-              @click="$emit('legendClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name] }"
               class="legend-item"
+              @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
             </span>
@@ -163,8 +163,8 @@
 &nbsp;
           </td>
           <td
-            class="rate-of-change"
             v-if="showRateOfChange"
+            class="rate-of-change"
           >
 &nbsp;
           </td>

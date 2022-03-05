@@ -12,10 +12,10 @@
         :title="$t('app.setting.label.confirm_dirty_editor_close')"
       >
         <v-switch
-          @click.native.stop
           v-model="confirmDirtyEditorClose"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 

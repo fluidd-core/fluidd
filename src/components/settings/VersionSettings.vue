@@ -14,8 +14,8 @@
           outlined
           small
           color="primary"
-          @click="forceCheck()"
           :disabled="isRefreshing"
+          @click="forceCheck()"
         >
           <v-icon
             left
@@ -33,10 +33,10 @@
         :title="$t('app.setting.label.enable_notifications')"
       >
         <v-switch
-          @click.native.stop
           v-model="enableNotifications"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 
@@ -64,18 +64,18 @@
           </template>
 
           <v-tooltip
-            left
             v-if="hasUpdate(component.key) && !inError(component)"
+            left
           >
             <template v-slot:activator="{ attrs, on }">
               <app-btn
                 v-if="hasUpdate(component.key) && !inError(component)"
-                @click="handleInformationDialog(component)"
-                v-on="on"
                 v-bind="attrs"
                 color="primary"
                 icon
                 small
+                @click="handleInformationDialog(component)"
+                v-on="on"
               >
                 <v-icon small>
                   $info
@@ -99,8 +99,8 @@
         </app-setting>
 
         <v-divider
-          :key="`component-${component.key}-${component.name}-_divider`"
           v-if="i < components.length - 1 && components.length > 0"
+          :key="`component-${component.key}-${component.name}-_divider`"
         />
       </template>
     </v-card>

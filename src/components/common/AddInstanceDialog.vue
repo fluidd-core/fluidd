@@ -1,9 +1,9 @@
 <template>
   <v-dialog
-    @input="$emit('input', $event)"
     :value="value"
     :max-width="320"
     persistent
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="addInstanceForm"
@@ -65,8 +65,8 @@
 
           <p
             v-if="note"
-            v-html="note"
             class="mb-0"
+            v-html="note"
           />
         </v-card-text>
 
@@ -75,8 +75,8 @@
           <app-btn
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>

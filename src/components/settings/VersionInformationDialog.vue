@@ -1,19 +1,19 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="850"
     scrollable
+    @input="$emit('input', $event)"
   >
     <v-card v-if="component">
       <v-card-title class="card-heading py-2">
         <span
-          class="focus--text"
           v-if="'commits_behind' in component"
+          class="focus--text"
         >{{ $t('app.version.label.commit_history') }}</span>
         <span
-          class="focus--text"
           v-else
+          class="focus--text"
         >{{ $t('app.version.label.package_list') }}</span>
 
         <v-spacer />
@@ -29,8 +29,8 @@
       <v-divider />
 
       <v-card-text
-        class="py-0 pl-0"
         v-if="commitHistory"
+        class="py-0 pl-0"
       >
         <!-- History Items. -->
         <template>
@@ -98,15 +98,15 @@
       </v-card-text>
 
       <v-card-text
-        class="pt-4"
         v-if="component.package_list"
+        class="pt-4"
       >
         <!-- OS Packages -->
         <div class="chip-group">
           <v-chip
-            small
             v-for="chip in component.package_list"
             :key="chip"
+            small
           >
             {{ chip }}
           </v-chip>

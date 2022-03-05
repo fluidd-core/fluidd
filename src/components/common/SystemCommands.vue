@@ -11,8 +11,8 @@
       </template>
 
       <v-list-item
-        @click="handleHostReboot"
         :disabled="printerPrinting"
+        @click="handleHostReboot"
       >
         <v-list-item-title>{{ $t('app.general.btn.reboot') }}</v-list-item-title>
         <v-list-item-icon>
@@ -23,8 +23,8 @@
       </v-list-item>
 
       <v-list-item
-        @click="handleHostShutdown"
         :disabled="printerPrinting"
+        @click="handleHostShutdown"
       >
         <v-list-item-title>{{ $t('app.general.btn.shutdown') }}</v-list-item-title>
         <v-list-item-icon>
@@ -50,8 +50,8 @@
         v-for="(device, index) in powerDevices"
         :key="index"
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
-        @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
         :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
+        @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
       >
         <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
         <v-list-item-icon>
@@ -79,9 +79,9 @@
                 <template v-slot:activator="{ on, attrs }">
                   <span
                     v-bind="attrs"
-                    v-on="on"
                     class="text-wrap"
                     style="text-transform: capitalize;"
+                    v-on="on"
                   >{{ service.name }}</span>
                 </template>
                 <span style="text-transform: capitalize;">{{ service.active_state }} ({{ service.sub_state }})</span>
@@ -90,15 +90,15 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-btn
-              icon
               v-if="service.active_state === 'inactive'"
+              icon
               @click="checkDialog(serviceStart, service, 'start')"
             >
               <v-icon>$play</v-icon>
             </v-btn>
             <v-btn
-              icon
               v-else
+              icon
               @click="checkDialog(serviceRestart, service, 'restart')"
             >
               <v-icon color="warning">
@@ -107,9 +107,9 @@
             </v-btn>
             <v-btn
               icon
-              @click="checkDialog(serviceStop, service, 'stop')"
               :disabled="service.active_state === 'inactive'"
               :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
+              @click="checkDialog(serviceStop, service, 'stop')"
             >
               <v-icon color="error">
                 $stop

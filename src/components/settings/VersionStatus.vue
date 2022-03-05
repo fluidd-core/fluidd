@@ -9,17 +9,17 @@
       {{ $t('app.version.label.up_to_date') }}
     </v-chip>
     <v-tooltip
-      left
       v-if="dirty && valid"
+      left
     >
       <template v-slot:activator="{ on, attrs }">
         <v-chip
           v-bind="attrs"
-          v-on="on"
           small
           outlined
           :disabled="disabled"
           :color="(disabled) ? 'grey darken-2' : 'error'"
+          v-on="on"
         >
           {{ $t('app.version.label.dirty') }}
         </v-chip>
@@ -28,16 +28,16 @@
     </v-tooltip>
 
     <v-tooltip
-      left
       v-if="!valid"
+      left
     >
       <template v-slot:activator="{ on, attrs }">
         <v-chip
           v-bind="attrs"
-          v-on="on"
           small
           outlined
           :color="(disabled) ? 'grey darken-2' : 'error'"
+          v-on="on"
         >
           {{ $t('app.version.label.invalid') }}
         </v-chip>

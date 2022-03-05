@@ -7,10 +7,10 @@
     <v-card-text>
       <e-charts-bed-mesh
         v-if="mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0"
+        ref="chart"
         :options="options"
         :data="series"
         :height="(isMobile) ? '225px' : '525px'"
-        ref="chart"
       />
 
       <span v-else>{{ $t('app.bedmesh.msg.not_loaded') }}</span>

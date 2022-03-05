@@ -1,9 +1,9 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col
+      v-if="supportsBedMesh && klippyReady"
       cols="12"
       md="8"
-      v-if="supportsBedMesh && klippyReady"
     >
       <bed-mesh />
     </v-col>

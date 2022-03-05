@@ -9,8 +9,8 @@
     <template v-slot:activator="{ on, attrs, value }">
       <app-btn
         v-bind="attrs"
-        v-on="on"
         small
+        v-on="on"
       >
         <v-icon
           small
@@ -32,9 +32,9 @@
       dense
     >
       <v-list-item
-        @click="$emit('select', 'all')"
         link
         dense
+        @click="$emit('select', 'all')"
       >
         <v-list-item-title>
           <v-icon
@@ -51,9 +51,9 @@
       <v-list-item
         v-for="item of cameras"
         :key="item.id"
-        @click="$emit('select', item.id)"
         link
         dense
+        @click="$emit('select', item.id)"
       >
         <v-list-item-title>
           <v-icon

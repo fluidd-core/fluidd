@@ -5,18 +5,18 @@
   >
     <v-layout>
       <v-text-field
+        v-model.number="inputValue"
         outlined
         dense
         single-line
         hide-details="auto"
-        v-model.number="inputValue"
         :disabled="!klippyReady"
         :loading="loading"
         :rules="[rules.min, rules.max]"
-        @keyup.enter="emitChange"
-        @focus="$event.target.select()"
         suffix="°C"
         class="v-input--width-x-small"
+        @keyup.enter="emitChange"
+        @focus="$event.target.select()"
       />
     </v-layout>
   </v-form>

@@ -9,16 +9,16 @@
     >
       <v-btn-toggle
         v-if="moveDistance"
+        v-model="moveDistance"
         mandatory
         dense
-        v-model="moveDistance"
         class="ml-2 d-inline-block"
       >
         <app-btn
           v-for="(value, i) in zAdjustValues"
+          :key="i"
           small
           class="px-1"
-          :key="i"
           :disabled="!klippyReady"
           :min-width="36"
           :value="value"
@@ -42,11 +42,11 @@
           class="pr-1"
         >
           <app-btn
-            @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
             :loading="hasWait('ZAdjust')"
             :disabled="!klippyReady"
             small
             block
+            @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
           >
             <v-icon small>
               $zUp
@@ -58,11 +58,11 @@
           class="pr-1"
         >
           <app-btn
-            @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
             :loading="hasWait('ZAdjust')"
             :disabled="!klippyReady"
             small
             block
+            @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
           >
             <v-icon small>
               $zDown
@@ -74,10 +74,10 @@
           class="pr-1"
         >
           <app-btn
-            @click="handleZApplyDialog"
             :disabled="!klippyReady || printerPrinting || (ZHomingOrigin == 0)"
             small
             block
+            @click="handleZApplyDialog"
           >
             <v-icon small>
               $save

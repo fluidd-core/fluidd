@@ -2,12 +2,12 @@
   <app-btn-collapse-group>
     <div>
       <app-btn
-        @click="cancelPrint()"
         v-if="printerPrinting || printerPaused"
         :loading="hasWait($waits.onPrintCancel)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         class="ma-1"
+        @click="cancelPrint()"
       >
         <v-icon
           small
@@ -19,12 +19,12 @@
       </app-btn>
 
       <app-btn
-        @click="pausePrint()"
         v-if="printerPrinting && !printerPaused"
         :loading="hasWait($waits.onPrintPause)"
         :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         class="ma-1"
+        @click="pausePrint()"
       >
         <v-icon
           small
@@ -36,12 +36,12 @@
       </app-btn>
 
       <app-btn
-        @click="resumePrint()"
         v-if="printerPaused"
         :loading="hasWait($waits.onPrintResume)"
         :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
         class="ma-1"
+        @click="resumePrint()"
       >
         <v-icon
           small
@@ -53,10 +53,10 @@
       </app-btn>
 
       <app-btn
-        @click="resetFile()"
         v-if="!printerPrinting && !printerPaused && filename"
         small
         class="ma-1"
+        @click="resetFile()"
       >
         <v-icon
           small
@@ -69,9 +69,9 @@
 
       <app-btn
         v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
-        @click="$emit('print', filename)"
         small
         class="ma-1"
+        @click="$emit('print', filename)"
       >
         <v-icon
           small

@@ -16,10 +16,10 @@
           dense
           class="v-input--width-small"
           type="number"
-          @change="moveTo('X', $event)"
           :disabled="!xHomed"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
+          @change="moveTo('X', $event)"
         />
       </v-col>
       <v-col
@@ -33,10 +33,10 @@
           dense
           class="v-input--width-small"
           type="number"
-          @change="moveTo('Y', $event)"
           :disabled="!yHomed"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
+          @change="moveTo('Y', $event)"
         />
       </v-col>
       <v-col
@@ -50,19 +50,19 @@
           dense
           class="v-input--width-small"
           type="number"
-          @change="moveTo('Z', $event)"
           :disabled="!zHomed"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
+          @change="moveTo('Z', $event)"
         />
       </v-col>
     </v-row>
 
     <v-row
+      v-show="printerPrinting"
       justify="space-between"
       align="center"
       no-gutters
-      v-show="printerPrinting"
     >
       <v-col
         cols="auto"

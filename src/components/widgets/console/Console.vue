@@ -8,18 +8,18 @@
       @send="sendCommand"
     />
     <v-card
+      ref="console-wrapper"
       flat
       class="console-wrapper"
-      ref="console-wrapper"
     >
       <DynamicScroller
         ref="scroller"
         :items="flipLayout ? [...items].reverse() : items"
         :min-item-size="24"
-        @resize="scrollToLatest()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
         :buffer="600"
+        @resize="scrollToLatest()"
       >
         <template v-slot="{ item, index, active }">
           <DynamicScrollerItem
@@ -31,10 +31,10 @@
             :data-index="index"
           >
             <console-item
-              :value="item"
               :key="item[keyField]"
-              @click="handleEntryClick"
+              :value="item"
               class="console-item"
+              @click="handleEntryClick"
             />
           </DynamicScrollerItem>
         </template>

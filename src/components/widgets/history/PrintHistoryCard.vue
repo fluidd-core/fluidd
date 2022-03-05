@@ -8,9 +8,9 @@
     <template v-slot:menu>
       <app-btn-collapse-group>
         <app-btn
-          @click="handleLoadAll"
           small
           class="ma-1"
+          @click="handleLoadAll"
         >
           <v-icon
             small
@@ -21,9 +21,9 @@
           <span>{{ $t('app.general.btn.load_all') }}</span>
         </app-btn>
         <app-btn
-          @click="handleRemoveAll"
           small
           class="ma-1"
+          @click="handleRemoveAll"
         >
           <v-icon
             small

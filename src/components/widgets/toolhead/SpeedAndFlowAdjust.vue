@@ -8,13 +8,13 @@
         :label="$t('app.general.label.speed')"
         suffix="%"
         :value="speed"
-        @change="handleSetSpeed"
         :overridable="true"
         :reset-value="100"
         :disabled="!klippyReady || hasWait(waits.onSetSpeed)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
+        @change="handleSetSpeed"
       />
     </v-col>
     <v-col
@@ -25,13 +25,13 @@
         :label="$t('app.general.label.flow')"
         suffix="%"
         :value="flow"
-        @change="handleSetFlow"
         :overridable="true"
         :reset-value="100"
         :disabled="!klippyReady || hasWait(waits.onSetFlow)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
+        @change="handleSetFlow"
       />
     </v-col>
   </v-row>

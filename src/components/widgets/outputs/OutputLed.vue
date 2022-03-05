@@ -14,8 +14,8 @@
       <app-color-picker
         :primary="primaryColor"
         :white="whiteColor"
-        @change="handleColorChange"
         dot
+        @change="handleColorChange"
       />
     </v-col>
   </v-row>

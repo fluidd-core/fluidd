@@ -31,16 +31,16 @@
           v-if="!socketConnecting"
           block
           color="info"
-          @click="reconnect()"
           class="me-2 mb-2"
+          @click="reconnect()"
         >
           {{ $t('app.general.btn.socket_reconnect') }}
         </app-btn>
         <app-btn
           block
           color="warning"
-          @click="reload()"
           class="me-2 mb-2"
+          @click="reload()"
         >
           {{ $t('app.general.btn.socket_refresh') }}
         </app-btn>

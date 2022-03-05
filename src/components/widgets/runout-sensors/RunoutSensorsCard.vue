@@ -5,11 +5,11 @@
   >
     <v-card-text>
       <v-layout
+        v-for="item in sensors"
+        :key="item.name"
         align-center
         justify-start
         class="py-1"
-        v-for="item in sensors"
-        :key="item.name"
       >
         <span class="text-subtitle-1">{{ item.name }}</span>
         <v-icon

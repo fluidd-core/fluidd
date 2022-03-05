@@ -30,12 +30,12 @@
               <app-slider
                 :label="$t('app.gcode.label.layer')"
                 :value="currentLayer + 1"
-                @input="setCurrentLayer($event - 1)"
                 :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
                 :locked="isMobile"
                 input-md
+                @input="setCurrentLayer($event - 1)"
               />
             </v-col>
           </v-row>
@@ -44,13 +44,13 @@
               <app-slider
                 :label="$t('app.general.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
-                @input="setMoveProgress($event + currentLayerMoveRange.min)"
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
                 value-suffix="moves"
                 :locked="isMobile"
                 input-md
+                @input="setMoveProgress($event + currentLayerMoveRange.min)"
               />
             </v-col>
           </v-row>

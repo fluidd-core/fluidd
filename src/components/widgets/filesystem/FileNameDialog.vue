@@ -1,13 +1,13 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', value)"
     :max-width="320"
+    @input="$emit('input', value)"
   >
     <v-form
-      class="mt-3"
       ref="addInstanceForm"
       v-model="valid"
+      class="mt-3"
       @submit.prevent="handleSave"
     >
       <v-card>
@@ -17,9 +17,9 @@
 
         <v-card-text class="py-4">
           <v-text-field
+            v-model="newName"
             autofocus
             outlined
-            v-model="newName"
             :label="label"
             :rules="rules"
             hide-details="auto"

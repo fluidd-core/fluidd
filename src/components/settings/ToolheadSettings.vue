@@ -55,13 +55,13 @@
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
         <v-text-field
           :value="defaultExtrudeLength"
-          @change="setDefaultExtrudeLength"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
+          @change="setDefaultExtrudeLength"
         />
       </app-setting>
 
@@ -70,13 +70,13 @@
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
         <v-text-field
           :value="defaultExtrudeSpeed"
-          @change="setDefaultExtrudeSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
+          @change="setDefaultExtrudeSpeed"
         />
       </app-setting>
 
@@ -86,13 +86,13 @@
         <v-select
           :value="defaultToolheadMoveLength"
           :items="[0.1, 1.0, 10, 25, 50, 100]"
-          @change="setDefaultToolheadMoveLength"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
+          @change="setDefaultToolheadMoveLength"
         />
       </app-setting>
 
@@ -101,13 +101,13 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
         <v-text-field
           :value="defaultToolheadXYSpeed"
-          @change="setDefaultToolheadYXSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
+          @change="setDefaultToolheadYXSpeed"
         />
       </app-setting>
 
@@ -116,13 +116,13 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
         <v-text-field
           :value="defaultToolheadZSpeed"
-          @change="setDefaultToolheadZSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
+          @change="setDefaultToolheadZSpeed"
         />
       </app-setting>
 

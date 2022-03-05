@@ -11,6 +11,7 @@
     >
       <app-setting :title="$t('app.setting.label.theme_preset')">
         <v-select
+          v-model="themePreset"
           filled
           dense
           single-line
@@ -18,7 +19,6 @@
           :items="themePresets"
           item-value="icon.src"
           item-text="name"
-          v-model="themePreset"
           return-object
         />
       </app-setting>
@@ -39,8 +39,8 @@
         <app-color-picker
           v-if="theme"
           :primary="themeColor"
-          @change="handleChangeThemeColor"
           :title="$t('app.setting.btn.select_theme')"
+          @change="handleChangeThemeColor"
         />
       </app-setting>
 
@@ -48,10 +48,10 @@
 
       <app-setting :title="$t('app.setting.label.dark_mode')">
         <v-switch
-          @click.native.stop
           v-model="isDark"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
     </v-card>

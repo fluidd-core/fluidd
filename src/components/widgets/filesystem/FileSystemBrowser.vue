@@ -18,14 +18,14 @@
       :show-select="bulkActions"
       :no-data-text="$t('app.file_system.msg.not_found')"
       :no-results-text="$t('app.file_system.msg.not_found')"
-      @input="handleSelected"
-      @item-selected="handleItemSelected"
       item-key="name"
       height="100%"
       mobile-breakpoint="0"
       sort-by="modified"
       hide-default-footer
       class="rounded-0"
+      @input="handleSelected"
+      @item-selected="handleItemSelected"
     >
       <template v-slot:item="{ item, isSelected, select }">
         <tr
@@ -36,9 +36,9 @@
             'v-data-table__selected': (isSelected && item.name !== '..')
           }"
           class="row-select px-1"
+          :draggable="draggable(item)"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
-          :draggable="draggable(item)"
           @drag="handleDrag(item)"
           @dragstart="handleDragStart"
           @dragend="handleDragEnd"
@@ -49,10 +49,10 @@
           <td v-if="bulkActions">
             <v-simple-checkbox
               v-if="item.name !== '..'"
+              v-ripple
               :value="isSelected"
               color=""
               class="mt-1"
-              v-ripple
               @click.stop="select(!isSelected)"
             />
           </td>

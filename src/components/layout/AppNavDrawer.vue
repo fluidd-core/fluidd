@@ -4,9 +4,9 @@
     :color="theme.currentTheme.drawer"
     :mini-variant="!hasSubNavigation"
     :floating="!hasSubNavigation"
-    @input="emitChange"
     clipped
     app
+    @input="emitChange"
   >
     <v-row
       class="fill-height"
@@ -28,8 +28,8 @@
         </div>
 
         <div
-          class="nav-items"
           v-show="authenticated && socketConnected"
+          class="nav-items"
         >
           <app-nav-item
             icon="$dash"

@@ -38,21 +38,21 @@
 
     <app-btn
       :disabled="!printerFile || printerFileLoaded"
-      @click="loadCurrent"
       color="primary"
       class="mt-3"
       block
       small
+      @click="loadCurrent"
     >
       {{ $t('app.gcode.btn.load_current_file') }}
     </app-btn>
 
     <app-btn
       :disabled="noMoves"
-      @click="resetFile"
       color="secondary"
       class="mt-3"
       block
+      @click="resetFile"
     >
       {{ $t('app.general.btn.reset_file') }}
     </app-btn>

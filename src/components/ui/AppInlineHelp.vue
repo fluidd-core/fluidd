@@ -9,10 +9,10 @@
       <app-btn
         :small="small"
         v-bind="attrs"
-        v-on="on"
         class="ml-2"
         :color="type"
         icon
+        v-on="on"
       >
         <v-icon
           :small="small"

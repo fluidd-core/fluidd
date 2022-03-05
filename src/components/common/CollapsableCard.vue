@@ -51,15 +51,15 @@
 
     <v-expand-transition v-if="!lazy">
       <div
-        @transitionend="transitionEvent"
-        id="card-content"
         v-if="!isCollapsed && !inLayout"
+        id="card-content"
         :class="_contentClasses"
         :style="_contentStyles"
+        @transitionend="transitionEvent"
       >
         <v-card-subtitle
-          class="py-2"
           v-if="subTitle || hasSubTitleSlot"
+          class="py-2"
         >
           <slot name="sub-title">
             <span v-html="subTitle" />
@@ -74,15 +74,15 @@
 
     <v-expand-transition v-if="lazy">
       <div
-        @transitionend="transitionEvent"
-        id="card-content"
         v-show="!isCollapsed && !inLayout"
+        id="card-content"
         :class="_contentClasses"
         :style="_contentStyles"
+        @transitionend="transitionEvent"
       >
         <v-card-subtitle
-          class="py-2"
           v-if="subTitle || hasSubTitleSlot"
+          class="py-2"
         >
           <slot name="subTitle">
             <span v-html="subTitle" />

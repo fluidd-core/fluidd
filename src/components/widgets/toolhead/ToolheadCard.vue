@@ -15,11 +15,11 @@
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
           <v-icon
-            v-bind="attrs"
-            v-on="on"
             v-show="!extruderReady"
+            v-bind="attrs"
             class="ml-3"
             color="info"
+            v-on="on"
           >
             $snowflakeAlert
           </v-icon>
@@ -31,55 +31,55 @@
     <template v-slot:menu>
       <app-btn-collapse-group>
         <app-btn
-          @click="sendGcode('M84')"
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
+          @click="sendGcode('M84')"
         >
           MOTORS OFF
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
-          @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
           :elevation="2"
           :loading="hasWait(waits.onBedScrewsAdjust)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
+          @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         >
           Bed_Screws_Adjust
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
-          @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
           :elevation="2"
           :loading="hasWait(waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
           class="ml-1"
+          @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         >
           Screws_Tilt_Calculate
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
-          @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
           :elevation="2"
           :loading="hasWait(waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
+          @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         >
           Z_Tilt_Adjust
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
-          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
           :elevation="2"
           :loading="hasWait(waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
+          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         >
           QGL
         </app-btn>

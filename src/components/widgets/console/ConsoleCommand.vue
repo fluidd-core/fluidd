@@ -6,7 +6,6 @@
           ref="input"
           :rows="1"
           :value="newValue"
-          @input="emitChange"
           :items="history"
           auto-grow
           clearable
@@ -14,6 +13,7 @@
           single-line
           dense
           hide-details
+          @input="emitChange"
           @keyup.enter.exact="emitSend(newValue)"
           @keydown.enter.exact.prevent
           @keyup.up="historyUp()"

@@ -10,11 +10,11 @@
     >
       <app-setting :title="$t('app.setting.label.printer_name')">
         <v-text-field
+          ref="instanceName"
           filled
           dense
           single-line
           hide-details="auto"
-          ref="instanceName"
           :rules="instanceNameRules"
           :value="instanceName"
           :default-value="$globals.APP_NAME"
@@ -42,6 +42,7 @@
 
       <app-setting :title="$t('app.setting.label.date_time_format')">
         <v-select
+          v-model="dateformat"
           filled
           dense
           hide-details="auto"
@@ -51,10 +52,10 @@
           ]"
           item-value="value"
           item-text="text"
-          v-model="dateformat"
         />
         &nbsp;
         <v-select
+          v-model="timeformat"
           filled
           dense
           hide-details="auto"
@@ -64,7 +65,6 @@
           ]"
           item-value="value"
           item-text="text"
-          v-model="timeformat"
         />
       </app-setting>
 
@@ -74,10 +74,10 @@
         :title="$t('app.setting.label.confirm_on_estop')"
       >
         <v-switch
-          @click.native.stop
           v-model="confirmOnEstop"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
 
@@ -87,10 +87,10 @@
         :title="$t('app.setting.label.confirm_on_power_device_change')"
       >
         <v-switch
-          @click.native.stop
           v-model="confirmOnPowerDeviceChange"
           hide-details
           class="mb-5"
+          @click.native.stop
         />
       </app-setting>
     </v-card>

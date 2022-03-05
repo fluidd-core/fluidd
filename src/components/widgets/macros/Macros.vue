@@ -1,9 +1,9 @@
 <template>
   <div>
     <v-expansion-panels
+      v-model="expanded"
       accordion
       multiple
-      v-model="expanded"
     >
       <v-expansion-panel
         v-for="category in macros"
@@ -24,12 +24,12 @@
               {{ category.macros.length }}
             </v-chip>
             <app-btn
-              @click.prevent.stop="handleEditCategory(category.id)"
               icon
               text
               small
               color=""
               class="ml-2"
+              @click.prevent.stop="handleEditCategory(category.id)"
             >
               <v-icon small>
                 $cog
@@ -41,13 +41,13 @@
         <v-expansion-panel-content>
           <app-macro-btn
             v-for="macro in category.macros"
-            :macro="macro"
             :key="`category-${macro.name}`"
-            @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
+            :macro="macro"
             :loading="hasWait(`${waits.onMacro}${macro.name}`)"
             :elevation="2"
             enable-params
             class="me-2 mb-2 float-left"
+            @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
           >
             {{ macro.alias || macro.name }}
           </app-macro-btn>
@@ -75,12 +75,12 @@
               {{ uncategorizedMacros.length }}
             </v-chip>
             <app-btn
-              @click.prevent.stop="handleEditCategory('0')"
               icon
               text
               small
               color=""
               class="ml-2"
+              @click.prevent.stop="handleEditCategory('0')"
             >
               <v-icon small>
                 $cog
@@ -92,13 +92,13 @@
         <v-expansion-panel-content>
           <template v-for="macro in uncategorizedMacros">
             <app-macro-btn
-              :macro="macro"
               :key="`category-${macro.name}`"
-              @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
+              :macro="macro"
               :loading="hasWait(`${waits.onMacro}${macro.name}`)"
               :elevation="2"
               enable-params
               class="me-2 mb-2 float-left"
+              @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
             >
               {{ macro.alias || macro.name }}
             </app-macro-btn>

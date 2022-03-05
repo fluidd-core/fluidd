@@ -37,11 +37,11 @@
           </template>
 
           <app-btn
-            @click.stop="handleEditFilterDialog(filter)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleEditFilterDialog(filter)"
           >
             <v-icon color="">
               $edit
@@ -49,11 +49,11 @@
           </app-btn>
 
           <app-btn
-            @click.stop="handleRemoveFilter(filter)"
             fab
             text
             x-small
             color=""
+            @click.stop="handleRemoveFilter(filter)"
           >
             <v-icon color="">
               $close

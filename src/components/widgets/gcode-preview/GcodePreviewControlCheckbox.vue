@@ -1,8 +1,8 @@
 <template>
   <v-checkbox
+    v-model="property"
     :disabled="disabled"
     :label="label"
-    v-model="property"
     hide-details
   />
 </template>

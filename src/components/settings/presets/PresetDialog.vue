@@ -6,8 +6,8 @@
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave(preset)"
       v-model="valid"
+      @submit.prevent="handleSave(preset)"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -30,8 +30,8 @@
           v-for="(item, i) in heaters"
         >
           <app-setting
-            :title="item.name"
             :key="i + 'heater'"
+            :title="item.name"
           >
             <v-checkbox
               v-model="preset.values[item.name].active"
@@ -58,8 +58,8 @@
           v-for="(item, i) in fans"
         >
           <app-setting
-            :title="item.name"
             :key="i + 'fan'"
+            :title="item.name"
           >
             <v-checkbox
               v-model="preset.values[item.name].active"
@@ -97,8 +97,8 @@
           <app-btn
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>

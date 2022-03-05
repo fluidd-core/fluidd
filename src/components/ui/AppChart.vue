@@ -6,8 +6,8 @@
     >
       <v-chart
         v-if="ready"
-        style="overflow: initial;"
         ref="chart"
+        style="overflow: initial;"
         :option="opts"
         :update-options="{ notMerge: true }"
         :init-options="{ renderer: 'svg' }"

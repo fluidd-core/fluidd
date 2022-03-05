@@ -21,9 +21,9 @@
       <template v-for="camera in cameras">
         <v-col
           v-if="!collapsed"
+          :key="camera.id"
           cols="12"
           :sm="cols"
-          :key="camera.id"
         >
           <camera-item
             :camera="camera"

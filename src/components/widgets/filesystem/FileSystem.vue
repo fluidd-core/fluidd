@@ -3,11 +3,11 @@
     class="filesystem-wrapper"
     :height="height"
     :max-height="maxHeight"
+    :class="{ 'no-pointer-events': dragState.overlay }"
     @dragenter.capture.prevent="handleDragEnter"
     @dragover.prevent
     @dragleave.self.prevent="handleDragLeave"
     @drop.prevent.stop="handleDropFile"
-    :class="{ 'no-pointer-events': dragState.overlay }"
   >
     <file-system-toolbar
       v-if="selected.length <= 0"
@@ -74,7 +74,7 @@
       :filename="fileEditorDialogState.filename"
       :loading="fileEditorDialogState.loading"
       :readonly="fileEditorDialogState.readonly"
-      :root="this.currentRoot"
+      :root="currentRoot"
       @save="handleSaveFileChanges"
     />
 

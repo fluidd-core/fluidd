@@ -42,8 +42,8 @@
       >
         <template v-for="(filter, i) in filters">
           <v-list-item
-            :disabled="disabled"
             :key="`filter-${i}`"
+            :disabled="disabled"
             :value="filter"
           >
             <template v-slot:default="{ active }">
