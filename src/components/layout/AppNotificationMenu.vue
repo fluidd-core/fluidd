@@ -1,9 +1,9 @@
 <template>
   <v-menu
+    v-model="menu"
     offset-y
     left
     :max-width="(isMobile) ? 220 : 420"
-    v-model="menu"
     :close-on-content-click="false"
     :close-delay="300"
   >
@@ -19,14 +19,16 @@
       >
         <v-btn
           v-bind="attrs"
-          v-on="on"
           fab
           small
           class="mx-1"
           :color="color"
           :elevation="0"
+          v-on="on"
         >
-          <v-icon :class="{ 'wiggle': color === 'error'}">$bell</v-icon>
+          <v-icon :class="{ 'wiggle': color === 'error'}">
+            $bell
+          </v-icon>
         </v-btn>
       </v-badge>
     </template>
@@ -36,7 +38,6 @@
         class="py-0 overflow-y-auto app-notifications"
         style="max-height: 90vh"
       >
-
         <v-list-item
           v-if="notifications.length === 0"
         >
@@ -47,61 +48,82 @@
 
         <v-list-item
           v-if="notifications.length > 0"
-          @click="handleClearAll"
           :disabled="clearableNotifications.length <= 0"
+          @click="handleClearAll"
         >
           <v-list-item-content>
             <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
           </v-list-item-content>
           <v-list-item-action class="notification-clear-all">
-            <v-icon small>$close</v-icon>
+            <v-icon small>
+              $close
+            </v-icon>
           </v-list-item-action>
         </v-list-item>
         <v-divider v-if="notifications.length > 0" />
 
         <template
-          v-for="(n, i) in notifications">
+          v-for="(n, i) in notifications"
+        >
           <v-list-item
             :key="`notification-${n.id}`"
             :three-line="true"
             :class="classes(n)"
           >
             <v-list-item-content>
-              <v-list-item-title v-html="n.title"></v-list-item-title>
-              <v-list-item-subtitle class="notification-description" v-if="n.description" v-html="n.description"></v-list-item-subtitle>
-              <v-list-item-subtitle class="notification-timestamp">{{ $filters.formatDateTime(n.timestamp) }}</v-list-item-subtitle>
+              <v-list-item-title v-html="n.title" />
+              <v-list-item-subtitle
+                v-if="n.description"
+                class="notification-description"
+                v-html="n.description"
+              />
+              <v-list-item-subtitle class="notification-timestamp">
+                {{ $filters.formatDateTime(n.timestamp) }}
+              </v-list-item-subtitle>
               <v-list-item-subtitle v-if="n.to">
                 <app-btn
                   v-if="!n.to.startsWith('http')"
                   x-small
                   :to="n.to"
                   @click="menu = false"
-                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')">
-                </app-btn>
+                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
+                />
                 <app-btn
                   v-else
                   x-small
                   :href="n.to"
                   target="_blank"
                   @click="menu = false"
-                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')">
-                </app-btn>
+                  v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
+                />
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action
               v-if="n.suffix"
               class="notification-suffix"
             >
-              <v-icon v-if="n.suffixIcon" :color="color" v-html="n.suffixIcon"></v-icon>
-              <div class="notification-temp" v-html="n.suffix"></div>
+              <v-icon
+                v-if="n.suffixIcon"
+                :color="color"
+                v-html="n.suffixIcon"
+              />
+              <div
+                class="notification-temp"
+                v-html="n.suffix"
+              />
             </v-list-item-action>
             <v-list-item-action
               v-if="n.clear"
-              @click="handleClear(n)"
               class="notification-clear"
+              @click="handleClear(n)"
             >
-              <v-btn icon small>
-                <v-icon small>$close</v-icon>
+              <v-btn
+                icon
+                small
+              >
+                <v-icon small>
+                  $close
+                </v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
@@ -111,7 +133,6 @@
             :key="`divider-${n.id}`"
           />
         </template>
-
       </v-list>
     </v-card>
   </v-menu>

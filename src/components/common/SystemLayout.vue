@@ -8,7 +8,9 @@
       </v-list-item-icon>
 
       <v-list-item-content>
-        <v-list-item-title class="text-wrap">{{ $t('app.general.btn.adjust_layout') }}</v-list-item-title>
+        <v-list-item-title class="text-wrap">
+          {{ $t('app.general.btn.adjust_layout') }}
+        </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
   </v-list>

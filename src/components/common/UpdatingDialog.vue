@@ -5,7 +5,8 @@
     persistent
   >
     <v-card
-      :loading="(updating) ? 'primary' : false">
+      :loading="(updating) ? 'primary' : false"
+    >
       <v-card-title>
         <span class="headline">{{ title }}</span>
       </v-card-title>
@@ -15,12 +16,19 @@
           key-field="id"
           :height="250"
           readonly
-        ></console>
+        />
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <slot name="actions">
-          <app-btn color="primary" text @click="close" :disabled="updating">{{ buttonTitle }}</app-btn>
+          <app-btn
+            color="primary"
+            text
+            :disabled="updating"
+            @click="close"
+          >
+            {{ buttonTitle }}
+          </app-btn>
         </slot>
       </v-card-actions>
     </v-card>

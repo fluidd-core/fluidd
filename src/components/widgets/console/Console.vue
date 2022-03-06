@@ -1,25 +1,25 @@
 <template>
   <div
-    class="console">
+    class="console"
+  >
     <console-command
       v-if="!readonly && flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
-    >
-    </console-command>
+    />
     <v-card
+      ref="console-wrapper"
       flat
       class="console-wrapper"
-      ref="console-wrapper"
     >
       <DynamicScroller
         ref="scroller"
         :items="flipLayout ? [...items].reverse() : items"
         :min-item-size="24"
-        @resize="scrollToLatest()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
         :buffer="600"
+        @resize="scrollToLatest()"
       >
         <template v-slot="{ item, index, active }">
           <DynamicScrollerItem
@@ -31,12 +31,11 @@
             :data-index="index"
           >
             <console-item
-              :value="item"
               :key="item[keyField]"
-              @click="handleEntryClick"
+              :value="item"
               class="console-item"
-            >
-            </console-item>
+              @click="handleEntryClick"
+            />
           </DynamicScrollerItem>
         </template>
       </DynamicScroller>
@@ -45,8 +44,7 @@
       v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
-    >
-    </console-command>
+    />
   </div>
 </template>
 

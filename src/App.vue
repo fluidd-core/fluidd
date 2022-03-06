@@ -1,13 +1,16 @@
 <template>
-  <v-app v-if="loading"></v-app>
-  <v-app v-else class="fluidd">
-    <app-tools-drawer v-model="toolsdrawer"></app-tools-drawer>
-    <app-nav-drawer v-model="navdrawer"></app-nav-drawer>
+  <v-app v-if="loading" />
+  <v-app
+    v-else
+    class="fluidd"
+  >
+    <app-tools-drawer v-model="toolsdrawer" />
+    <app-nav-drawer v-model="navdrawer" />
 
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
       @navdrawer="handleNavDrawerChange"
-    ></app-bar>
+    />
 
     <flash-message
       v-if="flashMessage"
@@ -22,7 +25,8 @@
       x-small
       fab
       fixed
-      bottom left
+      bottom
+      left
       class="ml-2 mb-2"
       color="error"
       @click="emergencyStop()"
@@ -35,38 +39,39 @@
       <v-container
         fluid
         :class="{ 'fill-height': $route.meta.fillHeight }"
-        class="constrained-width pa-2 pa-sm-4">
-
-        <v-row v-if="
-          (socketConnected && apiConnected) &&
-          (!klippyReady || hasWarnings) &&
-          !inLayout &&
-          $route.path !== '/login'
-        ">
+        class="constrained-width pa-2 pa-sm-4"
+      >
+        <v-row
+          v-if="
+            (socketConnected && apiConnected) &&
+              (!klippyReady || hasWarnings) &&
+              !inLayout &&
+              $route.path !== '/login'
+          "
+        >
           <v-col>
-            <klippy-status-card></klippy-status-card>
+            <klippy-status-card />
           </v-col>
         </v-row>
 
         <router-view
           v-if="
             (socketConnected && apiConnected) ||
-            (!authenticated && apiConnected)
-          ">
-        </router-view>
-
+              (!authenticated && apiConnected)
+          "
+        />
       </v-container>
 
       <socket-disconnected
         v-if="
           (!socketConnected && !apiConnected) ||
-          (!socketConnected && authenticated)"
-      ></socket-disconnected>
+            (!socketConnected && authenticated)"
+      />
 
-      <updating-dialog></updating-dialog>
+      <updating-dialog />
     </v-main>
 
-    <app-footer></app-footer>
+    <app-footer />
   </v-app>
 </template>
 

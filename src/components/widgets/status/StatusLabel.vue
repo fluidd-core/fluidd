@@ -4,9 +4,12 @@
       class="label body-2 secondary--text"
       :style="`width: ${labelWidth}; min-width: ${labelWidth};`"
       v-html="label"
-    ></span>
-    <span class="value"><slot></slot></span>
-    <span class="value" v-if="!this.$slots.default">--</span>
+    />
+    <span class="value"><slot /></span>
+    <span
+      v-if="!this.$slots.default"
+      class="value"
+    >--</span>
   </v-layout>
 </template>
 

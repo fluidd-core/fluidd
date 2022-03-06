@@ -3,46 +3,57 @@
     <gcode-preview-control-checkbox
       :disabled="disabled || !printerFileLoaded"
       name="followProgress"
-      :label="$t('app.gcode.label.follow_progress')"/>
+      :label="$t('app.gcode.label.follow_progress')"
+    />
 
     <gcode-preview-control-checkbox
       :disabled="disabled"
       name="showNextLayer"
-      :label="$t('app.gcode.label.show_next_layer')"/>
+      :label="$t('app.gcode.label.show_next_layer')"
+    />
 
     <gcode-preview-control-checkbox
       :disabled="disabled"
       name="showPreviousLayer"
-      :label="$t('app.gcode.label.show_previous_layer')"/>
+      :label="$t('app.gcode.label.show_previous_layer')"
+    />
 
     <gcode-preview-control-checkbox
       :disabled="disabled"
       name="showMoves"
-      :label="$t('app.gcode.label.show_moves')"/>
+      :label="$t('app.gcode.label.show_moves')"
+    />
 
     <gcode-preview-control-checkbox
       :disabled="disabled"
       name="showExtrusions"
-      :label="$t('app.gcode.label.show_extrusions')"/>
+      :label="$t('app.gcode.label.show_extrusions')"
+    />
 
     <gcode-preview-control-checkbox
       :disabled="disabled"
       name="showRetractions"
-      :label="$t('app.gcode.label.show_retractions')"/>
+      :label="$t('app.gcode.label.show_retractions')"
+    />
 
     <app-btn
       :disabled="!printerFile || printerFileLoaded"
+      color="primary"
+      class="mt-3"
+      block
+      small
       @click="loadCurrent"
-      color="primary" class="mt-3" block small>
+    >
       {{ $t('app.gcode.btn.load_current_file') }}
     </app-btn>
 
     <app-btn
       :disabled="noMoves"
-      @click="resetFile"
       color="secondary"
       class="mt-3"
-      block>
+      block
+      @click="resetFile"
+    >
       {{ $t('app.general.btn.reset_file') }}
     </app-btn>
   </div>

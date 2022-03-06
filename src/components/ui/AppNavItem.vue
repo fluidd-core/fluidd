@@ -1,5 +1,8 @@
 <template>
-  <v-tooltip right :disabled="isMobile">
+  <v-tooltip
+    right
+    :disabled="isMobile"
+  >
     <template v-slot:activator="{ attrs, on }">
       <v-list-item
         :to="to"
@@ -14,11 +17,11 @@
         </v-list-item-icon>
 
         <v-list-item-content>
-          <v-list-item-title><slot></slot></v-list-item-title>
+          <v-list-item-title><slot /></v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </template>
-    <span><slot></slot></span>
+    <span><slot /></span>
   </v-tooltip>
 
   <!-- <v-tooltip right :disabled="isMobile">

@@ -1,19 +1,25 @@
 <template>
-  <v-row :dense="$vuetify.breakpoint.smAndDown" justify="center">
-    <v-col cols="12" lg="8">
+  <v-row
+    :dense="$vuetify.breakpoint.smAndDown"
+    justify="center"
+  >
+    <v-col
+      cols="12"
+      lg="8"
+    >
       <router-view v-if="authenticated && socketConnected" />
       <div v-if="$route.matched.length === 1">
-        <general-settings></general-settings>
-        <console-settings></console-settings>
-        <theme-settings></theme-settings>
-        <file-editor-settings></file-editor-settings>
-        <auth-settings v-if="supportsAuth"></auth-settings>
-        <macro-categories></macro-categories>
-        <cameras></cameras>
-        <toolhead-settings></toolhead-settings>
-        <preset-settings></preset-settings>
-        <gcode-preview-settings></gcode-preview-settings>
-        <version-settings v-if="supportsVersions"></version-settings>
+        <general-settings />
+        <console-settings />
+        <theme-settings />
+        <file-editor-settings />
+        <auth-settings v-if="supportsAuth" />
+        <macro-categories />
+        <cameras />
+        <toolhead-settings />
+        <preset-settings />
+        <gcode-preview-settings />
+        <version-settings v-if="supportsVersions" />
       </div>
     </v-col>
   </v-row>

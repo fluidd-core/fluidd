@@ -1,21 +1,21 @@
 <template>
   <collapsable-card
     :title="$t('app.system_info.label.system_utilization')"
-    icon="$chart">
-
+    icon="$chart"
+  >
     <v-card-text>
       <v-row>
-        <system-load-chart></system-load-chart>
-        <klipper-load-chart></klipper-load-chart>
-        <moonraker-load-chart></moonraker-load-chart>
-        <system-memory-chart></system-memory-chart>
+        <system-load-chart />
+        <klipper-load-chart />
+        <moonraker-load-chart />
+        <system-memory-chart />
         <template
           v-for="(mcu, i) in mcus"
         >
           <mcu-load-chart
             :key="i"
             :mcu="mcu.name"
-          ></mcu-load-chart>
+          />
         </template>
       </v-row>
 

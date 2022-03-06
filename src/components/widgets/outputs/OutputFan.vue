@@ -6,13 +6,12 @@
       input-xs
       :value="value"
       :reset-value="0"
-      @change="handleChange"
       :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
       :rules="rules"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
-    >
-    </app-slider>
+      @change="handleChange"
+    />
 
     <v-layout
       v-if="!fan.controllable"
@@ -23,11 +22,16 @@
         {{ fan.prettyName }}
       </div>
       <div class="ml-auto">
-        <small v-if="rpm" class="mr-2">{{ rpm }}</small>
-        <span class="focus--text" v-html="prettyValue"></span>
+        <small
+          v-if="rpm"
+          class="mr-2"
+        >{{ rpm }}</small>
+        <span
+          class="focus--text"
+          v-html="prettyValue"
+        />
       </div>
     </v-layout>
-
   </div>
 </template>
 

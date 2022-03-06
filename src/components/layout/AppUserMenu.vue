@@ -7,9 +7,12 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         v-bind="attrs"
+        fab
+        text
+        small
         v-on="on"
-        fab text small
-        @click="$emit('drawer')">
+        @click="$emit('drawer')"
+      >
         <v-icon>$account</v-icon>
       </v-btn>
     </template>
@@ -17,12 +20,22 @@
     <v-card>
       <v-card-text class="text-center">
         <div>
-          <v-icon large>$account</v-icon>
+          <v-icon large>
+            $account
+          </v-icon>
         </div>
         <span class="text-h5">{{ currentUser }}</span>
 
-        <div class="mt-3" v-if="!isTrustedOnly">
-          <app-btn small @click="$emit('change-password')">Change password</app-btn>
+        <div
+          v-if="!isTrustedOnly"
+          class="mt-3"
+        >
+          <app-btn
+            small
+            @click="$emit('change-password')"
+          >
+            Change password
+          </app-btn>
         </div>
       </v-card-text>
 
@@ -43,11 +56,12 @@
 
         <v-list-item v-if="!isTrustedOnly">
           <v-list-item-content class="justify-center">
-            <app-btn @click="handleLogout">Logout</app-btn>
+            <app-btn @click="handleLogout">
+              Logout
+            </app-btn>
           </v-list-item-content>
         </v-list-item>
       </v-list>
-
     </v-card>
   </v-menu>
 </template>

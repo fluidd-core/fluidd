@@ -1,18 +1,19 @@
 <template>
   <div>
-    <v-subheader id="toolhead">{{ $t('app.setting.title.tool') }}</v-subheader>
+    <v-subheader id="toolhead">
+      {{ $t('app.setting.title.tool') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.invert_x_control')">
         <v-switch
           v-model="invertX"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -22,8 +23,7 @@
           v-model="invertY"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -33,8 +33,7 @@
           v-model="invertZ"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -42,13 +41,13 @@
       <app-setting
         :title="$t('app.setting.label.gcode_coords')"
         :sub-title="$t('app.setting.tooltip.gcode_coords')"
-        :r-cols="2">
+        :r-cols="2"
+      >
         <v-switch
           v-model="useGcodeCoords"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -56,14 +55,14 @@
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
         <v-text-field
           :value="defaultExtrudeLength"
-          @change="setDefaultExtrudeLength"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+          @change="setDefaultExtrudeLength"
+        />
       </app-setting>
 
       <v-divider />
@@ -71,14 +70,14 @@
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
         <v-text-field
           :value="defaultExtrudeSpeed"
-          @change="setDefaultExtrudeSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+          @change="setDefaultExtrudeSpeed"
+        />
       </app-setting>
 
       <v-divider />
@@ -87,14 +86,14 @@
         <v-select
           :value="defaultToolheadMoveLength"
           :items="[0.1, 1.0, 10, 25, 50, 100]"
-          @change="setDefaultToolheadMoveLength"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-select>
+          @change="setDefaultToolheadMoveLength"
+        />
       </app-setting>
 
       <v-divider />
@@ -102,14 +101,14 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
         <v-text-field
           :value="defaultToolheadXYSpeed"
-          @change="setDefaultToolheadYXSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+          @change="setDefaultToolheadYXSpeed"
+        />
       </app-setting>
 
       <v-divider />
@@ -117,14 +116,14 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
         <v-text-field
           :value="defaultToolheadZSpeed"
-          @change="setDefaultToolheadZSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+          @change="setDefaultToolheadZSpeed"
+        />
       </app-setting>
 
       <v-divider />
@@ -141,14 +140,14 @@
           append-icon=""
           deletable-chips
           :rules="[
-              v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-              v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
-              v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
+            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
+            v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
+            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
           ]"
-        ></v-combobox>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
@@ -160,7 +159,6 @@
           {{ $t('app.setting.btn.reset') }}
         </app-btn>
       </app-setting>
-
     </v-card>
   </div>
 </template>

@@ -3,8 +3,9 @@
     :title="$t('app.general.title.limits')"
     icon="$limits"
     :draggable="true"
-    layout-path="dashboard.printer-limits-card">
-    <printer-limits></printer-limits>
+    layout-path="dashboard.printer-limits-card"
+  >
+    <printer-limits />
   </collapsable-card>
 </template>
 

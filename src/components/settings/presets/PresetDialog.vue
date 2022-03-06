@@ -6,8 +6,8 @@
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave(preset)"
       v-model="valid"
+      @submit.prevent="handleSave(preset)"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -21,22 +21,23 @@
             hide-details="auto"
             filled
             dense
-          >
-          </v-text-field>
+          />
         </app-setting>
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <template
           v-for="(item, i) in heaters"
         >
-          <app-setting :title="item.name" :key="i + 'heater'">
+          <app-setting
+            :key="i + 'heater'"
+            :title="item.name"
+          >
             <v-checkbox
               v-model="preset.values[item.name].active"
               hide-details
               class="ma-0"
-            >
-            </v-checkbox>
+            />
 
             <v-text-field
               v-model.number="preset.values[item.name].value"
@@ -47,24 +48,24 @@
               class="mb-2"
               outlined
               dense
-            >
-            </v-text-field>
+            />
           </app-setting>
 
-          <v-divider :key="i + 'heaterd'"></v-divider>
-
+          <v-divider :key="i + 'heaterd'" />
         </template>
 
         <template
           v-for="(item, i) in fans"
         >
-          <app-setting :title="item.name" :key="i + 'fan'">
+          <app-setting
+            :key="i + 'fan'"
+            :title="item.name"
+          >
             <v-checkbox
               v-model="preset.values[item.name].active"
               hide-details
               class="ma-0"
-            >
-            </v-checkbox>
+            />
 
             <v-text-field
               v-model.number="preset.values[item.name].value"
@@ -75,11 +76,10 @@
               class="mb-2"
               outlined
               dense
-            >
-            </v-text-field>
+            />
           </app-setting>
 
-          <v-divider :key="i + 'fand'"></v-divider>
+          <v-divider :key="i + 'fand'" />
         </template>
 
         <app-setting :title="$t('app.setting.label.thermal_preset_gcode')">
@@ -89,14 +89,25 @@
             hide-details="auto"
             class="mb-2"
             outlined
-          >
-          </v-textarea>
+          />
         </app-setting>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit">{{ (preset.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            type="button"
+            @click="$emit('input', false)"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+          >
+            {{ (preset.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+          </app-btn>
         </v-card-actions>
       </v-card>
     </v-form>

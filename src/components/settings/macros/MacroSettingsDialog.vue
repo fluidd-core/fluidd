@@ -1,14 +1,14 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="480"
     persistent
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave"
       v-model="valid"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -29,13 +29,13 @@
           :title="$t('app.general.label.alias')"
         >
           <v-text-field
-            outlined
             v-model="newMacro.alias"
+            outlined
             filled
             dense
             single-line
             hide-details
-          ></v-text-field>
+          />
         </app-setting>
 
         <v-divider />
@@ -44,14 +44,14 @@
           :title="$t('app.general.label.category')"
         >
           <v-select
-            :items="categories"
             v-model="newMacro.categoryId"
+            :items="categories"
             hide-details
             dense
             filled
             item-value="id"
             item-text="name"
-          ></v-select>
+          />
         </app-setting>
 
         <v-divider />
@@ -63,8 +63,8 @@
             outlined
             small
             color="primary"
-            @click="handleResetColor"
             class="mr-1"
+            @click="handleResetColor"
           >
             {{ $t('app.setting.btn.reset') }}
           </app-btn>
@@ -72,8 +72,7 @@
             :title="$t('app.general.btn.set_color')"
             :primary="color"
             @change="handleColorChange"
-          >
-          </app-color-picker>
+          />
         </app-setting>
 
         <v-divider />
@@ -97,11 +96,11 @@
           :title="$t('app.general.label.disabled_while_printing')"
         >
           <v-switch
-            class="mt-0 pt-0"
             v-model="newMacro.disabledWhilePrinting"
+            class="mt-0 pt-0"
             color="primary"
             hide-details
-          ></v-switch>
+          />
         </app-setting>
 
         <v-divider />
@@ -110,21 +109,30 @@
           :title="$t('app.general.label.visible')"
         >
           <v-switch
-            class="mt-0 pt-0"
             v-model="newMacro.visible"
+            class="mt-0 pt-0"
             color="primary"
             hide-details
-          ></v-switch>
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions class="px-4">
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button" v-html="$t('app.general.btn.cancel')"></app-btn>
-          <app-btn color="primary" type="submit" v-html="$t('app.general.btn.save')"></app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            type="button"
+            @click="$emit('input', false)"
+            v-html="$t('app.general.btn.cancel')"
+          />
+          <app-btn
+            color="primary"
+            type="submit"
+            v-html="$t('app.general.btn.save')"
+          />
         </v-card-actions>
-
       </v-card>
     </v-form>
   </v-dialog>

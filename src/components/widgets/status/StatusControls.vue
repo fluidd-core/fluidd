@@ -1,57 +1,87 @@
 <template>
   <app-btn-collapse-group>
-  <div>
-    <app-btn
-      @click="cancelPrint()"
-      v-if="printerPrinting || printerPaused"
-      :loading="hasWait($waits.onPrintCancel)"
-      :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-      small
-      class="ma-1">
-      <v-icon small left>$cancelled</v-icon>
-      <span>{{ $t('app.general.btn.cancel') }}</span>
-    </app-btn>
+    <div>
+      <app-btn
+        v-if="printerPrinting || printerPaused"
+        :loading="hasWait($waits.onPrintCancel)"
+        :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
+        small
+        class="ma-1"
+        @click="cancelPrint()"
+      >
+        <v-icon
+          small
+          left
+        >
+          $cancelled
+        </v-icon>
+        <span>{{ $t('app.general.btn.cancel') }}</span>
+      </app-btn>
 
-    <app-btn
-      @click="pausePrint()"
-      v-if="printerPrinting && !printerPaused"
-      :loading="hasWait($waits.onPrintPause)"
-      :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-      small
-      class="ma-1">
-      <v-icon small left>$pause</v-icon>
-      <span>{{ $t('app.general.btn.pause') }}</span>
-    </app-btn>
+      <app-btn
+        v-if="printerPrinting && !printerPaused"
+        :loading="hasWait($waits.onPrintPause)"
+        :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
+        small
+        class="ma-1"
+        @click="pausePrint()"
+      >
+        <v-icon
+          small
+          left
+        >
+          $pause
+        </v-icon>
+        <span>{{ $t('app.general.btn.pause') }}</span>
+      </app-btn>
 
-    <app-btn
-      @click="resumePrint()"
-      v-if="printerPaused"
-      :loading="hasWait($waits.onPrintResume)"
-      :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-      small
-      class="ma-1">
-      <v-icon small left>$resume</v-icon>
-      <span>{{ $t('app.general.btn.resume') }}</span>
-    </app-btn>
+      <app-btn
+        v-if="printerPaused"
+        :loading="hasWait($waits.onPrintResume)"
+        :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
+        small
+        class="ma-1"
+        @click="resumePrint()"
+      >
+        <v-icon
+          small
+          left
+        >
+          $resume
+        </v-icon>
+        <span>{{ $t('app.general.btn.resume') }}</span>
+      </app-btn>
 
-    <app-btn
-      @click="resetFile()"
-      v-if="!printerPrinting && !printerPaused && filename"
-      small
-      class="ma-1">
-      <v-icon small left>$refresh</v-icon>
-      <span>{{ $t('app.general.btn.reset_file') }}</span>
-    </app-btn>
+      <app-btn
+        v-if="!printerPrinting && !printerPaused && filename"
+        small
+        class="ma-1"
+        @click="resetFile()"
+      >
+        <v-icon
+          small
+          left
+        >
+          $refresh
+        </v-icon>
+        <span>{{ $t('app.general.btn.reset_file') }}</span>
+      </app-btn>
 
-    <app-btn
-      v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
-      @click="$emit('print', filename)"
-      small
-      class="ma-1">
-      <v-icon small left>$reprint</v-icon>
-      <span>{{ $t('app.general.btn.reprint') }}</span>
-    </app-btn>
-  </div>
+      <app-btn
+        v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
+        small
+        class="ma-1"
+        @click="$emit('print', filename)"
+      >
+        <v-icon
+          small
+          left
+        >
+          $reprint
+        </v-icon>
+        <span>{{ $t('app.general.btn.reprint') }}</span>
+      </app-btn>
+    </div>
   </app-btn-collapse-group>
 </template>
 

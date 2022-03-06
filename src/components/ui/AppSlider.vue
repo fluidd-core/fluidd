@@ -11,14 +11,13 @@
         sm="5"
         align-self="center"
         class="text-body-1 py-0"
-        v-html="label">
-      </v-col>
+        v-html="label"
+      />
 
       <!-- Current value -->
       <v-col
         class="py-0"
       >
-
         <v-text-field
           v-model="internalValue"
           :suffix="suffix"
@@ -26,14 +25,14 @@
           :readonly="isLocked"
           :disabled="disabled || loading || isLocked"
           :step="step"
-          @change="handleChange($event)"
-          @focus="$event.target.select()"
           class="v-input--text-right"
           type="number"
           dense
           single-line
           outlined
           hide-details
+          @change="handleChange($event)"
+          @focus="$event.target.select()"
         >
           <template v-slot:prepend>
             <v-btn
@@ -41,44 +40,53 @@
               icon
               small
               :disabled="false"
-              @click="lockState = !lockState"
               style="margin-top: -4px;"
+              @click="lockState = !lockState"
             >
-              <v-icon small v-if="isLocked">$pencil</v-icon>
-              <v-icon small v-else>$lockReset</v-icon>
+              <v-icon
+                v-if="isLocked"
+                small
+              >
+                $pencil
+              </v-icon>
+              <v-icon
+                v-else
+                small
+              >
+                $lockReset
+              </v-icon>
             </v-btn>
 
             <app-btn
               v-if="resetValue !== undefined"
-              @click="handleReset"
               :disabled="disabled"
               style="margin-top: -4px;"
               color=""
               icon
               small
+              @click="handleReset"
             >
-              <v-icon small>$reset</v-icon>
+              <v-icon small>
+                $reset
+              </v-icon>
             </app-btn>
-
           </template>
         </v-text-field>
       </v-col>
     </v-row>
 
     <v-slider
+      ref="slider"
       v-model="internalValue"
       :rules="rules"
       :min="min"
       :max="internalMax"
       :step="step"
       :disabled="disabled || loading || isLocked || overridden"
-      @change="handleChange($event)"
-      ref="slider"
       dense
       hide-details
-    >
-    </v-slider>
-
+      @change="handleChange($event)"
+    />
   </v-form>
 </template>
 
