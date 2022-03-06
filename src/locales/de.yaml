@@ -48,7 +48,7 @@ app:
   endpoint:
     error:
       cant_connect: >-
-        Etwas ist schief gelaufen und Fluidd kann die Adresse nicht erreichen.
+        Etwas ist schiefgelaufen und Fluidd kann die Adresse nicht erreichen.
         Sind Sie sicher, dass dies die richtige Adresse ist?
       cors_error: durch CORS-Richtlinie blockiert
       cors_note: >-
@@ -171,11 +171,12 @@ app:
       upload: Hochladen
       upload_print: Hochladen & Drucken
       view: Ansicht
+      reset_stats: Statistik zurücksetzen
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
         target="_blank" href="%{url}">hier.</a>
-      app_warnings_found: '%{appName} Warnungen gefunden.'
+      app_warnings_found: '%{appName}-Warnungen gefunden.'
       components_config: >-
         Die Konfiguration des Moonraker-Plugins finden Sie <a target="_blank"
         href="%{url}">hier.</a>
@@ -185,13 +186,15 @@ app:
     label:
       accel_to_decel: Beschleunigen zu Bremsen
       acceleration: Beschleunigung
-      actual_time: Tatsächlich
+      actual_time: Wirklich
       add_camera: Kamera hinzufügen
+      add_filter: Filter hinzufügen
       add_preset: Voreinstellingen hinzufügen
       add_user: Benutzer hinzufügen
       alias: Alias
       api_key: API-Schlüssel
       api_url: API-URL
+      apply_z_offset: Z-Offset übernehmen und speichern
       category: Kategorie
       change_password: Passwort ändern
       clear_all: Alle schließen
@@ -200,6 +203,7 @@ app:
       current_password: Aktuelles Passwort
       disabled_while_printing: Während Druck deaktiviert
       edit_camera: Kamera bearbeiten
+      edit_filter: Filter bearbeiten
       edit_preset: Voreinstellungen bearbeiten
       edit_user: Benutzer bearbeiten
       extrude_length: Extrusionslänge
@@ -207,7 +211,7 @@ app:
       filament: Filament
       file: Datei
       finish_time: Fertig um
-      flow: Flow
+      flow: Fluss
       free: frei
       heaters_busy: >-
         Der Drucker ist momentan beschäftigt.
@@ -228,11 +232,11 @@ app:
       power: Leistung
       printers: Drucker
       progress: Fortschritt
-      requested_speed: Gewünschte Geschwindigkeit
+      requested_speed: Geschw.
       retract_length: Retract-Länge
       retract_speed: Retract-Geschwindigkeit
       save_as: Speichern als
-      services: Services
+      services: Dienste
       slicer: Slicer
       speed: Geschwindigkeit
       sqv: Geschwindigkeit bei rechtwinkligen Ecken
@@ -260,6 +264,7 @@ app:
       error:
         arrayofnums: Nur Zahlen
         exists: Existiert bereits
+        invalid_expression: Ungültiger Ausdruck
         invalid_url: Ungültige URL
         max: Max %{max}
         min: Min %{min}
@@ -267,9 +272,17 @@ app:
         password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
       msg:
+        apply_z_offset_endstop: >-
+          Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
+          aktualisiert.
+        apply_z_offset_probe: >-
+          Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
+          aktualisiert.
         confirm: Sind Sie sicher?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
+        confirm_service_restart: Möchten Sie den Dienst %{name} wirklich neu starten?
+        confirm_service_stop: Möchten Sie den Dienst %{name} wirklich beenden?
         confirm_shutdown_host: Sind Sie sicher? Das Host-System wird heruntergefahren.
         unsaved_changes: >-
           Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie den
@@ -282,9 +295,9 @@ app:
         filament: Filament
         filament_used: Filament verbraucht
         filament_weight_total: Filamentgewicht
-        first_layer_bed_temp: Erster Layer Bett Temparatur
-        first_layer_extr_temp: Erster Layer Extruder Temparatiur
-        first_layer_height: Erster Layer höhe
+        first_layer_bed_temp: Erste Schicht Bett-Temperatur
+        first_layer_extr_temp: Erste Schicht Extruder-Temperatur
+        first_layer_height: Erste Schichtöhe
         height: Höhe
         last_printed: Zuletzt gedruckt
         layer_height: Schichthöhe
@@ -293,7 +306,7 @@ app:
         print_duration: Druckdauer
         size: Größe
         slicer: Slicer
-        slicer_version: Slicer version
+        slicer_version: Slicer-Version
         start_time: Gestartet
         status: Status
         total_duration: Gesamtdauer
@@ -311,12 +324,13 @@ app:
       history: Auftragsverlauf
       home: Dashboard
       jobs: Aufträge
-      limits: Drucker Limits
+      limits: Drucker-Limits
       macros: Makros
+      other_files: Andere Dateien
       retract: Firmware-Retraction
-      runout_sensors: Runout Sensoren
+      runout_sensors: Runout-Sensoren
       settings: Einstellungen
-      stats: Druckerstatus
+      stats: Statistik
       system: System
       system_overview: Systeminformationen
       temperature: Temperaturen
@@ -328,7 +342,9 @@ app:
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
   history:
-    msg: {}
+    msg:
+      confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
+      confirm_stats: Sind Sie sicher? Dadurch wird die Statistik gelöscht.
   printer:
     state:
       busy: Beschäftigt
@@ -342,6 +358,8 @@ app:
   setting:
     btn:
       add_camera: Kamera hinzufügen
+      add_category: Kategorie hinzufügen
+      add_filter: Filter hinzufügen
       add_thermal_preset: Voreinstellungen hinzufügen
       add_user: Benutzer hinzufügen
       reset: Zurücksetzen
@@ -368,6 +386,7 @@ app:
       confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen bestätigen
       confirm_on_estop: Bestätigung bei Notaus anfordern
       confirm_on_power_device_change: Bestätigung bei Änderung eines Gerätestatus anfordern
+      contains: Enthält
       dark_mode: Nachtmodus
       date_time_format: Datum- und Zeitformat
       default_extrude_length: Standard Extrudierlänge
@@ -378,12 +397,15 @@ app:
       draw_background: Hintergrund anzeigen
       enable: Aktivieren
       enable_notifications: Aktiviere Benachrichtigung
+      expression: Ausdruck
       extrusion_line_width: Extrusionslinien-Dicke
+      filter: Filter
       flip_horizontal: Horizontal spiegeln
       flip_vertical: Vertikal spiegeln
       fps_target: FPS Ziel
       fps_idle_target: FPS Ziel im Ruhezustand
-      gcode_coords: GCode Koordinaten verwenden
+      gcode_coords: GCode-Koordinaten verwenden
+      group_lower_layers: Untere Schichten zusammenfassen
       height: Höhe
       invert_x_control: X-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren
@@ -396,9 +418,11 @@ app:
       retraction_icon_size: Retraction-Symbolgröße
       show_animations: Animationen anzeigen
       show_rate_of_change: Temperatur-Änderungsrate anzeigen
+      starts_with: Beginnt mit
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode
       thermal_preset_name: Name des Voreinstellungsprofils
+      type: Art
       z_adjust_values: Z-Werte anpassen
     timer_options:
       duration: Nur Dauer
@@ -408,6 +432,7 @@ app:
     title:
       authentication: Authentifizierung
       camera: Kamera | Kameras
+      console: Konsole
       gcode_preview: Gcode-Vorschau
       general: Allgemein
       file_editor: Datei-Editor
@@ -470,7 +495,7 @@ app:
       dirty: VERUNREINIGT
       invalid: UNZULÄSSIG
       os_packages: Betriebssystem-Pakete
-      package_list: Packet Liste
+      package_list: Paketliste
       up_to_date: AKTUELL
       updates_available: Updates sind verfügbar
     status:
@@ -478,7 +503,7 @@ app:
       updating: Aktualisieren...
     title: Softwareaktualisierungen
     tooltip:
-      commit_history: Commit-Vergangenheit
+      commit_history: Commit-Verlauf
       dirty: >-
         Deutet auf einen Fehler in Bezug auf das Git-Repository hin (z.B.
         detached head, not on master, invalid origin)
