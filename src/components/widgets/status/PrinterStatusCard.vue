@@ -20,7 +20,7 @@
           <v-icon left>
             $printer3d
           </v-icon>
-          {{ printerState }}
+          {{ $t('app.printer.state.' + printerState) || printerState }}
         </v-tab>
         <v-tab
           v-if="supportsHistoryComponent"
