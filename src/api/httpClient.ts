@@ -25,6 +25,10 @@ const handledErrorRequests = [
 ]
 
 const requestInterceptor = async (config: AxiosRequestConfig) => {
+  if (!config.headers) {
+    config.headers = {}
+  }
+
   // Common headers.
   config.headers.Accept = 'application/json'
   config.headers['Content-Type'] = 'application/json'
