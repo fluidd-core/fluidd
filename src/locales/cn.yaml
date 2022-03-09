@@ -363,7 +363,7 @@ app:
       confirm_dirty_editor_close: 关闭编辑器时如果有未保存的更改则需要确认
       contains: 包含
       expression: 表达式
-      confirm_on_power_device_change: 改变设备开关状态需要确认
+      confirm_on_power_device_change: 改变设备开关状态时需要确认
       fps_idle_target: 窗口失去焦点时的预设FPS值
       show_rate_of_change: 显示温度变化
       starts_with: 起始字符
