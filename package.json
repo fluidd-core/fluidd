@@ -45,7 +45,7 @@
     "jwt-decode": "^3.1.2",
     "lodash": "^4.17.21",
     "md5": "^2.3.0",
-    "monaco-editor": "^0.31.1",
+    "monaco-editor": "^0.32.1",
     "monaco-editor-textmate": "^3.0.0",
     "monaco-textmate": "^3.0.1",
     "onigasm": "^2.2.5",
