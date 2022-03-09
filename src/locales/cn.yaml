@@ -20,13 +20,13 @@ app:
       save: 将校准的配置应用于printer.cfg。这将重新启动您的打印机
   chart:
     label:
-      current: 当前
+      current: 当前温度
       item: 名称
       power: 功率
-      target: 目标
+      target: 目标温度
       'off': 关闭图表
       'on': 开启图表
-      rate_of_change: 变化
+      rate_of_change: 变化值
     tooltip:
       help: 按住Shift键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
@@ -54,8 +54,8 @@ app:
         http://192.168.1.150</blockquote>
   endstop:
     label:
-      open: 断开
-      triggered: 触发
+      open: 未触发
+      triggered: 已触发
     msg:
       subtitle: 使用“刷新”按钮更新限位开关状态。
   file_system:
