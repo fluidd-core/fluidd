@@ -33,7 +33,7 @@ app:
     label:
       hide_temp_waits: 隐藏温度等待信息
       auto_scroll: 自动滚动
-      flip_layout: 改变输入框位置
+      flip_layout: 翻转布局
     placeholder:
       command: 按'tab'自动补全命令，按'↑↓'键获取历史命令，输入'help' 获取命令帮助
       scroll: 滚动到底部
@@ -214,7 +214,7 @@ app:
       apply_z_offset: 保存并应用 Z偏移设置
       edit_filter: 编辑过滤器
       heaters_busy: 正在打印，关闭此加热器可能会导致打印失败
-      'on': 启用？
+      'on': 开启
       unsaved_changes: 未保存的更改
     simple_form:
       error:
@@ -225,14 +225,14 @@ app:
         required: 必填
         password_username: 用户名密码不匹配
         exists: 用户已存在
-        arrayofnums: 仅显示数量？
+        arrayofnums: 仅显示数量
         invalid_expression: 无效的表达式
       msg:
         confirm: 确定吗？
         confirm_reboot_host: 确定吗？这将重启您的系统。
         confirm_shutdown_host: 确定吗？这将关闭您的系统。
-        apply_z_offset_endstop: 将会从当前设置计算并更新限位开关Z偏移？
-        apply_z_offset_probe: 将会从当前Z偏移计算并应用传感器和Bltouch的Z偏移？
+        apply_z_offset_endstop: 将会从当前设置计算并更新限位开关Z偏移
+        apply_z_offset_probe: 将会从当前Z偏移计算并应用传感器和Bltouch的Z偏移
         confirm_service_restart: 确定要重启 %{name} 服务吗？
         confirm_power_device_toggle: 是否确认要切换设备开关状态？
         unsaved_changes: 如果单击“是”，则会丢失未保存的更改。
@@ -297,7 +297,7 @@ app:
   history:
     msg:
       confirm_jobs: 确定要清除任务历史信息吗？
-      confirm_stats: 确定要清除打印状态统计信息吗？
+      confirm_stats: 确定要清除状态统计信息吗？
   printer:
     state:
       busy: 忙碌
@@ -363,12 +363,12 @@ app:
       confirm_dirty_editor_close: 关闭编辑器时如果有未保存的更改则需要确认
       contains: 包含
       expression: 表达式
-      confirm_on_power_device_change: 改变设备开关状态时需要确认
+      confirm_on_power_device_change: 改变设备开关状态需要确认
       fps_idle_target: 窗口失去焦点时的预设FPS值
       show_rate_of_change: 显示温度变化
-      starts_with: 起始字符？
+      starts_with: 起始字符
       type: 类型
-      group_lower_layers: 较低层编组显示？
+      group_lower_layers: 低层编组显示
       date_time_format: 日期和时间格式
       camera_rotate_by: 旋转角度
       filter: 过滤器
