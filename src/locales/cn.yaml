@@ -26,7 +26,7 @@ app:
       target: 目标
       'off': 关闭图表
       'on': 开启图表
-      rate_of_change: 变化值
+      rate_of_change: 变化
     tooltip:
       help: 按住Shift键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
