@@ -1,5 +1,6 @@
 import { ArcMove, Move, Point, Rotation } from '@/store/gcodePreview/types'
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export const binarySearch = (arr: any[], comp: Function, approx = false): number => {
   if (arr.length <= 1) {
     return 0

@@ -34,7 +34,7 @@
           :r-cols="2"
           @click="openEditDialog(preset)"
         >
-          <template v-slot:sub-title>
+          <template #sub-title>
             <span
               v-for="(value, k) in preset.values"
               v-show="value.active"

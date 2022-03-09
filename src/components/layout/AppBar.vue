@@ -42,7 +42,7 @@
         v-if="socketConnected && !isMobile && authenticated"
         bottom
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <app-btn
             v-if="!isMobile"
             :disabled="!klippyReady"
@@ -81,7 +81,7 @@
 
     <template
       v-if="inLayout"
-      v-slot:extension
+      #extension
     >
       <app-btn
         small

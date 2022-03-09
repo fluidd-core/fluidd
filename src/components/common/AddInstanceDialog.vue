@@ -31,7 +31,7 @@
             :loading="verifying"
             :rules="[rules.required, rules.url]"
           >
-            <template v-slot:append-outer>
+            <template #append-outer>
               <v-icon
                 v-if="verifying"
                 class="spin"

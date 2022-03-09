@@ -7,7 +7,7 @@
     :min-width="150"
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         :disabled="disabled"
         fab

@@ -4,7 +4,7 @@
       <v-tooltip
         bottom
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block
@@ -24,7 +24,7 @@
       <v-tooltip
         bottom
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block
@@ -44,7 +44,7 @@
       <v-tooltip
         bottom
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
             block

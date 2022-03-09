@@ -68,20 +68,12 @@ export const getters: GetterTree<ServerState, RootState> = {
 
     // ...now, try prefixes.
     if (!item) {
-      item = configMap.find(o => {
-        if (o.prefix) {
-          return filename.toLowerCase().startsWith(o.prefix.toLowerCase())
-        }
-      })
+      item = configMap.find(o => o.prefix && filename.toLowerCase().startsWith(o.prefix.toLowerCase()))
     }
 
     // Finally, try suffixes.
     if (!item) {
-      item = configMap.find(o => {
-        if (o.suffix) {
-          return filename.endsWith(o.suffix.toLowerCase())
-        }
-      })
+      item = configMap.find(o => o.suffix && filename.endsWith(o.suffix.toLowerCase()))
     }
 
     if (item) {

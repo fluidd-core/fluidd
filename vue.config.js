@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
-const ThreadsPlugin = require('threads-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
 
 const v = require('./package.json').version
@@ -33,6 +32,9 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map',
     resolve: {
+      fallback: {
+        path: require.resolve('path-browserify')
+      },
       symlinks: false // Don't follow symlinks, fixes issues when using npm link.
     },
     plugins: [
@@ -43,9 +45,6 @@ module.exports = {
       new GenerateFilePlugin({
         file: '.version',
         content: 'v' + v + '\n'
-      }),
-      new ThreadsPlugin({
-        globalObject: "(typeof self!='undefined'?self:this)"
       })
       // new BundleAnalyzerPlugin({
       //   analyzerMode:

@@ -21,7 +21,7 @@
         :buffer="600"
         @resize="scrollToLatest()"
       >
-        <template v-slot="{ item, index, active }">
+        <template #default="{ item, index, active }">
           <DynamicScrollerItem
             :item="item"
             :active="active"

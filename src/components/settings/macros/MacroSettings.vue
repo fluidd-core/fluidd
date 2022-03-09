@@ -66,7 +66,7 @@
         >
           <template
             v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
-            v-slot:sub-title
+            #sub-title
           >
             <span
               v-show="true"

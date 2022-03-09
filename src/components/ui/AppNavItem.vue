@@ -3,7 +3,7 @@
     right
     :disabled="isMobile"
   >
-    <template v-slot:activator="{ attrs, on }">
+    <template #activator="{ attrs, on }">
       <v-list-item
         :to="to"
         :exact="exact"

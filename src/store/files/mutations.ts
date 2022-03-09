@@ -51,7 +51,7 @@ export const mutations: MutationTree<FilesState> = {
         if (fileIndex >= 0) {
           Vue.set(directory.items, fileIndex, mergeFileUpdate(root, file, payload.file))
         } else {
-          directory.items.push(mergeFileUpdate(root, {}, payload.file))
+          directory.items.push(mergeFileUpdate(root, {} as any, payload.file))
         }
       }
     }

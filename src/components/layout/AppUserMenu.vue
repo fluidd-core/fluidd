@@ -4,7 +4,7 @@
     offset-y
     :close-delay="300"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         v-bind="attrs"
         fab

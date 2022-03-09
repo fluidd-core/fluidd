@@ -44,7 +44,7 @@
               color="transparent"
               small
             >
-              <template v-slot:icon>
+              <template #icon>
                 <v-icon
                   class="rotate-90"
                   color="secondary"
