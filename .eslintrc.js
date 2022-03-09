@@ -18,8 +18,7 @@ module.exports = {
     'vue/no-v-html': 0,
     'no-use-before-define': 0,
     '@typescript-eslint/camelcase': 0,
-    '@typescript-eslint/no-explicit-any': 0,
-    '@typescript-eslint/explicit-module-boundary-types': 0
+    '@typescript-eslint/no-explicit-any': 0
   },
   overrides: [
     {
