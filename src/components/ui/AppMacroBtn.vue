@@ -132,7 +132,7 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
       for (const [, name, rest] of this.macro.config.gcode.matchAll(/params\.(\w+)(.*)/gi)) {
         const valueMatch = /\|\s*default\s*\(\s*([^,)]+)/i.exec(rest)
 
-        const value = (valueMatch && valueMatch[1] ? valueMatch[1] : '').trim()
+        const value = (valueMatch && valueMatch[1] || '').trim()
 
         if (!this.params[name]) {
           this.$set(this.params, name, { value, reset: value })
