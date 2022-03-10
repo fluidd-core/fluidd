@@ -302,6 +302,18 @@ export const SocketActions = {
     )
   },
 
+  async identify () {
+    baseEmit('server.connection.identify', {
+      dispatch: 'socket/onConnectionId',
+      params: {
+        client_name: 'Fluidd',
+        version: store.state.version?.fluidd.version || '0.0.0',
+        type: 'web',
+        url: 'https://github.com/fluidd-core/fluidd'
+      }
+    })
+  },
+
   async serverConfig () {
     baseEmit(
       'server.config', {
