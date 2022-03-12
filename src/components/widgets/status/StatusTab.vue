@@ -332,7 +332,9 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
    */
   get layers () {
     const current_file = this.$store.state.printer.printer.current_file
-    if (
+    if ('layer_count' in current_file) {
+      return current_file.layer_count
+    } else if (
       'first_layer_height' in current_file &&
       'layer_height' in current_file &&
       'object_height' in current_file
