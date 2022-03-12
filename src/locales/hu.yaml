@@ -1,26 +1,36 @@
 app:
   bedmesh:
     label:
-      profile_name: Profil neve
-      remove_profile: '%{name} profil eltávolítása'
+      box_scale: Dobozmérleg
+      flat_surface: Lapos sík megjelenítése
+      mesh_matrix: Hálós mátrix
+      probed_matrix: Próbamátrix
+      profile_name: Profil Név
+      remove_profile: %{name} profil eltávolítása
+      scale: Színskála
+      wireframe: Drótkeret
     msg:
       hint: >-
         Ha nem a (z) %{name}fájlként menti, választhatja a (z) %{name} profil
         eltávolítását is
-      not_found: Nem találhatóak meglévő ágy Meshek.
+      not_found: Nem található meglévő ágyháló.
+      not_loaded: Nincs háló betöltve
     tooltip:
-      calibrate: Új kalibrálás indítása, "alapértelmezett"  profilként mentve
+      calibrate: Új kalibrálás indítása, "alapértelmezett" profilként mentve
       delete: Törlöm a profilt. Ezután ÚJRAIDÍTOM a nyomtatót!
-      load: Profil betöltése
+      load: Profil Betöltése
       save: >-
         A kalibrált profilt a printer.cfg fájlba írom. Ezután ÚJRAIDÍTOM a
         nyomtatót!
   chart:
     label:
       current: Aktuális
-      item: Tétel
-      power: Erősség
+      item: Név
+      'off': Táblázat KI
+      'on': Táblázat BE
+      power: Kapacitás
       target: Cél
+      rate_of_change: Csere
     tooltip:
       help: >-
         A nagyításhoz tartsd lenyomva a Shift billentyűt.<br />Kattints egy
@@ -28,10 +38,11 @@ app:
         grafikonon való megjelenítéshez.
   console:
     label:
-      hide_temp_waits: Felfűtésre várás elrejtése
+      auto_scroll: Automatikus görgetés
+      flip_layout: Flip elrendezés
+      hide_temp_waits: Hőmérsékletek elrejtése
     placeholder:
-      command: >-
-        Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
+      command: Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
         'help'-et, az előzményekhez 'arrows'-t.
   endpoint:
     error:
@@ -67,59 +78,97 @@ app:
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemez használat
+      diskinfo: Lemezinformációk
+      downloaded: Letöltve
       file_name: Fájl név
+      transfer_rate: Átviteli sebesség
+      uploaded: Feltöltve
     msg:
       confirm: Biztos vagy benne? Ez ki fogja törölni az összes fájlt és mappát.
-      not_found: Nem találhatóak fájlok.
-      processing: '1'
+      not_found: Nem találhatóak fájlok
+      processing: Feldolgozás
     overlay:
       label: Húzza <strong>ide</strong> a fájlt
     title:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
-      rename_dir: Könyvtár átnevezése
+      download_file: Fájl lekérése
+      keyboard_shortcuts: Gyorsbillentyűk
+      rename_dir: Címtár átnevezése
       rename_file: Fájl átnevezése
+      upload_file: Fájl feltöltése
     tooltip:
-      low_on_space: Kevés lemezterület
+      low_on_space: Kevés a lemezterület
+      root_disabled: '{root} root nem érhető el. Kérjük, ellenőrizze a naplóit.'
+  gcode:
+    btn:
+      load_current_file: Az aktuális fájl betöltése
+    label:
+      current_layer_height: Jelenlegi rétegmagasság
+      follow_progress: Kövesse az előrehaladást
+      layer: Réteg
+      layers: Rétegek
+      parsed: Elemezve
+      show_extrusions: Extrudálások megjelenítése
+      show_moves: Mozgások megjelenítése
+      show_next_layer: Következő réteg megjelenítése
+      show_previous_layer: Előző réteg megjelenítése
+      show_retractions: Visszahúzások megjelenítése
+    msg:
+      confirm: >-
+        A fájl "%{filename}" mérete %{size}, megterhelheti a rendszert.
+        Biztos, hogy folytatod?
   general:
     btn:
       add: Hozzáad
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
       add_printer: Nyomtató hozzáadása
-      adjust_layout: Az irányítópult elrendezésének beállítása
+      adjust_layout: Irányítópult elrendezésének beállítása
       all: Mindegyik
       calibrate: Kalibrálás
       cancel: Mégsem
-      clear_profile: Profil törlése
+      clear_profile: Profil Törlése
       close: Bezárás
-      config_reference: Beállítási referencia
+      config_reference: Konfigurációs hivatkozás
       download: Letöltés
-      edit: Szerkeszt
+      edit: Szerkesztés
+      exit_layout: Kilépés az elrendezés módból
       extrude: Extrudálás
+      heaters_off: Fűtések KI
+      load_all: Az összes betöltése
+      more_information: Több információ
       pause: Szünet
       preheat: Előfűtés
+      presets: Előbeállítások
+      preview_gcode: A Gcode előnézete
       quad_gantry_level: QGL
-      reboot: Újraindít
-      remove: Eltávolít
+      reboot: Újraindítás
+      refresh: Frissítés
+      remove: Eltávolítás
       remove_all: Összes eltávolítása
       rename: Átnevezés
-      reprint: Újranyomtat
-      reset_file: Fájl alaphelyzetbe állítása
+      reprint: Újranyomtatás
+      reset_file: Fájl törlése
       reset_layout: Elrendezés alaphelyzetbe állítása
       restart_firmware: Firmware újraindítása
+      restart_service: Újraindítás %{service}
       restart_service_klipper: Klipper újraindítása
       restart_service_moonraker: Moonraker újraindítása
       resume: Folytatás
-      retract: Retract/Visszahúzás
+      retract: Visszahúzás
       save: Mentés
       save_as: Mentés másként
-      save_restart: Mentés és újraindítás
+      save_restart: Mentés & Újraindítás
+      send: Küldés
+      set_color: Szín beállítása
       shutdown: Leállítás
+      socket_reconnect: Újracsatlakozás
       socket_refresh: Frissítés kényszerítése
       upload: Feltöltés
-      upload_print: Feltöltés és nyomtatás
+      upload_print: Feltöltés & Nyomtatás
       view: Nézet
+      reset_stats: Statisztika visszaállítása
     error:
       app_setup_link: >-
         A fluid telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -132,184 +181,319 @@ app:
         A Moonraker moduljai hibásak. Kérlek, ellenőrizd a naplókat, frissítsd a
         konfigurációt és indítsd újra a Moonrakert.
     label:
-      accel_to_decel: Gyorsulás és lassulás
+      accel_to_decel: Gyorsulás & Lassulás
       acceleration: Gyorsulás
+      actual_time: Tényleges
       add_camera: Kamera hozzáadása
-      add_preset: Előre beállított érték hozzáadása
-      api_url: API URL címe
-      confirm: Megerősítés
+      add_filter: Szűrő hozzáadása
+      add_preset: Előbeállítás hozzáadása
+      add_user: Felhasználó hozzáadása
+      api_key: Api kulcs
+      api_url: API URL
+      category: Kategória
+      change_password: Jelszó módosítása
+      clear_all: Mindent kitöröl
+      color: Szín
+      confirm: Megerősít
+      current_password: Jelenlegi jelszó
+      disabled_while_printing: Nyomtatás közben letiltva
       edit_camera: Kamera szerkesztése
-      edit_preset: Előre beállított érték szerkesztése
+      edit_filter: Szűrő szerkesztése
+      edit_preset: Előbeállítás szerkesztése
+      edit_user: Felhasználó szerkesztése
       extrude_length: Extrudálás hossza
       extrude_speed: Extrudálás sebessége
+      filament: Nyomtatószál
+      file: Fájl
+      finish_time: Befejezés
       flow: Átfolyás
       free: szabad
+      heaters_busy: A nyomtató jelenleg foglalt. A fűtőtestek kikapcsolása sikertelen nyomtatást eredményezhet.
       high: Magas
-      host: Gazda
+      host: Házigazda
+      layer: Réteg
       layout: Elrendezés
-      longest_job: Leghosszab meló
+      longest_job: A leghosszabb munka
       low: Alacsony
+      m117: M117
       name: Név
-      'off': Ki
-      power: Táp
+      new_password: Új jelszó
+      no_notifications: Nincsenek értesítések
+      'on': 'Be'
+      'off': 'Ki'
+      password: Jelszó
+      power: Áramellátás
       printers: Nyomtatók
-      requested_speed: Kért sebesség
+      progress: Folyamat
+      requested_speed: Sebesség
+      retract_length: Visszahúzás hossza
+      retract_speed: Visszahúzási sebesség
       save_as: Mentés másként
       services: Szolgáltatások
+      slicer: Szeletelő
       speed: Sebesség
-      sqv: Sebesség a Négyzet sarkainál
-      total_filament: A felhasznált összes filament
-      total_filament_avg: Átlag nyomtatásonként
+      sqv: Négyzet saroksebesség
+      total: Teljes
+      total_filament: Összes felhasznált nyomtatószál
+      total_filament_avg: Átl. nyomtatásonként
       total_jobs: Összes nyomtatási feladat
       total_print_time: Teljes nyomtatási idő
-      total_print_time_avg: Átlag nyomtatásonként
+      total_print_time_avg: Átl. nyomtatásonként
       total_time: Teljes idő
-      total_time_avg: Átlag nyomtatásonként
+      total_time_avg: Átl. nyomtatásonként
+      uncategorized: Nem kategorizált
+      unretract_extra_length: Extra hossz visszahúzása
+      unretract_speed: Visszahúzási sebesség
       used: használt
-      variance: Variálás
+      variance: Eltérés
       velocity: Sebesség
-      z_offset: Z eltolás
+      visible: Látható
+      z_offset: Z Eltolás
+      unsaved_changes: Nem mentett módosítások
+      alias: Álnév
+      apply_z_offset: Alkalmazza és mentse a Z eltolást
+    msg:
+      password_changed: A jelszó megváltozott
+      wrong_password: Hoppá! Valami rosszul sült el. Jó a jelszavad?
     simple_form:
       error:
+        arrayofnums: Csak számok
+        exists: Már létezik
         invalid_url: Érvénytelen URL
-        max: Max. %{max}
-        min: Min. %{min}
-        min_or_0: Min. %{min} or 0
-        required: Megkívánt
+        invalid_expression: Érvénytelen kifejezés
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} vagy 0
+        password_username: Nem egyezik a felhasználónévvel
+        required: Ajánlott
       msg:
         confirm: Biztos vagy benne?
-        confirm_reboot_host: Biztos vagy benne? Ez újra fogja indítani a gazda rendszert.
-        confirm_shutdown_host: Biztos vagy benne? Ez le fogja állítani a gazda rendszert.
+        confirm_reboot_host: Biztos vagy benne? Ezzel újraindítod a gazdagépet.
+        confirm_shutdown_host: Biztos vagy benne? Ezzel leállítod a gazdagépet.
+        confirm_service_restart: Biztos, hogy újraindítod a %{name} szolgáltatást?
+        confirm_service_stop: Biztos leállítod a %{name} szolgáltatást?
+        confirm_power_device_toggle: Biztos vagy benne? Ezzel átkapcsolod az eszköz teljesítményét.
+        unsaved_changes: Nem mentett módosításaid vannak. Biztosan bezárod ezt a fájlt?
+        apply_z_offset_endstop: >-
+          A végpont Z-eltolása az aktuális értékből lesz számítva és frissítve
+          a Z-eltolás.
+        apply_z_offset_probe: >-
+          A Probe/Bltouch Z-eltolás kiszámítása és frissítése az aktuális értékből
+          történik.
     table:
       header:
-        actions: Lehetőségek
+        actions: Akciók
+        end_time: Befejezett
         estimated_time: Becsült idő
-        filament_used: Filament
+        filament: Nyomtatószál
+        filament_used: Használt nyomtatószál
+        filament_weight_total: Nyomtatószál súlya
+        first_layer_bed_temp: Első réteg ágy hőmérséklet
+        first_layer_extr_temp: Első réteg extruder hőmérséklet
+        first_layer_height: Első réteg magassága
         height: Magasság
-        last_printed: Utoljára kinyomtatva
+        last_printed: Utoljára nyomtatott
         layer_height: Rétegmagasság
-        modified: Módosítva
+        modified: Módosított
         name: Név
         print_duration: Nyomtatás időtartama
         size: Méret
-        slicer: Slicer/Szeletelő
-        start_time: Elindítva
+        slicer: Szeletelő
+        slicer_version: Szeletelő verziója
+        start_time: Elindult
         status: Állapot
+        total_duration: Teljes időtartam
     title:
       add_printer: Nyomtató hozzáadása
-      bedmesh: Ágy Mesh-e
-      camera: Kamera | Kamerák
+      bedmesh: Ágyháló
+      bedmesh_controls: Ágyhálós vezérlők
+      camera: Kamera
       config_files: Konfigurációs fájlok
-      configure: Beállítás
+      configure: Konfiguráció
       console: Konzol
       endstops: Végállások
-      fans_outputs: Ventilátorok és kimenetek
-      history: Munkák története
-      home: Műszerfal
-      jobs: Munkák
-      limits: Nyomtató korlátai
+      fans_outputs: Ventilátorok & Kimenetek
+      gcode_preview: Gcode előnézet [ béta ]
+      history: Történelem
+      home: Otthon
+      jobs: Feladatok
+      limits: Nyomtatókorlátok
       macros: Makrók
-      runout_sensors: Kifutásérzékelők
+      other_files: Egyéb fájlok
+      retract: Firmware visszahúzás
+      runout_sensors: Kifutás érzékelők
+      settings: Beállítások
       stats: Nyomtató statisztikák
-      temperature: Hőértékek
-      tool: Szerszám
-      tune: Állítás
+      system: Rendszer
+      system_overview: Rendszer információ
+      temperature: Hőmérsékletek
+      tool: Eszköz
+      tune: Hangolás
     tooltip:
-      estop: Vészstop
+      estop: VészSTOP
+      reload_klipper: Újratölti a klipper konfigurációját.
+      reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
+      restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
   history:
-    msg: {}
+    msg:
+      confirm_jobs: Biztos vagy benne? Ezzel minden feladat törlődik.
+      confirm_stats: Biztos vagy benne? Ezzel az összes statisztika törlődik.
   printer:
     state:
       busy: Elfoglalt
-      complete: Kész
+      complete: Befejez
       idle: Tétlen
       loading: Betöltés
-      paused: Szünetel
+      paused: Szüneteltetve
       printing: Nyomtatás
       ready: Kész
-      standby: Készenlétben
+      standby: Készenlét
   setting:
     btn:
       add_camera: Kamera hozzáadása
-      add_thermal_preset: Adjon hozzá előre beállított értéket
-      reset: Visszaállítás
+      add_category: Kategória hozzáadása
+      add_filter: Szűrő hozzáadása
+      add_thermal_preset: Előbeállítás hozzáadása
+      add_user: Felhasználó hozzáadása
+      reset: Újraindítás
       select_theme: Válassz témát
     camera_type_options:
-      mjpegadaptive: MJPEG adaptív
-      mjpegstream: MJPEG Stream
-      video: IP kamera
+      mjpegadaptive: MJPEG Adaptív
+      mjpegstream: MJPEG Sugárzás
+      video: IP Kamera
+      iframe: HTTP oldal
+    camera_rotate_options:
+      none: Nincs
+      90: 90°
+      180: 180°
+      270: 270°
     label:
-      all_off: Mindent ki
-      all_on: Mindent be
-      camera_flip_x: Vízszintes elforgatás
-      camera_flip_y: Függőleges elforgatás
-      camera_stream_type: Stream típusa
+      all_off: Minden kikapcsolva
+      all_on: Minden bekapcsolva
+      auto_edit_extensions: Szerkesztési módban automatikusan megnyíló bővítmények
+      camera_flip_x: Vízszintes forgatás
+      camera_flip_y: Függőleges forgatás
+      camera_rotate_by: Forgatás szerint
+      camera_stream_type: Sugátzás típusa
       camera_url: Kamera URL
+      confirm_on_estop: Kérjen megerősítést a Vészleállásnál
+      confirm_on_power_device_change: Kérjen megerősítést a Leállításnál
+      confirm_dirty_editor_close: Kérjen megerősítést, mikor módosítások mentése nélkül zárja be a szerkesztőt
+      contains: Tartalmaz
       dark_mode: Sötét mód
       default_extrude_length: Alapértelmezett extrudálási hossz
       default_extrude_speed: Alapértelmezett extrudálási sebesség
-      default_toolhead_move_length: Alap szerszámfej elmozdulási hossza
-      default_toolhead_xy_speed: Alap szerszámfej XY sebessége
-      default_toolhead_z_speed: Alap szerszámfej Z sebessége
+      default_toolhead_move_length: Alapértelmezett szerszámfej mozgási hossza
+      default_toolhead_xy_speed: Alapértelmezett XY szerszámfej sebesség
+      default_toolhead_z_speed: Alapértelmezett szerszámfej Z sebesség
+      draw_background: Háttér rajzolása
       enable: Engedélyez
+      enable_notifications: Értesítések engedélyezése
+      expression: Kifejezés
+      extrusion_line_width: Extrudálási vonal szélessége
+      flip_horizontal: Vízszintes Flip
+      flip_vertical: Függőleges Flip
+      filter: Szűrő
       fps_target: FPS Cél
-      gcode_coords: GCode koordináták használata
-      invert_x_control: X vezérlés invertálása
-      invert_y_control: Y vezérlés invertálása
-      invert_z_control: Z vezérlés invertálása
+      fps_idle_target: FPS Cél, ha nincs fókuszban
+      height: Magasság
+      gcode_coords: Használja a GCode koordinátákat
+      group_lower_layers: Csoportosítsa az alsó rétegeket
+      invert_x_control: Fordított X vezérlés
+      invert_y_control: Fordított Y vezérlés
+      invert_z_control: Fordított Z vezérlés
       language: Megjelenítési nyelv
+      move_line_width: Vonalszélesség mozgatása
       primary_color: Elsődleges szín
       printer_name: Nyomtató neve
       reset: Beállítások alaphelyzetbe állítása
+      retraction_icon_size: Visszahúzási ikon mérete
+      show_animations: Animációk megjelenítése
+      show_rate_of_change: A hőmérséklet változás sebességének megjelenítése
+      starts_with: Ezzel kezdődik
+      theme_preset: Közösségi előbeállítás
+      thermal_preset_gcode: GCode
       thermal_preset_name: Előre beállított név
-      z_adjust_values: Z Beállított értékei
+      type: Típus
+      z_adjust_values: Z Állítsa be az értékeket
+      date_time_format: Dátum és idő formátum
     timer_options:
       duration: Csak időtartam
-      filament: Filament becslése
-      file: Fájl becslése
-      slicer: Slicer/szeletelő
+      filament: Nyomtatószál becslés
+      file: Fájlbecslés
+      slicer: Szeletelő
     title:
-      camera: Kamera | Kamerák
+      authentication: Hitelesítés
+      console: Konzol
+      camera: Kamera
+      file_editor: Fájlszerkesztő
+      gcode_preview: Gcode előnézet
       general: Általános
       macros: Makrók
       theme: Téma
-      thermal_presets: Hőbeállítások
-      tool: Szerszám
+      thermal_presets: Hőmérsékleti előbeállítások
+      tool: Tool
     tooltip:
-      gcode_coords: >-
-        GCode pozíció használata  szerszámfej pozíciója helyett az
-        irányítópulton
+      gcode_coords: Használja a GCode pozíciót a szerszámfej pozíciója helyett az irányítópulton
   socket:
     msg:
-      connecting: Csatlakozás a moonracker-hez ..
-      no_connection: >-
-        Nincs kapcsolat a moonracker-rel. Kérlek ellenőrizd a státuszt és/vagy
-        frissíts.
+      connecting: Csatlakozás a moonrakerhez...
+      no_connection: Nincs moonraker kapcsolat. Kérjük, ellenőrizd a moonraker állapotát és/vagy frissítsd.
+  system_info:
+    label:
+      capacity: Kapacitás
+      cpu_desc: CPU leírása
+      distribution_codename: Kód név
+      distribution_like: Alap disztribúció
+      distribution_name: Disztribúció
+      hardware_desc: Hardver leírás
+      hostname: Gazdanév
+      klipper_load: Klipper Terheltsége
+      manufactured: Gyártva
+      manufacturer: Gyártó
+      mcu_awake: '{mcu} Ébredés ideje'
+      mcu_bandwidth: '{mcu} Sávszélesség'
+      mcu_load: '{mcu} Terheltsége'
+      model: CPU Modell
+      moonraker_load: Moonraker Terheltsége
+      processor_desc: Processzor
+      product_name: Termék név
+      serial_number: Sorozatszám
+      system_load: System Terheltsége
+      system_memory: Rendszermemória
+      system_utilization: Rendszerhasználat
+      total_memory: Teljes memória
   tool:
     btn:
       home_x: X
       home_y: 'Y'
     tooltip:
-      extruder_disabled: >-
-        extruder letiltva, min_extrude_temp alatti hőmérséklet (%{min}<small>°
-        C</small>)
-      home_xy: XY Haza
-      home_z: Z haza
+      extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van
+      home_xy: XY kezdőpont
+      home_z: Z kezdőpont
   version:
     btn:
       check_for_updates: Frissítések keresése
-      finish: Befejezés
+      finish: Befejezve
       update: Frissítés
+      view_versions: Verziók megtekintése
     label:
-      dirty: NEM TISZTA
+      commit_history: Történet rögzítése
+      commits_on: vállalja
+      committed: Elkötelezett
+      dirty: PISZKOS
       invalid: ÉRVÉNYTELEN
+      os_packages: OS csomagok
+      package_list: Csomaglista
       up_to_date: NAPRAKÉSZ
+      updates_available: Frissítések állnak rendelkezésre
     status:
-      finished: Frissítések befejeződtek
+      finished: A frissítések befejeződtek
       updating: Frissítés...
-    title: Szoftver Frissítések
+    title: Szoftver frissítések
     tooltip:
-      dirty: >-
-        a fej nincsen csatlakoztatva, vagy nem a masterre van kötve, vagy
-        érvénytelen forrás
-      invalid: a repoban történt helyi változásokat jelzi
+      commit_history: Előzmények rögzítése
+      dirty: levált fejet jelez, nem a mesteren vagy érvénytelen eredetet
+      invalid: a repo helyi változásait jelzi
+      packages: Csomagok
+      release_notes: Kiadási megjegyzések
