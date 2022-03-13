@@ -170,7 +170,7 @@
           </td>
           <td class="temp-actual">
             <v-tooltip left>
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <span
                   v-bind="attrs"
                   v-on="on"

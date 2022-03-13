@@ -7,7 +7,7 @@
     layout-path="dashboard.camera-card"
     @collapsed="collapsed = $event"
   >
-    <template v-slot:menu>
+    <template #menu>
       <camera-menu
         @select="handleCameraSelect"
       />

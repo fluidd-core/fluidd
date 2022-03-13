@@ -130,11 +130,6 @@ declare module 'vue/types/vue' {
     $colorset: ColorSet;
   }
 }
-declare module 'vue/types/options' {
-  interface ComponentOptions<V extends _Vue> {
-    $colorset?: ColorSet;
-  }
-}
 
 interface Options {
   colorList?: ColorListOption;

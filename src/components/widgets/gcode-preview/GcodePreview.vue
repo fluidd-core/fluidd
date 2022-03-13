@@ -424,12 +424,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   beforeDestroy () {
-    // eslint-disable-next-line no-unused-expressions
     this.panzoom?.dispose()
   }
 
   reset () {
-    // eslint-disable-next-line no-unused-expressions
     this.panzoom?.zoomTo(0, 0, 1)
   }
 

@@ -7,7 +7,7 @@
     :max-width="260"
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         v-show="!dot"
         v-bind="attrs"

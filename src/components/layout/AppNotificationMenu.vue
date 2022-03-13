@@ -7,7 +7,7 @@
     :close-on-content-click="false"
     :close-delay="300"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-badge
         :value="notificationsCounter"
         :content="notificationsCounter"
