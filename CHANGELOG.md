@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.17.2](https://github.com/fluidd-core/fluidd/compare/v1.17.1...v1.17.2) (2022-03-13)
+
+
+### Features
+
+* **ui:** display localized printer state in printer status card ([#563](https://github.com/fluidd-core/fluidd/issues/563)) ([1d58769](https://github.com/fluidd-core/fluidd/commit/1d587699394d1b37e90cf3317409ab375a440eda))
+* adds some missing i18n keys ([#557](https://github.com/fluidd-core/fluidd/issues/557)) ([c23cb3a](https://github.com/fluidd-core/fluidd/commit/c23cb3a60d847f7cafd284d0bbd1c7a9855026c8))
+
+
+### Bug Fixes
+
+* individual object layer count ([#572](https://github.com/fluidd-core/fluidd/issues/572)) ([da8f3d2](https://github.com/fluidd-core/fluidd/commit/da8f3d29ddfb04a065424cc7d42e55f71cd05cbe))
+* shows missing macro parameters ([#566](https://github.com/fluidd-core/fluidd/issues/566)) ([18da8e4](https://github.com/fluidd-core/fluidd/commit/18da8e4d5b108626a318656bc6b3292ca9c49d46))
+* typescript typings ([#559](https://github.com/fluidd-core/fluidd/issues/559)) ([8d51e05](https://github.com/fluidd-core/fluidd/commit/8d51e05f41fa500af929b92fa6eaedd41fb97b39))
+
 ### [1.17.1](https://github.com/fluidd-core/fluidd/compare/v1.17.0...v1.17.1) (2022-03-02)
 
 
