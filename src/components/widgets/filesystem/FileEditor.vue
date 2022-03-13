@@ -1,5 +1,8 @@
 <template>
-  <div class="editor" ref="monaco-editor"></div>
+  <div
+    ref="monaco-editor"
+    class="editor"
+  />
 </template>
 
 <script lang="ts">

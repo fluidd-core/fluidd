@@ -20,7 +20,6 @@ import vuetify from './plugins/vuetify'
 import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
-import vueHeadful from 'vue-headful'
 import { InlineSvgPlugin } from 'vue-inline-svg'
 import { loadWASM } from 'onigasm'
 
@@ -61,9 +60,6 @@ import Blur from '@/directives/blur'
 
 // Directives...
 Vue.directive('blur', Blur)
-
-// ...and 3rd party
-Vue.component('vue-headful', vueHeadful)
 
 // Use any Plugins
 

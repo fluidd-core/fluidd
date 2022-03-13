@@ -3,11 +3,11 @@
     <v-tooltip top>
       <template v-slot:activator="{ on, attrs }">
         <v-icon
-          v-on="on"
           v-bind="attrs"
           small
           :color="(job.exists) ? state : 'secondary'"
           class="mr-1"
+          v-on="on"
         >
           {{ icon }}
         </v-icon>

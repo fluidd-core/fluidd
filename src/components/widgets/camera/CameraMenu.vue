@@ -6,43 +6,68 @@
     transition="slide-y-transition"
     :min-width="150"
   >
-  <template v-slot:activator="{ on, attrs, value }">
-    <app-btn
-      v-bind="attrs" v-on="on"
-      small
-    >
-      <v-icon small class="mr-1">$camera</v-icon>
-      {{ activeCamera }}
-      <v-icon small class="ml-1" :class="{ 'rotate-180': value }">$chevronDown</v-icon>
-    </app-btn>
-  </template>
-  <v-list
-    dense>
-    <v-list-item
-      @click="$emit('select', 'all')"
-      link
+    <template v-slot:activator="{ on, attrs, value }">
+      <app-btn
+        v-bind="attrs"
+        small
+        v-on="on"
+      >
+        <v-icon
+          small
+          class="mr-1"
+        >
+          $camera
+        </v-icon>
+        {{ activeCamera }}
+        <v-icon
+          small
+          class="ml-1"
+          :class="{ 'rotate-180': value }"
+        >
+          $chevronDown
+        </v-icon>
+      </app-btn>
+    </template>
+    <v-list
       dense
     >
-      <v-list-item-title>
-        <v-icon small left color="secondary">$camera</v-icon>
-        {{ $t('app.general.btn.all') }}
-      </v-list-item-title>
-    </v-list-item>
+      <v-list-item
+        link
+        dense
+        @click="$emit('select', 'all')"
+      >
+        <v-list-item-title>
+          <v-icon
+            small
+            left
+            color="secondary"
+          >
+            $camera
+          </v-icon>
+          {{ $t('app.general.btn.all') }}
+        </v-list-item-title>
+      </v-list-item>
 
-    <v-list-item
-      v-for="item of cameras"
-      :key="item.id"
-      @click="$emit('select', item.id)"
-      link
-      dense
-    >
-      <v-list-item-title>
-        <v-icon small left color="secondary">$camera</v-icon>
-        {{ item.name }}
-      </v-list-item-title>
-    </v-list-item>
-  </v-list>
-</v-menu>
+      <v-list-item
+        v-for="item of cameras"
+        :key="item.id"
+        link
+        dense
+        @click="$emit('select', item.id)"
+      >
+        <v-list-item-title>
+          <v-icon
+            small
+            left
+            color="secondary"
+          >
+            $camera
+          </v-icon>
+          {{ item.name }}
+        </v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 
 <script lang="ts">

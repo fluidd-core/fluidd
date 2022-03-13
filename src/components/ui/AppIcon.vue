@@ -3,8 +3,7 @@
     <inline-svg
       :src="theme.logo.src"
       @loaded="handleLogoLoad"
-    >
-    </inline-svg>
+    />
   </div>
 </template>
 

@@ -10,7 +10,7 @@
     >
       <v-list-item
         v-if="item.visible"
-          :key="item.name"
+        :key="item.name"
         :to="`/settings${item.hash}`"
         :exact="false"
         link

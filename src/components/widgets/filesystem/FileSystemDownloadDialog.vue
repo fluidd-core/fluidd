@@ -5,9 +5,10 @@
     persistent
   >
     <v-card v-if="file">
-
       <v-card-title class="card-heading py-2 px-5">
-        <v-icon left>$download</v-icon>
+        <v-icon left>
+          $download
+        </v-icon>
         <span class="focus--text">
           {{ $t('app.file_system.title.download_file') }}
         </span>
@@ -21,14 +22,18 @@
           :value="file.percent"
           color="primary"
           class="mb-2"
-        ></v-progress-linear>
+        />
         <table>
           <tr>
-            <td class="pr-2">{{ $t('app.file_system.label.downloaded') }}:</td>
+            <td class="pr-2">
+              {{ $t('app.file_system.label.downloaded') }}:
+            </td>
             <td>{{ file.percent }}% ({{ $filters.getReadableFileSizeString(file.loaded) }} / {{ $filters.getReadableFileSizeString(file.size) }})</td>
           </tr>
           <tr>
-            <td class="pr-2">{{ $t('app.file_system.label.transfer_rate') }}:</td>
+            <td class="pr-2">
+              {{ $t('app.file_system.label.transfer_rate') }}:
+            </td>
             <td>{{ file.speed.toFixed(2) }} {{ file.unit }}/Sec</td>
           </tr>
         </table>
@@ -37,10 +42,15 @@
       <v-divider />
 
       <v-card-actions class="py-2 px-5">
-        <v-spacer></v-spacer>
-        <app-btn color="error" text @click="$emit('cancel'); $emit('input', false)">{{ $t('app.general.btn.cancel') }}</app-btn>
+        <v-spacer />
+        <app-btn
+          color="error"
+          text
+          @click="$emit('cancel'); $emit('input', false)"
+        >
+          {{ $t('app.general.btn.cancel') }}
+        </app-btn>
       </v-card-actions>
-
     </v-card>
   </v-dialog>
 </template>

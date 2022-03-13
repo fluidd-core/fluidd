@@ -3,7 +3,7 @@
     :value="value"
     :size="size"
     level="L"
-  ></qrcode-vue>
+  />
 </template>
 
 <script lang="ts">

@@ -1,28 +1,40 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.history')"
-    icon="$history">
-    <job-history></job-history>
+    icon="$history"
+  >
+    <job-history />
 
     <template v-slot:menu>
       <app-btn-collapse-group>
         <app-btn
-          @click="handleLoadAll"
           small
-          class="ma-1">
-          <v-icon small left>$download</v-icon>
+          class="ma-1"
+          @click="handleLoadAll"
+        >
+          <v-icon
+            small
+            left
+          >
+            $download
+          </v-icon>
           <span>{{ $t('app.general.btn.load_all') }}</span>
         </app-btn>
         <app-btn
-          @click="handleRemoveAll"
           small
-          class="ma-1">
-          <v-icon small left>$delete</v-icon>
+          class="ma-1"
+          @click="handleRemoveAll"
+        >
+          <v-icon
+            small
+            left
+          >
+            $delete
+          </v-icon>
           <span>{{ $t('app.general.btn.remove_all') }}</span>
         </app-btn>
       </app-btn-collapse-group>
     </template>
-
   </collapsable-card>
 </template>
 

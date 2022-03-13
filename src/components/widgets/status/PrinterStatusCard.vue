@@ -4,8 +4,8 @@
     icon="$printer3d"
     :draggable="true"
     :collapsable="collapsable"
-    layout-path="dashboard.printer-status-card">
-
+    layout-path="dashboard.printer-status-card"
+  >
     <template v-slot:title>
       <v-tabs
         v-model="tab"
@@ -17,8 +17,10 @@
         <v-tab
           key="status"
         >
-          <v-icon left>$printer3d</v-icon>
-          {{ printerState }}
+          <v-icon left>
+            $printer3d
+          </v-icon>
+          {{ $t('app.printer.state.' + printerState) || printerState }}
         </v-tab>
         <v-tab
           v-if="supportsHistoryComponent"
@@ -32,8 +34,8 @@
     <template v-slot:menu>
       <status-controls
         v-if="printerPrinting || printerPaused || filename"
-        @print="handlePrint($event)">
-      </status-controls>
+        @print="handlePrint($event)"
+      />
     </template>
 
     <v-tabs-items
@@ -44,7 +46,7 @@
       <v-tab-item
         key="status"
       >
-        <status-tab></status-tab>
+        <status-tab />
       </v-tab-item>
 
       <v-tab-item
@@ -52,11 +54,10 @@
         key="reprint"
       >
         <reprint-tab
-          @print="handlePrint($event)">
-        </reprint-tab>
+          @print="handlePrint($event)"
+        />
       </v-tab-item>
     </v-tabs-items>
-
   </collapsable-card>
 </template>
 

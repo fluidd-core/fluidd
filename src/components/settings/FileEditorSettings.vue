@@ -1,22 +1,25 @@
 <template>
   <div>
-    <v-subheader id="editor">{{ $t('app.setting.title.file_editor') }}</v-subheader>
+    <v-subheader id="editor">
+      {{ $t('app.setting.title.file_editor') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
+      class="mb-4"
+    >
       <app-setting
         :title="$t('app.setting.label.confirm_dirty_editor_close')"
       >
         <v-switch
-          @click.native.stop
           v-model="confirmDirtyEditorClose"
           hide-details
           class="mb-5"
-        ></v-switch>
+          @click.native.stop
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.auto_edit_extensions')">
         <v-combobox
@@ -29,7 +32,7 @@
           small-chips
           append-icon=""
           deletable-chips
-        ></v-combobox>
+        />
       </app-setting>
     </v-card>
   </div>

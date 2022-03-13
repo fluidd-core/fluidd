@@ -3,14 +3,14 @@
     :title="$t('app.general.title.jobs')"
     icon="$files"
     :draggable="true"
-    layout-path="dashboard.jobs-card">
-
+    layout-path="dashboard.jobs-card"
+  >
     <file-system
       roots="gcodes"
       name="dashboard"
       dense
       :height="400"
-    ></file-system>
+    />
   </collapsable-card>
 </template>
 

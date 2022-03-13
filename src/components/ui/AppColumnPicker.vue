@@ -10,7 +10,9 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         :disabled="disabled"
-        fab small text
+        fab
+        small
+        text
         v-bind="attrs"
         v-on="on"
       >
@@ -19,16 +21,19 @@
         </v-icon>
       </v-btn>
     </template>
-    <v-list dense class="overflow-y-auto">
+    <v-list
+      dense
+      class="overflow-y-auto"
+    >
       <template
         v-for="header in headers"
       >
         <v-list-item
-          @click="handleToggleHeader(header)"
-          :key="header.value"
           v-if="header.text !== '' && header.configurable"
+          :key="header.value"
           link
           dense
+          @click="handleToggleHeader(header)"
         >
           <v-list-item-action class="my-0">
             <v-checkbox
@@ -36,7 +41,7 @@
               dense
               hide-details
               color="primary"
-            ></v-checkbox>
+            />
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ header.text }}</v-list-item-title>

@@ -3,49 +3,70 @@
     <v-simple-table class="temperature-table">
       <thead>
         <tr>
-          <th width="1%"></th>
-          <th :width="showRateOfChange ? '94%' : '95%'">{{ $t('app.chart.label.item') }}</th>
-          <th width="1%">{{ $t('app.chart.label.power') }}</th>
-          <th width="1%" v-if="showRateOfChange">{{ $t('app.chart.label.rate_of_change') }}</th>
-          <th width="1%">{{ $t('app.chart.label.current') }}</th>
-          <th width="1%"></th>
+          <th width="1%" />
+          <th :width="showRateOfChange ? '94%' : '95%'">
+            {{ $t('app.chart.label.item') }}
+          </th>
+          <th width="1%">
+            {{ $t('app.chart.label.power') }}
+          </th>
+          <th
+            v-if="showRateOfChange"
+            width="1%"
+          >
+            {{ $t('app.chart.label.rate_of_change') }}
+          </th>
+          <th width="1%">
+            {{ $t('app.chart.label.current') }}
+          </th>
+          <th width="1%" />
           <th width="1%">
             {{ $t('app.chart.label.target') }}
           </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in heaters" :key="item.name">
+        <tr
+          v-for="item in heaters"
+          :key="item.name"
+        >
           <td>
             <v-icon
               small
-              :color="item.color">
+              :color="item.color"
+            >
               $fire
             </v-icon>
           </td>
           <td class="temp-name">
             <span
-              @click="$emit('legendClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name] }"
-              class="legend-item">
+              class="legend-item"
+              @click="$emit('legendClick', item)"
+            >
               {{ item.prettyName }}
             </span>
           </td>
           <td class="temp-power">
             <span
-              @click="$emit('legendPowerClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
-              class="legend-item">
+              class="legend-item"
+              @click="$emit('legendPowerClick', item)"
+            >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
               <span v-if="item.target > 0">
-                {{ (item.power) ? (item.power * 100).toFixed() : 0}}<small>%</small>
+                {{ (item.power) ? (item.power * 100).toFixed() : 0 }}<small>%</small>
               </span>
             </span>
           </td>
-          <td class="rate-of-change" v-if="showRateOfChange">
+          <td
+            v-if="showRateOfChange"
+            class="rate-of-change"
+          >
             <span
               :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
-              class="legend-item">
+              class="legend-item"
+            >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
           </td>
@@ -57,35 +78,41 @@
             <input-temperature
               v-if="klippyReady"
               :value="item.target"
-              @input="setHeaterTargetTemp(item.name, $event)"
               :max="item.maxTemp"
               :min="item.minTemp"
-            ></input-temperature>
+              @input="setHeaterTargetTemp(item.name, $event)"
+            />
           </td>
         </tr>
-        <tr v-for="item in fans" :key="item.name">
+        <tr
+          v-for="item in fans"
+          :key="item.name"
+        >
           <td>
             <v-icon
               small
               :class="{ 'spin': item.speed > 0 && item.target > 0 }"
-              :color="item.color">
+              :color="item.color"
+            >
               $fan
             </v-icon>
           </td>
           <td class="temp-name">
             <span
-              @click="$emit('legendClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name] }"
-              class="legend-item">
+              class="legend-item"
+              @click="$emit('legendClick', item)"
+            >
               {{ item.prettyName }}
             </span>
           </td>
           <td class="temp-power">
             <span
               v-if="item.speed"
-              @click="$emit('legendPowerClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
-              class="legend-item">
+              class="legend-item"
+              @click="$emit('legendPowerClick', item)"
+            >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
               </span>
@@ -105,37 +132,52 @@
             <input-temperature
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
-              @input="setFanTargetTemp(item.name, $event)"
               :max="item.maxTemp"
               :min="item.minTemp"
-            ></input-temperature>
+              @input="setFanTargetTemp(item.name, $event)"
+            />
           </td>
         </tr>
-        <tr v-for="item in sensors" :key="item.name">
+        <tr
+          v-for="item in sensors"
+          :key="item.name"
+        >
           <td>
             <v-icon
               small
-              :color="item.color">
+              :color="item.color"
+            >
               $thermometer
             </v-icon>
           </td>
           <td class="temp-name">
             <span
-              @click="$emit('legendClick', item)"
               :class="{ 'active': chartSelectedLegends[item.name] }"
-              class="legend-item">
+              class="legend-item"
+              @click="$emit('legendClick', item)"
+            >
               {{ item.prettyName }}
             </span>
           </td>
-          <td class="temp-power">&nbsp;</td>
-          <td class="rate-of-change" v-if="showRateOfChange">&nbsp;</td>
+          <td class="temp-power">
+&nbsp;
+          </td>
+          <td
+            v-if="showRateOfChange"
+            class="rate-of-change"
+          >
+&nbsp;
+          </td>
           <td class="temp-actual">
             <v-tooltip left>
               <template v-slot:activator="{ on, attrs }">
-                <span v-bind="attrs" v-on="on">{{ item.temperature.toFixed(1) }}<small>°C</small></span>
+                <span
+                  v-bind="attrs"
+                  v-on="on"
+                >{{ item.temperature.toFixed(1) }}<small>°C</small></span>
               </template>
               <span v-if="item.measured_max_temp && item.measured_min_temp">
-                <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br />
+                <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br>
                 <span class="">{{ $t('app.general.label.low') }}: {{ item.measured_min_temp.toFixed(1) }}°C</span>
               </span>
             </v-tooltip>

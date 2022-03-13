@@ -1,11 +1,13 @@
 <template>
   <div>
-    <v-subheader id="macros">{{ $t('app.setting.title.macros') }}</v-subheader>
+    <v-subheader id="macros">
+      {{ $t('app.setting.title.macros') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting>
         <app-btn
           outlined
@@ -13,8 +15,13 @@
           color="primary"
           @click="handleAddCategoryDialog"
         >
-          <v-icon small left>$plus</v-icon>
-          Add Category
+          <v-icon
+            small
+            left
+          >
+            $plus
+          </v-icon>
+          {{ $t('app.setting.btn.add_category') }}
         </app-btn>
       </app-setting>
 
@@ -27,31 +34,42 @@
         v-for="category in categories"
       >
         <app-setting
-          @click="handleCategoryClick(category)"
           :key="`category-${category.name}`"
           :r-cols="3"
+          @click="handleCategoryClick(category)"
         >
           <template v-slot:title>
             {{ category.name }}
-            <v-chip small class="mr-4">{{ category.visible }} / {{ category.count }}</v-chip>
+            <v-chip
+              small
+              class="mr-4"
+            >
+              {{ category.visible }} / {{ category.count }}
+            </v-chip>
           </template>
 
           <app-btn
-            @click.stop="handleEditCategoryDialog(category)"
             fab
             text
             x-small
-            color="">
-            <v-icon color="">$edit</v-icon>
+            color=""
+            @click.stop="handleEditCategoryDialog(category)"
+          >
+            <v-icon color="">
+              $edit
+            </v-icon>
           </app-btn>
 
           <app-btn
-            @click.stop="handleRemoveCategory(category)"
             fab
             text
             x-small
-            color="">
-            <v-icon color="">$close</v-icon>
+            color=""
+            @click.stop="handleRemoveCategory(category)"
+          >
+            <v-icon color="">
+              $close
+            </v-icon>
           </app-btn>
 
           <!-- <v-icon>$chevronRight</v-icon> -->
@@ -63,13 +81,15 @@
       <!-- Add the uncategorized macros.. -->
       <app-setting
         v-if="uncategorizedMacros.count > 0"
-        @click="handleCategoryClick()"
         :key="`category-uncategorized`"
         :r-cols="3"
+        @click="handleCategoryClick()"
       >
         <template v-slot:title>
           {{ $t('app.general.label.uncategorized') }}
-          <v-chip small>{{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}</v-chip>
+          <v-chip small>
+            {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}
+          </v-chip>
         </template>
         <v-icon>$chevronRight</v-icon>
       </app-setting>
@@ -82,8 +102,7 @@
         :name="categoryDialogState.name"
         :rules="categoryDialogState.rules"
         @save="categoryDialogState.handler"
-      ></macro-category-dialog>
-
+      />
     </v-card>
   </div>
 </template>

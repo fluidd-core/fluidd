@@ -18,14 +18,14 @@
       :show-select="bulkActions"
       :no-data-text="$t('app.file_system.msg.not_found')"
       :no-results-text="$t('app.file_system.msg.not_found')"
-      @input="handleSelected"
-      @item-selected="handleItemSelected"
       item-key="name"
       height="100%"
       mobile-breakpoint="0"
       sort-by="modified"
       hide-default-footer
       class="rounded-0"
+      @input="handleSelected"
+      @item-selected="handleItemSelected"
     >
       <template v-slot:item="{ item, isSelected, select }">
         <tr
@@ -36,9 +36,9 @@
             'v-data-table__selected': (isSelected && item.name !== '..')
           }"
           class="row-select px-1"
+          :draggable="draggable(item)"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
-          :draggable="draggable(item)"
           @drag="handleDrag(item)"
           @dragstart="handleDragStart"
           @dragend="handleDragEnd"
@@ -49,19 +49,20 @@
           <td v-if="bulkActions">
             <v-simple-checkbox
               v-if="item.name !== '..'"
+              v-ripple
               :value="isSelected"
               color=""
               class="mt-1"
-              v-ripple
               @click.stop="select(!isSelected)"
-            ></v-simple-checkbox>
+            />
           </td>
           <td>
             <!-- icons are 16px small, or 24px for standard size. -->
             <v-icon
               v-if="!item.thumbnails || !item.thumbnails.length"
               :small="dense"
-              :color="(item.type === 'file') ? 'grey' : 'primary'">
+              :color="(item.type === 'file') ? 'grey' : 'primary'"
+            >
               {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
             </v-icon>
             <img
@@ -69,109 +70,170 @@
               class="file-icon-thumb"
               :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
               :width="(dense) ? 16 : 24"
-            />
+            >
           </td>
 
           <file-row-item :nowrap="false">
             {{ item.name }}
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="object_height">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="object_height"
+          >
             <span v-if="item.object_height !== undefined">
               {{ $filters.getReadableLengthString(item.object_height) }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="first_layer_height">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="first_layer_height"
+          >
             <span v-if="item.first_layer_height !== undefined">
               {{ item.first_layer_height }} mm
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="layer_height">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="layer_height"
+          >
             <span v-if="item.layer_height !== undefined">
               {{ item.layer_height }} mm
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="filament_total">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="filament_total"
+          >
             <span v-if="item.filament_total !== undefined">
               {{ $filters.getReadableLengthString(item.filament_total) }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="filament_weight_total">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="filament_weight_total"
+          >
             <span v-if="item.filament_weight_total !== undefined">
               {{ item.filament_weight_total }} g
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.filament_used">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="history.filament_used"
+          >
             <span v-if="item.history && item.history.filament_used !== undefined">
               {{ $filters.getReadableLengthString(item.history.filament_used) }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="slicer">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="slicer"
+          >
             <span v-if="item.slicer !== undefined">
               {{ item.slicer }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="slicer_version">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="slicer_version"
+          >
             <span v-if="item.slicer_version !== undefined">
               {{ item.slicer_version }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="estimated_time">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="estimated_time"
+          >
             <span v-if="item.estimated_time !== undefined">
               {{ $filters.formatCounterTime(item.estimated_time) }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.print_duration">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="history.print_duration"
+          >
             <span v-if="item.history && item.history.print_duration !== undefined">
               {{ $filters.formatCounterTime(item.history.print_duration) }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="history.total_duration">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="history.total_duration"
+          >
             <span v-if="item.history && item.history.total_duration !== undefined">
               {{ $filters.formatCounterTime(item.history.total_duration) }}
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="first_layer_bed_temp">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="first_layer_bed_temp"
+          >
             <span v-if="item.first_layer_bed_temp !== undefined">
               {{ item.first_layer_bed_temp }}<small>°C</small>
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="first_layer_extr_temp">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="first_layer_extr_temp"
+          >
             <span v-if="item.first_layer_extr_temp !== undefined">
               {{ item.first_layer_extr_temp }}<small>°C</small>
             </span>
           </file-row-item>
 
-          <file-row-item v-if="root === 'gcodes'" :headers="headers" item-value="print_start_time">
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="print_start_time"
+          >
             <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
               {{ $filters.formatDateTime(item.print_start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
             </span>
           </file-row-item>
 
-          <file-row-item :headers="headers" item-value="modified">
+          <file-row-item
+            :headers="headers"
+            item-value="modified"
+          >
             <span v-if="item.modified !== undefined && item.modified !== null">
               {{ $filters.formatDateTime(item.modified, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
             </span>
           </file-row-item>
 
-          <file-row-item :headers="headers" item-value="size">
+          <file-row-item
+            :headers="headers"
+            item-value="size"
+          >
             <span v-if="item.size !== undefined && item.size !== 0">
               {{ $filters.getReadableFileSizeString(item.size) }}
             </span>
           </file-row-item>
-
         </tr>
       </template>
     </v-data-table>

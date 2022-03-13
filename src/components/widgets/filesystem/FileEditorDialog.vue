@@ -1,6 +1,5 @@
 <template>
   <v-dialog
-    @input="$emit('input', $event)"
     :value="value"
     :loading="loading"
     hide-overlay
@@ -8,8 +7,13 @@
     persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
+    @input="$emit('input', $event)"
   >
-    <v-card d-flex class="fill-height" style="overflow: hidden;">
+    <v-card
+      d-flex
+      class="fill-height"
+      style="overflow: hidden;"
+    >
       <v-toolbar
         dense
         :elevation="6"
@@ -25,39 +29,69 @@
           <v-icon>$close</v-icon>
         </app-btn>
         <v-toolbar-title>{{ filename }}</v-toolbar-title>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-toolbar-items>
           <app-btn
             v-if="!printerPrinting"
+            target="_blank"
             @click="handleKeyboardShortcuts"
-            target="_blank">
-            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$keyboard</v-icon>
+          >
+            <v-icon
+              small
+              :left="!$vuetify.breakpoint.smAndDown"
+            >
+              $keyboard
+            </v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.keyboard_shortcuts') }}</span>
           </app-btn>
           <app-btn
             v-if="!printerPrinting && configMap.link"
             :href="configMap.link"
-            target="_blank">
-            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$help</v-icon>
+            target="_blank"
+          >
+            <v-icon
+              small
+              :left="!$vuetify.breakpoint.smAndDown"
+            >
+              $help
+            </v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly && !printerPrinting && configMap.serviceSupported"
             :disabled="!ready"
-            @click="emitSave(true)">
-            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$restart</v-icon>
+            @click="emitSave(true)"
+          >
+            <v-icon
+              small
+              :left="!$vuetify.breakpoint.smAndDown"
+            >
+              $restart
+            </v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save_restart') }}</span>
           </app-btn>
           <app-btn
             v-if="!readonly"
             :disabled="!ready"
-            @click="emitSave(false)">
-            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$save</v-icon>
+            @click="emitSave(false)"
+          >
+            <v-icon
+              small
+              :left="!$vuetify.breakpoint.smAndDown"
+            >
+              $save
+            </v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.save') }}</span>
           </app-btn>
           <app-btn
-            @click="emitClose()">
-            <v-icon small :left="!$vuetify.breakpoint.smAndDown">$close</v-icon>
+            @click="emitClose()"
+          >
+            <v-icon
+              small
+              :left="!$vuetify.breakpoint.smAndDown"
+            >
+              $close
+            </v-icon>
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.close') }}</span>
           </app-btn>
         </v-toolbar-items>
@@ -68,14 +102,12 @@
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
-        @ready="editorReady = true">
-      </file-editor>
+        @ready="editorReady = true"
+      />
 
       <keyboard-shortcuts-dialog
         v-model="shortcutsDialog"
-      >
-      </keyboard-shortcuts-dialog>
-
+      />
     </v-card>
   </v-dialog>
 </template>

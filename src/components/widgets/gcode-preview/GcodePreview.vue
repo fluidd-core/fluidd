@@ -1,68 +1,167 @@
 <template>
-  <div :class="{container: true, dark: themeIsDark}" @focus="focused = true" @blur="focused = false">
-    <svg :viewBox="svgViewBox" :height="height" :width="width" ref="svg"
-         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <div
+    :class="{container: true, dark: themeIsDark}"
+    @focus="focused = true"
+    @blur="focused = false"
+  >
+    <svg
+      ref="svg"
+      :viewBox="svgViewBox"
+      :height="height"
+      :width="width"
+      xmlns="http://www.w3.org/2000/svg"
+      xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
       <defs>
-        <pattern id="backgroundPattern" patternUnits="userSpaceOnUse" width="10" height="10">
+        <pattern
+          id="backgroundPattern"
+          patternUnits="userSpaceOnUse"
+          width="10"
+          height="10"
+        >
           <rect
             width="10"
             height="10"
             stroke-width=".1"
             :stroke="themeIsDark ? 'black' : 'white'"
-            :fill="themeIsDark ? '#555' : 'lightgrey'"/>
+            :fill="themeIsDark ? '#555' : 'lightgrey'"
+          />
         </pattern>
-        <svg id="retraction" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
-          <path v-if="flipY" d="M 0,0 L 5,10 L 10,0 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
-          <path v-else d="M 10,10 L 5,0 L 0,10 Z" fill="red" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
+        <svg
+          id="retraction"
+          :width="retractionIconSize"
+          :height="retractionIconSize"
+          viewBox="0 0 10 10"
+        >
+          <path
+            v-if="flipY"
+            d="M 0,0 L 5,10 L 10,0 Z"
+            fill="red"
+            fill-opacity="0.9"
+            :shape-rendering="shapeRendering"
+          />
+          <path
+            v-else
+            d="M 10,10 L 5,0 L 0,10 Z"
+            fill="red"
+            fill-opacity="0.9"
+            :shape-rendering="shapeRendering"
+          />
         </svg>
-        <svg id="extrusionStart" :width="retractionIconSize" :height="retractionIconSize" viewBox="0 0 10 10">
-          <path v-if="flipY" d="M 10,10 L 5,0 L 0,10 Z" fill="green" fill-opacity="0.9"
-                :shape-rendering="shapeRendering"/>
-          <path v-else d="M 0,0 L 5,10 L 10,0 Z" fill="green" fill-opacity="0.9" :shape-rendering="shapeRendering"/>
+        <svg
+          id="extrusionStart"
+          :width="retractionIconSize"
+          :height="retractionIconSize"
+          viewBox="0 0 10 10"
+        >
+          <path
+            v-if="flipY"
+            d="M 10,10 L 5,0 L 0,10 Z"
+            fill="green"
+            fill-opacity="0.9"
+            :shape-rendering="shapeRendering"
+          />
+          <path
+            v-else
+            d="M 0,0 L 5,10 L 10,0 Z"
+            fill="green"
+            fill-opacity="0.9"
+            :shape-rendering="shapeRendering"
+          />
         </svg>
       </defs>
       <g :transform="flipTransform">
-        <g id="background" v-if="drawBackground">
-          <rect :height="bedSize.y.max - bedSize.y.min"
-                :width="bedSize.x.max - bedSize.x.min"
-                fill="url(#backgroundPattern)"
-                :x="bedSize.x.min" :y="bedSize.y.min"/>
+        <g
+          v-if="drawBackground"
+          id="background"
+        >
+          <rect
+            :height="bedSize.y.max - bedSize.y.min"
+            :width="bedSize.x.max - bedSize.x.min"
+            fill="url(#backgroundPattern)"
+            :x="bedSize.x.min"
+            :y="bedSize.y.min"
+          />
         </g>
-        <g id="previousLayer" class="layer" v-if="getViewerOption('showPreviousLayer')">
-          <path stroke="lightgrey" :stroke-width="extrusionLineWidth" stroke-opacity="0.6"
-                :d="svgPathPrevious.extrusions" :shape-rendering="shapeRendering"/>
+        <g
+          v-if="getViewerOption('showPreviousLayer')"
+          id="previousLayer"
+          class="layer"
+        >
+          <path
+            stroke="lightgrey"
+            :stroke-width="extrusionLineWidth"
+            stroke-opacity="0.6"
+            :d="svgPathPrevious.extrusions"
+            :shape-rendering="shapeRendering"
+          />
         </g>
-        <g id="currentLayer" class="layer">
-          <path :d="svgPathCurrent.extrusions" v-if="getViewerOption('showExtrusions')"
-                :stroke="themeIsDark ? 'white' : 'black'"
-                :stroke-width="extrusionLineWidth"
-                :shape-rendering="shapeRendering"/>
-          <path :d="svgPathCurrent.moves" v-if="getViewerOption('showMoves')"
-                stroke="gray"
-                :stroke-width="moveLineWidth"
-                :shape-rendering="shapeRendering"/>
+        <g
+          id="currentLayer"
+          class="layer"
+        >
+          <path
+            v-if="getViewerOption('showExtrusions')"
+            :d="svgPathCurrent.extrusions"
+            :stroke="themeIsDark ? 'white' : 'black'"
+            :stroke-width="extrusionLineWidth"
+            :shape-rendering="shapeRendering"
+          />
+          <path
+            v-if="getViewerOption('showMoves')"
+            :d="svgPathCurrent.moves"
+            stroke="gray"
+            :stroke-width="moveLineWidth"
+            :shape-rendering="shapeRendering"
+          />
 
-          <circle id="toolhead" fill="green" r=".6"
-                  :cx="svgPathCurrent.toolhead.x" :cy="svgPathCurrent.toolhead.y"/>
+          <circle
+            id="toolhead"
+            fill="green"
+            r=".6"
+            :cx="svgPathCurrent.toolhead.x"
+            :cy="svgPathCurrent.toolhead.y"
+          />
 
-          <g id="retractions" v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0">
-            <use v-for="({x, y}, index) of svgPathCurrent.retractions"
-                 :key="`retraction-${index + 1}`" xlink:href="#retraction"
-                 :x="x - (retractionIconSize / 2)" :y="flipY ? y : y - retractionIconSize"/>
+          <g
+            v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0"
+            id="retractions"
+          >
+            <use
+              v-for="({x, y}, index) of svgPathCurrent.retractions"
+              :key="`retraction-${index + 1}`"
+              xlink:href="#retraction"
+              :x="x - (retractionIconSize / 2)"
+              :y="flipY ? y : y - retractionIconSize"
+            />
             <!-- Calculate anchor to be bottom-center of the triangle -->
           </g>
 
-          <g id="extrusionStarts" v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0">
-            <use v-for="({x, y}, index) of svgPathCurrent.extrusionStarts"
-                 :key="`extrusion-start-${index + 1}`" xlink:href="#extrusionStart"
-                 :x="x - (retractionIconSize / 2)" :y="flipY ? y : y - retractionIconSize"/>
+          <g
+            v-if="getViewerOption('showRetractions') && svgPathCurrent.retractions.length > 0"
+            id="extrusionStarts"
+          >
+            <use
+              v-for="({x, y}, index) of svgPathCurrent.extrusionStarts"
+              :key="`extrusion-start-${index + 1}`"
+              xlink:href="#extrusionStart"
+              :x="x - (retractionIconSize / 2)"
+              :y="flipY ? y : y - retractionIconSize"
+            />
             <!-- Calculate anchor to be bottom-center of the triangle -->
           </g>
         </g>
-        <g id="nextLayer" class="layer" v-if="getViewerOption('showNextLayer')">
-          <path stroke="lightgrey" stroke-opacity="0.6"
-                :d="svgPathNext.extrusions"
-                :stroke-width="extrusionLineWidth"/>
+        <g
+          v-if="getViewerOption('showNextLayer')"
+          id="nextLayer"
+          class="layer"
+        >
+          <path
+            stroke="lightgrey"
+            stroke-opacity="0.6"
+            :d="svgPathNext.extrusions"
+            :stroke-width="extrusionLineWidth"
+          />
         </g>
       </g>
     </svg>

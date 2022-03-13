@@ -3,17 +3,36 @@
     <pre>{{ value }}</pre>
 
     <v-btn
-      small
-      fab text
-      absolute
       v-blur
+      small
+      fab
+      text
+      absolute
       @click="handleCopyClick"
     >
-      <v-fade-transition mode="in-out" leave-absolute>
-        <v-icon v-show="!copied" dense color="grey">$contentCopy</v-icon>
+      <v-fade-transition
+        mode="in-out"
+        leave-absolute
+      >
+        <v-icon
+          v-show="!copied"
+          dense
+          color="grey"
+        >
+          $contentCopy
+        </v-icon>
       </v-fade-transition>
-      <v-fade-transition mode="in-out" leave-absolute>
-        <v-icon v-show="copied" dense color="grey">$check</v-icon>
+      <v-fade-transition
+        mode="in-out"
+        leave-absolute
+      >
+        <v-icon
+          v-show="copied"
+          dense
+          color="grey"
+        >
+          $check
+        </v-icon>
       </v-fade-transition>
     </v-btn>
   </div>

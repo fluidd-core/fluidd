@@ -318,6 +318,7 @@ app:
       jobs: Jobs
       limits: Printer Limits
       macros: Macros
+      other_files: Other Files
       retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
@@ -349,6 +350,7 @@ app:
   setting:
     btn:
       add_camera: Add Camera
+      add_category: Add Category
       add_filter: Add Filter
       add_thermal_preset: Add Preset
       add_user: Add user
