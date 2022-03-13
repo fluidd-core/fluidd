@@ -74,7 +74,6 @@ const responseInterceptor = (response: AxiosResponse) => {
   return response
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const errorInterceptor = (error: AxiosError) => {
   let message: string | undefined
 
