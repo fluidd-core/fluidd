@@ -14,7 +14,7 @@
       v-if="lowOnSpace && !loading"
       bottom
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
           fab
@@ -37,7 +37,7 @@
       v-if="disabled && !loading"
       bottom
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
           fab
@@ -106,7 +106,7 @@
 
     <template
       v-if="roots.length > 1"
-      v-slot:extension
+      #extension
     >
       <v-tabs>
         <v-tab

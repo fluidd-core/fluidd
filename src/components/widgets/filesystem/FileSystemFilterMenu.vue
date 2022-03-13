@@ -6,7 +6,7 @@
     transition="slide-y-transition"
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-badge
         bordered
         color="warning"
@@ -46,7 +46,7 @@
             :disabled="disabled"
             :value="filter"
           >
-            <template v-slot:default="{ active }">
+            <template #default="{ active }">
               <v-list-item-action>
                 <v-checkbox :input-value="active" />
               </v-list-item-action>

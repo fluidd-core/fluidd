@@ -34,7 +34,7 @@
           :r-cols="2"
           @click="handleEditDialog(camera)"
         >
-          <template v-slot:title>
+          <template #title>
             {{ camera.name }} <v-icon
               v-if="!camera.enabled"
               right

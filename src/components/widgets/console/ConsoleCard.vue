@@ -10,7 +10,7 @@
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
-    <template v-slot:title>
+    <template #title>
       <v-icon left>
         $console
       </v-icon>
@@ -22,7 +22,7 @@
       />
     </template>
 
-    <template v-slot:menu>
+    <template #menu>
       <app-btn
         v-if="scrollingPaused"
         color=""

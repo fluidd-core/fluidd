@@ -38,7 +38,7 @@
           :r-cols="3"
           @click="handleCategoryClick(category)"
         >
-          <template v-slot:title>
+          <template #title>
             {{ category.name }}
             <v-chip
               small
@@ -85,7 +85,7 @@
         :r-cols="3"
         @click="handleCategoryClick()"
       >
-        <template v-slot:title>
+        <template #title>
           {{ $t('app.general.label.uncategorized') }}
           <v-chip small>
             {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}

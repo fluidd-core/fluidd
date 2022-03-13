@@ -78,7 +78,7 @@
       @change="handleSliderChange"
       @input="newValue = $event"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon
           :disabled="readonly || isDisabled || newValue === 0"
           color="grey"
@@ -88,7 +88,7 @@
         </v-icon>
       </template>
 
-      <template v-slot:append>
+      <template #append>
         <v-icon
           :disabled="readonly || isDisabled || newValue === max"
           color="grey"
