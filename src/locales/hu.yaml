@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      box_scale: Dobozmérleg
+      box_scale: Skála
       flat_surface: Lapos sík megjelenítése
       mesh_matrix: Hálós mátrix
       probed_matrix: Próbamátrix
@@ -105,7 +105,7 @@ app:
       load_current_file: Az aktuális fájl betöltése
     label:
       current_layer_height: Jelenlegi rétegmagasság
-      follow_progress: Kövesse az előrehaladást
+      follow_progress: Folyamat nyomonkövetése
       layer: Réteg
       layers: Rétegek
       parsed: Elemezve
@@ -128,7 +128,7 @@ app:
       all: Mindegyik
       calibrate: Kalibrálás
       cancel: Mégsem
-      clear_profile: Profil Törlése
+      clear_profile: Profil törlése
       close: Bezárás
       config_reference: Konfigurációs hivatkozás
       download: Letöltés
@@ -210,7 +210,7 @@ app:
       free: szabad
       heaters_busy: A nyomtató jelenleg foglalt. A fűtőtestek kikapcsolása sikertelen nyomtatást eredményezhet.
       high: Magas
-      host: Házigazda
+      host: Gazdagép
       layer: Réteg
       layout: Elrendezés
       longest_job: A leghosszabb munka
@@ -250,7 +250,7 @@ app:
       visible: Látható
       z_offset: Z Eltolás
       unsaved_changes: Nem mentett módosítások
-      alias: Álnév
+      alias: Becenév
       apply_z_offset: Alkalmazza és mentse a Z eltolást
     msg:
       password_changed: A jelszó megváltozott
@@ -282,7 +282,7 @@ app:
           történik.
     table:
       header:
-        actions: Akciók
+        actions: Parancsok
         end_time: Befejezett
         estimated_time: Becsült idő
         filament: Nyomtatószál
