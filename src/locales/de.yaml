@@ -348,6 +348,7 @@ app:
   printer:
     state:
       busy: Beschäftigt
+      cancelled: Abgebrochen
       complete: Fertig
       idle: Untätig
       loading: Laden
