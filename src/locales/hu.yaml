@@ -39,7 +39,7 @@ app:
   console:
     label:
       auto_scroll: Automatikus görgetés
-      flip_layout: Flip elrendezés
+      flip_layout: Fordított elrendezés
       hide_temp_waits: Hőmérsékletek elrejtése
     placeholder:
       command: Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
@@ -181,7 +181,7 @@ app:
         A Moonraker moduljai hibásak. Kérlek, ellenőrizd a naplókat, frissítsd a
         konfigurációt és indítsd újra a Moonrakert.
     label:
-      accel_to_decel: Gyorsulás & Lassulás
+      accel_to_decel: Lassulási együttható
       acceleration: Gyorsulás
       actual_time: Tényleges
       add_camera: Kamera hozzáadása
@@ -432,7 +432,7 @@ app:
       macros: Makrók
       theme: Téma
       thermal_presets: Hőmérsékleti előbeállítások
-      tool: Tool
+      tool: Eszköz
     tooltip:
       gcode_coords: Használja a GCode pozíciót a szerszámfej pozíciója helyett az irányítópulton
   socket:
@@ -459,7 +459,7 @@ app:
       processor_desc: Processzor
       product_name: Termék név
       serial_number: Sorozatszám
-      system_load: System Terheltsége
+      system_load: Rendszer Terheltsége
       system_memory: Rendszermemória
       system_utilization: Rendszerhasználat
       total_memory: Teljes memória
@@ -490,7 +490,7 @@ app:
     status:
       finished: A frissítések befejeződtek
       updating: Frissítés...
-    title: Szoftver frissítések
+    title: Szoftverfrissítések
     tooltip:
       commit_history: Előzmények rögzítése
       dirty: levált fejet jelez, nem a mesteren vagy érvénytelen eredetet
