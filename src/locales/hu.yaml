@@ -6,7 +6,7 @@ app:
       mesh_matrix: Hálós mátrix
       probed_matrix: Próbamátrix
       profile_name: Profil Név
-      remove_profile: %{name} profil eltávolítása
+      remove_profile: '%{name} profil eltávolítása'
       scale: Színskála
       wireframe: Drótkeret
     msg:
