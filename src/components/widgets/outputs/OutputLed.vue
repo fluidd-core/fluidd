@@ -14,6 +14,7 @@
       <app-color-picker
         :primary="primaryColor"
         :white="whiteColor"
+        :title="led.prettyName"
         dot
         @change="handleColorChange"
       />
