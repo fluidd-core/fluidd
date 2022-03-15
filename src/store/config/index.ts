@@ -29,7 +29,7 @@ export const defaultState = (): ConfigState => {
         { name: 'Русский', code: 'ru' },
         { name: 'Українська', code: 'uk' },
         { name: '한국어', code: 'ko' },
-        { name: 'العربية', code: 'ar' }
+        { name: 'العربية', code: 'ar' },
         { name: '日本語', code: 'ja' }
       ],
       themePresets: []
