@@ -1,0 +1,499 @@
+app:
+  bedmesh:
+    label:
+      box_scale: ボックス表示単位
+      flat_surface: 平らな面を表示
+      mesh_matrix: メッシュの行列
+      probed_matrix: 先端の行列
+      profile_name: プロファイル名
+      remove_profile: ' %{name} のプロファイルを削除'
+      scale: カラー表示単位
+      wireframe: ワイヤーフレーム
+    msg:
+      hint: >-
+       プロファイルを %{name} 以外として保存する場合、
+      %{name} プロファイルを削除することもできます。  
+      not_found: 既存のベッドメッシュが見つかりません。
+      not_loaded: ベッドメッシュが読み込めません。
+    tooltip:
+      calibrate: '新規のキャリブレーションを開始、''デフォルト''として保存。'
+      delete: プロファイルを削除。プリンターを再起動します。
+      load: プロファイルの読込み
+      save: >-
+        キャリブレーションされたプロファイルをprinter.cfgに書き込みします。
+        これにより、プリンタが再起動します。
+  chart:
+    label:
+      current: 温度
+      item: 名称
+      'off': チャートオフ
+      'on': チャートオン
+      power: 電源
+      rate_of_change: 変更
+      target: 設定温度
+    tooltip:
+      help: >-
+        shiftキーを押したままズーム<br />Click an item to toggle in the graph.<br
+        />Click a power to toggle in the graph.
+  console:
+    label:
+      auto_scroll: 自動スクロール
+      flip_layout: コマンド窓反転
+      hide_temp_waits: 温度上昇履歴を隠す
+    placeholder:
+      command: '''tab''キーで候補オートフィル, ''help''と入力でコマンド一覧表示 ''矢印キー'' で履歴をスクロール'
+      scroll: Scroll to bottom
+  endpoint:
+    error:
+      cant_connect: >-
+        何か問題があるため、Fluiddを表示できません。
+        アドレスが正しいか確認して下さい。
+      cors_error: CORSポリシーによって、ブロックされています。
+      cors_note: >-
+        moonraker configurationを編集する必要があります。
+        詳しくは、マルチプリンターセットアップ<a href="%{url}"
+        target="_blank">ここをクリック</a>を参照ください。
+    hint:
+      add_printer: '例として、 http://fluiddpi.local'
+    msg:
+      trouble: >-
+        何か問題が起きていますか? <a href="%{url}" target="_blank">ここをクリック</a>して
+        詳しい説明があります。
+    tooltip:
+      endpoint_examples: >-
+        あなたのAPI URLを入力してください。<br />例として;<br
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: 開く
+      triggered: 引き金
+    msg:
+      subtitle: 更新ボタンを押すと、現在のエンドストップの状態が表示されます。
+  file_system:
+    filters:
+      label:
+        print_start_time: 印刷済みをフィルター
+        print_start_time_desc: プリント済みを非表示
+    label:
+      dir_name: ディレクトリー名
+      disk_usage: ディスク使用量
+      diskinfo: ディスク情報
+      downloaded: ダウンロード済み
+      file_name: ファイル名
+      transfer_rate: 転送速度
+      uploaded: アップロード済み
+    msg:
+      confirm: 全てのファイルとフォルダを削除します。よろしいですか?
+      not_found: ファイルが見つかりません。
+      processing: Processing
+    overlay:
+      label: ここに<strong>ドラッグ</strong>して下さい。
+    title:
+      add_dir: ディレクトリーを追加
+      add_file: ファイルを追加
+      download_file: ファイルをダウンロード
+      keyboard_shortcuts: キーボードショートカット
+      rename_dir: ディレクトリー名を変更
+      rename_file: ファイル名を変更
+      upload_file: ファイルをアップロード中 | ファイルをアップロード中
+    tooltip:
+      low_on_space: ディスク容量が少なくなりました。
+      root_disabled: '{root} root は利用できません。logsを確認してください。'
+  gcode:
+    btn:
+      load_current_file: 現在のファイルを読込
+    label:
+      current_layer_height: 現在のレイヤー高さ
+      follow_progress: 進捗状況監視
+      layer: レイヤー
+      layers: レイヤー
+      parsed: 解析済み
+      show_extrusions: 押し出し表示
+      show_moves: 移動表示
+      show_next_layer: 次のレイヤーを表示
+      show_previous_layer: 前のレイヤーを表示
+      show_retractions: リトラクションを表示
+    msg:
+      confirm: >-
+        "%{filename}" は %{size}です。 これは、リソースを大幅に消費するかもしれません。
+        大丈夫ですか？
+  general:
+    btn:
+      add: 追加
+      add_dir: ディレクトリーを追加
+      add_file: ファイルを追加
+      add_printer: プリンターを追加
+      adjust_layout: ダッシュボードレイアウト調整
+      all: 全て
+      calibrate: 調整する
+      cancel: キャンセル
+      clear_profile: プロファイルをクリア
+      close: 閉じる
+      config_reference: Config Reference
+      download: ダウンロード
+      edit: 編集
+      exit_layout: レイアウトモード終了
+      extrude: Extrude
+      heaters_off: ヒーターoff
+      load_all: 全て読込み
+      more_information: 詳細情報
+      pause: ポーズ
+      preheat: プレヒート
+      presets: プリセット
+      preview_gcode: Gcodeプレビュー
+      quad_gantry_level: QGL
+      reboot: 再起動
+      refresh: リフレッシュ
+      remove: 削除
+      remove_all: 全てを削除
+      rename: 名前の変更
+      reprint: 再印刷
+      reset_file: ファイルをクリア
+      reset_layout: レイアウト　リセット
+      reset_stats: 履歴のリセット
+      restart_firmware: Firmware再スタート
+      restart_service: '%{service} 再スタート'
+      restart_service_klipper: Klipper 再スタート
+      restart_service_moonraker: Moonraker 再スタート
+      resume: 再開
+      retract: リトラクト
+      save: 保存
+      save_as: 名前を付けて保存
+      save_restart: 保存 & 再スタート
+      send: 送る
+      set_color: カラー設定
+      shutdown: 電源オフ
+      socket_reconnect: 再接続
+      socket_refresh: 強制リフレッシュ
+      upload: アップロード
+      upload_print: アップロード & 印刷
+      view: ビュー
+    error:
+      app_setup_link: >-
+        Fluidd のセットアップ要件を見つける。 <a target="_blank"
+        href="%{url}">ここをクリック</a>
+      app_warnings_found: '%{appName} 警告が見つかりました。'
+      components_config: >-
+        Moonraker plugin configurationを見つける。<a target="_blank"
+        href="%{url}">ここをクリック</a>
+      failed_components: >-
+        Moonraker pluginsに失敗, logsを確認してください。
+        configurationを更新とmoonrakerの再スタート
+    label:
+      accel_to_decel: Accel to Decel
+      acceleration: 加速度
+      actual_time: 実際の時間
+      add_camera: カメラを追加
+      add_filter: フィルターを追加
+      add_preset: プリセットを追加
+      add_user: ユーザーを追加
+      alias: エイリアス
+      api_key: Api Key
+      api_url: API URL
+      apply_z_offset: Z_Offsetの確定と保存
+      category: カテゴリー
+      change_password: パスワードの変更
+      clear_all: 全てをクリアする
+      color: カラー
+      confirm: 確認
+      current_password: 現在のパスワード
+      disabled_while_printing: 印刷は無効です
+      edit_camera: カメラを編集
+      edit_filter: フィルターの編集
+      edit_preset: プリセットの編集
+      edit_user: ユーザーを編集
+      extrude_length: エクストルーダー長さ
+      extrude_speed: エクストルーダー速さ
+      filament: フィラメント
+      ファイル: ファイル
+      finish_time: 終了
+      flow: フロー
+      free: フリー
+      heaters_busy: >-
+        プリンターは現在使用中。 
+        ヒーターをOFFにすると印刷に失敗します。
+      high: 高さ
+      host: ホスト
+      layer: レイヤー
+      layout: レイアウト
+      longest_job: Longest job
+      low: Low
+      m117: M117
+      name: Name
+      new_password: 新しいパスワード
+      no_notifications: 新しい通知はありません
+      'off': 'Off'
+      'on': 'On'
+      password: パスワード
+      power: 電源
+      printers: プリンター
+      progress: 進捗
+      requested_speed: 速さ
+      retract_length: Retract Length
+      retract_speed: Retract Speed
+      save_as: 名前をつけて保存
+      services: サービス
+      slicer: スライサー
+      speed: スピード
+      sqv: 四角コーナー速さ
+      total: 合計
+      total_filament: フィラメント合計
+      total_filament_avg: 平均使用量
+      total_jobs: 使用時間
+      total_print_time: 印刷時間
+      total_print_time_avg: 平均印刷時間
+      total_time: 総合計
+      total_time_avg: 総平均
+      uncategorized: 未分類
+      unretract_extra_length: Unretract Extra Length
+      unretract_speed: Unretract Speed
+      unsaved_changes: 変更を未保存
+      used: used
+      variance: 分散
+      velocity: 速度
+      visible: 見える
+      z_offset: Z Offset
+    msg:
+      password_changed: パスワードを変更しました。
+      wrong_password: 'Oops,何かまちがってるよー。パスワードは正しい?'
+    simple_form:
+      error:
+        arrayofnums: 数字のみ
+        exists: すでに使われています。
+        invalid_expression: 無効な
+        invalid_url: 無効なURLです
+        max: 'Max %{max}'
+        min: 'Min %{min}'
+        min_or_0: 'Min %{min} or 0'
+        password_username: ユーザー名が合っていません
+        required: 必須
+      msg:
+        apply_z_offset_endstop: >-
+          エンドストップ Zオフセットを現在の値で書き込みします。
+        apply_z_offset_probe: >-
+          プローブ/Bltouch Zオフセットを現在の値で書き込みします。
+        confirm: 変更してもよろしいですか?
+        confirm_power_device_toggle: 電源が切り替わります。よろしいですか?
+        confirm_reboot_host: ホストを再起動します。よろしいですか?
+        confirm_service_restart: '%{name} サービスを再起動します。よろしいですか?'
+        confirm_service_stop: '%{name} サービスを停止します。よろしいですか?'
+        confirm_shutdown_host: ホストをシャットダウンします。よろしいですか?
+        unsaved_changes: 変更を保存しいていません。ファイル閉じてもよろしいですか?
+    table:
+      header:
+        actions: Actions
+        end_time: 終了時間
+        estimated_time: 稼働時間
+        filament: フィラメント
+        filament_used: フィラメント名
+        filament_weight_total: フィラメント重量
+        first_layer_bed_temp: 1層目のベッド温度
+        first_layer_extr_temp: 1層目のホットエンド温度
+        first_layer_height: 1層目の高さ
+        height: 高さ
+        last_printed: 前回印刷
+        layer_height: レイヤー高さ
+        modified: Modified
+        name: 名称
+        print_duration: 印刷時間
+        size: サイズ
+        slicer: スライサー
+        slicer_version: スライサーバージョン
+        start_time: 印刷開始
+        status: 状態
+        total_duration: 合計時間
+    title:
+      add_printer: プリンターを追加
+      bedmesh: ベッドメッシュ
+      bedmesh_controls: ベッドメッシュ コントロール
+      camera: カメラ | マルチカメラ
+      config_files: Configuration ファイル
+      configure: Configuration
+      console: コンソール
+      endstops: エンドストップ
+      fans_outputs: ファン & 出力
+      gcode_preview: 'Gcode Preview [ Beta ]'
+      history: 履歴
+      home: ホーム
+      jobs: ジョブ
+      limits: プリンター限界値
+      macros: マクロ
+      other_files: その他のファイル
+      retract: Firmware撤回
+      runout_sensors: フィラメント断線センサー
+      settings: 設定
+      stats: プリンター状態
+      system: システム
+      system_overview: システム情報
+      temperature: 温度管理
+      tool: Tool
+      tune: チューン
+    tooltip:
+      estop: 緊急停止
+      reload_klipper: klipper configurationを再読み込み
+      reload_restart_klipper: klipper configuration を再読み込みとMCU再起動
+      restart_klipper: klipper サービスを再起動
+  history:
+    msg:
+      confirm_jobs: 全てのジョブをクリアしてもよろしいですか?
+      confirm_stats: 全ての統計をクリアしてもよろしいですか?
+  printer:
+    state:
+      busy: 使用中
+      complete: プリント完了
+      idle: アイドル中
+      loading: 読込中
+      paused: 一時停止
+      printing: 印刷中
+      ready: 準備完了
+      standby: スタンバイ中
+  setting:
+    btn:
+      add_camera: カメラを追加
+      add_category: カテゴリーを追加
+      add_filter: フィルターを追加
+      add_thermal_preset: プリセットを追加
+      add_user: ユーザー追加
+      reset: リセット
+      select_theme: テーマの選択
+    camera_rotate_options:
+      '90': 90度回転
+      '180': 180回転
+      '270': 270回転
+      none: None
+    camera_type_options:
+      iframe: HTTP page
+      mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
+      video: IP Camera
+    label:
+      all_off: 全オフ
+      all_on: 全オン
+      auto_edit_extensions: エクステンション編集は自動で開始します。
+      camera_flip_x: 上下反転
+      camera_flip_y: 左右反転
+      camera_rotate_by: 回転
+      camera_stream_type: ストリームタイプ
+      camera_url: カメラUrl
+      confirm_dirty_editor_close: 変更を保存せず、エディターを閉じる際に確認メッセージを表示する。
+      confirm_on_estop: 緊急停止する際は、確認メッセージを表示する。
+      confirm_on_power_device_change: デバイスパワーを変更する際は、確認メッセージを表示する。
+      contains: 内容
+      dark_mode: ダークモード
+      date_time_format: 日付表示方法
+      default_extrude_length: 標準エクストルーダー長さ
+      default_extrude_speed: 標準エクストルーダー速さ
+      default_toolhead_move_length: 標準ステッパー移動距離
+      default_toolhead_xy_speed: 標準ステッパー XY 速さ
+      default_toolhead_z_speed: 標準ステッパー Z 速さ
+      draw_background: 背景
+      enable: 有効
+      enable_notifications: 通知の有効
+      expression: 表現
+      extrusion_line_width: 押し出しの幅
+      filter: Filter | Filters
+      flip_horizontal: 水平フリップ
+      flip_vertical: 垂直フリップ
+      fps_idle_target: 焦点が合ってない場合のFPS
+      fps_target: FPS
+      gcode_coords: GCode座標を使用する
+      group_lower_layers: 下層をグループ化する
+      height: 高さ
+      invert_x_control: X コントロールを反転する
+      invert_y_control: Y コントロールを反転する
+      invert_z_control: Z コントロールを反転する
+      language: 表示言語
+      move_line_width: 線幅の移動
+      primary_color: 主要な色
+      printer_name: プリンター名
+      reset: 設定をリセット
+      retraction_icon_size: リトラクション アイコンサイズ
+      show_animations: アニメーションを表示
+      show_rate_of_change: 温度変化を表示する
+      starts_with: ～で始まる
+      theme_preset: コミニュティ プリセット
+      thermal_preset_gcode: GCode
+      thermal_preset_name: プリセット名
+      type: タイプ
+      z_adjust_values: Z 調整値
+    timer_options:
+      duration: 期間のみ
+      filament: フィラメント推定
+      ファイル: ファイル推定
+      slicer: スライサー
+    title:
+      authentication: 認証
+      camera: カメラ | マルチカメラ
+      console: コンソール
+      file_editor: ファイル エディター
+      gcode_preview: Gcode プレビュー
+      general: 全般
+      macros: マクロ
+      theme: テーマ
+      thermal_presets: 温度プリセット
+      tool: Tool
+    tooltip:
+      gcode_coords: ダッシュボードに、ステッパー位置の代わりにGCode表示を使用する。
+  socket:
+    msg:
+      connecting: moonrakerに接続中...
+      no_connection: moonrakerに接続できません。moonrakerステイタスの確認と再読み込み。
+  system_info:
+    label:
+      capacity: 容量
+      cpu_desc: CPU 詳細
+      distribution_codename: コード名
+      distribution_like: 近いディストリビューション
+      distribution_name: ディストリビューション
+      hardware_desc: ハードウェア詳細
+      hostname: ホスト名
+      klipper_load: Klipper 読込み
+      manufactured: 製造メーカー
+      manufacturer: 製造日
+      mcu_awake: '{mcu} 使用時間'
+      mcu_bandwidth: '{mcu} 帯域幅'
+      mcu_load: '{mcu} 使用率'
+      model: CPUモデル
+      moonraker_load: Moonraker使用率
+      processor_desc: プロセッサー
+      product_name: 製品名
+      serial_number: シリアル番号
+      system_load: システム使用率
+      system_memory: システムメモリー
+      system_utilization: システム使用率
+      total_memory: メモリー合計
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+    tooltip:
+      extruder_disabled: 'エクストルーダーが無効です。 エクストルーダーの最低温度 (%{min}<small>��C</small>)'
+      home_xy: Home XY
+      home_z: Home Z
+  version:
+    btn:
+      check_for_updates: アップデートの確認
+      finish: 終了
+      update: アップデート
+      view_versions: バージョンを表示
+    label:
+      commit_history: コミット履歴
+      commits_on: commits on
+      committed: Committed
+      dirty: DIRTY
+      invalid: 無効
+      os_packages: OSパッケージ
+      package_list: パッケージリスト
+      up_to_date: 最新の状態
+      updates_available: アップデートがあります
+    status:
+      finished: アップデート終了
+      updating: アップデート中...
+    title: ソフト アップデート
+    tooltip:
+      commit_history: Commit history
+      dirty: 'indicates a detached head, not on master or an invalid origin'
+      invalid: indicates local changes to the repo
+      packages: Packages
+      release_notes: Release notes
+
