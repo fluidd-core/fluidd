@@ -180,19 +180,12 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     window.addEventListener('beforeunload', this.handleBeforeUnload)
   }
 
-  beforeUnmount () {
+  beforeDestroy () {
     window.removeEventListener('beforeunload', this.handleBeforeUnload)
   }
 
   get showDirtyEditorWarning () {
     return this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose && this.updatedContent !== this.lastSavedContent
-  }
-
-  handleBeforeUnload (e: Event) {
-    if (this.showDirtyEditorWarning) {
-      e.preventDefault() // show browser-native "Leave site?" modal
-      return ((e || window.event).returnValue = true) // fallback
-    }
   }
 
   async emitClose () {
@@ -208,6 +201,13 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     }
 
     this.$emit('input', false)
+  }
+
+  handleBeforeUnload (e: Event) {
+    if (this.showDirtyEditorWarning) {
+      e.preventDefault() // show browser-native "Leave site?" modal
+      return ((e || window.event).returnValue = true) // fallback
+    }
   }
 
   emitSave (restart: boolean) {
