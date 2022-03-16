@@ -23,7 +23,7 @@ jobs:
           node-version: '16'
 
       - name: Install deps
-        run: npm install
+        run: npm ci --no-optional
 
       - name: Run lint
         run: npm run lint -- --no-fix
