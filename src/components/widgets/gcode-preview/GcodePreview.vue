@@ -277,8 +277,23 @@ export default class GcodePreview extends Mixins(StateMixin) {
   get bedSize (): BBox {
     const {
       stepper_x: stepperX,
-      stepper_y: stepperY
+      stepper_y: stepperY,
+      printer
     } = this.$store.getters['printer/getPrinterSettings']()
+
+    if (printer.kinematics === 'delta') {
+      const radius = printer?.print_radius ?? 100.0
+      return {
+        x: {
+          min: -radius,
+          max: radius
+        },
+        y: {
+          min: -radius,
+          max: radius
+        }
+      }
+    }
 
     return {
       x: {
@@ -297,8 +312,23 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
     const {
       stepper_x: stepperX,
-      stepper_y: stepperY
+      stepper_y: stepperY,
+      printer
     } = this.$store.getters['printer/getPrinterSettings']()
+
+    if (printer.kinematics === 'delta') {
+      const radius = printer?.print_radius ?? 100.0
+      return {
+        x: {
+          min: -radius,
+          max: radius
+        },
+        y: {
+          min: -radius,
+          max: radius
+        }
+      }
+    }
 
     if (stepperX === undefined || stepperY === undefined) {
       return {
