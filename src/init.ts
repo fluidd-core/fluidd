@@ -69,7 +69,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     endpoints.map(async endpoint => {
       return httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
         .then(() => true)
-        .catch((response) => (response.status === 401))
+        .catch((error) => error.response?.status === 401)
     })
   )
 
