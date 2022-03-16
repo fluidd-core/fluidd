@@ -146,6 +146,11 @@ interface AppColor {
   rgb: RgbwColor;
 }
 
+interface PointerPosition {
+  x: number;
+  y: number;
+}
+
 @Component({
   components: {}
 })
@@ -165,7 +170,7 @@ export default class AppColorPicker extends Vue {
 
   menu = false
   dragging = false
-  lastPointerPosition: {x: number, y: number} = { x: 0, y: 0 }
+  lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
   primaryColor: AppColor = {
     hexString: '#ffffff',
@@ -288,7 +293,7 @@ export default class AppColorPicker extends Vue {
     this.lastPointerPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
   }
 
-  relativeMove (newPosition: { x: number, y: number }) {
+  relativeMove (newPosition: PointerPosition) {
     if (!this.$refs.card) {
       return
     }
