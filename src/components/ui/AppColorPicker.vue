@@ -130,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
@@ -169,6 +169,10 @@ export default class AppColorPicker extends Vue {
   dot!: boolean
 
   menu = false
+
+  @Ref('card')
+  card!: Vue
+
   dragging = false
   lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
@@ -294,11 +298,7 @@ export default class AppColorPicker extends Vue {
   }
 
   relativeMove (newPosition: PointerPosition) {
-    if (!this.$refs.card) {
-      return
-    }
-
-    const parent = (this.$refs.card as Vue).$el.parentElement as HTMLElement
+    const parent = this.card.$el.parentElement as HTMLElement
 
     parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
     parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
