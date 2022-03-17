@@ -276,7 +276,7 @@ export default class ToolHeadSettings extends Vue {
   set toolheadMoveDistances (value: number[]) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadMoveDistances',
-      value: value.sort((a, b) => a - b),
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
     })
   }
