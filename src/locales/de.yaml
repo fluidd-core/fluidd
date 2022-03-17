@@ -423,6 +423,7 @@ app:
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode
       thermal_preset_name: Name des Voreinstellungsprofils
+      toolhead_move_distances: Bewegungsdistanzen des Druckkopfes
       type: Art
       z_adjust_values: Z-Werte anpassen
     timer_options:
