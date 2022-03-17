@@ -71,11 +71,28 @@
         </svg>
       </defs>
       <g :transform="flipTransform">
+        <clipPath id="clipCircle">
+          <circle
+            :r="bedSize.x.max"
+            cx="0"
+            cy="0"
+          />
+        </clipPath>
         <g
           v-if="drawBackground"
           id="background"
         >
           <rect
+            v-if="isDelta"
+            :height="bedSize.y.max - bedSize.y.min"
+            :width="bedSize.x.max - bedSize.x.min"
+            fill="url(#backgroundPattern)"
+            clip-path="url(#clipCircle)"
+            :x="bedSize.x.min"
+            :y="bedSize.y.min"
+          />
+          <rect
+            v-else
             :height="bedSize.y.max - bedSize.y.min"
             :width="bedSize.x.max - bedSize.x.min"
             fill="url(#backgroundPattern)"
@@ -211,6 +228,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   panning = false
 
+  get isDelta (): boolean {
+    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') === 'delta'
+  }
+
+  get printerRadius (): number {
+    return this.$store.getters['printer/getPrinterSettings']('printer.print_radius') ?? 100.0
+  }
+
   get themeIsDark (): boolean {
     return this.$store.state.config.uiSettings.theme.isDark
   }
@@ -271,18 +296,20 @@ export default class GcodePreview extends Mixins(StateMixin) {
       this.flipY ? -(y.max - y.min) : 0
     ]
 
+    if (this.isDelta) {
+      return `scale(${scale.join()}) translate(0,0)`
+    }
     return `scale(${scale.join()}) translate(${transform.join()})`
   }
 
   get bedSize (): BBox {
     const {
       stepper_x: stepperX,
-      stepper_y: stepperY,
-      printer
+      stepper_y: stepperY
     } = this.$store.getters['printer/getPrinterSettings']()
 
-    if (printer.kinematics === 'delta') {
-      const radius = printer?.print_radius ?? 100.0
+    if (this.isDelta) {
+      const radius = this.printerRadius
       return {
         x: {
           min: -radius,
@@ -312,20 +339,19 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
     const {
       stepper_x: stepperX,
-      stepper_y: stepperY,
-      printer
+      stepper_y: stepperY
     } = this.$store.getters['printer/getPrinterSettings']()
 
-    if (printer.kinematics === 'delta') {
-      const radius = printer?.print_radius ?? 100.0
+    if (this.isDelta) {
+      const radius = this.printerRadius
       return {
         x: {
           min: -radius,
-          max: radius
+          max: radius * 2
         },
         y: {
           min: -radius,
-          max: radius
+          max: radius * 2
         }
       }
     }
