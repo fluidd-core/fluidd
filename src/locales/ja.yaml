@@ -57,7 +57,7 @@ app:
   endstop:
     label:
       open: オープン
-      triggered: TRIGGERED
+      triggered: トリガー
     msg:
       subtitle: エンドストップの状態を更新する場合は、更新ボタンを押します。
   file_system:
@@ -163,7 +163,7 @@ app:
       components_config: 'Moonrakerのプラグイン設定は、こちら <a target="_blank" href="%{url}">です。</a>'
       failed_components: Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
     label:
-      accel_to_decel: Accel to Decel
+      accel_to_decel: 加減速
       acceleration: 加速度
       actual_time: 実際の
       add_camera: カメラ追加
@@ -226,8 +226,8 @@ app:
       total_time: 合計時間
       total_time_avg: プリントあたりの平均値
       uncategorized: 未分類
-      unretract_extra_length: Unretract Extra Length
-      unretract_speed: Unretract Speed
+      unretract_extra_length: アンリトラクト長さ
+      unretract_speed: アンリトラクトスピード
       unsaved_changes: 保存されていない変更
       used: used
       variance: 増減率
@@ -298,7 +298,7 @@ app:
       limits: プリンター制限
       macros: マクロ
       other_files: その他のファイル
-      retract: Firmware Retraction
+      retract: Firmwareを戻す
       runout_sensors: フィラメント断線センサー
       settings: 設定
       stats: プリンター統計
@@ -460,7 +460,7 @@ app:
       commit_history: 書込み履歴
       commits_on: 書込みする
       committed: 書込みする
-      dirty: DIRTY
+      dirty: ダーティー
       invalid: 無効
       os_packages: OSパッケージ
       package_list: パッケージリスト
