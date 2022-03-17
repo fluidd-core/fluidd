@@ -96,8 +96,8 @@ import { Macro } from '@/store/macros/types'
 })
 export default class Dashboard extends Mixins(StateMixin) {
   drag = false
-  container1 = []
-  container2 = []
+  container1: LayoutConfig[] = []
+  container2: LayoutConfig[] = []
 
   mounted () {
     this.container1 = this.layout.container1
