@@ -222,6 +222,7 @@ app:
       'off': 'Off'
       password: Password
       power: Power
+      pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
       requested_speed: Speed
@@ -230,6 +231,7 @@ app:
       save_as: Save As
       services: Services
       slicer: Slicer
+      smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
       total: Total
