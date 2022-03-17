@@ -85,8 +85,8 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
         <v-select
           :value="defaultToolheadMoveLength"
-          :items="[0.1, 1.0, 10, 25, 50, 100]"
-          :rules="[rules.numRequired, rules.numMin]"
+          :items="toolheadMoveDistances"
+          :rules="[rules.numRequired]"
           filled
           dense
           single-line
@@ -123,6 +123,27 @@
           hide-details
           suffix="mm/s"
           @change="setDefaultToolheadZSpeed"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
+        <v-combobox
+          v-model="toolheadMoveDistances"
+          filled
+          dense
+          hide-selected
+          hide-details="auto"
+          multiple
+          small-chips
+          append-icon=""
+          deletable-chips
+          :rules="[
+            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
+            v => v.length <= 6 || $t('app.general.simple_form.error.max', { max: 6 }),
+            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
+          ]"
         />
       </app-setting>
 
@@ -244,6 +265,18 @@ export default class ToolHeadSettings extends Vue {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.zAdjustDistances',
       value,
+      server: true
+    })
+  }
+
+  get toolheadMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+  }
+
+  set toolheadMoveDistances (value: number[]) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadMoveDistances',
+      value: value.sort((a, b) => a - b),
       server: true
     })
   }
