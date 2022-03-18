@@ -319,6 +319,7 @@ export const Waits = Object.freeze({
   onMacro: 'onMacro',
   onSetSpeed: 'onSetSpeed',
   onSetFlow: 'onSetFlow',
+  onSetPressureAdvance: 'onSetPressureAdvance',
   onSetFanSpeed: 'onSetFanSpeed',
   onSetOutputPin: 'onSetOutputPin',
   onZAdjust: 'onZAdjust',

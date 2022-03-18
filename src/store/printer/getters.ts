@@ -222,18 +222,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
     // If we can't find what we need..
     if (!e || !c) return {}
 
-    // The first extruder should include all we need.
-    if (name === 'extruder' && e && c) return { ...e, ...c }
-
     // If we have other extruders, they may inherit some properties
     // from the first depending how they're defined.
-    const d = getters.getPrinterSettings('extruder')
+    const { min_extrude_temp } = name === 'extruder' ? c : getters.getPrinterSettings('extruder')
+
     return {
-      ...{
-        min_extrude_temp: d.min_extrude_temp
-      },
+      min_extrude_temp,
+      ...c,
       ...e,
-      ...c
+      config_pressure_advance: c.pressure_advance,
+      config_smooth_time: c.pressure_advance_smooth_time
     }
   },
 
