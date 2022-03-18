@@ -130,6 +130,7 @@
 
       <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
         <v-combobox
+          ref="toolheadMoveDistances"
           v-model="toolheadMoveDistances"
           filled
           dense
@@ -144,6 +145,7 @@
             v => v.length <= 6 || $t('app.general.simple_form.error.max', { max: 6 }),
             v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
           ]"
+          @change="setToolheadMoveDistances"
         />
       </app-setting>
 
@@ -185,13 +187,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
 })
 export default class ToolHeadSettings extends Vue {
+  @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
+
   rules = {
     numRequired: (v: number | string) => v !== '' || 'Required',
     numMin: (v: number) => v >= 1 || 'Min 1'
@@ -274,7 +278,17 @@ export default class ToolHeadSettings extends Vue {
   }
 
   set toolheadMoveDistances (value: number[]) {
-    this.$store.dispatch('config/saveByPath', {
+    // noop, handled below for async input validation
+  }
+
+  async setToolheadMoveDistances (value: number[]) {
+    await this.waitForInputValidation()
+
+    if (!this.toolheadMoveDistancesElement.valid) {
+      return
+    }
+
+    return this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadMoveDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -343,6 +357,12 @@ export default class ToolHeadSettings extends Vue {
       value,
       server: true
     })
+  }
+
+  async waitForInputValidation (ticks = 2) {
+    for (let i = 0; i < ticks; i++) {
+      await new Promise(resolve => this.$nextTick(resolve as any))
+    }
   }
 }
 </script>
