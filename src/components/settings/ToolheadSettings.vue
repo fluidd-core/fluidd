@@ -145,7 +145,6 @@
             v => v.length <= 6 || $t('app.general.simple_form.error.max', { max: 6 }),
             v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
           ]"
-          @change="setToolheadMoveDistances"
         />
       </app-setting>
 
@@ -277,18 +276,12 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.toolheadMoveDistances
   }
 
-  set toolheadMoveDistances (value: number[]) {
-    // noop, handled below for async input validation
-  }
-
-  async setToolheadMoveDistances (value: number[]) {
-    await this.waitForInputValidation()
-
-    if (!this.toolheadMoveDistancesElement.valid) {
+  set toolheadMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadMoveDistancesElement.validate(true)) {
       return
     }
 
-    return this.$store.dispatch('config/saveByPath', {
+    this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.toolheadMoveDistances',
       value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
@@ -357,12 +350,6 @@ export default class ToolHeadSettings extends Vue {
       value,
       server: true
     })
-  }
-
-  async waitForInputValidation (ticks = 2) {
-    for (let i = 0; i < ticks; i++) {
-      await new Promise(resolve => this.$nextTick(resolve as any))
-    }
   }
 }
 </script>
