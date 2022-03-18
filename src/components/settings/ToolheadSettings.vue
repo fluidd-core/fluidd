@@ -85,8 +85,8 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
         <v-select
           :value="defaultToolheadMoveLength"
-          :items="[0.1, 1.0, 10, 25, 50, 100]"
-          :rules="[rules.numRequired, rules.numMin]"
+          :items="toolheadMoveDistances"
+          :rules="[rules.numRequired]"
           filled
           dense
           single-line
@@ -128,6 +128,28 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
+        <v-combobox
+          ref="toolheadMoveDistances"
+          v-model="toolheadMoveDistances"
+          filled
+          dense
+          hide-selected
+          hide-details="auto"
+          multiple
+          small-chips
+          append-icon=""
+          deletable-chips
+          :rules="[
+            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
+            v => v.length <= 6 || $t('app.general.simple_form.error.max', { max: 6 }),
+            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
+          ]"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.z_adjust_values')">
         <v-combobox
           v-model="zAdjustValues"
@@ -164,13 +186,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
 })
 export default class ToolHeadSettings extends Vue {
+  @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
+
   rules = {
     numRequired: (v: number | string) => v !== '' || 'Required',
     numMin: (v: number) => v >= 1 || 'Min 1'
@@ -244,6 +268,22 @@ export default class ToolHeadSettings extends Vue {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.zAdjustDistances',
       value,
+      server: true
+    })
+  }
+
+  get toolheadMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+  }
+
+  set toolheadMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadMoveDistancesElement.validate(true)) {
+      return
+    }
+
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
     })
   }

@@ -416,6 +416,7 @@ app:
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
+      toolhead_move_distances: Toolhead distance values
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
