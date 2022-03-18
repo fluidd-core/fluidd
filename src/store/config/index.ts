@@ -25,7 +25,7 @@ export const defaultState = (): ConfigState => {
         { name: 'Italiano', code: 'it' },
         { name: 'Magyar', code: 'hu' },
         { name: 'Nederlands', code: 'nl' },
-        { name: 'Portuguese', code: 'pt' },
+        { name: 'Português', code: 'pt' },
         { name: 'Русский', code: 'ru' },
         { name: 'Українська', code: 'uk' },
         { name: '한국어', code: 'ko' },
