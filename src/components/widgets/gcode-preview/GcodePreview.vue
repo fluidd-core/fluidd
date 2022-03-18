@@ -229,7 +229,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
   panning = false
 
   get isDelta (): boolean {
-    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') === 'delta'
+    const kinematics = this.$store.getters['printer/getPrinterSettings']('printer.kinematics')
+    return kinematics === 'delta' || kinematics === 'rotary_delta'
   }
 
   get printerRadius (): number {
