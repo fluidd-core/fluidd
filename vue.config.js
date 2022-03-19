@@ -2,13 +2,14 @@
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { defineConfig } = require('@vue/cli-service')
 
 const v = require('./package.json').version
 const h = require('child_process')
   .execSync('git rev-parse --short HEAD')
   .toString()
 
-module.exports = {
+module.exports = defineConfig({
   pluginOptions: {
     i18n: {
       locale: 'en',
@@ -82,4 +83,4 @@ module.exports = {
         return args
       })
   }
-}
+})
