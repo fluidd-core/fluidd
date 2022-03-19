@@ -51,6 +51,7 @@ export const defaultState = (): ConfigState => {
         defaultToolheadMoveLength: 1.0,
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
+        toolheadMoveDistances: [0.1, 1, 10, 25, 50, 100],
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
