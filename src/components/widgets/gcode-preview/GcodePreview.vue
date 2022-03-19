@@ -292,14 +292,15 @@ export default class GcodePreview extends Mixins(StateMixin) {
       this.flipY ? -1 : 1
     ]
 
+    if (this.isDelta) {
+      return `scale(${scale.join()}) translate(0,0)`
+    }
+
     const transform = [
       this.flipX ? -(x.max - x.min) : 0,
       this.flipY ? -(y.max - y.min) : 0
     ]
 
-    if (this.isDelta) {
-      return `scale(${scale.join()}) translate(0,0)`
-    }
     return `scale(${scale.join()}) translate(${transform.join()})`
   }
 
