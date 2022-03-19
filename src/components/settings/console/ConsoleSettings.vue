@@ -32,7 +32,7 @@
           :key="`filter-${filter.name}`"
           :r-cols="3"
         >
-          <template v-slot:title>
+          <template #title>
             {{ filter.name }}
           </template>
 
@@ -101,12 +101,12 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     const filterCopy = filter
       ? { ...filter }
       : {
-        id: '',
-        enabled: true,
-        name: '',
-        type: ConsoleFilterType.Contains,
-        value: ''
-      }
+          id: '',
+          enabled: true,
+          name: '',
+          type: ConsoleFilterType.Contains,
+          value: ''
+        }
 
     this.dialogState = {
       open: true,

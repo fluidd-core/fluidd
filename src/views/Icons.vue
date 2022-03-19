@@ -9,7 +9,7 @@
         class="d-inline-block"
         top
       >
-        <template v-slot:activator="{ attrs, on }">
+        <template #activator="{ attrs, on }">
           <v-icon
             v-bind="attrs"
             class="ma-2"

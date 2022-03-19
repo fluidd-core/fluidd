@@ -4,7 +4,7 @@
       prepend-icon="$host"
       no-action
     >
-      <template v-slot:activator>
+      <template #activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.host') }}</v-list-item-title>
         </v-list-item-content>
@@ -40,7 +40,7 @@
       prepend-icon="$power"
       no-action
     >
-      <template v-slot:activator>
+      <template #activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.power') }}</v-list-item-title>
         </v-list-item-content>
@@ -64,7 +64,7 @@
       prepend-icon="$restart"
       no-action
     >
-      <template v-slot:activator>
+      <template #activator>
         <v-list-item-content>
           <v-list-item-title>{{ $t('app.general.label.services') }}</v-list-item-title>
         </v-list-item-content>
@@ -76,7 +76,7 @@
           <v-list-item-content>
             <v-list-item-title>
               <v-tooltip left>
-                <template v-slot:activator="{ on, attrs }">
+                <template #activator="{ on, attrs }">
                   <span
                     v-bind="attrs"
                     class="text-wrap"

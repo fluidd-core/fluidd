@@ -77,7 +77,7 @@ echartsUse([
   SVGRenderer,
   CanvasRenderer
 ])
-Vue.component('v-chart', ECharts)
+Vue.component('VChart', ECharts)
 
 Vue.use(VueVirtualScroller)
 Vue.use(DayJSPlugin)

@@ -24,7 +24,7 @@
       transition="slide-y-transition"
       :close-on-content-click="false"
     >
-      <template v-slot:activator="{ on, attrs, value }">
+      <template #activator="{ on, attrs, value }">
         <app-btn
           v-if="paramList.length > 0"
           v-bind="attrs"
@@ -57,7 +57,7 @@
               class=""
               :class="{ 'mb-3': (i < paramList.length - 1) }"
             >
-              <template v-slot:append>
+              <template #append>
                 <app-btn
                   style="margin-top: -4px; margin-right: -6px;"
                   color=""

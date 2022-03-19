@@ -27,7 +27,7 @@
       @input="handleSelected"
       @item-selected="handleItemSelected"
     >
-      <template v-slot:item="{ item, isSelected, select }">
+      <template #item="{ item, isSelected, select }">
         <tr
           :class="{
             'is-directory': (item.type === 'directory'),

@@ -18,7 +18,7 @@ jobs:
           node-version: '16'
 
       - name: Install deps
-        run: npm install
+        run: npm ci --no-optional
 
       - name: Run tests
         run: npm run test:unit
@@ -32,11 +32,17 @@ jobs:
           zip -r fluidd.zip ./
           cd ..
 
+      - name: Get version from tag
+        id: tag_name
+        run: |
+          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+
       - name: Read ChangeLog
         uses: mindsers/changelog-reader-action@v2
         id: changelog
         with:
           validation_depth: 1
+          version: ${{ steps.tag_name.outputs.current_version }}
           path: ./CHANGELOG.md
 
       - name: Create Release

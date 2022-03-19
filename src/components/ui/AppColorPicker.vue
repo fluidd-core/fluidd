@@ -7,7 +7,7 @@
     :max-width="260"
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         v-show="!dot"
         v-bind="attrs"
@@ -28,7 +28,17 @@
         $circle
       </v-icon>
     </template>
-    <v-card>
+    <v-card ref="card">
+      <v-card-title
+        v-if="title"
+        class="card-heading mb-2"
+        style="cursor: move"
+        @mousedown="startMouseDrag"
+        @touchstart="startTouchDrag"
+        @touchmove="pointerMove"
+      >
+        {{ title }}
+      </v-card-title>
       <v-card-text>
         <v-icon
           :color="primaryColor.hexString"
@@ -120,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
@@ -134,6 +144,11 @@ interface RgbwColor {
 interface AppColor {
   hexString: string;
   rgb: RgbwColor;
+}
+
+interface PointerPosition {
+  x: number;
+  y: number;
 }
 
 @Component({
@@ -154,6 +169,12 @@ export default class AppColorPicker extends Vue {
   dot!: boolean
 
   menu = false
+
+  @Ref('card')
+  card!: Vue
+
+  dragging = false
+  lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
   primaryColor: AppColor = {
     hexString: '#ffffff',
@@ -261,6 +282,59 @@ export default class AppColorPicker extends Vue {
   @Debounce(500)
   debouncedChange (channel: string, color: IroColor) {
     this.$emit('change', { channel, color })
+  }
+
+  startMouseDrag (event: MouseEvent) {
+    this.dragging = true
+    this.lastPointerPosition = { x: event.clientX, y: event.clientY }
+  }
+
+  stopMouseDrag () {
+    this.dragging = false
+  }
+
+  startTouchDrag (event: TouchEvent) {
+    this.lastPointerPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+  }
+
+  relativeMove (newPosition: PointerPosition) {
+    const parent = this.card.$el.parentElement as HTMLElement
+
+    parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
+    parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+  }
+
+  pointerMove (event: TouchEvent | MouseEvent) {
+    let newPosition
+    if (event instanceof TouchEvent) {
+      event.preventDefault()
+      newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+    } else if (this.dragging) {
+      newPosition = { x: event.clientX, y: event.clientY }
+    } else {
+      return
+    }
+
+    this.relativeMove(newPosition)
+    this.lastPointerPosition = newPosition
+  }
+
+  preventSelection (event: Event) {
+    if (this.dragging) {
+      event.preventDefault()
+    }
+  }
+
+  mounted () {
+    window.addEventListener('mousemove', this.pointerMove)
+    window.addEventListener('mouseup', this.stopMouseDrag)
+    window.addEventListener('selectstart', this.preventSelection)
+  }
+
+  beforeUnmount () {
+    window.removeEventListener('mousemove', this.pointerMove)
+    window.removeEventListener('mouseup', this.stopMouseDrag)
+    window.removeEventListener('selectstart', this.preventSelection)
   }
 }
 </script>

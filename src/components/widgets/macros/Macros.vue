@@ -10,7 +10,7 @@
         :key="`category-${category.name}`"
       >
         <v-expansion-panel-header>
-          <template v-slot:actions>
+          <template #actions>
             <v-icon
               small
               class="mr-2"
@@ -58,7 +58,7 @@
         v-if="uncategorizedMacros && uncategorizedMacros.length > 0"
       >
         <v-expansion-panel-header>
-          <template v-slot:actions>
+          <template #actions>
             <v-icon
               small
               class="mr-2"

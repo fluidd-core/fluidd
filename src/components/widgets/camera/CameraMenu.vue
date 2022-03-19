@@ -6,7 +6,7 @@
     transition="slide-y-transition"
     :min-width="150"
   >
-    <template v-slot:activator="{ on, attrs, value }">
+    <template #activator="{ on, attrs, value }">
       <app-btn
         v-bind="attrs"
         small

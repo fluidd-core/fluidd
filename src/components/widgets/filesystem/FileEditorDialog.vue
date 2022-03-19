@@ -177,11 +177,19 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   mounted () {
     this.updatedContent = this.contents
     this.lastSavedContent = this.updatedContent
+    window.addEventListener('beforeunload', this.handleBeforeUnload)
+  }
+
+  beforeDestroy () {
+    window.removeEventListener('beforeunload', this.handleBeforeUnload)
+  }
+
+  get showDirtyEditorWarning () {
+    return this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose && this.updatedContent !== this.lastSavedContent
   }
 
   async emitClose () {
-    const confirmDirtyEditorClose = this.$store.state.config.uiSettings.editor.confirmDirtyEditorClose
-    if (confirmDirtyEditorClose && this.updatedContent !== this.lastSavedContent) {
+    if (this.showDirtyEditorWarning) {
       const result = await this.$confirm(
         this.$tc('app.general.simple_form.msg.unsaved_changes'),
         { title: this.$tc('app.general.label.unsaved_changes'), color: 'card-heading', icon: '$error' }
@@ -193,6 +201,13 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     }
 
     this.$emit('input', false)
+  }
+
+  handleBeforeUnload (e: Event) {
+    if (this.showDirtyEditorWarning) {
+      e.preventDefault() // show browser-native "Leave site?" modal
+      return ((e || window.event).returnValue = true) // fallback
+    }
   }
 
   emitSave (restart: boolean) {

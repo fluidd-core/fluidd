@@ -12,7 +12,7 @@
       style="background-color: transparent;"
     >
       <template
-        v-slot:item="{ item }"
+        #item="{ item }"
       >
         <tr
           class="px-1"

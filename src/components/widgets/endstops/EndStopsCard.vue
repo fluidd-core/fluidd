@@ -4,7 +4,7 @@
     :sub-title="$t('app.endstop.msg.subtitle')"
     icon="$expandHorizontal"
   >
-    <template v-slot:collapse-button>
+    <template #collapse-button>
       <app-btn
         color=""
         fab

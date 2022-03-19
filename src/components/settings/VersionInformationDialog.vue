@@ -33,68 +33,66 @@
         class="py-0 pl-0"
       >
         <!-- History Items. -->
-        <template>
-          <v-timeline
-            align-top
-            dense
+        <v-timeline
+          align-top
+          dense
+        >
+          <v-timeline-item
+            v-for="(key) in commitHistory.keys"
+            :key="`key-${key}`"
+            color="transparent"
+            small
           >
-            <v-timeline-item
-              v-for="(key) in commitHistory.keys"
-              :key="`key-${key}`"
-              color="transparent"
-              small
-            >
-              <template v-slot:icon>
-                <v-icon
-                  class="rotate-90"
-                  color="secondary"
+            <template #icon>
+              <v-icon
+                class="rotate-90"
+                color="secondary"
+              >
+                $commit
+              </v-icon>
+            </template>
+
+            <div class="secondary--text mb-4">
+              {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
+            </div>
+
+            <ol class="commit-history">
+              <template v-for="commit in commitHistory.result[key]">
+                <li
+                  :key="commit.sha"
                 >
-                  $commit
-                </v-icon>
-              </template>
-
-              <div class="secondary--text mb-4">
-                {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
-              </div>
-
-              <ol class="commit-history">
-                <template v-for="commit in commitHistory.result[key]">
-                  <li
-                    :key="commit.sha"
-                  >
-                    <div>
-                      <div class="commit-subject">
-                        {{ commit.subject }}
-                      </div>
-                      <div class="secondary--text">
-                        <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
-                        <a
-                          class="secondary--text"
-                          :href="`${baseUrl}/commits/${component.branch}`"
-                          target="_blank"
-                        >
-                          <strong>{{ commit.author }}</strong>
-                        </a>
-                        {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
-                      </div>
+                  <div>
+                    <div class="commit-subject">
+                      {{ commit.subject }}
                     </div>
-                    <div>
-                      <app-btn
-                        small
-                        outlined
-                        color="secondary"
-                        :href="`${baseUrl}/commit/${commit.sha}`"
+                    <div class="secondary--text">
+                      <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
+                      <a
+                        class="secondary--text"
+                        :href="`${baseUrl}/commits/${component.branch}`"
                         target="_blank"
                       >
-                        <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
-                      </app-btn>
+                        <strong>{{ commit.author }}</strong>
+                      </a>
+                      {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
                     </div>
-                  </li>
-                </template>
-              </ol>
-            </v-timeline-item>
-          </v-timeline>
-        </template>
+                  </div>
+                  <div>
+                    <app-btn
+                      small
+                      outlined
+                      color="secondary"
+                      :href="`${baseUrl}/commit/${commit.sha}`"
+                      target="_blank"
+                    >
+                      <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
+                    </app-btn>
+                  </div>
+                </li>
+              </template>
+            </ol>
+          </v-timeline-item>
+        </v-timeline>
       </v-card-text>
 
       <v-card-text
