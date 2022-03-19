@@ -187,7 +187,10 @@
                 <span
                   v-bind="attrs"
                   v-on="on"
-                >{{ item.temperature.toFixed(1) }}<small>°C</small></span>
+                >{{ item.temperature.toFixed(1) }}<small>°C</small>
+                  <small v-if="item.humidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+                  <small v-if="item.pressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+                </span>
               </template>
               <span v-if="item.measured_max_temp && item.measured_min_temp">
                 <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br>
