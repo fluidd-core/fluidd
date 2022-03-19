@@ -306,10 +306,10 @@ export const SocketActions = {
     baseEmit('server.connection.identify', {
       dispatch: 'socket/onConnectionId',
       params: {
-        client_name: 'Fluidd',
-        version: store.state.version?.fluidd.version || '0.0.0',
+        client_name: Globals.APP_NAME,
+        version: `${store.state.version?.fluidd.version || '0.0.0'}-${store.state.version?.fluidd.hash || 'unknown'}`.trim(),
         type: 'web',
-        url: 'https://github.com/fluidd-core/fluidd'
+        url: Globals.GITHUB_REPO
       }
     })
   },
