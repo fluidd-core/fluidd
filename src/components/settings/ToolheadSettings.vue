@@ -140,11 +140,7 @@
           small-chips
           append-icon=""
           deletable-chips
-          :rules="[
-            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-            v => v.length <= 6 || $t('app.general.simple_form.error.max', { max: 6 }),
-            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
-          ]"
+          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(6), rules.arrayOnlyNumbers]"
         />
       </app-setting>
 
@@ -152,6 +148,7 @@
 
       <app-setting :title="$t('app.setting.label.z_adjust_values')">
         <v-combobox
+          ref="zAdjustValues"
           v-model="zAdjustValues"
           filled
           dense
@@ -161,11 +158,7 @@
           small-chips
           append-icon=""
           deletable-chips
-          :rules="[
-            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-            v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
-            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
-          ]"
+          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(4), rules.arrayOnlyNumbers]"
         />
       </app-setting>
 
@@ -195,9 +188,14 @@ import { defaultState } from '@/store/config/index'
 export default class ToolHeadSettings extends Vue {
   @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
 
+  @Ref('zAdjustValues') readonly zAdjustValuesElement!: any;
+
   rules = {
-    numRequired: (v: number | string) => v !== '' || 'Required',
-    numMin: (v: number) => v >= 1 || 'Min 1'
+    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
+    numMin: (v: number) => v >= 1 || this.$t('app.general.simple_form.error.min', { min: 1 }),
+    arrayNumMin: (min: number) => (v: any[]) => v.length >= min || this.$t('app.general.simple_form.error.min', { min }),
+    arrayNumMax: (max: number) => (v: any[]) => v.length <= max || this.$t('app.general.simple_form.error.max', { max }),
+    arrayOnlyNumbers: (v: any[]) => !v.some(isNaN) || this.$t('app.general.simple_form.error.arrayofnums')
   }
 
   get defaultExtrudeSpeed () {
@@ -264,10 +262,14 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.zAdjustDistances
   }
 
-  set zAdjustValues (value: number[]) {
+  set zAdjustValues (value: (number | string)[]) {
+    if (!this.zAdjustValuesElement.validate(true)) {
+      return
+    }
+
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.zAdjustDistances',
-      value,
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
     })
   }
