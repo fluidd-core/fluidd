@@ -99,7 +99,7 @@
 
 <script lang="ts">
 import { LayoutConfig } from '@/store/layout/types'
-import { kebabCase } from 'lodash'
+import kebabCase from 'lodash/kebabCase'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})

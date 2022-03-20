@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
-import { pick } from 'lodash'
+import pick from 'lodash/pick'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {

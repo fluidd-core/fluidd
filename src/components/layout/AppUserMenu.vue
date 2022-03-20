@@ -68,7 +68,8 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { startCase, capitalize } from 'lodash'
+import startCase from 'lodash/startCase'
+import capitalize from 'lodash/capitalize'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {
