@@ -41,7 +41,22 @@ module.exports = defineConfig({
     plugins: [
       new MonacoEditorPlugin({
         languages: ['markdown'],
-        features: ['!contextmenu', '!snippets', '!multicursor']
+        features: [
+          '!accessibilityHelp',
+          '!codeAction',
+          '!codelens',
+          '!colorPicker',
+          '!contextmenu',
+          '!folding',
+          '!hover',
+          '!gotoError',
+          '!gotoLine',
+          '!gotoSymbol',
+          '!quickCommand',
+          '!quickHelp',
+          '!referenceSearch',
+          '!snippet'
+        ]
       }),
       new GenerateFilePlugin({
         file: '.version',
