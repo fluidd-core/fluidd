@@ -3,3 +3,7 @@ export type VForm = Vue & {
   reset: () => boolean;
   resetValidation: () => boolean;
 }
+
+export type VSlider = Vue & {
+  value: number
+}
