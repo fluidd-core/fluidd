@@ -26,7 +26,7 @@
         :label="$t('app.general.label.smooth_time')"
         suffix="s"
         :value="activeExtruder.smooth_time || 0"
-        :overridable="true"
+        :overridable="false"
         :reset-value="activeExtruder.config_smooth_time || 0"
         :disabled="!klippyReady || hasWait(waits.onSetPressureAdvance)"
         :locked="(!klippyReady || isMobile)"
