@@ -171,7 +171,7 @@ export default class AppColorPicker extends Vue {
   menu = false
 
   @Ref('card')
-  card!: Vue
+  card?: Vue
 
   dragging = false
   lastPointerPosition: PointerPosition = { x: 0, y: 0 }
@@ -298,19 +298,22 @@ export default class AppColorPicker extends Vue {
   }
 
   relativeMove (newPosition: PointerPosition) {
-    const parent = this.card.$el.parentElement as HTMLElement
+    if (!this.card) {
+      return
+    }
 
+    const parent = this.card.$el.parentElement as HTMLElement
     parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
     parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
   }
 
   pointerMove (event: TouchEvent | MouseEvent) {
     let newPosition
-    if (event instanceof TouchEvent) {
+    if (window.TouchEvent && event instanceof TouchEvent) {
       event.preventDefault()
       newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
     } else if (this.dragging) {
-      newPosition = { x: event.clientX, y: event.clientY }
+      newPosition = { x: (event as MouseEvent).clientX, y: (event as MouseEvent).clientY }
     } else {
       return
     }
