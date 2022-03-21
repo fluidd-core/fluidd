@@ -21,7 +21,6 @@ import VueVirtualScroller from 'vue-virtual-scroller'
 import VueMeta from 'vue-meta'
 import VuetifyConfirm from 'vuetify-confirm'
 import { InlineSvgPlugin } from 'vue-inline-svg'
-import { loadWASM } from 'onigasm'
 
 // Init.
 import { appInit } from './init'
@@ -62,13 +61,6 @@ Vue.use(VuetifyConfirm, {
 })
 Vue.use(InlineSvgPlugin)
 // Vue.use(WorkboxPlugin)
-
-const loadOnigasm = async (): Promise<void> => {
-  const wasm = await require('onigasm/lib/onigasm.wasm')
-  await loadWASM(wasm.default)
-}
-
-loadOnigasm()
 
 appInit()
   .then((config: InitConfig) => {
