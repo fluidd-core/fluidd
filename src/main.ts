@@ -32,22 +32,6 @@ import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
 import { DayJSPlugin } from './plugins/dayjs'
 
-// Import ECharts
-import ECharts from 'vue-echarts'
-import { use as echartsUse } from 'echarts/core'
-import { LineChart } from 'echarts/charts'
-import { Grid3DComponent } from 'echarts-gl/components'
-import { SurfaceChart } from 'echarts-gl/charts'
-import {
-  DatasetComponent,
-  TooltipComponent,
-  GridComponent,
-  DataZoomComponent,
-  LegendComponent,
-  VisualMapComponent
-} from 'echarts/components'
-import { SVGRenderer, CanvasRenderer } from 'echarts/renderers'
-
 // Main App component
 import App from './App.vue'
 
@@ -60,24 +44,13 @@ import Blur from '@/directives/blur'
 // Directives...
 Vue.directive('blur', Blur)
 
+// v-chart component asynchronously loaded from a split chunk
+Vue.component('VChart', () => import(
+  /* webpackChunkName: "vue-echarts" */
+  /* webpackPrefetch: 100 */
+  './vue-echarts-chunk'))
+
 // Use any Plugins
-
-// Configure echarts
-echartsUse([
-  DatasetComponent,
-  TooltipComponent,
-  GridComponent,
-  DataZoomComponent,
-  LegendComponent,
-  LineChart,
-  VisualMapComponent,
-  SurfaceChart,
-  Grid3DComponent,
-  SVGRenderer,
-  CanvasRenderer
-])
-Vue.component('VChart', ECharts)
-
 Vue.use(VueVirtualScroller)
 Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
