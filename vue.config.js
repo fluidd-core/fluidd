@@ -42,7 +42,6 @@ module.exports = defineConfig({
       new MonacoEditorPlugin({
         languages: ['markdown'],
         features: [
-          '!accessibilityHelp',
           '!codeAction',
           '!codelens',
           '!colorPicker',
