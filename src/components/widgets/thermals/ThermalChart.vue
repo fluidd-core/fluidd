@@ -18,7 +18,7 @@
 
 <script lang='ts'>
 import { Vue, Component, Watch, Prop, Ref } from 'vue-property-decorator'
-import { ECharts } from 'echarts'
+import type { ECharts } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 
 @Component({})
