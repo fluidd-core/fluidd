@@ -32,10 +32,10 @@
       <v-card-title
         v-if="title"
         class="card-heading mb-2"
-        style="cursor: move"
+        style="cursor: move; user-select: none;"
         @mousedown="startMouseDrag"
         @touchstart="startTouchDrag"
-        @touchmove="pointerMove"
+        @touchmove="touchMove"
       >
         {{ title }}
       </v-card-title>
@@ -173,7 +173,6 @@ export default class AppColorPicker extends Vue {
   @Ref('card')
   card!: Vue
 
-  dragging = false
   lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
   primaryColor: AppColor = {
@@ -285,12 +284,14 @@ export default class AppColorPicker extends Vue {
   }
 
   startMouseDrag (event: MouseEvent) {
-    this.dragging = true
     this.lastPointerPosition = { x: event.clientX, y: event.clientY }
+    window.addEventListener('mousemove', this.mouseMove)
+    window.addEventListener('mouseup', this.stopMouseDrag)
   }
 
   stopMouseDrag () {
-    this.dragging = false
+    window.removeEventListener('mousemove', this.mouseMove)
+    window.removeEventListener('mouseup', this.stopMouseDrag)
   }
 
   startTouchDrag (event: TouchEvent) {
@@ -304,37 +305,17 @@ export default class AppColorPicker extends Vue {
     parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
   }
 
-  pointerMove (event: TouchEvent | MouseEvent) {
-    let newPosition
-    if (event instanceof TouchEvent) {
-      event.preventDefault()
-      newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
-    } else if (this.dragging) {
-      newPosition = { x: event.clientX, y: event.clientY }
-    } else {
-      return
-    }
-
+  mouseMove (event: MouseEvent) {
+    const newPosition = { x: event.clientX, y: event.clientY }
     this.relativeMove(newPosition)
     this.lastPointerPosition = newPosition
   }
 
-  preventSelection (event: Event) {
-    if (this.dragging) {
-      event.preventDefault()
-    }
-  }
-
-  mounted () {
-    window.addEventListener('mousemove', this.pointerMove)
-    window.addEventListener('mouseup', this.stopMouseDrag)
-    window.addEventListener('selectstart', this.preventSelection)
-  }
-
-  beforeUnmount () {
-    window.removeEventListener('mousemove', this.pointerMove)
-    window.removeEventListener('mouseup', this.stopMouseDrag)
-    window.removeEventListener('selectstart', this.preventSelection)
+  touchMove (event: TouchEvent) {
+    event.preventDefault()
+    const newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+    this.relativeMove(newPosition)
+    this.lastPointerPosition = newPosition
   }
 }
 </script>
