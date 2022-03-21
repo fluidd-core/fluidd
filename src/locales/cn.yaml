@@ -95,7 +95,7 @@ app:
       add_file: 新建文件
       add_printer: 添加打印机
       adjust_layout: 调整仪表板布局
-      all: 全部归位
+      all: 全部
       calibrate: 校准
       cancel: 取消
       clear_profile: 清除配置文件
@@ -157,11 +157,11 @@ app:
       extrude_speed: 挤出速度
       flow: 流量
       free: 可用
-      high: 高
+      high: 最高温度
       host: 主机
       layout: 布局
       longest_job: 单次耗时最长
-      low: 低
+      low: 最低温度
       name: 名称
       'off': 关闭
       power: 设备
@@ -193,7 +193,7 @@ app:
       disabled_while_printing: 打印时禁用
       edit_user: 编辑用户
       filament: 已用耗材
-      file: 文件名称
+      file: 文件
       finish_time: 完成时间
       m117: 消息
       new_password: 新密码
@@ -285,7 +285,7 @@ app:
       retract: 固件回抽
       system_overview: 系统信息
       system: 系统
-      other_files: 其他文件
+      other_files: 其他文件（日志、文档及参考配置）
     tooltip:
       estop: 紧急停止
       reload_restart_klipper: 重新载入 Klipper 配置并重启 MCU
