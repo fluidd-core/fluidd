@@ -12,7 +12,7 @@
       v-if="dirty && valid"
       left
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-chip
           v-bind="attrs"
           small
@@ -31,7 +31,7 @@
       v-if="!valid"
       left
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-chip
           v-bind="attrs"
           small

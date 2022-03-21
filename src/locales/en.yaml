@@ -342,6 +342,7 @@ app:
   printer:
     state:
       busy: Busy
+      cancelled: Cancelled
       complete: Complete
       idle: Idle
       loading: Loading

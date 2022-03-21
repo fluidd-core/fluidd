@@ -34,7 +34,7 @@
           @change="handleChange($event)"
           @focus="$event.target.select()"
         >
-          <template v-slot:prepend>
+          <template #prepend>
             <v-btn
               v-if="isMobile"
               icon

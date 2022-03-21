@@ -25,6 +25,10 @@ const handledErrorRequests = [
 ]
 
 const requestInterceptor = async (config: AxiosRequestConfig) => {
+  if (!config.headers) {
+    config.headers = {}
+  }
+
   // Common headers.
   config.headers.Accept = 'application/json'
   config.headers['Content-Type'] = 'application/json'
@@ -70,7 +74,6 @@ const responseInterceptor = (response: AxiosResponse) => {
   return response
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
 const errorInterceptor = (error: AxiosError) => {
   let message: string | undefined
 

@@ -12,7 +12,7 @@
     offset-y
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <app-btn
         fab
         x-small

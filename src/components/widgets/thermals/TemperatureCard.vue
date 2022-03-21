@@ -6,7 +6,7 @@
     :draggable="true"
     layout-path="dashboard.temperature-card"
   >
-    <template v-slot:title>
+    <template #title>
       <v-icon left>
         $fire
       </v-icon>
@@ -18,7 +18,7 @@
       />
     </template>
 
-    <template v-slot:menu>
+    <template #menu>
       <app-btn-collapse-group>
         <app-btn
           small

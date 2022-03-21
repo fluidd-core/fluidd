@@ -5,7 +5,7 @@
   >
     <job-history />
 
-    <template v-slot:menu>
+    <template #menu>
       <app-btn-collapse-group>
         <app-btn
           small

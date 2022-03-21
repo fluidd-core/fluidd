@@ -40,7 +40,7 @@
       sort-by="start_time"
       sort-desc
     >
-      <template v-slot:expanded-item="{ headers, item }">
+      <template #expanded-item="{ headers, item }">
         <td
           :colspan="headers.length"
           class="pa-4"
@@ -60,7 +60,7 @@
       </template>
 
       <template
-        v-slot:[`item.data-table-icons`]="{ item }"
+        #[`item.data-table-icons`]="{ item }"
       >
         <!-- If the item no longer exists. -->
         <v-icon
@@ -89,7 +89,7 @@
       </template>
 
       <template
-        v-slot:[`item.filename`]="{ item }"
+        #[`item.filename`]="{ item }"
       >
         <span class="">
           {{ getFilePaths(item.filename).filename }}
@@ -97,13 +97,13 @@
       </template>
 
       <template
-        v-slot:[`item.status`]="{ item }"
+        #[`item.status`]="{ item }"
       >
         <job-history-item-status :job="item" />
       </template>
 
       <template
-        v-slot:[`item.start_time`]="{ item }"
+        #[`item.start_time`]="{ item }"
       >
         <span class="text-no-wrap">
           {{ $filters.formatDateTime(item.start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
@@ -111,7 +111,7 @@
       </template>
 
       <template
-        v-slot:[`item.end_time`]="{ item }"
+        #[`item.end_time`]="{ item }"
       >
         <span
           v-if="item.status !== 'in_progress'"
@@ -123,7 +123,7 @@
       </template>
 
       <template
-        v-slot:[`item.print_duration`]="{ item }"
+        #[`item.print_duration`]="{ item }"
       >
         <span class="text-no-wrap">
           {{ $filters.formatCounterTime(item.print_duration) }}
@@ -131,7 +131,7 @@
       </template>
 
       <template
-        v-slot:[`item.total_duration`]="{ item }"
+        #[`item.total_duration`]="{ item }"
       >
         <span class="text-no-wrap">
           {{ $filters.formatCounterTime(item.total_duration) }}
@@ -139,7 +139,7 @@
       </template>
 
       <template
-        v-slot:[`item.filament_used`]="{ item }"
+        #[`item.filament_used`]="{ item }"
       >
         <span class="text-no-wrap">
           {{ $filters.getReadableLengthString(item.filament_used) }}
@@ -147,7 +147,7 @@
       </template>
 
       <template
-        v-slot:[`item.metadata.size`]="{ item }"
+        #[`item.metadata.size`]="{ item }"
       >
         <span class="text-no-wrap">
           {{ $filters.getReadableFileSizeString(item.metadata.size) }}
@@ -155,7 +155,7 @@
       </template>
 
       <template
-        v-slot:[`item.actions`]="{ item }"
+        #[`item.actions`]="{ item }"
       >
         <div class="text-no-wrap">
           <v-btn

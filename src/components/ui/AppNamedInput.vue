@@ -28,7 +28,7 @@
         @change="handleChange"
         @focus="$event.target.select()"
       >
-        <template v-slot:prepend>
+        <template #prepend>
           <app-btn
             v-if="resetValue"
             :disabled="disabled"
