@@ -113,6 +113,7 @@ app:
       show_next_layer: Show next layer
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
+      parsing_file: Parsing file
     msg:
       confirm: >-
         The file "%{filename}" is %{size}, this might be resource intensive for
@@ -480,11 +481,10 @@ app:
       home_xy: Home XY
       home_z: Home Z
       motors_off: MOTORS OFF
-      ZTiltAdjust: Z_Tilt_Adjust
-      QGL: QGL
-      BedScrewsCalculate: Screws_Tilt_Calculate
-      BedScrewsAdjust: BED_SCREWS_ADJUST
-      parsing_file: Parsing file
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      bed_screws_adjust: BED_SCREWS_ADJUST
   version:
     btn:
       check_for_updates: Check for updates
