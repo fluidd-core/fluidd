@@ -359,6 +359,7 @@ export const SocketActions = {
       }
     )
   },
+
   async jobQueueRemoveJob (uid: string) {
     let params: any = { job_ids: [uid] }
     let dispatch = 'files/onjobQueueDelete'
@@ -373,6 +374,7 @@ export const SocketActions = {
       }
     )
   },
+
   async jobQueueSetQueue (queue: QueueJob[]) {
     const filenames: string[] = []
     baseEmit(
@@ -402,6 +404,7 @@ export const SocketActions = {
       }
     )
   },
+
   async pauseJobQueue () {
     baseEmit(
       'server.job_queue.pause', {
@@ -410,6 +413,7 @@ export const SocketActions = {
       }
     )
   },
+
   async resumeJobQueue () {
     baseEmit(
       'server.job_queue.start', {

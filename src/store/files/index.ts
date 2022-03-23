@@ -8,7 +8,6 @@ import { RootState } from '../types'
 export const defaultState = (): FilesState => {
   return {
     uploads: [],
-
     download: null,
     currentPaths: {},
     disk_usage: {

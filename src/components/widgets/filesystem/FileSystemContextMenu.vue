@@ -100,7 +100,6 @@
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
             </v-list-item>
-
           </v-list>
         </v-col>
         <v-col class="px-2 d-none d-sm-flex" v-if="file.thumbnails && file.thumbnails.length">

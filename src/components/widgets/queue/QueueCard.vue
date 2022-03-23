@@ -3,13 +3,13 @@
     :title="$t('app.general.title.queue')"
     icon="$history">
     <job-queue></job-queue>
-
     <template v-slot:menu>
         <app-btn
           @click="handlePause"
           small
           class="ma-1"
-          v-if="['ready','loading','starting'].includes(queueStatus)">
+          v-if="['ready','loading','starting'].includes(queueStatus)"
+        >
           <v-icon small left>$pause</v-icon>
           <span>{{ $t('app.general.btn.pause') }}</span>
         </app-btn>
@@ -17,21 +17,24 @@
           @click="handleResume"
           small
           class="ma-1"
-          v-else-if="queueStatus == 'paused'">
+          v-else-if="queueStatus == 'paused'"
+        >
           <v-icon small left>$resume</v-icon>
           <span>{{ $t('app.general.btn.resume') }}</span>
         </app-btn>
         <app-btn
           @click="handleLoadAll"
           small
-          class="ma-1">
+          class="ma-1"
+        >
           <v-icon small left>$refresh</v-icon>
           <span>{{ $t('app.general.btn.refresh') }}</span>
         </app-btn>
         <app-btn
           @click="handleRemoveAll"
           small
-          class="ma-1">
+          class="ma-1"
+        >
           <v-icon small left>$delete</v-icon>
           <span>{{ $t('app.general.btn.remove_all') }}</span>
         </app-btn>

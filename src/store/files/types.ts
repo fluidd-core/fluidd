@@ -47,7 +47,6 @@ export interface QueueJob {
   time_in_queue: number;
   job_id: string;
   filename: string;
-
 }
 export interface KlipperFile {
   filename: string;

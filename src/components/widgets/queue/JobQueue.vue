@@ -7,7 +7,7 @@
       :items-per-page="-1"
       :key="dataKey"
       mobile-breakpoint="0"
-      >
+    >
       <template #body="props">
         <draggable v-model="queue" tag="tbody">
           <tr
@@ -37,33 +37,18 @@
              :key="`col.${index}.action`"
             >
               <v-btn
-                  @click="handleRemoveJob(item)"
-                  icon
-                  small
-                >
-                  <v-icon small color="">
-                    $delete
-                  </v-icon>
-                </v-btn>
+                @click="handleRemoveJob(item)"
+                icon
+                small
+              >
+                <v-icon small color="">
+                  $delete
+                </v-icon>
+              </v-btn>
             </td>
-            <!-- <template v-for="(col, idx) in props.headers">
-              <td :key="`col.${index}.${idx}`">
-                  <action-buttons
-                    :path="path"
-                    :item-id="item.id"
-                    hide-view
-                    @delete="deleteItem"
-                    v-if="col.value == 'action'"
-                  />
-                  <span v-else>{{ $_.get(item, col.value) }}</span>
-                  <div>{{col.value}}</div>
-
-              </td>
-            </template> -->
         </tr>
         </draggable>
       </template>
-
     </v-data-table>
   </div>
 </template>
