@@ -169,6 +169,7 @@ app:
       upload_print: Upload & Print
       view: View
       reset_stats: Reset Stats
+      home_all: HomeAll
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -258,6 +259,7 @@ app:
       apply_z_offset: Apply and Save Z_Offset
       edit_category: Edit category
       add_category: Add category
+      percent_time: File
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?

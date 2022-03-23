@@ -105,7 +105,7 @@
 
               <status-label
                 v-else
-                :label="$t('app.general.label.file')"
+                :label="$t('app.general.label.percent_time')"
               >
                 <span v-if="estimates.file > 0">{{ $filters.formatCounterTime(estimates.file) }}</span>
               </status-label>
