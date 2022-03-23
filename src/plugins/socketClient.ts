@@ -9,7 +9,7 @@
 import _Vue from 'vue'
 import { Globals } from '@/globals'
 import consola from 'consola'
-import { camelCase } from 'lodash'
+import { camelCase } from 'lodash-es'
 import { authApi } from '@/api/auth.api'
 import deepMerge from 'deepmerge'
 
