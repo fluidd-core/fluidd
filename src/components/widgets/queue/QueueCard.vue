@@ -1,7 +1,10 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.queue')"
-    icon="$history">
+    icon="$history"
+    :lazy="false"
+    :draggable="true"
+    layout-path="dashboard.queue-card">
     <job-queue></job-queue>
     <template v-slot:menu>
         <app-btn
@@ -44,16 +47,24 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import JobQueue from '@/components/widgets/queue/JobQueue.vue'
 import { SocketActions } from '@/api/socketActions'
+import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
     JobQueue
   }
 })
-export default class JobQueueCard extends Vue {
+export default class JobQueueCard extends Mixins(StateMixin) {
+  @Prop({ type: Boolean, default: true })
+  enabled!: boolean
+
+  get inLayout (): boolean {
+    return (this.$store.state.config.layoutMode)
+  }
+
   handleRemoveAll () {
     this.$confirm(
       this.$tc('app.queue.msg.confirm'),
