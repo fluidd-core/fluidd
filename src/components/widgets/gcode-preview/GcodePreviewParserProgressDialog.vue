@@ -10,7 +10,7 @@
           $cubeScan
         </v-icon>
         <span class="focus--text">
-          Parsing file
+          {{$t('app.tool.tooltip.parsing_file')}}
         </span>
       </v-card-title>
 

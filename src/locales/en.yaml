@@ -484,6 +484,7 @@ app:
       QGL: QGL
       BedScrewsCalculate: Screws_Tilt_Calculate
       BedScrewsAdjust: BED_SCREWS_ADJUST
+      parsing_file: Parsing file
   version:
     btn:
       check_for_updates: Check for updates

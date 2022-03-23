@@ -224,11 +224,11 @@ app:
       error:
         invalid_url: 无效的URL地址
         max: 最大 %{max}
-        min: 最小 %{min}
+        min: 长度最小%{min}位
         min_or_0: 最小 %{min} 或 0
         required: 必填
         password_username: 用户名密码不匹配
-        exists: 用户已存在
+        exists: 名称已存在
         arrayofnums: 仅显示数量
         invalid_expression: 无效的表达式
         invalid_number: 无效数字
@@ -282,7 +282,7 @@ app:
       macros: 宏
       runout_sensors: 断料检测传感器
       settings: 设置
-      stats: 打印状态
+      stats: 打印任务统计
       temperature: 温度
       tool: 工具
       tune: 调整
@@ -416,6 +416,7 @@ app:
       BedScrewsCalculate: 辅助调平螺丝
       ZTiltAdjust: Z轴倾斜调整
       QGL: 龙门架调平
+      parsing_file: 解析文件
   version:
     btn:
       check_for_updates: 检查更新
