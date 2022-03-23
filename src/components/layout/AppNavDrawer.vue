@@ -41,12 +41,12 @@
             {{ $t('app.general.title.jobs') }}
           </app-nav-item>
 
-          <app-nav-item
+          <!-- <app-nav-item
             v-if="supportsQueue"
             icon="$list"
             to="/queue">
             {{ $t('app.general.title.queue') }}
-          </app-nav-item>
+          </app-nav-item> -->
 
           <app-nav-item
             v-if="supportsHistory"

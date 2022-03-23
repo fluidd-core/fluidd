@@ -1,7 +1,7 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.queue')"
-    icon="$history"
+    icon="$list"
     :lazy="false"
     :draggable="true"
     layout-path="dashboard.queue-card">

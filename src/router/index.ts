@@ -6,7 +6,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import History from '@/views/History.vue'
-import Queue from '@/views/Queue.vue'
+// import Queue from '@/views/Queue.vue'
 import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
@@ -55,12 +55,12 @@ const routes: Array<RouteConfig> = [
     component: History,
     beforeEnter: ifAuthenticated
   },
-  {
-    path: '/queue',
-    name: 'Queue',
-    component: Queue,
-    beforeEnter: ifAuthenticated
-  },
+  // {
+  //   path: '/queue',
+  //   name: 'Queue',
+  //   component: Queue,
+  //   beforeEnter: ifAuthenticated
+  // },
   {
     path: '/system',
     name: 'System',
