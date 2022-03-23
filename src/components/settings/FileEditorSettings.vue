@@ -34,6 +34,19 @@
           deletable-chips
         />
       </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.reset')">
+        <app-btn
+          outlined
+          small
+          color="primary"
+          @click="handleReset"
+        >
+          {{ $t('app.setting.btn.reset') }}
+        </app-btn>
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -41,6 +54,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
@@ -69,6 +83,14 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
       value: value.sort(),
+      server: true
+    })
+  }
+
+  handleReset () {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.editor',
+      value: defaultState().uiSettings.editor,
       server: true
     })
   }

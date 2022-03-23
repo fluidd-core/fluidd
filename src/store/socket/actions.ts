@@ -29,7 +29,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     */
   async onSocketOpen ({ commit }, payload) {
     commit('setSocketOpen', payload)
-    if (payload === true) SocketActions.serverInfo()
+    if (payload === true) {
+      SocketActions.serverInfo()
+      SocketActions.identify()
+    }
   },
 
   /**
@@ -104,6 +107,14 @@ export const actions: ActionTree<SocketState, RootState> = {
         SocketActions.serverInfo()
       }, Globals.KLIPPY_RETRY_DELAY)
     }
+  },
+
+  /**
+   * Fired when the socket [identifies](https://moonraker.readthedocs.io/en/latest/web_api/#identify-connection).
+   * Required for [HTTP-based subscriptions](https://moonraker.readthedocs.io/en/latest/web_api/#subscribe-to-printer-object-status).
+   */
+  async onConnectionId ({ commit }, { connection_id }) {
+    commit('setConnectionId', connection_id)
   },
 
   /**

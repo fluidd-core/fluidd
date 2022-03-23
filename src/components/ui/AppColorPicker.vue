@@ -28,7 +28,17 @@
         $circle
       </v-icon>
     </template>
-    <v-card>
+    <v-card ref="card">
+      <v-card-title
+        v-if="title"
+        class="card-heading mb-2"
+        style="cursor: move; user-select: none;"
+        @mousedown="startMouseDrag"
+        @touchstart="startTouchDrag"
+        @touchmove="touchMove"
+      >
+        {{ title }}
+      </v-card-title>
       <v-card-text>
         <v-icon
           :color="primaryColor.hexString"
@@ -120,7 +130,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
@@ -134,6 +144,11 @@ interface RgbwColor {
 interface AppColor {
   hexString: string;
   rgb: RgbwColor;
+}
+
+interface PointerPosition {
+  x: number;
+  y: number;
 }
 
 @Component({
@@ -154,6 +169,11 @@ export default class AppColorPicker extends Vue {
   dot!: boolean
 
   menu = false
+
+  @Ref('card')
+  card!: Vue
+
+  lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
   primaryColor: AppColor = {
     hexString: '#ffffff',
@@ -261,6 +281,41 @@ export default class AppColorPicker extends Vue {
   @Debounce(500)
   debouncedChange (channel: string, color: IroColor) {
     this.$emit('change', { channel, color })
+  }
+
+  startMouseDrag (event: MouseEvent) {
+    this.lastPointerPosition = { x: event.clientX, y: event.clientY }
+    window.addEventListener('mousemove', this.mouseMove)
+    window.addEventListener('mouseup', this.stopMouseDrag)
+  }
+
+  stopMouseDrag () {
+    window.removeEventListener('mousemove', this.mouseMove)
+    window.removeEventListener('mouseup', this.stopMouseDrag)
+  }
+
+  startTouchDrag (event: TouchEvent) {
+    this.lastPointerPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+  }
+
+  relativeMove (newPosition: PointerPosition) {
+    const parent = this.card.$el.parentElement as HTMLElement
+
+    parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
+    parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+  }
+
+  mouseMove (event: MouseEvent) {
+    const newPosition = { x: event.clientX, y: event.clientY }
+    this.relativeMove(newPosition)
+    this.lastPointerPosition = newPosition
+  }
+
+  touchMove (event: TouchEvent) {
+    event.preventDefault()
+    const newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+    this.relativeMove(newPosition)
+    this.lastPointerPosition = newPosition
   }
 }
 </script>

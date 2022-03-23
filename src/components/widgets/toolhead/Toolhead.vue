@@ -20,6 +20,7 @@
 
     <!-- Speed and Flow Adjustments  -->
     <speed-and-flow-adjust />
+    <pressure-advance-adjust />
   </v-card-text>
 </template>
 
@@ -32,6 +33,7 @@ import ExtruderSelection from '@/components/widgets/toolhead/ExtruderSelection.v
 import ToolheadPosition from '@/components/widgets/toolhead/ToolheadPosition.vue'
 import ZHeightAdjust from '@/components/widgets/toolhead/ZHeightAdjust.vue'
 import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust.vue'
+import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvanceAdjust.vue'
 
 @Component({
   components: {
@@ -40,7 +42,8 @@ import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust
     ExtruderSelection,
     ToolheadPosition,
     ZHeightAdjust,
-    SpeedAndFlowAdjust
+    SpeedAndFlowAdjust,
+    PressureAdvanceAdjust
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {

@@ -24,7 +24,7 @@ app:
         printer
   chart:
     label:
-      current: Temp
+      current: Actual
       item: Name
       'off': Chart off
       'on': Chart on
@@ -224,6 +224,7 @@ app:
       'off': 'Off'
       password: Password
       power: Power
+      pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
       requested_speed: Speed
@@ -232,6 +233,7 @@ app:
       save_as: Save As
       services: Services
       slicer: Slicer
+      smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
       total: Total
@@ -260,6 +262,7 @@ app:
       error:
         arrayofnums: Only numbers
         exists: Already exists
+        invalid_number: Invalid Number
         invalid_url: Invalid URL
         invalid_expression: Invalid Expression
         max: Max %{max}
@@ -416,6 +419,7 @@ app:
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
+      toolhead_move_distances: Toolhead distance values
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format

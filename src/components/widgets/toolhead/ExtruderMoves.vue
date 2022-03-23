@@ -26,7 +26,7 @@
           :disabled="!extruderReady || !klippyReady || !valid"
           :elevation="2"
           block
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtract)"
+          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
         >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
