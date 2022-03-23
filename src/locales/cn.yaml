@@ -216,6 +216,10 @@ app:
       heaters_busy: 正在打印，关闭此加热器可能会导致打印失败
       'on': 开启
       unsaved_changes: 未保存的更改
+      pressure_advance: 压力推进
+      smooth_time: 平滑时间
+      edit_category: 编辑分类
+      add_category: 添加分类
     simple_form:
       error:
         invalid_url: 无效的URL地址
@@ -227,6 +231,7 @@ app:
         exists: 用户已存在
         arrayofnums: 仅显示数量
         invalid_expression: 无效的表达式
+        invalid_number: 无效数字
       msg:
         confirm: 确定吗？
         confirm_reboot_host: 确定吗？这将重启您的系统。
@@ -308,6 +313,7 @@ app:
       printing: 打印中
       ready: 就绪
       standby: 待机
+      cancelled: 已取消
   setting:
     btn:
       add_camera: 添加摄像头
@@ -372,6 +378,7 @@ app:
       date_time_format: 日期和时间格式
       camera_rotate_by: 旋转角度
       filter: 过滤器
+      toolhead_move_distances: 挤出头移动预设距离
     timer_options:
       duration: 仅显示消耗时间
       filament: 通过耗材估算

@@ -255,6 +255,8 @@ app:
       unsaved_changes: Unsaved Changes
       alias: Alias
       apply_z_offset: Apply and Save Z_Offset
+      edit_category: Edit category
+      add_category: Add category
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
