@@ -216,7 +216,7 @@ app:
       heaters_busy: 正在打印，关闭此加热器可能会导致打印失败
       'on': 开启
       unsaved_changes: 未保存的更改
-      pressure_advance: 压力推进
+      pressure_advance: 压力补偿
       smooth_time: 平滑时间
       edit_category: 编辑分类
       add_category: 添加分类
@@ -353,7 +353,7 @@ app:
       printer_name: 打印机名称
       reset: 重置设定
       thermal_preset_name: 预设名称
-      z_adjust_values: Z偏移调整值
+      z_adjust_values: Z偏移调整预设值
       draw_background: 显示背景
       extrusion_line_width: 挤出线宽
       confirm_on_estop: 紧急停止需要确认
@@ -378,7 +378,7 @@ app:
       date_time_format: 日期和时间格式
       camera_rotate_by: 旋转角度
       filter: 过滤器列表
-      toolhead_move_distances: 挤出头移动预设距离
+      toolhead_move_distances: 挤出头移动距离预设值
     timer_options:
       duration: 仅显示消耗时间
       filament: 通过耗材估算
