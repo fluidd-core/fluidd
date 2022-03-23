@@ -4,7 +4,7 @@
     icon="$list"
     :lazy="false"
     :draggable="true"
-    layout-path="dashboard.queue-card">
+    layout-path="dashboard.job-queue-card">
     <job-queue></job-queue>
     <template v-slot:menu>
         <app-btn
