@@ -37,7 +37,7 @@
           class="ml-1"
           @click="sendGcode('M84')"
         >
-          {{$t('app.tool.tooltip.motors_off')}}
+          {{ $t('app.tool.tooltip.motors_off') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
@@ -48,7 +48,7 @@
           class="ml-1"
           @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         >
-          {{$t('app.tool.tooltip.BedScrewsAdjust')}}
+          {{ $t('app.tool.tooltip.bed_screws_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
@@ -59,7 +59,7 @@
           class="ml-1"
           @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         >
-          {{$t('app.tool.tooltip.BedScrewsCalculate')}}
+          {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
@@ -70,7 +70,7 @@
           class="ml-1"
           @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         >
-          {{$t('app.tool.tooltip.ZTiltAdjust')}}
+          {{ $t('app.tool.tooltip.z_tilt_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
@@ -81,7 +81,7 @@
           class="ml-1"
           @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         >
-          {{$t('app.tool.tooltip.QGL')}}
+          {{ $t('app.tool.tooltip.quad_gantry_level') }}
         </app-btn>
       </app-btn-collapse-group>
     </template>

@@ -412,11 +412,10 @@ app:
       home_xy: 归位 XY
       home_z: 归位 Z
       motors_off: 关闭电机
-      BedScrewsAdjust: 手动调平螺丝
-      BedScrewsCalculate: 辅助调平螺丝
-      ZTiltAdjust: Z轴倾斜调整
-      QGL: 龙门架调平
-      parsing_file: 解析文件
+      bed_screws_adjust: 手动调平螺丝
+      screws_tilt_calculate: 辅助调平螺丝
+      z_tilt_adjust: Z轴倾斜调整
+      quad_gantry_level: 龙门架调平
   version:
     btn:
       check_for_updates: 检查更新
@@ -455,6 +454,7 @@ app:
       show_moves: 显示移动走线
       show_previous_layer: 显示上一层
       show_retractions: 显示回抽
+      parsing_file: 解析文件
     btn:
       load_current_file: 载入当前文件
     msg:

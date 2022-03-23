@@ -10,7 +10,7 @@
           $cubeScan
         </v-icon>
         <span class="focus--text">
-          {{$t('app.tool.tooltip.parsing_file')}}
+          {{ $t('app.gcode.label.parsing_file') }}
         </span>
       </v-card-title>
 
