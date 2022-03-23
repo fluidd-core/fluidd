@@ -20,10 +20,10 @@ app:
       save: 将校准的配置应用于printer.cfg。这将重新启动您的打印机
   chart:
     label:
-      current: 当前温度
+      current: 当前值
       item: 名称
       power: 功率
-      target: 目标温度
+      target: 目标值
       'off': 关闭图表
       'on': 开启图表
       rate_of_change: 变化值
