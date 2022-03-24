@@ -11,6 +11,7 @@ import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
 import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
 import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
+import FullscreenCamera from '@/views/FullscreenCamera.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
@@ -98,6 +99,11 @@ const routes: Array<RouteConfig> = [
     meta: {
       fillHeight: true
     }
+  },
+  {
+    path: '/camera/:cameraId',
+    name: 'Camera',
+    component: FullscreenCamera
   },
   {
     path: '/icons',
