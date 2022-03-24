@@ -453,7 +453,7 @@ export const SocketActions = {
       }
     )
   },
-  
+
   async serverHistoryResetTotals () {
     baseEmit(
       'server.history.reset_totals', {

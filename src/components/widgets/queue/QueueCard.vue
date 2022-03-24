@@ -4,45 +4,65 @@
     icon="$list"
     :lazy="false"
     :draggable="true"
-    layout-path="dashboard.job-queue-card">
-    <job-queue></job-queue>
-    <template v-slot:menu>
-        <app-btn
-          @click="handlePause"
+    layout-path="dashboard.job-queue-card"
+  >
+    <job-queue />
+    <template #menu>
+      <app-btn
+        v-if="['ready','loading','starting'].includes(queueStatus)"
+        small
+        class="ma-1"
+        @click="handlePause"
+      >
+        <v-icon
           small
-          class="ma-1"
-          v-if="['ready','loading','starting'].includes(queueStatus)"
+          left
         >
-          <v-icon small left>$pause</v-icon>
-          <span>{{ $t('app.general.btn.pause') }}</span>
-        </app-btn>
-        <app-btn
-          @click="handleResume"
+          $pause
+        </v-icon>
+        <span>{{ $t('app.general.btn.pause') }}</span>
+      </app-btn>
+      <app-btn
+        v-else-if="queueStatus == 'paused'"
+        small
+        class="ma-1"
+        @click="handleResume"
+      >
+        <v-icon
           small
-          class="ma-1"
-          v-else-if="queueStatus == 'paused'"
+          left
         >
-          <v-icon small left>$resume</v-icon>
-          <span>{{ $t('app.general.btn.resume') }}</span>
-        </app-btn>
-        <app-btn
-          @click="handleLoadAll"
+          $resume
+        </v-icon>
+        <span>{{ $t('app.general.btn.resume') }}</span>
+      </app-btn>
+      <app-btn
+        small
+        class="ma-1"
+        @click="handleLoadAll"
+      >
+        <v-icon
           small
-          class="ma-1"
+          left
         >
-          <v-icon small left>$refresh</v-icon>
-          <span>{{ $t('app.general.btn.refresh') }}</span>
-        </app-btn>
-        <app-btn
-          @click="handleRemoveAll"
+          $refresh
+        </v-icon>
+        <span>{{ $t('app.general.btn.refresh') }}</span>
+      </app-btn>
+      <app-btn
+        small
+        class="ma-1"
+        @click="handleRemoveAll"
+      >
+        <v-icon
           small
-          class="ma-1"
+          left
         >
-          <v-icon small left>$delete</v-icon>
-          <span>{{ $t('app.general.btn.remove_all') }}</span>
-        </app-btn>
+          $delete
+        </v-icon>
+        <span>{{ $t('app.general.btn.remove_all') }}</span>
+      </app-btn>
     </template>
-
   </collapsable-card>
 </template>
 

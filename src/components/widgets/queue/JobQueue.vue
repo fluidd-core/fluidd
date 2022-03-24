@@ -1,15 +1,18 @@
 <template>
   <div class="file-system">
-    <v-spacer></v-spacer>
+    <v-spacer />
     <v-data-table
+      :key="dataKey"
       :items="queue"
       :headers="visibleHeaders"
       :items-per-page="-1"
-      :key="dataKey"
       mobile-breakpoint="0"
     >
       <template #body="props">
-        <draggable v-model="queue" tag="tbody">
+        <draggable
+          v-model="queue"
+          tag="tbody"
+        >
           <tr
             v-for="(item, index) in props.items"
             :key="`row.${index}`"
@@ -20,33 +23,36 @@
               </span>
             </td>
             <td
-             :key="`col.${index}.time_added`"
+              :key="`col.${index}.time_added`"
             >
               <span class="text-no-wrap">
                 {{ $filters.formatAbsoluteDateTime(item.time_added, 'lll') }}
               </span>
             </td>
             <td
-             :key="`col.${index}.time_in_queue`"
+              :key="`col.${index}.time_in_queue`"
             >
               <span class="text-no-wrap">
                 {{ $filters.formatCounterTime(item.time_in_queue) }}
               </span>
             </td>
             <td
-             :key="`col.${index}.action`"
+              :key="`col.${index}.action`"
             >
               <v-btn
-                @click="handleRemoveJob(item)"
                 icon
                 small
+                @click="handleRemoveJob(item)"
               >
-                <v-icon small color="">
+                <v-icon
+                  small
+                  color=""
+                >
                   $delete
                 </v-icon>
               </v-btn>
             </td>
-        </tr>
+          </tr>
         </draggable>
       </template>
     </v-data-table>

@@ -32,18 +32,19 @@
               </v-list-item-title>
             </v-list-item>
             <v-list-item
-              v-if="canPreheat"
+              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint"
               link
               @click="$emit('enqueue', file)"
-              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint">
+            >
               <v-list-item-icon>
                 <v-icon>$printer</v-icon>
               </v-list-item-icon>
               <v-list-item-title>
                 Queue File
-                </v-list-item-title>
+              </v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="canPreheat"
               link
               @click="$emit('preheat', file)"
             >
