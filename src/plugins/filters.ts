@@ -1,6 +1,6 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
-import { camelCase, startCase, capitalize, isFinite } from 'lodash'
+import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
 import { Globals, Waits } from '@/globals'
