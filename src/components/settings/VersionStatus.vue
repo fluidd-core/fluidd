@@ -5,30 +5,40 @@
       small
       outlined
       :color="(disabled) ? 'grey darken-2' : 'success'"
-    >{{ $t('app.version.label.up_to_date') }}</v-chip>
-    <v-tooltip left v-if="dirty && valid">
-      <template v-slot:activator="{ on, attrs }">
+    >
+      {{ $t('app.version.label.up_to_date') }}
+    </v-chip>
+    <v-tooltip
+      v-if="dirty && valid"
+      left
+    >
+      <template #activator="{ on, attrs }">
         <v-chip
           v-bind="attrs"
-          v-on="on"
           small
           outlined
           :disabled="disabled"
-          :color="(disabled) ? 'grey darken-2' : 'error'">
+          :color="(disabled) ? 'grey darken-2' : 'error'"
+          v-on="on"
+        >
           {{ $t('app.version.label.dirty') }}
         </v-chip>
       </template>
       <span>{{ $t('app.version.tooltip.dirty') }}</span>
     </v-tooltip>
 
-    <v-tooltip left v-if="!valid">
-      <template v-slot:activator="{ on, attrs }">
+    <v-tooltip
+      v-if="!valid"
+      left
+    >
+      <template #activator="{ on, attrs }">
         <v-chip
           v-bind="attrs"
-          v-on="on"
           small
           outlined
-          :color="(disabled) ? 'grey darken-2' : 'error'">
+          :color="(disabled) ? 'grey darken-2' : 'error'"
+          v-on="on"
+        >
           {{ $t('app.version.label.invalid') }}
         </v-chip>
       </template>
@@ -42,7 +52,8 @@
       text
       color="primary"
       class="ml-1"
-      @click="$emit('on-update')">
+      @click="$emit('on-update')"
+    >
       {{ $t('app.version.btn.update') }}
     </app-btn>
 
@@ -56,7 +67,6 @@
     >
       Recover
     </app-btn>
-
   </div>
 </template>
 

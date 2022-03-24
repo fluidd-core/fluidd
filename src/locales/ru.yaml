@@ -30,6 +30,7 @@ app:
       'on': Включить график
       power: Мощность
       target: Цель
+      rate_of_change: Изменение
     tooltip:
       help: >-
         Удерживайте shift для увеличения.<br />Кликните на элемент, чтобы
@@ -38,6 +39,7 @@ app:
   console:
     label:
       auto_scroll: Автоматическое пролистывание
+      flip_layout: Перевернутое отображение
       hide_temp_waits: Скрыть временные ожидания
     placeholder:
       command: >-
@@ -163,10 +165,12 @@ app:
       send: Отправить
       set_color: Установить цвет
       shutdown: Отключение
+      socket_reconnect: Повторное подключение
       socket_refresh: Принудительно обновление
       upload: Загрузить
       upload_print: Загрузить и напечатать
       view: Вид
+      reset_stats: Сбросить Статистику
     error:
       app_setup_link: >-
         Требования для установки Fluidd можно посмотреть <a target="_blank"
@@ -181,7 +185,9 @@ app:
     label:
       accel_to_decel: Ускорения и торможения
       acceleration: Ускорение
+      actual_time: Фактический
       add_camera: Добавить камеру
+      add_filter: Добавить фильтр
       add_preset: Добавить предустановку
       add_user: Добавить пользователя
       api_key: Ключ API
@@ -194,20 +200,28 @@ app:
       current_password: Текущий пароль
       disabled_while_printing: Отключено во время печати
       edit_camera: Редактировать камеру
+      edit_filter: Редактировать фильтр
       edit_preset: Редактировать предустановку
       edit_user: Редактирование пользователя
       extrude_length: Длинна экструзии
       extrude_speed: Скорость экструзии
+      filament: Филамент
+      file: Файл
+      finish_time: Конец
       flow: Поток
       free: Свободно
+      heaters_busy: Принтер в данный момент занят. Выключение нагревателей может привести к сбою печати.
       high: Выше
       host: Хост
+      layer: Слой
       layout: Компоновка интерфейса
       longest_job: Самая долгая печать
       low: Ниже
+      m117: M117
       name: Имя
       new_password: Новый пароль
       no_notifications: Нет уведомлений
+      'on': 'Включить'
       'off': Выключить
       password: Пароль
       power: Питание
@@ -218,8 +232,10 @@ app:
       retract_speed: Скорость ретракта
       save_as: Сохранить как
       services: Сервисы
+      slicer: Слайсер
       speed: Скорость
       sqv: Скорость прохождения угла
+      total: Весь
       total_filament: Всего использованно филамента
       total_filament_avg: Среднее на печать
       total_jobs: Всего печатей
@@ -228,12 +244,16 @@ app:
       total_time: Общее время
       total_time_avg: Среднее время
       uncategorized: Вне категории
+      unretract_extra_length: Дополнительная длина
       unretract_speed: Скорость деретракта
       used: Использованно
       variance: Различие
       velocity: Скорость
       visible: Видимый
       z_offset: Смещение Z
+      unsaved_changes: Не сохраненные изменения
+      alias: Псевдоним
+      apply_z_offset: Применить и сохранить Z_Offset
     msg:
       password_changed: Пароль изменен
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
@@ -242,6 +262,7 @@ app:
         arrayofnums: Только цифры
         exists: Уже существует
         invalid_url: Невалидный URL
+        invalid_expression: Недопустимое выражение
         max: Макс %{max}
         min: Мин %{min}
         min_or_0: Мин %{min} или 0
@@ -251,6 +272,16 @@ app:
         confirm: Вы уверены?
         confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
         confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
+        confirm_service_restart: Вы уверены, что хотите перезапустить службу %{name}?
+        confirm_service_stop: Вы уверены, что хотите остановить службу %{name}?
+        confirm_power_device_toggle: Вы уверены? Это позволит переключить питание этого устройства.
+        unsaved_changes: У вас есть несохраненные изменения. Вы уверены, что хотите закрыть файл?
+        apply_z_offset_endstop: >-
+          Z-смещение конечной точки будет рассчитано и обновлено по текущему
+          Z-Offset.
+        apply_z_offset_probe: >-
+          Z-смещение датчика/Bl touch будет рассчитано и обновлено на основе текущего
+          Z-Offset.
     table:
       header:
         actions: Действия
@@ -290,6 +321,7 @@ app:
       jobs: Задачи
       limits: Лимиты принтера
       macros: Макросы
+      other_files: Другие Файлы
       retract: Настройки ретракта
       runout_sensors: Датчик контроля филамента
       settings: Настройки
@@ -305,8 +337,7 @@ app:
       reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
       restart_klipper: Перезагружает сервис Klipper.
   history:
-    msg:
-      confirm: Вы уверены? Это очистит историю и сбросит статистику принтера
+    msg: {}
   printer:
     state:
       busy: Занят
@@ -320,6 +351,8 @@ app:
   setting:
     btn:
       add_camera: Добавить камеру
+      add_category: Добавить категорию
+      add_filter: Добавить фильтр
       add_thermal_preset: Добавить пресет температур
       add_user: Добавить пользователя
       reset: Сбросить
@@ -328,14 +361,25 @@ app:
       mjpegadaptive: Адаптивный MJPEG
       mjpegstream: MJPEG поток
       video: IP Камера
+      iframe: Страница HTTP
+    camera_rotate_options:
+      none: Нет
+      90: 90°
+      180: 180°
+      270: 270°
     label:
       all_off: Всё выключить
       all_on: Всё включить
+      auto_edit_extensions: Расширения для автоматического открытия в режиме редактирования
       camera_flip_x: Отразить по горизонтали
       camera_flip_y: Отразить по вертикали
+      camera_rotate_by: Повернуть на
       camera_stream_type: Тип потока
       camera_url: URL камеры
       confirm_on_estop: Требовать подтверждение при аварийной остановке
+      confirm_on_power_device_change: Требуется подтверждение при изменении мощности устройства
+      confirm_dirty_editor_close: Требовать подтверждения при закрытии редактора с несохраненными изменениями
+      contains: Содержит
       dark_mode: Тёмная тема
       default_extrude_length: Длина экструдирования по умолчанию
       default_extrude_speed: Скорость экструдера по умолчанию
@@ -345,11 +389,16 @@ app:
       draw_background: Отображать фон
       enable: Включить
       enable_notifications: Включить оповещения
+      expression: Выражение
       extrusion_line_width: Ширина линии экструзии
       flip_horizontal: Сдвиг по горизонтали
       flip_vertical: Сдвиг по вертикали
+      filter: Filter | Фильтры
       fps_target: Целевой FPS
+      fps_idle_target: Цель FPS, когда она не в фокусе
+      height: Высота
       gcode_coords: Испрользовать координаты GCode
+      group_lower_layers: Группировать нижние слои
       invert_x_control: Инвертировать управление по оси X
       invert_y_control: Инвертировать управление по оси Y
       invert_z_control: Инвертировать управление по оси Z
@@ -360,10 +409,14 @@ app:
       reset: Сбросить настройки
       retraction_icon_size: Размер иконки ретракта
       show_animations: Показывать анимации
+      show_rate_of_change: Показать скорость изменения температуры
+      starts_with: Начинается с
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
+      type: Тип
       z_adjust_values: Значения подстройки оси Z
+      date_time_format: Формат даты и времени
     timer_options:
       duration: Только продолжительность
       filament: Оценка филамента
@@ -371,7 +424,9 @@ app:
       slicer: Слайсер
     title:
       authentication: Аутентификация
+      console: Консоль
       camera: Камера | Камеры
+      file_editor: Редактор файлов
       gcode_preview: Предпросмотр GCode
       general: Общие
       macros: Макросы

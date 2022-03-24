@@ -41,9 +41,23 @@ export interface ServerInfo {
 
 export interface SystemInfo {
   available_services?: string[];
+  service_state?: ServiceState;
   cpu_info?: CpuInfo;
   sd_info?: SDInfo;
   distribution?: DistroInfo;
+}
+
+export interface ServiceState {
+  [id: string]: {
+    active_state?: string;
+    sub_state?: string;
+  };
+}
+
+export interface ServiceInfo {
+  name: string;
+  active_state?: string;
+  sub_state?: string;
 }
 
 export interface CpuInfo {
@@ -86,6 +100,7 @@ export interface DistroVersionParts {
 export interface ServerConfig {
   authorization: ServerAuthorization;
   server: ServerConfiguration;
+  data_store?: DataStoreConfiguration;
 }
 
 export interface ServerAuthorization {
@@ -93,6 +108,11 @@ export interface ServerAuthorization {
 }
 
 export interface ServerConfiguration {
-  gcode_store_size: number;
-  temperature_store_size: number;
+  gcode_store_size?: number;
+  temperature_store_size?: number;
+}
+
+export interface DataStoreConfiguration {
+  gcode_store_size?: number;
+  temperature_store_size?: number;
 }

@@ -1,18 +1,23 @@
 <template>
-  <v-row align="start" justify="end">
-    <v-col cols="6" class="text-right">
+  <v-row
+    align="start"
+    justify="end"
+  >
+    <v-col
+      cols="6"
+      class="text-right"
+    >
       <v-btn-toggle
         v-if="moveDistance"
+        v-model="moveDistance"
         mandatory
         dense
-        v-model="moveDistance"
-        class="ml-2 d-inline-block"
       >
         <app-btn
           v-for="(value, i) in zAdjustValues"
+          :key="i"
           small
           class="px-1"
-          :key="i"
           :disabled="!klippyReady"
           :min-width="36"
           :value="value"
@@ -26,34 +31,56 @@
       </div>
     </v-col>
     <v-col cols="6">
-      <v-row justify="space-between" no-gutters class="mr-n1">
-        <v-col cols="4" class="pr-1">
+      <v-row
+        justify="space-between"
+        no-gutters
+        class="mr-n1"
+      >
+        <v-col
+          cols="4"
+          class="pr-1"
+        >
           <app-btn
+            :loading="hasWait('ZAdjust')"
+            :disabled="!klippyReady"
+            small
+            block
             @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
+          >
+            <v-icon small>
+              $zUp
+            </v-icon>
+          </app-btn>
+        </v-col>
+        <v-col
+          cols="4"
+          class="pr-1"
+        >
+          <app-btn
             :loading="hasWait('ZAdjust')"
             :disabled="!klippyReady"
             small
-            block>
-            <v-icon small>$zUp</v-icon>
-          </app-btn>
-        </v-col>
-        <v-col cols="4" class="pr-1">
-          <app-btn
+            block
             @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
-            :loading="hasWait('ZAdjust')"
-            :disabled="!klippyReady"
-            small
-            block>
-            <v-icon small>$zDown</v-icon>
+          >
+            <v-icon small>
+              $zDown
+            </v-icon>
           </app-btn>
         </v-col>
-        <v-col cols="4" class="pr-1">
+        <v-col
+          cols="4"
+          class="pr-1"
+        >
           <app-btn
-            @click="handleZApplyDialog"
             :disabled="!klippyReady || printerPrinting || (ZHomingOrigin == 0)"
             small
-            block>
-            <v-icon small>$save</v-icon>
+            block
+            @click="handleZApplyDialog"
+          >
+            <v-icon small>
+              $save
+            </v-icon>
           </app-btn>
         </v-col>
       </v-row>
@@ -102,19 +129,15 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
     this.sendGcode(gcode, wait)
   }
 
-  get printerSettings () {
-    return this.$store.getters['printer/getPrinterSettings']()
-  }
-
-  get printerHasProbe (): boolean {
-    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+  get printerUsesProbeAsEndstop (): boolean {
+    return this.$store.getters['printer/getPrinterSettings']('stepper_z.endstop_pin') === 'probe:z_virtual_endstop'
   }
 
   handleZApplyDialog () {
     let msg = this.$tc('app.general.simple_form.msg.apply_z_offset_endstop')
     let gcode = 'Z_OFFSET_APPLY_ENDSTOP'
 
-    if (this.printerHasProbe) {
+    if (this.printerUsesProbeAsEndstop) {
       msg = this.$tc('app.general.simple_form.msg.apply_z_offset_probe')
       gcode = 'Z_OFFSET_APPLY_PROBE'
     }

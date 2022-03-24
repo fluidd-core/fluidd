@@ -1,18 +1,25 @@
 <template>
-  <v-row :dense="$vuetify.breakpoint.smAndDown" justify="center">
-    <v-col cols="12" lg="8">
+  <v-row
+    :dense="$vuetify.breakpoint.smAndDown"
+    justify="center"
+  >
+    <v-col
+      cols="12"
+      lg="8"
+    >
       <router-view v-if="authenticated && socketConnected" />
       <div v-if="$route.matched.length === 1">
-        <general-settings></general-settings>
-        <console-settings></console-settings>
-        <theme-settings></theme-settings>
-        <auth-settings v-if="supportsAuth"></auth-settings>
-        <macro-categories></macro-categories>
-        <cameras></cameras>
-        <toolhead-settings></toolhead-settings>
-        <preset-settings></preset-settings>
-        <gcode-preview-settings></gcode-preview-settings>
-        <version-settings v-if="supportsVersions"></version-settings>
+        <general-settings />
+        <console-settings />
+        <theme-settings />
+        <file-editor-settings />
+        <auth-settings v-if="supportsAuth" />
+        <macro-categories />
+        <cameras />
+        <toolhead-settings />
+        <preset-settings />
+        <gcode-preview-settings />
+        <version-settings v-if="supportsVersions" />
       </div>
     </v-col>
   </v-row>
@@ -32,6 +39,7 @@ import VersionSettings from '@/components/settings/VersionSettings.vue'
 import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue'
 import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
 import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
+import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
 
 @Component({
   components: {
@@ -44,7 +52,8 @@ import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
     VersionSettings,
     GcodePreviewSettings,
     AuthSettings,
-    ConsoleSettings
+    ConsoleSettings,
+    FileEditorSettings
   }
 })
 export default class Settings extends Mixins(StateMixin) {

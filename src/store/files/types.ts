@@ -73,7 +73,7 @@ export interface KlipperFileMeta {
 }
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
-  history: HistoryItem | {};
+  history: HistoryItem;
 }
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 

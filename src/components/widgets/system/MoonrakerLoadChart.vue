@@ -1,15 +1,14 @@
 <template>
   <v-col
+    v-if="ready"
     cols="4"
     class="chart-wrapper"
-    v-if="ready"
   >
     <app-chart
       :data="chartData"
       :options="options"
       height="120px"
-    >
-    </app-chart>
+    />
 
     <div class="chart-label-wrapper">
       <div class="chart-label">
@@ -17,7 +16,6 @@
         <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
       </div>
     </div>
-
   </v-col>
 </template>
 

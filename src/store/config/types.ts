@@ -14,6 +14,7 @@ export interface ConfigState {
 export interface UiSettings {
   general: GeneralConfig;
   theme: ThemeConfig;
+  editor: EditorConfig;
   dashboard: DashboardConfig;
   tableHeaders: AppTableConfiguredHeaders;
   gcodePreview: GcodePreviewConfig;
@@ -43,6 +44,7 @@ export interface GeneralConfig {
   defaultToolheadMoveLength: number;
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
+  toolheadMoveDistances: number[];
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
@@ -50,7 +52,8 @@ export interface GeneralConfig {
   confirmOnPowerDeviceChange: boolean;
   dateformat: string;
   timeformat: string;
-  confirmDirtyEditorClose: boolean;
+  showRateOfChange: boolean;
+  flipConsoleLayout: boolean;
 }
 
 // Config stored in moonraker db
@@ -73,6 +76,11 @@ export interface SupportedThemeLogo {
   dynamic: boolean;
   dark?: string;
   light?: string;
+}
+
+export interface EditorConfig {
+  confirmDirtyEditorClose: boolean;
+  autoEditExtensions: string[];
 }
 
 export interface Axis {

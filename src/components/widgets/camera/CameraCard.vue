@@ -5,12 +5,12 @@
     :lazy="false"
     :draggable="true"
     layout-path="dashboard.camera-card"
-    @collapsed="collapsed = $event">
-
-    <template v-slot:menu>
+    @collapsed="collapsed = $event"
+  >
+    <template #menu>
       <camera-menu
         @select="handleCameraSelect"
-      ></camera-menu>
+      />
     </template>
 
     <v-row
@@ -21,12 +21,13 @@
       <template v-for="camera in cameras">
         <v-col
           v-if="!collapsed"
-          cols="12" :sm="cols"
           :key="camera.id"
+          cols="12"
+          :sm="cols"
         >
           <camera-item
             :camera="camera"
-          ></camera-item>
+          />
         </v-col>
       </template>
     </v-row>
@@ -34,8 +35,7 @@
     <camera-item
       v-if="!collapsed && cameras.length === 1"
       :camera="cameras[0]"
-    ></camera-item>
-
+    />
   </collapsable-card>
 </template>
 

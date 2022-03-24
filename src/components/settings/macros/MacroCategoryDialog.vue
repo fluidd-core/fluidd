@@ -1,13 +1,13 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="350"
+    @input="$emit('input', $event)"
   >
     <v-form
-      class="mt-3"
       ref="addInstanceForm"
       v-model="valid"
+      class="mt-3"
       @submit.prevent="handleSave"
     >
       <v-card>
@@ -19,22 +19,33 @@
 
         <v-card-text>
           <v-text-field
+            v-model="newName"
             autofocus
             outlined
-            v-model="newName"
             :label="label"
             :rules="rules"
             hide-details="auto"
-            required>
-          </v-text-field>
+            required
+          />
         </v-card-text>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit">{{ $t('app.general.btn.save') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            type="button"
+            @click="$emit('input', false)"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+          >
+            {{ $t('app.general.btn.save') }}
+          </app-btn>
         </v-card-actions>
-
       </v-card>
     </v-form>
   </v-dialog>

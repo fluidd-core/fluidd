@@ -1,6 +1,9 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
-    <v-col cols="12" md="6">
+    <v-col
+      cols="12"
+      md="6"
+    >
       <collapsable-card
         :title="$t('app.general.title.config_files')"
         icon="$codeJson"
@@ -9,21 +12,24 @@
         <file-system
           :roots="['config']"
           :max-height="816"
-          name="configure">
-        </file-system>
+          name="configure"
+        />
       </collapsable-card>
     </v-col>
-    <v-col cols="12" md="6">
+    <v-col
+      cols="12"
+      md="6"
+    >
       <collapsable-card
-        title="Other Files"
+        :title="$t('app.general.title.other_files')"
         icon="$files"
         :draggable="false"
       >
         <file-system
           :roots="['logs', 'docs', 'config_examples']"
           :max-height="816"
-          name="configure">
-        </file-system>
+          name="configure"
+        />
       </collapsable-card>
     </v-col>
   </v-row>

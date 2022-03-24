@@ -1,10 +1,10 @@
 <template>
   <v-btn
     v-bind="attrs"
-    v-on="$listeners"
     :class="classes"
+    v-on="$listeners"
   >
-    <slot></slot>
+    <slot />
   </v-btn>
 </template>
 

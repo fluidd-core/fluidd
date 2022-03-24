@@ -1,7 +1,25 @@
 <template>
   <collapsable-card
     :title="$t('app.general.title.stats')"
-    icon="$chart">
+    icon="$chart"
+  >
+    <template #menu>
+      <app-btn-collapse-group>
+        <app-btn
+          small
+          class="ma-1"
+          @click="handleResetStats"
+        >
+          <v-icon
+            small
+            left
+          >
+            $delete
+          </v-icon>
+          <span>{{ $t('app.general.btn.reset_stats') }}</span>
+        </app-btn>
+      </app-btn-collapse-group>
+    </template>
 
     <v-card-text>
       <!-- <div class="mb-4">
@@ -33,35 +51,79 @@
 
       <v-row v-if="supportsHistoryComponent">
         <v-col cols="3">
-          <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="secondary--text">{{ $t('app.general.label.total_jobs') }}</div>
-            <div class="focus--text">{{ rollup.total_jobs }}</div>
-            <div class="secondary--text">{{ $t('app.general.label.longest_job') }}</div>
-            <div class="focus--text">{{ $filters.formatCounterTime(rollup.longest_job) }}</div>
+          <v-card
+            outlined
+            class="px-2 py-1 text-center stat-square"
+          >
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_jobs') }}
+            </div>
+            <div class="focus--text">
+              {{ rollup.total_jobs }}
+            </div>
+            <div class="secondary--text">
+              {{ $t('app.general.label.longest_job') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.formatCounterTime(rollup.longest_job) }}
+            </div>
           </v-card>
         </v-col>
         <v-col cols="3">
-          <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="secondary--text">{{ $t('app.general.label.total_time') }}</div>
-            <div class="focus--text">{{ $filters.formatCounterTime(rollup.total_time) }}</div>
-            <div class="secondary--text">{{ $t('app.general.label.total_time_avg') }}</div>
-            <div class="focus--text">{{ $filters.formatCounterTime(rollup.total_avg) }}</div>
+          <v-card
+            outlined
+            class="px-2 py-1 text-center stat-square"
+          >
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_time') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.formatCounterTime(rollup.total_time) }}
+            </div>
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_time_avg') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.formatCounterTime(rollup.total_avg) }}
+            </div>
           </v-card>
         </v-col>
         <v-col cols="3">
-          <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="secondary--text">{{ $t('app.general.label.total_print_time') }}</div>
-            <div class="focus--text">{{ $filters.formatCounterTime(rollup.total_print_time) }}</div>
-            <div class="secondary--text">{{ $t('app.general.label.total_print_time_avg') }}</div>
-            <div class="focus--text">{{ $filters.formatCounterTime(rollup.print_avg) }}</div>
+          <v-card
+            outlined
+            class="px-2 py-1 text-center stat-square"
+          >
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_print_time') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.formatCounterTime(rollup.total_print_time) }}
+            </div>
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_print_time_avg') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.formatCounterTime(rollup.print_avg) }}
+            </div>
           </v-card>
         </v-col>
         <v-col cols="3">
-          <v-card outlined class="px-2 py-1 text-center stat-square">
-            <div class="secondary--text">{{ $t('app.general.label.total_filament') }}</div>
-            <div class="focus--text">{{ $filters.getReadableLengthString(rollup.total_filament_used) }}</div>
-            <div class="secondary--text">{{ $t('app.general.label.total_filament_avg') }}</div>
-            <div class="focus--text">{{ $filters.getReadableLengthString(rollup.filament_avg) }}</div>
+          <v-card
+            outlined
+            class="px-2 py-1 text-center stat-square"
+          >
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_filament') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.getReadableLengthString(rollup.total_filament_used) }}
+            </div>
+            <div class="secondary--text">
+              {{ $t('app.general.label.total_filament_avg') }}
+            </div>
+            <div class="focus--text">
+              {{ $filters.getReadableLengthString(rollup.filament_avg) }}
+            </div>
           </v-card>
         </v-col>
       </v-row>
@@ -72,6 +134,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import JobHistory from '@/components/widgets/history/JobHistory.vue'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
@@ -104,6 +167,18 @@ export default class PrinterStatsCard extends Vue {
 
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  handleResetStats () {
+    this.$confirm(
+      this.$tc('app.history.msg.confirm_stats'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+      .then(res => {
+        if (res) {
+          SocketActions.serverHistoryResetTotals()
+        }
+      })
   }
 }
 </script>

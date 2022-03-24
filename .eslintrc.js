@@ -4,7 +4,7 @@ module.exports = {
     node: true
   },
   extends: [
-    'plugin:vue/essential',
+    'plugin:vue/recommended',
     '@vue/standard',
     '@vue/typescript/recommended'
   ],
@@ -15,6 +15,8 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     camelcase: 0,
+    'vue/no-v-html': 0,
+    'no-use-before-define': 0,
     '@typescript-eslint/camelcase': 0,
     '@typescript-eslint/no-explicit-any': 0
   },

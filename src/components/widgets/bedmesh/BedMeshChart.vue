@@ -1,12 +1,14 @@
 <template>
-  <div class="chart" :style="{ 'height': height }">
-    <ECharts
+  <div
+    class="chart"
+    :style="{ 'height': height }"
+  >
+    <v-chart
       ref="chart"
       :option="opts"
-      :setOptionOps="{ notMerge: false }"
-      :initOpts="{ renderer: 'canvas' }"
-    >
-    </ECharts>
+      :update-options="{ notMerge: false }"
+      :init-options="{ renderer: 'canvas' }"
+    />
 
     <!-- <pre>legends: {{ opts.legend }}</pre> -->
 
@@ -15,8 +17,8 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { ECharts } from 'echarts'
+import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
+import type { ECharts } from 'echarts'
 import { merge } from 'lodash'
 
 @Component({})
@@ -30,10 +32,8 @@ export default class EChartsBedMesh extends Vue {
   @Prop({ type: String, default: '100%' })
   height!: string;
 
-  get chart () {
-    const ref = this.$refs.chart as any
-    if (ref) return ref.inst as ECharts
-  }
+  @Ref('chart')
+  chart!: ECharts
 
   get flatSurface () {
     return this.$store.state.mesh.flatSurface

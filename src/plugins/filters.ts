@@ -194,7 +194,7 @@ export const Filters = {
   /**
    * Determines API urls from a base url
    */
-  getApiUrls (url: string) {
+  getApiUrls (url: string): ApiConfig {
     const _url = new URL(url)
     const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
     const o = {
@@ -234,29 +234,14 @@ export const FiltersPlugin = {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $filters: Filters;
-    $globals: any;
-    $waits: any;
+    $filters: typeof Filters;
+    $globals: typeof Globals;
+    $waits: typeof Waits;
   }
 
   interface VueConstructor {
-    $filters: Filters;
-    $globals: any;
-    $waits: any;
-  }
-
-  interface Filters {
-    formatCounterTime(seconds: number): string;
-    camelCase(string: string): string;
-    startCase(string: string): string;
-    capitalize(string: string): string;
-    formatDateTime(datetime: number, format?: string): string;
-    formatAbsoluteDateTime(datetime: number, todayFormat?: string, futureFormat?: string): string;
-    getReadableFileSizeString(fileSizeInBytes: number): string;
-    getReadableLengthString(lengthInMm: number): string;
-    getApiUrls(url: string): ApiConfig;
-    fileSystemSort(items: Array<any>, sortBy: string[], sortDesc: boolean[], locale: string): Array<any>;
-    isColorDark(color: string): boolean;
-    routeTo(router: VueRouter, path: string): void;
+    $filters: typeof Filters;
+    $globals: typeof Globals;
+    $waits: typeof Waits;
   }
 }

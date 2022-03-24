@@ -1,20 +1,29 @@
 <template>
   <v-navigation-drawer
     :value="value"
+    app
+    right
+    clipped
+    temporary
+    width="300"
+    dense
     @input="emitChange"
-    app right clipped temporary
-    dense>
-
-    <v-list dense v-if="authenticated">
+  >
+    <v-list
+      v-if="authenticated"
+      dense
+    >
       <v-subheader>{{ instanceName }}</v-subheader>
-      <v-divider></v-divider>
-      <system-commands @click="this.close"></system-commands>
+      <v-divider />
+      <system-commands @click="close" />
     </v-list>
 
-    <system-printers @click="this.close"></system-printers>
+    <system-printers @click="close" />
 
-    <system-layout @click="this.close" v-if="authenticated"></system-layout>
-
+    <system-layout
+      v-if="authenticated"
+      @click="close"
+    />
   </v-navigation-drawer>
 </template>
 

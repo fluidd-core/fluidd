@@ -1,33 +1,67 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-card>
       <v-card-title class="card-heading py-2">
-        <span class="focus--text" v-html="$t('app.general.label.api_key')"></span>
+        <span
+          class="focus--text"
+          v-html="$t('app.general.label.api_key')"
+        />
       </v-card-title>
 
-      <v-divider></v-divider>
+      <v-divider />
 
-      <v-card-text class="px-4 pt-4">
-        <v-text-field readonly outlined :value="apiKey"></v-text-field>
+      <v-card-text class="py-4">
+        <v-text-field
+          :value="apiKey"
+          filled
+          dense
+          single-line
+          hide-details
+          readonly
+          outlined
+        />
       </v-card-text>
+
+      <v-layout
+        align-center
+        column
+        class="pb-4"
+      >
+        <app-qr-code
+          :value="apiKey"
+          centered
+        />
+      </v-layout>
 
       <v-divider />
 
       <v-card-actions class="pa-4">
-        <v-spacer></v-spacer>
+        <v-spacer />
         <app-btn
           color=""
           @click="handleRefreshApiKey"
         >
-          <v-icon small left>$refresh</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $refresh
+          </v-icon>
           {{ $t('app.general.btn.refresh') }}
         </app-btn>
 
-        <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.close') }}</app-btn>
+        <app-btn
+          color="warning"
+          text
+          type="button"
+          @click="$emit('input', false)"
+        >
+          {{ $t('app.general.btn.close') }}
+        </app-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

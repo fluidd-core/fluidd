@@ -53,7 +53,7 @@ export const actions: ActionTree<FilesState, RootState> = {
           !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
         ) {
-          let history: HistoryItem | {} = {}
+          let history = {} as HistoryItem
           if (file.job_id) {
             const h = rootState.history?.jobs.find(job => job.job_id === file.job_id)
             if (h) history = h

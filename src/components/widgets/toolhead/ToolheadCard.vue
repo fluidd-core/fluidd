@@ -4,81 +4,89 @@
     icon="$printer3dNozzle"
     :draggable="true"
     layout-path="dashboard.toolhead-card"
-    menu-breakpoint="lg">
-
-    <template v-slot:title>
-      <v-icon left>$printer3dNozzle</v-icon>
+    menu-breakpoint="lg"
+  >
+    <template #title>
+      <v-icon left>
+        $printer3dNozzle
+      </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.tool') }}</span>
 
       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-icon
-            v-bind="attrs"
-            v-on="on"
             v-show="!extruderReady"
+            v-bind="attrs"
             class="ml-3"
-            color="info">
+            color="info"
+            v-on="on"
+          >
             $snowflakeAlert
           </v-icon>
         </template>
-        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })"></span>
+        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })" />
       </v-tooltip>
     </template>
 
-    <template v-slot:menu>
+    <template #menu>
       <app-btn-collapse-group>
         <app-btn
-          @click="sendGcode('M84')"
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            MOTORS OFF
+          class="ml-1"
+          @click="sendGcode('M84')"
+        >
+          MOTORS OFF
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
-          @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
           :elevation="2"
           :loading="hasWait(waits.onBedScrewsAdjust)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            Bed_Screws_Adjust
+          class="ml-1"
+          @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
+        >
+          Bed_Screws_Adjust
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
-          @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
           :elevation="2"
           :loading="hasWait(waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
-          class="ml-1">
-            Screws_Tilt_Calculate
+          class="ml-1"
+          @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
+        >
+          Screws_Tilt_Calculate
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
-          @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
           :elevation="2"
           :loading="hasWait(waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            Z_Tilt_Adjust
+          class="ml-1"
+          @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
+        >
+          Z_Tilt_Adjust
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
-          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
           :elevation="2"
           :loading="hasWait(waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1">
-            QGL
+          class="ml-1"
+          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+        >
+          QGL
         </app-btn>
       </app-btn-collapse-group>
     </template>
 
-    <toolhead></toolhead>
+    <toolhead />
   </collapsable-card>
 </template>
 

@@ -11,10 +11,9 @@
       sort-desc
       style="background-color: transparent;"
     >
-
       <template
-        v-slot:item="{ item }">
-
+        #item="{ item }"
+      >
         <tr
           class="px-1"
         >
@@ -23,14 +22,16 @@
             <v-icon
               v-if="!item.exists"
               class="mr-2"
-              color="secondary">
+              color="secondary"
+            >
               $fileCancel
             </v-icon>
 
             <!-- If the item exists, but has no thumbnail data. -->
             <v-icon
               v-if="item.exists && !item.metadata.thumbnails"
-              class="mr-2">
+              class="mr-2"
+            >
               $fileDocument
             </v-icon>
 
@@ -40,7 +41,7 @@
               class="mr-2 file-icon-thumb"
               :src="getThumbUrl(item.metadata.thumbnails, getFilePaths(item.filename).path, false, item.metadata.modified)"
               :width="24"
-            />
+            >
           </td>
 
           <td>
@@ -50,11 +51,14 @@
           </td>
 
           <td>
-            <job-history-item-status :job="item"></job-history-item-status>
+            <job-history-item-status :job="item" />
           </td>
 
           <td>
-            <span class="text-no-wrap" v-if="item.print_duration > 0">
+            <span
+              v-if="item.print_duration > 0"
+              class="text-no-wrap"
+            >
               {{ $filters.formatCounterTime(item.print_duration) }}
             </span>
             <span v-else>--</span>
@@ -73,13 +77,16 @@
             </span>
           </td> -->
 
-          <td class="actions" v-if="!printerPrinting">
+          <td
+            v-if="!printerPrinting"
+            class="actions"
+          >
             <div>
               <app-btn
-                @click="$emit('print', item.filename)"
                 color=""
                 icon
-                >
+                @click="$emit('print', item.filename)"
+              >
                 <v-icon>$printer</v-icon>
               </app-btn>
             </div>

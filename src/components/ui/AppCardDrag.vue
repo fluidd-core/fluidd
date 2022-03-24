@@ -1,6 +1,5 @@
 <template>
-  <v-card
-  >
+  <v-card>
     <v-card-title
       class="card-title card-heading py-1 draggable"
     >

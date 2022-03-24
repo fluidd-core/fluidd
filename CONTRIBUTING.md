@@ -18,3 +18,5 @@ Fluidd is built on VueJS, using TypeScript.
 
 - By signing off on commits, you acknowledge that you agree to the [developer certificate of origin](/developer-certificate-of-origin).
 This must contain your real name and a current email address.
+
+After cloning the repo and running `npm install`, we recommend running `npm run bootstrap` to install a couple of git hooks that will pre-validate all new commits.

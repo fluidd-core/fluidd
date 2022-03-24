@@ -1,12 +1,12 @@
 name: Feature Request
 description: Have a cool feature in mind? Use this template!
-labels: ["enhancement"]
+labels: ["FR - Enhancement"]
 body:
   - type: markdown
     attributes:
       value: |
         This issue form is for feature requests only!
-        If you've found a bug, please use [bug_report](/new?template=bug_report.yml)
+        If you've found a bug, please use [bug_report](new?template=bug_report.yml)
   - type: textarea
     id: problem-description
     attributes:

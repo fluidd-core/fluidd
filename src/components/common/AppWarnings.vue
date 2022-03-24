@@ -1,40 +1,67 @@
 <template>
-  <v-alert text dense icon="$warning" type="warning">
+  <v-alert
+    text
+    dense
+    icon="$warning"
+    type="warning"
+  >
     <div v-if="printerWarnings.length > 0">
       <div class="mb-2">
         {{ $t('app.general.error.app_warnings_found', { appName }) }}
       </div>
       <ul class="mb-4">
-        <li v-for="(warning, index) in printerWarnings" :key="index" v-html="warning.message"></li>
+        <li
+          v-for="(warning, index) in printerWarnings"
+          :key="index"
+          v-html="warning.message"
+        />
       </ul>
     </div>
 
     <div v-if="klipperWarnings.length > 0">
-      <div class="mb-2">{{ $t('app.general.error.app_warnings_found', { appName: 'Klipper' }) }}</div>
+      <div class="mb-2">
+        {{ $t('app.general.error.app_warnings_found', { appName: 'Klipper' }) }}
+      </div>
       <ul class="mb-4">
-        <li v-for="(warning, index) in klipperWarnings" :key="index" v-html="warning.message"></li>
+        <li
+          v-for="(warning, index) in klipperWarnings"
+          :key="index"
+          v-html="warning.message"
+        />
       </ul>
     </div>
 
     <div v-if="moonrakerFailedComponents.length > 0">
-      <div class="mb-2">{{ $t('app.general.error.failed_components') }}</div>
+      <div class="mb-2">
+        {{ $t('app.general.error.failed_components') }}
+      </div>
       <ul class="mb-4">
-        <li v-for="(failedComponent, index) in moonrakerFailedComponents" :key="index" v-html="failedComponent"></li>
+        <li
+          v-for="(failedComponent, index) in moonrakerFailedComponents"
+          :key="index"
+          v-html="failedComponent"
+        />
       </ul>
     </div>
 
     <div v-if="moonrakerWarnings.length > 0">
-      <div class="mb-2">{{ $t('app.general.error.app_warnings_found', { appName: 'Moonraker' }) }}</div>
+      <div class="mb-2">
+        {{ $t('app.general.error.app_warnings_found', { appName: 'Moonraker' }) }}
+      </div>
       <ul class="mb-4">
-        <li v-for="(warning, index) in moonrakerWarnings" :key="index" v-html="warning"></li>
+        <li
+          v-for="(warning, index) in moonrakerWarnings"
+          :key="index"
+          v-html="warning"
+        />
       </ul>
     </div>
 
     <div v-if="printerWarnings.length > 0">
-      <span v-html="printerWarningsTxt"></span>
+      <span v-html="printerWarningsTxt" />
     </div>
     <div v-if="moonrakerFailedComponents.length > 0">
-      <span v-html="moonrakerFailedComponentsTxt"></span>
+      <span v-html="moonrakerFailedComponentsTxt" />
     </div>
   </v-alert>
 </template>

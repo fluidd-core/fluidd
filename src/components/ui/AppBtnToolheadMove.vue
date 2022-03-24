@@ -1,23 +1,26 @@
 <template>
   <v-tooltip
-    top>
-    <template v-slot:activator="{ on, attrs }">
+    top
+  >
+    <template #activator="{ on, attrs }">
       <app-btn
-        @click="$emit('click')"
         :disabled="disabled"
         :min-width="40"
         :loading="loading"
         :color="color"
         v-bind="(tooltip !== '') ? attrs : undefined"
+        class="px-2"
+        @click="$emit('click')"
         v-on="(tooltip !== '') ? on : undefined"
-        class="px-2">
+      >
         <v-icon
           v-if="icon"
           :small="smallIcon"
-          :class="{ 'mr-1': hasDefaultSlot }">
+          :class="{ 'mr-1': hasDefaultSlot }"
+        >
           {{ icon }}
         </v-icon>
-        <slot></slot>
+        <slot />
       </app-btn>
     </template>
     <span>{{ tooltip }}</span>

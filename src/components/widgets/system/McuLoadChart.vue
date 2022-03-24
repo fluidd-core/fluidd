@@ -1,24 +1,23 @@
 <template>
   <v-col
+    v-if="ready"
     cols="4"
     class="chart-wrapper"
-    v-if="ready"
   >
     <app-chart
       :data="chartData || []"
       :options="options"
       height="120px"
-    >
-    </app-chart>
+    />
 
     <div class="chart-label-wrapper">
       <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.toUpperCase() })}}</span>
+        <span>{{ $t('app.system_info.label.mcu_load', { mcu: mcu.toUpperCase() }) }}</span>
         <span v-if="chartData.length">{{ chartData[chartData.length - 1].load }}%</span>
       </div>
 
       <div class="chart-label">
-        <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.toUpperCase() })}}</span>
+        <span>{{ $t('app.system_info.label.mcu_awake', { mcu: mcu.toUpperCase() }) }}</span>
         <span v-if="chartData.length">{{ chartData[chartData.length - 1].awake }}s</span>
       </div>
 

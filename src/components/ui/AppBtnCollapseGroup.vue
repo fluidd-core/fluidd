@@ -1,7 +1,7 @@
 <template>
   <!-- not collapsed -->
   <div v-if="!isCollapsed && hasDefaultSlot">
-    <slot></slot>
+    <slot />
   </div>
 
   <!-- collapsed to hamburger -->
@@ -12,19 +12,24 @@
     offset-y
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <app-btn
         fab
         x-small
         text
         color=""
         v-bind="attrs"
-        v-on="on">
+        class="ml-1"
+        v-on="on"
+      >
         <v-icon>{{ menuIcon }}</v-icon>
       </app-btn>
     </template>
-    <v-sheet elevation="0" class="pa-2">
-      <slot></slot>
+    <v-sheet
+      elevation="0"
+      class="pa-2"
+    >
+      <slot />
     </v-sheet>
   </v-menu>
 </template>

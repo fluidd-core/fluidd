@@ -1,20 +1,23 @@
 <template>
-  <v-form v-model="valid" @submit.prevent>
+  <v-form
+    v-model="valid"
+    @submit.prevent
+  >
     <v-layout>
       <v-text-field
+        v-model.number="inputValue"
         outlined
         dense
         single-line
         hide-details="auto"
-        v-model.number="inputValue"
         :disabled="!klippyReady"
         :loading="loading"
         :rules="[rules.min, rules.max]"
+        suffix="°C"
+        class="v-input--width-x-small"
         @keyup.enter="emitChange"
         @focus="$event.target.select()"
-        suffix="°C"
-        class="v-input--width-x-small">
-      </v-text-field>
+      />
     </v-layout>
   </v-form>
 </template>

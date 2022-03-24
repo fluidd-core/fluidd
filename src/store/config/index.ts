@@ -25,11 +25,12 @@ export const defaultState = (): ConfigState => {
         { name: 'Italiano', code: 'it' },
         { name: 'Magyar', code: 'hu' },
         { name: 'Nederlands', code: 'nl' },
-        { name: 'Portuguese', code: 'pt' },
+        { name: 'Português', code: 'pt' },
         { name: 'Русский', code: 'ru' },
         { name: 'Українська', code: 'uk' },
         { name: '한국어', code: 'ko' },
-        { name: 'العربية', code: 'ar' }
+        { name: 'العربية', code: 'ar' },
+        { name: '日本語', code: 'ja' }
       ],
       themePresets: []
     },
@@ -50,6 +51,7 @@ export const defaultState = (): ConfigState => {
         defaultToolheadMoveLength: 1.0,
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
+        toolheadMoveDistances: [0.1, 1, 10, 25, 50, 100],
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
@@ -57,7 +59,8 @@ export const defaultState = (): ConfigState => {
         confirmOnPowerDeviceChange: false,
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
-        confirmDirtyEditorClose: true
+        showRateOfChange: false,
+        flipConsoleLayout: false
       },
       theme: {
         isDark: true,
@@ -68,6 +71,10 @@ export const defaultState = (): ConfigState => {
         currentTheme: {
           primary: '#2196F3'
         }
+      },
+      editor: {
+        confirmDirtyEditorClose: true,
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt']
       },
       dashboard: {
         tempPresets: []

@@ -1,14 +1,25 @@
 <template>
-  <div class="editor" ref="monaco-editor"></div>
+  <div
+    ref="monaco-editor"
+    class="editor"
+  >
+    <div
+      v-if="!editor"
+      class="spinner"
+    >
+      <v-progress-circular
+        indeterminate
+        size="100"
+        color="primary"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import { IGrammarDefinition, Registry } from 'monaco-textmate'
-import { wireTmGrammars } from 'monaco-editor-textmate'
-import themeDark from '@/monaco/theme/editor.dark.theme.json'
-import themeLight from '@/monaco/theme/editor.light.theme.json'
+import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
+let monaco: typeof Monaco // dynamically imported
 
 @Component({})
 export default class FileEditor extends Vue {
@@ -24,7 +35,7 @@ export default class FileEditor extends Vue {
   @Ref('monaco-editor') monacoEditor!: HTMLElement
 
   // Our editor, once init'd.
-  editor: monaco.editor.IStandaloneCodeEditor | undefined = undefined
+  editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   // Base editor options.
   opts = {
@@ -51,49 +62,14 @@ export default class FileEditor extends Vue {
   }
 
   async initEditor () {
-    // Register our custom TextMate languages.
-    const registry = new Registry({
-      getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
-        const fileName = scopeName.split('.').pop()
-        return import(
-          /* webpackChunkName: "grammar-[request]" */
-          `@/monaco/language/${fileName}.tmLanguage.json`
-        )
-          .then(language => {
-            return Promise.resolve({
-              format: 'json',
-              content: language.default
-            })
-          })
-      }
-    })
-
-    // Load our grammars...
-    const grammars = new Map()
-    grammars.set('gcode', 'source.gcode')
-    grammars.set('klipper-config', 'source.klipper-config')
-    grammars.set('log', 'text.log')
-
-    // ... and our languages
-    monaco.languages.register({ id: 'gcode', extensions: ['gcode', 'g', 'gc', 'gco', 'ufp', 'nc'] })
-    monaco.languages.register({ id: 'klipper-config', extensions: ['cfg', 'conf'] })
-    monaco.languages.register({ id: 'log', extensions: ['log'] })
-
-    // Define how commenting works.
-    monaco.languages.setLanguageConfiguration('gcode', {
-      comments: {
-        lineComment: ';'
-      }
-    })
-    monaco.languages.setLanguageConfiguration('klipper-config', {
-      comments: {
-        lineComment: '#'
-      }
-    })
-
-    // Defined the themes.
-    monaco.editor.defineTheme('dark-converted', themeDark as any)
-    monaco.editor.defineTheme('light-converted', themeLight as any)
+    if (!monaco) {
+      const { default: promise } = await import(
+        /* webpackChunkName: "monaco-editor" */
+        /* webpackPrefetch: -100 */
+        './setupMonaco'
+      )
+      monaco = await promise
+    }
 
     // Set the correct theme.
     if (this.$vuetify.theme.dark) {
@@ -101,9 +77,6 @@ export default class FileEditor extends Vue {
     } else {
       monaco.editor.setTheme('light-converted')
     }
-
-    // Wire it up.
-    await wireTmGrammars(monaco, registry, grammars)
 
     // Create an editor instance.
     this.editor = monaco.editor.create(this.monacoEditor, {
@@ -121,27 +94,20 @@ export default class FileEditor extends Vue {
     // Focus the editor.
     this.editor.focus()
 
-    // Fire the editorMounted call.
-    this.editorMounted()
-  }
-
-  editorMounted () {
-    if (this.editor) {
-      this.$emit('ready')
-      this.editor.onDidChangeModelContent(event => {
-        const value = this.editor?.getValue()
-        this.emitChange(value, event)
-      })
-    }
+    this.$emit('ready')
+    this.editor.onDidChangeModelContent(event => {
+      const value = this.editor?.getValue()
+      this.emitChange(value, event)
+    })
   }
 
   // Ensure we dispose of our models and editor.
   destroyed () {
-    monaco.editor.getModels().forEach(model => model.dispose())
+    if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
     if (this.editor) this.editor.dispose()
   }
 
-  emitChange (value: string | undefined, event: monaco.editor.IModelContentChangedEvent) {
+  emitChange (value: string | undefined, event: Monaco.editor.IModelContentChangedEvent) {
     this.$emit('change', value, event)
     this.$emit('input', value)
   }
@@ -154,5 +120,12 @@ export default class FileEditor extends Vue {
     min-width: 100%;
     height: 90%;
     height: calc(100% - 48px);
+  }
+
+  .editor > .spinner {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
   }
 </style>

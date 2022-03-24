@@ -1,21 +1,26 @@
 <template>
   <v-card-text>
-    <v-row justify="space-between" align="start" class="mb-2">
+    <v-row
+      justify="space-between"
+      align="start"
+      class="mb-2"
+    >
       <v-col cols="auto">
-        <extruder-selection v-if="multipleExtruders"></extruder-selection>
-        <toolhead-moves v-if="!printerPrinting"></toolhead-moves>
-        <z-height-adjust v-if="printerPrinting"></z-height-adjust>
+        <extruder-selection v-if="multipleExtruders" />
+        <toolhead-moves v-if="!printerPrinting" />
+        <z-height-adjust v-if="printerPrinting" />
       </v-col>
 
-      <v-col style="min-width: 280px; max-width: 420px;">
-        <toolhead-position></toolhead-position>
-        <extruder-moves v-if="!printerPrinting"></extruder-moves>
-        <z-height-adjust v-if="!printerPrinting"></z-height-adjust>
+      <v-col style="min-width: 380px; max-width: 420px;">
+        <toolhead-position />
+        <extruder-moves v-if="!printerPrinting" />
+        <z-height-adjust v-if="!printerPrinting" />
       </v-col>
     </v-row>
 
     <!-- Speed and Flow Adjustments  -->
-    <speed-and-flow-adjust></speed-and-flow-adjust>
+    <speed-and-flow-adjust />
+    <pressure-advance-adjust />
   </v-card-text>
 </template>
 
@@ -28,6 +33,7 @@ import ExtruderSelection from '@/components/widgets/toolhead/ExtruderSelection.v
 import ToolheadPosition from '@/components/widgets/toolhead/ToolheadPosition.vue'
 import ZHeightAdjust from '@/components/widgets/toolhead/ZHeightAdjust.vue'
 import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust.vue'
+import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvanceAdjust.vue'
 
 @Component({
   components: {
@@ -36,7 +42,8 @@ import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust
     ExtruderSelection,
     ToolheadPosition,
     ZHeightAdjust,
-    SpeedAndFlowAdjust
+    SpeedAndFlowAdjust,
+    PressureAdvanceAdjust
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {

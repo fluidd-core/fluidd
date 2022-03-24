@@ -1,7 +1,13 @@
 <template>
   <v-card-text>
     <v-row class="my-0 mb-4">
-      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
+      <v-col
+        cols="12"
+        sm="6"
+        md="12"
+        lg="6"
+        class="py-0"
+      >
         <app-slider
           :label="$t('app.general.label.retract_length')"
           suffix="mm"
@@ -14,10 +20,16 @@
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait($waits.onSetRetractLength)"
-          @change="setRetractLength">
-        </app-slider>
+          @change="setRetractLength"
+        />
       </v-col>
-      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
+      <v-col
+        cols="12"
+        sm="6"
+        md="12"
+        lg="6"
+        class="py-0"
+      >
         <app-slider
           :label="$t('app.general.label.unretract_extra_length')"
           suffix="mm"
@@ -30,12 +42,18 @@
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait($waits.onSetRetractLength)"
-          @change="setUnRetractExtraLength">
-        </app-slider>
+          @change="setUnRetractExtraLength"
+        />
       </v-col>
     </v-row>
     <v-row class="my-0 mb-4">
-      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
+      <v-col
+        cols="12"
+        sm="6"
+        md="12"
+        lg="6"
+        class="py-0"
+      >
         <app-slider
           :label="$t('app.general.label.retract_speed')"
           suffix="mm/s"
@@ -48,10 +66,16 @@
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait($waits.onSetRetractSpeed)"
-          @change="setRetractSpeed">
-        </app-slider>
+          @change="setRetractSpeed"
+        />
       </v-col>
-      <v-col cols="12" sm="6" md="12" lg="6" class="py-0">
+      <v-col
+        cols="12"
+        sm="6"
+        md="12"
+        lg="6"
+        class="py-0"
+      >
         <app-slider
           :label="$t('app.general.label.unretract_speed')"
           suffix="mm/s"
@@ -64,8 +88,8 @@
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
           :loading="hasWait($waits.onSetUnretractSpeed)"
-          @change="setUnretractSpeed">
-        </app-slider>
+          @change="setUnretractSpeed"
+        />
       </v-col>
     </v-row>
   </v-card-text>

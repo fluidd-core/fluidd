@@ -1,12 +1,54 @@
 name: Bug report
 description: Create a report to help us improve
-labels: ["bug", "triage"]
+labels: ["GH - Bug", "GH - Evaluation Needed"]
 body:
   - type: markdown
     attributes:
       value: |
         This issue form is for reporting bugs only!
-        If you have a feature request, please use [feature_request](/new?template=feature_request.yml)
+        If you have a feature request, please use [feature_request](new?template=feature_request.yml)
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: >-
+        The browser you are using to access Fluidd
+      options:
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Other (Please tell us below)
+    validations:
+      required: true
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device
+      description: >-
+        The type of device you are using
+      options:
+        - Desktop PC
+        - Laptop
+        - Mobile device (Phone, Tablet or similar)
+        - Other (Please tell us below)
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: >-
+        The operating system powering your device
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Android
+        - iOS
+        - Other (Please tell us below)
+    validations:
+      required: true
   - type: textarea
     id: what-happened
     attributes:

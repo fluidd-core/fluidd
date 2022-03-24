@@ -1,13 +1,13 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave(user)"
       v-model="valid"
+      @submit.prevent="handleSave(user)"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -18,6 +18,7 @@
 
         <app-setting :title="$t('app.general.label.name')">
           <v-text-field
+            v-model="user.username"
             autocomplete="username"
             :disabled="(user.created_on)"
             filled
@@ -25,14 +26,14 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.max]"
-            v-model="user.username">
-          </v-text-field>
+          />
         </app-setting>
 
         <v-divider />
 
         <app-setting :title="$t('app.general.label.password')">
           <v-text-field
+            v-model="user.password"
             autocomplete="current-password"
             filled
             dense
@@ -40,16 +41,27 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.min, rules.password]"
-            v-model="user.password">
-          </v-text-field>
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <app-btn color="warning" text @click="$emit('input', false)" type="button">{{ $t('app.general.btn.cancel') }}</app-btn>
-          <app-btn color="primary" type="submit">{{ (user.created_on) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}</app-btn>
+          <v-spacer />
+          <app-btn
+            color="warning"
+            text
+            type="button"
+            @click="$emit('input', false)"
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
+          <app-btn
+            color="primary"
+            type="submit"
+          >
+            {{ (user.created_on) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+          </app-btn>
         </v-card-actions>
       </v-card>
     </v-form>

@@ -5,9 +5,10 @@
     persistent
   >
     <v-card v-if="file">
-
       <v-card-title class="card-heading py-2 px-5">
-        <v-icon left>$cubeScan</v-icon>
+        <v-icon left>
+          $cubeScan
+        </v-icon>
         <span class="focus--text">
           Parsing file
         </span>
@@ -21,11 +22,14 @@
           :value="percent"
           color="primary"
           class="mb-2"
-        ></v-progress-linear>
+        />
         <table>
           <tr>
-            <td class="pr-2">{{ $t('app.gcode.label.parsed') }}:</td>
-            <td>{{ percent }}%
+            <td class="pr-2">
+              {{ $t('app.gcode.label.parsed') }}:
+            </td>
+            <td>
+              {{ percent }}%
               ({{ $filters.getReadableFileSizeString(progress) }} /
               {{ $filters.getReadableFileSizeString(file.size) }})
             </td>
@@ -36,8 +40,14 @@
       <v-divider />
 
       <v-card-actions class="py-2 px-5">
-        <v-spacer></v-spacer>
-        <app-btn color="error" text @click="$emit('cancel'); $emit('input', false)">{{ $t('app.general.btn.cancel') }}</app-btn>
+        <v-spacer />
+        <app-btn
+          color="error"
+          text
+          @click="$emit('cancel'); $emit('input', false)"
+        >
+          {{ $t('app.general.btn.cancel') }}
+        </app-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
