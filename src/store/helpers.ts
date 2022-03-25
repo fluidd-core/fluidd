@@ -41,6 +41,9 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) =>
             data: 'data:image/gif;base64,' + thumb.data
           }
         }
+        if (thumb.absolute_path) {
+          return thumb
+        }
       }
     }
   }

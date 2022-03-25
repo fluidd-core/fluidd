@@ -6,6 +6,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import History from '@/views/History.vue'
+import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
@@ -46,6 +47,12 @@ const routes: Array<RouteConfig> = [
     path: '/tune',
     name: 'Tune',
     component: Tune,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/timelapse',
+    name: 'Timelapse',
+    component: Timelapse,
     beforeEnter: ifAuthenticated
   },
   {

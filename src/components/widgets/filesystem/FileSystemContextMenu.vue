@@ -92,7 +92,7 @@
               <v-list-item-title>{{ $t('app.general.btn.rename') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
-              v-if="!rootProperties.readonly"
+              v-if="!rootProperties.readonly || rootProperties.canDelete"
               link
               @click="$emit('remove', file)"
             >

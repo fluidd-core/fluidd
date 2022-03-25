@@ -328,6 +328,7 @@ app:
       system: System
       system_overview: System Information
       temperature: Thermals
+      timelapse: Timelapse
       tool: Tool
       tune: Tune
     tooltip:

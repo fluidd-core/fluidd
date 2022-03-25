@@ -115,7 +115,14 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilter } from '@/store/files/types'
+import {
+  AppDirectory,
+  AppFile,
+  AppFileWithMeta,
+  FilesUpload,
+  FileFilter,
+  KlipperFileWithMeta
+} from '@/store/files/types'
 import { Waits } from '@/globals'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
@@ -174,6 +181,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Allow bulk-actions
   @Prop({ type: Boolean, default: false })
   bulkActions!: boolean;
+
+  // Override thumbnails for timelapses
+  @Prop({ type: Boolean, default: false })
+  timelapseBrowser!: boolean;
 
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
@@ -340,7 +351,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       dir &&
       dir.items
     ) {
-      return dir.items
+      return this.timelapseBrowser ? this.transformTimelapseItems(dir.items) : dir.items
     }
     return []
   }
@@ -368,6 +379,38 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   get registeredRoots () {
     return this.$store.state.server.info.registered_directories || []
+  }
+
+  transformTimelapseItems (items: AppFile[] | AppDirectory[]) {
+    const timelapses: {[key: string]: AppFile} = {}
+
+    for (const item of items) {
+      if (item.type === 'file' && item.extension !== 'jpg') {
+        timelapses[item.filename.slice(0, -(item.extension.length + 2))] = item
+      }
+    }
+
+    for (const item of items) {
+      if (item.type === 'file' && item.extension === 'jpg') {
+        const name = item.filename.slice(0, -5)
+        if (name in timelapses) {
+          const url = new URL(this.apiUrl ?? document.location.origin)
+          url.pathname = `/server/files/timelapse/${item.filename}`;
+
+          (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
+            absolute_path: url.toString(),
+            // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
+            data: '',
+            height: 0,
+            width: 0,
+            size: 0,
+            relative_path: ''
+          }]
+        }
+      }
+    }
+
+    return Object.values(timelapses)
   }
 
   // Set the initial root, and load the dir.
