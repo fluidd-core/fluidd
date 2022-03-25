@@ -346,12 +346,21 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Get the available files given the current root and path.
   get files (): AppFile[] | AppDirectory[] {
+    return this.getAllFiles(this.timelapseBrowser ? this.transformTimelapseItems : undefined)
+  }
+
+  getAllFiles (transformFunction?: (files: AppFile[] | AppDirectory[]) => AppFile[] | AppDirectory[]): AppFile[] | AppDirectory[] {
     const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
+    console.log({ dir, transformFunction })
     if (
       dir &&
       dir.items
     ) {
-      return this.timelapseBrowser ? this.transformTimelapseItems(dir.items) : dir.items
+      if (transformFunction) {
+        return transformFunction(dir.items)
+      }
+
+      return dir.items
     }
     return []
   }
@@ -666,6 +675,22 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
+    const thumbnails = []
+
+    const allFiles = this.getAllFiles()
+    for (const item of this.files) {
+      if (item.type === 'file') {
+        const name = item.filename.slice(0, -(item.extension.length + 2))
+
+        for (const file of allFiles) {
+          if (file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name)) {
+            thumbnails.push(file)
+          }
+        }
+      }
+    }
+
+    items.push(...thumbnails)
 
     const text = this.$tc('app.file_system.msg.confirm')
     this.$confirm(
