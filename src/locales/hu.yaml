@@ -6,7 +6,7 @@ app:
       mesh_matrix: Hálós mátrix
       probed_matrix: Próbamátrix
       profile_name: Profil Név
-      remove_profile: '%{name} profil eltávolítása'
+      remove_profile: %{name} profil eltávolítása
       scale: Színskála
       wireframe: Drótkeret
     msg:
@@ -77,10 +77,10 @@ app:
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
     label:
       dir_name: Könyvtár neve
-      disk_usage: Lemez használat
+      disk_usage: Lemezhasználat
       diskinfo: Lemezinformációk
       downloaded: Letöltve
-      file_name: Fájl név
+      file_name: Fájlnév
       transfer_rate: Átviteli sebesség
       uploaded: Feltöltve
     msg:
@@ -411,7 +411,7 @@ app:
       show_animations: Animációk megjelenítése
       show_rate_of_change: A hőmérséklet változás sebességének megjelenítése
       starts_with: Ezzel kezdődik
-      theme_preset: Közösségi előbeállítás
+      theme_preset: Előre beállított téma
       thermal_preset_gcode: GCode
       thermal_preset_name: Előre beállított név
       type: Típus
