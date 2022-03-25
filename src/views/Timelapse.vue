@@ -28,6 +28,6 @@ import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
     FileSystem
   }
 })
-export default class Configuration extends Mixins(StateMixin) {
+export default class Timelapse extends Mixins(StateMixin) {
 }
 </script>
