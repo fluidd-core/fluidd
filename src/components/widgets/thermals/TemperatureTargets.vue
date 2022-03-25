@@ -122,6 +122,17 @@
               <span v-if="item.speed <=0 && ((item.target && item.target <= 0) || !item.target)">off</span>
             </span>
           </td>
+          <td
+            v-if="showRateOfChange"
+            class="rate-of-change"
+          >
+            <span
+              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
+              class="legend-item"
+            >
+              <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
+            </span>
+          </td>
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
@@ -166,7 +177,9 @@
             v-if="showRateOfChange"
             class="rate-of-change"
           >
-&nbsp;
+            <span class="legend-item">
+              {{ getRateOfChange(item) }}<small>&deg;C/s</small>
+            </span>
           </td>
           <td class="temp-actual">
             <v-tooltip left>
@@ -174,7 +187,10 @@
                 <span
                   v-bind="attrs"
                   v-on="on"
-                >{{ item.temperature.toFixed(1) }}<small>°C</small></span>
+                >{{ item.temperature.toFixed(1) }}<small>°C</small>
+                  <small v-if="item.humidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+                  <small v-if="item.pressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+                </span>
               </template>
               <span v-if="item.measured_max_temp && item.measured_min_temp">
                 <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br>

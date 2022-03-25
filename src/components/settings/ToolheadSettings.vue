@@ -85,8 +85,8 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
         <v-select
           :value="defaultToolheadMoveLength"
-          :items="[0.1, 1.0, 10, 25, 50, 100]"
-          :rules="[rules.numRequired, rules.numMin]"
+          :items="toolheadMoveDistances"
+          :rules="[rules.numRequired]"
           filled
           dense
           single-line
@@ -128,8 +128,27 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
+        <v-combobox
+          ref="toolheadMoveDistances"
+          v-model="toolheadMoveDistances"
+          filled
+          dense
+          hide-selected
+          hide-details="auto"
+          multiple
+          small-chips
+          append-icon=""
+          deletable-chips
+          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(6), rules.arrayOnlyNumbers]"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.z_adjust_values')">
         <v-combobox
+          ref="zAdjustValues"
           v-model="zAdjustValues"
           filled
           dense
@@ -139,11 +158,7 @@
           small-chips
           append-icon=""
           deletable-chips
-          :rules="[
-            v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-            v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
-            v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
-          ]"
+          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(4), rules.arrayOnlyNumbers]"
         />
       </app-setting>
 
@@ -164,16 +179,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
 })
 export default class ToolHeadSettings extends Vue {
+  @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
+
+  @Ref('zAdjustValues') readonly zAdjustValuesElement!: any;
+
   rules = {
-    numRequired: (v: number | string) => v !== '' || 'Required',
-    numMin: (v: number) => v >= 1 || 'Min 1'
+    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
+    numMin: (v: number) => v >= 1 || this.$t('app.general.simple_form.error.min', { min: 1 }),
+    arrayNumMin: (min: number) => (v: any[]) => v.length >= min || this.$t('app.general.simple_form.error.min', { min }),
+    arrayNumMax: (max: number) => (v: any[]) => v.length <= max || this.$t('app.general.simple_form.error.max', { max }),
+    arrayOnlyNumbers: (v: any[]) => !v.some(isNaN) || this.$t('app.general.simple_form.error.arrayofnums')
   }
 
   get defaultExtrudeSpeed () {
@@ -240,10 +262,30 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.zAdjustDistances
   }
 
-  set zAdjustValues (value: number[]) {
+  set zAdjustValues (value: (number | string)[]) {
+    if (!this.zAdjustValuesElement.validate(true)) {
+      return
+    }
+
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.zAdjustDistances',
-      value,
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
+
+  get toolheadMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+  }
+
+  set toolheadMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadMoveDistancesElement.validate(true)) {
+      return
+    }
+
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
     })
   }

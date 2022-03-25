@@ -33,5 +33,9 @@ export const mutations: MutationTree<SocketState> = {
 
   setApiConnected (state, payload) {
     state.apiConnected = payload
+  },
+
+  setConnectionId (state, payload) {
+    state.connectionId = payload
   }
 }

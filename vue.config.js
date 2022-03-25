@@ -2,13 +2,14 @@
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { defineConfig } = require('@vue/cli-service')
 
 const v = require('./package.json').version
 const h = require('child_process')
   .execSync('git rev-parse --short HEAD')
   .toString()
 
-module.exports = {
+module.exports = defineConfig({
   pluginOptions: {
     i18n: {
       locale: 'en',
@@ -40,7 +41,21 @@ module.exports = {
     plugins: [
       new MonacoEditorPlugin({
         languages: ['markdown'],
-        features: ['!contextmenu', '!snippets', '!multicursor']
+        features: [
+          '!codeAction',
+          '!codelens',
+          '!colorPicker',
+          '!contextmenu',
+          '!folding',
+          '!hover',
+          '!gotoError',
+          '!gotoLine',
+          '!gotoSymbol',
+          '!quickCommand',
+          '!quickHelp',
+          '!referenceSearch',
+          '!snippet'
+        ]
       }),
       new GenerateFilePlugin({
         file: '.version',
@@ -82,4 +97,4 @@ module.exports = {
         return args
       })
   }
-}
+})
