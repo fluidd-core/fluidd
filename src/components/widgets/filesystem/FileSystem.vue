@@ -351,7 +351,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   getAllFiles (transformFunction?: (files: AppFile[] | AppDirectory[]) => AppFile[] | AppDirectory[]): AppFile[] | AppDirectory[] {
     const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
-    console.log({ dir, transformFunction })
     if (
       dir &&
       dir.items
