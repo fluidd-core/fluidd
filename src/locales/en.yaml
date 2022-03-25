@@ -260,6 +260,7 @@ app:
       error:
         arrayofnums: Only numbers
         exists: Already exists
+        invalid_number: Invalid Number
         invalid_url: Invalid URL
         invalid_expression: Invalid Expression
         max: Max %{max}
