@@ -35,6 +35,17 @@
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
       </app-btn>
 
+      <app-btn
+        v-if="!fullScreen"
+        color=""
+        fab
+        small
+        text
+        @click="$filters.routeTo($router, '/console')"
+      >
+        <v-icon>$fullScreen</v-icon>
+      </app-btn>
+
       <app-btn-collapse-group
         :collapsed="true"
         menu-icon="$cog"
