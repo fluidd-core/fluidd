@@ -6,7 +6,8 @@
     content-classes="flex-grow-1 flow-shrink-0"
     menu-breakpoint="none"
     menu-icon="$cog"
-    :draggable="true"
+    :draggable="!fullScreen"
+    :collapsable="!fullScreen"
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
@@ -81,7 +82,7 @@
       ref="console"
       :scrolling-paused.sync="scrollingPaused"
       :items="items"
-      :height="300"
+      :height="fullScreen ? 816 : 300"
     />
   </collapsable-card>
 </template>
@@ -100,6 +101,9 @@ import { ConsoleEntry } from '@/store/console/types'
 export default class ConsoleCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  fullScreen!: boolean
 
   @Ref('console') console!: Console
 

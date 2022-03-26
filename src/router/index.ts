@@ -3,6 +3,7 @@ import VueRouter, { NavigationGuardNext, Route, RouteConfig } from 'vue-router'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
+import Console from '@/views/Console.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import History from '@/views/History.vue'
@@ -34,6 +35,12 @@ const routes: Array<RouteConfig> = [
     path: '/',
     name: 'Dashboard',
     component: Dashboard,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/console',
+    name: 'Console',
+    component: Console,
     beforeEnter: ifAuthenticated
   },
   {
