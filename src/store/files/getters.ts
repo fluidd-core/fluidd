@@ -89,7 +89,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         readonly: true,
         accepts: [],
         canEdit: false,
-        canView: false,
+        canView: true,
         canPrint: false,
         canConfigure: false,
         canDelete: true

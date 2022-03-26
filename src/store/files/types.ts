@@ -135,3 +135,10 @@ export interface FileFilter {
 }
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs'
+
+export interface FilePreviewState {
+  open: boolean;
+  filename: string;
+  src: string;
+  type: string;
+}

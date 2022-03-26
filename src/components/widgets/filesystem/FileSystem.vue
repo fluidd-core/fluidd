@@ -106,6 +106,12 @@
       @cancel="handleCancelUpload"
     />
 
+    <file-preview
+      :value="filePreviewState.open"
+      :file="filePreviewState"
+      @close="handleClosePreview"
+    />
+
     <!-- <pre>roots: {{ availableRoots }}</pre>
     <pre>currentRoot: {{ currentRoot }}<br />currentPath: {{ currentPath }}<br />visiblePath: {{ visiblePath }}</pre>
     <pre>dragState: {{ dragState }}</pre> -->
@@ -121,7 +127,8 @@ import {
   AppFileWithMeta,
   FilesUpload,
   FileFilter,
-  KlipperFileWithMeta
+  KlipperFileWithMeta,
+  FilePreviewState
 } from '@/store/files/types'
 import { Waits } from '@/globals'
 import StateMixin from '@/mixins/state'
@@ -136,6 +143,7 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
+import FilePreview from './FilePreviewDialog.vue'
 import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
 
@@ -155,7 +163,8 @@ import { AppTableHeader } from '@/types'
     FileEditorDialog,
     FileNameDialog,
     FileSystemDownloadDialog,
-    FileSystemUploadDialog
+    FileSystemUploadDialog,
+    FilePreview
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -232,6 +241,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     label: '',
     rules: [],
     handler: ''
+  }
+
+  filePreviewState: FilePreviewState = {
+    open: false,
+    type: '',
+    filename: '',
+    src: ''
   }
 
   // Gets available roots.
@@ -559,23 +575,39 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.currentPath,
       file.size,
       {
-        responseType: 'text',
+        responseType: this.timelapseBrowser ? 'arraybuffer' : 'text',
         transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
       }
     )
       .then((response: AxiosResponse) => {
-        // Open the edit dialog.
-        this.fileEditorDialogState = {
-          open: true,
-          contents: response.data,
-          filename: file.filename,
-          loading: false,
-          readonly: this.rootProperties.readonly
+        if (this.timelapseBrowser) {
+          const type = response.headers['content-type']
+          const blob = new Blob([response.data], { type })
+          this.filePreviewState = {
+            open: true,
+            type,
+            filename: file.filename,
+            src: URL.createObjectURL(blob)
+          }
+        } else {
+          // Open the edit dialog.
+          this.fileEditorDialogState = {
+            open: true,
+            contents: response.data,
+            filename: file.filename,
+            loading: false,
+            readonly: this.rootProperties.readonly
+          }
         }
       })
       .finally(() => this.$store.dispatch('files/removeFileDownload'))
       .catch(e => e)
+  }
+
+  handleClosePreview () {
+    this.filePreviewState.open = false
+    URL.revokeObjectURL(this.filePreviewState.src)
   }
 
   handleCancelDownload () {
