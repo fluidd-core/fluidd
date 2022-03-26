@@ -116,7 +116,7 @@ import {
   mdiFullscreen,
   mdiStop,
   mdiPlay,
-  mdiTimelapse
+  mdiFileVideoOutline
 } from '@mdi/js'
 
 /**
@@ -299,7 +299,7 @@ export const Icons = Object.freeze({
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
   fullScreen: mdiFullscreen,
-  timelapse: mdiTimelapse
+  timelapse: mdiFileVideoOutline
 })
 
 export const Waits = Object.freeze({
