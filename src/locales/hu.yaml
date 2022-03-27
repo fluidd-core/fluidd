@@ -30,7 +30,7 @@ app:
       'on': Táblázat BE
       power: Kapacitás
       target: Cél
-      rate_of_change: Csere
+      rate_of_change: Hőváltozás
     tooltip:
       help: >-
         A nagyításhoz tartsd lenyomva a Shift billentyűt.<br />Kattints egy
@@ -42,7 +42,8 @@ app:
       flip_layout: Fordított elrendezés
       hide_temp_waits: Hőmérsékletek elrejtése
     placeholder:
-      command: Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
+      command: >-
+        Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
         'help'-et, az előzményekhez 'arrows'-t.
   endpoint:
     error:
@@ -77,10 +78,10 @@ app:
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
     label:
       dir_name: Könyvtár neve
-      disk_usage: Lemez használat
+      disk_usage: Lemezhasználat
       diskinfo: Lemezinformációk
       downloaded: Letöltve
-      file_name: Fájl név
+      file_name: Fájlnév
       transfer_rate: Átviteli sebesség
       uploaded: Feltöltve
     msg:
@@ -116,8 +117,8 @@ app:
       show_retractions: Visszahúzások megjelenítése
     msg:
       confirm: >-
-        A fájl "%{filename}" mérete %{size}, megterhelheti a rendszert.
-        Biztos, hogy folytatod?
+        A fájl "%{filename}" mérete %{size}, megterhelheti a rendszert. Biztos,
+        hogy folytatod?
   general:
     btn:
       add: Hozzáad
@@ -203,12 +204,14 @@ app:
       edit_user: Felhasználó szerkesztése
       extrude_length: Extrudálás hossza
       extrude_speed: Extrudálás sebessége
-      filament: Nyomtatószál
+      filament: Szál
       file: Fájl
       finish_time: Befejezés
       flow: Átfolyás
       free: szabad
-      heaters_busy: A nyomtató jelenleg foglalt. A fűtőtestek kikapcsolása sikertelen nyomtatást eredményezhet.
+      heaters_busy: >-
+        A nyomtató jelenleg foglalt. A fűtőtestek kikapcsolása sikertelen
+        nyomtatást eredményezhet.
       high: Magas
       host: Gazdagép
       layer: Réteg
@@ -219,8 +222,8 @@ app:
       name: Név
       new_password: Új jelszó
       no_notifications: Nincsenek értesítések
-      'on': 'Be'
-      'off': 'Ki'
+      'on': Be
+      'off': Ki
       password: Jelszó
       power: Áramellátás
       printers: Nyomtatók
@@ -275,11 +278,11 @@ app:
         confirm_power_device_toggle: Biztos vagy benne? Ezzel átkapcsolod az eszköz teljesítményét.
         unsaved_changes: Nem mentett módosításaid vannak. Biztosan bezárod ezt a fájlt?
         apply_z_offset_endstop: >-
-          A végpont Z-eltolása az aktuális értékből lesz számítva és frissítve
-          a Z-eltolás.
+          A végpont Z-eltolása az aktuális értékből lesz számítva és frissítve a
+          Z-eltolás.
         apply_z_offset_probe: >-
-          A Probe/Bltouch Z-eltolás kiszámítása és frissítése az aktuális értékből
-          történik.
+          A Probe/Bltouch Z-eltolás kiszámítása és frissítése az aktuális
+          értékből történik.
     table:
       header:
         actions: Parancsok
@@ -363,10 +366,10 @@ app:
       video: IP Kamera
       iframe: HTTP oldal
     camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
       none: Nincs
-      90: 90°
-      180: 180°
-      270: 270°
     label:
       all_off: Minden kikapcsolva
       all_on: Minden bekapcsolva
@@ -378,7 +381,9 @@ app:
       camera_url: Kamera URL
       confirm_on_estop: Kérjen megerősítést a Vészleállásnál
       confirm_on_power_device_change: Kérjen megerősítést a Leállításnál
-      confirm_dirty_editor_close: Kérjen megerősítést, mikor módosítások mentése nélkül zárja be a szerkesztőt
+      confirm_dirty_editor_close: >-
+        Kérjen megerősítést, mikor módosítások mentése nélkül zárja be a
+        szerkesztőt
       contains: Tartalmaz
       dark_mode: Sötét mód
       default_extrude_length: Alapértelmezett extrudálási hossz
@@ -411,7 +416,7 @@ app:
       show_animations: Animációk megjelenítése
       show_rate_of_change: A hőmérséklet változás sebességének megjelenítése
       starts_with: Ezzel kezdődik
-      theme_preset: Közösségi előbeállítás
+      theme_preset: Előre beállított téma
       thermal_preset_gcode: GCode
       thermal_preset_name: Előre beállított név
       type: Típus
@@ -434,11 +439,15 @@ app:
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
     tooltip:
-      gcode_coords: Használja a GCode pozíciót a szerszámfej pozíciója helyett az irányítópulton
+      gcode_coords: >-
+        Használja a GCode pozíciót a szerszámfej pozíciója helyett az
+        irányítópulton
   socket:
     msg:
       connecting: Csatlakozás a moonrakerhez...
-      no_connection: Nincs moonraker kapcsolat. Kérjük, ellenőrizd a moonraker állapotát és/vagy frissítsd.
+      no_connection: >-
+        Nincs moonraker kapcsolat. Kérjük, ellenőrizd a moonraker állapotát
+        és/vagy frissítsd.
   system_info:
     label:
       capacity: Kapacitás
