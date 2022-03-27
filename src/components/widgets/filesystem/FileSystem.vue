@@ -191,7 +191,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: Boolean, default: false })
   bulkActions!: boolean;
 
-  // Override thumbnails for timelapses
+  // Override behavior (thumbnails, click/view actions) for timelapse browser
   @Prop({ type: Boolean, default: false })
   timelapseBrowser!: boolean;
 
@@ -585,6 +585,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     )
       .then((response: AxiosResponse) => {
         if (this.timelapseBrowser) {
+          // Open the file preview dialog.
           const type = response.headers['content-type']
           const blob = new Blob([response.data], { type })
           this.filePreviewState = {
@@ -711,6 +712,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
 
     if (this.timelapseBrowser) {
+      // Override thumbnails for timelapse browser
       const thumbnails = []
 
       const allFiles = this.getAllFiles()
