@@ -500,7 +500,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       } else {
         if (
           e.type === 'click' && item.type === 'file' &&
-          this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)
+          (
+            this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
+            this.timelapseBrowser
+          )
         ) {
           // Open the file editor
           this.handleFileOpenDialog(item)
