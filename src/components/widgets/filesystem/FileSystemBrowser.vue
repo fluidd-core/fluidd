@@ -58,19 +58,21 @@
           </td>
           <td>
             <!-- icons are 16px small, or 24px for standard size. -->
-            <v-icon
-              v-if="!item.thumbnails || !item.thumbnails.length"
-              :small="dense"
-              :color="(item.type === 'file') ? 'grey' : 'primary'"
-            >
-              {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
-            </v-icon>
-            <img
-              v-if="item.thumbnails && item.thumbnails.length"
-              class="file-icon-thumb"
-              :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
-              :width="(dense) ? 16 : 24"
-            >
+            <v-layout justify-center>
+              <v-icon
+                v-if="!item.thumbnails || !item.thumbnails.length"
+                :small="dense"
+                :color="(item.type === 'file') ? 'grey' : 'primary'"
+              >
+                {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
+              </v-icon>
+              <img
+                v-if="item.thumbnails && item.thumbnails.length"
+                class="file-icon-thumb"
+                :class="{dense, large: largeThumbnails}"
+                :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
+              >
+            </v-layout>
           </td>
 
           <file-row-item :nowrap="false">
@@ -289,6 +291,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Boolean, default: false })
   bulkActions!: boolean;
 
+  @Prop({ type: Boolean, default: false })
+  largeThumbnails!: boolean;
+
   @Prop({ type: Array, required: true })
   selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
@@ -426,6 +431,19 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   // Lighten up dark mode checkboxes.
   .theme--dark ::v-deep .v-simple-checkbox .v-icon {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
+  }
+
+  .file-icon-thumb {
+    max-width: 24px;
+  }
+
+  .file-icon-thumb.dense {
+    max-width: 16px;
+  }
+
+  .file-icon-thumb.large {
+    max-width: initial;
+    max-height: 36px;
   }
 
 </style>

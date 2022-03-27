@@ -46,6 +46,7 @@
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
       :selected.sync="selected"
+      :large-thumbnails="timelapseBrowser"
       @row-click="handleRowClick"
       @move="handleMove"
     />
