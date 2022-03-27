@@ -136,6 +136,8 @@ export interface FileFilter {
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs'
 
+export type FileBrowserEntry = AppFile | AppDirectory
+
 export interface FilePreviewState {
   open: boolean;
   filename: string;

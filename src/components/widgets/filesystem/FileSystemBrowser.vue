@@ -242,7 +242,13 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { AppDirectory, AppFile, AppFileWithMeta, FileFilter } from '@/store/files/types'
+import {
+  AppDirectory,
+  AppFile,
+  AppFileWithMeta,
+  FileBrowserEntry,
+  FileFilter
+} from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
@@ -258,7 +264,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   root!: string;
 
   @Prop({ type: Array, required: true })
-  files!: AppFile[] | AppDirectory[]
+  files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean, default: false })
   dense!: boolean;

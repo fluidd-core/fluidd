@@ -128,7 +128,8 @@ import {
   FilesUpload,
   FileFilter,
   KlipperFileWithMeta,
-  FilePreviewState
+  FilePreviewState,
+  FileBrowserEntry
 } from '@/store/files/types'
 import { Waits } from '@/globals'
 import StateMixin from '@/mixins/state'
@@ -222,7 +223,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Maintains any selected items and their state.
-  selected: (AppFile | AppFileWithMeta | AppDirectory)[] = []
+  selected: (FileBrowserEntry | AppFileWithMeta)[] = []
 
   // Maintains the file editor dialog state.
   fileEditorDialogState: any = {
@@ -305,7 +306,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         {
           text: this.$t('app.general.table.header.last_printed'),
           value: 'print_start_time',
-          filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
+          filter: (value: string, search: string | null, item: FileBrowserEntry | AppFileWithMeta) => {
             const filter = this.filters.find(filter => filter.value === 'print_start_time')
             if (
               !this.filters ||
@@ -361,11 +362,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Get the available files given the current root and path.
-  get files (): AppFile[] | AppDirectory[] {
+  get files (): FileBrowserEntry[] {
     return this.getAllFiles(this.timelapseBrowser ? this.transformTimelapseItems : undefined)
   }
 
-  getAllFiles (transformFunction?: (files: AppFile[] | AppDirectory[]) => AppFile[] | AppDirectory[]): AppFile[] | AppDirectory[] {
+  getAllFiles (transformFunction?: (files: FileBrowserEntry[]) => FileBrowserEntry[]): FileBrowserEntry[] {
     const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
     if (
       dir &&
@@ -405,7 +406,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.state.server.info.registered_directories || []
   }
 
-  transformTimelapseItems (items: AppFile[] | AppDirectory[]) {
+  transformTimelapseItems (items: FileBrowserEntry[]) {
     const timelapses: {[key: string]: AppFile} = {}
 
     for (const item of items) {
@@ -480,7 +481,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Handles a user clicking a file row.
-  handleRowClick (item: AppFile | AppDirectory, e: MouseEvent) {
+  handleRowClick (item: FileBrowserEntry, e: MouseEvent) {
     if (!this.contextMenuState.open && !this.disabled) {
       if (item.type === 'directory' && e.type !== 'contextmenu') {
         const dir = item as AppDirectory
@@ -525,7 +526,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Dialog handling.
    * ===========================================================================
   */
-  handleRenameDialog (item: AppFile | AppFileWithMeta | AppDirectory) {
+  handleRenameDialog (item: FileBrowserEntry | AppFileWithMeta) {
     if (this.disabled) return
     let title = this.$t('app.file_system.title.rename_dir')
     let label = this.$t('app.file_system.label.dir_name')
@@ -673,7 +674,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleMove (source: AppFile | AppFileWithMeta | AppDirectory | (AppFile | AppFileWithMeta | AppDirectory)[], destination: AppDirectory) {
+  handleMove (source: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], destination: AppDirectory) {
     let destinationPath = `${this.currentPath}/${destination.dirname}`
     if (destination.dirname === '..') {
       const arr = this.currentPath.split('/')
@@ -706,7 +707,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.serverFilesMove(src, dest)
   }
 
-  handleRemove (file: AppFile | AppFileWithMeta | AppDirectory | (AppFile | AppFileWithMeta | AppDirectory)[]) {
+  handleRemove (file: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[]) {
     if (this.disabled) return
 
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
