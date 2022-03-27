@@ -6,12 +6,23 @@
   >
     <v-card v-if="file.open">
       <v-card-title class="card-heading py-2 px-5">
-        <v-icon left>
-          $file
-        </v-icon>
-        <span class="focus--text">
-          {{ file.filename }}
-        </span>
+        <v-col cols="11">
+          <v-icon left>
+            $file
+          </v-icon>
+          <span class="focus--text">
+            {{ file.filename }}
+          </span>
+        </v-col>
+
+        <v-col
+          class="text-right"
+          cols="1"
+        >
+          <v-icon @click="$emit('close')">
+            $close
+          </v-icon>
+        </v-col>
       </v-card-title>
 
       <v-card-text class="pt-5">
