@@ -717,7 +717,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       const thumbnails = []
 
       const allFiles = this.getAllFiles()
-      for (const item of this.files) {
+      for (const item of items) {
         if (item.type === 'file') {
           const name = item.filename.slice(0, -(item.extension.length + 1))
 
