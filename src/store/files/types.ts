@@ -134,7 +134,7 @@ export interface FileFilter {
   desc: string;
 }
 
-export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs'
+export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
 
 export type FileBrowserEntry = AppFile | AppDirectory
 
