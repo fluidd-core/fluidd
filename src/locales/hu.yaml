@@ -30,7 +30,7 @@ app:
       'on': Táblázat BE
       power: Kapacitás
       target: Cél
-      rate_of_change: Csere
+      rate_of_change: Hőváltozás
     tooltip:
       help: >-
         A nagyításhoz tartsd lenyomva a Shift billentyűt.<br />Kattints egy
@@ -203,7 +203,7 @@ app:
       edit_user: Felhasználó szerkesztése
       extrude_length: Extrudálás hossza
       extrude_speed: Extrudálás sebessége
-      filament: Nyomtatószál
+      filament: Szál
       file: Fájl
       finish_time: Befejezés
       flow: Átfolyás
