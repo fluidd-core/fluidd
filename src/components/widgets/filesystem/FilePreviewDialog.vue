@@ -66,7 +66,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   file?: FilePreviewState;
 
   get width () {
-    return window.innerWidth * 0.5
+    return window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.5)
   }
 }
 </script>
