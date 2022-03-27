@@ -92,7 +92,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canView: true,
         canPrint: false,
         canConfigure: false,
-        canDelete: true
+        canDelete: true,
+        canCreateDirectory: true
       }
     }
 
@@ -102,8 +103,7 @@ export const getters: GetterTree<FilesState, RootState> = {
       canEdit: false,
       canView: true,
       canPrint: false,
-      canConfigure: false,
-      canDelete: false
+      canConfigure: false
     }
   },
 

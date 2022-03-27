@@ -420,7 +420,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         const name = item.filename.slice(0, -4)
         if (name in timelapses) {
           const url = new URL(this.apiUrl ?? document.location.origin)
-          url.pathname = `/server/files/timelapse/${item.filename}`;
+          url.pathname = `/server/files/timelapse${item.path ? `/${item.path}` : ''}/${item.filename}`;
 
           (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
             absolute_path: url.toString(),
@@ -435,7 +435,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
     }
 
-    return Object.values(timelapses)
+    return [...items.filter(item => item.type === 'directory'), ...Object.values(timelapses)]
   }
 
   // Set the initial root, and load the dir.
@@ -691,6 +691,16 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           ? `${destinationPath}/${item.filename}`
           : `${item.filename}`
         SocketActions.serverFilesMove(src, dest)
+
+        if (this.timelapseBrowser && item.extension !== 'jpg') {
+          // Move thumbnail
+          const name = item.filename.slice(0, -(item.extension.length + 1))
+          const thumbnails = this.getAllFiles().filter(file => file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name))
+          console.log(thumbnails)
+          if (thumbnails.length) {
+            this.handleMove(thumbnails, destination)
+          }
+        }
       } else {
         const src = `${this.currentPath}/${item.dirname}`
         const dest = (destinationPath)
