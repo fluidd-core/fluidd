@@ -696,7 +696,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           // Move thumbnail
           const name = item.filename.slice(0, -(item.extension.length + 1))
           const thumbnails = this.getAllFiles().filter(file => file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name))
-          console.log(thumbnails)
           if (thumbnails.length) {
             this.handleMove(thumbnails, destination)
           }
