@@ -443,7 +443,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   .file-icon-thumb.large {
     max-width: initial;
-    max-height: 36px;
+    max-height: 32px;
   }
 
 </style>
