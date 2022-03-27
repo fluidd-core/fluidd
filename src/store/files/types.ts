@@ -12,6 +12,7 @@ export interface FilesState {
   config_examples: Files[];
   docs: Files[];
   logs: Files[];
+  timelapse: Files[]; // may be null, but will never be accessed when feature is unsupported
 }
 
 export interface DiskUsage {
