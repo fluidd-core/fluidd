@@ -40,6 +40,13 @@
           </app-nav-item>
 
           <app-nav-item
+            icon="$console"
+            to="/console"
+          >
+            {{ $t('app.general.title.console') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$files"
             to="/jobs"
           >
