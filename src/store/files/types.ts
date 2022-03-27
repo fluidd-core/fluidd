@@ -26,7 +26,7 @@ export interface CurrentPaths {
 
 export interface Files {
   path: string;
-  items: (AppFile | AppFileWithMeta | AppDirectory)[];
+  items: (FileBrowserEntry | AppFileWithMeta)[];
 }
 
 export interface AppFile extends KlipperFile {

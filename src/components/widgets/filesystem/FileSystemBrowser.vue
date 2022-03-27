@@ -243,8 +243,6 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import {
-  AppDirectory,
-  AppFile,
   AppFileWithMeta,
   FileBrowserEntry,
   FileFilter
@@ -292,11 +290,11 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   bulkActions!: boolean;
 
   @Prop({ type: Array, required: true })
-  selected!: (AppFile | AppFileWithMeta | AppDirectory)[]
+  selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
-  dragItem: AppFile | AppFileWithMeta | AppDirectory | null = null
+  dragItem: FileBrowserEntry | AppFileWithMeta | null = null
   ghost: HTMLDivElement | undefined = undefined
-  selectedItems: (AppFile | AppFileWithMeta | AppDirectory)[] = []
+  selectedItems: (FileBrowserEntry | AppFileWithMeta)[] = []
 
   // Is the history component enabled
   get showHistory () {
@@ -312,17 +310,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   // Make sure we update the selected items if it's changed.
   @Watch('selected')
-  onSelected (selected: (AppFile | AppFileWithMeta | AppDirectory)[]) {
+  onSelected (selected: (FileBrowserEntry | AppFileWithMeta)[]) {
     this.selectedItems = selected
   }
 
   // When the selected items change, update the parent.
-  handleSelected (selected: (AppFile | AppFileWithMeta | AppDirectory)[]) {
+  handleSelected (selected: (FileBrowserEntry | AppFileWithMeta)[]) {
     this.$emit('update:selected', selected)
   }
 
   // We ignore our [..] dir, so handle faking our checkbox states.
-  handleItemSelected (item: { item: AppFile | AppFileWithMeta | AppDirectory; value: boolean }) {
+  handleItemSelected (item: { item: FileBrowserEntry | AppFileWithMeta; value: boolean }) {
     // If last two, and filtered results in 0 - set to 0.
     if (
       !item.value &&
@@ -343,7 +341,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Determines if a row is currently in a draggable state or not.
-  draggable (item: AppFile | AppFileWithMeta | AppDirectory) {
+  draggable (item: FileBrowserEntry | AppFileWithMeta) {
     return (
       item.name !== '..' &&
       this.files.length > 0 &&
@@ -370,7 +368,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Table row is being dragged
-  handleDrag (item: AppFile | AppFileWithMeta | AppDirectory) {
+  handleDrag (item: FileBrowserEntry | AppFileWithMeta) {
     if (this.dragState !== true) {
       this.dragItem = item
       this.$emit('update:dragState', true)
@@ -378,7 +376,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // File was dropped on another table row.
-  handleDrop (destination: AppFile | AppFileWithMeta | AppDirectory, e: { target: HTMLElement}) {
+  handleDrop (destination: FileBrowserEntry | AppFileWithMeta, e: { target: HTMLElement}) {
     this.handleDragLeave(e)
     if (
       destination.type === 'directory' &&
