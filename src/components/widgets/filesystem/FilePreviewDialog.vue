@@ -28,7 +28,7 @@
       <v-card-text class="pt-5">
         <video
           v-if="file.type.startsWith('video/')"
-          style="max-width: 100%; max-height: 100%"
+          class="video-preview"
           controls
         >
           <source
@@ -70,3 +70,10 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style>
+.video-preview {
+  max-width: 100%;
+  max-height: 100%;
+}
+</style>
