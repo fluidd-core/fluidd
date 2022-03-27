@@ -410,13 +410,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     for (const item of items) {
       if (item.type === 'file' && item.extension !== 'jpg') {
-        timelapses[item.filename.slice(0, -(item.extension.length + 2))] = item
+        timelapses[item.filename.slice(0, -(item.extension.length + 1))] = item
       }
     }
 
     for (const item of items) {
       if (item.type === 'file' && item.extension === 'jpg') {
-        const name = item.filename.slice(0, -5)
+        const name = item.filename.slice(0, -4)
         if (name in timelapses) {
           const url = new URL(this.apiUrl ?? document.location.origin)
           url.pathname = `/server/files/timelapse/${item.filename}`;
@@ -713,7 +713,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       const allFiles = this.getAllFiles()
       for (const item of this.files) {
         if (item.type === 'file') {
-          const name = item.filename.slice(0, -(item.extension.length + 2))
+          const name = item.filename.slice(0, -(item.extension.length + 1))
 
           for (const file of allFiles) {
             if (file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name)) {
