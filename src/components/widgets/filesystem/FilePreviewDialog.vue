@@ -8,7 +8,7 @@
       <v-card-title class="card-heading py-2 px-5">
         <v-col cols="11">
           <v-icon left>
-            $file
+            ${{ icon }}
           </v-icon>
           <span class="focus--text">
             {{ file.filename }}
@@ -27,7 +27,7 @@
 
       <v-card-text class="pt-5">
         <video
-          v-if="file.type.startsWith('video/')"
+          v-if="isVideo"
           class="video-preview"
           controls
         >
@@ -65,8 +65,20 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Object })
   file?: FilePreviewState;
 
+  get icon () {
+    if (this.isVideo) {
+      return 'video'
+    } else {
+      return 'file'
+    }
+  }
+
   get width () {
     return window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.5)
+  }
+
+  get isVideo () {
+    return this.file?.type.startsWith('video/')
   }
 }
 </script>
