@@ -1,11 +1,10 @@
 <template>
   <v-dialog
-    :value="value"
-    :width="width"
-    persistent
+    v-model="file.open"
+    :max-width="width"
   >
     <v-card v-if="file.open">
-      <v-card-title class="card-heading py-2 px-5">
+      <v-card-title class="card-heading py-2">
         <v-col cols="11">
           <v-icon left>
             ${{ icon }}
@@ -25,7 +24,7 @@
         </v-col>
       </v-card-title>
 
-      <v-card-text class="pt-5">
+      <v-card-text class="py-4">
         <video
           v-if="isVideo"
           class="video-preview"
@@ -38,14 +37,29 @@
         </video>
       </v-card-text>
 
-      <v-card-actions class="py-2 px-5">
+      <v-divider />
+
+      <v-card-actions
+        v-if="file.appFile && (removable || downloadable)"
+        class="pt-4"
+      >
         <v-spacer />
         <app-btn
+          v-if="file.appFile && removable"
           text
-          color=""
-          @click="$emit('close')"
+          color="error"
+          @click="$emit('remove', file.appFile)"
         >
-          {{ $t('app.general.btn.close') }}
+          <v-icon>$delete</v-icon>
+          {{ $t('app.general.btn.remove') }}
+        </app-btn>
+        <app-btn
+          v-if="file.appFile && downloadable"
+          color="primary"
+          @click="$emit('download', file.appFile)"
+        >
+          <v-icon>$download</v-icon>
+          {{ $t('app.general.btn.download') }}
         </app-btn>
       </v-card-actions>
     </v-card>
@@ -64,6 +78,12 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
   @Prop({ type: Object })
   file?: FilePreviewState;
+
+  @Prop({ type: Boolean, default: false })
+  downloadable!: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  removable!: boolean
 
   get icon () {
     if (this.isVideo) {

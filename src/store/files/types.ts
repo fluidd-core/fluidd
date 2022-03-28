@@ -144,4 +144,5 @@ export interface FilePreviewState {
   filename: string;
   src: string;
   type: string;
+  appFile?: AppFile;
 }

@@ -108,9 +108,12 @@
     />
 
     <file-preview
-      :value="filePreviewState.open"
       :file="filePreviewState"
+      removable
+      downloadable
       @close="handleClosePreview"
+      @download="handleDownload"
+      @remove="handleRemove"
     />
 
     <!-- <pre>roots: {{ availableRoots }}</pre>
@@ -594,7 +597,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             open: true,
             type,
             filename: file.filename,
-            src: URL.createObjectURL(blob)
+            src: URL.createObjectURL(blob),
+            appFile: file
           }
         } else {
           // Open the edit dialog.
