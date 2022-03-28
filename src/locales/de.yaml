@@ -334,6 +334,7 @@ app:
       system: System
       system_overview: Systeminformationen
       temperature: Temperaturen
+      timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
     tooltip:
