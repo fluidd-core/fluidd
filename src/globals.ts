@@ -299,7 +299,7 @@ export const Icons = Object.freeze({
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
   fullScreen: mdiFullscreen,
-  timelapse: mdiFileVideoOutline
+  video: mdiFileVideoOutline
 })
 
 export const Waits = Object.freeze({

@@ -63,7 +63,7 @@
 
           <app-nav-item
             v-if="supportsTimelapse"
-            icon="$timelapse"
+            icon="$video"
             to="/timelapse"
           >
             {{ $t('app.general.title.timelapse') }}

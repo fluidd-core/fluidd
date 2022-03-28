@@ -3,7 +3,7 @@
     <v-col cols="12">
       <collapsable-card
         :title="$t('app.general.title.timelapse')"
-        icon="$timelapse"
+        icon="$video"
         :draggable="false"
       >
         <file-system
