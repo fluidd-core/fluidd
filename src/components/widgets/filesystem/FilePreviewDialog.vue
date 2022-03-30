@@ -35,6 +35,13 @@
             :type="file.type"
           >
         </video>
+        <v-layout
+          v-else
+          justify-center
+        >
+          {{ (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }}
+          cannot currently be previewed.
+        </v-layout>
       </v-card-text>
 
       <v-divider />
