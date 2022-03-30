@@ -3,7 +3,7 @@
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
     layout-path="dashboard.gcode-preview-card"
-    draggable
+    :draggable="true"
   >
     <v-card-text v-if="file">
       {{ file.name }}
