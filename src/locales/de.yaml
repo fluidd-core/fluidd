@@ -334,7 +334,6 @@ app:
       system: System
       system_overview: Systeminformationen
       temperature: Temperaturen
-      timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
     tooltip:
@@ -513,3 +512,13 @@ app:
       invalid: Deutet auf lokale Änderungen im Git-Repository hin
       packages: Pakete
       release_notes: Veröffentlichungsnotizen
+  timelapse:
+    title:
+      timelapse: Zeitraffer
+      timelapse_settings: Zeitraffer-Einstellungen
+      timelapse_status: Zeitraffer-Status
+    tooltip:
+      managed_by_moonraker: Durch Ihre moonraker-Konfiguration verwaltet
+    setting:
+      enable: Aktiviert
+      auto_render: Automatisches Rendern

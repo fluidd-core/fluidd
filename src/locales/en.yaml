@@ -329,7 +329,6 @@ app:
       system: System
       system_overview: System Information
       temperature: Thermals
-      timelapse: Timelapse
       tool: Tool
       tune: Tune
     tooltip:
@@ -502,3 +501,13 @@ app:
       invalid: indicates local changes to the repo
       packages: Packages
       release_notes: Release notes
+  timelapse:
+    title:
+      timelapse: Timelapse
+      timelapse_settings: Timelapse Settings
+      timelapse_status: Timelapse Status
+    tooltip:
+      managed_by_moonraker: Managed by your moonraker configuration
+    setting:
+      enable: Enabled
+      auto_render: Auto Render

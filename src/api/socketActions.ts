@@ -3,6 +3,7 @@ import { Globals, Waits } from '@/globals'
 import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
+import { TimelapseSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -175,6 +176,28 @@ export const SocketActions = {
     )
   },
 
+  async machineTimelapseSetSettings (settings: Partial<TimelapseSettings>, wait?: string) {
+    baseEmit(
+      'machine.timelapse.post_settings', {
+        dispatch: 'timelapse/onSettings',
+        params: settings,
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseSaveFrames (wait?: string) {
+    baseEmit(
+      'machine.timelapse.saveframes', {
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseRender () {
+    baseEmit('machine.timelapse.render', {})
+  },
+
   async printerInfo () {
     baseEmit(
       'printer.info', {
@@ -312,6 +335,20 @@ export const SocketActions = {
         url: Globals.GITHUB_REPO
       }
     })
+  },
+
+  async timelapseState () {
+    baseEmit(
+      'machine.timelapse.get_settings', {
+        dispatch: 'timelapse/onSettings'
+      }
+    )
+
+    baseEmit(
+      'machine.timelapse.lastframeinfo', {
+        dispatch: 'timelapse/onLastFrame'
+      }
+    )
   },
 
   async serverConfig () {

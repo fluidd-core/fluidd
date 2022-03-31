@@ -66,7 +66,7 @@
             icon="$video"
             to="/timelapse"
           >
-            {{ $t('app.general.title.timelapse') }}
+            {{ $t('app.timelapse.title.timelapse') }}
           </app-nav-item>
 
           <app-nav-item
