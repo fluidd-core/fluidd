@@ -513,6 +513,12 @@ app:
       packages: Pakete
       release_notes: Veröffentlichungsnotizen
   timelapse:
+    btn:
+      render: Rendern
+      save_frames: Bilder speichern
+    label:
+      frames: %{frames} Bild | %{frames} Bilder
+      length: Videolänge
     title:
       timelapse: Zeitraffer
       timelapse_settings: Zeitraffer-Einstellungen

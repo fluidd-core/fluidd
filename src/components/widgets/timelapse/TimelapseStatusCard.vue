@@ -23,13 +23,13 @@
           cols="6"
           class="text-center"
         >
-          {{ frameCount }} frames
+          {{ $tc('app.timelapse.label.frames', frameCount, { frames: frameCount }) }}
         </v-col>
         <v-col
           cols="6"
           class="text-center"
         >
-          Video length: {{ lengthEstimate }}
+          {{ $t('app.timelapse.label.length') }}: {{ lengthEstimate }}
         </v-col>
       </v-row>
     </v-card-text>
@@ -45,14 +45,14 @@
         :disabled="savingFrames"
         @click="saveFrames()"
       >
-        Save Frames
+        {{ $t('app.timelapse.btn.save_frames') }}
       </app-btn>
       <app-btn
         color="primary"
         :disabled="!!renderStatus"
         @click="renderTimelapse()"
       >
-        Render
+        {{ $t('app.timelapse.btn.render') }}
       </app-btn>
     </v-card-actions>
   </collapsable-card>

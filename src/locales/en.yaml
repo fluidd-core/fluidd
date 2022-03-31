@@ -502,6 +502,12 @@ app:
       packages: Packages
       release_notes: Release notes
   timelapse:
+    btn:
+      render: Render
+      save_frames: Save Frames
+    label:
+      frames: %{frames} frame | %{frames} frames
+      length: Video length
     title:
       timelapse: Timelapse
       timelapse_settings: Timelapse Settings
