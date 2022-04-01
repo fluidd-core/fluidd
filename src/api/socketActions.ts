@@ -3,7 +3,7 @@ import { Globals, Waits } from '@/globals'
 import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
-import { TimelapseSettings } from '@/store/timelapse/types'
+import { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -176,7 +176,7 @@ export const SocketActions = {
     )
   },
 
-  async machineTimelapseSetSettings (settings: Partial<TimelapseSettings>, wait?: string) {
+  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, wait?: string) {
     baseEmit(
       'machine.timelapse.post_settings', {
         dispatch: 'timelapse/onSettings',
