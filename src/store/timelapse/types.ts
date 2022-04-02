@@ -5,6 +5,12 @@ export interface TimelapseState {
 }
 
 export type TimelapseSettings = TimelapseReadonlySettings & TimelapseWritableSettings;
+export type RenderStatus = RenderStarted | RenderRunning | RenderSuccess;
+
+export interface TimelapseLastFrame {
+  count: number;
+  file: string;
+}
 
 export interface TimelapseReadonlySettings {
   readonly blockedsettings: string[];
@@ -18,41 +24,43 @@ export interface TimelapseReadonlySettings {
 export interface TimelapseWritableSettings {
   enabled: boolean;
   autorender: boolean;
-  mode: 'layermacro' | 'hyperlapse';
+
   camera: string;
-  stream_delay_compensation: number;
-  gcode_verbose: boolean;
+  mode: TimelapseMode;
   parkhead: boolean;
-  parkpos: 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right';
+  parkpos: ParkPosition;
+  park_time: number;
+  park_travel_speed: number;
   park_custom_pos_x: number;
   park_custom_pos_y: number;
   park_custom_pos_dz: number;
-  park_travel_speed: number;
-  park_retract_speed: number;
-  park_extrude_speed: number;
-  park_retract_distance: number;
-  park_extrude_distance: number;
-  park_time: number;
   fw_retract: boolean;
-  hyperlapse_cycle: number;
-  constant_rate_factor: number;
-  output_framerate: number;
-  pixelformat: string;
-  time_format_code: string;
-  extraoutputparams: string;
+  park_retract_distance: number;
+  park_retract_speed: number;
+  park_extrude_distance: number;
+  park_extrude_speed: number;
+  gcode_verbose: boolean;
+
   variable_fps: boolean;
   targetlength: number;
   variable_fps_min: number;
   variable_fps_max: number;
+  output_framerate: number;
+  stream_delay_compensation: number;
+
   duplicatelastframe: number;
-  previewimage: boolean;
+  constant_rate_factor: number;
   saveframes: boolean;
+  previewimage: boolean;
+  time_format_code: string;
+  pixelformat: string;
+  extraoutputparams: string;
+
+  hyperlapse_cycle: number;
 }
 
-export interface TimelapseLastFrame {
-  count: number;
-  file: string;
-}
+export type TimelapseMode = 'layermacro' | 'hyperlapse';
+export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right';
 
 export interface RenderSettings {
   frameRate: number;
@@ -79,5 +87,3 @@ export interface RenderSuccess {
   previewImage: string;
   msg: string;
 }
-
-export type RenderStatus = RenderStarted | RenderRunning | RenderSuccess;

@@ -524,7 +524,30 @@ app:
       timelapse_settings: Zeitraffer-Einstellungen
       timelapse_status: Zeitraffer-Status
     tooltip:
-      managed_by_moonraker: Durch Ihre moonraker-Konfiguration verwaltet
+      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
     setting:
       enable: Aktiviert
       auto_render: Automatisches Rendern
+      fw_retract: Firmware-Retraction verwenden
+      mode: Modus
+      mode_layermacro: Schicht-Makro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse-Intervall
+      park_retract_distance: Retraction-Länge beim Parken
+      park_retract_speed: Retraction-Geschw. beim Parken
+      park_extrude_distance: Extrusionslänge beim Parken
+      park_extrude_speed: Extrusionsgeschw. beim Parken
+      parkhead: Druckkopf parken
+      park_time: Parkdauer
+      park_travel_speed: Park-Bewegungsgeschw.
+      park_custom_pos_x: Parkposition X
+      park_custom_pos_y: Parkposition Y
+      park_custom_pos_dz: Parkposition Z-Hop
+      parkpos:
+        label: Parkposition
+        custom: Benutzerdefiniert
+        front_left: Vorne links
+        front_right: Vorne rechts
+        center: Mitte
+        back_left: Hinten links
+        back_right: Hinten rechts

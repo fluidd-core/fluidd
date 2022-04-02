@@ -8,7 +8,7 @@
     <v-card-text>
       <app-setting
         :title="$t('app.timelapse.setting.enable')"
-        :sub-title="enabledBlocked && managedByConfigFile"
+        :sub-title="subtitleIfBlocked(enabledBlocked)"
         r-cols="2"
       >
         <v-switch
@@ -20,7 +20,7 @@
       </app-setting>
       <app-setting
         :title="$t('app.timelapse.setting.auto_render')"
-        :sub-title="autoRenderBlocked && managedByConfigFile"
+        :sub-title="subtitleIfBlocked(autoRenderBlocked)"
         r-cols="2"
       >
         <v-switch
@@ -83,8 +83,8 @@ export default class Timelapse extends Mixins(StateMixin) {
     return this.$store.getters['timelapse/getSettings']
   }
 
-  get managedByConfigFile () {
-    return this.$t('app.timelapse.tooltip.managed_by_moonraker')
+  subtitleIfBlocked (blocked: boolean): string {
+    return blocked ? this.$tc('app.timelapse.tooltip.managed_by_moonraker') : ''
   }
 }
 </script>

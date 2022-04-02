@@ -19,6 +19,7 @@
         <toolhead-settings />
         <preset-settings />
         <gcode-preview-settings />
+        <timelapse-settings v-if="supportsTimelapse" />
         <version-settings v-if="supportsVersions" />
       </div>
     </v-col>
@@ -40,9 +41,11 @@ import GcodePreviewSettings from '@/components/settings/GcodePreviewSettings.vue
 import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
 import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
 import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
+import TimelapseSettings from '@/components/settings/timelapse/TimelapseSettings.vue'
 
 @Component({
   components: {
+    TimelapseSettings,
     MacroCategories,
     GeneralSettings,
     PresetSettings,
@@ -63,6 +66,10 @@ export default class Settings extends Mixins(StateMixin) {
 
   get supportsAuth () {
     return this.$store.getters['server/componentSupport']('authorization')
+  }
+
+  get supportsTimelapse () {
+    return this.$store.getters['files/isRootAvailable']('timelapse')
   }
 }
 </script>

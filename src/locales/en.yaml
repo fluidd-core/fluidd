@@ -517,3 +517,26 @@ app:
     setting:
       enable: Enabled
       auto_render: Auto Render
+      fw_retract: Use Firmware Retraction
+      mode: Mode
+      mode_layermacro: Layer Macro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse Cycle
+      park_retract_distance: Park Retraction Distance
+      park_retract_speed: Park Retraction Speed
+      park_extrude_distance: Park Extrude Distance
+      park_extrude_speed: Park Extrude Speed
+      parkhead: Park Head
+      park_time: Park Time
+      park_travel_speed: Park Travel Speed
+      park_custom_pos_x: Park Position X
+      park_custom_pos_y: Park Position Y
+      park_custom_pos_dz: Park Position Z-Hop
+      parkpos:
+        label: Park Position
+        custom: Custom
+        front_left: Front Left
+        front_right: Front Right
+        center: Center
+        back_left: Back Left
+        back_right: Back Right
