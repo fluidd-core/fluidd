@@ -24,21 +24,13 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSlider from '@/components/ui/AppSlider.vue'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import TimelapseStatusCard from '@/components/widgets/timelapse/TimelapseStatusCard.vue'
 
 @Component({
   components: {
-    AppSetting,
-    AppSlider,
-    CollapsableCard,
-    FileSystem,
-    TimelapseStatusCard
+    AppSetting
   }
 })
 export default class HyperlapseSettings extends Mixins(StateMixin) {
