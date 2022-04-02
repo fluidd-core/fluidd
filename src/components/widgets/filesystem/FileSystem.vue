@@ -576,6 +576,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleFileOpenDialog (file: AppFile | AppFileWithMeta) {
+    if (this.timelapseBrowser && file.extension === 'zip') {
+      // don't download zipped frames before opening preview
+      this.filePreviewState = {
+        open: true,
+        type: 'unknown',
+        filename: file.filename,
+        src: '',
+        appFile: file
+      }
+      return
+    }
+
     // Grab the file. This should provide a dialog.
     this.cancelTokenSource = Axios.CancelToken.source()
     this.getFile(
