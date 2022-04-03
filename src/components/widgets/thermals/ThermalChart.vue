@@ -9,9 +9,7 @@
       :option="options"
       :update-options="{ notMerge: true }"
       :init-options="{ renderer: 'svg' }"
-      :events="[
-        ['legendselectchanged', handleLegendSelectChange ]
-      ]"
+      @legendselectchanged="handleLegendSelectChange"
     />
   </div>
 </template>

@@ -104,7 +104,7 @@
           </v-list>
         </v-col>
         <v-col
-          v-if="file.thumbnails && file.thumbnails.length"
+          v-if="'thumbnails' in file && file.thumbnails && file.thumbnails.length"
           class="px-2 d-none d-sm-flex"
         >
           <img
@@ -122,7 +122,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import { AppFile, AppFileWithMeta } from '@/store/files/types'
+import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
@@ -136,7 +136,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   open!: boolean
 
   @Prop({ type: Object, required: true })
-  file!: AppFile | AppFileWithMeta
+  file!: AppDirectory | AppFile | AppFileWithMeta
 
   @Prop({ type: Number, required: true })
   positionX!: number

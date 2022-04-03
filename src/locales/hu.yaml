@@ -316,7 +316,7 @@ app:
       console: Konzol
       endstops: Végállások
       fans_outputs: Ventilátorok & Kimenetek
-      gcode_preview: Gcode előnézet [ béta ]
+      gcode_preview: Gcode előnézet
       history: Történelem
       home: Otthon
       jobs: Feladatok

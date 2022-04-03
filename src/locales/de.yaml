@@ -320,7 +320,7 @@ app:
       console: Konsole
       endstops: Endschalter
       fans_outputs: Lüfter & Ausgänge
-      gcode_preview: Gcode-Vorschau [ Beta ]
+      gcode_preview: Gcode-Vorschau
       history: Auftragsverlauf
       home: Dashboard
       jobs: Aufträge
