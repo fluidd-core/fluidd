@@ -506,6 +506,8 @@ app:
       render: Render
       save_frames: Save Frames
       open_render_settings: Open Render Settings
+    error:
+      newframe: Error taking timelapse frame
     label:
       frames: %{frames} frame | %{frames} frames
       length: Video length

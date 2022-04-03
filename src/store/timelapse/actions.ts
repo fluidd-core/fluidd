@@ -3,6 +3,8 @@ import { TimelapseState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import consola from 'consola'
+import { EventBus, FlashMessageTypes } from '@/eventBus'
+import i18n from '@/plugins/i18n'
 
 export const actions: ActionTree<TimelapseState, RootState> = {
   /**
@@ -33,10 +35,15 @@ export const actions: ActionTree<TimelapseState, RootState> = {
   async onEvent ({ commit }, payload) {
     switch (payload.action) {
       case 'newframe': {
-        commit('setLastFrame', {
-          count: parseInt(payload.frame),
-          file: payload.framefile
-        })
+        if (payload.status === 'error') {
+          // open snackbar
+          EventBus.$emit(i18n.tc('app.timelapse.error.newframe'), { type: FlashMessageTypes.error })
+        } else {
+          commit('setLastFrame', {
+            count: parseInt(payload.frame),
+            file: payload.framefile
+          })
+        }
 
         break
       }
