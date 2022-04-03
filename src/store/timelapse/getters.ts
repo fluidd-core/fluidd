@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { TimelapseState } from './types'
+import { TimelapseSettings, TimelapseState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<TimelapseState, RootState> = {
@@ -16,6 +16,6 @@ export const getters: GetterTree<TimelapseState, RootState> = {
   },
 
   isBlockedSetting: (state) => {
-    return (setting: string) => state.settings?.blockedsettings.includes(setting) ?? true
+    return (setting: keyof TimelapseSettings): boolean => state.settings?.blockedsettings.includes(setting) ?? true
   }
 }

@@ -505,23 +505,29 @@ app:
     btn:
       render: Render
       save_frames: Save Frames
+      open_render_settings: Open Render Settings
     label:
       frames: %{frames} frame | %{frames} frames
       length: Video length
+      frame: Frame | Frames
     title:
       timelapse: Timelapse
       timelapse_settings: Timelapse Settings
       timelapse_status: Timelapse Status
+      render_settings: Render Settings
     tooltip:
       managed_by_moonraker: Managed by your moonraker configuration
     setting:
       enable: Enabled
       auto_render: Auto Render
+      duplicatelastframe: Duplicate last frames
       fw_retract: Use Firmware Retraction
+      gcode_verbose: Verbose Gcode
       mode: Mode
       mode_layermacro: Layer Macro
       mode_hyperlapse: Hyperlapse
       hyperlapse_cycle: Hyperlapse Cycle
+      output_framerate: Output Framerate
       park_retract_distance: Park Retraction Distance
       park_retract_speed: Park Retraction Speed
       park_extrude_distance: Park Extrude Distance
@@ -540,3 +546,9 @@ app:
         center: Center
         back_left: Back Left
         back_right: Back Right
+      saveframes: Save Frames
+      stream_delay_compensation: Delay Compensation
+      targetlength: Target Length
+      variable_fps: Variable FPS
+      variable_fps_min: Minimum Framerate
+      variable_fps_max: Maximum Framerate

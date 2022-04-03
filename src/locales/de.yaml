@@ -516,23 +516,29 @@ app:
     btn:
       render: Rendern
       save_frames: Bilder speichern
+      open_render_settings: Render-Einst. öffnen
     label:
       frames: %{frames} Bild | %{frames} Bilder
       length: Videolänge
+      frame: Frame | Frames
     title:
       timelapse: Zeitraffer
       timelapse_settings: Zeitraffer-Einstellungen
       timelapse_status: Zeitraffer-Status
+      render_settings: Render-Einstellungen
     tooltip:
       managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
     setting:
       enable: Aktiviert
       auto_render: Automatisches Rendern
+      duplicatelastframe: Letzte Bilder wiederholen
       fw_retract: Firmware-Retraction verwenden
+      gcode_verbose: Verboser Gcode
       mode: Modus
       mode_layermacro: Schicht-Makro
       mode_hyperlapse: Hyperlapse
       hyperlapse_cycle: Hyperlapse-Intervall
+      output_framerate: Ausgabe-Bildrate
       park_retract_distance: Retraction-Länge beim Parken
       park_retract_speed: Retraction-Geschw. beim Parken
       park_extrude_distance: Extrusionslänge beim Parken
@@ -551,3 +557,9 @@ app:
         center: Mitte
         back_left: Hinten links
         back_right: Hinten rechts
+      saveframes: Einzelbilder speichern
+      stream_delay_compensation: Verzögerungs-Kompensation
+      targetlength: Ziellänge
+      variable_fps: Variable Bildrate
+      variable_fps_min: Minimum Bildrate
+      variable_fps_max: Maximum Bildrate

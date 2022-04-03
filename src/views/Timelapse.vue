@@ -23,9 +23,15 @@
       cols="12"
       md="4"
     >
-      <timelapse-status-card />
-      <timelapse-settings-card />
+      <timelapse-status-card @openRenderDialog="openRenderDialog" />
+      <timelapse-settings-card @openRenderDialog="openRenderDialog" />
     </v-col>
+
+    <timelapse-render-settings-dialog
+      :open="renderDialog.open"
+      :renderable="renderDialog.renderable"
+      @close="closeRenderDialog"
+    />
   </v-row>
 </template>
 
@@ -34,20 +40,28 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSlider from '@/components/ui/AppSlider.vue'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import TimelapseStatusCard from '@/components/widgets/timelapse/TimelapseStatusCard.vue'
 import TimelapseSettingsCard from '@/components/widgets/timelapse/TimelapseSettingsCard.vue'
+import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
 
 @Component({
   components: {
-    AppSetting,
-    AppSlider,
+    TimelapseRenderSettingsDialog,
     CollapsableCard,
     FileSystem,
     TimelapseStatusCard,
     TimelapseSettingsCard
   }
 })
-export default class Timelapse extends Mixins(StateMixin) {}
+export default class Timelapse extends Mixins(StateMixin) {
+  renderDialog = { open: false, renderable: false }
+
+  openRenderDialog (renderable = false) {
+    this.renderDialog = { open: true, renderable }
+  }
+
+  closeRenderDialog () {
+    this.renderDialog.open = false
+  }
+}
 </script>

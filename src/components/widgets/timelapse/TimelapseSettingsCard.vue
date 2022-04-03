@@ -9,7 +9,7 @@
       <app-setting
         :title="$t('app.timelapse.setting.enable')"
         :sub-title="subtitleIfBlocked(enabledBlocked)"
-        r-cols="2"
+        :r-cols="2"
       >
         <v-switch
           v-model="enabled"
@@ -21,7 +21,7 @@
       <app-setting
         :title="$t('app.timelapse.setting.auto_render')"
         :sub-title="subtitleIfBlocked(autoRenderBlocked)"
-        r-cols="2"
+        :r-cols="2"
       >
         <v-switch
           v-model="autoRender"
@@ -31,6 +31,20 @@
         />
       </app-setting>
     </v-card-text>
+    <div v-if="!renderStatus">
+      <v-divider />
+      <v-card-actions>
+        <v-spacer />
+
+        <app-btn
+          color="primary"
+          text
+          @click="$emit('openRenderDialog')"
+        >
+          {{ $t('app.timelapse.btn.open_render_settings') }}
+        </app-btn>
+      </v-card-actions>
+    </div>
   </collapsable-card>
 </template>
 
@@ -38,13 +52,17 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AppSetting from '@/components/ui/AppSetting.vue'
-import { TimelapseSettings } from '@/store/timelapse/types'
+import { RenderStatus, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: { AppSetting }
 })
 export default class Timelapse extends Mixins(StateMixin) {
+  get renderStatus (): RenderStatus | undefined {
+    return this.$store.getters['timelapse/getRenderStatus']
+  }
+
   get enabledBlocked () {
     return this.$store.getters['timelapse/isBlockedSetting']('enabled')
   }

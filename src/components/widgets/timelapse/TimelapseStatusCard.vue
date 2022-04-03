@@ -50,7 +50,7 @@
       <app-btn
         color="primary"
         :disabled="!!renderStatus"
-        @click="renderTimelapse()"
+        @click="$emit('openRenderDialog', true)"
       >
         {{ $t('app.timelapse.btn.render') }}
       </app-btn>
@@ -77,10 +77,6 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class StatusCard extends Mixins(StateMixin) {
-  renderTimelapse () {
-    SocketActions.machineTimelapseRender()
-  }
-
   saveFrames () {
     SocketActions.machineTimelapseSaveFrames(this.waits.onTimelapseSaveFrame)
   }

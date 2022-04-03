@@ -46,6 +46,38 @@
       <toolhead-parking-settings />
 
       <v-divider />
+      <app-setting
+        :title="$t('app.timelapse.setting.stream_delay_compensation')"
+        :sub-title="subtitleIfBlocked(delayCompBlocked)"
+      >
+        <v-text-field
+          ref="delayCompElement"
+          :value="delayComp"
+          :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+          :disabled="delayCompBlocked"
+          :hide-details="delayCompElement ? delayCompElement.valid : true"
+          filled
+          dense
+          single-line
+          suffix="ms"
+          @change="setDelayComp"
+        />
+      </app-setting>
+
+      <v-divider />
+      <app-setting
+        :title="$t('app.timelapse.setting.gcode_verbose')"
+        :sub-title="subtitleIfBlocked(verboseGcodeBlocked)"
+      >
+        <v-switch
+          v-model="verboseGcode"
+          hide-details
+          :disabled="verboseGcodeBlocked"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -61,7 +93,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import {
   TimelapseMode,
@@ -77,6 +109,14 @@ import { defaultWritableSettings } from '@/store/timelapse'
   components: { ToolheadParkingSettings, HyperlapseSettings }
 })
 export default class TimelapseSettings extends Mixins(StateMixin) {
+  @Ref('delayCompElement') delayCompElement!: any
+
+  rules = {
+    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
+    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
+    numMin: (v: number) => v >= 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
+  }
+
   get supportedModes (): {text: string, value: TimelapseMode}[] {
     return [{
       text: this.$tc('app.timelapse.setting.mode_layermacro'),
@@ -113,6 +153,32 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
 
   set mode (value: TimelapseMode) {
     SocketActions.machineTimelapseSetSettings({ mode: value })
+  }
+
+  get delayCompBlocked (): boolean {
+    return this.$store.getters['timelapse/isBlockedSetting']('stream_delay_compensation')
+  }
+
+  get delayComp (): number {
+    return this.settings?.stream_delay_compensation * 1000
+  }
+
+  setDelayComp (value: number) {
+    if (this.delayCompElement?.validate()) {
+      SocketActions.machineTimelapseSetSettings({ stream_delay_compensation: value / 1000 })
+    }
+  }
+
+  get verboseGcodeBlocked (): boolean {
+    return this.$store.getters['timelapse/isBlockedSetting']('gcode_verbose')
+  }
+
+  get verboseGcode (): boolean {
+    return this.settings?.gcode_verbose
+  }
+
+  set verboseGcode (value: boolean) {
+    SocketActions.machineTimelapseSetSettings({ gcode_verbose: value })
   }
 
   get settings (): TimelapseSettingsType {
