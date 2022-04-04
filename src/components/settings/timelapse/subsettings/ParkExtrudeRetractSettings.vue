@@ -143,7 +143,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
   }
 
   setParkExtrudeDistance (value: number) {
-    if (this.parkRetractDistanceElement?.validate()) {
+    if (this.parkExtrudeDistanceElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_extrude_distance: value })
     }
   }
@@ -153,7 +153,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
   }
 
   get parkExtrudeSpeed (): number {
-    return this.settings?.park_extrude_distance
+    return this.settings?.park_extrude_speed
   }
 
   setParkExtrudeSpeed (value: number) {
