@@ -518,7 +518,7 @@ app:
       save_frames: Bilder speichern
       open_render_settings: Render-Einst. öffnen
     error:
-      newframe: Fehler beim Aufnehmen eines Zeitraffer-Bilds
+      newframe: Fehler beim Aufnehmen eines Zeitraffer-Bildes
     label:
       frames: %{frames} Bild | %{frames} Bilder
       length: Videolänge
