@@ -144,7 +144,7 @@
         <v-spacer />
         <app-btn
           color="primary"
-          @click="render"
+          @click="renderTimelapse"
         >
           <v-icon>$play</v-icon>
           {{ $t('app.timelapse.btn.render') }}
@@ -274,7 +274,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     SocketActions.machineTimelapseSetSettings({ saveframes: value })
   }
 
-  render () {
+  renderTimelapse () {
     SocketActions.machineTimelapseRender()
     this.$emit('close')
   }

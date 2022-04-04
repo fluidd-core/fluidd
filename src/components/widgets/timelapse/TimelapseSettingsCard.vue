@@ -31,7 +31,7 @@
         />
       </app-setting>
     </v-card-text>
-    <div v-if="!renderStatus">
+    <div v-if="!frameCount">
       <v-divider />
       <v-card-actions>
         <v-spacer />
@@ -52,17 +52,13 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import AppSetting from '@/components/ui/AppSetting.vue'
-import { RenderStatus, TimelapseSettings } from '@/store/timelapse/types'
+import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: { AppSetting }
 })
 export default class Timelapse extends Mixins(StateMixin) {
-  get renderStatus (): RenderStatus | undefined {
-    return this.$store.getters['timelapse/getRenderStatus']
-  }
-
   get enabledBlocked () {
     return this.$store.getters['timelapse/isBlockedSetting']('enabled')
   }
@@ -85,6 +81,10 @@ export default class Timelapse extends Mixins(StateMixin) {
 
   set autoRender (value: boolean) {
     SocketActions.machineTimelapseSetSettings({ autorender: value })
+  }
+
+  get frameCount () {
+    return this.$store.getters['timelapse/getLastFrame']?.count
   }
 
   get settings (): TimelapseSettings {

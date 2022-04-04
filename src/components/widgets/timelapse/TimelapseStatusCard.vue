@@ -8,10 +8,20 @@
   >
     <v-card-text class="px-4">
       <v-row>
-        <img
-          :src="previewUrl"
-          class="mx-auto thumbnail"
-        >
+        <div style="position: relative">
+          <img
+            :src="previewUrl"
+            class="mx-auto thumbnail"
+            :style="{filter: isRendering ? `saturate(${renderStatus.progress}%)` : 'none'}"
+          >
+          <v-progress-circular
+            v-if="isRendering"
+            class="render-progress"
+            color="primary"
+            size="64"
+            :value="renderStatus.progress"
+          />
+        </div>
       </v-row>
     </v-card-text>
 
@@ -49,7 +59,7 @@
       </app-btn>
       <app-btn
         color="primary"
-        :disabled="!!renderStatus"
+        :disabled="renderStatus && renderStatus.status !== 'success'"
         @click="$emit('openRenderDialog', true)"
       >
         {{ $t('app.timelapse.btn.render') }}
@@ -88,7 +98,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   get previewUrl () {
     const url = new URL(this.apiUrl ?? document.location.origin)
 
-    if (this.renderStatus?.status === 'success') {
+    if (this.renderStatus?.status === 'success' && this.renderStatus.previewImage) {
       const file = this.renderStatus.previewImage
       url.pathname = `/server/files/timelapse/${file}`
     } else if (this.lastFrame && this.lastFrame?.file) {
@@ -99,6 +109,10 @@ export default class StatusCard extends Mixins(StateMixin) {
     }
 
     return url.toString()
+  }
+
+  get isRendering () {
+    return this.renderStatus?.status === 'running'
   }
 
   get frameCount () {
@@ -133,5 +147,12 @@ export default class StatusCard extends Mixins(StateMixin) {
 <style>
 .thumbnail {
   width: 100%;
+}
+
+.render-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
