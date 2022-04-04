@@ -24,7 +24,7 @@
         </v-col>
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="pb-2">
         <app-setting
           :title="$t('app.timelapse.setting.variable_fps')"
           :sub-title="subtitleIfBlocked(variableFpsBlocked)"
@@ -135,8 +135,20 @@
             @change="setDuplicateFrames"
           />
         </app-setting>
+        <app-setting
+          :title="$t('app.timelapse.setting.previewimage')"
+          :sub-title="subtitleIfBlocked(previewImageBlocked)"
+        >
+          <v-switch
+            v-model="previewImage"
+            hide-details
+            :disabled="previewImageBlocked"
+            @click.native.stop
+          />
+        </app-setting>
       </v-card-text>
 
+      <v-divider v-if="renderable" />
       <v-card-actions
         v-if="renderable"
         class="pt-4"
@@ -272,6 +284,18 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
 
   set saveFrames (value: boolean) {
     SocketActions.machineTimelapseSetSettings({ saveframes: value })
+  }
+
+  get previewImageBlocked (): boolean {
+    return this.$store.getters['timelapse/isBlockedSetting']('previewimage')
+  }
+
+  get previewImage (): boolean {
+    return this.settings?.previewimage
+  }
+
+  set previewImage (value: boolean) {
+    SocketActions.machineTimelapseSetSettings({ previewimage: value })
   }
 
   renderTimelapse () {

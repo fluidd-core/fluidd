@@ -548,6 +548,7 @@ app:
         center: Center
         back_left: Back Left
         back_right: Back Right
+      previewimage: Generate Thumbnail
       saveframes: Save Frames
       stream_delay_compensation: Delay Compensation
       targetlength: Target Length
