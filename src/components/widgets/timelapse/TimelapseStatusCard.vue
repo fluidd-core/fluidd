@@ -120,7 +120,19 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get lengthEstimate () {
-    const seconds = (this.frameCount || 0) / this.settings.output_framerate
+    let framerate
+    if (this.settings.variable_fps) {
+      framerate = Math.min(
+        this.settings.variable_fps_max,
+        Math.max(
+          this.settings.variable_fps_min,
+          (this.frameCount || 0) / this.settings.targetlength)
+      )
+    } else {
+      framerate = this.settings.output_framerate
+    }
+
+    const seconds = (this.frameCount || 0) / framerate
     const minutes = Math.floor(seconds / 60)
 
     return `${minutes ? (minutes + 'm') : ''} ${Math.floor(seconds % 60)}s`.trim()
