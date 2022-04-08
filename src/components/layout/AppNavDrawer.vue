@@ -123,7 +123,7 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
   }
 
   get supportsTimelapse () {
-    return this.$store.getters['files/isRootAvailable']('timelapse')
+    return this.$store.getters['server/componentSupport']('timelapse')
   }
 
   get supportsVersions () {

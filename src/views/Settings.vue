@@ -69,7 +69,7 @@ export default class Settings extends Mixins(StateMixin) {
   }
 
   get supportsTimelapse () {
-    return this.$store.getters['files/isRootAvailable']('timelapse')
+    return this.$store.getters['server/componentSupport']('timelapse')
   }
 }
 </script>

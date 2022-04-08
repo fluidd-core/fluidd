@@ -54,7 +54,7 @@ export default class AppSettingsNav extends Vue {
   }
 
   get supportsTimelapse () {
-    return this.$store.getters['files/isRootAvailable']('timelapse')
+    return this.$store.getters['server/componentSupport']('timelapse')
   }
 }
 </script>
