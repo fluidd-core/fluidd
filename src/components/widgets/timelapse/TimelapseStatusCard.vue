@@ -6,7 +6,7 @@
     class="mb-2 sb-sm-4"
     :draggable="false"
   >
-    <v-card-text class="px-4">
+    <v-card-text class="px-4 pb-0">
       <v-row>
         <div style="position: relative">
           <img
@@ -25,21 +25,20 @@
       </v-row>
     </v-card-text>
 
-    <v-divider />
-
     <v-card-text>
       <v-row>
-        <v-col
-          cols="6"
-          class="text-center"
-        >
-          {{ $tc('app.timelapse.label.frames', frameCount, { frames: frameCount }) }}
-        </v-col>
-        <v-col
-          cols="6"
-          class="text-center"
-        >
-          {{ $t('app.timelapse.label.length') }}: {{ lengthEstimate }}
+        <v-col cols="12">
+          <v-layout justify-center>
+            <app-slider
+              v-model="selectedFrame"
+              full-width
+              :label="$tc('app.timelapse.label.frame')"
+              :min="1"
+              :max="frameCount"
+              :suffix="`/ ${frameCount}`"
+              :reset-value="frameCount"
+            />
+          </v-layout>
         </v-col>
       </v-row>
     </v-card-text>
@@ -77,9 +76,11 @@ import AppSlider from '@/components/ui/AppSlider.vue'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
+import AppBtn from '@/components/ui/AppBtn.vue'
 
 @Component({
   components: {
+    AppBtn,
     AppSetting,
     AppSlider,
     CollapsableCard,
@@ -87,12 +88,22 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class StatusCard extends Mixins(StateMixin) {
+  selectedFrameNumber = 0
+
   saveFrames () {
     SocketActions.machineTimelapseSaveFrames(this.waits.onTimelapseSaveFrame)
   }
 
   get savingFrames () {
     return this.hasWait(this.waits.onTimelapseSaveFrame)
+  }
+
+  get selectedFrame () {
+    return this.selectedFrameNumber || this.frameCount || 0
+  }
+
+  set selectedFrame (value: number) {
+    this.selectedFrameNumber = value === this.frameCount ? 0 : value
   }
 
   get previewUrl () {
@@ -102,7 +113,12 @@ export default class StatusCard extends Mixins(StateMixin) {
       const file = this.renderStatus.previewImage
       url.pathname = `/server/files/timelapse/${file}`
     } else if (this.lastFrame && this.lastFrame?.file) {
-      const file = this.lastFrame?.file
+      let file = this.lastFrame?.file
+      if (this.selectedFrame) {
+        const [ext] = file?.split('.').slice(-1)
+        file = `frame${this.selectedFrame.toString().padStart(6, '0')}.${ext}`
+      }
+
       url.pathname = `/server/files/timelapse_frames/${file}`
     } else {
       return
@@ -117,25 +133,6 @@ export default class StatusCard extends Mixins(StateMixin) {
 
   get frameCount () {
     return this.lastFrame?.count
-  }
-
-  get lengthEstimate () {
-    let framerate
-    if (this.settings.variable_fps) {
-      framerate = Math.min(
-        this.settings.variable_fps_max,
-        Math.max(
-          this.settings.variable_fps_min,
-          (this.frameCount || 0) / this.settings.targetlength)
-      )
-    } else {
-      framerate = this.settings.output_framerate
-    }
-
-    const seconds = (this.frameCount || 0) / framerate
-    const minutes = Math.floor(seconds / 60)
-
-    return `${minutes ? (minutes + 'm') : ''} ${Math.floor(seconds % 60)}s`.trim()
   }
 
   get settings (): TimelapseSettings {

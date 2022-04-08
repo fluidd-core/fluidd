@@ -154,13 +154,20 @@
         class="pt-4"
       >
         <v-spacer />
-        <app-btn
-          color="primary"
-          @click="renderTimelapse"
-        >
-          <v-icon>$play</v-icon>
-          {{ $t('app.timelapse.btn.render') }}
-        </app-btn>
+        <v-tooltip left>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              v-bind="attrs"
+              color="primary"
+              v-on="on"
+              @click="renderTimelapse"
+            >
+              <v-icon>$play</v-icon>
+              {{ $t('app.timelapse.btn.render') }}
+            </app-btn>
+          </template>
+          <span>{{ $t('app.timelapse.label.length', { length: lengthEstimate }) }}</span>
+        </v-tooltip>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -171,7 +178,7 @@ import { Component, Prop, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import AppSetting from '@/components/ui/AppSetting.vue'
-import { TimelapseSettings } from '@/store/timelapse/types'
+import { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 
 @Component({
   components: { AppSetting }
@@ -190,6 +197,25 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
     validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
     numMin: (v: number) => v >= 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
+  }
+
+  get lengthEstimate () {
+    let framerate
+    if (this.settings.variable_fps) {
+      framerate = Math.min(
+        this.settings.variable_fps_max,
+        Math.max(
+          this.settings.variable_fps_min,
+          (this.frameCount || 0) / this.settings.targetlength)
+      )
+    } else {
+      framerate = this.settings.output_framerate
+    }
+
+    const seconds = (this.frameCount || 0) / framerate
+    const minutes = Math.floor(seconds / 60)
+
+    return `${minutes ? (minutes + 'm') : ''} ${Math.floor(seconds % 60)}s`.trim()
   }
 
   get outputFramerateBlocked (): boolean {
@@ -303,8 +329,16 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     this.$emit('close')
   }
 
+  get frameCount () {
+    return this.lastFrame?.count
+  }
+
   get settings (): TimelapseSettings {
     return this.$store.getters['timelapse/getSettings']
+  }
+
+  get lastFrame (): TimelapseLastFrame | undefined {
+    return this.$store.getters['timelapse/getLastFrame']
   }
 
   subtitleIfBlocked (blocked: boolean): string {

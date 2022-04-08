@@ -521,7 +521,7 @@ app:
       newframe: Fehler beim Aufnehmen eines Zeitraffer-Bildes
     label:
       frames: %{frames} Bild | %{frames} Bilder
-      length: Videolänge
+      length: 'Geschätzte Länge: %{length}'
       frame: Frame | Frames
     title:
       timelapse: Zeitraffer
