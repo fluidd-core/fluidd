@@ -25,22 +25,22 @@
       </v-card-title>
 
       <v-card-text class="py-4">
-        <video
-          v-if="isVideo"
-          class="video-preview"
-          controls
-        >
-          <source
-            :src="file.src"
-            :type="file.type"
+        <v-layout justify-center>
+          <video
+            v-if="isVideo"
+            class="video-preview"
+            controls
           >
-        </video>
-        <v-layout
-          v-else
-          justify-center
-        >
-          {{ (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }}
-          cannot currently be previewed.
+            <source
+              :src="file.src"
+              :type="file.type"
+            >
+          </video>
+
+          <div v-else>
+            {{ (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }}
+            cannot currently be previewed.
+          </div>
         </v-layout>
       </v-card-text>
 
