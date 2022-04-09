@@ -127,8 +127,9 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
     }]
   }
 
-  get cameras (): {text: string, value: string} {
-    return this.$store.getters['cameras/getCameras'].map((camera: CameraConfig) => ({ text: camera.name, value: camera.id }))
+  get cameras (): {text: string, value: string, disabled: boolean} {
+    return this.$store.getters['cameras/getCameras']
+      .map((camera: CameraConfig) => ({ text: camera.name, value: camera.id, disabled: !camera.enabled }))
   }
 
   get cameraBlocked (): boolean {
