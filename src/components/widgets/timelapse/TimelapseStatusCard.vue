@@ -132,7 +132,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get frameCount () {
-    return this.lastFrame?.count
+    return this.lastFrame?.uniqueCount
   }
 
   get settings (): TimelapseSettings {

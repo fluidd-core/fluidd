@@ -26,8 +26,10 @@ export const actions: ActionTree<TimelapseState, RootState> = {
   },
 
   async onLastFrame ({ commit }, payload) {
+    const uniqueCount = +(payload.lastframefile?.match(/\d+/)[0] ?? 0)
     commit('setLastFrame', {
       count: payload.framecount,
+      uniqueCount,
       file: payload.lastframefile
     })
   },

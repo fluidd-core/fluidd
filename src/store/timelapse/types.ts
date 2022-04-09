@@ -9,6 +9,7 @@ export type RenderStatus = RenderStarted | RenderRunning | RenderSuccess;
 
 export interface TimelapseLastFrame {
   count: number;
+  uniqueCount: number;
   file: string;
 }
 
