@@ -5,7 +5,7 @@
       md="8"
     >
       <collapsable-card
-        :title="$t('app.timelapse.title.timelapse')"
+        :title="$t('app.general.title.timelapse')"
         icon="$video"
         :draggable="false"
       >

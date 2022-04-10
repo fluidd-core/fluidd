@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader id="timelapse">
-      {{ $t('app.timelapse.title.timelapse') }}
+      {{ $t('app.general.title.timelapse') }}
     </v-subheader>
     <v-card
       :elevation="5"

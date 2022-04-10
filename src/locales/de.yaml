@@ -334,6 +334,7 @@ app:
       system: System
       system_overview: Systeminformationen
       temperature: Temperaturen
+      timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
     tooltip:
@@ -524,7 +525,6 @@ app:
       length: 'Geschätzte Länge: %{length}'
       frame: Frame | Frames
     title:
-      timelapse: Zeitraffer
       timelapse_settings: Zeitraffer-Einstellungen
       timelapse_status: Zeitraffer-Status
       render_settings: Render-Einstellungen

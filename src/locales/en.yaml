@@ -329,6 +329,7 @@ app:
       system: System
       system_overview: System Information
       temperature: Thermals
+      timelapse: Timelapse
       tool: Tool
       tune: Tune
     tooltip:
@@ -513,7 +514,6 @@ app:
       length: 'Estimated length: %{length}'
       frame: Frame | Frames
     title:
-      timelapse: Timelapse
       timelapse_settings: Timelapse Settings
       timelapse_status: Timelapse Status
       render_settings: Render Settings
