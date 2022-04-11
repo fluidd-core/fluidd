@@ -510,7 +510,7 @@ app:
     error:
       newframe: Error taking timelapse frame
     label:
-      frames: %{frames} frame | %{frames} frames
+      frames: '%{frames} frame | %{frames} frames'
       length: 'Estimated length: %{length}'
       frame: Frame | Frames
     title:
