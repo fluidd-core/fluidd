@@ -58,7 +58,7 @@ import { SocketActions } from '@/api/socketActions'
 @Component({
   components: { AppSetting }
 })
-export default class Timelapse extends Mixins(StateMixin) {
+export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   get enabledBlocked () {
     return this.$store.getters['timelapse/isBlockedSetting']('enabled')
   }
