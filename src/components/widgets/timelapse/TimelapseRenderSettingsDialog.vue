@@ -25,7 +25,7 @@
         </v-col>
       </v-card-title>
 
-      <v-card-text class="pb-2">
+      <v-card-text class="py-4">
         <app-setting
           :title="$t('app.timelapse.setting.variable_fps')"
           :sub-title="subtitleIfBlocked(variableFpsBlocked)"
