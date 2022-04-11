@@ -2,6 +2,7 @@
   <v-dialog
     :value="open"
     :max-width="640"
+    @click:outside="$emit('close')"
   >
     <v-card v-if="open">
       <v-card-title class="card-heading py-2">
