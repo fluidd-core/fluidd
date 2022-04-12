@@ -6,7 +6,7 @@
     class="mb-2 sb-sm-4"
     :draggable="false"
   >
-    <v-card-text class="px-4 pb-0">
+    <v-card-text>
       <v-row>
         <div style="position: relative">
           <img
@@ -23,9 +23,7 @@
           />
         </div>
       </v-row>
-    </v-card-text>
 
-    <v-card-text>
       <v-row>
         <v-col cols="12">
           <v-layout justify-center>

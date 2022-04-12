@@ -2,35 +2,33 @@
   <collapsable-card
     :title="$t('app.timelapse.title.timelapse_settings')"
     icon="$cog"
-    class="mb-2 sb-sm-4"
+    class=""
     :draggable="false"
   >
-    <v-card-text>
-      <app-setting
-        :title="$t('app.timelapse.setting.enable')"
-        :sub-title="subtitleIfBlocked(enabledBlocked)"
-        :r-cols="2"
-      >
-        <v-switch
-          v-model="enabled"
-          hide-details
-          :disabled="enabledBlocked"
-          @click.native.stop
-        />
-      </app-setting>
-      <app-setting
-        :title="$t('app.timelapse.setting.auto_render')"
-        :sub-title="subtitleIfBlocked(autoRenderBlocked)"
-        :r-cols="2"
-      >
-        <v-switch
-          v-model="autoRender"
-          hide-details
-          :disabled="autoRenderBlocked"
-          @click.native.stop
-        />
-      </app-setting>
-    </v-card-text>
+    <app-setting
+      :title="$t('app.timelapse.setting.enable')"
+      :sub-title="subtitleIfBlocked(enabledBlocked)"
+      :r-cols="2"
+    >
+      <v-switch
+        v-model="enabled"
+        hide-details
+        :disabled="enabledBlocked"
+        @click.native.stop
+      />
+    </app-setting>
+    <app-setting
+      :title="$t('app.timelapse.setting.auto_render')"
+      :sub-title="subtitleIfBlocked(autoRenderBlocked)"
+      :r-cols="2"
+    >
+      <v-switch
+        v-model="autoRender"
+        hide-details
+        :disabled="autoRenderBlocked"
+        @click.native.stop
+      />
+    </app-setting>
     <div v-if="!frameCount">
       <v-divider />
       <v-card-actions>
