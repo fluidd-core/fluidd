@@ -28,9 +28,9 @@
     </v-col>
 
     <timelapse-render-settings-dialog
-      :open="renderDialog.open"
+      v-if="renderDialog.open"
+      v-model="renderDialog.open"
       :renderable="renderDialog.renderable"
-      @close="closeRenderDialog"
     />
   </v-row>
 </template>
@@ -58,10 +58,6 @@ export default class Timelapse extends Mixins(StateMixin) {
 
   openRenderDialog (renderable = false) {
     this.renderDialog = { open: true, renderable }
-  }
-
-  closeRenderDialog () {
-    this.renderDialog.open = false
   }
 }
 </script>

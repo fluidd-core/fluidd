@@ -1,10 +1,10 @@
 <template>
   <v-dialog
-    :value="open"
+    :value="value"
     :max-width="640"
-    @click:outside="$emit('close')"
+    @input="$emit('input', $event)"
   >
-    <v-card v-if="open">
+    <v-card v-if="value">
       <v-card-title class="card-heading py-2">
         <span class="focus--text">{{ $t('app.timelapse.title.render_settings') }}</span>
 
@@ -12,7 +12,7 @@
         <app-btn
           color=""
           icon
-          @click="$emit('close')"
+          @click="$emit('input', false)"
         >
           <v-icon>$close</v-icon>
         </app-btn>
@@ -176,8 +176,11 @@ import { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
   components: { AppSetting }
 })
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean }) open = false
-  @Prop({ type: Boolean }) renderable = false
+  @Prop({ type: Boolean, required: true })
+  value!: boolean
+
+  @Prop({ type: Boolean, required: true })
+  renderable!: boolean
 
   @Ref('outputFramerateElement') outputFramerateElement!: any
   @Ref('targetLengthElement') targetLengthElement!: any
