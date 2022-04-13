@@ -321,7 +321,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
 
   renderTimelapse () {
     SocketActions.machineTimelapseRender()
-    this.$emit('close')
+    this.$emit('input', false)
   }
 
   get frameCount () {
