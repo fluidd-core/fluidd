@@ -13,6 +13,7 @@
 
     <v-card-text>
       <GcodePreviewParserProgressDialog
+        v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
         :progress="parserProgress"
         :file="file"
