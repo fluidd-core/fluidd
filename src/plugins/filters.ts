@@ -142,6 +142,14 @@ export const Filters = {
   },
 
   /**
+   * Formats a number representing g to human readable weight.
+   */
+  getReadableWeightString (weightInG: number) {
+    if (weightInG >= 1000) return (weightInG / 1000).toFixed(2) + ' kg'
+    return weightInG.toFixed(2) + ' g'
+  },
+
+  /**
    * The filesystem sorter. This is copied from vuetify, and modified to ensure our directories
    * are always sorted to the top.
    */
