@@ -123,7 +123,7 @@
             item-value="filament_weight_total"
           >
             <span v-if="item.filament_weight_total !== undefined">
-              {{ item.filament_weight_total }} g
+              {{ $filters.getReadableWeightString(item.filament_weight_total) }}
             </span>
           </file-row-item>
 
