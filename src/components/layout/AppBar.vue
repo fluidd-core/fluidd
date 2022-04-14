@@ -100,6 +100,7 @@
     </template>
 
     <user-password-dialog
+      v-if="dialog"
       v-model="dialog"
     />
   </v-app-bar>
