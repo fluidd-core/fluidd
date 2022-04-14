@@ -109,7 +109,7 @@
       @cancel="handleCancelUpload"
     />
 
-    <file-preview
+    <file-preview-dialog
       :file="filePreviewState"
       removable
       downloadable
@@ -150,7 +150,7 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
-import FilePreview from './FilePreviewDialog.vue'
+import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
 
@@ -171,7 +171,7 @@ import { AppTableHeader } from '@/types'
     FileNameDialog,
     FileSystemDownloadDialog,
     FileSystemUploadDialog,
-    FilePreview
+    FilePreviewDialog
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
