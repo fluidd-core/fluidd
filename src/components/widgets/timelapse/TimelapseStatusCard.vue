@@ -56,7 +56,7 @@
       </app-btn>
       <app-btn
         color="primary"
-        :disabled="renderStatus && renderStatus.status !== 'success'"
+        :disabled="isRendering"
         @click="$emit('openRenderDialog', true)"
       >
         {{ $t('app.timelapse.btn.render') }}
@@ -123,7 +123,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get isRendering () {
-    return this.renderStatus?.status === 'running'
+    return this.renderStatus?.status !== 'success'
   }
 
   get frameCount () {
