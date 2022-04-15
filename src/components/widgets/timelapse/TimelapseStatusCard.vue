@@ -123,7 +123,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get isRendering () {
-    return this.renderStatus?.status !== 'success'
+    return this.renderStatus && this.renderStatus.status !== 'success'
   }
 
   get frameCount () {
