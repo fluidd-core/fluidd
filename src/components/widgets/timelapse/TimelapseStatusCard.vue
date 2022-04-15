@@ -107,10 +107,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   get previewUrl () {
     const url = new URL(this.apiUrl ?? document.location.origin)
 
-    if (this.renderStatus?.status === 'success' && this.renderStatus.previewImage) {
-      const file = this.renderStatus.previewImage
-      url.pathname = `/server/files/timelapse/${file}`
-    } else if (this.lastFrame && this.lastFrame?.file) {
+    if (this.lastFrame && this.lastFrame?.file) {
       let file = this.lastFrame?.file
       if (this.selectedFrame) {
         const [ext] = file?.split('.').slice(-1)
