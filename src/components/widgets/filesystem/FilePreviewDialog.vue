@@ -5,23 +5,16 @@
   >
     <v-card v-if="file.open">
       <v-card-title class="card-heading py-2">
-        <v-col cols="11">
-          <v-icon left>
-            ${{ icon }}
-          </v-icon>
-          <span class="focus--text">
-            {{ file.filename }}
-          </span>
-        </v-col>
+        <span class="focus--text">{{ file.filename }}</span>
 
-        <v-col
-          class="text-right"
-          cols="1"
+        <v-spacer />
+        <app-btn
+          color=""
+          icon
+          @click="$emit('close')"
         >
-          <v-icon @click="$emit('close')">
-            $close
-          </v-icon>
-        </v-col>
+          <v-icon>$close</v-icon>
+        </app-btn>
       </v-card-title>
 
       <v-card-text class="py-4">
