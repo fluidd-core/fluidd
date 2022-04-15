@@ -195,19 +195,21 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get lengthEstimate () {
+    const totalFrames = this.frameCount + this.duplicateLastFrameCount
+
     let framerate
     if (this.settings.variable_fps) {
       framerate = Math.min(
         this.settings.variable_fps_max,
         Math.max(
           this.settings.variable_fps_min,
-          (this.frameCount || 0) / this.settings.targetlength)
+          totalFrames / this.settings.targetlength)
       )
     } else {
       framerate = this.settings.output_framerate
     }
 
-    const seconds = (this.frameCount || 0) / framerate
+    const seconds = (totalFrames || 0) / framerate
     const minutes = Math.floor(seconds / 60)
 
     return `${minutes ? (minutes + 'm') : ''} ${Math.floor(seconds % 60)}s`.trim()
@@ -290,7 +292,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   setDuplicateFrames (value: number) {
-    if (this.maxFpsElement?.validate()) {
+    if (this.duplicateFramesElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ duplicatelastframe: value })
     }
   }
@@ -325,7 +327,11 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   get frameCount () {
-    return this.lastFrame?.count
+    return this.lastFrame?.count ?? 0
+  }
+
+  get duplicateLastFrameCount () {
+    return this.settings?.duplicatelastframe ?? 0
   }
 
   get settings (): TimelapseSettings {
