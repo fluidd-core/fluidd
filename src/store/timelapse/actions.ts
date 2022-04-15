@@ -41,8 +41,10 @@ export const actions: ActionTree<TimelapseState, RootState> = {
           // open snackbar
           EventBus.$emit(i18n.tc('app.timelapse.error.newframe'), { type: FlashMessageTypes.error })
         } else {
+          const count = parseInt(payload.frame)
           commit('setLastFrame', {
-            count: parseInt(payload.frame),
+            count,
+            uniqueCount: count,
             file: payload.framefile
           })
         }
