@@ -35,6 +35,7 @@
               :max="frameCount"
               :suffix="`/ ${frameCount}`"
               :reset-value="frameCount"
+              :disabled="isRendering"
             />
           </v-layout>
         </v-col>
