@@ -5,11 +5,12 @@ app:
       flat_surface: 显示参考平面
       mesh_matrix: 网格矩阵
       probed_matrix: 探测点矩阵
-      remove_profile: 删除 %{name} 配置文件
+      profile_name: 配置文件
+      remove_profile: '删除 %{name} 配置文件'
       scale: 显示偏差值
       wireframe: 显示网格线
     msg:
-      hint: 如果将 %{name} 另存, 你也可以选择删除此 %{name} 配置
+      hint: '如果将 %{name} 另存, 你也可以选择删除此 %{name} 配置'
       not_found: 热床网格配置不存在
       not_loaded: 没有加载热床网格配置
     tooltip:
@@ -21,8 +22,8 @@ app:
     label:
       current: 当前
       item: 名称
-      off: 关闭图表
-      on: 开启图表
+      'off': 关闭图表
+      'on': 开启图表
       power: 功率
       rate_of_change: 修改
       target: 目标
@@ -44,9 +45,9 @@ app:
         这可能意味着您需要修改 Moonraker 配置。请参阅有关多打印机设置的<a href=\"%{url}\"
         target=\"_blank\">文档</a>
     hint:
-      add_printer: 例如：http://fluiddpi.local
+      add_printer: '例如：http://fluiddpi.local'
     msg:
-      trouble: 遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。
+      trouble: '遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。'
     tooltip:
       endpoint_examples: >-
         输入您的 API 地址。<br />例如：<br/><blockquote>http://fluidd.local,
@@ -102,7 +103,7 @@ app:
       show_previous_layer: 显示上一层
       show_retractions: 显示回抽
     msg:
-      confirm: 文件 "%{filename}" 大小为 %{size}，这可能会导致系统短暂失去响应，是否确认？
+      confirm: '文件 "%{filename}" 大小为 %{size}，这可能会导致系统短暂失去响应，是否确认？'
   general:
     btn:
       add: 添加
@@ -138,7 +139,7 @@ app:
       reset_layout: 重置布局
       reset_stats: 重置数据
       restart_firmware: 重启硬件
-      restart_service: 重启 %{service}
+      restart_service: '重启 %{service}'
       restart_service_klipper: 重启 Klipper
       restart_service_moonraker: 重启 Moonraker
       resume: 恢复
@@ -155,12 +156,12 @@ app:
       upload_print: 上传并打印
       view: 查看
     error:
-      app_setup_link: Fluidd 配置需求可以在 <a target="_blank" href="%{url}"> 处找到.</a>
-      app_warnings_found: 找到 ％{appName} 条警告。
-      components_config: 可以在<a target="_blank" href="%{url}"> 处 </a>找到 Moonraker 插件配置。
+      app_setup_link: '如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
+      app_warnings_found: '％{appName} 出现警告'
+      components_config: '如需查看 Moonraker 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       failed_components: Moonraker 插件启用失败，请检查您的日志，更新您的配置并重新启动 Moonraker。
     label:
-      accel_to_decel: 加速到减速度
+      accel_to_decel: 加速度减速速率
       acceleration: 加速度
       actual_time: 实际剩余
       add_camera: 添加摄像头
@@ -200,8 +201,8 @@ app:
       name: 名称
       new_password: 新密码
       no_notifications: 暂无通知
-      off: 关闭
-      on: 开启
+      'off': 关闭
+      'on': 开启
       password: 密码
       power: 电源
       pressure_advance: 压力提前
@@ -243,9 +244,9 @@ app:
         invalid_expression: 无效表达
         invalid_number: 无效数字
         invalid_url: 无效的URL地址
-        max: 最大 %{max}
-        min: 最小 %{min}
-        min_or_0: 最小 %{min} 或 0
+        max: '最大 %{max}'
+        min: '最小 %{min}'
+        min_or_0: '最小 %{min} 或 0'
         password_username: 用户名密码不匹配
         required: 必填
       msg:
@@ -254,8 +255,8 @@ app:
         confirm: 你确定需要这样操作吗？
         confirm_power_device_toggle: 你确定需要这样操作吗？该操作将会断开设备的电源。
         confirm_reboot_host: 你确定需要这样操作吗？这将重启您的系统。
-        confirm_service_restart: 你确定你想重启 %{name} 服务吗?
-        confirm_service_stop: 你确定你想停止 %{name} 服务吗?
+        confirm_service_restart: '你确定你想重启 %{name} 服务吗?'
+        confirm_service_stop: '你确定你想停止 %{name} 服务吗?'
         confirm_shutdown_host: 你确定需要这样操作吗？这将关闭您的系统。
         unsaved_changes: 你有未保存的修改。你确定你想关闭该文件吗？
     table:
@@ -337,9 +338,9 @@ app:
       reset: 重置
       select_theme: 选择颜色
     camera_rotate_options:
-      90: 90度
-      180: 180度
-      270: 270度
+      '90': 90度
+      '180': 180度
+      '270': 270度
       none: 无
     camera_type_options:
       iframe: HTTP 页面
@@ -448,7 +449,7 @@ app:
       home_x: X
       home_y: Y
     tooltip:
-      extruder_disabled: 挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)
+      extruder_disabled: '挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)'
       home_xy: 归零 XY
       home_z: 归零 Z
   version:
