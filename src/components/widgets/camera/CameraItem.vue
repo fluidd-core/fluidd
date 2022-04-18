@@ -43,14 +43,14 @@
       fps: {{ currentFPS }}
     </div>
     <div
-      v-if="cameraFullScreenUrl && !fullscreen"
+      v-if="cameraFullScreenUrl && ((fullscreen && fullscreenMode === 'embed') || !fullscreen)"
       class="camera-fullscreen"
     >
       <a
         :href="cameraFullScreenUrl"
-        target="_blank"
+        :target="fullscreenMode === 'rawstream' ? '_blank' : ''"
       >
-        <v-icon>$fullScreen</v-icon>
+        <v-icon>${{ (fullscreen || fullscreenMode === 'rawstream') ? 'openInNew' : 'fullScreen' }}</v-icon>
       </a>
     </div>
   </v-sheet>
@@ -126,7 +126,9 @@ export default class CameraItem extends Vue {
   @Watch('camera', { immediate: true })
   onCameraChange () {
     this.setUrl()
-    this.cameraFullScreenUrl = `/#/camera/${this.camera.id}`
+    if (!this.fullscreen && this.fullscreenMode === 'embed') {
+      this.cameraFullScreenUrl = `/#/camera/${this.camera.id}`
+    }
   }
 
   /**
@@ -215,6 +217,9 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'stream')
         }
         this.cameraUrl = url.toString()
+        if (!this.cameraFullScreenUrl) {
+          this.cameraFullScreenUrl = this.cameraUrl
+        }
       }
 
       if (type === 'mjpgadaptive') {
@@ -224,11 +229,17 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'snapshot')
         }
         this.cameraUrl = url.toString()
-        url.searchParams.set('action', 'stream')
+        if (!this.cameraFullScreenUrl) {
+          url.searchParams.set('action', 'stream')
+          this.cameraFullScreenUrl = url.toString()
+        }
       }
 
       if (type === 'ipstream' || type === 'iframe') {
         this.cameraUrl = baseUrl
+        if (!this.cameraFullScreenUrl) {
+          this.cameraFullScreenUrl = baseUrl
+        }
       }
     } else {
       this.cameraUrl = ''
@@ -265,6 +276,10 @@ export default class CameraItem extends Vue {
     return () => {
       animating = false
     }
+  }
+
+  get fullscreenMode (): 'embed' | 'rawstream' {
+    return this.$store.state.config.uiSettings.general.cameraFullscreenAction
   }
 }
 </script>

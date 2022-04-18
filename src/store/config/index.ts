@@ -60,7 +60,8 @@ export const defaultState = (): ConfigState => {
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
         showRateOfChange: false,
-        flipConsoleLayout: false
+        flipConsoleLayout: false,
+        cameraFullscreenAction: 'embed'
       },
       theme: {
         isDark: true,
