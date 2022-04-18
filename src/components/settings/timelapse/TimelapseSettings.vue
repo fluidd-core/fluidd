@@ -78,6 +78,24 @@
       </app-setting>
 
       <v-divider />
+      <app-setting :title="$tc('app.timelapse.title.render_settings')">
+        <app-btn
+          outlined
+          small
+          color="primary"
+          @click="renderSettingsDialogOpen = true"
+        >
+          <v-icon
+            small
+            left
+          >
+            $pencil
+          </v-icon>
+          {{ $t('app.general.btn.edit') }}
+        </app-btn>
+      </app-setting>
+
+      <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -89,6 +107,12 @@
         </app-btn>
       </app-setting>
     </v-card>
+
+    <timelapse-render-settings-dialog
+      v-if="renderSettingsDialogOpen"
+      v-model="renderSettingsDialogOpen"
+      :renderable="false"
+    />
   </div>
 </template>
 
@@ -104,12 +128,19 @@ import HyperlapseSettings from '@/components/settings/timelapse/subsettings/mode
 import { CameraConfig } from '@/store/cameras/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
 import { defaultWritableSettings } from '@/store/timelapse'
+import TimelapseRenderSettingsDialog
+  from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
 
 @Component({
-  components: { ToolheadParkingSettings, HyperlapseSettings }
+  components: {
+    ToolheadParkingSettings,
+    HyperlapseSettings,
+    TimelapseRenderSettingsDialog
+  }
 })
 export default class TimelapseSettings extends Mixins(StateMixin) {
   @Ref('delayCompElement') delayCompElement!: any
+  renderSettingsDialogOpen = false
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),

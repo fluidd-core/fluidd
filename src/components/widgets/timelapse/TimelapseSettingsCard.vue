@@ -29,20 +29,6 @@
         @click.native.stop
       />
     </app-setting>
-    <div v-if="!frameCount">
-      <v-divider />
-      <v-card-actions>
-        <v-spacer />
-
-        <app-btn
-          color="primary"
-          text
-          @click="$emit('openRenderDialog')"
-        >
-          {{ $t('app.timelapse.btn.open_render_settings') }}
-        </app-btn>
-      </v-card-actions>
-    </div>
   </collapsable-card>
 </template>
 
