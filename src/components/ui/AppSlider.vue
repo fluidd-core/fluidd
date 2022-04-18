@@ -257,7 +257,7 @@ export default class AppSlider extends Mixins(StateMixin) {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .full-width-slider {
   width: 100%;
 }

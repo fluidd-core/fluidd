@@ -103,7 +103,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .video-preview {
   max-width: 100%;
   max-height: 100%;

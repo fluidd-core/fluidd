@@ -149,7 +149,7 @@ export default class StatusCard extends Mixins(StateMixin) {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 .thumbnail {
   width: 100%;
 }
