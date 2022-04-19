@@ -60,6 +60,7 @@
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
+import { CameraFullscreenAction } from '@/store/config/types'
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -278,7 +279,7 @@ export default class CameraItem extends Vue {
     }
   }
 
-  get fullscreenMode (): 'embed' | 'rawstream' {
+  get fullscreenMode (): CameraFullscreenAction {
     return this.$store.state.config.uiSettings.general.cameraFullscreenAction
   }
 }

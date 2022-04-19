@@ -54,8 +54,10 @@ export interface GeneralConfig {
   timeformat: string;
   showRateOfChange: boolean;
   flipConsoleLayout: boolean;
-  cameraFullscreenAction: 'embed' | 'rawstream';
+  cameraFullscreenAction: CameraFullscreenAction;
 }
+
+export type CameraFullscreenAction = 'embed' | 'rawstream';
 
 // Config stored in moonraker db
 export interface ThemeConfig {
