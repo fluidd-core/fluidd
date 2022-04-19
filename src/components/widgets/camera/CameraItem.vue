@@ -43,7 +43,7 @@
       fps: {{ currentFPS }}
     </div>
     <div
-      v-if="cameraFullScreenUrl && ((fullscreen && fullscreenMode === 'embed') || !fullscreen)"
+      v-if="cameraFullScreenUrl && (!fullscreen || fullscreenMode === 'embed')"
       class="camera-fullscreen"
     >
       <a
