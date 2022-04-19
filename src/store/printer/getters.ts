@@ -101,6 +101,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintProgress: (state) => {
+    const { gcode_start_byte, gcode_end_byte, filename } = state.printer.current_file ?? {}
+    const { file_position } = state.printer.virtual_sdcard ?? {}
+
+    if (gcode_start_byte && gcode_end_byte && file_position && filename === state.printer.print_stats?.filename) {
+      if (file_position <= gcode_start_byte) return 0
+      if (file_position >= gcode_end_byte) return 1
+
+      const currentPosition = file_position - gcode_start_byte
+      const endPosition = gcode_end_byte - gcode_start_byte
+
+      if (currentPosition > 0 && endPosition > 0) return currentPosition / endPosition
+    }
+
     return state.printer.display_status.progress || 0
   },
 
