@@ -142,7 +142,7 @@ app:
       pause: Szünet
       preheat: Előfűtés
       presets: Előbeállítások
-      preview_gcode: A G-Kód előnézete
+      preview_gcode: A G-Code előnézete
       quad_gantry_level: QGL
       reboot: Újraindítás
       refresh: Frissítés
@@ -314,7 +314,7 @@ app:
       console: Konzol
       endstops: Végállások
       fans_outputs: Ventilátorok & Kimenetek
-      gcode_preview: G-Kód előnézet
+      gcode_preview: G-Code előnézet
       history: Történelem
       home: Otthon
       jobs: Feladatok
@@ -398,7 +398,7 @@ app:
       fps_target: FPS Cél
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
-      gcode_coords: Használja a G-Kód koordinátákat
+      gcode_coords: Használja a G-Code koordinátákat
       group_lower_layers: Csoportosítsa az alsó rétegeket
       invert_x_control: Fordított (X) vezérlés
       invert_y_control: Fordított (Y) vezérlés
@@ -413,7 +413,7 @@ app:
       show_rate_of_change: A hőmérséklet változás sebességének megjelenítése
       starts_with: Ezzel kezdődik
       theme_preset: Előre beállított téma
-      thermal_preset_gcode: G-Kód
+      thermal_preset_gcode: G-Code
       thermal_preset_name: Előre beállított név
       type: Típus
       z_adjust_values: Állítsa be a (Z) értékeket
@@ -428,14 +428,14 @@ app:
       console: Konzol
       camera: Kamera
       file_editor: Fájlszerkesztő
-      gcode_preview: G-Kód előnézet
+      gcode_preview: G-Code előnézet
       general: Általános
       macros: Makrók
       theme: Téma
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
     tooltip:
-      gcode_coords: Használja a G-Kód pozíciót a szerszámfej pozíciója helyett az irányítópulton
+      gcode_coords: Használja a G-Code pozíciót a szerszámfej pozíciója helyett az irányítópulton
   socket:
     msg:
       connecting: Csatlakozás a moonrakerhez...
