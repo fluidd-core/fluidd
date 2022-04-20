@@ -110,6 +110,7 @@
     />
 
     <file-preview-dialog
+      v-if="filePreviewState.open"
       :file="filePreviewState"
       removable
       downloadable
