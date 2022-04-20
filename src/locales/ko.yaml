@@ -264,7 +264,7 @@ app:
       console: 명령어 창
       endstops: 엔드스탑
       fans_outputs: 팬 컨트롤
-      gcode_preview: Gcode 미리보기 [ 베타 ]
+      gcode_preview: Gcode 미리보기
       history: 작업 기록
       home: 대시보드
       jobs: 작업

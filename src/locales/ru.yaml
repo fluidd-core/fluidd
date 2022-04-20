@@ -315,7 +315,7 @@ app:
       console: Консоль
       endstops: Точки остановки
       fans_outputs: Кулеры и выходы
-      gcode_preview: Предпросмотр GCode [ Бета ]
+      gcode_preview: Предпросмотр GCode
       history: История задач
       home: Панель управления
       jobs: Задачи

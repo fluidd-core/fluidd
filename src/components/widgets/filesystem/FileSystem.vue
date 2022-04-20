@@ -95,12 +95,14 @@
     />
 
     <file-system-download-dialog
+      v-if="currentDownload !== null"
       :value="currentDownload !== null"
       :file="currentDownload"
       @cancel="handleCancelDownload"
     />
 
     <file-system-upload-dialog
+      v-if="currentUploads.length > 0"
       :value="currentUploads.length > 0"
       :files="currentUploads"
       @cancel="handleCancelUpload"
