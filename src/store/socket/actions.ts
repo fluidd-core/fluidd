@@ -6,7 +6,7 @@ import { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus, FlashMessageTypes } from '@/eventBus'
-import { upperFirst, camelCase } from 'lodash'
+import { upperFirst, camelCase } from 'lodash-es'
 
 let retryTimeout: number
 

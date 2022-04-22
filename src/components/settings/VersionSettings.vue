@@ -106,6 +106,7 @@
     </v-card>
 
     <version-commit-history-dialog
+      v-if="informationDialogState.open"
       v-model="informationDialogState.open"
       :component="informationDialogState.component"
     />

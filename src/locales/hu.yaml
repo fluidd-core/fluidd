@@ -30,7 +30,7 @@ app:
       'on': Táblázat BE
       power: Kapacitás
       target: Cél
-      rate_of_change: Csere
+      rate_of_change: Hőváltozás
     tooltip:
       help: >-
         A nagyításhoz tartsd lenyomva a Shift billentyűt.<br />Kattints egy
@@ -42,7 +42,8 @@ app:
       flip_layout: Fordított elrendezés
       hide_temp_waits: Hőmérsékletek elrejtése
     placeholder:
-      command: Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
+      command: >-
+        Az automatikus kiegészítéshez használd a 'tab'-ot, parancslistához
         'help'-et, az előzményekhez 'arrows'-t.
   endpoint:
     error:
@@ -77,10 +78,10 @@ app:
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
     label:
       dir_name: Könyvtár neve
-      disk_usage: Lemez használat
+      disk_usage: Lemezhasználat
       diskinfo: Lemezinformációk
       downloaded: Letöltve
-      file_name: Fájl név
+      file_name: Fájlnév
       transfer_rate: Átviteli sebesség
       uploaded: Feltöltve
     msg:
@@ -203,7 +204,7 @@ app:
       edit_user: Felhasználó szerkesztése
       extrude_length: Extrudálás hossza
       extrude_speed: Extrudálás sebessége
-      filament: Nyomtatószál
+      filament: Szál
       file: Fájl
       finish_time: Befejezés
       flow: Átfolyás
@@ -313,7 +314,7 @@ app:
       console: Konzol
       endstops: Végállások
       fans_outputs: Ventilátorok & Kimenetek
-      gcode_preview: Gcode előnézet [ béta ]
+      gcode_preview: Gcode előnézet
       history: Történelem
       home: Otthon
       jobs: Feladatok
@@ -364,9 +365,9 @@ app:
       iframe: HTTP oldal
     camera_rotate_options:
       none: Nincs
-      90: 90°
-      180: 180°
-      270: 270°
+      '90': 90°
+      '180': 180°
+      '270': 270°
     label:
       all_off: Minden kikapcsolva
       all_on: Minden bekapcsolva
@@ -378,14 +379,14 @@ app:
       camera_url: Kamera URL
       confirm_on_estop: Kérjen megerősítést a Vészleállásnál
       confirm_on_power_device_change: Kérjen megerősítést a Leállításnál
-      confirm_dirty_editor_close: Kérjen megerősítést, mikor módosítások mentése nélkül zárja be a szerkesztőt
-      contains: Tartalmaz
+      confirm_dirty_editor_close: Kérjen megerősítést, mikor a módosítások mentése nélkül zárja be a szerkesztőt
+      contains: Tartalom
       dark_mode: Sötét mód
       default_extrude_length: Alapértelmezett extrudálási hossz
       default_extrude_speed: Alapértelmezett extrudálási sebesség
       default_toolhead_move_length: Alapértelmezett szerszámfej mozgási hossza
-      default_toolhead_xy_speed: Alapértelmezett XY szerszámfej sebesség
-      default_toolhead_z_speed: Alapértelmezett szerszámfej Z sebesség
+      default_toolhead_xy_speed: Alapértelmezett (XY) szerszámfej sebesség
+      default_toolhead_z_speed: Alapértelmezett (Z) szerszámfej sebesség
       draw_background: Háttér rajzolása
       enable: Engedélyez
       enable_notifications: Értesítések engedélyezése
@@ -397,11 +398,11 @@ app:
       fps_target: FPS Cél
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
-      gcode_coords: Használja a GCode koordinátákat
+      gcode_coords: Használja a Gcode koordinátákat
       group_lower_layers: Csoportosítsa az alsó rétegeket
-      invert_x_control: Fordított X vezérlés
-      invert_y_control: Fordított Y vezérlés
-      invert_z_control: Fordított Z vezérlés
+      invert_x_control: Fordított (X) vezérlés
+      invert_y_control: Fordított (Y) vezérlés
+      invert_z_control: Fordított (Z) vezérlés
       language: Megjelenítési nyelv
       move_line_width: Vonalszélesség mozgatása
       primary_color: Elsődleges szín
@@ -411,12 +412,12 @@ app:
       show_animations: Animációk megjelenítése
       show_rate_of_change: A hőmérséklet változás sebességének megjelenítése
       starts_with: Ezzel kezdődik
-      theme_preset: Közösségi előbeállítás
-      thermal_preset_gcode: GCode
+      theme_preset: Előre beállított téma
+      thermal_preset_gcode: Gcode
       thermal_preset_name: Előre beállított név
       type: Típus
-      z_adjust_values: Z Állítsa be az értékeket
-      date_time_format: Dátum és idő formátum
+      z_adjust_values: Állítsa be a (Z) értékeket
+      date_time_format: Dátum és időformátum
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
@@ -434,7 +435,7 @@ app:
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
     tooltip:
-      gcode_coords: Használja a GCode pozíciót a szerszámfej pozíciója helyett az irányítópulton
+      gcode_coords: Használja a Gcode pozíciót a szerszámfej pozíciója helyett az irányítópulton
   socket:
     msg:
       connecting: Csatlakozás a moonrakerhez...

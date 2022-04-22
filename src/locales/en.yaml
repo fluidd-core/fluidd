@@ -322,7 +322,7 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs
-      gcode_preview: Gcode Preview [ Beta ]
+      gcode_preview: Gcode Preview
       history: History
       home: Home
       jobs: Jobs

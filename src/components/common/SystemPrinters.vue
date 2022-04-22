@@ -42,6 +42,7 @@
     </v-list-item>
 
     <add-instance-dialog
+      v-if="instanceDialogOpen"
       v-model="instanceDialogOpen"
       @resolve="activateInstance"
     />

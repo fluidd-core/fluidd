@@ -11,7 +11,7 @@
         <z-height-adjust v-if="printerPrinting" />
       </v-col>
 
-      <v-col style="min-width: 280px; max-width: 420px;">
+      <v-col style="min-width: 380px; max-width: 420px;">
         <toolhead-position />
         <extruder-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="!printerPrinting" />

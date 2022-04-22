@@ -302,7 +302,7 @@ app:
       console: Terminale
       endstops: Finecorsa
       fans_outputs: Ventole & Output
-      gcode_preview: Anteprima GCode [ Beta ]
+      gcode_preview: Anteprima GCode
       history: Cronologia dei lavori
       home: Pannello di Controllo
       jobs: Lavori
