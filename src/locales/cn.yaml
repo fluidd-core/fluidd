@@ -341,7 +341,7 @@ app:
       default_extrude_length: 默认挤出距离
       default_extrude_speed: 默认挤出速度
       default_toolhead_move_length: 默认打印头移动距离
-      default_toolhead_xy_speed: 默认X Y轴移动速度
+      default_toolhead_xy_speed: 默认 X Y 轴移动速度
       default_toolhead_z_speed: 默认 Z 轴移动速度
       enable: 启用
       enable_notifications: 更新通知
