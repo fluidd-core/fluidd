@@ -139,7 +139,6 @@ app:
       set_color: 设置颜色
       socket_reconnect: 重新连接
       reset_stats: 重置统计信息
-      home_all: 全部归位
     error:
       app_setup_link: Fluidd 配置需求可以在 <a target="_blank" href="%{url}"> 处找到.</a>
       app_warnings_found: 找到％{appName}条警告。
@@ -221,7 +220,7 @@ app:
       smooth_time: 平滑时间
       edit_category: 编辑分类
       add_category: 添加分类
-      percent_time: 预计剩余
+      file_time: 预计剩余
     simple_form:
       error:
         invalid_url: 无效的URL地址
@@ -409,6 +408,7 @@ app:
     btn:
       home_x: 归位 X
       home_y: 归位 Y
+      home_all: 全部归位
     tooltip:
       extruder_disabled: 挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)
       home_xy: 归位 XY

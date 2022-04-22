@@ -39,7 +39,7 @@
           small-icon
           @click="sendGcode('G28', waits.onHomeAll)"
         >
-          {{ $t('app.general.btn.home_all') }}
+          {{ $t('app.tool.btn.home_all') }}
         </app-btn-toolhead-move>
       </v-col>
     </v-row>
