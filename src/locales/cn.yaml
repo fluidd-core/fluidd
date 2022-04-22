@@ -17,7 +17,7 @@ app:
       calibrate: 开始校准，该校准信息会默认保存为 defalut
       delete: 删除配置。该操作将会重启你的打印机
       load: 加载配置
-      save: 将校准的配置文件保存至 printer.cfg。该操作将会重启你的打印机
+      save: 将校准的配置文件应用于 printer.cfg。该操作将会重启你的打印机
   chart:
     label:
       current: 当前值
@@ -25,15 +25,15 @@ app:
       'off': 关闭图表
       'on': 开启图表
       power: 功率
-      rate_of_change: 修改
-      target: 目标
+      rate_of_change: 变化值
+      target: 目标值
     tooltip:
       help: 按住 Shift 键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
     label:
       auto_scroll: 自动滚动
       flip_layout: 翻转布局
-      hide_temp_waits: 隐藏温度等待信息
+      hide_temp_waits: 隐藏温度信息
     placeholder:
       command: 按 'tab' 自动补全命令，按 '↑↓' 键获取历史命令，输入 'help' 获取命令帮助
       scroll: 滚动至底部
@@ -45,9 +45,9 @@ app:
         这可能意味着您需要修改 Moonraker 配置。请参阅有关多打印机设置的<a href=\"%{url}\"
         target=\"_blank\">文档</a>
     hint:
-      add_printer: '例如：http://fluiddpi.local'
+      add_printer: 例如：http://fluiddpi.local
     msg:
-      trouble: '遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。'
+      trouble: 遇到麻烦？<a href="%{url}" target="_blank">点击此处</a> 查看更多信息。
     tooltip:
       endpoint_examples: >-
         输入您的 Moonraker API 地址。<br />例如：<br/><blockquote>http://fluidd.local,
@@ -87,7 +87,7 @@ app:
       upload_file: 上传文件
     tooltip:
       low_on_space: 磁盘空间不足
-      root_disabled: '{root} root 不可用，请检查日志'
+      root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
   gcode:
     btn:
       load_current_file: 载入当前文件
@@ -102,6 +102,7 @@ app:
       show_next_layer: 显示下一层
       show_previous_layer: 显示上一层
       show_retractions: 显示回抽
+      parsing_file: 解析文件
     msg:
       confirm: '文件 "%{filename}" 大小为 %{size}，这可能会导致系统短暂失去响应，是否确认？'
   general:
@@ -137,11 +138,11 @@ app:
       reprint: 重新打印
       reset_file: 重置文件
       reset_layout: 重置布局
-      reset_stats: 重置数据
-      restart_firmware: 重启硬件
+      reset_stats: 重置统计信息
+      restart_firmware: 重启Firmware
       restart_service: '重启 %{service}'
-      restart_service_klipper: 重启 Klipper
-      restart_service_moonraker: 重启 Moonraker
+      restart_service_klipper: 重启Klipper
+      restart_service_moonraker: 重启Moonraker
       resume: 恢复
       retract: 回抽
       save: 保存
@@ -156,12 +157,12 @@ app:
       upload_print: 上传并打印
       view: 查看
     error:
-      app_setup_link: '如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
+      app_setup_link: 如需查看 Fluidd 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。
       app_warnings_found: '％{appName} 出现警告'
       components_config: '如需查看 Moonraker 详细配置规则，请点击<a target="_blank" href="%{url}">此处</a>。'
       failed_components: Moonraker 插件启用失败，请检查您的日志，更新您的配置并重新启动 Moonraker。
     label:
-      accel_to_decel: 加速度减速速率
+      accel_to_decel: 加速到减速度
       acceleration: 加速度
       actual_time: 实际剩余
       add_camera: 添加摄像头
@@ -170,7 +171,7 @@ app:
       add_user: 添加用户
       alias: 别名
       api_key: API 密钥
-      api_url: API 地址
+      api_url: Moonraker 服务器地址
       apply_z_offset: 应用并保存Z轴偏移量
       category: 分类
       change_password: 更改密码
@@ -180,7 +181,7 @@ app:
       current_password: 当前密码
       disabled_while_printing: 打印时禁用
       edit_camera: 编辑摄像头设置
-      edit_filter: 编辑筛选
+      edit_filter: 编辑过滤器
       edit_preset: 编辑预设
       edit_user: 编辑用户
       extrude_length: 挤出距离
@@ -188,15 +189,15 @@ app:
       filament: 已用耗材
       file: 文件名称
       finish_time: 完成时间
-      flow: 流量
+      flow: 挤出流量
       free: 可用
       heaters_busy: 打印机正忙。关闭热端有可能会导致打印失败。
-      high: 高
+      high: 最高温度
       host: 主机
       layer: 层数
       layout: 布局
       longest_job: 单次耗时最长
-      low: 低
+      low: 最低温度
       m117: M117
       name: 名称
       new_password: 新密码
@@ -204,10 +205,10 @@ app:
       'off': 关闭
       'on': 开启
       password: 密码
-      power: 电源
-      pressure_advance: 压力提前
+      power: 设备
+      pressure_advance: 压力补偿
       printers: 打印机列表
-      progress: 当前进度
+      progress: 当前层进度
       requested_speed: 请求速度
       retract_length: 回抽距离
       retract_speed: 回抽速度
@@ -215,7 +216,7 @@ app:
       services: 服务
       slicer: 切片剩余
       smooth_time: 平滑时间
-      speed: 速度
+      speed: 移动速度
       sqv: 转角速度
       total: 已用时间
       total_filament: 总消耗耗材
@@ -234,6 +235,9 @@ app:
       velocity: 速度
       visible: 可见性
       z_offset: Z轴偏移
+      edit_category: 编辑分类
+      add_category: 添加分类
+      file_time: 预计剩余
     msg:
       password_changed: 密码已更改
       wrong_password: 密码错误
@@ -245,27 +249,27 @@ app:
         invalid_number: 无效数字
         invalid_url: 无效的URL地址
         max: '最大 %{max}'
-        min: '最小 %{min}'
+        min: '长度最小%{min}位'
         min_or_0: '最小 %{min} 或 0'
         password_username: 用户名密码不匹配
         required: 必填
       msg:
-        apply_z_offset_endstop: Z轴限位偏移将以当前Z轴偏移量的基础上进行计算
-        apply_z_offset_probe: 自动调平的Z轴偏移量将以当前Z轴偏移量的基础上进行计算
-        confirm: 你确定需要这样操作吗？
-        confirm_power_device_toggle: 你确定需要这样操作吗？该操作将会断开设备的电源。
-        confirm_reboot_host: 你确定需要这样操作吗？这将重启您的系统。
-        confirm_service_restart: '你确定你想重启 %{name} 服务吗?'
-        confirm_service_stop: '你确定你想停止 %{name} 服务吗?'
-        confirm_shutdown_host: 你确定需要这样操作吗？这将关闭您的系统。
-        unsaved_changes: 你有未保存的修改。你确定你想关闭该文件吗？
+        apply_z_offset_endstop: Z轴限位偏移将以当前Z轴偏移量的基础上进行计算并更新
+        apply_z_offset_probe: 自动调平的Z轴偏移量将以当前Z轴偏移量的基础上进行计算并更新
+        confirm: 是否确认？
+        confirm_power_device_toggle: 这会切换设备开关状态！是否确认？
+        confirm_reboot_host: 这会重启您的系统！是否确认？
+        confirm_service_restart: '你确定要重启 %{name} 服务吗?'
+        confirm_service_stop: '你确定要停止 %{name} 服务吗?'
+        confirm_shutdown_host: 这会关闭您的系统！是否确认？
+        unsaved_changes: 这会丢失未保存的更改！是否确认？
     table:
       header:
         actions: 展开
         end_time: 结束时间
-        estimated_time: 估计时间
-        filament: 耗材长度
-        filament_used: 耗材使用长度
+        estimated_time: 预计时间
+        filament: 预计使用耗材
+        filament_used: 实际使用耗材
         filament_weight_total: 耗材重量
         first_layer_bed_temp: 起始层热床温度
         first_layer_extr_temp: 起始层挤出温度
@@ -298,11 +302,11 @@ app:
       jobs: 任务列表
       limits: 打印机限制
       macros: 宏
-      other_files: 其他文件
+      other_files: 其他文件（日志、文档及参考配置）
       retract: 固件回抽
       runout_sensors: 断料检测传感器
       settings: 设置
-      stats: 打印状态
+      stats: 打印任务统计
       system: 系统
       system_overview: 系统信息
       temperature: 温度
@@ -315,12 +319,11 @@ app:
       restart_klipper: 重启 Klipper 服务
   history:
     msg:
-      confirm_jobs: 你确定需要这样操作吗？这将会清除所有的作业。
-      confirm_stats: 你确定需要这样操作吗？这将清除所有数据。
+      confirm_jobs: 这会清除任务历史信息！是否确认？
+      confirm_stats: 这会清除状态统计信息！是否确认？
   printer:
     state:
       busy: 处理中
-      cancelled: 取消
       complete: 完成
       idle: 空闲
       loading: 加载中
@@ -333,7 +336,7 @@ app:
     btn:
       add_camera: 添加摄像头
       add_category: 添加分类
-      add_filter: 添加过滤
+      add_filter: 添加过滤器
       add_thermal_preset: 添加预设
       add_user: 添加用户
       reset: 重置
@@ -342,38 +345,38 @@ app:
       '90': 90度
       '180': 180度
       '270': 270度
-      none: 无
+      none: 不旋转
     camera_type_options:
       iframe: HTTP 页面
       mjpegadaptive: MJPEG 自适应
-      mjpegstream: MJPEG 流
+      mjpegstream: MJPEG 视频流
       video: IP 摄像头
     label:
       all_off: 全部禁用
       all_on: 全部启用
-      auto_edit_extensions: 默认以编辑模式打开包含以下拓展名的文件
+      auto_edit_extensions: 自动进入编辑模式的文件类型
       camera_flip_x: 水平翻转
       camera_flip_y: 垂直翻转
-      camera_rotate_by: 旋转
+      camera_rotate_by: 旋转角度
       camera_stream_type: 视频流类型
       camera_url: 摄像头地址
-      confirm_dirty_editor_close: 文件未保存关闭时是否需要确认
+      confirm_dirty_editor_close: 编辑器有未保存的更改时需要确认
       confirm_on_estop: 紧急停止时是否需要确认
-      confirm_on_power_device_change: 电源变化时是否需要确认
-      contains: 包含
+      confirm_on_power_device_change: 改变设备开关状态时需要确认
+      contains: 包含字符
       dark_mode: 深色模式
-      date_time_format: 日期时间格式
-      default_extrude_length: 默认挤出长度
+      date_time_format: 日期和时间格式
+      default_extrude_length: 默认挤出距离
       default_extrude_speed: 默认挤出速度
       default_toolhead_move_length: 默认打印头移动距离
-      default_toolhead_xy_speed: 默认打印头XY轴速度
-      default_toolhead_z_speed: 默认打印头Z轴速度
+      default_toolhead_xy_speed: 默认 XY 轴移动速度
+      default_toolhead_z_speed: 默认 Z 轴移动速度
       draw_background: 显示背景
       enable: 启用
       enable_notifications: 更新通知
-      expression: 表达
+      expression: 表达式
       extrusion_line_width: 挤出线宽
-      filter: 过滤
+      filter: 过滤器列表
       flip_horizontal: 水平翻转
       flip_vertical: 垂直翻转
       fps_idle_target: 未对焦时 FPS
@@ -391,12 +394,12 @@ app:
       reset: 重置设定
       retraction_icon_size: 回抽图标大小
       show_animations: 显示动画
-      show_rate_of_change: 显示温度变化速率
-      starts_with: 以 ... 开始
+      show_rate_of_change: 显示温度变化值
+      starts_with: 起始字符
       theme_preset: 预设主题
       thermal_preset_gcode: GCode
       thermal_preset_name: 预设名称
-      toolhead_move_distances: 热头距离
+      toolhead_move_distances: 挤出头移动距离预设值
       type: 类型
       z_adjust_values: Z轴偏移量
     timer_options:
@@ -408,13 +411,13 @@ app:
       authentication: 安全认证
       camera: 摄像头
       console: 控制台
-      file_editor: 文件编辑
+      file_editor: 文本编辑器
       gcode_preview: GCode 预览
       general: 常规
       macros: 宏
       theme: 主题
       thermal_presets: 温度预设
-      tool: 工具
+      tool: 移动控制
     tooltip:
       gcode_coords: 使用 GCode 坐标位置而不是仪表板上的打印头坐标位置
   socket:
@@ -447,12 +450,18 @@ app:
       total_memory: 内存
   tool:
     btn:
-      home_x: X
-      home_y: Y
+      home_x: 归位 X
+      home_y: 归位 Y
+      home_all: 全部归位
     tooltip:
       extruder_disabled: '挤出机操作已被禁用，低于 min_extrude_temp 设置的最低温度 (%{min}<small>°C</small>)'
-      home_xy: 归零 XY
-      home_z: 归零 Z
+      home_xy: 归位 XY
+      home_z: 归位 Z
+      motors_off: 关闭电机
+      bed_screws_adjust: 手动调平螺丝
+      quad_gantry_level: 龙门架调平
+      screws_tilt_calculate: 辅助调平螺丝
+      z_tilt_adjust: Z轴倾斜调整
   version:
     btn:
       check_for_updates: 检查更新
