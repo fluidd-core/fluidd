@@ -86,7 +86,7 @@ app:
       transfer_rate: Átviteli sebesség
       uploaded: Feltöltve
     msg:
-      confirm: Biztos vagy benne? Ez minden fájlt és mappát törölni fog.
+      confirm: Biztos, hogy minden fájlt és mappát törölsz?
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
