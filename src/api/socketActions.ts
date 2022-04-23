@@ -485,5 +485,13 @@ export const SocketActions = {
         }
       }
     )
+  },
+
+  async serverAnnouncementsList () {
+    baseEmit(
+      'server.announcements.list', {
+        dispatch: 'announcements/onAnnouncementsList'
+      }
+    )
   }
 }

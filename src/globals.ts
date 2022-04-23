@@ -156,7 +156,8 @@ export const Globals = Object.freeze({
     auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
-    history: { name: 'history', dispatch: 'history/init' }
+    history: { name: 'history', dispatch: 'history/init' },
+    announcements: { name: 'announcements', dispatch: 'announcements/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [

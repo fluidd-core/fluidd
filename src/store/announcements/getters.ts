@@ -1,6 +1,12 @@
+import { GetterTree } from 'vuex'
 import { AnnouncementsState } from './types'
 import { RootState } from '../types'
-import { GetterTree } from 'vuex'
 
 export const getters: GetterTree<AnnouncementsState, RootState> = {
+  /**
+   * Returns all annoucements, sorted by start time.
+   */
+  getAnnouncements: (state) => {
+    return state.entries ?? []
+  }
 }

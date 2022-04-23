@@ -13,6 +13,7 @@ import { GcodePreviewState } from './gcodePreview/types'
 import { LayoutState } from './layout/types'
 import { MeshState } from './mesh/types'
 import { NotificationsState } from './notifications/types'
+import { AnnouncementsState } from './announcements/types'
 import { AuthState } from './auth/types'
 
 export interface RootState {
@@ -32,6 +33,7 @@ export interface RootState {
   version?: VersionState;
   gcodePreview?: GcodePreviewState;
   notifications?: NotificationsState;
+  announcements?: AnnouncementsState;
 }
 
 export type AppNotificationType = 'success' | 'info' | 'warning' | 'error'
