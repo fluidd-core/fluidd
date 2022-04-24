@@ -36,4 +36,4 @@ export interface RootState {
   announcements?: AnnouncementsState;
 }
 
-export type AppNotificationType = 'success' | 'info' | 'warning' | 'error'
+export type AppNotificationType = 'success' | 'info' | 'warning' | 'error' | 'announcement'

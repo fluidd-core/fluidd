@@ -190,9 +190,14 @@ export default class AppNotificationMenu extends Vue {
    */
   icon (n: AppNotification) {
     if (n.icon) return n.icon
-    if (n.type === 'info' || n.type === 'success') return '$info'
-    if (n.type === 'warning') return '$warning'
-    if (n.type === 'error') return '$error'
+    switch (n.type) {
+      case 'info':
+      case 'success':
+      case 'announcement':
+        return '$info'
+      case 'warning':
+        return '$warning'
+    }
     return '$error'
   }
 
@@ -248,14 +253,16 @@ export default class AppNotificationMenu extends Vue {
   ::v-deep .notification-success,
   ::v-deep .notification-info,
   ::v-deep .notification-warning,
-  ::v-deep .notification-error {
+  ::v-deep .notification-error,
+  ::v-deep .notification-announcement {
     border-left: solid 3px;
   }
 
   ::v-deep .notification-success {
     border-color: var(--v-success-base);
   }
-  ::v-deep .notification-info {
+  ::v-deep .notification-info,
+  ::v-deep .notification-announcement {
     border-color: var(--v-info-base);
   }
   ::v-deep .notification-warning {

@@ -9,10 +9,10 @@ export interface Announcement {
   title: string
   description: string
   priority: AnnouncementPriority
-  date: Date
+  date: number
   dismissed: boolean
-  date_dismissed: Date | null
-  dismiss_wake: Date | null
+  date_dismissed: number | null
+  dismiss_wake: number | null
   source: AnnouncementSource | string
   feed: string
 }
