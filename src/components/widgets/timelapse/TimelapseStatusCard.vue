@@ -142,8 +142,6 @@ export default class StatusCard extends Mixins(StateMixin) {
 
   get camera () {
     return this.$store.getters['cameras/getCameraById'](this.settings.camera) ??
-      this.$store.getters['cameras/getActiveCamera']() ??
-      this.$store.getters['cameras/getEnabledCameras']()[0] ??
       { url: '/webcam/?action=snapshot', type: 'mjpgadaptive' }
   }
 
