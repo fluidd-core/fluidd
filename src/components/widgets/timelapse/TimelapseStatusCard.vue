@@ -1,6 +1,5 @@
 <template>
   <collapsable-card
-    v-if="frameCount"
     :title="$t('app.timelapse.title.timelapse_status')"
     icon="$info"
     class="mb-2 sb-sm-4"
@@ -8,7 +7,10 @@
   >
     <v-card-text>
       <v-row>
-        <div style="position: relative">
+        <div
+          v-if="frameCount"
+          style="position: relative"
+        >
           <img
             :src="previewUrl"
             class="mx-auto thumbnail"
@@ -22,6 +24,10 @@
             :value="renderStatus.progress"
           />
         </div>
+        <camera-item
+          v-else
+          :camera="camera"
+        />
       </v-row>
 
       <v-row>
@@ -35,7 +41,7 @@
               :max="frameCount"
               :suffix="`/ ${frameCount}`"
               :reset-value="frameCount"
-              :disabled="isRendering"
+              :disabled="!frameCount || isRendering"
             />
           </v-layout>
         </v-col>
@@ -50,14 +56,14 @@
       <app-btn
         color="primary"
         text
-        :disabled="savingFrames"
+        :disabled="!frameCount || savingFrames"
         @click="saveFrames()"
       >
         {{ $t('app.timelapse.btn.save_frames') }}
       </app-btn>
       <app-btn
         color="primary"
-        :disabled="isRendering"
+        :disabled="!frameCount || isRendering"
         @click="$emit('openRenderDialog', true)"
       >
         {{ $t('app.timelapse.btn.render') }}
@@ -76,9 +82,12 @@ import AppSetting from '@/components/ui/AppSetting.vue'
 import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import AppBtn from '@/components/ui/AppBtn.vue'
+import CameraItem from '@/components/widgets/camera/CameraItem.vue'
+import { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: {
+    CameraItem,
     AppBtn,
     AppSetting,
     AppSlider,
@@ -129,6 +138,13 @@ export default class StatusCard extends Mixins(StateMixin) {
 
   get frameCount () {
     return this.lastFrame?.uniqueCount
+  }
+
+  get camera () {
+    return this.$store.getters['cameras/getCameraById'](this.settings.camera) ??
+      this.$store.getters['cameras/getActiveCamera']() ??
+      this.$store.getters['cameras/getEnabledCameras']()[0] ??
+      { url: '/webcam/?action=snapshot', type: 'mjpgadaptive' }
   }
 
   get settings (): TimelapseSettings {
