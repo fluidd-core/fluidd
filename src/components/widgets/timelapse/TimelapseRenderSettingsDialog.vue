@@ -29,6 +29,8 @@
           @click.native.stop
         />
       </app-setting>
+
+      <v-divider />
       <app-setting
         v-if="!variableFps"
         :title="$t('app.timelapse.setting.output_framerate')"
@@ -65,6 +67,8 @@
             @change="setTargetLength"
           />
         </app-setting>
+
+        <v-divider />
         <app-setting
           :title="$t('app.timelapse.setting.variable_fps_min')"
           :sub-title="subtitleIfBlocked(minFpsBlocked)"
@@ -82,6 +86,8 @@
             @change="setMinFps"
           />
         </app-setting>
+
+        <v-divider />
         <app-setting
           :title="$t('app.timelapse.setting.variable_fps_max')"
           :sub-title="subtitleIfBlocked(maxFpsBlocked)"
@@ -100,6 +106,8 @@
           />
         </app-setting>
       </div>
+
+      <v-divider />
       <app-setting
         :title="$t('app.timelapse.setting.saveframes')"
         :sub-title="subtitleIfBlocked(saveFramesBlocked)"
@@ -111,6 +119,8 @@
           @click.native.stop
         />
       </app-setting>
+
+      <v-divider />
       <app-setting
         :title="$t('app.timelapse.setting.duplicatelastframe')"
         :sub-title="subtitleIfBlocked(duplicateFramesBlocked)"
@@ -128,6 +138,8 @@
           @change="setDuplicateFrames"
         />
       </app-setting>
+
+      <v-divider />
       <app-setting
         :title="$t('app.timelapse.setting.previewimage')"
         :sub-title="subtitleIfBlocked(previewImageBlocked)"
