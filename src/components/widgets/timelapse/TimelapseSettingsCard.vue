@@ -17,6 +17,8 @@
         @click.native.stop
       />
     </app-setting>
+
+    <v-divider />
     <app-setting
       :title="$t('app.timelapse.setting.auto_render')"
       :sub-title="subtitleIfBlocked(autoRenderBlocked)"
@@ -28,6 +30,24 @@
         :disabled="autoRenderBlocked"
         @click.native.stop
       />
+    </app-setting>
+
+    <v-divider />
+    <app-setting :title="$tc('app.timelapse.title.render_settings')">
+      <app-btn
+        outlined
+        small
+        color="primary"
+        @click="$emit('openRenderDialog', false)"
+      >
+        <v-icon
+          small
+          left
+        >
+          $pencil
+        </v-icon>
+        {{ $t('app.general.btn.edit') }}
+      </app-btn>
     </app-setting>
   </collapsable-card>
 </template>

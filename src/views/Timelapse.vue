@@ -30,7 +30,7 @@
     <timelapse-render-settings-dialog
       v-if="renderDialogOpen"
       v-model="renderDialogOpen"
-      :renderable="true"
+      :renderable="renderDialogRenderable"
     />
   </v-row>
 </template>
@@ -55,8 +55,10 @@ import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/Timela
 })
 export default class Timelapse extends Mixins(StateMixin) {
   renderDialogOpen = false
+  renderDialogRenderable = false
 
-  openRenderDialog () {
+  openRenderDialog (renderable = false) {
+    this.renderDialogRenderable = renderable
     this.renderDialogOpen = true
   }
 }
