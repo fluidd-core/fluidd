@@ -54,10 +54,10 @@ export interface TimelapseWritableSettings {
   output_framerate: number;
   saveframes: boolean;
   duplicatelastframe: number;
+  constant_rate_factor: number;
   previewimage: boolean;
 
   // not in UI yet, low priority
-  constant_rate_factor: number;
   time_format_code: string;
   pixelformat: string;
   extraoutputparams: string;

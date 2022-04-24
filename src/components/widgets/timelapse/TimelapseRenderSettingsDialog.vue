@@ -140,6 +140,19 @@
       </app-setting>
 
       <v-divider />
+      <app-slider
+        :value="crf"
+        class="px-4 pt-3"
+        style="overflow: hidden"
+        :label="$tc('app.timelapse.setting.crf')"
+        :min="0"
+        :max="51"
+        :reset-value="defaultCRF"
+        :disabled="crfBlocked"
+        @change="setCRF"
+      />
+
+      <v-divider />
       <app-setting
         :title="$t('app.timelapse.setting.previewimage')"
         :sub-title="subtitleIfBlocked(previewImageBlocked)"
@@ -183,6 +196,7 @@ import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
+import { defaultWritableSettings } from '@/store/timelapse'
 
 @Component({
   components: { AppSetting }
@@ -344,6 +358,22 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
 
   get duplicateLastFrameCount () {
     return this.settings?.duplicatelastframe ?? 0
+  }
+
+  get crfBlocked (): boolean {
+    return this.$store.getters['timelapse/isBlockedSetting']('constant_rate_factor')
+  }
+
+  get crf (): number {
+    return this.settings?.constant_rate_factor
+  }
+
+  setCRF (value: number) {
+    SocketActions.machineTimelapseSetSettings({ constant_rate_factor: value })
+  }
+
+  get defaultCRF (): number {
+    return defaultWritableSettings.constant_rate_factor
   }
 
   get settings (): TimelapseSettings {

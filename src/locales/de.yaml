@@ -532,6 +532,7 @@ app:
     setting:
       enable: Aktiviert
       auto_render: Automatisches Rendern
+      crf: Constant Rate- Faktor
       duplicatelastframe: Letzte Bilder wiederholen
       fw_retract: Firmware-Retraction verwenden
       gcode_verbose: Verboser Gcode

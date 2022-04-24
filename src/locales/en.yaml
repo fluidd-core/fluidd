@@ -521,6 +521,7 @@ app:
     setting:
       enable: Enabled
       auto_render: Auto Render
+      crf: Constant Rate Factor
       duplicatelastframe: Duplicate last frames
       fw_retract: Use Firmware Retraction
       gcode_verbose: Verbose Gcode
