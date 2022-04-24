@@ -42,11 +42,11 @@ export const actions: ActionTree<AnnouncementsState, RootState> = {
     }
   },
 
-  dismiss (_, payload) {
-    SocketActions.serverAnnouncementsDismiss(payload.entry_id)
+  async dismiss (_, payload) {
+    SocketActions.serverAnnouncementsDismiss(payload.entry_id, payload.wake_time)
   },
 
-  dismissAll ({ state }) {
+  async dismissAll ({ state }) {
     const entries = [...state.entries]
 
     entries.forEach(async (entry: Announcement) => await SocketActions.serverAnnouncementsDismiss(entry.entry_id))
