@@ -24,6 +24,12 @@ export const actions: ActionTree<AnnouncementsState, RootState> = {
     }
   },
 
+  async onAnnouncementUpdate ({ commit }, payload) {
+    if (payload) {
+      commit('setAnnouncementsList', payload)
+    }
+  },
+
   async onAnnouncementDismissed ({ commit }, payload) {
     if (payload) {
       commit('setAnnouncementDismissed', { entry_id: payload.entry_id, dismissed: true })

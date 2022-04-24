@@ -12,8 +12,8 @@ export const mutations: MutationTree<AnnouncementsState> = {
   },
 
   setAnnouncementsList (state, payload: AnnouncementsState) {
-    if (payload.entries !== undefined) Vue.set(state, 'entries', payload.entries)
-    if (payload.feeds !== undefined) Vue.set(state, 'feeds', payload.feeds)
+    if (payload.entries) Vue.set(state, 'entries', payload.entries)
+    if (payload.feeds) Vue.set(state, 'feeds', payload.feeds)
   },
 
   setAnnouncementDismissed (state, payload: { entry_id: string, dismissed: boolean }) {
