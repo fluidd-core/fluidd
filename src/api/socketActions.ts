@@ -522,5 +522,25 @@ export const SocketActions = {
         }
       }
     )
+  },
+
+  async serverAnnouncementsList () {
+    baseEmit(
+      'server.announcements.list', {
+        dispatch: 'announcements/onAnnouncementsList'
+      }
+    )
+  },
+
+  async serverAnnouncementsDismiss (entry_id: string, wake_time?: number) {
+    baseEmit(
+      'server.announcements.dismiss', {
+        dispatch: 'void',
+        params: {
+          entry_id,
+          wake_time
+        }
+      }
+    )
   }
 }
