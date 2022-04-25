@@ -116,6 +116,7 @@ import {
   mdiFullscreen,
   mdiStop,
   mdiPlay,
+  mdiFileVideoOutline,
   mdiBellSleep
 } from '@mdi/js'
 
@@ -158,6 +159,7 @@ export const Globals = Object.freeze({
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' },
+    timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
     announcements: { name: 'announcements', dispatch: 'announcements/init' }
   },
   // Ordered by weight.
@@ -300,6 +302,7 @@ export const Icons = Object.freeze({
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
   fullScreen: mdiFullscreen,
+  video: mdiFileVideoOutline,
   snooze: mdiBellSleep
 })
 
@@ -344,5 +347,6 @@ export const Waits = Object.freeze({
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem'
+  onFileSystem: 'onFileSystem',
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
 })

@@ -15,6 +15,7 @@ import { MeshState } from './mesh/types'
 import { NotificationsState } from './notifications/types'
 import { AnnouncementsState } from './announcements/types'
 import { AuthState } from './auth/types'
+import { TimelapseState } from '@/store/timelapse/types'
 
 export interface RootState {
   socket?: SocketState;
@@ -34,6 +35,7 @@ export interface RootState {
   gcodePreview?: GcodePreviewState;
   notifications?: NotificationsState;
   announcements?: AnnouncementsState;
+  timelapse?: TimelapseState;
 }
 
 export type AppNotificationType = 'success' | 'info' | 'warning' | 'error' | 'announcement'

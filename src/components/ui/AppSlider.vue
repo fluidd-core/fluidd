@@ -2,6 +2,7 @@
   <v-form
     ref="form"
     v-model="valid"
+    :class="{'full-width-slider': fullWidth}"
     @submit.prevent
   >
     <v-row no-gutters>
@@ -135,6 +136,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   @Prop({ type: String })
   public suffix!: string;
 
+  @Prop({ type: Boolean, default: false })
+  public fullWidth!: boolean;
+
   @Ref('slider')
   slider!: VSlider;
 
@@ -252,3 +256,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.full-width-slider {
+  width: 100%;
+}
+</style>
