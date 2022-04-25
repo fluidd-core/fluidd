@@ -83,7 +83,6 @@ import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/tim
 import { SocketActions } from '@/api/socketActions'
 import AppBtn from '@/components/ui/AppBtn.vue'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: {
