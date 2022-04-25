@@ -237,7 +237,7 @@ app:
       smooth_time: Simítási idő
       speed: Sebesség
       sqv: Négyzet saroksebesség
-      total: Teljes
+      total: Eltelt
       total_filament: Összes felhasznált szál
       total_filament_avg: Átl. nyomtatásonként
       total_jobs: Összes nyomtatási feladat
@@ -347,7 +347,7 @@ app:
     state:
       busy: Elfoglalt
       cancelled: Törölt
-      complete: Teljes
+      complete: Kész
       idle: Tétlen
       loading: Betöltés
       paused: Szüneteltetve
