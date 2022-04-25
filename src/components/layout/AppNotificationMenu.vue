@@ -85,6 +85,7 @@
                   v-if="!n.to.startsWith('http')"
                   x-small
                   :to="n.to"
+                  class="mr-1"
                   @click="menu = false"
                   v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
                 />
@@ -93,8 +94,14 @@
                   x-small
                   :href="n.to"
                   target="_blank"
+                  class="mr-1"
                   @click="menu = false"
                   v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
+                />
+
+                <app-announcement-dismiss-menu
+                  v-if="n.type === 'announcement'"
+                  @dismiss="handleAnnouncementDismiss(n, $event)"
                 />
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -141,8 +148,13 @@
 <script lang="ts">
 import { AppNotification } from '@/store/notifications/types'
 import { Component, Vue } from 'vue-property-decorator'
+import AppAnnouncementDismissMenu from './AppAnnouncementDismissMenu.vue'
 
-@Component({})
+@Component({
+  components: {
+    AppAnnouncementDismissMenu
+  }
+})
 export default class AppNotificationMenu extends Vue {
   menu = false
 
@@ -211,6 +223,17 @@ export default class AppNotificationMenu extends Vue {
 
   handleClearAll () {
     this.$store.dispatch('notifications/clearAll')
+  }
+
+  handleAnnouncementDismiss (n: AppNotification, wake_time: number) {
+    if (n && wake_time) {
+      this.$store.dispatch('announcements/dismiss', {
+        entry_id: n.id,
+        wake_time
+      })
+
+      this.menu = false
+    }
   }
 }
 </script>

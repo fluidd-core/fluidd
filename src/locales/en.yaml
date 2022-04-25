@@ -162,6 +162,7 @@ app:
       send: Send
       set_color: Set Color
       shutdown: Shutdown
+      snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload

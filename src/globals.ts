@@ -115,7 +115,8 @@ import {
   mdiSwapVertical,
   mdiFullscreen,
   mdiStop,
-  mdiPlay
+  mdiPlay,
+  mdiBellSleep
 } from '@mdi/js'
 
 /**
@@ -298,7 +299,8 @@ export const Icons = Object.freeze({
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
-  fullScreen: mdiFullscreen
+  fullScreen: mdiFullscreen,
+  snooze: mdiBellSleep
 })
 
 export const Waits = Object.freeze({
