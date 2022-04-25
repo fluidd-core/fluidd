@@ -65,7 +65,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Add meg az API URL-címét.<br />Pár példa
-        látható;<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+        látható;<br /><blockquote>fluidd.local, http://192.168.1.150</blockquote>
   endstop:
     label:
       open: NYITVA
