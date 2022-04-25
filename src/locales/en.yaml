@@ -113,6 +113,7 @@ app:
       show_next_layer: Show next layer
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
+      parsing_file: Parsing file
     msg:
       confirm: >-
         The file "%{filename}" is %{size}, this might be resource intensive for
@@ -208,7 +209,9 @@ app:
       finish_time: Finish
       flow: Flow
       free: free
-      heaters_busy: The printer is currently busy. Turning off the heaters may result in a failed print.
+      heaters_busy: >-
+        The printer is currently busy. Turning off the heaters may result in a
+        failed print.
       high: High
       host: Host
       layer: Layer
@@ -254,6 +257,9 @@ app:
       unsaved_changes: Unsaved Changes
       alias: Alias
       apply_z_offset: Apply and Save Z_Offset
+      edit_category: Edit category
+      add_category: Add category
+      file_time: File
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -368,10 +374,10 @@ app:
       video: IP Camera
       iframe: HTTP page
     camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
       none: None
-      90: 90°
-      180: 180°
-      270: 270°
     label:
       all_off: All off
       all_on: All on
@@ -473,10 +479,16 @@ app:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: All
     tooltip:
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      motors_off: MOTORS OFF
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      bed_screws_adjust: BED_SCREWS_ADJUST
   version:
     btn:
       check_for_updates: Check for updates
