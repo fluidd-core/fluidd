@@ -115,7 +115,8 @@ import {
   mdiSwapVertical,
   mdiFullscreen,
   mdiStop,
-  mdiPlay
+  mdiPlay,
+  mdiFileVideoOutline
 } from '@mdi/js'
 
 /**
@@ -156,7 +157,8 @@ export const Globals = Object.freeze({
     auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
-    history: { name: 'history', dispatch: 'history/init' }
+    history: { name: 'history', dispatch: 'history/init' },
+    timelapse: { name: 'timelapse', dispatch: 'timelapse/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -297,7 +299,8 @@ export const Icons = Object.freeze({
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
-  fullScreen: mdiFullscreen
+  fullScreen: mdiFullscreen,
+  video: mdiFileVideoOutline
 })
 
 export const Waits = Object.freeze({
@@ -341,5 +344,6 @@ export const Waits = Object.freeze({
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem'
+  onFileSystem: 'onFileSystem',
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
 })

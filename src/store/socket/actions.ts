@@ -197,5 +197,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyServiceStateChanged ({ dispatch }, payload) {
     dispatch('server/onServiceStateChanged', payload, { root: true })
+  },
+
+  async notifyTimelapseEvent ({ dispatch }, payload) {
+    dispatch('timelapse/onEvent', payload, { root: true })
   }
 }

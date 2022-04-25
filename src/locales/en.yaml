@@ -329,6 +329,7 @@ app:
       system: System
       system_overview: System Information
       temperature: Thermals
+      timelapse: Timelapse
       tool: Tool
       tune: Tune
     tooltip:
@@ -501,3 +502,56 @@ app:
       invalid: indicates local changes to the repo
       packages: Packages
       release_notes: Release notes
+  timelapse:
+    btn:
+      render: Render
+      save_frames: Save Frames
+    error:
+      newframe: Error taking timelapse frame
+    label:
+      frames: '%{frames} frame | %{frames} frames'
+      length: 'Estimated length: %{length}'
+      frame: Frame | Frames
+    title:
+      timelapse_settings: Timelapse Settings
+      timelapse_status: Timelapse Status
+      render_settings: Render Settings
+    tooltip:
+      managed_by_moonraker: Managed by your moonraker configuration
+    setting:
+      enable: Enabled
+      auto_render: Auto Render
+      crf: Constant Rate Factor
+      duplicatelastframe: Duplicate last frames
+      fw_retract: Use Firmware Retraction
+      gcode_verbose: Verbose Gcode
+      mode: Mode
+      mode_layermacro: Layer Macro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse Cycle
+      output_framerate: Output Framerate
+      park_retract_distance: Park Retraction Distance
+      park_retract_speed: Park Retraction Speed
+      park_extrude_distance: Park Extrude Distance
+      park_extrude_speed: Park Extrude Speed
+      parkhead: Park Head
+      park_time: Park Time
+      park_travel_speed: Park Travel Speed
+      park_custom_pos_x: Park Position X
+      park_custom_pos_y: Park Position Y
+      park_custom_pos_dz: Park Position Z-Hop
+      parkpos:
+        label: Park Position
+        custom: Custom
+        front_left: Front Left
+        front_right: Front Right
+        center: Center
+        back_left: Back Left
+        back_right: Back Right
+      previewimage: Generate Thumbnail
+      saveframes: Save Frames
+      stream_delay_compensation: Delay Compensation
+      targetlength: Target Length
+      variable_fps: Variable FPS
+      variable_fps_min: Minimum Framerate
+      variable_fps_max: Maximum Framerate
