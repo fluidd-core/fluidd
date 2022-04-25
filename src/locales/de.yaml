@@ -334,6 +334,7 @@ app:
       system: System
       system_overview: Systeminformationen
       temperature: Temperaturen
+      timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
     tooltip:
@@ -512,3 +513,56 @@ app:
       invalid: Deutet auf lokale Änderungen im Git-Repository hin
       packages: Pakete
       release_notes: Veröffentlichungsnotizen
+  timelapse:
+    btn:
+      render: Rendern
+      save_frames: Bilder speichern
+    error:
+      newframe: Fehler beim Aufnehmen eines Zeitraffer-Bildes
+    label:
+      frames: '%{frames} Bild | %{frames} Bilder'
+      length: 'Geschätzte Länge: %{length}'
+      frame: Frame | Frames
+    title:
+      timelapse_settings: Zeitraffer-Einstellungen
+      timelapse_status: Zeitraffer-Status
+      render_settings: Render-Einstellungen
+    tooltip:
+      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
+    setting:
+      enable: Aktiviert
+      auto_render: Automatisches Rendern
+      crf: Constant Rate- Faktor
+      duplicatelastframe: Letzte Bilder wiederholen
+      fw_retract: Firmware-Retraction verwenden
+      gcode_verbose: Verboser Gcode
+      mode: Modus
+      mode_layermacro: Schicht-Makro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse-Intervall
+      output_framerate: Ausgabe-Bildrate
+      park_retract_distance: Retraction-Länge beim Parken
+      park_retract_speed: Retraction-Geschw. beim Parken
+      park_extrude_distance: Extrusionslänge beim Parken
+      park_extrude_speed: Extrusionsgeschw. beim Parken
+      parkhead: Druckkopf parken
+      park_time: Parkdauer
+      park_travel_speed: Park-Bewegungsgeschw.
+      park_custom_pos_x: Parkposition X
+      park_custom_pos_y: Parkposition Y
+      park_custom_pos_dz: Parkposition Z-Hop
+      parkpos:
+        label: Parkposition
+        custom: Benutzerdefiniert
+        front_left: Vorne links
+        front_right: Vorne rechts
+        center: Mitte
+        back_left: Hinten links
+        back_right: Hinten rechts
+      previewimage: Vorschaubild erzeugen
+      saveframes: Einzelbilder speichern
+      stream_delay_compensation: Verzögerungs-Kompensation
+      targetlength: Ziellänge
+      variable_fps: Variable Bildrate
+      variable_fps_min: Minimum Bildrate
+      variable_fps_max: Maximum Bildrate
