@@ -3,14 +3,26 @@
     :title="$t('app.general.title.jobs')"
     icon="$files"
     :draggable="true"
-    layout-path="dashboard.jobs-card">
+    layout-path="dashboard.jobs-card"
+  >
+    <template #menu>
+      <app-btn
+        color=""
+        fab
+        small
+        text
+        @click="$filters.routeTo($router, '/jobs')"
+      >
+        <v-icon>$fullScreen</v-icon>
+      </app-btn>
+    </template>
 
     <file-system
       roots="gcodes"
       name="dashboard"
       dense
       :height="400"
-    ></file-system>
+    />
   </collapsable-card>
 </template>
 

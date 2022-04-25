@@ -87,6 +87,8 @@ export interface Sensor {
   color?: string;
   type: string;
   temperature: number;
+  pressure?: number;
+  humidity?: number;
   target?: number;
   measured_min_temp?: number;
   measured_max_temp?: number;

@@ -1,11 +1,13 @@
 <template>
   <collapsable-card
     :title="$t('app.file_system.label.diskinfo')"
-    icon="$harddisk">
-
+    icon="$harddisk"
+  >
     <v-card-text>
       <v-layout justify-space-between>
-        <div class="">{{ $t('app.file_system.label.disk_usage') }}</div>
+        <div class="">
+          {{ $t('app.file_system.label.disk_usage') }}
+        </div>
       </v-layout>
       <v-progress-linear
         :size="90"
@@ -13,8 +15,7 @@
         :value="fileSystemUsedPercent"
         color="primary"
         class="my-1"
-      >
-      </v-progress-linear>
+      />
 
       <v-layout justify-space-between>
         <div class="">
@@ -41,9 +42,9 @@
         <tr>
           <th>{{ $t('app.system_info.label.manufactured') }}</th>
           <td>{{ sdInfo.manufacturer_date }}</td>
-        <tr>
+        </tr><tr>
           <th>{{ $t('app.system_info.label.product_name') }}</th>
-          <td>{{ sdInfo.product_name }} {{sdInfo.product_revision }}</td>
+          <td>{{ sdInfo.product_name }} {{ sdInfo.product_revision }}</td>
         </tr>
         <tr>
           <th>{{ $t('app.system_info.label.capacity') }}</th>
@@ -55,7 +56,6 @@
         </tr>
       </tbody>
     </v-simple-table>
-
   </collapsable-card>
 </template>
 

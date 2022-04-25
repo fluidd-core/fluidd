@@ -3,12 +3,12 @@
     class="filesystem-wrapper"
     :height="height"
     :max-height="maxHeight"
+    :class="{ 'no-pointer-events': dragState.overlay }"
     @dragenter.capture.prevent="handleDragEnter"
     @dragover.prevent
     @dragleave.self.prevent="handleDragLeave"
     @drop.prevent.stop="handleDropFile"
-    :class="{ 'no-pointer-events': dragState.overlay }">
-
+  >
     <file-system-toolbar
       v-if="selected.length <= 0"
       :roots="availableRoots"
@@ -25,14 +25,13 @@
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
       @filter="handleFilter"
-    ></file-system-toolbar>
+    />
 
     <file-system-bulk-actions
       v-if="selected.length > 0"
       :path="visiblePath"
       @remove="handleRemove(selected)"
-    >
-    </file-system-bulk-actions>
+    />
 
     <file-system-browser
       v-if="headers"
@@ -47,10 +46,10 @@
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
       :selected.sync="selected"
+      :large-thumbnails="timelapseBrowser"
       @row-click="handleRowClick"
       @move="handleMove"
-    >
-    </file-system-browser>
+    />
 
     <file-system-context-menu
       v-if="contextMenuState.open"
@@ -67,8 +66,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
-    >
-    </file-system-context-menu>
+    />
 
     <file-editor-dialog
       v-if="fileEditorDialogState.open"
@@ -77,9 +75,9 @@
       :filename="fileEditorDialogState.filename"
       :loading="fileEditorDialogState.loading"
       :readonly="fileEditorDialogState.readonly"
-      :root="this.currentRoot"
+      :root="currentRoot"
       @save="handleSaveFileChanges"
-    ></file-editor-dialog>
+    />
 
     <!-- A generic dialog to define the name of a file, or folder.
          Used to create, or rename a file or folder. -->
@@ -91,26 +89,35 @@
       :label="fileNameDialogState.label"
       :rules="fileNameDialogState.rules"
       @save="fileNameDialogState.handler"
-    >
-    </file-name-dialog>
+    />
 
     <file-system-drag-overlay
       v-model="dragState.overlay"
-    ></file-system-drag-overlay>
+    />
 
     <file-system-download-dialog
+      v-if="currentDownload !== null"
       :value="currentDownload !== null"
       :file="currentDownload"
       @cancel="handleCancelDownload"
-    >
-    </file-system-download-dialog>
+    />
 
     <file-system-upload-dialog
+      v-if="currentUploads.length > 0"
       :value="currentUploads.length > 0"
       :files="currentUploads"
       @cancel="handleCancelUpload"
-    >
-    </file-system-upload-dialog>
+    />
+
+    <file-preview-dialog
+      v-if="filePreviewState.open"
+      :file="filePreviewState"
+      removable
+      downloadable
+      @close="handleClosePreview"
+      @download="handleDownload"
+      @remove="handleRemove"
+    />
 
     <!-- <pre>roots: {{ availableRoots }}</pre>
     <pre>currentRoot: {{ currentRoot }}<br />currentPath: {{ currentPath }}<br />visiblePath: {{ visiblePath }}</pre>
@@ -121,7 +128,16 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilter } from '@/store/files/types'
+import {
+  AppDirectory,
+  AppFile,
+  AppFileWithMeta,
+  FilesUpload,
+  FileFilter,
+  KlipperFileWithMeta,
+  FilePreviewState,
+  FileBrowserEntry
+} from '@/store/files/types'
 import { Waits } from '@/globals'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
@@ -135,6 +151,7 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
+import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
 
@@ -154,7 +171,8 @@ import { AppTableHeader } from '@/types'
     FileEditorDialog,
     FileNameDialog,
     FileSystemDownloadDialog,
-    FileSystemUploadDialog
+    FileSystemUploadDialog,
+    FilePreviewDialog
   }
 })
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
@@ -180,6 +198,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Allow bulk-actions
   @Prop({ type: Boolean, default: false })
   bulkActions!: boolean;
+
+  // Override behavior (thumbnails, click/view actions) for timelapse browser
+  @Prop({ type: Boolean, default: false })
+  timelapseBrowser!: boolean;
 
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
@@ -208,7 +230,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Maintains any selected items and their state.
-  selected: (AppFile | AppFileWithMeta | AppDirectory)[] = []
+  selected: (FileBrowserEntry | AppFileWithMeta)[] = []
 
   // Maintains the file editor dialog state.
   fileEditorDialogState: any = {
@@ -227,6 +249,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     label: '',
     rules: [],
     handler: ''
+  }
+
+  filePreviewState: FilePreviewState = {
+    open: false,
+    type: '',
+    filename: '',
+    src: ''
   }
 
   // Gets available roots.
@@ -284,7 +313,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         {
           text: this.$t('app.general.table.header.last_printed'),
           value: 'print_start_time',
-          filter: (value: string, search: string | null, item: AppFile | AppFileWithMeta | AppDirectory) => {
+          filter: (value: string, search: string | null, item: FileBrowserEntry | AppFileWithMeta) => {
             const filter = this.filters.find(filter => filter.value === 'print_start_time')
             if (
               !this.filters ||
@@ -340,12 +369,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Get the available files given the current root and path.
-  get files (): AppFile[] | AppDirectory[] {
+  get files (): FileBrowserEntry[] {
+    return this.getAllFiles(this.timelapseBrowser ? this.transformTimelapseItems : undefined)
+  }
+
+  getAllFiles (transformFunction?: (files: FileBrowserEntry[]) => FileBrowserEntry[]): FileBrowserEntry[] {
     const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
     if (
       dir &&
       dir.items
     ) {
+      if (transformFunction) {
+        return transformFunction(dir.items)
+      }
+
       return dir.items
     }
     return []
@@ -374,6 +411,38 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   get registeredRoots () {
     return this.$store.state.server.info.registered_directories || []
+  }
+
+  transformTimelapseItems (items: FileBrowserEntry[]) {
+    const timelapses: {[key: string]: AppFile} = {}
+
+    for (const item of items) {
+      if (item.type === 'file' && item.extension !== 'jpg') {
+        timelapses[item.filename.slice(0, -(item.extension.length + 1))] = item
+      }
+    }
+
+    for (const item of items) {
+      if (item.type === 'file' && item.extension === 'jpg') {
+        const name = item.filename.slice(0, -4)
+        if (name in timelapses) {
+          const url = new URL(this.apiUrl ?? document.location.origin)
+          url.pathname = `/server/files/timelapse${item.path ? `/${item.path}` : ''}/${item.filename}`;
+
+          (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
+            absolute_path: url.toString(),
+            // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
+            data: '',
+            height: 0,
+            width: 0,
+            size: 0,
+            relative_path: ''
+          }]
+        }
+      }
+    }
+
+    return [...items.filter(item => item.type === 'directory'), ...Object.values(timelapses)]
   }
 
   // Set the initial root, and load the dir.
@@ -419,7 +488,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Handles a user clicking a file row.
-  handleRowClick (item: AppFile | AppDirectory, e: MouseEvent) {
+  handleRowClick (item: FileBrowserEntry, e: MouseEvent) {
     if (!this.contextMenuState.open && !this.disabled) {
       if (item.type === 'directory' && e.type !== 'contextmenu') {
         const dir = item as AppDirectory
@@ -437,13 +506,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         // Clear selected bulk items if we're navigating folders.
         this.selected = []
       } else {
-        // Open the context menu
-        this.contextMenuState.x = e.clientX
-        this.contextMenuState.y = e.clientY
-        this.contextMenuState.file = item
-        this.$nextTick(() => {
-          this.contextMenuState.open = true
-        })
+        if (
+          e.type === 'click' && item.type === 'file' &&
+          (
+            this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
+            this.timelapseBrowser
+          )
+        ) {
+          // Open the file editor
+          this.handleFileOpenDialog(item)
+        } else {
+          // Open the context menu
+          this.contextMenuState.x = e.clientX
+          this.contextMenuState.y = e.clientY
+          this.contextMenuState.file = item
+          this.$nextTick(() => {
+            this.contextMenuState.open = true
+          })
+        }
       }
     }
   }
@@ -453,7 +533,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Dialog handling.
    * ===========================================================================
   */
-  handleRenameDialog (item: AppFile | AppFileWithMeta | AppDirectory) {
+  handleRenameDialog (item: FileBrowserEntry | AppFileWithMeta) {
     if (this.disabled) return
     let title = this.$t('app.file_system.title.rename_dir')
     let label = this.$t('app.file_system.label.dir_name')
@@ -499,6 +579,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleFileOpenDialog (file: AppFile | AppFileWithMeta) {
+    if (this.timelapseBrowser && file.extension === 'zip') {
+      // don't download zipped frames before opening preview
+      this.filePreviewState = {
+        open: true,
+        type: 'unknown',
+        filename: file.filename,
+        src: '',
+        appFile: file
+      }
+      return
+    }
+
     // Grab the file. This should provide a dialog.
     this.cancelTokenSource = Axios.CancelToken.source()
     this.getFile(
@@ -506,23 +598,41 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.currentPath,
       file.size,
       {
-        responseType: 'text',
+        responseType: this.timelapseBrowser ? 'arraybuffer' : 'text',
         transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
       }
     )
       .then((response: AxiosResponse) => {
-        // Open the edit dialog.
-        this.fileEditorDialogState = {
-          open: true,
-          contents: response.data,
-          filename: file.filename,
-          loading: false,
-          readonly: this.rootProperties.readonly
+        if (this.timelapseBrowser) {
+          // Open the file preview dialog.
+          const type = response.headers['content-type']
+          const blob = new Blob([response.data], { type })
+          this.filePreviewState = {
+            open: true,
+            type,
+            filename: file.filename,
+            src: URL.createObjectURL(blob),
+            appFile: file
+          }
+        } else {
+          // Open the edit dialog.
+          this.fileEditorDialogState = {
+            open: true,
+            contents: response.data,
+            filename: file.filename,
+            loading: false,
+            readonly: this.rootProperties.readonly
+          }
         }
       })
       .finally(() => this.$store.dispatch('files/removeFileDownload'))
       .catch(e => e)
+  }
+
+  handleClosePreview () {
+    this.filePreviewState.open = false
+    URL.revokeObjectURL(this.filePreviewState.src)
   }
 
   handleCancelDownload () {
@@ -584,7 +694,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleMove (source: AppFile | AppFileWithMeta | AppDirectory | (AppFile | AppFileWithMeta | AppDirectory)[], destination: AppDirectory) {
+  handleMove (source: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], destination: AppDirectory) {
     let destinationPath = `${this.currentPath}/${destination.dirname}`
     if (destination.dirname === '..') {
       const arr = this.currentPath.split('/')
@@ -601,6 +711,15 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           ? `${destinationPath}/${item.filename}`
           : `${item.filename}`
         SocketActions.serverFilesMove(src, dest)
+
+        if (this.timelapseBrowser && item.extension !== 'jpg') {
+          // Move thumbnail
+          const name = item.filename.slice(0, -(item.extension.length + 1))
+          const thumbnails = this.getAllFiles().filter(file => file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name))
+          if (thumbnails.length) {
+            this.handleMove(thumbnails, destination)
+          }
+        }
       } else {
         const src = `${this.currentPath}/${item.dirname}`
         const dest = (destinationPath)
@@ -617,10 +736,30 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.serverFilesMove(src, dest)
   }
 
-  handleRemove (file: AppFile | AppFileWithMeta | AppDirectory | (AppFile | AppFileWithMeta | AppDirectory)[]) {
+  handleRemove (file: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], callback?: () => void) {
     if (this.disabled) return
 
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
+
+    if (this.timelapseBrowser) {
+      // Override thumbnails for timelapse browser
+      const thumbnails = []
+
+      const allFiles = this.getAllFiles()
+      for (const item of items) {
+        if (item.type === 'file') {
+          const name = item.filename.slice(0, -(item.extension.length + 1))
+
+          for (const file of allFiles) {
+            if (file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name)) {
+              thumbnails.push(file)
+            }
+          }
+        }
+      }
+
+      items.push(...thumbnails)
+    }
 
     const text = this.$tc('app.file_system.msg.confirm')
     this.$confirm(
@@ -634,6 +773,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.name}`)
           }
         })
+
+        if (callback) {
+          callback()
+        }
       })
   }
 

@@ -3,7 +3,7 @@ import { MutationTree } from 'vuex'
 import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './index'
 import { Globals } from '@/globals'
-import { merge, set } from 'lodash'
+import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
@@ -27,6 +27,14 @@ export const mutations: MutationTree<ConfigState> = {
       // Apply overrides.
       if (payload.general && payload.general.zAdjustDistances) {
         Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
+      }
+
+      if (payload.general && payload.general.toolheadMoveDistances) {
+        Vue.set(processed.general, 'toolheadMoveDistances', payload.general.toolheadMoveDistances)
+      }
+
+      if (payload.editor && payload.editor.autoEditExtensions) {
+        Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
       }
 
       Vue.set(state, 'uiSettings', processed)

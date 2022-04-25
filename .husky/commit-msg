@@ -1,0 +1,32 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+die () {
+  cat <<'EOF'
+Error: Commit messages should follow the conventional commits standard, and should have a Signed-off-by line, for example:
+
+```
+feat: My feature.
+
+Some description.
+
+Signed-off-by: Your Name <your email address>
+```
+
+EOF
+
+exit 1
+}
+
+COMMIT_MESSAGE=$(cat $1)
+
+COMMIT_HEAD="^merge.+|(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|types)(\(.+\))?: .{1,50}"
+COMMIT_SIGNED_OFF="signed-off-by: .*<.*@.*>"
+
+if ! echo "$COMMIT_MESSAGE" | grep -iqE "$COMMIT_HEAD"; then
+  die
+fi
+
+if ! echo "$COMMIT_MESSAGE" | grep -iqE "$COMMIT_SIGNED_OFF"; then
+  die
+fi

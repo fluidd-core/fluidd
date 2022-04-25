@@ -16,6 +16,7 @@ export const defaultState = (): CamerasState => {
         name: 'Default',
         type: 'mjpgadaptive',
         fpstarget: 15,
+        fpsidletarget: 5,
         url: '/webcam/?action=stream',
         flipX: false,
         flipY: false,

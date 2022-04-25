@@ -3,6 +3,7 @@ import { Globals, Waits } from '@/globals'
 import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
+import { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -24,6 +25,28 @@ export const SocketActions = {
     const wait = Waits.onServiceRestart
     baseEmit(
       'machine.services.restart', {
+        dispatch: 'void',
+        params: { service },
+        wait
+      }
+    )
+  },
+
+  async machineServicesStart (service: string) {
+    const wait = Waits.onServiceStart
+    baseEmit(
+      'machine.services.start', {
+        dispatch: 'void',
+        params: { service },
+        wait
+      }
+    )
+  },
+
+  async machineServicesStop (service: string) {
+    const wait = Waits.onServiceStop
+    baseEmit(
+      'machine.services.stop', {
         dispatch: 'void',
         params: { service },
         wait
@@ -153,6 +176,28 @@ export const SocketActions = {
     )
   },
 
+  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, wait?: string) {
+    baseEmit(
+      'machine.timelapse.post_settings', {
+        dispatch: 'timelapse/onSettings',
+        params: settings,
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseSaveFrames (wait?: string) {
+    baseEmit(
+      'machine.timelapse.saveframes', {
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseRender () {
+    baseEmit('machine.timelapse.render', {})
+  },
+
   async printerInfo () {
     baseEmit(
       'printer.info', {
@@ -280,6 +325,32 @@ export const SocketActions = {
     )
   },
 
+  async identify () {
+    baseEmit('server.connection.identify', {
+      dispatch: 'socket/onConnectionId',
+      params: {
+        client_name: Globals.APP_NAME,
+        version: `${store.state.version?.fluidd.version || '0.0.0'}-${store.state.version?.fluidd.hash || 'unknown'}`.trim(),
+        type: 'web',
+        url: Globals.GITHUB_REPO
+      }
+    })
+  },
+
+  async timelapseState () {
+    baseEmit(
+      'machine.timelapse.get_settings', {
+        dispatch: 'timelapse/onSettings'
+      }
+    )
+
+    baseEmit(
+      'machine.timelapse.lastframeinfo', {
+        dispatch: 'timelapse/onLastFrame'
+      }
+    )
+  },
+
   async serverConfig () {
     baseEmit(
       'server.config', {
@@ -346,15 +417,21 @@ export const SocketActions = {
 
   async serverHistoryDeleteJob (uid: string) {
     let params: any = { uid }
-    let dispatch = 'history/onDelete'
     if (uid === 'all') {
       params = { all: true }
-      dispatch = 'history/onDeleteAll'
     }
     baseEmit(
       'server.history.delete_job', {
-        dispatch,
+        dispatch: 'history/onDelete',
         params
+      }
+    )
+  },
+
+  async serverHistoryResetTotals () {
+    baseEmit(
+      'server.history.reset_totals', {
+        dispatch: 'history/onHistoryChange'
       }
     )
   },

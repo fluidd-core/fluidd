@@ -1,21 +1,27 @@
 <template>
   <div
-    class="console">
+    class="console"
+  >
+    <console-command
+      v-if="!readonly && flipLayout"
+      v-model="consoleCommand"
+      @send="sendCommand"
+    />
     <v-card
+      ref="console-wrapper"
       flat
       class="console-wrapper"
-      ref="console-wrapper"
     >
       <DynamicScroller
         ref="scroller"
-        :items="items"
+        :items="flipLayout ? [...items].reverse() : items"
         :min-item-size="24"
-        @resize="scrollToBottom()"
         :style="{ height: height + 'px' }"
         :key-field="keyField"
         :buffer="600"
+        @resize="scrollToLatest()"
       >
-        <template v-slot="{ item, index, active }">
+        <template #default="{ item, index, active }">
           <DynamicScrollerItem
             :item="item"
             :active="active"
@@ -25,22 +31,20 @@
             :data-index="index"
           >
             <console-item
-              :value="item"
               :key="item[keyField]"
-              @click="handleEntryClick"
+              :value="item"
               class="console-item"
-            >
-            </console-item>
+              @click="handleEntryClick"
+            />
           </DynamicScrollerItem>
         </template>
       </DynamicScroller>
     </v-card>
     <console-command
-      v-if="!readonly"
+      v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
       @send="sendCommand"
-    >
-    </console-command>
+    />
   </div>
 </template>
 
@@ -73,6 +77,10 @@ export default class Console extends Mixins(StateMixin) {
 
   @Ref('scroller') dynamicScroller: any
 
+  _lastScroll = 0
+  _lastHeight = 0
+  _pauseScroll = false
+
   get availableCommands () {
     return this.$store.getters['console/getAllGcodeCommands']
   }
@@ -85,8 +93,19 @@ export default class Console extends Mixins(StateMixin) {
     this.$store.commit('console/setConsoleCommand', val)
   }
 
+  get flipLayout (): boolean {
+    return this.$store.state.config.uiSettings.general.flipConsoleLayout
+  }
+
+  set flipLayout (_) {
+    this.scrollToLatest(true)
+  }
+
   mounted () {
-    this.scrollToBottom()
+    this.$nextTick(() => {
+      this.scrollToLatest()
+      this.watchScroll()
+    })
   }
 
   /**
@@ -106,19 +125,53 @@ export default class Console extends Mixins(StateMixin) {
       (item.id !== oldItem.id) ||
       val.length !== oldVal.length
     ) {
-      this.scrollToBottom()
+      this.scrollToLatest()
+      if (this.dynamicScroller) {
+        if (this.flipLayout && this._pauseScroll) {
+          const el = this.dynamicScroller.$el
+          el.scrollTop += el.scrollHeight - this._lastHeight
+        }
+
+        this._lastHeight = this.dynamicScroller.$el.scrollHeight
+      }
     }
   }
 
-  scrollToBottom () {
+  updateScrollingPaused (value: boolean) {
+    if (this._pauseScroll !== value) {
+      this._pauseScroll = value
+      this.$emit('update:scrollingPaused', value)
+    }
+  }
+
+  watchScroll () {
+    this.dynamicScroller.$el.addEventListener('scroll', (e: any) => {
+      const el = e.target
+      if (this.flipLayout ? (el.scrollTop > this._lastScroll) : (el.scrollTop < this._lastScroll)) {
+        this.updateScrollingPaused(true)
+      } else {
+        if (this._pauseScroll) {
+          if (this.flipLayout ? (el.scrollTop < 1) : (el.scrollHeight - el.scrollTop - el.clientHeight < 1)) {
+            this.updateScrollingPaused(false)
+          }
+        }
+      }
+      this._lastScroll = el.scrollTop
+    })
+  }
+
+  scrollToLatest (force?: boolean) {
     // If we have auto scroll turned off, then don't do this
-    // unless it's readonly.
+    // unless it's readonly or forced.
     if (this.dynamicScroller) {
+      if (this._pauseScroll && !force) return
       if (
         this.$store.state.console.autoScroll ||
-        this.readonly
+        this.readonly ||
+        force
       ) {
-        this.dynamicScroller.scrollToBottom()
+        this.dynamicScroller[this.flipLayout ? 'scrollToItem' : 'scrollToBottom'](0)
+        this.updateScrollingPaused(false)
       }
     }
   }

@@ -264,7 +264,7 @@ app:
       console: 명령어 창
       endstops: 엔드스탑
       fans_outputs: 팬 컨트롤
-      gcode_preview: Gcode 미리보기 [ 베타 ]
+      gcode_preview: Gcode 미리보기
       history: 작업 기록
       home: 대시보드
       jobs: 작업
@@ -284,8 +284,7 @@ app:
       reload_restart_klipper: Klipper 설정을 다시 불러오고, MCU(s)를 재시작 합니다.
       restart_klipper: Klipper 시스템 서비스를 다시 시작합니다.
   history:
-    msg:
-      confirm: 확실합니까? 모든 기록 및 프린터 통계가 삭제됩니다.
+    msg: {}
   printer:
     state:
       busy: 바쁨

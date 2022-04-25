@@ -1,6 +1,8 @@
 import { ArcMove, Move, Point, Rotation } from '@/store/gcodePreview/types'
 
-export const binarySearch = (arr: any[], comp: Function, approx = false): number => {
+type BinarySearchComparer<T> = (item: T, index: number, array: T[]) => number
+
+export const binarySearch = <T>(arr: T[], comp: BinarySearchComparer<T>, approx = false): number => {
   if (arr.length <= 1) {
     return 0
   }
@@ -20,7 +22,7 @@ export const binarySearch = (arr: any[], comp: Function, approx = false): number
       return index
     }
 
-    index = Math.round((bottomBound + topBound) / 2)
+    index = Math.floor((bottomBound + topBound) / 2)
   }
 
   return approx ? index : -1

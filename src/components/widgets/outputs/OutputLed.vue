@@ -11,13 +11,13 @@
       {{ led.prettyName }}
     </v-col>
     <v-col class="ml-auto py-0 text-right">
-        <app-color-picker
-          :primary="primaryColor"
-          :white="whiteColor"
-          @change="handleColorChange"
-          dot
-        >
-        </app-color-picker>
+      <app-color-picker
+        :primary="primaryColor"
+        :white="whiteColor"
+        :title="led.prettyName"
+        dot
+        @change="handleColorChange"
+      />
     </v-col>
   </v-row>
 </template>

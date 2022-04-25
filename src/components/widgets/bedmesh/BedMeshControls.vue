@@ -2,9 +2,12 @@
   <collapsable-card
     :title="$t('app.general.title.bedmesh_controls')"
     :lazy="false"
-    icon="$bedMesh">
-
-    <v-simple-table v-if="meshes.length > 0" class="no-hover">
+    icon="$bedMesh"
+  >
+    <v-simple-table
+      v-if="meshes.length > 0"
+      class="no-hover"
+    >
       <thead>
         <tr>
           <th>{{ $t('app.general.label.name') }}</th>
@@ -14,7 +17,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in meshes" :key="item.profile_name">
+        <tr
+          v-for="item in meshes"
+          :key="item.profile_name"
+        >
           <td class="">
             {{ item.profile_name }}
           </td>
@@ -22,31 +28,35 @@
             <v-chip
               v-if="item.active"
               small
-              block>
+              block
+            >
               active
             </v-chip>
           </td>
           <td class="focus--text">
             <span v-if="item.active && mesh.variance">
               {{ mesh.variance.toFixed(4) }}
-               <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
+              <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
             </span>
           </td>
-          <td class="text-right" nowrap>
+          <td
+            class="text-right"
+            nowrap
+          >
             <v-tooltip
               v-if="!item.active && !printerPrinting && !printerBusy"
               bottom
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <app-btn
-                  @click="loadProfile(item.profile_name)"
                   v-if="!item.active && !printerPrinting && !printerBusy"
                   v-bind="attrs"
-                  v-on="on"
                   x-small
                   color=""
                   fab
                   text
+                  @click="loadProfile(item.profile_name)"
+                  v-on="on"
                 >
                   <v-icon>$open</v-icon>
                 </app-btn>
@@ -55,18 +65,21 @@
             </v-tooltip>
 
             <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <app-btn
-                  @click="removeProfile(item.profile_name)"
                   :disabled="printerPrinting || printerBusy"
                   v-bind="attrs"
-                  v-on="on"
                   color=""
                   class="ml-2"
                   fab
                   text
-                  x-small>
-                  <v-icon color="">$close</v-icon>
+                  x-small
+                  @click="removeProfile(item.profile_name)"
+                  v-on="on"
+                >
+                  <v-icon color="">
+                    $close
+                  </v-icon>
                 </app-btn>
               </template>
               <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
@@ -79,30 +92,36 @@
     <v-divider />
 
     <v-card-text>
-      <div class="mb-4" v-if="meshes.length === 0">{{ $t('app.bedmesh.msg.not_found') }}</div>
+      <div
+        v-if="meshes.length === 0"
+        class="mb-4"
+      >
+        {{ $t('app.bedmesh.msg.not_found') }}
+      </div>
       <v-row>
         <v-col cols="6">
           <app-btn
-            @click="clearMesh()"
             :disabled="!meshLoaded || printerPrinting || printerBusy"
             small
             block
             class="mb-2"
+            @click="clearMesh()"
           >
             {{ $t('app.general.btn.clear_profile') }}
           </app-btn>
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <app-btn
                 v-bind="attrs"
-                v-on="on"
                 small
                 block
                 class="mb-2"
                 :loading="hasWait(waits.onMeshCalibrate)"
                 :disabled="printerPrinting || printerBusy"
-                @click="calibrate()">
+                v-on="on"
+                @click="calibrate()"
+              >
                 {{ $t('app.general.btn.calibrate') }}
               </app-btn>
             </template>
@@ -110,54 +129,63 @@
           </v-tooltip>
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <app-btn
                 v-bind="attrs"
-                v-on="on"
                 block
                 small
                 color="primary"
                 :disabled="!meshLoaded || printerPrinting || printerBusy"
-                @click="handleOpenSaveDialog()">
+                v-on="on"
+                @click="handleOpenSaveDialog()"
+              >
                 {{ $t('app.general.btn.save_as') }}
               </app-btn>
             </template>
             <span>{{ $t('app.bedmesh.tooltip.save') }}</span>
           </v-tooltip>
-
         </v-col>
         <v-col cols="6">
           <app-btn
-            @click="sendGcode('G28', waits.onHomeAll)"
             block
             small
             class="mb-2"
             :loading="hasWait(waits.onHomeAll)"
             :disabled="printerPrinting || printerBusy"
-            :color="(!allHomed) ? 'primary' : undefined">
-              <v-icon small class="mr-1">$home</v-icon> {{ $t('app.general.btn.all') }}
+            :color="(!allHomed) ? 'primary' : undefined"
+            @click="sendGcode('G28', waits.onHomeAll)"
+          >
+            <v-icon
+              small
+              class="mr-1"
+            >
+              $home
+            </v-icon> {{ $t('app.general.btn.all') }}
           </app-btn>
 
           <app-btn
             v-if="!printerPrinting && printerSupportsQgl"
-            @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
             :elevation="2"
             :loading="hasWait(waits.onQGL)"
             :disabled="printerPrinting || printerBusy"
             block
             class="mb-2"
-            small>
-              {{ $t('app.general.btn.quad_gantry_level') }}
+            small
+            @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+          >
+            {{ $t('app.general.btn.quad_gantry_level') }}
           </app-btn>
-
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-radio-group
-            :disabled="!meshLoaded"
             v-model="matrix"
+            :disabled="!meshLoaded"
             column
             hide-details
             class="mt-0 mb-2"
@@ -166,66 +194,63 @@
               :label="$t('app.bedmesh.label.probed_matrix')"
               color="primary"
               value="probed_matrix"
-            ></v-radio>
+            />
             <v-radio
               :label="$t('app.bedmesh.label.mesh_matrix')"
               color="primary"
               value="mesh_matrix"
-            ></v-radio>
+            />
           </v-radio-group>
-
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <v-checkbox
+            v-model="wireframe"
             :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.wireframe')"
-            v-model="wireframe"
             hide-details
             class="mt-0"
-          >
-          </v-checkbox>
+          />
 
           <v-checkbox
+            v-model="flatSurface"
             :disabled="!meshLoaded"
             :label="$t('app.bedmesh.label.flat_surface')"
-            v-model="flatSurface"
             hide-details
             class="mt-1"
-          >
-          </v-checkbox>
+          />
         </v-col>
       </v-row>
 
       <v-row>
         <v-col>
           <v-slider
+            v-model="mapScale"
             :label="$t('app.bedmesh.label.scale')"
             :disabled="!meshLoaded"
-            v-model="mapScale"
             :tick-labels="mapScaleLabels"
             :min="0"
             :max="0.2"
             step="0.1"
             ticks="always"
             tick-size="4"
-          >
-          </v-slider>
+          />
 
           <v-slider
+            v-model="boxScale"
             :label="$t('app.bedmesh.label.box_scale')"
             :disabled="!meshLoaded"
-            v-model="boxScale"
             :tick-labels="boxScaleLabels"
             :min="1"
             :max="2"
             step="0.5"
             ticks="always"
             tick-size="4"
-          >
-          </v-slider>
+          />
         </v-col>
       </v-row>
-
     </v-card-text>
 
     <save-mesh-dialog
@@ -233,8 +258,7 @@
       v-model="saveDialogState.open"
       :existing-name="saveDialogState.existingName"
       @save="handleMeshSave"
-    >
-    </save-mesh-dialog>
+    />
   </collapsable-card>
 </template>
 

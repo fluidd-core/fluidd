@@ -4,9 +4,9 @@
     :color="theme.currentTheme.drawer"
     :mini-variant="!hasSubNavigation"
     :floating="!hasSubNavigation"
-    @input="emitChange"
     clipped
     app
+    @input="emitChange"
   >
     <v-row
       class="fill-height"
@@ -23,59 +23,83 @@
           class="app-icon"
         >
           <router-link to="/">
-            <app-icon></app-icon>
+            <app-icon />
           </router-link>
         </div>
 
-        <div class="nav-items" v-show="authenticated && socketConnected">
+        <div
+          v-show="authenticated && socketConnected"
+          class="nav-items"
+        >
           <app-nav-item
             icon="$dash"
             exact
-            to="/">
+            to="/"
+          >
             {{ $t('app.general.title.home') }}
           </app-nav-item>
 
           <app-nav-item
+            icon="$console"
+            to="/console"
+          >
+            {{ $t('app.general.title.console') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$files"
-            to="/jobs">
+            to="/jobs"
+          >
             {{ $t('app.general.title.jobs') }}
           </app-nav-item>
 
           <app-nav-item
             v-if="supportsHistory"
             icon="$history"
-            to="/history">
+            to="/history"
+          >
             {{ $t('app.general.title.history') }}
           </app-nav-item>
 
           <app-nav-item
+            v-if="supportsTimelapse"
+            icon="$video"
+            to="/timelapse"
+          >
+            {{ $t('app.general.title.timelapse') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$tune"
-            to="/tune">
+            to="/tune"
+          >
             {{ $t('app.general.title.tune') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$codeJson"
-            to="/configure">
+            to="/configure"
+          >
             {{ $t('app.general.title.configure') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$desktopTower"
-            to="/system">
+            to="/system"
+          >
             {{ $t('app.general.title.system') }}
           </app-nav-item>
 
           <app-nav-item
             icon="$cog"
-            to="/settings">
+            to="/settings"
+          >
             {{ $t('app.general.title.settings') }}
           </app-nav-item>
         </div>
-
       </v-navigation-drawer>
 
-      <router-view name="navigation"></router-view>
+      <router-view name="navigation" />
     </v-row>
   </v-navigation-drawer>
 </template>
@@ -96,6 +120,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsHistory () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  get supportsTimelapse () {
+    return this.$store.getters['server/componentSupport']('timelapse')
   }
 
   get supportsVersions () {

@@ -1,14 +1,20 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="850"
     scrollable
+    @input="$emit('input', $event)"
   >
     <v-card v-if="component">
       <v-card-title class="card-heading py-2">
-        <span class="focus--text" v-if="'commits_behind' in component">{{ $t('app.version.label.commit_history') }}</span>
-        <span class="focus--text" v-else>{{ $t('app.version.label.package_list') }}</span>
+        <span
+          v-if="'commits_behind' in component"
+          class="focus--text"
+        >{{ $t('app.version.label.commit_history') }}</span>
+        <span
+          v-else
+          class="focus--text"
+        >{{ $t('app.version.label.package_list') }}</span>
 
         <v-spacer />
         <app-btn
@@ -22,30 +28,36 @@
 
       <v-divider />
 
-      <v-card-text class="py-0 pl-0" v-if="commitHistory">
-
+      <v-card-text
+        v-if="commitHistory"
+        class="py-0 pl-0"
+      >
         <!-- History Items. -->
-        <template>
-          <v-timeline
-            align-top
-            dense
+        <v-timeline
+          align-top
+          dense
+        >
+          <v-timeline-item
+            v-for="(key) in commitHistory.keys"
+            :key="`key-${key}`"
+            color="transparent"
+            small
           >
-            <v-timeline-item
-              v-for="(key) in commitHistory.keys"
-              :key="`key-${key}`"
-              color="transparent"
-              small
-            >
-              <template v-slot:icon>
-                <v-icon class="rotate-90" color="secondary">$commit</v-icon>
-              </template>
+            <template #icon>
+              <v-icon
+                class="rotate-90"
+                color="secondary"
+              >
+                $commit
+              </v-icon>
+            </template>
 
-              <div class="secondary--text mb-4">
-                {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
-              </div>
+            <div class="secondary--text mb-4">
+              {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
+            </div>
 
-              <ol class="commit-history">
-                <template v-for="commit in commitHistory.result[key]">
+            <ol class="commit-history">
+              <template v-for="commit in commitHistory.result[key]">
                 <li
                   :key="commit.sha"
                 >
@@ -56,7 +68,7 @@
                     <div class="secondary--text">
                       <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
                       <a
-                         class="secondary--text"
+                        class="secondary--text"
                         :href="`${baseUrl}/commits/${component.branch}`"
                         target="_blank"
                       >
@@ -77,31 +89,27 @@
                     </app-btn>
                   </div>
                 </li>
-                </template>
-              </ol>
-            </v-timeline-item>
-          </v-timeline>
-
-        </template>
-
+              </template>
+            </ol>
+          </v-timeline-item>
+        </v-timeline>
       </v-card-text>
 
       <v-card-text
-        class="pt-4"
         v-if="component.package_list"
+        class="pt-4"
       >
         <!-- OS Packages -->
         <div class="chip-group">
           <v-chip
-            small
             v-for="chip in component.package_list"
             :key="chip"
+            small
           >
             {{ chip }}
           </v-chip>
         </div>
       </v-card-text>
-
     </v-card>
   </v-dialog>
 </template>

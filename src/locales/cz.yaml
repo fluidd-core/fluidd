@@ -11,8 +11,8 @@ app:
       wireframe: Drátěný model
     msg:
       hint: >-
-        Pokud uložíte pod jiným názvem než %{name}, 
-        můžete původní profil %{name} odstranit.
+        Pokud uložíte pod jiným názvem než %{name},  můžete původní profil
+        %{name} odstranit.
       not_found: Síť bodů nenalezena.
       not_loaded: Síť bodů nenačtena.
     tooltip:
@@ -30,8 +30,8 @@ app:
       target: Cílová
     tooltip:
       help: >-
-        Pro přiblížení podržte Shift.<br />Pro přepnutí grafu klikněte na položku.<br/>
-        Klikněte na výkon pro jeho zobrazení v grafu.
+        Pro přiblížení podržte Shift.<br />Pro přepnutí grafu klikněte na
+        položku.<br/> Klikněte na výkon pro jeho zobrazení v grafu.
   console:
     label:
       auto_scroll: Automatický posun
@@ -41,23 +41,23 @@ app:
   endpoint:
     error:
       cant_connect: >-
-        Něco se pokazilo a fluidd se nemůže připojit na cílovou adresu.
-        Jste si jistí že je adresa správně zadaná?
+        Něco se pokazilo a fluidd se nemůže připojit na cílovou adresu. Jste si
+        jistí že je adresa správně zadaná?
       cors_error: Zablokováno CORS politikou
       cors_note: >-
         To znamená, že bude třeba upravit konfiguraci moonrakeru. Prosím
-        pročtěte si dokumentaci ohledně multi printer nastavení 
-        <a href="%{url}" target="_blank">zde</a>
+        pročtěte si dokumentaci ohledně multi printer nastavení  <a
+        href="%{url}" target="_blank">zde</a>
     hint:
       add_printer: Např. http://fluiddpi.local
     msg:
       trouble: >-
-        Nefunguje Vám něco? <a href="%{url}" target="_blank">Klikněte zde
-        </a> pro více informací.
+        Nefunguje Vám něco? <a href="%{url}" target="_blank">Klikněte zde </a>
+        pro více informací.
     tooltip:
       endpoint_examples: >-
-        Vložte URL Vašeho API.<br />Příklad URL;<br
-        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+        Vložte URL Vašeho API.<br />Příklad URL;<br /><blockquote>fluidd.local,
+        https://192.168.1.150</blockquote>
   endstop:
     label:
       open: OTEVŘEN
@@ -209,7 +209,7 @@ app:
       name: Jméno
       new_password: Nové heslo
       no_notifications: Žádné notifikace
-      'off': 'Vypnuto'
+      'off': Vypnuto
       password: Heslo
       power: Výkon
       printers: Tiskárny
@@ -288,7 +288,7 @@ app:
       console: Konzole
       endstops: Koncové spínače
       fans_outputs: Větráky a výstupy
-      gcode_preview: Zobrazení Gcode [ Beta ]
+      gcode_preview: Zobrazení Gcode
       history: Historie
       home: Domů
       jobs: Soubory
@@ -309,8 +309,7 @@ app:
       reload_restart_klipper: Obnoví konfiguraci klipperu a restartuje MCU.
       restart_klipper: Restartuje systémovou službu klipper.
   history:
-    msg:
-      confirm: Jste si jistí? Toto smaže veškerou historii a statistiky tiskárny
+    msg: {}
   printer:
     state:
       busy: Zaneprázdněn
@@ -387,7 +386,9 @@ app:
   socket:
     msg:
       connecting: Připojuji se na moonraker...
-      no_connection: Žádné připojení k moonrakeru. Zkontrolujte stav moonrakeru nebo jej obnovte.
+      no_connection: >-
+        Žádné připojení k moonrakeru. Zkontrolujte stav moonrakeru nebo jej
+        obnovte.
   system_info:
     label:
       capacity: Kapacita
@@ -415,7 +416,7 @@ app:
   tool:
     btn:
       home_x: X
-      home_y: Y
+      home_y: 'Y'
     tooltip:
       extruder_disabled: Extruze zakázána pod min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Výchozí pozice XY
@@ -435,14 +436,16 @@ app:
       os_packages: Balíčky systému
       package_list: Seznam balíčků
       up_to_date: AKTUÁLNÍ
-      updates_available: Dostupné aktualizace 
+      updates_available: Dostupné aktualizace
     status:
       finished: Aktualizace hotova
       updating: Aktualizuji...
     title: Aktualizace programů
     tooltip:
       commit_history: Historie commitů
-      dirty: naznačuje odpojený (git) head, není v (git) masteru nebo neplatný (git) origin
+      dirty: >-
+        naznačuje odpojený (git) head, není v (git) masteru nebo neplatný (git)
+        origin
       invalid: naznačuje lokální změny v repositáři
       packages: Balíčky
       release_notes: Poznámky k vydání

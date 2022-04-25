@@ -24,12 +24,13 @@ app:
         printer
   chart:
     label:
-      current: Temp
+      current: Actual
       item: Name
       'off': Chart off
       'on': Chart on
       power: Power
       target: Target
+      rate_of_change: Change
     tooltip:
       help: >-
         Hold shift to zoom.<br />Click an item to toggle in the graph.<br
@@ -37,9 +38,11 @@ app:
   console:
     label:
       auto_scroll: Auto scroll
+      flip_layout: Flip layout
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+      scroll: Scroll to bottom
   endpoint:
     error:
       cant_connect: >-
@@ -110,6 +113,7 @@ app:
       show_next_layer: Show next layer
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
+      parsing_file: Parsing file
     msg:
       confirm: >-
         The file "%{filename}" is %{size}, this might be resource intensive for
@@ -164,6 +168,7 @@ app:
       upload: Upload
       upload_print: Upload & Print
       view: View
+      reset_stats: Reset Stats
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -203,6 +208,9 @@ app:
       finish_time: Finish
       flow: Flow
       free: free
+      heaters_busy: >-
+        The printer is currently busy. Turning off the heaters may result in a
+        failed print.
       high: High
       host: Host
       layer: Layer
@@ -217,6 +225,7 @@ app:
       'off': 'Off'
       password: Password
       power: Power
+      pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
       requested_speed: Speed
@@ -225,6 +234,7 @@ app:
       save_as: Save As
       services: Services
       slicer: Slicer
+      smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
       total: Total
@@ -245,6 +255,10 @@ app:
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
       alias: Alias
+      apply_z_offset: Apply and Save Z_Offset
+      edit_category: Edit category
+      add_category: Add category
+      file_time: File
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
@@ -252,6 +266,7 @@ app:
       error:
         arrayofnums: Only numbers
         exists: Already exists
+        invalid_number: Invalid Number
         invalid_url: Invalid URL
         invalid_expression: Invalid Expression
         max: Max %{max}
@@ -263,8 +278,16 @@ app:
         confirm: Are you sure?
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
+        confirm_service_restart: Are you sure you want to restart the %{name} service?
+        confirm_service_stop: Are you sure you want to stop the %{name} service?
         confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
         unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
+        apply_z_offset_endstop: >-
+          Endstop Z-Offset will be calculated and updated from the current
+          Z-Offset.
+        apply_z_offset_probe: >-
+          Probe/Bltouch Z-Offset will be calculated and updated from the current
+          Z-Offset.
     table:
       header:
         actions: Actions
@@ -298,12 +321,13 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs
-      gcode_preview: Gcode Preview [ Beta ]
+      gcode_preview: Gcode Preview
       history: History
       home: Home
       jobs: Jobs
       limits: Printer Limits
       macros: Macros
+      other_files: Other Files
       retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
@@ -311,6 +335,7 @@ app:
       system: System
       system_overview: System Information
       temperature: Thermals
+      timelapse: Timelapse
       tool: Tool
       tune: Tune
     tooltip:
@@ -320,10 +345,12 @@ app:
       restart_klipper: Restarts the klipper system service.
   history:
     msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
+      confirm_jobs: Are you sure? This will clear all jobs.
+      confirm_stats: Are you sure? This will clear all stats.
   printer:
     state:
       busy: Busy
+      cancelled: Cancelled
       complete: Complete
       idle: Idle
       loading: Loading
@@ -334,6 +361,7 @@ app:
   setting:
     btn:
       add_camera: Add Camera
+      add_category: Add Category
       add_filter: Add Filter
       add_thermal_preset: Add Preset
       add_user: Add user
@@ -344,11 +372,18 @@ app:
       mjpegstream: MJPEG Stream
       video: IP Camera
       iframe: HTTP page
+    camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
+      none: None
     label:
       all_off: All off
       all_on: All on
+      auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
@@ -370,8 +405,10 @@ app:
       flip_vertical: Vertical Flip
       filter: Filter | Filters
       fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
+      group_lower_layers: Group lower layers
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -382,10 +419,12 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      show_rate_of_change: Show temperature rate of change
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
+      toolhead_move_distances: Toolhead distance values
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
@@ -398,6 +437,7 @@ app:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
       macros: Macros
@@ -438,10 +478,16 @@ app:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: All
     tooltip:
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      motors_off: MOTORS OFF
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      bed_screws_adjust: BED_SCREWS_ADJUST
   version:
     btn:
       check_for_updates: Check for updates
@@ -468,3 +514,56 @@ app:
       invalid: indicates local changes to the repo
       packages: Packages
       release_notes: Release notes
+  timelapse:
+    btn:
+      render: Render
+      save_frames: Save Frames
+    error:
+      newframe: Error taking timelapse frame
+    label:
+      frames: '%{frames} frame | %{frames} frames'
+      length: 'Estimated length: %{length}'
+      frame: Frame | Frames
+    title:
+      timelapse_settings: Timelapse Settings
+      timelapse_status: Timelapse Status
+      render_settings: Render Settings
+    tooltip:
+      managed_by_moonraker: Managed by your moonraker configuration
+    setting:
+      enable: Enabled
+      auto_render: Auto Render
+      crf: Constant Rate Factor
+      duplicatelastframe: Duplicate last frames
+      fw_retract: Use Firmware Retraction
+      gcode_verbose: Verbose Gcode
+      mode: Mode
+      mode_layermacro: Layer Macro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse Cycle
+      output_framerate: Output Framerate
+      park_retract_distance: Park Retraction Distance
+      park_retract_speed: Park Retraction Speed
+      park_extrude_distance: Park Extrude Distance
+      park_extrude_speed: Park Extrude Speed
+      parkhead: Park Head
+      park_time: Park Time
+      park_travel_speed: Park Travel Speed
+      park_custom_pos_x: Park Position X
+      park_custom_pos_y: Park Position Y
+      park_custom_pos_dz: Park Position Z-Hop
+      parkpos:
+        label: Park Position
+        custom: Custom
+        front_left: Front Left
+        front_right: Front Right
+        center: Center
+        back_left: Back Left
+        back_right: Back Right
+      previewimage: Generate Thumbnail
+      saveframes: Save Frames
+      stream_delay_compensation: Delay Compensation
+      targetlength: Target Length
+      variable_fps: Variable FPS
+      variable_fps_min: Minimum Framerate
+      variable_fps_max: Maximum Framerate

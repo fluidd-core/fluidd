@@ -1,26 +1,39 @@
 <template>
   <v-row
     no-gutters
-    v-on="$listeners"
     v-bind="$attrs"
     :class="classes"
     class="setting"
+    v-on="$listeners"
   >
     <div
       v-if="accentColor && accentColor !== ''"
       :style="`background-color: ${accentColor};`"
-      class="setting__accent-color">
-    </div>
-    <v-col :cols="cols[0]" class="setting-title" align-self="center">
-      <slot name="title">{{ title }}</slot>
-      <div class="setting-sub-title secondary--text" v-if="hasSubTitle">
+      class="setting__accent-color"
+    />
+    <v-col
+      :cols="cols[0]"
+      class="setting-title"
+      align-self="center"
+    >
+      <slot name="title">
+        {{ title }}
+      </slot>
+      <div
+        v-if="hasSubTitle"
+        class="setting-sub-title secondary--text"
+      >
         <slot name="sub-title">
-            {{ subTitle }}
+          {{ subTitle }}
         </slot>
       </div>
     </v-col>
-    <v-col :cols="cols[1]" class="setting-controls" align-self="center">
-      <slot></slot>
+    <v-col
+      :cols="cols[1]"
+      class="setting-controls"
+      align-self="center"
+    >
+      <slot />
     </v-col>
   </v-row>
 </template>

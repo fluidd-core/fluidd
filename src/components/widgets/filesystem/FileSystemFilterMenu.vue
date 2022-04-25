@@ -6,7 +6,7 @@
     transition="slide-y-transition"
     :close-on-content-click="false"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-badge
         bordered
         color="warning"
@@ -18,7 +18,9 @@
       >
         <v-btn
           :disabled="disabled"
-          fab small text
+          fab
+          small
+          text
           v-bind="attrs"
           v-on="on"
         >
@@ -40,13 +42,13 @@
       >
         <template v-for="(filter, i) in filters">
           <v-list-item
-            :disabled="disabled"
             :key="`filter-${i}`"
+            :disabled="disabled"
             :value="filter"
           >
-            <template v-slot:default="{ active }">
+            <template #default="{ active }">
               <v-list-item-action>
-                <v-checkbox :input-value="active"></v-checkbox>
+                <v-checkbox :input-value="active" />
               </v-list-item-action>
               <v-list-item-content>
                 <v-list-item-title>

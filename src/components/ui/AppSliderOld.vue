@@ -1,6 +1,13 @@
 <template>
-  <v-form ref="inputSliderForm" v-model="valid" @submit.prevent>
-    <v-layout align-center justify-space-between>
+  <v-form
+    ref="inputSliderForm"
+    v-model="valid"
+    @submit.prevent
+  >
+    <v-layout
+      align-center
+      justify-space-between
+    >
       <div
         class="text-body-1"
         :style="(readonly) ? 'padding: 2px 0 3px 0;' : ''"
@@ -11,47 +18,53 @@
         <small
           class="mr-2"
           v-html="valueLabel"
-        >
-        </small>
+        />
         <span
           v-if="readonly"
           class="focus--text"
           :class="{ 'text--darken-2': isDisabled, 'text--lighten-1': !isDisabled }"
         >
           {{ newValue }}
-          <small>{{valueSuffix}}</small>
+          <small>{{ valueSuffix }}</small>
         </span>
         <v-btn
           v-if="isMobile"
           icon
           small
           :disabled="disabled"
-          @click="lockState = !lockState"
           class="mr-2"
+          @click="lockState = !lockState"
         >
-          <v-icon small v-if="isLocked">$pencil</v-icon>
-          <v-icon small v-else>$lockReset</v-icon>
+          <v-icon
+            v-if="isLocked"
+            small
+          >
+            $pencil
+          </v-icon>
+          <v-icon
+            v-else
+            small
+          >
+            $lockReset
+          </v-icon>
         </v-btn>
         <v-text-field
           v-if="!readonly"
-          @change="handleTextChange"
           :value="newValue"
           :suffix="valueSuffix"
           :rules="rules"
           :class="classes"
           :disabled="isDisabled || loading"
-          @focus="$event.target.select()"
           class="v-input--x-dense v-input--text-right"
           single-line
           outlined
           hide-details
-        >
-        </v-text-field>
+          @change="handleTextChange"
+          @focus="$event.target.select()"
+        />
       </div>
     </v-layout>
     <v-slider
-      @change="handleSliderChange"
-      @input="newValue = $event"
       :value="newValue"
       :rules="rules"
       :min="min"
@@ -62,21 +75,25 @@
       :thumb-label="false"
       dense
       hide-details
+      @change="handleSliderChange"
+      @input="newValue = $event"
     >
-      <template v-slot:prepend>
+      <template #prepend>
         <v-icon
           :disabled="readonly || isDisabled || newValue === 0"
+          color="grey"
           @click="handleClickChange(newValue - step)"
-          color="grey">
+        >
           $minus
         </v-icon>
       </template>
 
-      <template v-slot:append>
+      <template #append>
         <v-icon
           :disabled="readonly || isDisabled || newValue === max"
+          color="grey"
           @click="handleClickChange(newValue + step)"
-          color="grey">
+        >
           $plus
         </v-icon>
       </template>

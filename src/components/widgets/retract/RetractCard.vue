@@ -3,8 +3,9 @@
     :title="$t('app.general.title.retract')"
     icon="$retract"
     :draggable="true"
-    layout-path="dashboard.retract-card">
-    <retract></retract>
+    layout-path="dashboard.retract-card"
+  >
+    <retract />
   </collapsable-card>
 </template>
 

@@ -1,18 +1,19 @@
 <template>
   <div>
-    <v-subheader id="toolhead">{{ $t('app.setting.title.tool') }}</v-subheader>
+    <v-subheader id="toolhead">
+      {{ $t('app.setting.title.tool') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.invert_x_control')">
         <v-switch
           v-model="invertX"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -22,8 +23,7 @@
           v-model="invertY"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -33,8 +33,7 @@
           v-model="invertZ"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -42,13 +41,13 @@
       <app-setting
         :title="$t('app.setting.label.gcode_coords')"
         :sub-title="$t('app.setting.tooltip.gcode_coords')"
-        :r-cols="2">
+        :r-cols="2"
+      >
         <v-switch
           v-model="useGcodeCoords"
           hide-details
           class="mt-0 mb-4"
-        >
-        </v-switch>
+        />
       </app-setting>
 
       <v-divider />
@@ -56,14 +55,14 @@
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
         <v-text-field
           :value="defaultExtrudeLength"
-          @change="setDefaultExtrudeLength"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+          @change="setDefaultExtrudeLength"
+        />
       </app-setting>
 
       <v-divider />
@@ -71,14 +70,14 @@
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
         <v-text-field
           :value="defaultExtrudeSpeed"
-          @change="setDefaultExtrudeSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+          @change="setDefaultExtrudeSpeed"
+        />
       </app-setting>
 
       <v-divider />
@@ -86,15 +85,15 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
         <v-select
           :value="defaultToolheadMoveLength"
-          :items="[0.1, 1.0, 10, 25, 50, 100]"
-          @change="setDefaultToolheadMoveLength"
-          :rules="[rules.numRequired, rules.numMin]"
+          :items="toolheadMoveDistances"
+          :rules="[rules.numRequired]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-select>
+          @change="setDefaultToolheadMoveLength"
+        />
       </app-setting>
 
       <v-divider />
@@ -102,14 +101,14 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
         <v-text-field
           :value="defaultToolheadXYSpeed"
-          @change="setDefaultToolheadYXSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+          @change="setDefaultToolheadYXSpeed"
+        />
       </app-setting>
 
       <v-divider />
@@ -117,20 +116,39 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
         <v-text-field
           :value="defaultToolheadZSpeed"
-          @change="setDefaultToolheadZSpeed"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm/s"
-        ></v-text-field>
+          @change="setDefaultToolheadZSpeed"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
+        <v-combobox
+          ref="toolheadMoveDistances"
+          v-model="toolheadMoveDistances"
+          filled
+          dense
+          hide-selected
+          hide-details="auto"
+          multiple
+          small-chips
+          append-icon=""
+          deletable-chips
+          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(6), rules.arrayOnlyNumbers]"
+        />
       </app-setting>
 
       <v-divider />
 
       <app-setting :title="$t('app.setting.label.z_adjust_values')">
         <v-combobox
+          ref="zAdjustValues"
           v-model="zAdjustValues"
           filled
           dense
@@ -140,15 +158,11 @@
           small-chips
           append-icon=""
           deletable-chips
-          :rules="[
-              v => v.length > 0 || $t('app.general.simple_form.error.min', { min: 1 }),
-              v => v.length <= 4 || $t('app.general.simple_form.error.max', { max: 4 }),
-              v => !v.some(isNaN) || $t('app.general.simple_form.error.arrayofnums')
-          ]"
-        ></v-combobox>
+          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(4), rules.arrayOnlyNumbers]"
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
@@ -160,22 +174,28 @@
           {{ $t('app.setting.btn.reset') }}
         </app-btn>
       </app-setting>
-
     </v-card>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/index'
 
 @Component({
   components: {}
 })
 export default class ToolHeadSettings extends Vue {
+  @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
+
+  @Ref('zAdjustValues') readonly zAdjustValuesElement!: any;
+
   rules = {
-    numRequired: (v: number | string) => v !== '' || 'Required',
-    numMin: (v: number) => v >= 1 || 'Min 1'
+    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
+    numMin: (v: number) => v >= 1 || this.$t('app.general.simple_form.error.min', { min: 1 }),
+    arrayNumMin: (min: number) => (v: any[]) => v.length >= min || this.$t('app.general.simple_form.error.min', { min }),
+    arrayNumMax: (max: number) => (v: any[]) => v.length <= max || this.$t('app.general.simple_form.error.max', { max }),
+    arrayOnlyNumbers: (v: any[]) => !v.some(isNaN) || this.$t('app.general.simple_form.error.arrayofnums')
   }
 
   get defaultExtrudeSpeed () {
@@ -242,10 +262,30 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.zAdjustDistances
   }
 
-  set zAdjustValues (value: number[]) {
+  set zAdjustValues (value: (number | string)[]) {
+    if (!this.zAdjustValuesElement.validate(true)) {
+      return
+    }
+
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.zAdjustDistances',
-      value,
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+      server: true
+    })
+  }
+
+  get toolheadMoveDistances () {
+    return this.$store.state.config.uiSettings.general.toolheadMoveDistances
+  }
+
+  set toolheadMoveDistances (value: (number | string)[]) {
+    if (!this.toolheadMoveDistancesElement.validate(true)) {
+      return
+    }
+
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.toolheadMoveDistances',
+      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
       server: true
     })
   }

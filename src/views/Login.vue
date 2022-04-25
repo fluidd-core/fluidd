@@ -1,28 +1,43 @@
 <template>
-  <v-row :dense="$vuetify.breakpoint.smAndDown" justify="center" align="center">
-    <v-col cols="12" md="4" lg="3" xl="2">
+  <v-row
+    :dense="$vuetify.breakpoint.smAndDown"
+    justify="center"
+    align="center"
+  >
+    <v-col
+      cols="12"
+      md="4"
+      lg="3"
+      xl="2"
+    >
       <v-form
         ref="form"
-        @submit.prevent="handleLogin"
         v-model="valid"
+        @submit.prevent="handleLogin"
       >
         <div class="text-center">
-          <p>Welcome back.<br />Sign in below to stay in touch with your printer.</p>
+          <p>Welcome back.<br>Sign in below to stay in touch with your printer.</p>
 
-          <v-alert type="error" v-if="error">Invalid credentials</v-alert>
+          <v-alert
+            v-if="error"
+            type="error"
+          >
+            Invalid credentials
+          </v-alert>
 
           <v-text-field
+            v-model="username"
             label="Username"
             autocomplete="username"
             filled
             dense
             hide-details="auto"
             :disabled="loading"
-            v-model="username"
-            class="mb-4">
-          </v-text-field>
+            class="mb-4"
+          />
 
           <v-text-field
+            v-model="password"
             label="Password"
             autocomplete="current-password"
             filled
@@ -30,9 +45,8 @@
             type="password"
             hide-details="auto"
             :disabled="loading"
-            v-model="password"
-            class="mb-4">
-          </v-text-field>
+            class="mb-4"
+          />
 
           <app-btn
             type="submit"
@@ -41,7 +55,12 @@
             block
             class="mb-6"
           >
-            <v-icon class="spin mr-2" v-if="loading">$loading</v-icon>
+            <v-icon
+              v-if="loading"
+              class="spin mr-2"
+            >
+              $loading
+            </v-icon>
             Login
           </app-btn>
 
@@ -66,7 +85,6 @@
           </app-btn>
         </div>
       </v-form>
-
     </v-col>
   </v-row>
 </template>

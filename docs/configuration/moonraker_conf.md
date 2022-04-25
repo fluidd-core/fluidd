@@ -19,10 +19,14 @@ Your moonraker configuration can usually be found here: `~/klipper_config/moonra
 host: 0.0.0.0
 port: 7125
 enable_debug_logging: False
+
+[file_manager]
 config_path: ~/klipper_config
+log_path: ~/klipper_logs
+
+[data_store]
 temperature_store_size: 600
 gcode_store_size: 1000
-log_path: ~/klipper_logs
 
 [authorization]
 force_logins: true
@@ -50,6 +54,6 @@ enable_auto_refresh: True
 
 [update_manager client fluidd]
 type: web
-repo: cadriel/fluidd
+repo: fluidd-core/fluidd
 path: ~/fluidd
 ```

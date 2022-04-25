@@ -4,8 +4,8 @@
     :nowrap="nowrap"
     :class="{ 'text-end': right }"
   >
-    <slot></slot>
-    <span v-if="!this.$slots.default">--</span>
+    <slot />
+    <span v-if="!$slots.default">--</span>
   </td>
 </template>
 

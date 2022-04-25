@@ -1,5 +1,8 @@
 <template>
-  <v-layout justify-space-between align-center>
+  <v-layout
+    justify-space-between
+    align-center
+  >
     <div
       class="text-body-1"
     >
@@ -10,10 +13,9 @@
       :input-value="value"
       :disabled="disabled"
       hide-details
-      @change="emitChange"
       flat
-    >
-    </v-switch>
+      @change="emitChange"
+    />
   </v-layout>
 </template>
 

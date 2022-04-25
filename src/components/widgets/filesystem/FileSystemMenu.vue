@@ -5,10 +5,12 @@
     offset-y
     transition="slide-y-transition"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         :disabled="disabled"
-        fab small text
+        fab
+        small
+        text
         v-bind="attrs"
         v-on="on"
       >
@@ -19,48 +21,73 @@
     </template>
 
     <v-list
-      dense>
+      dense
+    >
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
-        @click="emulateClick(false)">
+        @click="emulateClick(false)"
+      >
         <v-list-item-title>
-          <v-icon small left>$fileUpload</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $fileUpload
+          </v-icon>
           {{ $t('app.general.btn.upload') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
         v-if="!readonly && root === 'gcodes'"
         :disabled="disabled"
-        @click="emulateClick(true)">
+        @click="emulateClick(true)"
+      >
         <v-list-item-title>
-          <v-icon small left>$progressUpload</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $progressUpload
+          </v-icon>
           {{ $t('app.general.btn.upload_print') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
-        @click="$emit('add-file')">
+        @click="$emit('add-file')"
+      >
         <v-list-item-title>
-          <v-icon small left>$fileAdd</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $fileAdd
+          </v-icon>
           {{ $t('app.general.btn.add_file') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
-        v-if="!readonly"
+        v-if="!readonly || canCreateDirectory"
         :disabled="disabled"
-        @click="$emit('add-dir')">
+        @click="$emit('add-dir')"
+      >
         <v-list-item-title>
-          <v-icon small left>$folderAdd</v-icon>
+          <v-icon
+            small
+            left
+          >
+            $folderAdd
+          </v-icon>
           {{ $t('app.general.btn.add_dir') }}
         </v-list-item-title>
       </v-list-item>
     </v-list>
     <input
-      type="file"
-      ref="uploadFile"
       :id="`${_uid}BtnFileUpload`"
+      ref="uploadFile"
+      type="file"
       :accept="accepts"
       style="display: none"
       multiple
@@ -89,6 +116,10 @@ export default class FileSystemMenu extends Vue {
 
   get accepts () {
     return this.$store.getters['files/getRootProperties'](this.root).accepts.join(',')
+  }
+
+  get canCreateDirectory () {
+    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
   }
 
   emulateClick (startPrint: boolean) {

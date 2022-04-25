@@ -1,121 +1,136 @@
 <template>
   <v-menu
-      v-model="menu"
-      ref="menu"
-      bottom
-      left
-      :max-width="260"
-      :close-on-content-click="false"
-    >
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          v-show="!dot"
-          v-bind="attrs"
-          v-on="on"
-          :color="primaryColor.hexString"
-          outlined
-          small
-        >
-          {{ title }}
-        </v-btn>
+    ref="menu"
+    v-model="menu"
+    bottom
+    left
+    :max-width="260"
+    :close-on-content-click="false"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        v-show="!dot"
+        v-bind="attrs"
+        :color="primaryColor.hexString"
+        outlined
+        small
+        v-on="on"
+      >
+        {{ title }}
+      </v-btn>
 
+      <v-icon
+        v-show="dot"
+        v-bind="attrs"
+        :color="primaryColor.hexString"
+        v-on="on"
+      >
+        $circle
+      </v-icon>
+    </template>
+    <v-card ref="card">
+      <v-card-title
+        v-if="title"
+        class="card-heading mb-2"
+        style="cursor: move; user-select: none;"
+        @mousedown="startMouseDrag"
+        @touchstart="startTouchDrag"
+        @touchmove="touchMove"
+      >
+        {{ title }}
+      </v-card-title>
+      <v-card-text>
         <v-icon
-          v-show="dot"
-          v-bind="attrs"
-          v-on="on"
           :color="primaryColor.hexString"
+          large
         >
           $circle
         </v-icon>
 
-      </template>
-      <v-card>
-        <v-card-text>
+        <v-icon
+          v-if="white"
+          :color="whiteColor.hexString"
+          large
+        >
+          $circle
+        </v-icon>
 
-          <v-icon
+        <v-layout
+          align-center
+          column
+        >
+          <!-- <pre>{{primaryColor.hexString}}</pre> -->
+          <!-- standard full color picker -->
+          <app-iro-color-picker
+            v-if="primaryColor"
             :color="primaryColor.hexString"
-            large
-          >
-            $circle
-          </v-icon>
+            :options="primaryOptions"
+            @color:change="handleColorChange('primary', $event)"
+          />
 
-          <v-icon
-            v-if="this.white"
+          <!-- white channel color picker -->
+          <app-iro-color-picker
+            v-if="white"
+            class="mt-4"
             :color="whiteColor.hexString"
-            large
-          >
-            $circle
-          </v-icon>
+            :options="whiteOptions"
+            @color:change="handleColorChange('white', $event)"
+          />
+        </v-layout>
 
-          <v-layout align-center column>
-            <!-- <pre>{{primaryColor.hexString}}</pre> -->
-            <!-- standard full color picker -->
-            <app-iro-color-picker
-              v-if="primaryColor"
-              :color="primaryColor.hexString"
-              :options="primaryOptions"
-              @color:change="handleColorChange('primary', $event)"
-            >
-            </app-iro-color-picker>
-
-            <!-- white channel color picker -->
-            <app-iro-color-picker
-              v-if="this.white"
-              class="mt-4"
-              :color="whiteColor.hexString"
-              :options="whiteOptions"
-              @color:change="handleColorChange('white', $event)"
-            >
-            </app-iro-color-picker>
-          </v-layout>
-
-          <!-- <pre>{{ primaryColor }}</pre>
+        <!-- <pre>{{ primaryColor }}</pre>
           <pre v-if="this.white">{{ whiteColor }}</pre> -->
-          <v-layout class="mt-4" justify-space-between>
-            <div class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model.number="primaryColor.rgb.r"
-                outlined
-              ></v-text-field>
-              <div>R</div>
-            </div>
-            <div class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model.number="primaryColor.rgb.g"
-                outlined
-              ></v-text-field>
-              <div>G</div>
-            </div>
-            <div class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model.number="primaryColor.rgb.b"
-                outlined
-              ></v-text-field>
-              <div>B</div>
-            </div>
-            <div v-if="this.white" class="color-input">
-              <v-text-field
-                dense
-                hide-details
-                v-model="whiteColor.rgb.r"
-                outlined
-              ></v-text-field>
-              <div>W</div>
-            </div>
-          </v-layout>
-        </v-card-text>
-      </v-card>
+        <v-layout
+          class="mt-4"
+          justify-space-between
+        >
+          <div class="color-input">
+            <v-text-field
+              v-model.number="primaryColor.rgb.r"
+              dense
+              hide-details
+              outlined
+            />
+            <div>R</div>
+          </div>
+          <div class="color-input">
+            <v-text-field
+              v-model.number="primaryColor.rgb.g"
+              dense
+              hide-details
+              outlined
+            />
+            <div>G</div>
+          </div>
+          <div class="color-input">
+            <v-text-field
+              v-model.number="primaryColor.rgb.b"
+              dense
+              hide-details
+              outlined
+            />
+            <div>B</div>
+          </div>
+          <div
+            v-if="white"
+            class="color-input"
+          >
+            <v-text-field
+              v-model="whiteColor.rgb.r"
+              dense
+              hide-details
+              outlined
+            />
+            <div>W</div>
+          </div>
+        </v-layout>
+      </v-card-text>
+    </v-card>
   </v-menu>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Debounce } from 'vue-debounce-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
@@ -129,6 +144,11 @@ interface RgbwColor {
 interface AppColor {
   hexString: string;
   rgb: RgbwColor;
+}
+
+interface PointerPosition {
+  x: number;
+  y: number;
 }
 
 @Component({
@@ -149,6 +169,11 @@ export default class AppColorPicker extends Vue {
   dot!: boolean
 
   menu = false
+
+  @Ref('card')
+  card!: Vue
+
+  lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
   primaryColor: AppColor = {
     hexString: '#ffffff',
@@ -256,6 +281,41 @@ export default class AppColorPicker extends Vue {
   @Debounce(500)
   debouncedChange (channel: string, color: IroColor) {
     this.$emit('change', { channel, color })
+  }
+
+  startMouseDrag (event: MouseEvent) {
+    this.lastPointerPosition = { x: event.clientX, y: event.clientY }
+    window.addEventListener('mousemove', this.mouseMove)
+    window.addEventListener('mouseup', this.stopMouseDrag)
+  }
+
+  stopMouseDrag () {
+    window.removeEventListener('mousemove', this.mouseMove)
+    window.removeEventListener('mouseup', this.stopMouseDrag)
+  }
+
+  startTouchDrag (event: TouchEvent) {
+    this.lastPointerPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+  }
+
+  relativeMove (newPosition: PointerPosition) {
+    const parent = this.card.$el.parentElement as HTMLElement
+
+    parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
+    parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+  }
+
+  mouseMove (event: MouseEvent) {
+    const newPosition = { x: event.clientX, y: event.clientY }
+    this.relativeMove(newPosition)
+    this.lastPointerPosition = newPosition
+  }
+
+  touchMove (event: TouchEvent) {
+    event.preventDefault()
+    const newPosition = { x: event.touches[0].clientX, y: event.touches[0].clientY }
+    this.relativeMove(newPosition)
+    this.lastPointerPosition = newPosition
   }
 }
 </script>

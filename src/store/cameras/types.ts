@@ -10,7 +10,9 @@ export interface CameraConfig {
   type: 'mjpgadaptive' | 'mjpgstream' | 'ipstream' | 'iframe';
   url: string;
   fpstarget?: number;
+  fpsidletarget?: number;
   flipX: boolean;
   flipY: boolean;
+  rotate?: '90' | '180' | '270';
   height?: number;
 }

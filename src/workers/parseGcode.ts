@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
-import { pick } from 'lodash'
+import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
@@ -55,6 +55,8 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     } = parseLine(lines[i]) ?? {}
 
     if (!command) {
+      toolhead.filePosition += lines[i].length + 1 // + 1 for newline
+
       continue
     }
 
@@ -75,7 +77,8 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
             'i', 'j', 'r'
           ]),
           direction: command === 'G2'
-            ? Rotation.Clockwise : Rotation.CounterClockwise
+            ? Rotation.Clockwise
+            : Rotation.CounterClockwise
         } as ArcMove
         break
       case 'G10':

@@ -1,22 +1,28 @@
 <template>
   <v-dialog
     :value="value"
-    @input="$emit('input', $event)"
     :max-width="500"
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
-      @submit.prevent="handleSave"
       v-model="valid"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
-          <span class="focus--text" v-html="$t('app.general.label.change_password')"></span>
+          <span
+            class="focus--text"
+            v-html="$t('app.general.label.change_password')"
+          />
         </v-card-title>
 
         <v-divider />
 
-        <v-card-text class="mb-0" v-if="error">
+        <v-card-text
+          v-if="error"
+          class="mb-0"
+        >
           <v-alert
             type="error"
             text
@@ -28,6 +34,7 @@
 
         <app-setting :title="$t('app.general.label.current_password')">
           <v-text-field
+            v-model="currentPassword"
             autocomplete="current-password"
             filled
             dense
@@ -35,14 +42,14 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required]"
-            v-model="currentPassword">
-          </v-text-field>
+          />
         </app-setting>
 
         <v-divider />
 
         <app-setting :title="$t('app.general.label.new_password')">
           <v-text-field
+            v-model="password"
             autocomplete="current-password"
             filled
             dense
@@ -50,14 +57,13 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required, rules.password, rules.min]"
-            v-model="password">
-          </v-text-field>
+          />
         </app-setting>
 
         <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-icon
             v-if="loading"
             class="spin"
@@ -70,8 +76,8 @@
             :disabled="loading"
             color="warning"
             text
-            @click="$emit('input', false)"
             type="button"
+            @click="$emit('input', false)"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -81,8 +87,7 @@
             color="primary"
             type="submit"
             v-html="$t('app.general.btn.save')"
-          >
-          </app-btn>
+          />
         </v-card-actions>
       </v-card>
     </v-form>

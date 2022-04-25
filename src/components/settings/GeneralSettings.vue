@@ -1,26 +1,28 @@
 <template>
   <div>
-    <v-subheader id="general">{{ $t('app.setting.title.general') }}</v-subheader>
+    <v-subheader id="general">
+      {{ $t('app.setting.title.general') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.printer_name')">
         <v-text-field
+          ref="instanceName"
           filled
           dense
           single-line
           hide-details="auto"
-          ref="instanceName"
           :rules="instanceNameRules"
           :value="instanceName"
           :default-value="$globals.APP_NAME"
           @change="setInstanceName"
-        ></v-text-field>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.language')">
         <v-select
@@ -33,13 +35,14 @@
           item-text="name"
           item-value="code"
           @change="setLocale"
-        ></v-select>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.date_time_format')">
         <v-select
+          v-model="dateformat"
           filled
           dense
           hide-details="auto"
@@ -49,10 +52,10 @@
           ]"
           item-value="value"
           item-text="text"
-          v-model="dateformat">
-        </v-select>
+        />
         &nbsp;
         <v-select
+          v-model="timeformat"
           filled
           dense
           hide-details="auto"
@@ -62,47 +65,33 @@
           ]"
           item-value="value"
           item-text="text"
-          v-model="timeformat">
-        </v-select>
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
         <v-switch
-          @click.native.stop
           v-model="confirmOnEstop"
           hide-details
           class="mb-5"
-        ></v-switch>
+          @click.native.stop
+        />
       </app-setting>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <app-setting
         :title="$t('app.setting.label.confirm_on_power_device_change')"
       >
         <v-switch
-          @click.native.stop
           v-model="confirmOnPowerDeviceChange"
           hide-details
           class="mb-5"
-        ></v-switch>
-      </app-setting>
-
-      <v-divider></v-divider>
-
-      <app-setting
-        :title="$t('app.setting.label.confirm_dirty_editor_close')"
-      >
-        <v-switch
           @click.native.stop
-          v-model="confirmDirtyEditorClose"
-          hide-details
-          class="mb-5"
-        ></v-switch>
+        />
       </app-setting>
     </v-card>
   </div>
@@ -197,18 +186,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnPowerDeviceChange (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
-      value,
-      server: true
-    })
-  }
-
-  get confirmDirtyEditorClose () {
-    return this.$store.state.config.uiSettings.general.confirmDirtyClose
-  }
-
-  set confirmDirtyEditorClose (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.confirmDirtyEditorClose',
       value,
       server: true
     })

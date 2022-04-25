@@ -1,99 +1,112 @@
 <template>
   <div>
-    <v-subheader id="gcodePreview">{{ $t('app.setting.title.gcode_preview') }}</v-subheader>
+    <v-subheader id="gcodePreview">
+      {{ $t('app.setting.title.gcode_preview') }}
+    </v-subheader>
     <v-card
       :elevation="5"
       dense
-      class="mb-4">
-
+      class="mb-4"
+    >
       <app-setting :title="$t('app.setting.label.show_animations')">
         <v-switch
-          @click.native.stop
           v-model="showAnimations"
           hide-details
           class="mb-5"
-        ></v-switch>
+          @click.native.stop
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.group_lower_layers')">
+        <v-switch
+          v-model="groupLowerLayers"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
-          @click.native.stop
           v-model="drawBackground"
           hide-details
           class="mb-5"
-        ></v-switch>
+          @click.native.stop
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
         <v-text-field
           :value="extrusionLineWidth"
-          @change="setExtrusionLineWidth"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+          @change="setExtrusionLineWidth"
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.move_line_width')">
         <v-text-field
           :value="moveLineWidth"
-          @change="setMoveLineWidth"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+          @change="setMoveLineWidth"
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
         <v-text-field
           :value="retractionIconSize"
-          @change="setRetractionIconSize"
           :rules="[rules.numRequired, rules.numMin]"
           filled
           dense
           single-line
           hide-details
           suffix="mm"
-        ></v-text-field>
+          @change="setRetractionIconSize"
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.flip_horizontal')">
         <v-switch
-          @click.native.stop
           v-model="flipHorizontal"
           hide-details
           class="mb-5"
-        ></v-switch>
+          @click.native.stop
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.flip_vertical')">
         <v-switch
-          @click.native.stop
           v-model="flipVertical"
           hide-details
           class="mb-5"
-        ></v-switch>
+          @click.native.stop
+        />
       </app-setting>
 
-      <v-divider/>
+      <v-divider />
 
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
@@ -201,6 +214,18 @@ export default class GcodePreviewSettings extends Vue {
   set showAnimations (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.showAnimations',
+      value,
+      server: true
+    })
+  }
+
+  get groupLowerLayers () {
+    return this.$store.state.config.uiSettings.gcodePreview.groupLowerLayers
+  }
+
+  set groupLowerLayers (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.groupLowerLayers',
       value,
       server: true
     })

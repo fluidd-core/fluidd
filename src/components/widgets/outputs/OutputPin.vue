@@ -12,8 +12,8 @@
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
-      @change="setValue(pin, $event)">
-    </app-slider>
+      @change="setValue(pin, $event)"
+    />
 
     <app-switch
       v-if="pin && !pin.pwm"
@@ -21,9 +21,7 @@
       :label="pin.prettyName"
       :value="(pin.value > 0)"
       @input="setValue(pin, $event)"
-    >
-    </app-switch>
-
+    />
   </div>
 </template>
 

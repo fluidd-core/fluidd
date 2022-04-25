@@ -8,9 +8,9 @@
     top
     centered
   >
-    <span v-html="text"></span>
+    <span v-html="text" />
 
-    <template v-slot:action="{ attrs }">
+    <template #action="{ attrs }">
       <app-btn
         dark
         v-bind="attrs"

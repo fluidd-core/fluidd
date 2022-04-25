@@ -95,7 +95,7 @@ import {
   mdiPencilLock,
   mdiLockReset,
   mdiCubeScan,
-  mdiHandRight,
+  mdiHandBackRight,
   mdiThermometerAlert,
   mdiShieldAccount,
   mdiContentCopy,
@@ -112,7 +112,11 @@ import {
   mdiHarddisk,
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
-  mdiSwapVertical
+  mdiSwapVertical,
+  mdiFullscreen,
+  mdiStop,
+  mdiPlay,
+  mdiFileVideoOutline
 } from '@mdi/js'
 
 /**
@@ -153,7 +157,8 @@ export const Globals = Object.freeze({
     auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
-    history: { name: 'history', dispatch: 'history/init' }
+    history: { name: 'history', dispatch: 'history/init' },
+    timelapse: { name: 'timelapse', dispatch: 'timelapse/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -171,7 +176,8 @@ export const Globals = Object.freeze({
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
   DOCS_MOONRAKER_COMPONENTS: 'https://docs.fluidd.xyz/configuration/moonraker',
   DOCS_AUTH_LOST_PASSWORD: 'https://docs.fluidd.xyz/authorization#lost-password',
-  DOCS_AUTH: 'https://docs.fluidd.xyz/authorization'
+  DOCS_AUTH: 'https://docs.fluidd.xyz/authorization',
+  GITHUB_REPO: 'https://github.com/fluidd-core/fluidd'
 })
 
 export const Icons = Object.freeze({
@@ -202,7 +208,7 @@ export const Icons = Object.freeze({
   restartAlert: mdiRestartAlert,
   update: mdiUpdate,
   warning: mdiAlert,
-  error: mdiHandRight,
+  error: mdiHandBackRight,
   thermometer: mdiThermometerLow,
   bell: mdiBellOutline,
   fireAlert: mdiFireAlert,
@@ -255,7 +261,9 @@ export const Icons = Object.freeze({
   pause: mdiPause,
   cancel: mdiWindowClose,
   cancelled: mdiCancel,
+  play: mdiPlay,
   resume: mdiPlayBoxOutline,
+  stop: mdiStop,
   reprint: mdiPrinter,
   printer: mdiPrinter,
   download: mdiDownload,
@@ -290,11 +298,15 @@ export const Icons = Object.freeze({
   codeJson: mdiCodeJson,
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
-  message: mdiMessageTextOutline
+  message: mdiMessageTextOutline,
+  fullScreen: mdiFullscreen,
+  video: mdiFileVideoOutline
 })
 
 export const Waits = Object.freeze({
   onServiceRestart: 'onServiceRestart',
+  onServiceStop: 'onServiceStop',
+  onServiceStart: 'onServiceStart',
   onDevicePowerToggle: 'onDevicePowerToggle',
   onHomeAll: 'onHomeAll',
   onHomeXY: 'onHomeXY',
@@ -311,9 +323,12 @@ export const Waits = Object.freeze({
   onMacro: 'onMacro',
   onSetSpeed: 'onSetSpeed',
   onSetFlow: 'onSetFlow',
+  onSetPressureAdvance: 'onSetPressureAdvance',
   onSetFanSpeed: 'onSetFanSpeed',
   onSetOutputPin: 'onSetOutputPin',
   onZAdjust: 'onZAdjust',
+  onZApply: 'onZApply',
+  onSaveConfig: 'onSaveConfig',
   onRetract: 'onRetract',
   onExtrude: 'onExtrude',
   onMeshCalibrate: 'onMeshCalibrate',
@@ -329,5 +344,6 @@ export const Waits = Object.freeze({
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem'
+  onFileSystem: 'onFileSystem',
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
 })

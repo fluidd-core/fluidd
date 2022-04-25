@@ -3,15 +3,19 @@
     dense
   >
     <v-toolbar-title class="d-none d-sm-block">
-      <div class="file-path">&lrm;/{{ path }}</div>
+      <div class="file-path">
+        &lrm;/{{ path }}
+      </div>
     </v-toolbar-title>
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
     <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn
-          fab small text
+          fab
+          small
+          text
           v-bind="attrs"
           v-on="on"
           @click="$emit('remove')"
@@ -42,7 +46,6 @@
         <span>Move to</span>
       </slot>
     </v-tooltip> -->
-
   </v-toolbar>
 </template>
 
