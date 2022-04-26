@@ -21,8 +21,10 @@ import { version } from './version'
 import { cameras } from './cameras'
 import { mesh } from './mesh'
 import { notifications } from './notifications'
+import { announcements } from './announcements'
 import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
+import { timelapse } from './timelapse'
 
 Vue.use(Vuex)
 
@@ -46,8 +48,10 @@ export default new Vuex.Store<RootState>({
     cameras,
     mesh,
     notifications,
+    announcements,
     wait,
-    gcodePreview
+    gcodePreview,
+    timelapse
   },
   mutations: {},
   actions: {

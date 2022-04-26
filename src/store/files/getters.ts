@@ -84,6 +84,19 @@ export const getters: GetterTree<FilesState, RootState> = {
       }
     }
 
+    if (root === 'timelapse') {
+      return {
+        readonly: true,
+        accepts: [],
+        canEdit: false,
+        canView: true,
+        canPrint: false,
+        canConfigure: false,
+        canDelete: true,
+        canCreateDirectory: true
+      }
+    }
+
     return {
       readonly: true,
       accepts: [],

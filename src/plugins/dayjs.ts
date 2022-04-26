@@ -6,6 +6,7 @@ import isToday from 'dayjs/plugin/isToday'
 import updateLocale from 'dayjs/plugin/updateLocale'
 import LocalizedFormat from 'dayjs/plugin/localizedFormat'
 import utc from 'dayjs/plugin/utc'
+import duration from 'dayjs/plugin/duration'
 
 // import localeData from 'dayjs/plugin/localeData'
 
@@ -16,6 +17,7 @@ export const DayJSPlugin = {
     dayjs.extend(updateLocale)
     dayjs.extend(LocalizedFormat)
     dayjs.extend(utc)
+    dayjs.extend(duration)
     dayjs.locale('en-chart', {
       relativeTime: {
         future: 'in %s',
@@ -45,14 +47,10 @@ export const DayJSPlugin = {
 
 declare module 'vue/types/vue' {
   interface Vue {
-    $dayjs (date?: dayjs.ConfigType): dayjs.Dayjs;
-    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, strict?: boolean): dayjs.Dayjs;
-    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean): dayjs.Dayjs;
+    $dayjs: typeof dayjs
   }
 
   interface VueConstructor {
-    $dayjs (date?: dayjs.ConfigType): dayjs.Dayjs;
-    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, strict?: boolean): dayjs.Dayjs;
-    $dayjs (date?: dayjs.ConfigType, format?: dayjs.OptionType, locale?: string, strict?: boolean): dayjs.Dayjs;
+    $dayjs: typeof dayjs
   }
 }

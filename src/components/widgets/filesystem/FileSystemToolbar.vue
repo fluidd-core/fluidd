@@ -70,7 +70,7 @@
     />
 
     <file-system-menu
-      v-if="!readonly"
+      v-if="!readonly || canCreateDirectory"
       :root="root"
       :disabled="disabled"
       @add-file="$emit('add-file')"
@@ -169,6 +169,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   get readonly () {
     return this.$store.getters['files/getRootProperties'](this.root).readonly
+  }
+
+  get canCreateDirectory () {
+    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
   }
 
   get lowOnSpace () {
