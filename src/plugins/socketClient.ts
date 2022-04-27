@@ -167,7 +167,7 @@ export class WebSocketClient {
                   }
                 }
 
-                const timestamp = eventtime ? eventtime * 1000 : new Date().getTime()
+                const timestamp = eventtime ? eventtime * 1000 : Date.now()
 
                 this.cache = (!this.cache)
                   ? { timestamp, params }
