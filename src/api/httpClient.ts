@@ -74,7 +74,7 @@ const responseInterceptor = (response: AxiosResponse) => {
   return response
 }
 
-const errorInterceptor = (error: AxiosError) => {
+const errorInterceptor = (error: AxiosError<string | { error?: { message?: string} } | undefined>) => {
   let message: string | undefined
 
   // Check if its a network / server error.
@@ -86,8 +86,11 @@ const errorInterceptor = (error: AxiosError) => {
   }
 
   // All other errors
-  if (error.response.data) message = error.response.data
-  if (error.response.data.error.message) message = error.response.data.error.message
+  if (typeof error.response.data === 'object') {
+    message = error.response.data.error?.message
+  } else {
+    message = error.response.data
+  }
 
   const url = error.config.url || ''
   switch (error.response.status) {
