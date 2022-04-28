@@ -152,5 +152,14 @@ export const actions: ActionTree<PrinterState, RootState> = {
         Globals.CHART_HISTORY_RETENTION
       handleAddChartEntry(retention, getters.getChartableSensors)
     }
+  },
+
+  async onFastNotifyStatusUpdate ({ rootState, commit }, payload) {
+    // Do NOT accept updates until our subscribe comes back.
+    // This is because moonraker currently sends notification updates
+    // prior to subscribing on browser refresh.
+    if (payload && rootState.socket?.acceptingNotifications) {
+      commit('printer/setSocketNotify', payload, { root: true })
+    }
   }
 }
