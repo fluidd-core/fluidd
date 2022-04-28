@@ -98,7 +98,15 @@
       </v-toolbar>
 
       <file-editor
-        v-if="contents !== undefined"
+        v-if="contents !== undefined && !isMobile"
+        v-model="updatedContent"
+        :filename="filename"
+        :readonly="readonly"
+        @ready="editorReady = true"
+      />
+
+      <file-editor-text-only
+        v-if="contents !== undefined && isMobile"
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
@@ -116,10 +124,13 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileEditor from './FileEditor.vue'
+import FileEditorTextOnly from './FileEditorTextOnly.vue'
+import isMobile from '@/util/is-mobile'
 
 @Component({
   components: {
-    FileEditor
+    FileEditor,
+    FileEditorTextOnly
   }
 })
 export default class FileEditorDialog extends Mixins(StateMixin) {
@@ -152,6 +163,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
       this.editorReady &&
       !this.isUploading
     )
+  }
+
+  get isMobile () {
+    return isMobile()
   }
 
   get isUploading (): boolean {

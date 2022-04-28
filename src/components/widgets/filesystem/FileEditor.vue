@@ -114,7 +114,7 @@ export default class FileEditor extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .editor {
     // margin-top: 12px;
     min-width: 100%;
