@@ -3,6 +3,7 @@
     class="editor v-input v-textarea theme--dark"
     :readonly="readonly"
     :value="value"
+    :spellcheck="false"
     @change="emitChange($event.target.value)"
   />
 </template>
@@ -35,7 +36,6 @@ export default class FileEditorText extends Vue {
     font-size: 1rem;
     font-weight: 100 !important;
     min-width: 100%;
-    height: 90% !important;
     height: calc(100% - 48px) !important;
     resize: none;
   }
