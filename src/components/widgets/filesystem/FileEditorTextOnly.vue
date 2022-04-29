@@ -1,6 +1,6 @@
 <template>
   <textarea
-    class="editor v-input v-textarea theme--dark"
+    class="editor v-input v-textarea theme--dark px-2"
     :readonly="readonly"
     :value="value"
     :spellcheck="false"
