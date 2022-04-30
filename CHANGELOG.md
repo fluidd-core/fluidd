@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.18.0](https://github.com/fluidd-core/fluidd/compare/v1.17.2...v1.18.0) (2022-04-30)
+
+
+### Features
+
+* add full-screen button to the Jobs card ([#616](https://github.com/fluidd-core/fluidd/issues/616)) ([ce47233](https://github.com/fluidd-core/fluidd/commit/ce47233873c17074f8eb3f6da21c912957a858d4))
+* add full-screen console view ([#613](https://github.com/fluidd-core/fluidd/issues/613)) ([b8f17e6](https://github.com/fluidd-core/fluidd/commit/b8f17e6e28fe4f1e0ad4ba2a29d3b2d87eda30c4))
+* add Reset button to File Editor settings ([#594](https://github.com/fluidd-core/fluidd/issues/594)) ([e8a6731](https://github.com/fluidd-core/fluidd/commit/e8a67318c23b9ea0b65c099cac974b83bc29b8fd))
+* adds delta support to gcode viewer ([#591](https://github.com/fluidd-core/fluidd/issues/591)) ([3dca83e](https://github.com/fluidd-core/fluidd/commit/3dca83e74ffce7f263d89c97f171ba4b9d3cb01f))
+* adds Pressure Advance support ([#588](https://github.com/fluidd-core/fluidd/issues/588)) ([2090c59](https://github.com/fluidd-core/fluidd/commit/2090c59c436e38575f19fb3f152b557805904591))
+* adjustable toolhead move distances ([#590](https://github.com/fluidd-core/fluidd/issues/590)) ([7b115ec](https://github.com/fluidd-core/fluidd/commit/7b115ec81bca10ea029082597806aafb31253b3f))
+* calculate linear progress ([#633](https://github.com/fluidd-core/fluidd/issues/633)) ([2efa85d](https://github.com/fluidd-core/fluidd/commit/2efa85d460bda06407ebddce16d41cba85ee7d18))
+* formats weight as human readable ([#628](https://github.com/fluidd-core/fluidd/issues/628)) ([49d03e5](https://github.com/fluidd-core/fluidd/commit/49d03e51866dda09c16774ac2da72e1258edf52a))
+* **i18n-HU:** update Hungarian translation ([#634](https://github.com/fluidd-core/fluidd/issues/634)) ([db84b02](https://github.com/fluidd-core/fluidd/commit/db84b0255babb1bb46b7d76e7f5554f352592c31))
+* **i18n-HU:** update Hungarian translation ([#640](https://github.com/fluidd-core/fluidd/issues/640)) ([e7b9716](https://github.com/fluidd-core/fluidd/commit/e7b9716a6679a99c3d9a69eea742094bd7575495))
+* **i18n-JA:** adds Japanese language ([#585](https://github.com/fluidd-core/fluidd/issues/585)) ([08a44eb](https://github.com/fluidd-core/fluidd/commit/08a44eb75278d1f0da5935494ed827312fe0f593))
+* implement Moonraker announcements ([#642](https://github.com/fluidd-core/fluidd/issues/642)) ([481f20e](https://github.com/fluidd-core/fluidd/commit/481f20e445c6b9d8eb926d43f493ef18a67edd2b))
+* marks g-code preview non-beta ([#620](https://github.com/fluidd-core/fluidd/issues/620)) ([e61cd33](https://github.com/fluidd-core/fluidd/commit/e61cd3341d438013157346bdbb0cb132bffff02e))
+* show live position ([#645](https://github.com/fluidd-core/fluidd/issues/645)) ([136af75](https://github.com/fluidd-core/fluidd/commit/136af7552230c347a64d8c1ab93cd203379fc27e))
+* show pressure and humidity from sensors ([#538](https://github.com/fluidd-core/fluidd/issues/538)) ([9c5e904](https://github.com/fluidd-core/fluidd/commit/9c5e9044edec84c4489cfe912004644086b1a6a6))
+* support for moonraker socket connection identification ([#568](https://github.com/fluidd-core/fluidd/issues/568)) ([7a6b6d0](https://github.com/fluidd-core/fluidd/commit/7a6b6d0166536eefda1d0d5280c6a4e7e3cba2e3))
+* **thermals:** display rate of change for all temperature sensors ([#575](https://github.com/fluidd-core/fluidd/issues/575)) ([4cf6f43](https://github.com/fluidd-core/fluidd/commit/4cf6f4348931d86460b5595951466e08867c81de))
+* timelapse browser ([#610](https://github.com/fluidd-core/fluidd/issues/610)) ([de02081](https://github.com/fluidd-core/fluidd/commit/de0208146cb77eb3b8b172c4af4c39d7989d2ae5))
+* **ui:** make color picker movable ([#577](https://github.com/fluidd-core/fluidd/issues/577)) ([a8c16af](https://github.com/fluidd-core/fluidd/commit/a8c16af3c27e9d44274e2f1fe1854bfe0551d844))
+* unsaved editor close confirmations when unloading the page ([#584](https://github.com/fluidd-core/fluidd/issues/584)) ([999af77](https://github.com/fluidd-core/fluidd/commit/999af77fb956dc8a8d3cfb71d3fe4b584b5bfdf7))
+
+
+### Bug Fixes
+
+* allow decimals in slider bound text controls ([#604](https://github.com/fluidd-core/fluidd/issues/604)) ([863c0b2](https://github.com/fluidd-core/fluidd/commit/863c0b289b3de522dbef64767b881960654acd16))
+* auto-determination of base printer ([#583](https://github.com/fluidd-core/fluidd/issues/583)) ([e97a0cb](https://github.com/fluidd-core/fluidd/commit/e97a0cbe3e32dfdaee1da9ed59dd9ad6ed24b542))
+* fully unload dialogs when not in use ([#627](https://github.com/fluidd-core/fluidd/issues/627)) ([25d5e29](https://github.com/fluidd-core/fluidd/commit/25d5e29645fabfbd60590faf4a046f5eb27efcaf))
+* **i18n-HU:** improve Hungarian translations ([#614](https://github.com/fluidd-core/fluidd/issues/614)) ([d1c5913](https://github.com/fluidd-core/fluidd/commit/d1c59130e93df8e1c24cbfdf67a8d83852ad61b4))
+* **i18n-PT:** use localized label ([#587](https://github.com/fluidd-core/fluidd/issues/587)) ([aa6d241](https://github.com/fluidd-core/fluidd/commit/aa6d2419447844945273b381b0b93208b5994fd9))
+* **i18n:** add missing 'cancelled' translation ([#574](https://github.com/fluidd-core/fluidd/issues/574)) ([4d18c13](https://github.com/fluidd-core/fluidd/commit/4d18c134b008e5865b83b2488c6e0cf0385ed04e))
+* **i18n:** improve Hungarian translations ([#576](https://github.com/fluidd-core/fluidd/issues/576)) ([6af6e59](https://github.com/fluidd-core/fluidd/commit/6af6e5977775166c98b853d7f98d71e159e4c0a6))
+* improves macro params default values parsing ([#651](https://github.com/fluidd-core/fluidd/issues/651)) ([11280a7](https://github.com/fluidd-core/fluidd/commit/11280a7e86970fa0a83ecb1739dc44a48605197c))
+* improves ToolheadSettings rules and validation ([#593](https://github.com/fluidd-core/fluidd/issues/593)) ([1780081](https://github.com/fluidd-core/fluidd/commit/1780081c5c81fbc61661dc96672edb537c895cde))
+* layout database data handling ([#636](https://github.com/fluidd-core/fluidd/issues/636)) ([7773f02](https://github.com/fluidd-core/fluidd/commit/7773f020c229e0fe1bead9cc8a8f278d8e556944))
+* layout resize wrapping ([#648](https://github.com/fluidd-core/fluidd/issues/648)) ([9c05f52](https://github.com/fluidd-core/fluidd/commit/9c05f52b54cf250076c57b3b43298ae041b41fbb))
+* show simple editor on mobile ([#649](https://github.com/fluidd-core/fluidd/issues/649)) ([deb139e](https://github.com/fluidd-core/fluidd/commit/deb139e9ef8e13651b8d01bbaa74b2b591d448ce))
+* thermals chart legend selection event ([#615](https://github.com/fluidd-core/fluidd/issues/615)) ([f8cac27](https://github.com/fluidd-core/fluidd/commit/f8cac272f4255247126f16710601b0db3565db6a))
+* thumbnail URI encoding ([#618](https://github.com/fluidd-core/fluidd/issues/618)) ([30efd5f](https://github.com/fluidd-core/fluidd/commit/30efd5ff12848c1c7e7dda654c7cee4a7feb0f65))
+* thumbnail URI encoding ([#622](https://github.com/fluidd-core/fluidd/issues/622)) ([ff50dae](https://github.com/fluidd-core/fluidd/commit/ff50daeedf2cdb79347b94b5f8fcb80613c91d55))
+* Toolhead and ZHeightAdjust layout ([#606](https://github.com/fluidd-core/fluidd/issues/606)) ([63fd72f](https://github.com/fluidd-core/fluidd/commit/63fd72f9edfe734ceda0cb80946d27aa1c5e2c0a))
+* TouchEvent is not defined on Firefox desktop ([#601](https://github.com/fluidd-core/fluidd/issues/601)) ([34173ad](https://github.com/fluidd-core/fluidd/commit/34173ad8fb0fee4f256b74ca60890f9dc5eb8e7b))
+* typescript issues ([#589](https://github.com/fluidd-core/fluidd/issues/589)) ([fa05c0c](https://github.com/fluidd-core/fluidd/commit/fa05c0cd0fdf5f2aec5bdaa22f2b2c54a79c991d))
+* typescript type narrowing ([#619](https://github.com/fluidd-core/fluidd/issues/619)) ([abe98a0](https://github.com/fluidd-core/fluidd/commit/abe98a0b022f595e65a60e9f6bfbbb824dc3d8cf))
+
 ### [1.17.2](https://github.com/fluidd-core/fluidd/compare/v1.17.1...v1.17.2) (2022-03-13)
 
 
