@@ -115,7 +115,9 @@ import {
   mdiSwapVertical,
   mdiFullscreen,
   mdiStop,
-  mdiPlay
+  mdiPlay,
+  mdiFileVideoOutline,
+  mdiBellSleep
 } from '@mdi/js'
 
 /**
@@ -156,7 +158,9 @@ export const Globals = Object.freeze({
     auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
-    history: { name: 'history', dispatch: 'history/init' }
+    history: { name: 'history', dispatch: 'history/init' },
+    timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
+    announcements: { name: 'announcements', dispatch: 'announcements/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -174,7 +178,8 @@ export const Globals = Object.freeze({
   DOCS_MULTIPLE_INSTANCES: 'https://docs.fluidd.xyz/configuration/multiple_printers',
   DOCS_MOONRAKER_COMPONENTS: 'https://docs.fluidd.xyz/configuration/moonraker',
   DOCS_AUTH_LOST_PASSWORD: 'https://docs.fluidd.xyz/authorization#lost-password',
-  DOCS_AUTH: 'https://docs.fluidd.xyz/authorization'
+  DOCS_AUTH: 'https://docs.fluidd.xyz/authorization',
+  GITHUB_REPO: 'https://github.com/fluidd-core/fluidd'
 })
 
 export const Icons = Object.freeze({
@@ -296,7 +301,9 @@ export const Icons = Object.freeze({
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
-  fullScreen: mdiFullscreen
+  fullScreen: mdiFullscreen,
+  video: mdiFileVideoOutline,
+  snooze: mdiBellSleep
 })
 
 export const Waits = Object.freeze({
@@ -319,6 +326,7 @@ export const Waits = Object.freeze({
   onMacro: 'onMacro',
   onSetSpeed: 'onSetSpeed',
   onSetFlow: 'onSetFlow',
+  onSetPressureAdvance: 'onSetPressureAdvance',
   onSetFanSpeed: 'onSetFanSpeed',
   onSetOutputPin: 'onSetOutputPin',
   onZAdjust: 'onZAdjust',
@@ -339,5 +347,6 @@ export const Waits = Object.freeze({
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem'
+  onFileSystem: 'onFileSystem',
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
 })

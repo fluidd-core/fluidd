@@ -3,6 +3,7 @@ import { Globals, Waits } from '@/globals'
 import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
+import { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -175,6 +176,28 @@ export const SocketActions = {
     )
   },
 
+  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, wait?: string) {
+    baseEmit(
+      'machine.timelapse.post_settings', {
+        dispatch: 'timelapse/onSettings',
+        params: settings,
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseSaveFrames (wait?: string) {
+    baseEmit(
+      'machine.timelapse.saveframes', {
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseRender () {
+    baseEmit('machine.timelapse.render', {})
+  },
+
   async printerInfo () {
     baseEmit(
       'printer.info', {
@@ -298,6 +321,32 @@ export const SocketActions = {
     baseEmit(
       'server.info', {
         dispatch: 'server/onServerInfo'
+      }
+    )
+  },
+
+  async identify () {
+    baseEmit('server.connection.identify', {
+      dispatch: 'socket/onConnectionId',
+      params: {
+        client_name: Globals.APP_NAME,
+        version: `${store.state.version?.fluidd.version || '0.0.0'}-${store.state.version?.fluidd.hash || 'unknown'}`.trim(),
+        type: 'web',
+        url: Globals.GITHUB_REPO
+      }
+    })
+  },
+
+  async timelapseState () {
+    baseEmit(
+      'machine.timelapse.get_settings', {
+        dispatch: 'timelapse/onSettings'
+      }
+    )
+
+    baseEmit(
+      'machine.timelapse.lastframeinfo', {
+        dispatch: 'timelapse/onLastFrame'
       }
     )
   },
@@ -470,6 +519,26 @@ export const SocketActions = {
         params: {
           path,
           force
+        }
+      }
+    )
+  },
+
+  async serverAnnouncementsList () {
+    baseEmit(
+      'server.announcements.list', {
+        dispatch: 'announcements/onAnnouncementsList'
+      }
+    )
+  },
+
+  async serverAnnouncementsDismiss (entry_id: string, wake_time?: number) {
+    baseEmit(
+      'server.announcements.dismiss', {
+        dispatch: 'void',
+        params: {
+          entry_id,
+          wake_time
         }
       }
     )

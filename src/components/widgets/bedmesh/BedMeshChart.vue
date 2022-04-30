@@ -18,8 +18,8 @@
 
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
-import { ECharts } from 'echarts'
-import { merge } from 'lodash'
+import type { ECharts } from 'echarts'
+import { merge } from 'lodash-es'
 
 @Component({})
 export default class EChartsBedMesh extends Vue {

@@ -40,6 +40,13 @@
           </app-nav-item>
 
           <app-nav-item
+            icon="$console"
+            to="/console"
+          >
+            {{ $t('app.general.title.console') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$files"
             to="/jobs"
           >
@@ -52,6 +59,14 @@
             to="/history"
           >
             {{ $t('app.general.title.history') }}
+          </app-nav-item>
+
+          <app-nav-item
+            v-if="supportsTimelapse"
+            icon="$video"
+            to="/timelapse"
+          >
+            {{ $t('app.general.title.timelapse') }}
           </app-nav-item>
 
           <app-nav-item
@@ -105,6 +120,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsHistory () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  get supportsTimelapse () {
+    return this.$store.getters['server/componentSupport']('timelapse')
   }
 
   get supportsVersions () {

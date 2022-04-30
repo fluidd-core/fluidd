@@ -288,7 +288,7 @@ app:
       console: Consola
       endstops: Endstops
       fans_outputs: Ventiladores y salidas
-      gcode_preview: Previsualización de Gcode [ Beta ]
+      gcode_preview: Previsualización de Gcode
       history: Historial
       home: Inicio
       jobs: Tareas

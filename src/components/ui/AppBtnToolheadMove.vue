@@ -2,7 +2,7 @@
   <v-tooltip
     top
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <app-btn
         :disabled="disabled"
         :min-width="40"

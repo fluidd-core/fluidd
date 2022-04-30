@@ -2,6 +2,7 @@
   <v-form
     ref="form"
     v-model="valid"
+    :class="{'full-width-slider': fullWidth}"
     @submit.prevent
   >
     <v-row no-gutters>
@@ -19,7 +20,7 @@
         class="py-0"
       >
         <v-text-field
-          v-model="internalValue"
+          v-model="internalStringValue"
           :suffix="suffix"
           :rules="textRules"
           :readonly="isLocked"
@@ -32,9 +33,10 @@
           outlined
           hide-details
           @change="handleChange($event)"
-          @focus="$event.target.select()"
+          @focus="directInput = true; $event.target.select()"
+          @blur="directInput = false"
         >
-          <template v-slot:prepend>
+          <template #prepend>
             <v-btn
               v-if="isMobile"
               icon
@@ -85,6 +87,7 @@
       :disabled="disabled || loading || isLocked || overridden"
       dense
       hide-details
+      @start="directInput=false"
       @change="handleChange($event)"
     />
   </v-form>
@@ -92,9 +95,8 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Mixins, Ref } from 'vue-property-decorator'
-import VSlider from 'vuetify/lib/components/VSlider.vue'
 import StateMixin from '@/mixins/state'
-import { VForm } from '@/types/vuetify'
+import { VForm, VSlider } from '@/types/vuetify'
 
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {
@@ -134,6 +136,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   @Prop({ type: String })
   public suffix!: string;
 
+  @Prop({ type: Boolean, default: false })
+  public fullWidth!: boolean;
+
   @Ref('slider')
   slider!: VSlider;
 
@@ -143,7 +148,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   valid = true
   lockState = false
   overridden = false
-  internalValue = this.value
+  internalStringValue: string = this.value.toString()
+  internalValue: number = this.value
+  directInput = false
   internalMax = this.max
   pending = false
 
@@ -152,17 +159,17 @@ export default class AppSlider extends Mixins(StateMixin) {
   onValue (value: string | number) {
     value = +value
     if (value !== this.internalValue) {
-      this.internalValue = +value
+      this.internalValue = value
     }
     this.pending = false
   }
 
   // If one of our controls updates the value.
-  @Watch('internalValue')
-  onInternalValue (value: string | number) {
+  @Watch('internalStringValue')
+  onInternalStringValue (value: string) {
     if (this.valid) {
       if (
-        value > this.max &&
+        +value > this.max &&
         this.overridable
       ) {
         // This is overridable, and the user wants to increase
@@ -175,8 +182,18 @@ export default class AppSlider extends Mixins(StateMixin) {
         this.overridden = false
         this.internalMax = this.max
       }
-      this.$emit('input', +value)
+
+      this.internalValue = +value
     }
+  }
+
+  @Watch('internalValue')
+  onInternalValue (value: number) {
+    if (!this.directInput) {
+      this.internalStringValue = value.toString()
+    }
+
+    this.$emit('input', value)
   }
 
   get isLocked () {
@@ -201,6 +218,7 @@ export default class AppSlider extends Mixins(StateMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules,
+      (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
       (v: string) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
     ]
     if (!this.overridable) {
@@ -238,3 +256,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.full-width-slider {
+  width: 100%;
+}
+</style>

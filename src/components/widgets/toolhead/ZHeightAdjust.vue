@@ -12,7 +12,6 @@
         v-model="moveDistance"
         mandatory
         dense
-        class="ml-2 d-inline-block"
       >
         <app-btn
           v-for="(value, i) in zAdjustValues"

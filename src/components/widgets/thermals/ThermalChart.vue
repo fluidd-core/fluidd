@@ -9,16 +9,14 @@
       :option="options"
       :update-options="{ notMerge: true }"
       :init-options="{ renderer: 'svg' }"
-      :events="[
-        ['legendselectchanged', handleLegendSelectChange ]
-      ]"
+      @legendselectchanged="handleLegendSelectChange"
     />
   </div>
 </template>
 
 <script lang='ts'>
 import { Vue, Component, Watch, Prop, Ref } from 'vue-property-decorator'
-import { ECharts } from 'echarts'
+import type { ECharts } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 
 @Component({})

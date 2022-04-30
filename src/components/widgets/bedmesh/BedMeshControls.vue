@@ -47,7 +47,7 @@
               v-if="!item.active && !printerPrinting && !printerBusy"
               bottom
             >
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <app-btn
                   v-if="!item.active && !printerPrinting && !printerBusy"
                   v-bind="attrs"
@@ -65,7 +65,7 @@
             </v-tooltip>
 
             <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
+              <template #activator="{ on, attrs }">
                 <app-btn
                   :disabled="printerPrinting || printerBusy"
                   v-bind="attrs"
@@ -111,7 +111,7 @@
           </app-btn>
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <app-btn
                 v-bind="attrs"
                 small
@@ -129,7 +129,7 @@
           </v-tooltip>
 
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <app-btn
                 v-bind="attrs"
                 block

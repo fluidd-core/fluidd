@@ -14,7 +14,7 @@
       v-if="lowOnSpace && !loading"
       bottom
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
           fab
@@ -37,7 +37,7 @@
       v-if="disabled && !loading"
       bottom
     >
-      <template v-slot:activator="{ on, attrs }">
+      <template #activator="{ on, attrs }">
         <v-btn
           v-bind="attrs"
           fab
@@ -70,7 +70,7 @@
     />
 
     <file-system-menu
-      v-if="!readonly"
+      v-if="!readonly || canCreateDirectory"
       :root="root"
       :disabled="disabled"
       @add-file="$emit('add-file')"
@@ -106,7 +106,7 @@
 
     <template
       v-if="roots.length > 1"
-      v-slot:extension
+      #extension
     >
       <v-tabs>
         <v-tab
@@ -169,6 +169,10 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
 
   get readonly () {
     return this.$store.getters['files/getRootProperties'](this.root).readonly
+  }
+
+  get canCreateDirectory () {
+    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
   }
 
   get lowOnSpace () {

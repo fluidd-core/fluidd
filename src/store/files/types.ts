@@ -12,6 +12,7 @@ export interface FilesState {
   config_examples: Files[];
   docs: Files[];
   logs: Files[];
+  timelapse: Files[]; // may be null, but will never be accessed when feature is unsupported
 }
 
 export interface DiskUsage {
@@ -26,7 +27,7 @@ export interface CurrentPaths {
 
 export interface Files {
   path: string;
-  items: (AppFile | AppFileWithMeta | AppDirectory)[];
+  items: (FileBrowserEntry | AppFileWithMeta)[];
 }
 
 export interface AppFile extends KlipperFile {
@@ -64,7 +65,7 @@ export interface KlipperFileMeta {
 }
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
-  history: HistoryItem | {};
+  history: HistoryItem;
 }
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
@@ -134,4 +135,14 @@ export interface FileFilter {
   desc: string;
 }
 
-export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs'
+export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
+
+export type FileBrowserEntry = AppFile | AppDirectory
+
+export interface FilePreviewState {
+  open: boolean;
+  filename: string;
+  src: string;
+  type: string;
+  appFile?: AppFile;
+}

@@ -50,7 +50,7 @@
           :key="`user-${user.username}`"
           :r-cols="3"
         >
-          <template v-slot:title>
+          <template #title>
             {{ user.username }}
           </template>
 

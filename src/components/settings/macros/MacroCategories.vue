@@ -38,7 +38,7 @@
           :r-cols="3"
           @click="handleCategoryClick(category)"
         >
-          <template v-slot:title>
+          <template #title>
             {{ category.name }}
             <v-chip
               small
@@ -85,7 +85,7 @@
         :r-cols="3"
         @click="handleCategoryClick()"
       >
-        <template v-slot:title>
+        <template #title>
           {{ $t('app.general.label.uncategorized') }}
           <v-chip small>
             {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}
@@ -146,7 +146,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
   handleAddCategoryDialog () {
     this.categoryDialogState = {
       open: true,
-      title: 'Add category',
+      title: this.$t('app.general.label.add_category'),
       label: this.$t('app.general.label.name'),
       category: null,
       name: '',
@@ -161,7 +161,7 @@ export default class MacroSettings extends Mixins(StateMixin) {
   handleEditCategoryDialog (category: MacroCategory) {
     this.categoryDialogState = {
       open: true,
-      title: 'Edit category',
+      title: this.$t('app.general.label.edit_category'),
       label: this.$t('app.general.label.name'),
       category,
       name: category.name,

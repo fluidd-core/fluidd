@@ -2,7 +2,7 @@
   <v-dialog
     :value="value"
     :max-width="320"
-    @input="$emit('input', value)"
+    @input="$emit('input', $event)"
   >
     <v-form
       ref="addInstanceForm"

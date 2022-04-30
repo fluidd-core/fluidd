@@ -7,7 +7,7 @@
     :close-on-content-click="false"
     :close-delay="300"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-badge
         :value="notificationsCounter"
         :content="notificationsCounter"
@@ -85,6 +85,7 @@
                   v-if="!n.to.startsWith('http')"
                   x-small
                   :to="n.to"
+                  class="mr-1"
                   @click="menu = false"
                   v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
                 />
@@ -93,8 +94,14 @@
                   x-small
                   :href="n.to"
                   target="_blank"
+                  class="mr-1"
                   @click="menu = false"
                   v-html="(n.btnText) ? n.btnText : $t('app.general.btn.more_information')"
+                />
+
+                <app-announcement-dismiss-menu
+                  v-if="n.type === 'announcement'"
+                  @dismiss="handleAnnouncementDismiss(n, $event)"
                 />
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -141,8 +148,13 @@
 <script lang="ts">
 import { AppNotification } from '@/store/notifications/types'
 import { Component, Vue } from 'vue-property-decorator'
+import AppAnnouncementDismissMenu from './AppAnnouncementDismissMenu.vue'
 
-@Component({})
+@Component({
+  components: {
+    AppAnnouncementDismissMenu
+  }
+})
 export default class AppNotificationMenu extends Vue {
   menu = false
 
@@ -190,9 +202,14 @@ export default class AppNotificationMenu extends Vue {
    */
   icon (n: AppNotification) {
     if (n.icon) return n.icon
-    if (n.type === 'info' || n.type === 'success') return '$info'
-    if (n.type === 'warning') return '$warning'
-    if (n.type === 'error') return '$error'
+    switch (n.type) {
+      case 'info':
+      case 'success':
+      case 'announcement':
+        return '$info'
+      case 'warning':
+        return '$warning'
+    }
     return '$error'
   }
 
@@ -206,6 +223,17 @@ export default class AppNotificationMenu extends Vue {
 
   handleClearAll () {
     this.$store.dispatch('notifications/clearAll')
+  }
+
+  handleAnnouncementDismiss (n: AppNotification, wake_time: number) {
+    if (n && wake_time) {
+      this.$store.dispatch('announcements/dismiss', {
+        entry_id: n.id,
+        wake_time
+      })
+
+      this.menu = false
+    }
   }
 }
 </script>
@@ -248,14 +276,16 @@ export default class AppNotificationMenu extends Vue {
   ::v-deep .notification-success,
   ::v-deep .notification-info,
   ::v-deep .notification-warning,
-  ::v-deep .notification-error {
+  ::v-deep .notification-error,
+  ::v-deep .notification-announcement {
     border-left: solid 3px;
   }
 
   ::v-deep .notification-success {
     border-color: var(--v-success-base);
   }
-  ::v-deep .notification-info {
+  ::v-deep .notification-info,
+  ::v-deep .notification-announcement {
     border-color: var(--v-info-base);
   }
   ::v-deep .notification-warning {

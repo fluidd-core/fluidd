@@ -39,7 +39,7 @@
           small-icon
           @click="sendGcode('G28', waits.onHomeAll)"
         >
-          {{ $t('app.general.btn.all') }}
+          {{ $t('app.tool.btn.home_all') }}
         </app-btn-toolhead-move>
       </v-col>
     </v-row>
@@ -166,57 +166,14 @@
           dense
         >
           <app-btn
+            v-for="(distance, index) of toolheadMoveDistances"
+            :key="index"
             small
             :min-width="40"
-            :value="0.1"
+            :value="distance"
             :disabled="!klippyReady"
           >
-            0.1
-          </app-btn>
-          <app-btn
-            small
-            :min-width="40"
-            class="pa-0"
-            :value="1.0"
-            :disabled="!klippyReady"
-          >
-            1.0
-          </app-btn>
-          <app-btn
-            small
-            :min-width="40"
-            class="pa-0"
-            :value="10"
-            :disabled="!klippyReady"
-          >
-            10
-          </app-btn>
-          <app-btn
-            small
-            :min-width="40"
-            class="pa-0"
-            :value="25"
-            :disabled="!klippyReady"
-          >
-            25
-          </app-btn>
-          <app-btn
-            small
-            :min-width="40"
-            class="pa-0"
-            :value="50"
-            :disabled="!klippyReady"
-          >
-            50
-          </app-btn>
-          <app-btn
-            small
-            :min-width="40"
-            class="pa-0"
-            :value="100"
-            :disabled="!klippyReady"
-          >
-            100
+            {{ distance }}
           </app-btn>
         </v-btn-toggle>
       </v-col>
@@ -242,6 +199,16 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   get canHomeXY () {
     return this.kinematics !== 'delta'
+  }
+
+  get toolheadMoveDistances () {
+    const distances = this.$store.state.config.uiSettings.general.toolheadMoveDistances
+    if (distances.includes(this.toolheadMoveLength)) {
+      return distances
+    }
+
+    // safety for when no valid move length is present
+    return [this.toolheadMoveLength, ...distances].sort((a, b) => a - b)
   }
 
   get toolheadMoveLength () {

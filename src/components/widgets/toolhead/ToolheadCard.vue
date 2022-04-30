@@ -6,14 +6,14 @@
     layout-path="dashboard.toolhead-card"
     menu-breakpoint="lg"
   >
-    <template v-slot:title>
+    <template #title>
       <v-icon left>
         $printer3dNozzle
       </v-icon>
       <span class="font-weight-light">{{ $t('app.general.title.tool') }}</span>
 
       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <v-icon
             v-show="!extruderReady"
             v-bind="attrs"
@@ -28,7 +28,7 @@
       </v-tooltip>
     </template>
 
-    <template v-slot:menu>
+    <template #menu>
       <app-btn-collapse-group>
         <app-btn
           :elevation="2"
@@ -37,7 +37,7 @@
           class="ml-1"
           @click="sendGcode('M84')"
         >
-          MOTORS OFF
+          {{ $t('app.tool.tooltip.motors_off') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
@@ -48,7 +48,7 @@
           class="ml-1"
           @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         >
-          Bed_Screws_Adjust
+          {{ $t('app.tool.tooltip.bed_screws_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
@@ -59,7 +59,7 @@
           class="ml-1"
           @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         >
-          Screws_Tilt_Calculate
+          {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
@@ -70,7 +70,7 @@
           class="ml-1"
           @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         >
-          Z_Tilt_Adjust
+          {{ $t('app.tool.tooltip.z_tilt_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
@@ -81,7 +81,7 @@
           class="ml-1"
           @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         >
-          QGL
+          {{ $t('app.tool.tooltip.quad_gantry_level') }}
         </app-btn>
       </app-btn-collapse-group>
     </template>

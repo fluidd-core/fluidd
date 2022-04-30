@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const MonacoEditorPlugin = require('monaco-editor-webpack-plugin')
 const GenerateFilePlugin = require('generate-file-webpack-plugin')
-const ThreadsPlugin = require('threads-plugin')
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer')
+const { defineConfig } = require('@vue/cli-service')
 
 const v = require('./package.json').version
 const h = require('child_process')
   .execSync('git rev-parse --short HEAD')
   .toString()
 
-module.exports = {
+module.exports = defineConfig({
   pluginOptions: {
     i18n: {
       locale: 'en',
@@ -33,19 +33,33 @@ module.exports = {
   configureWebpack: {
     devtool: 'source-map',
     resolve: {
+      fallback: {
+        path: require.resolve('path-browserify')
+      },
       symlinks: false // Don't follow symlinks, fixes issues when using npm link.
     },
     plugins: [
       new MonacoEditorPlugin({
         languages: ['markdown'],
-        features: ['!contextmenu', '!snippets', '!multicursor']
+        features: [
+          '!codeAction',
+          '!codelens',
+          '!colorPicker',
+          '!contextmenu',
+          '!folding',
+          '!hover',
+          '!gotoError',
+          '!gotoLine',
+          '!gotoSymbol',
+          '!quickCommand',
+          '!quickHelp',
+          '!referenceSearch',
+          '!snippet'
+        ]
       }),
       new GenerateFilePlugin({
         file: '.version',
         content: 'v' + v + '\n'
-      }),
-      new ThreadsPlugin({
-        globalObject: "(typeof self!='undefined'?self:this)"
       })
       // new BundleAnalyzerPlugin({
       //   analyzerMode:
@@ -83,4 +97,4 @@ module.exports = {
         return args
       })
   }
-}
+})

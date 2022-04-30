@@ -24,7 +24,7 @@
       transition="slide-y-transition"
       :close-on-content-click="false"
     >
-      <template v-slot:activator="{ on, attrs, value }">
+      <template #activator="{ on, attrs, value }">
         <app-btn
           v-if="paramList.length > 0"
           v-bind="attrs"
@@ -57,7 +57,7 @@
               class=""
               :class="{ 'mb-3': (i < paramList.length - 1) }"
             >
-              <template v-slot:append>
+              <template #append>
                 <app-btn
                   style="margin-top: -4px; margin-right: -6px;"
                   color=""
@@ -91,6 +91,7 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Macro } from '@/store/macros/types'
+import gcodeMacroParams from '@/util/gcode-macro-params'
 
 @Component({})
 export default class AppMacroBtn extends Mixins(StateMixin) {
@@ -129,11 +130,7 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
     if (this.macro.config.gcode) {
-      for (const [, name, rest] of this.macro.config.gcode.matchAll(/params\.(\w+)(.*)/gi)) {
-        const valueMatch = /\|\s*default\s*\(\s*([^,)]+)/i.exec(rest)
-
-        const value = ((valueMatch && valueMatch[1]) || '').trim()
-
+      for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
         if (!this.params[name]) {
           this.$set(this.params, name, { value, reset: value })
         }

@@ -47,7 +47,7 @@
           :key="`component-${component.key}-${component.name}`"
           :title="packageTitle(component)"
         >
-          <template v-slot:sub-title>
+          <template #sub-title>
             <span v-if="component.key !== 'system' && 'full_version_string' in component">
               {{ component.full_version_string }}
             </span>
@@ -67,7 +67,7 @@
             v-if="hasUpdate(component.key) && !inError(component)"
             left
           >
-            <template v-slot:activator="{ attrs, on }">
+            <template #activator="{ attrs, on }">
               <app-btn
                 v-if="hasUpdate(component.key) && !inError(component)"
                 v-bind="attrs"
@@ -106,6 +106,7 @@
     </v-card>
 
     <version-commit-history-dialog
+      v-if="informationDialogState.open"
       v-model="informationDialogState.open"
       :component="informationDialogState.component"
     />

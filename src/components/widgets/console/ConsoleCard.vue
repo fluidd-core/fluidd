@@ -6,11 +6,12 @@
     content-classes="flex-grow-1 flow-shrink-0"
     menu-breakpoint="none"
     menu-icon="$cog"
-    :draggable="true"
+    :draggable="!fullScreen"
+    :collapsable="!fullScreen"
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
-    <template v-slot:title>
+    <template #title>
       <v-icon left>
         $console
       </v-icon>
@@ -22,7 +23,7 @@
       />
     </template>
 
-    <template v-slot:menu>
+    <template #menu>
       <app-btn
         v-if="scrollingPaused"
         color=""
@@ -32,6 +33,17 @@
         @click="console.scrollToLatest(true)"
       >
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
+      </app-btn>
+
+      <app-btn
+        v-if="!fullScreen"
+        color=""
+        fab
+        small
+        text
+        @click="$filters.routeTo($router, '/console')"
+      >
+        <v-icon>$fullScreen</v-icon>
       </app-btn>
 
       <app-btn-collapse-group
@@ -81,7 +93,7 @@
       ref="console"
       :scrolling-paused.sync="scrollingPaused"
       :items="items"
-      :height="300"
+      :height="fullScreen ? 816 : 300"
     />
   </collapsable-card>
 </template>
@@ -100,6 +112,9 @@ import { ConsoleEntry } from '@/store/console/types'
 export default class ConsoleCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  fullScreen!: boolean
 
   @Ref('console') console!: Console
 

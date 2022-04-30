@@ -4,7 +4,7 @@
     offset-y
     :close-delay="300"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         v-bind="attrs"
         fab
@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { startCase, capitalize } from 'lodash'
+import { startCase, capitalize } from 'lodash-es'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {

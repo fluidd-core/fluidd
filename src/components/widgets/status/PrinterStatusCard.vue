@@ -6,7 +6,7 @@
     :collapsable="collapsable"
     layout-path="dashboard.printer-status-card"
   >
-    <template v-slot:title>
+    <template #title>
       <v-tabs
         v-model="tab"
         background-color="transparent"
@@ -31,7 +31,7 @@
       </v-tabs>
     </template>
 
-    <template v-slot:menu>
+    <template #menu>
       <status-controls
         v-if="printerPrinting || printerPaused || filename"
         @print="handlePrint($event)"

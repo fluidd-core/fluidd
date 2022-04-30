@@ -288,7 +288,7 @@ app:
       console: Konzole
       endstops: Koncové spínače
       fans_outputs: Větráky a výstupy
-      gcode_preview: Zobrazení Gcode [ Beta ]
+      gcode_preview: Zobrazení Gcode
       history: Historie
       home: Domů
       jobs: Soubory

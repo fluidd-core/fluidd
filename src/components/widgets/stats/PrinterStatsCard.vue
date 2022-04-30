@@ -3,7 +3,7 @@
     :title="$t('app.general.title.stats')"
     icon="$chart"
   >
-    <template v-slot:menu>
+    <template #menu>
       <app-btn-collapse-group>
         <app-btn
           small

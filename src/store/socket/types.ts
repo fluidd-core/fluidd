@@ -6,6 +6,7 @@ export interface SocketState {
   ready: boolean;
   acceptingNotifications: boolean;
   error: SocketError | null;
+  connectionId: string | null;
 }
 
 export interface SocketError {

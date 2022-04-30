@@ -3,7 +3,7 @@
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
     layout-path="dashboard.gcode-preview-card"
-    draggable
+    :draggable="true"
   >
     <v-card-text v-if="file">
       {{ file.name }}
@@ -13,6 +13,7 @@
 
     <v-card-text>
       <GcodePreviewParserProgressDialog
+        v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
         :progress="parserProgress"
         :file="file"

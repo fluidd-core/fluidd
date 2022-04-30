@@ -5,7 +5,7 @@
     :left="left"
     :right="right"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <app-btn
         :small="small"
         v-bind="attrs"

@@ -10,7 +10,7 @@
         class="pr-1"
       >
         <v-text-field
-          label="X"
+          :label="`X [ ${livePosition[0].toFixed(2)} ]`"
           outlined
           hide-details
           dense
@@ -27,7 +27,7 @@
         class="pr-1 pl-1"
       >
         <v-text-field
-          label="Y"
+          :label="`Y [ ${livePosition[1].toFixed(2)} ]`"
           outlined
           hide-details
           dense
@@ -44,7 +44,7 @@
         class="pl-1"
       >
         <v-text-field
-          label="Z"
+          :label="`Z [ ${livePosition[2].toFixed(2)} ]`"
           outlined
           hide-details
           dense
@@ -95,6 +95,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get toolheadPosition () {
     return this.$store.state.printer.printer.toolhead.position
+  }
+
+  get livePosition () {
+    return this.$store.state.printer.printer.motion_report.live_position
   }
 
   get useGcodeCoords () {

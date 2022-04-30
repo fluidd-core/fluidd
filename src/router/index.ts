@@ -3,9 +3,11 @@ import VueRouter, { NavigationGuardNext, Route, RouteConfig } from 'vue-router'
 
 // Views
 import Dashboard from '@/views/Dashboard.vue'
+import Console from '@/views/Console.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import History from '@/views/History.vue'
+import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
@@ -37,6 +39,12 @@ const routes: Array<RouteConfig> = [
     beforeEnter: ifAuthenticated
   },
   {
+    path: '/console',
+    name: 'Console',
+    component: Console,
+    beforeEnter: ifAuthenticated
+  },
+  {
     path: '/jobs',
     name: 'Jobs',
     component: Jobs,
@@ -46,6 +54,12 @@ const routes: Array<RouteConfig> = [
     path: '/tune',
     name: 'Tune',
     component: Tune,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/timelapse',
+    name: 'Timelapse',
+    component: Timelapse,
     beforeEnter: ifAuthenticated
   },
   {
