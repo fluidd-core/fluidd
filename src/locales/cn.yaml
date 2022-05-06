@@ -90,6 +90,9 @@ app:
     tooltip:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
+    config:
+      klipper:
+        link:  'https://www.klipper3d.org/zh/Config_Reference.html'
   gcode:
     btn:
       load_current_file: 载入当前文件

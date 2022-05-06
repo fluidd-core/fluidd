@@ -144,5 +144,41 @@ export const getters: GetterTree<FilesState, RootState> = {
    */
   getUsage: (state) => {
     return state.disk_usage
+  },
+
+  getStructure: () => (value: string | undefined) => {
+    if (value === undefined) return []
+    const lines = value.split(/\n/gi)
+    value = ''
+    for (let i = 0; i < lines.length; i++) {
+      value += '|' + i + '|' + lines[i] + '\n'
+    }
+    const regex = /(\|\d+\|)#.*|#.*/gi
+    value = value.replace(regex, '$1')
+    const regex2 = /^\|\d+\|[ \f\r\t\v]*$\n/gim
+    value = value.replace(regex2, '')
+    value = value + '|0|['
+    const regex3 = /\|(?<index>\d+)\|(\[(?<section>.*?)\]|(?<name>\w+):(?<value>[^[]*?)(?=\|\d+\|\w+:|\|\d+\|\[))/gim
+    const matchArrays = [...value.matchAll(regex3)]
+    const items = []
+    // let section = null
+    for (const index in matchArrays) {
+      const groups = matchArrays[index].groups
+      if (groups) {
+        const section = groups.section
+        let section_key = groups.section
+        if (section) {
+          section_key = section.split(' ')[0]
+        }
+        items.push({
+          index: parseInt(groups.index) + 1,
+          section: section,
+          section_name: section_key,
+          name: groups.name,
+          value: groups.value
+        })
+      }
+    }
+    return items
   }
 }

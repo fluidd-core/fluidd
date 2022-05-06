@@ -2,6 +2,7 @@ import { HistoryItem } from '@/store/history/types'
 
 export interface FilesState {
   [key: string]: Files[] | FilesUpload[] | FileDownload | string[] | CurrentPaths | DiskUsage | null;
+
   uploads: FilesUpload[];
   download: FileDownload | null;
   currentPaths: CurrentPaths;
@@ -67,7 +68,9 @@ export interface KlipperFileMeta {
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   history: HistoryItem;
 }
-export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
+
+export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {
+}
 
 export interface AppDirectory {
   type: 'directory';
@@ -145,4 +148,12 @@ export interface FilePreviewState {
   src: string;
   type: string;
   appFile?: AppFile;
+}
+
+export interface Structure {
+  index: number;
+  section: string | undefined;
+  section_name: string | undefined;
+  name: string;
+  value: string;
 }

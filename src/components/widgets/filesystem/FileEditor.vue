@@ -54,11 +54,11 @@
               }}</span>
             </div>
             <a
-              :href="configMap.link + '#' + item.section_name"
+              v-if="item.section!==undefined && configLink"
+              :href="configLink + '#' + item.section_name"
               target="_blank"
             >
               <v-icon
-                v-if="item.section!==undefined && configMap.link"
                 class="float-right mr-3"
                 color="secondary"
                 size="20"
@@ -75,29 +75,35 @@
 <script lang="ts">
 import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
-let monaco: typeof Monaco // dynamically imported
+import { Structure } from '@/store/files/types'
 
-interface Structure {
-  index: number;
-  section: string;
-  section_name: string;
-  name: string;
-  value: string;
-}
+let monaco: typeof Monaco // dynamically imported
 
 @Component({})
 export default class FileEditor extends Vue {
-  @Prop({ type: String, required: true })
-  value!: string;
+  @Prop({
+    type: String,
+    required: true
+  })
+  value!: string
 
-  @Prop({ type: String, required: true })
-  filename!: string;
+  @Prop({
+    type: String,
+    required: true
+  })
+  filename!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly!: boolean;
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  readonly!: boolean
 
-  @Prop({ type: Boolean, default: false })
-  sidebar!: boolean;
+  @Prop({
+    type: Boolean,
+    default: false
+  })
+  sidebar!: boolean
 
   @Ref('monaco-editor') monacoEditor!: HTMLElement
   @Ref('editor-sidebar') editor_sidebar!: HTMLElement
@@ -128,8 +134,16 @@ export default class FileEditor extends Vue {
     return this.$vuetify.breakpoint.mobile
   }
 
-  get configMap () {
-    return this.$store.getters['server/getConfigMapByFilename'](this.filename)
+  get configLink () {
+    const configMap = this.$store.getters['server/getConfigMapByFilename'](this.filename)
+    let link = configMap.link
+    if (configMap.service) {
+      const configLink = 'app.file_system.config.' + configMap.service + '.link'
+      if (this.$t(configLink)) {
+        link = this.$t(configLink)
+      }
+    }
+    return link
   }
 
   async mounted () {
@@ -173,14 +187,13 @@ export default class FileEditor extends Vue {
     this.$emit('ready')
     this.editor.onDidChangeModelContent(event => {
       const value = this.editor?.getValue()
-      this.structures = this.parseFile(value)
+      this.structures = this.$store.getters['files/getStructure'](value)
       this.emitChange(value, event)
     })
 
     if (this.sidebar && !this.isMobile) {
-      this.structures = this.parseFile(this.value)
+      this.structures = this.$store.getters['files/getStructure'](this.value)
       this.editor.onDidChangeCursorPosition(event => {
-        console.log('cursor event', event.source)
         const lineNumber = event.position.lineNumber
         let sectionLineNumber = 0
         let itemLineNumber = 0
@@ -224,44 +237,11 @@ export default class FileEditor extends Vue {
   gotoLine (index: number) {
     if (this.editor) {
       this.editor.revealLineNearTop(index)
-      this.editor.setPosition({ column: 1, lineNumber: index })
+      this.editor.setPosition({
+        column: 1,
+        lineNumber: index
+      })
     }
-  }
-
-  parseFile (value: string|undefined) {
-    if (value === undefined) return []
-    const lines = value.split(/\n/gi)
-    value = ''
-    for (let i = 0; i < lines.length; i++) {
-      value += '|' + i + '|' + lines[i] + '\n'
-    }
-    const regex = /(\|\d+\|)#.*|#.*/gi
-    value = value.replace(regex, '$1')
-    const regex2 = /^\|\d+\|[ \f\r\t\v]*$\n/gim
-    value = value.replace(regex2, '')
-    value = value + '|0|['
-    const regex3 = /\|(?<index>\d+)\|(\[(?<section>.*?)\]|(?<name>\w+):(?<value>[^[]*?)(?=\|\d+\|\w+:|\|\d+\|\[))/gim
-    const matchArrays = [...value.matchAll(regex3)]
-    const items = []
-    // let section = null
-    for (const index in matchArrays) {
-      const groups = matchArrays[index].groups
-      if (groups) {
-        const section = groups.section
-        let section_key = groups.section
-        if (section) {
-          section_key = section.split(' ')[0]
-        }
-        items.push({
-          index: parseInt(groups.index) + 1,
-          section: section,
-          section_name: section_key,
-          name: groups.name,
-          value: groups.value
-        })
-      }
-    }
-    return items
   }
 }
 </script>
