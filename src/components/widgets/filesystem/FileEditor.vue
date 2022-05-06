@@ -173,6 +173,7 @@ export default class FileEditor extends Vue {
     this.$emit('ready')
     this.editor.onDidChangeModelContent(event => {
       const value = this.editor?.getValue()
+      this.structures = this.parseFile(value)
       this.emitChange(value, event)
     })
 
@@ -227,7 +228,8 @@ export default class FileEditor extends Vue {
     }
   }
 
-  parseFile (value: string) {
+  parseFile (value: string|undefined) {
+    if (value === undefined) return []
     const lines = value.split(/\n/gi)
     value = ''
     for (let i = 0; i < lines.length; i++) {
