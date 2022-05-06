@@ -42,16 +42,16 @@
               class="py-1"
             >
               <span :class="$vuetify.theme.dark?'mtk1':'mtk1'">[</span> <span
-              :class="$vuetify.theme.dark?'mtk13':'mtk4'"
-            >{{ item.section }}</span> <span :class="$vuetify.theme.dark?'mtk1':'mtk1'">]</span>
+                :class="$vuetify.theme.dark?'mtk13':'mtk4'"
+              >{{ item.section }}</span> <span :class="$vuetify.theme.dark?'mtk1':'mtk1'">]</span>
             </div>
             <div
               v-else
               class="py-1"
             >
               <span :class="$vuetify.theme.dark?'mtk1':'mtk13'">{{
-                  item.name
-                }}</span>
+                item.name
+              }}</span>
             </div>
             <a
               :href="configMap.link + '#' + item.section_name"
@@ -143,7 +143,7 @@ export default class FileEditor extends Vue {
         /* webpackChunkName: "monaco-editor" */
         /* webpackPrefetch: -100 */
         './setupMonaco'
-        )
+      )
       monaco = await promise
     }
 
