@@ -58,6 +58,19 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
+            v-if="!printerPrinting && configMap.link"
+            target="_blank"
+            @click="sidebar=!sidebar"
+          >
+            <v-icon
+              small
+              :left="!$vuetify.breakpoint.smAndDown"
+            >
+              $tree
+            </v-icon>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.structure') }}</span>
+          </app-btn>
+          <app-btn
             v-if="!readonly && !printerPrinting && configMap.serviceSupported"
             :disabled="!ready"
             @click="emitSave(true)"
@@ -102,6 +115,7 @@
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
+        :sidebar="configMap.link && sidebar"
         @ready="editorReady = true"
       />
 
@@ -156,6 +170,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   lastSavedContent = this.updatedContent
   editorReady = false
   shortcutsDialog = false
+  sidebar = true
 
   get ready () {
     return (

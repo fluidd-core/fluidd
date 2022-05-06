@@ -82,6 +82,7 @@ app:
       file_name: Filename
       transfer_rate: Transfer rate
       uploaded: Uploaded
+      structure: Structure
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
@@ -96,6 +97,7 @@ app:
       rename_dir: Rename Directory
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
+      structure: Structure
     tooltip:
       low_on_space: Low on disk space
       root_disabled: '{root} root is not available. Please check your logs.'
