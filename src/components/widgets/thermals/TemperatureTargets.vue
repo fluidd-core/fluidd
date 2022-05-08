@@ -40,7 +40,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -99,7 +99,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -163,7 +163,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
