@@ -43,7 +43,6 @@ module.exports = defineConfig({
         languages: ['markdown'],
         features: [
           '!codeAction',
-          '!codelens',
           '!colorPicker',
           '!contextmenu',
           '!folding',

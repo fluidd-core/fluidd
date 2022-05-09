@@ -82,6 +82,8 @@ app:
       file_name: Filename
       transfer_rate: Transfer rate
       uploaded: Uploaded
+      open_klipper_config: Open Klipper config
+      open_moonraker_config: Open Moonraker config
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
@@ -99,6 +101,9 @@ app:
     tooltip:
       low_on_space: Low on disk space
       root_disabled: '{root} root is not available. Please check your logs.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
   gcode:
     btn:
       load_current_file: Load Current File

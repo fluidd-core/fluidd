@@ -19,6 +19,7 @@
 <script lang="ts">
 import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import getReferenceSection from '@/util/get-reference-section'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
@@ -69,6 +70,63 @@ export default class FileEditor extends Vue {
         './setupMonaco'
       )
       monaco = await promise
+
+      monaco.editor.registerCommand('fluidd_open_docs', (_, isMoonrakerConfig, hash) => {
+        if (isMoonrakerConfig) {
+          const url = this.$t('app.file_system.url.moonraker_config', { hash }).toString()
+          window.open(url)
+        } else {
+          const url = this.$t('app.file_system.url.klipper_config', { hash }).toString()
+          window.open(url)
+        }
+      })
+
+      monaco.languages.registerCodeLensProvider('klipper-config', {
+        provideCodeLenses: (model) => {
+          const isMoonrakerConfig = model.uri.path.toLowerCase().endsWith('/moonraker.conf')
+          const title = isMoonrakerConfig
+            ? this.$t('app.file_system.label.open_moonraker_config').toString()
+            : this.$t('app.file_system.label.open_klipper_config').toString()
+
+          const linesContent = model.getLinesContent()
+
+          const sections = linesContent.reduce((ranges, lineContent, index) => {
+            const section = /^\[([^\]]+)\]/.exec(lineContent)
+            if (section) {
+              const [sectionName] = section[1].split(' ')
+
+              const referenceSection = getReferenceSection(sectionName)
+
+              return ranges.concat({
+                referenceSection,
+                range: {
+                  startLineNumber: index + 1,
+                  startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
+                  endLineNumber: index + 1,
+                  endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+                }
+              })
+            }
+            return ranges
+          }, [] as { referenceSection: string, range: Monaco.IRange }[])
+
+          return {
+            lenses: sections.map((section, index) =>
+              ({
+                range: section.range,
+                id: `docs${index}`,
+                command: {
+                  id: 'fluidd_open_docs',
+                  title,
+                  arguments: [isMoonrakerConfig, section.referenceSection]
+                }
+              })
+            ),
+            dispose: () => undefined
+          }
+        },
+        resolveCodeLens: (_model, codeLens) => codeLens
+      })
     }
 
     // Set the correct theme.
