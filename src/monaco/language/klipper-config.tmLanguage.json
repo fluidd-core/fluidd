@@ -65,7 +65,7 @@
 		},
 		"known_config_block_name": {
 			"name": "storage.type",
-			"match": "(?i)\\b(ad5206|adc_temperature|bed_mesh|bed_screws|bed_tilt|bltouch|board_pins|controller_fan|delayed_gcode|delta_calibrate|display|display_data|display_template|dotstar|dual_carriage|endstop_phase|extruder_stepper|extruder[1-9]{0,1}|fan|filament_switch_sensor|firmware_retraction|force_move|gcode_arcs|gcode_button|gcode_macro|hall_filament_width_sensor|heater_bed|heater_fan|heater_generic|homing_heaters|homing_override|idle_timeout|include|manual_stepper|mcp4018|mcp4451|mcp4728|mcu|menu|multi_pin|neopixel|output_pin|pause_resume|printer|probe|quad_gantry_level|replicape|respond|safe_z_home|samd_sercom|screws_tilt_adjust|servo|skew_correction|static_digital_output|stepper_(bed|arm|[abcdxy]|z[1-9]{0,1})|sx1509|temperature_fan|temperature_sensor|thermistor|tsl1401cl_filament_width_sensor|verify_heater|virtual_sdcard|z_tilt)\\b"
+			"match": "(?i)\\b(ad5206|adc_scaled|adc_temperature|adxl345|bed_mesh|bed_screws|bed_tilt|bltouch|board_pins|controller_fan|delayed_gcode|delta_calibrate|display|display_data|display_status|display_glyph|display_template|dotstar|dual_carriage|endstop_phase|extruder_stepper|extruder[1-9]{0,1}|fan|filament_motion_sensor|filament_switch_sensor|firmware_retraction|force_move|gcode_arcs|gcode_button|gcode_macro|hall_filament_width_sensor|heater_bed|heater_fan|heater_generic|homing_heaters|homing_override|idle_timeout|include|input_shaper|manual_stepper|mcp4018|mcp4451|mcp4728|mcu|menu|multi_pin|neopixel|output_pin|palette2|pause_resume|PCA9533|PCA9632|printer|probe|quad_gantry_level|replicape|resonance_tester|respond|safe_z_home|samd_sercom|screws_tilt_adjust|servo|skew_correction|static_digital_output|stepper_(bed|arm|[abcdxy]|z[1-9]{0,1})|sx1509|temperature_fan|temperature_sensor|thermistor|tsl1401cl_filament_width_sensor|verify_heater|virtual_sdcard|z_tilt)\\b"
 		},
 		"known_driver_type": {
 			"name": "support.type",
@@ -73,7 +73,7 @@
 		},
 		"known_thermistor_type": {
 			"name": "support.type",
-			"match": "(?i)\\b(EPCOS 100K B57560G104F|ATC Semitec 104GT-2|NTC 100K beta 3950|Honeywell 100K 135-104LAG-J01|NTC 100K MGB18-104F39050L32)\\b"
+			"match": "(?i)\\b(EPCOS 100K B57560G104F|ATC Semitec 104GT-2|Generic 3950|NTC 100K beta 3950|Honeywell 100K 135-104LAG-J01|NTC 100K MGB18-104F39050L32)\\b"
 		},
 		"known_extruder_sensor_type": {
 			"name": "support.type",
@@ -222,7 +222,7 @@
 		"gcode_macro_block": {
 			"name": "string.unquoted",
 			"begin": "{",
-			"end": "}"
+      "end": "}"
 		}
 	},
 	"scopeName": "source.klipper-config"
