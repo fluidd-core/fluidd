@@ -84,9 +84,6 @@ export default class FileEditor extends Vue {
       monaco.languages.registerCodeLensProvider('klipper-config', {
         provideCodeLenses: (model) => {
           const isMoonrakerConfig = model.uri.path.toLowerCase().endsWith('/moonraker.conf')
-          const title = isMoonrakerConfig
-            ? this.$t('app.file_system.label.open_moonraker_config').toString()
-            : this.$t('app.file_system.label.open_klipper_config').toString()
 
           const linesContent = model.getLinesContent()
 
@@ -117,7 +114,7 @@ export default class FileEditor extends Vue {
                 id: `docs${index}`,
                 command: {
                   id: 'fluidd_open_docs',
-                  title,
+                  title: this.$t('app.file_system.label.view_section_documentation', { section: section.referenceSection }).toString(),
                   arguments: [isMoonrakerConfig, section.referenceSection]
                 }
               })

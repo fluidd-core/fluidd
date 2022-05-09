@@ -82,8 +82,8 @@ app:
       file_name: Filename
       transfer_rate: Transfer rate
       uploaded: Uploaded
-      open_klipper_config: Open Klipper config
-      open_moonraker_config: Open Moonraker config
+      view_section_documentation: >-
+        View '%{section}' documentation
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
