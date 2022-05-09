@@ -31,10 +31,11 @@
         <div class="pa-2 heading">
           <div
             v-for="(item, index) in structures"
-            :id="'line_'+item.index"
+            :id="`line_${item.index}`"
             :key="index"
             style="cursor: pointer"
-            :class="(item.section!==undefined?'':'pl-5')+' px-2 d-flex justify-space-between align-center'"
+            :class="{'pl-5': item.section === undefined}"
+            class="px-2 d-flex justify-space-between align-center"
             @click="gotoLine(item.index)"
           >
             <div
@@ -55,7 +56,7 @@
             </div>
             <a
               v-if="item.section!==undefined && configLink"
-              :href="configLink + '#' + item.section_name"
+              :href="`${configLink}#${item.section_name}`"
               target="_blank"
             >
               <v-icon
@@ -139,7 +140,7 @@ export default class FileEditor extends Vue {
     let link = configMap.link
     if (configMap.service) {
       const configLink = 'app.file_system.config.' + configMap.service + '.link'
-      if (this.$t(configLink)) {
+      if (this.$t(configLink) !== configLink) {
         link = this.$t(configLink)
       }
     }

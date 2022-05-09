@@ -58,7 +58,7 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
-            v-if="!printerPrinting && configMap.link"
+            v-if="configMap.link"
             target="_blank"
             @click="sidebar=!sidebar"
           >

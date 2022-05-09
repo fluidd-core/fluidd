@@ -152,8 +152,8 @@ export interface FilePreviewState {
 
 export interface Structure {
   index: number;
-  section: string | undefined;
-  section_name: string | undefined;
+  section?: string;
+  section_name?: string;
   name: string;
   value: string;
 }
