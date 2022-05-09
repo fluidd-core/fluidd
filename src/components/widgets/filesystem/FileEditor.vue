@@ -124,6 +124,26 @@ export default class FileEditor extends Vue {
         },
         resolveCodeLens: (_model, codeLens) => codeLens
       })
+
+      monaco.languages.registerFoldingRangeProvider('klipper-config', {
+        provideFoldingRanges: (model) => {
+          const linesContent = model.getLinesContent()
+
+          return linesContent.reduce((sections, lineContent, index) => {
+            const section = /^\[([^\]]+)\]/.exec(lineContent)
+            if (section) {
+              return sections.concat({
+                start: index + 1,
+                end: index + 1,
+                kind: monaco.languages.FoldingRangeKind.Region
+              })
+            } else if (lineContent.trim().length > 0 && sections.length > 0) {
+              sections[sections.length - 1].end = index + 1
+            }
+            return sections
+          }, [] as Monaco.languages.FoldingRange[])
+        }
+      })
     }
 
     // Set the correct theme.

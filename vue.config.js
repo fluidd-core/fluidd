@@ -45,12 +45,10 @@ module.exports = defineConfig({
           '!codeAction',
           '!colorPicker',
           '!contextmenu',
-          '!folding',
           '!hover',
           '!gotoError',
           '!gotoLine',
           '!gotoSymbol',
-          '!quickCommand',
           '!quickHelp',
           '!referenceSearch',
           '!snippet'
