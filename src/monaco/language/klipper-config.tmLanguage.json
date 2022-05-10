@@ -222,7 +222,7 @@
 		"gcode_macro_block": {
 			"name": "string.unquoted",
 			"begin": "{",
-      "end": "}"
+			"end": "}"
 		}
 	},
 	"scopeName": "source.klipper-config"
