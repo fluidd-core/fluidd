@@ -130,16 +130,33 @@ export default class FileEditor extends Vue {
           const linesContent = model.getLinesContent()
 
           return linesContent.reduce((sections, lineContent, index) => {
-            const section = /^\[([^\]]+)\]/.exec(lineContent)
-            if (section) {
+            const isSection = /^\[([^\]]+)\]/.test(lineContent)
+
+            if (isSection) {
               return sections.concat({
                 start: index + 1,
                 end: index + 1,
                 kind: monaco.languages.FoldingRangeKind.Region
               })
-            } else if (lineContent.trim().length > 0 && sections.length > 0) {
+            }
+
+            const lastSection = sections.length > 0 ? sections[sections.length - 1] : undefined
+            const isLastSectionComment = lastSection?.kind === monaco.languages.FoldingRangeKind.Comment
+
+            const isComment = lineContent.startsWith('#')
+
+            if (isComment && !isLastSectionComment) {
+              return sections.concat({
+                start: index + 1,
+                end: index + 1,
+                kind: monaco.languages.FoldingRangeKind.Comment
+              })
+            }
+
+            if (lineContent.trim().length > 0 && isComment === isLastSectionComment) {
               sections[sections.length - 1].end = index + 1
             }
+
             return sections
           }, [] as Monaco.languages.FoldingRange[])
         }
