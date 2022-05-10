@@ -165,7 +165,7 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   set autoScroll (value: boolean) {
     this.$store.dispatch('console/onUpdateAutoScroll', value)
     if (value) {
-      this.console.scrollToLatest()
+      this.console.scrollToLatest(true)
     }
   }
 
