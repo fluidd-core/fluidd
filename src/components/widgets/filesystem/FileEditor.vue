@@ -19,7 +19,6 @@
 <script lang="ts">
 import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
-import getReferenceSection from '@/util/get-reference-section'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
@@ -70,97 +69,6 @@ export default class FileEditor extends Vue {
         './setupMonaco'
       )
       monaco = await promise
-
-      monaco.editor.registerCommand('fluidd_open_docs', (_, isMoonrakerConfig, hash) => {
-        if (isMoonrakerConfig) {
-          const url = this.$t('app.file_system.url.moonraker_config', { hash }).toString()
-          window.open(url)
-        } else {
-          const url = this.$t('app.file_system.url.klipper_config', { hash }).toString()
-          window.open(url)
-        }
-      })
-
-      monaco.languages.registerCodeLensProvider('klipper-config', {
-        provideCodeLenses: (model) => {
-          const isMoonrakerConfig = model.uri.path.toLowerCase().endsWith('/moonraker.conf')
-
-          const linesContent = model.getLinesContent()
-
-          const sections = linesContent.reduce((ranges, lineContent, index) => {
-            const section = /^\[([^\]]+)\]/.exec(lineContent)
-            if (section) {
-              const [sectionName] = section[1].split(' ')
-
-              const referenceSection = getReferenceSection(sectionName)
-
-              return ranges.concat({
-                referenceSection,
-                range: {
-                  startLineNumber: index + 1,
-                  startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
-                  endLineNumber: index + 1,
-                  endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
-                }
-              })
-            }
-            return ranges
-          }, [] as { referenceSection: string, range: Monaco.IRange }[])
-
-          return {
-            lenses: sections.map((section, index) =>
-              ({
-                range: section.range,
-                id: `docs${index}`,
-                command: {
-                  id: 'fluidd_open_docs',
-                  title: this.$t('app.file_system.label.view_section_documentation', { section: section.referenceSection }).toString(),
-                  arguments: [isMoonrakerConfig, section.referenceSection]
-                }
-              })
-            ),
-            dispose: () => undefined
-          }
-        },
-        resolveCodeLens: (_model, codeLens) => codeLens
-      })
-
-      monaco.languages.registerFoldingRangeProvider('klipper-config', {
-        provideFoldingRanges: (model) => {
-          const linesContent = model.getLinesContent()
-
-          return linesContent.reduce((sections, lineContent, index) => {
-            const isSection = /^\[([^\]]+)\]/.test(lineContent)
-
-            if (isSection) {
-              return sections.concat({
-                start: index + 1,
-                end: index + 1,
-                kind: monaco.languages.FoldingRangeKind.Region
-              })
-            }
-
-            const lastSection = sections.length > 0 ? sections[sections.length - 1] : undefined
-            const isLastSectionComment = lastSection?.kind === monaco.languages.FoldingRangeKind.Comment
-
-            const isComment = lineContent.startsWith('#')
-
-            if (isComment && !isLastSectionComment) {
-              return sections.concat({
-                start: index + 1,
-                end: index + 1,
-                kind: monaco.languages.FoldingRangeKind.Comment
-              })
-            }
-
-            if (lineContent.trim().length > 0 && isComment === isLastSectionComment) {
-              sections[sections.length - 1].end = index + 1
-            }
-
-            return sections
-          }, [] as Monaco.languages.FoldingRange[])
-        }
-      })
     }
 
     // Set the correct theme.
