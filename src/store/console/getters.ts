@@ -8,13 +8,12 @@ export const getters: GetterTree<ConsoleState, RootState> = {
   /**
    * Return a list of all available console entries, filtered appropriately.
    */
-  getConsoleEntries: (state, getters, rootState) => {
-    const hideTempWaits = (rootState && rootState.config)
-      ? rootState.config.uiSettings.general.hideTempWaits
-      : true
+  getConsoleEntries: (state, rootState) => {
+    const hideTempWaits = rootState.config?.uiSettings.general.hideTempWaits || true
 
     const items = state.console.filter(entry => {
-      return (hideTempWaits ? !_tempWaitExpr.test(entry.message) : true) &&
+      return (!entry.time || entry.time * 1000 > state.lastCleared) &&
+      (!hideTempWaits || !_tempWaitExpr.test(entry.message)) &&
       (!state.consoleFilters.some((f, i) => f.enabled && state.consoleFiltersRegexp[i].test(entry.message)))
     })
 
