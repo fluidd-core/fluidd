@@ -84,6 +84,7 @@ app:
       uploaded: Uploaded
       view_section_documentation: >-
         View '%{section}' documentation
+      structure: Structures
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
@@ -98,6 +99,7 @@ app:
       rename_dir: Rename Directory
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
+      structure: Structures
     tooltip:
       low_on_space: Low on disk space
       root_disabled: '{root} root is not available. Please check your logs.'

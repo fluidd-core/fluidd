@@ -71,6 +71,7 @@ app:
       file_name: 文件名
       transfer_rate: 传输速率
       uploaded: 上传完成
+      structure: 大纲
     msg:
       confirm: 你确定需要这样操作吗？这将删除选中的文件和目录。
       not_found: 文件未找到
@@ -85,6 +86,7 @@ app:
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
+      structure: 大纲视图
     tooltip:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'

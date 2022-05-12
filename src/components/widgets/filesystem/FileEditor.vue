@@ -57,18 +57,6 @@
                 item.name
               }}</span>
             </div>
-            <a
-              v-if="item.section!==undefined && configLink"
-              :href="`${configLink}#${item.section_name}`"
-              target="_blank"
-            >
-              <v-icon
-                class="float-right mr-3"
-                color="secondary"
-                size="20"
-              >$help
-              </v-icon>
-            </a>
           </div>
         </div>
       </div>
@@ -137,18 +125,6 @@ export default class FileEditor extends Vue {
     return this.$vuetify.breakpoint.mobile
   }
 
-  get configLink () {
-    const configMap = this.$store.getters['server/getConfigMapByFilename'](this.filename)
-    let link = configMap.link
-    if (configMap.service) {
-      const configLink = 'app.file_system.config.' + configMap.service + '.link'
-      if (this.$t(configLink) !== configLink) {
-        link = this.$t(configLink)
-      }
-    }
-    return link
-  }
-
   async mounted () {
     // Init the editor.
     await this.initEditor()
@@ -174,15 +150,6 @@ export default class FileEditor extends Vue {
       monaco.editor.setTheme('light-converted')
     }
 
-    if (this.isMobile) {
-      this.opts = Object.assign(this.opts, {
-        lineNumbers: 'off' as Monaco.editor.LineNumbersType,
-        glyphMargin: false,
-        folding: false,
-        lineDecorationsWidth: 5,
-        lineNumbersMinChars: 0
-      })
-    }
     // Create an editor instance.
     this.editor = monaco.editor.create(this.monacoEditor, {
       ...this.opts
@@ -312,7 +279,10 @@ export default class FileEditor extends Vue {
   border-radius: 0 !important;
 }
 
-.editor-sidebar::v-deep .ps__rail-y:hover {
+.editor-sidebar::v-deep .ps__rail-y:hover,
+.editor-sidebar::v-deep .ps__rail-y:focus,
+.editor-sidebar::v-deep .ps__rail-y.ps--clicking,
+{
   background-color: transparent !important;
 }
 </style>
