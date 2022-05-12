@@ -6,7 +6,10 @@
     no-actions
   >
     <v-card-text class="py-4">
-      <v-layout justify-center>
+      <v-layout
+        v-if="!isMarkdown"
+        justify-center
+      >
         <video
           v-if="isVideo"
           controls
@@ -26,6 +29,17 @@
           {{ $t('app.general.simple_form.msg.no_file_preview', { name: (extension ? `.${extension} files` : filename) }) }}
         </div>
       </v-layout>
+
+      <template v-else-if="isMarkdown">
+        <promise-wrapper :promise="resultPromise">
+          <template #default="{result}">
+            <div
+              class="markdown-container"
+              v-html="result"
+            />
+          </template>
+        </promise-wrapper>
+      </template>
     </v-card-text>
 
     <template v-if="file">
@@ -58,11 +72,16 @@
 import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import type { AppFile } from '@/store/files/types'
+import { Marked, type MarkedExtension } from 'marked'
+import { baseUrl } from 'marked-base-url'
 
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean })
     open?: boolean
+
+  @Prop({ type: String, required: true })
+  readonly path!: string
 
   @Prop({ type: Object })
   readonly file?: AppFile
@@ -85,6 +104,8 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly readonly?: boolean
 
+  resultPromise: Promise<string> | null = null
+
   get calculatedWidth () {
     const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
     return Math.min(window.innerWidth * 0.9, Math.max(this.width ?? defaultWidth, defaultWidth / 2))
@@ -97,6 +118,45 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   get isImage () {
     return this.type.startsWith('image/')
   }
+
+  get isMarkdown () {
+    return this.type.startsWith('text/markdown')
+  }
+
+  get apiUrl (): string {
+    return this.$store.state.config.apiUrl as string
+  }
+
+  async LoadMarkdown () {
+    const response = await fetch(this.src)
+    const data = await response.text()
+
+    const apiFileUrl = `${this.apiUrl}/server/files/${this.path}/`
+
+    const baseUrlExtension = baseUrl(apiFileUrl)
+
+    const customExtension: MarkedExtension = {
+      renderer: {
+        link (...args) {
+          const html = this.constructor.prototype.link.call(this, ...args)
+
+          return html.replace(/^<a /, '<a target="_blank" ')
+        }
+      }
+    }
+
+    const marked = new Marked(baseUrlExtension, customExtension)
+
+    this.resultPromise = marked.parse(data, {
+      async: true
+    }) as Promise<string>
+  }
+
+  mounted () {
+    if (this.isMarkdown) {
+      this.LoadMarkdown()
+    }
+  }
 }
 </script>
 
@@ -104,5 +164,11 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 video, img {
   max-width: 100%;
   max-height: calc(90vh - 144px);
+}
+
+.markdown-container {
+  :deep(img) {
+    max-width: 100% !important;
+  }
 }
 </style>

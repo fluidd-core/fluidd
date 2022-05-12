@@ -502,6 +502,11 @@ export const SupportedImageFormats = Object.freeze([
   '.webp'
 ])
 
+export const SupportedMarkdownFormats = Object.freeze([
+  '.md',
+  '.mardown'
+])
+
 export const SupportedVideoFormats = Object.freeze([
   '.mp4',
   '.mpeg',
