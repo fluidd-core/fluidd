@@ -58,9 +58,9 @@
             <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.general.btn.config_reference') }}</span>
           </app-btn>
           <app-btn
-            v-if="configMap.link"
+            v-if="sidebar!==undefined & !isMobile"
             target="_blank"
-            @click="sidebar=!sidebar"
+            @click="showSidebar=!showSidebar"
           >
             <v-icon
               small
@@ -115,7 +115,8 @@
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
-        :sidebar="configMap.link && sidebar"
+        :sidebar="sidebar"
+        @hideSidebar="showSidebar = false"
         @ready="editorReady = true"
       />
 
@@ -170,7 +171,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   lastSavedContent = this.updatedContent
   editorReady = false
   shortcutsDialog = false
-  sidebar = true
+  showSidebar = !this.isMobile
 
   get ready () {
     return (
@@ -194,6 +195,13 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get configMap () {
     return this.$store.getters['server/getConfigMapByFilename'](this.filename)
+  }
+
+  get sidebar () {
+    if (this.configMap.link !== undefined) {
+      return this.showSidebar
+    }
+    return undefined
   }
 
   // get configRefUrl () {

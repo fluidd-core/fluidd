@@ -2,7 +2,7 @@
   <div class="editor-container d-flex">
     <div
       ref="monaco-editor"
-      :class="(sidebar && !isMobile)?'editor':'editor-full'"
+      :class="sidebar?'editor':'editor-full'"
     >
       <div
         v-if="!editor"
@@ -16,19 +16,22 @@
       </div>
     </div>
     <div
-      v-if="sidebar && !isMobile"
+      v-if="sidebar !== undefined"
+      v-show="sidebar"
       ref="editor-sidebar"
       class="editor-sidebar pa-2"
     >
-      <v-card flat>
-        <v-card-subtitle>
+      <div>
+        <div class="py-2">
           <v-icon small>
             $tree
           </v-icon>
           {{ $t('app.file_system.label.structure') }}
-        </v-card-subtitle>
+        </div>
         <v-divider />
-        <div class="pa-2 heading">
+        <div
+          class="pa-2 structures"
+        >
           <div
             v-for="(item, index) in structures"
             :id="`line_${item.index}`"
@@ -42,9 +45,9 @@
               v-if="item.section!==undefined"
               class="py-1"
             >
-              <span :class="$vuetify.theme.dark?'mtk1':'mtk1'">[</span> <span
+              <span class="mtk1">[</span><span
                 :class="$vuetify.theme.dark?'mtk13':'mtk4'"
-              >{{ item.section }}</span> <span :class="$vuetify.theme.dark?'mtk1':'mtk1'">]</span>
+              >{{ item.section }}</span><span class="mtk1">]</span>
             </div>
             <div
               v-else
@@ -68,7 +71,7 @@
             </a>
           </div>
         </div>
-      </v-card>
+      </div>
     </div>
   </div>
 </template>
@@ -77,6 +80,8 @@
 import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { Structure } from '@/store/files/types'
+import PerfectScrollbar from 'perfect-scrollbar'
+import 'perfect-scrollbar/css/perfect-scrollbar.css'
 
 let monaco: typeof Monaco // dynamically imported
 
@@ -101,13 +106,12 @@ export default class FileEditor extends Vue {
   readonly!: boolean
 
   @Prop({
-    type: Boolean,
-    default: false
+    type: Boolean
   })
   sidebar!: boolean
 
   @Ref('monaco-editor') monacoEditor!: HTMLElement
-  @Ref('editor-sidebar') editor_sidebar!: HTMLElement
+  @Ref('editor-sidebar') editorSidebar!: HTMLElement
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
@@ -129,8 +133,6 @@ export default class FileEditor extends Vue {
 
   structures: Structure[] = []
 
-  st: any[] = []
-
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
   }
@@ -150,6 +152,9 @@ export default class FileEditor extends Vue {
   async mounted () {
     // Init the editor.
     await this.initEditor()
+    if (this.sidebar !== undefined) {
+      this.initSidebar()
+    }
   }
 
   async initEditor () {
@@ -169,6 +174,15 @@ export default class FileEditor extends Vue {
       monaco.editor.setTheme('light-converted')
     }
 
+    if (this.isMobile) {
+      this.opts = Object.assign(this.opts, {
+        lineNumbers: 'off' as Monaco.editor.LineNumbersType,
+        glyphMargin: false,
+        folding: false,
+        lineDecorationsWidth: 5,
+        lineNumbersMinChars: 0
+      })
+    }
     // Create an editor instance.
     this.editor = monaco.editor.create(this.monacoEditor, {
       ...this.opts
@@ -191,37 +205,41 @@ export default class FileEditor extends Vue {
       this.structures = this.$store.getters['files/getStructure'](value)
       this.emitChange(value, event)
     })
+  }
 
-    if (this.sidebar && !this.isMobile) {
-      this.structures = this.$store.getters['files/getStructure'](this.value)
-      this.editor.onDidChangeCursorPosition(event => {
-        const lineNumber = event.position.lineNumber
-        let sectionLineNumber = 0
-        let itemLineNumber = 0
-        for (let i = 0; i < this.structures.length; i++) {
-          if (lineNumber < this.structures[i].index) break
-          itemLineNumber = this.structures[i].index
-          if (this.structures[i].section !== undefined) {
-            sectionLineNumber = this.structures[i].index
-          }
+  initSidebar () {
+    this.structures = this.$store.getters['files/getStructure'](this.value)
+    this.editor?.onDidChangeCursorPosition(event => {
+      const lineNumber = event.position.lineNumber
+      let sectionLineNumber = 0
+      let itemLineNumber = 0
+      for (let i = 0; i < this.structures.length; i++) {
+        if (lineNumber < this.structures[i].index) break
+        itemLineNumber = this.structures[i].index
+        if (this.structures[i].section) {
+          sectionLineNumber = this.structures[i].index
         }
+      }
 
-        const sectionAnchor: HTMLElement | null = this.editor_sidebar.querySelector('#line_' + sectionLineNumber)
-        const itemAnchor: HTMLElement | null = this.editor_sidebar.querySelector('#line_' + itemLineNumber)
-        if (sectionAnchor && event.source === 'mouse') {
-          this.editor_sidebar.scrollTop = sectionAnchor?.offsetTop - 80
-        }
+      const sectionAnchor: HTMLElement | null = this.editorSidebar.querySelector('#line_' + sectionLineNumber)
+      const itemAnchor: HTMLElement | null = this.editorSidebar.querySelector('#line_' + itemLineNumber)
+      if (sectionAnchor && event.source === 'mouse') {
+        this.editorSidebar.scrollTop = sectionAnchor?.offsetTop - 80
+      }
 
-        if (itemAnchor) {
-          const active: HTMLElement | null = this.editor_sidebar.querySelector('.active-item')
-          if (active) {
-            const activeClass = active.getAttribute('class')?.replace('active-item', '').trimEnd()
-            active.setAttribute('class', activeClass || '')
-          }
-          itemAnchor.setAttribute('class', itemAnchor.getAttribute('class') + ' active-item')
+      if (itemAnchor) {
+        const active: HTMLElement | null = this.editorSidebar.querySelector('.active-item')
+        if (active) {
+          const activeClass = active.getAttribute('class')?.replace('active-item', '').trimEnd()
+          active.setAttribute('class', activeClass || '')
         }
-      })
-    }
+        itemAnchor.setAttribute('class', itemAnchor.getAttribute('class') + ' active-item')
+      }
+    })
+    const scrollbar = new PerfectScrollbar(this.editorSidebar, { suppressScrollX: true })
+    window.addEventListener('resize', () => {
+      scrollbar.update()
+    })
   }
 
   // Ensure we dispose of our models and editor.
@@ -236,12 +254,13 @@ export default class FileEditor extends Vue {
   }
 
   gotoLine (index: number) {
-    if (this.editor) {
-      this.editor.revealLineNearTop(index)
-      this.editor.setPosition({
-        column: 1,
-        lineNumber: index
-      })
+    this.editor?.revealLineNearTop(index)
+    this.editor?.setPosition({
+      column: 1,
+      lineNumber: index
+    })
+    if (this.isMobile) {
+      this.$emit('hideSidebar', false)
     }
   }
 }
@@ -260,17 +279,19 @@ export default class FileEditor extends Vue {
 }
 
 .editor-sidebar {
-  //display: none;
+  position: relative;
   min-width: 400px;
+  height: calc(100% - 48px);
+
+}
+
+.editor-sidebar .structures {
+  font-family: Consolas, "Courier New", monospace;
+  font-weight: normal;
+  font-size: 16px;
+  font-feature-settings: "liga" 0, "calt" 0;
+  line-height: 22px;
   letter-spacing: 0px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE 10+, edge */
-  &::-webkit-scrollbar {
-    display: none; /* Chrome Safari */
-    // 或者 width: 0;
-  }
 }
 
 .active-item {
@@ -281,5 +302,17 @@ export default class FileEditor extends Vue {
 .editor-container {
   width: 100%;
   height: 100%;
+}
+
+.editor-sidebar::v-deep .ps__thumb-y {
+  border-radius: 0 !important;
+}
+
+.editor-sidebar::v-deep .ps__thumb-y {
+  border-radius: 0 !important;
+}
+
+.editor-sidebar::v-deep .ps__rail-y:hover {
+  background-color: transparent !important;
 }
 </style>
