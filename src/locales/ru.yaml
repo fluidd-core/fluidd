@@ -85,6 +85,8 @@ app:
       file_name: Имя файла
       transfer_rate: Скорость передачи данных
       uploaded: Загружен
+      view_section_documentation: >-
+        Просмотр '%{section}' документации
     msg:
       confirm: Вы уверены? Это приведет к удалению всех файлов и папок внутри.
       not_found: Файлы не найдены
@@ -102,6 +104,9 @@ app:
     tooltip:
       low_on_space: Мало места на диске
       root_disabled: Root недоступен. Проверьте файлы логов.
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
   gcode:
     btn:
       load_current_file: Загрузить текущий файл
@@ -116,6 +121,7 @@ app:
       show_next_layer: Показывать следующий слой
       show_previous_layer: Отображать предыдущий слой
       show_retractions: Отображать ретракты
+      parsing_file: Синтаксический анализ файла
     msg:
       confirm: >-
         Файл "%{filename}" имеет размер %{size}, это может быть ресурсоемким для
@@ -165,6 +171,7 @@ app:
       send: Отправить
       set_color: Установить цвет
       shutdown: Отключение
+      snooze: Вздремнуть
       socket_reconnect: Повторное подключение
       socket_refresh: Принудительно обновление
       upload: Загрузить
@@ -225,6 +232,7 @@ app:
       'off': Выключить
       password: Пароль
       power: Питание
+      pressure_advance: Повышение давления
       printers: Принтеры
       progress: Прогресс
       requested_speed: Запрошенная скорость
@@ -233,6 +241,7 @@ app:
       save_as: Сохранить как
       services: Сервисы
       slicer: Слайсер
+      smooth_time: Сглаживающее время
       speed: Скорость
       sqv: Скорость прохождения угла
       total: Весь
@@ -254,6 +263,9 @@ app:
       unsaved_changes: Не сохраненные изменения
       alias: Псевдоним
       apply_z_offset: Применить и сохранить Z_Offset
+      edit_category: Редактировать категорию
+      add_category: Добавить категорию
+      file_time: Файл
     msg:
       password_changed: Пароль изменен
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
@@ -261,6 +273,7 @@ app:
       error:
         arrayofnums: Только цифры
         exists: Уже существует
+        invalid_number: Неверный номер
         invalid_url: Невалидный URL
         invalid_expression: Недопустимое выражение
         max: Макс %{max}
@@ -329,6 +342,7 @@ app:
       system: Система
       system_overview: Информация о системе
       temperature: Температуры
+      timelapse: Интервальная киносъемка
       tool: Инструмент
       tune: Подстройка
     tooltip:
@@ -337,10 +351,13 @@ app:
       reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
       restart_klipper: Перезагружает сервис Klipper.
   history:
-    msg: {}
+    msg:
+      confirm_jobs: Вы уверены? Это очистит все выполненые работы.
+      confirm_stats: Вы уверены? Это очистит всю статистику.
   printer:
     state:
       busy: Занят
+      cancelled: Отмененый
       complete: Готово
       idle: Ждёт задачу
       loading: Загрузка
@@ -363,10 +380,10 @@ app:
       video: IP Камера
       iframe: Страница HTTP
     camera_rotate_options:
-      none: Нет
       90: 90°
       180: 180°
       270: 270°
+      none: Нет
     label:
       all_off: Всё выключить
       all_on: Всё включить
@@ -414,6 +431,7 @@ app:
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
+      toolhead_move_distances: Значения расстояния перемещения головки
       type: Тип
       z_adjust_values: Значения подстройки оси Z
       date_time_format: Формат даты и времени
@@ -471,10 +489,16 @@ app:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: Все
     tooltip:
       extruder_disabled: экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
       home_xy: Домой XY
       home_z: Домой Z
+      motors_off: МОТОРЫ ВЫКЛ
+      z_tilt_adjust: Z Регулировка наклона
+      quad_gantry_level: QGL
+      screws_tilt_calculate: Расчет Наклона Винтами
+      bed_screws_adjust: РЕГУЛИРОВКА ВИНТОВ СТОЛА
   version:
     btn:
       check_for_updates: Проверить обновления
@@ -485,7 +509,7 @@ app:
       commit_history: История коммитов
       commits_on: Коммиты на
       committed: Закоммичено
-      dirty: DIRTY
+      dirty: Грязный
       invalid: Ошибка
       os_packages: Системные пакеты
       package_list: Список пакетов
@@ -503,3 +527,57 @@ app:
       invalid: Оповещает о локальных изменениях в репозитории
       packages: Пакеты
       release_notes: Примечания к релизу
+  timelapse:
+    btn:
+      render: Рендеринг
+      save_frames: Сохранение Кадров
+    error:
+      newframe: Ошибка при съемке замедленного кадра
+    label:
+      frames: '%{frames} кадр | %{frames} кадров'
+      length: 'Предполагаемая длина: %{length}'
+      frame: Кадр | Кадров
+    title:
+      timelapse_settings: Настройки таймлапса
+      timelapse_status: Статус таймлапса
+      render_settings: Настройки рендеринга
+    tooltip:
+      managed_by_moonraker: Управляется вашей конфигурацией moonraker
+    setting:
+      enable: Включен
+      auto_render: Автоматический Рендеринг
+      crf: Constant Коэффициент скорости
+      duplicatelastframe: Дублирование последних кадров
+      fw_retract: Используется ретракт прошивки
+      gcode_verbose: Подробный Gcode
+      mode: Режим
+      mode_layermacro: Макрос слоя
+      mode_hyperlapse: Временная
+      hyperlapse_cycle: Временная Задержка
+      output_framerate: Выходная Частота кадров
+      park_retract_distance: Расстояние Втягивания Парковки
+      park_retract_speed: Скорость Втягивания Парковки
+      park_extrude_distance: Расстояние Выталкивания Парковки
+      park_extrude_speed: Скорость Выталкивания Парковки
+      parkhead: Парковка Сопла
+      park_time: Время Парковки
+      park_travel_speed: Скорость Перемещения Парковки
+      park_custom_pos_x: Парковочное Положение X
+      park_custom_pos_y: Парковочное Положение Y
+      park_custom_pos_dz: Парковочное Положение Z-Hop
+      parkpos:
+        label: Позиция Парковки
+        custom: Индивидуальный
+        front_left: Передний Левый
+        front_right: Передний Справа
+        center: Центр
+        back_left: Задний Левый
+        back_right: Задний Справа
+      previewimage: Создавать Скриншот
+      saveframes: Сохранение Кадров
+      stream_delay_compensation: Компенсация Задержки
+      targetlength: Целевая длина
+      variable_fps: Переменный FPS
+      variable_fps_min: Минимальная Частота Кадров
+      variable_fps_max: Максимальная Частота Кадров
+      
