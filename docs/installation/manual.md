@@ -12,6 +12,8 @@ permalink: /installation/manual
 ---
 
 Fluidd comes with a `build` script which automatically transpiles and bundles the source code.
+Every Fluidd release has a pre-built package available in the [GitHub Releases](https://github.com/fluidd-core/fluidd/releases) (`fluidd.zip`).
+
 To manually build Fluidd, make sure you have NodeJS and Git installed.
 
 You can follow these steps to build the Fluidd repository:
