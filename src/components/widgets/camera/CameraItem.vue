@@ -34,21 +34,18 @@
       <div
         v-if="camera.name"
         class="camera-name"
-        :class="{'theme--light': !$vuetify.theme.dark}"
       >
         {{ camera.name }}
       </div>
       <div
         v-if="camera.type === 'mjpgadaptive' && time"
         class="camera-frames"
-        :class="{'theme--light': !$vuetify.theme.dark}"
       >
         fps: {{ currentFPS }}
       </div>
       <div
         v-if="cameraFullScreenUrl"
         class="camera-fullscreen"
-        :class="{'theme--light': !$vuetify.theme.dark}"
       >
         <a
           :href="cameraFullScreenUrl"
