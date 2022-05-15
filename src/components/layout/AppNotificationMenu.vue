@@ -74,10 +74,11 @@
               <v-list-item-title v-html="n.title" />
               <v-list-item-subtitle
                 v-if="n.description"
+                :color="textColor(0.6)"
                 class="notification-description"
                 v-html="n.description"
               />
-              <v-list-item-subtitle class="notification-timestamp">
+              <v-list-item-subtitle :color="textColor(0.47)">
                 {{ $filters.formatDateTime(n.timestamp) }}
               </v-list-item-subtitle>
               <v-list-item-subtitle v-if="n.to">
@@ -197,6 +198,10 @@ export default class AppNotificationMenu extends Vue {
     return this.$vuetify.breakpoint.mobile
   }
 
+  get textColor () {
+    return (opacity = 1) => this.$vuetify.theme.dark ? `rgba(255, 255, 255, ${opacity})` : `rgba(0, 0, 0, ${opacity})`
+  }
+
   /**
    * If no defined icon, pull from a standard set based on notification type.
    */
@@ -264,13 +269,8 @@ export default class AppNotificationMenu extends Vue {
     margin-right: -8px;
   }
 
-  ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp {
-    color: rgba(255, 255, 255, 0.47);
-  }
-
   ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-description {
     font-style: italic;
-    color: rgba(255, 255, 255, 0.60);
   }
 
   ::v-deep .notification-success,
