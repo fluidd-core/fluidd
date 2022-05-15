@@ -80,8 +80,9 @@
           <td
             v-if="!printerPrinting"
             class="actions"
+            :class="{'theme--light': !$vuetify.theme.dark}"
           >
-            <div>
+            <div :class="{'theme--light': !$vuetify.theme.dark}">
               <app-btn
                 color=""
                 icon
