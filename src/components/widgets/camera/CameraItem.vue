@@ -34,18 +34,21 @@
       <div
         v-if="camera.name"
         class="camera-name"
+        :class="{'theme--light': !$vuetify.theme.dark}"
       >
         {{ camera.name }}
       </div>
       <div
         v-if="camera.type === 'mjpgadaptive' && time"
         class="camera-frames"
+        :class="{'theme--light': !$vuetify.theme.dark}"
       >
         fps: {{ currentFPS }}
       </div>
       <div
         v-if="cameraFullScreenUrl"
         class="camera-fullscreen"
+        :class="{'theme--light': !$vuetify.theme.dark}"
       >
         <a
           :href="cameraFullScreenUrl"
@@ -292,6 +295,11 @@ export default class CameraItem extends Vue {
     font-weight: 100;
   }
 
+  .theme--light .camera-name,
+  .theme--light .camera-frames {
+    background: rgba(255, 255, 255, 0.75);
+  }
+
   .camera-fullscreen {
     position: absolute;
     text-align: right;
@@ -299,6 +307,10 @@ export default class CameraItem extends Vue {
     right: 0;
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.75);
+  }
+
+  .theme--light .camera-fullscreen {
+    background: rgba(255, 255, 255, 0.75);
   }
 
   .camera-name {
