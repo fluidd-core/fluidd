@@ -82,6 +82,10 @@
       border: none;
     }
 
+    div.theme--light {
+      background: map-deep-get($material-light, 'table', 'hover');
+    }
+
     div:before {
       content: "";
       position: absolute;
@@ -90,6 +94,10 @@
       width: 32px;
       height: inherit;
       background: linear-gradient(90deg, rgba(53,53,57,0) 0%, rgba(53,53,57,1) 100%);
+    }
+
+    div.theme--light:before {
+      background: linear-gradient(90deg, rgba(238,238,238,0) 0%, rgba(238,238,238,1) 100%);
     }
   }
 
