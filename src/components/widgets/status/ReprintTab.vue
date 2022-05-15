@@ -81,7 +81,7 @@
             v-if="!printerPrinting"
             class="actions"
           >
-            <div>
+            <div :class="{'theme--light': !$vuetify.theme.dark}">
               <app-btn
                 color=""
                 icon
