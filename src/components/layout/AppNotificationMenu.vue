@@ -268,9 +268,17 @@ export default class AppNotificationMenu extends Vue {
     color: rgba(255, 255, 255, 0.47);
   }
 
+  .theme--light ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp {
+    color: rgba(0, 0, 0, 0.47);
+  }
+
   ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-description {
     font-style: italic;
     color: rgba(255, 255, 255, 0.60);
+  }
+
+  .theme--light ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-description {
+    color: rgba(0, 0, 0, 0.60);
   }
 
   ::v-deep .notification-success,

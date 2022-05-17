@@ -46,6 +46,16 @@
         <v-icon>$fullScreen</v-icon>
       </app-btn>
 
+      <app-btn
+        color=""
+        fab
+        x-small
+        text
+        @click="handleClear"
+      >
+        <v-icon>$delete</v-icon>
+      </app-btn>
+
       <app-btn-collapse-group
         :collapsed="true"
         menu-icon="$cog"
@@ -180,6 +190,10 @@ export default class ConsoleCard extends Mixins(StateMixin) {
     if (!collapsed) {
       this.console.scrollToLatest()
     }
+  }
+
+  handleClear () {
+    this.$store.dispatch('console/onClear')
   }
 }
 </script>
