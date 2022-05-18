@@ -96,7 +96,7 @@ app:
       keyboard_shortcuts: Toetsenbordcommando's
       rename_dir: Map hernoemen
       rename_file: Bestand hernoemen
-      upload_file: upload bestand | Bestanden uploaden
+      upload_file: Upload bestand | Bestanden uploaden
     tooltip:
       low_on_space: Weinig geheugen over op de schijf
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
@@ -247,7 +247,7 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
-        password_username: Gebruikersnaam is te lang
+        password_username: Gebruikersnaam mag niet overeenkomen met je wachtwoord.
         required: Vereist
       msg:
         confirm: Weet je dit zeker?
@@ -358,7 +358,7 @@ app:
       move_line_width: Lijnbreedte verplaatsen
       primary_color: Primaire kleur
       printer_name: Printer Naam
-      reset: instellingen ongedaan maken
+      reset: Instellingen ongedaan maken
       retraction_icon_size: Grootte van pictogram voor intrekken
       show_animations: Toon animaties
       theme_preset: Community thema
