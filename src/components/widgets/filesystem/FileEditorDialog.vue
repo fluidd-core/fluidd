@@ -33,15 +33,15 @@
         <v-toolbar-items>
           <app-btn
             v-if="!printerPrinting && !isMobile"
-            @click="handleKeyboardShortcuts"
+            @click="handleCommandPalette"
           >
             <v-icon
               small
               :left="!$vuetify.breakpoint.smAndDown"
             >
-              $keyboard
+              $consoleLine
             </v-icon>
-            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.keyboard_shortcuts') }}</span>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.command_palette') }}</span>
           </app-btn>
           <app-btn
             v-if="!printerPrinting && configMap.link"
@@ -228,7 +228,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     }
   }
 
-  handleKeyboardShortcuts () {
+  handleCommandPalette () {
     this.editor?.showCommandPalette()
   }
 }

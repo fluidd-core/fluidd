@@ -98,7 +98,6 @@ app:
       add_dir: Ordner hinzufügen
       add_file: Datei hinzufügen
       download_file: Empfange Datei
-      keyboard_shortcuts: Tastaturkürzel
       rename_dir: Ordner umbennen
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen

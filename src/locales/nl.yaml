@@ -93,7 +93,6 @@ app:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
       download_file: Bestand downloaden
-      keyboard_shortcuts: Toetsenbordcommando's
       rename_dir: Hernoem map
       rename_file: Hernoem bestand
       upload_file: Bestand uploaden | Bestanden uploaden
@@ -117,7 +116,7 @@ app:
     msg:
       confirm: >-
         Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
-        voor uw systeem. 
+        voor uw systeem.
 
         Weet je het zeker?
   general:

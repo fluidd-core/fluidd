@@ -97,7 +97,6 @@ app:
       add_dir: Добавить папку
       add_file: Добавить файл
       download_file: Получение файла
-      keyboard_shortcuts: Сочетания клавиш
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
       upload_file: Загрузка файла | Загрузка файлов
@@ -580,4 +579,4 @@ app:
       variable_fps: Переменный FPS
       variable_fps_min: Минимальная Частота Кадров
       variable_fps_max: Максимальная Частота Кадров
-      
+
