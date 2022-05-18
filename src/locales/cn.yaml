@@ -81,7 +81,6 @@ app:
       add_dir: 新建目录
       add_file: 新建文件
       download_file: 下载文件
-      keyboard_shortcuts: 快捷键
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
