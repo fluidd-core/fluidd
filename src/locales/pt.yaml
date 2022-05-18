@@ -87,8 +87,8 @@ app:
     title:
       add_dir: Adicionar diretório
       add_file: Adicionar ficheiro
+      command_palette: Palete de comandos
       download_file: Recuperando ficheiro
-      keyboard_shortcuts: Atalhos do teclado
       rename_dir: Renomear diretório
       rename_file: Renomear ficheiro
       upload_file: Carregando ficheiro | Carregando ficheiros

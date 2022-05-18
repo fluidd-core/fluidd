@@ -22,7 +22,7 @@ app:
         Questa azione riavvierà la stampante
       load: Carica profilo
       save: |-
-        Salva il profilo calibrato in printer.cfg. 
+        Salva il profilo calibrato in printer.cfg.
         Questa azione riavvierà la stampante
   chart:
     label:
@@ -49,13 +49,13 @@ app:
     error:
       cant_connect: >-
         Qualcosa è andato storto e fluidd non riesce a raggiungere la
-        destinazione. 
+        destinazione.
 
         Sei sicuro che questo sia l'indirizzo corretto?
       cors_error: bloccato dalla CORS policy
       cors_note: >-
         Potrebbe significare che devi modificare la tua configurazione di
-        moonraker. 
+        moonraker.
 
         Consulta la documentazione sulle configurazioni di più stampanti
         contemporanee <a href="%{url}" target="_blank"> qui </a>
@@ -63,7 +63,7 @@ app:
       add_printer: Ad esempio, http://fluiddpi.local
     msg:
       trouble: >-
-        Stai avendo problemi? 
+        Stai avendo problemi?
 
         <a href="%{url}" target="_blank"> Fai clic qui </a> per ulteriori
         informazioni.
@@ -94,7 +94,7 @@ app:
       uploaded: Caricato
     msg:
       confirm: |-
-        Sei sicuro? 
+        Sei sicuro?
         Questa azione eliminerà tutti i file e le cartelle.
       not_found: Nessun file trovato
       processing: Calcolando
@@ -104,11 +104,10 @@ app:
       add_dir: Aggiungi Directory
       add_file: Aggiungi File
       download_file: Recupero file in corso
-      keyboard_shortcuts: Tasti rapidi (shortcut)
       rename_dir: Rinomina Directory
       rename_file: Rinomina il File
       upload_file: |-
-        Caricamento file | 
+        Caricamento file |
         Caricamento files
     tooltip:
       low_on_space: Spazio su disco insufficiente
@@ -249,7 +248,7 @@ app:
     msg:
       password_changed: Password cambiata
       wrong_password: |-
-        Oops! Qualcosa è andato storto. 
+        Oops! Qualcosa è andato storto.
         La tua password è corretta?
     simple_form:
       error:
@@ -264,10 +263,10 @@ app:
       msg:
         confirm: Sei sicuro?
         confirm_reboot_host: |-
-          Sei sicuro? 
+          Sei sicuro?
           Questa azione raivvierà il tuo host.
         confirm_shutdown_host: |-
-          Sei sicuro? 
+          Sei sicuro?
           Questa azione spegnerà il tuo host.
     table:
       header:
@@ -402,7 +401,7 @@ app:
     msg:
       connecting: Connessione a Moonraker...
       no_connection: |-
-        Nessuna connessione Moonraker. 
+        Nessuna connessione Moonraker.
         Controlla lo stato di Moonraker e / o aggiorna.
   system_info:
     label:

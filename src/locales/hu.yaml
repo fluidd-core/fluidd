@@ -95,7 +95,6 @@ app:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
       download_file: Fájl lekérése
-      keyboard_shortcuts: Gyorsbillentyűk
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése

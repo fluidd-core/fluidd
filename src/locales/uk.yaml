@@ -91,7 +91,6 @@ app:
       add_dir: Додати каталог
       add_file: Додати файл
       download_file: Отримання файлу
-      keyboard_shortcuts: Гарячі клавіші
       rename_dir: Перейменувати папку
       rename_file: Перейменувати файл
       upload_file: Завантаження файлу | Завантаження файлів

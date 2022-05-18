@@ -87,7 +87,6 @@ app:
       add_dir: Přidat adresář
       add_file: Přidat soubor
       download_file: Přijímám soubor
-      keyboard_shortcuts: Klávesové zkratky
       rename_dir: Přejmenovat adresář
       rename_file: Přejmenovat soubor
       upload_file: Nahrávám soubor | Nahrávám soubory
