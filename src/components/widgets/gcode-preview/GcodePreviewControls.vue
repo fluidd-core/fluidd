@@ -86,11 +86,13 @@ export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin)
     const file = this.$store.getters['gcodePreview/getFile']
     const printerFile = this.printerFile
 
-    if (!file || !printerFile) {
+    if (!file || !printerFile || (file.path + '/' + file.filename) !== (printerFile.path + '/' + printerFile.filename)) {
+      this.$store.commit('gcodePreview/setViewerState', { followProgress: false })
+
       return false
     }
 
-    return (file.path + '/' + file.filename) === (printerFile.path + '/' + printerFile.filename)
+    return true
   }
 
   get noMoves () {
