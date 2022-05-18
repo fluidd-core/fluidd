@@ -32,7 +32,7 @@
         <v-spacer />
         <v-toolbar-items>
           <app-btn
-            v-if="!printerPrinting && !isMobile"
+            v-if="!isMobile"
             @click="handleCommandPalette"
           >
             <v-icon
