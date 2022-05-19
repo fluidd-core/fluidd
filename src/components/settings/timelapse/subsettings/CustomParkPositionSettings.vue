@@ -64,7 +64,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
     validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
     numMin: (min: number) => (v: number) => v >= min || this.$t('app.general.simple_form.error.min', { min }),
-    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.min', { max })
+    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.max', { max })
   }
 
   getCustomParkPosBlocked (axis: 'x' | 'y') {
