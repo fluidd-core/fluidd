@@ -100,11 +100,11 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
   }
 
   get printerMaxX () {
-    return this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_max ?? Infinity
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_max ?? Infinity)
   }
 
   get printerMaxY () {
-    return this.$store.getters['printer/getPrinterConfig']().stepper_y?.position_max ?? Infinity
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_y?.position_max ?? Infinity)
   }
 
   get settings (): TimelapseSettings {
