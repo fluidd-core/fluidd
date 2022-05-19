@@ -95,7 +95,6 @@ app:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
       download_file: Téléchargement en cours
-      keyboard_shortcuts: Raccourcis de clavier
       rename_dir: Renommer le dossier
       rename_file: Renommer le fichier
       upload_file: Upload en cours
