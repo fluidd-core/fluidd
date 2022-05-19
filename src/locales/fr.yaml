@@ -447,7 +447,7 @@ app:
       os_packages: Paquets du système d'exploitation
       package_list: Liste des paquets
       up_to_date: A JOUR
-      updates_available: Mises à jour disponnibles
+      updates_available: Mises à jour disponibles
     status:
       finished: Mises à jour terminées
       updating: Mise à jour ...
