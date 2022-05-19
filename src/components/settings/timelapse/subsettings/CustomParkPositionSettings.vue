@@ -8,7 +8,7 @@
       <v-text-field
         ref="parkPosXElement"
         :value="parkPosX"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(0), rules.numMax(printerMaxX)]"
+        :rules="[rules.numRequired, rules.validNum, rules.numMin(printerMinX), rules.numMax(printerMaxX)]"
         :disabled="getCustomParkPosBlocked('x')"
         :hide-details="parkPosXElement ? parkPosXElement.valid : true"
         filled
@@ -27,7 +27,7 @@
       <v-text-field
         ref="parkPosYElement"
         :value="parkPosY"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(0), rules.numMax(printerMaxY)]"
+        :rules="[rules.numRequired, rules.validNum, rules.numMin(printerMinY), rules.numMax(printerMaxY)]"
         :disabled="getCustomParkPosBlocked('y')"
         :hide-details="parkPosYElement ? parkPosYElement.valid : true"
         filled
@@ -99,8 +99,16 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     }
   }
 
+  get printerMinX () {
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_min ?? 0)
+  }
+
   get printerMaxX () {
     return +(this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_max ?? Infinity)
+  }
+
+  get printerMinY () {
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_y?.position_min ?? 0)
   }
 
   get printerMaxY () {
