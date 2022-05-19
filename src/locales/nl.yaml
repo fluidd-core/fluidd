@@ -11,17 +11,17 @@ app:
       wireframe: Draadframe
     msg:
       hint: >-
-        Als je opslaat onder een andere naam dan %{name}, kan je er ook voor
+        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook voor
         kiezen %{name} te verwijderen.
       not_found: Geen bedmeshes gevonden.
       not_loaded: Geen meshes geladen
     tooltip:
-      calibrate: Begint een nieuwe calibratie, opslaand als 'default'
+      calibrate: Begint een nieuwe calibratie, opgeslagen als 'default'
       delete: Verwijder profiel. Dit zal je printer herstarten
       load: Laad profiel
       save: >-
-        Slaat gecalibreerd profiel op naar printer.cfg. Dit zal je printer
-        herstarten.
+        Slaat afgesteld profiel op naar printer.cfg. Dit process zal je printer
+        opnieuw opstarten.
   chart:
     label:
       current: Huidig
@@ -32,7 +32,7 @@ app:
       target: Doelwit
     tooltip:
       help: >-
-        Shift inhouden om te zoomen.<br />Klik op een item om het aan of uit te
+        Houd shift ingedrukt om te zoomen.<br />Klik op een item om deze aan of uit te
         schakelen in de grafiek.
   console:
     label:
@@ -45,12 +45,12 @@ app:
   endpoint:
     error:
       cant_connect: >-
-        Er is iets mis, Fluidd kan niet met je bestemming communiceren. Ben je
+        Er is iets mis, Fluidd kan niet met je doelwit communiceren. Ben je
         zeker dat dit het juiste adres is?
       cors_error: blocked by CORS policy
       cors_note: >-
-        Dit betekent dat er iets mis is met je moonraker configuratie.  Bekijk
-        alsjeblieft de documentatie omtrent multiprinter setups <a href="%{url}"
+        Dit betekent dat er iets mis is met je moonraker instellingen.  Bekijk
+        alsjeblieft de documentatie omtrent multiprinter configuraties <a href="%{url}"
         target="_blank">hier</a>
     hint:
       add_printer: V.B, http://fluiddpi.local
@@ -65,7 +65,7 @@ app:
   endstop:
     label:
       open: OPEN
-      triggered: GETRIGGERD
+      triggered: GERAAKT
     msg:
       subtitle: Gebruik de verversknop om je endstopstatus te vernieuwen
   file_system:
@@ -93,11 +93,11 @@ app:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
       download_file: Bestand downloaden
-      rename_dir: Hernoem map
-      rename_file: Hernoem bestand
-      upload_file: Bestand uploaden | Bestanden uploaden
+      rename_dir: Map hernoemen
+      rename_file: Bestand hernoemen
+      upload_file: Upload bestand | Bestanden uploaden
     tooltip:
-      low_on_space: Weinig plaats op de Disk
+      low_on_space: Weinig geheugen over op de schijf
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
   gcode:
     btn:
@@ -112,7 +112,7 @@ app:
       show_moves: Toon bewegingen
       show_next_layer: Toon volgende laag
       show_previous_layer: Toon vorige laag
-      show_retractions: Toon retracts
+      show_retractions: Toon terugtrekpunten
     msg:
       confirm: >-
         Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
@@ -134,7 +134,7 @@ app:
       config_reference: Configuratieverwijzing
       download: Downloaden
       edit: Aanpassen
-      exit_layout: Sluit layourmanager
+      exit_layout: Sluit layoutmanager
       extrude: Extrude
       heaters_off: Verwarmingen uit
       load_all: Alles laden
@@ -157,7 +157,7 @@ app:
       restart_service_klipper: Klipper herstart
       restart_service_moonraker: Moonraker herstart
       resume: Verdergaan
-      retract: Retract
+      retract: Terugtrekken
       save: Opslaan
       save_as: Opslaan als
       save_restart: Opslaan & herstarten
@@ -170,14 +170,14 @@ app:
       view: Bekijken
     error:
       app_setup_link: >-
-        Fluidd setup vereisten kan je <a target="_blank" href="%{url}">hier</a>
+        Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
         vinden.
       app_warnings_found: '%{appName} waarschuwingen gevonden.'
       components_config: >-
         Moonraker plugin configuratie kan je <a target="_blank"
         href="%{url}">hier</a> vinden.
       failed_components: >-
-        Moonraker heeft gefaalde plugins, controleer je logs, update je
+        Moonraker heeft falende plugins, controleer je logs, update je
         configuratie en herstart moonraker.
     label:
       accel_to_decel: Vertragingssnelheid
@@ -215,8 +215,8 @@ app:
       printers: Printers
       progress: Vooruitgang
       requested_speed: Gevraagde Snelheid
-      retract_length: Retract lengte
-      retract_speed: Retract snelheid
+      retract_length: Intrek lengte
+      retract_speed: Intrek snelheid
       save_as: Opslaan als
       services: Services
       speed: Snelheid
@@ -229,7 +229,7 @@ app:
       total_time: Totale tijd
       total_time_avg: Gemiddelde tijd
       uncategorized: Zonder categorie
-      unretract_speed: De-retract lengte
+      unretract_speed: Terugduw lengte
       used: Gebruikt
       variance: Afwijking
       velocity: Snelheid
@@ -237,7 +237,7 @@ app:
       z_offset: Z-Offset
     msg:
       password_changed: Wachtwoord aangepast
-      wrong_password: Oeps! Er ging iets verkeerd, is je wachtwoord wel correct?
+      wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -246,12 +246,12 @@ app:
         max: Max %{max}
         min: Min %{min}
         min_or_0: Min %{min} or 0
-        password_username: Gebruikersnaam past niet
+        password_username: Gebruikersnaam mag niet overeenkomen met je wachtwoord.
         required: Vereist
       msg:
-        confirm: Ben je zeker?
-        confirm_reboot_host: Ben je zeker? Hierdoor zal je host systeem herstarten.
-        confirm_shutdown_host: Ben je zeker? Hierdoor zal je host systeem afsluiten.
+        confirm: Weet je dit zeker?
+        confirm_reboot_host: Weet je dit zeker? Hierdoor zal je host systeem herstarten.
+        confirm_shutdown_host: Weet je dit zeker? Hierdoor zal je host systeem afsluiten.
     table:
       header:
         actions: Acties
@@ -268,7 +268,7 @@ app:
         layer_height: Laaghoogte
         modified: Aangepast
         name: Naam
-        print_duration: Print duurtijd
+        print_duration: Printduur
         size: Grootte
         slicer: Slicer
         slicer_version: Slicer versie
@@ -291,7 +291,7 @@ app:
       jobs: Taken
       limits: Printer Limieten
       macros: Macros
-      retract: Firmware retractie
+      retract: Firmwarematisch intrekken
       runout_sensors: Runout Sensors
       settings: Instellingen
       stats: Printer Statistieken
@@ -299,12 +299,12 @@ app:
       system_overview: Systeeminformatie
       temperature: Temperaturen
       tool: Werktuig
-      tune: Tunen
+      tune: Afstellen
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
-      restart_klipper: Herstart de klipper service.
+      restart_klipper: Start klipper opnieuw op.
   history:
     msg: {}
   printer:
@@ -335,7 +335,7 @@ app:
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
       camera_url: Camera Url
-      confirm_on_estop: Bent u zeker?
+      confirm_on_estop: Weet je dit zeker?
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte
       default_extrude_speed: Standaard extrudesnelheid
@@ -357,7 +357,7 @@ app:
       move_line_width: Lijnbreedte verplaatsen
       primary_color: Primaire kleur
       printer_name: Printer Naam
-      reset: Reset instellingen
+      reset: Instellingen ongedaan maken
       retraction_icon_size: Grootte van pictogram voor intrekken
       show_animations: Toon animaties
       theme_preset: Community thema
@@ -431,7 +431,7 @@ app:
       commits_on: commits op
       committed: Committed
       dirty: DIRTY
-      invalid: INVALID
+      invalid: FOUTIEF
       os_packages: OS Updates
       package_list: Pakketlijst
       up_to_date: UP TO DATE
