@@ -60,6 +60,8 @@ export const defaultState = (): ConfigState => {
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
         showRateOfChange: false,
+        showRelativeHumidity: true,
+        showBarometricPressure: true,
         flipConsoleLayout: false
       },
       theme: {
