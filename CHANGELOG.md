@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.18.1](https://github.com/fluidd-core/fluidd/compare/v1.18.0...v1.18.1) (2022-05-20)
+
+
+### Features
+
+* add toggles for relative humidity / barometric pressure ([#687](https://github.com/fluidd-core/fluidd/issues/687)) ([665c743](https://github.com/fluidd-core/fluidd/commit/665c743b3fde2ca22a523a95db5c69acbb94b95e))
+* adds Codelens and code folding support ([#665](https://github.com/fluidd-core/fluidd/issues/665)) ([aaddeab](https://github.com/fluidd-core/fluidd/commit/aaddeabc51f94f2c388552784ca8d77206a7295c))
+* clear console ([#678](https://github.com/fluidd-core/fluidd/issues/678)) ([237f62e](https://github.com/fluidd-core/fluidd/commit/237f62e9757e63246295e10288894719e6134ca0))
+* highlight links in warning messages ([#682](https://github.com/fluidd-core/fluidd/issues/682)) ([ebe1c5a](https://github.com/fluidd-core/fluidd/commit/ebe1c5a42771b0e6d91106ff69fbb8f4530575d0))
+* **i18n-HU:** update Hungarian translation  ([#663](https://github.com/fluidd-core/fluidd/issues/663)) ([d51502b](https://github.com/fluidd-core/fluidd/commit/d51502b7667aaf78953d5cc6bc00c1cf0c8d7d9a))
+* **i18n-NL:** update Dutch translations ([#672](https://github.com/fluidd-core/fluidd/issues/672)) ([197f8a4](https://github.com/fluidd-core/fluidd/commit/197f8a4f7f1136d87fb8cef5c0d95bcc94637d6f))
+* **i18n-RU:** update Russian translations ([#666](https://github.com/fluidd-core/fluidd/issues/666)) ([ab63e2a](https://github.com/fluidd-core/fluidd/commit/ab63e2a87bdf36018292305e55e26e3a4f75d2a5))
+* replaces Keyboard Shortcuts with Command Palette ([#680](https://github.com/fluidd-core/fluidd/issues/680)) ([33dfe66](https://github.com/fluidd-core/fluidd/commit/33dfe66d6a404f876f60ce62163433c1961a5a89))
+
+
+### Bug Fixes
+
+* allow omit 0 units in gcode number parsing ([#679](https://github.com/fluidd-core/fluidd/issues/679)) ([ad8d4ff](https://github.com/fluidd-core/fluidd/commit/ad8d4ff2a4f2956e3332f54e47b5cfc7262b9794))
+* AppSlider incorrect state ([#654](https://github.com/fluidd-core/fluidd/issues/654)) ([8e59f4e](https://github.com/fluidd-core/fluidd/commit/8e59f4e9167547e1856c561762af6627a0ffc563))
+* clear "follow progress" if not correct file printing ([#683](https://github.com/fluidd-core/fluidd/issues/683)) ([21892ca](https://github.com/fluidd-core/fluidd/commit/21892ca9f71ae79eeffef0c65a8b6565b7c7f302)), closes [#659](https://github.com/fluidd-core/fluidd/issues/659)
+* console auto-scrolling and flipped layout ([#661](https://github.com/fluidd-core/fluidd/issues/661)) ([979e874](https://github.com/fluidd-core/fluidd/commit/979e87408776d5178504180505c4fbc9f1773e25))
+* **i18n-FR:** fix typo in French translation ([c856dd3](https://github.com/fluidd-core/fluidd/commit/c856dd3980d7bc34dd05ffc23788956d2c9979f1))
+* increase PA precision to 0.001 ([#652](https://github.com/fluidd-core/fluidd/issues/652)) ([2623902](https://github.com/fluidd-core/fluidd/commit/2623902c9b43ccdd6531dddea7d949ddd520fc94))
+* job card history metadata race condition ([#668](https://github.com/fluidd-core/fluidd/issues/668)) ([5ce0921](https://github.com/fluidd-core/fluidd/commit/5ce0921c25d306fa651c5b05f1537829d56d5e67))
+* show temp item as selected by default ([#655](https://github.com/fluidd-core/fluidd/issues/655)) ([8a0af9e](https://github.com/fluidd-core/fluidd/commit/8a0af9e7273692f1ef61d5a1268b21666abe4b35))
+* show temp item as selected by default (cont.) ([#660](https://github.com/fluidd-core/fluidd/issues/660)) ([89223ca](https://github.com/fluidd-core/fluidd/commit/89223ca35ffaf77a1f44ae5d9136b48fa1005d4a))
+* **style:** light theme fixes/improvements ([#676](https://github.com/fluidd-core/fluidd/issues/676)) ([1530697](https://github.com/fluidd-core/fluidd/commit/1530697b47af8c918a8a0cf4438b22456b4a9bc8))
+* timelapse custom park position ([#686](https://github.com/fluidd-core/fluidd/issues/686)) ([efba69b](https://github.com/fluidd-core/fluidd/commit/efba69bfa98b279dda5e189741e3f9aa82ca5503))
+
 ## [1.18.0](https://github.com/fluidd-core/fluidd/compare/v1.17.2...v1.18.0) (2022-04-30)
 
 
