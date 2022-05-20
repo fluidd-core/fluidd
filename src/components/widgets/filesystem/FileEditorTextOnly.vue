@@ -1,6 +1,7 @@
 <template>
   <textarea
-    class="editor v-input v-textarea theme--dark px-2"
+    class="editor v-input v-textarea px-2"
+    :class="{'theme--dark': $vuetify.theme.dark}"
     :readonly="readonly"
     :value="value"
     :spellcheck="false"

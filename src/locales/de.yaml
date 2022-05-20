@@ -86,6 +86,8 @@ app:
       file_name: Dateiname
       transfer_rate: Transferrate
       uploaded: Hochgeladen
+      view_section_documentation: >-
+        Dokumentation für '%{section}' anzeigen
     msg:
       confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
       not_found: Keine Dateien gefunden
@@ -95,8 +97,8 @@ app:
     title:
       add_dir: Ordner hinzufügen
       add_file: Datei hinzufügen
+      command_palette: Befehlspalette
       download_file: Empfange Datei
-      keyboard_shortcuts: Tastaturkürzel
       rename_dir: Ordner umbennen
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen
@@ -419,7 +421,9 @@ app:
       reset: Einstellungen zurücksetzen
       retraction_icon_size: Retraction-Symbolgröße
       show_animations: Animationen anzeigen
+      show_barometric_pressure: Luftdruck anzeigen
       show_rate_of_change: Temperatur-Änderungsrate anzeigen
+      show_relative_humidity: Relative Luftfeuchtigkeit anzeigen
       starts_with: Beginnt mit
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode

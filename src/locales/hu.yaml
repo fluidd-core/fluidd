@@ -95,7 +95,6 @@ app:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
       download_file: Fájl lekérése
-      keyboard_shortcuts: Gyorsbillentyűk
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
@@ -116,6 +115,7 @@ app:
       show_next_layer: Következő réteg megjelenítése
       show_previous_layer: Előző réteg megjelenítése
       show_retractions: Visszahúzások megjelenítése
+      parsing_file: Fájl elemzése
     msg:
       confirm: >-
         A fájl "%{filename}" mérete %{size}, megterhelheti a rendszert.
@@ -165,12 +165,13 @@ app:
       send: Küldés
       set_color: Szín beállítása
       shutdown: Leállítás
+      snooze: Szundi
       socket_reconnect: Újracsatlakozás
       socket_refresh: Frissítés kényszerítése
       upload: Feltöltés
       upload_print: Feltöltés & Nyomtatás
       view: Nézet
-      reset_stats: Statisztikák visszaállítása
+      reset_stats: Statisztikák törlése
     error:
       app_setup_link: >-
         A fluid telepítési követelményeit <a target="_blank" href="%{url}">itt
@@ -225,7 +226,7 @@ app:
       'off': 'Ki'
       password: Jelszó
       power: Áramellátás
-      pressure_advance: Nyomásszabályozás
+      pressure_advance: Nyomás előtolás
       printers: Nyomtatók
       progress: Folyamat
       requested_speed: Sebesség
@@ -256,6 +257,9 @@ app:
       unsaved_changes: Nem mentett változások
       alias: Álnév
       apply_z_offset: Z-eltolás alkalmazása és mentése
+      edit_category: Kategória szerkesztése
+      add_category: Kategória hozzáadása
+      file_time: Fájl
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
@@ -330,8 +334,9 @@ app:
       settings: Beállítások
       stats: Nyomtató statisztikák
       system: Rendszer
-      system_overview: Rendszer információ
+      system_overview: Rendszerinformáció
       temperature: Hőmérsékletek
+      timelapse: Timelapse
       tool: Eszköz
       tune: Hangolás
     tooltip:
@@ -361,7 +366,7 @@ app:
       add_filter: Szűrő hozzáadása
       add_thermal_preset: Előbeállítás hozzáadása
       add_user: Felhasználó hozzáadása
-      reset: Újraindítás
+      reset: Frissítés
       select_theme: Válassz témát
     camera_type_options:
       mjpegadaptive: MJPEG Adaptív
@@ -474,10 +479,16 @@ app:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: Mind
     tooltip:
       extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
+      motors_off: MOTOROK KI
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      bed_screws_adjust: BED_SCREWS_ADJUST
   version:
     btn:
       check_for_updates: Frissítések keresése
@@ -504,3 +515,56 @@ app:
       invalid: a repo helyi változásait jelzi
       packages: Csomagok
       release_notes: Kiadási jegyzetek
+  timelapse:
+    btn:
+      render: Renderelés
+      save_frames: Képkockák mentése
+    error:
+      newframe: Hiba a timelapse képkocka felvételekor
+    label:
+      frames: '%{frames} képkocka | %{frames} képkockák'
+      length: 'Becsült hossza: %{length}'
+      frame: Képkocka | Képkockák
+    title:
+      timelapse_settings: Timelapse beállítások
+      timelapse_status: Timelapse állapot
+      render_settings: Renderelési beállítások
+    tooltip:
+      managed_by_moonraker: A moonraker konfigurációja által kezelt
+    setting:
+      enable: Engedélyezve
+      auto_render: Automatikus renderelés
+      crf: Állandó árfolyamtényező
+      duplicatelastframe: Utolsó képkockák duplikálása
+      fw_retract: Firmware visszahúzás használata
+      gcode_verbose: Szöveges Gcode
+      mode: Mód
+      mode_layermacro: Réteg makró
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse ciklus
+      output_framerate: Kimeneti képkockaszám
+      park_retract_distance: Parkolás visszahúzási távolság
+      park_retract_speed: Parkolás visszahúzási sebesség
+      park_extrude_distance: Parkolás extrudálási távolság
+      park_extrude_speed: Parkolás extrudálás sebesség
+      parkhead: Parkoló fej
+      park_time: Parkolási idő
+      park_travel_speed: Parkolás utazási sebesség
+      park_custom_pos_x: Parkolási pozíció X
+      park_custom_pos_y: Parkolási pozíció Y
+      park_custom_pos_dz: Parkolási pozíció Z-ugrás
+      parkpos:
+        label: Parkolási pozíció
+        custom: Egyedi
+        front_left: Elöl balra
+        front_right: Elöl jobbra
+        center: Központ
+        back_left: Hátul balra
+        back_right: Hátul jobbra
+      previewimage: Miniatűr generálása
+      saveframes: Képkockák mentése
+      stream_delay_compensation: Késleltetés kompenzáció
+      targetlength: Cél hossza
+      variable_fps: Változó FPS
+      variable_fps_min: Minimális képkockaszám
+      variable_fps_max: Maximális képkockaszám

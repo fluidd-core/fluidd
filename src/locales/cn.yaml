@@ -81,13 +81,14 @@ app:
       add_dir: 新建目录
       add_file: 新建文件
       download_file: 下载文件
-      keyboard_shortcuts: 快捷键
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
     tooltip:
       low_on_space: 磁盘空间不足
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
+    url:
+      klipper_config: 'https://www.klipper3d.org/zh/Config_Reference.html#%{hash}'
   gcode:
     btn:
       load_current_file: 载入当前文件

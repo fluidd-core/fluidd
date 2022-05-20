@@ -38,6 +38,7 @@ export const actions: ActionTree<HistoryState, RootState> = {
   async onHistoryList ({ commit }, payload) {
     if (payload) {
       commit('setHistoryList', payload)
+      SocketActions.serverFilesGetDirectory('gcodes', 'gcodes')
     }
   },
 

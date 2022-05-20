@@ -6,6 +6,7 @@ export interface ConsoleState {
   consoleEntryCount: number; // give each console entry a unique id.
   commandHistory: string[];
   autoScroll: boolean;
+  lastCleared: number;
   consoleFilters: ConsoleFilter[];
   consoleFiltersRegexp: RegExp[];
 }
