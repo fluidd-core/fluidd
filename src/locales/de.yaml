@@ -421,7 +421,9 @@ app:
       reset: Einstellungen zurücksetzen
       retraction_icon_size: Retraction-Symbolgröße
       show_animations: Animationen anzeigen
+      show_barometric_pressure: Luftdruck anzeigen
       show_rate_of_change: Temperatur-Änderungsrate anzeigen
+      show_relative_humidity: Relative Luftfeuchtigkeit anzeigen
       starts_with: Beginnt mit
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode

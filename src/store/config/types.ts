@@ -53,6 +53,8 @@ export interface GeneralConfig {
   dateformat: string;
   timeformat: string;
   showRateOfChange: boolean;
+  showRelativeHumidity: boolean;
+  showBarometricPressure: boolean;
   flipConsoleLayout: boolean;
 }
 
