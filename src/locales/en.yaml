@@ -113,6 +113,7 @@ app:
       layer: Layer
       layers: Layers
       parsed: Parsed
+      show_current_layer: Show current layer
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer

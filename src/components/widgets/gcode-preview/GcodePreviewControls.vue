@@ -8,6 +8,12 @@
 
     <gcode-preview-control-checkbox
       :disabled="disabled"
+      name="showCurrentLayer"
+      :label="$t('app.gcode.label.show_current_layer')"
+    />
+
+    <gcode-preview-control-checkbox
+      :disabled="disabled"
       name="showNextLayer"
       :label="$t('app.gcode.label.show_next_layer')"
     />
