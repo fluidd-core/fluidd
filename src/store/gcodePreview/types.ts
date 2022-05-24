@@ -10,6 +10,7 @@ export interface GcodePreviewState {
   parserWorker: Thread | null;
 
   viewer: {
+    showCurrentLayer: boolean;
     showNextLayer: boolean;
     showPreviousLayer: boolean;
     showMoves: boolean;

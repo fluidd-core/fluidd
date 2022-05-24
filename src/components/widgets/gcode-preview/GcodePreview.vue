@@ -114,6 +114,19 @@
           />
         </g>
         <g
+          v-if="getViewerOption('showCurrentLayer')"
+          id="activeLayer"
+          class="layer"
+        >
+          <path
+            stroke="lightgrey"
+            :stroke-width="extrusionLineWidth"
+            stroke-opacity="0.6"
+            :d="svgPathActive.extrusions"
+            :shape-rendering="shapeRendering"
+          />
+        </g>
+        <g
           id="currentLayer"
           class="layer"
         >
@@ -419,6 +432,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
     }
 
     return this.$store.getters['gcodePreview/getPaths'](layer?.move ?? 0, this.progress)
+  }
+
+  get svgPathActive (): LayerPaths {
+    if (this.disabled) {
+      return this.defaultLayerPaths
+    }
+
+    return this.$store.getters['gcodePreview/getLayerPaths'](this.layer)
   }
 
   get svgPathPrevious (): LayerPaths {
