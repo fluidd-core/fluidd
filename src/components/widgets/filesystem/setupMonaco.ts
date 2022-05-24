@@ -124,36 +124,63 @@ async function setupMonaco () {
     provideFoldingRanges: (model) => {
       const linesContent = model.getLinesContent()
 
-      return linesContent.reduce((sections, lineContent, index) => {
+      const sectionBlocks = linesContent.reduce((sectionBlocks, lineContent, index) => {
         const isSection = /^\[([^\]]+)\]/.test(lineContent)
 
         if (isSection) {
-          return sections.concat({
+          return sectionBlocks.concat({
             start: index + 1,
-            end: index + 1,
-            kind: monaco.languages.FoldingRangeKind.Region
+            end: index + 1
           })
         }
 
-        const lastSection = sections.length > 0 ? sections[sections.length - 1] : undefined
-        const isLastSectionComment = lastSection?.kind === monaco.languages.FoldingRangeKind.Comment
+        const isNotComment = /^\s*[^#;]/.test(lineContent)
 
-        const isComment = lineContent.startsWith('#')
-
-        if (isComment && !isLastSectionComment) {
-          return sections.concat({
-            start: index + 1,
-            end: index + 1,
-            kind: monaco.languages.FoldingRangeKind.Comment
-          })
+        if (isNotComment && sectionBlocks.length > 0) {
+          sectionBlocks[sectionBlocks.length - 1].end = index + 1
         }
 
-        if (lineContent.trim().length > 0 && isComment === isLastSectionComment) {
-          sections[sections.length - 1].end = index + 1
+        return sectionBlocks
+      }, [] as Array<{ start: number, end: number }>)
+
+      const commentBlocks = linesContent.reduce((commentBlocks, lineContent, index) => {
+        lineContent = lineContent.trim()
+
+        if (lineContent.length > 0) {
+          const isComment = ['#', ';'].includes(lineContent[0])
+
+          const lastCommentBlock = commentBlocks.length > 0 ? commentBlocks[commentBlocks.length - 1] : undefined
+
+          if (isComment) {
+            if (lastCommentBlock && !lastCommentBlock.complete) {
+              lastCommentBlock.end = index + 1
+            } else {
+              return commentBlocks.concat({
+                start: index + 1,
+                end: index + 1,
+                complete: false
+              })
+            }
+          } else if (lastCommentBlock) {
+            lastCommentBlock.complete = true
+          }
         }
 
-        return sections
-      }, [] as monaco.languages.FoldingRange[])
+        return commentBlocks
+      }, [] as Array<{start: number, end: number, complete: boolean}>)
+
+      return [
+        ...sectionBlocks.map(section => ({
+          start: section.start,
+          end: section.end,
+          kind: monaco.languages.FoldingRangeKind.Region
+        })),
+        ...commentBlocks.map(section => ({
+          start: section.start,
+          end: section.end,
+          kind: monaco.languages.FoldingRangeKind.Comment
+        }))
+      ]
     }
   })
 
