@@ -6,22 +6,20 @@
     :draggable="true"
   >
     <template #menu>
-      <app-btn-collapse-group>
-        <app-btn
-          :disabled="!printerFile || printerFileLoaded"
-          color="primary"
-          small
-          @click="loadCurrent"
-        >
-          {{ $t('app.gcode.btn.load_current_file') }}
-        </app-btn>
+      <app-btn
+        :disabled="!printerFile || printerFileLoaded"
+        color="primary"
+        small
+        @click="loadCurrent"
+      >
+        {{ $t('app.gcode.btn.load_current_file') }}
+      </app-btn>
 
-        <app-btn-collapse-group
-          :collapsed="true"
-          menu-icon="$cog"
-        >
-          <GcodePreviewControls :disabled="!fileLoaded" />
-        </app-btn-collapse-group>
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
+      >
+        <GcodePreviewControls :disabled="!fileLoaded" />
       </app-btn-collapse-group>
     </template>
 
