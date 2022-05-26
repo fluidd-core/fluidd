@@ -5,6 +5,15 @@
     layout-path="dashboard.gcode-preview-card"
     :draggable="true"
   >
+    <template #menu>
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
+      >
+        <GcodePreviewControls :disabled="!fileLoaded" />
+      </app-btn-collapse-group>
+    </template>
+
     <v-card-text v-if="file">
       {{ file.name }}
     </v-card-text>
@@ -21,11 +30,7 @@
       />
 
       <v-row>
-        <v-col
-          cols="12"
-          lg="9"
-          md="7"
-        >
+        <v-col cols="8">
           <v-row>
             <v-col>
               <app-slider
@@ -55,25 +60,13 @@
               />
             </v-col>
           </v-row>
-          <v-row>
-            <v-col>
-              <gcode-preview
-                width="100%"
-                :layer="currentLayer"
-                :progress="moveProgress"
-                :disabled="!fileLoaded"
-              />
-            </v-col>
-          </v-row>
         </v-col>
         <v-col
-          cols="12"
-          lg="3"
-          md="5"
+          cols="4"
         >
           <v-card
             outlined
-            class="px-2 py-1 text-center stat-square"
+            class="px-2 py-1 text-center stat-square justify-center"
           >
             <div class="">
               {{ $t('app.gcode.label.layers') }}
@@ -88,7 +81,17 @@
               {{ currentLayerHeight }}
             </div>
           </v-card>
-          <GcodePreviewControls :disabled="!fileLoaded" />
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <gcode-preview
+            width="100%"
+            :layer="currentLayer"
+            :progress="moveProgress"
+            :disabled="!fileLoaded"
+          />
         </v-col>
       </v-row>
     </v-card-text>
