@@ -531,6 +531,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
   outline: none;
   overflow: hidden;
   border: 1px solid black;
+  max-height: calc(100vh * 2/3);
+  aspect-ratio: 1;
 
   &:focus {
     border-color: grey;
