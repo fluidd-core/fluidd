@@ -6,11 +6,22 @@
     :draggable="true"
   >
     <template #menu>
-      <app-btn-collapse-group
-        :collapsed="true"
-        menu-icon="$cog"
-      >
-        <GcodePreviewControls :disabled="!fileLoaded" />
+      <app-btn-collapse-group>
+        <app-btn
+          :disabled="!printerFile || printerFileLoaded"
+          color="primary"
+          small
+          @click="loadCurrent"
+        >
+          {{ $t('app.gcode.btn.load_current_file') }}
+        </app-btn>
+
+        <app-btn-collapse-group
+          :collapsed="true"
+          menu-icon="$cog"
+        >
+          <GcodePreviewControls :disabled="!fileLoaded" />
+        </app-btn-collapse-group>
       </app-btn-collapse-group>
     </template>
 
@@ -64,23 +75,39 @@
         <v-col
           cols="4"
         >
-          <v-card
-            outlined
-            class="px-2 py-1 text-center stat-square justify-center"
-          >
-            <div class="">
-              {{ $t('app.gcode.label.layers') }}
-            </div>
-            <div class="focus--text">
-              {{ layerCount }}
-            </div>
-            <div class="">
-              {{ $t('app.gcode.label.current_layer_height') }}
-            </div>
-            <div class="focus--text">
-              {{ currentLayerHeight }}
-            </div>
-          </v-card>
+          <v-row>
+            <v-col>
+              <v-card
+                outlined
+                class="px-2 py-1 text-center stat-square justify-center"
+              >
+                <div class="">
+                  {{ $t('app.gcode.label.layers') }}
+                </div>
+                <div class="focus--text">
+                  {{ layerCount }}
+                </div>
+                <div class="">
+                  {{ $t('app.gcode.label.current_layer_height') }}
+                </div>
+                <div class="focus--text">
+                  {{ currentLayerHeight }}
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <app-btn
+                :disabled="!fileLoaded"
+                color="secondary"
+                block
+                @click="resetFile"
+              >
+                {{ $t('app.general.btn.reset_file') }}
+              </app-btn>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
@@ -107,9 +134,12 @@ import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePrevie
 import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
+import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
+import { AxiosResponse } from 'axios'
 
 @Component({
   components: {
+    AppBtnCollapseGroup,
     GcodePreviewParserProgressDialog,
     GcodePreview,
     GcodePreviewControls
@@ -262,6 +292,47 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   abortParser () {
     this.$store.dispatch('gcodePreview/terminateParserWorker')
+  }
+
+  resetFile () {
+    this.$store.dispatch('gcodePreview/reset')
+  }
+
+  async loadCurrent () {
+    const file = this.$store.state.printer.printer.current_file as AppFile
+    this.getGcode(file)
+      .then(response => response?.data)
+      .then((gcode: AxiosResponse) => {
+        this.$store.dispatch('gcodePreview/loadGcode', {
+          file,
+          gcode
+        })
+      })
+      .catch(e => e)
+      .finally(() => {
+        this.$store.dispatch('files/removeFileDownload')
+      })
+  }
+
+  get printerFile (): AppFile | undefined {
+    const currentFile = this.$store.state.printer.printer.current_file
+
+    if (currentFile.filename) {
+      return currentFile
+    }
+  }
+
+  get printerFileLoaded () {
+    const file = this.$store.getters['gcodePreview/getFile']
+    const printerFile = this.printerFile
+
+    if (!file || !printerFile || (file.path + '/' + file.filename) !== (printerFile.path + '/' + printerFile.filename)) {
+      this.$store.commit('gcodePreview/setViewerState', { followProgress: false })
+
+      return false
+    }
+
+    return true
   }
 }
 </script>
