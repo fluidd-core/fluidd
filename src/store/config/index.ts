@@ -18,7 +18,7 @@ export const defaultState = (): ConfigState => {
       locales: [
         { name: 'English', code: 'en' },
         { name: 'Čeština', code: 'cz' },
-        { name: 'Chinese', code: 'cn' },
+        { name: '简体中文', code: 'cn' },
         { name: 'Deutsch', code: 'de' },
         { name: 'Español', code: 'es' },
         { name: 'Français', code: 'fr' },
@@ -60,6 +60,8 @@ export const defaultState = (): ConfigState => {
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
         showRateOfChange: false,
+        showRelativeHumidity: true,
+        showBarometricPressure: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed'
       },

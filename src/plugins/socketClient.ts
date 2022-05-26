@@ -150,26 +150,33 @@ export class WebSocketClient {
             // Dispatch with the name of the method, converted to camelCase.
 
             if (d.params && d.params[0]) {
+              const [params, eventtime] = d.params
+
               if (d.method !== 'notify_status_update') {
                 // Normally, we let notifications through with no cache...
-                if (this.store) this.store.dispatch('socket/' + camelCase(d.method), d.params[0])
+                if (this.store) this.store.dispatch('socket/' + camelCase(d.method), params)
               } else {
-                // ...However, status notifications come throug thicc and fast,
+                // ...However, status notifications come through thick and fast,
                 // so we cache these and send them through every second.
-                const date: number = (
-                  d.params[1] === 2 &&
-                  isNaN(d.params[1])
-                )
-                  ? d.params[1]
-                  : new Date().getTime()
+
+                // If any of these properties exist, bypass the cache and send immediately
+                for (const key of ['motion_report']) {
+                  if (this.store && key in params) {
+                    this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
+                    delete params[key]
+                  }
+                }
+
+                const timestamp = eventtime ? eventtime * 1000 : Date.now()
+
                 this.cache = (!this.cache)
-                  ? { timestamp: date, params: d.params[0] }
-                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, d.params[0], { arrayMerge: (x, y) => y }) }
+                  ? { timestamp, params }
+                  : { timestamp: this.cache.timestamp, params: deepMerge(this.cache.params, params, { arrayMerge: (_, y) => y }) }
 
                 // If there's a second or more difference, flush the cache.
-                if (this.cache && date - this.cache.timestamp >= 1000) {
+                if (timestamp - this.cache.timestamp >= 1000) {
                   if (this.store) this.store.dispatch('socket/' + camelCase(d.method), this.cache.params)
-                  this.cache = { timestamp: date, params: {} }
+                  this.cache = { timestamp, params: {} }
                 }
               }
             } else {
@@ -286,15 +293,15 @@ interface SocketRequest {
   jsonrpc: string;
   id: number;
   method: string;
-  params?: object;
+  params?: any;
 }
 
 interface SocketResponse {
   jsonrpc: string; // always available
   method?: string; // generic responses
-  params?: [object, number?]; // generic responses
+  params?: [any, number?]; // generic responses
   id?: number; // specific response
-  result?: object; // specific response
+  result?: any; // specific response
   error?: string | SocketError; // specific response
 }
 
@@ -305,5 +312,5 @@ interface SocketError {
 
 interface CachedParams {
   timestamp: number;
-  params: object;
+  params: any;
 }

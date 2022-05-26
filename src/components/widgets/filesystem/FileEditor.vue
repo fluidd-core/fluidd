@@ -38,7 +38,7 @@ export default class FileEditor extends Vue {
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   // Base editor options.
-  opts = {
+  opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
     contextmenu: false,
     readOnly: this.readonly,
     automaticLayout: true,
@@ -101,6 +101,13 @@ export default class FileEditor extends Vue {
     })
   }
 
+  showCommandPalette () {
+    if (this.editor) {
+      this.editor.focus()
+      this.editor.trigger(null, 'editor.action.quickCommand', null)
+    }
+  }
+
   // Ensure we dispose of our models and editor.
   destroyed () {
     if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
@@ -114,7 +121,7 @@ export default class FileEditor extends Vue {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .editor {
     // margin-top: 12px;
     min-width: 100%;

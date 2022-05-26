@@ -62,6 +62,14 @@
           </app-nav-item>
 
           <app-nav-item
+            v-if="supportsTimelapse"
+            icon="$video"
+            to="/timelapse"
+          >
+            {{ $t('app.general.title.timelapse') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$tune"
             to="/tune"
           >
@@ -112,6 +120,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsHistory () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  get supportsTimelapse () {
+    return this.$store.getters['server/componentSupport']('timelapse')
   }
 
   get supportsVersions () {

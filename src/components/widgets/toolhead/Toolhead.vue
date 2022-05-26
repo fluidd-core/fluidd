@@ -5,13 +5,13 @@
       align="start"
       class="mb-2"
     >
-      <v-col cols="auto">
+      <v-col class="controls-wrapper">
         <extruder-selection v-if="multipleExtruders" />
         <toolhead-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="printerPrinting" />
       </v-col>
 
-      <v-col style="min-width: 380px; max-width: 420px;">
+      <v-col class="controls-wrapper">
         <toolhead-position />
         <extruder-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="!printerPrinting" />
@@ -52,3 +52,10 @@ export default class Toolhead extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style type="scss" scoped>
+  .controls-wrapper {
+    min-width: 380px !important;
+    max-width: 450px !important;
+  }
+</style>

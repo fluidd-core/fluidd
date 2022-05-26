@@ -85,7 +85,7 @@ import {
   mdiCloudAlert,
   mdiCircle,
   mdiFolderMove,
-  mdiKeyboard,
+  mdiConsoleLine,
   mdiDotsGrid,
   mdiHammerWrench,
   mdiAccount,
@@ -116,6 +116,8 @@ import {
   mdiFullscreen,
   mdiStop,
   mdiPlay,
+  mdiFileVideoOutline,
+  mdiBellSleep,
   mdiOpenInNew
 } from '@mdi/js'
 
@@ -157,7 +159,9 @@ export const Globals = Object.freeze({
     auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
-    history: { name: 'history', dispatch: 'history/init' }
+    history: { name: 'history', dispatch: 'history/init' },
+    timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
+    announcements: { name: 'announcements', dispatch: 'announcements/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -284,7 +288,7 @@ export const Icons = Object.freeze({
   cloudCheck: mdiCloudCheck,
   cloudAlert: mdiCloudAlert,
   cubeScan: mdiCubeScan,
-  keyboard: mdiKeyboard,
+  consoleLine: mdiConsoleLine,
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,
   lockReset: mdiLockReset,
@@ -299,6 +303,8 @@ export const Icons = Object.freeze({
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
   fullScreen: mdiFullscreen,
+  video: mdiFileVideoOutline,
+  snooze: mdiBellSleep,
   openInNew: mdiOpenInNew
 })
 
@@ -343,5 +349,6 @@ export const Waits = Object.freeze({
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem'
+  onFileSystem: 'onFileSystem',
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
 })

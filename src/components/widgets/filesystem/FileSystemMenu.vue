@@ -69,7 +69,7 @@
         </v-list-item-title>
       </v-list-item>
       <v-list-item
-        v-if="!readonly"
+        v-if="!readonly || canCreateDirectory"
         :disabled="disabled"
         @click="$emit('add-dir')"
       >
@@ -116,6 +116,10 @@ export default class FileSystemMenu extends Vue {
 
   get accepts () {
     return this.$store.getters['files/getRootProperties'](this.root).accepts.join(',')
+  }
+
+  get canCreateDirectory () {
+    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
   }
 
   emulateClick (startPrint: boolean) {
