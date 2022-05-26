@@ -41,7 +41,10 @@
       />
 
       <v-row>
-        <v-col cols="8">
+        <v-col
+          cols="12"
+          md="8"
+        >
           <v-row>
             <v-col>
               <app-slider
@@ -73,7 +76,8 @@
           </v-row>
         </v-col>
         <v-col
-          cols="4"
+          cols="12"
+          md="4"
         >
           <v-row>
             <v-col>
