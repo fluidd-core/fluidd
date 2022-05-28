@@ -221,6 +221,18 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
     this.moveLength = val
   }
 
+  get toolheadPosition () {
+    return this.$store.state.printer.printer.toolhead.position
+  }
+
+  get printerConfig () {
+    return this.$store.getters['printer/getPrinterConfig']()
+  }
+
+  get usesAbsolutePositioning () {
+    return this.$store.state.printer.printer.gcode_move.absolute_coordinates
+  }
+
   /**
    * Send a move gcode script.
    */
@@ -234,9 +246,22 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
       ? '-' + distance
       : distance
 
-    this.sendGcode(`G91
-      G1 ${axis}${distance} F${rate * 60}
-      G90`)
+    const absolutePosition = Math.min(
+      this.printerConfig[`stepper_${axis}`]?.position_max ?? Infinity,
+      Math.max(
+        this.printerConfig[`stepper_${axis}`]?.position_min ?? 0,
+        this.toolheadPosition[['x', 'y', 'z'].indexOf(axis)] + parseFloat(distance)
+      )
+    )
+
+    let commands = `
+    G90
+    G1 ${axis}${absolutePosition} F${rate * 60}
+    `
+
+    if (!this.usesAbsolutePositioning) commands += 'G91'
+
+    this.sendGcode(commands.trim())
   }
 }
 </script>
