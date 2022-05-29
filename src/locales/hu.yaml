@@ -113,6 +113,7 @@ app:
       show_extrusions: Extrudálások megjelenítése
       show_moves: Mozgások megjelenítése
       show_next_layer: Következő réteg megjelenítése
+      show_current_layer: Aktuális réteg megjelenítése
       show_previous_layer: Előző réteg megjelenítése
       show_retractions: Visszahúzások megjelenítése
       parsing_file: Fájl elemzése
