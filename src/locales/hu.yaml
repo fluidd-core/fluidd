@@ -85,6 +85,8 @@ app:
       file_name: Fájlnév
       transfer_rate: Átviteli sebesség
       uploaded: Feltöltve
+      view_section_documentation: >-
+        Nézd '%{section}' dokumentáció
     msg:
       confirm: Biztos, hogy minden fájlt és mappát törölsz?
       not_found: Nincsenek fájlok
@@ -94,6 +96,7 @@ app:
     title:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
+      command_palette: Parancs paletta
       download_file: Fájl lekérése
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
@@ -101,6 +104,9 @@ app:
     tooltip:
       low_on_space: Kevés a lemezterület
       root_disabled: '{root} nem elérhető. Kérjük, ellenőrizd a naplókat.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
   gcode:
     btn:
       load_current_file: Aktuális fájl betöltése
@@ -110,6 +116,7 @@ app:
       layer: Réteg
       layers: Rétegek
       parsed: Elemezve
+      show_current_layer: Aktuális réteg megjelenítése
       show_extrusions: Extrudálások megjelenítése
       show_moves: Mozgások megjelenítése
       show_next_layer: Következő réteg megjelenítése
@@ -420,7 +427,9 @@ app:
       reset: Beállítások visszaállítása
       retraction_icon_size: Visszahúzási ikon mérete
       show_animations: Animációk megjelenítése
+      show_barometric_pressure: Barometrikus nyomás mutatása
       show_rate_of_change: A hőmérséklet változásának mértéke
+      show_relative_humidity: Relatív páratartalom mutatása
       starts_with: Ezzel kezdődik
       theme_preset: Előre beállított téma
       thermal_preset_gcode: Gcode
