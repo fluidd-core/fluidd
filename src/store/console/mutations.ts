@@ -114,5 +114,9 @@ export const mutations: MutationTree<ConsoleState> = {
       state.consoleFilters.splice(i, 1)
       state.consoleFiltersRegexp.splice(i, 1)
     }
+  },
+
+  setLastCleared (state) {
+    Vue.set(state, 'lastCleared', Date.now())
   }
 }

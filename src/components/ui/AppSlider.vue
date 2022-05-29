@@ -40,7 +40,7 @@
               v-if="isMobile"
               icon
               small
-              :disabled="false"
+              :disabled="disabled"
               style="margin-top: -4px;"
               @click="lockState = !lockState"
             >

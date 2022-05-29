@@ -8,7 +8,7 @@
       <v-text-field
         ref="parkPosXElement"
         :value="parkPosX"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(0), rules.numMax(printerMaxX)]"
+        :rules="[rules.numRequired, rules.validNum, rules.numMin(printerMinX), rules.numMax(printerMaxX)]"
         :disabled="getCustomParkPosBlocked('x')"
         :hide-details="parkPosXElement ? parkPosXElement.valid : true"
         filled
@@ -27,7 +27,7 @@
       <v-text-field
         ref="parkPosYElement"
         :value="parkPosY"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(0), rules.numMax(printerMaxY)]"
+        :rules="[rules.numRequired, rules.validNum, rules.numMin(printerMinY), rules.numMax(printerMaxY)]"
         :disabled="getCustomParkPosBlocked('y')"
         :hide-details="parkPosYElement ? parkPosYElement.valid : true"
         filled
@@ -64,7 +64,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
     validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
     numMin: (min: number) => (v: number) => v >= min || this.$t('app.general.simple_form.error.min', { min }),
-    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.min', { max })
+    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.max', { max })
   }
 
   getCustomParkPosBlocked (axis: 'x' | 'y') {
@@ -99,12 +99,20 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     }
   }
 
+  get printerMinX () {
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_min ?? 0)
+  }
+
   get printerMaxX () {
-    return this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_max ?? Infinity
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_x?.position_max ?? Infinity)
+  }
+
+  get printerMinY () {
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_y?.position_min ?? 0)
   }
 
   get printerMaxY () {
-    return this.$store.getters['printer/getPrinterConfig']().stepper_y?.position_max ?? Infinity
+    return +(this.$store.getters['printer/getPrinterConfig']().stepper_y?.position_max ?? Infinity)
   }
 
   get settings (): TimelapseSettings {

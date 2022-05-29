@@ -38,7 +38,7 @@ export default class FileEditor extends Vue {
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   // Base editor options.
-  opts = {
+  opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
     contextmenu: false,
     readOnly: this.readonly,
     automaticLayout: true,
@@ -99,6 +99,13 @@ export default class FileEditor extends Vue {
       const value = this.editor?.getValue()
       this.emitChange(value, event)
     })
+  }
+
+  showCommandPalette () {
+    if (this.editor) {
+      this.editor.focus()
+      this.editor.trigger(null, 'editor.action.quickCommand', null)
+    }
   }
 
   // Ensure we dispose of our models and editor.

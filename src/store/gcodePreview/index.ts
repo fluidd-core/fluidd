@@ -16,6 +16,7 @@ export const defaultState = (): GcodePreviewState => {
     parserWorker: null,
 
     viewer: {
+      showCurrentLayer: false,
       showNextLayer: false,
       showPreviousLayer: false,
       showMoves: true,

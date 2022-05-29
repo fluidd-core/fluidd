@@ -32,17 +32,16 @@
         <v-spacer />
         <v-toolbar-items>
           <app-btn
-            v-if="!printerPrinting"
-            target="_blank"
-            @click="handleKeyboardShortcuts"
+            v-if="!isMobile"
+            @click="handleCommandPalette"
           >
             <v-icon
               small
               :left="!$vuetify.breakpoint.smAndDown"
             >
-              $keyboard
+              $consoleLine
             </v-icon>
-            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.keyboard_shortcuts') }}</span>
+            <span v-if="!$vuetify.breakpoint.smAndDown">{{ $t('app.file_system.title.command_palette') }}</span>
           </app-btn>
           <app-btn
             v-if="!printerPrinting && configMap.link"
@@ -99,6 +98,7 @@
 
       <file-editor
         v-if="contents !== undefined && !isMobile"
+        ref="editor"
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
@@ -112,16 +112,12 @@
         :readonly="readonly"
         @ready="editorReady = true"
       />
-
-      <keyboard-shortcuts-dialog
-        v-model="shortcutsDialog"
-      />
     </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileEditor from './FileEditor.vue'
 import FileEditorTextOnly from './FileEditorTextOnly.vue'
@@ -152,10 +148,12 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   public readonly!: boolean
 
+  @Ref('editor')
+  editor?: FileEditor
+
   updatedContent = this.contents
   lastSavedContent = this.updatedContent
   editorReady = false
-  shortcutsDialog = false
 
   get ready () {
     return (
@@ -180,14 +178,6 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   get configMap () {
     return this.$store.getters['server/getConfigMapByFilename'](this.filename)
   }
-
-  // get configRefUrl () {
-  //   if (this.filename && this.filename.includes('moonraker.conf')) {
-  //     return Globals.DOCS_MOONRAKER_CONFIG_REF
-  //   } else {
-  //     return Globals.DOCS_KLIPPER_CONFIG_REF
-  //   }
-  // }
 
   mounted () {
     this.updatedContent = this.contents
@@ -238,8 +228,8 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     }
   }
 
-  handleKeyboardShortcuts () {
-    this.shortcutsDialog = true
+  handleCommandPalette () {
+    this.editor?.showCommandPalette()
   }
 }
 </script>

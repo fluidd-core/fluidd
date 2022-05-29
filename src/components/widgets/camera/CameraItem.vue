@@ -292,6 +292,11 @@ export default class CameraItem extends Vue {
     font-weight: 100;
   }
 
+  .theme--light .camera-name,
+  .theme--light .camera-frames {
+    background: rgba(255, 255, 255, 0.75);
+  }
+
   .camera-fullscreen {
     position: absolute;
     text-align: right;
@@ -299,6 +304,10 @@ export default class CameraItem extends Vue {
     right: 0;
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.75);
+  }
+
+  .theme--light .camera-fullscreen {
+    background: rgba(255, 255, 255, 0.75);
   }
 
   .camera-name {
