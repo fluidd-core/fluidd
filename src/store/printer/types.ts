@@ -12,6 +12,7 @@ export interface Extruder {
 }
 
 export interface MCU {
+  name: string;
   last_stats: MCUData;
   mcu_build_versions: string;
   mcu_constants: MCUData;

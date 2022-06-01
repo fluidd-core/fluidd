@@ -150,6 +150,19 @@ export const Filters = {
   },
 
   /**
+   * Formats a number representing mm to human readable distance.
+   */
+  getReadableFrequencyString (frequencyInHz: number) {
+    let i = 0
+    const frequencyUnits = [' Hz', ' KHz', ' MHz', ' GHz']
+    while (frequencyInHz >= 1000) {
+      frequencyInHz = frequencyInHz / 1000
+      i++
+    }
+    return frequencyInHz.toFixed() + frequencyUnits[i]
+  },
+
+  /**
    * The filesystem sorter. This is copied from vuetify, and modified to ensure our directories
    * are always sorted to the top.
    */
