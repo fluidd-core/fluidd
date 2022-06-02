@@ -98,7 +98,7 @@ app:
       layer: 當前層數
       layers: 總層數
       parsed: 已解析
-      parsing_file: 解析文件
+      parsing_file:  解析文件
       show_extrusions: 顯示已打印部分
       show_moves: 顯示移動走線
       show_next_layer: 顯示下一層
