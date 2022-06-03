@@ -119,6 +119,8 @@ app:
       show_next_layer: Nächste Schicht zeigen
       show_previous_layer: Vorherige Schicht zeigen
       show_retractions: Retracten zeigen
+      parsing_file: Verarbeite Datei
+      show_current_layer: Aktuelle Schicht anzeigen
     msg:
       confirm: >-
         Die Datei "%{filename}" ist %{size} groß, dies kann sehr
@@ -174,6 +176,7 @@ app:
       upload_print: Hochladen & Drucken
       view: Ansicht
       reset_stats: Statistik zurücksetzen
+      snooze: Schlummern
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -259,6 +262,11 @@ app:
       velocity: Geschwindigkeit
       visible: Sichtbar
       z_offset: Z-Offset
+      add_category: Kategorie hinzufügen
+      edit_category: Kategorie bearbeiten
+      file_time: Datei
+      pressure_advance: Pressure Advance
+      smooth_time: Glättungszeit
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -273,6 +281,7 @@ app:
         min_or_0: Min %{min} oder 0
         password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
+        invalid_number: Ungültige Zahl
       msg:
         apply_z_offset_endstop: >-
           Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
@@ -487,12 +496,14 @@ app:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: Alle
     tooltip:
       extruder_disabled: >-
         Extruder deaktiviert, da unter der min_extrude_temp
         (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      motors_off: MOTOREN AUS
   version:
     btn:
       check_for_updates: Nach Aktualisierungen suchen
