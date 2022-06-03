@@ -42,7 +42,6 @@ app:
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
-      scroll: Scroll to bottom
   endpoint:
     error:
       cant_connect: >-
