@@ -462,6 +462,7 @@ app:
       distribution_codename: Codename
       distribution_like: Distribution wie
       distribution_name: Distribution
+      frequency: Frequenz
       hardware_desc: Hardwarebeschreibung
       hostname: Hostname
       klipper_load: Klipper-Last
@@ -469,7 +470,9 @@ app:
       manufacturer: Hersteller
       mcu_awake: '{mcu} Zeit im Wachzustand'
       mcu_bandwidth: '{mcu}-Bandbreite'
+      mcu_information: '{mcu}-Informationen'
       mcu_load: '{mcu}-Last'
+      micro_controller: Mikrocontroller
       model: CPU-Modell
       moonraker_load: Moonraker-Last
       processor_desc: Prozessor
@@ -479,6 +482,7 @@ app:
       system_memory: Systemspeicher
       system_utilization: Auslastung
       total_memory: Gesamtspeicherplatz
+      version: Version
   tool:
     btn:
       home_x: X

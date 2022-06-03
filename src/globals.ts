@@ -117,7 +117,9 @@ import {
   mdiStop,
   mdiPlay,
   mdiFileVideoOutline,
-  mdiBellSleep
+  mdiBellSleep,
+  mdiChip,
+  mdiViewHeadline
 } from '@mdi/js'
 
 /**
@@ -303,7 +305,9 @@ export const Icons = Object.freeze({
   message: mdiMessageTextOutline,
   fullScreen: mdiFullscreen,
   video: mdiFileVideoOutline,
-  snooze: mdiBellSleep
+  snooze: mdiBellSleep,
+  chip: mdiChip,
+  viewHeadline: mdiViewHeadline
 })
 
 export const Waits = Object.freeze({

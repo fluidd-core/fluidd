@@ -466,6 +466,7 @@ app:
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
+      frequency: Frequency
       hardware_desc: Hardware Description
       hostname: Hostname
       klipper_load: Klipper Load
@@ -473,7 +474,9 @@ app:
       manufacturer: Manufacturer
       mcu_awake: '{mcu} Awake Time'
       mcu_bandwidth: '{mcu} Bandwidth'
+      mcu_information: '{mcu} Information'
       mcu_load: '{mcu} Load'
+      micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
       processor_desc: Processor
@@ -483,6 +486,7 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      version: Version
   tool:
     btn:
       home_x: X
