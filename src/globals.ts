@@ -119,7 +119,9 @@ import {
   mdiFileVideoOutline,
   mdiBellSleep,
   mdiChip,
-  mdiViewHeadline
+  mdiViewHeadline,
+  mdiAxisArrow,
+  mdiVectorLine
 } from '@mdi/js'
 
 /**
@@ -308,7 +310,9 @@ export const Icons = Object.freeze({
   video: mdiFileVideoOutline,
   snooze: mdiBellSleep,
   chip: mdiChip,
-  viewHeadline: mdiViewHeadline
+  viewHeadline: mdiViewHeadline,
+  absolutePositioning: mdiAxisArrow,
+  relativePositioning: mdiVectorLine
 })
 
 export const Waits = Object.freeze({
