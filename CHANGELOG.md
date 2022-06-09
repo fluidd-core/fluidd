@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.18.2](https://github.com/fluidd-core/fluidd/compare/v1.18.1...v1.18.2) (2022-06-09)
+
+
+### Features
+
+* adds "show current layer" to gcode previewer ([#693](https://github.com/fluidd-core/fluidd/issues/693)) ([5b3c923](https://github.com/fluidd-core/fluidd/commit/5b3c923d2c2fd2426ceafa3aab35c256009553a3))
+* **i18n-DE:** update German translations ([#708](https://github.com/fluidd-core/fluidd/issues/708)) ([2f94b6b](https://github.com/fluidd-core/fluidd/commit/2f94b6b21c5e1c5f59731bcff2b1522941dab9b6))
+* **i18n-HU:** update Hungarian translation ([#702](https://github.com/fluidd-core/fluidd/issues/702)) ([5ccc2d6](https://github.com/fluidd-core/fluidd/commit/5ccc2d6bd0f9c79e58671b3a919e550e4686507b))
+* **i18n-zh-HK:** add Traditional Chinese translations ([#705](https://github.com/fluidd-core/fluidd/issues/705)) ([6a33ad0](https://github.com/fluidd-core/fluidd/commit/6a33ad03e91fb71851002733441db93ade4ddc28))
+* moves MCU info to separate panel ([#706](https://github.com/fluidd-core/fluidd/issues/706)) ([d937f06](https://github.com/fluidd-core/fluidd/commit/d937f06164283f111002367825fe1ae9c24ac814))
+
+
+### Bug Fixes
+
+* AppSlider mobile lock disabling ([#695](https://github.com/fluidd-core/fluidd/issues/695)) ([8e9c07f](https://github.com/fluidd-core/fluidd/commit/8e9c07f1d7a5687398976e3b724936c27d7a0685))
+* code editor folding ([#692](https://github.com/fluidd-core/fluidd/issues/692)) ([cde3a61](https://github.com/fluidd-core/fluidd/commit/cde3a61a76214b914c928c1b59c8376e5d226c05))
+* hide Pressure Advance if no default extruder stepper set ([#694](https://github.com/fluidd-core/fluidd/issues/694)) ([895dbe2](https://github.com/fluidd-core/fluidd/commit/895dbe25a00c22fce94dabf7b5378b56d7ae7b08))
+* **layout:** move gcode controls to dropdown; fix vertical layout ([#696](https://github.com/fluidd-core/fluidd/issues/696)) ([6fc304e](https://github.com/fluidd-core/fluidd/commit/6fc304e6251a7ffbc46feeb00a11d49496b54b3d))
+
 ### [1.18.1](https://github.com/fluidd-core/fluidd/compare/v1.18.0...v1.18.1) (2022-05-20)
 
 
