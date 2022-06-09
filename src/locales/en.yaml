@@ -42,7 +42,6 @@ app:
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
-      scroll: Scroll to bottom
   endpoint:
     error:
       cant_connect: >-
@@ -113,6 +112,7 @@ app:
       layer: Layer
       layers: Layers
       parsed: Parsed
+      show_current_layer: Show current layer
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
@@ -465,6 +465,7 @@ app:
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
+      frequency: Frequency
       hardware_desc: Hardware Description
       hostname: Hostname
       klipper_load: Klipper Load
@@ -472,7 +473,9 @@ app:
       manufacturer: Manufacturer
       mcu_awake: '{mcu} Awake Time'
       mcu_bandwidth: '{mcu} Bandwidth'
+      mcu_information: '{mcu} Information'
       mcu_load: '{mcu} Load'
+      micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
       processor_desc: Processor
@@ -482,6 +485,7 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      version: Version
   tool:
     btn:
       home_x: X

@@ -20,7 +20,7 @@
 
     <!-- Speed and Flow Adjustments  -->
     <speed-and-flow-adjust />
-    <pressure-advance-adjust />
+    <pressure-advance-adjust v-if="showPressureAdvance" />
   </v-card-text>
 </template>
 
@@ -49,6 +49,11 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
 export default class Toolhead extends Mixins(StateMixin) {
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1
+  }
+
+  get showPressureAdvance () {
+    const extruder = this.$store.getters['printer/getActiveExtruder']
+    return extruder?.pressure_advance !== undefined
   }
 }
 </script>
