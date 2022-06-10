@@ -1,6 +1,9 @@
 <template>
   <!-- not collapsed -->
-  <div v-if="!isCollapsed && hasDefaultSlot">
+  <div
+    v-if="!isCollapsed && hasDefaultSlot"
+    class="d-inline-block"
+  >
     <slot />
   </div>
 
