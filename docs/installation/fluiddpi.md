@@ -52,13 +52,13 @@ the warnings in the file.
    a. *Note:* Often, connectivity issues can be boiled down to WiFi issues. If
       you're having trouble, try plugging in an ethernet cable.
 2. Boot the Pi from the card.
-3. Log into your Pi via SSH (it should be located at `http://fluiddpi.local`)
+3. Log into your Pi via SSH (it should be located at `fluiddpi.local`)
    if your computer supports Bonjour. If not, you may need to access via it's IP
    address.
    - If your computer supports Bonjour, it should be located at
-     `http://fluiddpi.local`.
+     `fluiddpi.local`.
    - For networks that correctly manage DNS, your host maybe located at
-     `http://fluiddpi`.
+     `fluiddpi`.
    - If you can't find your Pi, try inspecting your Router web UI.
 4. Configure your host.
    - The default username and password is `pi` and `raspberry`.
