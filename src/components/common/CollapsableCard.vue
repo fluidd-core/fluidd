@@ -26,6 +26,7 @@
         </v-col>
 
         <v-col
+          v-if="!inLayout"
           cols="auto"
           align-self="center"
         >
