@@ -1,61 +1,37 @@
 <template>
   <v-row :dense="$vuetify.breakpoint.smAndDown">
-    <v-col
-      cols="12"
-      md="6"
-      :class="{ 'drag': inLayout }"
-    >
-      <draggable
-        v-if="container1"
-        v-model="container1"
-        class="list-group"
-        v-bind="dragOptions"
-        @start.stop="drag = true"
-        @end.stop="handleStopDrag"
+    <template v-for="(container, containerIndex) in containers">
+      <v-col
+        v-if="inLayout || hasCards(container)"
+        :key="`container${containerIndex}`"
+        cols="12"
+        md="6"
+        :lg="columnSpan"
+        :class="{ 'drag': inLayout }"
       >
-        <transition-group
-          type="transition"
-          :name="!drag ? 'flip-list' : null"
+        <draggable
+          v-model="containers[containerIndex]"
+          class="list-group"
+          v-bind="dragOptions"
+          @start.stop="drag = true"
+          @end.stop="handleStopDrag"
         >
-          <template v-for="c in container1">
-            <component
-              :is="c.id"
-              v-if="(c.enabled && !filtered(c)) || inLayout"
-              :key="c.id"
-              class="mb-2 mb-sm-4"
-            />
-          </template>
-        </transition-group>
-      </draggable>
-    </v-col>
-    <v-col
-      cols="12"
-      md="6"
-      :class="{ 'drag': inLayout }"
-    >
-      <draggable
-        v-if="container2"
-        v-model="container2"
-        class="list-group"
-        v-bind="dragOptions"
-        @start.stop="drag = true"
-        @end.stop="handleStopDrag"
-      >
-        <transition-group
-          type="transition"
-          :name="!drag ? 'flip-list' : null"
-        >
-          <template v-for="c in container2">
-            <component
-              :is="c.id"
-              v-if="(c.enabled && !filtered(c)) || inLayout"
-              :key="c.id"
-              class="mb-2 mb-sm-4"
-            />
-          </template>
-        </transition-group>
-      </draggable>
-    </v-col>
+          <transition-group
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
+          >
+            <template v-for="c in container">
+              <component
+                :is="c.id"
+                v-if="(c.enabled && !filtered(c)) || inLayout"
+                :key="c.id"
+                class="mb-2 mb-sm-4"
+              />
+            </template>
+          </transition-group>
+        </draggable>
+      </v-col>
+    </template>
   </v-row>
 </template>
 
@@ -96,19 +72,25 @@ import { Macro } from '@/store/macros/types'
 })
 export default class Dashboard extends Mixins(StateMixin) {
   drag = false
-  container1: LayoutConfig[] = []
-  container2: LayoutConfig[] = []
+  containers: Array<LayoutConfig[]> = []
 
   mounted () {
-    this.container1 = this.layout.container1
-    this.container2 = this.layout.container2
+    this.onLayoutChange()
+  }
+
+  get columnSpan () {
+    if (this.inLayout) return 3
+
+    const cols = this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
+
+    return 12 / cols
   }
 
   get hasCameras (): boolean {
     return this.$store.getters['cameras/getEnabledCameras'].length
   }
 
-  get frimwareRetractionEnabled (): boolean {
+  get firmwareRetractionEnabled (): boolean {
     return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
   }
 
@@ -131,8 +113,13 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   @Watch('layout')
   onLayoutChange () {
-    this.container1 = this.layout.container1
-    this.container2 = this.layout.container2
+    const containers = Object.values(this.layout) as Array<LayoutConfig[]>
+
+    while (containers.length < 4) {
+      containers.push([])
+    }
+
+    this.containers = containers.slice(0, 4)
   }
 
   get dragOptions () {
@@ -150,10 +137,16 @@ export default class Dashboard extends Mixins(StateMixin) {
     this.$store.dispatch('layout/onLayoutChange', {
       name: 'dashboard',
       value: {
-        container1: this.container1,
-        container2: this.container2
+        container1: this.containers[0],
+        container2: this.containers[1],
+        container3: this.containers[2],
+        container4: this.containers[3]
       }
     })
+  }
+
+  hasCards (container: LayoutConfig[]) {
+    return container.some(card => card.enabled && !this.filtered(card))
   }
 
   filtered (item: LayoutConfig) {
@@ -162,7 +155,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'camera-card' && !this.hasCameras) return true
     if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
-    if (item.id === 'retract-card' && !this.frimwareRetractionEnabled) return true
+    if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled
