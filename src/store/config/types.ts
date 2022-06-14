@@ -83,6 +83,7 @@ export interface SupportedThemeLogo {
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;
   autoEditExtensions: string[];
+  codeLens: boolean;
 }
 
 export interface Axis {
