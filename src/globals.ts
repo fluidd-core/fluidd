@@ -171,6 +171,7 @@ export const Globals = Object.freeze({
     { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
+    { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
     { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
   ],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],

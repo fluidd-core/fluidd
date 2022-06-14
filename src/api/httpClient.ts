@@ -78,7 +78,7 @@ const errorInterceptor = (error: AxiosError<string | { error?: { message?: strin
   let message: string | undefined
 
   // Check if its a network / server error.
-  if (!error.response) {
+  if (!error.response || error.code === 'ERR_NETWORK') {
     // Network / Server Error.
     if (error.message) message = error.message
     consola.debug(message || 'Network error')

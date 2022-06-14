@@ -37,6 +37,19 @@
 
       <v-divider />
 
+      <app-setting
+        :title="$t('app.setting.label.show_code_lens')"
+      >
+        <v-switch
+          v-model="codeLens"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -83,6 +96,18 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
       value: value.sort(),
+      server: true
+    })
+  }
+
+  get codeLens (): boolean {
+    return this.$store.state.config.uiSettings.editor.codeLens
+  }
+
+  set codeLens (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.editor.codeLens',
+      value,
       server: true
     })
   }
