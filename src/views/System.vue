@@ -9,11 +9,19 @@
     </v-col>
 
     <v-col
-      v-if="hasGraphData"
       cols="12"
       md="6"
     >
-      <system-usage-card />
+      <system-usage-card class="mb-2 mb-sm-4" />
+      <template
+        v-for="mcu in mcus"
+      >
+        <mcu-card
+          :key="mcu.name"
+          :mcu="mcu"
+          class="mb-2 mb-sm-4"
+        />
+      </template>
     </v-col>
   </v-row>
 </template>
@@ -25,6 +33,7 @@ import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import SystemControl from '@/components/common/SystemControl.vue'
 
 import SystemOverviewCard from '@/components/widgets/system/SystemOverviewCard.vue'
+import McuCard from '@/components/widgets/system/McuCard.vue'
 import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
 import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
 
@@ -33,19 +42,12 @@ import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
     FileSystem,
     SystemControl,
     SystemOverviewCard,
+    McuCard,
     SystemUsageCard,
     DiskUsageCard
   }
 })
 export default class Configure extends Mixins(StateMixin) {
-  get hasGraphData () {
-    return (
-      this.$store.state.charts.klipper !== undefined ||
-      this.$store.state.charts.moonraker !== undefined ||
-      this.$store.state.charts.memory !== undefined
-    )
-  }
-
   get breakpoint () {
     if (this.$vuetify.breakpoint.mdAndDown) {
       return 12
@@ -53,8 +55,8 @@ export default class Configure extends Mixins(StateMixin) {
     return 6
   }
 
-  get supportsHistory () {
-    return this.$store.getters['server/componentSupport']('history')
+  get mcus () {
+    return this.$store.getters['printer/getMcus']
   }
 }
 </script>

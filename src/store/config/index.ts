@@ -19,6 +19,7 @@ export const defaultState = (): ConfigState => {
         { name: 'English', code: 'en' },
         { name: 'Čeština', code: 'cz' },
         { name: '简体中文', code: 'cn' },
+        { name: '繁體中文', code: 'zh-HK' },
         { name: 'Deutsch', code: 'de' },
         { name: 'Español', code: 'es' },
         { name: 'Français', code: 'fr' },
