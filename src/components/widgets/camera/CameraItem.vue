@@ -48,7 +48,7 @@
     >
       <a
         :href="cameraFullScreenUrl"
-        :target="fullscreenMode === 'rawstream' ? '_blank' : ''"
+        :target="fullscreen || fullscreenMode === 'rawstream' ? '_blank' : ''"
       >
         <v-icon>${{ (fullscreen || fullscreenMode === 'rawstream') ? 'openInNew' : 'fullScreen' }}</v-icon>
       </a>
