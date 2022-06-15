@@ -6,7 +6,7 @@
       no-gutters
     >
       <v-col
-        cols="4"
+        cols="3"
         class="pr-1"
       >
         <v-text-field
@@ -23,7 +23,7 @@
         />
       </v-col>
       <v-col
-        cols="4"
+        cols="3"
         class="pr-1 pl-1"
       >
         <v-text-field
@@ -40,8 +40,8 @@
         />
       </v-col>
       <v-col
-        cols="4"
-        class="pl-1"
+        cols="3"
+        class="pr-1 pl-1"
       >
         <v-text-field
           :label="`Z [ ${livePosition[2].toFixed(2)} ]`"
@@ -55,6 +55,46 @@
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
         />
+      </v-col>
+      <v-col
+        cols="3"
+        class="pl-1"
+      >
+        <v-btn-toggle
+          v-model="positioning"
+          mandatory
+          dense
+          class="d-block"
+        >
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                v-bind="attrs"
+                class="positioning-toggle-button"
+                v-on="on"
+              >
+                <v-icon small>
+                  $absolutePositioning
+                </v-icon>
+              </app-btn>
+            </template>
+            <span>{{ $t('app.tool.tooltip.absolute_positioning') }}</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                v-bind="attrs"
+                class="positioning-toggle-button"
+                v-on="on"
+              >
+                <v-icon small>
+                  $relativePositioning
+                </v-icon>
+              </app-btn>
+            </template>
+            <span>{{ $t('app.tool.tooltip.relative_positioning') }}</span>
+          </v-tooltip>
+        </v-btn-toggle>
       </v-col>
     </v-row>
 
@@ -113,6 +153,18 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     return speed.toFixed()
   }
 
+  get usesAbsolutePositioning () {
+    return this.$store.state.printer.printer.gcode_move.absolute_coordinates
+  }
+
+  get positioning () {
+    return this.usesAbsolutePositioning ? 0 : 1
+  }
+
+  set positioning (value: number) {
+    this.sendGcode(`G9${value}`)
+  }
+
   moveTo (axis: string, pos: string) {
     const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
     const currentPos = (this.useGcodeCoords)
@@ -130,15 +182,8 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 </script>
 
 <style type="scss" scoped>
-  .coord-wrapper {
-    line-height: 32px;
-    padding: 0 12px;
+  .positioning-toggle-button {
+    min-width: 20px !important;
+    width: 50%;
   }
-  /* .coord-col {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    max-height: 36px;
-  } */
 </style>

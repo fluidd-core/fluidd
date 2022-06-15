@@ -120,6 +120,8 @@ import {
   mdiBellSleep,
   mdiChip,
   mdiViewHeadline,
+  mdiAxisArrow,
+  mdiVectorLine,
   mdiOpenInNew
 } from '@mdi/js'
 
@@ -310,6 +312,8 @@ export const Icons = Object.freeze({
   snooze: mdiBellSleep,
   chip: mdiChip,
   viewHeadline: mdiViewHeadline,
+  absolutePositioning: mdiAxisArrow,
+  relativePositioning: mdiVectorLine,
   openInNew: mdiOpenInNew
 })
 
