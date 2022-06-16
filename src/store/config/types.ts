@@ -56,7 +56,10 @@ export interface GeneralConfig {
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
   flipConsoleLayout: boolean;
+  cameraFullscreenAction: CameraFullscreenAction;
 }
+
+export type CameraFullscreenAction = 'embed' | 'rawstream';
 
 // Config stored in moonraker db
 export interface ThemeConfig {

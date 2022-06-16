@@ -1,67 +1,66 @@
 <template>
-  <div>
-    <v-sheet
-      :elevation="0"
-      rounded
-      class="camera-container"
-      v-on="$listeners"
+  <v-sheet
+    :elevation="0"
+    rounded
+    class="camera-container"
+    v-on="$listeners"
+  >
+    <img
+      v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
+      ref="camera_image"
+      :src="cameraUrl"
+      class="camera-image"
+      @load="handleImgLoad"
     >
-      <img
-        v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
-        ref="camera_image"
-        :src="cameraUrl"
-        class="camera-image"
-        @load="handleImgLoad"
-      >
 
-      <video
-        v-if="camera.type === 'ipstream'"
-        ref="camera_image"
-        :src="cameraUrl"
-        autoplay
-        class="camera-image"
-      />
+    <video
+      v-if="camera.type === 'ipstream'"
+      ref="camera_image"
+      :src="cameraUrl"
+      autoplay
+      class="camera-image"
+    />
 
-      <iframe
-        v-if="camera.type === 'iframe'"
-        ref="camera_image"
-        :src="cameraUrl"
-        class="camera-image"
-        :height="cameraHeight"
-        frameBorder="0"
-      />
+    <iframe
+      v-if="camera.type === 'iframe'"
+      ref="camera_image"
+      :src="cameraUrl"
+      class="camera-image"
+      :height="cameraHeight"
+      frameBorder="0"
+    />
 
-      <div
-        v-if="camera.name"
-        class="camera-name"
+    <div
+      v-if="camera.name"
+      class="camera-name"
+    >
+      {{ camera.name }}
+    </div>
+    <div
+      v-if="camera.type === 'mjpgadaptive' && time"
+      class="camera-frames"
+    >
+      fps: {{ currentFPS }}
+    </div>
+    <div
+      v-if="cameraFullScreenUrl && (!fullscreen || fullscreenMode === 'embed')"
+      class="camera-fullscreen"
+    >
+      <a
+        :href="cameraFullScreenUrl"
+        :target="fullscreen || fullscreenMode === 'rawstream' ? '_blank' : ''"
       >
-        {{ camera.name }}
-      </div>
-      <div
-        v-if="camera.type === 'mjpgadaptive' && time"
-        class="camera-frames"
-      >
-        fps: {{ currentFPS }}
-      </div>
-      <div
-        v-if="cameraFullScreenUrl"
-        class="camera-fullscreen"
-      >
-        <a
-          :href="cameraFullScreenUrl"
-          target="_blank"
-        >
-          <v-icon>$fullScreen</v-icon>
-        </a>
-      </div>
-    </v-sheet>
-  </div>
+        <v-icon>${{ (fullscreen || fullscreenMode === 'rawstream') ? 'openInNew' : 'fullScreen' }}</v-icon>
+      </a>
+    </div>
+  </v-sheet>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
+import { CameraFullscreenAction } from '@/store/config/types'
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -70,6 +69,9 @@ import { noop } from 'vue-class-component/lib/util'
 export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
   camera!: CameraConfig
+
+  @Prop({ type: Boolean, required: false, default: false })
+  fullscreen!: boolean
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -125,6 +127,9 @@ export default class CameraItem extends Vue {
   @Watch('camera', { immediate: true })
   onCameraChange () {
     this.setUrl()
+    if (!this.fullscreen && this.fullscreenMode === 'embed') {
+      this.cameraFullScreenUrl = `/#/camera/${this.camera.id}`
+    }
   }
 
   /**
@@ -213,7 +218,9 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'stream')
         }
         this.cameraUrl = url.toString()
-        this.cameraFullScreenUrl = this.cameraUrl
+        if (!this.cameraFullScreenUrl) {
+          this.cameraFullScreenUrl = this.cameraUrl
+        }
       }
 
       if (type === 'mjpgadaptive') {
@@ -223,17 +230,20 @@ export default class CameraItem extends Vue {
           url.searchParams.set('action', 'snapshot')
         }
         this.cameraUrl = url.toString()
-        url.searchParams.set('action', 'stream')
-        this.cameraFullScreenUrl = url.toString()
+        if (!this.cameraFullScreenUrl) {
+          url.searchParams.set('action', 'stream')
+          this.cameraFullScreenUrl = url.toString()
+        }
       }
 
       if (type === 'ipstream' || type === 'iframe') {
         this.cameraUrl = baseUrl
-        this.cameraFullScreenUrl = baseUrl
+        if (!this.cameraFullScreenUrl) {
+          this.cameraFullScreenUrl = baseUrl
+        }
       }
     } else {
       this.cameraUrl = ''
-      this.cameraFullScreenUrl = ''
     }
   }
 
@@ -268,14 +278,20 @@ export default class CameraItem extends Vue {
       animating = false
     }
   }
+
+  get fullscreenMode (): CameraFullscreenAction {
+    return this.$store.state.config.uiSettings.general.cameraFullscreenAction
+  }
 }
 </script>
 
 <style lang="scss" scoped>
   .camera-image {
     display: block;
-    width: 100%;
+    max-width: 100%;
+    max-height: calc(100vh - 56px - 32px);
     white-space: nowrap;
+    margin: auto;
   }
 
   .camera-container {

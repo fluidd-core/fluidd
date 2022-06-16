@@ -63,6 +63,26 @@
         />
       </template>
 
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.camera_fullscreen_action.title')">
+        <v-select
+          v-model="defaultFullscreenAction"
+          filled
+          dense
+          hide-details
+          :items="[
+            {
+              text: $t('app.setting.label.camera_fullscreen_action.embed'),
+              value: 'embed',
+            },{
+              text: $t('app.setting.label.camera_fullscreen_action.rawstream'),
+              value: 'rawstream',
+            }
+          ]"
+        />
+      </app-setting>
+
       <camera-config-dialog
         v-if="dialogState.camera"
         v-model="dialogState.active"
@@ -78,9 +98,11 @@ import { Component, Vue } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import CameraConfigDialog from './CameraConfigDialog.vue'
 import { Globals } from '@/globals'
+import AppSetting from '@/components/ui/AppSetting.vue'
 
 @Component({
   components: {
+    AppSetting,
     CameraConfigDialog
   }
 })
@@ -126,6 +148,18 @@ export default class CameraSettings extends Vue {
 
   handleRemoveCamera (camera: CameraConfig) {
     this.$store.dispatch('cameras/removeCamera', camera)
+  }
+
+  get defaultFullscreenAction (): string {
+    return this.$store.state.config.uiSettings.general.cameraFullscreenAction
+  }
+
+  set defaultFullscreenAction (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.cameraFullscreenAction',
+      value,
+      server: true
+    })
   }
 }
 </script>

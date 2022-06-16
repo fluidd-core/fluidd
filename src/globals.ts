@@ -121,7 +121,8 @@ import {
   mdiChip,
   mdiViewHeadline,
   mdiAxisArrow,
-  mdiVectorLine
+  mdiVectorLine,
+  mdiOpenInNew
 } from '@mdi/js'
 
 /**
@@ -312,7 +313,8 @@ export const Icons = Object.freeze({
   chip: mdiChip,
   viewHeadline: mdiViewHeadline,
   absolutePositioning: mdiAxisArrow,
-  relativePositioning: mdiVectorLine
+  relativePositioning: mdiVectorLine,
+  openInNew: mdiOpenInNew
 })
 
 export const Waits = Object.freeze({

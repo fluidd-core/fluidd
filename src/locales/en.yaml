@@ -389,6 +389,10 @@ app:
       auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_fullscreen_action:
+        title: Fullscreen action
+        embed: Embed
+        rawstream: Raw stream
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
