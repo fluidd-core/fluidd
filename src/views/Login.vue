@@ -22,12 +22,12 @@
             v-if="error"
             type="error"
           >
-            Invalid credentials
+            {{ $t('app.general.simple_form.error.credentials') }}
           </v-alert>
 
           <v-text-field
             v-model="username"
-            label="Username"
+            :label="$t('app.general.label.username')"
             autocomplete="username"
             filled
             dense
@@ -38,13 +38,25 @@
 
           <v-text-field
             v-model="password"
-            label="Password"
+            :label="$t('app.general.label.password')"
             autocomplete="current-password"
             filled
             dense
             type="password"
             hide-details="auto"
             :disabled="loading"
+            class="mb-4"
+          />
+
+          <v-select
+            v-if="availableSources.length > 1"
+            v-model="source"
+            :label="$t('app.general.label.auth_source')"
+            filled
+            dense
+            hide-details="auto"
+            :disabled="loading"
+            :items="availableSources.map(value => ({ text: $t(`app.general.label.${value}`), value }))"
             class="mb-4"
           />
 
@@ -61,7 +73,7 @@
             >
               $loading
             </v-icon>
-            Login
+            {{ $t('app.general.btn.login') }}
           </app-btn>
 
           <app-btn
@@ -71,7 +83,7 @@
             :href="$globals.DOCS_AUTH_LOST_PASSWORD"
             target="_blank"
           >
-            Forgotten your password?
+            {{ $t('app.general.btn.forgot_password') }}
           </app-btn>
 
           <app-btn
@@ -81,7 +93,7 @@
             :href="$globals.DOCS_AUTH"
             target="_blank"
           >
-            Unsure why you're seeing this?
+            {{ $t('app.general.btn.auth_unsure') }}
           </app-btn>
         </div>
       </v-form>
@@ -94,6 +106,7 @@ import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import consola from 'consola'
 import { InitConfig } from '@/store/config/types'
+import httpClient from '@/api/httpClient'
 
 @Component({})
 export default class Login extends Vue {
@@ -102,12 +115,24 @@ export default class Login extends Vue {
   valid = true
   error = false
   loading = false
+  source = 'moonraker'
+  availableSources = [this.source]
+
+  mounted () {
+    httpClient.get('/access/info', { withAuth: false })
+      .then(r => {
+        this.source = r.data.result.default_source
+        this.availableSources = r.data.result.available_sources
+      }).catch(() => {
+        // ignore
+      })
+  }
 
   async handleLogin () {
     this.error = false
     this.loading = true
     try {
-      await this.$store.dispatch('auth/login', { username: this.username, password: this.password })
+      await this.$store.dispatch('auth/login', { username: this.username, password: this.password, source: this.source })
     } catch (err) {
       this.error = true
     }

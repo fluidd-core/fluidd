@@ -110,9 +110,9 @@ export const actions: ActionTree<AuthState, RootState> = {
       })
   },
 
-  async login ({ commit }, payload) {
+  async login ({ commit }, { username, password, source }) {
     const keys = getTokenKeys()
-    return authApi.login(payload.username, payload.password)
+    return authApi.login(username, password, source)
       .then(response => response.data.result)
       .then((user) => {
         // Successful login. Set the tokens and auth status and move on.

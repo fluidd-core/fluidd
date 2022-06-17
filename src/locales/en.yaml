@@ -131,6 +131,7 @@ app:
       add_printer: Add printer
       adjust_layout: Adjust dashboard layout
       all: All
+      auth_unsure: Unsure why you're seeing this?
       calibrate: Calibrate
       cancel: Cancel
       clear_profile: Clear Profile
@@ -140,8 +141,10 @@ app:
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      forgot_password: Forgotten your password?
       heaters_off: Heaters off
       load_all: Load all
+      login: Login
       more_information: More information
       pause: Pause
       preheat: Preheat
@@ -196,6 +199,7 @@ app:
       add_user: Add user
       api_key: Api Key
       api_url: API URL
+      auth_source: Authentication Source
       category: Category
       change_password: Change password
       clear_all: Clear all
@@ -221,9 +225,11 @@ app:
       host: Host
       layer: Layer
       layout: Layout
+      ldap: LDAP
       longest_job: Longest job
       low: Low
       m117: M117
+      moonraker: Moonraker
       name: Name
       new_password: New password
       no_notifications: No notifications
@@ -255,6 +261,7 @@ app:
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       used: used
+      username: Username
       variance: Variance
       velocity: Velocity
       visible: Visible
@@ -271,6 +278,7 @@ app:
     simple_form:
       error:
         arrayofnums: Only numbers
+        credentials: Invalid credentials
         exists: Already exists
         invalid_number: Invalid Number
         invalid_url: Invalid URL
