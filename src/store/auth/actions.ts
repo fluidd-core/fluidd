@@ -110,7 +110,7 @@ export const actions: ActionTree<AuthState, RootState> = {
       })
   },
 
-  async getAuthInfo (): Promise<{ defaultSource: string, availableSources: string[] }> {
+  async getAuthInfo () {
     return httpClient.get('/access/info', { withAuth: false })
       .then(r => {
         return {
@@ -118,10 +118,8 @@ export const actions: ActionTree<AuthState, RootState> = {
           availableSources: r.data.result.available_sources
         }
       }).catch(() => {
-        return {
-          defaultSource: 'moonraker',
-          availableSources: ['moonraker']
-        }
+        // external authentication sources not supported
+        return {}
       })
   },
 
