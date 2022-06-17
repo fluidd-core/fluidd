@@ -71,7 +71,7 @@
               <app-btn
                 v-bind="attrs"
                 class="positioning-toggle-button"
-                :disabled="printerBusy"
+                :disabled="!klippyReady || printerBusy"
                 v-on="on"
               >
                 <v-icon small>
@@ -86,7 +86,7 @@
               <app-btn
                 v-bind="attrs"
                 class="positioning-toggle-button"
-                :disabled="printerBusy"
+                :disabled="!klippyReady || printerBusy"
                 v-on="on"
               >
                 <v-icon small>
