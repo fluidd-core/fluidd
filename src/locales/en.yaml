@@ -206,6 +206,7 @@ app:
       color: Color
       confirm: Confirm
       current_password: Current password
+      current_user: Current user
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -228,6 +229,7 @@ app:
       ldap: LDAP
       longest_job: Longest job
       low: Low
+      user_managed_source: User managed by %{source} authentication
       m117: M117
       moonraker: Moonraker
       name: Name

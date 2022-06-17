@@ -48,6 +48,11 @@
       >
         <app-setting
           :key="`user-${user.username}`"
+          :sub-title="
+            user.username === currentUser ? $t('app.general.label.current_user') :
+            user.source !== 'moonraker' ? $t('app.general.label.user_managed_source', { source: $t(`app.general.label.${user.source}`) }) :
+            undefined
+          "
           :r-cols="3"
         >
           <template #title>
@@ -55,7 +60,7 @@
           </template>
 
           <app-btn
-            :disabled="user.username === currentUser"
+            :disabled="user.username === currentUser || user.source !== 'moonraker'"
             fab
             text
             x-small
