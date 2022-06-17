@@ -106,7 +106,6 @@ import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import consola from 'consola'
 import { InitConfig } from '@/store/config/types'
-import httpClient from '@/api/httpClient'
 
 @Component({})
 export default class Login extends Vue {
@@ -118,14 +117,9 @@ export default class Login extends Vue {
   source = 'moonraker'
   availableSources = [this.source]
 
-  mounted () {
-    httpClient.get('/access/info', { withAuth: false })
-      .then(r => {
-        this.source = r.data.result.default_source
-        this.availableSources = r.data.result.available_sources
-      }).catch(() => {
-        // ignore
-      })
+  async mounted () {
+    const authInfo = await this.$store.dispatch('auth/getAuthInfo')
+    Object.assign(this, authInfo)
   }
 
   async handleLogin () {

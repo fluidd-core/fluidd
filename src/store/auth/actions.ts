@@ -110,6 +110,21 @@ export const actions: ActionTree<AuthState, RootState> = {
       })
   },
 
+  async getAuthInfo (): Promise<{ defaultSource: string, availableSources: string[] }> {
+    return httpClient.get('/access/info', { withAuth: false })
+      .then(r => {
+        return {
+          defaultSource: r.data.result.default_source,
+          availableSources: r.data.result.available_sources
+        }
+      }).catch(() => {
+        return {
+          defaultSource: 'moonraker',
+          availableSources: ['moonraker']
+        }
+      })
+  },
+
   async login ({ commit }, { username, password, source }) {
     const keys = getTokenKeys()
     return authApi.login(username, password, source)
