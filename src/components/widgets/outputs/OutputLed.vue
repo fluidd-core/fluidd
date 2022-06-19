@@ -27,11 +27,19 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { IroColor } from '@irojs/iro-core'
 import StateMixin from '@/mixins/state'
+import { Led } from '@/store/printer/types'
+
+interface RgbwColor {
+  r: number;
+  g: number;
+  b: number;
+  w: number;
+}
 
 @Component({})
 export default class OutputLed extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  led!: any
+  led!: Led
 
   channelLookup: {[key: string]: string} = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
 
@@ -74,7 +82,7 @@ export default class OutputLed extends Mixins(StateMixin) {
     this.sendGcode(`SET_LED LED=${this.led.name} ${Object.entries(currentVals).map(([key, val]) => `${this.channelLookup[key]}=${val}`).join(' ')}`)
   }
 
-  convertTo (o: any) {
+  convertTo (o: any): RgbwColor {
     const r: any = {}
     const channels = this.supportedChannels.toLowerCase()
     Object.keys(o).forEach((key) => {
@@ -83,7 +91,7 @@ export default class OutputLed extends Mixins(StateMixin) {
     return r
   }
 
-  convertFrom (o: any) {
+  convertFrom (o: any): RgbwColor {
     const r: any = {}
     Object.keys(o).forEach((key) => {
       r[key] = Number.parseFloat((o[key] / 255).toPrecision(2))
