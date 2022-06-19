@@ -48,7 +48,7 @@
         </v-icon>
 
         <v-icon
-          v-if="white"
+          v-if="supportedChannels.includes('W')"
           :color="whiteColor.hexString"
           large
         >
@@ -62,7 +62,6 @@
           <!-- <pre>{{primaryColor.hexString}}</pre> -->
           <!-- standard full color picker -->
           <app-iro-color-picker
-            v-if="primaryColor"
             :color="primaryColor.hexString"
             :options="primaryOptions"
             @color:change="handleColorChange('primary', $event)"
@@ -70,7 +69,7 @@
 
           <!-- white channel color picker -->
           <app-iro-color-picker
-            v-if="white"
+            v-if="supportedChannels.includes('W')"
             class="mt-4"
             :color="whiteColor.hexString"
             :options="whiteOptions"
@@ -112,7 +111,7 @@
             <div>B</div>
           </div>
           <div
-            v-if="white"
+            v-if="supportedChannels.includes('W')"
             class="color-input"
           >
             <v-text-field
@@ -167,6 +166,9 @@ export default class AppColorPicker extends Vue {
 
   @Prop({ type: Boolean, default: false })
   dot!: boolean
+
+  @Prop({ type: String, default: 'RGB' })
+  supportedChannels!: string
 
   menu = false
 
@@ -251,7 +253,7 @@ export default class AppColorPicker extends Vue {
 
   created () {
     this.primaryColor = this.getColor(this.primary)
-    if (this.whiteColor) this.whiteColor = this.getColor(this.white)
+    if (this.supportedChannels.includes('W')) this.whiteColor = this.getColor(this.white)
   }
 
   getColor (color: string) {
