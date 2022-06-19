@@ -119,7 +119,8 @@ export default class Login extends Vue {
 
   async mounted () {
     const authInfo = await this.$store.dispatch('auth/getAuthInfo')
-    Object.assign(this, authInfo)
+    this.source = authInfo.defaultSource ?? this.source
+    this.availableSources = authInfo.availableSources ?? this.availableSources
   }
 
   async handleLogin () {
