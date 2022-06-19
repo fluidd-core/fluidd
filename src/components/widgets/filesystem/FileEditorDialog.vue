@@ -102,6 +102,7 @@
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
+        :code-lens="codeLens"
         @ready="editorReady = true"
       />
 
@@ -177,6 +178,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get configMap () {
     return this.$store.getters['server/getConfigMapByFilename'](this.filename)
+  }
+
+  get codeLens () {
+    return this.$store.state.config.uiSettings.editor.codeLens
   }
 
   mounted () {

@@ -63,7 +63,8 @@ export const defaultState = (): ConfigState => {
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
-        flipConsoleLayout: false
+        flipConsoleLayout: false,
+        cameraFullscreenAction: 'embed'
       },
       theme: {
         isDark: true,
@@ -77,7 +78,8 @@ export const defaultState = (): ConfigState => {
       },
       editor: {
         confirmDirtyEditorClose: true,
-        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt']
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        codeLens: true
       },
       dashboard: {
         tempPresets: []

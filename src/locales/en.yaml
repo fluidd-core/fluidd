@@ -131,6 +131,7 @@ app:
       add_printer: Add printer
       adjust_layout: Adjust dashboard layout
       all: All
+      auth_unsure: Unsure why you're seeing this?
       calibrate: Calibrate
       cancel: Cancel
       clear_profile: Clear Profile
@@ -140,8 +141,10 @@ app:
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      forgot_password: Forgotten your password?
       heaters_off: Heaters off
       load_all: Load all
+      login: Login
       more_information: More information
       pause: Pause
       preheat: Preheat
@@ -196,12 +199,14 @@ app:
       add_user: Add user
       api_key: Api Key
       api_url: API URL
+      auth_source: Authentication Source
       category: Category
       change_password: Change password
       clear_all: Clear all
       color: Color
       confirm: Confirm
       current_password: Current password
+      current_user: Current user
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -221,9 +226,12 @@ app:
       host: Host
       layer: Layer
       layout: Layout
+      ldap: LDAP
       longest_job: Longest job
       low: Low
+      user_managed_source: User managed by %{source} authentication
       m117: M117
+      moonraker: Moonraker
       name: Name
       new_password: New password
       no_notifications: No notifications
@@ -255,6 +263,7 @@ app:
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       used: used
+      username: Username
       variance: Variance
       velocity: Velocity
       visible: Visible
@@ -271,6 +280,7 @@ app:
     simple_form:
       error:
         arrayofnums: Only numbers
+        credentials: Invalid credentials
         exists: Already exists
         invalid_number: Invalid Number
         invalid_url: Invalid URL
@@ -389,6 +399,10 @@ app:
       auto_edit_extensions: Extensions to automatically open in edit mode
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_fullscreen_action:
+        title: Fullscreen action
+        embed: Embed
+        rawstream: Raw stream
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
@@ -426,6 +440,7 @@ app:
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
+      show_code_lens: Show CodeLens
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       starts_with: Starts with
@@ -492,12 +507,14 @@ app:
       home_y: 'Y'
       home_all: All
     tooltip:
+      absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
       motors_off: MOTORS OFF
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
+      relative_positioning: Relative Positioning
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
   version:

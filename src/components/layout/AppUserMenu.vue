@@ -31,11 +31,20 @@
           class="mt-3"
         >
           <app-btn
+            :disabled="user.source !== 'moonraker'"
             small
             @click="$emit('change-password')"
           >
-            Change password
+            {{ $t('app.general.label.change_password') }}
           </app-btn>
+          <div
+            v-if="user.source !== 'moonraker'"
+            class="mt-2"
+          >
+            <small>
+              {{ $t('app.general.label.user_managed_source', { source: $t(`app.general.label.${user.source}`) }) }}
+            </small>
+          </div>
         </div>
       </v-card-text>
 
