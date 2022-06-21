@@ -50,6 +50,7 @@ export interface GeneralConfig {
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
+  confirmOnSaveConfigAndRestart: boolean;
   dateformat: string;
   timeformat: string;
   showRateOfChange: boolean;

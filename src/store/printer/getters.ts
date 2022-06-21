@@ -653,6 +653,14 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return rootGetters['server/getInfo'].warnings || []
   },
 
+  getSaveConfigPending: (state) => {
+    return state.printer?.configfile?.save_config_pending || false
+  },
+
+  getSaveConfigPendingItems: (state) => {
+    return state.printer?.configfile?.save_config_pending_items
+  },
+
   getHasHomingOverride: (state, getters) => {
     const config = getters.getPrinterConfig()
     if (config && ('homing_override' in config)) {
