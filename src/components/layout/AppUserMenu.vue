@@ -27,7 +27,7 @@
         <span class="text-h5">{{ currentUser }}</span>
 
         <div
-          v-if="!isTrustedOnly"
+          v-if="user && !isTrustedOnly"
           class="mt-3"
         >
           <app-btn
