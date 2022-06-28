@@ -119,6 +119,7 @@
         <v-col>
           <gcode-preview
             width="100%"
+            height="100%"
             :layer="currentLayer"
             :progress="moveProgress"
             :disabled="!fileLoaded"
