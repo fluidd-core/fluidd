@@ -33,7 +33,7 @@ export default class EChartsBedMesh extends Vue {
   height!: string;
 
   @Ref('chart')
-  chart!: ECharts
+  readonly chart!: ECharts
 
   get flatSurface () {
     return this.$store.state.mesh.flatSurface

@@ -181,14 +181,17 @@
 <script lang="ts">
 import { Component, Ref, Vue } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/index'
+import { VInput } from '@/types'
 
 @Component({
   components: {}
 })
 export default class ToolHeadSettings extends Vue {
-  @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
+  @Ref('toolheadMoveDistances')
+  readonly toolheadMoveDistancesElement!: VInput
 
-  @Ref('zAdjustValues') readonly zAdjustValuesElement!: any;
+  @Ref('zAdjustValues')
+  readonly zAdjustValuesElement!: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),

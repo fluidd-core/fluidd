@@ -104,7 +104,7 @@
 <script lang="ts">
 import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { VForm } from '@/types/vuetify'
+import { VForm } from '@/types'
 
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {

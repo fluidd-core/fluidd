@@ -100,7 +100,7 @@ import { Globals, Waits } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
-import { VForm } from '@/types/vuetify'
+import { VForm } from '@/types'
 import consola from 'consola'
 
 @Component({})

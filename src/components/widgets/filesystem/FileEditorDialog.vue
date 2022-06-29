@@ -150,7 +150,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   public readonly!: boolean
 
   @Ref('editor')
-  editor?: FileEditor
+  readonly editor?: FileEditor
 
   updatedContent = this.contents
   lastSavedContent = this.updatedContent

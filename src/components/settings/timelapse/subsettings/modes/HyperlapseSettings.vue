@@ -27,6 +27,7 @@ import StateMixin from '@/mixins/state'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
+import { VInput } from '@/types'
 
 @Component({
   components: {
@@ -35,7 +36,7 @@ import { SocketActions } from '@/api/socketActions'
 })
 export default class HyperlapseSettings extends Mixins(StateMixin) {
   @Ref('hyperlapseCycleElement')
-  readonly hyperlapseCycleElement!: any
+  readonly hyperlapseCycleElement!: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),

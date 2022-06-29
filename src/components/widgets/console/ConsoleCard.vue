@@ -126,7 +126,8 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   fullScreen!: boolean
 
-  @Ref('console') console!: Console
+  @Ref('console')
+  readonly console!: Console
 
   scrollingPaused = false
 
