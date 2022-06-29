@@ -79,7 +79,6 @@ import PresetDialog from './PresetDialog.vue'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
-import { VForm } from '@/types'
 
 @Component({
   components: {
@@ -97,10 +96,6 @@ export default class TemperaturePresetSettings extends Mixins(StateMixin) {
 
   get presets () {
     return this.$store.getters['config/getTempPresets']
-  }
-
-  get form (): VForm {
-    return this.$refs.tempPresetsform as VForm
   }
 
   dialogState: any = {
