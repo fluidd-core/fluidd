@@ -100,12 +100,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { VInput } from '@/types'
 
 @Component({
   components: {}
 })
 export default class GeneralSettings extends Mixins(StateMixin) {
-  @Ref('instanceName') readonly instanceNameElement!: any
+  @Ref('instanceName')
+  readonly instanceNameElement!: VInput
 
   instanceNameRules = [
     (v: string) => !!v || 'Required'

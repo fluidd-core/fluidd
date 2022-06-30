@@ -25,7 +25,7 @@ export default class ThermalChart extends Vue {
   height!: string;
 
   @Ref('chart')
-  chart!: ECharts
+  readonly chart!: ECharts
 
   loading = false
   series: any[] = []

@@ -57,7 +57,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
 import { CameraFullscreenAction } from '@/store/config/types'
@@ -72,6 +72,9 @@ export default class CameraItem extends Vue {
 
   @Prop({ type: Boolean, required: false, default: false })
   fullscreen!: boolean
+
+  @Ref('camera_image')
+  readonly cameraImage!: HTMLElement
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -261,7 +264,7 @@ export default class CameraItem extends Vue {
           return
         }
 
-        const image = this.$refs.camera_image as HTMLElement | undefined
+        const image = this.cameraImage
 
         if (image) {
           // Call to Object.assign() might not be suitable here.

@@ -37,7 +37,7 @@ export default class AppChart extends Vue {
   events!: any;
 
   @Ref('chart')
-  chart!: ECharts
+  readonly chart!: ECharts
 
   ready = false
 
