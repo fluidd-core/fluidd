@@ -371,7 +371,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   removeProfile (name: string) {
     this.sendGcode(`BED_MESH_PROFILE REMOVE="${name}"`)
-    this.sendGcode('SAVE_CONFIG')
+    this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
   }
 
   handleMeshSave (config: {name: string; removeDefault: boolean}) {
@@ -381,7 +381,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     if (config.removeDefault) {
       this.sendGcode(`BED_MESH_PROFILE REMOVE="${this.currentMesh.profile_name}"`)
     }
-    this.sendGcode('SAVE_CONFIG')
+    this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
   }
 
   handleOpenSaveDialog () {

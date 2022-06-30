@@ -7,30 +7,34 @@
     :close-on-content-click="false"
     :close-delay="300"
   >
-    <template #activator="{ on, attrs }">
-      <v-badge
-        :value="notificationsCounter"
-        :content="notificationsCounter"
-        offset-x="17"
-        offset-y="17"
-        bordered
-        overlap
-        :color="badgeColor"
-      >
-        <v-btn
-          v-bind="attrs"
-          fab
-          small
-          class="mx-1"
-          :color="color"
-          :elevation="0"
-          v-on="on"
-        >
-          <v-icon :class="{ 'wiggle': color === 'error'}">
-            $bell
-          </v-icon>
-        </v-btn>
-      </v-badge>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-badge
+            :value="notificationsCounter"
+            :content="notificationsCounter"
+            offset-x="17"
+            offset-y="17"
+            bordered
+            overlap
+            :color="badgeColor"
+          >
+            <v-btn
+              v-bind="attrs"
+              fab
+              small
+              :color="color"
+              :elevation="0"
+              v-on="{ ...tooltip, ...menu }"
+            >
+              <v-icon :class="{ 'wiggle': color === 'error'}">
+                $bell
+              </v-icon>
+            </v-btn>
+          </v-badge>
+        </template>
+        <span>{{ $t('app.general.tooltip.notifications') }}</span>
+      </v-tooltip>
     </template>
 
     <v-card>

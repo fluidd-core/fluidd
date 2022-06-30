@@ -168,6 +168,7 @@ app:
       save: Save
       save_as: Save As
       save_restart: Save & Restart
+      save_config_and_restart: Save config & restart
       send: Send
       set_color: Set Color
       shutdown: Shutdown
@@ -344,6 +345,7 @@ app:
       limits: Printer Limits
       macros: Macros
       other_files: Other Files
+      pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
@@ -356,6 +358,7 @@ app:
       tune: Tune
     tooltip:
       estop: Emergency Stop
+      notifications: Notifications
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
@@ -408,6 +411,7 @@ app:
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
+      confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
       confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
       contains: Contains
       dark_mode: Dark mode
