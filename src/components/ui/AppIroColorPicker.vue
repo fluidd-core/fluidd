@@ -61,7 +61,8 @@ export default class AppColorPicker extends Vue {
   @Prop({ type: Object, default: () => ({}) })
   options!: ColorPickerProps
 
-  @Ref('picker') picker!: HTMLElement
+  @Ref('picker')
+  readonly picker!: HTMLElement
 
   colorPicker: null | IroColorPicker = null
   supportedEvents = [

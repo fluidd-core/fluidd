@@ -6,7 +6,7 @@
     @input="$emit('input', $event)"
   >
     <v-form
-      ref="addInstanceForm"
+      ref="form"
       v-model="valid"
       @submit.prevent="addInstance()"
     >
@@ -94,19 +94,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import httpClient from '@/api/httpClient'
 import { Globals, Waits } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
-import { VForm } from '@/types/vuetify'
+import { VForm } from '@/types'
 import consola from 'consola'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
+
+  @Ref('form')
+  readonly form!: VForm
 
   waits = Waits
 
@@ -235,10 +238,6 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
           .finally(() => { this.verifying = false })
       }
     }
-  }
-
-  get form (): VForm {
-    return this.$refs.addInstanceForm as VForm
   }
 
   get helpTxt () {

@@ -1,6 +1,5 @@
 <template>
   <v-menu
-    ref="menu"
     v-model="menu"
     bottom
     left
@@ -173,7 +172,7 @@ export default class AppColorPicker extends Vue {
   menu = false
 
   @Ref('card')
-  card!: Vue
+  readonly card!: Vue
 
   lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 

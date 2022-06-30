@@ -54,6 +54,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
+import { DinamicScroller } from 'vue-virtual-scroller'
 
 @Component({
   components: {
@@ -75,7 +76,7 @@ export default class Console extends Mixins(StateMixin) {
   readonly!: boolean
 
   @Ref('scroller')
-  dynamicScroller!: any
+  readonly dynamicScroller!: DinamicScroller
 
   _pauseScroll = false
 

@@ -101,7 +101,8 @@ export default class TemperatureCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
-  @Ref('thermalchart') readonly thermalChart!: ThermalChart
+  @Ref('thermalchart')
+  readonly thermalChart!: ThermalChart
 
   get chartReady () {
     return (
