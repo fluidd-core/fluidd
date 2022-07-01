@@ -118,6 +118,7 @@ import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from '@/components/settings/timelapse/subsettings/ParkExtrudeRetractSettings.vue'
 import CustomParkPositionSettings from '@/components/settings/timelapse/subsettings/CustomParkPositionSettings.vue'
+import { VInput } from '@/types'
 
 @Component({
   components: {
@@ -127,9 +128,14 @@ import CustomParkPositionSettings from '@/components/settings/timelapse/subsetti
   }
 })
 export default class LayerMacroSettings extends Mixins(StateMixin) {
-  @Ref('parkTimeElement') parkTimeElement?: any;
-  @Ref('parkTravelSpeedElement') parkTravelSpeedElement?: any;
-  @Ref('parkPosDZElement') parkPosDZElement?: any;
+  @Ref('parkTimeElement')
+  readonly parkTimeElement?: VInput
+
+  @Ref('parkTravelSpeedElement')
+  readonly parkTravelSpeedElement?: VInput
+
+  @Ref('parkPosDZElement')
+  readonly parkPosDZElement?: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),

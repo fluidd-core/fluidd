@@ -58,6 +58,7 @@ export const defaultState = (): ConfigState => {
         enableVersionNotifications: true,
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
+        confirmOnSaveConfigAndRestart: true,
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
         showRateOfChange: false,

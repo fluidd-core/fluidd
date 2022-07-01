@@ -20,9 +20,14 @@ const unauthenticatedPaths = [
 
 // For these paths, we don't emit an error because we handle them
 // downstream.
-const handledErrorRequests = [
-  '/access/login'
-]
+const handledErrorRequests = {
+  400: [
+    '/access/login'
+  ],
+  502: [
+    '/access/oneshot_token'
+  ]
+}
 
 const requestInterceptor = async (config: AxiosRequestConfig) => {
   if (!config.headers) {
@@ -98,9 +103,10 @@ const errorInterceptor = (error: AxiosError<string | { error?: { message?: strin
       consola.debug(error.response.status, error.message, message)
       EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
       break
+    case 502:
     case 400:
       consola.debug(error.response.status, error.message, message)
-      if (!handledErrorRequests.includes(url)) {
+      if (!handledErrorRequests[error.response.status].includes(url)) {
         EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
       }
       break

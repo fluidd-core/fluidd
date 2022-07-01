@@ -35,7 +35,8 @@ export default class FileEditor extends Vue {
   @Prop({ type: Boolean, default: true })
   codeLens!: boolean;
 
-  @Ref('monaco-editor') monacoEditor!: HTMLElement
+  @Ref('monaco-editor')
+  readonly monacoEditor!: HTMLElement
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null

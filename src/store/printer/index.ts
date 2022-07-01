@@ -25,6 +25,7 @@ export const defaultState = (): PrinterState => {
       configfile: {
         warnings: [],
         save_config_pending: false,
+        save_config_pending_items: {},
         config: {
           virtual_sdcard: {},
           pause_resume: {},
