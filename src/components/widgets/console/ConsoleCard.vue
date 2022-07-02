@@ -103,7 +103,7 @@
       ref="console"
       :scrolling-paused.sync="scrollingPaused"
       :items="items"
-      :height="fullScreen ? 816 : 300"
+      :height="fullScreen ? (height - 236) : 300"
     />
   </collapsable-card>
 </template>
@@ -120,6 +120,21 @@ import { ConsoleEntry } from '@/store/console/types'
   }
 })
 export default class ConsoleCard extends Mixins(StateMixin) {
+  height = 0;
+
+  created () {
+    window.addEventListener('resize', this.changeHeight)
+    this.changeHeight()
+  }
+
+  destroyed () {
+    window.removeEventListener('resize', this.changeHeight)
+  }
+
+  changeHeight () {
+    this.height = window.innerHeight
+  }
+
   @Prop({ type: Boolean, default: true })
   enabled!: boolean
 
