@@ -130,6 +130,7 @@ import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings
 import { defaultWritableSettings } from '@/store/timelapse'
 import TimelapseRenderSettingsDialog
   from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
+import { VInput } from '@/types'
 
 @Component({
   components: {
@@ -139,7 +140,9 @@ import TimelapseRenderSettingsDialog
   }
 })
 export default class TimelapseSettings extends Mixins(StateMixin) {
-  @Ref('delayCompElement') delayCompElement!: any
+  @Ref('delayCompElement')
+  readonly delayCompElement!: VInput
+
   renderSettingsDialogOpen = false
 
   rules = {

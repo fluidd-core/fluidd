@@ -93,6 +93,19 @@
           @click.native.stop
         />
       </app-setting>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_on_save_config_and_restart')"
+      >
+        <v-switch
+          v-model="confirmOnSaveConfigAndRestart"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -100,12 +113,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { VInput } from '@/types'
 
 @Component({
   components: {}
 })
 export default class GeneralSettings extends Mixins(StateMixin) {
-  @Ref('instanceName') readonly instanceNameElement!: any
+  @Ref('instanceName')
+  readonly instanceNameElement!: VInput
 
   instanceNameRules = [
     (v: string) => !!v || 'Required'
@@ -186,6 +201,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnPowerDeviceChange (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
+      value,
+      server: true
+    })
+  }
+
+  get confirmOnSaveConfigAndRestart () {
+    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+  }
+
+  set confirmOnSaveConfigAndRestart (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmOnSaveConfigAndRestart',
       value,
       server: true
     })

@@ -48,6 +48,7 @@ import AppSetting from '@/components/ui/AppSetting.vue'
 import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from '@/components/settings/timelapse/subsettings/ParkExtrudeRetractSettings.vue'
+import { VInput } from '@/types'
 
 @Component({
   components: {
@@ -57,8 +58,11 @@ import ParkExtrudeRetractSettings from '@/components/settings/timelapse/subsetti
   }
 })
 export default class LayerMacroSettings extends Mixins(StateMixin) {
-  @Ref('parkPosXElement') parkPosXElement?: any;
-  @Ref('parkPosYElement') parkPosYElement?: any;
+  @Ref('parkPosXElement')
+  readonly parkPosXElement?: VInput
+
+  @Ref('parkPosYElement')
+  readonly parkPosYElement?: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),

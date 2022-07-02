@@ -4,17 +4,22 @@
     offset-y
     :close-delay="300"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        v-bind="attrs"
-        fab
-        text
-        small
-        v-on="on"
-        @click="$emit('drawer')"
-      >
-        <v-icon>$account</v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            v-bind="attrs"
+            fab
+            text
+            small
+            v-on="{ ...tooltip, ...menu }"
+            @click="$emit('drawer')"
+          >
+            <v-icon>$account</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ currentUser }}</span>
+      </v-tooltip>
     </template>
 
     <v-card>

@@ -85,6 +85,7 @@ import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
+import { VInput } from '@/types'
 
 @Component({
   components: {
@@ -93,10 +94,17 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class LayerMacroSettings extends Mixins(StateMixin) {
-  @Ref('parkRetractDistanceElement') parkRetractDistanceElement!: any
-  @Ref('parkRetractSpeedElement') parkRetractSpeedElement!: any
-  @Ref('parkExtrudeDistanceElement') parkExtrudeDistanceElement!: any
-  @Ref('parkExtrudeSpeedElement') parkExtrudeSpeedElement!: any
+  @Ref('parkRetractDistanceElement')
+  readonly parkRetractDistanceElement!: VInput
+
+  @Ref('parkRetractSpeedElement')
+  readonly parkRetractSpeedElement!: VInput
+
+  @Ref('parkExtrudeDistanceElement')
+  readonly parkExtrudeDistanceElement!: VInput
+
+  @Ref('parkExtrudeSpeedElement')
+  readonly parkExtrudeSpeedElement!: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
