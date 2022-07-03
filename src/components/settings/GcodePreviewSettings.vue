@@ -108,6 +108,28 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.auto_load_on_print_start')">
+        <v-switch
+          v-model="autoLoadOnPrintStart"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.auto_follow_on_file_load')">
+        <v-switch
+          v-model="autoFollowOnFileLoad"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -226,6 +248,30 @@ export default class GcodePreviewSettings extends Vue {
   set groupLowerLayers (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.groupLowerLayers',
+      value,
+      server: true
+    })
+  }
+
+  get autoLoadOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
+  }
+
+  set autoLoadOnPrintStart (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoLoadOnPrintStart',
+      value,
+      server: true
+    })
+  }
+
+  get autoFollowOnFileLoad () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoFollowOnFileLoad
+  }
+
+  set autoFollowOnFileLoad (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoFollowOnFileLoad',
       value,
       server: true
     })

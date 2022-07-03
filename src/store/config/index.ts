@@ -121,6 +121,8 @@ export const defaultState = (): ConfigState => {
         drawBackground: true,
         showAnimations: true,
         groupLowerLayers: false,
+        autoLoadOnPrintStart: true,
+        autoFollowOnFileLoad: true,
         flip: {
           horizontal: false,
           vertical: true

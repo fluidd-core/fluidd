@@ -154,6 +154,8 @@ export interface GcodePreviewConfig {
   drawBackground: boolean;
   showAnimations: boolean;
   groupLowerLayers: boolean;
+  autoLoadOnPrintStart: boolean;
+  autoFollowOnFileLoad: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;
