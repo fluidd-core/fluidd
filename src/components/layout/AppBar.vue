@@ -226,17 +226,15 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     })
   }
 
-  handleHostShutdown () {
-    this.$confirm(
+  async handleHostShutdown () {
+    const res = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$emit('click')
-          this.hostShutdown()
-        }
-      })
+
+    if (res) {
+      this.hostShutdown()
+    }
   }
 
   saveConfigAndRestart (force = false) {
