@@ -87,7 +87,7 @@
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t('app.general.btn.shutdown') }}</span>
+          <span>{{ $t('app.general.btn.shutdown') }} ({{ $t('app.general.label.host') }})</span>
         </v-tooltip>
       </div>
 
