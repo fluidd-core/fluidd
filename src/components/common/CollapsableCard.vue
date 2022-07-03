@@ -287,6 +287,9 @@ export default class CollapsableCard extends Vue {
    * If the layout isn't defined, then this should always be disabled.
    */
   get isCollapsed (): boolean {
+    if (!this.collapsable) {
+      return false
+    }
     return (this.layout) ? this.layout.collapsed : false
   }
 
