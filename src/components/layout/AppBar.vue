@@ -70,6 +70,28 @@
       </div>
 
       <div
+        v-if="authenticated && socketConnected && shutdownOnAppBar"
+      >
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              v-bind="attrs"
+              class="mx-1"
+              depressed
+              color="transparent"
+              v-on="on"
+              @click="handleHostShutdown()"
+            >
+              <v-icon color="primary">
+                $power
+              </v-icon>
+            </app-btn>
+          </template>
+          <span>{{ $t('app.general.btn.shutdown') }}</span>
+        </v-tooltip>
+      </div>
+
+      <div
         v-if="authenticated && socketConnected"
         class="mr-1"
       >
@@ -135,6 +157,7 @@ import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue
 import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
 import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
+import ServicesMixin from '@/mixins/services'
 
 @Component({
   components: {
@@ -143,7 +166,7 @@ import StateMixin from '@/mixins/state'
     AppSaveConfigAndRestartBtn
   }
 })
-export default class AppBar extends Mixins(StateMixin) {
+export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   menu = false
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
@@ -184,6 +207,10 @@ export default class AppBar extends Mixins(StateMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
+  get shutdownOnAppBar (): boolean {
+    return (this.$store.state.config.uiSettings.general.shutdownOnAppBar)
+  }
+
   handleExitLayout () {
     this.$store.commit('config/setLayoutMode', false)
   }
@@ -197,6 +224,19 @@ export default class AppBar extends Mixins(StateMixin) {
         container2: layout.layouts.dashboard.container2
       }
     })
+  }
+
+  handleHostShutdown () {
+    this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+      .then(res => {
+        if (res) {
+          this.$emit('click')
+          this.hostShutdown()
+        }
+      })
   }
 
   saveConfigAndRestart (force = false) {

@@ -84,6 +84,19 @@
       <v-divider />
 
       <app-setting
+        :title="$t('app.setting.label.shutdownOnAppBar')"
+      >
+        <v-switch
+          v-model="shutdownOnAppBar"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
         :title="$t('app.setting.label.confirm_on_power_device_change')"
       >
         <v-switch
@@ -189,6 +202,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnEstop (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnEstop',
+      value,
+      server: true
+    })
+  }
+
+  get shutdownOnAppBar () {
+    return this.$store.state.config.uiSettings.general.shutdownOnAppBar
+  }
+
+  set shutdownOnAppBar (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.shutdownOnAppBar',
       value,
       server: true
     })

@@ -65,7 +65,8 @@ export const defaultState = (): ConfigState => {
         showRelativeHumidity: true,
         showBarometricPressure: true,
         flipConsoleLayout: false,
-        cameraFullscreenAction: 'embed'
+        cameraFullscreenAction: 'embed',
+        shutdownOnAppBar: true
       },
       theme: {
         isDark: true,
