@@ -235,6 +235,7 @@ app:
       'on': An
       password: Passwort
       power: Leistung
+      power_toggle_caption: Power für Gerät %{device} umschalten
       printers: Drucker
       progress: Fortschritt
       requested_speed: Geschw.
@@ -427,6 +428,8 @@ app:
       invert_z_control: Z-Steuerung invertieren
       language: Anzeigesprache
       move_line_width: Bewegungslinien-Dicke
+      none: Keines | Keine
+      power_toggle_in_top_nav: Power-Schalter in Kopfleiste
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
@@ -435,7 +438,6 @@ app:
       show_barometric_pressure: Luftdruck anzeigen
       show_rate_of_change: Temperatur-Änderungsrate anzeigen
       show_relative_humidity: Relative Luftfeuchtigkeit anzeigen
-      shutdownOnAppBar: Schaltfläche zum Herunterfahren auf der Kopfleiste anzeigen
       starts_with: Beginnt mit
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode

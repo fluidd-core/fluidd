@@ -70,7 +70,7 @@
       </div>
 
       <div
-        v-if="authenticated && socketConnected && shutdownOnAppBar"
+        v-if="authenticated && socketConnected && topNavPowerToggle"
       >
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
@@ -79,15 +79,16 @@
               class="mx-1"
               depressed
               color="transparent"
+              :disabled="topNavPowerToggleDisabled"
               v-on="on"
-              @click="handleHostShutdown()"
+              @click="handlePowerToggle()"
             >
               <v-icon color="primary">
-                $power
+                {{ topNavPowerDevice && topNavPowerDevice.status === 'on' ? '$powerOn' : '$powerOff' }}
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t('app.general.btn.shutdown') }} ({{ $t('app.general.label.host') }})</span>
+          <span>{{ $t('app.general.label.power_toggle_caption', { device: topNavPowerToggle }) }}</span>
         </v-tooltip>
       </div>
 
@@ -158,6 +159,7 @@ import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
 import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
@@ -207,8 +209,17 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
-  get shutdownOnAppBar (): boolean {
-    return (this.$store.state.config.uiSettings.general.shutdownOnAppBar)
+  get topNavPowerToggle (): null | string {
+    return this.$store.state.config.uiSettings.general.topNavPowerToggle
+  }
+
+  get topNavPowerDevice () {
+    return this.$store.state.power.devices.find((device: { device: string }) => device.device === this.topNavPowerToggle)
+  }
+
+  get topNavPowerToggleDisabled (): boolean {
+    const device = this.topNavPowerDevice
+    return (!device) || (this.printerPrinting && device.locked_while_printing)
   }
 
   handleExitLayout () {
@@ -226,14 +237,20 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     })
   }
 
-  async handleHostShutdown () {
-    const res = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handlePowerToggle () {
+    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    let res: boolean | undefined = true
+    if (confirmOnPowerDeviceChange) {
+      res = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+    }
 
     if (res) {
-      this.hostShutdown()
+      const device = this.topNavPowerDevice
+      const state = (device.status === 'on') ? 'off' : 'on'
+      SocketActions.machineDevicePowerToggle(device.device, state)
     }
   }
 
