@@ -29,7 +29,7 @@
     </template>
 
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
@@ -102,6 +102,9 @@ import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
+  @Prop({ type: Boolean, default: false })
+  menuCollapsed!: boolean
+
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
   }
