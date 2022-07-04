@@ -23,7 +23,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     }
   },
 
-  async loadGcode ({ commit, getters, state }, payload: { file: AppFile; gcode: string }) {
+  async loadGcode ({ commit, getters, state, rootState }, payload: { file: AppFile; gcode: string }) {
     const worker = await spawn(new Worker(new URL('@/workers/parseGcode.worker.ts', import.meta.url) as any))
 
     commit('setParserWorker', worker)
@@ -46,6 +46,10 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
     commit('setMoves', [])
 
     commit('setFile', payload.file)
+    if (rootState.config?.uiSettings.gcodePreview.autoFollowOnFileLoad) {
+      // check if loaded file equals printed file is handled downstream
+      commit('setViewerState', { followProgress: true })
+    }
 
     try {
       commit('setMoves', await Promise.race([abort, worker.parse(payload.gcode)]))

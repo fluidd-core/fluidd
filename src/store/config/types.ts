@@ -58,6 +58,7 @@ export interface GeneralConfig {
   showBarometricPressure: boolean;
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
+  shutdownOnAppBar: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
@@ -154,6 +155,8 @@ export interface GcodePreviewConfig {
   drawBackground: boolean;
   showAnimations: boolean;
   groupLowerLayers: boolean;
+  autoLoadOnPrintStart: boolean;
+  autoFollowOnFileLoad: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;

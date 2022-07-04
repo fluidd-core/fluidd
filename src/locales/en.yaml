@@ -400,6 +400,8 @@ app:
       all_off: All off
       all_on: All on
       auto_edit_extensions: Extensions to automatically open in edit mode
+      auto_follow_on_file_load: Automatically follow progress on file load
+      auto_load_on_print_start: Automatically load file on print start
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_fullscreen_action:
@@ -447,6 +449,7 @@ app:
       show_code_lens: Show CodeLens
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
+      shutdownOnAppBar: Show Shutdown Icon on Top Bar
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
