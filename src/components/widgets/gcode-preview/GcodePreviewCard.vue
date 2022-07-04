@@ -221,6 +221,13 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
   }
 
+  @Watch('printerFile')
+  onPrintFileChanged () {
+    if (this.autoLoadOnPrintStart && this.printerFile) {
+      this.loadCurrent()
+    }
+  }
+
   get file (): AppFile | undefined {
     return this.$store.getters['gcodePreview/getFile']
   }
@@ -304,7 +311,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   async loadCurrent () {
-    const file = this.$store.state.printer.printer.current_file as AppFile
+    const file = this.printerFile as AppFile
     this.getGcode(file)
       .then(response => response?.data)
       .then((gcode: AxiosResponse) => {
@@ -338,6 +345,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
 
     return true
+  }
+
+  get autoLoadOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
   }
 }
 </script>
