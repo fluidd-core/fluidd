@@ -39,7 +39,7 @@
       <v-container
         fluid
         :class="{ 'fill-height': $route.meta.fillHeight }"
-        class="constrained-width pa-2 pa-sm-4"
+        class="pa-2 pa-sm-4"
       >
         <v-row
           v-if="
