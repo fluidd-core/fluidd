@@ -25,6 +25,7 @@
                 :is="c.id"
                 v-if="(c.enabled && !filtered(c)) || inLayout"
                 :key="c.id"
+                :menu-collapsed="menuCollapsed"
                 class="mb-2 mb-sm-4"
               />
             </template>
@@ -72,18 +73,29 @@ import { Macro } from '@/store/macros/types'
 })
 export default class Dashboard extends Mixins(StateMixin) {
   drag = false
+  menuCollapsed = false
   containers: Array<LayoutConfig[]> = []
 
   mounted () {
     this.onLayoutChange()
+
+    window.addEventListener('resize', this.updateMenuCollapsed)
+
+    this.updateMenuCollapsed()
+  }
+
+  unmounted () {
+    window.removeEventListener('resize', this.updateMenuCollapsed)
+  }
+
+  get columnCount () {
+    if (this.inLayout) return 4
+
+    return this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
   }
 
   get columnSpan () {
-    if (this.inLayout) return 3
-
-    const cols = this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
-
-    return 12 / cols
+    return 12 / this.columnCount
   }
 
   get hasCameras (): boolean {
@@ -120,6 +132,8 @@ export default class Dashboard extends Mixins(StateMixin) {
     }
 
     this.containers = containers.slice(0, 4)
+
+    this.updateMenuCollapsed()
   }
 
   get dragOptions () {
@@ -130,6 +144,10 @@ export default class Dashboard extends Mixins(StateMixin) {
       disabled: !this.inLayout,
       ghostClass: 'ghost'
     }
+  }
+
+  updateMenuCollapsed () {
+    this.menuCollapsed = (this.$el.clientWidth / this.columnCount) < 560
   }
 
   handleStopDrag () {
