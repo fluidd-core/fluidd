@@ -235,7 +235,7 @@ app:
       'on': An
       password: Passwort
       power: Leistung
-      power_toggle_caption: Power für Gerät %{device} umschalten
+      power_toggle_caption: Gerät %{device} ein- bzw. ausschalten
       printers: Drucker
       progress: Fortschritt
       requested_speed: Geschw.
