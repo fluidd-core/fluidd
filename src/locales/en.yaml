@@ -240,7 +240,7 @@ app:
       'off': 'Off'
       password: Password
       power: Power
-      power_toggle_caption: Toggle power for device %{device}
+      power_toggle_caption: Toggle %{device} power
       pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
