@@ -14,7 +14,7 @@
         :locked="(!klippyReady || isMobile)"
         :min="0"
         :max="2"
-        :step="0.001"
+        :step="0.0001"
         @change="handleSetPressureAdvance"
       />
     </v-col>
