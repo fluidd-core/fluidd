@@ -16,22 +16,22 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class FileRowItem extends Vue {
   @Prop({ type: String, required: false })
-  itemValue!: string
+  public itemValue!: string
 
   /**
    * Optionally pass a key to define how we lookup this header item.
    */
   @Prop({ type: String, required: false })
-  itemKey!: string
+  public itemKey!: string
 
   @Prop({ type: Array, required: false })
-  headers!: AppTableHeader[]
+  public headers!: AppTableHeader[]
 
   @Prop({ type: Boolean, default: true })
-  nowrap!: boolean
+  public nowrap!: boolean
 
   @Prop({ type: Boolean, default: false })
-  right!: boolean
+  public right!: boolean
 
   /**
    * Self check if it should appear or not based on the headers

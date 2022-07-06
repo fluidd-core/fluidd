@@ -49,8 +49,8 @@ export const getters: GetterTree<ServerState, RootState> = {
 
     const services: ServiceInfo[] = [...available_services].sort().map((name: string) => {
       return name in service_states
-        ? { name: name, ...service_states[name] }
-        : { name: name }
+        ? { name, ...service_states[name] }
+        : { name }
     })
 
     return services

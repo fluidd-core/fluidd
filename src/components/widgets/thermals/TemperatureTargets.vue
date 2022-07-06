@@ -295,21 +295,21 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   @import '~vuetify/src/styles/styles.sass';
   @import '@/scss/variables.scss';
 
-  .theme--light ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+  .theme--light :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
     color: rgba(map-get($material-light, 'text-color'), 1);
     .temp-actual {
       color: rgba(map-get($material-light, 'text-color'), 1);
     }
   }
 
-  .theme--dark ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+  .theme--dark :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
     color: rgba(map-get($material-dark, 'text-color'), 1);
     .temp-actual {
       color: rgba(map-get($material-dark, 'text-color'), 1);
     }
   }
 
-  ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+  :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
 
     .temp-name,
     .temp-power {

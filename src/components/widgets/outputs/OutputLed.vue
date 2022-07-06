@@ -39,7 +39,7 @@ interface RgbwColor {
 @Component({})
 export default class OutputLed extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  led!: Led
+  public led!: Led
 
   channelLookup: {[key: string]: string} = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
 

@@ -43,10 +43,10 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnCollapseGroup extends Vue {
   @Prop({ type: Boolean, default: false })
-  collapsed!: boolean
+  public collapsed!: boolean
 
   @Prop({ type: String, default: '$menu' })
-  menuIcon!: string
+  public menuIcon!: string
 
   get isCollapsed () {
     if (this.collapsed) return true

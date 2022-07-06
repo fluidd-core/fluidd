@@ -99,10 +99,10 @@ import { TemperaturePreset } from '@/store/config/types'
 })
 export default class TemperatureCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  enabled!: boolean
+  public enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  menuCollapsed!: boolean
+  public menuCollapsed!: boolean
 
   @Ref('thermalchart')
   readonly thermalChart!: ThermalChart

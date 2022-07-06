@@ -35,10 +35,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component({})
 export default class McuConstantsDialog extends Vue {
   @Prop({ type: Boolean, default: false })
-  value!: boolean
+  public value!: boolean
 
   @Prop({ type: Object, required: true })
-  mcu!: MCU
+  public mcu!: MCU
 
   get constants () {
     return Object.entries(this.mcu.mcu_constants)

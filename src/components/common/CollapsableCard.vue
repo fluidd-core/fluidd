@@ -109,19 +109,19 @@ export default class CollapsableCard extends Vue {
    * Title
    */
   @Prop({ type: String, required: true })
-  title!: string
+  public title!: string
 
   /**
    * Card color.
    */
   @Prop({ type: String })
-  color!: string
+  public color!: string
 
   /**
    * Sub title.
    */
   @Prop({ type: String, required: false })
-  subTitle!: string
+  public subTitle!: string
 
   /**
    * Required to bind to a layout.
@@ -132,7 +132,7 @@ export default class CollapsableCard extends Vue {
    * duplicate id's across containers for any given layout.
    */
   @Prop({ type: String })
-  layoutPath!: string
+  public layoutPath!: string
 
   /**
    * If lazy, we use a v-show for card display.
@@ -143,69 +143,69 @@ export default class CollapsableCard extends Vue {
    * visible.
    */
   @Prop({ type: Boolean, default: true })
-  lazy!: boolean
+  public lazy!: boolean
 
   /**
    * The icon to use in the title.
    */
   @Prop({ type: String, required: false })
-  icon!: string
+  public icon!: string
 
   /**
    * The icon color to use in the title.
    */
   @Prop({ type: String, required: false })
-  iconColor!: string
+  public iconColor!: string
 
   /**
    * Loading state.
    */
   @Prop({ type: Boolean, default: false })
-  loading!: boolean
+  public loading!: boolean
 
   /**
    * Enables dragging of the card. Also causes the card
    * to react to layoutMode state.
    */
   @Prop({ type: Boolean, default: false })
-  draggable!: boolean
+  public draggable!: boolean
 
   /**
    * Whether this card is collapsable or not.
    */
   @Prop({ type: Boolean, default: true })
-  collapsable!: boolean
+  public collapsable!: boolean
 
   /**
    * Rounded
    */
   @Prop({ type: String, default: 'md' })
-  rounded!: string
+  public rounded!: string
 
   /**
    * Optionally set a defined height.
    */
   @Prop({ type: [Number, String], required: false })
-  height!: number | string
+  public height!: number | string
 
   /**
    * Breakpoint at which to condense the menu buttons to a hamburger.
    * xs, sm, md, lg, xl.
    */
   @Prop({ type: String, default: 'lg' })
-  menuBreakpoint!: string
+  public menuBreakpoint!: string
 
   /**
    * Define any optional classes for the card itself.
    */
   @Prop({ type: String })
-  cardClasses!: string
+  public cardClasses!: string
 
   /**
    * Define any optional classes for the card content itself.
    */
   @Prop({ type: String })
-  contentClasses!: string
+  public contentClasses!: string
 
   /**
    * Base classes.

@@ -70,24 +70,27 @@
       </div>
 
       <div
-        v-if="authenticated && socketConnected && shutdownOnAppBar"
+        v-if="authenticated && socketConnected && topNavPowerToggle"
       >
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
-              v-bind="attrs"
-              class="mx-1"
-              depressed
+              fab
+              small
+              :elevation="0"
+              class="mr-1 bg-transparent"
               color="transparent"
+              :disabled="topNavPowerToggleDisabled"
+              v-bind="attrs"
               v-on="on"
-              @click="handleHostShutdown()"
+              @click="handlePowerToggle()"
             >
               <v-icon color="primary">
-                $power
+                {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t('app.general.btn.shutdown') }} ({{ $t('app.general.label.host') }})</span>
+          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle }) }}</span>
         </v-tooltip>
       </div>
 
@@ -158,6 +161,7 @@ import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
 import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
@@ -207,8 +211,21 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
-  get shutdownOnAppBar (): boolean {
-    return (this.$store.state.config.uiSettings.general.shutdownOnAppBar)
+  get topNavPowerToggle (): null | string {
+    return this.$store.state.config.uiSettings.general.topNavPowerToggle
+  }
+
+  get topNavPowerDevice () {
+    return this.$store.state.power.devices.find((device: { device: string }) => device.device === this.topNavPowerToggle)
+  }
+
+  get topNavPowerDeviceOn () {
+    return this.topNavPowerDevice?.status === 'on'
+  }
+
+  get topNavPowerToggleDisabled (): boolean {
+    const device = this.topNavPowerDevice
+    return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status)
   }
 
   handleExitLayout () {
@@ -226,14 +243,20 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     })
   }
 
-  async handleHostShutdown () {
-    const res = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
+  async handlePowerToggle () {
+    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    let res: boolean | undefined = true
+    if (confirmOnPowerDeviceChange) {
+      res = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+    }
 
     if (res) {
-      this.hostShutdown()
+      const device = this.topNavPowerDevice
+      const state = (device.status === 'on') ? 'off' : 'on'
+      SocketActions.machineDevicePowerToggle(device.device, state)
     }
   }
 
@@ -307,18 +330,22 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     text-decoration: none;
   }
 
-  .v-toolbar--extended ::v-deep .v-toolbar__content {
+  .v-toolbar--extended :deep(.v-toolbar__content) {
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
   }
 
-  ::v-deep .v-toolbar__extension {
+  :deep(.v-toolbar__extension) {
     flex: 1 1 auto;
     align-items: center;
     justify-content: center;
     padding: 0;
   }
 
-  ::v-deep .v-toolbar__content {
+  :deep(.v-toolbar__content) {
     padding-left: 0;
+  }
+
+  .v-btn.v-btn--disabled.v-btn--has-bg.bg-transparent {
+    background: none !important;
   }
 </style>

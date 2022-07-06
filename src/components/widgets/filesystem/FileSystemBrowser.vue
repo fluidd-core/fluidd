@@ -261,41 +261,41 @@ import FileRowItem from './FileRowItem.vue'
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: String, required: true })
-  root!: string;
+  public root!: string
 
   @Prop({ type: Array, required: true })
-  files!: FileBrowserEntry[]
+  public files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean, default: false })
-  dense!: boolean;
+  public dense!: boolean
 
   @Prop({ type: Boolean, default: false })
-  loading!: boolean;
+  public loading!: boolean
 
   // Currently defined list of headers.
   @Prop({ type: Array, required: true })
-  headers!: AppTableHeader[]
+  public headers!: AppTableHeader[]
 
   @Prop({ type: String, required: false })
-  search!: string;
+  public search!: string
 
   @Prop({ type: Array, default: () => { return [] } })
-  filters!: FileFilter[]
+  public filters!: FileFilter[]
 
   @Prop({ type: Boolean, required: true })
-  dragState!: boolean;
+  public dragState!: boolean
 
   @Prop({ type: Boolean, default: false })
-  disabled!: boolean
+  public disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  bulkActions!: boolean;
+  public bulkActions!: boolean
 
   @Prop({ type: Boolean, default: false })
-  largeThumbnails!: boolean;
+  public largeThumbnails!: boolean
 
   @Prop({ type: Array, required: true })
-  selected!: (FileBrowserEntry | AppFileWithMeta)[]
+  public selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
   dragItem: FileBrowserEntry | AppFileWithMeta | null = null
   ghost: HTMLDivElement | undefined = undefined
@@ -429,7 +429,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @import '~vuetify/src/styles/styles.sass';
 
   // Lighten up dark mode checkboxes.
-  .theme--dark ::v-deep .v-simple-checkbox .v-icon {
+  .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
   }
 
