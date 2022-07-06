@@ -34,7 +34,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class FileSystemDragOverlay extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  value!: boolean;
+  public value!: boolean
 }
 </script>
 

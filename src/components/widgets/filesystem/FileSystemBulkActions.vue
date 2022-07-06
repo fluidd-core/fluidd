@@ -64,6 +64,6 @@ import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   // The current path
   @Prop({ type: String, required: false })
-  path!: string;
+  public path!: string
 }
 </script>

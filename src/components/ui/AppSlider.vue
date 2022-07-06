@@ -100,7 +100,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   public value!: number
 
   @Prop({ type: Number, required: false })
-  public resetValue!: number;
+  public resetValue!: number
 
   @Prop({ type: String, required: true })
   public label!: string
@@ -118,22 +118,22 @@ export default class AppSlider extends Mixins(StateMixin) {
   public loading!: boolean
 
   @Prop({ type: Number, default: 0 })
-  public min!: number;
+  public min!: number
 
   @Prop({ type: Number, default: 100 })
-  public max!: number;
+  public max!: number
 
   @Prop({ type: Boolean, default: false })
-  public overridable!: boolean;
+  public overridable!: boolean
 
   @Prop({ type: Number, default: 1 })
-  public step!: number;
+  public step!: number
 
   @Prop({ type: String })
-  public suffix!: string;
+  public suffix!: string
 
   @Prop({ type: Boolean, default: false })
-  public fullWidth!: boolean;
+  public fullWidth!: boolean
 
   valid = true
   lockState = false

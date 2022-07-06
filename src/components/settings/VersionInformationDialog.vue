@@ -121,10 +121,10 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class VersionInformationDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  value!: boolean
+  public value!: boolean
 
   @Prop({ type: Object })
-  component!: HashVersion | ArtifactVersion | OSPackage
+  public component!: HashVersion | ArtifactVersion | OSPackage
 
   // For HashVersions or ArtifacVersions, show the commit history.
   // For type system, show the packages available to update.

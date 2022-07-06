@@ -73,7 +73,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class ApiKeyDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  value!: boolean
+  public value!: boolean
 
   get apiKey () {
     return this.$store.getters['auth/getApiKey']

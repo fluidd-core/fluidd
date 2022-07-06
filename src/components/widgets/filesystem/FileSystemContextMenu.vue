@@ -130,19 +130,19 @@ import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
 @Component({})
 export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: String, required: true })
-  root!: string
+  public root!: string
 
   @Prop({ type: Boolean, default: false })
-  open!: boolean
+  public open!: boolean
 
   @Prop({ type: Object, required: true })
-  file!: AppDirectory | AppFile | AppFileWithMeta
+  public file!: AppDirectory | AppFile | AppFileWithMeta
 
   @Prop({ type: Number, required: true })
-  positionX!: number
+  public positionX!: number
 
   @Prop({ type: Number, required: true })
-  positionY!: number
+  public positionY!: number
 
   get rootProperties () {
     return this.$store.getters['files/getRootProperties'](this.root)

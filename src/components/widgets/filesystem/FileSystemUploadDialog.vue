@@ -98,9 +98,9 @@ import { FilesUpload } from '@/store/files/types'
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  value!: boolean;
+  public value!: boolean
 
   @Prop({ type: Array })
-  files!: FilesUpload[]
+  public files!: FilesUpload[]
 }
 </script>

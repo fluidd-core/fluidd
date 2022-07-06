@@ -29,16 +29,16 @@ import { Component, Prop } from 'vue-property-decorator'
 @Component({})
 export default class FlashMessage extends Vue {
   @Prop({ type: Boolean })
-  value!: boolean;
+  public value!: boolean
 
   @Prop({ type: String, default: 'dark' })
-  type!: string;
+  public type!: string
 
   @Prop({ type: String, default: 'Saved!' })
-  text!: string;
+  public text!: string
 
   @Prop({ type: Number, default: 1500 })
-  timeout!: number;
+  public timeout!: number
 
   get open () {
     return this.$props.value

@@ -64,16 +64,16 @@ import { DinamicScroller } from 'vue-virtual-scroller'
 })
 export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
-  items!: []
+  public items!: []
 
   @Prop({ type: String, default: 'id' })
-  keyField!: string
+  public keyField!: string
 
   @Prop({ type: Number, default: 250 })
-  height!: number
+  public height!: number
 
   @Prop({ type: Boolean, default: false })
-  readonly!: boolean
+  public readonly!: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller

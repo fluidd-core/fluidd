@@ -44,7 +44,7 @@ import { Waits } from '@/globals'
 @Component({})
 export default class OutputFan extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  fan!: Fan
+  public fan!: Fan
 
   get prettyValue () {
     return (this.value === 0)
