@@ -263,6 +263,8 @@ app:
       total_print_time_avg: Átl. nyomtatásonként
       total_time: Teljes idő
       total_time_avg: Átl. nyomtatásonként
+      turn_device_on: Kapcsolja be %{device}
+      turn_device_off: Kapcsolja ki %{device}
       uncategorized: Nem kategorizált
       unretract_extra_length: Extra hossz visszahúzása
       unretract_speed: Visszahúzási sebesség
@@ -443,6 +445,8 @@ app:
       invert_z_control: Fordított (Z) vezérlés
       language: Megjelenítés nyelve
       move_line_width: Vonalszélesség mozgatása
+      none: Egyik sem
+      power_toggle_in_top_nav: Bekapcsológomb a felső navigációban
       primary_color: Elsődleges szín
       printer_name: Nyomtató neve
       reset: Beállítások visszaállítása
@@ -452,7 +456,6 @@ app:
       show_code_lens: CodeLens megjelenítése
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
-      shutdownOnAppBar: Leállítás ikon megjelenítése a felső sávon
       starts_with: Ezzel kezdődik
       theme_preset: Előre beállított téma
       thermal_preset_gcode: Gcode
