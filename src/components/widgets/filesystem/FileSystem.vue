@@ -861,7 +861,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 <style lang="scss" scoped>
   .filesystem-wrapper,
   .file-system,
-  .file-system ::v-deep .v-data-table {
+  .file-system :deep(.v-data-table) {
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -876,7 +876,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     border: dashed 3px #616161;
   }
 
-  ::v-deep .dragOverlay > .v-overlay__content {
+  :deep(.dragOverlay > .v-overlay__content) {
     width: 100%;
   }
 </style>

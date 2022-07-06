@@ -25,11 +25,9 @@ export default class AppQrCode extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep {
-    canvas, svg {
-      display: block;
-      padding: 10px;
-      background: #fff;
-    }
+  :deep(canvas, svg) {
+    display: block;
+    padding: 10px;
+    background: #fff;
   }
 </style>

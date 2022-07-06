@@ -1,7 +1,6 @@
 <template>
   <div
     ref="monaco-editor"
-    class="editor"
   >
     <div
       v-if="!editor"
@@ -127,14 +126,14 @@ export default class FileEditor extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .editor {
+  :deep() {
     // margin-top: 12px;
     min-width: 100%;
     height: 90%;
     height: calc(100% - 48px);
   }
 
-  .editor > .spinner {
+  :deep(.spinner) {
     display:flex;
     justify-content:center;
     align-items:center;

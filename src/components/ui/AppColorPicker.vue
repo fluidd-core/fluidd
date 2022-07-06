@@ -335,11 +335,11 @@ export default class AppColorPicker extends Vue {
     color: rgba(map-get($material-dark, 'text-color'), 0.45);
   }
 
-  ::v-deep .v-text-field__slot input {
+  :deep(.v-text-field__slot input) {
     text-align: center;
   }
 
-  ::v-deep .v-input--dense .v-input__slot {
+  :deep(.v-input--dense .v-input__slot) {
     min-height: 32px !important;
   }
 </style>

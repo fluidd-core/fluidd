@@ -198,7 +198,7 @@ export default class Console extends Mixins(StateMixin) {
     flex: 0 0 auto;
   }
 
-  ::v-deep .vue-recycle-scroller__item-wrapper {
+  :deep(.vue-recycle-scroller__item-wrapper) {
     overflow: revert;
   }
 

@@ -1,6 +1,6 @@
 <template>
   <textarea
-    class="editor v-input v-textarea px-2"
+    class="v-input v-textarea px-2"
     :class="{'theme--dark': $vuetify.theme.dark}"
     :readonly="readonly"
     :value="value"
@@ -32,7 +32,7 @@ export default class FileEditorText extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .editor {
+  :deep() {
     font-family: monospace;
     font-size: 1rem;
     font-weight: 100 !important;

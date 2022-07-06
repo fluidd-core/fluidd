@@ -43,7 +43,7 @@ export default class FileSystemDragOverlay extends Mixins(StateMixin) {
     border: dashed 3px #616161;
   }
 
-  .dragOverlay ::v-deep .v-overlay__content {
+  .dragOverlay :deep(.v-overlay__content) {
     width: 100%;
   }
 </style>
