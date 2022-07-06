@@ -38,7 +38,7 @@ import StateMixin from '@/mixins/state'
 })
 export default class JobsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  enabled!: boolean
+  public enabled!: boolean
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)

@@ -1,7 +1,6 @@
 <template>
   <div
     ref="monaco-editor"
-    class="editor"
   >
     <div
       v-if="!editor"
@@ -24,16 +23,16 @@ let monaco: typeof Monaco // dynamically imported
 @Component({})
 export default class FileEditor extends Vue {
   @Prop({ type: String, required: true })
-  value!: string;
+  public value!: string
 
   @Prop({ type: String, required: true })
-  filename!: string;
+  public filename!: string
 
   @Prop({ type: Boolean, default: false })
-  readonly!: boolean;
+  public readonly!: boolean
 
   @Prop({ type: Boolean, default: true })
-  codeLens!: boolean;
+  public codeLens!: boolean
 
   @Ref('monaco-editor')
   readonly monacoEditor!: HTMLElement
@@ -127,14 +126,14 @@ export default class FileEditor extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .editor {
+  :deep() {
     // margin-top: 12px;
     min-width: 100%;
     height: 90%;
     height: calc(100% - 48px);
   }
 
-  .editor > .spinner {
+  :deep(.spinner) {
     display:flex;
     justify-content:center;
     align-items:center;

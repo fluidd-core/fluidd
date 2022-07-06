@@ -151,14 +151,11 @@ import { AxiosResponse } from 'axios'
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
-  @Prop({
-    type: Boolean,
-    default: true
-  })
-  enabled!: boolean
+  @Prop({ type: Boolean, default: true })
+  public enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  menuCollapsed!: boolean
+  public menuCollapsed!: boolean
 
   currentLayer = 0
   moveProgress = 0

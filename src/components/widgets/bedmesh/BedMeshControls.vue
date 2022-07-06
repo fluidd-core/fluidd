@@ -394,7 +394,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep .v-input__slider .v-input__slot .v-label {
+  :deep(.v-input__slider .v-input__slot .v-label) {
     min-width: 82px;
   }
 </style>

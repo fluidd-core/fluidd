@@ -108,10 +108,10 @@ export default class SystemPrinters extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep .instance-item .v-list-item__action  {
+  :deep(.instance-item .v-list-item__action ) {
     margin: 6px 0;
   }
-  ::v-deep .v-list-item--active::before {
+  :deep(.v-list-item--active::before) {
     opacity: 0.08;
   }
 </style>

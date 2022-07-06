@@ -52,7 +52,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 })
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Object, required: true })
-  mcu!: MCU
+  public mcu!: MCU
 
   mcuConstantsDialogOpen = false
 

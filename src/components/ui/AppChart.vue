@@ -25,16 +25,16 @@ import { merge } from 'lodash-es'
 @Component({})
 export default class AppChart extends Vue {
   @Prop({ type: Array, required: true })
-  data!: any
+  public data!: any
 
   @Prop({ type: Object, default: {} })
-  options!: any
+  public options!: any
 
   @Prop({ type: String, default: '100%' })
-  height!: string;
+  public height!: string
 
   @Prop({ type: Array, default: () => [] })
-  events!: any;
+  public events!: any
 
   @Ref('chart')
   readonly chart!: ECharts

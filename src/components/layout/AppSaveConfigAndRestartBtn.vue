@@ -42,10 +42,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 @Component({})
 export default class AppSaveConfigAndRestartBtn extends Vue {
   @Prop({ type: Boolean, default: false })
-  disabled!: boolean
+  public disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  loading!: boolean
+  public loading!: boolean
 
   get isExpanded () {
     return this.$vuetify.breakpoint.mdAndUp

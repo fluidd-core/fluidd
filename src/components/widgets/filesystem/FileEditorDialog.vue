@@ -135,10 +135,10 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   public value!: boolean
 
   @Prop({ type: String, required: true })
-  root!: string
+  public root!: string
 
   @Prop({ type: String, required: true })
-  public filename!: string;
+  public filename!: string
 
   @Prop({ type: String, required: true })
   public contents!: string

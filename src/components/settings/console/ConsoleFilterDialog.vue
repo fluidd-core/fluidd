@@ -107,13 +107,13 @@ import { ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
 @Component({})
 export default class ConsoleFilterDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  value!: boolean
+  public value!: boolean
 
   @Prop({ type: Object, required: true })
-  rules!: any
+  public rules!: any
 
   @Prop({ type: Object, required: true })
-  filter!: ConsoleFilter
+  public filter!: ConsoleFilter
 
   valid = true
 

@@ -56,10 +56,10 @@ import { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
 })
 export default class AppColorPicker extends Vue {
   @Prop({ type: [Object, String], default: '#ffffff' })
-  color!: IroColor;
+  public color!: IroColor
 
   @Prop({ type: Object, default: () => ({}) })
-  options!: ColorPickerProps
+  public options!: ColorPickerProps
 
   @Ref('picker')
   readonly picker!: HTMLElement

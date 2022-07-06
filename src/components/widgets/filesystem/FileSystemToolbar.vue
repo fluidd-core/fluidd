@@ -137,33 +137,33 @@ import { AppTableHeader } from '@/types'
 export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // The currently active root.
   @Prop({ type: String, required: true })
-  root!: string
+  public root!: string
 
   @Prop({ type: String, required: false })
-  name!: string;
+  public name!: string
 
   // Can be a list of roots, or a single root.
   @Prop({ type: Array, required: false })
-  roots!: string[];
+  public roots!: string[]
 
   // Currently defined list of headers.
   @Prop({ type: Array, required: false })
-  headers!: AppTableHeader[];
+  public headers!: AppTableHeader[]
 
   // The current path
   @Prop({ type: String, required: false })
-  path!: string;
+  public path!: string
 
   // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
-  disabled!: boolean
+  public disabled!: boolean
 
   // If the fs is loading or not.
   @Prop({ type: Boolean, default: false })
-  loading!: boolean
+  public loading!: boolean
 
   @Prop({ type: String, default: '' })
-  search!: string
+  public search!: string
 
   textSearch = ''
 

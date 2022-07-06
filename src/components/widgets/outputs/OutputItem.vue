@@ -36,7 +36,7 @@ import { Fan, Led, OutputPin as IOutputPin } from '@/store/printer/types'
 })
 export default class Outputs extends Vue {
   @Prop({ type: Object, required: true })
-  item!: Fan | Led | IOutputPin
+  public item!: Fan | Led | IOutputPin
 
   get fanTypes () {
     return [
