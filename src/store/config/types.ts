@@ -58,7 +58,7 @@ export interface GeneralConfig {
   showBarometricPressure: boolean;
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
-  shutdownOnAppBar: boolean;
+  topNavPowerToggle: null | string;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
