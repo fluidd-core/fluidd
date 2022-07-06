@@ -241,7 +241,6 @@ app:
       'off': 'Off'
       password: Password
       power: Power
-      power_toggle_caption: Toggle %{device} power
       pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
@@ -262,6 +261,8 @@ app:
       total_print_time_avg: Avg per print
       total_time: Total time
       total_time_avg: Avg per print
+      turn_device_on: Turn %{device} on
+      turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed

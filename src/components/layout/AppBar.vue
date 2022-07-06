@@ -86,11 +86,11 @@
               @click="handlePowerToggle()"
             >
               <v-icon color="primary">
-                {{ topNavPowerDevice && topNavPowerDevice.status === 'on' ? '$powerOn' : '$powerOff' }}
+                {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t('app.general.label.power_toggle_caption', { device: topNavPowerToggle }) }}</span>
+          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle }) }}</span>
         </v-tooltip>
       </div>
 
@@ -217,6 +217,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   get topNavPowerDevice () {
     return this.$store.state.power.devices.find((device: { device: string }) => device.device === this.topNavPowerToggle)
+  }
+
+  get topNavPowerDeviceOn () {
+    return this.topNavPowerDevice?.status === 'on'
   }
 
   get topNavPowerToggleDisabled (): boolean {

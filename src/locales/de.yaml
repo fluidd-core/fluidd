@@ -235,7 +235,6 @@ app:
       'on': An
       password: Passwort
       power: Leistung
-      power_toggle_caption: Gerät %{device} ein- bzw. ausschalten
       printers: Drucker
       progress: Fortschritt
       requested_speed: Geschw.
@@ -254,6 +253,8 @@ app:
       total_print_time_avg: Durchschnitt pro Druck
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
+      turn_device_on: %{device} einschalten
+      turn_device_off: %{device} ausschalten
       uncategorized: Unkategorisiert
       unretract_extra_length: Unretract-Extralänge
       unretract_speed: Unretract-Geschwindigkeit
