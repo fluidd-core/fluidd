@@ -225,7 +225,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   get topNavPowerToggleDisabled (): boolean {
     const device = this.topNavPowerDevice
-    return (!device) || (this.printerPrinting && device.locked_while_printing) || device.status === 'error'
+    return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status)
   }
 
   handleExitLayout () {
