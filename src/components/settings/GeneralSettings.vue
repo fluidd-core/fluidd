@@ -84,13 +84,18 @@
       <v-divider />
 
       <app-setting
-        :title="$t('app.setting.label.shutdownOnAppBar')"
+        :title="$t('app.setting.label.power_toggle_in_top_nav')"
       >
-        <v-switch
-          v-model="shutdownOnAppBar"
-          hide-details
-          class="mb-5"
-          @click.native.stop
+        <v-select
+          v-model="topNavPowerToggle"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="[{ text: $tc('app.setting.label.none'), value: null }, ...powerDevicesList]"
+          :value="topNavPowerToggle"
+          item-value="value"
+          item-text="text"
         />
       </app-setting>
 
@@ -207,16 +212,20 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get shutdownOnAppBar () {
-    return this.$store.state.config.uiSettings.general.shutdownOnAppBar
+  get topNavPowerToggle () {
+    return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
 
-  set shutdownOnAppBar (value: boolean) {
+  set topNavPowerToggle (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.shutdownOnAppBar',
+      path: 'uiSettings.general.topNavPowerToggle',
       value,
       server: true
     })
+  }
+
+  get powerDevicesList () {
+    return this.$store.state.power.devices.map((device: { device: string }) => ({ text: device.device, value: device.device }))
   }
 
   get confirmOnPowerDeviceChange () {
