@@ -75,11 +75,13 @@
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
-              v-bind="attrs"
-              class="mx-1"
-              depressed
+              fab
+              small
+              :elevation="0"
+              class="mr-1"
               color="transparent"
               :disabled="topNavPowerToggleDisabled"
+              v-bind="attrs"
               v-on="on"
               @click="handlePowerToggle()"
             >
