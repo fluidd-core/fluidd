@@ -107,6 +107,7 @@ app:
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:
     btn:
       load_current_file: Aktuális fájl betöltése
@@ -135,6 +136,7 @@ app:
       add_printer: Nyomtató hozzáadása
       adjust_layout: Műszerfal elrendezésének beállítása
       all: Összes
+      auth_unsure: Nem tudja, miért látja ezt?
       calibrate: Kalibrálás
       cancel: Mégsem
       clear_profile: Profil tisztítása
@@ -144,8 +146,10 @@ app:
       edit: Szerkesztés
       exit_layout: Elrendezési mód bezárása
       extrude: Extrudálás
+      forgot_password: Elfelejtette a jelszavát?
       heaters_off: Fűtőtestek Ki
       load_all: Minden betöltése
+      login: Belépés
       more_information: Bővebb információ
       pause: Szünet
       preheat: Előfűtés
@@ -169,6 +173,7 @@ app:
       save: Mentés
       save_as: Mentés másként
       save_restart: Mentés & Újraindítás
+      save_config_and_restart: Konfiguráció mentése és újraindítás
       send: Küldés
       set_color: Szín beállítása
       shutdown: Leállítás
@@ -200,12 +205,14 @@ app:
       add_user: Felhasználó hozzáadása
       api_key: Api kulcs
       api_url: API URL
+      auth_source: Hitelesítési forrás
       category: Kategória
       change_password: Jelszóváltás
       clear_all: Mindent kitöröl
       color: Szín
       confirm: Megerősít
       current_password: Aktuális jelszó
+      current_user: Jelenlegi felhasználó
       disabled_while_printing: Nyomtatáskor letiltva
       edit_camera: Kamera szerkesztése
       edit_filter: Szűrő szerkesztése
@@ -223,9 +230,12 @@ app:
       host: Gazdagép
       layer: Réteg
       layout: Elrendezés
+      ldap: LDAP
       longest_job: Leghosszabb munka
       low: Alacsony
+      user_managed_source: %{source} hitelesítéssel kezelt felhasználó
       m117: M117
+      moonraker: Moonraker
       name: Név
       new_password: Új jelszó
       no_notifications: Nincs értesítés
@@ -257,6 +267,7 @@ app:
       unretract_extra_length: Extra hossz visszahúzása
       unretract_speed: Visszahúzási sebesség
       used: használt
+      username: Felhasználónév
       variance: Eltérés
       velocity: Sebesség
       visible: Látható
@@ -273,6 +284,7 @@ app:
     simple_form:
       error:
         arrayofnums: Csak számok
+        credentials: Érvénytelen hitelesítő adatok
         exists: Már létezik
         invalid_number: Érvénytelen szám
         invalid_url: Érvénytelen URL
@@ -336,6 +348,7 @@ app:
       limits: Nyomtató határai
       macros: Makrók
       other_files: Egyéb fájlok
+      pending_configuration_changes: Függőben lévő konfigurációs változások
       retract: Firmware visszahúzás
       runout_sensors: Kifutás érzékelők
       settings: Beállítások
@@ -348,6 +361,7 @@ app:
       tune: Hangolás
     tooltip:
       estop: VészSTOP
+      notifications: Értesítések
       reload_klipper: Újratölti a klipper konfigurációját.
       reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
       restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
@@ -389,13 +403,20 @@ app:
       all_off: Minden kikapcsolva
       all_on: Minden bekapcsolva
       auto_edit_extensions: Szerkesztési módban automatikusan megnyíló bővítmények
+      auto_follow_on_file_load: Automatikusan követi a fájlbetöltés folyamatát
+      auto_load_on_print_start: Fájl automatikus betöltése a nyomtatás indításakor
       camera_flip_x: Vízszintes forgatás
       camera_flip_y: Függőleges forgatás
+      camera_fullscreen_action:
+        title: Teljes képernyős művelet
+        embed: Beágyaz
+        rawstream: Nyers adás
       camera_rotate_by: Forgatás szerint
       camera_stream_type: Sugárzás típusa
       camera_url: Kamera URL
       confirm_on_estop: Megerősítés kérése vészleállításkor
       confirm_on_power_device_change: Megerősítés kérése kikapcsoláskor
+      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintse át a függőben lévő konfigurációs módosításokat
       confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül zárja be a szerkesztőt
       contains: Tartalom
       dark_mode: Sötét mód
@@ -428,8 +449,10 @@ app:
       retraction_icon_size: Visszahúzási ikon mérete
       show_animations: Animációk megjelenítése
       show_barometric_pressure: Barometrikus nyomás mutatása
+      show_code_lens: CodeLens megjelenítése
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
+      shutdownOnAppBar: Leállítás ikon megjelenítése a felső sávon
       starts_with: Ezzel kezdődik
       theme_preset: Előre beállított téma
       thermal_preset_gcode: Gcode
@@ -467,6 +490,7 @@ app:
       distribution_codename: Kódnév
       distribution_like: Alap disztribúció
       distribution_name: Disztribúció
+      frequency: Frekvencia
       hardware_desc: Hardver leírás
       hostname: Gazdanév
       klipper_load: Klipper Terheltsége
@@ -474,7 +498,9 @@ app:
       manufacturer: Gyártó
       mcu_awake: '{mcu} Ébredés ideje'
       mcu_bandwidth: '{mcu} Sávszélesség'
+      mcu_information: '{mcu} Információ'
       mcu_load: '{mcu} Terheltsége'
+      micro_controller: Mikrovezérlő
       model: CPU Modell
       moonraker_load: Moonraker Terheltsége
       processor_desc: Processzor
@@ -484,18 +510,21 @@ app:
       system_memory: Rendszermemória
       system_utilization: Rendszerhasználat
       total_memory: Teljes memória
+      version: Változat
   tool:
     btn:
       home_x: X
       home_y: 'Y'
       home_all: Mind
     tooltip:
+      absolute_positioning: Abszolút pozicionálás
       extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
       motors_off: MOTOROK KI
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
+      relative_positioning: Relatív pozicionálás
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
   version:
