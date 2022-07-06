@@ -78,7 +78,7 @@
               fab
               small
               :elevation="0"
-              class="mr-1"
+              class="mr-1 bg-transparent"
               color="transparent"
               :disabled="topNavPowerToggleDisabled"
               v-bind="attrs"
@@ -225,7 +225,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   get topNavPowerToggleDisabled (): boolean {
     const device = this.topNavPowerDevice
-    return (!device) || (this.printerPrinting && device.locked_while_printing)
+    return (!device) || (this.printerPrinting && device.locked_while_printing) || device.status === 'error'
   }
 
   handleExitLayout () {
@@ -343,5 +343,9 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   ::v-deep .v-toolbar__content {
     padding-left: 0;
+  }
+
+  .v-btn.v-btn--disabled.v-btn--has-bg.bg-transparent {
+    background: none !important;
   }
 </style>
