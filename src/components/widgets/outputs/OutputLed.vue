@@ -15,6 +15,7 @@
         :primary="primaryColor"
         :white="whiteColor"
         :title="led.prettyName"
+        :supported-channels="supportedChannels"
         dot
         @change="handleColorChange"
       />
@@ -26,11 +27,25 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { IroColor } from '@irojs/iro-core'
 import StateMixin from '@/mixins/state'
+import { Led } from '@/store/printer/types'
+
+interface RgbwColor {
+  r: number;
+  g: number;
+  b: number;
+  w: number;
+}
 
 @Component({})
 export default class OutputLed extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  led!: any
+  public led!: Led
+
+  channelLookup: {[key: string]: string} = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
+
+  get supportedChannels () {
+    return this.led.config.color_order[0]
+  }
 
   get primaryColor () {
     const vals = this.convertTo(this.led.color_data[0])
@@ -52,39 +67,34 @@ export default class OutputLed extends Mixins(StateMixin) {
   handleColorChange (value: { channel: string; color: IroColor }) {
     // Will return an update to either the primary or white channel.
     // Gather the existing values..
-    const currentVals = this.led.color_data[0]
+    const channels = this.supportedChannels.toLowerCase()
+    let currentVals = Object.fromEntries(this.led.color_data[0].map((value: number, idx: number) => [channels[idx], value]))
     const newVals = this.convertFrom(value.color.rgb)
 
     if (value.channel === 'primary') {
-      if (this.whiteColor) newVals.w = currentVals.W
+      // RGB picker update
+      currentVals = { ...currentVals, ...newVals }
     } else {
-      if (this.whiteColor) newVals.w = newVals.r
-      newVals.r = currentVals.R
-      newVals.g = currentVals.G
-      newVals.b = currentVals.B
+      // White channel update
+      currentVals.w = newVals.r
     }
 
-    const map: { [index: string]: string } = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
-    let s = `SET_LED LED=${this.led.name}`
-
-    Object.keys(newVals).forEach((key) => {
-      s += ` ${map[key]}=${newVals[key]}`
-    })
-    this.sendGcode(s)
+    this.sendGcode(`SET_LED LED=${this.led.name} ${Object.entries(currentVals).map(([key, val]) => `${this.channelLookup[key]}=${val}`).join(' ')}`)
   }
 
-  convertTo (o: any) {
+  convertTo (o: any): RgbwColor {
     const r: any = {}
+    const channels = this.supportedChannels.toLowerCase()
     Object.keys(o).forEach((key) => {
-      r[key.toLowerCase()] = Math.round(o[key] * 255)
+      r[channels[key]] = Math.round(o[key] * 255)
     })
     return r
   }
 
-  convertFrom (o: any) {
+  convertFrom (o: any): RgbwColor {
     const r: any = {}
     Object.keys(o).forEach((key) => {
-      r[key.toLowerCase()] = Number.parseFloat((o[key] / 255).toPrecision(2))
+      r[key] = Number.parseFloat((o[key] / 255).toPrecision(2))
     })
     return r
   }

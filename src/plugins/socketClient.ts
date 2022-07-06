@@ -14,17 +14,17 @@ import { authApi } from '@/api/auth.api'
 import deepMerge from 'deepmerge'
 
 export class WebSocketClient {
-  url = '';
-  connection: WebSocket | null = null;
-  reconnectEnabled = false;
-  reconnectInterval = 1000;
-  allowedReconnectAttempts = 3;
-  reconnectCount = 0;
-  logPrefix = '[WEBSOCKET]';
-  requests: Array<Request> = [];
-  store: any | null = null;
-  pingTimeout: any;
-  cache: CachedParams | null = null;
+  url = ''
+  connection: WebSocket | null = null
+  reconnectEnabled = false
+  reconnectInterval = 1000
+  allowedReconnectAttempts = 3
+  reconnectCount = 0
+  logPrefix = '[WEBSOCKET]'
+  requests: Array<Request> = []
+  store: any | null = null
+  pingTimeout: any
+  cache: CachedParams | null = null
 
   constructor (options: Options) {
     this.url = options.url

@@ -6,7 +6,7 @@
     <job-history />
 
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           small
           class="ma-1"
@@ -39,7 +39,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import JobHistory from '@/components/widgets/history/JobHistory.vue'
 import { SocketActions } from '@/api/socketActions'
 
@@ -49,6 +49,9 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class PrinterHistoryCard extends Vue {
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
+
   handleRemoveAll () {
     this.$confirm(
       this.$tc('app.history.msg.confirm_jobs'),

@@ -63,9 +63,9 @@ import { FileDownload } from '@/store/files/types'
 @Component({})
 export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  value!: boolean;
+  public value!: boolean
 
   @Prop({ type: Object })
-  file!: FileDownload;
+  public file!: FileDownload
 }
 </script>

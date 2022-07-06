@@ -73,11 +73,11 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
-  root!: string
+  public root!: string
 
   // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
-  disabled!: boolean
+  public disabled!: boolean
 
   model = []
   filters: FileFilter[] = [

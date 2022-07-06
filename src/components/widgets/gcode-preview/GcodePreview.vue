@@ -199,7 +199,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
@@ -207,33 +207,23 @@ import { GcodePreviewConfig } from '@/store/config/types'
 
 @Component({})
 export default class GcodePreview extends Mixins(StateMixin) {
-  @Prop({
-    type: Boolean,
-    default: true
-  })
-  disabled!: boolean
+  @Prop({ type: Boolean, default: true })
+  public disabled!: boolean
 
-  @Prop({
-    type: String
-  })
-  width!: string
+  @Prop({ type: String })
+  public width!: string
 
-  @Prop({
-    type: String
-  })
-  height!: string
+  @Prop({ type: String })
+  public height!: string
 
-  @Prop({
-    type: Number,
-    default: Infinity
-  })
-  progress!: number
+  @Prop({ type: Number, default: Infinity })
+  public progress!: number
 
-  @Prop({
-    type: Number,
-    default: 0
-  })
-  layer!: LayerNr
+  @Prop({ type: Number, default: 0 })
+  public layer!: LayerNr
+
+  @Ref('svg')
+  readonly svg!: SVGElement
 
   focused = false
 
@@ -483,7 +473,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   mounted () {
-    this.panzoom = panzoom(this.$refs.svg as SVGElement, {
+    this.panzoom = panzoom(this.svg, {
       maxZoom: 20,
       minZoom: 0.95,
       bounds: true,

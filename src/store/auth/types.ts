@@ -11,5 +11,6 @@ export interface AuthState {
 
 export interface AppUser {
   username: string;
+  source: 'moonraker' | 'ldap';
   created_on: number;
 }

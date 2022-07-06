@@ -7,30 +7,34 @@
     :close-on-content-click="false"
     :close-delay="300"
   >
-    <template #activator="{ on, attrs }">
-      <v-badge
-        :value="notificationsCounter"
-        :content="notificationsCounter"
-        offset-x="17"
-        offset-y="17"
-        bordered
-        overlap
-        :color="badgeColor"
-      >
-        <v-btn
-          v-bind="attrs"
-          fab
-          small
-          class="mx-1"
-          :color="color"
-          :elevation="0"
-          v-on="on"
-        >
-          <v-icon :class="{ 'wiggle': color === 'error'}">
-            $bell
-          </v-icon>
-        </v-btn>
-      </v-badge>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-badge
+            :value="notificationsCounter"
+            :content="notificationsCounter"
+            offset-x="17"
+            offset-y="17"
+            bordered
+            overlap
+            :color="badgeColor"
+          >
+            <v-btn
+              v-bind="attrs"
+              fab
+              small
+              :color="color"
+              :elevation="0"
+              v-on="{ ...tooltip, ...menu }"
+            >
+              <v-icon :class="{ 'wiggle': color === 'error'}">
+                $bell
+              </v-icon>
+            </v-btn>
+          </v-badge>
+        </template>
+        <span>{{ $t('app.general.tooltip.notifications') }}</span>
+      </v-tooltip>
     </template>
 
     <v-card>
@@ -241,8 +245,8 @@ export default class AppNotificationMenu extends Vue {
 <style lang="scss" scoped>
   @import '~vuetify/src/styles/styles.sass';
 
-  ::v-deep .app-notifications .v-list-item__action.notification-suffix,
-  ::v-deep .app-notifications .v-list-item__action.notification-clear {
+  :deep(.app-notifications .v-list-item__action.notification-suffix),
+  :deep(.app-notifications .v-list-item__action.notification-clear) {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -251,58 +255,58 @@ export default class AppNotificationMenu extends Vue {
     border-left: thin solid rgba(map-get($shades, 'white'), 0.12);
   }
 
-  ::v-deep .app-notifications .v-list-item__action.notification-suffix {
+  :deep(.app-notifications .v-list-item__action.notification-suffix) {
     padding: 0 0 0 12px;
   }
 
-  ::v-deep .app-notifications .v-list-item__action.notification-clear {
+  :deep(.app-notifications .v-list-item__action.notification-clear) {
     padding: 0 0 0 8px;
     margin-right: -8px;
   }
 
-::v-deep .app-notifications .v-list-item__action.notification-clear-all {
+:deep(.app-notifications .v-list-item__action.notification-clear-all) {
     margin-right: -8px;
   }
 
-  ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp {
+  :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp) {
     color: rgba(255, 255, 255, 0.47);
   }
 
-  .theme--light ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp {
+  .theme--light :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-timestamp) {
     color: rgba(0, 0, 0, 0.47);
   }
 
-  ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-description {
+  :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-description) {
     font-style: italic;
     color: rgba(255, 255, 255, 0.60);
   }
 
-  .theme--light ::v-deep .app-notifications .v-list-item .v-list-item__subtitle.notification-description {
+  .theme--light :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-description) {
     color: rgba(0, 0, 0, 0.60);
   }
 
-  ::v-deep .notification-success,
-  ::v-deep .notification-info,
-  ::v-deep .notification-warning,
-  ::v-deep .notification-error,
-  ::v-deep .notification-announcement {
+  :deep(.notification-success),
+  :deep(.notification-info),
+  :deep(.notification-warning),
+  :deep(.notification-error),
+  :deep(.notification-announcement) {
     border-left: solid 3px;
   }
 
-  ::v-deep .notification-success {
+  :deep(.notification-success) {
     border-color: var(--v-success-base);
   }
-  ::v-deep .notification-info,
-  ::v-deep .notification-announcement {
+  :deep(.notification-info),
+  :deep(.notification-announcement) {
     border-color: var(--v-info-base);
   }
-  ::v-deep .notification-warning {
+  :deep(.notification-warning) {
     border-color: var(--v-warning-base);
   }
-  ::v-deep .notification-error {
+  :deep(.notification-error) {
     border-color: var(--v-error-base);
   }
-  ::v-deep .notification-temp {
+  :deep(.notification-temp) {
     font-size: 1.5rem;
   }
 </style>

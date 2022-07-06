@@ -35,10 +35,13 @@ export const actions: ActionTree<HistoryState, RootState> = {
   /**
    * Update the store with history
    */
-  async onHistoryList ({ commit }, payload) {
+  async onHistoryList ({ commit, rootGetters }, payload) {
     if (payload) {
       commit('setHistoryList', payload)
-      SocketActions.serverFilesGetDirectory('gcodes', 'gcodes')
+
+      if (rootGetters['files/isRootAvailable']('gcodes')) {
+        SocketActions.serverFilesGetDirectory('gcodes', 'gcodes')
+      }
     }
   },
 

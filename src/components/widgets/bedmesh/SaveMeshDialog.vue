@@ -73,10 +73,10 @@ import ToolheadMixin from '@/mixins/toolhead'
 @Component({})
 export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: false })
-  value!: string;
+  public value!: string
 
   @Prop({ type: String })
-  existingName!: string;
+  public existingName!: string
 
   mounted () {
     this.name = 'default'

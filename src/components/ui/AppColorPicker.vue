@@ -1,6 +1,5 @@
 <template>
   <v-menu
-    ref="menu"
     v-model="menu"
     bottom
     left
@@ -48,7 +47,7 @@
         </v-icon>
 
         <v-icon
-          v-if="white"
+          v-if="supportedChannels.includes('W')"
           :color="whiteColor.hexString"
           large
         >
@@ -62,7 +61,6 @@
           <!-- <pre>{{primaryColor.hexString}}</pre> -->
           <!-- standard full color picker -->
           <app-iro-color-picker
-            v-if="primaryColor"
             :color="primaryColor.hexString"
             :options="primaryOptions"
             @color:change="handleColorChange('primary', $event)"
@@ -70,7 +68,7 @@
 
           <!-- white channel color picker -->
           <app-iro-color-picker
-            v-if="white"
+            v-if="supportedChannels.includes('W')"
             class="mt-4"
             :color="whiteColor.hexString"
             :options="whiteOptions"
@@ -112,7 +110,7 @@
             <div>B</div>
           </div>
           <div
-            v-if="white"
+            v-if="supportedChannels.includes('W')"
             class="color-input"
           >
             <v-text-field
@@ -157,21 +155,24 @@ interface PointerPosition {
 export default class AppColorPicker extends Vue {
   // Expected color input. Can be a hex, rgbw etc.
   @Prop({ type: String, required: true })
-  primary!: string
+  public primary!: string
 
   @Prop({ type: String, required: false })
-  white!: string
+  public white!: string
 
   @Prop({ type: String, default: '' })
-  title!: string
+  public title!: string
 
   @Prop({ type: Boolean, default: false })
-  dot!: boolean
+  public dot!: boolean
+
+  @Prop({ type: String, default: 'RGB' })
+  public supportedChannels!: string
 
   menu = false
 
   @Ref('card')
-  card!: Vue
+  readonly card!: Vue
 
   lastPointerPosition: PointerPosition = { x: 0, y: 0 }
 
@@ -251,7 +252,7 @@ export default class AppColorPicker extends Vue {
 
   created () {
     this.primaryColor = this.getColor(this.primary)
-    if (this.whiteColor) this.whiteColor = this.getColor(this.white)
+    if (this.supportedChannels.includes('W')) this.whiteColor = this.getColor(this.white)
   }
 
   getColor (color: string) {
@@ -334,11 +335,11 @@ export default class AppColorPicker extends Vue {
     color: rgba(map-get($material-dark, 'text-color'), 0.45);
   }
 
-  ::v-deep .v-text-field__slot input {
+  :deep(.v-text-field__slot input) {
     text-align: center;
   }
 
-  ::v-deep .v-input--dense .v-input__slot {
+  :deep(.v-input--dense .v-input__slot) {
     min-height: 32px !important;
   }
 </style>

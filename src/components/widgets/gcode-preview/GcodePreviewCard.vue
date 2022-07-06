@@ -6,7 +6,7 @@
     :draggable="true"
   >
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           color="primary"
@@ -15,13 +15,13 @@
         >
           {{ $t('app.gcode.btn.load_current_file') }}
         </app-btn>
+      </app-btn-collapse-group>
 
-        <app-btn-collapse-group
-          :collapsed="true"
-          menu-icon="$cog"
-        >
-          <GcodePreviewControls :disabled="!fileLoaded" />
-        </app-btn-collapse-group>
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
+      >
+        <GcodePreviewControls :disabled="!fileLoaded" />
       </app-btn-collapse-group>
     </template>
 
@@ -119,6 +119,7 @@
         <v-col>
           <gcode-preview
             width="100%"
+            height="100%"
             :layer="currentLayer"
             :progress="moveProgress"
             :disabled="!fileLoaded"
@@ -150,11 +151,11 @@ import { AxiosResponse } from 'axios'
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
-  @Prop({
-    type: Boolean,
-    default: true
-  })
-  enabled!: boolean
+  @Prop({ type: Boolean, default: true })
+  public enabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
 
   currentLayer = 0
   moveProgress = 0
@@ -217,6 +218,13 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       if (fileMovePosition !== this.moveProgress) {
         this.syncMoveProgress()
       }
+    }
+  }
+
+  @Watch('printerFile')
+  onPrintFileChanged () {
+    if (this.autoLoadOnPrintStart && this.printerFile) {
+      this.loadCurrent()
     }
   }
 
@@ -303,7 +311,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   async loadCurrent () {
-    const file = this.$store.state.printer.printer.current_file as AppFile
+    const file = this.printerFile as AppFile
     this.getGcode(file)
       .then(response => response?.data)
       .then((gcode: AxiosResponse) => {
@@ -337,6 +345,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
 
     return true
+  }
+
+  get autoLoadOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
   }
 }
 </script>

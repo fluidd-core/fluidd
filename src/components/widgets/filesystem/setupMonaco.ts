@@ -6,15 +6,24 @@ import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
-const extruderRegExp = /^extruder[0-9]+$/
+type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot'
 
-const getDocsSection = (sectionName: string) => {
-  if (sectionName.startsWith('stepper_')) {
-    return 'stepper'
-  }
+const isCodeLensSupportedService = (service: string) : service is CodeLensSupportedService => [
+  'klipper',
+  'moonraker',
+  'moonraker-telegram-bot'
+].includes(service)
 
-  if (extruderRegExp.test(sectionName)) {
-    return 'extruder'
+const getDocsSection = (service: CodeLensSupportedService, sectionName: string) => {
+  switch (service) {
+    case 'klipper':
+      if (sectionName.startsWith('stepper_')) {
+        return 'stepper'
+      }
+
+      if (/^extruder[0-9]+$/.test(sectionName)) {
+        return 'extruder'
+      }
   }
 
   return sectionName
@@ -66,19 +75,20 @@ async function setupMonaco () {
 
   const app = getVueApp()
 
-  monaco.editor.registerCommand('fluidd_open_docs', (_, isMoonrakerConfig, hash) => {
-    if (isMoonrakerConfig) {
-      const url = app.$t('app.file_system.url.moonraker_config', { hash }).toString()
-      window.open(url)
-    } else {
-      const url = app.$t('app.file_system.url.klipper_config', { hash }).toString()
-      window.open(url)
-    }
+  monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
+    const serviceKey = service.replace(/-/g, '_')
+    const url = app.$t(`app.file_system.url.${serviceKey}_config`, { hash }).toString()
+
+    window.open(url)
   })
 
   monaco.languages.registerCodeLensProvider('klipper-config', {
     provideCodeLenses: (model) => {
-      const isMoonrakerConfig = model.uri.path.toLowerCase().endsWith('/moonraker.conf')
+      const { service } = app.$store.getters['server/getConfigMapByFilename'](model.uri.path.split('/').pop())
+
+      if (!isCodeLensSupportedService(service)) {
+        return null
+      }
 
       const linesContent = model.getLinesContent()
 
@@ -87,7 +97,7 @@ async function setupMonaco () {
         if (section) {
           const [sectionName] = section[1].split(' ')
 
-          const referenceSection = getDocsSection(sectionName)
+          const referenceSection = getDocsSection(service, sectionName)
 
           return ranges.concat({
             referenceSection,
@@ -110,7 +120,7 @@ async function setupMonaco () {
             command: {
               id: 'fluidd_open_docs',
               title: app.$t('app.file_system.label.view_section_documentation', { section: section.referenceSection }).toString(),
-              arguments: [isMoonrakerConfig, section.referenceSection]
+              arguments: [service, section.referenceSection]
             }
           })
         ),

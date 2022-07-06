@@ -50,13 +50,18 @@ export interface GeneralConfig {
   enableVersionNotifications: boolean;
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
+  confirmOnSaveConfigAndRestart: boolean;
   dateformat: string;
   timeformat: string;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
   flipConsoleLayout: boolean;
+  cameraFullscreenAction: CameraFullscreenAction;
+  shutdownOnAppBar: boolean;
 }
+
+export type CameraFullscreenAction = 'embed' | 'rawstream';
 
 // Config stored in moonraker db
 export interface ThemeConfig {
@@ -83,6 +88,7 @@ export interface SupportedThemeLogo {
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;
   autoEditExtensions: string[];
+  codeLens: boolean;
 }
 
 export interface Axis {
@@ -149,6 +155,8 @@ export interface GcodePreviewConfig {
   drawBackground: boolean;
   showAnimations: boolean;
   groupLowerLayers: boolean;
+  autoLoadOnPrintStart: boolean;
+  autoFollowOnFileLoad: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;

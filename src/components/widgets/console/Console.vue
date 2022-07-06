@@ -54,6 +54,7 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
+import { DinamicScroller } from 'vue-virtual-scroller'
 
 @Component({
   components: {
@@ -63,19 +64,19 @@ import { SocketActions } from '@/api/socketActions'
 })
 export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
-  items!: []
+  public items!: []
 
   @Prop({ type: String, default: 'id' })
-  keyField!: string
+  public keyField!: string
 
   @Prop({ type: Number, default: 250 })
-  height!: number
+  public height!: number
 
   @Prop({ type: Boolean, default: false })
-  readonly!: boolean
+  public readonly!: boolean
 
   @Ref('scroller')
-  dynamicScroller!: any
+  readonly dynamicScroller!: DinamicScroller
 
   _pauseScroll = false
 
@@ -197,7 +198,7 @@ export default class Console extends Mixins(StateMixin) {
     flex: 0 0 auto;
   }
 
-  ::v-deep .vue-recycle-scroller__item-wrapper {
+  :deep(.vue-recycle-scroller__item-wrapper) {
     overflow: revert;
   }
 

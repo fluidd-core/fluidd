@@ -3,12 +3,12 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios'
 import { AppUser } from '@/store/auth/types'
 
 export const authApi = {
-  async login (username: string, password: string): Promise<AxiosResponse> {
-    const login = await httpClient.post('/access/login', {
+  async login (username: string, password: string, source = 'moonraker'): Promise<AxiosResponse> {
+    return await httpClient.post('/access/login', {
       username,
-      password
+      password,
+      source
     })
-    return login
   },
 
   async logout (): Promise<AxiosResponse> {

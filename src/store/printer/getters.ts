@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, OutputPin, Sensor, RunoutSensor, Extruder, MCU } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -170,7 +170,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     return {
       progress: (progress * 100).toFixed(),
-      duration: duration,
+      duration,
       slicer: slicerLeft,
       file: fileLeft,
       actual: actualLeft,
@@ -340,6 +340,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getAllLeds: (_, getters) => {
     return getters.getOutputs([
+      'led',
       'neopixel',
       'dotstar'
     ])
@@ -391,7 +392,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   /**
   * Return available fans and output pins
   */
-  getOutputs: (state, getters) => (filter?: string[]): Array<Fan | OutputPin> => {
+  getOutputs: (state, getters) => (filter?: string[]): Array<Fan | Led | OutputPin> => {
     // Fans..
     const fans = [
       'temperature_fan',
@@ -408,6 +409,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     // LEDs...
     const leds = [
+      'led',
       'neopixel',
       'dotstar'
     ]
@@ -417,6 +419,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'fan',
       'fan_generic',
       'output_pin',
+      'led',
       'neopixel',
       'dotstar'
     ]
@@ -433,6 +436,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'controller_fan',
       'heater_fan',
       'fan_generic',
+      'led',
       'neopixel',
       'dotstar'
     ]
@@ -441,7 +445,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ? filter
       : [...fans, ...outputPins, ...leds]
 
-    const pins: Array<Fan | OutputPin> = []
+    const pins: Array<Fan | Led | OutputPin> = []
 
     for (const pin in state.printer) {
       const split = pin.split(' ')
@@ -464,7 +468,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
         const config = getters.getPrinterSettings(pin)
 
-        let output: Fan | OutputPin = {
+        let output: Fan | Led | OutputPin = {
           ...state.printer[pin],
           config: { ...config },
           name,
@@ -647,6 +651,14 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getMoonrakerWarnings: (state, getters, rootState, rootGetters) => {
     return rootGetters['server/getInfo'].warnings || []
+  },
+
+  getSaveConfigPending: (state) => {
+    return state.printer?.configfile?.save_config_pending || false
+  },
+
+  getSaveConfigPendingItems: (state) => {
+    return state.printer?.configfile?.save_config_pending_items
   },
 
   getHasHomingOverride: (state, getters) => {
