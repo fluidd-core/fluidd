@@ -60,17 +60,14 @@ import { AppFile } from '@/store/files/types'
 
 @Component({})
 export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin) {
-  @Prop({
-    type: Boolean,
-    default: false
-  })
-  value!: boolean
+  @Prop({ type: Boolean, default: false })
+  public value!: boolean
 
   @Prop({ type: Number })
-  progress!: number
+  public progress!: number
 
   @Prop({ type: Object })
-  file!: AppFile
+  public file!: AppFile
 
   get percent () {
     return Math.floor((this.progress / this.file.size) * 100)

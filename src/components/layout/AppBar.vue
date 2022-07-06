@@ -330,18 +330,18 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     text-decoration: none;
   }
 
-  .v-toolbar--extended ::v-deep .v-toolbar__content {
+  .v-toolbar--extended :deep(.v-toolbar__content) {
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
   }
 
-  ::v-deep .v-toolbar__extension {
+  :deep(.v-toolbar__extension) {
     flex: 1 1 auto;
     align-items: center;
     justify-content: center;
     padding: 0;
   }
 
-  ::v-deep .v-toolbar__content {
+  :deep(.v-toolbar__content) {
     padding-left: 0;
   }
 

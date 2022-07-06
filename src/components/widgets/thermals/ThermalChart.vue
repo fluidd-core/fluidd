@@ -22,7 +22,7 @@ import getKlipperType from '@/util/get-klipper-type'
 @Component({})
 export default class ThermalChart extends Vue {
   @Prop({ type: String, default: '100%' })
-  height!: string;
+  public height!: string
 
   @Ref('chart')
   readonly chart!: ECharts

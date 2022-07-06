@@ -199,10 +199,10 @@ import { CameraConfig } from '@/store/cameras/types'
 @Component({})
 export default class CameraConfigDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  value!: boolean
+  public value!: boolean
 
   @Prop({ type: Object, required: true })
-  camera!: CameraConfig
+  public camera!: CameraConfig
 
   cameraUrlRules = [
     (v: string) => !!v || 'Required'

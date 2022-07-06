@@ -22,8 +22,8 @@ export const mutations: MutationTree<ServerState> = {
   },
 
   setServiceState (state, payload: ServiceState) {
-    if (payload) {
-      Object.assign(state.system_info?.service_state, payload)
+    if (payload && state.system_info?.service_state) {
+      Object.assign(state.system_info.service_state, payload)
     }
   },
 

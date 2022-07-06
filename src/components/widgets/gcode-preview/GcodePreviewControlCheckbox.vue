@@ -13,23 +13,14 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class GcodePreviewControlCheckbox extends Mixins(StateMixin) {
-  @Prop({
-    type: String,
-    required: true
-  })
-  name!: string
+  @Prop({ type: String, required: true })
+  public name!: string
 
-  @Prop({
-    type: String,
-    required: true
-  })
-  label!: string
+  @Prop({ type: String, required: true })
+  public label!: string
 
-  @Prop({
-    type: Boolean,
-    default: false
-  })
-  disabled!: boolean
+  @Prop({ type: Boolean, default: false })
+  public disabled!: boolean
 
   get property () {
     return this.$store.getters['gcodePreview/getViewerOption'](this.name)

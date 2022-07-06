@@ -120,7 +120,7 @@ import { ConsoleEntry } from '@/store/console/types'
   }
 })
 export default class ConsoleCard extends Mixins(StateMixin) {
-  height = 0;
+  height = 0
 
   created () {
     window.addEventListener('resize', this.changeHeight)
@@ -136,10 +136,10 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   }
 
   @Prop({ type: Boolean, default: true })
-  enabled!: boolean
+  public enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  fullScreen!: boolean
+  public fullScreen!: boolean
 
   @Ref('console')
   readonly console!: Console

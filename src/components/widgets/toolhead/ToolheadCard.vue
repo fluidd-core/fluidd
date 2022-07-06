@@ -103,7 +103,7 @@ import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: false })
-  menuCollapsed!: boolean
+  public menuCollapsed!: boolean
 
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()

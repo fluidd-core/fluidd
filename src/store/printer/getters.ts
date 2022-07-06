@@ -170,7 +170,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     return {
       progress: (progress * 100).toFixed(),
-      duration: duration,
+      duration,
       slicer: slicerLeft,
       file: fileLeft,
       actual: actualLeft,
