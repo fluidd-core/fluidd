@@ -43,6 +43,8 @@ will ignore your `trusted_clients:` setup, and require authorization credentials
 Under default conditions, a fresh installation would have your client trusted.
 You can confirm this by noting your currently authenticated user.
 
+![screenshot](/assets/images/auth_trusted.png)
+
 ## Lost password?
 
 Lost your only password? You need to revert to a trusted setup. You can do this
@@ -100,6 +102,7 @@ moonraker_secure.json
 }
 ```
 
-![screenshot](/assets/images/auth_trusted.png)
+![screenshot](/assets/images/auth_login_multisource.png)
+![screenshot](/assets/images/auth_login_multisource_select.png)
 
 {: .fs-6 .fw-300 }
