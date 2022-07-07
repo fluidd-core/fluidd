@@ -10,13 +10,14 @@
         class="pr-1"
       >
         <v-text-field
+          :color="(forceMove) ? 'error' : 'primary'"
           :label="`X [ ${livePosition[0].toFixed(2)} ]`"
           outlined
           hide-details
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!xHomed"
+          :disabled="!xHomed && !forceMove"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @change="moveTo('X', $event)"
@@ -27,13 +28,14 @@
         class="pr-1 pl-1"
       >
         <v-text-field
+          :color="(forceMove) ? 'error' : 'primary'"
           :label="`Y [ ${livePosition[1].toFixed(2)} ]`"
           outlined
           hide-details
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!yHomed"
+          :disabled="!yHomed && !forceMove"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @change="moveTo('Y', $event)"
@@ -44,13 +46,14 @@
         class="pr-1 pl-1"
       >
         <v-text-field
+          :color="(forceMove) ? 'error' : 'primary'"
           :label="`Z [ ${livePosition[2].toFixed(2)} ]`"
           outlined
           hide-details
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!zHomed"
+          :disabled="!zHomed && !forceMove"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
@@ -125,61 +128,69 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
-  get gcodePosition () {
-    return this.$store.state.printer.printer.gcode_move.gcode_position
-  }
+ @Prop({ type: Boolean, default: false })
+   forceMove!: boolean
 
-  get toolheadPosition () {
-    return this.$store.state.printer.printer.toolhead.position
-  }
+ get gcodePosition () {
+   return this.$store.state.printer.printer.gcode_move.gcode_position
+ }
 
-  get livePosition () {
-    return this.$store.state.printer.printer.motion_report.live_position
-  }
+ get toolheadPosition () {
+   return this.$store.state.printer.printer.toolhead.position
+ }
 
-  get useGcodeCoords () {
-    return this.$store.state.config.uiSettings.general.useGcodeCoords
-  }
+ get livePosition () {
+   return this.$store.state.printer.printer.motion_report.live_position
+ }
 
-  get requestedSpeed () {
-    // Take into account the speed multiplier.
-    const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
-    let speed = this.$store.state.printer.printer.gcode_move.speed || 0
-    speed = (speed * multiplier) / 60
-    return speed.toFixed()
-  }
+ get useGcodeCoords () {
+   return this.$store.state.config.uiSettings.general.useGcodeCoords
+ }
 
-  get usesAbsolutePositioning () {
-    return this.$store.state.printer.printer.gcode_move.absolute_coordinates
-  }
+ get requestedSpeed () {
+   // Take into account the speed multiplier.
+   const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
+   let speed = this.$store.state.printer.printer.gcode_move.speed || 0
+   speed = (speed * multiplier) / 60
+   return speed.toFixed()
+ }
 
-  get positioning () {
-    return this.usesAbsolutePositioning ? 0 : 1
-  }
+ get usesAbsolutePositioning () {
+   return this.$store.state.printer.printer.gcode_move.absolute_coordinates
+ }
 
-  set positioning (value: number) {
-    this.sendGcode(`G9${value}`)
-  }
+ get positioning () {
+   return this.usesAbsolutePositioning ? 0 : 1
+ }
 
-  moveTo (axis: string, pos: string) {
-    const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
-    const currentPos = (this.useGcodeCoords)
-      ? this.gcodePosition[axisIndexMap[axis]]
-      : this.toolheadPosition[axisIndexMap[axis]]
-    if (parseInt(currentPos) !== parseInt(pos)) {
-      const rate = (axis.toLowerCase() === 'z')
-        ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-        : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-      this.sendGcode(`G90
+ set positioning (value: number) {
+   this.sendGcode(`G9${value}`)
+ }
+
+ moveTo (axis: string, pos: string) {
+   axis = axis.toLowerCase()
+   const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
+   const currentPos = (this.useGcodeCoords)
+     ? this.gcodePosition[axisIndexMap[axis]]
+     : this.toolheadPosition[axisIndexMap[axis]]
+   if (parseInt(currentPos) !== parseInt(pos)) {
+     const rate = (axis.toLowerCase() === 'z')
+       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+     if (this.forceMove) {
+       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${pos} VELOCITY=${rate}`)
+     } else {
+       this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)
-    }
-  }
+     }
+   }
+ }
 }
 </script>
 

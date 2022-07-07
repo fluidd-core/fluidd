@@ -10,8 +10,8 @@
         class="ml-12 mr-12"
       >
         <app-btn-toolhead-move
-          :color="(yHomed) ? 'primary' : undefined"
-          :disabled="!yHomed || !klippyReady"
+          :color="(forceMove) ? 'error' : ( (yHomed) ? 'primary' : undefined)"
+          :disabled="(!yHomed && !forceMove) || !klippyReady"
           icon="$up"
           @click="sendMoveGcode('Y', toolheadMoveLength)"
         />
@@ -21,8 +21,8 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(zHomed) ? 'primary' : undefined"
-          :disabled="!zHomed || !klippyReady"
+          :color="(forceMove) ? 'error' : ( (zHomed) ? 'primary' : undefined)"
+          :disabled="(!zHomed && !forceMove) || !klippyReady"
           icon="$up"
           @click="sendMoveGcode('Z', toolheadMoveLength)"
         />
@@ -50,8 +50,8 @@
     >
       <v-col cols="auto">
         <app-btn-toolhead-move
-          :color="(xHomed) ? 'primary' : undefined"
-          :disabled="!xHomed || !klippyReady"
+          :color="(forceMove) ? 'error' : ( (xHomed) ? 'primary' : undefined)"
+          :disabled="(!xHomed && !forceMove) || !klippyReady"
           icon="$left"
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
         />
@@ -75,8 +75,8 @@
         justify="end"
       >
         <app-btn-toolhead-move
-          :color="(xHomed) ? 'primary' : undefined"
-          :disabled="!xHomed || !klippyReady"
+          :color="(forceMove) ? 'error' : ( (xHomed) ? 'primary' : undefined)"
+          :disabled="(!xHomed && !forceMove) || !klippyReady"
           icon="$right"
           @click="sendMoveGcode('X', toolheadMoveLength)"
         />
@@ -121,8 +121,8 @@
         class="ml-12 mr-7"
       >
         <app-btn-toolhead-move
-          :color="(yHomed) ? 'primary' : undefined"
-          :disabled="!yHomed || !klippyReady"
+          :color="(forceMove) ? 'error' : ( (xHomed) ? 'primary' : undefined)"
+          :disabled="(!yHomed && !forceMove) || !klippyReady"
           icon="$down"
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
         />
@@ -132,8 +132,8 @@
         class="ml-7"
       >
         <app-btn-toolhead-move
-          :color="(zHomed) ? 'primary' : undefined"
-          :disabled="!zHomed || !klippyReady"
+          :color="(forceMove) ? 'error' : ( (zHomed) ? 'primary' : undefined)"
+          :disabled="(!yHomed && !forceMove) || !klippyReady"
           icon="$down"
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
         />
@@ -182,7 +182,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { Waits } from '@/globals'
@@ -192,6 +192,9 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   moveLength = ''
   fab = false
+
+  @Prop({ type: Boolean, default: false })
+    forceMove!: boolean
 
   get kinematics () {
     return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
@@ -234,9 +237,13 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
       ? '-' + distance
       : distance
 
-    this.sendGcode(`G91
+    if (this.forceMove) {
+      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate}`)
+    } else {
+      this.sendGcode(`G91
       G1 ${axis}${distance} F${rate * 60}
       G90`)
+    }
   }
 }
 </script>

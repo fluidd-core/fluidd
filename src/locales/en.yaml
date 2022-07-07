@@ -528,6 +528,8 @@ app:
       relative_positioning: Relative Positioning
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
+    checkbox:
+      force_move: Activate Force Move
   version:
     btn:
       check_for_updates: Check for updates

@@ -7,12 +7,32 @@
     >
       <v-col class="controls-wrapper">
         <extruder-selection v-if="multipleExtruders" />
-        <toolhead-moves v-if="!printerPrinting" />
+        <toolhead-moves
+          v-if="!printerPrinting"
+          :force-move="forceMove"
+        />
         <z-height-adjust v-if="printerPrinting" />
+
+        <!-- some css is missing here -->
+        <v-checkbox
+          v-if="printerSupportsForcemove"
+          v-model="forceMove"
+          :disabled="!klippyReady"
+          color="error"
+        >
+          <template #label>
+            <v-icon
+              color="error"
+            >
+              $warning
+            </v-icon>
+            <span>&nbsp;{{ $t('app.tool.checkbox.force_move') }}</span>
+          </template>
+        </v-checkbox>
       </v-col>
 
       <v-col class="controls-wrapper">
-        <toolhead-position />
+        <toolhead-position :force-move="forceMove" />
         <extruder-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="!printerPrinting" />
       </v-col>
@@ -47,6 +67,17 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
+  forceMove = false
+
+  get printerSupportsForcemove () {
+    const printerSettings = this.$store.getters['printer/getPrinterSettings']()
+    if (printerSettings.force_move.enable_force_move) {
+      return true
+    } else {
+      return false
+    }
+  }
+
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1
   }
