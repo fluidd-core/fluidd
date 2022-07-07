@@ -85,7 +85,7 @@
               v-on="on"
               @click="handlePowerToggle()"
             >
-              <v-icon color="primary">
+              <v-icon>
                 {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
               </v-icon>
             </app-btn>
@@ -199,6 +199,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.getters['printer/getSaveConfigPending']
   }
 
+  get devicePowerComponentEnabled () {
+    return this.$store.getters['server/componentSupport']('power')
+  }
+
   get theme () {
     return this.$store.getters['config/getTheme']
   }
@@ -225,7 +229,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   get topNavPowerToggleDisabled (): boolean {
     const device = this.topNavPowerDevice
-    return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status)
+    return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
   }
 
   handleExitLayout () {
