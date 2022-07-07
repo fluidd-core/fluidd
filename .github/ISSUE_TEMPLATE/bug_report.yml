@@ -7,12 +7,21 @@ body:
       value: |
         This issue form is for reporting bugs only!
         If you have a feature request, please use [feature_request](new?template=feature_request.yml)
+  - type: input
+    id: version
+    attributes:
+      label: Fluidd Version
+      description: >-
+        Fluidd version where the issue occurs
+    validations:
+      required: true
   - type: dropdown
     id: browser
     attributes:
       label: Browser
       description: >-
         The browser you are using to access Fluidd
+      multiple: true
       options:
         - Chrome
         - Firefox
@@ -27,6 +36,7 @@ body:
       label: Device
       description: >-
         The type of device you are using
+      multiple: true
       options:
         - Desktop PC
         - Laptop
@@ -40,6 +50,7 @@ body:
       label: Operating System
       description: >-
         The operating system powering your device
+      multiple: true
       options:
         - Windows
         - macOS
