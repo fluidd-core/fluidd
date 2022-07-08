@@ -5,20 +5,19 @@
       align="start"
       class="mb-2"
     >
-      <v-col class="controls-wrapper">
-        <extruder-selection v-if="multipleExtruders" />
-        <toolhead-moves
-          v-if="!printerPrinting"
-          :force-move="forceMove"
+      <v-col
+        class="controls-wrapper"
+      >
+        <extruder-selection
+          v-if="multipleExtruders"
         />
-        <z-height-adjust v-if="printerPrinting" />
-
-        <!-- some css is missing here -->
         <v-checkbox
-          v-if="printerSupportsForcemove"
+          v-if="printerSupportsForcemove && !printerPrinting"
           v-model="forceMove"
           :disabled="!klippyReady"
           color="error"
+          class="forcemove-checkbox"
+          hide-details
         >
           <template #label>
             <v-icon
@@ -29,6 +28,13 @@
             <span>&nbsp;{{ $t('app.tool.checkbox.force_move') }}</span>
           </template>
         </v-checkbox>
+        <toolhead-moves
+          v-if="!printerPrinting"
+          :force-move="forceMove"
+        />
+        <z-height-adjust
+          v-if="printerPrinting"
+        />
       </v-col>
 
       <v-col class="controls-wrapper">
@@ -93,5 +99,10 @@ export default class Toolhead extends Mixins(StateMixin) {
   .controls-wrapper {
     min-width: 380px !important;
     max-width: 450px !important;
+  }
+  .forcemove-checkbox {
+    margin: 0;
+    padding: 0 0 10px 0;
+    width: fit-content;
   }
 </style>
