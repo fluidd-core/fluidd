@@ -21,7 +21,7 @@
     >
       <path
         :class="iconClasses(name)"
-        :d="icon(name)"
+        :d="icon"
         @click="onPartClick(name)"
       />
     </svg>
@@ -69,8 +69,8 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
     return this.$store.getters['parts/getPartSVG'](name)
   }
 
-  icon (name: string) {
-    return this.$store.getters['parts/getIsPartExcluded'](name) ? Icons.cancelled : Icons.circle
+  get icon () {
+    return Icons.cancelled
   }
 
   partPos (name: string) {
@@ -121,6 +121,8 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 .layer .partIcon .partIncluded {
   pointer-events: all;
   fill: var(--v-success-base);
+  stroke: var(--v-success-base);
+  stroke-width: .5;
 }
 
 .layer .partIcon.partExcluded {
@@ -134,7 +136,7 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 
 .layer .partOutline {
   filter: opacity(60%);
-  stroke-width: .25;
+  stroke-width: .5;
 }
 
 .layer .partExcluded {
