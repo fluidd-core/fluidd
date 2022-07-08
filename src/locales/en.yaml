@@ -109,6 +109,7 @@ app:
       load_current_file: Load Current File
     label:
       current_layer_height: Current Layer Height
+      exclude_object: Exclude Object
       follow_progress: Follow progress
       layer: Layer
       layers: Layers

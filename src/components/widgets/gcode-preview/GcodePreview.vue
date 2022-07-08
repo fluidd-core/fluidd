@@ -193,7 +193,10 @@
             :stroke-width="extrusionLineWidth"
           />
         </g>
-        <exclude-objects v-if="showExcludeObjects" />
+        <exclude-objects
+          v-if="showExcludeObjects"
+          @cancel="$emit('cancelObject', $event)"
+        />
       </g>
     </svg>
   </div>

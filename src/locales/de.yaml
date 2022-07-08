@@ -110,6 +110,7 @@ app:
       load_current_file: Aktuelle Datei laden
     label:
       current_layer_height: Aktuelle Schichthöhe
+      exclude_object: Objekt ausschließen
       follow_progress: Fortschritt folgen
       layer: Schicht
       layers: Schichten
