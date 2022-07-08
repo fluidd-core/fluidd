@@ -16,12 +16,18 @@
       height="7"
       viewBox="0 0 24 24"
       class="partIcon"
-      :x="partPos(name).x - 3.5"
-      :y="partPos(name).y - 3.5"
+      :x="partPos(name).x - 7/2"
+      :y="partPos(name).y - 7/2"
     >
       <path
         :class="iconClasses(name)"
-        :d="icon"
+        :d="iconCancelled"
+      />
+      <path
+        v-if="!isPartExcluded(name)"
+        :class="iconClasses(name)"
+        :d="iconCircle"
+        class="hitarea"
         @click="onPartClick(name)"
       />
     </svg>
@@ -69,8 +75,12 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
     return this.$store.getters['parts/getPartSVG'](name)
   }
 
-  get icon () {
+  get iconCancelled () {
     return Icons.cancelled
+  }
+
+  get iconCircle () {
+    return Icons.circle
   }
 
   partPos (name: string) {
@@ -86,7 +96,6 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   }
 
   async onPartClick (id: string) {
-    if (this.isPartExcluded(id)) return
     const reqId = id.toUpperCase().replace(/\s/g, '_')
 
     const res = await this.$confirm(
@@ -114,6 +123,16 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   fill-opacity: 15%;
 }
 
+.layer .partIcon .hitarea {
+  pointer-events: all;
+  z-index: -1;
+  stroke-width: 0;
+}
+
+.layer .partIcon .partIncluded:hover {
+  fill-opacity: 50%;
+}
+
 .layer .partIcon.partCurrent {
   fill: var(--v-info-base);
   fill-opacity: 30%;
@@ -129,10 +148,6 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 .layer .partIcon.partExcluded {
   filter: brightness(75%);
   pointer-events: none;
-}
-
-.layer .partIcon .partIncluded:hover {
-  fill-opacity: 50%;
 }
 
 .layer .partOutline {
