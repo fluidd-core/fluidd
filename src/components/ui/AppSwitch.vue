@@ -13,7 +13,6 @@
       :input-value="value"
       :disabled="disabled"
       hide-details
-      flat
       @change="emitChange"
     />
   </v-layout>
