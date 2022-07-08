@@ -292,6 +292,7 @@ app:
           Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
           aktualisiert.
         confirm: Sind Sie sicher?
+        confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
         confirm_service_restart: Möchten Sie den Dienst %{name} wirklich neu starten?

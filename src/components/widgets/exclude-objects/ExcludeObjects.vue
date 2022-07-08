@@ -99,7 +99,7 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
     const reqId = id.toUpperCase().replace(/\s/g, '_')
 
     const res = await this.$confirm(
-      this.$tc('app.general.simple_form.msg.confirm'),
+      this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
