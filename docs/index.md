@@ -30,7 +30,8 @@ firmware.
 - [Notifications](/features/notifications) on Pi throttling + more
 - [Macro organization](/features/macros)
 - Full [localization](/development/localization) (i18n) support
-- View and Edit your Klipper Config AND Gcode files in app
+- View and Edit your Klipper config in app with code folding and Codelens support
+- View and Edit your Gcode files in app
 - [Bed Mesh](/features/bed_mesh) levelling
 - [Thermal Presets](/features/presets)
 - [Multiple web cam](/features/cameras) support
@@ -41,12 +42,10 @@ firmware.
 
 ## Supporting Fluidd
 
-Fluidd is developed and maintained by [Craig Bassett](https://github.com/cadriel)
-and our contributors - along with support from the entire Klipper Team, associated printer communities and you, the user.
-
-- [Make a recurring payment with Patreon](https://patreon.com/cadriel)
-- [Make a one time payment with Ko-Fi](https://ko-fi.com/cadriel)
-- [Make a one time payment with Paypal](https://paypal.me/fluiddui)
+Fluidd was created by [Craig Bassett](https://github.com/cadriel) and is currently
+developed and maintained by [Fluidd Maintainers](https://github.com/orgs/fluidd-core/teams/maintainers)
+and our contributors - along with support from the entire Klipper Team, associated
+printer communities and you, the user.
 
 ## Docker
 
