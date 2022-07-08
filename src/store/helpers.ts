@@ -56,6 +56,7 @@ export const handleExcludeObjectChange = (payload: any, state: any, dispatch: an
   if ('exclude_object' in payload) {
     dispatch('parts/onPartUpdate', payload.exclude_object, { root: true })
   }
+
   if (
     'print_stats' in payload &&
     ('state' in payload.print_stats || 'filename' in payload.print_stats)

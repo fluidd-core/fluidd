@@ -22,8 +22,6 @@ export const getters: GetterTree<PartsState, RootState> = {
 
   getPartSVG: (state, getters) => (partName: string): string => {
     const part = getters.getParts[partName]
-    console.log('in getPartsSVG')
-    console.log(part)
 
     let svg = ''
     let op = 'M'

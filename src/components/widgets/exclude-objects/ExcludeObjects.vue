@@ -5,24 +5,24 @@
   >
     <path
       v-for="name in outlineNames"
-      :key="name+'bounds'"
+      :key="`${name}bounds`"
       :class="isPartExcluded(name) ? 'partOutline partExcluded' : 'partOutline'"
       :d="partSVG(name)"
     />
     <svg
       v-for="name in iconNames"
-      :key="name+'icon'"
+      :key="`${name}icon`"
       width="7"
       height="7"
       viewBox="0 0 24 24"
       class="partIcon"
-      :x="partPos(name).x-3.5"
-      :y="partPos(name).y-3.5"
+      :x="partPos(name).x - 3.5"
+      :y="partPos(name).y - 3.5"
     >
       <path
         :class="iconClasses(name)"
         :d="icon(name)"
-        @click="onPartClick(name, $event)"
+        @click="onPartClick(name)"
       />
     </svg>
   </g>
@@ -85,19 +85,17 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
     return this.$store.getters['parts/getIsPartExcluded'](name)
   }
 
-  onPartClick (id: string) {
+  async onPartClick (id: string) {
     const reqId = id.toUpperCase().replace(/\s/g, '_')
 
-    this.$tc('app.general.simple_form.msg.confirm')
-    this.$confirm(
+    const res = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.sendGcode('EXCLUDE_OBJECT NAME=' + reqId)
-        }
-      })
+
+    if (res) {
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+    }
   }
 }
 </script>

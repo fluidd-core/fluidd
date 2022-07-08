@@ -12,9 +12,6 @@ export const mutations: MutationTree<PartsState> = {
   },
 
   partUpdate (state, payload) {
-    console.log('In partUpdate')
-    console.log(payload)
-
     if ('current_object' in payload) {
       Vue.set(state, 'currentPart', payload.current_object)
     }
@@ -32,15 +29,17 @@ export const mutations: MutationTree<PartsState> = {
           outline: [],
           target: null
         }
+
         if ('center' in obj && obj.center.length === 2) {
           part.target = { x: obj.center[0], y: obj.center[1] }
         }
+
         if ('polygon' in obj) {
           part.outline = obj.polygon.map(p => {
             return { x: p[0], y: p[1] }
           })
         }
-        console.log(obj)
+
         partMap[name] = part
       })
       Vue.set(state, 'parts', Object.freeze(partMap))
@@ -48,8 +47,6 @@ export const mutations: MutationTree<PartsState> = {
   },
 
   printStatsUpdate (state, payload) {
-    console.log('In printStatsUpdate')
-    console.log(payload)
     if ('state' in payload) {
       Vue.set(state, 'printState', payload.state)
     }
