@@ -1,18 +1,31 @@
 <template>
-    <g id="parts" class="layer">
-        <path v-for="name in outlineNames" :key="name+'bounds'"
-                :class="isPartExcluded(name) ? 'partOutline partExcluded' : 'partOutline'"
-            :d="partSVG(name)"
-        />
-        <svg width="7" height="7" viewBox="0 0 24 24" class="partIcon"
-          v-for="name in iconNames" :key="name+'icon'" :x="partPos(name).x-3.5" :y="partPos(name).y-3.5">
-        <path
-                :class="iconClasses(name)"
-                :d="icon(name)"
-         v-on:click="onPartClick(name, $event)"
-        />
-        </svg>
-    </g>
+  <g
+    id="parts"
+    class="layer"
+  >
+    <path
+      v-for="name in outlineNames"
+      :key="name+'bounds'"
+      :class="isPartExcluded(name) ? 'partOutline partExcluded' : 'partOutline'"
+      :d="partSVG(name)"
+    />
+    <svg
+      v-for="name in iconNames"
+      :key="name+'icon'"
+      width="7"
+      height="7"
+      viewBox="0 0 24 24"
+      class="partIcon"
+      :x="partPos(name).x-3.5"
+      :y="partPos(name).y-3.5"
+    >
+      <path
+        :class="iconClasses(name)"
+        :d="icon(name)"
+        @click="onPartClick(name, $event)"
+      />
+    </svg>
+  </g>
 </template>
 
 <script lang="ts">
@@ -53,8 +66,7 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   }
 
   partSVG (name: string) {
-    const svg = this.$store.getters['parts/getPartSVG'](name)
-    return svg
+    return this.$store.getters['parts/getPartSVG'](name)
   }
 
   icon (name: string) {

@@ -193,7 +193,7 @@
             :stroke-width="extrusionLineWidth"
           />
         </g>
-        <exclude-objects v-if="showExcludeObjects"/>
+        <exclude-objects v-if="showExcludeObjects" />
       </g>
     </svg>
   </div>

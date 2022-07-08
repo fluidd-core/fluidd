@@ -59,7 +59,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
    * Print start confirmation.
    * Fires as a watch on a printer state change.
    */
-  async onPrintStart ({ dispatch }, payload) {
+  async onPrintStart (_, payload) {
     consola.debug('Print start detected', payload)
   },
 
