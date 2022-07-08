@@ -86,6 +86,7 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   }
 
   async onPartClick (id: string) {
+    if (this.isPartExcluded(id)) return
     const reqId = id.toUpperCase().replace(/\s/g, '_')
 
     const res = await this.$confirm(
