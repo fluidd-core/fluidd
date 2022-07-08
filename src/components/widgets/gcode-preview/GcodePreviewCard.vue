@@ -23,6 +23,7 @@
         fab
         x-small
         text
+        :disabled="!parts.length"
         @click="excludeObjectDialog = true"
       >
         <v-icon>$cancelled</v-icon>
@@ -384,6 +385,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     if (res) {
       this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
     }
+  }
+
+  get parts () {
+    return this.$store.getters['parts/getParts']
   }
 }
 </script>
