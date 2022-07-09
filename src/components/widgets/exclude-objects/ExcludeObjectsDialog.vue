@@ -22,7 +22,7 @@
               :key="part.name"
             >
               <td class="partName">{{ part.name }}</td>
-              <td>
+              <td class="actions">
                 <app-btn
                   x-small
                   fab
@@ -77,5 +77,9 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
 <style lang="scss" scoped>
   .partName {
     word-break: break-all;
+  }
+
+  .actions {
+    width: 32px;
   }
 </style>
