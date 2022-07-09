@@ -23,7 +23,7 @@
         fab
         x-small
         text
-        :disabled="!parts.length"
+        :disabled="!klippyReady || !printerPrinting || !printerFileLoaded || !parts.length"
         @click="excludeObjectDialog = true"
       >
         <v-icon>$cancelled</v-icon>
