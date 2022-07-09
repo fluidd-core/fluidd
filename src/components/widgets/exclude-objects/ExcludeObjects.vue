@@ -47,7 +47,7 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   }
 
   iconClasses (name: string) {
-    return this.isPartExcluded(name) ? 'partExcluded' : 'partIncluded'
+    return this.isPartExcluded(name) ? 'partExcluded' : this.isPartCurrent(name) ? 'partCurrent' : 'partIncluded'
   }
 
   partSVG (name: string) {
@@ -95,23 +95,26 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
   stroke-width: 0;
 }
 
-.layer .partIcon .partIncluded:hover {
+.layer .partIcon :not(.partExcluded):hover {
   fill-opacity: 50%;
 }
 
-.layer .partIcon.partCurrent {
-  fill: var(--v-info-base);
-  fill-opacity: 30%;
-}
-
-.layer .partIcon .partIncluded {
+.layer .partIcon :not(.partExcluded) {
   pointer-events: all;
-  fill: var(--v-success-base);
-  stroke: var(--v-success-base);
   stroke-width: .5;
 }
 
-.layer .partIcon.partExcluded {
+.layer .partIcon .partCurrent {
+  fill: var(--v-info-base);
+  stroke: var(--v-info-base);
+}
+
+.layer .partIcon .partIncluded {
+  fill: var(--v-success-base);
+  stroke: var(--v-success-base);
+}
+
+.layer .partIcon .partExcluded {
   filter: brightness(75%);
   pointer-events: none;
 }
