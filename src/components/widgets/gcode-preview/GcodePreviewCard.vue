@@ -9,7 +9,6 @@
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
-          color="primary"
           small
           @click="loadCurrent"
         >
@@ -104,7 +103,6 @@
             <v-col>
               <app-btn
                 :disabled="!fileLoaded"
-                color="secondary"
                 block
                 @click="resetFile"
               >
