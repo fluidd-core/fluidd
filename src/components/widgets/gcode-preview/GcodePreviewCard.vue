@@ -388,7 +388,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get parts () {
-    return this.$store.getters['parts/getParts']
+    return Object.values(this.$store.getters['parts/getParts'])
   }
 }
 </script>
