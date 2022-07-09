@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :value="value"
-    max-width="50vw"
+    max-width="500"
     persistent
   >
     <v-card>
@@ -21,7 +21,7 @@
               v-for="part in parts"
               :key="part.name"
             >
-              <td>{{ part.name }}</td>
+              <td class="partName">{{ part.name }}</td>
               <td>
                 <app-btn
                   x-small
@@ -73,3 +73,9 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .partName {
+    word-break: break-all;
+  }
+</style>
