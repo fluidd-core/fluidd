@@ -72,6 +72,7 @@
                 v-bind="attrs"
                 class="positioning-toggle-button"
                 :disabled="!klippyReady || printerBusy"
+                :elevation="2"
                 v-on="on"
               >
                 <v-icon small>
@@ -87,6 +88,7 @@
                 v-bind="attrs"
                 class="positioning-toggle-button"
                 :disabled="!klippyReady || printerBusy"
+                :elevation="2"
                 v-on="on"
               >
                 <v-icon small>
