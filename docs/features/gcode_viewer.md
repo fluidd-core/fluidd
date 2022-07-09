@@ -30,7 +30,7 @@ The Gcode viewer has [Exclude Object](https://www.klipper3d.org/Exclude_Object.h
 current print, for example in the case of a print failure, simply click on the cancel
 icon within the Gcode preview, or bring up a list of all objects by clicking the cancel
 icon in the header of the card.  
-Excluded objects will be marked in red, the currently printed object in blue, and all
+Excluded objects will be marked in red, the currently printing object in blue, and all
 other objects in green.
 
 ![screenshot](/assets/images/exclude_object.png)
