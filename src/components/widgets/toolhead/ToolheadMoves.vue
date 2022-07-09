@@ -171,6 +171,7 @@
             small
             :min-width="40"
             :value="distance"
+            :elevation="2"
             :disabled="!klippyReady"
           >
             {{ distance }}
