@@ -4,13 +4,13 @@
     class="layer"
   >
     <path
-      v-for="name in outlineNames"
+      v-for="name in parts"
       :key="`${name}bounds`"
       :class="isPartExcluded(name) ? 'partOutline partExcluded' : 'partOutline'"
       :d="partSVG(name)"
     />
     <svg
-      v-for="name in iconNames"
+      v-for="name in parts"
       :key="`${name}icon`"
       width="7"
       height="7"
@@ -41,30 +41,9 @@ import { Icons } from '@/globals'
 
 @Component({})
 export default class ExcludeObjects extends Mixins(StateMixin) {
-  get outlineNames () {
+  get parts () {
     const parts = this.$store.getters['parts/getParts']
-    const names = []
-    for (const name in parts) {
-      if (parts[name].outline.length >= 3) {
-        names.push(name)
-      }
-    }
-    return names
-  }
-
-  get iconNames () {
-    const parts = this.$store.getters['parts/getParts']
-    const state = this.$store.getters['parts/getPrintState']
-    const names = []
-    for (const name in parts) {
-      const excluded = this.isPartExcluded(name)
-      if (parts[name].target &&
-        ((state === 'printing' || state === 'paused') ||
-        ((state === 'complete' || state === 'cancelled' || state === 'error') && excluded))) {
-        names.push(name)
-      }
-    }
-    return names
+    return Object.keys(parts)
   }
 
   iconClasses (name: string) {
