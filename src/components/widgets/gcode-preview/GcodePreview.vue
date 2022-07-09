@@ -286,6 +286,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   get showExcludeObjects () {
+    if (!(this.printerPrinting || this.printerPaused)) return false
+
     const file = this.$store.getters['gcodePreview/getFile']
     if (!file) {
       return true
