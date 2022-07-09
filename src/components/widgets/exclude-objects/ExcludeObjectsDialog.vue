@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :value="value"
-    max-width="500"
+    max-width="50vw"
     persistent
   >
     <v-card>
