@@ -145,10 +145,10 @@ import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 @Component({})
 export default class MacroMoveDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  value!: boolean
+  public value!: boolean
 
   @Prop({ type: Object, required: true })
-  macro!: Macro
+  public macro!: Macro
 
   assign = null
   valid = false

@@ -38,40 +38,81 @@
     <!-- <v-spacer /> -->
 
     <div class="toolbar-supplemental">
-      <v-tooltip
-        v-if="socketConnected && !isMobile && authenticated"
-        bottom
+      <div
+        v-if="socketConnected && klippyReady && authenticated && saveConfigPending"
+        class="mr-1"
       >
-        <template #activator="{ on, attrs }">
-          <app-btn
-            v-if="!isMobile"
-            :disabled="!klippyReady"
-            v-bind="attrs"
-            class="mx-1"
-            color=""
-            v-on="on"
-            @click="emergencyStop()"
-          >
-            <v-icon color="error">
-              $estop
-            </v-icon>
-          </app-btn>
-        </template>
-        {{ $t('app.general.tooltip.estop') }}
-      </v-tooltip>
+        <app-save-config-and-restart-btn
+          :loading="hasWait(waits.onSaveConfig)"
+          :disabled="printerPrinting"
+          @click="saveConfigAndRestart"
+        />
+      </div>
 
-      <app-notification-menu v-if="authenticated && socketConnected" />
+      <div v-if="socketConnected && !isMobile && authenticated">
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              :disabled="!klippyReady"
+              v-bind="attrs"
+              class="mx-1"
+              color=""
+              v-on="on"
+              @click="emergencyStop()"
+            >
+              <v-icon color="error">
+                $estop
+              </v-icon>
+            </app-btn>
+          </template>
+          <span>{{ $t('app.general.tooltip.estop') }}</span>
+        </v-tooltip>
+      </div>
 
-      <app-user-menu
+      <div
+        v-if="authenticated && socketConnected && topNavPowerToggle"
+      >
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              fab
+              small
+              :elevation="0"
+              class="mr-1 bg-transparent"
+              color="transparent"
+              :disabled="topNavPowerToggleDisabled"
+              v-bind="attrs"
+              v-on="on"
+              @click="handlePowerToggle()"
+            >
+              <v-icon>
+                {{ topNavPowerDeviceOn ? '$powerOn' : '$powerOff' }}
+              </v-icon>
+            </app-btn>
+          </template>
+          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle }) }}</span>
+        </v-tooltip>
+      </div>
+
+      <div
+        v-if="authenticated && socketConnected"
+        class="mr-1"
+      >
+        <app-notification-menu />
+      </div>
+
+      <div
         v-if="supportsAuth && authenticated"
-        @change-password="dialog = true"
-      />
+        class="mr-1"
+      >
+        <app-user-menu @change-password="userPasswordDialogOpen = true" />
+      </div>
 
       <app-btn
         fab
         small
         :elevation="0"
-        class="mx-1"
+        class="mr-1"
         color="transparent"
         @click="$emit('toolsdrawer')"
       >
@@ -100,8 +141,14 @@
     </template>
 
     <user-password-dialog
-      v-if="dialog"
-      v-model="dialog"
+      v-if="userPasswordDialogOpen"
+      v-model="userPasswordDialogOpen"
+    />
+
+    <pending-changes-dialog
+      v-if="pendingChangesDialogOpen"
+      v-model="pendingChangesDialogOpen"
+      @save="saveConfigAndRestart(true)"
     />
   </v-app-bar>
 </template>
@@ -109,17 +156,24 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
+import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue'
+import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
 import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
+import ServicesMixin from '@/mixins/services'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
-    UserPasswordDialog
+    UserPasswordDialog,
+    PendingChangesDialog,
+    AppSaveConfigAndRestartBtn
   }
 })
-export default class AppBar extends Mixins(StateMixin) {
+export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   menu = false
-  dialog = false
+  userPasswordDialogOpen = false
+  pendingChangesDialogOpen = false
 
   get supportsAuth () {
     return this.$store.getters['server/componentSupport']('authorization')
@@ -141,6 +195,14 @@ export default class AppBar extends Mixins(StateMixin) {
     return this.$store.getters['version/hasUpdates']
   }
 
+  get saveConfigPending () {
+    return this.$store.getters['printer/getSaveConfigPending']
+  }
+
+  get devicePowerComponentEnabled () {
+    return this.$store.getters['server/componentSupport']('power')
+  }
+
   get theme () {
     return this.$store.getters['config/getTheme']
   }
@@ -151,6 +213,23 @@ export default class AppBar extends Mixins(StateMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get topNavPowerToggle (): null | string {
+    return this.$store.state.config.uiSettings.general.topNavPowerToggle
+  }
+
+  get topNavPowerDevice () {
+    return this.$store.state.power.devices.find((device: { device: string }) => device.device === this.topNavPowerToggle)
+  }
+
+  get topNavPowerDeviceOn () {
+    return this.topNavPowerDevice?.status === 'on'
+  }
+
+  get topNavPowerToggleDisabled (): boolean {
+    const device = this.topNavPowerDevice
+    return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
   }
 
   handleExitLayout () {
@@ -166,6 +245,37 @@ export default class AppBar extends Mixins(StateMixin) {
         container2: layout.layouts.dashboard.container2
       }
     })
+  }
+
+  async handlePowerToggle () {
+    const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
+    let res: boolean | undefined = true
+    if (confirmOnPowerDeviceChange) {
+      res = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+    }
+
+    if (res) {
+      const device = this.topNavPowerDevice
+      const state = (device.status === 'on') ? 'off' : 'on'
+      SocketActions.machineDevicePowerToggle(device.device, state)
+    }
+  }
+
+  saveConfigAndRestart (force = false) {
+    if (!force) {
+      const confirmOnSaveConfigAndRestart = this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+
+      if (confirmOnSaveConfigAndRestart) {
+        this.pendingChangesDialogOpen = true
+
+        return
+      }
+    }
+
+    this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
   }
 }
 </script>
@@ -205,10 +315,6 @@ export default class AppBar extends Mixins(StateMixin) {
     max-width: 50%;
     align-items: center;
     height: inherit;
-    @media #{map-get($display-breakpoints, 'md-and-up')} {
-      flex: 0 0 50%;
-      max-width: 50%;
-    }
   }
 
   .printer-title {
@@ -228,18 +334,22 @@ export default class AppBar extends Mixins(StateMixin) {
     text-decoration: none;
   }
 
-  .v-toolbar--extended ::v-deep .v-toolbar__content {
+  .v-toolbar--extended :deep(.v-toolbar__content) {
     box-shadow: 0px 2px 4px -1px rgb(0 0 0 / 20%), 0px 4px 5px 0px rgb(0 0 0 / 14%), 0px 1px 10px 0px rgb(0 0 0 / 12%);
   }
 
-  ::v-deep .v-toolbar__extension {
+  :deep(.v-toolbar__extension) {
     flex: 1 1 auto;
     align-items: center;
     justify-content: center;
     padding: 0;
   }
 
-  ::v-deep .v-toolbar__content {
+  :deep(.v-toolbar__content) {
     padding-left: 0;
+  }
+
+  .v-btn.v-btn--disabled.v-btn--has-bg.bg-transparent {
+    background: none !important;
   }
 </style>

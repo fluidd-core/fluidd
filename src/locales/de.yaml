@@ -110,6 +110,7 @@ app:
       load_current_file: Aktuelle Datei laden
     label:
       current_layer_height: Aktuelle Schichthöhe
+      exclude_object: Objekt ausschließen
       follow_progress: Fortschritt folgen
       layer: Schicht
       layers: Schichten
@@ -253,6 +254,8 @@ app:
       total_print_time_avg: Durchschnitt pro Druck
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
+      turn_device_on: %{device} einschalten
+      turn_device_off: %{device} ausschalten
       uncategorized: Unkategorisiert
       unretract_extra_length: Unretract-Extralänge
       unretract_speed: Unretract-Geschwindigkeit
@@ -290,6 +293,7 @@ app:
           Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
           aktualisiert.
         confirm: Sind Sie sicher?
+        confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
         confirm_service_restart: Möchten Sie den Dienst %{name} wirklich neu starten?
@@ -391,6 +395,8 @@ app:
       all_off: Alle aus
       all_on: Alle an
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
+      auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
+      auto_load_on_print_start: Datei bei Druckstart automatisch laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
@@ -425,6 +431,8 @@ app:
       invert_z_control: Z-Steuerung invertieren
       language: Anzeigesprache
       move_line_width: Bewegungslinien-Dicke
+      none: Keines | Keine
+      power_toggle_in_top_nav: Power-Schalter in Kopfleiste
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen

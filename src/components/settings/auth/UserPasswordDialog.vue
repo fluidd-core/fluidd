@@ -98,13 +98,15 @@
 import { authApi } from '@/api/auth.api'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
+import { VForm } from '@/types'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {
   @Prop({ type: Boolean, default: false })
-  value!: boolean
+  public value!: boolean
 
-  @Ref('form') form!: HTMLFormElement
+  @Ref('form')
+  readonly form!: VForm
 
   currentPassword = ''
   password = ''

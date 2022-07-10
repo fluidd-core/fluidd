@@ -33,25 +33,25 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnToolheadMove extends Vue {
   @Prop({ type: String, required: true })
-  icon!: string
+  public icon!: string
 
   @Prop()
-  disabled!: boolean
+  public disabled!: boolean
 
   @Prop({ type: String, default: 'btncolor' })
-  color!: string
+  public color!: string
 
   @Prop({ type: Boolean, default: false })
-  loading!: boolean
+  public loading!: boolean
 
   @Prop({ type: String, default: '' })
-  badge!: string
+  public badge!: string
 
   @Prop({ type: String, default: '' })
-  tooltip!: string
+  public tooltip!: string
 
   @Prop({ type: Boolean, default: false })
-  smallIcon!: boolean
+  public smallIcon!: boolean
 
   get hasDefaultSlot () {
     return !!this.$slots.default || !!this.$scopedSlots.default

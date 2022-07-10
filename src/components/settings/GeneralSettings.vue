@@ -84,10 +84,41 @@
       <v-divider />
 
       <app-setting
+        :title="$t('app.setting.label.power_toggle_in_top_nav')"
+      >
+        <v-select
+          v-model="topNavPowerToggle"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :items="[{ text: $tc('app.setting.label.none'), value: null }, ...powerDevicesList]"
+          :value="topNavPowerToggle"
+          item-value="value"
+          item-text="text"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
         :title="$t('app.setting.label.confirm_on_power_device_change')"
       >
         <v-switch
           v-model="confirmOnPowerDeviceChange"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.setting.label.confirm_on_save_config_and_restart')"
+      >
+        <v-switch
+          v-model="confirmOnSaveConfigAndRestart"
           hide-details
           class="mb-5"
           @click.native.stop
@@ -100,12 +131,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { VInput } from '@/types'
 
 @Component({
   components: {}
 })
 export default class GeneralSettings extends Mixins(StateMixin) {
-  @Ref('instanceName') readonly instanceNameElement!: any
+  @Ref('instanceName')
+  readonly instanceNameElement!: VInput
 
   instanceNameRules = [
     (v: string) => !!v || 'Required'
@@ -179,6 +212,22 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
+  get topNavPowerToggle () {
+    return this.$store.state.config.uiSettings.general.topNavPowerToggle
+  }
+
+  set topNavPowerToggle (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.topNavPowerToggle',
+      value,
+      server: true
+    })
+  }
+
+  get powerDevicesList () {
+    return this.$store.state.power.devices.map((device: { device: string }) => ({ text: device.device, value: device.device }))
+  }
+
   get confirmOnPowerDeviceChange () {
     return this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
   }
@@ -186,6 +235,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnPowerDeviceChange (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
+      value,
+      server: true
+    })
+  }
+
+  get confirmOnSaveConfigAndRestart () {
+    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+  }
+
+  set confirmOnSaveConfigAndRestart (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.confirmOnSaveConfigAndRestart',
       value,
       server: true
     })

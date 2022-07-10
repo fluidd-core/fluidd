@@ -6,22 +6,33 @@
     :draggable="true"
   >
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
-          color="primary"
           small
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
         </app-btn>
+      </app-btn-collapse-group>
 
-        <app-btn-collapse-group
-          :collapsed="true"
-          menu-icon="$cog"
-        >
-          <GcodePreviewControls :disabled="!fileLoaded" />
-        </app-btn-collapse-group>
+      <app-btn
+        color=""
+        class="ml-1"
+        fab
+        x-small
+        text
+        :disabled="!klippyReady || !(printerPrinting || printerPaused) || !parts.length"
+        @click="excludeObjectDialog = true"
+      >
+        <v-icon>$cancelled</v-icon>
+      </app-btn>
+
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
+      >
+        <GcodePreviewControls :disabled="!fileLoaded" />
       </app-btn-collapse-group>
     </template>
 
@@ -38,6 +49,13 @@
         :progress="parserProgress"
         :file="file"
         @cancel="abortParser"
+      />
+
+      <ExcludeObjectsDialog
+        v-if="excludeObjectDialog"
+        :value="excludeObjectDialog"
+        @close="excludeObjectDialog = false"
+        @cancelObject="cancelObject($event)"
       />
 
       <v-row>
@@ -104,7 +122,6 @@
             <v-col>
               <app-btn
                 :disabled="!fileLoaded"
-                color="secondary"
                 block
                 @click="resetFile"
               >
@@ -119,9 +136,11 @@
         <v-col>
           <gcode-preview
             width="100%"
+            height="100%"
             :layer="currentLayer"
             :progress="moveProgress"
             :disabled="!fileLoaded"
+            @cancelObject="cancelObject($event)"
           />
         </v-col>
       </v-row>
@@ -140,24 +159,27 @@ import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview
 import { MinMax } from '@/store/gcodePreview/types'
 import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
 import { AxiosResponse } from 'axios'
+import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 
 @Component({
   components: {
     AppBtnCollapseGroup,
     GcodePreviewParserProgressDialog,
     GcodePreview,
-    GcodePreviewControls
+    GcodePreviewControls,
+    ExcludeObjectsDialog
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
-  @Prop({
-    type: Boolean,
-    default: true
-  })
-  enabled!: boolean
+  @Prop({ type: Boolean, default: true })
+  public enabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
 
   currentLayer = 0
   moveProgress = 0
+  excludeObjectDialog = false
 
   get visibleLayer () {
     return this.currentLayer + 1
@@ -217,6 +239,22 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       if (fileMovePosition !== this.moveProgress) {
         this.syncMoveProgress()
       }
+    }
+  }
+
+  @Watch('printerFile')
+  onPrintFileChanged () {
+    if (this.autoLoadOnPrintStart && this.printerFile) {
+      this.loadCurrent()
+    }
+  }
+
+  @Watch('fileLoaded')
+  onFileLoaded () {
+    if (this.fileLoaded &&
+        this.$store.state.config?.uiSettings.gcodePreview.autoFollowOnFileLoad &&
+        this.printerFileLoaded) {
+      this.$store.commit('gcodePreview/setViewerState', { followProgress: true }, { root: true })
     }
   }
 
@@ -303,7 +341,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   async loadCurrent () {
-    const file = this.$store.state.printer.printer.current_file as AppFile
+    const file = this.printerFile as AppFile
     this.getGcode(file)
       .then(response => response?.data)
       .then((gcode: AxiosResponse) => {
@@ -337,6 +375,27 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     }
 
     return true
+  }
+
+  get autoLoadOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
+  }
+
+  async cancelObject (id: string) {
+    const reqId = id.toUpperCase().replace(/\s/g, '_')
+
+    const res = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (res) {
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+    }
+  }
+
+  get parts () {
+    return Object.values(this.$store.getters['parts/getParts'])
   }
 }
 </script>

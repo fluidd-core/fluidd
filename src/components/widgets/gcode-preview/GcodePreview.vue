@@ -193,47 +193,46 @@
             :stroke-width="extrusionLineWidth"
           />
         </g>
+        <exclude-objects
+          v-if="showExcludeObjects"
+          @cancel="$emit('cancelObject', $event)"
+        />
       </g>
     </svg>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
+import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 
-@Component({})
+@Component({
+  components: {
+    ExcludeObjects
+  }
+})
 export default class GcodePreview extends Mixins(StateMixin) {
-  @Prop({
-    type: Boolean,
-    default: true
-  })
-  disabled!: boolean
+  @Prop({ type: Boolean, default: true })
+  public disabled!: boolean
 
-  @Prop({
-    type: String
-  })
-  width!: string
+  @Prop({ type: String })
+  public width!: string
 
-  @Prop({
-    type: String
-  })
-  height!: string
+  @Prop({ type: String })
+  public height!: string
 
-  @Prop({
-    type: Number,
-    default: Infinity
-  })
-  progress!: number
+  @Prop({ type: Number, default: Infinity })
+  public progress!: number
 
-  @Prop({
-    type: Number,
-    default: 0
-  })
-  layer!: LayerNr
+  @Prop({ type: Number, default: 0 })
+  public layer!: LayerNr
+
+  @Ref('svg')
+  readonly svg!: SVGElement
 
   focused = false
 
@@ -284,6 +283,21 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get shapeRendering () {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
+  }
+
+  get showExcludeObjects () {
+    if (!(this.printerPrinting || this.printerPaused)) return false
+
+    const file = this.$store.getters['gcodePreview/getFile']
+    if (!file) {
+      return true
+    }
+    const printerFile = this.$store.state.printer.printer.current_file
+
+    if (printerFile.filename) {
+      return (file.path + '/' + file.filename) === (printerFile.path + '/' + printerFile.filename)
+    }
+    return false
   }
 
   get flipX (): boolean {
@@ -483,7 +497,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   mounted () {
-    this.panzoom = panzoom(this.$refs.svg as SVGElement, {
+    this.panzoom = panzoom(this.svg, {
       maxZoom: 20,
       minZoom: 0.95,
       bounds: true,

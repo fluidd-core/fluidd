@@ -112,7 +112,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  value!: boolean
+  public value!: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']
@@ -151,7 +151,7 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
     align-items: center;
   }
 
-  ::v-deep .v-navigation-drawer.no-subnav > .v-navigation-drawer__border {
+  :deep(.v-navigation-drawer.no-subnav > .v-navigation-drawer__border) {
      display: none;
   }
 </style>

@@ -96,10 +96,10 @@ import gcodeMacroParams from '@/util/gcode-macro-params'
 @Component({})
 export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  macro!: Macro
+  public macro!: Macro
 
   @Prop({ type: Boolean, default: false })
-  enableParams!: boolean;
+  public enableParams!: boolean
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 

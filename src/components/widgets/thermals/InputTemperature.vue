@@ -32,13 +32,13 @@ export default class InputTemperature extends Mixins(StateMixin) {
   public value!: number
 
   @Prop({ type: Number, default: null })
-  public max!: number;
+  public max!: number
 
   @Prop({ type: Number, default: null })
-  public min!: number;
+  public min!: number
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean;
+  public loading!: boolean
 
   @Watch('value')
   onValueChange (val: number) {
@@ -46,7 +46,7 @@ export default class InputTemperature extends Mixins(StateMixin) {
   }
 
   valid = true
-  inputValue = 0;
+  inputValue = 0
 
   rules = {
     min: (v: number | string) => (v >= this.min || v === '' || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.min_or_0', { min: this.min }),

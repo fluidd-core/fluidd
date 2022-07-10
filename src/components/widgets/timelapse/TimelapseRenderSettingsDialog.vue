@@ -197,22 +197,32 @@ import { SocketActions } from '@/api/socketActions'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { defaultWritableSettings } from '@/store/timelapse'
+import { VInput } from '@/types'
 
 @Component({
   components: { AppSetting }
 })
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  value!: boolean
+  public value!: boolean
 
   @Prop({ type: Boolean, required: true })
-  renderable!: boolean
+  public renderable!: boolean
 
-  @Ref('outputFramerateElement') outputFramerateElement!: any
-  @Ref('targetLengthElement') targetLengthElement!: any
-  @Ref('minFpsElement') minFpsElement!: any
-  @Ref('maxFpsElement') maxFpsElement!: any
-  @Ref('duplicateFramesElement') duplicateFramesElement!: any
+  @Ref('outputFramerateElement')
+  readonly outputFramerateElement!: VInput
+
+  @Ref('targetLengthElement')
+  readonly targetLengthElement!: VInput
+
+  @Ref('minFpsElement')
+  readonly minFpsElement!: VInput
+
+  @Ref('maxFpsElement')
+  readonly maxFpsElement!: VInput
+
+  @Ref('duplicateFramesElement')
+  readonly duplicateFramesElement!: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),

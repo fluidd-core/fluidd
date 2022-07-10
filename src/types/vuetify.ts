@@ -1,9 +1,13 @@
-export type VForm = Vue & {
+export type VForm = Vue & HTMLFormElement & {
   validate: () => boolean;
-  reset: () => boolean;
   resetValidation: () => boolean;
 }
 
-export type VSlider = Vue & {
+export type VInput = Vue & HTMLInputElement & {
+  validate: (force?: boolean) => boolean;
+  valid: boolean
+}
+
+export type VSlider = VInput & {
   value: number
 }

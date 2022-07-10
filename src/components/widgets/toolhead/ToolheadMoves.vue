@@ -171,6 +171,7 @@
             small
             :min-width="40"
             :value="distance"
+            :elevation="2"
             :disabled="!klippyReady"
           >
             {{ distance }}
@@ -242,7 +243,7 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
 </script>
 
 <style type="scss" scoped>
-  ::v-deep .v-speed-dial__list {
+  :deep(.v-speed-dial__list) {
     flex-direction: column !important;
   }
 </style>

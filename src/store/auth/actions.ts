@@ -110,9 +110,22 @@ export const actions: ActionTree<AuthState, RootState> = {
       })
   },
 
-  async login ({ commit }, payload) {
+  async getAuthInfo () {
+    return httpClient.get('/access/info', { withAuth: false })
+      .then(r => {
+        return {
+          defaultSource: r.data.result.default_source,
+          availableSources: r.data.result.available_sources
+        }
+      }).catch(() => {
+        // external authentication sources not supported
+        return {}
+      })
+  },
+
+  async login ({ commit }, { username, password, source }) {
     const keys = getTokenKeys()
-    return authApi.login(payload.username, payload.password)
+    return authApi.login(username, password, source)
       .then(response => response.data.result)
       .then((user) => {
         // Successful login. Set the tokens and auth status and move on.

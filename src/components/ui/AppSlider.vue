@@ -77,7 +77,6 @@
     </v-row>
 
     <v-slider
-      ref="slider"
       v-model="internalValue"
       :rules="rules"
       :min="min"
@@ -92,9 +91,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { VForm, VSlider } from '@/types/vuetify'
 
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {
@@ -102,7 +100,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   public value!: number
 
   @Prop({ type: Number, required: false })
-  public resetValue!: number;
+  public resetValue!: number
 
   @Prop({ type: String, required: true })
   public label!: string
@@ -120,28 +118,22 @@ export default class AppSlider extends Mixins(StateMixin) {
   public loading!: boolean
 
   @Prop({ type: Number, default: 0 })
-  public min!: number;
+  public min!: number
 
   @Prop({ type: Number, default: 100 })
-  public max!: number;
+  public max!: number
 
   @Prop({ type: Boolean, default: false })
-  public overridable!: boolean;
+  public overridable!: boolean
 
   @Prop({ type: Number, default: 1 })
-  public step!: number;
+  public step!: number
 
   @Prop({ type: String })
-  public suffix!: string;
+  public suffix!: string
 
   @Prop({ type: Boolean, default: false })
-  public fullWidth!: boolean;
-
-  @Ref('slider')
-  slider!: VSlider;
-
-  @Ref('form')
-  form!: VForm;
+  public fullWidth!: boolean
 
   valid = true
   lockState = false

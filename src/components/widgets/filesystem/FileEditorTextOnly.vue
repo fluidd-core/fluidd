@@ -1,6 +1,6 @@
 <template>
   <textarea
-    class="editor v-input v-textarea px-2"
+    class="v-input v-textarea px-2"
     :class="{'theme--dark': $vuetify.theme.dark}"
     :readonly="readonly"
     :value="value"
@@ -15,10 +15,10 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 @Component({})
 export default class FileEditorText extends Vue {
   @Prop({ type: String, required: true })
-  value!: string;
+  public value!: string
 
   @Prop({ type: Boolean, default: false })
-  readonly!: boolean;
+  public readonly!: boolean
 
   emitChange (value: string | undefined) {
     this.$emit('change', value)
@@ -32,7 +32,7 @@ export default class FileEditorText extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .editor {
+  :deep() {
     font-family: monospace;
     font-size: 1rem;
     font-weight: 100 !important;

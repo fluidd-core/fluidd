@@ -103,11 +103,13 @@ app:
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:
     btn:
       load_current_file: Load Current File
     label:
       current_layer_height: Current Layer Height
+      exclude_object: Exclude Object
       follow_progress: Follow progress
       layer: Layer
       layers: Layers
@@ -131,6 +133,7 @@ app:
       add_printer: Add printer
       adjust_layout: Adjust dashboard layout
       all: All
+      auth_unsure: Unsure why you're seeing this?
       calibrate: Calibrate
       cancel: Cancel
       clear_profile: Clear Profile
@@ -140,8 +143,10 @@ app:
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      forgot_password: Forgotten your password?
       heaters_off: Heaters off
       load_all: Load all
+      login: Login
       more_information: More information
       pause: Pause
       preheat: Preheat
@@ -165,6 +170,7 @@ app:
       save: Save
       save_as: Save As
       save_restart: Save & Restart
+      save_config_and_restart: Save config & restart
       send: Send
       set_color: Set Color
       shutdown: Shutdown
@@ -196,12 +202,14 @@ app:
       add_user: Add user
       api_key: Api Key
       api_url: API URL
+      auth_source: Authentication Source
       category: Category
       change_password: Change password
       clear_all: Clear all
       color: Color
       confirm: Confirm
       current_password: Current password
+      current_user: Current user
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -221,9 +229,12 @@ app:
       host: Host
       layer: Layer
       layout: Layout
+      ldap: LDAP
       longest_job: Longest job
       low: Low
+      user_managed_source: User managed by %{source} authentication
       m117: M117
+      moonraker: Moonraker
       name: Name
       new_password: New password
       no_notifications: No notifications
@@ -251,10 +262,13 @@ app:
       total_print_time_avg: Avg per print
       total_time: Total time
       total_time_avg: Avg per print
+      turn_device_on: Turn %{device} on
+      turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       used: used
+      username: Username
       variance: Variance
       velocity: Velocity
       visible: Visible
@@ -271,6 +285,7 @@ app:
     simple_form:
       error:
         arrayofnums: Only numbers
+        credentials: Invalid credentials
         exists: Already exists
         invalid_number: Invalid Number
         invalid_url: Invalid URL
@@ -282,6 +297,7 @@ app:
         required: Required
       msg:
         confirm: Are you sure?
+        confirm_exclude_object: Are you sure you want to exclude this object from printing?
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -334,6 +350,7 @@ app:
       limits: Printer Limits
       macros: Macros
       other_files: Other Files
+      pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
@@ -346,6 +363,7 @@ app:
       tune: Tune
     tooltip:
       estop: Emergency Stop
+      notifications: Notifications
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
@@ -387,13 +405,20 @@ app:
       all_off: All off
       all_on: All on
       auto_edit_extensions: Extensions to automatically open in edit mode
+      auto_follow_on_file_load: Automatically follow progress on file load
+      auto_load_on_print_start: Automatically load file on print start
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_fullscreen_action:
+        title: Fullscreen action
+        embed: Embed
+        rawstream: Raw stream
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
+      confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
       confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
       contains: Contains
       dark_mode: Dark mode
@@ -420,12 +445,15 @@ app:
       invert_z_control: Invert Z control
       language: Display Language
       move_line_width: Move Line Width
+      none: None
+      power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
+      show_code_lens: Show CodeLens
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       starts_with: Starts with
@@ -492,12 +520,14 @@ app:
       home_y: 'Y'
       home_all: All
     tooltip:
+      absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
       motors_off: MOTORS OFF
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
+      relative_positioning: Relative Positioning
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
   version:

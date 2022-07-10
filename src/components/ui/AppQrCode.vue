@@ -17,19 +17,17 @@ import QrcodeVue from 'qrcode.vue'
 })
 export default class AppQrCode extends Vue {
   @Prop({ type: String, default: '' })
-  value!: string;
+  public value!: string
 
   @Prop({ type: Number, default: 260 })
-  size!: number;
+  public size!: number
 }
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep {
-    canvas, svg {
-      display: block;
-      padding: 10px;
-      background: #fff;
-    }
+  :deep(canvas, svg) {
+    display: block;
+    padding: 10px;
+    background: #fff;
   }
 </style>

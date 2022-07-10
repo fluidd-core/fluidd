@@ -178,30 +178,30 @@ import { AppTableHeader } from '@/types'
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
   // Can be a list of roots, or a single root.
   @Prop({ type: [String, Array], required: true })
-  roots!: string | string[];
+  public roots!: string | string[]
 
   @Prop({ type: String, required: false })
-  name!: string;
+  public name!: string
 
   // If dense, hide the meta and reduce the overall size.
   @Prop({ type: Boolean, default: false })
-  dense!: boolean
+  public dense!: boolean
 
   // Constrain height
   @Prop({ type: [Number, String] })
-  height!: number | string;
+  public height!: number | string
 
   // Constrain height
   @Prop({ type: [Number, String] })
-  maxHeight!: number | string;
+  public maxHeight!: number | string
 
   // Allow bulk-actions
   @Prop({ type: Boolean, default: false })
-  bulkActions!: boolean;
+  public bulkActions!: boolean
 
   // Override behavior (thumbnails, click/view actions) for timelapse browser
   @Prop({ type: Boolean, default: false })
-  timelapseBrowser!: boolean;
+  public timelapseBrowser!: boolean
 
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
@@ -861,7 +861,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 <style lang="scss" scoped>
   .filesystem-wrapper,
   .file-system,
-  .file-system ::v-deep .v-data-table {
+  .file-system :deep(.v-data-table) {
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -876,7 +876,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     border: dashed 3px #616161;
   }
 
-  ::v-deep .dragOverlay > .v-overlay__content {
+  :deep(.dragOverlay > .v-overlay__content) {
     width: 100%;
   }
 </style>

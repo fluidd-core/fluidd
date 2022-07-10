@@ -49,7 +49,23 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) =>
   }
 }
 
-export const handlePrintStateChange = (payload: any) => {
+export const handleExcludeObjectChange = (payload: any, state: any, dispatch: any) => {
+  // For every notify - if print_stats.state changes from standby -> printing,
+  // then record an entry in our print history.
+  // If the state changes from printing -> complete, then record the finish time.
+  if ('exclude_object' in payload) {
+    dispatch('parts/onPartUpdate', payload.exclude_object, { root: true })
+  }
+
+  if (
+    'print_stats' in payload &&
+    ('state' in payload.print_stats || 'filename' in payload.print_stats)
+  ) {
+    dispatch('parts/onPrintStatsUpdate', payload.print_stats, { root: true })
+  }
+}
+
+export const handlePrintStateChange = (payload: any, state: any, dispatch: any) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -58,23 +74,23 @@ export const handlePrintStateChange = (payload: any) => {
     'state' in payload.print_stats
   ) {
     if (
-      store.state.printer?.printer.print_stats.state === 'standby' &&
+      state.printer?.printer.print_stats.state !== 'printing' &&
       payload.print_stats.state === 'printing'
     ) {
       // This is a new print starting...
-      store.dispatch('printer/onPrintStart', payload)
+      dispatch('printer/onPrintStart', payload, { root: true })
     } else if (
-      store.state.printer?.printer.print_stats.state === 'printing' &&
+      state.printer?.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'complete'
     ) {
       // This is a completed print...
-      store.dispatch('printer/onPrintEnd', payload)
+      dispatch('printer/onPrintEnd', payload, { root: true })
     } else if (
-      store.state.printer?.printer.print_stats.state === 'printing' &&
+      state.printer?.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'standby'
     ) {
       // This is a cancelled print...
-      store.dispatch('printer/onPrintEnd', payload)
+      dispatch('printer/onPrintEnd', payload, { root: true })
     }
   }
 }

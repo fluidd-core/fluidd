@@ -72,8 +72,8 @@ import {
   mdiOpenInApp,
   mdiDesktopTower,
   mdiDotsHorizontal,
-  mdiElectricSwitch,
-  mdiElectricSwitchClosed,
+  mdiToggleSwitch,
+  mdiToggleSwitchOffOutline,
   mdiMotionOutline,
   mdiThermometerLow,
   mdiHelpCircle,
@@ -119,7 +119,10 @@ import {
   mdiFileVideoOutline,
   mdiBellSleep,
   mdiChip,
-  mdiViewHeadline
+  mdiViewHeadline,
+  mdiAxisArrow,
+  mdiVectorLine,
+  mdiOpenInNew
 } from '@mdi/js'
 
 /**
@@ -171,6 +174,7 @@ export const Globals = Object.freeze({
     { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
+    { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
     { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
   ],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
@@ -203,8 +207,8 @@ export const Icons = Object.freeze({
   chart: mdiChartTimelineVariant,
   power: mdiPower,
   powerCycle: mdiPowerCycle,
-  powerOn: mdiElectricSwitchClosed,
-  powerOff: mdiElectricSwitch,
+  powerOn: mdiToggleSwitch,
+  powerOff: mdiToggleSwitchOffOutline,
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
@@ -307,7 +311,10 @@ export const Icons = Object.freeze({
   video: mdiFileVideoOutline,
   snooze: mdiBellSleep,
   chip: mdiChip,
-  viewHeadline: mdiViewHeadline
+  viewHeadline: mdiViewHeadline,
+  absolutePositioning: mdiAxisArrow,
+  relativePositioning: mdiVectorLine,
+  openInNew: mdiOpenInNew
 })
 
 export const Waits = Object.freeze({
