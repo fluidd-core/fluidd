@@ -30,3 +30,7 @@ gcode:
 [output_pin _BEEPER]
 pin: z:P1.30
 ```
+
+Macros can also be hidden directly from the Fluidd settings by toggling their
+visibility, in order to not change their name:  
+![screenshot](/assets/images/macro_visibility.png)
