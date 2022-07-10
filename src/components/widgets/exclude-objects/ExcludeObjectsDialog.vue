@@ -21,7 +21,9 @@
               v-for="part in parts"
               :key="part.name"
             >
-              <td class="partName">{{ part.name }}</td>
+              <td class="partName">
+                {{ part.name }}
+              </td>
               <td class="actions">
                 <app-btn
                   x-small
