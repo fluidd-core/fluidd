@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.19.0](https://github.com/fluidd-core/fluidd/compare/v1.18.2...v1.19.0) (2022-07-10)
+
+
+### Features
+
+* add icon to shutdown on AppBar ([#736](https://github.com/fluidd-core/fluidd/issues/736)) ([580a177](https://github.com/fluidd-core/fluidd/commit/580a177276ccaafad279537ea61ff517c676ded6))
+* adds Save Config & Restart button ([#726](https://github.com/fluidd-core/fluidd/issues/726)) ([68809bf](https://github.com/fluidd-core/fluidd/commit/68809bf34c6c3584ae5bafb8e2601b9595a5814d))
+* adds setting to toggle Codelens visibility ([#716](https://github.com/fluidd-core/fluidd/issues/716)) ([6dd511c](https://github.com/fluidd-core/fluidd/commit/6dd511c2df90f4fe6ca3214e96110bcd9061d205))
+* allows 4 layout columns in dashboard ([#719](https://github.com/fluidd-core/fluidd/issues/719)) ([51d09fe](https://github.com/fluidd-core/fluidd/commit/51d09fe5e097138bb50a0b50f0be1e719a7667f4))
+* device power toggle in top navigation ([#739](https://github.com/fluidd-core/fluidd/issues/739)) ([ed3e647](https://github.com/fluidd-core/fluidd/commit/ed3e64795050879ecd3385f1819c6f8321a074bc))
+* Exclude Objects ([#754](https://github.com/fluidd-core/fluidd/issues/754)) ([03ca3ab](https://github.com/fluidd-core/fluidd/commit/03ca3abf221a3b3cf3d1a4163f60934f0c5ec867))
+* Extended G-Code viewer auto-actions ([#738](https://github.com/fluidd-core/fluidd/issues/738)) ([79ec091](https://github.com/fluidd-core/fluidd/commit/79ec091ac30e784a5093c8467edd6cb63fa4729a))
+* fullscreen camera page ([#609](https://github.com/fluidd-core/fluidd/issues/609)) ([9a159ec](https://github.com/fluidd-core/fluidd/commit/9a159ecbef0bdd37ad1d937d13330a07dd6bdbc0))
+* **i18n-HU:** update Hungarian translation ([#745](https://github.com/fluidd-core/fluidd/issues/745)) ([eca3bb9](https://github.com/fluidd-core/fluidd/commit/eca3bb95cc2ae8ab9c31bed584ca53aec7933756))
+* keep icon buttons visible on mobile view ([#709](https://github.com/fluidd-core/fluidd/issues/709)) ([362fcb3](https://github.com/fluidd-core/fluidd/commit/362fcb3d4f18d49936083ff4dac305ed230aaa65))
+* ldap authentication support ([#721](https://github.com/fluidd-core/fluidd/issues/721)) ([08973eb](https://github.com/fluidd-core/fluidd/commit/08973eb940976353363e67cf396d9c504205018b))
+* Support full range of klipper PA scale ([#743](https://github.com/fluidd-core/fluidd/issues/743)) ([7e54fbe](https://github.com/fluidd-core/fluidd/commit/7e54fbe76507a0a2ab5b45485a80a983769a169c))
+* **ui:** Fit console height to screen size ([#735](https://github.com/fluidd-core/fluidd/issues/735)) ([d749a3a](https://github.com/fluidd-core/fluidd/commit/d749a3ac6999d596b387f165080e54b0701a9e28))
+
+
+### Bug Fixes
+
+* add default authentication source to new users ([#749](https://github.com/fluidd-core/fluidd/issues/749)) ([e52f4cd](https://github.com/fluidd-core/fluidd/commit/e52f4cd9c1aa672b76e2c340d4a2d61eb42874c4))
+* check for root available before listing files ([#728](https://github.com/fluidd-core/fluidd/issues/728)) ([f67a178](https://github.com/fluidd-core/fluidd/commit/f67a1789e25267264545ed664a484affeab873a1))
+* codelens links for moonraker-telegram-bot ([#742](https://github.com/fluidd-core/fluidd/issues/742)) ([dd19d18](https://github.com/fluidd-core/fluidd/commit/dd19d18ed1ff3085c8a10b322aa87d9885e66d6b))
+* console error from LDAP auth changes ([#724](https://github.com/fluidd-core/fluidd/issues/724)) ([d9b276c](https://github.com/fluidd-core/fluidd/commit/d9b276c123154c14dac76e1ab41a60f9eb2ecf76))
+* disable absolute/relative positioning controls while printing ([#720](https://github.com/fluidd-core/fluidd/issues/720)) ([394b980](https://github.com/fluidd-core/fluidd/commit/394b9802b2db74f0478b5ae0679cd843c82a5f76))
+* disable positioning mode buttons when klippy is not ready ([#722](https://github.com/fluidd-core/fluidd/issues/722)) ([60531c1](https://github.com/fluidd-core/fluidd/commit/60531c15c15f43a197f5f0a0f78ae033fd30af7a))
+* gcode preview initial layout ([#731](https://github.com/fluidd-core/fluidd/issues/731)) ([065aece](https://github.com/fluidd-core/fluidd/commit/065aece668894620a7640c4d1a8e278352c3a183))
+* hide card buttons and menus in layout view ([#710](https://github.com/fluidd-core/fluidd/issues/710)) ([b436288](https://github.com/fluidd-core/fluidd/commit/b436288c12fb8a8dacf60efb3ddfaecfb9e1979b))
+* LED controls behavior ([#723](https://github.com/fluidd-core/fluidd/issues/723)) ([0cbf650](https://github.com/fluidd-core/fluidd/commit/0cbf650d859405972ee1b9b3562105a13b2c456f))
+* mitigates network error with latest Axios ([#717](https://github.com/fluidd-core/fluidd/issues/717)) ([0fafbf7](https://github.com/fluidd-core/fluidd/commit/0fafbf74672000db0c1a1f504560ef26a46dfdc7))
+* nginx 502 error when restarting moonraker ([#734](https://github.com/fluidd-core/fluidd/issues/734)) ([62d22cc](https://github.com/fluidd-core/fluidd/commit/62d22cc64f545a65c8087fe0a199a3fd000f3f6c))
+* no collapsed console in fullscreen mode ([#737](https://github.com/fluidd-core/fluidd/issues/737)) ([057e505](https://github.com/fluidd-core/fluidd/commit/057e5059242bc16a8a645c4c7addfe4f06bef5fa))
+* only splice waits if contains item ([#725](https://github.com/fluidd-core/fluidd/issues/725)) ([7b3bcd0](https://github.com/fluidd-core/fluidd/commit/7b3bcd0118232a5527d262e00c6d58f5bca99ace))
+* show absolute/relative positioning controls ([#718](https://github.com/fluidd-core/fluidd/issues/718)) ([26ab673](https://github.com/fluidd-core/fluidd/commit/26ab6733c6d339c5c47c2a3e5e0b53c5ce94d0ba))
+* **style:** light theme and consistency changes ([#755](https://github.com/fluidd-core/fluidd/issues/755)) ([bdce69e](https://github.com/fluidd-core/fluidd/commit/bdce69e588af334af5925846e2e938b2da59a9b8))
+* **style:** light theme AppSwitch ([#752](https://github.com/fluidd-core/fluidd/issues/752)) ([ac3d80e](https://github.com/fluidd-core/fluidd/commit/ac3d80ecef1d96474569e4c4af1794900fb1dce2))
+* use default color for power icon in top navigation ([#746](https://github.com/fluidd-core/fluidd/issues/746)) ([0f40140](https://github.com/fluidd-core/fluidd/commit/0f4014054d172abe6978f24eb38be33ccfbdad0a))
+
 ### [1.18.2](https://github.com/fluidd-core/fluidd/compare/v1.18.1...v1.18.2) (2022-06-09)
 
 
