@@ -83,10 +83,20 @@
         >
           {{ $t('app.tool.tooltip.quad_gantry_level') }}
         </app-btn>
+        <app-btn
+          v-if="printerSupportsForceMove"
+          :elevation="2"
+          small
+          class="ml-1"
+          :color="btncolor"
+          @click="changeForceMoveStatus"
+        >
+          {{ $t('app.tool.tooltip.force_move') }}
+        </app-btn>
       </app-btn-collapse-group>
     </template>
 
-    <toolhead />
+    <toolhead :force-move="forceMove" />
   </collapsable-card>
 </template>
 
@@ -102,6 +112,9 @@ import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
+  btncolor: any
+  forceMove = false
+
   @Prop({ type: Boolean, default: false })
   public menuCollapsed!: boolean
 
@@ -123,6 +136,27 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsBedScrewsCalculate (): boolean {
     return 'screws_tilt_adjust' in this.printerSettings
+  }
+
+  get printerSupportsForceMove () {
+    if (this.printerSettings.force_move.enable_force_move && this.$store.state.config.uiSettings.general.forceMoveToggle) {
+      return true
+    } else {
+      return false
+    }
+  }
+
+  async changeForceMoveStatus () {
+    if (this.forceMove) {
+      this.btncolor = undefined
+      this.forceMove = false
+    } else {
+      const res = (this.$store.state.config.uiSettings.general.forceMoveToggleWarning) ? (await this.$confirm(this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'), { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' })) : true
+      if (res) {
+        this.btncolor = 'error'
+        this.forceMove = true
+      }
+    }
   }
 }
 </script>

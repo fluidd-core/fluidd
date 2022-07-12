@@ -11,23 +11,6 @@
         <extruder-selection
           v-if="multipleExtruders"
         />
-        <v-checkbox
-          v-if="printerSupportsForcemove && !printerPrinting"
-          v-model="forceMove"
-          :disabled="!klippyReady"
-          color="error"
-          class="forcemove-checkbox"
-          hide-details
-        >
-          <template #label>
-            <v-icon
-              color="error"
-            >
-              $warning
-            </v-icon>
-            <span>&nbsp;{{ $t('app.tool.checkbox.force_move') }}</span>
-          </template>
-        </v-checkbox>
         <toolhead-moves
           v-if="!printerPrinting"
           :force-move="forceMove"
@@ -51,7 +34,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMoves from '@/components/widgets/toolhead/ToolheadMoves.vue'
 import ExtruderMoves from '@/components/widgets/toolhead/ExtruderMoves.vue'
@@ -73,16 +56,8 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
-  forceMove = false
-
-  get printerSupportsForcemove () {
-    const printerSettings = this.$store.getters['printer/getPrinterSettings']()
-    if (printerSettings.force_move.enable_force_move) {
-      return true
-    } else {
-      return false
-    }
-  }
+  @Prop({ type: Boolean, default: false })
+    forceMove!: boolean
 
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1
@@ -99,10 +74,5 @@ export default class Toolhead extends Mixins(StateMixin) {
   .controls-wrapper {
     min-width: 380px !important;
     max-width: 450px !important;
-  }
-  .forcemove-checkbox {
-    margin: 0;
-    padding: 0 0 10px 0;
-    width: fit-content;
   }
 </style>
