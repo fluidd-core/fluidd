@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { PrinterState } from './types'
 import { RootState } from '../types'
-import { handlePrintStateChange, handleCurrentFileChange } from '../helpers'
+import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
@@ -115,7 +115,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
    */
 
   /** Automated notify events via socket */
-  async onNotifyStatusUpdate ({ rootState, commit, getters }, payload) {
+  async onNotifyStatusUpdate ({ rootState, commit, getters, dispatch }, payload) {
     // TODO: We potentially get many updates here.
     // Consider caching the updates and sending them every <interval>.
     // We don't want to miss an update - but also don't need all of them
@@ -129,7 +129,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // We do this prior to commiting the notify so we can
       // compare the before and after.
       handleCurrentFileChange(payload)
-      handlePrintStateChange(payload)
+      handlePrintStateChange(payload, rootState, dispatch)
+      handleExcludeObjectChange(payload, rootState, dispatch)
       handleSystemStatsChange(payload)
       handleMcuStatsChange(payload)
 
