@@ -137,7 +137,7 @@ import ToolheadMixin from '@/mixins/toolhead'
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: false })
-    forceMove!: boolean
+  public forceMove!: boolean
 
   get gcodePosition () {
     return this.$store.state.printer.printer.gcode_move.gcode_position
