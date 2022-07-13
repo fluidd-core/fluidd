@@ -67,7 +67,6 @@ export const defaultState = (): ConfigState => {
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
         topNavPowerToggle: null,
-        forceMoveToggle: true,
         forceMoveToggleWarning: true
       },
       theme: {

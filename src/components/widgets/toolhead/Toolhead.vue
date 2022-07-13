@@ -5,19 +5,13 @@
       align="start"
       class="mb-2"
     >
-      <v-col
-        class="controls-wrapper"
-      >
-        <extruder-selection
-          v-if="multipleExtruders"
-        />
+      <v-col class="controls-wrapper">
+        <extruder-selection v-if="multipleExtruders" />
         <toolhead-moves
           v-if="!printerPrinting"
           :force-move="forceMove"
         />
-        <z-height-adjust
-          v-if="printerPrinting"
-        />
+        <z-height-adjust v-if="printerPrinting" />
       </v-col>
 
       <v-col class="controls-wrapper">
@@ -57,7 +51,7 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
 })
 export default class Toolhead extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-    forceMove!: boolean
+  public forceMove!: boolean
 
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1

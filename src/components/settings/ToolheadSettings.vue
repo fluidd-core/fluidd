@@ -164,33 +164,17 @@
 
       <v-divider />
 
-      <app-setting
-        v-if="printerSupportsForcemove"
-        :title="$t('app.setting.label.force_move_toggle')"
-      >
-        <v-switch
-          v-model="forceMoveToggle"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
+      <template v-if="printerSupportsForceMove">
+        <app-setting :title="$t('app.setting.label.force_move_toggle_warning')">
+          <v-switch
+            v-model="forceMoveToggleWarning"
+            hide-details
+            class="mt-0 mb-4"
+          />
+        </app-setting>
 
-      <v-divider v-if="printerSupportsForcemove" />
-
-      <app-setting
-        v-if="forceMoveToggle && printerSupportsForcemove"
-        :title="$t('app.setting.label.force_move_toggle_warning')"
-      >
-        <v-switch
-          v-model="forceMoveToggleWarning"
-          hide-details
-          class="mb-5"
-          @click.native.stop
-        />
-      </app-setting>
-
-      <v-divider v-if="forceMoveToggle && printerSupportsForcemove" />
+        <v-divider />
+      </template>
 
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
@@ -369,25 +353,8 @@ export default class ToolHeadSettings extends Vue {
     })
   }
 
-  get printerSupportsForcemove () {
-    const printerSettings = this.$store.getters['printer/getPrinterSettings']()
-    if (printerSettings.force_move.enable_force_move) {
-      return true
-    } else {
-      return false
-    }
-  }
-
-  get forceMoveToggle () {
-    return this.$store.state.config.uiSettings.general.forceMoveToggle
-  }
-
-  set forceMoveToggle (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.forceMoveToggle',
-      value,
-      server: true
-    })
+  get printerSupportsForceMove () {
+    return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
   }
 
   get forceMoveToggleWarning () {

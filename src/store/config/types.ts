@@ -59,7 +59,6 @@ export interface GeneralConfig {
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
-  forceMoveToggle: boolean;
   forceMoveToggleWarning: boolean;
 }
 

@@ -10,8 +10,8 @@
         class="ml-12 mr-12"
       >
         <app-btn-toolhead-move
-          :color="(forceMove) ? 'error' : ( (yHomed) ? 'primary' : undefined)"
-          :disabled="(!yHomed && !forceMove) || !klippyReady"
+          :color="axisButtonColor(yHomed)"
+          :disabled="axisButtonDisabled(yHomed)"
           icon="$up"
           @click="sendMoveGcode('Y', toolheadMoveLength)"
         />
@@ -21,8 +21,8 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(forceMove) ? 'error' : ( (zHomed) ? 'primary' : undefined)"
-          :disabled="(!zHomed && !forceMove) || !klippyReady"
+          :color="axisButtonColor(zHomed)"
+          :disabled="axisButtonDisabled(zHomed)"
           icon="$up"
           @click="sendMoveGcode('Z', toolheadMoveLength)"
         />
@@ -50,8 +50,8 @@
     >
       <v-col cols="auto">
         <app-btn-toolhead-move
-          :color="(forceMove) ? 'error' : ( (xHomed) ? 'primary' : undefined)"
-          :disabled="(!xHomed && !forceMove) || !klippyReady"
+          :color="axisButtonColor(xHomed)"
+          :disabled="axisButtonDisabled(xHomed)"
           icon="$left"
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
         />
@@ -75,8 +75,8 @@
         justify="end"
       >
         <app-btn-toolhead-move
-          :color="(forceMove) ? 'error' : ( (xHomed) ? 'primary' : undefined)"
-          :disabled="(!xHomed && !forceMove) || !klippyReady"
+          :color="axisButtonColor(xHomed)"
+          :disabled="axisButtonDisabled(xHomed)"
           icon="$right"
           @click="sendMoveGcode('X', toolheadMoveLength)"
         />
@@ -121,8 +121,8 @@
         class="ml-12 mr-7"
       >
         <app-btn-toolhead-move
-          :color="(forceMove) ? 'error' : ( (xHomed) ? 'primary' : undefined)"
-          :disabled="(!yHomed && !forceMove) || !klippyReady"
+          :color="axisButtonColor(xHomed)"
+          :disabled="axisButtonDisabled(yHomed)"
           icon="$down"
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
         />
@@ -132,8 +132,8 @@
         class="ml-7"
       >
         <app-btn-toolhead-move
-          :color="(forceMove) ? 'error' : ( (zHomed) ? 'primary' : undefined)"
-          :disabled="(!yHomed && !forceMove) || !klippyReady"
+          :color="axisButtonColor(zHomed)"
+          :disabled="axisButtonDisabled(yHomed)"
           icon="$down"
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
         />
@@ -223,6 +223,16 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   set toolheadMoveLength (val: string) {
     this.moveLength = val
+  }
+
+  axisButtonColor (axisHomed: boolean) {
+    if (this.forceMove) return 'error'
+
+    return axisHomed ? 'primary' : undefined
+  }
+
+  axisButtonDisabled (axisHomed: boolean) {
+    return !this.klippyReady || (!axisHomed && !this.forceMove)
   }
 
   /**
