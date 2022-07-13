@@ -176,7 +176,6 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
   }
 
   moveTo (axis: string, pos: string) {
-    axis = axis.toLowerCase()
     const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
     const currentPos = (this.useGcodeCoords)
       ? this.gcodePosition[axisIndexMap[axis]]
@@ -186,7 +185,7 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
         ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
       if (this.forceMove) {
-        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${pos} VELOCITY=${rate}`)
+        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate}`)
       } else {
         this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)
