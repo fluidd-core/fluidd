@@ -136,63 +136,63 @@ import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
- @Prop({ type: Boolean, default: false })
-   forceMove!: boolean
+  @Prop({ type: Boolean, default: false })
+    forceMove!: boolean
 
- get gcodePosition () {
-   return this.$store.state.printer.printer.gcode_move.gcode_position
- }
+  get gcodePosition () {
+    return this.$store.state.printer.printer.gcode_move.gcode_position
+  }
 
- get toolheadPosition () {
-   return this.$store.state.printer.printer.toolhead.position
- }
+  get toolheadPosition () {
+    return this.$store.state.printer.printer.toolhead.position
+  }
 
- get livePosition () {
-   return this.$store.state.printer.printer.motion_report.live_position
- }
+  get livePosition () {
+    return this.$store.state.printer.printer.motion_report.live_position
+  }
 
- get useGcodeCoords () {
-   return this.$store.state.config.uiSettings.general.useGcodeCoords
- }
+  get useGcodeCoords () {
+    return this.$store.state.config.uiSettings.general.useGcodeCoords
+  }
 
- get requestedSpeed () {
-   // Take into account the speed multiplier.
-   const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
-   let speed = this.$store.state.printer.printer.gcode_move.speed || 0
-   speed = (speed * multiplier) / 60
-   return speed.toFixed()
- }
+  get requestedSpeed () {
+    // Take into account the speed multiplier.
+    const multiplier = this.$store.state.printer.printer.gcode_move.speed_factor || 1
+    let speed = this.$store.state.printer.printer.gcode_move.speed || 0
+    speed = (speed * multiplier) / 60
+    return speed.toFixed()
+  }
 
- get usesAbsolutePositioning () {
-   return this.$store.state.printer.printer.gcode_move.absolute_coordinates
- }
+  get usesAbsolutePositioning () {
+    return this.$store.state.printer.printer.gcode_move.absolute_coordinates
+  }
 
- get positioning () {
-   return this.usesAbsolutePositioning ? 0 : 1
- }
+  get positioning () {
+    return this.usesAbsolutePositioning ? 0 : 1
+  }
 
- set positioning (value: number) {
-   this.sendGcode(`G9${value}`)
- }
+  set positioning (value: number) {
+    this.sendGcode(`G9${value}`)
+  }
 
- moveTo (axis: string, pos: string) {
-   axis = axis.toLowerCase()
-   const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
-   const currentPos = (this.useGcodeCoords)
-     ? this.gcodePosition[axisIndexMap[axis]]
-     : this.toolheadPosition[axisIndexMap[axis]]
-   if (parseInt(currentPos) !== parseInt(pos)) {
-     const rate = (axis.toLowerCase() === 'z')
-       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
-       : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-     if (this.forceMove) {
-       this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${pos} VELOCITY=${rate}`)
-     } else {
-       this.sendGcode(`G90
+  moveTo (axis: string, pos: string) {
+    axis = axis.toLowerCase()
+    const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
+    const currentPos = (this.useGcodeCoords)
+      ? this.gcodePosition[axisIndexMap[axis]]
+      : this.toolheadPosition[axisIndexMap[axis]]
+    if (parseInt(currentPos) !== parseInt(pos)) {
+      const rate = (axis.toLowerCase() === 'z')
+        ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+        : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+      if (this.forceMove) {
+        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${pos} VELOCITY=${rate}`)
+      } else {
+        this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)
-     }
-   }
- }
+      }
+    }
+  }
 }
 </script>
 
