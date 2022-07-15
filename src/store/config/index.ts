@@ -66,7 +66,8 @@ export const defaultState = (): ConfigState => {
         showBarometricPressure: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
-        topNavPowerToggle: null
+        topNavPowerToggle: null,
+        forceMoveToggleWarning: true
       },
       theme: {
         isDark: true,
