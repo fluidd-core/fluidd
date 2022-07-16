@@ -33,6 +33,7 @@
         <app-btn
           v-if="printerSupportsForceMove"
           :elevation="2"
+          :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
           :color="forceMove ? 'error' : undefined"
