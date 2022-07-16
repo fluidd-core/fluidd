@@ -45,7 +45,6 @@ app:
       command: >-
         '''tab'' az automatikus kitöltéshez, ''help'' a parancsokhoz
         ''nyilak'' az előzményekhez'
-      scroll: Görgessen lefelé
   endpoint:
     error:
       cant_connect: >-
@@ -113,6 +112,7 @@ app:
       load_current_file: Aktuális fájl betöltése
     label:
       current_layer_height: Aktuális rétegmagasság
+      exclude_object: Objektum kizárása
       follow_progress: Folyamat követése
       layer: Réteg
       layers: Rétegek
@@ -225,7 +225,9 @@ app:
       finish_time: Befejezés
       flow: Átfolyás
       free: szabad
-      heaters_busy: A nyomtató jelenleg foglalt. A fűtőtestek kikapcsolása sikertelen nyomtatást eredményezhet.
+      heaters_busy: >-
+        A nyomtató jelenleg foglalt. A fűtőtestek kikapcsolása sikertelen
+        nyomtatást eredményezhet.
       high: Magas
       host: Gazdagép
       layer: Réteg
@@ -298,6 +300,8 @@ app:
         required: Ajánlott
       msg:
         confirm: Biztos vagy benne?
+        confirm_exclude_object: Biztosan kizárja ezt az objektumot a nyomtatásból?
+        confirm_forcemove_toggle: Biztos vagy ebben? Ez károsíthatja a nyomtatót.
         confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
         confirm_shutdown_host: Biztos, hogy leállítod a gazdagépet?
         confirm_service_restart: Biztos, hogy újraindítod a %{name} szolgáltatást?
@@ -464,6 +468,7 @@ app:
       type: Típus
       z_adjust_values: A (Z) értékek beállítása
       date_time_format: Dátum és időformátum
+      force_move_toggle_warning: A force_move aktiválásakor megerősítés szükséges
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
@@ -530,6 +535,7 @@ app:
       relative_positioning: Relatív pozicionálás
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
+      force_move: FORCE_MOVE
   version:
     btn:
       check_for_updates: Frissítések keresése
