@@ -109,6 +109,7 @@ app:
       load_current_file: Load Current File
     label:
       current_layer_height: Current Layer Height
+      exclude_object: Exclude Object
       follow_progress: Follow progress
       layer: Layer
       layers: Layers
@@ -296,6 +297,8 @@ app:
         required: Required
       msg:
         confirm: Are you sure?
+        confirm_exclude_object: Are you sure you want to exclude this object from printing?
+        confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -462,6 +465,7 @@ app:
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
+      force_move_toggle_warning: Require confirm when activating force_move
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -528,6 +532,7 @@ app:
       relative_positioning: Relative Positioning
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
+      force_move: FORCE_MOVE
   version:
     btn:
       check_for_updates: Check for updates

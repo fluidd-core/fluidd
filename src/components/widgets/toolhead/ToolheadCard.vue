@@ -31,6 +31,16 @@
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
+          v-if="printerSupportsForceMove"
+          :elevation="2"
+          small
+          class="ml-1"
+          :color="forceMove ? 'error' : undefined"
+          @click="toggleForceMove"
+        >
+          {{ $t('app.tool.tooltip.force_move') }}
+        </app-btn>
+        <app-btn
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
@@ -86,7 +96,7 @@
       </app-btn-collapse-group>
     </template>
 
-    <toolhead />
+    <toolhead :force-move="forceMove" />
   </collapsable-card>
 </template>
 
@@ -102,6 +112,8 @@ import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
+  forceMove = false
+
   @Prop({ type: Boolean, default: false })
   public menuCollapsed!: boolean
 
@@ -123,6 +135,25 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsBedScrewsCalculate (): boolean {
     return 'screws_tilt_adjust' in this.printerSettings
+  }
+
+  get printerSupportsForceMove () {
+    return this.printerSettings.force_move?.enable_force_move ?? false
+  }
+
+  async toggleForceMove () {
+    if (!this.forceMove && this.$store.state.config.uiSettings.general.forceMoveToggleWarning) {
+      const result = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
+    this.forceMove = !this.forceMove
   }
 }
 </script>

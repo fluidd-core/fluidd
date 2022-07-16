@@ -59,6 +59,7 @@ export interface GeneralConfig {
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
+  forceMoveToggleWarning: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';

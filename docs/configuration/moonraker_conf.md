@@ -23,6 +23,8 @@ enable_debug_logging: False
 [file_manager]
 config_path: ~/klipper_config
 log_path: ~/klipper_logs
+# cancel object preprocessing - set to True to enable; leave disabled when running on a low-powered device (e.g. Pi Zero)
+enable_object_processing: False
 
 [data_store]
 temperature_store_size: 600

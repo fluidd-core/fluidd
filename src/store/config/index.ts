@@ -66,7 +66,8 @@ export const defaultState = (): ConfigState => {
         showBarometricPressure: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
-        topNavPowerToggle: null
+        topNavPowerToggle: null,
+        forceMoveToggleWarning: true
       },
       theme: {
         isDark: true,
@@ -122,7 +123,7 @@ export const defaultState = (): ConfigState => {
         drawBackground: true,
         showAnimations: true,
         groupLowerLayers: false,
-        autoLoadOnPrintStart: true,
+        autoLoadOnPrintStart: false,
         autoFollowOnFileLoad: true,
         flip: {
           horizontal: false,
