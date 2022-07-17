@@ -18,7 +18,8 @@ export const defaultState = (): ConfigState => {
       locales: [
         { name: 'English', code: 'en' },
         { name: 'Čeština', code: 'cz' },
-        { name: 'Chinese', code: 'cn' },
+        { name: '简体中文', code: 'cn' },
+        { name: '繁體中文', code: 'zh-HK' },
         { name: 'Deutsch', code: 'de' },
         { name: 'Español', code: 'es' },
         { name: 'Français', code: 'fr' },
@@ -57,10 +58,16 @@ export const defaultState = (): ConfigState => {
         enableVersionNotifications: true,
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
+        confirmOnSaveConfigAndRestart: true,
         dateformat: 'MMM. DD,',
         timeformat: 'hh:mm a',
         showRateOfChange: false,
-        flipConsoleLayout: false
+        showRelativeHumidity: true,
+        showBarometricPressure: true,
+        flipConsoleLayout: false,
+        cameraFullscreenAction: 'embed',
+        topNavPowerToggle: null,
+        forceMoveToggleWarning: true
       },
       theme: {
         isDark: true,
@@ -74,7 +81,8 @@ export const defaultState = (): ConfigState => {
       },
       editor: {
         confirmDirtyEditorClose: true,
-        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt']
+        autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        codeLens: true
       },
       dashboard: {
         tempPresets: []
@@ -115,6 +123,8 @@ export const defaultState = (): ConfigState => {
         drawBackground: true,
         showAnimations: true,
         groupLowerLayers: false,
+        autoLoadOnPrintStart: false,
+        autoFollowOnFileLoad: true,
         flip: {
           horizontal: false,
           vertical: true

@@ -10,10 +10,13 @@ import { DevicePowerState } from './power/types'
 import { HistoryState } from './history/types'
 import { VersionState } from './version/types'
 import { GcodePreviewState } from './gcodePreview/types'
+import { PartsState } from './parts/types'
 import { LayoutState } from './layout/types'
 import { MeshState } from './mesh/types'
 import { NotificationsState } from './notifications/types'
+import { AnnouncementsState } from './announcements/types'
 import { AuthState } from './auth/types'
+import { TimelapseState } from '@/store/timelapse/types'
 
 export interface RootState {
   socket?: SocketState;
@@ -31,7 +34,10 @@ export interface RootState {
   history?: HistoryState;
   version?: VersionState;
   gcodePreview?: GcodePreviewState;
+  parts?: PartsState;
   notifications?: NotificationsState;
+  announcements?: AnnouncementsState;
+  timelapse?: TimelapseState;
 }
 
-export type AppNotificationType = 'success' | 'info' | 'warning' | 'error'
+export type AppNotificationType = 'success' | 'info' | 'warning' | 'error' | 'announcement'

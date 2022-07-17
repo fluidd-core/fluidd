@@ -53,7 +53,7 @@ app:
     tooltip:
       endpoint_examples: >-
         API URLを入力してください。<br />例としては、<blockquote>fluidd.local,
-        https://192.168.1.150</blockquote><br />があります。 
+        https://192.168.1.150</blockquote><br />があります。
   endstop:
     label:
       open: オープン
@@ -83,7 +83,6 @@ app:
       add_dir: ディレクトリの追加
       add_file: ファイルの追加
       download_file: ファイルの取得
-      keyboard_shortcuts: キーボードショートカット
       rename_dir: ディレクトリの名変更
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
@@ -291,7 +290,7 @@ app:
       console: コンソール
       endstops: エンドストップ
       fans_outputs: ファン＆出力
-      gcode_preview: 'Gcode Preview [ ベータ版 ]'
+      gcode_preview: 'Gcode Preview'
       history: 履歴
       home: ホーム
       jobs: 印刷ジョブ

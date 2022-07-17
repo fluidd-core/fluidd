@@ -27,8 +27,8 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) =>
         if (thumb.relative_path && thumb.relative_path.length > 0) {
           const url = new URL(apiUrl ?? document.location.origin)
           url.pathname = (path === '')
-            ? `/server/files/gcodes/${thumb.relative_path}`
-            : `/server/files/gcodes/${path}/${thumb.relative_path}`
+            ? `/server/files/gcodes/${encodeURI(thumb.relative_path)}`
+            : `/server/files/gcodes/${encodeURI(path)}/${encodeURI(thumb.relative_path)}`
 
           return {
             ...thumb,
@@ -41,12 +41,31 @@ export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) =>
             data: 'data:image/gif;base64,' + thumb.data
           }
         }
+        if (thumb.absolute_path) {
+          return thumb
+        }
       }
     }
   }
 }
 
-export const handlePrintStateChange = (payload: any) => {
+export const handleExcludeObjectChange = (payload: any, state: any, dispatch: any) => {
+  // For every notify - if print_stats.state changes from standby -> printing,
+  // then record an entry in our print history.
+  // If the state changes from printing -> complete, then record the finish time.
+  if ('exclude_object' in payload) {
+    dispatch('parts/onPartUpdate', payload.exclude_object, { root: true })
+  }
+
+  if (
+    'print_stats' in payload &&
+    ('state' in payload.print_stats || 'filename' in payload.print_stats)
+  ) {
+    dispatch('parts/onPrintStatsUpdate', payload.print_stats, { root: true })
+  }
+}
+
+export const handlePrintStateChange = (payload: any, state: any, dispatch: any) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -56,23 +75,23 @@ export const handlePrintStateChange = (payload: any) => {
   ) {
     SocketActions.jobQueueList()
     if (
-      store.state.printer?.printer.print_stats.state === 'standby' &&
+      state.printer?.printer.print_stats.state !== 'printing' &&
       payload.print_stats.state === 'printing'
     ) {
       // This is a new print starting...
-      store.dispatch('printer/onPrintStart', payload)
+      dispatch('printer/onPrintStart', payload, { root: true })
     } else if (
-      store.state.printer?.printer.print_stats.state === 'printing' &&
+      state.printer?.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'complete'
     ) {
       // This is a completed print...
-      store.dispatch('printer/onPrintEnd', payload)
+      dispatch('printer/onPrintEnd', payload, { root: true })
     } else if (
-      store.state.printer?.printer.print_stats.state === 'printing' &&
+      state.printer?.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'standby'
     ) {
       // This is a cancelled print...
-      store.dispatch('printer/onPrintEnd', payload)
+      dispatch('printer/onPrintEnd', payload, { root: true })
     }
   }
 }

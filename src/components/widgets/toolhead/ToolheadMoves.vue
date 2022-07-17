@@ -10,8 +10,8 @@
         class="ml-12 mr-12"
       >
         <app-btn-toolhead-move
-          :color="(yHomed) ? 'primary' : undefined"
-          :disabled="!yHomed || !klippyReady"
+          :color="axisButtonColor(yHomed)"
+          :disabled="axisButtonDisabled(yHomed)"
           icon="$up"
           @click="sendMoveGcode('Y', toolheadMoveLength)"
         />
@@ -21,8 +21,8 @@
         class="ml-2"
       >
         <app-btn-toolhead-move
-          :color="(zHomed) ? 'primary' : undefined"
-          :disabled="!zHomed || !klippyReady"
+          :color="axisButtonColor(zHomed)"
+          :disabled="axisButtonDisabled(zHomed)"
           icon="$up"
           @click="sendMoveGcode('Z', toolheadMoveLength)"
         />
@@ -39,7 +39,7 @@
           small-icon
           @click="sendGcode('G28', waits.onHomeAll)"
         >
-          {{ $t('app.general.btn.all') }}
+          {{ $t('app.tool.btn.home_all') }}
         </app-btn-toolhead-move>
       </v-col>
     </v-row>
@@ -50,8 +50,8 @@
     >
       <v-col cols="auto">
         <app-btn-toolhead-move
-          :color="(xHomed) ? 'primary' : undefined"
-          :disabled="!xHomed || !klippyReady"
+          :color="axisButtonColor(xHomed)"
+          :disabled="axisButtonDisabled(xHomed)"
           icon="$left"
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
         />
@@ -75,8 +75,8 @@
         justify="end"
       >
         <app-btn-toolhead-move
-          :color="(xHomed) ? 'primary' : undefined"
-          :disabled="!xHomed || !klippyReady"
+          :color="axisButtonColor(xHomed)"
+          :disabled="axisButtonDisabled(xHomed)"
           icon="$right"
           @click="sendMoveGcode('X', toolheadMoveLength)"
         />
@@ -121,8 +121,8 @@
         class="ml-12 mr-7"
       >
         <app-btn-toolhead-move
-          :color="(yHomed) ? 'primary' : undefined"
-          :disabled="!yHomed || !klippyReady"
+          :color="axisButtonColor(xHomed)"
+          :disabled="axisButtonDisabled(yHomed)"
           icon="$down"
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
         />
@@ -132,8 +132,8 @@
         class="ml-7"
       >
         <app-btn-toolhead-move
-          :color="(zHomed) ? 'primary' : undefined"
-          :disabled="!zHomed || !klippyReady"
+          :color="axisButtonColor(zHomed)"
+          :disabled="axisButtonDisabled(yHomed)"
           icon="$down"
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
         />
@@ -171,6 +171,7 @@
             small
             :min-width="40"
             :value="distance"
+            :elevation="2"
             :disabled="!klippyReady"
           >
             {{ distance }}
@@ -182,7 +183,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { Waits } from '@/globals'
@@ -192,6 +193,9 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   moveLength = ''
   fab = false
+
+  @Prop({ type: Boolean, default: false })
+  public forceMove!: boolean
 
   get kinematics () {
     return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
@@ -221,6 +225,16 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
     this.moveLength = val
   }
 
+  axisButtonColor (axisHomed: boolean) {
+    if (this.forceMove) return 'error'
+
+    return axisHomed ? 'primary' : undefined
+  }
+
+  axisButtonDisabled (axisHomed: boolean) {
+    return !this.klippyReady || (!axisHomed && !this.forceMove)
+  }
+
   /**
    * Send a move gcode script.
    */
@@ -234,15 +248,19 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
       ? '-' + distance
       : distance
 
-    this.sendGcode(`G91
+    if (this.forceMove) {
+      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate}`)
+    } else {
+      this.sendGcode(`G91
       G1 ${axis}${distance} F${rate * 60}
       G90`)
+    }
   }
 }
 </script>
 
 <style type="scss" scoped>
-  ::v-deep .v-speed-dial__list {
+  :deep(.v-speed-dial__list) {
     flex-direction: column !important;
   }
 </style>

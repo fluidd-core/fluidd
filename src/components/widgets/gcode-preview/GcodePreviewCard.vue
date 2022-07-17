@@ -3,8 +3,39 @@
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
     layout-path="dashboard.gcode-preview-card"
-    draggable
+    :draggable="true"
   >
+    <template #menu>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
+        <app-btn
+          :disabled="!printerFile || printerFileLoaded"
+          small
+          @click="loadCurrent"
+        >
+          {{ $t('app.gcode.btn.load_current_file') }}
+        </app-btn>
+      </app-btn-collapse-group>
+
+      <app-btn
+        color=""
+        class="ml-1"
+        fab
+        x-small
+        text
+        :disabled="!klippyReady || !(printerPrinting || printerPaused) || !parts.length"
+        @click="excludeObjectDialog = true"
+      >
+        <v-icon>$cancelled</v-icon>
+      </app-btn>
+
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
+      >
+        <GcodePreviewControls :disabled="!fileLoaded" />
+      </app-btn-collapse-group>
+    </template>
+
     <v-card-text v-if="file">
       {{ file.name }}
     </v-card-text>
@@ -13,17 +44,24 @@
 
     <v-card-text>
       <GcodePreviewParserProgressDialog
+        v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
         :progress="parserProgress"
         :file="file"
         @cancel="abortParser"
       />
 
+      <ExcludeObjectsDialog
+        v-if="excludeObjectDialog"
+        :value="excludeObjectDialog"
+        @close="excludeObjectDialog = false"
+        @cancelObject="cancelObject($event)"
+      />
+
       <v-row>
         <v-col
           cols="12"
-          lg="9"
-          md="7"
+          md="8"
         >
           <v-row>
             <v-col>
@@ -54,40 +92,56 @@
               />
             </v-col>
           </v-row>
-          <v-row>
-            <v-col>
-              <gcode-preview
-                width="100%"
-                :layer="currentLayer"
-                :progress="moveProgress"
-                :disabled="!fileLoaded"
-              />
-            </v-col>
-          </v-row>
         </v-col>
         <v-col
           cols="12"
-          lg="3"
-          md="5"
+          md="4"
         >
-          <v-card
-            outlined
-            class="px-2 py-1 text-center stat-square"
-          >
-            <div class="">
-              {{ $t('app.gcode.label.layers') }}
-            </div>
-            <div class="focus--text">
-              {{ layerCount }}
-            </div>
-            <div class="">
-              {{ $t('app.gcode.label.current_layer_height') }}
-            </div>
-            <div class="focus--text">
-              {{ currentLayerHeight }}
-            </div>
-          </v-card>
-          <GcodePreviewControls :disabled="!fileLoaded" />
+          <v-row>
+            <v-col>
+              <v-card
+                outlined
+                class="px-2 py-1 text-center stat-square justify-center"
+              >
+                <div class="">
+                  {{ $t('app.gcode.label.layers') }}
+                </div>
+                <div class="focus--text">
+                  {{ layerCount }}
+                </div>
+                <div class="">
+                  {{ $t('app.gcode.label.current_layer_height') }}
+                </div>
+                <div class="focus--text">
+                  {{ currentLayerHeight }}
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <app-btn
+                :disabled="!fileLoaded"
+                block
+                @click="resetFile"
+              >
+                {{ $t('app.general.btn.reset_file') }}
+              </app-btn>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+
+      <v-row>
+        <v-col>
+          <gcode-preview
+            width="100%"
+            height="100%"
+            :layer="currentLayer"
+            :progress="moveProgress"
+            :disabled="!fileLoaded"
+            @cancelObject="cancelObject($event)"
+          />
         </v-col>
       </v-row>
     </v-card-text>
@@ -103,23 +157,29 @@ import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePrevie
 import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
+import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
+import { AxiosResponse } from 'axios'
+import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 
 @Component({
   components: {
+    AppBtnCollapseGroup,
     GcodePreviewParserProgressDialog,
     GcodePreview,
-    GcodePreviewControls
+    GcodePreviewControls,
+    ExcludeObjectsDialog
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
-  @Prop({
-    type: Boolean,
-    default: true
-  })
-  enabled!: boolean
+  @Prop({ type: Boolean, default: true })
+  public enabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
 
   currentLayer = 0
   moveProgress = 0
+  excludeObjectDialog = false
 
   get visibleLayer () {
     return this.currentLayer + 1
@@ -179,6 +239,22 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
       if (fileMovePosition !== this.moveProgress) {
         this.syncMoveProgress()
       }
+    }
+  }
+
+  @Watch('printerFile')
+  onPrintFileChanged () {
+    if (this.autoLoadOnPrintStart && this.printerFile) {
+      this.loadCurrent()
+    }
+  }
+
+  @Watch('fileLoaded')
+  onFileLoaded () {
+    if (this.fileLoaded &&
+        this.$store.state.config?.uiSettings.gcodePreview.autoFollowOnFileLoad &&
+        this.printerFileLoaded) {
+      this.$store.commit('gcodePreview/setViewerState', { followProgress: true }, { root: true })
     }
   }
 
@@ -258,6 +334,68 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   abortParser () {
     this.$store.dispatch('gcodePreview/terminateParserWorker')
+  }
+
+  resetFile () {
+    this.$store.dispatch('gcodePreview/reset')
+  }
+
+  async loadCurrent () {
+    const file = this.printerFile as AppFile
+    this.getGcode(file)
+      .then(response => response?.data)
+      .then((gcode: AxiosResponse) => {
+        this.$store.dispatch('gcodePreview/loadGcode', {
+          file,
+          gcode
+        })
+      })
+      .catch(e => e)
+      .finally(() => {
+        this.$store.dispatch('files/removeFileDownload')
+      })
+  }
+
+  get printerFile (): AppFile | undefined {
+    const currentFile = this.$store.state.printer.printer.current_file
+
+    if (currentFile.filename) {
+      return currentFile
+    }
+  }
+
+  get printerFileLoaded () {
+    const file = this.$store.getters['gcodePreview/getFile']
+    const printerFile = this.printerFile
+
+    if (!file || !printerFile || (file.path + '/' + file.filename) !== (printerFile.path + '/' + printerFile.filename)) {
+      this.$store.commit('gcodePreview/setViewerState', { followProgress: false })
+
+      return false
+    }
+
+    return true
+  }
+
+  get autoLoadOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
+  }
+
+  async cancelObject (id: string) {
+    const reqId = id.toUpperCase().replace(/\s/g, '_')
+
+    const res = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (res) {
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+    }
+  }
+
+  get parts () {
+    return Object.values(this.$store.getters['parts/getParts'])
   }
 }
 </script>

@@ -34,20 +34,23 @@
 
 <script lang="ts">
 import { GcodeCommands } from '@/store/console/types'
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import { Globals } from '@/globals'
+import { VInput } from '@/types'
 
 @Component({})
 export default class ConsoleCommand extends Vue {
   @Prop({ type: String })
   public value!: string
 
+  @Ref('input')
+  readonly input!: VInput
+
   @Watch('value')
   onValueChange (val: string) {
     if (val) {
       this.newValue = val
-      const input = this.$refs.input as HTMLElement
-      input.focus()
+      this.input.focus()
     } else {
       this.newValue = ''
     }

@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
-import { pick } from 'lodash'
+import { pick } from 'lodash-es'
 import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
@@ -15,7 +15,7 @@ function parseLine (line: string) {
 
   const argMap: any = {}
 
-  for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?\d+(?:\.\d+)?)/ig)) {
+  for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
     argMap[key.toLowerCase()] = Number(value)
   }
 

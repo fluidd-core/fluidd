@@ -80,7 +80,6 @@ app:
       add_dir: 폴더 추가
       add_file: 파일 추가
       download_file: Retrieving file
-      keyboard_shortcuts: 키보드 단축키
       rename_dir: 폴더명 변경
       rename_file: 파일명 변경
       upload_file: Uploading file | Uploading files
@@ -264,7 +263,7 @@ app:
       console: 명령어 창
       endstops: 엔드스탑
       fans_outputs: 팬 컨트롤
-      gcode_preview: Gcode 미리보기 [ 베타 ]
+      gcode_preview: Gcode 미리보기
       history: 작업 기록
       home: 대시보드
       jobs: 작업

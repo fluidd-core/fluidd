@@ -55,13 +55,13 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNamedInput extends Mixins(StateMixin) {
   @Prop({ type: [String, Number], required: true })
-  public value!: string | number;
+  public value!: string | number
 
   @Prop({ type: String, required: true })
   public label!: string
 
   @Prop({ type: [String, Number], required: false })
-  public resetValue!: string | number;
+  public resetValue!: string | number
 
   @Prop({ type: Boolean, default: false })
   public readonly!: boolean
@@ -73,7 +73,7 @@ export default class AppNamedInput extends Mixins(StateMixin) {
   public loading!: boolean
 
   @Prop({ type: String })
-  public suffix!: string;
+  public suffix!: string
 
   @Prop({ type: Array, default: () => { return [] } })
   public rules!: []

@@ -96,5 +96,10 @@ export const actions: ActionTree<ConsoleState, RootState> = {
   async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setFilter', filter)
     SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+  },
+
+  async onClear ({ commit, state }) {
+    commit('setLastCleared')
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.lastCleared', state.lastCleared)
   }
 }

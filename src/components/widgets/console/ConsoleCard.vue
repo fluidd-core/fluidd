@@ -6,7 +6,8 @@
     content-classes="flex-grow-1 flow-shrink-0"
     menu-breakpoint="none"
     menu-icon="$cog"
-    :draggable="true"
+    :draggable="!fullScreen"
+    :collapsable="!fullScreen"
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
@@ -32,6 +33,27 @@
         @click="console.scrollToLatest(true)"
       >
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
+      </app-btn>
+
+      <app-btn
+        v-if="!fullScreen"
+        color=""
+        fab
+        small
+        text
+        @click="$filters.routeTo($router, '/console')"
+      >
+        <v-icon>$fullScreen</v-icon>
+      </app-btn>
+
+      <app-btn
+        color=""
+        fab
+        x-small
+        text
+        @click="handleClear"
+      >
+        <v-icon>$delete</v-icon>
       </app-btn>
 
       <app-btn-collapse-group
@@ -81,7 +103,7 @@
       ref="console"
       :scrolling-paused.sync="scrollingPaused"
       :items="items"
-      :height="300"
+      :height="fullScreen ? (height - 236) : 300"
     />
   </collapsable-card>
 </template>
@@ -98,10 +120,29 @@ import { ConsoleEntry } from '@/store/console/types'
   }
 })
 export default class ConsoleCard extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  enabled!: boolean
+  height = 0
 
-  @Ref('console') console!: Console
+  created () {
+    window.addEventListener('resize', this.changeHeight)
+    this.changeHeight()
+  }
+
+  destroyed () {
+    window.removeEventListener('resize', this.changeHeight)
+  }
+
+  changeHeight () {
+    this.height = window.innerHeight
+  }
+
+  @Prop({ type: Boolean, default: true })
+  public enabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  public fullScreen!: boolean
+
+  @Ref('console')
+  readonly console!: Console
 
   scrollingPaused = false
 
@@ -150,7 +191,7 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   set autoScroll (value: boolean) {
     this.$store.dispatch('console/onUpdateAutoScroll', value)
     if (value) {
-      this.console.scrollToLatest()
+      this.console.scrollToLatest(true)
     }
   }
 
@@ -165,6 +206,10 @@ export default class ConsoleCard extends Mixins(StateMixin) {
     if (!collapsed) {
       this.console.scrollToLatest()
     }
+  }
+
+  handleClear () {
+    this.$store.dispatch('console/onClear')
   }
 }
 </script>

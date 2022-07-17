@@ -20,7 +20,8 @@ export const defaultState = (): FilesState => {
     config: [],
     config_examples: [],
     docs: [],
-    logs: []
+    logs: [],
+    timelapse: []
   }
 }
 

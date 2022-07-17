@@ -39,7 +39,7 @@
       <v-container
         fluid
         :class="{ 'fill-height': $route.meta.fillHeight }"
-        class="constrained-width pa-2 pa-sm-4"
+        class="pa-2 pa-sm-4"
       >
         <v-row
           v-if="
@@ -89,7 +89,10 @@ import { LinkPropertyHref } from 'vue-meta'
 
     return {
       title: pageTitle,
-      link: pageIcon
+      link: pageIcon,
+      meta: [
+        { name: 'theme-color', content: this.primaryColor }
+      ]
     }
   }
 })
@@ -196,6 +199,11 @@ export default class App extends Mixins(StateMixin) {
         href: icon || svg_xml
       }
     ]
+  }
+
+  get primaryColor () {
+    const theme = this.$store.getters['config/getTheme']
+    return theme.currentTheme.primary
   }
 
   mounted () {

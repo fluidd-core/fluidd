@@ -20,9 +20,14 @@ const unauthenticatedPaths = [
 
 // For these paths, we don't emit an error because we handle them
 // downstream.
-const handledErrorRequests = [
-  '/access/login'
-]
+const handledErrorRequests = {
+  400: [
+    '/access/login'
+  ],
+  502: [
+    '/access/oneshot_token'
+  ]
+}
 
 const requestInterceptor = async (config: AxiosRequestConfig) => {
   if (!config.headers) {
@@ -74,11 +79,11 @@ const responseInterceptor = (response: AxiosResponse) => {
   return response
 }
 
-const errorInterceptor = (error: AxiosError) => {
+const errorInterceptor = (error: AxiosError<string | { error?: { message?: string} } | undefined>) => {
   let message: string | undefined
 
   // Check if its a network / server error.
-  if (!error.response) {
+  if (!error.response || error.code === 'ERR_NETWORK') {
     // Network / Server Error.
     if (error.message) message = error.message
     consola.debug(message || 'Network error')
@@ -86,8 +91,11 @@ const errorInterceptor = (error: AxiosError) => {
   }
 
   // All other errors
-  if (error.response.data) message = error.response.data
-  if (error.response.data.error.message) message = error.response.data.error.message
+  if (typeof error.response.data === 'object') {
+    message = error.response.data.error?.message
+  } else {
+    message = error.response.data
+  }
 
   const url = error.config.url || ''
   switch (error.response.status) {
@@ -95,9 +103,10 @@ const errorInterceptor = (error: AxiosError) => {
       consola.debug(error.response.status, error.message, message)
       EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
       break
+    case 502:
     case 400:
       consola.debug(error.response.status, error.message, message)
-      if (!handledErrorRequests.includes(url)) {
+      if (!handledErrorRequests[error.response.status].includes(url)) {
         EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
       }
       break

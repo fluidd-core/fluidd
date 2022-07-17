@@ -72,8 +72,8 @@ import {
   mdiOpenInApp,
   mdiDesktopTower,
   mdiDotsHorizontal,
-  mdiElectricSwitch,
-  mdiElectricSwitchClosed,
+  mdiToggleSwitch,
+  mdiToggleSwitchOffOutline,
   mdiMotionOutline,
   mdiThermometerLow,
   mdiHelpCircle,
@@ -85,7 +85,7 @@ import {
   mdiCloudAlert,
   mdiCircle,
   mdiFolderMove,
-  mdiKeyboard,
+  mdiConsoleLine,
   mdiDotsGrid,
   mdiHammerWrench,
   mdiAccount,
@@ -116,7 +116,14 @@ import {
   mdiSwapVertical,
   mdiFullscreen,
   mdiStop,
-  mdiPlay
+  mdiPlay,
+  mdiFileVideoOutline,
+  mdiBellSleep,
+  mdiChip,
+  mdiViewHeadline,
+  mdiAxisArrow,
+  mdiVectorLine,
+  mdiOpenInNew
 } from '@mdi/js'
 
 /**
@@ -157,7 +164,9 @@ export const Globals = Object.freeze({
     auth: { name: 'authorization', dispatch: 'auth/init' },
     power: { name: 'power', dispatch: 'power/init' },
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
-    history: { name: 'history', dispatch: 'history/init' }
+    history: { name: 'history', dispatch: 'history/init' },
+    timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
+    announcements: { name: 'announcements', dispatch: 'announcements/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -166,6 +175,7 @@ export const Globals = Object.freeze({
     { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
+    { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
     { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
   ],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
@@ -198,8 +208,8 @@ export const Icons = Object.freeze({
   chart: mdiChartTimelineVariant,
   power: mdiPower,
   powerCycle: mdiPowerCycle,
-  powerOn: mdiElectricSwitchClosed,
-  powerOff: mdiElectricSwitch,
+  powerOn: mdiToggleSwitch,
+  powerOff: mdiToggleSwitchOffOutline,
   home: mdiHome,
   close: mdiClose,
   refresh: mdiRefresh,
@@ -284,7 +294,7 @@ export const Icons = Object.freeze({
   cloudCheck: mdiCloudCheck,
   cloudAlert: mdiCloudAlert,
   cubeScan: mdiCubeScan,
-  keyboard: mdiKeyboard,
+  consoleLine: mdiConsoleLine,
   lock: mdiLock,
   lockOpen: mdiLockOpenVariant,
   lockReset: mdiLockReset,
@@ -299,7 +309,14 @@ export const Icons = Object.freeze({
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
   list: mdiFormatListBulleted,
-  fullScreen: mdiFullscreen
+  fullScreen: mdiFullscreen,
+  video: mdiFileVideoOutline,
+  snooze: mdiBellSleep,
+  chip: mdiChip,
+  viewHeadline: mdiViewHeadline,
+  absolutePositioning: mdiAxisArrow,
+  relativePositioning: mdiVectorLine,
+  openInNew: mdiOpenInNew
 })
 
 export const Waits = Object.freeze({
@@ -343,5 +360,6 @@ export const Waits = Object.freeze({
   onSetUnretractExtraLength: 'onSetUnretractExtraLength',
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
-  onFileSystem: 'onFileSystem'
+  onFileSystem: 'onFileSystem',
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
 })

@@ -19,7 +19,7 @@ module.exports = defineConfig({
     }
   },
   pwa: {
-    themeColor: '#2196F3',
+    themeColor: '',
     msTileColor: '#000000',
     appleMobileWebAppCache: 'yes',
     manifestOptions: {
@@ -43,15 +43,12 @@ module.exports = defineConfig({
         languages: ['markdown'],
         features: [
           '!codeAction',
-          '!codelens',
           '!colorPicker',
           '!contextmenu',
-          '!folding',
           '!hover',
           '!gotoError',
           '!gotoLine',
           '!gotoSymbol',
-          '!quickCommand',
           '!quickHelp',
           '!referenceSearch',
           '!snippet'

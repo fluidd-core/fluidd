@@ -89,7 +89,6 @@ app:
       add_dir: اضافة مجلد
       add_file: اضافة ملف
       download_file: جاري جلب الملف
-      keyboard_shortcuts: اختصارات لوحة المفاتيح
       rename_dir: اعادة تسمية مجلد
       rename_file: اعادة تسمية ملف
       upload_file: جاري رفع الملف | جاري رفع الملفات
@@ -279,7 +278,7 @@ app:
       console: الطرفية
       endstops: نقاط التوقف
       fans_outputs: المراوح والمخرجات
-      gcode_preview: معاينة Gcode [تجريبي]
+      gcode_preview: معاينة Gcode
       history: التاريخ
       home: الرئيسية
       jobs: المهام

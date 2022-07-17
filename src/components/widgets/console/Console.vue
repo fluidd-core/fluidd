@@ -53,8 +53,8 @@ import { Component, Prop, Mixins, Watch, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
-import { ConsoleEntry } from '@/store/console/types'
 import { SocketActions } from '@/api/socketActions'
+import { DinamicScroller } from 'vue-virtual-scroller'
 
 @Component({
   components: {
@@ -64,21 +64,20 @@ import { SocketActions } from '@/api/socketActions'
 })
 export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
-  items!: []
+  public items!: []
 
   @Prop({ type: String, default: 'id' })
-  keyField!: string
+  public keyField!: string
 
   @Prop({ type: Number, default: 250 })
-  height!: number
+  public height!: number
 
   @Prop({ type: Boolean, default: false })
-  readonly!: boolean
+  public readonly!: boolean
 
-  @Ref('scroller') dynamicScroller: any
+  @Ref('scroller')
+  readonly dynamicScroller!: DinamicScroller
 
-  _lastScroll = 0
-  _lastHeight = 0
   _pauseScroll = false
 
   get availableCommands () {
@@ -102,77 +101,66 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   mounted () {
-    this.$nextTick(() => {
-      this.scrollToLatest()
-      this.watchScroll()
-    })
+    this.dynamicScroller.$el.addEventListener('scroll', this.onScroll)
   }
 
-  /**
-   * Scroll if the last item in the array is different from the previous
-   * array.
-   */
+  beforeDestroy () {
+    this.dynamicScroller.$el.removeEventListener('scroll', this.onScroll)
+  }
+
   @Watch('items', { immediate: true })
-  onItemsChange (val: ConsoleEntry[], oldVal: ConsoleEntry[]) {
-    const item = (val && val.length)
-      ? val[val.length - 1] as ConsoleEntry
-      : undefined
-    const oldItem = (oldVal && oldVal.length)
-      ? oldVal[oldVal.length - 1] as ConsoleEntry
-      : undefined
-    if (
-      (!item || !oldItem) ||
-      (item.id !== oldItem.id) ||
-      val.length !== oldVal.length
-    ) {
-      this.scrollToLatest()
-      if (this.dynamicScroller) {
-        if (this.flipLayout && this._pauseScroll) {
-          const el = this.dynamicScroller.$el
-          el.scrollTop += el.scrollHeight - this._lastHeight
+  onItemsChange (_: any, oldItems: any[]) {
+    if (this.dynamicScroller) {
+      const el = this.dynamicScroller.$el
+
+      if (this.flipLayout && (this._pauseScroll || !this.$store.state.console.autoScroll)) {
+        const { scrollHeight, clientHeight } = el
+
+        if (scrollHeight > clientHeight) {
+          this.$nextTick(() => {
+            el.scrollTop += el.scrollHeight - scrollHeight
+          })
         }
-
-        this._lastHeight = this.dynamicScroller.$el.scrollHeight
-      }
-    }
-  }
-
-  updateScrollingPaused (value: boolean) {
-    if (this._pauseScroll !== value) {
-      this._pauseScroll = value
-      this.$emit('update:scrollingPaused', value)
-    }
-  }
-
-  watchScroll () {
-    this.dynamicScroller.$el.addEventListener('scroll', (e: any) => {
-      const el = e.target
-      if (this.flipLayout ? (el.scrollTop > this._lastScroll) : (el.scrollTop < this._lastScroll)) {
-        this.updateScrollingPaused(true)
       } else {
-        if (this._pauseScroll) {
-          if (this.flipLayout ? (el.scrollTop < 1) : (el.scrollHeight - el.scrollTop - el.clientHeight < 1)) {
-            this.updateScrollingPaused(false)
-          }
-        }
+        this.scrollToLatest(oldItems?.length === 0)
       }
-      this._lastScroll = el.scrollTop
+    }
+  }
+
+  updateScrollingPaused () {
+    this.$nextTick(() => {
+      const { scrollTop, scrollHeight, clientHeight } = this.dynamicScroller.$el
+
+      const pauseScroll = this.flipLayout ? scrollTop > 1 : scrollHeight - scrollTop - clientHeight > 1
+
+      if (this._pauseScroll !== pauseScroll) {
+        this._pauseScroll = pauseScroll
+        this.$emit('update:scrollingPaused', pauseScroll)
+      }
     })
+  }
+
+  onScroll () {
+    this.updateScrollingPaused()
   }
 
   scrollToLatest (force?: boolean) {
-    // If we have auto scroll turned off, then don't do this
-    // unless it's readonly or forced.
+    if (this._pauseScroll && !force) return
+
     if (this.dynamicScroller) {
-      if (this._pauseScroll && !force) return
       if (
         this.$store.state.console.autoScroll ||
         this.readonly ||
         force
       ) {
-        this.dynamicScroller[this.flipLayout ? 'scrollToItem' : 'scrollToBottom'](0)
-        this.updateScrollingPaused(false)
+        if (this.flipLayout) {
+          this.dynamicScroller.scrollToItem(0)
+        } else {
+          this.dynamicScroller.scrollToBottom()
+        }
       }
+
+      this.updateScrollingPaused()
     }
   }
 
@@ -210,7 +198,7 @@ export default class Console extends Mixins(StateMixin) {
     flex: 0 0 auto;
   }
 
-  ::v-deep .vue-recycle-scroller__item-wrapper {
+  :deep(.vue-recycle-scroller__item-wrapper) {
     overflow: revert;
   }
 

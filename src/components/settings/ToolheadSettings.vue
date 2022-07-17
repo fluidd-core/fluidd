@@ -164,6 +164,18 @@
 
       <v-divider />
 
+      <template v-if="printerSupportsForceMove">
+        <app-setting :title="$t('app.setting.label.force_move_toggle_warning')">
+          <v-switch
+            v-model="forceMoveToggleWarning"
+            hide-details
+            class="mt-0 mb-4"
+          />
+        </app-setting>
+
+        <v-divider />
+      </template>
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -181,14 +193,17 @@
 <script lang="ts">
 import { Component, Ref, Vue } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/index'
+import { VInput } from '@/types'
 
 @Component({
   components: {}
 })
 export default class ToolHeadSettings extends Vue {
-  @Ref('toolheadMoveDistances') readonly toolheadMoveDistancesElement!: any;
+  @Ref('toolheadMoveDistances')
+  readonly toolheadMoveDistancesElement!: VInput
 
-  @Ref('zAdjustValues') readonly zAdjustValuesElement!: any;
+  @Ref('zAdjustValues')
+  readonly zAdjustValuesElement!: VInput
 
   rules = {
     numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
@@ -333,6 +348,22 @@ export default class ToolHeadSettings extends Vue {
   set invertZ (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.z.inverted',
+      value,
+      server: true
+    })
+  }
+
+  get printerSupportsForceMove () {
+    return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
+  }
+
+  get forceMoveToggleWarning () {
+    return this.$store.state.config.uiSettings.general.forceMoveToggleWarning
+  }
+
+  set forceMoveToggleWarning (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.forceMoveToggleWarning',
       value,
       server: true
     })

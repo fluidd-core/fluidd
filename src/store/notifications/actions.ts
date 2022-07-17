@@ -54,14 +54,21 @@ export const actions: ActionTree<NotificationsState, RootState> = {
   /**
    * Clear a notification.
    */
-  async clearNotification ({ commit }, n: AppNotification | string) {
+  async clearNotification ({ commit, dispatch }, n: AppNotification | string) {
+    if (typeof n === 'object' && n.type === 'announcement') {
+      dispatch('announcements/dismiss', { entry_id: n.id }, { root: true })
+      return
+    }
+
     commit('setClearNotification', n)
   },
 
   /**
    * Clear all notifications.
    */
-  async clearAll ({ commit }) {
+  async clearAll ({ commit, dispatch }) {
     commit('setClearAllNotifications')
+
+    dispatch('announcements/dismissAll', {}, { root: true })
   }
 }

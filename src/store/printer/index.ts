@@ -25,6 +25,7 @@ export const defaultState = (): PrinterState => {
       configfile: {
         warnings: [],
         save_config_pending: false,
+        save_config_pending_items: {},
         config: {
           virtual_sdcard: {},
           pause_resume: {},
@@ -81,6 +82,11 @@ export const defaultState = (): PrinterState => {
         print_time: 0,
         square_corner_velocity: 0,
         extruder: ''
+      },
+      motion_report: {
+        live_position: [0, 0, 0, 0],
+        live_velocity: 0,
+        live_extruder_velocity: 0
       },
       firmware_retraction: {
         retract_length: 0,

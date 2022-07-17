@@ -14,7 +14,7 @@ export const mutations: MutationTree<WaitState> = {
    * Add a wait, ensuring we don't add dupes.
    */
   setAddWait (state, payload) {
-    const i = state.waits.findIndex(wait => wait === payload)
+    const i = state.waits.indexOf(payload)
     if (i === -1) state.waits.push(payload)
   },
 
@@ -22,8 +22,7 @@ export const mutations: MutationTree<WaitState> = {
    * Remove a wait, if found.
    */
   setRemoveWait (state, payload) {
-    if (state.waits.length) {
-      state.waits.splice(state.waits.indexOf(payload, 0), 1)
-    }
+    const i = state.waits.indexOf(payload)
+    if (i !== -1) state.waits.splice(i, 1)
   }
 }

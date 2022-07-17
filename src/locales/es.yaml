@@ -92,7 +92,6 @@ app:
       add_dir: Agregar una carpeta
       add_file: Agregar un archivo
       download_file: Recuperando el archivo
-      keyboard_shortcuts: Atajos de teclado
       rename_dir: Cambiar el nombre de la carpeta
       rename_file: Cambiar el nombre del archivo
       upload_file: Subiendo archivo | Subiendo archivos
@@ -288,7 +287,7 @@ app:
       console: Consola
       endstops: Endstops
       fans_outputs: Ventiladores y salidas
-      gcode_preview: Previsualización de Gcode [ Beta ]
+      gcode_preview: Previsualización de Gcode
       history: Historial
       home: Inicio
       jobs: Tareas

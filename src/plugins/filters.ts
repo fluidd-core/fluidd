@@ -1,6 +1,6 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
-import { camelCase, startCase, capitalize, isFinite } from 'lodash'
+import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
 import { Globals, Waits } from '@/globals'
@@ -139,6 +139,27 @@ export const Filters = {
     if (lengthInMm >= 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
     if (lengthInMm > 100) return (lengthInMm / 10).toFixed(1) + ' cm'
     return lengthInMm.toFixed(1) + ' mm'
+  },
+
+  /**
+   * Formats a number representing g to human readable weight.
+   */
+  getReadableWeightString (weightInG: number) {
+    if (weightInG >= 1000) return (weightInG / 1000).toFixed(2) + ' kg'
+    return weightInG.toFixed(2) + ' g'
+  },
+
+  /**
+   * Formats a number representing mm to human readable distance.
+   */
+  getReadableFrequencyString (frequencyInHz: number) {
+    let i = 0
+    const frequencyUnits = [' Hz', ' KHz', ' MHz', ' GHz']
+    while (frequencyInHz >= 1000) {
+      frequencyInHz = frequencyInHz / 1000
+      i++
+    }
+    return frequencyInHz.toFixed() + frequencyUnits[i]
   },
 
   /**

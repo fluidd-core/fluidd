@@ -9,9 +9,7 @@
       :option="options"
       :update-options="{ notMerge: true }"
       :init-options="{ renderer: 'svg' }"
-      :events="[
-        ['legendselectchanged', handleLegendSelectChange ]
-      ]"
+      @legendselectchanged="handleLegendSelectChange"
     />
   </div>
 </template>
@@ -24,10 +22,10 @@ import getKlipperType from '@/util/get-klipper-type'
 @Component({})
 export default class ThermalChart extends Vue {
   @Prop({ type: String, default: '100%' })
-  height!: string;
+  public height!: string
 
   @Ref('chart')
-  chart!: ECharts
+  readonly chart!: ECharts
 
   loading = false
   series: any[] = []

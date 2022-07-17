@@ -19,7 +19,7 @@
     </template>
 
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           small
           class="ma-1"
@@ -37,19 +37,33 @@
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
         />
+      </app-btn-collapse-group>
 
-        <app-btn-collapse-group
-          :collapsed="true"
-          menu-icon="$cog"
-        >
-          <v-checkbox
-            v-model="showRateOfChange"
-            :label="$t('app.setting.label.show_rate_of_change')"
-            color="primary"
-            hide-details
-            class="mx-2 mt-2 mb-2"
-          />
-        </app-btn-collapse-group>
+      <app-btn-collapse-group
+        :collapsed="true"
+        menu-icon="$cog"
+      >
+        <v-checkbox
+          v-model="showRateOfChange"
+          :label="$t('app.setting.label.show_rate_of_change')"
+          color="primary"
+          hide-details
+          class="mx-2 mt-2 mb-2"
+        />
+        <v-checkbox
+          v-model="showRelativeHumidity"
+          :label="$t('app.setting.label.show_relative_humidity')"
+          color="primary"
+          hide-details
+          class="mx-2 mt-2 mb-2"
+        />
+        <v-checkbox
+          v-model="showBarometricPressure"
+          :label="$t('app.setting.label.show_barometric_pressure')"
+          color="primary"
+          hide-details
+          class="mx-2 mt-2 mb-2"
+        />
       </app-btn-collapse-group>
     </template>
 
@@ -85,9 +99,13 @@ import { TemperaturePreset } from '@/store/config/types'
 })
 export default class TemperatureCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  enabled!: boolean
+  public enabled!: boolean
 
-  @Ref('thermalchart') readonly thermalChart!: ThermalChart
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
+
+  @Ref('thermalchart')
+  readonly thermalChart!: ThermalChart
 
   get chartReady () {
     return (
@@ -136,6 +154,30 @@ export default class TemperatureCard extends Mixins(StateMixin) {
   set showRateOfChange (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.showRateOfChange',
+      value,
+      server: true
+    })
+  }
+
+  get showRelativeHumidity () {
+    return this.$store.state.config.uiSettings.general.showRelativeHumidity
+  }
+
+  set showRelativeHumidity (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showRelativeHumidity',
+      value,
+      server: true
+    })
+  }
+
+  get showBarometricPressure () {
+    return this.$store.state.config.uiSettings.general.showBarometricPressure
+  }
+
+  set showBarometricPressure (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showBarometricPressure',
       value,
       server: true
     })

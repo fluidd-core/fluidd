@@ -91,14 +91,15 @@
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Macro } from '@/store/macros/types'
+import gcodeMacroParams from '@/util/gcode-macro-params'
 
 @Component({})
 export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  macro!: Macro
+  public macro!: Macro
 
   @Prop({ type: Boolean, default: false })
-  enableParams!: boolean;
+  public enableParams!: boolean
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 
@@ -129,11 +130,7 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
     if (this.macro.config.gcode) {
-      for (const [, name, rest] of this.macro.config.gcode.matchAll(/params\.(\w+)(.*)/gi)) {
-        const valueMatch = /\|\s*default\s*\(\s*([^,)]+)/i.exec(rest)
-
-        const value = ((valueMatch && valueMatch[1]) || '').trim()
-
+      for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
         if (!this.params[name]) {
           this.$set(this.params, name, { value, reset: value })
         }

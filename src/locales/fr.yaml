@@ -95,7 +95,6 @@ app:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
       download_file: Téléchargement en cours
-      keyboard_shortcuts: Raccourcis de clavier
       rename_dir: Renommer le dossier
       rename_file: Renommer le fichier
       upload_file: Upload en cours
@@ -448,7 +447,7 @@ app:
       os_packages: Paquets du système d'exploitation
       package_list: Liste des paquets
       up_to_date: A JOUR
-      updates_available: Mises à jour disponnibles
+      updates_available: Mises à jour disponibles
     status:
       finished: Mises à jour terminées
       updating: Mise à jour ...

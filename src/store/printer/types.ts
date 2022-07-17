@@ -12,6 +12,7 @@ export interface Extruder {
 }
 
 export interface MCU {
+  name: string;
   last_stats: MCUData;
   mcu_build_versions: string;
   mcu_constants: MCUData;
@@ -22,11 +23,15 @@ export interface MCUData {
   [index: string]: string | number;
 }
 
-export interface Heater {
+export type OutputType<T = Record<string, any>> = {
+  config: T
   name: string;
   prettyName: string;
   key: string;
   color?: string;
+  type: string;
+}
+export interface Heater extends OutputType {
   temperature: number;
   target: number;
   power: number;
@@ -34,13 +39,7 @@ export interface Heater {
   maxTemp?: number;
 }
 
-export interface Fan {
-  config: FanConfig;
-  name: string;
-  prettyName: string;
-  key: string;
-  color?: string;
-  type: string;
+export interface Fan extends OutputType<FanConfig> {
   controllable: boolean;
   speed?: number;
   rpm?: number | null;
@@ -51,22 +50,23 @@ export interface Fan {
 }
 
 export interface FanConfig {
-  [index: string]: string | number | undefined;
+  [key: string]: string | number | undefined;
   pin: string;
   max_power: number;
   off_below: number;
 }
 
-export interface OutputPin {
-  name: string;
-  prettyName: string;
-  key: string;
+export interface Led extends OutputType {
   color?: string;
-  type: string;
+  color_data: number[][]
+}
+
+export interface OutputPin extends OutputType<OutputPinConfig> {
   controllable: boolean;
   pwm: boolean;
   scale: number;
   static: number;
+  value: number;
 }
 
 export interface OutputPinConfig {

@@ -58,19 +58,21 @@
           </td>
           <td>
             <!-- icons are 16px small, or 24px for standard size. -->
-            <v-icon
-              v-if="!item.thumbnails || !item.thumbnails.length"
-              :small="dense"
-              :color="(item.type === 'file') ? 'grey' : 'primary'"
-            >
-              {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
-            </v-icon>
-            <img
-              v-if="item.thumbnails && item.thumbnails.length"
-              class="file-icon-thumb"
-              :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
-              :width="(dense) ? 16 : 24"
-            >
+            <v-layout justify-center>
+              <v-icon
+                v-if="!item.thumbnails || !item.thumbnails.length"
+                :small="dense"
+                :color="(item.type === 'file') ? 'grey' : 'primary'"
+              >
+                {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
+              </v-icon>
+              <img
+                v-if="item.thumbnails && item.thumbnails.length"
+                class="file-icon-thumb"
+                :class="{dense, large: largeThumbnails}"
+                :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
+              >
+            </v-layout>
           </td>
 
           <file-row-item :nowrap="false">
@@ -123,7 +125,7 @@
             item-value="filament_weight_total"
           >
             <span v-if="item.filament_weight_total !== undefined">
-              {{ item.filament_weight_total }} g
+              {{ $filters.getReadableWeightString(item.filament_weight_total) }}
             </span>
           </file-row-item>
 
@@ -242,7 +244,11 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { AppDirectory, AppFile, AppFileWithMeta, FileFilter } from '@/store/files/types'
+import {
+  AppFileWithMeta,
+  FileBrowserEntry,
+  FileFilter
+} from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
@@ -255,42 +261,45 @@ import FileRowItem from './FileRowItem.vue'
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: String, required: true })
-  root!: string;
+  public root!: string
 
   @Prop({ type: Array, required: true })
-  files!: AppFile[] | AppDirectory[]
+  public files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean, default: false })
-  dense!: boolean;
+  public dense!: boolean
 
   @Prop({ type: Boolean, default: false })
-  loading!: boolean;
+  public loading!: boolean
 
   // Currently defined list of headers.
   @Prop({ type: Array, required: true })
-  headers!: AppTableHeader[]
+  public headers!: AppTableHeader[]
 
   @Prop({ type: String, required: false })
-  search!: string;
+  public search!: string
 
   @Prop({ type: Array, default: () => { return [] } })
-  filters!: FileFilter[]
+  public filters!: FileFilter[]
 
   @Prop({ type: Boolean, required: true })
-  dragState!: boolean;
+  public dragState!: boolean
 
   @Prop({ type: Boolean, default: false })
-  disabled!: boolean
+  public disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  bulkActions!: boolean;
+  public bulkActions!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  public largeThumbnails!: boolean
 
   @Prop({ type: Array, required: true })
-  selected!: (AppFile | AppFileWithMeta | AppDirectory)[]
+  public selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
-  dragItem: AppFile | AppFileWithMeta | AppDirectory | null = null
+  dragItem: FileBrowserEntry | AppFileWithMeta | null = null
   ghost: HTMLDivElement | undefined = undefined
-  selectedItems: (AppFile | AppFileWithMeta | AppDirectory)[] = []
+  selectedItems: (FileBrowserEntry | AppFileWithMeta)[] = []
 
   // Is the history component enabled
   get showHistory () {
@@ -306,17 +315,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   // Make sure we update the selected items if it's changed.
   @Watch('selected')
-  onSelected (selected: (AppFile | AppFileWithMeta | AppDirectory)[]) {
+  onSelected (selected: (FileBrowserEntry | AppFileWithMeta)[]) {
     this.selectedItems = selected
   }
 
   // When the selected items change, update the parent.
-  handleSelected (selected: (AppFile | AppFileWithMeta | AppDirectory)[]) {
+  handleSelected (selected: (FileBrowserEntry | AppFileWithMeta)[]) {
     this.$emit('update:selected', selected)
   }
 
   // We ignore our [..] dir, so handle faking our checkbox states.
-  handleItemSelected (item: { item: AppFile | AppFileWithMeta | AppDirectory; value: boolean }) {
+  handleItemSelected (item: { item: FileBrowserEntry | AppFileWithMeta; value: boolean }) {
     // If last two, and filtered results in 0 - set to 0.
     if (
       !item.value &&
@@ -337,7 +346,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Determines if a row is currently in a draggable state or not.
-  draggable (item: AppFile | AppFileWithMeta | AppDirectory) {
+  draggable (item: FileBrowserEntry | AppFileWithMeta) {
     return (
       item.name !== '..' &&
       this.files.length > 0 &&
@@ -364,7 +373,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Table row is being dragged
-  handleDrag (item: AppFile | AppFileWithMeta | AppDirectory) {
+  handleDrag (item: FileBrowserEntry | AppFileWithMeta) {
     if (this.dragState !== true) {
       this.dragItem = item
       this.$emit('update:dragState', true)
@@ -372,7 +381,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // File was dropped on another table row.
-  handleDrop (destination: AppFile | AppFileWithMeta | AppDirectory, e: { target: HTMLElement}) {
+  handleDrop (destination: FileBrowserEntry | AppFileWithMeta, e: { target: HTMLElement}) {
     this.handleDragLeave(e)
     if (
       destination.type === 'directory' &&
@@ -420,8 +429,21 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @import '~vuetify/src/styles/styles.sass';
 
   // Lighten up dark mode checkboxes.
-  .theme--dark ::v-deep .v-simple-checkbox .v-icon {
+  .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
+  }
+
+  .file-icon-thumb {
+    max-width: 24px;
+  }
+
+  .file-icon-thumb.dense {
+    max-width: 16px;
+  }
+
+  .file-icon-thumb.large {
+    max-width: initial;
+    max-height: 32px;
   }
 
 </style>

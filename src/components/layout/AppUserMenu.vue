@@ -4,17 +4,22 @@
     offset-y
     :close-delay="300"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        v-bind="attrs"
-        fab
-        text
-        small
-        v-on="on"
-        @click="$emit('drawer')"
-      >
-        <v-icon>$account</v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            v-bind="attrs"
+            fab
+            text
+            small
+            v-on="{ ...tooltip, ...menu }"
+            @click="$emit('drawer')"
+          >
+            <v-icon>$account</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ currentUser }}</span>
+      </v-tooltip>
     </template>
 
     <v-card>
@@ -27,15 +32,24 @@
         <span class="text-h5">{{ currentUser }}</span>
 
         <div
-          v-if="!isTrustedOnly"
+          v-if="user && !isTrustedOnly"
           class="mt-3"
         >
           <app-btn
+            :disabled="user.source !== 'moonraker'"
             small
             @click="$emit('change-password')"
           >
-            Change password
+            {{ $t('app.general.label.change_password') }}
           </app-btn>
+          <div
+            v-if="user.source !== 'moonraker'"
+            class="mt-2"
+          >
+            <small>
+              {{ $t('app.general.label.user_managed_source', { source: $t(`app.general.label.${user.source}`) }) }}
+            </small>
+          </div>
         </div>
       </v-card-text>
 
@@ -68,7 +82,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { startCase, capitalize } from 'lodash'
+import { startCase, capitalize } from 'lodash-es'
 
 @Component({})
 export default class AppNotificationMenu extends Vue {

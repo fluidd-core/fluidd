@@ -5,6 +5,18 @@
     :draggable="true"
     layout-path="dashboard.jobs-card"
   >
+    <template #menu>
+      <app-btn
+        color=""
+        fab
+        small
+        text
+        @click="$filters.routeTo($router, '/jobs')"
+      >
+        <v-icon>$fullScreen</v-icon>
+      </app-btn>
+    </template>
+
     <file-system
       roots="gcodes"
       name="dashboard"
@@ -26,7 +38,7 @@ import StateMixin from '@/mixins/state'
 })
 export default class JobsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  enabled!: boolean
+  public enabled!: boolean
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)

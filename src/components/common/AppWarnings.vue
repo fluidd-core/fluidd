@@ -13,7 +13,7 @@
         <li
           v-for="(warning, index) in printerWarnings"
           :key="index"
-          v-html="warning.message"
+          v-html="linkExternalUrls(warning.message)"
         />
       </ul>
     </div>
@@ -26,7 +26,7 @@
         <li
           v-for="(warning, index) in klipperWarnings"
           :key="index"
-          v-html="warning.message"
+          v-html="linkExternalUrls(warning.message)"
         />
       </ul>
     </div>
@@ -39,7 +39,7 @@
         <li
           v-for="(failedComponent, index) in moonrakerFailedComponents"
           :key="index"
-          v-html="failedComponent"
+          v-html="linkExternalUrls(failedComponent)"
         />
       </ul>
     </div>
@@ -52,7 +52,7 @@
         <li
           v-for="(warning, index) in moonrakerWarnings"
           :key="index"
-          v-html="warning"
+          v-html="linkExternalUrls(warning)"
         />
       </ul>
     </div>
@@ -70,6 +70,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Globals } from '@/globals'
+import linkExternalUrls from '@/util/link-external-urls'
 
 @Component({
   components: {}
@@ -114,5 +115,7 @@ export default class AppWarnings extends Mixins(StateMixin) {
   get moonrakerWarnings () {
     return this.$store.getters['printer/getMoonrakerWarnings']
   }
+
+  linkExternalUrls = linkExternalUrls
 }
 </script>

@@ -34,7 +34,7 @@ import { OutputPin as IOutputPin } from '@/store/printer/types'
 @Component({})
 export default class OutputPin extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  pin!: IOutputPin
+  public pin!: IOutputPin
 
   setValue (pin: IOutputPin, target: number) {
     if (!pin.pwm) {

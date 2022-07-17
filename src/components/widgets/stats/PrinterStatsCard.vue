@@ -4,7 +4,7 @@
     icon="$chart"
   >
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           small
           class="ma-1"
@@ -132,7 +132,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import JobHistory from '@/components/widgets/history/JobHistory.vue'
 import { SocketActions } from '@/api/socketActions'
 
@@ -142,6 +142,9 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class PrinterStatsCard extends Vue {
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
+
   get rollup () {
     return this.$store.getters['history/getRollUp']
   }

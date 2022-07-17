@@ -1,4 +1,4 @@
 # Notes
 
-https://socialify.git.ci/cadriel/fluidd
+https://socialify.git.ci/fluidd-core/fluidd
 Font = Raleway

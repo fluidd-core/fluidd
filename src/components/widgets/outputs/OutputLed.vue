@@ -15,6 +15,7 @@
         :primary="primaryColor"
         :white="whiteColor"
         :title="led.prettyName"
+        :supported-channels="supportedChannels"
         dot
         @change="handleColorChange"
       />
@@ -26,23 +27,67 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { IroColor } from '@irojs/iro-core'
 import StateMixin from '@/mixins/state'
+import { Led } from '@/store/printer/types'
+
+type Channel = 'r' | 'g' | 'b' | 'w'
 
 @Component({})
 export default class OutputLed extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  led!: any
+  public led!: Led
+
+  channelLookup: Record<Channel, string> = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
+
+  get supportedChannels (): string {
+    const { type, config } = this.led
+
+    if ('color_order' in config) {
+      return config.color_order[0]
+    }
+
+    switch (type) {
+      case 'dotstar':
+        return 'RGB'
+
+      case 'led':
+      {
+        const channels = []
+
+        if ('red_pin' in config) channels.push('R')
+        if ('green_pin' in config) channels.push('G')
+        if ('blue_pin' in config) channels.push('B')
+        if ('white_pin' in config) channels.push('W')
+
+        return channels.join('')
+      }
+    }
+
+    return 'RBGW'
+  }
+
+  get currentColor () {
+    return this.convertFromNumberArray(this.led.color_data[0])
+  }
 
   get primaryColor () {
-    const vals = this.convertTo(this.led.color_data[0])
-    const c = new IroColor(vals)
-    return c.hexString
+    const color = new IroColor(this.currentColor)
+
+    return color.hexString
   }
 
   get whiteColor () {
-    const vals = this.convertTo(this.led.color_data[0])
-    if (!vals.w) return undefined
-    const c = new IroColor({ r: vals.w, g: vals.w, b: vals.w })
-    return c.hexString
+    if (!this.supportedChannels.includes('W')) {
+      return undefined
+    }
+
+    const currentColor = this.currentColor
+    const color = new IroColor({
+      r: currentColor.w,
+      g: currentColor.w,
+      b: currentColor.w
+    })
+
+    return color.hexString
   }
 
   get isMobile () {
@@ -50,43 +95,28 @@ export default class OutputLed extends Mixins(StateMixin) {
   }
 
   handleColorChange (value: { channel: string; color: IroColor }) {
-    // Will return an update to either the primary or white channel.
-    // Gather the existing values..
-    const currentVals = this.led.color_data[0]
-    const newVals = this.convertFrom(value.color.rgb)
+    const selectedColor = value.color.rgb
 
-    if (value.channel === 'primary') {
-      if (this.whiteColor) newVals.w = currentVals.W
-    } else {
-      if (this.whiteColor) newVals.w = newVals.r
-      newVals.r = currentVals.R
-      newVals.g = currentVals.G
-      newVals.b = currentVals.B
+    const newColor: Record<Channel, number> = {
+      ...this.currentColor,
+      ...(value.channel === 'primary' ? selectedColor : { w: selectedColor.r })
     }
 
-    const map: { [index: string]: string } = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
-    let s = `SET_LED LED=${this.led.name}`
+    const supportedChannels = this.supportedChannels.toLowerCase().split('') as Channel[]
+    const colorsString = supportedChannels.map(channel => `${this.channelLookup[channel]}=${Math.round(newColor[channel] * 1000 / 255) / 1000}`).join(' ')
 
-    Object.keys(newVals).forEach((key) => {
-      s += ` ${map[key]}=${newVals[key]}`
-    })
-    this.sendGcode(s)
+    this.sendGcode(`SET_LED LED=${this.led.name} ${colorsString}`)
   }
 
-  convertTo (o: any) {
-    const r: any = {}
-    Object.keys(o).forEach((key) => {
-      r[key.toLowerCase()] = Math.round(o[key] * 255)
-    })
-    return r
-  }
+  convertFromNumberArray (colorData: number[]) : Record<Channel, number> {
+    const [r, g, b, w] = colorData.map(value => value * 255)
 
-  convertFrom (o: any) {
-    const r: any = {}
-    Object.keys(o).forEach((key) => {
-      r[key.toLowerCase()] = Number.parseFloat((o[key] / 255).toPrecision(2))
-    })
-    return r
+    return {
+      r,
+      g,
+      b,
+      w
+    }
   }
 }
 </script>

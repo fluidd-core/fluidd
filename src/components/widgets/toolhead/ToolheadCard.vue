@@ -29,7 +29,18 @@
     </template>
 
     <template #menu>
-      <app-btn-collapse-group>
+      <app-btn-collapse-group :collapsed="menuCollapsed">
+        <app-btn
+          v-if="printerSupportsForceMove"
+          :elevation="2"
+          :disabled="!klippyReady || printerPrinting"
+          small
+          class="ml-1"
+          :color="forceMove ? 'error' : undefined"
+          @click="toggleForceMove"
+        >
+          {{ $t('app.tool.tooltip.force_move') }}
+        </app-btn>
         <app-btn
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
@@ -37,7 +48,7 @@
           class="ml-1"
           @click="sendGcode('M84')"
         >
-          MOTORS OFF
+          {{ $t('app.tool.tooltip.motors_off') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
@@ -48,7 +59,7 @@
           class="ml-1"
           @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
         >
-          Bed_Screws_Adjust
+          {{ $t('app.tool.tooltip.bed_screws_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
@@ -59,7 +70,7 @@
           class="ml-1"
           @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
         >
-          Screws_Tilt_Calculate
+          {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
@@ -70,7 +81,7 @@
           class="ml-1"
           @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
         >
-          Z_Tilt_Adjust
+          {{ $t('app.tool.tooltip.z_tilt_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
@@ -81,17 +92,17 @@
           class="ml-1"
           @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
         >
-          QGL
+          {{ $t('app.tool.tooltip.quad_gantry_level') }}
         </app-btn>
       </app-btn-collapse-group>
     </template>
 
-    <toolhead />
+    <toolhead :force-move="forceMove" />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
@@ -102,6 +113,11 @@ import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
+  forceMove = false
+
+  @Prop({ type: Boolean, default: false })
+  public menuCollapsed!: boolean
+
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
   }
@@ -120,6 +136,25 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsBedScrewsCalculate (): boolean {
     return 'screws_tilt_adjust' in this.printerSettings
+  }
+
+  get printerSupportsForceMove () {
+    return this.printerSettings.force_move?.enable_force_move ?? false
+  }
+
+  async toggleForceMove () {
+    if (!this.forceMove && this.$store.state.config.uiSettings.general.forceMoveToggleWarning) {
+      const result = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
+    this.forceMove = !this.forceMove
   }
 }
 </script>

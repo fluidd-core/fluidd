@@ -2,6 +2,7 @@
   <v-form
     ref="form"
     v-model="valid"
+    :class="{'full-width-slider': fullWidth}"
     @submit.prevent
   >
     <v-row no-gutters>
@@ -19,7 +20,7 @@
         class="py-0"
       >
         <v-text-field
-          v-model="internalStringValue"
+          v-model.number="internalValue"
           :suffix="suffix"
           :rules="textRules"
           :readonly="isLocked"
@@ -32,15 +33,14 @@
           outlined
           hide-details
           @change="handleChange($event)"
-          @focus="directInput = true; $event.target.select()"
-          @blur="directInput = false"
+          @focus="$event.target.select()"
         >
           <template #prepend>
             <v-btn
               v-if="isMobile"
               icon
               small
-              :disabled="false"
+              :disabled="disabled"
               style="margin-top: -4px;"
               @click="lockState = !lockState"
             >
@@ -77,7 +77,6 @@
     </v-row>
 
     <v-slider
-      ref="slider"
       v-model="internalValue"
       :rules="rules"
       :min="min"
@@ -86,16 +85,14 @@
       :disabled="disabled || loading || isLocked || overridden"
       dense
       hide-details
-      @start="directInput=false"
       @change="handleChange($event)"
     />
   </v-form>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { VForm, VSlider } from '@/types/vuetify'
 
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {
@@ -103,7 +100,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   public value!: number
 
   @Prop({ type: Number, required: false })
-  public resetValue!: number;
+  public resetValue!: number
 
   @Prop({ type: String, required: true })
   public label!: string
@@ -121,32 +118,27 @@ export default class AppSlider extends Mixins(StateMixin) {
   public loading!: boolean
 
   @Prop({ type: Number, default: 0 })
-  public min!: number;
+  public min!: number
 
   @Prop({ type: Number, default: 100 })
-  public max!: number;
+  public max!: number
 
   @Prop({ type: Boolean, default: false })
-  public overridable!: boolean;
+  public overridable!: boolean
 
   @Prop({ type: Number, default: 1 })
-  public step!: number;
+  public step!: number
 
   @Prop({ type: String })
-  public suffix!: string;
+  public suffix!: string
 
-  @Ref('slider')
-  slider!: VSlider;
-
-  @Ref('form')
-  form!: VForm;
+  @Prop({ type: Boolean, default: false })
+  public fullWidth!: boolean
 
   valid = true
   lockState = false
   overridden = false
-  internalStringValue: string = this.value.toString()
   internalValue: number = this.value
-  directInput = false
   internalMax = this.max
   pending = false
 
@@ -161,17 +153,14 @@ export default class AppSlider extends Mixins(StateMixin) {
   }
 
   // If one of our controls updates the value.
-  @Watch('internalStringValue')
-  onInternalStringValue (value: string) {
+  @Watch('internalValue')
+  onInternalValue (value: number) {
     if (this.valid) {
-      if (
-        +value > this.max &&
-        this.overridable
-      ) {
+      if (value > this.max && this.overridable) {
         // This is overridable, and the user wants to increase
         // past the given max. So, disable the slider - and let it be.
         this.overridden = true
-        this.internalMax = +value
+        this.internalMax = value
       } else {
         // This is not overridable, or the user has reverted back to a value
         // within the given max. So, re-enable the slider - and let it be.
@@ -179,17 +168,8 @@ export default class AppSlider extends Mixins(StateMixin) {
         this.internalMax = this.max
       }
 
-      this.internalValue = +value
+      this.$emit('input', value)
     }
-  }
-
-  @Watch('internalValue')
-  onInternalValue (value: number) {
-    if (!this.directInput) {
-      this.internalStringValue = value.toString()
-    }
-
-    this.$emit('input', value)
   }
 
   get isLocked () {
@@ -214,12 +194,12 @@ export default class AppSlider extends Mixins(StateMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules,
-      (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-      (v: string) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
+      (v: string | number) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
+      (v: string | number) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
     ]
     if (!this.overridable) {
       rules.push(
-        (v: string) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
+        (v: string | number) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
       )
     }
     return rules
@@ -229,8 +209,7 @@ export default class AppSlider extends Mixins(StateMixin) {
     this.lockState = this.locked
   }
 
-  handleChange (value: string | number) {
-    value = +value
+  handleChange (value: number) {
     if (
       value !== this.value &&
       !this.pending
@@ -252,3 +231,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.full-width-slider {
+  width: 100%;
+}
+</style>

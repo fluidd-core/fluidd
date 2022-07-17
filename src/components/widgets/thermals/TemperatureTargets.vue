@@ -40,7 +40,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -99,7 +99,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -163,7 +163,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -188,8 +188,8 @@
                   v-bind="attrs"
                   v-on="on"
                 >{{ item.temperature.toFixed(1) }}<small>°C</small>
-                  <small v-if="item.humidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-                  <small v-if="item.pressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+                  <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+                  <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
                 </span>
               </template>
               <span v-if="item.measured_max_temp && item.measured_min_temp">
@@ -257,6 +257,14 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.showRateOfChange
   }
 
+  get showRelativeHumidity () {
+    return this.$store.state.config.uiSettings.general.showRelativeHumidity
+  }
+
+  get showBarometricPressure () {
+    return this.$store.state.config.uiSettings.general.showBarometricPressure
+  }
+
   setHeaterTargetTemp (heater: string, target: number) {
     this.sendGcode(`SET_HEATER_TEMPERATURE HEATER=${heater} TARGET=${target}`)
   }
@@ -287,21 +295,21 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   @import '~vuetify/src/styles/styles.sass';
   @import '@/scss/variables.scss';
 
-  .theme--light ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+  .theme--light :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
     color: rgba(map-get($material-light, 'text-color'), 1);
     .temp-actual {
       color: rgba(map-get($material-light, 'text-color'), 1);
     }
   }
 
-  .theme--dark ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+  .theme--dark :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
     color: rgba(map-get($material-dark, 'text-color'), 1);
     .temp-actual {
       color: rgba(map-get($material-dark, 'text-color'), 1);
     }
   }
 
-  ::v-deep .v-data-table.temperature-table > .v-data-table__wrapper > table {
+  :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {
 
     .temp-name,
     .temp-power {

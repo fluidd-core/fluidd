@@ -19,21 +19,21 @@
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
 import type { ECharts } from 'echarts'
-import { merge } from 'lodash'
+import { merge } from 'lodash-es'
 
 @Component({})
 export default class EChartsBedMesh extends Vue {
   @Prop({ type: Array, required: true, default: {} })
-  data!: []
+  public data!: []
 
   @Prop({ type: Object, default: {} })
-  options!: any
+  public options!: any
 
   @Prop({ type: String, default: '100%' })
-  height!: string;
+  public height!: string
 
   @Ref('chart')
-  chart!: ECharts
+  readonly chart!: ECharts
 
   get flatSurface () {
     return this.$store.state.mesh.flatSurface

@@ -69,7 +69,7 @@
         </v-list-item-title>
       </v-list-item>
       <v-list-item
-        v-if="!readonly"
+        v-if="!readonly || canCreateDirectory"
         :disabled="disabled"
         @click="$emit('add-dir')"
       >
@@ -85,7 +85,6 @@
       </v-list-item>
     </v-list>
     <input
-      :id="`${_uid}BtnFileUpload`"
       ref="uploadFile"
       type="file"
       :accept="accepts"
@@ -97,16 +96,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 
 @Component({})
 export default class FileSystemMenu extends Vue {
   @Prop({ type: String, required: true })
-  root!: string
+  public root!: string
 
   // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
-  disabled!: boolean
+  public disabled!: boolean
+
+  @Ref('uploadFile')
+  readonly uploadFile!: HTMLInputElement
 
   andPrint = false
 
@@ -118,11 +120,14 @@ export default class FileSystemMenu extends Vue {
     return this.$store.getters['files/getRootProperties'](this.root).accepts.join(',')
   }
 
+  get canCreateDirectory () {
+    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
+  }
+
   emulateClick (startPrint: boolean) {
     this.andPrint = startPrint
-    const uploadFile = this.$refs.uploadFile as HTMLInputElement
-    uploadFile.multiple = !startPrint // Can't start print with multiple files
-    uploadFile.click()
+    this.uploadFile.multiple = !startPrint // Can't start print with multiple files
+    this.uploadFile.click()
   }
 
   fileChanged (e: Event) {

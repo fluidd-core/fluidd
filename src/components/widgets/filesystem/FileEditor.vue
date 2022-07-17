@@ -1,7 +1,6 @@
 <template>
   <div
     ref="monaco-editor"
-    class="editor"
   >
     <div
       v-if="!editor"
@@ -24,23 +23,28 @@ let monaco: typeof Monaco // dynamically imported
 @Component({})
 export default class FileEditor extends Vue {
   @Prop({ type: String, required: true })
-  value!: string;
+  public value!: string
 
   @Prop({ type: String, required: true })
-  filename!: string;
+  public filename!: string
 
   @Prop({ type: Boolean, default: false })
-  readonly!: boolean;
+  public readonly!: boolean
 
-  @Ref('monaco-editor') monacoEditor!: HTMLElement
+  @Prop({ type: Boolean, default: true })
+  public codeLens!: boolean
+
+  @Ref('monaco-editor')
+  readonly monacoEditor!: HTMLElement
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
   // Base editor options.
-  opts = {
+  opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
     contextmenu: false,
     readOnly: this.readonly,
+    codeLens: this.codeLens,
     automaticLayout: true,
     fontSize: 16,
     scrollbar: {
@@ -101,6 +105,13 @@ export default class FileEditor extends Vue {
     })
   }
 
+  showCommandPalette () {
+    if (this.editor) {
+      this.editor.focus()
+      this.editor.trigger(null, 'editor.action.quickCommand', null)
+    }
+  }
+
   // Ensure we dispose of our models and editor.
   destroyed () {
     if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
@@ -114,15 +125,15 @@ export default class FileEditor extends Vue {
 }
 </script>
 
-<style lang="scss">
-  .editor {
+<style lang="scss" scoped>
+  :deep() {
     // margin-top: 12px;
     min-width: 100%;
     height: 90%;
     height: calc(100% - 48px);
   }
 
-  .editor > .spinner {
+  :deep(.spinner) {
     display:flex;
     justify-content:center;
     align-items:center;

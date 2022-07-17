@@ -47,7 +47,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import OutputItem from '@/components/widgets/outputs/OutputItem.vue'
 import StateMixin from '@/mixins/state'
-import { Fan, OutputPin } from '@/store/printer/types'
+import { Fan, Led, OutputPin } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -56,13 +56,13 @@ import { Fan, OutputPin } from '@/store/printer/types'
 })
 export default class Outputs extends Mixins(StateMixin) {
   get all () {
-    const items: Array<Fan | OutputPin> = [
+    const items: Array<Fan | Led | OutputPin> = [
       ...this.$store.getters['printer/getAllFans'],
       ...this.$store.getters['printer/getPins'],
       ...this.$store.getters['printer/getAllLeds']
     ]
-    let col1: Array<Fan | OutputPin> = []
-    let col2: Array<Fan | OutputPin> = []
+    let col1: Array<Fan | Led | OutputPin> = []
+    let col2: Array<Fan | Led | OutputPin> = []
     if (items.length > 1) {
       const half = Math.ceil(items.length / 2)
       col1 = items.splice(0, half)

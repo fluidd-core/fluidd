@@ -6,55 +6,102 @@
       no-gutters
     >
       <v-col
-        cols="4"
+        cols="3"
         class="pr-1"
       >
         <v-text-field
-          label="X"
+          :color="(forceMove) ? 'error' : 'primary'"
+          :label="`X [ ${livePosition[0].toFixed(2)} ]`"
           outlined
           hide-details
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!xHomed"
+          :disabled="!xHomed && !forceMove"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @change="moveTo('X', $event)"
         />
       </v-col>
       <v-col
-        cols="4"
+        cols="3"
         class="pr-1 pl-1"
       >
         <v-text-field
-          label="Y"
+          :color="(forceMove) ? 'error' : 'primary'"
+          :label="`Y [ ${livePosition[1].toFixed(2)} ]`"
           outlined
           hide-details
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!yHomed"
+          :disabled="!yHomed && !forceMove"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @change="moveTo('Y', $event)"
         />
       </v-col>
       <v-col
-        cols="4"
-        class="pl-1"
+        cols="3"
+        class="pr-1 pl-1"
       >
         <v-text-field
-          label="Z"
+          :color="(forceMove) ? 'error' : 'primary'"
+          :label="`Z [ ${livePosition[2].toFixed(2)} ]`"
           outlined
           hide-details
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!zHomed"
+          :disabled="!zHomed && !forceMove"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
         />
+      </v-col>
+      <v-col
+        cols="3"
+        class="pl-1"
+      >
+        <v-btn-toggle
+          v-model="positioning"
+          mandatory
+          dense
+          class="d-block"
+        >
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                v-bind="attrs"
+                class="positioning-toggle-button"
+                :disabled="!klippyReady || printerBusy"
+                :elevation="2"
+                v-on="on"
+              >
+                <v-icon small>
+                  $absolutePositioning
+                </v-icon>
+              </app-btn>
+            </template>
+            <span>{{ $t('app.tool.tooltip.absolute_positioning') }}</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template #activator="{ on, attrs }">
+              <app-btn
+                v-bind="attrs"
+                class="positioning-toggle-button"
+                :disabled="!klippyReady || printerBusy"
+                :elevation="2"
+                v-on="on"
+              >
+                <v-icon small>
+                  $relativePositioning
+                </v-icon>
+              </app-btn>
+            </template>
+            <span>{{ $t('app.tool.tooltip.relative_positioning') }}</span>
+          </v-tooltip>
+        </v-btn-toggle>
       </v-col>
     </v-row>
 
@@ -83,18 +130,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
+  @Prop({ type: Boolean, default: false })
+  public forceMove!: boolean
+
   get gcodePosition () {
     return this.$store.state.printer.printer.gcode_move.gcode_position
   }
 
   get toolheadPosition () {
     return this.$store.state.printer.printer.toolhead.position
+  }
+
+  get livePosition () {
+    return this.$store.state.printer.printer.motion_report.live_position
   }
 
   get useGcodeCoords () {
@@ -109,6 +163,18 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
     return speed.toFixed()
   }
 
+  get usesAbsolutePositioning () {
+    return this.$store.state.printer.printer.gcode_move.absolute_coordinates
+  }
+
+  get positioning () {
+    return this.usesAbsolutePositioning ? 0 : 1
+  }
+
+  set positioning (value: number) {
+    this.sendGcode(`G9${value}`)
+  }
+
   moveTo (axis: string, pos: string) {
     const axisIndexMap: any = { X: 0, Y: 1, Z: 2 }
     const currentPos = (this.useGcodeCoords)
@@ -118,23 +184,20 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
       const rate = (axis.toLowerCase() === 'z')
         ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-      this.sendGcode(`G90
+      if (this.forceMove) {
+        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate}`)
+      } else {
+        this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)
+      }
     }
   }
 }
 </script>
 
 <style type="scss" scoped>
-  .coord-wrapper {
-    line-height: 32px;
-    padding: 0 12px;
+  .positioning-toggle-button {
+    min-width: 20px !important;
+    width: 50%;
   }
-  /* .coord-col {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    max-height: 36px;
-  } */
 </style>

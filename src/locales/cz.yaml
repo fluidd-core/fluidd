@@ -87,7 +87,6 @@ app:
       add_dir: Přidat adresář
       add_file: Přidat soubor
       download_file: Přijímám soubor
-      keyboard_shortcuts: Klávesové zkratky
       rename_dir: Přejmenovat adresář
       rename_file: Přejmenovat soubor
       upload_file: Nahrávám soubor | Nahrávám soubory
@@ -288,7 +287,7 @@ app:
       console: Konzole
       endstops: Koncové spínače
       fans_outputs: Větráky a výstupy
-      gcode_preview: Zobrazení Gcode [ Beta ]
+      gcode_preview: Zobrazení Gcode
       history: Historie
       home: Domů
       jobs: Soubory

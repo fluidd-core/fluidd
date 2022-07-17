@@ -11,20 +11,15 @@ permalink: /features/cameras
 
 ---
 
-Fluidd (and FluiddPI) has built in support for web cameras.
+Fluidd (and FluiddPI) has built in support for web cameras and allows configuring
+your cameras from the same place as your other configuration files.
 
-On older versions of FluiddPI (pre 1.15) you can edit the file found here;
-`/boot/fluiddpi.txt`.
-
-Versions of FluiddPI after 1.14 allow configuring your cameras from the same
-place as your other configuration files, and can be found in the `webcam.txt`
-file.
-
-In both cases, Instructions are contained within the files.
+To get started, open the `webcam.txt` config file in Fluidd's configuration editor.
+Instructions on how to get started as well as option references are included in this file.
 
 You can add up to four cameras to display on your dashboard.
 
-Currently supported types are;
+Currently supported types are:
 
 - MJPEG Stream  
   This is the traditional mjpegstream service. The service pushes images to

@@ -122,8 +122,8 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  ::v-deep .v-slide-group__prev,
-  ::v-deep .v-slide-group__next {
+  :deep(.v-slide-group__prev),
+  :deep(.v-slide-group__next) {
     display: none;
   }
 </style>

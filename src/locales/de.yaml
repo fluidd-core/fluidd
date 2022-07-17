@@ -86,6 +86,8 @@ app:
       file_name: Dateiname
       transfer_rate: Transferrate
       uploaded: Hochgeladen
+      view_section_documentation: >-
+        Dokumentation für '%{section}' anzeigen
     msg:
       confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
       not_found: Keine Dateien gefunden
@@ -95,8 +97,8 @@ app:
     title:
       add_dir: Ordner hinzufügen
       add_file: Datei hinzufügen
+      command_palette: Befehlspalette
       download_file: Empfange Datei
-      keyboard_shortcuts: Tastaturkürzel
       rename_dir: Ordner umbennen
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen
@@ -108,6 +110,7 @@ app:
       load_current_file: Aktuelle Datei laden
     label:
       current_layer_height: Aktuelle Schichthöhe
+      exclude_object: Objekt ausschließen
       follow_progress: Fortschritt folgen
       layer: Schicht
       layers: Schichten
@@ -117,6 +120,8 @@ app:
       show_next_layer: Nächste Schicht zeigen
       show_previous_layer: Vorherige Schicht zeigen
       show_retractions: Retracten zeigen
+      parsing_file: Verarbeite Datei
+      show_current_layer: Aktuelle Schicht anzeigen
     msg:
       confirm: >-
         Die Datei "%{filename}" ist %{size} groß, dies kann sehr
@@ -172,6 +177,7 @@ app:
       upload_print: Hochladen & Drucken
       view: Ansicht
       reset_stats: Statistik zurücksetzen
+      snooze: Schlummern
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -248,6 +254,8 @@ app:
       total_print_time_avg: Durchschnitt pro Druck
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
+      turn_device_on: %{device} einschalten
+      turn_device_off: %{device} ausschalten
       uncategorized: Unkategorisiert
       unretract_extra_length: Unretract-Extralänge
       unretract_speed: Unretract-Geschwindigkeit
@@ -257,6 +265,11 @@ app:
       velocity: Geschwindigkeit
       visible: Sichtbar
       z_offset: Z-Offset
+      add_category: Kategorie hinzufügen
+      edit_category: Kategorie bearbeiten
+      file_time: Datei
+      pressure_advance: Pressure Advance
+      smooth_time: Glättungszeit
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -271,6 +284,7 @@ app:
         min_or_0: Min %{min} oder 0
         password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
+        invalid_number: Ungültige Zahl
       msg:
         apply_z_offset_endstop: >-
           Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
@@ -279,6 +293,7 @@ app:
           Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
           aktualisiert.
         confirm: Sind Sie sicher?
+        confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
         confirm_service_restart: Möchten Sie den Dienst %{name} wirklich neu starten?
@@ -320,7 +335,7 @@ app:
       console: Konsole
       endstops: Endschalter
       fans_outputs: Lüfter & Ausgänge
-      gcode_preview: Gcode-Vorschau [ Beta ]
+      gcode_preview: Gcode-Vorschau
       history: Auftragsverlauf
       home: Dashboard
       jobs: Aufträge
@@ -334,6 +349,7 @@ app:
       system: System
       system_overview: Systeminformationen
       temperature: Temperaturen
+      timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
     tooltip:
@@ -379,6 +395,8 @@ app:
       all_off: Alle aus
       all_on: Alle an
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
+      auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
+      auto_load_on_print_start: Datei bei Druckstart automatisch laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
@@ -413,12 +431,16 @@ app:
       invert_z_control: Z-Steuerung invertieren
       language: Anzeigesprache
       move_line_width: Bewegungslinien-Dicke
+      none: Keines | Keine
+      power_toggle_in_top_nav: Power-Schalter in Kopfleiste
       primary_color: Primärfarbe
       printer_name: Druckername
       reset: Einstellungen zurücksetzen
       retraction_icon_size: Retraction-Symbolgröße
       show_animations: Animationen anzeigen
+      show_barometric_pressure: Luftdruck anzeigen
       show_rate_of_change: Temperatur-Änderungsrate anzeigen
+      show_relative_humidity: Relative Luftfeuchtigkeit anzeigen
       starts_with: Beginnt mit
       theme_preset: Community-Voreinstellung
       thermal_preset_gcode: GCode
@@ -457,6 +479,7 @@ app:
       distribution_codename: Codename
       distribution_like: Distribution wie
       distribution_name: Distribution
+      frequency: Frequenz
       hardware_desc: Hardwarebeschreibung
       hostname: Hostname
       klipper_load: Klipper-Last
@@ -464,7 +487,9 @@ app:
       manufacturer: Hersteller
       mcu_awake: '{mcu} Zeit im Wachzustand'
       mcu_bandwidth: '{mcu}-Bandbreite'
+      mcu_information: '{mcu}-Informationen'
       mcu_load: '{mcu}-Last'
+      micro_controller: Mikrocontroller
       model: CPU-Modell
       moonraker_load: Moonraker-Last
       processor_desc: Prozessor
@@ -474,16 +499,19 @@ app:
       system_memory: Systemspeicher
       system_utilization: Auslastung
       total_memory: Gesamtspeicherplatz
+      version: Version
   tool:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: Alle
     tooltip:
       extruder_disabled: >-
         Extruder deaktiviert, da unter der min_extrude_temp
         (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      motors_off: MOTOREN AUS
   version:
     btn:
       check_for_updates: Nach Aktualisierungen suchen
@@ -512,3 +540,56 @@ app:
       invalid: Deutet auf lokale Änderungen im Git-Repository hin
       packages: Pakete
       release_notes: Veröffentlichungsnotizen
+  timelapse:
+    btn:
+      render: Rendern
+      save_frames: Bilder speichern
+    error:
+      newframe: Fehler beim Aufnehmen eines Zeitraffer-Bildes
+    label:
+      frames: '%{frames} Bild | %{frames} Bilder'
+      length: 'Geschätzte Länge: %{length}'
+      frame: Frame | Frames
+    title:
+      timelapse_settings: Zeitraffer-Einstellungen
+      timelapse_status: Zeitraffer-Status
+      render_settings: Render-Einstellungen
+    tooltip:
+      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
+    setting:
+      enable: Aktiviert
+      auto_render: Automatisches Rendern
+      crf: Constant Rate- Faktor
+      duplicatelastframe: Letzte Bilder wiederholen
+      fw_retract: Firmware-Retraction verwenden
+      gcode_verbose: Verboser Gcode
+      mode: Modus
+      mode_layermacro: Schicht-Makro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse-Intervall
+      output_framerate: Ausgabe-Bildrate
+      park_retract_distance: Retraction-Länge beim Parken
+      park_retract_speed: Retraction-Geschw. beim Parken
+      park_extrude_distance: Extrusionslänge beim Parken
+      park_extrude_speed: Extrusionsgeschw. beim Parken
+      parkhead: Druckkopf parken
+      park_time: Parkdauer
+      park_travel_speed: Park-Bewegungsgeschw.
+      park_custom_pos_x: Parkposition X
+      park_custom_pos_y: Parkposition Y
+      park_custom_pos_dz: Parkposition Z-Hop
+      parkpos:
+        label: Parkposition
+        custom: Benutzerdefiniert
+        front_left: Vorne links
+        front_right: Vorne rechts
+        center: Mitte
+        back_left: Hinten links
+        back_right: Hinten rechts
+      previewimage: Vorschaubild erzeugen
+      saveframes: Einzelbilder speichern
+      stream_delay_compensation: Verzögerungs-Kompensation
+      targetlength: Ziellänge
+      variable_fps: Variable Bildrate
+      variable_fps_min: Minimum Bildrate
+      variable_fps_max: Maximum Bildrate

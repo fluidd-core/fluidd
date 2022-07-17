@@ -42,7 +42,6 @@ app:
       hide_temp_waits: Hide temp waits
     placeholder:
       command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
-      scroll: Scroll to bottom
   endpoint:
     error:
       cant_connect: >-
@@ -82,6 +81,8 @@ app:
       file_name: Filename
       transfer_rate: Transfer rate
       uploaded: Uploaded
+      view_section_documentation: >-
+        View '%{section}' documentation
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
@@ -91,28 +92,35 @@ app:
     title:
       add_dir: Add Directory
       add_file: Add File
+      command_palette: Command Palette
       download_file: Retrieving file
-      keyboard_shortcuts: Keyboard Shortcuts
       rename_dir: Rename Directory
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space
       root_disabled: '{root} root is not available. Please check your logs.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:
     btn:
       load_current_file: Load Current File
     label:
       current_layer_height: Current Layer Height
+      exclude_object: Exclude Object
       follow_progress: Follow progress
       layer: Layer
       layers: Layers
       parsed: Parsed
+      show_current_layer: Show current layer
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
+      parsing_file: Parsing file
     msg:
       confirm: >-
         The file "%{filename}" is %{size}, this might be resource intensive for
@@ -125,6 +133,7 @@ app:
       add_printer: Add printer
       adjust_layout: Adjust dashboard layout
       all: All
+      auth_unsure: Unsure why you're seeing this?
       calibrate: Calibrate
       cancel: Cancel
       clear_profile: Clear Profile
@@ -134,8 +143,10 @@ app:
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      forgot_password: Forgotten your password?
       heaters_off: Heaters off
       load_all: Load all
+      login: Login
       more_information: More information
       pause: Pause
       preheat: Preheat
@@ -160,9 +171,11 @@ app:
       save: Save
       save_as: Save As
       save_restart: Save & Restart
+      save_config_and_restart: Save config & restart
       send: Send
       set_color: Set Color
       shutdown: Shutdown
+      snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload
@@ -190,12 +203,14 @@ app:
       add_user: Add user
       api_key: Api Key
       api_url: API URL
+      auth_source: Authentication Source
       category: Category
       change_password: Change password
       clear_all: Clear all
       color: Color
       confirm: Confirm
       current_password: Current password
+      current_user: Current user
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -208,14 +223,19 @@ app:
       finish_time: Finish
       flow: Flow
       free: free
-      heaters_busy: The printer is currently busy. Turning off the heaters may result in a failed print.
+      heaters_busy: >-
+        The printer is currently busy. Turning off the heaters may result in a
+        failed print.
       high: High
       host: Host
       layer: Layer
       layout: Layout
+      ldap: LDAP
       longest_job: Longest job
       low: Low
+      user_managed_source: User managed by %{source} authentication
       m117: M117
+      moonraker: Moonraker
       name: Name
       new_password: New password
       no_notifications: No notifications
@@ -243,10 +263,13 @@ app:
       total_print_time_avg: Avg per print
       total_time: Total time
       total_time_avg: Avg per print
+      turn_device_on: Turn %{device} on
+      turn_device_off: Turn %{device} off
       uncategorized: Uncategorized
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       used: used
+      username: Username
       variance: Variance
       velocity: Velocity
       visible: Visible
@@ -254,12 +277,16 @@ app:
       unsaved_changes: Unsaved Changes
       alias: Alias
       apply_z_offset: Apply and Save Z_Offset
+      edit_category: Edit category
+      add_category: Add category
+      file_time: File
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
     simple_form:
       error:
         arrayofnums: Only numbers
+        credentials: Invalid credentials
         exists: Already exists
         invalid_number: Invalid Number
         invalid_url: Invalid URL
@@ -271,6 +298,8 @@ app:
         required: Required
       msg:
         confirm: Are you sure?
+        confirm_exclude_object: Are you sure you want to exclude this object from printing?
+        confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -318,7 +347,7 @@ app:
       console: Console
       endstops: Endstops
       fans_outputs: Fans & Outputs
-      gcode_preview: Gcode Preview [ Beta ]
+      gcode_preview: Gcode Preview
       history: History
       queue: Queue
       home: Home
@@ -326,6 +355,7 @@ app:
       limits: Printer Limits
       macros: Macros
       other_files: Other Files
+      pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction
       runout_sensors: Runout Sensors
       settings: Settings
@@ -333,10 +363,12 @@ app:
       system: System
       system_overview: System Information
       temperature: Thermals
+      timelapse: Timelapse
       tool: Tool
       tune: Tune
     tooltip:
       estop: Emergency Stop
+      notifications: Notifications
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
@@ -374,21 +406,28 @@ app:
       video: IP Camera
       iframe: HTTP page
     camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
       none: None
-      90: 90°
-      180: 180°
-      270: 270°
     label:
       all_off: All off
       all_on: All on
       auto_edit_extensions: Extensions to automatically open in edit mode
+      auto_follow_on_file_load: Automatically follow progress on file load
+      auto_load_on_print_start: Automatically load file on print start
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      camera_fullscreen_action:
+        title: Fullscreen action
+        embed: Embed
+        rawstream: Raw stream
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
+      confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
       confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
       contains: Contains
       dark_mode: Dark mode
@@ -415,12 +454,17 @@ app:
       invert_z_control: Invert Z control
       language: Display Language
       move_line_width: Move Line Width
+      none: None
+      power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       show_animations: Show animations
+      show_barometric_pressure: Show barometric pressure
+      show_code_lens: Show CodeLens
       show_rate_of_change: Show temperature rate of change
+      show_relative_humidity: Show relative humidity
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
@@ -429,6 +473,7 @@ app:
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
+      force_move_toggle_warning: Require confirm when activating force_move
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -458,6 +503,7 @@ app:
       distribution_codename: Codename
       distribution_like: Distribution Like
       distribution_name: Distribution
+      frequency: Frequency
       hardware_desc: Hardware Description
       hostname: Hostname
       klipper_load: Klipper Load
@@ -465,7 +511,9 @@ app:
       manufacturer: Manufacturer
       mcu_awake: '{mcu} Awake Time'
       mcu_bandwidth: '{mcu} Bandwidth'
+      mcu_information: '{mcu} Information'
       mcu_load: '{mcu} Load'
+      micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
       processor_desc: Processor
@@ -475,14 +523,24 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      version: Version
   tool:
     btn:
       home_x: X
       home_y: 'Y'
+      home_all: All
     tooltip:
+      absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      motors_off: MOTORS OFF
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      relative_positioning: Relative Positioning
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      bed_screws_adjust: BED_SCREWS_ADJUST
+      force_move: FORCE_MOVE
   version:
     btn:
       check_for_updates: Check for updates
@@ -509,3 +567,56 @@ app:
       invalid: indicates local changes to the repo
       packages: Packages
       release_notes: Release notes
+  timelapse:
+    btn:
+      render: Render
+      save_frames: Save Frames
+    error:
+      newframe: Error taking timelapse frame
+    label:
+      frames: '%{frames} frame | %{frames} frames'
+      length: 'Estimated length: %{length}'
+      frame: Frame | Frames
+    title:
+      timelapse_settings: Timelapse Settings
+      timelapse_status: Timelapse Status
+      render_settings: Render Settings
+    tooltip:
+      managed_by_moonraker: Managed by your moonraker configuration
+    setting:
+      enable: Enabled
+      auto_render: Auto Render
+      crf: Constant Rate Factor
+      duplicatelastframe: Duplicate last frames
+      fw_retract: Use Firmware Retraction
+      gcode_verbose: Verbose Gcode
+      mode: Mode
+      mode_layermacro: Layer Macro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse Cycle
+      output_framerate: Output Framerate
+      park_retract_distance: Park Retraction Distance
+      park_retract_speed: Park Retraction Speed
+      park_extrude_distance: Park Extrude Distance
+      park_extrude_speed: Park Extrude Speed
+      parkhead: Park Head
+      park_time: Park Time
+      park_travel_speed: Park Travel Speed
+      park_custom_pos_x: Park Position X
+      park_custom_pos_y: Park Position Y
+      park_custom_pos_dz: Park Position Z-Hop
+      parkpos:
+        label: Park Position
+        custom: Custom
+        front_left: Front Left
+        front_right: Front Right
+        center: Center
+        back_left: Back Left
+        back_right: Back Right
+      previewimage: Generate Thumbnail
+      saveframes: Save Frames
+      stream_delay_compensation: Delay Compensation
+      targetlength: Target Length
+      variable_fps: Variable FPS
+      variable_fps_min: Minimum Framerate
+      variable_fps_max: Maximum Framerate

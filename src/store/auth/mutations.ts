@@ -32,7 +32,7 @@ export const mutations: MutationTree<AuthState> = {
   },
 
   setAddUser (state, user) {
-    state.users.push(user)
+    state.users.push({ source: 'moonraker', ...user })
   },
 
   setRemoveUser (state, user) {

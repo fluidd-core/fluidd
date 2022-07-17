@@ -3,6 +3,7 @@ import { Globals, Waits } from '@/globals'
 import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
+import { TimelapseWritableSettings } from '@/store/timelapse/types'
 import { QueueJob } from '@/store/files/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
@@ -176,6 +177,28 @@ export const SocketActions = {
     )
   },
 
+  async machineTimelapseSetSettings (settings: Partial<TimelapseWritableSettings>, wait?: string) {
+    baseEmit(
+      'machine.timelapse.post_settings', {
+        dispatch: 'timelapse/onSettings',
+        params: settings,
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseSaveFrames (wait?: string) {
+    baseEmit(
+      'machine.timelapse.saveframes', {
+        wait
+      }
+    )
+  },
+
+  async machineTimelapseRender () {
+    baseEmit('machine.timelapse.render', {})
+  },
+
   async printerInfo () {
     baseEmit(
       'printer.info', {
@@ -315,6 +338,20 @@ export const SocketActions = {
     })
   },
 
+  async timelapseState () {
+    baseEmit(
+      'machine.timelapse.get_settings', {
+        dispatch: 'timelapse/onSettings'
+      }
+    )
+
+    baseEmit(
+      'machine.timelapse.lastframeinfo', {
+        dispatch: 'timelapse/onLastFrame'
+      }
+    )
+  },
+
   async serverConfig () {
     baseEmit(
       'server.config', {
@@ -419,7 +456,7 @@ export const SocketActions = {
       filenames.push(job.filename)
     })
 
-    const params = { filenames: filenames }
+    const params = { filenames }
     baseEmit(
       'server.job_queue.post_job', {
         dispatch: 'files/updateQueueStatus',
@@ -545,6 +582,26 @@ export const SocketActions = {
         params: {
           path,
           force
+        }
+      }
+    )
+  },
+
+  async serverAnnouncementsList () {
+    baseEmit(
+      'server.announcements.list', {
+        dispatch: 'announcements/onAnnouncementsList'
+      }
+    )
+  },
+
+  async serverAnnouncementsDismiss (entry_id: string, wake_time?: number) {
+    baseEmit(
+      'server.announcements.dismiss', {
+        dispatch: 'void',
+        params: {
+          entry_id,
+          wake_time
         }
       }
     )

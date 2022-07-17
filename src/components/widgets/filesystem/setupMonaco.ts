@@ -2,8 +2,32 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { loadWASM } from 'onigasm'
 import { IGrammarDefinition, Registry } from 'monaco-textmate'
 import { wireTmGrammars } from 'monaco-editor-textmate'
+import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
+
+type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot'
+
+const isCodeLensSupportedService = (service: string) : service is CodeLensSupportedService => [
+  'klipper',
+  'moonraker',
+  'moonraker-telegram-bot'
+].includes(service)
+
+const getDocsSection = (service: CodeLensSupportedService, sectionName: string) => {
+  switch (service) {
+    case 'klipper':
+      if (sectionName.startsWith('stepper_')) {
+        return 'stepper'
+      }
+
+      if (/^extruder[0-9]+$/.test(sectionName)) {
+        return 'extruder'
+      }
+  }
+
+  return sectionName
+}
 
 async function setupMonaco () {
   const wasm = await require('onigasm/lib/onigasm.wasm')
@@ -46,6 +70,127 @@ async function setupMonaco () {
   monaco.languages.setLanguageConfiguration('klipper-config', {
     comments: {
       lineComment: '#'
+    }
+  })
+
+  const app = getVueApp()
+
+  monaco.editor.registerCommand('fluidd_open_docs', (_, service: CodeLensSupportedService, hash: string) => {
+    const serviceKey = service.replace(/-/g, '_')
+    const url = app.$t(`app.file_system.url.${serviceKey}_config`, { hash }).toString()
+
+    window.open(url)
+  })
+
+  monaco.languages.registerCodeLensProvider('klipper-config', {
+    provideCodeLenses: (model) => {
+      const { service } = app.$store.getters['server/getConfigMapByFilename'](model.uri.path.split('/').pop())
+
+      if (!isCodeLensSupportedService(service)) {
+        return null
+      }
+
+      const linesContent = model.getLinesContent()
+
+      const sections = linesContent.reduce((ranges, lineContent, index) => {
+        const section = /^\[([^\]]+)\]/.exec(lineContent)
+        if (section) {
+          const [sectionName] = section[1].split(' ')
+
+          const referenceSection = getDocsSection(service, sectionName)
+
+          return ranges.concat({
+            referenceSection,
+            range: {
+              startLineNumber: index + 1,
+              startColumn: model.getLineFirstNonWhitespaceColumn(index + 1),
+              endLineNumber: index + 1,
+              endColumn: model.getLineLastNonWhitespaceColumn(index + 1)
+            }
+          })
+        }
+        return ranges
+      }, [] as { referenceSection: string, range: monaco.IRange }[])
+
+      return {
+        lenses: sections.map((section, index) =>
+          ({
+            range: section.range,
+            id: `docs${index}`,
+            command: {
+              id: 'fluidd_open_docs',
+              title: app.$t('app.file_system.label.view_section_documentation', { section: section.referenceSection }).toString(),
+              arguments: [service, section.referenceSection]
+            }
+          })
+        ),
+        dispose: () => undefined
+      }
+    },
+    resolveCodeLens: (_model, codeLens) => codeLens
+  })
+
+  monaco.languages.registerFoldingRangeProvider('klipper-config', {
+    provideFoldingRanges: (model) => {
+      const linesContent = model.getLinesContent()
+
+      const sectionBlocks = linesContent.reduce((sectionBlocks, lineContent, index) => {
+        const isSection = /^\[([^\]]+)\]/.test(lineContent)
+
+        if (isSection) {
+          return sectionBlocks.concat({
+            start: index + 1,
+            end: index + 1
+          })
+        }
+
+        const isNotComment = /^\s*[^#;]/.test(lineContent)
+
+        if (isNotComment && sectionBlocks.length > 0) {
+          sectionBlocks[sectionBlocks.length - 1].end = index + 1
+        }
+
+        return sectionBlocks
+      }, [] as Array<{ start: number, end: number }>)
+
+      const commentBlocks = linesContent.reduce((commentBlocks, lineContent, index) => {
+        lineContent = lineContent.trim()
+
+        if (lineContent.length > 0) {
+          const isComment = ['#', ';'].includes(lineContent[0])
+
+          const lastCommentBlock = commentBlocks.length > 0 ? commentBlocks[commentBlocks.length - 1] : undefined
+
+          if (isComment) {
+            if (lastCommentBlock && !lastCommentBlock.complete) {
+              lastCommentBlock.end = index + 1
+            } else {
+              return commentBlocks.concat({
+                start: index + 1,
+                end: index + 1,
+                complete: false
+              })
+            }
+          } else if (lastCommentBlock) {
+            lastCommentBlock.complete = true
+          }
+        }
+
+        return commentBlocks
+      }, [] as Array<{start: number, end: number, complete: boolean}>)
+
+      return [
+        ...sectionBlocks.map(section => ({
+          start: section.start,
+          end: section.end,
+          kind: monaco.languages.FoldingRangeKind.Region
+        })),
+        ...commentBlocks.map(section => ({
+          start: section.start,
+          end: section.end,
+          kind: monaco.languages.FoldingRangeKind.Comment
+        }))
+      ]
     }
   })
 
