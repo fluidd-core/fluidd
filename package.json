@@ -52,7 +52,7 @@
     "qrcode.vue": "^1.7.0",
     "register-service-worker": "^1.7.2",
     "semver": "^7.3.7",
-    "sortablejs": "^1.14.0",
+    "sortablejs": "^1.15.0",
     "threads": "^1.7.0",
     "uuid": "^8.3.2",
     "vue": "^2.7.3",
