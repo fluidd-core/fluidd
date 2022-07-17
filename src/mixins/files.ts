@@ -155,7 +155,7 @@ export default class FilesMixin extends Vue {
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
     const filenames = [filepath]
     const data = {
-      filenames: filenames
+      filenames
     }
     return httpClient
       .post(
