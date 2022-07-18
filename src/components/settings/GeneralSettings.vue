@@ -115,15 +115,30 @@
       <v-divider />
 
       <app-setting
-        :title="$t('app.setting.label.confirm_on_save_config_and_restart')"
+        :title="$t('app.setting.label.show_save_config_and_restart')"
       >
         <v-switch
-          v-model="confirmOnSaveConfigAndRestart"
+          v-model="showSaveConfigAndRestart"
           hide-details
           class="mb-5"
           @click.native.stop
         />
       </app-setting>
+
+      <template v-if="showSaveConfigAndRestart">
+        <v-divider />
+
+        <app-setting
+          :title="$t('app.setting.label.confirm_on_save_config_and_restart')"
+        >
+          <v-switch
+            v-model="confirmOnSaveConfigAndRestart"
+            hide-details
+            class="mb-5"
+            @click.native.stop
+          />
+        </app-setting>
+      </template>
     </v-card>
   </div>
 </template>
@@ -235,6 +250,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnPowerDeviceChange (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnPowerDeviceChange',
+      value,
+      server: true
+    })
+  }
+
+  get showSaveConfigAndRestart () {
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+  }
+
+  set showSaveConfigAndRestart (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showSaveConfigAndRestart',
       value,
       server: true
     })
