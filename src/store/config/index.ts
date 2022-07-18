@@ -64,6 +64,7 @@ export const defaultState = (): ConfigState => {
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
+        showSaveConfigAndRestart: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
         topNavPowerToggle: null,

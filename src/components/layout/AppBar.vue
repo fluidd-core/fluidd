@@ -39,7 +39,7 @@
 
     <div class="toolbar-supplemental">
       <div
-        v-if="socketConnected && klippyReady && authenticated && saveConfigPending"
+        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestart && saveConfigPending"
         class="mr-1"
       >
         <app-save-config-and-restart-btn
@@ -213,6 +213,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get showSaveConfigAndRestart (): boolean {
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
   }
 
   get topNavPowerToggle (): null | string {
