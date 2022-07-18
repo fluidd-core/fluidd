@@ -37,6 +37,7 @@ For this feature to work you need to:
 - Turn on `Label Objects` in your slicer.
 - Add an `[exclude_object]` section to your printer.cfg or fluidd.cfg file.
 - Add a a line `enable_object_processing: True` to your mooraker.conf `[file_manager]` section.
+  Alternatively you can configure [object preprocessing for your slicer](https://github.com/kageurufu/preprocess_cancellation).
 
 This feature only works on files that were uploaded _after_ these configuration changes as the file needs to be processed by mooraker with this option turned on.
 
