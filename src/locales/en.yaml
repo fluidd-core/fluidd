@@ -457,6 +457,7 @@ app:
       show_code_lens: Show CodeLens
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
+      show_save_config_and_restart: Save Config and Restart button in top navigation
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
