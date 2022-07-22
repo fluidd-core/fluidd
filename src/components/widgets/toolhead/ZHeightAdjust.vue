@@ -94,7 +94,7 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class ZHeightAdjust extends Mixins(StateMixin) {
-  _moveDistance: number | null = null
+  moveDistanceValue: number | null = null
 
   get ZHomingOrigin () {
     // This is an array of 4 values, representing the homing origin.
@@ -111,11 +111,11 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
   }
 
   get moveDistance () {
-    return this._moveDistance || this.zAdjustValues[0]
+    return this.moveDistanceValue || this.zAdjustValues[0]
   }
 
   set moveDistance (value: number) {
-    this._moveDistance = value
+    this.moveDistanceValue = value
   }
 
   /**
