@@ -54,14 +54,14 @@
             >
               <app-btn-group>
                 <app-btn
-                  :disabled="!klippyReady || printerPrinting || manualProbe.z_position_lower === null"
+                  :disabled="!klippyReady || printerPrinting"
                   color="primary"
                   @click="sendTestZ('--')"
                 >
                   --
                 </app-btn>
                 <app-btn
-                  :disabled="!klippyReady || printerPrinting || manualProbe.z_position_lower === null"
+                  :disabled="!klippyReady || printerPrinting"
                   color="primary"
                   @click="sendTestZ('-')"
                 >
@@ -75,14 +75,14 @@
             >
               <app-btn-group>
                 <app-btn
-                  :disabled="!klippyReady || printerPrinting || manualProbe.z_position_upper === null"
+                  :disabled="!klippyReady || printerPrinting"
                   color="primary"
                   @click="sendTestZ('+')"
                 >
                   +
                 </app-btn>
                 <app-btn
-                  :disabled="!klippyReady || printerPrinting || manualProbe.z_position_upper === null"
+                  :disabled="!klippyReady || printerPrinting"
                   color="primary"
                   @click="sendTestZ('++')"
                 >
