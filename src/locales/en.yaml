@@ -466,7 +466,7 @@ app:
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
-      force_move_toggle_warning: Require confirm when activating force_move
+      force_move_toggle_warning: Require confirm when activating FORCE_MOVE
     timer_options:
       duration: Duration only
       filament: Filament Estimation
