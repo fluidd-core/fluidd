@@ -1,7 +1,7 @@
-<template>
+<template v-if="hasDefaultSlot">
   <!-- not collapsed -->
   <div
-    v-if="!isCollapsed && hasDefaultSlot"
+    v-if="!isCollapsed"
     class="d-inline-block"
   >
     <slot />
@@ -9,7 +9,7 @@
 
   <!-- collapsed to hamburger -->
   <v-menu
-    v-else-if="isCollapsed && hasDefaultSlot"
+    v-else
     transition="slide-y-transition"
     left
     offset-y
