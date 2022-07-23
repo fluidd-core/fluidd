@@ -668,5 +668,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
     } else {
       return false
     }
+  },
+
+  getIsManualProbeActive: (state) => {
+    return state.printer?.manual_probe?.is_active || false
   }
 }

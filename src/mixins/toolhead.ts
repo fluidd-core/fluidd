@@ -37,4 +37,8 @@ export default class ToolheadMixin extends Vue {
   get hasHomingOverride (): boolean {
     return this.$store.getters['printer/getHasHomingOverride']
   }
+
+  get isManualProbeActive () {
+    return this.$store.getters['printer/getIsManualProbeActive']
+  }
 }

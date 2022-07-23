@@ -127,6 +127,8 @@ app:
         your system. Are you sure?
   general:
     btn:
+      abort: Abort
+      accept: Accept
       add: Add
       add_dir: Add Directory
       add_file: Add File
@@ -467,6 +469,7 @@ app:
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
       force_move_toggle_warning: Require confirm when activating force_move
+      show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -485,6 +488,7 @@ app:
       tool: Tool
     tooltip:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
+      show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
   socket:
     msg:
       connecting: Connecting to moonraker...
@@ -527,6 +531,7 @@ app:
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      manual_probe: Manual Probe
       motors_off: MOTORS OFF
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
