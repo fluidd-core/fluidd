@@ -409,6 +409,7 @@ app:
       contains: Enthält
       dark_mode: Nachtmodus
       date_time_format: Datum- und Zeitformat
+      force_move_toggle_warning: Bestätigung bei Aktivierung von FORCE_MOVE anfordern
       default_extrude_length: Standard Extrudierlänge
       default_extrude_speed: Standard Extrudiergeschwindigkeit
       default_toolhead_move_length: Standard Bewegungsdistanz des Druckkopfes

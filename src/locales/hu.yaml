@@ -468,7 +468,7 @@ app:
       type: Típus
       z_adjust_values: A (Z) értékek beállítása
       date_time_format: Dátum és időformátum
-      force_move_toggle_warning: A force_move aktiválásakor megerősítés szükséges
+      force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
