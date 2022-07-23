@@ -176,6 +176,16 @@
         <v-divider />
       </template>
 
+      <app-setting :title="$t('app.setting.label.enable_diagnostics')">
+        <v-switch
+          v-model="enableDiagnostics"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -364,6 +374,18 @@ export default class ToolHeadSettings extends Vue {
   set forceMoveToggleWarning (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.forceMoveToggleWarning',
+      value,
+      server: true
+    })
+  }
+
+  get enableDiagnostics () {
+    return this.$store.state.config.uiSettings.general.enableDiagnostics
+  }
+
+  set enableDiagnostics (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.enableDiagnostics',
       value,
       server: true
     })

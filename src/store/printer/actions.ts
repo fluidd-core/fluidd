@@ -152,15 +152,41 @@ export const actions: ActionTree<PrinterState, RootState> = {
         rootStateServerConfig?.server?.temperature_store_size ??
         Globals.CHART_HISTORY_RETENTION
       handleAddChartEntry(retention, getters.getChartableSensors)
+      dispatch('onDiagnosticsDataUpdate')
     }
   },
 
-  async onFastNotifyStatusUpdate ({ rootState, commit }, payload) {
+  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload) {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
     if (payload && rootState.socket?.acceptingNotifications) {
       commit('printer/setSocketNotify', payload, { root: true })
+      dispatch('onDiagnosticsDataUpdate')
+    }
+  },
+
+  async onDiagnosticsDataUpdate ({ commit, state, rootGetters, rootState }) {
+    if (!rootState.config?.uiSettings.general.enableDiagnostics) return
+
+    const extrusionSpeed = state.printer.motion_report.live_extruder_velocity
+    const filamentDiameter = this.getters['printer/getPrinterSettings']('extruder.filament_diameter') || 1.75
+    const filamentArea = (filamentDiameter / 2) ** 2 * Math.PI
+    const flow = filamentArea * extrusionSpeed
+
+    const velocity = state.printer.motion_report.live_velocity
+
+    const data = { extrusion_rate: flow, velocity }
+
+    for (const [type, value] of Object.entries(data)) {
+      commit('charts/setChartEntry', {
+        type,
+        retention: rootGetters['charts/getChartRetention'],
+        data: {
+          date: new Date(),
+          [type]: Math.round(value * 1000) / 1000
+        }
+      }, { root: true })
     }
   }
 }

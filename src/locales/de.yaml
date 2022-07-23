@@ -333,6 +333,7 @@ app:
       config_files: Konfigurationsdateien
       configure: Konfiguration
       console: Konsole
+      diagnostics: Diagnostik
       endstops: Endschalter
       fans_outputs: Lüfter & Ausgänge
       gcode_preview: Gcode-Vorschau
@@ -415,6 +416,7 @@ app:
       default_toolhead_z_speed: Standard Druckkopfgeschwindigkeit für Z
       draw_background: Hintergrund anzeigen
       enable: Aktivieren
+      enable_diagnostics: Diagnostik-Aufzeichnung aktivieren
       enable_notifications: Aktiviere Benachrichtigung
       expression: Ausdruck
       extrusion_line_width: Extrusionslinien-Dicke

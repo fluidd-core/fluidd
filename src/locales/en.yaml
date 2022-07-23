@@ -342,6 +342,7 @@ app:
       config_files: Configuration Files
       configure: Configuration
       console: Console
+      diagnostics: Diagnostics
       endstops: Endstops
       fans_outputs: Fans & Outputs
       gcode_preview: Gcode Preview
@@ -430,6 +431,7 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       draw_background: Draw Background
       enable: Enable
+      enable_diagnostics: Enable diagnostics logging
       enable_notifications: Enable notifications
       expression: Expression
       extrusion_line_width: Extrusion Line Width

@@ -61,6 +61,7 @@ export interface GeneralConfig {
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
   forceMoveToggleWarning: boolean;
+  enableDiagnostics: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';

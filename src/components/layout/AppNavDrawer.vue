@@ -77,6 +77,14 @@
           </app-nav-item>
 
           <app-nav-item
+            v-if="diagnosticsEnabled"
+            icon="$chart"
+            to="/diagnostics"
+          >
+            {{ $t('app.general.title.diagnostics') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$codeJson"
             to="/configure"
           >
@@ -124,6 +132,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsTimelapse () {
     return this.$store.getters['server/componentSupport']('timelapse')
+  }
+
+  get diagnosticsEnabled () {
+    return this.$store.state.config.uiSettings.general.enableDiagnostics
   }
 
   get supportsVersions () {

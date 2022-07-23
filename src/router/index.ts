@@ -18,6 +18,7 @@ import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
 import store from '@/store'
+import Diagnostics from '@/views/Diagnostics.vue'
 
 Vue.use(VueRouter)
 
@@ -55,6 +56,12 @@ const routes: Array<RouteConfig> = [
     path: '/tune',
     name: 'Tune',
     component: Tune,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/diagnostics',
+    name: 'Diagnostics',
+    component: Diagnostics,
     beforeEnter: ifAuthenticated
   },
   {

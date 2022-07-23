@@ -159,15 +159,15 @@ export class WebSocketClient {
                 // ...However, status notifications come through thick and fast,
                 // so we cache these and send them through every second.
 
+                const timestamp = eventtime ? eventtime * 1000 : Date.now()
+
                 // If any of these properties exist, bypass the cache and send immediately
                 for (const key of ['motion_report']) {
                   if (this.store && key in params) {
-                    this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, payload: params[key] }, { root: true })
+                    this.store.dispatch('printer/onFastNotifyStatusUpdate', { key, timestamp, payload: params[key] }, { root: true })
                     delete params[key]
                   }
                 }
-
-                const timestamp = eventtime ? eventtime * 1000 : Date.now()
 
                 this.cache = (!this.cache)
                   ? { timestamp, params }
