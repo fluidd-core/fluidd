@@ -468,7 +468,7 @@ app:
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
-      force_move_toggle_warning: Require confirm when activating force_move
+      force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
     timer_options:
       duration: Duration only
