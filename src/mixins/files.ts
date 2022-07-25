@@ -253,7 +253,7 @@ export default class FilesMixin extends Vue {
         : '/' + filepath
       const fileState = this.$store.state.files.uploads.find((u: FilesUpload) => u.filepath === filepath)
       // consola.error('about to process...', fileState)
-      if (!fileState.cancelled) {
+      if (fileState && !fileState?.cancelled) {
         try {
           this.cancelTokenSource = Axios.CancelToken.source()
           await this.uploadFile(file, path, root, andPrint, {
