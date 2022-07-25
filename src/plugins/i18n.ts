@@ -11,7 +11,7 @@ Vue.use(VueI18n)
  */
 export const getStartingLocale = () => {
   const browserLocale = getBrowserLocale({ countryCodeOnly: true })
-  const supportedLocales = store.state.config?.hostConfig.locales
+  const supportedLocales = store.state.config.hostConfig.locales
   if (
     supportedLocales &&
     browserLocale &&

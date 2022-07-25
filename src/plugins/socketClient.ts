@@ -40,7 +40,7 @@ export class WebSocketClient {
     // We have a connection again, so set the socket properties
     // appropriately.
     if (
-      !this.store.state.socket?.disconnecting && // We arent about to disonnect and..
+      !this.store.state.socket.disconnecting && // We arent about to disonnect and..
       !this.store.state.files.download // We're not in the middle of a download.
     ) {
       this.store.commit('socket/setSocketOpen', true)
@@ -49,7 +49,7 @@ export class WebSocketClient {
 
     this.pingTimeout = setTimeout(() => {
       if (
-        !this.store.state.socket?.disconnecting && // We arent about to disonnect and..
+        !this.store.state.socket.disconnecting && // We arent about to disonnect and..
         !this.store.state.files.download // We're not in the middle of a download.
       ) {
         // In the event our socket stops responding, set the socket properties

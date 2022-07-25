@@ -14,7 +14,7 @@ export const isOfType = <T> (
  * Optionally, pick the largest or smallest image.
  */
 export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) => {
-  const apiUrl = store.state.config?.apiUrl
+  const apiUrl = store.state.config.apiUrl
   if (thumbnails.length) {
     let thumb: Thumbnail | undefined
     if (thumbnails) {
@@ -74,19 +74,19 @@ export const handlePrintStateChange = (payload: any, state: any, dispatch: any) 
     'state' in payload.print_stats
   ) {
     if (
-      state.printer?.printer.print_stats.state !== 'printing' &&
+      state.printer.printer.print_stats.state !== 'printing' &&
       payload.print_stats.state === 'printing'
     ) {
       // This is a new print starting...
       dispatch('printer/onPrintStart', payload, { root: true })
     } else if (
-      state.printer?.printer.print_stats.state === 'printing' &&
+      state.printer.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'complete'
     ) {
       // This is a completed print...
       dispatch('printer/onPrintEnd', payload, { root: true })
     } else if (
-      state.printer?.printer.print_stats.state === 'printing' &&
+      state.printer.printer.print_stats.state === 'printing' &&
       payload.print_stats.state === 'standby'
     ) {
       // This is a cancelled print...
@@ -99,7 +99,7 @@ export const handleCurrentFileChange = (payload: any) => {
   if (
     'print_stats' in payload &&
     'filename' in payload.print_stats &&
-    payload.print_stats.filename !== store.state.printer?.printer.print_stats.filename
+    payload.print_stats.filename !== store.state.printer.printer.print_stats.filename
   ) {
     store.commit('printer/setResetCurrentFile')
     if (

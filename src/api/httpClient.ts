@@ -66,8 +66,8 @@ const responseInterceptor = (response: AxiosResponse) => {
       // We can reasonably assume that successfull moonraker responses
       // determine a user is trusted or authenticated in some way.
       if (
-        store.state.config?.apiUrl &&
-        response.config.baseURL === store.state.config?.apiUrl &&
+        store.state.config.apiUrl &&
+        response.config.baseURL === store.state.config.apiUrl &&
         response.config.withAuth
       ) {
         // Set authenticated to true.
