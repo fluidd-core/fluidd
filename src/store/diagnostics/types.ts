@@ -1,5 +1,9 @@
 import { LayoutConfig } from '@/store/layout/types'
 
+export interface DiagnosticsCardContainer {
+  [key: string]: DiagnosticsCardConfig[]
+}
+
 export interface DiagnosticsCardConfig extends LayoutConfig {
   icon: string
   title: string

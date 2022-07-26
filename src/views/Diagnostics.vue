@@ -73,7 +73,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import draggable from 'vuedraggable'
 import { v4 as uuidv4 } from 'uuid'
 import StateMixin from '@/mixins/state'
-import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
 import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
@@ -151,7 +151,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
-  get layout (): { [key: string]: DiagnosticsCardConfig[] } {
+  get layout (): DiagnosticsCardContainer {
     return this.$store.getters['layout/getLayout']('diagnostics')
   }
 

@@ -5,7 +5,7 @@ import { actions } from './actions'
 import { mutations } from './mutations'
 import { LayoutState } from './types'
 import { RootState } from '../types'
-import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 
 /**
  * Maintains the state of our page layouts.
@@ -58,7 +58,7 @@ export const defaultState = (): LayoutState => {
         container2: [],
         container3: [],
         container4: []
-      } as { [key: string]: DiagnosticsCardConfig[] }
+      } as DiagnosticsCardContainer
     }
   }
 }
