@@ -34,7 +34,7 @@
       <v-icon>$estop</v-icon>
     </v-btn>
 
-    <v-main>
+    <v-main :style="customBackgroundImageStyle">
       <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
       <v-container
         fluid
@@ -76,11 +76,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from './mixins/state'
 import { Waits } from './globals'
 import { LinkPropertyHref } from 'vue-meta'
+import { authApi } from './api/auth.api'
 
 @Component<App>({
   metaInfo () {
@@ -100,6 +101,7 @@ export default class App extends Mixins(StateMixin) {
   toolsdrawer: boolean | null = null
   navdrawer: boolean | null = null
   showUpdateUI = false
+  customBackgroundImageStyle = ''
 
   flashMessage: FlashMessage = {
     open: false,
@@ -204,6 +206,75 @@ export default class App extends Mixins(StateMixin) {
   get primaryColor () {
     const theme = this.$store.getters['config/getTheme']
     return theme.currentTheme.primary
+  }
+
+  get apiUrl () {
+    return this.$store.state.config.apiUrl
+  }
+
+  get ready () {
+    return (this.socketConnected && this.apiConnected) || (!this.authenticated && this.apiConnected)
+  }
+
+  checkFile (list: any, filename: string, extensions: string[]) {
+    for (const i in extensions) {
+      const file = list.find(f => f.path === filename + extensions[i])
+      if (file) return file.path
+    }
+    return false
+  }
+
+  @Watch('ready')
+  async checkCustomTheme (value: boolean) {
+    if (!value) return
+    const token = (await authApi.getOneShot()).data.result
+    const url = encodeURI(
+      this.apiUrl +
+          '/server/files/list?root=config' +
+          '&token=' + token +
+          '&date=' + new Date().getTime())
+    let list = await fetch(url)
+    list = (await list.json()).result
+
+    const customStylesheetPath = this.checkFile(list, '.fluidd-theme/custom', ['.css'])
+    if (customStylesheetPath) this.setCustomStylesheet(customStylesheetPath)
+
+    const backgroundImagePath = this.checkFile(list, '.fluidd-theme/background', ['.png', '.jpg', '.gif'])
+    if (backgroundImagePath) this.setCustomBackgroundImage(backgroundImagePath)
+  }
+
+  async setCustomStylesheet (customStylesheetPath: string) {
+    const token = (await authApi.getOneShot()).data.result
+    const url = encodeURI(
+      this.apiUrl +
+          '/server/files/config/' + customStylesheetPath +
+          '?token=' + token +
+          '&date=' + new Date().getTime())
+    const oldCustomStylesheet = document.getElementById('customStylesheet')
+    if (oldCustomStylesheet) {
+      oldCustomStylesheet.setAttribute('href', url)
+      return
+    }
+    const customStylesheet = document.createElement('link')
+    customStylesheet.rel = 'stylesheet'
+    customStylesheet.type = 'text/css'
+    customStylesheet.id = 'customStylesheet'
+    customStylesheet.href = url
+    document.head.appendChild(customStylesheet)
+  }
+
+  async setCustomBackgroundImage (backgroundImagePath: string) {
+    const token = (await authApi.getOneShot()).data.result
+    const url = encodeURI(
+      this.apiUrl +
+          '/server/files/config/' + backgroundImagePath +
+          '?token=' + token +
+          '&date=' + new Date().getTime())
+    this.customBackgroundImageStyle = `
+    background-image: url(${url});
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;`
   }
 
   mounted () {
