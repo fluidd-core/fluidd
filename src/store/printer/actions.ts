@@ -6,6 +6,7 @@ import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } fr
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import consola from 'consola'
+import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 
 // let retryTimeout: number
 
@@ -152,15 +153,43 @@ export const actions: ActionTree<PrinterState, RootState> = {
         rootStateServerConfig?.server?.temperature_store_size ??
         Globals.CHART_HISTORY_RETENTION
       handleAddChartEntry(retention, getters.getChartableSensors)
+      dispatch('onDiagnosticsMetricsUpdate')
     }
   },
 
-  async onFastNotifyStatusUpdate ({ rootState, commit }, payload) {
+  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload) {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
     if (payload && rootState.socket.acceptingNotifications) {
       commit('printer/setSocketNotify', payload, { root: true })
+      dispatch('onDiagnosticsMetricsUpdate')
     }
+  },
+
+  async onDiagnosticsMetricsUpdate ({ rootState, commit, rootGetters }) {
+    const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
+    const metrics = Object.values(layout).flat()
+      .filter(layout => layout.enabled)
+      .map(layout => layout.metrics).flat()
+    const data: { [key: string]: any } = { date: new Date() }
+
+    for (const metric of metrics) {
+      let base: any = rootState
+      const properties = metric.key.split('.')
+      while (properties.length) {
+        base = base[properties.shift() as any]
+        if (!base) break
+      }
+
+      if (properties.length || !['string', 'number', 'boolean'].includes(typeof base)) continue
+      data[metric.key] = base
+    }
+
+    commit('charts/setChartEntry', {
+      type: 'diagnostics',
+      retention: rootGetters['charts/getChartRetention'],
+      data
+    }, { root: true })
   }
 }
