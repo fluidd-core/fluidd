@@ -25,7 +25,7 @@ Vue.use(VueRouter)
 const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
   if (
     store.getters['auth/getAuthenticated'] ||
-    !store.state.socket?.apiConnected
+    !store.state.socket.apiConnected
   ) {
     next()
     return

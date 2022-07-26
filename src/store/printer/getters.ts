@@ -642,7 +642,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getKlipperWarnings: (state) => {
-    return state.printer?.configfile?.warnings || []
+    return state.printer.configfile?.warnings || []
   },
 
   getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
@@ -654,11 +654,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getSaveConfigPending: (state) => {
-    return state.printer?.configfile?.save_config_pending || false
+    return state.printer.configfile?.save_config_pending || false
   },
 
   getSaveConfigPendingItems: (state) => {
-    return state.printer?.configfile?.save_config_pending_items
+    return state.printer.configfile?.save_config_pending_items
   },
 
   getHasHomingOverride: (state, getters) => {
@@ -671,6 +671,6 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getIsManualProbeActive: (state) => {
-    return state.printer?.manual_probe?.is_active || false
+    return state.printer.manual_probe?.is_active || false
   }
 }

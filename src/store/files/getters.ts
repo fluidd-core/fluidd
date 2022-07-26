@@ -20,7 +20,7 @@ export const getters: GetterTree<FilesState, RootState> = {
    * Indicates if a root is available.
    */
   isRootAvailable: (state, getters, rootState) => (r: string) => {
-    return rootState.server?.info.registered_directories.includes(r)
+    return rootState.server.info.registered_directories.includes(r)
   },
 
   /**

@@ -252,7 +252,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   @Watch('fileLoaded')
   onFileLoaded () {
     if (this.fileLoaded &&
-        this.$store.state.config?.uiSettings.gcodePreview.autoFollowOnFileLoad &&
+        this.$store.state.config.uiSettings.gcodePreview.autoFollowOnFileLoad &&
         this.printerFileLoaded) {
       this.$store.commit('gcodePreview/setViewerState', { followProgress: true }, { root: true })
     }

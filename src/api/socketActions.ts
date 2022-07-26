@@ -11,8 +11,8 @@ const baseEmit = (method: string, options: NotifyOptions) => {
     return
   }
   if (
-    !store.state.socket?.disconnecting &&
-    !store.state.socket?.connecting
+    !store.state.socket.disconnecting &&
+    !store.state.socket.connecting
   ) {
     Vue.$socket.emit(method, options)
   } else {
@@ -330,7 +330,7 @@ export const SocketActions = {
       dispatch: 'socket/onConnectionId',
       params: {
         client_name: Globals.APP_NAME,
-        version: `${store.state.version?.fluidd.version || '0.0.0'}-${store.state.version?.fluidd.hash || 'unknown'}`.trim(),
+        version: `${store.state.version.fluidd.version || '0.0.0'}-${store.state.version.fluidd.hash || 'unknown'}`.trim(),
         type: 'web',
         url: Globals.GITHUB_REPO
       }
