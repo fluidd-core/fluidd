@@ -17,11 +17,11 @@ export const getters: GetterTree<MeshState, RootState> = {
    */
   getBedMeshes: (state, getters, rootState, rootGetters): KlipperMesh[] => {
     const meshes: KlipperMesh[] = []
-    const currentProfile = rootState.printer?.printer.bed_mesh.profile_name || ''
+    const currentProfile = rootState.printer.printer.bed_mesh.profile_name || ''
     const config = rootGetters['printer/getPrinterConfig']()
-    if (rootState.printer?.printer.bed_mesh && currentProfile.length > 0) {
+    if (rootState.printer.printer.bed_mesh && currentProfile.length > 0) {
       meshes.push({
-        ...rootState.printer?.printer.bed_mesh,
+        ...rootState.printer.printer.bed_mesh,
         active: true
       })
     }
@@ -54,10 +54,10 @@ export const getters: GetterTree<MeshState, RootState> = {
    */
   getCurrentMeshData: (state, getters, rootState): AppMeshes => {
     return {
-      mesh_matrix: transformMesh(rootState.printer?.printer.bed_mesh, 'mesh_matrix'),
-      probed_matrix: transformMesh(rootState.printer?.printer.bed_mesh, 'probed_matrix'),
-      mesh_matrix_flat: transformMesh(rootState.printer?.printer.bed_mesh, 'mesh_matrix', true),
-      probed_matrix_flat: transformMesh(rootState.printer?.printer.bed_mesh, 'probed_matrix', true)
+      mesh_matrix: transformMesh(rootState.printer.printer.bed_mesh, 'mesh_matrix'),
+      probed_matrix: transformMesh(rootState.printer.printer.bed_mesh, 'probed_matrix'),
+      mesh_matrix_flat: transformMesh(rootState.printer.printer.bed_mesh, 'mesh_matrix', true),
+      probed_matrix_flat: transformMesh(rootState.printer.printer.bed_mesh, 'probed_matrix', true)
     }
   }
 }

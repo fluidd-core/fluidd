@@ -17,27 +17,29 @@ import { NotificationsState } from './notifications/types'
 import { AnnouncementsState } from './announcements/types'
 import { AuthState } from './auth/types'
 import { TimelapseState } from '@/store/timelapse/types'
+import { CamerasState } from './cameras/types'
+import { WaitState } from './wait/types'
 
 export interface RootState {
-  socket?: SocketState;
-  auth?: AuthState;
-  server?: ServerState;
-  printer?: PrinterState;
-  config?: ConfigState;
-  layout?: LayoutState;
-  mesh?: MeshState;
-  files?: FilesState;
-  charts?: ChartState;
-  console?: ConsoleState;
-  macros?: MacrosState;
-  power?: DevicePowerState;
-  history?: HistoryState;
-  version?: VersionState;
-  gcodePreview?: GcodePreviewState;
-  parts?: PartsState;
-  notifications?: NotificationsState;
-  announcements?: AnnouncementsState;
-  timelapse?: TimelapseState;
+  socket: SocketState;
+  auth: AuthState;
+  server: ServerState;
+  printer: PrinterState;
+  config: ConfigState;
+  files: FilesState;
+  layout: LayoutState;
+  charts: ChartState;
+  console: ConsoleState;
+  macros: MacrosState;
+  power: DevicePowerState;
+  history: HistoryState;
+  version: VersionState;
+  cameras: CamerasState;
+  mesh: MeshState;
+  notifications: NotificationsState;
+  announcements: AnnouncementsState;
+  wait: WaitState;
+  gcodePreview: GcodePreviewState;
+  timelapse: TimelapseState;
+  parts: PartsState;
 }
-
-export type AppNotificationType = 'success' | 'info' | 'warning' | 'error' | 'announcement'

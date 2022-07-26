@@ -55,7 +55,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         ) {
           let history = {} as HistoryItem
           if (file.job_id) {
-            const h = rootState.history?.jobs.find(job => job.job_id === file.job_id)
+            const h = rootState.history.jobs.find(job => job.job_id === file.job_id)
             if (h) history = h
           }
           items.push({
@@ -85,7 +85,7 @@ export const actions: ActionTree<FilesState, RootState> = {
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
-    if (filepath === rootState.printer?.printer.print_stats.filename) {
+    if (filepath === rootState.printer.printer.print_stats.filename) {
       // Find an completed history item for this file, if it exists.
       const history = rootGetters['history/getHistoryByFilename'](filepath)
       if (history) {

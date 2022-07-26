@@ -124,7 +124,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     // Do NOT accept notification updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
-    if (payload && rootState.socket?.acceptingNotifications) {
+    if (payload && rootState.socket.acceptingNotifications) {
       // Detect a printing state change.
       // We do this prior to commiting the notify so we can
       // compare the before and after.
@@ -146,7 +146,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
 
       // Add a temp chart entry
-      const rootStateServerConfig = rootState.server?.config
+      const rootStateServerConfig = rootState.server.config
       const retention =
         rootStateServerConfig?.data_store?.temperature_store_size ??
         rootStateServerConfig?.server?.temperature_store_size ??
@@ -159,7 +159,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
-    if (payload && rootState.socket?.acceptingNotifications) {
+    if (payload && rootState.socket.acceptingNotifications) {
       commit('printer/setSocketNotify', payload, { root: true })
     }
   }

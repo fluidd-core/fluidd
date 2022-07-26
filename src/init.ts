@@ -149,7 +149,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   await store.dispatch('init', { apiConfig, hostConfig, apiConnected })
 
   // Ensure users start on the dash.
-  if (router.currentRoute.path !== '/' && store.state.auth?.authenticated) router.push('/')
+  if (router.currentRoute.path !== '/' && store.state.auth.authenticated) router.push('/')
 
   return { apiConfig, hostConfig, apiConnected, apiAuthenticated }
 }
