@@ -56,7 +56,7 @@
     "uuid": "^8.3.2",
     "vue": "^2.7.3",
     "vue-class-component": "^7.2.6",
-    "vue-echarts": "^6.2.0",
+    "vue-echarts": "^6.2.3",
     "vue-i18n": "^8.27.2",
     "vue-inline-svg": "^2.1.0",
     "vue-meta": "^2.4.0",
