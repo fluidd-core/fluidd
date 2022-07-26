@@ -84,15 +84,9 @@ import { defaultState } from '@/store/layout'
   components: { draggable, CollapsableCard, DiagnosticsCard, DiagnosticsCardConfigDialog }
 })
 export default class Diagnostics extends Mixins(StateMixin) {
-  get defaultCardConfig () {
-    const defaultCardConfig = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0]))
-    defaultCardConfig.id = ''
-    return defaultCardConfig
-  }
-
-  dialogState: { active: boolean, card: DiagnosticsCardConfig } = {
+  dialogState: { active: boolean, card: DiagnosticsCardConfig | null } = {
     active: false,
-    card: this.defaultCardConfig
+    card: null
   }
 
   drag = false
@@ -103,7 +97,9 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 
   handleAddCard () {
-    this.dialogState.card = this.defaultCardConfig
+    const clonedDefaultCard = JSON.parse(JSON.stringify(defaultState().layouts.diagnostics.container1[0]))
+    clonedDefaultCard.id = ''
+    this.dialogState.card = clonedDefaultCard
     this.dialogState.active = true
   }
 
