@@ -194,3 +194,7 @@ export default class Diagnostics extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import '@/scss/draggable.scss';
+</style>
