@@ -139,6 +139,16 @@
           />
         </app-setting>
       </template>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.enable_diagnostics')">
+        <v-switch
+          v-model="enableDiagnostics"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
     </v-card>
   </div>
 </template>
@@ -274,6 +284,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set confirmOnSaveConfigAndRestart (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnSaveConfigAndRestart',
+      value,
+      server: true
+    })
+  }
+
+  get enableDiagnostics () {
+    return this.$store.state.config.uiSettings.general.enableDiagnostics
+  }
+
+  set enableDiagnostics (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.enableDiagnostics',
       value,
       server: true
     })

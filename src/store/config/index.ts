@@ -69,7 +69,8 @@ export const defaultState = (): ConfigState => {
         cameraFullscreenAction: 'embed',
         topNavPowerToggle: null,
         showManualProbeDialogAutomatically: true,
-        forceMoveToggleWarning: true
+        forceMoveToggleWarning: true,
+        enableDiagnostics: false
       },
       theme: {
         isDark: true,

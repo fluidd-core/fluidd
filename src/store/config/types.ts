@@ -62,6 +62,7 @@ export interface GeneralConfig {
   topNavPowerToggle: null | string;
   showManualProbeDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  enableDiagnostics: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';

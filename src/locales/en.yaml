@@ -199,6 +199,7 @@ app:
       acceleration: Acceleration
       actual_time: Actual
       add_camera: Add Camera
+      add_card: Add Card
       add_filter: Add Filter
       add_preset: Add Preset
       add_user: Add user
@@ -214,6 +215,7 @@ app:
       current_user: Current user
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
+      edit_card: Edit Card
       edit_filter: Edit Filter
       edit_preset: Edit Preset
       edit_user: Edit user
@@ -344,6 +346,7 @@ app:
       config_files: Configuration Files
       configure: Configuration
       console: Console
+      diagnostics: Diagnostics
       endstops: Endstops
       fans_outputs: Fans & Outputs
       gcode_preview: Gcode Preview
@@ -434,6 +437,7 @@ app:
       enable: Enable
       enable_notifications: Enable notifications
       expression: Expression
+      enable_diagnostics: Enable diagnostics logging
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
