@@ -2,8 +2,8 @@
   <v-navigation-drawer
     :value="value"
     :color="theme.currentTheme.drawer"
-    :mini-variant="!hasSubNavigation"
-    :floating="!hasSubNavigation"
+    :mini-variant="!(hasSubNavigation && authenticated && socketConnected)"
+    :floating="!(hasSubNavigation && authenticated && socketConnected)"
     clipped
     app
     @input="emitChange"
@@ -99,7 +99,10 @@
         </div>
       </v-navigation-drawer>
 
-      <router-view name="navigation" />
+      <router-view
+        v-if="hasSubNavigation && authenticated && socketConnected"
+        name="navigation"
+      />
     </v-row>
   </v-navigation-drawer>
 </template>
