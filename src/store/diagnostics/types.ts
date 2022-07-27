@@ -9,13 +9,20 @@ export interface DiagnosticsCardConfig extends LayoutConfig {
   title: string
   height: number
 
+  axis: ChartAxis[]
+}
+
+export interface ChartAxis {
+  unit: string
+  min?: number
+  max?: number
+  showLegend: boolean
+
   metrics: Metric[]
 }
 
 export interface Metric {
   key: string
   name: string
-  suffix: string
-  color: string
-  factor?: number
+  color?: string
 }

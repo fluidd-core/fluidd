@@ -172,7 +172,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
     const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
     const metrics = Object.values(layout).flat()
       .filter(layout => layout.enabled)
-      .map(layout => layout.metrics).flat()
+      .map(layout => layout.axis).flat()
+      .map(axis => axis.metrics).flat()
     const data: { [key: string]: any } = { date: new Date() }
 
     for (const metric of metrics) {
