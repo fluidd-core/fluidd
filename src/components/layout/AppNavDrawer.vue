@@ -2,8 +2,8 @@
   <v-navigation-drawer
     :value="value"
     :color="theme.currentTheme.drawer"
-    :mini-variant="!(hasSubNavigation && authenticated && socketConnected)"
-    :floating="!(hasSubNavigation && authenticated && socketConnected)"
+    :mini-variant="!showSubNavigation"
+    :floating="!showSubNavigation"
     clipped
     app
     @input="emitChange"
@@ -100,7 +100,7 @@
       </v-navigation-drawer>
 
       <router-view
-        v-if="hasSubNavigation && authenticated && socketConnected"
+        v-if="showSubNavigation"
         name="navigation"
       />
     </v-row>
@@ -135,6 +135,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get hasSubNavigation () {
     return this.$route.meta?.hasSubNavigation ?? false
+  }
+
+  get showSubNavigation () {
+    return this.hasSubNavigation && this.socketConnected && this.authenticated
   }
 
   get isMobile () {
