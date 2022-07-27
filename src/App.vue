@@ -246,7 +246,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
 
   checkFile (directory: Files, filename: string, extensions: string[]) {
     for (const extension of extensions) {
-      const file = directory.items.find(f => f.type === 'file' && f.name === filename + extension) as AppFile
+      const file = directory.items.find((f): f is AppFile => f.type === 'file' && f.name === filename + extension)
 
       if (file) return file.path + '/' + file.filename
     }
