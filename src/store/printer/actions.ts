@@ -168,6 +168,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async onDiagnosticsMetricsUpdate ({ rootState, commit, rootGetters }) {
+    if (!rootState.config.uiSettings.general.enableDiagnostics) return
     const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
     const metrics = Object.values(layout).flat()
       .filter(layout => layout.enabled)
