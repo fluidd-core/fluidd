@@ -42,17 +42,22 @@ export const defaultState = (): LayoutState => {
           collapsed: false,
           height: 300,
           icon: 'motion',
-          metrics: [{
-            key: 'printer.printer.motion_report.live_extruder_velocity',
-            name: 'Flow Rate',
-            suffix: 'mm³/s',
-            color: '#ff0000',
-            factor: (1.75 / 2) ** 2 * Math.PI
+          axis: [{
+            unit: 'mm/s',
+            showLegend: true,
+            metrics: [{
+              key: 'printer.printer.motion_report.live_velocity',
+              name: 'Velocity'
+            }]
           }, {
-            key: 'printer.printer.motion_report.live_velocity',
-            name: 'Velocity',
-            suffix: 'mm/s',
-            color: '#00ff00'
+            unit: 'mm³/s',
+            showLegend: true,
+            min: 0,
+            max: 20,
+            metrics: [{
+              key: 'printer.printer.motion_report.live_extruder_velocity',
+              name: 'Flow'
+            }]
           }]
         }],
         container2: [],
