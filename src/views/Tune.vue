@@ -5,7 +5,7 @@
       cols="12"
       md="8"
     >
-      <bed-mesh />
+      <bed-mesh-card :full-screen="true" />
     </v-col>
     <v-col
       cols="12"
@@ -25,14 +25,14 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
-import BedMesh from '@/components/widgets/bedmesh/BedMesh.vue'
+import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import BedMeshControls from '@/components/widgets/bedmesh/BedMeshControls.vue'
 import EndStopsCard from '@/components/widgets/endstops/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 
 @Component({
   components: {
-    BedMesh,
+    BedMeshCard,
     BedMeshControls,
     EndStopsCard,
     RunoutSensorsCard

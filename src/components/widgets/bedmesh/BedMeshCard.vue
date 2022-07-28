@@ -3,7 +3,25 @@
     :title="$t('app.general.title.bedmesh')"
     :lazy="false"
     icon="$bedMesh"
+    :draggable="!fullScreen"
+    :collapsable="!fullScreen"
+    layout-path="dashboard.bed-mesh-card"
   >
+    <template
+      v-if="!fullScreen"
+      #menu
+    >
+      <app-btn
+        color=""
+        fab
+        small
+        text
+        @click="$filters.routeTo($router, '/tune')"
+      >
+        <v-icon>$fullScreen</v-icon>
+      </app-btn>
+    </template>
+
     <v-card-text>
       <e-charts-bed-mesh
         v-if="mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0"
@@ -19,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
@@ -29,7 +47,10 @@ import ToolheadMixin from '@/mixins/toolhead'
     EChartsBedMesh
   }
 })
-export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
+export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin) {
+  @Prop({ type: Boolean, default: false })
+  public fullScreen!: boolean
+
   get options () {
     const map_scale = this.scale / 2
     const box_scale = this.boxScale / 2
