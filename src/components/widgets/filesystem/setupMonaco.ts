@@ -24,6 +24,15 @@ const getDocsSection = (service: CodeLensSupportedService, sectionName: string) 
       if (/^extruder[0-9]+$/.test(sectionName)) {
         return 'extruder'
       }
+
+      break
+
+    case 'moonraker':
+      if (sectionName.startsWith('include')) {
+        return 'include-directives'
+      }
+
+      break
   }
 
   return sectionName
