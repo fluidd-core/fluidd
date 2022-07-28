@@ -110,45 +110,25 @@ export default class DiagnosticsCard extends Vue {
             backgroundColor: tooltip.backgroundColor
           }
         },
-        position: undefined /*, // changed
-        /* formatter: (params: any) => {
+        formatter: (params: any) => {
           let text = ''
           params
-            .reverse()
-            .forEach((param: any) => {
-              if (
-                !param.seriesName.toLowerCase().endsWith('target') &&
-                !param.seriesName.toLowerCase().endsWith('power') &&
-                !param.seriesName.toLowerCase().endsWith('speed') &&
-                param.seriesName &&
-                param.seriesName in param.value
-              ) {
-                text += `
-                  <div>
-                    ${param.marker}
-                    <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${param.seriesName}:
-                    </span>
-                    <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                      ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`
-
-                if (param.seriesName + 'Target' in param.value) {
-                  text += ` / ${param.value[param.seriesName + 'Target'].toFixed()}<small>°C</small>`
-                }
-                if (param.seriesName + 'Power' in param.value) {
-                  text += ` / ${(param.value[param.seriesName + 'Power'] * 100).toFixed()}<small>%</small>`
-                }
-                if (param.seriesName + 'Speed' in param.value) {
-                  text += ` / ${(param.value[param.seriesName + 'Speed'] * 100).toFixed()}<small>%</small>`
-                }
-                text += `</span>
+            .forEach((param: any, index: number) => {
+              text += `
+                <div>
+                  ${param.marker}
+                  <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
+                    ${param.seriesName}:
+                  </span>
+                  <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
+                    ${param.value[param.dimensionNames[index + 1]].toFixed(3)} ${this.config.axis[index].unit}
+                  </span>
                   <div style="clear: both"></div>
                 </div>
                 <div style="clear: both"></div>`
-              }
             })
           return text
-        } */
+        }
       },
       xAxis: {
         type: 'time',
