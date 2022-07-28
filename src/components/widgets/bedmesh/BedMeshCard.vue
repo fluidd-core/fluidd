@@ -1,5 +1,6 @@
 <template>
   <collapsable-card
+    v-if="supportsBedMesh && klippyReady"
     :title="$t('app.general.title.bedmesh')"
     :lazy="false"
     icon="$bedMesh"
@@ -164,6 +165,10 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin) {
   // The current processed mesh data, if any.
   get mesh () {
     return this.$store.getters['mesh/getCurrentMeshData']
+  }
+
+  get supportsBedMesh () {
+    return this.$store.getters['mesh/getSupportsBedMesh']
   }
 
   get isMobile () {
