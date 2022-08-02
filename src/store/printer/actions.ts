@@ -176,8 +176,10 @@ export const actions: ActionTree<PrinterState, RootState> = {
       .flat(3)
 
     const collectors = Array.from(new Set(metrics.map(metric => metric.collector)))
+    let data
 
-    const data = JSON.parse(sandboxedEval(`
+    try {
+      data = sandboxedEval(`
       ${
         Object.entries(rootState)
           .map(([key, value]) => `const ${key} = ${JSON.stringify(value)}`).join('\n')
@@ -195,7 +197,13 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
 
       return JSON.stringify(result) // in order to only return serializable data
-    `))
+    `)
+
+      if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
+      data = JSON.parse(data)
+    } catch (err: any) {
+      data = Object.fromEntries(collectors.map(collector => [collector, err?.message ?? 'Unknown Error']))
+    }
 
     commit('charts/setChartEntry', {
       type: 'diagnostics',
