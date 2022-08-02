@@ -127,11 +127,14 @@ app:
         your system. Are you sure?
   general:
     btn:
+      abort: Abort
+      accept: Accept
       add: Add
       add_dir: Add Directory
       add_file: Add File
       add_printer: Add printer
       adjust_layout: Adjust dashboard layout
+      adjusted: Adjusted
       all: All
       auth_unsure: Unsure why you're seeing this?
       calibrate: Calibrate
@@ -195,6 +198,7 @@ app:
     label:
       accel_to_decel: Accel to Decel
       acceleration: Acceleration
+      accepted_screws: Accepted screws
       actual_time: Actual
       add_camera: Add Camera
       add_filter: Add Filter
@@ -241,6 +245,7 @@ app:
       'on': 'On'
       'off': 'Off'
       password: Password
+      partial_of_total: '%{partial} of %{total}'
       power: Power
       pressure_advance: Pressure Advance
       printers: Printers
@@ -249,6 +254,9 @@ app:
       retract_length: Retract Length
       retract_speed: Retract Speed
       save_as: Save As
+      screw_index: Screw index
+      screw_name: Screw name
+      screw_number: Screw %{index}
       services: Services
       slicer: Slicer
       smooth_time: Smooth Time
@@ -282,6 +290,8 @@ app:
     msg:
       password_changed: Password changed
       wrong_password: Oops, something went wrong. Is your password correct?
+      bed_screws_adjust: >-
+        Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -298,6 +308,7 @@ app:
       msg:
         confirm: Are you sure?
         confirm_exclude_object: Are you sure you want to exclude this object from printing?
+        confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
         confirm_service_restart: Are you sure you want to restart the %{name} service?
@@ -456,6 +467,7 @@ app:
       show_code_lens: Show CodeLens
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
+      show_save_config_and_restart: Save Config and Restart button in top navigation
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
@@ -464,6 +476,9 @@ app:
       type: Type
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
+      force_move_toggle_warning: Require confirm when activating FORCE_MOVE
+      show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
+      show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -482,6 +497,8 @@ app:
       tool: Tool
     tooltip:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
+      show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
+      show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
   socket:
     msg:
       connecting: Connecting to moonraker...
@@ -519,17 +536,22 @@ app:
       home_x: X
       home_y: 'Y'
       home_all: All
+    title:
+      bed_screws_adjust: Bed Screws Adjust
+      manual_probe: Manual Probe
     tooltip:
       absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
+      manual_probe: Manual Probe
       motors_off: MOTORS OFF
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
       relative_positioning: Relative Positioning
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
+      force_move: FORCE_MOVE
   version:
     btn:
       check_for_updates: Check for updates

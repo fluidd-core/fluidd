@@ -31,6 +31,27 @@
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
+          v-if="isManualProbeActive"
+          :elevation="2"
+          :disabled="!klippyReady || printerPrinting"
+          small
+          class="ml-1"
+          @click="manualProbeDialogOpen = true"
+        >
+          {{ $t('app.tool.tooltip.manual_probe') }}
+        </app-btn>
+        <app-btn
+          v-if="printerSupportsForceMove"
+          :elevation="2"
+          :disabled="!klippyReady || printerPrinting"
+          small
+          class="ml-1"
+          :color="forceMove ? 'error' : undefined"
+          @click="toggleForceMove"
+        >
+          {{ $t('app.tool.tooltip.force_move') }}
+        </app-btn>
+        <app-btn
           :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
@@ -46,7 +67,7 @@
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('BED_SCREWS_ADJUST', waits.onBedScrewsAdjust)"
+          @click="bedScrewsAdjust"
         >
           {{ $t('app.tool.tooltip.bed_screws_adjust') }}
         </app-btn>
@@ -86,22 +107,40 @@
       </app-btn-collapse-group>
     </template>
 
-    <toolhead />
+    <toolhead :force-move="forceMove" />
+
+    <manual-probe-dialog
+      v-if="manualProbeDialogOpen"
+      v-model="manualProbeDialogOpen"
+    />
+
+    <bed-screws-adjust-dialog
+      v-if="bedScrewsAdjustDialogOpen"
+      v-model="bedScrewsAdjustDialogOpen"
+    />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
+import ManualProbeDialog from '@/components/common/ManualProbeDialog.vue'
+import BedScrewsAdjustDialog from '@/components/common/BedScrewsAdjustDialog.vue'
 
 @Component({
   components: {
-    Toolhead
+    Toolhead,
+    ManualProbeDialog,
+    BedScrewsAdjustDialog
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
+  forceMove = false
+  manualProbeDialogOpen = false
+  bedScrewsAdjustDialogOpen = false
+
   @Prop({ type: Boolean, default: false })
   public menuCollapsed!: boolean
 
@@ -123,6 +162,57 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get printerSupportsBedScrewsCalculate (): boolean {
     return 'screws_tilt_adjust' in this.printerSettings
+  }
+
+  get printerSupportsForceMove () {
+    return this.printerSettings.force_move?.enable_force_move ?? false
+  }
+
+  get showManualProbeDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
+  }
+
+  get showBedScrewsAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
+  }
+
+  @Watch('isManualProbeActive')
+  onIsManualProbeActive (value: boolean) {
+    if (value && this.showManualProbeDialogAutomatically &&
+      this.klippyReady && !this.printerPrinting) {
+      this.manualProbeDialogOpen = true
+    }
+  }
+
+  @Watch('isBedScrewsAdjustActive')
+  onIsBedScrewsAdjustActive (value: boolean) {
+    if (value && this.showBedScrewsAdjustDialogAutomatically &&
+      this.klippyReady && !this.printerPrinting) {
+      this.bedScrewsAdjustDialogOpen = true
+    }
+  }
+
+  bedScrewsAdjust () {
+    if (this.isBedScrewsAdjustActive) {
+      this.bedScrewsAdjustDialogOpen = true
+    } else {
+      this.sendGcode('BED_SCREWS_ADJUST', this.waits.onBedScrewsAdjust)
+    }
+  }
+
+  async toggleForceMove () {
+    if (!this.forceMove && this.$store.state.config.uiSettings.general.forceMoveToggleWarning) {
+      const result = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
+    this.forceMove = !this.forceMove
   }
 }
 </script>

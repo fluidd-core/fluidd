@@ -14,8 +14,8 @@
     "lint": "vue-cli-service lint",
     "bootstrap": "husky install",
     "copy:host:config": "shx cp -f ./server/config.json ./dist/config.json",
-    "deploy:host": "potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
-    "deploy:host:dev": "potato -s dist -u -b dev-app.fluidd.xyz",
+    "deploy:host": "npx --yes -p @0x4447/potato potato -s dist -u -b app.fluidd.xyz -a \"$AWS_ACCESS_KEY_ID\" -t \"$AWS_SECRET_ACCESS_KEY\"",
+    "deploy:host:dev": "npx --yes -p @0x4447/potato potato -s dist -u -b dev-app.fluidd.xyz",
     "i18n-extract": "vue-i18n-extract use-config",
     "inspect": "vue-cli-service inspect",
     "release": "standard-version",
@@ -56,7 +56,7 @@
     "uuid": "^8.3.2",
     "vue": "^2.7.3",
     "vue-class-component": "^7.2.6",
-    "vue-echarts": "^6.2.0",
+    "vue-echarts": "^6.2.3",
     "vue-i18n": "^8.27.2",
     "vue-inline-svg": "^2.1.0",
     "vue-meta": "^2.4.0",
@@ -69,7 +69,6 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@0x4447/potato": "^2.4.7",
     "@mdi/js": "^6.9.96",
     "@types/jest": "^27.5.2",
     "@types/lodash-es": "^4.17.6",

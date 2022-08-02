@@ -43,7 +43,7 @@ export const actions: ActionTree<AuthState, RootState> = {
     // No known API?
     // This is likely a new setup with no known instances yet. Set auth to true
     // and move on until we know more.
-    if (rootState.config?.apiUrl === '') {
+    if (rootState.config.apiUrl === '') {
       commit('setAuthenticated', true)
       return
     }

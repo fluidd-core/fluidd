@@ -31,7 +31,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
-  state: {},
   modules: {
     socket,
     auth,

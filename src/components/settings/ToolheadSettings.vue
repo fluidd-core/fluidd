@@ -164,6 +164,44 @@
 
       <v-divider />
 
+      <app-setting
+        :title="$t('app.setting.label.show_manual_probe_dialog_automatically')"
+        :sub-title="$t('app.setting.tooltip.show_manual_probe_dialog_automatically')"
+      >
+        <v-switch
+          v-model="showManualProbeDialogAutomatically"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
+        :title="$t('app.setting.label.show_bed_screws_adjust_dialog_automatically')"
+        :sub-title="$t('app.setting.tooltip.show_bed_screws_adjust_dialog_automatically')"
+      >
+        <v-switch
+          v-model="showBedScrewsAdjustDialogAutomatically"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <template v-if="printerSupportsForceMove">
+        <app-setting :title="$t('app.setting.label.force_move_toggle_warning')">
+          <v-switch
+            v-model="forceMoveToggleWarning"
+            hide-details
+            class="mt-0 mb-4"
+          />
+        </app-setting>
+
+        <v-divider />
+      </template>
+
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -336,6 +374,46 @@ export default class ToolHeadSettings extends Vue {
   set invertZ (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.axis.z.inverted',
+      value,
+      server: true
+    })
+  }
+
+  get printerSupportsForceMove () {
+    return this.$store.getters['printer/getPrinterSettings']('force_move.enable_force_move') ?? false
+  }
+
+  get showManualProbeDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
+  }
+
+  set showManualProbeDialogAutomatically (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showManualProbeDialogAutomatically',
+      value,
+      server: true
+    })
+  }
+
+  get showBedScrewsAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
+  }
+
+  set showBedScrewsAdjustDialogAutomatically (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showBedScrewsAdjustDialogAutomatically',
+      value,
+      server: true
+    })
+  }
+
+  get forceMoveToggleWarning () {
+    return this.$store.state.config.uiSettings.general.forceMoveToggleWarning
+  }
+
+  set forceMoveToggleWarning (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.forceMoveToggleWarning',
       value,
       server: true
     })

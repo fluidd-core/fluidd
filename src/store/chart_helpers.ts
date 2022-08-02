@@ -10,7 +10,7 @@ export const handleMcuStatsChange = (payload: any) => {
 
       // Combine existing with the update.
       const stats = {
-        ...store.state.printer?.printer[key],
+        ...store.state.printer.printer[key],
         ...payload[key]
       }
 
@@ -20,7 +20,7 @@ export const handleMcuStatsChange = (payload: any) => {
 
         // The last entry in our chart data.
         let lastEntry: any
-        if (store.state.charts && store.state.charts[key]) {
+        if (store.state.charts[key]) {
           lastEntry = store.state.charts[key][store.state.charts[key].length - 1]
         }
 
@@ -68,7 +68,7 @@ export const handleSystemStatsChange = (payload: any) => {
   ) {
     // Combine existing with the update.
     const stats = {
-      ...store.state.printer?.printer.system_stats,
+      ...store.state.printer.printer.system_stats,
       ...payload.system_stats
     }
 
@@ -78,9 +78,9 @@ export const handleSystemStatsChange = (payload: any) => {
     // Add an entry for the memory graph.
     if (
       'memavail' in stats &&
-      store.state.server?.system_info?.cpu_info?.total_memory
+      store.state.server.system_info?.cpu_info?.total_memory
     ) {
-      const total_memory = store.state.server?.system_info?.cpu_info?.total_memory || 0
+      const total_memory = store.state.server.system_info?.cpu_info?.total_memory || 0
       const mem_used = total_memory - stats.memavail
       const percent_mem_used = Math.ceil(mem_used / total_memory * 100)
 
@@ -101,7 +101,7 @@ export const handleSystemStatsChange = (payload: any) => {
       'sysload' in stats
     ) {
       const cputime = stats.cputime
-      const last_cputime = store.state.printer?.printer.system_stats?.cputime || stats.cputime || 0
+      const last_cputime = store.state.printer.printer.system_stats?.cputime || stats.cputime || 0
 
       // Commit the formatted result to our chart data.
       store.commit('charts/setChartEntry', {
@@ -131,10 +131,10 @@ export const handleAddChartEntry = (retention: number, keys: string[]) => {
     keys.forEach((key) => {
       let label = key
       if (key.includes(' ')) label = key.split(' ')[1]
-      const temp = store.state.printer?.printer[key].temperature
-      const target = store.state.printer?.printer[key].target
-      const power = store.state.printer?.printer[key].power
-      const speed = store.state.printer?.printer[key].speed
+      const temp = store.state.printer.printer[key].temperature
+      const target = store.state.printer.printer[key].target
+      const power = store.state.printer.printer[key].power
+      const speed = store.state.printer.printer[key].speed
       r[label] = temp
       if (target !== undefined) r[`${label}Target`] = target
       if (power !== undefined) r[`${label}Power`] = power
@@ -144,7 +144,7 @@ export const handleAddChartEntry = (retention: number, keys: string[]) => {
     return r
   }
 
-  if (store.state.charts && store.state.charts.ready) {
+  if (store.state.charts.ready) {
     const data = configureChartEntry()
     store.commit('charts/setChartEntry', {
       type: 'chart',

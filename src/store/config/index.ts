@@ -64,9 +64,13 @@ export const defaultState = (): ConfigState => {
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
+        showSaveConfigAndRestart: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
-        topNavPowerToggle: null
+        topNavPowerToggle: null,
+        showManualProbeDialogAutomatically: true,
+        showBedScrewsAdjustDialogAutomatically: true,
+        forceMoveToggleWarning: true
       },
       theme: {
         isDark: true,

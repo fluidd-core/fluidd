@@ -171,6 +171,7 @@ export const Globals = Object.freeze({
   CONFIG_SERVICE_MAP: [
     { filename: 'moonraker.conf', service: 'moonraker', link: 'https://moonraker.readthedocs.io/en/latest/configuration/' },
     { filename: 'webcam.txt', service: 'webcamd' },
+    { filename: 'crowsnest.conf', service: 'crowsnest', link: 'https://github.com/mainsail-crew/crowsnest' },
     { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
@@ -359,5 +360,6 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
-  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame',
+  onManualProbe: 'onManualProbe'
 })

@@ -577,6 +577,27 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return sensors
   },
 
+  getBedScrews: (_, getters) => {
+    const config = getters.getPrinterSettings('bed_screws')
+    const screws = []
+
+    for (let index = 1; index <= 99; index++) {
+      const adjust = config[`screw${index}`]
+
+      if (!adjust) {
+        break
+      }
+
+      screws.push({
+        adjust,
+        fine: config[`screw${index}_fine_adjust`],
+        name: config[`screw${index}_name`]
+      })
+    }
+
+    return screws
+  },
+
   /**
    * Return a required setting from the printer.config object.
    */
@@ -642,7 +663,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getKlipperWarnings: (state) => {
-    return state.printer?.configfile?.warnings || []
+    return state.printer.configfile?.warnings || []
   },
 
   getMoonrakerFailedComponents: (state, getters, rootState, rootGetters) => {
@@ -654,11 +675,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getSaveConfigPending: (state) => {
-    return state.printer?.configfile?.save_config_pending || false
+    return state.printer.configfile?.save_config_pending || false
   },
 
   getSaveConfigPendingItems: (state) => {
-    return state.printer?.configfile?.save_config_pending_items
+    return state.printer.configfile?.save_config_pending_items
   },
 
   getHasHomingOverride: (state, getters) => {
@@ -668,5 +689,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
     } else {
       return false
     }
+  },
+
+  getIsManualProbeActive: (state) => {
+    return state.printer.manual_probe?.is_active || false
+  },
+
+  getIsBedScrewsAdjustActive: (state) => {
+    return state.printer.bed_screws?.is_active || false
   }
 }

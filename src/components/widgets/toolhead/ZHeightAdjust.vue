@@ -8,7 +8,6 @@
       class="text-right"
     >
       <v-btn-toggle
-        v-if="moveDistance"
         v-model="moveDistance"
         mandatory
         dense
@@ -42,11 +41,11 @@
           class="pr-1"
         >
           <app-btn
-            :loading="hasWait('ZAdjust')"
+            :loading="hasWait($waits.onZAdjust)"
             :disabled="!klippyReady"
             small
             block
-            @click="sendZAdjustGcode('+', moveDistance, waits.onZAdjust)"
+            @click="sendZAdjustGcode('+')"
           >
             <v-icon small>
               $zUp
@@ -58,11 +57,11 @@
           class="pr-1"
         >
           <app-btn
-            :loading="hasWait('ZAdjust')"
+            :loading="hasWait($waits.onZAdjust)"
             :disabled="!klippyReady"
             small
             block
-            @click="sendZAdjustGcode('-', moveDistance, waits.onZAdjust)"
+            @click="sendZAdjustGcode('-')"
           >
             <v-icon small>
               $zDown
@@ -92,74 +91,65 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class ZHeightAdjust extends Mixins(StateMixin) {
-  waits = Waits
-  moveDistance: number | null = null
+  moveDistanceValue: number | null = null
 
   get ZHomingOrigin () {
     // This is an array of 4 values, representing the homing origin.
     // It should be in the order of; X, Y, Z, E.
-    if (
-      this.$store.state.printer.printer.gcode_move.homing_origin &&
-      this.$store.state.printer.printer.gcode_move.homing_origin.length >= 4
-    ) {
-      const origin = this.$store.state.printer.printer.gcode_move.homing_origin[2]
-      return origin.toFixed(3)
-    } else {
-      return null
-    }
+    const { homing_origin } = this.$store.state.printer.printer.gcode_move
+
+    return homing_origin && homing_origin.length >= 4
+      ? homing_origin[2].toFixed(3)
+      : null
   }
 
   get zAdjustValues () {
     return this.$store.state.config.uiSettings.general.zAdjustDistances
   }
 
-  mounted () {
-    this.moveDistance = this.zAdjustValues[0]
+  get moveDistance () {
+    return this.moveDistanceValue || this.zAdjustValues[0]
+  }
+
+  set moveDistance (value: number) {
+    this.moveDistanceValue = value
   }
 
   /**
    * Send a Z adjust gcode script.
    */
-  sendZAdjustGcode (direction: '+' | '-', distance: string, wait?: string) {
+  sendZAdjustGcode (direction: '+' | '-') {
     const zHomed = this.$store.getters['printer/getHomedAxes']('z')
-    const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${distance} MOVE=${+zHomed}`
-    this.sendGcode(gcode, wait)
+    const gcode = `SET_GCODE_OFFSET Z_ADJUST=${direction}${this.moveDistance} MOVE=${+zHomed}`
+    this.sendGcode(gcode, this.$waits.onZAdjust)
   }
 
   get printerUsesProbeAsEndstop (): boolean {
     return this.$store.getters['printer/getPrinterSettings']('stepper_z.endstop_pin') === 'probe:z_virtual_endstop'
   }
 
-  handleZApplyDialog () {
-    let msg = this.$tc('app.general.simple_form.msg.apply_z_offset_endstop')
-    let gcode = 'Z_OFFSET_APPLY_ENDSTOP'
+  async handleZApplyDialog () {
+    const [gcode, msg] = this.printerUsesProbeAsEndstop
+      ? ['Z_OFFSET_APPLY_PROBE', this.$tc('app.general.simple_form.msg.apply_z_offset_probe')]
+      : ['Z_OFFSET_APPLY_ENDSTOP', this.$tc('app.general.simple_form.msg.apply_z_offset_endstop')]
 
-    if (this.printerUsesProbeAsEndstop) {
-      msg = this.$tc('app.general.simple_form.msg.apply_z_offset_probe')
-      gcode = 'Z_OFFSET_APPLY_PROBE'
-    }
-
-    this.$confirm(
+    const res = await this.$confirm(
       msg,
       {
         title: this.$tc('app.general.label.apply_z_offset'),
         color: 'card-heading',
         icon: '$error',
         buttonTrueText: this.$tc('app.general.btn.save_restart'),
-        buttonTrueColor: 'primary',
         buttonFalseText: this.$tc('app.general.btn.cancel')
-      }
-    )
-      .then(res => {
-        if (res) {
-          this.sendGcode(gcode, this.waits.onZApply)
-          this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
-        }
       })
+
+    if (res) {
+      this.sendGcode(gcode, this.waits.onZApply)
+      this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
+    }
   }
 }
 </script>

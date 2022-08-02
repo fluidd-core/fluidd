@@ -12,6 +12,7 @@
         :update-options="{ notMerge: true }"
         :init-options="{ renderer: 'svg' }"
         :events="events"
+        autoresize
       />
     </div>
   </div>
