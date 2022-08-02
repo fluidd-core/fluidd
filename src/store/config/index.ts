@@ -69,6 +69,7 @@ export const defaultState = (): ConfigState => {
         cameraFullscreenAction: 'embed',
         topNavPowerToggle: null,
         showManualProbeDialogAutomatically: true,
+        showBedScrewsAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         enableDiagnostics: false
       },
