@@ -90,6 +90,8 @@ export default class DiagnosticsCard extends Vue {
       theme.currentTheme.secondary
     ]
 
+    const series = this.series
+
     const options = {
       grid,
       color,
@@ -113,7 +115,12 @@ export default class DiagnosticsCard extends Vue {
         formatter: (params: any) => {
           let text = ''
           params
-            .forEach((param: any, index: number) => {
+            .forEach((param: any) => {
+              const metric = series[param.seriesIndex]
+              let value = param.data[metric.encode.y]
+              if (typeof value === 'number') value = Math.round(value * 1000) / 1000
+              else if (!value) value = '-'
+
               text += `
                 <div>
                   ${param.marker}
@@ -121,7 +128,7 @@ export default class DiagnosticsCard extends Vue {
                     ${param.seriesName}:
                   </span>
                   <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                    ${param.value[param.dimensionNames[index + 1]].toFixed(3)} ${this.config.axis[index].unit}
+                    ${value} ${metric.unit}
                   </span>
                   <div style="clear: both"></div>
                 </div>
@@ -187,7 +194,7 @@ export default class DiagnosticsCard extends Vue {
         type: 'inside',
         zoomOnMouseWheel: 'shift'
       }],
-      series: this.series
+      series
     }
 
     return options
@@ -195,28 +202,32 @@ export default class DiagnosticsCard extends Vue {
 
   get series () {
     const series = []
-    for (const [index, axis] of Object.entries(this.config.axis)) {
-      for (const metric of axis.metrics) {
+    for (const [yAxisIndex, yAxis] of Object.entries(this.config.axis)) {
+      for (const metric of yAxis.metrics) {
         series.push({
           name: metric.name,
+          unit: yAxis.unit,
           type: 'line',
-          yAxisIndex: Number(index),
+          yAxisIndex: Number(yAxisIndex),
           showSymbol: false,
           animation: false,
-          color: metric.color || undefined,
+          color: metric.style.lineColor,
           emphasis: {
             lineStyle: {
               width: 1.5
             }
           },
           lineStyle: {
-            color: metric.color || undefined,
-            type: 'solid',
+            color: metric.style.lineColor,
+            type: metric.style.lineStyle,
             width: 1.5,
             opacity: 1
           },
-          areaStyle: { opacity: 0.05 },
-          encode: { x: 'date', y: metric.key }
+          areaStyle: {
+            opacity: metric.style.fillOpacity / 100,
+            color: metric.style.fillColor ?? metric.style.lineColor
+          },
+          encode: { x: 'date', y: metric.collector }
         })
       }
     }

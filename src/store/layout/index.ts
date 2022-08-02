@@ -46,8 +46,13 @@ export const defaultState = (): LayoutState => {
             unit: 'mm/s',
             showLegend: true,
             metrics: [{
-              key: 'printer.printer.motion_report.live_velocity',
-              name: 'Velocity'
+              collector: 'printer.printer.motion_report.live_velocity',
+              name: 'Velocity',
+              style: { lineStyle: 'solid', lineColor: '#2196f3', fillOpacity: 0 }
+            }, {
+              collector: '250',
+              name: 'Max Velocity',
+              style: { lineStyle: 'dotted', lineColor: '#0075d2', fillOpacity: 0 }
             }]
           }, {
             unit: 'mm³/s',
@@ -55,8 +60,14 @@ export const defaultState = (): LayoutState => {
             min: 0,
             max: 20,
             metrics: [{
-              key: 'printer.printer.motion_report.live_extruder_velocity',
-              name: 'Flow'
+              collector: 'printer.printer.motion_report.live_extruder_velocity * Math.PI * ' +
+                '(printer.printer.configfile.settings.extruder.filament_diameter / 2) ** 2',
+              name: 'Flow',
+              style: { lineStyle: 'solid', lineColor: '#b12f36', fillOpacity: 5 }
+            }, {
+              collector: '16',
+              name: 'Max Flow',
+              style: { lineStyle: 'dashed', lineColor: '#820007', fillOpacity: 0 }
             }]
           }]
         }],

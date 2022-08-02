@@ -24,5 +24,12 @@ export interface ChartAxis {
 export interface Metric {
   collector: string
   name: string
-  color?: string
+  style: MetricStyle
+}
+
+export interface MetricStyle {
+  lineColor: string
+  lineStyle: 'solid' | 'dashed' | 'dotted'
+  fillColor?: string
+  fillOpacity: number
 }
