@@ -32,4 +32,5 @@ export interface MetricStyle {
   lineStyle: 'solid' | 'dashed' | 'dotted'
   fillColor?: string
   fillOpacity: number
+  displayLegend: boolean
 }

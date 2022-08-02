@@ -117,6 +117,8 @@ export default class DiagnosticsCard extends Vue {
           params
             .forEach((param: any) => {
               const metric = series[param.seriesIndex]
+              if (!metric.displayLegend) return
+
               let value = param.data[metric.encode.y]
               if (typeof value === 'number') value = Math.round(value * 1000) / 1000
               else if (!value) value = '-'
@@ -207,6 +209,7 @@ export default class DiagnosticsCard extends Vue {
         series.push({
           name: metric.name,
           unit: yAxis.unit,
+          displayLegend: metric.style.displayLegend,
           type: 'line',
           yAxisIndex: Number(yAxisIndex),
           showSymbol: false,
