@@ -8,7 +8,7 @@
     <v-form @submit.prevent="sendAccept">
       <v-card>
         <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ $t('app.tool.tooltip.manual_probe') }}</span>
+          <span class="focus--text">{{ $t('app.tool.title.manual_probe') }}</span>
         </v-card-title>
 
         <v-divider />

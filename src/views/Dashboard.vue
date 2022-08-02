@@ -108,6 +108,10 @@ export default class Dashboard extends Mixins(StateMixin) {
     return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
   }
 
+  get supportsBedMesh () {
+    return this.$store.getters['mesh/getSupportsBedMesh']
+  }
+
   get macros () {
     return this.$store.getters['macros/getVisibleMacros']
   }
@@ -176,6 +180,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
+    if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled
