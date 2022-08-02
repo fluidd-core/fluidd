@@ -19,7 +19,7 @@ module.exports = defineConfig({
     }
   },
   pwa: {
-    themeColor: '',
+    themeColor: '#2196F3',
     msTileColor: '#000000',
     appleMobileWebAppCache: 'yes',
     manifestOptions: {
