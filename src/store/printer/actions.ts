@@ -180,10 +180,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
 
     try {
       data = sandboxedEval(`
-      ${
-        Object.entries(rootState)
-          .map(([key, value]) => `const ${key} = ${JSON.stringify(value)}`).join('\n')
-      }
+      const printer = ${JSON.stringify(rootState.printer.printer)}
       const state = ${JSON.stringify(rootState)}
       const collectors = ${JSON.stringify(collectors)}
       const result = { }
@@ -192,7 +189,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
         try {
           result[collector] = eval(collector)
         } catch (err) {
-          result[collector] = err.stack
+          result[collector] = err.message
         }
       }
 
