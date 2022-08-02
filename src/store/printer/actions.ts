@@ -7,6 +7,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import consola from 'consola'
 import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import sandboxedEval from '@/plugins/sandboxedEval'
 
 // let retryTimeout: number
 
@@ -170,23 +171,31 @@ export const actions: ActionTree<PrinterState, RootState> = {
   async onDiagnosticsMetricsUpdate ({ rootState, commit, rootGetters }) {
     if (!rootState.config.uiSettings.general.enableDiagnostics) return
     const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
-    const metrics = Object.values(layout).flat()
-      .filter(layout => layout.enabled)
-      .map(layout => layout.axis).flat()
-      .map(axis => axis.metrics).flat()
-    const data: { [key: string]: any } = { date: new Date() }
+    const metrics = Object.values(layout)
+      .map(column => column.map(card => card.axis.map(axis => axis.metrics)))
+      .flat(3)
 
-    for (const metric of metrics) {
-      let base: any = rootState
-      const properties = metric.key.split('.')
-      while (properties.length) {
-        base = base[properties.shift() as any]
-        if (!base) break
+    const collectors = Array.from(new Set(metrics.map(metric => metric.collector)))
+
+    const data = JSON.parse(sandboxedEval(`
+      ${
+        Object.entries(rootState)
+          .map(([key, value]) => `const ${key} = ${JSON.stringify(value)}`).join('\n')
+      }
+      const state = ${JSON.stringify(rootState)}
+      const collectors = ${JSON.stringify(collectors)}
+      const result = { date: new Date() }
+
+      for (const collector of collectors) {
+        try {
+          result[collector] = eval(collector)
+        } catch (err) {
+          result[collector] = err.stack
+        }
       }
 
-      if (properties.length || !['string', 'number', 'boolean'].includes(typeof base)) continue
-      data[metric.key] = base
-    }
+      return JSON.stringify(result) // in order to only return serializable data
+    `))
 
     commit('charts/setChartEntry', {
       type: 'diagnostics',

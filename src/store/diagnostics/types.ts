@@ -22,7 +22,7 @@ export interface ChartAxis {
 }
 
 export interface Metric {
-  key: string
+  collector: string
   name: string
   color?: string
 }
