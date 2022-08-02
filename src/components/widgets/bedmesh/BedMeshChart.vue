@@ -8,6 +8,7 @@
       :option="opts"
       :update-options="{ notMerge: false }"
       :init-options="{ renderer: 'canvas' }"
+      autoresize
     />
 
     <!-- <pre>legends: {{ opts.legend }}</pre> -->

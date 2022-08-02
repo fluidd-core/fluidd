@@ -9,6 +9,7 @@
       :option="options"
       :update-options="{ notMerge: true }"
       :init-options="{ renderer: 'svg' }"
+      autoresize
       @legendselectchanged="handleLegendSelectChange"
     />
   </div>
