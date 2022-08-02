@@ -186,7 +186,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
       const state = ${JSON.stringify(rootState)}
       const collectors = ${JSON.stringify(collectors)}
-      const result = { date: new Date() }
+      const result = { }
 
       for (const collector of collectors) {
         try {
@@ -204,6 +204,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
     } catch (err: any) {
       data = Object.fromEntries(collectors.map(collector => [collector, err?.message ?? 'Unknown Error']))
     }
+
+    data.date = new Date()
 
     commit('charts/setChartEntry', {
       type: 'diagnostics',
