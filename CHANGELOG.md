@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.19.1](https://github.com/fluidd-core/fluidd/compare/v1.19.0...v1.19.1) (2022-08-02)
+
+
+### Features
+
+* Adds minimum support for crowsnest service ([#808](https://github.com/fluidd-core/fluidd/issues/808)) ([1258b35](https://github.com/fluidd-core/fluidd/commit/1258b351769c09f1d88eeb78c1952f2f6f43c1a1))
+* adds new Bed Screws Adjust helper dialog ([#802](https://github.com/fluidd-core/fluidd/issues/802)) ([adc5847](https://github.com/fluidd-core/fluidd/commit/adc5847af04f22644d02aff5ef5c537df99cc317))
+* adds new Manual Probe helper dialog ([#785](https://github.com/fluidd-core/fluidd/issues/785)) ([0f60671](https://github.com/fluidd-core/fluidd/commit/0f606715a9bb0afaeb364600f1aec535f7f2e23d))
+* allow showing Bed Mesh on Dashboard ([#797](https://github.com/fluidd-core/fluidd/issues/797)) ([a503bb4](https://github.com/fluidd-core/fluidd/commit/a503bb4aea4b980581b98bf94accdab7cb74a7d4))
+* **i18n-HU:** update Hungarian translation ([#771](https://github.com/fluidd-core/fluidd/issues/771)) ([70a1102](https://github.com/fluidd-core/fluidd/commit/70a1102c1ccf1adf1c888a44445883a6b682bd2d))
+* match theme-color with primary-color ([#774](https://github.com/fluidd-core/fluidd/issues/774)) ([6c6c475](https://github.com/fluidd-core/fluidd/commit/6c6c4759d4bc4ff583b79121e3f4aaa1fb306455))
+* Save Config And Restart button visibility toggle ([#775](https://github.com/fluidd-core/fluidd/issues/775)) ([869a580](https://github.com/fluidd-core/fluidd/commit/869a580b29c2e7cc507d38af35df23e6ce64329f))
+* **ui:** Add FORCE_MOVE support to tool controls ([#750](https://github.com/fluidd-core/fluidd/issues/750)) ([c6b9d8b](https://github.com/fluidd-core/fluidd/commit/c6b9d8b58b1e7d3b0c5abeb7ccbf6a6b3d724d43))
+
+
+### Bug Fixes
+
+* Check Bed_Mesh Support ([#801](https://github.com/fluidd-core/fluidd/issues/801)) ([a38592c](https://github.com/fluidd-core/fluidd/commit/a38592c45200ffe77f7eaa36af7fabaf4e4524d1))
+* corrects moonraker docs link for "include" section ([#799](https://github.com/fluidd-core/fluidd/issues/799)) ([3e2552a](https://github.com/fluidd-core/fluidd/commit/3e2552afc1c71807e7f91ac7001a72a8720690a7))
+* disable FORCE_MOVE toggle when printing / not ready ([#770](https://github.com/fluidd-core/fluidd/issues/770)) ([e17f5a1](https://github.com/fluidd-core/fluidd/commit/e17f5a1fc870e7877054a2ccb9ec17b36185184f))
+* Enable vue-echarts auto-resizing ([#809](https://github.com/fluidd-core/fluidd/issues/809)) ([041dc0f](https://github.com/fluidd-core/fluidd/commit/041dc0fee0414c916bcdccadbfcce0b53e432e84))
+* hide sub-navigation if socket not connected ([#798](https://github.com/fluidd-core/fluidd/issues/798)) ([e5547e6](https://github.com/fluidd-core/fluidd/commit/e5547e6b501cce49134d31facb521cd3a96be334))
+* **i18n:** fix FORCE_MOVE capitalization ([#786](https://github.com/fluidd-core/fluidd/issues/786)) ([63e4871](https://github.com/fluidd-core/fluidd/commit/63e487189804618999ec277bc2121dab59004e86))
+* mitigates console warning ([#800](https://github.com/fluidd-core/fluidd/issues/800)) ([aa55234](https://github.com/fluidd-core/fluidd/commit/aa55234039e2789e5d41ed0470920e5d78b62858))
+* OutputLed working with all types of LEDs ([#766](https://github.com/fluidd-core/fluidd/issues/766)) ([b101cd3](https://github.com/fluidd-core/fluidd/commit/b101cd31a50c25fccf4adcc613ae790bc67f2664))
+* **README:** use preview from docs ([#757](https://github.com/fluidd-core/fluidd/issues/757)) ([24c6c48](https://github.com/fluidd-core/fluidd/commit/24c6c48fa59d39497c6b3c445a9717d6ec039e2c))
+* show current layer in Gcode preview by default ([#790](https://github.com/fluidd-core/fluidd/issues/790)) ([278d683](https://github.com/fluidd-core/fluidd/commit/278d683d6b7424524cecaf2a6d54ee6d13f76024))
+
 ## [1.19.0](https://github.com/fluidd-core/fluidd/compare/v1.18.2...v1.19.0) (2022-07-10)
 
 
