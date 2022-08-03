@@ -201,7 +201,6 @@ app:
       accepted_screws: Accepted screws
       actual_time: Actual
       add_camera: Add Camera
-      add_card: Add Card
       add_filter: Add Filter
       add_preset: Add Preset
       add_user: Add user
@@ -217,7 +216,6 @@ app:
       current_user: Current user
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
-      edit_card: Edit Card
       edit_filter: Edit Filter
       edit_preset: Edit Preset
       edit_user: Edit user

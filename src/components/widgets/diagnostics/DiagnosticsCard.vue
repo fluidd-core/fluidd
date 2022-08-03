@@ -11,7 +11,7 @@
           small
           @click="$emit('edit', config)"
         >
-          <v-icon>
+          <v-icon small>
             $edit
           </v-icon>
         </app-btn>
@@ -127,10 +127,10 @@ export default class DiagnosticsCard extends Vue {
                 <div>
                   ${param.marker}
                   <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                    ${param.seriesName}:
+                    ${this.sanitize(param.seriesName)}:
                   </span>
                   <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
-                    ${value} ${metric.unit}
+                    ${this.sanitize(value)} ${this.sanitize(metric.unit)}
                   </span>
                   <div style="clear: both"></div>
                 </div>
@@ -200,6 +200,12 @@ export default class DiagnosticsCard extends Vue {
     }
 
     return options
+  }
+
+  sanitize (value: any): string {
+    return value
+      .toString()
+      .replace(/[^a-z0-9]/gi, (char: string) => `&#${char.charCodeAt(0)};`)
   }
 
   get series () {

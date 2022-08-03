@@ -61,7 +61,7 @@
     <diagnostics-card-config-dialog
       v-if="dialogState.active"
       v-model="dialogState.active"
-      :card="dialogState.card"
+      :config="dialogState.card"
       @save="handleSaveCard"
       @delete="handleDeleteCard"
     />

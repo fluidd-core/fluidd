@@ -51,14 +51,13 @@ export const defaultState = (): LayoutState => {
               name: 'Velocity',
               style: { lineStyle: 'solid', lineColor: '#2196f3', fillOpacity: 0, displayLegend: true }
             }, {
-              collector: '250',
+              collector: 'printer.toolhead.max_velocity',
               name: 'Max Velocity',
               style: { lineStyle: 'dotted', lineColor: '#0075d2', fillOpacity: 0, displayLegend: false }
             }]
           }, {
             unit: 'mm³/s',
             showLegend: true,
-            min: 0,
             max: 20,
             metrics: [{
               collector: 'printer.motion_report.live_extruder_velocity * Math.PI * ' +
@@ -66,7 +65,7 @@ export const defaultState = (): LayoutState => {
               name: 'Flow',
               style: { lineStyle: 'solid', lineColor: '#b12f36', fillOpacity: 5, displayLegend: true }
             }, {
-              collector: '16',
+              collector: '12',
               name: 'Max Flow',
               style: { lineStyle: 'dashed', lineColor: '#820007', fillOpacity: 0, displayLegend: false }
             }]
