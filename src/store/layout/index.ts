@@ -71,10 +71,7 @@ export const defaultState = (): LayoutState => {
               style: { lineStyle: 'dashed', lineColor: '#820007', fillOpacity: 0, displayLegend: false }
             }]
           }]
-        }],
-        container2: [],
-        container3: [],
-        container4: []
+        }]
       } as DiagnosticsCardContainer
     }
   }
