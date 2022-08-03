@@ -172,7 +172,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     if (!rootState.config.uiSettings.general.enableDiagnostics) return
     const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
     const metrics = Object.values(layout)
-      .map(column => column.map(card => card.axis.map(axis => axis.metrics)))
+      .map(column => column.map(card => card.axes.map(axis => axis.metrics)))
       .flat(3)
 
     const collectors = Array.from(new Set(metrics.map(metric => metric.collector)))

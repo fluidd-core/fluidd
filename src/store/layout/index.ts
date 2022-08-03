@@ -43,7 +43,7 @@ export const defaultState = (): LayoutState => {
           collapsed: false,
           height: 300,
           icon: 'motion',
-          axis: [{
+          axes: [{
             unit: 'mm/s',
             showLegend: true,
             metrics: [{

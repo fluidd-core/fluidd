@@ -66,7 +66,7 @@ export default class DiagnosticsCard extends Vue {
     }
 
     let right = (this.isMobile) ? 15 : 20
-    if (this.config.axis.length > 1) right = (this.isMobile) ? 35 : 45
+    if (this.config.axes.length > 1) right = (this.isMobile) ? 35 : 45
 
     const grid = {
       top: 20,
@@ -170,7 +170,7 @@ export default class DiagnosticsCard extends Vue {
           }
         }
       },
-      yAxis: this.config.axis.map((axis, index) => ({
+      yAxis: this.config.axes.map((axis, index) => ({
         name: axis.showLegend ? axis.unit : undefined,
         nameTextStyle: {
           fontSize,
@@ -204,7 +204,7 @@ export default class DiagnosticsCard extends Vue {
 
   get series () {
     const series = []
-    for (const [yAxisIndex, yAxis] of Object.entries(this.config.axis)) {
+    for (const [yAxisIndex, yAxis] of Object.entries(this.config.axes)) {
       for (const metric of yAxis.metrics) {
         series.push({
           name: metric.name,

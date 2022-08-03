@@ -9,7 +9,7 @@ export interface DiagnosticsCardConfig extends LayoutConfig {
   title: string
   height: number
 
-  axis: ChartAxis[]
+  axes: ChartAxis[]
 }
 
 export interface ChartAxis {
