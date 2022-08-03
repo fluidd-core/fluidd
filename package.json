@@ -59,6 +59,7 @@
     "vue-echarts": "^6.2.3",
     "vue-i18n": "^8.27.2",
     "vue-inline-svg": "^2.1.0",
+    "vue-json-viewer": "^2.2.22",
     "vue-meta": "^2.4.0",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.5.4",
