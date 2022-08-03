@@ -16,16 +16,6 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.enable')">
-          <v-switch
-            v-model="card.enabled"
-            class="mt-0"
-            hide-details="auto"
-          />
-        </app-setting>
-
-        <v-divider />
-
         <app-setting :title="$t('app.general.label.title')">
           <v-text-field
             v-model="card.title"
@@ -34,19 +24,6 @@
             class="mt-0"
             hide-details="auto"
             :rules="[rules.required]"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.general.label.height')">
-          <v-text-field
-            v-model="card.height"
-            filled
-            dense
-            class="mt-0"
-            hide-details="auto"
-            :rules="[rules.required, rules.numAboveZero]"
           />
         </app-setting>
 
@@ -61,6 +38,20 @@
             hide-details="auto"
             :items="icons"
             :prepend-inner-icon="`$${card.icon}`"
+          />
+        </app-setting>
+
+        <v-divider />
+
+        <app-setting :title="$t('app.general.label.height')">
+          <v-text-field
+            v-model="card.height"
+            filled
+            dense
+            class="mt-0"
+            hide-details="auto"
+            suffix="px"
+            :rules="[rules.required, rules.numAboveZero]"
           />
         </app-setting>
 
@@ -91,6 +82,7 @@
           <app-btn
             v-if="card.id !== ''"
             color="error"
+            text
             @click="handleDelete"
           >
             {{ $t('app.general.btn.remove') }}

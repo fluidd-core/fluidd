@@ -18,7 +18,7 @@
       </app-btn-collapse-group>
     </template>
 
-    <AppChart
+    <app-chart
       class="mt-2"
       :data="chartData"
       :height="`${config.height}px`"
