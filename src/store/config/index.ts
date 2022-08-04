@@ -131,6 +131,10 @@ export const defaultState = (): ConfigState => {
           horizontal: false,
           vertical: true
         }
+      },
+      fileSystem: {
+        showHiddenFiles: true,
+        showKlipperBackupFiles: true
       }
     }
   }

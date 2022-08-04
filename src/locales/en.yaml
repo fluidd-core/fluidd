@@ -83,6 +83,8 @@ app:
       uploaded: Uploaded
       view_section_documentation: >-
         View '%{section}' documentation
+      show_hidden_files: Show hidden files
+      show_klipper_backup_files: Show klipper backup files
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found

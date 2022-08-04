@@ -104,6 +104,47 @@
       />
     </div>
 
+    <v-menu
+      v-if="hideableFilesAvailable"
+      transition="slide-y-transition"
+      left
+      offset-y
+      :close-on-content-click="false"
+    >
+      <template #activator="{ on, attrs }">
+        <app-btn
+          fab
+          small
+          text
+          color=""
+          v-bind="attrs"
+          class="ml-1"
+          v-on="on"
+        >
+          <v-icon>$cogs</v-icon>
+        </app-btn>
+      </template>
+      <v-sheet
+        elevation="0"
+        class="pa-2"
+      >
+        <v-checkbox
+          v-model="showHiddenFiles"
+          :label="$t('app.file_system.label.show_hidden_files')"
+          color="primary"
+          hide-details
+          class="mx-2 mt-2"
+        />
+        <v-checkbox
+          v-model="showKlipperBackupFiles"
+          :label="$t('app.file_system.label.show_klipper_backup_files')"
+          color="primary"
+          hide-details
+          class="mx-2 mb-2"
+        />
+      </v-sheet>
+    </v-menu>
+
     <template
       v-if="roots.length > 1"
       #extension
@@ -165,6 +206,9 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   @Prop({ type: String, default: '' })
   public search!: string
 
+  @Prop({ type: Boolean })
+  public hideableFilesAvailable!: boolean
+
   textSearch = ''
 
   get readonly () {
@@ -192,6 +236,32 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Only show roots that have been registered.
   get registeredRoots () {
     return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
+  }
+
+  get showKlipperBackupFiles () {
+    return this.$store.state.config.uiSettings.fileSystem.showKlipperBackupFiles
+  }
+
+  set showKlipperBackupFiles (value: boolean) {
+    console.log(value)
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.fileSystem.showKlipperBackupFiles',
+      value,
+      server: true
+    })
+  }
+
+  get showHiddenFiles () {
+    return this.$store.state.config.uiSettings.fileSystem.showHiddenFiles
+  }
+
+  set showHiddenFiles (value: boolean) {
+    console.log(value)
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.fileSystem.showHiddenFiles',
+      value,
+      server: true
+    })
   }
 
   mounted () {

@@ -19,6 +19,7 @@
       :disabled="disabled"
       :loading="filesLoading"
       :headers="headers"
+      :hideable-files-available="hideableFilesAvailable"
       @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"
@@ -203,6 +204,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: Boolean, default: false })
   public timelapseBrowser!: boolean
 
+  @Prop({ type: Boolean, default: false })
+  public hideableFilesAvailable!: boolean
+
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
 
@@ -368,6 +372,14 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.currentPath
   }
 
+  get showKlipperBackupFiles () {
+    return this.$store.state.config.uiSettings.fileSystem.showKlipperBackupFiles
+  }
+
+  get showHiddenFiles () {
+    return this.$store.state.config.uiSettings.fileSystem.showHiddenFiles
+  }
+
   // Get the available files given the current root and path.
   get files (): FileBrowserEntry[] {
     return this.getAllFiles(this.timelapseBrowser ? this.transformTimelapseItems : undefined)
@@ -382,8 +394,16 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (transformFunction) {
         return transformFunction(dir.items)
       }
-
-      return dir.items
+      let items = dir.items
+      // filter out '.***' files (eg. '.fluidd-theme')
+      if (!this.showHiddenFiles && this.hideableFilesAvailable) {
+        items = items.filter((element: { name: string }) => !element.name.match(/^\.(?!\.$)/))
+      }
+      // filter out 'printer-********_******.cfg' files
+      if (!this.showKlipperBackupFiles && this.hideableFilesAvailable) {
+        items = items.filter((element: { name: string }) => !element.name.match(/^printer-\d{8}_\d{6}\.cfg$/))
+      }
+      return items
     }
     return []
   }

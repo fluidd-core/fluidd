@@ -12,6 +12,7 @@
         <file-system
           :roots="['config']"
           :max-height="816"
+          :hideable-files-available="true"
           name="configure"
         />
       </collapsable-card>

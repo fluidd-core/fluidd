@@ -18,6 +18,7 @@ export interface UiSettings {
   dashboard: DashboardConfig;
   tableHeaders: AppTableConfiguredHeaders;
   gcodePreview: GcodePreviewConfig;
+  fileSystem: FileSystemConfig
 }
 
 export interface HostConfig {
@@ -164,4 +165,9 @@ export interface GcodePreviewConfig {
     horizontal: boolean;
     vertical: boolean;
   };
+}
+
+export interface FileSystemConfig {
+  showHiddenFiles: boolean;
+  showKlipperBackupFiles: boolean;
 }
