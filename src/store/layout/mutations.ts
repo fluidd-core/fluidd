@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { defaultState } from './'
+import { defaultState as getDefaultState } from './'
 import { LayoutConfig, LayoutState, Layouts } from './types'
 
 export const mutations: MutationTree<LayoutState> = {
@@ -8,7 +8,7 @@ export const mutations: MutationTree<LayoutState> = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, getDefaultState())
   },
 
   /**
@@ -19,10 +19,11 @@ export const mutations: MutationTree<LayoutState> = {
    */
   setInitLayout (state, payload: LayoutState) {
     if (payload && Object.keys(payload).length > 0) {
+      const defaultState = getDefaultState()
       const migratableLayouts = ['dashboard']
 
       for (const layout of migratableLayouts) {
-        const defaultComponents = defaultState().layouts[layout]
+        const defaultComponents = defaultState.layouts[layout]
         const existingComponents = Object.values(defaultComponents).flat().map(card => card.id)
         const componentsInDB = Object.values(payload.layouts[layout]).flat().map(card => card.id)
 
@@ -43,6 +44,13 @@ export const mutations: MutationTree<LayoutState> = {
               payloadContainer.splice(payloadContainer.indexOf(component), 1)
             }
           }
+        }
+      }
+
+      // add missing, non-migratable layouts
+      for (const layout of Object.keys(defaultState.layouts).filter(layout => !migratableLayouts.includes(layout))) {
+        if (!payload.layouts[layout]) {
+          payload.layouts[layout] = defaultState.layouts[layout]
         }
       }
 
