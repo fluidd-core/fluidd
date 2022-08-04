@@ -1,5 +1,6 @@
 <template>
   <json-viewer
+    class="py-4"
     :value="state"
     :expand-depth="2"
     :class="$vuetify.theme.isDark ? 'jv-dark' : ''"
@@ -25,6 +26,10 @@ export default class StateExplorer extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss">
+.jv-container>.jv-code {
+  padding: 0;
+}
+
 .jv-container.jv-dark {
   background: transparent;
   color: rgba(255, 255, 255, 0.8);
