@@ -7,7 +7,7 @@
       align-self="center"
       cols="5"
       class="text-body-1 py-0"
-      :class="{ 'disabled--text': disabled }"
+      :class="{ 'text--disabled': disabled }"
     >
       {{ label }}
     </v-col>

@@ -1,7 +1,7 @@
 <template>
   <app-btn
     v-if="paramList.length === 0 || !enableParams"
-    :disabled="macro.disabledWhilePrinting && printerPrinting"
+    :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
     @click="$emit('click', macro.name)"
   >
@@ -12,7 +12,7 @@
     :elevation="6"
   >
     <app-btn
-      :disabled="macro.disabledWhilePrinting && printerPrinting"
+      :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
       @click="$emit('click', macro.name)"
     >
@@ -30,6 +30,7 @@
           v-bind="attrs"
           :min-width="24"
           class="px-0"
+          :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
           v-on="on"
         >
           <v-icon
