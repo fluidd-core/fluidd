@@ -43,13 +43,14 @@
         hide-details="auto"
         disabled
         :suffix="unit"
+        :value="result"
       />
     </app-setting>
   </v-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import { Metric } from '@/store/diagnostics/types'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import sandboxedEval from '@/plugins/sandboxedEval'
@@ -57,15 +58,14 @@ import sandboxedEval from '@/plugins/sandboxedEval'
 @Component({
   components: { AppSetting }
 })
-export default class AxesConfigStep extends Vue {
+export default class MetricsCollectorConfig extends Vue {
   @Prop({ type: Object, required: true })
   public metric!: Metric
 
   @Prop({ type: String, required: true })
   public unit!: string
 
-  @Ref('result')
-  readonly result!: any
+  result = '-'
 
   runCollector () {
     let data
@@ -82,7 +82,7 @@ export default class AxesConfigStep extends Vue {
     }
 
     if (typeof data === 'number') data = Math.round(data * 1000) / 1000
-    this.result.value = data
+    this.result = data
   }
 }
 </script>

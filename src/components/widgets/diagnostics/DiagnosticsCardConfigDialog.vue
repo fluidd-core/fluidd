@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :value="value"
-    :max-width="width"
+    :max-width="800"
     @input="$emit('input', $event)"
   >
     <v-card>
@@ -37,7 +37,7 @@
           <v-stepper-content
             v-for="(step, index) of steps"
             :key="`${index}-content`"
-            class="pt-4"
+            class="pa-0"
             :step="index + 1"
           >
             <component
@@ -96,14 +96,10 @@ export default class DiagnosticsCardConfigDialog extends Vue {
 
   currentStep = 1
   steps = [
-    { name: this.$t('app.general.label.card'), component: CardConfigStep, width: 800 },
-    { name: this.$t('app.general.label.axes'), component: AxesConfigStep, width: 800 },
-    { name: this.$t('app.general.label.metrics'), component: MetricsConfigStep, width: 1200 }
+    { name: this.$t('app.general.label.card'), component: CardConfigStep },
+    { name: this.$t('app.general.label.axes'), component: AxesConfigStep },
+    { name: this.$t('app.general.label.metrics'), component: MetricsConfigStep }
   ]
-
-  get width () {
-    return this.steps[this.currentStep - 1].width
-  }
 
   handleSave () {
     this.$emit('save', this.config)

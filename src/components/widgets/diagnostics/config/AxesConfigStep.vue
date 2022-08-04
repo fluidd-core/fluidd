@@ -1,13 +1,33 @@
 <template>
-  <v-row>
-    <template
-      v-for="(axis, i) in config.axes"
+  <v-stepper
+    v-model="currentStep"
+    non-linear
+    flat
+  >
+    <v-stepper-header>
+      <template v-for="(step, index) of steps">
+        <v-stepper-step
+          :key="`step-${index}`"
+          :step="index + 1"
+          editable
+        >
+          {{ step }}
+        </v-stepper-step>
+
+        <v-divider
+          v-if="index < steps.length - 1"
+          :key="index"
+        />
+      </template>
+    </v-stepper-header>
+
+    <v-stepper-content
+      v-for="(step, i) of steps"
+      :key="`${i}-content`"
+      class="pt-4"
+      :step="i + 1"
     >
-      <v-col
-        :key="`${i}-axis`"
-        cols="12"
-        md="6"
-      >
+      <template v-if="currentStep === i + 1">
         <app-setting :title="$t('app.setting.label.enable')">
           <v-switch
             v-model="config.axes[i].enabled"
@@ -48,6 +68,7 @@
             hide-details="auto"
             :hint="$t('app.settings.label.optional')"
             :rules="[rules.validNum]"
+            :suffix="config.axes[i].unit"
           />
         </app-setting>
 
@@ -62,17 +83,12 @@
             hide-details="auto"
             :hint="$t('app.settings.label.optional')"
             :rules="[rules.validNum]"
+            :suffix="config.axes[i].unit"
           />
         </app-setting>
-      </v-col>
-
-      <v-divider
-        v-if="i === 0"
-        :key="`${i}-seperator`"
-        vertical
-      />
-    </template>
-  </v-row>
+      </template>
+    </v-stepper-content>
+  </v-stepper>
 </template>
 
 <script lang="ts">
@@ -87,9 +103,18 @@ export default class AxesConfigStep extends Vue {
   @Prop({ type: Object, required: true })
   public config!: DiagnosticsCardConfig
 
+  currentStep = 1
+  steps = [this.$t('app.general.label.left_y'), this.$t('app.general.label.right_y')]
+
   rules = {
     required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
     validNum: (v: string) => ([undefined, ''].includes(v) || !isNaN(+v)) || this.$t('app.general.simple_form.error.invalid_number')
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-stepper {
+  background: transparent;
+}
+</style>

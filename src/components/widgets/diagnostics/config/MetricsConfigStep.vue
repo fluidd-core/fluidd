@@ -1,20 +1,39 @@
 <template>
-  <v-row>
-    <template
-      v-for="(axis, i) in config.axes"
+  <v-stepper
+    v-model="currentStep"
+    non-linear
+    flat
+  >
+    <v-stepper-header>
+      <template v-for="(step, index) of steps">
+        <v-stepper-step
+          :key="`step-${index}`"
+          :step="index + 1"
+          editable
+        >
+          {{ step }} <small>{{ config.axes[index].unit }}</small>
+        </v-stepper-step>
+
+        <v-divider
+          v-if="index < steps.length - 1"
+          :key="index"
+        />
+      </template>
+    </v-stepper-header>
+
+    <v-stepper-content
+      v-for="(step, i) of steps"
+      :key="`${i}-content`"
+      class="pt-4"
+      :step="i + 1"
     >
-      <v-col
-        :key="`${i}-axis`"
-        cols="12"
-        md="6"
-      >
+      <template v-if="currentStep === i + 1">
         <v-expansion-panels
           accordion
-          mandatory
           flat
         >
           <v-expansion-panel
-            v-for="(metric, j) in axis.metrics"
+            v-for="(metric, j) in config.axes[i].metrics"
             :key="`${j}-metric-${i}-axis`"
           >
             <v-expansion-panel-header>
@@ -94,20 +113,14 @@
               <metrics-collector-config
                 class="mt-3"
                 :metric="metric"
-                :unit="axis.unit"
+                :unit="config.axes[i].unit"
               />
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
-      </v-col>
-
-      <v-divider
-        v-if="i === 0"
-        :key="`${i}-seperator`"
-        vertical
-      />
-    </template>
-  </v-row>
+      </template>
+    </v-stepper-content>
+  </v-stepper>
 </template>
 
 <script lang="ts">
@@ -119,9 +132,12 @@ import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
 @Component({
   components: { AppSetting, MetricsCollectorConfig }
 })
-export default class AxesConfigStep extends Vue {
+export default class MetricsConfigStep extends Vue {
   @Prop({ type: Object, required: true })
   public config!: DiagnosticsCardConfig
+
+  currentStep = 1
+  steps = [this.$t('app.general.label.left_y'), this.$t('app.general.label.right_y')]
 
   lineStyles = [
     { text: this.$t('app.setting.label.solid'), value: 'solid' },
