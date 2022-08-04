@@ -11,7 +11,8 @@
           :step="index + 1"
           editable
         >
-          {{ step }} <small>{{ config.axes[index].unit }}</small>
+          {{ step }}
+          <small>{{ config.axes[index].unit }}</small>
         </v-stepper-step>
 
         <v-divider
@@ -24,7 +25,7 @@
     <v-stepper-content
       v-for="(step, i) of steps"
       :key="`${i}-content`"
-      class="pt-4"
+      class="pt-2"
       :step="i + 1"
     >
       <template v-if="currentStep === i + 1">
@@ -156,3 +157,14 @@ export default class MetricsConfigStep extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-stepper__header > .v-stepper__step {
+  /*
+   * Handling of <small> elements in the stepper header seems to be broken,
+   * so we handle them ourselves.
+  */
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+</style>
