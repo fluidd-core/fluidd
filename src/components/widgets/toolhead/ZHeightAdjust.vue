@@ -25,7 +25,10 @@
           {{ value }}
         </app-btn>
       </v-btn-toggle>
-      <div class="mt-1">
+      <div
+        class="mt-1"
+        :class="{ 'text--disabled': !klippyReady }"
+      >
         <span class="secondary--text">{{ $t('app.general.label.z_offset') }}&nbsp;</span>
         <span>{{ ZHomingOrigin }}mm</span>
       </div>
