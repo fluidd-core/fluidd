@@ -4,7 +4,7 @@
       ref="textarea"
       v-model="metric.collector"
       class="px-4"
-      :label="$t('app.settings.label.collector')"
+      :label="$t('app.setting.label.collector')"
       spellcheck="false"
       auto-grow
       hide-details="auto"
@@ -36,7 +36,7 @@
       </template>
     </v-textarea>
 
-    <app-setting :title="$t('app.general.tooltip.last_result')">
+    <app-setting :title="$t('app.setting.label.last_result')">
       <v-text-field
         ref="result"
         filled

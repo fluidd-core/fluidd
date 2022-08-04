@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-title class="card-heading py-2">
-        <span class="focus--text">{{ (config.id !== '') ? $t('app.general.label.edit_card') : $t('app.general.label.add_card') }}</span>
+        <span class="focus--text">{{ (config.id !== '') ? $t('app.general.title.edit_card') : $t('app.general.title.add_card') }}</span>
       </v-card-title>
 
       <v-divider />
@@ -96,9 +96,9 @@ export default class DiagnosticsCardConfigDialog extends Vue {
 
   currentStep = 1
   steps = [
-    { name: this.$t('app.general.label.card'), component: CardConfigStep },
-    { name: this.$t('app.general.label.axes'), component: AxesConfigStep },
-    { name: this.$t('app.general.label.metrics'), component: MetricsConfigStep }
+    { name: this.$t('app.setting.label.card'), component: CardConfigStep },
+    { name: this.$t('app.setting.label.axes'), component: AxesConfigStep },
+    { name: this.$t('app.setting.label.metrics'), component: MetricsConfigStep }
   ]
 
   handleSave () {

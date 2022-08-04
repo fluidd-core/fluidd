@@ -137,7 +137,7 @@ export default class MetricsConfigStep extends Vue {
   public config!: DiagnosticsCardConfig
 
   currentStep = 1
-  steps = [this.$t('app.general.label.left_y'), this.$t('app.general.label.right_y')]
+  steps = [this.$t('app.setting.label.left_y'), this.$t('app.setting.label.right_y')]
 
   lineStyles = [
     { text: this.$t('app.setting.label.solid'), value: 'solid' },

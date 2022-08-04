@@ -66,7 +66,7 @@
             dense
             single-line
             hide-details="auto"
-            :hint="$t('app.settings.label.optional')"
+            :hint="$t('app.setting.label.optional')"
             :rules="[rules.validNum]"
             :suffix="config.axes[i].unit"
           />
@@ -81,7 +81,7 @@
             dense
             single-line
             hide-details="auto"
-            :hint="$t('app.settings.label.optional')"
+            :hint="$t('app.setting.label.optional')"
             :rules="[rules.validNum]"
             :suffix="config.axes[i].unit"
           />
@@ -104,7 +104,7 @@ export default class AxesConfigStep extends Vue {
   public config!: DiagnosticsCardConfig
 
   currentStep = 1
-  steps = [this.$t('app.general.label.left_y'), this.$t('app.general.label.right_y')]
+  steps = [this.$t('app.setting.label.left_y'), this.$t('app.setting.label.right_y')]
 
   rules = {
     required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
