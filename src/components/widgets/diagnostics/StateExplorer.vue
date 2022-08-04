@@ -5,6 +5,7 @@
     :expand-depth="2"
     :class="$vuetify.theme.isDark ? 'jv-dark' : ''"
     sort
+    @keyclick="handleClick"
   />
 </template>
 
@@ -21,6 +22,22 @@ export default class StateExplorer extends Mixins(StateMixin) {
     return {
       printer: this.$store.state.printer.printer
     }
+  }
+
+  /*
+   * the path vue-json-viewer puts out is completely butchered,
+   * we try our best to fix them.
+   * e.g. ("printer.tmc2209 extruder" -> "printer['tmc2209 extruder']")
+   */
+  handleClick (path: string) {
+    const sanitizedPath = path
+      .replace('$.', '')
+      .replace(/\.(\w*[^\w\S.]+\w*)/g, (_, match) => {
+        if (isNaN(match)) return `['${match}']`
+        return `[${match}]`
+      })
+
+    this.$emit('input', sanitizedPath)
   }
 }
 </script>
