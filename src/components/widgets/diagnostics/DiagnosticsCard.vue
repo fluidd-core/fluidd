@@ -171,7 +171,7 @@ export default class DiagnosticsCard extends Vue {
         }
       },
       yAxis: this.config.axes.map((axis, index) => ({
-        name: axis.showLegend ? axis.unit : undefined,
+        name: (axis.enabled && axis.showLegend) ? axis.unit : undefined,
         nameTextStyle: {
           fontSize,
           color: fontColor,
