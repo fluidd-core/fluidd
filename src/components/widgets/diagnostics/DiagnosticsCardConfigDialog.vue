@@ -37,6 +37,7 @@
           <v-stepper-content
             v-for="(step, index) of steps"
             :key="`${index}-content`"
+            class="pt-4"
             :step="index + 1"
           >
             <component
