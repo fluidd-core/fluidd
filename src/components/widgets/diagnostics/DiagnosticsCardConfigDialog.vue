@@ -100,13 +100,9 @@ export default class DiagnosticsCardConfigDialog extends Vue {
     { name: this.$t('app.general.label.metrics'), component: null }
   ]
 
-  valid = false
-
   handleSave () {
-    if (this.valid) {
-      this.$emit('save', this.config)
-      this.$emit('input', false)
-    }
+    this.$emit('save', this.config)
+    this.$emit('input', false)
   }
 
   handleDelete () {
