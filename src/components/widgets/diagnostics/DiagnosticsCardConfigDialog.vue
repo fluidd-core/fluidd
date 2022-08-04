@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     :value="value"
-    :max-width="1000"
+    :max-width="width"
     @input="$emit('input', $event)"
   >
     <v-card>
@@ -84,6 +84,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import CardConfigStep from './config/CardConfigStep.vue'
 import AxesConfigStep from './config/AxesConfigStep.vue'
+import MetricsConfigStep from './config/MetricsConfigStep.vue'
 
 @Component({})
 export default class DiagnosticsCardConfigDialog extends Vue {
@@ -95,10 +96,14 @@ export default class DiagnosticsCardConfigDialog extends Vue {
 
   currentStep = 1
   steps = [
-    { name: this.$t('app.general.label.card'), component: CardConfigStep },
-    { name: this.$t('app.general.label.axes'), component: AxesConfigStep },
-    { name: this.$t('app.general.label.metrics'), component: null }
+    { name: this.$t('app.general.label.card'), component: CardConfigStep, width: 800 },
+    { name: this.$t('app.general.label.axes'), component: AxesConfigStep, width: 800 },
+    { name: this.$t('app.general.label.metrics'), component: MetricsConfigStep, width: 1200 }
   ]
+
+  get width () {
+    return this.steps[this.currentStep - 1].width
+  }
 
   handleSave () {
     this.$emit('save', this.config)

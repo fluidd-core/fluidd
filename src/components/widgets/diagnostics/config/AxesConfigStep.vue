@@ -1,10 +1,10 @@
 <template>
   <v-row>
     <template
-      v-for="(n, i) in 2"
+      v-for="(axis, i) in config.axes"
     >
       <v-col
-        :key="`${i}-col`"
+        :key="`${i}-axis`"
         cols="12"
         md="6"
       >
