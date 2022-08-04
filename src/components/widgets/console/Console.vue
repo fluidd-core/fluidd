@@ -5,6 +5,7 @@
     <console-command
       v-if="!readonly && flipLayout"
       v-model="consoleCommand"
+      :disabled="!klippyReady"
       @send="sendCommand"
     />
     <v-card
@@ -43,6 +44,7 @@
     <console-command
       v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
+      :disabled="!klippyReady"
       @send="sendCommand"
     />
   </div>
