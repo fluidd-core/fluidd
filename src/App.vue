@@ -294,15 +294,22 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
       this.flashMessage.open = true
     })
 
-    const legacyFavIcons = document.querySelectorAll("link[rel*='icon'][type='image/png']")
+    const legacyElementsSelectors = [
+      "link[rel*='icon'][type='image/png']",
+      "meta[name='theme-color']"
+    ]
 
-    legacyFavIcons.forEach(item => {
-      const parentElement = item.parentElement
+    for (const legacyElementsSelector of legacyElementsSelectors) {
+      const legacyElements = document.querySelectorAll(legacyElementsSelector)
 
-      if (parentElement) {
-        parentElement.removeChild(item)
-      }
-    })
+      legacyElements.forEach(item => {
+        const parentElement = item.parentElement
+
+        if (parentElement) {
+          parentElement.removeChild(item)
+        }
+      })
+    }
   }
 
   handleToolsDrawerChange () {
