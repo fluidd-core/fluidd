@@ -44,6 +44,7 @@ export const defaultState = (): LayoutState => {
           height: 300,
           icon: 'motion',
           axes: [{
+            enabled: true,
             unit: 'mm/s',
             showLegend: true,
             metrics: [{
@@ -56,6 +57,7 @@ export const defaultState = (): LayoutState => {
               style: { lineStyle: 'dotted', lineColor: '#0075d2', fillOpacity: 0, displayLegend: false }
             }]
           }, {
+            enabled: true,
             unit: 'mm³/s',
             showLegend: true,
             max: 20,

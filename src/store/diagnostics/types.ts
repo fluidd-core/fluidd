@@ -13,6 +13,7 @@ export interface DiagnosticsCardConfig extends LayoutConfig {
 }
 
 export interface ChartAxis {
+  enabled: boolean
   unit: string
   min?: number
   max?: number

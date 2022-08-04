@@ -12,7 +12,7 @@
                 small
                 @click="handleAddCard"
               >
-                <v-icon>
+                <v-icon small>
                   $plus
                 </v-icon>
               </app-btn>

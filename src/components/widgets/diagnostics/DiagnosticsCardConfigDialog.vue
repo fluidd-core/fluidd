@@ -1,175 +1,122 @@
 <template>
   <v-dialog
     :value="value"
-    :max-width="500"
+    :max-width="1000"
     @input="$emit('input', $event)"
   >
-    <v-form
-      ref="form"
-      v-model="valid"
-      @submit.prevent="handleSave(card)"
-    >
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ (card.id !== '') ? $t('app.general.label.edit_card') : $t('app.general.label.add_card') }}</span>
-        </v-card-title>
+    <v-card>
+      <v-card-title class="card-heading py-2">
+        <span class="focus--text">{{ (config.id !== '') ? $t('app.general.label.edit_card') : $t('app.general.label.add_card') }}</span>
+      </v-card-title>
 
-        <v-divider />
+      <v-divider />
 
-        <app-setting :title="$t('app.general.label.title')">
-          <v-text-field
-            v-model="card.title"
-            filled
-            dense
-            class="mt-0"
-            hide-details="auto"
-            :rules="[rules.required]"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.general.label.icon')">
-          <v-select
-            v-model="card.icon"
-            filled
-            dense
-            single-line
-            hide-details="auto"
-            :items="icons"
-            :prepend-inner-icon="`$${card.icon}`"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting :title="$t('app.general.label.height')">
-          <v-text-field
-            v-model="card.height"
-            filled
-            dense
-            class="mt-0"
-            hide-details="auto"
-            suffix="px"
-            :rules="[rules.required, rules.numAboveZero]"
-          />
-        </app-setting>
-
-        <v-divider />
-
-        <app-setting
-          :title="$t('app.setting.label.metrics')"
-        >
-          <app-btn
-            outlined
-            small
-            color="primary"
-            @click="handleEditMetrics"
-          >
-            <v-icon
-              small
-              left
+      <v-stepper
+        v-model="currentStep"
+        non-linear
+        flat
+      >
+        <v-stepper-header>
+          <template v-for="(step, index) of steps">
+            <v-stepper-step
+              :key="`step-${index}`"
+              :step="index + 1"
+              editable
             >
-              $edit
-            </v-icon>
-            {{ $t('app.setting.btn.edit_metrics') }}
-          </app-btn>
-        </app-setting>
+              {{ step.name }}
+            </v-stepper-step>
 
-        <v-divider />
+            <v-divider
+              v-if="index < steps.length - 1"
+              :key="index"
+            />
+          </template>
+        </v-stepper-header>
 
-        <v-card-actions>
-          <app-btn
-            v-if="card.id !== ''"
-            color="error"
-            text
-            @click="handleDelete"
+        <v-stepper-items>
+          <v-stepper-content
+            v-for="(step, index) of steps"
+            :key="`${index}-content`"
+            :step="index + 1"
           >
-            {{ $t('app.general.btn.remove') }}
-          </app-btn>
-          <v-spacer />
-          <app-btn
-            color="warning"
-            text
-            @click="$emit('input', false)"
-          >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-          <app-btn
-            color="primary"
-            @click="handleSave"
-          >
-            {{ (card.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
+            <component
+              :is="step.component"
+              v-if="currentStep === index + 1"
+              :config="config"
+            />
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
 
-    <metrics-config-dialog
-      v-if="dialogState.active"
-      v-model="dialogState.active"
-      :metrics="dialogState.metrics"
-      @save="handleSaveMetrics"
-    />
+      <v-divider />
+
+      <v-card-actions class="pt-4">
+        <app-btn
+          v-if="config.id !== ''"
+          color="error"
+          text
+          @click="handleDelete"
+        >
+          {{ $t('app.general.btn.remove') }}
+        </app-btn>
+        <v-spacer />
+        <app-btn
+          color="warning"
+          text
+          @click="$emit('input', false)"
+        >
+          {{ $t('app.general.btn.cancel') }}
+        </app-btn>
+        <app-btn
+          color="primary"
+          @click="handleSave"
+        >
+          {{ (config.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+        </app-btn>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DiagnosticsCardConfig, Metric } from '@/store/diagnostics/types'
-import { Icons } from '@/globals'
-import AppSetting from '@/components/ui/AppSetting.vue'
-import MetricsConfigDialog from '@/components/widgets/diagnostics/MetricsConfigDialog.vue'
+import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import CardConfigStep from './config/CardConfigStep.vue'
+import AxesConfigStep from './config/AxesConfigStep.vue'
 
-@Component({
-  components: { MetricsConfigDialog, AppSetting }
-})
+@Component({})
 export default class DiagnosticsCardConfigDialog extends Vue {
   @Prop({ type: Boolean, required: true })
   public value!: boolean
 
   @Prop({ type: Object, required: true })
-  public card!: DiagnosticsCardConfig
+  public config!: DiagnosticsCardConfig
+
+  currentStep = 1
+  steps = [
+    { name: this.$t('app.general.label.card'), component: CardConfigStep },
+    { name: this.$t('app.general.label.axes'), component: AxesConfigStep },
+    { name: this.$t('app.general.label.metrics'), component: null }
+  ]
 
   valid = false
-  dialogState: { active: boolean, metrics: Metric[] } = {
-    active: false,
-    metrics: []
-  }
-
-  rules = {
-    required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    numAboveZero: (v: number) => v > 0 || this.$t('app.general.simple_form.error.min', { min: '> 0' })
-  }
-
-  get icons () {
-    const icons = Object.keys(Icons)
-    return icons.sort().map(icon => ({ text: icon, value: icon }))
-  }
-
-  get state () {
-    return Object.keys(this.card)
-  }
 
   handleSave () {
     if (this.valid) {
-      this.$emit('save', this.card)
+      this.$emit('save', this.config)
       this.$emit('input', false)
     }
   }
 
   handleDelete () {
-    this.$emit('delete', this.card.id)
+    this.$emit('delete', this.config.id)
     this.$emit('input', false)
-  }
-
-  handleEditMetrics () {
-    this.dialogState.metrics = JSON.parse(JSON.stringify(this.card.metrics))
-    this.dialogState.active = true
-  }
-
-  handleSaveMetrics (metrics: Metric[]) {
-    this.card.metrics = metrics
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-stepper {
+  background: transparent;
+}
+</style>

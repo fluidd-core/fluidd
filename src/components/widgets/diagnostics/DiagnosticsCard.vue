@@ -211,6 +211,7 @@ export default class DiagnosticsCard extends Vue {
   get series () {
     const series = []
     for (const [yAxisIndex, yAxis] of Object.entries(this.config.axes)) {
+      if (!yAxis.enabled) continue
       for (const metric of yAxis.metrics) {
         series.push({
           name: metric.name,
