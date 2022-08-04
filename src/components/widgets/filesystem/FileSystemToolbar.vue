@@ -243,7 +243,6 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   set showKlipperBackupFiles (value: boolean) {
-    console.log(value)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.fileSystem.showKlipperBackupFiles',
       value,
