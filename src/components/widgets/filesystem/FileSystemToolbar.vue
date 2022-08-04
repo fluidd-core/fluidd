@@ -255,7 +255,6 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   set showHiddenFiles (value: boolean) {
-    console.log(value)
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.fileSystem.showHiddenFiles',
       value,
