@@ -182,8 +182,8 @@ export default class DiagnosticsCard extends Vue {
         type: 'value',
         position: ['left', 'right'][index],
         splitLine: { show: true, lineStyle },
-        min: axis.min ?? undefined,
-        max: axis.max ?? undefined,
+        min: [undefined, ''].includes(axis.min as any) ? undefined : axis.min,
+        max: [undefined, ''].includes(axis.max as any) ? undefined : axis.max,
         axisLabel: axis.showLegend
           ? {
               color: fontColor,
