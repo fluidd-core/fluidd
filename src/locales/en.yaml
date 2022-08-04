@@ -404,6 +404,7 @@ app:
       add_camera: Add Camera
       add_category: Add Category
       add_filter: Add Filter
+      add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
       reset: Reset

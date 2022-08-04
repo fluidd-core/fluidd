@@ -24,7 +24,7 @@
     <v-stepper-content
       v-for="(step, i) of steps"
       :key="`${i}-content`"
-      class="pt-2"
+      class="pt-4"
       :step="i + 1"
     >
       <template v-if="currentStep === i + 1">

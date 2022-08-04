@@ -25,7 +25,7 @@
     <v-stepper-content
       v-for="(step, i) of steps"
       :key="`${i}-content`"
-      class="pt-2"
+      class="pt-4"
       :step="i + 1"
     >
       <template v-if="currentStep === i + 1">
@@ -40,6 +40,21 @@
             <v-expansion-panel-header>
               {{ metric.name }}
               <v-divider class="ml-4" />
+              <v-col
+                cols="1"
+                class="d-flex justify-center"
+              >
+                <app-btn
+                  small
+                  icon
+                  color=""
+                  @click.stop="removeMetric(i, j)"
+                >
+                  <v-icon dense>
+                    $delete
+                  </v-icon>
+                </app-btn>
+              </v-col>
             </v-expansion-panel-header>
 
             <v-expansion-panel-content>
@@ -119,6 +134,21 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-expansion-panels>
+
+        <v-divider class="mt-4" />
+
+        <v-row class="pa-2 mt-2">
+          <v-spacer />
+          <app-btn
+            small
+            @click="addMetric(i)"
+          >
+            <v-icon small>
+              $plus
+            </v-icon>
+            {{ $t('app.setting.btn.add_metric') }}
+          </app-btn>
+        </v-row>
       </template>
     </v-stepper-content>
   </v-stepper>
@@ -129,6 +159,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DiagnosticsCardConfig, Metric } from '@/store/diagnostics/types'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
+import { defaultState } from '@/store/layout'
 
 @Component({
   components: { AppSetting, MetricsCollectorConfig }
@@ -150,10 +181,19 @@ export default class MetricsConfigStep extends Vue {
     required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required')
   }
 
-  collectorResults: {[axis: number]: {[metric: number]: string}} = {}
-
   handleColorChange (prop: 'lineColor' | 'fillColor', metric: Metric, event: any) {
     metric.style[prop] = event.color.hexString
+  }
+
+  addMetric (axis: number) {
+    const defaultCard = defaultState().layouts.diagnostics.container1[0] as DiagnosticsCardConfig
+    const defaultMetric = defaultCard.axes[0].metrics[0]
+
+    this.config.axes[axis].metrics.push(defaultMetric)
+  }
+
+  removeMetric (axis: number, metric: number) {
+    this.config.axes[axis].metrics.splice(metric, 1)
   }
 }
 </script>
