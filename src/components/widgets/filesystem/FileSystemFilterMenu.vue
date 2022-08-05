@@ -54,7 +54,7 @@
                 <v-list-item-title>
                   {{ filter.text }}
                 </v-list-item-title>
-                <v-list-item-subtitle>
+                <v-list-item-subtitle v-if="filter.desc !== undefined">
                   {{ filter.desc }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -75,22 +75,37 @@ export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
   public root!: string
 
-  // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
   public disabled!: boolean
 
-  model = []
-  filters: FileFilter[] = [
-    {
-      value: 'print_start_time',
-      text: this.$tc('app.file_system.filters.label.print_start_time'),
-      desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
-    }
-  ]
+  get filters (): FileFilter[] {
+    switch (this.root) {
+      case 'gcodes':
+        return [
+          {
+            value: 'print_start_time',
+            text: this.$tc('app.file_system.filters.label.print_start_time'),
+            desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
+          }
+        ]
 
-  get readonly () {
-    return this.$store.getters['files/getRootProperties'](this.root).readonly
+      case 'config':
+        return [
+          {
+            value: 'hidden_files',
+            text: this.$tc('app.file_system.filters.label.hidden_files')
+          },
+          {
+            value: 'klipper_backup_files',
+            text: this.$tc('app.file_system.filters.label.klipper_backup_files')
+          }
+        ]
+    }
+
+    return []
   }
+
+  model = []
 
   @Watch('model')
   onFiltersChange (model: any) {

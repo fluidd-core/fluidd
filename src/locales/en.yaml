@@ -73,6 +73,8 @@ app:
       label:
         print_start_time: Filter printed
         print_start_time_desc: Filters out items you've already printed.
+        hidden_files: Filter hidden files
+        klipper_backup_files: Filter Klipper backup files
     label:
       dir_name: Directory name
       disk_usage: Disk Usage
@@ -83,8 +85,6 @@ app:
       uploaded: Uploaded
       view_section_documentation: >-
         View '%{section}' documentation
-      show_hidden_files: Show hidden files
-      show_klipper_backup_files: Show Klipper backup files
     msg:
       confirm: Are you sure? This will delete all files and folders.
       not_found: No files found

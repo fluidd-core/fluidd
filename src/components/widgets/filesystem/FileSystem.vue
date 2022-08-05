@@ -19,7 +19,6 @@
       :disabled="disabled"
       :loading="filesLoading"
       :headers="headers"
-      :hideable-files-available="hideableFilesAvailable"
       @root-change="handleRootChange"
       @refresh="refreshPath(currentPath)"
       @add-file="handleAddFileDialog"
@@ -204,9 +203,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: Boolean, default: false })
   public timelapseBrowser!: boolean
 
-  @Prop({ type: Boolean, default: false })
-  public hideableFilesAvailable!: boolean
-
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
 
@@ -294,7 +290,29 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // Base headers. All roots have these.
     let headers: any = [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$t('app.general.table.header.name'), value: 'name' }
+      {
+        text: this.$t('app.general.table.header.name'),
+        value: 'name',
+        filter: (value: string) => {
+          if (!this.filters) return true
+
+          for (const filter of this.filters) {
+            switch (filter.value) {
+              case 'hidden_files':
+                if (value.match(/^\.(?!\.$)/)) {
+                  return false
+                }
+                break
+              case 'klipper_backup_files':
+                if (value.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
+                  return false
+                }
+                break
+            }
+          }
+          return true
+        }
+      }
     ]
 
     // If this is a gcode root, then metadata is available, including potentially history data.
@@ -372,14 +390,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.currentPath
   }
 
-  get showKlipperBackupFiles () {
-    return this.$store.state.config.uiSettings.fileSystem.showKlipperBackupFiles
-  }
-
-  get showHiddenFiles () {
-    return this.$store.state.config.uiSettings.fileSystem.showHiddenFiles
-  }
-
   // Get the available files given the current root and path.
   get files (): FileBrowserEntry[] {
     return this.getAllFiles(this.timelapseBrowser ? this.transformTimelapseItems : undefined)
@@ -394,16 +404,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (transformFunction) {
         return transformFunction(dir.items)
       }
-      let items = dir.items
-      // filter out '.***' files (eg. '.fluidd-theme')
-      if (!this.showHiddenFiles && this.hideableFilesAvailable) {
-        items = items.filter((element: { name: string }) => !element.name.match(/^\.(?!\.$)/))
-      }
-      // filter out 'printer-********_******.cfg' files
-      if (!this.showKlipperBackupFiles && this.hideableFilesAvailable) {
-        items = items.filter((element: { name: string }) => !element.name.match(/^printer-\d{8}_\d{6}\.cfg$/))
-      }
-      return items
+
+      return dir.items
     }
     return []
   }
