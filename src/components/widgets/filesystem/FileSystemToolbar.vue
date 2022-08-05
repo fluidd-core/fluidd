@@ -127,7 +127,6 @@ import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
-import { FileFilter } from '@/store/files/types'
 
 @Component({
   components: {
