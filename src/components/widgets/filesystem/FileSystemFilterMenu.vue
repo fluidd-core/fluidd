@@ -12,7 +12,7 @@
         color="warning"
         dot
         overlap
-        :value="model.length > 0"
+        :value="selectedFilterTypes.length > 0"
         :offset-y="15"
         :offset-x="15"
       >
@@ -33,7 +33,7 @@
 
     <v-list flat>
       <v-list-item-group
-        v-model="model"
+        v-model="selectedFilterTypes"
         multiple
         active-class=""
       >
@@ -41,7 +41,7 @@
           <v-list-item
             :key="`filter-${i}`"
             :disabled="disabled"
-            :value="filter"
+            :value="filter.value"
           >
             <template #default="{ active }">
               <v-list-item-action>
@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
-import { FileFilter, FileRoot } from '@/store/files/types'
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { FileFilter, FileFilterType, FileRoot } from '@/store/files/types'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
@@ -101,11 +101,18 @@ export default class FileSystemFilterMenu extends Vue {
     return this.availableFilters[this.root] ?? []
   }
 
-  model = []
+  get selectedFilterTypes (): FileFilterType[] {
+    return this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
+  }
 
-  @Watch('model')
-  onFiltersChange (model: any) {
-    this.$emit('change', model)
+  set selectedFilterTypes (value: FileFilterType[]) {
+    this.$store.dispatch('config/saveByPath', {
+      path: `uiSettings.fileSystem.activeFilters.${this.root}`,
+      value,
+      server: true
+    })
+
+    this.$emit('change', this.filters.filter(f => value.includes(f.value)))
   }
 }
 </script>
