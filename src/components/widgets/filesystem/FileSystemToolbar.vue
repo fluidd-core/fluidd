@@ -63,7 +63,7 @@
     />
 
     <file-system-filter-menu
-      v-if="!readonly && ['gcodes', 'config'].includes(root)"
+      v-if="hasFilterMenu"
       :root="root"
       :disabled="disabled"
       @change="$emit('filter', $event)"
@@ -192,6 +192,18 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Only show roots that have been registered.
   get registeredRoots () {
     return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
+  }
+
+  get hasFilterMenu () {
+    if (!this.readonly) {
+      switch (this.root) {
+        case 'gcodes':
+          return this.supportsHistoryComponent
+        case 'config':
+          return true
+      }
+    }
+    return false
   }
 
   mounted () {
