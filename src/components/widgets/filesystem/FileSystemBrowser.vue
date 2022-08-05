@@ -279,9 +279,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: String, required: false })
   public search!: string
 
-  @Prop({ type: Array, default: () => { return [] } })
-  public filters!: FileFilter[]
-
   @Prop({ type: Boolean, required: true })
   public dragState!: boolean
 

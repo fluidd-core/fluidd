@@ -106,13 +106,7 @@ export default class FileSystemFilterMenu extends Vue {
   }
 
   set selectedFilterTypes (value: FileFilterType[]) {
-    this.$store.dispatch('config/saveByPath', {
-      path: `uiSettings.fileSystem.activeFilters.${this.root}`,
-      value,
-      server: true
-    })
-
-    this.$emit('change', this.filters.filter(f => value.includes(f.value)))
+    this.$emit('change', value)
   }
 }
 </script>
