@@ -67,42 +67,41 @@
 </template>
 
 <script lang="ts">
-import { FileFilter } from '@/store/files/types'
+import { FileFilter, FileRoot } from '@/store/files/types'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
-  public root!: string
+  public root!: FileRoot
 
   @Prop({ type: Boolean, default: false })
   public disabled!: boolean
 
-  get filters (): FileFilter[] {
-    switch (this.root) {
-      case 'gcodes':
-        return [
-          {
-            value: 'print_start_time',
-            text: this.$tc('app.file_system.filters.label.print_start_time'),
-            desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
-          }
-        ]
-
-      case 'config':
-        return [
-          {
-            value: 'hidden_files',
-            text: this.$tc('app.file_system.filters.label.hidden_files')
-          },
-          {
-            value: 'klipper_backup_files',
-            text: this.$tc('app.file_system.filters.label.klipper_backup_files')
-          }
-        ]
+  get availableFilters (): Partial<Record<FileRoot, FileFilter[]>> {
+    return {
+      gcodes: [
+        {
+          value: 'print_start_time',
+          text: this.$tc('app.file_system.filters.label.print_start_time'),
+          desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
+        }
+      ],
+      config: [
+        {
+          value: 'hidden_files',
+          text: this.$tc('app.file_system.filters.label.hidden_files')
+        },
+        {
+          value: 'klipper_backup_files',
+          text: this.$tc('app.file_system.filters.label.klipper_backup_files')
+        }
+      ]
     }
+  }
 
-    return []
+  get filters (): FileFilter[] {
+    return this.availableFilters[this.root] ?? []
   }
 
   model = []
