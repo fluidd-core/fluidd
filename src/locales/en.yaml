@@ -474,6 +474,7 @@ app:
       last_result: Last result
       left_y: Left Y-Axis
       line_color: Line color
+      line_style: Line style
       min: Minimum
       max: Maximum
       metrics: Metrics

@@ -82,14 +82,14 @@
 
               <v-divider />
 
-              <app-setting :title="$t('app.setting.label.icon')">
+              <app-setting :title="$t('app.setting.label.line_style')">
                 <v-select
+                  v-model="metric.style.lineStyle"
                   filled
                   dense
                   single-line
                   hide-details="auto"
                   :items="lineStyles"
-                  :value="metric.style.lineStyle"
                 />
               </app-setting>
 
