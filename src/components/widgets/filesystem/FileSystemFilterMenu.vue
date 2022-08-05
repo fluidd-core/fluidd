@@ -31,10 +31,7 @@
       </v-badge>
     </template>
 
-    <v-list
-      flat
-      two-line
-    >
+    <v-list flat>
       <v-list-item-group
         v-model="model"
         multiple
