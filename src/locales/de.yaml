@@ -105,6 +105,11 @@ app:
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: >-
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
   gcode:
     btn:
       load_current_file: Aktuelle Datei laden
@@ -167,7 +172,7 @@ app:
       retract: Retracten
       save: Speichern
       save_as: Speichern als
-      save_restart: Speichern & Neustarten
+      save_restart: Speichern & Neu starten
       send: Senden
       set_color: Farbe setzen
       shutdown: Herunterfahren
@@ -178,6 +183,13 @@ app:
       view: Ansicht
       reset_stats: Statistik zurücksetzen
       snooze: Schlummern
+      abort: Abbrechen
+      accept: Akzeptieren
+      adjusted: Angepasst
+      auth_unsure: Sie wissen nicht, warum dies angezeigt wird?
+      forgot_password: Passwort vergessen?
+      login: Einloggen
+      save_config_and_restart: Konfiguration speichern und neu starten
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -254,8 +266,8 @@ app:
       total_print_time_avg: Durchschnitt pro Druck
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
-      turn_device_on: %{device} einschalten
-      turn_device_off: %{device} ausschalten
+      turn_device_on: '%{device} einschalten'
+      turn_device_off: '%{device} ausschalten'
       uncategorized: Unkategorisiert
       unretract_extra_length: Unretract-Extralänge
       unretract_speed: Unretract-Geschwindigkeit
@@ -270,6 +282,10 @@ app:
       file_time: Datei
       pressure_advance: Pressure Advance
       smooth_time: Glättungszeit
+      current_user: Aktueller Benutzer
+      moonraker: Moonraker
+      username: Benutzername
+      ldap: LDAP
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -302,6 +318,7 @@ app:
         unsaved_changes: >-
           Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie den
           Editor schließen möchten?
+        confirm_forcemove_toggle: Sind Sie sicher? Dies kann Schäden am Drucker verursachen.
     table:
       header:
         actions: Aktionen
@@ -352,11 +369,13 @@ app:
       timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
+      pending_configuration_changes: Ausstehende Konfigurationsänderungen
     tooltip:
       estop: NOT-AUS
       reload_klipper: Lädt die Klipper-Konfiguration neu.
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
+      notifications: Benachrichtigungen
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
@@ -449,6 +468,8 @@ app:
       toolhead_move_distances: Bewegungsdistanzen des Druckkopfes
       type: Art
       z_adjust_values: Z-Werte anpassen
+      show_code_lens: CodeLens anzeigen
+      show_save_config_and_restart: Speichern & Neu starten Schaltfläche in der Navigationsleite
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -513,6 +534,13 @@ app:
       home_xy: Home XY
       home_z: Home Z
       motors_off: MOTOREN AUS
+      relative_positioning: Relative Positionierung
+      absolute_positioning: Absolute Positionierung
+      force_move: FORCE_MOVE
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      bed_screws_adjust: BED_SCREWS_ADJUST
   version:
     btn:
       check_for_updates: Nach Aktualisierungen suchen

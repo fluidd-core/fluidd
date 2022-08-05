@@ -14,9 +14,10 @@
     />
 
     <v-layout
-      v-if="!fan.controllable"
+      v-else
       align-center
       justify-space-between
+      :class="{ 'text--disabled': !klippyReady }"
     >
       <div class="text-body-1">
         {{ fan.prettyName }}

@@ -5,6 +5,7 @@
   >
     <div
       class="text-body-1"
+      :class="{ 'text--disabled': disabled }"
     >
       {{ label }}
     </div>

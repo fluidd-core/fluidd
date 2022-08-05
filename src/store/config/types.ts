@@ -62,6 +62,7 @@ export interface GeneralConfig {
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
   showManualProbeDialogAutomatically: boolean;
+  showBedScrewsAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
 }
 
