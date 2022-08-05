@@ -11,9 +11,13 @@
           small
           @click="$emit('edit', config)"
         >
-          <v-icon small>
+          <v-icon
+            small
+            left
+          >
             $edit
           </v-icon>
+          {{ $t('app.general.title.edit_chart') }}
         </app-btn>
       </app-btn-collapse-group>
     </template>

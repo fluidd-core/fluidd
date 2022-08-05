@@ -6,7 +6,7 @@
   >
     <v-card>
       <v-card-title class="card-heading py-2">
-        <span class="focus--text">{{ (config.id !== '') ? $t('app.general.title.edit_card') : $t('app.general.title.add_card') }}</span>
+        <span class="focus--text">{{ (config.id !== '') ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart') }}</span>
       </v-card-title>
 
       <v-divider />

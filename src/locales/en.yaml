@@ -345,7 +345,7 @@ app:
         status: Status
         total_duration: Total duration
     title:
-      add_card: Add Card
+      add_chart: Add Chart
       add_printer: Add Printer
       bedmesh: Bed Mesh
       bedmesh_controls: Bed Mesh Controls
@@ -354,7 +354,7 @@ app:
       configure: Configuration
       console: Console
       diagnostics: Diagnostics
-      edit_card: Edit Card
+      edit_chart: Edit Chart
       endstops: Endstops
       fans_outputs: Fans & Outputs
       gcode_preview: Gcode Preview

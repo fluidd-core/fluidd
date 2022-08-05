@@ -12,9 +12,13 @@
                 small
                 @click="handleAddCard"
               >
-                <v-icon small>
+                <v-icon
+                  small
+                  left
+                >
                   $plus
                 </v-icon>
+                {{ $t('app.general.title.add_chart') }}
               </app-btn>
             </app-btn-collapse-group>
           </template>
