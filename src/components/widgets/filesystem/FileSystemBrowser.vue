@@ -246,8 +246,7 @@
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import {
   AppFileWithMeta,
-  FileBrowserEntry,
-  FileFilter
+  FileBrowserEntry
 } from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'

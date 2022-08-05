@@ -129,12 +129,6 @@ export interface FilesUpload extends FileDownload {
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
-export interface FileFilter {
-  value: FileFilterType;
-  text: string;
-  desc?: string;
-}
-
 export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files'
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'

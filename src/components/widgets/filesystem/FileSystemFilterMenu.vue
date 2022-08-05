@@ -64,8 +64,14 @@
 </template>
 
 <script lang="ts">
-import { FileFilter, FileFilterType, FileRoot } from '@/store/files/types'
+import { FileFilterType, FileRoot } from '@/store/files/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
+
+interface FileFilter {
+  value: FileFilterType;
+  text: string;
+  desc?: string;
+}
 
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
@@ -75,30 +81,30 @@ export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: Boolean, default: false })
   public disabled!: boolean
 
-  get availableFilters (): Partial<Record<FileRoot, FileFilter[]>> {
-    return {
-      gcodes: [
-        {
-          value: 'print_start_time',
-          text: this.$tc('app.file_system.filters.label.print_start_time'),
-          desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
-        }
-      ],
-      config: [
-        {
-          value: 'hidden_files',
-          text: this.$tc('app.file_system.filters.label.hidden_files')
-        },
-        {
-          value: 'klipper_backup_files',
-          text: this.$tc('app.file_system.filters.label.klipper_backup_files')
-        }
-      ]
+  availableFilters: FileFilter[] = [
+    {
+      value: 'print_start_time',
+      text: this.$tc('app.file_system.filters.label.print_start_time'),
+      desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
+    },
+    {
+      value: 'hidden_files',
+      text: this.$tc('app.file_system.filters.label.hidden_files')
+    },
+    {
+      value: 'klipper_backup_files',
+      text: this.$tc('app.file_system.filters.label.klipper_backup_files')
     }
+  ]
+
+  get rootFilterTypes (): FileFilterType[] {
+    return this.$store.getters['files/getRootProperties'](this.root).filterTypes
   }
 
   get filters (): FileFilter[] {
-    return this.availableFilters[this.root] ?? []
+    const filterTypes = this.rootFilterTypes
+
+    return this.availableFilters.filter(f => filterTypes.includes(f.value))
   }
 
   get selectedFilterTypes (): FileFilterType[] {
