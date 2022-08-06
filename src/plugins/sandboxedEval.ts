@@ -1,11 +1,20 @@
-export default function (code: string): any {
+const frames: {[feature: string]: any} = {}
+
+export default function (code: string, feature?: string): any {
+  let frame
+  if (feature) {
+    if (frames[feature]) frame = frames[feature]
+    else if (!frames[feature]) frames[feature] = frame = createFrame()
+  } else frame = createFrame()
+
+  return (new (frame.contentWindow as any).Function(code))()
+}
+
+export function createFrame () {
   const frame = document.createElement('iframe')
 
   frame.style.display = 'none'
   document.body.appendChild(frame) // needed for contentWindow
 
-  const result = (new (frame.contentWindow as any).Function(code))()
-  frame.remove()
-
-  return result
+  return frame
 }

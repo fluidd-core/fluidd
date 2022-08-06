@@ -197,7 +197,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
 
       return JSON.stringify(result) // in order to only return serializable data
-    `)
+    `, 'metrics')
 
       if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
       data = JSON.parse(data)
