@@ -73,6 +73,8 @@ app:
       label:
         print_start_time: Filter printed
         print_start_time_desc: Filters out items you've already printed.
+        hidden_files: Filter hidden files
+        klipper_backup_files: Filter Klipper backup files
     label:
       dir_name: Directory name
       disk_usage: Disk Usage
