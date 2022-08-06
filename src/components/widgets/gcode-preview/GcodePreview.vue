@@ -324,8 +324,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
     }
 
     const transform = [
-      this.flipX ? -(x.max - x.min) : 0,
-      this.flipY ? -(y.max - y.min) : 0
+      this.flipX ? -(x.max + x.min) : 0,
+      this.flipY ? -(y.max + y.min) : 0
     ]
 
     return `scale(${scale.join()}) translate(${transform.join()})`
@@ -416,7 +416,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
       y
     } = this.viewBox
 
-    return `${x.min} ${y.min} ${x.max} ${y.max}`
+    return `${x.min} ${y.min} ${x.max - x.min} ${y.max - y.min}`
   }
 
   get defaultLayerPaths (): LayerPaths {
