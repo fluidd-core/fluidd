@@ -185,7 +185,6 @@ export const actions: ActionTree<PrinterState, RootState> = {
     try {
       data = sandboxedEval(`
       const printer = ${JSON.stringify(rootState.printer.printer)}
-      const state = ${JSON.stringify(rootState)}
       const collectors = ${JSON.stringify(collectors)}
       const result = { }
 
