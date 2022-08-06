@@ -142,7 +142,10 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.enable_diagnostics')">
+      <app-setting
+        :title="$t('app.setting.label.enable_diagnostics')"
+        :sub-title="$t('app.setting.tooltip.diagnostics_performance')"
+      >
         <v-switch
           v-model="enableDiagnostics"
           hide-details
