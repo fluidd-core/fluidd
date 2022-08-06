@@ -132,6 +132,12 @@ export const defaultState = (): ConfigState => {
           horizontal: false,
           vertical: true
         }
+      },
+      fileSystem: {
+        activeFilters: {
+          gcodes: [],
+          config: []
+        }
       }
     }
   }

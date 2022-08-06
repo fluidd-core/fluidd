@@ -26,9 +26,7 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (r: FileRoot) => {
-    const root = r
-
+  getRootProperties: () => (root: FileRoot) => {
     if (root === 'gcodes') {
       return {
         readonly: false,
@@ -36,7 +34,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: true,
-        canConfigure: true
+        canConfigure: true,
+        filterTypes: ['print_start_time']
       }
     }
 
@@ -47,7 +46,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: ['hidden_files', 'klipper_backup_files']
       }
     }
 
@@ -58,7 +58,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: []
       }
     }
 
@@ -69,7 +70,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: []
       }
     }
 
@@ -80,7 +82,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: []
       }
     }
 
@@ -93,7 +96,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canPrint: false,
         canConfigure: false,
         canDelete: true,
-        canCreateDirectory: true
+        canCreateDirectory: true,
+        filterTypes: []
       }
     }
 
@@ -103,7 +107,8 @@ export const getters: GetterTree<FilesState, RootState> = {
       canEdit: false,
       canView: true,
       canPrint: false,
-      canConfigure: false
+      canConfigure: false,
+      filterTypes: []
     }
   },
 
