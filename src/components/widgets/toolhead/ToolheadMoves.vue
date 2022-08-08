@@ -249,7 +249,10 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
       : distance
 
     if (this.forceMove) {
-      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate}`)
+      const accel = (axis.toLowerCase() === 'z')
+        ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+        : this.$store.state.printer.printer.toolhead.max_accel
+      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
       this.sendGcode(`G91
       G1 ${axis}${distance} F${rate * 60}
