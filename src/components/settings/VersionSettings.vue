@@ -14,6 +14,20 @@
           outlined
           small
           color="primary"
+          class="mr-2"
+          :disabled="!hasUpdates || isRefreshing || printerPrinting"
+          @click="handleUpdateComponent('all')"
+        >
+          <v-icon left>
+            $download
+          </v-icon>
+          {{ $t('app.version.btn.update_all') }}
+        </app-btn>
+
+        <app-btn
+          outlined
+          small
+          color="primary"
           :disabled="isRefreshing"
           @click="forceCheck()"
         >
@@ -194,6 +208,9 @@ export default class VersionSettings extends Mixins(StateMixin) {
         break
       case 'system':
         SocketActions.machineUpdateSystem()
+        break
+      case 'all':
+        SocketActions.machineUpdateAll()
         break
       default: // assume a client update
         SocketActions.machineUpdateClient(key)

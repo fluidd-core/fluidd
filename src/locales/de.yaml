@@ -546,6 +546,7 @@ app:
       check_for_updates: Nach Aktualisierungen suchen
       finish: Beenden
       update: Aktualisieren
+      update_all: Alles aktualisieren
       view_versions: Versionen anzeigen
     label:
       commit_history: Commit-Verlauf
