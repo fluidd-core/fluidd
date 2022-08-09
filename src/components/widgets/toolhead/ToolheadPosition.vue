@@ -185,7 +185,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
         ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
       if (this.forceMove) {
-        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate}`)
+        const accel = (axis.toLowerCase() === 'z')
+          ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+          : this.$store.state.printer.printer.toolhead.max_accel
+        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
         this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)
