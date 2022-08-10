@@ -246,8 +246,7 @@
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import {
   AppFileWithMeta,
-  FileBrowserEntry,
-  FileFilter
+  FileBrowserEntry
 } from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
@@ -278,9 +277,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   @Prop({ type: String, required: false })
   public search!: string
-
-  @Prop({ type: Array, default: () => { return [] } })
-  public filters!: FileFilter[]
 
   @Prop({ type: Boolean, required: true })
   public dragState!: boolean

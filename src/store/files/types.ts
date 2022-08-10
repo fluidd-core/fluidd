@@ -49,6 +49,7 @@ export interface KlipperFile {
 }
 
 export interface KlipperFileMeta {
+  chamber_temp?: number;
   estimated_time?: number;
   filament_total?: number;
   filament_weight_total?: number;
@@ -129,11 +130,7 @@ export interface FilesUpload extends FileDownload {
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
-export interface FileFilter {
-  value: string;
-  text: string;
-  desc: string;
-}
+export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files'
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
 

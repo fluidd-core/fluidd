@@ -84,5 +84,10 @@ export const actions: ActionTree<VersionState, RootState> = {
   async onUpdatedSystem (_, payload) {
     consola.debug('Finished updating system', payload)
     SocketActions.machineUpdateStatus()
+  },
+
+  async onUpdatedAll (_, payload) {
+    consola.debug('Finished updating all services', payload)
+    window.location.reload()
   }
 }

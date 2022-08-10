@@ -130,6 +130,14 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateAll () {
+    baseEmit(
+      'machine.update.full', {
+        dispatch: 'version/onUpdatedAll'
+      }
+    )
+  },
+
   async machineProcStats () {
     baseEmit(
       'machine.proc_stats', {

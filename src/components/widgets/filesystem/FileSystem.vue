@@ -133,7 +133,7 @@ import {
   AppFile,
   AppFileWithMeta,
   FilesUpload,
-  FileFilter,
+  FileFilterType,
   KlipperFileWithMeta,
   FilePreviewState,
   FileBrowserEntry
@@ -213,7 +213,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   search = ''
 
   // Maintains filter state.
-  filters: FileFilter[] = []
+  get filters (): FileFilterType[] {
+    return this.$store.state.config.uiSettings.fileSystem.activeFilters[this.currentRoot] ?? []
+  }
+
+  set filters (value: FileFilterType[]) {
+    this.$store.dispatch('config/saveByPath', {
+      path: `uiSettings.fileSystem.activeFilters.${this.currentRoot}`,
+      value,
+      server: true
+    })
+  }
 
   // Maintains content menu state.
   contextMenuState: any = {
@@ -290,7 +300,27 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // Base headers. All roots have these.
     let headers: any = [
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$t('app.general.table.header.name'), value: 'name' }
+      {
+        text: this.$t('app.general.table.header.name'),
+        value: 'name',
+        filter: (value: string) => {
+          for (const filter of this.filters) {
+            switch (filter) {
+              case 'hidden_files':
+                if (value.match(/^\.(?!\.$)/)) {
+                  return false
+                }
+                break
+              case 'klipper_backup_files':
+                if (value.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
+                  return false
+                }
+                break
+            }
+          }
+          return true
+        }
+      }
     ]
 
     // If this is a gcode root, then metadata is available, including potentially history data.
@@ -314,14 +344,16 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           text: this.$t('app.general.table.header.last_printed'),
           value: 'print_start_time',
           filter: (value: string, search: string | null, item: FileBrowserEntry | AppFileWithMeta) => {
-            const filter = this.filters.find(filter => filter.value === 'print_start_time')
-            if (
-              !this.filters ||
-              this.filters.length === 0 ||
-              !filter ||
-              item.type !== 'file'
-            ) return true
-            return item.print_start_time === null
+            for (const filter of this.filters) {
+              switch (filter) {
+                case 'print_start_time':
+                  if (item.type === 'file' && value !== null) {
+                    return false
+                  }
+                  break
+              }
+            }
+            return true
           },
           configurable: true
         }
@@ -830,6 +862,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
       if (file.first_layer_bed_temp > 0) {
         this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
+      }
+      if (file.chamber_temp && file.chamber_temp > 0) {
+        this.sendGcode(`M141 S${file.chamber_temp}`)
       }
     }
   }

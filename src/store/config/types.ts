@@ -1,5 +1,6 @@
 import { AppTablePartialHeader } from '@/types/tableheaders'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import { FileFilterType, FileRoot } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
@@ -18,6 +19,7 @@ export interface UiSettings {
   dashboard: DashboardConfig;
   tableHeaders: AppTableConfiguredHeaders;
   gcodePreview: GcodePreviewConfig;
+  fileSystem: FileSystemConfig;
 }
 
 export interface HostConfig {
@@ -165,4 +167,8 @@ export interface GcodePreviewConfig {
     horizontal: boolean;
     vertical: boolean;
   };
+}
+
+export interface FileSystemConfig {
+  activeFilters: Partial<Record<FileRoot, FileFilterType[]>>
 }
