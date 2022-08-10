@@ -139,7 +139,15 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   @Watch('layout')
   onLayoutChange () {
-    const containers = Object.values(this.layout) as Array<LayoutConfig[]>
+    const containers: Array<LayoutConfig[]> = []
+
+    for (let index = 1; index <= 4; index++) {
+      const container = this.layout[`container${index}`]
+
+      if (container?.length > 0) {
+        containers.push(container)
+      }
+    }
 
     while (containers.length < 4) {
       containers.push([])
