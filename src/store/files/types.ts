@@ -49,6 +49,7 @@ export interface KlipperFile {
 }
 
 export interface KlipperFileMeta {
+  chamber_temp?: number;
   estimated_time?: number;
   filament_total?: number;
   filament_weight_total?: number;
