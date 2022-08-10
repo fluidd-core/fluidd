@@ -863,6 +863,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (file.first_layer_bed_temp > 0) {
         this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
       }
+      if (file.chamber_temp && file.chamber_temp > 0) {
+        this.sendGcode(`M141 S${file.chamber_temp}`)
+      }
     }
   }
 
