@@ -416,6 +416,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
       y
     } = this.viewBox
 
+    if (this.isDelta) {
+      return `${x.min} ${y.min} ${x.max} ${y.max}`
+    }
+
     return `${x.min} ${y.min} ${x.max - x.min} ${y.max - y.min}`
   }
 
