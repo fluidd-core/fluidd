@@ -42,7 +42,7 @@ export default class FileEditor extends Vue {
 
   // Base editor options.
   opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
-    contextmenu: false,
+    contextmenu: true,
     readOnly: this.readonly,
     codeLens: this.codeLens,
     automaticLayout: true,
