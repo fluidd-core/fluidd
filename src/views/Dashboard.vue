@@ -1,39 +1,47 @@
 <template>
-  <v-row :dense="$vuetify.breakpoint.smAndDown">
-    <template v-for="(container, containerIndex) in containers">
-      <v-col
-        v-if="inLayout || hasCards(container)"
-        :key="`container${containerIndex}`"
-        cols="12"
-        md="6"
-        :lg="columnSpan"
-        :class="{ 'drag': inLayout }"
-      >
-        <draggable
-          v-model="containers[containerIndex]"
-          class="list-group"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
+  <v-layout justify-center>
+    <v-row
+      :dense="$vuetify.breakpoint.smAndDown"
+      :class="{
+        [['single', 'double', 'triple', 'quad'][columnCount - 1]]: true
+      }"
+      class="constrained-width"
+    >
+      <template v-for="(container, containerIndex) in containers">
+        <v-col
+          v-if="inLayout || hasCards(container)"
+          :key="`container${containerIndex}`"
+          cols="12"
+          md="6"
+          :lg="columnSpan"
+          :class="{ 'drag': inLayout }"
         >
-          <transition-group
-            type="transition"
-            :name="!drag ? 'flip-list' : null"
+          <draggable
+            v-model="containers[containerIndex]"
+            class="list-group"
+            v-bind="dragOptions"
+            @start.stop="drag = true"
+            @end.stop="handleStopDrag"
           >
-            <template v-for="c in container">
-              <component
-                :is="c.id"
-                v-if="(c.enabled && !filtered(c)) || inLayout"
-                :key="c.id"
-                :menu-collapsed="menuCollapsed"
-                class="mb-2 mb-sm-4"
-              />
-            </template>
-          </transition-group>
-        </draggable>
-      </v-col>
-    </template>
-  </v-row>
+            <transition-group
+              type="transition"
+              :name="!drag ? 'flip-list' : null"
+            >
+              <template v-for="c in container">
+                <component
+                  :is="c.id"
+                  v-if="(c.enabled && !filtered(c)) || inLayout"
+                  :key="c.id"
+                  :menu-collapsed="menuCollapsed"
+                  class="mb-2 mb-sm-4"
+                />
+              </template>
+            </transition-group>
+          </draggable>
+        </v-col>
+      </template>
+    </v-row>
+  </v-layout>
 </template>
 
 <script lang="ts">
