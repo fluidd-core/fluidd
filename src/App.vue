@@ -208,14 +208,6 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
     return theme.currentTheme.primary
   }
 
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
-  }
-
-  get ready () {
-    return (this.socketConnected && this.apiConnected) || (!this.authenticated && this.apiConnected)
-  }
-
   get customStyleSheet () {
     return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
   }
