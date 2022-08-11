@@ -474,6 +474,18 @@ export const SocketActions = {
     )
   },
 
+  async serverFilesListRoot (root: string) {
+    const wait = `${Waits.onFileSystem}${root}`
+    baseEmit(
+      'server.files.list',
+      {
+        dispatch: 'files/onServerFilesListRoot',
+        wait,
+        params: { root }
+      }
+    )
+  },
+
   async serverFilesMove (source: string, dest: string) {
     const wait = Waits.onFileSystem
     baseEmit(

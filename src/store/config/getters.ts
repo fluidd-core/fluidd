@@ -6,6 +6,7 @@ import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
+import { RootFile } from '../files/types'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
@@ -91,6 +92,20 @@ export const getters: GetterTree<ConfigState, RootState> = {
         .toHexString()
     }
     return r
+  },
+
+  getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
+    const files = rootGetters['files/getRootFiles']('config') as RootFile[]
+
+    if (files) {
+      for (const extension of extensions) {
+        const path = `.fluidd-theme/${filename}${extension}`
+
+        if (files.some(f => f.path === path)) {
+          return path
+        }
+      }
+    }
   },
 
   /**

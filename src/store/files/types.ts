@@ -1,11 +1,11 @@
 import { HistoryItem } from '@/store/history/types'
 
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[] | FileDownload | string[] | CurrentPaths | DiskUsage | null;
   uploads: FilesUpload[];
   download: FileDownload | null;
   currentPaths: CurrentPaths;
   disk_usage: DiskUsage;
+  rootFiles: RootFiles;
 
   gcodes: Files[];
   config: Files[];
@@ -142,4 +142,20 @@ export interface FilePreviewState {
   src: string;
   type: string;
   appFile?: AppFile;
+}
+
+export interface RootFiles {
+  gcodes: RootFile[];
+  config: RootFile[];
+  config_examples: RootFile[];
+  docs: RootFile[];
+  logs: RootFile[];
+  timelapse: RootFile[];
+}
+
+export interface RootFile {
+  path: string;
+  modified: number;
+  size: number;
+  permissions: string;
 }

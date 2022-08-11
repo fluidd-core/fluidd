@@ -32,6 +32,7 @@ export const actions: ActionTree<SocketState, RootState> = {
     if (payload === true) {
       SocketActions.serverInfo()
       SocketActions.identify()
+      SocketActions.serverFilesListRoot('config')
     }
   },
 

@@ -80,10 +80,8 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
-import { SocketActions } from '@/api/socketActions'
 import { Waits } from '@/globals'
 import { LinkPropertyHref } from 'vue-meta'
-import { Files, AppFile } from './store/files/types'
 
 @Component<App>({
   metaInfo () {
@@ -218,43 +216,17 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
     return (this.socketConnected && this.apiConnected) || (!this.authenticated && this.apiConnected)
   }
 
-  get isConfigRootAvailable () {
-    return this.$store.getters['files/isRootAvailable']('config')
+  get customStyleSheet () {
+    return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
   }
 
-  get fluiddThemeFiles () {
-    return this.isConfigRootAvailable && this.$store.getters['files/getDirectory']('config', 'config/.fluidd-theme')
-  }
-
-  @Watch('isConfigRootAvailable')
-  onIsConfigRootAvailable (value: boolean) {
-    if (value) {
-      SocketActions.serverFilesGetDirectory('config', 'config/.fluidd-theme')
+  @Watch('customStyleSheet')
+  async onCustomStyleSheet (value: string) {
+    if (!value) {
+      return
     }
-  }
 
-  @Watch('fluiddThemeFiles')
-  onFluiddThemeFiles (value: Files) {
-    if (!value || !value.items) return
-
-    const customStylesheetPath = this.checkFile(value, 'custom', ['.css'])
-    if (customStylesheetPath) this.setCustomStylesheet(customStylesheetPath)
-
-    const backgroundImagePath = this.checkFile(value, 'background', ['.png', '.jpg', '.gif'])
-    if (backgroundImagePath) this.setCustomBackgroundImage(backgroundImagePath)
-  }
-
-  checkFile (directory: Files, filename: string, extensions: string[]) {
-    for (const extension of extensions) {
-      const file = directory.items.find((f): f is AppFile => f.type === 'file' && f.name === filename + extension)
-
-      if (file) return file.path + '/' + file.filename
-    }
-    return undefined
-  }
-
-  async setCustomStylesheet (customStylesheetPath: string) {
-    const url = await this.createFileUrl(customStylesheetPath, 'config')
+    const url = await this.createFileUrl(value, 'config')
 
     const oldCustomStylesheet = document.getElementById('customStylesheet')
 
@@ -273,8 +245,17 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
     document.head.appendChild(linkElement)
   }
 
-  async setCustomBackgroundImage (backgroundImagePath: string) {
-    const url = await this.createFileUrl(backgroundImagePath, 'config')
+  get customBackgroundImage () {
+    return this.$store.getters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.gif'])
+  }
+
+  @Watch('customBackgroundImage')
+  async onCustomBackgroundImage (value: string) {
+    if (!value) {
+      return
+    }
+
+    const url = await this.createFileUrl(value, 'config')
 
     this.customBackgroundImageStyle = {
       backgroundImage: `url(${url})`,
@@ -282,7 +263,6 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
       backgroundAttachment: 'fixed',
       backgroundRepeat: 'no-repeat'
     }
-    console.log({ customBackgroundImageStyle: this.customBackgroundImageStyle })
   }
 
   mounted () {
