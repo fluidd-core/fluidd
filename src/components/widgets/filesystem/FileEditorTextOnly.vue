@@ -15,10 +15,10 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 @Component({})
 export default class FileEditorText extends Vue {
   @Prop({ type: String, required: true })
-  public value!: string
+  readonly value!: string
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   emitChange (value: string | undefined) {
     this.$emit('change', value)

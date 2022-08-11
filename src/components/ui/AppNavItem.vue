@@ -55,16 +55,16 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNavItem extends Mixins(StateMixin) {
   @Prop({ type: String })
-  public title!: string
+  readonly title!: string
 
   @Prop({ type: String })
-  public to!: string
+  readonly to!: string
 
   @Prop({ type: Boolean, default: false })
-  public exact!: boolean
+  readonly exact!: boolean
 
   @Prop({ type: String })
-  public icon!: string
+  readonly icon!: string
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile

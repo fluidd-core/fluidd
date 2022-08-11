@@ -17,10 +17,10 @@ import QrcodeVue from 'qrcode.vue'
 })
 export default class AppQrCode extends Vue {
   @Prop({ type: String, default: '' })
-  public value!: string
+  readonly value!: string
 
   @Prop({ type: Number, default: 260 })
-  public size!: number
+  readonly size!: number
 }
 </script>
 

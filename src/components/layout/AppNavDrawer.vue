@@ -123,7 +123,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public value!: boolean
+  readonly value!: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']

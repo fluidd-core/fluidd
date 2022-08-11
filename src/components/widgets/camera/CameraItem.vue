@@ -68,10 +68,10 @@ import { CameraFullscreenAction } from '@/store/config/types'
 @Component({})
 export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
-  public camera!: CameraConfig
+  readonly camera!: CameraConfig
 
   @Prop({ type: Boolean, required: false, default: false })
-  public fullscreen!: boolean
+  readonly fullscreen!: boolean
 
   @Ref('camera_image')
   readonly cameraImage!: HTMLElement

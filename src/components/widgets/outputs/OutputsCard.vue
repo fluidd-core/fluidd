@@ -22,7 +22,7 @@ import Outputs from '@/components/widgets/outputs/Outputs.vue'
 })
 export default class OutputsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)

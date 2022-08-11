@@ -178,30 +178,30 @@ import { AppTableHeader } from '@/types'
 export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesMixin) {
   // Can be a list of roots, or a single root.
   @Prop({ type: [String, Array], required: true })
-  public roots!: string | string[]
+  readonly roots!: string | string[]
 
   @Prop({ type: String, required: false })
-  public name!: string
+  readonly name!: string
 
   // If dense, hide the meta and reduce the overall size.
   @Prop({ type: Boolean, default: false })
-  public dense!: boolean
+  readonly dense!: boolean
 
   // Constrain height
   @Prop({ type: [Number, String] })
-  public height!: number | string
+  readonly height!: number | string
 
   // Constrain height
   @Prop({ type: [Number, String] })
-  public maxHeight!: number | string
+  readonly maxHeight!: number | string
 
   // Allow bulk-actions
   @Prop({ type: Boolean, default: false })
-  public bulkActions!: boolean
+  readonly bulkActions!: boolean
 
   // Override behavior (thumbnails, click/view actions) for timelapse browser
   @Prop({ type: Boolean, default: false })
-  public timelapseBrowser!: boolean
+  readonly timelapseBrowser!: boolean
 
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
@@ -862,6 +862,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
       if (file.first_layer_bed_temp > 0) {
         this.sendGcode(`M140 S${file.first_layer_bed_temp}`)
+      }
+      if (file.chamber_temp && file.chamber_temp > 0) {
+        this.sendGcode(`M141 S${file.chamber_temp}`)
       }
     }
   }

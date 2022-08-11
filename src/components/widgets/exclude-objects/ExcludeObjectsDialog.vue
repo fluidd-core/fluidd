@@ -64,7 +64,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   get parts () {
     return this.$store.getters['parts/getParts']

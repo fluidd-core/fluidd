@@ -22,7 +22,7 @@ import { ConsoleEntry } from '@/store/console/types'
 @Component({})
 export default class ConsoleItem extends Vue {
   @Prop({ type: Object, default: {} })
-  public value!: ConsoleEntry
+  readonly value!: ConsoleEntry
 
   get knownCommands () {
     const availableCommands = this.$store.getters['console/getAllGcodeCommands']
