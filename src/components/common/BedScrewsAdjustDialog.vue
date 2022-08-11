@@ -107,7 +107,7 @@ import { startCase } from 'lodash-es'
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   get bedScrews () {
     return this.$store.getters['printer/getBedScrews']

@@ -45,13 +45,13 @@ import { VInput } from '@/types'
 @Component({})
 export default class ConsoleCommand extends Vue {
   @Prop({ type: String })
-  public value!: string
+  readonly value!: string
 
   @Ref('input')
   readonly input!: VInput
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Watch('value')
   onValueChange (val: string) {

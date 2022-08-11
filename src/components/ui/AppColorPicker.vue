@@ -155,19 +155,19 @@ interface PointerPosition {
 export default class AppColorPicker extends Vue {
   // Expected color input. Can be a hex, rgbw etc.
   @Prop({ type: String, required: true })
-  public primary!: string
+  readonly primary!: string
 
   @Prop({ type: String, required: false })
-  public white!: string
+  readonly white!: string
 
   @Prop({ type: String, default: '' })
-  public title!: string
+  readonly title!: string
 
   @Prop({ type: Boolean, default: false })
-  public dot!: boolean
+  readonly dot!: boolean
 
   @Prop({ type: String, default: 'RGB' })
-  public supportedChannels!: string
+  readonly supportedChannels!: string
 
   menu = false
 

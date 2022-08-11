@@ -101,11 +101,11 @@ import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 @Component({})
 export default class FileSystemMenu extends Vue {
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Ref('uploadFile')
   readonly uploadFile!: HTMLInputElement

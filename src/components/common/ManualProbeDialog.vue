@@ -166,7 +166,7 @@ import ToolheadMixin from '@/mixins/toolhead'
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   get offsets () {
     return [

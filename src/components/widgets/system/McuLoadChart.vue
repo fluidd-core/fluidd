@@ -37,7 +37,7 @@ export default class McuLoadChart extends Vue {
   ready = false
 
   @Prop({ type: String, required: true })
-  public mcu!: string
+  readonly mcu!: string
 
   get chartData () {
     return this.$store.state.charts[this.mcu] || []

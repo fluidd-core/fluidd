@@ -23,16 +23,16 @@ let monaco: typeof Monaco // dynamically imported
 @Component({})
 export default class FileEditor extends Vue {
   @Prop({ type: String, required: true })
-  public value!: string
+  readonly value!: string
 
   @Prop({ type: String, required: true })
-  public filename!: string
+  readonly filename!: string
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Prop({ type: Boolean, default: true })
-  public codeLens!: boolean
+  readonly codeLens!: boolean
 
   @Ref('monaco-editor')
   readonly monacoEditor!: HTMLElement
