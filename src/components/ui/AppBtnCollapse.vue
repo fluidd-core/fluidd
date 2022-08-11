@@ -41,13 +41,13 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnCollapse extends Vue {
   @Prop({ type: Boolean, default: false })
-  public collapsed!: boolean
+  readonly collapsed!: boolean
 
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public inLayout!: boolean
+  readonly inLayout!: boolean
 
   // emitChange (value: boolean) {
   //   this.$emit('input', value)

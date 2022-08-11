@@ -44,19 +44,19 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppSetting extends Vue {
   @Prop({ type: String, default: '' })
-  public title!: string
+  readonly title!: string
 
   @Prop({ type: String })
-  public subTitle!: string
+  readonly subTitle!: string
 
   @Prop({ type: String })
-  public help!: string
+  readonly help!: string
 
   @Prop({ type: String })
-  public accentColor!: string
+  readonly accentColor!: string
 
   @Prop({ type: Number, default: 6 })
-  public rCols!: number
+  readonly rCols!: number
 
   get cols () {
     return [12 - this.rCols, this.rCols]

@@ -20,10 +20,10 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppSwitch extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: [String, Number], default: '70px' })
-  public labelWidth!: string | number
+  readonly labelWidth!: string | number
 }
 </script>
 

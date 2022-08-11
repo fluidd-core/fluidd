@@ -122,10 +122,10 @@ import { Fan, Heater } from '@/store/printer/types'
 @Component({})
 export default class TemperaturePresetDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Object, required: true })
-  public preset!: TemperaturePreset
+  readonly preset!: TemperaturePreset
 
   valid = false
 

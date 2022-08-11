@@ -49,7 +49,7 @@ import ToolheadMixin from '@/mixins/toolhead'
 })
 export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin) {
   @Prop({ type: Boolean, default: false })
-  public fullScreen!: boolean
+  readonly fullScreen!: boolean
 
   get options () {
     const map_scale = this.scale / 2
