@@ -44,7 +44,6 @@ module.exports = defineConfig({
         features: [
           '!codeAction',
           '!colorPicker',
-          '!contextmenu',
           '!hover',
           '!gotoError',
           '!gotoLine',
