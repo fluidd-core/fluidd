@@ -238,7 +238,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   }
 
   get customBackgroundImage () {
-    return this.$store.getters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.gif'])
+    return this.$store.getters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.jpeg', '.gif'])
   }
 
   @Watch('customBackgroundImage')
