@@ -94,10 +94,10 @@ import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
 })
 export default class MetricsCollectorConfig extends Vue {
   @Prop({ type: Object, required: true })
-  public metric!: Metric
+  readonly metric!: Metric
 
   @Prop({ type: String, required: true })
-  public unit!: string
+  readonly unit!: string
 
   @Ref('textarea')
   readonly textArea!: any

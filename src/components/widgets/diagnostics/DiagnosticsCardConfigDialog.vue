@@ -89,10 +89,10 @@ import MetricsConfigStep from './config/MetricsConfigStep.vue'
 @Component({})
 export default class DiagnosticsCardConfigDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Object, required: true })
-  public config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsCardConfig
 
   currentStep = 1
   steps = [

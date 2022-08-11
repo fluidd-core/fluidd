@@ -42,7 +42,7 @@ import AppChart from '@/components/ui/AppChart.vue'
 })
 export default class DiagnosticsCard extends Vue {
   @Prop({ type: Object, required: true })
-  public config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsCardConfig
 
   get chartData () {
     return this.$store.state.charts.diagnostics || []

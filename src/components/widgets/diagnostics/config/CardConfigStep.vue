@@ -69,7 +69,7 @@ import { Icons } from '@/globals'
 })
 export default class CardConfigStep extends Vue {
   @Prop({ type: Object, required: true })
-  public config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsCardConfig
 
   rules = {
     required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),

@@ -166,7 +166,7 @@ import { defaultState } from '@/store/layout'
 })
 export default class MetricsConfigStep extends Vue {
   @Prop({ type: Object, required: true })
-  public config!: DiagnosticsCardConfig
+  readonly config!: DiagnosticsCardConfig
 
   currentStep = 1
   steps = [this.$t('app.setting.label.left_y'), this.$t('app.setting.label.right_y')]
