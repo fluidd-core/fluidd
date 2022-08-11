@@ -55,28 +55,28 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNamedInput extends Mixins(StateMixin) {
   @Prop({ type: [String, Number], required: true })
-  public value!: string | number
+  readonly value!: string | number
 
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: [String, Number], required: false })
-  public resetValue!: string | number
+  readonly resetValue!: string | number
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: String })
-  public suffix!: string
+  readonly suffix!: string
 
   @Prop({ type: Array, default: () => { return [] } })
-  public rules!: []
+  readonly rules!: []
 
   handleChange (value: string | number) {
     if (this.value !== value) this.$emit('change', value)

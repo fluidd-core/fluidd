@@ -143,7 +143,7 @@ import { SocketActions } from '@/api/socketActions'
 })
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Boolean, default: false })
-  public menuCollapsed!: boolean
+  readonly menuCollapsed!: boolean
 
   get rollup () {
     return this.$store.getters['history/getRollUp']

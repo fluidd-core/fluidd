@@ -57,19 +57,19 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class MacroCategoryDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: String, required: true })
-  public title!: string
+  readonly title!: string
 
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: Array, required: false })
-  public rules!: []
+  readonly rules!: []
 
   @Prop({ type: String, required: true })
-  public name!: string
+  readonly name!: string
 
   newName = ''
   valid = true

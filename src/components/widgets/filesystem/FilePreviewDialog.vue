@@ -74,16 +74,16 @@ import { FilePreviewState } from '@/store/files/types'
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Object })
-  public file?: FilePreviewState
+  readonly file?: FilePreviewState
 
   @Prop({ type: Boolean, default: false })
-  public downloadable!: boolean
+  readonly downloadable!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public removable!: boolean
+  readonly removable!: boolean
 
   get icon () {
     if (this.isVideo) {

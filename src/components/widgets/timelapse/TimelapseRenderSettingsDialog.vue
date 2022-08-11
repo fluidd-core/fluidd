@@ -204,10 +204,10 @@ import { VInput } from '@/types'
 })
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Boolean, required: true })
-  public renderable!: boolean
+  readonly renderable!: boolean
 
   @Ref('outputFramerateElement')
   readonly outputFramerateElement!: VInput

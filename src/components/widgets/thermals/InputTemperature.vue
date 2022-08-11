@@ -29,16 +29,16 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class InputTemperature extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
-  public value!: number
+  readonly value!: number
 
   @Prop({ type: Number, default: null })
-  public max!: number
+  readonly max!: number
 
   @Prop({ type: Number, default: null })
-  public min!: number
+  readonly min!: number
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Watch('value')
   onValueChange (val: number) {

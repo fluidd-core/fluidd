@@ -46,7 +46,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 })
 export default class AppCodeView extends Vue {
   @Prop({ type: String, required: true })
-  public value!: string
+  readonly value!: string
 
   copied = false
 

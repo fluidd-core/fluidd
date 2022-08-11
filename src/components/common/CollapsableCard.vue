@@ -109,19 +109,19 @@ export default class CollapsableCard extends Vue {
    * Title
    */
   @Prop({ type: String, required: true })
-  public title!: string
+  readonly title!: string
 
   /**
    * Card color.
    */
   @Prop({ type: String })
-  public color!: string
+  readonly color!: string
 
   /**
    * Sub title.
    */
   @Prop({ type: String, required: false })
-  public subTitle!: string
+  readonly subTitle!: string
 
   /**
    * Required to bind to a layout.
@@ -132,7 +132,7 @@ export default class CollapsableCard extends Vue {
    * duplicate id's across containers for any given layout.
    */
   @Prop({ type: String })
-  public layoutPath!: string
+  readonly layoutPath!: string
 
   /**
    * If lazy, we use a v-show for card display.
@@ -143,69 +143,69 @@ export default class CollapsableCard extends Vue {
    * visible.
    */
   @Prop({ type: Boolean, default: true })
-  public lazy!: boolean
+  readonly lazy!: boolean
 
   /**
    * The icon to use in the title.
    */
   @Prop({ type: String, required: false })
-  public icon!: string
+  readonly icon!: string
 
   /**
    * The icon color to use in the title.
    */
   @Prop({ type: String, required: false })
-  public iconColor!: string
+  readonly iconColor!: string
 
   /**
    * Loading state.
    */
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   /**
    * Enables dragging of the card. Also causes the card
    * to react to layoutMode state.
    */
   @Prop({ type: Boolean, default: false })
-  public draggable!: boolean
+  readonly draggable!: boolean
 
   /**
    * Whether this card is collapsable or not.
    */
   @Prop({ type: Boolean, default: true })
-  public collapsable!: boolean
+  readonly collapsable!: boolean
 
   /**
    * Rounded
    */
   @Prop({ type: String, default: 'md' })
-  public rounded!: string
+  readonly rounded!: string
 
   /**
    * Optionally set a defined height.
    */
   @Prop({ type: [Number, String], required: false })
-  public height!: number | string
+  readonly height!: number | string
 
   /**
    * Breakpoint at which to condense the menu buttons to a hamburger.
    * xs, sm, md, lg, xl.
    */
   @Prop({ type: String, default: 'lg' })
-  public menuBreakpoint!: string
+  readonly menuBreakpoint!: string
 
   /**
    * Define any optional classes for the card itself.
    */
   @Prop({ type: String })
-  public cardClasses!: string
+  readonly cardClasses!: string
 
   /**
    * Define any optional classes for the card content itself.
    */
   @Prop({ type: String })
-  public contentClasses!: string
+  readonly contentClasses!: string
 
   /**
    * Base classes.
