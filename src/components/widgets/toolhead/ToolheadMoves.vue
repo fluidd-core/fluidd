@@ -195,7 +195,7 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
   fab = false
 
   @Prop({ type: Boolean, default: false })
-  public forceMove!: boolean
+  readonly forceMove!: boolean
 
   get kinematics () {
     return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''

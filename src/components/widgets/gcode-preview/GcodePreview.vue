@@ -217,19 +217,19 @@ import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.
 })
 export default class GcodePreview extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: String })
-  public width!: string
+  readonly width!: string
 
   @Prop({ type: String })
-  public height!: string
+  readonly height!: string
 
   @Prop({ type: Number, default: Infinity })
-  public progress!: number
+  readonly progress!: number
 
   @Prop({ type: Number, default: 0 })
-  public layer!: LayerNr
+  readonly layer!: LayerNr
 
   @Ref('svg')
   readonly svg!: SVGElement

@@ -133,22 +133,22 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
 })
 export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   @Prop({ type: String, required: true })
-  public filename!: string
+  readonly filename!: string
 
   @Prop({ type: String, required: true })
-  public contents!: string
+  readonly contents!: string
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Ref('editor')
   readonly editor?: FileEditor

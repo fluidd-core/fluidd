@@ -260,38 +260,38 @@ import FileRowItem from './FileRowItem.vue'
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   @Prop({ type: Array, required: true })
-  public files!: FileBrowserEntry[]
+  readonly files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean, default: false })
-  public dense!: boolean
+  readonly dense!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   // Currently defined list of headers.
   @Prop({ type: Array, required: true })
-  public headers!: AppTableHeader[]
+  readonly headers!: AppTableHeader[]
 
   @Prop({ type: String, required: false })
-  public search!: string
+  readonly search!: string
 
   @Prop({ type: Boolean, required: true })
-  public dragState!: boolean
+  readonly dragState!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public bulkActions!: boolean
+  readonly bulkActions!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public largeThumbnails!: boolean
+  readonly largeThumbnails!: boolean
 
   @Prop({ type: Array, required: true })
-  public selected!: (FileBrowserEntry | AppFileWithMeta)[]
+  readonly selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
   dragItem: FileBrowserEntry | AppFileWithMeta | null = null
   ghost: HTMLDivElement | undefined = undefined

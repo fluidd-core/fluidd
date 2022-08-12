@@ -54,7 +54,7 @@ import StateMixin from '@/mixins/state'
 })
 export default class CameraCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   dialogState: any = {
     open: false,

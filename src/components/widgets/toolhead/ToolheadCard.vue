@@ -142,7 +142,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   bedScrewsAdjustDialogOpen = false
 
   @Prop({ type: Boolean, default: false })
-  public menuCollapsed!: boolean
+  readonly menuCollapsed!: boolean
 
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()

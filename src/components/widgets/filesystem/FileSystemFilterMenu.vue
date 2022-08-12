@@ -76,10 +76,10 @@ interface FileFilter {
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
-  public root!: FileRoot
+  readonly root!: FileRoot
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   availableFilters: FileFilter[] = [
     {
