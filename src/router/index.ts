@@ -147,4 +147,9 @@ const router = new VueRouter({
   }
 })
 
+router.beforeEach((to, from, next) => {
+  store.commit('config/setContainerColumnCount', 2)
+  next()
+})
+
 export default router

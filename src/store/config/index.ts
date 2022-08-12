@@ -11,6 +11,7 @@ export const defaultState = (): ConfigState => {
     apiUrl: '',
     socketUrl: '',
     layoutMode: false,
+    containerColumnCount: 2,
     hostConfig: {
       endpoints: [],
       blacklist: [],
