@@ -7,7 +7,10 @@ export default function (code: string, feature?: string): any {
     else if (!frames[feature]) frames[feature] = frame = createFrame()
   } else frame = createFrame()
 
-  return (new (frame.contentWindow as any).Function(code))()
+  const result = (new (frame.contentWindow as any).Function(code))()
+
+  if (!feature) frame.remove()
+  return result
 }
 
 export function createFrame () {
