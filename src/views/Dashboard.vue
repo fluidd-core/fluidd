@@ -202,41 +202,5 @@ export default class Dashboard extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .flip-list-move {
-    transition: transform 0.5s;
-  }
-
-  .no-move {
-    transition: transform 0s;
-  }
-
-  .ghost {
-    opacity: 0.5;
-    background: #ccc;
-  }
-
-  .list-group {
-    flex: 1 1 auto;
-
-    span {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-height: 50vh;
-    }
-  }
-
-  @media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .list-group span {
-      min-height: auto;
-    }
-  }
-
-  .drag {
-    .list-group {
-      padding: 6px;
-      border: thin dashed rgba(map-get($shades, 'white'), 0.12);
-    }
-  }
-
+@import '@/scss/draggable.scss';
 </style>

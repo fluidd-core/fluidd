@@ -66,6 +66,7 @@ export interface GeneralConfig {
   showManualProbeDialogAutomatically: boolean;
   showBedScrewsAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  enableDiagnostics: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
