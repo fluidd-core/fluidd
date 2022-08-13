@@ -7,6 +7,7 @@ export interface ConfigState {
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
+  containerColumnCount: number;
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
