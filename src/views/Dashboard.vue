@@ -1,47 +1,39 @@
 <template>
-  <v-layout justify-center>
-    <v-row
-      :dense="$vuetify.breakpoint.smAndDown"
-      :class="{
-        [['single', 'double', 'triple', 'quad'][columnCount - 1]]: true
-      }"
-      class="constrained-width"
-    >
-      <template v-for="(container, containerIndex) in containers">
-        <v-col
-          v-if="inLayout || hasCards(container)"
-          :key="`container${containerIndex}`"
-          cols="12"
-          md="6"
-          :lg="columnSpan"
-          :class="{ 'drag': inLayout }"
+  <v-row :dense="$vuetify.breakpoint.smAndDown">
+    <template v-for="(container, containerIndex) in containers">
+      <v-col
+        v-if="inLayout || hasCards(container)"
+        :key="`container${containerIndex}`"
+        cols="12"
+        md="6"
+        :lg="columnSpan"
+        :class="{ 'drag': inLayout }"
+      >
+        <draggable
+          v-model="containers[containerIndex]"
+          class="list-group"
+          v-bind="dragOptions"
+          @start.stop="drag = true"
+          @end.stop="handleStopDrag"
         >
-          <draggable
-            v-model="containers[containerIndex]"
-            class="list-group"
-            v-bind="dragOptions"
-            @start.stop="drag = true"
-            @end.stop="handleStopDrag"
+          <transition-group
+            type="transition"
+            :name="!drag ? 'flip-list' : null"
           >
-            <transition-group
-              type="transition"
-              :name="!drag ? 'flip-list' : null"
-            >
-              <template v-for="c in container">
-                <component
-                  :is="c.id"
-                  v-if="(c.enabled && !filtered(c)) || inLayout"
-                  :key="c.id"
-                  :menu-collapsed="menuCollapsed"
-                  class="mb-2 mb-sm-4"
-                />
-              </template>
-            </transition-group>
-          </draggable>
-        </v-col>
-      </template>
-    </v-row>
-  </v-layout>
+            <template v-for="c in container">
+              <component
+                :is="c.id"
+                v-if="(c.enabled && !filtered(c)) || inLayout"
+                :key="c.id"
+                :menu-collapsed="menuCollapsed"
+                class="mb-2 mb-sm-4"
+              />
+            </template>
+          </transition-group>
+        </draggable>
+      </v-col>
+    </template>
+  </v-row>
 </template>
 
 <script lang="ts">
@@ -102,6 +94,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (this.inLayout) return 4
 
     return this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
+  }
+
+  @Watch('columnCount')
+  onColumnCount (value: number) {
+    this.$store.commit('config/setContainerColumnCount', value)
   }
 
   get columnSpan () {
@@ -205,41 +202,5 @@ export default class Dashboard extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .flip-list-move {
-    transition: transform 0.5s;
-  }
-
-  .no-move {
-    transition: transform 0s;
-  }
-
-  .ghost {
-    opacity: 0.5;
-    background: #ccc;
-  }
-
-  .list-group {
-    flex: 1 1 auto;
-
-    span {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-height: 50vh;
-    }
-  }
-
-  @media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .list-group span {
-      min-height: auto;
-    }
-  }
-
-  .drag {
-    .list-group {
-      padding: 6px;
-      border: thin dashed rgba(map-get($shades, 'white'), 0.12);
-    }
-  }
-
+@import '@/scss/draggable.scss';
 </style>

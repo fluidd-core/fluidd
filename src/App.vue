@@ -38,8 +38,11 @@
       <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
       <v-container
         fluid
-        :class="{ 'fill-height': $route.meta.fillHeight }"
-        class="pa-2 pa-sm-4"
+        :class="{
+          'fill-height': $route.meta && $route.meta.fillHeight,
+          [['single', 'double', 'triple', 'quad'][columnCount - 1]]: true
+        }"
+        class="constrained-width pa-2 pa-sm-4"
       >
         <v-row
           v-if="
@@ -115,6 +118,10 @@ export default class App extends Mixins(StateMixin) {
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
+  }
+
+  get columnCount () {
+    return this.$store.state.config.containerColumnCount
   }
 
   get loading () {

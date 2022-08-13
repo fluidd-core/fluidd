@@ -241,13 +241,16 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   handleResetLayout () {
-    const layout = defaultState()
+    const pathLayouts = {
+      '/diagnostics': 'diagnostics'
+    } as { [key: string]: string }
+
+    const toReset = pathLayouts[this.$route.path] ?? 'dashboard'
+    const layoutDefaultState = defaultState()
+
     this.$store.dispatch('layout/onLayoutChange', {
-      name: 'dashboard',
-      value: {
-        container1: layout.layouts.dashboard.container1,
-        container2: layout.layouts.dashboard.container2
-      }
+      name: toReset,
+      value: layoutDefaultState.layouts[toReset]
     })
   }
 
