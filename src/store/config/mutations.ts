@@ -161,6 +161,10 @@ export const mutations: MutationTree<ConfigState> = {
     state.layoutMode = payload
   },
 
+  setContainerColumnCount (state, payload: number) {
+    state.containerColumnCount = payload
+  },
+
   /**
    * Toggle a tables header state based on its name and key.
    */

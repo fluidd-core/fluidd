@@ -100,7 +100,6 @@
 
 <script lang="ts">
 import { LayoutConfig } from '@/store/layout/types'
-import { kebabCase } from 'lodash-es'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
@@ -256,7 +255,7 @@ export default class CollapsableCard extends Vue {
         const split = this.layoutPath.split('.')
         return {
           name: split[0],
-          id: kebabCase(split[1])
+          id: split[1]
         }
       } else {
         throw new Error('invalid layout path')
