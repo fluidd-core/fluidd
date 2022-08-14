@@ -7,6 +7,7 @@ export interface ConfigState {
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
+  containerColumnCount: number;
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
@@ -65,6 +66,7 @@ export interface GeneralConfig {
   showManualProbeDialogAutomatically: boolean;
   showBedScrewsAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  enableDiagnostics: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';

@@ -11,6 +11,7 @@ export const defaultState = (): ConfigState => {
     apiUrl: '',
     socketUrl: '',
     layoutMode: false,
+    containerColumnCount: 2,
     hostConfig: {
       endpoints: [],
       blacklist: [],
@@ -70,7 +71,8 @@ export const defaultState = (): ConfigState => {
         topNavPowerToggle: null,
         showManualProbeDialogAutomatically: true,
         showBedScrewsAdjustDialogAutomatically: true,
-        forceMoveToggleWarning: true
+        forceMoveToggleWarning: true,
+        enableDiagnostics: false
       },
       theme: {
         isDark: true,

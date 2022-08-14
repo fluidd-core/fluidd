@@ -77,6 +77,14 @@
           </app-nav-item>
 
           <app-nav-item
+            v-if="enableDiagnostics"
+            icon="$chart"
+            to="/diagnostics"
+          >
+            {{ $t('app.general.title.diagnostics') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$codeJson"
             to="/configure"
           >
@@ -131,6 +139,10 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsVersions () {
     return this.$store.getters['server/componentSupport']('update_manager')
+  }
+
+  get enableDiagnostics () {
+    return this.$store.state.config.uiSettings.general.enableDiagnostics
   }
 
   get hasSubNavigation () {

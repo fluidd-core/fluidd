@@ -347,6 +347,7 @@ app:
         status: Status
         total_duration: Total duration
     title:
+      add_chart: Add Chart
       add_printer: Add Printer
       bedmesh: Bed Mesh
       bedmesh_controls: Bed Mesh Controls
@@ -354,6 +355,8 @@ app:
       config_files: Configuration Files
       configure: Configuration
       console: Console
+      diagnostics: Diagnostics
+      edit_chart: Edit Chart
       endstops: Endstops
       fans_outputs: Fans & Outputs
       gcode_preview: Gcode Preview
@@ -362,6 +365,7 @@ app:
       jobs: Jobs
       limits: Printer Limits
       macros: Macros
+      metrics_explorer: Metrics Explorer
       other_files: Other Files
       pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction
@@ -375,11 +379,13 @@ app:
       tool: Tool
       tune: Tune
     tooltip:
+      browse_metrics: Browser available metrics
       estop: Emergency Stop
       notifications: Notifications
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
+      run_collector: Run collector
   history:
     msg:
       confirm_jobs: Are you sure? This will clear all jobs.
@@ -400,6 +406,7 @@ app:
       add_camera: Add Camera
       add_category: Add Category
       add_filter: Add Filter
+      add_metric: Add Metric
       add_thermal_preset: Add Preset
       add_user: Add user
       reset: Reset
@@ -420,6 +427,7 @@ app:
       auto_edit_extensions: Extensions to automatically open in edit mode
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
+      axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_fullscreen_action:
@@ -429,53 +437,75 @@ app:
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
       camera_url: Camera Url
+      card: Card
+      collector: Collector
       confirm_on_estop: Require confirm on Emergency Stop
       confirm_on_power_device_change: Require confirm on Device Power changes
       confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
       confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
       contains: Contains
       dark_mode: Dark mode
+      dashed: Dashed
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
       default_toolhead_move_length: Default toolhead move length
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
+      dotted: Dotted
       draw_background: Draw Background
       enable: Enable
+      enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
       expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
       flip_vertical: Vertical Flip
+      fill_color: Fill color
+      fill_opacity: Fill opacity
       filter: Filter | Filters
       fps_target: FPS Target
       fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
       group_lower_layers: Group lower layers
+      icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
       language: Display Language
+      last_result: Last result
+      left_y: Left Y-Axis
+      line_color: Line color
+      line_style: Line style
+      min: Minimum
+      max: Maximum
+      metrics: Metrics
       move_line_width: Move Line Width
+      name: Name
       none: None
+      optional: Optional
       power_toggle_in_top_nav: Power toggle in top navigation
       primary_color: Primary color
       printer_name: Printer Name
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
+      right_y: Right Y-Axis
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_code_lens: Show CodeLens
+      show_legend: Show legend
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       show_save_config_and_restart: Save Config and Restart button in top navigation
+      solid: Solid
       starts_with: Starts with
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
+      title: Title
       toolhead_move_distances: Toolhead distance values
       type: Type
+      unit: Unit
       z_adjust_values: Z Adjust values
       date_time_format: Date and Time format
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
@@ -498,6 +528,7 @@ app:
       thermal_presets: Thermal Presets
       tool: Tool
     tooltip:
+      diagnostics_performance: Logging diagnostics info may impact performance
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
