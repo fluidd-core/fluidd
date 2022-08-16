@@ -326,6 +326,7 @@ app:
     table:
       header:
         actions: Actions
+        chamber_temp: Chamber temp
         end_time: Ended
         estimated_time: Estimated time
         filament: Filament

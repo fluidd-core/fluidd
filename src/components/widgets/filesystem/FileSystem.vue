@@ -340,6 +340,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         { text: this.$t('app.general.table.header.total_duration'), value: 'history.total_duration', configurable: true },
         { text: this.$t('app.general.table.header.first_layer_bed_temp'), value: 'first_layer_bed_temp', configurable: true },
         { text: this.$t('app.general.table.header.first_layer_extr_temp'), value: 'first_layer_extr_temp', configurable: true },
+        { text: this.$t('app.general.table.header.chamber_temp'), value: 'chamber_temp', configurable: true },
         {
           text: this.$t('app.general.table.header.last_printed'),
           value: 'print_start_time',
