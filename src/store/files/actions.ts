@@ -141,10 +141,16 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyCreateFile ({ commit }, payload: FileChangeSocketResponse) {
+  async notifyCreateFile ({ commit, dispatch, rootState }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const file = formatAsFile(root, payload.item)
     if (file.extension === 'gcode') {
+      // If the file in the gcode preview is the same as the one being updated, then reset gcode preview
+      const gcodePreviewFile = rootState.gcodePreview.file
+      if (gcodePreviewFile && gcodePreviewFile.path === file.path && gcodePreviewFile.filename === file.filename) {
+        dispatch('gcodePreview/reset', undefined, { root: true })
+      }
+
       // For gcode files, get the metadata and the meta update will take care of the rest.
       SocketActions.serverFilesMetaData(payload.item.path)
     } else {
