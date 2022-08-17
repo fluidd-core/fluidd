@@ -212,6 +212,16 @@
           <file-row-item
             v-if="root === 'gcodes'"
             :headers="headers"
+            item-value="chamber_temp"
+          >
+            <span v-if="item.chamber_temp !== undefined">
+              {{ item.chamber_temp }}<small>°C</small>
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
             item-value="print_start_time"
           >
             <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
