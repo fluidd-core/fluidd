@@ -235,7 +235,7 @@ app:
       ldap: LDAP
       longest_job: Leghosszabb munka
       low: Alacsony
-      user_managed_source: %{source} hitelesítéssel kezelt felhasználó
+      user_managed_source: '%{source} hitelesítéssel kezelt felhasználó'
       m117: M117
       moonraker: Moonraker
       name: Név
