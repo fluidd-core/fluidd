@@ -6,7 +6,7 @@
     v-on="$listeners"
   >
     <img
-      v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
+      v-if="camera.service === 'mjpgstream' || camera.service === 'mjpgadaptive'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
@@ -14,7 +14,7 @@
     >
 
     <video
-      v-if="camera.type === 'ipstream'"
+      v-if="camera.service === 'ipstream'"
       ref="camera_image"
       :src="cameraUrl"
       autoplay
@@ -22,7 +22,7 @@
     />
 
     <iframe
-      v-if="camera.type === 'iframe'"
+      v-if="camera.service === 'iframe'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
@@ -37,7 +37,7 @@
       {{ camera.name }}
     </div>
     <div
-      v-if="camera.type === 'mjpgadaptive' && time"
+      v-if="camera.service === 'mjpgadaptive' && time"
       class="camera-frames"
     >
       fps: {{ currentFPS }}
@@ -105,12 +105,12 @@ export default class CameraItem extends Vue {
     const config = this.camera
     let transforms = ''
 
-    if (!config.rotate) {
+    if (config.rotation === 0) {
       transforms += config && config.flipX ? ' scaleX(-1)' : ''
       transforms += config && config.flipY ? ' scaleY(-1)' : ''
     } else {
       let scaling = 1
-      if (config.rotate !== '180') {
+      if (config.rotation !== 180) {
         scaling = element.clientHeight / element.clientWidth
         if (scaling > 1) {
           scaling = element.clientWidth / element.clientHeight
@@ -119,7 +119,7 @@ export default class CameraItem extends Vue {
 
       transforms += config && config.flipX ? ` scaleX(-${scaling})` : ` scaleX(${scaling})`
       transforms += config && config.flipY ? ` scaleY(-${scaling})` : ` scaleY(${scaling})`
-      transforms += ` rotate(${config.rotate}deg)`
+      transforms += ` rotate(${config.rotation}deg)`
     }
 
     return transforms.trimLeft().length
@@ -183,9 +183,9 @@ export default class CameraItem extends Vue {
   handleImgLoad () {
     if (
       this.camera &&
-      this.camera.type === 'mjpgadaptive'
+      this.camera.service === 'mjpgadaptive'
     ) {
-      const fpsTarget = (!document.hasFocus() && this.camera.fpsidletarget) || this.camera.fpstarget || 10
+      const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
       const end_time = performance.now()
       const current_time = end_time - this.start_time
       this.time = (this.time * this.time_smoothing) + (current_time * (1.0 - this.time_smoothing))
@@ -208,14 +208,14 @@ export default class CameraItem extends Vue {
    */
   setUrl () {
     if (!document.hidden) {
-      const type = this.camera.type
-      const baseUrl = this.camera.url
+      const type = this.camera.service
+      const baseUrl = this.camera.urlStream || ''
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
 
       this.cameraHeight = this.camera.height || 720
 
-      if (type === 'mjpgstream') {
+      if (type === 'mjpegstreamer') {
         url.searchParams.append('cacheBust', this.refresh.toString())
         if (!url.searchParams.get('action')?.startsWith('stream')) {
           url.searchParams.set('action', 'stream')

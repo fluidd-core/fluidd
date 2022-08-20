@@ -124,17 +124,17 @@ export default class CameraSettings extends Vue {
   }
 
   handleAddDialog () {
-    const camera: any = {
-      id: -1,
+    const camera = {
+      id: '',
       enabled: true,
       flipX: false,
       flipY: false,
       name: '',
-      type: 'mjpgadaptive',
-      fpstarget: 15,
-      fpsidletarget: 5,
-      url: Globals.DEFAULTS.CAMERA_URL
-    }
+      service: 'mjpgadaptive',
+      targetFps: 15,
+      targetFpsIdle: 5,
+      urlStream: Globals.DEFAULTS.CAMERA_URL
+    } as CameraConfig
 
     this.dialogState = {
       active: true,

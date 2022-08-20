@@ -105,7 +105,7 @@ export const actions: ActionTree<ChartState, RootState> = {
     // Only change the data if they require it
     if (!isEqual(state.selectedLegends, payload)) {
       commit('setSelectedLegends', payload)
-      SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.charts.name + '.selectedLegends', payload)
+      SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.charts.name + '.selectedLegends', payload)
     }
   }
 }

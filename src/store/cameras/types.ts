@@ -3,7 +3,36 @@ export interface CamerasState {
   cameras: CameraConfig[];
 }
 
-export interface CameraConfig {
+export interface MoonrakerWebcamConfig
+{
+  name: string,
+  location?: string,
+  service?: string;
+  targetFps?: number,
+  urlStream?: string,
+  urlSnapshot?: string,
+  flipX?: boolean,
+  flipY?: boolean,
+  rotation: number,
+  source?: 'config' | 'database'
+}
+
+export interface CameraConfigWithoutId extends MoonrakerWebcamConfig {
+  enabled: boolean;
+  height?: number;
+  targetFpsIdle?: number;
+}
+
+export interface CameraConfig extends CameraConfigWithoutId {
+  id: string;
+}
+
+export interface LegacyCamerasState {
+  activeCamera: string;
+  cameras: LegacyCameraConfig[];
+}
+
+export interface LegacyCameraConfig {
   id: string;
   enabled: boolean;
   name: string;

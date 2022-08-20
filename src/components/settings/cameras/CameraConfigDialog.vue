@@ -7,11 +7,11 @@
     <v-form
       ref="form"
       v-model="valid"
-      @submit.prevent="handleSave(camera)"
+      @submit.prevent="handleSave()"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ (camera.id != -1) ? $t('app.general.label.edit_camera') : $t('app.general.label.add_camera') }}</span>
+          <span class="focus--text">{{ (camera.id != '') ? $t('app.general.label.edit_camera') : $t('app.general.label.add_camera') }}</span>
         </v-card-title>
 
         <v-divider />
@@ -60,25 +60,16 @@
 
         <app-setting :title="$t('app.setting.label.camera_rotate_by')">
           <v-select
-            v-model="camera.rotate"
+            v-model.number="camera.rotation"
             filled
             dense
             hide-details="auto"
             initial-value="false"
             :items="[
-              {
-                text: $t('app.setting.camera_rotate_options.none'),
-                value: '',
-              },
-              { text: $t('app.setting.camera_rotate_options.90'), value: '90' },
-              {
-                text: $t('app.setting.camera_rotate_options.180'),
-                value: '180',
-              },
-              {
-                text: $t('app.setting.camera_rotate_options.270'),
-                value: '270',
-              },
+              { text: $t('app.setting.camera_rotate_options.none'), value: 0 },
+              { text: $t('app.setting.camera_rotate_options.90'), value: 90 },
+              { text: $t('app.setting.camera_rotate_options.180'), value: 180 },
+              { text: $t('app.setting.camera_rotate_options.270'), value: 270 }
             ]"
             item-value="value"
             item-text="text"
@@ -89,13 +80,13 @@
 
         <app-setting :title="$t('app.setting.label.camera_stream_type')">
           <v-select
-            v-model="camera.type"
+            v-model="camera.service"
             filled
             dense
             hide-details="auto"
             :items="[
               { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpgadaptive' },
-              { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpgstream' },
+              { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpegstreamer' },
               { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
               { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
             ]"
@@ -107,11 +98,11 @@
         <v-divider />
 
         <app-setting
-          v-if="camera.type === 'mjpgadaptive'"
+          v-if="camera.service === 'mjpgadaptive'"
           :title="$t('app.setting.label.fps_target')"
         >
           <v-text-field
-            v-model.number="camera.fpstarget"
+            v-model.number="camera.targetFps"
             class="mt-5"
             filled
             dense
@@ -121,14 +112,14 @@
           />
         </app-setting>
 
-        <v-divider v-if="camera.type === 'mjpgadaptive'" />
+        <v-divider v-if="camera.service === 'mjpgadaptive'" />
 
         <app-setting
-          v-if="camera.type === 'mjpgadaptive'"
+          v-if="camera.service === 'mjpgadaptive'"
           :title="$t('app.setting.label.fps_idle_target')"
         >
           <v-text-field
-            v-model.number="camera.fpsidletarget"
+            v-model.number="camera.targetFpsIdle"
             class="mt-5"
             filled
             dense
@@ -137,11 +128,11 @@
           />
         </app-setting>
 
-        <v-divider v-if="camera.type === 'mjpgadaptive'" />
+        <v-divider v-if="camera.service === 'mjpgadaptive'" />
 
         <app-setting :title="$t('app.setting.label.camera_url')">
           <v-text-field
-            v-model="camera.url"
+            v-model="camera.urlStream"
             class="mt-5"
             filled
             dense
@@ -154,7 +145,7 @@
         <v-divider />
 
         <app-setting
-          v-if="camera.type === 'iframe'"
+          v-if="camera.service === 'iframe'"
           :title="$t('app.setting.label.height')"
         >
           <v-text-field
@@ -184,7 +175,7 @@
             color="primary"
             type="submit"
           >
-            {{ (camera.id !== -1) ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+            {{ (camera.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
           </app-btn>
         </v-card-actions>
       </v-card>
