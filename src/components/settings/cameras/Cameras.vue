@@ -49,9 +49,19 @@
             text
             x-small
             color=""
+            :disabled="camera.source === 'config'"
             @click.stop="handleRemoveCamera(camera)"
           >
-            <v-icon color="">
+            <v-icon
+              v-if="camera.source === 'config'"
+              color=""
+            >
+              $lock
+            </v-icon>
+            <v-icon
+              v-else
+              color=""
+            >
               $close
             </v-icon>
           </app-btn>
@@ -112,11 +122,15 @@ export default class CameraSettings extends Vue {
     camera: null
   }
 
-  get cameras () {
+  get cameras (): CameraConfig[] {
     return this.$store.getters['cameras/getCameras']
   }
 
   handleEditDialog (camera: CameraConfig) {
+    if (camera.source === 'config') {
+      return
+    }
+
     this.dialogState = {
       active: true,
       camera: { ...camera }

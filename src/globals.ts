@@ -173,7 +173,8 @@ export const Globals = Object.freeze({
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' },
     timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
-    announcements: { name: 'announcements', dispatch: 'announcements/init' }
+    announcements: { name: 'announcements', dispatch: 'announcements/init' },
+    webcams: { name: 'webcam', dispatch: 'webcams/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [

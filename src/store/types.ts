@@ -19,6 +19,7 @@ import { AuthState } from './auth/types'
 import { TimelapseState } from '@/store/timelapse/types'
 import { CamerasState } from './cameras/types'
 import { WaitState } from './wait/types'
+import { WebcamsState } from './webcams/types'
 
 export interface RootState {
   socket: SocketState;
@@ -42,4 +43,5 @@ export interface RootState {
   gcodePreview: GcodePreviewState;
   timelapse: TimelapseState;
   parts: PartsState;
+  webcams: WebcamsState;
 }

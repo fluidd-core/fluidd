@@ -382,6 +382,17 @@ export const SocketActions = {
     )
   },
 
+  async serverRead (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.get_item', {
+        params: {
+          namespace,
+          key
+        }
+      }
+    )
+  },
+
   async serverRestart () {
     baseEmit(
       'server.restart', {
@@ -560,6 +571,14 @@ export const SocketActions = {
           entry_id,
           wake_time
         }
+      }
+    )
+  },
+
+  async serverWebcamsList () {
+    baseEmit(
+      'server.webcams.list', {
+        dispatch: 'webcams/onWebcamsList'
       }
     )
   }

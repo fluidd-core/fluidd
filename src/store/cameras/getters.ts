@@ -1,18 +1,46 @@
 import { GetterTree } from 'vuex'
-import { CamerasState } from './types'
+import { CameraConfig, CamerasState } from './types'
 import { RootState } from '../types'
+import { WebcamConfig } from '../webcams/types'
 
 export const getters: GetterTree<CamerasState, RootState> = {
   /**
    * Return all cameras.
    */
-  getCameras: (state) => {
-    return [...state.cameras]
-      .sort((a, b) => {
-        const name1 = a.name.toLowerCase()
-        const name2 = b.name.toLowerCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+  getCameras: (state, getters) => {
+    const camerasInConfig = getters.getCamerasInConfig as CameraConfig[]
+
+    const camerasFromDatabase = state.cameras
+      .filter(camera => camerasInConfig.every(cameraInConfig => cameraInConfig.name !== camera.name))
+
+    return [
+      ...camerasInConfig,
+      ...camerasFromDatabase
+    ].sort((a, b) => {
+      const name1 = a.name.toLowerCase()
+      const name2 = b.name.toLowerCase()
+      return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
+    })
+  },
+
+  getCamerasInConfig: (state, getters, rootState, rootGetters) => {
+    const webcamsInConfig = rootGetters['webcams/getWebcamsInConfig'] as WebcamConfig[]
+
+    return webcamsInConfig
+      .map(webcam => ({
+        name: webcam.name,
+        location: webcam.location,
+        service: webcam.service,
+        targetFps: webcam.target_fps,
+        urlStream: webcam.stream_url,
+        urlSnapshot: webcam.snapshot_url,
+        flipX: webcam.flip_horizontal,
+        flipY: webcam.flip_vertical,
+        rotation: webcam.rotation,
+        source: webcam.source,
+        enabled: true,
+        id: ''
+      } as CameraConfig))
   },
 
   /**
