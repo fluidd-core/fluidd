@@ -31,6 +31,12 @@ export const mutations: MutationTree<FilesState> = {
     }
   },
 
+  setServerFilesListRoot (state, payload) {
+    const root = payload.root as FileRoot
+
+    state.rootFiles[root] = payload.files
+  },
+
   setFileUpdate (state, payload: FileUpdate) {
     const root = payload.root as FileRoot
     const paths = payload.paths

@@ -16,6 +16,10 @@ export const getters: GetterTree<FilesState, RootState> = {
     }
   },
 
+  getRootFiles: (state) => (root: FileRoot) => {
+    return state.rootFiles[root]
+  },
+
   /**
    * Indicates if a root is available.
    */
@@ -42,7 +46,7 @@ export const getters: GetterTree<FilesState, RootState> = {
     if (root === 'config') {
       return {
         readonly: false,
-        accepts: ['.conf', '.cfg', '.md'],
+        accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
         canEdit: true,
         canView: false,
         canPrint: false,

@@ -34,7 +34,7 @@
       <v-icon>$estop</v-icon>
     </v-btn>
 
-    <v-main>
+    <v-main :style="customBackgroundImageStyle">
       <!-- <pre>authenticated {{ authenticated }}, socketConnected {{ socketConnected }}, apiConnected {{ apiConnected }}</pre> -->
       <v-container
         fluid
@@ -79,10 +79,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
-import StateMixin from './mixins/state'
-import { Waits } from './globals'
+import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
+import { Waits } from '@/globals'
 import { LinkPropertyHref } from 'vue-meta'
 
 @Component<App>({
@@ -99,10 +100,11 @@ import { LinkPropertyHref } from 'vue-meta'
     }
   }
 })
-export default class App extends Mixins(StateMixin) {
+export default class App extends Mixins(StateMixin, FilesMixin) {
   toolsdrawer: boolean | null = null
   navdrawer: boolean | null = null
   showUpdateUI = false
+  customBackgroundImageStyle: Record<string, string> = {}
 
   flashMessage: FlashMessage = {
     open: false,
@@ -211,6 +213,55 @@ export default class App extends Mixins(StateMixin) {
   get primaryColor () {
     const theme = this.$store.getters['config/getTheme']
     return theme.currentTheme.primary
+  }
+
+  get customStyleSheet () {
+    return this.$store.getters['config/getCustomThemeFile']('custom', ['.css'])
+  }
+
+  @Watch('customStyleSheet')
+  async onCustomStyleSheet (value: string) {
+    if (!value) {
+      return
+    }
+
+    const url = await this.createFileUrl(value, 'config')
+
+    const oldCustomStylesheet = document.getElementById('customStylesheet')
+
+    if (oldCustomStylesheet) {
+      oldCustomStylesheet.setAttribute('href', url)
+      return
+    }
+
+    const linkElement = document.createElement('link')
+
+    linkElement.rel = 'stylesheet'
+    linkElement.type = 'text/css'
+    linkElement.id = 'customStylesheet'
+    linkElement.href = url
+
+    document.head.appendChild(linkElement)
+  }
+
+  get customBackgroundImage () {
+    return this.$store.getters['config/getCustomThemeFile']('background', ['.png', '.jpg', '.jpeg', '.gif'])
+  }
+
+  @Watch('customBackgroundImage')
+  async onCustomBackgroundImage (value: string) {
+    if (!value) {
+      return
+    }
+
+    const url = await this.createFileUrl(value, 'config')
+
+    this.customBackgroundImageStyle = {
+      backgroundImage: `url(${url})`,
+      backgroundSize: 'cover',
+      backgroundAttachment: 'fixed',
+      backgroundRepeat: 'no-repeat'
+    }
   }
 
   mounted () {
