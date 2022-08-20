@@ -74,6 +74,12 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setServerFilesGetDirectory', { root, directory: { path, items } })
   },
 
+  async onServerFilesListRoot ({ commit }, payload) {
+    const root = payload.__request__.params.root
+
+    commit('setServerFilesListRoot', { root, files: payload })
+  },
+
   /**
    * If we request the metadata (a file..) then we load and update here.
    */

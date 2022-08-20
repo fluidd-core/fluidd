@@ -16,6 +16,10 @@ export const getters: GetterTree<FilesState, RootState> = {
     }
   },
 
+  getRootFiles: (state) => (root: FileRoot) => {
+    return state.rootFiles[root]
+  },
+
   /**
    * Indicates if a root is available.
    */
