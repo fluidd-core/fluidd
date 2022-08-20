@@ -78,6 +78,8 @@ app:
       label:
         print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
+        hidden_files: Versteckte Dateien ausblenden
+        klipper_backup_files: Klipper-Backupdateien ausblenden
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
@@ -286,9 +288,19 @@ app:
       moonraker: Moonraker
       username: Benutzername
       ldap: LDAP
+      accepted_screws: Akzeptierte Schrauben
+      auth_source: Authentifizierungsquelle
+      partial_of_total: '%{partial} von %{total}'
+      screw_index: Schraubenindex
+      screw_name: Schraubenname
+      screw_number: Schraube %{index}
+      user_managed_source: Benutzer durch %{source}-Authentifizierung verwaltet
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
+      bed_screws_adjust: >-
+        Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der aktuellen Schraube erforderlich ist.
+        Klicken Sie andernfalls auf <b>Akzeptieren</b>, um fortzufahren.
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -301,6 +313,7 @@ app:
         password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
         invalid_number: Ungültige Zahl
+        credentials: Ungültige Anmeldeinformationen
       msg:
         apply_z_offset_endstop: >-
           Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
@@ -342,6 +355,7 @@ app:
         start_time: Gestartet
         status: Status
         total_duration: Gesamtdauer
+        chamber_temp: Kammertemperatur
     title:
       add_printer: Drucker hinzufügen
       bedmesh: Bettnivellierung
@@ -371,12 +385,17 @@ app:
       tool: Druckkopf
       tune: Tune
       pending_configuration_changes: Ausstehende Konfigurationsänderungen
+      metrics_explorer: Metrik-Explorer
+      edit_chart: Diagramm bearbeiten
+      add_chart: Diagramm hinzufügen
     tooltip:
       estop: NOT-AUS
       reload_klipper: Lädt die Klipper-Konfiguration neu.
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
       notifications: Benachrichtigungen
+      browse_metrics: Verfügbare Metriken durchsuchen
+      run_collector: Kollektor ausführen
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
@@ -401,6 +420,7 @@ app:
       add_user: Benutzer hinzufügen
       reset: Zurücksetzen
       select_theme: Farbschema auswählen
+      add_metric: Metrik hinzufügen
     camera_type_options:
       iframe: HTTP-Seite
       mjpegadaptive: Adaptives MJPEG
@@ -429,6 +449,7 @@ app:
       dark_mode: Nachtmodus
       date_time_format: Datum- und Zeitformat
       force_move_toggle_warning: Bestätigung bei Aktivierung von FORCE_MOVE anfordern
+      show_manual_probe_dialog_automatically: Dialog für manuelles Probing automatisch anzeigen
       default_extrude_length: Standard Extrudierlänge
       default_extrude_speed: Standard Extrudiergeschwindigkeit
       default_toolhead_move_length: Standard Bewegungsdistanz des Druckkopfes
@@ -472,6 +493,36 @@ app:
       z_adjust_values: Z-Werte anpassen
       show_code_lens: CodeLens anzeigen
       show_save_config_and_restart: Speichern & Neu starten Schaltfläche in der Navigationsleite
+      icon: Symbol
+      solid: Durchgängig
+      title: Titel
+      unit: Einheit
+      camera_fullscreen_action:
+        title: Vollbildaktion
+        rawstream: Direkter Stream
+        embed: Eingebettet
+      last_result: Letztes Ergebnis
+      show_bed_screws_adjust_dialog_automatically: Dialogfeld zum Anpassen der Bettschrauben automatisch anzeigen
+      show_legend: Legende zeigen
+      max: Maximum
+      metrics: Metriken
+      min: Minimum
+      name: Name
+      optional: Optional
+      right_y: Rechte Y-Achse
+      confirm_on_save_config_and_restart: >-
+        Vor dem Speichern und Neustart die ausstehenden
+        Konfigurationsänderungen überprüfen
+      dashed: Gestrichelt
+      fill_color: Füllfarbe
+      fill_opacity: Fülldeckkraft
+      left_y: Linke Y-Achse
+      line_color: Linienfarbe
+      line_style: Linienstil
+      card: Karte
+      collector: Kollektor
+      dotted: Gepunktet
+      axes: Achsen
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -490,6 +541,15 @@ app:
       tool: Druckkopf
     tooltip:
       gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard anzeigen
+      show_manual_probe_dialog_automatically: >-
+        Zeigt automatisch den Hilfsdialog an, wenn ein manuelles Probe-Tool
+        ausgeführt wird
+      show_bed_screws_adjust_dialog_automatically: >-
+        Zeigt automatisch den Hilfsdialog an, wenn das BED_SCREWS_ADJUST-Tool
+        ausgeführt wird
+      diagnostics_performance: >-
+        Das Protokollieren von Diagnoseinformationen kann die Leistung
+        beeinträchtigen
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
@@ -543,6 +603,10 @@ app:
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
       bed_screws_adjust: BED_SCREWS_ADJUST
+      manual_probe: Manuelles Probing
+    title:
+      bed_screws_adjust: Bettschrauben einstellen
+      manual_probe: Manuelles Probing
   version:
     btn:
       check_for_updates: Nach Aktualisierungen suchen
