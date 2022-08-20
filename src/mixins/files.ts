@@ -119,35 +119,40 @@ export default class FilesMixin extends Vue {
 
   /**
    * Will download a file by filepath via a standard browser link.
-   * Implements a oneshot.
    * @param filename The filename to retrieve.
    * @param path The path to the file.
    */
-  downloadFile (filename: string, path: string) {
+  async downloadFile (filename: string, path: string) {
     // Grab a oneshot.
-    authApi.getOneShot()
-      .then(response => response.data.result)
-      .then((token) => {
-        // Sort out the filepath and url.
-        const filepath = (path) ? `${path}/${filename}` : `${filename}`
-        const url = encodeURI(
-          this.apiUrl +
-          '/server/files/' + filepath +
-          '?token=' + token +
-          '&date=' + new Date().getTime())
+    try {
+      const url = encodeURI(await this.createFileUrl(filename, path))
 
-        // Create a link, handle its click - and finally remove it again.
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', filename)
-        link.setAttribute('target', '_blank')
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-      })
-      .catch(() => {
-        // Likely a 401.
-      })
+      // Create a link, handle its click - and finally remove it again.
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', filename)
+      link.setAttribute('target', '_blank')
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch {
+      // Likely a 401.
+    }
+  }
+
+  /**
+   * Creates a url for a file by filepath.
+   * Implements a oneshot.
+   * @param filename The filename.
+   * @param path The path to the file.
+   * @returns The url for the requested file
+   */
+  async createFileUrl (filename: string, path: string) {
+    const token = (await authApi.getOneShot()).data.result
+
+    const filepath = (path) ? `${path}/${filename}` : `${filename}`
+
+    return `${this.apiUrl}/server/files/${filepath}?token=${token}&date=${Date.now()}`
   }
 
   /**
