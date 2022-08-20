@@ -144,7 +144,7 @@ export default class CameraSettings extends Vue {
       flipX: false,
       flipY: false,
       name: '',
-      service: 'mjpgadaptive',
+      service: 'mjpegstreamer-adaptive',
       targetFps: 15,
       targetFpsIdle: 5,
       urlStream: Globals.DEFAULTS.CAMERA_URL

@@ -85,7 +85,7 @@
             dense
             hide-details="auto"
             :items="[
-              { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpgadaptive' },
+              { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpegstreamer-adaptive' },
               { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpegstreamer' },
               { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
               { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
@@ -98,7 +98,7 @@
         <v-divider />
 
         <app-setting
-          v-if="camera.service === 'mjpgadaptive'"
+          v-if="camera.service === 'mjpegstreamer-adaptive'"
           :title="$t('app.setting.label.fps_target')"
         >
           <v-text-field
@@ -112,10 +112,10 @@
           />
         </app-setting>
 
-        <v-divider v-if="camera.service === 'mjpgadaptive'" />
+        <v-divider v-if="camera.service === 'mjpegstreamer-adaptive'" />
 
         <app-setting
-          v-if="camera.service === 'mjpgadaptive'"
+          v-if="camera.service === 'mjpegstreamer-adaptive'"
           :title="$t('app.setting.label.fps_idle_target')"
         >
           <v-text-field
@@ -128,7 +128,7 @@
           />
         </app-setting>
 
-        <v-divider v-if="camera.service === 'mjpgadaptive'" />
+        <v-divider v-if="camera.service === 'mjpegstreamer-adaptive'" />
 
         <app-setting :title="$t('app.setting.label.camera_url')">
           <v-text-field

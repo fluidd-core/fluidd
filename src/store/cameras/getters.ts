@@ -10,12 +10,9 @@ export const getters: GetterTree<CamerasState, RootState> = {
   getCameras: (state, getters) => {
     const camerasInConfig = getters.getCamerasInConfig as CameraConfig[]
 
-    const camerasFromDatabase = state.cameras
-      .filter(camera => camerasInConfig.every(cameraInConfig => cameraInConfig.name !== camera.name))
-
     return [
-      ...camerasInConfig,
-      ...camerasFromDatabase
+      ...state.cameras,
+      ...camerasInConfig
     ].sort((a, b) => {
       const name1 = a.name.toLowerCase()
       const name2 = b.name.toLowerCase()
@@ -39,7 +36,7 @@ export const getters: GetterTree<CamerasState, RootState> = {
         rotation: webcam.rotation,
         source: webcam.source,
         enabled: true,
-        id: ''
+        id: `config-${webcam.name}`
       } as CameraConfig))
   },
 

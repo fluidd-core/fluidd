@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import { CamerasState, CameraConfigWithoutId, LegacyCamerasState, CameraConfig } from './types'
+import { CamerasState, CameraConfigWithoutId, CameraConfig, CameraService, LegacyCamerasState, LegacyCameraType } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import httpClient from '@/api/httpClient'
@@ -16,7 +16,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
 
   async migrateLegacyCameras (_, payload: LegacyCamerasState) {
     if (payload.cameras) {
-      const changeQueryParam = (url: string, key: string, value: string) => {
+      const setQueryParam = (url: string, key: string, value: string) => {
         const fakeOrigin = 'http://fake.fake'
         const newUrl = new URL(url, fakeOrigin)
 
@@ -27,17 +27,29 @@ export const actions: ActionTree<CamerasState, RootState> = {
           : newUrl.href
       }
 
+      const getCameraServiceForLegacyCameraType = (type: LegacyCameraType): CameraService => {
+        switch (type) {
+          case 'mjpgstream':
+            return 'mjpegstreamer'
+          case 'mjpgadaptive':
+            return 'mjpegstreamer-adaptive'
+          default:
+            return type
+        }
+      }
+
       const webcams = {} as Record<string, CameraConfigWithoutId>
 
       for (const camera of payload.cameras) {
-        const isMjpegStreamer = camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'
+        const service = getCameraServiceForLegacyCameraType(camera.type)
+        const isMjpegStreamer = service === 'mjpegstreamer' || service === 'mjpegstreamer-adaptive'
 
         webcams[camera.id] = {
           name: camera.name,
-          service: camera.type === 'mjpgstream' ? 'mjpegstreamer' : camera.type,
+          service,
           targetFps: camera.fpstarget,
-          urlStream: isMjpegStreamer ? changeQueryParam(camera.url, 'action', 'stream') : camera.url,
-          urlSnapshot: isMjpegStreamer ? changeQueryParam(camera.url, 'action', 'snapshot') : camera.url,
+          urlStream: isMjpegStreamer ? setQueryParam(camera.url, 'action', 'stream') : camera.url,
+          urlSnapshot: isMjpegStreamer ? setQueryParam(camera.url, 'action', 'snapshot') : camera.url,
           flipX: camera.flipX,
           flipY: camera.flipY,
           rotation: camera.rotate ? +camera.rotate : 0,
@@ -66,8 +78,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
     const cameras = Object.entries(payload).map(([id, value]) => ({
       id,
       ...value
-    } as CameraConfig
-    ))
+    } as CameraConfig))
 
     commit('setInitCameras', { cameras })
   },
@@ -90,7 +101,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
   /**
    * Remove a camera
    */
-  async removeCamera ({ commit }, payload) {
+  async removeCamera ({ commit }, payload: CameraConfig) {
     commit('setRemoveCamera', payload)
 
     const { id, ...camera } = payload
@@ -103,7 +114,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
   /**
    * Sets active camera
    */
-  async updateActiveCamera ({ commit }, payload) {
+  async updateActiveCamera ({ commit }, payload: string) {
     commit('setActiveCamera', payload)
     // SocketActions.serverWrite('webcams.activeCamera', payload)
   }

@@ -14,10 +14,13 @@ export interface MoonrakerWebcamConfig
   flipX?: boolean,
   flipY?: boolean,
   rotation: number,
-  source?: 'config' | 'database'
+  source?: MoonrakerWebcamSource
 }
 
+type MoonrakerWebcamSource = 'config' | 'database'
+
 export interface CameraConfigWithoutId extends MoonrakerWebcamConfig {
+  service?: CameraService;
   enabled: boolean;
   height?: number;
   targetFpsIdle?: number;
@@ -26,6 +29,8 @@ export interface CameraConfigWithoutId extends MoonrakerWebcamConfig {
 export interface CameraConfig extends CameraConfigWithoutId {
   id: string;
 }
+
+export type CameraService = 'mjpegstreamer' | 'mjpegstreamer-adaptive' | 'ipstream' | 'iframe'
 
 export interface LegacyCamerasState {
   activeCamera: string;
@@ -36,7 +41,7 @@ export interface LegacyCameraConfig {
   id: string;
   enabled: boolean;
   name: string;
-  type: 'mjpgadaptive' | 'mjpgstream' | 'ipstream' | 'iframe';
+  type: LegacyCameraType;
   url: string;
   fpstarget?: number;
   fpsidletarget?: number;
@@ -45,3 +50,5 @@ export interface LegacyCameraConfig {
   rotate?: '90' | '180' | '270';
   height?: number;
 }
+
+export type LegacyCameraType = 'mjpgstream' | 'mjpgadaptive' | 'ipstream' | 'iframe'

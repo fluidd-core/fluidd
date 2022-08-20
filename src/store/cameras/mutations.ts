@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { CamerasState } from './types'
+import { CameraConfig, CamerasState } from './types'
 import { defaultState } from './index'
 
 export const mutations: MutationTree<CamerasState> = {
@@ -14,7 +14,7 @@ export const mutations: MutationTree<CamerasState> = {
   /**
    * Inits UI settings from the db
    */
-  setInitCameras (state, payload) {
+  setInitCameras (state, payload: CameraConfig[]) {
     if (payload) {
       Object.assign(state, payload)
     }
@@ -23,7 +23,7 @@ export const mutations: MutationTree<CamerasState> = {
   /**
    * Update / Add a temperature preset
    */
-  setCamera (state, payload) {
+  setCamera (state, payload: CameraConfig) {
     const index = state.cameras.findIndex(camera => camera.id === payload.id)
 
     if (index >= 0) {
@@ -36,7 +36,7 @@ export const mutations: MutationTree<CamerasState> = {
   /**
    * Remove a camera
    */
-  setRemoveCamera (state, payload) {
+  setRemoveCamera (state, payload: CameraConfig) {
     const index = state.cameras.findIndex(camera => camera.id === payload.id)
 
     if (index >= 0) {
@@ -49,7 +49,7 @@ export const mutations: MutationTree<CamerasState> = {
   /**
    * Sets active camera
    */
-  setActiveCamera (state, payload) {
+  setActiveCamera (state, payload: string) {
     state.activeCamera = payload
   }
 }

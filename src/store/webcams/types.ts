@@ -13,5 +13,7 @@ export interface WebcamConfig
   flip_horizontal?: boolean,
   flip_vertical?: boolean,
   rotation?: number,
-  source?: 'config' | 'database'
+  source?: WebcamSource
 }
+
+type WebcamSource = 'config' | 'database'

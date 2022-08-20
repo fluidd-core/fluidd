@@ -6,7 +6,7 @@
     v-on="$listeners"
   >
     <img
-      v-if="camera.service === 'mjpgstream' || camera.service === 'mjpgadaptive'"
+      v-if="camera.service === 'mjpegstreamer' || camera.service === 'mjpegstreamer-adaptive'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
@@ -37,7 +37,7 @@
       {{ camera.name }}
     </div>
     <div
-      v-if="camera.service === 'mjpgadaptive' && time"
+      v-if="camera.service === 'mjpegstreamer-adaptive' && time"
       class="camera-frames"
     >
       fps: {{ currentFPS }}
@@ -183,7 +183,7 @@ export default class CameraItem extends Vue {
   handleImgLoad () {
     if (
       this.camera &&
-      this.camera.service === 'mjpgadaptive'
+      this.camera.service === 'mjpegstreamer-adaptive'
     ) {
       const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
       const end_time = performance.now()
@@ -226,7 +226,7 @@ export default class CameraItem extends Vue {
         }
       }
 
-      if (type === 'mjpgadaptive') {
+      if (type === 'mjpegstreamer-adaptive') {
         this.request_start_time = performance.now()
         url.searchParams.append('cacheBust', this.refresh.toString())
         if (!url.searchParams.get('action')?.startsWith('snapshot')) {
