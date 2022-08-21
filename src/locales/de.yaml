@@ -502,7 +502,7 @@ app:
         rawstream: Direkter Stream
         embed: Eingebettet
       last_result: Letztes Ergebnis
-      show_bed_screws_adjust_dialog_automatically: Dialogfeld zum Anpassen der Bettschrauben automatisch anzeigen
+      show_bed_screws_adjust_dialog_automatically: Dialog zum Anpassen der Bettschrauben automatisch anzeigen
       show_legend: Legende zeigen
       max: Maximum
       metrics: Metriken
@@ -542,11 +542,11 @@ app:
     tooltip:
       gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard anzeigen
       show_manual_probe_dialog_automatically: >-
-        Zeigt automatisch den Hilfsdialog an, wenn ein manuelles Probe-Tool
-        ausgeführt wird
+        Öffnet automatisch einen Hilfsdialog,
+        wenn ein manuelles Probe-Tool ausgeführt wird
       show_bed_screws_adjust_dialog_automatically: >-
-        Zeigt automatisch den Hilfsdialog an, wenn das BED_SCREWS_ADJUST-Tool
-        ausgeführt wird
+        Öffnet automatisch einen Hilfsdialog,
+        wenn das BED_SCREWS_ADJUST-Tool ausgeführt wird
       diagnostics_performance: >-
         Das Protokollieren von Diagnoseinformationen kann die Leistung
         beeinträchtigen
