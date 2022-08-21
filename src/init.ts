@@ -172,7 +172,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
           })
         }
 
-        store.dispatch(root.dispatch, value || {})
+        await store.dispatch(root.dispatch, value || {})
       }
     })
 

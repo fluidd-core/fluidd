@@ -156,7 +156,7 @@ export const Globals = Object.freeze({
         macros: { name: 'macros', dispatch: 'macros/initMacros' },
         console: { name: 'console', dispatch: 'console/initConsole' },
         charts: { name: 'charts', dispatch: 'charts/initCharts' },
-        cameras: { name: 'cameras', dispatch: 'cameras/migrateLegacyCameras', migrate_only: true },
+        cameras: { name: 'cameras', dispatch: 'cameras/initLegacyCameras' },
         layout: { name: 'layout', dispatch: 'layout/initLayout' }
       }
     },

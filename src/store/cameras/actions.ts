@@ -14,8 +14,10 @@ export const actions: ActionTree<CamerasState, RootState> = {
     commit('setReset')
   },
 
-  async migrateLegacyCameras (_, payload: LegacyCamerasState) {
-    if (payload.cameras) {
+  async initLegacyCameras ({ commit }, payload: LegacyCamerasState) {
+    const { cameras: legacyCameras, activeCamera } = payload
+
+    if (legacyCameras) {
       const setQueryParam = (url: string, key: string, value: string) => {
         const fakeOrigin = 'http://fake.fake'
         const newUrl = new URL(url, fakeOrigin)
@@ -38,39 +40,43 @@ export const actions: ActionTree<CamerasState, RootState> = {
         }
       }
 
-      const webcams = {} as Record<string, CameraConfigWithoutId>
-
-      for (const camera of payload.cameras) {
-        const service = getCameraServiceForLegacyCameraType(camera.type)
+      for (const legacyCamera of legacyCameras) {
+        const service = getCameraServiceForLegacyCameraType(legacyCamera.type)
         const isMjpegStreamer = service === 'mjpegstreamer' || service === 'mjpegstreamer-adaptive'
 
-        webcams[camera.id] = {
-          name: camera.name,
+        const camera = {
+          name: legacyCamera.name,
           service,
-          targetFps: camera.fpstarget,
-          urlStream: isMjpegStreamer ? setQueryParam(camera.url, 'action', 'stream') : camera.url,
-          urlSnapshot: isMjpegStreamer ? setQueryParam(camera.url, 'action', 'snapshot') : camera.url,
-          flipX: camera.flipX,
-          flipY: camera.flipY,
-          rotation: camera.rotate ? +camera.rotate : 0,
-          enabled: camera.enabled,
-          height: camera.height,
-          targetFpsIdle: camera.fpsidletarget
-        }
+          targetFps: legacyCamera.fpstarget,
+          urlStream: isMjpegStreamer ? setQueryParam(legacyCamera.url, 'action', 'stream') : legacyCamera.url,
+          urlSnapshot: isMjpegStreamer ? setQueryParam(legacyCamera.url, 'action', 'snapshot') : legacyCamera.url,
+          flipX: legacyCamera.flipX,
+          flipY: legacyCamera.flipY,
+          rotation: legacyCamera.rotate ? +legacyCamera.rotate : 0,
+          enabled: legacyCamera.enabled,
+          height: legacyCamera.height,
+          targetFpsIdle: legacyCamera.fpsidletarget
+        } as CameraConfigWithoutId
+
+        await httpClient.post('/server/database/item', {
+          namespace: Globals.MOONRAKER_DB.webcams.NAMESPACE,
+          key: legacyCamera.id,
+          value: camera
+        })
       }
 
-      await httpClient.post(`/server/database/item?namespace=${Globals.MOONRAKER_DB.webcams.NAMESPACE}`, {
-        value: webcams
+      await httpClient.post('/server/database/item', {
+        namespace: Globals.MOONRAKER_DB.fluidd.NAMESPACE,
+        key: Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name,
+        value: {
+          activeCamera
+        }
       })
-
-      // await httpClient.post(`/server/database/item?namespace=${Globals.MOONRAKER_DB.webcams.NAMESPACE}`, {
-      //   key: 'activeCamera',
-      //   value: payload.activeCamera
-      // })
     }
 
-    await httpClient.delete(`/server/database/item?namespace=${Globals.MOONRAKER_DB.fluidd.NAMESPACE}&key=${Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name}`)
+    commit('setActiveCamera', activeCamera)
   },
+
   /**
    * Init any file configs we may have.
    */
@@ -101,14 +107,13 @@ export const actions: ActionTree<CamerasState, RootState> = {
   /**
    * Remove a camera
    */
-  async removeCamera ({ commit }, payload: CameraConfig) {
+  async removeCamera ({ commit, state }, payload: CameraConfig) {
     commit('setRemoveCamera', payload)
 
     const { id, ...camera } = payload
 
     SocketActions.serverWrite(id, camera, Globals.MOONRAKER_DB.webcams.NAMESPACE)
-
-    // SocketActions.serverWrite('webcams.activeCamera', state.activeCamera)
+    SocketActions.serverWrite('webcams.activeCamera', state.activeCamera)
   },
 
   /**
@@ -116,6 +121,6 @@ export const actions: ActionTree<CamerasState, RootState> = {
    */
   async updateActiveCamera ({ commit }, payload: string) {
     commit('setActiveCamera', payload)
-    // SocketActions.serverWrite('webcams.activeCamera', payload)
+    SocketActions.serverWrite('webcams.activeCamera', payload)
   }
 }
