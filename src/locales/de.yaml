@@ -548,8 +548,7 @@ app:
         Öffnet automatisch einen Hilfsdialog,
         wenn das BED_SCREWS_ADJUST-Tool ausgeführt wird
       diagnostics_performance: >-
-        Das Protokollieren von Diagnoseinformationen kann die Leistung
-        beeinträchtigen
+        [BETA] Das Protokollieren von Diagnoseinformationen kann die Leistung beeinträchtigen
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
