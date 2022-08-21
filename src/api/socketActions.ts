@@ -370,7 +370,7 @@ export const SocketActions = {
   /**
    * Writes data to moonraker's DB.
    */
-  async serverWrite (key: string | undefined, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverWrite (key: string, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.post_item', {
         params: {

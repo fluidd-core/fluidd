@@ -113,7 +113,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
     const { id, ...camera } = payload
 
     SocketActions.serverWrite(id, camera, Globals.MOONRAKER_DB.webcams.NAMESPACE)
-    SocketActions.serverWrite('webcams.activeCamera', state.activeCamera)
+    SocketActions.serverWrite('cameras.activeCamera', state.activeCamera)
   },
 
   /**
@@ -121,6 +121,6 @@ export const actions: ActionTree<CamerasState, RootState> = {
    */
   async updateActiveCamera ({ commit }, payload: string) {
     commit('setActiveCamera', payload)
-    SocketActions.serverWrite('webcams.activeCamera', payload)
+    SocketActions.serverWrite('cameras.activeCamera', payload)
   }
 }
