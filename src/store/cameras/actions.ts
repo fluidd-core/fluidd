@@ -122,5 +122,9 @@ export const actions: ActionTree<CamerasState, RootState> = {
   async updateActiveCamera ({ commit }, payload: string) {
     commit('setActiveCamera', payload)
     SocketActions.serverWrite('cameras.activeCamera', payload)
+  },
+
+  async reloadCameras ({ dispatch }, payload: { value: Record<string, CameraConfigWithoutId> }) {
+    dispatch('initCameras', payload.value)
   }
 }

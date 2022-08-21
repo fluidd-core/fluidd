@@ -209,7 +209,7 @@ export default class CameraItem extends Vue {
   setUrl () {
     if (!document.hidden) {
       const type = this.camera.service
-      const baseUrl = this.camera.urlStream || ''
+      const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
 

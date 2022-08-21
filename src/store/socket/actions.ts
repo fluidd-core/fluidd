@@ -214,5 +214,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyAnnouncementWake ({ dispatch }, payload) {
     dispatch('announcements/onAnnouncementWake', payload, { root: true })
+  },
+
+  async notifyWebcamsChanged ({ dispatch }, payload) {
+    dispatch('webcams/onWebcamsChanged', payload, { root: true })
   }
 }
