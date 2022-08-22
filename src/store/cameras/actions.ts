@@ -105,7 +105,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
     SocketActions.serverWrite('cameras.activeCamera', state.activeCamera)
   },
 
-  async onCamerasLoaded ({ dispatch }, payload: { value: Record<string, CameraConfigWithoutId> }) {
-    dispatch('initCameras', payload.value)
+  async reloadMoonrakerWebcamsNamespace () {
+    SocketActions.serverRead(undefined, Globals.MOONRAKER_DB.webcams.NAMESPACE)
   }
 }

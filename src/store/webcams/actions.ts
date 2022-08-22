@@ -2,7 +2,6 @@ import { ActionTree } from 'vuex'
 import { WebcamConfig, WebcamsState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import { Globals } from '@/globals'
 
 export const actions: ActionTree<WebcamsState, RootState> = {
   async reset ({ commit }) {
@@ -19,7 +18,7 @@ export const actions: ActionTree<WebcamsState, RootState> = {
     }
   },
 
-  async onWebcamsChanged () {
-    SocketActions.serverRead(undefined, 'cameras/onCamerasLoaded', Globals.MOONRAKER_DB.webcams.NAMESPACE)
+  async onWebcamsChanged ({ dispatch }) {
+    dispatch('cameras/reloadMoonrakerWebcamsNamespace', undefined, { root: true })
   }
 }

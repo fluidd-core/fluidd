@@ -393,10 +393,10 @@ export const SocketActions = {
     )
   },
 
-  async serverRead (key?: string, dispatch?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.get_item', {
-        dispatch,
+        dispatch: 'socket/onServerRead',
         params: {
           namespace,
           key
