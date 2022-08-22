@@ -104,7 +104,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
     const { id } = payload
 
     SocketActions.serverDelete(id, Globals.MOONRAKER_DB.webcams.NAMESPACE)
-    SocketActions.serverWrite('cameras.activeCamera', state.activeCamera)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name + '.activeCamera', state.activeCamera)
   },
 
   /**
@@ -113,7 +113,7 @@ export const actions: ActionTree<CamerasState, RootState> = {
   async updateActiveCamera ({ commit, state }, payload: string) {
     commit('setActiveCamera', payload || 'all')
 
-    SocketActions.serverWrite('cameras.activeCamera', state.activeCamera)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name + '.activeCamera', state.activeCamera)
   },
 
   async reloadMoonrakerWebcamsNamespace () {
