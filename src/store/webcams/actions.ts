@@ -20,6 +20,6 @@ export const actions: ActionTree<WebcamsState, RootState> = {
   },
 
   async onWebcamsChanged () {
-    SocketActions.serverRead(undefined, 'cameras/reloadCameras', Globals.MOONRAKER_DB.webcams.NAMESPACE)
+    SocketActions.serverRead(undefined, 'cameras/onCamerasLoaded', Globals.MOONRAKER_DB.webcams.NAMESPACE)
   }
 }

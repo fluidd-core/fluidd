@@ -382,6 +382,17 @@ export const SocketActions = {
     )
   },
 
+  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.delete_item', {
+        params: {
+          namespace,
+          key
+        }
+      }
+    )
+  },
+
   async serverRead (key?: string, dispatch?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.get_item', {

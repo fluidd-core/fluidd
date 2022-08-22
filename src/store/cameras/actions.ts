@@ -1,10 +1,12 @@
 import { ActionTree } from 'vuex'
-import { CamerasState, CameraConfigWithoutId, CameraConfig, CameraService, LegacyCamerasState, LegacyCameraType } from './types'
+import { CamerasState, CameraConfigWithoutId, CameraConfig, LegacyCamerasState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import httpClient from '@/api/httpClient'
 import { Globals } from '@/globals'
 import { v4 as uuidv4 } from 'uuid'
+import getCameraServiceForLegacyCameraType from '@/util/get-camera-service-for-legacy-camera-type'
+import setUrlQueryParam from '@/util/set-url-query-param'
 
 export const actions: ActionTree<CamerasState, RootState> = {
   /**
@@ -18,28 +20,6 @@ export const actions: ActionTree<CamerasState, RootState> = {
     const { cameras: legacyCameras, activeCamera } = payload
 
     if (legacyCameras) {
-      const setQueryParam = (url: string, key: string, value: string) => {
-        const fakeOrigin = 'http://fake.fake'
-        const newUrl = new URL(url, fakeOrigin)
-
-        newUrl.searchParams.set(key, value)
-
-        return newUrl.origin === fakeOrigin
-          ? newUrl.pathname + newUrl.search
-          : newUrl.href
-      }
-
-      const getCameraServiceForLegacyCameraType = (type: LegacyCameraType): CameraService => {
-        switch (type) {
-          case 'mjpgstream':
-            return 'mjpegstreamer'
-          case 'mjpgadaptive':
-            return 'mjpegstreamer-adaptive'
-          default:
-            return type
-        }
-      }
-
       for (const legacyCamera of legacyCameras) {
         const service = getCameraServiceForLegacyCameraType(legacyCamera.type)
         const isMjpegStreamer = service === 'mjpegstreamer' || service === 'mjpegstreamer-adaptive'
@@ -48,8 +28,8 @@ export const actions: ActionTree<CamerasState, RootState> = {
           name: legacyCamera.name,
           service,
           targetFps: legacyCamera.fpstarget,
-          urlStream: isMjpegStreamer ? setQueryParam(legacyCamera.url, 'action', 'stream') : legacyCamera.url,
-          urlSnapshot: isMjpegStreamer ? setQueryParam(legacyCamera.url, 'action', 'snapshot') : legacyCamera.url,
+          urlStream: isMjpegStreamer ? setUrlQueryParam(legacyCamera.url, 'action', 'stream') : legacyCamera.url,
+          urlSnapshot: isMjpegStreamer ? setUrlQueryParam(legacyCamera.url, 'action', 'snapshot') : legacyCamera.url,
           flipX: legacyCamera.flipX,
           flipY: legacyCamera.flipY,
           rotation: legacyCamera.rotate ? +legacyCamera.rotate : 0,
@@ -69,12 +49,12 @@ export const actions: ActionTree<CamerasState, RootState> = {
         namespace: Globals.MOONRAKER_DB.fluidd.NAMESPACE,
         key: Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name,
         value: {
-          activeCamera
+          activeCamera: activeCamera || 'all'
         }
       })
     }
 
-    commit('setActiveCamera', activeCamera)
+    commit('setActiveCamera', activeCamera || 'all')
   },
 
   /**
@@ -110,21 +90,22 @@ export const actions: ActionTree<CamerasState, RootState> = {
   async removeCamera ({ commit, state }, payload: CameraConfig) {
     commit('setRemoveCamera', payload)
 
-    const { id, ...camera } = payload
+    const { id } = payload
 
-    SocketActions.serverWrite(id, camera, Globals.MOONRAKER_DB.webcams.NAMESPACE)
+    SocketActions.serverDelete(id, Globals.MOONRAKER_DB.webcams.NAMESPACE)
     SocketActions.serverWrite('cameras.activeCamera', state.activeCamera)
   },
 
   /**
    * Sets active camera
    */
-  async updateActiveCamera ({ commit }, payload: string) {
-    commit('setActiveCamera', payload)
-    SocketActions.serverWrite('cameras.activeCamera', payload)
+  async updateActiveCamera ({ commit, state }, payload: string) {
+    commit('setActiveCamera', payload || 'all')
+
+    SocketActions.serverWrite('cameras.activeCamera', state.activeCamera)
   },
 
-  async reloadCameras ({ dispatch }, payload: { value: Record<string, CameraConfigWithoutId> }) {
+  async onCamerasLoaded ({ dispatch }, payload: { value: Record<string, CameraConfigWithoutId> }) {
     dispatch('initCameras', payload.value)
   }
 }
