@@ -27,23 +27,13 @@ export const mutations: MutationTree<LayoutState> = {
         const existingComponents = Object.values(defaultComponents).flat().map(card => card.id)
         const componentsInDB = Object.values(payload.layouts[layout]).flat().map(card => card.id)
 
-        // add missing components
-        for (const [container, components] of Object.entries(defaultComponents)) {
-          for (const component of components) {
-            if (!componentsInDB.includes(component.id)) {
-              payload.layouts[layout][container].push(component)
-            }
-          }
-        }
+        for (const [container, defaultContainerComponents] of Object.entries(defaultComponents)) {
+          const currentContainerComponents = payload.layouts[layout][container] || []
 
-        // remove outdated components
-        for (const [container, components] of Object.entries(payload.layouts[layout])) {
-          for (const component of components) {
-            if (!existingComponents.includes(component.id)) {
-              const payloadContainer = payload.layouts[layout][container]
-              payloadContainer.splice(payloadContainer.indexOf(component), 1)
-            }
-          }
+          payload.layouts[layout][container] = [
+            ...currentContainerComponents.filter(component => existingComponents.includes(component.id)),
+            ...defaultContainerComponents.filter(component => !componentsInDB.includes(component.id))
+          ]
         }
       }
 
