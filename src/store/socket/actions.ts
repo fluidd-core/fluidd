@@ -7,6 +7,7 @@ import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus, FlashMessageTypes } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
+import IsKeyOf from '@/util/is-key-of'
 
 let retryTimeout: number
 
@@ -118,6 +119,18 @@ export const actions: ActionTree<SocketState, RootState> = {
     commit('setConnectionId', connection_id)
   },
 
+  async onServerRead ({ dispatch }, payload: {namespace: string, key?: string, value: any}) {
+    const { namespace, key, value } = payload
+
+    if (IsKeyOf(namespace, Globals.MOONRAKER_DB)) {
+      const roots = Globals.MOONRAKER_DB[namespace].ROOTS
+
+      const root = key && IsKeyOf(key, roots) ? roots[key] : Object.values(roots)[0]
+
+      dispatch(root.dispatch, value, { root: true })
+    }
+  },
+
   /**
    * ==========================================================================
    * Automated notifications via socket
@@ -214,5 +227,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyAnnouncementWake ({ dispatch }, payload) {
     dispatch('announcements/onAnnouncementWake', payload, { root: true })
+  },
+
+  async notifyWebcamsChanged ({ dispatch }, payload) {
+    dispatch('webcams/onWebcamsChanged', payload, { root: true })
   }
 }
