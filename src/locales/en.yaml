@@ -380,7 +380,7 @@ app:
       tool: Tool
       tune: Tune
     tooltip:
-      browse_metrics: Browser available metrics
+      browse_metrics: Browse available metrics
       estop: Emergency Stop
       notifications: Notifications
       reload_klipper: Reloads klipper configuration.
@@ -529,7 +529,7 @@ app:
       thermal_presets: Thermal Presets
       tool: Tool
     tooltip:
-      diagnostics_performance: Logging diagnostics info may impact performance
+      diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
