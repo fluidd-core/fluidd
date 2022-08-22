@@ -10,7 +10,6 @@
     >
       <app-setting>
         <app-btn
-          :disabled="cameras.length >= 3"
           outlined
           small
           color="primary"
