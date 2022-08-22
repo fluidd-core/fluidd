@@ -24,15 +24,15 @@ export const mutations: MutationTree<LayoutState> = {
 
       for (const layout of migratableLayouts) {
         const defaultComponents = defaultState.layouts[layout]
-        const existingComponents = Object.values(defaultComponents).flat().map(card => card.id)
-        const componentsInDB = Object.values(payload.layouts[layout]).flat().map(card => card.id)
+        const defaultComponentIds = Object.values(defaultComponents).flat().map(card => card.id)
+        const currentComponentIds = Object.values(payload.layouts[layout]).flat().map(card => card.id)
 
         for (const [container, defaultContainerComponents] of Object.entries(defaultComponents)) {
           const currentContainerComponents = payload.layouts[layout][container] || []
 
           payload.layouts[layout][container] = [
-            ...currentContainerComponents.filter(component => existingComponents.includes(component.id)),
-            ...defaultContainerComponents.filter(component => !componentsInDB.includes(component.id))
+            ...currentContainerComponents.filter(component => defaultComponentIds.includes(component.id)),
+            ...defaultContainerComponents.filter(component => !currentComponentIds.includes(component.id))
           ]
         }
       }
