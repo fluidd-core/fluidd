@@ -149,14 +149,22 @@ export const Globals = Object.freeze({
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
   MOONRAKER_DB: {
-    NAMESPACE: 'fluidd',
-    ROOTS: {
-      uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
-      macros: { name: 'macros', dispatch: 'macros/initMacros' },
-      console: { name: 'console', dispatch: 'console/initConsole' },
-      charts: { name: 'charts', dispatch: 'charts/initCharts' },
-      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' },
-      layout: { name: 'layout', dispatch: 'layout/initLayout' }
+    fluidd: {
+      NAMESPACE: 'fluidd',
+      ROOTS: {
+        uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
+        macros: { name: 'macros', dispatch: 'macros/initMacros' },
+        console: { name: 'console', dispatch: 'console/initConsole' },
+        charts: { name: 'charts', dispatch: 'charts/initCharts' },
+        cameras: { name: 'cameras', dispatch: 'cameras/initLegacyCameras' },
+        layout: { name: 'layout', dispatch: 'layout/initLayout' }
+      }
+    },
+    webcams: {
+      NAMESPACE: 'webcams',
+      ROOTS: {
+        webcams: { dispatch: 'cameras/initCameras' }
+      }
     }
   },
   MOONRAKER_COMPONENTS: {
@@ -165,7 +173,8 @@ export const Globals = Object.freeze({
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' },
     timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
-    announcements: { name: 'announcements', dispatch: 'announcements/init' }
+    announcements: { name: 'announcements', dispatch: 'announcements/init' },
+    webcams: { name: 'webcam', dispatch: 'webcams/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [

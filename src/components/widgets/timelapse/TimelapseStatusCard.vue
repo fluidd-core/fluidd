@@ -141,7 +141,7 @@ export default class StatusCard extends Mixins(StateMixin) {
 
   get camera () {
     return this.$store.getters['cameras/getCameraById'](this.settings.camera) ??
-      { url: '/webcam/?action=snapshot', type: 'mjpgadaptive' }
+      { url: '/webcam/?action=snapshot', type: 'mjpegstreamer-adaptive' }
   }
 
   get settings (): TimelapseSettings {

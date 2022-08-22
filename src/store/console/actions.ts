@@ -24,7 +24,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    */
   async onUpdateCommandHistory ({ state, commit }, payload) {
     commit('setUpdateCommandHistory', payload)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.commandHistory', state.commandHistory)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.commandHistory', state.commandHistory)
   },
 
   /**
@@ -79,7 +79,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    */
   async onUpdateAutoScroll ({ commit }, payload) {
     commit('setAutoScroll', payload)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.autoScroll', payload)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.autoScroll', payload)
   },
 
   /**
@@ -87,7 +87,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    */
   async onRemoveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setRemoveFilter', filter)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   },
 
   /**
@@ -95,11 +95,11 @@ export const actions: ActionTree<ConsoleState, RootState> = {
     */
   async onSaveFilter ({ commit, state }, filter: ConsoleFilter) {
     commit('setFilter', filter)
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.consoleFilters', state.consoleFilters)
   },
 
   async onClear ({ commit, state }) {
     commit('setLastCleared')
-    SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.console.name + '.lastCleared', state.lastCleared)
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.console.name + '.lastCleared', state.lastCleared)
   }
 }

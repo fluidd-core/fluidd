@@ -382,6 +382,7 @@ app:
     tooltip:
       browse_metrics: Browse available metrics
       estop: Emergency Stop
+      managed_by_moonraker: Managed by your moonraker configuration
       notifications: Notifications
       reload_klipper: Reloads klipper configuration.
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
@@ -627,8 +628,6 @@ app:
       timelapse_settings: Timelapse Settings
       timelapse_status: Timelapse Status
       render_settings: Render Settings
-    tooltip:
-      managed_by_moonraker: Managed by your moonraker configuration
     setting:
       enable: Enabled
       auto_render: Auto Render

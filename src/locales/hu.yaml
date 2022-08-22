@@ -387,6 +387,7 @@ app:
     tooltip:
       browse_metrics: A böngészőben elérhető mutatók
       estop: VészSTOP
+      managed_by_moonraker: A moonraker konfigurációja által kezelt
       notifications: Értesítések
       reload_klipper: Újratölti a klipper konfigurációját.
       reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
@@ -632,8 +633,6 @@ app:
       timelapse_settings: Timelapse beállítások
       timelapse_status: Timelapse állapot
       render_settings: Renderelési beállítások
-    tooltip:
-      managed_by_moonraker: A moonraker konfigurációja által kezelt
     setting:
       enable: Engedélyezve
       auto_render: Automatikus renderelés
