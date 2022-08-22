@@ -1,12 +1,23 @@
 import { ActionTree } from 'vuex'
-import { CamerasState, CameraConfigWithoutId, CameraConfig, LegacyCamerasState } from './types'
+import { CamerasState, CameraConfigWithoutId, CameraConfig, CameraService, LegacyCamerasState, LegacyCameraType } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import httpClient from '@/api/httpClient'
 import { Globals } from '@/globals'
 import { v4 as uuidv4 } from 'uuid'
-import getCameraServiceForLegacyCameraType from '@/util/get-camera-service-for-legacy-camera-type'
 import setUrlQueryParam from '@/util/set-url-query-param'
+
+const legacyCameraTypeToCameraService: Record<LegacyCameraType, CameraService> = {
+  mjpgstream: 'mjpegstreamer',
+  mjpgadaptive: 'mjpegstreamer-adaptive',
+  iframe: 'iframe',
+  ipstream: 'ipstream'
+}
+
+const mjpegstreamerServices: CameraService[] = [
+  'mjpegstreamer',
+  'mjpegstreamer-adaptive'
+]
 
 export const actions: ActionTree<CamerasState, RootState> = {
   /**
@@ -21,8 +32,8 @@ export const actions: ActionTree<CamerasState, RootState> = {
 
     if (legacyCameras) {
       for (const legacyCamera of legacyCameras) {
-        const service = getCameraServiceForLegacyCameraType(legacyCamera.type)
-        const isMjpegStreamer = service === 'mjpegstreamer' || service === 'mjpegstreamer-adaptive'
+        const service = legacyCameraTypeToCameraService[legacyCamera.type]
+        const isMjpegStreamer = mjpegstreamerServices.includes(service)
 
         const camera = {
           name: legacyCamera.name,
