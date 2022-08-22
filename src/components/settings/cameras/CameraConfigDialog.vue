@@ -2,11 +2,13 @@
   <v-dialog
     :value="value"
     :max-width="500"
+    scrollable
     @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
       v-model="valid"
+      :disabled="camera.source === 'config'"
       @submit.prevent="handleSave()"
     >
       <v-card>
@@ -169,9 +171,10 @@
             type="button"
             @click="$emit('input', false)"
           >
-            {{ $t('app.general.btn.cancel') }}
+            {{ camera.source === 'config' ? $t('app.general.btn.close') : $t('app.general.btn.cancel') }}
           </app-btn>
           <app-btn
+            v-if="camera.source !== 'config'"
             color="primary"
             type="submit"
           >

@@ -31,6 +31,7 @@
         <app-setting
           :key="camera.id"
           :r-cols="2"
+          :sub-title="camera.source === 'config' ? $t('app.general.tooltip.managed_by_moonraker') : undefined"
           @click="handleEditDialog(camera)"
         >
           <template #title>
@@ -44,23 +45,14 @@
             </v-icon>
           </template>
           <app-btn
+            v-if="camera.source !== 'config'"
             fab
             text
             x-small
             color=""
-            :disabled="camera.source === 'config'"
             @click.stop="handleRemoveCamera(camera)"
           >
-            <v-icon
-              v-if="camera.source === 'config'"
-              color=""
-            >
-              $lock
-            </v-icon>
-            <v-icon
-              v-else
-              color=""
-            >
+            <v-icon color="">
               $close
             </v-icon>
           </app-btn>
@@ -126,10 +118,6 @@ export default class CameraSettings extends Vue {
   }
 
   handleEditDialog (camera: CameraConfig) {
-    if (camera.source === 'config') {
-      return
-    }
-
     this.dialogState = {
       active: true,
       camera: { ...camera }

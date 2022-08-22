@@ -63,7 +63,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   }
 
   subtitleIfBlocked (blocked: boolean): string {
-    return blocked ? this.$tc('app.timelapse.tooltip.managed_by_moonraker') : ''
+    return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }
 </script>

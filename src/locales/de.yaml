@@ -389,12 +389,13 @@ app:
       edit_chart: Diagramm bearbeiten
       add_chart: Diagramm hinzufügen
     tooltip:
+      browse_metrics: Verfügbare Metriken durchsuchen
       estop: NOT-AUS
+      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
+      notifications: Benachrichtigungen
       reload_klipper: Lädt die Klipper-Konfiguration neu.
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
-      notifications: Benachrichtigungen
-      browse_metrics: Verfügbare Metriken durchsuchen
       run_collector: Kollektor ausführen
   history:
     msg:
@@ -649,8 +650,6 @@ app:
       timelapse_settings: Zeitraffer-Einstellungen
       timelapse_status: Zeitraffer-Status
       render_settings: Render-Einstellungen
-    tooltip:
-      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
     setting:
       enable: Aktiviert
       auto_render: Automatisches Rendern
