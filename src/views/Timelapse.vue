@@ -14,7 +14,6 @@
           name="timelapse"
           bulk-actions
           :max-height="816"
-          :timelapse-browser="true"
         />
       </collapsable-card>
     </v-col>
