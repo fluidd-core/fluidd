@@ -6,6 +6,7 @@ import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'
 import router from './router'
+import sanitizeEndpoint from '@/util/sanitize-endpoint'
 
 // Load API configuration
 /**
@@ -48,6 +49,18 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   if (hostConfig && 'blacklist' in hostConfig && hostConfig.blacklist.length) {
     blacklist = hostConfig.blacklist
+  }
+
+  // If endpoints are defined in the hostConfig file,
+  // we want to load these on initial application launch
+  if (hostConfig && 'endpoints' in hostConfig && hostConfig.endpoints.length) {
+    hostConfig.endpoints.map(async endpoint => {
+      const temp = sanitizeEndpoint(endpoint)
+      if (temp) {
+        endpoints.push(temp)
+      }
+    }
+    )
   }
 
   // Add the browsers url to our endpoints list, unless black listed.
