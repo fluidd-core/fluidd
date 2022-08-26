@@ -46,7 +46,7 @@
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
       :selected.sync="selected"
-      :large-thumbnails="timelapseBrowser"
+      :large-thumbnails="currentRoot === 'timelapse'"
       @row-click="handleRowClick"
       @move="handleMove"
     />
@@ -198,10 +198,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   // Allow bulk-actions
   @Prop({ type: Boolean, default: false })
   readonly bulkActions!: boolean
-
-  // Override behavior (thumbnails, click/view actions) for timelapse browser
-  @Prop({ type: Boolean, default: false })
-  readonly timelapseBrowser!: boolean
 
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
@@ -403,19 +399,21 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Get the available files given the current root and path.
   get files (): FileBrowserEntry[] {
-    return this.getAllFiles(this.timelapseBrowser ? this.transformTimelapseItems : undefined)
+    const files = this.getAllFiles()
+
+    if (this.currentRoot === 'timelapse') {
+      return this.transformTimelapseItems(files)
+    }
+
+    return files
   }
 
-  getAllFiles (transformFunction?: (files: FileBrowserEntry[]) => FileBrowserEntry[]): FileBrowserEntry[] {
+  getAllFiles (): FileBrowserEntry[] {
     const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
     if (
       dir &&
       dir.items
     ) {
-      if (transformFunction) {
-        return transformFunction(dir.items)
-      }
-
       return dir.items
     }
     return []
@@ -447,7 +445,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   transformTimelapseItems (items: FileBrowserEntry[]) {
-    const timelapses: {[key: string]: AppFile} = {}
+    const timelapses: Record<string, AppFile> = {}
 
     for (const item of items) {
       if (item.type === 'file' && item.extension !== 'jpg') {
@@ -543,7 +541,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           e.type === 'click' && item.type === 'file' &&
           (
             this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
-            this.timelapseBrowser
+            this.currentRoot === 'timelapse'
           )
         ) {
           // Open the file editor
@@ -612,7 +610,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleFileOpenDialog (file: AppFile | AppFileWithMeta) {
-    if (this.timelapseBrowser && file.extension === 'zip') {
+    if (this.currentRoot === 'timelapse' && file.extension === 'zip') {
       // don't download zipped frames before opening preview
       this.filePreviewState = {
         open: true,
@@ -631,13 +629,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.currentPath,
       file.size,
       {
-        responseType: this.timelapseBrowser ? 'arraybuffer' : 'text',
+        responseType: this.currentRoot === 'timelapse' ? 'arraybuffer' : 'text',
         transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
       }
     )
       .then((response: AxiosResponse) => {
-        if (this.timelapseBrowser) {
+        if (this.currentRoot === 'timelapse') {
           // Open the file preview dialog.
           const type = response.headers['content-type']
           const blob = new Blob([response.data], { type })
@@ -745,7 +743,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           : `${item.filename}`
         SocketActions.serverFilesMove(src, dest)
 
-        if (this.timelapseBrowser && item.extension !== 'jpg') {
+        if (this.currentRoot === 'timelapse' && item.extension !== 'jpg') {
           // Move thumbnail
           const name = item.filename.slice(0, -(item.extension.length + 1))
           const thumbnails = this.getAllFiles().filter(file => file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name))
@@ -774,7 +772,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
 
-    if (this.timelapseBrowser) {
+    if (this.currentRoot === 'timelapse') {
       // Override thumbnails for timelapse browser
       const thumbnails = []
 
