@@ -166,11 +166,15 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
         if (value) store.dispatch(root.dispatch, value)
       } else {
         if (!value) {
-          await httpClient.post('/server/database/item', {
-            namespace: NAMESPACE,
-            key: root.name,
-            value: {}
-          })
+          try {
+            await httpClient.post('/server/database/item', {
+              namespace: NAMESPACE,
+              key: root.name,
+              value: {}
+            })
+          } catch (e) {
+            consola.debug('Error creating database item', e)
+          }
         }
 
         await store.dispatch(root.dispatch, value || {})
