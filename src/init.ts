@@ -6,6 +6,7 @@ import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'
 import router from './router'
+import sanitizeEndpoint from '@/util/sanitize-endpoint'
 
 // Load API configuration
 /**
@@ -44,10 +45,19 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // If local storage not set, then ping the browser url.
   const endpoints: string[] = []
-  let blacklist: string[] = []
+  const blacklist: string[] = []
 
   if (hostConfig && 'blacklist' in hostConfig && hostConfig.blacklist.length) {
-    blacklist = hostConfig.blacklist
+    blacklist.push(...hostConfig.blacklist)
+  }
+
+  // If endpoints are defined in the hostConfig file,
+  // we want to load these on initial application launch
+  if (hostConfig && 'endpoints' in hostConfig && hostConfig.endpoints.length) {
+    endpoints.push(
+      ...hostConfig.endpoints
+        .map(sanitizeEndpoint)
+        .filter((endpoint): endpoint is string => !!endpoint))
   }
 
   // Add the browsers url to our endpoints list, unless black listed.
@@ -56,8 +66,8 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     endpoints.push(`${document.location.protocol}//${document.location.host}`)
 
     // Add the moonraker endpoints...
-    let port = '7125'
-    if (document.location.protocol === 'https:') port = '7130'
+    const port = document.location.protocol === 'https:' ? '7130' : '7125'
+
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
   }
 
@@ -166,11 +176,15 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
         if (value) store.dispatch(root.dispatch, value)
       } else {
         if (!value) {
-          await httpClient.post('/server/database/item', {
-            namespace: NAMESPACE,
-            key: root.name,
-            value: {}
-          })
+          try {
+            await httpClient.post('/server/database/item', {
+              namespace: NAMESPACE,
+              key: root.name,
+              value: {}
+            })
+          } catch (e) {
+            consola.debug('Error creating database item', e)
+          }
         }
 
         await store.dispatch(root.dispatch, value || {})
