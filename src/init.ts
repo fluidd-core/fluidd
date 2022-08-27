@@ -45,22 +45,22 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // If local storage not set, then ping the browser url.
   const endpoints: string[] = []
-  let blacklist: string[] = []
+  const blacklist: string[] = []
 
   if (hostConfig && 'blacklist' in hostConfig && hostConfig.blacklist.length) {
-    blacklist = hostConfig.blacklist
+    blacklist.push(...hostConfig.blacklist)
   }
 
   // If endpoints are defined in the hostConfig file,
   // we want to load these on initial application launch
   if (hostConfig && 'endpoints' in hostConfig && hostConfig.endpoints.length) {
-    hostConfig.endpoints.map(async endpoint => {
-      const temp = sanitizeEndpoint(endpoint)
-      if (temp) {
-        endpoints.push(temp)
-      }
-    }
-    )
+    console.log({ before: hostConfig.endpoints })
+    endpoints.push(
+      ...hostConfig.endpoints
+        .map(sanitizeEndpoint)
+        .filter((endpoint): endpoint is string => !!endpoint))
+
+    console.log({ after: endpoints })
   }
 
   // Add the browsers url to our endpoints list, unless black listed.
@@ -69,8 +69,8 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     endpoints.push(`${document.location.protocol}//${document.location.host}`)
 
     // Add the moonraker endpoints...
-    let port = '7125'
-    if (document.location.protocol === 'https:') port = '7130'
+    const port = document.location.protocol === 'https:' ? '7130' : '7125'
+
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
   }
 
