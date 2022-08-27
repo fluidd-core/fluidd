@@ -54,13 +54,10 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // If endpoints are defined in the hostConfig file,
   // we want to load these on initial application launch
   if (hostConfig && 'endpoints' in hostConfig && hostConfig.endpoints.length) {
-    console.log({ before: hostConfig.endpoints })
     endpoints.push(
       ...hostConfig.endpoints
         .map(sanitizeEndpoint)
         .filter((endpoint): endpoint is string => !!endpoint))
-
-    console.log({ after: endpoints })
   }
 
   // Add the browsers url to our endpoints list, unless black listed.
