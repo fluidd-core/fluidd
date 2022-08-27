@@ -44,20 +44,20 @@ export default class StateExplorer extends Mixins(StateMixin) {
 
 <style lang="scss">
 .jv-container>.jv-code {
-  padding: 0;
+  padding: 0 !important;
 }
 
 .jv-container.jv-dark {
-  background: transparent;
-  color: rgba(255, 255, 255, 0.8);
+  background: transparent !important;
+  color: rgba(255, 255, 255, 0.8) !important;
 
-  .jv-item.jv-object { color: rgba(255, 255, 255, 0.8); }
-  .jv-item.jv-array { color: rgba(255, 255, 255, 0.8); }
-  .jv-key { color: rgba(255, 255, 255, 0.8); }
+  .jv-item.jv-object { color: rgba(255, 255, 255, 0.8) !important; }
+  .jv-item.jv-array { color: rgba(255, 255, 255, 0.8) !important; }
+  .jv-key { color: rgba(255, 255, 255, 0.8) !important; }
 
   .jv-ellipsis {
-    color: rgba(255, 255, 255, 0.5);
-    background-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.5) !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
   }
 }
 </style>
