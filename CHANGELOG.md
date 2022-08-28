@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.20.0](https://github.com/fluidd-core/fluidd/compare/v1.19.1...v1.20.0) (2022-08-28)
+
+
+### Features
+
+* add optional Chamber Temp column to jobs ([#835](https://github.com/fluidd-core/fluidd/issues/835)) ([7dd561c](https://github.com/fluidd-core/fluidd/commit/7dd561cb1f42decaf548f7c81d861fb2375f8b25))
+* Diagnostics panel ([#793](https://github.com/fluidd-core/fluidd/issues/793)) ([f61eaf4](https://github.com/fluidd-core/fluidd/commit/f61eaf44bac8f9e1fb5b2cff35da1b5cdfc7ac04))
+* enable context menu in monaco editor ([#824](https://github.com/fluidd-core/fluidd/issues/824)) ([f374bee](https://github.com/fluidd-core/fluidd/commit/f374beef2be3a1e277b8c78c60bc280b151d8c0f))
+* Enabling default list of endpoints via config ([#843](https://github.com/fluidd-core/fluidd/issues/843)) ([2a2d77d](https://github.com/fluidd-core/fluidd/commit/2a2d77d49bdb3689a1f2043bd2b85fc140742865))
+* **i18n-DE:** update German translation ([#813](https://github.com/fluidd-core/fluidd/issues/813)) ([d56d6bf](https://github.com/fluidd-core/fluidd/commit/d56d6bf1034500fccd279fdff16402eac07375ec))
+* **i18n-DE:** update German translations ([#840](https://github.com/fluidd-core/fluidd/issues/840)) ([acfaa65](https://github.com/fluidd-core/fluidd/commit/acfaa65df39b1643ecdaad3bf5fc46290166612f))
+* **i18n-HU:** update Hungarian language files ([#837](https://github.com/fluidd-core/fluidd/issues/837)) ([adc60a6](https://github.com/fluidd-core/fluidd/commit/adc60a6b7ae0fbb52ccc894e4896b665af843b34))
+* preheat printer chamber if value provided ([#818](https://github.com/fluidd-core/fluidd/issues/818)) ([2eecdd5](https://github.com/fluidd-core/fluidd/commit/2eecdd5e1a35c0d2275362c9aed7cfb768d69346))
+* **ui:** custom stylesheet and background image ([#795](https://github.com/fluidd-core/fluidd/issues/795)) ([e4720dc](https://github.com/fluidd-core/fluidd/commit/e4720dc66fda27e9d84ebf2f3e2eb50ce2082146))
+* **ui:** Hide files in /config ([#812](https://github.com/fluidd-core/fluidd/issues/812)) ([9b09655](https://github.com/fluidd-core/fluidd/commit/9b096554a5d788edca6e427894d0665bc6cabe85))
+* **ui:** update all feature ([#817](https://github.com/fluidd-core/fluidd/issues/817)) ([b07f59c](https://github.com/fluidd-core/fluidd/commit/b07f59c4e674d04184a61439f5f58693b4b84f44))
+
+
+### Bug Fixes
+
+* adds ACCEL parameter to FORCE_MOVE commands ([#815](https://github.com/fluidd-core/fluidd/issues/815)) ([ad8ebf1](https://github.com/fluidd-core/fluidd/commit/ad8ebf1846728496ecd1f4ffce1eede206691960))
+* Allow uploading theme files ([#828](https://github.com/fluidd-core/fluidd/issues/828)) ([03ac253](https://github.com/fluidd-core/fluidd/commit/03ac25347a82f31305f03b80dd13b0f86310d0f6))
+* check for webassembly support ([#822](https://github.com/fluidd-core/fluidd/issues/822)) ([384712a](https://github.com/fluidd-core/fluidd/commit/384712a2f9ee520852b4db622cc098fe417b76bf))
+* Correct SVG transformations in GCode Preview ([#816](https://github.com/fluidd-core/fluidd/issues/816)) ([ed5e5d1](https://github.com/fluidd-core/fluidd/commit/ed5e5d19e8a8e3dbc0d4a8f0b14c18609e233c77))
+* dashboard constrained width ([#820](https://github.com/fluidd-core/fluidd/issues/820)) ([48fab84](https://github.com/fluidd-core/fluidd/commit/48fab840411fe7fce80313b74bb530b471ee9f80))
+* delta viewbox regression ([#823](https://github.com/fluidd-core/fluidd/issues/823)) ([a344eb1](https://github.com/fluidd-core/fluidd/commit/a344eb10c8ca220ebed5bc33153aeee0c85502d9))
+* **diagnostics:** Metrics Explorer styling ([#848](https://github.com/fluidd-core/fluidd/issues/848)) ([c2768a3](https://github.com/fluidd-core/fluidd/commit/c2768a344a1eeeec5ad71cb36b0d35fd86686b1f))
+* disable dashboard controls if Klipper is not ready ([#811](https://github.com/fluidd-core/fluidd/issues/811)) ([7028b15](https://github.com/fluidd-core/fluidd/commit/7028b1595a1c6efd85bb2b60d2fc350749a6890c))
+* dispatch even if database creation fails ([#847](https://github.com/fluidd-core/fluidd/issues/847)) ([fde24f9](https://github.com/fluidd-core/fluidd/commit/fde24f9dcc3434b0549d0013f2093eef7ec85d4e))
+* edge case where containers order is incorrect ([#819](https://github.com/fluidd-core/fluidd/issues/819)) ([d76f186](https://github.com/fluidd-core/fluidd/commit/d76f186662d8d42d8c3d9975a1959cdf8ed22b3a))
+* ensures containers exist ([#842](https://github.com/fluidd-core/fluidd/issues/842)) ([0d5a1a3](https://github.com/fluidd-core/fluidd/commit/0d5a1a3ab85c174275ad55f1d4abaf22578c1e11))
+* mitigates undefined history errors ([#830](https://github.com/fluidd-core/fluidd/issues/830)) ([9424f7f](https://github.com/fluidd-core/fluidd/commit/9424f7f34133873df0227c04c8fe55582435ce31))
+* reset G-code Preview state on file overwrite ([#832](https://github.com/fluidd-core/fluidd/issues/832)) ([71f0938](https://github.com/fluidd-core/fluidd/commit/71f09382341468af06530a481b34d025f8bee4ce))
+* width constraint at root container level ([#829](https://github.com/fluidd-core/fluidd/issues/829)) ([1ab7618](https://github.com/fluidd-core/fluidd/commit/1ab7618d0ade0182da26fd3499cc9069ca083bbc))
+
 ### [1.19.1](https://github.com/fluidd-core/fluidd/compare/v1.19.0...v1.19.1) (2022-08-02)
 
 
