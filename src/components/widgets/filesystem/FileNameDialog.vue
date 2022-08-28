@@ -57,19 +57,19 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class FileNameDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: String, required: true })
-  public title!: string
+  readonly title!: string
 
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: Array, required: false })
-  public rules!: []
+  readonly rules!: []
 
   @Prop({ type: String, required: true })
-  public name!: string
+  readonly name!: string
 
   newName = ''
   valid = false

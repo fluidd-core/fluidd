@@ -55,7 +55,7 @@ import FilesMixin from '@/mixins/files'
 })
 export default class GcodePreviewControls extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   get canFollowProgress () {
     const file = this.$store.getters['gcodePreview/getFile']

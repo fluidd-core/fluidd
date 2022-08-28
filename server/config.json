@@ -3,6 +3,8 @@
     "fluidd.xyz",
     "fluidd.net"
   ],
+  "endpoints": [
+  ],
   "hosted": true,
   "themePresets": [
     {

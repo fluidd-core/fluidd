@@ -15,7 +15,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnGroup extends Vue {
   @Prop({ type: Boolean, default: false })
-  public vertical!: boolean
+  readonly vertical!: boolean
 }
 </script>
 

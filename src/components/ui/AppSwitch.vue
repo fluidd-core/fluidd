@@ -5,6 +5,7 @@
   >
     <div
       class="text-body-1"
+      :class="{ 'text--disabled': disabled }"
     >
       {{ label }}
     </div>
@@ -25,13 +26,13 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppSwitch extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: Boolean, required: false, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Watch('value')
   onValueChange (val: boolean) {

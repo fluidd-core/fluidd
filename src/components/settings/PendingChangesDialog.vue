@@ -52,7 +52,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class PendingChangesDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   get saveConfigPendingItems () {
     const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems']

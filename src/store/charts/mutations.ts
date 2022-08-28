@@ -43,9 +43,8 @@ export const mutations: MutationTree<ChartState> = {
     }
     state[payload.type].push(payload.data)
     // console.log('set data', payload.type, payload.data)
-    while (state[payload.type].length > payload.retention) {
-      state[payload.type].splice(0, 1)
-    }
+    const firstInRange = state[payload.type].findIndex((entry: ChartData) => (Date.now() - entry.date.valueOf()) / 1000 < payload.retention)
+    if (firstInRange > 0) state[payload.type].splice(0, firstInRange)
   },
 
   setSelectedLegends (state, payload) {

@@ -96,6 +96,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
   }
 
+  @Watch('columnCount')
+  onColumnCount (value: number) {
+    this.$store.commit('config/setContainerColumnCount', value)
+  }
+
   get columnSpan () {
     return 12 / this.columnCount
   }
@@ -131,7 +136,15 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   @Watch('layout')
   onLayoutChange () {
-    const containers = Object.values(this.layout) as Array<LayoutConfig[]>
+    const containers: Array<LayoutConfig[]> = []
+
+    for (let index = 1; index <= 4; index++) {
+      const container = this.layout[`container${index}`]
+
+      if (container?.length > 0) {
+        containers.push(container)
+      }
+    }
 
     while (containers.length < 4) {
       containers.push([])
@@ -189,41 +202,5 @@ export default class Dashboard extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .flip-list-move {
-    transition: transform 0.5s;
-  }
-
-  .no-move {
-    transition: transform 0s;
-  }
-
-  .ghost {
-    opacity: 0.5;
-    background: #ccc;
-  }
-
-  .list-group {
-    flex: 1 1 auto;
-
-    span {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-height: 50vh;
-    }
-  }
-
-  @media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .list-group span {
-      min-height: auto;
-    }
-  }
-
-  .drag {
-    .list-group {
-      padding: 6px;
-      border: thin dashed rgba(map-get($shades, 'white'), 0.12);
-    }
-  }
-
+@import '@/scss/draggable.scss';
 </style>

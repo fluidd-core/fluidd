@@ -136,10 +136,10 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   }
 
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public fullScreen!: boolean
+  readonly fullScreen!: boolean
 
   @Ref('console')
   readonly console!: Console

@@ -130,6 +130,14 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateAll () {
+    baseEmit(
+      'machine.update.full', {
+        dispatch: 'version/onUpdatedAll'
+      }
+    )
+  },
+
   async machineProcStats () {
     baseEmit(
       'machine.proc_stats', {
@@ -362,13 +370,36 @@ export const SocketActions = {
   /**
    * Writes data to moonraker's DB.
    */
-  async serverWrite (key: string, value: any) {
+  async serverWrite (key: string, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.post_item', {
         params: {
-          namespace: Globals.MOONRAKER_DB.NAMESPACE,
+          namespace,
           key,
           value
+        }
+      }
+    )
+  },
+
+  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.delete_item', {
+        params: {
+          namespace,
+          key
+        }
+      }
+    )
+  },
+
+  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.get_item', {
+        dispatch: 'socket/onServerRead',
+        params: {
+          namespace,
+          key
         }
       }
     )
@@ -466,6 +497,18 @@ export const SocketActions = {
     )
   },
 
+  async serverFilesListRoot (root: string) {
+    const wait = `${Waits.onFileSystem}${root}`
+    baseEmit(
+      'server.files.list',
+      {
+        dispatch: 'files/onServerFilesListRoot',
+        wait,
+        params: { root }
+      }
+    )
+  },
+
   async serverFilesMove (source: string, dest: string) {
     const wait = Waits.onFileSystem
     baseEmit(
@@ -540,6 +583,14 @@ export const SocketActions = {
           entry_id,
           wake_time
         }
+      }
+    )
+  },
+
+  async serverWebcamsList () {
+    baseEmit(
+      'server.webcams.list', {
+        dispatch: 'webcams/onWebcamsList'
       }
     )
   }

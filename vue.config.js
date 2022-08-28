@@ -44,7 +44,6 @@ module.exports = defineConfig({
         features: [
           '!codeAction',
           '!colorPicker',
-          '!contextmenu',
           '!hover',
           '!gotoError',
           '!gotoLine',
@@ -72,9 +71,6 @@ module.exports = defineConfig({
       // Allows us to load yaml and have it loaded as json for locales.
       .rule('yaml-loader')
       .test(/.\.yaml$/)
-      .use('json-loader')
-      .loader('json-loader')
-      .end()
       .use('yaml-loader')
       .loader('yaml-loader')
       .end()

@@ -172,10 +172,10 @@ import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeOb
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public menuCollapsed!: boolean
+  readonly menuCollapsed!: boolean
 
   currentLayer = 0
   moveProgress = 0

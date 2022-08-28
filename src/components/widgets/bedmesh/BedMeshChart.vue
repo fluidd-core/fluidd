@@ -25,13 +25,13 @@ import { merge } from 'lodash-es'
 @Component({})
 export default class EChartsBedMesh extends Vue {
   @Prop({ type: Array, required: true, default: {} })
-  public data!: []
+  readonly data!: []
 
   @Prop({ type: Object, default: {} })
-  public options!: any
+  readonly options!: any
 
   @Prop({ type: String, default: '100%' })
-  public height!: string
+  readonly height!: string
 
   @Ref('chart')
   readonly chart!: ECharts

@@ -51,7 +51,7 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
 })
 export default class Toolhead extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public forceMove!: boolean
+  readonly forceMove!: boolean
 
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1

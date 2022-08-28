@@ -12,8 +12,10 @@
         sm="5"
         align-self="center"
         class="text-body-1 py-0"
-        v-html="label"
-      />
+        :class="{ 'text--disabled': disabled }"
+      >
+        {{ label }}
+      </v-col>
 
       <!-- Current value -->
       <v-col
@@ -97,43 +99,43 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
-  public value!: number
+  readonly value!: number
 
   @Prop({ type: Number, required: false })
-  public resetValue!: number
+  readonly resetValue!: number
 
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: Array, default: () => { return [] } })
-  public rules!: []
+  readonly rules!: []
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public locked!: boolean
+  readonly locked!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: Number, default: 0 })
-  public min!: number
+  readonly min!: number
 
   @Prop({ type: Number, default: 100 })
-  public max!: number
+  readonly max!: number
 
   @Prop({ type: Boolean, default: false })
-  public overridable!: boolean
+  readonly overridable!: boolean
 
   @Prop({ type: Number, default: 1 })
-  public step!: number
+  readonly step!: number
 
   @Prop({ type: String })
-  public suffix!: string
+  readonly suffix!: string
 
   @Prop({ type: Boolean, default: false })
-  public fullWidth!: boolean
+  readonly fullWidth!: boolean
 
   valid = true
   lockState = false

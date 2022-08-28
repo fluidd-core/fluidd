@@ -103,7 +103,7 @@ import { VForm } from '@/types'
 @Component({})
 export default class UserPasswordDialog extends Vue {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   @Ref('form')
   readonly form!: VForm

@@ -204,10 +204,10 @@ import { VInput } from '@/types'
 })
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Boolean, required: true })
-  public renderable!: boolean
+  readonly renderable!: boolean
 
   @Ref('outputFramerateElement')
   readonly outputFramerateElement!: VInput
@@ -395,7 +395,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
   }
 
   subtitleIfBlocked (blocked: boolean): string {
-    return blocked ? this.$tc('app.timelapse.tooltip.managed_by_moonraker') : ''
+    return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }
 </script>

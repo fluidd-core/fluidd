@@ -60,13 +60,13 @@ import { AppTableHeader } from '@/types'
 @Component({})
 export default class AppColumnPicker extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
-  public keyName!: string
+  readonly keyName!: string
 
   @Prop({ type: Array, required: true })
-  public headers!: AppTableHeader[]
+  readonly headers!: AppTableHeader[]
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   value: any[] = []
 

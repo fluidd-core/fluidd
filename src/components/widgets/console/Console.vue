@@ -5,6 +5,7 @@
     <console-command
       v-if="!readonly && flipLayout"
       v-model="consoleCommand"
+      :disabled="!klippyReady"
       @send="sendCommand"
     />
     <v-card
@@ -43,6 +44,7 @@
     <console-command
       v-if="!readonly && !flipLayout"
       v-model="consoleCommand"
+      :disabled="!klippyReady"
       @send="sendCommand"
     />
   </div>
@@ -64,16 +66,16 @@ import { DinamicScroller } from 'vue-virtual-scroller'
 })
 export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
-  public items!: []
+  readonly items!: []
 
   @Prop({ type: String, default: 'id' })
-  public keyField!: string
+  readonly keyField!: string
 
   @Prop({ type: Number, default: 250 })
-  public height!: number
+  readonly height!: number
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller
