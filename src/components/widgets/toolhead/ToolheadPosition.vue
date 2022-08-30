@@ -17,7 +17,7 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!xHomed && !forceMove"
+          :disabled="!klippyReady || (!xHomed && !forceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @change="moveTo('X', $event)"
@@ -35,7 +35,7 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!yHomed && !forceMove"
+          :disabled="!klippyReady || (!yHomed && !forceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @change="moveTo('Y', $event)"
@@ -53,7 +53,7 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!zHomed && !forceMove"
+          :disabled="!klippyReady || (!zHomed && !forceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
