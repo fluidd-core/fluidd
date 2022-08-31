@@ -12,8 +12,9 @@ export interface WebcamConfig
   snapshot_url?: string,
   flip_horizontal?: boolean,
   flip_vertical?: boolean,
-  rotation?: number,
+  rotation?: WebcamRotation,
   source?: WebcamSource
 }
 
-type WebcamSource = 'config' | 'database'
+export type WebcamRotation = 0 | 90 | 180 | 270
+export type WebcamSource = 'config' | 'database'

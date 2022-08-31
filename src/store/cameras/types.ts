@@ -13,11 +13,12 @@ export interface MoonrakerWebcamConfig
   urlSnapshot?: string,
   flipX?: boolean,
   flipY?: boolean,
-  rotation: number,
+  rotation: MoonrakerWebcamRotation,
   source?: MoonrakerWebcamSource
 }
 
-type MoonrakerWebcamSource = 'config' | 'database'
+export type MoonrakerWebcamRotation = 0 | 90 | 180 | 270
+export type MoonrakerWebcamSource = 'config' | 'database'
 
 export interface CameraConfigWithoutId extends MoonrakerWebcamConfig {
   service?: CameraService;
@@ -47,8 +48,9 @@ export interface LegacyCameraConfig {
   fpsidletarget?: number;
   flipX: boolean;
   flipY: boolean;
-  rotate?: '90' | '180' | '270';
+  rotate?: LegacyCameraRotation;
   height?: number;
 }
 
+export type LegacyCameraRotation = '90' | '180' | '270'
 export type LegacyCameraType = 'mjpgstream' | 'mjpgadaptive' | 'ipstream' | 'iframe'
