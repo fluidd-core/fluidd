@@ -34,6 +34,18 @@ export default class ToolheadMixin extends Vue {
     return this.$store.getters['printer/getHomedAxes']('z')
   }
 
+  get xHasMultipleSteppers (): boolean {
+    return !!this.$store.getters['printer/getPrinterConfig']('stepper_x1')
+  }
+
+  get yHasMultipleSteppers (): boolean {
+    return !!this.$store.getters['printer/getPrinterConfig']('stepper_y1')
+  }
+
+  get zHasMultipleSteppers (): boolean {
+    return !!this.$store.getters['printer/getPrinterConfig']('stepper_z1')
+  }
+
   get hasHomingOverride (): boolean {
     return this.$store.getters['printer/getHasHomingOverride']
   }
