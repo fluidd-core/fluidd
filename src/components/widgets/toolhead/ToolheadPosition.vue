@@ -17,7 +17,7 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!klippyReady || (!xHomed && !forceMove)"
+          :disabled="!klippyReady || (!xHomed && !xForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @change="moveTo('X', $event)"
@@ -35,7 +35,7 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!klippyReady || (!yHomed && !forceMove)"
+          :disabled="!klippyReady || (!yHomed && !yForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @change="moveTo('Y', $event)"
@@ -53,7 +53,7 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!klippyReady || (!zHomed && !forceMove)"
+          :disabled="!klippyReady || (!zHomed && !zForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
@@ -153,6 +153,18 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get useGcodeCoords () {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
+  }
+
+  get xForceMove () {
+    return this.forceMove && !this.xHasMultipleSteppers
+  }
+
+  get yForceMove () {
+    return this.forceMove && !this.yHasMultipleSteppers
+  }
+
+  get zForceMove () {
+    return this.forceMove && !this.zHasMultipleSteppers
   }
 
   get requestedSpeed () {
