@@ -9,7 +9,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * Should include the macro's config.
    */
   getMacros: (state, getters, rootState) => {
-    const macros: Macro[] = Object.keys(rootState.printer?.printer.configfile.settings)
+    const macros: Macro[] = Object.keys(rootState.printer.printer.configfile.settings)
       .filter(key => {
         const name = key.split(' ')[1]
         return (
@@ -19,7 +19,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
       })
       .map(key => {
         const name = key.split(' ')[1]
-        const config = rootState.printer?.printer.configfile.settings[key]
+        const config = rootState.printer.printer.configfile.settings[key]
         const stored = state.stored.find(macro => macro.name === name)
 
         const r: Macro = {

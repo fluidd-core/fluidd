@@ -6,6 +6,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import Console from '@/views/Console.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
+import Diagnostics from '@/views/Diagnostics.vue'
 import History from '@/views/History.vue'
 import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
@@ -24,7 +25,7 @@ Vue.use(VueRouter)
 const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
   if (
     store.getters['auth/getAuthenticated'] ||
-    !store.state.socket?.apiConnected
+    !store.state.socket.apiConnected
   ) {
     next()
     return
@@ -55,6 +56,12 @@ const routes: Array<RouteConfig> = [
     path: '/tune',
     name: 'Tune',
     component: Tune,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/diagnostics',
+    name: 'Diagnostics',
+    component: Diagnostics,
     beforeEnter: ifAuthenticated
   },
   {
@@ -145,6 +152,11 @@ const router = new VueRouter({
     }
     return { x: 0, y: 0 }
   }
+})
+
+router.beforeEach((to, from, next) => {
+  store.commit('config/setContainerColumnCount', 2)
+  next()
 })
 
 export default router

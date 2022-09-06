@@ -1,5 +1,3 @@
-import { AppNotificationType } from '@/store/types'
-
 export interface NotificationsState {
   notifications: AppNotification[];
 }
@@ -36,3 +34,5 @@ export interface AppPushNotification {
   merge?: boolean;
   noCount?: boolean;
 }
+
+export type AppNotificationType = 'success' | 'info' | 'warning' | 'error' | 'announcement'

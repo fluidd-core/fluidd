@@ -26,12 +26,12 @@ import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
 import { parts } from './parts'
+import { webcams } from './webcams'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
   strict: (process.env.NODE_ENV === 'development'),
-  state: {},
   modules: {
     socket,
     auth,
@@ -53,7 +53,8 @@ export default new Vuex.Store<RootState>({
     wait,
     gcodePreview,
     timelapse,
-    parts
+    parts,
+    webcams
   },
   mutations: {},
   actions: {

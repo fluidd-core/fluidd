@@ -4,6 +4,21 @@
     :lazy="false"
     icon="$bedMesh"
   >
+    <template #menu>
+      <app-btn-collapse-group>
+        <app-btn
+          v-if="isManualProbeActive"
+          :elevation="2"
+          :disabled="!klippyReady || printerPrinting"
+          small
+          class="ml-1"
+          @click="manualProbeDialogOpen = true"
+        >
+          {{ $t('app.tool.tooltip.manual_probe') }}
+        </app-btn>
+      </app-btn-collapse-group>
+    </template>
+
     <v-simple-table
       v-if="meshes.length > 0"
       class="no-hover"
@@ -117,7 +132,7 @@
                 small
                 block
                 class="mb-2"
-                :loading="hasWait(waits.onMeshCalibrate)"
+                :loading="hasWait($waits.onMeshCalibrate)"
                 :disabled="printerPrinting || printerBusy"
                 v-on="on"
                 @click="calibrate()"
@@ -150,10 +165,10 @@
             block
             small
             class="mb-2"
-            :loading="hasWait(waits.onHomeAll)"
+            :loading="hasWait($waits.onHomeAll)"
             :disabled="printerPrinting || printerBusy"
             :color="(!allHomed) ? 'primary' : undefined"
-            @click="sendGcode('G28', waits.onHomeAll)"
+            @click="sendGcode('G28', $waits.onHomeAll)"
           >
             <v-icon
               small
@@ -166,12 +181,12 @@
           <app-btn
             v-if="!printerPrinting && printerSupportsQgl"
             :elevation="2"
-            :loading="hasWait(waits.onQGL)"
+            :loading="hasWait($waits.onQGL)"
             :disabled="printerPrinting || printerBusy"
             block
             class="mb-2"
             small
-            @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+            @click="sendGcode('QUAD_GANTRY_LEVEL', $waits.onQGL)"
           >
             {{ $t('app.general.btn.quad_gantry_level') }}
           </app-btn>
@@ -259,24 +274,30 @@
       :existing-name="saveDialogState.existingName"
       @save="handleMeshSave"
     />
+
+    <manual-probe-dialog
+      v-if="manualProbeDialogOpen"
+      v-model="manualProbeDialogOpen"
+    />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { KlipperMesh, ProcessedMesh } from '@/store/mesh/types'
-import { Waits } from '@/globals'
+import ManualProbeDialog from '@/components/common/ManualProbeDialog.vue'
 
 @Component({
   components: {
-    SaveMeshDialog
+    SaveMeshDialog,
+    ManualProbeDialog
   }
 })
 export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
-  waits = Waits
+  manualProbeDialogOpen = false
 
   mapScaleLabels = ['min', '0.1', '0.2']
   boxScaleLabels = ['1.0', '1.5', '2.0']
@@ -358,7 +379,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   calibrate () {
-    this.sendGcode('BED_MESH_CALIBRATE', Waits.onMeshCalibrate)
+    this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
   clearMesh () {
@@ -371,7 +392,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   removeProfile (name: string) {
     this.sendGcode(`BED_MESH_PROFILE REMOVE="${name}"`)
-    this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
+    this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 
   handleMeshSave (config: {name: string; removeDefault: boolean}) {
@@ -381,13 +402,25 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     if (config.removeDefault) {
       this.sendGcode(`BED_MESH_PROFILE REMOVE="${this.currentMesh.profile_name}"`)
     }
-    this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
+    this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 
   handleOpenSaveDialog () {
     this.saveDialogState = {
       open: true,
       existingName: this.currentMesh.profile_name
+    }
+  }
+
+  get showManualProbeDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showManualProbeDialogAutomatically
+  }
+
+  @Watch('isManualProbeActive')
+  onIsManualProbeActive (value: boolean) {
+    if (value && this.showManualProbeDialogAutomatically &&
+      this.klippyReady && !this.printerPrinting) {
+      this.manualProbeDialogOpen = true
     }
   }
 }

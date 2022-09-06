@@ -12,7 +12,7 @@
         color="warning"
         dot
         overlap
-        :value="model.length > 0"
+        :value="selectedFilterTypes.length > 0"
         :offset-y="15"
         :offset-x="15"
       >
@@ -31,12 +31,9 @@
       </v-badge>
     </template>
 
-    <v-list
-      flat
-      two-line
-    >
+    <v-list flat>
       <v-list-item-group
-        v-model="model"
+        v-model="selectedFilterTypes"
         multiple
         active-class=""
       >
@@ -44,7 +41,7 @@
           <v-list-item
             :key="`filter-${i}`"
             :disabled="disabled"
-            :value="filter"
+            :value="filter.value"
           >
             <template #default="{ active }">
               <v-list-item-action>
@@ -54,7 +51,7 @@
                 <v-list-item-title>
                   {{ filter.text }}
                 </v-list-item-title>
-                <v-list-item-subtitle>
+                <v-list-item-subtitle v-if="filter.desc !== undefined">
                   {{ filter.desc }}
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -67,34 +64,55 @@
 </template>
 
 <script lang="ts">
-import { FileFilter } from '@/store/files/types'
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { FileFilterType, FileRoot } from '@/store/files/types'
+import { Component, Vue, Prop } from 'vue-property-decorator'
+
+interface FileFilter {
+  value: FileFilterType;
+  text: string;
+  desc?: string;
+}
 
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: FileRoot
 
-  // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
-  model = []
-  filters: FileFilter[] = [
+  availableFilters: FileFilter[] = [
     {
       value: 'print_start_time',
       text: this.$tc('app.file_system.filters.label.print_start_time'),
       desc: this.$tc('app.file_system.filters.label.print_start_time_desc')
+    },
+    {
+      value: 'hidden_files',
+      text: this.$tc('app.file_system.filters.label.hidden_files')
+    },
+    {
+      value: 'klipper_backup_files',
+      text: this.$tc('app.file_system.filters.label.klipper_backup_files')
     }
   ]
 
-  get readonly () {
-    return this.$store.getters['files/getRootProperties'](this.root).readonly
+  get rootFilterTypes (): FileFilterType[] {
+    return this.$store.getters['files/getRootProperties'](this.root).filterTypes
   }
 
-  @Watch('model')
-  onFiltersChange (model: any) {
-    this.$emit('change', model)
+  get filters (): FileFilter[] {
+    const filterTypes = this.rootFilterTypes
+
+    return this.availableFilters.filter(f => filterTypes.includes(f.value))
+  }
+
+  get selectedFilterTypes (): FileFilterType[] {
+    return this.$store.state.config.uiSettings.fileSystem.activeFilters[this.root] ?? []
+  }
+
+  set selectedFilterTypes (value: FileFilterType[]) {
+    this.$emit('change', value)
   }
 }
 </script>

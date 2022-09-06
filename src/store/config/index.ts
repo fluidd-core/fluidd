@@ -11,6 +11,7 @@ export const defaultState = (): ConfigState => {
     apiUrl: '',
     socketUrl: '',
     layoutMode: false,
+    containerColumnCount: 2,
     hostConfig: {
       endpoints: [],
       blacklist: [],
@@ -64,9 +65,14 @@ export const defaultState = (): ConfigState => {
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
+        showSaveConfigAndRestart: true,
         flipConsoleLayout: false,
         cameraFullscreenAction: 'embed',
-        topNavPowerToggle: null
+        topNavPowerToggle: null,
+        showManualProbeDialogAutomatically: true,
+        showBedScrewsAdjustDialogAutomatically: true,
+        forceMoveToggleWarning: true,
+        enableDiagnostics: false
       },
       theme: {
         isDark: true,
@@ -90,6 +96,7 @@ export const defaultState = (): ConfigState => {
         gcodes_dashboard: [
           { value: 'first_layer_extr_temp', visible: false },
           { value: 'first_layer_bed_temp', visible: false },
+          { value: 'chamber_temp', visible: false },
           { value: 'history.total_duration', visible: false },
           { value: 'history.print_duration', visible: false },
           { value: 'estimated_time', visible: false },
@@ -107,6 +114,7 @@ export const defaultState = (): ConfigState => {
           { value: 'history.filament_used', visible: false },
           { value: 'slicer_version', visible: false },
           { value: 'history.print_duration', visible: false },
+          { value: 'chamber_temp', visible: false },
           { value: 'first_layer_extr_temp', visible: false },
           { value: 'first_layer_bed_temp', visible: false }
         ],
@@ -127,6 +135,12 @@ export const defaultState = (): ConfigState => {
         flip: {
           horizontal: false,
           vertical: true
+        }
+      },
+      fileSystem: {
+        activeFilters: {
+          gcodes: [],
+          config: []
         }
       }
     }

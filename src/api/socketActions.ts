@@ -11,8 +11,8 @@ const baseEmit = (method: string, options: NotifyOptions) => {
     return
   }
   if (
-    !store.state.socket?.disconnecting &&
-    !store.state.socket?.connecting
+    !store.state.socket.disconnecting &&
+    !store.state.socket.connecting
   ) {
     Vue.$socket.emit(method, options)
   } else {
@@ -126,6 +126,14 @@ export const SocketActions = {
     baseEmit(
       'machine.update.system', {
         dispatch: 'version/onUpdatedSystem'
+      }
+    )
+  },
+
+  async machineUpdateAll () {
+    baseEmit(
+      'machine.update.full', {
+        dispatch: 'version/onUpdatedAll'
       }
     )
   },
@@ -330,7 +338,7 @@ export const SocketActions = {
       dispatch: 'socket/onConnectionId',
       params: {
         client_name: Globals.APP_NAME,
-        version: `${store.state.version?.fluidd.version || '0.0.0'}-${store.state.version?.fluidd.hash || 'unknown'}`.trim(),
+        version: `${store.state.version.fluidd.version || '0.0.0'}-${store.state.version.fluidd.hash || 'unknown'}`.trim(),
         type: 'web',
         url: Globals.GITHUB_REPO
       }
@@ -362,13 +370,36 @@ export const SocketActions = {
   /**
    * Writes data to moonraker's DB.
    */
-  async serverWrite (key: string, value: any) {
+  async serverWrite (key: string, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.post_item', {
         params: {
-          namespace: Globals.MOONRAKER_DB.NAMESPACE,
+          namespace,
           key,
           value
+        }
+      }
+    )
+  },
+
+  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.delete_item', {
+        params: {
+          namespace,
+          key
+        }
+      }
+    )
+  },
+
+  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.get_item', {
+        dispatch: 'socket/onServerRead',
+        params: {
+          namespace,
+          key
         }
       }
     )
@@ -466,6 +497,18 @@ export const SocketActions = {
     )
   },
 
+  async serverFilesListRoot (root: string) {
+    const wait = `${Waits.onFileSystem}${root}`
+    baseEmit(
+      'server.files.list',
+      {
+        dispatch: 'files/onServerFilesListRoot',
+        wait,
+        params: { root }
+      }
+    )
+  },
+
   async serverFilesMove (source: string, dest: string) {
     const wait = Waits.onFileSystem
     baseEmit(
@@ -540,6 +583,14 @@ export const SocketActions = {
           entry_id,
           wake_time
         }
+      }
+    )
+  },
+
+  async serverWebcamsList () {
+    baseEmit(
+      'server.webcams.list', {
+        dispatch: 'webcams/onWebcamsList'
       }
     )
   }

@@ -104,6 +104,18 @@ export const defaultState = (): PrinterState => {
         homing_origin: [],
         speed: 0
       },
+      manual_probe: {
+        is_active: false,
+        z_position: null,
+        z_position_lower: null,
+        z_position_upper: null
+      },
+      bed_screws: {
+        is_active: false,
+        state: null,
+        current_screw: 0,
+        accepted_screws: 0
+      },
       fan: {
         speed: 0
       },

@@ -10,7 +10,8 @@ import {
   GridComponent,
   DataZoomComponent,
   LegendComponent,
-  VisualMapComponent
+  VisualMapComponent,
+  GraphicComponent
 } from 'echarts/components'
 import { SVGRenderer, CanvasRenderer } from 'echarts/renderers'
 
@@ -23,6 +24,7 @@ use([
   LegendComponent,
   LineChart,
   VisualMapComponent,
+  GraphicComponent,
   SurfaceChart,
   Grid3DComponent,
   SVGRenderer,

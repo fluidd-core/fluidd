@@ -1,7 +1,7 @@
 <template>
   <app-btn
     v-if="paramList.length === 0 || !enableParams"
-    :disabled="macro.disabledWhilePrinting && printerPrinting"
+    :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
     @click="$emit('click', macro.name)"
   >
@@ -12,7 +12,7 @@
     :elevation="6"
   >
     <app-btn
-      :disabled="macro.disabledWhilePrinting && printerPrinting"
+      :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
       @click="$emit('click', macro.name)"
     >
@@ -30,6 +30,7 @@
           v-bind="attrs"
           :min-width="24"
           class="px-0"
+          :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
           v-on="on"
         >
           <v-icon
@@ -96,10 +97,10 @@ import gcodeMacroParams from '@/util/gcode-macro-params'
 @Component({})
 export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  public macro!: Macro
+  readonly macro!: Macro
 
   @Prop({ type: Boolean, default: false })
-  public enableParams!: boolean
+  readonly enableParams!: boolean
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 

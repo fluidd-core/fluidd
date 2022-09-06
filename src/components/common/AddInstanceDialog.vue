@@ -106,7 +106,7 @@ import consola from 'consola'
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Ref('form')
   readonly form!: VForm

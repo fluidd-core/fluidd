@@ -134,35 +134,35 @@
                 v-if="current_file.history && current_file.history.filament_used"
                 :label="$t('app.general.label.filament')"
               >
-                <span v-if="current_file.history.filament_used">{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
+                <span>{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used"
+                v-else-if="current_file.filament_total"
                 :label="$t('app.general.label.filament')"
               >
-                <span v-if="current_file.filament_total">{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
+                <span>{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
               </status-label>
 
               <status-label
                 v-if="current_file.estimated_time"
                 :label="$t('app.general.label.slicer')"
               >
-                <span v-if="current_file.estimated_time > 0">{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
+                <span>{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.history && current_file.history.print_duration"
+                v-if="current_file.history && current_file.history.print_duration > 0"
                 :label="$t('app.general.label.actual_time')"
               >
-                <span v-if="current_file.history.print_duration > 0">{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
+                <span>{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.history && current_file.history.total_duration"
+                v-if="current_file.history && current_file.history.total_duration > 0"
                 :label="$t('app.general.label.total')"
               >
-                <span v-if="current_file.history.total_duration > 0">{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
+                <span>{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
               </status-label>
             </v-col>
           </v-row>

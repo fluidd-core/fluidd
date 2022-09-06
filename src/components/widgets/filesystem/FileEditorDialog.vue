@@ -32,7 +32,7 @@
         <v-spacer />
         <v-toolbar-items>
           <app-btn
-            v-if="!isMobile"
+            v-if="!useTextOnlyEditor"
             @click="handleCommandPalette"
           >
             <v-icon
@@ -97,7 +97,7 @@
       </v-toolbar>
 
       <file-editor
-        v-if="contents !== undefined && !isMobile"
+        v-if="contents !== undefined && !useTextOnlyEditor"
         ref="editor"
         v-model="updatedContent"
         :filename="filename"
@@ -107,7 +107,7 @@
       />
 
       <file-editor-text-only
-        v-if="contents !== undefined && isMobile"
+        v-if="contents !== undefined && useTextOnlyEditor"
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
@@ -123,6 +123,7 @@ import StateMixin from '@/mixins/state'
 import FileEditor from './FileEditor.vue'
 import FileEditorTextOnly from './FileEditorTextOnly.vue'
 import isMobile from '@/util/is-mobile'
+import isWebAssemblySupported from '@/util/is-web-assembly-supported'
 
 @Component({
   components: {
@@ -132,22 +133,22 @@ import isMobile from '@/util/is-mobile'
 })
 export default class FileEditorDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   @Prop({ type: String, required: true })
-  public filename!: string
+  readonly filename!: string
 
   @Prop({ type: String, required: true })
-  public contents!: string
+  readonly contents!: string
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Ref('editor')
   readonly editor?: FileEditor
@@ -166,6 +167,14 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get isMobile () {
     return isMobile()
+  }
+
+  get isWebAssemblySupported () {
+    return isWebAssemblySupported()
+  }
+
+  get useTextOnlyEditor () {
+    return this.isMobile || !this.isWebAssemblySupported
   }
 
   get isUploading (): boolean {

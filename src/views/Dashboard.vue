@@ -52,6 +52,7 @@ import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 import RetractCard from '@/components/widgets/retract/RetractCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
+import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import { Macro } from '@/store/macros/types'
 
@@ -68,6 +69,7 @@ import { Macro } from '@/store/macros/types'
     RetractCard,
     ConsoleCard,
     OutputsCard,
+    BedMeshCard,
     GcodePreviewCard
   }
 })
@@ -94,6 +96,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.containers.reduce((count, container) => +this.hasCards(container) + count, 0)
   }
 
+  @Watch('columnCount')
+  onColumnCount (value: number) {
+    this.$store.commit('config/setContainerColumnCount', value)
+  }
+
   get columnSpan () {
     return 12 / this.columnCount
   }
@@ -104,6 +111,10 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get firmwareRetractionEnabled (): boolean {
     return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
+  }
+
+  get supportsBedMesh () {
+    return this.$store.getters['mesh/getSupportsBedMesh']
   }
 
   get macros () {
@@ -125,7 +136,15 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   @Watch('layout')
   onLayoutChange () {
-    const containers = Object.values(this.layout) as Array<LayoutConfig[]>
+    const containers: Array<LayoutConfig[]> = []
+
+    for (let index = 1; index <= 4; index++) {
+      const container = this.layout[`container${index}`]
+
+      if (container?.length > 0) {
+        containers.push(container)
+      }
+    }
 
     while (containers.length < 4) {
       containers.push([])
@@ -174,6 +193,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
+    if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled
@@ -182,41 +202,5 @@ export default class Dashboard extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .flip-list-move {
-    transition: transform 0.5s;
-  }
-
-  .no-move {
-    transition: transform 0s;
-  }
-
-  .ghost {
-    opacity: 0.5;
-    background: #ccc;
-  }
-
-  .list-group {
-    flex: 1 1 auto;
-
-    span {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      min-height: 50vh;
-    }
-  }
-
-  @media #{map-get($display-breakpoints, 'sm-and-down')} {
-    .list-group span {
-      min-height: auto;
-    }
-  }
-
-  .drag {
-    .list-group {
-      padding: 6px;
-      border: thin dashed rgba(map-get($shades, 'white'), 0.12);
-    }
-  }
-
+@import '@/scss/draggable.scss';
 </style>

@@ -21,7 +21,7 @@ export const actions: ActionTree<LayoutState, RootState> = {
     if (layout) {
       commit('setLayoutChange', payload)
       await SocketActions.serverWrite(
-        Globals.MOONRAKER_DB.ROOTS.layout.name + '.layouts',
+        Globals.MOONRAKER_DB.fluidd.ROOTS.layout.name + '.layouts',
         state.layouts
       )
     }
@@ -35,7 +35,7 @@ export const actions: ActionTree<LayoutState, RootState> = {
         if (i >= 0) {
           commit('setUpdateConfig', { name: payload.name, container, i, value: payload.value })
           await SocketActions.serverWrite(
-            Globals.MOONRAKER_DB.ROOTS.layout.name + `.layouts.${payload.name}.${container}`,
+            Globals.MOONRAKER_DB.fluidd.ROOTS.layout.name + `.layouts.${payload.name}.${container}`,
             state.layouts[payload.name][container]
           )
         }

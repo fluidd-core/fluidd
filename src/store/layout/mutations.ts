@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import getAllLayouts from '@/util/get-all-layouts'
-import { defaultState } from './'
+import { defaultState as getDefaultState } from './'
 import { LayoutConfig, LayoutState, Layouts } from './types'
 
 export const mutations: MutationTree<LayoutState> = {
@@ -9,7 +8,7 @@ export const mutations: MutationTree<LayoutState> = {
    * Reset state
    */
   setReset (state) {
-    Object.assign(state, defaultState())
+    Object.assign(state, getDefaultState())
   },
 
   /**
@@ -18,38 +17,33 @@ export const mutations: MutationTree<LayoutState> = {
    * being the default state, and newly added components users may not
    * have in their moonraker db.
    */
-  setInitLayout (state, payload) {
+  setInitLayout (state, payload: LayoutState) {
     if (payload && Object.keys(payload).length > 0) {
-      const defaultComponents = Object.assign({}, defaultState())
-      const supportedComponents = getAllLayouts(defaultComponents.layouts)
+      const defaultState = getDefaultState()
+      const migratableLayouts = ['dashboard']
 
-      for (const _layout in payload.layouts) {
-        const layout = payload.layouts[_layout]
-        for (const _container in layout) {
-          const container = layout[_container]
-          // Remove components that may no longer exist.
-          payload.layouts[_layout][_container] = container
-            .filter((config: LayoutConfig) => {
-              const i = supportedComponents.findIndex(o => o.id === config.id)
-              if (i >= 0) {
-                // Remove this layout from the supported list.
-                supportedComponents.splice(i, 1)
-              }
-              return i >= 0
-            })
+      for (const layout of migratableLayouts) {
+        const defaultComponents = defaultState.layouts[layout]
+        const defaultComponentIds = Object.values(defaultComponents).flat().map(card => card.id)
+        const currentComponentIds = Object.values(payload.layouts[layout]).flat().map(card => card.id)
+
+        for (const [container, defaultContainerComponents] of Object.entries(defaultComponents)) {
+          const currentContainerComponents = payload.layouts[layout][container] || []
+
+          payload.layouts[layout][container] = [
+            ...currentContainerComponents.filter(component => defaultComponentIds.includes(component.id)),
+            ...defaultContainerComponents.filter(component => !currentComponentIds.includes(component.id))
+          ]
         }
       }
 
-      // Missing compontents? Add'em.
-      supportedComponents.forEach(o => {
-        if (o.layout && o.container) {
-          if (payload.layouts[o.layout][o.container]) {
-            payload.layouts[o.layout][o.container].push(o)
-          } else {
-            payload.layouts[o.layout][o.container] = [o]
-          }
+      // add missing, non-migratable layouts
+      for (const layout of Object.keys(defaultState.layouts).filter(layout => !migratableLayouts.includes(layout))) {
+        if (!payload.layouts[layout]) {
+          payload.layouts[layout] = defaultState.layouts[layout]
         }
-      })
+      }
+
       Object.assign(state, payload)
     }
   },

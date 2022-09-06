@@ -346,6 +346,7 @@ app:
       tune: Подстройка
     tooltip:
       estop: Немедленная остановка
+      managed_by_moonraker: Управляется вашей конфигурацией moonraker
       reload_klipper: Перезагружает конфигурацию Klipper.
       reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
       restart_klipper: Перезагружает сервис Klipper.
@@ -540,8 +541,6 @@ app:
       timelapse_settings: Настройки таймлапса
       timelapse_status: Статус таймлапса
       render_settings: Настройки рендеринга
-    tooltip:
-      managed_by_moonraker: Управляется вашей конфигурацией moonraker
     setting:
       enable: Включен
       auto_render: Автоматический Рендеринг

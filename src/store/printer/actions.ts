@@ -6,6 +6,8 @@ import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } fr
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import consola from 'consola'
+import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import sandboxedEval from '@/plugins/sandboxedEval'
 
 // let retryTimeout: number
 
@@ -124,7 +126,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     // Do NOT accept notification updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
-    if (payload && rootState.socket?.acceptingNotifications) {
+    if (payload && rootState.socket.acceptingNotifications) {
       // Detect a printing state change.
       // We do this prior to commiting the notify so we can
       // compare the before and after.
@@ -146,21 +148,69 @@ export const actions: ActionTree<PrinterState, RootState> = {
       }
 
       // Add a temp chart entry
-      const rootStateServerConfig = rootState.server?.config
+      const rootStateServerConfig = rootState.server.config
       const retention =
         rootStateServerConfig?.data_store?.temperature_store_size ??
         rootStateServerConfig?.server?.temperature_store_size ??
         Globals.CHART_HISTORY_RETENTION
       handleAddChartEntry(retention, getters.getChartableSensors)
+      dispatch('onDiagnosticsMetricsUpdate')
     }
   },
 
-  async onFastNotifyStatusUpdate ({ rootState, commit }, payload) {
+  async onFastNotifyStatusUpdate ({ rootState, commit, dispatch }, payload) {
     // Do NOT accept updates until our subscribe comes back.
     // This is because moonraker currently sends notification updates
     // prior to subscribing on browser refresh.
-    if (payload && rootState.socket?.acceptingNotifications) {
+    if (payload && rootState.socket.acceptingNotifications) {
       commit('printer/setSocketNotify', payload, { root: true })
+      dispatch('onDiagnosticsMetricsUpdate')
     }
+  },
+
+  async onDiagnosticsMetricsUpdate ({ rootState, commit, rootGetters }) {
+    if (!rootState.config.uiSettings.general.enableDiagnostics) return
+    const layout = rootState.layout.layouts.diagnostics as DiagnosticsCardContainer
+    const metrics = Object.values(layout)
+      .flat()
+      .map(card => card.axes)
+      .flat()
+      .filter(axis => axis.enabled)
+      .map(axis => axis.metrics)
+      .flat()
+
+    const collectors = Array.from(new Set(metrics.map(metric => metric.collector)))
+    let data
+
+    try {
+      data = sandboxedEval(`
+      const printer = ${JSON.stringify(rootState.printer.printer)}
+      const collectors = ${JSON.stringify(collectors)}
+      const result = { }
+
+      for (const collector of collectors) {
+        try {
+          result[collector] = eval(collector)
+        } catch (err) {
+          result[collector] = err.message
+        }
+      }
+
+      return JSON.stringify(result) // in order to only return serializable data
+    `, 'metrics')
+
+      if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
+      data = JSON.parse(data)
+    } catch (err: any) {
+      data = Object.fromEntries(collectors.map(collector => [collector, err?.message ?? 'Unknown Error']))
+    }
+
+    data.date = new Date()
+
+    commit('charts/setChartEntry', {
+      type: 'diagnostics',
+      retention: rootGetters['charts/getChartRetention'],
+      data
+    }, { root: true })
   }
 }

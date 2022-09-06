@@ -39,7 +39,7 @@
 
     <div class="toolbar-supplemental">
       <div
-        v-if="socketConnected && klippyReady && authenticated && saveConfigPending"
+        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestart && saveConfigPending"
         class="mr-1"
       >
         <app-save-config-and-restart-btn
@@ -215,6 +215,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
+  get showSaveConfigAndRestart (): boolean {
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+  }
+
   get topNavPowerToggle (): null | string {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
@@ -237,13 +241,16 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   handleResetLayout () {
-    const layout = defaultState()
+    const pathLayouts = {
+      '/diagnostics': 'diagnostics'
+    } as { [key: string]: string }
+
+    const toReset = pathLayouts[this.$route.path] ?? 'dashboard'
+    const layoutDefaultState = defaultState()
+
     this.$store.dispatch('layout/onLayoutChange', {
-      name: 'dashboard',
-      value: {
-        container1: layout.layouts.dashboard.container1,
-        container2: layout.layouts.dashboard.container2
-      }
+      name: toReset,
+      value: layoutDefaultState.layouts[toReset]
     })
   }
 

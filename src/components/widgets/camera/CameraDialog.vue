@@ -22,10 +22,10 @@ import { CameraConfig } from '@/store/cameras/types'
 })
 export default class CameraDialog extends Vue {
   @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Object, required: true })
-  public camera!: CameraConfig
+  readonly camera!: CameraConfig
 }
 </script>
 

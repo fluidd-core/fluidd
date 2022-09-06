@@ -2,8 +2,8 @@
   <v-navigation-drawer
     :value="value"
     :color="theme.currentTheme.drawer"
-    :mini-variant="!hasSubNavigation"
-    :floating="!hasSubNavigation"
+    :mini-variant="!showSubNavigation"
+    :floating="!showSubNavigation"
     clipped
     app
     @input="emitChange"
@@ -77,6 +77,14 @@
           </app-nav-item>
 
           <app-nav-item
+            v-if="enableDiagnostics"
+            icon="$chart"
+            to="/diagnostics"
+          >
+            {{ $t('app.general.title.diagnostics') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$codeJson"
             to="/configure"
           >
@@ -99,7 +107,10 @@
         </div>
       </v-navigation-drawer>
 
-      <router-view name="navigation" />
+      <router-view
+        v-if="showSubNavigation"
+        name="navigation"
+      />
     </v-row>
   </v-navigation-drawer>
 </template>
@@ -112,7 +123,7 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public value!: boolean
+  readonly value!: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']
@@ -130,8 +141,16 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
     return this.$store.getters['server/componentSupport']('update_manager')
   }
 
+  get enableDiagnostics () {
+    return this.$store.state.config.uiSettings.general.enableDiagnostics
+  }
+
   get hasSubNavigation () {
     return this.$route.meta?.hasSubNavigation ?? false
+  }
+
+  get showSubNavigation () {
+    return this.hasSubNavigation && this.socketConnected && this.authenticated
   }
 
   get isMobile () {
