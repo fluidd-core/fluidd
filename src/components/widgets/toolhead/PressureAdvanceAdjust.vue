@@ -6,7 +6,7 @@
     >
       <app-slider
         :label="$t('app.general.label.pressure_advance')"
-        suffix="mm/s"
+        suffix="s"
         :value="activeExtruder.pressure_advance || 0"
         :overridable="true"
         :reset-value="activeExtruder.config_pressure_advance || 0"
