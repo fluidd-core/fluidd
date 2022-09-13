@@ -97,7 +97,6 @@
           item-value="value"
           item-text="text"
         />
-
       </app-setting>
 
       <v-divider />
@@ -285,7 +284,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get printerPins () {
-    var pins = this.$store.getters['printer/getPins']
+    const pins = this.$store.getters['printer/getPins']
     return pins.map((outputPin: OutputPin) => ({ text: outputPin.name, value: outputPin.name }))
   }
 

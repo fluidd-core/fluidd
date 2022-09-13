@@ -260,8 +260,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   isPinLightON () {
-    var pins : Array<OutputPin> = this.$store.getters['printer/getPins']
-    var lightPin = pins.find(pin => { return pin.name === this.topNavPinLight })
+    const pins : Array<OutputPin> = this.$store.getters['printer/getPins']
+    const lightPin = pins.find(pin => { return pin.name === this.topNavPinLight })
     if (lightPin !== undefined) return lightPin.value === 1
     return false
   }
@@ -294,7 +294,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   handleLightToggle () {
-    var target = this.isPinLightON() ? 0 : 1
+    const target = this.isPinLightON() ? 0 : 1
     this.sendGcode(`SET_PIN PIN=${this.topNavPinLight} VALUE=${target}`, Waits.onSetOutputPin)
   }
 
