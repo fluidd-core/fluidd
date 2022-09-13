@@ -251,6 +251,8 @@ app:
       total_print_time_avg: Среднее время печати
       total_time: Общее время
       total_time_avg: Среднее время
+      turn_light_on: Вкл подсветку
+      turn_light_off: Выкл подсветку
       uncategorized: Вне категории
       unretract_extra_length: Дополнительная длина
       unretract_speed: Скорость деретракта
@@ -394,7 +396,7 @@ app:
       camera_stream_type: Тип потока
       camera_url: URL камеры
       confirm_on_estop: Требовать подтверждение при аварийной остановке
-      confirm_on_power_device_change: Требуется подтверждение при изменении мощности устройства
+      confirm_on_power_device_change: Требуется подтверждение при переключении питания
       confirm_dirty_editor_close: Требовать подтверждения при закрытии редактора с несохраненными изменениями
       contains: Содержит
       dark_mode: Тёмная тема
@@ -423,15 +425,19 @@ app:
       move_line_width: Ширина линии движения
       primary_color: Основной цвет
       printer_name: Имя принтера
+      power_toggle_in_top_nav: Переключатель питания в верхнем баре
       reset: Сбросить настройки
       retraction_icon_size: Размер иконки ретракта
       show_animations: Показывать анимации
+      show_code_lens: Показывать CodeLens
       show_rate_of_change: Показать скорость изменения температуры
+      show_save_config_and_restart: Сохранить и перезагрузить кнопки в верхнем баре
       starts_with: Начинается с
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
       toolhead_move_distances: Значения расстояния перемещения головки
+      topNavPinLight: Переключатель подсветки в верхнем баре
       type: Тип
       z_adjust_values: Значения подстройки оси Z
       date_time_format: Формат даты и времени

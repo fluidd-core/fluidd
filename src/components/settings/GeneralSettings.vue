@@ -82,6 +82,25 @@
       </app-setting>
 
       <v-divider />
+      <app-setting
+        :title="$t('app.setting.label.topNavPinLight')"
+      >
+        <v-select
+          v-model="topNavPinLight"
+          filled
+          dense
+          single-line
+          :disabled="!klippyReady"
+          hide-details="auto"
+          :items="[{ text: $tc('app.setting.label.none'), value: null }, ...printerPins]"
+          :value="topNavPinLight"
+          item-value="value"
+          item-text="text"
+        />
+
+      </app-setting>
+
+      <v-divider />
 
       <app-setting
         :title="$t('app.setting.label.power_toggle_in_top_nav')"
@@ -160,6 +179,7 @@
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { VInput } from '@/types'
+import { OutputPin } from '@/store/printer/types'
 
 @Component({
   components: {}
@@ -240,6 +260,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
+  get topNavPinLight (): string {
+    return this.$store.state.config.uiSettings.general.topNavPinLight
+  }
+
+  set topNavPinLight (value:string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.topNavPinLight',
+      value,
+      server: true
+    })
+  }
+
   get topNavPowerToggle () {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
@@ -250,6 +282,11 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
+  }
+
+  get printerPins () {
+    var pins = this.$store.getters['printer/getPins']
+    return pins.map((outputPin: OutputPin) => ({ text: outputPin.name, value: outputPin.name }))
   }
 
   get powerDevicesList () {

@@ -93,7 +93,30 @@
           <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle }) }}</span>
         </v-tooltip>
       </div>
-
+      <div
+        v-if="authenticated && socketConnected && topNavPinLight"
+      >
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <app-btn
+              fab
+              small
+              :elevation="0"
+              class="mr-1 bg-transparent"
+              color="transparent"
+              :disabled="!klippyReady"
+              v-bind="attrs"
+              v-on="on"
+              @click="handleLightToggle()"
+            >
+              <v-icon>
+                {{ topNavPinLightOn ? '$lightON' : '$lightOFF' }}
+              </v-icon>
+            </app-btn>
+          </template>
+          <span>{{ $t(`app.general.label.turn_light_${topNavPinLightOn ? 'off' : 'on'}`) }}</span>
+        </v-tooltip>
+      </div>
       <div
         v-if="authenticated && socketConnected"
         class="mr-1"
@@ -119,7 +142,6 @@
         <v-icon>$menu</v-icon>
       </app-btn>
     </div>
-
     <template
       v-if="inLayout"
       #extension
@@ -162,6 +184,8 @@ import { defaultState } from '@/store/layout/index'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
+import { OutputPin } from '@/store/printer/types'
+import { Waits } from '@/globals'
 
 @Component({
   components: {
@@ -231,6 +255,21 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return this.topNavPowerDevice?.status === 'on'
   }
 
+  get topNavPinLight (): string {
+    return this.$store.state.config.uiSettings.general.topNavPinLight
+  }
+
+  isPinLightON () {
+    var pins : Array<OutputPin> = this.$store.getters['printer/getPins']
+    var lightPin = pins.find(pin => { return pin.name === this.topNavPinLight })
+    if (lightPin !== undefined) return lightPin.value === 1
+    return false
+  }
+
+  get topNavPinLightOn () {
+    return this.isPinLightON()
+  }
+
   get topNavPowerToggleDisabled (): boolean {
     const device = this.topNavPowerDevice
     return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
@@ -252,6 +291,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
       name: toReset,
       value: layoutDefaultState.layouts[toReset]
     })
+  }
+
+  handleLightToggle () {
+    var target = this.isPinLightON() ? 0 : 1
+    this.sendGcode(`SET_PIN PIN=${this.topNavPinLight} VALUE=${target}`, Waits.onSetOutputPin)
   }
 
   async handlePowerToggle () {

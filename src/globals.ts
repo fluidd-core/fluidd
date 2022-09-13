@@ -122,7 +122,9 @@ import {
   mdiViewHeadline,
   mdiAxisArrow,
   mdiVectorLine,
-  mdiOpenInNew
+  mdiOpenInNew,
+  mdiLightbulb,
+  mdiLightbulbOutline
 } from '@mdi/js'
 
 /**
@@ -324,7 +326,9 @@ export const Icons = Object.freeze({
   viewHeadline: mdiViewHeadline,
   absolutePositioning: mdiAxisArrow,
   relativePositioning: mdiVectorLine,
-  openInNew: mdiOpenInNew
+  openInNew: mdiOpenInNew,
+  lightON: mdiLightbulb,
+  lightOFF: mdiLightbulbOutline
 })
 
 export const Waits = Object.freeze({

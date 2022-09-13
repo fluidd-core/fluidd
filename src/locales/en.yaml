@@ -274,6 +274,8 @@ app:
       total_time_avg: Avg per print
       turn_device_on: Turn %{device} on
       turn_device_off: Turn %{device} off
+      turn_light_on: Light on
+      turn_light_off: Light off
       uncategorized: Uncategorized
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
@@ -504,6 +506,7 @@ app:
       theme_preset: Community preset
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
+      topNavPinLight: Light pin in top navigation
       title: Title
       toolhead_move_distances: Toolhead distance values
       type: Type

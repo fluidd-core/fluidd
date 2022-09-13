@@ -63,6 +63,7 @@ export interface GeneralConfig {
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
+  topNavPinLight:  null | string;
   showManualProbeDialogAutomatically: boolean;
   showBedScrewsAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
