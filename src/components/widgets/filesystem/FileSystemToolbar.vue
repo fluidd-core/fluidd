@@ -66,7 +66,7 @@
         v-model="thumbnailSize"
         :label="$t('app.general.label.thumbnail_size')"
         :min="32"
-        :max="128"
+        :max="192"
         :step="16"
         suffix="px"
       />
