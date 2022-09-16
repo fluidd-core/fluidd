@@ -64,6 +64,7 @@
     >
       <app-slider
         v-model="thumbnailSize"
+        class="ma-1"
         :label="$t('app.general.label.thumbnail_size')"
         :min="32"
         :max="192"
