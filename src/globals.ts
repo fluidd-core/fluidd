@@ -122,7 +122,8 @@ import {
   mdiViewHeadline,
   mdiAxisArrow,
   mdiVectorLine,
-  mdiOpenInNew
+  mdiOpenInNew,
+  mdiImageSizeSelectLarge
 } from '@mdi/js'
 
 /**
@@ -324,7 +325,8 @@ export const Icons = Object.freeze({
   viewHeadline: mdiViewHeadline,
   absolutePositioning: mdiAxisArrow,
   relativePositioning: mdiVectorLine,
-  openInNew: mdiOpenInNew
+  openInNew: mdiOpenInNew,
+  imageSizeSelectLarge: mdiImageSizeSelectLarge
 })
 
 export const Waits = Object.freeze({

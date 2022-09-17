@@ -56,6 +56,24 @@
       </slot>
     </v-tooltip>
 
+    <app-btn-collapse-group
+      v-if="['gcodes', 'timelapse'].includes(root)"
+      :collapsed="true"
+      menu-icon="$imageSizeSelectLarge"
+      size="small"
+    >
+      <app-slider
+        v-model="thumbnailSize"
+        class="ma-1"
+        :label="$t('app.general.label.thumbnail_size')"
+        :min="32"
+        :max="192"
+        :step="16"
+        :reset-value="32"
+        suffix="px"
+      />
+    </app-btn-collapse-group>
+
     <app-column-picker
       v-if="headers && rootProperties.canConfigure"
       :key-name="`${root}_${name}`"
@@ -127,9 +145,11 @@ import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
+import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
 
 @Component({
   components: {
+    AppBtnCollapseGroup,
     FileSystemMenu,
     FileSystemFilterMenu
   }
@@ -204,6 +224,18 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
       }
     }
     return false
+  }
+
+  get thumbnailSize () {
+    return this.$store.state.config.uiSettings.general.thumbnailSize
+  }
+
+  set thumbnailSize (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.thumbnailSize',
+      value,
+      server: true
+    })
   }
 
   mounted () {

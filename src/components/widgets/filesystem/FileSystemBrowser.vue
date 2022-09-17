@@ -69,8 +69,9 @@
               <img
                 v-if="item.thumbnails && item.thumbnails.length"
                 class="file-icon-thumb"
-                :class="{dense, large: largeThumbnails}"
-                :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
+                :class="{dense}"
+                :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
+                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 32, item.modified)"
               >
             </v-layout>
           </td>
@@ -297,9 +298,6 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Boolean, default: false })
   readonly bulkActions!: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly largeThumbnails!: boolean
-
   @Prop({ type: Array, required: true })
   readonly selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
@@ -313,6 +311,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.$store.getters['server/componentSupport']('history') &&
       this.root === 'gcodes'
     )
+  }
+
+  get thumbnailSize () {
+    return this.$store.state.config.uiSettings.general.thumbnailSize
   }
 
   mounted () {
@@ -446,10 +448,4 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   .file-icon-thumb.dense {
     max-width: 16px;
   }
-
-  .file-icon-thumb.large {
-    max-width: initial;
-    max-height: 32px;
-  }
-
 </style>
