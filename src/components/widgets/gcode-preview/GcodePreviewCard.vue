@@ -244,7 +244,9 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   @Watch('printerFile')
   onPrintFileChanged () {
-    if (this.autoLoadOnPrintStart && this.printerFile) {
+    if (this.autoLoadOnPrintStart &&
+      this.printerFile &&
+      ['paused', 'printing'].includes(this.printerState)) {
       this.loadCurrent()
     }
   }
