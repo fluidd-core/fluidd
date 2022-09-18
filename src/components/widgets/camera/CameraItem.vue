@@ -27,6 +27,7 @@
       :src="cameraUrl"
       class="camera-image"
       style="border: none; width: 100%"
+      :style="{height: fullscreen ? '100vh' : `${cameraHeight}px`}"
     />
 
     <div
