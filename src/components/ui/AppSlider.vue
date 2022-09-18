@@ -13,9 +13,8 @@
         align-self="center"
         class="text-body-1 py-0"
         :class="{ 'text--disabled': disabled }"
-      >
-        {{ label }}
-      </v-col>
+        v-html="label"
+      />
 
       <!-- Current value -->
       <v-col

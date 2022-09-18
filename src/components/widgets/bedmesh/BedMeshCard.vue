@@ -28,6 +28,7 @@
         ref="chart"
         :options="options"
         :data="series"
+        :graphics="graphics"
         :height="(isMobile) ? '225px' : '525px'"
       />
 
@@ -119,6 +120,21 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin) {
       this.createFlatSeries('mesh_matrix_flat')
     ]
     return series
+  }
+
+  get graphics () {
+    const variance = this.mesh[this.matrix].variance
+
+    return [{
+      type: 'text',
+      right: 10,
+      top: 0,
+      z: 100,
+      silent: true,
+      style: {
+        text: `Variance: ${variance.toFixed(4)}`
+      }
+    }]
   }
 
   createFlatSeries (matrix: string) {

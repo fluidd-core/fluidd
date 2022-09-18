@@ -268,6 +268,7 @@ app:
       smooth_time: Simítási idő
       speed: Sebesség
       sqv: Négyzet saroksebesség
+      thumbnail_size: Miniatűr mérete
       total: Eltelt
       total_filament: Összes felhasznált szál
       total_filament_avg: Átl. nyomtatásonként

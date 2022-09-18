@@ -11,7 +11,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(yHomed)"
-          :disabled="axisButtonDisabled(yHomed)"
+          :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$up"
           @click="sendMoveGcode('Y', toolheadMoveLength)"
         />
@@ -22,7 +22,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(zHomed)"
-          :disabled="axisButtonDisabled(zHomed)"
+          :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$up"
           @click="sendMoveGcode('Z', toolheadMoveLength)"
         />
@@ -51,7 +51,7 @@
       <v-col cols="auto">
         <app-btn-toolhead-move
           :color="axisButtonColor(xHomed)"
-          :disabled="axisButtonDisabled(xHomed)"
+          :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$left"
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
         />
@@ -76,7 +76,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(xHomed)"
-          :disabled="axisButtonDisabled(xHomed)"
+          :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$right"
           @click="sendMoveGcode('X', toolheadMoveLength)"
         />
@@ -121,8 +121,8 @@
         class="ml-12 mr-7"
       >
         <app-btn-toolhead-move
-          :color="axisButtonColor(xHomed)"
-          :disabled="axisButtonDisabled(yHomed)"
+          :color="axisButtonColor(yHomed)"
+          :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$down"
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
         />
@@ -133,7 +133,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(zHomed)"
-          :disabled="axisButtonDisabled(yHomed)"
+          :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$down"
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
         />
@@ -231,8 +231,8 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
     return axisHomed ? 'primary' : undefined
   }
 
-  axisButtonDisabled (axisHomed: boolean) {
-    return !this.klippyReady || (!axisHomed && !this.forceMove)
+  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean) {
+    return !this.klippyReady || (!axisHomed && !(this.forceMove && !axisMultipleSteppers))
   }
 
   /**

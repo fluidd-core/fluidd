@@ -60,7 +60,7 @@
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
-            suffix="mm/s^2"
+            suffix="mm/s²"
             @change="setAcceleration($event)"
           />
         </v-col>
@@ -79,7 +79,7 @@
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
-            suffix="mm/s^2"
+            suffix="mm/s²"
             @change="setDeceleration($event)"
           />
         </v-col>
