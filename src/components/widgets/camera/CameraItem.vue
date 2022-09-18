@@ -74,7 +74,7 @@ export default class CameraItem extends Vue {
   readonly fullscreen!: boolean
 
   @Ref('camera_image')
-  readonly cameraImage!: HTMLElement
+  readonly cameraImage!: HTMLImageElement
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -149,7 +149,7 @@ export default class CameraItem extends Vue {
    */
   beforeDestroy () {
     this.cancelCameraTransform()
-    this.cameraUrl = ''
+    this.cameraUrl = this.cameraImage.src = ''
     this.cameraFullScreenUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
   }
