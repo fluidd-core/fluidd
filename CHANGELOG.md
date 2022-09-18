@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.20.1](https://github.com/fluidd-core/fluidd/compare/v1.20.0...v1.20.1) (2022-09-18)
+
+
+### Features
+
+* adds variance to bed mesh chart ([#857](https://github.com/fluidd-core/fluidd/issues/857)) ([e0d8602](https://github.com/fluidd-core/fluidd/commit/e0d8602e792f44b8e713b4b1a5fc35a35fd9aeb1))
+* adjustable thumbnail size ([#862](https://github.com/fluidd-core/fluidd/issues/862)) ([0a3f8de](https://github.com/fluidd-core/fluidd/commit/0a3f8de1a0e71c01cc2bf54a6ad3985d88369c32))
+* **i18n-HU:** Update Hungarian Language ([#866](https://github.com/fluidd-core/fluidd/issues/866)) ([d8dafc8](https://github.com/fluidd-core/fluidd/commit/d8dafc843f6477f8581935414f7d6e513e87a2de))
+
+
+### Bug Fixes
+
+* Camera iframe width ([#867](https://github.com/fluidd-core/fluidd/issues/867)) ([fb3c955](https://github.com/fluidd-core/fluidd/commit/fb3c955107bc47ddd356ba026d6d30fdfbf930a9))
+* disable dashboard controls if Klipper is not ready ([#852](https://github.com/fluidd-core/fluidd/issues/852)) ([b08eec1](https://github.com/fluidd-core/fluidd/commit/b08eec19590d38cdbb2dfa798b89130fe6004427))
+* disable force_move on axis with multiple steppers ([#858](https://github.com/fluidd-core/fluidd/issues/858)) ([3514f15](https://github.com/fluidd-core/fluidd/commit/3514f15b0eb08226cbab4ad531f39e46d9ae4d15))
+* do not escape label for app-slider ([#861](https://github.com/fluidd-core/fluidd/issues/861)) ([a79f9eb](https://github.com/fluidd-core/fluidd/commit/a79f9eb7081c4de828523759662ab157467bc9ca))
+* pressure advance and acceleration units ([#859](https://github.com/fluidd-core/fluidd/issues/859)) ([8c10427](https://github.com/fluidd-core/fluidd/commit/8c104270b1b49daf6b7c1d8f3fc98187cd32bd05))
+
 ## [1.20.0](https://github.com/fluidd-core/fluidd/compare/v1.19.1...v1.20.0) (2022-08-28)
 
 
