@@ -26,8 +26,8 @@
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
-      :height="cameraHeight"
-      frameBorder="0"
+      style="border: none; width: 100%"
+      :style="{height: fullscreen ? '100vh' : `${cameraHeight}px`}"
     />
 
     <div
