@@ -294,8 +294,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   handleLightToggle () {
-    const target = this.isPinLightON() ? 0 : 1
-    this.sendGcode(`SET_PIN PIN=${this.topNavPinLight} VALUE=${target}`, Waits.onSetOutputPin)
+    this.sendGcode(`SET_PIN PIN=${this.topNavPinLight} VALUE=${+!this.topNavPinLightOn}`, Waits.onSetOutputPin)
   }
 
   async handlePowerToggle () {
