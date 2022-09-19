@@ -104,7 +104,7 @@
               :elevation="0"
               class="mr-1 bg-transparent"
               color="transparent"
-              :disabled="!klippyReady"
+              :disabled="!klippyReady || hasWait($waits.onSetOutputPin)"
               v-bind="attrs"
               v-on="on"
               @click="handleLightToggle()"
@@ -259,15 +259,12 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.state.config.uiSettings.general.topNavPinLight
   }
 
-  isPinLightON () {
+
+  get topNavPinLightOn () {
     const pins : Array<OutputPin> = this.$store.getters['printer/getPins']
     const lightPin = pins.find(pin => { return pin.name === this.topNavPinLight })
     if (lightPin !== undefined) return lightPin.value === 1
     return false
-  }
-
-  get topNavPinLightOn () {
-    return this.isPinLightON()
   }
 
   get topNavPowerToggleDisabled (): boolean {
