@@ -73,7 +73,8 @@ export const defaultState = (): ConfigState => {
         showManualProbeDialogAutomatically: true,
         showBedScrewsAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
-        enableDiagnostics: false
+        enableDiagnostics: false,
+        thumbnailSize: 32
       },
       theme: {
         isDark: true,

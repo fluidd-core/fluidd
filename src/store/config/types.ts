@@ -68,6 +68,7 @@ export interface GeneralConfig {
   showBedScrewsAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
   enableDiagnostics: boolean;
+  thumbnailSize: number;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';

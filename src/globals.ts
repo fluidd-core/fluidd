@@ -123,6 +123,7 @@ import {
   mdiAxisArrow,
   mdiVectorLine,
   mdiOpenInNew,
+  mdiImageSizeSelectLarge,
   mdiLightbulb,
   mdiLightbulbOutline
 } from '@mdi/js'
@@ -327,6 +328,7 @@ export const Icons = Object.freeze({
   absolutePositioning: mdiAxisArrow,
   relativePositioning: mdiVectorLine,
   openInNew: mdiOpenInNew,
+  imageSizeSelectLarge: mdiImageSizeSelectLarge,
   lightON: mdiLightbulb,
   lightOFF: mdiLightbulbOutline
 })

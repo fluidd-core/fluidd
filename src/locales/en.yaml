@@ -264,6 +264,7 @@ app:
       smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
+      thumbnail_size: Thumbnail Size
       total: Total
       total_filament: Total filament used
       total_filament_avg: Avg per print
