@@ -259,7 +259,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.state.config.uiSettings.general.topNavPinLight
   }
 
-
   get topNavPinLightOn () {
     const pins : Array<OutputPin> = this.$store.getters['printer/getPins']
     const lightPin = pins.find(pin => { return pin.name === this.topNavPinLight })
