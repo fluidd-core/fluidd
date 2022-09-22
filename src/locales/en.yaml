@@ -331,6 +331,8 @@ app:
         end_time: Ended
         estimated_time: Estimated time
         filament: Filament
+        filament_name: Filament name
+        filament_type: Filament type
         filament_used: Used filament
         filament_weight_total: Filament weight
         first_layer_bed_temp: First layer bed temp
@@ -341,6 +343,7 @@ app:
         layer_height: Layer height
         modified: Modified
         name: Name
+        nozzle_diameter: Nozzle diameter
         print_duration: Print duration
         size: Size
         slicer: Slicer

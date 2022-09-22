@@ -113,6 +113,26 @@
           <file-row-item
             v-if="root === 'gcodes'"
             :headers="headers"
+            item-value="filament_name"
+          >
+            <span v-if="item.filament_name !== undefined">
+              {{ item.filament_name }}
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="filament_type"
+          >
+            <span v-if="item.filament_type !== undefined">
+              {{ item.filament_type }}
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
             item-value="filament_total"
           >
             <span v-if="item.filament_total !== undefined">
@@ -137,6 +157,16 @@
           >
             <span v-if="item.history && item.history.filament_used !== undefined">
               {{ $filters.getReadableLengthString(item.history.filament_used) }}
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="nozzle_diameter"
+          >
+            <span v-if="item.nozzle_diameter !== undefined">
+              {{ item.nozzle_diameter }} mm
             </span>
           </file-row-item>
 
