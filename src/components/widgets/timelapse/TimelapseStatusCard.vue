@@ -42,6 +42,7 @@
               :suffix="`/ ${frameCount}`"
               :reset-value="frameCount"
               :disabled="!frameCount || isRendering"
+              @input="updatePreviewUrl"
             />
           </v-layout>
         </v-col>
@@ -75,6 +76,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import FilesMixin from '@/mixins/files'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import AppSlider from '@/components/ui/AppSlider.vue'
@@ -94,8 +96,13 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
     FileSystem
   }
 })
-export default class StatusCard extends Mixins(StateMixin) {
+export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   selectedFrameNumber = 0
+  previewUrl = ''
+
+  mounted () {
+    this.updatePreviewUrl()
+  }
 
   saveFrames () {
     SocketActions.machineTimelapseSaveFrames(this.waits.onTimelapseSaveFrame)
@@ -113,22 +120,16 @@ export default class StatusCard extends Mixins(StateMixin) {
     this.selectedFrameNumber = value === this.frameCount ? 0 : value
   }
 
-  get previewUrl () {
-    const url = new URL(this.apiUrl ?? document.location.origin)
-
+  async updatePreviewUrl () {
     if (this.lastFrame && this.lastFrame?.file) {
-      let file = this.lastFrame?.file
+      let file = this.lastFrame.file
       if (this.selectedFrame) {
-        const [ext] = file?.split('.').slice(-1)
+        const [ext] = file.split('.').slice(-1)
         file = `frame${this.selectedFrame.toString().padStart(6, '0')}.${ext}`
       }
 
-      url.pathname = `/server/files/timelapse_frames/${file}`
-    } else {
-      return
+      this.previewUrl = await this.createFileUrl(file, 'timelapse_frames')
     }
-
-    return url.toString()
   }
 
   get isRendering () {
@@ -154,10 +155,6 @@ export default class StatusCard extends Mixins(StateMixin) {
 
   get renderStatus (): RenderStatus | undefined {
     return this.$store.getters['timelapse/getRenderStatus']
-  }
-
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
   }
 }
 </script>
