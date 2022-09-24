@@ -148,11 +148,15 @@ export default class FilesMixin extends Vue {
    * @returns The url for the requested file
    */
   async createFileUrl (filename: string, path: string) {
-    const token = (await authApi.getOneShot()).data.result
-
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
+    let url = `${this.apiUrl}/server/files/${filepath}?date=${Date.now()}`
 
-    return `${this.apiUrl}/server/files/${filepath}?token=${token}&date=${Date.now()}`
+    if (this.$store.getters['server/getConfig'].authorization.force_logins) {
+      const token = (await authApi.getOneShot()).data.result
+      url += `&token=${token}`
+    }
+
+    return url
   }
 
   /**

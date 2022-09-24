@@ -105,6 +105,7 @@ export interface ServerConfig {
 
 export interface ServerAuthorization {
   enabled: boolean;
+  force_logins: boolean;
 }
 
 export interface ServerConfiguration {

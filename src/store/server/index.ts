@@ -19,7 +19,8 @@ export const defaultState = (): ServerState => {
     system_info: null,
     config: {
       authorization: {
-        enabled: true
+        enabled: true,
+        force_logins: false
       },
       server: {}
     },
