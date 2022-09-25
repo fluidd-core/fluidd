@@ -121,7 +121,7 @@ export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   async updatePreviewUrl () {
-    if (this.lastFrame && this.lastFrame?.file) {
+    if (this.lastFrame?.file) {
       let file = this.lastFrame.file
       if (this.selectedFrame) {
         const [ext] = file.split('.').slice(-1)
