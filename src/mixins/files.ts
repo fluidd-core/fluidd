@@ -151,7 +151,10 @@ export default class FilesMixin extends Vue {
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
     let url = `${this.apiUrl}/server/files/${filepath}?date=${Date.now()}`
 
-    if (this.$store.getters['server/getConfig'].authorization.force_logins) {
+    const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
+    const isTrusted = this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+
+    if (forceLogins || !isTrusted) {
       const token = (await authApi.getOneShot()).data.result
       url += `&token=${token}`
     }
