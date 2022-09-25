@@ -312,6 +312,7 @@ app:
         min_or_0: Min %{min} oder 0
         password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
+        invalid_aspect: Ungültiges Verhältnis
         invalid_number: Ungültige Zahl
         credentials: Ungültige Anmeldeinformationen
       msg:
@@ -435,6 +436,8 @@ app:
     label:
       all_off: Alle aus
       all_on: Alle an
+      aspect_ratio: Seitenverhältnis
+      aspect_ratio_format: 'Breite : Höhe'
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
