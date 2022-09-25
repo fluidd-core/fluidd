@@ -27,7 +27,11 @@
       :src="cameraUrl"
       class="camera-image"
       style="border: none; width: 100%"
-      :style="{height: fullscreen ? '100vh' : `${cameraHeight}px`}"
+      :style="{
+        height: (cameraHeight && !camera.aspectRatio) ? (fullscreen ? '100vh' : `${cameraHeight}px`) : undefined,
+        'aspect-ratio': camera.aspectRatio ? camera.aspectRatio.replace(':', '/') : undefined,
+        'max-height': camera.aspectRatio ? 'unset' : undefined
+      }"
     />
 
     <div
@@ -89,7 +93,7 @@ export default class CameraItem extends Vue {
   cameraUrl = ''
   cameraFullScreenUrl = ''
 
-  // iframe height
+  // iframe height, deprecated
   cameraHeight = 720
 
   // Maintains the last cachebust string

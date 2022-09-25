@@ -23,7 +23,8 @@ export type MoonrakerWebcamSource = 'config' | 'database'
 export interface CameraConfigWithoutId extends MoonrakerWebcamConfig {
   service?: CameraService;
   enabled: boolean;
-  height?: number;
+  height?: number; // deprecated
+  aspectRatio?: string;
   targetFpsIdle?: number;
 }
 
