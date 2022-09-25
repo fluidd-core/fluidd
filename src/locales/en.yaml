@@ -432,7 +432,7 @@ app:
       all_off: All off
       all_on: All on
       aspect_ratio: Aspect Ratio
-      aspect_ratio_format: 'width : height'
+      aspect_ratio_format: '[width : height]'
       auto_edit_extensions: Extensions to automatically open in edit mode
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start

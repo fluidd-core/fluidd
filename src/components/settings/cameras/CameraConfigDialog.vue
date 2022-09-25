@@ -149,7 +149,7 @@
         <app-setting
           v-if="camera.service === 'iframe'"
           :title="$t('app.setting.label.aspect_ratio')"
-          :sub-title="`[${$t('app.setting.label.aspect_ratio_format')}]`"
+          :sub-title="$t('app.setting.label.aspect_ratio_format')"
         >
           <v-text-field
             v-model="camera.aspectRatio"
