@@ -253,8 +253,11 @@ export default class CollapsableCard extends Vue {
     if (this.layoutPath) {
       if (this.layoutPath.includes('.')) {
         const split = this.layoutPath.split('.')
+        let name = split[0]
+        if (name === 'dashboard') name = this.$store.getters['layout/getSpecificLayout']
+
         return {
-          name: split[0],
+          name,
           id: split[1]
         }
       } else {
@@ -294,6 +297,7 @@ export default class CollapsableCard extends Vue {
 
   set isCollapsed (collapsed: boolean) {
     const value = this.layout
+    console.log(value, this._layoutPath)
     if (value && this._layoutPath) {
       value.collapsed = collapsed
       this.$store.dispatch('layout/onUpdateConfig', { name: this._layoutPath.name, value })
@@ -319,6 +323,7 @@ export default class CollapsableCard extends Vue {
     const value = this.layout
     if (value && this._layoutPath) {
       value.enabled = enabled
+      console.log({ ...this._layoutPath }, value)
       this.$store.dispatch('layout/onUpdateConfig', { name: this._layoutPath.name, value })
     }
   }
