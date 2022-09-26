@@ -310,6 +310,7 @@ app:
         min_or_0: Min %{min} or 0
         password_username: Cannot match username
         required: Required
+        invalid_aspect: Invalid Aspect Ratio
       msg:
         confirm: Are you sure?
         confirm_exclude_object: Are you sure you want to exclude this object from printing?
@@ -432,6 +433,8 @@ app:
     label:
       all_off: All off
       all_on: All on
+      aspect_ratio: Aspect Ratio
+      aspect_ratio_format: '[width : height]'
       auto_edit_extensions: Extensions to automatically open in edit mode
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
