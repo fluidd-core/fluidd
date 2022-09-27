@@ -172,7 +172,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   handleStopDrag () {
     this.drag = false
     this.$store.dispatch('layout/onLayoutChange', {
-      name: this.layoutName,
+      name: this.$store.getters['layout/getSpecificLayout'],
       value: {
         container1: this.containers[0],
         container2: this.containers[1],
