@@ -139,9 +139,13 @@
         v-html="$t('app.general.btn.reset_layout')"
       />
       <template v-if="isDashboard">
+        <v-divider
+          vertical
+          class="mx-2"
+        />
         <app-btn
           small
-          class="mx-2 ml-8"
+          class="mx-2"
           color="primary"
           @click.stop="handleSetDefaultLayout"
           v-html="$t('app.general.btn.set_default_layout')"
