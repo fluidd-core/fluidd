@@ -297,7 +297,6 @@ export default class CollapsableCard extends Vue {
 
   set isCollapsed (collapsed: boolean) {
     const value = this.layout
-    console.log(value, this._layoutPath)
     if (value && this._layoutPath) {
       value.collapsed = collapsed
       this.$store.dispatch('layout/onUpdateConfig', { name: this._layoutPath.name, value })
@@ -323,7 +322,6 @@ export default class CollapsableCard extends Vue {
     const value = this.layout
     if (value && this._layoutPath) {
       value.enabled = enabled
-      console.log({ ...this._layoutPath }, value)
       this.$store.dispatch('layout/onUpdateConfig', { name: this._layoutPath.name, value })
     }
   }
