@@ -165,7 +165,8 @@ app:
       rename: Rename
       reprint: Re-Print
       reset_file: Clear File
-      reset_layout: Reset Layout
+      reset_layout: Reset to Default Layout
+      reset_default_layout: Reset Default Layout
       restart_firmware: Firmware Restart
       restart_service: Restart %{service}
       restart_service_klipper: Restart Klipper
@@ -178,6 +179,7 @@ app:
       save_config_and_restart: Save config & restart
       send: Send
       set_color: Set Color
+      set_default_layout: Set as Default Layout
       shutdown: Shutdown
       snooze: Snooze
       socket_reconnect: Re-Connect
