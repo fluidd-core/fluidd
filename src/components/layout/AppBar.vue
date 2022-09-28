@@ -273,7 +273,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     let layoutDefaultState
     if (pathLayout) {
       // reset to default init state
-      layoutDefaultState = defaultState().layouts[pathLayouts[this.$route.path]]
+      layoutDefaultState = defaultState().layouts[pathLayout]
     } else {
       // reset dashboard to default layout
       layoutDefaultState = this.$store.getters['layout/getLayout']('dashboard')
