@@ -131,7 +131,8 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get layout () {
-    return this.$store.getters['layout/getLayout'](this.$store.getters['layout/getSpecificLayout'])
+    const layoutName = this.$store.getters['layout/getSpecificLayout']
+    return this.$store.getters['layout/getLayout'](layoutName)
   }
 
   @Watch('layout')
