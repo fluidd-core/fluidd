@@ -279,7 +279,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
       layoutDefaultState = this.$store.getters['layout/getLayout']('dashboard')
     }
 
-    const toReset = pathLayout ?? this.$store.getters['layout/getSpecificLayout']
+    const toReset = pathLayout ?? this.$store.getters['layout/getSpecificLayoutName']
 
     this.$store.dispatch('layout/onLayoutChange', {
       name: toReset,
@@ -288,7 +288,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   handleSetDefaultLayout () {
-    const currentLayoutName = this.$store.getters['layout/getSpecificLayout']
+    const currentLayoutName = this.$store.getters['layout/getSpecificLayoutName']
     this.$store.dispatch('layout/onLayoutChange', {
       name: 'dashboard',
       value: this.$store.getters['layout/getLayout'](currentLayoutName)

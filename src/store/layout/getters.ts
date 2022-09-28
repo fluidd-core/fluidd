@@ -58,7 +58,7 @@ export const getters: GetterTree<LayoutState, RootState> = {
     }
   },
 
-  getSpecificLayout: (state, getters, rootState, rootGetters): string => {
+  getSpecificLayoutName: (state, getters, rootState, rootGetters): string => {
     const user = rootGetters['auth/getCurrentUser']
     if (!user) return 'dashboard'
 

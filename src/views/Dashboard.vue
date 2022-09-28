@@ -131,7 +131,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get layout () {
-    const layoutName = this.$store.getters['layout/getSpecificLayout']
+    const layoutName = this.$store.getters['layout/getSpecificLayoutName']
     return this.$store.getters['layout/getLayout'](layoutName)
   }
 
@@ -173,7 +173,7 @@ export default class Dashboard extends Mixins(StateMixin) {
   handleStopDrag () {
     this.drag = false
     this.$store.dispatch('layout/onLayoutChange', {
-      name: this.$store.getters['layout/getSpecificLayout'],
+      name: this.$store.getters['layout/getSpecificLayoutName'],
       value: {
         container1: this.containers[0],
         container2: this.containers[1],
