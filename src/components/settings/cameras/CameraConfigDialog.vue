@@ -148,16 +148,17 @@
 
         <app-setting
           v-if="camera.service === 'iframe'"
-          :title="$t('app.setting.label.height')"
+          :title="$t('app.setting.label.aspect_ratio')"
+          :sub-title="$t('app.setting.label.aspect_ratio_format')"
         >
           <v-text-field
-            v-model.number="camera.height"
+            v-model="camera.aspectRatio"
             class="mt-5"
             filled
             dense
             single-line
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[rules.required, rules.aspect]"
           />
         </app-setting>
 
@@ -207,7 +208,8 @@ export default class CameraConfigDialog extends Vue {
   rules = {
     required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
     minFps: (v: number) => (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 }),
-    maxFps: (v: number) => (v <= 60) || this.$t('app.general.simple_form.error.max', { max: 60 })
+    maxFps: (v: number) => (v <= 60) || this.$t('app.general.simple_form.error.max', { max: 60 }),
+    aspect: (v: string) => /^\d+\s*[:/]\s*\d+$/.test(v) || this.$t('app.general.simple_form.error.invalid_aspect')
   }
 
   handleSave () {
