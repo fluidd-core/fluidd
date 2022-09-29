@@ -165,7 +165,8 @@ app:
       rename: Umbenennen
       reprint: Druck wiederholen
       reset_file: Datei zurücksetzen
-      reset_layout: Layout zurücksetzen
+      reset_layout: Auf Standardlayout zurücksetzen
+      reset_default_layout: Standardlayout zurücksetzen
       restart_firmware: Firmware Neustarten
       restart_service: '%{service} neustarten'
       restart_service_klipper: Klipper neustarten
@@ -177,6 +178,7 @@ app:
       save_restart: Speichern & Neu starten
       send: Senden
       set_color: Farbe setzen
+      set_default_layout: Als Standardlayout setzen
       shutdown: Herunterfahren
       socket_reconnect: Neu verbinden
       socket_refresh: Aktualisieren erzwingen
