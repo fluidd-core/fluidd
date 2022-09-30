@@ -24,8 +24,8 @@ app:
       item: 名称
       'off': チャートオフ
       'on': チャートオン
-      power: 電源
-      rate_of_change: 変更
+      power: 出力
+      rate_of_change: 変化値
       target: ターゲット温度
     tooltip:
       help: >-
@@ -38,7 +38,7 @@ app:
       hide_temp_waits: 待機中を隠す
     placeholder:
       command: タブでオートコンプリート、helpと入力でコマンド一覧表示 矢印で履歴ーを表示
-      scroll: 下にスクロール
+      scroll: ''
   endpoint:
     error:
       cant_connect: 何か問題が発生し、fluiddがアドレスに接続できません。このアドレスで間違いないですか？
@@ -53,7 +53,7 @@ app:
     tooltip:
       endpoint_examples: >-
         API URLを入力してください。<br />例としては、<blockquote>fluidd.local,
-        https://192.168.1.150</blockquote><br />があります。
+        https://192.168.1.150</blockquote><br />があります。 
   endstop:
     label:
       open: オープン
@@ -63,6 +63,8 @@ app:
   file_system:
     filters:
       label:
+        hidden_files: 隠しファイルを非表示
+        klipper_backup_files: バックアップファイルを非表示
         print_start_time: 印刷済みを隠す
         print_start_time_desc: すでに印刷したものをフィルタリングします。
     label:
@@ -73,6 +75,7 @@ app:
       file_name: ファイル名
       transfer_rate: 転送速度
       uploaded: アップロード
+      view_section_documentation: '''%{section}'' ドキュメントを表示'
     msg:
       confirm: すべてのファイルとフォルダーが削除されます。よろしいですか？
       not_found: ファイルが見つかりません
@@ -82,37 +85,51 @@ app:
     title:
       add_dir: ディレクトリの追加
       add_file: ファイルの追加
+      command_palette: コマンドパレット
       download_file: ファイルの取得
+      keyboard_shortcuts: ''
       rename_dir: ディレクトリの名変更
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
     tooltip:
       low_on_space: ディスク容量が少なくなりました。
       root_disabled: '{root} rootは使用できません。ログを確認してください。'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: >-
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
   gcode:
     btn:
       load_current_file: 現在のファイルを読み込む
     label:
       current_layer_height: 現在のレイヤーの高さ
+      exclude_object: オブジェクトを除外
       follow_progress: 進捗状況を確認する
       layer: レイヤー
       layers: レイヤー
       parsed: 解析済み
+      parsing_file: ファイルを解析しています
+      show_current_layer: 現在のレイヤーを表示
       show_extrusions: 押し出しを表示
       show_moves: 軌跡を表示
       show_next_layer: 次のレイヤーを表示
       show_previous_layer: 前のレイヤーを表示
-      show_retractions: リトラクションの表示
+      show_retractions: 撤回を表示
     msg:
       confirm: '"%{filename}"は %{size}です。これは、システムにとってリソースを大量に消費する可能性があります。よろしいですか？'
   general:
     btn:
+      abort: アボート
+      accept: 同意する
       add: 追加
       add_dir: ディレクトリを追加
       add_file: ファイルを追加
       add_printer: プリンターを追加
       adjust_layout: ダッシュボードのレイアウトを調整する
+      adjusted: 調整済み
       all: すべて
+      auth_unsure: なぜこれを見ているのかわからない？
       calibrate: 調整する
       cancel: キャンセル
       clear_profile: プロファイルをクリア
@@ -122,8 +139,10 @@ app:
       edit: 編集
       exit_layout: レイアウトモードを終了する
       extrude: 押し出し
+      forgot_password: パスワードをお忘れですか？
       heaters_off: ヒーターオフ
       load_all: すべて読み込み
+      login: ログイン
       more_information: 詳細はこちら
       pause: 一時停止
       preheat: プレヒート
@@ -136,6 +155,7 @@ app:
       remove_all: すべて削除
       rename: 名前の変更
       reprint: 再印刷
+      reset_default_layout: デフォルトのレイアウトをリセット
       reset_file: クリアファイル
       reset_layout: レイアウトをリセット
       reset_stats: 統計情報をリセット
@@ -147,10 +167,13 @@ app:
       retract: リトラクト
       save: 保存
       save_as: 名前を付けて保存
+      save_config_and_restart: 設定を保存して再起動
       save_restart: 保存と再起動
       send: 送信
       set_color: セットカラー
+      set_default_layout: デフォルトのレイアウトとして設定
       shutdown: シャットダウン
+      snooze: スヌーズ
       socket_reconnect: 再接続
       socket_refresh: 強制リフレッシュ
       upload: アップロード
@@ -162,10 +185,12 @@ app:
       components_config: 'Moonrakerのプラグイン設定は、こちら <a target="_blank" href="%{url}">です。</a>'
       failed_components: Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
     label:
-      accel_to_decel: 加減速
+      accel_to_decel: Accel to Decel
       acceleration: 加速度
+      accepted_screws: ネジを有効
       actual_time: 実際の
       add_camera: カメラ追加
+      add_category: ''
       add_filter: フィルターの追加
       add_preset: プリセット追加
       add_user: ユーザーの追加
@@ -173,14 +198,17 @@ app:
       api_key: APIキー
       api_url: API URL
       apply_z_offset: Z_Offsetの適用と保存
+      auth_source: 認証元
       category: カテゴリー
       change_password: パスワードの変更
       clear_all: すべてクリア
       color: カラー
       confirm: 確認
       current_password: 現在のパスワード
+      current_user: 現在の使用者
       disabled_while_printing: 印刷中は無効
       edit_camera: カメラの編集
+      edit_category: カテゴリを編集
       edit_filter: フィルターの編集
       edit_preset: プリセットの編集
       edit_user: ユーザーの編集
@@ -188,6 +216,7 @@ app:
       extrude_speed: 押し出し速度
       filament: フィラメント
       file: ファイル
+      file_time: ファイル
       finish_time: 終了
       flow: フロー
       free: フリー
@@ -196,26 +225,35 @@ app:
       host: ホスト
       layer: レイヤー
       layout: レイアウト
+      ldap: LDAP
       longest_job: 長い印刷
       low: 低い
       m117: M117
+      moonraker: Moonraker
       name: 名前
       new_password: 新しいパスワード
       no_notifications: 通知なし
       'off': オフ
       'on': オン
+      partial_of_total: '  %{total}の%{partial} '
       password: パスワード
       power: 電源
+      pressure_advance: 圧力上昇
       printers: プリンター
       progress: 進捗
       requested_speed: スピード
       retract_length: リトラクト長
       retract_speed: リトラクト速度
       save_as: 名前を付けて保存
+      screw_index: ねじインデックス
+      screw_name: ねじ名
+      screw_number: 'ねじ %{index}'
       services: サービス
       slicer: スライサー
+      smooth_time: スムーズタイム
       speed: スピード
       sqv: 正方形角速度
+      thumbnail_size: サムネイルのサイズ
       total: 合計
       total_filament: フィラメント総使用量
       total_filament_avg: プリントあたりの平均値
@@ -224,23 +262,33 @@ app:
       total_print_time_avg: プリントあたりの平均値
       total_time: 合計時間
       total_time_avg: プリントあたりの平均値
+      turn_device_off: ' %{device} をオフにする'
+      turn_device_on: ' %{device} をオンにする'
       uncategorized: 未分類
-      unretract_extra_length: アンリトラクト長さ
-      unretract_speed: アンリトラクトスピード
+      unretract_extra_length: Unretract Extra Length
+      unretract_speed: Unretract Speed
       unsaved_changes: 保存されていない変更
       used: used
+      user_managed_source: ' %{source} 認証によって管理されるユーザー'
+      username: ユーザー名
       variance: 増減率
       velocity: 速度
       visible: 見える
       z_offset: Zオフセット
     msg:
+      bed_screws_adjust: >-
+        現在のネジで大幅な調整が必要な場合は、 <b>調整済み</b> をクリックします。そうでない場合は、 <b>同意する</b>
+        をクリックして続行します。
       password_changed: パスワードの変更
       wrong_password: おっと、何か問題が発生したようですよ。パスワードは正しいですか？
     simple_form:
       error:
         arrayofnums: 数字のみ
+        credentials: 無効な資格情報
         exists: すでに存在する
+        invalid_aspect: アスペクト比が無効です
         invalid_expression: 無効な表現
+        invalid_number: 無効な番号
         invalid_url: 無効なURL
         max: '最大 %{max}'
         min: '最小 %{min}'
@@ -251,6 +299,8 @@ app:
         apply_z_offset_endstop: Endstop のZ-Offsetは、現在のZ-Offsetから計算され、更新されます。
         apply_z_offset_probe: Probe/Bltouch Zオフセットは、現在のZオフセットから計算され、更新されます。
         confirm: よろしいですか？
+        confirm_exclude_object: このオブジェクトを印刷から除外してもよろしいですか?
+        confirm_forcemove_toggle: これにより、プリンターが損傷する可能性があります。よろしいですか？
         confirm_power_device_toggle: このデバイスの電源が切り替わります。よろしいですか？
         confirm_reboot_host: ホストシステムが再起動されます。よろしいですか？
         confirm_service_restart: '%{name} サービスを再起動してよろしいですか？'
@@ -260,9 +310,12 @@ app:
     table:
       header:
         actions: アクション
+        chamber_temp: チャンバー温度
         end_time: 終了
         estimated_time: 予定時間
         filament: フィラメント
+        filament_name: フィラメント名
+        filament_type: フィラメントタイプ
         filament_used: 使用フィラメント
         filament_weight_total: フィラメント重量
         first_layer_bed_temp: １層目ベッド温度
@@ -273,6 +326,7 @@ app:
         layer_height: レイヤーの高さ
         modified: モディファイド
         name: 名前
+        nozzle_diameter: ノズル径
         print_duration: プリント期間
         size: サイズ
         slicer: スライサー
@@ -281,6 +335,7 @@ app:
         status: 状態
         total_duration: 合計期間
     title:
+      add_chart: グラフを追加
       add_printer: プリンターの追加
       bedmesh: ベッドメッシュ
       bedmesh_controls: ベッドメッシュコントロール
@@ -288,29 +343,38 @@ app:
       config_files: Configurationファイル
       configure: Configuration
       console: コンソール
+      diagnostics: 診断
+      edit_chart: チャートを編集
       endstops: エンドストップ
       fans_outputs: ファン＆出力
-      gcode_preview: 'Gcode Preview'
+      gcode_preview: 'Gcode Preview [ ベータ版 ]'
       history: 履歴
       home: ホーム
       jobs: 印刷ジョブ
       limits: プリンター制限
       macros: マクロ
+      metrics_explorer: メトリクス エクスプローラー
       other_files: その他のファイル
-      retract: Firmwareを戻す
+      pending_configuration_changes: 保留中の構成変更
+      retract: Firmware Retraction
       runout_sensors: フィラメント断線センサー
       settings: 設定
       stats: プリンター統計
       system: システム
       system_overview: システム情報
       temperature: サーマル
+      timelapse: タイムラプス
       tool: ツール
       tune: チューン
     tooltip:
+      browse_metrics: 利用可能なメトリックを閲覧する
       estop: 緊急停止
+      managed_by_moonraker: Moonraker 構成によって管理されます
+      notifications: 通知
       reload_klipper: klipper の設定を再読み込みする。
       reload_restart_klipper: クリッパーのコンフィギュレーションを再読み込みし、MCUを再起動します。
       restart_klipper: klipperのシステムサービスを再起動します。
+      run_collector: 実行コレクター
   history:
     msg:
       confirm_jobs: すべてのジョブがクリアされます。よろしいですか？
@@ -331,6 +395,7 @@ app:
       add_camera: カメラを追加
       add_category: カテゴリを追加
       add_filter: フィルターの追加
+      add_metric: メトリックを追加
       add_thermal_preset: プリセット追加
       add_user: ユーザーの追加
       reset: リセット
@@ -348,52 +413,94 @@ app:
     label:
       all_off: すべてオフ
       all_on: すべてオン
+      aspect_ratio: アスペクト比
+      aspect_ratio_format: '[幅 : 高さ]'
       auto_edit_extensions: 拡張機能を編集モードで自動的に開く
+      auto_follow_on_file_load: ファイル読み込みの進行状況を自動的に追跡
+      auto_load_on_print_start: 印刷開始時にファイルを自動的に読み込む
+      axes: 軸
       camera_flip_x: 水平方向に反転させる
       camera_flip_y: 縦方向に反転させる
+      camera_fullscreen_action:
+        embed: 埋め込む
+        rawstream: Rawストリーム
+        title: フルスクリーンアクション
       camera_rotate_by: 回転させる
       camera_stream_type: ストリームタイプ
       camera_url: カメラURL
+      card: カード
+      collector: コレクタ
       confirm_dirty_editor_close: 保存されていない変更内容でエディタを閉じる場合、確認を表示する。
       confirm_on_estop: 緊急停止時の確認を表示する。
       confirm_on_power_device_change: デバイスの電源変更時に確認を表示する。
+      confirm_on_save_config_and_restart: 保存して再起動する前に保留中の構成変更を確認する
       contains: 内容
       dark_mode: ダークモード
+      dashed: ダッシュ
       date_time_format: 日付と時刻の表示方法
       default_extrude_length: デフォルトの押し出し長さ
       default_extrude_speed: デフォルトの押し出し速度
       default_toolhead_move_length: ツールヘッド移動長の初期設定
       default_toolhead_xy_speed: デフォルトのツールヘッドXY速度
       default_toolhead_z_speed: デフォルトのツールヘッドZ速度
+      dotted: 点在
       draw_background: 背景を描く
       enable: 有効化
+      enable_diagnostics: 診断を有効にする
       enable_notifications: 通知を有効にする
       expression: 表現方法
       extrusion_line_width: 押し出し線幅
+      fill_color: 塗りつぶしの色
+      fill_opacity: 不透明度を塗りつぶす
       filter: フィルター｜フィルター
       flip_horizontal: 水平フリップ
       flip_vertical: 縦型フリップ
+      force_move_toggle_warning: 強制移動 をアクティブにするときに確認が必要
       fps_idle_target: '非フォーカス時のターゲットFPS '
       fps_target: FPSターゲット
       gcode_coords: GCode座標を使用する
       group_lower_layers: グループ下位層
       height: 高さ
+      icon: アイコン
       invert_x_control: Xコントロールを反転
       invert_y_control: Yコントロールを反転
       invert_z_control: Zコントロールを反転
       language: 表示言語
+      last_result: 最後の結果
+      left_y: 左 Y 軸
+      line_color: 線の色
+      line_style: 線のスタイル
+      max: 最大
+      metrics: メトリック
+      min: 最小
       move_line_width: 線幅の移動
+      name: 名称
+      none: 無し
+      optional: オプション
+      power_toggle_in_top_nav: 上部ナビゲーションの電源切り替え
       primary_color: 現在の色
       printer_name: プリンター名
       reset: 設定をリセット
       retraction_icon_size: 引き込みアイコンのサイズ
+      right_y: 右 Y 軸
       show_animations: アニメーションを表示する
+      show_barometric_pressure: 気圧を表示
+      show_bed_screws_adjust_dialog_automatically: ベッドスクリュー調整ダイアログを自動的に表示
+      show_code_lens: CodeLens を表示
+      show_legend: 凡例を表示
+      show_manual_probe_dialog_automatically: 手動プローブ ダイアログを自動的に表示
       show_rate_of_change: 温度変化率を表示する
-      starts_with: Starts with
+      show_relative_humidity: 相対湿度を表示
+      show_save_config_and_restart: '上部ナビゲーションに [設定を保存して再起動] ボタン'
+      solid: ソリッド
+      starts_with: で始まる
       theme_preset: コミュニティプリセット
       thermal_preset_gcode: GCode
       thermal_preset_name: プリセット名
+      title: タイトル
+      toolhead_move_distances: ツールヘッド距離値
       type: タイプ
+      unit: 単位
       z_adjust_values: Z値を調整します
     timer_options:
       duration: 期間のみ
@@ -412,7 +519,10 @@ app:
       thermal_presets: サーマルプリセット
       tool: Tool
     tooltip:
+      diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
       gcode_coords: ダッシュボードのツールヘッド位置の代わりにGCode位置を使用する
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー ダイアログを表示します
+      show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー ダイアログを表示します
   socket:
     msg:
       connecting: moonrakerに接続しています...
@@ -424,6 +534,7 @@ app:
       distribution_codename: コード名
       distribution_like: ディストリビューションライク
       distribution_name: ディストリビューション
+      frequency: 周波数
       hardware_desc: ハードウェアの説明
       hostname: ホスト名
       klipper_load: Klipper 稼働状況
@@ -431,7 +542,9 @@ app:
       manufacturer: メーカー
       mcu_awake: '{mcu} アウェイクタイム'
       mcu_bandwidth: '{mcu} 帯域幅'
+      mcu_information: '{mcu} 情報'
       mcu_load: '{mcu} 稼働状況'
+      micro_controller: マイクロコントローラー
       model: CPUモデル
       moonraker_load: Moonraker稼働状況
       processor_desc: プロセッサー
@@ -441,25 +554,91 @@ app:
       system_memory: システムメモリ
       system_utilization: システム使用率
       total_memory: 総メモリ
+      version: バージョン
+  timelapse:
+    btn:
+      render: レンダリング
+      save_frames: フレームを保存
+    error:
+      newframe: タイムラプス フレームの撮影中にエラーが発生しました
+    label:
+      frame: フレーム | フレームフレーム
+      frames: '%{frames} フレーム | %{frames} フレーム'
+      length: '推定長さ: %{length}'
+    setting:
+      auto_render: 自動レンダリング
+      crf: 定率係数
+      duplicatelastframe: 最後のフレームを複製
+      enable: 有効
+      fw_retract: ファームウェアの撤回を使用する
+      gcode_verbose: 詳細な G コード
+      hyperlapse_cycle: ハイパーラプス サイクル
+      mode: モード
+      mode_hyperlapse: ハイパーラプス
+      mode_layermacro: レイヤーマクロ
+      output_framerate: フレームレート出力
+      park_custom_pos_dz: パークポジション Z-Hop
+      park_custom_pos_x: パークポジション X
+      park_custom_pos_y: パークポジションY
+      park_extrude_distance: パークエクストルーダー距離
+      park_extrude_speed: パーク押し出し速度
+      park_retract_distance: パーク引込長さ
+      park_retract_speed: パーク引込速度
+      park_time: パークタイム
+      park_travel_speed: パーク移動速度
+      parkhead: パークヘッド
+      parkpos:
+        back_left: 左後
+        back_right: 右後
+        center: センター
+        custom: カスタム
+        front_left: 左前
+        front_right: 右前
+        label: パークポジション
+      previewimage: サムネイルを生成
+      saveframes: フレームを保存する
+      stream_delay_compensation: 遅延補償
+      targetlength: 目標長さ
+      variable_fps: バリアブルFPS
+      variable_fps_max: 最大フレームレート
+      variable_fps_min: 最小フレームレート
+    title:
+      render_settings: レンダリング設定
+      timelapse_settings: タイムラプスの設定
+      timelapse_status: タイムラプスの状況
   tool:
     btn:
+      home_all: すべて
       home_x: X
       home_y: 'Y'
+    title:
+      bed_screws_adjust: ベッドスクリューの調整
+      manual_probe: マニュアルプローブ
     tooltip:
+      absolute_positioning: 相対位置
+      bed_screws_adjust: ベッドスクリューの調整
       extruder_disabled: '最小温度未満（%{min}<small>°C</small>）のためホットエンドが無効です。'
+      force_move: 強制移動
       home_xy: Home XY
       home_z: Home Z
+      manual_probe: マニュアルプローブ
+      motors_off: モーターオフ
+      quad_gantry_level: QGL
+      relative_positioning: 相対位置
+      screws_tilt_calculate: ネジチルト計算
+      z_tilt_adjust: Zチルト調整
   version:
     btn:
       check_for_updates: アップデートを確認
       finish: 終了
       update: アップデート
+      update_all: 全てをアップデート
       view_versions: バージョンを表示
     label:
       commit_history: 書込み履歴
       commits_on: 書込みする
       committed: 書込みする
-      dirty: ダーティー
+      dirty: DIRTY
       invalid: 無効
       os_packages: OSパッケージ
       package_list: パッケージリスト
@@ -475,4 +654,3 @@ app:
       invalid: リポジトリへのローカル変更を示します
       packages: パッケージ
       release_notes: リリースノート
-
