@@ -102,6 +102,16 @@ export interface RunoutSensor {
   filament_detected: boolean;
 }
 
+export interface Endstop {
+  name: string;
+  state: string;
+}
+
+export interface Probe {
+  last_z_result: number;
+  last_query: boolean;
+}
+
 // printer.mcu[num]
 export interface KlipperMcu {
   last_stats: KlipperMcuStats;
