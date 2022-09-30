@@ -133,7 +133,10 @@ export const actions: ActionTree<AuthState, RootState> = {
         localStorage.setItem(keys['refresh-token'], user.refresh_token)
         httpClient.defaults.headers.common.Authorization = `Bearer ${user.token}`
         commit('setAuthenticated', true)
-        commit('setCurrentUser', user.username)
+        commit('setCurrentUser', {
+          username: user.username,
+          source: user.source
+        })
         commit('setToken', user.token)
         commit('setRefreshToken', user.refresh_token)
         return Promise.resolve(user)
@@ -201,13 +204,14 @@ export const actions: ActionTree<AuthState, RootState> = {
 
     // Make the request.
     await authApi.getCurrentUser({ withAuth: false })
+      .then(response => response.data.result)
       .then((user) => {
         // Re-apply the token.
         httpClient.defaults.headers.common.Authorization = `Bearer ${token}`
 
         // no error, so must be trusted. partial logout.
         dispatch('logout', { partial: true })
-        commit('setCurrentUser', user.data.result)
+        commit('setCurrentUser', user)
       })
       .catch(() => {
         // error. not trusted. log'em out.
