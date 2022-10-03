@@ -38,7 +38,7 @@ app:
       hide_temp_waits: 待機中を隠す
     placeholder:
       command: タブでオートコンプリート、helpと入力でコマンド一覧表示 矢印で履歴ーを表示
-      scroll: ''
+      scroll: '下にスクロール'
   endpoint:
     error:
       cant_connect: 何か問題が発生し、fluiddがアドレスに接続できません。このアドレスで間違いないですか？
@@ -52,8 +52,8 @@ app:
       trouble: 'お困りですか？ <a href="%{url}" target="_blank">詳細はこちら</a> をご覧ください。'
     tooltip:
       endpoint_examples: >-
-        API URLを入力してください。<br />例としては、<blockquote>fluidd.local,
-        https://192.168.1.150</blockquote><br />があります。 
+        API URLを入力してください。<br />例としては、<br /><blockquote>fluidd.local,
+        https://192.168.1.150 があります</blockquote>。 
   endstop:
     label:
       open: オープン
@@ -87,7 +87,7 @@ app:
       add_file: ファイルの追加
       command_palette: コマンドパレット
       download_file: ファイルの取得
-      keyboard_shortcuts: ''
+      keyboard_shortcuts: 'キーボードショートカット'
       rename_dir: ディレクトリの名変更
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
@@ -115,7 +115,7 @@ app:
       show_moves: 軌跡を表示
       show_next_layer: 次のレイヤーを表示
       show_previous_layer: 前のレイヤーを表示
-      show_retractions: 撤回を表示
+      show_retractions: リトラクションの表示
     msg:
       confirm: '"%{filename}"は %{size}です。これは、システムにとってリソースを大量に消費する可能性があります。よろしいですか？'
   general:
@@ -185,7 +185,7 @@ app:
       components_config: 'Moonrakerのプラグイン設定は、こちら <a target="_blank" href="%{url}">です。</a>'
       failed_components: Moonrakerはプラグインに失敗しています。ログを確認し、設定を更新して、moonrakerを再起動してください。
     label:
-      accel_to_decel: Accel to Decel
+      accel_to_decel: 加減速
       acceleration: 加速度
       accepted_screws: ネジを有効
       actual_time: 実際の
@@ -235,7 +235,7 @@ app:
       no_notifications: 通知なし
       'off': オフ
       'on': オン
-      partial_of_total: '  %{total}の%{partial} '
+      partial_of_total: '%{total}の%{partial} '
       password: パスワード
       power: 電源
       pressure_advance: 圧力上昇
@@ -265,8 +265,8 @@ app:
       turn_device_off: ' %{device} をオフにする'
       turn_device_on: ' %{device} をオンにする'
       uncategorized: 未分類
-      unretract_extra_length: Unretract Extra Length
-      unretract_speed: Unretract Speed
+      unretract_extra_length: アンリトラクト長さ
+      unretract_speed: アンリトラクト速度
       unsaved_changes: 保存されていない変更
       used: used
       user_managed_source: ' %{source} 認証によって管理されるユーザー'
@@ -347,7 +347,7 @@ app:
       edit_chart: チャートを編集
       endstops: エンドストップ
       fans_outputs: ファン＆出力
-      gcode_preview: 'Gcode Preview [ ベータ版 ]'
+      gcode_preview: 'Gcode プレビュー'
       history: 履歴
       home: ホーム
       jobs: 印刷ジョブ
@@ -356,7 +356,7 @@ app:
       metrics_explorer: メトリクス エクスプローラー
       other_files: その他のファイル
       pending_configuration_changes: 保留中の構成変更
-      retract: Firmware Retraction
+      retract: ファームウェアを戻す
       runout_sensors: フィラメント断線センサー
       settings: 設定
       stats: プリンター統計
@@ -638,7 +638,7 @@ app:
       commit_history: 書込み履歴
       commits_on: 書込みする
       committed: 書込みする
-      dirty: DIRTY
+      dirty: ダーティー
       invalid: 無効
       os_packages: OSパッケージ
       package_list: パッケージリスト
