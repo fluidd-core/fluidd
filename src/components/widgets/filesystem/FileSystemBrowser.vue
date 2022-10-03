@@ -71,7 +71,7 @@
                 class="file-icon-thumb"
                 :class="{dense}"
                 :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
-                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 32, item.modified)"
+                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
           </td>
