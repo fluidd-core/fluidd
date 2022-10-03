@@ -190,7 +190,7 @@ app:
       accepted_screws: ネジを有効
       actual_time: 実際の
       add_camera: カメラ追加
-      add_category: ''
+      add_category: カテゴリーの追加
       add_filter: フィルターの追加
       add_preset: プリセット追加
       add_user: ユーザーの追加
