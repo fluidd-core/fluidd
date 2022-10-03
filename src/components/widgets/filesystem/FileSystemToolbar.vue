@@ -66,10 +66,10 @@
         v-model="thumbnailSize"
         class="ma-1"
         :label="$t('app.general.label.thumbnail_size')"
-        :min="16"
+        :min="32"
         :max="192"
         :step="16"
-        :reset-value="16"
+        :reset-value="32"
         suffix="px"
       />
     </app-btn-collapse-group>
