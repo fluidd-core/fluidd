@@ -53,7 +53,7 @@ app:
     tooltip:
       endpoint_examples: >-
         API URLを入力してください。<br />例としては、<br /><blockquote>fluidd.local,
-        https://192.168.1.150 があります</blockquote>。 
+        https://192.168.1.150 があります</blockquote>。
   endstop:
     label:
       open: オープン
