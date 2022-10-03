@@ -61,13 +61,13 @@
             <v-layout justify-center>
               <v-icon
                 v-if="!item.thumbnails || !item.thumbnails.length"
-                :small="dense"
+                :size="thumbnailSize"
                 :color="(item.type === 'file') ? 'grey' : 'primary'"
               >
                 {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
               </v-icon>
               <img
-                v-if="item.thumbnails && item.thumbnails.length"
+                v-else
                 class="file-icon-thumb"
                 :class="{dense}"
                 :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
