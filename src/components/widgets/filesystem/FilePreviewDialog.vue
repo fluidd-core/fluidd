@@ -21,7 +21,6 @@
         <v-layout justify-center>
           <video
             v-if="isVideo"
-            class="video-preview"
             controls
           >
             <source
@@ -30,6 +29,11 @@
             >
           </video>
 
+          <img
+            v-else-if="isImage"
+            :src="file.src"
+          >
+
           <div v-else>
             {{ (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }}
             cannot currently be previewed.
@@ -37,31 +41,30 @@
         </v-layout>
       </v-card-text>
 
-      <v-divider />
+      <template v-if="file.appFile && (removable || downloadable)">
+        <v-divider />
 
-      <v-card-actions
-        v-if="file.appFile && (removable || downloadable)"
-        class="pt-4"
-      >
-        <v-spacer />
-        <app-btn
-          v-if="file.appFile && removable"
-          text
-          color="error"
-          @click="$emit('remove', file.appFile, () => $emit('close'))"
-        >
-          <v-icon>$delete</v-icon>
-          {{ $t('app.general.btn.remove') }}
-        </app-btn>
-        <app-btn
-          v-if="file.appFile && downloadable"
-          color="primary"
-          @click="$emit('download', file.appFile)"
-        >
-          <v-icon>$download</v-icon>
-          {{ $t('app.general.btn.download') }}
-        </app-btn>
-      </v-card-actions>
+        <v-card-actions class="pt-4">
+          <v-spacer />
+          <app-btn
+            v-if="file.appFile && removable"
+            text
+            color="error"
+            @click="$emit('remove', file.appFile, () => $emit('close'))"
+          >
+            <v-icon>$delete</v-icon>
+            {{ $t('app.general.btn.remove') }}
+          </app-btn>
+          <app-btn
+            v-if="file.appFile && downloadable"
+            color="primary"
+            @click="$emit('download', file.appFile)"
+          >
+            <v-icon>$download</v-icon>
+            {{ $t('app.general.btn.download') }}
+          </app-btn>
+        </v-card-actions>
+      </template>
     </v-card>
   </v-dialog>
 </template>
@@ -92,11 +95,15 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   get isVideo () {
     return this.file?.type.startsWith('video/')
   }
+
+  get isImage () {
+    return this.file?.type === 'image'
+  }
 }
 </script>
 
 <style lang="scss" scoped>
-.video-preview {
+video, img {
   max-width: 100%;
   max-height: 100%;
 }

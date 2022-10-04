@@ -66,6 +66,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
+      @view-thumbnail="handleViewThumbnail"
     />
 
     <file-editor-dialog
@@ -666,7 +667,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleClosePreview () {
     this.filePreviewState.open = false
-    URL.revokeObjectURL(this.filePreviewState.src)
+    if (this.filePreviewState.src.startsWith('blob:')) {
+      URL.revokeObjectURL(this.filePreviewState.src)
+    }
   }
 
   handleCancelDownload () {
@@ -691,6 +694,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .finally(() => {
         this.$store.dispatch('files/removeFileDownload')
       })
+  }
+
+  handleViewThumbnail (file: AppFileWithMeta) {
+    if (!file.thumbnails) return
+    const src = this.getThumbUrl(file.thumbnails, file.path, true)
+    this.filePreviewState = {
+      open: true,
+      src,
+      type: 'image',
+      filename: file.filename
+    }
+    console.log(this.filePreviewState)
   }
 
   /**
