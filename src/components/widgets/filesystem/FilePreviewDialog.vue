@@ -85,14 +85,6 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   readonly removable!: boolean
 
-  get icon () {
-    if (this.isVideo) {
-      return 'video'
-    } else {
-      return 'file'
-    }
-  }
-
   get width () {
     return window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.5)
   }
