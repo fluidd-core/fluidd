@@ -68,10 +68,8 @@
               </v-icon>
               <img
                 v-else
-                class="file-icon-thumb"
-                :class="{dense}"
                 :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
-                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 32, item.modified)"
+                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
           </td>
@@ -344,7 +342,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   get thumbnailSize () {
-    return this.$store.state.config.uiSettings.general.thumbnailSize
+    const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
+
+    return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
   mounted () {
@@ -469,13 +469,5 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   // Lighten up dark mode checkboxes.
   .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
-  }
-
-  .file-icon-thumb {
-    max-width: 24px;
-  }
-
-  .file-icon-thumb.dense {
-    max-width: 16px;
   }
 </style>
