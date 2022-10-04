@@ -73,7 +73,7 @@ export const defaultState = (): ConfigState => {
         showBedScrewsAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         enableDiagnostics: false,
-        thumbnailSize: 16
+        thumbnailSize: 32
       },
       theme: {
         isDark: true,
