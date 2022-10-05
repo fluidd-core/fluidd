@@ -59,7 +59,7 @@
     <app-btn-collapse-group
       v-if="['gcodes', 'timelapse'].includes(root)"
       :collapsed="true"
-      menu-icon="$imageSizeSelectLarge"
+      menu-icon="$menu"
       size="small"
     >
       <app-slider
@@ -71,6 +71,14 @@
         :step="16"
         :reset-value="32"
         suffix="px"
+      />
+
+      <v-divider />
+
+      <app-switch
+        v-model="beautifyFileNames"
+        class="ma-1 mt-2"
+        :label="$t('app.general.label.beautify_file_names')"
       />
     </app-btn-collapse-group>
 
@@ -146,9 +154,11 @@ import FileSystemMenu from './FileSystemMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
 import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
+import AppSwitch from '@/components/ui/AppSwitch.vue'
 
 @Component({
   components: {
+    AppSwitch,
     AppBtnCollapseGroup,
     FileSystemMenu,
     FileSystemFilterMenu
@@ -233,6 +243,18 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   set thumbnailSize (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.thumbnailSize',
+      value,
+      server: true
+    })
+  }
+
+  get beautifyFileNames () {
+    return this.$store.state.config.uiSettings.general.beautifyFileNames
+  }
+
+  set beautifyFileNames (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.beautifyFileNames',
       value,
       server: true
     })

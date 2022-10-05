@@ -68,6 +68,7 @@ export interface GeneralConfig {
   forceMoveToggleWarning: boolean;
   enableDiagnostics: boolean;
   thumbnailSize: number;
+  beautifyFileNames: boolean;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';

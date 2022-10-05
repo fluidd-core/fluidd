@@ -211,6 +211,7 @@ app:
       api_key: Api Key
       api_url: API URL
       auth_source: Authentication Source
+      beautify_file_names: Beautify File Names
       category: Category
       change_password: Change password
       clear_all: Clear all

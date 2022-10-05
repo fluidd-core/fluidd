@@ -75,7 +75,7 @@
           </td>
 
           <file-row-item :nowrap="false">
-            {{ item.name }}
+            {{ getFileName(item) }}
           </file-row-item>
 
           <file-row-item
@@ -284,6 +284,8 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import {
+  AppDirectory,
+  AppFile,
   AppFileWithMeta,
   FileBrowserEntry
 } from '@/store/files/types'
@@ -345,6 +347,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
+  }
+
+  get beautifyFileNames () {
+    return this.$store.state.config.uiSettings.general.beautifyFileNames
+  }
+
+  getFileName (item: AppFile | AppFileWithMeta | AppDirectory) {
+    if (item.type === 'directory' || !this.beautifyFileNames) return item.name
+    if (item.name) {
+      return item.name
+        .slice(0, item.name.length - item.extension.length - 1)
+        .replaceAll('_', ' ')
+    }
+    return ''
   }
 
   mounted () {
