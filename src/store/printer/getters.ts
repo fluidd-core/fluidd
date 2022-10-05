@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU, Endstop, Probe } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -282,11 +282,21 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getEndstops: (state) => {
-    const sorted: { [index: string]: string } = {}
-    Object.keys(state.printer.endstops).sort().forEach((key) => {
-      sorted[key] = state.printer.endstops[key]
-    })
-    return sorted
+    const endstops: Endstop[] = []
+    Object.keys(state.printer.endstops)
+      .sort()
+      .forEach(key => {
+        endstops.push({
+          name: key,
+          state: state.printer.endstops[key]
+        })
+      })
+    return endstops
+  },
+
+  getProbe: (state) => {
+    const probe: Probe = state.printer.probe
+    return probe
   },
 
   /**
