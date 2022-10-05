@@ -18,7 +18,17 @@
 
       <app-btn
         color=""
-        class="ml-1"
+        fab
+        x-small
+        text
+        :disabled="!fileLoaded"
+        @click="autoZoom = !autoZoom"
+      >
+        <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
+      </app-btn>
+
+      <app-btn
+        color=""
         fab
         x-small
         text
@@ -135,6 +145,7 @@
       <v-row>
         <v-col>
           <gcode-preview
+            ref="preview"
             width="100%"
             height="100%"
             :layer="currentLayer"
@@ -149,7 +160,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
@@ -176,6 +187,9 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
+
+  @Ref('preview')
+  readonly preview!: GcodePreview
 
   currentLayer = 0
   moveProgress = 0
@@ -398,6 +412,20 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
+  }
+
+  get autoZoom () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoZoom
+  }
+
+  set autoZoom (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoZoom',
+      value,
+      server: true
+    })
+
+    this.preview.reset()
   }
 }
 </script>

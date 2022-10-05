@@ -69,7 +69,14 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getBounds: (state, getters): BBox => {
-    const moves = getters.getMoves
+    let moves = getters.getMoves
+    const layers = getters.getLayers
+
+    // ignore first and last layer (priming and parking)
+    const moveRangeStart = layers[1]?.move
+    const moveRangeEnd = layers[layers.length - 1]?.move
+    if (moveRangeStart && moveRangeEnd) moves = moves.slice(moveRangeStart, moveRangeEnd)
+
     const bounds = {
       x: {
         min: NaN,
