@@ -22,6 +22,7 @@
         x-small
         text
         :disabled="!fileLoaded"
+        class="ml-1"
         @click="autoZoom = !autoZoom"
       >
         <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
