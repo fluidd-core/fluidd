@@ -73,7 +73,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     const layers = getters.getLayers
 
     // ignore first and last layer (priming and parking)
-    const moveRangeStart = layers[1]?.move
+    const moveRangeStart = layers[layers.length > 1 ? 1 : 0]?.move
     const moveRangeEnd = layers[layers.length - 1]?.move
     if (moveRangeStart && moveRangeEnd) moves = moves.slice(moveRangeStart, moveRangeEnd)
 
