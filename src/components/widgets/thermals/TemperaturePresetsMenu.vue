@@ -11,6 +11,7 @@
         :disabled="!klippyReady"
         v-bind="attrs"
         small
+        class="ml-1"
         v-on="on"
       >
         <v-icon

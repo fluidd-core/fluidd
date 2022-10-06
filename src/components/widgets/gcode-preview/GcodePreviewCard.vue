@@ -10,6 +10,7 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
+          class="ml-1"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
@@ -196,10 +197,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   moveProgress = 0
   excludeObjectDialog = false
 
-  get visibleLayer () {
-    return this.currentLayer + 1
-  }
-
   @Watch('layerCount')
   onLayerCountChanged () {
     this.currentLayer = 0
@@ -308,7 +305,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get currentLayerHeight (): number {
-    return this.$store.getters['gcodePreview/getLayers'][this.currentLayer - 1]?.z ?? 0
+    return this.$store.getters['gcodePreview/getLayers'][this.currentLayer]?.z ?? 0
   }
 
   get followProgress (): boolean {
@@ -338,7 +335,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   setCurrentLayer (value: number) {
-    if (value > 0) this.currentLayer = value
+    if (value >= 0) this.currentLayer = value
   }
 
   setMoveProgress (value: number) {
