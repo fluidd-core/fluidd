@@ -137,6 +137,7 @@ export const defaultState = (): ConfigState => {
         groupLowerLayers: false,
         autoLoadOnPrintStart: false,
         autoFollowOnFileLoad: true,
+        autoZoom: false,
         flip: {
           horizontal: false,
           vertical: true

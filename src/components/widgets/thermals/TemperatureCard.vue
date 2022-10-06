@@ -22,8 +22,8 @@
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           small
-          class="ma-1"
           :disabled="!klippyReady"
+          class="ml-1"
           @click="chartVisible = !chartVisible"
         >
           <v-icon left>
@@ -33,7 +33,6 @@
         </app-btn>
 
         <temperature-presets-menu
-          class="ma-1"
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
         />
