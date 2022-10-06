@@ -709,7 +709,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       filename: file.filename,
       width: thumb.width
     }
-    console.log(this.filePreviewState)
   }
 
   /**

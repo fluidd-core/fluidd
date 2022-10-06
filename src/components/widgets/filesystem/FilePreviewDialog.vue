@@ -17,9 +17,7 @@
         </app-btn>
       </v-card-title>
 
-      <v-card-text
-        class="py-4"
-      >
+      <v-card-text class="py-4">
         <v-layout justify-center>
           <video
             v-if="isVideo"
