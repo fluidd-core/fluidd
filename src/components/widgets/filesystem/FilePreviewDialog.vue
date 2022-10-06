@@ -1,7 +1,7 @@
 <template>
   <v-dialog
     v-model="file.open"
-    :max-width="width"
+    :width="width"
   >
     <v-card v-if="file.open">
       <v-card-title class="card-heading py-2">
@@ -17,7 +17,9 @@
         </app-btn>
       </v-card-title>
 
-      <v-card-text class="py-4">
+      <v-card-text
+        class="py-4"
+      >
         <v-layout justify-center>
           <video
             v-if="isVideo"
@@ -89,7 +91,8 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   readonly removable!: boolean
 
   get width () {
-    return window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.5)
+    const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
+    return Math.min(window.innerWidth * 0.9, Math.max(this.file?.width ?? defaultWidth, defaultWidth / 2))
   }
 
   get isVideo () {
@@ -105,6 +108,6 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 <style lang="scss" scoped>
 video, img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(90vh - (24px + 16px + 8px) * 2);
 }
 </style>
