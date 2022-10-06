@@ -358,7 +358,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     if (item.name) {
       return item.name
         .slice(0, item.name.length - item.extension.length - 1)
-        .replaceAll('_', ' ')
+        .replaceAll('_', '\u00a0')
     }
     return ''
   }
