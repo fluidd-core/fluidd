@@ -9,6 +9,7 @@
         fab
         x-small
         text
+        class="ml-1"
         @click="showMcuConstantsDialog"
       >
         <v-icon>$viewHeadline</v-icon>

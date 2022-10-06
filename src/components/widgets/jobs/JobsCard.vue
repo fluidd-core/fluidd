@@ -9,7 +9,7 @@
       <app-btn
         color=""
         fab
-        small
+        x-small
         text
         @click="$filters.routeTo($router, '/jobs')"
       >

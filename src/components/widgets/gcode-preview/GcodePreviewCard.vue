@@ -10,6 +10,7 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
+          class="ml-1"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
