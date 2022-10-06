@@ -390,22 +390,19 @@ export default class GcodePreview extends Mixins(StateMixin) {
     }
 
     if (stepperX === undefined || stepperY === undefined || this.autoZoom) {
+      let padding = 0
       if (this.autoZoom) {
-        const padding = Math.min(bounds.x.max - bounds.x.min, bounds.y.max - bounds.y.min) * 0.05
-        bounds.x.min -= padding
-        bounds.x.max += padding
-        bounds.y.min -= padding
-        bounds.y.max += padding
+        padding = Math.min(bounds.x.max - bounds.x.min, bounds.y.max - bounds.y.min) * 0.05
       }
 
       return {
         x: {
-          min: bounds.x.min,
-          max: bounds.x.max
+          min: bounds.x.min - padding,
+          max: bounds.x.max + padding
         },
         y: {
-          min: bounds.y.min,
-          max: bounds.y.max
+          min: bounds.y.min - padding,
+          max: bounds.y.max + padding
         }
       }
     }
