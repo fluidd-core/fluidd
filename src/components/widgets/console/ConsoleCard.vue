@@ -30,6 +30,7 @@
         fab
         x-small
         text
+        class="ml-1"
         @click="console.scrollToLatest(true)"
       >
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
@@ -39,8 +40,9 @@
         v-if="!fullScreen"
         color=""
         fab
-        small
+        x-small
         text
+        class="ml-1"
         @click="$filters.routeTo($router, '/console')"
       >
         <v-icon>$fullScreen</v-icon>
@@ -51,6 +53,7 @@
         fab
         x-small
         text
+        class="ml-1"
         @click="handleClear"
       >
         <v-icon>$delete</v-icon>
