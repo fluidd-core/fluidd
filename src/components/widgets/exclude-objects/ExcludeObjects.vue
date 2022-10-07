@@ -32,6 +32,7 @@
         @touchstart="touchedElement = name"
         @touchend="handleTouchEnd(name)"
         @touchcancel="touchedElement = undefined"
+        @touchmove="touchedElement = undefined"
       />
     </svg>
   </g>
