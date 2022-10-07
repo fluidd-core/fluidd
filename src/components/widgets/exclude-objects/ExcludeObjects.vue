@@ -29,6 +29,10 @@
         :d="iconCircle"
         class="hitarea"
         @click="$emit('cancel', name)"
+        @touchstart="touchedElement = name"
+        @touchend="handleTouchEnd(name)"
+        @touchcancel="touchedElement = undefined"
+        @touchmove="touchedElement = undefined"
       />
     </svg>
   </g>
@@ -41,6 +45,13 @@ import { Icons } from '@/globals'
 
 @Component({})
 export default class ExcludeObjects extends Mixins(StateMixin) {
+  touchedElement?: string
+
+  handleTouchEnd (name: string) {
+    if (this.touchedElement === name) this.$emit('cancel', name)
+    this.touchedElement = undefined
+  }
+
   get parts () {
     const parts = this.$store.getters['parts/getParts']
     return Object.keys(parts)
