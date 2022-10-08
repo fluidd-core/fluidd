@@ -146,6 +146,7 @@ export interface FilePreviewState {
   src: string;
   type: string;
   appFile?: AppFile;
+  width?: number;
 }
 
 export interface RootFiles {

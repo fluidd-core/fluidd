@@ -66,6 +66,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
+      @view-thumbnail="handleViewThumbnail"
     />
 
     <file-editor-dialog
@@ -154,6 +155,7 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
+import { getThumb } from '@/store/helpers'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -666,7 +668,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleClosePreview () {
     this.filePreviewState.open = false
-    URL.revokeObjectURL(this.filePreviewState.src)
+    if (this.filePreviewState.src.startsWith('blob:')) {
+      URL.revokeObjectURL(this.filePreviewState.src)
+    }
   }
 
   handleCancelDownload () {
@@ -691,6 +695,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .finally(() => {
         this.$store.dispatch('files/removeFileDownload')
       })
+  }
+
+  async handleViewThumbnail (file: AppFileWithMeta) {
+    const thumb = getThumb(file.thumbnails ?? [], file.path, true)
+    if (!thumb) return
+    const thumbUrl = this.getThumbUrl([thumb], file.path, true)
+
+    this.filePreviewState = {
+      open: true,
+      src: thumbUrl,
+      type: 'image',
+      filename: file.filename,
+      width: thumb.width
+    }
   }
 
   /**

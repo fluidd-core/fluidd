@@ -82,6 +82,16 @@
               <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="file.type !== 'directory' && file.thumbnails?.length"
+              link
+              @click="$emit('view-thumbnail', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$imageSizeSelectLarge</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('app.general.btn.view_thumbnail') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
               v-if="!rootProperties.readonly"
               link
               @click="$emit('rename', file)"
