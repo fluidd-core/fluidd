@@ -456,22 +456,26 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
     }
 
-    for (const item of items) {
-      if (item.type === 'file' && item.extension === 'jpg') {
-        const name = item.filename.slice(0, -4)
-        if (name in timelapses) {
-          const url = new URL(this.apiUrl ?? document.location.origin)
-          url.pathname = `/server/files/timelapse${item.path ? `/${item.path}` : ''}/${item.filename}`;
+    const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
+    if (!forceLogins) {
+      // thumbnails cannot currently be loaded with force_logins turned on, see #849
+      for (const item of items) {
+        if (item.type === 'file' && item.extension === 'jpg') {
+          const name = item.filename.slice(0, -4)
+          if (name in timelapses) {
+            const url = new URL(this.apiUrl ?? document.location.origin)
+            url.pathname = `/server/files/timelapse${item.path ? `/${item.path}` : ''}/${item.filename}`;
 
-          (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
-            absolute_path: url.toString(),
-            // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
-            data: '',
-            height: 0,
-            width: 0,
-            size: 0,
-            relative_path: ''
-          }]
+            (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
+              absolute_path: url.toString(),
+              // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
+              data: '',
+              height: 0,
+              width: 0,
+              size: 0,
+              relative_path: ''
+            }]
+          }
         }
       }
     }
