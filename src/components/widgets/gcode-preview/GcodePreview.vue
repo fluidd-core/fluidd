@@ -281,6 +281,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.getUiSetting('showAnimations')
   }
 
+  get autoZoom () {
+    return this.getUiSetting('autoZoom')
+  }
+
   get shapeRendering () {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
@@ -385,15 +389,19 @@ export default class GcodePreview extends Mixins(StateMixin) {
       }
     }
 
-    if (stepperX === undefined || stepperY === undefined) {
+    if (stepperX === undefined || stepperY === undefined || this.autoZoom) {
+      const padding = this.autoZoom
+        ? Math.min(bounds.x.max - bounds.x.min, bounds.y.max - bounds.y.min) * 0.05
+        : 0
+
       return {
         x: {
-          min: bounds.x.min,
-          max: bounds.x.max
+          min: bounds.x.min - padding,
+          max: bounds.x.max + padding
         },
         y: {
-          min: bounds.y.min,
-          max: bounds.y.max
+          min: bounds.y.min - padding,
+          max: bounds.y.max + padding
         }
       }
     }
@@ -525,7 +533,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   reset () {
-    this.panzoom?.zoomTo(0, 0, 1)
+    this.panzoom?.moveTo(0, 0)
+    this.panzoom?.zoomAbs(0, 0, 1)
   }
 
   getViewerOption (name: string) {
