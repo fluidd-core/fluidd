@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      active: active
       box_scale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
@@ -144,6 +145,7 @@ app:
       clear_profile: Clear Profile
       close: Close
       config_reference: Config Reference
+      delete: Delete
       download: Download
       edit: Edit
       exit_layout: Exit layout mode
@@ -152,13 +154,16 @@ app:
       heaters_off: Heaters off
       load_all: Load all
       login: Login
+      logout: Logout
       more_information: More information
       pause: Pause
       preheat: Preheat
       presets: Presets
       preview_gcode: Preview Gcode
+      print: Print
       quad_gantry_level: QGL
       reboot: Reboot
+      recover: Recover
       refresh: Refresh
       remove: Remove
       remove_all: Remove All
@@ -173,6 +178,7 @@ app:
       restart_service_moonraker: Restart Moonraker
       resume: Resume
       retract: Retract
+      return_dashboard: Return to the dashboard
       save: Save
       save_as: Save As
       save_restart: Save & Restart
@@ -219,6 +225,7 @@ app:
       confirm: Confirm
       current_password: Current password
       current_user: Current user
+      drag_me: Drag me
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -241,6 +248,7 @@ app:
       ldap: LDAP
       longest_job: Longest job
       low: Low
+      manage_accounts: Manage Accounts
       user_managed_source: User managed by %{source} authentication
       m117: M117
       moonraker: Moonraker
@@ -298,6 +306,8 @@ app:
       wrong_password: Oops, something went wrong. Is your password correct?
       bed_screws_adjust: >-
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
+      welcome_back: >-
+        Welcome back.<br>Sign in below to stay in touch with your printer.
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -328,6 +338,8 @@ app:
         apply_z_offset_probe: >-
           Probe/Bltouch Z-Offset will be calculated and updated from the current
           Z-Offset.
+        no_file_preview: >-
+          %{name} cannot currently be previewed.
     table:
       header:
         actions: Actions
@@ -375,6 +387,7 @@ app:
       limits: Printer Limits
       macros: Macros
       metrics_explorer: Metrics Explorer
+      not_found: 404 Not Found
       other_files: Other Files
       pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction

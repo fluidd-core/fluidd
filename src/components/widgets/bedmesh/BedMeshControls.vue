@@ -45,7 +45,7 @@
               small
               block
             >
-              active
+              {{ $t('app.bedmesh.label.active') }}
             </v-chip>
           </td>
           <td class="focus--text">

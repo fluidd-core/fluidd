@@ -3,7 +3,7 @@
     <v-card-title
       class="card-title card-heading py-1 draggable"
     >
-      Drag Me
+      {{ $t('app.general.label.drag_me') }}
     </v-card-title>
   </v-card>
 </template>

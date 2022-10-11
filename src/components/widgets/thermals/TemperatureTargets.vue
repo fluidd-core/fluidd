@@ -117,7 +117,7 @@
                 {{ (item.speed * 100).toFixed(0) }}<small>%</small>
               </span>
               <span v-if="item.speed <= 0 && item.target && item.target > 0">
-                standby
+                {{ $t('app.printer.state.standby') }}
               </span>
               <span v-if="item.speed <=0 && ((item.target && item.target <= 0) || !item.target)">off</span>
             </span>
