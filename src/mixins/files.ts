@@ -15,6 +15,12 @@ export default class FilesMixin extends Vue {
     return this.$store.state.config.apiUrl
   }
 
+  get isTrustedUser () {
+    const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
+
+    return !forceLogins || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+  }
+
   getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, cachebust?: number) {
     if (thumbnails.length) {
       if (!cachebust) cachebust = new Date().getTime()
@@ -114,7 +120,7 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return await httpClient.get(encodeURI(this.apiUrl + '/server/files/' + filepath + '?date=' + new Date().getTime()), o)
+    return await httpClient.get(encodeURI(`${this.apiUrl}/server/files/${filepath}?date=${Date.now()}`), o)
   }
 
   /**
@@ -148,11 +154,13 @@ export default class FilesMixin extends Vue {
    * @returns The url for the requested file
    */
   async createFileUrl (filename: string, path: string) {
-    const token = (await authApi.getOneShot()).data.result
-
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
 
-    return `${this.apiUrl}/server/files/${filepath}?token=${token}&date=${Date.now()}`
+    const url = `${this.apiUrl}/server/files/${filepath}?date=${Date.now()}`
+
+    return this.isTrustedUser
+      ? url
+      : `${url}&token=${(await authApi.getOneShot()).data.result}`
   }
 
   /**
