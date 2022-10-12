@@ -225,7 +225,6 @@ app:
       confirm: Confirm
       current_password: Current password
       current_user: Current user
-      drag_me: Drag me
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
