@@ -38,7 +38,7 @@ jobs:
           echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
 
       - name: Read ChangeLog
-        uses: pedrolamas/changelog-reader-action@d71e9d8dc93a56c192a84bddd8af46cf3b1d284b
+        uses: mindsers/changelog-reader-action@v2.2.0
         id: changelog
         with:
           validation_depth: 1

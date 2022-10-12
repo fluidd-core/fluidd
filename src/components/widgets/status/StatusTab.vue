@@ -331,40 +331,14 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
    * The total estimated layer count.
    */
   get layers () {
-    const current_file = this.$store.state.printer.printer.current_file
-    if ('layer_count' in current_file) {
-      return current_file.layer_count
-    } else if (
-      'first_layer_height' in current_file &&
-      'layer_height' in current_file &&
-      'object_height' in current_file
-    ) {
-      const lc = Math.ceil((current_file.object_height - current_file.first_layer_height) / current_file.layer_height + 1)
-      if (lc > 0) return lc
-    }
-    return 0
+    return this.$store.getters['printer/getPrintLayers']
   }
 
   /**
    * Current estimated layer based on current z pos.
    */
   get layer () {
-    const current_file = this.$store.state.printer.printer.current_file
-    const duration = this.$store.state.printer.printer.print_stats.print_duration || 0
-    const pos = this.$store.state.printer.printer.gcode_move.gcode_position
-    if (
-      current_file &&
-      duration > 0 &&
-      'first_layer_height' in current_file &&
-      'layer_height' in current_file &&
-      pos &&
-      pos.length >= 3
-    ) {
-      const z = this.$store.state.printer.printer.gcode_move.gcode_position[2]
-      const l = Math.ceil((z - current_file.first_layer_height) / current_file.layer_height + 1)
-      if (l > 0) return l
-    }
-    return 0
+    return this.$store.getters['printer/getPrintLayer']
   }
 
   /**

@@ -117,6 +117,48 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return state.printer.display_status.progress || 0
   },
 
+  getPrintLayers: (state) => {
+    const layersFromPrintStats = state.printer.print_stats?.info?.total_layer
+    if (typeof layersFromPrintStats === 'number') {
+      return layersFromPrintStats
+    }
+    const current_file = state.printer.current_file
+    if ('layer_count' in current_file) {
+      return current_file.layer_count
+    } else if (
+      'first_layer_height' in current_file &&
+      'layer_height' in current_file &&
+      'object_height' in current_file
+    ) {
+      const lc = Math.ceil((current_file.object_height - current_file.first_layer_height) / current_file.layer_height + 1)
+      if (lc > 0) return lc
+    }
+    return 0
+  },
+
+  getPrintLayer: (state) => {
+    const layerFromPrintStats = state.printer.print_stats?.info?.current_layer
+    if (typeof layerFromPrintStats === 'number') {
+      return layerFromPrintStats
+    }
+    const current_file = state.printer.current_file
+    const duration = state.printer.print_stats.print_duration || 0
+    const pos = state.printer.gcode_move.gcode_position
+    if (
+      current_file &&
+      duration > 0 &&
+      'first_layer_height' in current_file &&
+      'layer_height' in current_file &&
+      pos &&
+      pos.length >= 3
+    ) {
+      const z = state.printer.gcode_move.gcode_position[2]
+      const l = Math.ceil((z - current_file.first_layer_height) / current_file.layer_height + 1)
+      if (l > 0) return l
+    }
+    return 0
+  },
+
   getTimeEstimates: (state, getters) => {
     const progress = getters.getPrintProgress
     const endTime = Math.floor(Date.now() / 1000)
