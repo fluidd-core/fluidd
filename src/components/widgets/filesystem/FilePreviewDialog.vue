@@ -35,8 +35,7 @@
           >
 
           <div v-else>
-            {{ (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }}
-            cannot currently be previewed.
+            {{ $t('app.general.simple_form.msg.no_file_preview', { name: (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }) }}
           </div>
         </v-layout>
       </v-card-text>

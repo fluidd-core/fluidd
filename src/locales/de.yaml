@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      active: aktiv
       box_scale: Skalierung
       flat_surface: Ebene anzeigen
       mesh_matrix: Mesh-Matrix
@@ -146,6 +147,7 @@ app:
       clear_profile: Profil zurücksetzen
       close: Schließen
       config_reference: Config Referenz
+      delete: Löschen
       download: Herunterladen
       edit: Bearbeiten
       exit_layout: Layout-Modus verlassen
@@ -157,8 +159,10 @@ app:
       preheat: Vorheizen
       presets: Voreinstellungen
       preview_gcode: Gcode-Vorschau
+      print: Drucken
       quad_gantry_level: QGL
       reboot: Neustarten
+      recover: Retten
       refresh: Aktualisieren
       remove: Entfernen
       remove_all: Alle Entfernen
@@ -173,6 +177,7 @@ app:
       restart_service_moonraker: Moonraker neustarten
       resume: Fortfahren
       retract: Retracten
+      return_dashboard: Zurück zum Dashboard
       save: Speichern
       save_as: Speichern als
       save_restart: Speichern & Neu starten
@@ -193,6 +198,7 @@ app:
       auth_unsure: Sie wissen nicht, warum dies angezeigt wird?
       forgot_password: Passwort vergessen?
       login: Einloggen
+      logout: Ausloggen
       save_config_and_restart: Konfiguration speichern und neu starten
     error:
       app_setup_link: >-
@@ -244,6 +250,7 @@ app:
       layout: Layout
       longest_job: Längster Auftrag
       low: Niedrigste
+      manage_accounts: Benutzer verwalten
       m117: M117
       name: Name
       new_password: Neues Passwort
@@ -303,6 +310,8 @@ app:
       bed_screws_adjust: >-
         Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der aktuellen Schraube erforderlich ist.
         Klicken Sie andernfalls auf <b>Akzeptieren</b>, um fortzufahren.
+      welcome_back: >-
+        Willkommen zurück.<br>Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt zu bleiben.
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -324,6 +333,8 @@ app:
         apply_z_offset_probe: >-
           Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
           aktualisiert.
+        no_file_preview: >-
+          %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?
         confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
@@ -389,6 +400,7 @@ app:
       tune: Tune
       pending_configuration_changes: Ausstehende Konfigurationsänderungen
       metrics_explorer: Metrik-Explorer
+      not_found: 404 Nicht Gefunden
       edit_chart: Diagramm bearbeiten
       add_chart: Diagramm hinzufügen
     tooltip:

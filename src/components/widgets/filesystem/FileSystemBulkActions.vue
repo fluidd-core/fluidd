@@ -26,7 +26,7 @@
         </v-btn>
       </template>
       <slot>
-        <span>Delete</span>
+        <span>{{ $t('app.general.btn.delete') }}</span>
       </slot>
     </v-tooltip>
 

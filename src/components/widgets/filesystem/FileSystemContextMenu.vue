@@ -27,9 +27,7 @@
               <v-list-item-icon>
                 <v-icon>$printer</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>
-                Print
-              </v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.print') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="canPreheat"
