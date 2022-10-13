@@ -1,7 +1,10 @@
 <template>
-  <v-row :dense="$vuetify.breakpoint.smAndDown">
+  <v-row
+    v-if="klippyReady"
+    :dense="$vuetify.breakpoint.smAndDown"
+  >
     <v-col
-      v-if="supportsBedMesh && klippyReady"
+      v-if="supportsBedMesh"
       cols="12"
       md="8"
     >
@@ -12,7 +15,7 @@
       md="4"
     >
       <bed-mesh-controls
-        v-if="supportsBedMesh && klippyReady"
+        v-if="supportsBedMesh"
         class="mb-2 mb-sm-4"
       />
       <end-stops-card class="mb-2 mb-sm-4" />
