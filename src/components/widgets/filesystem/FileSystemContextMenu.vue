@@ -176,9 +176,11 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get printerReady () {
-    return !this.printerPrinting &&
+    return (
+      !this.printerPrinting &&
       !this.printerPaused &&
       this.klippyReady
+    )
   }
 
   get canPreviewGcode () {
