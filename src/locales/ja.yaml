@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      active: アクティブ
       box_scale: ボックススケール
       flat_surface: 平面を表示する
       mesh_matrix: メッシュマトリックス
@@ -135,6 +136,7 @@ app:
       clear_profile: プロファイルをクリア
       close: 閉じる
       config_reference: Configリファレンス
+      delete: 削除
       download: ダウンロード
       edit: 編集
       exit_layout: レイアウトモードを終了する
@@ -143,6 +145,7 @@ app:
       heaters_off: ヒーターオフ
       load_all: すべて読み込み
       login: ログイン
+      logout: ログアウト
       more_information: 詳細はこちら
       pause: 一時停止
       preheat: プレヒート
@@ -150,6 +153,7 @@ app:
       preview_gcode: Gコードをプレビュー
       quad_gantry_level: QGL
       reboot: 再起動
+      recover: 回復する
       refresh: リフレッシュ
       remove: 削除
       remove_all: すべて削除
@@ -165,6 +169,7 @@ app:
       restart_service_moonraker: Moonrakerを再起動する
       resume: 再始動
       retract: リトラクト
+      return_dashboard: ダッシュボードに戻る
       save: 保存
       save_as: 名前を付けて保存
       save_config_and_restart: 設定を保存して再起動
@@ -229,6 +234,7 @@ app:
       longest_job: 長い印刷
       low: 低い
       m117: M117
+      manage_accounts: アカウントの管理
       moonraker: Moonraker
       name: 名前
       new_password: 新しいパスワード
@@ -268,7 +274,7 @@ app:
       unretract_extra_length: アンリトラクト長さ
       unretract_speed: アンリトラクト速度
       unsaved_changes: 保存されていない変更
-      used: used
+      used: 使用済み
       user_managed_source: ' %{source} 認証によって管理されるユーザー'
       username: ユーザー名
       variance: 増減率
@@ -280,6 +286,7 @@ app:
         現在のネジで大幅な調整が必要な場合は、 <b>調整済み</b> をクリックします。そうでない場合は、 <b>同意する</b>
         をクリックして続行します。
       password_changed: パスワードの変更
+      welcome_back: お帰りなさい。<br>以下でログインして、プリンタと接続してください。
       wrong_password: おっと、何か問題が発生したようですよ。パスワードは正しいですか？
     simple_form:
       error:
@@ -306,6 +313,7 @@ app:
         confirm_service_restart: '%{name} サービスを再起動してよろしいですか？'
         confirm_service_stop: ' %{name} サービスを停止してよろしいですか？'
         confirm_shutdown_host: ホストシステムをシャットダウンしてよろしいですか？
+        no_file_preview: '%{name} は現在プレビューできません。'
         unsaved_changes: 未保存の変更があります。本当にこのファイルを閉じますか？
     table:
       header:
@@ -354,6 +362,7 @@ app:
       limits: プリンター制限
       macros: マクロ
       metrics_explorer: メトリクス エクスプローラー
+      not_found: 404 お探しのページが見つかりませんでした
       other_files: その他のファイル
       pending_configuration_changes: 保留中の構成変更
       retract: ファームウェアを戻す
