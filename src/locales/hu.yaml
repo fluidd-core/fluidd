@@ -197,7 +197,6 @@ app:
       upload: Feltöltés
       upload_print: Feltöltés & Nyomtatás
       view: Nézet
-      view_thumbnail: Miniatűr mutatása
       reset_stats: Statisztikák törlése
     error:
       app_setup_link: >-
