@@ -1,45 +1,25 @@
 <template>
-  <v-tooltip
+  <app-btn
     v-if="paramList.length === 0 || !enableParams"
-    :disabled="!description"
-    bottom
+    :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
+    :style="borderStyle"
+    @click="$emit('click', macro.name)"
+    v-on="$listeners"
   >
-    <template #activator="{ on, attrs }">
-      <app-btn
-        v-bind="attrs"
-        :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
-        :style="borderStyle"
-        class="me-2 mb-2"
-        v-on="on"
-        @click="$emit('click', macro.name)"
-      >
-        <slot />
-      </app-btn>
-    </template>
-    <span>{{ description }}</span>
-  </v-tooltip>
-
+    <slot />
+  </app-btn>
   <app-btn-group
     v-else
     :elevation="6"
   >
-    <v-tooltip
-      :disabled="!description"
-      bottom
+    <app-btn
+      :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
+      :style="borderStyle"
+      @click="$emit('click', macro.name)"
+      v-on="$listeners"
     >
-      <template #activator="{ on, attrs }">
-        <app-btn
-          v-bind="attrs"
-          :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
-          :style="borderStyle"
-          v-on="on"
-          @click="$emit('click', macro.name)"
-        >
-          <slot />
-        </app-btn>
-      </template>
-      <span>{{ description }}</span>
-    </v-tooltip>
+      <slot />
+    </app-btn>
     <v-menu
       left
       offset-y
@@ -125,12 +105,6 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   readonly enableParams!: boolean
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
-
-  get description () {
-    if (!this.macro.config || this.macro.config.description === 'G-Code macro') return undefined
-
-    return this.macro.config.description
-  }
 
   get paramList () {
     return Object.keys(this.params)
