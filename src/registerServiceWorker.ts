@@ -4,7 +4,7 @@ import { Workbox } from 'workbox-window'
 let wb: Workbox | null
 
 if ('serviceWorker' in navigator) {
-  wb = new Workbox(`${process.env.BASE_URL}service-worker.js`)
+  wb = new Workbox(`${import.meta.env.BASE_URL}service-worker.js`)
 
   wb.addEventListener('controlling', () => {
     window.location.reload()
@@ -19,8 +19,8 @@ export default wb
 
 // Relevant read?
 // https://medium.com/@stephen.trevor.wong/3-steps-to-add-pwa-to-vue-js-in-2020-9f9daa56f9
-// if (process.env.NODE_ENV === 'production') {
-//   register(`${process.env.BASE_URL}service-worker.js`, {
+// if (import.meta.env.NODE_ENV === 'production') {
+//   register(`${import.meta.env.BASE_URL}service-worker.js`, {
 //     ready () {
 //       consola.log(
 //         'App is being served from cache by a service worker.\n' +

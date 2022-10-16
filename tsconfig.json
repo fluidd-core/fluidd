@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2019",
+    "target": "es2020",
     "module": "esnext",
     "strict": true,
     "jsx": "preserve",
@@ -14,10 +14,11 @@
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
-      "webpack-env",
+      "vite/client",
       "jest",
       "vuetify",
-      "vue-meta"
+      "vue-meta",
+      "@intlify/vite-plugin-vue-i18n/client"
     ],
     "paths": {
       "@/*": [

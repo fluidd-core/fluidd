@@ -4,7 +4,7 @@
       class="chart"
       :style="{ 'height': height }"
     >
-      <v-chart
+      <e-chart
         v-if="ready"
         ref="chart"
         style="overflow: initial;"

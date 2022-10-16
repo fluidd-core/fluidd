@@ -464,7 +464,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   // Lighten up dark mode checkboxes.
   .theme--dark :deep(.v-simple-checkbox .v-icon) {

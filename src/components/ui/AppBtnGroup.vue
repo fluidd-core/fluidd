@@ -20,6 +20,8 @@ export default class AppBtnGroup extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  @import 'vuetify/src/styles/styles.sass';
+
   .app-btn-group {
     display: flex;
 

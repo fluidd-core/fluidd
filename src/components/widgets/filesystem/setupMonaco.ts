@@ -46,9 +46,7 @@ async function setupMonaco () {
   const registry = new Registry({
     getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
       const fileName = scopeName.split('.').pop()
-      return import(
-                /* webpackChunkName: "grammar-[request]" */
-                `@/monaco/language/${fileName}.tmLanguage.json`
+      return import(`@/monaco/language/${fileName}.tmLanguage.json`
       )
         .then(language => {
           return Promise.resolve({

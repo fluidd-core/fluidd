@@ -24,7 +24,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
   },
 
   async loadGcode ({ commit, getters, state }, payload: { file: AppFile; gcode: string }) {
-    const worker = await spawn(new Worker(new URL('@/workers/parseGcode.worker.ts', import.meta.url) as any))
+    const worker = await spawn({} as Worker)// await spawn(new Worker(new URL('@/workers/parseGcode.worker.ts', import.meta.url) as any))
 
     commit('setParserWorker', worker)
 

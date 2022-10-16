@@ -18,7 +18,7 @@ export const getStartingLocale = () => {
     supportedLocales.findIndex(locale => locale.code === browserLocale) >= 0) {
     return browserLocale
   } else {
-    return process.env.VUE_APP_I18N_LOCALE || 'en'
+    return import.meta.env.VUE_APP_I18N_LOCALE || 'en'
   }
 }
 
@@ -26,7 +26,7 @@ const startingLocale = getStartingLocale()
 
 const i18n: VueI18n = new VueI18n({
   locale: startingLocale,
-  fallbackLocale: process.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
+  fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
   messages: {}
 })
 
@@ -47,9 +47,7 @@ export const loadLocaleMessagesAsync = async (locale: Locale) => {
   }
 
   // Not loaded
-  return import(
-    /* webpackChunkName: "locale-[request]" */ `@/locales/${locale}.yaml`
-  )
+  return import(`@/locales/${locale}.yaml`)
     .then(messages => {
       i18n.setLocaleMessage(locale, messages.default)
       loadedLanguages.push(locale)

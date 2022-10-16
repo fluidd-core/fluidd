@@ -334,6 +334,8 @@ export default class AppColorPicker extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  @import 'vuetify/src/styles/styles.sass';
+
   .color-input div {
     margin: 0 2px;
     text-align: center;
