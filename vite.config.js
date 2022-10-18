@@ -11,7 +11,7 @@ export default defineConfig({
     vue(),
     content(),
     monacoEditorPlugin({
-      languageWorkers: ['editorWorkerService', 'css']
+      languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
     Components({
       dts: true,

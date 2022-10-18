@@ -1,5 +1,27 @@
+import 'monaco-editor/esm/vs/editor/editor.all.js'
+
+import 'monaco-editor/esm/vs/editor/standalone/browser/accessibilityHelp/accessibilityHelp.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/iPadShowKeyboard/iPadShowKeyboard.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/inspectTokens/inspectTokens.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneHelpQuickAccess.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoLineQuickAccess.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneGotoSymbolQuickAccess.js'
+import 'monaco-editor/esm/vs/editor/standalone/browser/quickAccess/standaloneCommandsQuickAccess.js'
+// import 'monaco-editor/esm/vs/editor/standalone/browser/referenceSearch/standaloneReferenceSearch.js'
+
+// import 'monaco-editor/esm/vs/language/typescript/monaco.contribution'
+import 'monaco-editor/esm/vs/language/css/monaco.contribution'
+import 'monaco-editor/esm/vs/language/json/monaco.contribution'
+// import 'monaco-editor/esm/vs/language/html/monaco.contribution'
+// import 'monaco-editor/esm/vs/basic-languages/monaco.contribution'
+import 'monaco-editor/esm/vs/basic-languages/css/css.contribution'
+import 'monaco-editor/esm/vs/basic-languages/markdown/markdown.contribution'
+
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
+
 import { loadWASM } from 'onigasm'
+import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
+
 import { IGrammarDefinition, Registry } from 'monaco-textmate'
 import { wireTmGrammars } from 'monaco-editor-textmate'
 import getVueApp from '@/util/get-vue-app'
@@ -39,15 +61,13 @@ const getDocsSection = (service: CodeLensSupportedService, sectionName: string) 
 }
 
 async function setupMonaco () {
-  const wasm = await require('onigasm/lib/onigasm.wasm')
-  await loadWASM(wasm.default)
+  await loadWASM(onigasmWasm)
 
   // Register our custom TextMate languages.
   const registry = new Registry({
     getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
       const fileName = scopeName.split('.').pop()
-      return import(`@/monaco/language/${fileName}.tmLanguage.json`
-      )
+      return import(`../../../monaco/language/${fileName}.tmLanguage.json`)
         .then(language => {
           return Promise.resolve({
             format: 'json',
