@@ -98,6 +98,7 @@
     "unplugin-vue-components": "^0.22.8",
     "vite": "^3.1.8",
     "vite-plugin-monaco-editor": "^1.1.0",
+    "vite-plugin-pwa": "^0.13.1",
     "vitest": "^0.24.3",
     "vue-debounce-decorator": "^1.0.1",
     "vue-i18n-extract": "^2.0.7",
