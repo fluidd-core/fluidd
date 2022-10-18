@@ -89,14 +89,11 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-vue": "^8.7.1",
-    "file-loader": "^6.2.0",
-    "generate-file-webpack-plugin": "^1.0.1",
     "husky": "^7.0.4",
     "jest-junit": "^13.2.0",
     "json-loader": "^0.5.7",
     "mockdate": "^3.0.5",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
-    "path-browserify": "^1.0.1",
     "sass": "~1.32",
     "serve": "^14.0.1",
     "shx": "^0.3.4",
@@ -108,8 +105,7 @@
     "vite-plugin-monaco-editor": "^1.1.0",
     "vue-debounce-decorator": "^1.0.1",
     "vue-i18n-extract": "^2.0.7",
-    "vue-template-compiler": "^2.7.13",
-    "webpack-bundle-analyzer": "^4.6.1"
+    "vue-template-compiler": "^2.7.13"
   },
   "_id": "fluidd@0.0.3",
   "bugs": {
