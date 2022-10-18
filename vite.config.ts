@@ -50,6 +50,17 @@ export default defineConfig({
     }
   },
 
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: [
+      './tests/unit/setup.ts'
+    ],
+    alias: [
+      { find: /^vue$/, replacement: 'vue/dist/vue.runtime.common.js' }
+    ]
+  },
+
   server: {
     host: '0.0.0.0',
     port: 8080

@@ -15,7 +15,7 @@
     "baseUrl": ".",
     "types": [
       "vite/client",
-      "jest",
+      "vitest/globals",
       "vuetify",
       "vue-meta",
       "@intlify/vite-plugin-vue-i18n/client"
