@@ -12,8 +12,8 @@ module.exports = {
     ecmaVersion: 2020
   },
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-console': import.meta.env.PROD ? 'warn' : 'off',
+    'no-debugger': import.meta.env.PROD ? 'warn' : 'off',
     camelcase: 0,
     'vue/no-v-html': 0,
     'no-use-before-define': 0,

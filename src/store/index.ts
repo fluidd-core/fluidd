@@ -31,7 +31,7 @@ import { webcams } from './webcams'
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
-  strict: (import.meta.env.NODE_ENV === 'development'),
+  strict: (import.meta.env.DEV),
   modules: {
     socket,
     auth,
