@@ -139,7 +139,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   valid = true
   lockState = false
   overridden = false
-  internalValue: number = this.value
+  internalValue = this.value
   internalMax = this.max
   pending = false
 
@@ -208,6 +208,8 @@ export default class AppSlider extends Mixins(StateMixin) {
 
   mounted () {
     this.lockState = this.locked
+    this.internalValue = this.value
+    this.internalMax = this.max
   }
 
   handleChange (value: number) {
