@@ -42,7 +42,7 @@
           <v-tooltip
             v-for="macro in category.macros"
             :key="`category-${macro.name}`"
-            bottom
+            top
           >
             <template #activator="{ on, attrs }">
               <app-macro-btn
@@ -102,7 +102,7 @@
           <v-tooltip
             v-for="macro in uncategorizedMacros"
             :key="`category-${macro.name}`"
-            bottom
+            top
           >
             <template #activator="{ on, attrs }">
               <app-macro-btn
