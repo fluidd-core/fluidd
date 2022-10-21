@@ -173,7 +173,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
       1,
       0.1,
       ...this.$store.state.config.uiSettings.general.zAdjustDistances
-    ]
+    ].sort((a, b) => b - a)
   }
 
   get manualProbe () {
