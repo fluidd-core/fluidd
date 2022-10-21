@@ -22,12 +22,13 @@ const sendMoves = (moves: Move[]) => {
 self.onmessage = (e) => {
   const data: ParseGcodeWorkerServerMessage = e.data
 
-  switch(data.action) {
-    case 'parse':
+  switch (data.action) {
+    case 'parse': {
       const moves = parseGcode(data.gcode, sendProgress)
 
       sendMoves(moves)
 
-      break;
+      break
+    }
   }
 }
