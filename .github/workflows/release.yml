@@ -21,7 +21,7 @@ jobs:
         run: npm ci --no-optional
 
       - name: Run tests
-        run: npm run test:unit
+        run: npm run test
 
       - name: Build
         run: npm run build
