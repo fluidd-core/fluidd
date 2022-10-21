@@ -18,8 +18,8 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
   }
 })
 export default class FullscreenCamera extends Vue {
-  cameraId?: string
-  camera?: CameraConfig
+  cameraId: string | null = null
+  camera: CameraConfig | null = null
 
   created () {
     this.cameraId = this.$route.params.cameraId
