@@ -139,8 +139,8 @@ export default class AppSlider extends Mixins(StateMixin) {
   valid = true
   lockState = false
   overridden = false
-  internalValue = this.value
-  internalMax = this.max
+  internalValue = 0
+  internalMax = 0
   pending = false
 
   // If the parent updates the value.
