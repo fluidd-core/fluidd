@@ -26,6 +26,7 @@
     "release:patch": "npm run release -- --release-as patch",
     "release:rc": "npm run release -- --prerelease rc",
     "test": "vitest",
+    "test:unit": "vitest",
     "theme:convert": "cd tools; node convertTheme.js"
   },
   "main": "index.js",
@@ -83,6 +84,7 @@
     "eslint": "^8.25.0",
     "eslint-plugin-vue": "^8.7.1",
     "husky": "^7.0.4",
+    "jsdom": "^20.0.1",
     "json-loader": "^0.5.7",
     "mockdate": "^3.0.5",
     "monaco-vscode-textmate-theme-converter": "^0.1.7",
