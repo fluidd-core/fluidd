@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -7,6 +9,7 @@ import path from 'path'
 import content from '@originjs/vite-plugin-content'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
+import version from './src/plugins/vite-plugin-inject-version'
 
 export default defineConfig({
   plugins: [
@@ -49,6 +52,7 @@ export default defineConfig({
       }
     }),
     vue(),
+    version(),
     content(),
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
@@ -77,10 +81,6 @@ export default defineConfig({
         ].join('\n')
       }
     }
-  },
-
-  build: {
-    target: 'safari12'
   },
 
   envPrefix: 'VUE_',
