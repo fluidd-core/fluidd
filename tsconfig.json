@@ -19,7 +19,7 @@
       "vitest/globals",
       "vuetify",
       "vue-meta",
-      "@intlify/vite-plugin-vue-i18n/client"
+      "vite-plugin-pwa/client"
     ],
     "paths": {
       "@/*": [

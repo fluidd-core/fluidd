@@ -6,6 +6,7 @@ import { VuetifyResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import content from '@originjs/vite-plugin-content'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
+import checker from 'vite-plugin-checker'
 
 export default defineConfig({
   plugins: [
@@ -52,6 +53,7 @@ export default defineConfig({
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
+    checker({ typescript: true }),
     Components({
       dts: true,
       dirs: [

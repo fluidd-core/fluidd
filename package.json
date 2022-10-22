@@ -94,6 +94,7 @@
     "typescript": "^4.8.4",
     "unplugin-vue-components": "^0.22.8",
     "vite": "^3.1.8",
+    "vite-plugin-checker": "^0.5.1",
     "vite-plugin-monaco-editor": "^1.1.0",
     "vite-plugin-pwa": "^0.13.1",
     "vitest": "^0.24.3",
