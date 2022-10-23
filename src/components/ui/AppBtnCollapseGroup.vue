@@ -13,6 +13,7 @@
     transition="slide-y-transition"
     left
     offset-y
+    :disabled="disabled"
     :close-on-content-click="false"
   >
     <template #activator="{ on, attrs }">
@@ -20,6 +21,7 @@
         fab
         :x-small="size === 'x-small'"
         :small="size === 'small'"
+        :disabled="disabled"
         text
         color=""
         v-bind="attrs"
@@ -51,6 +53,9 @@ export default class AppBtnCollapseGroup extends Vue {
 
   @Prop({ type: String, default: 'x-small' })
   readonly size!: string
+
+  @Prop({ type: Boolean, default: false })
+  readonly disabled!: boolean
 
   get isCollapsed () {
     if (this.collapsed) return true

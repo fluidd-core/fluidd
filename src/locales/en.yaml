@@ -193,7 +193,6 @@ app:
       upload: Upload
       upload_print: Upload & Print
       view: View
-      view_thumbnail: View Thumbnail
       reset_stats: Reset Stats
     error:
       app_setup_link: >-
