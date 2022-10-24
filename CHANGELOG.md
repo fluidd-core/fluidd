@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.21.0](https://github.com/fluidd-core/fluidd/compare/v1.20.1...v1.21.0) (2022-10-24)
+
+
+### Features
+
+* Adds any existing Probe to Endstops card ([#881](https://github.com/fluidd-core/fluidd/issues/881)) ([50ce1f1](https://github.com/fluidd-core/fluidd/commit/50ce1f190da96299d74958057da19449d0e2fdbb))
+* adds missing translation keys ([#906](https://github.com/fluidd-core/fluidd/issues/906)) ([e7106a2](https://github.com/fluidd-core/fluidd/commit/e7106a28fee5c29ac1cc79b0a03f964de344199d))
+* Adds new metadata fields to file list ([#871](https://github.com/fluidd-core/fluidd/issues/871)) ([afe70e9](https://github.com/fluidd-core/fluidd/commit/afe70e95fc8587639fb7e6e837343106b855e6c1))
+* gcode preview autozoom ([#894](https://github.com/fluidd-core/fluidd/issues/894)) ([c0294dd](https://github.com/fluidd-core/fluidd/commit/c0294dda5c43528c0c9722eb2f768f250e2667b2))
+* **i18n-HU:** update Hungarian language ([#909](https://github.com/fluidd-core/fluidd/issues/909)) ([ec94685](https://github.com/fluidd-core/fluidd/commit/ec9468555cb5173d713deb687865b3572117fe80))
+* **i18n-JA:** update Japanese language ([#880](https://github.com/fluidd-core/fluidd/issues/880)) ([4d23b23](https://github.com/fluidd-core/fluidd/commit/4d23b23044f58641f6b54c67f6007ed0d275ca73))
+* iframe camera view aspect ratio ([#875](https://github.com/fluidd-core/fluidd/issues/875)) ([aec9789](https://github.com/fluidd-core/fluidd/commit/aec9789227812e030a7a1ba939ea4b73b5358b6c))
+* larger thumbnail preview ([#891](https://github.com/fluidd-core/fluidd/issues/891)) ([2a101db](https://github.com/fluidd-core/fluidd/commit/2a101db44c707beb1e7f039f1cabbb946100751c))
+* single white channel led control ([#901](https://github.com/fluidd-core/fluidd/issues/901)) ([69fc533](https://github.com/fluidd-core/fluidd/commit/69fc53389147b0271ba800f3e5872e6e66f8aa1b))
+* use layer info from print_stats if available ([#903](https://github.com/fluidd-core/fluidd/issues/903)) ([d6886fd](https://github.com/fluidd-core/fluidd/commit/d6886fde1260d791120f71f7821cc959212c5b1d))
+* user/device specific layouts ([#878](https://github.com/fluidd-core/fluidd/issues/878)) ([9f198d6](https://github.com/fluidd-core/fluidd/commit/9f198d630a5ec563c188869e98a394051cebb029))
+* uses macro description as button tooltip ([#915](https://github.com/fluidd-core/fluidd/issues/915)) ([ca25343](https://github.com/fluidd-core/fluidd/commit/ca25343b93326e37953a875809fae41408a5241e))
+
+
+### Bug Fixes
+
+* allow initial layer in GcodePreviewCard ([#896](https://github.com/fluidd-core/fluidd/issues/896)) ([0938cce](https://github.com/fluidd-core/fluidd/commit/0938cce0d13c844491c9e07454932f541942b620))
+* auth/setCurrentUser expects object ([#882](https://github.com/fluidd-core/fluidd/issues/882)) ([729988d](https://github.com/fluidd-core/fluidd/commit/729988dcb28764af2b16ad91d5f1d96c7c22b31a))
+* check stepper_z exists before applying z_offset ([#890](https://github.com/fluidd-core/fluidd/issues/890)) ([becdd78](https://github.com/fluidd-core/fluidd/commit/becdd7889297f436995b633fd6b3b6ca15eab76d))
+* **console:** console no longer loses scroll attachment on multiple M118 ([#921](https://github.com/fluidd-core/fluidd/issues/921)) ([60bb6d9](https://github.com/fluidd-core/fluidd/commit/60bb6d92c0fda929f552ba5d6cd3e214d135aa4c))
+* destroy mjpg camera stream properly ([#868](https://github.com/fluidd-core/fluidd/issues/868)) ([d6cb6f1](https://github.com/fluidd-core/fluidd/commit/d6cb6f1900e1816986caf8704879bd4122efb9e5))
+* disable controls if Klipper not ready ([#911](https://github.com/fluidd-core/fluidd/issues/911)) ([793a94b](https://github.com/fluidd-core/fluidd/commit/793a94b7bb60fa3539f85ed4be452f226981f268))
+* Exclude Object not reacting to mobile inputs ([#898](https://github.com/fluidd-core/fluidd/issues/898)) ([f1b32a9](https://github.com/fluidd-core/fluidd/commit/f1b32a9e87fa27af5ced6abf5024aebeeec51833))
+* FileSystemBrowser icon size and resolution ([#887](https://github.com/fluidd-core/fluidd/issues/887)) ([b807802](https://github.com/fluidd-core/fluidd/commit/b807802ddccb0d4cc90bd30b0d7cfb51804dfac8))
+* only auto-load gcode preview on ongoing print ([#869](https://github.com/fluidd-core/fluidd/issues/869)) ([1752ee0](https://github.com/fluidd-core/fluidd/commit/1752ee0ff5d3702ab2fcac3b80ee6e0bc4fdd93a))
+* sort the manual probe offsets descending ([#917](https://github.com/fluidd-core/fluidd/issues/917)) ([646bb29](https://github.com/fluidd-core/fluidd/commit/646bb2996edab33a140cdf90e0e069d422453928))
+
 ### [1.20.1](https://github.com/fluidd-core/fluidd/compare/v1.20.0...v1.20.1) (2022-09-18)
 
 
