@@ -59,7 +59,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm"
           @change="setDefaultExtrudeLength"
         />
@@ -74,7 +74,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm/s"
           @change="setDefaultExtrudeSpeed"
         />
@@ -90,7 +90,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm"
           @change="setDefaultToolheadMoveLength"
         />
@@ -105,7 +105,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm/s"
           @change="setDefaultToolheadYXSpeed"
         />
@@ -120,7 +120,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm/s"
           @change="setDefaultToolheadZSpeed"
         />

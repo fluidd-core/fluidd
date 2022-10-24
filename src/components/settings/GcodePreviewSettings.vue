@@ -48,7 +48,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm"
           @change="setExtrusionLineWidth"
         />
@@ -63,7 +63,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm"
           @change="setMoveLineWidth"
         />
@@ -78,7 +78,7 @@
           filled
           dense
           single-line
-          hide-details
+          hide-details="auto"
           suffix="mm"
           @change="setRetractionIconSize"
         />
@@ -153,8 +153,8 @@ import { defaultState } from '@/store/config/index'
 })
 export default class GcodePreviewSettings extends Vue {
   rules = {
-    numRequired: (v: number | string) => v !== '' || 'Required',
-    numMin: (v: number) => v > 0 || 'Must be greater than 0'
+    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
+    numMin: (v: number) => v > 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
   }
 
   get extrusionLineWidth () {
