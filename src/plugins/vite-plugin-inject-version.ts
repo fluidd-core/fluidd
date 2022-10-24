@@ -1,12 +1,15 @@
-import { Plugin } from 'vite'
+import child_process from 'child_process'
+import fs from 'fs'
+import path from 'path'
 import { version } from '../../package.json'
-import ChildProcess from 'child_process'
+
+import type { Plugin } from 'vite'
 
 const vitePluginInjectVersion = (): Plugin => {
   return {
     name: 'version',
     config: () => {
-      const git_hash = ChildProcess
+      const git_hash = child_process
         .execSync('git rev-parse --short HEAD')
         .toString()
 
@@ -16,6 +19,15 @@ const vitePluginInjectVersion = (): Plugin => {
           'import.meta.env.HASH': JSON.stringify(git_hash)
         }
       }
+    },
+    writeBundle: () => {
+      setImmediate(async () => {
+        const versionFile = await fs.promises.open(path.resolve(__dirname, '../../dist/.version'), 'w')
+
+        await versionFile.writeFile(`v${version}`)
+
+        await versionFile.close()
+      })
     }
   }
 }
