@@ -22,7 +22,7 @@ export const defaultState = (): CamerasState => {
         flipX: false,
         flipY: false,
         rotation: 0,
-        height: 720
+        aspectRatio: '16:9'
       }
     ]
   }

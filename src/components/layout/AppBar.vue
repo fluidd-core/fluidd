@@ -138,6 +138,26 @@
         @click.stop="handleResetLayout"
         v-html="$t('app.general.btn.reset_layout')"
       />
+      <template v-if="isDashboard">
+        <v-divider
+          vertical
+          class="mx-2"
+        />
+        <app-btn
+          small
+          class="mx-2"
+          color="primary"
+          @click.stop="handleSetDefaultLayout"
+          v-html="$t('app.general.btn.set_default_layout')"
+        />
+        <app-btn
+          small
+          class="mx-2"
+          color="primary"
+          @click.stop="handleResetDefaultLayout"
+          v-html="$t('app.general.btn.reset_default_layout')"
+        />
+      </template>
     </template>
 
     <user-password-dialog
@@ -240,17 +260,45 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     this.$store.commit('config/setLayoutMode', false)
   }
 
+  get isDashboard () {
+    return this.$route.path === '/'
+  }
+
   handleResetLayout () {
     const pathLayouts = {
       '/diagnostics': 'diagnostics'
-    } as { [key: string]: string }
+    } as Record<string, string>
 
-    const toReset = pathLayouts[this.$route.path] ?? 'dashboard'
-    const layoutDefaultState = defaultState()
+    const pathLayout = pathLayouts[this.$route.path]
+    let layoutDefaultState
+    if (pathLayout) {
+      // reset to default init state
+      layoutDefaultState = defaultState().layouts[pathLayout]
+    } else {
+      // reset dashboard to default layout
+      layoutDefaultState = this.$store.getters['layout/getLayout']('dashboard')
+    }
+
+    const toReset = pathLayout ?? this.$store.getters['layout/getSpecificLayoutName']
 
     this.$store.dispatch('layout/onLayoutChange', {
       name: toReset,
-      value: layoutDefaultState.layouts[toReset]
+      value: layoutDefaultState
+    })
+  }
+
+  handleSetDefaultLayout () {
+    const currentLayoutName = this.$store.getters['layout/getSpecificLayoutName']
+    this.$store.dispatch('layout/onLayoutChange', {
+      name: 'dashboard',
+      value: this.$store.getters['layout/getLayout'](currentLayoutName)
+    })
+  }
+
+  handleResetDefaultLayout () {
+    this.$store.dispatch('layout/onLayoutChange', {
+      name: 'dashboard',
+      value: defaultState().layouts.dashboard
     })
   }
 

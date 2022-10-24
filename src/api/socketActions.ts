@@ -235,7 +235,8 @@ export const SocketActions = {
   async printerQueryEndstops () {
     baseEmit(
       'printer.query_endstops.status', {
-        dispatch: 'printer/onQueryEndstops'
+        dispatch: 'printer/onQueryEndstops',
+        wait: Waits.onQueryEndstops
       }
     )
   },

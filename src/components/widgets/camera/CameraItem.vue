@@ -27,7 +27,11 @@
       :src="cameraUrl"
       class="camera-image"
       style="border: none; width: 100%"
-      :style="{height: fullscreen ? '100vh' : `${cameraHeight}px`}"
+      :style="{
+        height: (cameraHeight && !camera.aspectRatio) ? (fullscreen ? '100vh' : `${cameraHeight}px`) : undefined,
+        'aspect-ratio': camera.aspectRatio ? camera.aspectRatio.replace(':', '/') : undefined,
+        'max-height': camera.aspectRatio ? 'unset' : undefined
+      }"
     />
 
     <div
@@ -74,7 +78,7 @@ export default class CameraItem extends Vue {
   readonly fullscreen!: boolean
 
   @Ref('camera_image')
-  readonly cameraImage!: HTMLElement
+  readonly cameraImage!: HTMLImageElement
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -89,7 +93,7 @@ export default class CameraItem extends Vue {
   cameraUrl = ''
   cameraFullScreenUrl = ''
 
-  // iframe height
+  // iframe height, deprecated
   cameraHeight = 720
 
   // Maintains the last cachebust string
@@ -149,7 +153,7 @@ export default class CameraItem extends Vue {
    */
   beforeDestroy () {
     this.cancelCameraTransform()
-    this.cameraUrl = ''
+    this.cameraUrl = this.cameraImage.src = ''
     this.cameraFullScreenUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
   }

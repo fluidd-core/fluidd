@@ -66,6 +66,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
+      @view-thumbnail="handleViewThumbnail"
     />
 
     <file-editor-dialog
@@ -154,6 +155,7 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
+import { getThumb } from '@/store/helpers'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -326,9 +328,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         { text: this.$t('app.general.table.header.height'), value: 'object_height', configurable: true },
         { text: this.$t('app.general.table.header.first_layer_height'), value: 'first_layer_height', configurable: true },
         { text: this.$t('app.general.table.header.layer_height'), value: 'layer_height', configurable: true },
+        { text: this.$t('app.general.table.header.filament_name'), value: 'filament_name', configurable: true },
+        { text: this.$t('app.general.table.header.filament_type'), value: 'filament_type', configurable: true },
         { text: this.$t('app.general.table.header.filament'), value: 'filament_total', configurable: true },
         { text: this.$t('app.general.table.header.filament_weight_total'), value: 'filament_weight_total', configurable: true },
         { text: this.$t('app.general.table.header.filament_used'), value: 'history.filament_used', configurable: true },
+        { text: this.$t('app.general.table.header.nozzle_diameter'), value: 'nozzle_diameter', configurable: true },
         { text: this.$t('app.general.table.header.slicer'), value: 'slicer', configurable: true },
         { text: this.$t('app.general.table.header.slicer_version'), value: 'slicer_version', configurable: true },
         { text: this.$t('app.general.table.header.estimated_time'), value: 'estimated_time', configurable: true },
@@ -663,7 +668,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleClosePreview () {
     this.filePreviewState.open = false
-    URL.revokeObjectURL(this.filePreviewState.src)
+    if (this.filePreviewState.src.startsWith('blob:')) {
+      URL.revokeObjectURL(this.filePreviewState.src)
+    }
   }
 
   handleCancelDownload () {
@@ -688,6 +695,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .finally(() => {
         this.$store.dispatch('files/removeFileDownload')
       })
+  }
+
+  async handleViewThumbnail (file: AppFileWithMeta) {
+    const thumb = getThumb(file.thumbnails ?? [], file.path, true)
+    if (!thumb) return
+    const thumbUrl = this.getThumbUrl([thumb], file.path, true)
+
+    this.filePreviewState = {
+      open: true,
+      src: thumbUrl,
+      type: 'image',
+      filename: file.filename,
+      width: thumb.width
+    }
   }
 
   /**

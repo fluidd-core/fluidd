@@ -101,9 +101,12 @@ export const defaultState = (): ConfigState => {
           { value: 'history.total_duration', visible: false },
           { value: 'history.print_duration', visible: false },
           { value: 'estimated_time', visible: false },
+          { value: 'nozzle_diameter', visible: false },
           { value: 'slicer_version', visible: false },
           { value: 'slicer', visible: false },
           { value: 'history.filament_used', visible: false },
+          { value: 'filament_name', visible: false },
+          { value: 'filament_type', visible: false },
           { value: 'filament_total', visible: false },
           { value: 'filament_weight_total', visible: false },
           { value: 'object_height', visible: false },
@@ -133,6 +136,7 @@ export const defaultState = (): ConfigState => {
         groupLowerLayers: false,
         autoLoadOnPrintStart: false,
         autoFollowOnFileLoad: true,
+        autoZoom: false,
         flip: {
           horizontal: false,
           vertical: true

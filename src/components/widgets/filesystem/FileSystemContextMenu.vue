@@ -16,28 +16,30 @@
         no-gutters
       >
         <v-col>
-          <v-list
-            dense
-          >
+          <v-list dense>
             <v-list-item
-              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint"
+              v-if="canPrint"
               link
+              :disabled="!printerReady"
               @click="$emit('print', file)"
             >
               <v-list-item-icon>
-                <v-icon>$printer</v-icon>
+                <v-icon :disabled="!printerReady">
+                  $printer
+                </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>
-                Print
-              </v-list-item-title>
+              <v-list-item-title>{{ $t('app.general.btn.print') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="canPreheat"
               link
+              :disabled="!printerReady"
               @click="$emit('preheat', file)"
             >
               <v-list-item-icon>
-                <v-icon>$fire</v-icon>
+                <v-icon :disabled="!printerReady">
+                  $fire
+                </v-icon>
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.preheat') }}</v-list-item-title>
             </v-list-item>
@@ -108,9 +110,10 @@
           class="px-2 d-none d-sm-flex"
         >
           <img
-            class="mr-2 ml-2"
+            class="mr-2 ml-2 thumbnail"
             :src="getThumbUrl(file.thumbnails, file.path, true, file.modified)"
             :height="150"
+            @click="$emit('view-thumbnail', file)"
           >
         </v-col>
       </v-row>
@@ -148,10 +151,23 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return this.$store.getters['files/getRootProperties'](this.root)
   }
 
+  get canPrint () {
+    return (
+      this.file.type !== 'directory' &&
+      this.rootProperties.accepts.includes('.' + this.file.extension) &&
+      this.rootProperties.canPrint
+    )
+  }
+
   get canPreheat () {
     return (
       'first_layer_extr_temp' in this.file &&
-      'first_layer_bed_temp' in this.file &&
+      'first_layer_bed_temp' in this.file
+    )
+  }
+
+  get printerReady () {
+    return (
       !this.printerPrinting &&
       !this.printerPaused &&
       this.klippyReady
@@ -159,7 +175,14 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    return (this.$store.getters['layout/isEnabledInLayout']('dashboard', 'gcode-preview-card') && this.root === 'gcodes')
+    const layoutName = this.$store.getters['layout/getSpecificLayoutName']
+    return (this.$store.getters['layout/isEnabledInLayout'](layoutName, 'gcode-preview-card') && this.root === 'gcodes')
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .thumbnail {
+    cursor: pointer;
+  }
+</style>

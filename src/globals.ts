@@ -40,6 +40,8 @@ import {
   mdiFolder,
   mdiPencil,
   mdiMagnify,
+  mdiMagnifyPlus,
+  mdiMagnifyMinus,
   mdiDownload,
   mdiFormTextbox,
   mdiDelete,
@@ -293,6 +295,8 @@ export const Icons = Object.freeze({
   pencil: mdiPencil,
   pencilLock: mdiPencilLock,
   magnify: mdiMagnify,
+  magnifyPlus: mdiMagnifyPlus,
+  magnifyMinus: mdiMagnifyMinus,
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
@@ -372,5 +376,7 @@ export const Waits = Object.freeze({
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
-  onManualProbe: 'onManualProbe'
+  onManualProbe: 'onManualProbe',
+  onQueryEndstops: 'onQueryEndstops',
+  onQueryProbe: 'onQueryProbe'
 })

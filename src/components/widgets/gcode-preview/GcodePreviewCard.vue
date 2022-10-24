@@ -10,6 +10,7 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
+          class="ml-1"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
@@ -18,7 +19,18 @@
 
       <app-btn
         color=""
+        fab
+        x-small
+        text
+        :disabled="!fileLoaded"
         class="ml-1"
+        @click="autoZoom = !autoZoom"
+      >
+        <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
+      </app-btn>
+
+      <app-btn
+        color=""
         fab
         x-small
         text
@@ -135,6 +147,7 @@
       <v-row>
         <v-col>
           <gcode-preview
+            ref="preview"
             width="100%"
             height="100%"
             :layer="currentLayer"
@@ -149,7 +162,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
@@ -177,13 +190,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
+  @Ref('preview')
+  readonly preview!: GcodePreview
+
   currentLayer = 0
   moveProgress = 0
   excludeObjectDialog = false
-
-  get visibleLayer () {
-    return this.currentLayer + 1
-  }
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -244,7 +256,9 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   @Watch('printerFile')
   onPrintFileChanged () {
-    if (this.autoLoadOnPrintStart && this.printerFile) {
+    if (this.autoLoadOnPrintStart &&
+      this.printerFile &&
+      ['paused', 'printing'].includes(this.printerState)) {
       this.loadCurrent()
     }
   }
@@ -291,7 +305,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get currentLayerHeight (): number {
-    return this.$store.getters['gcodePreview/getLayers'][this.currentLayer - 1]?.z ?? 0
+    return this.$store.getters['gcodePreview/getLayers'][this.currentLayer]?.z ?? 0
   }
 
   get followProgress (): boolean {
@@ -321,7 +335,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   setCurrentLayer (value: number) {
-    if (value > 0) this.currentLayer = value
+    if (value >= 0) this.currentLayer = value
   }
 
   setMoveProgress (value: number) {
@@ -396,6 +410,20 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
+  }
+
+  get autoZoom () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoZoom
+  }
+
+  set autoZoom (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoZoom',
+      value,
+      server: true
+    })
+
+    this.preview.reset()
   }
 }
 </script>

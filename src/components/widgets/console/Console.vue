@@ -162,7 +162,10 @@ export default class Console extends Mixins(StateMixin) {
         }
       }
 
-      this.updateScrollingPaused()
+      if (force) {
+        // The fixed/floating nature of the console may only change if the scroll is forced.
+        this.updateScrollingPaused()
+      }
     }
   }
 

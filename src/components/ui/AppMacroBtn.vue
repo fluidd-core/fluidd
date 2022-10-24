@@ -4,6 +4,7 @@
     :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
     @click="$emit('click', macro.name)"
+    v-on="$listeners"
   >
     <slot />
   </app-btn>
@@ -15,6 +16,7 @@
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
       @click="$emit('click', macro.name)"
+      v-on="$listeners"
     >
       <slot />
     </app-btn>
@@ -80,7 +82,7 @@
             block
             @click="$emit('click', runCommand)"
           >
-            Send
+            {{ $t('app.general.btn.send') }}
           </app-btn>
         </v-card-actions>
       </v-card>
@@ -114,8 +116,12 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   get runCommand () {
     let s = this.macro.name
     if (this.params) {
-      for (const param of Object.keys(this.params)) {
-        s += ` ${param}=${this.params[param].value}`
+      if (['m117', 'm118'].includes(this.macro.name)) {
+        s += ` ${this.params.message.value}`
+      } else {
+        for (const param of Object.keys(this.params)) {
+          s += ` ${param}=${this.params[param].value}`
+        }
       }
     }
     return s
@@ -130,7 +136,10 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
 
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
-    if (this.macro.config.gcode) {
+
+    if (['m117', 'm118'].includes(this.macro.name)) {
+      this.$set(this.params, 'message', { value: '', reset: '' })
+    } else {
       for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
         if (!this.params[name]) {
           this.$set(this.params, name, { value, reset: value })

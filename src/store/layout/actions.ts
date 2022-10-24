@@ -18,7 +18,7 @@ export const actions: ActionTree<LayoutState, RootState> = {
 
   async onLayoutChange ({ commit, state }, payload: { name: string; value: LayoutConfig }) {
     const layout = state.layouts[payload.name]
-    if (layout) {
+    if (layout || payload.name.startsWith('dashboard')) {
       commit('setLayoutChange', payload)
       await SocketActions.serverWrite(
         Globals.MOONRAKER_DB.fluidd.ROOTS.layout.name + '.layouts',
@@ -27,8 +27,14 @@ export const actions: ActionTree<LayoutState, RootState> = {
     }
   },
 
-  async onUpdateConfig ({ commit, state }, payload: { name: string; value: LayoutConfig }) {
-    const containers = state.layouts[payload.name]
+  async onUpdateConfig ({ commit, state, dispatch }, payload: { name: string; value: LayoutConfig }) {
+    let containers = state.layouts[payload.name]
+    if (!containers) {
+      // user/device specific layout doesn't exist yet, so we create it
+      dispatch('onLayoutChange', { name: payload.name, value: state.layouts.dashboard })
+      containers = state.layouts[payload.name]
+    }
+
     if (containers) {
       for (const container in containers) {
         const i = containers[container].findIndex(layout => layout.id === payload.value.id)

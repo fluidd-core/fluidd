@@ -166,6 +166,7 @@ export interface GcodePreviewConfig {
   groupLowerLayers: boolean;
   autoLoadOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
+  autoZoom: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;
