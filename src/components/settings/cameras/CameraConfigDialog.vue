@@ -200,7 +200,7 @@ export default class CameraConfigDialog extends Vue {
   readonly camera!: CameraConfig
 
   cameraUrlRules = [
-    (v: string) => !!v || 'Required'
+    (v: string) => !!v || this.$t('app.general.simple_form.error.required')
   ]
 
   valid = false
