@@ -1,19 +1,19 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+
   "compilerOptions": {
-    "target": "es2020",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-    "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    // if `<script setup>` is used, then remove the next line
+    "preserveValueImports": false,
+
+    "importsNotUsedAsValues": "remove",
+
+    // if using Vue 3, then remove the next line
     "useDefineForClassFields": false,
-    "sourceMap": true,
+
+    "experimentalDecorators": true,
+
     "baseUrl": ".",
+
     "types": [
       "vite/client",
       "vitest/globals",
@@ -21,18 +21,14 @@
       "vue-meta",
       "vite-plugin-pwa/client"
     ],
+
     "paths": {
       "@/*": [
         "src/*"
       ]
-    },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
+    }
   },
+
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
