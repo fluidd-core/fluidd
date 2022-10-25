@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [1.21.1](https://github.com/fluidd-core/fluidd/compare/v1.21.0...v1.21.1) (2022-10-25)
+## [1.21.1](https://github.com/fluidd-core/fluidd/compare/v1.21.0...v1.21.1) (2022-10-25)
 
 
 ### Bug Fixes
@@ -41,7 +41,7 @@ All notable changes to this project will be documented in this file. See [standa
 * only auto-load gcode preview on ongoing print ([#869](https://github.com/fluidd-core/fluidd/issues/869)) ([1752ee0](https://github.com/fluidd-core/fluidd/commit/1752ee0ff5d3702ab2fcac3b80ee6e0bc4fdd93a))
 * sort the manual probe offsets descending ([#917](https://github.com/fluidd-core/fluidd/issues/917)) ([646bb29](https://github.com/fluidd-core/fluidd/commit/646bb2996edab33a140cdf90e0e069d422453928))
 
-### [1.20.1](https://github.com/fluidd-core/fluidd/compare/v1.20.0...v1.20.1) (2022-09-18)
+## [1.20.1](https://github.com/fluidd-core/fluidd/compare/v1.20.0...v1.20.1) (2022-09-18)
 
 
 ### Features
@@ -94,7 +94,7 @@ All notable changes to this project will be documented in this file. See [standa
 * reset G-code Preview state on file overwrite ([#832](https://github.com/fluidd-core/fluidd/issues/832)) ([71f0938](https://github.com/fluidd-core/fluidd/commit/71f09382341468af06530a481b34d025f8bee4ce))
 * width constraint at root container level ([#829](https://github.com/fluidd-core/fluidd/issues/829)) ([1ab7618](https://github.com/fluidd-core/fluidd/commit/1ab7618d0ade0182da26fd3499cc9069ca083bbc))
 
-### [1.19.1](https://github.com/fluidd-core/fluidd/compare/v1.19.0...v1.19.1) (2022-08-02)
+## [1.19.1](https://github.com/fluidd-core/fluidd/compare/v1.19.0...v1.19.1) (2022-08-02)
 
 
 ### Features
@@ -162,7 +162,7 @@ All notable changes to this project will be documented in this file. See [standa
 * **style:** light theme AppSwitch ([#752](https://github.com/fluidd-core/fluidd/issues/752)) ([ac3d80e](https://github.com/fluidd-core/fluidd/commit/ac3d80ecef1d96474569e4c4af1794900fb1dce2))
 * use default color for power icon in top navigation ([#746](https://github.com/fluidd-core/fluidd/issues/746)) ([0f40140](https://github.com/fluidd-core/fluidd/commit/0f4014054d172abe6978f24eb38be33ccfbdad0a))
 
-### [1.18.2](https://github.com/fluidd-core/fluidd/compare/v1.18.1...v1.18.2) (2022-06-09)
+## [1.18.2](https://github.com/fluidd-core/fluidd/compare/v1.18.1...v1.18.2) (2022-06-09)
 
 
 ### Features
@@ -181,7 +181,7 @@ All notable changes to this project will be documented in this file. See [standa
 * hide Pressure Advance if no default extruder stepper set ([#694](https://github.com/fluidd-core/fluidd/issues/694)) ([895dbe2](https://github.com/fluidd-core/fluidd/commit/895dbe25a00c22fce94dabf7b5378b56d7ae7b08))
 * **layout:** move gcode controls to dropdown; fix vertical layout ([#696](https://github.com/fluidd-core/fluidd/issues/696)) ([6fc304e](https://github.com/fluidd-core/fluidd/commit/6fc304e6251a7ffbc46feeb00a11d49496b54b3d))
 
-### [1.18.1](https://github.com/fluidd-core/fluidd/compare/v1.18.0...v1.18.1) (2022-05-20)
+## [1.18.1](https://github.com/fluidd-core/fluidd/compare/v1.18.0...v1.18.1) (2022-05-20)
 
 
 ### Features
@@ -259,7 +259,7 @@ All notable changes to this project will be documented in this file. See [standa
 * typescript issues ([#589](https://github.com/fluidd-core/fluidd/issues/589)) ([fa05c0c](https://github.com/fluidd-core/fluidd/commit/fa05c0cd0fdf5f2aec5bdaa22f2b2c54a79c991d))
 * typescript type narrowing ([#619](https://github.com/fluidd-core/fluidd/issues/619)) ([abe98a0](https://github.com/fluidd-core/fluidd/commit/abe98a0b022f595e65a60e9f6bfbbb824dc3d8cf))
 
-### [1.17.2](https://github.com/fluidd-core/fluidd/compare/v1.17.1...v1.17.2) (2022-03-13)
+## [1.17.2](https://github.com/fluidd-core/fluidd/compare/v1.17.1...v1.17.2) (2022-03-13)
 
 
 ### Features
@@ -274,7 +274,7 @@ All notable changes to this project will be documented in this file. See [standa
 * shows missing macro parameters ([#566](https://github.com/fluidd-core/fluidd/issues/566)) ([18da8e4](https://github.com/fluidd-core/fluidd/commit/18da8e4d5b108626a318656bc6b3292ca9c49d46))
 * typescript typings ([#559](https://github.com/fluidd-core/fluidd/issues/559)) ([8d51e05](https://github.com/fluidd-core/fluidd/commit/8d51e05f41fa500af929b92fa6eaedd41fb97b39))
 
-### [1.17.1](https://github.com/fluidd-core/fluidd/compare/v1.17.0...v1.17.1) (2022-03-02)
+## [1.17.1](https://github.com/fluidd-core/fluidd/compare/v1.17.0...v1.17.1) (2022-03-02)
 
 
 ### Bug Fixes
@@ -341,14 +341,14 @@ All notable changes to this project will be documented in this file. See [standa
 * websocket cache issue with arrays ([#510](https://github.com/fluidd-core/fluidd/issues/510)) ([731d67e](https://github.com/fluidd-core/fluidd/commit/731d67ecc6d0611d576a18e6c03eddb9fcf7feed))
 * z move speed issue ([#488](https://github.com/fluidd-core/fluidd/issues/488)) ([dbd100a](https://github.com/fluidd-core/fluidd/commit/dbd100ab1a4761191b34134442d1f6951bf5fbaf))
 
-### [1.16.2](https://github.com/cadriel/fluidd/compare/v1.16.1...v1.16.2) (2021-07-09)
+## [1.16.2](https://github.com/cadriel/fluidd/compare/v1.16.1...v1.16.2) (2021-07-09)
 
 
 ### Bug Fixes
 
 * don't block connection on fresh moonraker databases ([cc39708](https://github.com/cadriel/fluidd/commit/cc397081627e8dba76be6ea46bdc41fa40ad85d5))
 
-### [1.16.1](https://github.com/cadriel/fluidd/compare/v1.16.0...v1.16.1) (2021-07-09)
+## [1.16.1](https://github.com/cadriel/fluidd/compare/v1.16.0...v1.16.1) (2021-07-09)
 
 
 ### Bug Fixes
@@ -555,14 +555,14 @@ All notable changes to this project will be documented in this file. See [standa
 * set min val to 0.1 for extruder length and speed vals ([88c9e42](https://github.com/cadriel/fluidd/commit/88c9e424dfb6c34325f09a4b23a32e082337f38e))
 * Z adjust values now apply properly ([87dc3dc](https://github.com/cadriel/fluidd/commit/87dc3dcc4d3e9c045dbefcf685df7df88c8e6701))
 
-### [1.12.2](https://github.com/cadriel/fluidd/compare/v1.12.1...v1.12.2) (2021-04-09)
+## [1.12.2](https://github.com/cadriel/fluidd/compare/v1.12.1...v1.12.2) (2021-04-09)
 
 
 ### Bug Fixes
 
 * file edit should now be enabled on smaller screens and mobile ([dc47eae](https://github.com/cadriel/fluidd/commit/dc47eae99e0ff43332bc7a65ab9a261aeead7650))
 
-### [1.12.1](https://github.com/cadriel/fluidd/compare/v1.12.0...v1.12.1) (2021-04-08)
+## [1.12.1](https://github.com/cadriel/fluidd/compare/v1.12.0...v1.12.1) (2021-04-08)
 
 
 ### Bug Fixes
@@ -612,7 +612,7 @@ All notable changes to this project will be documented in this file. See [standa
 * remove edit / view file if on mobile ([c143786](https://github.com/cadriel/fluidd/commit/c14378622a2b92b299df76e064b4b7a653888ae8))
 * shrink edit dialog buttons on smaller displays ([d5111a9](https://github.com/cadriel/fluidd/commit/d5111a976d01ea688046ff10d0b0351f8058bde7))
 
-### [1.11.2](https://github.com/cadriel/fluidd/compare/v1.11.1...v1.11.2) (2021-03-28)
+## [1.11.2](https://github.com/cadriel/fluidd/compare/v1.11.1...v1.11.2) (2021-03-28)
 
 
 ### Features
@@ -629,7 +629,7 @@ All notable changes to this project will be documented in this file. See [standa
 * reprint not working when history is off ([08d2b8b](https://github.com/cadriel/fluidd/commit/08d2b8bafddc253cde5b513dc884b616f403b0ac))
 * thumbs failing to load ([64f3a8f](https://github.com/cadriel/fluidd/commit/64f3a8fd7346ff8b28fa282f38847c14388de559))
 
-### [1.11.1](https://github.com/cadriel/fluidd/compare/v1.11.0...v1.11.1) (2021-03-26)
+## [1.11.1](https://github.com/cadriel/fluidd/compare/v1.11.0...v1.11.1) (2021-03-26)
 
 
 ### Bug Fixes
@@ -716,7 +716,7 @@ All notable changes to this project will be documented in this file. See [standa
 * relax url check when adding printer ([6753e8d](https://github.com/cadriel/fluidd/commit/6753e8dba60d713d84b73fab7e6e3a9134e7218c))
 * tz unit tests ([de1de4e](https://github.com/cadriel/fluidd/commit/de1de4e486e797b3a437cf70edab3054ed3d4f4f))
 
-### [1.8.1](https://github.com/cadriel/fluidd/compare/v1.8.0...v1.8.1) (2021-02-21)
+## [1.8.1](https://github.com/cadriel/fluidd/compare/v1.8.0...v1.8.1) (2021-02-21)
 
 
 ### Bug Fixes
@@ -753,7 +753,7 @@ All notable changes to this project will be documented in this file. See [standa
 * should not change extruder during a print ([2af8d49](https://github.com/cadriel/fluidd/commit/2af8d49c350c869040076ebd8498b19ead307efb))
 * update responses now properly scroll the console ([17e70ce](https://github.com/cadriel/fluidd/commit/17e70ce7a94797fe64ee982a02c9f3e65590a463))
 
-### [1.7.1](https://github.com/cadriel/fluidd/compare/v1.7.0...v1.7.1) (2021-02-13)
+## [1.7.1](https://github.com/cadriel/fluidd/compare/v1.7.0...v1.7.1) (2021-02-13)
 
 
 ### Bug Fixes
@@ -789,7 +789,7 @@ All notable changes to this project will be documented in this file. See [standa
 * resolve page refreshes on first form entry ([c2dc9fd](https://github.com/fluidd-core/fluidd/commit/c2dc9fd1857d3a32eed03ee2bee20e59b17769ad))
 * speed multiplier ([0ccd46e](https://github.com/fluidd-core/fluidd/commit/0ccd46e8535ddf8dc3e819a248939b2949389d1c))
 
-### [1.6.3](https://github.com/fluidd-core/fluidd/compare/v1.6.2...v1.6.3) (2021-02-06)
+## [1.6.3](https://github.com/fluidd-core/fluidd/compare/v1.6.2...v1.6.3) (2021-02-06)
 
 
 ### Bug Fixes
@@ -797,7 +797,7 @@ All notable changes to this project will be documented in this file. See [standa
 * fan value display not having a fixed decimal ([8a14ac6](https://github.com/fluidd-core/fluidd/commit/8a14ac65828f158176cce49ddc1f796ce025ebec))
 * websocket data bleed ([cff0077](https://github.com/fluidd-core/fluidd/commit/cff00771988fc240520a4d977ab00fbe2e3bad85))
 
-### [1.6.2](https://github.com/fluidd-core/fluidd/compare/v1.6.1...v1.6.2) (2021-02-05)
+## [1.6.2](https://github.com/fluidd-core/fluidd/compare/v1.6.1...v1.6.2) (2021-02-05)
 
 
 ### Bug Fixes
@@ -805,7 +805,7 @@ All notable changes to this project will be documented in this file. See [standa
 * package-lock ([02d50e1](https://github.com/fluidd-core/fluidd/commit/02d50e126876054e24586ad23988a4c05101c3cd))
 * temp store with no targets won't break chart ([ddefcf7](https://github.com/fluidd-core/fluidd/commit/ddefcf7ac287b7fe2c855e333dbc0d2cc505f676))
 
-### [1.6.1](https://github.com/fluidd-core/fluidd/compare/v1.6.0...v1.6.1) (2021-01-24)
+## [1.6.1](https://github.com/fluidd-core/fluidd/compare/v1.6.0...v1.6.1) (2021-01-24)
 
 
 ### Bug Fixes
@@ -844,7 +844,7 @@ All notable changes to this project will be documented in this file. See [standa
 * temp inputs can no longer send NaN ([5d21718](https://github.com/fluidd-core/fluidd/commit/5d21718752720d17df834f92f10eb42921ff5c8b))
 * update response output ([f680525](https://github.com/fluidd-core/fluidd/commit/f680525e5cab9fea77088080aca408f04284e25c))
 
-### [1.5.1](https://github.com/fluidd-core/fluidd/compare/v1.5.0...v1.5.1) (2021-01-17)
+## [1.5.1](https://github.com/fluidd-core/fluidd/compare/v1.5.0...v1.5.1) (2021-01-17)
 
 
 ### Bug Fixes
@@ -890,7 +890,7 @@ All notable changes to this project will be documented in this file. See [standa
 * Temp graph no longer consumes resources in a collapsed state ([f566190](https://github.com/fluidd-core/fluidd/commit/f5661906f4f9d2f308048ae86d600ca302e3018d))
 * temp presets no longer error if heaters or fan names change ([1ac6d37](https://github.com/fluidd-core/fluidd/commit/1ac6d3783730019da58ee987d82fda44c68102d4))
 
-### [1.4.3](https://github.com/fluidd-core/fluidd/compare/v1.4.2...v1.4.3) (2021-01-10)
+## [1.4.3](https://github.com/fluidd-core/fluidd/compare/v1.4.2...v1.4.3) (2021-01-10)
 
 
 ### Features
@@ -909,7 +909,7 @@ All notable changes to this project will be documented in this file. See [standa
 * OS updates should properly update status now ([aed9896](https://github.com/fluidd-core/fluidd/commit/aed9896e5ae99facffaac2cf60e0e6ced9612377))
 * rename restart mcu's to firmware restart klipper ([a597aa2](https://github.com/fluidd-core/fluidd/commit/a597aa238535c1d2dce7f72eb412db453c475fc1))
 
-### [1.4.2](https://github.com/fluidd-core/fluidd/compare/v1.4.1...v1.4.2) (2021-01-04)
+## [1.4.2](https://github.com/fluidd-core/fluidd/compare/v1.4.1...v1.4.2) (2021-01-04)
 
 
 ### Features
@@ -934,7 +934,7 @@ All notable changes to this project will be documented in this file. See [standa
 * toolhead title buttons overflowing ([292d2b8](https://github.com/fluidd-core/fluidd/commit/292d2b8bf016c2882bd6d4405a0787ace61a684f))
 * update status no longer effects other waits in the UI ([c2751d5](https://github.com/fluidd-core/fluidd/commit/c2751d55e61f2e6739937c63b797f7a05e4600fb))
 
-### [1.4.1](https://github.com/fluidd-core/fluidd/compare/v1.4.0...v1.4.1) (2020-12-31)
+## [1.4.1](https://github.com/fluidd-core/fluidd/compare/v1.4.0...v1.4.1) (2020-12-31)
 
 
 ### Bug Fixes
@@ -956,7 +956,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * ensure add printer instance url requires protocol ([17c3271](https://github.com/fluidd-core/fluidd/commit/17c327196966608b2aa2f9f263d02c124cfe5035))
 
-### [1.3.1](https://github.com/fluidd-core/fluidd/compare/v1.3.0...v1.3.1) (2020-12-26)
+## [1.3.1](https://github.com/fluidd-core/fluidd/compare/v1.3.0...v1.3.1) (2020-12-26)
 
 
 ### Bug Fixes
@@ -977,7 +977,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * unable to edit new files. ([25aa5b9](https://github.com/fluidd-core/fluidd/commit/25aa5b94e5648cc8c9f9bc89f2eb41ac41960d32))
 
-### [1.2.2](https://github.com/fluidd-core/fluidd/compare/v1.2.1...v1.2.2) (2020-12-20)
+## [1.2.2](https://github.com/fluidd-core/fluidd/compare/v1.2.1...v1.2.2) (2020-12-20)
 
 
 ### Bug Fixes
@@ -985,7 +985,7 @@ All notable changes to this project will be documented in this file. See [standa
 * refresh on client update ([694d472](https://github.com/fluidd-core/fluidd/commit/694d4727baae3ef8a52b72665062e79b9efd1500))
 * you should not update or restart services during a print ([e250478](https://github.com/fluidd-core/fluidd/commit/e250478aa5e9249b0b6e0420c50a207cf8a7446a))
 
-### [1.2.1](https://github.com/fluidd-core/fluidd/compare/v1.2.0...v1.2.1) (2020-12-20)
+## [1.2.1](https://github.com/fluidd-core/fluidd/compare/v1.2.0...v1.2.1) (2020-12-20)
 
 
 ### Bug Fixes
@@ -1103,14 +1103,14 @@ All notable changes to this project will be documented in this file. See [standa
 * unused var ([86b163f](https://github.com/fluidd-core/fluidd/commit/86b163f552ea8e369f862d715cccf98398101d10))
 * update ref for vue-plotly ([1f7d275](https://github.com/fluidd-core/fluidd/commit/1f7d2758584e77026b5f906c160c7f47272cc3e0))
 
-### [0.0.10](https://github.com/fluidd-core/fluidd/compare/v0.0.9...v0.0.10) (2020-10-30)
+## [0.0.10](https://github.com/fluidd-core/fluidd/compare/v0.0.9...v0.0.10) (2020-10-30)
 
 
 ### Bug Fixes
 
 * firefox not showing logo ([31475c5](https://github.com/fluidd-core/fluidd/commit/31475c5b5fe2063535b3ac040446f13f852e4911))
 
-### [0.0.9](https://github.com/fluidd-core/fluidd/compare/v0.0.8...v0.0.9) (2020-10-30)
+## [0.0.9](https://github.com/fluidd-core/fluidd/compare/v0.0.8...v0.0.9) (2020-10-30)
 
 
 ### Features
@@ -1138,7 +1138,7 @@ All notable changes to this project will be documented in this file. See [standa
 * sliders not registering if mouse released outside of control ([8dee998](https://github.com/fluidd-core/fluidd/commit/8dee9983341b6820129618137a8ecb1a4132bf8c))
 * z-adjust displays to 3 decimal points, as per lcd. ([05c9869](https://github.com/fluidd-core/fluidd/commit/05c986921387059e1d379d84e9dd0db2edd57bae))
 
-### [0.0.8](https://github.com/fluidd-core/fluidd/compare/v0.0.7...v0.0.8) (2020-10-26)
+## [0.0.8](https://github.com/fluidd-core/fluidd/compare/v0.0.7...v0.0.8) (2020-10-26)
 
 
 ### Features
@@ -1158,7 +1158,7 @@ All notable changes to this project will be documented in this file. See [standa
 * updates to reflect moonraker changes to file modified ([d71712f](https://github.com/fluidd-core/fluidd/commit/d71712f4103f2e79ff76d4cbbbc2d940b9732525))
 * z_tilt_adjust ([0a020b1](https://github.com/fluidd-core/fluidd/commit/0a020b16dba0dce5379db53ebcfd372deda9b2b3))
 
-### [0.0.7](https://github.com/fluidd-core/fluidd/compare/v0.0.6...v0.0.7) (2020-10-20)
+## [0.0.7](https://github.com/fluidd-core/fluidd/compare/v0.0.6...v0.0.7) (2020-10-20)
 
 
 ### Bug Fixes
@@ -1169,7 +1169,7 @@ All notable changes to this project will be documented in this file. See [standa
 * printing within a folder ([aea8257](https://github.com/fluidd-core/fluidd/commit/aea8257b5b8e80f3571a04295923cbd842616663))
 * sorted endstops ([dc489f5](https://github.com/fluidd-core/fluidd/commit/dc489f52f0816501c2b61bba0e6417b5feb2b4a2))
 
-### [0.0.6](https://github.com/fluidd-core/fluidd/compare/v0.0.5...v0.0.6) (2020-10-15)
+## [0.0.6](https://github.com/fluidd-core/fluidd/compare/v0.0.5...v0.0.6) (2020-10-15)
 
 
 ### Features
@@ -1188,14 +1188,14 @@ All notable changes to this project will be documented in this file. See [standa
 * host reboot and shutdown now work ([07bc5d5](https://github.com/fluidd-core/fluidd/commit/07bc5d52035aa98219971cfde127a805d0b85feb))
 * macros no longer disabled during print ([8b70ac4](https://github.com/fluidd-core/fluidd/commit/8b70ac42d206fcd4a0042536b80b802c34f20c1a))
 
-### [0.0.5](https://github.com/fluidd-core/fluidd/compare/v0.0.4...v0.0.5) (2020-10-10)
+## [0.0.5](https://github.com/fluidd-core/fluidd/compare/v0.0.4...v0.0.5) (2020-10-10)
 
 
 ### Bug Fixes
 
 * missing / incorrect icon definitions ([0f51496](https://github.com/fluidd-core/fluidd/commit/0f5149698cd7025cbdca833ca2626899c121d9b3))
 
-### [0.0.4](https://github.com/fluidd-core/fluidd/compare/v0.0.3...v0.0.4) (2020-10-09)
+## [0.0.4](https://github.com/fluidd-core/fluidd/compare/v0.0.3...v0.0.4) (2020-10-09)
 
 
 ### Features
@@ -1211,7 +1211,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 * temp sensors and probes now display ([8776fbc](https://github.com/fluidd-core/fluidd/commit/8776fbcb533d32fd6624fe037876e9d98a574f0b))
 
-### [0.0.3](https://github.com/fluidd-core/fluidd/compare/v0.0.2...v0.0.3) (2020-10-05)
+## [0.0.3](https://github.com/fluidd-core/fluidd/compare/v0.0.2...v0.0.3) (2020-10-05)
 
 
 ### Bug Fixes
@@ -1219,7 +1219,7 @@ All notable changes to this project will be documented in this file. See [standa
 * config now correctly applies when no valid env or config.json given ([ba8ae43](https://github.com/fluidd-core/fluidd/commit/ba8ae43ed1a20524fafaccb4bba00da62bb391d4))
 * macro's with spaces now show in the UI correctly ([d13bb0c](https://github.com/fluidd-core/fluidd/commit/d13bb0cac9389efb26c7223d7d3cd7a0277d5597))
 
-### [0.0.2](https://github.com/fluidd-core/fluidd/compare/v0.0.1...v0.0.2) (2020-10-04)
+## [0.0.2](https://github.com/fluidd-core/fluidd/compare/v0.0.1...v0.0.2) (2020-10-04)
 
 
 ### Features
