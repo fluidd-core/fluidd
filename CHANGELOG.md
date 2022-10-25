@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.21.1](https://github.com/fluidd-core/fluidd/compare/v1.21.0...v1.21.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* script error on AppMacroBtn click ([#924](https://github.com/fluidd-core/fluidd/issues/924)) ([93b3d34](https://github.com/fluidd-core/fluidd/commit/93b3d3456e5b5693fc010078572857163fe3c181))
+
 ## [1.21.0](https://github.com/fluidd-core/fluidd/compare/v1.20.1...v1.21.0) (2022-10-24)
 
 
