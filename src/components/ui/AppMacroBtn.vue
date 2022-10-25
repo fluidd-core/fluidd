@@ -3,8 +3,10 @@
     v-if="paramList.length === 0 || !enableParams"
     :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
-    @click="$emit('click', macro.name)"
-    v-on="$listeners"
+    v-on="{
+      ...$listeners,
+      click: () => $emit('click', macro.name)
+    }"
   >
     <slot />
   </app-btn>
@@ -15,8 +17,10 @@
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
-      @click="$emit('click', macro.name)"
-      v-on="$listeners"
+      v-on="{
+        ...$listeners,
+        click: () => $emit('click', macro.name)
+      }"
     >
       <slot />
     </app-btn>
