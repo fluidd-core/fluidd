@@ -4,7 +4,7 @@ import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import consola from 'consola'
 
-import PargeGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
+import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
 
 export const actions: ActionTree<GcodePreviewState, RootState> = {
   /**
@@ -27,7 +27,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
   },
 
   async loadGcode ({ commit, getters, state }, payload: { file: AppFile; gcode: string }) {
-    const worker = new PargeGcodeWorker()
+    const worker = new ParseGcodeWorker()
 
     commit('setParserWorker', worker)
 
