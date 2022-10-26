@@ -17,8 +17,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['img/**/*.svg', 'img/**/*.png'],
       manifest: {
-        name: 'Fluidd',
-        short_name: 'Fluidd',
+        name: 'fluidd',
+        short_name: 'fluidd',
         description: 'The Klipper web interface for managing your 3d printer',
         theme_color: '#2196F3',
         background_color: '#000000',
