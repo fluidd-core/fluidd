@@ -1,36 +1,34 @@
 {
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+
   "compilerOptions": {
-    "target": "es2019",
-    "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
+    // if `<script setup>` is used, then remove the next line
+    "preserveValueImports": false,
+
+    "importsNotUsedAsValues": "remove",
+
+    // if using Vue 3, then remove the next line
+    "useDefineForClassFields": false,
+
     "experimentalDecorators": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+
     "baseUrl": ".",
+
     "types": [
-      "webpack-env",
-      "jest",
+      "vite/client",
+      "vitest/globals",
       "vuetify",
-      "vue-meta"
+      "vue-meta",
+      "vite-plugin-pwa/client"
     ],
+
     "paths": {
       "@/*": [
         "src/*"
       ]
-    },
-    "lib": [
-      "esnext",
-      "dom",
-      "dom.iterable",
-      "scripthost"
-    ]
+    }
   },
+
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",

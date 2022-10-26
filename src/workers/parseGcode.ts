@@ -1,7 +1,6 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
 import { pick } from 'lodash-es'
-import { Subject } from 'threads/observable'
 
 function parseLine (line: string) {
   const [, command, args = ''] = line
@@ -25,7 +24,7 @@ function parseLine (line: string) {
   }
 }
 
-export default function parseGcode (gcode: string, subject: Subject<number>) {
+export default function parseGcode (gcode: string, sendProgress: (filePosition: number) => void) {
   const moves: Move[] = []
   const lines = gcode.split('\n')
 
@@ -160,13 +159,13 @@ export default function parseGcode (gcode: string, subject: Subject<number>) {
     }
 
     if (i % Math.floor(lines.length / 100) === 0) {
-      subject.next(toolhead.filePosition)
+      sendProgress(toolhead.filePosition)
     }
 
     toolhead.filePosition += lines[i].length + 1 // + 1 for newline
   }
 
-  subject.next(toolhead.filePosition)
+  sendProgress(toolhead.filePosition)
 
   return moves
 }

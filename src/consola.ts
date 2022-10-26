@@ -4,4 +4,4 @@ import Consola from 'consola'
 Consola.wrapAll()
 Consola.level = 1
 
-if (process.env.NODE_ENV === 'development') Consola.level = 6
+if (import.meta.env.DEV) Consola.level = 6

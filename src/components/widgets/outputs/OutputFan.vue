@@ -83,9 +83,7 @@ export default class OutputFan extends Mixins(StateMixin) {
 
   rules = [
     (v: string | number) => {
-      const off_below = (this.fan.config?.off_below)
-        ? this.fan.config.off_below * 100
-        : 0
+      const off_below = (this.fan?.config?.off_below || 0) * 100
       if (!off_below) return true
       v = +v
       return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })

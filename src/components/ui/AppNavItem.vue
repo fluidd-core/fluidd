@@ -74,7 +74,7 @@ export default class AppNavItem extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   button {
     // font-size: 0.875rem;

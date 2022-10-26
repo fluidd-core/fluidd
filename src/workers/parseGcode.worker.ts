@@ -1,19 +1,34 @@
-import { expose } from 'threads/worker'
+import { Move, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
-import { Subject, Observable } from 'threads/observable'
 
-let progress = new Subject<number>()
-
-expose({
-  parse (gcode: string) {
-    const moves = parseGcode(gcode, progress)
-
-    progress.complete()
-    progress = new Subject<number>()
-
-    return moves
-  },
-  progress (): Observable<number> {
-    return Observable.from(progress)
+const sendProgress = (filePosition: number) => {
+  const message: ParseGcodeWorkerClientMessage = {
+    action: 'progress',
+    filePosition
   }
-})
+
+  self.postMessage(message)
+}
+
+const sendMoves = (moves: Move[]) => {
+  const message : ParseGcodeWorkerClientMessage = {
+    action: 'moves',
+    moves
+  }
+
+  self.postMessage(message)
+}
+
+self.onmessage = (e) => {
+  const data: ParseGcodeWorkerServerMessage = e.data
+
+  switch (data.action) {
+    case 'parse': {
+      const moves = parseGcode(data.gcode, sendProgress)
+
+      sendMoves(moves)
+
+      break
+    }
+  }
+}

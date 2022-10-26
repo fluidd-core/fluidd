@@ -3,7 +3,7 @@
     class="chart"
     :style="{ 'height': height }"
   >
-    <v-chart
+    <e-chart
       ref="chart"
       :option="opts"
       :update-options="{ notMerge: false }"

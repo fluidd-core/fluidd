@@ -79,7 +79,7 @@
             <v-col>
               <app-slider
                 :label="$t('app.gcode.label.layer')"
-                :value="currentLayer + 1"
+                :value="(!fileLoaded) ? 0 : currentLayer + 1"
                 :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
