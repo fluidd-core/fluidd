@@ -206,7 +206,7 @@ export default class AppSlider extends Mixins(StateMixin) {
     return rules
   }
 
-  mounted () {
+  created () {
     this.lockState = this.locked
     this.internalValue = this.value
     this.internalMax = this.max
