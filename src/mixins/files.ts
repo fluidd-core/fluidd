@@ -2,7 +2,6 @@ import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import httpClient from '@/api/httpClient'
 import { Component } from 'vue-property-decorator'
-import { getThumb } from '@/store/helpers'
 import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
 import { authApi } from '@/api/auth.api'
 
@@ -24,7 +23,7 @@ export default class FilesMixin extends Vue {
   getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, cachebust?: number) {
     if (thumbnails.length) {
       if (!cachebust) cachebust = new Date().getTime()
-      const thumb = getThumb(thumbnails, path, large)
+      const thumb = this.getThumb(thumbnails, path, large)
       if (
         thumb &&
         thumb.absolute_path
@@ -35,6 +34,42 @@ export default class FilesMixin extends Vue {
       ) return thumb.data
     }
     return ''
+  }
+
+  getThumb (thumbnails: Thumbnail[], path: string, large = true) {
+    const apiUrl = this.$store.state.config.apiUrl
+    if (thumbnails.length) {
+      let thumb: Thumbnail | undefined
+      if (thumbnails) {
+        if (large) {
+          thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size > c.size)) ? a : c)
+        } else {
+          thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)
+        }
+        if (thumb) {
+          if (thumb.relative_path && thumb.relative_path.length > 0) {
+            const url = new URL(apiUrl ?? document.location.origin)
+            url.pathname = (path === '')
+              ? `/server/files/gcodes/${encodeURI(thumb.relative_path)}`
+              : `/server/files/gcodes/${encodeURI(path)}/${encodeURI(thumb.relative_path)}`
+
+            return {
+              ...thumb,
+              absolute_path: url.toString()
+            }
+          }
+          if (thumb.data) {
+            return {
+              ...thumb,
+              data: 'data:image/gif;base64,' + thumb.data
+            }
+          }
+          if (thumb.absolute_path) {
+            return thumb
+          }
+        }
+      }
+    }
   }
 
   /**

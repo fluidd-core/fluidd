@@ -1,53 +1,9 @@
-import {
-  Thumbnail
-} from './files/types'
 import { SocketActions } from '@/api/socketActions'
-import store from '@/store'
 
 export const isOfType = <T> (
   varToBeChecked: any,
   propertyToCheckFor: keyof T
 ): varToBeChecked is T => (varToBeChecked as T)[propertyToCheckFor] !== undefined
-
-/**
- * Return a file thumb if one exists
- * Optionally, pick the largest or smallest image.
- */
-export const getThumb = (thumbnails: Thumbnail[], path: string, large = true) => {
-  const apiUrl = store.state.config.apiUrl
-  if (thumbnails.length) {
-    let thumb: Thumbnail | undefined
-    if (thumbnails) {
-      if (large) {
-        thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size > c.size)) ? a : c)
-      } else {
-        thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)
-      }
-      if (thumb) {
-        if (thumb.relative_path && thumb.relative_path.length > 0) {
-          const url = new URL(apiUrl ?? document.location.origin)
-          url.pathname = (path === '')
-            ? `/server/files/gcodes/${encodeURI(thumb.relative_path)}`
-            : `/server/files/gcodes/${encodeURI(path)}/${encodeURI(thumb.relative_path)}`
-
-          return {
-            ...thumb,
-            absolute_path: url.toString()
-          }
-        }
-        if (thumb.data) {
-          return {
-            ...thumb,
-            data: 'data:image/gif;base64,' + thumb.data
-          }
-        }
-        if (thumb.absolute_path) {
-          return thumb
-        }
-      }
-    }
-  }
-}
 
 export const handleExcludeObjectChange = (payload: any, state: any, dispatch: any) => {
   // For every notify - if print_stats.state changes from standby -> printing,
@@ -95,13 +51,13 @@ export const handlePrintStateChange = (payload: any, state: any, dispatch: any) 
   }
 }
 
-export const handleCurrentFileChange = (payload: any) => {
+export const handleCurrentFileChange = (payload: any, state: any, commit: any) => {
   if (
     'print_stats' in payload &&
     'filename' in payload.print_stats &&
-    payload.print_stats.filename !== store.state.printer.printer.print_stats.filename
+    payload.print_stats.filename !== state.printer.printer.print_stats.filename
   ) {
-    store.commit('printer/setResetCurrentFile')
+    commit('printer/setResetCurrentFile', { root: true })
     if (
       payload.print_stats.filename !== '' &&
       payload.print_stats.filename !== null

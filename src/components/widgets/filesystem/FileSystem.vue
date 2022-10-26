@@ -155,7 +155,6 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios, { AxiosResponse } from 'axios'
 import { AppTableHeader } from '@/types'
-import { getThumb } from '@/store/helpers'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -698,7 +697,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
-    const thumb = getThumb(file.thumbnails ?? [], file.path, true)
+    const thumb = this.getThumb(file.thumbnails ?? [], file.path, true)
     if (!thumb) return
     const thumbUrl = this.getThumbUrl([thumb], file.path, true)
 

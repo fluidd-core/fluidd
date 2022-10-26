@@ -250,20 +250,15 @@ export const SocketPlugin = {
     Vue.$socket = socket
   }
 }
+
 declare module 'vue/types/vue' {
   interface Vue {
-    $socket: SocketClient;
+    $socket: WebSocketClient;
   }
 
   interface VueConstructor {
-    $socket: SocketClient;
+    $socket: WebSocketClient;
   }
-}
-
-interface SocketClient {
-  connect(url?: string): void;
-  close(): void;
-  emit(method: string, options?: NotifyOptions): void;
 }
 
 interface Options {

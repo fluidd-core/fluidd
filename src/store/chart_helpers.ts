@@ -1,7 +1,6 @@
 import { ChartData } from './charts/types'
-import store from '@/store'
 
-export const handleMcuStatsChange = (payload: any) => {
+export const handleMcuStatsChange = (payload: any, state: any, commit: any) => {
   const keys = Object.keys(payload).filter(key => key.startsWith('mcu'))
   if (keys.length > 0) {
     keys.forEach(key => {
@@ -10,7 +9,7 @@ export const handleMcuStatsChange = (payload: any) => {
 
       // Combine existing with the update.
       const stats = {
-        ...store.state.printer.printer[key],
+        ...state.printer.printer[key],
         ...payload[key]
       }
 
@@ -20,8 +19,8 @@ export const handleMcuStatsChange = (payload: any) => {
 
         // The last entry in our chart data.
         let lastEntry: any
-        if (store.state.charts[key]) {
-          lastEntry = store.state.charts[key][store.state.charts[key].length - 1]
+        if (state.charts[key]) {
+          lastEntry = state.charts[key][state.charts[key].length - 1]
         }
 
         // Load & Awake times
@@ -47,7 +46,7 @@ export const handleMcuStatsChange = (payload: any) => {
         bw = 100 * (bw - lastbw) / (maxbw * timedelta)
 
         // Commit the formatted result to our chart data.
-        store.commit('charts/setChartEntry', {
+        commit('charts/setChartEntry', {
           type: key,
           retention: 600,
           data: {
@@ -56,19 +55,19 @@ export const handleMcuStatsChange = (payload: any) => {
             awake: awake.toFixed(2),
             bw: bw.toFixed(2)
           }
-        })
+        }, { root: true })
       }
     })
   }
 }
 
-export const handleSystemStatsChange = (payload: any) => {
+export const handleSystemStatsChange = (payload: any, state: any, commit: any) => {
   if (
     'system_stats' in payload
   ) {
     // Combine existing with the update.
     const stats = {
-      ...store.state.printer.printer.system_stats,
+      ...state.printer.printer.system_stats,
       ...payload.system_stats
     }
 
@@ -78,21 +77,21 @@ export const handleSystemStatsChange = (payload: any) => {
     // Add an entry for the memory graph.
     if (
       'memavail' in stats &&
-      store.state.server.system_info?.cpu_info?.total_memory
+      state.server.system_info?.cpu_info?.total_memory
     ) {
-      const total_memory = store.state.server.system_info?.cpu_info?.total_memory || 0
+      const total_memory = state.server.system_info?.cpu_info?.total_memory || 0
       const mem_used = total_memory - stats.memavail
       const percent_mem_used = Math.ceil(mem_used / total_memory * 100)
 
       // Commit the formatted result to our chart data.
-      store.commit('charts/setChartEntry', {
+      commit('charts/setChartEntry', {
         type: 'memory',
         retention: 600,
         data: {
           date,
           memused: percent_mem_used.toFixed(2)
         }
-      })
+      }, { root: true })
     }
 
     // Add an entry for the cpu time and sysload.
@@ -101,10 +100,10 @@ export const handleSystemStatsChange = (payload: any) => {
       'sysload' in stats
     ) {
       const cputime = stats.cputime
-      const last_cputime = store.state.printer.printer.system_stats?.cputime || stats.cputime || 0
+      const last_cputime = state.printer.printer.system_stats?.cputime || stats.cputime || 0
 
       // Commit the formatted result to our chart data.
-      store.commit('charts/setChartEntry', {
+      commit('charts/setChartEntry', {
         type: 'klipper',
         retention: 600,
         data: {
@@ -112,7 +111,7 @@ export const handleSystemStatsChange = (payload: any) => {
           load: stats.sysload.toFixed(2),
           cputime_change: ((cputime - last_cputime) * 100).toFixed(2)
         }
-      })
+      }, { root: true })
     }
   }
 }
@@ -121,20 +120,22 @@ export const handleSystemStatsChange = (payload: any) => {
  * Prepare packet data for a chart entry.
  * Every packet should contain an entry for all known sensors we want to track.
  */
-export const handleAddChartEntry = (retention: number, keys: string[]) => {
+export const handleAddChartEntry = (retention: number, state: any, commit: any, getters: any) => {
   const configureChartEntry = () => {
     const date = new Date()
     const r: ChartData = {
       date
     }
 
+    const keys: string[] = getters.getChartableSensors
+
     keys.forEach((key) => {
       let label = key
       if (key.includes(' ')) label = key.split(' ')[1]
-      const temp = store.state.printer.printer[key].temperature
-      const target = store.state.printer.printer[key].target
-      const power = store.state.printer.printer[key].power
-      const speed = store.state.printer.printer[key].speed
+      const temp = state.printer.printer[key].temperature
+      const target = state.printer.printer[key].target
+      const power = state.printer.printer[key].power
+      const speed = state.printer.printer[key].speed
       r[label] = temp
       if (target !== undefined) r[`${label}Target`] = target
       if (power !== undefined) r[`${label}Power`] = power
@@ -144,12 +145,12 @@ export const handleAddChartEntry = (retention: number, keys: string[]) => {
     return r
   }
 
-  if (store.state.charts.ready) {
+  if (state.charts.ready) {
     const data = configureChartEntry()
-    store.commit('charts/setChartEntry', {
+    commit('charts/setChartEntry', {
       type: 'chart',
       data,
       retention
-    })
+    }, { root: true })
   }
 }

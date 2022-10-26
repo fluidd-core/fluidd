@@ -4,7 +4,6 @@ import { AuthState } from './types'
 import { RootState } from '../types'
 import { authApi } from '@/api/auth.api'
 import httpClient from '@/api/httpClient'
-import { getTokenKeys } from './helpers'
 import router from '@/router'
 import consola from 'consola'
 
@@ -39,7 +38,7 @@ export const actions: ActionTree<AuthState, RootState> = {
   /**
    * Init auth status / tokens.
    */
-  async initAuth ({ commit, rootState }) {
+  async initAuth ({ commit, rootState, rootGetters }) {
     // No known API?
     // This is likely a new setup with no known instances yet. Set auth to true
     // and move on until we know more.
@@ -49,7 +48,7 @@ export const actions: ActionTree<AuthState, RootState> = {
     }
 
     // Load our tokens and apply them if found.
-    const keys = getTokenKeys()
+    const keys = rootGetters['config/getTokenKeys']
     const refreshToken = localStorage.getItem(keys['refresh-token'])
     const token = localStorage.getItem(keys['user-token'])
     if (token && refreshToken) {
@@ -86,8 +85,8 @@ export const actions: ActionTree<AuthState, RootState> = {
   /**
    * Refresh the auth tokens.
    */
-  async refreshTokens ({ commit }) {
-    const keys = getTokenKeys()
+  async refreshTokens ({ commit, rootGetters }) {
+    const keys = rootGetters['config/getTokenKeys']
     const refresh_token = localStorage.getItem(keys['refresh-token'])
     return httpClient.post('/access/refresh_jwt', {
       refresh_token
@@ -123,8 +122,8 @@ export const actions: ActionTree<AuthState, RootState> = {
       })
   },
 
-  async login ({ commit }, { username, password, source }) {
-    const keys = getTokenKeys()
+  async login ({ commit, rootGetters }, { username, password, source }) {
+    const keys = rootGetters['config/getTokenKeys']
     return authApi.login(username, password, source)
       .then(response => response.data.result)
       .then((user) => {
@@ -154,7 +153,7 @@ export const actions: ActionTree<AuthState, RootState> = {
    * Logout the user. This should remove their token from local storage,
    * shut down the socket and send them back to the login page.
    */
-  async logout ({ commit }, options?: { invalidate: boolean; partial: boolean }) {
+  async logout ({ commit, rootGetters }, options?: { invalidate: boolean; partial: boolean }) {
     const opts = {
       ...{
         invalidate: false,
@@ -163,7 +162,7 @@ export const actions: ActionTree<AuthState, RootState> = {
       ...options
     }
 
-    const keys = getTokenKeys()
+    const keys = rootGetters['config/getTokenKeys']
 
     // Do we want to invalidate all sessions?
     if (opts.invalidate) await authApi.logout()
@@ -195,8 +194,8 @@ export const actions: ActionTree<AuthState, RootState> = {
    * and / or trust check, in that if the user is not trusted - then we log
    * them out which bumps them to the login page.
    */
-  async checkTrust ({ dispatch, commit }) {
-    const keys = getTokenKeys()
+  async checkTrust ({ dispatch, commit, rootGetters }) {
+    const keys = rootGetters['config/getTokenKeys']
     const token = localStorage.getItem(keys['user-token'])
 
     // Clear the token.
