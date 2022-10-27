@@ -1,9 +1,8 @@
 import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
-import httpClient from '@/api/httpClient'
 import { Component } from 'vue-property-decorator'
 import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
-import { authApi } from '@/api/auth.api'
+import { httpClientActions } from '@/api/httpClientActions'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -155,7 +154,7 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return await httpClient.get(encodeURI(`${this.apiUrl}/server/files/${filepath}?date=${Date.now()}`), o)
+    return await httpClientActions.serverFilesGet(filepath, o)
   }
 
   /**
@@ -195,7 +194,7 @@ export default class FilesMixin extends Vue {
 
     return this.isTrustedUser
       ? url
-      : `${url}&token=${(await authApi.getOneShot()).data.result}`
+      : `${url}&token=${(await httpClientActions.accessOneshotTokenGet()).data.result}`
   }
 
   /**
@@ -230,36 +229,32 @@ export default class FilesMixin extends Vue {
       cancelled: false
     })
 
-    return httpClient
-      .post(
-        this.apiUrl + '/server/files/upload',
-        formData, {
-          ...options,
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          },
-          onUploadProgress: (progressEvent: ProgressEvent) => {
-            const units = ['kB', 'MB', 'GB']
-            let speed = 0
-            let i = 0
-            const delta = performance.now() - startTime
-            if (delta > 0) {
-              speed = progressEvent.loaded / delta
-              while (speed > 1024) {
-                speed /= 1024
-                i = Math.min(2, i + 1)
-              }
-            }
-            this.$store.dispatch('files/updateFileUpload', {
-              filepath,
-              loaded: progressEvent.loaded,
-              percent: Math.round(progressEvent.loaded / progressEvent.total * 100),
-              speed,
-              unit: units[i]
-            })
+    return httpClientActions.serverFilesUploadPost(formData, {
+      ...options,
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: (progressEvent: ProgressEvent) => {
+        const units = ['kB', 'MB', 'GB']
+        let speed = 0
+        let i = 0
+        const delta = performance.now() - startTime
+        if (delta > 0) {
+          speed = progressEvent.loaded / delta
+          while (speed > 1024) {
+            speed /= 1024
+            i = Math.min(2, i + 1)
           }
         }
-      )
+        this.$store.dispatch('files/updateFileUpload', {
+          filepath,
+          loaded: progressEvent.loaded,
+          percent: Math.round(progressEvent.loaded / progressEvent.total * 100),
+          speed,
+          unit: units[i]
+        })
+      }
+    })
       .then((response) => {
         return response
       })

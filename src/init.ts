@@ -1,11 +1,11 @@
 import Vue from 'vue'
-import httpClient from '@/api/httpClient'
 import store from './store'
 import consola from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'
 import router from './router'
+import { httpClientActions } from '@/api/httpClientActions'
 import sanitizeEndpoint from '@/util/sanitize-endpoint'
 
 // Load API configuration
@@ -19,7 +19,7 @@ import sanitizeEndpoint from '@/util/sanitize-endpoint'
  */
 
 const getHostConfig = async (): Promise<HostConfig> => {
-  const hostConfigResponse = await httpClient.get('/config.json?date=' + new Date().getTime())
+  const hostConfigResponse = await httpClientActions.get('/config.json?date=' + new Date().getTime())
   if (hostConfigResponse && hostConfigResponse.data) {
     consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data
@@ -77,7 +77,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // endpoint but working instance.
   const results = await Promise.all(
     endpoints.map(async endpoint => {
-      return httpClient.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
+      return httpClientActions.get(endpoint + '/server/info?date=' + new Date().getTime(), { timeout: 1000 })
         .then(() => true)
         .catch((error) => error.response?.status === 401)
     })
@@ -98,7 +98,7 @@ const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
 
   if (apiConfig.apiUrl !== '' && apiConfig.socketUrl !== '') {
     try {
-      const response = await httpClient.get(`/server/database/item?namespace=${namespace}`)
+      const response = await httpClientActions.serverDatabaseItemGet(namespace)
 
       result.data = response.data.result.value
 
@@ -143,7 +143,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
   }
 
   // Setup axios
-  if (apiConfig.apiUrl) httpClient.defaults.baseURL = apiConfig.apiUrl
+  if (apiConfig.apiUrl) httpClientActions.defaults.baseURL = apiConfig.apiUrl
 
   // Just sets the api urls
   await store.dispatch('config/onInitApiConfig', apiConfig)
@@ -177,11 +177,7 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
       } else {
         if (!value) {
           try {
-            await httpClient.post('/server/database/item', {
-              namespace: NAMESPACE,
-              key: root.name,
-              value: {}
-            })
+            await httpClientActions.serverDatabaseItemPost(NAMESPACE, root.name, {})
           } catch (e) {
             consola.debug('Error creating database item', e)
           }

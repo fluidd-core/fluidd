@@ -26,6 +26,7 @@ import { appInit } from './init'
 import { InitConfig } from './store/config/types'
 
 // Import plugins
+import { HttpClientPlugin } from './plugins/httpClientPlugin'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
@@ -53,6 +54,10 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 Vue.use(InlineSvgPlugin)
+
+Vue.use(HttpClientPlugin, {
+  store
+})
 
 appInit()
   .then((config: InitConfig) => {

@@ -10,7 +10,7 @@ import _Vue from 'vue'
 import { Globals } from '@/globals'
 import consola from 'consola'
 import { camelCase } from 'lodash-es'
-import { authApi } from '@/api/auth.api'
+import { httpClientActions } from '@/api/httpClientActions'
 import deepMerge from 'deepmerge'
 
 export class WebSocketClient {
@@ -73,9 +73,9 @@ export class WebSocketClient {
     if (url) this.url = url
     this.cache = null
 
-    await authApi.getOneShot()
+    await httpClientActions.accessOneshotTokenGet()
       .then(response => response.data.result)
-      .then((token) => {
+      .then(token => {
         // Good. Move on with setting up the socket.
         if (this.store) this.store.dispatch('socket/onSocketConnecting', true)
         this.connection = new WebSocket(`${this.url}?token=${token}`)

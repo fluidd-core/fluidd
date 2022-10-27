@@ -638,7 +638,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         cancelToken: this.cancelTokenSource.token
       }
     )
-      .then((response: AxiosResponse) => {
+      .then(response => {
         if (this.currentRoot === 'timelapse') {
           // Open the file preview dialog.
           const type = response.headers['content-type']

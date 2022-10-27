@@ -2,8 +2,7 @@ import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import { AuthState } from './types'
 import { RootState } from '../types'
-import { authApi } from '@/api/auth.api'
-import httpClient from '@/api/httpClient'
+import { httpClientActions } from '@/api/httpClientActions'
 import router from '@/router'
 import consola from 'consola'
 
@@ -20,17 +19,17 @@ export const actions: ActionTree<AuthState, RootState> = {
    */
   async init ({ commit }) {
     // Load current user.
-    await authApi.getCurrentUser()
+    await httpClientActions.accessCurrentUserGet()
       .then(response => response.data.result)
       .then((user) => commit('setCurrentUser', user))
 
     // Load user list.
-    await authApi.getUsers()
+    await httpClientActions.accessUsersListGet()
       .then(response => response.data.result.users)
       .then((users) => commit('setUsers', users))
 
     // Load our current API key.
-    await authApi.getApiKey()
+    await httpClientActions.accessApiKeyGet()
       .then(response => response.data.result)
       .then((key) => commit('setApiKey', key))
   },
@@ -56,10 +55,10 @@ export const actions: ActionTree<AuthState, RootState> = {
       // header.
       commit('setToken', token)
       commit('setRefreshToken', refreshToken)
-      httpClient.defaults.headers.common.Authorization = `Bearer ${token}`
+      httpClientActions.defaults.headers.common.Authorization = `Bearer ${token}`
     } else {
       // No tokens, delete auth header.
-      delete httpClient.defaults.headers.common.Authorization
+      delete httpClientActions.defaults.headers.common.Authorization
     }
   },
 
@@ -88,9 +87,7 @@ export const actions: ActionTree<AuthState, RootState> = {
   async refreshTokens ({ commit, rootGetters }) {
     const keys = rootGetters['config/getTokenKeys']
     const refresh_token = localStorage.getItem(keys['refresh-token'])
-    return httpClient.post('/access/refresh_jwt', {
-      refresh_token
-    }, {
+    return httpClientActions.accessRefreshJwtPost(refresh_token || '', {
       withAuth: false
     })
       .then(response => response.data.result)
@@ -99,7 +96,7 @@ export const actions: ActionTree<AuthState, RootState> = {
         // store data, and move on.
         localStorage.setItem(keys['user-token'], response.token)
         commit('setToken', response.token)
-        httpClient.defaults.headers.common.Authorization = `Bearer ${response.token}`
+        httpClientActions.defaults.headers.common.Authorization = `Bearer ${response.token}`
         return Promise.resolve(response.token)
       })
       .catch(() => {
@@ -110,7 +107,7 @@ export const actions: ActionTree<AuthState, RootState> = {
   },
 
   async getAuthInfo () {
-    return httpClient.get('/access/info', { withAuth: false })
+    return httpClientActions.accessInfoGet({ withAuth: false })
       .then(r => {
         return {
           defaultSource: r.data.result.default_source,
@@ -124,13 +121,13 @@ export const actions: ActionTree<AuthState, RootState> = {
 
   async login ({ commit, rootGetters }, { username, password, source }) {
     const keys = rootGetters['config/getTokenKeys']
-    return authApi.login(username, password, source)
+    return httpClientActions.accessLoginPost(username, password, source)
       .then(response => response.data.result)
-      .then((user) => {
+      .then(user => {
         // Successful login. Set the tokens and auth status and move on.
         localStorage.setItem(keys['user-token'], user.token)
         localStorage.setItem(keys['refresh-token'], user.refresh_token)
-        httpClient.defaults.headers.common.Authorization = `Bearer ${user.token}`
+        httpClientActions.defaults.headers.common.Authorization = `Bearer ${user.token}`
         commit('setAuthenticated', true)
         commit('setCurrentUser', {
           username: user.username,
@@ -144,7 +141,7 @@ export const actions: ActionTree<AuthState, RootState> = {
         // Unsuccessful login. Remove any existing keys, set auth and move on.
         localStorage.removeItem(keys['user-token'])
         localStorage.removeItem(keys['refresh-token'])
-        delete httpClient.defaults.headers.common.Authorization
+        delete httpClientActions.defaults.headers.common.Authorization
         return Promise.reject(err)
       })
   },
@@ -165,14 +162,14 @@ export const actions: ActionTree<AuthState, RootState> = {
     const keys = rootGetters['config/getTokenKeys']
 
     // Do we want to invalidate all sessions?
-    if (opts.invalidate) await authApi.logout()
+    if (opts.invalidate) await httpClientActions.accessLogoutPost()
 
     // Remove the tokens from local storage..
     localStorage.removeItem(keys['user-token'])
     localStorage.removeItem(keys['refresh-token'])
 
     // Remove the authentication header.
-    delete httpClient.defaults.headers.common.Authorization
+    delete httpClientActions.defaults.headers.common.Authorization
 
     // Clear the in memory store.
     commit('setCurrentUser', null)
@@ -199,14 +196,14 @@ export const actions: ActionTree<AuthState, RootState> = {
     const token = localStorage.getItem(keys['user-token'])
 
     // Clear the token.
-    delete httpClient.defaults.headers.common.Authorization
+    delete httpClientActions.defaults.headers.common.Authorization
 
     // Make the request.
-    await authApi.getCurrentUser({ withAuth: false })
+    await httpClientActions.accessCurrentUserGet({ withAuth: false })
       .then(response => response.data.result)
       .then((user) => {
         // Re-apply the token.
-        httpClient.defaults.headers.common.Authorization = `Bearer ${token}`
+        httpClientActions.defaults.headers.common.Authorization = `Bearer ${token}`
 
         // no error, so must be trusted. partial logout.
         dispatch('logout', { partial: true })
@@ -219,14 +216,14 @@ export const actions: ActionTree<AuthState, RootState> = {
   },
 
   async addUser (_, user) {
-    return authApi.addUser(user)
+    return httpClientActions.accessUserPost(user.username, user.password)
       .then(() => {
         return Promise.resolve(user)
       })
   },
 
   async removeUser (_, user) {
-    return authApi.removeUser(user)
+    return httpClientActions.accessUserDelete(user.username)
       .then(() => {
         return Promise.resolve(user)
       })
@@ -241,8 +238,8 @@ export const actions: ActionTree<AuthState, RootState> = {
   },
 
   async refreshApiKey ({ commit }) {
-    return authApi.refreshApiKey()
+    return httpClientActions.accessApiKeyPost()
       .then(response => response.data.result)
-      .then((key) => commit('setApiKey', key))
+      .then(key => commit('setApiKey', key))
   }
 }

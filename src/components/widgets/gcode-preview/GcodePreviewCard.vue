@@ -171,7 +171,6 @@ import { AppFile } from '@/store/files/types'
 import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
 import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
-import { AxiosResponse } from 'axios'
 import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 
 @Component({
@@ -358,7 +357,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     const file = this.printerFile as AppFile
     this.getGcode(file)
       .then(response => response?.data)
-      .then((gcode: AxiosResponse) => {
+      .then(gcode => {
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode
