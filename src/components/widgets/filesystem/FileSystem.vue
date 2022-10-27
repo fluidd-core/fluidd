@@ -153,7 +153,7 @@ import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import Axios, { AxiosResponse } from 'axios'
+import Axios from 'axios'
 import { AppTableHeader } from '@/types'
 
 /**

@@ -94,7 +94,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref, Watch, Vue } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import { Globals, Waits } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
@@ -182,7 +182,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       // Start by making a standard request. Maybe it's good?
       const request = await httpClientActions.get(
-        url + 'server/info?t=' + new Date().getTime(), {
+        url + 'server/info?t=' + Date.now(), {
           withAuth: false,
           cancelToken: this.cancelSource.token
         })
