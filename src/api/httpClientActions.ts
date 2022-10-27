@@ -144,7 +144,7 @@ export const httpClientActions = {
     }>(`/server/database/item?namespace=${namespace}`, options)
   },
 
-  serverDatabaseItemPost<T = any> (namespace: string, key: string, value: any, options?: AxiosRequestConfig) {
+  serverDatabaseItemPost<T = any> (namespace: string, key: string, value: T, options?: AxiosRequestConfig) {
     return this.post<{
       result: {
         namespace: string,
@@ -171,7 +171,7 @@ export const httpClientActions = {
     }>('/server/files/upload', data, options)
   },
 
-  serverFilesGet<R = any> (filepath: string, options?: AxiosRequestConfig) {
-    return this.get<R>(`/server/files/${filepath}?date=${Date.now()}`, options)
+  serverFilesGet<T = any> (filepath: string, options?: AxiosRequestConfig) {
+    return this.get<T>(`/server/files/${filepath}?date=${Date.now()}`, options)
   }
 }
