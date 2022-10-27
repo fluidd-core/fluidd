@@ -1,3 +1,5 @@
+import { Commit, Dispatch } from 'vuex'
+import { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 
 export const isOfType = <T> (
@@ -5,7 +7,7 @@ export const isOfType = <T> (
   propertyToCheckFor: keyof T
 ): varToBeChecked is T => (varToBeChecked as T)[propertyToCheckFor] !== undefined
 
-export const handleExcludeObjectChange = (payload: any, state: any, dispatch: any) => {
+export const handleExcludeObjectChange = (payload: any, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -21,7 +23,7 @@ export const handleExcludeObjectChange = (payload: any, state: any, dispatch: an
   }
 }
 
-export const handlePrintStateChange = (payload: any, state: any, dispatch: any) => {
+export const handlePrintStateChange = (payload: any, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
   // If the state changes from printing -> complete, then record the finish time.
@@ -51,7 +53,7 @@ export const handlePrintStateChange = (payload: any, state: any, dispatch: any) 
   }
 }
 
-export const handleCurrentFileChange = (payload: any, state: any, commit: any) => {
+export const handleCurrentFileChange = (payload: any, state: RootState, commit: Commit) => {
   if (
     'print_stats' in payload &&
     'filename' in payload.print_stats &&

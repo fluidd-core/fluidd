@@ -1,6 +1,8 @@
+import { Commit } from 'vuex'
+import { RootState } from './types'
 import { ChartData } from './charts/types'
 
-export const handleMcuStatsChange = (payload: any, state: any, commit: any) => {
+export const handleMcuStatsChange = (payload: any, state: RootState, commit: Commit) => {
   const keys = Object.keys(payload).filter(key => key.startsWith('mcu'))
   if (keys.length > 0) {
     keys.forEach(key => {
@@ -61,7 +63,7 @@ export const handleMcuStatsChange = (payload: any, state: any, commit: any) => {
   }
 }
 
-export const handleSystemStatsChange = (payload: any, state: any, commit: any) => {
+export const handleSystemStatsChange = (payload: any, state: RootState, commit: Commit) => {
   if (
     'system_stats' in payload
   ) {
@@ -120,7 +122,7 @@ export const handleSystemStatsChange = (payload: any, state: any, commit: any) =
  * Prepare packet data for a chart entry.
  * Every packet should contain an entry for all known sensors we want to track.
  */
-export const handleAddChartEntry = (retention: number, state: any, commit: any, getters: any) => {
+export const handleAddChartEntry = (retention: number, state: RootState, commit: Commit, getters: any) => {
   const configureChartEntry = () => {
     const date = new Date()
     const r: ChartData = {
