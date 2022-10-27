@@ -211,6 +211,12 @@ export class WebSocketClient {
    * @param params
    */
   emit (method: string, options?: NotifyOptions) {
+    if (this.store.state.socket.disconnecting || this.store.state.socket.connecting) {
+      consola.debug(`${this.logPrefix} Socket emit denied, in disconnecting state:`, method, options)
+
+      return
+    }
+
     if (this.connection?.readyState === WebSocket.OPEN) {
       // moonraker expects a unique id for us to reference back to when data is returned.
       const getRandomNumber = (min: number, max: number) => {
