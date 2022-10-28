@@ -73,7 +73,7 @@ export const httpClientActions = {
     return this.get<{
       result: {
         username: string,
-        source: 'moonraker' | 'ldap',
+        source: string,
         created_on: number
       }
     }>('/access/user', options)
@@ -84,7 +84,7 @@ export const httpClientActions = {
       result: {
         users: Array<{
           username: string,
-          source: 'moonraker' | 'ldap',
+          source: string,
           created_on: number
         }>
       }
