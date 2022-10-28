@@ -18,8 +18,8 @@ import sanitizeEndpoint from '@/util/sanitize-endpoint'
  * 4. Resume Vue Init
  */
 
-const getHostConfig = async (): Promise<HostConfig> => {
-  const hostConfigResponse = await httpClientActions.get('/config.json?date=' + new Date().getTime())
+const getHostConfig = async () => {
+  const hostConfigResponse = await httpClientActions.get<HostConfig>(`/config.json?date=${Date.now()}`)
   if (hostConfigResponse && hostConfigResponse.data) {
     consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data
@@ -32,7 +32,7 @@ const getHostConfig = async (): Promise<HostConfig> => {
 const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | InstanceConfig> => {
   // Local storage load
   if (Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage) {
-    const instances: InstanceConfig[] = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY])
+    const instances = JSON.parse(localStorage[Globals.LOCAL_INSTANCES_STORAGE_KEY]) as InstanceConfig[]
     if (instances && instances.length) {
       for (const config of instances) {
         if (config.active) {
@@ -77,7 +77,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // endpoint but working instance.
   const results = await Promise.all(
     endpoints.map(async endpoint => {
-      return httpClientActions.get(endpoint + '/server/info?date=' + Date.now(), { timeout: 1000 })
+      return httpClientActions.get(`${endpoint}/server/info?date=${Date.now()}`, { timeout: 1000 })
         .then(() => true)
         .catch((error) => error.response?.status === 401)
     })

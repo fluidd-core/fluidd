@@ -181,11 +181,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.cancelSource = Axios.CancelToken.source()
 
       // Start by making a standard request. Maybe it's good?
-      const request = await httpClientActions.get(
-        url + 'server/info?t=' + Date.now(), {
-          withAuth: false,
-          cancelToken: this.cancelSource.token
-        })
+      const request = await httpClientActions.get(`${url}server/info?t=${Date.now()}`, {
+        withAuth: false,
+        cancelToken: this.cancelSource.token
+      })
         .then(() => {
           this.verified = true
           this.verifying = false
