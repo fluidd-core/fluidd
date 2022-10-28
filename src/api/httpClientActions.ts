@@ -92,7 +92,15 @@ export const httpClientActions = {
   },
 
   accessUserPost (username: string, password: string, options?: AxiosRequestConfig) {
-    return this.post('/access/user', {
+    return this.post<{
+      result: {
+        username: string,
+        token: string,
+        refresh_token: string,
+        action: string,
+        source: string
+      }
+    }>('/access/user', {
       username,
       password
     }, options)
