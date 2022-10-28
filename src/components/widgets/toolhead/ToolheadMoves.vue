@@ -183,7 +183,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { Waits } from '@/globals'
@@ -194,15 +194,16 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
   moveLength = ''
   fab = false
 
-  @Prop({ type: Boolean, default: false })
-  readonly forceMove!: boolean
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
+  }
 
   get kinematics () {
     return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
   }
 
   get canHomeXY () {
-    return this.kinematics !== 'delta'
+    return ['delta', 'rotary_delta'].includes(this.kinematics)
   }
 
   get toolheadMoveDistances () {

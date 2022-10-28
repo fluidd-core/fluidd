@@ -21,6 +21,11 @@ export interface UiSettings {
   tableHeaders: AppTableConfiguredHeaders;
   gcodePreview: GcodePreviewConfig;
   fileSystem: FileSystemConfig;
+  toolhead: ToolheadConfig;
+}
+
+export interface ToolheadConfig {
+  forceMove: boolean
 }
 
 export interface HostConfig {

@@ -147,6 +147,9 @@ export const defaultState = (): ConfigState => {
           gcodes: [],
           config: []
         }
+      },
+      toolhead: {
+        forceMove: false
       }
     }
   }
