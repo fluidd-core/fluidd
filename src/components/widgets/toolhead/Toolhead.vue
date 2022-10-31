@@ -16,9 +16,11 @@
         <extruder-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="!printerPrinting" />
       </v-col>
+      <v-col cols="12">
+        <extruder-stats />
+      </v-col>
     </v-row>
 
-    <!-- Speed and Flow Adjustments  -->
     <speed-and-flow-adjust />
     <pressure-advance-adjust v-if="showPressureAdvance" />
   </v-card-text>
@@ -34,6 +36,7 @@ import ToolheadPosition from '@/components/widgets/toolhead/ToolheadPosition.vue
 import ZHeightAdjust from '@/components/widgets/toolhead/ZHeightAdjust.vue'
 import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust.vue'
 import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvanceAdjust.vue'
+import ExtruderStats from '@/components/widgets/toolhead/ExtruderStats.vue'
 
 @Component({
   components: {
@@ -43,7 +46,8 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
     ToolheadPosition,
     ZHeightAdjust,
     SpeedAndFlowAdjust,
-    PressureAdvanceAdjust
+    PressureAdvanceAdjust,
+    ExtruderStats
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
