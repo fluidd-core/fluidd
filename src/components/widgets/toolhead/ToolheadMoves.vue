@@ -203,7 +203,7 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get canHomeXY () {
-    return ['delta', 'rotary_delta'].includes(this.kinematics)
+    return !['delta', 'rotary_delta'].includes(this.kinematics)
   }
 
   get toolheadMoveDistances () {
