@@ -107,7 +107,7 @@
       </app-btn-collapse-group>
     </template>
 
-    <toolhead :force-move="forceMove" />
+    <toolhead />
 
     <manual-probe-dialog
       v-if="manualProbeDialogOpen"
@@ -137,7 +137,6 @@ import BedScrewsAdjustDialog from '@/components/common/BedScrewsAdjustDialog.vue
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
-  forceMove = false
   manualProbeDialogOpen = false
   bedScrewsAdjustDialogOpen = false
 
@@ -165,7 +164,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get printerSupportsForceMove () {
-    return this.printerSettings.force_move?.enable_force_move ?? false
+    return (
+      (this.printerSettings.force_move?.enable_force_move ?? false) &&
+      !this.printerIsDelta
+    )
+  }
+
+  get printerIsDelta () {
+    return ['delta', 'rotary_delta'].includes(this.printerSettings.printer.kinematics)
   }
 
   get showManualProbeDialogAutomatically () {
@@ -174,6 +180,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get showBedScrewsAdjustDialogAutomatically () {
     return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
+  }
+
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   @Watch('isManualProbeActive')
@@ -212,7 +222,11 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       }
     }
 
-    this.forceMove = !this.forceMove
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.toolhead.forceMove',
+      value: !this.forceMove,
+      server: false
+    })
   }
 }
 </script>

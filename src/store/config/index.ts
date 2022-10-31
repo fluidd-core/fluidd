@@ -147,6 +147,11 @@ export const defaultState = (): ConfigState => {
           gcodes: [],
           config: []
         }
+      },
+      toolhead: {
+        forceMove: false,
+        extrudeSpeed: -1,
+        extrudeLength: -1
       }
     }
   }
