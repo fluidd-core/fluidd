@@ -149,7 +149,9 @@ export const defaultState = (): ConfigState => {
         }
       },
       toolhead: {
-        forceMove: false
+        forceMove: false,
+        extrudeSpeed: -1,
+        extrudeLength: -1
       }
     }
   }
