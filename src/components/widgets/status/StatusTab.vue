@@ -199,7 +199,7 @@ import FilesMixin from '@/mixins/files'
 export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
   // Maintains the state of flow
   flow = {
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     lastExtruderPosition: 0,
     value: 0,
     max: 0

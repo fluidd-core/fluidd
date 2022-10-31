@@ -28,11 +28,16 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
     * Fired when the socket opens.
     */
-  async onSocketOpen ({ commit }, payload) {
+  async onSocketOpen ({ commit, rootState }, payload) {
     commit('setSocketOpen', payload)
     if (payload === true) {
       SocketActions.serverInfo()
-      SocketActions.identify()
+      SocketActions.identify({
+        client_name: Globals.APP_NAME,
+        version: `${rootState.version.fluidd.version || '0.0.0'}-${rootState.version.fluidd.hash || 'unknown'}`.trim(),
+        type: 'web',
+        url: Globals.GITHUB_REPO
+      })
       SocketActions.serverFilesListRoot('config')
     }
   },

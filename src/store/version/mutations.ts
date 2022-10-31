@@ -11,10 +11,6 @@ export const mutations: MutationTree<VersionState> = {
     Object.assign(state, defaultState())
   },
 
-  setRefreshing (state, payload) {
-    state.refreshing = payload
-  },
-
   setUpdateStatus (state, payload) {
     if (payload) {
       if ('busy' in payload) state.busy = payload.busy

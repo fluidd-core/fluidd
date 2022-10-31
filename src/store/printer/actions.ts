@@ -130,11 +130,11 @@ export const actions: ActionTree<PrinterState, RootState> = {
       // Detect a printing state change.
       // We do this prior to commiting the notify so we can
       // compare the before and after.
-      handleCurrentFileChange(payload)
+      handleCurrentFileChange(payload, rootState, commit)
       handlePrintStateChange(payload, rootState, dispatch)
       handleExcludeObjectChange(payload, rootState, dispatch)
-      handleSystemStatsChange(payload)
-      handleMcuStatsChange(payload)
+      handleSystemStatsChange(payload, rootState, commit)
+      handleMcuStatsChange(payload, rootState, commit)
 
       for (const key in payload) {
         const val = payload[key]
@@ -153,7 +153,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
         rootStateServerConfig?.data_store?.temperature_store_size ??
         rootStateServerConfig?.server?.temperature_store_size ??
         Globals.CHART_HISTORY_RETENTION
-      handleAddChartEntry(retention, getters.getChartableSensors)
+      handleAddChartEntry(retention, rootState, commit, getters)
       dispatch('onDiagnosticsMetricsUpdate')
     }
   },
