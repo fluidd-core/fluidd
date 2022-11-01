@@ -81,6 +81,23 @@
         </v-icon>
         <span>{{ $t('app.general.btn.reprint') }}</span>
       </app-btn>
+
+      <app-btn
+        v-if="(printerPrinting || printerPaused) && hasParts"
+        color=""
+        fab
+        x-small
+        text
+        class="ml-1"
+        @click="excludeObjectDialog = true"
+      >
+        <v-icon>$listStatus</v-icon>
+      </app-btn>
+
+      <ExcludeObjectsDialog
+        v-if="excludeObjectDialog"
+        v-model="excludeObjectDialog"
+      />
     </div>
   </app-btn-collapse-group>
 </template>
@@ -90,19 +107,27 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
+import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 
 @Component({
   components: {
-    JobHistoryItemStatus
+    JobHistoryItemStatus,
+    ExcludeObjectsDialog
   }
 })
 export default class StatusControls extends Mixins(StateMixin) {
+  excludeObjectDialog = false
+
   get filename () {
     return this.$store.state.printer.printer.print_stats.filename
   }
 
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  get hasParts () {
+    return Object.keys(this.$store.getters['parts/getParts']).length > 0
   }
 
   cancelPrint () {

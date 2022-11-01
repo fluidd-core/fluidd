@@ -1,18 +1,16 @@
 <template>
   <v-dialog
     :value="value"
-    max-width="500"
-    persistent
+    :max-width="500"
+    scrollable
+    @input="$emit('input', $event)"
   >
     <v-card>
-      <v-card-title class="card-heading py-2 px-5">
-        <v-icon left>
-          $cancelled
-        </v-icon>
-        <span class="focus--text">
-          {{ $t('app.gcode.label.exclude_object') }}
-        </span>
+      <v-card-title class="card-heading py-2">
+        <span class="focus--text">{{ $t('app.gcode.label.exclude_object') }}</span>
       </v-card-title>
+
+      <v-divider />
 
       <v-card-text class="py-3 px-5">
         <v-simple-table>
@@ -26,10 +24,12 @@
               </td>
               <td class="actions">
                 <app-btn
+                  color=""
                   x-small
                   fab
+                  text
                   :disabled="isPartExcluded(part.name)"
-                  @click="$emit('cancelObject', part.name)"
+                  @click="cancelObject(part.name)"
                 >
                   <v-icon color="error">
                     $cancelled
@@ -40,19 +40,6 @@
           </tbody>
         </v-simple-table>
       </v-card-text>
-
-      <v-divider />
-
-      <v-card-actions class="py-2 px-5">
-        <v-spacer />
-        <app-btn
-          color="primary"
-          text
-          @click="$emit('close')"
-        >
-          {{ $t('app.general.btn.close') }}
-        </app-btn>
-      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -72,6 +59,19 @@ export default class ExcludeObjectDialog extends Mixins(StateMixin) {
 
   isPartExcluded (name: string) {
     return this.$store.getters['parts/getIsPartExcluded'](name)
+  }
+
+  async cancelObject (id: string) {
+    const res = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (res) {
+      const reqId = id.toUpperCase().replace(/\s/g, '_')
+
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+    }
   }
 }
 </script>
