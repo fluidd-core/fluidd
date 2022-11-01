@@ -109,12 +109,17 @@
           v-if="'thumbnails' in file && file.thumbnails && file.thumbnails.length"
           class="px-2 d-none d-sm-flex"
         >
-          <img
-            class="mr-2 ml-2 thumbnail"
-            :src="getThumbUrl(file.thumbnails, file.path, true, file.modified)"
-            :height="150"
+          <v-btn
+            text
+            height="100%"
             @click="$emit('view-thumbnail', file)"
           >
+            <img
+              class="mx-2"
+              :src="getThumbUrl(file.thumbnails, file.path, true, file.modified)"
+              :height="150"
+            >
+          </v-btn>
         </v-col>
       </v-row>
     </v-card>
@@ -180,9 +185,3 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 }
 </script>
-
-<style lang="scss" scoped>
-  .thumbnail {
-    cursor: pointer;
-  }
-</style>
