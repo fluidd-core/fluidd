@@ -117,6 +117,6 @@
     "url": "git+https://github.com/fluidd-core/fluidd.git"
   },
   "engines": {
-    "node": "^16"
+    "node": "^16 || ^18"
   }
 }
