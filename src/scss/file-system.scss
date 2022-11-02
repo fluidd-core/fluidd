@@ -60,6 +60,26 @@
     box-shadow: none !important;
   }
 
+  .theme--light.v-data-table tr > td.actions {
+    div {
+      background: map-deep-get($material-light, 'table', 'hover');
+
+      &:before {
+        background: linear-gradient(90deg, rgba(map-deep-get($material-light, 'table', 'hover'), 0) 0%, rgba(map-deep-get($material-light, 'table', 'hover'), 1) 100%);
+      }
+    }
+  }
+
+  .theme--dark.v-data-table tr > td.actions {
+    div {
+      background: map-deep-get($material-dark, 'table', 'hover');
+
+      &:before {
+        background: linear-gradient(90deg, rgba(map-deep-get($material-dark, 'table', 'hover'), 0) 0%, rgba(map-deep-get($material-dark, 'table', 'hover'), 1) 100%);
+      }
+    }
+  }
+
   // Quick actions hover
   .v-data-table tr > td.actions {
     position: relative;
@@ -68,22 +88,16 @@
     padding: 0 !important;
     display: none;
     border-bottom: none !important;
-    background: transparent;
     div {
       position: absolute;
       display: flex;
       top: 0;
       right: 0;
       align-items: center;
-      padding: 0 16px;
+      padding: 0 12px;
       vertical-align: middle;
       height: calc(100% - 1px);
-      background: map-deep-get($material-dark, 'table', 'hover');
       border: none;
-    }
-
-    div.theme--light {
-      background: map-deep-get($material-light, 'table', 'hover');
     }
 
     div:before {
@@ -93,11 +107,6 @@
       left: -32px;
       width: 32px;
       height: inherit;
-      background: linear-gradient(90deg, rgba(53,53,57,0) 0%, rgba(53,53,57,1) 100%);
-    }
-
-    div.theme--light:before {
-      background: linear-gradient(90deg, rgba(238,238,238,0) 0%, rgba(238,238,238,1) 100%);
     }
   }
 
