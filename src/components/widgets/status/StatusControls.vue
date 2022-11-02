@@ -1,6 +1,6 @@
 <template>
-  <app-btn-collapse-group>
-    <div>
+  <div>
+    <app-btn-collapse-group>
       <app-btn
         v-if="printerPrinting || printerPaused"
         :loading="hasWait($waits.onPrintCancel)"
@@ -81,25 +81,35 @@
         </v-icon>
         <span>{{ $t('app.general.btn.reprint') }}</span>
       </app-btn>
+    </app-btn-collapse-group>
 
-      <app-btn
-        v-if="(printerPrinting || printerPaused) && hasParts"
-        color=""
-        fab
-        x-small
-        text
-        class="ml-1"
-        @click="excludeObjectDialog = true"
-      >
-        <v-icon>$listStatus</v-icon>
-      </app-btn>
+    <v-tooltip
+      v-if="printerPrinting || printerPaused"
+      bottom
+    >
+      <template #activator="{ on, attrs }">
+        <app-btn
+          v-bind="attrs"
+          :disabled="!hasParts"
+          color=""
+          fab
+          x-small
+          text
+          class="ml-1"
+          v-on="on"
+          @click="showExcludeObjectDialog = true"
+        >
+          <v-icon>$listStatus</v-icon>
+        </app-btn>
+      </template>
+      <span>{{ $t('app.gcode.label.exclude_object') }}</span>
+    </v-tooltip>
 
-      <ExcludeObjectsDialog
-        v-if="excludeObjectDialog"
-        v-model="excludeObjectDialog"
-      />
-    </div>
-  </app-btn-collapse-group>
+    <ExcludeObjectsDialog
+      v-if="showExcludeObjectDialog"
+      v-model="showExcludeObjectDialog"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -116,7 +126,7 @@ import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeOb
   }
 })
 export default class StatusControls extends Mixins(StateMixin) {
-  excludeObjectDialog = false
+  showExcludeObjectDialog = false
 
   get filename () {
     return this.$store.state.printer.printer.print_stats.filename
