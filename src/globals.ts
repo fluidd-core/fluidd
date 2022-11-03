@@ -19,7 +19,6 @@ import {
   mdiFileDocumentOutline,
   mdiPause,
   mdiWindowClose,
-  mdiPlayBoxOutline,
   mdiPrinter,
   mdiCamera,
   mdiFan,
@@ -125,7 +124,8 @@ import {
   mdiAxisArrow,
   mdiVectorLine,
   mdiOpenInNew,
-  mdiImageSizeSelectLarge
+  mdiImageSizeSelectLarge,
+  mdiListStatus
 } from '@mdi/js'
 
 /**
@@ -283,7 +283,7 @@ export const Icons = Object.freeze({
   cancel: mdiWindowClose,
   cancelled: mdiCancel,
   play: mdiPlay,
-  resume: mdiPlayBoxOutline,
+  resume: mdiPlay,
   stop: mdiStop,
   reprint: mdiPrinter,
   printer: mdiPrinter,
@@ -330,7 +330,8 @@ export const Icons = Object.freeze({
   absolutePositioning: mdiAxisArrow,
   relativePositioning: mdiVectorLine,
   openInNew: mdiOpenInNew,
-  imageSizeSelectLarge: mdiImageSizeSelectLarge
+  imageSizeSelectLarge: mdiImageSizeSelectLarge,
+  listStatus: mdiListStatus
 })
 
 export const Waits = Object.freeze({
