@@ -54,7 +54,6 @@
           </app-btn>
           <app-btn
             color="primary"
-            :elevation="2"
             type="submit"
           >
             {{ $t('app.general.btn.save') }}

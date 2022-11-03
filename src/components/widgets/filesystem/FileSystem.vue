@@ -4,6 +4,7 @@
     :height="height"
     :max-height="maxHeight"
     :class="{ 'no-pointer-events': dragState.overlay }"
+    flat
     @dragenter.capture.prevent="handleDragEnter"
     @dragover.prevent
     @dragleave.self.prevent="handleDragLeave"

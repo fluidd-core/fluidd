@@ -32,7 +32,6 @@
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           v-if="isManualProbeActive"
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -42,7 +41,6 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsForceMove"
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -52,7 +50,6 @@
           {{ $t('app.tool.tooltip.force_move') }}
         </app-btn>
         <app-btn
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -62,7 +59,6 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
-          :elevation="2"
           :loading="hasWait(waits.onBedScrewsAdjust)"
           :disabled="!klippyReady || printerPrinting"
           small
@@ -73,7 +69,6 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
-          :elevation="2"
           :loading="hasWait(waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
@@ -84,7 +79,6 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
-          :elevation="2"
           :loading="hasWait(waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
@@ -95,7 +89,6 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
-          :elevation="2"
           :loading="hasWait(waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small

@@ -147,7 +147,6 @@
           <app-btn
             :loading="hasWait($waits.onManualProbe)"
             color="primary"
-            :elevation="2"
             type="submit"
           >
             {{ $t('app.general.btn.accept') }}

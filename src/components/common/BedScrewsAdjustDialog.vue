@@ -87,7 +87,6 @@
           <app-btn
             :loading="hasWait($waits.onBedScrewsAdjust)"
             color="primary"
-            :elevation="2"
             type="submit"
           >
             {{ $t('app.general.btn.accept') }}

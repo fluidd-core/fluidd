@@ -8,7 +8,6 @@
       <app-btn-collapse-group>
         <app-btn
           v-if="isManualProbeActive"
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -180,7 +179,6 @@
 
           <app-btn
             v-if="!printerPrinting && printerSupportsQgl"
-            :elevation="2"
             :loading="hasWait($waits.onQGL)"
             :disabled="printerPrinting || printerBusy"
             block

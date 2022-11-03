@@ -49,7 +49,6 @@
                 v-bind="attrs"
                 :macro="macro"
                 :loading="hasWait(`${waits.onMacro}${macro.name}`)"
-                :elevation="2"
                 enable-params
                 class="me-2 mb-2 float-left"
                 v-on="on"
@@ -109,7 +108,6 @@
                 v-bind="attrs"
                 :macro="macro"
                 :loading="hasWait(`${waits.onMacro}${macro.name}`)"
-                :elevation="2"
                 enable-params
                 class="me-2 mb-2 float-left"
                 v-on="on"
@@ -161,3 +159,9 @@ export default class Macros extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  :deep(.v-expansion-panel::before) {
+    box-shadow: none;
+  }
+</style>

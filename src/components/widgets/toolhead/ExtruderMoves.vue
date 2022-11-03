@@ -24,7 +24,6 @@
       <v-col cols="6">
         <app-btn
           :disabled="!extruderReady || !klippyReady || !valid"
-          :elevation="2"
           block
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
         >
@@ -56,7 +55,6 @@
       <v-col cols="6">
         <app-btn
           :disabled="!extruderReady || !klippyReady || !valid"
-          :elevation="2"
           block
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
         >
