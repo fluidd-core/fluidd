@@ -101,6 +101,7 @@ app:
       add_file: Fájl hozzáadása
       command_palette: Parancs paletta
       download_file: Fájl lekérése
+      keyboard_shortcuts: Billentyűparancs
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
