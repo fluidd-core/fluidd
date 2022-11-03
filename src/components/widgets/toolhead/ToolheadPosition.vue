@@ -130,15 +130,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly forceMove!: boolean
-
   get gcodePosition () {
     return this.$store.state.printer.printer.gcode_move.gcode_position
   }
@@ -153,6 +150,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get useGcodeCoords () {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
+  }
+
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   get xForceMove () {

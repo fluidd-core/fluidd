@@ -64,7 +64,7 @@ export default class AppCodeView extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   .theme--light .code-view {
     background-color: rgba(map-get($material-light, 'bg-color'), 0.08);

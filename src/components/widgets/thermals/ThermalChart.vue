@@ -3,7 +3,7 @@
     class="chart"
     :style="{ 'height': height }"
   >
-    <v-chart
+    <e-chart
       ref="chart"
       style="overflow: initial;"
       :option="options"

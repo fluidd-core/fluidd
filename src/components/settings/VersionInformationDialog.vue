@@ -144,8 +144,7 @@ export default class VersionInformationDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
-  // @import '~vuetify/src/components/VStepper/_variables.scss';
+  @import 'vuetify/src/styles/styles.sass';
 
   ol.commit-history {
     margin: 0;

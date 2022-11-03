@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { authApi } from '@/api/auth.api'
+import { httpClientActions } from '@/api/httpClientActions'
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
 import { VForm } from '@/types'
@@ -140,7 +140,7 @@ export default class UserPasswordDialog extends Vue {
   handleSave () {
     if (this.valid) {
       this.loading = true
-      authApi.changePassword(this.currentPassword, this.password)
+      httpClientActions.accessUserPasswordPost(this.currentPassword, this.password)
         .then(() => {
           EventBus.$emit(this.$tc('app.general.msg.password_changed'), { timeout: 2000 })
           this.$emit('input', false)

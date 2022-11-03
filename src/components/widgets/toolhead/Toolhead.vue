@@ -7,15 +7,12 @@
     >
       <v-col class="controls-wrapper">
         <extruder-selection v-if="multipleExtruders" />
-        <toolhead-moves
-          v-if="!printerPrinting"
-          :force-move="forceMove"
-        />
+        <toolhead-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="printerPrinting" />
       </v-col>
 
       <v-col class="controls-wrapper">
-        <toolhead-position :force-move="forceMove" />
+        <toolhead-position />
         <extruder-moves v-if="!printerPrinting" />
         <z-height-adjust v-if="!printerPrinting" />
       </v-col>
@@ -28,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMoves from '@/components/widgets/toolhead/ToolheadMoves.vue'
 import ExtruderMoves from '@/components/widgets/toolhead/ExtruderMoves.vue'
@@ -50,9 +47,6 @@ import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvance
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly forceMove!: boolean
-
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1
   }

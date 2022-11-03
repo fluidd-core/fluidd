@@ -378,5 +378,6 @@ export const Waits = Object.freeze({
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
   onQueryEndstops: 'onQueryEndstops',
-  onQueryProbe: 'onQueryProbe'
+  onQueryProbe: 'onQueryProbe',
+  onVersionRefresh: 'onVersionRefresh'
 })

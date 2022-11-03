@@ -153,8 +153,8 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   @Ref('editor')
   readonly editor?: FileEditor
 
-  updatedContent = this.contents
-  lastSavedContent = this.updatedContent
+  updatedContent: string | null = null
+  lastSavedContent: string | null = null
   editorReady = false
 
   get ready () {
@@ -193,9 +193,12 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.editor.codeLens
   }
 
-  mounted () {
+  created () {
     this.updatedContent = this.contents
-    this.lastSavedContent = this.updatedContent
+    this.lastSavedContent = this.contents
+  }
+
+  mounted () {
     window.addEventListener('beforeunload', this.handleBeforeUnload)
   }
 

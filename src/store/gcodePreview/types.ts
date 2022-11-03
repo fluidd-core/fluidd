@@ -1,5 +1,4 @@
 import { AppFile } from '@/store/files/types'
-import { Thread } from 'threads'
 
 export type LayerNr = number
 
@@ -7,7 +6,7 @@ export interface GcodePreviewState {
   moves: Move[];
   file?: AppFile;
   parserProgress: number;
-  parserWorker: Thread | null;
+  parserWorker: Worker | null;
 
   viewer: {
     showCurrentLayer: boolean;
@@ -79,4 +78,17 @@ export interface MinMax {
 export interface BBox {
   x: MinMax;
   y: MinMax;
+}
+
+export type ParseGcodeWorkerClientMessage = {
+  action: 'progress',
+  filePosition: number
+} | {
+  action: 'moves',
+  moves: Move[]
+}
+
+export type ParseGcodeWorkerServerMessage = {
+  action: 'parse',
+  gcode: string
 }

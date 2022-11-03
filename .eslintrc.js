@@ -1,6 +1,7 @@
 module.exports = {
   root: true,
   env: {
+    browser: true,
     node: true
   },
   extends: [
@@ -8,36 +9,21 @@ module.exports = {
     '@vue/standard',
     '@vue/typescript/recommended'
   ],
+  parser: 'vue-eslint-parser',
   parserOptions: {
-    ecmaVersion: 2020
+    parser: '@typescript-eslint/parser',
+    sourceType: 'module'
   },
+  plugins: [
+    'vue'
+  ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    camelcase: 0,
-    'vue/no-v-html': 0,
-    'no-use-before-define': 0,
-    '@typescript-eslint/camelcase': 0,
-    '@typescript-eslint/no-explicit-any': 0
-  },
-  overrides: [
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
-      ],
-      env: {
-        mocha: true
-      }
-    },
-    {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)'
-      ],
-      env: {
-        jest: true
-      }
-    }
-  ]
+    camelcase: 'off',
+    'no-use-before-define': 'off',
+    'vue/no-v-html': 'off',
+    'vue/no-v-text-v-html-on-component': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
+  }
 }

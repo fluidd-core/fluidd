@@ -77,8 +77,6 @@ import { Waits } from '@/globals'
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
-  feedSpeed = -1
-  feedLength = -1
   valid = true
 
   rules = {
@@ -94,31 +92,43 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get maxExtrudeSpeed () {
-    return this.$store.getters['printer/getPrinterSettings']('extruder.max_extrude_only_velocity')
+    return this.activeExtruder?.max_extrude_only_velocity || 500
   }
 
   get maxExtrudeLength () {
-    return this.$store.getters['printer/getPrinterSettings']('extruder.max_extrude_only_distance')
+    return this.activeExtruder?.max_extrude_only_distance || 50
   }
 
   get extrudeSpeed () {
-    return (this.feedSpeed === -1)
+    const extrudeSpeed = this.$store.state.config.uiSettings.toolhead.extrudeSpeed
+
+    return extrudeSpeed === -1
       ? this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
-      : this.feedSpeed
+      : extrudeSpeed
   }
 
-  set extrudeSpeed (val: number) {
-    this.feedSpeed = val
+  set extrudeSpeed (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.toolhead.extrudeSpeed',
+      value,
+      server: false
+    })
   }
 
   get extrudeLength () {
-    return (this.feedLength === -1)
+    const extrudeLength = this.$store.state.config.uiSettings.toolhead.extrudeLength
+
+    return extrudeLength === -1
       ? this.$store.state.config.uiSettings.general.defaultExtrudeLength
-      : this.feedLength
+      : extrudeLength
   }
 
-  set extrudeLength (val: number) {
-    this.feedLength = val
+  set extrudeLength (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.toolhead.extrudeLength',
+      value,
+      server: false
+    })
   }
 
   sendRetractGcode (amount: number, rate: number, wait?: string) {

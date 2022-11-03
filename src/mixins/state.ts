@@ -4,7 +4,7 @@ import { Component } from 'vue-property-decorator'
 import { Waits } from '@/globals'
 
 @Component
-export default class UtilsMixin extends Vue {
+export default class StateMixin extends Vue {
   waits = Waits
 
   get authenticated () {

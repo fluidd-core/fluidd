@@ -243,7 +243,7 @@ export default class AppNotificationMenu extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   :deep(.app-notifications .v-list-item__action.notification-suffix),
   :deep(.app-notifications .v-list-item__action.notification-clear) {

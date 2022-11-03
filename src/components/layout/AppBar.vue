@@ -336,6 +336,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 </script>
 
 <style lang="scss" scoped>
+  @import 'vuetify/src/styles/styles.sass';
+
   .toolbar-logo {
     display: flex;
     justify-content: center;

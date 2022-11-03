@@ -49,17 +49,17 @@ input[type=number] {
 }
 
 .constrained-width.single {
-  max-width: calc(map-get($container-max-widths, 'xl') / 2);
+  max-width: map-get($container-max-widths, 'xl') / 2;
 }
 
 .constrained-width.double {
-  max-width: calc(map-get($container-max-widths, 'xl'));
+  max-width: map-get($container-max-widths, 'xl');
 }
 
 .constrained-width.triple {
-  max-width: calc(map-get($container-max-widths, 'xl') / 2 * 3);
+  max-width: map-get($container-max-widths, 'xl') / 2 * 3;
 }
 
 .constrained-width.quad {
-  max-width: calc(map-get($container-max-widths, 'xl') * 2);
+  max-width: map-get($container-max-widths, 'xl') * 2;
 }
