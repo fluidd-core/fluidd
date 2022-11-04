@@ -68,7 +68,6 @@
         v-if="dialogState.open"
         v-model="dialogState.open"
         :filter="dialogState.filter"
-        :rules="dialogState.rules"
         @save="handleSaveFilter"
       />
     </v-card>
@@ -89,7 +88,6 @@ import ConsoleFilterDialog from './ConsoleFilterDialog.vue'
 export default class ConsoleSettings extends Mixins(StateMixin) {
   dialogState: any = {
     open: false,
-    rules: null,
     filter: null
   }
 
@@ -110,20 +108,6 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
 
     this.dialogState = {
       open: true,
-      rules: {
-        required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-        uniqueName: (v: string) => !this.filters.some((c: ConsoleFilter) => c.id !== this.dialogState.filter.id && c.name.toLowerCase() === v.toLowerCase()) || this.$t('app.general.simple_form.error.exists'),
-        validExpression: (v: string) => {
-          try {
-            if (v) {
-              // eslint-disable-next-line
-              new RegExp(v)
-            }
-            return true
-          } catch (e) { }
-          return this.$t('app.general.simple_form.error.invalid_expression')
-        }
-      },
       filter: filterCopy
     }
   }

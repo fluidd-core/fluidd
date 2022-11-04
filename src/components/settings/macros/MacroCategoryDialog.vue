@@ -23,7 +23,10 @@
             autofocus
             outlined
             :label="label"
-            :rules="rules"
+            :rules="[
+              $rules.required,
+              customRules.uniqueName
+            ]"
             hide-details="auto"
             required
           />
@@ -52,6 +55,7 @@
 </template>
 
 <script lang="ts">
+import { MacroCategory } from '@/store/macros/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
@@ -65,14 +69,17 @@ export default class MacroCategoryDialog extends Vue {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: Array, required: false })
-  readonly rules!: []
-
   @Prop({ type: String, required: true })
   readonly name!: string
 
   newName = ''
   valid = true
+
+  get customRules () {
+    return {
+      uniqueName: (v: string) => this.categories.findIndex((c: MacroCategory) => c.name.toLowerCase() === v.toLowerCase()) < 0 || this.$t('app.general.simple_form.error.exists')
+    }
+  }
 
   mounted () {
     this.newName = this.name

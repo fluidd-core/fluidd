@@ -35,7 +35,9 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
           />
         </app-setting>
 
@@ -110,7 +112,9 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
           />
         </app-setting>
 
@@ -140,7 +144,9 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
           />
         </app-setting>
 
@@ -158,7 +164,10 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[rules.required, rules.aspect]"
+            :rules="[
+              $rules.required,
+              $rules.aspectRatioValid
+            ]"
           />
         </app-setting>
 
@@ -199,18 +208,7 @@ export default class CameraConfigDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly camera!: CameraConfig
 
-  cameraUrlRules = [
-    (v: string) => !!v || this.$t('app.general.simple_form.error.required')
-  ]
-
   valid = false
-
-  rules = {
-    required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    minFps: (v: number) => (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 }),
-    maxFps: (v: number) => (v <= 60) || this.$t('app.general.simple_form.error.max', { max: 60 }),
-    aspect: (v: string) => /^\d+\s*[:/]\s*\d+$/.test(v) || this.$t('app.general.simple_form.error.invalid_aspect')
-  }
 
   handleSave () {
     if (this.valid) {

@@ -7,7 +7,9 @@
       :value="value"
       :reset-value="0"
       :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
-      :rules="rules"
+      :rules="[
+        customRules.minFan
+      ]"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
       @change="handleChange"
@@ -81,13 +83,18 @@ export default class OutputFan extends Mixins(StateMixin) {
     return this.$vuetify.breakpoint.mobile
   }
 
-  rules = [
-    (v: string | number) => {
-      const off_below = (this.fan?.config?.off_below || 0) * 100
-      if (!off_below) return true
-      v = +v
-      return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
+  get customRules () {
+    return {
+      minFan: (v: string | number) => {
+        const off_below = (this.fan.config?.off_below || 0) * 100
+
+        if (!off_below) return true
+
+        v = +v
+
+        return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
+      }
     }
-  ]
+  }
 }
 </script>

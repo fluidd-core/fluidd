@@ -89,7 +89,6 @@
       :name="fileNameDialogState.value"
       :title="fileNameDialogState.title"
       :label="fileNameDialogState.label"
-      :rules="fileNameDialogState.rules"
       @save="fileNameDialogState.handler"
     />
 
@@ -255,7 +254,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     title: '',
     value: '',
     label: '',
-    rules: [],
     handler: ''
   }
 
@@ -573,9 +571,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
     let title = this.$t('app.file_system.title.rename_dir')
     let label = this.$t('app.file_system.label.dir_name')
-    const rules: any = [
-      (v: string) => !!v || this.$t('app.general.simple_form.error.required')
-    ]
     if (item.type === 'file') {
       title = this.$t('app.file_system.title.rename_file')
       label = this.$t('app.file_system.label.file_name')
@@ -585,7 +580,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       title,
       label,
       value: item.name,
-      rules,
       handler: this.handleRename
     }
   }
@@ -597,7 +591,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       title: this.$t('app.file_system.title.add_file'),
       label: this.$t('app.file_system.label.file_name'),
       value: '',
-      rules: [(v: string) => !!v || this.$t('app.general.simple_form.error.required')],
       handler: this.handleAddFile
     }
   }
@@ -609,7 +602,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       title: this.$t('app.file_system.title.add_dir'),
       label: this.$t('app.file_system.label.dir_name'),
       value: '',
-      rules: [(v: string) => !!v || this.$t('app.general.simple_form.error.required')],
       handler: this.handleAddDir
     }
   }

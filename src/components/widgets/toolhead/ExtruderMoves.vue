@@ -12,7 +12,10 @@
           ref="lengthfield"
           v-model.number="extrudeLength"
           :disabled="!klippyReady"
-          :rules="[rules.min, rules.maxLength]"
+          :rules="[
+            $rules.numberGreaterThanOrEqual(0.1),
+            $rules.numberLessThanOrEqual(maxExtrudeLength)
+          ]"
           hide-details
           outlined
           dense
@@ -43,7 +46,10 @@
         <v-text-field
           v-model.number="extrudeSpeed"
           :disabled="!klippyReady"
-          :rules="[rules.min, rules.maxSpeed]"
+          :rules="[
+            $rules.numberGreaterThanOrEqual(0.1),
+            $rules.numberLessThanOrEqual(maxExtrudeSpeed)
+          ]"
           hide-details
           outlined
           dense
@@ -76,18 +82,6 @@ import { Waits } from '@/globals'
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   waits = Waits
   valid = true
-
-  rules = {
-    min: (v: number) => {
-      return (v >= 0.1) || this.$t('app.general.simple_form.error.min', { min: 0.1 })
-    },
-    maxSpeed: (v: number) => {
-      return (v <= this.maxExtrudeSpeed) || this.$t('app.general.simple_form.error.max', { max: this.maxExtrudeSpeed })
-    },
-    maxLength: (v: number) => {
-      return (v <= this.maxExtrudeLength) || this.$t('app.general.simple_form.error.max', { max: this.maxExtrudeLength })
-    }
-  }
 
   get maxExtrudeSpeed () {
     return this.activeExtruder?.max_extrude_only_velocity || 500

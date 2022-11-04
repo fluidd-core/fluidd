@@ -39,7 +39,11 @@
         <v-text-field
           ref="outputFramerateElement"
           :value="outputFramerate"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="outputFramerateBlocked"
           :hide-details="outputFramerateElement ? outputFramerateElement.valid : true"
           filled
@@ -57,7 +61,11 @@
           <v-text-field
             ref="targetLengthElement"
             :value="targetLength"
-            :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+            :rules="[
+              $rules.required,
+              $rules.numberValid,
+              $rules.numberGreaterThanOrEqual(0)
+            ]"
             :disabled="targetLengthBlocked"
             :hide-details="targetLengthElement ? targetLengthElement.valid : true"
             filled
@@ -76,7 +84,11 @@
           <v-text-field
             ref="minFpsElement"
             :value="minFps"
-            :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+            :rules="[
+              $rules.required,
+              $rules.numberValid,
+              $rules.numberGreaterThanOrEqual(0)
+            ]"
             :disabled="minFpsBlocked"
             :hide-details="minFpsElement ? minFpsElement.valid : true"
             filled
@@ -95,7 +107,11 @@
           <v-text-field
             ref="maxFpsElement"
             :value="maxFps"
-            :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+            :rules="[
+              $rules.required,
+              $rules.numberValid,
+              $rules.numberGreaterThanOrEqual(0)
+            ]"
             :disabled="maxFpsBlocked"
             :hide-details="maxFpsElement ? maxFpsElement.valid : true"
             filled
@@ -128,7 +144,11 @@
         <v-text-field
           ref="duplicateFramesElement"
           :value="duplicateFrames"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="duplicateFramesBlocked"
           :hide-details="duplicateFramesElement ? duplicateFramesElement.valid : true"
           filled
@@ -223,12 +243,6 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
 
   @Ref('duplicateFramesElement')
   readonly duplicateFramesElement!: VInput
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (v: number) => v >= 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
-  }
 
   get lengthEstimate () {
     const totalFrames = this.frameCount + this.duplicateLastFrameCount
