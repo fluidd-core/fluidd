@@ -142,7 +142,7 @@ export default class ConsoleFilterDialog extends Vue {
         text: this.$t('app.setting.label.expression'),
         value: ConsoleFilterType.Expression,
         rules: [
-          this.$rules.regExpValid
+          this.$rules.regExpPatternValid
         ]
       }
     ]

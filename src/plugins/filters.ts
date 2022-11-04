@@ -247,16 +247,8 @@ export const Rules = {
     return ((v ?? '') !== '') || i18n.t('app.general.simple_form.error.required')
   },
 
-  numberValid (v?: string | number | null) {
+  numberValid (v: any) {
     return !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
-  },
-
-  numberRequired (v: any) {
-    if ((v ?? '') !== '') {
-      return !isNaN(+v) || i18n.t('app.general.simple_form.error.invalid_number')
-    } else {
-      return i18n.t('app.general.simple_form.error.required')
-    }
   },
 
   numberGreaterThan (min: number) {
@@ -299,8 +291,8 @@ export const Rules = {
     return (v: string | any[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  arrayOnlyNumbers (v: any[]) {
-    return !v.some(i => isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
+  numberArrayValid (v: any[]) {
+    return !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
   },
 
   passwordNotEqualUsername (username?: string | null) {
@@ -311,7 +303,7 @@ export const Rules = {
     return /^\d+\s*[:/]\s*\d+$/.test(v) || i18n.t('app.general.simple_form.error.invalid_aspect')
   },
 
-  regExpValid (v: string) {
+  regExpPatternValid (v: string) {
     try {
       // eslint-disable-next-line no-new
       new RegExp(v)
@@ -321,7 +313,7 @@ export const Rules = {
     }
   },
 
-  regExValid (regExp: RegExp, errorMessage: string | TranslateResult) {
+  regExpValid (regExp: RegExp, errorMessage: string | TranslateResult) {
     return (v: string) => regExp.test(v) || errorMessage || 'Invalid'
   }
 }

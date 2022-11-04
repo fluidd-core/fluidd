@@ -162,7 +162,7 @@
           :rules="[
             $rules.lengthGreaterThanOrEqual(1),
             $rules.lengthLessThanOrEqual(6),
-            $rules.arrayOnlyNumbers
+            $rules.numberArrayValid
           ]"
         />
       </app-setting>
@@ -184,7 +184,7 @@
           :rules="[
             $rules.lengthGreaterThanOrEqual(1),
             $rules.lengthLessThanOrEqual(4),
-            $rules.arrayOnlyNumbers
+            $rules.numberArrayValid
           ]"
         />
       </app-setting>
