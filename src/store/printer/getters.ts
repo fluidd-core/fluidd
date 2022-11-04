@@ -250,7 +250,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getExtruders: (state) => {
     const extruders: Extruder[] = []
     Object.keys(state.printer)
-      .filter(key => key.startsWith('extruder'))
+      .filter(key => /^extruder\d{0,2}$/.test(key))
       .sort()
       .forEach(key => {
         if (key === 'extruder') {

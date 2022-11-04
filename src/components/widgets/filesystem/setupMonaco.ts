@@ -37,7 +37,7 @@ const getDocsSection = (service: CodeLensSupportedService, sectionName: string) 
         return 'stepper'
       }
 
-      if (/^extruder[0-9]+$/.test(sectionName)) {
+      if (/^extruder\d{0,2}$/.test(sectionName)) {
         return 'extruder'
       }
 
