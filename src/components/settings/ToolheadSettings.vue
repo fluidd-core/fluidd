@@ -55,7 +55,11 @@
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
         <v-text-field
           :value="defaultExtrudeLength"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(1)
+          ]"
           filled
           dense
           single-line
@@ -70,7 +74,11 @@
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
         <v-text-field
           :value="defaultExtrudeSpeed"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(1)
+          ]"
           filled
           dense
           single-line
@@ -86,7 +94,10 @@
         <v-select
           :value="defaultToolheadMoveLength"
           :items="toolheadMoveDistances"
-          :rules="[rules.numRequired]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid
+          ]"
           filled
           dense
           single-line
@@ -101,7 +112,11 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
         <v-text-field
           :value="defaultToolheadXYSpeed"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(1)
+          ]"
           filled
           dense
           single-line
@@ -116,7 +131,11 @@
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
         <v-text-field
           :value="defaultToolheadZSpeed"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(1)
+          ]"
           filled
           dense
           single-line
@@ -140,7 +159,11 @@
           small-chips
           append-icon=""
           deletable-chips
-          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(6), rules.arrayOnlyNumbers]"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+            $rules.lengthLessThanOrEqual(6),
+            $rules.numberArrayValid
+          ]"
         />
       </app-setting>
 
@@ -158,7 +181,11 @@
           small-chips
           append-icon=""
           deletable-chips
-          :rules="[rules.arrayNumMin(1), rules.arrayNumMax(4), rules.arrayOnlyNumbers]"
+          :rules="[
+            $rules.lengthGreaterThanOrEqual(1),
+            $rules.lengthLessThanOrEqual(4),
+            $rules.numberArrayValid
+          ]"
         />
       </app-setting>
 
@@ -230,14 +257,6 @@ export default class ToolHeadSettings extends Vue {
 
   @Ref('zAdjustValues')
   readonly zAdjustValuesElement!: VInput
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    numMin: (v: number) => v >= 1 || this.$t('app.general.simple_form.error.min', { min: 1 }),
-    arrayNumMin: (min: number) => (v: any[]) => v.length >= min || this.$t('app.general.simple_form.error.min', { min }),
-    arrayNumMax: (max: number) => (v: any[]) => v.length <= max || this.$t('app.general.simple_form.error.max', { max }),
-    arrayOnlyNumbers: (v: any[]) => !v.some(isNaN) || this.$t('app.general.simple_form.error.arrayofnums')
-  }
 
   get defaultExtrudeSpeed () {
     return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed

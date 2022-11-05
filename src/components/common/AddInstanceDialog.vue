@@ -29,7 +29,10 @@
             persistent-hint
             :hint="$t('app.endpoint.hint.add_printer')"
             :loading="verifying"
-            :rules="[rules.required, rules.url]"
+            :rules="[
+              $rules.required,
+              customRules.url
+            ]"
           >
             <template #append-outer>
               <v-icon
@@ -119,9 +122,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   error: any = null
   note: any = null
 
-  rules = {
-    required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-    url: (v: string) => (this.validUrl(v)) || this.$t('app.general.simple_form.error.invalid_url')
+  get customRules () {
+    return {
+      url: (v: string) => (this.validUrl(v)) || this.$t('app.general.simple_form.error.invalid_url')
+    }
   }
 
   /**

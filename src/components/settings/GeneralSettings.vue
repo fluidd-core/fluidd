@@ -15,7 +15,9 @@
           dense
           single-line
           hide-details="auto"
-          :rules="instanceNameRules"
+          :rules="[
+            $rules.required
+          ]"
           :value="instanceName"
           :default-value="$globals.APP_NAME"
           @change="setInstanceName"
@@ -93,7 +95,6 @@
           single-line
           hide-details="auto"
           :items="[{ text: $tc('app.setting.label.none'), value: null }, ...powerDevicesList]"
-          :value="topNavPowerToggle"
           item-value="value"
           item-text="text"
         />
@@ -167,10 +168,6 @@ import { VInput } from '@/types'
 export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
-
-  instanceNameRules = [
-    (v: string) => !!v || 'Required'
-  ]
 
   get estimateTypes () {
     return [

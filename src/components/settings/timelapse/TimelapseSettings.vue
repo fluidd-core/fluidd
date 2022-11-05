@@ -19,7 +19,6 @@
           single-line
           hide-details="auto"
           :items="cameras"
-          :value="camera"
           :disabled="cameraBlocked"
         />
       </app-setting>
@@ -36,7 +35,6 @@
           single-line
           hide-details="auto"
           :items="supportedModes"
-          :value="mode"
           :disabled="modeBlocked"
         />
       </app-setting>
@@ -53,7 +51,11 @@
         <v-text-field
           ref="delayCompElement"
           :value="delayComp"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="delayCompBlocked"
           :hide-details="delayCompElement ? delayCompElement.valid : true"
           filled
@@ -144,12 +146,6 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   readonly delayCompElement!: VInput
 
   renderSettingsDialogOpen = false
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (v: number) => v >= 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
-  }
 
   get supportedModes (): {text: string, value: TimelapseMode}[] {
     return [{

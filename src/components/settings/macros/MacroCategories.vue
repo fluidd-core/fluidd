@@ -100,7 +100,6 @@
         :title="categoryDialogState.title"
         :label="categoryDialogState.label"
         :name="categoryDialogState.name"
-        :rules="categoryDialogState.rules"
         @save="categoryDialogState.handler"
       />
     </v-card>
@@ -125,7 +124,6 @@ export default class MacroSettings extends Mixins(StateMixin) {
     label: '',
     category: null,
     name: '',
-    rules: [],
     handler: this.handleAddCategory
   }
 
@@ -150,10 +148,6 @@ export default class MacroSettings extends Mixins(StateMixin) {
       label: this.$t('app.general.label.name'),
       category: null,
       name: '',
-      rules: [
-        (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-        (v: string) => this.categories.findIndex((c: MacroCategory) => c.name.toLowerCase() === v.toLowerCase()) < 0 || this.$t('app.general.simple_form.error.exists')
-      ],
       handler: this.handleAddCategory
     }
   }
@@ -165,10 +159,6 @@ export default class MacroSettings extends Mixins(StateMixin) {
       label: this.$t('app.general.label.name'),
       category,
       name: category.name,
-      rules: [
-        (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-        (v: string) => this.categories.findIndex((c: MacroCategory) => c.name.toLowerCase() === v.toLowerCase()) < 0 || this.$t('app.general.simple_form.error.exists')
-      ],
       handler: this.handleEditCategory
     }
   }

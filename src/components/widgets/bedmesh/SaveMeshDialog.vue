@@ -22,7 +22,9 @@
             filled
             required
             class="mb-4"
-            :rules="rules"
+            :rules="[
+              $rules.required
+            ]"
             hide-details="auto"
             :label="$t('app.bedmesh.label.profile_name')"
           />
@@ -85,10 +87,6 @@ export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   valid = true
   name = 'default'
   removeDefault = false
-
-  rules = [
-    (v: string) => !!v || this.$t('app.general.simple_form.error.required')
-  ]
 
   handleSubmit () {
     if (this.valid) {

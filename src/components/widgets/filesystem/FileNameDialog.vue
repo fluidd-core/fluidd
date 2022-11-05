@@ -21,7 +21,9 @@
             autofocus
             outlined
             :label="label"
-            :rules="rules"
+            :rules="[
+              $rules.required
+            ]"
             hide-details="auto"
             required
           />
@@ -64,9 +66,6 @@ export default class FileNameDialog extends Mixins(StateMixin) {
 
   @Prop({ type: String, required: true })
   readonly label!: string
-
-  @Prop({ type: Array, required: false })
-  readonly rules!: []
 
   @Prop({ type: String, required: true })
   readonly name!: string

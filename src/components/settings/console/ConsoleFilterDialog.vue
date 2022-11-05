@@ -40,7 +40,10 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.uniqueName]"
+            :rules="[
+              $rules.required,
+              customRules.uniqueName
+            ]"
           />
         </app-setting>
 
@@ -74,7 +77,10 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="type.rules"
+            :rules="[
+              $rules.required,
+              ...type.rules
+            ]"
           />
         </app-setting>
 
@@ -110,33 +116,44 @@ export default class ConsoleFilterDialog extends Vue {
   readonly value!: boolean
 
   @Prop({ type: Object, required: true })
-  readonly rules!: any
-
-  @Prop({ type: Object, required: true })
   readonly filter!: ConsoleFilter
 
   valid = true
 
-  types = [
-    {
-      text: this.$t('app.setting.label.contains'),
-      value: ConsoleFilterType.Contains,
-      rules: [this.rules.required]
-    },
-    {
-      text: this.$t('app.setting.label.starts_with'),
-      value: ConsoleFilterType.StartsWith,
-      rules: [this.rules.required]
-    },
-    {
-      text: this.$t('app.setting.label.expression'),
-      value: ConsoleFilterType.Expression,
-      rules: [this.rules.required, this.rules.validExpression]
+  get customRules () {
+    return {
+      uniqueName: (v: string) => !this.filters.some((c: ConsoleFilter) => c.id !== this.filter.id && c.name.toLowerCase() === v.toLowerCase()) || this.$t('app.general.simple_form.error.exists')
     }
-  ]
+  }
+
+  get types () {
+    return [
+      {
+        text: this.$t('app.setting.label.contains'),
+        value: ConsoleFilterType.Contains,
+        rules: []
+      },
+      {
+        text: this.$t('app.setting.label.starts_with'),
+        value: ConsoleFilterType.StartsWith,
+        rules: []
+      },
+      {
+        text: this.$t('app.setting.label.expression'),
+        value: ConsoleFilterType.Expression,
+        rules: [
+          this.$rules.regExpPatternValid
+        ]
+      }
+    ]
+  }
 
   get type () {
     return this.types.find(f => f.value === this.filter?.type) || this.types[0]
+  }
+
+  get filters () {
+    return this.$store.getters['console/getFilters']
   }
 
   handleSave () {

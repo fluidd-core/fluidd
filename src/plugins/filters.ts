@@ -4,8 +4,8 @@ import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
 import { Globals, Waits } from '@/globals'
-
-// import router from '@/router'
+import i18n from '@/plugins/i18n'
+import type { TranslateResult } from 'vue-i18n'
 
 /**
  * credit: taken from Vuetify source
@@ -242,12 +242,90 @@ export const Filters = {
   }
 }
 
+export const Rules = {
+  required (v: any) {
+    return ((v ?? '') !== '') || i18n.t('app.general.simple_form.error.required')
+  },
+
+  numberValid (v: any) {
+    return !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
+  },
+
+  numberGreaterThan (min: number) {
+    return (v: number) => v > min || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
+  },
+
+  numberGreaterThanOrEqual (min: number) {
+    return (v: number) => v >= min || i18n.t('app.general.simple_form.error.min', { min })
+  },
+
+  numberGreaterThanOrEqualOrZero (min: number) {
+    return (v: number) => +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
+  },
+
+  numberGreaterThanOrZero (min: number) {
+    return (v: number) => +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
+  },
+
+  numberLessThan (max: number) {
+    return (v: number) => v < max || i18n.t('app.general.simple_form.error.max', { max: `< ${max}` })
+  },
+
+  numberLessThanOrEqual (max: number) {
+    return (v: number) => v <= max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  numberLessThanOrEqualOrZero (max: number) {
+    return (v: number) => +v === 0 || v <= max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  numberLessThanOrZero (max: number) {
+    return (v: number) => +v === 0 || v < max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  lengthGreaterThanOrEqual (min: number) {
+    return (v: string | any[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
+  },
+
+  lengthLessThanOrEqual (max: number) {
+    return (v: string | any[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  numberArrayValid (v: any[]) {
+    return !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
+  },
+
+  passwordNotEqualUsername (username?: string | null) {
+    return (v: string) => (v.toLowerCase() !== (username ?? '').toLowerCase()) || i18n.t('app.general.simple_form.error.password_username')
+  },
+
+  aspectRatioValid (v: string) {
+    return /^\d+\s*[:/]\s*\d+$/.test(v) || i18n.t('app.general.simple_form.error.invalid_aspect')
+  },
+
+  regExpPatternValid (v: string) {
+    try {
+      // eslint-disable-next-line no-new
+      new RegExp(v)
+      return true
+    } catch (e) {
+      return i18n.t('app.general.simple_form.error.invalid_expression')
+    }
+  },
+
+  regExpValid (regExp: RegExp, errorMessage: string | TranslateResult) {
+    return (v: string) => regExp.test(v) || errorMessage || 'Invalid'
+  }
+}
+
 export const FiltersPlugin = {
   install (Vue: typeof _Vue) {
     Vue.prototype.$filters = Filters
+    Vue.prototype.$rules = Rules
     Vue.prototype.$globals = Globals
     Vue.prototype.$waits = Waits
     Vue.$filters = Filters
+    Vue.$rules = Rules
     Vue.$globals = Globals
     Vue.$waits = Waits
   }
@@ -256,12 +334,14 @@ export const FiltersPlugin = {
 declare module 'vue/types/vue' {
   interface Vue {
     $filters: typeof Filters;
+    $rules: typeof Rules;
     $globals: typeof Globals;
     $waits: typeof Waits;
   }
 
   interface VueConstructor {
     $filters: typeof Filters;
+    $rules: typeof Rules;
     $globals: typeof Globals;
     $waits: typeof Waits;
   }

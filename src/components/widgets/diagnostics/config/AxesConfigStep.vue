@@ -53,7 +53,9 @@
             dense
             single-line
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
           />
         </app-setting>
 
@@ -67,7 +69,9 @@
             single-line
             hide-details="auto"
             :hint="$t('app.setting.label.optional')"
-            :rules="[rules.validNum]"
+            :rules="[
+              $rules.numberValid
+            ]"
             :suffix="config.axes[i].unit"
           />
         </app-setting>
@@ -82,7 +86,9 @@
             single-line
             hide-details="auto"
             :hint="$t('app.setting.label.optional')"
-            :rules="[rules.validNum]"
+            :rules="[
+              $rules.numberValid
+            ]"
             :suffix="config.axes[i].unit"
           />
         </app-setting>
@@ -105,11 +111,6 @@ export default class AxesConfigStep extends Vue {
 
   currentStep = 1
   steps = [this.$t('app.setting.label.left_y'), this.$t('app.setting.label.right_y')]
-
-  rules = {
-    required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => ([undefined, ''].includes(v) || !isNaN(+v)) || this.$t('app.general.simple_form.error.invalid_number')
-  }
 }
 </script>
 

@@ -25,7 +25,10 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.max]"
+            :rules="[
+              $rules.required,
+              $rules.lengthLessThanOrEqual(60)
+            ]"
           />
         </app-setting>
 
@@ -40,7 +43,11 @@
             type="password"
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.min, rules.password]"
+            :rules="[
+              $rules.required,
+              $rules.lengthGreaterThanOrEqual(4),
+              $rules.passwordNotEqualUsername(user.username)
+            ]"
           />
         </app-setting>
 
@@ -81,13 +88,6 @@ export default class UserConfigDialog extends Vue {
   readonly user!: AppUser
 
   valid = false
-
-  rules = {
-    required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    password: (v: string) => (v.toLowerCase() !== this.user.username.toLowerCase()) || this.$t('app.general.simple_form.error.password_username'),
-    min: (v: string) => (v !== undefined && v.length >= 4) || this.$t('app.general.simple_form.error.min', { min: 4 }),
-    max: (v: string) => (v !== undefined && v.length <= 60) || this.$t('app.general.simple_form.error.max', { max: 60 })
-  }
 
   handleSave () {
     if (this.valid) {

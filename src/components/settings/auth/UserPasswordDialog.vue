@@ -41,7 +41,9 @@
             type="password"
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
           />
         </app-setting>
 
@@ -56,7 +58,11 @@
             type="password"
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.password, rules.min]"
+            :rules="[
+              $rules.required,
+              $rules.numberGreaterThanOrEqual(4),
+              $rules.passwordNotEqualUsername(currentUser)
+            ]"
           />
         </app-setting>
 
@@ -114,12 +120,6 @@ export default class UserPasswordDialog extends Vue {
   loading = false
 
   valid = false
-
-  rules = {
-    required: (v: string) => (v && v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    password: (v: string) => (v && v.toLowerCase() !== this.currentUser.toLowerCase()) || this.$t('app.general.simple_form.error.password_username'),
-    min: (v: string) => (v && v !== undefined && v.length >= 4) || this.$t('app.general.simple_form.error.min', { min: 4 })
-  }
 
   get currentUser () {
     const currentUser = this.$store.getters['auth/getCurrentUser']
