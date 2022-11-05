@@ -11,6 +11,15 @@ export const mutations: MutationTree<ServerState> = {
     Object.assign(state, defaultState())
   },
 
+  setResetKlippy (state) {
+    const { klippy_retries, info } = defaultState()
+
+    Object.assign(state, {
+      klippy_retries,
+      info
+    })
+  },
+
   setServerInfo (state, payload) {
     Vue.set(state, 'info', payload)
   },
