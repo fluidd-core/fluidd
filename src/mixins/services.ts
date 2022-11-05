@@ -4,6 +4,10 @@ import { Component } from 'vue-property-decorator'
 
 @Component
 export default class ServicesMixin extends Vue {
+  get moonrakerServiceName () {
+    return this.$store.state.server.system_info?.instance_ids?.moonraker || 'moonraker'
+  }
+
   /**
    * Resets the UI when restarting/resetting Klipper
    */
@@ -42,14 +46,14 @@ export default class ServicesMixin extends Vue {
    * Restart the moonraker service itself.
    */
   serviceRestartMoonraker () {
-    this.serviceRestartByName('moonraker')
+    this.serviceRestartByName(this.moonrakerServiceName)
   }
 
   /**
    * Restart a service by name.
    */
   async serviceRestartByName (name: string) {
-    if (name === 'moonraker') {
+    if (name === this.moonrakerServiceName) {
       SocketActions.serverRestart()
       this.$store.commit('socket/setSocketDisconnecting', true)
     } else {
@@ -72,7 +76,7 @@ export default class ServicesMixin extends Vue {
    * Stop a service by name.
    */
   async serviceStopByName (name: string) {
-    if (name === 'moonraker') {
+    if (name === this.moonrakerServiceName) {
       throw new Error('Stopping the moonraker service is not supported')
     } else {
       if (name === 'klipper') {

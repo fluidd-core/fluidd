@@ -60,7 +60,7 @@ export const getters: GetterTree<ServerState, RootState> = {
    * Maps configuration files to an object representing a config doc link,
    * along with a service name.
    */
-  getConfigMapByFilename: (state, getters) => (filename: string) => {
+  getConfigMapByFilename: (state, getters, rootState) => (filename: string) => {
     const configMap = Globals.CONFIG_SERVICE_MAP
 
     // First, see if can find an exact match.
@@ -77,8 +77,11 @@ export const getters: GetterTree<ServerState, RootState> = {
     }
 
     if (item) {
+      const itemService = item?.service
+      const instanceIds = rootState.server.system_info?.instance_ids
+
       return {
-        serviceSupported: getters.getServices.some((i: ServiceInfo) => i.name === item?.service),
+        serviceSupported: (instanceIds && itemService in instanceIds) || getters.getServices.some((i: ServiceInfo) => i.name === itemService),
         ...item
       }
     }
