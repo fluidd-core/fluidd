@@ -108,7 +108,7 @@
             <v-btn
               icon
               :disabled="service.active_state === 'inactive'"
-              :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
+              :style="service.name === moonrakerServiceName ? 'visibility: hidden;' : ''"
               @click="checkDialog(serviceStop, service, 'stop')"
             >
               <v-icon color="error">

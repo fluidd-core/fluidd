@@ -45,6 +45,8 @@ export interface SystemInfo {
   cpu_info?: CpuInfo;
   sd_info?: SDInfo;
   distribution?: DistroInfo;
+  virtualization?: Virtualization;
+  instance_ids: InstanceIds;
 }
 
 export interface ServiceState {
@@ -95,6 +97,16 @@ export interface DistroVersionParts {
   major: string;
   minor: string;
   build_number: string;
+}
+
+export interface Virtualization {
+  virt_type: string;
+  virt_identifier: string;
+}
+
+export interface InstanceIds {
+  moonraker: string;
+  klipper: string;
 }
 
 export interface ServerConfig {
