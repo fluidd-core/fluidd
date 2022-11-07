@@ -78,8 +78,8 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   readonly value!: boolean
 
-  @Prop({ type: Object })
-  readonly file?: FilePreviewState
+  @Prop({ type: Object, required: true })
+  readonly file!: FilePreviewState
 
   @Prop({ type: Boolean, default: false })
   readonly downloadable!: boolean
@@ -89,15 +89,15 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
   get width () {
     const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
-    return Math.min(window.innerWidth * 0.9, Math.max(this.file?.width ?? defaultWidth, defaultWidth / 2))
+    return Math.min(window.innerWidth * 0.9, Math.max(this.file.width ?? defaultWidth, defaultWidth / 2))
   }
 
   get isVideo () {
-    return this.file?.type.startsWith('video/')
+    return this.file.type.startsWith('video/')
   }
 
   get isImage () {
-    return this.file?.type === 'image'
+    return this.file.type === 'image'
   }
 }
 </script>
