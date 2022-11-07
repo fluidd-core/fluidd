@@ -6,10 +6,7 @@
   >
     <v-card>
       <v-card-title class="card-heading py-2">
-        <span
-          class="focus--text"
-          v-html="$t('app.general.label.api_key')"
-        />
+        <span class="focus--text">{{ $t('app.general.label.api_key') }}</span>
       </v-card-title>
 
       <v-divider />
@@ -22,14 +19,15 @@
           single-line
           hide-details
           readonly
-          outlined
         />
       </v-card-text>
+
+      <v-divider />
 
       <v-layout
         align-center
         column
-        class="pb-4"
+        class="py-4"
       >
         <app-qr-code
           :value="apiKey"
@@ -41,26 +39,14 @@
 
       <v-card-actions class="pa-4">
         <v-spacer />
-        <app-btn
-          color=""
-          @click="handleRefreshApiKey"
-        >
-          <v-icon
-            small
-            left
-          >
-            $refresh
-          </v-icon>
-          {{ $t('app.general.btn.refresh') }}
-        </app-btn>
 
         <app-btn
-          color="warning"
+          color="primary"
           text
           type="button"
-          @click="$emit('input', false)"
+          @click="handleRefreshApiKey"
         >
-          {{ $t('app.general.btn.close') }}
+          {{ $t('app.general.btn.refresh') }}
         </app-btn>
       </v-card-actions>
     </v-card>
