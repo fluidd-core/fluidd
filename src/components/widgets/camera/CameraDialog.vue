@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     max-width="90vh"
-    @input="$emit('input', $event)"
   >
     <camera-item
       :camera="camera"

@@ -1,9 +1,8 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     :max-width="600"
     scrollable
-    @input="$emit('input', $event)"
   >
     <v-form @submit.prevent="handleSubmit()">
       <v-card>

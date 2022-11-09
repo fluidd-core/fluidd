@@ -1,9 +1,8 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     :max-width="500"
     scrollable
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"

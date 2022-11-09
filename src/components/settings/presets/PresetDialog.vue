@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     :max-width="500"
-    persistent
   >
     <v-form
       ref="form"
