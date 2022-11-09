@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     :max-width="640"
-    @input="$emit('input', $event)"
   >
     <v-card v-if="value">
       <v-card-title class="card-heading py-2">

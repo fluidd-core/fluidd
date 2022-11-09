@@ -1,9 +1,8 @@
 <template>
   <v-dialog
+    v-model="value"
     :title="$t('app.general.label.save_as')"
-    :value="value"
     :max-width="450"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="saveMeshForm"

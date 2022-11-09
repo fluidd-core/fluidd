@@ -1,13 +1,12 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     :loading="loading"
     hide-overlay
     fullscreen
     persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
-    @input="$emit('input', $event)"
   >
     <v-card
       d-flex
