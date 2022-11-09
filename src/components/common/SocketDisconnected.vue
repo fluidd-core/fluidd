@@ -53,7 +53,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import { appInit } from '@/init'
 import StateMixin from '@/mixins/state'
-import { InitConfig, InstanceConfig } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -63,23 +62,18 @@ export default class SocketDisconnected extends Mixins(StateMixin) {
     window.location.reload()
   }
 
-  get instances (): InstanceConfig[] {
-    return this.$store.getters['config/getInstances']
-  }
-
   get activeInstance () {
-    return this.instances.find(instance => instance.active)
+    return this.$store.getters['config/getCurrentInstance']
   }
 
-  reconnect (instance: InstanceConfig) {
+  async reconnect () {
     // Re-init the app.
-    appInit(instance, this.$store.state.config.hostConfig)
-      .then((config: InitConfig) => {
-        // Reconnect the socket with the instance url.
-        if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
-          this.$socket.connect(config.apiConfig.socketUrl)
-        }
-      })
+    const config = await appInit(this.activeInstance, this.$store.state.config.hostConfig)
+
+    // Reconnect the socket with the instance url.
+    if (config.apiConfig.socketUrl && config.apiConnected && config.apiAuthenticated) {
+      this.$socket.connect(config.apiConfig.socketUrl)
+    }
   }
 }
 </script>

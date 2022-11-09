@@ -4,7 +4,7 @@
     :max-width="850"
     scrollable
   >
-    <v-card v-if="component">
+    <v-card>
       <v-card-title class="card-heading py-2">
         <span
           v-if="'commits_behind' in component"
@@ -28,7 +28,7 @@
       <v-divider />
 
       <v-card-text
-        v-if="commitHistory"
+        v-if="'commits_behind' in component && commitHistory"
         class="py-0 pl-0"
       >
         <!-- History Items. -->
@@ -95,7 +95,7 @@
       </v-card-text>
 
       <v-card-text
-        v-if="component.package_list"
+        v-if="'package_list' in component"
         class="pt-4"
       >
         <!-- OS Packages -->

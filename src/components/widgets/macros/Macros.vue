@@ -29,7 +29,7 @@
               small
               color=""
               class="ml-2"
-              @click.prevent.stop="handleEditCategory(category.id)"
+              @click.prevent.stop="handleEditCategory"
             >
               <v-icon small>
                 $cog
@@ -88,7 +88,7 @@
               small
               color=""
               class="ml-2"
-              @click.prevent.stop="handleEditCategory('0')"
+              @click.prevent.stop="handleEditCategory"
             >
               <v-icon small>
                 $cog

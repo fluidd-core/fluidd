@@ -13,11 +13,11 @@
     />
 
     <flash-message
-      v-if="flashMessage"
-      v-model="flashMessage.open"
-      :text="flashMessage.text"
-      :type="flashMessage.type"
-      :timeout="flashMessage.timeout"
+      v-if="flashMessageState"
+      v-model="flashMessageState.open"
+      :text="flashMessageState.text"
+      :type="flashMessageState.type"
+      :timeout="flashMessageState.timeout"
     />
 
     <v-btn
@@ -106,7 +106,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   showUpdateUI = false
   customBackgroundImageStyle: Record<string, string> = {}
 
-  flashMessage: FlashMessage = {
+  flashMessageState: FlashMessage = {
     open: false,
     text: undefined,
     type: undefined
@@ -267,10 +267,10 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   mounted () {
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
-      this.flashMessage.text = (payload && payload.text) || undefined
-      this.flashMessage.type = (payload && payload.type) || undefined
-      this.flashMessage.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
-      this.flashMessage.open = true
+      this.flashMessageState.text = (payload && payload.text) || undefined
+      this.flashMessageState.type = (payload && payload.type) || undefined
+      this.flashMessageState.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
+      this.flashMessageState.open = true
     })
 
     const legacyElementsSelectors = [

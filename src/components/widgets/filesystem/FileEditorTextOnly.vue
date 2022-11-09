@@ -5,7 +5,7 @@
     :readonly="readonly"
     :value="value"
     :spellcheck="false"
-    @change="emitChange($event.target.value)"
+    @change="emitChange($event)"
   />
 </template>
 
@@ -20,9 +20,13 @@ export default class FileEditorText extends Vue {
   @Prop({ type: Boolean, default: false })
   readonly readonly!: boolean
 
-  emitChange (value: string | undefined) {
-    this.$emit('change', value)
-    this.$emit('input', value)
+  emitChange (e: Event) {
+    const element = e.target as HTMLTextAreaElement
+
+    if (element) {
+      this.$emit('change', element.value)
+      this.$emit('input', element.value)
+    }
   }
 
   mounted () {

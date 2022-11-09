@@ -9,7 +9,7 @@ import path from 'path'
 import content from '@originjs/vite-plugin-content'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 import checker from 'vite-plugin-checker'
-import version from './src/plugins/vite-plugin-inject-version'
+import version from './vite.config.inject-version'
 
 export default defineConfig({
   plugins: [
@@ -57,7 +57,9 @@ export default defineConfig({
     monacoEditorPlugin({
       languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
-    checker({ typescript: true }),
+    checker({
+      vueTsc: true
+    }),
     Components({
       dts: true,
       dirs: [

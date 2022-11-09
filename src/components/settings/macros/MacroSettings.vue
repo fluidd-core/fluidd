@@ -142,9 +142,12 @@ export default class MacroSettings extends Vue {
     return this.$store.getters['macros/getCategories']
   }
 
-  get category (): MacroCategory | undefined {
-    if (this.categoryId === '0') return { id: '0', name: this.$tc('app.general.label.uncategorized') }
-    return this.categories.find(category => category.id === this.categoryId)
+  get category () {
+    const category = this.categoryId !== '0' && this.categories.find(category => category.id === this.categoryId)
+
+    return category || {
+      id: '0', name: this.$tc('app.general.label.uncategorized')
+    }
   }
 
   beforeRouteEnter (to: any, from: any, next: any) {

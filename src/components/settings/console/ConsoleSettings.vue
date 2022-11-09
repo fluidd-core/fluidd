@@ -95,7 +95,7 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
     return this.$store.getters['console/getFilters']
   }
 
-  handleEditFilterDialog (filter: ConsoleFilter) {
+  handleEditFilterDialog (filter: ConsoleFilter | null) {
     const filterCopy = filter
       ? { ...filter }
       : {

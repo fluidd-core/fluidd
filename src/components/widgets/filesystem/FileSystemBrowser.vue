@@ -419,7 +419,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // File was dropped on another table row.
-  handleDrop (destination: FileBrowserEntry | AppFileWithMeta, e: { target: HTMLElement}) {
+  handleDrop (destination: FileBrowserEntry | AppFileWithMeta, e: DragEvent) {
     this.handleDragLeave(e)
     if (
       destination.type === 'directory' &&
@@ -435,20 +435,24 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Handles highlighting rows as drag over them
-  handleDragOver (e: { target: HTMLElement}) {
-    if (
-      e.target.tagName === 'TD' &&
-      e.target.parentElement?.classList.contains('is-directory')
-    ) {
-      const row = e.target.parentElement
-      if (row) row.classList.add('active')
+  handleDragOver (e: DragEvent) {
+    const element = e.target as HTMLElement
+    if (element) {
+      if (
+        element.tagName === 'TD' &&
+        element.parentElement?.classList.contains('is-directory')
+      ) {
+        const row = element.parentElement
+        if (row) row.classList.add('active')
+      }
     }
   }
 
   // Handles un highlighting rows as we drag out of them.
-  handleDragLeave (e: { target: HTMLElement}) {
-    if (e.target.tagName === 'TD') {
-      const row = e.target.parentElement
+  handleDragLeave (e: DragEvent) {
+    const element = e.target as HTMLElement
+    if (element?.tagName === 'TD') {
+      const row = element.parentElement
       if (row) row.classList.remove('active')
     }
   }
