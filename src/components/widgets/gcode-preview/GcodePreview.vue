@@ -1,6 +1,5 @@
 <template>
-  <div
-    :class="{container: true, dark: themeIsDark}"
+  <app-focusable-container
     @focus="focused = true"
     @blur="focused = false"
   >
@@ -199,7 +198,7 @@
         />
       </g>
     </svg>
-  </div>
+  </app-focusable-container>
 </template>
 
 <script lang="ts">
@@ -548,32 +547,19 @@ export default class GcodePreview extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-.layer > path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+  :deep(.v-input__slot) {
+    overflow: hidden;
+    max-height: calc(100vh * 2/3);
+    aspect-ratio: 1;
 
-.container {
-  outline: none;
-  overflow: hidden;
-  border: 1px solid black;
-  max-height: calc(100vh * 2/3);
-  aspect-ratio: 1;
+    svg {
+      shape-rendering: geometricPrecision;
 
-  &:focus {
-    border-color: grey;
-    box-shadow: 0 0 4px 0 black;
-  }
-
-  .dark {
-    &:focus {
-      box-shadow: 0 0 4px 0 lightgrey;
+      .layer > path {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
     }
   }
-}
-
-svg {
-  shape-rendering: geometricPrecision;
-}
 </style>
