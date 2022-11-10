@@ -8,7 +8,7 @@
       ref="form"
       v-model="valid"
       :disabled="camera.source === 'config'"
-      @submit.prevent="handleSave()"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">

@@ -9,7 +9,7 @@
       v-model="valid"
       @submit.prevent="handleSave"
     >
-      <v-card>
+      <v-card v-if="newMacro">
         <v-card-title class="card-heading py-2">
           <span class="focus--text">{{ newMacro.name.toUpperCase() }}</span>
         </v-card-title>

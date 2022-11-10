@@ -6,7 +6,7 @@
     <v-form
       ref="form"
       v-model="valid"
-      @submit.prevent="handleSave(preset)"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">

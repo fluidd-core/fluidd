@@ -179,8 +179,8 @@ export default class MacroSettings extends Mixins(StateMixin) {
     this.$store.dispatch('macros/editCategory', category)
   }
 
-  handleCategoryClick (category: MacroCategory) {
-    const id = (category) ? category.id : 0
+  handleCategoryClick (category?: MacroCategory) {
+    const id = category?.id ?? 0
     this.$router.push(`/settings/macros/${id}`)
   }
 }

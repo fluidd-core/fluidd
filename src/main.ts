@@ -26,7 +26,7 @@ import { appInit } from './init'
 import { InitConfig } from './store/config/types'
 
 // Import plugins
-import { HttpClientPlugin } from './plugins/httpClientPlugin'
+import { HttpClientPlugin } from './plugins/httpClient'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'

@@ -3,7 +3,7 @@
     class="py-4"
     :value="state"
     :expand-depth="2"
-    :class="$vuetify.theme.isDark ? 'jv-dark' : ''"
+    :class="$vuetify.theme.dark ? 'jv-dark' : ''"
     sort
     @keyclick="handleClick"
   />
