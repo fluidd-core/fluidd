@@ -17,7 +17,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
   getInstances: (state) => {
     const instances = [...state.instances]
     instances.sort((a, b) => {
-      return (a.active) ? -1 : (b.active) ? 1 : 0
+      return a.active ? -1 : (b.active ? 1 : a.name.localeCompare(b.name))
     })
     return instances
   },
