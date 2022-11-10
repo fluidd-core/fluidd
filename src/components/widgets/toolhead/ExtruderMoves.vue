@@ -28,7 +28,7 @@
         <app-btn
           :disabled="!extruderReady || !klippyReady || !valid"
           block
-          @click="sendRetractGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
+          @click="sendRetractGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
         >
           {{ $t('app.general.btn.retract') }}
           <v-icon>$chevronUp</v-icon>
@@ -62,7 +62,7 @@
         <app-btn
           :disabled="!extruderReady || !klippyReady || !valid"
           block
-          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, waits.onExtrude)"
+          @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
         >
           {{ $t('app.general.btn.extrude') }}
           <v-icon>$chevronDown</v-icon>
@@ -76,11 +76,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
-  waits = Waits
   valid = true
 
   get maxExtrudeSpeed () {

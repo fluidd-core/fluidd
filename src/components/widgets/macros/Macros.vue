@@ -48,11 +48,11 @@
               <app-macro-btn
                 v-bind="attrs"
                 :macro="macro"
-                :loading="hasWait(`${waits.onMacro}${macro.name}`)"
+                :loading="hasWait(`${$waits.onMacro}${macro.name}`)"
                 enable-params
                 class="me-2 mb-2 float-left"
                 v-on="on"
-                @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
+                @click="sendGcode($event, `${$waits.onMacro}${macro.name}`)"
               >
                 {{ macro.alias || macro.name }}
               </app-macro-btn>
@@ -107,11 +107,11 @@
               <app-macro-btn
                 v-bind="attrs"
                 :macro="macro"
-                :loading="hasWait(`${waits.onMacro}${macro.name}`)"
+                :loading="hasWait(`${$waits.onMacro}${macro.name}`)"
                 enable-params
                 class="me-2 mb-2 float-left"
                 v-on="on"
-                @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
+                @click="sendGcode($event, `${$waits.onMacro}${macro.name}`)"
               >
                 {{ macro.alias || macro.name }}
               </app-macro-btn>
@@ -127,13 +127,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 import { Macro } from '@/store/macros/types'
 
 @Component({})
 export default class Macros extends Mixins(StateMixin) {
-  waits = Waits
-
   get macros () {
     return this.$store.getters['macros/getVisibleMacros']
   }

@@ -43,7 +43,7 @@
         class="mr-1"
       >
         <app-save-config-and-restart-btn
-          :loading="hasWait(waits.onSaveConfig)"
+          :loading="hasWait($waits.onSaveConfig)"
           :disabled="printerPrinting"
           @click="saveConfigAndRestart"
         />
@@ -330,7 +330,7 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
       }
     }
 
-    this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
+    this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 }
 </script>

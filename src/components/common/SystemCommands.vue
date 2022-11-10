@@ -50,8 +50,8 @@
         v-for="(device, index) in powerDevices"
         :key="index"
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
-        :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
-        @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
+        :loading="hasWait(`${$waits.onDevicePowerToggle}${device.device}`)"
+        @click="togglePowerDevice(device, `${$waits.onDevicePowerToggle}${device.device}`)"
       >
         <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
         <v-list-item-icon>

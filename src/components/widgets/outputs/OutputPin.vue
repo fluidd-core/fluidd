@@ -12,7 +12,8 @@
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
-      @change="setValue(pin, $event)"
+      :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
+      @change="setValue"
     />
 
     <app-switch
@@ -20,7 +21,8 @@
       :disabled="!klippyReady"
       :label="pin.prettyName"
       :value="(pin.value > 0)"
-      @input="setValue(pin, $event)"
+      :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
+      @input="setValue"
     />
   </div>
 </template>
@@ -28,7 +30,6 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 import { OutputPin as IOutputPin } from '@/store/printer/types'
 
 @Component({})
@@ -36,11 +37,11 @@ export default class OutputPin extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly pin!: IOutputPin
 
-  setValue (pin: IOutputPin, target: number) {
-    if (!pin.pwm) {
-      target = (target) ? pin.scale : 0
+  setValue (target: number) {
+    if (!this.pin.pwm) {
+      target = (target) ? this.pin.scale : 0
     }
-    this.sendGcode(`SET_PIN PIN=${pin.name} VALUE=${target}`, Waits.onSetOutputPin)
+    this.sendGcode(`SET_PIN PIN=${this.pin.name} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
   }
 
   get isMobile () {

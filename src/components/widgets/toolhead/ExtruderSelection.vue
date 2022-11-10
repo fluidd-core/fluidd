@@ -16,7 +16,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 
 @Component({
   components: {}
@@ -31,7 +30,7 @@ export default class ExtruderSelection extends Mixins(StateMixin) {
   }
 
   set extruder (extruder: string) {
-    this.sendGcode(`ACTIVATE_EXTRUDER EXTRUDER=${extruder}`, Waits.onExtruderChange)
+    this.sendGcode(`ACTIVATE_EXTRUDER EXTRUDER=${extruder}`, this.$waits.onExtruderChange)
   }
 }
 </script>

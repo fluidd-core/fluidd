@@ -59,7 +59,7 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
-          :loading="hasWait(waits.onBedScrewsAdjust)"
+          :loading="hasWait($waits.onBedScrewsAdjust)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -69,31 +69,31 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
-          :loading="hasWait(waits.onBedScrewsCalculate)"
+          :loading="hasWait($waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
+          @click="sendGcode('SCREWS_TILT_CALCULATE', $waits.onBedScrewsCalculate)"
         >
           {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
-          :loading="hasWait(waits.onZTilt)"
+          :loading="hasWait($waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
+          @click="sendGcode('Z_TILT_ADJUST', $waits.onZTilt)"
         >
           {{ $t('app.tool.tooltip.z_tilt_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
-          :loading="hasWait(waits.onQGL)"
+          :loading="hasWait($waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+          @click="sendGcode('QUAD_GANTRY_LEVEL', $waits.onQGL)"
         >
           {{ $t('app.tool.tooltip.quad_gantry_level') }}
         </app-btn>
@@ -199,7 +199,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (this.isBedScrewsAdjustActive) {
       this.bedScrewsAdjustDialogOpen = true
     } else {
-      this.sendGcode('BED_SCREWS_ADJUST', this.waits.onBedScrewsAdjust)
+      this.sendGcode('BED_SCREWS_ADJUST', this.$waits.onBedScrewsAdjust)
     }
   }
 

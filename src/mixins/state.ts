@@ -1,12 +1,9 @@
 import Vue from 'vue'
 import { SocketActions } from '@/api/socketActions'
 import { Component } from 'vue-property-decorator'
-import { Waits } from '@/globals'
 
 @Component
 export default class StateMixin extends Vue {
-  waits = Waits
-
   get authenticated () {
     const auth = this.$store.getters['auth/getAuthenticated']
     return auth

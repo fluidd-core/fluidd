@@ -41,7 +41,7 @@
           :overridable="true"
           :disabled="!klippyReady"
           :locked="!klippyReady || isMobile"
-          :loading="hasWait($waits.onSetRetractLength)"
+          :loading="hasWait($waits.onSetUnretractExtraLength)"
           @change="setUnRetractExtraLength"
         />
       </v-col>
@@ -98,7 +98,6 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class Retract extends Mixins(StateMixin) {
@@ -147,19 +146,19 @@ export default class Retract extends Mixins(StateMixin) {
   }
 
   setRetractLength (val: number) {
-    this.sendGcode(`SET_RETRACTION RETRACT_LENGTH=${val}`, Waits.onSetRetractLength)
+    this.sendGcode(`SET_RETRACTION RETRACT_LENGTH=${val}`, this.$waits.onSetRetractLength)
   }
 
   setRetractSpeed (val: number) {
-    this.sendGcode(`SET_RETRACTION RETRACT_SPEED=${val}`, Waits.onSetRetractSpeed)
+    this.sendGcode(`SET_RETRACTION RETRACT_SPEED=${val}`, this.$waits.onSetRetractSpeed)
   }
 
   setUnretractSpeed (val: number) {
-    this.sendGcode(`SET_RETRACTION UNRETRACT_SPEED=${val}`, Waits.onSetUnretractSpeed)
+    this.sendGcode(`SET_RETRACTION UNRETRACT_SPEED=${val}`, this.$waits.onSetUnretractSpeed)
   }
 
   setUnRetractExtraLength (val: number) {
-    this.sendGcode(`SET_RETRACTION UNRETRACT_EXTRA_LENGTH=${val}`, Waits.onSetUnretractExtraLength)
+    this.sendGcode(`SET_RETRACTION UNRETRACT_EXTRA_LENGTH=${val}`, this.$waits.onSetUnretractExtraLength)
   }
 }
 </script>

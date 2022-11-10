@@ -83,7 +83,6 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
-import { Waits } from '@/globals'
 import { LinkPropertyHref } from 'vue-meta'
 
 @Component<App>({
@@ -127,7 +126,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   }
 
   get loading () {
-    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
+    return this.hasWait(this.$waits.onLoadLanguage)
   }
 
   get progress () {

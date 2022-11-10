@@ -98,11 +98,11 @@ export default class StatusCard extends Mixins(StateMixin) {
   selectedFrameNumber = 0
 
   saveFrames () {
-    SocketActions.machineTimelapseSaveFrames(this.waits.onTimelapseSaveFrame)
+    SocketActions.machineTimelapseSaveFrames(this.$waits.onTimelapseSaveFrame)
   }
 
   get savingFrames () {
-    return this.hasWait(this.waits.onTimelapseSaveFrame)
+    return this.hasWait(this.$waits.onTimelapseSaveFrame)
   }
 
   get selectedFrame () {

@@ -12,7 +12,7 @@
     <v-switch
       class="mt-0"
       :input-value="value"
-      :disabled="disabled"
+      :disabled="disabled || loading"
       hide-details
       @change="emitChange"
     />
@@ -33,6 +33,9 @@ export default class AppSwitch extends Mixins(StateMixin) {
 
   @Prop({ type: Boolean, required: false, default: false })
   readonly disabled!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  readonly loading!: boolean
 
   @Watch('value')
   onValueChange (val: boolean) {

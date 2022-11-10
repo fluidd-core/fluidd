@@ -10,7 +10,7 @@
         :value="speed"
         :overridable="true"
         :reset-value="100"
-        :disabled="!klippyReady || hasWait(waits.onSetSpeed)"
+        :disabled="!klippyReady || hasWait($waits.onSetSpeed)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
@@ -27,7 +27,7 @@
         :value="flow"
         :overridable="true"
         :reset-value="100"
-        :disabled="!klippyReady || hasWait(waits.onSetFlow)"
+        :disabled="!klippyReady || hasWait($waits.onSetFlow)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
@@ -40,18 +40,15 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
-  waits = Waits
-
   get flow () {
     return Math.round(this.$store.state.printer.printer.gcode_move.extrude_factor * 100) || 100
   }
 
   handleSetFlow (val: number) {
-    this.sendGcode('M221 S' + val, this.waits.onSetFlow)
+    this.sendGcode(`M221 S${val}`, this.$waits.onSetFlow)
   }
 
   get speed () {
@@ -59,7 +56,7 @@ export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
   }
 
   handleSetSpeed (val: number) {
-    this.sendGcode('M220 S' + val, this.waits.onSetSpeed)
+    this.sendGcode(`M220 S${val}`, this.$waits.onSetSpeed)
   }
 
   get isMobile () {

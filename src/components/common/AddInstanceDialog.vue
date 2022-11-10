@@ -97,7 +97,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
-import { Globals, Waits } from '@/globals'
+import { Globals } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
@@ -112,8 +112,6 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
   @Ref('form')
   readonly form!: VForm
-
-  waits = Waits
 
   valid = true
   verifying = false
