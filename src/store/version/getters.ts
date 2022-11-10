@@ -16,12 +16,8 @@ export const getters: GetterTree<VersionState, RootState> = {
         r.key = k
         return r
       })
+      .sort((a, b) => a.key.localeCompare(b.key))
 
-    o.sort((a, b) => {
-      const name1 = a.key.toLowerCase()
-      const name2 = b.key.toLowerCase()
-      return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-    })
     return o
   },
 

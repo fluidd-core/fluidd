@@ -381,11 +381,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
           })
         }
       })
-      return r.sort((a: Heater, b: Heater) => {
-        const name1 = a.name.toUpperCase()
-        const name2 = b.name.toUpperCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+
+      return r.sort((a, b) => a.name.localeCompare(b.name))
     }
     return []
   },
@@ -438,7 +435,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const outputs = getters.getOutputs([
       'output_pin'
     ])
-    return outputs.sort((output: OutputPin) => output.pwm ? 1 : 1)
+    return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
   },
 
   /**

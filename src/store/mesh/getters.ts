@@ -41,12 +41,15 @@ export const getters: GetterTree<MeshState, RootState> = {
         }
       }
     }
-    return meshes.sort((a: KlipperMesh, b: KlipperMesh) => {
-      const name1 = a.profile_name.toLowerCase()
-      const name2 = b.profile_name.toLowerCase()
-      if (a.profile_name === 'default' || b.profile_name === 'default') return 1
-      return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-    })
+    return meshes.sort((a, b) =>
+      a.profile_name === 'default'
+        ? -1
+        : (
+            b.profile_name === 'default'
+              ? 1
+              : a.profile_name.localeCompare(b.profile_name)
+          )
+    )
   },
 
   /**
