@@ -58,7 +58,9 @@ export default defineConfig({
       languageWorkers: ['editorWorkerService', 'json', 'css']
     }),
     checker({
-      vueTsc: true
+      vueTsc: {
+        tsconfigPath: path.resolve(__dirname, './tsconfig.app.json')
+      }
     }),
     Components({
       dts: true,
