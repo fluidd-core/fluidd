@@ -10,17 +10,16 @@
           lg="6"
         >
           <app-slider
+            v-model="velocity"
             :label="$t('app.general.label.velocity')"
-            :value="velocity.current"
-            :reset-value="velocity.max"
+            :reset-value="maxVelocity"
             :min="1"
-            :max="velocity.max"
+            :max="maxVelocity"
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
             :loading="hasWait($waits.onSetVelocity)"
             suffix="mm/s"
-            @change="setVelocity($event)"
           />
         </v-col>
         <v-col
@@ -30,18 +29,17 @@
           lg="6"
         >
           <app-slider
+            v-model="squareCornerVelocity"
             :label="$t('app.general.label.sqv')"
-            :value="scv.current"
-            :reset-value="scv.max"
+            :reset-value="maxSquareCornerVelocity"
             :min="0"
-            :max="scv.max"
+            :max="maxSquareCornerVelocity"
             :step="0.1"
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
             :loading="hasWait($waits.onSetSCV)"
             suffix="mm/s"
-            @change="setSCV($event)"
           />
         </v-col>
       </v-row>
@@ -54,17 +52,16 @@
           lg="6"
         >
           <app-slider
+            v-model="acceleration"
             :label="$t('app.general.label.acceleration')"
-            :value="accel.current"
-            :reset-value="accel.max"
+            :reset-value="maxAcceleration"
             :min="1"
-            :max="accel.max"
+            :max="maxAcceleration"
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
             :loading="hasWait($waits.onSetAcceleration)"
             suffix="mm/s²"
-            @change="setAcceleration($event)"
           />
         </v-col>
         <v-col
@@ -74,17 +71,16 @@
           lg="6"
         >
           <app-slider
+            v-model="deceleration"
             :label="$t('app.general.label.accel_to_decel')"
-            :value="decel.current"
-            :reset-value="decel.max"
+            :reset-value="maxDeceleration"
             :min="1"
-            :max="decel.max"
+            :max="maxDeceleration"
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
             :loading="hasWait($waits.onSetDeceleration)"
             suffix="mm/s²"
-            @change="setDeceleration($event)"
           />
         </v-col>
       </v-row>
@@ -99,55 +95,55 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class PrinterLimits extends Mixins(StateMixin) {
   get velocity () {
-    const max = this.$store.getters['printer/getPrinterSettings']('printer.max_velocity')
-    return {
-      current: this.$store.state.printer.printer.toolhead.max_velocity,
-      max
-    }
+    return this.$store.state.printer.printer.toolhead.max_velocity
   }
 
-  get accel () {
-    const max = this.$store.getters['printer/getPrinterSettings']('printer.max_accel')
-    return {
-      current: this.$store.state.printer.printer.toolhead.max_accel,
-      max
-    }
+  set velocity (val: number) {
+    this.sendGcode(`SET_VELOCITY_LIMIT VELOCITY=${val}`, this.$waits.onSetVelocity)
   }
 
-  get decel () {
-    const max = this.$store.getters['printer/getPrinterSettings']('printer.max_accel_to_decel') || this.accel.max / 2
-    return {
-      current: this.$store.state.printer.printer.toolhead.max_accel_to_decel,
-      max
-    }
+  get maxVelocity () {
+    return this.$store.getters['printer/getPrinterSettings']('printer.max_velocity')
   }
 
-  get scv () {
-    const max = this.$store.getters['printer/getPrinterSettings']('printer.square_corner_velocity') || 5
-    return {
-      current: this.$store.state.printer.printer.toolhead.square_corner_velocity,
-      max
-    }
+  get acceleration () {
+    return this.$store.state.printer.printer.toolhead.max_accel
+  }
+
+  set acceleration (val: number) {
+    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL=${val}`, this.$waits.onSetAcceleration)
+  }
+
+  get maxAcceleration () {
+    return this.$store.getters['printer/getPrinterSettings']('printer.max_accel')
+  }
+
+  get deceleration () {
+    return this.$store.state.printer.printer.toolhead.max_accel_to_decel
+  }
+
+  set deceleration (val: number) {
+    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL_TO_DECEL=${val}`, this.$waits.onSetDeceleration)
+  }
+
+  get maxDeceleration () {
+    return this.$store.getters['printer/getPrinterSettings']('printer.max_accel_to_decel') || this.maxAcceleration / 2
+  }
+
+  get squareCornerVelocity () {
+    return this.$store.state.printer.printer.toolhead.square_corner_velocity
+  }
+
+  set squareCornerVelocity (val: number) {
+    this.sendGcode(`SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=${val}`, this.$waits.onSetSCV)
+  }
+
+  get maxSquareCornerVelocity () {
+    return this.$store.getters['printer/getPrinterSettings']('printer.square_corner_velocity') || 5
   }
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
-  }
-
-  setVelocity (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT VELOCITY=${val}`, this.$waits.onSetVelocity)
-  }
-
-  setAcceleration (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL=${val}`, this.$waits.onSetAcceleration)
-  }
-
-  setDeceleration (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL_TO_DECEL=${val}`, this.$waits.onSetDeceleration)
-  }
-
-  setSCV (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=${val}`, this.$waits.onSetSCV)
   }
 }
 </script>

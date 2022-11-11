@@ -43,7 +43,7 @@
 
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
         <v-text-field
-          :value="extrusionLineWidth"
+          v-model="extrusionLineWidth"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -54,7 +54,6 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setExtrusionLineWidth"
         />
       </app-setting>
 
@@ -62,7 +61,7 @@
 
       <app-setting :title="$t('app.setting.label.move_line_width')">
         <v-text-field
-          :value="moveLineWidth"
+          v-model="moveLineWidth"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -73,7 +72,6 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setMoveLineWidth"
         />
       </app-setting>
 
@@ -81,7 +79,7 @@
 
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
         <v-text-field
-          :value="retractionIconSize"
+          v-model="retractionIconSize"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -92,7 +90,6 @@
           single-line
           hide-details="auto"
           suffix="mm"
-          @change="setRetractionIconSize"
         />
       </app-setting>
 
@@ -168,7 +165,7 @@ export default class GcodePreviewSettings extends Vue {
     return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
   }
 
-  setExtrusionLineWidth (value: number) {
+  set extrusionLineWidth (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.extrusionLineWidth',
       value: +value,
@@ -180,7 +177,7 @@ export default class GcodePreviewSettings extends Vue {
     return this.$store.state.config.uiSettings.gcodePreview.moveLineWidth
   }
 
-  setMoveLineWidth (value: number) {
+  set moveLineWidth (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.moveLineWidth',
       value: +value,
@@ -192,7 +189,7 @@ export default class GcodePreviewSettings extends Vue {
     return this.$store.state.config.uiSettings.gcodePreview.retractionIconSize
   }
 
-  setRetractionIconSize (value: number) {
+  set retractionIconSize (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.retractionIconSize',
       value: +value,

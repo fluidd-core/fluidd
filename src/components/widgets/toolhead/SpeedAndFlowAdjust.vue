@@ -5,16 +5,15 @@
       sm="6"
     >
       <app-slider
+        v-model="speed"
         :label="$t('app.general.label.speed')"
         suffix="%"
-        :value="speed"
         :overridable="true"
         :reset-value="100"
         :disabled="!klippyReady || hasWait($waits.onSetSpeed)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
-        @change="handleSetSpeed"
       />
     </v-col>
     <v-col
@@ -22,16 +21,15 @@
       sm="6"
     >
       <app-slider
+        v-model="flow"
         :label="$t('app.general.label.flow')"
         suffix="%"
-        :value="flow"
         :overridable="true"
         :reset-value="100"
         :disabled="!klippyReady || hasWait($waits.onSetFlow)"
         :locked="(!klippyReady || isMobile)"
         :min="1"
         :max="200"
-        @change="handleSetFlow"
       />
     </v-col>
   </v-row>
@@ -47,7 +45,7 @@ export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
     return Math.round(this.$store.state.printer.printer.gcode_move.extrude_factor * 100) || 100
   }
 
-  handleSetFlow (val: number) {
+  set flow (val: number) {
     this.sendGcode(`M221 S${val}`, this.$waits.onSetFlow)
   }
 
@@ -55,7 +53,7 @@ export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
     return Math.round(this.$store.state.printer.printer.gcode_move.speed_factor * 100) || 100
   }
 
-  handleSetSpeed (val: number) {
+  set speed (val: number) {
     this.sendGcode(`M220 S${val}`, this.$waits.onSetSpeed)
   }
 
