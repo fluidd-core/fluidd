@@ -168,8 +168,6 @@ export default class AppSlider extends Mixins(StateMixin) {
         this.overridden = false
         this.internalMax = this.max
       }
-
-      this.$emit('input', value)
     }
   }
 
@@ -219,7 +217,7 @@ export default class AppSlider extends Mixins(StateMixin) {
     ) {
       if (this.valid) {
         this.pending = true
-        this.$emit('change', value)
+        this.$emit('input', value)
       } else {
         this.internalValue = this.value
       }
@@ -230,7 +228,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   handleReset () {
     this.internalValue = this.resetValue
     this.lockState = this.locked
-    this.$emit('change', this.resetValue)
+    this.$emit('input', this.resetValue)
   }
 }
 </script>
