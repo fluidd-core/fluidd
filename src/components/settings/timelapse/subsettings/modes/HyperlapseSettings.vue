@@ -14,7 +14,7 @@
           $rules.numberGreaterThanOrEqual(1)
         ]"
         :disabled="hyperlapseCycleBlocked"
-        :hide-details="hyperlapseCycleElement ? hyperlapseCycleElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line

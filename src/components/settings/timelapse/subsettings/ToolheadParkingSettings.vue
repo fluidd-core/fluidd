@@ -29,7 +29,7 @@
             $rules.numberGreaterThanOrEqual(0)
           ]"
           :disabled="parkTimeBlocked"
-          :hide-details="parkTimeElement ? parkTimeElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -52,7 +52,7 @@
             $rules.numberGreaterThanOrEqual(0)
           ]"
           :disabled="parkTravelSpeedBlocked"
-          :hide-details="parkTravelSpeedElement ? parkTravelSpeedElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -94,7 +94,7 @@
             $rules.numberGreaterThanOrEqual(0)
           ]"
           :disabled="parkPosZBlocked"
-          :hide-details="parkPosDZElement ? parkPosDZElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line

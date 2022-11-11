@@ -14,7 +14,7 @@
           $rules.numberGreaterThanOrEqual(0)
         ]"
         :disabled="parkRetractDistanceBlocked"
-        :hide-details="parkRetractDistanceElement ? parkRetractDistanceElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -37,7 +37,7 @@
           $rules.numberGreaterThan(0)
         ]"
         :disabled="parkRetractSpeedBlocked"
-        :hide-details="parkRetractSpeedElement ? parkRetractSpeedElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -60,7 +60,7 @@
           $rules.numberGreaterThanOrEqual(0)
         ]"
         :disabled="parkExtrudeDistanceBlocked"
-        :hide-details="parkExtrudeDistanceElement ? parkExtrudeDistanceElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -83,7 +83,7 @@
           $rules.numberGreaterThan(0)
         ]"
         :disabled="parkExtrudeSpeedBlocked"
-        :hide-details="parkExtrudeSpeedElement ? parkExtrudeSpeedElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line

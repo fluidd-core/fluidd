@@ -4,112 +4,105 @@
     :max-width="850"
     scrollable
   >
-    <v-card>
-      <v-card-title class="card-heading py-2">
-        <span
-          v-if="'commits_behind' in component"
-          class="focus--text"
-        >{{ $t('app.version.label.commit_history') }}</span>
-        <span
-          v-else
-          class="focus--text"
-        >{{ $t('app.version.label.package_list') }}</span>
+    <v-form>
+      <v-card>
+        <v-card-title class="card-heading py-2">
+          <span
+            v-if="'commits_behind' in component"
+            class="focus--text"
+          >{{ $t('app.version.label.commit_history') }}</span>
+          <span
+            v-else
+            class="focus--text"
+          >{{ $t('app.version.label.package_list') }}</span>
+        </v-card-title>
 
-        <v-spacer />
-        <app-btn
-          color=""
-          icon
-          @click="open = false"
+        <v-divider />
+
+        <v-card-text
+          v-if="'commits_behind' in component && commitHistory"
+          class="py-0 pl-0"
         >
-          <v-icon>$close</v-icon>
-        </app-btn>
-      </v-card-title>
-
-      <v-divider />
-
-      <v-card-text
-        v-if="'commits_behind' in component && commitHistory"
-        class="py-0 pl-0"
-      >
-        <!-- History Items. -->
-        <v-timeline
-          align-top
-          dense
-        >
-          <v-timeline-item
-            v-for="(key) in commitHistory.keys"
-            :key="`key-${key}`"
-            color="transparent"
-            small
+          <!-- History Items. -->
+          <v-timeline
+            align-top
+            dense
           >
-            <template #icon>
-              <v-icon
-                class="rotate-90"
-                color="secondary"
-              >
-                $commit
-              </v-icon>
-            </template>
-
-            <div class="secondary--text mb-4">
-              {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
-            </div>
-
-            <ol class="commit-history">
-              <template v-for="commit in commitHistory.result[key]">
-                <li
-                  :key="commit.sha"
+            <v-timeline-item
+              v-for="(key) in commitHistory.keys"
+              :key="`key-${key}`"
+              color="transparent"
+              small
+            >
+              <template #icon>
+                <v-icon
+                  class="rotate-90"
+                  color="secondary"
                 >
-                  <div>
-                    <div class="commit-subject">
-                      {{ commit.subject }}
+                  $commit
+                </v-icon>
+              </template>
+
+              <div class="secondary--text mb-4">
+                {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
+              </div>
+
+              <ol class="commit-history">
+                <template v-for="commit in commitHistory.result[key]">
+                  <li
+                    :key="commit.sha"
+                  >
+                    <div>
+                      <div class="commit-subject">
+                        {{ commit.subject }}
+                      </div>
+                      <div class="secondary--text">
+                        <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
+                        <a
+                          class="secondary--text"
+                          :href="`${baseUrl}/commits/${component.branch}`"
+                          target="_blank"
+                        >
+                          <strong>{{ commit.author }}</strong>
+                        </a>
+                        {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
+                      </div>
                     </div>
-                    <div class="secondary--text">
-                      <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
-                      <a
-                        class="secondary--text"
-                        :href="`${baseUrl}/commits/${component.branch}`"
+                    <div>
+                      <app-btn
+                        small
+                        outlined
+                        color="secondary"
+                        :href="`${baseUrl}/commit/${commit.sha}`"
                         target="_blank"
                       >
-                        <strong>{{ commit.author }}</strong>
-                      </a>
-                      {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
+                        <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
+                      </app-btn>
                     </div>
-                  </div>
-                  <div>
-                    <app-btn
-                      small
-                      outlined
-                      color="secondary"
-                      :href="`${baseUrl}/commit/${commit.sha}`"
-                      target="_blank"
-                    >
-                      <span class="primary--text">{{ commit.sha.substring(0, 7) }}</span>
-                    </app-btn>
-                  </div>
-                </li>
-              </template>
-            </ol>
-          </v-timeline-item>
-        </v-timeline>
-      </v-card-text>
+                  </li>
+                </template>
+              </ol>
+            </v-timeline-item>
+          </v-timeline>
+        </v-card-text>
 
-      <v-card-text
-        v-if="'package_list' in component"
-        class="pt-4"
-      >
-        <!-- OS Packages -->
-        <div class="chip-group">
-          <v-chip
-            v-for="chip in component.package_list"
-            :key="chip"
-            small
-          >
-            {{ chip }}
-          </v-chip>
-        </div>
-      </v-card-text>
-    </v-card>
+        <v-card-text
+          v-if="'package_list' in component"
+          class="pt-4"
+        >
+          <!-- OS Packages -->
+          <div class="chip-group">
+            <v-chip
+              v-for="chip in component.package_list"
+              :key="chip"
+              small
+            >
+              {{ chip }}
+            </v-chip>
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 

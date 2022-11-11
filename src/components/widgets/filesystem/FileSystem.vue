@@ -115,7 +115,6 @@
       :file="filePreviewState"
       removable
       downloadable
-      @close="handleClosePreview"
       @download="handleDownload"
       @remove="handleRemove"
     />
@@ -261,6 +260,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     type: '',
     filename: '',
     src: ''
+  }
+
+  @Watch('filePreviewState.open')
+  onFilePreviewStateChanged (value: boolean) {
+    if (!value && this.filePreviewState.src.startsWith('blob:')) {
+      URL.revokeObjectURL(this.filePreviewState.src)
+    }
   }
 
   // Gets available roots.
@@ -657,13 +663,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .catch(e => e)
   }
 
-  handleClosePreview () {
-    this.filePreviewState.open = false
-    if (this.filePreviewState.src.startsWith('blob:')) {
-      URL.revokeObjectURL(this.filePreviewState.src)
-    }
-  }
-
   handleCancelDownload () {
     if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
     this.$store.dispatch('files/removeFileDownload')
@@ -779,7 +778,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.serverFilesMove(src, dest)
   }
 
-  handleRemove (file: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], callback?: () => void) {
+  async handleRemove (file: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], callback?: () => void) {
     if (this.disabled) return
 
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
@@ -804,23 +803,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       items.push(...thumbnails)
     }
 
-    const text = this.$tc('app.file_system.msg.confirm')
-    this.$confirm(
-      text,
+    const res = await this.$confirm(
+      this.$tc('app.file_system.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        items.forEach((item) => {
-          if (res) {
-            if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.name}`, true)
-            if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.name}`)
-          }
-        })
-
-        if (callback) {
-          callback()
-        }
+    if (res) {
+      items.forEach((item) => {
+        if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.name}`, true)
+        if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.name}`)
       })
+
+      if (callback) {
+        callback()
+      }
+    }
   }
 
   async handleUpload (files: FileList | File[], print: boolean) {

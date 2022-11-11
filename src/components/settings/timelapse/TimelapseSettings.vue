@@ -57,7 +57,7 @@
             $rules.numberGreaterThanOrEqual(0)
           ]"
           :disabled="delayCompBlocked"
-          :hide-details="delayCompElement ? delayCompElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -221,7 +221,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   handleReset () {
-    const nonBlockedEntries = Object.entries(defaultWritableSettings)
+    const nonBlockedEntries = Object.entries(defaultWritableSettings())
       .filter(([key]) => !this.$store.getters['timelapse/isBlockedSetting'](key))
     SocketActions.machineTimelapseSetSettings(Object.fromEntries(nonBlockedEntries))
   }

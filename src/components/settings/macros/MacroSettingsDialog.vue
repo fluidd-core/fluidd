@@ -2,7 +2,6 @@
   <v-dialog
     v-model="open"
     :max-width="480"
-    persistent
   >
     <v-form
       ref="form"
@@ -21,8 +20,6 @@
         </v-card-subtitle>
 
         <v-divider />
-
-        <!-- <pre>{{ newMacro }}</pre> -->
 
         <app-setting
           :title="$t('app.general.label.alias')"

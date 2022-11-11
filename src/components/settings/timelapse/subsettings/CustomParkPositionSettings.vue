@@ -15,7 +15,7 @@
           $rules.numberLessThanOrEqual(printerMaxX)
         ]"
         :disabled="getCustomParkPosBlocked('x')"
-        :hide-details="parkPosXElement ? parkPosXElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -39,7 +39,7 @@
           $rules.numberLessThanOrEqual(printerMaxY)
         ]"
         :disabled="getCustomParkPosBlocked('y')"
-        :hide-details="parkPosYElement ? parkPosYElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
