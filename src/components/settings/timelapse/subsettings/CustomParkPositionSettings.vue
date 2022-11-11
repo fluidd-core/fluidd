@@ -7,7 +7,7 @@
     >
       <v-text-field
         ref="parkPosXElement"
-        v-model="parkPosX"
+        :value="parkPosX"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -20,6 +20,7 @@
         dense
         single-line
         suffix="mm"
+        @change="setParkPosX"
       />
     </app-setting>
 
@@ -30,7 +31,7 @@
     >
       <v-text-field
         ref="parkPosYElement"
-        v-model="parkPosY"
+        :value="parkPosY"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -43,6 +44,7 @@
         dense
         single-line
         suffix="mm"
+        @change="setParkPosY"
       />
     </app-setting>
   </div>
@@ -88,7 +90,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_custom_pos_x
   }
 
-  set parkPosX (value: number) {
+  setParkPosX (value: number) {
     if (this.parkPosXElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_custom_pos_x: value })
     }
@@ -98,7 +100,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_custom_pos_y
   }
 
-  set parkPosY (value: number) {
+  setParkPosY (value: number) {
     if (this.parkPosYElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_custom_pos_y: value })
     }

@@ -11,7 +11,6 @@
       <app-setting :title="$t('app.setting.label.printer_name')">
         <v-text-field
           ref="instanceName"
-          v-model="instanceName"
           filled
           dense
           single-line
@@ -19,7 +18,9 @@
           :rules="[
             $rules.required
           ]"
+          :value="instanceName"
           :default-value="$globals.APP_NAME"
+          @change="setInstanceName"
         />
       </app-setting>
 
@@ -27,14 +28,15 @@
 
       <app-setting :title="$t('app.setting.label.language')">
         <v-select
-          v-model="locale"
           filled
           dense
           single-line
           hide-details="auto"
           :items="supportedLocales"
+          :value="locale"
           item-text="name"
           item-value="code"
+          @change="setLocale"
         />
       </app-setting>
 
@@ -180,7 +182,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.instanceName
   }
 
-  set instanceName (value: string) {
+  setInstanceName (value: string) {
     if (this.instanceNameElement.valid) this.$store.dispatch('config/updateInstance', value)
   }
 
@@ -188,15 +190,15 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.locale
   }
 
-  set locale (value: string) {
-    this.$store.dispatch('config/onLocaleChange', value)
-  }
-
   get supportedLocales () {
     return [
       { name: 'Browser default', code: 'default' },
       ...this.$store.state.config.hostConfig.locales
     ]
+  }
+
+  setLocale (value: string) {
+    this.$store.dispatch('config/onLocaleChange', value)
   }
 
   get dateformat () {

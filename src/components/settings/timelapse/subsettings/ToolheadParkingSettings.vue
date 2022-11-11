@@ -22,7 +22,7 @@
       >
         <v-text-field
           ref="parkTimeElement"
-          v-model="parkTime"
+          :value="parkTime"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -34,6 +34,7 @@
           dense
           single-line
           suffix="ms"
+          @change="setParkTime"
         />
       </app-setting>
 
@@ -44,7 +45,7 @@
       >
         <v-text-field
           ref="parkTravelSpeedElement"
-          v-model="parkTravelSpeed"
+          :value="parkTravelSpeed"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -56,6 +57,7 @@
           dense
           single-line
           suffix="mm/s"
+          @change="setParkTravelSpeed"
         />
       </app-setting>
 
@@ -85,7 +87,7 @@
       >
         <v-text-field
           ref="parkPosDZElement"
-          v-model="parkPosZ"
+          :value="parkPosZ"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -97,6 +99,7 @@
           dense
           single-line
           suffix="mm"
+          @change="setParkPosZ"
         />
       </app-setting>
 
@@ -184,7 +187,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_time * 1000
   }
 
-  set parkTime (value: number) {
+  setParkTime (value: number) {
     if (this.parkTimeElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_time: value / 1000 })
     }
@@ -198,7 +201,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_travel_speed
   }
 
-  set parkTravelSpeed (value: number) {
+  setParkTravelSpeed (value: number) {
     if (this.parkTravelSpeedElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_travel_speed: value })
     }
@@ -212,7 +215,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_custom_pos_dz
   }
 
-  set parkPosZ (value: number) {
+  setParkPosZ (value: number) {
     if (this.parkPosDZElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_custom_pos_dz: value })
     }

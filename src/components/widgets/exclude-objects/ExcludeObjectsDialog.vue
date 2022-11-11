@@ -1,56 +1,58 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="500"
     scrollable
   >
-    <v-card>
-      <v-card-title class="card-heading py-2">
-        <span class="focus--text">{{ $t('app.gcode.label.exclude_object') }}</span>
-      </v-card-title>
+    <v-form>
+      <v-card>
+        <v-card-title class="card-heading py-2">
+          <span class="focus--text">{{ $t('app.gcode.label.exclude_object') }}</span>
+        </v-card-title>
 
-      <v-divider />
+        <v-divider />
 
-      <v-card-text class="py-3 px-5">
-        <v-simple-table>
-          <tbody>
-            <tr
-              v-for="part in parts"
-              :key="part.name"
-            >
-              <td class="partName">
-                {{ part.name }}
-              </td>
-              <td class="actions">
-                <app-btn
-                  color=""
-                  x-small
-                  fab
-                  text
-                  :disabled="isPartExcluded(part.name)"
-                  @click="cancelObject(part.name)"
-                >
-                  <v-icon color="error">
-                    $cancelled
-                  </v-icon>
-                </app-btn>
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-      </v-card-text>
-    </v-card>
+        <v-card-text class="py-3 px-5">
+          <v-simple-table>
+            <tbody>
+              <tr
+                v-for="part in parts"
+                :key="part.name"
+              >
+                <td class="partName">
+                  {{ part.name }}
+                </td>
+                <td class="actions">
+                  <app-btn
+                    color=""
+                    x-small
+                    fab
+                    text
+                    :disabled="isPartExcluded(part.name)"
+                    @click="cancelObject(part.name)"
+                  >
+                    <v-icon color="error">
+                      $cancelled
+                    </v-icon>
+                  </app-btn>
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-card-text>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: boolean
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   get parts () {
     return this.$store.getters['parts/getParts']

@@ -33,7 +33,7 @@
           single-line
           outlined
           hide-details
-          @change="handleChange($event)"
+          @change="handleChange"
           @focus="$event.target.select()"
         >
           <template #prepend>
@@ -86,7 +86,7 @@
       :disabled="disabled || loading || isLocked || overridden"
       dense
       hide-details
-      @change="handleChange($event)"
+      @change="handleChange"
     />
   </v-form>
 </template>
@@ -168,6 +168,8 @@ export default class AppSlider extends Mixins(StateMixin) {
         this.overridden = false
         this.internalMax = this.max
       }
+
+      this.$emit('input', value)
     }
   }
 
@@ -217,7 +219,7 @@ export default class AppSlider extends Mixins(StateMixin) {
     ) {
       if (this.valid) {
         this.pending = true
-        this.$emit('input', value)
+        this.$emit('change', value)
       } else {
         this.internalValue = this.value
       }
@@ -228,7 +230,7 @@ export default class AppSlider extends Mixins(StateMixin) {
   handleReset () {
     this.internalValue = this.resetValue
     this.lockState = this.locked
-    this.$emit('input', this.resetValue)
+    this.$emit('change', this.resetValue)
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="500"
   >
     <v-form
@@ -107,7 +107,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -124,14 +124,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/printer/types'
 
 @Component({})
 export default class TemperaturePresetDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
   readonly preset!: TemperaturePreset
@@ -149,7 +149,7 @@ export default class TemperaturePresetDialog extends Vue {
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.preset)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

@@ -37,7 +37,7 @@
       >
         <v-text-field
           ref="outputFramerateElement"
-          v-model="outputFramerate"
+          :value="outputFramerate"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -49,6 +49,7 @@
           dense
           single-line
           suffix="fps"
+          @change="setOutputFramerate"
         />
       </app-setting>
       <div v-else>
@@ -58,7 +59,7 @@
         >
           <v-text-field
             ref="targetLengthElement"
-            v-model="targetLength"
+            :value="targetLength"
             :rules="[
               $rules.required,
               $rules.numberValid,
@@ -70,6 +71,7 @@
             dense
             single-line
             suffix="s"
+            @change="setTargetLength"
           />
         </app-setting>
 
@@ -80,7 +82,7 @@
         >
           <v-text-field
             ref="minFpsElement"
-            v-model="minFps"
+            :value="minFps"
             :rules="[
               $rules.required,
               $rules.numberValid,
@@ -92,6 +94,7 @@
             dense
             single-line
             suffix="fps"
+            @change="setMinFps"
           />
         </app-setting>
 
@@ -102,7 +105,7 @@
         >
           <v-text-field
             ref="maxFpsElement"
-            v-model="maxFps"
+            :value="maxFps"
             :rules="[
               $rules.required,
               $rules.numberValid,
@@ -114,6 +117,7 @@
             dense
             single-line
             suffix="fps"
+            @change="setMaxFps"
           />
         </app-setting>
       </div>
@@ -138,7 +142,7 @@
       >
         <v-text-field
           ref="duplicateFramesElement"
-          v-model="duplicateFrames"
+          :value="duplicateFrames"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -150,12 +154,13 @@
           dense
           single-line
           :suffix="$tc('app.timelapse.label.frame', duplicateFrames)"
+          @change="setDuplicateFrames"
         />
       </app-setting>
 
       <v-divider />
       <app-slider
-        v-model="crf"
+        :value="crf"
         class="px-4 pt-3"
         style="overflow: hidden"
         :label="$tc('app.timelapse.setting.crf')"
@@ -163,6 +168,7 @@
         :max="51"
         :reset-value="defaultCRF"
         :disabled="crfBlocked"
+        @change="setCRF"
       />
 
       <v-divider />
@@ -266,7 +272,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     return this.settings?.output_framerate
   }
 
-  set outputFramerate (value: number) {
+  setOutputFramerate (value: number) {
     if (this.outputFramerateElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ output_framerate: value })
     }
@@ -292,7 +298,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     return this.settings?.targetlength
   }
 
-  set targetLength (value: number) {
+  setTargetLength (value: number) {
     if (this.targetLengthElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ targetlength: value })
     }
@@ -306,7 +312,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     return this.settings?.variable_fps_min
   }
 
-  set minFps (value: number) {
+  setMinFps (value: number) {
     if (this.minFpsElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ variable_fps_min: value })
     }
@@ -320,7 +326,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     return this.settings?.variable_fps_max
   }
 
-  set maxFps (value: number) {
+  setMaxFps (value: number) {
     if (this.maxFpsElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ variable_fps_max: value })
     }
@@ -334,7 +340,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     return this.settings?.duplicatelastframe
   }
 
-  set duplicateFrames (value: number) {
+  setDuplicateFrames (value: number) {
     if (this.duplicateFramesElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ duplicatelastframe: value })
     }
@@ -385,7 +391,7 @@ export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
     return this.settings?.constant_rate_factor
   }
 
-  set crf (value: number) {
+  setCRF (value: number) {
     SocketActions.machineTimelapseSetSettings({ constant_rate_factor: value })
   }
 

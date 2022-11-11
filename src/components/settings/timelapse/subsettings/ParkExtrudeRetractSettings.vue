@@ -7,7 +7,7 @@
     >
       <v-text-field
         ref="parkRetractDistanceElement"
-        v-model="parkRetractDistance"
+        :value="parkRetractDistance"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -19,6 +19,7 @@
         dense
         single-line
         suffix="mm"
+        @change="setParkRetractDistance"
       />
     </app-setting>
 
@@ -29,7 +30,7 @@
     >
       <v-text-field
         ref="parkRetractSpeedElement"
-        v-model="parkRetractSpeed"
+        :value="parkRetractSpeed"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -41,6 +42,7 @@
         dense
         single-line
         suffix="mm/s"
+        @change="setParkRetractSpeed"
       />
     </app-setting>
 
@@ -51,7 +53,7 @@
     >
       <v-text-field
         ref="parkExtrudeDistanceElement"
-        v-model="parkExtrudeDistance"
+        :value="parkExtrudeDistance"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -63,6 +65,7 @@
         dense
         single-line
         suffix="mm"
+        @change="setParkExtrudeDistance"
       />
     </app-setting>
 
@@ -73,7 +76,7 @@
     >
       <v-text-field
         ref="parkExtrudeSpeedElement"
-        v-model="parkExtrudeSpeed"
+        :value="parkExtrudeSpeed"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -85,6 +88,7 @@
         dense
         single-line
         suffix="mm/s"
+        @change="setParkExtrudeSpeed"
       />
     </app-setting>
   </div>
@@ -126,7 +130,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_retract_distance
   }
 
-  set parkRetractDistance (value: number) {
+  setParkRetractDistance (value: number) {
     if (this.parkRetractDistanceElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_retract_distance: value })
     }
@@ -140,7 +144,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_retract_speed
   }
 
-  set parkRetractSpeed (value: number) {
+  setParkRetractSpeed (value: number) {
     if (this.parkRetractDistanceElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_retract_speed: value })
     }
@@ -154,7 +158,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_extrude_distance
   }
 
-  set parkExtrudeDistance (value: number) {
+  setParkExtrudeDistance (value: number) {
     if (this.parkExtrudeDistanceElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_extrude_distance: value })
     }
@@ -168,7 +172,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
     return this.settings?.park_extrude_speed
   }
 
-  set parkExtrudeSpeed (value: number) {
+  setParkExtrudeSpeed (value: number) {
     if (this.parkRetractDistanceElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ park_extrude_speed: value })
     }

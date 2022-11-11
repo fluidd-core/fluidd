@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="480"
     persistent
   >
@@ -123,7 +123,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
             v-html="$t('app.general.btn.cancel')"
           />
           <app-btn
@@ -139,12 +139,12 @@
 
 <script lang="ts">
 import { Macro } from '@/store/macros/types'
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class MacroMoveDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
@@ -187,7 +187,7 @@ export default class MacroMoveDialog extends Vue {
 
   handleSave () {
     this.$store.dispatch('macros/saveMacro', this.newMacro)
-    this.$emit('input', false)
+    this.open = false
   }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="500"
   >
     <v-form
@@ -58,7 +58,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -75,13 +75,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class UserConfigDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
   readonly user!: AppUser
@@ -91,7 +91,7 @@ export default class UserConfigDialog extends Vue {
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.user)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

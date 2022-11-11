@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="600"
     scrollable
   >
@@ -28,7 +28,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -46,12 +46,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class PendingChangesDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   get saveConfigPendingItems () {
     const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems']
@@ -68,7 +68,7 @@ export default class PendingChangesDialog extends Vue {
   }
 
   handleSubmit () {
-    this.$emit('input', false)
+    this.open = false
     this.$emit('save')
   }
 }

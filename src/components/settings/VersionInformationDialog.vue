@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="850"
     scrollable
   >
@@ -19,7 +19,7 @@
         <app-btn
           color=""
           icon
-          @click="$emit('input', false)"
+          @click="open = false"
         >
           <v-icon>$close</v-icon>
         </app-btn>
@@ -115,12 +115,12 @@
 
 <script lang="ts">
 import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class VersionInformationDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object })
   readonly component!: HashVersion | ArtifactVersion | OSPackage

@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
@@ -36,21 +36,6 @@ export default class AppSwitch extends Mixins(StateMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly loading!: boolean
-
-  @Watch('value')
-  onValueChange (val: boolean) {
-    this.newValue = val
-  }
-
-  newValue = false
-
-  mounted () {
-    this.newValue = this.value
-  }
-
-  updateValue (e: boolean) {
-    this.newValue = e
-  }
 
   emitChange (val: boolean) {
     this.$emit('input', val)

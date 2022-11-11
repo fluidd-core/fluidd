@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :max-width="500"
   >
     <v-form
@@ -82,7 +82,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -101,14 +101,14 @@
 
 <script lang="ts">
 import { httpClientActions } from '@/api/httpClientActions'
-import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import { Component, Vue, Watch, Ref, VModel } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
 import { VForm } from '@/types'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: boolean
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   @Ref('form')
   readonly form!: VForm
@@ -142,7 +142,7 @@ export default class UserPasswordDialog extends Vue {
       httpClientActions.accessUserPasswordPost(this.currentPassword, this.password)
         .then(() => {
           EventBus.$emit(this.$tc('app.general.msg.password_changed'), { timeout: 2000 })
-          this.$emit('input', false)
+          this.open = false
         })
         .catch(() => {
           this.error = true

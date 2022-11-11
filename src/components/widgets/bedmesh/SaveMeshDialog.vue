@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     :title="$t('app.general.label.save_as')"
     :max-width="450"
   >
@@ -49,7 +49,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -66,14 +66,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: string
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   @Prop({ type: String })
   readonly existingName!: string
@@ -90,7 +90,7 @@ export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   handleSubmit () {
     if (this.valid) {
       this.$emit('save', { name: this.name, removeDefault: this.removeDefault })
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

@@ -50,7 +50,7 @@
       >
         <v-text-field
           ref="delayCompElement"
-          v-model="delayComp"
+          :value="delayComp"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -62,6 +62,7 @@
           dense
           single-line
           suffix="ms"
+          @change="setDelayComp"
         />
       </app-setting>
 
@@ -193,7 +194,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
     return this.settings?.stream_delay_compensation * 1000
   }
 
-  set delayComp (value: number) {
+  setDelayComp (value: number) {
     if (this.delayCompElement?.validate()) {
       SocketActions.machineTimelapseSetSettings({ stream_delay_compensation: value / 1000 })
     }

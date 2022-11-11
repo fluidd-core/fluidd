@@ -2,9 +2,9 @@
   <div>
     <app-slider
       v-if="fan.controllable"
-      v-model="value"
       suffix="%"
       input-xs
+      :value="value"
       :reset-value="0"
       :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
       :rules="[
@@ -13,6 +13,7 @@
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
       :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
+      @change="handleChange"
     />
 
     <v-layout
@@ -60,7 +61,7 @@ export default class OutputFan extends Mixins(StateMixin) {
     return Math.round(speed * 100)
   }
 
-  set value (target: number) {
+  handleChange (target: number) {
     // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
     if (this.fan.type === 'fan') {
       target = Math.ceil(target * 2.55)

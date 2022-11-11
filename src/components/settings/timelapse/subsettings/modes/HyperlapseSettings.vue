@@ -7,7 +7,7 @@
     >
       <v-text-field
         ref="hyperlapseCycleElement"
-        v-model="hyperlapseCycle"
+        :value="hyperlapseCycle"
         :rules="[
           $rules.required,
           $rules.numberValid,
@@ -19,6 +19,7 @@
         dense
         single-line
         suffix="s"
+        @change="setHyperlapseCycle"
       />
     </app-setting>
   </div>
@@ -49,7 +50,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
     return this.settings?.hyperlapse_cycle
   }
 
-  set hyperlapseCycle (value: number) {
+  setHyperlapseCycle (value: number) {
     if (this.hyperlapseCycleElement.valid) {
       SocketActions.machineTimelapseSetSettings({ hyperlapse_cycle: value })
     }

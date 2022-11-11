@@ -54,7 +54,7 @@
 
       <app-setting :title="$t('app.setting.label.default_extrude_length')">
         <v-text-field
-          v-model="defaultExtrudeLength"
+          :value="defaultExtrudeLength"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -65,6 +65,7 @@
           single-line
           hide-details="auto"
           suffix="mm"
+          @change="setDefaultExtrudeLength"
         />
       </app-setting>
 
@@ -72,7 +73,7 @@
 
       <app-setting :title="$t('app.setting.label.default_extrude_speed')">
         <v-text-field
-          v-model="defaultExtrudeSpeed"
+          :value="defaultExtrudeSpeed"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -83,6 +84,7 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
+          @change="setDefaultExtrudeSpeed"
         />
       </app-setting>
 
@@ -90,7 +92,7 @@
 
       <app-setting :title="$t('app.setting.label.default_toolhead_move_length')">
         <v-select
-          v-model="defaultToolheadMoveLength"
+          :value="defaultToolheadMoveLength"
           :items="toolheadMoveDistances"
           :rules="[
             $rules.required,
@@ -101,6 +103,7 @@
           single-line
           hide-details="auto"
           suffix="mm"
+          @change="setDefaultToolheadMoveLength"
         />
       </app-setting>
 
@@ -108,7 +111,7 @@
 
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
         <v-text-field
-          v-model="defaultToolheadXYSpeed"
+          :value="defaultToolheadXYSpeed"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -119,6 +122,7 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
+          @change="setDefaultToolheadYXSpeed"
         />
       </app-setting>
 
@@ -126,7 +130,7 @@
 
       <app-setting :title="$t('app.setting.label.default_toolhead_z_speed')">
         <v-text-field
-          v-model="defaultToolheadZSpeed"
+          :value="defaultToolheadZSpeed"
           :rules="[
             $rules.required,
             $rules.numberValid,
@@ -137,6 +141,7 @@
           single-line
           hide-details="auto"
           suffix="mm/s"
+          @change="setDefaultToolheadZSpeed"
         />
       </app-setting>
 
@@ -257,7 +262,7 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.defaultExtrudeSpeed
   }
 
-  set defaultExtrudeSpeed (value: string) {
+  setDefaultExtrudeSpeed (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeSpeed',
       value: +value,
@@ -269,7 +274,7 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.defaultExtrudeLength
   }
 
-  set defaultExtrudeLength (value: number) {
+  setDefaultExtrudeLength (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultExtrudeLength',
       value: +value,
@@ -281,7 +286,7 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.defaultToolheadMoveLength
   }
 
-  set defaultToolheadMoveLength (value: number) {
+  setDefaultToolheadMoveLength (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadMoveLength',
       value: +value,
@@ -293,7 +298,7 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
   }
 
-  set defaultToolheadXYSpeed (value: number) {
+  setDefaultToolheadYXSpeed (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadXYSpeed',
       value: +value,
@@ -305,7 +310,7 @@ export default class ToolHeadSettings extends Vue {
     return this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
   }
 
-  set defaultToolheadZSpeed (value: number) {
+  setDefaultToolheadZSpeed (value: number) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.defaultToolheadZSpeed',
       value: +value,
