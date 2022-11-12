@@ -158,7 +158,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/index'
+import { defaultState } from '@/store/config/state'
 
 @Component({
   components: {}

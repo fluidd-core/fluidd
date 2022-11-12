@@ -67,7 +67,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { defaultState } from '@/store/config/index'
+import { defaultState } from '@/store/config/state'
 
 @Component({
   components: {}

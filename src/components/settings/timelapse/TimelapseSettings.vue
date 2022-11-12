@@ -129,7 +129,7 @@ import { SocketActions } from '@/api/socketActions'
 import HyperlapseSettings from '@/components/settings/timelapse/subsettings/modes/HyperlapseSettings.vue'
 import { CameraConfig } from '@/store/cameras/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
-import { defaultWritableSettings } from '@/store/timelapse'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 import TimelapseRenderSettingsDialog
   from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
 import { VInput } from '@/types'

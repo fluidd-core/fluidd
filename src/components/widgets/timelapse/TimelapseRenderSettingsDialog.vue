@@ -208,7 +208,7 @@ import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
-import { defaultWritableSettings } from '@/store/timelapse'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 import { VInput } from '@/types'
 
 @Component({

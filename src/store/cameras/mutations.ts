@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { CameraConfig, CamerasState } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 
 export const mutations: MutationTree<CamerasState> = {
   /**

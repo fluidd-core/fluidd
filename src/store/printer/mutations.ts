@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { PrinterState } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 import consola from 'consola'
 import { get } from 'lodash-es'
 

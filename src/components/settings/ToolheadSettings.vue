@@ -245,7 +245,7 @@
 
 <script lang="ts">
 import { Component, Ref, Vue } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/index'
+import { defaultState } from '@/store/config/state'
 import { VInput } from '@/types'
 
 @Component({

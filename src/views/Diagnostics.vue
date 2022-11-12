@@ -82,7 +82,7 @@ import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vu
 import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 import { LayoutConfig } from '@/store/layout/types'
-import { defaultState } from '@/store/layout'
+import { defaultState } from '@/store/layout/state'
 
 @Component({
   components: { draggable, CollapsableCard, DiagnosticsCard, DiagnosticsCardConfigDialog }
