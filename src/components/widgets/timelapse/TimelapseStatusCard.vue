@@ -25,7 +25,7 @@
           />
         </div>
         <camera-item
-          v-else
+          v-else-if="camera"
           :camera="camera"
         />
       </v-row>
@@ -140,8 +140,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get camera () {
-    return this.$store.getters['cameras/getCameraById'](this.settings.camera) ??
-      { url: '/webcam/?action=snapshot', type: 'mjpegstreamer-adaptive' }
+    return this.$store.getters['cameras/getCameraById'](this.settings.camera)
   }
 
   get settings (): TimelapseSettings {
