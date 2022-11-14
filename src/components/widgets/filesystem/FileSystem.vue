@@ -54,8 +54,8 @@
 
     <file-system-context-menu
       v-if="contextMenuState.open"
+      v-model="contextMenuState.open"
       :root="currentRoot"
-      :open.sync="contextMenuState.open"
       :file="contextMenuState.file"
       :position-x="contextMenuState.x"
       :position-y="contextMenuState.y"
