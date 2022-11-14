@@ -135,9 +135,10 @@ export const Filters = {
   /**
    * Formats a number representing mm to human readable distance.
    */
-  getReadableLengthString (lengthInMm: number) {
+  getReadableLengthString (lengthInMm: number, showMicrons = false) {
     if (lengthInMm >= 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
     if (lengthInMm > 100) return (lengthInMm / 10).toFixed(1) + ' cm'
+    if (lengthInMm < 0.1 && showMicrons) return (lengthInMm * 1000).toFixed(0) + ' μm'
     return lengthInMm.toFixed(1) + ' mm'
   },
 
