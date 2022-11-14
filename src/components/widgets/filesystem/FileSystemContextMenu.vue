@@ -1,13 +1,12 @@
 <template>
   <v-menu
+    v-model="open"
     transition="slide-y-transition"
-    :value="open"
     :position-x="positionX"
     :position-y="positionY"
     min-width="180"
     absolute
     right
-    @input="$emit('update:open', $event)"
   >
     <v-card>
       <v-row
@@ -127,7 +126,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
@@ -137,11 +136,11 @@ import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
  */
 @Component({})
 export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin) {
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
+
   @Prop({ type: String, required: true })
   readonly root!: string
-
-  @Prop({ type: Boolean, default: false })
-  readonly open!: boolean
 
   @Prop({ type: Object, required: true })
   readonly file!: AppDirectory | AppFile | AppFileWithMeta

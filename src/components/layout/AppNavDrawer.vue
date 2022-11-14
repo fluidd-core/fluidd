@@ -1,12 +1,11 @@
 <template>
   <v-navigation-drawer
-    :value="value"
+    v-model="open"
     :color="theme.currentTheme.drawer"
     :mini-variant="!showSubNavigation"
     :floating="!showSubNavigation"
     clipped
     app
-    @input="emitChange"
   >
     <v-row
       class="fill-height"
@@ -15,7 +14,7 @@
       <v-navigation-drawer
         :color="theme.currentTheme.drawer"
         :mini-variant="true"
-        :value="value"
+        :value="open"
       >
         <div
           v-show="isMobile"
@@ -116,14 +115,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, VModel } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, default: true })
+    open!: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']
@@ -155,10 +154,6 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
-  }
-
-  emitChange (e: boolean) {
-    this.$emit('input', e)
   }
 }
 </script>
