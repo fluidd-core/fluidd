@@ -33,29 +33,34 @@
       </v-layout>
     </v-card-text>
 
-    <v-simple-table dense>
-      <tbody>
-        <tr>
-          <th>{{ $t('app.system_info.label.manufacturer') }}</th>
-          <td>{{ sdInfo.manufacturer }}</td>
-        </tr>
-        <tr>
-          <th>{{ $t('app.system_info.label.manufactured') }}</th>
-          <td>{{ sdInfo.manufacturer_date }}</td>
-        </tr><tr>
-          <th>{{ $t('app.system_info.label.product_name') }}</th>
-          <td>{{ sdInfo.product_name }} {{ sdInfo.product_revision }}</td>
-        </tr>
-        <tr>
-          <th>{{ $t('app.system_info.label.capacity') }}</th>
-          <td>{{ sdInfo.capacity }}</td>
-        </tr>
-        <tr>
-          <th>{{ $t('app.system_info.label.serial_number') }}</th>
-          <td>{{ sdInfo.serial_number }}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+    <v-card
+      flat
+      class="overflow-hidden"
+    >
+      <v-simple-table dense>
+        <tbody>
+          <tr>
+            <th>{{ $t('app.system_info.label.manufacturer') }}</th>
+            <td>{{ sdInfo.manufacturer }}</td>
+          </tr>
+          <tr>
+            <th>{{ $t('app.system_info.label.manufactured') }}</th>
+            <td>{{ sdInfo.manufacturer_date }}</td>
+          </tr><tr>
+            <th>{{ $t('app.system_info.label.product_name') }}</th>
+            <td>{{ sdInfo.product_name }} {{ sdInfo.product_revision }}</td>
+          </tr>
+          <tr>
+            <th>{{ $t('app.system_info.label.capacity') }}</th>
+            <td>{{ sdInfo.capacity }}</td>
+          </tr>
+          <tr>
+            <th>{{ $t('app.system_info.label.serial_number') }}</th>
+            <td>{{ sdInfo.serial_number }}</td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+    </v-card>
   </collapsable-card>
 </template>
 
