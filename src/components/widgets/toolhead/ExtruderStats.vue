@@ -107,11 +107,11 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get estimatedExtrudedLength (): number {
-    return Math.round(this.extrudeLength * this.extrudeFactor * (this.filamentDiameter / this.nozzleDiameter) * 10) / 10
+    return Math.round(this.extrudeLength * this.extrudeFactor * (this.filamentDiameter ** 2 / this.nozzleDiameter ** 2) * 10) / 10
   }
 
   get estimatedVolumetricFlow (): number {
-    return Math.round(Math.PI * ((this.filamentDiameter / 2) ** 2) * this.extrudeSpeed * 10) / 10
+    return Math.round(Math.PI / 4 * this.filamentDiameter ** 2 * this.extrudeSpeed * 10) / 10
   }
 
   get estimatedMaxSpeed (): number {
