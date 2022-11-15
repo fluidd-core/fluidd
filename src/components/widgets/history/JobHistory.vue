@@ -1,5 +1,8 @@
 <template>
-  <div class="file-system">
+  <v-card
+    flat
+    class="file-system"
+  >
     <v-toolbar
       dense
     >
@@ -183,7 +186,7 @@
         </div>
       </template>
     </v-data-table>
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">

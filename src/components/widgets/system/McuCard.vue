@@ -16,22 +16,27 @@
       </app-btn>
     </template>
 
-    <v-simple-table dense>
-      <tbody>
-        <tr>
-          <th>{{ $t('app.system_info.label.micro_controller') }}</th>
-          <td>{{ mcu.mcu_constants.MCU }}</td>
-        </tr>
-        <tr>
-          <th>{{ $t('app.system_info.label.frequency') }}</th>
-          <td>{{ $filters.getReadableFrequencyString(+mcu.mcu_constants.CLOCK_FREQ) }}</td>
-        </tr>
-        <tr>
-          <th>{{ $t('app.system_info.label.version') }}</th>
-          <td>{{ mcu.mcu_version }}</td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+    <v-card
+      flat
+      class="overflow-hidden"
+    >
+      <v-simple-table dense>
+        <tbody>
+          <tr>
+            <th>{{ $t('app.system_info.label.micro_controller') }}</th>
+            <td>{{ mcu.mcu_constants.MCU }}</td>
+          </tr>
+          <tr>
+            <th>{{ $t('app.system_info.label.frequency') }}</th>
+            <td>{{ $filters.getReadableFrequencyString(+mcu.mcu_constants.CLOCK_FREQ) }}</td>
+          </tr>
+          <tr>
+            <th>{{ $t('app.system_info.label.version') }}</th>
+            <td>{{ mcu.mcu_version }}</td>
+          </tr>
+        </tbody>
+      </v-simple-table>
+    </v-card>
 
     <mcu-constants-dialog
       v-if="mcuConstantsDialogOpen"
