@@ -13,8 +13,8 @@ export const defaultState = (): ConfigState => {
       hosted: false,
       locales: [
         { name: 'English', code: 'en' },
-        { name: 'Čeština', code: 'cz' },
-        { name: '简体中文', code: 'cn' },
+        { name: 'Čeština', code: 'cs' },
+        { name: '简体中文', code: 'zh-CN' },
         { name: '繁體中文', code: 'zh-HK' },
         { name: 'Deutsch', code: 'de' },
         { name: 'Español', code: 'es' },
