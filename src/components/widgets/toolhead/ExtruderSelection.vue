@@ -3,6 +3,7 @@
     v-model="extruder"
     :items="extruders"
     :readonly="printerPrinting"
+    :disabled="!klippyReady"
     item-value="key"
     item-text="name"
     hide-details
