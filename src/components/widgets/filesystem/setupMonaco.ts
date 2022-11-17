@@ -22,6 +22,8 @@ import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'
 import themeLight from '@/monaco/theme/editor.light.theme.json'
 
+import { MonacoLanguageImports } from '@/dynamicImports'
+
 type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot'
 
 const isCodeLensSupportedService = (service: string) : service is CodeLensSupportedService => [
@@ -60,14 +62,12 @@ async function setupMonaco () {
   // Register our custom TextMate languages.
   const registry = new Registry({
     getGrammarDefinition: async (scopeName): Promise<IGrammarDefinition> => {
-      const fileName = scopeName.split('.').pop()
-      return import(`../../../monaco/language/${fileName}.tmLanguage.json`)
-        .then(language => {
-          return Promise.resolve({
-            format: 'json',
-            content: language.default
-          })
-        })
+      const languageName = scopeName.split('.').pop() ?? ''
+      const language = await MonacoLanguageImports[languageName]()
+      return {
+        format: 'json',
+        content: language
+      }
     }
   })
 
