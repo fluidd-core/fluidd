@@ -52,8 +52,8 @@ export const loadLocaleMessagesAsync = async (locale: Locale) => {
     const messages = await I18nLocales[locale]()
 
     i18n.setLocaleMessage(locale, messages)
-      loadedLanguages.push(locale)
-      i18n.locale = locale
+    loadedLanguages.push(locale)
+    i18n.locale = locale
     return locale
   } catch {
     return i18n.locale
