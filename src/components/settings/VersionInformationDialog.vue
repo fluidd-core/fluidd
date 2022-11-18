@@ -44,7 +44,7 @@
               </template>
 
               <div class="secondary--text mb-4">
-                {{ $t('app.version.label.commits_on') }} {{ $dayjs(key).format('ll') }}
+                {{ $t('app.version.label.commits_on') }} {{ $filters.formatDate(key) }}
               </div>
 
               <ol class="commit-history">
@@ -65,7 +65,7 @@
                         >
                           <strong>{{ commit.author }}</strong>
                         </a>
-                        {{ $t('app.version.label.committed') }} {{ $dayjs(commit.date).fromNow() }}
+                        {{ $t('app.version.label.committed') }} {{ $filters.formatRelativeTimeToNow(commit.date * 1000) }}
                       </div>
                     </div>
                     <div>

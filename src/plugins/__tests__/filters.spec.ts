@@ -1,5 +1,3 @@
-import dayjs from 'dayjs'
-
 import { Filters } from '../filters'
 import { timeTravel } from '@/../tests/unit/utils'
 
@@ -31,25 +29,29 @@ describe('formatCounterTime', () => {
 })
 
 describe('formatDateTime', () => {
-  it('Formats as human readable when in near future', () => {
-    const fiveMins = dayjs().add(5, 'minutes').unix()
+  it('Formats as human readable when in future', () => {
+    const fiveMins = Date.now() + (5 * 60 * 1000)
 
-    expect(Filters.formatDateTime(fiveMins)).toBe('in 5 minutes')
+    expect(Filters.formatRelativeTimeToNow(fiveMins)).toBe('in 5 minutes')
+
+    const oneDay = Date.now() + (24 * 60 * 60 * 1000)
+
+    expect(Filters.formatRelativeTimeToNow(oneDay)).toBe('tomorrow')
   })
 
-  it('Formats as date in long form when in further future', () => {
-    timeTravel('2020-01-01', () => {
-      const twoDays = dayjs().add(2, 'days').unix()
+  it('Formats as human readable when in past', () => {
+    timeTravel('2022-11-19 14:32', () => {
+      const fiveMins = Date.now() - (5 * 60 * 1000)
 
-      expect(Filters.formatDateTime(twoDays)).toBe('Jan 3, 2020 12:00 AM')
-    })
-  })
+      expect(Filters.formatRelativeTimeToNow(fiveMins)).toBe('5 minutes ago')
 
-  it('Lets you optionally specify a custom format', () => {
-    timeTravel('2020-01-01', () => {
-      const twoDays = dayjs().add(2, 'days').unix()
+      const oneDay = Date.now() - (24 * 60 * 60 * 1000)
 
-      expect(Filters.formatDateTime(twoDays, 'YYYY-MM-DD')).toBe('2020-01-03')
+      expect(Filters.formatRelativeTimeToNow(oneDay)).toBe('yesterday')
+
+      const date = new Date(2022, 10, 16, 15, 9)
+
+      expect(Filters.formatRelativeTimeToDate(date, new Date())).toBe('3 days ago')
     })
   })
 })

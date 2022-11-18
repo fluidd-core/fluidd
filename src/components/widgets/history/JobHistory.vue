@@ -109,7 +109,7 @@
         #[`item.start_time`]="{ item }"
       >
         <span class="text-no-wrap">
-          {{ $filters.formatDateTime(item.start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
+          {{ $filters.formatDateTime(item.start_time * 1000) }}
         </span>
       </template>
 
@@ -120,7 +120,7 @@
           v-if="item.status !== 'in_progress'"
           class="text-no-wrap"
         >
-          {{ $filters.formatDateTime(item.end_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
+          {{ $filters.formatDateTime(item.end_time * 1000) }}
         </span>
         <span v-else>--</span>
       </template>

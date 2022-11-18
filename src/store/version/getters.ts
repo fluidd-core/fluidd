@@ -1,9 +1,8 @@
 import { GetterTree } from 'vuex'
 import { isOfType } from '@/store/helpers'
-import { ArtifactVersion, HashVersion, OSPackage, VersionState } from './types'
+import { ArtifactVersion, CommitItem, HashVersion, OSPackage, VersionState } from './types'
 import { RootState } from '../types'
 import { valid, gt } from 'semver'
-import _Vue from 'vue'
 
 export const getters: GetterTree<VersionState, RootState> = {
   /**
@@ -77,15 +76,18 @@ export const getters: GetterTree<VersionState, RootState> = {
     if (state.version_info[component] && isOfType<HashVersion>(state.version_info[component], 'git_messages')) {
       const c = state.version_info[component] as HashVersion
       const result = [...c.commits_behind]
-        .reduce((result: any, a) => {
-          const d = _Vue.$dayjs(+a.date * 1000).hour(6).minute(0).second(0).unix() * 1000
-          result[d] = result[d] || []
-          result[d].push({
-            ...a,
-            date: +a.date * 1000
-          })
-          return result
-        }, Object.create(null))
+        .reduce((groups, commitItem) => {
+          const dateAndTime = new Date(+commitItem.date * 1000)
+          const dateOnly = +(new Date(dateAndTime.getFullYear(), dateAndTime.getMonth(), dateAndTime.getDate()))
+
+          if (dateOnly in groups) {
+            groups[dateOnly].push(commitItem)
+          } else {
+            groups[dateOnly] = [commitItem]
+          }
+
+          return groups
+        }, {} as Record<number, CommitItem[]>)
       return {
         keys: Object
           .keys(result)

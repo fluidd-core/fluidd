@@ -61,8 +61,8 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
-  dateformat: string;
-  timeformat: string;
+  dateFormat: string;
+  timeFormat: string;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;

@@ -30,7 +30,6 @@ import { HttpClientPlugin } from './plugins/httpClient'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
-import { DayJSPlugin } from './plugins/dayjs'
 
 // Main App component
 import App from './App.vue'
@@ -46,7 +45,6 @@ Vue.component('EChart', () => import('./vue-echarts-chunk'))
 
 // Use any Plugins
 Vue.use(VueVirtualScroller)
-Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})

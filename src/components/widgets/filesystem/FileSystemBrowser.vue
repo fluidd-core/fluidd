@@ -254,7 +254,7 @@
             item-value="print_start_time"
           >
             <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
-              {{ $filters.formatDateTime(item.print_start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
+              {{ $filters.formatDateTime(item.print_start_time * 1000) }}
             </span>
           </file-row-item>
 
@@ -263,7 +263,7 @@
             item-value="modified"
           >
             <span v-if="item.modified !== undefined && item.modified !== null">
-              {{ $filters.formatDateTime(item.modified, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
+              {{ $filters.formatDateTime(item.modified * 1000) }}
             </span>
           </file-row-item>
 
