@@ -36,6 +36,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import AppChart from '@/components/ui/AppChart.vue'
+import { EChartsOption } from 'echarts'
 
 @Component({
   components: { AppChart, CollapsableCard }
@@ -100,8 +101,7 @@ export default class DiagnosticsCard extends Vue {
       grid,
       color,
       legend: {
-        show: false,
-        selected: true // changed
+        show: false
       },
       tooltip: {
         ...tooltip,
@@ -201,7 +201,7 @@ export default class DiagnosticsCard extends Vue {
         zoomOnMouseWheel: 'shift'
       }],
       series
-    }
+    } as EChartsOption
 
     return options
   }
@@ -250,8 +250,7 @@ export default class DiagnosticsCard extends Vue {
   }
 
   xAxisPointerFormatter (params: any) {
-    const d = this.$dayjs(params.value)
-    return d.format('H:mm:ss')
+    return this.$filters.formatTimeWithSeconds(params.value)
   }
 }
 </script>

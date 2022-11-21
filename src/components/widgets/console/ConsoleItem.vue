@@ -44,7 +44,7 @@ export default class ConsoleItem extends Vue {
 
   get itemTime () {
     return (this.value.time)
-      ? this.$dayjs(this.value.time * 1000).format('HH:mm:ss')
+      ? this.$filters.formatTimeWithSeconds(this.value.time * 1000)
       : ''
   }
 

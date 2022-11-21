@@ -38,7 +38,6 @@
     "@jaames/iro": "^5.5.2",
     "axios": "^0.27.2",
     "consola": "^2.15.3",
-    "dayjs": "^1.11.6",
     "deepmerge": "^4.2.2",
     "echarts": "^5.4.0",
     "echarts-gl": "^2.0.9",

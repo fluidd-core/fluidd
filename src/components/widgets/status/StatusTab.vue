@@ -119,7 +119,7 @@
               </status-label>
 
               <status-label :label="$t('app.general.label.finish_time')">
-                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta, $store.state.config.uiSettings.general.timeformat, $store.state.config.uiSettings.general.dateformat + ' - ' + $store.state.config.uiSettings.general.timeformat) }}</span>
+                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta) }}</span>
               </status-label>
             </v-col>
           </v-row>

@@ -82,7 +82,7 @@
                 v-html="n.description"
               />
               <v-list-item-subtitle class="notification-timestamp">
-                {{ $filters.formatDateTime(n.timestamp) }}
+                {{ $filters.formatRelativeTimeToNow(n.timestamp * 1000) }}
               </v-list-item-subtitle>
               <v-list-item-subtitle v-if="n.to">
                 <app-btn

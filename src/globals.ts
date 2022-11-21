@@ -382,3 +382,37 @@ export const Waits = Object.freeze({
   onQueryProbe: 'onQueryProbe',
   onVersionRefresh: 'onVersionRefresh'
 })
+
+type DateTimeFormat = {
+  locale?: string,
+  options: Intl.DateTimeFormatOptions,
+  suffix?: string
+}
+
+export const DateFormats = Object.freeze({
+  iso: {
+    locale: 'sv-SE',
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' },
+    suffix: ' (ISO 8601)'
+  },
+  digits2: {
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' }
+  },
+  short: {
+    options: { day: '2-digit', month: 'short', year: 'numeric' }
+  }
+} as Record<string, DateTimeFormat>)
+
+export const TimeFormats = Object.freeze({
+  iso: {
+    locale: 'sv-SE',
+    options: { hour: '2-digit', minute: '2-digit', hour12: false },
+    suffix: ' (ISO 8601)'
+  },
+  hours12: {
+    options: { hour: '2-digit', minute: '2-digit', hour12: true }
+  },
+  hours24: {
+    options: { hour: '2-digit', minute: '2-digit', hour12: false }
+  }
+} as Record<string, DateTimeFormat>)

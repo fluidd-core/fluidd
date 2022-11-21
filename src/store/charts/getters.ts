@@ -1,9 +1,10 @@
+import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
 import { GetterTree } from 'vuex'
 import { ChartState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
-import dayjs from 'dayjs'
+import { EChartsOption } from 'echarts'
 
 export const getters: GetterTree<ChartState, RootState> = {
   /**
@@ -96,10 +97,9 @@ export const getters: GetterTree<ChartState, RootState> = {
                 param.seriesName
               ) {
                 if (!title) {
-                  const date = dayjs(param.value[xDimension])
                   text += `
                   <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                    ${date.format('LTS')}
+                    ${Vue.$filters.formatTimeWithSeconds(param.value[xDimension])}
                   </span>
                   `
                   title = true
@@ -148,7 +148,7 @@ export const getters: GetterTree<ChartState, RootState> = {
         axisLabel: { show: false, formatter: '{value}%' },
         splitLine: { show: true, lineStyle }
       }
-    }
+    } as EChartsOption
   },
 
   /**

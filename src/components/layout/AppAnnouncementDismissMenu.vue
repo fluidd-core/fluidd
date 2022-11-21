@@ -60,17 +60,19 @@ import StateMixin from '@/mixins/state'
 export default class AppAnnouncementDismissMenu extends Mixins(StateMixin) {
   get presets () {
     return [
-      { hours: 1 },
-      { days: 1 },
-      { days: 7 }
-    ].map(v => {
-      const duration = this.$dayjs.duration(v)
-
-      return ({
-        label: duration.humanize(),
-        delay: duration.asSeconds()
-      })
-    })
+      {
+        label: this.$filters.formatRelativeTime(1, 'hour', { numeric: 'always' }),
+        delay: 3600
+      },
+      {
+        label: this.$filters.formatRelativeTime(1, 'day', { numeric: 'always' }),
+        delay: 3600 * 24
+      },
+      {
+        label: this.$filters.formatRelativeTime(7, 'day', { numeric: 'always' }),
+        delay: 3600 * 24 * 7
+      }
+    ]
   }
 }
 </script>
