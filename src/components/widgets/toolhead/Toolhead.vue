@@ -1,29 +1,35 @@
 <template>
-  <v-card-text>
-    <v-row
-      justify="space-between"
-      align="start"
-      class="mb-2"
-    >
-      <v-col class="controls-wrapper">
-        <extruder-selection v-if="multipleExtruders" />
-        <toolhead-moves v-if="!printerPrinting" />
-        <z-height-adjust v-if="printerPrinting" />
-      </v-col>
+  <div>
+    <v-card-text>
+      <v-row
+        justify="space-between"
+        align="start"
+      >
+        <v-col class="controls-wrapper">
+          <extruder-selection v-if="multipleExtruders" />
+          <toolhead-moves v-if="!printerPrinting" />
+          <z-height-adjust v-if="printerPrinting" />
+        </v-col>
 
-      <v-col class="controls-wrapper">
-        <toolhead-position />
-        <extruder-moves v-if="!printerPrinting" />
-        <z-height-adjust v-if="!printerPrinting" />
-      </v-col>
-      <v-col cols="12">
-        <extruder-stats />
-      </v-col>
-    </v-row>
+        <v-col class="controls-wrapper">
+          <toolhead-position />
+          <extruder-moves v-if="!printerPrinting" />
+          <z-height-adjust v-if="!printerPrinting" />
+        </v-col>
+      </v-row>
+    </v-card-text>
 
-    <speed-and-flow-adjust />
-    <pressure-advance-adjust v-if="showPressureAdvance" />
-  </v-card-text>
+    <v-divider />
+
+    <extruder-stats />
+
+    <v-divider />
+
+    <v-card-text>
+      <speed-and-flow-adjust />
+      <pressure-advance-adjust v-if="showPressureAdvance" />
+    </v-card-text>
+  </div>
 </template>
 
 <script lang="ts">
