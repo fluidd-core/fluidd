@@ -1,62 +1,58 @@
 <template>
-  <div>
-    <v-divider />
-    <v-expansion-panels
-      accordion
-      multiple
-      flat
-    >
-      <v-expansion-panel>
-        <v-expansion-panel-header>
-          <template #default="{ open }">
-            <v-row no-gutters>
-              <v-col
-                class="text--secondary text-center"
-                :class="{ 'text--disabled': !klippyReady }"
-              >
-                <v-fade-transition>
-                  <span v-if="!open">~ {{ estimatedExtrudedLength }} mm @ {{ estimatedVolumetricFlow }} mm³/s, {{ estimatedMaxSpeed }} mm/s</span>
-                </v-fade-transition>
-              </v-col>
-            </v-row>
-          </template>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content>
-          <div
-            class="text-center"
-            :class="{ 'text--disabled': !klippyReady }"
-          >
-            <p
-              v-html="$t('app.tool.label.stats_active_extruder', {
-                filamentDiameter,
-                nozzleDiameter
-              })"
-            />
-            <p
-              v-html="$t('app.tool.label.stats_volumetric_flow', {
-                extrudeSpeed,
-                estimatedVolumetricFlow
-              })"
-            />
-            <p
-              v-html="$t('app.tool.label.stats_extruded_length', {
-                extrudeLength,
-                extrudeFactor: (extrudeFactor * 100).toFixed(),
-                estimatedExtrudedLength
-              })"
-            />
-            <p
-              v-html="$t('app.tool.label.stats_max_speed', {
-                layerHeight,
-                estimatedMaxSpeed
-              })"
-            />
-          </div>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </v-expansion-panels>
-    <v-divider />
-  </div>
+  <v-expansion-panels
+    accordion
+    multiple
+    flat
+  >
+    <v-expansion-panel>
+      <v-expansion-panel-header>
+        <template #default="{ open }">
+          <v-row no-gutters>
+            <v-col
+              class="text--secondary text-center"
+              :class="{ 'text--disabled': !klippyReady }"
+            >
+              <v-fade-transition>
+                <span v-if="!open">~ {{ estimatedExtrudedLength }} mm @ {{ estimatedVolumetricFlow }} mm³/s, {{ estimatedMaxSpeed }} mm/s</span>
+              </v-fade-transition>
+            </v-col>
+          </v-row>
+        </template>
+      </v-expansion-panel-header>
+      <v-expansion-panel-content>
+        <div
+          class="text-center"
+          :class="{ 'text--disabled': !klippyReady }"
+        >
+          <p
+            v-html="$t('app.tool.label.stats_active_extruder', {
+              filamentDiameter,
+              nozzleDiameter
+            })"
+          />
+          <p
+            v-html="$t('app.tool.label.stats_volumetric_flow', {
+              extrudeSpeed,
+              estimatedVolumetricFlow
+            })"
+          />
+          <p
+            v-html="$t('app.tool.label.stats_extruded_length', {
+              extrudeLength,
+              extrudeFactor: (extrudeFactor * 100).toFixed(),
+              estimatedExtrudedLength
+            })"
+          />
+          <p
+            v-html="$t('app.tool.label.stats_max_speed', {
+              layerHeight,
+              estimatedMaxSpeed
+            })"
+          />
+        </div>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+  </v-expansion-panels>
 </template>
 
 <script lang="ts">
@@ -119,10 +115,3 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 }
 </script>
-
-<style type="scss" scoped>
-:deep(.v-expansion-panel-header) {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-</style>
