@@ -31,6 +31,9 @@ jobs:
       - name: Run tests
         run: npm run test:unit
 
+      - name: Check for circular references
+        run: npm run circular-check -- --no-spinner
+
       - name: Build
         run: npm run build
 

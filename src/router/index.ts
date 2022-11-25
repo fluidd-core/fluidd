@@ -18,14 +18,13 @@ import FullscreenCamera from '@/views/FullscreenCamera.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
-import store from '@/store'
 
 Vue.use(VueRouter)
 
 const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
   if (
-    store.getters['auth/getAuthenticated'] ||
-    !store.state.socket.apiConnected
+    router.app.$store.getters['auth/getAuthenticated'] ||
+    !router.app.$store.state.socket.apiConnected
   ) {
     next()
     return
@@ -155,7 +154,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  store.commit('config/setContainerColumnCount', 2)
+  router.app.$store.commit('config/setContainerColumnCount', 2)
   next()
 })
 

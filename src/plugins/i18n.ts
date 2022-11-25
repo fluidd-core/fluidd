@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueI18n, { Locale } from 'vue-i18n'
-import store from '@/store'
+import { SupportedLocales } from '@/globals'
 import getBrowserLocale from '@/util/get-browser-locale'
 import messages from '@/locales/en.yaml'
 import { I18nLocales } from '@/dynamicImports'
@@ -12,11 +12,9 @@ Vue.use(VueI18n)
  */
 export const getStartingLocale = () => {
   const browserLocale = getBrowserLocale({ countryCodeOnly: true })
-  const supportedLocales = store.state.config.hostConfig.locales
   if (
-    supportedLocales &&
     browserLocale &&
-    supportedLocales.findIndex(locale => locale.code === browserLocale) >= 0) {
+    SupportedLocales.findIndex(locale => locale.code === browserLocale) >= 0) {
     return browserLocale
   } else {
     return import.meta.env.VUE_APP_I18N_LOCALE || 'en'
