@@ -1,40 +1,36 @@
 <template>
-  <g
-    id="parts"
-    class="layer"
-  >
-    <path
+  <g id="parts">
+    <g
       v-for="name in parts"
-      :key="`${name}bounds`"
-      :class="isPartExcluded(name) ? 'partOutline partExcluded' : 'partOutline'"
-      :d="partSVG(name)"
-    />
-    <svg
-      v-for="name in parts"
-      :key="`${name}icon`"
-      width="7"
-      height="7"
-      viewBox="0 0 24 24"
-      class="partIcon"
-      :x="partPos(name).x - 7/2"
-      :y="partPos(name).y - 7/2"
+      :key="name"
+      :class="iconClasses(name)"
+      class="layer"
     >
       <path
-        :class="iconClasses(name)"
-        :d="iconCancelled"
+        class="partOutline"
+        :d="partSVG(name)"
       />
-      <path
-        v-if="!isPartExcluded(name)"
-        :class="iconClasses(name)"
-        :d="iconCircle"
-        class="hitarea"
-        @click="$emit('cancel', name)"
-        @touchstart="touchedElement = name"
-        @touchend="handleTouchEnd(name)"
-        @touchcancel="touchedElement = undefined"
-        @touchmove="touchedElement = undefined"
-      />
-    </svg>
+      <svg
+        width="7"
+        height="7"
+        viewBox="0 0 24 24"
+        class="partIcon"
+        :x="partPos(name).x - 7/2"
+        :y="partPos(name).y - 7/2"
+      >
+        <path :d="iconCancelled" />
+        <path
+          v-if="!isPartExcluded(name)"
+          :d="iconCircle"
+          class="hitarea"
+          @click="$emit('cancel', name)"
+          @touchstart="touchedElement = name"
+          @touchend="handleTouchEnd(name)"
+          @touchcancel="touchedElement = undefined"
+          @touchmove="touchedElement = undefined"
+        />
+      </svg>
+    </g>
   </g>
 </template>
 
@@ -88,57 +84,52 @@ export default class ExcludeObjects extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-.layer > path {
-  fill: none;
-  stroke: var(--v-success-base);
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.layer {
+  filter: brightness(140%);
+
+  & > path {
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .partOutline {
+    filter: opacity(60%);
+    stroke-width: .5;
+  }
+
+  .partIcon {
+    fill-opacity: 15%;
+    stroke-width: .5;
+
+    .hitarea {
+      pointer-events: all;
+      z-index: -1;
+    }
+  }
+
+  &:not(.partExcluded) {
+    .partIcon:hover {
+      fill-opacity: 50%;
+    }
+  }
+
+  &.partExcluded {
+    fill: var(--v-error-base);
+    stroke: var(--v-error-base);
+  }
+
+  &.partIncluded {
+    fill: var(--v-success-base);
+    stroke: var(--v-success-base);
+  }
+
+  &.partCurrent {
+    fill: var(--v-info-base);
+    stroke: var(--v-info-base);
+  }
 }
 
-.layer .partIcon {
-  filter: brightness(150%);
-  fill-opacity: 15%;
-}
-
-.layer .partIcon .hitarea {
-  pointer-events: all;
-  z-index: -1;
-  stroke-width: 0;
-}
-
-.layer .partIcon :not(.partExcluded):hover {
-  fill-opacity: 50%;
-}
-
-.layer .partIcon :not(.partExcluded) {
-  pointer-events: all;
-  stroke-width: .5;
-}
-
-.layer .partIcon .partCurrent {
-  fill: var(--v-info-base);
-  stroke: var(--v-info-base);
-}
-
-.layer .partIcon .partIncluded {
-  fill: var(--v-success-base);
-  stroke: var(--v-success-base);
-}
-
-.layer .partIcon .partExcluded {
-  filter: brightness(75%);
-  pointer-events: none;
-}
-
-.layer .partOutline {
-  filter: opacity(60%);
-  stroke-width: .5;
-}
-
-.layer .partExcluded {
-  filter: opacity(100%);
-  fill: var(--v-error-base);
-  stroke: var(--v-error-base);
-  fill-opacity: 35%;
+.theme--light .layer {
+  filter: brightness(90%);
 }
 </style>
