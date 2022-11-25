@@ -383,6 +383,25 @@ export const Waits = Object.freeze({
   onVersionRefresh: 'onVersionRefresh'
 })
 
+export const SupportedLocales = Object.freeze([
+  { name: 'English', code: 'en' },
+  { name: 'Čeština', code: 'cs' },
+  { name: '简体中文', code: 'zh-CN' },
+  { name: '繁體中文', code: 'zh-HK' },
+  { name: 'Deutsch', code: 'de' },
+  { name: 'Español', code: 'es' },
+  { name: 'Français', code: 'fr' },
+  { name: 'Italiano', code: 'it' },
+  { name: 'Magyar', code: 'hu' },
+  { name: 'Nederlands', code: 'nl' },
+  { name: 'Português', code: 'pt' },
+  { name: 'Русский', code: 'ru' },
+  { name: 'Українська', code: 'uk' },
+  { name: '한국어', code: 'ko' },
+  { name: 'العربية', code: 'ar' },
+  { name: '日本語', code: 'ja' }
+])
+
 type DateTimeFormat = {
   locale?: string,
   options: Intl.DateTimeFormatOptions,

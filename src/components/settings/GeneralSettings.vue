@@ -153,7 +153,7 @@
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { VInput } from '@/types'
-import { DateFormats, TimeFormats } from '@/globals'
+import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 
 @Component({
   components: {}
@@ -186,7 +186,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   get supportedLocales () {
     return [
       { name: 'Browser default', code: 'default' },
-      ...this.$store.state.config.hostConfig.locales
+      ...SupportedLocales
     ]
   }
 

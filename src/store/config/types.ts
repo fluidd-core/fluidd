@@ -34,7 +34,6 @@ export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
   hosted: boolean;
-  locales: SupportedLocale[];
   themePresets: SupportedTheme[];
 }
 
