@@ -105,7 +105,7 @@
           class="layer"
         >
           <path
-            stroke="lightgrey"
+            :stroke="themeIsDark ? 'lightgrey' : '#555'"
             :stroke-width="extrusionLineWidth"
             stroke-opacity="0.6"
             :d="svgPathPrevious.extrusions"
@@ -118,7 +118,7 @@
           class="layer"
         >
           <path
-            stroke="lightgrey"
+            :stroke="themeIsDark ? 'lightgrey' : '#555'"
             :stroke-width="extrusionLineWidth"
             stroke-opacity="0.6"
             :d="svgPathActive.extrusions"
@@ -198,6 +198,68 @@
         />
       </g>
     </svg>
+    <div
+      v-if="file"
+      class="preview-options"
+      @mousedown.stop=""
+      @dblclick.stop=""
+    >
+      <gcode-preview-button
+        name="followProgress"
+        icon="$play"
+        :tooltip="$t('app.gcode.label.follow_progress')"
+      />
+
+      <gcode-preview-button
+        name="showPreviousLayer"
+        icon="$previousLayer"
+        :tooltip="$t('app.gcode.label.show_previous_layer')"
+      />
+
+      <gcode-preview-button
+        name="showCurrentLayer"
+        icon="$currentLayer"
+        :tooltip="$t('app.gcode.label.show_current_layer')"
+      />
+
+      <gcode-preview-button
+        name="showNextLayer"
+        icon="$nextLayer"
+        :tooltip="$t('app.gcode.label.show_next_layer')"
+      />
+
+      <gcode-preview-button
+        name="showMoves"
+        icon="$moves"
+        :tooltip="$t('app.gcode.label.show_moves')"
+      />
+
+      <gcode-preview-button
+        name="showExtrusions"
+        icon="$extrusions"
+        :tooltip="$t('app.gcode.label.show_extrusions')"
+      />
+
+      <gcode-preview-button
+        name="showRetractions"
+        icon="$retractions"
+        :tooltip="$t('app.gcode.label.show_retractions')"
+      />
+
+      <v-btn
+        icon
+        small
+        @click="autoZoom = !autoZoom"
+      >
+        <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
+      </v-btn>
+    </div>
+    <div
+      v-if="file"
+      class="preview-name"
+    >
+      {{ file.name }}
+    </div>
   </app-focusable-container>
 </template>
 
@@ -208,10 +270,13 @@ import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
+import GcodePreviewButton from './GcodePreviewButton.vue'
+import { AppFile } from '@/store/files/types'
 
 @Component({
   components: {
-    ExcludeObjects
+    ExcludeObjects,
+    GcodePreviewButton
   }
 })
 export default class GcodePreview extends Mixins(StateMixin) {
@@ -282,6 +347,16 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get autoZoom () {
     return this.getUiSetting('autoZoom')
+  }
+
+  set autoZoom (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoZoom',
+      value,
+      server: true
+    })
+
+    this.reset()
   }
 
   get shapeRendering () {
@@ -485,6 +560,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
+  get file (): AppFile | undefined {
+    return this.$store.getters['gcodePreview/getFile']
+  }
+
   @Watch('isMobile')
   onIsMobileChanged () {
     if (this.panzoom) {
@@ -547,6 +626,30 @@ export default class GcodePreview extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
+  .preview-options,
+  .preview-name {
+    position: absolute;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.75);
+    font-weight: 100;
+  }
+
+  .preview-options {
+    top: 0;
+    border-bottom-right-radius: 4px;
+  }
+  .preview-name {
+    bottom: 0;
+    border-top-right-radius: 4px;
+  }
+
+  .theme--light {
+    .preview-options,
+    .preview-name {
+      background: rgba(255, 255, 255, 0.75);
+    }
+  }
+
   :deep(.v-input__slot) {
     overflow: hidden;
     max-height: calc(100vh * 2/3);

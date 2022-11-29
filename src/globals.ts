@@ -8,6 +8,7 @@ import {
   mdiCog,
   mdiCarBrakeAlert,
   mdiPrinter3d,
+  mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
   mdiConsole,
@@ -125,7 +126,11 @@ import {
   mdiVectorLine,
   mdiOpenInNew,
   mdiImageSizeSelectLarge,
-  mdiListStatus
+  mdiListStatus,
+  mdiLayersMinus,
+  mdiLayers,
+  mdiLayersPlus,
+  mdiFolderOpen
 } from '@mdi/js'
 
 /**
@@ -331,7 +336,14 @@ export const Icons = Object.freeze({
   relativePositioning: mdiVectorLine,
   openInNew: mdiOpenInNew,
   imageSizeSelectLarge: mdiImageSizeSelectLarge,
-  listStatus: mdiListStatus
+  listStatus: mdiListStatus,
+  previousLayer: mdiLayersMinus,
+  currentLayer: mdiLayers,
+  nextLayer: mdiLayersPlus,
+  moves: mdiVectorLine,
+  extrusions: mdiPrinter3dNozzle,
+  retractions: mdiSwapVertical,
+  folderOpen: mdiFolderOpen
 })
 
 export const Waits = Object.freeze({
