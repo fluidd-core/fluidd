@@ -148,15 +148,13 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
-import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePreviewControls.vue'
+import GcodePreviewControls from './GcodePreviewControls.vue'
+import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import { AppFile } from '@/store/files/types'
-import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
-import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
 
 @Component({
   components: {
-    AppBtnCollapseGroup,
     GcodePreviewParserProgressDialog,
     GcodePreview,
     GcodePreviewControls

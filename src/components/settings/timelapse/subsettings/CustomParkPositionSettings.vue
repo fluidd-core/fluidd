@@ -53,18 +53,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import ParkExtrudeRetractSettings from '@/components/settings/timelapse/subsettings/ParkExtrudeRetractSettings.vue'
+import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import { VInput } from '@/types'
 
 @Component({
   components: {
-    ParkExtrudeRetractSettings,
-    AppSetting,
-    CollapsableCard
+    ParkExtrudeRetractSettings
   }
 })
 export default class LayerMacroSettings extends Mixins(StateMixin) {

@@ -11,14 +11,12 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import SystemControl from '@/components/common/SystemControl.vue'
 import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
 import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
 
 @Component({
   components: {
     FileSystem,
-    SystemControl,
     PrinterStatsCard,
     PrinterHistoryCard
   }

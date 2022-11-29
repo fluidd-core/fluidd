@@ -77,12 +77,13 @@
 <script lang="ts">
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 import { Metric } from '@/store/diagnostics/types'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import sandboxedEval from '@/plugins/sandboxedEval'
 import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
 
 @Component({
-  components: { StateExplorer, AppSetting }
+  components: {
+    StateExplorer
+  }
 })
 export default class MetricsCollectorConfig extends Vue {
   @Prop({ type: Object, required: true })

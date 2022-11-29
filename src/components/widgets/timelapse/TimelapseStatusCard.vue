@@ -76,21 +76,13 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSlider from '@/components/ui/AppSlider.vue'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import AppBtn from '@/components/ui/AppBtn.vue'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 
 @Component({
   components: {
     CameraItem,
-    AppBtn,
-    AppSetting,
-    AppSlider,
-    CollapsableCard,
     FileSystem
   }
 })

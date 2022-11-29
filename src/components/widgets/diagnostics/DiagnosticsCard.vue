@@ -33,14 +33,10 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import AppChart from '@/components/ui/AppChart.vue'
 import { EChartsOption } from 'echarts'
 
-@Component({
-  components: { AppChart, CollapsableCard }
-})
+@Component({})
 export default class DiagnosticsCard extends Vue {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
