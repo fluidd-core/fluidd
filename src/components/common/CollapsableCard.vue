@@ -73,7 +73,7 @@
       </div>
     </v-expand-transition>
 
-    <v-expand-transition v-if="lazy">
+    <v-expand-transition v-else>
       <div
         v-show="!isCollapsed && !inLayout"
         id="card-content"
@@ -385,3 +385,10 @@ export default class CollapsableCard extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-card.collapsed > .card-heading {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+</style>

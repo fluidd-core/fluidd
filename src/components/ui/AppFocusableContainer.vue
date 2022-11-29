@@ -7,12 +7,16 @@
       class="v-text-field v-text-field--enclosed v-text-field--outlined"
       :class="{
         'v-input--is-focused': hasFocus,
-        'primary--text': hasFocus
       }"
       hide-details
     >
       <slot />
-      <fieldset aria-hidden="true" />
+      <fieldset
+        aria-hidden="true"
+        :class="{
+          'primary--text': hasFocus
+        }"
+      />
     </v-input>
   </div>
 </template>
