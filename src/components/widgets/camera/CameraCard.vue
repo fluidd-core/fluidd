@@ -32,15 +32,10 @@
       </template>
     </v-row>
 
-    <v-card
-      flat
-      class="overflow-hidden"
-    >
-      <camera-item
-        v-if="!collapsed && cameras.length === 1"
-        :camera="cameras[0]"
-      />
-    </v-card>
+    <camera-item
+      v-if="!collapsed && cameras.length === 1"
+      :camera="cameras[0]"
+    />
   </collapsable-card>
 </template>
 
