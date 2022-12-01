@@ -8,6 +8,7 @@
         tabindex="-1"
         :disabled="disabled"
         :color="property ? 'primary' : undefined"
+        :retain-focus-on-click="!isMobile"
         v-on="on"
         @click="property = !property"
       >
@@ -34,6 +35,10 @@ export default class GcodePreviewButton extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly disabled!: boolean
+
+  get isMobile (): boolean {
+    return this.$vuetify.breakpoint.mobile
+  }
 
   get property () {
     return this.$store.getters['gcodePreview/getViewerOption'](this.name)

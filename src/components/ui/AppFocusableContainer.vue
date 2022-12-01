@@ -1,9 +1,10 @@
 <template>
   <div
-    @focusin="setFocus(true)"
-    @focusout="setFocus(false)"
+    @focusin="hasFocus = true"
+    @focusout="hasFocus = false"
   >
     <v-input
+      ref="input"
       class="v-text-field v-text-field--enclosed v-text-field--outlined"
       :class="{
         'v-input--is-focused': hasFocus,
@@ -22,20 +23,27 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
+import { VInput } from '@/types'
 
 @Component({})
 export default class AppFocusableContainer extends Vue {
+  @Ref('input')
+  readonly input!: VInput
+
   hasFocus = false
 
-  setFocus (value: boolean) {
-    this.hasFocus = value
-
+  @Watch('hasFocus')
+  onHasFocusChanged (value: boolean) {
     if (value) {
       this.$emit('focus')
     } else {
       this.$emit('blur')
     }
+  }
+
+  focus () {
+    (this.input.$refs['input-slot'] as HTMLDivElement)?.focus()
   }
 }
 </script>

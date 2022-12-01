@@ -1,5 +1,6 @@
 <template>
   <app-focusable-container
+    ref="container"
     @focus="focused = true"
     @blur="focused = false"
   >
@@ -202,7 +203,10 @@
       v-if="file"
       class="preview-options"
       @mousedown.stop=""
+      @mouseup="keepFocus"
       @dblclick.stop=""
+      @touchstart="panzoom?.pause()"
+      @touchend="panzoom?.resume()"
     >
       <gcode-preview-button
         name="followProgress"
@@ -269,6 +273,7 @@ import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
+import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
 import { AppFile } from '@/store/files/types'
@@ -294,6 +299,9 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   @Prop({ type: Number, default: 0 })
   readonly layer!: LayerNr
+
+  @Ref('container')
+  readonly container!: AppFocusableContainer
 
   @Ref('svg')
   readonly svg!: SVGElement
@@ -564,21 +572,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.getters['gcodePreview/getFile']
   }
 
-  @Watch('isMobile')
-  onIsMobileChanged () {
-    if (this.panzoom) {
-      if (this.isMobile) {
-        this.panzoom.pause()
-      } else {
-        this.panzoom.resume()
-      }
-    }
-  }
-
   @Watch('focused')
-  onFocusedChanged () {
-    if (this.isMobile && this.panzoom) {
-      if (this.focused) {
+  onFocusedChanged (value: boolean) {
+    if (this.panzoom && !this.isMobile) {
+      if (value) {
         this.panzoom.resume()
       } else {
         this.panzoom.pause()
@@ -613,6 +610,12 @@ export default class GcodePreview extends Mixins(StateMixin) {
   reset () {
     this.panzoom?.moveTo(0, 0)
     this.panzoom?.zoomAbs(0, 0, 1)
+  }
+
+  keepFocus () {
+    if (!this.isMobile) {
+      this.container.focus()
+    }
   }
 
   getViewerOption (name: string) {
