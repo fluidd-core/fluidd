@@ -1,17 +1,10 @@
 import { Module } from 'vuex'
+import { state } from './state'
 import { getters } from './getters'
 import { actions } from './actions'
 import { mutations } from './mutations'
 import { WaitState } from './types'
 import { RootState } from '../types'
-
-export const defaultState = (): WaitState => {
-  return {
-    waits: []
-  }
-}
-
-export const state = defaultState()
 
 const namespaced = true
 

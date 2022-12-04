@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { WebcamConfig, WebcamsState } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 
 export const mutations: MutationTree<WebcamsState> = {
   setReset (state) {

@@ -24,12 +24,12 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
+import { Component, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class FlashMessage extends Vue {
-  @Prop({ type: Boolean })
-  readonly value!: boolean
+  @VModel({ type: Boolean })
+    open!: boolean
 
   @Prop({ type: String, default: 'dark' })
   readonly type!: string
@@ -39,14 +39,6 @@ export default class FlashMessage extends Vue {
 
   @Prop({ type: Number, default: 1500 })
   readonly timeout!: number
-
-  get open () {
-    return this.$props.value
-  }
-
-  set open (value: boolean) {
-    this.$emit('input', value)
-  }
 }
 </script>
 

@@ -31,7 +31,7 @@
         x-small
         text
         class="ml-1"
-        @click="console.scrollToLatest(true)"
+        @click="consoleElement.scrollToLatest(true)"
       >
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
       </app-btn>
@@ -145,7 +145,7 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   readonly fullScreen!: boolean
 
   @Ref('console')
-  readonly console!: Console
+  readonly consoleElement!: Console
 
   scrollingPaused = false
 
@@ -176,7 +176,7 @@ export default class ConsoleCard extends Mixins(StateMixin) {
       server: true
     })
 
-    this.console.flipLayout = value
+    this.consoleElement.flipLayout = value
   }
 
   get items (): ConsoleEntry[] {
@@ -194,20 +194,20 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   set autoScroll (value: boolean) {
     this.$store.dispatch('console/onUpdateAutoScroll', value)
     if (value) {
-      this.console.scrollToLatest(true)
+      this.consoleElement.scrollToLatest(true)
     }
   }
 
   @Watch('inLayout')
   inLayoutChange (inLayout: boolean) {
     if (!inLayout) {
-      this.console.scrollToLatest()
+      this.consoleElement.scrollToLatest()
     }
   }
 
   handleCollapseChange (collapsed: boolean) {
     if (!collapsed) {
-      this.console.scrollToLatest()
+      this.consoleElement.scrollToLatest()
     }
   }
 

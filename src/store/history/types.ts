@@ -1,4 +1,4 @@
-import { KlipperFileMeta } from '@/store/files/types'
+import { KlipperFileMeta } from '@/store/files/types.metadata'
 
 export interface HistoryState {
   count: number;

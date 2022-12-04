@@ -44,7 +44,7 @@ export default class ConsoleItem extends Vue {
 
   get itemTime () {
     return (this.value.time)
-      ? this.$dayjs(this.value.time * 1000).format('HH:mm:ss')
+      ? this.$filters.formatTimeWithSeconds(this.value.time * 1000)
       : ''
   }
 
@@ -67,7 +67,7 @@ export default class ConsoleItem extends Vue {
   itemClick (event: Event) {
     const target = event.target as Element
     if (target.tagName.toLowerCase() === 'a') {
-      const c = target.innerHTML.replaceAll(/<br>/g, '\n').replace(/^\s+|\s+$/gm, '')
+      const c = target.innerHTML.replace(/<br>/g, '\n').replace(/^\s+|\s+$/gm, '')
       this.$emit('click', c)
     }
   }

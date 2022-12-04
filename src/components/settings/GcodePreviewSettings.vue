@@ -44,7 +44,11 @@
       <app-setting :title="$t('app.setting.label.extrusion_line_width')">
         <v-text-field
           :value="extrusionLineWidth"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThan(0)
+          ]"
           filled
           dense
           single-line
@@ -59,7 +63,11 @@
       <app-setting :title="$t('app.setting.label.move_line_width')">
         <v-text-field
           :value="moveLineWidth"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThan(0)
+          ]"
           filled
           dense
           single-line
@@ -74,7 +82,11 @@
       <app-setting :title="$t('app.setting.label.retraction_icon_size')">
         <v-text-field
           :value="retractionIconSize"
-          :rules="[rules.numRequired, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThan(0)
+          ]"
           filled
           dense
           single-line
@@ -146,17 +158,12 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { defaultState } from '@/store/config/index'
+import { defaultState } from '@/store/config/state'
 
 @Component({
   components: {}
 })
 export default class GcodePreviewSettings extends Vue {
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    numMin: (v: number) => v > 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
-  }
-
   get extrusionLineWidth () {
     return this.$store.state.config.uiSettings.gcodePreview.extrusionLineWidth
   }

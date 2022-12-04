@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { WaitState } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 
 export const mutations: MutationTree<WaitState> = {
   /**

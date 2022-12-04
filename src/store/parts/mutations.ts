@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { defaultState } from '.'
+import { defaultState } from './state'
 import { Part, PartObject, PartsState } from './types'
 import Vue from 'vue'
 

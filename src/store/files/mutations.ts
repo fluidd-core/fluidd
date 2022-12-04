@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import mergeFileUpdate from '@/util/merge-file-update'
 import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta, FileRoot } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 import { Globals } from '@/globals'
 
 export const mutations: MutationTree<FilesState> = {

@@ -13,11 +13,7 @@ export const getters: GetterTree<CamerasState, RootState> = {
     return [
       ...state.cameras,
       ...camerasInConfig
-    ].sort((a, b) => {
-      const name1 = a.name.toLowerCase()
-      const name2 = b.name.toLowerCase()
-      return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-    })
+    ].sort((a, b) => a.name.localeCompare(b.name))
   },
 
   getCamerasInConfig: (state, getters, rootState, rootGetters) => {

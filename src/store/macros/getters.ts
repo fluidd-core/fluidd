@@ -46,11 +46,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
         return r
       })
-      .sort((a, b) => {
-        const name1 = a.name.toLowerCase()
-        const name2 = b.name.toLowerCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+      .sort((a, b) => a.name.localeCompare(b.name))
     return macros
   },
 
@@ -109,11 +105,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
           count
         }
       })
-      .sort((a, b) => {
-        const name1 = a.name.toLowerCase()
-        const name2 = b.name.toLowerCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+      .sort((a, b) => a.name.localeCompare(b.name))
 
     return categories
   }

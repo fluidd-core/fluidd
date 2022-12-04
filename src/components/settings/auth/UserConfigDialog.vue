@@ -1,13 +1,12 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="500"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
       v-model="valid"
-      @submit.prevent="handleSave(user)"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -25,7 +24,10 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.max]"
+            :rules="[
+              $rules.required,
+              $rules.lengthLessThanOrEqual(60)
+            ]"
           />
         </app-setting>
 
@@ -40,7 +42,11 @@
             type="password"
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.min, rules.password]"
+            :rules="[
+              $rules.required,
+              $rules.lengthGreaterThanOrEqual(4),
+              $rules.passwordNotEqualUsername(user.username)
+            ]"
           />
         </app-setting>
 
@@ -52,7 +58,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -69,30 +75,23 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class UserConfigDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
   readonly user!: AppUser
 
   valid = false
 
-  rules = {
-    required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    password: (v: string) => (v.toLowerCase() !== this.user.username.toLowerCase()) || this.$t('app.general.simple_form.error.password_username'),
-    min: (v: string) => (v !== undefined && v.length >= 4) || this.$t('app.general.simple_form.error.min', { min: 4 }),
-    max: (v: string) => (v !== undefined && v.length <= 60) || this.$t('app.general.simple_form.error.max', { max: 60 })
-  }
-
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.user)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

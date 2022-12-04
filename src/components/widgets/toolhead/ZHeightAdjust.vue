@@ -152,8 +152,8 @@ export default class ZHeightAdjust extends Mixins(StateMixin) {
       })
 
     if (res) {
-      this.sendGcode(gcode, this.waits.onZApply)
-      this.sendGcode('SAVE_CONFIG', this.waits.onSaveConfig)
+      this.sendGcode(gcode, this.$waits.onZApply)
+      this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
     }
   }
 }

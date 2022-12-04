@@ -7,9 +7,12 @@
       :value="value"
       :reset-value="0"
       :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
-      :rules="rules"
+      :rules="[
+        customRules.minFan
+      ]"
       :disabled="!klippyReady"
       :locked="!klippyReady || isMobile"
+      :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
       @change="handleChange"
     />
 
@@ -40,7 +43,6 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { Fan } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class OutputFan extends Mixins(StateMixin) {
@@ -63,11 +65,11 @@ export default class OutputFan extends Mixins(StateMixin) {
     // If this is a controllable fan, it's either the part fan [fan] or a generic fan [fan_generic].
     if (this.fan.type === 'fan') {
       target = Math.ceil(target * 2.55)
-      this.sendGcode(`M106 S${target}`, Waits.onSetFanSpeed)
+      this.sendGcode(`M106 S${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
     }
     if (this.fan.type === 'fan_generic') {
       target = target / 100
-      this.sendGcode(`SET_FAN_SPEED FAN=${this.fan.name} SPEED=${target}`, Waits.onSetFanSpeed)
+      this.sendGcode(`SET_FAN_SPEED FAN=${this.fan.name} SPEED=${target}`, `${this.$waits.onSetFanSpeed}${this.fan.name}`)
     }
   }
 
@@ -81,15 +83,18 @@ export default class OutputFan extends Mixins(StateMixin) {
     return this.$vuetify.breakpoint.mobile
   }
 
-  rules = [
-    (v: string | number) => {
-      const off_below = (this.fan.config?.off_below)
-        ? this.fan.config.off_below * 100
-        : 0
-      if (!off_below) return true
-      v = +v
-      return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
+  get customRules () {
+    return {
+      minFan: (v: string | number) => {
+        const off_below = (this.fan.config?.off_below || 0) * 100
+
+        if (!off_below) return true
+
+        v = +v
+
+        return (v >= off_below || v === 0) || this.$t('app.general.simple_form.error.min_or_0', { min: off_below })
+      }
     }
-  ]
+  }
 }
 </script>

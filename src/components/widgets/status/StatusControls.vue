@@ -1,6 +1,6 @@
 <template>
-  <app-btn-collapse-group>
-    <div>
+  <div>
+    <app-btn-collapse-group>
       <app-btn
         v-if="printerPrinting || printerPaused"
         :loading="hasWait($waits.onPrintCancel)"
@@ -81,8 +81,35 @@
         </v-icon>
         <span>{{ $t('app.general.btn.reprint') }}</span>
       </app-btn>
-    </div>
-  </app-btn-collapse-group>
+    </app-btn-collapse-group>
+
+    <v-tooltip
+      v-if="printerPrinting || printerPaused"
+      bottom
+    >
+      <template #activator="{ on, attrs }">
+        <app-btn
+          v-bind="attrs"
+          :disabled="!hasParts"
+          color=""
+          fab
+          x-small
+          text
+          class="ml-1"
+          v-on="on"
+          @click="showExcludeObjectDialog = true"
+        >
+          <v-icon>$listStatus</v-icon>
+        </app-btn>
+      </template>
+      <span>{{ $t('app.gcode.label.exclude_object') }}</span>
+    </v-tooltip>
+
+    <ExcludeObjectsDialog
+      v-if="showExcludeObjectDialog"
+      v-model="showExcludeObjectDialog"
+    />
+  </div>
 </template>
 
 <script lang="ts">
@@ -90,19 +117,27 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
+import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 
 @Component({
   components: {
-    JobHistoryItemStatus
+    JobHistoryItemStatus,
+    ExcludeObjectsDialog
   }
 })
 export default class StatusControls extends Mixins(StateMixin) {
+  showExcludeObjectDialog = false
+
   get filename () {
     return this.$store.state.printer.printer.print_stats.filename
   }
 
   get supportsHistoryComponent () {
     return this.$store.getters['server/componentSupport']('history')
+  }
+
+  get hasParts () {
+    return Object.keys(this.$store.getters['parts/getParts']).length > 0
   }
 
   cancelPrint () {

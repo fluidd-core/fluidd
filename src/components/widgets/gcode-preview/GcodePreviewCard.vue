@@ -16,43 +16,7 @@
           {{ $t('app.gcode.btn.load_current_file') }}
         </app-btn>
       </app-btn-collapse-group>
-
-      <app-btn
-        color=""
-        fab
-        x-small
-        text
-        :disabled="!fileLoaded"
-        class="ml-1"
-        @click="autoZoom = !autoZoom"
-      >
-        <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
-      </app-btn>
-
-      <app-btn
-        color=""
-        fab
-        x-small
-        text
-        :disabled="!klippyReady || !(printerPrinting || printerPaused) || !parts.length"
-        @click="excludeObjectDialog = true"
-      >
-        <v-icon>$cancelled</v-icon>
-      </app-btn>
-
-      <app-btn-collapse-group
-        :collapsed="true"
-        menu-icon="$cog"
-      >
-        <GcodePreviewControls :disabled="!fileLoaded" />
-      </app-btn-collapse-group>
     </template>
-
-    <v-card-text v-if="file">
-      {{ file.name }}
-    </v-card-text>
-
-    <v-divider v-if="file" />
 
     <v-card-text>
       <GcodePreviewParserProgressDialog
@@ -61,13 +25,6 @@
         :progress="parserProgress"
         :file="file"
         @cancel="abortParser"
-      />
-
-      <ExcludeObjectsDialog
-        v-if="excludeObjectDialog"
-        :value="excludeObjectDialog"
-        @close="excludeObjectDialog = false"
-        @cancelObject="cancelObject($event)"
       />
 
       <v-row>
@@ -79,7 +36,7 @@
             <v-col>
               <app-slider
                 :label="$t('app.gcode.label.layer')"
-                :value="currentLayer + 1"
+                :value="(!fileLoaded) ? 0 : currentLayer + 1"
                 :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
@@ -166,21 +123,14 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
-import GcodePreviewControls from '@/components/widgets/gcode-preview/GcodePreviewControls.vue'
+import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import { AppFile } from '@/store/files/types'
-import GcodePreviewParserProgressDialog from '@/components/widgets/gcode-preview/GcodePreviewParserProgressDialog.vue'
 import { MinMax } from '@/store/gcodePreview/types'
-import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
-import { AxiosResponse } from 'axios'
-import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
 
 @Component({
   components: {
-    AppBtnCollapseGroup,
     GcodePreviewParserProgressDialog,
-    GcodePreview,
-    GcodePreviewControls,
-    ExcludeObjectsDialog
+    GcodePreview
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
@@ -195,7 +145,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   currentLayer = 0
   moveProgress = 0
-  excludeObjectDialog = false
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -358,7 +307,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     const file = this.printerFile as AppFile
     this.getGcode(file)
       .then(response => response?.data)
-      .then((gcode: AxiosResponse) => {
+      .then(gcode => {
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode
@@ -396,34 +345,20 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   async cancelObject (id: string) {
-    const reqId = id.toUpperCase().replace(/\s/g, '_')
-
     const res = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
     if (res) {
+      const reqId = id.toUpperCase().replace(/\s/g, '_')
+
       this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
     }
   }
 
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
-  }
-
-  get autoZoom () {
-    return this.$store.state.config.uiSettings.gcodePreview.autoZoom
-  }
-
-  set autoZoom (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.gcodePreview.autoZoom',
-      value,
-      server: true
-    })
-
-    this.preview.reset()
   }
 }
 </script>

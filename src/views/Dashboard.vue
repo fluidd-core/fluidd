@@ -99,6 +99,8 @@ export default class Dashboard extends Mixins(StateMixin) {
   @Watch('columnCount')
   onColumnCount (value: number) {
     this.$store.commit('config/setContainerColumnCount', value)
+
+    this.updateMenuCollapsed()
   }
 
   get columnSpan () {
@@ -152,8 +154,6 @@ export default class Dashboard extends Mixins(StateMixin) {
     }
 
     this.containers = containers.slice(0, 4)
-
-    this.updateMenuCollapsed()
   }
 
   get dragOptions () {

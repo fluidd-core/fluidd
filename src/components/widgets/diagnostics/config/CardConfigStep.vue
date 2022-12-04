@@ -7,7 +7,9 @@
         dense
         single-line
         hide-details="auto"
-        :rules="[rules.required]"
+        :rules="[
+          $rules.required
+        ]"
       />
     </app-setting>
 
@@ -52,7 +54,10 @@
         single-line
         hide-details="auto"
         suffix="px"
-        :rules="[rules.required, rules.min]"
+        :rules="[
+          $rules.required,
+          $rules.numberGreaterThanOrEqual(1)
+        ]"
       />
     </app-setting>
   </div>
@@ -61,20 +66,12 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { Icons } from '@/globals'
 
-@Component({
-  components: { AppSetting }
-})
+@Component({})
 export default class CardConfigStep extends Vue {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
-
-  rules = {
-    required: (v: string) => (v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    min: (v: number) => (v >= 1) || this.$t('app.general.simple_form.error.min', { min: 1 })
-  }
 
   get icons () {
     const icons = Object.keys(Icons)

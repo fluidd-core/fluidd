@@ -119,7 +119,7 @@
               </status-label>
 
               <status-label :label="$t('app.general.label.finish_time')">
-                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta, $store.state.config.uiSettings.general.timeformat, $store.state.config.uiSettings.general.dateformat + ' - ' + $store.state.config.uiSettings.general.timeformat) }}</span>
+                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta * 1000) }}</span>
               </status-label>
             </v-col>
           </v-row>
@@ -199,7 +199,7 @@ import FilesMixin from '@/mixins/files'
 export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
   // Maintains the state of flow
   flow = {
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     lastExtruderPosition: 0,
     value: 0,
     max: 0

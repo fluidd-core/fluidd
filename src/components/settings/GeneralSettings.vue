@@ -15,7 +15,9 @@
           dense
           single-line
           hide-details="auto"
-          :rules="instanceNameRules"
+          :rules="[
+            $rules.required
+          ]"
           :value="instanceName"
           :default-value="$globals.APP_NAME"
           @change="setInstanceName"
@@ -40,31 +42,25 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.date_time_format')">
+      <app-setting :title="$t('app.setting.label.date_format')">
         <v-select
-          v-model="dateformat"
+          v-model="dateFormat"
           filled
           dense
           hide-details="auto"
-          :items="[
-            { text: $filters.formatDateTime(current_time, 'MMM. DD, YYYY'), value: 'MMM. DD,' },
-            { text: $filters.formatDateTime(current_time, 'DD MMM. YYYY'), value: 'DD MMM.' }
-          ]"
-          item-value="value"
-          item-text="text"
+          :items="availableDateFormats"
         />
-        &nbsp;
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.time_format')">
         <v-select
-          v-model="timeformat"
+          v-model="timeFormat"
           filled
           dense
           hide-details="auto"
-          :items="[
-            { text: $filters.formatDateTime(current_time, 'h:mm a'), value: 'hh:mm a' },
-            { text: $filters.formatDateTime(current_time, 'HH:mm'), value: 'HH:mm' }
-          ]"
-          item-value="value"
-          item-text="text"
+          :items="availableTimeFormats"
         />
       </app-setting>
 
@@ -93,9 +89,6 @@
           single-line
           hide-details="auto"
           :items="[{ text: $tc('app.setting.label.none'), value: null }, ...powerDevicesList]"
-          :value="topNavPowerToggle"
-          item-value="value"
-          item-text="text"
         />
       </app-setting>
 
@@ -160,6 +153,7 @@
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { VInput } from '@/types'
+import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
 
 @Component({
   components: {}
@@ -167,10 +161,6 @@ import { VInput } from '@/types'
 export default class GeneralSettings extends Mixins(StateMixin) {
   @Ref('instanceName')
   readonly instanceNameElement!: VInput
-
-  instanceNameRules = [
-    (v: string) => !!v || 'Required'
-  ]
 
   get estimateTypes () {
     return [
@@ -196,7 +186,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   get supportedLocales () {
     return [
       { name: 'Browser default', code: 'default' },
-      ...this.$store.state.config.hostConfig.locales
+      ...SupportedLocales
     ]
   }
 
@@ -204,28 +194,48 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/onLocaleChange', value)
   }
 
-  get dateformat () {
-    return this.$store.state.config.uiSettings.general.dateformat
+  get dateFormat () {
+    return this.$store.state.config.uiSettings.general.dateFormat
   }
 
-  set dateformat (value: boolean) {
+  set dateFormat (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.dateformat',
+      path: 'uiSettings.general.dateFormat',
       value,
       server: true
     })
   }
 
-  get timeformat () {
-    return this.$store.state.config.uiSettings.general.timeformat
+  get availableDateFormats () {
+    const date = new Date()
+
+    return Object.entries(DateFormats)
+      .map(([key, entry]) => ({
+        value: key,
+        text: `${date.toLocaleDateString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+      }))
   }
 
-  set timeformat (value: boolean) {
+  get timeFormat () {
+    return this.$store.state.config.uiSettings.general.timeFormat
+  }
+
+  set timeFormat (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.timeformat',
+      path: 'uiSettings.general.timeFormat',
       value,
       server: true
     })
+  }
+
+  get availableTimeFormats () {
+    const date = new Date()
+
+    return Object.entries(TimeFormats)
+      .map(([key, entry]) => ({
+        value: key,
+        text: `${date.toLocaleTimeString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+      }))
   }
 
   get confirmOnEstop () {

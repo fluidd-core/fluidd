@@ -1,10 +1,13 @@
 <template>
-  <div v-if="camera">
+  <v-card
+    v-if="camera"
+    class="overflow-hidden"
+  >
     <CameraItem
       :camera="camera"
       :fullscreen="true"
     />
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -18,8 +21,8 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
   }
 })
 export default class FullscreenCamera extends Vue {
-  cameraId?: string
-  camera?: CameraConfig
+  cameraId: string | null = null
+  camera: CameraConfig | null = null
 
   created () {
     this.cameraId = this.$route.params.cameraId

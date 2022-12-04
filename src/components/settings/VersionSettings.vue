@@ -152,7 +152,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   get isRefreshing () {
-    return this.$store.state.version.refreshing
+    return this.hasWait(this.$waits.onVersionRefresh)
   }
 
   get hasUpdates () {

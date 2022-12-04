@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="320"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="addInstanceForm"
@@ -21,7 +20,9 @@
             autofocus
             outlined
             :label="label"
-            :rules="rules"
+            :rules="[
+              $rules.required
+            ]"
             hide-details="auto"
             required
           />
@@ -34,7 +35,7 @@
           <app-btn
             color="warning"
             text
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -51,22 +52,19 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class FileNameDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: String, required: true })
   readonly title!: string
 
   @Prop({ type: String, required: true })
   readonly label!: string
-
-  @Prop({ type: Array, required: false })
-  readonly rules!: []
 
   @Prop({ type: String, required: true })
   readonly name!: string
@@ -81,7 +79,7 @@ export default class FileNameDialog extends Mixins(StateMixin) {
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.newName)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

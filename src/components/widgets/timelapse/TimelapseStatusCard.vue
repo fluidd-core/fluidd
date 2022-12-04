@@ -14,18 +14,18 @@
           <img
             :src="previewUrl"
             class="mx-auto thumbnail"
-            :style="{filter: isRendering ? `saturate(${renderStatus.progress}%)` : 'none'}"
+            :style="{filter: isRendering ? `saturate(${renderProgress}%)` : 'none'}"
           >
           <v-progress-circular
             v-if="isRendering"
             class="render-progress"
             color="primary"
             size="64"
-            :value="renderStatus.progress"
+            :value="renderProgress"
           />
         </div>
         <camera-item
-          v-else
+          v-else-if="camera"
           :camera="camera"
         />
       </v-row>
@@ -76,21 +76,13 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSlider from '@/components/ui/AppSlider.vue'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import AppBtn from '@/components/ui/AppBtn.vue'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 
 @Component({
   components: {
     CameraItem,
-    AppBtn,
-    AppSetting,
-    AppSlider,
-    CollapsableCard,
     FileSystem
   }
 })
@@ -98,11 +90,11 @@ export default class StatusCard extends Mixins(StateMixin) {
   selectedFrameNumber = 0
 
   saveFrames () {
-    SocketActions.machineTimelapseSaveFrames(this.waits.onTimelapseSaveFrame)
+    SocketActions.machineTimelapseSaveFrames(this.$waits.onTimelapseSaveFrame)
   }
 
   get savingFrames () {
-    return this.hasWait(this.waits.onTimelapseSaveFrame)
+    return this.hasWait(this.$waits.onTimelapseSaveFrame)
   }
 
   get selectedFrame () {
@@ -119,7 +111,7 @@ export default class StatusCard extends Mixins(StateMixin) {
     if (this.lastFrame && this.lastFrame?.file) {
       let file = this.lastFrame?.file
       if (this.selectedFrame) {
-        const [ext] = file?.split('.').slice(-1)
+        const [ext] = file.split('.').slice(-1)
         file = `frame${this.selectedFrame.toString().padStart(6, '0')}.${ext}`
       }
 
@@ -140,8 +132,7 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get camera () {
-    return this.$store.getters['cameras/getCameraById'](this.settings.camera) ??
-      { url: '/webcam/?action=snapshot', type: 'mjpegstreamer-adaptive' }
+    return this.$store.getters['cameras/getCameraById'](this.settings.camera)
   }
 
   get settings (): TimelapseSettings {
@@ -154,6 +145,16 @@ export default class StatusCard extends Mixins(StateMixin) {
 
   get renderStatus (): RenderStatus | undefined {
     return this.$store.getters['timelapse/getRenderStatus']
+  }
+
+  get renderProgress () {
+    const renderStatus = this.renderStatus
+
+    if (renderStatus?.status === 'running') {
+      return renderStatus.progress
+    }
+
+    return 0
   }
 
   get apiUrl () {

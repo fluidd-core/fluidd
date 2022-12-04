@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="350"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="addInstanceForm"
@@ -23,7 +22,10 @@
             autofocus
             outlined
             :label="label"
-            :rules="rules"
+            :rules="[
+              $rules.required,
+              customRules.uniqueName
+            ]"
             hide-details="auto"
             required
           />
@@ -35,7 +37,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -52,12 +54,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { MacroCategory } from '@/store/macros/types'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class MacroCategoryDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: String, required: true })
   readonly title!: string
@@ -65,14 +68,17 @@ export default class MacroCategoryDialog extends Vue {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: Array, required: false })
-  readonly rules!: []
-
   @Prop({ type: String, required: true })
   readonly name!: string
 
   newName = ''
   valid = true
+
+  get customRules () {
+    return {
+      uniqueName: (v: string) => this.categories.findIndex((c: MacroCategory) => c.name.toLowerCase() === v.toLowerCase()) < 0 || this.$t('app.general.simple_form.error.exists')
+    }
+  }
 
   mounted () {
     this.newName = this.name
@@ -85,7 +91,7 @@ export default class MacroCategoryDialog extends Vue {
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.newName)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

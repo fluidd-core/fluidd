@@ -29,7 +29,7 @@
               small
               color=""
               class="ml-2"
-              @click.prevent.stop="handleEditCategory(category.id)"
+              @click.prevent.stop="handleEditCategory"
             >
               <v-icon small>
                 $cog
@@ -48,12 +48,11 @@
               <app-macro-btn
                 v-bind="attrs"
                 :macro="macro"
-                :loading="hasWait(`${waits.onMacro}${macro.name}`)"
-                :elevation="2"
+                :loading="hasWait(`${$waits.onMacro}${macro.name}`)"
                 enable-params
                 class="me-2 mb-2 float-left"
                 v-on="on"
-                @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
+                @click="sendGcode($event, `${$waits.onMacro}${macro.name}`)"
               >
                 {{ macro.alias || macro.name }}
               </app-macro-btn>
@@ -89,7 +88,7 @@
               small
               color=""
               class="ml-2"
-              @click.prevent.stop="handleEditCategory('0')"
+              @click.prevent.stop="handleEditCategory"
             >
               <v-icon small>
                 $cog
@@ -108,12 +107,11 @@
               <app-macro-btn
                 v-bind="attrs"
                 :macro="macro"
-                :loading="hasWait(`${waits.onMacro}${macro.name}`)"
-                :elevation="2"
+                :loading="hasWait(`${$waits.onMacro}${macro.name}`)"
                 enable-params
                 class="me-2 mb-2 float-left"
                 v-on="on"
-                @click="sendGcode($event, `${waits.onMacro}${macro.name}`)"
+                @click="sendGcode($event, `${$waits.onMacro}${macro.name}`)"
               >
                 {{ macro.alias || macro.name }}
               </app-macro-btn>
@@ -129,13 +127,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 import { Macro } from '@/store/macros/types'
 
 @Component({})
 export default class Macros extends Mixins(StateMixin) {
-  waits = Waits
-
   get macros () {
     return this.$store.getters['macros/getVisibleMacros']
   }
@@ -161,3 +156,9 @@ export default class Macros extends Mixins(StateMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  :deep(.v-expansion-panel::before) {
+    box-shadow: none;
+  }
+</style>

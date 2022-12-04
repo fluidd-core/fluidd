@@ -67,11 +67,7 @@ export default class FileEditor extends Vue {
 
   async initEditor () {
     if (!monaco) {
-      const { default: promise } = await import(
-        /* webpackChunkName: "monaco-editor" */
-        /* webpackPrefetch: -100 */
-        './setupMonaco'
-      )
+      const { default: promise } = await import('./setupMonaco')
       monaco = await promise
     }
 

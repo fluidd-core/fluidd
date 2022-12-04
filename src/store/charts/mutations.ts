@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { ChartData, ChartState } from './types'
-import { defaultState } from './'
+import { defaultState } from './state'
 
 export const mutations: MutationTree<ChartState> = {
   /**

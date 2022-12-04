@@ -8,9 +8,13 @@
       <v-text-field
         ref="parkRetractDistanceElement"
         :value="parkRetractDistance"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(0)]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThanOrEqual(0)
+        ]"
         :disabled="parkRetractDistanceBlocked"
-        :hide-details="parkRetractDistanceElement ? parkRetractDistanceElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -27,9 +31,13 @@
       <v-text-field
         ref="parkRetractSpeedElement"
         :value="parkRetractSpeed"
-        :rules="[rules.numRequired, rules.validNum, rules.numAboveZero]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThan(0)
+        ]"
         :disabled="parkRetractSpeedBlocked"
-        :hide-details="parkRetractSpeedElement ? parkRetractSpeedElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -46,9 +54,13 @@
       <v-text-field
         ref="parkExtrudeDistanceElement"
         :value="parkExtrudeDistance"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(0)]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThanOrEqual(0)
+        ]"
         :disabled="parkExtrudeDistanceBlocked"
-        :hide-details="parkExtrudeDistanceElement ? parkExtrudeDistanceElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -65,9 +77,13 @@
       <v-text-field
         ref="parkExtrudeSpeedElement"
         :value="parkExtrudeSpeed"
-        :rules="[rules.numRequired, rules.validNum, rules.numAboveZero]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThan(0)
+        ]"
         :disabled="parkExtrudeSpeedBlocked"
-        :hide-details="parkExtrudeSpeedElement ? parkExtrudeSpeedElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -81,18 +97,11 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import { VInput } from '@/types'
 
-@Component({
-  components: {
-    AppSetting,
-    CollapsableCard
-  }
-})
+@Component({})
 export default class LayerMacroSettings extends Mixins(StateMixin) {
   @Ref('parkRetractDistanceElement')
   readonly parkRetractDistanceElement!: VInput
@@ -105,14 +114,6 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
 
   @Ref('parkExtrudeSpeedElement')
   readonly parkExtrudeSpeedElement!: VInput
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (min: number) => (v: number) => v >= min || this.$t('app.general.simple_form.error.min', { min }),
-    numAboveZero: (v: number) => v > 0 || this.$t('app.general.simple_form.error.min', { min: '> 0' }),
-    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.min', { max })
-  }
 
   get parkRetractDistanceBlocked (): boolean {
     return this.$store.getters['timelapse/isBlockedSetting']('park_retract_distance')

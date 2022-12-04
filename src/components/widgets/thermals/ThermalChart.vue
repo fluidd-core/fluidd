@@ -3,7 +3,7 @@
     class="chart"
     :style="{ 'height': height }"
   >
-    <v-chart
+    <e-chart
       ref="chart"
       style="overflow: initial;"
       :option="options"
@@ -17,7 +17,7 @@
 
 <script lang='ts'>
 import { Vue, Component, Watch, Prop, Ref } from 'vue-property-decorator'
-import type { ECharts } from 'echarts'
+import type { ECharts, EChartsOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
 
 @Component({})
@@ -286,7 +286,7 @@ export default class ThermalChart extends Vue {
         zoomOnMouseWheel: 'shift'
       }],
       series: this.series
-    }
+    } as EChartsOption
 
     return options
   }
@@ -385,8 +385,7 @@ export default class ThermalChart extends Vue {
   }
 
   xAxisPointerFormatter (params: any) {
-    const d = this.$dayjs(params.value)
-    return d.format('H:mm:ss')
+    return this.$filters.formatTimeWithSeconds(params.value)
   }
 
   yAxisPointerFormatter (params: any) {

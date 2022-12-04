@@ -82,7 +82,7 @@
                 v-html="n.description"
               />
               <v-list-item-subtitle class="notification-timestamp">
-                {{ $filters.formatDateTime(n.timestamp) }}
+                {{ $filters.formatRelativeTimeToNow(n.timestamp * 1000) }}
               </v-list-item-subtitle>
               <v-list-item-subtitle v-if="n.to">
                 <app-btn
@@ -243,7 +243,7 @@ export default class AppNotificationMenu extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   :deep(.app-notifications .v-list-item__action.notification-suffix),
   :deep(.app-notifications .v-list-item__action.notification-clear) {

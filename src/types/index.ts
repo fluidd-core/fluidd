@@ -4,7 +4,7 @@ import { MeshData } from './mesh'
 import { AppTableHeader } from './tableheaders'
 import { VForm, VInput, VSlider } from './vuetify'
 
-export {
+export type {
   FileSystemDialogData,
   NewDirectory,
   FlashMessage,

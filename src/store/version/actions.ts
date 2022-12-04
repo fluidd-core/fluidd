@@ -24,7 +24,6 @@ export const actions: ActionTree<VersionState, RootState> = {
    * Inits any file config we may have.
    */
   async onUpdateStatus ({ commit, dispatch, getters }, payload) {
-    commit('setRefreshing', false)
     commit('setUpdateStatus', payload)
 
     if (getters.hasUpdates) {
@@ -39,14 +38,6 @@ export const actions: ActionTree<VersionState, RootState> = {
     } else {
       dispatch('notifications/clearNotification', 'updates-available', { root: true })
     }
-  },
-
-  /**
-   * Tells us if moonraker is in the middle of refreshing
-   * the version state.
-   */
-  async refreshing ({ commit }, payload) {
-    commit('setRefreshing', payload)
   },
 
   /**

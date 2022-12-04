@@ -1,9 +1,8 @@
 import { MutationTree } from 'vuex'
-import { defaultState } from './'
+import { defaultState } from './state'
 import { GcodePreviewState } from './types'
 import Vue from 'vue'
 import { AppFile } from '@/store/files/types'
-import { Thread } from 'threads'
 
 export const mutations: MutationTree<GcodePreviewState> = {
   /**
@@ -37,7 +36,7 @@ export const mutations: MutationTree<GcodePreviewState> = {
     state.parserProgress = payload
   },
 
-  setParserWorker (state, payload: Thread) {
+  setParserWorker (state, payload: Worker) {
     state.parserWorker = payload
   }
 }

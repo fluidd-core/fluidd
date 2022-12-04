@@ -33,7 +33,7 @@
           single-line
           outlined
           hide-details
-          @change="handleChange($event)"
+          @change="handleChange"
           @focus="$event.target.select()"
         >
           <template #prepend>
@@ -86,7 +86,7 @@
       :disabled="disabled || loading || isLocked || overridden"
       dense
       hide-details
-      @change="handleChange($event)"
+      @change="handleChange"
     />
   </v-form>
 </template>
@@ -139,8 +139,8 @@ export default class AppSlider extends Mixins(StateMixin) {
   valid = true
   lockState = false
   overridden = false
-  internalValue: number = this.value
-  internalMax = this.max
+  internalValue = 0
+  internalMax = 0
   pending = false
 
   // If the parent updates the value.
@@ -195,19 +195,21 @@ export default class AppSlider extends Mixins(StateMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules,
-      (v: string | number) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-      (v: string | number) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
+      this.$rules.numberValid,
+      this.$rules.numberGreaterThanOrEqual(this.min)
     ]
     if (!this.overridable) {
       rules.push(
-        (v: string | number) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
+        this.$rules.numberLessThanOrEqual(this.max)
       )
     }
     return rules
   }
 
-  mounted () {
+  created () {
     this.lockState = this.locked
+    this.internalValue = this.value
+    this.internalMax = this.max
   }
 
   handleChange (value: number) {

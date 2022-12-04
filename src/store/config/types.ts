@@ -21,13 +21,19 @@ export interface UiSettings {
   tableHeaders: AppTableConfiguredHeaders;
   gcodePreview: GcodePreviewConfig;
   fileSystem: FileSystemConfig;
+  toolhead: ToolheadConfig;
+}
+
+export interface ToolheadConfig {
+  forceMove: boolean;
+  extrudeSpeed: number;
+  extrudeLength: number;
 }
 
 export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
   hosted: boolean;
-  locales: SupportedLocale[];
   themePresets: SupportedTheme[];
 }
 
@@ -54,8 +60,8 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
-  dateformat: string;
-  timeformat: string;
+  dateFormat: string;
+  timeFormat: string;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;

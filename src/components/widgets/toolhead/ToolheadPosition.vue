@@ -21,6 +21,7 @@
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @change="moveTo('X', $event)"
+          @focus="$event.target.select()"
         />
       </v-col>
       <v-col
@@ -39,6 +40,7 @@
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @change="moveTo('Y', $event)"
+          @focus="$event.target.select()"
         />
       </v-col>
       <v-col
@@ -57,6 +59,7 @@
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
+          @focus="$event.target.select()"
         />
       </v-col>
       <v-col
@@ -130,15 +133,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly forceMove!: boolean
-
   get gcodePosition () {
     return this.$store.state.printer.printer.gcode_move.gcode_position
   }
@@ -153,6 +153,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get useGcodeCoords () {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
+  }
+
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   get xForceMove () {

@@ -13,11 +13,11 @@
     />
 
     <flash-message
-      v-if="flashMessage"
-      v-model="flashMessage.open"
-      :text="flashMessage.text"
-      :type="flashMessage.type"
-      :timeout="flashMessage.timeout"
+      v-if="flashMessageState"
+      v-model="flashMessageState.open"
+      :text="flashMessageState.text"
+      :type="flashMessageState.type"
+      :timeout="flashMessageState.timeout"
     />
 
     <v-btn
@@ -83,7 +83,6 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
-import { Waits } from '@/globals'
 import { LinkPropertyHref } from 'vue-meta'
 
 @Component<App>({
@@ -106,7 +105,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   showUpdateUI = false
   customBackgroundImageStyle: Record<string, string> = {}
 
-  flashMessage: FlashMessage = {
+  flashMessageState: FlashMessage = {
     open: false,
     text: undefined,
     type: undefined
@@ -127,7 +126,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   }
 
   get loading () {
-    return this.$store.getters['wait/hasWait'](Waits.onLoadLanguage)
+    return this.hasWait(this.$waits.onLoadLanguage)
   }
 
   get progress () {
@@ -267,10 +266,10 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
   mounted () {
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
-      this.flashMessage.text = (payload && payload.text) || undefined
-      this.flashMessage.type = (payload && payload.type) || undefined
-      this.flashMessage.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
-      this.flashMessage.open = true
+      this.flashMessageState.text = (payload && payload.text) || undefined
+      this.flashMessageState.type = (payload && payload.type) || undefined
+      this.flashMessageState.timeout = (payload && payload.timeout !== undefined) ? payload.timeout : undefined
+      this.flashMessageState.open = true
     })
 
     const legacyElementsSelectors = [

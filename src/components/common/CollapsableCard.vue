@@ -58,22 +58,22 @@
         :style="_contentStyles"
         @transitionend="transitionEvent"
       >
-        <v-card-subtitle
-          v-if="subTitle || hasSubTitleSlot"
-          class="py-2"
-        >
-          <slot name="sub-title">
-            <span v-html="subTitle" />
-          </slot>
-        </v-card-subtitle>
-        <v-divider v-if="subTitle || hasSubTitleSlot" />
+        <template v-if="subTitle || hasSubTitleSlot">
+          <v-card-subtitle class="py-2">
+            <slot name="sub-title">
+              <span v-html="subTitle" />
+            </slot>
+          </v-card-subtitle>
+
+          <v-divider />
+        </template>
 
         <!-- Primary Content slot -->
         <slot />
       </div>
     </v-expand-transition>
 
-    <v-expand-transition v-if="lazy">
+    <v-expand-transition v-else>
       <div
         v-show="!isCollapsed && !inLayout"
         id="card-content"
@@ -81,15 +81,17 @@
         :style="_contentStyles"
         @transitionend="transitionEvent"
       >
-        <v-card-subtitle
+        <template
           v-if="subTitle || hasSubTitleSlot"
-          class="py-2"
         >
-          <slot name="subTitle">
-            <span v-html="subTitle" />
-          </slot>
-        </v-card-subtitle>
-        <v-divider v-if="subTitle || hasSubTitleSlot" />
+          <v-card-subtitle class="py-2">
+            <slot name="subTitle">
+              <span v-html="subTitle" />
+            </slot>
+          </v-card-subtitle>
+
+          <v-divider />
+        </template>
 
         <!-- Primary Content slot -->
         <slot />
@@ -210,7 +212,7 @@ export default class CollapsableCard extends Vue {
    * Base classes.
    */
   baseCardClasses = { 'collapsable-card': true }
-  baseContentClasses = ''
+  baseContentClasses = { 'overflow-hidden': true }
 
   get _cardClasses () {
     // If user defined, format to an object based on the input.
@@ -223,14 +225,21 @@ export default class CollapsableCard extends Vue {
     return {
       ...classes,
       ...this.baseCardClasses,
-      collapsed: this.isCollapsed
+      collapsed: this.isCollapsed || !this.hasDefaultSlot
     }
   }
 
   get _contentClasses () {
-    return (this.contentClasses)
-      ? this.contentClasses
-      : this.baseContentClasses
+    const classes: any = {}
+    if (this.contentClasses) {
+      this.contentClasses.split(' ').forEach(s => {
+        classes[s] = true
+      })
+    }
+    return {
+      ...classes,
+      ...this.baseContentClasses
+    }
   }
 
   // height can not be applied to the card, otherwise
@@ -385,3 +394,10 @@ export default class CollapsableCard extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-card.collapsed > .card-heading {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+</style>

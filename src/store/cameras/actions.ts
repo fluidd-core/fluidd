@@ -2,10 +2,10 @@ import { ActionTree } from 'vuex'
 import { CamerasState, CameraConfigWithoutId, CameraConfig, CameraService, LegacyCamerasState, LegacyCameraType } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import httpClient from '@/api/httpClient'
 import { Globals } from '@/globals'
 import { v4 as uuidv4 } from 'uuid'
 import setUrlQueryParam from '@/util/set-url-query-param'
+import { httpClientActions } from '@/api/httpClientActions'
 
 const legacyCameraTypeToCameraService: Record<LegacyCameraType, CameraService> = {
   mjpgstream: 'mjpegstreamer',
@@ -49,19 +49,11 @@ export const actions: ActionTree<CamerasState, RootState> = {
           targetFpsIdle: legacyCamera.fpsidletarget
         } as CameraConfigWithoutId
 
-        await httpClient.post('/server/database/item', {
-          namespace: Globals.MOONRAKER_DB.webcams.NAMESPACE,
-          key: legacyCamera.id,
-          value: camera
-        })
+        await httpClientActions.serverDatabaseItemPost(Globals.MOONRAKER_DB.webcams.NAMESPACE, legacyCamera.id, camera)
       }
 
-      await httpClient.post('/server/database/item', {
-        namespace: Globals.MOONRAKER_DB.fluidd.NAMESPACE,
-        key: Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name,
-        value: {
-          activeCamera: activeCamera || 'all'
-        }
+      await httpClientActions.serverDatabaseItemPost(Globals.MOONRAKER_DB.fluidd.NAMESPACE, Globals.MOONRAKER_DB.fluidd.ROOTS.cameras.name, {
+        activeCamera: activeCamera || 'all'
       })
     }
 
