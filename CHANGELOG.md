@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.22.0](https://github.com/fluidd-core/fluidd/compare/v1.21.1...v1.22.0) (2022-12-04)
+
+
+### Features
+
+* adds extrusion estimations ([#950](https://github.com/fluidd-core/fluidd/issues/950)) ([4fa93c9](https://github.com/fluidd-core/fluidd/commit/4fa93c97ec8fa9a75322ee9563cbd3466e7c3271))
+* adds z_thermal_adjust support ([#951](https://github.com/fluidd-core/fluidd/issues/951)) ([d6d11db](https://github.com/fluidd-core/fluidd/commit/d6d11dbe261bd21de9a813ab81f0670cfde7fe0e))
+* g-code preview alternative controls ([#969](https://github.com/fluidd-core/fluidd/issues/969)) ([846f5f9](https://github.com/fluidd-core/fluidd/commit/846f5f94ab39f79224f5b1a23f75db3dbb254712))
+* move exclude objects list to StatusControls ([#935](https://github.com/fluidd-core/fluidd/issues/935)) ([504913c](https://github.com/fluidd-core/fluidd/commit/504913cc23563e3afeeffc14c9ee7bd6db068ac3))
+* new AppFocusableContainer component ([#942](https://github.com/fluidd-core/fluidd/issues/942)) ([961b45f](https://github.com/fluidd-core/fluidd/commit/961b45f0a866805154fb2131f2121b50c8f3861d))
+* sort instance list alphabetically ([#946](https://github.com/fluidd-core/fluidd/issues/946)) ([935a6c5](https://github.com/fluidd-core/fluidd/commit/935a6c5266313074c17edc326ad1b0a21bf84cbc))
+* use service names provided by Moonraker ([#940](https://github.com/fluidd-core/fluidd/issues/940)) ([ad84769](https://github.com/fluidd-core/fluidd/commit/ad847690cf0e40c691c0e03613b38e0fe5ada661))
+
+
+### Bug Fixes
+
+* disable XY controls for delta printers only ([0de81b6](https://github.com/fluidd-core/fluidd/commit/0de81b669aea8100fb25beb05cb5f2fa1f96da53))
+* exclude extruder_stepper from extruders ([1b8819c](https://github.com/fluidd-core/fluidd/commit/1b8819c0a294c7098b78506844d7d9f553a95be5))
+* extrusion estimation spacing ([#961](https://github.com/fluidd-core/fluidd/issues/961)) ([ebc1c09](https://github.com/fluidd-core/fluidd/commit/ebc1c092ba0bc6bc77ce70b0e62a650b00a721e1))
+* **i18n:** adds missing 'start service' translation ([#945](https://github.com/fluidd-core/fluidd/issues/945)) ([70d48e4](https://github.com/fluidd-core/fluidd/commit/70d48e4e33f60fa2f2c4f23709a0914cce4d1b51))
+* Klipper reset should only reset its own state ([06d81c5](https://github.com/fluidd-core/fluidd/commit/06d81c5f54c85414ad09426435e07f65213e44e4))
+* mitigates console warning ([a4c9ea5](https://github.com/fluidd-core/fluidd/commit/a4c9ea5f014f63c3aa53af868bde696f120587f6))
+* pre-commit hook linting ([#959](https://github.com/fluidd-core/fluidd/issues/959)) ([a23b06c](https://github.com/fluidd-core/fluidd/commit/a23b06cf125a1609947e712de84dd41b5e81fe2d))
+* properly scale print finish ETA ([#958](https://github.com/fluidd-core/fluidd/issues/958)) ([967f30e](https://github.com/fluidd-core/fluidd/commit/967f30e056b9af8ca93011a97c98cd18dc5aa3ea))
+* set layout to default if it is missing ([310c740](https://github.com/fluidd-core/fluidd/commit/310c7400f504adf6480a672b32032766e44ff0b0))
+* show html formatted welcome message ([#930](https://github.com/fluidd-core/fluidd/issues/930)) ([be9d138](https://github.com/fluidd-core/fluidd/commit/be9d138106545c31be60ce5a01f2b2343f534aa0))
+* sort temperature sensors by type and name ([#957](https://github.com/fluidd-core/fluidd/issues/957)) ([3f76335](https://github.com/fluidd-core/fluidd/commit/3f763358cb7b723a7c4647db547ccc0b5bf969d2))
+* stop slider animation on navigating to page ([#927](https://github.com/fluidd-core/fluidd/issues/927)) ([c698675](https://github.com/fluidd-core/fluidd/commit/c6986757a67af6af11f17d201f42f5cf8608cdb1))
+* **style:** button and card elevation values ([e0a4c78](https://github.com/fluidd-core/fluidd/commit/e0a4c78bdc3265a88bf1dde197246302cf063d1f))
+* **style:** cards bottom border radius ([83c7fb9](https://github.com/fluidd-core/fluidd/commit/83c7fb9c87b19e4460279100414bc283dabfa2c3))
+* **style:** more cards bottom border radius ([666e535](https://github.com/fluidd-core/fluidd/commit/666e53500ecca609d26569949dc9c452ebbd8aef))
+* **style:** PrinterStatusCard bottom border radius ([69eba56](https://github.com/fluidd-core/fluidd/commit/69eba5625d31718ea913c5e3b5f63c5225a64740))
+* timelapse card error when no camera is set ([7ac5a4d](https://github.com/fluidd-core/fluidd/commit/7ac5a4d770149cf8db592673d7e48d1444bbed93))
+* update menu collapsed state on column count ([f14173f](https://github.com/fluidd-core/fluidd/commit/f14173f28163304bc80d47817961b3f8078e252d))
+
 ## [1.21.1](https://github.com/fluidd-core/fluidd/compare/v1.21.0...v1.21.1) (2022-10-25)
 
 
