@@ -80,7 +80,7 @@
               :elevation="0"
               class="mr-1 bg-transparent"
               color="transparent"
-              :disabled="topNavPowerToggleDisabled"
+              :disabled="topNavPowerDeviceDisabled"
               v-bind="attrs"
               v-on="on"
               @click="handlePowerToggle()"
@@ -90,7 +90,7 @@
               </v-icon>
             </app-btn>
           </template>
-          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle }) }}</span>
+          <span>{{ $t(`app.general.label.turn_device_${topNavPowerDeviceOn ? 'off' : 'on'}`, { device: topNavPowerToggle.name }) }}</span>
         </v-tooltip>
       </div>
 
@@ -239,21 +239,56 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
   }
 
-  get topNavPowerToggle (): null | string {
-    return this.$store.state.config.uiSettings.general.topNavPowerToggle
-  }
+  get topNavPowerToggle () {
+    const topNavPowerToggle = this.$store.state.config.uiSettings.general.topNavPowerToggle as string | null
 
-  get topNavPowerDevice () {
-    return this.$store.state.power.devices.find((device: { device: string }) => device.device === this.topNavPowerToggle)
+    if (!topNavPowerToggle) return null
+
+    const [name, type] = topNavPowerToggle.split(':')
+
+    switch (type) {
+      case 'klipper':
+        return {
+          type,
+          name,
+          device: this.$store.getters['printer/getPinByName'](name)
+        }
+
+      default:
+        return {
+          type: 'moonraker',
+          name: topNavPowerToggle,
+          device: this.$store.state.power.devices.find((device: { device: string }) => device.device === topNavPowerToggle)
+        }
+    }
   }
 
   get topNavPowerDeviceOn () {
-    return this.topNavPowerDevice?.status === 'on'
+    const topNavPowerToggle = this.topNavPowerToggle
+
+    switch (topNavPowerToggle?.type) {
+      case 'moonraker':
+        return topNavPowerToggle.device.status === 'on'
+
+      case 'klipper':
+        return topNavPowerToggle.device.value !== 0
+    }
   }
 
-  get topNavPowerToggleDisabled (): boolean {
-    const device = this.topNavPowerDevice
-    return (!device) || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
+  get topNavPowerDeviceDisabled (): boolean {
+    const topNavPowerToggle = this.topNavPowerToggle
+
+    switch (topNavPowerToggle?.type) {
+      case 'moonraker': {
+        const device = topNavPowerToggle.device
+        return !device || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
+      }
+
+      case 'klipper':
+        return !topNavPowerToggle.device || !this.klippyReady
+    }
+
+    return true
   }
 
   handleExitLayout () {
@@ -313,9 +348,21 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     }
 
     if (res) {
-      const device = this.topNavPowerDevice
-      const state = (device.status === 'on') ? 'off' : 'on'
-      SocketActions.machineDevicePowerToggle(device.device, state)
+      const topNavPowerToggle = this.topNavPowerToggle
+
+      switch (topNavPowerToggle?.type) {
+        case 'moonraker': {
+          const state = (topNavPowerToggle.device.status === 'on') ? 'off' : 'on'
+          SocketActions.machineDevicePowerToggle(topNavPowerToggle.device.device, state)
+          break
+        }
+
+        case 'klipper': {
+          const value = (topNavPowerToggle.device.value !== 0) ? 0 : topNavPowerToggle.device.scale
+          this.sendGcode(`SET_PIN PIN=${topNavPowerToggle.name} VALUE=${value}`, `${this.$waits.onSetOutputPin}${topNavPowerToggle.name}`)
+          break
+        }
+      }
     }
   }
 
