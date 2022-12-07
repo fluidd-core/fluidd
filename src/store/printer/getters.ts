@@ -438,6 +438,12 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
   },
 
+  getPinByName: (state, getters) => (name: string) => {
+    const pins = getters.getPins as OutputPin[]
+
+    return pins.find(pin => pin.name === name)
+  },
+
   /**
   * Return available fans and output pins
   */
