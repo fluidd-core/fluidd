@@ -26,8 +26,11 @@ const startingLocale = getStartingLocale()
 const i18n = new VueI18n({
   locale: startingLocale,
   fallbackLocale: import.meta.env.VUE_APP_I18N_FALLBACK_LOCALE || 'en',
-  messages
+  messages: {}
 })
+
+// Pre apply the en language for fallback.
+i18n.setLocaleMessage('en', messages)
 
 const loadedLanguages: Locale[] = []
 
