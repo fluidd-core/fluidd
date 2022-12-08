@@ -17,4 +17,4 @@ connect to multiple printers.
 
 The container is updated automatically with each release of Fluidd.
 
-[View on Docker Hub](https://hub.docker.com/r/cadriel/fluidd){: .btn .fs-5 .mb-4 .mb-md-0 }
+[View on GitHub Container Registry](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd){: .btn .fs-5 .mb-4 .mb-md-0 }

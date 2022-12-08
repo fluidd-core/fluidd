@@ -25,7 +25,7 @@ Older releases can be found [here](https://github.com/fluidd-core/fluidd/release
 
 ## Docker
 
-We have an [official docker image](https://hub.docker.com/r/cadriel/fluidd). This is updated for each release.
+We have an [official docker image](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd). This is updated for each release.
 
 ## How to use?
 
