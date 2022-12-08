@@ -247,19 +247,24 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     const [name, type] = topNavPowerToggle.split(':')
 
     switch (type) {
-      case 'klipper':
+      case 'klipper': {
+        const device = this.$store.getters['printer/getPinByName'](name)
+
         return {
           type,
-          name,
-          device: this.$store.getters['printer/getPinByName'](name)
+          name: device.prettyName,
+          device
         }
+      }
 
-      default:
+      default: {
+        const device = this.$store.state.power.devices.find((device: { device: string }) => device.device === topNavPowerToggle)
         return {
           type: 'moonraker',
           name: topNavPowerToggle,
-          device: this.$store.state.power.devices.find((device: { device: string }) => device.device === topNavPowerToggle)
+          device
         }
+      }
     }
   }
 
@@ -348,18 +353,18 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     }
 
     if (res) {
-      const topNavPowerToggle = this.topNavPowerToggle
+      const { type, device } = this.topNavPowerToggle || {}
 
-      switch (topNavPowerToggle?.type) {
+      switch (type) {
         case 'moonraker': {
-          const state = (topNavPowerToggle.device.status === 'on') ? 'off' : 'on'
-          SocketActions.machineDevicePowerToggle(topNavPowerToggle.device.device, state)
+          const state = (device.status === 'on') ? 'off' : 'on'
+          SocketActions.machineDevicePowerToggle(device.device, state)
           break
         }
 
         case 'klipper': {
-          const value = (topNavPowerToggle.device.value !== 0) ? 0 : topNavPowerToggle.device.scale
-          this.sendGcode(`SET_PIN PIN=${topNavPowerToggle.name} VALUE=${value}`, `${this.$waits.onSetOutputPin}${topNavPowerToggle.name}`)
+          const value = (device.value !== 0) ? 0 : device.scale
+          this.sendGcode(`SET_PIN PIN=${device.name} VALUE=${value}`, `${this.$waits.onSetOutputPin}${device.name}`)
           break
         }
       }
