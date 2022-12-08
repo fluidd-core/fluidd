@@ -39,7 +39,6 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import SystemControl from '@/components/common/SystemControl.vue'
 
 import SystemOverviewCard from '@/components/widgets/system/SystemOverviewCard.vue'
 import SystemUsageCard from '@/components/widgets/system/SystemUsageCard.vue'
@@ -48,7 +47,6 @@ import DiskUsageCard from '@/components/widgets/system/DiskUsageCard.vue'
 @Component({
   components: {
     FileSystem,
-    SystemControl,
     SystemOverviewCard,
     SystemUsageCard,
     DiskUsageCard

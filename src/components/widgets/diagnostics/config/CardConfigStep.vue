@@ -66,12 +66,9 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { Icons } from '@/globals'
 
-@Component({
-  components: { AppSetting }
-})
+@Component({})
 export default class CardConfigStep extends Vue {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig

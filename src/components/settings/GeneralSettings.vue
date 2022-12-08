@@ -154,6 +154,8 @@ import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
+import { OutputPin } from '@/store/printer/types'
+import { Device } from '@/store/power/types'
 
 @Component({
   components: {}
@@ -263,7 +265,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get powerDevicesList () {
-    return this.$store.state.power.devices.map((device: { device: string }) => ({ text: device.device, value: device.device }))
+    const devices = this.$store.state.power.devices as Device[]
+    const deviceEntries = devices.map(device => ({ text: device.device, value: device.device }))
+
+    const pins = this.$store.getters['printer/getPins'] as OutputPin[]
+    const pinEntries = pins.map(outputPin => ({ text: outputPin.prettyName, value: `${outputPin.name}:klipper` }))
+
+    return [
+      { header: 'Moonraker' },
+      ...deviceEntries,
+      { header: 'Klipper' },
+      ...pinEntries
+    ]
   }
 
   get confirmOnPowerDeviceChange () {

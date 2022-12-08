@@ -1,7 +1,6 @@
 <template>
   <v-sheet
     :elevation="0"
-    rounded
     class="camera-container"
     v-on="$listeners"
   >
@@ -327,6 +326,7 @@ export default class CameraItem extends Vue {
     right: 0;
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.75);
+    border-bottom-left-radius: 4px;
   }
 
   .theme--light .camera-fullscreen {

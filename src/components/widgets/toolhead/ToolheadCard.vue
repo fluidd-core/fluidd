@@ -118,15 +118,11 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
-import ManualProbeDialog from '@/components/common/ManualProbeDialog.vue'
-import BedScrewsAdjustDialog from '@/components/common/BedScrewsAdjustDialog.vue'
+import Toolhead from './Toolhead.vue'
 
 @Component({
   components: {
-    Toolhead,
-    ManualProbeDialog,
-    BedScrewsAdjustDialog
+    Toolhead
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {

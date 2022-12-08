@@ -1,10 +1,13 @@
 <template>
-  <div v-if="camera">
+  <v-card
+    v-if="camera"
+    class="overflow-hidden"
+  >
     <CameraItem
       :camera="camera"
       :fullscreen="true"
     />
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">

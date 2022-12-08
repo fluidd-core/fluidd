@@ -145,11 +145,9 @@ import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
-import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
 
 @Component({
   components: {
-    AppBtnCollapseGroup,
     FileSystemMenu,
     FileSystemFilterMenu
   }

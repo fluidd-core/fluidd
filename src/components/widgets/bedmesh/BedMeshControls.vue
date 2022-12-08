@@ -286,12 +286,10 @@ import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { KlipperMesh, ProcessedMesh } from '@/store/mesh/types'
-import ManualProbeDialog from '@/components/common/ManualProbeDialog.vue'
 
 @Component({
   components: {
-    SaveMeshDialog,
-    ManualProbeDialog
+    SaveMeshDialog
   }
 })
 export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {

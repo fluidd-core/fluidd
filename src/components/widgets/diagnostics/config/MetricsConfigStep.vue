@@ -159,12 +159,13 @@
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { DiagnosticsCardConfig, Metric } from '@/store/diagnostics/types'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import MetricsCollectorConfig from './MetricsCollectorConfig.vue'
 import { defaultState } from '@/store/layout/state'
 
 @Component({
-  components: { AppSetting, MetricsCollectorConfig }
+  components: {
+    MetricsCollectorConfig
+  }
 })
 export default class MetricsConfigStep extends Vue {
   @Prop({ type: Object, required: true })

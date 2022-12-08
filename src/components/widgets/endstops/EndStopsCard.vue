@@ -17,39 +17,33 @@
         <v-icon>$refresh</v-icon>
       </app-btn>
     </template>
-
-    <v-card
-      flat
-      class="overflow-hidden"
-    >
-      <v-simple-table v-if="hasEndstops">
-        <tbody>
-          <tr
-            v-for="item in endstopsAndProbes"
-            :key="item.name"
-          >
-            <td>
-              <span class="focus--text">{{ item.name }}</span>
-            </td>
-            <td>
-              <v-chip
-                :color="(item.state === 'open') ? 'secondary' : 'warning'"
+    <v-simple-table v-if="hasEndstops">
+      <tbody>
+        <tr
+          v-for="item in endstopsAndProbes"
+          :key="item.name"
+        >
+          <td>
+            <span class="focus--text">{{ item.name }}</span>
+          </td>
+          <td>
+            <v-chip
+              :color="(item.state === 'open') ? 'secondary' : 'warning'"
+              small
+              label
+            >
+              <v-icon
                 small
-                label
+                left
               >
-                <v-icon
-                  small
-                  left
-                >
-                  {{ (item.state === 'open') ? '$blankCircle' : '$markedCircle' }}
-                </v-icon>
-                {{ $t('app.endstop.label.' + item.state.toLowerCase()) }}
-              </v-chip>
-            </td>
-          </tr>
-        </tbody>
-      </v-simple-table>
-    </v-card>
+                {{ (item.state === 'open') ? '$blankCircle' : '$markedCircle' }}
+              </v-icon>
+              {{ $t('app.endstop.label.' + item.state.toLowerCase()) }}
+            </v-chip>
+          </td>
+        </tr>
+      </tbody>
+    </v-simple-table>
   </collapsable-card>
 </template>
 

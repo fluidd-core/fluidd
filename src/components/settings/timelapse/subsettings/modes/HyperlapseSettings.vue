@@ -28,16 +28,11 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import { VInput } from '@/types'
 
-@Component({
-  components: {
-    AppSetting
-  }
-})
+@Component({})
 export default class HyperlapseSettings extends Mixins(StateMixin) {
   @Ref('hyperlapseCycleElement')
   readonly hyperlapseCycleElement!: VInput

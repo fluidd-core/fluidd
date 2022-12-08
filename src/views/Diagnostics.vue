@@ -79,13 +79,16 @@ import { v4 as uuidv4 } from 'uuid'
 import StateMixin from '@/mixins/state'
 import { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
 import { LayoutConfig } from '@/store/layout/types'
 import { defaultState } from '@/store/layout/state'
 
 @Component({
-  components: { draggable, CollapsableCard, DiagnosticsCard, DiagnosticsCardConfigDialog }
+  components: {
+    draggable,
+    DiagnosticsCard,
+    DiagnosticsCardConfigDialog
+  }
 })
 export default class Diagnostics extends Mixins(StateMixin) {
   dialogState: { active: boolean, card: DiagnosticsCardConfig | null } = {

@@ -38,25 +38,23 @@
       />
     </template>
 
-    <v-card flat>
-      <v-tabs-items
-        v-model="tab"
-        touchless
-      >
-        <v-tab-item key="status">
-          <status-tab />
-        </v-tab-item>
+    <v-tabs-items
+      v-model="tab"
+      touchless
+    >
+      <v-tab-item key="status">
+        <status-tab />
+      </v-tab-item>
 
-        <v-tab-item
-          v-if="supportsHistoryComponent"
-          key="reprint"
-        >
-          <reprint-tab
-            @print="handlePrint($event)"
-          />
-        </v-tab-item>
-      </v-tabs-items>
-    </v-card>
+      <v-tab-item
+        v-if="supportsHistoryComponent"
+        key="reprint"
+      >
+        <reprint-tab
+          @print="handlePrint($event)"
+        />
+      </v-tab-item>
+    </v-tabs-items>
   </collapsable-card>
 </template>
 
