@@ -1,68 +1,63 @@
 <template>
   <v-dialog
     v-model="file.open"
-    :max-width="width"
+    :width="width"
   >
-    <v-card v-if="file.open">
-      <v-card-title class="card-heading py-2">
-        <span class="focus--text">{{ file.filename }}</span>
+    <v-form>
+      <v-card>
+        <v-card-title class="card-heading py-2">
+          <span class="focus--text">{{ file.filename }}</span>
+        </v-card-title>
 
-        <v-spacer />
-        <app-btn
-          color=""
-          icon
-          @click="$emit('close')"
-        >
-          <v-icon>$close</v-icon>
-        </app-btn>
-      </v-card-title>
-
-      <v-card-text class="py-4">
-        <v-layout justify-center>
-          <video
-            v-if="isVideo"
-            class="video-preview"
-            controls
-          >
-            <source
-              :src="file.src"
-              :type="file.type"
+        <v-card-text class="py-4">
+          <v-layout justify-center>
+            <video
+              v-if="isVideo"
+              controls
             >
-          </video>
+              <source
+                :src="file.src"
+                :type="file.type"
+              >
+            </video>
 
-          <div v-else>
-            {{ (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }}
-            cannot currently be previewed.
-          </div>
-        </v-layout>
-      </v-card-text>
+            <img
+              v-else-if="isImage"
+              :src="file.src"
+            >
 
-      <v-divider />
+            <div v-else>
+              {{ $t('app.general.simple_form.msg.no_file_preview', { name: (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }) }}
+            </div>
+          </v-layout>
+        </v-card-text>
 
-      <v-card-actions
-        v-if="file.appFile && (removable || downloadable)"
-        class="pt-4"
-      >
-        <v-spacer />
-        <app-btn
-          v-if="file.appFile && removable"
-          text
-          color="error"
-          @click="$emit('remove', file.appFile, () => $emit('close'))"
-        >
-          <v-icon>$delete</v-icon>
-          {{ $t('app.general.btn.remove') }}
-        </app-btn>
-        <app-btn
-          v-if="file.appFile && downloadable"
-          color="primary"
-          @click="$emit('download', file.appFile)"
-        >
-          <v-icon>$download</v-icon>
-          {{ $t('app.general.btn.download') }}
-        </app-btn>
-      </v-card-actions>
-    </v-card>
+        <template v-if="file.appFile && (removable || downloadable)">
+          <v-divider />
+
+          <v-card-actions class="pt-4">
+            <v-spacer />
+            <app-btn
+              v-if="file.appFile && removable"
+              text
+              color="error"
+              @click="$emit('remove', file.appFile, () => file.open = false)"
+            >
+              <v-icon>$delete</v-icon>
+              {{ $t('app.general.btn.remove') }}
+            </app-btn>
+            <app-btn
+              v-if="file.appFile && downloadable"
+              color="primary"
+              @click="$emit('download', file.appFile)"
+            >
+              <v-icon>$download</v-icon>
+              {{ $t('app.general.btn.download') }}
+            </app-btn>
+          </v-card-actions>
+        </template>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
@@ -74,38 +69,35 @@ import { FilePreviewState } from '@/store/files/types'
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
-  @Prop({ type: Object })
-  public file?: FilePreviewState
-
-  @Prop({ type: Boolean, default: false })
-  public downloadable!: boolean
+  @Prop({ type: Object, required: true })
+  readonly file!: FilePreviewState
 
   @Prop({ type: Boolean, default: false })
-  public removable!: boolean
+  readonly downloadable!: boolean
 
-  get icon () {
-    if (this.isVideo) {
-      return 'video'
-    } else {
-      return 'file'
-    }
-  }
+  @Prop({ type: Boolean, default: false })
+  readonly removable!: boolean
 
   get width () {
-    return window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.5)
+    const defaultWidth = window.innerWidth * (this.$vuetify.breakpoint.mdAndDown ? 1 : 0.75)
+    return Math.min(window.innerWidth * 0.9, Math.max(this.file.width ?? defaultWidth, defaultWidth / 2))
   }
 
   get isVideo () {
-    return this.file?.type.startsWith('video/')
+    return this.file.type.startsWith('video/')
+  }
+
+  get isImage () {
+    return this.file.type === 'image'
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.video-preview {
+video, img {
   max-width: 100%;
-  max-height: 100%;
+  max-height: calc(90vh - (24px + 16px + 8px) * 2);
 }
 </style>

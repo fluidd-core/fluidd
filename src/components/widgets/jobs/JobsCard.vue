@@ -9,7 +9,7 @@
       <app-btn
         color=""
         fab
-        small
+        x-small
         text
         @click="$filters.routeTo($router, '/jobs')"
       >
@@ -38,7 +38,7 @@ import StateMixin from '@/mixins/state'
 })
 export default class JobsCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)

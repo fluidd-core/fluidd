@@ -55,13 +55,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
-@Component({
-  components: { AppSetting }
-})
+@Component({})
 export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   get enabledBlocked () {
     return this.$store.getters['timelapse/isBlockedSetting']('enabled')
@@ -96,7 +93,7 @@ export default class TimelapseSettingsCard extends Mixins(StateMixin) {
   }
 
   subtitleIfBlocked (blocked: boolean): string {
-    return blocked ? this.$tc('app.timelapse.tooltip.managed_by_moonraker') : ''
+    return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }
 </script>

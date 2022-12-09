@@ -10,7 +10,6 @@
     >
       <app-setting>
         <app-btn
-          :disabled="cameras.length >= 3"
           outlined
           small
           color="primary"
@@ -32,6 +31,7 @@
         <app-setting
           :key="camera.id"
           :r-cols="2"
+          :sub-title="camera.source === 'config' ? $t('app.general.tooltip.managed_by_moonraker') : undefined"
           @click="handleEditDialog(camera)"
         >
           <template #title>
@@ -45,6 +45,7 @@
             </v-icon>
           </template>
           <app-btn
+            v-if="camera.source !== 'config'"
             fab
             text
             x-small
@@ -98,11 +99,9 @@ import { Component, Vue } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import CameraConfigDialog from './CameraConfigDialog.vue'
 import { Globals } from '@/globals'
-import AppSetting from '@/components/ui/AppSetting.vue'
 
 @Component({
   components: {
-    AppSetting,
     CameraConfigDialog
   }
 })
@@ -112,7 +111,7 @@ export default class CameraSettings extends Vue {
     camera: null
   }
 
-  get cameras () {
+  get cameras (): CameraConfig[] {
     return this.$store.getters['cameras/getCameras']
   }
 
@@ -124,17 +123,17 @@ export default class CameraSettings extends Vue {
   }
 
   handleAddDialog () {
-    const camera: any = {
-      id: -1,
+    const camera = {
+      id: '',
       enabled: true,
       flipX: false,
       flipY: false,
       name: '',
-      type: 'mjpgadaptive',
-      fpstarget: 15,
-      fpsidletarget: 5,
-      url: Globals.DEFAULTS.CAMERA_URL
-    }
+      service: 'mjpegstreamer-adaptive',
+      targetFps: 15,
+      targetFpsIdle: 5,
+      urlStream: Globals.DEFAULTS.CAMERA_URL
+    } as CameraConfig
 
     this.dialogState = {
       active: true,

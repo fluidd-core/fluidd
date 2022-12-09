@@ -25,7 +25,7 @@ import { HistoryItem, HistoryItemStatus } from '@/store/history/types'
 @Component({})
 export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   @Prop({ type: Object, required: true })
-  public job!: HistoryItem
+  readonly job!: HistoryItem
 
   // get status () {
   //   if (this.job.status === HistoryItemStatus.Completed) return HistoryItemStatus.Completed

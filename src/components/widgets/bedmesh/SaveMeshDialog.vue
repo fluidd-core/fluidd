@@ -1,9 +1,8 @@
 <template>
   <v-dialog
+    v-model="open"
     :title="$t('app.general.label.save_as')"
-    :value="value"
     :max-width="450"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="saveMeshForm"
@@ -22,7 +21,9 @@
             filled
             required
             class="mb-4"
-            :rules="rules"
+            :rules="[
+              $rules.required
+            ]"
             hide-details="auto"
             :label="$t('app.bedmesh.label.profile_name')"
           />
@@ -48,13 +49,12 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
           <app-btn
             color="primary"
-            :elevation="2"
             type="submit"
           >
             {{ $t('app.general.btn.save') }}
@@ -66,17 +66,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  public value!: string
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   @Prop({ type: String })
-  public existingName!: string
+  readonly existingName!: string
 
   mounted () {
     this.name = 'default'
@@ -87,14 +87,10 @@ export default class SaveMeshDialog extends Mixins(StateMixin, ToolheadMixin) {
   name = 'default'
   removeDefault = false
 
-  rules = [
-    (v: string) => !!v || this.$t('app.general.simple_form.error.required')
-  ]
-
   handleSubmit () {
     if (this.valid) {
       this.$emit('save', { name: this.name, removeDefault: this.removeDefault })
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

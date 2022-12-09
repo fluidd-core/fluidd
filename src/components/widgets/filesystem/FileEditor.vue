@@ -23,16 +23,16 @@ let monaco: typeof Monaco // dynamically imported
 @Component({})
 export default class FileEditor extends Vue {
   @Prop({ type: String, required: true })
-  public value!: string
+  readonly value!: string
 
   @Prop({ type: String, required: true })
-  public filename!: string
+  readonly filename!: string
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Prop({ type: Boolean, default: true })
-  public codeLens!: boolean
+  readonly codeLens!: boolean
 
   @Ref('monaco-editor')
   readonly monacoEditor!: HTMLElement
@@ -42,7 +42,7 @@ export default class FileEditor extends Vue {
 
   // Base editor options.
   opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
-    contextmenu: false,
+    contextmenu: true,
     readOnly: this.readonly,
     codeLens: this.codeLens,
     automaticLayout: true,
@@ -67,11 +67,7 @@ export default class FileEditor extends Vue {
 
   async initEditor () {
     if (!monaco) {
-      const { default: promise } = await import(
-        /* webpackChunkName: "monaco-editor" */
-        /* webpackPrefetch: -100 */
-        './setupMonaco'
-      )
+      const { default: promise } = await import('./setupMonaco')
       monaco = await promise
     }
 

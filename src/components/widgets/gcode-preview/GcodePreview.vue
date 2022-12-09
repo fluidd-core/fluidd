@@ -1,6 +1,6 @@
 <template>
-  <div
-    :class="{container: true, dark: themeIsDark}"
+  <app-focusable-container
+    ref="container"
     @focus="focused = true"
     @blur="focused = false"
   >
@@ -106,7 +106,7 @@
           class="layer"
         >
           <path
-            stroke="lightgrey"
+            :stroke="themeIsDark ? 'lightgrey' : '#555'"
             :stroke-width="extrusionLineWidth"
             stroke-opacity="0.6"
             :d="svgPathPrevious.extrusions"
@@ -119,7 +119,7 @@
           class="layer"
         >
           <path
-            stroke="lightgrey"
+            :stroke="themeIsDark ? 'lightgrey' : '#555'"
             :stroke-width="extrusionLineWidth"
             stroke-opacity="0.6"
             :d="svgPathActive.extrusions"
@@ -199,7 +199,72 @@
         />
       </g>
     </svg>
-  </div>
+    <div
+      v-if="file"
+      class="preview-options"
+      @mousedown.stop=""
+      @mouseup="keepFocus"
+      @dblclick.stop=""
+      @touchstart="panzoom?.pause()"
+      @touchend="panzoom?.resume()"
+    >
+      <gcode-preview-button
+        name="followProgress"
+        icon="$play"
+        :tooltip="$t('app.gcode.label.follow_progress')"
+      />
+
+      <gcode-preview-button
+        name="showPreviousLayer"
+        icon="$previousLayer"
+        :tooltip="$t('app.gcode.label.show_previous_layer')"
+      />
+
+      <gcode-preview-button
+        name="showCurrentLayer"
+        icon="$currentLayer"
+        :tooltip="$t('app.gcode.label.show_current_layer')"
+      />
+
+      <gcode-preview-button
+        name="showNextLayer"
+        icon="$nextLayer"
+        :tooltip="$t('app.gcode.label.show_next_layer')"
+      />
+
+      <gcode-preview-button
+        name="showMoves"
+        icon="$moves"
+        :tooltip="$t('app.gcode.label.show_moves')"
+      />
+
+      <gcode-preview-button
+        name="showExtrusions"
+        icon="$extrusions"
+        :tooltip="$t('app.gcode.label.show_extrusions')"
+      />
+
+      <gcode-preview-button
+        name="showRetractions"
+        icon="$retractions"
+        :tooltip="$t('app.gcode.label.show_retractions')"
+      />
+
+      <v-btn
+        icon
+        small
+        @click="autoZoom = !autoZoom"
+      >
+        <v-icon>{{ autoZoom ? '$magnifyMinus' : '$magnifyPlus' }}</v-icon>
+      </v-btn>
+    </div>
+    <div
+      v-if="file"
+      class="preview-name"
+    >
+      {{ file.name }}
+    </div>
+  </app-focusable-container>
 </template>
 
 <script lang="ts">
@@ -208,28 +273,35 @@ import StateMixin from '@/mixins/state'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
+import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
+import GcodePreviewButton from './GcodePreviewButton.vue'
+import { AppFile } from '@/store/files/types'
 
 @Component({
   components: {
-    ExcludeObjects
+    ExcludeObjects,
+    GcodePreviewButton
   }
 })
 export default class GcodePreview extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: String })
-  public width!: string
+  readonly width!: string
 
   @Prop({ type: String })
-  public height!: string
+  readonly height!: string
 
   @Prop({ type: Number, default: Infinity })
-  public progress!: number
+  readonly progress!: number
 
   @Prop({ type: Number, default: 0 })
-  public layer!: LayerNr
+  readonly layer!: LayerNr
+
+  @Ref('container')
+  readonly container!: AppFocusableContainer
 
   @Ref('svg')
   readonly svg!: SVGElement
@@ -281,6 +353,20 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.getUiSetting('showAnimations')
   }
 
+  get autoZoom () {
+    return this.getUiSetting('autoZoom')
+  }
+
+  set autoZoom (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoZoom',
+      value,
+      server: true
+    })
+
+    this.reset()
+  }
+
   get shapeRendering () {
     return this.panning ? 'optimizeSpeed' : 'geometricPrecision'
   }
@@ -324,8 +410,8 @@ export default class GcodePreview extends Mixins(StateMixin) {
     }
 
     const transform = [
-      this.flipX ? -(x.max - x.min) : 0,
-      this.flipY ? -(y.max - y.min) : 0
+      this.flipX ? -(x.max + x.min) : 0,
+      this.flipY ? -(y.max + y.min) : 0
     ]
 
     return `scale(${scale.join()}) translate(${transform.join()})`
@@ -385,15 +471,19 @@ export default class GcodePreview extends Mixins(StateMixin) {
       }
     }
 
-    if (stepperX === undefined || stepperY === undefined) {
+    if (stepperX === undefined || stepperY === undefined || this.autoZoom) {
+      const padding = this.autoZoom
+        ? Math.min(bounds.x.max - bounds.x.min, bounds.y.max - bounds.y.min) * 0.05
+        : 0
+
       return {
         x: {
-          min: bounds.x.min,
-          max: bounds.x.max
+          min: bounds.x.min - padding,
+          max: bounds.x.max + padding
         },
         y: {
-          min: bounds.y.min,
-          max: bounds.y.max
+          min: bounds.y.min - padding,
+          max: bounds.y.max + padding
         }
       }
     }
@@ -416,7 +506,11 @@ export default class GcodePreview extends Mixins(StateMixin) {
       y
     } = this.viewBox
 
-    return `${x.min} ${y.min} ${x.max} ${y.max}`
+    if (this.isDelta) {
+      return `${x.min} ${y.min} ${x.max} ${y.max}`
+    }
+
+    return `${x.min} ${y.min} ${x.max - x.min} ${y.max - y.min}`
   }
 
   get defaultLayerPaths (): LayerPaths {
@@ -474,21 +568,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
-  @Watch('isMobile')
-  onIsMobileChanged () {
-    if (this.panzoom) {
-      if (this.isMobile) {
-        this.panzoom.pause()
-      } else {
-        this.panzoom.resume()
-      }
-    }
+  get file (): AppFile | undefined {
+    return this.$store.getters['gcodePreview/getFile']
   }
 
   @Watch('focused')
-  onFocusedChanged () {
-    if (this.isMobile && this.panzoom) {
-      if (this.focused) {
+  onFocusedChanged (value: boolean) {
+    if (this.panzoom && !this.isMobile) {
+      if (value) {
         this.panzoom.resume()
       } else {
         this.panzoom.pause()
@@ -521,7 +608,14 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   reset () {
-    this.panzoom?.zoomTo(0, 0, 1)
+    this.panzoom?.moveTo(0, 0)
+    this.panzoom?.zoomAbs(0, 0, 1)
+  }
+
+  keepFocus () {
+    if (!this.isMobile) {
+      this.container.focus()
+    }
   }
 
   getViewerOption (name: string) {
@@ -535,32 +629,43 @@ export default class GcodePreview extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
-.layer > path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.container {
-  outline: none;
-  overflow: hidden;
-  border: 1px solid black;
-  max-height: calc(100vh * 2/3);
-  aspect-ratio: 1;
-
-  &:focus {
-    border-color: grey;
-    box-shadow: 0 0 4px 0 black;
+  .preview-options,
+  .preview-name {
+    position: absolute;
+    padding: 2px 6px;
+    background: rgba(0, 0, 0, 0.75);
+    font-weight: 100;
   }
 
-  .dark {
-    &:focus {
-      box-shadow: 0 0 4px 0 lightgrey;
+  .preview-options {
+    top: 0;
+    border-bottom-right-radius: 4px;
+  }
+  .preview-name {
+    bottom: 0;
+    border-top-right-radius: 4px;
+  }
+
+  .theme--light {
+    .preview-options,
+    .preview-name {
+      background: rgba(255, 255, 255, 0.75);
     }
   }
-}
 
-svg {
-  shape-rendering: geometricPrecision;
-}
+  :deep(.v-input__slot) {
+    overflow: hidden;
+    max-height: calc(100vh * 2/3);
+    aspect-ratio: 1;
+
+    svg {
+      shape-rendering: geometricPrecision;
+
+      .layer > path {
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+    }
+  }
 </style>

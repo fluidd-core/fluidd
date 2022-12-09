@@ -1,11 +1,12 @@
 app:
   bedmesh:
     label:
+      active: aktív
       box_scale: Doboz skála
       flat_surface: Lapos sík megjelenítése
       mesh_matrix: Hálós mátrix
       probed_matrix: Vizsgált mátrix
-      profile_name: Profil név
+      profile_name: Profilnév
       remove_profile: Profil %{name} eltávolítása
       scale: Színskála
       wireframe: Drótváz
@@ -17,11 +18,11 @@ app:
       not_loaded: Nincs háló betöltve
     tooltip:
       calibrate: Új kalibrálás kezdése, mentés "alapértelmezett" profilként
-      delete: Profil törlése. Ezután ÚJRAIDUL a nyomtatót
+      delete: Profil törlése. Ezután ÚJRAINDUL a nyomtató
       load: Profil betöltése
       save: >-
         A kalibrált profil a printer.cfg fájlba íródik. Ezután ÚJRAINDUL a
-        nyomtatót
+        nyomtató
   chart:
     label:
       current: Aktuális
@@ -45,6 +46,7 @@ app:
       command: >-
         '''tab'' az automatikus kitöltéshez, ''help'' a parancsokhoz
         ''nyilak'' az előzményekhez'
+      scroll: Görgess lefelé
   endpoint:
     error:
       cant_connect: >-
@@ -76,6 +78,8 @@ app:
       label:
         print_start_time: Nyomtatottak szűrése
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
+        hidden_files: Rejtett fájlok szűrése
+        klipper_backup_files: Klipper biztonsági fájlok szűrése
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemezhasználat
@@ -91,7 +95,7 @@ app:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
-      label: Húzza <strong>ide</strong> a fájlt
+      label: Húzzd <strong>ide</strong> a fájlt
     title:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
@@ -130,33 +134,40 @@ app:
         Biztos, hogy folytatod?
   general:
     btn:
+      abort: Elvet
+      accept: Elfogad
       add: Hozzáad
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
       add_printer: Nyomtató hozzáadása
       adjust_layout: Műszerfal elrendezésének beállítása
+      adjusted: Beállított
       all: Összes
-      auth_unsure: Nem tudja, miért látja ezt?
+      auth_unsure: Nem tudod, miért látod ezt?
       calibrate: Kalibrálás
       cancel: Mégsem
       clear_profile: Profil tisztítása
       close: Bezárás
       config_reference: Konfigurációs hivatkozás
+      delete: Töröl
       download: Letöltés
       edit: Szerkesztés
       exit_layout: Elrendezési mód bezárása
       extrude: Extrudálás
-      forgot_password: Elfelejtette a jelszavát?
+      forgot_password: Elfelejtetted a jelszavad?
       heaters_off: Fűtőtestek Ki
       load_all: Minden betöltése
       login: Belépés
+      logout: Kijelentkezés
       more_information: Bővebb információ
       pause: Szünet
       preheat: Előfűtés
       presets: Előbeállítások
-      preview_gcode: Gcode előnézet
+      preview_gcode: G-Kód előnézet
+      print: Nyomtatás
       quad_gantry_level: QGL
       reboot: Újraindítás
+      recover: Visszaállítás
       refresh: Frissítés
       remove: Eltávolítás
       remove_all: Összes eltávolítása
@@ -164,18 +175,21 @@ app:
       reprint: Újranyomtatás
       reset_file: Fájl törlése
       reset_layout: Elrendezés visszaállítása
+      reset_default_layout: Alapértelmezett elrendezés visszaállítása
       restart_firmware: Firmware újraindítása
       restart_service: Újraindítás %{service}
       restart_service_klipper: Klipper újraindítása
       restart_service_moonraker: Moonraker újraindítása
       resume: Folytatás
       retract: Visszahúzás
+      return_dashboard: Vissza a műszerfalra
       save: Mentés
       save_as: Mentés másként
       save_restart: Mentés & Újraindítás
       save_config_and_restart: Konfiguráció mentése és újraindítás
       send: Küldés
       set_color: Szín beállítása
+      set_default_layout: Beállítás alapértelmezett elrendezésként
       shutdown: Leállítás
       snooze: Szundi
       socket_reconnect: Újracsatlakozás
@@ -186,7 +200,7 @@ app:
       reset_stats: Statisztikák törlése
     error:
       app_setup_link: >-
-        A fluid telepítési követelményeit <a target="_blank" href="%{url}">itt
+        A Fluidd telepítési követelményeit <a target="_blank" href="%{url}">itt
         találod.</a>
       app_warnings_found: '%{appName} figyelmeztetés található.'
       components_config: >-
@@ -198,6 +212,7 @@ app:
     label:
       accel_to_decel: Gyorsítás-Lassítás
       acceleration: Gyorsulás
+      accepted_screws: Elfogadott csavarok
       actual_time: Aktuális
       add_camera: Kamera hozzáadása
       add_filter: Szűrő hozzáadása
@@ -235,7 +250,8 @@ app:
       ldap: LDAP
       longest_job: Leghosszabb munka
       low: Alacsony
-      user_managed_source: %{source} hitelesítéssel kezelt felhasználó
+      manage_accounts: Fiókok kezelése
+      user_managed_source: '%{source} hitelesítéssel kezelt felhasználó'
       m117: M117
       moonraker: Moonraker
       name: Név
@@ -244,6 +260,7 @@ app:
       'on': 'Be'
       'off': 'Ki'
       password: Jelszó
+      partial_of_total: '%{partial} - %{total}'
       power: Áramellátás
       pressure_advance: Nyomás előtolás
       printers: Nyomtatók
@@ -252,11 +269,15 @@ app:
       retract_length: Visszahúzási hossz
       retract_speed: Visszahúzási sebesség
       save_as: Mentés másként
+      screw_index: Csavar index
+      screw_name: Csavar neve
+      screw_number: Csavar %{index}
       services: Szolgáltatások
       slicer: Szeletelő
       smooth_time: Simítási idő
       speed: Sebesség
       sqv: Négyzet saroksebesség
+      thumbnail_size: Miniatűr mérete
       total: Eltelt
       total_filament: Összes felhasznált szál
       total_filament_avg: Átl. nyomtatásonként
@@ -285,6 +306,11 @@ app:
     msg:
       password_changed: A jelszó megváltozott
       wrong_password: Hoppá! Valami rosszul sült el. Ez a jelszavad?
+      bed_screws_adjust: >-
+        Kattints a <b>Adjusted</b> ha jelentős csavar módosításra van szükség
+        ellenkező esetben kattints a <b>Accept</b> gombra a folytatáshoz.
+      welcome_back: >-
+        Üdv újra.<br>Jelentkezz be alább, hogy kapcsolatban maradj a nyomtatóddal.
     simple_form:
       error:
         arrayofnums: Csak számok
@@ -298,10 +324,11 @@ app:
         min_or_0: Min %{min} vagy 0
         password_username: Nem egyezik a felhasználónév
         required: Ajánlott
+        invalid_aspect: Érvénytelen képarány
       msg:
         confirm: Biztos vagy benne?
-        confirm_exclude_object: Biztosan kizárja ezt az objektumot a nyomtatásból?
-        confirm_forcemove_toggle: Biztos vagy ebben? Ez károsíthatja a nyomtatót.
+        confirm_exclude_object: Biztosan kizárod ezt az objektumot a nyomtatásból?
+        confirm_forcemove_toggle: Biztos vagy benne? Ez károsíthatja a nyomtatót.
         confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
         confirm_shutdown_host: Biztos, hogy leállítod a gazdagépet?
         confirm_service_restart: Biztos, hogy újraindítod a %{name} szolgáltatást?
@@ -314,12 +341,17 @@ app:
         apply_z_offset_probe: >-
           A Probe/Bltouch Z-eltolás kiszámítása és frissítése az aktuális értékből
           történik.
+        no_file_preview: >-
+          %{name} jelenleg nem tekinthető meg.
     table:
       header:
         actions: Tevékenységek
+        chamber_temp: Kamra hőmérséklet
         end_time: Befejezve
         estimated_time: Becsült idő
         filament: Nyomtatószál
+        filament_name: Nyomtatószál neve
+        filament_type: Nyomtatószál típusa
         filament_used: Használt nyomtatószál
         filament_weight_total: Nyomtatószál súlya
         first_layer_bed_temp: Első réteg ágy hőmérséklet
@@ -330,6 +362,7 @@ app:
         layer_height: Rétegmagasság
         modified: Módosított
         name: Név
+        nozzle_diameter: Fúvóka átmérő
         print_duration: Nyomtatás időtartama
         size: Méret
         slicer: Szeletelő
@@ -338,6 +371,7 @@ app:
         status: Állapot
         total_duration: Teljes időtartam
     title:
+      add_chart: Ábra hozzáadása
       add_printer: Nyomtató hozzáadása
       bedmesh: Ágyháló
       bedmesh_controls: Ágyhálós vezérlők
@@ -345,17 +379,21 @@ app:
       config_files: Konfigurációs fájlok
       configure: Konfiguráció
       console: Konzol
+      diagnostics: Diagnosztika
+      edit_chart: Ábra szerkesztése
       endstops: Végállások
       fans_outputs: Ventilátorok & Kimenetek
-      gcode_preview: Gcode előnézet
+      gcode_preview: G-Kód előnézet
       history: Történet
       home: Otthon
       jobs: Feladatok
       limits: Nyomtató határai
       macros: Makrók
+      metrics_explorer: Felderítő mérés
+      not_found: 404 Nem található
       other_files: Egyéb fájlok
       pending_configuration_changes: Függőben lévő konfigurációs változások
-      retract: Firmware visszahúzás
+      retract: Szoftveres visszahúzás
       runout_sensors: Kifutás érzékelők
       settings: Beállítások
       stats: Nyomtató statisztikák
@@ -366,11 +404,14 @@ app:
       tool: Eszköz
       tune: Hangolás
     tooltip:
+      browse_metrics: A böngészőben elérhető mutatók
       estop: VészSTOP
+      managed_by_moonraker: A moonraker konfigurációja által kezelt
       notifications: Értesítések
       reload_klipper: Újratölti a klipper konfigurációját.
       reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
       restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
+      run_collector: Gyűjtő futtatása
   history:
     msg:
       confirm_jobs: Biztos, hogy minden feladatot törölni szeretnél?
@@ -391,6 +432,7 @@ app:
       add_camera: Kamera hozzáadása
       add_category: Kategória hozzáadása
       add_filter: Szűrő hozzáadása
+      add_metric: Metrika hozzáadása
       add_thermal_preset: Előbeállítás hozzáadása
       add_user: Felhasználó hozzáadása
       reset: Frissítés
@@ -408,9 +450,12 @@ app:
     label:
       all_off: Minden kikapcsolva
       all_on: Minden bekapcsolva
+      aspect_ratio: Képarány
+      aspect_ratio_format: '[szélesség : magasság]'
       auto_edit_extensions: Szerkesztési módban automatikusan megnyíló bővítmények
       auto_follow_on_file_load: Automatikusan követi a fájlbetöltés folyamatát
       auto_load_on_print_start: Fájl automatikus betöltése a nyomtatás indításakor
+      axes: Tengelyek
       camera_flip_x: Vízszintes forgatás
       camera_flip_y: Függőleges forgatás
       camera_fullscreen_action:
@@ -420,55 +465,80 @@ app:
       camera_rotate_by: Forgatás szerint
       camera_stream_type: Sugárzás típusa
       camera_url: Kamera URL
+      card: Kártya
+      collector: Kollektor
       confirm_on_estop: Megerősítés kérése vészleállításkor
       confirm_on_power_device_change: Megerősítés kérése kikapcsoláskor
-      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintse át a függőben lévő konfigurációs módosításokat
-      confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül zárja be a szerkesztőt
+      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintsd át a függőben lévő konfigurációs módosításokat
+      confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül zárod be a szerkesztőt
       contains: Tartalom
       dark_mode: Sötét mód
+      dashed: Szaggatott
       default_extrude_length: Alapértelmezett extrudálási hossz
       default_extrude_speed: Alapértelmezett extrudálási sebesség
       default_toolhead_move_length: Alapértelmezett nyomtatófej mozgási hossza
       default_toolhead_xy_speed: Alapértelmezett (XY) nyomtatófej sebesség
       default_toolhead_z_speed: Alapértelmezett (Z) nyomtatófej sebesség
+      dotted: Pöttyös
       draw_background: Háttér rajzolása
       enable: Engedélyez
+      enable_diagnostics: Diagnosztika engedélyezése
       enable_notifications: Értesítések engedélyezése
       expression: Kifejezés
       extrusion_line_width: Extrudálási vonal szélessége
       flip_horizontal: Vízszintes forgatás
       flip_vertical: Függőleges forgatás
+      fill_color: Kitöltés színe
+      fill_opacity: Kitöltés átlátszósága
       filter: Szűrő
       fps_target: FPS Cél
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
-      gcode_coords: Gcode koordináták használata
-      group_lower_layers: Csoportosítsa az alsó rétegeket
+      gcode_coords: G-Kód koordináták használata
+      group_lower_layers: Csoportosítsd az alsó rétegeket
+      icon: Ikon
       invert_x_control: Fordított (X) vezérlés
       invert_y_control: Fordított (Y) vezérlés
       invert_z_control: Fordított (Z) vezérlés
       language: Megjelenítés nyelve
+      last_result: Utolsó eredmény
+      left_y: Bal Y-tengely
+      line_color: Vonal színe
+      line_style: Vonal stílusa
+      min: Minimum
+      max: Maximum
+      metrics: Metrikus
       move_line_width: Vonalszélesség mozgatása
+      name: Név
       none: Egyik sem
+      optional: Opcionális
       power_toggle_in_top_nav: Bekapcsológomb a felső navigációban
       primary_color: Elsődleges szín
       printer_name: Nyomtató neve
       reset: Beállítások visszaállítása
       retraction_icon_size: Visszahúzási ikon mérete
+      right_y: Jobb Y-tengely
       show_animations: Animációk megjelenítése
       show_barometric_pressure: Barometrikus nyomás mutatása
       show_code_lens: CodeLens megjelenítése
+      show_legend: Legenda mutatása
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
+      show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső navigációban
+      solid: Szilárd
       starts_with: Ezzel kezdődik
       theme_preset: Előre beállított téma
-      thermal_preset_gcode: Gcode
+      thermal_preset_gcode: G-Kód
       thermal_preset_name: Előre beállított név
+      title: Cím
       toolhead_move_distances: Nyomtatófej távolsági értékek
       type: Típus
+      unit: Egység
       z_adjust_values: A (Z) értékek beállítása
       date_time_format: Dátum és időformátum
-      force_move_toggle_warning: A force_move aktiválásakor megerősítés szükséges
+      force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
+      show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus megjelenítése
+      show_bed_screws_adjust_dialog_automatically: Ágycsavarok automatikus beállítása párbeszédpanel megjelenítése
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
@@ -479,18 +549,21 @@ app:
       console: Konzol
       camera: Kamera
       file_editor: Fájlszerkesztő
-      gcode_preview: Gcode előnézet
+      gcode_preview: G-Kód előnézet
       general: Általános
       macros: Makrók
       theme: Téma
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
     tooltip:
-      gcode_coords: Gcode pozíció használata a nyomtatófej pozíciója helyett a műszerfalon
+      diagnostics_performance: A diagnosztikai információk naplózása hatással lehet a teljesítményre
+      gcode_coords: G-Kód pozíció használata a nyomtatófej pozíciója helyett a műszerfalon
+      show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha kézi szintezőeszközt futtatsz
+      show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
   socket:
     msg:
-      connecting: Csatlakozás a moonrakerhez...
-      no_connection: Nincs moonraker kapcsolat. Kérjük, ellenőrizd a moonraker állapotát és/vagy frissítsd.
+      connecting: Csatlakozás a Moonraker-hez...
+      no_connection: Nincs Moonraker kapcsolat. Kérjük, ellenőrizd a Moonraker állapotát és/vagy frissítsd.
   system_info:
     label:
       capacity: Kapacitás
@@ -524,11 +597,15 @@ app:
       home_x: X
       home_y: 'Y'
       home_all: Mind
+    title:
+      bed_screws_adjust: Ágycsavarok beállítása
+      manual_probe: Kézi szonda
     tooltip:
       absolute_positioning: Abszolút pozicionálás
       extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
+      manual_probe: Kézi szonda
       motors_off: MOTOROK KI
       z_tilt_adjust: Z_Tilt_Adjust
       quad_gantry_level: QGL
@@ -541,6 +618,7 @@ app:
       check_for_updates: Frissítések keresése
       finish: Befejezve
       update: Frissítés
+      update_all: Összes frissítése
       view_versions: Verziók megtekintése
     label:
       commit_history: Történet rögzítése
@@ -558,7 +636,7 @@ app:
     title: Szoftverfrissítések
     tooltip:
       commit_history: Előzmények rögzítése
-      dirty: leválasztott fejet jelez, nem master vagy érvénytelen eredetű
+      dirty: leválasztott fejet jelez, nem elsődleges vagy érvénytelen eredetű
       invalid: a repo helyi változásait jelzi
       packages: Csomagok
       release_notes: Kiadási jegyzetek
@@ -570,21 +648,19 @@ app:
       newframe: Hiba a timelapse képkocka felvételekor
     label:
       frames: '%{frames} képkocka | %{frames} képkockák'
-      length: 'Becsült hossza: %{length}'
+      length: 'Becsült hossz: %{length}'
       frame: Képkocka | Képkockák
     title:
       timelapse_settings: Timelapse beállítások
       timelapse_status: Timelapse állapot
       render_settings: Renderelési beállítások
-    tooltip:
-      managed_by_moonraker: A moonraker konfigurációja által kezelt
     setting:
       enable: Engedélyezve
       auto_render: Automatikus renderelés
       crf: Állandó árfolyamtényező
       duplicatelastframe: Utolsó képkockák duplikálása
       fw_retract: Firmware visszahúzás használata
-      gcode_verbose: Szöveges Gcode
+      gcode_verbose: Szöveges G-Kód
       mode: Mód
       mode_layermacro: Réteg makró
       mode_hyperlapse: Hyperlapse

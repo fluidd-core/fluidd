@@ -1,13 +1,12 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="500"
-    persistent
   >
     <v-form
       ref="form"
       v-model="valid"
-      @submit.prevent="handleSave(preset)"
+      @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
@@ -17,7 +16,9 @@
         <app-setting :title="$t('app.setting.label.thermal_preset_name')">
           <v-text-field
             v-model="preset.name"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
             hide-details="auto"
             filled
             dense
@@ -30,7 +31,7 @@
           v-for="(item, i) in heaters"
         >
           <app-setting
-            :key="i + 'heater'"
+            :key="`${i}heater`"
             :title="item.name"
           >
             <v-checkbox
@@ -41,7 +42,11 @@
 
             <v-text-field
               v-model.number="preset.values[item.name].value"
-              :rules="[rules.numRequired, rules.numMin]"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThan(0)
+              ]"
               hide-details="auto"
               type="number"
               suffix="°C"
@@ -58,7 +63,7 @@
           v-for="(item, i) in fans"
         >
           <app-setting
-            :key="i + 'fan'"
+            :key="`${i}fan`"
             :title="item.name"
           >
             <v-checkbox
@@ -69,7 +74,11 @@
 
             <v-text-field
               v-model.number="preset.values[item.name].value"
-              :rules="[rules.numRequired, rules.numMin]"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThan(0)
+              ]"
               hide-details="auto"
               type="number"
               suffix="°C"
@@ -98,7 +107,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -115,17 +124,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/printer/types'
 
 @Component({})
 export default class TemperaturePresetDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
-  public preset!: TemperaturePreset
+  readonly preset!: TemperaturePreset
 
   valid = false
 
@@ -137,16 +146,10 @@ export default class TemperaturePresetDialog extends Vue {
     return this.$store.getters['printer/getOutputs'](['temperature_fan'])
   }
 
-  rules = {
-    required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    numMin: (v: number) => v >= 0 || this.$t('app.general.simple_form.error.min', { min: 1 })
-  }
-
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.preset)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

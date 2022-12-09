@@ -1,0 +1,33 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "include": [
+    "env.d.ts",
+    "components.d.ts",
+    "src/**/*",
+    "src/**/*.vue",
+    "src/monaco/theme/editor.*.theme.json"
+  ],
+  "exclude": [
+    "src/**/__tests__/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ]
+    },
+
+    // if `<script setup>` is used, then remove the next line
+    "preserveValueImports": false,
+
+    "importsNotUsedAsValues": "remove",
+
+    "experimentalDecorators": true
+  },
+
+  "vueCompilerOptions": {
+    "target": 2.7
+  }
+}

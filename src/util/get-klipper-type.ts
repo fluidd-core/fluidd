@@ -13,7 +13,8 @@ export default (name: string) => {
 
   const sensors = [
     'temperature_sensor',
-    'temperature_probe'
+    'temperature_probe',
+    'z_thermal_adjust'
   ]
 
   const heaters = [

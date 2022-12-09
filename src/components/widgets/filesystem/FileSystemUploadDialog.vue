@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     max-width="500"
     persistent
   >
@@ -98,9 +98,9 @@ import { FilesUpload } from '@/store/files/types'
 @Component({})
 export default class FileSystemUploadDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Array })
-  public files!: FilesUpload[]
+  readonly files!: FilesUpload[]
 }
 </script>

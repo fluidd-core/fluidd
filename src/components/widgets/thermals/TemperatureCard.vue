@@ -22,8 +22,8 @@
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           small
-          class="ma-1"
           :disabled="!klippyReady"
+          class="ml-1"
           @click="chartVisible = !chartVisible"
         >
           <v-icon left>
@@ -33,7 +33,6 @@
         </app-btn>
 
         <temperature-presets-menu
-          class="ma-1"
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
         />
@@ -99,13 +98,13 @@ import { TemperaturePreset } from '@/store/config/types'
 })
 export default class TemperatureCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public menuCollapsed!: boolean
+  readonly menuCollapsed!: boolean
 
   @Ref('thermalchart')
-  readonly thermalChart!: ThermalChart
+  readonly thermalChartElement!: ThermalChart
 
   get chartReady () {
     return (
@@ -120,9 +119,9 @@ export default class TemperatureCard extends Mixins(StateMixin) {
     // If this has a target, toggle that too.
     if (this.chartVisible) {
       if ('target' in item) {
-        this.thermalChart.legendToggleSelect(item.name + 'Target')
+        this.thermalChartElement.legendToggleSelect(item.name + 'Target')
       }
-      this.thermalChart.legendToggleSelect(item.name)
+      this.thermalChartElement.legendToggleSelect(item.name)
     }
   }
 
@@ -131,7 +130,7 @@ export default class TemperatureCard extends Mixins(StateMixin) {
       const name = ('speed' in item)
         ? item.name + 'Speed'
         : item.name + 'Power'
-      this.thermalChart.legendToggleSelect(name)
+      this.thermalChartElement.legendToggleSelect(name)
     }
   }
 

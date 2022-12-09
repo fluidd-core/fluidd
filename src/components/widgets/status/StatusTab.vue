@@ -119,7 +119,7 @@
               </status-label>
 
               <status-label :label="$t('app.general.label.finish_time')">
-                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta, $store.state.config.uiSettings.general.timeformat, $store.state.config.uiSettings.general.dateformat + ' - ' + $store.state.config.uiSettings.general.timeformat) }}</span>
+                <span v-if="estimates.eta > 0 && printerPrinting">{{ $filters.formatAbsoluteDateTime(estimates.eta * 1000) }}</span>
               </status-label>
             </v-col>
           </v-row>
@@ -134,35 +134,35 @@
                 v-if="current_file.history && current_file.history.filament_used"
                 :label="$t('app.general.label.filament')"
               >
-                <span v-if="current_file.history.filament_used">{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
+                <span>{{ $filters.getReadableLengthString(current_file.history.filament_used) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.filament_total && !current_file.history && !current_file.history.filament_used"
+                v-else-if="current_file.filament_total"
                 :label="$t('app.general.label.filament')"
               >
-                <span v-if="current_file.filament_total">{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
+                <span>{{ $filters.getReadableLengthString(current_file.filament_total) }}</span>
               </status-label>
 
               <status-label
                 v-if="current_file.estimated_time"
                 :label="$t('app.general.label.slicer')"
               >
-                <span v-if="current_file.estimated_time > 0">{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
+                <span>{{ $filters.formatCounterTime(current_file.estimated_time) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.history && current_file.history.print_duration"
+                v-if="current_file.history && current_file.history.print_duration > 0"
                 :label="$t('app.general.label.actual_time')"
               >
-                <span v-if="current_file.history.print_duration > 0">{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
+                <span>{{ $filters.formatCounterTime(current_file.history.print_duration) }}</span>
               </status-label>
 
               <status-label
-                v-if="current_file.history && current_file.history.total_duration"
+                v-if="current_file.history && current_file.history.total_duration > 0"
                 :label="$t('app.general.label.total')"
               >
-                <span v-if="current_file.history.total_duration > 0">{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
+                <span>{{ $filters.formatCounterTime(current_file.history.total_duration) }}</span>
               </status-label>
             </v-col>
           </v-row>
@@ -199,7 +199,7 @@ import FilesMixin from '@/mixins/files'
 export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
   // Maintains the state of flow
   flow = {
-    timestamp: new Date().getTime(),
+    timestamp: Date.now(),
     lastExtruderPosition: 0,
     value: 0,
     max: 0
@@ -331,40 +331,14 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
    * The total estimated layer count.
    */
   get layers () {
-    const current_file = this.$store.state.printer.printer.current_file
-    if ('layer_count' in current_file) {
-      return current_file.layer_count
-    } else if (
-      'first_layer_height' in current_file &&
-      'layer_height' in current_file &&
-      'object_height' in current_file
-    ) {
-      const lc = Math.ceil((current_file.object_height - current_file.first_layer_height) / current_file.layer_height + 1)
-      if (lc > 0) return lc
-    }
-    return 0
+    return this.$store.getters['printer/getPrintLayers']
   }
 
   /**
    * Current estimated layer based on current z pos.
    */
   get layer () {
-    const current_file = this.$store.state.printer.printer.current_file
-    const duration = this.$store.state.printer.printer.print_stats.print_duration || 0
-    const pos = this.$store.state.printer.printer.gcode_move.gcode_position
-    if (
-      current_file &&
-      duration > 0 &&
-      'first_layer_height' in current_file &&
-      'layer_height' in current_file &&
-      pos &&
-      pos.length >= 3
-    ) {
-      const z = this.$store.state.printer.printer.gcode_move.gcode_position[2]
-      const l = Math.ceil((z - current_file.first_layer_height) / current_file.layer_height + 1)
-      if (l > 0) return l
-    }
-    return 0
+    return this.$store.getters['printer/getPrintLayer']
   }
 
   /**

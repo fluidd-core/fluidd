@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import mergeFileUpdate from '@/util/merge-file-update'
 import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta, FileRoot } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 import { Globals } from '@/globals'
 
 export const mutations: MutationTree<FilesState> = {
@@ -29,6 +29,12 @@ export const mutations: MutationTree<FilesState> = {
     } else {
       state[root].push(payload.directory)
     }
+  },
+
+  setServerFilesListRoot (state, payload) {
+    const root = payload.root as FileRoot
+
+    state.rootFiles[root] = payload.files
   },
 
   setFileUpdate (state, payload: FileUpdate) {

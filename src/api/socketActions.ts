@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
-import store from '../store'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
 import { TimelapseWritableSettings } from '@/store/timelapse/types'
@@ -11,14 +10,7 @@ const baseEmit = (method: string, options: NotifyOptions) => {
     consola.warn('Socket emit denied, socket not ready.', method, options)
     return
   }
-  if (
-    !store.state.socket?.disconnecting &&
-    !store.state.socket?.connecting
-  ) {
-    Vue.$socket.emit(method, options)
-  } else {
-    consola.debug('Socket emit denied, in disonnecting state:', method, options)
-  }
+  Vue.$socket.emit(method, options)
 }
 
 export const SocketActions = {
@@ -72,11 +64,11 @@ export const SocketActions = {
   },
 
   async machineUpdateStatus (refresh = false) {
-    store.dispatch('version/refreshing', true)
     baseEmit(
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
-        params: { refresh }
+        params: { refresh },
+        wait: Waits.onVersionRefresh
       }
     )
   },
@@ -127,6 +119,14 @@ export const SocketActions = {
     baseEmit(
       'machine.update.system', {
         dispatch: 'version/onUpdatedSystem'
+      }
+    )
+  },
+
+  async machineUpdateAll () {
+    baseEmit(
+      'machine.update.full', {
+        dispatch: 'version/onUpdatedAll'
       }
     )
   },
@@ -228,7 +228,8 @@ export const SocketActions = {
   async printerQueryEndstops () {
     baseEmit(
       'printer.query_endstops.status', {
-        dispatch: 'printer/onQueryEndstops'
+        dispatch: 'printer/onQueryEndstops',
+        wait: Waits.onQueryEndstops
       }
     )
   },
@@ -326,15 +327,10 @@ export const SocketActions = {
     )
   },
 
-  async identify () {
+  async identify (params?: { client_name: string, version: string, type: string, url: string }) {
     baseEmit('server.connection.identify', {
       dispatch: 'socket/onConnectionId',
-      params: {
-        client_name: Globals.APP_NAME,
-        version: `${store.state.version?.fluidd.version || '0.0.0'}-${store.state.version?.fluidd.hash || 'unknown'}`.trim(),
-        type: 'web',
-        url: Globals.GITHUB_REPO
-      }
+      params
     })
   },
 
@@ -363,13 +359,36 @@ export const SocketActions = {
   /**
    * Writes data to moonraker's DB.
    */
-  async serverWrite (key: string, value: any) {
+  async serverWrite (key: string, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.post_item', {
         params: {
-          namespace: Globals.MOONRAKER_DB.NAMESPACE,
+          namespace,
           key,
           value
+        }
+      }
+    )
+  },
+
+  async serverDelete (key: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.delete_item', {
+        params: {
+          namespace,
+          key
+        }
+      }
+    )
+  },
+
+  async serverRead (key?: string, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+    baseEmit(
+      'server.database.get_item', {
+        dispatch: 'socket/onServerRead',
+        params: {
+          namespace,
+          key
         }
       }
     )
@@ -417,10 +436,12 @@ export const SocketActions = {
   },
 
   async serverHistoryDeleteJob (uid: string) {
-    let params: any = { uid }
-    if (uid === 'all') {
-      params = { all: true }
-    }
+    const params = uid === 'all'
+      ? {
+          all: true
+        }
+      : { uid }
+
     baseEmit(
       'server.history.delete_job', {
         dispatch: 'history/onDelete',
@@ -529,6 +550,18 @@ export const SocketActions = {
     )
   },
 
+  async serverFilesListRoot (root: string) {
+    const wait = `${Waits.onFileSystem}${root}`
+    baseEmit(
+      'server.files.list',
+      {
+        dispatch: 'files/onServerFilesListRoot',
+        wait,
+        params: { root }
+      }
+    )
+  },
+
   async serverFilesMove (source: string, dest: string) {
     const wait = Waits.onFileSystem
     baseEmit(
@@ -603,6 +636,14 @@ export const SocketActions = {
           entry_id,
           wake_time
         }
+      }
+    )
+  },
+
+  async serverWebcamsList () {
+    baseEmit(
+      'server.webcams.list', {
+        dispatch: 'webcams/onWebcamsList'
       }
     )
   }

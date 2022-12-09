@@ -67,10 +67,9 @@
                 {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
               </v-icon>
               <img
-                v-if="item.thumbnails && item.thumbnails.length"
-                class="file-icon-thumb"
-                :class="{dense, large: largeThumbnails}"
-                :src="getThumbUrl(item.thumbnails, item.path, false, item.modified)"
+                v-else
+                :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
+                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
           </td>
@@ -112,6 +111,26 @@
           <file-row-item
             v-if="root === 'gcodes'"
             :headers="headers"
+            item-value="filament_name"
+          >
+            <span v-if="item.filament_name !== undefined">
+              {{ item.filament_name }}
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="filament_type"
+          >
+            <span v-if="item.filament_type !== undefined">
+              {{ item.filament_type }}
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
             item-value="filament_total"
           >
             <span v-if="item.filament_total !== undefined">
@@ -136,6 +155,16 @@
           >
             <span v-if="item.history && item.history.filament_used !== undefined">
               {{ $filters.getReadableLengthString(item.history.filament_used) }}
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
+            item-value="nozzle_diameter"
+          >
+            <span v-if="item.nozzle_diameter !== undefined">
+              {{ item.nozzle_diameter }} mm
             </span>
           </file-row-item>
 
@@ -212,10 +241,20 @@
           <file-row-item
             v-if="root === 'gcodes'"
             :headers="headers"
+            item-value="chamber_temp"
+          >
+            <span v-if="item.chamber_temp !== undefined">
+              {{ item.chamber_temp }}<small>°C</small>
+            </span>
+          </file-row-item>
+
+          <file-row-item
+            v-if="root === 'gcodes'"
+            :headers="headers"
             item-value="print_start_time"
           >
             <span v-if="item.print_start_time !== undefined && item.print_start_time !== null">
-              {{ $filters.formatDateTime(item.print_start_time, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
+              {{ $filters.formatDateTime(item.print_start_time * 1000) }}
             </span>
           </file-row-item>
 
@@ -224,7 +263,7 @@
             item-value="modified"
           >
             <span v-if="item.modified !== undefined && item.modified !== null">
-              {{ $filters.formatDateTime(item.modified, $store.state.config.uiSettings.general.dateformat + ' YYYY - ' + $store.state.config.uiSettings.general.timeformat) }}
+              {{ $filters.formatDateTime(item.modified * 1000) }}
             </span>
           </file-row-item>
 
@@ -246,8 +285,7 @@
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import {
   AppFileWithMeta,
-  FileBrowserEntry,
-  FileFilter
+  FileBrowserEntry
 } from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
@@ -261,41 +299,35 @@ import FileRowItem from './FileRowItem.vue'
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   @Prop({ type: Array, required: true })
-  public files!: FileBrowserEntry[]
+  readonly files!: FileBrowserEntry[]
 
   @Prop({ type: Boolean, default: false })
-  public dense!: boolean
+  readonly dense!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   // Currently defined list of headers.
   @Prop({ type: Array, required: true })
-  public headers!: AppTableHeader[]
+  readonly headers!: AppTableHeader[]
 
   @Prop({ type: String, required: false })
-  public search!: string
-
-  @Prop({ type: Array, default: () => { return [] } })
-  public filters!: FileFilter[]
+  readonly search!: string
 
   @Prop({ type: Boolean, required: true })
-  public dragState!: boolean
+  readonly dragState!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public bulkActions!: boolean
-
-  @Prop({ type: Boolean, default: false })
-  public largeThumbnails!: boolean
+  readonly bulkActions!: boolean
 
   @Prop({ type: Array, required: true })
-  public selected!: (FileBrowserEntry | AppFileWithMeta)[]
+  readonly selected!: (FileBrowserEntry | AppFileWithMeta)[]
 
   dragItem: FileBrowserEntry | AppFileWithMeta | null = null
   ghost: HTMLDivElement | undefined = undefined
@@ -307,6 +339,12 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.$store.getters['server/componentSupport']('history') &&
       this.root === 'gcodes'
     )
+  }
+
+  get thumbnailSize () {
+    const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
+
+    return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
   mounted () {
@@ -381,7 +419,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // File was dropped on another table row.
-  handleDrop (destination: FileBrowserEntry | AppFileWithMeta, e: { target: HTMLElement}) {
+  handleDrop (destination: FileBrowserEntry | AppFileWithMeta, e: DragEvent) {
     this.handleDragLeave(e)
     if (
       destination.type === 'directory' &&
@@ -397,20 +435,24 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Handles highlighting rows as drag over them
-  handleDragOver (e: { target: HTMLElement}) {
-    if (
-      e.target.tagName === 'TD' &&
-      e.target.parentElement?.classList.contains('is-directory')
-    ) {
-      const row = e.target.parentElement
-      if (row) row.classList.add('active')
+  handleDragOver (e: DragEvent) {
+    const element = e.target as HTMLElement
+    if (element) {
+      if (
+        element.tagName === 'TD' &&
+        element.parentElement?.classList.contains('is-directory')
+      ) {
+        const row = element.parentElement
+        if (row) row.classList.add('active')
+      }
     }
   }
 
   // Handles un highlighting rows as we drag out of them.
-  handleDragLeave (e: { target: HTMLElement}) {
-    if (e.target.tagName === 'TD') {
-      const row = e.target.parentElement
+  handleDragLeave (e: DragEvent) {
+    const element = e.target as HTMLElement
+    if (element?.tagName === 'TD') {
+      const row = element.parentElement
       if (row) row.classList.remove('active')
     }
   }
@@ -426,24 +468,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   // Lighten up dark mode checkboxes.
   .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
   }
-
-  .file-icon-thumb {
-    max-width: 24px;
-  }
-
-  .file-icon-thumb.dense {
-    max-width: 16px;
-  }
-
-  .file-icon-thumb.large {
-    max-width: initial;
-    max-height: 32px;
-  }
-
 </style>

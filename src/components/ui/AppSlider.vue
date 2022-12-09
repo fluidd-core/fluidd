@@ -12,6 +12,7 @@
         sm="5"
         align-self="center"
         class="text-body-1 py-0"
+        :class="{ 'text--disabled': disabled }"
         v-html="label"
       />
 
@@ -32,7 +33,7 @@
           single-line
           outlined
           hide-details
-          @change="handleChange($event)"
+          @change="handleChange"
           @focus="$event.target.select()"
         >
           <template #prepend>
@@ -85,7 +86,7 @@
       :disabled="disabled || loading || isLocked || overridden"
       dense
       hide-details
-      @change="handleChange($event)"
+      @change="handleChange"
     />
   </v-form>
 </template>
@@ -97,49 +98,49 @@ import StateMixin from '@/mixins/state'
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {
   @Prop({ type: Number, required: true })
-  public value!: number
+  readonly value!: number
 
   @Prop({ type: Number, required: false })
-  public resetValue!: number
+  readonly resetValue!: number
 
   @Prop({ type: String, required: true })
-  public label!: string
+  readonly label!: string
 
   @Prop({ type: Array, default: () => { return [] } })
-  public rules!: []
+  readonly rules!: []
 
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public locked!: boolean
+  readonly locked!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: Number, default: 0 })
-  public min!: number
+  readonly min!: number
 
   @Prop({ type: Number, default: 100 })
-  public max!: number
+  readonly max!: number
 
   @Prop({ type: Boolean, default: false })
-  public overridable!: boolean
+  readonly overridable!: boolean
 
   @Prop({ type: Number, default: 1 })
-  public step!: number
+  readonly step!: number
 
   @Prop({ type: String })
-  public suffix!: string
+  readonly suffix!: string
 
   @Prop({ type: Boolean, default: false })
-  public fullWidth!: boolean
+  readonly fullWidth!: boolean
 
   valid = true
   lockState = false
   overridden = false
-  internalValue: number = this.value
-  internalMax = this.max
+  internalValue = 0
+  internalMax = 0
   pending = false
 
   // If the parent updates the value.
@@ -194,19 +195,21 @@ export default class AppSlider extends Mixins(StateMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules,
-      (v: string | number) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-      (v: string | number) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
+      this.$rules.numberValid,
+      this.$rules.numberGreaterThanOrEqual(this.min)
     ]
     if (!this.overridable) {
       rules.push(
-        (v: string | number) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
+        this.$rules.numberLessThanOrEqual(this.max)
       )
     }
     return rules
   }
 
-  mounted () {
+  created () {
     this.lockState = this.locked
+    this.internalValue = this.value
+    this.internalMax = this.max
   }
 
   handleChange (value: number) {

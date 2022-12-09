@@ -74,11 +74,11 @@ export const actions: ActionTree<ChartState, RootState> = {
         let label = key
         if (key.includes(' ')) label = key.split(' ')[1]
 
-        if (rootState.printer?.printer[key]) {
-          const temp = rootState.printer?.printer[key].temperature || 0
-          const target = rootState.printer?.printer[key].target || 0
-          const power = rootState.printer?.printer[key].power || 0
-          const speed = rootState.printer?.printer[key].speed || 0
+        if (rootState.printer.printer[key]) {
+          const temp = rootState.printer.printer[key].temperature || 0
+          const target = rootState.printer.printer[key].target || 0
+          const power = rootState.printer.printer[key].power || 0
+          const speed = rootState.printer.printer[key].speed || 0
 
           r[label] = payload[key].temperatures[i] || temp
           if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i] || target
@@ -105,7 +105,7 @@ export const actions: ActionTree<ChartState, RootState> = {
     // Only change the data if they require it
     if (!isEqual(state.selectedLegends, payload)) {
       commit('setSelectedLegends', payload)
-      SocketActions.serverWrite(Globals.MOONRAKER_DB.ROOTS.charts.name + '.selectedLegends', payload)
+      SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.charts.name + '.selectedLegends', payload)
     }
   }
 }

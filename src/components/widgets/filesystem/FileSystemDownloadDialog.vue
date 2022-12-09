@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     max-width="500"
     persistent
   >
@@ -63,9 +63,9 @@ import { FileDownload } from '@/store/files/types'
 @Component({})
 export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Object })
-  public file!: FileDownload
+  readonly file!: FileDownload
 }
 </script>

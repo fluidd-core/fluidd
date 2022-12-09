@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="500"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="addInstanceForm"
@@ -40,7 +39,10 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.uniqueName]"
+            :rules="[
+              $rules.required,
+              customRules.uniqueName
+            ]"
           />
         </app-setting>
 
@@ -74,7 +76,10 @@
             dense
             class="mt-0"
             hide-details="auto"
-            :rules="type.rules"
+            :rules="[
+              $rules.required,
+              ...type.rules
+            ]"
           />
         </app-setting>
 
@@ -84,7 +89,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -101,48 +106,59 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleFilterDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
-  public rules!: any
-
-  @Prop({ type: Object, required: true })
-  public filter!: ConsoleFilter
+  readonly filter!: ConsoleFilter
 
   valid = true
 
-  types = [
-    {
-      text: this.$t('app.setting.label.contains'),
-      value: ConsoleFilterType.Contains,
-      rules: [this.rules.required]
-    },
-    {
-      text: this.$t('app.setting.label.starts_with'),
-      value: ConsoleFilterType.StartsWith,
-      rules: [this.rules.required]
-    },
-    {
-      text: this.$t('app.setting.label.expression'),
-      value: ConsoleFilterType.Expression,
-      rules: [this.rules.required, this.rules.validExpression]
+  get customRules () {
+    return {
+      uniqueName: (v: string) => !this.filters.some((c: ConsoleFilter) => c.id !== this.filter.id && c.name.toLowerCase() === v.toLowerCase()) || this.$t('app.general.simple_form.error.exists')
     }
-  ]
+  }
+
+  get types () {
+    return [
+      {
+        text: this.$t('app.setting.label.contains'),
+        value: ConsoleFilterType.Contains,
+        rules: []
+      },
+      {
+        text: this.$t('app.setting.label.starts_with'),
+        value: ConsoleFilterType.StartsWith,
+        rules: []
+      },
+      {
+        text: this.$t('app.setting.label.expression'),
+        value: ConsoleFilterType.Expression,
+        rules: [
+          this.$rules.regExpPatternValid
+        ]
+      }
+    ]
+  }
 
   get type () {
     return this.types.find(f => f.value === this.filter?.type) || this.types[0]
   }
 
+  get filters () {
+    return this.$store.getters['console/getFilters']
+  }
+
   handleSave () {
     if (this.valid) {
       this.$emit('save', this.filter)
-      this.$emit('input', false)
+      this.open = false
     }
   }
 }

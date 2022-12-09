@@ -26,7 +26,7 @@
         </v-btn>
       </template>
       <slot>
-        <span>Delete</span>
+        <span>{{ $t('app.general.btn.delete') }}</span>
       </slot>
     </v-tooltip>
 
@@ -64,6 +64,6 @@ import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   // The current path
   @Prop({ type: String, required: false })
-  public path!: string
+  readonly path!: string
 }
 </script>

@@ -23,7 +23,7 @@
           {{ $t('app.printer.state.' + printerState) || printerState }}
         </v-tab>
         <v-tab
-          v-if="supportsHistoryComponent"
+          v-if="supportsHistoryComponent && !(printerPrinting || printerPaused)"
           key="reprint"
         >
           {{ $t('app.general.btn.reprint') }}
@@ -40,12 +40,9 @@
 
     <v-tabs-items
       v-model="tab"
-      style="background-color: transparent;"
       touchless
     >
-      <v-tab-item
-        key="status"
-      >
+      <v-tab-item key="status">
         <status-tab />
       </v-tab-item>
 

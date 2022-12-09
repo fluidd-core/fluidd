@@ -17,10 +17,11 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!xHomed && !forceMove"
+          :disabled="!klippyReady || (!xHomed && !xForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[0].toFixed(2) : toolheadPosition[0].toFixed(2)"
           @change="moveTo('X', $event)"
+          @focus="$event.target.select()"
         />
       </v-col>
       <v-col
@@ -35,10 +36,11 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!yHomed && !forceMove"
+          :disabled="!klippyReady || (!yHomed && !yForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[1].toFixed(2) : toolheadPosition[1].toFixed(2)"
           @change="moveTo('Y', $event)"
+          @focus="$event.target.select()"
         />
       </v-col>
       <v-col
@@ -53,10 +55,11 @@
           dense
           class="v-input--width-small"
           type="number"
-          :disabled="!zHomed && !forceMove"
+          :disabled="!klippyReady || (!zHomed && !zForceMove)"
           :readonly="printerBusy"
           :value="(useGcodeCoords) ? gcodePosition[2].toFixed(2) : toolheadPosition[2].toFixed(2)"
           @change="moveTo('Z', $event)"
+          @focus="$event.target.select()"
         />
       </v-col>
       <v-col
@@ -130,15 +133,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  public forceMove!: boolean
-
   get gcodePosition () {
     return this.$store.state.printer.printer.gcode_move.gcode_position
   }
@@ -153,6 +153,22 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get useGcodeCoords () {
     return this.$store.state.config.uiSettings.general.useGcodeCoords
+  }
+
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
+  }
+
+  get xForceMove () {
+    return this.forceMove && !this.xHasMultipleSteppers
+  }
+
+  get yForceMove () {
+    return this.forceMove && !this.yHasMultipleSteppers
+  }
+
+  get zForceMove () {
+    return this.forceMove && !this.zHasMultipleSteppers
   }
 
   get requestedSpeed () {
@@ -185,7 +201,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
         ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
         : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
       if (this.forceMove) {
-        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate}`)
+        const accel = (axis.toLowerCase() === 'z')
+          ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+          : this.$store.state.printer.printer.toolhead.max_accel
+        this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis.toLowerCase()} DISTANCE=${pos} VELOCITY=${rate} ACCEL=${accel}`)
       } else {
         this.sendGcode(`G90
         G1 ${axis}${pos} F${rate * 60}`)

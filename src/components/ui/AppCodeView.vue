@@ -46,7 +46,7 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 })
 export default class AppCodeView extends Vue {
   @Prop({ type: String, required: true })
-  public value!: string
+  readonly value!: string
 
   copied = false
 
@@ -64,7 +64,7 @@ export default class AppCodeView extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '~vuetify/src/styles/styles.sass';
+  @import 'vuetify/src/styles/styles.sass';
 
   .theme--light .code-view {
     background-color: rgba(map-get($material-light, 'bg-color'), 0.08);

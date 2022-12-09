@@ -6,6 +6,7 @@ import Dashboard from '@/views/Dashboard.vue'
 import Console from '@/views/Console.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
+import Diagnostics from '@/views/Diagnostics.vue'
 import History from '@/views/History.vue'
 // import Queue from '@/views/Queue.vue'
 import Timelapse from '@/views/Timelapse.vue'
@@ -18,14 +19,13 @@ import FullscreenCamera from '@/views/FullscreenCamera.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
 import Icons from '@/views/Icons.vue'
-import store from '@/store'
 
 Vue.use(VueRouter)
 
 const ifAuthenticated = (to: Route, from: Route, next: NavigationGuardNext<Vue>) => {
   if (
-    store.getters['auth/getAuthenticated'] ||
-    !store.state.socket?.apiConnected
+    router.app.$store.getters['auth/getAuthenticated'] ||
+    !router.app.$store.state.socket.apiConnected
   ) {
     next()
     return
@@ -56,6 +56,12 @@ const routes: Array<RouteConfig> = [
     path: '/tune',
     name: 'Tune',
     component: Tune,
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: '/diagnostics',
+    name: 'Diagnostics',
+    component: Diagnostics,
     beforeEnter: ifAuthenticated
   },
   {
@@ -139,7 +145,7 @@ const routes: Array<RouteConfig> = [
 ]
 
 const router = new VueRouter({
-  base: process.env.BASE_URL,
+  base: import.meta.env.BASE_URL,
   routes,
   scrollBehavior: (to, from, savedPosition) => {
     if (savedPosition) return savedPosition
@@ -152,6 +158,11 @@ const router = new VueRouter({
     }
     return { x: 0, y: 0 }
   }
+})
+
+router.beforeEach((to, from, next) => {
+  router.app.$store.commit('config/setContainerColumnCount', 2)
+  next()
 })
 
 export default router

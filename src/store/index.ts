@@ -26,12 +26,12 @@ import { wait } from './wait'
 import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
 import { parts } from './parts'
+import { webcams } from './webcams'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store<RootState>({
-  strict: (process.env.NODE_ENV === 'development'),
-  state: {},
+  strict: (import.meta.env.DEV),
   modules: {
     socket,
     auth,
@@ -53,7 +53,8 @@ export default new Vuex.Store<RootState>({
     wait,
     gcodePreview,
     timelapse,
-    parts
+    parts,
+    webcams
   },
   mutations: {},
   actions: {
@@ -77,8 +78,8 @@ export default new Vuex.Store<RootState>({
 
     async init ({ dispatch, commit }, payload: InitConfig) {
       // Sets the version and hash of Fluidd.
-      commit('version/setVersion', process.env.VERSION)
-      commit('version/setHash', process.env.HASH)
+      commit('version/setVersion', import.meta.env.VERSION)
+      commit('version/setHash', import.meta.env.HASH)
 
       // Set the api connection state..
       commit('socket/setApiConnected', payload.apiConnected)

@@ -1,20 +1,25 @@
 <template>
   <app-btn
     v-if="paramList.length === 0 || !enableParams"
-    :disabled="macro.disabledWhilePrinting && printerPrinting"
+    :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
-    @click="$emit('click', macro.name)"
+    v-on="{
+      ...$listeners,
+      click: () => $emit('click', macro.name)
+    }"
   >
     <slot />
   </app-btn>
   <app-btn-group
     v-else
-    :elevation="6"
   >
     <app-btn
-      :disabled="macro.disabledWhilePrinting && printerPrinting"
+      :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
-      @click="$emit('click', macro.name)"
+      v-on="{
+        ...$listeners,
+        click: () => $emit('click', macro.name)
+      }"
     >
       <slot />
     </app-btn>
@@ -30,6 +35,7 @@
           v-bind="attrs"
           :min-width="24"
           class="px-0"
+          :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
           v-on="on"
         >
           <v-icon
@@ -79,7 +85,7 @@
             block
             @click="$emit('click', runCommand)"
           >
-            Send
+            {{ $t('app.general.btn.send') }}
           </app-btn>
         </v-card-actions>
       </v-card>
@@ -96,10 +102,10 @@ import gcodeMacroParams from '@/util/gcode-macro-params'
 @Component({})
 export default class AppMacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  public macro!: Macro
+  readonly macro!: Macro
 
   @Prop({ type: Boolean, default: false })
-  public enableParams!: boolean
+  readonly enableParams!: boolean
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 
@@ -113,8 +119,12 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
   get runCommand () {
     let s = this.macro.name
     if (this.params) {
-      for (const param of Object.keys(this.params)) {
-        s += ` ${param}=${this.params[param].value}`
+      if (['m117', 'm118'].includes(this.macro.name)) {
+        s += ` ${this.params.message.value}`
+      } else {
+        for (const param of Object.keys(this.params)) {
+          s += ` ${param}=${this.params[param].value}`
+        }
       }
     }
     return s
@@ -129,7 +139,10 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
 
   mounted () {
     if (!this.macro.config || !this.macro.config.gcode) return []
-    if (this.macro.config.gcode) {
+
+    if (['m117', 'm118'].includes(this.macro.name)) {
+      this.$set(this.params, 'message', { value: '', reset: '' })
+    } else {
       for (const { name, value } of gcodeMacroParams(this.macro.config.gcode)) {
         if (!this.params[name]) {
           this.$set(this.params, name, { value, reset: value })

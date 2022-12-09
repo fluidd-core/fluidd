@@ -5,7 +5,6 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 // Global Registrations
 import './registerComponentHooks'
 import './consola'
-// import { WorkboxPlugin } from './plugins/workbox'
 
 // Common, 1st party.
 import Vue from 'vue'
@@ -27,16 +26,13 @@ import { appInit } from './init'
 import { InitConfig } from './store/config/types'
 
 // Import plugins
+import { HttpClientPlugin } from './plugins/httpClient'
 import { FiltersPlugin } from './plugins/filters'
 import { SocketPlugin } from './plugins/socketClient'
 import { ColorSetPlugin } from './plugins/colorSet'
-import { DayJSPlugin } from './plugins/dayjs'
 
 // Main App component
 import App from './App.vue'
-
-// Globally register all components in our common, layout and ui directories.
-import '@/components/_globals'
 
 // Register global directives.
 import Blur from '@/directives/blur'
@@ -45,14 +41,10 @@ import Blur from '@/directives/blur'
 Vue.directive('blur', Blur)
 
 // v-chart component asynchronously loaded from a split chunk
-Vue.component('VChart', () => import(
-  /* webpackChunkName: "vue-echarts" */
-  /* webpackPrefetch: 100 */
-  './vue-echarts-chunk'))
+Vue.component('EChart', () => import('./vue-echarts-chunk'))
 
 // Use any Plugins
 Vue.use(VueVirtualScroller)
-Vue.use(DayJSPlugin)
 Vue.use(FiltersPlugin)
 Vue.use(VueMeta)
 Vue.use(ColorSetPlugin, {})
@@ -60,7 +52,10 @@ Vue.use(VuetifyConfirm, {
   vuetify
 })
 Vue.use(InlineSvgPlugin)
-// Vue.use(WorkboxPlugin)
+
+Vue.use(HttpClientPlugin, {
+  store
+})
 
 appInit()
   .then((config: InitConfig) => {

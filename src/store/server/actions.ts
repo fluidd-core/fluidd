@@ -15,6 +15,10 @@ export const actions: ActionTree<ServerState, RootState> = {
     commit('setReset')
   },
 
+  async resetKlippy ({ commit }) {
+    commit('setResetKlippy')
+  },
+
   /**
    * Init moonraker components.
    * During app init, we want to initially init these once, irrelevant

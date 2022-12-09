@@ -16,19 +16,21 @@ export const getters: GetterTree<FilesState, RootState> = {
     }
   },
 
+  getRootFiles: (state) => (root: FileRoot) => {
+    return state.rootFiles[root]
+  },
+
   /**
    * Indicates if a root is available.
    */
   isRootAvailable: (state, getters, rootState) => (r: string) => {
-    return rootState.server?.info.registered_directories.includes(r)
+    return rootState.server.info.registered_directories.includes(r)
   },
 
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (r: FileRoot) => {
-    const root = r
-
+  getRootProperties: () => (root: FileRoot) => {
     if (root === 'gcodes') {
       return {
         readonly: false,
@@ -36,18 +38,20 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: true,
         canView: false,
         canPrint: true,
-        canConfigure: true
+        canConfigure: true,
+        filterTypes: ['print_start_time']
       }
     }
 
     if (root === 'config') {
       return {
         readonly: false,
-        accepts: ['.conf', '.cfg', '.md'],
+        accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
         canEdit: true,
         canView: false,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: ['hidden_files', 'klipper_backup_files']
       }
     }
 
@@ -58,7 +62,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: []
       }
     }
 
@@ -69,7 +74,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: []
       }
     }
 
@@ -80,7 +86,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canEdit: false,
         canView: true,
         canPrint: false,
-        canConfigure: false
+        canConfigure: false,
+        filterTypes: []
       }
     }
 
@@ -93,7 +100,8 @@ export const getters: GetterTree<FilesState, RootState> = {
         canPrint: false,
         canConfigure: false,
         canDelete: true,
-        canCreateDirectory: true
+        canCreateDirectory: true,
+        filterTypes: []
       }
     }
 
@@ -103,7 +111,8 @@ export const getters: GetterTree<FilesState, RootState> = {
       canEdit: false,
       canView: true,
       canPrint: false,
-      canConfigure: false
+      canConfigure: false,
+      filterTypes: []
     }
   },
 

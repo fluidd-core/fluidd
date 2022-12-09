@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      active: aktiv
       box_scale: Skalierung
       flat_surface: Ebene anzeigen
       mesh_matrix: Mesh-Matrix
@@ -78,6 +79,8 @@ app:
       label:
         print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
+        hidden_files: Versteckte Dateien ausblenden
+        klipper_backup_files: Klipper-Backupdateien ausblenden
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
@@ -105,6 +108,11 @@ app:
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: >-
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
   gcode:
     btn:
       load_current_file: Aktuelle Datei laden
@@ -139,6 +147,7 @@ app:
       clear_profile: Profil zurücksetzen
       close: Schließen
       config_reference: Config Referenz
+      delete: Löschen
       download: Herunterladen
       edit: Bearbeiten
       exit_layout: Layout-Modus verlassen
@@ -150,26 +159,31 @@ app:
       preheat: Vorheizen
       presets: Voreinstellungen
       preview_gcode: Gcode-Vorschau
+      print: Drucken
       quad_gantry_level: QGL
       reboot: Neustarten
+      recover: Retten
       refresh: Aktualisieren
       remove: Entfernen
       remove_all: Alle Entfernen
       rename: Umbenennen
       reprint: Druck wiederholen
       reset_file: Datei zurücksetzen
-      reset_layout: Layout zurücksetzen
+      reset_layout: Auf Standardlayout zurücksetzen
+      reset_default_layout: Standardlayout zurücksetzen
       restart_firmware: Firmware Neustarten
       restart_service: '%{service} neustarten'
       restart_service_klipper: Klipper neustarten
       restart_service_moonraker: Moonraker neustarten
       resume: Fortfahren
       retract: Retracten
+      return_dashboard: Zurück zum Dashboard
       save: Speichern
       save_as: Speichern als
-      save_restart: Speichern & Neustarten
+      save_restart: Speichern & Neu starten
       send: Senden
       set_color: Farbe setzen
+      set_default_layout: Als Standardlayout setzen
       shutdown: Herunterfahren
       socket_reconnect: Neu verbinden
       socket_refresh: Aktualisieren erzwingen
@@ -178,6 +192,14 @@ app:
       view: Ansicht
       reset_stats: Statistik zurücksetzen
       snooze: Schlummern
+      abort: Abbrechen
+      accept: Akzeptieren
+      adjusted: Angepasst
+      auth_unsure: Sie wissen nicht, warum dies angezeigt wird?
+      forgot_password: Passwort vergessen?
+      login: Einloggen
+      logout: Ausloggen
+      save_config_and_restart: Konfiguration speichern und neu starten
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -228,6 +250,7 @@ app:
       layout: Layout
       longest_job: Längster Auftrag
       low: Niedrigste
+      manage_accounts: Benutzer verwalten
       m117: M117
       name: Name
       new_password: Neues Passwort
@@ -254,8 +277,8 @@ app:
       total_print_time_avg: Durchschnitt pro Druck
       total_time: Gesamtzeit
       total_time_avg: Durchschnitt pro Druck
-      turn_device_on: %{device} einschalten
-      turn_device_off: %{device} ausschalten
+      turn_device_on: '%{device} einschalten'
+      turn_device_off: '%{device} ausschalten'
       uncategorized: Unkategorisiert
       unretract_extra_length: Unretract-Extralänge
       unretract_speed: Unretract-Geschwindigkeit
@@ -270,9 +293,25 @@ app:
       file_time: Datei
       pressure_advance: Pressure Advance
       smooth_time: Glättungszeit
+      current_user: Aktueller Benutzer
+      moonraker: Moonraker
+      username: Benutzername
+      ldap: LDAP
+      accepted_screws: Akzeptierte Schrauben
+      auth_source: Authentifizierungsquelle
+      partial_of_total: '%{partial} von %{total}'
+      screw_index: Schraubenindex
+      screw_name: Schraubenname
+      screw_number: Schraube %{index}
+      user_managed_source: Benutzer durch %{source}-Authentifizierung verwaltet
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
+      bed_screws_adjust: >-
+        Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der aktuellen Schraube erforderlich ist.
+        Klicken Sie andernfalls auf <b>Akzeptieren</b>, um fortzufahren.
+      welcome_back: >-
+        Willkommen zurück.<br>Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt zu bleiben.
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -284,7 +323,9 @@ app:
         min_or_0: Min %{min} oder 0
         password_username: Kann nicht dem Nutzernamen entsprechen
         required: Erforderlich
+        invalid_aspect: Ungültiges Verhältnis
         invalid_number: Ungültige Zahl
+        credentials: Ungültige Anmeldeinformationen
       msg:
         apply_z_offset_endstop: >-
           Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
@@ -292,6 +333,8 @@ app:
         apply_z_offset_probe: >-
           Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
           aktualisiert.
+        no_file_preview: >-
+          %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?
         confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
@@ -302,6 +345,7 @@ app:
         unsaved_changes: >-
           Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie den
           Editor schließen möchten?
+        confirm_forcemove_toggle: Sind Sie sicher? Dies kann Schäden am Drucker verursachen.
     table:
       header:
         actions: Aktionen
@@ -325,6 +369,7 @@ app:
         start_time: Gestartet
         status: Status
         total_duration: Gesamtdauer
+        chamber_temp: Kammertemperatur
     title:
       add_printer: Drucker hinzufügen
       bedmesh: Bettnivellierung
@@ -333,6 +378,7 @@ app:
       config_files: Konfigurationsdateien
       configure: Konfiguration
       console: Konsole
+      diagnostics: Diagnostik
       endstops: Endschalter
       fans_outputs: Lüfter & Ausgänge
       gcode_preview: Gcode-Vorschau
@@ -352,11 +398,20 @@ app:
       timelapse: Zeitraffer
       tool: Druckkopf
       tune: Tune
+      pending_configuration_changes: Ausstehende Konfigurationsänderungen
+      metrics_explorer: Metrik-Explorer
+      not_found: 404 Nicht Gefunden
+      edit_chart: Diagramm bearbeiten
+      add_chart: Diagramm hinzufügen
     tooltip:
+      browse_metrics: Verfügbare Metriken durchsuchen
       estop: NOT-AUS
+      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
+      notifications: Benachrichtigungen
       reload_klipper: Lädt die Klipper-Konfiguration neu.
       reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
+      run_collector: Kollektor ausführen
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
@@ -381,6 +436,7 @@ app:
       add_user: Benutzer hinzufügen
       reset: Zurücksetzen
       select_theme: Farbschema auswählen
+      add_metric: Metrik hinzufügen
     camera_type_options:
       iframe: HTTP-Seite
       mjpegadaptive: Adaptives MJPEG
@@ -394,6 +450,8 @@ app:
     label:
       all_off: Alle aus
       all_on: Alle an
+      aspect_ratio: Seitenverhältnis
+      aspect_ratio_format: '[Breite : Höhe]'
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
@@ -408,6 +466,8 @@ app:
       contains: Enthält
       dark_mode: Nachtmodus
       date_time_format: Datum- und Zeitformat
+      force_move_toggle_warning: Bestätigung bei Aktivierung von FORCE_MOVE anfordern
+      show_manual_probe_dialog_automatically: Dialog für manuelles Probing automatisch anzeigen
       default_extrude_length: Standard Extrudierlänge
       default_extrude_speed: Standard Extrudiergeschwindigkeit
       default_toolhead_move_length: Standard Bewegungsdistanz des Druckkopfes
@@ -415,6 +475,7 @@ app:
       default_toolhead_z_speed: Standard Druckkopfgeschwindigkeit für Z
       draw_background: Hintergrund anzeigen
       enable: Aktivieren
+      enable_diagnostics: Diagnostik-Aufzeichnung aktivieren
       enable_notifications: Aktiviere Benachrichtigung
       expression: Ausdruck
       extrusion_line_width: Extrusionslinien-Dicke
@@ -448,6 +509,38 @@ app:
       toolhead_move_distances: Bewegungsdistanzen des Druckkopfes
       type: Art
       z_adjust_values: Z-Werte anpassen
+      show_code_lens: CodeLens anzeigen
+      show_save_config_and_restart: Speichern & Neu starten Schaltfläche in der Navigationsleite
+      icon: Symbol
+      solid: Durchgängig
+      title: Titel
+      unit: Einheit
+      camera_fullscreen_action:
+        title: Vollbildaktion
+        rawstream: Direkter Stream
+        embed: Eingebettet
+      last_result: Letztes Ergebnis
+      show_bed_screws_adjust_dialog_automatically: Dialog zum Anpassen der Bettschrauben automatisch anzeigen
+      show_legend: Legende zeigen
+      max: Maximum
+      metrics: Metriken
+      min: Minimum
+      name: Name
+      optional: Optional
+      right_y: Rechte Y-Achse
+      confirm_on_save_config_and_restart: >-
+        Vor dem Speichern und Neustart die ausstehenden
+        Konfigurationsänderungen überprüfen
+      dashed: Gestrichelt
+      fill_color: Füllfarbe
+      fill_opacity: Fülldeckkraft
+      left_y: Linke Y-Achse
+      line_color: Linienfarbe
+      line_style: Linienstil
+      card: Karte
+      collector: Kollektor
+      dotted: Gepunktet
+      axes: Achsen
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -466,6 +559,14 @@ app:
       tool: Druckkopf
     tooltip:
       gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard anzeigen
+      show_manual_probe_dialog_automatically: >-
+        Öffnet automatisch einen Hilfsdialog,
+        wenn ein manuelles Probe-Tool ausgeführt wird
+      show_bed_screws_adjust_dialog_automatically: >-
+        Öffnet automatisch einen Hilfsdialog,
+        wenn das BED_SCREWS_ADJUST-Tool ausgeführt wird
+      diagnostics_performance: >-
+        [BETA] Das Protokollieren von Diagnoseinformationen kann die Leistung beeinträchtigen
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
@@ -512,11 +613,23 @@ app:
       home_xy: Home XY
       home_z: Home Z
       motors_off: MOTOREN AUS
+      relative_positioning: Relative Positionierung
+      absolute_positioning: Absolute Positionierung
+      force_move: FORCE_MOVE
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      bed_screws_adjust: BED_SCREWS_ADJUST
+      manual_probe: Manuelles Probing
+    title:
+      bed_screws_adjust: Bettschrauben einstellen
+      manual_probe: Manuelles Probing
   version:
     btn:
       check_for_updates: Nach Aktualisierungen suchen
       finish: Beenden
       update: Aktualisieren
+      update_all: Alles aktualisieren
       view_versions: Versionen anzeigen
     label:
       commit_history: Commit-Verlauf
@@ -554,8 +667,6 @@ app:
       timelapse_settings: Zeitraffer-Einstellungen
       timelapse_status: Zeitraffer-Status
       render_settings: Render-Einstellungen
-    tooltip:
-      managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
     setting:
       enable: Aktiviert
       auto_render: Automatisches Rendern

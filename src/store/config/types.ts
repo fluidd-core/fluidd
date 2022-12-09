@@ -1,11 +1,13 @@
 import { AppTablePartialHeader } from '@/types/tableheaders'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import { FileFilterType, FileRoot } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
   apiUrl: string;
   socketUrl: string;
   layoutMode: boolean;
+  containerColumnCount: number;
   instances: InstanceConfig[];
   uiSettings: UiSettings;
   hostConfig: HostConfig;
@@ -18,13 +20,20 @@ export interface UiSettings {
   dashboard: DashboardConfig;
   tableHeaders: AppTableConfiguredHeaders;
   gcodePreview: GcodePreviewConfig;
+  fileSystem: FileSystemConfig;
+  toolhead: ToolheadConfig;
+}
+
+export interface ToolheadConfig {
+  forceMove: boolean;
+  extrudeSpeed: number;
+  extrudeLength: number;
 }
 
 export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
   hosted: boolean;
-  locales: SupportedLocale[];
   themePresets: SupportedTheme[];
 }
 
@@ -51,15 +60,20 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
-  dateformat: string;
-  timeformat: string;
+  dateFormat: string;
+  timeFormat: string;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
+  showSaveConfigAndRestart: boolean;
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
+  showManualProbeDialogAutomatically: boolean;
+  showBedScrewsAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
+  enableDiagnostics: boolean;
+  thumbnailSize: number;
 }
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
@@ -158,8 +172,13 @@ export interface GcodePreviewConfig {
   groupLowerLayers: boolean;
   autoLoadOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
+  autoZoom: boolean;
   flip: {
     horizontal: boolean;
     vertical: boolean;
   };
+}
+
+export interface FileSystemConfig {
+  activeFilters: Partial<Record<FileRoot, FileFilterType[]>>
 }

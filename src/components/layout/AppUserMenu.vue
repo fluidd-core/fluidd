@@ -63,7 +63,7 @@
           <v-list-item-icon>
             <v-icon>$addAccount</v-icon>
           </v-list-item-icon>
-          <v-list-item-title>Manage accounts</v-list-item-title>
+          <v-list-item-title>{{ $t('app.general.label.manage_accounts') }}</v-list-item-title>
         </v-list-item>
 
         <v-divider v-if="!isTrustedOnly" />
@@ -71,7 +71,7 @@
         <v-list-item v-if="!isTrustedOnly">
           <v-list-item-content class="justify-center">
             <app-btn @click="handleLogout">
-              Logout
+              {{ $t('app.general.btn.logout') }}
             </app-btn>
           </v-list-item-content>
         </v-list-item>

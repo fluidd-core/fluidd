@@ -11,7 +11,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(yHomed)"
-          :disabled="axisButtonDisabled(yHomed)"
+          :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$up"
           @click="sendMoveGcode('Y', toolheadMoveLength)"
         />
@@ -22,7 +22,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(zHomed)"
-          :disabled="axisButtonDisabled(zHomed)"
+          :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$up"
           @click="sendMoveGcode('Z', toolheadMoveLength)"
         />
@@ -33,11 +33,11 @@
       >
         <app-btn-toolhead-move
           :color="(!allHomed) ? 'primary' : undefined"
-          :loading="hasWait(waits.onHomeAll)"
+          :loading="hasWait($waits.onHomeAll)"
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
           small-icon
-          @click="sendGcode('G28', waits.onHomeAll)"
+          @click="sendGcode('G28', $waits.onHomeAll)"
         >
           {{ $t('app.tool.btn.home_all') }}
         </app-btn-toolhead-move>
@@ -51,7 +51,7 @@
       <v-col cols="auto">
         <app-btn-toolhead-move
           :color="axisButtonColor(xHomed)"
-          :disabled="axisButtonDisabled(xHomed)"
+          :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$left"
           @click="sendMoveGcode('X', toolheadMoveLength, true)"
         />
@@ -62,11 +62,11 @@
       >
         <app-btn-toolhead-move
           :color="(!xyHomed) ? 'primary' : undefined"
-          :loading="hasWait(waits.onHomeXY)"
+          :loading="hasWait($waits.onHomeXY)"
           :disabled="!klippyReady || printerPrinting"
           :tooltip="$t('app.tool.tooltip.home_xy')"
           icon="$home"
-          @click="sendGcode('G28 X Y', waits.onHomeXY)"
+          @click="sendGcode('G28 X Y', $waits.onHomeXY)"
         />
       </v-col>
       <v-col
@@ -76,7 +76,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(xHomed)"
-          :disabled="axisButtonDisabled(xHomed)"
+          :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
           icon="$right"
           @click="sendMoveGcode('X', toolheadMoveLength)"
         />
@@ -88,11 +88,11 @@
       >
         <app-btn-toolhead-move
           :color="(!zHomed) ? 'primary' : undefined"
-          :loading="hasWait(waits.onHomeZ)"
+          :loading="hasWait($waits.onHomeZ)"
           :disabled="!klippyReady || printerPrinting"
           :tooltip="$t('app.tool.tooltip.home_z')"
           icon="$home"
-          @click="sendGcode('G28 Z', waits.onHomeZ)"
+          @click="sendGcode('G28 Z', $waits.onHomeZ)"
         />
       </v-col>
       <v-col
@@ -101,11 +101,11 @@
       >
         <app-btn-toolhead-move
           :color="(!xHomed) ? 'primary' : undefined"
-          :loading="hasWait(waits.onHomeX)"
+          :loading="hasWait($waits.onHomeX)"
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
           small-icon
-          @click="sendGcode('G28 X', waits.onHomeX)"
+          @click="sendGcode('G28 X', $waits.onHomeX)"
         >
           {{ $t('app.tool.btn.home_x') }}
         </app-btn-toolhead-move>
@@ -121,8 +121,8 @@
         class="ml-12 mr-7"
       >
         <app-btn-toolhead-move
-          :color="axisButtonColor(xHomed)"
-          :disabled="axisButtonDisabled(yHomed)"
+          :color="axisButtonColor(yHomed)"
+          :disabled="axisButtonDisabled(yHomed, yHasMultipleSteppers)"
           icon="$down"
           @click="sendMoveGcode('Y', toolheadMoveLength, true)"
         />
@@ -133,7 +133,7 @@
       >
         <app-btn-toolhead-move
           :color="axisButtonColor(zHomed)"
-          :disabled="axisButtonDisabled(yHomed)"
+          :disabled="axisButtonDisabled(zHomed, zHasMultipleSteppers)"
           icon="$down"
           @click="sendMoveGcode('Z', toolheadMoveLength, true)"
         />
@@ -144,11 +144,11 @@
       >
         <app-btn-toolhead-move
           :color="(!yHomed) ? 'primary' : undefined"
-          :loading="hasWait(waits.onHomeY)"
+          :loading="hasWait($waits.onHomeY)"
           :disabled="!klippyReady || printerPrinting"
           icon="$home"
           small-icon
-          @click="sendGcode('G28 Y', waits.onHomeY)"
+          @click="sendGcode('G28 Y', $waits.onHomeY)"
         >
           {{ $t('app.tool.btn.home_y') }}
         </app-btn-toolhead-move>
@@ -183,26 +183,25 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
-  waits = Waits
   moveLength = ''
   fab = false
 
-  @Prop({ type: Boolean, default: false })
-  public forceMove!: boolean
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
+  }
 
   get kinematics () {
     return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
   }
 
   get canHomeXY () {
-    return this.kinematics !== 'delta'
+    return !['delta', 'rotary_delta'].includes(this.kinematics)
   }
 
   get toolheadMoveDistances () {
@@ -231,8 +230,8 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
     return axisHomed ? 'primary' : undefined
   }
 
-  axisButtonDisabled (axisHomed: boolean) {
-    return !this.klippyReady || (!axisHomed && !this.forceMove)
+  axisButtonDisabled (axisHomed: boolean, axisMultipleSteppers: boolean) {
+    return !this.klippyReady || (!axisHomed && !(this.forceMove && !axisMultipleSteppers))
   }
 
   /**
@@ -249,7 +248,10 @@ export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
       : distance
 
     if (this.forceMove) {
-      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate}`)
+      const accel = (axis.toLowerCase() === 'z')
+        ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+        : this.$store.state.printer.printer.toolhead.max_accel
+      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
     } else {
       this.sendGcode(`G91
       G1 ${axis}${distance} F${rate * 60}

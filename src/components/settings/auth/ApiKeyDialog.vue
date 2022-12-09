@@ -1,79 +1,66 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="500"
-    @input="$emit('input', $event)"
   >
-    <v-card>
-      <v-card-title class="card-heading py-2">
-        <span
-          class="focus--text"
-          v-html="$t('app.general.label.api_key')"
-        />
-      </v-card-title>
+    <v-form>
+      <v-card>
+        <v-card-title class="card-heading py-2">
+          <span class="focus--text">{{ $t('app.general.label.api_key') }}</span>
+        </v-card-title>
 
-      <v-divider />
+        <v-divider />
 
-      <v-card-text class="py-4">
-        <v-text-field
-          :value="apiKey"
-          filled
-          dense
-          single-line
-          hide-details
-          readonly
-          outlined
-        />
-      </v-card-text>
+        <v-card-text class="py-4">
+          <v-text-field
+            :value="apiKey"
+            filled
+            dense
+            single-line
+            hide-details
+            readonly
+          />
+        </v-card-text>
 
-      <v-layout
-        align-center
-        column
-        class="pb-4"
-      >
-        <app-qr-code
-          :value="apiKey"
-          centered
-        />
-      </v-layout>
+        <v-divider />
 
-      <v-divider />
-
-      <v-card-actions class="pa-4">
-        <v-spacer />
-        <app-btn
-          color=""
-          @click="handleRefreshApiKey"
+        <v-layout
+          align-center
+          column
+          class="py-4"
         >
-          <v-icon
-            small
-            left
+          <app-qr-code
+            :value="apiKey"
+            centered
+          />
+        </v-layout>
+
+        <v-divider />
+
+        <v-card-actions>
+          <v-spacer />
+
+          <app-btn
+            color="primary"
+            text
+            type="button"
+            @click="handleRefreshApiKey"
           >
-            $refresh
-          </v-icon>
-          {{ $t('app.general.btn.refresh') }}
-        </app-btn>
-
-        <app-btn
-          color="warning"
-          text
-          type="button"
-          @click="$emit('input', false)"
-        >
-          {{ $t('app.general.btn.close') }}
-        </app-btn>
-      </v-card-actions>
-    </v-card>
+            {{ $t('app.general.btn.refresh') }}
+          </app-btn>
+        </v-card-actions>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class ApiKeyDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   get apiKey () {
     return this.$store.getters['auth/getApiKey']

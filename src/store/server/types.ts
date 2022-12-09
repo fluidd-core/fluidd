@@ -45,13 +45,19 @@ export interface SystemInfo {
   cpu_info?: CpuInfo;
   sd_info?: SDInfo;
   distribution?: DistroInfo;
+  virtualization?: Virtualization;
+  network?: NetworkState;
+  canbus?: CanBusState;
+  instance_ids: InstanceIds;
 }
 
 export interface ServiceState {
-  [id: string]: {
-    active_state?: string;
-    sub_state?: string;
-  };
+  [id: string]: ServiceStateDetails;
+}
+
+interface ServiceStateDetails {
+  active_state?: string;
+  sub_state?: string;
 }
 
 export interface ServiceInfo {
@@ -95,6 +101,41 @@ export interface DistroVersionParts {
   major: string;
   minor: string;
   build_number: string;
+}
+
+export interface Virtualization {
+  virt_type: string;
+  virt_identifier: string;
+}
+
+export interface NetworkState {
+  [id: string]: NetworkInterface
+}
+
+export interface NetworkInterface {
+  mac_address?: string;
+  ip_addresses?: NetworkIpAddress;
+}
+
+export interface NetworkIpAddress {
+  family?: string;
+  address?: string;
+  is_link_local?: boolean;
+}
+
+export interface CanBusState {
+  [id: string]: CanBusInterface;
+}
+
+export interface CanBusInterface {
+  tx_queue_len?: number;
+  bitrate?: number;
+  driver?: string;
+}
+
+export interface InstanceIds {
+  moonraker: string;
+  klipper: string;
 }
 
 export interface ServerConfig {

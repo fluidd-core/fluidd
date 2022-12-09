@@ -34,7 +34,7 @@ type Channel = 'r' | 'g' | 'b' | 'w'
 @Component({})
 export default class OutputLed extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
-  public led!: Led
+  readonly led!: Led
 
   channelLookup: Record<Channel, string> = { r: 'RED', g: 'GREEN', b: 'BLUE', w: 'WHITE' }
 

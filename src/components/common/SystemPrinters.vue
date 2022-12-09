@@ -56,12 +56,9 @@ import { Component, Mixins } from 'vue-property-decorator'
 import { InitConfig, InstanceConfig } from '@/store/config/types'
 import StateMixin from '@/mixins/state'
 import { appInit } from '@/init'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class SystemPrinters extends Mixins(StateMixin) {
-  waits = Waits
-
   instanceDialogOpen = false
 
   get instanceName () {

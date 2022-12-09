@@ -31,7 +31,7 @@ export default class SystemLoadChart extends Vue {
   }
 
   get cores () {
-    return this.$store.state.server?.system_info?.cpu_info?.cpu_count || 1
+    return this.$store.state.server.system_info?.cpu_info?.cpu_count || 1
   }
 
   get options () {

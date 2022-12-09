@@ -47,3 +47,19 @@ input[type=number] {
 .v-btn {
   touch-action: manipulation;
 }
+
+.constrained-width.single {
+  max-width: map-get($container-max-widths, 'xl') / 2;
+}
+
+.constrained-width.double {
+  max-width: map-get($container-max-widths, 'xl');
+}
+
+.constrained-width.triple {
+  max-width: map-get($container-max-widths, 'xl') / 2 * 3;
+}
+
+.constrained-width.quad {
+  max-width: map-get($container-max-widths, 'xl') * 2;
+}

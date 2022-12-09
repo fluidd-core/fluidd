@@ -3,11 +3,12 @@
     class="chart"
     :style="{ 'height': height }"
   >
-    <v-chart
+    <e-chart
       ref="chart"
       :option="opts"
       :update-options="{ notMerge: false }"
       :init-options="{ renderer: 'canvas' }"
+      autoresize
     />
 
     <!-- <pre>legends: {{ opts.legend }}</pre> -->
@@ -18,19 +19,22 @@
 
 <script lang='ts'>
 import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
-import type { ECharts } from 'echarts'
-import { merge } from 'lodash-es'
+import type { ECharts, EChartsOption, GraphicComponentOption } from 'echarts'
+import { merge, cloneDeepWith } from 'lodash-es'
 
 @Component({})
 export default class EChartsBedMesh extends Vue {
   @Prop({ type: Array, required: true, default: {} })
-  public data!: []
+  readonly data!: []
+
+  @Prop({ type: Array, required: false, default: () => [] })
+  readonly graphics!: GraphicComponentOption[]
 
   @Prop({ type: Object, default: {} })
-  public options!: any
+  readonly options!: any
 
   @Prop({ type: String, default: '100%' })
-  public height!: string
+  readonly height!: string
 
   @Ref('chart')
   readonly chart!: ECharts
@@ -41,28 +45,23 @@ export default class EChartsBedMesh extends Vue {
 
   @Watch('flatSurface')
   onFlatSurfaceChange (value: boolean) {
-    if (this.chart) {
-      let type = 'legendUnSelect'
-      if (value) type = 'legendSelect'
-      this.chart.dispatchAction({
-        type,
-        name: 'mesh_matrix_flat'
-      })
-      this.chart.dispatchAction({
-        type,
-        name: 'probed_matrix_flat'
-      })
-    }
+    const type = value ? 'legendSelect' : 'legendUnSelect'
+    this.chart.dispatchAction({
+      type,
+      name: 'mesh_matrix_flat'
+    })
+    this.chart.dispatchAction({
+      type,
+      name: 'probed_matrix_flat'
+    })
   }
 
   beforeDestroy () {
     if (typeof window === 'undefined') return
-    if (this.chart) {
-      this.chart.dispose()
-    }
+    this.chart.dispose()
   }
 
-  get opts () {
+  get opts (): EChartsOption {
     // If options includes series data, rip it out so we can merge it with
     // the given series in our initial options.
     const darkMode = this.$store.state.config.uiSettings.theme.isDark
@@ -123,6 +122,22 @@ export default class EChartsBedMesh extends Vue {
       }
     }
 
+    const graphic = cloneDeepWith(this.graphics, g => {
+      switch (g.type) {
+        case 'text':
+          return {
+            ...g,
+            style: {
+              ...g.style,
+              fill: fontColor,
+              fontSize
+            }
+          }
+        default:
+          return undefined
+      }
+    })
+
     const opts = {
       legend: {
         show: false
@@ -180,8 +195,9 @@ export default class EChartsBedMesh extends Vue {
           panMouseButton: 'right'
         }
       },
+      graphic,
       series: [...this.data]
-    }
+    } as EChartsOption
 
     // Merge the default options with the given prop.
     merge(opts, this.options)

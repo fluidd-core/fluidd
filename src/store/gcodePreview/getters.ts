@@ -11,7 +11,7 @@ import {
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
-import { state as configState } from '@/store/config'
+import { state as configState } from '@/store/config/state'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -69,7 +69,14 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getBounds: (state, getters): BBox => {
-    const moves = getters.getMoves
+    let moves = getters.getMoves
+    const layers = getters.getLayers
+
+    // ignore first and last layer (priming and parking)
+    const moveRangeStart = layers[layers.length > 1 ? 1 : 0]?.move
+    const moveRangeEnd = layers[layers.length - 1]?.move
+    if (moveRangeStart && moveRangeEnd) moves = moves.slice(moveRangeStart, moveRangeEnd)
+
     const bounds = {
       x: {
         min: NaN,

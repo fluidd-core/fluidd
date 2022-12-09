@@ -58,22 +58,22 @@
         :style="_contentStyles"
         @transitionend="transitionEvent"
       >
-        <v-card-subtitle
-          v-if="subTitle || hasSubTitleSlot"
-          class="py-2"
-        >
-          <slot name="sub-title">
-            <span v-html="subTitle" />
-          </slot>
-        </v-card-subtitle>
-        <v-divider v-if="subTitle || hasSubTitleSlot" />
+        <template v-if="subTitle || hasSubTitleSlot">
+          <v-card-subtitle class="py-2">
+            <slot name="sub-title">
+              <span v-html="subTitle" />
+            </slot>
+          </v-card-subtitle>
+
+          <v-divider />
+        </template>
 
         <!-- Primary Content slot -->
         <slot />
       </div>
     </v-expand-transition>
 
-    <v-expand-transition v-if="lazy">
+    <v-expand-transition v-else>
       <div
         v-show="!isCollapsed && !inLayout"
         id="card-content"
@@ -81,15 +81,17 @@
         :style="_contentStyles"
         @transitionend="transitionEvent"
       >
-        <v-card-subtitle
+        <template
           v-if="subTitle || hasSubTitleSlot"
-          class="py-2"
         >
-          <slot name="subTitle">
-            <span v-html="subTitle" />
-          </slot>
-        </v-card-subtitle>
-        <v-divider v-if="subTitle || hasSubTitleSlot" />
+          <v-card-subtitle class="py-2">
+            <slot name="subTitle">
+              <span v-html="subTitle" />
+            </slot>
+          </v-card-subtitle>
+
+          <v-divider />
+        </template>
 
         <!-- Primary Content slot -->
         <slot />
@@ -100,7 +102,6 @@
 
 <script lang="ts">
 import { LayoutConfig } from '@/store/layout/types'
-import { kebabCase } from 'lodash-es'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
@@ -109,19 +110,19 @@ export default class CollapsableCard extends Vue {
    * Title
    */
   @Prop({ type: String, required: true })
-  public title!: string
+  readonly title!: string
 
   /**
    * Card color.
    */
   @Prop({ type: String })
-  public color!: string
+  readonly color!: string
 
   /**
    * Sub title.
    */
   @Prop({ type: String, required: false })
-  public subTitle!: string
+  readonly subTitle!: string
 
   /**
    * Required to bind to a layout.
@@ -132,7 +133,7 @@ export default class CollapsableCard extends Vue {
    * duplicate id's across containers for any given layout.
    */
   @Prop({ type: String })
-  public layoutPath!: string
+  readonly layoutPath!: string
 
   /**
    * If lazy, we use a v-show for card display.
@@ -143,75 +144,75 @@ export default class CollapsableCard extends Vue {
    * visible.
    */
   @Prop({ type: Boolean, default: true })
-  public lazy!: boolean
+  readonly lazy!: boolean
 
   /**
    * The icon to use in the title.
    */
   @Prop({ type: String, required: false })
-  public icon!: string
+  readonly icon!: string
 
   /**
    * The icon color to use in the title.
    */
   @Prop({ type: String, required: false })
-  public iconColor!: string
+  readonly iconColor!: string
 
   /**
    * Loading state.
    */
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   /**
    * Enables dragging of the card. Also causes the card
    * to react to layoutMode state.
    */
   @Prop({ type: Boolean, default: false })
-  public draggable!: boolean
+  readonly draggable!: boolean
 
   /**
    * Whether this card is collapsable or not.
    */
   @Prop({ type: Boolean, default: true })
-  public collapsable!: boolean
+  readonly collapsable!: boolean
 
   /**
    * Rounded
    */
   @Prop({ type: String, default: 'md' })
-  public rounded!: string
+  readonly rounded!: string
 
   /**
    * Optionally set a defined height.
    */
   @Prop({ type: [Number, String], required: false })
-  public height!: number | string
+  readonly height!: number | string
 
   /**
    * Breakpoint at which to condense the menu buttons to a hamburger.
    * xs, sm, md, lg, xl.
    */
   @Prop({ type: String, default: 'lg' })
-  public menuBreakpoint!: string
+  readonly menuBreakpoint!: string
 
   /**
    * Define any optional classes for the card itself.
    */
   @Prop({ type: String })
-  public cardClasses!: string
+  readonly cardClasses!: string
 
   /**
    * Define any optional classes for the card content itself.
    */
   @Prop({ type: String })
-  public contentClasses!: string
+  readonly contentClasses!: string
 
   /**
    * Base classes.
    */
   baseCardClasses = { 'collapsable-card': true }
-  baseContentClasses = ''
+  baseContentClasses = { 'overflow-hidden': true }
 
   get _cardClasses () {
     // If user defined, format to an object based on the input.
@@ -224,14 +225,21 @@ export default class CollapsableCard extends Vue {
     return {
       ...classes,
       ...this.baseCardClasses,
-      collapsed: this.isCollapsed
+      collapsed: this.isCollapsed || !this.hasDefaultSlot
     }
   }
 
   get _contentClasses () {
-    return (this.contentClasses)
-      ? this.contentClasses
-      : this.baseContentClasses
+    const classes: any = {}
+    if (this.contentClasses) {
+      this.contentClasses.split(' ').forEach(s => {
+        classes[s] = true
+      })
+    }
+    return {
+      ...classes,
+      ...this.baseContentClasses
+    }
   }
 
   // height can not be applied to the card, otherwise
@@ -254,9 +262,12 @@ export default class CollapsableCard extends Vue {
     if (this.layoutPath) {
       if (this.layoutPath.includes('.')) {
         const split = this.layoutPath.split('.')
+        let name = split[0]
+        if (name === 'dashboard') name = this.$store.getters['layout/getSpecificLayoutName']
+
         return {
-          name: split[0],
-          id: kebabCase(split[1])
+          name,
+          id: split[1]
         }
       } else {
         throw new Error('invalid layout path')
@@ -383,3 +394,10 @@ export default class CollapsableCard extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.v-card.collapsed > .card-heading {
+  border-bottom-left-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+</style>

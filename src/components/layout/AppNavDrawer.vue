@@ -1,12 +1,11 @@
 <template>
   <v-navigation-drawer
-    :value="value"
+    v-model="open"
     :color="theme.currentTheme.drawer"
-    :mini-variant="!hasSubNavigation"
-    :floating="!hasSubNavigation"
+    :mini-variant="!showSubNavigation"
+    :floating="!showSubNavigation"
     clipped
     app
-    @input="emitChange"
   >
     <v-row
       class="fill-height"
@@ -15,7 +14,7 @@
       <v-navigation-drawer
         :color="theme.currentTheme.drawer"
         :mini-variant="true"
-        :value="value"
+        :value="open"
       >
         <div
           v-show="isMobile"
@@ -84,6 +83,14 @@
           </app-nav-item>
 
           <app-nav-item
+            v-if="enableDiagnostics"
+            icon="$chart"
+            to="/diagnostics"
+          >
+            {{ $t('app.general.title.diagnostics') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$codeJson"
             to="/configure"
           >
@@ -106,20 +113,23 @@
         </div>
       </v-navigation-drawer>
 
-      <router-view name="navigation" />
+      <router-view
+        v-if="showSubNavigation"
+        name="navigation"
+      />
     </v-row>
   </v-navigation-drawer>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, VModel } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  public value!: boolean
+  @VModel({ type: Boolean, default: true })
+    open!: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']
@@ -141,16 +151,20 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
     return this.$store.getters['server/componentSupport']('update_manager')
   }
 
+  get enableDiagnostics () {
+    return this.$store.state.config.uiSettings.general.enableDiagnostics
+  }
+
   get hasSubNavigation () {
     return this.$route.meta?.hasSubNavigation ?? false
   }
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
+  get showSubNavigation () {
+    return this.hasSubNavigation && this.socketConnected && this.authenticated
   }
 
-  emitChange (e: boolean) {
-    this.$emit('input', e)
+  get isMobile () {
+    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

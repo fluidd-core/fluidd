@@ -8,9 +8,13 @@
       <v-text-field
         ref="hyperlapseCycleElement"
         :value="hyperlapseCycle"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThanOrEqual(1)
+        ]"
         :disabled="hyperlapseCycleBlocked"
-        :hide-details="hyperlapseCycleElement ? hyperlapseCycleElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -24,25 +28,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import { VInput } from '@/types'
 
-@Component({
-  components: {
-    AppSetting
-  }
-})
+@Component({})
 export default class HyperlapseSettings extends Mixins(StateMixin) {
   @Ref('hyperlapseCycleElement')
   readonly hyperlapseCycleElement!: VInput
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (v: number) => v >= 1 || this.$t('app.general.simple_form.error.min', { min: 1 })
-  }
 
   get hyperlapseCycleBlocked () {
     return this.$store.getters['timelapse/isBlockedSetting']('hyperlapse_cycle')
@@ -63,7 +56,7 @@ export default class HyperlapseSettings extends Mixins(StateMixin) {
   }
 
   subtitleIfBlocked (blocked: boolean): string {
-    return blocked ? this.$tc('app.timelapse.tooltip.managed_by_moonraker') : ''
+    return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }
 </script>

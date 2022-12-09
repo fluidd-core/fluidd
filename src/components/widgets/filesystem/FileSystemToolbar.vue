@@ -56,6 +56,24 @@
       </slot>
     </v-tooltip>
 
+    <app-btn-collapse-group
+      v-if="['gcodes', 'timelapse'].includes(root)"
+      :collapsed="true"
+      menu-icon="$imageSizeSelectLarge"
+      size="small"
+    >
+      <app-slider
+        v-model="thumbnailSize"
+        class="ma-1"
+        :label="$t('app.general.label.thumbnail_size')"
+        :min="32"
+        :max="192"
+        :step="16"
+        :reset-value="32"
+        suffix="px"
+      />
+    </app-btn-collapse-group>
+
     <app-column-picker
       v-if="headers && rootProperties.canConfigure"
       :key-name="`${root}_${name}`"
@@ -63,7 +81,7 @@
     />
 
     <file-system-filter-menu
-      v-if="!readonly && root === 'gcodes' && supportsHistoryComponent"
+      v-if="hasFilterMenu"
       :root="root"
       :disabled="disabled"
       @change="$emit('filter', $event)"
@@ -137,33 +155,33 @@ import { AppTableHeader } from '@/types'
 export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // The currently active root.
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   @Prop({ type: String, required: false })
-  public name!: string
+  readonly name!: string
 
   // Can be a list of roots, or a single root.
   @Prop({ type: Array, required: false })
-  public roots!: string[]
+  readonly roots!: string[]
 
   // Currently defined list of headers.
   @Prop({ type: Array, required: false })
-  public headers!: AppTableHeader[]
+  readonly headers!: AppTableHeader[]
 
   // The current path
   @Prop({ type: String, required: false })
-  public path!: string
+  readonly path!: string
 
   // If the controls are disabled or not.
   @Prop({ type: Boolean, default: false })
-  public disabled!: boolean
+  readonly disabled!: boolean
 
   // If the fs is loading or not.
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: String, default: '' })
-  public search!: string
+  readonly search!: string
 
   textSearch = ''
 
@@ -192,6 +210,30 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Only show roots that have been registered.
   get registeredRoots () {
     return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
+  }
+
+  get hasFilterMenu () {
+    if (!this.readonly) {
+      switch (this.root) {
+        case 'gcodes':
+          return this.supportsHistoryComponent
+        case 'config':
+          return true
+      }
+    }
+    return false
+  }
+
+  get thumbnailSize () {
+    return this.$store.state.config.uiSettings.general.thumbnailSize
+  }
+
+  set thumbnailSize (value: number) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.thumbnailSize',
+      value,
+      server: true
+    })
   }
 
   mounted () {

@@ -9,6 +9,7 @@
         fab
         x-small
         text
+        class="ml-1"
         @click="showMcuConstantsDialog"
       >
         <v-icon>$viewHeadline</v-icon>
@@ -52,7 +53,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 })
 export default class PrinterStatsCard extends Vue {
   @Prop({ type: Object, required: true })
-  public mcu!: MCU
+  readonly mcu!: MCU
 
   mcuConstantsDialogOpen = false
 

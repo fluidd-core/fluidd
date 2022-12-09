@@ -1,28 +1,10 @@
 import { Module } from 'vuex'
+import { state } from './state'
 import { getters } from './getters'
 import { actions } from './actions'
 import { mutations } from './mutations'
 import { ConsoleState } from './types'
 import { RootState } from '../types'
-
-/**
- * Maintains the state of the console
- */
-export const defaultState = (): ConsoleState => {
-  return {
-    consoleCommand: '',
-    consoleEntryCount: 0,
-    console: [],
-    availableCommands: {},
-    commandHistory: [],
-    autoScroll: true,
-    lastCleared: 0,
-    consoleFilters: [],
-    consoleFiltersRegexp: []
-  }
-}
-
-export const state = defaultState()
 
 const namespaced = true
 

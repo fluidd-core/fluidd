@@ -16,7 +16,7 @@
         @submit.prevent="handleLogin"
       >
         <div class="text-center">
-          <p>Welcome back.<br>Sign in below to stay in touch with your printer.</p>
+          <p v-html="$t('app.general.msg.welcome_back')" />
 
           <v-alert
             v-if="error"

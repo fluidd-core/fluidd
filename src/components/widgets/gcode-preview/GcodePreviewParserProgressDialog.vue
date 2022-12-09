@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="value"
     max-width="500"
     persistent
   >
@@ -61,13 +61,13 @@ import { AppFile } from '@/store/files/types'
 @Component({})
 export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  readonly value!: boolean
 
   @Prop({ type: Number })
-  public progress!: number
+  readonly progress!: number
 
   @Prop({ type: Object })
-  public file!: AppFile
+  readonly file!: AppFile
 
   get percent () {
     return Math.floor((this.progress / this.file.size) * 100)

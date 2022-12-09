@@ -1,7 +1,7 @@
-<template>
+<template v-if="hasDefaultSlot">
   <!-- not collapsed -->
   <div
-    v-if="!isCollapsed && hasDefaultSlot"
+    v-if="!isCollapsed"
     class="d-inline-block"
   >
     <slot />
@@ -9,16 +9,19 @@
 
   <!-- collapsed to hamburger -->
   <v-menu
-    v-else-if="isCollapsed && hasDefaultSlot"
+    v-else
     transition="slide-y-transition"
     left
     offset-y
+    :disabled="disabled"
     :close-on-content-click="false"
   >
     <template #activator="{ on, attrs }">
       <app-btn
         fab
-        x-small
+        :x-small="size === 'x-small'"
+        :small="size === 'small'"
+        :disabled="disabled"
         text
         color=""
         v-bind="attrs"
@@ -43,10 +46,16 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 @Component({})
 export default class AppBtnCollapseGroup extends Vue {
   @Prop({ type: Boolean, default: false })
-  public collapsed!: boolean
+  readonly collapsed!: boolean
 
   @Prop({ type: String, default: '$menu' })
-  public menuIcon!: string
+  readonly menuIcon!: string
+
+  @Prop({ type: String, default: 'x-small' })
+  readonly size!: string
+
+  @Prop({ type: Boolean, default: false })
+  readonly disabled!: boolean
 
   get isCollapsed () {
     if (this.collapsed) return true

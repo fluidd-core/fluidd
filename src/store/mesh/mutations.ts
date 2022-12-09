@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { defaultState } from './'
+import { defaultState } from './state'
 import { MeshState } from './types'
 
 export const mutations: MutationTree<MeshState> = {

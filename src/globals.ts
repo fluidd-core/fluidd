@@ -8,6 +8,7 @@ import {
   mdiCog,
   mdiCarBrakeAlert,
   mdiPrinter3d,
+  mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
   mdiConsole,
@@ -19,7 +20,6 @@ import {
   mdiFileDocumentOutline,
   mdiPause,
   mdiWindowClose,
-  mdiPlayBoxOutline,
   mdiPrinter,
   mdiCamera,
   mdiFan,
@@ -40,6 +40,8 @@ import {
   mdiFolder,
   mdiPencil,
   mdiMagnify,
+  mdiMagnifyPlus,
+  mdiMagnifyMinus,
   mdiDownload,
   mdiFormTextbox,
   mdiDelete,
@@ -123,7 +125,13 @@ import {
   mdiViewHeadline,
   mdiAxisArrow,
   mdiVectorLine,
-  mdiOpenInNew
+  mdiOpenInNew,
+  mdiImageSizeSelectLarge,
+  mdiListStatus,
+  mdiLayersMinus,
+  mdiLayers,
+  mdiLayersPlus,
+  mdiFolderOpen
 } from '@mdi/js'
 
 /**
@@ -150,14 +158,22 @@ export const Globals = Object.freeze({
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
   MOONRAKER_DB: {
-    NAMESPACE: 'fluidd',
-    ROOTS: {
-      uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
-      macros: { name: 'macros', dispatch: 'macros/initMacros' },
-      console: { name: 'console', dispatch: 'console/initConsole' },
-      charts: { name: 'charts', dispatch: 'charts/initCharts' },
-      cameras: { name: 'cameras', dispatch: 'cameras/initCameras' },
-      layout: { name: 'layout', dispatch: 'layout/initLayout' }
+    fluidd: {
+      NAMESPACE: 'fluidd',
+      ROOTS: {
+        uiSettings: { name: 'uiSettings', dispatch: 'config/initUiSettings' },
+        macros: { name: 'macros', dispatch: 'macros/initMacros' },
+        console: { name: 'console', dispatch: 'console/initConsole' },
+        charts: { name: 'charts', dispatch: 'charts/initCharts' },
+        cameras: { name: 'cameras', dispatch: 'cameras/initLegacyCameras' },
+        layout: { name: 'layout', dispatch: 'layout/initLayout' }
+      }
+    },
+    webcams: {
+      NAMESPACE: 'webcams',
+      ROOTS: {
+        webcams: { dispatch: 'cameras/initCameras' }
+      }
     }
   },
   MOONRAKER_COMPONENTS: {
@@ -166,12 +182,14 @@ export const Globals = Object.freeze({
     updateManager: { name: 'update_manager', dispatch: 'version/init' },
     history: { name: 'history', dispatch: 'history/init' },
     timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
-    announcements: { name: 'announcements', dispatch: 'announcements/init' }
+    announcements: { name: 'announcements', dispatch: 'announcements/init' },
+    webcams: { name: 'webcam', dispatch: 'webcams/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
     { filename: 'moonraker.conf', service: 'moonraker', link: 'https://moonraker.readthedocs.io/en/latest/configuration/' },
     { filename: 'webcam.txt', service: 'webcamd' },
+    { filename: 'crowsnest.conf', service: 'crowsnest', link: 'https://github.com/mainsail-crew/crowsnest' },
     { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
@@ -271,7 +289,7 @@ export const Icons = Object.freeze({
   cancel: mdiWindowClose,
   cancelled: mdiCancel,
   play: mdiPlay,
-  resume: mdiPlayBoxOutline,
+  resume: mdiPlay,
   stop: mdiStop,
   reprint: mdiPrinter,
   printer: mdiPrinter,
@@ -283,6 +301,8 @@ export const Icons = Object.freeze({
   pencil: mdiPencil,
   pencilLock: mdiPencilLock,
   magnify: mdiMagnify,
+  magnifyPlus: mdiMagnifyPlus,
+  magnifyMinus: mdiMagnifyMinus,
   printer3d: mdiPrinter3d,
   printer3dNozzle: mdiPrinter3dNozzleOutline,
   printer3dNozzleAlert: mdiPrinter3dNozzleAlertOutline,
@@ -316,7 +336,16 @@ export const Icons = Object.freeze({
   viewHeadline: mdiViewHeadline,
   absolutePositioning: mdiAxisArrow,
   relativePositioning: mdiVectorLine,
-  openInNew: mdiOpenInNew
+  openInNew: mdiOpenInNew,
+  imageSizeSelectLarge: mdiImageSizeSelectLarge,
+  listStatus: mdiListStatus,
+  previousLayer: mdiLayersMinus,
+  currentLayer: mdiLayers,
+  nextLayer: mdiLayersPlus,
+  moves: mdiVectorLine,
+  extrusions: mdiPrinter3dNozzle,
+  retractions: mdiSwapVertical,
+  folderOpen: mdiFolderOpen
 })
 
 export const Waits = Object.freeze({
@@ -361,5 +390,62 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
-  onTimelapseSaveFrame: 'onTimelapseSaveFrame'
+  onTimelapseSaveFrame: 'onTimelapseSaveFrame',
+  onManualProbe: 'onManualProbe',
+  onQueryEndstops: 'onQueryEndstops',
+  onQueryProbe: 'onQueryProbe',
+  onVersionRefresh: 'onVersionRefresh'
 })
+
+export const SupportedLocales = Object.freeze([
+  { name: 'English', code: 'en' },
+  { name: 'Čeština', code: 'cs' },
+  { name: '简体中文', code: 'zh-CN' },
+  { name: '繁體中文', code: 'zh-HK' },
+  { name: 'Deutsch', code: 'de' },
+  { name: 'Español', code: 'es' },
+  { name: 'Français', code: 'fr' },
+  { name: 'Italiano', code: 'it' },
+  { name: 'Magyar', code: 'hu' },
+  { name: 'Nederlands', code: 'nl' },
+  { name: 'Português', code: 'pt' },
+  { name: 'Русский', code: 'ru' },
+  { name: 'Українська', code: 'uk' },
+  { name: '한국어', code: 'ko' },
+  { name: 'العربية', code: 'ar' },
+  { name: '日本語', code: 'ja' }
+])
+
+type DateTimeFormat = {
+  locale?: string,
+  options: Intl.DateTimeFormatOptions,
+  suffix?: string
+}
+
+export const DateFormats = Object.freeze({
+  iso: {
+    locale: 'sv-SE',
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' },
+    suffix: ' (ISO 8601)'
+  },
+  digits2: {
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' }
+  },
+  short: {
+    options: { day: '2-digit', month: 'short', year: 'numeric' }
+  }
+} as Record<string, DateTimeFormat>)
+
+export const TimeFormats = Object.freeze({
+  iso: {
+    locale: 'sv-SE',
+    options: { hour: '2-digit', minute: '2-digit', hour12: false },
+    suffix: ' (ISO 8601)'
+  },
+  hours12: {
+    options: { hour: '2-digit', minute: '2-digit', hour12: true }
+  },
+  hours24: {
+    options: { hour: '2-digit', minute: '2-digit', hour12: false }
+  }
+} as Record<string, DateTimeFormat>)

@@ -1,12 +1,11 @@
 <template>
   <v-sheet
     :elevation="0"
-    rounded
     class="camera-container"
     v-on="$listeners"
   >
     <img
-      v-if="camera.type === 'mjpgstream' || camera.type === 'mjpgadaptive'"
+      v-if="camera.service === 'mjpegstreamer' || camera.service === 'mjpegstreamer-adaptive'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
@@ -14,7 +13,7 @@
     >
 
     <video
-      v-if="camera.type === 'ipstream'"
+      v-if="camera.service === 'ipstream'"
       ref="camera_image"
       :src="cameraUrl"
       autoplay
@@ -22,12 +21,16 @@
     />
 
     <iframe
-      v-if="camera.type === 'iframe'"
+      v-if="camera.service === 'iframe'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
-      :height="cameraHeight"
-      frameBorder="0"
+      style="border: none; width: 100%"
+      :style="{
+        height: (cameraHeight && !camera.aspectRatio) ? (fullscreen ? '100vh' : `${cameraHeight}px`) : undefined,
+        'aspect-ratio': camera.aspectRatio ? camera.aspectRatio.replace(':', '/') : undefined,
+        'max-height': camera.aspectRatio ? 'unset' : undefined
+      }"
     />
 
     <div
@@ -37,7 +40,7 @@
       {{ camera.name }}
     </div>
     <div
-      v-if="camera.type === 'mjpgadaptive' && time"
+      v-if="camera.service === 'mjpegstreamer-adaptive' && time"
       class="camera-frames"
     >
       fps: {{ currentFPS }}
@@ -68,13 +71,13 @@ import { CameraFullscreenAction } from '@/store/config/types'
 @Component({})
 export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
-  public camera!: CameraConfig
+  readonly camera!: CameraConfig
 
   @Prop({ type: Boolean, required: false, default: false })
-  public fullscreen!: boolean
+  readonly fullscreen!: boolean
 
   @Ref('camera_image')
-  readonly cameraImage!: HTMLElement
+  readonly cameraImage!: HTMLImageElement
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -89,7 +92,7 @@ export default class CameraItem extends Vue {
   cameraUrl = ''
   cameraFullScreenUrl = ''
 
-  // iframe height
+  // iframe height, deprecated
   cameraHeight = 720
 
   // Maintains the last cachebust string
@@ -105,12 +108,12 @@ export default class CameraItem extends Vue {
     const config = this.camera
     let transforms = ''
 
-    if (!config.rotate) {
+    if (config.rotation === 0) {
       transforms += config && config.flipX ? ' scaleX(-1)' : ''
       transforms += config && config.flipY ? ' scaleY(-1)' : ''
     } else {
       let scaling = 1
-      if (config.rotate !== '180') {
+      if (config.rotation !== 180) {
         scaling = element.clientHeight / element.clientWidth
         if (scaling > 1) {
           scaling = element.clientWidth / element.clientHeight
@@ -119,7 +122,7 @@ export default class CameraItem extends Vue {
 
       transforms += config && config.flipX ? ` scaleX(-${scaling})` : ` scaleX(${scaling})`
       transforms += config && config.flipY ? ` scaleY(-${scaling})` : ` scaleY(${scaling})`
-      transforms += ` rotate(${config.rotate}deg)`
+      transforms += ` rotate(${config.rotation}deg)`
     }
 
     return transforms.trimLeft().length
@@ -149,7 +152,7 @@ export default class CameraItem extends Vue {
    */
   beforeDestroy () {
     this.cancelCameraTransform()
-    this.cameraUrl = ''
+    this.cameraUrl = this.cameraImage.src = ''
     this.cameraFullScreenUrl = ''
     document.removeEventListener('visibilitychange', this.setUrl)
   }
@@ -183,9 +186,9 @@ export default class CameraItem extends Vue {
   handleImgLoad () {
     if (
       this.camera &&
-      this.camera.type === 'mjpgadaptive'
+      this.camera.service === 'mjpegstreamer-adaptive'
     ) {
-      const fpsTarget = (!document.hasFocus() && this.camera.fpsidletarget) || this.camera.fpstarget || 10
+      const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
       const end_time = performance.now()
       const current_time = end_time - this.start_time
       this.time = (this.time * this.time_smoothing) + (current_time * (1.0 - this.time_smoothing))
@@ -208,14 +211,14 @@ export default class CameraItem extends Vue {
    */
   setUrl () {
     if (!document.hidden) {
-      const type = this.camera.type
-      const baseUrl = this.camera.url
+      const type = this.camera.service
+      const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
 
       this.cameraHeight = this.camera.height || 720
 
-      if (type === 'mjpgstream') {
+      if (type === 'mjpegstreamer') {
         url.searchParams.append('cacheBust', this.refresh.toString())
         if (!url.searchParams.get('action')?.startsWith('stream')) {
           url.searchParams.set('action', 'stream')
@@ -226,7 +229,7 @@ export default class CameraItem extends Vue {
         }
       }
 
-      if (type === 'mjpgadaptive') {
+      if (type === 'mjpegstreamer-adaptive') {
         this.request_start_time = performance.now()
         url.searchParams.append('cacheBust', this.refresh.toString())
         if (!url.searchParams.get('action')?.startsWith('snapshot')) {
@@ -323,6 +326,7 @@ export default class CameraItem extends Vue {
     right: 0;
     padding: 2px 6px;
     background: rgba(0, 0, 0, 0.75);
+    border-bottom-left-radius: 4px;
   }
 
   .theme--light .camera-fullscreen {

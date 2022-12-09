@@ -1,9 +1,10 @@
+import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
 import { GetterTree } from 'vuex'
 import { ChartState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
-import dayjs from 'dayjs'
+import { EChartsOption } from 'echarts'
 
 export const getters: GetterTree<ChartState, RootState> = {
   /**
@@ -35,7 +36,7 @@ export const getters: GetterTree<ChartState, RootState> = {
    */
   getBaseChartOptions: (state, getters, rootState, rootGetters) => (tooltipSuffix: { [index: string]: string } = {}) => {
     // Common properties across all chart types.
-    const isDark = rootState.config?.uiSettings.theme.isDark
+    const isDark = rootState.config.uiSettings.theme.isDark
     const isMobile = vuetify.framework.breakpoint.mobile
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
@@ -96,10 +97,9 @@ export const getters: GetterTree<ChartState, RootState> = {
                 param.seriesName
               ) {
                 if (!title) {
-                  const date = dayjs(param.value[xDimension])
                   text += `
                   <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                    ${date.format('LTS')}
+                    ${Vue.$filters.formatTimeWithSeconds(param.value[xDimension])}
                   </span>
                   `
                   title = true
@@ -148,7 +148,7 @@ export const getters: GetterTree<ChartState, RootState> = {
         axisLabel: { show: false, formatter: '{value}%' },
         splitLine: { show: true, lineStyle }
       }
-    }
+    } as EChartsOption
   },
 
   /**

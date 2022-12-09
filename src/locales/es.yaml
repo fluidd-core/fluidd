@@ -6,7 +6,7 @@ app:
       mesh_matrix: Matriz de la malla
       probed_matrix: Matriz sondeada
       profile_name: Nombre del Perfil
-      remove_profile: Borrar el perfil %{name}
+      remove_profile: 'Borrar el perfil %{name}'
       scale: Escala de color
       wireframe: Wireframe
     msg:
@@ -16,11 +16,11 @@ app:
       not_found: No se ha encontrado ninguna malla de la cama.
       not_loaded: No está cargada ninguna malla.
     tooltip:
-      calibrate: Inicia una nueva calibración, que se guardará con el nombre 'default'
+      calibrate: 'Comienza una nueva calibración, se guardará con el nombre ''default'''
       delete: Elimina el perfil. Esto REINICIARÁ su impresora
       load: Cargar el perfil
       save: >-
-        Carga el perfil de calibracion en el archivo printer.cfg.  Esto
+        Guarda el perfil de calibracion en el archivo printer.cfg.  Esto
         REINICIARÁ su impresora
   chart:
     label:
@@ -29,6 +29,7 @@ app:
       'off': Gráfico desactivado
       'on': Gráfico activado
       power: Potencia
+      rate_of_change: Cambio
       target: Objetivo
     tooltip:
       help: >-
@@ -38,6 +39,7 @@ app:
   console:
     label:
       auto_scroll: Scroll automático
+      flip_layout: Invertir diseño
       hide_temp_waits: Esconder los mensajes de temperatura
     placeholder:
       command: >-
@@ -54,7 +56,7 @@ app:
         Consulte la documentación sobre las configuraciones con varias
         impresoras <a href="%{url}" target="_blank">aquí</a>.
     hint:
-      add_printer: Ex., http://fluiddpi.local
+      add_printer: 'Ex., http://fluiddpi.local'
     msg:
       trouble: >-
         ¿Tienes problemas? <a href="%{url}" target="_blank">Haga clic aquí</a>
@@ -72,6 +74,7 @@ app:
   file_system:
     filters:
       label:
+        hidden_files: Filtrar archivos ocultos
         print_start_time: Filtrar ya impresos
         print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
     label:
@@ -82,6 +85,7 @@ app:
       file_name: Nombre del archivo
       transfer_rate: Tasa de transferencia
       uploaded: Subido
+      view_section_documentation: 'Ver documentación sobre ''%{section}'''
     msg:
       confirm: ¿Está seguro? Esto borrará todos los subarchivos y subcarpetas.
       not_found: No se encontraron archivos
@@ -102,10 +106,13 @@ app:
       load_current_file: Cargar archivo actual
     label:
       current_layer_height: Altura de capa actual
+      exclude_object: Excluir objeto
       follow_progress: Seguir el progreso
       layer: Capa
       layers: Capas
       parsed: Analizado
+      parsing_file: Procesando archivo
+      show_current_layer: Mostrar capa actual
       show_extrusions: Mostrar extrusiones
       show_moves: Mostrar movimientos
       show_next_layer: Mostrar capa siguiente
@@ -117,12 +124,16 @@ app:
         de su sistema. ¿Está seguro?
   general:
     btn:
+      abort: Abortar
+      accept: Aceptar
       add: Añadir
       add_dir: Añadir una carpeta
       add_file: Añadir un archivo
       add_printer: Añadir una impresora
       adjust_layout: Ajustar la disposición del tablero
+      adjusted: Ajustado
       all: Todo
+      auth_unsure: No está seguro de porqué vé esto?
       calibrate: Calibrar
       cancel: Cancelar
       clear_profile: Limpar Perfil
@@ -131,10 +142,14 @@ app:
       download: Descargar
       edit: Editar
       extrude: Extrudir
+      forgot_password: Olvido su contraseña?
+      heaters_off: Apagar calentadores
       load_all: Cargar todos
+      login: Ingresar
       more_information: Más información
       pause: Pausa
       preheat: Precalentar
+      presets: Preajustes
       preview_gcode: Previsualizar Gcode
       quad_gantry_level: QGL
       reboot: Reiniciar
@@ -144,18 +159,22 @@ app:
       rename: Renombrar
       reprint: Reimprimir
       reset_file: Despejar archivo
-      reset_layout: Reestablecer la disposición
+      reset_layout: Restablecer la disposición
+      reset_stats: Restablecer Estadísticas
       restart_firmware: Reiniciar firmware
+      restart_service: 'Reinciar %{service}'
       restart_service_klipper: Reiniciar Klipper
       restart_service_moonraker: Reiniciar Moonraker
       resume: Retomar
       retract: Retraer
       save: Guardar
       save_as: Guardar como
+      save_config_and_restart: Guardar configuración & reiniciar
       save_restart: Guardar y reiniciar
       send: Enviar
       set_color: Elegir color
       shutdown: Apagar
+      snooze: Posponer
       socket_reconnect: Reconectar
       socket_refresh: Forzar actualización
       upload: Subir
@@ -175,20 +194,28 @@ app:
     label:
       accel_to_decel: Aceleración a deceleración
       acceleration: Aceleración
+      accepted_screws: Tornillos aceptados
       actual_time: Real
       add_camera: Añadir cámara
+      add_category: Agregar categoría
+      add_filter: Agregar Filtro
       add_preset: Añadir preajuste
       add_user: Añadir usuario
+      alias: Alias
       api_key: Clave de la API
       api_url: URL de la API
+      apply_z_offset: Aplicar y guardar Z_Offset
       category: Categoría
       change_password: Cambiar contraseña
       clear_all: Despejar todos
       color: Color
       confirm: Confirmar
       current_password: Contraseña actual
+      current_user: Usuario actual
       disabled_while_printing: Desactivado durante la impresión
       edit_camera: Editar cámara
+      edit_category: Editar Cateogria
+      edit_filter: Editar Filtro
       edit_preset: Editar preajustes
       edit_user: Editar usuario
       extrude_length: Longitud de extrusión
@@ -198,6 +225,9 @@ app:
       finish_time: Final
       flow: Flujo
       free: libre
+      heaters_busy: >-
+        La impresora está ocupada. Apagar los calentadores puede resultar en una
+        impresión fallida.
       high: Alto
       host: Anfitrión
       layer: Capa
@@ -209,14 +239,19 @@ app:
       new_password: Nueva contraseña
       no_notifications: Ninguna notificación
       'off': Apagado
+      'on': Encendido
+      partial_of_total: '%{partial} de %{total}'
       password: Contraseña
-      power: Energia
+      power: Energía
       printers: Impresoras
       progress: Progreso
       requested_speed: Velocidad
       retract_length: Longitud de retracción
       retract_speed: Velocidad de retracción
       save_as: Guardar como
+      screw_index: Indice de tornillo
+      screw_name: Nombre del Tornillo
+      screw_number: 'Tornillo %{index}'
       services: Servicios
       slicer: Slicer
       speed: Velocidad
@@ -229,29 +264,40 @@ app:
       total_print_time_avg: Promedio por impresion
       total_time: Tiempo total
       total_time_avg: Promedio por impresión
+      turn_device_off: 'Apagar %{device}'
+      turn_device_on: 'Encender %{device}'
       uncategorized: Sin categorizar
       unretract_extra_length: Longitud extra al des-retraer
       unretract_speed: Velocidad de des-retracción
+      unsaved_changes: Cambios sin guardar
       used: Usado
+      username: Usuario
       variance: Variación
       velocity: Velocidad
       visible: Visible
       z_offset: Z Offset
     msg:
+      bed_screws_adjust: >-
+        Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
+        en el tornillo actual, de lo contrario haga click en <b>Aceptar</b> para
+        continuar.
       password_changed: Contraseña cambiada
       wrong_password: Se ha producido un error. ¿Es su contraseña correcta?
     simple_form:
       error:
         arrayofnums: Solo números
+        credentials: Credenciales inválidas
         exists: Ya existe
+        invalid_number: Número inválido
         invalid_url: URL no válida
-        max: Máx. %{max}
-        min: Mín. %{min}
-        min_or_0: Mín. %{min} o 0
+        max: 'Máx. %{max}'
+        min: 'Mín. %{min}'
+        min_or_0: 'Mín. %{min} o 0'
         password_username: No se puede emparejar con el nombre de usuario
         required: Obligatorio
       msg:
         confirm: ¿Está seguro?
+        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
     table:
@@ -273,11 +319,12 @@ app:
         print_duration: Duración de la impresión
         size: Tamaño
         slicer: Slicer
-        slicer_version: Versión del slier
+        slicer_version: Versión del slicer
         start_time: Iniciado
         status: Estado
         total_duration: Duración total
     title:
+      add_chart: Agregar gráfico
       add_printer: Añadir impresora
       bedmesh: Malla de la cama
       bedmesh_controls: Controles de la malla de la cama
@@ -293,6 +340,7 @@ app:
       jobs: Tareas
       limits: Límites de la impresora
       macros: Macros
+      other_files: Otros Archivos
       retract: Retracción por firmware
       runout_sensors: Sensores de filamento
       settings: Opciones
@@ -304,14 +352,14 @@ app:
       tune: Calibrar
     tooltip:
       estop: Parada de Emergencia
+      notifications: Notificaciones
       reload_klipper: Recarga la configuración de Klipper.
       reload_restart_klipper: Recarga la configuración de Klipper y reinicia los MCUs.
       restart_klipper: Reinicia el servicio de sistema de Klipper.
-  history:
-    msg: {}
   printer:
     state:
       busy: Ocupada
+      cancelled: Cancelado
       complete: Completado
       idle: Inactiva
       loading: Cargando
@@ -329,15 +377,17 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG Adaptative
       mjpegstream: MJPEG Stream
-      video: IP Camera
+      video: Cámara IP
     label:
       all_off: Apagar todo
       all_on: Encender todo
+      axes: Ejes
       camera_flip_x: Voltear horizontalmente
       camera_flip_y: Voltear verticalmente
       camera_stream_type: Tipo de stream
       camera_url: URL de la cámara
       confirm_on_estop: Requerir confirmación para la Parada de Emergencia
+      confirm_on_power_device_change: Requiere confirmar cambios de alimentación
       dark_mode: Modo oscuro
       default_extrude_length: Longitud de extrusión por defecto
       default_extrude_speed: Velocidad de extrusión por defecto
@@ -355,16 +405,30 @@ app:
       invert_x_control: Invertir control X
       invert_y_control: Invertir control Y
       invert_z_control: Invertir control Z
-      language: Mostrar idioma
+      language: Idioma
+      max: Máximo
+      metrics: Métricas
+      min: Mínimo
       move_line_width: Ancho de línea del movimiento
+      name: Nombre
+      none: Ninguno
+      optional: Opcional
       primary_color: Color principal
       printer_name: Nombre de la impresora
-      reset: Reestablecer opciones
+      reset: Restablecer opciones
       retraction_icon_size: Tamaño del icono de retracción
       show_animations: Mostrar animaciones
+      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos de cama automáticamente
+      show_rate_of_change: Mostrar tasa de cambio de temperatura
+      solid: Sólido
+      starts_with: Comienza con
       theme_preset: Preajustes de la comunidad
       thermal_preset_gcode: GCode
       thermal_preset_name: Nombre del preajuste
+      title: Título
+      toolhead_move_distances: Valores de distancia de la herramienta
+      type: Tipo
+      unit: Unidad
       z_adjust_values: Valores de ajuste de Z
     timer_options:
       duration: Solo duración
@@ -374,6 +438,8 @@ app:
     title:
       authentication: Autentificación
       camera: Cámara | Cámaras
+      console: Consola
+      file_editor: Editor de Archivos
       gcode_preview: Previsualización de Gcode
       general: General
       macros: Macros
@@ -397,14 +463,15 @@ app:
       distribution_codename: Nombre clave
       distribution_like: Distribución basada en
       distribution_name: Distribución
+      frequency: Frecuencia
       hardware_desc: Descripción de hardware
       hostname: Nombre del anfitrión
       klipper_load: Carga de Klipper
       manufactured: Fabricado
       manufacturer: Fabricante
-      mcu_awake: Tiempo despierto del {mcu}
-      mcu_bandwidth: Ancho de banda del {mcu}
-      mcu_load: Carga del {mcu}
+      mcu_awake: 'Tiempo despierto del {mcu}'
+      mcu_bandwidth: 'Ancho de banda del {mcu}'
+      mcu_load: 'Carga del {mcu}'
       model: Modelo de CPU
       moonraker_load: Carga de Moonraker
       processor_desc: Procesador
@@ -416,19 +483,30 @@ app:
       total_memory: Memoria total
   tool:
     btn:
+      home_all: Todos
       home_x: X
       home_y: 'Y'
+    title:
+      bed_screws_adjust: Ajustar tornillos de la cama
     tooltip:
+      absolute_positioning: Posicionamiento Absoluto
+      bed_screws_adjust: BED_SCREWS_ADJUST
       extruder_disabled: >-
         Extrusor deshabilidado, por debajo de min_extrude_temp
         (%{min}<small>°C</small>)
+      force_move: FORCE_MOVE
       home_xy: Origen XY
       home_z: Origen Z
+      motors_off: APAGAR MOTORES
+      relative_positioning: Posicionamiento Relativo
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      z_tilt_adjust: Z_Tilt_Adjust
   version:
     btn:
       check_for_updates: Buscar actualizaciones
       finish: Terminar
       update: Actualizar
+      update_all: Actualizar todo
       view_versions: Ver versiones
     label:
       commit_history: Historial de commits

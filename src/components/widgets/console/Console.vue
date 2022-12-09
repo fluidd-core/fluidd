@@ -4,7 +4,8 @@
   >
     <console-command
       v-if="!readonly && flipLayout"
-      v-model="consoleCommand"
+      v-model="currentCommand"
+      :disabled="!klippyReady"
       @send="sendCommand"
     />
     <v-card
@@ -42,7 +43,8 @@
     </v-card>
     <console-command
       v-if="!readonly && !flipLayout"
-      v-model="consoleCommand"
+      v-model="currentCommand"
+      :disabled="!klippyReady"
       @send="sendCommand"
     />
   </div>
@@ -55,6 +57,7 @@ import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
 import { DinamicScroller } from 'vue-virtual-scroller'
+import { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {
@@ -64,16 +67,16 @@ import { DinamicScroller } from 'vue-virtual-scroller'
 })
 export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
-  public items!: []
+  readonly items!: ConsoleEntry[]
 
   @Prop({ type: String, default: 'id' })
-  public keyField!: string
+  readonly keyField!: string
 
   @Prop({ type: Number, default: 250 })
-  public height!: number
+  readonly height!: number
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller
@@ -84,11 +87,11 @@ export default class Console extends Mixins(StateMixin) {
     return this.$store.getters['console/getAllGcodeCommands']
   }
 
-  get consoleCommand () {
+  get currentCommand () {
     return this.$store.state.console.consoleCommand
   }
 
-  set consoleCommand (val: string) {
+  set currentCommand (val: string) {
     this.$store.commit('console/setConsoleCommand', val)
   }
 
@@ -160,7 +163,10 @@ export default class Console extends Mixins(StateMixin) {
         }
       }
 
-      this.updateScrollingPaused()
+      if (force) {
+        // The fixed/floating nature of the console may only change if the scroll is forced.
+        this.updateScrollingPaused()
+      }
     }
   }
 
@@ -171,12 +177,12 @@ export default class Console extends Mixins(StateMixin) {
         SocketActions.printerEmergencyStop()
       }
       this.sendGcode(command)
-      this.consoleCommand = ''
+      this.currentCommand = ''
     }
   }
 
   handleEntryClick (command: string) {
-    this.consoleCommand = command
+    this.currentCommand = command
   }
 }
 </script>

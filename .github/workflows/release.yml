@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: 18
 
       - name: Install deps
         run: npm ci --no-optional
@@ -35,10 +35,10 @@ jobs:
       - name: Get version from tag
         id: tag_name
         run: |
-          echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+          echo "current_version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
       - name: Read ChangeLog
-        uses: pedrolamas/changelog-reader-action@d71e9d8dc93a56c192a84bddd8af46cf3b1d284b
+        uses: mindsers/changelog-reader-action@v2.2.0
         id: changelog
         with:
           validation_depth: 1

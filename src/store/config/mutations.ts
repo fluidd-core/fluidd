@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
-import { defaultState } from './index'
+import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
@@ -159,6 +159,10 @@ export const mutations: MutationTree<ConfigState> = {
    */
   setLayoutMode (state, payload) {
     state.layoutMode = payload
+  },
+
+  setContainerColumnCount (state, payload: number) {
+    state.containerColumnCount = payload
   },
 
   /**

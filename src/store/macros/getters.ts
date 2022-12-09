@@ -9,7 +9,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * Should include the macro's config.
    */
   getMacros: (state, getters, rootState) => {
-    const macros: Macro[] = Object.keys(rootState.printer?.printer.configfile.settings)
+    const macros: Macro[] = Object.keys(rootState.printer.printer.configfile.settings)
       .filter(key => {
         const name = key.split(' ')[1]
         return (
@@ -19,7 +19,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
       })
       .map(key => {
         const name = key.split(' ')[1]
-        const config = rootState.printer?.printer.configfile.settings[key]
+        const config = rootState.printer.printer.configfile.settings[key]
         const stored = state.stored.find(macro => macro.name === name)
 
         const r: Macro = {
@@ -46,11 +46,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
         return r
       })
-      .sort((a, b) => {
-        const name1 = a.name.toLowerCase()
-        const name2 = b.name.toLowerCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+      .sort((a, b) => a.name.localeCompare(b.name))
     return macros
   },
 
@@ -109,11 +105,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
           count
         }
       })
-      .sort((a, b) => {
-        const name1 = a.name.toLowerCase()
-        const name2 = b.name.toLowerCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+      .sort((a, b) => a.name.localeCompare(b.name))
 
     return categories
   }

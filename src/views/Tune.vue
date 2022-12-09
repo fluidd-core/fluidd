@@ -1,18 +1,21 @@
 <template>
-  <v-row :dense="$vuetify.breakpoint.smAndDown">
+  <v-row
+    v-if="klippyReady"
+    :dense="$vuetify.breakpoint.smAndDown"
+  >
     <v-col
-      v-if="supportsBedMesh && klippyReady"
+      v-if="supportsBedMesh"
       cols="12"
       md="8"
     >
-      <bed-mesh />
+      <bed-mesh-card :full-screen="true" />
     </v-col>
     <v-col
       cols="12"
       md="4"
     >
       <bed-mesh-controls
-        v-if="supportsBedMesh && klippyReady"
+        v-if="supportsBedMesh"
         class="mb-2 mb-sm-4"
       />
       <end-stops-card class="mb-2 mb-sm-4" />
@@ -25,14 +28,14 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
-import BedMesh from '@/components/widgets/bedmesh/BedMesh.vue'
+import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import BedMeshControls from '@/components/widgets/bedmesh/BedMeshControls.vue'
 import EndStopsCard from '@/components/widgets/endstops/EndStopsCard.vue'
 import RunoutSensorsCard from '@/components/widgets/runout-sensors/RunoutSensorsCard.vue'
 
 @Component({
   components: {
-    BedMesh,
+    BedMeshCard,
     BedMeshControls,
     EndStopsCard,
     RunoutSensorsCard

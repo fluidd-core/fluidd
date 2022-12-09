@@ -1,11 +1,14 @@
+import { KlipperFileMeta, Thumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
 
+export type { KlipperFileMeta, Thumbnail }
+
 export interface FilesState {
-  [key: string]: Files[] | FilesUpload[] | FileDownload | string[] | CurrentPaths | DiskUsage | Queue | null;
   uploads: FilesUpload[];
   download: FileDownload | null;
   currentPaths: CurrentPaths;
   disk_usage: DiskUsage;
+  rootFiles: RootFiles;
   queue: Queue;
   gcodes: Files[];
   config: Files[];
@@ -57,22 +60,6 @@ export interface KlipperFile {
   job_id?: string | null;
 }
 
-export interface KlipperFileMeta {
-  estimated_time?: number;
-  filament_total?: number;
-  filament_weight_total?: number;
-  first_layer_bed_temp?: number;
-  first_layer_extr_temp?: number;
-  first_layer_height?: number;
-  gcode_end_byte?: number;
-  gcode_start_byte?: number;
-  layer_height?: number;
-  object_height?: number;
-  slicer?: string;
-  slicer_version?: string;
-  thumbnails?: Thumbnail[];
-}
-
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   history: HistoryItem;
 }
@@ -83,15 +70,6 @@ export interface AppDirectory {
   name?: string;
   dirname: string;
   modified: number | null;
-  size: number;
-}
-
-export interface Thumbnail {
-  data: string;
-  relative_path: string;
-  absolute_path?: string;
-  height: number;
-  width: number;
   size: number;
 }
 
@@ -138,11 +116,7 @@ export interface FilesUpload extends FileDownload {
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
-export interface FileFilter {
-  value: string;
-  text: string;
-  desc: string;
-}
+export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files'
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
 
@@ -154,4 +128,21 @@ export interface FilePreviewState {
   src: string;
   type: string;
   appFile?: AppFile;
+  width?: number;
+}
+
+export interface RootFiles {
+  gcodes: RootFile[];
+  config: RootFile[];
+  config_examples: RootFile[];
+  docs: RootFile[];
+  logs: RootFile[];
+  timelapse: RootFile[];
+}
+
+export interface RootFile {
+  path: string;
+  modified: number;
+  size: number;
+  permissions: string;
 }

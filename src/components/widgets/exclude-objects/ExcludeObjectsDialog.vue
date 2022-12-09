@@ -1,77 +1,89 @@
 <template>
   <v-dialog
-    :value="value"
-    max-width="500"
-    persistent
+    v-model="open"
+    :max-width="500"
+    scrollable
   >
-    <v-card>
-      <v-card-title class="card-heading py-2 px-5">
-        <v-icon left>
-          $cancelled
-        </v-icon>
-        <span class="focus--text">
-          {{ $t('app.gcode.label.exclude_object') }}
-        </span>
-      </v-card-title>
+    <v-form>
+      <v-card>
+        <v-card-title class="card-heading py-2">
+          <span class="focus--text">{{ $t('app.gcode.label.exclude_object') }}</span>
+        </v-card-title>
 
-      <v-card-text class="py-3 px-5">
-        <v-simple-table>
-          <tbody>
-            <tr
-              v-for="part in parts"
-              :key="part.name"
-            >
-              <td class="partName">
-                {{ part.name }}
-              </td>
-              <td class="actions">
-                <app-btn
-                  x-small
-                  fab
-                  :disabled="isPartExcluded(part.name)"
-                  @click="$emit('cancelObject', part.name)"
+        <v-divider />
+
+        <v-card-text class="py-3 px-5">
+          <v-simple-table>
+            <tbody>
+              <tr
+                v-for="name in parts"
+                :key="name"
+              >
+                <td
+                  :class="{
+                    'text--disabled': isPartExcluded(name),
+                    'info--text': isPartCurrent(name)
+                  }"
+                  class="partName"
                 >
-                  <v-icon color="error">
-                    $cancelled
-                  </v-icon>
-                </app-btn>
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table>
-      </v-card-text>
-
-      <v-divider />
-
-      <v-card-actions class="py-2 px-5">
-        <v-spacer />
-        <app-btn
-          color="primary"
-          text
-          @click="$emit('close')"
-        >
-          {{ $t('app.general.btn.close') }}
-        </app-btn>
-      </v-card-actions>
-    </v-card>
+                  {{ name }}
+                </td>
+                <td class="actions">
+                  <app-btn
+                    color=""
+                    x-small
+                    fab
+                    text
+                    :disabled="isPartExcluded(name)"
+                    @click="cancelObject(name)"
+                  >
+                    <v-icon color="error">
+                      $cancelled
+                    </v-icon>
+                  </app-btn>
+                </td>
+              </tr>
+            </tbody>
+          </v-simple-table>
+        </v-card-text>
+      </v-card>
+    </v-form>
   </v-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class ExcludeObjectDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   get parts () {
-    return this.$store.getters['parts/getParts']
+    const parts = this.$store.getters['parts/getParts']
+    return Object.keys(parts)
   }
 
   isPartExcluded (name: string) {
     return this.$store.getters['parts/getIsPartExcluded'](name)
+  }
+
+  isPartCurrent (name: string) {
+    return this.$store.getters['parts/getIsPartCurrent'](name)
+  }
+
+  async cancelObject (name: string) {
+    const res = await this.$confirm(
+      this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
+      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+    )
+
+    if (res) {
+      const reqId = name.toUpperCase().replace(/\s/g, '_')
+
+      this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)
+    }
   }
 }
 </script>

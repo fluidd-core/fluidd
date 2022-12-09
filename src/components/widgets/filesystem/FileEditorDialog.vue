@@ -1,13 +1,12 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :loading="loading"
     hide-overlay
     fullscreen
     persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
-    @input="$emit('input', $event)"
   >
     <v-card
       d-flex
@@ -32,7 +31,7 @@
         <v-spacer />
         <v-toolbar-items>
           <app-btn
-            v-if="!isMobile"
+            v-if="!useTextOnlyEditor"
             @click="handleCommandPalette"
           >
             <v-icon
@@ -97,7 +96,7 @@
       </v-toolbar>
 
       <file-editor
-        v-if="contents !== undefined && !isMobile"
+        v-if="contents !== undefined && !useTextOnlyEditor"
         ref="editor"
         v-model="updatedContent"
         :filename="filename"
@@ -107,7 +106,7 @@
       />
 
       <file-editor-text-only
-        v-if="contents !== undefined && isMobile"
+        v-if="contents !== undefined && useTextOnlyEditor"
         v-model="updatedContent"
         :filename="filename"
         :readonly="readonly"
@@ -118,11 +117,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileEditor from './FileEditor.vue'
 import FileEditorTextOnly from './FileEditorTextOnly.vue'
 import isMobile from '@/util/is-mobile'
+import isWebAssemblySupported from '@/util/is-web-assembly-supported'
 
 @Component({
   components: {
@@ -131,29 +131,29 @@ import isMobile from '@/util/is-mobile'
   }
 })
 export default class FileEditorDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: String, required: true })
-  public root!: string
+  readonly root!: string
 
   @Prop({ type: String, required: true })
-  public filename!: string
+  readonly filename!: string
 
   @Prop({ type: String, required: true })
-  public contents!: string
+  readonly contents!: string
 
   @Prop({ type: Boolean, default: false })
-  public loading!: boolean
+  readonly loading!: boolean
 
   @Prop({ type: Boolean, default: false })
-  public readonly!: boolean
+  readonly readonly!: boolean
 
   @Ref('editor')
   readonly editor?: FileEditor
 
-  updatedContent = this.contents
-  lastSavedContent = this.updatedContent
+  updatedContent: string | null = null
+  lastSavedContent: string | null = null
   editorReady = false
 
   get ready () {
@@ -166,6 +166,14 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
 
   get isMobile () {
     return isMobile()
+  }
+
+  get isWebAssemblySupported () {
+    return isWebAssemblySupported()
+  }
+
+  get useTextOnlyEditor () {
+    return this.isMobile || !this.isWebAssemblySupported
   }
 
   get isUploading (): boolean {
@@ -184,9 +192,12 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.editor.codeLens
   }
 
-  mounted () {
+  created () {
     this.updatedContent = this.contents
-    this.lastSavedContent = this.updatedContent
+    this.lastSavedContent = this.contents
+  }
+
+  mounted () {
     window.addEventListener('beforeunload', this.handleBeforeUnload)
   }
 
@@ -210,7 +221,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
       }
     }
 
-    this.$emit('input', false)
+    this.open = false
   }
 
   handleBeforeUnload (e: Event) {
@@ -224,7 +235,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     if (this.editorReady) {
       if (this.configMap.serviceSupported && restart) {
         this.$emit('save', this.updatedContent, this.configMap.service)
-        this.$emit('input', false)
+        this.open = false
       } else {
         this.$emit('save', this.updatedContent)
       }

@@ -64,24 +64,11 @@
             <span v-else>--</span>
           </td>
 
-          <!-- <td>
-            <span class="text-no-wrap" v-if="item.total_duration > 0">
-              {{ $filters.formatCounterTime(item.total_duration) }}
-            </span>
-            <span v-else>--</span>
-          </td> -->
-
-          <!-- <td>
-            <span class="text-no-wrap">
-              {{ $filters.formatDateTime(item.start_time, 'lll') }}
-            </span>
-          </td> -->
-
           <td
             v-if="!printerPrinting"
             class="actions"
           >
-            <div :class="{'theme--light': !$vuetify.theme.dark}">
+            <div>
               <app-btn
                 color=""
                 icon

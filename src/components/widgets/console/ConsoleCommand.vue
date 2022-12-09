@@ -7,6 +7,7 @@
           :rows="1"
           :value="newValue"
           :items="history"
+          :disabled="disabled"
           auto-grow
           clearable
           outlined
@@ -22,7 +23,10 @@
         />
       </v-col>
       <v-col cols="auto">
-        <app-btn @click="emitSend(newValue)">
+        <app-btn
+          :disabled="disabled"
+          @click="emitSend(newValue)"
+        >
           {{ $t('app.general.btn.send') }}
         </app-btn>
       </v-col>
@@ -41,10 +45,13 @@ import { VInput } from '@/types'
 @Component({})
 export default class ConsoleCommand extends Vue {
   @Prop({ type: String })
-  public value!: string
+  readonly value!: string
 
   @Ref('input')
   readonly input!: VInput
+
+  @Prop({ type: Boolean, default: false })
+  readonly disabled!: boolean
 
   @Watch('value')
   onValueChange (val: string) {

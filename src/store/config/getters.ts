@@ -6,6 +6,8 @@ import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
+import { RootFile } from '../files/types'
+import md5 from 'md5'
 
 export const getters: GetterTree<ConfigState, RootState> = {
   getCurrentInstance: (state) => {
@@ -13,10 +15,13 @@ export const getters: GetterTree<ConfigState, RootState> = {
   },
 
   getInstances: (state) => {
-    const instances = [...state.instances]
-    instances.sort((a, b) => {
-      return (a.active) ? -1 : (b.active) ? 1 : 0
-    })
+    const instances = [
+      ...state.instances
+    ].sort((a, b) =>
+      a.active
+        ? -1
+        : (b.active ? 1 : a.name.localeCompare(b.name))
+    )
     return instances
   },
 
@@ -93,6 +98,20 @@ export const getters: GetterTree<ConfigState, RootState> = {
     return r
   },
 
+  getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
+    const files = rootGetters['files/getRootFiles']('config') as RootFile[]
+
+    if (files) {
+      for (const extension of extensions) {
+        const path = `.fluidd-theme/${filename}${extension}`
+
+        if (files.some(f => f.path === path)) {
+          return path
+        }
+      }
+    }
+  },
+
   /**
    * Returns a default theme preset for first init / when reset
    */
@@ -141,5 +160,14 @@ export const getters: GetterTree<ConfigState, RootState> = {
 
   getConfiguredTableHeaders: (state) => (key: string) => {
     return state.uiSettings.tableHeaders[key]
+  },
+
+  getTokenKeys: (state) => {
+    const url = state.apiUrl
+    const hash = (url) ? md5(url) : ''
+    return {
+      'user-token': `user-token-${hash}`,
+      'refresh-token': `refresh-token-${hash}`
+    }
   }
 }

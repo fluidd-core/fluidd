@@ -3,9 +3,10 @@ import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
-import { Globals, Waits } from '@/globals'
-
-// import router from '@/router'
+import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
+import i18n from '@/plugins/i18n'
+import type { TranslateResult } from 'vue-i18n'
+import store from '@/store'
 
 /**
  * credit: taken from Vuetify source
@@ -64,34 +65,132 @@ export const Filters = {
     return (isNeg) ? '-' + r : r
   },
 
-  /**
-   * Formats a date from unixtime into a human readable
-   * datetime.
-   */
-  formatDateTime: (datetime: number, format?: string) => {
-    const date = _Vue.$dayjs(datetime * 1000)
-    if (!format) {
-      if (date.isToday()) {
-        return date.fromNow()
-      } else {
-        return date.format('MMM D, YYYY h:mm A')
-      }
+  getDateFormat: (override?: string) => {
+    return {
+      locale: i18n.locale,
+      ...DateFormats[override ?? store.state.config.uiSettings.general.dateFormat]
     }
-    return date.format(format)
   },
 
-  /**
-   * Formats a date from unixtime into a human readable
-   * datetime with optional formats for today and
-   * future datetimes
-   */
-  formatAbsoluteDateTime: (datetime: number, todayFormat?: string, futureFormat?: string) => {
-    const date = _Vue.$dayjs(datetime * 1000)
-    // Including a year doesn't make sense as that'll be clear from context (even on newyears-related edge cases)
-    const defaultFormat = 'MMM D, h:mm a'
-    const appropriateSpecifiedFormat = date.isToday() ? todayFormat : futureFormat
+  getTimeFormat: (override?: string) => {
+    return {
+      locale: i18n.locale,
+      ...TimeFormats[override ?? store.state.config.uiSettings.general.timeFormat]
+    }
+  },
 
-    return date.format(appropriateSpecifiedFormat || defaultFormat)
+  formatDate: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
+    const date = new Date(value)
+    const dateFormat = Filters.getDateFormat()
+
+    return date.toLocaleDateString(dateFormat.locale, {
+      ...dateFormat.options,
+      ...options
+    })
+  },
+
+  formatTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
+    const date = new Date(value)
+    const timeFormat = Filters.getTimeFormat()
+
+    return date.toLocaleTimeString(timeFormat.locale, {
+      ...timeFormat.options,
+      ...options
+    })
+  },
+
+  formatTimeWithSeconds: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
+    return Filters.formatTime(value, {
+      second: '2-digit',
+      ...options
+    })
+  },
+
+  formatDateTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
+    const date = new Date(value)
+    const timeFormat = Filters.getTimeFormat()
+    const dateFormat = Filters.getDateFormat()
+
+    return date.toLocaleDateString(dateFormat.locale, {
+      ...dateFormat.options,
+      ...timeFormat.options,
+      ...options
+    })
+  },
+
+  formatRelativeTimeToNow (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
+    return Filters.formatRelativeTimeToDate(value, Date.now(), options)
+  },
+
+  formatRelativeTimeToDate (value: number | string | Date, value2: number | string | Date, options?: Intl.RelativeTimeFormatOptions) {
+    let v = Math.floor(+new Date(value) / 1000)
+    let v2 = Math.floor(+new Date(value2) / 1000)
+
+    const units: { unit: Intl.RelativeTimeFormatUnit, limit: number }[] = [
+      { unit: 'second', limit: 60 },
+      { unit: 'minute', limit: 60 },
+      { unit: 'hour', limit: 24 },
+      { unit: 'day', limit: 30 },
+      { unit: 'month', limit: 12 },
+      { unit: 'year', limit: -1 }
+    ]
+
+    for (const { unit, limit } of units) {
+      if (limit === -1 || Math.abs(v - v2) < limit) {
+        return Filters.formatRelativeTime(v - v2, unit, options)
+      }
+
+      v = Math.floor(v / limit)
+      v2 = Math.floor(v2 / limit)
+    }
+  },
+
+  formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
+    const rtf = new Intl.RelativeTimeFormat(i18n.locale, {
+      numeric: 'auto',
+      ...options
+    })
+
+    return rtf.format(value, unit)
+  },
+
+  formatAbsoluteDateTime: (value: number | string | Date, options?: Intl.RelativeTimeFormatOptions) => {
+    if (Filters.isToday(value)) {
+      return Filters.formatTime(value, options)
+    }
+
+    if (Filters.isThisYear(value)) {
+      return Filters.formatDateTime(value, {
+        year: undefined,
+        ...options
+      })
+    }
+
+    return Filters.formatDateTime(value, options)
+  },
+
+  isToday: (value: number | string | Date) => {
+    const date = new Date(value)
+    const today = new Date()
+
+    return date.getDate() === today.getDate() &&
+      date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+  },
+
+  isThisMonth: (value: number | string | Date) => {
+    const date = new Date(value)
+    const today = new Date()
+
+    return date.getMonth() === today.getMonth() &&
+      date.getFullYear() === today.getFullYear()
+  },
+
+  isThisYear: (value: number | string | Date) => {
+    const date = new Date(value)
+    const today = new Date()
+
+    return date.getFullYear() === today.getFullYear()
   },
 
   /**
@@ -135,9 +234,10 @@ export const Filters = {
   /**
    * Formats a number representing mm to human readable distance.
    */
-  getReadableLengthString (lengthInMm: number) {
+  getReadableLengthString (lengthInMm: number, showMicrons = false) {
     if (lengthInMm >= 1000) return (lengthInMm / 1000).toFixed(2) + ' m'
     if (lengthInMm > 100) return (lengthInMm / 10).toFixed(1) + ' cm'
+    if (lengthInMm < 0.1 && showMicrons) return (lengthInMm * 1000).toFixed(0) + ' μm'
     return lengthInMm.toFixed(1) + ' mm'
   },
 
@@ -242,12 +342,90 @@ export const Filters = {
   }
 }
 
+export const Rules = {
+  required (v: any) {
+    return ((v ?? '') !== '') || i18n.t('app.general.simple_form.error.required')
+  },
+
+  numberValid (v: any) {
+    return !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
+  },
+
+  numberGreaterThan (min: number) {
+    return (v: number) => v > min || i18n.t('app.general.simple_form.error.min', { min: `> ${min}` })
+  },
+
+  numberGreaterThanOrEqual (min: number) {
+    return (v: number) => v >= min || i18n.t('app.general.simple_form.error.min', { min })
+  },
+
+  numberGreaterThanOrEqualOrZero (min: number) {
+    return (v: number) => +v === 0 || v >= min || i18n.t('app.general.simple_form.error.min_or_0', { min })
+  },
+
+  numberGreaterThanOrZero (min: number) {
+    return (v: number) => +v === 0 || v > min || i18n.t('app.general.simple_form.error.min_or_0', { min: `> ${min}` })
+  },
+
+  numberLessThan (max: number) {
+    return (v: number) => v < max || i18n.t('app.general.simple_form.error.max', { max: `< ${max}` })
+  },
+
+  numberLessThanOrEqual (max: number) {
+    return (v: number) => v <= max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  numberLessThanOrEqualOrZero (max: number) {
+    return (v: number) => +v === 0 || v <= max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  numberLessThanOrZero (max: number) {
+    return (v: number) => +v === 0 || v < max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  lengthGreaterThanOrEqual (min: number) {
+    return (v: string | any[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
+  },
+
+  lengthLessThanOrEqual (max: number) {
+    return (v: string | any[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
+  },
+
+  numberArrayValid (v: any[]) {
+    return !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
+  },
+
+  passwordNotEqualUsername (username?: string | null) {
+    return (v: string) => (v.toLowerCase() !== (username ?? '').toLowerCase()) || i18n.t('app.general.simple_form.error.password_username')
+  },
+
+  aspectRatioValid (v: string) {
+    return /^\d+\s*[:/]\s*\d+$/.test(v) || i18n.t('app.general.simple_form.error.invalid_aspect')
+  },
+
+  regExpPatternValid (v: string) {
+    try {
+      // eslint-disable-next-line no-new
+      new RegExp(v)
+      return true
+    } catch (e) {
+      return i18n.t('app.general.simple_form.error.invalid_expression')
+    }
+  },
+
+  regExpValid (regExp: RegExp, errorMessage: string | TranslateResult) {
+    return (v: string) => regExp.test(v) || errorMessage || 'Invalid'
+  }
+}
+
 export const FiltersPlugin = {
   install (Vue: typeof _Vue) {
     Vue.prototype.$filters = Filters
+    Vue.prototype.$rules = Rules
     Vue.prototype.$globals = Globals
     Vue.prototype.$waits = Waits
     Vue.$filters = Filters
+    Vue.$rules = Rules
     Vue.$globals = Globals
     Vue.$waits = Waits
   }
@@ -256,12 +434,14 @@ export const FiltersPlugin = {
 declare module 'vue/types/vue' {
   interface Vue {
     $filters: typeof Filters;
+    $rules: typeof Rules;
     $globals: typeof Globals;
     $waits: typeof Waits;
   }
 
   interface VueConstructor {
     $filters: typeof Filters;
+    $rules: typeof Rules;
     $globals: typeof Globals;
     $waits: typeof Waits;
   }

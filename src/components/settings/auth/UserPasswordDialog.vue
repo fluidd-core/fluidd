@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="500"
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
@@ -41,7 +40,9 @@
             type="password"
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required]"
+            :rules="[
+              $rules.required
+            ]"
           />
         </app-setting>
 
@@ -56,7 +57,11 @@
             type="password"
             class="mt-0"
             hide-details="auto"
-            :rules="[rules.required, rules.password, rules.min]"
+            :rules="[
+              $rules.required,
+              $rules.numberGreaterThanOrEqual(4),
+              $rules.passwordNotEqualUsername(currentUser)
+            ]"
           />
         </app-setting>
 
@@ -77,7 +82,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open = false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -95,15 +100,15 @@
 </template>
 
 <script lang="ts">
-import { authApi } from '@/api/auth.api'
-import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
+import { httpClientActions } from '@/api/httpClientActions'
+import { Component, Vue, Watch, Ref, VModel } from 'vue-property-decorator'
 import { EventBus } from '@/eventBus'
 import { VForm } from '@/types'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {
-  @Prop({ type: Boolean, default: false })
-  public value!: boolean
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   @Ref('form')
   readonly form!: VForm
@@ -114,12 +119,6 @@ export default class UserPasswordDialog extends Vue {
   loading = false
 
   valid = false
-
-  rules = {
-    required: (v: string) => (v && v !== undefined && v !== '') || this.$t('app.general.simple_form.error.required'),
-    password: (v: string) => (v && v.toLowerCase() !== this.currentUser.toLowerCase()) || this.$t('app.general.simple_form.error.password_username'),
-    min: (v: string) => (v && v !== undefined && v.length >= 4) || this.$t('app.general.simple_form.error.min', { min: 4 })
-  }
 
   get currentUser () {
     const currentUser = this.$store.getters['auth/getCurrentUser']
@@ -140,10 +139,10 @@ export default class UserPasswordDialog extends Vue {
   handleSave () {
     if (this.valid) {
       this.loading = true
-      authApi.changePassword(this.currentPassword, this.password)
+      httpClientActions.accessUserPasswordPost(this.currentPassword, this.password)
         .then(() => {
           EventBus.$emit(this.$tc('app.general.msg.password_changed'), { timeout: 2000 })
-          this.$emit('input', false)
+          this.open = false
         })
         .catch(() => {
           this.error = true

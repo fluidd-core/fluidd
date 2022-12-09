@@ -1,8 +1,7 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     max-width="90vh"
-    @input="$emit('input', $event)"
   >
     <camera-item
       :camera="camera"
@@ -11,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import { CameraConfig } from '@/store/cameras/types'
 
@@ -21,11 +20,11 @@ import { CameraConfig } from '@/store/cameras/types'
   }
 })
 export default class CameraDialog extends Vue {
-  @Prop({ type: Boolean, required: true })
-  public value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object, required: true })
-  public camera!: CameraConfig
+  readonly camera!: CameraConfig
 }
 </script>
 

@@ -23,9 +23,13 @@
         <v-text-field
           ref="parkTimeElement"
           :value="parkTime"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin(0)]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="parkTimeBlocked"
-          :hide-details="parkTimeElement ? parkTimeElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -42,9 +46,13 @@
         <v-text-field
           ref="parkTravelSpeedElement"
           :value="parkTravelSpeed"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin(0)]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="parkTravelSpeedBlocked"
-          :hide-details="parkTravelSpeedElement ? parkTravelSpeedElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -80,9 +88,13 @@
         <v-text-field
           ref="parkPosDZElement"
           :value="parkPosZ"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin(0)]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="parkPosZBlocked"
-          :hide-details="parkPosDZElement ? parkPosDZElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -113,18 +125,16 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import ParkExtrudeRetractSettings from '@/components/settings/timelapse/subsettings/ParkExtrudeRetractSettings.vue'
-import CustomParkPositionSettings from '@/components/settings/timelapse/subsettings/CustomParkPositionSettings.vue'
+import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
+import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
 import { VInput } from '@/types'
 
 @Component({
   components: {
     CustomParkPositionSettings,
-    ParkExtrudeRetractSettings,
-    AppSetting
+    ParkExtrudeRetractSettings
   }
 })
 export default class LayerMacroSettings extends Mixins(StateMixin) {
@@ -136,13 +146,6 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
 
   @Ref('parkPosDZElement')
   readonly parkPosDZElement?: VInput
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (min: number) => (v: number) => v >= min || this.$t('app.general.simple_form.error.min', { min }),
-    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.min', { max })
-  }
 
   get parkPositions (): {text: string, value: ParkPosition}[] {
     const values: ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'custom']
@@ -233,7 +236,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
   }
 
   subtitleIfBlocked (blocked: boolean): string {
-    return blocked ? this.$tc('app.timelapse.tooltip.managed_by_moonraker') : ''
+    return blocked ? this.$tc('app.general.tooltip.managed_by_moonraker') : ''
   }
 }
 </script>
