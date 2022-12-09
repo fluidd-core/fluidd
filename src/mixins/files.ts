@@ -204,7 +204,7 @@ export default class FilesMixin extends Vue {
     const data = {
       filenames
     }
-    return httpClient
+    return Vue.$httpClient
       .post(
         this.apiUrl + '/server/job_queue/job',
         data
@@ -219,7 +219,7 @@ export default class FilesMixin extends Vue {
   }
 
   updateQueue () {
-    return httpClient
+    return Vue.$httpClient
       .get(
         this.apiUrl + '/server/job_queue/status'
       )

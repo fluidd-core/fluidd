@@ -79,23 +79,22 @@ import StateMixin from '@/mixins/state'
 })
 export default class JobQueueCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
-  public enabled!: boolean
+  readonly enabled!: boolean
 
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
 
-  handleRemoveAll () {
-    this.$confirm(
+  async handleRemoveAll () {
+    const res = await this.$confirm(
       this.$tc('app.queue.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          SocketActions.jobQueueRemoveJob('all')
-          SocketActions.jobQueueList()
-        }
-      })
+
+    if (res) {
+      SocketActions.jobQueueRemoveJob('all')
+      SocketActions.jobQueueList()
+    }
   }
 
   get queueStatus () {

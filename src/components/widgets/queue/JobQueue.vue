@@ -26,7 +26,7 @@
               :key="`col.${index}.time_added`"
             >
               <span class="text-no-wrap">
-                {{ $filters.formatAbsoluteDateTime(item.time_added, 'lll') }}
+                {{ $filters.formatAbsoluteDateTime(item.time_added) }}
               </span>
             </td>
             <td
@@ -71,13 +71,11 @@ import draggable from 'vuedraggable'
 @Component({
   components: {
     draggable
-
   }
 })
 export default class JobQueue extends Mixins(FilesMixin) {
   expanded: QueueJob[] = []
   search = ''
-  draggable = true
   datakey = 0
   datakey2 = 0
 

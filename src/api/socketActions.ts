@@ -490,7 +490,6 @@ export const SocketActions = {
     baseEmit(
       'server.job_queue.status', {
         dispatch: 'files/updateQueueStatus'
-
       }
     )
   },
@@ -499,7 +498,6 @@ export const SocketActions = {
     baseEmit(
       'server.job_queue.pause', {
         dispatch: 'files/updateQueueStatus'
-
       }
     )
   },
