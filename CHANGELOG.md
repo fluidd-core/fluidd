@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.22.1](https://github.com/fluidd-core/fluidd/compare/v1.22.0...v1.22.1) (2022-12-09)
+
+
+### Features
+
+* supports Klipper output pin toggle in AppBar ([#970](https://github.com/fluidd-core/fluidd/issues/970)) ([d263733](https://github.com/fluidd-core/fluidd/commit/d263733ef8a181f048c7ee30220c606d515757f8))
+
+
+### Bug Fixes
+
+* correctly load fallback language ([095b093](https://github.com/fluidd-core/fluidd/commit/095b093204a47115943bf55c2d41ecb97b7d2d83))
+* don't reload printing file if loaded in GCode Previewer ([64a4e8a](https://github.com/fluidd-core/fluidd/commit/64a4e8a7af7974019e41f48612181f9a12e05dcc))
+* temperature chart legend ([#973](https://github.com/fluidd-core/fluidd/issues/973)) ([f490098](https://github.com/fluidd-core/fluidd/commit/f490098f74ae7e30db4b0fe0d49d8c110bdf7436))
+
 ## [1.22.0](https://github.com/fluidd-core/fluidd/compare/v1.21.1...v1.22.0) (2022-12-04)
 
 
