@@ -164,7 +164,6 @@ export default class ThermalChart extends Vue {
         formatter: (params: any) => {
           let text = ''
           params
-            .reverse()
             .forEach((param: any) => {
               if (
                 !param.seriesName.toLowerCase().endsWith('target') &&
@@ -177,7 +176,7 @@ export default class ThermalChart extends Vue {
                   <div>
                     ${param.marker}
                     <span style="font-size:${fontSize}px;color:${fontColor};font-weight:400;margin-left:2px">
-                      ${param.seriesName}:
+                      ${this.$filters.startCase(param.seriesName)}:
                     </span>
                     <span style="float:right;margin-left:20px;font-size:${fontSize}px;color:${fontColor};font-weight:900">
                       ${param.value[param.seriesName].toFixed(2)}<small>°C</small>`

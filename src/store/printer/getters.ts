@@ -438,6 +438,12 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
   },
 
+  getPinByName: (state, getters) => (name: string) => {
+    const pins = getters.getPins as OutputPin[]
+
+    return pins.find(pin => pin.name === name)
+  },
+
   /**
   * Return available fans and output pins
   */
@@ -610,24 +616,32 @@ export const getters: GetterTree<PrinterState, RootState> = {
    * to chart.
    */
   getChartableSensors: (state) => {
-    let sensors: string[] = []
-    const keys = [
-      'temperature_fan',
-      'temperature_probe',
-      'z_thermal_adjust',
-      'temperature_sensor'
+    const keyGroups = [
+      [
+        'temperature_fan'
+      ],
+      [
+        'temperature_probe',
+        'z_thermal_adjust',
+        'temperature_sensor'
+      ]
     ]
 
-    for (const key of Object.keys(state.printer)) {
-      if (keys.some(e => key.startsWith(e))) {
-        sensors.push(key)
-      }
-    }
+    const printerKeys = Object.keys(state.printer)
 
-    if (state.printer.heaters.available_heaters.length > 0) {
-      sensors = [...sensors, ...state.printer.heaters.available_heaters]
-    }
-    return sensors
+    const sensors = keyGroups.flatMap(keyGroup => {
+      return printerKeys
+        .filter(key => keyGroup.some(x => key.startsWith(x)))
+        .sort((a, b) => a.localeCompare(b))
+    })
+
+    const heaters = (state.printer.heaters.available_heaters as string[])
+      .sort((a, b) => a.localeCompare(b))
+
+    return [
+      ...heaters,
+      ...sensors
+    ]
   },
 
   getBedScrews: (_, getters) => {
