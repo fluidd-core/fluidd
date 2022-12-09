@@ -35,6 +35,7 @@ declare module 'vue' {
     AppSwitch: typeof import('./src/components/ui/AppSwitch.vue')['default']
     AppTable: typeof import('./src/components/ui/AppTable.vue')['default']
     AppToolsDrawer: typeof import('./src/components/layout/AppToolsDrawer.vue')['default']
+    AppUploadAndPrintBtn: typeof import('./src/components/layout/AppUploadAndPrintBtn.vue')['default']
     AppUserMenu: typeof import('./src/components/layout/AppUserMenu.vue')['default']
     AppWarnings: typeof import('./src/components/common/AppWarnings.vue')['default']
     BedScrewsAdjustDialog: typeof import('./src/components/common/BedScrewsAdjustDialog.vue')['default']
