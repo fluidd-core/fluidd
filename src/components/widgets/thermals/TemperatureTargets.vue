@@ -243,10 +243,6 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$store.getters['printer/getSensors']
   }
 
-  get chartableSensors () {
-    return this.$store.getters['printer/getChartableSensors']
-  }
-
   get chartSelectedLegends () {
     return this.$store.getters['charts/getSelectedLegends']
   }
