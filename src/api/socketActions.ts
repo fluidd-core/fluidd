@@ -3,7 +3,6 @@ import { Globals, Waits } from '@/globals'
 import { NotifyOptions } from '@/plugins/socketClient'
 import consola from 'consola'
 import { TimelapseWritableSettings } from '@/store/timelapse/types'
-import { QueueJob } from '@/store/files/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -74,9 +73,11 @@ export const SocketActions = {
   },
 
   async machineUpdateRecover (name: string, hard = false) {
-    let dispatch = 'version/onUpdatedClient'
-    if (name === 'moonraker') dispatch = 'version/onUpdatedMoonraker'
-    if (name === 'klipper') dispatch = 'version/onUpdatedKlipper'
+    const dispatch = name === 'moonraker'
+      ? 'version/onUpdatedMoonraker'
+      : name === 'klipper'
+        ? 'version/onUpdatedKlipper'
+        : 'version/onUpdatedClient'
     baseEmit(
       'machine.update.recover', {
         dispatch,
@@ -105,8 +106,9 @@ export const SocketActions = {
   },
 
   async machineUpdateClient (name: string) {
-    let dispatch = 'version/onUpdatedClient'
-    if (name === 'fluidd') dispatch = 'version/onUpdatedFluidd'
+    const dispatch = name === 'fluidd'
+      ? 'version/onUpdatedFluidd'
+      : 'version/onUpdatedClient'
     baseEmit(
       'machine.update.client', {
         dispatch,
@@ -450,70 +452,56 @@ export const SocketActions = {
     )
   },
 
-  async jobQueueRemoveJob (uid: string) {
-    let params: any = { job_ids: [uid] }
-    let dispatch = 'files/onjobQueueDelete'
-    if (uid === 'all') {
-      params = { all: true }
-      dispatch = 'files/onjobQueueDeleteAll'
-    }
-    baseEmit(
-      'server.job_queue.delete_job', {
-        dispatch,
-        params
-      }
-    )
-  },
-
-  async jobQueueSetQueue (queue: QueueJob[]) {
-    const filenames: string[] = []
-    baseEmit(
-      'server.job_queue.delete_job', {
-        params: { all: true }
-      }
-    )
-
-    queue.forEach((job: QueueJob) => {
-      filenames.push(job.filename)
-    })
-
-    const params = { filenames }
-    baseEmit(
-      'server.job_queue.post_job', {
-        dispatch: 'files/updateQueueStatus',
-        params
-      }
-    )
-  },
-
-  async jobQueueList () {
-    baseEmit(
-      'server.job_queue.status', {
-        dispatch: 'files/updateQueueStatus'
-      }
-    )
-  },
-
-  async pauseJobQueue () {
-    baseEmit(
-      'server.job_queue.pause', {
-        dispatch: 'files/updateQueueStatus'
-      }
-    )
-  },
-
-  async resumeJobQueue () {
-    baseEmit(
-      'server.job_queue.start', {
-        dispatch: 'files/updateQueueStatus'
-      }
-    )
-  },
-
   async serverHistoryResetTotals () {
     baseEmit(
       'server.history.reset_totals', {
         dispatch: 'history/onHistoryChange'
+      }
+    )
+  },
+
+  async serverJobQueueStatus () {
+    baseEmit(
+      'server.job_queue.status', {
+        dispatch: 'jobQueue/onCurrentState'
+      }
+    )
+  },
+
+  async serverJobQueuePostJob (filenames: string[]) {
+    baseEmit(
+      'server.job_queue.post_job', {
+        dispatch: 'jobQueue/onCurrentState',
+        params: { filenames }
+      }
+    )
+  },
+
+  async serverJobQueueDeleteJob (uid: string) {
+    const params = uid === 'all'
+      ? { all: true }
+      : { job_ids: [uid] }
+
+    baseEmit(
+      'server.job_queue.delete_job', {
+        dispatch: 'jobQueue/onCurrentState',
+        params
+      }
+    )
+  },
+
+  async serverJobQueuePause () {
+    baseEmit(
+      'server.job_queue.pause', {
+        dispatch: 'jobQueue/onCurrentState'
+      }
+    )
+  },
+
+  async serverJobQueueStart () {
+    baseEmit(
+      'server.job_queue.start', {
+        dispatch: 'jobQueue/onCurrentState'
       }
     )
   },

@@ -22,7 +22,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import JobQueueCard from '@/components/widgets/queue/QueueCard.vue'
+import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SystemControl from '@/components/common/SystemControl.vue'
 
 @Component({
@@ -32,7 +32,7 @@ import SystemControl from '@/components/common/SystemControl.vue'
     JobQueueCard
   }
 })
-export default class History extends Mixins(StateMixin) {
+export default class JobQueue extends Mixins(StateMixin) {
   get breakpoint () {
     if (this.$vuetify.breakpoint.mdAndDown) {
       return 12

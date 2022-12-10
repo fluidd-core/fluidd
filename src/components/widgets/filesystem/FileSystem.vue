@@ -295,7 +295,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (!val) {
       this.loadFiles(this.currentPath)
       if (this.$store.getters['server/componentSupport']('job_queue')) {
-        SocketActions.jobQueueList()
+        SocketActions.serverJobQueueStatus()
       }
     }
   }

@@ -23,7 +23,7 @@
         <span>{{ $t('app.general.btn.pause') }}</span>
       </app-btn>
       <app-btn
-        v-else-if="queueStatus == 'paused'"
+        v-else-if="queueStatus === 'paused'"
         small
         class="ma-1"
         @click="handleResume"
@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import JobQueue from '@/components/widgets/queue/JobQueue.vue'
+import JobQueue from '@/components/widgets/job-queue/JobQueue.vue'
 import { SocketActions } from '@/api/socketActions'
 import StateMixin from '@/mixins/state'
 
@@ -92,8 +92,8 @@ export default class JobQueueCard extends Mixins(StateMixin) {
     )
 
     if (res) {
-      SocketActions.jobQueueRemoveJob('all')
-      SocketActions.jobQueueList()
+      SocketActions.serverJobQueueDeleteJob('all')
+      SocketActions.serverJobQueueStatus()
     }
   }
 
@@ -102,15 +102,15 @@ export default class JobQueueCard extends Mixins(StateMixin) {
   }
 
   handleLoadAll () {
-    SocketActions.jobQueueList()
+    SocketActions.serverJobQueueStatus()
   }
 
   handlePause () {
-    SocketActions.pauseJobQueue()
+    SocketActions.serverJobQueuePause()
   }
 
   handleResume () {
-    SocketActions.resumeJobQueue()
+    SocketActions.serverJobQueueStart()
   }
 }
 </script>

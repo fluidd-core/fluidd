@@ -54,8 +54,8 @@ import RetractCard from '@/components/widgets/retract/RetractCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
+import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import { Macro } from '@/store/macros/types'
-import JobQueueCard from '@/components/widgets/queue/QueueCard.vue'
 
 @Component({
   components: {

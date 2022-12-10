@@ -126,24 +126,6 @@ export const mutations: MutationTree<FilesState> = {
     state.download = null
   },
 
-  setQueue (state, payload) {
-    state.queue.jobs = [...payload.queued_jobs]
-    state.queue.status = payload.queue_state
-  },
-
-  setDeleteJob (state, payload: string[]) {
-    if (payload) {
-      payload.forEach((job_id) => {
-        const i = state.queue.jobs.findIndex(job => job.job_id === job_id)
-        if (i >= 0) state.queue.jobs.splice(i, 1)
-      })
-    }
-  },
-
-  setDeleteAllJobs (state) {
-    Object.assign(state.queue, defaultState().queue)
-  },
-
   setCurrentPath (state, payload) {
     Vue.set(state.currentPaths, payload.root, payload.path)
   },

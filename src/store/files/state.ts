@@ -18,7 +18,6 @@ export const defaultState = (): FilesState => {
       logs: [],
       timelapse: []
     },
-    queue: { status: '', jobs: [] },
     gcodes: [],
     config: [],
     config_examples: [],

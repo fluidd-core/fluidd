@@ -63,7 +63,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import getFilePaths from '@/util/get-file-paths'
-import { QueueJob } from '@/store/files/types'
+import { QueueJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'
 import draggable from 'vuedraggable'
@@ -111,7 +111,7 @@ export default class JobQueue extends Mixins(FilesMixin) {
     const currentQueue = this.$store.getters['files/getQueue']
     const formattedQueue = { queued_jobs: val, queue_state: currentQueue.status }
     this.$store.dispatch('files/updateQueueStatus', formattedQueue)
-    SocketActions.jobQueueSetQueue(val)
+    // SocketActions.jobQueueSetQueue(val)
   }
 
   getFilePaths (filename: string) {
@@ -123,8 +123,7 @@ export default class JobQueue extends Mixins(FilesMixin) {
   }
 
   handleRemoveJob (job: QueueJob) {
-    SocketActions.jobQueueRemoveJob(job.job_id)
-    SocketActions.jobQueueList()
+    SocketActions.serverJobQueueDeleteJob(job.job_id)
   }
 
   isExpanded (row: QueueJob) {
