@@ -8,7 +8,6 @@ import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import Diagnostics from '@/views/Diagnostics.vue'
 import History from '@/views/History.vue'
-// import JobQueue from '@/views/JobQueue.vue'
 import Timelapse from '@/views/Timelapse.vue'
 import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
@@ -76,12 +75,6 @@ const routes: Array<RouteConfig> = [
     component: History,
     beforeEnter: ifAuthenticated
   },
-  // {
-  //   path: '/queue',
-  //   name: 'JobQueue',
-  //   component: JobQueue,
-  //   beforeEnter: ifAuthenticated
-  // },
   {
     path: '/system',
     name: 'System',

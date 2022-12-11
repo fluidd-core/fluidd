@@ -463,7 +463,8 @@ export const SocketActions = {
   async serverJobQueueStatus () {
     baseEmit(
       'server.job_queue.status', {
-        dispatch: 'jobQueue/onCurrentState'
+        dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue
       }
     )
   },
@@ -471,21 +472,23 @@ export const SocketActions = {
   async serverJobQueuePostJob (filenames: string[]) {
     baseEmit(
       'server.job_queue.post_job', {
-        dispatch: 'jobQueue/onCurrentState',
-        params: { filenames }
+        dispatch: 'jobQueue/onJobQueueStatus',
+        params: { filenames },
+        wait: Waits.onJobQueue
       }
     )
   },
 
-  async serverJobQueueDeleteJob (uid: string) {
-    const params = uid === 'all'
+  async serverJobQueueDeleteJobs (uids: string[]) {
+    const params = uids.length > 0 && uids[0] === 'all'
       ? { all: true }
-      : { job_ids: [uid] }
+      : { job_ids: uids }
 
     baseEmit(
       'server.job_queue.delete_job', {
-        dispatch: 'jobQueue/onCurrentState',
-        params
+        dispatch: 'jobQueue/onJobQueueStatus',
+        params,
+        wait: Waits.onJobQueue
       }
     )
   },
@@ -493,7 +496,8 @@ export const SocketActions = {
   async serverJobQueuePause () {
     baseEmit(
       'server.job_queue.pause', {
-        dispatch: 'jobQueue/onCurrentState'
+        dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue
       }
     )
   },
@@ -501,7 +505,8 @@ export const SocketActions = {
   async serverJobQueueStart () {
     baseEmit(
       'server.job_queue.start', {
-        dispatch: 'jobQueue/onCurrentState'
+        dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue
       }
     )
   },

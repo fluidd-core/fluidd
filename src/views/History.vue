@@ -28,9 +28,5 @@ export default class History extends Mixins(StateMixin) {
     }
     return 6
   }
-
-  get supportsHistory () {
-    return this.$store.getters['server/componentSupport']('history')
-  }
 }
 </script>

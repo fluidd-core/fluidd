@@ -27,21 +27,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Vue, Prop } from 'vue-property-decorator'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
     FileSystem
   }
 })
-export default class JobsCard extends Mixins(StateMixin) {
+export default class JobsCard extends Vue {
   @Prop({ type: Boolean, default: true })
   readonly enabled!: boolean
-
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
-  }
 }
 </script>

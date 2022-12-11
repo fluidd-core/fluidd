@@ -20,13 +20,13 @@ export const defaultState = (): LayoutState => {
           { id: 'macros-card', enabled: true, collapsed: false },
           { id: 'outputs-card', enabled: true, collapsed: false },
           { id: 'printer-limits-card', enabled: true, collapsed: false },
-          { id: 'retract-card', enabled: true, collapsed: false },
-          { id: 'job-queue-card', enabled: true, collapsed: false }
+          { id: 'retract-card', enabled: true, collapsed: false }
         ],
         container2: [
           { id: 'temperature-card', enabled: true, collapsed: false },
           { id: 'console-card', enabled: true, collapsed: false },
           { id: 'jobs-card', enabled: true, collapsed: false },
+          { id: 'job-queue-card', enabled: false, collapsed: false },
           { id: 'gcode-preview-card', enabled: true, collapsed: false },
           { id: 'bed-mesh-card', enabled: false, collapsed: false }
         ]

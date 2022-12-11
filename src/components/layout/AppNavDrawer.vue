@@ -52,13 +52,6 @@
             {{ $t('app.general.title.jobs') }}
           </app-nav-item>
 
-          <!-- <app-nav-item
-            v-if="supportsQueue"
-            icon="$list"
-            to="/queue">
-            {{ $t('app.general.title.queue') }}
-          </app-nav-item> -->
-
           <app-nav-item
             v-if="supportsHistory"
             icon="$history"
@@ -141,10 +134,6 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get supportsTimelapse () {
     return this.$store.getters['server/componentSupport']('timelapse')
-  }
-
-  get supportsQueue () {
-    return this.$store.getters['server/componentSupport']('job_queue')
   }
 
   get supportsVersions () {

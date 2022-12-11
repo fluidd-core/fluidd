@@ -136,6 +136,7 @@ app:
       add_dir: Add Directory
       add_file: Add File
       add_printer: Add printer
+      add_to_queue: Add to Queue
       adjust_layout: Adjust dashboard layout
       adjusted: Adjusted
       all: All
@@ -152,6 +153,7 @@ app:
       extrude: Extrude
       forgot_password: Forgotten your password?
       heaters_off: Heaters off
+      job_queue: Job Queue
       load_all: Load all
       login: Login
       logout: Logout
@@ -168,7 +170,6 @@ app:
       remove: Remove
       remove_all: Remove All
       rename: Rename
-      queue: Queue
       reprint: Re-Print
       reset_file: Clear File
       reset_layout: Reset to Default Layout
@@ -361,7 +362,7 @@ app:
         name: Name
         nozzle_diameter: Nozzle diameter
         print_duration: Print duration
-        time_added: Time Added To Queue
+        time_added: Time Added
         time_in_queue: Time In Queue
         size: Size
         slicer: Slicer
@@ -384,9 +385,9 @@ app:
       fans_outputs: Fans & Outputs
       gcode_preview: Gcode Preview
       history: History
-      queue: Queue
       home: Home
       jobs: Jobs
+      job_queue: Job Queue
       limits: Printer Limits
       macros: Macros
       metrics_explorer: Metrics Explorer
@@ -415,7 +416,7 @@ app:
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
-  queue:
+  job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
       confirm_jobs: Are you sure? This will clear all jobs.

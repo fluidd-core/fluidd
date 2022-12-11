@@ -1,138 +1,59 @@
 <template>
-  <div class="file-system">
-    <v-spacer />
-    <v-data-table
-      :key="dataKey"
-      :items="jobs"
-      :headers="visibleHeaders"
-      :items-per-page="-1"
-      mobile-breakpoint="0"
-    >
-      <template #body="props">
-        <draggable
-          v-model="jobs"
-          tag="tbody"
-        >
-          <tr
-            v-for="(item, index) in props.items"
-            :key="`row.${index}`"
-          >
-            <td :key="`col.${index}.filename`">
-              <span class="">
-                {{ getFilePaths(item.filename).filename }}
-              </span>
-            </td>
-            <td
-              :key="`col.${index}.time_added`"
-            >
-              <span class="text-no-wrap">
-                {{ $filters.formatAbsoluteDateTime(item.time_added) }}
-              </span>
-            </td>
-            <td
-              :key="`col.${index}.time_in_queue`"
-            >
-              <span class="text-no-wrap">
-                {{ $filters.formatCounterTime(item.time_in_queue) }}
-              </span>
-            </td>
-            <td
-              :key="`col.${index}.action`"
-            >
-              <v-btn
-                icon
-                small
-                @click="handleRemoveJob(item)"
-              >
-                <v-icon
-                  small
-                  color=""
-                >
-                  $delete
-                </v-icon>
-              </v-btn>
-            </td>
-          </tr>
-        </draggable>
-      </template>
-    </v-data-table>
+  <div>
+    <job-queue-browser
+      :dense="dense"
+      @row-click="handleRowClick"
+    />
+
+    <job-queue-context-menu
+      v-if="contextMenuState.open"
+      v-model="contextMenuState.open"
+      :job="contextMenuState.job"
+      :position-x="contextMenuState.x"
+      :position-y="contextMenuState.y"
+      @remove="handleRemove"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import getFilePaths from '@/util/get-file-paths'
-import { QueuedJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
-import { AppTableHeader } from '@/types'
-import draggable from 'vuedraggable'
+import { QueuedJob } from '@/store/jobQueue/types'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import JobQueueBrowser from './JobQueueBrowser.vue'
+import JobQueueContextMenu from './JobQueueContextMenu.vue'
 
 @Component({
   components: {
-    draggable
+    JobQueueBrowser,
+    JobQueueContextMenu
   }
 })
 export default class JobQueue extends Vue {
-  expanded: QueuedJob[] = []
-  search = ''
-  datakey = 0
-  datakey2 = 0
-
-  get headers (): AppTableHeader[] {
-    const headers = [
-      // { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
-      { text: this.$tc('app.general.table.header.time_added'), value: 'time_added', configurable: true, sortable: false },
-      { text: this.$tc('app.general.table.header.time_in_queue'), value: 'time_in_queue', configurable: true, sortable: false },
-      { text: this.$tc('app.general.table.header.actions'), value: 'action', sortable: false, align: 'end' }
-    ]
-    const key = 'queue'
-    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+  contextMenuState: any = {
+    open: false,
+    x: 0,
+    y: 0,
+    job: null
   }
 
-  get visibleHeaders (): AppTableHeader[] {
-    return this.headers.filter(header => header.visible || header.visible === undefined)
-  }
+  @Prop({ type: Boolean, default: false })
+  readonly dense!: boolean
 
-  get dataKey () {
-    return this.datakey2
-  }
-
-  set dataKey (value) {
-    this.datakey2 += 1
-  }
-
-  get jobs () {
-    return this.$store.state.jobQueue.queued_jobs
-  }
-
-  set jobs (val) {
-    const currentQueue = this.$store.state.jobQueue
-    const formattedQueue = { queued_jobs: val, queue_state: currentQueue.queue_state }
-    this.$store.dispatch('jobQueue/updateQueueStatus', formattedQueue)
-    // SocketActions.jobQueueSetQueue(val)
-  }
-
-  getFilePaths (filename: string) {
-    return getFilePaths(filename, 'gcodes')
-  }
-
-  handleRemoveJob (job: QueuedJob) {
-    SocketActions.serverJobQueueDeleteJob(job.job_id)
-  }
-
-  isExpanded (row: QueuedJob) {
-    if (this.expanded.length <= 0) return false
-    const r = this.expanded[0] as QueuedJob
-    return (row.job_id === r.job_id)
-  }
-
-  toggleRowExpand (row: QueuedJob) {
-    if (this.isExpanded(row)) {
-      this.expanded = []
-    } else {
-      this.expanded = [row]
+  handleRowClick (item: QueuedJob, e: MouseEvent) {
+    if (!this.contextMenuState.open) {
+      // Open the context menu
+      this.contextMenuState.x = e.clientX
+      this.contextMenuState.y = e.clientY
+      this.contextMenuState.job = item
+      this.$nextTick(() => {
+        this.contextMenuState.open = true
+      })
     }
+  }
+
+  handleRemove (item: QueuedJob) {
+    SocketActions.serverJobQueueDeleteJobs([item.job_id])
   }
 }
 </script>

@@ -131,7 +131,10 @@ import {
   mdiLayersMinus,
   mdiLayers,
   mdiLayersPlus,
-  mdiFolderOpen
+  mdiFolderOpen,
+  mdiTrayFull,
+  mdiTrayPlus,
+  mdiTrayRemove
 } from '@mdi/js'
 
 /**
@@ -346,7 +349,10 @@ export const Icons = Object.freeze({
   moves: mdiVectorLine,
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
-  folderOpen: mdiFolderOpen
+  folderOpen: mdiFolderOpen,
+  jobQueue: mdiTrayFull,
+  enqueueJob: mdiTrayPlus,
+  dequeueJob: mdiTrayRemove
 })
 
 export const Waits = Object.freeze({
@@ -391,6 +397,7 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
+  onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
   onQueryEndstops: 'onQueryEndstops',

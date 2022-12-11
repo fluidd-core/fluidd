@@ -69,10 +69,6 @@ export default class CameraCard extends Mixins(StateMixin) {
     if (this.cameras.length > 2) return 4
   }
 
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
-  }
-
   get cameras () {
     return this.$store.getters['cameras/getVisibleCameras']
   }

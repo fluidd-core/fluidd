@@ -117,8 +117,8 @@ export default class Dashboard extends Mixins(StateMixin) {
     return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
   }
 
-  get jobQueueEnabled (): boolean {
-    return !!this.$store.getters['server/componentSupport']('job_queue')
+  get supportsJobQueue (): boolean {
+    return this.$store.getters['server/componentSupport']('job_queue')
   }
 
   get supportsBedMesh () {
@@ -199,7 +199,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'camera-card' && !this.hasCameras) return true
     if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
-    if (item.id === 'job-queue-card' && !this.jobQueueEnabled) return true
+    if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
 

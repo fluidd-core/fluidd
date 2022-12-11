@@ -30,16 +30,14 @@
               <v-list-item-title>{{ $t('app.general.btn.print') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
-              v-if="file.type !== 'directory' && rootProperties.accepts.includes('.' + file.extension) && rootProperties.canPrint"
+              v-if="canPrint && supportsJobQueue"
               link
               @click="$emit('enqueue', file)"
             >
               <v-list-item-icon>
-                <v-icon>$printer</v-icon>
+                <v-icon>$enqueueJob</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>
-                Queue File
-              </v-list-item-title>
+              <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="canPreheat"
@@ -193,6 +191,10 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   get canPreviewGcode () {
     const layoutName = this.$store.getters['layout/getSpecificLayoutName']
     return (this.$store.getters['layout/isEnabledInLayout'](layoutName, 'gcode-preview-card') && this.root === 'gcodes')
+  }
+
+  get supportsJobQueue (): boolean {
+    return this.$store.getters['server/componentSupport']('job_queue')
   }
 }
 </script>
