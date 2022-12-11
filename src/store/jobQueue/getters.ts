@@ -7,11 +7,11 @@ export const getters: GetterTree<JobQueueState, RootState> = {
     return state.queue_state
   },
 
-  getJobs: (state) => {
-    return state.jobs
+  getQueuedJobs: (state) => {
+    return state.queued_jobs
   },
 
-  getJob: (state) => (jobId: string) => {
-    return state.jobs.findIndex(job => job.job_id === jobId)
+  getQueuedJob: (state) => (jobId: string) => {
+    return state.queued_jobs.findIndex(job => job.job_id === jobId)
   }
 }

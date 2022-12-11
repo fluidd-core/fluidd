@@ -39,7 +39,7 @@
       <app-btn
         small
         class="ma-1"
-        @click="handleLoadAll"
+        @click="handleRefresh"
       >
         <v-icon
           small
@@ -81,10 +81,6 @@ export default class JobQueueCard extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: true })
   readonly enabled!: boolean
 
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
-  }
-
   async handleRemoveAll () {
     const res = await this.$confirm(
       this.$tc('app.queue.msg.confirm'),
@@ -93,15 +89,14 @@ export default class JobQueueCard extends Mixins(StateMixin) {
 
     if (res) {
       SocketActions.serverJobQueueDeleteJob('all')
-      SocketActions.serverJobQueueStatus()
     }
   }
 
   get queueStatus () {
-    return this.$store.getters['files/getQueue'].status
+    return this.$store.state.jobQueue.queue_status
   }
 
-  handleLoadAll () {
+  handleRefresh () {
     SocketActions.serverJobQueueStatus()
   }
 

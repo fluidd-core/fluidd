@@ -3,14 +3,14 @@
     <v-spacer />
     <v-data-table
       :key="dataKey"
-      :items="queue"
+      :items="jobs"
       :headers="visibleHeaders"
       :items-per-page="-1"
       mobile-breakpoint="0"
     >
       <template #body="props">
         <draggable
-          v-model="queue"
+          v-model="jobs"
           tag="tbody"
         >
           <tr
@@ -60,10 +60,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import FilesMixin from '@/mixins/files'
+import { Component, Vue } from 'vue-property-decorator'
 import getFilePaths from '@/util/get-file-paths'
-import { QueueJob } from '@/store/jobQueue/types'
+import { QueuedJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'
 import draggable from 'vuedraggable'
@@ -73,8 +72,8 @@ import draggable from 'vuedraggable'
     draggable
   }
 })
-export default class JobQueue extends Mixins(FilesMixin) {
-  expanded: QueueJob[] = []
+export default class JobQueue extends Vue {
+  expanded: QueuedJob[] = []
   search = ''
   datakey = 0
   datakey2 = 0
@@ -103,14 +102,14 @@ export default class JobQueue extends Mixins(FilesMixin) {
     this.datakey2 += 1
   }
 
-  get queue () {
-    return this.$store.getters['files/getQueue'].jobs
+  get jobs () {
+    return this.$store.state.jobQueue.queued_jobs
   }
 
-  set queue (val) {
-    const currentQueue = this.$store.getters['files/getQueue']
-    const formattedQueue = { queued_jobs: val, queue_state: currentQueue.status }
-    this.$store.dispatch('files/updateQueueStatus', formattedQueue)
+  set jobs (val) {
+    const currentQueue = this.$store.state.jobQueue
+    const formattedQueue = { queued_jobs: val, queue_state: currentQueue.queue_state }
+    this.$store.dispatch('jobQueue/updateQueueStatus', formattedQueue)
     // SocketActions.jobQueueSetQueue(val)
   }
 
@@ -118,21 +117,17 @@ export default class JobQueue extends Mixins(FilesMixin) {
     return getFilePaths(filename, 'gcodes')
   }
 
-  getFilename (filename: string) {
-    return filename.split('/').pop() || ''
-  }
-
-  handleRemoveJob (job: QueueJob) {
+  handleRemoveJob (job: QueuedJob) {
     SocketActions.serverJobQueueDeleteJob(job.job_id)
   }
 
-  isExpanded (row: QueueJob) {
+  isExpanded (row: QueuedJob) {
     if (this.expanded.length <= 0) return false
-    const r = this.expanded[0] as QueueJob
+    const r = this.expanded[0] as QueuedJob
     return (row.job_id === r.job_id)
   }
 
-  toggleRowExpand (row: QueueJob) {
+  toggleRowExpand (row: QueuedJob) {
     if (this.isExpanded(row)) {
       this.expanded = []
     } else {

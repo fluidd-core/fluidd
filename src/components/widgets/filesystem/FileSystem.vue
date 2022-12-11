@@ -294,9 +294,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // load too.
     if (!val) {
       this.loadFiles(this.currentPath)
-      if (this.$store.getters['server/componentSupport']('job_queue')) {
-        SocketActions.serverJobQueueStatus()
-      }
     }
   }
 
@@ -882,7 +879,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleEnqueue (file: AppFileWithMeta) {
     if (this.disabled) return
-    this.enqueueFile(file.filename, this.currentPath)
+    const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
+    SocketActions.serverJobQueuePostJob([filepath])
   }
 
   /**

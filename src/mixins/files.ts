@@ -197,43 +197,6 @@ export default class FilesMixin extends Vue {
       : `${url}&token=${(await httpClientActions.accessOneshotTokenGet()).data.result}`
   }
 
-  enqueueFile (filename: string, path: string) {
-    path = path.replace(/gcodes\/?/gi, '')
-    const filepath = (path) ? `${path}/${filename}` : `${filename}`
-    const filenames = [filepath]
-    const data = {
-      filenames
-    }
-    return Vue.$httpClient
-      .post(
-        this.apiUrl + '/server/job_queue/job',
-        data
-      )
-      .then((response) => {
-        this.updateQueue()
-        return response
-      })
-      .catch(e => {
-        return e
-      })
-  }
-
-  updateQueue () {
-    return Vue.$httpClient
-      .get(
-        this.apiUrl + '/server/job_queue/status'
-      )
-      .then((response) => {
-        const data = response.data
-
-        this.$store.dispatch('files/updateQueueStatus', data.result)
-        return response
-      })
-      .catch(e => {
-        return e
-      })
-  }
-
   /**
    * Uploads a single file via moonraker.
    * @param file The file object. Contains the filename.
