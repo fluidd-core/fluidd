@@ -40,22 +40,6 @@ export default class FileEditor extends Vue {
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
-  // Base editor options.
-  opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
-    contextmenu: true,
-    readOnly: this.readonly,
-    codeLens: this.codeLens,
-    automaticLayout: true,
-    fontSize: 16,
-    scrollbar: {
-      useShadows: false
-    },
-    minimap: {
-      enabled: (!this.isMobile)
-    },
-    rulers: (this.isMobile) ? [80, 120] : []
-  }
-
   get isMobile () {
     return this.$vuetify.breakpoint.mobile
   }
@@ -80,7 +64,18 @@ export default class FileEditor extends Vue {
 
     // Create an editor instance.
     this.editor = monaco.editor.create(this.monacoEditor, {
-      ...this.opts
+      contextmenu: true,
+      readOnly: this.readonly,
+      codeLens: this.codeLens,
+      automaticLayout: true,
+      fontSize: 16,
+      scrollbar: {
+        useShadows: false
+      },
+      minimap: {
+        enabled: (!this.isMobile)
+      },
+      rulers: (this.isMobile) ? [80, 120] : []
     })
 
     // Define the model. The filename will map to the supported languages.
