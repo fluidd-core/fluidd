@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import Macros from '@/components/widgets/macros/Macros.vue'
 
 @Component({
@@ -19,7 +19,5 @@ import Macros from '@/components/widgets/macros/Macros.vue'
   }
 })
 export default class MacrosCard extends Vue {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
 }
 </script>

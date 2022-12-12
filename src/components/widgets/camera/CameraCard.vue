@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
@@ -53,9 +53,6 @@ import StateMixin from '@/mixins/state'
   }
 })
 export default class CameraCard extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
-
   dialogState: any = {
     open: false,
     camera: null

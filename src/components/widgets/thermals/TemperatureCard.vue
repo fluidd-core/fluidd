@@ -97,9 +97,6 @@ import { TemperaturePreset } from '@/store/config/types'
   }
 })
 export default class TemperatureCard extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
-
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
@@ -180,10 +177,6 @@ export default class TemperatureCard extends Mixins(StateMixin) {
       value,
       server: true
     })
-  }
-
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
   }
 
   get isMobile () {

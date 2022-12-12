@@ -8,8 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Vue } from 'vue-property-decorator'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
 import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
@@ -21,7 +20,7 @@ import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vu
     PrinterHistoryCard
   }
 })
-export default class History extends Mixins(StateMixin) {
+export default class History extends Vue {
   get breakpoint () {
     if (this.$vuetify.breakpoint.mdAndDown) {
       return 12

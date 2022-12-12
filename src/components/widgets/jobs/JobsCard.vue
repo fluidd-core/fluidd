@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 
 @Component({
@@ -36,7 +36,5 @@ import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
   }
 })
 export default class JobsCard extends Vue {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
 }
 </script>

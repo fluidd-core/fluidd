@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import Retract from '@/components/widgets/retract/Retract.vue'
 
 @Component({
@@ -19,7 +19,5 @@ import Retract from '@/components/widgets/retract/Retract.vue'
   }
 })
 export default class RetractCard extends Vue {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
 }
 </script>
