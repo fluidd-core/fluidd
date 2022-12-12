@@ -134,9 +134,6 @@ import { MinMax } from '@/store/gcodePreview/types'
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
-
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
