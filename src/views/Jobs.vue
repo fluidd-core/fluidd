@@ -2,7 +2,7 @@
   <v-row :dense="$vuetify.breakpoint.smAndDown">
     <v-col
       cols="12"
-      :lg="supportsJobQueue ? 8 : undefined"
+      :lg="hasQueuedJobs ? 8 : undefined"
     >
       <collapsable-card
         :title="$t('app.general.title.jobs')"
@@ -20,7 +20,7 @@
       </collapsable-card>
     </v-col>
     <v-col
-      v-if="supportsJobQueue"
+      v-if="hasQueuedJobs"
       cols="12"
       lg="4"
     >
@@ -44,6 +44,10 @@ import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 export default class Configuration extends Mixins(StateMixin) {
   get supportsJobQueue (): boolean {
     return this.$store.getters['server/componentSupport']('job_queue')
+  }
+
+  get hasQueuedJobs () {
+    return this.supportsJobQueue && this.$store.state.jobQueue.queued_jobs.length > 0
   }
 }
 </script>
