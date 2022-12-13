@@ -151,6 +151,7 @@ app:
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      filter: Filter
       forgot_password: Forgotten your password?
       heaters_off: Heaters off
       job_queue: Job Queue
