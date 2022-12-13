@@ -2,14 +2,21 @@
   <v-toolbar dense>
     <v-spacer />
 
-    <v-btn
-      fab
-      small
-      text
-      @click="$emit('remove')"
-    >
-      <v-icon>$delete</v-icon>
-    </v-btn>
+    <v-tooltip bottom>
+      <template #activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          fab
+          small
+          text
+          @click="$emit('remove')"
+          v-on="on"
+        >
+          <v-icon>$delete</v-icon>
+        </v-btn>
+      </template>
+      <span>{{ $t('app.general.btn.remove') }}</span>
+    </v-tooltip>
   </v-toolbar>
 </template>
 
