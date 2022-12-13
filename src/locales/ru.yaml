@@ -62,7 +62,7 @@ app:
     tooltip:
       endpoint_examples: >-
         Введите URL вашего API.<br />В качестве примера, может быть что-то
-        подобное:<br /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+        подобное:<br /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
   endstop:
     label:
       open: Открыто
@@ -163,7 +163,7 @@ app:
       print: Напечатать
       quad_gantry_level: QGL
       reboot: Перезагрузка
-      recover: Восстановить 
+      recover: Восстановить
       refresh: Обновить
       remove: Удалить
       remove_all: Удалить всё
@@ -237,7 +237,7 @@ app:
       flow: Поток
       free: Свободно
       heaters_busy: >-
-        Принтер в данный момент занят. 
+        Принтер в данный момент занят.
         Выключение нагревателей может привести к сбою печати.
       high: Выше
       host: Хост
@@ -613,7 +613,7 @@ app:
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Активный экструдер настроен на </span>
-        %{filamentDiameter} мм филамент 
+        %{filamentDiameter} мм филамент
         <span class="secondary--text">и диаметр сопла</span>
         %{nozzleDiameter} мм
       stats_volumetric_flow: >-
@@ -621,13 +621,13 @@ app:
         экструдер должен обеспечить </span>
         объем потока %{estimatedVolumetricFlow} мм³/сек
       stats_extruded_length: >-
-        <span class="secondary--text">При экструзии </span>%{extrudeLength} мм филамента при 
+        <span class="secondary--text">При экструзии </span>%{extrudeLength} мм филамента при
         %{extrudeFactor} % потоке<span class="secondary--text">,
         обеспечивает </span>
         выходную длину из сопла на %{estimatedExtrudedLength} мм
       stats_max_speed: >-
         <span class="secondary--text">При высоте слоя </span>
-        %{layerHeight} мм 
+        %{layerHeight} мм
         максимальная скорость печати составляет %{estimatedMaxSpeed} мм/сек
   version:
     btn:
