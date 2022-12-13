@@ -13,10 +13,10 @@
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
         <v-btn
+          v-bind="attrs"
           fab
           small
           text
-          v-bind="attrs"
           v-on="on"
           @click="$emit('remove')"
         >
@@ -25,27 +25,8 @@
           </v-icon>
         </v-btn>
       </template>
-      <slot>
-        <span>{{ $t('app.general.btn.delete') }}</span>
-      </slot>
+      <span>{{ $t('app.general.btn.delete') }}</span>
     </v-tooltip>
-
-    <!-- <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          fab small text
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon>
-            $move
-          </v-icon>
-        </v-btn>
-      </template>
-      <slot>
-        <span>Move to</span>
-      </slot>
-    </v-tooltip> -->
   </v-toolbar>
 </template>
 
