@@ -133,8 +133,7 @@ import {
   mdiLayersPlus,
   mdiFolderOpen,
   mdiTrayFull,
-  mdiTrayPlus,
-  mdiTrayRemove
+  mdiTrayPlus
 } from '@mdi/js'
 
 /**
@@ -351,8 +350,7 @@ export const Icons = Object.freeze({
   retractions: mdiSwapVertical,
   folderOpen: mdiFolderOpen,
   jobQueue: mdiTrayFull,
-  enqueueJob: mdiTrayPlus,
-  dequeueJob: mdiTrayRemove
+  enqueueJob: mdiTrayPlus
 })
 
 export const Waits = Object.freeze({
