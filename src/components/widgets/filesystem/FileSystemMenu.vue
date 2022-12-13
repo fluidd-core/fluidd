@@ -5,19 +5,24 @@
     offset-y
     transition="slide-y-transition"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        :disabled="disabled"
-        fab
-        small
-        text
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon>
-          $plus
-        </v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            v-bind="attrs"
+            :disabled="disabled"
+            fab
+            small
+            text
+            v-on="{... menu, ...tooltip}"
+          >
+            <v-icon>
+              $plus
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.add') }}</span>
+      </v-tooltip>
     </template>
 
     <v-list
