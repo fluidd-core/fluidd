@@ -36,32 +36,6 @@
           </v-icon>
           <span>{{ $t('app.general.btn.resume') }}</span>
         </app-btn>
-        <app-btn
-          small
-          class="ma-1"
-          @click="handleRefresh"
-        >
-          <v-icon
-            small
-            left
-          >
-            $refresh
-          </v-icon>
-          <span>{{ $t('app.general.btn.refresh') }}</span>
-        </app-btn>
-        <app-btn
-          small
-          class="ma-1"
-          @click="handleRemoveAll"
-        >
-          <v-icon
-            small
-            left
-          >
-            $delete
-          </v-icon>
-          <span>{{ $t('app.general.btn.remove_all') }}</span>
-        </app-btn>
       </app-btn-collapse-group>
 
       <app-btn
@@ -78,6 +52,7 @@
 
     <job-queue
       :dense="!fullScreen"
+      :bulk-actions="fullScreen"
     />
   </collapsable-card>
 </template>
@@ -100,22 +75,7 @@ export default class JobQueueCard extends Vue {
   readonly fullScreen!: boolean
 
   get queueStatus () {
-    return this.$store.state.jobQueue.queue_status
-  }
-
-  async handleRemoveAll () {
-    const res = await this.$confirm(
-      this.$tc('app.job_queue.msg.confirm'),
-      { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-    )
-
-    if (res) {
-      SocketActions.serverJobQueueDeleteJobs(['all'])
-    }
-  }
-
-  handleRefresh () {
-    SocketActions.serverJobQueueStatus()
+    return this.$store.state.jobQueue.queue_state
   }
 
   handlePause () {

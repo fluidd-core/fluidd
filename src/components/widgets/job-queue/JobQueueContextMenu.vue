@@ -29,7 +29,7 @@ import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { QueuedJob } from '@/store/jobQueue/types'
 
 @Component({})
-export default class FileSystemContextMenu extends Vue {
+export default class JobQueueContextMenu extends Vue {
   @VModel({ type: Boolean, default: false })
     open!: boolean
 

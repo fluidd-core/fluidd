@@ -479,10 +479,10 @@ export const SocketActions = {
     )
   },
 
-  async serverJobQueueDeleteJobs (uids: string[]) {
-    const params = uids.length > 0 && uids[0] === 'all'
+  async serverJobQueueDeleteJobs (jobIds: string[]) {
+    const params = jobIds.length > 0 && jobIds[0] === 'all'
       ? { all: true }
-      : { job_ids: uids }
+      : { job_ids: jobIds }
 
     baseEmit(
       'server.job_queue.delete_job', {
