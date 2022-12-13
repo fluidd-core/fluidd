@@ -250,7 +250,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getExtruders: (state) => {
     const extruders: Extruder[] = []
     Object.keys(state.printer)
-      .filter(key => key.startsWith('extruder'))
+      .filter(key => /^extruder\d{0,2}$/.test(key))
       .sort()
       .forEach(key => {
         if (key === 'extruder') {
@@ -381,11 +381,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
           })
         }
       })
-      return r.sort((a: Heater, b: Heater) => {
-        const name1 = a.name.toUpperCase()
-        const name2 = b.name.toUpperCase()
-        return (name1 < name2) ? -1 : (name1 > name2) ? 1 : 0
-      })
+
+      return r.sort((a, b) => a.name.localeCompare(b.name))
     }
     return []
   },
@@ -438,7 +435,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const outputs = getters.getOutputs([
       'output_pin'
     ])
-    return outputs.sort((output: OutputPin) => output.pwm ? 1 : 1)
+    return outputs.sort((output: OutputPin) => output.pwm ? 1 : -1)
+  },
+
+  getPinByName: (state, getters) => (name: string) => {
+    const pins = getters.getPins as OutputPin[]
+
+    return pins.find(pin => pin.name === name)
   },
 
   /**
@@ -552,6 +555,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       }
     }
     return pins
+      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
   },
 
   /**
@@ -560,7 +564,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
   getSensors: (state, getters): Sensor[] => {
     const supportedSensors = [
       'temperature_sensor',
-      'temperature_probe'
+      'temperature_probe',
+      'z_thermal_adjust'
     ]
     const extraSupportedSensors = [
       'bme280',
@@ -569,20 +574,20 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     const sensors = Object.keys(state.printer).reduce((groups, item) => {
       const split = item.split(' ')
+      const type = split[0]
       const name = (split.length > 1) ? split[1] : item
 
       if (supportedSensors.includes(split[0])) {
         const prettyName = Vue.$filters.startCase(name)
         const color = Vue.$colorset.next(getKlipperType(item), item)
-        const type = (split.length) ? split[0] : item
         const config = getters.getPrinterSettings(item)
 
         groups[name] = {
           ...groups[name],
           ...state.printer[item],
           ...config,
-          minTemp: (config && config.min_temp) ? config.min_temp : null,
-          maxTemp: (config && config.max_temp) ? config.max_temp : null,
+          minTemp: config?.min_temp ?? null,
+          maxTemp: config?.max_temp ?? null,
           name,
           key: item,
           prettyName,
@@ -603,6 +608,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }, {} as Record<string, Sensor>)
 
     return Object.values(sensors)
+      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
   },
 
   /**
@@ -610,23 +616,32 @@ export const getters: GetterTree<PrinterState, RootState> = {
    * to chart.
    */
   getChartableSensors: (state) => {
-    let sensors: string[] = []
-    const keys = [
-      'temperature_fan',
-      'temperature_probe',
-      'temperature_sensor'
+    const keyGroups = [
+      [
+        'temperature_fan'
+      ],
+      [
+        'temperature_probe',
+        'z_thermal_adjust',
+        'temperature_sensor'
+      ]
     ]
 
-    for (const key of Object.keys(state.printer)) {
-      if (keys.some(e => key.startsWith(e))) {
-        sensors.push(key)
-      }
-    }
+    const printerKeys = Object.keys(state.printer)
 
-    if (state.printer.heaters.available_heaters.length > 0) {
-      sensors = [...sensors, ...state.printer.heaters.available_heaters]
-    }
-    return sensors
+    const sensors = keyGroups.flatMap(keyGroup => {
+      return printerKeys
+        .filter(key => keyGroup.some(x => key.startsWith(x)))
+        .sort((a, b) => a.localeCompare(b))
+    })
+
+    const heaters = (state.printer.heaters.available_heaters as string[])
+      .sort((a, b) => a.localeCompare(b))
+
+    return [
+      ...heaters,
+      ...sensors
+    ]
   },
 
   getBedScrews: (_, getters) => {

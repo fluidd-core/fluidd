@@ -150,6 +150,7 @@ app:
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      filter: Filter
       forgot_password: Forgotten your password?
       heaters_off: Heaters off
       load_all: Load all
@@ -326,6 +327,7 @@ app:
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_reboot_host: Are you sure? This will reboot your host system.
         confirm_shutdown_host: Are you sure? This will shutdown your host system.
+        confirm_service_start: Are you sure you want to start the %{name} service?
         confirm_service_restart: Are you sure you want to restart the %{name} service?
         confirm_service_stop: Are you sure you want to stop the %{name} service?
         confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
@@ -530,7 +532,8 @@ app:
       type: Type
       unit: Unit
       z_adjust_values: Z Adjust values
-      date_time_format: Date and Time format
+      date_format: Date format
+      time_format: Time format
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
@@ -608,6 +611,25 @@ app:
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
       force_move: FORCE_MOVE
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">The active extruder configuration is set for</span>
+        %{filamentDiameter} mm diameter filament
+        <span class="secondary--text">and</span>
+        %{nozzleDiameter} mm nozzle
+      stats_volumetric_flow: >-
+        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">,
+        the extruder should be able to provide an</span>
+        estimated volumetric flow of %{estimatedVolumetricFlow} mm³/s
+      stats_extruded_length: >-
+        Extruding %{extrudeLength} mm of filament at
+        %{extrudeFactor} % flow<span class="secondary--text">,
+        will provide an</span>
+        estimated output length of %{estimatedExtrudedLength} mm
+      stats_max_speed: >-
+        <span class="secondary--text">Assuming a</span>
+        %{layerHeight} mm layer height<span class="secondary--text">,
+        the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
   version:
     btn:
       check_for_updates: Check for updates

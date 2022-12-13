@@ -59,7 +59,7 @@ export const handleCurrentFileChange = (payload: any, state: RootState, commit: 
     'filename' in payload.print_stats &&
     payload.print_stats.filename !== state.printer.printer.print_stats.filename
   ) {
-    commit('printer/setResetCurrentFile', { root: true })
+    commit('printer/setResetCurrentFile', undefined, { root: true })
     if (
       payload.print_stats.filename !== '' &&
       payload.print_stats.filename !== null

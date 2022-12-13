@@ -1,7 +1,7 @@
 import child_process from 'child_process'
 import fs from 'fs'
 import path from 'path'
-import { version } from '../../package.json'
+import { version } from './package.json'
 
 import type { Plugin } from 'vite'
 
@@ -22,7 +22,7 @@ const vitePluginInjectVersion = (): Plugin => {
     },
     writeBundle: () => {
       setImmediate(async () => {
-        const versionFile = await fs.promises.open(path.resolve(__dirname, '../../dist/.version'), 'w')
+        const versionFile = await fs.promises.open(path.resolve(__dirname, 'dist/.version'), 'w')
 
         await versionFile.writeFile(`v${version}`)
 

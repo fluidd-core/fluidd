@@ -8,6 +8,7 @@ import {
   mdiCog,
   mdiCarBrakeAlert,
   mdiPrinter3d,
+  mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
   mdiConsole,
@@ -125,7 +126,11 @@ import {
   mdiVectorLine,
   mdiOpenInNew,
   mdiImageSizeSelectLarge,
-  mdiListStatus
+  mdiListStatus,
+  mdiLayersMinus,
+  mdiLayers,
+  mdiLayersPlus,
+  mdiFolderOpen
 } from '@mdi/js'
 
 /**
@@ -331,7 +336,14 @@ export const Icons = Object.freeze({
   relativePositioning: mdiVectorLine,
   openInNew: mdiOpenInNew,
   imageSizeSelectLarge: mdiImageSizeSelectLarge,
-  listStatus: mdiListStatus
+  listStatus: mdiListStatus,
+  previousLayer: mdiLayersMinus,
+  currentLayer: mdiLayers,
+  nextLayer: mdiLayersPlus,
+  moves: mdiVectorLine,
+  extrusions: mdiPrinter3dNozzle,
+  retractions: mdiSwapVertical,
+  folderOpen: mdiFolderOpen
 })
 
 export const Waits = Object.freeze({
@@ -382,3 +394,56 @@ export const Waits = Object.freeze({
   onQueryProbe: 'onQueryProbe',
   onVersionRefresh: 'onVersionRefresh'
 })
+
+export const SupportedLocales = Object.freeze([
+  { name: 'English', code: 'en' },
+  { name: 'Čeština', code: 'cs' },
+  { name: '简体中文', code: 'zh-CN' },
+  { name: '繁體中文', code: 'zh-HK' },
+  { name: 'Deutsch', code: 'de' },
+  { name: 'Español', code: 'es' },
+  { name: 'Français', code: 'fr' },
+  { name: 'Italiano', code: 'it' },
+  { name: 'Magyar', code: 'hu' },
+  { name: 'Nederlands', code: 'nl' },
+  { name: 'Português', code: 'pt' },
+  { name: 'Русский', code: 'ru' },
+  { name: 'Українська', code: 'uk' },
+  { name: '한국어', code: 'ko' },
+  { name: 'العربية', code: 'ar' },
+  { name: '日本語', code: 'ja' }
+])
+
+type DateTimeFormat = {
+  locale?: string,
+  options: Intl.DateTimeFormatOptions,
+  suffix?: string
+}
+
+export const DateFormats = Object.freeze({
+  iso: {
+    locale: 'sv-SE',
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' },
+    suffix: ' (ISO 8601)'
+  },
+  digits2: {
+    options: { day: '2-digit', month: '2-digit', year: 'numeric' }
+  },
+  short: {
+    options: { day: '2-digit', month: 'short', year: 'numeric' }
+  }
+} as Record<string, DateTimeFormat>)
+
+export const TimeFormats = Object.freeze({
+  iso: {
+    locale: 'sv-SE',
+    options: { hour: '2-digit', minute: '2-digit', hour12: false },
+    suffix: ' (ISO 8601)'
+  },
+  hours12: {
+    options: { hour: '2-digit', minute: '2-digit', hour12: true }
+  },
+  hours24: {
+    options: { hour: '2-digit', minute: '2-digit', hour12: false }
+  }
+} as Record<string, DateTimeFormat>)

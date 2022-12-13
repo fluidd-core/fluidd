@@ -96,15 +96,22 @@
       @upload="handleUpload"
     />
 
-    <v-btn
-      :disabled="disabled"
-      fab
-      small
-      text
-      @click="$emit('refresh')"
-    >
-      <v-icon>$refresh</v-icon>
-    </v-btn>
+    <v-tooltip bottom>
+      <template #activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          :disabled="disabled"
+          fab
+          small
+          text
+          @click="$emit('refresh')"
+          v-on="on"
+        >
+          <v-icon>$refresh</v-icon>
+        </v-btn>
+      </template>
+      <span>{{ $t('app.general.btn.refresh') }}</span>
+    </v-tooltip>
 
     <div
       style="max-width: 160px;"
@@ -145,11 +152,9 @@ import StatesMixin from '@/mixins/state'
 import FileSystemMenu from './FileSystemMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
-import AppBtnCollapseGroup from '@/components/ui/AppBtnCollapseGroup.vue'
 
 @Component({
   components: {
-    AppBtnCollapseGroup,
     FileSystemMenu,
     FileSystemFilterMenu
   }

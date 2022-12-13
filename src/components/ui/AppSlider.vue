@@ -33,7 +33,7 @@
           single-line
           outlined
           hide-details
-          @change="handleChange($event)"
+          @change="handleChange"
           @focus="$event.target.select()"
         >
           <template #prepend>
@@ -86,7 +86,7 @@
       :disabled="disabled || loading || isLocked || overridden"
       dense
       hide-details
-      @change="handleChange($event)"
+      @change="handleChange"
     />
   </v-form>
 </template>
@@ -195,12 +195,12 @@ export default class AppSlider extends Mixins(StateMixin) {
     // Apply a min and max rule as per the slider.
     const rules = [
       ...this.rules,
-      (v: string | number) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-      (v: string | number) => +v >= this.min || this.$t('app.general.simple_form.error.min', { min: this.min })
+      this.$rules.numberValid,
+      this.$rules.numberGreaterThanOrEqual(this.min)
     ]
     if (!this.overridable) {
       rules.push(
-        (v: string | number) => +v <= this.max || this.$t('app.general.simple_form.error.max', { max: this.max })
+        this.$rules.numberLessThanOrEqual(this.max)
       )
     }
     return rules

@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { defaultState } from '.'
+import { defaultState } from './state'
 import { AnnouncementsState } from './types'
 
 export const mutations: MutationTree<AnnouncementsState> = {

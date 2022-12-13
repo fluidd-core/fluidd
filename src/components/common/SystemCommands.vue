@@ -50,8 +50,8 @@
         v-for="(device, index) in powerDevices"
         :key="index"
         :disabled="(device.status === 'error' || device.status === 'init' || (printerPrinting && device.locked_while_printing))"
-        :loading="hasWait(`${waits.onDevicePowerToggle}${device.device}`)"
-        @click="togglePowerDevice(device, `${waits.onDevicePowerToggle}${device.device}`)"
+        :loading="hasWait(`${$waits.onDevicePowerToggle}${device.device}`)"
+        @click="togglePowerDevice(device, `${$waits.onDevicePowerToggle}${device.device}`)"
       >
         <v-list-item-title>{{ getPowerButtonText(device) }}</v-list-item-title>
         <v-list-item-icon>
@@ -108,7 +108,7 @@
             <v-btn
               icon
               :disabled="service.active_state === 'inactive'"
-              :style="service.name === 'moonraker' ? 'visibility: hidden;' : ''"
+              :style="service.name === moonrakerServiceName ? 'visibility: hidden;' : ''"
               @click="checkDialog(serviceStop, service, 'stop')"
             >
               <v-icon color="error">

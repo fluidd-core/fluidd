@@ -12,7 +12,6 @@
   </app-btn>
   <app-btn-group
     v-else
-    :elevation="6"
   >
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"

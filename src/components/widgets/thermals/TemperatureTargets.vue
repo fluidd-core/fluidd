@@ -184,17 +184,19 @@
           <td class="temp-actual">
             <v-tooltip left>
               <template #activator="{ on, attrs }">
-                <span
+                <div
                   v-bind="attrs"
                   v-on="on"
-                >{{ item.temperature.toFixed(1) }}<small>°C</small>
+                >
+                  {{ item.temperature.toFixed(1) }}<small>°C</small>
                   <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
                   <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-                </span>
+                  <small v-if="item.current_z_adjust !== undefined"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
+                </div>
               </template>
-              <span v-if="item.measured_max_temp && item.measured_min_temp">
-                <span class="">{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br>
-                <span class="">{{ $t('app.general.label.low') }}: {{ item.measured_min_temp.toFixed(1) }}°C</span>
+              <span v-if="[item.measured_max_temp, item.measured_min_temp].every(x => x !== undefined)">
+                <span>{{ $t('app.general.label.high') }}: {{ item.measured_max_temp.toFixed(1) }}°C</span><br>
+                <span>{{ $t('app.general.label.low') }}: {{ item.measured_min_temp.toFixed(1) }}°C</span>
               </span>
             </v-tooltip>
           </td>
@@ -239,10 +241,6 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   get sensors () {
     return this.$store.getters['printer/getSensors']
-  }
-
-  get chartableSensors () {
-    return this.$store.getters['printer/getChartableSensors']
   }
 
   get chartSelectedLegends () {

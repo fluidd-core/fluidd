@@ -8,7 +8,6 @@
       <app-btn-collapse-group>
         <app-btn
           v-if="isManualProbeActive"
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -180,7 +179,6 @@
 
           <app-btn
             v-if="!printerPrinting && printerSupportsQgl"
-            :elevation="2"
             :loading="hasWait($waits.onQGL)"
             :disabled="printerPrinting || printerBusy"
             block
@@ -288,12 +286,10 @@ import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { KlipperMesh, ProcessedMesh } from '@/store/mesh/types'
-import ManualProbeDialog from '@/components/common/ManualProbeDialog.vue'
 
 @Component({
   components: {
-    SaveMeshDialog,
-    ManualProbeDialog
+    SaveMeshDialog
   }
 })
 export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {

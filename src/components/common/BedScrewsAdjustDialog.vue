@@ -1,9 +1,8 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="450"
     scrollable
-    @input="$emit('input', $event)"
   >
     <v-form @submit.prevent="sendAccept">
       <v-card>
@@ -87,7 +86,6 @@
           <app-btn
             :loading="hasWait($waits.onBedScrewsAdjust)"
             color="primary"
-            :elevation="2"
             type="submit"
           >
             {{ $t('app.general.btn.accept') }}
@@ -99,15 +97,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { startCase } from 'lodash-es'
 
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: boolean
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   get bedScrews () {
     return this.$store.getters['printer/getBedScrews']
@@ -142,13 +140,13 @@ export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMi
   @Watch('isBedScrewsAdjustActive')
   onBedScrewsAdjustActive (value: boolean) {
     if (!value) {
-      this.$emit('input', false)
+      this.open = false
     }
   }
 
   sendAbort () {
     this.sendGcode('ABORT', this.$waits.onBedScrewsAdjust)
-    this.$emit('input', false)
+    this.open = false
   }
 
   sendAdjusted () {

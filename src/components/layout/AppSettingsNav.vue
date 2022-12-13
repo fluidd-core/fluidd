@@ -3,7 +3,7 @@
     dense
     width="180"
     class="grow pt-0"
-    :color="($vuetify.theme.isDark) ? '#1E1E20' : '#FFFFFF'"
+    :color="($vuetify.theme.dark) ? '#1E1E20' : '#FFFFFF'"
   >
     <template
       v-for="item in items"

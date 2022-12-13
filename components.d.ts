@@ -2,7 +2,7 @@
 // We suggest you to commit this file into source control
 // Read more: https://github.com/vuejs/core/pull/3399
 export {}
-        
+
 declare module 'vue' {
   export interface GlobalComponents {
     AddInstanceDialog: typeof import('./src/components/common/AddInstanceDialog.vue')['default']
@@ -17,6 +17,7 @@ declare module 'vue' {
     AppCodeView: typeof import('./src/components/ui/AppCodeView.vue')['default']
     AppColorPicker: typeof import('./src/components/ui/AppColorPicker.vue')['default']
     AppColumnPicker: typeof import('./src/components/ui/AppColumnPicker.vue')['default']
+    AppFocusableContainer: typeof import('./src/components/ui/AppFocusableContainer.vue')['default']
     AppFooter: typeof import('./src/components/layout/AppFooter.vue')['default']
     AppIcon: typeof import('./src/components/ui/AppIcon.vue')['default']
     AppInlineHelp: typeof import('./src/components/ui/AppInlineHelp.vue')['default']
@@ -73,9 +74,11 @@ declare module 'vue' {
     VExpansionPanelContent: typeof import('vuetify/lib')['VExpansionPanelContent']
     VExpansionPanelHeader: typeof import('vuetify/lib')['VExpansionPanelHeader']
     VExpansionPanels: typeof import('vuetify/lib')['VExpansionPanels']
+    VFadeTransition: typeof import('vuetify/lib')['VFadeTransition']
     VFooter: typeof import('vuetify/lib')['VFooter']
     VForm: typeof import('vuetify/lib')['VForm']
     VIcon: typeof import('vuetify/lib')['VIcon']
+    VInput: typeof import('vuetify/lib')['VInput']
     VItemGroup: typeof import('vuetify/lib')['VItemGroup']
     VLayout: typeof import('vuetify/lib')['VLayout']
     VList: typeof import('vuetify/lib')['VList']

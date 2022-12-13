@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { defaultState as getDefaultState } from './'
+import { defaultState as getDefaultState } from './state'
 import { LayoutConfig, LayoutState, Layouts } from './types'
 
 export const mutations: MutationTree<LayoutState> = {
@@ -22,25 +22,21 @@ export const mutations: MutationTree<LayoutState> = {
       const defaultState = getDefaultState()
       const migratableLayouts = ['dashboard']
 
-      for (const layout of migratableLayouts) {
-        const defaultComponents = defaultState.layouts[layout]
-        const defaultComponentIds = Object.values(defaultComponents).flat().map(card => card.id)
-        const currentComponentIds = Object.values(payload.layouts[layout]).flat().map(card => card.id)
-
-        for (const [container, defaultContainerComponents] of Object.entries(defaultComponents)) {
-          const currentContainerComponents = payload.layouts[layout][container] || []
-
-          payload.layouts[layout][container] = [
-            ...currentContainerComponents.filter(component => defaultComponentIds.includes(component.id)),
-            ...defaultContainerComponents.filter(component => !currentComponentIds.includes(component.id))
-          ]
-        }
-      }
-
-      // add missing, non-migratable layouts
-      for (const layout of Object.keys(defaultState.layouts).filter(layout => !migratableLayouts.includes(layout))) {
+      for (const [layout, defaultComponents] of Object.entries(defaultState.layouts)) {
         if (!payload.layouts[layout]) {
-          payload.layouts[layout] = defaultState.layouts[layout]
+          payload.layouts[layout] = defaultComponents
+        } else if (migratableLayouts.includes(layout)) {
+          const defaultComponentIds = Object.values(defaultComponents).flat().map(card => card.id)
+          const currentComponentIds = Object.values(payload.layouts[layout]).flat().map(card => card.id)
+
+          for (const [container, defaultContainerComponents] of Object.entries(defaultComponents)) {
+            const currentContainerComponents = payload.layouts[layout][container] || []
+
+            payload.layouts[layout][container] = [
+              ...currentContainerComponents.filter(component => defaultComponentIds.includes(component.id)),
+              ...defaultContainerComponents.filter(component => !currentComponentIds.includes(component.id))
+            ]
+          }
         }
       }
 

@@ -1,45 +1,14 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.web.json",
-
-  "compilerOptions": {
-    // if `<script setup>` is used, then remove the next line
-    "preserveValueImports": false,
-
-    "importsNotUsedAsValues": "remove",
-
-    // if using Vue 3, then remove the next line
-    "useDefineForClassFields": false,
-
-    "experimentalDecorators": true,
-
-    "baseUrl": ".",
-
-    "types": [
-      "vite/client",
-      "vitest/globals",
-      "vuetify",
-      "vue-meta",
-      "vite-plugin-pwa/client"
-    ],
-
-    "paths": {
-      "@/*": [
-        "src/*"
-      ]
+  "files": [],
+  "references": [
+    {
+      "path": "./tsconfig.config.json"
+    },
+    {
+      "path": "./tsconfig.app.json"
+    },
+    {
+      "path": "./tsconfig.vitest.json"
     }
-  },
-
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue",
-    "src/**/*.yaml",
-    "src/**/*.yml",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "types.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
   ]
 }

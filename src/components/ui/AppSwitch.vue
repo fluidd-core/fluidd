@@ -12,7 +12,7 @@
     <v-switch
       class="mt-0"
       :input-value="value"
-      :disabled="disabled"
+      :disabled="disabled || loading"
       hide-details
       @change="emitChange"
     />
@@ -20,7 +20,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
 @Component({})
@@ -34,20 +34,8 @@ export default class AppSwitch extends Mixins(StateMixin) {
   @Prop({ type: Boolean, required: false, default: false })
   readonly disabled!: boolean
 
-  @Watch('value')
-  onValueChange (val: boolean) {
-    this.newValue = val
-  }
-
-  newValue = false
-
-  mounted () {
-    this.newValue = this.value
-  }
-
-  updateValue (e: boolean) {
-    this.newValue = e
-  }
+  @Prop({ type: Boolean, default: false })
+  readonly loading!: boolean
 
   emitChange (val: boolean) {
     this.$emit('input', val)

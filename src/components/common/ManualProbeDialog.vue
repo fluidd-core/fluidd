@@ -1,9 +1,8 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="450"
     scrollable
-    @input="$emit('input', $event)"
   >
     <v-form @submit.prevent="sendAccept">
       <v-card>
@@ -147,7 +146,6 @@
           <app-btn
             :loading="hasWait($waits.onManualProbe)"
             color="primary"
-            :elevation="2"
             type="submit"
           >
             {{ $t('app.general.btn.accept') }}
@@ -159,14 +157,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
+import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: boolean
+  @VModel({ type: Boolean, default: false })
+    open!: boolean
 
   get offsets () {
     return [
@@ -195,7 +193,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
   @Watch('isManualProbeActive')
   onIsManualProbeActive (value: boolean) {
     if (!value) {
-      this.$emit('input', false)
+      this.open = false
     }
   }
 
@@ -205,7 +203,7 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
 
   sendAbort () {
     this.sendGcode('ABORT', this.$waits.onManualProbe)
-    this.$emit('input', false)
+    this.open = false
   }
 
   sendAccept () {

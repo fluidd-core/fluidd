@@ -1,13 +1,12 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :loading="loading"
     hide-overlay
     fullscreen
     persistent
     transition="dialog-bottom-transition"
     content-class="config-editor-overlay"
-    @input="$emit('input', $event)"
   >
     <v-card
       d-flex
@@ -118,7 +117,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileEditor from './FileEditor.vue'
 import FileEditorTextOnly from './FileEditorTextOnly.vue'
@@ -132,8 +131,8 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
   }
 })
 export default class FileEditorDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string
@@ -222,7 +221,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
       }
     }
 
-    this.$emit('input', false)
+    this.open = false
   }
 
   handleBeforeUnload (e: Event) {
@@ -236,7 +235,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     if (this.editorReady) {
       if (this.configMap.serviceSupported && restart) {
         this.$emit('save', this.updatedContent, this.configMap.service)
-        this.$emit('input', false)
+        this.open = false
       } else {
         this.$emit('save', this.updatedContent)
       }

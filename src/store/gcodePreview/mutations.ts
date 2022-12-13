@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { defaultState } from './'
+import { defaultState } from './state'
 import { GcodePreviewState } from './types'
 import Vue from 'vue'
 import { AppFile } from '@/store/files/types'

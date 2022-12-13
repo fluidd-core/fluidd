@@ -12,7 +12,9 @@
         hide-details="auto"
         :disabled="!klippyReady"
         :loading="loading"
-        :rules="[rules.min, rules.max]"
+        :rules="[
+          $rules.numberGreaterThanOrEqualOrZero(min),
+          $rules.numberLessThanOrEqualOrZero(max)]"
         suffix="°C"
         class="v-input--width-x-small"
         @keyup.enter="emitChange"
@@ -47,11 +49,6 @@ export default class InputTemperature extends Mixins(StateMixin) {
 
   valid = true
   inputValue = 0
-
-  rules = {
-    min: (v: number | string) => (v >= this.min || v === '' || v === '0' || v === 0 || this.min === null) || this.$t('app.general.simple_form.error.min_or_0', { min: this.min }),
-    max: (v: number | string) => (v <= this.max || v === '' || v === '0' || v === 0 || this.max === null) || this.$t('app.general.simple_form.error.max', { max: this.max })
-  }
 
   emitChange () {
     if (this.valid) {

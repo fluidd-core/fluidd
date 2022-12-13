@@ -8,9 +8,14 @@
       <v-text-field
         ref="parkPosXElement"
         :value="parkPosX"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(printerMinX), rules.numMax(printerMaxX)]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThanOrEqual(printerMinX),
+          $rules.numberLessThanOrEqual(printerMaxX)
+        ]"
         :disabled="getCustomParkPosBlocked('x')"
-        :hide-details="parkPosXElement ? parkPosXElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -27,9 +32,14 @@
       <v-text-field
         ref="parkPosYElement"
         :value="parkPosY"
-        :rules="[rules.numRequired, rules.validNum, rules.numMin(printerMinY), rules.numMax(printerMaxY)]"
+        :rules="[
+          $rules.required,
+          $rules.numberValid,
+          $rules.numberGreaterThanOrEqual(printerMinY),
+          $rules.numberLessThanOrEqual(printerMaxY)
+        ]"
         :disabled="getCustomParkPosBlocked('y')"
-        :hide-details="parkPosYElement ? parkPosYElement.valid : true"
+        hide-details="auto"
         filled
         dense
         single-line
@@ -43,18 +53,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import CollapsableCard from '@/components/common/CollapsableCard.vue'
-import AppSetting from '@/components/ui/AppSetting.vue'
 import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
-import ParkExtrudeRetractSettings from '@/components/settings/timelapse/subsettings/ParkExtrudeRetractSettings.vue'
+import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import { VInput } from '@/types'
 
 @Component({
   components: {
-    ParkExtrudeRetractSettings,
-    AppSetting,
-    CollapsableCard
+    ParkExtrudeRetractSettings
   }
 })
 export default class LayerMacroSettings extends Mixins(StateMixin) {
@@ -63,13 +69,6 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
 
   @Ref('parkPosYElement')
   readonly parkPosYElement?: VInput
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (min: number) => (v: number) => v >= min || this.$t('app.general.simple_form.error.min', { min }),
-    numMax: (max: number) => (v: number) => v <= max || this.$t('app.general.simple_form.error.max', { max })
-  }
 
   getCustomParkPosBlocked (axis: 'x' | 'y') {
     return this.$store.getters['timelapse/isBlockedSetting'](`park_custom_pos_${axis}`)

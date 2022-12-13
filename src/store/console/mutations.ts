@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import { MutationTree } from 'vuex'
-import { defaultState } from './'
+import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { ConsoleEntry, ConsoleFilter, ConsoleFilterType, ConsoleState } from './types'
 

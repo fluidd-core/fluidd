@@ -32,7 +32,6 @@
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           v-if="isManualProbeActive"
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -42,7 +41,6 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsForceMove"
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -52,7 +50,6 @@
           {{ $t('app.tool.tooltip.force_move') }}
         </app-btn>
         <app-btn
-          :elevation="2"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -62,8 +59,7 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrews"
-          :elevation="2"
-          :loading="hasWait(waits.onBedScrewsAdjust)"
+          :loading="hasWait($waits.onBedScrewsAdjust)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
@@ -73,34 +69,31 @@
         </app-btn>
         <app-btn
           v-if="printerSupportsBedScrewsCalculate"
-          :elevation="2"
-          :loading="hasWait(waits.onBedScrewsCalculate)"
+          :loading="hasWait($waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('SCREWS_TILT_CALCULATE', waits.onBedScrewsCalculate)"
+          @click="sendGcode('SCREWS_TILT_CALCULATE', $waits.onBedScrewsCalculate)"
         >
           {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsZtilt"
-          :elevation="2"
-          :loading="hasWait(waits.onZTilt)"
+          :loading="hasWait($waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('Z_TILT_ADJUST', waits.onZTilt)"
+          @click="sendGcode('Z_TILT_ADJUST', $waits.onZTilt)"
         >
           {{ $t('app.tool.tooltip.z_tilt_adjust') }}
         </app-btn>
         <app-btn
           v-if="printerSupportsQgl"
-          :elevation="2"
-          :loading="hasWait(waits.onQGL)"
+          :loading="hasWait($waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ml-1"
-          @click="sendGcode('QUAD_GANTRY_LEVEL', waits.onQGL)"
+          @click="sendGcode('QUAD_GANTRY_LEVEL', $waits.onQGL)"
         >
           {{ $t('app.tool.tooltip.quad_gantry_level') }}
         </app-btn>
@@ -125,15 +118,11 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import Toolhead from '@/components/widgets/toolhead/Toolhead.vue'
-import ManualProbeDialog from '@/components/common/ManualProbeDialog.vue'
-import BedScrewsAdjustDialog from '@/components/common/BedScrewsAdjustDialog.vue'
+import Toolhead from './Toolhead.vue'
 
 @Component({
   components: {
-    Toolhead,
-    ManualProbeDialog,
-    BedScrewsAdjustDialog
+    Toolhead
   }
 })
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
@@ -206,7 +195,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (this.isBedScrewsAdjustActive) {
       this.bedScrewsAdjustDialogOpen = true
     } else {
-      this.sendGcode('BED_SCREWS_ADJUST', this.waits.onBedScrewsAdjust)
+      this.sendGcode('BED_SCREWS_ADJUST', this.$waits.onBedScrewsAdjust)
     }
   }
 

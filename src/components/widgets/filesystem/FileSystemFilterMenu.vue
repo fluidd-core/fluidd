@@ -6,29 +6,34 @@
     transition="slide-y-transition"
     :close-on-content-click="false"
   >
-    <template #activator="{ on, attrs }">
-      <v-badge
-        bordered
-        color="warning"
-        dot
-        overlap
-        :value="selectedFilterTypes.length > 0"
-        :offset-y="15"
-        :offset-x="15"
-      >
-        <v-btn
-          :disabled="disabled"
-          fab
-          small
-          text
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon>
-            $filter
-          </v-icon>
-        </v-btn>
-      </v-badge>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-badge
+            bordered
+            color="warning"
+            dot
+            overlap
+            :value="selectedFilterTypes.length > 0"
+            :offset-y="15"
+            :offset-x="15"
+          >
+            <v-btn
+              :disabled="disabled"
+              fab
+              small
+              text
+              v-bind="attrs"
+              v-on="{... menu, ...tooltip}"
+            >
+              <v-icon>
+                $filter
+              </v-icon>
+            </v-btn>
+          </v-badge>
+        </template>
+        <span>{{ $t('app.general.btn.filter') }}</span>
+      </v-tooltip>
     </template>
 
     <v-list flat>

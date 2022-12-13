@@ -19,7 +19,6 @@
           single-line
           hide-details="auto"
           :items="cameras"
-          :value="camera"
           :disabled="cameraBlocked"
         />
       </app-setting>
@@ -36,7 +35,6 @@
           single-line
           hide-details="auto"
           :items="supportedModes"
-          :value="mode"
           :disabled="modeBlocked"
         />
       </app-setting>
@@ -53,9 +51,13 @@
         <v-text-field
           ref="delayCompElement"
           :value="delayComp"
-          :rules="[rules.numRequired, rules.validNum, rules.numMin]"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0)
+          ]"
           :disabled="delayCompBlocked"
-          :hide-details="delayCompElement ? delayCompElement.valid : true"
+          hide-details="auto"
           filled
           dense
           single-line
@@ -127,7 +129,7 @@ import { SocketActions } from '@/api/socketActions'
 import HyperlapseSettings from '@/components/settings/timelapse/subsettings/modes/HyperlapseSettings.vue'
 import { CameraConfig } from '@/store/cameras/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
-import { defaultWritableSettings } from '@/store/timelapse'
+import { defaultWritableSettings } from '@/store/timelapse/state'
 import TimelapseRenderSettingsDialog
   from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
 import { VInput } from '@/types'
@@ -144,12 +146,6 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   readonly delayCompElement!: VInput
 
   renderSettingsDialogOpen = false
-
-  rules = {
-    numRequired: (v: number | string) => v !== '' || this.$t('app.general.simple_form.error.required'),
-    validNum: (v: string) => !isNaN(+v) || this.$t('app.general.simple_form.error.invalid_number'),
-    numMin: (v: number) => v >= 0 || this.$t('app.general.simple_form.error.min', { min: 0 })
-  }
 
   get supportedModes (): {text: string, value: TimelapseMode}[] {
     return [{
@@ -225,7 +221,7 @@ export default class TimelapseSettings extends Mixins(StateMixin) {
   }
 
   handleReset () {
-    const nonBlockedEntries = Object.entries(defaultWritableSettings)
+    const nonBlockedEntries = Object.entries(defaultWritableSettings())
       .filter(([key]) => !this.$store.getters['timelapse/isBlockedSetting'](key))
     SocketActions.machineTimelapseSetSettings(Object.fromEntries(nonBlockedEntries))
   }

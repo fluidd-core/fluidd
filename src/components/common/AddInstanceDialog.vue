@@ -1,9 +1,8 @@
 <template>
   <v-dialog
-    :value="value"
+    v-model="open"
     :max-width="320"
     persistent
-    @input="$emit('input', $event)"
   >
     <v-form
       ref="form"
@@ -29,7 +28,10 @@
             persistent-hint
             :hint="$t('app.endpoint.hint.add_printer')"
             :loading="verifying"
-            :rules="[rules.required, rules.url]"
+            :rules="[
+              $rules.required,
+              customRules.url
+            ]"
           >
             <template #append-outer>
               <v-icon
@@ -76,7 +78,7 @@
             color="warning"
             text
             type="button"
-            @click="$emit('input', false)"
+            @click="open=false"
           >
             {{ $t('app.general.btn.cancel') }}
           </app-btn>
@@ -94,8 +96,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
-import { Globals, Waits } from '@/globals'
+import { Component, Mixins, Ref, VModel, Watch } from 'vue-property-decorator'
+import { Globals } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
@@ -105,13 +107,11 @@ import { httpClientActions } from '@/api/httpClientActions'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Ref('form')
   readonly form!: VForm
-
-  waits = Waits
 
   valid = true
   verifying = false
@@ -119,9 +119,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   error: any = null
   note: any = null
 
-  rules = {
-    required: (v: string) => !!v || this.$t('app.general.simple_form.error.required'),
-    url: (v: string) => (this.validUrl(v)) || this.$t('app.general.simple_form.error.invalid_url')
+  get customRules () {
+    return {
+      url: (v: string) => (this.validUrl(v)) || this.$t('app.general.simple_form.error.invalid_url')
+    }
   }
 
   /**

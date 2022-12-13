@@ -18,6 +18,7 @@
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
+            :loading="hasWait($waits.onSetVelocity)"
             suffix="mm/s"
             @change="setVelocity($event)"
           />
@@ -38,6 +39,7 @@
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
+            :loading="hasWait($waits.onSetSCV)"
             suffix="mm/s"
             @change="setSCV($event)"
           />
@@ -60,6 +62,7 @@
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
+            :loading="hasWait($waits.onSetAcceleration)"
             suffix="mm/s²"
             @change="setAcceleration($event)"
           />
@@ -79,6 +82,7 @@
             :disabled="!klippyReady"
             :overridable="true"
             :locked="!klippyReady || isMobile"
+            :loading="hasWait($waits.onSetDeceleration)"
             suffix="mm/s²"
             @change="setDeceleration($event)"
           />
@@ -91,12 +95,9 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Waits } from '@/globals'
 
 @Component({})
 export default class PrinterLimits extends Mixins(StateMixin) {
-  waits = Waits
-
   get velocity () {
     const max = this.$store.getters['printer/getPrinterSettings']('printer.max_velocity')
     return {
@@ -134,19 +135,19 @@ export default class PrinterLimits extends Mixins(StateMixin) {
   }
 
   setVelocity (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT VELOCITY=${val}`, Waits.onSetVelocity)
+    this.sendGcode(`SET_VELOCITY_LIMIT VELOCITY=${val}`, this.$waits.onSetVelocity)
   }
 
   setAcceleration (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL=${val}`, Waits.onSetAcceleration)
+    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL=${val}`, this.$waits.onSetAcceleration)
   }
 
   setDeceleration (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL_TO_DECEL=${val}`, Waits.onSetDeceleration)
+    this.sendGcode(`SET_VELOCITY_LIMIT ACCEL_TO_DECEL=${val}`, this.$waits.onSetDeceleration)
   }
 
   setSCV (val: number) {
-    this.sendGcode(`SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=${val}`, Waits.onSetSCV)
+    this.sendGcode(`SET_VELOCITY_LIMIT SQUARE_CORNER_VELOCITY=${val}`, this.$waits.onSetSCV)
   }
 }
 </script>

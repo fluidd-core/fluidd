@@ -97,14 +97,11 @@ import { TemperaturePreset } from '@/store/config/types'
   }
 })
 export default class TemperatureCard extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
-
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
   @Ref('thermalchart')
-  readonly thermalChart!: ThermalChart
+  readonly thermalChartElement!: ThermalChart
 
   get chartReady () {
     return (
@@ -119,9 +116,9 @@ export default class TemperatureCard extends Mixins(StateMixin) {
     // If this has a target, toggle that too.
     if (this.chartVisible) {
       if ('target' in item) {
-        this.thermalChart.legendToggleSelect(item.name + 'Target')
+        this.thermalChartElement.legendToggleSelect(item.name + 'Target')
       }
-      this.thermalChart.legendToggleSelect(item.name)
+      this.thermalChartElement.legendToggleSelect(item.name)
     }
   }
 
@@ -130,7 +127,7 @@ export default class TemperatureCard extends Mixins(StateMixin) {
       const name = ('speed' in item)
         ? item.name + 'Speed'
         : item.name + 'Power'
-      this.thermalChart.legendToggleSelect(name)
+      this.thermalChartElement.legendToggleSelect(name)
     }
   }
 
@@ -180,10 +177,6 @@ export default class TemperatureCard extends Mixins(StateMixin) {
       value,
       server: true
     })
-  }
-
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
   }
 
   get isMobile () {

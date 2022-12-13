@@ -4,7 +4,7 @@
   >
     <console-command
       v-if="!readonly && flipLayout"
-      v-model="consoleCommand"
+      v-model="currentCommand"
       :disabled="!klippyReady"
       @send="sendCommand"
     />
@@ -43,7 +43,7 @@
     </v-card>
     <console-command
       v-if="!readonly && !flipLayout"
-      v-model="consoleCommand"
+      v-model="currentCommand"
       :disabled="!klippyReady"
       @send="sendCommand"
     />
@@ -57,6 +57,7 @@ import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
 import { DinamicScroller } from 'vue-virtual-scroller'
+import { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {
@@ -66,7 +67,7 @@ import { DinamicScroller } from 'vue-virtual-scroller'
 })
 export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Array, default: [] })
-  readonly items!: []
+  readonly items!: ConsoleEntry[]
 
   @Prop({ type: String, default: 'id' })
   readonly keyField!: string
@@ -86,11 +87,11 @@ export default class Console extends Mixins(StateMixin) {
     return this.$store.getters['console/getAllGcodeCommands']
   }
 
-  get consoleCommand () {
+  get currentCommand () {
     return this.$store.state.console.consoleCommand
   }
 
-  set consoleCommand (val: string) {
+  set currentCommand (val: string) {
     this.$store.commit('console/setConsoleCommand', val)
   }
 
@@ -176,12 +177,12 @@ export default class Console extends Mixins(StateMixin) {
         SocketActions.printerEmergencyStop()
       }
       this.sendGcode(command)
-      this.consoleCommand = ''
+      this.currentCommand = ''
     }
   }
 
   handleEntryClick (command: string) {
-    this.consoleCommand = command
+    this.currentCommand = command
   }
 }
 </script>

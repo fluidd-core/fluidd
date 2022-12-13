@@ -40,12 +40,9 @@
 
     <v-tabs-items
       v-model="tab"
-      style="background-color: transparent;"
       touchless
     >
-      <v-tab-item
-        key="status"
-      >
+      <v-tab-item key="status">
         <status-tab />
       </v-tab-item>
 

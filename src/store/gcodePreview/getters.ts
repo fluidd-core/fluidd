@@ -11,7 +11,7 @@ import {
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
-import { state as configState } from '@/store/config'
+import { state as configState } from '@/store/config/state'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**

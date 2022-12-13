@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
-import { defaultState } from './'
+import { defaultState } from './state'
 import { ServerState, ServiceState } from './types'
 
 export const mutations: MutationTree<ServerState> = {
@@ -9,6 +9,15 @@ export const mutations: MutationTree<ServerState> = {
    */
   setReset (state) {
     Object.assign(state, defaultState())
+  },
+
+  setResetKlippy (state) {
+    const { klippy_retries, info } = defaultState()
+
+    Object.assign(state, {
+      klippy_retries,
+      info
+    })
   },
 
   setServerInfo (state, payload) {
