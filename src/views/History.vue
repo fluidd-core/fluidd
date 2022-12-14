@@ -9,13 +9,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import PrinterStatsCard from '@/components/widgets/stats/PrinterStatsCard.vue'
 import PrinterHistoryCard from '@/components/widgets/history/PrintHistoryCard.vue'
 
 @Component({
   components: {
-    FileSystem,
     PrinterStatsCard,
     PrinterHistoryCard
   }
