@@ -2,6 +2,7 @@
   <div>
     <job-queue-toolbar
       v-if="selected.length === 0"
+      :headers="headers"
       @remove-all="handleRemoveAll"
       @refresh="handleRefresh"
     />
@@ -12,6 +13,7 @@
     />
 
     <job-queue-browser
+      :headers="visibleHeaders"
       :dense="dense"
       :bulk-actions="bulkActions"
       :selected.sync="selected"
@@ -37,6 +39,7 @@ import JobQueueToolbar from './JobQueueToolbar.vue'
 import JobQueueBulkActions from './JobQueueBulkActions.vue'
 import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
+import { AppTableHeader } from '@/types'
 
 @Component({
   components: {
@@ -61,6 +64,21 @@ export default class JobQueue extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly bulkActions!: boolean
+
+  get headers (): AppTableHeader[] {
+    const headers = [
+      { text: '', value: 'handle', sortable: false, width: '24px' },
+      { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
+      { text: this.$tc('app.general.table.header.time_added'), value: 'time_added', configurable: true, sortable: false },
+      { text: this.$tc('app.general.table.header.time_in_queue'), value: 'time_in_queue', configurable: true, sortable: false }
+    ]
+    const key = 'job_queue'
+    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
+  }
+
+  get visibleHeaders (): AppTableHeader[] {
+    return this.headers.filter(header => header.visible || header.visible === undefined)
+  }
 
   handleRowClick (item: QueuedJob, e: MouseEvent) {
     if (!this.contextMenuState.open) {

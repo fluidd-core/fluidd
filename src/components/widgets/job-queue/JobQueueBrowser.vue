@@ -1,8 +1,17 @@
 <template>
   <div class="file-system">
     <v-data-table
+      v-sortable-data-table="{
+        options:{
+          animation: '200',
+          handle: '.handle',
+          group: 'jobQueue',
+          ghostClass: 'ghost'
+        },
+        handler: onSorted
+      }"
       item-key="job_id"
-      :headers="visibleHeaders"
+      :headers="headers"
       :items="jobs"
       :dense="dense"
       :disable-pagination="true"
@@ -10,67 +19,31 @@
       :show-select="bulkActions"
       mobile-breakpoint="0"
       hide-default-footer
+      @sorted="jobs = $event"
       @input="$emit('update:selected', $event)"
     >
-      <template #body="props">
-        <tbody v-if="props.items.length === 0">
-          <tr class="v-data-table__empty-wrapper">
-            <td :colspan="bulkActions ? 5 : 4">
-              <span>{{ $t('app.file_system.msg.not_found') }}</span>
-            </td>
-          </tr>
-        </tbody>
-        <draggable
-          v-else
-          v-model="jobs"
-          tag="tbody"
-          animation="200"
-          handle=".handle"
-          group="jobQueue"
-          ghost-class="ghost"
+      <template #[`item.handle`]>
+        <v-icon
+          class="handle"
+          left
         >
-          <tr
-            v-for="item in props.items"
-            :key="item.job_id"
-            class="row-select"
-            @click.prevent="$emit('row-click', item, $event)"
-            @contextmenu.prevent="$emit('row-click', item, $event)"
-          >
-            <td v-if="bulkActions">
-              <v-simple-checkbox
-                v-if="item.name !== '..'"
-                v-ripple
-                :value="props.isSelected(item)"
-                color=""
-                class="mt-1"
-                @click.stop="props.select(item, !props.isSelected(item))"
-              />
-            </td>
-            <td>
-              <v-icon
-                class="handle"
-                left
-              >
-                $drag
-              </v-icon>
-            </td>
-            <td>
-              <span>
-                {{ item.filename }}
-              </span>
-            </td>
-            <td>
-              <span class="text-no-wrap">
-                {{ $filters.formatAbsoluteDateTime(item.time_added * 1000) }}
-              </span>
-            </td>
-            <td>
-              <span class="text-no-wrap">
-                {{ $filters.formatCounterTime(item.time_in_queue) }}
-              </span>
-            </td>
-          </tr>
-        </draggable>
+          $drag
+        </v-icon>
+      </template>
+      <template #[`item.filename`]="{ item }">
+        <span>
+          {{ item.filename }}
+        </span>
+      </template>
+      <template #[`item.time_added`]="{ item }">
+        <span class="text-no-wrap">
+          {{ $filters.formatAbsoluteDateTime(item.time_added * 1000) }}
+        </span>
+      </template>
+      <template #[`item.time_in_queue`]="{ item }">
+        <span class="text-no-wrap">
+          {{ $filters.formatCounterTime(item.time_in_queue) }}
+        </span>
       </template>
     </v-data-table>
   </div>
@@ -96,20 +69,8 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   readonly bulkActions!: boolean
 
-  get headers (): AppTableHeader[] {
-    const headers = [
-      { text: '', value: 'drag', sortable: false, width: '24px' },
-      { text: this.$tc('app.general.table.header.name'), value: 'filename', sortable: false },
-      { text: this.$tc('app.general.table.header.time_added'), value: 'time_added', configurable: true, sortable: false },
-      { text: this.$tc('app.general.table.header.time_in_queue'), value: 'time_in_queue', configurable: true, sortable: false }
-    ]
-    const key = 'queue'
-    return this.$store.getters['config/getMergedTableHeaders'](headers, key)
-  }
-
-  get visibleHeaders (): AppTableHeader[] {
-    return this.headers.filter(header => header.visible || header.visible === undefined)
-  }
+  @Prop({ type: Array, required: true })
+  readonly headers!: AppTableHeader[]
 
   get jobs () {
     return this.$store.state.jobQueue.queued_jobs as QueuedJob[]
@@ -121,6 +82,10 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
     SocketActions.serverJobQueueDeleteJobs(['all'])
     SocketActions.serverJobQueuePostJob(filenames)
   }
+
+  onSorted (jobs: QueuedJob[]) {
+    this.jobs = jobs
+  }
 }
 </script>
 
@@ -130,5 +95,9 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
   // Lighten up dark mode checkboxes.
   .theme--dark :deep(.v-simple-checkbox .v-icon) {
     color: rgba(map-deep-get($material-dark, 'inputs', 'box'), 0.25);
+  }
+
+  .handle {
+    cursor: pointer;
   }
 </style>

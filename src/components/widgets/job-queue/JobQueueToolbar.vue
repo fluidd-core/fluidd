@@ -2,6 +2,12 @@
   <v-toolbar dense>
     <v-spacer />
 
+    <app-column-picker
+      v-if="headers"
+      key-name="job_queue"
+      :headers="headers"
+    />
+
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
         <v-btn
@@ -37,9 +43,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
+import { AppTableHeader } from '@/types'
 
 @Component({})
 export default class JobQueueToolbar extends Vue {
+  @Prop({ type: Array, required: false })
+  readonly headers!: AppTableHeader[]
 }
 </script>

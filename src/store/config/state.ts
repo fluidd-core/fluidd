@@ -102,6 +102,10 @@ export const defaultState = (): ConfigState => {
         history: [
           { value: 'print_duration', visible: false },
           { value: 'filament_used', visible: false }
+        ],
+        job_queue: [
+          { value: 'time_added', visible: true },
+          { value: 'time_in_queue', visible: false }
         ]
       },
       gcodePreview: {
