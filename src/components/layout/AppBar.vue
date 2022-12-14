@@ -69,8 +69,11 @@
         </v-tooltip>
       </div>
 
-      <div v-if="authenticated && socketConnected && showUploadAndPrint && !(printerPrinting || printerPaused)">
-        <app-upload-and-print-btn @upload="handleUploadAndPrint" />
+      <div v-if="authenticated && socketConnected && showUploadAndPrint">
+        <app-upload-and-print-btn
+          :disabled="printerPrinting || printerPaused"
+          @upload="handleUploadAndPrint"
+        />
       </div>
 
       <div v-if="authenticated && socketConnected && topNavPowerToggle">
