@@ -9,7 +9,7 @@
           group: 'jobQueue',
           ghostClass: 'ghost'
         },
-        handler: onSorted
+        handler: handleSorted
       }"
       item-key="job_id"
       :headers="headers"
@@ -23,6 +23,8 @@
       mobile-breakpoint="0"
       hide-default-footer
       @sorted="jobs = $event"
+      @click:row="handleRowClick"
+      @contextmenu:row.prevent="handleContextMenu"
     >
       <template #[`item.handle`]>
         <v-icon
@@ -58,6 +60,7 @@ import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'
 import draggable from 'vuedraggable'
 import StateMixin from '@/mixins/state'
+import { DataTableItemProps } from 'vuetify'
 
 @Component({
   components: {
@@ -90,7 +93,15 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
     SocketActions.serverJobQueuePostJob(filenames)
   }
 
-  onSorted (jobs: QueuedJob[]) {
+  handleRowClick (_data: any, props: DataTableItemProps, event: MouseEvent) {
+    this.$emit('row-click', props.item, event)
+  }
+
+  handleContextMenu (event: MouseEvent, props: DataTableItemProps) {
+    this.$emit('row-click', props.item, event)
+  }
+
+  handleSorted (jobs: QueuedJob[]) {
     this.jobs = jobs
   }
 }
