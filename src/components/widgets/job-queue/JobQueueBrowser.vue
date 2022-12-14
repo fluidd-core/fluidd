@@ -1,6 +1,7 @@
 <template>
   <div class="file-system">
     <v-data-table
+      v-model="selected"
       v-sortable-data-table="{
         options:{
           animation: '200',
@@ -17,10 +18,11 @@
       :disable-pagination="true"
       :loading="hasWait($waits.onJobQueue)"
       :show-select="bulkActions"
+      :no-data-text="$t('app.file_system.msg.not_found')"
+      :no-results-text="$t('app.file_system.msg.not_found')"
       mobile-breakpoint="0"
       hide-default-footer
       @sorted="jobs = $event"
-      @input="$emit('update:selected', $event)"
     >
       <template #[`item.handle`]>
         <v-icon
@@ -50,7 +52,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import { QueuedJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
 import { AppTableHeader } from '@/types'
@@ -63,6 +65,9 @@ import StateMixin from '@/mixins/state'
   }
 })
 export default class JobQueueBrowser extends Mixins(StateMixin) {
+  @VModel({ type: Array, default: [] })
+    selected!: any[]
+
   @Prop({ type: Boolean, default: false })
   readonly dense!: boolean
 
@@ -73,6 +78,8 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
   readonly headers!: AppTableHeader[]
 
   get jobs () {
+    this.selected = []
+
     return this.$store.state.jobQueue.queued_jobs as QueuedJob[]
   }
 

@@ -13,10 +13,10 @@
     />
 
     <job-queue-browser
+      v-model="selected"
       :headers="visibleHeaders"
       :dense="dense"
       :bulk-actions="bulkActions"
-      :selected.sync="selected"
       @row-click="handleRowClick"
     />
 
