@@ -61,6 +61,7 @@ import { AppTableHeader } from '@/types'
 import draggable from 'vuedraggable'
 import StateMixin from '@/mixins/state'
 import { DataTableItemProps } from 'vuetify'
+import { SortableEvent } from 'sortablejs'
 
 @Component({
   components: {
@@ -101,7 +102,16 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
     this.$emit('row-click', props.item, event)
   }
 
-  handleSorted (jobs: QueuedJob[]) {
+  handleSorted (event: SortableEvent) {
+    if (event.oldIndex === undefined || event.newIndex === undefined) {
+      return
+    }
+
+    const jobs = this.jobs
+
+    const movedItem = jobs.splice(event.oldIndex, 1)[0]
+    jobs.splice(event.newIndex, 0, movedItem)
+
     this.jobs = jobs
   }
 }
