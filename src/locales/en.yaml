@@ -290,6 +290,7 @@ app:
       uncategorized: Uncategorized
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
+      upload_and_print: Upload and Print
       used: used
       username: Username
       variance: Variance
@@ -531,6 +532,7 @@ app:
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       show_save_config_and_restart: Save Config and Restart button in top navigation
+      show_upload_and_print: Show Upload and Print button in top navigation
       solid: Solid
       starts_with: Starts with
       theme_preset: Community preset

@@ -66,6 +66,7 @@ export interface GeneralConfig {
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
   showSaveConfigAndRestart: boolean;
+  showUploadAndPrint: boolean;
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;

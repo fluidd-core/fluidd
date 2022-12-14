@@ -80,6 +80,19 @@
       <v-divider />
 
       <app-setting
+        :title="$t('app.setting.label.show_upload_and_print')"
+      >
+        <v-switch
+          v-model="showUploadAndPrint"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
         :title="$t('app.setting.label.power_toggle_in_top_nav')"
       >
         <v-select
@@ -298,6 +311,18 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   set showSaveConfigAndRestart (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.showSaveConfigAndRestart',
+      value,
+      server: true
+    })
+  }
+
+  get showUploadAndPrint () {
+    return this.$store.state.config.uiSettings.general.showUploadAndPrint
+  }
+
+  set showUploadAndPrint (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showUploadAndPrint',
       value,
       server: true
     })

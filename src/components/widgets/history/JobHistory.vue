@@ -5,9 +5,15 @@
     >
       <v-spacer />
 
+      <app-column-picker
+        v-if="headers"
+        key-name="history"
+        :headers="headers"
+      />
+
       <div
         style="max-width: 160px;"
-        class="mr-1"
+        class="ml-1"
       >
         <v-text-field
           v-model="search"
@@ -19,12 +25,6 @@
           @keyup="$emit('update:search', search);"
         />
       </div>
-
-      <app-column-picker
-        v-if="headers"
-        key-name="history"
-        :headers="headers"
-      />
     </v-toolbar>
 
     <v-data-table
