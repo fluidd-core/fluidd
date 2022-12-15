@@ -46,49 +46,51 @@
           </v-icon>
         </app-btn>
       </template>
-      <v-card>
-        <v-card-text class="pb-3 px-3">
-          <v-layout
-            wrap
-            style="max-width: 150px;"
-          >
-            <v-text-field
-              v-for="(param, i) in paramList"
-              :key="param"
-              v-model="params[param].value"
-              :label="param"
-              outlined
-              dense
-              hide-details="auto"
-              class=""
-              :class="{ 'mb-3': (i < paramList.length - 1) }"
+      <v-form @submit.prevent="$emit('click', runCommand)">
+        <v-card>
+          <v-card-text class="pb-3 px-3">
+            <v-layout
+              wrap
+              style="max-width: 150px;"
             >
-              <template #append>
-                <app-btn
-                  style="margin-top: -4px; margin-right: -6px;"
-                  color=""
-                  icon
-                  small
-                  @click="params[param].value = params[param].reset"
-                >
-                  <v-icon small>
-                    $reset
-                  </v-icon>
-                </app-btn>
-              </template>
-            </v-text-field>
-          </v-layout>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions class="px-3 py-3">
-          <app-btn
-            block
-            @click="$emit('click', runCommand)"
-          >
-            {{ $t('app.general.btn.send') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
+              <v-text-field
+                v-for="(param, i) in paramList"
+                :key="param"
+                v-model="params[param].value"
+                :label="param"
+                outlined
+                dense
+                hide-details="auto"
+                class=""
+                :class="{ 'mb-3': (i < paramList.length - 1) }"
+              >
+                <template #append>
+                  <app-btn
+                    style="margin-top: -4px; margin-right: -6px;"
+                    color=""
+                    icon
+                    small
+                    @click="params[param].value = params[param].reset"
+                  >
+                    <v-icon small>
+                      $reset
+                    </v-icon>
+                  </app-btn>
+                </template>
+              </v-text-field>
+            </v-layout>
+          </v-card-text>
+          <v-divider />
+          <v-card-actions class="px-3 py-3">
+            <app-btn
+              block
+              @click="$emit('click', runCommand)"
+            >
+              {{ $t('app.general.btn.send') }}
+            </app-btn>
+          </v-card-actions>
+        </v-card>
+      </v-form>
     </v-menu>
   </app-btn-group>
 </template>
