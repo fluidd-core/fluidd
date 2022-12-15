@@ -84,7 +84,7 @@
           <v-card-actions class="px-3 py-3">
             <app-btn
               block
-              @click="$emit('click', runCommand)"
+              type="submit"
             >
               {{ $t('app.general.btn.send') }}
             </app-btn>
