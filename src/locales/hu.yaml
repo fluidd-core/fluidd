@@ -621,23 +621,23 @@ app:
       force_move: FORCE_MOVE
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">The active extruder configuration is set for</span>
-        %{filamentDiameter} mm diameter filament
-        <span class="secondary--text">and</span>
-        %{nozzleDiameter} mm nozzle
+        <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>
+        %{filamentDiameter} mm átmérőjű filament
+        <span class="secondary--text">és</span>
+        %{nozzleDiameter} mm fúvóka
       stats_volumetric_flow: >-
-        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">,
-        the extruder should be able to provide an</span>
-        estimated volumetric flow of %{estimatedVolumetricFlow} mm³/s
+        Extrudálás: %{extrudeSpeed} mm/s<span class="secondary--text">,
+        az extrudernek biztosítania kell a</span>t
+        becsült térfogatáram %{estimatedVolumetricFlow} mm³/s
       stats_extruded_length: >-
-        Extruding %{extrudeLength} mm of filament at
-        %{extrudeFactor} % flow<span class="secondary--text">,
-        will provide an</span>
-        estimated output length of %{estimatedExtrudedLength} mm
+        A filament extrudálása %{extrudeLength} mm-nél
+        %{extrudeFactor} % folyamot<span class="secondary--text">,
+        biztosít egy</span>-t
+        becsült kimeneti hosszon %{estimatedExtrudedLength} mm
       stats_max_speed: >-
-        <span class="secondary--text">Assuming a</span>
-        %{layerHeight} mm layer height<span class="secondary--text">,
-        the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
+        <span class="secondary--text">Feltéve, hogy a</span>
+        %{layerHeight} mm réteg magassága<span class="secondary--text">,
+        a</span> becsült maximális nyomtatási sebesség %{estimatedMaxSpeed} mm/s
   version:
     btn:
       check_for_updates: Frissítések keresése
