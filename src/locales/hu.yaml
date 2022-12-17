@@ -155,6 +155,7 @@ app:
       edit: Szerkesztés
       exit_layout: Elrendezési mód bezárása
       extrude: Extrudálás
+      filter: Szűrő
       forgot_password: Elfelejtetted a jelszavad?
       heaters_off: Fűtőtestek Ki
       load_all: Minden betöltése
@@ -292,6 +293,7 @@ app:
       uncategorized: Nem kategorizált
       unretract_extra_length: Extra hossz visszahúzása
       unretract_speed: Visszahúzási sebesség
+      upload_and_print: Feltöltés és nyomtatás
       used: használt
       username: Felhasználónév
       variance: Eltérés
@@ -332,6 +334,7 @@ app:
         confirm_forcemove_toggle: Biztos vagy benne? Ez károsíthatja a nyomtatót.
         confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
         confirm_shutdown_host: Biztos, hogy leállítod a gazdagépet?
+        confirm_service_start: Biztos elindítod a %{name} szolgáltatást?
         confirm_service_restart: Biztos, hogy újraindítod a %{name} szolgáltatást?
         confirm_service_stop: Biztos, hogy leállítod a %{name} szolgáltatást?
         confirm_power_device_toggle: Biztos, hogy átkapcsolod az eszköz teljesítményét?
@@ -526,6 +529,7 @@ app:
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
       show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső navigációban
+      show_upload_and_print: A Feltöltés és Nyomtatás gomb megjelenítése a felső navigációban
       solid: Szilárd
       starts_with: Ezzel kezdődik
       theme_preset: Előre beállított téma
@@ -536,7 +540,8 @@ app:
       type: Típus
       unit: Egység
       z_adjust_values: A (Z) értékek beállítása
-      date_time_format: Dátum és időformátum
+      date_format: Dátum formátum
+      time_format: Idő formátum
       force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
       show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus megjelenítése
       show_bed_screws_adjust_dialog_automatically: Ágycsavarok automatikus beállítása párbeszédpanel megjelenítése
@@ -614,6 +619,25 @@ app:
       screws_tilt_calculate: Screws_Tilt_Calculate
       bed_screws_adjust: BED_SCREWS_ADJUST
       force_move: FORCE_MOVE
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">The active extruder configuration is set for</span>
+        %{filamentDiameter} mm diameter filament
+        <span class="secondary--text">and</span>
+        %{nozzleDiameter} mm nozzle
+      stats_volumetric_flow: >-
+        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">,
+        the extruder should be able to provide an</span>
+        estimated volumetric flow of %{estimatedVolumetricFlow} mm³/s
+      stats_extruded_length: >-
+        Extruding %{extrudeLength} mm of filament at
+        %{extrudeFactor} % flow<span class="secondary--text">,
+        will provide an</span>
+        estimated output length of %{estimatedExtrudedLength} mm
+      stats_max_speed: >-
+        <span class="secondary--text">Assuming a</span>
+        %{layerHeight} mm layer height<span class="secondary--text">,
+        the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
   version:
     btn:
       check_for_updates: Frissítések keresése
