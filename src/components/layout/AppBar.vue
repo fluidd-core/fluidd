@@ -44,7 +44,7 @@
       >
         <app-save-config-and-restart-btn
           :loading="hasWait($waits.onSaveConfig)"
-          :disabled="printerPrinting"
+          :disabled="printerPrinting || printerPaused"
           @click="saveConfigAndRestart"
         />
       </div>
@@ -69,9 +69,14 @@
         </v-tooltip>
       </div>
 
-      <div
-        v-if="authenticated && socketConnected && topNavPowerToggle"
-      >
+      <div v-if="authenticated && socketConnected && showUploadAndPrint">
+        <app-upload-and-print-btn
+          :disabled="printerPrinting || printerPaused"
+          @upload="handleUploadAndPrint"
+        />
+      </div>
+
+      <div v-if="authenticated && socketConnected && topNavPowerToggle">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -178,19 +183,22 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
 import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue'
 import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
+import AppUploadAndPrintBtn from './AppUploadAndPrintBtn.vue'
 import { defaultState } from '@/store/layout/state'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
+import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({
   components: {
     UserPasswordDialog,
     PendingChangesDialog,
-    AppSaveConfigAndRestartBtn
+    AppSaveConfigAndRestartBtn,
+    AppUploadAndPrintBtn
   }
 })
-export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
+export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
   menu = false
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
@@ -237,6 +245,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
   get showSaveConfigAndRestart (): boolean {
     return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+  }
+
+  get showUploadAndPrint (): boolean {
+    return this.$store.state.config.uiSettings.general.showUploadAndPrint
   }
 
   get topNavPowerToggle () {
@@ -369,6 +381,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
         }
       }
     }
+  }
+
+  handleUploadAndPrint (file: File) {
+    this.uploadFile(file, '/', 'gcodes', true)
   }
 
   saveConfigAndRestart (force = false) {
