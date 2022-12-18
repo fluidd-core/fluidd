@@ -15,6 +15,10 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
+      workbox: {
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
+        navigateFallback: undefined
+      },
       includeAssets: ['img/**/*.svg', 'img/**/*.png'],
       manifest: {
         name: 'fluidd',
