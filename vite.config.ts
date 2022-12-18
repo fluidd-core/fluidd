@@ -17,7 +17,10 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
-        navigateFallback: undefined
+        navigateFallbackDenylist: [
+          /^\/websocket/,
+          /^\/(printer|api|access|machine|server)\//
+        ]
       },
       includeAssets: ['img/**/*.svg', 'img/**/*.png'],
       manifest: {
