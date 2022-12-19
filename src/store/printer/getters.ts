@@ -509,13 +509,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
       if (
         supportedTypes.includes(type) &&
-        (
-          (filterByPrefix.includes(type) && !name.startsWith('_')) ||
-          !filterByPrefix.includes(type)
-        )
+        (!filterByPrefix.includes(type) || !name.startsWith('_'))
       ) {
-        let prettyName = Vue.$filters.startCase(name)
-        if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
+        const prettyName = name === 'fan'
+          ? 'Part Fan' // If we know its the part fan.
+          : Vue.$filters.startCase(name)
 
         const color = (applyColor.includes(type))
           ? Vue.$colorset.next(getKlipperType(pin), pin)
@@ -630,8 +628,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const printerKeys = Object.keys(state.printer)
 
     const sensors = keyGroups.flatMap(keyGroup => {
+      const keyGroupRegExpArray = keyGroup
+        .map(x => new RegExp(`^${x}(?! _)`))
+
       return printerKeys
-        .filter(key => keyGroup.some(x => key.startsWith(x)))
+        .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
         .sort((a, b) => a.localeCompare(b))
     })
 
