@@ -101,7 +101,6 @@ app:
       add_file: Fájl hozzáadása
       command_palette: Parancs paletta
       download_file: Fájl lekérése
-      keyboard_shortcuts: Billentyűparancs
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
@@ -627,12 +626,12 @@ app:
         %{nozzleDiameter} mm fúvóka
       stats_volumetric_flow: >-
         Extrudálás: %{extrudeSpeed} mm/s<span class="secondary--text">,
-        az extrudernek biztosítania kell a</span>t
+        az extrudernek biztosítania kell at</span>
         becsült térfogatáram %{estimatedVolumetricFlow} mm³/s
       stats_extruded_length: >-
         A filament extrudálása %{extrudeLength} mm-nél
         %{extrudeFactor} % folyamot<span class="secondary--text">,
-        biztosít egy</span>-t
+        biztosít egy-t</span>
         becsült kimeneti hosszon %{estimatedExtrudedLength} mm
       stats_max_speed: >-
         <span class="secondary--text">Feltéve, hogy a</span>
