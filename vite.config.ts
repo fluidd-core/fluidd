@@ -19,7 +19,8 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
         navigateFallbackDenylist: [
           /^\/websocket/,
-          /^\/(printer|api|access|machine|server)\//
+          /^\/(printer|api|access|machine|server)\//,
+          /^\/webcam[2-4]?\//
         ]
       },
       includeAssets: ['img/**/*.svg', 'img/**/*.png'],
