@@ -112,8 +112,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Watch, Ref } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import Console from './Console.vue'
 import { ConsoleEntry } from '@/store/console/types'
 
@@ -122,7 +121,7 @@ import { ConsoleEntry } from '@/store/console/types'
     Console
   }
 })
-export default class ConsoleCard extends Mixins(StateMixin) {
+export default class ConsoleCard extends Vue {
   height = 0
 
   created () {
@@ -137,9 +136,6 @@ export default class ConsoleCard extends Mixins(StateMixin) {
   changeHeight () {
     this.height = window.innerHeight
   }
-
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
 
   @Prop({ type: Boolean, default: false })
   readonly fullScreen!: boolean

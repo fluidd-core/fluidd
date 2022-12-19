@@ -54,7 +54,6 @@ import RetractCard from '@/components/widgets/retract/RetractCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
-import { Macro } from '@/store/macros/types'
 
 @Component({
   components: {
@@ -123,11 +122,6 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['macros/getVisibleMacros']
   }
 
-  get uncategorizedMacros () {
-    const macros = this.$store.getters['macros/getMacrosByCategory']()
-    return macros.filter((macro: Macro) => macro.visible)
-  }
-
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
@@ -191,7 +185,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     // Take care of special cases.
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true
-    if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
+    if (item.id === 'macros-card' && (this.macros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
