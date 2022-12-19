@@ -23,13 +23,26 @@ export default defineConfig({
       ],
       workbox: {
         globPatterns: [
-          '**/*.{js,css,html,ttf,woff,woff2}'
+          '**/*.{js,css,html}',
+          'assets/*.*'
         ],
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
         navigateFallbackDenylist: [
           /^\/websocket/,
           /^\/(printer|api|access|machine|server)\//,
           /^\/webcam[2-4]?\//
+        ],
+        runtimeCaching: [
+          {
+            urlPattern: (options) => (options.sameOrigin && options.url.pathname.startsWith('/config.json')),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'config',
+              matchOptions: {
+                ignoreSearch: true
+              }
+            }
+          }
         ]
       },
       manifest: {
