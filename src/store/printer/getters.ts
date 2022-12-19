@@ -635,7 +635,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
         .sort((a, b) => a.localeCompare(b))
     })
 
-    const heaters = (state.printer.heaters.available_heaters as string[])
+    const heaters = [...state.printer.heaters.available_heaters as string[]]
       .sort((a, b) => a.localeCompare(b))
 
     return [

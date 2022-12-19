@@ -18,11 +18,8 @@ Your moonraker configuration can usually be found here: `~/klipper_config/moonra
 [server]
 host: 0.0.0.0
 port: 7125
-enable_debug_logging: False
 
 [file_manager]
-config_path: ~/klipper_config
-log_path: ~/klipper_logs
 # cancel object preprocessing - set to True to enable; leave disabled when running on a low-powered device (e.g. Pi Zero)
 enable_object_processing: False
 
