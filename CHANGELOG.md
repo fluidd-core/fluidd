@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.22.2](https://github.com/fluidd-core/fluidd/compare/v1.22.1...v1.22.2) (2022-12-19)
+
+
+### Features
+
+* adds Upload and Print button to AppBar ([#974](https://github.com/fluidd-core/fluidd/issues/974)) ([7c64799](https://github.com/fluidd-core/fluidd/commit/7c64799a2db3ff25233e95ac11028cbb2f31ead6))
+* **i18n-HU:** update Hungarian language ([#982](https://github.com/fluidd-core/fluidd/issues/982)) ([93c139a](https://github.com/fluidd-core/fluidd/commit/93c139acb89c18aea9c979f3fd87c5f5bb83e4c8))
+* **i18n-RU:** Update Russian translations ([#979](https://github.com/fluidd-core/fluidd/issues/979)) ([638e33e](https://github.com/fluidd-core/fluidd/commit/638e33e4dcbba468369c056b85490eed779a5487))
+* ignore all sensors starting with "_" ([0b981ee](https://github.com/fluidd-core/fluidd/commit/0b981ee2ddbac0605b4b7b448366dabec5ed054f))
+* send macro commands on enter ([#981](https://github.com/fluidd-core/fluidd/issues/981)) ([322eaf2](https://github.com/fluidd-core/fluidd/commit/322eaf2eb19f132a3f1b64578b890ee8efa50772))
+
+
+### Bug Fixes
+
+* add moonraker routes to workbox.navigateFallbackDenylist ([#985](https://github.com/fluidd-core/fluidd/issues/985)) ([c16d5db](https://github.com/fluidd-core/fluidd/commit/c16d5db60859a4f1faae22d7284e37504e86145f))
+* clone instead of directly changing state ([6557f1d](https://github.com/fluidd-core/fluidd/commit/6557f1d5a467edb42439d30ff0bb33010af60e87))
+* ensures CodeLens is not shown if disabled ([#978](https://github.com/fluidd-core/fluidd/issues/978)) ([0bdb86d](https://github.com/fluidd-core/fluidd/commit/0bdb86dabef83427fac1c93c45941a30d226566f))
+
 ## [1.22.1](https://github.com/fluidd-core/fluidd/compare/v1.22.0...v1.22.1) (2022-12-09)
 
 
