@@ -15,7 +15,23 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['img/**/*.svg', 'img/**/*.png'],
+      includeAssets: [
+        '**/*.svg',
+        '**/*.png',
+        '**/*.ico',
+        '*.json'
+      ],
+      workbox: {
+        globPatterns: [
+          '**/*.{js,css,html,ttf,woff,woff2}'
+        ],
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
+        navigateFallbackDenylist: [
+          /^\/websocket/,
+          /^\/(printer|api|access|machine|server)\//,
+          /^\/webcam[2-4]?\//
+        ]
+      },
       manifest: {
         name: 'fluidd',
         short_name: 'fluidd',
