@@ -1,26 +1,21 @@
 <template>
   <div>
     <v-snackbar
-      v-model="open"
-      :timeout="needRefresh ? undefined: 10000"
+      v-model="needRefresh"
+      timeout="-1"
+      multi-line
+      elevation="24"
+      bottom
+      right
     >
-      <span v-if="offlineReady">
-        Fluidd is ready to work offline
-      </span>
-      <span v-else>
-        New content available, please click on reload button to update.
-      </span>
-      <template
-        v-if="needRefresh"
-        #action="{ attrs }"
-      >
-        <v-btn
-          text
+      <span v-html="$t('app.general.msg.needs_refresh')" />
+      <template #action="{ attrs }">
+        <app-btn
           v-bind="attrs"
           @click="updateServiceWorker"
         >
-          Reload
-        </v-btn>
+          {{ $t('app.general.btn.reload') }}
+        </app-btn>
       </template>
     </v-snackbar>
   </div>
@@ -29,25 +24,16 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import consola from 'consola'
+import { EventBus } from '@/eventBus'
 
 @Component({})
 export default class RegisterServiceWorker extends Vue {
   updateSW: ((reloadPage?: boolean) => Promise<void>) | null = null
-  offlineReady = false
   needRefresh = false
-
-  get open () {
-    return this.offlineReady || this.needRefresh
-  }
-
-  set open (value: boolean) {
-    this.offlineReady = false
-    this.needRefresh = false
-  }
 
   onOfflineReady () {
     consola.debug('[PWA] ready for offline work')
-    this.offlineReady = true
+    EventBus.$emit(this.$tc('app.general.msg.offline_ready'), { timeout: 5000 })
   }
 
   onNeedRefresh () {
@@ -84,3 +70,10 @@ export default class RegisterServiceWorker extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  :deep(.v-snack__wrapper .v-snack__content) {
+    overflow: hidden;
+    overflow-wrap: break-word;
+  }
+</style>
