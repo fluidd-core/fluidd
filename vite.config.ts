@@ -14,7 +14,6 @@ import version from './vite.config.inject-version'
 export default defineConfig({
   plugins: [
     VitePWA({
-      registerType: 'autoUpdate',
       includeAssets: [
         '**/*.svg',
         '**/*.png',
