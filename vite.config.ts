@@ -40,6 +40,9 @@ export default defineConfig({
               cacheName: 'config',
               matchOptions: {
                 ignoreSearch: true
+              },
+              precacheFallback: {
+                fallbackURL: 'config.json'
               }
             }
           }
@@ -77,7 +80,8 @@ export default defineConfig({
         ]
       },
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
       }
     }),
     vue(),
