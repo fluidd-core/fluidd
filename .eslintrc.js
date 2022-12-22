@@ -4,7 +4,8 @@ module.exports = {
     'plugin:vue/recommended',
     'eslint:recommended',
     '@vue/standard',
-    '@vue/eslint-config-typescript/recommended'
+    '@vue/eslint-config-typescript/recommended',
+    '@vue/eslint-config-prettier',
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
