@@ -43,6 +43,7 @@ declare module 'vue' {
     FlashMessage: typeof import('./src/components/common/FlashMessage.vue')['default']
     KlippyStatusCard: typeof import('./src/components/common/KlippyStatusCard.vue')['default']
     ManualProbeDialog: typeof import('./src/components/common/ManualProbeDialog.vue')['default']
+    RegisterServiceWorker: typeof import('./src/components/common/RegisterServiceWorker.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SocketDisconnected: typeof import('./src/components/common/SocketDisconnected.vue')['default']
