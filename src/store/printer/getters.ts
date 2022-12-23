@@ -625,11 +625,19 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ]
     ]
 
+    const filterByPrefix = [
+      'temperature_fan'
+    ]
+
     const printerKeys = Object.keys(state.printer)
 
     const sensors = keyGroups.flatMap(keyGroup => {
       const keyGroupRegExpArray = keyGroup
-        .map(x => new RegExp(`^${x}(?! _)`))
+        .map(x => new RegExp(
+          filterByPrefix.includes(x)
+            ? `^${x}(?! _)`
+            : `^${x}`)
+        )
 
       return printerKeys
         .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
