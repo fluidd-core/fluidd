@@ -3,25 +3,17 @@ import Sortable from 'sortablejs'
 
 type SortableHtmlElement = HTMLElement & { _sortable: Sortable }
 
-type SortableDataTableHandler = (event: Sortable.SortableEvent) => void
+type SortableEvent = (event: Sortable.SortableEvent) => void
 
-type SortableDataTableValue = SortableDataTableHandler | {
-  handler: SortableDataTableHandler
-  options?: Sortable.Options
-}
+type SortableDataTableValue = SortableEvent | Sortable.Options
 
 const sortableDataTable : ObjectDirective<SortableHtmlElement, SortableDataTableValue> = {
   bind: (el, binding) => {
-    const bindingValue = typeof (binding.value) === 'function'
+    const options: Sortable.Options = typeof (binding.value) === 'function'
       ? {
-          handler: binding.value
+          onUpdate: binding.value
         }
       : binding.value
-
-    const options = {
-      ...bindingValue.options || {},
-      onUpdate: bindingValue.handler
-    } as Sortable.Options
 
     el._sortable = Sortable.create(el.getElementsByTagName('tbody')[0], options)
   },

@@ -469,11 +469,14 @@ export const SocketActions = {
     )
   },
 
-  async serverJobQueuePostJob (filenames: string[]) {
+  async serverJobQueuePostJob (filenames: string[], reset?: boolean) {
     baseEmit(
       'server.job_queue.post_job', {
         dispatch: 'jobQueue/onJobQueueStatus',
-        params: { filenames },
+        params: {
+          filenames,
+          reset
+        },
         wait: Waits.onJobQueue
       }
     )

@@ -3,26 +3,24 @@
     <v-data-table
       v-model="selected"
       v-sortable-data-table="{
-        options:{
-          animation: '200',
-          handle: '.handle',
-          group: 'jobQueue',
-          ghostClass: 'ghost'
-        },
-        handler: handleSorted
+        animation: '200',
+        handle: '.handle',
+        group: 'jobQueue',
+        ghostClass: 'ghost',
+        onUpdate: handleSorted,
       }"
       item-key="job_id"
       :headers="headers"
       :items="jobs"
       :dense="dense"
-      :disable-pagination="true"
       :loading="hasWait($waits.onJobQueue)"
       :show-select="bulkActions"
       :no-data-text="$t('app.file_system.msg.not_found')"
       :no-results-text="$t('app.file_system.msg.not_found')"
       mobile-breakpoint="0"
       hide-default-footer
-      @sorted="jobs = $event"
+      disable-pagination
+      disable-sort
       @click:row="handleRowClick"
       @contextmenu:row.prevent="handleContextMenu"
     >
@@ -87,13 +85,6 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
     return this.$store.state.jobQueue.queued_jobs as QueuedJob[]
   }
 
-  set jobs (val: QueuedJob[]) {
-    const filenames = val.map(job => job.filename)
-
-    SocketActions.serverJobQueueDeleteJobs(['all'])
-    SocketActions.serverJobQueuePostJob(filenames)
-  }
-
   handleRowClick (_data: any, props: DataTableItemProps, event: MouseEvent) {
     this.$emit('row-click', props.item, event)
   }
@@ -107,12 +98,13 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
       return
     }
 
-    const jobs = this.jobs
+    const filenames = this.jobs
+      .map(job => job.filename)
 
-    const movedItem = jobs.splice(event.oldIndex, 1)[0]
-    jobs.splice(event.newIndex, 0, movedItem)
+    const movedItem = filenames.splice(event.oldIndex, 1)[0]
+    filenames.splice(event.newIndex, 0, movedItem)
 
-    this.jobs = jobs
+    SocketActions.serverJobQueuePostJob(filenames, true)
   }
 }
 </script>
