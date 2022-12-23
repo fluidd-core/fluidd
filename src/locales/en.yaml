@@ -168,6 +168,7 @@ app:
       reboot: Reboot
       recover: Recover
       refresh: Refresh
+      reload: Reload
       remove: Remove
       remove_all: Remove All
       rename: Rename
@@ -310,6 +311,8 @@ app:
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
       welcome_back: >-
         Welcome back.<br>Sign in below to stay in touch with your printer.
+      offline_ready: Fluidd is now ready to work offline.
+      needs_refresh: New content available, please click the <b>Reload</b> button to update.
     simple_form:
       error:
         arrayofnums: Only numbers
