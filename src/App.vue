@@ -63,6 +63,8 @@
               (!authenticated && apiConnected)
           "
         />
+
+        <register-service-worker />
       </v-container>
 
       <socket-disconnected
