@@ -14,7 +14,6 @@ import version from './vite.config.inject-version'
 export default defineConfig({
   plugins: [
     VitePWA({
-      registerType: 'autoUpdate',
       includeAssets: [
         '**/*.svg',
         '**/*.png',
@@ -23,13 +22,28 @@ export default defineConfig({
       ],
       workbox: {
         globPatterns: [
-          '**/*.{js,css,html,ttf,woff,woff2}'
+          '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
         navigateFallbackDenylist: [
           /^\/websocket/,
           /^\/(printer|api|access|machine|server)\//,
           /^\/webcam[2-4]?\//
+        ],
+        runtimeCaching: [
+          {
+            urlPattern: (options) => (options.sameOrigin && options.url.pathname.startsWith('/config.json')),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'config',
+              matchOptions: {
+                ignoreSearch: true
+              },
+              precacheFallback: {
+                fallbackURL: 'config.json'
+              }
+            }
+          }
         ]
       },
       manifest: {
@@ -64,7 +78,8 @@ export default defineConfig({
         ]
       },
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
       }
     }),
     vue(),
