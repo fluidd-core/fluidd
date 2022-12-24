@@ -9,9 +9,9 @@
         ghostClass: 'ghost',
         onUpdate: handleSorted,
       }"
-      item-key="job_id"
+      item-key="key"
       :headers="headers"
-      :items="jobs"
+      :items="jobsWithKey"
       :dense="dense"
       :loading="hasWait($waits.onJobQueue)"
       :show-select="bulkActions"
@@ -83,6 +83,16 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
     this.selected = []
 
     return this.$store.state.jobQueue.queued_jobs as QueuedJob[]
+  }
+
+  get jobsWithKey () {
+    const refresh = Date.now()
+
+    return this.jobs
+      .map(job => ({
+        ...job,
+        key: `${job.job_id}-${refresh}`
+      }))
   }
 
   handleRowClick (_data: any, props: DataTableItemProps, event: MouseEvent) {
