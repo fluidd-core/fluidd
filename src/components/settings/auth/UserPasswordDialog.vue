@@ -10,10 +10,7 @@
     >
       <v-card>
         <v-card-title class="card-heading py-2">
-          <span
-            class="focus--text"
-            v-html="$t('app.general.label.change_password')"
-          />
+          <span class="focus--text">{{ $t('app.general.label.change_password') }}</span>
         </v-card-title>
 
         <v-divider />
@@ -91,8 +88,9 @@
             :disabled="loading"
             color="primary"
             type="submit"
-            v-html="$t('app.general.btn.save')"
-          />
+          >
+            {{ $t('app.general.btn.save') }}
+          </app-btn>
         </v-card-actions>
       </v-card>
     </v-form>

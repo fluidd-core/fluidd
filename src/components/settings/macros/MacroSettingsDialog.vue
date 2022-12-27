@@ -121,13 +121,15 @@
             text
             type="button"
             @click="open = false"
-            v-html="$t('app.general.btn.cancel')"
-          />
+          >
+            {{ $t('app.general.btn.cancel') }}
+          </app-btn>
           <app-btn
             color="primary"
             type="submit"
-            v-html="$t('app.general.btn.save')"
-          />
+          >
+            {{ $t('app.general.btn.save') }}
+          </app-btn>
         </v-card-actions>
       </v-card>
     </v-form>
