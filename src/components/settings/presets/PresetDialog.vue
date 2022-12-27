@@ -5,13 +5,14 @@
   >
     <v-form
       ref="form"
-      v-model="valid"
       @submit.prevent="handleSave"
     >
       <v-card>
         <v-card-title class="card-heading py-2">
           <span class="focus--text">{{ (preset.id != -1) ? $t('app.general.label.edit_preset') : $t('app.general.label.add_preset') }}</span>
         </v-card-title>
+
+        <v-divider />
 
         <app-setting :title="$t('app.setting.label.thermal_preset_name')">
           <v-text-field
@@ -37,21 +38,20 @@
             <v-checkbox
               v-model="preset.values[item.name].active"
               hide-details
-              class="ma-0"
             />
 
             <v-text-field
               v-model.number="preset.values[item.name].value"
-              :rules="[
+              :disabled="!preset.values[item.name].active"
+              :rules="preset.values[item.name].active ? [
                 $rules.required,
                 $rules.numberValid,
                 $rules.numberGreaterThan(0)
-              ]"
+              ] : undefined"
               hide-details="auto"
               type="number"
               suffix="°C"
-              class="mb-2"
-              outlined
+              filled
               dense
             />
           </app-setting>
@@ -69,21 +69,20 @@
             <v-checkbox
               v-model="preset.values[item.name].active"
               hide-details
-              class="ma-0"
             />
 
             <v-text-field
               v-model.number="preset.values[item.name].value"
-              :rules="[
+              :disabled="!preset.values[item.name].active"
+              :rules="preset.values[item.name].active ? [
                 $rules.required,
                 $rules.numberValid,
                 $rules.numberGreaterThan(0)
-              ]"
+              ] : undefined"
               hide-details="auto"
               type="number"
               suffix="°C"
-              class="mb-2"
-              outlined
+              filled
               dense
             />
           </app-setting>
@@ -96,10 +95,11 @@
             v-model="preset.gcode"
             rows="2"
             hide-details="auto"
-            class="mb-2"
-            outlined
+            filled
           />
         </app-setting>
+
+        <v-divider />
 
         <v-card-actions>
           <v-spacer />
@@ -124,9 +124,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
+import { Component, Vue, Prop, VModel, Ref } from 'vue-property-decorator'
 import { TemperaturePreset } from '@/store/config/types'
 import { Fan, Heater } from '@/store/printer/types'
+import { VForm } from '@/types'
 
 @Component({})
 export default class TemperaturePresetDialog extends Vue {
@@ -136,7 +137,8 @@ export default class TemperaturePresetDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly preset!: TemperaturePreset
 
-  valid = false
+  @Ref('form')
+  readonly form!: VForm
 
   get heaters (): Heater[] {
     return this.$store.getters['printer/getHeaters']
@@ -147,7 +149,7 @@ export default class TemperaturePresetDialog extends Vue {
   }
 
   handleSave () {
-    if (this.valid) {
+    if (this.form.validate()) {
       this.$emit('save', this.preset)
       this.open = false
     }
