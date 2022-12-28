@@ -22,6 +22,7 @@
         </app-setting>
 
         <v-divider />
+
         <app-setting
           v-if="!variableFps"
           :title="$t('app.timelapse.setting.output_framerate')"
@@ -44,7 +45,8 @@
             @change="setOutputFramerate"
           />
         </app-setting>
-        <div v-else>
+
+        <template v-else>
           <app-setting
             :title="$t('app.timelapse.setting.targetlength')"
             :sub-title="subtitleIfBlocked(targetLengthBlocked)"
@@ -68,6 +70,7 @@
           </app-setting>
 
           <v-divider />
+
           <app-setting
             :title="$t('app.timelapse.setting.variable_fps_min')"
             :sub-title="subtitleIfBlocked(minFpsBlocked)"
@@ -91,6 +94,7 @@
           </app-setting>
 
           <v-divider />
+
           <app-setting
             :title="$t('app.timelapse.setting.variable_fps_max')"
             :sub-title="subtitleIfBlocked(maxFpsBlocked)"
@@ -112,9 +116,10 @@
               @change="setMaxFps"
             />
           </app-setting>
-        </div>
+        </template>
 
         <v-divider />
+
         <app-setting
           :title="$t('app.timelapse.setting.saveframes')"
           :sub-title="subtitleIfBlocked(saveFramesBlocked)"
@@ -128,6 +133,7 @@
         </app-setting>
 
         <v-divider />
+
         <app-setting
           :title="$t('app.timelapse.setting.duplicatelastframe')"
           :sub-title="subtitleIfBlocked(duplicateFramesBlocked)"
@@ -151,6 +157,7 @@
         </app-setting>
 
         <v-divider />
+
         <app-slider
           :value="crf"
           class="px-4 pt-3"
@@ -164,6 +171,7 @@
         />
 
         <v-divider />
+
         <app-setting
           :title="$t('app.timelapse.setting.previewimage')"
           :sub-title="subtitleIfBlocked(previewImageBlocked)"
@@ -176,27 +184,27 @@
           />
         </app-setting>
 
-        <v-divider v-if="renderable" />
-        <v-card-actions
-          v-if="renderable"
-          class="pt-4"
-        >
-          <v-spacer />
-          <v-tooltip left>
-            <template #activator="{ on, attrs }">
-              <app-btn
-                v-bind="attrs"
-                color="primary"
-                v-on="on"
-                @click="renderTimelapse"
-              >
-                <v-icon>$play</v-icon>
-                {{ $t('app.timelapse.btn.render') }}
-              </app-btn>
-            </template>
-            <span>{{ $t('app.timelapse.label.length', { length: lengthEstimate }) }}</span>
-          </v-tooltip>
-        </v-card-actions>
+        <template v-if="renderable">
+          <v-divider />
+
+          <v-card-actions class="pt-4">
+            <v-spacer />
+            <v-tooltip left>
+              <template #activator="{ on, attrs }">
+                <app-btn
+                  v-bind="attrs"
+                  color="primary"
+                  v-on="on"
+                  @click="renderTimelapse"
+                >
+                  <v-icon>$play</v-icon>
+                  {{ $t('app.timelapse.btn.render') }}
+                </app-btn>
+              </template>
+              <span>{{ $t('app.timelapse.label.length', { length: lengthEstimate }) }}</span>
+            </v-tooltip>
+          </v-card-actions>
+        </template>
       </v-card>
     </v-form>
   </v-dialog>

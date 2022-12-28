@@ -1,48 +1,22 @@
 <template>
-  <v-dialog
+  <app-dialog
     v-model="open"
+    :title="$t('app.general.title.pending_configuration_changes')"
+    :save-button-text="$t('app.general.btn.save_config_and_restart')"
     :max-width="600"
-    scrollable
+    @save="handleSubmit"
   >
-    <v-form @submit.prevent="handleSubmit()">
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ $t('app.general.title.pending_configuration_changes' ) }}</span>
-        </v-card-title>
-
-        <v-card-text>
-          <v-textarea
-            readonly
-            auto-grow
-            rows="1"
-            :value="saveConfigPendingItems"
-            :spellcheck="false"
-            style="width: 100%; font-family: monospace; font-size: 1rem; font-weight: 100 !important;"
-          />
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-
-          <app-btn
-            color="warning"
-            text
-            type="button"
-            @click="open = false"
-          >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-
-          <app-btn
-            color="primary"
-            type="submit"
-          >
-            {{ $t('app.general.btn.save_config_and_restart') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+    <v-card-text>
+      <v-textarea
+        readonly
+        auto-grow
+        rows="1"
+        :value="saveConfigPendingItems"
+        :spellcheck="false"
+        style="width: 100%; font-family: monospace; font-size: 1rem; font-weight: 100 !important;"
+      />
+    </v-card-text>
+  </app-dialog>
 </template>
 
 <script lang="ts">

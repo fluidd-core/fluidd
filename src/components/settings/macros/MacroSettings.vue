@@ -94,7 +94,7 @@
     </v-card>
 
     <macro-settings-dialog
-      v-if="dialogState.macro"
+      v-if="dialogState.open"
       v-model="dialogState.open"
       :macro="dialogState.macro"
     />
