@@ -134,15 +134,17 @@
         class="mx-2"
         color="primary"
         @click.stop="handleExitLayout"
-        v-html="$t('app.general.btn.exit_layout')"
-      />
+      >
+        {{ $t('app.general.btn.exit_layout') }}
+      </app-btn>
       <app-btn
         small
         class="mx-2"
         color="primary"
         @click.stop="handleResetLayout"
-        v-html="$t('app.general.btn.reset_layout')"
-      />
+      >
+        {{ $t('app.general.btn.reset_layout') }}
+      </app-btn>
       <template v-if="isDashboard">
         <v-divider
           vertical
@@ -153,15 +155,17 @@
           class="mx-2"
           color="primary"
           @click.stop="handleSetDefaultLayout"
-          v-html="$t('app.general.btn.set_default_layout')"
-        />
+        >
+          {{ $t('app.general.btn.set_default_layout') }}
+        </app-btn>
         <app-btn
           small
           class="mx-2"
           color="primary"
           @click.stop="handleResetDefaultLayout"
-          v-html="$t('app.general.btn.reset_default_layout')"
-        />
+        >
+          {{ $t('app.general.btn.reset_default_layout') }}
+        </app-btn>
       </template>
     </template>
 

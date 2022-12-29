@@ -19,7 +19,7 @@
     </template>
 
     <v-card-text>
-      <GcodePreviewParserProgressDialog
+      <gcode-preview-parser-progress-dialog
         v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
         :progress="parserProgress"

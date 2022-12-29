@@ -165,6 +165,10 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     apiAuthenticated = result.apiAuthenticated
     apiConnected = result.apiConnected
 
+    if (!apiConnected || !apiAuthenticated) {
+      break
+    }
+
     const { data } = result
 
     const roots = Object.values<Record<string, any>>(ROOTS)

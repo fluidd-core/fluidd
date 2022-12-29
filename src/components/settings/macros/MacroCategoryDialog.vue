@@ -1,56 +1,24 @@
 <template>
-  <v-dialog
+  <app-dialog
     v-model="open"
+    :title="title"
     :max-width="350"
+    @save="handleSave"
   >
-    <v-form
-      ref="addInstanceForm"
-      v-model="valid"
-      class="mt-3"
-      @submit.prevent="handleSave"
-    >
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ title }}</span>
-        </v-card-title>
-
-        <v-divider />
-
-        <v-card-text>
-          <v-text-field
-            v-model="newName"
-            autofocus
-            outlined
-            :label="label"
-            :rules="[
-              $rules.required,
-              customRules.uniqueName
-            ]"
-            hide-details="auto"
-            required
-          />
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <app-btn
-            color="warning"
-            text
-            type="button"
-            @click="open = false"
-          >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-          <app-btn
-            color="primary"
-            type="submit"
-          >
-            {{ $t('app.general.btn.save') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+    <v-card-text>
+      <v-text-field
+        v-model="newName"
+        autofocus
+        outlined
+        :label="label"
+        :rules="[
+          $rules.required,
+          customRules.uniqueName
+        ]"
+        required
+      />
+    </v-card-text>
+  </app-dialog>
 </template>
 
 <script lang="ts">
@@ -72,7 +40,6 @@ export default class MacroCategoryDialog extends Vue {
   readonly name!: string
 
   newName = ''
-  valid = true
 
   get customRules () {
     return {
@@ -89,10 +56,8 @@ export default class MacroCategoryDialog extends Vue {
   }
 
   handleSave () {
-    if (this.valid) {
-      this.$emit('save', this.newName)
-      this.open = false
-    }
+    this.$emit('save', this.newName)
+    this.open = false
   }
 }
 </script>

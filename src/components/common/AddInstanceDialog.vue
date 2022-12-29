@@ -1,107 +1,82 @@
 <template>
-  <v-dialog
+  <app-dialog
     v-model="open"
     :max-width="320"
+    :save-button-disabled="!verified"
+    :valid.sync="valid"
     persistent
+    @save="addInstance"
   >
-    <v-form
-      ref="form"
-      v-model="valid"
-      @submit.prevent="addInstance()"
-    >
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ $t('app.general.title.add_printer') }}</span>
-          <v-spacer />
-          <app-inline-help bottom>
-            <span v-html="$t('app.endpoint.tooltip.endpoint_examples')" />
-          </app-inline-help>
-        </v-card-title>
+    <template #title>
+      <span class="focus--text">{{ $t('app.general.title.add_printer') }}</span>
+      <v-spacer />
+      <app-inline-help bottom>
+        <span v-html="$t('app.endpoint.tooltip.endpoint_examples')" />
+      </app-inline-help>
+    </template>
 
-        <v-card-text class="mt-4">
-          <span v-html="helpTxt" />
+    <v-card-text>
+      <span v-html="helpTxt" />
 
-          <v-text-field
-            v-model="url"
-            autofocus
-            :label="$t('app.general.label.api_url')"
-            persistent-hint
-            :hint="$t('app.endpoint.hint.add_printer')"
-            :loading="verifying"
-            :rules="[
-              $rules.required,
-              customRules.url
-            ]"
-          >
-            <template #append-outer>
-              <v-icon
-                v-if="verifying"
-                class="spin"
-                color="primary"
-              >
-                $loading
-              </v-icon>
-              <v-icon
-                v-if="!verified && !verifying"
-                color="error"
-              >
-                $cloudAlert
-              </v-icon>
-              <v-icon
-                v-if="verified && !verifying"
-                color="success"
-              >
-                $cloudCheck
-              </v-icon>
-            </template>
-          </v-text-field>
-
-          <v-alert
-            v-if="error"
-            dense
-            text
-            type="error"
-            class="mt-3 mb-2"
-            v-html="error"
-          />
-
-          <p
-            v-if="note"
-            class="mb-0"
-            v-html="note"
-          />
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <app-btn
-            color="warning"
-            text
-            type="button"
-            @click="open=false"
-          >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-          <app-btn
+      <v-text-field
+        v-model="url"
+        autofocus
+        :label="$t('app.general.label.api_url')"
+        persistent-hint
+        :hint="$t('app.endpoint.hint.add_printer')"
+        :loading="verifying"
+        :rules="[
+          $rules.required,
+          customRules.url
+        ]"
+      >
+        <template #append-outer>
+          <v-icon
+            v-if="verifying"
+            class="spin"
             color="primary"
-            type="submit"
-            :disabled="!verified"
           >
-            {{ $t('app.general.btn.save') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+            $loading
+          </v-icon>
+          <v-icon
+            v-if="!verified && !verifying"
+            color="error"
+          >
+            $cloudAlert
+          </v-icon>
+          <v-icon
+            v-if="verified && !verifying"
+            color="success"
+          >
+            $cloudCheck
+          </v-icon>
+        </template>
+      </v-text-field>
+
+      <v-alert
+        v-if="error"
+        dense
+        text
+        type="error"
+        class="mt-3 mb-2"
+        v-html="error"
+      />
+
+      <p
+        v-if="note"
+        class="mb-0"
+        v-html="note"
+      />
+    </v-card-text>
+  </app-dialog>
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref, VModel, Watch } from 'vue-property-decorator'
+import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 import { Globals } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
-import { VForm } from '@/types'
 import consola from 'consola'
 import { httpClientActions } from '@/api/httpClientActions'
 
@@ -109,9 +84,6 @@ import { httpClientActions } from '@/api/httpClientActions'
 export default class AddInstanceDialog extends Mixins(StateMixin) {
   @VModel({ type: Boolean, required: true })
     open!: boolean
-
-  @Ref('form')
-  readonly form!: VForm
 
   valid = true
   verifying = false
@@ -247,12 +219,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   addInstance () {
-    if (this.valid) {
-      const url = this.buildUrl(this.url)
-      const apiConfig = this.$filters.getApiUrls(url.toString())
-      this.$emit('input', false)
-      this.$emit('resolve', apiConfig)
-    }
+    const url = this.buildUrl(this.url)
+    const apiConfig = this.$filters.getApiUrls(url.toString())
+    this.open = false
+    this.$emit('resolve', apiConfig)
   }
 }
 </script>
