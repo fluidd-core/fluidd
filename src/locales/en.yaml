@@ -136,6 +136,7 @@ app:
       add_dir: Add Directory
       add_file: Add File
       add_printer: Add printer
+      add_to_queue: Add to Queue
       adjust_layout: Adjust dashboard layout
       adjusted: Adjusted
       all: All
@@ -153,6 +154,7 @@ app:
       filter: Filter
       forgot_password: Forgotten your password?
       heaters_off: Heaters off
+      job_queue: Job Queue
       load_all: Load all
       login: Login
       logout: Logout
@@ -365,6 +367,8 @@ app:
         name: Name
         nozzle_diameter: Nozzle diameter
         print_duration: Print duration
+        time_added: Time Added
+        time_in_queue: Time In Queue
         size: Size
         slicer: Slicer
         slicer_version: Slicer version
@@ -388,6 +392,7 @@ app:
       history: History
       home: Home
       jobs: Jobs
+      job_queue: Job Queue
       limits: Printer Limits
       macros: Macros
       metrics_explorer: Metrics Explorer
@@ -415,6 +420,10 @@ app:
       run_collector: Run collector
   history:
     msg:
+      confirm: Are you sure? This will clear all history, and printer statistics
+  job_queue:
+    msg:
+      confirm: Are you sure? This will clear the entire printer queue
       confirm_jobs: Are you sure? This will clear all jobs.
       confirm_stats: Are you sure? This will clear all stats.
   printer:

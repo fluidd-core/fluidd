@@ -27,6 +27,7 @@ import { gcodePreview } from './gcodePreview'
 import { timelapse } from './timelapse'
 import { parts } from './parts'
 import { webcams } from './webcams'
+import { jobQueue } from './jobQueue'
 
 Vue.use(Vuex)
 
@@ -54,7 +55,8 @@ export default new Vuex.Store<RootState>({
     gcodePreview,
     timelapse,
     parts,
-    webcams
+    webcams,
+    jobQueue
   },
   mutations: {},
   actions: {

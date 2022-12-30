@@ -36,9 +36,11 @@ import App from './App.vue'
 
 // Register global directives.
 import Blur from '@/directives/blur'
+import SortableDataTable from '@/directives/sortableDataTable'
 
 // Directives...
 Vue.directive('blur', Blur)
+Vue.directive('sortableDataTable', SortableDataTable)
 
 // v-chart component asynchronously loaded from a split chunk
 Vue.component('EChart', () => import('./vue-echarts-chunk'))

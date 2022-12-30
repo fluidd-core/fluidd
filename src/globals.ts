@@ -114,6 +114,7 @@ import {
   mdiHarddisk,
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
+  mdiFormatListBulleted,
   mdiSwapVertical,
   mdiFullscreen,
   mdiStop,
@@ -130,7 +131,9 @@ import {
   mdiLayersMinus,
   mdiLayers,
   mdiLayersPlus,
-  mdiFolderOpen
+  mdiFolderOpen,
+  mdiTrayFull,
+  mdiTrayPlus
 } from '@mdi/js'
 
 /**
@@ -182,7 +185,8 @@ export const Globals = Object.freeze({
     history: { name: 'history', dispatch: 'history/init' },
     timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
     announcements: { name: 'announcements', dispatch: 'announcements/init' },
-    webcams: { name: 'webcam', dispatch: 'webcams/init' }
+    webcams: { name: 'webcam', dispatch: 'webcams/init' },
+    jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -327,6 +331,7 @@ export const Icons = Object.freeze({
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
+  list: mdiFormatListBulleted,
   fullScreen: mdiFullscreen,
   video: mdiFileVideoOutline,
   snooze: mdiBellSleep,
@@ -343,7 +348,9 @@ export const Icons = Object.freeze({
   moves: mdiVectorLine,
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
-  folderOpen: mdiFolderOpen
+  folderOpen: mdiFolderOpen,
+  jobQueue: mdiTrayFull,
+  enqueueJob: mdiTrayPlus
 })
 
 export const Waits = Object.freeze({
@@ -388,6 +395,7 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
+  onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
   onQueryEndstops: 'onQueryEndstops',
