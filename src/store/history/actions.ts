@@ -23,6 +23,18 @@ export const actions: ActionTree<HistoryState, RootState> = {
     SocketActions.serverHistoryTotals()
   },
 
+  async updateHistory ({ commit }, payload) {
+    if (payload) {
+      commit('setUpdateHistory', payload)
+    }
+  },
+
+  async clearHistoryThumbnails ({ commit }, payload) {
+    if (payload) {
+      commit('setClearHistoryThumbnails', payload)
+    }
+  },
+
   /**
    * Update the store with history totals data
    */
