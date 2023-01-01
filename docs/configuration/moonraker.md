@@ -113,7 +113,7 @@ Automated updates can be configured by ensuring the following is in your
 [update_manager]
 enable_auto_refresh: True
 
-[update_manager client fluidd]
+[update_manager fluidd]
 type: web
 repo: fluidd-core/fluidd
 path: ~/fluidd

@@ -1,159 +1,133 @@
 <template>
-  <v-dialog
+  <app-dialog
     v-model="open"
+    :title="$t('app.tool.title.manual_probe')"
+    :cancel-button-text="$t('app.general.btn.abort')"
+    :save-button-text="$t('app.general.btn.accept')"
+    :save-button-loading="hasWait($waits.onManualProbe)"
     :max-width="450"
-    scrollable
+    @cancel="sendAbort"
+    @save="sendAccept"
   >
-    <v-form @submit.prevent="sendAccept">
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ $t('app.tool.title.manual_probe') }}</span>
-        </v-card-title>
+    <v-card-text>
+      <v-row>
+        <v-col>
+          <v-text-field
+            label="Z Min"
+            outlined
+            hide-details
+            dense
+            disabled
+            :value="zPositionLower"
+          />
+        </v-col>
+        <v-col>
+          <v-text-field
+            label="Z"
+            outlined
+            hide-details
+            dense
+            disabled
+            :value="zPosition"
+          />
+        </v-col>
+        <v-col>
+          <v-text-field
+            label="Z Max"
+            outlined
+            hide-details
+            dense
+            disabled
+            :value="zPositionUpper"
+          />
+        </v-col>
+      </v-row>
 
-        <v-divider />
-
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-text-field
-                label="Z Min"
-                outlined
-                hide-details
-                dense
-                disabled
-                :value="zPositionLower"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                label="Z"
-                outlined
-                hide-details
-                dense
-                disabled
-                :value="zPosition"
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                label="Z Max"
-                outlined
-                hide-details
-                dense
-                disabled
-                :value="zPositionUpper"
-              />
-            </v-col>
-          </v-row>
-
-          <v-row class="bysect-row">
-            <v-col
-              cols="3"
-              offset="1"
+      <v-row class="bysect-row">
+        <v-col
+          cols="3"
+          offset="1"
+        >
+          <app-btn-group>
+            <app-btn
+              :disabled="!klippyReady || printerPrinting"
+              color="primary"
+              @click="sendTestZ('--')"
             >
-              <app-btn-group>
-                <app-btn
-                  :disabled="!klippyReady || printerPrinting"
-                  color="primary"
-                  @click="sendTestZ('--')"
-                >
-                  --
-                </app-btn>
-                <app-btn
-                  :disabled="!klippyReady || printerPrinting"
-                  color="primary"
-                  @click="sendTestZ('-')"
-                >
-                  -
-                </app-btn>
-              </app-btn-group>
-            </v-col>
-            <v-col
-              cols="3"
-              offset="4"
+              --
+            </app-btn>
+            <app-btn
+              :disabled="!klippyReady || printerPrinting"
+              color="primary"
+              @click="sendTestZ('-')"
             >
-              <app-btn-group>
-                <app-btn
-                  :disabled="!klippyReady || printerPrinting"
-                  color="primary"
-                  @click="sendTestZ('+')"
-                >
-                  +
-                </app-btn>
-                <app-btn
-                  :disabled="!klippyReady || printerPrinting"
-                  color="primary"
-                  @click="sendTestZ('++')"
-                >
-                  ++
-                </app-btn>
-              </app-btn-group>
-            </v-col>
-          </v-row>
-
-          <v-row
-            v-for="offset in offsets"
-            :key="offset"
-            class="offset-row"
-          >
-            <v-col
-              cols="3"
-              offset="1"
+              -
+            </app-btn>
+          </app-btn-group>
+        </v-col>
+        <v-col
+          cols="3"
+          offset="4"
+        >
+          <app-btn-group>
+            <app-btn
+              :disabled="!klippyReady || printerPrinting"
+              color="primary"
+              @click="sendTestZ('+')"
             >
-              <app-btn
-                :disabled="!klippyReady || printerPrinting"
-                color="primary"
-                @click="sendTestZ(`-${offset}`)"
-              >
-                <v-icon>
-                  $minus
-                </v-icon>
-              </app-btn>
-            </v-col>
-            <v-col cols="4">
-              <div
-                class="v-btn v-size--default btncolor"
-              >
-                {{ offset }}
-              </div>
-            </v-col>
-            <v-col cols="3">
-              <app-btn
-                :disabled="!klippyReady || printerPrinting"
-                color="primary"
-                @click="sendTestZ(`+${offset}`)"
-              >
-                <v-icon>
-                  $plus
-                </v-icon>
-              </app-btn>
-            </v-col>
-          </v-row>
-        </v-card-text>
+              +
+            </app-btn>
+            <app-btn
+              :disabled="!klippyReady || printerPrinting"
+              color="primary"
+              @click="sendTestZ('++')"
+            >
+              ++
+            </app-btn>
+          </app-btn-group>
+        </v-col>
+      </v-row>
 
-        <v-card-actions>
-          <v-spacer />
-
+      <v-row
+        v-for="offset in offsets"
+        :key="offset"
+        class="offset-row"
+      >
+        <v-col
+          cols="3"
+          offset="1"
+        >
           <app-btn
-            color="warning"
-            text
-            type="button"
-            @click="sendAbort"
-          >
-            {{ $t('app.general.btn.abort') }}
-          </app-btn>
-
-          <app-btn
-            :loading="hasWait($waits.onManualProbe)"
+            :disabled="!klippyReady || printerPrinting"
             color="primary"
-            type="submit"
+            @click="sendTestZ(`-${offset}`)"
           >
-            {{ $t('app.general.btn.accept') }}
+            <v-icon>
+              $minus
+            </v-icon>
           </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+        </v-col>
+        <v-col cols="4">
+          <div
+            class="v-btn v-size--default btncolor"
+          >
+            {{ offset }}
+          </div>
+        </v-col>
+        <v-col cols="3">
+          <app-btn
+            :disabled="!klippyReady || printerPrinting"
+            color="primary"
+            @click="sendTestZ(`+${offset}`)"
+          >
+            <v-icon>
+              $plus
+            </v-icon>
+          </app-btn>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </app-dialog>
 </template>
 
 <script lang="ts">

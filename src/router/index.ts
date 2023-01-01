@@ -154,7 +154,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  router.app.$store.commit('config/setContainerColumnCount', 2)
+  router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
 })
 

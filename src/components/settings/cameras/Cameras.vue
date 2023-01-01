@@ -85,7 +85,7 @@
       </app-setting>
 
       <camera-config-dialog
-        v-if="dialogState.camera"
+        v-if="dialogState.active"
         v-model="dialogState.active"
         :camera="dialogState.camera"
         @save="handleSaveCamera"
