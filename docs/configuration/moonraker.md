@@ -32,17 +32,13 @@ cases, you shouldn't need to touch anything here.
 
 ## [file_manager] block
 
-If you have a FluiddPI installation of `1.14` or below, it may be worth adding a
-logs path, which will expose all logs inside of Fluidd. [KIUAH](/installation/kiauh) can
-provide a gracefull upgrade path in order to re-arrange all of your logs into
-the same place for this to be most benifical.
+If you want to be able to cancel single objects on a muilti-object print, then
+you will need to set `enable_object_processing: True` here to enable it.
 
 ```yaml
 [file_manager]
-log_path: ~/klipper_logs
+enable_object_processing: True
 ```
-
-See the [configuration example](/configuration/moonraker_conf) where this belongs.
 
 ## [data_store] block
 

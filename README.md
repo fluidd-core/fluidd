@@ -40,6 +40,6 @@ Please see the [docs](https://docs.fluidd.xyz) for help with installation and co
 A big thank you to:
 
 - the [Voron Community](http://vorondesign.com/)
-- Kevin O'Connor for [Klipper](https://github.com/KevinOConnor/klipper)
+- Kevin O'Connor for [Klipper](https://github.com/Klipper3d/klipper)
 - Eric Callahan for [Moonraker](https://github.com/Arksine/moonraker)
 - Ray for [MainsailOS](https://github.com/raymondh2/MainsailOS)
