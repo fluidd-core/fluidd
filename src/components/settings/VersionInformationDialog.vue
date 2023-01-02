@@ -53,7 +53,7 @@
                     {{ commit.subject }}
                   </div>
                   <div class="secondary--text">
-                    <!-- https://github.com/KevinOConnor/klipper/commits?author=KevinOConnor -->
+                    <!-- https://github.com/Klipper3D/klipper/commits?author=KevinOConnor -->
                     <a
                       class="secondary--text"
                       :href="`${baseUrl}/commits/${component.branch}`"
