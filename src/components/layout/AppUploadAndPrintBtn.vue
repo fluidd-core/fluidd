@@ -14,7 +14,7 @@
           @click="uploadFile.click()"
         >
           <v-icon>
-            $fileUpload
+            $progressUpload
           </v-icon>
         </app-btn>
       </template>
