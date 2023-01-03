@@ -50,21 +50,23 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item
-          v-if="notifications.length > 0"
-          :disabled="clearableNotifications.length <= 0"
-          @click="handleClearAll"
-        >
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action class="notification-clear-all">
-            <v-icon small>
-              $close
-            </v-icon>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider v-if="notifications.length > 0" />
+        <template v-else-if="notifications.length > 0">
+          <v-list-item
+            :disabled="clearableNotifications.length <= 0"
+            @click="handleClearAll"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action class="notification-clear-all">
+              <v-icon small>
+                $close
+              </v-icon>
+            </v-list-item-action>
+          </v-list-item>
+
+          <v-divider />
+        </template>
 
         <template
           v-for="(n, i) in notifications"
@@ -283,6 +285,10 @@ export default class AppNotificationMenu extends Vue {
 
   .theme--light :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-description) {
     color: rgba(0, 0, 0, 0.60);
+  }
+
+  :deep(.notification-description) {
+    -webkit-line-clamp: 5;
   }
 
   :deep(.notification-success),
