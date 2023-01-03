@@ -71,7 +71,7 @@
 
       <div v-if="authenticated && socketConnected && showUploadAndPrint">
         <app-upload-and-print-btn
-          :disabled="printerPrinting || printerPaused"
+          :disabled="printerPrinting || printerPaused || !klippyReady"
           @upload="handleUploadAndPrint"
         />
       </div>
