@@ -153,7 +153,8 @@
 
 <script lang="ts">
 import { AppNotification } from '@/store/notifications/types'
-import { Component, Vue } from 'vue-property-decorator'
+import isSetAppBadgeSupported from '@/util/is-set-app-badge-supported'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import AppAnnouncementDismissMenu from './AppAnnouncementDismissMenu.vue'
 
 @Component({
@@ -171,6 +172,13 @@ export default class AppNotificationMenu extends Vue {
   get notificationsCounter (): number {
     const notifications: AppNotification[] = this.notifications.filter(n => !n.noCount)
     return notifications.length
+  }
+
+  @Watch('notificationsCounter')
+  onNotificationsCounter (value: number) {
+    if (isSetAppBadgeSupported(navigator)) {
+      navigator.setAppBadge(value)
+    }
   }
 
   get clearableNotifications (): AppNotification[] {
