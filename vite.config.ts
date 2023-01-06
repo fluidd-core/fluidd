@@ -75,6 +75,30 @@ export default defineConfig({
             type: 'image/png',
             purpose: 'maskable'
           }
+        ],
+        shortcuts: [
+          {
+            name: 'Configuration',
+            url: '/#/configure',
+            icons: [
+              {
+                src: '/img/icons/shortcut-configuration-96x96.png',
+                sizes: '96x96',
+                type: 'image/png'
+              }
+            ]
+          },
+          {
+            name: 'Settings',
+            url: '/#/settings',
+            icons: [
+              {
+                src: '/img/icons/shortcut-settings-96x96.png',
+                sizes: '96x96',
+                type: 'image/png'
+              }
+            ]
+          }
         ]
       },
       devOptions: {
