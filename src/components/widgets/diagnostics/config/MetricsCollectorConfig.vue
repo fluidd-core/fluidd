@@ -49,28 +49,19 @@
       />
     </app-setting>
 
-    <v-dialog
+    <app-dialog
       v-if="browserOpen"
       v-model="browserOpen"
+      :title="$t('app.general.title.metrics_explorer')"
       :max-width="1200"
-      scrollable
+      no-actions
     >
-      <v-form>
-        <v-card>
-          <v-card-title class="card-heading py-2">
-            <span class="focus--text">{{ $t('app.general.title.metrics_explorer') }}</span>
-          </v-card-title>
-
-          <v-divider />
-
-          <v-card-text>
-            <state-explorer
-              @input="handleExplorerClick"
-            />
-          </v-card-text>
-        </v-card>
-      </v-form>
-    </v-dialog>
+      <v-card-text>
+        <state-explorer
+          @input="handleExplorerClick"
+        />
+      </v-card-text>
+    </app-dialog>
   </v-card>
 </template>
 

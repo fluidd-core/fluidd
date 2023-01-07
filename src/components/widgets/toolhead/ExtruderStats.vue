@@ -111,7 +111,8 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get estimatedMaxSpeed (): number {
-    return Math.round(this.estimatedVolumetricFlow / this.nozzleDiameter / this.layerHeight * 10) / 10
+    const stadiumArea = this.layerHeight * (this.nozzleDiameter + this.layerHeight * (Math.PI / 4 - 1))
+    return Math.round(this.estimatedVolumetricFlow / stadiumArea * 10) / 10
   }
 }
 </script>

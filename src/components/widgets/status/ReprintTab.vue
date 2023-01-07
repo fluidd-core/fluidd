@@ -29,18 +29,20 @@
 
             <!-- If the item exists, but has no thumbnail data. -->
             <v-icon
-              v-if="item.exists && !item.metadata.thumbnails"
+              v-else-if="!item.metadata.thumbnails?.length"
               class="mr-2"
+              color="secondary"
             >
-              $fileDocument
+              $file
             </v-icon>
 
             <!-- If the item exists, and we have thumbnail data. -->
             <img
-              v-if="item.exists && item.metadata.thumbnails && item.metadata.thumbnails.length"
+              v-else
               class="mr-2 file-icon-thumb"
               :src="getThumbUrl(item.metadata.thumbnails, getFilePaths(item.filename).path, false, item.metadata.modified)"
               :width="24"
+              @error="handleJobThumbnailError(item)"
             >
           </td>
 
@@ -90,6 +92,7 @@ import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import getFilePaths from '@/util/get-file-paths'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
+import { HistoryItem } from '@/store/history/types'
 
 @Component({
   components: {
@@ -115,6 +118,10 @@ export default class ReprintTab extends Mixins(StateMixin, FilesMixin) {
       // { text: this.$tc('app.general.table.header.start_time'), value: 'start_time', sortable: false }
     ]
     return headers
+  }
+
+  handleJobThumbnailError (job: HistoryItem) {
+    this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 }
 </script>

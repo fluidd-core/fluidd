@@ -4,6 +4,7 @@ import VueRouter, { NavigationGuardNext, Route, RouteConfig } from 'vue-router'
 // Views
 import Dashboard from '@/views/Dashboard.vue'
 import Console from '@/views/Console.vue'
+import GcodePreview from '@/views/GcodePreview.vue'
 import Jobs from '@/views/Jobs.vue'
 import Tune from '@/views/Tune.vue'
 import Diagnostics from '@/views/Diagnostics.vue'
@@ -126,6 +127,11 @@ const routes: Array<RouteConfig> = [
     component: FullscreenCamera
   },
   {
+    path: '/preview',
+    name: 'Gcode Preview',
+    component: GcodePreview
+  },
+  {
     path: '/icons',
     name: 'Icons',
     component: Icons
@@ -154,7 +160,7 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  router.app.$store.commit('config/setContainerColumnCount', 2)
+  router.app?.$store.commit('config/setContainerColumnCount', 2)
   next()
 })
 

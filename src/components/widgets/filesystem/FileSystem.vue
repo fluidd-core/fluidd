@@ -68,6 +68,7 @@
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
       @view-thumbnail="handleViewThumbnail"
+      @enqueue="handleEnqueue"
     />
 
     <file-editor-dialog
@@ -303,24 +304,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
       {
         text: this.$t('app.general.table.header.name'),
-        value: 'name',
-        filter: (value: string) => {
-          for (const filter of this.filters) {
-            switch (filter) {
-              case 'hidden_files':
-                if (value.match(/^\.(?!\.$)/)) {
-                  return false
-                }
-                break
-              case 'klipper_backup_files':
-                if (value.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
-                  return false
-                }
-                break
-            }
-          }
-          return true
-        }
+        value: 'name'
       }
     ]
 
@@ -348,18 +332,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         {
           text: this.$t('app.general.table.header.last_printed'),
           value: 'print_start_time',
-          filter: (value: string, search: string | null, item: FileBrowserEntry | AppFileWithMeta) => {
-            for (const filter of this.filters) {
-              switch (filter) {
-                case 'print_start_time':
-                  if (item.type === 'file' && value !== null) {
-                    return false
-                  }
-                  break
-              }
-            }
-            return true
-          },
           configurable: true
         }
       ]
@@ -413,7 +385,35 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return this.transformTimelapseItems(files)
     }
 
-    return files
+    const filteredFiles = files.filter(file => {
+      if (file.type !== 'file') {
+        return true
+      }
+
+      for (const filter of this.filters) {
+        switch (filter) {
+          case 'hidden_files':
+            if (file.name?.match(/^\.(?!\.$)/)) {
+              return false
+            }
+            break
+          case 'klipper_backup_files':
+            if (file.name?.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
+              return false
+            }
+            break
+          case 'print_start_time':
+            if (file.print_start_time !== null) {
+              return false
+            }
+            break
+        }
+      }
+
+      return true
+    })
+
+    return filteredFiles
   }
 
   getAllFiles (): FileBrowserEntry[] {
@@ -874,6 +874,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.sendGcode(`M141 S${file.chamber_temp}`)
       }
     }
+  }
+
+  handleEnqueue (file: AppFileWithMeta) {
+    if (this.disabled) return
+    const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
+    SocketActions.serverJobQueuePostJob([filepath])
   }
 
   /**

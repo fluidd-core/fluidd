@@ -11,8 +11,6 @@
       xl="2"
     >
       <v-form
-        ref="form"
-        v-model="valid"
         @submit.prevent="handleLogin"
       >
         <div class="text-center">
@@ -111,7 +109,6 @@ import { InitConfig } from '@/store/config/types'
 export default class Login extends Vue {
   username = ''
   password = ''
-  valid = true
   error = false
   loading = false
   source = 'moonraker'

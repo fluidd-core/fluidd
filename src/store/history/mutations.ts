@@ -48,6 +48,22 @@ export const mutations: MutationTree<HistoryState> = {
     }
   },
 
+  setClearHistoryThumbnails (state, payload: string) {
+    if (payload) {
+      const i = state.jobs.findIndex(job => job.job_id === payload)
+      if (i >= 0) {
+        const job = state.jobs[i]
+        Vue.set(state.jobs, i, {
+          ...job,
+          metadata: {
+            ...job.metadata,
+            thumbnails: []
+          }
+        })
+      }
+    }
+  },
+
   setDeleteJob (state, payload: string[]) {
     if (payload) {
       payload.forEach((job_id) => {

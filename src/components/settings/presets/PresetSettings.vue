@@ -64,7 +64,7 @@
       </template>
 
       <preset-dialog
-        v-if="dialogState.preset"
+        v-if="dialogState.active"
         v-model="dialogState.active"
         :preset="dialogState.preset"
         @save="handleSavePreset"

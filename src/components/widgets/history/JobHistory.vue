@@ -73,18 +73,20 @@
 
         <!-- If the item exists, but has no thumbnail data. -->
         <v-icon
-          v-if="item.exists && !item.metadata.thumbnails"
+          v-else-if="!item.metadata.thumbnails?.length"
           class="mr-2"
+          color="secondary"
         >
-          $fileDocument
+          $file
         </v-icon>
 
         <!-- If the item exists, and we have thumbnail data. -->
         <img
-          v-if="item.exists && item.metadata.thumbnails && item.metadata.thumbnails.length"
+          v-else
           class="mr-2 file-icon-thumb"
           :src="getThumbUrl(item.metadata.thumbnails, getFilePaths(item.filename).path, false, item.metadata.modified)"
           :width="24"
+          @error="handleJobThumbnailError(item)"
         >
       </template>
 
@@ -244,6 +246,10 @@ export default class JobHistory extends Mixins(FilesMixin) {
 
   handleRemoveJob (job: HistoryItem) {
     SocketActions.serverHistoryDeleteJob(job.job_id)
+  }
+
+  handleJobThumbnailError (job: HistoryItem) {
+    this.$store.dispatch('history/clearHistoryThumbnails', job.job_id)
   }
 
   isExpanded (row: HistoryItem) {

@@ -8,6 +8,5 @@ permalink: /installation
 
 # Installation
 
-For a single printer instance, the easiest approach to installing Fluidd is
-by flashing FluiddPI.
+The recommended way to install Fluidd is to use KIAUH.
 {: .fs-6 .fw-300 }
