@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.23.0](https://github.com/fluidd-core/fluidd/compare/v1.22.2...v1.23.0) (2023-01-07)
+
+
+### Features
+
+* adds Moonraker Job Queue Support ([#448](https://github.com/fluidd-core/fluidd/issues/448)) ([6cd1227](https://github.com/fluidd-core/fluidd/commit/6cd1227ba1d4be24c14bf226bf1ebfaa7f17a41c))
+* adds PWA shortcuts ([c278f8d](https://github.com/fluidd-core/fluidd/commit/c278f8d82a1e027f3694d6ff8d7b2171068c559d))
+* allow Fluidd to run fully offline ([#986](https://github.com/fluidd-core/fluidd/issues/986)) ([e91af48](https://github.com/fluidd-core/fluidd/commit/e91af487919a2d3f8d3f96c954ad08c975fb1106))
+* fullscreen Gcode Preview ([#999](https://github.com/fluidd-core/fluidd/issues/999)) ([decf161](https://github.com/fluidd-core/fluidd/commit/decf1611f1ac8b5a7048bbc8055d74272f395de4))
+* **i18n-JA:** update Japanese language ([#988](https://github.com/fluidd-core/fluidd/issues/988)) ([281cb06](https://github.com/fluidd-core/fluidd/commit/281cb069d0cf97fde69a0c6eedff992609cf5f8d))
+* show notifications count on app badge ([16fd9ef](https://github.com/fluidd-core/fluidd/commit/16fd9efb6a5e4937e17c5ff8178f2870adb2b74e))
+
+
+### Bug Fixes
+
+* check type when filtering prefixed sensors ([#991](https://github.com/fluidd-core/fluidd/issues/991)) ([920d817](https://github.com/fluidd-core/fluidd/commit/920d8176ceaf51e1b04f7b09ff14e54d199d494a))
+* derive estimated max speed from stadium area ([a33732d](https://github.com/fluidd-core/fluidd/commit/a33732d3e30cc04e400617b13517f95f87a141c5))
+* fallback to icon when history thumbnail fails ([#997](https://github.com/fluidd-core/fluidd/issues/997)) ([d2b6da2](https://github.com/fluidd-core/fluidd/commit/d2b6da2f83fb775bd5e9a92fdbda2521282ee047))
+* mitigates Vuetify bug filtering items ahead ([#992](https://github.com/fluidd-core/fluidd/issues/992)) ([7e477ee](https://github.com/fluidd-core/fluidd/commit/7e477eeede536a8e160cd16bf15b5b9a82a7a977))
+* only validate enabled fields in PresetDialog ([#995](https://github.com/fluidd-core/fluidd/issues/995)) ([a4aeb2e](https://github.com/fluidd-core/fluidd/commit/a4aeb2e092a47679cb9abed0969f570ec21d2684))
+* sets maximum notifications lines to 5 ([#1002](https://github.com/fluidd-core/fluidd/issues/1002)) ([6dba642](https://github.com/fluidd-core/fluidd/commit/6dba642f0347b3a8aa2d2f84c30da5264b7a8f08))
+* skip init if not connected and authenticated ([ff50e72](https://github.com/fluidd-core/fluidd/commit/ff50e72b17089f702b23f212d4895c4e57e5d7f1))
+
 ## [1.22.2](https://github.com/fluidd-core/fluidd/compare/v1.22.1...v1.22.2) (2022-12-19)
 
 
