@@ -51,6 +51,10 @@ trusted_clients:
 [update_manager]
 enable_auto_refresh: True
 
+[announcements]
+subscriptions:
+  fluidd
+
 [update_manager fluidd]
 type: web
 repo: fluidd-core/fluidd

@@ -100,6 +100,17 @@ This enables the slicer upload feature, allowing PrusaSlicer, SuperSlicer and
 Cura users to directly upload gcodes. See the
 [configuration example](/configuration/moonraker_conf).
 
+## [announcements] block
+
+Enables Moonraker announcements for Fluidd, so that any important Fluidd message
+from the developers and maintainers is shown in the Fluidd notifications.
+
+```yaml
+[announcements]
+subscriptions:
+  fluidd
+```
+
 ## [update_manager] block / Automated Updates
 
 Automated updates can be configured by ensuring the following is in your
