@@ -88,6 +88,7 @@ export interface GeneralConfig {
   topNavPowerToggle: null | string;
   showManualProbeDialogAutomatically: boolean;
   showBedScrewsAdjustDialogAutomatically: boolean;
+  showScrewsTiltAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
   enableDiagnostics: boolean;
   thumbnailSize: number;

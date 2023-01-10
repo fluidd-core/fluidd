@@ -99,6 +99,9 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
+    if (payload?.status?.screws_tilt_adjust) {
+      delete payload.status.screws_tilt_adjust
+    }
     // Accept notifications, and commit the first subscribe.
     commit('socket/setAcceptNotifications', true, { root: true })
     await dispatch('onNotifyStatusUpdate', payload.status)

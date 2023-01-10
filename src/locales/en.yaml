@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       active: active
+      base: base
       box_scale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
@@ -193,6 +194,7 @@ app:
       restart_service_moonraker: Restart Moonraker
       resume: Resume
       retract: Retract
+      retry: Retry
       return_dashboard: Return to the dashboard
       save: Save
       save_as: Save As
@@ -599,6 +601,7 @@ app:
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
+      show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust dialog automatically
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -620,6 +623,7 @@ app:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
+      show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
   socket:
     msg:
       connecting: Connecting to moonraker...
@@ -663,6 +667,7 @@ app:
     title:
       bed_screws_adjust: Bed Screws Adjust
       manual_probe: Manual Probe
+      screws_tilt_adjust: Screws Tilt Adjust
     tooltip:
       absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)

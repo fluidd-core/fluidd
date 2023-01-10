@@ -55,6 +55,7 @@ export const defaultState = (): ConfigState => {
         topNavPowerToggle: null,
         showManualProbeDialogAutomatically: true,
         showBedScrewsAdjustDialogAutomatically: true,
+        showScrewsTiltAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         enableDiagnostics: false,
         thumbnailSize: 32

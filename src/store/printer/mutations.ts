@@ -35,6 +35,10 @@ export const mutations: MutationTree<PrinterState> = {
     state.printer.endstops = {}
   },
 
+  setClearScrewsTiltAdjust (state) {
+    state.printer.screws_tilt_adjust = {}
+  },
+
   setResetCurrentFile (state) {
     const newState = defaultState().printer.current_file
     consola.debug('resetting current file', newState)
