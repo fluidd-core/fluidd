@@ -672,10 +672,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.getGcode(file)
       .then(response => response?.data)
       .then((gcode) => {
-        // If we aren't on the dashboard, push the user back there.
-        if (this.$router.currentRoute.path !== '/') {
-          this.$router.push({ path: '/' })
+        if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
+          this.$router.push({ path: '/preview' })
         }
+
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode

@@ -189,8 +189,11 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    const layoutName = this.$store.getters['layout/getSpecificLayoutName']
-    return (this.$store.getters['layout/isEnabledInLayout'](layoutName, 'gcode-preview-card') && this.root === 'gcodes')
+    return (
+      this.file.type === 'file' &&
+      this.file.extension === 'gcode' &&
+      this.root === 'gcodes'
+    )
   }
 
   get supportsJobQueue (): boolean {
