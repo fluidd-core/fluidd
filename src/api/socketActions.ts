@@ -570,6 +570,35 @@ export const SocketActions = {
     )
   },
 
+  async serverFilesCopy (source: string, dest: string) {
+    const wait = Waits.onFileSystem
+    baseEmit(
+      'server.files.copy', {
+        dispatch: 'void',
+        wait,
+        params: {
+          source,
+          dest
+        }
+      }
+    )
+  },
+
+  async serverFilesZip (dest: string, items: string[], store_only?: boolean) {
+    const wait = Waits.onFileSystem
+    baseEmit(
+      'server.files.zip', {
+        dispatch: 'void',
+        wait,
+        params: {
+          dest,
+          items,
+          store_only
+        }
+      }
+    )
+  },
+
   /**
    * Create a directory.
    * Root should be included in the path.

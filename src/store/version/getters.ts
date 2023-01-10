@@ -73,9 +73,9 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   getCommitHistory: (state) => (component: string) => {
     // This is only relevant for certain types.
-    if (state.version_info[component] && isOfType<HashVersion>(state.version_info[component], 'git_messages')) {
-      const c = state.version_info[component] as HashVersion
-      const result = [...c.commits_behind]
+    const componentVersionInfo = state.version_info[component]
+    if (state.version_info[component] && isOfType<HashVersion>(componentVersionInfo, 'git_messages')) {
+      const result = [...componentVersionInfo.commits_behind]
         .reduce((groups, commitItem) => {
           const dateAndTime = new Date(+commitItem.date * 1000)
           const dateOnly = +(new Date(dateAndTime.getFullYear(), dateAndTime.getMonth(), dateAndTime.getDate()))

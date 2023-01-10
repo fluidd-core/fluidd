@@ -32,6 +32,7 @@
       v-if="selected.length > 0"
       :path="visiblePath"
       @remove="handleRemove(selected)"
+      @create-zip="handleCreateZip(selected)"
     />
 
     <file-system-browser
@@ -69,6 +70,7 @@
       @preview-gcode="handlePreviewGcode"
       @view-thumbnail="handleViewThumbnail"
       @enqueue="handleEnqueue"
+      @create-zip="handleCreateZip"
     />
 
     <file-editor-dialog
@@ -880,6 +882,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
     const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
     SocketActions.serverJobQueuePostJob([filepath])
+  }
+
+  handleCreateZip (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const dest = Array.isArray(file)
+      ? `${this.currentPath}/${Date.now()}.zip`
+      : `${this.currentPath}/${file.name}_${Date.now()}.zip`
+
+    const items = (Array.isArray(file) ? file : [file])
+      .map(item => `${this.currentPath}/${item.name}`)
+
+    SocketActions.serverFilesZip(dest, items)
   }
 
   /**

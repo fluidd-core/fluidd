@@ -13,6 +13,7 @@
           :roots="['config']"
           :max-height="816"
           name="configure"
+          bulk-actions
         />
       </collapsable-card>
     </v-col>
