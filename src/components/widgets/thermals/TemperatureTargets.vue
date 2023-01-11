@@ -25,7 +25,7 @@
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="klippyReady">
         <tr
           v-for="item in heaters"
           :key="item.name"
@@ -205,7 +205,6 @@
         </tr>
       </tbody>
     </v-simple-table>
-    <v-divider v-if="chartVisible" />
   </div>
 </template>
 
@@ -245,10 +244,6 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   get chartSelectedLegends () {
     return this.$store.getters['charts/getSelectedLegends']
-  }
-
-  get chartVisible () {
-    return this.$store.state.config.uiSettings.general.chartVisible
   }
 
   get showRateOfChange () {
