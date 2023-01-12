@@ -64,7 +64,7 @@
                 :small="dense"
                 :color="(item.type === 'file') ? 'grey' : 'primary'"
               >
-                {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
+                {{ getItemIcon(item) }}
               </v-icon>
               <img
                 v-else
@@ -380,6 +380,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..')).length + 1 === this.files.length
     ) {
       this.selectedItems = this.files
+    }
+  }
+
+  getItemIcon (item: FileBrowserEntry) {
+    if (item.type === 'file') {
+      if (item.extension === 'zip') {
+        return '$fileZip'
+      } else {
+        return '$file'
+      }
+    } else if (item.name === '..') {
+      return '$folderUp'
+    } else {
+      return '$folder'
     }
   }
 

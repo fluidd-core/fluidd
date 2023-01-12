@@ -146,6 +146,7 @@ app:
       clear_profile: Clear Profile
       close: Close
       config_reference: Config Reference
+      create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
       edit: Edit
