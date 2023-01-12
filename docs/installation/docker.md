@@ -2,7 +2,7 @@
 layout: default
 title: Docker
 parent: Installation
-nav_order: 3
+nav_order: 2
 permalink: /installation/docker
 ---
 
