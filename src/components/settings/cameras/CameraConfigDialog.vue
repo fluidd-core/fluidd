@@ -91,6 +91,21 @@
 
     <v-divider />
 
+    <template v-if="camera.service?.startsWith('mjpegstreamer')">
+      <app-setting :title="$t('app.setting.label.camera_crowsnest_served')">
+        <v-switch
+          v-model="camera.isCrowsnestServed"
+          filled
+          dense
+          hide-details="auto"
+          item-value="value"
+          item-text="text"
+        />
+      </app-setting>
+
+      <v-divider />
+    </template>
+
     <template v-if="camera.service === 'mjpegstreamer-adaptive'">
       <app-setting
 
@@ -138,6 +153,10 @@
         :rules="[
           $rules.required
         ]"
+        :success="urlReachable === true"
+        :error="urlReachable === false"
+        :messages="urlMessage"
+        @input="handleUrlChange"
       />
     </app-setting>
 
@@ -168,6 +187,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
+import { Debounce } from 'vue-debounce-decorator'
 
 @Component({})
 export default class CameraConfigDialog extends Vue {
@@ -177,9 +197,41 @@ export default class CameraConfigDialog extends Vue {
   @Prop({ type: Object, required: true })
   readonly camera!: CameraConfig
 
+  urlReachable: boolean | null = null
+  urlMessage = ''
+
+  created () {
+    if (this.camera.urlStream) {
+      this.handleUrlChange(this.camera.urlStream)
+    }
+  }
+
   handleSave () {
     this.$emit('save', this.camera)
     this.open = false
+  }
+
+  @Debounce({ time: 200 })
+  async handleUrlChange (input: string) {
+    if (this.camera.service?.startsWith('mjpegstreamer')) {
+      let servedByCrowsnest = false
+
+      try {
+        const fetchResult = await fetch(input)
+        this.urlReachable = fetchResult.ok
+        if (fetchResult.headers.has('X-UStreamer-Online')) {
+          servedByCrowsnest = true
+        }
+      } catch (err) {
+        this.urlReachable = false
+      }
+
+      this.urlMessage = this.$tc(`app.setting.label.camera_${this.urlReachable ? 'reachable' : 'unreachable'}`)
+      if (servedByCrowsnest) {
+        this.camera.isCrowsnestServed = true
+        this.urlMessage = this.$tc('app.setting.label.camera_reachable_crowsnest')
+      }
+    }
   }
 }
 </script>

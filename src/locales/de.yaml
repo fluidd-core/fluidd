@@ -455,10 +455,14 @@ app:
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
+      camera_crowsnest_served: Mit Crowsnest betrieben
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
+      camera_reachable: Erreichbar
+      camera_reachable_crowsnest: Erreichbar - mit Crowsnest betrieben
       camera_rotate_by: Rotieren um
       camera_stream_type: Art des Kamerastreams
+      camera_unreachable: Nicht erreichbar
       camera_url: Kamera-Url
       confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen bestätigen
       confirm_on_estop: Bestätigung bei Notaus anfordern

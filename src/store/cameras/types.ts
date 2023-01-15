@@ -26,6 +26,7 @@ export interface CameraConfigWithoutId extends MoonrakerWebcamConfig {
   height?: number; // deprecated
   aspectRatio?: string;
   targetFpsIdle?: number;
+  isCrowsnestServed?: boolean;
 }
 
 export interface CameraConfig extends CameraConfigWithoutId {

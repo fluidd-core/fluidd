@@ -212,15 +212,20 @@ export default class CameraItem extends Vue {
   setUrl () {
     if (!document.hidden) {
       const type = this.camera.service
+      const isCrowsnest = this.camera.isCrowsnestServed
       const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
 
       this.cameraHeight = this.camera.height || 720
 
+      if (isCrowsnest) {
+        this.cameraFullScreenUrl = url.toString().replace('/snapshot', '/stream')
+      }
+
       if (type === 'mjpegstreamer') {
         url.searchParams.append('cacheBust', this.refresh.toString())
-        if (!url.searchParams.get('action')?.startsWith('stream')) {
+        if (!isCrowsnest && !url.searchParams.get('action')?.startsWith('stream')) {
           url.searchParams.set('action', 'stream')
         }
         this.cameraUrl = url.toString()
@@ -232,7 +237,7 @@ export default class CameraItem extends Vue {
       if (type === 'mjpegstreamer-adaptive') {
         this.request_start_time = performance.now()
         url.searchParams.append('cacheBust', this.refresh.toString())
-        if (!url.searchParams.get('action')?.startsWith('snapshot')) {
+        if (!isCrowsnest && !url.searchParams.get('action')?.startsWith('snapshot')) {
           url.searchParams.set('action', 'snapshot')
         }
         this.cameraUrl = url.toString()

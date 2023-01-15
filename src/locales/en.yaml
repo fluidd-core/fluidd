@@ -467,14 +467,18 @@ app:
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
       axes: Axes
+      camera_crowsnest_served: Served by Crowsnest
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
       camera_fullscreen_action:
         title: Fullscreen action
         embed: Embed
         rawstream: Raw stream
+      camera_reachable: Reachable
+      camera_reachable_crowsnest: Reachable - served by Crowsnest
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
+      camera_unreachable: Unreachable
       camera_url: Camera Url
       card: Card
       collector: Collector
