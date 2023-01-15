@@ -295,8 +295,13 @@ export const Filters = {
 
         [sortA, sortB] = [sortA, sortB].map(s => (s || '').toString().toLocaleLowerCase())
 
-        if (a.type === 'directory' || b.type === 'directory') {
+        if (a.type === 'directory' || b.type === 'directory' || a.type === 'file' || b.type === 'file') {
           if (a.type === b.type) {
+            if (isNaN(sortA) && isNaN(sortB) && /^\d+/.test(sortA) && /^\d+/.test(sortB)) {
+              // sort file names numerically when prefixed by numbers
+              return (parseInt(sortA.match(/^\d+/)) - parseInt(sortB.match(/^\d+/)))
+            }
+
             return stringCollator.compare(sortA, sortB)
           } else {
             return 0
