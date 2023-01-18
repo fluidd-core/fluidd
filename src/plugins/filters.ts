@@ -1,12 +1,14 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
-import { ApiConfig } from '@/store/config/types'
+import { ApiConfig, TextSortOrder } from '@/store/config/types'
 import tinycolor from '@ctrl/tinycolor'
 import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
+import { FileBrowserEntry } from '@/store/files/types'
+import versionStringCompare from '@/util/version-string-compare'
 
 /**
  * credit: taken from Vuetify source
@@ -267,46 +269,57 @@ export const Filters = {
    * are always sorted to the top.
    */
   fileSystemSort (
-    items: any,
+    items: FileBrowserEntry[],
     sortBy: string[],
     sortDesc: boolean[],
-    locale: string
+    locale: string,
+    textSortOrder: TextSortOrder
   ) {
     if (sortBy === null || !sortBy.length) return items
     const stringCollator = new Intl.Collator(locale, { sensitivity: 'accent', usage: 'sort' })
-    return items.sort((a: any, b: any) => {
-      if (a !== null && a.type === 'directory' && a.name === '..') return -1
-      if (b !== null && b.type === 'directory' && b.name === '..') return 1
+    return items.sort((a, b) => {
+      if (a.type === 'directory' && (a.name === '..' || b.type !== 'directory')) return -1
+      if (b.type === 'directory' && (b.name === '..' || a.type !== 'directory')) return 1
 
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]
 
-        let sortA = getObjectValueByPath(a, sortKey)
-        let sortB = getObjectValueByPath(b, sortKey)
+        const sortValues = [
+          getObjectValueByPath(a, sortKey),
+          getObjectValueByPath(b, sortKey)
+        ]
 
-        if (sortDesc[i]) {
-          [sortA, sortB] = [sortB, sortA]
-        }
-
-        // Check if both cannot be evaluated
-        if (sortA === null && sortB === null) {
+        // If values are equal, continue
+        if (sortValues[0] === sortValues[1]) {
           continue
         }
 
-        [sortA, sortB] = [sortA, sortB].map(s => (s || '').toString().toLocaleLowerCase())
+        // If sorting descending, reverse values
+        if (sortDesc[i]) {
+          sortValues.reverse()
+        }
 
-        if (a.type === 'directory' || b.type === 'directory') {
-          if (a.type === b.type) {
-            return stringCollator.compare(sortA, sortB)
-          } else {
-            return 0
+        // If values are of type number, compare as number
+        if (sortValues.every(x => typeof (x) === 'number' && !isNaN(x))) {
+          return sortValues[0] - sortValues[1]
+        }
+
+        const sortValuesAsString = sortValues
+          .map(s => (s || '').toString() as string)
+
+        if (textSortOrder === 'numeric-prefix') {
+          const [sortA, sortB] = sortValuesAsString
+            .map(s => s.match(/^\d+/))
+
+          // If are number prefixed, compare prefixes as number
+          if (sortA && sortB && sortA[0] !== sortB[0]) {
+            return Number(sortA[0]) - Number(sortB[0])
           }
+        } else if (textSortOrder === 'version') {
+          return versionStringCompare(sortValuesAsString[0], sortValuesAsString[1])
         }
 
-        if (sortA !== sortB) {
-          if (!isNaN(sortA) && !isNaN(sortB)) return Number(sortA) - Number(sortB)
-          return stringCollator.compare(sortA, sortB)
-        }
+        return stringCollator.compare(sortValuesAsString[0], sortValuesAsString[1])
       }
       return 0
     })

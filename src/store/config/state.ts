@@ -39,6 +39,7 @@ export const defaultState = (): ConfigState => {
         confirmOnSaveConfigAndRestart: true,
         dateFormat: 'iso',
         timeFormat: 'iso',
+        textSortOrder: 'default',
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
