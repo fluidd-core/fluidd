@@ -229,6 +229,7 @@ app:
       confirm: Confirm
       current_password: Current password
       current_user: Current user
+      default: Default
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -260,6 +261,7 @@ app:
       no_notifications: No notifications
       'on': 'On'
       'off': 'Off'
+      numeric_prefix_sort: Numeric Prefix sort
       password: Password
       partial_of_total: '%{partial} of %{total}'
       power: Power
@@ -297,6 +299,7 @@ app:
       username: Username
       variance: Variance
       velocity: Velocity
+      version_sort: Version sort
       visible: Visible
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
@@ -549,6 +552,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
+      text_sort_order: Text Sort Order
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically

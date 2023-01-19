@@ -13,7 +13,7 @@
       :disable-pagination="true"
       :loading="loading"
       :sort-desc="true"
-      :custom-sort="$filters.fileSystemSort"
+      :custom-sort="customSort"
       :search="search"
       :show-select="bulkActions"
       :no-data-text="$t('app.file_system.msg.not_found')"
@@ -345,6 +345,14 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
 
     return this.dense ? thumbnailSize / 2 : thumbnailSize
+  }
+
+  get textSortOrder () {
+    return this.$store.state.config.uiSettings.general.textSortOrder
+  }
+
+  customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {
+    return this.$filters.fileSystemSort(items, sortBy, sortDesc, locale, this.textSortOrder)
   }
 
   mounted () {
