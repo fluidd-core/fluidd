@@ -71,11 +71,14 @@
       @legendPowerClick="legendTogglePowerSelect"
     />
 
-    <thermal-chart
-      v-if="chartReady && chartVisible"
-      ref="thermalchart"
-      :height="(isMobile) ? '180px' : '260px'"
-    />
+    <template v-if="chartReady && chartVisible">
+      <v-divider />
+
+      <thermal-chart
+        ref="thermalchart"
+        :height="(isMobile) ? '180px' : '260px'"
+      />
+    </template>
   </collapsable-card>
 </template>
 

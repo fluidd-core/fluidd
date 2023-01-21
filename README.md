@@ -29,9 +29,7 @@ We have an [official docker image](https://hub.docker.com/r/cadriel/fluidd). Thi
 
 ## How to use?
 
-Fluidd is distributed as a RaspbiOS image, with Fluidd pre-installed and setup alongside its dependencies.
-
-The recommended approach is to flash a fresh image using FluiddPI.
+Fluidd can be easily installed via [KIAUH](https://github.com/th33xitus/kiauh), along with Klipper, Moonraker, and all of the required dependencies.
 
 Please see the [docs](https://docs.fluidd.xyz) for help with installation and configuration.
 

@@ -66,6 +66,18 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.text_sort_order')">
+        <v-select
+          v-model="textSortOrder"
+          filled
+          dense
+          hide-details="auto"
+          :items="availableTextSortOrders"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
@@ -251,6 +263,35 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         value: key,
         text: `${date.toLocaleTimeString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
       }))
+  }
+
+  get textSortOrder () {
+    return this.$store.state.config.uiSettings.general.textSortOrder
+  }
+
+  set textSortOrder (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.textSortOrder',
+      value,
+      server: true
+    })
+  }
+
+  get availableTextSortOrders () {
+    return [
+      {
+        value: 'default',
+        text: this.$t('app.general.label.default')
+      },
+      {
+        value: 'numeric-prefix',
+        text: this.$t('app.general.label.numeric_prefix_sort')
+      },
+      {
+        value: 'version',
+        text: this.$t('app.general.label.version_sort')
+      }
+    ]
   }
 
   get confirmOnEstop () {

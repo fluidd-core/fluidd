@@ -36,6 +36,12 @@ export const getters: GetterTree<LayoutState, RootState> = {
     return configs.find(configs => configs.id === id)?.enabled ?? false
   },
 
+  isEnabledInCurrentLayout: (state, getters) => (id: string) => {
+    const layout = getters.getSpecificLayoutName
+
+    return getters.isEnabledInLayout(layout, id)
+  },
+
   /**
    * Return a layout's container given a layout name and container name.
    */
