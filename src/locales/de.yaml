@@ -578,7 +578,7 @@ app:
       capacity: Gesamtgröße
       cpu_desc: CPU-Beschreibung
       distribution_codename: Codename
-      distribution_like: Distribution wie
+      distribution_like: Distribution basiert auf
       distribution_name: Distribution
       frequency: Frequenz
       hardware_desc: Hardwarebeschreibung
@@ -600,6 +600,7 @@ app:
       system_memory: Systemspeicher
       system_utilization: Auslastung
       total_memory: Gesamtspeicherplatz
+      operating_system: Betriebssystem
       version: Version
   tool:
     btn:

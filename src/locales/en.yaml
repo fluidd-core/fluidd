@@ -610,6 +610,7 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      operating_system: Operating System
       version: Version
   tool:
     btn:
