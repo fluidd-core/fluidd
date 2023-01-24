@@ -97,7 +97,7 @@ export interface DistroInfo {
   version_parts: DistroVersionParts;
   like: string;
   codename: string;
-  release_info: ReleaseInfo;
+  release_info?: ReleaseInfo;
 }
 
 export interface ReleaseInfo {

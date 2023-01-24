@@ -35,7 +35,7 @@
               <th>{{ $t('app.system_info.label.operating_system') }}</th>
               <td>{{ distribution.name }}</td>
             </tr>
-            <tr v-if="distribution.release_info.name">
+            <tr v-if="distribution.release_info?.name">
               <th>{{ $t('app.system_info.label.distribution_name') }}</th>
               <td>
                 {{ distribution.release_info.name }} {{ distribution.release_info.version_id }}
