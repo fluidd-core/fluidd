@@ -134,7 +134,8 @@ import {
   mdiArchive,
   mdiArchivePlus,
   mdiTrayFull,
-  mdiTrayPlus
+  mdiTrayPlus,
+  mdiFolderArrowUp
 } from '@mdi/js'
 
 /**
@@ -253,6 +254,7 @@ export const Icons = Object.freeze({
   alertCircle: mdiAlertCircle,
   folderAdd: mdiFolderPlus,
   folderUp: mdiFolderUpload,
+  folderUpload: mdiFolderArrowUp,
   folder: mdiFolder,
   fileUpload: mdiUpload,
   fileAdd: mdiFilePlus,
