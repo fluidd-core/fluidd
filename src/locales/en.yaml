@@ -91,7 +91,7 @@ app:
       not_found: No files found
       processing: Processing
     overlay:
-      label: <strong>Drag</strong> a file here
+      drag_files_folders: <strong>Drag</strong> files and folders here
     title:
       add_dir: Add Directory
       add_file: Add File
@@ -196,6 +196,8 @@ app:
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload
+      upload_files: Upload Files
+      upload_folder: Upload Folder
       upload_print: Upload & Print
       view: View
       reset_stats: Reset Stats
@@ -608,6 +610,7 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      operating_system: Operating System
       version: Version
   tool:
     btn:

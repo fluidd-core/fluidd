@@ -156,6 +156,7 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios from 'axios'
 import { AppTableHeader } from '@/types'
+import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -821,7 +822,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleUpload (files: FileList | File[], print: boolean) {
+  async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     this.$store.dispatch('wait/addWait', this.$waits.onFileSystem)
     this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
     this.$store.dispatch('wait/removeWait', this.$waits.onFileSystem)
@@ -912,8 +913,15 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   async handleDropFile (e: DragEvent) {
     this.dragState.overlay = false
-    if (e && e.dataTransfer && e.dataTransfer.files.length && !this.rootProperties.readonly) {
-      this.handleUpload(e.dataTransfer.files, false)
+
+    if (!e.dataTransfer || this.rootProperties.readonly) {
+      return
+    }
+
+    const files = await getFilesFromDataTransfer(e.dataTransfer)
+
+    if (files) {
+      this.handleUpload(files, false)
     }
   }
 }
