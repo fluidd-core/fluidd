@@ -118,7 +118,7 @@
         cols="auto"
         class="secondary--text text--lighten-1"
       >
-        {{ $t('app.general.label.requested_speed') }}
+        {{ $t('app.general.label.requested_speed') }} [ {{ liveVelocity.toFixed(2) }} mm/s ]
       </v-col>
       <v-col
         cols="auto"
@@ -149,6 +149,10 @@ export default class ToolheadPosition extends Mixins(StateMixin, ToolheadMixin) 
 
   get livePosition () {
     return this.$store.state.printer.printer.motion_report.live_position
+  }
+
+  get liveVelocity () {
+    return this.$store.state.printer.printer.motion_report.live_velocity
   }
 
   get useGcodeCoords () {
