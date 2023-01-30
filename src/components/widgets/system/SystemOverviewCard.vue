@@ -21,7 +21,7 @@
             </tr>
             <tr v-if="cpuInfo.total_memory">
               <th>{{ $t('app.system_info.label.total_memory') }}</th>
-              <td>{{ $filters.getReadableFileSizeString(cpuInfo.total_memory * 1000) }}</td>
+              <td>{{ $filters.getReadableFileSizeString(cpuInfo.total_memory * 1024) }}</td>
             </tr>
             <tr v-if="cpuInfo.hardware_desc">
               <th>{{ $t('app.system_info.label.hardware_desc') }}</th>
