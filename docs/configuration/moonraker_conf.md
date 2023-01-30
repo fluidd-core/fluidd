@@ -28,7 +28,7 @@ temperature_store_size: 600
 gcode_store_size: 1000
 
 [authorization]
-force_logins: true
+force_logins: false
 
 cors_domains:
   *.local
@@ -50,6 +50,10 @@ trusted_clients:
 
 [update_manager]
 enable_auto_refresh: True
+
+[announcements]
+subscriptions:
+  fluidd
 
 [update_manager fluidd]
 type: web

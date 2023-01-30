@@ -40,7 +40,22 @@
           >
             $fileUpload
           </v-icon>
-          {{ $t('app.general.btn.upload') }}
+          {{ $t('app.general.btn.upload_files') }}
+        </v-list-item-title>
+      </v-list-item>
+      <v-list-item
+        v-if="!readonly"
+        :disabled="disabled"
+        @click="emulateClick(false, true)"
+      >
+        <v-list-item-title>
+          <v-icon
+            small
+            left
+          >
+            $folderUpload
+          </v-icon>
+          {{ $t('app.general.btn.upload_folder') }}
         </v-list-item-title>
       </v-list-item>
       <v-list-item
@@ -101,6 +116,7 @@
 </template>
 
 <script lang="ts">
+import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 
 @Component({})
@@ -129,23 +145,23 @@ export default class FileSystemMenu extends Vue {
     return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
   }
 
-  emulateClick (startPrint: boolean) {
+  emulateClick (startPrint: boolean, folder = false) {
     this.andPrint = startPrint
     this.uploadFile.multiple = !startPrint // Can't start print with multiple files
+    this.uploadFile.webkitdirectory = folder
     this.uploadFile.click()
   }
 
-  fileChanged (e: Event) {
+  async fileChanged (e: Event) {
     const target = e.target as HTMLInputElement
-    const files = target.files
-    const fileList = []
 
-    if (target && files && files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        fileList.push(files[i])
+    if (target) {
+      const files = await getFilesWithPathFromHTMLInputElement(target)
+
+      if (files) {
+        this.$emit('upload', files, this.andPrint)
       }
 
-      this.$emit('upload', fileList, this.andPrint)
       target.value = ''
     }
   }

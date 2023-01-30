@@ -73,6 +73,26 @@
               <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="canPreviewGcode"
+              link
+              @click="$emit('preview-gcode', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$magnify</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              v-if="canCreateZip"
+              link
+              @click="$emit('create-zip', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$fileZipAdd</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t('app.general.btn.create_zip_archive') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
               v-if="file.type !== 'directory'"
               link
               @click="$emit('download', file)"
@@ -81,16 +101,6 @@
                 <v-icon>$download</v-icon>
               </v-list-item-icon>
               <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              v-if="file.type !== 'directory' && canPreviewGcode"
-              link
-              @click="$emit('preview-gcode', file)"
-            >
-              <v-list-item-icon>
-                <v-icon>$magnify</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="!rootProperties.readonly"
@@ -189,8 +199,19 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    const layoutName = this.$store.getters['layout/getSpecificLayoutName']
-    return (this.$store.getters['layout/isEnabledInLayout'](layoutName, 'gcode-preview-card') && this.root === 'gcodes')
+    return (
+      this.file.type === 'file' &&
+      this.file.extension === 'gcode' &&
+      this.root === 'gcodes'
+    )
+  }
+
+  get canCreateZip () {
+    return (
+      (this.file.type !== 'file' || this.file.extension !== 'zip') &&
+      !this.rootProperties.readonly &&
+      this.$store.getters['server/getIsMinApiVersion'](1, 1)
+    )
   }
 
   get supportsJobQueue (): boolean {

@@ -91,7 +91,7 @@ app:
       not_found: No files found
       processing: Processing
     overlay:
-      label: <strong>Drag</strong> a file here
+      drag_files_folders: <strong>Drag</strong> files and folders here
     title:
       add_dir: Add Directory
       add_file: Add File
@@ -146,6 +146,7 @@ app:
       clear_profile: Clear Profile
       close: Close
       config_reference: Config Reference
+      create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
       edit: Edit
@@ -195,6 +196,8 @@ app:
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload
+      upload_files: Upload Files
+      upload_folder: Upload Folder
       upload_print: Upload & Print
       view: View
       reset_stats: Reset Stats
@@ -228,6 +231,7 @@ app:
       confirm: Confirm
       current_password: Current password
       current_user: Current user
+      default: Default
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -259,6 +263,7 @@ app:
       no_notifications: No notifications
       'on': 'On'
       'off': 'Off'
+      numeric_prefix_sort: Numeric Prefix sort
       password: Password
       partial_of_total: '%{partial} of %{total}'
       power: Power
@@ -296,6 +301,7 @@ app:
       username: Username
       variance: Variance
       velocity: Velocity
+      version_sort: Version sort
       visible: Visible
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
@@ -548,6 +554,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
+      text_sort_order: Text Sort Order
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
@@ -603,6 +610,7 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      operating_system: Operating System
       version: Version
   tool:
     btn:

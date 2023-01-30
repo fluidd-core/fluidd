@@ -32,6 +32,7 @@
       v-if="selected.length > 0"
       :path="visiblePath"
       @remove="handleRemove(selected)"
+      @create-zip="handleCreateZip(selected)"
     />
 
     <file-system-browser
@@ -69,6 +70,7 @@
       @preview-gcode="handlePreviewGcode"
       @view-thumbnail="handleViewThumbnail"
       @enqueue="handleEnqueue"
+      @create-zip="handleCreateZip"
     />
 
     <file-editor-dialog
@@ -154,6 +156,7 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios from 'axios'
 import { AppTableHeader } from '@/types'
+import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -672,10 +675,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.getGcode(file)
       .then(response => response?.data)
       .then((gcode) => {
-        // If we aren't on the dashboard, push the user back there.
-        if (this.$router.currentRoute.path !== '/') {
-          this.$router.push({ path: '/' })
+        if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
+          this.$router.push({ path: '/preview' })
         }
+
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode
@@ -819,7 +822,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleUpload (files: FileList | File[], print: boolean) {
+  async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     this.$store.dispatch('wait/addWait', this.$waits.onFileSystem)
     this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
     this.$store.dispatch('wait/removeWait', this.$waits.onFileSystem)
@@ -882,6 +885,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.serverJobQueuePostJob([filepath])
   }
 
+  handleCreateZip (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const dest = Array.isArray(file)
+      ? `${this.currentPath}/${Date.now()}.zip`
+      : `${this.currentPath}/${file.name}_${Date.now()}.zip`
+
+    const items = (Array.isArray(file) ? file : [file])
+      .map(item => `${this.currentPath}/${item.name}`)
+
+    SocketActions.serverFilesZip(dest, items)
+  }
+
   /**
    * ===========================================================================
    * Drag handling.
@@ -899,8 +913,15 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   async handleDropFile (e: DragEvent) {
     this.dragState.overlay = false
-    if (e && e.dataTransfer && e.dataTransfer.files.length && !this.rootProperties.readonly) {
-      this.handleUpload(e.dataTransfer.files, false)
+
+    if (!e.dataTransfer || this.rootProperties.readonly) {
+      return
+    }
+
+    const files = await getFilesFromDataTransfer(e.dataTransfer)
+
+    if (files) {
+      this.handleUpload(files, false)
     }
   }
 }

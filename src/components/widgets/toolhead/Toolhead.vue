@@ -19,11 +19,13 @@
       </v-row>
     </v-card-text>
 
-    <v-divider />
+    <template v-if="!printerPrinting">
+      <v-divider />
 
-    <extruder-stats />
+      <extruder-stats />
 
-    <v-divider />
+      <v-divider />
+    </template>
 
     <v-card-text>
       <speed-and-flow-adjust />

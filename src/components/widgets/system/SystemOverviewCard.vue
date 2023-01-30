@@ -7,41 +7,47 @@
       <v-col>
         <v-simple-table dense>
           <tbody>
-            <tr>
+            <tr v-if="printerInfo.hostname">
               <th>{{ $t('app.system_info.label.hostname') }}</th>
               <td>{{ printerInfo.hostname }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.model">
               <th>{{ $t('app.system_info.label.model') }}</th>
               <td>{{ cpuInfo.model }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.cpu_desc">
               <th>{{ $t('app.system_info.label.cpu_desc') }}</th>
               <td>{{ cpuInfo.cpu_desc }}</td>
             </tr>
             <tr v-if="cpuInfo.total_memory">
               <th>{{ $t('app.system_info.label.total_memory') }}</th>
-              <td>{{ $filters.getReadableFileSizeString(cpuInfo.total_memory * 1000) }}</td>
+              <td>{{ $filters.getReadableFileSizeString(cpuInfo.total_memory * 1024) }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.hardware_desc">
               <th>{{ $t('app.system_info.label.hardware_desc') }}</th>
               <td>{{ cpuInfo.hardware_desc }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.bits && cpuInfo.processor && cpuInfo.cpu_count">
               <th>{{ $t('app.system_info.label.processor_desc') }}</th>
               <td>{{ cpuInfo.bits }} {{ cpuInfo.processor }} with {{ cpuInfo.cpu_count }} cores</td>
             </tr>
-            <tr>
-              <th>{{ $t('app.system_info.label.distribution_name') }}</th>
+            <tr v-if="distribution.name">
+              <th>{{ $t('app.system_info.label.operating_system') }}</th>
               <td>{{ distribution.name }}</td>
             </tr>
-            <tr>
-              <th>{{ $t('app.system_info.label.distribution_codename') }}</th>
-              <td>{{ distribution.codename }}</td>
+            <tr v-if="distribution.release_info?.name">
+              <th>{{ $t('app.system_info.label.distribution_name') }}</th>
+              <td>
+                {{ distribution.release_info.name }} {{ distribution.release_info.version_id }}
+              </td>
             </tr>
-            <tr>
+            <tr v-if="distribution.like">
               <th>{{ $t('app.system_info.label.distribution_like') }}</th>
               <td>{{ distribution.like }}</td>
+            </tr>
+            <tr v-if="distribution.codename">
+              <th>{{ $t('app.system_info.label.distribution_codename') }}</th>
+              <td>{{ distribution.codename }}</td>
             </tr>
           </tbody>
         </v-simple-table>

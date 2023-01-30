@@ -62,6 +62,7 @@ export interface GeneralConfig {
   confirmOnSaveConfigAndRestart: boolean;
   dateFormat: string;
   timeFormat: string;
+  textSortOrder: TextSortOrder;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
@@ -76,6 +77,8 @@ export interface GeneralConfig {
   enableDiagnostics: boolean;
   thumbnailSize: number;
 }
+
+export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
 

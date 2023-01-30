@@ -3,6 +3,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
+import { FileWithPath } from '@/util/file-system-entry'
 
 @Component
 export default class FilesMixin extends Vue {
@@ -208,11 +209,12 @@ export default class FilesMixin extends Vue {
   async uploadFile (file: File, path: string, root: string, andPrint: boolean, options?: AxiosRequestConfig) {
     const formData = new FormData()
     // let filename = file.name.replace(' ', '_')
-    let filepath = `${path}/${file.name}`
+    let filepath = `${path}${file.name}`
     filepath = (filepath.startsWith('/'))
       ? filepath
       : '/' + filepath
-    formData.append('file', file, filepath)
+    formData.append('file', file, file.name)
+    formData.append('path', path)
     formData.append('root', root)
     if (andPrint) {
       formData.append('print', 'true')
@@ -266,17 +268,33 @@ export default class FilesMixin extends Vue {
       })
   }
 
+  getFullPathAndFile (rootPath: string, file: File | FileWithPath): [string, File] {
+    if ('path' in file) {
+      return [
+        `${rootPath}/${file.path}`,
+        file.file
+      ]
+    } else {
+      return [
+        rootPath,
+        file
+      ]
+    }
+  }
+
   // Upload some files.
-  async uploadFiles (files: FileList | File[], path: string, root: string, andPrint: boolean) {
+  async uploadFiles (files: FileList | File[] | FileWithPath[], path: string, root: string, andPrint: boolean) {
     // For each file, adds the associated state.
     for (const file of files) {
-      let filepath = `${path}/${file.name}`
+      const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
+
+      let filepath = `${fullPath}${fileObject.name}`
       filepath = (filepath.startsWith('/'))
         ? filepath
         : '/' + filepath
       this.$store.dispatch('files/updateFileUpload', {
         filepath,
-        size: file.size,
+        size: fileObject.size,
         loaded: 0,
         percent: 0,
         speed: 0,
@@ -290,7 +308,9 @@ export default class FilesMixin extends Vue {
     // processing of each file.
     if (files.length > 1) andPrint = false
     for (const file of files) {
-      let filepath = `${path}/${file.name}`
+      const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
+
+      let filepath = `${fullPath}${fileObject.name}`
       filepath = (filepath.startsWith('/'))
         ? filepath
         : '/' + filepath
@@ -299,7 +319,7 @@ export default class FilesMixin extends Vue {
       if (fileState && !fileState?.cancelled) {
         try {
           this.cancelTokenSource = Axios.CancelToken.source()
-          await this.uploadFile(file, path, root, andPrint, {
+          await this.uploadFile(fileObject, fullPath, root, andPrint, {
             cancelToken: this.cancelTokenSource.token
           })
         } catch (e) {

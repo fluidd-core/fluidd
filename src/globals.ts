@@ -131,8 +131,11 @@ import {
   mdiLayers,
   mdiLayersPlus,
   mdiFolderOpen,
+  mdiArchive,
+  mdiArchivePlus,
   mdiTrayFull,
-  mdiTrayPlus
+  mdiTrayPlus,
+  mdiFolderArrowUp
 } from '@mdi/js'
 
 /**
@@ -251,6 +254,7 @@ export const Icons = Object.freeze({
   alertCircle: mdiAlertCircle,
   folderAdd: mdiFolderPlus,
   folderUp: mdiFolderUpload,
+  folderUpload: mdiFolderArrowUp,
   folder: mdiFolder,
   fileUpload: mdiUpload,
   fileAdd: mdiFilePlus,
@@ -347,6 +351,8 @@ export const Icons = Object.freeze({
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
   folderOpen: mdiFolderOpen,
+  fileZip: mdiArchive,
+  fileZipAdd: mdiArchivePlus,
   jobQueue: mdiTrayFull,
   enqueueJob: mdiTrayPlus
 })

@@ -6,6 +6,14 @@
   >
     <v-expansion-panel>
       <v-expansion-panel-header>
+        <template #actions>
+          <v-icon
+            small
+            class="my-1 mr-2"
+          >
+            $expand
+          </v-icon>
+        </template>
         <template #default="{ open }">
           <v-row no-gutters>
             <v-col

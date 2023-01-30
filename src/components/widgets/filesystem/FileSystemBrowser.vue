@@ -13,7 +13,7 @@
       :disable-pagination="true"
       :loading="loading"
       :sort-desc="true"
-      :custom-sort="$filters.fileSystemSort"
+      :custom-sort="customSort"
       :search="search"
       :show-select="bulkActions"
       :no-data-text="$t('app.file_system.msg.not_found')"
@@ -64,7 +64,7 @@
                 :small="dense"
                 :color="(item.type === 'file') ? 'grey' : 'primary'"
               >
-                {{ (item.type === 'file' ? '$file' : item.name === '..' ? '$folderUp' : '$folder') }}
+                {{ getItemIcon(item) }}
               </v-icon>
               <img
                 v-else
@@ -347,6 +347,14 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     return this.dense ? thumbnailSize / 2 : thumbnailSize
   }
 
+  get textSortOrder () {
+    return this.$store.state.config.uiSettings.general.textSortOrder
+  }
+
+  customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {
+    return this.$filters.fileSystemSort(items, sortBy, sortDesc, locale, this.textSortOrder)
+  }
+
   mounted () {
     this.selectedItems = this.selected
   }
@@ -380,6 +388,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..')).length + 1 === this.files.length
     ) {
       this.selectedItems = this.files
+    }
+  }
+
+  getItemIcon (item: FileBrowserEntry) {
+    if (item.type === 'file') {
+      if (item.extension === 'zip') {
+        return '$fileZip'
+      } else {
+        return '$file'
+      }
+    } else if (item.name === '..') {
+      return '$folderUp'
+    } else {
+      return '$folder'
     }
   }
 
