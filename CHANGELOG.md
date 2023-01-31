@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.23.1](https://github.com/fluidd-core/fluidd/compare/v1.23.0...v1.23.1) (2023-01-30)
+
+
+### Features
+
+* Add all endpoints in config as printer instances ([#1006](https://github.com/fluidd-core/fluidd/issues/1006)) ([03185c5](https://github.com/fluidd-core/fluidd/commit/03185c5ccc0c7057908c3fca15159f4fce06e4a7))
+* adds support to create ZIP archives ([#1007](https://github.com/fluidd-core/fluidd/issues/1007)) ([9d8d36b](https://github.com/fluidd-core/fluidd/commit/9d8d36bdfdc214389a1095d652e6abbc087f55a7))
+* allow sorting text by version or prefix number ([#1013](https://github.com/fluidd-core/fluidd/issues/1013)) ([85c214e](https://github.com/fluidd-core/fluidd/commit/85c214e381717d892cd822ac23eaa3734c33af90))
+* complete folder upload ([#1015](https://github.com/fluidd-core/fluidd/issues/1015)) ([30df5ec](https://github.com/fluidd-core/fluidd/commit/30df5ec3b51e88d13d129c7b3e67824b1135ad1b))
+* show live speed while printing ([#1019](https://github.com/fluidd-core/fluidd/issues/1019)) ([414bb03](https://github.com/fluidd-core/fluidd/commit/414bb031f63a329824427169b4d0b09feefab5b1))
+* **ui:** hide blank fields in Disk Info card ([95bff0e](https://github.com/fluidd-core/fluidd/commit/95bff0e63d834a8565b48bd084e377fa830dc9d3))
+* **ui:** show content of release_info ([#1016](https://github.com/fluidd-core/fluidd/issues/1016)) ([23d3a0c](https://github.com/fluidd-core/fluidd/commit/23d3a0c3e41718c47a8b54319e6b03b1b544bd1a))
+
+
+### Bug Fixes
+
+* always show Preview Gcode in context menu ([55eb71b](https://github.com/fluidd-core/fluidd/commit/55eb71b2e0c9565d08785ab1227b983da33274a2))
+* disable temperature targets if Klipper not ready ([83bcf1e](https://github.com/fluidd-core/fluidd/commit/83bcf1e680d55074666c1096c7938265bad7c042))
+* hide extrusion estimations if printing ([9aac206](https://github.com/fluidd-core/fluidd/commit/9aac20690b05058320d5244b3879f460c493abe4))
+* hide system controls if socket disconnected ([eafcf4f](https://github.com/fluidd-core/fluidd/commit/eafcf4ff351ccf4cae237be8835d04ad622938fb))
+* mitigates console error from race condition ([a0ed423](https://github.com/fluidd-core/fluidd/commit/a0ed423705292d213192e12b65fa63529d414767))
+* total memory is always kB (1024 bytes based) ([7d510de](https://github.com/fluidd-core/fluidd/commit/7d510de56366a4dd2e5b86968df7c0f2e1833314))
+
 ## [1.23.0](https://github.com/fluidd-core/fluidd/compare/v1.22.2...v1.23.0) (2023-01-07)
 
 
