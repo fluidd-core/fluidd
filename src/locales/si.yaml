@@ -130,77 +130,77 @@ app:
         your system. Are you sure?
   general:
     btn:
-      abort: Abort
-      accept: Accept
-      add: Add
-      add_dir: Add Directory
-      add_file: Add File
-      add_printer: Add printer
-      add_to_queue: Add to Queue
-      adjust_layout: Adjust dashboard layout
-      adjusted: Adjusted
-      all: All
-      auth_unsure: Unsure why you're seeing this?
-      calibrate: Calibrate
-      cancel: Cancel
-      clear_profile: Clear Profile
-      close: Close
-      config_reference: Config Reference
-      create_zip_archive: Create ZIP Archive
-      delete: Delete
-      download: Download
-      edit: Edit
-      exit_layout: Exit layout mode
-      extrude: Extrude
+      abort: Prekini
+      accept: Sprejmi
+      add: Dodaj
+      add_dir: Dodaj mapo
+      add_file: Dodaj datoteko
+      add_printer: Dodaj tiskalnik
+      add_to_queue: Dodaj v vrsto
+      adjust_layout: Prilagodi postavitev armature
+      adjusted: Prilagojeno
+      all: Vse
+      auth_unsure: Niste prepričani, zakaj sem vam to prikazuje?
+      calibrate: Kalibriraj
+      cancel: Prekliči
+      clear_profile: Počisti profil
+      close: Zapri
+      config_reference: Sklic na konfiguracije
+      create_zip_archive: Ustvari ZIP arhiv
+      delete: Zbriši
+      download: Prenesi
+      edit: Uredi
+      exit_layout: Izhod iz načina postavitve
+      extrude: Iztisni
       filter: Filter
-      forgot_password: Forgotten your password?
-      heaters_off: Heaters off
-      job_queue: Job Queue
-      load_all: Load all
-      login: Login
-      logout: Logout
-      more_information: More information
-      pause: Pause
-      preheat: Preheat
-      presets: Presets
-      preview_gcode: Preview Gcode
-      print: Print
+      forgot_password: Ste pozabili geslo?
+      heaters_off: Izklopi grelce
+      job_queue: Vrsta opravil
+      load_all: Naloži vse
+      login: Prijava
+      logout: Odjava
+      more_information: Več informacij
+      pause: Premor
+      preheat: Predogrej
+      presets: Prednastavitev
+      preview_gcode: Predogled Gkode
+      print: Tiskaj
       quad_gantry_level: QGL
-      reboot: Reboot
-      recover: Recover
-      refresh: Refresh
-      reload: Reload
-      remove: Remove
-      remove_all: Remove All
-      rename: Rename
-      reprint: Re-Print
-      reset_file: Clear File
-      reset_layout: Reset to Default Layout
-      reset_default_layout: Reset Default Layout
-      restart_firmware: Firmware Restart
-      restart_service: Restart %{service}
-      restart_service_klipper: Restart Klipper
-      restart_service_moonraker: Restart Moonraker
-      resume: Resume
-      retract: Retract
-      return_dashboard: Return to the dashboard
-      save: Save
-      save_as: Save As
-      save_restart: Save & Restart
-      save_config_and_restart: Save config & restart
-      send: Send
-      set_color: Set Color
-      set_default_layout: Set as Default Layout
-      shutdown: Shutdown
-      snooze: Snooze
-      socket_reconnect: Re-Connect
-      socket_refresh: Force refresh
-      upload: Upload
-      upload_files: Upload Files
-      upload_folder: Upload Folder
-      upload_print: Upload & Print
-      view: View
-      reset_stats: Reset Stats
+      reboot: Ponovni zagon
+      recover: Obnovi
+      refresh: Osveži
+      reload: Ponovno naloži
+      remove: Odstrani
+      remove_all: Odstrani vse
+      rename: Preimenuj
+      reprint: Ponovno natisni
+      reset_file: Počisti datoteko
+      reset_layout: Ponastavi na privzeto postavitev
+      reset_default_layout: Ponastavi privzeto postavitev
+      restart_firmware: Ponovno zaženi MCU
+      restart_service: Ponovno zaženi %{service}
+      restart_service_klipper: Ponovno zaženi Klipper
+      restart_service_moonraker: Ponovno zaženi Moonraker
+      resume: Nadaljuj
+      retract: Umik
+      return_dashboard: Vrni se na armaturno ploščo
+      save: Shrani
+      save_as: Shrani vse
+      save_restart: Shrani & ponovno zaženi
+      save_config_and_restart: Shrani konfiguracijo & ponovno zaženi
+      send: Pošlji
+      set_color: Nastavi barvo
+      set_default_layout: Nastavi kot privzeto postavitev
+      shutdown: Ugasni
+      snooze: Dremež
+      socket_reconnect: Ponovno poveži
+      socket_refresh: Prisilna osvežitev
+      upload: Naloži
+      upload_files: Naloži datoteke
+      upload_folder: Naloži mape
+      upload_print: Naloži & tiskaj
+      view: Pogled
+      reset_stats: Ponastavi statistiko
     error:
       app_setup_link: >-
         Fluidd setup requirements can be found <a target="_blank"
@@ -382,39 +382,39 @@ app:
         status: Status
         total_duration: Total duration
     title:
-      add_chart: Add Chart
-      add_printer: Add Printer
-      bedmesh: Bed Mesh
-      bedmesh_controls: Bed Mesh Controls
-      camera: Camera | Cameras
-      config_files: Configuration Files
-      configure: Configuration
-      console: Console
-      diagnostics: Diagnostics
-      edit_chart: Edit Chart
-      endstops: Endstops
-      fans_outputs: Fans & Outputs
-      gcode_preview: Gcode Preview
-      history: History
-      home: Home
-      jobs: Jobs
-      job_queue: Job Queue
-      limits: Printer Limits
-      macros: Macros
-      metrics_explorer: Metrics Explorer
-      not_found: 404 Not Found
-      other_files: Other Files
-      pending_configuration_changes: Pending Configuration Changes
-      retract: Firmware Retraction
-      runout_sensors: Runout Sensors
-      settings: Settings
-      stats: Printer Stats
-      system: System
-      system_overview: System Information
-      temperature: Thermals
-      timelapse: Timelapse
-      tool: Tool
-      tune: Tune
+      add_chart: Dodaj graf
+      add_printer: Dodaj tiskalnik
+      bedmesh: Mreža mize
+      bedmesh_controls: Nastavitve mreže mize
+      camera: Kamera | Kamere
+      config_files: Nastavitvene datoteke
+      configure: Konfiguracije
+      console: Konzola
+      diagnostics: Diagnostika
+      edit_chart: Uredi graf
+      endstops: Končna stikala
+      fans_outputs: Ventilatorji & izhodi
+      gcode_preview: Predogled Gkode
+      history: Zgodovina
+      home: Domov
+      jobs: Opravila
+      job_queue: Opravila v vrsti
+      limits: Omejitve tiskalnika
+      macros: Makroji
+      metrics_explorer: Raziskovalec meritev
+      not_found: 404 Ni najdeno
+      other_files: Ostale datoteke
+      pending_configuration_changes: Čakam na spremembe konfiguracij
+      retract: Strojni umik
+      runout_sensors: Senzor filamenta
+      settings: Nastavitve
+      stats: Statistika tiskalnika
+      system: Sistem
+      system_overview: O sistemu
+      temperature: Temperatura
+      timelapse: Časovni zamik
+      tool: Orodje
+      tune: Uglaševanje
     tooltip:
       browse_metrics: Browse available metrics
       estop: Emergency Stop
