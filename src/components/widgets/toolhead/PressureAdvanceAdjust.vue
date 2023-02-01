@@ -7,12 +7,12 @@
       <app-slider
         :label="$t('app.general.label.pressure_advance')"
         suffix="s"
-        :value="activeExtruder.pressure_advance || 0"
+        :value="selectedExtruderStepper.pressure_advance || 0"
         :overridable="true"
-        :reset-value="activeExtruder.config_pressure_advance || 0"
+        :reset-value="selectedExtruderStepper.config_pressure_advance || 0"
         :disabled="!klippyReady"
         :locked="(!klippyReady || isMobile)"
-        :loading="hasWait($waits.onSetPressureAdvance)"
+        :loading="hasWait(`${$waits.onSetPressureAdvance}${selectedExtruderStepper.name ?? ''}`)"
         :min="0"
         :max="2"
         :step="0.0001"
@@ -26,12 +26,12 @@
       <app-slider
         :label="$t('app.general.label.smooth_time')"
         suffix="s"
-        :value="activeExtruder.smooth_time || 0"
+        :value="selectedExtruderStepper.smooth_time || 0"
         :overridable="false"
-        :reset-value="activeExtruder.config_smooth_time || 0"
+        :reset-value="selectedExtruderStepper.config_smooth_time || 0"
         :disabled="!klippyReady"
         :locked="(!klippyReady || isMobile)"
-        :loading="hasWait($waits.onSetPressureAdvance)"
+        :loading="hasWait(`${$waits.onSetPressureAdvance}${selectedExtruderStepper.name ?? ''}`)"
         :min="0"
         :max="0.2"
         :step="0.001"
@@ -42,18 +42,35 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import { ExtruderStepper } from '@/store/printer/types'
 
 @Component({})
 export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMixin) {
+  @Prop({ type: Object, required: false })
+  readonly extruderStepper?: ExtruderStepper
+
+  get selectedExtruderStepper (): ExtruderStepper {
+    return this.extruderStepper ?? this.activeExtruder
+  }
+
   handleSetPressureAdvance (val: number) {
-    this.sendGcode('SET_PRESSURE_ADVANCE ADVANCE=' + val, this.$waits.onSetPressureAdvance)
+    this.sendSetPressureAdvance('ADVANCE', val)
   }
 
   handleSetSmoothTime (val: number) {
-    this.sendGcode('SET_PRESSURE_ADVANCE SMOOTH_TIME=' + val, this.$waits.onSetPressureAdvance)
+    this.sendSetPressureAdvance('SMOOTH_TIME', val)
+  }
+
+  sendSetPressureAdvance (arg: string, val: number) {
+    if (this.extruderStepper) {
+      const { name } = this.extruderStepper
+      this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val} EXTRUDER=${name}`, `${this.$waits.onSetPressureAdvance}${name}`)
+    } else {
+      this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val}`, this.$waits.onSetPressureAdvance)
+    }
   }
 
   get isMobile () {
