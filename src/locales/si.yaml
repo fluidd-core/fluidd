@@ -1,0 +1,732 @@
+app:
+  bedmesh:
+    label:
+      active: active
+      box_scale: Box scale
+      flat_surface: Show flat plane
+      mesh_matrix: Mesh matrix
+      probed_matrix: Probed matrix
+      profile_name: Profile Name
+      remove_profile: Remove %{name} profile
+      scale: Color scale
+      wireframe: Wireframe
+    msg:
+      hint: >-
+        If saving as something other than %{name}, you can choose to also remove
+        the %{name} profile
+      not_found: No existing bed meshes found.
+      not_loaded: No mesh loaded
+    tooltip:
+      calibrate: Begins a new calibration, saving as profile 'default'
+      delete: Delete Profile. This WILL restart your printer
+      load: Load Profile
+      save: >-
+        Commits calibrated profile to printer.cfg. This WILL restart your
+        printer
+  chart:
+    label:
+      current: Actual
+      item: Name
+      'off': Chart off
+      'on': Chart on
+      power: Power
+      target: Target
+      rate_of_change: Change
+    tooltip:
+      help: >-
+        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
+        />Click a power to toggle in the graph.
+  console:
+    label:
+      auto_scroll: Auto scroll
+      flip_layout: Flip layout
+      hide_temp_waits: Hide temp waits
+    placeholder:
+      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+  endpoint:
+    error:
+      cant_connect: >-
+        Something went wrong, and fluidd can't reach the destination. Are you
+        sure this is the correct address?
+      cors_error: blocked by CORS policy
+      cors_note: >-
+        This may mean you need to modify your moonraker configuration. Please
+        see the documentation on multi printer setups <a href="%{url}"
+        target="_blank">here</a>
+    hint:
+      add_printer: E.g., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Having trouble? <a href="%{url}" target="_blank">See here</a> for more
+        information.
+    tooltip:
+      endpoint_examples: >-
+        Enter your API URL.<br />Some examples might be;<br
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: OPEN
+      triggered: TRIGGERED
+    msg:
+      subtitle: Use the refresh button to update endstop status.
+  file_system:
+    filters:
+      label:
+        print_start_time: Filter printed
+        print_start_time_desc: Filters out items you've already printed.
+        hidden_files: Filter hidden files
+        klipper_backup_files: Filter Klipper backup files
+    label:
+      dir_name: Directory name
+      disk_usage: Disk Usage
+      diskinfo: Disk Information
+      downloaded: Downloaded
+      file_name: Filename
+      transfer_rate: Transfer rate
+      uploaded: Uploaded
+      view_section_documentation: >-
+        View '%{section}' documentation
+    msg:
+      confirm: Are you sure? This will delete all files and folders.
+      not_found: No files found
+      processing: Processing
+    overlay:
+      drag_files_folders: <strong>Drag</strong> files and folders here
+    title:
+      add_dir: Add Directory
+      add_file: Add File
+      command_palette: Command Palette
+      download_file: Retrieving file
+      rename_dir: Rename Directory
+      rename_file: Rename File
+      upload_file: Uploading file | Uploading files
+    tooltip:
+      low_on_space: Low on disk space
+      root_disabled: '{root} root is not available. Please check your logs.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+  gcode:
+    btn:
+      load_current_file: Load Current File
+    label:
+      current_layer_height: Current Layer Height
+      exclude_object: Exclude Object
+      follow_progress: Follow progress
+      layer: Layer
+      layers: Layers
+      parsed: Parsed
+      show_current_layer: Show current layer
+      show_extrusions: Show extrusions
+      show_moves: Show moves
+      show_next_layer: Show next layer
+      show_previous_layer: Show previous layer
+      show_retractions: Show retractions
+      parsing_file: Parsing file
+    msg:
+      confirm: >-
+        The file "%{filename}" is %{size}, this might be resource intensive for
+        your system. Are you sure?
+  general:
+    btn:
+      abort: Abort
+      accept: Accept
+      add: Add
+      add_dir: Add Directory
+      add_file: Add File
+      add_printer: Add printer
+      add_to_queue: Add to Queue
+      adjust_layout: Adjust dashboard layout
+      adjusted: Adjusted
+      all: All
+      auth_unsure: Unsure why you're seeing this?
+      calibrate: Calibrate
+      cancel: Cancel
+      clear_profile: Clear Profile
+      close: Close
+      config_reference: Config Reference
+      create_zip_archive: Create ZIP Archive
+      delete: Delete
+      download: Download
+      edit: Edit
+      exit_layout: Exit layout mode
+      extrude: Extrude
+      filter: Filter
+      forgot_password: Forgotten your password?
+      heaters_off: Heaters off
+      job_queue: Job Queue
+      load_all: Load all
+      login: Login
+      logout: Logout
+      more_information: More information
+      pause: Pause
+      preheat: Preheat
+      presets: Presets
+      preview_gcode: Preview Gcode
+      print: Print
+      quad_gantry_level: QGL
+      reboot: Reboot
+      recover: Recover
+      refresh: Refresh
+      reload: Reload
+      remove: Remove
+      remove_all: Remove All
+      rename: Rename
+      reprint: Re-Print
+      reset_file: Clear File
+      reset_layout: Reset to Default Layout
+      reset_default_layout: Reset Default Layout
+      restart_firmware: Firmware Restart
+      restart_service: Restart %{service}
+      restart_service_klipper: Restart Klipper
+      restart_service_moonraker: Restart Moonraker
+      resume: Resume
+      retract: Retract
+      return_dashboard: Return to the dashboard
+      save: Save
+      save_as: Save As
+      save_restart: Save & Restart
+      save_config_and_restart: Save config & restart
+      send: Send
+      set_color: Set Color
+      set_default_layout: Set as Default Layout
+      shutdown: Shutdown
+      snooze: Snooze
+      socket_reconnect: Re-Connect
+      socket_refresh: Force refresh
+      upload: Upload
+      upload_files: Upload Files
+      upload_folder: Upload Folder
+      upload_print: Upload & Print
+      view: View
+      reset_stats: Reset Stats
+    error:
+      app_setup_link: >-
+        Fluidd setup requirements can be found <a target="_blank"
+        href="%{url}">here.</a>
+      app_warnings_found: '%{appName} warnings found.'
+      components_config: >-
+        Moonraker plugin configuration can be found <a target="_blank"
+        href="%{url}">here.</a>
+      failed_components: >-
+        Moonraker has failed plugins, please check your logs, update your
+        configuration and restart moonraker.
+    label:
+      accel_to_decel: Accel to Decel
+      acceleration: Acceleration
+      accepted_screws: Accepted screws
+      actual_time: Actual
+      add_camera: Add Camera
+      add_filter: Add Filter
+      add_preset: Add Preset
+      add_user: Add user
+      api_key: Api Key
+      api_url: API URL
+      auth_source: Authentication Source
+      category: Category
+      change_password: Change password
+      clear_all: Clear all
+      color: Color
+      confirm: Confirm
+      current_password: Current password
+      current_user: Current user
+      default: Default
+      disabled_while_printing: Disabled while printing
+      edit_camera: Edit Camera
+      edit_filter: Edit Filter
+      edit_preset: Edit Preset
+      edit_user: Edit user
+      extrude_length: Extrude Length
+      extrude_speed: Extrude Speed
+      filament: Filament
+      file: File
+      finish_time: Finish
+      flow: Flow
+      free: free
+      heaters_busy: >-
+        The printer is currently busy. Turning off the heaters may result in a
+        failed print.
+      high: High
+      host: Host
+      layer: Layer
+      layout: Layout
+      ldap: LDAP
+      longest_job: Longest job
+      low: Low
+      manage_accounts: Manage Accounts
+      user_managed_source: User managed by %{source} authentication
+      m117: M117
+      moonraker: Moonraker
+      name: Name
+      new_password: New password
+      no_notifications: No notifications
+      'on': 'On'
+      'off': 'Off'
+      numeric_prefix_sort: Numeric Prefix sort
+      password: Password
+      partial_of_total: '%{partial} of %{total}'
+      power: Power
+      pressure_advance: Pressure Advance
+      printers: Printers
+      progress: Progress
+      requested_speed: Speed
+      retract_length: Retract Length
+      retract_speed: Retract Speed
+      save_as: Save As
+      screw_index: Screw index
+      screw_name: Screw name
+      screw_number: Screw %{index}
+      services: Services
+      slicer: Slicer
+      smooth_time: Smooth Time
+      speed: Speed
+      sqv: Square Corner Velocity
+      thumbnail_size: Thumbnail Size
+      total: Total
+      total_filament: Total filament used
+      total_filament_avg: Avg per print
+      total_jobs: Total print jobs
+      total_print_time: Total print time
+      total_print_time_avg: Avg per print
+      total_time: Total time
+      total_time_avg: Avg per print
+      turn_device_on: Turn %{device} on
+      turn_device_off: Turn %{device} off
+      uncategorized: Uncategorized
+      unretract_extra_length: Unretract Extra Length
+      unretract_speed: Unretract Speed
+      upload_and_print: Upload and Print
+      used: used
+      username: Username
+      variance: Variance
+      velocity: Velocity
+      version_sort: Version sort
+      visible: Visible
+      z_offset: Z Offset
+      unsaved_changes: Unsaved Changes
+      alias: Alias
+      apply_z_offset: Apply and Save Z_Offset
+      edit_category: Edit category
+      add_category: Add category
+      file_time: File
+    msg:
+      password_changed: Password changed
+      wrong_password: Oops, something went wrong. Is your password correct?
+      bed_screws_adjust: >-
+        Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
+      welcome_back: >-
+        Welcome back.<br>Sign in below to stay in touch with your printer.
+      offline_ready: Fluidd is now ready to work offline.
+      needs_refresh: New content available, please click the <b>Reload</b> button to update.
+    simple_form:
+      error:
+        arrayofnums: Only numbers
+        credentials: Invalid credentials
+        exists: Already exists
+        invalid_number: Invalid Number
+        invalid_url: Invalid URL
+        invalid_expression: Invalid Expression
+        max: Max %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} or 0
+        password_username: Cannot match username
+        required: Required
+        invalid_aspect: Invalid Aspect Ratio
+      msg:
+        confirm: Are you sure?
+        confirm_exclude_object: Are you sure you want to exclude this object from printing?
+        confirm_forcemove_toggle: Are you sure? This can damage the printer.
+        confirm_reboot_host: Are you sure? This will reboot your host system.
+        confirm_shutdown_host: Are you sure? This will shutdown your host system.
+        confirm_service_start: Are you sure you want to start the %{name} service?
+        confirm_service_restart: Are you sure you want to restart the %{name} service?
+        confirm_service_stop: Are you sure you want to stop the %{name} service?
+        confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
+        unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
+        apply_z_offset_endstop: >-
+          Endstop Z-Offset will be calculated and updated from the current
+          Z-Offset.
+        apply_z_offset_probe: >-
+          Probe/Bltouch Z-Offset will be calculated and updated from the current
+          Z-Offset.
+        no_file_preview: >-
+          %{name} cannot currently be previewed.
+    table:
+      header:
+        actions: Actions
+        chamber_temp: Chamber temp
+        end_time: Ended
+        estimated_time: Estimated time
+        filament: Filament
+        filament_name: Filament name
+        filament_type: Filament type
+        filament_used: Used filament
+        filament_weight_total: Filament weight
+        first_layer_bed_temp: First layer bed temp
+        first_layer_extr_temp: First layer extruder temp
+        first_layer_height: First layer height
+        height: Height
+        last_printed: Last printed
+        layer_height: Layer height
+        modified: Modified
+        name: Name
+        nozzle_diameter: Nozzle diameter
+        print_duration: Print duration
+        time_added: Time Added
+        time_in_queue: Time In Queue
+        size: Size
+        slicer: Slicer
+        slicer_version: Slicer version
+        start_time: Started
+        status: Status
+        total_duration: Total duration
+    title:
+      add_chart: Add Chart
+      add_printer: Add Printer
+      bedmesh: Bed Mesh
+      bedmesh_controls: Bed Mesh Controls
+      camera: Camera | Cameras
+      config_files: Configuration Files
+      configure: Configuration
+      console: Console
+      diagnostics: Diagnostics
+      edit_chart: Edit Chart
+      endstops: Endstops
+      fans_outputs: Fans & Outputs
+      gcode_preview: Gcode Preview
+      history: History
+      home: Home
+      jobs: Jobs
+      job_queue: Job Queue
+      limits: Printer Limits
+      macros: Macros
+      metrics_explorer: Metrics Explorer
+      not_found: 404 Not Found
+      other_files: Other Files
+      pending_configuration_changes: Pending Configuration Changes
+      retract: Firmware Retraction
+      runout_sensors: Runout Sensors
+      settings: Settings
+      stats: Printer Stats
+      system: System
+      system_overview: System Information
+      temperature: Thermals
+      timelapse: Timelapse
+      tool: Tool
+      tune: Tune
+    tooltip:
+      browse_metrics: Browse available metrics
+      estop: Emergency Stop
+      managed_by_moonraker: Managed by your moonraker configuration
+      notifications: Notifications
+      reload_klipper: Reloads klipper configuration.
+      reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
+      restart_klipper: Restarts the klipper system service.
+      run_collector: Run collector
+  history:
+    msg:
+      confirm: Are you sure? This will clear all history, and printer statistics
+  job_queue:
+    msg:
+      confirm: Are you sure? This will clear the entire printer queue
+      confirm_jobs: Are you sure? This will clear all jobs.
+      confirm_stats: Are you sure? This will clear all stats.
+  printer:
+    state:
+      busy: Busy
+      cancelled: Cancelled
+      complete: Complete
+      idle: Idle
+      loading: Loading
+      paused: Paused
+      printing: Printing
+      ready: Ready
+      standby: Standby
+  setting:
+    btn:
+      add_camera: Add Camera
+      add_category: Add Category
+      add_filter: Add Filter
+      add_metric: Add Metric
+      add_thermal_preset: Add Preset
+      add_user: Add user
+      reset: Reset
+      select_theme: Select Theme
+    camera_type_options:
+      mjpegadaptive: MJPEG Adaptive
+      mjpegstream: MJPEG Stream
+      video: IP Camera
+      iframe: HTTP page
+    camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
+      none: None
+    label:
+      all_off: All off
+      all_on: All on
+      aspect_ratio: Aspect Ratio
+      aspect_ratio_format: '[width : height]'
+      auto_edit_extensions: Extensions to automatically open in edit mode
+      auto_follow_on_file_load: Automatically follow progress on file load
+      auto_load_on_print_start: Automatically load file on print start
+      axes: Axes
+      camera_flip_x: Flip horizontally
+      camera_flip_y: Flip vertically
+      camera_fullscreen_action:
+        title: Fullscreen action
+        embed: Embed
+        rawstream: Raw stream
+      camera_rotate_by: Rotate by
+      camera_stream_type: Stream type
+      camera_url: Camera Url
+      card: Card
+      collector: Collector
+      confirm_on_estop: Require confirm on Emergency Stop
+      confirm_on_power_device_change: Require confirm on Device Power changes
+      confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
+      confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
+      contains: Contains
+      dark_mode: Dark mode
+      dashed: Dashed
+      default_extrude_length: Default extrude length
+      default_extrude_speed: Default extrude speed
+      default_toolhead_move_length: Default toolhead move length
+      default_toolhead_xy_speed: Default toolhead XY speed
+      default_toolhead_z_speed: Default toolhead Z speed
+      dotted: Dotted
+      draw_background: Draw Background
+      enable: Enable
+      enable_diagnostics: Enable diagnostics
+      enable_notifications: Enable notifications
+      expression: Expression
+      extrusion_line_width: Extrusion Line Width
+      flip_horizontal: Horizontal Flip
+      flip_vertical: Vertical Flip
+      fill_color: Fill color
+      fill_opacity: Fill opacity
+      filter: Filter | Filters
+      fps_target: FPS Target
+      fps_idle_target: FPS Target when not in focus
+      height: Height
+      gcode_coords: Use GCode Coordinates
+      group_lower_layers: Group lower layers
+      icon: Icon
+      invert_x_control: Invert X control
+      invert_y_control: Invert Y control
+      invert_z_control: Invert Z control
+      language: Display Language
+      last_result: Last result
+      left_y: Left Y-Axis
+      line_color: Line color
+      line_style: Line style
+      min: Minimum
+      max: Maximum
+      metrics: Metrics
+      move_line_width: Move Line Width
+      name: Name
+      none: None
+      optional: Optional
+      power_toggle_in_top_nav: Power toggle in top navigation
+      primary_color: Primary color
+      printer_name: Printer Name
+      reset: Reset settings
+      retraction_icon_size: Retraction Icon Size
+      right_y: Right Y-Axis
+      show_animations: Show animations
+      show_barometric_pressure: Show barometric pressure
+      show_code_lens: Show CodeLens
+      show_legend: Show legend
+      show_rate_of_change: Show temperature rate of change
+      show_relative_humidity: Show relative humidity
+      show_save_config_and_restart: Save Config and Restart button in top navigation
+      show_upload_and_print: Show Upload and Print button in top navigation
+      solid: Solid
+      starts_with: Starts with
+      theme_preset: Community preset
+      thermal_preset_gcode: GCode
+      thermal_preset_name: Preset Name
+      title: Title
+      toolhead_move_distances: Toolhead distance values
+      type: Type
+      unit: Unit
+      z_adjust_values: Z Adjust values
+      date_format: Date format
+      time_format: Time format
+      text_sort_order: Text Sort Order
+      force_move_toggle_warning: Require confirm when activating FORCE_MOVE
+      show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
+      show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
+    timer_options:
+      duration: Duration only
+      filament: Filament Estimation
+      file: File Estimation
+      slicer: Slicer
+    title:
+      authentication: Authentication
+      console: Console
+      camera: Camera | Cameras
+      file_editor: File Editor
+      gcode_preview: Gcode Preview
+      general: General
+      macros: Macros
+      theme: Theme
+      thermal_presets: Thermal Presets
+      tool: Tool
+    tooltip:
+      diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
+      gcode_coords: Use GCode position instead of toolhead position on dashboard
+      show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
+      show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
+  socket:
+    msg:
+      connecting: Connecting to moonraker...
+      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+  system_info:
+    label:
+      capacity: Capacity
+      cpu_desc: CPU Description
+      distribution_codename: Codename
+      distribution_like: Distribution Like
+      distribution_name: Distribution
+      frequency: Frequency
+      hardware_desc: Hardware Description
+      hostname: Hostname
+      klipper_load: Klipper Load
+      manufactured: Manufactured
+      manufacturer: Manufacturer
+      mcu_awake: '{mcu} Awake Time'
+      mcu_bandwidth: '{mcu} Bandwidth'
+      mcu_information: '{mcu} Information'
+      mcu_load: '{mcu} Load'
+      micro_controller: Micro-Controller
+      model: CPU Model
+      moonraker_load: Moonraker Load
+      processor_desc: Processor
+      product_name: Product Name
+      serial_number: Serial Number
+      system_load: System Load
+      system_memory: System Memory
+      system_utilization: System Utilization
+      total_memory: Total Memory
+      operating_system: Operating System
+      version: Version
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+      home_all: All
+    title:
+      bed_screws_adjust: Bed Screws Adjust
+      manual_probe: Manual Probe
+    tooltip:
+      absolute_positioning: Absolute Positioning
+      extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
+      home_xy: Home XY
+      home_z: Home Z
+      manual_probe: Manual Probe
+      motors_off: MOTORS OFF
+      z_tilt_adjust: Z_Tilt_Adjust
+      quad_gantry_level: QGL
+      relative_positioning: Relative Positioning
+      screws_tilt_calculate: Screws_Tilt_Calculate
+      bed_screws_adjust: BED_SCREWS_ADJUST
+      force_move: FORCE_MOVE
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">The active extruder configuration is set for</span>
+        %{filamentDiameter} mm diameter filament
+        <span class="secondary--text">and</span>
+        %{nozzleDiameter} mm nozzle
+      stats_volumetric_flow: >-
+        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">,
+        the extruder should be able to provide an</span>
+        estimated volumetric flow of %{estimatedVolumetricFlow} mm³/s
+      stats_extruded_length: >-
+        Extruding %{extrudeLength} mm of filament at
+        %{extrudeFactor} % flow<span class="secondary--text">,
+        will provide an</span>
+        estimated output length of %{estimatedExtrudedLength} mm
+      stats_max_speed: >-
+        <span class="secondary--text">Assuming a</span>
+        %{layerHeight} mm layer height<span class="secondary--text">,
+        the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
+  version:
+    btn:
+      check_for_updates: Check for updates
+      finish: Finish
+      update: Update
+      update_all: Update all
+      view_versions: View versions
+    label:
+      commit_history: Commit History
+      commits_on: commits on
+      committed: Committed
+      dirty: DIRTY
+      invalid: INVALID
+      os_packages: OS Packages
+      package_list: Package List
+      up_to_date: UP TO DATE
+      updates_available: Updates are available
+    status:
+      finished: Updates finished
+      updating: Updating...
+    title: Software Updates
+    tooltip:
+      commit_history: Commit history
+      dirty: indicates a detached head, not on master or an invalid origin
+      invalid: indicates local changes to the repo
+      packages: Packages
+      release_notes: Release notes
+  timelapse:
+    btn:
+      render: Render
+      save_frames: Save Frames
+    error:
+      newframe: Error taking timelapse frame
+    label:
+      frames: '%{frames} frame | %{frames} frames'
+      length: 'Estimated length: %{length}'
+      frame: Frame | Frames
+    title:
+      timelapse_settings: Timelapse Settings
+      timelapse_status: Timelapse Status
+      render_settings: Render Settings
+    setting:
+      enable: Enabled
+      auto_render: Auto Render
+      crf: Constant Rate Factor
+      duplicatelastframe: Duplicate last frames
+      fw_retract: Use Firmware Retraction
+      gcode_verbose: Verbose Gcode
+      mode: Mode
+      mode_layermacro: Layer Macro
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse Cycle
+      output_framerate: Output Framerate
+      park_retract_distance: Park Retraction Distance
+      park_retract_speed: Park Retraction Speed
+      park_extrude_distance: Park Extrude Distance
+      park_extrude_speed: Park Extrude Speed
+      parkhead: Park Head
+      park_time: Park Time
+      park_travel_speed: Park Travel Speed
+      park_custom_pos_x: Park Position X
+      park_custom_pos_y: Park Position Y
+      park_custom_pos_dz: Park Position Z-Hop
+      parkpos:
+        label: Park Position
+        custom: Custom
+        front_left: Front Left
+        front_right: Front Right
+        center: Center
+        back_left: Back Left
+        back_right: Back Right
+      previewimage: Generate Thumbnail
+      saveframes: Save Frames
+      stream_delay_compensation: Delay Compensation
+      targetlength: Target Length
+      variable_fps: Variable FPS
+      variable_fps_min: Minimum Framerate
+      variable_fps_max: Maximum Framerate
