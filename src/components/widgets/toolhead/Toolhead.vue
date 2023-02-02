@@ -31,6 +31,35 @@
       <speed-and-flow-adjust />
       <pressure-advance-adjust v-if="showPressureAdvance" />
     </v-card-text>
+
+    <v-expansion-panels
+      accordion
+      multiple
+      flat
+    >
+      <v-expansion-panel
+        v-for="extruderStepper in extruderSteppers"
+        :key="`extruderStepper-${extruderStepper.name}`"
+      >
+        <v-divider />
+        <v-expansion-panel-header>
+          <template #actions>
+            <v-icon
+              small
+              class="my-1 mr-2"
+            >
+              $expand
+            </v-icon>
+          </template>
+          {{ $filters.startCase(extruderStepper.name) }}
+        </v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <pressure-advance-adjust
+            :extruder-stepper="extruderStepper"
+          />
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
   </div>
 </template>
 
@@ -45,6 +74,7 @@ import ZHeightAdjust from '@/components/widgets/toolhead/ZHeightAdjust.vue'
 import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust.vue'
 import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvanceAdjust.vue'
 import ExtruderStats from '@/components/widgets/toolhead/ExtruderStats.vue'
+import { ExtruderStepper } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -61,6 +91,12 @@ import ExtruderStats from '@/components/widgets/toolhead/ExtruderStats.vue'
 export default class Toolhead extends Mixins(StateMixin) {
   get multipleExtruders () {
     return this.$store.getters['printer/getExtruders'].length > 1
+  }
+
+  get extruderSteppers () {
+    const extruderSteppers = this.$store.getters['printer/getExtruderSteppers'] as ExtruderStepper[]
+    return extruderSteppers
+      .filter(x => x.pressure_advance !== undefined)
   }
 
   get showPressureAdvance () {

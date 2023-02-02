@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU, Endstop, Probe } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU, Endstop, Probe, ExtruderStepper } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -288,6 +288,26 @@ export const getters: GetterTree<PrinterState, RootState> = {
       config_pressure_advance: c.pressure_advance,
       config_smooth_time: c.pressure_advance_smooth_time
     }
+  },
+
+  getExtruderSteppers: (state, getters) => {
+    const extruderSteppers: ExtruderStepper[] = []
+    for (const item in state.printer) {
+      const [type, name] = item.split(' ')
+
+      if (type === 'extruder_stepper') {
+        const e = state.printer[item]
+        const c = getters.getPrinterSettings(item)
+
+        extruderSteppers.push({
+          name,
+          ...e,
+          config_pressure_advance: c.pressure_advance,
+          config_smooth_time: c.pressure_advance_smooth_time
+        })
+      }
+    }
+    return extruderSteppers.sort((a, b) => a.name.localeCompare(b.name))
   },
 
   /**
