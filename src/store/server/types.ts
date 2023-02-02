@@ -124,7 +124,7 @@ export interface NetworkState {
 
 export interface NetworkInterface {
   mac_address?: string;
-  ip_addresses?: NetworkIpAddress;
+  ip_addresses?: NetworkIpAddress[];
 }
 
 export interface NetworkIpAddress {

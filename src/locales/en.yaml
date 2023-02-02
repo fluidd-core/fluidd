@@ -603,6 +603,7 @@ app:
       micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
+      network: Network
       processor_desc: Processor
       product_name: Product Name
       serial_number: Serial Number
@@ -612,6 +613,7 @@ app:
       total_memory: Total Memory
       operating_system: Operating System
       version: Version
+      virtualization: Virtualization
   tool:
     btn:
       home_x: X
