@@ -32,8 +32,7 @@
     </template>
 
     <v-card-text>
-      <gcode-preview-parser-progress-dialog
-        v-if="showParserProgressDialog"
+      <gcode-preview-parser-progress-overlay
         :value="showParserProgressDialog"
         :progress="parserProgress"
         :file="file"
@@ -136,13 +135,13 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
-import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
+import GcodePreviewParserProgressOverlay from './GcodePreviewParserProgressOverlay.vue'
 import { AppFile } from '@/store/files/types'
 import { MinMax } from '@/store/gcodePreview/types'
 
 @Component({
   components: {
-    GcodePreviewParserProgressDialog,
+    GcodePreviewParserProgressOverlay,
     GcodePreview
   }
 })
