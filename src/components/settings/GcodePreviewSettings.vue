@@ -282,6 +282,10 @@ export default class GcodePreviewSettings extends Vue {
       value,
       server: true
     })
+
+    if (!value) {
+      this.autoLoadMobileOnPrintStart = false
+    }
   }
 
   get autoLoadMobileOnPrintStart () {
