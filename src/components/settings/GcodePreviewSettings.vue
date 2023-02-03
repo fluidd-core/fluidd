@@ -131,6 +131,18 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.auto_load_mobile_on_print_start')">
+        <v-switch
+          v-model="autoLoadMobileOnPrintStart"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+          :disabled="!autoLoadOnPrintStart"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.auto_follow_on_file_load')">
         <v-switch
           v-model="autoFollowOnFileLoad"
@@ -267,6 +279,18 @@ export default class GcodePreviewSettings extends Vue {
   set autoLoadOnPrintStart (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoLoadOnPrintStart',
+      value,
+      server: true
+    })
+  }
+
+  get autoLoadMobileOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
+  }
+
+  set autoLoadMobileOnPrintStart (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoLoadMobileOnPrintStart',
       value,
       server: true
     })
