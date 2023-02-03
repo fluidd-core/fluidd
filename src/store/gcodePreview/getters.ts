@@ -48,7 +48,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       ? (a: number, b: number) => Number.isNaN(a) || a < b
       : (a: number, b: number) => a !== b
 
-    moves.forEach((move, index) => {
+    moves.forEach((move: Move, index: number) => {
       if (move.z !== undefined && z !== move.z) {
         z = move.z
         zStart = index
