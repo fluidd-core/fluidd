@@ -54,7 +54,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
         zStart = index
       }
 
-      if (move.e > 0 && zCmp(zLast, z)) {
+      if (move.e && move.e > 0 && zCmp(zLast, z)) {
         zLast = z
 
         output.push({
