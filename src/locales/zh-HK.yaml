@@ -73,7 +73,7 @@ app:
       file_name: 文件名
       transfer_rate: 傳輸速率
       uploaded: 上傳完成
-      view_section_documentation: '%{section}' 查看文檔
+      view_section_documentation: '%{section} 查看文檔'
     msg:
       confirm: 這將刪除所有文件和文件夾！是否確認？
       not_found: 文件未找到
