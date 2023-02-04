@@ -141,7 +141,6 @@ app:
       filter: 過濾
       forgot_password: 忘記密碼？
       heaters_off: 停止加熱
-      job_queue: ''
       load_all: 全部加載
       login: 登入
       logout: 登出
@@ -269,7 +268,6 @@ app:
       uncategorized: 未分類
       unretract_extra_length: 回抽額外裝填量
       unretract_speed: 回抽裝填速度
-      upload_and_print: ''
       used: 已用
       username: 用戶名
       variance: 偏差值
@@ -435,8 +433,6 @@ app:
       aspect_ratio: 縱橫比
       aspect_ratio_format: '[寬度：高度]'
       auto_edit_extensions: 自動進入編輯模式的文件類型
-      auto_follow_on_file_load: ''
-      auto_load_on_print_start: ''
       axes: 軸
       camera_flip_x: 水平翻轉
       camera_flip_y: 垂直翻轉
@@ -464,7 +460,6 @@ app:
       dotted: 点线
       draw_background: 顯示背景
       enable: 啟用
-      enable_diagnostics: ''
       enable_notifications: 更新通知
       expression: 表達式
       extrusion_line_width: 擠出線寬
@@ -502,12 +497,10 @@ app:
       right_y: 右 Y 軸
       show_animations: 顯示動畫
       show_barometric_pressure: 顯示氣壓
-      show_code_lens: ''
       show_legend: 顯示圖例
       show_rate_of_change: 顯示溫度變化值
       show_relative_humidity: 顯示相對濕度
       show_save_config_and_restart: 頂部導航中的保存配置並重啟按鈕
-      show_upload_and_print: ''
       solid: 實線
       starts_with: 起始字符
       theme_preset: 預設主題
@@ -540,7 +533,6 @@ app:
       thermal_presets: 溫度預設
       tool: 移動控制
     tooltip:
-      diagnostics_performance: ''
       gcode_coords: 使用 GCode 坐標位置而不是儀表板上的打印頭坐標位置
       show_manual_probe_dialog_automatically: 運行手動探測工具時自動顯示幫助對話框
   socket:
@@ -562,9 +554,7 @@ app:
       manufacturer: 制造商
       mcu_awake: '{mcu} 喚醒時間'
       mcu_bandwidth: '{mcu} 帶寬占用'
-      mcu_information: ''
       mcu_load: '{mcu} 負載'
-      micro_controller: ''
       model: 型號
       moonraker_load: Moonraker 負載
       network: 網路
@@ -597,7 +587,6 @@ app:
       relative_positioning: 相對位置
       screws_tilt_calculate: 輔助調平螺絲
       bed_screws_adjust: 手動調平螺絲
-      force_move: ''
     label:
       stats_active_extruder: '擠出機配置為耗材直徑 %{filamentDiameter}mm，噴嘴直徑 %{nozzleDiameter}mm'
       stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度，預估擠出耗材體積為 %{estimatedVolumetricFlow}mm³/s'
