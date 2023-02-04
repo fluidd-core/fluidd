@@ -136,8 +136,8 @@
           v-model="autoLoadMobileOnPrintStart"
           hide-details
           class="mb-5"
-          @click.native.stop
           :disabled="!autoLoadOnPrintStart"
+          @click.native.stop
         />
       </app-setting>
 
