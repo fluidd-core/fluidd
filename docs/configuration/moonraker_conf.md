@@ -33,6 +33,7 @@ force_logins: false
 cors_domains:
   *.local
   *.lan
+  *://localhost
   *://app.fluidd.xyz
 
 trusted_clients:
