@@ -456,7 +456,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   transformTimelapseItems (items: FileBrowserEntry[]) {
-    const timelapses: Record<string, AppFile> = {}
+    const timelapses: Record<string, KlipperFileWithMeta> = {}
 
     for (const item of items) {
       if (item.type === 'file' && item.extension !== 'jpg') {
@@ -468,11 +468,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (item.type === 'file' && item.extension === 'jpg') {
         const name = item.filename.slice(0, -4)
         if (name in timelapses) {
-          const url = new URL(this.apiUrl ?? document.location.origin)
-          url.pathname = `/server/files/timelapse${item.path ? `/${item.path}` : ''}/${item.filename}`;
+          const path = item.path ? `timelapse/${item.path}` : 'timelapse'
 
-          (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
-            absolute_path: url.toString(),
+          timelapses[name].thumbnails = [{
+            absolute_path: this.createFileUrl(item.filename, path, item.modified),
             // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
             data: '',
             height: 0,
@@ -484,7 +483,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
     }
 
-    return [...items.filter(item => item.type === 'directory'), ...Object.values(timelapses)]
+    return [
+      ...items.filter(item => item.type === 'directory'),
+      ...Object.values(timelapses) as AppFile[]
+    ]
   }
 
   // Set the initial root, and load the dir.
