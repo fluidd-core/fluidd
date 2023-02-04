@@ -131,12 +131,14 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.auto_load_mobile_on_print_start')">
+      <app-setting
+        v-if="autoLoadOnPrintStart"
+        :title="$t('app.setting.label.auto_load_mobile_on_print_start')"
+      >
         <v-switch
           v-model="autoLoadMobileOnPrintStart"
           hide-details
           class="mb-5"
-          :disabled="!autoLoadOnPrintStart"
           @click.native.stop
         />
       </app-setting>
