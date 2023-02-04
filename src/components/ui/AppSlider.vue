@@ -1,7 +1,6 @@
 <template>
   <v-form
     ref="form"
-    v-model="valid"
     :class="{'full-width-slider': fullWidth}"
     @submit.prevent
   >
@@ -92,8 +91,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Watch, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { VForm } from '@/types'
 
 @Component({})
 export default class AppSlider extends Mixins(StateMixin) {
@@ -136,7 +136,9 @@ export default class AppSlider extends Mixins(StateMixin) {
   @Prop({ type: Boolean, default: false })
   readonly fullWidth!: boolean
 
-  valid = true
+  @Ref('form')
+  readonly form!: VForm
+
   lockState = false
   overridden = false
   internalValue = 0
@@ -153,21 +155,16 @@ export default class AppSlider extends Mixins(StateMixin) {
     this.pending = false
   }
 
+  @Watch('max')
+  onMax () {
+    this.checkOverride()
+  }
+
   // If one of our controls updates the value.
   @Watch('internalValue')
   onInternalValue (value: number) {
-    if (this.valid) {
-      if (value > this.max && this.overridable) {
-        // This is overridable, and the user wants to increase
-        // past the given max. So, disable the slider - and let it be.
-        this.overridden = true
-        this.internalMax = value
-      } else {
-        // This is not overridable, or the user has reverted back to a value
-        // within the given max. So, re-enable the slider - and let it be.
-        this.overridden = false
-        this.internalMax = this.max
-      }
+    if (this.form.validate()) {
+      this.checkOverride()
 
       this.$emit('input', value)
     }
@@ -212,12 +209,26 @@ export default class AppSlider extends Mixins(StateMixin) {
     this.internalMax = this.max
   }
 
+  checkOverride () {
+    if (this.internalValue > this.max && this.overridable) {
+      // This is overridable, and the user wants to increase
+      // past the given max. So, disable the slider - and let it be.
+      this.overridden = true
+      this.internalMax = this.internalValue
+    } else {
+      // This is not overridable, or the user has reverted back to a value
+      // within the given max. So, re-enable the slider - and let it be.
+      this.overridden = false
+      this.internalMax = this.max
+    }
+  }
+
   handleChange (value: number) {
     if (
       value !== this.value &&
       !this.pending
     ) {
-      if (this.valid) {
+      if (this.form.validate()) {
         this.pending = true
         this.$emit('change', value)
       } else {
