@@ -471,6 +471,7 @@ app:
       auto_edit_extensions: Extensions to automatically open in edit mode
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
+      auto_load_mobile_on_print_start: Automatically load file on mobile devices
       axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically

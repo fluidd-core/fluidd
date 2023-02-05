@@ -175,6 +175,7 @@ export interface GcodePreviewConfig {
   showAnimations: boolean;
   groupLowerLayers: boolean;
   autoLoadOnPrintStart: boolean;
+  autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
   autoZoom: boolean;
   flip: {
