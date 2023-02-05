@@ -11,7 +11,7 @@
       :value="(pin.value * pin.scale) / 1"
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
-      :locked="!klippyReady || isMobile"
+      :locked="isMobile"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
       @change="setValue"
     />

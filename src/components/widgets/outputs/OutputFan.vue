@@ -11,7 +11,7 @@
         customRules.minFan
       ]"
       :disabled="!klippyReady"
-      :locked="!klippyReady || isMobile"
+      :locked="isMobile"
       :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
       @change="handleChange"
     />
