@@ -48,21 +48,31 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       ? (a: number, b: number) => Number.isNaN(a) || a < b
       : (a: number, b: number) => a !== b
 
-    for (let index = 0; index < moves.length; index++) {
-      if (moves[index].z !== undefined && z !== moves[index].z) {
-        z = moves[index].z
+    moves.forEach((move: Move, index: number) => {
+      if (move.z !== undefined && z !== move.z) {
+        z = move.z
         zStart = index
       }
 
-      if (moves[index].e > 0 && zCmp(zLast, z)) {
+      if (move.e && move.e > 0 && zCmp(zLast, z)) {
         zLast = z
 
         output.push({
           z,
           move: zStart,
-          filePosition: moves[index].filePosition
+          filePosition: move.filePosition
         })
       }
+    })
+
+    // If moves exist but there are no layers, add a single "default" layer at z=0
+    // This can happen for gcode that only contains travel moves (eg: 2d plotters without Z or E steppers)
+    if (output.length === 0 && moves.length > 0) {
+      output.push({
+        z: 0,
+        move: 0,
+        filePosition: moves[0].filePosition
+      })
     }
 
     return output
