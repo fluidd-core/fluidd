@@ -320,15 +320,23 @@ export default class GeneralSettings extends Mixins(StateMixin) {
 
   get powerDevicesList () {
     const devices = this.$store.state.power.devices as Device[]
-    const deviceEntries = devices.map(device => ({ text: device.device, value: device.device }))
+    const deviceEntries = devices.length
+      ? [
+          { header: 'Moonraker' },
+          ...devices.map(device => ({ text: device.device, value: device.device }))
+        ]
+      : []
 
     const pins = this.$store.getters['printer/getPins'] as OutputPin[]
-    const pinEntries = pins.map(outputPin => ({ text: outputPin.prettyName, value: `${outputPin.name}:klipper` }))
+    const pinEntries = pins.length
+      ? [
+          { header: 'Klipper' },
+          ...pins.map(outputPin => ({ text: outputPin.prettyName, value: `${outputPin.name}:klipper` }))
+        ]
+      : []
 
     return [
-      { header: 'Moonraker' },
       ...deviceEntries,
-      { header: 'Klipper' },
       ...pinEntries
     ]
   }
