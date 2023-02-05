@@ -225,7 +225,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.dateFormat
   }
 
-  set dateFormat (value: boolean) {
+  set dateFormat (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.dateFormat',
       value,
@@ -247,7 +247,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.timeFormat
   }
 
-  set timeFormat (value: boolean) {
+  set timeFormat (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.timeFormat',
       value,
@@ -269,7 +269,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.textSortOrder
   }
 
-  set textSortOrder (value: boolean) {
+  set textSortOrder (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.textSortOrder',
       value,
@@ -310,7 +310,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
 
-  set topNavPowerToggle (value: boolean) {
+  set topNavPowerToggle (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.topNavPowerToggle',
       value,
