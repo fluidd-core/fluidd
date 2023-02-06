@@ -13,8 +13,10 @@ export interface Extruder {
 
 export interface ExtruderStepper {
   name: string;
+  prettyName: string;
   pressure_advance: number;
   smooth_time: number;
+  motion_queue?: string | null;
   config_pressure_advance: number;
   config_smooth_time: number;
 }

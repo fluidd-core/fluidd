@@ -282,6 +282,7 @@ app:
       smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
+      synced_extruder: Synced Extruder
       thumbnail_size: Thumbnail Size
       total: Total
       total_filament: Total filament used
