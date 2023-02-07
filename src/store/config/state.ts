@@ -118,6 +118,7 @@ export const defaultState = (): ConfigState => {
         showAnimations: true,
         groupLowerLayers: false,
         autoLoadOnPrintStart: false,
+        autoLoadMobileOnPrintStart: false,
         autoFollowOnFileLoad: true,
         autoZoom: false,
         flip: {

@@ -455,6 +455,7 @@ app:
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
+      auto_load_mobile_on_print_start: Datei bei Druckstart auch auf mobilen Geräten laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
