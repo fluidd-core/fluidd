@@ -31,13 +31,15 @@
       </app-btn-collapse-group>
     </template>
 
-    <v-card-text>
+    <v-card-text class="gcode-preview-container">
       <gcode-preview-parser-progress-overlay
         :value="showParserProgressDialog"
         :progress="parserProgress"
         :file="file"
         @cancel="abortParser"
       />
+
+      <!-- <div id="tester"></div> -->
 
       <v-row>
         <v-col
@@ -375,3 +377,9 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.gcode-preview-container {
+  position: relative;
+}
+</style>
