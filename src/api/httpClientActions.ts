@@ -180,6 +180,6 @@ export const httpClientActions = {
   },
 
   serverFilesGet<T = any> (filepath: string, options?: AxiosRequestConfig) {
-    return this.get<T>(`/server/files/${filepath}?date=${Date.now()}`, options)
+    return this.get<T>(`/server/files/${encodeURI(filepath)}?date=${Date.now()}`, options)
   }
 }

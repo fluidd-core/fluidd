@@ -11,6 +11,14 @@ export interface Extruder {
   key: string;
 }
 
+export interface ExtruderStepper {
+  name: string;
+  pressure_advance: number;
+  smooth_time: number;
+  config_pressure_advance: number;
+  config_smooth_time: number;
+}
+
 export interface MCU {
   name: string;
   last_stats: MCUData;

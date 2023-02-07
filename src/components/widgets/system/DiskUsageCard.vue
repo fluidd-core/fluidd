@@ -35,22 +35,23 @@
 
     <v-simple-table dense>
       <tbody>
-        <tr>
+        <tr v-if="sdInfo.manufacturer">
           <th>{{ $t('app.system_info.label.manufacturer') }}</th>
           <td>{{ sdInfo.manufacturer }}</td>
         </tr>
-        <tr>
+        <tr v-if="sdInfo.manufacturer_date">
           <th>{{ $t('app.system_info.label.manufactured') }}</th>
           <td>{{ sdInfo.manufacturer_date }}</td>
-        </tr><tr>
+        </tr>
+        <tr v-if="sdInfo.product_name">
           <th>{{ $t('app.system_info.label.product_name') }}</th>
           <td>{{ sdInfo.product_name }} {{ sdInfo.product_revision }}</td>
         </tr>
-        <tr>
+        <tr v-if="sdInfo.capacity">
           <th>{{ $t('app.system_info.label.capacity') }}</th>
           <td>{{ sdInfo.capacity }}</td>
         </tr>
-        <tr>
+        <tr v-if="sdInfo.serial_number">
           <th>{{ $t('app.system_info.label.serial_number') }}</th>
           <td>{{ sdInfo.serial_number }}</td>
         </tr>

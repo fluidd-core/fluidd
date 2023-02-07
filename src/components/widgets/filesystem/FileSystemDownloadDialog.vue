@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="value"
+    v-model="open"
     max-width="500"
     persistent
   >
@@ -46,7 +46,7 @@
         <app-btn
           color="error"
           text
-          @click="$emit('cancel'); $emit('input', false)"
+          @click="$emit('cancel'); open = false"
         >
           {{ $t('app.general.btn.cancel') }}
         </app-btn>
@@ -56,14 +56,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
+import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { FileDownload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly value!: boolean
+  @VModel({ type: Boolean, required: true })
+    open!: boolean
 
   @Prop({ type: Object })
   readonly file!: FileDownload

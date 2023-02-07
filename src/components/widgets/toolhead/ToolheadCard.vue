@@ -60,7 +60,7 @@
         <app-btn
           v-if="printerSupportsBedScrews"
           :loading="hasWait($waits.onBedScrewsAdjust)"
-          :disabled="!klippyReady || printerPrinting"
+          :disabled="!allHomed || !klippyReady || printerPrinting"
           small
           class="ml-1"
           @click="bedScrewsAdjust"

@@ -39,6 +39,7 @@ export const defaultState = (): ConfigState => {
         confirmOnSaveConfigAndRestart: true,
         dateFormat: 'iso',
         timeFormat: 'iso',
+        textSortOrder: 'default',
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
@@ -103,6 +104,10 @@ export const defaultState = (): ConfigState => {
         history: [
           { value: 'print_duration', visible: false },
           { value: 'filament_used', visible: false }
+        ],
+        job_queue: [
+          { value: 'time_added', visible: true },
+          { value: 'time_in_queue', visible: false }
         ]
       },
       gcodePreview: {
@@ -113,6 +118,7 @@ export const defaultState = (): ConfigState => {
         showAnimations: true,
         groupLowerLayers: false,
         autoLoadOnPrintStart: false,
+        autoLoadMobileOnPrintStart: false,
         autoFollowOnFileLoad: true,
         autoZoom: false,
         flip: {

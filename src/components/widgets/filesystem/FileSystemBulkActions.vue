@@ -18,6 +18,24 @@
           small
           text
           v-on="on"
+          @click="$emit('create-zip')"
+        >
+          <v-icon>
+            $fileZipAdd
+          </v-icon>
+        </v-btn>
+      </template>
+      <span>{{ $t('app.general.btn.create_zip_archive') }}</span>
+    </v-tooltip>
+
+    <v-tooltip bottom>
+      <template #activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          fab
+          small
+          text
+          v-on="on"
           @click="$emit('remove')"
         >
           <v-icon>

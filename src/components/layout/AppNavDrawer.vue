@@ -46,6 +46,13 @@
           </app-nav-item>
 
           <app-nav-item
+            icon="$cubeScan"
+            to="/preview"
+          >
+            {{ $t('app.general.title.gcode_preview') }}
+          </app-nav-item>
+
+          <app-nav-item
             icon="$files"
             to="/jobs"
           >

@@ -28,11 +28,12 @@ temperature_store_size: 600
 gcode_store_size: 1000
 
 [authorization]
-force_logins: true
+force_logins: false
 
 cors_domains:
   *.local
   *.lan
+  *://localhost
   *://app.fluidd.xyz
 
 trusted_clients:
@@ -51,7 +52,11 @@ trusted_clients:
 [update_manager]
 enable_auto_refresh: True
 
-[update_manager client fluidd]
+[announcements]
+subscriptions:
+  fluidd
+
+[update_manager fluidd]
 type: web
 repo: fluidd-core/fluidd
 path: ~/fluidd

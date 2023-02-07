@@ -14,7 +14,7 @@
           @click="uploadFile.click()"
         >
           <v-icon>
-            $fileUpload
+            $progressUpload
           </v-icon>
         </app-btn>
       </template>
@@ -49,8 +49,11 @@ export default class AppUploadAndPrintBtn extends Vue {
   fileChanged (e: Event) {
     const target = e.target as HTMLInputElement
 
-    if (target?.files?.length === 1) {
-      this.$emit('upload', target.files[0])
+    if (target) {
+      if (target.files?.length === 1) {
+        this.$emit('upload', target.files[0])
+      }
+
       target.value = ''
     }
   }

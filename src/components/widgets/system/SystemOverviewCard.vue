@@ -7,41 +7,55 @@
       <v-col>
         <v-simple-table dense>
           <tbody>
-            <tr>
+            <tr v-if="printerInfo.hostname">
               <th>{{ $t('app.system_info.label.hostname') }}</th>
               <td>{{ printerInfo.hostname }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.model">
               <th>{{ $t('app.system_info.label.model') }}</th>
               <td>{{ cpuInfo.model }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.cpu_desc">
               <th>{{ $t('app.system_info.label.cpu_desc') }}</th>
               <td>{{ cpuInfo.cpu_desc }}</td>
             </tr>
             <tr v-if="cpuInfo.total_memory">
               <th>{{ $t('app.system_info.label.total_memory') }}</th>
-              <td>{{ $filters.getReadableFileSizeString(cpuInfo.total_memory * 1000) }}</td>
+              <td>{{ $filters.getReadableFileSizeString(cpuInfo.total_memory * 1024) }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.hardware_desc">
               <th>{{ $t('app.system_info.label.hardware_desc') }}</th>
               <td>{{ cpuInfo.hardware_desc }}</td>
             </tr>
-            <tr>
+            <tr v-if="cpuInfo.bits && cpuInfo.processor && cpuInfo.cpu_count">
               <th>{{ $t('app.system_info.label.processor_desc') }}</th>
               <td>{{ cpuInfo.bits }} {{ cpuInfo.processor }} with {{ cpuInfo.cpu_count }} cores</td>
             </tr>
-            <tr>
-              <th>{{ $t('app.system_info.label.distribution_name') }}</th>
+            <tr v-if="distribution.name">
+              <th>{{ $t('app.system_info.label.operating_system') }}</th>
               <td>{{ distribution.name }}</td>
             </tr>
-            <tr>
+            <tr v-if="distribution.release_info?.name">
+              <th>{{ $t('app.system_info.label.distribution_name') }}</th>
+              <td>
+                {{ distribution.release_info.name }} {{ distribution.release_info.version_id }}
+              </td>
+            </tr>
+            <tr v-if="distribution.like">
+              <th>{{ $t('app.system_info.label.distribution_like') }}</th>
+              <td>{{ distribution.like }}</td>
+            </tr>
+            <tr v-if="distribution.codename">
               <th>{{ $t('app.system_info.label.distribution_codename') }}</th>
               <td>{{ distribution.codename }}</td>
             </tr>
-            <tr>
-              <th>{{ $t('app.system_info.label.distribution_like') }}</th>
-              <td>{{ distribution.like }}</td>
+            <tr v-if="network">
+              <th>{{ $t('app.system_info.label.network') }}</th>
+              <td>{{ network }}</td>
+            </tr>
+            <tr v-if="virtualization.virt_type && virtualization.virt_type !== 'none'">
+              <th>{{ $t('app.system_info.label.virtualization') }}</th>
+              <td>{{ virtualization.virt_type }} ({{ virtualization.virt_identifier }})</td>
             </tr>
           </tbody>
         </v-simple-table>
@@ -52,52 +66,45 @@
         </v-card-text>
       </v-col>
     </v-row>
-
-    <!-- <pre>{{ services }}</pre> -->
-    <!-- <pre>{{ sdInfo }}</pre> -->
-    <!-- <pre>{{ distribution }}</pre> -->
-    <!-- <pre>{{ printerInfo }}</pre> -->
   </collapsable-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
-  get cpuInfo () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.cpu_info || {}
+  get systemInfo (): SystemInfo | null {
+    return this.$store.getters['server/getSystemInfo']
   }
 
-  get sdInfo () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.sd_info || {}
+  get cpuInfo () {
+    return this.systemInfo?.cpu_info || {} as CpuInfo
   }
 
   get distribution () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.distribution || {}
+    return this.systemInfo?.distribution || {} as DistroInfo
   }
 
-  get services () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.available_services || []
+  get virtualization () {
+    return this.systemInfo?.virtualization || {} as Virtualization
+  }
+
+  get network () {
+    return Object.entries(this.systemInfo?.network || {})
+      .map(([key, entry]) => {
+        const ipAddresses = entry.ip_addresses?.filter(x => x.family === 'ipv4') || entry.ip_addresses?.filter(x => x.family === 'ipv6')
+
+        return ipAddresses
+          ? `${key} (${ipAddresses.map(x => x.address).join(', ')})`
+          : key
+      })
+      .join(', ')
   }
 
   get printerInfo () {
     return this.$store.state.printer.printer.info
-  }
-
-  get fileSystemUsedPercent () {
-    // (250 / 500) * 100
-    const total = this.fileSystemUsage.total
-    const used = this.fileSystemUsage.used
-    return Math.floor((used / total) * 100).toFixed()
-  }
-
-  get fileSystemUsage () {
-    return this.$store.getters['files/getUsage']
   }
 }
 </script>

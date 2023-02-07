@@ -20,7 +20,7 @@
           <v-icon x-large>
             $fileUpload
           </v-icon>
-          <span v-html="$t('app.file_system.overlay.label')" />
+          <span v-html="$t('app.file_system.overlay.drag_files_folders')" />
         </v-col>
       </v-row>
     </v-container>

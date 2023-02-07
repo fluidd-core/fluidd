@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU, Endstop, Probe } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU, Endstop, Probe, ExtruderStepper } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -290,6 +290,26 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
+  getExtruderSteppers: (state, getters) => {
+    const extruderSteppers: ExtruderStepper[] = []
+    for (const item in state.printer) {
+      const [type, name] = item.split(' ')
+
+      if (type === 'extruder_stepper') {
+        const e = state.printer[item]
+        const c = getters.getPrinterSettings(item)
+
+        extruderSteppers.push({
+          name,
+          ...e,
+          config_pressure_advance: c.pressure_advance,
+          config_smooth_time: c.pressure_advance_smooth_time
+        })
+      }
+    }
+    return extruderSteppers.sort((a, b) => a.name.localeCompare(b.name))
+  },
+
   /**
    * Given axes, returns a boolean indicating if the axes are homed.
    */
@@ -509,13 +529,11 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
       if (
         supportedTypes.includes(type) &&
-        (
-          (filterByPrefix.includes(type) && !name.startsWith('_')) ||
-          !filterByPrefix.includes(type)
-        )
+        (!filterByPrefix.includes(type) || !name.startsWith('_'))
       ) {
-        let prettyName = Vue.$filters.startCase(name)
-        if (name === 'fan') prettyName = 'Part Fan' // If we know its the part fan.
+        const prettyName = name === 'fan'
+          ? 'Part Fan' // If we know its the part fan.
+          : Vue.$filters.startCase(name)
 
         const color = (applyColor.includes(type))
           ? Vue.$colorset.next(getKlipperType(pin), pin)
@@ -627,11 +645,22 @@ export const getters: GetterTree<PrinterState, RootState> = {
       ]
     ]
 
+    const filterByPrefix = [
+      'temperature_fan'
+    ]
+
     const printerKeys = Object.keys(state.printer)
 
     const sensors = keyGroups.flatMap(keyGroup => {
+      const keyGroupRegExpArray = keyGroup
+        .map(x => new RegExp(
+          filterByPrefix.includes(x)
+            ? `^${x}(?! _)`
+            : `^${x}`)
+        )
+
       return printerKeys
-        .filter(key => keyGroup.some(x => key.startsWith(x)))
+        .filter(key => keyGroupRegExpArray.some(x => x.test(key)))
         .sort((a, b) => a.localeCompare(b))
     })
 

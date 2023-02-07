@@ -71,7 +71,7 @@
 
       <div v-if="authenticated && socketConnected && showUploadAndPrint">
         <app-upload-and-print-btn
-          :disabled="printerPrinting || printerPaused"
+          :disabled="printerPrinting || printerPaused || !klippyReady"
           @upload="handleUploadAndPrint"
         />
       </div>
@@ -134,15 +134,17 @@
         class="mx-2"
         color="primary"
         @click.stop="handleExitLayout"
-        v-html="$t('app.general.btn.exit_layout')"
-      />
+      >
+        {{ $t('app.general.btn.exit_layout') }}
+      </app-btn>
       <app-btn
         small
         class="mx-2"
         color="primary"
         @click.stop="handleResetLayout"
-        v-html="$t('app.general.btn.reset_layout')"
-      />
+      >
+        {{ $t('app.general.btn.reset_layout') }}
+      </app-btn>
       <template v-if="isDashboard">
         <v-divider
           vertical
@@ -153,15 +155,17 @@
           class="mx-2"
           color="primary"
           @click.stop="handleSetDefaultLayout"
-          v-html="$t('app.general.btn.set_default_layout')"
-        />
+        >
+          {{ $t('app.general.btn.set_default_layout') }}
+        </app-btn>
         <app-btn
           small
           class="mx-2"
           color="primary"
           @click.stop="handleResetDefaultLayout"
-          v-html="$t('app.general.btn.reset_default_layout')"
-        />
+        >
+          {{ $t('app.general.btn.reset_default_layout') }}
+        </app-btn>
       </template>
     </template>
 
@@ -189,6 +193,8 @@ import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import { SocketActions } from '@/api/socketActions'
+import { OutputPin } from '@/store/printer/types'
+import { Device } from '@/store/power/types'
 
 @Component({
   components: {
@@ -260,19 +266,20 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
     switch (type) {
       case 'klipper': {
-        const device = this.$store.getters['printer/getPinByName'](name)
+        const device = this.$store.getters['printer/getPinByName'](name) as OutputPin | undefined
 
         return {
           type,
-          name: device.prettyName,
+          name: device?.prettyName ?? name,
           device
         }
       }
 
       default: {
-        const device = this.$store.state.power.devices.find((device: { device: string }) => device.device === topNavPowerToggle)
+        const devices = this.$store.state.power.devices as Device[]
+        const device = devices.find(device => device.device === topNavPowerToggle)
         return {
-          type: 'moonraker',
+          type: 'moonraker' as const,
           name: topNavPowerToggle,
           device
         }
@@ -280,29 +287,33 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     }
   }
 
-  get topNavPowerDeviceOn () {
-    const topNavPowerToggle = this.topNavPowerToggle
+  get topNavPowerDeviceOn (): boolean {
+    const { type, device } = this.topNavPowerToggle || {}
 
-    switch (topNavPowerToggle?.type) {
+    if (!device) return false
+
+    switch (type) {
       case 'moonraker':
-        return topNavPowerToggle.device.status === 'on'
+        return device.status === 'on'
 
       case 'klipper':
-        return topNavPowerToggle.device.value !== 0
+        return device.value !== 0
     }
+
+    return false
   }
 
   get topNavPowerDeviceDisabled (): boolean {
-    const topNavPowerToggle = this.topNavPowerToggle
+    const { type, device } = this.topNavPowerToggle || {}
 
-    switch (topNavPowerToggle?.type) {
-      case 'moonraker': {
-        const device = topNavPowerToggle.device
-        return !device || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
-      }
+    if (!device) return true
+
+    switch (type) {
+      case 'moonraker':
+        return (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
 
       case 'klipper':
-        return !topNavPowerToggle.device || !this.klippyReady
+        return !this.klippyReady
     }
 
     return true
@@ -355,6 +366,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   async handlePowerToggle () {
+    const { type, device } = this.topNavPowerToggle || {}
+
+    if (!device) return
+
     const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
     let res: boolean | undefined = true
     if (confirmOnPowerDeviceChange) {
@@ -365,8 +380,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     }
 
     if (res) {
-      const { type, device } = this.topNavPowerToggle || {}
-
       switch (type) {
         case 'moonraker': {
           const state = (device.status === 'on') ? 'off' : 'on'

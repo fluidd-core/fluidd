@@ -32,6 +32,7 @@
       v-if="selected.length > 0"
       :path="visiblePath"
       @remove="handleRemove(selected)"
+      @create-zip="handleCreateZip(selected)"
     />
 
     <file-system-browser
@@ -68,6 +69,8 @@
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
       @view-thumbnail="handleViewThumbnail"
+      @enqueue="handleEnqueue"
+      @create-zip="handleCreateZip"
     />
 
     <file-editor-dialog
@@ -153,6 +156,7 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import Axios from 'axios'
 import { AppTableHeader } from '@/types'
+import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -303,24 +307,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       { text: '', value: 'data-table-icons', sortable: false, width: '24px' },
       {
         text: this.$t('app.general.table.header.name'),
-        value: 'name',
-        filter: (value: string) => {
-          for (const filter of this.filters) {
-            switch (filter) {
-              case 'hidden_files':
-                if (value.match(/^\.(?!\.$)/)) {
-                  return false
-                }
-                break
-              case 'klipper_backup_files':
-                if (value.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
-                  return false
-                }
-                break
-            }
-          }
-          return true
-        }
+        value: 'name'
       }
     ]
 
@@ -348,18 +335,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         {
           text: this.$t('app.general.table.header.last_printed'),
           value: 'print_start_time',
-          filter: (value: string, search: string | null, item: FileBrowserEntry | AppFileWithMeta) => {
-            for (const filter of this.filters) {
-              switch (filter) {
-                case 'print_start_time':
-                  if (item.type === 'file' && value !== null) {
-                    return false
-                  }
-                  break
-              }
-            }
-            return true
-          },
           configurable: true
         }
       ]
@@ -413,7 +388,35 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       return this.transformTimelapseItems(files)
     }
 
-    return files
+    const filteredFiles = files.filter(file => {
+      if (file.type !== 'file') {
+        return true
+      }
+
+      for (const filter of this.filters) {
+        switch (filter) {
+          case 'hidden_files':
+            if (file.name?.match(/^\.(?!\.$)/)) {
+              return false
+            }
+            break
+          case 'klipper_backup_files':
+            if (file.name?.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
+              return false
+            }
+            break
+          case 'print_start_time':
+            if (file.print_start_time !== null) {
+              return false
+            }
+            break
+        }
+      }
+
+      return true
+    })
+
+    return filteredFiles
   }
 
   getAllFiles (): FileBrowserEntry[] {
@@ -453,7 +456,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   transformTimelapseItems (items: FileBrowserEntry[]) {
-    const timelapses: Record<string, AppFile> = {}
+    const timelapses: Record<string, KlipperFileWithMeta> = {}
 
     for (const item of items) {
       if (item.type === 'file' && item.extension !== 'jpg') {
@@ -465,11 +468,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       if (item.type === 'file' && item.extension === 'jpg') {
         const name = item.filename.slice(0, -4)
         if (name in timelapses) {
-          const url = new URL(this.apiUrl ?? document.location.origin)
-          url.pathname = `/server/files/timelapse${item.path ? `/${item.path}` : ''}/${item.filename}`;
+          const path = item.path ? `timelapse/${item.path}` : 'timelapse'
 
-          (timelapses[name] as KlipperFileWithMeta).thumbnails = [{
-            absolute_path: url.toString(),
+          timelapses[name].thumbnails = [{
+            absolute_path: this.createFileUrl(item.filename, path, item.modified),
             // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
             data: '',
             height: 0,
@@ -481,7 +483,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
     }
 
-    return [...items.filter(item => item.type === 'directory'), ...Object.values(timelapses)]
+    return [
+      ...items.filter(item => item.type === 'directory'),
+      ...Object.values(timelapses) as AppFile[]
+    ]
   }
 
   // Set the initial root, and load the dir.
@@ -672,10 +677,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.getGcode(file)
       .then(response => response?.data)
       .then((gcode) => {
-        // If we aren't on the dashboard, push the user back there.
-        if (this.$router.currentRoute.path !== '/') {
-          this.$router.push({ path: '/' })
+        if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
+          this.$router.push({ path: '/preview' })
         }
+
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode
@@ -819,7 +824,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  async handleUpload (files: FileList | File[], print: boolean) {
+  async handleUpload (files: FileList | File[] | FileWithPath[], print: boolean) {
     this.$store.dispatch('wait/addWait', this.$waits.onFileSystem)
     this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
     this.$store.dispatch('wait/removeWait', this.$waits.onFileSystem)
@@ -876,6 +881,23 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
+  handleEnqueue (file: AppFileWithMeta) {
+    if (this.disabled) return
+    const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
+    SocketActions.serverJobQueuePostJob([filepath])
+  }
+
+  handleCreateZip (file: FileBrowserEntry | FileBrowserEntry[]) {
+    const dest = Array.isArray(file)
+      ? `${this.currentPath}/${Date.now()}.zip`
+      : `${this.currentPath}/${file.name}_${Date.now()}.zip`
+
+    const items = (Array.isArray(file) ? file : [file])
+      .map(item => `${this.currentPath}/${item.name}`)
+
+    SocketActions.serverFilesZip(dest, items)
+  }
+
   /**
    * ===========================================================================
    * Drag handling.
@@ -893,8 +915,15 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   async handleDropFile (e: DragEvent) {
     this.dragState.overlay = false
-    if (e && e.dataTransfer && e.dataTransfer.files.length && !this.rootProperties.readonly) {
-      this.handleUpload(e.dataTransfer.files, false)
+
+    if (!e.dataTransfer || this.rootProperties.readonly) {
+      return
+    }
+
+    const files = await getFilesFromDataTransfer(e.dataTransfer)
+
+    if (files) {
+      this.handleUpload(files, false)
     }
   }
 }

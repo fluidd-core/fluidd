@@ -2,8 +2,9 @@
   <collapsable-card
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
+    :draggable="!fullScreen"
+    :collapsable="!fullScreen"
     layout-path="dashboard.gcode-preview-card"
-    :draggable="true"
   >
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
@@ -15,11 +16,23 @@
         >
           {{ $t('app.gcode.btn.load_current_file') }}
         </app-btn>
+
+        <app-btn
+          v-if="!fullScreen"
+          color=""
+          fab
+          x-small
+          text
+          class="ml-1"
+          @click="$filters.routeTo($router, '/preview')"
+        >
+          <v-icon>$fullScreen</v-icon>
+        </app-btn>
       </app-btn-collapse-group>
     </template>
 
     <v-card-text>
-      <GcodePreviewParserProgressDialog
+      <gcode-preview-parser-progress-dialog
         v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
         :progress="parserProgress"
@@ -136,6 +149,9 @@ import { MinMax } from '@/store/gcodePreview/types'
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  readonly fullScreen!: boolean
 
   @Ref('preview')
   readonly preview!: GcodePreview
@@ -339,6 +355,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get autoLoadOnPrintStart () {
+    if (this.isMobile) {
+      return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
+    }
+
     return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
   }
 

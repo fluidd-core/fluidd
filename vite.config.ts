@@ -14,7 +14,6 @@ import version from './vite.config.inject-version'
 export default defineConfig({
   plugins: [
     VitePWA({
-      registerType: 'autoUpdate',
       includeAssets: [
         '**/*.svg',
         '**/*.png',
@@ -23,13 +22,28 @@ export default defineConfig({
       ],
       workbox: {
         globPatterns: [
-          '**/*.{js,css,html,ttf,woff,woff2}'
+          '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
         maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
         navigateFallbackDenylist: [
           /^\/websocket/,
           /^\/(printer|api|access|machine|server)\//,
           /^\/webcam[2-4]?\//
+        ],
+        runtimeCaching: [
+          {
+            urlPattern: (options) => (options.sameOrigin && options.url.pathname.startsWith('/config.json')),
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'config',
+              matchOptions: {
+                ignoreSearch: true
+              },
+              precacheFallback: {
+                fallbackURL: 'config.json'
+              }
+            }
+          }
         ]
       },
       manifest: {
@@ -61,10 +75,35 @@ export default defineConfig({
             type: 'image/png',
             purpose: 'maskable'
           }
+        ],
+        shortcuts: [
+          {
+            name: 'Configuration',
+            url: '/#/configure',
+            icons: [
+              {
+                src: '/img/icons/shortcut-configuration-96x96.png',
+                sizes: '96x96',
+                type: 'image/png'
+              }
+            ]
+          },
+          {
+            name: 'Settings',
+            url: '/#/settings',
+            icons: [
+              {
+                src: '/img/icons/shortcut-settings-96x96.png',
+                sizes: '96x96',
+                type: 'image/png'
+              }
+            ]
+          }
         ]
       },
       devOptions: {
-        enabled: true
+        enabled: true,
+        type: 'module'
       }
     }),
     vue(),

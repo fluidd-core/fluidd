@@ -46,7 +46,7 @@ permalink: /faq
 ## Klipper updated and now my printer has an error
 
 - Klipper likely has configuration changes. Please see
-  [here](https://github.com/KevinOConnor/klipper/blob/master/docs/Config_Changes.md)
+  [here](https://www.klipper3d.org/Config_Changes.html)
   for a list of recent changes.
 
 ## The host reboot / shutdown commands don't work

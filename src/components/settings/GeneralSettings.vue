@@ -66,6 +66,18 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.text_sort_order')">
+        <v-select
+          v-model="textSortOrder"
+          filled
+          dense
+          hide-details="auto"
+          :items="availableTextSortOrders"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting
         :title="$t('app.setting.label.confirm_on_estop')"
       >
@@ -213,7 +225,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.dateFormat
   }
 
-  set dateFormat (value: boolean) {
+  set dateFormat (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.dateFormat',
       value,
@@ -235,7 +247,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.timeFormat
   }
 
-  set timeFormat (value: boolean) {
+  set timeFormat (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.timeFormat',
       value,
@@ -251,6 +263,35 @@ export default class GeneralSettings extends Mixins(StateMixin) {
         value: key,
         text: `${date.toLocaleTimeString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
       }))
+  }
+
+  get textSortOrder () {
+    return this.$store.state.config.uiSettings.general.textSortOrder
+  }
+
+  set textSortOrder (value: string) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.textSortOrder',
+      value,
+      server: true
+    })
+  }
+
+  get availableTextSortOrders () {
+    return [
+      {
+        value: 'default',
+        text: this.$t('app.general.label.default')
+      },
+      {
+        value: 'numeric-prefix',
+        text: this.$t('app.general.label.numeric_prefix_sort')
+      },
+      {
+        value: 'version',
+        text: this.$t('app.general.label.version_sort')
+      }
+    ]
   }
 
   get confirmOnEstop () {
@@ -269,7 +310,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return this.$store.state.config.uiSettings.general.topNavPowerToggle
   }
 
-  set topNavPowerToggle (value: boolean) {
+  set topNavPowerToggle (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.topNavPowerToggle',
       value,
@@ -279,15 +320,23 @@ export default class GeneralSettings extends Mixins(StateMixin) {
 
   get powerDevicesList () {
     const devices = this.$store.state.power.devices as Device[]
-    const deviceEntries = devices.map(device => ({ text: device.device, value: device.device }))
+    const deviceEntries = devices.length
+      ? [
+          { header: 'Moonraker' },
+          ...devices.map(device => ({ text: device.device, value: device.device }))
+        ]
+      : []
 
     const pins = this.$store.getters['printer/getPins'] as OutputPin[]
-    const pinEntries = pins.map(outputPin => ({ text: outputPin.prettyName, value: `${outputPin.name}:klipper` }))
+    const pinEntries = pins.length
+      ? [
+          { header: 'Klipper' },
+          ...pins.map(outputPin => ({ text: outputPin.prettyName, value: `${outputPin.name}:klipper` }))
+        ]
+      : []
 
     return [
-      { header: 'Moonraker' },
       ...deviceEntries,
-      { header: 'Klipper' },
       ...pinEntries
     ]
   }

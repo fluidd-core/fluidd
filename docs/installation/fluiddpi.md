@@ -1,8 +1,8 @@
 ---
 layout: default
-title: FluiddPI
+title: FluiddPI (not recommended)
 parent: Installation
-nav_order: 1
+nav_order: 4
 permalink: /installation/fluiddpi
 ---
 
@@ -17,10 +17,21 @@ permalink: /installation/fluiddpi
 
 ---
 
+## !! WARNING !!
+{: .text-red-300 #warning}
+
+FluiddPI is not under active maintenance and we've had reports from users
+finding issues while using it.
+
+As such, our recommendation is that you **do not use FluiddPI**, and instead
+use [KIAUH](/installation/kiauh) to install Fluidd.
+
+---
+
 ## Overview
 
 FluiddPI is a Raspberry Pi OS Lite image, preconfigured with Klipper, Moonraker and
-Fluidd. It is the recommended way to install Fluidd.
+Fluidd.
 
 [View on GitHub](https://github.com/fluidd-core/FluiddPi){: .btn .fs-5 .mb-4 .mb-md-0 }
 

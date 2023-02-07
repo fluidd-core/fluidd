@@ -191,7 +191,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   packageUrl (component: HashVersion | OSPackage | ArtifactVersion) {
-    if (component.key === 'klipper') return 'https://github.com/KevinOConnor/klipper/commits/master'
+    if (component.key === 'klipper') return 'https://github.com/Klipper3d/klipper/commits/master'
     if (component.key === 'moonraker') return 'https://github.com/Arksine/moonraker/commits/master'
     if (component.key === 'fluidd' && 'name' in component && component.name === 'fluidd') return 'https://github.com/fluidd-core/fluidd/releases'
   }
@@ -234,7 +234,11 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   forceCheck () {
-    SocketActions.machineUpdateStatus(true)
+    if (this.$store.getters['server/getIsMinApiVersion'](1, 2)) {
+      SocketActions.machineUpdateRefresh()
+    } else {
+      SocketActions.machineUpdateStatus(true)
+    }
   }
 
   getBaseUrl (component: HashVersion | ArtifactVersion) {

@@ -63,6 +63,8 @@
               (!authenticated && apiConnected)
           "
         />
+
+        <register-service-worker />
       </v-container>
 
       <socket-disconnected
@@ -224,7 +226,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
       return
     }
 
-    const url = await this.createFileUrl(value, 'config')
+    const url = await this.createFileUrlWithToken(value, 'config')
 
     const oldCustomStylesheet = document.getElementById('customStylesheet')
 
@@ -253,7 +255,7 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
       return
     }
 
-    const url = await this.createFileUrl(value, 'config')
+    const url = await this.createFileUrlWithToken(value, 'config')
 
     this.customBackgroundImageStyle = {
       backgroundImage: `url(${url})`,

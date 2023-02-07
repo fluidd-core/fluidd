@@ -455,6 +455,7 @@ app:
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
+      auto_load_mobile_on_print_start: Datei bei Druckstart auch auf mobilen Geräten laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
@@ -578,7 +579,7 @@ app:
       capacity: Gesamtgröße
       cpu_desc: CPU-Beschreibung
       distribution_codename: Codename
-      distribution_like: Distribution wie
+      distribution_like: Distribution basiert auf
       distribution_name: Distribution
       frequency: Frequenz
       hardware_desc: Hardwarebeschreibung
@@ -600,6 +601,7 @@ app:
       system_memory: Systemspeicher
       system_utilization: Auslastung
       total_memory: Gesamtspeicherplatz
+      operating_system: Betriebssystem
       version: Version
   tool:
     btn:

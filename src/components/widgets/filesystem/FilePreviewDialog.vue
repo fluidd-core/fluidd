@@ -1,64 +1,58 @@
 <template>
-  <v-dialog
+  <app-dialog
     v-model="file.open"
+    :title="file.filename"
     :width="width"
+    no-actions
   >
-    <v-form>
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ file.filename }}</span>
-        </v-card-title>
+    <v-card-text class="py-4">
+      <v-layout justify-center>
+        <video
+          v-if="isVideo"
+          controls
+        >
+          <source
+            :src="file.src"
+            :type="file.type"
+          >
+        </video>
 
-        <v-card-text class="py-4">
-          <v-layout justify-center>
-            <video
-              v-if="isVideo"
-              controls
-            >
-              <source
-                :src="file.src"
-                :type="file.type"
-              >
-            </video>
+        <img
+          v-else-if="isImage"
+          :src="file.src"
+        >
 
-            <img
-              v-else-if="isImage"
-              :src="file.src"
-            >
+        <div v-else>
+          {{ $t('app.general.simple_form.msg.no_file_preview', { name: (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }) }}
+        </div>
+      </v-layout>
+    </v-card-text>
 
-            <div v-else>
-              {{ $t('app.general.simple_form.msg.no_file_preview', { name: (file.appFile ? `.${file.appFile.extension.toUpperCase()} files` : file.filename) }) }}
-            </div>
-          </v-layout>
-        </v-card-text>
+    <template v-if="file.appFile && (removable || downloadable)">
+      <v-divider />
 
-        <template v-if="file.appFile && (removable || downloadable)">
-          <v-divider />
-
-          <v-card-actions class="pt-4">
-            <v-spacer />
-            <app-btn
-              v-if="file.appFile && removable"
-              text
-              color="error"
-              @click="$emit('remove', file.appFile, () => file.open = false)"
-            >
-              <v-icon>$delete</v-icon>
-              {{ $t('app.general.btn.remove') }}
-            </app-btn>
-            <app-btn
-              v-if="file.appFile && downloadable"
-              color="primary"
-              @click="$emit('download', file.appFile)"
-            >
-              <v-icon>$download</v-icon>
-              {{ $t('app.general.btn.download') }}
-            </app-btn>
-          </v-card-actions>
-        </template>
-      </v-card>
-    </v-form>
-  </v-dialog>
+      <v-card-actions class="pt-4">
+        <v-spacer />
+        <app-btn
+          v-if="file.appFile && removable"
+          text
+          color="error"
+          @click="$emit('remove', file.appFile, () => file.open = false)"
+        >
+          <v-icon>$delete</v-icon>
+          {{ $t('app.general.btn.remove') }}
+        </app-btn>
+        <app-btn
+          v-if="file.appFile && downloadable"
+          color="primary"
+          @click="$emit('download', file.appFile)"
+        >
+          <v-icon>$download</v-icon>
+          {{ $t('app.general.btn.download') }}
+        </app-btn>
+      </v-card-actions>
+    </template>
+  </app-dialog>
 </template>
 
 <script lang="ts">
