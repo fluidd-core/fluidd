@@ -234,7 +234,11 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   forceCheck () {
-    SocketActions.machineUpdateStatus(true)
+    if (this.$store.getters['server/getIsMinApiVersion'](1, 2)) {
+      SocketActions.machineUpdateRefresh()
+    } else {
+      SocketActions.machineUpdateStatus(true)
+    }
   }
 
   getBaseUrl (component: HashVersion | ArtifactVersion) {

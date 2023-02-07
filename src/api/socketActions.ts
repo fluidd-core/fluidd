@@ -72,6 +72,16 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateRefresh (name?: string) {
+    baseEmit(
+      'machine.update.refresh', {
+        dispatch: 'version/onUpdateStatus',
+        params: { name },
+        wait: Waits.onVersionRefresh
+      }
+    )
+  },
+
   async machineUpdateRecover (name: string, hard = false) {
     const dispatch = name === 'moonraker'
       ? 'version/onUpdatedMoonraker'
