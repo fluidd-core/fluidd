@@ -26,6 +26,8 @@
     >
       <job-queue-card full-screen />
     </v-col>
+
+    <file-system-download-wrapper />
   </v-row>
 </template>
 
@@ -34,11 +36,13 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
+import FileSystemDownloadWrapper from '@/components/widgets/filesystem/FileSystemDownloadWrapper.vue'
 
 @Component({
   components: {
     FileSystem,
-    JobQueueCard
+    JobQueueCard,
+    FileSystemDownloadWrapper
   }
 })
 export default class Configuration extends Mixins(StateMixin) {
