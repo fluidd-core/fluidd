@@ -11,7 +11,6 @@ import {
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
-import { state as configState } from '@/store/config/state'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -35,27 +34,24 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
   getLayers: (state, getters, rootState): Layer[] => {
     const output = []
-    const moves = getters.getMoves
+    const moves = getters.getMoves as Move[]
 
     let z = NaN
     let zStart = 0
     let zLast = NaN
+    let zNext = NaN
 
-    const { uiSettings } = (rootState && rootState.config) ? rootState.config : configState
-    const groupLowerLayers = uiSettings.gcodePreview.groupLowerLayers
+    const { minLayerHeight } = rootState.config.uiSettings.gcodePreview
 
-    const zCmp = groupLowerLayers
-      ? (a: number, b: number) => Number.isNaN(a) || a < b
-      : (a: number, b: number) => a !== b
-
-    moves.forEach((move: Move, index: number) => {
+    moves.forEach((move, index) => {
       if (move.z !== undefined && z !== move.z) {
         z = move.z
         zStart = index
       }
 
-      if (move.e && move.e > 0 && zCmp(zLast, z)) {
+      if (move.e && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
         zLast = z
+        zNext = Math.round((z + minLayerHeight) * 1000) / 1000
 
         output.push({
           z,
@@ -71,7 +67,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       output.push({
         z: 0,
         move: 0,
-        filePosition: moves[0].filePosition
+        filePosition: moves[0].filePosition || 0
       })
     }
 

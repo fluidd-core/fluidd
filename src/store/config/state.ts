@@ -116,7 +116,7 @@ export const defaultState = (): ConfigState => {
         retractionIconSize: 0.6,
         drawBackground: true,
         showAnimations: true,
-        groupLowerLayers: false,
+        minLayerHeight: 0.1,
         autoLoadOnPrintStart: false,
         autoLoadMobileOnPrintStart: false,
         autoFollowOnFileLoad: true,

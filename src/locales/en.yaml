@@ -512,7 +512,6 @@ app:
       fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
-      group_lower_layers: Group lower layers
       icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
@@ -523,6 +522,7 @@ app:
       line_color: Line color
       line_style: Line style
       min: Minimum
+      min_layer_height: Minimum Layer Height
       max: Maximum
       metrics: Metrics
       move_line_width: Move Line Width
