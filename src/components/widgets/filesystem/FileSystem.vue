@@ -99,12 +99,12 @@
       v-model="dragState.overlay"
     />
 
-    <file-system-download-dialog
+    <!-- <file-system-download-dialog
       v-if="currentDownload !== null"
       :value="currentDownload !== null"
       :file="currentDownload"
       @cancel="handleCancelDownload"
-    />
+    /> -->
 
     <file-system-upload-dialog
       v-if="currentUploads.length > 0"
@@ -447,9 +447,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Get the state of a currently file being retrieved.
-  get currentDownload () {
-    return this.$store.state.files.download
-  }
+  // get currentDownload () {
+  //   return this.$store.state.files.download
+  // }
 
   get registeredRoots () {
     return this.$store.state.server.info.registered_directories || []

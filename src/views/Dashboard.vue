@@ -33,6 +33,7 @@
         </draggable>
       </v-col>
     </template>
+    <file-system-download-wrapper />
   </v-row>
 </template>
 
@@ -55,6 +56,7 @@ import { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
+import FileSystemDownloadWrapper from '@/components/widgets/filesystem/FileSystemDownloadWrapper.vue'
 
 @Component({
   components: {
@@ -71,7 +73,8 @@ import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
     OutputsCard,
     BedMeshCard,
     GcodePreviewCard,
-    JobQueueCard
+    JobQueueCard,
+    FileSystemDownloadWrapper
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
