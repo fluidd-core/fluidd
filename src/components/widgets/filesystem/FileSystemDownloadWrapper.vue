@@ -22,7 +22,8 @@ export default class FileSystemDownloadWrapper extends Vue {
   }
 
   handleCancelDownload () {
-    console.log('TEST')
+    this.currentDownload?.cancelTokenSource?.cancel('User cancelled.')
+    this.$store.dispatch('files/removeFileDownload')
   }
 }
 </script>

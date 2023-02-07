@@ -7,9 +7,6 @@ import { FileWithPath } from '@/util/file-system-entry'
 
 @Component
 export default class FilesMixin extends Vue {
-  // Maintains a cancel token source should we need to disable a request.
-  cancelTokenSource: CancelTokenSource | undefined = undefined
-
   get apiUrl () {
     return this.$store.state.config.apiUrl
   }
@@ -92,12 +89,11 @@ export default class FilesMixin extends Vue {
     }
 
     if (res) {
-      this.cancelTokenSource = Axios.CancelToken.source()
+      const cancelTokenSource = Axios.CancelToken.source()
       const path = file.path ? `${file.path}/${file.filename}` : file.filename
-      return await this.getFile(path, 'gcodes', file.size, {
+      return await this.getFile(path, 'gcodes', file.size, cancelTokenSource, {
         responseType: 'text',
-        transformResponse: [v => v],
-        cancelToken: this.cancelTokenSource.token
+        cancelToken: cancelTokenSource.token
       })
     }
   }
@@ -107,7 +103,7 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
+  async getFile (filename: string, path: string, size = 0, cancelTokenSource: CancelTokenSource | null = null, options?: AxiosRequestConfig) {
     // Sort out the filepath
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
 
@@ -120,7 +116,8 @@ export default class FilesMixin extends Vue {
       loaded: 0,
       percent: 0,
       speed: 0,
-      unit: 'kB'
+      unit: 'kB',
+      cancelTokenSource
     })
 
     // Append any additional options.
@@ -144,7 +141,8 @@ export default class FilesMixin extends Vue {
           loaded: progressEvent.loaded,
           percent: Math.round(progressEvent.loaded / size * 100),
           speed,
-          unit: units[i]
+          unit: units[i],
+          cancelTokenSource
         }
 
         if (progressEvent.lengthComputable) {
@@ -287,6 +285,7 @@ export default class FilesMixin extends Vue {
     // For each file, adds the associated state.
     for (const file of files) {
       const [fullPath, fileObject] = this.getFullPathAndFile(path, file)
+      const cancelTokenSource = Axios.CancelToken.source()
 
       let filepath = `${fullPath}${fileObject.name}`
       filepath = (filepath.startsWith('/'))
@@ -299,7 +298,8 @@ export default class FilesMixin extends Vue {
         percent: 0,
         speed: 0,
         unit: 'kB',
-        cancelled: false
+        cancelled: false,
+        cancelTokenSource
       })
     }
 
@@ -318,9 +318,8 @@ export default class FilesMixin extends Vue {
       // consola.error('about to process...', fileState)
       if (fileState && !fileState?.cancelled) {
         try {
-          this.cancelTokenSource = Axios.CancelToken.source()
           await this.uploadFile(fileObject, fullPath, root, andPrint, {
-            cancelToken: this.cancelTokenSource.token
+            cancelToken: fileState.cancelTokenSource.token
           })
         } catch (e) {
           return e

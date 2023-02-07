@@ -1,5 +1,6 @@
 import { KlipperFileMeta, Thumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
+import { CancelTokenSource } from 'axios'
 
 export type { KlipperFileMeta, Thumbnail }
 
@@ -100,6 +101,7 @@ export interface FileDownload {
   percent: number;
   speed: number;
   unit: string;
+  cancelTokenSource?: CancelTokenSource;
 }
 
 export interface FilesUpload extends FileDownload {

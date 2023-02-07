@@ -628,15 +628,16 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
 
     // Grab the file. This should provide a dialog.
-    this.cancelTokenSource = Axios.CancelToken.source()
+    const cancelTokenSource = Axios.CancelToken.source()
+
     this.getFile(
       file.filename,
       this.currentPath,
       file.size,
+      cancelTokenSource,
       {
         responseType: this.currentRoot === 'timelapse' ? 'arraybuffer' : 'text',
-        transformResponse: [v => v],
-        cancelToken: this.cancelTokenSource.token
+        cancelToken: cancelTokenSource.token
       }
     )
       .then(response => {
@@ -664,11 +665,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       })
       .finally(() => this.$store.dispatch('files/removeFileDownload'))
       .catch(e => e)
-  }
-
-  handleCancelDownload () {
-    if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
-    this.$store.dispatch('files/removeFileDownload')
   }
 
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
@@ -840,7 +836,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       // Started uploading, but not complete.
       if (file.loaded > 0 && file.loaded < file.size) {
-        if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
+        file.cancelTokenSource?.cancel('User cancelled.')
       }
     }
   }
