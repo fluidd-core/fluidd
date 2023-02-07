@@ -493,6 +493,7 @@ app:
       dashed: Dashed
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
+      default_min_layer_height: Default minimum layer height
       default_toolhead_move_length: Default toolhead move length
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
@@ -522,7 +523,6 @@ app:
       line_color: Line color
       line_style: Line style
       min: Minimum
-      min_layer_height: Minimum Layer Height
       max: Maximum
       metrics: Metrics
       move_line_width: Move Line Width

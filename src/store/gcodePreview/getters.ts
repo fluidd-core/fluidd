@@ -33,6 +33,10 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getLayers: (state, getters, rootState): Layer[] => {
+    if (state.layers.length) {
+      return state.layers
+    }
+
     const output = []
     const moves = getters.getMoves as Move[]
 
@@ -63,7 +67,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
     // If moves exist but there are no layers, add a single "default" layer at z=0
     // This can happen for gcode that only contains travel moves (eg: 2d plotters without Z or E steppers)
-    if (output.length === 0 && moves.length > 0) {
+    if (output.length === 0 && moves.length) {
       output.push({
         z: 0,
         move: 0,

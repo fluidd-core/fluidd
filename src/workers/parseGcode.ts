@@ -1,11 +1,22 @@
 /* eslint-disable no-fallthrough */
-import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
+import { ArcMove, Layer, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
 import { pick } from 'lodash-es'
 
 function parseLine (line: string) {
-  const [, command, args = ''] = line
+  const clearedLine = line
     .trim()
     .split(';', 2)[0]
+
+  const clearedLineUpperCase = clearedLine.toUpperCase()
+
+  if (clearedLineUpperCase.startsWith('SET_PRINT_STATS_INFO ') && clearedLineUpperCase.includes(' CURRENT_LAYER=')) {
+    return {
+      command: ';LAYER',
+      args: {}
+    }
+  }
+
+  const [, command, args = ''] = clearedLine
     .split(/^([a-z][0-9]+)\s+/i)
 
   if (!/^(G|M)\d+$/.test(command)) {
@@ -26,8 +37,10 @@ function parseLine (line: string) {
 
 export default function parseGcode (gcode: string, sendProgress: (filePosition: number) => void) {
   const moves: Move[] = []
+  const layers: Layer[] = []
   const lines = gcode.split('\n')
 
+  let newLayerForNextMove = false
   let extrusionMode = PositioningMode.Relative
   let positioningMode = PositioningMode.Absolute
   const toolhead = {
@@ -54,6 +67,12 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
     } = parseLine(lines[i]) ?? {}
 
     if (!command) {
+      toolhead.filePosition += lines[i].length + 1 // + 1 for newline
+
+      continue
+    } else if (command === ';LAYER') {
+      newLayerForNextMove = true
+
       toolhead.filePosition += lines[i].length + 1 // + 1 for newline
 
       continue
@@ -149,6 +168,18 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
         }
       }
 
+      if (newLayerForNextMove && move.e && move.e > 0) {
+        const layer = {
+          z: toolhead.z,
+          move: moves.length - 1,
+          filePosition: toolhead.filePosition
+        }
+
+        layers.push(Object.freeze(layer))
+
+        newLayerForNextMove = false
+      }
+
       toolhead.x = move.x ?? toolhead.x
       toolhead.y = move.y ?? toolhead.y
       toolhead.z = move.z ?? toolhead.z
@@ -167,5 +198,5 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
   sendProgress(toolhead.filePosition)
 
-  return moves
+  return { moves, layers }
 }

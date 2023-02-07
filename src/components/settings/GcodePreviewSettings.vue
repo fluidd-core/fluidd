@@ -30,7 +30,7 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.min_layer_height')">
+      <app-setting :title="$t('app.setting.label.default_min_layer_height')">
         <v-text-field
           :value="minLayerHeight"
           :rules="[
