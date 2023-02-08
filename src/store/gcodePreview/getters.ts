@@ -55,7 +55,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
       if (move.e && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
         zLast = z
-        zNext = Math.round((z + minLayerHeight) * 1000) / 1000
+        zNext = Math.round((z + minLayerHeight) * 10000) / 10000
 
         output.push({
           z,

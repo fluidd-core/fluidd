@@ -35,6 +35,10 @@ function parseLine (line: string) {
   }
 }
 
+function decimalRount (a: number) {
+  return Math.round(a * 10000) / 10000
+}
+
 export default function parseGcode (gcode: string, sendProgress: (filePosition: number) => void) {
   const moves: Move[] = []
   const layers: Layer[] = []
@@ -105,16 +109,16 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
         }
 
         if (fwretraction.z !== 0) {
-          move.z = toolhead.z + fwretraction.z
+          move.z = decimalRount(toolhead.z + fwretraction.z)
         }
         break
       case 'G11':
         move = {
-          e: fwretraction.length + fwretraction.extrudeExtra
+          e: decimalRount(fwretraction.length + fwretraction.extrudeExtra)
         }
 
         if (fwretraction.z !== 0) {
-          move.z = toolhead.z - fwretraction.z
+          move.z = decimalRount(toolhead.z - fwretraction.z)
         }
         break
       case 'G90':
@@ -148,7 +152,7 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
     if (move) {
       if (extrusionMode === PositioningMode.Absolute && move.e !== undefined) {
-        const extrusionLength = move.e - toolhead.e
+        const extrusionLength = decimalRount(move.e - toolhead.e)
 
         toolhead.e = move.e
         move.e = extrusionLength
@@ -156,15 +160,15 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
       if (positioningMode === PositioningMode.Relative) {
         if (move.x !== undefined) {
-          move.x += toolhead.x
+          move.x = decimalRount(move.x + toolhead.x)
         }
 
         if (move.y !== undefined) {
-          move.y += toolhead.y
+          move.y = decimalRount(move.y + toolhead.y)
         }
 
         if (move.z !== undefined) {
-          move.z += toolhead.z
+          move.z = decimalRount(move.z + toolhead.z)
         }
       }
 
