@@ -11,8 +11,7 @@ function parseLine (line: string) {
 
   if (clearedLineUpperCase.startsWith('SET_PRINT_STATS_INFO ') && clearedLineUpperCase.includes(' CURRENT_LAYER=')) {
     return {
-      command: ';LAYER',
-      args: {}
+      command: ';LAYER' as const
     }
   }
 
@@ -23,7 +22,7 @@ function parseLine (line: string) {
     return null
   }
 
-  const argMap: any = {}
+  const argMap: Record<string, number> = {}
 
   for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
     argMap[key.toLowerCase()] = Number(value)
@@ -70,13 +69,13 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
       args
     } = parseLine(lines[i]) ?? {}
 
-    if (!command) {
+    if (command === ';LAYER') {
+      newLayerForNextMove = true
+
       toolhead.filePosition += lines[i].length + 1 // + 1 for newline
 
       continue
-    } else if (command === ';LAYER') {
-      newLayerForNextMove = true
-
+    } else if (!command || !args) {
       toolhead.filePosition += lines[i].length + 1 // + 1 for newline
 
       continue
