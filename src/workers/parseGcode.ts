@@ -1,5 +1,6 @@
 /* eslint-disable no-fallthrough */
 import { ArcMove, Layer, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
+import IsKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 
 const parseLine = (line: string) => {
@@ -95,7 +96,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         move = {
           ...pick(args, [
             'x', 'y', 'z', 'e',
-            'i', 'j', 'r'
+            'i', 'j', 'k', 'r'
           ]),
           direction: command === 'G2'
             ? Rotation.Clockwise
@@ -172,15 +173,18 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       }
 
       if (newLayerForNextMove && move.e && move.e > 0) {
-        const layer = {
-          z: toolhead.z,
-          move: moves.length - 1,
-          filePosition: toolhead.filePosition
+        const m = move
+        if (['x', 'y', 'i', 'j'].some(x => IsKeyOf(x, m) && m[x] !== 0)) {
+          const layer = {
+            z: toolhead.z,
+            move: moves.length - 1,
+            filePosition: toolhead.filePosition
+          }
+
+          layers.push(Object.freeze(layer))
+
+          newLayerForNextMove = false
         }
-
-        layers.push(Object.freeze(layer))
-
-        newLayerForNextMove = false
       }
 
       toolhead.x = move.x ?? toolhead.x

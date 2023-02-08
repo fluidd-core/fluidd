@@ -11,6 +11,7 @@ import {
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
+import IsKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -54,14 +55,16 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       }
 
       if (move.e && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
-        zLast = z
-        zNext = Math.round((z + minLayerHeight) * 10000) / 10000
+        if (['x', 'y', 'i', 'j'].some(x => IsKeyOf(x, move) && move[x] !== 0)) {
+          zLast = z
+          zNext = Math.round((z + minLayerHeight) * 10000) / 10000
 
-        output.push({
-          z,
-          move: zStart,
-          filePosition: move.filePosition
-        })
+          output.push({
+            z,
+            move: zStart,
+            filePosition: move.filePosition
+          })
+        }
       }
     })
 
