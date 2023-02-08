@@ -2,7 +2,7 @@
 import { ArcMove, Layer, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
 import { pick } from 'lodash-es'
 
-function parseLine (line: string) {
+const parseLine = (line: string) => {
   const clearedLine = line
     .trim()
     .split(';', 2)[0]
@@ -34,11 +34,11 @@ function parseLine (line: string) {
   }
 }
 
-function decimalRount (a: number) {
+const decimalRount = (a: number) => {
   return Math.round(a * 10000) / 10000
 }
 
-export default function parseGcode (gcode: string, sendProgress: (filePosition: number) => void) {
+const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void) => {
   const moves: Move[] = []
   const layers: Layer[] = []
   const lines = gcode.split('\n')
@@ -203,3 +203,5 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
   return { moves, layers }
 }
+
+export default parseGcode
