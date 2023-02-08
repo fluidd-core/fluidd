@@ -87,9 +87,12 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
     switch (command) {
       case 'G0':
       case 'G1':
-        move = pick(args, [
-          'x', 'y', 'z', 'e'
-        ]) as LinearMove
+        move = {
+          ...pick(args, [
+            'x', 'y', 'z', 'e'
+          ]),
+          filePosition: toolhead.filePosition
+        } satisfies LinearMove
         break
       case 'G2':
       case 'G3':
@@ -100,13 +103,15 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           ]),
           direction: command === 'G2'
             ? Rotation.Clockwise
-            : Rotation.CounterClockwise
-        } as ArcMove
+            : Rotation.CounterClockwise,
+          filePosition: toolhead.filePosition
+        } satisfies ArcMove
         break
       case 'G10':
         move = {
-          e: -fwretraction.length
-        }
+          e: -fwretraction.length,
+          filePosition: 0
+        } satisfies LinearMove
 
         if (fwretraction.z !== 0) {
           move.z = decimalRound(toolhead.z + fwretraction.z)
@@ -114,8 +119,9 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
         break
       case 'G11':
         move = {
-          e: decimalRound(fwretraction.length + fwretraction.extrudeExtra)
-        }
+          e: decimalRound(fwretraction.length + fwretraction.extrudeExtra),
+          filePosition: toolhead.filePosition
+        } satisfies LinearMove
 
         if (fwretraction.z !== 0) {
           move.z = decimalRound(toolhead.z - fwretraction.z)
@@ -190,8 +196,6 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       toolhead.x = move.x ?? toolhead.x
       toolhead.y = move.y ?? toolhead.y
       toolhead.z = move.z ?? toolhead.z
-
-      move.filePosition = toolhead.filePosition
 
       moves.push(Object.freeze(move))
     }

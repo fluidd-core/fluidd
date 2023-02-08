@@ -74,7 +74,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       output.push({
         z: 0,
         move: 0,
-        filePosition: moves[0].filePosition || 0
+        filePosition: moves[0].filePosition
       })
     }
 
@@ -244,7 +244,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       return 0
     }
 
-    return binarySearch(getters.getMoves, (val: Move) => filePosition - (val.filePosition ?? 0), true)
+    return binarySearch(getters.getMoves, (val: Move) => filePosition - val.filePosition, true)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {
