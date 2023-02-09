@@ -173,7 +173,7 @@ export interface GcodePreviewConfig {
   retractionIconSize: number;
   drawBackground: boolean;
   showAnimations: boolean;
-  groupLowerLayers: boolean;
+  minLayerHeight: number;
   autoLoadOnPrintStart: boolean;
   autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;

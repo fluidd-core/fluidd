@@ -3,6 +3,7 @@ import { GcodePreviewState } from './types'
 export const defaultState = (): GcodePreviewState => {
   return {
     moves: [],
+    layers: [],
     file: undefined,
     parserProgress: 0,
     parserWorker: null,
