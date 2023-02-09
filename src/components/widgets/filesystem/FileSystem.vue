@@ -630,7 +630,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
 
     // Grab the file. This should provide a dialog.
-    this.cancelTokenSource = Axios.CancelToken.source()
+    this.$store.dispatch('files/createFileTransferCancelTokenSource')
+
     this.getFile(
       file.filename,
       this.currentPath,
@@ -669,7 +670,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleCancelDownload () {
-    if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
+    if (this.cancelTokenSource) {
+      this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
+    }
+
     this.$store.dispatch('files/removeFileDownload')
   }
 
@@ -842,7 +846,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       // Started uploading, but not complete.
       if (file.loaded > 0 && file.loaded < file.size) {
-        if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
+        if (this.cancelTokenSource) {
+          this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
+        }
       }
     }
   }

@@ -1,14 +1,15 @@
 import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
+import Axios, { AxiosRequestConfig } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
 import { FileWithPath } from '@/util/file-system-entry'
 
 @Component
 export default class FilesMixin extends Vue {
-  // Maintains a cancel token source should we need to disable a request.
-  cancelTokenSource: CancelTokenSource | undefined = undefined
+  get cancelTokenSource () {
+    return this.$store.state.files.fileTransferCancelTokenSource
+  }
 
   get apiUrl () {
     return this.$store.state.config.apiUrl
@@ -83,7 +84,8 @@ export default class FilesMixin extends Vue {
     }
 
     if (res) {
-      this.cancelTokenSource = Axios.CancelToken.source()
+      this.$store.dispatch('files/createFileTransferCancelTokenSource')
+
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
       return await this.getFile(file.filename, path, file.size, {
         responseType: 'text',
@@ -313,7 +315,8 @@ export default class FilesMixin extends Vue {
       // consola.error('about to process...', fileState)
       if (fileState && !fileState?.cancelled) {
         try {
-          this.cancelTokenSource = Axios.CancelToken.source()
+          this.$store.dispatch('files/createFileTransferCancelTokenSource')
+
           await this.uploadFile(fileObject, fullPath, root, andPrint, {
             cancelToken: this.cancelTokenSource.token
           })
