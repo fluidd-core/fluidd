@@ -83,7 +83,6 @@ export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
     }
 
     this.$store.dispatch('files/removeFileDownload')
-    this.open = false
   }
 }
 </script>
