@@ -4,7 +4,7 @@
     max-width="500"
     persistent
   >
-    <v-card v-if="file">
+    <v-card v-if="currentDownload">
       <v-card-title class="card-heading py-2 px-5">
         <v-icon left>
           $download
@@ -16,10 +16,10 @@
 
       <v-card-text class="py-3 px-5">
         <div class="mb-2">
-          {{ file.filepath }}
+          {{ currentDownload.filepath }}
         </div>
         <v-progress-linear
-          :value="file.percent"
+          :value="currentDownload.percent"
           color="primary"
           class="mb-2"
         />
@@ -28,13 +28,13 @@
             <td class="pr-2">
               {{ $t('app.file_system.label.downloaded') }}:
             </td>
-            <td>{{ file.percent }}% ({{ $filters.getReadableFileSizeString(file.loaded) }} / {{ $filters.getReadableFileSizeString(file.size) }})</td>
+            <td>{{ currentDownload.percent }}% ({{ $filters.getReadableFileSizeString(currentDownload.loaded) }} / {{ $filters.getReadableFileSizeString(currentDownload.size) }})</td>
           </tr>
           <tr>
             <td class="pr-2">
               {{ $t('app.file_system.label.transfer_rate') }}:
             </td>
-            <td>{{ file.speed.toFixed(2) }} {{ file.unit }}/Sec</td>
+            <td>{{ currentDownload.speed.toFixed(2) }} {{ currentDownload.unit }}/Sec</td>
           </tr>
         </table>
       </v-card-text>
@@ -46,7 +46,7 @@
         <app-btn
           color="error"
           text
-          @click="$emit('cancel'); open = false"
+          @click="handleCancelDownload"
         >
           {{ $t('app.general.btn.cancel') }}
         </app-btn>
@@ -56,16 +56,36 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { FileDownload } from '@/store/files/types'
 
 @Component({})
 export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  open = !!this.currentDownload
 
-  @Prop({ type: Object })
-  readonly file!: FileDownload
+  @Watch('currentDownload')
+  onCurrentDownloadChange (val: FileDownload | null) {
+    if (val !== null) {
+      this.open = true
+    }
+  }
+
+  get cancelTokenSource () {
+    return this.$store.state.files.fileTransferCancelTokenSource
+  }
+
+  get currentDownload () {
+    return this.$store.state.files.download
+  }
+
+  handleCancelDownload () {
+    if (this.cancelTokenSource) {
+      this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
+    }
+
+    this.$store.dispatch('files/removeFileDownload')
+    this.open = false
+  }
 }
 </script>

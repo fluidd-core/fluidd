@@ -1,7 +1,7 @@
 import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import Axios, { AxiosRequestConfig } from 'axios'
+import { AxiosRequestConfig } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
 import { FileWithPath } from '@/util/file-system-entry'
 
