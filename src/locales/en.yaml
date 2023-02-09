@@ -493,6 +493,7 @@ app:
       dashed: Dashed
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
+      default_min_layer_height: Default minimum layer height
       default_toolhead_move_length: Default toolhead move length
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
@@ -512,7 +513,6 @@ app:
       fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
-      group_lower_layers: Group lower layers
       icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control

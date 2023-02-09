@@ -1,18 +1,29 @@
 /* eslint-disable no-fallthrough */
-import { ArcMove, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
+import { ArcMove, Layer, LinearMove, Move, PositioningMode, Rotation } from '@/store/gcodePreview/types'
+import IsKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 
-function parseLine (line: string) {
-  const [, command, args = ''] = line
+const parseLine = (line: string) => {
+  const clearedLine = line
     .trim()
     .split(';', 2)[0]
+
+  const clearedLineUpperCase = clearedLine.toUpperCase()
+
+  if (clearedLineUpperCase.startsWith('SET_PRINT_STATS_INFO ') && clearedLineUpperCase.includes(' CURRENT_LAYER=')) {
+    return {
+      command: ';LAYER' as const
+    }
+  }
+
+  const [, command, args = ''] = clearedLine
     .split(/^([a-z][0-9]+)\s+/i)
 
   if (!/^(G|M)\d+$/.test(command)) {
     return null
   }
 
-  const argMap: any = {}
+  const argMap: Record<string, number> = {}
 
   for (const [, key, value] of args.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
     argMap[key.toLowerCase()] = Number(value)
@@ -24,10 +35,16 @@ function parseLine (line: string) {
   }
 }
 
-export default function parseGcode (gcode: string, sendProgress: (filePosition: number) => void) {
+const decimalRound = (a: number) => {
+  return Math.round(a * 10000) / 10000
+}
+
+const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void) => {
   const moves: Move[] = []
+  const layers: Layer[] = []
   const lines = gcode.split('\n')
 
+  let newLayerForNextMove = false
   let extrusionMode = PositioningMode.Relative
   let positioningMode = PositioningMode.Absolute
   const toolhead = {
@@ -53,7 +70,13 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
       args
     } = parseLine(lines[i]) ?? {}
 
-    if (!command) {
+    if (command === ';LAYER') {
+      newLayerForNextMove = true
+
+      toolhead.filePosition += lines[i].length + 1 // + 1 for newline
+
+      continue
+    } else if (!command || !args) {
       toolhead.filePosition += lines[i].length + 1 // + 1 for newline
 
       continue
@@ -64,38 +87,44 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
     switch (command) {
       case 'G0':
       case 'G1':
-        move = pick(args, [
-          'x', 'y', 'z', 'e'
-        ]) as LinearMove
+        move = {
+          ...pick(args, [
+            'x', 'y', 'z', 'e'
+          ]),
+          filePosition: toolhead.filePosition
+        } satisfies LinearMove
         break
       case 'G2':
       case 'G3':
         move = {
           ...pick(args, [
             'x', 'y', 'z', 'e',
-            'i', 'j', 'r'
+            'i', 'j', 'k', 'r'
           ]),
           direction: command === 'G2'
             ? Rotation.Clockwise
-            : Rotation.CounterClockwise
-        } as ArcMove
+            : Rotation.CounterClockwise,
+          filePosition: toolhead.filePosition
+        } satisfies ArcMove
         break
       case 'G10':
         move = {
-          e: -fwretraction.length
-        }
+          e: -fwretraction.length,
+          filePosition: 0
+        } satisfies LinearMove
 
         if (fwretraction.z !== 0) {
-          move.z = toolhead.z + fwretraction.z
+          move.z = decimalRound(toolhead.z + fwretraction.z)
         }
         break
       case 'G11':
         move = {
-          e: fwretraction.length + fwretraction.extrudeExtra
-        }
+          e: decimalRound(fwretraction.length + fwretraction.extrudeExtra),
+          filePosition: toolhead.filePosition
+        } satisfies LinearMove
 
         if (fwretraction.z !== 0) {
-          move.z = toolhead.z - fwretraction.z
+          move.z = decimalRound(toolhead.z - fwretraction.z)
         }
         break
       case 'G90':
@@ -129,7 +158,7 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
     if (move) {
       if (extrusionMode === PositioningMode.Absolute && move.e !== undefined) {
-        const extrusionLength = move.e - toolhead.e
+        const extrusionLength = decimalRound(move.e - toolhead.e)
 
         toolhead.e = move.e
         move.e = extrusionLength
@@ -137,23 +166,36 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
       if (positioningMode === PositioningMode.Relative) {
         if (move.x !== undefined) {
-          move.x += toolhead.x
+          move.x = decimalRound(move.x + toolhead.x)
         }
 
         if (move.y !== undefined) {
-          move.y += toolhead.y
+          move.y = decimalRound(move.y + toolhead.y)
         }
 
         if (move.z !== undefined) {
-          move.z += toolhead.z
+          move.z = decimalRound(move.z + toolhead.z)
+        }
+      }
+
+      if (newLayerForNextMove && move.e && move.e > 0) {
+        const m = move
+        if (['x', 'y', 'i', 'j'].some(x => IsKeyOf(x, m) && m[x] !== 0)) {
+          const layer = {
+            z: toolhead.z,
+            move: moves.length - 1,
+            filePosition: toolhead.filePosition
+          }
+
+          layers.push(Object.freeze(layer))
+
+          newLayerForNextMove = false
         }
       }
 
       toolhead.x = move.x ?? toolhead.x
       toolhead.y = move.y ?? toolhead.y
       toolhead.z = move.z ?? toolhead.z
-
-      move.filePosition = toolhead.filePosition
 
       moves.push(Object.freeze(move))
     }
@@ -167,5 +209,7 @@ export default function parseGcode (gcode: string, sendProgress: (filePosition: 
 
   sendProgress(toolhead.filePosition)
 
-  return moves
+  return { moves, layers }
 }
+
+export default parseGcode

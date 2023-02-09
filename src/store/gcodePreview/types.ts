@@ -4,6 +4,7 @@ export type LayerNr = number
 
 export interface GcodePreviewState {
   moves: Move[];
+  layers: Layer[],
   file?: AppFile;
   parserProgress: number;
   parserWorker: Worker | null;
@@ -25,12 +26,13 @@ export interface LinearMove {
   z?: number;
   e?: number;
 
-  filePosition?: number;
+  filePosition: number;
 }
 
 export interface ArcMove extends LinearMove {
   i?: number;
   j?: number;
+  k?: number;
   r?: number;
   direction: Rotation;
 }
@@ -84,8 +86,9 @@ export type ParseGcodeWorkerClientMessage = {
   action: 'progress',
   filePosition: number
 } | {
-  action: 'moves',
+  action: 'result',
   moves: Move[]
+  layers: Layer[]
 }
 
 export type ParseGcodeWorkerServerMessage = {
