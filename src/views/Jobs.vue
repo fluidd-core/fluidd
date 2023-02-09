@@ -26,8 +26,6 @@
     >
       <job-queue-card full-screen />
     </v-col>
-
-    <file-system-download-dialog />
   </v-row>
 </template>
 
@@ -36,13 +34,11 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
-import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 
 @Component({
   components: {
     FileSystem,
-    JobQueueCard,
-    FileSystemDownloadDialog
+    JobQueueCard
   }
 })
 export default class Configuration extends Mixins(StateMixin) {

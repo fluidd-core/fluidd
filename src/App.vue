@@ -73,6 +73,7 @@
             (!socketConnected && authenticated)"
       />
 
+      <file-system-download-dialog />
       <updating-dialog />
     </v-main>
 
@@ -86,6 +87,7 @@ import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import { LinkPropertyHref } from 'vue-meta'
+import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -99,6 +101,9 @@ import { LinkPropertyHref } from 'vue-meta'
         { name: 'theme-color', content: this.primaryColor }
       ]
     }
+  },
+  components: {
+    FileSystemDownloadDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin) {
