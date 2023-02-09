@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat, ServiceInfo, ServiceState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
-import numberArrayCompare from '@/util/number-array-compare'
+import { gte, valid } from 'semver'
 
 export const getters: GetterTree<ServerState, RootState> = {
   /**
@@ -12,8 +12,9 @@ export const getters: GetterTree<ServerState, RootState> = {
     return state.info
   },
 
-  getIsMinApiVersion: (state) => (...version: number[]) => {
-    return numberArrayCompare(state.info.api_version ?? [], version) <= 0
+  getIsMinApiVersion: (state) => (minVersion: string) => {
+    const apiVersion = state.info.api_version_string
+    return apiVersion && valid(apiVersion) && valid(minVersion) && gte(apiVersion, minVersion)
   },
 
   /**

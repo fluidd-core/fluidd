@@ -234,7 +234,7 @@ export default class VersionSettings extends Mixins(StateMixin) {
   }
 
   forceCheck () {
-    if (this.$store.getters['server/getIsMinApiVersion'](1, 2)) {
+    if (this.$store.getters['server/getIsMinApiVersion']('1.2.0')) {
       SocketActions.machineUpdateRefresh()
     } else {
       SocketActions.machineUpdateStatus(true)
