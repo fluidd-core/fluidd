@@ -66,9 +66,7 @@ export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
 
   @Watch('currentDownload')
   onCurrentDownloadChange (val: FileDownload | null) {
-    if (val !== null) {
-      this.open = true
-    }
+    this.open = !!val
   }
 
   get cancelTokenSource () {
