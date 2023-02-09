@@ -210,7 +210,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return (
       (this.file.type !== 'file' || this.file.extension !== 'zip') &&
       !this.rootProperties.readonly &&
-      this.$store.getters['server/getIsMinApiVersion'](1, 1)
+      this.$store.getters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 
