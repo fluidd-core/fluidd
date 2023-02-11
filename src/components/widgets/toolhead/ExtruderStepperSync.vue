@@ -1,0 +1,42 @@
+<template>
+  <v-row>
+    <v-col
+      cols="12"
+      sm="6"
+    >
+      <app-select
+        :value="extruderStepper.motion_queue"
+        :label="$t('app.general.label.synced_extruder')"
+        :items="[
+          { name: $t('app.setting.label.none'), key: null },
+          ...availableExtruders
+        ]"
+        :disabled="!klippyReady || printerPrinting"
+        :loading="hasWait(`${$waits.onSyncExtruder}${extruderStepper.name}`)"
+        item-value="key"
+        item-text="name"
+        @change="sendSyncExtruderMotion"
+      />
+    </v-col>
+  </v-row>
+</template>
+
+<script lang="ts">
+import { Component, Mixins, Prop } from 'vue-property-decorator'
+import StateMixin from '@/mixins/state'
+import { Extruder, ExtruderStepper } from '@/store/printer/types'
+
+@Component({})
+export default class ExtruderStepperSync extends Mixins(StateMixin) {
+  @Prop({ type: Object, required: true })
+  readonly extruderStepper!: ExtruderStepper
+
+  get availableExtruders () {
+    return this.$store.getters['printer/getExtruders'] as Extruder[]
+  }
+
+  sendSyncExtruderMotion (value: string | null) {
+    this.sendGcode(`SYNC_EXTRUDER_MOTION EXTRUDER=${this.extruderStepper.name} MOTION_QUEUE=${value ?? ''}`, `${this.$waits.onSyncExtruder}${this.extruderStepper.name}`)
+  }
+}
+</script>

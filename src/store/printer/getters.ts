@@ -248,19 +248,15 @@ export const getters: GetterTree<PrinterState, RootState> = {
  * Return known extruders, giving them a friendly name.
  */
   getExtruders: (state) => {
-    const extruders: Extruder[] = []
-    Object.keys(state.printer)
-      .filter(key => /^extruder\d{0,2}$/.test(key))
-      .sort()
-      .forEach(key => {
-        if (key === 'extruder') {
-          extruders.push({ name: 'Extruder 0', key })
-        } else {
-          const match = key.match(/\d+$/)
-          if (match) extruders.push({ name: 'Extruder ' + match[0], key })
-        }
-      })
-    return extruders
+    const extruderCount = Object.keys(state.printer)
+      .filter(key => /^extruder\d{0,2}$/.exec(key))
+      .length
+
+    return [...Array(extruderCount).keys()]
+      .map((index): Extruder => ({
+        key: `extruder${index === 0 ? '' : index}`,
+        name: extruderCount === 1 ? 'Extruder' : `Extruder ${index}`
+      }))
   },
 
   // Return the current extruder along with its configuration.
@@ -301,6 +297,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
         extruderSteppers.push({
           name,
+          prettyName: Vue.$filters.startCase(name),
           ...e,
           config_pressure_advance: c.pressure_advance,
           config_smooth_time: c.pressure_advance_smooth_time
