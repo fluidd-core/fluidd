@@ -2,8 +2,11 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 die () {
-  cat <<'EOF'
-Error: Commit messages should follow the conventional commits standard, and should have a Signed-off-by line, for example:
+  TEXT=$(cat <<'EOF'
+
+\e[31mError: Commit messages should follow the conventional commits standard, and should have a Signed-off-by line\e[0m
+
+Example:
 
 ```
 feat: My feature.
@@ -14,8 +17,11 @@ Signed-off-by: Your Name <your email address>
 ```
 
 EOF
+  )
 
-exit 1
+  echo "${TEXT}"
+
+  exit 1
 }
 
 COMMIT_MESSAGE=$(cat $1)
