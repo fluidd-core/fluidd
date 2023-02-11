@@ -91,7 +91,8 @@ app:
       not_found: No files found
       processing: Processing
     overlay:
-      drag_files_folders: <strong>Drag</strong> files and folders here
+      drag_files_folders_upload: <strong>Drag</strong> files and folders here to upload
+      drag_files_enqueue: <strong>Drag</strong> files here to enqueue
     title:
       add_dir: Add Directory
       add_file: Add File
