@@ -64,7 +64,7 @@ export interface TimelapseWritableSettings {
 }
 
 export type TimelapseMode = 'layermacro' | 'hyperlapse';
-export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right';
+export type ParkPosition = 'custom' | 'front_left' | 'front_right' | 'center' | 'back_left' | 'back_right' | 'x_only' | 'y_only';
 
 export interface RenderSettings {
   frameRate: number;

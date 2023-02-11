@@ -699,6 +699,8 @@ app:
         center: Mitte
         back_left: Hinten links
         back_right: Hinten rechts
+        x_only: Nur X bewegen
+        y_only: Nur Y bewegen
       previewimage: Vorschaubild erzeugen
       saveframes: Einzelbilder speichern
       stream_delay_compensation: Verzögerungs-Kompensation
