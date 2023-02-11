@@ -1,11 +1,13 @@
 import { KlipperFileMeta, Thumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
+import { CancelTokenSource } from 'axios'
 
 export type { KlipperFileMeta, Thumbnail }
 
 export interface FilesState {
   uploads: FilesUpload[];
   download: FileDownload | null;
+  fileTransferCancelTokenSource: CancelTokenSource | null;
   currentPaths: CurrentPaths;
   disk_usage: DiskUsage;
   rootFiles: RootFiles;
