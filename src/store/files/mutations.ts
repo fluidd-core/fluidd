@@ -126,6 +126,10 @@ export const mutations: MutationTree<FilesState> = {
     state.download = null
   },
 
+  setFileTransferCancelTokenSource (state, payload) {
+    state.fileTransferCancelTokenSource = payload
+  },
+
   setCurrentPath (state, payload) {
     Vue.set(state.currentPaths, payload.root, payload.path)
   },

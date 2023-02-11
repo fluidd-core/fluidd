@@ -99,13 +99,6 @@
       v-model="dragState.overlay"
     />
 
-    <file-system-download-dialog
-      v-if="currentDownload !== null"
-      :value="currentDownload !== null"
-      :file="currentDownload"
-      @cancel="handleCancelDownload"
-    />
-
     <file-system-upload-dialog
       v-if="currentUploads.length > 0"
       :value="currentUploads.length > 0"
@@ -151,10 +144,8 @@ import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
-import FileSystemDownloadDialog from './FileSystemDownloadDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import Axios from 'axios'
 import { AppTableHeader } from '@/types'
 import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry'
 
@@ -173,7 +164,6 @@ import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry
     FileSystemDragOverlay,
     FileEditorDialog,
     FileNameDialog,
-    FileSystemDownloadDialog,
     FileSystemUploadDialog,
     FilePreviewDialog
   }
@@ -446,11 +436,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.state.files.uploads
   }
 
-  // Get the state of a currently file being retrieved.
-  get currentDownload () {
-    return this.$store.state.files.download
-  }
-
   get registeredRoots () {
     return this.$store.state.server.info.registered_directories || []
   }
@@ -630,7 +615,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
 
     // Grab the file. This should provide a dialog.
-    this.cancelTokenSource = Axios.CancelToken.source()
+    this.$store.dispatch('files/createFileTransferCancelTokenSource')
+
     this.getFile(
       file.filename,
       this.currentPath,
@@ -666,11 +652,6 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       })
       .finally(() => this.$store.dispatch('files/removeFileDownload'))
       .catch(e => e)
-  }
-
-  handleCancelDownload () {
-    if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
-    this.$store.dispatch('files/removeFileDownload')
   }
 
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
@@ -842,7 +823,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       // Started uploading, but not complete.
       if (file.loaded > 0 && file.loaded < file.size) {
-        if (this.cancelTokenSource) this.cancelTokenSource.cancel('User cancelled.')
+        if (this.cancelTokenSource) {
+          this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
+        }
       }
     }
   }
