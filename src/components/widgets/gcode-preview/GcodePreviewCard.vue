@@ -31,10 +31,10 @@
       </app-btn-collapse-group>
     </template>
 
-    <v-card-text>
-      <gcode-preview-parser-progress-dialog
-        v-if="showParserProgressDialog"
-        :value="showParserProgressDialog"
+    <v-card-text class="gcode-preview-container">
+      <gcode-preview-parser-progress-overlay
+        v-if="showParserProgressOverlay"
+        :value="showParserProgressOverlay"
         :progress="parserProgress"
         :file="file"
         @cancel="abortParser"
@@ -136,13 +136,13 @@ import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import GcodePreview from './GcodePreview.vue'
-import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
+import GcodePreviewParserProgressOverlay from './GcodePreviewParserProgressOverlay.vue'
 import { AppFile } from '@/store/files/types'
 import { MinMax } from '@/store/gcodePreview/types'
 
 @Component({
   components: {
-    GcodePreviewParserProgressDialog,
+    GcodePreviewParserProgressOverlay,
     GcodePreview
   }
 })
@@ -251,7 +251,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
     return this.$store.getters['gcodePreview/getParserProgress']
   }
 
-  get showParserProgressDialog (): boolean {
+  get showParserProgressOverlay (): boolean {
     return this.file !== undefined && this.parserProgress !== this.file.size
   }
 
@@ -380,3 +380,9 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.gcode-preview-container {
+  position: relative;
+}
+</style>
