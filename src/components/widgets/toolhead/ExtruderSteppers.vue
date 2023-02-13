@@ -30,7 +30,7 @@
               v-else
               key="1"
             >
-              {{ extruderStepper.prettyName }} <span class="secondary--text">[ {{ extruderStepper.motion_queue_pretty_name }} ]</span>
+              {{ extruderStepper.prettyName }} <span class="secondary--text">[ {{ extruderStepper.description }} ]</span>
             </span>
           </v-fade-transition>
         </template>
@@ -67,10 +67,16 @@ export default class ExtruderSteppers extends Vue {
     const extruderSteppers = this.$store.getters['printer/getExtruderSteppers'] as ExtruderStepper[]
 
     return extruderSteppers
-      .map(x => ({
-        ...x,
-        motion_queue_pretty_name: extruders.find(y => y.key === x.motion_queue)?.name ?? this.$t('app.setting.label.none')
-      }))
+      .map(x => {
+        const motionQueueName = extruders.find(y => y.key === x.motion_queue)?.name ?? this.$t('app.setting.label.none')
+        const enabledDesc = x.enabled !== undefined && this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`)
+        const description = enabledDesc ? `${motionQueueName}, ${enabledDesc}` : motionQueueName
+
+        return {
+          ...x,
+          description
+        }
+      })
   }
 }
 </script>
