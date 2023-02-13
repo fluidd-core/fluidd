@@ -727,6 +727,8 @@ app:
         center: Center
         back_left: Back Left
         back_right: Back Right
+        x_only: Move X only
+        y_only: Move Y only
       previewimage: Generate Thumbnail
       saveframes: Save Frames
       stream_delay_compensation: Delay Compensation
