@@ -78,7 +78,7 @@
         />
       </app-setting>
 
-      <custom-park-position-settings v-if="parkpos === 'custom'" />
+      <custom-park-position-settings v-if="['custom', 'x_only', 'y_only'].includes(parkpos)" />
 
       <v-divider />
       <app-setting
@@ -148,7 +148,7 @@ export default class LayerMacroSettings extends Mixins(StateMixin) {
   readonly parkPosDZElement?: VInput
 
   get parkPositions (): {text: string, value: ParkPosition}[] {
-    const values: ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'custom']
+    const values: ParkPosition[] = ['front_left', 'front_right', 'center', 'back_left', 'back_right', 'x_only', 'y_only', 'custom']
 
     return values.map(value => ({ text: this.$tc(`app.timelapse.setting.parkpos.${value}`), value }))
   }

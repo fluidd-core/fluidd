@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import axios from 'axios'
-import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, AppFile, DiskUsage } from './types'
+import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, DiskUsage, FileBrowserEntry } from './types'
 import { RootState } from '../types'
 import formatAsFile from '@/util/format-as-file'
 import getFilePaths from '@/util/get-file-paths'
@@ -22,7 +22,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     let pathNoRoot = path.replace(root, '')
     if (pathNoRoot.startsWith('/')) pathNoRoot = pathNoRoot.substring(1)
 
-    const items: (AppFileWithMeta | AppFile | AppDirectory)[] = []
+    const items: FileBrowserEntry[] = []
 
     if (path && path.indexOf('/') >= 0) {
       items.push({
@@ -31,7 +31,7 @@ export const actions: ActionTree<FilesState, RootState> = {
         name: '..',
         size: 0,
         modified: null
-      })
+      } satisfies AppDirectory)
     }
 
     if (payload.dirs) {
@@ -67,7 +67,7 @@ export const actions: ActionTree<FilesState, RootState> = {
             modified: new Date(file.modified).getTime(),
             path: (pathNoRoot === '/') ? '' : pathNoRoot,
             history
-          })
+          } satisfies AppFileWithMeta)
         }
       })
     }

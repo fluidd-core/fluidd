@@ -298,6 +298,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
         extruderSteppers.push({
           name,
           prettyName: Vue.$filters.startCase(name),
+          key: item,
+          enabled: state.printer.stepper_enable?.steppers[item],
           ...e,
           config_pressure_advance: c.pressure_advance,
           config_smooth_time: c.pressure_advance_smooth_time

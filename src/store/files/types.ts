@@ -32,7 +32,7 @@ export interface CurrentPaths {
 
 export interface Files {
   path: string;
-  items: (FileBrowserEntry | AppFileWithMeta)[];
+  items: FileBrowserEntry[];
 }
 
 export interface AppFile extends KlipperFile {
@@ -91,7 +91,7 @@ export interface FilePaths {
 
 export interface FileUpdate {
   paths: FilePaths;
-  file: AppFile | AppFileWithMeta;
+  file: AppFile;
   root: string;
 }
 
@@ -113,7 +113,7 @@ export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_back
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
 
-export type FileBrowserEntry = AppFile | AppDirectory
+export type FileBrowserEntry = AppFile | AppFileWithMeta | AppDirectory
 
 export interface FilePreviewState {
   open: boolean;
