@@ -81,14 +81,6 @@ import ToolheadMixin from '@/mixins/toolhead'
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   valid = true
 
-  get maxExtrudeSpeed () {
-    return this.activeExtruder?.max_extrude_only_velocity || 500
-  }
-
-  get maxExtrudeLength () {
-    return this.activeExtruder?.max_extrude_only_distance || 50
-  }
-
   get extrudeSpeed () {
     const extrudeSpeed = this.$store.state.config.uiSettings.toolhead.extrudeSpeed
 
@@ -123,16 +115,22 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   sendRetractGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
+      const safeAmount = Math.min(amount, this.maxExtrudeLength)
+      const safeRate = Math.min(rate, this.maxExtrudeSpeed)
+
       const gcode = `M83
-        G1 E-${amount} F${rate * 60}`
+        G1 E-${safeAmount} F${safeRate * 60}`
       this.sendGcode(gcode, wait)
     }
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
+      const safeAmount = Math.min(amount, this.maxExtrudeLength)
+      const safeRate = Math.min(rate, this.maxExtrudeSpeed)
+
       const gcode = `M83
-        G1 E${amount} F${rate * 60}`
+        G1 E${safeAmount} F${safeRate * 60}`
       this.sendGcode(gcode, wait)
     }
   }
