@@ -30,9 +30,11 @@
 
     <file-system-bulk-actions
       v-if="selected.length > 0"
+      :root="currentRoot"
       :path="visiblePath"
       @remove="handleRemove(selected)"
       @create-zip="handleCreateZip(selected)"
+      @enqueue="handleEnqueue(selected)"
     />
 
     <file-system-browser
@@ -51,6 +53,7 @@
       :large-thumbnails="currentRoot === 'timelapse'"
       @row-click="handleRowClick"
       @move="handleMove"
+      @drag-start="handleDragStart"
     />
 
     <file-system-context-menu
@@ -95,8 +98,10 @@
       @save="fileNameDialogState.handler"
     />
 
-    <file-system-drag-overlay
+    <app-drag-overlay
       v-model="dragState.overlay"
+      :message="$t('app.file_system.overlay.drag_files_folders_upload')"
+      icon="$fileUpload"
     />
 
     <file-system-upload-dialog
@@ -143,7 +148,6 @@ import FileSystemBrowser from './FileSystemBrowser.vue'
 import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
-import FileSystemDragOverlay from './FileSystemDragOverlay.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import { AppTableHeader } from '@/types'
@@ -161,7 +165,6 @@ import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry
     FileSystemBulkActions,
     FileSystemBrowser,
     FileSystemContextMenu,
-    FileSystemDragOverlay,
     FileEditorDialog,
     FileNameDialog,
     FileSystemUploadDialog,
@@ -229,7 +232,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Maintains any selected items and their state.
-  selected: (FileBrowserEntry | AppFileWithMeta)[] = []
+  selected: FileBrowserEntry[] = []
 
   // Maintains the file editor dialog state.
   fileEditorDialogState: any = {
@@ -562,14 +565,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Dialog handling.
    * ===========================================================================
   */
-  handleRenameDialog (item: FileBrowserEntry | AppFileWithMeta) {
+  handleRenameDialog (item: FileBrowserEntry) {
     if (this.disabled) return
-    let title = this.$t('app.file_system.title.rename_dir')
-    let label = this.$t('app.file_system.label.dir_name')
-    if (item.type === 'file') {
-      title = this.$t('app.file_system.title.rename_file')
-      label = this.$t('app.file_system.label.file_name')
-    }
+
+    const [title, label] = item.type === 'file'
+      ? [this.$t('app.file_system.title.rename_dir'), this.$t('app.file_system.label.dir_name')]
+      : [this.$t('app.file_system.title.rename_file'), this.$t('app.file_system.label.file_name')]
+
     this.fileNameDialogState = {
       open: true,
       title,
@@ -601,7 +603,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleFileOpenDialog (file: AppFile | AppFileWithMeta) {
+  handleFileOpenDialog (file: AppFile) {
     if (this.currentRoot === 'timelapse' && file.extension === 'zip') {
       // don't download zipped frames before opening preview
       this.filePreviewState = {
@@ -692,7 +694,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Core file handling.
    * ===========================================================================
   */
-  handlePrint (file: AppFile | AppFileWithMeta) {
+  handlePrint (file: AppFile) {
     if (this.disabled) return
     SocketActions.printerPrintStart(`${this.visiblePath}/${file.filename}`)
 
@@ -722,7 +724,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleMove (source: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], destination: AppDirectory) {
+  handleMove (source: FileBrowserEntry | FileBrowserEntry[], destination: AppDirectory) {
     let destinationPath = `${this.currentPath}/${destination.dirname}`
     if (destination.dirname === '..') {
       const arr = this.currentPath.split('/')
@@ -758,13 +760,30 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     })
   }
 
+  handleDragStart (source: FileBrowserEntry| FileBrowserEntry[], dataTransfer: DataTransfer) {
+    if (this.currentRoot === 'gcodes') {
+      const items = (Array.isArray(source)) ? source.filter(item => (item.name !== '..')) : [source]
+      const files = items
+        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes('.' + item.extension))
+
+      if (files.length > 0) {
+        const data = {
+          path: files[0].path,
+          jobs: files.map(file => file.name)
+        }
+
+        dataTransfer.setData('jobs', JSON.stringify(data))
+      }
+    }
+  }
+
   handleRename (name: string) {
     const src = `${this.currentPath}/${this.fileNameDialogState.value}`
     const dest = `${this.currentPath}/${name}`
     SocketActions.serverFilesMove(src, dest)
   }
 
-  async handleRemove (file: FileBrowserEntry | AppFileWithMeta | (FileBrowserEntry | AppFileWithMeta)[], callback?: () => void) {
+  async handleRemove (file: FileBrowserEntry | FileBrowserEntry[], callback?: () => void) {
     if (this.disabled) return
 
     const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
@@ -839,7 +858,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.uploadFile(file, this.visiblePath, this.currentRoot, false)
   }
 
-  handleDownload (file: AppFile | AppFileWithMeta) {
+  handleDownload (file: AppFile) {
     this.downloadFile(file.filename, this.currentPath)
   }
 
@@ -864,10 +883,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
   }
 
-  handleEnqueue (file: AppFileWithMeta) {
+  handleEnqueue (file: FileBrowserEntry | FileBrowserEntry[]) {
     if (this.disabled) return
-    const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
-    SocketActions.serverJobQueuePostJob([filepath])
+
+    const items = Array.isArray(file) ? file : [file]
+    const filenames = items
+      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes('.' + item.extension))
+      .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
+
+    if (filenames.length > 0) {
+      SocketActions.serverJobQueuePostJob(filenames)
+    }
   }
 
   handleCreateZip (file: FileBrowserEntry | FileBrowserEntry[]) {
