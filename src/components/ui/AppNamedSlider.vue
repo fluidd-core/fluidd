@@ -91,12 +91,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Mixins, Ref } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Prop, Watch, Vue, Ref } from 'vue-property-decorator'
 import { VForm } from '@/types'
 
 @Component({})
-export default class AppSlider extends Mixins(StateMixin) {
+export default class AppNamedSlider extends Vue {
   @Prop({ type: Number, required: true })
   readonly value!: number
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <app-slider
+    <app-named-slider
       v-if="fan.controllable"
       suffix="%"
       input-xs

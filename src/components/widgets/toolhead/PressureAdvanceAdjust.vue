@@ -4,7 +4,7 @@
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.pressure_advance')"
         suffix="s"
         :value="selectedExtruderStepper.pressure_advance || 0"
@@ -23,7 +23,7 @@
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.smooth_time')"
         suffix="s"
         :value="selectedExtruderStepper.smooth_time || 0"

@@ -62,7 +62,7 @@
       menu-icon="$imageSizeSelectLarge"
       size="small"
     >
-      <app-slider
+      <app-named-slider
         v-model="thumbnailSize"
         class="ma-1"
         :label="$t('app.general.label.thumbnail_size')"

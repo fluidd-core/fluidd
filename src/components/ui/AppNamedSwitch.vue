@@ -19,11 +19,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 
 @Component({})
-export default class AppSwitch extends Mixins(StateMixin) {
+export default class AppNamedSwitch extends Vue {
   @VModel({ type: Boolean, required: true })
     inputValue!: boolean
 

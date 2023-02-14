@@ -9,7 +9,7 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.velocity')"
             :value="velocity.current"
             :reset-value="velocity.max"
@@ -29,7 +29,7 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.sqv')"
             :value="scv.current"
             :reset-value="scv.max"
@@ -53,7 +53,7 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.acceleration')"
             :value="accel.current"
             :reset-value="accel.max"
@@ -73,7 +73,7 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.accel_to_decel')"
             :value="decel.current"
             :reset-value="decel.max"

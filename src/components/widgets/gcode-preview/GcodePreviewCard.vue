@@ -47,7 +47,7 @@
         >
           <v-row>
             <v-col>
-              <app-slider
+              <app-named-slider
                 :label="$t('app.gcode.label.layer')"
                 :value="(!fileLoaded) ? 0 : currentLayer + 1"
                 :min="(!fileLoaded) ? 0 : 1"
@@ -61,7 +61,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <app-slider
+              <app-named-slider
                 :label="$t('app.general.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
                 :min="0"

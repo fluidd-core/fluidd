@@ -4,7 +4,7 @@
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.speed')"
         suffix="%"
         :value="speed"
@@ -21,7 +21,7 @@
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.flow')"
         suffix="%"
         :value="flow"

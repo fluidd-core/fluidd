@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Output Pins -->
-    <app-slider
+    <app-named-slider
       v-if="pin && pin.pwm"
       input-xs
       :label="pin.prettyName"
@@ -16,7 +16,7 @@
       @change="setValue"
     />
 
-    <app-switch
+    <app-named-switch
       v-if="pin && !pin.pwm"
       :disabled="!klippyReady"
       :label="pin.prettyName"

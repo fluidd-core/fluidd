@@ -8,7 +8,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.retract_length')"
           suffix="mm"
           :value="retract_length"
@@ -30,7 +30,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.unretract_extra_length')"
           suffix="mm"
           :value="unretract_extra_length"
@@ -54,7 +54,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.retract_speed')"
           suffix="mm/s"
           :value="retract_speed"
@@ -76,7 +76,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.unretract_speed')"
           suffix="mm/s"
           :value="unretract_speed"

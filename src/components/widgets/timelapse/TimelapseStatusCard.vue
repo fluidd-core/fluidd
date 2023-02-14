@@ -33,7 +33,7 @@
       <v-row>
         <v-col cols="12">
           <v-layout justify-center>
-            <app-slider
+            <app-named-slider
               v-model="selectedFrame"
               full-width
               :label="$tc('app.timelapse.label.frame')"
