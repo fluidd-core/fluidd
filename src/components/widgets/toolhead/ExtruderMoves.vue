@@ -1,5 +1,6 @@
 <template>
   <v-form
+    ref="form"
     v-model="valid"
     @submit.prevent
   >
@@ -9,10 +10,11 @@
         class="text-right"
       >
         <v-text-field
-          ref="lengthfield"
           v-model.number="extrudeLength"
           :disabled="!klippyReady"
           :rules="[
+            $rules.required,
+            $rules.numberValid,
             $rules.numberGreaterThanOrEqual(0.1),
             $rules.numberLessThanOrEqual(maxExtrudeLength)
           ]"
@@ -47,6 +49,8 @@
           v-model.number="extrudeSpeed"
           :disabled="!klippyReady"
           :rules="[
+            $rules.required,
+            $rules.numberValid,
             $rules.numberGreaterThanOrEqual(0.1),
             $rules.numberLessThanOrEqual(maxExtrudeSpeed)
           ]"
@@ -73,21 +77,17 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import { VForm } from '@/types'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
+  @Ref('form')
+  readonly form!: VForm
+
   valid = true
-
-  get maxExtrudeSpeed () {
-    return this.activeExtruder?.max_extrude_only_velocity || 500
-  }
-
-  get maxExtrudeLength () {
-    return this.activeExtruder?.max_extrude_only_distance || 50
-  }
 
   get extrudeSpeed () {
     const extrudeSpeed = this.$store.state.config.uiSettings.toolhead.extrudeSpeed
@@ -135,6 +135,10 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
         G1 E${amount} F${rate * 60}`
       this.sendGcode(gcode, wait)
     }
+  }
+
+  mounted () {
+    this.form.validate()
   }
 }
 </script>
