@@ -1,5 +1,6 @@
 <template>
   <v-form
+    ref="form"
     v-model="valid"
     @submit.prevent
   >
@@ -9,10 +10,11 @@
         class="text-right"
       >
         <v-text-field
-          ref="lengthfield"
           v-model.number="extrudeLength"
           :disabled="!klippyReady"
           :rules="[
+            $rules.required,
+            $rules.numberValid,
             $rules.numberGreaterThanOrEqual(0.1),
             $rules.numberLessThanOrEqual(maxExtrudeLength)
           ]"
@@ -47,6 +49,8 @@
           v-model.number="extrudeSpeed"
           :disabled="!klippyReady"
           :rules="[
+            $rules.required,
+            $rules.numberValid,
             $rules.numberGreaterThanOrEqual(0.1),
             $rules.numberLessThanOrEqual(maxExtrudeSpeed)
           ]"
@@ -73,12 +77,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import { VForm } from '@/types'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
+  @Ref('form')
+  readonly form!: VForm
+
   valid = true
 
   get extrudeSpeed () {
@@ -115,24 +123,22 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
 
   sendRetractGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
-      const safeAmount = Math.min(amount, this.maxExtrudeLength)
-      const safeRate = Math.min(rate, this.maxExtrudeSpeed)
-
       const gcode = `M83
-        G1 E-${safeAmount} F${safeRate * 60}`
+        G1 E-${amount} F${rate * 60}`
       this.sendGcode(gcode, wait)
     }
   }
 
   sendExtrudeGcode (amount: number, rate: number, wait?: string) {
     if (this.valid) {
-      const safeAmount = Math.min(amount, this.maxExtrudeLength)
-      const safeRate = Math.min(rate, this.maxExtrudeSpeed)
-
       const gcode = `M83
-        G1 E${safeAmount} F${safeRate * 60}`
+        G1 E${amount} F${rate * 60}`
       this.sendGcode(gcode, wait)
     }
+  }
+
+  mounted () {
+    this.form.validate()
   }
 }
 </script>
