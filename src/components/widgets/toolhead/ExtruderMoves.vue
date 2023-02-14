@@ -18,6 +18,7 @@
             $rules.numberGreaterThanOrEqual(0.1),
             $rules.numberLessThanOrEqual(maxExtrudeLength)
           ]"
+          type="number"
           hide-details
           outlined
           dense
@@ -54,6 +55,7 @@
             $rules.numberGreaterThanOrEqual(0.1),
             $rules.numberLessThanOrEqual(maxExtrudeSpeed)
           ]"
+          type="number"
           hide-details
           outlined
           dense
