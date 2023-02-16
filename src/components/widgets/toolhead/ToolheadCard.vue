@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.tool')"
     icon="$printer3dNozzle"
-    :draggable="true"
+    draggable
     layout-path="dashboard.toolhead-card"
     menu-breakpoint="lg"
   >

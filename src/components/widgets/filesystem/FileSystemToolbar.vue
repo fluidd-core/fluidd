@@ -58,7 +58,7 @@
 
     <app-btn-collapse-group
       v-if="['gcodes', 'timelapse'].includes(root)"
-      :collapsed="true"
+      collapsed
       menu-icon="$imageSizeSelectLarge"
       size="small"
     >

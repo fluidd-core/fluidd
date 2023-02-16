@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.limits')"
     icon="$limits"
-    :draggable="true"
+    draggable
     layout-path="dashboard.printer-limits-card"
   >
     <printer-limits />

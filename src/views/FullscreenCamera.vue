@@ -5,7 +5,7 @@
   >
     <CameraItem
       :camera="camera"
-      :fullscreen="true"
+      fullscreen
     />
   </v-card>
 </template>

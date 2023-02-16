@@ -60,7 +60,7 @@
       </app-btn>
 
       <app-btn-collapse-group
-        :collapsed="true"
+        collapsed
         menu-icon="$cog"
       >
         <v-checkbox

@@ -8,7 +8,7 @@
         :label="$t('app.general.label.speed')"
         suffix="%"
         :value="speed"
-        :overridable="true"
+        overridable
         :reset-value="100"
         :disabled="hasWait($waits.onSetSpeed)"
         :locked="isMobile"
@@ -25,7 +25,7 @@
         :label="$t('app.general.label.flow')"
         suffix="%"
         :value="flow"
-        :overridable="true"
+        overridable
         :reset-value="100"
         :disabled="hasWait($waits.onSetFlow)"
         :locked="isMobile"

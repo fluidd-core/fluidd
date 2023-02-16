@@ -8,7 +8,6 @@
         :title="$t('app.general.title.jobs')"
         card-key="JobsPage"
         icon="$files"
-        :draggable="false"
         class="mb-2 mb-sm-4"
       >
         <file-system

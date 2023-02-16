@@ -7,7 +7,6 @@
       <collapsable-card
         :title="$t('app.general.title.timelapse')"
         icon="$video"
-        :draggable="false"
       >
         <file-system
           :roots="'timelapse'"

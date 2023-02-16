@@ -16,7 +16,7 @@
             :min="1"
             :max="velocity.max"
             :disabled="!klippyReady"
-            :overridable="true"
+            overridable
             :locked="isMobile"
             :loading="hasWait($waits.onSetVelocity)"
             suffix="mm/s"
@@ -37,7 +37,7 @@
             :max="scv.max"
             :step="0.1"
             :disabled="!klippyReady"
-            :overridable="true"
+            overridable
             :locked="isMobile"
             :loading="hasWait($waits.onSetSCV)"
             suffix="mm/s"
@@ -60,7 +60,7 @@
             :min="1"
             :max="accel.max"
             :disabled="!klippyReady"
-            :overridable="true"
+            overridable
             :locked="isMobile"
             :loading="hasWait($waits.onSetAcceleration)"
             suffix="mm/s²"
@@ -80,7 +80,7 @@
             :min="1"
             :max="decel.max"
             :disabled="!klippyReady"
-            :overridable="true"
+            overridable
             :locked="isMobile"
             :loading="hasWait($waits.onSetDeceleration)"
             suffix="mm/s²"

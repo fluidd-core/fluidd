@@ -16,7 +16,7 @@
           :min="0"
           :max="retract_length_max"
           :step="0.01"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetRetractLength)"
@@ -38,7 +38,7 @@
           :min="0"
           :max="unretract_extra_length_max"
           :step="0.01"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetUnretractExtraLength)"
@@ -62,7 +62,7 @@
           :min="0"
           :step="1"
           :max="retract_speed_max"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetRetractSpeed)"
@@ -84,7 +84,7 @@
           :min="0"
           :step="1"
           :max="unretract_speed_max"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetUnretractSpeed)"
