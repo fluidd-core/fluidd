@@ -55,42 +55,46 @@
       </app-setting>
 
       <v-divider />
-
-      <template v-for="(macro, i) in macros">
-        <app-setting
-          :key="`macro-${macro.name}`"
-          :title="macro.name.toUpperCase()"
-          :accent-color="macro.color"
-          :r-cols="2"
-          @click="handleSettingsDialog(macro)"
+      <draggable v-model="macros">
+        <div
+          v-for="(macro, i) in macros"
+          :key="macro.name"
         >
-          <template
-            v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
-            #sub-title
+          <app-setting
+            :key="`macro-${macro.name}`"
+            :title="macro.name.toUpperCase()"
+            :accent-color="macro.color"
+            :r-cols="2"
+            @click="handleSettingsDialog(macro)"
           >
-            <span
-              v-show="true"
-              class="mr-2"
+            <template
+              v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
+              #sub-title
             >
-              {{ macro.config.description }}
-            </span>
-          </template>
+              <span
+                v-show="true"
+                class="mr-2"
+              >
+                {{ macro.config.description }}
+              </span>
+            </template>
 
-          <v-switch
-            class="mt-0 pt-0"
-            :input-value="macro.visible"
-            color="primary"
-            hide-details
-            @click.stop
-            @change="handleMacroVisible(macro, $event)"
+            <v-switch
+              class="mt-0 pt-0"
+              :input-value="macro.visible"
+              color="primary"
+              hide-details
+              @click.stop
+              @change="handleMacroVisible(macro, $event)"
+            />
+          </app-setting>
+
+          <v-divider
+            v-if="i < macros.length - 1 && macros.length > 0"
+            :key="`divider-${macro.name}`"
           />
-        </app-setting>
-
-        <v-divider
-          v-if="i < macros.length - 1 && macros.length > 0"
-          :key="`divider-${macro.name}`"
-        />
-      </template>
+        </div>
+      </draggable>
     </v-card>
 
     <macro-settings-dialog
@@ -103,6 +107,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import draggable from 'vuedraggable'
 import MacroSettingsDialog from './MacroSettingsDialog.vue'
 import { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
@@ -119,7 +124,8 @@ const routeGuard = (to: any) => {
 
 @Component({
   components: {
-    MacroSettingsDialog
+    MacroSettingsDialog,
+    draggable
   }
 })
 export default class MacroSettings extends Vue {
@@ -135,7 +141,17 @@ export default class MacroSettings extends Vue {
     const id = this.categoryId
     const macros = this.$store.getters['macros/getMacrosByCategory'](id)
       .filter((macro: Macro) => (!this.search || this.search === '') ? true : macro.name.toLowerCase().includes(this.search.toLowerCase()))
+
     return macros
+  }
+
+  set macros (macros: Macro[]) {
+    macros.forEach((macro: Macro, index: number) => {
+      this.$store.dispatch('macros/saveMacro', {
+        ...macro,
+        order: index
+      })
+    })
   }
 
   get categories (): MacroCategory[] {
