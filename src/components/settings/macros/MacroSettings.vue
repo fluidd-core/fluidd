@@ -55,18 +55,31 @@
       </app-setting>
 
       <v-divider />
-      <draggable v-model="macros">
-        <div
+      <draggable
+        v-model="macros"
+        v-bind="dragOptions"
+      >
+        <section
           v-for="(macro, i) in macros"
           :key="macro.name"
         >
           <app-setting
             :key="`macro-${macro.name}`"
-            :title="macro.name.toUpperCase()"
             :accent-color="macro.color"
             :r-cols="2"
             @click="handleSettingsDialog(macro)"
           >
+            <template #title>
+              <v-icon
+                class="handle"
+                left
+              >
+                $drag
+              </v-icon>
+
+              {{ macro.name.toUpperCase() }}
+            </template>
+
             <template
               v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
               #sub-title
@@ -93,7 +106,7 @@
             v-if="i < macros.length - 1 && macros.length > 0"
             :key="`divider-${macro.name}`"
           />
-        </div>
+        </section>
       </draggable>
     </v-card>
 
@@ -135,6 +148,15 @@ export default class MacroSettings extends Vue {
   dialogState: any = {
     open: false,
     macro: null
+  }
+
+  get dragOptions () {
+    return {
+      animation: 200,
+      handle: '.handle',
+      group: `macro-settings-${this.category.name}`,
+      ghostClass: 'ghost'
+    }
   }
 
   get macros () {
