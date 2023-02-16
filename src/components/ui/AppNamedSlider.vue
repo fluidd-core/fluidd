@@ -23,8 +23,8 @@
           v-model.number="internalValue"
           :suffix="suffix"
           :rules="textRules"
-          :readonly="isLocked"
-          :disabled="disabled || loading || isLocked"
+          :readonly="lockState"
+          :disabled="disabled || loading || lockState"
           :step="step"
           class="v-input--text-right"
           type="number"
@@ -45,7 +45,7 @@
               @click="lockState = !lockState"
             >
               <v-icon
-                v-if="isLocked"
+                v-if="lockState"
                 small
               >
                 $pencil
@@ -82,7 +82,7 @@
       :min="min"
       :max="internalMax"
       :step="step"
-      :disabled="disabled || loading || isLocked || overridden"
+      :disabled="disabled || loading || lockState || overridden"
       dense
       hide-details
       @change="handleChange"
@@ -91,13 +91,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue, Ref } from 'vue-property-decorator'
+import { Component, Prop, Watch, Vue, Ref, VModel } from 'vue-property-decorator'
 import { VForm } from '@/types'
 
 @Component({})
 export default class AppNamedSlider extends Vue {
-  @Prop({ type: Number, required: true })
-  readonly value!: number
+  @VModel({ type: Number })
+    inputValue!: number
 
   @Prop({ type: Number, required: false })
   readonly resetValue!: number
@@ -165,17 +165,8 @@ export default class AppNamedSlider extends Vue {
     if (this.form.validate()) {
       this.checkOverride()
 
-      this.$emit('input', value)
+      this.inputValue = value
     }
-  }
-
-  get isLocked () {
-    return this.lockState
-  }
-
-  set isLocked (val: boolean) {
-    this.lockState = val
-    this.$emit('update:locked', val)
   }
 
   @Watch('locked')
@@ -204,7 +195,7 @@ export default class AppNamedSlider extends Vue {
 
   created () {
     this.lockState = this.locked
-    this.internalValue = this.value
+    this.internalValue = this.inputValue
     this.internalMax = this.max
   }
 
@@ -224,14 +215,14 @@ export default class AppNamedSlider extends Vue {
 
   handleChange (value: number) {
     if (
-      value !== this.value &&
+      value !== this.inputValue &&
       !this.pending
     ) {
       if (this.form.validate()) {
         this.pending = true
         this.$emit('change', value)
       } else {
-        this.internalValue = this.value
+        this.internalValue = this.inputValue
       }
       this.lockState = this.locked
     }

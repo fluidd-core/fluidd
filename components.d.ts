@@ -36,6 +36,7 @@ declare module 'vue' {
     AppSaveConfigAndRestartBtn: typeof import('./src/components/layout/AppSaveConfigAndRestartBtn.vue')['default']
     AppSetting: typeof import('./src/components/ui/AppSetting.vue')['default']
     AppSettingsNav: typeof import('./src/components/layout/AppSettingsNav.vue')['default']
+    AppTextField: typeof import('./src/components/ui/AppTextField.vue')['default']
     AppToolsDrawer: typeof import('./src/components/layout/AppToolsDrawer.vue')['default']
     AppUploadAndPrintBtn: typeof import('./src/components/layout/AppUploadAndPrintBtn.vue')['default']
     AppUserMenu: typeof import('./src/components/layout/AppUserMenu.vue')['default']
