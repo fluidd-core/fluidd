@@ -3,7 +3,6 @@
     <app-named-slider
       v-if="fan.controllable"
       suffix="%"
-      input-xs
       :value="value"
       :reset-value="0"
       :label="(rpm) ? `${fan.prettyName} <small>${rpm}</small>` : fan.prettyName"
@@ -13,7 +12,7 @@
       :disabled="!klippyReady"
       :locked="isMobile"
       :loading="hasWait(`${$waits.onSetFanSpeed}${fan.name}`)"
-      @change="handleChange"
+      @submit="handleChange"
     />
 
     <v-layout

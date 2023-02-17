@@ -16,7 +16,7 @@
         :min="0"
         :max="2"
         :step="0.0001"
-        @change="handleSetPressureAdvance"
+        @submit="handleSetPressureAdvance"
       />
     </v-col>
     <v-col
@@ -34,7 +34,7 @@
         :min="0"
         :max="0.2"
         :step="0.001"
-        @change="handleSetSmoothTime"
+        @submit="handleSetSmoothTime"
       />
     </v-col>
   </v-row>

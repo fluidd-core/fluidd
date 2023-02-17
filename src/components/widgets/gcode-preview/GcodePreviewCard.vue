@@ -54,7 +54,6 @@
                 :max="layerCount"
                 :disabled="!fileLoaded"
                 :locked="isMobile"
-                input-md
                 @input="setCurrentLayer($event - 1)"
               />
             </v-col>
@@ -67,9 +66,7 @@
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
-                value-suffix="moves"
                 :locked="isMobile"
-                input-md
                 @input="setMoveProgress($event + currentLayerMoveRange.min)"
               />
             </v-col>

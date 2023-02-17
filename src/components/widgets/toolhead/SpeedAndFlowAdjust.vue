@@ -14,7 +14,7 @@
         :locked="isMobile"
         :min="1"
         :max="200"
-        @change="handleSetSpeed"
+        @submit="handleSetSpeed"
       />
     </v-col>
     <v-col
@@ -31,7 +31,7 @@
         :locked="isMobile"
         :min="1"
         :max="200"
-        @change="handleSetFlow"
+        @submit="handleSetFlow"
       />
     </v-col>
   </v-row>

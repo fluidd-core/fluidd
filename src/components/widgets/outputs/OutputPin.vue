@@ -3,7 +3,6 @@
     <!-- Output Pins -->
     <app-named-slider
       v-if="pin && pin.pwm"
-      input-xs
       :label="pin.prettyName"
       :min="0"
       :max="pin.scale"
@@ -13,7 +12,7 @@
       :disabled="!klippyReady"
       :locked="isMobile"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @change="setValue"
+      @submit="setValue"
     />
 
     <app-named-switch

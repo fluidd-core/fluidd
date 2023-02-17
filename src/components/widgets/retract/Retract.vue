@@ -20,7 +20,7 @@
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetRetractLength)"
-          @change="setRetractLength"
+          @submit="setRetractLength"
         />
       </v-col>
       <v-col
@@ -42,7 +42,7 @@
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetUnretractExtraLength)"
-          @change="setUnRetractExtraLength"
+          @submit="setUnRetractExtraLength"
         />
       </v-col>
     </v-row>
@@ -66,7 +66,7 @@
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetRetractSpeed)"
-          @change="setRetractSpeed"
+          @submit="setRetractSpeed"
         />
       </v-col>
       <v-col
@@ -88,7 +88,7 @@
           :disabled="!klippyReady"
           :locked="isMobile"
           :loading="hasWait($waits.onSetUnretractSpeed)"
-          @change="setUnretractSpeed"
+          @submit="setUnretractSpeed"
         />
       </v-col>
     </v-row>

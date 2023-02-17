@@ -20,7 +20,7 @@
             :locked="isMobile"
             :loading="hasWait($waits.onSetVelocity)"
             suffix="mm/s"
-            @change="setVelocity($event)"
+            @submit="setVelocity"
           />
         </v-col>
         <v-col
@@ -41,7 +41,7 @@
             :locked="isMobile"
             :loading="hasWait($waits.onSetSCV)"
             suffix="mm/s"
-            @change="setSCV($event)"
+            @submit="setSCV"
           />
         </v-col>
       </v-row>
@@ -64,7 +64,7 @@
             :locked="isMobile"
             :loading="hasWait($waits.onSetAcceleration)"
             suffix="mm/s²"
-            @change="setAcceleration($event)"
+            @submit="setAcceleration"
           />
         </v-col>
         <v-col
@@ -84,7 +84,7 @@
             :locked="isMobile"
             :loading="hasWait($waits.onSetDeceleration)"
             suffix="mm/s²"
-            @change="setDeceleration($event)"
+            @submit="setDeceleration"
           />
         </v-col>
       </v-row>
