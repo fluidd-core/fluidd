@@ -82,7 +82,8 @@
                 $rules.required,
                 $rules.numberValid,
                 $rules.numberGreaterThanOrEqualOrZero(item.minTemp),
-                $rules.numberLessThanOrEqualOrZero(item.maxTemp)]"
+                $rules.numberLessThanOrEqualOrZero(item.maxTemp)
+              ]"
               type="number"
               outlined
               dense
@@ -90,7 +91,7 @@
               hide-details="auto"
               suffix="°C"
               class="v-input--width-x-small"
-              @submit="setHeaterTargetTemp(item.name, $event)"
+              @submit="setHeaterTargetTemp(item.name, +$event)"
             />
           </td>
         </tr>
@@ -150,12 +151,23 @@
           </td>
           <td>/</td>
           <td>
-            <input-temperature
+            <app-text-field
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
-              :max="item.maxTemp"
-              :min="item.minTemp"
-              @input="setFanTargetTemp(item.name, $event)"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThanOrEqualOrZero(item.minTemp),
+                $rules.numberLessThanOrEqualOrZero(item.maxTemp)
+              ]"
+              type="number"
+              outlined
+              dense
+              single-line
+              hide-details="auto"
+              suffix="°C"
+              class="v-input--width-x-small"
+              @submit="setFanTargetTemp(item.name, +$event)"
             />
           </td>
         </tr>
