@@ -10,7 +10,8 @@
         :value="speed"
         overridable
         :reset-value="100"
-        :disabled="hasWait($waits.onSetSpeed)"
+        :disabled="!klippyReady"
+        :loading="hasWait($waits.onSetSpeed)"
         :locked="isMobile"
         :min="1"
         :max="200"
@@ -27,7 +28,8 @@
         :value="flow"
         overridable
         :reset-value="100"
-        :disabled="hasWait($waits.onSetFlow)"
+        :disabled="!klippyReady"
+        :loading="hasWait($waits.onSetFlow)"
         :locked="isMobile"
         :min="1"
         :max="200"
