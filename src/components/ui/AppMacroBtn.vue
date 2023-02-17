@@ -4,7 +4,7 @@
     :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
     v-on="filteredListeners"
-    @click="$emit('click', macro.name)"
+    @click="handleClick"
   >
     <slot />
   </app-btn>
@@ -15,7 +15,7 @@
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
       v-on="filteredListeners"
-      @click="$emit('click', macro.name)"
+      @click="handleClick"
     >
       <slot />
     </app-btn>
@@ -140,6 +140,10 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
       return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
     return ''
+  }
+
+  handleClick () {
+    this.$emit('click', this.macro.name)
   }
 
   mounted () {
