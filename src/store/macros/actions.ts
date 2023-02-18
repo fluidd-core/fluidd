@@ -30,6 +30,19 @@ export const actions: ActionTree<MacrosState, RootState> = {
     SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
   },
 
+  saveAllOrder ({ state, commit }, macros: Macro[]) {
+    // Commit the change...
+    macros.forEach((macro, index) => {
+      commit('setUpdateMacro', {
+        ...macro,
+        order: index
+      })
+    })
+
+    // Save to moonraker.
+    SocketActions.serverWrite(Globals.MOONRAKER_DB.fluidd.ROOTS.macros.name + '.stored', state.stored)
+  },
+
   saveAllOn ({ state, commit }, macros) {
     // Commit the change...
     commit('setUpdateAllVisible', { macros, visible: true })

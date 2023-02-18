@@ -84,10 +84,7 @@
               v-if="macro.config.description && macro.config.description !== 'G-Code macro'"
               #sub-title
             >
-              <span
-                v-show="true"
-                class="mr-2"
-              >
+              <span class="ml-1 mr-2">
                 {{ macro.config.description }}
               </span>
             </template>
@@ -168,12 +165,7 @@ export default class MacroSettings extends Vue {
   }
 
   set macros (macros: Macro[]) {
-    macros.forEach((macro: Macro, index: number) => {
-      this.$store.dispatch('macros/saveMacro', {
-        ...macro,
-        order: index
-      })
-    })
+    this.$store.dispatch('macros/saveAllOrder', macros)
   }
 
   get categories (): MacroCategory[] {
