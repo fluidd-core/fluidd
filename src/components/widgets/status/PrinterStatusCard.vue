@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.printer.state.' + printerState)"
     icon="$printer3d"
-    :draggable="true"
+    draggable
     :collapsable="collapsable"
     layout-path="dashboard.printer-status-card"
   >

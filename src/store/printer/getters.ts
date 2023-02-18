@@ -395,8 +395,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
             color,
             prettyName,
             key: e,
-            minTemp: (config && config.min_temp !== undefined) ? config.min_temp : undefined,
-            maxTemp: (config && config.max_temp !== undefined) ? config.max_temp : undefined
+            minTemp: config?.min_temp,
+            maxTemp: config?.max_temp
           })
         }
       })
@@ -554,8 +554,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
         if (fans.includes(type)) {
           output = {
             ...output,
-            minTemp: (config && config.min_temp) ? config.min_temp : undefined,
-            maxTemp: (config && config.max_temp) ? config.max_temp : undefined
+            minTemp: config?.min_temp,
+            maxTemp: config?.max_temp
           }
         }
 

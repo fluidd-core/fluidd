@@ -108,7 +108,7 @@
 
               <v-divider />
 
-              <app-slider
+              <app-named-slider
                 v-model="metric.style.fillOpacity"
                 class="px-4 py-3"
                 :label="$t('app.setting.label.fill_opacity')"

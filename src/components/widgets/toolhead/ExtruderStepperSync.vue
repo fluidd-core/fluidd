@@ -4,7 +4,7 @@
       cols="12"
       sm="6"
     >
-      <app-select
+      <app-named-select
         :value="extruderStepper.motion_queue"
         :label="$t('app.general.label.synced_extruder')"
         :items="[
@@ -22,7 +22,7 @@
       cols="12"
       sm="6"
     >
-      <app-switch
+      <app-named-switch
         :value="extruderStepper.enabled"
         :label="$t('app.general.label.stepper_enabled')"
         :disabled="!klippyReady || printerPrinting"

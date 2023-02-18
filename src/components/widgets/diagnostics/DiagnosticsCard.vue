@@ -2,7 +2,7 @@
   <collapsable-card
     :title="config.title"
     :icon="`$${config.icon}`"
-    :draggable="true"
+    draggable
     :layout-path="`diagnostics.${config.id}`"
   >
     <template #menu>
