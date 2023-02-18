@@ -521,43 +521,50 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   // Handles a user clicking a file row.
   handleRowClick (item: FileBrowserEntry, e: MouseEvent) {
-    if (!this.contextMenuState.open && !this.disabled) {
-      if (item.type === 'directory' && e.type !== 'contextmenu') {
-        const dir = item as AppDirectory
+    if (this.disabled) {
+      return
+    }
+
+    if (this.contextMenuState.open) {
+      this.contextMenuState.open = false
+
+      if (e.type !== 'contextmenu') {
+        return
+      }
+    }
+
+    if (e.type === 'click') {
+      if (item.type === 'directory') {
         if (item.name === '..') {
           const dirs = this.currentPath.split('/')
           const newpath = dirs.slice(0, -1).join('/')
-          if (newpath === this.currentRoot) {
-            this.loadFiles(this.currentRoot)
-          } else {
-            this.loadFiles(newpath)
-          }
+
+          this.loadFiles(newpath)
         } else {
-          this.loadFiles(`${this.currentPath}/${dir.dirname}`)
+          this.loadFiles(`${this.currentPath}/${item.dirname}`)
         }
+
         // Clear selected bulk items if we're navigating folders.
         this.selected = []
-      } else {
-        if (
-          e.type === 'click' && item.type === 'file' &&
-          (
-            this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
-            this.currentRoot === 'timelapse'
-          )
-        ) {
-          // Open the file editor
-          this.handleFileOpenDialog(item)
-        } else {
-          // Open the context menu
-          this.contextMenuState.x = e.clientX
-          this.contextMenuState.y = e.clientY
-          this.contextMenuState.file = item
-          this.$nextTick(() => {
-            this.contextMenuState.open = true
-          })
-        }
+
+        return
+      } else if (
+        this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
+        this.currentRoot === 'timelapse'
+      ) {
+        this.handleFileOpenDialog(item)
+
+        return
       }
     }
+
+    // Open the context menu
+    this.contextMenuState.x = e.clientX
+    this.contextMenuState.y = e.clientY
+    this.contextMenuState.file = item
+    this.$nextTick(() => {
+      this.contextMenuState.open = true
+    })
   }
 
   /**
