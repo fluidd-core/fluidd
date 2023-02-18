@@ -4,11 +4,11 @@
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.pressure_advance')"
         suffix="s"
         :value="selectedExtruderStepper.pressure_advance || 0"
-        :overridable="true"
+        overridable
         :reset-value="selectedExtruderStepper.config_pressure_advance || 0"
         :disabled="!klippyReady"
         :locked="isMobile"
@@ -16,18 +16,17 @@
         :min="0"
         :max="2"
         :step="0.0001"
-        @change="handleSetPressureAdvance"
+        @submit="handleSetPressureAdvance"
       />
     </v-col>
     <v-col
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.smooth_time')"
         suffix="s"
         :value="selectedExtruderStepper.smooth_time || 0"
-        :overridable="false"
         :reset-value="selectedExtruderStepper.config_smooth_time || 0"
         :disabled="!klippyReady"
         :locked="isMobile"
@@ -35,7 +34,7 @@
         :min="0"
         :max="0.2"
         :step="0.001"
-        @change="handleSetSmoothTime"
+        @submit="handleSetSmoothTime"
       />
     </v-col>
   </v-row>

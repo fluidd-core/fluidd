@@ -4,34 +4,36 @@
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.speed')"
         suffix="%"
         :value="speed"
-        :overridable="true"
+        overridable
         :reset-value="100"
-        :disabled="hasWait($waits.onSetSpeed)"
+        :disabled="!klippyReady"
+        :loading="hasWait($waits.onSetSpeed)"
         :locked="isMobile"
         :min="1"
         :max="200"
-        @change="handleSetSpeed"
+        @submit="handleSetSpeed"
       />
     </v-col>
     <v-col
       cols="12"
       sm="6"
     >
-      <app-slider
+      <app-named-slider
         :label="$t('app.general.label.flow')"
         suffix="%"
         :value="flow"
-        :overridable="true"
+        overridable
         :reset-value="100"
-        :disabled="hasWait($waits.onSetFlow)"
+        :disabled="!klippyReady"
+        :loading="hasWait($waits.onSetFlow)"
         :locked="isMobile"
         :min="1"
         :max="200"
-        @change="handleSetFlow"
+        @submit="handleSetFlow"
       />
     </v-col>
   </v-row>

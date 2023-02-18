@@ -3,7 +3,6 @@
     :title="$t('app.timelapse.title.timelapse_status')"
     icon="$info"
     class="mb-2 sb-sm-4"
-    :draggable="false"
   >
     <v-card-text>
       <v-row>
@@ -33,7 +32,7 @@
       <v-row>
         <v-col cols="12">
           <v-layout justify-center>
-            <app-slider
+            <app-named-slider
               v-model="selectedFrame"
               full-width
               :label="$tc('app.timelapse.label.frame')"

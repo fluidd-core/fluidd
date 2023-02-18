@@ -32,7 +32,7 @@
       :headers="visibleHeaders"
       :items-per-page="15"
       :item-class="getRowClasses"
-      :single-expand="true"
+      single-expand
       :search="search"
       :expanded="expanded"
       mobile-breakpoint="0"

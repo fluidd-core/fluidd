@@ -3,7 +3,6 @@
     :title="$t('app.timelapse.title.timelapse_settings')"
     icon="$cog"
     class=""
-    :draggable="false"
   >
     <app-setting
       :title="$t('app.timelapse.setting.enable')"

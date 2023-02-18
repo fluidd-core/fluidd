@@ -7,7 +7,6 @@
       <collapsable-card
         :title="$t('app.general.title.config_files')"
         icon="$codeJson"
-        :draggable="false"
       >
         <file-system
           :roots="['config']"
@@ -24,7 +23,6 @@
       <collapsable-card
         :title="$t('app.general.title.other_files')"
         icon="$files"
-        :draggable="false"
       >
         <file-system
           :roots="['logs', 'docs', 'config_examples']"

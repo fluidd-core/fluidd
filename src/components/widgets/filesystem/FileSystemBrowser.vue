@@ -10,9 +10,9 @@
       :headers="headers"
       :items="files"
       :dense="dense"
-      :disable-pagination="true"
+      disable-pagination
       :loading="loading"
-      :sort-desc="true"
+      sort-desc
       :custom-sort="customSort"
       :search="search"
       :show-select="bulkActions"

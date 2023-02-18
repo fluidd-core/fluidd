@@ -75,12 +75,23 @@
           </td>
           <td>/</td>
           <td>
-            <input-temperature
+            <app-text-field
               v-if="klippyReady"
               :value="item.target"
-              :max="item.maxTemp"
-              :min="item.minTemp"
-              @input="setHeaterTargetTemp(item.name, $event)"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThanOrEqualOrZero(item.minTemp),
+                $rules.numberLessThanOrEqualOrZero(item.maxTemp)
+              ]"
+              type="number"
+              outlined
+              dense
+              single-line
+              hide-details="auto"
+              suffix="°C"
+              class="v-input--width-x-small"
+              @submit="setHeaterTargetTemp(item.name, +$event)"
             />
           </td>
         </tr>
@@ -140,12 +151,23 @@
           </td>
           <td>/</td>
           <td>
-            <input-temperature
+            <app-text-field
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
-              :max="item.maxTemp"
-              :min="item.minTemp"
-              @input="setFanTargetTemp(item.name, $event)"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThanOrEqualOrZero(item.minTemp),
+                $rules.numberLessThanOrEqualOrZero(item.maxTemp)
+              ]"
+              type="number"
+              outlined
+              dense
+              single-line
+              hide-details="auto"
+              suffix="°C"
+              class="v-input--width-x-small"
+              @submit="setFanTargetTemp(item.name, +$event)"
             />
           </td>
         </tr>
@@ -211,14 +233,12 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
-import InputTemperature from './InputTemperature.vue'
 import StateMixin from '@/mixins/state'
 import { Heater, Sensor } from '@/store/printer/types'
 
 @Component({
   components: {
-    TemperaturePresetsMenu,
-    InputTemperature
+    TemperaturePresetsMenu
   }
 })
 export default class TemperatureTargets extends Mixins(StateMixin) {

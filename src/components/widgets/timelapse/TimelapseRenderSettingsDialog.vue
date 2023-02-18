@@ -158,7 +158,7 @@
 
         <v-divider />
 
-        <app-slider
+        <app-named-slider
           :value="crf"
           class="px-4 pt-3"
           style="overflow: hidden"
