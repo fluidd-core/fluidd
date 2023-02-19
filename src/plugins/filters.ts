@@ -278,8 +278,8 @@ export const Filters = {
     if (sortBy === null || !sortBy.length) return items
     const stringCollator = new Intl.Collator(locale, { sensitivity: 'accent', usage: 'sort' })
     return items.sort((a, b) => {
-      if (a.type === 'directory' && (a.name === '..' || b.type !== 'directory')) return -1
-      if (b.type === 'directory' && (b.name === '..' || a.type !== 'directory')) return 1
+      if (a.type === 'directory' && (a.dirname === '..' || b.type !== 'directory')) return -1
+      if (b.type === 'directory' && (b.dirname === '..' || a.type !== 'directory')) return 1
 
       for (let i = 0; i < sortBy.length; i++) {
         const sortKey = sortBy[i]

@@ -389,12 +389,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       for (const filter of this.filters) {
         switch (filter) {
           case 'hidden_files':
-            if (file.name?.match(/^\.(?!\.$)/)) {
+            if (file.filename.match(/^\.(?!\.$)/)) {
               return false
             }
             break
           case 'klipper_backup_files':
-            if (file.name?.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
+            if (file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
               return false
             }
             break
@@ -533,9 +533,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       }
     }
 
-    if (e.type === 'click') {
-      if (item.type === 'directory') {
-        if (item.name === '..') {
+    if (item.type === 'directory') {
+      if (e.type === 'click') {
+        if (item.dirname === '..') {
           const dirs = this.currentPath.split('/')
           const newpath = dirs.slice(0, -1).join('/')
 
@@ -548,14 +548,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.selected = []
 
         return
-      } else if (
-        this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
-        this.currentRoot === 'timelapse'
-      ) {
-        this.handleFileOpenDialog(item)
-
+      } else if (item.dirname === '..') {
         return
       }
+    } else if (
+      e.type === 'click' && (
+        this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
+        this.currentRoot === 'timelapse'
+      )
+    ) {
+      this.handleFileOpenDialog(item)
+
+      return
     }
 
     // Open the context menu
@@ -684,15 +688,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   async handleViewThumbnail (file: AppFileWithMeta) {
     const thumb = this.getThumb(file.thumbnails ?? [], file.path, true)
-    if (!thumb) return
-    const thumbUrl = this.getThumbUrl([thumb], file.path, true)
 
-    this.filePreviewState = {
-      open: true,
-      src: thumbUrl,
-      type: 'image',
-      filename: file.filename,
-      width: thumb.width
+    if (thumb) {
+      const thumbUrl = thumb.absolute_path || thumb.data || ''
+
+      this.filePreviewState = {
+        open: true,
+        src: thumbUrl,
+        type: 'image',
+        filename: file.filename,
+        width: thumb.width
+      }
     }
   }
 
@@ -821,8 +827,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     )
     if (res) {
       items.forEach((item) => {
-        if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.name}`, true)
-        if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.name}`)
+        if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
+        if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
       })
 
       if (callback) {

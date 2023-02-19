@@ -37,20 +37,26 @@ export interface Files {
 
 export interface AppFile extends KlipperFile {
   type: 'file';
-  name?: string;
+  name: string;
   extension: string;
-  filename: string;
-  modified: number;
-  size: number;
   path: string;
+  modified: number;
 }
 
 export interface KlipperFile {
   filename: string;
-  modified: number;
+  modified: number | string;
   size: number;
+  permissions?: '' | 'r' | 'rw';
   print_start_time?: number | null;
   job_id?: string | null;
+}
+
+export interface KlipperDir {
+  dirname: string;
+  modified: number | string;
+  size: number;
+  permissions?: '' | 'r' | 'rw';
 }
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
@@ -58,12 +64,10 @@ export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
 }
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
-export interface AppDirectory {
+export interface AppDirectory extends KlipperDir {
   type: 'directory';
-  name?: string;
-  dirname: string;
-  modified: number | null;
-  size: number;
+  name: string;
+  modified: number;
 }
 
 export interface FileMetaDataSocketResponse {
@@ -91,7 +95,7 @@ export interface FilePaths {
 
 export interface FileUpdate {
   paths: FilePaths;
-  file: AppFile;
+  file: Partial<AppFile | AppFileWithMeta> & { filename: string; };
   root: string;
 }
 

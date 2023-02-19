@@ -262,7 +262,7 @@
       v-if="file"
       class="preview-name"
     >
-      {{ file.name }}
+      {{ file.filename }}
     </div>
   </app-focusable-container>
 </template>
