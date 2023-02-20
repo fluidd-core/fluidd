@@ -95,7 +95,8 @@ app:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
-      label: Húzzd <strong>ide</strong> a fájlt
+      drag_files_folders_upload: <strong>Drag</strong> files and folders here to upload
+      drag_files_enqueue: <strong>Drag</strong> files here to enqueue
     title:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
@@ -140,6 +141,7 @@ app:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
       add_printer: Nyomtató hozzáadása
+      add_to_queue: Hozzáadás sorhoz
       adjust_layout: Műszerfal elrendezésének beállítása
       adjusted: Beállított
       all: Összes
@@ -149,6 +151,7 @@ app:
       clear_profile: Profil tisztítása
       close: Bezárás
       config_reference: Konfigurációs hivatkozás
+      create_zip_archive: ZIP archívum létrehozása
       delete: Töröl
       download: Letöltés
       edit: Szerkesztés
@@ -157,6 +160,7 @@ app:
       filter: Szűrő
       forgot_password: Elfelejtetted a jelszavad?
       heaters_off: Fűtőtestek Ki
+      job_queue: Feladatsor
       load_all: Minden betöltése
       login: Belépés
       logout: Kijelentkezés
@@ -170,6 +174,7 @@ app:
       reboot: Újraindítás
       recover: Visszaállítás
       refresh: Frissítés
+      reload: Újratöltés
       remove: Eltávolítás
       remove_all: Összes eltávolítása
       rename: Átnevezés
@@ -196,6 +201,8 @@ app:
       socket_reconnect: Újracsatlakozás
       socket_refresh: Frissítés kényszerítése
       upload: Feltöltés
+      upload_files: Fájlok feltöltése
+      upload_folder: Mappa feltöltése
       upload_print: Feltöltés & Nyomtatás
       view: Nézet
       reset_stats: Statisztikák törlése
@@ -229,6 +236,7 @@ app:
       confirm: Megerősít
       current_password: Aktuális jelszó
       current_user: Jelenlegi felhasználó
+      default: Alapértelmezett
       disabled_while_printing: Nyomtatáskor letiltva
       edit_camera: Kamera szerkesztése
       edit_filter: Szűrő szerkesztése
@@ -260,6 +268,7 @@ app:
       no_notifications: Nincs értesítés
       'on': 'Be'
       'off': 'Ki'
+      numeric_prefix_sort: Numerikus előtag rendezése
       password: Jelszó
       partial_of_total: '%{partial} - %{total}'
       power: Áramellátás
@@ -278,6 +287,8 @@ app:
       smooth_time: Simítási idő
       speed: Sebesség
       sqv: Négyzet saroksebesség
+      stepper_enabled: Léptető engedélyezve
+      synced_extruder: Szinkronizált extruder
       thumbnail_size: Miniatűr mérete
       total: Eltelt
       total_filament: Összes felhasznált szál
@@ -297,6 +308,7 @@ app:
       username: Felhasználónév
       variance: Eltérés
       velocity: Sebesség
+      version_sort: Verzió rendezés
       visible: Látható
       z_offset: Z Eltolás
       unsaved_changes: Nem mentett változások
@@ -313,6 +325,8 @@ app:
         ellenkező esetben kattints a <b>Accept</b> gombra a folytatáshoz.
       welcome_back: >-
         Üdv újra.<br>Jelentkezz be alább, hogy kapcsolatban maradj a nyomtatóddal.
+      offline_ready: Fluidd készen áll az offline munkavégzésre.
+      needs_refresh: Új tartalom érhető el, frissítéshez kattints a <b>Újratöltés</b> gombra.
     simple_form:
       error:
         arrayofnums: Csak számok
@@ -367,6 +381,8 @@ app:
         name: Név
         nozzle_diameter: Fúvóka átmérő
         print_duration: Nyomtatás időtartama
+        time_added: Hozzáadott idő
+        time_in_queue: Idő a sorban
         size: Méret
         slicer: Szeletelő
         slicer_version: Szeletelő verziója
@@ -390,6 +406,7 @@ app:
       history: Történet
       home: Otthon
       jobs: Feladatok
+      job_queue: Feladatsor
       limits: Nyomtató határai
       macros: Makrók
       metrics_explorer: Felderítő mérés
@@ -417,8 +434,12 @@ app:
       run_collector: Gyűjtő futtatása
   history:
     msg:
-      confirm_jobs: Biztos, hogy minden feladatot törölni szeretnél?
-      confirm_stats: Biztos, hogy az összes statisztikát törlöd?
+      confirm: Biztos vagy benne? Ez törli az összes előzményt és a nyomtatóstatisztikát
+  job_queue:
+    msg:
+      confirm: Biztos vagy benne? Ez törli a teljes nyomtatósort
+      confirm_jobs: Biztos vagy benne? Ez az összes munkát törli.
+      confirm_stats: Biztos vagy benne? Ez az összes statisztikát törli.
   printer:
     state:
       busy: Elfoglalt
@@ -446,10 +467,10 @@ app:
       video: IP Kamera
       iframe: HTTP oldal
     camera_rotate_options:
-      none: Nincs
       '90': 90°
       '180': 180°
       '270': 270°
+      none: Nincs
     label:
       all_off: Minden kikapcsolva
       all_on: Minden bekapcsolva
@@ -458,6 +479,7 @@ app:
       auto_edit_extensions: Szerkesztési módban automatikusan megnyíló bővítmények
       auto_follow_on_file_load: Automatikusan követi a fájlbetöltés folyamatát
       auto_load_on_print_start: Fájl automatikus betöltése a nyomtatás indításakor
+      auto_load_mobile_on_print_start: Fájlok automatikus betöltése mobileszközökön
       axes: Tengelyek
       camera_flip_x: Vízszintes forgatás
       camera_flip_y: Függőleges forgatás
@@ -479,6 +501,7 @@ app:
       dashed: Szaggatott
       default_extrude_length: Alapértelmezett extrudálási hossz
       default_extrude_speed: Alapértelmezett extrudálási sebesség
+      default_min_layer_height: Alapértelmezett minimális rétegmagasság
       default_toolhead_move_length: Alapértelmezett nyomtatófej mozgási hossza
       default_toolhead_xy_speed: Alapértelmezett (XY) nyomtatófej sebesség
       default_toolhead_z_speed: Alapértelmezett (Z) nyomtatófej sebesség
@@ -498,7 +521,6 @@ app:
       fps_idle_target: FPS Cél, ha nincs fókuszban
       height: Magasság
       gcode_coords: G-Kód koordináták használata
-      group_lower_layers: Csoportosítsd az alsó rétegeket
       icon: Ikon
       invert_x_control: Fordított (X) vezérlés
       invert_y_control: Fordított (Y) vezérlés
@@ -541,6 +563,7 @@ app:
       z_adjust_values: A (Z) értékek beállítása
       date_format: Dátum formátum
       time_format: Idő formátum
+      text_sort_order: Szövegrendezési sorrend
       force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
       show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus megjelenítése
       show_bed_screws_adjust_dialog_automatically: Ágycsavarok automatikus beállítása párbeszédpanel megjelenítése
@@ -589,6 +612,7 @@ app:
       micro_controller: Mikrovezérlő
       model: CPU Modell
       moonraker_load: Moonraker Terheltsége
+      network: Hálózat
       processor_desc: Processzor
       product_name: Termék név
       serial_number: Sorozatszám
@@ -596,7 +620,9 @@ app:
       system_memory: Rendszermemória
       system_utilization: Rendszerhasználat
       total_memory: Teljes memória
+      operating_system: Operációs rendszer
       version: Változat
+      virtualization: Virtualizáció
   tool:
     btn:
       home_x: X
@@ -708,6 +734,8 @@ app:
         center: Központ
         back_left: Hátul balra
         back_right: Hátul jobbra
+        x_only: X mozgatása
+        y_only: Y mozgatása
       previewimage: Miniatűr generálása
       saveframes: Képkockák mentése
       stream_delay_compensation: Késleltetés kompenzáció
