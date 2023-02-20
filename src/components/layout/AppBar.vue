@@ -328,9 +328,9 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   handleResetLayout () {
-    const pathLayouts = {
+    const pathLayouts: Record<string, string> = {
       '/diagnostics': 'diagnostics'
-    } as Record<string, string>
+    }
 
     const pathLayout = pathLayouts[this.$route.path]
     let layoutDefaultState

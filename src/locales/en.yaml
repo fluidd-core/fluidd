@@ -91,7 +91,8 @@ app:
       not_found: No files found
       processing: Processing
     overlay:
-      drag_files_folders: <strong>Drag</strong> files and folders here
+      drag_files_folders_upload: <strong>Drag</strong> files and folders here to upload
+      drag_files_enqueue: <strong>Drag</strong> files here to enqueue
     title:
       add_dir: Add Directory
       add_file: Add File
@@ -282,6 +283,8 @@ app:
       smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
+      stepper_enabled: Stepper Enabled
+      synced_extruder: Synced Extruder
       thumbnail_size: Thumbnail Size
       total: Total
       total_filament: Total filament used
@@ -471,6 +474,7 @@ app:
       auto_edit_extensions: Extensions to automatically open in edit mode
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
+      auto_load_mobile_on_print_start: Automatically load file on mobile devices
       axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
@@ -492,6 +496,7 @@ app:
       dashed: Dashed
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
+      default_min_layer_height: Default minimum layer height
       default_toolhead_move_length: Default toolhead move length
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
@@ -511,7 +516,6 @@ app:
       fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
-      group_lower_layers: Group lower layers
       icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
@@ -603,6 +607,7 @@ app:
       micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
+      network: Network
       processor_desc: Processor
       product_name: Product Name
       serial_number: Serial Number
@@ -612,6 +617,7 @@ app:
       total_memory: Total Memory
       operating_system: Operating System
       version: Version
+      virtualization: Virtualization
   tool:
     btn:
       home_x: X
@@ -723,6 +729,8 @@ app:
         center: Center
         back_left: Back Left
         back_right: Back Right
+        x_only: Move X only
+        y_only: Move Y only
       previewimage: Generate Thumbnail
       saveframes: Save Frames
       stream_delay_compensation: Delay Compensation

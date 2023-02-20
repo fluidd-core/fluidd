@@ -9,18 +9,18 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.velocity')"
             :value="velocity.current"
             :reset-value="velocity.max"
             :min="1"
             :max="velocity.max"
             :disabled="!klippyReady"
-            :overridable="true"
-            :locked="!klippyReady || isMobile"
+            overridable
+            :locked="isMobile"
             :loading="hasWait($waits.onSetVelocity)"
             suffix="mm/s"
-            @change="setVelocity($event)"
+            @submit="setVelocity"
           />
         </v-col>
         <v-col
@@ -29,7 +29,7 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.sqv')"
             :value="scv.current"
             :reset-value="scv.max"
@@ -37,11 +37,11 @@
             :max="scv.max"
             :step="0.1"
             :disabled="!klippyReady"
-            :overridable="true"
-            :locked="!klippyReady || isMobile"
+            overridable
+            :locked="isMobile"
             :loading="hasWait($waits.onSetSCV)"
             suffix="mm/s"
-            @change="setSCV($event)"
+            @submit="setSCV"
           />
         </v-col>
       </v-row>
@@ -53,18 +53,18 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.acceleration')"
             :value="accel.current"
             :reset-value="accel.max"
             :min="1"
             :max="accel.max"
             :disabled="!klippyReady"
-            :overridable="true"
-            :locked="!klippyReady || isMobile"
+            overridable
+            :locked="isMobile"
             :loading="hasWait($waits.onSetAcceleration)"
             suffix="mm/s²"
-            @change="setAcceleration($event)"
+            @submit="setAcceleration"
           />
         </v-col>
         <v-col
@@ -73,18 +73,18 @@
           md="12"
           lg="6"
         >
-          <app-slider
+          <app-named-slider
             :label="$t('app.general.label.accel_to_decel')"
             :value="decel.current"
             :reset-value="decel.max"
             :min="1"
             :max="decel.max"
             :disabled="!klippyReady"
-            :overridable="true"
-            :locked="!klippyReady || isMobile"
+            overridable
+            :locked="isMobile"
             :loading="hasWait($waits.onSetDeceleration)"
             suffix="mm/s²"
-            @change="setDeceleration($event)"
+            @submit="setDeceleration"
           />
         </v-col>
       </v-row>

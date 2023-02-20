@@ -14,6 +14,7 @@ export interface Macro {
   disabledWhilePrinting?: boolean;
   color?: string;
   config?: any;
+  order?: number;
 }
 
 export interface MacroCategory {

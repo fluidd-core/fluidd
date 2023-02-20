@@ -19,9 +19,9 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.group_lower_layers')">
+      <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
-          v-model="groupLowerLayers"
+          v-model="drawBackground"
           hide-details
           class="mb-5"
           @click.native.stop
@@ -30,12 +30,20 @@
 
       <v-divider />
 
-      <app-setting :title="$t('app.setting.label.draw_background')">
-        <v-switch
-          v-model="drawBackground"
-          hide-details
-          class="mb-5"
-          @click.native.stop
+      <app-setting :title="$t('app.setting.label.default_min_layer_height')">
+        <v-text-field
+          :value="minLayerHeight"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(0.1)
+          ]"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          suffix="mm"
+          @change="setMinLayerHeight"
         />
       </app-setting>
 
@@ -128,6 +136,19 @@
           @click.native.stop
         />
       </app-setting>
+
+      <template v-if="autoLoadOnPrintStart">
+        <v-divider />
+
+        <app-setting :title="$t('app.setting.label.auto_load_mobile_on_print_start')">
+          <v-switch
+            v-model="autoLoadMobileOnPrintStart"
+            hide-details
+            class="mb-5"
+            @click.native.stop
+          />
+        </app-setting>
+      </template>
 
       <v-divider />
 
@@ -248,14 +269,14 @@ export default class GcodePreviewSettings extends Vue {
     })
   }
 
-  get groupLowerLayers () {
-    return this.$store.state.config.uiSettings.gcodePreview.groupLowerLayers
+  get minLayerHeight () {
+    return this.$store.state.config.uiSettings.gcodePreview.minLayerHeight
   }
 
-  set groupLowerLayers (value: boolean) {
+  setMinLayerHeight (value: number) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.gcodePreview.groupLowerLayers',
-      value,
+      path: 'uiSettings.gcodePreview.minLayerHeight',
+      value: +value,
       server: true
     })
   }
@@ -267,6 +288,22 @@ export default class GcodePreviewSettings extends Vue {
   set autoLoadOnPrintStart (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.autoLoadOnPrintStart',
+      value,
+      server: true
+    })
+
+    if (!value) {
+      this.autoLoadMobileOnPrintStart = false
+    }
+  }
+
+  get autoLoadMobileOnPrintStart () {
+    return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
+  }
+
+  set autoLoadMobileOnPrintStart (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.autoLoadMobileOnPrintStart',
       value,
       server: true
     })

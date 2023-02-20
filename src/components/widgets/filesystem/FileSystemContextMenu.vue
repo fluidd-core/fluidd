@@ -149,7 +149,7 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
+import { FileBrowserEntry } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
@@ -163,7 +163,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   readonly root!: string
 
   @Prop({ type: Object, required: true })
-  readonly file!: AppDirectory | AppFile | AppFileWithMeta
+  readonly file!: FileBrowserEntry
 
   @Prop({ type: Number, required: true })
   readonly positionX!: number
@@ -210,7 +210,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return (
       (this.file.type !== 'file' || this.file.extension !== 'zip') &&
       !this.rootProperties.readonly &&
-      this.$store.getters['server/getIsMinApiVersion'](1, 1)
+      this.$store.getters['server/getIsMinApiVersion']('1.1.0')
     )
   }
 

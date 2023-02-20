@@ -1,5 +1,11 @@
 <template>
-  <div>
+  <v-card
+    :class="{ 'no-pointer-events': overlay }"
+    @dragenter.capture.prevent="handleDragEnter"
+    @dragover.prevent
+    @dragleave.self.prevent="handleDragLeave"
+    @drop.prevent.stop="handleDropJob"
+  >
     <job-queue-toolbar
       v-if="selected.length === 0"
       :headers="headers"
@@ -20,6 +26,12 @@
       @row-click="handleRowClick"
     />
 
+    <app-drag-overlay
+      v-model="overlay"
+      :message="$t('app.file_system.overlay.drag_files_enqueue')"
+      icon="$enqueueJob"
+    />
+
     <job-queue-context-menu
       v-if="contextMenuState.open"
       v-model="contextMenuState.open"
@@ -28,7 +40,7 @@
       :position-y="contextMenuState.y"
       @remove="handleRemove"
     />
-  </div>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -58,6 +70,7 @@ export default class JobQueue extends Vue {
   }
 
   selected: QueuedJob[] = []
+  overlay = false
 
   @Prop({ type: Boolean, default: false })
   readonly dense!: boolean
@@ -113,6 +126,30 @@ export default class JobQueue extends Vue {
       : [jobs.job_id]
 
     SocketActions.serverJobQueueDeleteJobs(jobIds)
+  }
+
+  handleDragEnter (e: DragEvent) {
+    if (e.dataTransfer?.types.includes('jobs')) {
+      this.overlay = true
+    }
+  }
+
+  handleDragLeave () {
+    this.overlay = false
+  }
+
+  handleDropJob (e: DragEvent) {
+    this.overlay = false
+
+    if (e.dataTransfer?.types.includes('jobs')) {
+      const data = e.dataTransfer.getData('jobs')
+      const files: { path: string, jobs: string[] } = JSON.parse(data)
+      const filePath = files.path ? `${files.path}/` : ''
+      const filenames = files.jobs
+        .map(file => `${filePath}${file}`)
+
+      SocketActions.serverJobQueuePostJob(filenames)
+    }
   }
 }
 </script>

@@ -47,29 +47,26 @@
         >
           <v-row>
             <v-col>
-              <app-slider
+              <app-named-slider
                 :label="$t('app.gcode.label.layer')"
                 :value="(!fileLoaded) ? 0 : currentLayer + 1"
                 :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
                 :locked="isMobile"
-                input-md
                 @input="setCurrentLayer($event - 1)"
               />
             </v-col>
           </v-row>
           <v-row>
             <v-col>
-              <app-slider
+              <app-named-slider
                 :label="$t('app.general.label.progress')"
                 :value="moveProgress - currentLayerMoveRange.min"
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
-                value-suffix="moves"
                 :locked="isMobile"
-                input-md
                 @input="setMoveProgress($event + currentLayerMoveRange.min)"
               />
             </v-col>
@@ -355,6 +352,10 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get autoLoadOnPrintStart () {
+    if (this.isMobile) {
+      return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
+    }
+
     return this.$store.state.config.uiSettings.gcodePreview.autoLoadOnPrintStart
   }
 

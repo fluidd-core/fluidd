@@ -8,7 +8,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.retract_length')"
           suffix="mm"
           :value="retract_length"
@@ -16,11 +16,11 @@
           :min="0"
           :max="retract_length_max"
           :step="0.01"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
+          :locked="isMobile"
           :loading="hasWait($waits.onSetRetractLength)"
-          @change="setRetractLength"
+          @submit="setRetractLength"
         />
       </v-col>
       <v-col
@@ -30,7 +30,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.unretract_extra_length')"
           suffix="mm"
           :value="unretract_extra_length"
@@ -38,11 +38,11 @@
           :min="0"
           :max="unretract_extra_length_max"
           :step="0.01"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
+          :locked="isMobile"
           :loading="hasWait($waits.onSetUnretractExtraLength)"
-          @change="setUnRetractExtraLength"
+          @submit="setUnRetractExtraLength"
         />
       </v-col>
     </v-row>
@@ -54,7 +54,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.retract_speed')"
           suffix="mm/s"
           :value="retract_speed"
@@ -62,11 +62,11 @@
           :min="0"
           :step="1"
           :max="retract_speed_max"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
+          :locked="isMobile"
           :loading="hasWait($waits.onSetRetractSpeed)"
-          @change="setRetractSpeed"
+          @submit="setRetractSpeed"
         />
       </v-col>
       <v-col
@@ -76,7 +76,7 @@
         lg="6"
         class="py-0"
       >
-        <app-slider
+        <app-named-slider
           :label="$t('app.general.label.unretract_speed')"
           suffix="mm/s"
           :value="unretract_speed"
@@ -84,11 +84,11 @@
           :min="0"
           :step="1"
           :max="unretract_speed_max"
-          :overridable="true"
+          overridable
           :disabled="!klippyReady"
-          :locked="!klippyReady || isMobile"
+          :locked="isMobile"
           :loading="hasWait($waits.onSetUnretractSpeed)"
-          @change="setUnretractSpeed"
+          @submit="setUnretractSpeed"
         />
       </v-col>
     </v-row>

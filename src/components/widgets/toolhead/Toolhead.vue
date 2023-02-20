@@ -31,20 +31,23 @@
       <speed-and-flow-adjust />
       <pressure-advance-adjust v-if="showPressureAdvance" />
     </v-card-text>
+
+    <extruder-steppers />
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import ToolheadMoves from '@/components/widgets/toolhead/ToolheadMoves.vue'
-import ExtruderMoves from '@/components/widgets/toolhead/ExtruderMoves.vue'
-import ExtruderSelection from '@/components/widgets/toolhead/ExtruderSelection.vue'
-import ToolheadPosition from '@/components/widgets/toolhead/ToolheadPosition.vue'
-import ZHeightAdjust from '@/components/widgets/toolhead/ZHeightAdjust.vue'
-import SpeedAndFlowAdjust from '@/components/widgets/toolhead/SpeedAndFlowAdjust.vue'
-import PressureAdvanceAdjust from '@/components/widgets/toolhead/PressureAdvanceAdjust.vue'
-import ExtruderStats from '@/components/widgets/toolhead/ExtruderStats.vue'
+import ToolheadMoves from './ToolheadMoves.vue'
+import ExtruderMoves from './ExtruderMoves.vue'
+import ExtruderSelection from './ExtruderSelection.vue'
+import ToolheadPosition from './ToolheadPosition.vue'
+import ZHeightAdjust from './ZHeightAdjust.vue'
+import SpeedAndFlowAdjust from './SpeedAndFlowAdjust.vue'
+import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
+import ExtruderStats from './ExtruderStats.vue'
+import ExtruderSteppers from './ExtruderSteppers.vue'
 
 @Component({
   components: {
@@ -55,7 +58,8 @@ import ExtruderStats from '@/components/widgets/toolhead/ExtruderStats.vue'
     ZHeightAdjust,
     SpeedAndFlowAdjust,
     PressureAdvanceAdjust,
-    ExtruderStats
+    ExtruderStats,
+    ExtruderSteppers
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {

@@ -3,7 +3,7 @@
     :title="$t('app.general.title.temperature')"
     icon="$fire"
     :lazy="false"
-    :draggable="true"
+    draggable
     layout-path="dashboard.temperature-card"
   >
     <template #title>
@@ -39,7 +39,7 @@
       </app-btn-collapse-group>
 
       <app-btn-collapse-group
-        :collapsed="true"
+        collapsed
         menu-icon="$cog"
       >
         <v-checkbox

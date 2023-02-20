@@ -17,10 +17,13 @@
           cols="12"
           sm="6"
         >
-          <v-icon x-large>
-            $fileUpload
+          <v-icon
+            x-large
+            class="mr-1"
+          >
+            {{ icon }}
           </v-icon>
-          <span v-html="$t('app.file_system.overlay.drag_files_folders')" />
+          <span v-html="message" />
         </v-col>
       </v-row>
     </v-container>
@@ -28,13 +31,18 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({})
-export default class FileSystemDragOverlay extends Mixins(StateMixin) {
+export default class AppDragOverlay extends Vue {
   @Prop({ type: Boolean, default: false })
   readonly value!: boolean
+
+  @Prop({ type: String, required: true })
+  readonly message!: string
+
+  @Prop({ type: String, required: true })
+  readonly icon!: string
 }
 </script>
 

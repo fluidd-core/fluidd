@@ -1,52 +1,56 @@
 <template>
   <div>
-    <v-divider />
-    <app-setting
-      :title="$t('app.timelapse.setting.park_custom_pos_x')"
-      :sub-title="subtitleIfBlocked(getCustomParkPosBlocked('x'))"
-    >
-      <v-text-field
-        ref="parkPosXElement"
-        :value="parkPosX"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThanOrEqual(printerMinX),
-          $rules.numberLessThanOrEqual(printerMaxX)
-        ]"
-        :disabled="getCustomParkPosBlocked('x')"
-        hide-details="auto"
-        filled
-        dense
-        single-line
-        suffix="mm"
-        @change="setParkPosX"
-      />
-    </app-setting>
+    <template v-if="['custom', 'x_only'].includes(parkpos)">
+      <v-divider />
+      <app-setting
+        :title="$t('app.timelapse.setting.park_custom_pos_x')"
+        :sub-title="subtitleIfBlocked(getCustomParkPosBlocked('x'))"
+      >
+        <v-text-field
+          ref="parkPosXElement"
+          :value="parkPosX"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(printerMinX),
+            $rules.numberLessThanOrEqual(printerMaxX)
+          ]"
+          :disabled="getCustomParkPosBlocked('x')"
+          hide-details="auto"
+          filled
+          dense
+          single-line
+          suffix="mm"
+          @change="setParkPosX"
+        />
+      </app-setting>
+    </template>
 
-    <v-divider />
-    <app-setting
-      :title="$t('app.timelapse.setting.park_custom_pos_y')"
-      :sub-title="subtitleIfBlocked(getCustomParkPosBlocked('y'))"
-    >
-      <v-text-field
-        ref="parkPosYElement"
-        :value="parkPosY"
-        :rules="[
-          $rules.required,
-          $rules.numberValid,
-          $rules.numberGreaterThanOrEqual(printerMinY),
-          $rules.numberLessThanOrEqual(printerMaxY)
-        ]"
-        :disabled="getCustomParkPosBlocked('y')"
-        hide-details="auto"
-        filled
-        dense
-        single-line
-        suffix="mm"
-        @change="setParkPosY"
-      />
-    </app-setting>
+    <template v-if="['custom', 'y_only'].includes(parkpos)">
+      <v-divider />
+      <app-setting
+        :title="$t('app.timelapse.setting.park_custom_pos_y')"
+        :sub-title="subtitleIfBlocked(getCustomParkPosBlocked('y'))"
+      >
+        <v-text-field
+          ref="parkPosYElement"
+          :value="parkPosY"
+          :rules="[
+            $rules.required,
+            $rules.numberValid,
+            $rules.numberGreaterThanOrEqual(printerMinY),
+            $rules.numberLessThanOrEqual(printerMaxY)
+          ]"
+          :disabled="getCustomParkPosBlocked('y')"
+          hide-details="auto"
+          filled
+          dense
+          single-line
+          suffix="mm"
+          @change="setParkPosY"
+        />
+      </app-setting>
+    </template>
   </div>
 </template>
 

@@ -1,14 +1,15 @@
 import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import Axios, { AxiosRequestConfig, CancelTokenSource } from 'axios'
+import { AxiosRequestConfig } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
 import { FileWithPath } from '@/util/file-system-entry'
 
 @Component
 export default class FilesMixin extends Vue {
-  // Maintains a cancel token source should we need to disable a request.
-  cancelTokenSource: CancelTokenSource | undefined = undefined
+  get cancelTokenSource () {
+    return this.$store.state.files.fileTransferCancelTokenSource
+  }
 
   get apiUrl () {
     return this.$store.state.config.apiUrl
@@ -20,24 +21,18 @@ export default class FilesMixin extends Vue {
     return !forceLogins || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, cachebust?: number) {
+  getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, date?: number) {
     if (thumbnails.length) {
-      if (!cachebust) cachebust = new Date().getTime()
-      const thumb = this.getThumb(thumbnails, path, large)
-      if (
-        thumb &&
-        thumb.absolute_path
-      ) return `${thumb.absolute_path}?cachebust=${cachebust}`
-      if (
-        thumb &&
-        thumb.data
-      ) return thumb.data
+      const thumb = this.getThumb(thumbnails, path, large, date)
+
+      if (thumb) {
+        return thumb.absolute_path || thumb.data || ''
+      }
     }
     return ''
   }
 
-  getThumb (thumbnails: Thumbnail[], path: string, large = true) {
-    const apiUrl = this.$store.state.config.apiUrl
+  getThumb (thumbnails: Thumbnail[], path: string, large = true, date?: number) {
     if (thumbnails.length) {
       let thumb: Thumbnail | undefined
       if (thumbnails) {
@@ -48,14 +43,11 @@ export default class FilesMixin extends Vue {
         }
         if (thumb) {
           if (thumb.relative_path && thumb.relative_path.length > 0) {
-            const url = new URL(apiUrl ?? document.location.origin)
-            url.pathname = (path === '')
-              ? `/server/files/gcodes/${encodeURI(thumb.relative_path)}`
-              : `/server/files/gcodes/${encodeURI(path)}/${encodeURI(thumb.relative_path)}`
+            const filepath = path ? `gcodes/${path}` : 'gcodes'
 
             return {
               ...thumb,
-              absolute_path: url.toString()
+              absolute_path: this.createFileUrl(thumb.relative_path, filepath, date)
             }
           }
           if (thumb.data) {
@@ -92,9 +84,10 @@ export default class FilesMixin extends Vue {
     }
 
     if (res) {
-      this.cancelTokenSource = Axios.CancelToken.source()
-      const path = file.path ? `${file.path}/${file.filename}` : file.filename
-      return await this.getFile(path, 'gcodes', file.size, {
+      this.$store.dispatch('files/createFileTransferCancelTokenSource')
+
+      const path = file.path ? `gcodes/${file.path}` : 'gcodes'
+      return await this.getFile(file.filename, path, file.size, {
         responseType: 'text',
         transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
@@ -109,7 +102,7 @@ export default class FilesMixin extends Vue {
    */
   async getFile (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
     // Sort out the filepath
-    const filepath = (path) ? `${path}/${filename}` : `${filename}`
+    const filepath = path ? `${path}/${filename}` : filename
 
     // Add an entry to vuex indicating we're downloading a file.
     const startTime = performance.now()
@@ -166,7 +159,7 @@ export default class FilesMixin extends Vue {
   async downloadFile (filename: string, path: string) {
     // Grab a oneshot.
     try {
-      const url = encodeURI(await this.createFileUrl(filename, path))
+      const url = await this.createFileUrlWithToken(filename, path)
 
       // Create a link, handle its click - and finally remove it again.
       const link = document.createElement('a')
@@ -188,10 +181,14 @@ export default class FilesMixin extends Vue {
    * @param path The path to the file.
    * @returns The url for the requested file
    */
-  async createFileUrl (filename: string, path: string) {
+  createFileUrl (filename: string, path: string, date?: number) {
     const filepath = (path) ? `${path}/${filename}` : `${filename}`
 
-    const url = `${this.apiUrl}/server/files/${filepath}?date=${Date.now()}`
+    return `${this.apiUrl}/server/files/${encodeURI(filepath)}?date=${date || Date.now()}`
+  }
+
+  async createFileUrlWithToken (filename: string, path: string, date?: number) {
+    const url = this.createFileUrl(filename, path, date)
 
     return this.isTrustedUser
       ? url
@@ -318,7 +315,8 @@ export default class FilesMixin extends Vue {
       // consola.error('about to process...', fileState)
       if (fileState && !fileState?.cancelled) {
         try {
-          this.cancelTokenSource = Axios.CancelToken.source()
+          this.$store.dispatch('files/createFileTransferCancelTokenSource')
+
           await this.uploadFile(fileObject, fullPath, root, andPrint, {
             cancelToken: this.cancelTokenSource.token
           })

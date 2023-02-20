@@ -138,7 +138,7 @@ export default class EChartsBedMesh extends Vue {
       }
     })
 
-    const opts = {
+    const opts: EChartsOption = {
       legend: {
         show: false
       },
@@ -197,7 +197,7 @@ export default class EChartsBedMesh extends Vue {
       },
       graphic,
       series: [...this.data]
-    } as EChartsOption
+    }
 
     // Merge the default options with the given prop.
     merge(opts, this.options)

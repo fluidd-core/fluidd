@@ -26,6 +26,7 @@ export default (root: string, file: FileChangeItem | KlipperFile | KlipperFileWi
     filename: paths.filename,
     extension: paths.filename.split('.').pop() || '',
     name: paths.filename,
-    path: paths.path
+    path: paths.path,
+    modified: new Date(file.modified).getTime()
   }
 }

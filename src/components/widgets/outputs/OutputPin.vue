@@ -1,9 +1,8 @@
 <template>
   <div>
     <!-- Output Pins -->
-    <app-slider
+    <app-named-slider
       v-if="pin && pin.pwm"
-      input-xs
       :label="pin.prettyName"
       :min="0"
       :max="pin.scale"
@@ -11,12 +10,12 @@
       :value="(pin.value * pin.scale) / 1"
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
-      :locked="!klippyReady || isMobile"
+      :locked="isMobile"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @change="setValue"
+      @submit="setValue"
     />
 
-    <app-switch
+    <app-named-switch
       v-if="pin && !pin.pwm"
       :disabled="!klippyReady"
       :label="pin.prettyName"
