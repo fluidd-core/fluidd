@@ -326,7 +326,7 @@ app:
       welcome_back: >-
         Üdv újra.<br>Jelentkezz be alább, hogy kapcsolatban maradj a nyomtatóddal.
       offline_ready: Fluidd készen áll az offline munkavégzésre.
-      needs_refresh: Új tartalom érhető el, frissítéshez kattints a <b>Újratöltés</b> gombra.
+      needs_refresh: Új tartalom érhető el, frissítéshez kattints az <b>Újratöltés</b> gombra.
     simple_form:
       error:
         arrayofnums: Csak számok
