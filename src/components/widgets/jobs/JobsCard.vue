@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.jobs')"
     icon="$files"
-    :draggable="true"
+    draggable
     layout-path="dashboard.jobs-card"
   >
     <template #menu>

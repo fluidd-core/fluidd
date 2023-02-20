@@ -18,10 +18,30 @@
             $expand
           </v-icon>
         </template>
-        {{ $filters.startCase(extruderStepper.name) }}
+        <template #default="{ open }">
+          <v-fade-transition leave-absolute>
+            <span
+              v-if="open"
+              key="0"
+            >
+              {{ extruderStepper.prettyName }}
+            </span>
+            <span
+              v-else
+              key="1"
+            >
+              {{ extruderStepper.prettyName }} <span class="secondary--text">[ {{ extruderStepper.description }} ]</span>
+            </span>
+          </v-fade-transition>
+        </template>
       </v-expansion-panel-header>
       <v-expansion-panel-content>
+        <extruder-stepper-sync
+          :extruder-stepper="extruderStepper"
+        />
+
         <pressure-advance-adjust
+          v-if="extruderStepper.pressure_advance !== undefined"
           :extruder-stepper="extruderStepper"
         />
       </v-expansion-panel-content>
@@ -30,21 +50,33 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Vue } from 'vue-property-decorator'
+import ExtruderStepperSync from './ExtruderStepperSync.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
-import { ExtruderStepper } from '@/store/printer/types'
+import { Extruder, ExtruderStepper } from '@/store/printer/types'
 
 @Component({
   components: {
+    ExtruderStepperSync,
     PressureAdvanceAdjust
   }
 })
-export default class ExtruderSteppers extends Mixins(StateMixin) {
+export default class ExtruderSteppers extends Vue {
   get extruderSteppers () {
+    const extruders = this.$store.getters['printer/getExtruders'] as Extruder[]
     const extruderSteppers = this.$store.getters['printer/getExtruderSteppers'] as ExtruderStepper[]
+
     return extruderSteppers
-      .filter(x => x.pressure_advance !== undefined)
+      .map(x => {
+        const motionQueueName = extruders.find(y => y.key === x.motion_queue)?.name ?? this.$t('app.setting.label.none')
+        const enabledDesc = x.enabled !== undefined && this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`)
+        const description = enabledDesc ? `${motionQueueName}, ${enabledDesc}` : motionQueueName
+
+        return {
+          ...x,
+          description
+        }
+      })
   }
 }
 </script>

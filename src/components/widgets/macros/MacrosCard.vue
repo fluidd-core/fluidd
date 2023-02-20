@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.macros')"
     icon="$fileCode"
-    :draggable="true"
+    draggable
     layout-path="dashboard.macros-card"
   >
     <macros />

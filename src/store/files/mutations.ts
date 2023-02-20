@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { MutationTree } from 'vuex'
 import mergeFileUpdate from '@/util/merge-file-update'
-import { Files, FilesState, FileUpdate, AppFile, AppFileWithMeta, FileRoot } from './types'
+import { Files, FilesState, FileUpdate, AppFile, FileRoot } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 
@@ -45,8 +45,8 @@ export const mutations: MutationTree<FilesState> = {
     const directory = state[root].find((f: Files) => (f.path === paths.rootPath))
 
     if (directory) {
-      const fileIndex = directory.items.findIndex(file => file.name === paths.filename)
-      const file = directory.items[fileIndex] as AppFile | AppFileWithMeta
+      const fileIndex = directory.items.findIndex(file => file.type === 'file' && file.filename === paths.filename)
+      const file = directory.items[fileIndex] as AppFile
 
       const isFiltered = (
         Globals.FILTERED_FILES_PREFIX.some(e => payload.paths.filename.startsWith(e)) ||
@@ -57,7 +57,7 @@ export const mutations: MutationTree<FilesState> = {
         if (fileIndex >= 0) {
           Vue.set(directory.items, fileIndex, mergeFileUpdate(root, file, payload.file))
         } else {
-          directory.items.push(mergeFileUpdate(root, {} as any, payload.file))
+          directory.items.push(mergeFileUpdate(root, {} as AppFile, payload.file))
         }
       }
     }
@@ -70,7 +70,7 @@ export const mutations: MutationTree<FilesState> = {
     // Find relevant directory.
     const directory = state[root].find((f: Files) => (f.path === paths.rootPath))
     if (directory) {
-      const fileIndex = directory.items.findIndex(file => file.name === paths.filename)
+      const fileIndex = directory.items.findIndex(file => file.type === 'file' && file.filename === paths.filename)
 
       if (fileIndex >= 0) {
         directory.items.splice(fileIndex, 1)
@@ -124,6 +124,10 @@ export const mutations: MutationTree<FilesState> = {
 
   setRemoveFileDownload (state) {
     state.download = null
+  },
+
+  setFileTransferCancelTokenSource (state, payload) {
+    state.fileTransferCancelTokenSource = payload
   },
 
   setCurrentPath (state, payload) {

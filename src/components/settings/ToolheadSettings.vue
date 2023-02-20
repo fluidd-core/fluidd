@@ -58,7 +58,8 @@
           :rules="[
             $rules.required,
             $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
+            $rules.numberGreaterThanOrEqual(1),
+            $rules.numberLessThanOrEqual(maxExtrudeLength)
           ]"
           filled
           dense
@@ -77,7 +78,8 @@
           :rules="[
             $rules.required,
             $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1)
+            $rules.numberGreaterThanOrEqual(1),
+            $rules.numberLessThanOrEqual(maxExtrudeSpeed)
           ]"
           filled
           dense
@@ -244,14 +246,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue } from 'vue-property-decorator'
+import { Component, Ref, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
 import { VInput } from '@/types'
+import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({
   components: {}
 })
-export default class ToolHeadSettings extends Vue {
+export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   @Ref('toolheadMoveDistances')
   readonly toolheadMoveDistancesElement!: VInput
 

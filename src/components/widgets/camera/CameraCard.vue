@@ -3,7 +3,7 @@
     :title="$tc('app.general.title.camera', 2)"
     icon="$camera"
     :lazy="false"
-    :draggable="true"
+    draggable
     layout-path="dashboard.camera-card"
     @collapsed="collapsed = $event"
   >

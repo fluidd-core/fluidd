@@ -11,7 +11,7 @@ import {
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
-import { state as configState } from '@/store/config/state'
+import IsKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -34,40 +34,43 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getLayers: (state, getters, rootState): Layer[] => {
+    if (state.layers.length) {
+      return state.layers
+    }
+
     const output = []
-    const moves = getters.getMoves
+    const moves = getters.getMoves as Move[]
 
     let z = NaN
     let zStart = 0
     let zLast = NaN
+    let zNext = NaN
 
-    const { uiSettings } = (rootState && rootState.config) ? rootState.config : configState
-    const groupLowerLayers = uiSettings.gcodePreview.groupLowerLayers
+    const { minLayerHeight } = rootState.config.uiSettings.gcodePreview
 
-    const zCmp = groupLowerLayers
-      ? (a: number, b: number) => Number.isNaN(a) || a < b
-      : (a: number, b: number) => a !== b
-
-    moves.forEach((move: Move, index: number) => {
+    moves.forEach((move, index) => {
       if (move.z !== undefined && z !== move.z) {
         z = move.z
         zStart = index
       }
 
-      if (move.e && move.e > 0 && zCmp(zLast, z)) {
-        zLast = z
+      if (move.e && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
+        if (['x', 'y', 'i', 'j'].some(x => IsKeyOf(x, move) && move[x] !== 0)) {
+          zLast = z
+          zNext = Math.round((z + minLayerHeight) * 10000) / 10000
 
-        output.push({
-          z,
-          move: zStart,
-          filePosition: move.filePosition
-        })
+          output.push({
+            z,
+            move: zStart,
+            filePosition: move.filePosition
+          })
+        }
       }
     })
 
     // If moves exist but there are no layers, add a single "default" layer at z=0
     // This can happen for gcode that only contains travel moves (eg: 2d plotters without Z or E steppers)
-    if (output.length === 0 && moves.length > 0) {
+    if (output.length === 0 && moves.length) {
       output.push({
         z: 0,
         move: 0,
@@ -241,7 +244,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       return 0
     }
 
-    return binarySearch(getters.getMoves, (val: Move) => filePosition - (val.filePosition ?? 0), true)
+    return binarySearch(getters.getMoves, (val: Move) => filePosition - val.filePosition, true)
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {

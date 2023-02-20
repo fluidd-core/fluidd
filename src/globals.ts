@@ -404,7 +404,9 @@ export const Waits = Object.freeze({
   onManualProbe: 'onManualProbe',
   onQueryEndstops: 'onQueryEndstops',
   onQueryProbe: 'onQueryProbe',
-  onVersionRefresh: 'onVersionRefresh'
+  onVersionRefresh: 'onVersionRefresh',
+  onSyncExtruder: 'onSyncExtruder',
+  onStepperEnable: 'onStepperEnable'
 })
 
 export const SupportedLocales = Object.freeze([

@@ -32,7 +32,7 @@
 import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 
 @Component({})
-export default class AppSelect extends Vue {
+export default class AppNamedSelect extends Vue {
   @VModel({ })
     inputValue?: any
 

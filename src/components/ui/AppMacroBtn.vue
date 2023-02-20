@@ -3,10 +3,8 @@
     v-if="paramList.length === 0 || !enableParams"
     :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
     :style="borderStyle"
-    v-on="{
-      ...$listeners,
-      click: () => $emit('click', macro.name)
-    }"
+    v-on="filteredListeners"
+    @click="handleClick"
   >
     <slot />
   </app-btn>
@@ -16,10 +14,8 @@
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
-      v-on="{
-        ...$listeners,
-        click: () => $emit('click', macro.name)
-      }"
+      v-on="filteredListeners"
+      @click="handleClick"
     >
       <slot />
     </app-btn>
@@ -111,6 +107,13 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 
+  get filteredListeners () {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { click, ...listeners } = this.$listeners
+
+    return listeners
+  }
+
   get paramList () {
     return Object.keys(this.params)
   }
@@ -137,6 +140,10 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
       return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
     return ''
+  }
+
+  handleClick () {
+    this.$emit('click', this.macro.name)
   }
 
   mounted () {

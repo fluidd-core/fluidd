@@ -73,7 +73,7 @@
         >
           <v-list-item
             :key="`notification-${n.id}`"
-            :three-line="true"
+            three-line
             :class="classes(n)"
           >
             <v-list-item-content>

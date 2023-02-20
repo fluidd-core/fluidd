@@ -13,7 +13,7 @@
     >
       <v-navigation-drawer
         :color="theme.currentTheme.drawer"
-        :mini-variant="true"
+        mini-variant
         :value="open"
       >
         <div

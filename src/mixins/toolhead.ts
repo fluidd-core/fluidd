@@ -8,10 +8,18 @@ export default class ToolheadMixin extends Vue {
   }
 
   get extruderReady () {
-    const extruder = this.$store.getters['printer/getActiveExtruder']
+    const extruder = this.activeExtruder
     return (extruder && extruder.temperature >= 0 && extruder.min_extrude_temp >= 0)
       ? (extruder.temperature >= extruder.min_extrude_temp)
       : false
+  }
+
+  get maxExtrudeSpeed () {
+    return this.activeExtruder?.max_extrude_only_velocity || 500
+  }
+
+  get maxExtrudeLength () {
+    return this.activeExtruder?.max_extrude_only_distance || 50
   }
 
   get allHomed (): boolean {

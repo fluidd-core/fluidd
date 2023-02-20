@@ -1,5 +1,6 @@
 import { ActionTree } from 'vuex'
-import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, AppFile, DiskUsage } from './types'
+import axios from 'axios'
+import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, DiskUsage, FileBrowserEntry, KlipperDir } from './types'
 import { RootState } from '../types'
 import formatAsFile from '@/util/format-as-file'
 import getFilePaths from '@/util/get-file-paths'
@@ -15,13 +16,14 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit, rootState }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: AppDirectory[]; __request__: any }) {
+  async onServerFilesGetDirectory ({ commit, rootState }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: KlipperDir[]; __request__: any }) {
     const path = payload.__request__.params.path
     const root = payload.__request__.params.root
-    let pathNoRoot = path.replace(root, '')
-    if (pathNoRoot.startsWith('/')) pathNoRoot = pathNoRoot.substring(1)
+    const pathNoRoot = path.length > root.length
+      ? path.substring(root.length + 1)
+      : path.substring(root.length)
 
-    const items: (AppFileWithMeta | AppFile | AppDirectory)[] = []
+    const items: FileBrowserEntry[] = []
 
     if (path && path.indexOf('/') >= 0) {
       items.push({
@@ -29,8 +31,8 @@ export const actions: ActionTree<FilesState, RootState> = {
         dirname: '..',
         name: '..',
         size: 0,
-        modified: null
-      })
+        modified: 0
+      } satisfies AppDirectory)
     }
 
     if (payload.dirs) {
@@ -39,10 +41,12 @@ export const actions: ActionTree<FilesState, RootState> = {
           !Globals.FILTERED_FILES_PREFIX.some(e => dir.dirname.startsWith(e)) &&
           !Globals.FILTERED_FILES_EXTENSION.some(e => dir.dirname.endsWith(e))
         ) {
-          dir.type = 'directory'
-          dir.name = dir.dirname
-          dir.modified = (dir.modified) ? new Date(dir.modified).getTime() : null
-          items.push(dir)
+          items.push({
+            ...dir,
+            type: 'directory',
+            name: dir.dirname,
+            modified: new Date(dir.modified).getTime()
+          } satisfies AppDirectory)
         }
       })
     }
@@ -66,7 +70,7 @@ export const actions: ActionTree<FilesState, RootState> = {
             modified: new Date(file.modified).getTime(),
             path: (pathNoRoot === '/') ? '' : pathNoRoot,
             history
-          })
+          } satisfies AppFileWithMeta)
         }
       })
     }
@@ -238,6 +242,20 @@ export const actions: ActionTree<FilesState, RootState> = {
 
   async removeFileDownload ({ commit }, payload) {
     commit('setRemoveFileDownload', payload)
+  },
+
+  async createFileTransferCancelTokenSource ({ commit }) {
+    const cancelTokenSource = axios.CancelToken.source()
+
+    commit('setFileTransferCancelTokenSource', cancelTokenSource)
+  },
+
+  async cancelFileTransferWithTokenSource ({ commit, state }, cancellationMessage) {
+    if (state.fileTransferCancelTokenSource) {
+      state.fileTransferCancelTokenSource.cancel(cancellationMessage)
+    }
+
+    commit('setFileTransferCancelTokenSource', null)
   },
 
   async updateCurrentPathByRoot ({ commit }, payload) {
