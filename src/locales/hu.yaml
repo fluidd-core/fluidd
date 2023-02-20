@@ -95,8 +95,8 @@ app:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
-      drag_files_folders_upload: <strong>Drag</strong> files and folders here to upload
-      drag_files_enqueue: <strong>Drag</strong> files here to enqueue
+      drag_files_folders_upload: Feltöltéshez <strong>húzd</strong> ide a fájlokat és mappákat
+      drag_files_enqueue: <strong>Húzd</strong> sorba a fájlokat
     title:
       add_dir: Könyvtár hozzáadása
       add_file: Fájl hozzáadása
