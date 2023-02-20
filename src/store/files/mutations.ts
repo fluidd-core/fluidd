@@ -70,10 +70,10 @@ export const mutations: MutationTree<FilesState> = {
     // Find relevant directory.
     const directory = state[root].find((f: Files) => (f.path === paths.rootPath))
     if (directory) {
-      const fileIndex = directory.items.findIndex(file => file.type === 'file' && file.filename === paths.filename)
+      const itemIndex = directory.items.findIndex(item => item.name === paths.filename)
 
-      if (fileIndex >= 0) {
-        directory.items.splice(fileIndex, 1)
+      if (itemIndex >= 0) {
+        directory.items.splice(itemIndex, 1)
       }
     }
   },

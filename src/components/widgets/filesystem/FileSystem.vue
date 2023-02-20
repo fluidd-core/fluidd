@@ -796,44 +796,43 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     SocketActions.serverFilesMove(src, dest)
   }
 
-  async handleRemove (file: FileBrowserEntry | FileBrowserEntry[], callback?: () => void) {
+  async handleRemove (file: FileBrowserEntry | FileBrowserEntry[]) {
     if (this.disabled) return
-
-    const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
-
-    if (this.currentRoot === 'timelapse') {
-      // Override thumbnails for timelapse browser
-      const thumbnails = []
-
-      const allFiles = this.getAllFiles()
-      for (const item of items) {
-        if (item.type === 'file') {
-          const name = item.filename.slice(0, -(item.extension.length + 1))
-
-          for (const file of allFiles) {
-            if (file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name)) {
-              thumbnails.push(file)
-            }
-          }
-        }
-      }
-
-      items.push(...thumbnails)
-    }
 
     const res = await this.$confirm(
       this.$tc('app.file_system.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
+
     if (res) {
+      this.filePreviewState.open = false
+
+      const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
+
+      if (this.currentRoot === 'timelapse') {
+      // Override thumbnails for timelapse browser
+        const thumbnails = []
+
+        const allFiles = this.getAllFiles()
+        for (const item of items) {
+          if (item.type === 'file') {
+            const name = item.filename.slice(0, -(item.extension.length + 1))
+
+            for (const file of allFiles) {
+              if (file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name)) {
+                thumbnails.push(file)
+              }
+            }
+          }
+        }
+
+        items.push(...thumbnails)
+      }
+
       items.forEach((item) => {
         if (item.type === 'directory') SocketActions.serverFilesDeleteDirectory(`${this.currentPath}/${item.dirname}`, true)
         if (item.type === 'file') SocketActions.serverFilesDeleteFile(`${this.currentPath}/${item.filename}`)
       })
-
-      if (callback) {
-        callback()
-      }
     }
   }
 

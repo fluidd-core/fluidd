@@ -37,7 +37,7 @@
           v-if="file.appFile && removable"
           text
           color="error"
-          @click="$emit('remove', file.appFile, () => file.open = false)"
+          @click="$emit('remove', file.appFile)"
         >
           <v-icon>$delete</v-icon>
           {{ $t('app.general.btn.remove') }}
