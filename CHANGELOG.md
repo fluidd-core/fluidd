@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.23.2](https://github.com/fluidd-core/fluidd/compare/v1.23.1...v1.23.2) (2023-02-20)
+
+
+### Features
+
+* Add support for gcode viewing on plotter-style devices ([#1025](https://github.com/fluidd-core/fluidd/issues/1025)) ([7d99259](https://github.com/fluidd-core/fluidd/commit/7d99259ee8d2b38f43875ba2bbdb27c26a7705ce))
+* Adds network and virtualization info ([a053dc3](https://github.com/fluidd-core/fluidd/commit/a053dc3a5740085e28f35cd674085b5f2042a9e7))
+* adds support for extruder stepper enable ([#1039](https://github.com/fluidd-core/fluidd/issues/1039)) ([10bd04c](https://github.com/fluidd-core/fluidd/commit/10bd04c46881f5a87ed43d1c708901284ffb0005))
+* allow ordering of gcode macros ([#1041](https://github.com/fluidd-core/fluidd/issues/1041)) ([03f01d7](https://github.com/fluidd-core/fluidd/commit/03f01d7a7892cd9c0e288a292a2b2ff84dcb6e27))
+* dragging jobs to job queue ([#1037](https://github.com/fluidd-core/fluidd/issues/1037)) ([0ad8aa3](https://github.com/fluidd-core/fluidd/commit/0ad8aa3d6548eba5ede1dd9fd87bf62732cac167))
+* extruder selection for each extruder stepper ([#1034](https://github.com/fluidd-core/fluidd/issues/1034)) ([02169d9](https://github.com/fluidd-core/fluidd/commit/02169d92a61b7798193fa5cc9bcd63137b0bbd85))
+* **i18n-HU:** Hungarian language update ([#1043](https://github.com/fluidd-core/fluidd/issues/1043)) ([7ec591f](https://github.com/fluidd-core/fluidd/commit/7ec591fbf15ced580253ddb622a4355ca92175f7))
+* **i18n-zh:** updates Chinese translations ([#1026](https://github.com/fluidd-core/fluidd/issues/1026)) ([99f1f4b](https://github.com/fluidd-core/fluidd/commit/99f1f4be712fdac270e6fdeb7bb2d713524d4ea1))
+* machine.update.refresh endpoint support ([1302f3a](https://github.com/fluidd-core/fluidd/commit/1302f3a183cd52436c96e2a3a0f1ac267e2ad4ad))
+* make file download dialog component independent from parent ([#1033](https://github.com/fluidd-core/fluidd/issues/1033)) ([f98f7cf](https://github.com/fluidd-core/fluidd/commit/f98f7cf67f88fc9e94147466a134bd48f26ff9e7))
+* Pressure Advance per extruder stepper ([#1022](https://github.com/fluidd-core/fluidd/issues/1022)) ([aa7007a](https://github.com/fluidd-core/fluidd/commit/aa7007ae698996f9765d56d25c11084063d0feaf))
+* setting to disable automatic gcode loading on mobile ([#1028](https://github.com/fluidd-core/fluidd/issues/1028)) ([afcff8f](https://github.com/fluidd-core/fluidd/commit/afcff8f8278501136b6a67e1f8eabac304fd22c2))
+* **timelapse:** add new park positions ([#1035](https://github.com/fluidd-core/fluidd/issues/1035)) ([2b30418](https://github.com/fluidd-core/fluidd/commit/2b3041846ea58446260509d2bfa6227a0489d30b)), closes [mainsail-crew/moonraker-timelapse#96](https://github.com/mainsail-crew/moonraker-timelapse/issues/96)
+* try parsing layer info directly from g-code ([#1031](https://github.com/fluidd-core/fluidd/issues/1031)) ([cc323b8](https://github.com/fluidd-core/fluidd/commit/cc323b88ce576595f92deee2e2d0d53e153186b2))
+* updated tool extrusion settings to respect printer config ([#1038](https://github.com/fluidd-core/fluidd/issues/1038)) ([2d124cb](https://github.com/fluidd-core/fluidd/commit/2d124cb2159c9a114a10840a9a51834c47a69acd))
+
+
+### Bug Fixes
+
+* AppSlider max changes not applied ([a1bd625](https://github.com/fluidd-core/fluidd/commit/a1bd6257e96878377a18a709c15150b20f73aba4))
+* don't show context menu for ".." item ([737bc0a](https://github.com/fluidd-core/fluidd/commit/737bc0a00b4b1c9900bcb36d7e40e832bb90d20f))
+* encode all request paths ([#1024](https://github.com/fluidd-core/fluidd/issues/1024)) ([f84a7fe](https://github.com/fluidd-core/fluidd/commit/f84a7fe5d4debb92a946b7a37981d25e23cc3def))
+* hide header of empty power devices lists ([2ef8b43](https://github.com/fluidd-core/fluidd/commit/2ef8b433032ac05f69dfd4b2b636f68ca765d0f2))
+* more Moonraker modules reset on socket close ([23047c0](https://github.com/fluidd-core/fluidd/commit/23047c0f90be66a99caf623fdcea78501087cadf))
+
 ## [1.23.1](https://github.com/fluidd-core/fluidd/compare/v1.23.0...v1.23.1) (2023-01-30)
 
 
