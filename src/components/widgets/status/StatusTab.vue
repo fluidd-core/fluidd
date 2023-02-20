@@ -290,7 +290,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
       this.current_file &&
       this.current_file.thumbnails
     ) {
-      const url = this.getThumbUrl(this.current_file.thumbnails, this.current_file.path, true, this.current_file.modified)
+      const url = this.getThumbUrl(this.current_file.thumbnails, 'gcodes', this.current_file.path, true, this.current_file.modified)
       return url
     }
   }

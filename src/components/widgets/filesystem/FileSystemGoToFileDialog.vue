@@ -47,11 +47,11 @@
 <script lang="ts">
 import { Component, Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import { RootFile } from '@/store/files/types'
+import { MoonrakerRootFile } from '@/store/files/types'
 import getFilePaths from '@/util/get-file-paths'
 import StateMixin from '@/mixins/state'
 
-type File = RootFile &{
+type File = MoonrakerRootFile &{
   filename: string
   filepath: string
   rootPath: string
@@ -68,8 +68,8 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   search = ''
   loaded = false
 
-  get rootFiles (): RootFile[] {
-    return this.$store.getters['files/getRootFiles'](this.root) as RootFile[]
+  get rootFiles (): MoonrakerRootFile[] {
+    return this.$store.getters['files/getRootFiles'](this.root) as MoonrakerRootFile[]
   }
 
   get matchedFiles (): File[] {

@@ -21,9 +21,9 @@ export default class FilesMixin extends Vue {
     return forceLogins === false || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, date?: number) {
+  getThumbUrl (thumbnails: Thumbnail[], root: string, path: string, large: boolean, date?: number) {
     if (thumbnails.length) {
-      const thumb = this.getThumb(thumbnails, path, large, date)
+      const thumb = this.getThumb(thumbnails, root, path, large, date)
 
       if (thumb) {
         return thumb.absolute_path || thumb.data || ''
@@ -32,7 +32,7 @@ export default class FilesMixin extends Vue {
     return ''
   }
 
-  getThumb (thumbnails: Thumbnail[], path: string, large = true, date?: number) {
+  getThumb (thumbnails: Thumbnail[], root: string, path: string, large = true, date?: number) {
     if (thumbnails.length) {
       let thumb: Thumbnail | undefined
       if (thumbnails) {
@@ -43,7 +43,7 @@ export default class FilesMixin extends Vue {
         }
         if (thumb) {
           if (thumb.relative_path && thumb.relative_path.length > 0) {
-            const filepath = path ? `gcodes/${path}` : 'gcodes'
+            const filepath = path ? `${root}/${path}` : root
 
             return {
               ...thumb,
