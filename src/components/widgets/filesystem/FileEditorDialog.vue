@@ -119,9 +119,9 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Ref, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import FileEditor from './FileEditor.vue'
 import FileEditorTextOnly from './FileEditorTextOnly.vue'
-import isMobile from '@/util/is-mobile'
 import isWebAssemblySupported from '@/util/is-web-assembly-supported'
 
 @Component({
@@ -130,7 +130,7 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
     FileEditorTextOnly
   }
 })
-export default class FileEditorDialog extends Mixins(StateMixin) {
+export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean, required: true })
     open!: boolean
 
@@ -164,16 +164,12 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     )
   }
 
-  get isMobile () {
-    return isMobile()
-  }
-
   get isWebAssemblySupported () {
     return isWebAssemblySupported()
   }
 
   get useTextOnlyEditor () {
-    return this.isMobile || !this.isWebAssemblySupported
+    return this.isMobileUserAgent || !this.isWebAssemblySupported
   }
 
   get isUploading (): boolean {
