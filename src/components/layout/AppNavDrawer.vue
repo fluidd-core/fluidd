@@ -17,7 +17,7 @@
         :value="open"
       >
         <div
-          v-show="isMobileUserAgent"
+          v-show="isMobileViewport"
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
           class="app-icon"
         >

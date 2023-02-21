@@ -7,7 +7,7 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
-      v-show="!isMobileUserAgent"
+      v-show="!isMobileViewport"
       to="/"
       class="toolbar-logo"
     >
@@ -16,7 +16,7 @@
 
     <div class="toolbar-title">
       <app-btn
-        v-if="isMobileUserAgent"
+        v-if="isMobileViewport"
         fab
         small
         :elevation="0"
@@ -49,7 +49,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && !isMobileUserAgent && authenticated">
+      <div v-if="socketConnected && !isMobileViewport && authenticated">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
