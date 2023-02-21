@@ -12,7 +12,7 @@
         :reset-value="100"
         :disabled="!klippyReady"
         :loading="hasWait($waits.onSetSpeed)"
-        :locked="isMobile"
+        :locked="isMobileViewport"
         :min="1"
         :max="200"
         @submit="handleSetSpeed"
@@ -30,7 +30,7 @@
         :reset-value="100"
         :disabled="!klippyReady"
         :loading="hasWait($waits.onSetFlow)"
-        :locked="isMobile"
+        :locked="isMobileViewport"
         :min="1"
         :max="200"
         @submit="handleSetFlow"
@@ -42,9 +42,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
+export default class SpeedAndFlowAdjust extends Mixins(StateMixin, BrowserMixin) {
   get flow () {
     return Math.round(this.$store.state.printer.printer.gcode_move.extrude_factor * 100) || 100
   }
@@ -59,10 +60,6 @@ export default class SpeedAndFlowAdjust extends Mixins(StateMixin) {
 
   handleSetSpeed (val: number) {
     this.sendGcode(`M220 S${val}`, this.$waits.onSetSpeed)
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

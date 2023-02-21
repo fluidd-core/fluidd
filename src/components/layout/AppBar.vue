@@ -7,7 +7,7 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
-      v-show="!isMobile"
+      v-show="!isMobileUserAgent"
       to="/"
       class="toolbar-logo"
     >
@@ -16,7 +16,7 @@
 
     <div class="toolbar-title">
       <app-btn
-        v-if="isMobile"
+        v-if="isMobileUserAgent"
         fab
         small
         :elevation="0"
@@ -49,7 +49,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && !isMobile && authenticated">
+      <div v-if="socketConnected && !isMobileUserAgent && authenticated">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -192,6 +192,7 @@ import { defaultState } from '@/store/layout/state'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
+import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
 import { OutputPin } from '@/store/printer/types'
 import { Device } from '@/store/power/types'
@@ -204,7 +205,7 @@ import { Device } from '@/store/power/types'
     AppUploadAndPrintBtn
   }
 })
-export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
+export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin, BrowserMixin) {
   menu = false
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
@@ -239,10 +240,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   get theme () {
     return this.$store.getters['config/getTheme']
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   get inLayout (): boolean {

@@ -8,7 +8,7 @@
         tabindex="-1"
         :disabled="disabled"
         :color="property ? 'primary' : undefined"
-        :retain-focus-on-click="!isMobile"
+        :retain-focus-on-click="!isMobileViewport"
         v-on="on"
         @click="property = !property"
       >
@@ -20,10 +20,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class GcodePreviewButton extends Vue {
+export default class GcodePreviewButton extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly name!: string
 
@@ -35,10 +36,6 @@ export default class GcodePreviewButton extends Vue {
 
   @Prop({ type: Boolean, default: false })
   readonly disabled!: boolean
-
-  get isMobile (): boolean {
-    return this.$vuetify.breakpoint.mobile
-  }
 
   get property () {
     return this.$store.getters['gcodePreview/getViewerOption'](this.name)

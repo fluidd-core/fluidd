@@ -11,7 +11,7 @@
         overridable
         :reset-value="selectedExtruderStepper.config_pressure_advance || 0"
         :disabled="!klippyReady"
-        :locked="isMobile"
+        :locked="isMobileViewport"
         :loading="hasWait(`${$waits.onSetPressureAdvance}${selectedExtruderStepper.name ?? ''}`)"
         :min="0"
         :max="2"
@@ -29,7 +29,7 @@
         :value="selectedExtruderStepper.smooth_time || 0"
         :reset-value="selectedExtruderStepper.config_smooth_time || 0"
         :disabled="!klippyReady"
-        :locked="isMobile"
+        :locked="isMobileViewport"
         :loading="hasWait(`${$waits.onSetPressureAdvance}${selectedExtruderStepper.name ?? ''}`)"
         :min="0"
         :max="0.2"
@@ -44,10 +44,11 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import BrowserMixin from '@/mixins/browser'
 import { ExtruderStepper } from '@/store/printer/types'
 
 @Component({})
-export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMixin) {
+export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
   @Prop({ type: Object, required: false })
   readonly extruderStepper?: ExtruderStepper
 
@@ -70,10 +71,6 @@ export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMi
     } else {
       this.sendGcode(`SET_PRESSURE_ADVANCE ${arg}=${val}`, this.$waits.onSetPressureAdvance)
     }
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>
