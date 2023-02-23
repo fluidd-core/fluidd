@@ -42,10 +42,6 @@ export default class AppChart extends Vue {
 
   ready = false
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
-
   get isDark () {
     return this.$store.state.config.uiSettings.theme.isDark
   }

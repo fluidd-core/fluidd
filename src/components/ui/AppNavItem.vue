@@ -1,7 +1,7 @@
 <template>
   <v-tooltip
     right
-    :disabled="isMobile"
+    :disabled="isMobileViewport"
   >
     <template #activator="{ attrs, on }">
       <v-list-item
@@ -24,7 +24,7 @@
     <span><slot /></span>
   </v-tooltip>
 
-  <!-- <v-tooltip right :disabled="isMobile">
+  <!-- <v-tooltip right :disabled="isMobileViewport">
     <template v-slot:activator="{ attrs, on }">
       <router-link
         :to="to"
@@ -51,9 +51,10 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class AppNavItem extends Mixins(StateMixin) {
+export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: String })
   readonly title!: string
 
@@ -65,10 +66,6 @@ export default class AppNavItem extends Mixins(StateMixin) {
 
   @Prop({ type: String })
   readonly icon!: string
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
 }
 
 </script>

@@ -130,6 +130,7 @@
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
+import BrowserMixin from '@/mixins/browser'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import { AppFile } from '@/store/files/types'
@@ -141,7 +142,7 @@ import { MinMax } from '@/store/gcodePreview/types'
     GcodePreview
   }
 })
-export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
+export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
@@ -236,10 +237,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get fileLoaded (): boolean {
     return this.$store.getters['gcodePreview/getMoves'].length > 0
-  }
-
-  get isMobile (): boolean {
-    return this.$vuetify.breakpoint.mobile
   }
 
   get parserProgress (): number {
@@ -350,7 +347,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get autoLoadOnPrintStart () {
-    if (this.isMobile) {
+    if (this.isMobileViewport) {
       return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
     }
 

@@ -76,7 +76,7 @@
 
       <thermal-chart
         ref="thermalchart"
-        :height="(isMobile) ? '180px' : '260px'"
+        :height="(isMobileViewport) ? '180px' : '260px'"
       />
     </template>
   </collapsable-card>
@@ -85,6 +85,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import { Fan, Heater } from '@/store/printer/types'
 
 import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
@@ -99,7 +100,7 @@ import { TemperaturePreset } from '@/store/config/types'
     TemperaturePresetsMenu
   }
 })
-export default class TemperatureCard extends Mixins(StateMixin) {
+export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
@@ -180,10 +181,6 @@ export default class TemperatureCard extends Mixins(StateMixin) {
       value,
       server: true
     })
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   handleApplyPreset (preset: TemperaturePreset) {

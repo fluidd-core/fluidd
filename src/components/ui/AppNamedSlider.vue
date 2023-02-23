@@ -35,7 +35,7 @@
         >
           <template #prepend>
             <v-btn
-              v-if="locked && isMobile"
+              v-if="locked && isMobileViewport"
               icon
               small
               :disabled="disabled"
@@ -90,11 +90,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue, Ref, VModel } from 'vue-property-decorator'
+import { Component, Prop, Watch, Ref, VModel, Mixins } from 'vue-property-decorator'
 import { VForm } from '@/types'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class AppNamedSlider extends Vue {
+export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @VModel({ type: Number })
     inputValue!: number
 
@@ -178,11 +179,6 @@ export default class AppNamedSlider extends Vue {
   internalMax = 0
   overridden = false
   hasFocus = false
-
-  // If the parent updates the value.
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
 
   get textRules () {
     // Apply a min and max rule as per the slider.

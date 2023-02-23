@@ -290,6 +290,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
@@ -304,7 +305,7 @@ import { AppFile } from '@/store/files/types'
     GcodePreviewButton
   }
 })
-export default class GcodePreview extends Mixins(StateMixin) {
+export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean, default: true })
   readonly disabled!: boolean
 
@@ -347,10 +348,6 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get filePosition (): number {
     return this.$store.state.printer.printer.virtual_sdcard.file_position
-  }
-
-  get isMobile (): boolean {
-    return this.$vuetify.breakpoint.mobile
   }
 
   get extrusionLineWidth () {
@@ -598,7 +595,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   @Watch('focused')
   onFocusedChanged (value: boolean) {
-    if (this.panzoom && !this.isMobile) {
+    if (this.panzoom && !this.isMobileViewport) {
       if (value) {
         this.panzoom.resume()
       } else {
@@ -637,7 +634,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   keepFocus () {
-    if (!this.isMobile) {
+    if (!this.isMobileViewport) {
       this.container.focus()
     }
   }
