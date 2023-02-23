@@ -17,7 +17,7 @@
             :max="velocity.max"
             :disabled="!klippyReady"
             overridable
-            :locked="isMobile"
+            :locked="isMobileViewport"
             :loading="hasWait($waits.onSetVelocity)"
             suffix="mm/s"
             @submit="setVelocity"
@@ -38,7 +38,7 @@
             :step="0.1"
             :disabled="!klippyReady"
             overridable
-            :locked="isMobile"
+            :locked="isMobileViewport"
             :loading="hasWait($waits.onSetSCV)"
             suffix="mm/s"
             @submit="setSCV"
@@ -61,7 +61,7 @@
             :max="accel.max"
             :disabled="!klippyReady"
             overridable
-            :locked="isMobile"
+            :locked="isMobileViewport"
             :loading="hasWait($waits.onSetAcceleration)"
             suffix="mm/s²"
             @submit="setAcceleration"
@@ -81,7 +81,7 @@
             :max="decel.max"
             :disabled="!klippyReady"
             overridable
-            :locked="isMobile"
+            :locked="isMobileViewport"
             :loading="hasWait($waits.onSetDeceleration)"
             suffix="mm/s²"
             @submit="setDeceleration"
@@ -95,9 +95,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class PrinterLimits extends Mixins(StateMixin) {
+export default class PrinterLimits extends Mixins(StateMixin, BrowserMixin) {
   get velocity () {
     const max = this.$store.getters['printer/getPrinterSettings']('printer.max_velocity')
     return {
@@ -128,10 +129,6 @@ export default class PrinterLimits extends Mixins(StateMixin) {
       current: this.$store.state.printer.printer.toolhead.square_corner_velocity,
       max
     }
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   setVelocity (val: number) {
