@@ -1,4 +1,4 @@
-import { Layer, Move, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from '@/store/gcodePreview/types'
+import { Layer, Move, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage, Part } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 
 const sendProgress = (filePosition: number) => {
@@ -10,11 +10,12 @@ const sendProgress = (filePosition: number) => {
   self.postMessage(message)
 }
 
-const sendResult = (moves: Move[], layers: Layer[]) => {
+const sendResult = (moves: Move[], layers: Layer[], parts: Part[]) => {
   const message : ParseGcodeWorkerClientMessage = {
     action: 'result',
     moves,
-    layers
+    layers,
+    parts
   }
 
   self.postMessage(message)
@@ -25,9 +26,9 @@ self.onmessage = (e) => {
 
   switch (data.action) {
     case 'parse': {
-      const { moves, layers } = parseGcode(data.gcode, sendProgress)
+      const { moves, layers, parts } = parseGcode(data.gcode, sendProgress)
 
-      sendResult(moves, layers)
+      sendResult(moves, layers, parts)
 
       break
     }

@@ -44,6 +44,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
           try {
             commit('setMoves', data.moves)
             commit('setLayers', data.layers)
+            commit('setParts', data.parts)
             commit('setParserProgress', payload.file.size ?? payload.gcode.length)
           } catch (error) {
             consola.error('Parser worker error', error)
