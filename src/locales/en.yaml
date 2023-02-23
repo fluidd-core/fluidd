@@ -122,6 +122,7 @@ app:
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
+      show_parts: Show parts
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
       parsing_file: Parsing file

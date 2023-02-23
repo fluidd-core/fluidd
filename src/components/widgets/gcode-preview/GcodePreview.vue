@@ -101,6 +101,18 @@
           />
         </g>
         <g
+          v-if="!showExcludeObjects && getViewerOption('showParts') && svgPathParts.length > 0"
+          id="parts"
+        >
+          <path
+            v-for="(part, index) of svgPathParts"
+            :key="`part-${index + 1}`"
+            fill-opacity="0.2"
+            :d="part"
+            :shape-rendering="shapeRendering"
+          />
+        </g>
+        <g
           v-if="getViewerOption('showPreviousLayer')"
           id="previousLayer"
           class="layer"
@@ -191,10 +203,12 @@
             stroke-opacity="0.6"
             :d="svgPathNext.extrusions"
             :stroke-width="extrusionLineWidth"
+            :shape-rendering="shapeRendering"
           />
         </g>
         <exclude-objects
           v-if="showExcludeObjects"
+          :shape-rendering="shapeRendering"
           @cancel="$emit('cancelObject', $event)"
         />
       </g>
@@ -248,6 +262,12 @@
         name="showRetractions"
         icon="$retractions"
         :tooltip="$t('app.gcode.label.show_retractions')"
+      />
+
+      <gcode-preview-button
+        name="showParts"
+        icon="$parts"
+        :tooltip="$t('app.gcode.label.show_parts')"
       />
 
       <v-btn
@@ -566,6 +586,10 @@ export default class GcodePreview extends Mixins(StateMixin) {
     }
 
     return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
+  }
+
+  get svgPathParts () {
+    return this.$store.getters['gcodePreview/getPartPaths']
   }
 
   get file (): AppFile | undefined {

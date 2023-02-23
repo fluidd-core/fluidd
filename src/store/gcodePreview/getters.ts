@@ -6,6 +6,7 @@ import {
   LayerNr,
   LayerPaths,
   Move,
+  Part,
   Point3D
 } from './types'
 import { RootState } from '../types'
@@ -79,6 +80,10 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     }
 
     return output
+  },
+
+  getParts: (state): Part[] => {
+    return state.parts
   },
 
   getBounds: (state, getters): BBox => {
@@ -237,6 +242,23 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     const layers = getters.getLayers
 
     return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1)
+  },
+
+  getPartPaths: (state, getters): string[] => {
+    const parts = getters.getParts as Part[]
+
+    return parts
+      .map(part => {
+        const svgData: string[] = []
+
+        part.polygon.forEach((point, index) => {
+          svgData.push(`${index === 0 ? 'M' : 'L'}${point.x},${point.y}`)
+        })
+
+        svgData.push('z')
+
+        return svgData.join()
+      })
   },
 
   getMoveIndexByFilePosition: (state, getters) => (filePosition: number): number => {

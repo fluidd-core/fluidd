@@ -35,7 +35,7 @@
         >
           <template #prepend>
             <v-btn
-              v-if="isMobile"
+              v-if="locked && isMobile"
               icon
               small
               :disabled="disabled"
@@ -83,6 +83,7 @@
       dense
       hide-details
       @start="handleStart"
+      @end="handleEnd"
       @change="handleChange"
     />
   </v-form>
@@ -252,8 +253,13 @@ export default class AppNamedSlider extends Vue {
     this.submitValue(value)
   }
 
-  handleStart () {
+  handleStart (value: number) {
     this.hasFocus = false
+    this.$emit('start', value)
+  }
+
+  handleEnd (value: number) {
+    this.$emit('end', value)
   }
 
   handleChange (value: number) {

@@ -9,6 +9,7 @@
       <path
         class="partOutline"
         :d="partSVG(name)"
+        :shape-rendering="shapeRendering"
       />
       <svg
         width="7"
@@ -35,12 +36,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { Icons } from '@/globals'
 
 @Component({})
 export default class ExcludeObjects extends Mixins(StateMixin) {
+  @Prop({ type: String })
+  readonly shapeRendering?: string
+
   touchedElement?: string
 
   handleTouchEnd (name: string) {

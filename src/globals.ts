@@ -135,7 +135,8 @@ import {
   mdiArchivePlus,
   mdiTrayFull,
   mdiTrayPlus,
-  mdiFolderArrowUp
+  mdiFolderArrowUp,
+  mdiShape
 } from '@mdi/js'
 
 /**
@@ -350,6 +351,7 @@ export const Icons = Object.freeze({
   moves: mdiVectorLine,
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
+  parts: mdiShape,
   folderOpen: mdiFolderOpen,
   fileZip: mdiArchive,
   fileZipAdd: mdiArchivePlus,
