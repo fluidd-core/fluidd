@@ -65,7 +65,8 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
 import { CameraFullscreenAction } from '@/store/config/types'
-import Hls from 'hls.js'
+import type HlsType from 'hls.js'
+let Hls: typeof HlsType
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -89,7 +90,7 @@ export default class CameraItem extends Vue {
   time_smoothing = 0.6
   request_time_smoothing = 0.1
   currentFPS = '0'
-  hls: Hls | null = null
+  hls: HlsType | null = null
 
   // URL used by camera
   cameraUrl = ''
@@ -217,7 +218,7 @@ export default class CameraItem extends Vue {
   /**
    * Sets the correct (cachebusted if applicable) camera url.
    */
-  setUrl () {
+  async setUrl () {
     if (!document.hidden && this.cameraImage !== undefined) {
       const type = this.camera.service
       const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
@@ -261,6 +262,10 @@ export default class CameraItem extends Vue {
 
         case 'hlsstream': {
           const cameraVideo = this.cameraImage as HTMLVideoElement
+
+          if (!Hls) {
+            Hls = (await import('hls.js')).default
+          }
 
           if (Hls.isSupported()) {
             this.hls?.destroy()
