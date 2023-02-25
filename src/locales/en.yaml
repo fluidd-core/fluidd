@@ -460,6 +460,7 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
+      hlsstream: HLS Stream
       video: IP Camera
       iframe: HTTP page
     camera_rotate_options:

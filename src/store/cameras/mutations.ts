@@ -21,7 +21,7 @@ export const mutations: MutationTree<CamerasState> = {
   },
 
   /**
-   * Update / Add a temperature preset
+   * Update / Add a camera
    */
   setCamera (state, payload: CameraConfig) {
     const index = state.cameras.findIndex(camera => camera.id === payload.id)

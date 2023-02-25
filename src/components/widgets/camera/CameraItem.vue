@@ -13,15 +13,16 @@
     >
 
     <video
-      v-if="camera.service === 'ipstream'"
+      v-else-if="camera.service === 'ipstream' || camera.service === 'hlsstream'"
       ref="camera_image"
       :src="cameraUrl"
       autoplay
+      muted
       class="camera-image"
     />
 
     <iframe
-      v-if="camera.service === 'iframe'"
+      v-else-if="camera.service === 'iframe'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
@@ -64,6 +65,7 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
 import { CameraFullscreenAction } from '@/store/config/types'
+import Hls from 'hls.js'
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -77,7 +79,7 @@ export default class CameraItem extends Vue {
   readonly fullscreen!: boolean
 
   @Ref('camera_image')
-  readonly cameraImage!: HTMLImageElement
+  readonly cameraImage!: HTMLImageElement | HTMLVideoElement | HTMLIFrameElement
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -87,6 +89,7 @@ export default class CameraItem extends Vue {
   time_smoothing = 0.6
   request_time_smoothing = 0.1
   currentFPS = '0'
+  hls: Hls | null = null
 
   // URL used by camera
   cameraUrl = ''
@@ -146,11 +149,16 @@ export default class CameraItem extends Vue {
     this.cancelCameraTransform = this.createTransformAnimation()
   }
 
+  mounted () {
+    this.setUrl()
+  }
+
   /**
    * make sure to clear the URL and remove the listener when we destroy the
    * component.
    */
   beforeDestroy () {
+    this.hls?.destroy()
     this.cancelCameraTransform()
     this.cameraUrl = this.cameraImage.src = ''
     this.cameraFullScreenUrl = ''
@@ -210,7 +218,7 @@ export default class CameraItem extends Vue {
    * Sets the correct (cachebusted if applicable) camera url.
    */
   setUrl () {
-    if (!document.hidden) {
+    if (!document.hidden && this.cameraImage !== undefined) {
       const type = this.camera.service
       const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
       const hostUrl = new URL(document.URL)
@@ -218,37 +226,69 @@ export default class CameraItem extends Vue {
 
       this.cameraHeight = this.camera.height || 720
 
-      if (type === 'mjpegstreamer') {
-        url.searchParams.append('cacheBust', this.refresh.toString())
-        if (!url.searchParams.get('action')?.startsWith('stream')) {
-          url.searchParams.set('action', 'stream')
-        }
-        this.cameraUrl = url.toString()
-        if (!this.cameraFullScreenUrl) {
-          this.cameraFullScreenUrl = this.cameraUrl
-        }
-      }
+      switch (type) {
+        case 'mjpegstreamer':
+          url.searchParams.append('cacheBust', this.refresh.toString())
+          if (!url.searchParams.get('action')?.startsWith('stream')) {
+            url.searchParams.set('action', 'stream')
+          }
+          this.cameraUrl = url.toString()
+          if (!this.cameraFullScreenUrl) {
+            this.cameraFullScreenUrl = this.cameraUrl
+          }
+          break
 
-      if (type === 'mjpegstreamer-adaptive') {
-        this.request_start_time = performance.now()
-        url.searchParams.append('cacheBust', this.refresh.toString())
-        if (!url.searchParams.get('action')?.startsWith('snapshot')) {
-          url.searchParams.set('action', 'snapshot')
-        }
-        this.cameraUrl = url.toString()
-        if (!this.cameraFullScreenUrl) {
-          url.searchParams.set('action', 'stream')
-          this.cameraFullScreenUrl = url.toString()
-        }
-      }
+        case 'mjpegstreamer-adaptive':
+          this.request_start_time = performance.now()
+          url.searchParams.append('cacheBust', this.refresh.toString())
+          if (!url.searchParams.get('action')?.startsWith('snapshot')) {
+            url.searchParams.set('action', 'snapshot')
+          }
+          this.cameraUrl = url.toString()
+          if (!this.cameraFullScreenUrl) {
+            url.searchParams.set('action', 'stream')
+            this.cameraFullScreenUrl = url.toString()
+          }
+          break
 
-      if (type === 'ipstream' || type === 'iframe') {
-        this.cameraUrl = baseUrl
-        if (!this.cameraFullScreenUrl) {
-          this.cameraFullScreenUrl = baseUrl
+        case 'ipstream':
+        case 'iframe':
+          this.cameraUrl = baseUrl
+          if (!this.cameraFullScreenUrl) {
+            this.cameraFullScreenUrl = baseUrl
+          }
+          break
+
+        case 'hlsstream': {
+          const cameraVideo = this.cameraImage as HTMLVideoElement
+
+          if (Hls.isSupported()) {
+            this.hls?.destroy()
+
+            this.hls = new Hls({
+              enableWorker: true,
+              lowLatencyMode: true,
+              maxLiveSyncPlaybackRate: 2,
+              liveSyncDuration: 0.5,
+              liveMaxLatencyDuration: 2,
+              backBufferLength: 5
+            })
+            this.hls.loadSource(baseUrl)
+            this.hls.attachMedia(cameraVideo)
+            this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              cameraVideo.play()
+            })
+          } else if (cameraVideo.canPlayType('application/vnd.apple.mpegurl')) {
+            fetch(baseUrl).then(() => {
+              cameraVideo.src = baseUrl
+              cameraVideo.play()
+            })
+          }
+          break
         }
       }
     } else {
+      this.hls?.destroy()
       this.cameraUrl = ''
     }
   }
