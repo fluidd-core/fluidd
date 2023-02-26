@@ -58,7 +58,7 @@
 
             <app-btn
               v-if="resetValue !== undefined"
-              :disabled="disabled"
+              :disabled="disabled || loading"
               style="margin-top: -4px;"
               color=""
               icon
