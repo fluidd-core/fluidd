@@ -15,6 +15,7 @@ export interface Macro {
   color?: string;
   config?: any;
   order?: number;
+  variables?: Record<string, any>
 }
 
 export interface MacroCategory {

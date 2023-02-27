@@ -230,6 +230,7 @@ app:
       change_password: Change password
       clear_all: Clear all
       color: Color
+      command: Command
       confirm: Confirm
       current_password: Current password
       current_user: Current user
@@ -268,6 +269,9 @@ app:
       numeric_prefix_sort: Numeric Prefix sort
       password: Password
       partial_of_total: '%{partial} of %{total}'
+      pause_at_layer: Pause at Layer
+      pause_at_next_layer: Pause at next layer
+      pause_at_layer_number: Pause at layer number
       power: Power
       pressure_advance: Pressure Advance
       printers: Printers
