@@ -19,6 +19,7 @@
       <v-col class="py-0">
         <v-text-field
           v-model="currentValue"
+          :prefix="prefix"
           :suffix="suffix"
           :rules="textRules"
           :disabled="disabled || loading || internalLocked"
@@ -128,6 +129,9 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
 
   @Prop({ type: Number, default: 1 })
   readonly step!: number
+
+  @Prop({ type: String })
+  readonly prefix?: string
 
   @Prop({ type: String })
   readonly suffix?: string

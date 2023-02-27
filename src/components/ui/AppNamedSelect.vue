@@ -14,6 +14,7 @@
         class="mt-0"
         :items="items"
         :disabled="disabled || loading"
+        :prefix="prefix"
         :suffix="suffix"
         :item-value="itemValue"
         :item-text="itemText"
@@ -23,7 +24,23 @@
         outlined
         hide-details
         v-on="$listeners"
-      />
+      >
+        <template #prepend>
+          <app-btn
+            v-if="resetValue !== undefined"
+            :disabled="disabled"
+            style="margin-top: -4px;"
+            color=""
+            icon
+            small
+            @click="handleReset"
+          >
+            <v-icon small>
+              $reset
+            </v-icon>
+          </app-btn>
+        </template>
+      </v-select>
     </v-col>
   </v-row>
 </template>
@@ -35,6 +52,9 @@ import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 export default class AppNamedSelect extends Vue {
   @VModel({ })
     inputValue?: any
+
+  @Prop({ })
+  readonly resetValue?: any
 
   @Prop({ type: Array })
   readonly items?: any[]
@@ -49,6 +69,9 @@ export default class AppNamedSelect extends Vue {
   readonly loading!: boolean
 
   @Prop({ type: String })
+  readonly prefix?: string
+
+  @Prop({ type: String })
   readonly suffix?: string
 
   @Prop({ type: String })
@@ -59,5 +82,9 @@ export default class AppNamedSelect extends Vue {
 
   @Prop({ type: Boolean })
   readonly returnObject?: boolean
+
+  handleReset () {
+    this.inputValue = this.resetValue
+  }
 }
 </script>
