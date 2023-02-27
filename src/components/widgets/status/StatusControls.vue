@@ -6,7 +6,7 @@
         :loading="hasWait($waits.onPrintCancel)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="cancelPrint()"
       >
         <v-icon
@@ -23,7 +23,7 @@
         :loading="hasWait($waits.onPrintPause)"
         :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="pausePrint()"
       >
         <v-icon
@@ -40,7 +40,7 @@
         :loading="hasWait($waits.onPrintResume)"
         :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="resumePrint()"
       >
         <v-icon
@@ -55,7 +55,7 @@
       <app-btn
         v-if="!printerPrinting && !printerPaused && filename"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="resetFile()"
       >
         <v-icon
@@ -70,7 +70,7 @@
       <app-btn
         v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="$emit('print', filename)"
       >
         <v-icon
@@ -95,7 +95,7 @@
           fab
           x-small
           text
-          class="ml-1"
+          class="ms-1 my-1"
           v-on="on"
           @click="showExcludeObjectDialog = true"
         >

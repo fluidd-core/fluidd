@@ -11,7 +11,7 @@
         fab
         x-small
         text
-        class="ml-1"
+        class="ms-1 my-1"
         @click="queryEndstops"
       >
         <v-icon>$refresh</v-icon>

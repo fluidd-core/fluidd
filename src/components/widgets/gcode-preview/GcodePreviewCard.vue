@@ -11,7 +11,7 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
@@ -23,7 +23,7 @@
           fab
           x-small
           text
-          class="ml-1"
+          class="ms-1 my-1"
           @click="$filters.routeTo($router, '/preview')"
         >
           <v-icon>$fullScreen</v-icon>

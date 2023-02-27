@@ -23,7 +23,7 @@
         <app-btn
           small
           :disabled="!klippyReady"
-          class="ml-1"
+          class="ms-1 my-1"
           @click="chartVisible = !chartVisible"
         >
           <v-icon left>
@@ -47,21 +47,21 @@
           :label="$t('app.setting.label.show_rate_of_change')"
           color="primary"
           hide-details
-          class="mx-2 mt-2 mb-2"
+          class="mx-2 my-2"
         />
         <v-checkbox
           v-model="showRelativeHumidity"
           :label="$t('app.setting.label.show_relative_humidity')"
           color="primary"
           hide-details
-          class="mx-2 mt-2 mb-2"
+          class="mx-2 my-2"
         />
         <v-checkbox
           v-model="showBarometricPressure"
           :label="$t('app.setting.label.show_barometric_pressure')"
           color="primary"
           hide-details
-          class="mx-2 mt-2 mb-2"
+          class="mx-2 my-2"
         />
       </app-btn-collapse-group>
     </template>

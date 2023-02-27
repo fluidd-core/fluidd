@@ -10,6 +10,7 @@
       <app-btn
         v-bind="attrs"
         small
+        class="ms-1 my-1"
         v-on="on"
       >
         <v-icon
