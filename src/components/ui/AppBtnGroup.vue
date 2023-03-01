@@ -24,6 +24,7 @@ export default class AppBtnGroup extends Vue {
 
   .app-btn-group {
     display: flex;
+    white-space: nowrap;
 
     &:not(.app-btn-group-vertical) {
       & > :deep(.v-btn) {
