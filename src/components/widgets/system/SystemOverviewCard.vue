@@ -3,6 +3,27 @@
     :title="$t('app.general.title.system_overview')"
     icon="$desktopTower"
   >
+    <template #menu>
+      <v-tooltip
+        bottom
+      >
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            color=""
+            fab
+            x-small
+            text
+            class="ms-1 my-1"
+            v-on="on"
+            @click="rolloverLogsDialogOpen = true"
+          >
+            <v-icon>$fileRefresh</v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.rollover_logs') }}</span>
+      </v-tooltip>
+    </template>
     <v-row no-gutters>
       <v-col>
         <v-simple-table dense>
@@ -66,6 +87,11 @@
         </v-card-text>
       </v-col>
     </v-row>
+
+    <rollover-logs-dialog
+      v-if="rolloverLogsDialogOpen"
+      v-model="rolloverLogsDialogOpen"
+    />
   </collapsable-card>
 </template>
 
@@ -75,6 +101,8 @@ import { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/
 
 @Component({})
 export default class PrinterStatsCard extends Vue {
+  rolloverLogsDialogOpen = false
+
   get systemInfo (): SystemInfo | null {
     return this.$store.getters['server/getSystemInfo']
   }
