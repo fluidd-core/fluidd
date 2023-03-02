@@ -323,6 +323,7 @@ app:
         Welcome back.<br>Sign in below to stay in touch with your printer.
       offline_ready: Fluidd is now ready to work offline.
       needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      pending_configuration_sections_deleted: The following sections are marked for deletion
     simple_form:
       error:
         arrayofnums: Only numbers

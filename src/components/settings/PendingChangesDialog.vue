@@ -30,13 +30,25 @@ export default class PendingChangesDialog extends Vue {
   get saveConfigPendingItems () {
     const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems']
 
-    const lines = Object.entries<Record<string, string>>(saveConfigPendingItems).map(section => {
-      const [sectionName, sectionEntries] = section
+    const { changed, deleted } = Object.entries<Record<string, string>>(saveConfigPendingItems)
+      .reduce((previous, [sectionName, sectionEntries]) => {
+        if (sectionEntries === null) {
+          previous.deleted.push(`# [${sectionName}]`)
+        } else {
+          const entryValues = Object.entries(sectionEntries)
+            .map(entry => `${entry[0]}: ${entry[1]}`)
 
-      const entryValues = Object.entries(sectionEntries).map(entry => `${entry[0]}: ${entry[1]}`)
+          previous.changed.push(`[${sectionName}]\n${entryValues.join('\n')}`)
+        }
 
-      return `[${sectionName}]\n${entryValues.join('\n')}`
-    })
+        return previous
+      }, { changed: [], deleted: [] } as { changed: string[], deleted: string[] })
+
+    const lines = [...changed]
+
+    if (deleted.length > 0) {
+      lines.push(`# ${this.$t('app.general.msg.pending_configuration_sections_deleted')}\n${deleted.join('\n')}`)
+    }
 
     return lines.join('\n\n')
   }
