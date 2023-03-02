@@ -17,7 +17,6 @@
     >
       <template #activator="{ on, attrs, value }">
         <app-btn
-          v-if="paramList.length > 0"
           v-bind="attrs"
           :min-width="24"
           class="px-0"
