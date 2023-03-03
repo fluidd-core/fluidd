@@ -4,9 +4,7 @@
     icon="$desktopTower"
   >
     <template #menu>
-      <v-tooltip
-        bottom
-      >
+      <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
@@ -15,6 +13,7 @@
             x-small
             text
             class="ms-1 my-1"
+            :disabled="printerPrinting || printerPaused"
             v-on="on"
             @click="rolloverLogsDialogOpen = true"
           >
@@ -96,11 +95,12 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class PrinterStatsCard extends Vue {
+export default class PrinterStatsCard extends Mixins(StateMixin) {
   rolloverLogsDialogOpen = false
 
   get systemInfo (): SystemInfo | null {
