@@ -7,7 +7,11 @@
     @save="sendAccept"
   >
     <v-card-text>
-      <v-radio-group v-model="application">
+      <v-radio-group
+        v-model="application"
+        class="mt-0"
+        hide-details
+      >
         <v-radio
           :label="$t('app.general.label.all')"
           value=""
