@@ -3,7 +3,7 @@
     v-model="open"
     :title="$t('app.general.title.rollover_logs')"
     :save-button-text="$t('app.general.btn.accept')"
-    :max-width="450"
+    :max-width="400"
     @save="sendAccept"
   >
     <v-card-text>
