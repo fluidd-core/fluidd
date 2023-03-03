@@ -13,7 +13,7 @@
             x-small
             text
             class="ms-1 my-1"
-            :disabled="printerPrinting || printerPaused"
+            :disabled="printerBusy"
             v-on="on"
             @click="rolloverLogsDialogOpen = true"
           >
