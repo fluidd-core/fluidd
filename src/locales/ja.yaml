@@ -16,9 +16,9 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      delete: プロファイルを削除します。これにより、プリンタが再起動します
+      delete: プロファイルを削除します
       load: プロファイルを読込み
-      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。これにより、プリンタが再起動します
+      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします
   chart:
     label:
       current: 温度

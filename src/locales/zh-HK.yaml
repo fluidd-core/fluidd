@@ -16,9 +16,9 @@ app:
       not_loaded: 熱床網格配置不存在
     tooltip:
       calibrate: 開始校準，該校準信息會默認保存為 defalut
-      delete: 刪除配置。該操作將會重啟你的打印機
+      delete: 刪除配置
       load: 加載配置
-      save: 將校準的配置文件應用於 printer.cfg。該操作將會重啟你的打印機
+      save: 將校準的配置文件應用於 printer.cfg
   chart:
     label:
       current: 當前值

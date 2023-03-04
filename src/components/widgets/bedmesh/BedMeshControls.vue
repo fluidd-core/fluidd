@@ -18,96 +18,93 @@
       </app-btn-collapse-group>
     </template>
 
-    <v-simple-table
-      v-if="meshes.length > 0"
-      class="no-hover"
-    >
-      <thead>
-        <tr>
-          <th>{{ $t('app.general.label.name') }}</th>
-          <th>&nbsp;</th>
-          <th>{{ $t('app.general.label.variance') }}</th>
-          <th>&nbsp;</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="item in meshes"
-          :key="item.profile_name"
-        >
-          <td class="">
-            {{ item.profile_name }}
-          </td>
-          <td>
-            <v-chip
-              v-if="item.active"
-              small
-              block
-            >
-              {{ $t('app.bedmesh.label.active') }}
-            </v-chip>
-          </td>
-          <td class="focus--text">
-            <span v-if="item.active && mesh.variance">
-              {{ mesh.variance.toFixed(4) }}
-              <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
-            </span>
-          </td>
-          <td
-            class="text-right"
-            nowrap
+    <template v-if="bedMeshProfiles.length > 0">
+      <v-simple-table class="no-hover">
+        <thead>
+          <tr>
+            <th>{{ $t('app.general.label.name') }}</th>
+            <th>&nbsp;</th>
+            <th>{{ $t('app.general.label.variance') }}</th>
+            <th>&nbsp;</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="item in bedMeshProfiles"
+            :key="item.name"
           >
-            <v-tooltip
-              v-if="!item.active && !printerPrinting && !printerBusy"
-              bottom
+            <td class="">
+              {{ item.name }}
+            </td>
+            <td>
+              <v-chip
+                v-if="item.active"
+                small
+                block
+              >
+                {{ $t('app.bedmesh.label.active') }}
+              </v-chip>
+            </td>
+            <td class="focus--text">
+              <span>
+                {{ item.variance.toFixed(4) }}
+              <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
+              </span>
+            </td>
+            <td
+              class="text-right"
+              nowrap
             >
-              <template #activator="{ on, attrs }">
-                <app-btn
-                  v-if="!item.active && !printerPrinting && !printerBusy"
-                  v-bind="attrs"
-                  x-small
-                  color=""
-                  fab
-                  text
-                  @click="loadProfile(item.profile_name)"
-                  v-on="on"
-                >
-                  <v-icon>$open</v-icon>
-                </app-btn>
-              </template>
-              <span>{{ $t('app.bedmesh.tooltip.load') }}</span>
-            </v-tooltip>
+              <v-tooltip
+                v-if="!item.active"
+                bottom
+              >
+                <template #activator="{ on, attrs }">
+                  <app-btn
+                    v-bind="attrs"
+                    x-small
+                    color=""
+                    fab
+                    text
+                    @click="loadProfile(item.name)"
+                    v-on="on"
+                  >
+                    <v-icon>$open</v-icon>
+                  </app-btn>
+                </template>
+                <span>{{ $t('app.bedmesh.tooltip.load') }}</span>
+              </v-tooltip>
 
-            <v-tooltip bottom>
-              <template #activator="{ on, attrs }">
-                <app-btn
-                  :disabled="printerPrinting || printerBusy"
-                  v-bind="attrs"
-                  color=""
-                  class="ml-2"
-                  fab
-                  text
-                  x-small
-                  @click="removeProfile(item.profile_name)"
-                  v-on="on"
-                >
-                  <v-icon color="">
-                    $close
-                  </v-icon>
-                </app-btn>
-              </template>
-              <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
-            </v-tooltip>
-          </td>
-        </tr>
-      </tbody>
-    </v-simple-table>
+              <v-tooltip bottom>
+                <template #activator="{ on, attrs }">
+                  <app-btn
+                    v-bind="attrs"
+                    color=""
+                    class="ml-2"
+                    fab
+                    text
+                    x-small
+                    @click="removeProfile(item.name)"
+                    v-on="on"
+                  >
+                    <v-icon color="">
+                      $close
+                    </v-icon>
+                  </app-btn>
+                </template>
+                <span>{{ $t('app.bedmesh.tooltip.delete') }}</span>
+              </v-tooltip>
+            </td>
+          </tr>
+        </tbody>
+      </v-simple-table>
 
-    <v-divider />
+      <v-divider />
+    </template>
 
     <v-card-text>
       <div
-        v-if="meshes.length === 0"
+        v-if="bedMeshProfiles.length === 0"
         class="mb-4"
       >
         {{ $t('app.bedmesh.msg.not_found') }}
@@ -115,7 +112,7 @@
       <v-row>
         <v-col cols="6">
           <app-btn
-            :disabled="!meshLoaded || printerPrinting || printerBusy"
+            :disabled="!meshLoaded"
             small
             block
             class="mb-2"
@@ -132,7 +129,7 @@
                 block
                 class="mb-2"
                 :loading="hasWait($waits.onMeshCalibrate)"
-                :disabled="printerPrinting || printerBusy"
+                :disabled="printerBusy"
                 v-on="on"
                 @click="calibrate()"
               >
@@ -149,7 +146,7 @@
                 block
                 small
                 color="primary"
-                :disabled="!meshLoaded || printerPrinting || printerBusy"
+                :disabled="!meshLoaded"
                 v-on="on"
                 @click="handleOpenSaveDialog()"
               >
@@ -165,7 +162,7 @@
             small
             class="mb-2"
             :loading="hasWait($waits.onHomeAll)"
-            :disabled="printerPrinting || printerBusy"
+            :disabled="printerBusy"
             :color="(!allHomed) ? 'primary' : undefined"
             @click="sendGcode('G28', $waits.onHomeAll)"
           >
@@ -180,7 +177,7 @@
           <app-btn
             v-if="!printerPrinting && printerSupportsQgl"
             :loading="hasWait($waits.onQGL)"
-            :disabled="printerPrinting || printerBusy"
+            :disabled="printerBusy"
             block
             class="mb-2"
             small
@@ -205,12 +202,10 @@
           >
             <v-radio
               :label="$t('app.bedmesh.label.probed_matrix')"
-              color="primary"
               value="probed_matrix"
             />
             <v-radio
               :label="$t('app.bedmesh.label.mesh_matrix')"
-              color="primary"
               value="mesh_matrix"
             />
           </v-radio-group>
@@ -285,7 +280,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { KlipperMesh, ProcessedMesh } from '@/store/mesh/types'
+import { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -304,58 +299,57 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get matrix () {
-    return this.$store.state.mesh.matrix
+    return this.mesh.matrix
   }
 
-  set matrix (val: string) {
+  set matrix (val: MatrixType) {
     this.$store.dispatch('mesh/onMatrix', val)
   }
 
   get mapScale () {
-    return this.$store.state.mesh.scale
+    return this.mesh.scale
   }
 
-  set mapScale (val: string) {
+  set mapScale (val: number) {
     this.$store.dispatch('mesh/onScale', val)
   }
 
   get boxScale () {
-    return this.$store.state.mesh.boxScale
+    return this.mesh.boxScale
   }
 
-  set boxScale (val: string) {
+  set boxScale (val: number) {
     this.$store.dispatch('mesh/onBoxScale', val)
   }
 
   get wireframe () {
-    return this.$store.state.mesh.wireframe
+    return this.mesh.wireframe
   }
 
-  set wireframe (val: string) {
+  set wireframe (val: boolean) {
     this.$store.dispatch('mesh/onWireframe', val)
   }
 
   get flatSurface () {
-    return this.$store.state.mesh.flatSurface
+    return this.mesh.flatSurface
   }
 
   set flatSurface (val: boolean) {
     this.$store.dispatch('mesh/onFlatSurface', val)
   }
 
-  // The available meshes.
-  get meshes (): KlipperMesh[] {
-    return this.$store.getters['mesh/getBedMeshes']
+  get mesh () {
+    return this.$store.state.mesh as MeshState
   }
 
-  // The current processed mesh data, if any.
-  get mesh (): ProcessedMesh {
-    return this.$store.getters['mesh/getCurrentMeshData'][this.matrix]
+  // The available meshes.
+  get bedMeshProfiles () {
+    return this.$store.getters['mesh/getBedMeshProfiles'] as BedMeshProfile[]
   }
 
   // The current mesh, unprocessed.
-  get currentMesh (): KlipperMesh {
-    return this.$store.state.printer.printer.bed_mesh
+  get currentMesh () {
+    return this.$store.state.printer.printer.bed_mesh as KlipperBedMesh
   }
 
   // If we have a mesh loaded.
@@ -365,7 +359,7 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   // If we have a default profile.
   get hasDefault (): boolean {
-    return (this.meshes.findIndex(mesh => mesh.profile_name === 'default') > -1)
+    return (this.bedMeshProfiles.findIndex(mesh => mesh.name === 'default') > -1)
   }
 
   // If the printer supports QGL
@@ -388,7 +382,6 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
 
   removeProfile (name: string) {
     this.sendGcode(`BED_MESH_PROFILE REMOVE="${name}"`)
-    this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 
   handleMeshSave (config: {name: string; removeDefault: boolean}) {
@@ -398,7 +391,6 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     if (config.removeDefault) {
       this.sendGcode(`BED_MESH_PROFILE REMOVE="${this.currentMesh.profile_name}"`)
     }
-    this.sendGcode('SAVE_CONFIG', this.$waits.onSaveConfig)
   }
 
   handleOpenSaveDialog () {

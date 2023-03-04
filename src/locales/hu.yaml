@@ -18,11 +18,9 @@ app:
       not_loaded: Nincs háló betöltve
     tooltip:
       calibrate: Új kalibrálás kezdése, mentés "alapértelmezett" profilként
-      delete: Profil törlése. Ezután ÚJRAINDUL a nyomtató
+      delete: Profil törlése
       load: Profil betöltése
-      save: >-
-        A kalibrált profil a printer.cfg fájlba íródik. Ezután ÚJRAINDUL a
-        nyomtató
+      save: A kalibrált profil a printer.cfg fájlba íródik
   chart:
     label:
       current: Aktuális
