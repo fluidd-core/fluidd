@@ -357,11 +357,6 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     return ('profile_name' in this.currentMesh && this.currentMesh.profile_name.length > 0)
   }
 
-  // If we have a default profile.
-  get hasDefault (): boolean {
-    return (this.bedMeshProfiles.findIndex(mesh => mesh.name === 'default') > -1)
-  }
-
   // If the printer supports QGL
   get printerSupportsQgl (): boolean {
     const printerSettings = this.$store.getters['printer/getPrinterSettings']()
