@@ -19,11 +19,9 @@ app:
       calibrate: >-
         Démarrer une nouvelle calibration, le profil sera sauvegardé sous le nom
         'default'
-      delete: Supprime le profil, ceci va REDÉMARRER votre imprimante .
+      delete: Supprime le profil
       load: Charger le profil
-      save: >-
-        Enregistrer le profil calibré dans 'printer.cfg' . Ceci va REDÉMARRER
-        votre imprimante .
+      save: Enregistrer le profil calibré dans 'printer.cfg'
   chart:
     label:
       current: Courant

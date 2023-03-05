@@ -6,7 +6,10 @@
     :loading="loading"
     @click="$emit('click')"
   >
-    <v-icon class="mr-1">
+    <v-icon
+      class="mr-1"
+      color="warning"
+    >
       $save
     </v-icon>
     <span>{{ $t('app.general.btn.save_config_and_restart') }}</span>
@@ -22,7 +25,7 @@
         fab
         small
         text
-        color=""
+        color="warning"
         :elevation="0"
         :disabled="disabled"
         :loading="loading"
