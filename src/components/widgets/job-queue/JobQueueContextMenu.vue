@@ -39,7 +39,7 @@ export default class JobQueueContextMenu extends Vue {
   @Prop({ type: Number, required: true })
   readonly positionY!: number
 
-  @Prop({ type: Object, required: true })
-  readonly job!: QueuedJob
+  @Prop({ type: [Object, Array], required: true })
+  readonly job!: QueuedJob | QueuedJob[]
 }
 </script>

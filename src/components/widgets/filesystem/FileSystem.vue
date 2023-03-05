@@ -551,7 +551,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       } else if (item.dirname === '..') {
         return
       }
-    } else if (
+    }
+
+    if (
+      this.selected.length !== 0 &&
+      !this.selected.some(x => x.name === item.name)
+    ) {
+      return
+    }
+
+    if (
+      item.type === 'file' &&
       e.type === 'click' && (
         this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
         this.currentRoot === 'timelapse'
@@ -565,7 +575,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     // Open the context menu
     this.contextMenuState.x = e.clientX
     this.contextMenuState.y = e.clientY
-    this.contextMenuState.file = item
+    this.contextMenuState.file = this.selected.length > 1
+      ? this.selected
+      : item
     this.$nextTick(() => {
       this.contextMenuState.open = true
     })
