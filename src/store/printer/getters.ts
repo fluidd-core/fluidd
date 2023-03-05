@@ -104,7 +104,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const { gcode_start_byte, gcode_end_byte, filename } = state.printer.current_file ?? {}
     const { file_position } = state.printer.virtual_sdcard ?? {}
 
-    if (gcode_start_byte && gcode_end_byte && file_position && filename === state.printer.print_stats?.filename) {
+    if (gcode_start_byte && gcode_end_byte && file_position && filename === state.printer.print_stats.filename) {
       if (file_position <= gcode_start_byte) return 0
       if (file_position >= gcode_end_byte) return 1
 
@@ -118,7 +118,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintLayers: (state) => {
-    const layersFromPrintStats = state.printer.print_stats?.info?.total_layer
+    const layersFromPrintStats = state.printer.print_stats.info?.total_layer
     if (typeof layersFromPrintStats === 'number') {
       return layersFromPrintStats
     }
@@ -137,7 +137,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintLayer: (state) => {
-    const layerFromPrintStats = state.printer.print_stats?.info?.current_layer
+    const layerFromPrintStats = state.printer.print_stats.info?.current_layer
     if (typeof layerFromPrintStats === 'number') {
       return layerFromPrintStats
     }

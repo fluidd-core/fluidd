@@ -87,7 +87,7 @@ export const actions: ActionTree<PrinterState, RootState> = {
     // and prepopulate our store.
     let intendedSubscriptions = {}
     payload.objects.forEach((k: string) => {
-      if (!k.includes('menu') && !k.includes('gcode_macro')) {
+      if (!k.includes('menu')) {
         intendedSubscriptions = { ...intendedSubscriptions, [k]: null }
       }
       let key = k
@@ -138,13 +138,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
 
       for (const key in payload) {
         const val = payload[key]
-        // Skip anything we need here.
-        if (
-          !key.includes('gcode_macro')
-        ) {
-          // Commit the value.
-          commit('printer/setSocketNotify', { key, payload: val }, { root: true })
-        }
+        // Commit the value.
+        commit('printer/setSocketNotify', { key, payload: val }, { root: true })
       }
 
       // Add a temp chart entry
