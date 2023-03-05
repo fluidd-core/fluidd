@@ -367,11 +367,33 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
     this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
-  clearMesh () {
+  async clearMesh () {
+    if (this.printerPrinting) {
+      const result = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
     this.sendGcode('BED_MESH_CLEAR')
   }
 
-  loadProfile (name: string) {
+  async loadProfile (name: string) {
+    if (this.printerPrinting) {
+      const result = await this.$confirm(
+        this.$tc('app.general.simple_form.msg.confirm'),
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
+      )
+
+      if (!result) {
+        return
+      }
+    }
+
     this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
   }
 
