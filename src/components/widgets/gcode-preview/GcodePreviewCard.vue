@@ -370,5 +370,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
   }
+
+  created () {
+    if (this.followProgress) {
+      this.currentLayer = this.fileProgressLayerNr
+      this.syncMoveProgress()
+    } else {
+      this.moveProgress = this.currentLayerMoveRange.min
+    }
+  }
 }
 </script>
