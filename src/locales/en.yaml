@@ -551,6 +551,7 @@ app:
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_code_lens: Show CodeLens
+      show_gas_resistance: Show gas resistance
       show_legend: Show legend
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity

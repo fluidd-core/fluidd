@@ -101,6 +101,7 @@ export interface Sensor {
   temperature: number;
   pressure?: number;
   humidity?: number;
+  gas?: number;
   target?: number;
   measured_min_temp?: number;
   measured_max_temp?: number;

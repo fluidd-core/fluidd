@@ -594,7 +594,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       const type = split[0]
       const name = (split.length > 1) ? split[1] : item
 
-      if (supportedSensors.includes(split[0])) {
+      if (supportedSensors.includes(type)) {
         const prettyName = Vue.$filters.startCase(name)
         const color = Vue.$colorset.next(getKlipperType(item), item)
         const config = getters.getPrinterSettings(item)
@@ -611,12 +611,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
           color,
           type
         }
-      } else if (extraSupportedSensors.includes(split[0])) {
-        const { pressure, humidity } = state.printer[item]
+      } else if (extraSupportedSensors.includes(type)) {
+        const { pressure, humidity, gas } = state.printer[item]
 
         groups[name] = {
           pressure,
           humidity,
+          gas,
           ...groups[name]
         }
       }
