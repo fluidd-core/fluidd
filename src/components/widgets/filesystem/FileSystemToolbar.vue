@@ -81,7 +81,7 @@
     />
 
     <file-system-filter-menu
-      v-if="hasFilterMenu"
+      v-if="hasFilterTypes"
       :root="root"
       :disabled="disabled"
       @change="$emit('filter', $event)"
@@ -193,20 +193,20 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   textSearch = ''
 
   get readonly () {
-    return this.$store.getters['files/getRootProperties'](this.root).readonly
+    return this.rootProperties.readonly
   }
 
   get canCreateDirectory () {
-    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
+    return this.rootProperties.canCreateDirectory
+  }
+
+  get hasFilterTypes () {
+    return this.rootProperties.filterTypes.length > 0
   }
 
   get lowOnSpace () {
     if (!this.klippyReady) return false
     return this.$store.getters['files/getLowOnSpace']
-  }
-
-  get supportsHistoryComponent () {
-    return this.$store.getters['server/componentSupport']('history')
   }
 
   // Properties of the current root.
@@ -217,18 +217,6 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Only show roots that have been registered.
   get registeredRoots () {
     return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
-  }
-
-  get hasFilterMenu () {
-    if (!this.readonly) {
-      switch (this.root) {
-        case 'gcodes':
-          return this.supportsHistoryComponent
-        case 'config':
-          return true
-      }
-    }
-    return false
   }
 
   get thumbnailSize () {
