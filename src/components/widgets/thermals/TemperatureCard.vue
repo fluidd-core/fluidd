@@ -63,6 +63,13 @@
           hide-details
           class="mx-2 my-2"
         />
+        <v-checkbox
+          v-model="showGasResistance"
+          :label="$t('app.setting.label.show_gas_resistance')"
+          color="primary"
+          hide-details
+          class="mx-2 my-2"
+        />
       </app-btn-collapse-group>
     </template>
 
@@ -178,6 +185,18 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   set showBarometricPressure (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.showBarometricPressure',
+      value,
+      server: true
+    })
+  }
+
+  get showGasResistance () {
+    return this.$store.state.config.uiSettings.general.showGasResistance
+  }
+
+  set showGasResistance (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showGasResistance',
       value,
       server: true
     })
