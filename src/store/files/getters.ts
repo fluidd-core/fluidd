@@ -36,7 +36,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: false,
           canPrint: true,
           canConfigure: true,
-          filterTypes: ['print_start_time']
+          filterTypes: ['hidden_files', 'print_start_time']
         }
       case 'config':
         return {
@@ -88,7 +88,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canConfigure: false,
           canDelete: true,
           canCreateDirectory: true,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
       default:
         return {
