@@ -36,20 +36,19 @@
       </v-tooltip>
     </template>
 
-    <v-list flat>
+    <v-list dense>
       <v-list-item-group
         v-model="selectedFilterTypes"
         multiple
-        active-class=""
       >
         <template v-for="(filter, i) in filters">
           <v-list-item
+            v-if="filter.enabled"
             :key="`filter-${i}`"
-            :disabled="disabled"
             :value="filter.type"
           >
             <template #default="{ active }">
-              <v-list-item-action>
+              <v-list-item-action class="my-0">
                 <v-checkbox :input-value="active" />
               </v-list-item-action>
               <v-list-item-content>
@@ -116,7 +115,6 @@ export default class FileSystemFilterMenu extends Vue {
         ...this.availableFilters[type],
         type
       }))
-      .filter(filter => filter.enabled)
   }
 
   get selectedFilterTypes (): FileFilterType[] {
@@ -132,3 +130,13 @@ export default class FileSystemFilterMenu extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+:deep(.v-list-item--active::before) {
+  opacity: 0;
+}
+:deep(.v-list-item--active:hover::before) {
+  opacity: 0.08;
+}
+
+</style>

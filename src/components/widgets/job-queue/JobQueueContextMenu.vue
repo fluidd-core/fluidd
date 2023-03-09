@@ -9,16 +9,15 @@
     right
   >
     <v-list dense>
-      <v-list-item
-        link
-        @click="$emit('remove', job)"
-      >
+      <v-list-item @click="$emit('remove', job)">
         <v-list-item-icon>
           <v-icon>
             $delete
           </v-icon>
         </v-list-item-icon>
-        <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
   </v-menu>
