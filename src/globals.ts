@@ -440,7 +440,7 @@ type DateTimeFormat = {
 
 export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
     suffix: ' (ISO 8601)'
   },
@@ -454,7 +454,7 @@ export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
 
 export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { hour: '2-digit', minute: '2-digit', hour12: false },
     suffix: ' (ISO 8601)'
   },
