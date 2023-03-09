@@ -380,8 +380,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     // If top two, and filtered results in count -1, set to all.
     if (
       item.value &&
-      this.selectedItems.length + 1 >= this.files.length &&
-      this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..')).length + 1 === this.files.length
+      this.selectedItems.length + 2 >= this.files.length &&
+      this.selectedItems.length + 1 === this.files.filter(fileOrFolder => (fileOrFolder.name !== '..')).length
     ) {
       this.selectedItems = this.files
     }
@@ -421,18 +421,20 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     if (e.dataTransfer) {
+      const filteredSelectedItems = this.selected
+        .filter(item => (item.name !== '..'))
+      const draggedItems = filteredSelectedItems.length > 0
+        ? filteredSelectedItems
+        : [item]
+
       this.ghost = document.createElement('div')
       this.ghost.classList.add('bulk-drag')
       this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
-      this.ghost.innerHTML = (this.selected.length > 0)
-        ? `Move ${this.selected.length} items`
-        : 'Move item'
+      this.ghost.innerHTML = this.$tc('app.file_system.tooltip.move_item', draggedItems.length)
       document.body.appendChild(this.ghost)
       e.dataTransfer.dropEffect = 'move'
       e.dataTransfer.setDragImage(this.ghost, 0, 0)
-      const source = (this.selected.length === 0)
-        ? [item]
-        : this.selected.filter(item => (item.name !== '..'))
+      const source = draggedItems
       this.$emit('drag-start', source, e.dataTransfer)
     }
   }
@@ -443,13 +445,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     if (
       destination.type === 'directory' &&
       this.dragItem &&
-      this.dragItem !== destination &&
-      !this.selected.includes(destination)
+      this.dragItem !== destination
     ) {
-      const source = (this.selected.length === 0)
-        ? [this.dragItem]
-        : this.selected.filter(item => (item.name !== '..'))
-      this.$emit('move', source, destination)
+      const filteredSelectedItems = this.selected
+        .filter(item => (item.name !== '..'))
+      const draggedItems = filteredSelectedItems.length > 0
+        ? filteredSelectedItems
+        : [this.dragItem]
+
+      if (!draggedItems.includes(destination)) {
+        this.$emit('move', draggedItems, destination)
+      }
     }
   }
 
