@@ -58,15 +58,16 @@
       </template>
       <v-list dense>
         <v-list-item @click="$emit('pauseAtLayer')">
-          <v-list-item-title>
-            <v-icon
-              small
-              left
-            >
+          <v-list-item-icon>
+            <v-icon>
               $pause
             </v-icon>
-            {{ $t('app.general.label.pause_at_layer') }}
-          </v-list-item-title>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ $t('app.general.label.pause_at_layer') }}
+            </v-list-item-title>
+          </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-menu>

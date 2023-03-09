@@ -29,44 +29,37 @@
         </v-icon>
       </app-btn>
     </template>
-    <v-list
-      dense
-    >
-      <v-list-item
-        link
-        dense
-        @click="$emit('select', 'all')"
-      >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-            color="secondary"
-          >
+    <v-list dense>
+      <v-list-item @click="$emit('select', 'all')">
+        <v-list-item-icon>
+          <v-icon>
             $camera
           </v-icon>
-          {{ $t('app.general.btn.all') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.all') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
 
-      <v-list-item
-        v-for="item of cameras"
-        :key="item.id"
-        link
-        dense
-        @click="$emit('select', item.id)"
-      >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-            color="secondary"
-          >
-            $camera
-          </v-icon>
-          {{ item.name }}
-        </v-list-item-title>
-      </v-list-item>
+      <template v-for="item of cameras">
+        <v-list-item
+          :key="item.id"
+          @click="$emit('select', item.id)"
+        >
+          <v-list-item-icon>
+            <v-icon>
+              $camera
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ item.name }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
   </v-menu>
 </template>
