@@ -53,7 +53,7 @@ export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMi
   readonly extruderStepper?: ExtruderStepper
 
   get selectedExtruderStepper (): ExtruderStepper {
-    return this.extruderStepper ?? this.activeExtruder
+    return this.extruderStepper ?? this.activeExtruder ?? {}
   }
 
   handleSetPressureAdvance (val: number) {

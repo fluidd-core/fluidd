@@ -271,7 +271,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const c = getters.getPrinterSettings(name)
 
     // If we can't find what we need..
-    if (!e || !c) return {}
+    if (!e || !c) return undefined
 
     // If we have other extruders, they may inherit some properties
     // from the first depending how they're defined.

@@ -14,11 +14,11 @@ export default class ToolheadMixin extends Vue {
       : false
   }
 
-  get maxExtrudeSpeed () {
+  get maxExtrudeSpeed (): number {
     return this.activeExtruder?.max_extrude_only_velocity || 500
   }
 
-  get maxExtrudeLength () {
+  get maxExtrudeLength (): number {
     return this.activeExtruder?.max_extrude_only_distance || 50
   }
 

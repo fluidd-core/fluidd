@@ -158,10 +158,6 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     )
   }
 
-  debugme (val:any) {
-    console.log({ val })
-  }
-
   legendToggleSelect (item: Heater | Fan) {
     // If this has a target, toggle that too.
     if (this.chartVisible) {

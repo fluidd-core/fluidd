@@ -11,12 +11,12 @@
       >
         <v-text-field
           v-model.number="extrudeLength"
-          :disabled="!klippyReady"
+          :disabled="!klippyReady || !activeExtruder"
           :rules="[
             $rules.required,
             $rules.numberValid,
             $rules.numberGreaterThanOrEqual(0.1),
-            $rules.numberLessThanOrEqual(maxExtrudeLength)
+            maxExtrudeLengthRule
           ]"
           type="number"
           hide-details
@@ -29,7 +29,7 @@
       </v-col>
       <v-col cols="6">
         <app-btn
-          :disabled="!extruderReady || !klippyReady || !valid"
+          :disabled="!klippyReady || !extruderReady || !valid"
           block
           @click="sendRetractGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
         >
@@ -48,12 +48,12 @@
       >
         <v-text-field
           v-model.number="extrudeSpeed"
-          :disabled="!klippyReady"
+          :disabled="!klippyReady || !activeExtruder"
           :rules="[
             $rules.required,
             $rules.numberValid,
             $rules.numberGreaterThanOrEqual(0.1),
-            $rules.numberLessThanOrEqual(maxExtrudeSpeed)
+            maxExtrudeSpeedRule
           ]"
           type="number"
           hide-details
@@ -66,7 +66,7 @@
       </v-col>
       <v-col cols="6">
         <app-btn
-          :disabled="!extruderReady || !klippyReady || !valid"
+          :disabled="!klippyReady || !extruderReady || !valid"
           block
           @click="sendExtrudeGcode(extrudeLength, extrudeSpeed, $waits.onExtrude)"
         >
@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Ref } from 'vue-property-decorator'
+import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { VForm } from '@/types'
@@ -121,6 +121,19 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
       value,
       server: false
     })
+  }
+
+  @Watch('activeExtruder')
+  activeExtruderChanged () {
+    this.form.validate()
+  }
+
+  maxExtrudeLengthRule (value: number) {
+    return this.$rules.numberLessThanOrEqual(this.maxExtrudeLength)(value)
+  }
+
+  maxExtrudeSpeedRule (value: number) {
+    return this.$rules.numberLessThanOrEqual(this.maxExtrudeSpeed)(value)
   }
 
   sendRetractGcode (amount: number, rate: number, wait?: string) {
