@@ -62,10 +62,10 @@ export interface Fan extends OutputType<FanConfig> {
 }
 
 export interface FanConfig {
-  [key: string]: string | number | undefined;
+  [key: string]: string | undefined;
   pin: string;
-  max_power: number;
-  off_below: number;
+  max_power: string;
+  off_below: string;
 }
 
 export interface Led extends OutputType {

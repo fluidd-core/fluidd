@@ -57,7 +57,7 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
 
   get value () {
     if (!this.fan.speed) return 0
-    const speed = this.fan.speed / (this.fan.config.max_power || 1)
+    const speed = this.fan.speed / +(this.fan.config.max_power || 1)
     return Math.round(speed * 100)
   }
 
@@ -82,7 +82,7 @@ export default class OutputFan extends Mixins(StateMixin, BrowserMixin) {
   get customRules () {
     return {
       minFan: (v: string | number) => {
-        const off_below = (this.fan.config?.off_below || 0) * 100
+        const off_below = +(this.fan.config?.off_below || 0) * 100
 
         if (!off_below) return true
 
