@@ -7,12 +7,12 @@
       <app-named-slider
         :label="$t('app.general.label.pressure_advance')"
         suffix="s"
-        :value="selectedExtruderStepper.pressure_advance || 0"
+        :value="selectedExtruderStepper?.pressure_advance || 0"
         overridable
-        :reset-value="selectedExtruderStepper.config_pressure_advance || 0"
+        :reset-value="selectedExtruderStepper?.config?.pressure_advance || 0"
         :disabled="!klippyReady"
         :locked="isMobileViewport"
-        :loading="hasWait(`${$waits.onSetPressureAdvance}${selectedExtruderStepper.name ?? ''}`)"
+        :loading="hasWait(`${$waits.onSetPressureAdvance}${extruderStepper?.name ?? ''}`)"
         :min="0"
         :max="2"
         :step="0.0001"
@@ -26,11 +26,11 @@
       <app-named-slider
         :label="$t('app.general.label.smooth_time')"
         suffix="s"
-        :value="selectedExtruderStepper.smooth_time || 0"
-        :reset-value="selectedExtruderStepper.config_smooth_time || 0"
+        :value="selectedExtruderStepper?.smooth_time || 0"
+        :reset-value="selectedExtruderStepper?.config?.pressure_advance_smooth_time || 0"
         :disabled="!klippyReady"
         :locked="isMobileViewport"
-        :loading="hasWait(`${$waits.onSetPressureAdvance}${selectedExtruderStepper.name ?? ''}`)"
+        :loading="hasWait(`${$waits.onSetPressureAdvance}${extruderStepper?.name ?? ''}`)"
         :min="0"
         :max="0.2"
         :step="0.001"
@@ -52,8 +52,8 @@ export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMi
   @Prop({ type: Object, required: false })
   readonly extruderStepper?: ExtruderStepper
 
-  get selectedExtruderStepper (): ExtruderStepper {
-    return this.extruderStepper ?? this.activeExtruder ?? {}
+  get selectedExtruderStepper () {
+    return this.extruderStepper ?? this.activeExtruder
   }
 
   handleSetPressureAdvance (val: number) {

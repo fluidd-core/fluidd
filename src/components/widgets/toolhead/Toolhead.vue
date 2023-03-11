@@ -48,6 +48,7 @@ import SpeedAndFlowAdjust from './SpeedAndFlowAdjust.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
 import ExtruderStats from './ExtruderStats.vue'
 import ExtruderSteppers from './ExtruderSteppers.vue'
+import { Extruder } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -68,7 +69,7 @@ export default class Toolhead extends Mixins(StateMixin) {
   }
 
   get showPressureAdvance () {
-    const extruder = this.$store.getters['printer/getActiveExtruder']
+    const extruder = this.$store.getters['printer/getActiveExtruder'] as Extruder | undefined
     return extruder?.pressure_advance !== undefined
   }
 }
