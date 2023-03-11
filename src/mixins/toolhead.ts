@@ -52,15 +52,15 @@ export default class ToolheadMixin extends Vue {
   }
 
   get xHasMultipleSteppers (): boolean {
-    return !!this.$store.getters['printer/getPrinterConfig']('stepper_x1') as boolean
+    return !!this.$store.getters['printer/getPrinterSettings']('stepper_x1') as boolean
   }
 
   get yHasMultipleSteppers (): boolean {
-    return !!this.$store.getters['printer/getPrinterConfig']('stepper_y1') as boolean
+    return !!this.$store.getters['printer/getPrinterSettings']('stepper_y1') as boolean
   }
 
   get zHasMultipleSteppers (): boolean {
-    return !!this.$store.getters['printer/getPrinterConfig']('stepper_z1') as boolean
+    return !!this.$store.getters['printer/getPrinterSettings']('stepper_z1') as boolean
   }
 
   get hasHomingOverride (): boolean {
