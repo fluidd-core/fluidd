@@ -26,7 +26,8 @@ const createHttpClient = (store: any) => {
       '/access/login'
     ],
     502: [
-      '/access/oneshot_token'
+      '/access/oneshot_token',
+      '/access/user'
     ]
   }
 
