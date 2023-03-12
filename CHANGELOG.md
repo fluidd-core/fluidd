@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.23.3](https://github.com/fluidd-core/fluidd/compare/v1.23.2...v1.23.3) (2023-03-12)
+
+
+### Features
+
+* adds filters to gcodes and timelapse roots ([#1060](https://github.com/fluidd-core/fluidd/issues/1060)) ([95e6e59](https://github.com/fluidd-core/fluidd/commit/95e6e591b44dea43f7a54ae4ba3e05cb5c4b1ba4))
+* adds HLS camera stream support ([#1047](https://github.com/fluidd-core/fluidd/issues/1047)) ([57f37ef](https://github.com/fluidd-core/fluidd/commit/57f37efe707da239002c63993533e03c8cdc697f))
+* adds logs rollover support ([#1051](https://github.com/fluidd-core/fluidd/issues/1051)) ([2f340a1](https://github.com/fluidd-core/fluidd/commit/2f340a126552f4fa93f19b71dacce82ad8013754))
+* adds Pause at Layer support ([#1052](https://github.com/fluidd-core/fluidd/issues/1052)) ([c1e77c0](https://github.com/fluidd-core/fluidd/commit/c1e77c064a972613c5e278d607feb873448fef4f))
+* adds toggle for gas resistance ([#1057](https://github.com/fluidd-core/fluidd/issues/1057)) ([52f5265](https://github.com/fluidd-core/fluidd/commit/52f5265598b039249c76311d3ce9f25cbe66bfc3))
+* **i18n-UK:** update Ukrainian translations ([#1048](https://github.com/fluidd-core/fluidd/issues/1048)) ([0de47bc](https://github.com/fluidd-core/fluidd/commit/0de47bcf30de6fc33cd34221efd1d9a08538b6ba))
+* live printing bed mesh changes ([#1056](https://github.com/fluidd-core/fluidd/issues/1056)) ([e88e783](https://github.com/fluidd-core/fluidd/commit/e88e78330e526300e961ef5b8ae97e7ded3003b6))
+* make context menus selection aware ([58e9033](https://github.com/fluidd-core/fluidd/commit/58e90336a85aff311d685e0e66a0f2b912f6530c))
+* show parts on Gcode Previewer ([#1046](https://github.com/fluidd-core/fluidd/issues/1046)) ([d1a347f](https://github.com/fluidd-core/fluidd/commit/d1a347f69360f9503b4e2d0c2e6ae0f64af562a0))
+
+
+### Bug Fixes
+
+* **diagnostics:** fix card icon selection ([#1055](https://github.com/fluidd-core/fluidd/issues/1055)) ([dfbfefe](https://github.com/fluidd-core/fluidd/commit/dfbfefe4a1906a3e208bbfce999fdd230b93b29d))
+* disable AppNamedSlider reset button if loading ([2a1f4e8](https://github.com/fluidd-core/fluidd/commit/2a1f4e8e4853ba9e54bd7418e43dd53c4733a97d))
+* force validation if active extruder changed ([ff36433](https://github.com/fluidd-core/fluidd/commit/ff36433d44461ec709982e5f41a18a27239238da))
+* initial state of GcodePreviewCard ([07e3eb1](https://github.com/fluidd-core/fluidd/commit/07e3eb18b8e821e5c140e4e041d97e4fd1a2451b))
+* multi-file selection and drag ([7328b3f](https://github.com/fluidd-core/fluidd/commit/7328b3f9fbe99305bb0ae4624fc3f87e8733f650))
+* show deleted sections on PendingChangesDialog ([4ac3a9f](https://github.com/fluidd-core/fluidd/commit/4ac3a9f8b1ac96631950e6cb74ffd6de6c68e7aa))
+* use Lithuanian "lt" for ISO-8601 formats ([#1061](https://github.com/fluidd-core/fluidd/issues/1061)) ([5602bcc](https://github.com/fluidd-core/fluidd/commit/5602bcce037a7e237f9e1b3205f7806ee33be0c6))
+
 ## [1.23.2](https://github.com/fluidd-core/fluidd/compare/v1.23.1...v1.23.2) (2023-02-20)
 
 
