@@ -25,7 +25,7 @@
         text
         color=""
         v-bind="attrs"
-        class="ml-1"
+        class="ms-1 my-1"
         v-on="on"
       >
         <v-icon>{{ menuIcon }}</v-icon>

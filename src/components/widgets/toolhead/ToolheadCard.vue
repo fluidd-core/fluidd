@@ -24,7 +24,7 @@
             $snowflakeAlert
           </v-icon>
         </template>
-        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder.min_extrude_temp })" />
+        <span v-html="$t('app.tool.tooltip.extruder_disabled', { min: activeExtruder?.min_extrude_temp })" />
       </v-tooltip>
     </template>
 
@@ -34,7 +34,7 @@
           v-if="isManualProbeActive"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="manualProbeDialogOpen = true"
         >
           {{ $t('app.tool.tooltip.manual_probe') }}
@@ -43,7 +43,7 @@
           v-if="printerSupportsForceMove"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           :color="forceMove ? 'error' : undefined"
           @click="toggleForceMove"
         >
@@ -52,7 +52,7 @@
         <app-btn
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="sendGcode('M84')"
         >
           {{ $t('app.tool.tooltip.motors_off') }}
@@ -62,7 +62,7 @@
           :loading="hasWait($waits.onBedScrewsAdjust)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="bedScrewsAdjust"
         >
           {{ $t('app.tool.tooltip.bed_screws_adjust') }}
@@ -72,7 +72,7 @@
           :loading="hasWait($waits.onBedScrewsCalculate)"
           :disabled="!allHomed || !klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="sendGcode('SCREWS_TILT_CALCULATE', $waits.onBedScrewsCalculate)"
         >
           {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
@@ -82,7 +82,7 @@
           :loading="hasWait($waits.onZTilt)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="sendGcode('Z_TILT_ADJUST', $waits.onZTilt)"
         >
           {{ $t('app.tool.tooltip.z_tilt_adjust') }}
@@ -92,7 +92,7 @@
           :loading="hasWait($waits.onQGL)"
           :disabled="!klippyReady || printerPrinting"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="sendGcode('QUAD_GANTRY_LEVEL', $waits.onQGL)"
         >
           {{ $t('app.tool.tooltip.quad_gantry_level') }}

@@ -15,9 +15,9 @@ app:
       not_loaded: 没有加载热床网格配置
     tooltip:
       calibrate: 开始校准，该校准信息会默认保存为 defalut
-      delete: 删除配置。该操作将会重启你的打印机
+      delete: 删除配置
       load: 加载配置
-      save: 将校准的配置文件应用于 printer.cfg。该操作将会重启你的打印机
+      save: 将校准的配置文件应用于 printer.cfg
   chart:
     label:
       current: 当前值

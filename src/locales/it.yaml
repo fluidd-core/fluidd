@@ -17,13 +17,9 @@ app:
       not_loaded: Nessuna mesh caricata
     tooltip:
       calibrate: Comincia una nuova calibrazione, salvando il profilo come 'predefinito'
-      delete: |-
-        Elimina profilo
-        Questa azione riavvierà la stampante
+      delete: Elimina profilo
       load: Carica profilo
-      save: |-
-        Salva il profilo calibrato in printer.cfg.
-        Questa azione riavvierà la stampante
+      save: Salva il profilo calibrato in printer.cfg
   chart:
     label:
       current: Effettivo

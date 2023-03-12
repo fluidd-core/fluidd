@@ -24,6 +24,7 @@ export default class AppBtnGroup extends Vue {
 
   .app-btn-group {
     display: flex;
+    white-space: nowrap;
 
     &:not(.app-btn-group-vertical) {
       & > :deep(.v-btn) {
@@ -34,10 +35,12 @@ export default class AppBtnGroup extends Vue {
         }
 
         &:first-child {
-          border-radius: $border-radius-root 0 0 $border-radius-root;
+          border-top-left-radius: $border-radius-root;
+          border-bottom-left-radius: $border-radius-root;
         }
         &:last-child {
-          border-radius: 0 $border-radius-root $border-radius-root 0;
+          border-top-right-radius: $border-radius-root;
+          border-bottom-right-radius: $border-radius-root;
         }
       }
     }

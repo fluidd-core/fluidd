@@ -19,6 +19,7 @@
       <v-col class="py-0">
         <v-text-field
           v-model="currentValue"
+          :prefix="prefix"
           :suffix="suffix"
           :rules="textRules"
           :disabled="disabled || loading || internalLocked"
@@ -35,7 +36,7 @@
         >
           <template #prepend>
             <v-btn
-              v-if="isMobile"
+              v-if="locked && isMobileViewport"
               icon
               small
               :disabled="disabled"
@@ -58,7 +59,7 @@
 
             <app-btn
               v-if="resetValue !== undefined"
-              :disabled="disabled"
+              :disabled="disabled || loading"
               style="margin-top: -4px;"
               color=""
               icon
@@ -83,17 +84,19 @@
       dense
       hide-details
       @start="handleStart"
+      @end="handleEnd"
       @change="handleChange"
     />
   </v-form>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch, Vue, Ref, VModel } from 'vue-property-decorator'
+import { Component, Prop, Watch, Ref, VModel, Mixins } from 'vue-property-decorator'
 import { VForm } from '@/types'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class AppNamedSlider extends Vue {
+export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @VModel({ type: Number })
     inputValue!: number
 
@@ -126,6 +129,9 @@ export default class AppNamedSlider extends Vue {
 
   @Prop({ type: Number, default: 1 })
   readonly step!: number
+
+  @Prop({ type: String })
+  readonly prefix?: string
 
   @Prop({ type: String })
   readonly suffix?: string
@@ -177,11 +183,6 @@ export default class AppNamedSlider extends Vue {
   internalMax = 0
   overridden = false
   hasFocus = false
-
-  // If the parent updates the value.
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
 
   get textRules () {
     // Apply a min and max rule as per the slider.
@@ -252,8 +253,13 @@ export default class AppNamedSlider extends Vue {
     this.submitValue(value)
   }
 
-  handleStart () {
+  handleStart (value: number) {
     this.hasFocus = false
+    this.$emit('start', value)
+  }
+
+  handleEnd (value: number) {
+    this.$emit('end', value)
   }
 
   handleChange (value: number) {

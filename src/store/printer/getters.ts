@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, Extruder, MCU, Endstop, Probe, ExtruderStepper } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -104,7 +104,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const { gcode_start_byte, gcode_end_byte, filename } = state.printer.current_file ?? {}
     const { file_position } = state.printer.virtual_sdcard ?? {}
 
-    if (gcode_start_byte && gcode_end_byte && file_position && filename === state.printer.print_stats?.filename) {
+    if (gcode_start_byte && gcode_end_byte && file_position && filename === state.printer.print_stats.filename) {
       if (file_position <= gcode_start_byte) return 0
       if (file_position >= gcode_end_byte) return 1
 
@@ -118,7 +118,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintLayers: (state) => {
-    const layersFromPrintStats = state.printer.print_stats?.info?.total_layer
+    const layersFromPrintStats = state.printer.print_stats.info?.total_layer
     if (typeof layersFromPrintStats === 'number') {
       return layersFromPrintStats
     }
@@ -137,7 +137,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintLayer: (state) => {
-    const layerFromPrintStats = state.printer.print_stats?.info?.current_layer
+    const layerFromPrintStats = state.printer.print_stats.info?.current_layer
     if (typeof layerFromPrintStats === 'number') {
       return layerFromPrintStats
     }
@@ -253,7 +253,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       .length
 
     return [...Array(extruderCount).keys()]
-      .map((index): Extruder => ({
+      .map((index): KnownExtruder => ({
         key: `extruder${index === 0 ? '' : index}`,
         name: extruderCount === 1 ? 'Extruder' : `Extruder ${index}`
       }))
@@ -262,28 +262,30 @@ export const getters: GetterTree<PrinterState, RootState> = {
   // Return the current extruder along with its configuration.
   getActiveExtruder: (state, getters) => {
     const name = state.printer.toolhead.extruder || 'extruder'
-    return getters.getExtruderByName(name)
+    return getters.getExtruderByName(name) as Extruder | undefined
   },
 
   // Returns an extruder by name.
   getExtruderByName: (state, getters) => (name: string) => {
     const e = state.printer[name] || undefined
-    const c = getters.getPrinterSettings(name)
+    const c = getters.getPrinterSettings(name) as ExtruderConfig
 
     // If we can't find what we need..
-    if (!e || !c) return {}
+    if (!e || !c) return undefined
 
     // If we have other extruders, they may inherit some properties
     // from the first depending how they're defined.
-    const { min_extrude_temp } = name === 'extruder' ? c : getters.getPrinterSettings('extruder')
+    const { min_extrude_temp } = name === 'extruder'
+      ? c
+      : getters.getPrinterSettings('extruder') as ExtruderConfig
 
-    return {
+    const extruder: Extruder = {
       min_extrude_temp,
-      ...c,
-      ...e,
-      config_pressure_advance: c.pressure_advance,
-      config_smooth_time: c.pressure_advance_smooth_time
+      config: { ...c },
+      ...e
     }
+
+    return extruder
   },
 
   getExtruderSteppers: (state, getters) => {
@@ -301,8 +303,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
           key: item,
           enabled: state.printer.stepper_enable?.steppers[item],
           ...e,
-          config_pressure_advance: c.pressure_advance,
-          config_smooth_time: c.pressure_advance_smooth_time
+          config: { ...c }
         })
       }
     }
@@ -594,7 +595,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
       const type = split[0]
       const name = (split.length > 1) ? split[1] : item
 
-      if (supportedSensors.includes(split[0])) {
+      if (supportedSensors.includes(type)) {
         const prettyName = Vue.$filters.startCase(name)
         const color = Vue.$colorset.next(getKlipperType(item), item)
         const config = getters.getPrinterSettings(item)
@@ -611,12 +612,13 @@ export const getters: GetterTree<PrinterState, RootState> = {
           color,
           type
         }
-      } else if (extraSupportedSensors.includes(split[0])) {
-        const { pressure, humidity } = state.printer[item]
+      } else if (extraSupportedSensors.includes(type)) {
+        const { pressure, humidity, gas } = state.printer[item]
 
         groups[name] = {
           pressure,
           humidity,
+          gas,
           ...groups[name]
         }
       }

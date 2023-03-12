@@ -673,6 +673,17 @@ export const SocketActions = {
     )
   },
 
+  async serverLogsRollover (application?: string) {
+    baseEmit(
+      'server.logs.rollover', {
+        dispatch: 'server/onLogsRollOver',
+        params: {
+          application
+        }
+      }
+    )
+  },
+
   async serverWebcamsList () {
     baseEmit(
       'server.webcams.list', {

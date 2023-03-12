@@ -16,11 +16,9 @@ app:
       not_loaded: Nenhuma malha carregada
     tooltip:
       calibrate: Nova calibração, salvando o perfil como 'default'
-      delete: Eliminar perfil. A impressora irá reiniciar.
+      delete: Eliminar perfil
       load: Carregar perfil
-      save: >-
-        Carregar o perfil calibrado no ficheiro printer.cfg. A impressora irá
-        reiniciar.
+      save: Carregar o perfil calibrado no ficheiro printer.cfg
   chart:
     label:
       current: Corrente

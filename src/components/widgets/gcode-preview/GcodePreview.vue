@@ -101,6 +101,18 @@
           />
         </g>
         <g
+          v-if="!showExcludeObjects && getViewerOption('showParts') && svgPathParts.length > 0"
+          id="parts"
+        >
+          <path
+            v-for="(part, index) of svgPathParts"
+            :key="`part-${index + 1}`"
+            fill-opacity="0.2"
+            :d="part"
+            :shape-rendering="shapeRendering"
+          />
+        </g>
+        <g
           v-if="getViewerOption('showPreviousLayer')"
           id="previousLayer"
           class="layer"
@@ -191,10 +203,12 @@
             stroke-opacity="0.6"
             :d="svgPathNext.extrusions"
             :stroke-width="extrusionLineWidth"
+            :shape-rendering="shapeRendering"
           />
         </g>
         <exclude-objects
           v-if="showExcludeObjects"
+          :shape-rendering="shapeRendering"
           @cancel="$emit('cancelObject', $event)"
         />
       </g>
@@ -250,6 +264,12 @@
         :tooltip="$t('app.gcode.label.show_retractions')"
       />
 
+      <gcode-preview-button
+        name="showParts"
+        icon="$parts"
+        :tooltip="$t('app.gcode.label.show_parts')"
+      />
+
       <v-btn
         icon
         small
@@ -270,6 +290,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import panzoom, { PanZoom } from 'panzoom'
 import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
 import { GcodePreviewConfig } from '@/store/config/types'
@@ -284,7 +305,7 @@ import { AppFile } from '@/store/files/types'
     GcodePreviewButton
   }
 })
-export default class GcodePreview extends Mixins(StateMixin) {
+export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean, default: true })
   readonly disabled!: boolean
 
@@ -327,10 +348,6 @@ export default class GcodePreview extends Mixins(StateMixin) {
 
   get filePosition (): number {
     return this.$store.state.printer.printer.virtual_sdcard.file_position
-  }
-
-  get isMobile (): boolean {
-    return this.$vuetify.breakpoint.mobile
   }
 
   get extrusionLineWidth () {
@@ -568,13 +585,17 @@ export default class GcodePreview extends Mixins(StateMixin) {
     return this.$store.getters['gcodePreview/getLayerPaths'](this.layer + 1)
   }
 
+  get svgPathParts () {
+    return this.$store.getters['gcodePreview/getPartPaths']
+  }
+
   get file (): AppFile | undefined {
     return this.$store.getters['gcodePreview/getFile']
   }
 
   @Watch('focused')
   onFocusedChanged (value: boolean) {
-    if (this.panzoom && !this.isMobile) {
+    if (this.panzoom && !this.isMobileViewport) {
       if (value) {
         this.panzoom.resume()
       } else {
@@ -613,7 +634,7 @@ export default class GcodePreview extends Mixins(StateMixin) {
   }
 
   keepFocus () {
-    if (!this.isMobile) {
+    if (!this.isMobileViewport) {
       this.container.focus()
     }
   }

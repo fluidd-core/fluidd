@@ -9,16 +9,15 @@
     right
   >
     <v-list dense>
-      <v-list-item
-        link
-        @click="$emit('remove', job)"
-      >
+      <v-list-item @click="$emit('remove', job)">
         <v-list-item-icon>
           <v-icon>
             $delete
           </v-icon>
         </v-list-item-icon>
-        <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
   </v-menu>
@@ -39,7 +38,7 @@ export default class JobQueueContextMenu extends Vue {
   @Prop({ type: Number, required: true })
   readonly positionY!: number
 
-  @Prop({ type: Object, required: true })
-  readonly job!: QueuedJob
+  @Prop({ type: [Object, Array], required: true })
+  readonly job!: QueuedJob | QueuedJob[]
 }
 </script>

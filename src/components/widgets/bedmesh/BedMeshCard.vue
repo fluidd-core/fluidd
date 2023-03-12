@@ -29,7 +29,7 @@
         :options="options"
         :data="series"
         :graphics="graphics"
-        :height="(isMobile) ? '225px' : '525px'"
+        :height="(isMobileViewport) ? '225px' : '525px'"
       />
 
       <span v-else>{{ $t('app.bedmesh.msg.not_loaded') }}</span>
@@ -42,13 +42,14 @@ import { Component, Mixins, Prop } from 'vue-property-decorator'
 import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({
   components: {
     EChartsBedMesh
   }
 })
-export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin) {
+export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly fullScreen!: boolean
 
@@ -180,10 +181,6 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin) {
   // The current processed mesh data, if any.
   get mesh () {
     return this.$store.getters['mesh/getCurrentMeshData']
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

@@ -48,17 +48,16 @@
             top
           >
             <template #activator="{ on, attrs }">
-              <app-macro-btn
+              <macro-btn
                 v-bind="attrs"
                 :macro="macro"
                 :loading="hasWait(`${$waits.onMacro}${macro.name}`)"
-                enable-params
-                class="me-2 mb-2 float-left"
+                class="me-2 mb-2 d-inline-block"
                 v-on="on"
                 @click="sendGcode($event, `${$waits.onMacro}${macro.name}`)"
               >
                 {{ macro.alias || macro.name }}
-              </app-macro-btn>
+              </macro-btn>
             </template>
             <span>{{ macro.config.description }}</span>
           </v-tooltip>
@@ -71,8 +70,13 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import MacroBtn from './MacroBtn.vue'
 
-@Component({})
+@Component({
+  components: {
+    MacroBtn
+  }
+})
 export default class Macros extends Mixins(StateMixin) {
   get macros () {
     return this.$store.getters['macros/getVisibleMacros']

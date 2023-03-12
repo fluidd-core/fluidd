@@ -18,11 +18,9 @@ app:
       not_loaded: Kein Mesh geladen
     tooltip:
       calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
-      delete: Profil löschen. Achtung, der Drucker wird neu gestartet
+      delete: Profil löschen
       load: Profil laden
-      save: >-
-        Fügt das Mesh Profil der printer.cfg hinzu. Achtung, der Drucker wird
-        neu gestartet
+      save: Fügt das Mesh Profil der printer.cfg hinzu
   chart:
     label:
       current: Aktuell

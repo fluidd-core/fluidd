@@ -17,12 +17,12 @@
 
     <app-setting :title="$t('app.setting.label.icon')">
       <v-select
+        v-model="config.icon"
         filled
         dense
         single-line
         hide-details="auto"
         :items="icons"
-        :value="config.icon"
       >
         <template #item="{item}">
           <v-icon

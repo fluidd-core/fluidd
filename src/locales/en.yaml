@@ -18,11 +18,9 @@ app:
       not_loaded: No mesh loaded
     tooltip:
       calibrate: Begins a new calibration, saving as profile 'default'
-      delete: Delete Profile. This WILL restart your printer
+      delete: Delete Profile
       load: Load Profile
-      save: >-
-        Commits calibrated profile to printer.cfg. This WILL restart your
-        printer
+      save: Commits calibrated profile to printer.cfg
   chart:
     label:
       current: Actual
@@ -103,6 +101,7 @@ app:
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space
+      move_item: Move item | Move {count} items
       root_disabled: '{root} root is not available. Please check your logs.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
@@ -122,6 +121,7 @@ app:
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
+      show_parts: Show parts
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
       parsing_file: Parsing file
@@ -222,6 +222,7 @@ app:
       add_filter: Add Filter
       add_preset: Add Preset
       add_user: Add user
+      all: All
       api_key: Api Key
       api_url: API URL
       auth_source: Authentication Source
@@ -229,6 +230,7 @@ app:
       change_password: Change password
       clear_all: Clear all
       color: Color
+      command: Command
       confirm: Confirm
       current_password: Current password
       current_user: Current user
@@ -267,6 +269,9 @@ app:
       numeric_prefix_sort: Numeric Prefix sort
       password: Password
       partial_of_total: '%{partial} of %{total}'
+      pause_at_layer: Pause at Layer
+      pause_at_next_layer: Pause at next layer
+      pause_at_layer_number: Pause at layer number
       power: Power
       pressure_advance: Pressure Advance
       printers: Printers
@@ -322,6 +327,9 @@ app:
         Welcome back.<br>Sign in below to stay in touch with your printer.
       offline_ready: Fluidd is now ready to work offline.
       needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      pending_configuration_sections_deleted: The following sections are marked for deletion
+      rolledover_logs: >-
+        The following application logs have been rolled over: %{applications}
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -409,6 +417,7 @@ app:
       other_files: Other Files
       pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction
+      rollover_logs: Rollover logs
       runout_sensors: Runout Sensors
       settings: Settings
       stats: Printer Stats
@@ -427,6 +436,7 @@ app:
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
       run_collector: Run collector
+      rollover_logs: Rollover logs
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
@@ -459,6 +469,7 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
+      hlsstream: HLS Stream
       video: IP Camera
       iframe: HTTP page
     camera_rotate_options:
@@ -541,6 +552,7 @@ app:
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_code_lens: Show CodeLens
+      show_gas_resistance: Show gas resistance
       show_legend: Show legend
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity

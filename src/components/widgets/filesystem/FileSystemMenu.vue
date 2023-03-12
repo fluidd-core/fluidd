@@ -25,85 +25,93 @@
       </v-tooltip>
     </template>
 
-    <v-list
-      dense
-    >
+    <v-list dense>
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
         @click="emulateClick(false)"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $fileUpload
           </v-icon>
-          {{ $t('app.general.btn.upload_files') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.upload_files') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
         @click="emulateClick(false, true)"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $folderUpload
           </v-icon>
-          {{ $t('app.general.btn.upload_folder') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.upload_folder') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="!readonly && root === 'gcodes'"
         :disabled="disabled"
         @click="emulateClick(true)"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $progressUpload
           </v-icon>
-          {{ $t('app.general.btn.upload_print') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.upload_print') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
         @click="$emit('add-file')"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $fileAdd
           </v-icon>
-          {{ $t('app.general.btn.add_file') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.add_file') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="!readonly || canCreateDirectory"
         :disabled="disabled"
         @click="$emit('add-dir')"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $folderAdd
           </v-icon>
-          {{ $t('app.general.btn.add_dir') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.add_dir') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
+
     <input
       ref="uploadFile"
       type="file"

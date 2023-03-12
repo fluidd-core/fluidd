@@ -94,15 +94,30 @@ export default class JobQueue extends Vue {
   }
 
   handleRowClick (item: QueuedJob, e: MouseEvent) {
-    if (!this.contextMenuState.open) {
-      // Open the context menu
-      this.contextMenuState.x = e.clientX
-      this.contextMenuState.y = e.clientY
-      this.contextMenuState.job = item
-      this.$nextTick(() => {
-        this.contextMenuState.open = true
-      })
+    if (this.contextMenuState.open) {
+      this.contextMenuState.open = false
+
+      if (e.type !== 'contextmenu') {
+        return
+      }
     }
+
+    if (
+      this.selected.length !== 0 &&
+      !this.selected.some(x => x.filename === item.filename)
+    ) {
+      return
+    }
+
+    // Open the context menu
+    this.contextMenuState.x = e.clientX
+    this.contextMenuState.y = e.clientY
+    this.contextMenuState.job = this.selected.length > 1
+      ? this.selected
+      : item
+    this.$nextTick(() => {
+      this.contextMenuState.open = true
+    })
   }
 
   async handleRemoveAll () {

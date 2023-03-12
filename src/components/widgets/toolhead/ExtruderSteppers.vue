@@ -53,7 +53,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import ExtruderStepperSync from './ExtruderStepperSync.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
-import { Extruder, ExtruderStepper } from '@/store/printer/types'
+import { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -63,12 +63,12 @@ import { Extruder, ExtruderStepper } from '@/store/printer/types'
 })
 export default class ExtruderSteppers extends Vue {
   get extruderSteppers () {
-    const extruders = this.$store.getters['printer/getExtruders'] as Extruder[]
+    const extruders = this.$store.getters['printer/getExtruders'] as KnownExtruder[]
     const extruderSteppers = this.$store.getters['printer/getExtruderSteppers'] as ExtruderStepper[]
 
     return extruderSteppers
       .map(x => {
-        const motionQueueName = extruders.find(y => y.key === x.motion_queue)?.name ?? this.$t('app.setting.label.none')
+        const motionQueueName = (x.motion_queue && extruders.find(y => y.key === x.motion_queue)?.name) ?? this.$t('app.setting.label.none')
         const enabledDesc = x.enabled !== undefined && this.$t(`app.general.label.${x.enabled ? 'on' : 'off'}`)
         const description = enabledDesc ? `${motionQueueName}, ${enabledDesc}` : motionQueueName
 

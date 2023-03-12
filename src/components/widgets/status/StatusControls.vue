@@ -6,7 +6,7 @@
         :loading="hasWait($waits.onPrintCancel)"
         :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="cancelPrint()"
       >
         <v-icon
@@ -18,44 +18,17 @@
         <span>{{ $t('app.general.btn.cancel') }}</span>
       </app-btn>
 
-      <app-btn
-        v-if="printerPrinting && !printerPaused"
-        :loading="hasWait($waits.onPrintPause)"
-        :disabled="printerPaused || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-        small
-        class="ma-1"
-        @click="pausePrint()"
-      >
-        <v-icon
-          small
-          left
-        >
-          $pause
-        </v-icon>
-        <span>{{ $t('app.general.btn.pause') }}</span>
-      </app-btn>
-
-      <app-btn
-        v-if="printerPaused"
-        :loading="hasWait($waits.onPrintResume)"
-        :disabled="printerPrinting || hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
-        small
-        class="ma-1"
-        @click="resumePrint()"
-      >
-        <v-icon
-          small
-          left
-        >
-          $resume
-        </v-icon>
-        <span>{{ $t('app.general.btn.resume') }}</span>
-      </app-btn>
+      <pause-resume-btn
+        v-if="printerPrinting || printerPaused"
+        @pause="pausePrint"
+        @resume="resumePrint"
+        @pauseAtLayer="showPauseAtLayerDialog = true"
+      />
 
       <app-btn
         v-if="!printerPrinting && !printerPaused && filename"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="resetFile()"
       >
         <v-icon
@@ -70,7 +43,7 @@
       <app-btn
         v-if="!supportsHistoryComponent && !printerPrinting && !printerPaused && filename"
         small
-        class="ma-1"
+        class="ms-1 my-1"
         @click="$emit('print', filename)"
       >
         <v-icon
@@ -95,7 +68,7 @@
           fab
           x-small
           text
-          class="ml-1"
+          class="ms-1 my-1"
           v-on="on"
           @click="showExcludeObjectDialog = true"
         >
@@ -105,9 +78,14 @@
       <span>{{ $t('app.gcode.label.exclude_object') }}</span>
     </v-tooltip>
 
-    <ExcludeObjectsDialog
+    <exclude-objects-dialog
       v-if="showExcludeObjectDialog"
       v-model="showExcludeObjectDialog"
+    />
+
+    <pause-at-layer-dialog
+      v-if="showPauseAtLayerDialog"
+      v-model="showPauseAtLayerDialog"
     />
   </div>
 </template>
@@ -118,15 +96,20 @@ import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
 import ExcludeObjectsDialog from '@/components/widgets/exclude-objects/ExcludeObjectsDialog.vue'
+import PauseResumeBtn from './PauseResumeBtn.vue'
+import PauseAtLayerDialog from './PauseAtLayerDialog.vue'
 
 @Component({
   components: {
+    PauseResumeBtn,
+    PauseAtLayerDialog,
     JobHistoryItemStatus,
     ExcludeObjectsDialog
   }
 })
 export default class StatusControls extends Mixins(StateMixin) {
   showExcludeObjectDialog = false
+  showPauseAtLayerDialog = false
 
   get filename () {
     return this.$store.state.printer.printer.print_stats.filename

@@ -11,6 +11,7 @@ import {
   mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
+  mdiFileRefreshOutline,
   mdiConsole,
   mdiChevronUp,
   mdiChevronDown,
@@ -135,7 +136,8 @@ import {
   mdiArchivePlus,
   mdiTrayFull,
   mdiTrayPlus,
-  mdiFolderArrowUp
+  mdiFolderArrowUp,
+  mdiShape
 } from '@mdi/js'
 
 /**
@@ -287,6 +289,7 @@ export const Icons = Object.freeze({
   chevronLeft: mdiChevronLeft,
   timer: mdiTimerSand,
   fileCode: mdiFileCodeOutline,
+  fileRefresh: mdiFileRefreshOutline,
   files: mdiFileTableOutline,
   file: mdiFile,
   fileCancel: mdiFileCancel,
@@ -350,6 +353,7 @@ export const Icons = Object.freeze({
   moves: mdiVectorLine,
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
+  parts: mdiShape,
   folderOpen: mdiFolderOpen,
   fileZip: mdiArchive,
   fileZipAdd: mdiArchivePlus,
@@ -436,7 +440,7 @@ type DateTimeFormat = {
 
 export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
     suffix: ' (ISO 8601)'
   },
@@ -450,7 +454,7 @@ export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
 
 export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { hour: '2-digit', minute: '2-digit', hour12: false },
     suffix: ' (ISO 8601)'
   },

@@ -81,6 +81,7 @@
         :items="[
           { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpegstreamer-adaptive' },
           { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpegstreamer' },
+          { text: $t('app.setting.camera_type_options.hlsstream'), value: 'hlsstream' },
           { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
           { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
         ]"

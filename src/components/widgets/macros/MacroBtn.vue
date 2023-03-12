@@ -1,16 +1,5 @@
 <template>
-  <app-btn
-    v-if="paramList.length === 0 || !enableParams"
-    :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
-    :style="borderStyle"
-    v-on="filteredListeners"
-    @click="handleClick"
-  >
-    <slot />
-  </app-btn>
-  <app-btn-group
-    v-else
-  >
+  <app-btn-group>
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
@@ -20,6 +9,7 @@
       <slot />
     </app-btn>
     <v-menu
+      v-if="paramList.length > 0"
       left
       offset-y
       transition="slide-y-transition"
@@ -27,7 +17,6 @@
     >
       <template #activator="{ on, attrs, value }">
         <app-btn
-          v-if="paramList.length > 0"
           v-bind="attrs"
           :min-width="24"
           class="px-0"
@@ -98,12 +87,9 @@ import { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
 
 @Component({})
-export default class AppMacroBtn extends Mixins(StateMixin) {
+export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
-
-  @Prop({ type: Boolean, default: false })
-  readonly enableParams!: boolean
 
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
 

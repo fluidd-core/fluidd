@@ -17,7 +17,7 @@ permalink: /installation/fluiddpi
 
 ---
 
-## !! WARNING !!
+## ⚠️ WARNING ⚠️
 {: .text-red-300 #warning}
 
 FluiddPI is not under active maintenance and we've had reports from users
