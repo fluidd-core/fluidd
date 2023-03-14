@@ -524,8 +524,8 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
     for (const pin in state.printer) {
       const split = pin.split(' ')
+      const type = split[0]
       const name = (split.length > 1) ? split[1] : pin
-      const type = (split.length) ? split[0] : pin
 
       if (
         supportedTypes.includes(type) &&
@@ -543,6 +543,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
         let output: Fan | Led | OutputPin = {
           ...state.printer[pin],
+          ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
           config: { ...config },
           name,
           prettyName,
@@ -585,49 +586,58 @@ export const getters: GetterTree<PrinterState, RootState> = {
       'temperature_probe',
       'z_thermal_adjust'
     ]
-    const extraSupportedSensors = [
+
+    const sensors = Object.keys(state.printer)
+      .reduce((groups, item) => {
+        const split = item.split(' ')
+        const type = split[0]
+        const name = (split.length > 1) ? split[1] : item
+
+        if (supportedSensors.includes(type)) {
+          const prettyName = Vue.$filters.startCase(name)
+          const color = Vue.$colorset.next(getKlipperType(item), item)
+          const config = getters.getPrinterSettings(item)
+
+          groups[name] = {
+            ...state.printer[item],
+            ...getters.getExtraSensorData(config?.sensor_type?.toLowerCase(), name),
+            config: { ...config },
+            minTemp: config?.min_temp ?? null,
+            maxTemp: config?.max_temp ?? null,
+            name,
+            key: item,
+            prettyName,
+            color,
+            type
+          }
+        }
+
+        return groups
+      }, {} as Record<string, Sensor>)
+
+    return Object.values(sensors)
+      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
+  },
+
+  getExtraSensorData: (state) => (sensorType: string, name: string) => {
+    const supportedSensors = [
       'bme280',
       'htu21d'
     ]
 
-    const sensors = Object.keys(state.printer).reduce((groups, item) => {
-      const split = item.split(' ')
-      const type = split[0]
-      const name = (split.length > 1) ? split[1] : item
+    if (supportedSensors.includes(sensorType)) {
+      const sensor = state.printer[`${sensorType} ${name}`]
 
-      if (supportedSensors.includes(type)) {
-        const prettyName = Vue.$filters.startCase(name)
-        const color = Vue.$colorset.next(getKlipperType(item), item)
-        const config = getters.getPrinterSettings(item)
+      if (sensor) {
+        const { pressure, humidity, gas } = sensor
 
-        groups[name] = {
-          ...groups[name],
-          ...state.printer[item],
-          ...config,
-          minTemp: config?.min_temp ?? null,
-          maxTemp: config?.max_temp ?? null,
-          name,
-          key: item,
-          prettyName,
-          color,
-          type
-        }
-      } else if (extraSupportedSensors.includes(type)) {
-        const { pressure, humidity, gas } = state.printer[item]
-
-        groups[name] = {
+        return {
           pressure,
           humidity,
-          gas,
-          ...groups[name]
+          gas
         }
       }
-
-      return groups
-    }, {} as Record<string, Sensor>)
-
-    return Object.values(sensors)
-      .sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name))
+    }
   },
 
   /**

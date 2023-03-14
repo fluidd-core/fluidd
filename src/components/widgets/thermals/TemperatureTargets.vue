@@ -147,6 +147,9 @@
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
+              <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+              <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+              <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
             </span>
           </td>
           <td>/</td>
