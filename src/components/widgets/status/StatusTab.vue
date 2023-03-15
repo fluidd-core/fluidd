@@ -363,7 +363,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
   onFilamentUsed (filament_used: string) {
     const extruderPosition = parseFloat(filament_used)
     const filament_diameter = this.$store.getters['printer/getPrinterSettings']('extruder.filament_diameter') || 1.75
-    const timeDelta = (new Date().getTime() - this.flow.timestamp) / 1000
+    const timeDelta = (Date.now() - this.flow.timestamp) / 1000
     if (timeDelta >= 2) {
       if (
         this.flow.lastExtruderPosition &&
@@ -380,7 +380,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
       }
 
       this.flow.lastExtruderPosition = extruderPosition
-      this.flow.timestamp = new Date().getTime()
+      this.flow.timestamp = Date.now()
     }
   }
 }
