@@ -23,7 +23,7 @@
               @click="$emit('print', file)"
             >
               <v-list-item-icon>
-                <v-icon :disabled="!printerReady">
+                <v-icon>
                   $printer
                 </v-icon>
               </v-list-item-icon>
@@ -48,7 +48,7 @@
               @click="$emit('preheat', file)"
             >
               <v-list-item-icon>
-                <v-icon :disabled="!printerReady">
+                <v-icon>
                   $fire
                 </v-icon>
               </v-list-item-icon>

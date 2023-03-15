@@ -1,3 +1,5 @@
+@import 'vuetify/src/styles/styles.sass';
+
 /* Extra dense list items */
 .v-list-item--x-dense .v-list-item__content,
 .v-list--x-dense .v-list-item .v-list-item__content {
@@ -18,4 +20,11 @@
     margin-top: 0px !important;
     margin-bottom: 0 !important;
   }
+}
+
+.theme--light.v-list-item--disabled .v-list-item__icon .v-icon {
+  color: map-deep-get($material-light, 'icons', 'inactive') !important;
+}
+.theme--dark.v-list-item--disabled .v-list-item__icon .v-icon {
+  color: map-deep-get($material-dark, 'icons', 'inactive') !important;
 }
