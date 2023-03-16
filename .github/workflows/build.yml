@@ -77,7 +77,7 @@ jobs:
             type=ref,event=pr
             type=sha,format=long
             type=raw,value=latest-dev,enable=${{ github.ref == 'refs/heads/develop' }}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/master' }}
+            type=raw,value=latest-master,enable=${{ github.ref == 'refs/heads/master' }}
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -96,7 +96,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Dockerfile.new
           platforms: linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x
           push: true
           tags: ${{ steps.docker_meta.outputs.tags }}

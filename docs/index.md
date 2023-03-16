@@ -50,7 +50,7 @@ printer communities and you, the user.
 ## Docker
 
 Fluidd ships with Docker support built in. The official docker can be found
-[here](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and further information can be found [here](/installation/docker).
+[here](https://hub.docker.com/r/cadriel/fluidd), and further information can be found [here](/installation/docker).
 
 ## Support
 
