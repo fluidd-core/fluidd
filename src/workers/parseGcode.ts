@@ -101,21 +101,21 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
             newLayerForNextMove = true
           }
           break
-        case 'EXCLUDE_OBJECT_DEFINE': {
-          const polygonData = JSON.parse(args.polygon) as [number, number][]
+        case 'EXCLUDE_OBJECT_DEFINE':
+          if ('polygon' in args && args.polygon) {
+            const polygonData = JSON.parse(args.polygon) as [number, number][]
 
-          const part: Part = {
-            polygon: polygonData
-              .map(([x, y]): Point => ({
-                x,
-                y
-              }))
+            const part: Part = {
+              polygon: polygonData
+                .map(([x, y]): Point => ({
+                  x,
+                  y
+                }))
+            }
+
+            parts.push(Object.freeze(part))
           }
-
-          parts.push(Object.freeze(part))
-
           break
-        }
       }
     } else if (type === 'gcode') {
       switch (command) {
