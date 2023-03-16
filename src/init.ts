@@ -137,6 +137,13 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
     hostConfig = await getHostConfig()
   }
 
+  if (!(Globals.LOCAL_INSTANCES_STORAGE_KEY in localStorage)) {
+    for (const endpoint of hostConfig.endpoints) {
+      apiConfig = Vue.$filters.getApiUrls(endpoint)
+      await store.dispatch('config/initLocal', { apiConfig })
+    }
+  }
+
   // Load the API Config
   if (!apiConfig) {
     apiConfig = await getApiConfig(hostConfig)
@@ -164,6 +171,10 @@ export const appInit = async (apiConfig?: ApiConfig, hostConfig?: HostConfig): P
 
     apiAuthenticated = result.apiAuthenticated
     apiConnected = result.apiConnected
+
+    if (!apiConnected || !apiAuthenticated) {
+      break
+    }
 
     const { data } = result
 

@@ -23,84 +23,123 @@
               @click="$emit('print', file)"
             >
               <v-list-item-icon>
-                <v-icon :disabled="!printerReady">
+                <v-icon>
                   $printer
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.print') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.print') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
+
+            <v-list-item
+              v-if="canAddToQueue"
+              @click="$emit('enqueue', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$enqueueJob</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>{{ $t("app.general.btn.add_to_queue") }}</v-list-item-title>
+            </v-list-item>
+
             <v-list-item
               v-if="canPreheat"
-              link
               :disabled="!printerReady"
               @click="$emit('preheat', file)"
             >
               <v-list-item-icon>
-                <v-icon :disabled="!printerReady">
+                <v-icon>
                   $fire
                 </v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.preheat') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.preheat') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
+
             <v-list-item
-              v-if="file.type !== 'directory' && rootProperties.canEdit"
-              link
+              v-if="!Array.isArray(file) && file.type !== 'directory' && rootProperties.canEdit"
               @click="$emit('edit', file)"
             >
               <v-list-item-icon>
                 <v-icon>$pencil</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.edit') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.edit') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
+
             <v-list-item
-              v-if="file.type !== 'directory' && rootProperties.canView"
-              link
+              v-if="!Array.isArray(file) && file.type !== 'directory' && rootProperties.canView"
               @click="$emit('view', file)"
             >
               <v-list-item-icon>
                 <v-icon>$magnify</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
+
             <v-list-item
-              v-if="file.type !== 'directory'"
+              v-if="canPreviewGcode"
+              @click="$emit('preview-gcode', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$magnify</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
+              v-if="canCreateZip"
+              @click="$emit('create-zip', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$fileZipAdd</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.create_zip_archive') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
+              v-if="!Array.isArray(file) && file.type !== 'directory'"
               link
               @click="$emit('download', file)"
             >
               <v-list-item-icon>
                 <v-icon>$download</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.download') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
+
             <v-list-item
-              v-if="file.type !== 'directory' && canPreviewGcode"
-              link
-              @click="$emit('preview-gcode', file)"
-            >
-              <v-list-item-icon>
-                <v-icon>$magnify</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
-            </v-list-item>
-            <v-list-item
-              v-if="!rootProperties.readonly"
-              link
+              v-if="!Array.isArray(file) && !rootProperties.readonly"
               @click="$emit('rename', file)"
             >
               <v-list-item-icon>
                 <v-icon>$rename</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.rename') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.rename') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
+
             <v-list-item
               v-if="!rootProperties.readonly || rootProperties.canDelete"
-              link
               @click="$emit('remove', file)"
             >
               <v-list-item-icon>
                 <v-icon>$delete</v-icon>
               </v-list-item-icon>
-              <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.remove') }}</v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
           </v-list>
         </v-col>
@@ -129,7 +168,7 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import { AppDirectory, AppFile, AppFileWithMeta } from '@/store/files/types'
+import { FileBrowserEntry } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
@@ -142,8 +181,8 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Object, required: true })
-  readonly file!: AppDirectory | AppFile | AppFileWithMeta
+  @Prop({ type: [Object, Array], required: true })
+  readonly file!: FileBrowserEntry | FileBrowserEntry[]
 
   @Prop({ type: Number, required: true })
   readonly positionX!: number
@@ -157,6 +196,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
 
   get canPrint () {
     return (
+      !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
       this.rootProperties.accepts.includes('.' + this.file.extension) &&
       this.rootProperties.canPrint
@@ -165,6 +205,7 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
 
   get canPreheat () {
     return (
+      !Array.isArray(this.file) &&
       'first_layer_extr_temp' in this.file &&
       'first_layer_bed_temp' in this.file
     )
@@ -179,8 +220,37 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   }
 
   get canPreviewGcode () {
-    const layoutName = this.$store.getters['layout/getSpecificLayoutName']
-    return (this.$store.getters['layout/isEnabledInLayout'](layoutName, 'gcode-preview-card') && this.root === 'gcodes')
+    return (
+      !Array.isArray(this.file) &&
+      this.file.type === 'file' &&
+      this.file.extension === 'gcode' &&
+      this.root === 'gcodes'
+    )
+  }
+
+  get canCreateZip () {
+    return (
+      (
+        Array.isArray(this.file) ||
+        this.file.type !== 'file' ||
+        this.file.extension !== 'zip'
+      ) &&
+      !this.rootProperties.readonly &&
+      this.$store.getters['server/getIsMinApiVersion']('1.1.0')
+    )
+  }
+
+  get canAddToQueue () {
+    const files = Array.isArray(this.file) ? this.file : [this.file]
+
+    return (
+      files.some(x =>
+        x.type !== 'directory' &&
+        this.rootProperties.accepts.includes('.' + x.extension) &&
+        this.rootProperties.canPrint
+      ) &&
+      this.$store.getters['server/componentSupport']('job_queue')
+    )
   }
 }
 </script>

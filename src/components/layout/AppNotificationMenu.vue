@@ -3,7 +3,7 @@
     v-model="menu"
     offset-y
     left
-    :max-width="(isMobile) ? 220 : 420"
+    :max-width="(isMobileViewport) ? 220 : 420"
     :close-on-content-click="false"
     :close-delay="300"
   >
@@ -50,28 +50,30 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item
-          v-if="notifications.length > 0"
-          :disabled="clearableNotifications.length <= 0"
-          @click="handleClearAll"
-        >
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action class="notification-clear-all">
-            <v-icon small>
-              $close
-            </v-icon>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider v-if="notifications.length > 0" />
+        <template v-else-if="notifications.length > 0">
+          <v-list-item
+            :disabled="clearableNotifications.length <= 0"
+            @click="handleClearAll"
+          >
+            <v-list-item-content>
+              <v-list-item-title>{{ $t('app.general.label.clear_all') }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action class="notification-clear-all">
+              <v-icon small>
+                $close
+              </v-icon>
+            </v-list-item-action>
+          </v-list-item>
+
+          <v-divider />
+        </template>
 
         <template
           v-for="(n, i) in notifications"
         >
           <v-list-item
             :key="`notification-${n.id}`"
-            :three-line="true"
+            three-line
             :class="classes(n)"
           >
             <v-list-item-content>
@@ -151,7 +153,9 @@
 
 <script lang="ts">
 import { AppNotification } from '@/store/notifications/types'
-import { Component, Vue } from 'vue-property-decorator'
+import isSetAppBadgeSupported from '@/util/is-set-app-badge-supported'
+import { Component, Watch, Mixins } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 import AppAnnouncementDismissMenu from './AppAnnouncementDismissMenu.vue'
 
 @Component({
@@ -159,7 +163,7 @@ import AppAnnouncementDismissMenu from './AppAnnouncementDismissMenu.vue'
     AppAnnouncementDismissMenu
   }
 })
-export default class AppNotificationMenu extends Vue {
+export default class AppNotificationMenu extends Mixins(BrowserMixin) {
   menu = false
 
   get notifications (): AppNotification[] {
@@ -169,6 +173,13 @@ export default class AppNotificationMenu extends Vue {
   get notificationsCounter (): number {
     const notifications: AppNotification[] = this.notifications.filter(n => !n.noCount)
     return notifications.length
+  }
+
+  @Watch('notificationsCounter')
+  onNotificationsCounter (value: number) {
+    if (isSetAppBadgeSupported(navigator)) {
+      navigator.setAppBadge(value)
+    }
   }
 
   get clearableNotifications (): AppNotification[] {
@@ -195,10 +206,6 @@ export default class AppNotificationMenu extends Vue {
   get badgeColor () {
     if (this.color === 'transparent') return 'info'
     return this.color
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   /**
@@ -283,6 +290,10 @@ export default class AppNotificationMenu extends Vue {
 
   .theme--light :deep(.app-notifications .v-list-item .v-list-item__subtitle.notification-description) {
     color: rgba(0, 0, 0, 0.60);
+  }
+
+  :deep(.notification-description) {
+    -webkit-line-clamp: 5;
   }
 
   :deep(.notification-success),

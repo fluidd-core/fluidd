@@ -16,9 +16,9 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      delete: プロファイルを削除します。これにより、プリンタが再起動します
+      delete: プロファイルを削除します
       load: プロファイルを読込み
-      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。これにより、プリンタが再起動します
+      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします
   chart:
     label:
       current: 温度
@@ -39,7 +39,6 @@ app:
       hide_temp_waits: 待機中を隠す
     placeholder:
       command: タブでオートコンプリート、helpと入力でコマンド一覧表示 矢印で履歴ーを表示
-      scroll: '下にスクロール'
   endpoint:
     error:
       cant_connect: 何か問題が発生し、fluiddがアドレスに接続できません。このアドレスで間違いないですか？
@@ -88,7 +87,6 @@ app:
       add_file: ファイルの追加
       command_palette: コマンドパレット
       download_file: ファイルの取得
-      keyboard_shortcuts: 'キーボードショートカット'
       rename_dir: ディレクトリの名変更
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
@@ -141,6 +139,7 @@ app:
       edit: 編集
       exit_layout: レイアウトモードを終了する
       extrude: 押し出し
+      filter: フィルタ
       forgot_password: パスワードをお忘れですか？
       heaters_off: ヒーターオフ
       load_all: すべて読み込み
@@ -151,6 +150,7 @@ app:
       preheat: プレヒート
       presets: プリセット
       preview_gcode: Gコードをプレビュー
+      print: 印刷する
       quad_gantry_level: QGL
       reboot: 再起動
       recover: 回復する
@@ -274,6 +274,7 @@ app:
       unretract_extra_length: アンリトラクト長さ
       unretract_speed: アンリトラクト速度
       unsaved_changes: 保存されていない変更
+      upload_and_print: アップロードして印刷する
       used: 使用済み
       user_managed_source: ' %{source} 認証によって管理されるユーザー'
       username: ユーザー名
@@ -311,6 +312,7 @@ app:
         confirm_power_device_toggle: このデバイスの電源が切り替わります。よろしいですか？
         confirm_reboot_host: ホストシステムが再起動されます。よろしいですか？
         confirm_service_restart: '%{name} サービスを再起動してよろしいですか？'
+        confirm_service_start: ' %{name} サービスを開始しますか?'
         confirm_service_stop: ' %{name} サービスを停止してよろしいですか？'
         confirm_shutdown_host: ホストシステムをシャットダウンしてよろしいですか？
         no_file_preview: '%{name} は現在プレビューできません。'
@@ -355,7 +357,7 @@ app:
       edit_chart: チャートを編集
       endstops: エンドストップ
       fans_outputs: ファン＆出力
-      gcode_preview: 'Gcode プレビュー'
+      gcode_preview: Gcode プレビュー
       history: 履歴
       home: ホーム
       jobs: 印刷ジョブ
@@ -446,7 +448,7 @@ app:
       contains: 内容
       dark_mode: ダークモード
       dashed: ダッシュ
-      date_time_format: 日付と時刻の表示方法
+      date_format: 日付表示方法
       default_extrude_length: デフォルトの押し出し長さ
       default_extrude_speed: デフォルトの押し出し速度
       default_toolhead_move_length: ツールヘッド移動長の初期設定
@@ -501,11 +503,13 @@ app:
       show_rate_of_change: 温度変化率を表示する
       show_relative_humidity: 相対湿度を表示
       show_save_config_and_restart: '上部ナビゲーションに [設定を保存して再起動] ボタン'
+      show_upload_and_print: '上部のナビゲーションに [アップロードと印刷] ボタンを表示する'
       solid: ソリッド
       starts_with: で始まる
       theme_preset: コミュニティプリセット
       thermal_preset_gcode: GCode
       thermal_preset_name: プリセット名
+      time_format: 時間表示方法
       title: タイトル
       toolhead_move_distances: ツールヘッド距離値
       type: タイプ
@@ -620,6 +624,17 @@ app:
       home_all: すべて
       home_x: X
       home_y: 'Y'
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">アクティブなエクストルーダー構成は、</span>
+        %{filamentDiameter} mm 直径のフィラメント <span class="secondary--text">と</span>
+        %{nozzleDiameter} mm ノズルに設定されています
+      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定出力長 %{estimatedExtrudedLength} mm となります。'
+      stats_max_speed: >-
+        <span class="secondary--text">レイヤーの高さを</span> %{layerHeight} mm<span
+        class="secondary--text">とすると、</span> の推定最大印刷速度は %{estimatedMaxSpeed}
+        mm/s です
+      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、エクストルーダーは</span>  %{estimatedVolumetricFlow} mm3/s の推定体積流量になります。'
     title:
       bed_screws_adjust: ベッドスクリューの調整
       manual_probe: マニュアルプローブ

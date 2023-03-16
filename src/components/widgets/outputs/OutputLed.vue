@@ -90,10 +90,6 @@ export default class OutputLed extends Mixins(StateMixin) {
     return color.hexString
   }
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
-
   handleColorChange (value: { channel: string; color: IroColor }) {
     const selectedColor = value.color.rgb
 

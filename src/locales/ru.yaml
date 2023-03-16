@@ -1,6 +1,7 @@
 app:
   bedmesh:
     label:
+      active: Активно
       box_scale: Масштаб
       flat_surface: Показать базовую плоскость
       mesh_matrix: Сетчатая матрица
@@ -13,19 +14,17 @@ app:
       hint: >-
         Если сохранить не как %{name}, вы так же можете выбрать - удалить
         %{name} профиль
-      not_found: Не найдённо существующих сеток стола.
+      not_found: Не найдено существующих сеток стола.
       not_loaded: Сетка не загружена
     tooltip:
       calibrate: Начать новую калибровку, будет сохранено как профиль 'default'
-      delete: Удалить профиль. Это приведёт к ПЕРЕЗАГРУЗКЕ вашего принтера
+      delete: Удалить профиль
       load: Загрузить профиль
-      save: >-
-        Сохранить откалиброванный профиль в printer.cfg. Это приведёт к
-        ПЕРЕЗАГРУЗКЕ вашего принтера
+      save: Сохранить откалиброванный профиль в printer.cfg
   chart:
     label:
       current: Текущее значение
-      item: Элемент
+      item: Датчик
       'off': Выключить график
       'on': Включить график
       power: Мощность
@@ -34,17 +33,14 @@ app:
     tooltip:
       help: >-
         Удерживайте shift для увеличения.<br />Кликните на элемент, чтобы
-        изменить его видимость на графике.<br />Кликните на мощность чтобы
-        изменить видимость шкалы на графике.
+        изменить его видимость на графике.<br />Кликните на мощность чтобы изменить видимость шкалы на графике.
   console:
     label:
       auto_scroll: Автоматическое пролистывание
       flip_layout: Перевернутое отображение
       hide_temp_waits: Скрыть временные ожидания
     placeholder:
-      command: >-
-        'tab' для автокомплита, 'help' для списка комманд 'стрелки  ↑ и ↓'
-        история команд
+      command: '''tab'' для автокомплита, ''help'' for для списка комманд ''↑ и ↓'' история команд'
   endpoint:
     error:
       cant_connect: >-
@@ -64,27 +60,28 @@ app:
     tooltip:
       endpoint_examples: >-
         Введите URL вашего API.<br />В качестве примера, может быть что-то
-        подобное:<br /><blockquote>http://fluidd.local,
-        http://192.168.1.150</blockquote>
+        подобное:<br /><blockquote>http://fluidd.local, http://192.168.1.150</blockquote>
   endstop:
     label:
       open: Открыто
       triggered: Есть контакт
     msg:
-      subtitle: Используйте кнопку обновить, чтобы обновить состояние концевика.
+      subtitle: Используйте кнопку обновить, чтобы обновить состояние концевиков
   file_system:
     filters:
       label:
-        print_start_time: Отфильтровать напечатанное
-        print_start_time_desc: Отфильтровывает уже напечатанные элементы.
+        print_start_time: Фильтровать напечатанное
+        print_start_time_desc: Фильтровывать уже напечатанные элементы.
+        hidden_files: Фильтровать скрытые файлы
+        klipper_backup_files: Фильтровать резервные копии klipperа
     label:
       dir_name: Имя папки
       disk_usage: Использование дискового пространства
       diskinfo: Информация о диске
-      downloaded: Скачан
+      downloaded: Скачано
       file_name: Имя файла
       transfer_rate: Скорость передачи данных
-      uploaded: Загружен
+      uploaded: Загружено
       view_section_documentation: >-
         Просмотр '%{section}' документации
     msg:
@@ -96,61 +93,75 @@ app:
     title:
       add_dir: Добавить папку
       add_file: Добавить файл
+      command_palette: Команды
       download_file: Получение файла
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
-      upload_file: Загрузка файла | Загрузка файлов
+      upload_file: Загрузка файла(ов)
     tooltip:
       low_on_space: Мало места на диске
       root_disabled: Root недоступен. Проверьте файлы логов.
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:
     btn:
       load_current_file: Загрузить текущий файл
     label:
       current_layer_height: Текущая высота слоя
+      exclude_object: Исключить объект
       follow_progress: Следить за процессом
       layer: Слой
       layers: Слои
-      parsed: Считано
-      show_extrusions: Показывать
+      parsed: Обработано
+      show_current_layer: Показывать текущий слой
+      show_extrusions: Показывать экструдер
       show_moves: Показывать перемещения
       show_next_layer: Показывать следующий слой
       show_previous_layer: Отображать предыдущий слой
       show_retractions: Отображать ретракты
-      parsing_file: Синтаксический анализ файла
+      parsing_file: Анализ файла
     msg:
       confirm: >-
         Файл "%{filename}" имеет размер %{size}, это может быть ресурсоемким для
         вашей системы. Вы уверены?
   general:
     btn:
+      abort: Отменить
+      accept: Применить
       add: Добавить
       add_dir: Добавить папку
       add_file: Добавить файл
       add_printer: Добавить принтер
       adjust_layout: Настроить компановку интерфейса панели управления
+      adjusted: Настроено
       all: Все
+      auth_unsure: Не знаете, почему вы это видите?
       calibrate: Калибровка
       cancel: Отменить
       clear_profile: Очистить профиль
       close: Закрыть
       config_reference: Примеры конфигураций
+      delete: Удалить
       download: Скачать
       edit: Редактировать
       exit_layout: Выйти из режима редактирования
       extrude: Экструдировать
+      forgot_password: Забыли ваш пароль?
       heaters_off: Отключить нагрев
       load_all: Загрузить все
+      login: Вход
+      logout: Выйти
       more_information: Больше информации
       pause: Пауза
       preheat: Преднагрев
       presets: Предустановки
       preview_gcode: Предпросмотр GCode
+      print: Напечатать
       quad_gantry_level: QGL
       reboot: Перезагрузка
+      recover: Восстановить
       refresh: Обновить
       remove: Удалить
       remove_all: Удалить всё
@@ -158,17 +169,21 @@ app:
       reprint: Перепечатать
       reset_file: Сбросить файл
       reset_layout: Сбросить компановку интерфейса
+      reset_default_layout: Сбросить компановку интерфейса
       restart_firmware: Перезагрузить прошивку
       restart_service: Перезапустить %{service}
       restart_service_klipper: Перезагрузить Klipper
       restart_service_moonraker: Перезагрузить Moonraker
       resume: Возобновить
-      retract: Ретракт
+      retract: Втянуть
+      return_dashboard: Вернуться к дашборду
       save: Сохранить
       save_as: Сохранить как
       save_restart: Сохранить и перезагрузить
+      save_config_and_restart: Сохранить настройки и перезагрузить
       send: Отправить
       set_color: Установить цвет
+      set_default_layout: Установить по умолчанию
       shutdown: Отключение
       snooze: Вздремнуть
       socket_reconnect: Повторное подключение
@@ -189,8 +204,9 @@ app:
         Moonraker не смог запустить некоторые плагины, пожалуйста проверьте
         логи, обновите конфигурацию и перезагрузите moonraker.
     label:
-      accel_to_decel: Ускорения и торможения
+      accel_to_decel: Ускорение к замедлению
       acceleration: Ускорение
+      accepted_screws: Примененные винты
       actual_time: Фактический
       add_camera: Добавить камеру
       add_filter: Добавить фильтр
@@ -198,12 +214,14 @@ app:
       add_user: Добавить пользователя
       api_key: Ключ API
       api_url: API URL
+      auth_source: Источник аутентификации
       category: Категория
       change_password: Изменить пароль
       clear_all: Очистить все
       color: Цвет
-      confirm: Подтвердить
+      confirm: Подтверждение
       current_password: Текущий пароль
+      current_user: Текущий пользователь
       disabled_while_printing: Отключено во время печати
       edit_camera: Редактировать камеру
       edit_filter: Редактировать фильтр
@@ -216,45 +234,59 @@ app:
       finish_time: Конец
       flow: Поток
       free: Свободно
-      heaters_busy: Принтер в данный момент занят. Выключение нагревателей может привести к сбою печати.
+      heaters_busy: >-
+        Принтер в данный момент занят.
+        Выключение нагревателей может привести к сбою печати.
       high: Выше
       host: Хост
       layer: Слой
       layout: Компоновка интерфейса
+      ldap: LDAP
       longest_job: Самая долгая печать
       low: Ниже
+      manage_accounts: Управление аккаунтами
+      user_managed_source: Пользователь аутентифицируется с помощью %{source}
       m117: M117
+      moonraker: Moonraker
       name: Имя
       new_password: Новый пароль
       no_notifications: Нет уведомлений
-      'on': 'Включить'
-      'off': Выключить
+      'on': 'Вкл'
+      'off': 'Выкл'
       password: Пароль
+      partial_of_total: '%{partial} of %{total}'
       power: Питание
-      pressure_advance: Повышение давления
+      pressure_advance: Pressure Advance
       printers: Принтеры
       progress: Прогресс
       requested_speed: Запрошенная скорость
       retract_length: Длина ретракта
       retract_speed: Скорость ретракта
       save_as: Сохранить как
+      screw_index: Индекс винта
+      screw_name: Имя винта
+      screw_number: Винт № %{index}
       services: Сервисы
       slicer: Слайсер
-      smooth_time: Сглаживающее время
+      smooth_time: Сглаживающее время P.Advance
       speed: Скорость
       sqv: Скорость прохождения угла
-      total: Весь
+      thumbnail_size: Размер эскиза
+      total: Всего
       total_filament: Всего использованно филамента
-      total_filament_avg: Среднее на печать
-      total_jobs: Всего печатей
+      total_filament_avg: Среднее использование филамента одну печать
+      total_jobs: Всего напечатано
       total_print_time: Общее время печати
       total_print_time_avg: Среднее время печати
-      total_time: Общее время
+      total_time: Общее время работы
       total_time_avg: Среднее время
+      turn_device_on: Вкл %{device}
+      turn_device_off: Выкл %{device}
       uncategorized: Вне категории
       unretract_extra_length: Дополнительная длина
       unretract_speed: Скорость деретракта
       used: Использованно
+      username: Имя пользователя
       variance: Различие
       velocity: Скорость
       visible: Видимый
@@ -268,22 +300,31 @@ app:
     msg:
       password_changed: Пароль изменен
       wrong_password: Ой, что-то пошло не так. Пароль введен верно?
+      bed_screws_adjust: >-
+        Нажмите <b>Скорректировать</b>, если требуется корректировка текущего винта; в противном случае нажмите <b>Принять</b>, чтобы продолжить
+      welcome_back: >-
+        С возвращением.<br>Войдите в систему, чтобы подключится к принтеру.
     simple_form:
       error:
         arrayofnums: Только цифры
+        credentials: Invalid credentials
         exists: Уже существует
         invalid_number: Неверный номер
         invalid_url: Невалидный URL
         invalid_expression: Недопустимое выражение
-        max: Макс %{max}
-        min: Мин %{min}
+        max: Макс. %{max}
+        min: Мин. %{min}
         min_or_0: Мин %{min} или 0
-        password_username: Не совпадает имя пользователя
+        password_username: Не удается сопоставить имя пользователя
         required: Требуется
+        invalid_aspect: Invalid Aspect Ratio
       msg:
         confirm: Вы уверены?
+        confirm_exclude_object: Вы уверены, что хотите исключить этот объект из печати?
+        confirm_forcemove_toggle: Вы уверены? Это может повредить принтер
         confirm_reboot_host: Вы уверены? Это приведёт к перезагрузке вашей хост системы.
         confirm_shutdown_host: Вы уверены? Это приведёт к выключению вашей хост системы.
+        confirm_service_start: Вы уверены, что хотите запустить службу %{name}?
         confirm_service_restart: Вы уверены, что хотите перезапустить службу %{name}?
         confirm_service_stop: Вы уверены, что хотите остановить службу %{name}?
         confirm_power_device_toggle: Вы уверены? Это позволит переключить питание этого устройства.
@@ -294,13 +335,18 @@ app:
         apply_z_offset_probe: >-
           Z-смещение датчика/Bl touch будет рассчитано и обновлено на основе текущего
           Z-Offset.
+        no_file_preview: >-
+          %{name} в настоящее время не может быть просмотрен.
     table:
       header:
         actions: Действия
+        chamber_temp: Температура камеры
         end_time: Завершено
         estimated_time: Ожидаемое время
         filament: Филамент
-        filament_used: Использованный филамент
+        filament_name: Имя филамента
+        filament_type: Тип филамента
+        filament_used: Использованно филамента
         filament_weight_total: Вес филамента
         first_layer_bed_temp: Температура стола на первом слое
         first_layer_extr_temp: Температура экструдера на первом слое
@@ -310,6 +356,7 @@ app:
         layer_height: Высота слоя
         modified: Изменён
         name: Имя
+        nozzle_diameter: Диаметр сопла
         print_duration: Продолжительность печати
         size: Размер
         slicer: Слайсер
@@ -318,38 +365,47 @@ app:
         status: Статус
         total_duration: Общая продолжительность
     title:
+      add_chart: Add Chart
       add_printer: Добавить принтер
-      bedmesh: Сетка стола
-      bedmesh_controls: Управление сеткой стола
+      bedmesh: Профиль высот стола
+      bedmesh_controls: Управление профилями высот стола
       camera: Камера | Камеры
       config_files: Файлы конфигурации
       configure: Конфигурация
       console: Консоль
-      endstops: Точки остановки
-      fans_outputs: Кулеры и выходы
+      diagnostics: Диагностика
+      edit_chart: Edit Chart
+      endstops: Концевики
+      fans_outputs: Вентиляторы и выходы
       gcode_preview: Предпросмотр GCode
-      history: История задач
+      history: История печати
       home: Панель управления
-      jobs: Задачи
+      jobs: Файлы для печати
       limits: Лимиты принтера
       macros: Макросы
-      other_files: Другие Файлы
+      metrics_explorer: Metrics Explorer
+      not_found: 404 Не найдено
+      other_files: Другие файлы
+      pending_configuration_changes: Ожидающие изменения конфигурации
       retract: Настройки ретракта
       runout_sensors: Датчик контроля филамента
       settings: Настройки
       stats: Статистика принтера
       system: Система
       system_overview: Информация о системе
-      temperature: Температуры
-      timelapse: Интервальная киносъемка
+      temperature: Температура
+      timelapse: Интервальная съемка
       tool: Инструмент
-      tune: Подстройка
+      tune: Юстировка стола
     tooltip:
-      estop: Немедленная остановка
+      browse_metrics: Browse available metrics
+      estop: Аварийная остановка
       managed_by_moonraker: Управляется вашей конфигурацией moonraker
+      notifications: Оповещения
       reload_klipper: Перезагружает конфигурацию Klipper.
       reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
       restart_klipper: Перезагружает сервис Klipper.
+      run_collector: Run collector
   history:
     msg:
       confirm_jobs: Вы уверены? Это очистит все выполненые работы.
@@ -357,9 +413,9 @@ app:
   printer:
     state:
       busy: Занят
-      cancelled: Отмененый
+      cancelled: Отменено
       complete: Готово
-      idle: Ждёт задачу
+      idle: Бездействует
       loading: Загрузка
       paused: Пауза
       printing: Идёт печать
@@ -370,7 +426,8 @@ app:
       add_camera: Добавить камеру
       add_category: Добавить категорию
       add_filter: Добавить фильтр
-      add_thermal_preset: Добавить пресет температур
+      add_metric: Add Metric
+      add_thermal_preset: Добавить температурую предустановку
       add_user: Добавить пользователя
       reset: Сбросить
       select_theme: Выбрать тему
@@ -380,61 +437,103 @@ app:
       video: IP Камера
       iframe: Страница HTTP
     camera_rotate_options:
-      90: 90°
-      180: 180°
-      270: 270°
+      '90': 90°
+      '180': 180°
+      '270': 270°
       none: Нет
     label:
       all_off: Всё выключить
       all_on: Всё включить
+      aspect_ratio: Соотношение сторон
+      aspect_ratio_format: '[width : height]'
       auto_edit_extensions: Расширения для автоматического открытия в режиме редактирования
+      auto_follow_on_file_load: Автоматически наблюдать за прогрессом печати при загрузке файла
+      auto_load_on_print_start: Автоматически загружать файл при старте печати
+      axes: Axes
       camera_flip_x: Отразить по горизонтали
       camera_flip_y: Отразить по вертикали
+      camera_fullscreen_action:
+        title: Поведение при полноэкраном просмотре
+        embed: Встроенно
+        rawstream: Чистый поток
       camera_rotate_by: Повернуть на
       camera_stream_type: Тип потока
       camera_url: URL камеры
+      card: Card
+      collector: Collector
       confirm_on_estop: Требовать подтверждение при аварийной остановке
       confirm_on_power_device_change: Требуется подтверждение при изменении мощности устройства
+      confirm_on_save_config_and_restart: Просмотрите отложенные изменения в конфигурации перед сохранением и перезапуском
       confirm_dirty_editor_close: Требовать подтверждения при закрытии редактора с несохраненными изменениями
       contains: Содержит
       dark_mode: Тёмная тема
+      dashed: Dashed
       default_extrude_length: Длина экструдирования по умолчанию
       default_extrude_speed: Скорость экструдера по умолчанию
-      default_toolhead_move_length: Длина перемещения инструментальной головки по умолчанию
-      default_toolhead_xy_speed: Скорость инструмента для осей XY по умолчанию
-      default_toolhead_z_speed: Скорость инструмента для оси Z по умолчанию
+      default_toolhead_move_length: Длина перемещения головки по умолчанию
+      default_toolhead_xy_speed: Скорость головки для осей XY по умолчанию
+      default_toolhead_z_speed: Скорость головки для оси Z по умолчанию
+      dotted: Dotted
       draw_background: Отображать фон
-      enable: Включить
+      enable: Вкл.
+      enable_diagnostics: Включить диагностику
       enable_notifications: Включить оповещения
       expression: Выражение
       extrusion_line_width: Ширина линии экструзии
       flip_horizontal: Сдвиг по горизонтали
       flip_vertical: Сдвиг по вертикали
+      fill_color: Fill color
+      fill_opacity: Fill opacity
       filter: Filter | Фильтры
       fps_target: Целевой FPS
       fps_idle_target: Цель FPS, когда она не в фокусе
       height: Высота
       gcode_coords: Испрользовать координаты GCode
-      group_lower_layers: Группировать нижние слои
+      group_lower_layers: Показывать напечатанные слои (большая нагрузка на CPU)
+      icon: Иконка
       invert_x_control: Инвертировать управление по оси X
       invert_y_control: Инвертировать управление по оси Y
       invert_z_control: Инвертировать управление по оси Z
       language: Язык интерфейса
+      last_result: Последний результат
+      left_y: Left Y-Axis
+      line_color: Цвет линии
+      line_style: Стиль линии
+      min: Мин.
+      max: Макс.
+      metrics: Metrics
       move_line_width: Ширина линии движения
+      name: Name
+      none: None
+      optional: Optional
+      power_toggle_in_top_nav: Переключатель питания в верхней панели навигации
       primary_color: Основной цвет
       printer_name: Имя принтера
       reset: Сбросить настройки
       retraction_icon_size: Размер иконки ретракта
-      show_animations: Показывать анимации
+      right_y: Right Y-Axis
+      show_animations: Показывать анимацию
+      show_barometric_pressure: Показать атмосферное давление
+      show_code_lens: Показывать CodeLens (подсказки в тексте)
+      show_legend: Показывать легенду
       show_rate_of_change: Показать скорость изменения температуры
+      show_relative_humidity: Показать относительную влажность
+      show_save_config_and_restart: Кнопка «Сохранить конфигурацию и перезапустить» в верхней части панели навигации
+      solid: Solid
       starts_with: Начинается с
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
+      title: Заголовок
       toolhead_move_distances: Значения расстояния перемещения головки
       type: Тип
+      unit: Unit
       z_adjust_values: Значения подстройки оси Z
-      date_time_format: Формат даты и времени
+      date_format: Формат даты
+      time_format: Формат времени
+      force_move_toggle_warning: Требовать поддтверждения при активации "Форсированного перемещения"
+      show_manual_probe_dialog_automatically: Автоматически показывать диалоговое окно "Ручная настройка стола"
+      show_bed_screws_adjust_dialog_automatically: Автоматически показывать диалоговое окно "Регулировка винтов стола"
     timer_options:
       duration: Только продолжительность
       filament: Оценка филамента
@@ -444,30 +543,30 @@ app:
       authentication: Аутентификация
       console: Консоль
       camera: Камера | Камеры
-      file_editor: Редактор файлов
+      file_editor: Редактор конфигурационных файлов
       gcode_preview: Предпросмотр GCode
       general: Общие
       macros: Макросы
       theme: Тема
       thermal_presets: Температурные профили
-      tool: Инструмент
+      tool: Инструменты
     tooltip:
-      gcode_coords: >-
-        Использовать GCode положение вместо положение инструментальной головки
-        на панели управления
+      diagnostics_performance: '[BETA] Логирование диагностики может замедлить работу системы'
+      gcode_coords: Использовать GCode положение вместо положение инструментальной головки на панели управления
+      show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
+      show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
   socket:
     msg:
       connecting: Подключение к moonraker...
-      no_connection: >-
-        Нет подключения к moonraker. Пожалуйста проеверьте статус работы
-        moonraker и / или перезагрузите страницу.
+      no_connection: Нет подключения к moonraker. Пожалуйста проеверьте статус работы moonraker и/или перезагрузите страницу.
   system_info:
     label:
-      capacity: Вместимость
+      capacity: Емкость
       cpu_desc: Описание CPU
       distribution_codename: Кодовое название
-      distribution_like: Тип дистрибьютива
-      distribution_name: Дистрибьютив
+      distribution_like: Тип дистрибутива
+      distribution_name: Дистрибутив
+      frequency: Частота
       hardware_desc: Описание оборудования
       hostname: Имя в сети
       klipper_load: Klipper
@@ -475,7 +574,9 @@ app:
       manufacturer: Производитель
       mcu_awake: Время работы {mcu}
       mcu_bandwidth: Частота {mcu}
+      mcu_information: 'Информация о микроконтроллере'
       mcu_load: Загрузка {mcu}
+      micro_controller: Микроконтроллер
       model: Модель CPU
       moonraker_load: Moonraker
       processor_desc: Процессор
@@ -483,32 +584,60 @@ app:
       serial_number: Серийный номер
       system_load: CPU
       system_memory: Оперативная память
-      system_utilization: Загрузка системы
+      system_utilization: Загрузка ОС
       total_memory: Всего памяти
+      version: Версия
   tool:
     btn:
       home_x: X
-      home_y: 'Y'
+      home_y: Y
       home_all: Все
+    title:
+      bed_screws_adjust: Регулировка винтов стола
+      manual_probe: Ручная регулировка стола
     tooltip:
-      extruder_disabled: экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
+      absolute_positioning: Абсолютная позиция
+      extruder_disabled: Экструдер отключён, температура ниже чем (%{min}<small>°C</small>)
       home_xy: Домой XY
       home_z: Домой Z
+      manual_probe: Ручная регулировка стола
       motors_off: МОТОРЫ ВЫКЛ
       z_tilt_adjust: Z Регулировка наклона
       quad_gantry_level: QGL
+      relative_positioning: Относительная позиция
       screws_tilt_calculate: Расчет Наклона Винтами
       bed_screws_adjust: РЕГУЛИРОВКА ВИНТОВ СТОЛА
+      force_move: Форс. перемещение
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">Активный экструдер настроен на </span>
+        %{filamentDiameter} мм филамент
+        <span class="secondary--text">и диаметр сопла</span>
+        %{nozzleDiameter} мм
+      stats_volumetric_flow: >-
+        При экструзии со скоростью %{extrudeSpeed} мм/сек<span class="secondary--text">,
+        экструдер должен обеспечить </span>
+        объем потока %{estimatedVolumetricFlow} мм³/сек
+      stats_extruded_length: >-
+        <span class="secondary--text">При экструзии </span>%{extrudeLength} мм филамента при
+        %{extrudeFactor} % потоке<span class="secondary--text">,
+        обеспечивает </span>
+        выходную длину из сопла на %{estimatedExtrudedLength} мм
+      stats_max_speed: >-
+        <span class="secondary--text">При высоте слоя </span>
+        %{layerHeight} мм
+        максимальная скорость печати составляет %{estimatedMaxSpeed} мм/сек
   version:
     btn:
       check_for_updates: Проверить обновления
       finish: Закончено
       update: Обновление
+      update_all: Обновить всё
       view_versions: Новые версии
     label:
       commit_history: История коммитов
       commits_on: Коммиты на
-      committed: Закоммичено
+      committed: Закомментировано
       dirty: Грязный
       invalid: Ошибка
       os_packages: Системные пакеты
@@ -521,9 +650,7 @@ app:
     title: Обновления ПО
     tooltip:
       commit_history: История коммитов
-      dirty: >-
-        Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке
-        или невалидный оригинальный репозиторий
+      dirty: Оповещает о отсоединенном состоянии указателя HEAD, не в мастер-ветке или ошибочный репозиторий
       invalid: Оповещает о локальных изменениях в репозитории
       packages: Пакеты
       release_notes: Примечания к релизу
@@ -551,26 +678,26 @@ app:
       mode: Режим
       mode_layermacro: Макрос слоя
       mode_hyperlapse: Временная
-      hyperlapse_cycle: Временная Задержка
-      output_framerate: Выходная Частота кадров
-      park_retract_distance: Расстояние Втягивания Парковки
-      park_retract_speed: Скорость Втягивания Парковки
-      park_extrude_distance: Расстояние Выталкивания Парковки
-      park_extrude_speed: Скорость Выталкивания Парковки
-      parkhead: Парковка Сопла
-      park_time: Время Парковки
-      park_travel_speed: Скорость Перемещения Парковки
+      hyperlapse_cycle: Временная задержка
+      output_framerate: Выходная частота кадров
+      park_retract_distance: Расстояние втягивания парковки
+      park_retract_speed: Скорость втягивания парковки
+      park_extrude_distance: Расстояние экструдирования парковки
+      park_extrude_speed: Скорость экструдирования парковки
+      parkhead: Парковка головки
+      park_time: Время парковки
+      park_travel_speed: Скорость перемещения при парковки
       park_custom_pos_x: Парковочное Положение X
       park_custom_pos_y: Парковочное Положение Y
       park_custom_pos_dz: Парковочное Положение Z-Hop
       parkpos:
-        label: Позиция Парковки
+        label: Позиция парковки
         custom: Индивидуальный
         front_left: Передний Левый
-        front_right: Передний Справа
+        front_right: Передний Правый
         center: Центр
         back_left: Задний Левый
-        back_right: Задний Справа
+        back_right: Задний Правый
       previewimage: Создавать Скриншот
       saveframes: Сохранение Кадров
       stream_delay_compensation: Компенсация Задержки
@@ -578,4 +705,3 @@ app:
       variable_fps: Переменный FPS
       variable_fps_min: Минимальная Частота Кадров
       variable_fps_max: Максимальная Частота Кадров
-

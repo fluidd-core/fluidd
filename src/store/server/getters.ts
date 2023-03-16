@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex'
 import { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat, ServiceInfo, ServiceState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
+import { gte, valid } from 'semver'
 
 export const getters: GetterTree<ServerState, RootState> = {
   /**
@@ -9,6 +10,11 @@ export const getters: GetterTree<ServerState, RootState> = {
    */
   getInfo: (state): ServerInfo => {
     return state.info
+  },
+
+  getIsMinApiVersion: (state) => (minVersion: string) => {
+    const apiVersion = state.info.api_version_string
+    return apiVersion && valid(apiVersion) && valid(minVersion) && gte(apiVersion, minVersion)
   },
 
   /**

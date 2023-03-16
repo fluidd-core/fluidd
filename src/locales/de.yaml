@@ -18,11 +18,9 @@ app:
       not_loaded: Kein Mesh geladen
     tooltip:
       calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
-      delete: Profil löschen. Achtung, der Drucker wird neu gestartet
+      delete: Profil löschen
       load: Profil laden
-      save: >-
-        Fügt das Mesh Profil der printer.cfg hinzu. Achtung, der Drucker wird
-        neu gestartet
+      save: Fügt das Mesh Profil der printer.cfg hinzu
   chart:
     label:
       current: Aktuell
@@ -455,6 +453,7 @@ app:
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
+      auto_load_mobile_on_print_start: Datei bei Druckstart auch auf mobilen Geräten laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
@@ -578,7 +577,7 @@ app:
       capacity: Gesamtgröße
       cpu_desc: CPU-Beschreibung
       distribution_codename: Codename
-      distribution_like: Distribution wie
+      distribution_like: Distribution basiert auf
       distribution_name: Distribution
       frequency: Frequenz
       hardware_desc: Hardwarebeschreibung
@@ -600,6 +599,7 @@ app:
       system_memory: Systemspeicher
       system_utilization: Auslastung
       total_memory: Gesamtspeicherplatz
+      operating_system: Betriebssystem
       version: Version
   tool:
     btn:
@@ -697,6 +697,8 @@ app:
         center: Mitte
         back_left: Hinten links
         back_right: Hinten rechts
+        x_only: Nur X bewegen
+        y_only: Nur Y bewegen
       previewimage: Vorschaubild erzeugen
       saveframes: Einzelbilder speichern
       stream_delay_compensation: Verzögerungs-Kompensation

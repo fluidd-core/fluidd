@@ -54,7 +54,7 @@ import RetractCard from '@/components/widgets/retract/RetractCard.vue'
 import { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
-import { Macro } from '@/store/macros/types'
+import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 
 @Component({
   components: {
@@ -70,7 +70,8 @@ import { Macro } from '@/store/macros/types'
     ConsoleCard,
     OutputsCard,
     BedMeshCard,
-    GcodePreviewCard
+    GcodePreviewCard,
+    JobQueueCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
@@ -115,17 +116,16 @@ export default class Dashboard extends Mixins(StateMixin) {
     return 'firmware_retraction' in this.$store.getters['printer/getPrinterSettings']()
   }
 
+  get supportsJobQueue (): boolean {
+    return this.$store.getters['server/componentSupport']('job_queue')
+  }
+
   get supportsBedMesh () {
     return this.$store.getters['mesh/getSupportsBedMesh']
   }
 
   get macros () {
     return this.$store.getters['macros/getVisibleMacros']
-  }
-
-  get uncategorizedMacros () {
-    const macros = this.$store.getters['macros/getMacrosByCategory']()
-    return macros.filter((macro: Macro) => macro.visible)
   }
 
   get inLayout (): boolean {
@@ -191,8 +191,9 @@ export default class Dashboard extends Mixins(StateMixin) {
     // Take care of special cases.
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true
-    if (item.id === 'macros-card' && (this.macros.length <= 0 && this.uncategorizedMacros.length <= 0)) return true
+    if (item.id === 'macros-card' && (this.macros.length <= 0)) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
+    if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
 

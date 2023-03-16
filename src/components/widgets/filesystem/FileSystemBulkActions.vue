@@ -10,13 +10,52 @@
 
     <v-spacer />
 
-    <v-tooltip bottom>
+    <v-tooltip
+      v-if="rootProperties.canPrint"
+      bottom
+    >
       <template #activator="{ on, attrs }">
         <v-btn
+          v-bind="attrs"
           fab
           small
           text
+          v-on="on"
+          @click="$emit('enqueue')"
+        >
+          <v-icon>
+            $enqueueJob
+          </v-icon>
+        </v-btn>
+      </template>
+      <span>{{ $t('app.general.btn.add_to_queue') }}</span>
+    </v-tooltip>
+
+    <v-tooltip bottom>
+      <template #activator="{ on, attrs }">
+        <v-btn
           v-bind="attrs"
+          fab
+          small
+          text
+          v-on="on"
+          @click="$emit('create-zip')"
+        >
+          <v-icon>
+            $fileZipAdd
+          </v-icon>
+        </v-btn>
+      </template>
+      <span>{{ $t('app.general.btn.create_zip_archive') }}</span>
+    </v-tooltip>
+
+    <v-tooltip bottom>
+      <template #activator="{ on, attrs }">
+        <v-btn
+          v-bind="attrs"
+          fab
+          small
+          text
           v-on="on"
           @click="$emit('remove')"
         >
@@ -25,27 +64,8 @@
           </v-icon>
         </v-btn>
       </template>
-      <slot>
-        <span>{{ $t('app.general.btn.delete') }}</span>
-      </slot>
+      <span>{{ $t('app.general.btn.delete') }}</span>
     </v-tooltip>
-
-    <!-- <v-tooltip bottom>
-      <template v-slot:activator="{ on, attrs }">
-        <v-btn
-          fab small text
-          v-bind="attrs"
-          v-on="on"
-        >
-          <v-icon>
-            $move
-          </v-icon>
-        </v-btn>
-      </template>
-      <slot>
-        <span>Move to</span>
-      </slot>
-    </v-tooltip> -->
   </v-toolbar>
 </template>
 
@@ -62,8 +82,15 @@ import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
   }
 })
 export default class FileSystemBulkActions extends Mixins(StatesMixin) {
+  @Prop({ type: String, required: true })
+  readonly root!: string
+
   // The current path
   @Prop({ type: String, required: false })
   readonly path!: string
+
+  get rootProperties () {
+    return this.$store.getters['files/getRootProperties'](this.root)
+  }
 }
 </script>

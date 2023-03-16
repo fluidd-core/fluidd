@@ -62,10 +62,13 @@ export interface GeneralConfig {
   confirmOnSaveConfigAndRestart: boolean;
   dateFormat: string;
   timeFormat: string;
+  textSortOrder: TextSortOrder;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
+  showGasResistance: boolean;
   showSaveConfigAndRestart: boolean;
+  showUploadAndPrint: boolean;
   flipConsoleLayout: boolean;
   cameraFullscreenAction: CameraFullscreenAction;
   topNavPowerToggle: null | string;
@@ -75,6 +78,8 @@ export interface GeneralConfig {
   enableDiagnostics: boolean;
   thumbnailSize: number;
 }
+
+export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
 export type CameraFullscreenAction = 'embed' | 'rawstream';
 
@@ -169,8 +174,9 @@ export interface GcodePreviewConfig {
   retractionIconSize: number;
   drawBackground: boolean;
   showAnimations: boolean;
-  groupLowerLayers: boolean;
+  minLayerHeight: number;
   autoLoadOnPrintStart: boolean;
+  autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
   autoZoom: boolean;
   flip: {

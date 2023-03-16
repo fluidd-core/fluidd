@@ -7,7 +7,7 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
-      v-show="!isMobile"
+      v-show="!isMobileViewport"
       to="/"
       class="toolbar-logo"
     >
@@ -16,7 +16,7 @@
 
     <div class="toolbar-title">
       <app-btn
-        v-if="isMobile"
+        v-if="isMobileViewport"
         fab
         small
         :elevation="0"
@@ -44,12 +44,12 @@
       >
         <app-save-config-and-restart-btn
           :loading="hasWait($waits.onSaveConfig)"
-          :disabled="printerPrinting"
+          :disabled="printerPrinting || printerPaused"
           @click="saveConfigAndRestart"
         />
       </div>
 
-      <div v-if="socketConnected && !isMobile && authenticated">
+      <div v-if="socketConnected && !isMobileViewport && authenticated">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -69,9 +69,14 @@
         </v-tooltip>
       </div>
 
-      <div
-        v-if="authenticated && socketConnected && topNavPowerToggle"
-      >
+      <div v-if="authenticated && socketConnected && showUploadAndPrint">
+        <app-upload-and-print-btn
+          :disabled="printerPrinting || printerPaused || !klippyReady"
+          @upload="handleUploadAndPrint"
+        />
+      </div>
+
+      <div v-if="authenticated && socketConnected && topNavPowerToggle">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -129,15 +134,17 @@
         class="mx-2"
         color="primary"
         @click.stop="handleExitLayout"
-        v-html="$t('app.general.btn.exit_layout')"
-      />
+      >
+        {{ $t('app.general.btn.exit_layout') }}
+      </app-btn>
       <app-btn
         small
         class="mx-2"
         color="primary"
         @click.stop="handleResetLayout"
-        v-html="$t('app.general.btn.reset_layout')"
-      />
+      >
+        {{ $t('app.general.btn.reset_layout') }}
+      </app-btn>
       <template v-if="isDashboard">
         <v-divider
           vertical
@@ -148,15 +155,17 @@
           class="mx-2"
           color="primary"
           @click.stop="handleSetDefaultLayout"
-          v-html="$t('app.general.btn.set_default_layout')"
-        />
+        >
+          {{ $t('app.general.btn.set_default_layout') }}
+        </app-btn>
         <app-btn
           small
           class="mx-2"
           color="primary"
           @click.stop="handleResetDefaultLayout"
-          v-html="$t('app.general.btn.reset_default_layout')"
-        />
+        >
+          {{ $t('app.general.btn.reset_default_layout') }}
+        </app-btn>
       </template>
     </template>
 
@@ -178,19 +187,25 @@ import { Component, Mixins } from 'vue-property-decorator'
 import UserPasswordDialog from '@/components/settings/auth/UserPasswordDialog.vue'
 import PendingChangesDialog from '@/components/settings/PendingChangesDialog.vue'
 import AppSaveConfigAndRestartBtn from './AppSaveConfigAndRestartBtn.vue'
+import AppUploadAndPrintBtn from './AppUploadAndPrintBtn.vue'
 import { defaultState } from '@/store/layout/state'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
+import FilesMixin from '@/mixins/files'
+import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
+import { OutputPin } from '@/store/printer/types'
+import { Device } from '@/store/power/types'
 
 @Component({
   components: {
     UserPasswordDialog,
     PendingChangesDialog,
-    AppSaveConfigAndRestartBtn
+    AppSaveConfigAndRestartBtn,
+    AppUploadAndPrintBtn
   }
 })
-export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
+export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin, BrowserMixin) {
   menu = false
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
@@ -227,16 +242,16 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     return this.$store.getters['config/getTheme']
   }
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
-
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
 
   get showSaveConfigAndRestart (): boolean {
     return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+  }
+
+  get showUploadAndPrint (): boolean {
+    return this.$store.state.config.uiSettings.general.showUploadAndPrint
   }
 
   get topNavPowerToggle () {
@@ -248,19 +263,20 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
 
     switch (type) {
       case 'klipper': {
-        const device = this.$store.getters['printer/getPinByName'](name)
+        const device = this.$store.getters['printer/getPinByName'](name) as OutputPin | undefined
 
         return {
           type,
-          name: device.prettyName,
+          name: device?.prettyName ?? name,
           device
         }
       }
 
       default: {
-        const device = this.$store.state.power.devices.find((device: { device: string }) => device.device === topNavPowerToggle)
+        const devices = this.$store.state.power.devices as Device[]
+        const device = devices.find(device => device.device === topNavPowerToggle)
         return {
-          type: 'moonraker',
+          type: 'moonraker' as const,
           name: topNavPowerToggle,
           device
         }
@@ -268,29 +284,33 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     }
   }
 
-  get topNavPowerDeviceOn () {
-    const topNavPowerToggle = this.topNavPowerToggle
+  get topNavPowerDeviceOn (): boolean {
+    const { type, device } = this.topNavPowerToggle || {}
 
-    switch (topNavPowerToggle?.type) {
+    if (!device) return false
+
+    switch (type) {
       case 'moonraker':
-        return topNavPowerToggle.device.status === 'on'
+        return device.status === 'on'
 
       case 'klipper':
-        return topNavPowerToggle.device.value !== 0
+        return device.value !== 0
     }
+
+    return false
   }
 
   get topNavPowerDeviceDisabled (): boolean {
-    const topNavPowerToggle = this.topNavPowerToggle
+    const { type, device } = this.topNavPowerToggle || {}
 
-    switch (topNavPowerToggle?.type) {
-      case 'moonraker': {
-        const device = topNavPowerToggle.device
-        return !device || (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
-      }
+    if (!device) return true
+
+    switch (type) {
+      case 'moonraker':
+        return (this.printerPrinting && device.locked_while_printing) || ['init', 'error'].includes(device.status) || (!this.devicePowerComponentEnabled)
 
       case 'klipper':
-        return !topNavPowerToggle.device || !this.klippyReady
+        return !this.klippyReady
     }
 
     return true
@@ -305,9 +325,9 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   handleResetLayout () {
-    const pathLayouts = {
+    const pathLayouts: Record<string, string> = {
       '/diagnostics': 'diagnostics'
-    } as Record<string, string>
+    }
 
     const pathLayout = pathLayouts[this.$route.path]
     let layoutDefaultState
@@ -343,6 +363,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
   }
 
   async handlePowerToggle () {
+    const { type, device } = this.topNavPowerToggle || {}
+
+    if (!device) return
+
     const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
     let res: boolean | undefined = true
     if (confirmOnPowerDeviceChange) {
@@ -353,8 +377,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
     }
 
     if (res) {
-      const { type, device } = this.topNavPowerToggle || {}
-
       switch (type) {
         case 'moonraker': {
           const state = (device.status === 'on') ? 'off' : 'on'
@@ -369,6 +391,10 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin) {
         }
       }
     }
+  }
+
+  handleUploadAndPrint (file: File) {
+    this.uploadFile(file, '/', 'gcodes', true)
   }
 
   saveConfigAndRestart (force = false) {

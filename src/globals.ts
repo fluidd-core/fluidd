@@ -11,13 +11,13 @@ import {
   mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
+  mdiFileRefreshOutline,
   mdiConsole,
   mdiChevronUp,
   mdiChevronDown,
   mdiTimerSand,
   mdiClockOutline,
   mdiFormatLineSpacing,
-  mdiFileDocumentOutline,
   mdiPause,
   mdiWindowClose,
   mdiPrinter,
@@ -114,6 +114,7 @@ import {
   mdiHarddisk,
   mdiLayersTripleOutline,
   mdiMessageTextOutline,
+  mdiFormatListBulleted,
   mdiSwapVertical,
   mdiFullscreen,
   mdiStop,
@@ -130,7 +131,13 @@ import {
   mdiLayersMinus,
   mdiLayers,
   mdiLayersPlus,
-  mdiFolderOpen
+  mdiFolderOpen,
+  mdiArchive,
+  mdiArchivePlus,
+  mdiTrayFull,
+  mdiTrayPlus,
+  mdiFolderArrowUp,
+  mdiShape
 } from '@mdi/js'
 
 /**
@@ -182,7 +189,8 @@ export const Globals = Object.freeze({
     history: { name: 'history', dispatch: 'history/init' },
     timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
     announcements: { name: 'announcements', dispatch: 'announcements/init' },
-    webcams: { name: 'webcam', dispatch: 'webcams/init' }
+    webcams: { name: 'webcam', dispatch: 'webcams/init' },
+    jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [
@@ -248,6 +256,7 @@ export const Icons = Object.freeze({
   alertCircle: mdiAlertCircle,
   folderAdd: mdiFolderPlus,
   folderUp: mdiFolderUpload,
+  folderUpload: mdiFolderArrowUp,
   folder: mdiFolder,
   fileUpload: mdiUpload,
   fileAdd: mdiFilePlus,
@@ -280,8 +289,8 @@ export const Icons = Object.freeze({
   chevronLeft: mdiChevronLeft,
   timer: mdiTimerSand,
   fileCode: mdiFileCodeOutline,
+  fileRefresh: mdiFileRefreshOutline,
   files: mdiFileTableOutline,
-  fileDocument: mdiFileDocumentOutline,
   file: mdiFile,
   fileCancel: mdiFileCancel,
   pause: mdiPause,
@@ -327,6 +336,7 @@ export const Icons = Object.freeze({
   desktopTower: mdiDesktopTower,
   harddisk: mdiHarddisk,
   message: mdiMessageTextOutline,
+  list: mdiFormatListBulleted,
   fullScreen: mdiFullscreen,
   video: mdiFileVideoOutline,
   snooze: mdiBellSleep,
@@ -343,7 +353,12 @@ export const Icons = Object.freeze({
   moves: mdiVectorLine,
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
-  folderOpen: mdiFolderOpen
+  parts: mdiShape,
+  folderOpen: mdiFolderOpen,
+  fileZip: mdiArchive,
+  fileZipAdd: mdiArchivePlus,
+  jobQueue: mdiTrayFull,
+  enqueueJob: mdiTrayPlus
 })
 
 export const Waits = Object.freeze({
@@ -388,11 +403,14 @@ export const Waits = Object.freeze({
   onExtruderChange: 'onExtruderChange',
   onLoadLanguage: 'onLoadLanguage',
   onFileSystem: 'onFileSystem',
+  onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
   onQueryEndstops: 'onQueryEndstops',
   onQueryProbe: 'onQueryProbe',
-  onVersionRefresh: 'onVersionRefresh'
+  onVersionRefresh: 'onVersionRefresh',
+  onSyncExtruder: 'onSyncExtruder',
+  onStepperEnable: 'onStepperEnable'
 })
 
 export const SupportedLocales = Object.freeze([
@@ -420,9 +438,9 @@ type DateTimeFormat = {
   suffix?: string
 }
 
-export const DateFormats = Object.freeze({
+export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
     suffix: ' (ISO 8601)'
   },
@@ -432,11 +450,11 @@ export const DateFormats = Object.freeze({
   short: {
     options: { day: '2-digit', month: 'short', year: 'numeric' }
   }
-} as Record<string, DateTimeFormat>)
+})
 
-export const TimeFormats = Object.freeze({
+export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { hour: '2-digit', minute: '2-digit', hour12: false },
     suffix: ' (ISO 8601)'
   },
@@ -446,4 +464,4 @@ export const TimeFormats = Object.freeze({
   hours24: {
     options: { hour: '2-digit', minute: '2-digit', hour12: false }
   }
-} as Record<string, DateTimeFormat>)
+})

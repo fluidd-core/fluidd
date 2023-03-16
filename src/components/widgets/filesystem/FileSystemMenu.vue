@@ -5,85 +5,113 @@
     offset-y
     transition="slide-y-transition"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        :disabled="disabled"
-        fab
-        small
-        text
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon>
-          $plus
-        </v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            v-bind="attrs"
+            :disabled="disabled"
+            fab
+            small
+            text
+            v-on="{... menu, ...tooltip}"
+          >
+            <v-icon>
+              $plus
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.add') }}</span>
+      </v-tooltip>
     </template>
 
-    <v-list
-      dense
-    >
+    <v-list dense>
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
         @click="emulateClick(false)"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $fileUpload
           </v-icon>
-          {{ $t('app.general.btn.upload') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.upload_files') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
+      <v-list-item
+        v-if="!readonly"
+        :disabled="disabled"
+        @click="emulateClick(false, true)"
+      >
+        <v-list-item-icon>
+          <v-icon>
+            $folderUpload
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.upload_folder') }}
+          </v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item
         v-if="!readonly && root === 'gcodes'"
         :disabled="disabled"
         @click="emulateClick(true)"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $progressUpload
           </v-icon>
-          {{ $t('app.general.btn.upload_print') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.upload_print') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="!readonly"
         :disabled="disabled"
         @click="$emit('add-file')"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $fileAdd
           </v-icon>
-          {{ $t('app.general.btn.add_file') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.add_file') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
+
       <v-list-item
         v-if="!readonly || canCreateDirectory"
         :disabled="disabled"
         @click="$emit('add-dir')"
       >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-          >
+        <v-list-item-icon>
+          <v-icon>
             $folderAdd
           </v-icon>
-          {{ $t('app.general.btn.add_dir') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.add_dir') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
+
     <input
       ref="uploadFile"
       type="file"
@@ -96,6 +124,7 @@
 </template>
 
 <script lang="ts">
+import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 
 @Component({})
@@ -124,23 +153,23 @@ export default class FileSystemMenu extends Vue {
     return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
   }
 
-  emulateClick (startPrint: boolean) {
+  emulateClick (startPrint: boolean, folder = false) {
     this.andPrint = startPrint
     this.uploadFile.multiple = !startPrint // Can't start print with multiple files
+    this.uploadFile.webkitdirectory = folder
     this.uploadFile.click()
   }
 
-  fileChanged (e: Event) {
+  async fileChanged (e: Event) {
     const target = e.target as HTMLInputElement
-    const files = target.files
-    const fileList = []
 
-    if (target && files && files.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        fileList.push(files[i])
+    if (target) {
+      const files = await getFilesWithPathFromHTMLInputElement(target)
+
+      if (files) {
+        this.$emit('upload', files, this.andPrint)
       }
 
-      this.$emit('upload', fileList, this.andPrint)
       target.value = ''
     }
   }

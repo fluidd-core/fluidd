@@ -50,25 +50,17 @@ export default class StateMixin extends Vue {
   // Returns a boolean indicating if the printer is busy.
   get printerBusy () {
     const printerState = this.printerState.toLowerCase()
-    if (
+
+    return (
       printerState === 'printing' ||
       printerState === 'paused' ||
       printerState === 'busy'
-    ) {
-      return true
-    }
-    return false
+    )
   }
 
   // Returns a boolean indicating if the printer is paused.
   get printerPaused () {
-    const printerState = this.printerState.toLowerCase()
-    if (
-      printerState === 'paused'
-    ) {
-      return true
-    }
-    return false
+    return this.printerState.toLowerCase() === 'paused'
   }
 
   /**
@@ -76,8 +68,7 @@ export default class StateMixin extends Vue {
    * (versus busy in some other way...)
    */
   get printerPrinting () {
-    if (this.printerState === 'printing') return true
-    return false
+    return this.printerState.toLowerCase() === 'printing'
   }
 
   /**

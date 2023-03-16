@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.jobs')"
     icon="$files"
-    :draggable="true"
+    draggable
     layout-path="dashboard.jobs-card"
   >
     <template #menu>
@@ -27,21 +27,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import StateMixin from '@/mixins/state'
 
 @Component({
   components: {
     FileSystem
   }
 })
-export default class JobsCard extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly enabled!: boolean
-
-  get inLayout (): boolean {
-    return (this.$store.state.config.layoutMode)
-  }
+export default class JobsCard extends Vue {
 }
 </script>

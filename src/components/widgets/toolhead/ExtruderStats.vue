@@ -6,6 +6,14 @@
   >
     <v-expansion-panel>
       <v-expansion-panel-header>
+        <template #actions>
+          <v-icon
+            small
+            class="my-1 mr-2"
+          >
+            $expand
+          </v-icon>
+        </template>
         <template #default="{ open }">
           <v-row no-gutters>
             <v-col
@@ -62,18 +70,6 @@ import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
-  get maxExtrudeLength (): number {
-    return this.activeExtruder?.max_extrude_only_distance || 50
-  }
-
-  get filamentDiameter (): number {
-    return this.activeExtruder?.filament_diameter || 1.75
-  }
-
-  get nozzleDiameter (): number {
-    return this.activeExtruder?.nozzle_diameter || 0.4
-  }
-
   get extrudeFactor (): number {
     return this.$store.state.printer.printer.gcode_move.extrude_factor || 1
   }
@@ -111,7 +107,8 @@ export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get estimatedMaxSpeed (): number {
-    return Math.round(this.estimatedVolumetricFlow / this.nozzleDiameter / this.layerHeight * 10) / 10
+    const stadiumArea = this.layerHeight * (this.nozzleDiameter + this.layerHeight * (Math.PI / 4 - 1))
+    return Math.round(this.estimatedVolumetricFlow / stadiumArea * 10) / 10
   }
 }
 </script>

@@ -47,7 +47,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
   async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
     const retry = state.disconnecting
-    const modules = ['server', 'charts', 'socket', 'wait']
+    const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait', 'gcodePreview']
 
     if (e.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
@@ -236,5 +236,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyWebcamsChanged ({ dispatch }, payload) {
     dispatch('webcams/onWebcamsChanged', payload, { root: true })
+  },
+
+  async notifyJobQueueChanged ({ dispatch }, payload) {
+    dispatch('jobQueue/onJobQueueChanged', payload, { root: true })
   }
 }

@@ -85,7 +85,7 @@
       </app-setting>
 
       <camera-config-dialog
-        v-if="dialogState.camera"
+        v-if="dialogState.active"
         v-model="dialogState.active"
         :camera="dialogState.camera"
         @save="handleSaveCamera"
@@ -123,17 +123,18 @@ export default class CameraSettings extends Vue {
   }
 
   handleAddDialog () {
-    const camera = {
+    const camera: CameraConfig = {
       id: '',
       enabled: true,
       flipX: false,
       flipY: false,
       name: '',
+      rotation: 0,
       service: 'mjpegstreamer-adaptive',
       targetFps: 15,
       targetFpsIdle: 5,
       urlStream: Globals.DEFAULTS.CAMERA_URL
-    } as CameraConfig
+    }
 
     this.dialogState = {
       active: true,

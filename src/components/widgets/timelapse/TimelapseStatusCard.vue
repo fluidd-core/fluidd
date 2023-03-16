@@ -3,7 +3,6 @@
     :title="$t('app.timelapse.title.timelapse_status')"
     icon="$info"
     class="mb-2 sb-sm-4"
-    :draggable="false"
   >
     <v-card-text>
       <v-row>
@@ -33,7 +32,7 @@
       <v-row>
         <v-col cols="12">
           <v-layout justify-center>
-            <app-slider
+            <app-named-slider
               v-model="selectedFrame"
               full-width
               :label="$tc('app.timelapse.label.frame')"
@@ -79,6 +78,7 @@ import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
 import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
+import FilesMixin from '@/mixins/files'
 
 @Component({
   components: {
@@ -86,7 +86,7 @@ import CameraItem from '@/components/widgets/camera/CameraItem.vue'
     FileSystem
   }
 })
-export default class StatusCard extends Mixins(StateMixin) {
+export default class StatusCard extends Mixins(StateMixin, FilesMixin) {
   selectedFrameNumber = 0
 
   saveFrames () {
@@ -106,21 +106,15 @@ export default class StatusCard extends Mixins(StateMixin) {
   }
 
   get previewUrl () {
-    const url = new URL(this.apiUrl ?? document.location.origin)
+    const file = this.lastFrame?.file
 
-    if (this.lastFrame && this.lastFrame?.file) {
-      let file = this.lastFrame?.file
-      if (this.selectedFrame) {
-        const [ext] = file.split('.').slice(-1)
-        file = `frame${this.selectedFrame.toString().padStart(6, '0')}.${ext}`
-      }
+    if (file) {
+      const fullFile = this.selectedFrame
+        ? `frame${this.selectedFrame.toString().padStart(6, '0')}.${file.split('.').pop()}`
+        : file
 
-      url.pathname = `/server/files/timelapse_frames/${file}`
-    } else {
-      return
+      return this.createFileUrl(fullFile, 'timelapse_frames')
     }
-
-    return url.toString()
   }
 
   get isRendering () {
@@ -155,10 +149,6 @@ export default class StatusCard extends Mixins(StateMixin) {
     }
 
     return 0
-  }
-
-  get apiUrl () {
-    return this.$store.state.config.apiUrl
   }
 }
 </script>

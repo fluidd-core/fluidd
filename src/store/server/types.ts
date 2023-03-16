@@ -37,6 +37,8 @@ export interface ServerInfo {
   components: string[];
   registered_directories: string[];
   warnings: string[];
+  api_version?: number[]
+  api_version_string?: string
 }
 
 export interface SystemInfo {
@@ -95,6 +97,14 @@ export interface DistroInfo {
   version_parts: DistroVersionParts;
   like: string;
   codename: string;
+  release_info?: ReleaseInfo;
+}
+
+export interface ReleaseInfo {
+  codename?: string;
+  id?: string;
+  name?: string;
+  version_id?: string;
 }
 
 export interface DistroVersionParts {
@@ -114,7 +124,7 @@ export interface NetworkState {
 
 export interface NetworkInterface {
   mac_address?: string;
-  ip_addresses?: NetworkIpAddress;
+  ip_addresses?: NetworkIpAddress[];
 }
 
 export interface NetworkIpAddress {

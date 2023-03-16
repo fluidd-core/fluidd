@@ -1,88 +1,76 @@
 <template>
-  <v-dialog
+  <app-dialog
     v-model="open"
+    :title="(config.id !== '') ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart')"
     :max-width="800"
-    scrollable
   >
-    <v-form>
-      <v-card>
-        <v-card-title class="card-heading py-2">
-          <span class="focus--text">{{ (config.id !== '') ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart') }}</span>
-        </v-card-title>
+    <v-card-text>
+      <v-stepper
+        v-model="currentStep"
+        non-linear
+        flat
+      >
+        <v-stepper-header>
+          <template v-for="(step, index) of steps">
+            <v-stepper-step
+              :key="`step-${index}`"
+              :step="index + 1"
+              editable
+            >
+              {{ step.name }}
+            </v-stepper-step>
 
-        <v-divider />
+            <v-divider
+              v-if="index < steps.length - 1"
+              :key="index"
+            />
+          </template>
+        </v-stepper-header>
 
-        <v-card-text>
-          <v-stepper
-            v-model="currentStep"
-            non-linear
-            flat
+        <v-stepper-items>
+          <v-stepper-content
+            v-for="(step, index) of steps"
+            :key="`${index}-content`"
+            class="pa-0"
+            :step="index + 1"
           >
-            <v-stepper-header>
-              <template v-for="(step, index) of steps">
-                <v-stepper-step
-                  :key="`step-${index}`"
-                  :step="index + 1"
-                  editable
-                >
-                  {{ step.name }}
-                </v-stepper-step>
+            <component
+              :is="step.component"
+              v-if="currentStep === index + 1"
+              :config="config"
+            />
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </v-card-text>
 
-                <v-divider
-                  v-if="index < steps.length - 1"
-                  :key="index"
-                />
-              </template>
-            </v-stepper-header>
+    <template #actions>
+      <app-btn
+        v-if="config.id !== ''"
+        color="error"
+        text
+        @click="handleDelete"
+      >
+        {{ $t('app.general.btn.remove') }}
+      </app-btn>
 
-            <v-stepper-items>
-              <v-stepper-content
-                v-for="(step, index) of steps"
-                :key="`${index}-content`"
-                class="pa-0"
-                :step="index + 1"
-              >
-                <component
-                  :is="step.component"
-                  v-if="currentStep === index + 1"
-                  :config="config"
-                />
-              </v-stepper-content>
-            </v-stepper-items>
-          </v-stepper>
-        </v-card-text>
+      <v-spacer />
 
-        <v-divider />
-
-        <v-card-actions>
-          <app-btn
-            v-if="config.id !== ''"
-            color="error"
-            text
-            @click="handleDelete"
-          >
-            {{ $t('app.general.btn.remove') }}
-          </app-btn>
-
-          <v-spacer />
-
-          <app-btn
-            color="warning"
-            text
-            @click="open = false"
-          >
-            {{ $t('app.general.btn.cancel') }}
-          </app-btn>
-          <app-btn
-            color="primary"
-            @click="handleSave"
-          >
-            {{ (config.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
-          </app-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+      <app-btn
+        color="warning"
+        text
+        @click="open = false"
+      >
+        {{ $t('app.general.btn.cancel') }}
+      </app-btn>
+      <app-btn
+        color="primary"
+        @click="handleSave"
+      >
+        {{ (config.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add') }}
+      </app-btn>
+    </template>
+  </app-dialog>
 </template>
 
 <script lang="ts">

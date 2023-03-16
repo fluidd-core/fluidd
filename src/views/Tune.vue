@@ -8,7 +8,7 @@
       cols="12"
       md="8"
     >
-      <bed-mesh-card :full-screen="true" />
+      <bed-mesh-card full-screen />
     </v-col>
     <v-col
       cols="12"

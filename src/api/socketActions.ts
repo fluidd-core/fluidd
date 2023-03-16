@@ -72,10 +72,22 @@ export const SocketActions = {
     )
   },
 
+  async machineUpdateRefresh (name?: string) {
+    baseEmit(
+      'machine.update.refresh', {
+        dispatch: 'version/onUpdateStatus',
+        params: { name },
+        wait: Waits.onVersionRefresh
+      }
+    )
+  },
+
   async machineUpdateRecover (name: string, hard = false) {
-    let dispatch = 'version/onUpdatedClient'
-    if (name === 'moonraker') dispatch = 'version/onUpdatedMoonraker'
-    if (name === 'klipper') dispatch = 'version/onUpdatedKlipper'
+    const dispatch = name === 'moonraker'
+      ? 'version/onUpdatedMoonraker'
+      : name === 'klipper'
+        ? 'version/onUpdatedKlipper'
+        : 'version/onUpdatedClient'
     baseEmit(
       'machine.update.recover', {
         dispatch,
@@ -104,8 +116,9 @@ export const SocketActions = {
   },
 
   async machineUpdateClient (name: string) {
-    let dispatch = 'version/onUpdatedClient'
-    if (name === 'fluidd') dispatch = 'version/onUpdatedFluidd'
+    const dispatch = name === 'fluidd'
+      ? 'version/onUpdatedFluidd'
+      : 'version/onUpdatedClient'
     baseEmit(
       'machine.update.client', {
         dispatch,
@@ -457,6 +470,60 @@ export const SocketActions = {
     )
   },
 
+  async serverJobQueueStatus () {
+    baseEmit(
+      'server.job_queue.status', {
+        dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue
+      }
+    )
+  },
+
+  async serverJobQueuePostJob (filenames: string[], reset?: boolean) {
+    baseEmit(
+      'server.job_queue.post_job', {
+        dispatch: 'jobQueue/onJobQueueStatus',
+        params: {
+          filenames,
+          reset
+        },
+        wait: Waits.onJobQueue
+      }
+    )
+  },
+
+  async serverJobQueueDeleteJobs (jobIds: string[]) {
+    const params = jobIds.length > 0 && jobIds[0] === 'all'
+      ? { all: true }
+      : { job_ids: jobIds }
+
+    baseEmit(
+      'server.job_queue.delete_job', {
+        dispatch: 'jobQueue/onJobQueueStatus',
+        params,
+        wait: Waits.onJobQueue
+      }
+    )
+  },
+
+  async serverJobQueuePause () {
+    baseEmit(
+      'server.job_queue.pause', {
+        dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue
+      }
+    )
+  },
+
+  async serverJobQueueStart () {
+    baseEmit(
+      'server.job_queue.start', {
+        dispatch: 'jobQueue/onJobQueueStatus',
+        wait: Waits.onJobQueue
+      }
+    )
+  },
+
   /**
    * Loads the metadata for a given filepath.
    * Expects the full path including root.
@@ -508,6 +575,35 @@ export const SocketActions = {
         params: {
           source,
           dest
+        }
+      }
+    )
+  },
+
+  async serverFilesCopy (source: string, dest: string) {
+    const wait = Waits.onFileSystem
+    baseEmit(
+      'server.files.copy', {
+        dispatch: 'void',
+        wait,
+        params: {
+          source,
+          dest
+        }
+      }
+    )
+  },
+
+  async serverFilesZip (dest: string, items: string[], store_only?: boolean) {
+    const wait = Waits.onFileSystem
+    baseEmit(
+      'server.files.zip', {
+        dispatch: 'void',
+        wait,
+        params: {
+          dest,
+          items,
+          store_only
         }
       }
     )
@@ -572,6 +668,17 @@ export const SocketActions = {
         params: {
           entry_id,
           wake_time
+        }
+      }
+    )
+  },
+
+  async serverLogsRollover (application?: string) {
+    baseEmit(
+      'server.logs.rollover', {
+        dispatch: 'server/onLogsRollOver',
+        params: {
+          application
         }
       }
     )

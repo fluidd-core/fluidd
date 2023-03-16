@@ -27,7 +27,7 @@ export const mutations: MutationTree<AnnouncementsState> = {
         entry.date_dismissed = null
         entry.dismiss_wake = null
       } else {
-        entry.date_dismissed = new Date().getTime()
+        entry.date_dismissed = Date.now()
       }
     }
 

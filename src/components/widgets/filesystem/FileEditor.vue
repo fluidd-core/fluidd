@@ -16,12 +16,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
+import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
-export default class FileEditor extends Vue {
+export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly value!: string
 
@@ -39,26 +40,6 @@ export default class FileEditor extends Vue {
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
-
-  // Base editor options.
-  opts: Monaco.editor.IStandaloneEditorConstructionOptions = {
-    contextmenu: true,
-    readOnly: this.readonly,
-    codeLens: this.codeLens,
-    automaticLayout: true,
-    fontSize: 16,
-    scrollbar: {
-      useShadows: false
-    },
-    minimap: {
-      enabled: (!this.isMobile)
-    },
-    rulers: (this.isMobile) ? [80, 120] : []
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
 
   async mounted () {
     // Init the editor.
@@ -80,7 +61,18 @@ export default class FileEditor extends Vue {
 
     // Create an editor instance.
     this.editor = monaco.editor.create(this.monacoEditor, {
-      ...this.opts
+      contextmenu: true,
+      readOnly: this.readonly,
+      codeLens: this.codeLens,
+      automaticLayout: true,
+      fontSize: 16,
+      scrollbar: {
+        useShadows: false
+      },
+      minimap: {
+        enabled: (!this.isMobileViewport)
+      },
+      rulers: (this.isMobileViewport) ? [80, 120] : []
     })
 
     // Define the model. The filename will map to the supported languages.

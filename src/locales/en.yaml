@@ -18,11 +18,9 @@ app:
       not_loaded: No mesh loaded
     tooltip:
       calibrate: Begins a new calibration, saving as profile 'default'
-      delete: Delete Profile. This WILL restart your printer
+      delete: Delete Profile
       load: Load Profile
-      save: >-
-        Commits calibrated profile to printer.cfg. This WILL restart your
-        printer
+      save: Commits calibrated profile to printer.cfg
   chart:
     label:
       current: Actual
@@ -91,7 +89,8 @@ app:
       not_found: No files found
       processing: Processing
     overlay:
-      label: <strong>Drag</strong> a file here
+      drag_files_folders_upload: <strong>Drag</strong> files and folders here to upload
+      drag_files_enqueue: <strong>Drag</strong> files here to enqueue
     title:
       add_dir: Add Directory
       add_file: Add File
@@ -102,6 +101,7 @@ app:
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space
+      move_item: Move item | Move {count} items
       root_disabled: '{root} root is not available. Please check your logs.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
@@ -121,6 +121,7 @@ app:
       show_extrusions: Show extrusions
       show_moves: Show moves
       show_next_layer: Show next layer
+      show_parts: Show parts
       show_previous_layer: Show previous layer
       show_retractions: Show retractions
       parsing_file: Parsing file
@@ -136,6 +137,7 @@ app:
       add_dir: Add Directory
       add_file: Add File
       add_printer: Add printer
+      add_to_queue: Add to Queue
       adjust_layout: Adjust dashboard layout
       adjusted: Adjusted
       all: All
@@ -145,13 +147,16 @@ app:
       clear_profile: Clear Profile
       close: Close
       config_reference: Config Reference
+      create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
+      filter: Filter
       forgot_password: Forgotten your password?
       heaters_off: Heaters off
+      job_queue: Job Queue
       load_all: Load all
       login: Login
       logout: Logout
@@ -165,6 +170,7 @@ app:
       reboot: Reboot
       recover: Recover
       refresh: Refresh
+      reload: Reload
       remove: Remove
       remove_all: Remove All
       rename: Rename
@@ -191,6 +197,8 @@ app:
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
       upload: Upload
+      upload_files: Upload Files
+      upload_folder: Upload Folder
       upload_print: Upload & Print
       view: View
       reset_stats: Reset Stats
@@ -214,6 +222,7 @@ app:
       add_filter: Add Filter
       add_preset: Add Preset
       add_user: Add user
+      all: All
       api_key: Api Key
       api_url: API URL
       auth_source: Authentication Source
@@ -221,9 +230,11 @@ app:
       change_password: Change password
       clear_all: Clear all
       color: Color
+      command: Command
       confirm: Confirm
       current_password: Current password
       current_user: Current user
+      default: Default
       disabled_while_printing: Disabled while printing
       edit_camera: Edit Camera
       edit_filter: Edit Filter
@@ -255,8 +266,12 @@ app:
       no_notifications: No notifications
       'on': 'On'
       'off': 'Off'
+      numeric_prefix_sort: Numeric Prefix sort
       password: Password
       partial_of_total: '%{partial} of %{total}'
+      pause_at_layer: Pause at Layer
+      pause_at_next_layer: Pause at next layer
+      pause_at_layer_number: Pause at layer number
       power: Power
       pressure_advance: Pressure Advance
       printers: Printers
@@ -273,6 +288,8 @@ app:
       smooth_time: Smooth Time
       speed: Speed
       sqv: Square Corner Velocity
+      stepper_enabled: Stepper Enabled
+      synced_extruder: Synced Extruder
       thumbnail_size: Thumbnail Size
       total: Total
       total_filament: Total filament used
@@ -287,10 +304,12 @@ app:
       uncategorized: Uncategorized
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
+      upload_and_print: Upload and Print
       used: used
       username: Username
       variance: Variance
       velocity: Velocity
+      version_sort: Version sort
       visible: Visible
       z_offset: Z Offset
       unsaved_changes: Unsaved Changes
@@ -306,6 +325,11 @@ app:
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
       welcome_back: >-
         Welcome back.<br>Sign in below to stay in touch with your printer.
+      offline_ready: Fluidd is now ready to work offline.
+      needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      pending_configuration_sections_deleted: The following sections are marked for deletion
+      rolledover_logs: >-
+        The following application logs have been rolled over: %{applications}
     simple_form:
       error:
         arrayofnums: Only numbers
@@ -360,6 +384,8 @@ app:
         name: Name
         nozzle_diameter: Nozzle diameter
         print_duration: Print duration
+        time_added: Time Added
+        time_in_queue: Time In Queue
         size: Size
         slicer: Slicer
         slicer_version: Slicer version
@@ -383,6 +409,7 @@ app:
       history: History
       home: Home
       jobs: Jobs
+      job_queue: Job Queue
       limits: Printer Limits
       macros: Macros
       metrics_explorer: Metrics Explorer
@@ -390,6 +417,7 @@ app:
       other_files: Other Files
       pending_configuration_changes: Pending Configuration Changes
       retract: Firmware Retraction
+      rollover_logs: Rollover logs
       runout_sensors: Runout Sensors
       settings: Settings
       stats: Printer Stats
@@ -408,8 +436,13 @@ app:
       reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
       restart_klipper: Restarts the klipper system service.
       run_collector: Run collector
+      rollover_logs: Rollover logs
   history:
     msg:
+      confirm: Are you sure? This will clear all history, and printer statistics
+  job_queue:
+    msg:
+      confirm: Are you sure? This will clear the entire printer queue
       confirm_jobs: Are you sure? This will clear all jobs.
       confirm_stats: Are you sure? This will clear all stats.
   printer:
@@ -436,6 +469,7 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
+      hlsstream: HLS Stream
       video: IP Camera
       iframe: HTTP page
     camera_rotate_options:
@@ -451,6 +485,7 @@ app:
       auto_edit_extensions: Extensions to automatically open in edit mode
       auto_follow_on_file_load: Automatically follow progress on file load
       auto_load_on_print_start: Automatically load file on print start
+      auto_load_mobile_on_print_start: Automatically load file on mobile devices
       axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
@@ -472,6 +507,7 @@ app:
       dashed: Dashed
       default_extrude_length: Default extrude length
       default_extrude_speed: Default extrude speed
+      default_min_layer_height: Default minimum layer height
       default_toolhead_move_length: Default toolhead move length
       default_toolhead_xy_speed: Default toolhead XY speed
       default_toolhead_z_speed: Default toolhead Z speed
@@ -491,7 +527,6 @@ app:
       fps_idle_target: FPS Target when not in focus
       height: Height
       gcode_coords: Use GCode Coordinates
-      group_lower_layers: Group lower layers
       icon: Icon
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
@@ -517,10 +552,12 @@ app:
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_code_lens: Show CodeLens
+      show_gas_resistance: Show gas resistance
       show_legend: Show legend
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       show_save_config_and_restart: Save Config and Restart button in top navigation
+      show_upload_and_print: Show Upload and Print button in top navigation
       solid: Solid
       starts_with: Starts with
       theme_preset: Community preset
@@ -533,6 +570,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
+      text_sort_order: Text Sort Order
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
@@ -581,6 +619,7 @@ app:
       micro_controller: Micro-Controller
       model: CPU Model
       moonraker_load: Moonraker Load
+      network: Network
       processor_desc: Processor
       product_name: Product Name
       serial_number: Serial Number
@@ -588,7 +627,9 @@ app:
       system_memory: System Memory
       system_utilization: System Utilization
       total_memory: Total Memory
+      operating_system: Operating System
       version: Version
+      virtualization: Virtualization
   tool:
     btn:
       home_x: X
@@ -700,6 +741,8 @@ app:
         center: Center
         back_left: Back Left
         back_right: Back Right
+        x_only: Move X only
+        y_only: Move Y only
       previewimage: Generate Thumbnail
       saveframes: Save Frames
       stream_delay_compensation: Delay Compensation

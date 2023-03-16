@@ -4,6 +4,8 @@ export type LayerNr = number
 
 export interface GcodePreviewState {
   moves: Move[];
+  layers: Layer[],
+  parts: Part[],
   file?: AppFile;
   parserProgress: number;
   parserWorker: Worker | null;
@@ -15,6 +17,7 @@ export interface GcodePreviewState {
     showMoves: boolean;
     showExtrusions: boolean;
     showRetractions: boolean;
+    showParts: boolean;
     followProgress: boolean;
   };
 }
@@ -25,12 +28,13 @@ export interface LinearMove {
   z?: number;
   e?: number;
 
-  filePosition?: number;
+  filePosition: number;
 }
 
 export interface ArcMove extends LinearMove {
   i?: number;
   j?: number;
+  k?: number;
   r?: number;
   direction: Rotation;
 }
@@ -70,6 +74,10 @@ export interface Layer {
   filePosition: number;
 }
 
+export interface Part {
+  polygon: Point[]
+}
+
 export interface MinMax {
   min: number;
   max: number;
@@ -84,8 +92,10 @@ export type ParseGcodeWorkerClientMessage = {
   action: 'progress',
   filePosition: number
 } | {
-  action: 'moves',
-  moves: Move[]
+  action: 'result',
+  moves: Move[],
+  layers: Layer[],
+  parts: Part[]
 }
 
 export type ParseGcodeWorkerServerMessage = {

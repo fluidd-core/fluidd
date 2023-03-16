@@ -16,6 +16,14 @@ export const mutations: MutationTree<GcodePreviewState> = {
     Vue.set(state, 'moves', Object.freeze(payload.map(Object.freeze)))
   },
 
+  setLayers (state, payload) {
+    Vue.set(state, 'layers', Object.freeze(payload.map(Object.freeze)))
+  },
+
+  setParts (state, payload) {
+    Vue.set(state, 'parts', Object.freeze(payload.map(Object.freeze)))
+  },
+
   setFile (state, file: AppFile) {
     state.file = file
   },

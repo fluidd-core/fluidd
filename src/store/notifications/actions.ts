@@ -28,7 +28,7 @@ export const actions: ActionTree<NotificationsState, RootState> = {
         // snackbar: true,
         id: uuidv4(),
         type: 'info',
-        timestamp: new Date().getTime() / 1000,
+        timestamp: Date.now() / 1000,
         clear: true,
         merge: false
       },

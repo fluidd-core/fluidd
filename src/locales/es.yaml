@@ -17,11 +17,9 @@ app:
       not_loaded: No está cargada ninguna malla.
     tooltip:
       calibrate: 'Comienza una nueva calibración, se guardará con el nombre ''default'''
-      delete: Elimina el perfil. Esto REINICIARÁ su impresora
+      delete: Elimina el perfil
       load: Cargar el perfil
-      save: >-
-        Guarda el perfil de calibracion en el archivo printer.cfg.  Esto
-        REINICIARÁ su impresora
+      save: Guarda el perfil de calibracion en el archivo printer.cfg
   chart:
     label:
       current: Tª

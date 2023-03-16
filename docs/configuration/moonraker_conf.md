@@ -18,11 +18,8 @@ Your moonraker configuration can usually be found here: `~/klipper_config/moonra
 [server]
 host: 0.0.0.0
 port: 7125
-enable_debug_logging: False
 
 [file_manager]
-config_path: ~/klipper_config
-log_path: ~/klipper_logs
 # cancel object preprocessing - set to True to enable; leave disabled when running on a low-powered device (e.g. Pi Zero)
 enable_object_processing: False
 
@@ -31,11 +28,12 @@ temperature_store_size: 600
 gcode_store_size: 1000
 
 [authorization]
-force_logins: true
+force_logins: false
 
 cors_domains:
   *.local
   *.lan
+  *://localhost
   *://app.fluidd.xyz
 
 trusted_clients:
@@ -54,7 +52,11 @@ trusted_clients:
 [update_manager]
 enable_auto_refresh: True
 
-[update_manager client fluidd]
+[announcements]
+subscriptions:
+  fluidd
+
+[update_manager fluidd]
 type: web
 repo: fluidd-core/fluidd
 path: ~/fluidd
