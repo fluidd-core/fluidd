@@ -58,20 +58,21 @@ import { Endstop, Probe } from '@/store/printer/types'
 })
 export default class EndStopsCard extends Mixins(StateMixin) {
   get endstops (): Endstop[] {
-    return this.$store.getters['printer/getEndstops']
+    return this.$store.getters['printer/getEndstops'] as Endstop[]
   }
 
-  get probe (): Probe {
-    return this.$store.getters['printer/getProbe']
+  get probe (): Probe | undefined {
+    return this.$store.getters['printer/getProbe'] as Probe | undefined
   }
 
   get endstopsAndProbes () {
     const endstopsAndProbes = [...this.endstops]
+    const probe = this.probe
 
-    if (this.hasProbe) {
+    if (probe !== undefined) {
       endstopsAndProbes.push({
         name: 'Probe',
-        state: this.probe.last_query ? 'triggered' : 'open'
+        state: probe.last_query ? 'triggered' : 'open'
       })
     }
 
@@ -83,14 +84,10 @@ export default class EndStopsCard extends Mixins(StateMixin) {
     return this.endstops.length > 0
   }
 
-  get hasProbe () {
-    return this.probe !== undefined
-  }
-
   queryEndstops () {
     SocketActions.printerQueryEndstops()
 
-    if (this.hasProbe) {
+    if (this.probe !== undefined) {
       this.sendGcode('QUERY_PROBE', this.$waits.onQueryProbe)
     }
   }

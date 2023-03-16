@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -356,8 +356,30 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return endstops
   },
 
-  getProbe: (state) => {
-    const probe: Probe = state.printer.probe
+  getProbe: (state, getters): Probe | undefined => {
+    const probe = state.printer.probe as Probe | undefined
+
+    if (probe && !probe.name) {
+      const probeNames = [
+        'bltouch',
+        'smart_effector',
+        'probe'
+      ] as ProbeName[]
+
+      for (const name of probeNames) {
+        const probeSettings = getters.getPrinterSettings(name)
+
+        if (probeSettings?.z_offset !== undefined) {
+          const probeWithName: Probe = {
+            ...probe,
+            name
+          }
+
+          return probeWithName
+        }
+      }
+    }
+
     return probe
   },
 
