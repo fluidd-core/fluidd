@@ -661,12 +661,7 @@ app:
       home_z: Додому Z
       manual_probe: Manual Probe
       motors_off: Вимкнути мотори
-      z_tilt_adjust: Регулювання нахилу осі Z
-      quad_gantry_level: QGL
       relative_positioning: Відносне позиціонування
-      screws_tilt_calculate: Розрахунок нахилу гвинтів
-      bed_screws_adjust: Регулювання гвинтів столу
-      force_move: FORCE_MOVE
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Конфігурація активного екструдера

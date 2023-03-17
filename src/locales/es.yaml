@@ -488,17 +488,13 @@ app:
       bed_screws_adjust: Ajustar tornillos de la cama
     tooltip:
       absolute_positioning: Posicionamiento Absoluto
-      bed_screws_adjust: BED_SCREWS_ADJUST
       extruder_disabled: >-
         Extrusor deshabilidado, por debajo de min_extrude_temp
         (%{min}<small>°C</small>)
-      force_move: FORCE_MOVE
       home_xy: Origen XY
       home_z: Origen Z
-      motors_off: APAGAR MOTORES
+      motors_off: Apagar Motores
       relative_positioning: Posicionamiento Relativo
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      z_tilt_adjust: Z_Tilt_Adjust
   version:
     btn:
       check_for_updates: Buscar actualizaciones

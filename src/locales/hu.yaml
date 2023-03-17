@@ -635,13 +635,8 @@ app:
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
       manual_probe: Kézi szonda
-      motors_off: MOTOROK KI
-      z_tilt_adjust: Z_Tilt_Adjust
-      quad_gantry_level: QGL
+      motors_off: Motorok Ki
       relative_positioning: Relatív pozicionálás
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      bed_screws_adjust: BED_SCREWS_ADJUST
-      force_move: FORCE_MOVE
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>

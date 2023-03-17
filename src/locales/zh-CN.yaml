@@ -591,12 +591,7 @@ app:
       home_z: 归位 Z
       manual_probe: 手动探测
       motors_off: 关闭电机
-      z_tilt_adjust: Z轴倾斜调整
-      quad_gantry_level: 龙门架调平
       relative_positioning: 相对位置
-      screws_tilt_calculate: 辅助调平螺丝
-      bed_screws_adjust: 手动调平螺丝
-      force_move: 强制移动
     label:
       stats_active_extruder: '挤出机配置为耗材直径 %{filamentDiameter}mm，喷嘴直径 %{nozzleDiameter}mm'
       stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度，预估挤出耗材体积为 %{estimatedVolumetricFlow}mm³/s'

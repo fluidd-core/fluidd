@@ -640,17 +640,12 @@ app:
       manual_probe: マニュアルプローブ
     tooltip:
       absolute_positioning: 相対位置
-      bed_screws_adjust: ベッドスクリューの調整
       extruder_disabled: '最小温度未満（%{min}<small>°C</small>）のためホットエンドが無効です。'
-      force_move: 強制移動
       home_xy: Home XY
       home_z: Home Z
       manual_probe: マニュアルプローブ
       motors_off: モーターオフ
-      quad_gantry_level: QGL
       relative_positioning: 相対位置
-      screws_tilt_calculate: ネジチルト計算
-      z_tilt_adjust: Zチルト調整
   version:
     btn:
       check_for_updates: アップデートを確認
