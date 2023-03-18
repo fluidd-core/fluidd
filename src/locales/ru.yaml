@@ -601,13 +601,8 @@ app:
       home_xy: Домой XY
       home_z: Домой Z
       manual_probe: Ручная регулировка стола
-      motors_off: МОТОРЫ ВЫКЛ
-      z_tilt_adjust: Z Регулировка наклона
-      quad_gantry_level: QGL
+      motors_off: Моторы Выкл
       relative_positioning: Относительная позиция
-      screws_tilt_calculate: Расчет Наклона Винтами
-      bed_screws_adjust: РЕГУЛИРОВКА ВИНТОВ СТОЛА
-      force_move: Форс. перемещение
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Активный экструдер настроен на </span>
