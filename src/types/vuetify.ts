@@ -1,13 +1,21 @@
 export type VForm = Vue & HTMLFormElement & {
-  validate: () => boolean;
-  resetValidation: () => boolean;
+  resetValidation: () => void,
+  validate: () => boolean,
 }
 
 export type VInput = Vue & HTMLInputElement & {
-  validate: (force?: boolean) => boolean;
-  valid: boolean
+  hasColor: boolean,
+  hasFocused: boolean,
+  hasInput: boolean,
+  hasMouseDown: boolean,
+  isFocused: boolean,
+  isResetting: boolean,
+  reset: () => void,
+  resetValidation: () => void,
+  valid: boolean,
+  validate: (force?: boolean) => boolean,
 }
 
 export type VSlider = VInput & {
-  value: number
+  value: number,
 }
