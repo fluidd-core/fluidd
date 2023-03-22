@@ -21,6 +21,7 @@
       hide-default-footer
       disable-pagination
       disable-sort
+      fixed-header
       @click:row="handleRowClick"
       @contextmenu:row.prevent="handleContextMenu"
     >

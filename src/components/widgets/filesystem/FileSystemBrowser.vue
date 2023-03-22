@@ -24,6 +24,7 @@
       sort-by="modified"
       hide-default-footer
       class="rounded-0"
+      fixed-header
       @input="handleSelected"
       @item-selected="handleItemSelected"
     >
