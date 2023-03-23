@@ -115,7 +115,12 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
     const movedItem = filenames.splice(event.oldIndex, 1)[0]
     filenames.splice(event.newIndex, 0, movedItem)
 
-    SocketActions.serverJobQueuePostJob(filenames, true)
+    if (this.$store.getters['server/getIsMinApiVersion']('1.1.0')) {
+      SocketActions.serverJobQueuePostJob(filenames, true)
+    } else {
+      SocketActions.serverJobQueueDeleteJobs(['all'])
+      SocketActions.serverJobQueuePostJob(filenames)
+    }
   }
 }
 </script>
