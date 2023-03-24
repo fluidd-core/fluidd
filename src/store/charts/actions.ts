@@ -71,8 +71,7 @@ export const actions: ActionTree<ChartState, RootState> = {
         date
       }
       keys.forEach(key => {
-        let label = key
-        if (key.includes(' ')) label = key.split(' ')[1]
+        const label = key.split(' ', 2).pop() || ''
 
         if (rootState.printer.printer[key]) {
           const temp = rootState.printer.printer[key].temperature || 0

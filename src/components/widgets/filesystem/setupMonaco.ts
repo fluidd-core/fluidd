@@ -106,7 +106,7 @@ async function setupMonaco () {
       const sections = linesContent.reduce((ranges, lineContent, index) => {
         const section = /^\[([^\]]+)\]/.exec(lineContent)
         if (section) {
-          const [sectionName] = section[1].split(' ')
+          const [sectionName] = section[1].split(' ', 1)
 
           const referenceSection = getDocsSection(service, sectionName)
 

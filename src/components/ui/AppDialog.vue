@@ -101,8 +101,8 @@ export default class AppDialog extends Vue {
   @Prop({ type: Number })
   readonly width?: number
 
-  @Prop({ type: Number })
-  readonly maxWidth?: number
+  @Prop({ type: [String, Number] })
+  readonly maxWidth?: string | number
 
   @Prop({ type: Boolean })
   readonly persistent?: boolean
