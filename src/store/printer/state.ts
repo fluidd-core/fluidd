@@ -9,8 +9,7 @@ export const defaultState = (): PrinterState => {
     printer: {
       endstops: {},
       bed_mesh: {
-        profile_name: '',
-        profiles: []
+        profile_name: ''
       },
       heaters: {
         available_heaters: [],
