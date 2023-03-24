@@ -77,7 +77,7 @@ app:
     msg:
       confirm: 這將刪除所有文件和文件夾！是否確認？
       not_found: 文件未找到
-      processing: 處理中... Transtate by oldcookie
+      processing: 處理中...
     overlay:
       drag_files_folders_upload: <strong>拖動</strong>文件和文件夾到這裡上傳
       drag_files_enqueue: <strong>拖動</strong>文件到這裡排隊
