@@ -15,7 +15,22 @@ export interface KlipperBedMesh {
   mesh_max?: number[];
   probed_matrix?: number[][];
   mesh_matrix?: number[][];
-  profiles: Record<string, KlipperBedMeshProfile>
+  profiles?: Record<string, KlipperBedMeshProfile>
+}
+
+export interface LegacyKlipperBedMeshProfile {
+  version: string;
+  points: string;
+  algo: string;
+  max_x: string;
+  max_y: string;
+  mesh_x_pps: string;
+  mesh_y_pps: string;
+  min_x: string;
+  min_y: string;
+  tension: string;
+  x_count: string;
+  y_count: string;
 }
 
 export interface KlipperBedMeshProfile {
