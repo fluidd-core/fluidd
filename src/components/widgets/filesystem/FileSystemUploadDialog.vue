@@ -2,7 +2,7 @@
   <app-dialog
     v-model="value"
     :title="$tc('app.file_system.title.upload_file', files.length)"
-    max-width="500"
+    :max-width="500"
     persistent
     no-actions
   >

@@ -88,8 +88,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
     const keys = this.$store.getters['printer/getChartableSensors'] as string[]
 
     keys.forEach((key) => {
-      let label = key
-      if (key.includes(' ')) label = key.split(' ')[1]
+      const label = key.split(' ', 2).pop() || ''
 
       this.series.push(this.createSeries(label, key))
       if (dataKeys.includes(label + 'Target')) this.series.push(this.createSeries(label + 'Target', key))
