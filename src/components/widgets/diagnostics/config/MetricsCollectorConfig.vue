@@ -53,7 +53,7 @@
       v-if="browserOpen"
       v-model="browserOpen"
       :title="$t('app.general.title.metrics_explorer')"
-      :max-width="1200"
+      max-width="1200"
       no-actions
     >
       <v-card-text>

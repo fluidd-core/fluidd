@@ -14,7 +14,7 @@
           :roots="'gcodes'"
           name="jobs"
           bulk-actions
-          :max-height="816"
+          max-height="816"
         />
       </collapsable-card>
     </v-col>

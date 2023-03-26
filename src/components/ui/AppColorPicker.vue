@@ -3,7 +3,7 @@
     v-model="menu"
     bottom
     left
-    :max-width="260"
+    max-width="260"
     :close-on-content-click="false"
   >
     <template #activator="{ on, attrs }">

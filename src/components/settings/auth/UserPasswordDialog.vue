@@ -4,55 +4,57 @@
     :title="$t('app.general.label.change_password')"
     :cancel-button-loading="loading"
     :save-button-loading="loading"
-    :max-width="500"
+    max-width="500"
     @save="handleSave"
   >
-    <v-card-text
-      v-if="error"
-      class="mb-0"
-    >
-      <v-alert
-        type="error"
-        text
+    <div class="overflow-y-auto">
+      <v-card-text
+        v-if="error"
         class="mb-0"
       >
-        {{ $t('app.general.msg.wrong_password') }}
-      </v-alert>
-    </v-card-text>
+        <v-alert
+          type="error"
+          text
+          class="mb-0"
+        >
+          {{ $t('app.general.msg.wrong_password') }}
+        </v-alert>
+      </v-card-text>
 
-    <app-setting :title="$t('app.general.label.current_password')">
-      <v-text-field
-        v-model="currentPassword"
-        autocomplete="current-password"
-        filled
-        dense
-        type="password"
-        class="mt-0"
-        hide-details="auto"
-        :rules="[
-          $rules.required
-        ]"
-      />
-    </app-setting>
+      <app-setting :title="$t('app.general.label.current_password')">
+        <v-text-field
+          v-model="currentPassword"
+          autocomplete="current-password"
+          filled
+          dense
+          type="password"
+          class="mt-0"
+          hide-details="auto"
+          :rules="[
+            $rules.required
+          ]"
+        />
+      </app-setting>
 
-    <v-divider />
+      <v-divider />
 
-    <app-setting :title="$t('app.general.label.new_password')">
-      <v-text-field
-        v-model="password"
-        autocomplete="current-password"
-        filled
-        dense
-        type="password"
-        class="mt-0"
-        hide-details="auto"
-        :rules="[
-          $rules.required,
-          $rules.lengthGreaterThanOrEqual(4),
-          $rules.passwordNotEqualUsername(currentUser)
-        ]"
-      />
-    </app-setting>
+      <app-setting :title="$t('app.general.label.new_password')">
+        <v-text-field
+          v-model="password"
+          autocomplete="current-password"
+          filled
+          dense
+          type="password"
+          class="mt-0"
+          hide-details="auto"
+          :rules="[
+            $rules.required,
+            $rules.lengthGreaterThanOrEqual(4),
+            $rules.passwordNotEqualUsername(currentUser)
+          ]"
+        />
+      </app-setting>
+    </div>
   </app-dialog>
 </template>
 

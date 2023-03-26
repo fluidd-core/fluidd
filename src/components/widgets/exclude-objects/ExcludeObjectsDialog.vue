@@ -2,10 +2,10 @@
   <app-dialog
     v-model="open"
     :title="$t('app.gcode.label.exclude_object')"
-    :max-width="500"
+    max-width="500"
     no-actions
   >
-    <v-card-text class="py-3 px-5">
+    <v-card-text>
       <v-simple-table>
         <tbody>
           <tr

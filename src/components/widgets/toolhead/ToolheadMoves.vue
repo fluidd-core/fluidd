@@ -169,7 +169,7 @@
             v-for="(distance, index) of toolheadMoveDistances"
             :key="index"
             small
-            :min-width="40"
+            min-width="40"
             :value="distance"
             :elevation="2"
             :disabled="!klippyReady"
