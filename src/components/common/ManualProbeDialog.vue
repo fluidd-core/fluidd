@@ -5,7 +5,7 @@
     :cancel-button-text="$t('app.general.btn.abort')"
     :save-button-text="$t('app.general.btn.accept')"
     :save-button-loading="hasWait($waits.onManualProbe)"
-    :max-width="450"
+    max-width="450"
     @cancel="sendAbort"
     @save="sendAccept"
   >

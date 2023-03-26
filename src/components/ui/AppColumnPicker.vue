@@ -4,7 +4,7 @@
     left
     offset-y
     transition="slide-y-transition"
-    :min-width="150"
+    min-width="150"
     :close-on-content-click="false"
   >
     <template #activator="{ on, attrs }">

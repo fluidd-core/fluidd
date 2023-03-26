@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="$t('app.general.label.save_as')"
-    :max-width="450"
+    max-width="450"
     @save="handleSubmit()"
   >
     <v-card-text>

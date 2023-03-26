@@ -2,77 +2,79 @@
   <app-dialog
     v-model="open"
     :title="$t('app.general.label.pause_at_layer')"
-    :max-width="450"
+    max-width="450"
     :save-button-text="$t('app.general.btn.accept')"
     @save="sendAccept"
   >
-    <template v-if="hasSetPauseNextLayerMacro">
-      <app-setting :title="$t('app.general.label.pause_at_next_layer')">
-        <v-switch
-          v-model="pauseNextLayer.enable"
-          class="mt-0"
-          hide-details
-        />
-      </app-setting>
-
-      <template v-if="pauseNextLayer.enable">
-        <v-divider />
-
-        <app-setting :title="$t('app.general.label.command')">
-          <v-combobox
-            v-model="pauseNextLayer.call"
-            :items="['PAUSE', 'M600']"
-            hide-details="auto"
-            filled
-            dense
+    <div class="overflow-y-auto">
+      <template v-if="hasSetPauseNextLayerMacro">
+        <app-setting :title="$t('app.general.label.pause_at_next_layer')">
+          <v-switch
+            v-model="pauseNextLayer.enable"
+            class="mt-0"
+            hide-details
           />
         </app-setting>
+
+        <template v-if="pauseNextLayer.enable">
+          <v-divider />
+
+          <app-setting :title="$t('app.general.label.command')">
+            <v-combobox
+              v-model="pauseNextLayer.call"
+              :items="['PAUSE', 'M600']"
+              hide-details="auto"
+              filled
+              dense
+            />
+          </app-setting>
+        </template>
       </template>
-    </template>
 
-    <v-divider v-if="hasSetPauseNextLayerMacro && hasSetPauseAtLayerMacro" />
+      <v-divider v-if="hasSetPauseNextLayerMacro && hasSetPauseAtLayerMacro" />
 
-    <template v-if="hasSetPauseAtLayerMacro">
-      <app-setting :title="$t('app.general.label.pause_at_layer_number')">
-        <v-switch
-          v-model="pauseAtLayer.enable"
-          class="mt-0"
-          hide-details
-        />
-      </app-setting>
-
-      <template v-if="pauseAtLayer.enable">
-        <v-divider />
-
-        <app-setting :title="$t('app.general.label.layer')">
-          <v-text-field
-            v-model="pauseAtLayer.layer"
-            type="number"
-            :rules="[
-              $rules.required,
-              $rules.numberValid,
-              $rules.numberGreaterThan(currentLayer),
-              $rules.numberLessThanOrEqual(totalLayers)
-            ]"
-            hide-details="auto"
-            filled
-            dense
+      <template v-if="hasSetPauseAtLayerMacro">
+        <app-setting :title="$t('app.general.label.pause_at_layer_number')">
+          <v-switch
+            v-model="pauseAtLayer.enable"
+            class="mt-0"
+            hide-details
           />
         </app-setting>
 
-        <v-divider />
+        <template v-if="pauseAtLayer.enable">
+          <v-divider />
 
-        <app-setting :title="$t('app.general.label.command')">
-          <v-combobox
-            v-model="pauseAtLayer.call"
-            :items="['PAUSE', 'M600']"
-            hide-details="auto"
-            filled
-            dense
-          />
-        </app-setting>
+          <app-setting :title="$t('app.general.label.layer')">
+            <v-text-field
+              v-model="pauseAtLayer.layer"
+              type="number"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThan(currentLayer),
+                $rules.numberLessThanOrEqual(totalLayers)
+              ]"
+              hide-details="auto"
+              filled
+              dense
+            />
+          </app-setting>
+
+          <v-divider />
+
+          <app-setting :title="$t('app.general.label.command')">
+            <v-combobox
+              v-model="pauseAtLayer.call"
+              :items="['PAUSE', 'M600']"
+              hide-details="auto"
+              filled
+              dense
+            />
+          </app-setting>
+        </template>
       </template>
-    </template>
+    </div>
   </app-dialog>
 </template>
 

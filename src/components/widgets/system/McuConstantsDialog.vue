@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="$t('app.system_info.label.mcu_information', {mcu: mcu.name})"
-    :max-width="500"
+    max-width="500"
     no-actions
   >
     <v-card-text>

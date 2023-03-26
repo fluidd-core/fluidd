@@ -18,7 +18,7 @@
       <template #activator="{ on, attrs, value }">
         <app-btn
           v-bind="attrs"
-          :min-width="24"
+          min-width="24"
           class="px-0"
           :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
           v-on="on"

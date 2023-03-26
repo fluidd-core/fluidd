@@ -1,12 +1,10 @@
 <template>
   <v-dialog
     :value="showDialog"
-    :max-width="650"
+    max-width="650"
     persistent
   >
-    <v-card
-      :loading="(updating) ? 'primary' : false"
-    >
+    <v-card :loading="(updating) ? 'primary' : false">
       <v-card-title>
         <span class="headline">{{ title }}</span>
       </v-card-title>

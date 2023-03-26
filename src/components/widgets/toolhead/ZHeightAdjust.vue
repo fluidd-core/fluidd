@@ -18,7 +18,7 @@
           small
           class="px-1"
           :disabled="!klippyReady"
-          :min-width="36"
+          min-width="36"
           :elevation="2"
           :value="value"
         >
