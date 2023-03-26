@@ -96,6 +96,7 @@ app:
       add_file: Add File
       command_palette: Command Palette
       download_file: Retrieving file
+      go_to_file: Go to file
       rename_dir: Rename Directory
       rename_file: Rename File
       upload_file: Uploading file | Uploading files
@@ -155,6 +156,7 @@ app:
       extrude: Extrude
       filter: Filter
       forgot_password: Forgotten your password?
+      go_to_file: Go to file
       heaters_off: Heaters off
       job_queue: Job Queue
       load_all: Load all

@@ -26,6 +26,7 @@
       @add-dir="handleAddDirDialog"
       @upload="handleUpload"
       @filter="handleFilter"
+      @go-to-file="handleGoToFileDialog"
     />
 
     <file-system-bulk-actions
@@ -120,9 +121,12 @@
       @remove="handleRemove"
     />
 
-    <!-- <pre>roots: {{ availableRoots }}</pre>
-    <pre>currentRoot: {{ currentRoot }}<br />currentPath: {{ currentPath }}<br />visiblePath: {{ visiblePath }}</pre>
-    <pre>dragState: {{ dragState }}</pre> -->
+    <file-system-go-to-file-dialog
+      v-if="goToFileDialogOpen"
+      v-model="goToFileDialogOpen"
+      :root="currentRoot"
+      @path-change="loadFiles"
+    />
   </v-card>
 </template>
 
@@ -149,6 +153,7 @@ import FileSystemContextMenu from './FileSystemContextMenu.vue'
 import FileEditorDialog from './FileEditorDialog.vue'
 import FileNameDialog from './FileNameDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
+import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import { AppTableHeader } from '@/types'
 import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry'
@@ -168,6 +173,7 @@ import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry
     FileEditorDialog,
     FileNameDialog,
     FileSystemUploadDialog,
+    FileSystemGoToFileDialog,
     FilePreviewDialog
   }
 })
@@ -258,6 +264,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     filename: '',
     src: ''
   }
+
+  goToFileDialogOpen = false
 
   @Watch('filePreviewState.open')
   onFilePreviewStateChanged (value: boolean) {
@@ -624,6 +632,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       value: '',
       handler: this.handleAddDir
     }
+  }
+
+  handleGoToFileDialog () {
+    if (this.disabled) return
+    this.goToFileDialogOpen = true
   }
 
   handleFileOpenDialog (file: AppFile) {
