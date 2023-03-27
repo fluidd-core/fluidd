@@ -132,5 +132,6 @@ declare module 'vue' {
     VToolbarItems: typeof import('vuetify/lib')['VToolbarItems']
     VToolbarTitle: typeof import('vuetify/lib')['VToolbarTitle']
     VTooltip: typeof import('vuetify/lib')['VTooltip']
+    VVirtualScroll: typeof import('vuetify/lib')['VVirtualScroll']
   }
 }

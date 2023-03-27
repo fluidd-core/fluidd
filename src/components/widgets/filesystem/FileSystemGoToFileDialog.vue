@@ -16,20 +16,31 @@
         class="mx-2"
       />
     </v-card-actions>
-    <v-card-text>
-      <v-simple-table>
-        <tbody>
-          <template v-for="file in matchedFiles">
-            <tr
-              :key="file.path"
-              @click="handleFileClick(file)"
-            >
-              <td>{{ file.path }}</td>
-            </tr>
-          </template>
-        </tbody>
-      </v-simple-table>
-    </v-card-text>
+
+    <v-divider />
+
+    <v-virtual-scroll
+      :items="matchedFiles"
+      bench="30"
+      item-height="40"
+    >
+      <template #default="{ item }">
+        <v-list-item
+          :key="item.path"
+          dense
+          class="v-list-item--link"
+          @click="handleFileClick(item)"
+        >
+          <v-list-item-content>
+            <v-list-item-title class="text-body-2 font-weight-regular">
+              {{ item.path }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-divider />
+      </template>
+    </v-virtual-scroll>
   </app-dialog>
 </template>
 
@@ -61,7 +72,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
     return this.$store.getters['files/getRootFiles'](this.root) as RootFile[]
   }
 
-  get matchedRootFiles (): RootFile[] {
+  get matchedFiles (): File[] {
     if (!this.loaded) {
       return []
     }
@@ -73,11 +84,6 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
 
     return this.rootFiles
       .filter(rootFile => searchRegExp.exec(rootFile.path))
-  }
-
-  get matchedFiles () {
-    return this.matchedRootFiles
-      .slice(0, 100)
       .map(rootFile => {
         const { filename, rootPath, path: filepath } = getFilePaths(rootFile.path, this.root)
 
@@ -112,10 +118,3 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-:deep(.v-data-table td) {
-  cursor: pointer;
-  user-select: none;
-}
-</style>
