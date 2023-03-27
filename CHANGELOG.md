@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.23.4](https://github.com/fluidd-core/fluidd/compare/v1.23.3...v1.23.4) (2023-03-27)
+
+
+### Features
+
+* adds Go To File dialog ([#1077](https://github.com/fluidd-core/fluidd/issues/1077)) ([a6ff766](https://github.com/fluidd-core/fluidd/commit/a6ff766cb79d5556c6d7f8488457b58284948048))
+* adds new Tools menu to Tool card ([#1071](https://github.com/fluidd-core/fluidd/issues/1071)) ([835f658](https://github.com/fluidd-core/fluidd/commit/835f658877d4d79c9f586be4cbd298a44f60c51c))
+* **i18n-zh-HK:** update Traditional Chinese translations ([#1072](https://github.com/fluidd-core/fluidd/issues/1072)) ([fa56a5b](https://github.com/fluidd-core/fluidd/commit/fa56a5b874865b2e7221bcc714bad588fc17e26e))
+
+
+### Bug Fixes
+
+* **18n-RU:** typo in RU locale ([#1064](https://github.com/fluidd-core/fluidd/issues/1064)) ([6a8f9ca](https://github.com/fluidd-core/fluidd/commit/6a8f9caf48fbf3ec8e50d7432fdcd9a27b81f484))
+* add API check before doing job queue reset ([#1074](https://github.com/fluidd-core/fluidd/issues/1074)) ([475a92f](https://github.com/fluidd-core/fluidd/commit/475a92f4e9b69b868bcd2996c19d73bf11abea30))
+* add legacy bed mesh profiles from config ([#1076](https://github.com/fluidd-core/fluidd/issues/1076)) ([66fb72f](https://github.com/fluidd-core/fluidd/commit/66fb72fa0bd7c0265a2522f7fce9be56b2d1134a))
+* assume untrusted user before config receival ([#1065](https://github.com/fluidd-core/fluidd/issues/1065)) ([f454b9d](https://github.com/fluidd-core/fluidd/commit/f454b9d667e64827ae1d55a64e6701043bdde72b))
+* improves nginx 502 error handling ([3b6b9e0](https://github.com/fluidd-core/fluidd/commit/3b6b9e02178484d1e9b435b17d7754e0c3f04f32))
+* include extra sensor data on temperature_fan ([#1067](https://github.com/fluidd-core/fluidd/issues/1067)) ([e39d835](https://github.com/fluidd-core/fluidd/commit/e39d835f9830396cb05cfc14bdcb38d7ec81bbcf))
+* only add parts with defined polygon ([#1069](https://github.com/fluidd-core/fluidd/issues/1069)) ([aad8199](https://github.com/fluidd-core/fluidd/commit/aad81999ade700c5d85144cdbe81903883501639))
+
 ## [1.23.3](https://github.com/fluidd-core/fluidd/compare/v1.23.2...v1.23.3) (2023-03-12)
 
 
