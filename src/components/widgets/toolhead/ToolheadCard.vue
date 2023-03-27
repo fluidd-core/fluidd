@@ -39,6 +39,17 @@
         >
           {{ $t('app.tool.tooltip.manual_probe') }}
         </app-btn>
+
+        <app-btn
+          v-if="isBedScrewsAdjustActive"
+          :disabled="!klippyReady || printerPrinting || !allHomed"
+          small
+          class="ms-1 my-1"
+          @click="bedScrewsAdjustDialogOpen = true"
+        >
+          BED_SCREWS_ADJUST
+        </app-btn>
+
         <app-btn
           v-if="printerSupportsForceMove"
           :disabled="!klippyReady || printerPrinting"
@@ -47,8 +58,9 @@
           :color="forceMove ? 'error' : undefined"
           @click="toggleForceMove"
         >
-          {{ $t('app.tool.tooltip.force_move') }}
+          FORCE_MOVE
         </app-btn>
+
         <app-btn
           :disabled="!klippyReady || printerPrinting"
           small
@@ -57,46 +69,57 @@
         >
           {{ $t('app.tool.tooltip.motors_off') }}
         </app-btn>
-        <app-btn
-          v-if="printerSupportsBedScrews"
-          :loading="hasWait($waits.onBedScrewsAdjust)"
-          :disabled="!allHomed || !klippyReady || printerPrinting"
-          small
-          class="ms-1 my-1"
-          @click="bedScrewsAdjust"
+
+        <v-menu
+          v-if="availableTools.length"
+          left
+          offset-y
+          transition="slide-y-transition"
         >
-          {{ $t('app.tool.tooltip.bed_screws_adjust') }}
-        </app-btn>
-        <app-btn
-          v-if="printerSupportsBedScrewsCalculate"
-          :loading="hasWait($waits.onBedScrewsCalculate)"
-          :disabled="!allHomed || !klippyReady || printerPrinting"
-          small
-          class="ms-1 my-1"
-          @click="sendGcode('SCREWS_TILT_CALCULATE', $waits.onBedScrewsCalculate)"
-        >
-          {{ $t('app.tool.tooltip.screws_tilt_calculate') }}
-        </app-btn>
-        <app-btn
-          v-if="printerSupportsZtilt"
-          :loading="hasWait($waits.onZTilt)"
-          :disabled="!klippyReady || printerPrinting"
-          small
-          class="ms-1 my-1"
-          @click="sendGcode('Z_TILT_ADJUST', $waits.onZTilt)"
-        >
-          {{ $t('app.tool.tooltip.z_tilt_adjust') }}
-        </app-btn>
-        <app-btn
-          v-if="printerSupportsQgl"
-          :loading="hasWait($waits.onQGL)"
-          :disabled="!klippyReady || printerPrinting"
-          small
-          class="ms-1 my-1"
-          @click="sendGcode('QUAD_GANTRY_LEVEL', $waits.onQGL)"
-        >
-          {{ $t('app.tool.tooltip.quad_gantry_level') }}
-        </app-btn>
+          <template #activator="{ on, attrs, value }">
+            <app-btn
+              v-bind="attrs"
+              small
+              class="ms-1 my-1"
+              :disabled="!klippyReady || printerPrinting"
+              v-on="on"
+            >
+              <v-icon
+                small
+                class="mr-1"
+              >
+                $tools
+              </v-icon>
+              {{ $t('app.tool.tooltip.tools') }}
+              <v-icon
+                small
+                class="ml-1"
+                :class="{ 'rotate-180': value }"
+              >
+                $chevronDown
+              </v-icon>
+            </app-btn>
+          </template>
+          <v-list dense>
+            <v-list-item
+              v-for="tool in availableTools"
+              :key="tool.name"
+              :disabled="tool.disabled || (tool.wait && hasWait(tool.wait))"
+              @click="sendGcode(tool.name, tool.wait)"
+            >
+              <v-list-item-icon>
+                <v-icon>
+                  $tools
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ tool.name }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </app-btn-collapse-group>
     </template>
 
@@ -120,6 +143,12 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
 
+type Tool = {
+  name: string,
+  disabled?: boolean,
+  wait?: string,
+}
+
 @Component({
   components: {
     Toolhead
@@ -136,20 +165,116 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.getters['printer/getPrinterSettings']()
   }
 
-  get printerSupportsQgl (): boolean {
+  get printerSupportsQuadGantryLevel (): boolean {
     return 'quad_gantry_level' in this.printerSettings
   }
 
-  get printerSupportsZtilt (): boolean {
+  get printerSupportsZTiltAdjust (): boolean {
     return 'z_tilt' in this.printerSettings
   }
 
-  get printerSupportsBedScrews (): boolean {
+  get printerSupportsBedScrewsAdjust (): boolean {
     return 'bed_screws' in this.printerSettings
   }
 
   get printerSupportsBedScrewsCalculate (): boolean {
     return 'screws_tilt_adjust' in this.printerSettings
+  }
+
+  get printerSupportsBedTiltCalibrate (): boolean {
+    return 'bed_tilt' in this.printerSettings
+  }
+
+  get printerSupportsDeltaCalibrate (): boolean {
+    return 'delta_calibrate' in this.printerSettings
+  }
+
+  get printerSupportsProbeCalibrate (): boolean {
+    return 'probe' in this.printerSettings || 'bltouch' in this.printerSettings
+  }
+
+  get printerSupportsZEndstopCalibrate (): boolean {
+    return (
+      'stepper_z' in this.printerSettings &&
+      'z_position_endstop' in this.printerSettings.stepper_z
+    )
+  }
+
+  get availableTools () {
+    const tools: Tool[] = []
+
+    if (this.printerSupportsBedScrewsAdjust) {
+      tools.push({
+        name: 'BED_SCREWS_ADJUST',
+        disabled: !this.allHomed || this.isBedScrewsAdjustActive,
+        wait: this.$waits.onBedScrewsAdjust
+      })
+    }
+
+    if (this.printerSupportsBedTiltCalibrate) {
+      tools.push({
+        name: 'BED_TILT_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBedTiltCalibrate
+      })
+    }
+
+    if (this.printerSupportsDeltaCalibrate) {
+      tools.push({
+        name: 'DELTA_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onDeltaCalibrate
+      })
+    }
+
+    tools.push({
+      name: 'MANUAL_PROBE',
+      disabled: !this.allHomed || this.isManualProbeActive,
+      wait: this.$waits.onManualProbe
+    })
+
+    if (this.printerSupportsProbeCalibrate) {
+      tools.push({
+        name: 'PROBE_CALIBRATE',
+        disabled: !this.allHomed,
+        wait: this.$waits.onProbeCalibrate
+      })
+    }
+
+    if (this.printerSupportsQuadGantryLevel) {
+      tools.push({
+        name: 'QUAD_GANTRY_LEVEL',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onQGL
+      })
+    }
+
+    if (this.printerSupportsBedScrewsCalculate) {
+      tools.push({
+        name: 'SCREWS_TILT_CALCULATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onBedScrewsCalculate
+      })
+    }
+
+    if (this.printerSupportsZEndstopCalibrate) {
+      tools.push({
+        name: 'Z_ENDSTOP_CALIBRATE',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onZEndstopCalibrate
+      })
+    }
+
+    if (this.printerSupportsZTiltAdjust) {
+      tools.push({
+        name: 'Z_TILT_ADJUST',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onZTilt
+      })
+    }
+
+    return tools
+      .sort((a, b) => a.name.localeCompare(b.name))
   }
 
   get printerSupportsForceMove () {
@@ -188,14 +313,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     if (value && this.showBedScrewsAdjustDialogAutomatically &&
       this.klippyReady && !this.printerPrinting) {
       this.bedScrewsAdjustDialogOpen = true
-    }
-  }
-
-  bedScrewsAdjust () {
-    if (this.isBedScrewsAdjustActive) {
-      this.bedScrewsAdjustDialogOpen = true
-    } else {
-      this.sendGcode('BED_SCREWS_ADJUST', this.$waits.onBedScrewsAdjust)
     }
   }
 

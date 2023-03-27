@@ -79,6 +79,7 @@
               <v-card
                 outlined
                 class="px-2 py-1 text-center stat-square justify-center"
+                :class="{ 'text--disabled': !fileLoaded }"
               >
                 <div class="">
                   {{ $t('app.gcode.label.layers') }}

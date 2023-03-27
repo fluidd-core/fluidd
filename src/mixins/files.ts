@@ -18,7 +18,7 @@ export default class FilesMixin extends Vue {
   get isTrustedUser () {
     const forceLogins = this.$store.getters['server/getConfig'].authorization.force_logins
 
-    return !forceLogins || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
+    return forceLogins === false || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
   }
 
   getThumbUrl (thumbnails: Thumbnail[], path: string, large: boolean, date?: number) {

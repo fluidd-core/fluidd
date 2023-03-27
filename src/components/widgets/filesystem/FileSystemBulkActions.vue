@@ -72,15 +72,8 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
-import FileSystemMenu from './FileSystemMenu.vue'
-import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 
-@Component({
-  components: {
-    FileSystemMenu,
-    FileSystemFilterMenu
-  }
-})
+@Component({})
 export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   @Prop({ type: String, required: true })
   readonly root!: string

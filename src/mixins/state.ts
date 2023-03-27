@@ -75,22 +75,22 @@ export default class StateMixin extends Vue {
    * Indicates if we have a valid wait(s).
    * Supports a single string or a list of.
    */
-  hasWait (wait: string | string[]) {
-    return this.$store.getters['wait/hasWait'](wait)
+  hasWait (wait: string | string[]): boolean {
+    return this.$store.getters['wait/hasWait'](wait) as boolean
   }
 
   /**
    * Indicates if we have any waits.
    */
-  get hasWaits () {
-    return this.$store.getters['wait/hasWaits']
+  get hasWaits (): boolean {
+    return this.$store.getters['wait/hasWaits'] as boolean
   }
 
   /**
    * Indicates if we have any waits prefixed by.
    */
-  hasWaitsBy (prefix: string) {
-    return this.$store.getters['wait/hasWaitsBy'](prefix)
+  hasWaitsBy (prefix: string): boolean {
+    return this.$store.getters['wait/hasWaitsBy'](prefix) as boolean
   }
 
   /**

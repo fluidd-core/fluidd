@@ -3,13 +3,12 @@
     v-model="open"
     :title="$t('app.general.title.rollover_logs')"
     :save-button-text="$t('app.general.btn.accept')"
-    :max-width="400"
+    max-width="400"
     @save="sendAccept"
   >
     <v-card-text>
       <v-radio-group
         v-model="application"
-        class="mt-0"
         hide-details
       >
         <v-radio

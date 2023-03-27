@@ -149,7 +149,10 @@ export interface Endstop {
 export interface Probe {
   last_z_result: number;
   last_query: boolean;
+  name: ProbeName;
 }
+
+export type ProbeName = 'bltouch' | 'smart_effector' | 'probe'
 
 // printer.mcu[num]
 export interface KlipperMcu {

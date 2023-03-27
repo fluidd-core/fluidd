@@ -129,7 +129,7 @@
                 block
                 class="mb-2"
                 :loading="hasWait($waits.onMeshCalibrate)"
-                :disabled="printerBusy"
+                :disabled="printerBusy || !allHomed"
                 v-on="on"
                 @click="calibrate()"
               >
@@ -175,7 +175,7 @@
           </app-btn>
 
           <app-btn
-            v-if="!printerPrinting && printerSupportsQgl"
+            v-if="printerSupportsQgl"
             :loading="hasWait($waits.onQGL)"
             :disabled="printerBusy"
             block

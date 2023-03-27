@@ -128,7 +128,7 @@ import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
 
 @Component({})
-export default class FileSystemMenu extends Vue {
+export default class FileSystemAddMenu extends Vue {
   @Prop({ type: String, required: true })
   readonly root!: string
 

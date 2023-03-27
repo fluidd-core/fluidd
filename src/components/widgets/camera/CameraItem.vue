@@ -100,7 +100,7 @@ export default class CameraItem extends Vue {
   cameraHeight = 720
 
   // Maintains the last cachebust string
-  refresh = new Date().getTime()
+  refresh = Date.now()
 
   // Callback to cancel requestAnimationFrame() when component is being destroyed.
   cancelCameraTransform = noop
@@ -172,7 +172,7 @@ export default class CameraItem extends Vue {
    */
   handleRefresh () {
     if (!document.hidden) {
-      this.refresh = new Date().getTime()
+      this.refresh = Date.now()
       // this.setUrl()
       this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
       this.$nextTick(() => {

@@ -10,7 +10,7 @@
       >
         <file-system
           :roots="['config']"
-          :max-height="816"
+          max-height="816"
           name="configure"
           bulk-actions
         />
@@ -26,7 +26,7 @@
       >
         <file-system
           :roots="['logs', 'docs', 'config_examples']"
-          :max-height="816"
+          max-height="816"
           name="configure"
         />
       </collapsable-card>

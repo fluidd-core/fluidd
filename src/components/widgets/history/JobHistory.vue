@@ -39,6 +39,7 @@
       item-key="job_id"
       sort-by="start_time"
       sort-desc
+      fixed-header
     >
       <template #expanded-item="{ headers, item }">
         <td

@@ -3,7 +3,7 @@
     v-model="open"
     :title="$t('app.general.title.pending_configuration_changes')"
     :save-button-text="$t('app.general.btn.save_config_and_restart')"
-    :max-width="600"
+    max-width="600"
     @save="handleSubmit"
   >
     <v-card-text>

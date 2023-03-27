@@ -607,20 +607,15 @@ app:
       home_y: 'Y'
       home_all: Alle
     tooltip:
+      absolute_positioning: Absolute Positionierung
       extruder_disabled: >-
         Extruder deaktiviert, da unter der min_extrude_temp
         (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
-      motors_off: MOTOREN AUS
-      relative_positioning: Relative Positionierung
-      absolute_positioning: Absolute Positionierung
-      force_move: FORCE_MOVE
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      z_tilt_adjust: Z_Tilt_Adjust
-      quad_gantry_level: QGL
-      bed_screws_adjust: BED_SCREWS_ADJUST
       manual_probe: Manuelles Probing
+      motors_off: Motoren Aus
+      relative_positioning: Relative Positionierung
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing

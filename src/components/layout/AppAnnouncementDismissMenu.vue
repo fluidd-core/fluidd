@@ -4,7 +4,7 @@
     left
     offset-y
     transition="slide-y-transition"
-    :min-width="150"
+    min-width="150"
   >
     <template #activator="{ on, attrs, value }">
       <app-btn

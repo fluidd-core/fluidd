@@ -1,7 +1,7 @@
 <template>
   <app-dialog
     v-model="open"
-    :max-width="320"
+    max-width="320"
     :save-button-disabled="!verified"
     :valid.sync="valid"
     persistent

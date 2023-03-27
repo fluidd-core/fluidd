@@ -1,6 +1,7 @@
 <template>
   <app-focusable-container
     ref="container"
+    :disabled="disabled"
     @focus="focused = true"
     @blur="focused = false"
   >
@@ -25,6 +26,7 @@
             stroke-width=".1"
             :stroke="themeIsDark ? 'black' : 'white'"
             :fill="themeIsDark ? '#555' : 'lightgrey'"
+            :fill-opacity="disabled ? 0.6 : undefined"
           />
         </pattern>
         <svg
@@ -612,7 +614,8 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       boundsPadding: 0.6,
       smoothScroll: this.showAnimations,
 
-      beforeWheel: () => !this.focused
+      beforeMouseDown: () => this.disabled,
+      beforeWheel: () => !this.focused || this.disabled
     })
 
     this.panzoom.on('panstart', () => {

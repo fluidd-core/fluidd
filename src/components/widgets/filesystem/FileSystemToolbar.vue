@@ -80,6 +80,25 @@
       :headers="headers"
     />
 
+    <div>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            :disabled="disabled"
+            fab
+            small
+            text
+            @click="$emit('go-to-file')"
+            v-on="on"
+          >
+            <v-icon>$magnify</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.go_to_file') }}</span>
+      </v-tooltip>
+    </div>
+
     <file-system-filter-menu
       v-if="hasFilterTypes"
       :root="root"
@@ -87,7 +106,7 @@
       @change="$emit('filter', $event)"
     />
 
-    <file-system-menu
+    <file-system-add-menu
       v-if="!readonly || canCreateDirectory"
       :root="root"
       :disabled="disabled"
@@ -96,22 +115,24 @@
       @upload="handleUpload"
     />
 
-    <v-tooltip bottom>
-      <template #activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          :disabled="disabled"
-          fab
-          small
-          text
-          @click="$emit('refresh')"
-          v-on="on"
-        >
-          <v-icon>$refresh</v-icon>
-        </v-btn>
-      </template>
-      <span>{{ $t('app.general.btn.refresh') }}</span>
-    </v-tooltip>
+    <div>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            :disabled="disabled"
+            fab
+            small
+            text
+            @click="$emit('refresh')"
+            v-on="on"
+          >
+            <v-icon>$refresh</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.refresh') }}</span>
+      </v-tooltip>
+    </div>
 
     <div
       style="max-width: 160px;"
@@ -149,13 +170,13 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
-import FileSystemMenu from './FileSystemMenu.vue'
+import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
 
 @Component({
   components: {
-    FileSystemMenu,
+    FileSystemAddMenu,
     FileSystemFilterMenu
   }
 })
