@@ -140,7 +140,7 @@ app:
       adjust_layout: Prilagodi postavitev armature
       adjusted: Prilagojeno
       all: Vse
-      auth_unsure: Niste prepričani, zakaj sem vam to prikazuje?
+      auth_unsure: Niste prepričani, zakaj se vam to prikazuje?
       calibrate: Kalibriraj
       cancel: Prekliči
       clear_profile: Počisti profil
@@ -155,7 +155,7 @@ app:
       filter: Filter
       forgot_password: Ste pozabili geslo?
       heaters_off: Izklopi grelce
-      job_queue: Vrsta opravil
+      job_queue: Opravila v vrsti
       load_all: Naloži vse
       login: Prijava
       logout: Odjava
@@ -185,7 +185,7 @@ app:
       retract: Umik
       return_dashboard: Vrni se na armaturno ploščo
       save: Shrani
-      save_as: Shrani vse
+      save_as: Shrani kot
       save_restart: Shrani & ponovno zaženi
       save_config_and_restart: Shrani konfiguracijo & ponovno zaženi
       send: Pošlji
@@ -203,121 +203,121 @@ app:
       reset_stats: Ponastavi statistiko
     error:
       app_setup_link: >-
-        Fluidd setup requirements can be found <a target="_blank"
-        href="%{url}">here.</a>
-      app_warnings_found: '%{appName} warnings found.'
+        Zahteve za namestitve Fluidda lahko najdete <a target="_blank"
+        href="%{url}">tukaj.</a>
+      app_warnings_found: 'Aplikacija %{appName} je zaznala opozorila.'
       components_config: >-
-        Moonraker plugin configuration can be found <a target="_blank"
-        href="%{url}">here.</a>
+        Konfiguracijo za vtičnik Moonraker lahko najdete <a target="_blank"
+        href="%{url}">tukaj.</a>
       failed_components: >-
-        Moonraker has failed plugins, please check your logs, update your
-        configuration and restart moonraker.
+        Vtičniki za Moonraker so spodleteli. Prosimo, preverite dnevnike,
+        posodobite konfiguracijo in ponovno zaženite Moonraker.
     label:
-      accel_to_decel: Accel to Decel
-      acceleration: Acceleration
+      accel_to_decel: Pojemek
+      acceleration: Pospešek
       accepted_screws: Accepted screws
-      actual_time: Actual
-      add_camera: Add Camera
-      add_filter: Add Filter
-      add_preset: Add Preset
-      add_user: Add user
-      api_key: Api Key
+      actual_time: Dejansko
+      add_camera: Dodaj kamero
+      add_filter: Dodaj filter
+      add_preset: Dodaj prednastavitev
+      add_user: Dodaj uporabnika
+      api_key: Api ključ
       api_url: API URL
       auth_source: Authentication Source
-      category: Category
-      change_password: Change password
-      clear_all: Clear all
-      color: Color
-      confirm: Confirm
-      current_password: Current password
-      current_user: Current user
-      default: Default
-      disabled_while_printing: Disabled while printing
-      edit_camera: Edit Camera
-      edit_filter: Edit Filter
-      edit_preset: Edit Preset
-      edit_user: Edit user
-      extrude_length: Extrude Length
-      extrude_speed: Extrude Speed
+      category: Kategorija
+      change_password: Spremeni geslo
+      clear_all: Počisti vse
+      color: Barva
+      confirm: Potrdi
+      current_password: Trenutno geslo
+      current_user: Trenutni uporabnik
+      default: Privzeto
+      disabled_while_printing: Onemogočeno med tiskanjem
+      edit_camera: Uredi kamero
+      edit_filter: Uredi filter
+      edit_preset: Uredi prednastavitev
+      edit_user: Uredi uporabnika
+      extrude_length: Dožina iztiskovanja
+      extrude_speed: Hitrost iztiskovanja
       filament: Filament
-      file: File
-      finish_time: Finish
-      flow: Flow
-      free: free
+      file: Datoteka
+      finish_time: Konec
+      flow: Pretok
+      free: prosto
       heaters_busy: >-
-        The printer is currently busy. Turning off the heaters may result in a
-        failed print.
-      high: High
-      host: Host
-      layer: Layer
-      layout: Layout
+        Tiskalnik je trenutno zaseden. Ugasnitev grelcev lahko povzroči
+        neuspešen tisk.
+      high: Visoko
+      host: Gostitelj
+      layer: Plast
+      layout: Postavitev
       ldap: LDAP
-      longest_job: Longest job
-      low: Low
-      manage_accounts: Manage Accounts
+      longest_job: Najdaljše opravilo
+      low: Nizko
+      manage_accounts: Urejaj račune
       user_managed_source: User managed by %{source} authentication
       m117: M117
       moonraker: Moonraker
-      name: Name
-      new_password: New password
-      no_notifications: No notifications
-      'on': 'On'
-      'off': 'Off'
+      name: Ime
+      new_password: New Novo geslo
+      no_notifications: Ni obvestil
+      'on': 'Vklopi'
+      'off': 'Izklopi'
       numeric_prefix_sort: Numeric Prefix sort
-      password: Password
-      partial_of_total: '%{partial} of %{total}'
-      power: Power
-      pressure_advance: Pressure Advance
-      printers: Printers
-      progress: Progress
-      requested_speed: Speed
-      retract_length: Retract Length
-      retract_speed: Retract Speed
-      save_as: Save As
-      screw_index: Screw index
-      screw_name: Screw name
-      screw_number: Screw %{index}
-      services: Services
-      slicer: Slicer
-      smooth_time: Smooth Time
-      speed: Speed
-      sqv: Square Corner Velocity
-      thumbnail_size: Thumbnail Size
-      total: Total
-      total_filament: Total filament used
-      total_filament_avg: Avg per print
-      total_jobs: Total print jobs
-      total_print_time: Total print time
-      total_print_time_avg: Avg per print
-      total_time: Total time
-      total_time_avg: Avg per print
-      turn_device_on: Turn %{device} on
-      turn_device_off: Turn %{device} off
-      uncategorized: Uncategorized
+      password: Geslo
+      partial_of_total: '%{partial} od %{total}'
+      power: Moč
+      pressure_advance: Napredni tlak
+      printers: Tiskalniki
+      progress: Napredek
+      requested_speed: Hitrost
+      retract_length: Dolžina umika
+      retract_speed: Hitrost umika
+      save_as: Shrani kot
+      screw_index: Pozicija vijaka
+      screw_name: Ime vijaka
+      screw_number: Vijak %{index}
+      services: Storitve
+      slicer: Rezalnik
+      smooth_time: Čas glajenja
+      speed: Hitrost
+      sqv: Hitrost v vogalu
+      thumbnail_size: Velikost sličite
+      total: Skupno
+      total_filament: Skupno porabljenega filamenta
+      total_filament_avg: Povp. dolžina na tisk
+      total_jobs: Skupno število opravili
+      total_print_time: Skupen čas tiskanja
+      total_print_time_avg: Povp. čas na tisk
+      total_time: Skupen čas
+      total_time_avg: Povp. čas na tisk
+      turn_device_on: Prižgi %{device}
+      turn_device_off: Ugasni %{device}
+      uncategorized: Nekategorizirano
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
-      upload_and_print: Upload and Print
-      used: used
-      username: Username
-      variance: Variance
-      velocity: Velocity
+      upload_and_print: Naloži in tiskaj
+      used: uporabljeno
+      username: Uporabniško ime
+      variance: Odstopanje
+      velocity: Hitrost
       version_sort: Version sort
-      visible: Visible
-      z_offset: Z Offset
-      unsaved_changes: Unsaved Changes
-      alias: Alias
-      apply_z_offset: Apply and Save Z_Offset
-      edit_category: Edit category
-      add_category: Add category
-      file_time: File
+      visible: Vidno
+      z_offset: Z odmik
+      unsaved_changes: Neshranjene spremembe
+      alias: Vzdevek
+      apply_z_offset: Uporabi in shrani Z odmik
+      edit_category: Uredi kategorijo
+      add_category: Dodaj kategorijo
+      file_time: Datoteka
     msg:
-      password_changed: Password changed
-      wrong_password: Oops, something went wrong. Is your password correct?
+      password_changed: Geslo spremenjeno
+      wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
       bed_screws_adjust: >-
         Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
       welcome_back: >-
         Welcome back.<br>Sign in below to stay in touch with your printer.
-      offline_ready: Fluidd is now ready to work offline.
+      offline_ready: Fluidd je pripravljen za delo brez povezave.
       needs_refresh: New content available, please click the <b>Reload</b> button to update.
     simple_form:
       error:
@@ -406,7 +406,7 @@ app:
       other_files: Ostale datoteke
       pending_configuration_changes: Čakam na spremembe konfiguracij
       retract: Strojni umik
-      runout_sensors: Senzor filamenta
+      runout_sensors: Senzorji za iztek filamenta
       settings: Nastavitve
       stats: Statistika tiskalnika
       system: Sistem
