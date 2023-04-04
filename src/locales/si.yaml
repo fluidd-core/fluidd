@@ -25,109 +25,108 @@ app:
         printer
   chart:
     label:
-      current: Actual
-      item: Name
-      'off': Chart off
-      'on': Chart on
-      power: Power
-      target: Target
-      rate_of_change: Change
+      current: Dejansko
+      item: Ime
+      'off': Skrij graf
+      'on': Prikaži graf
+      power: Moč
+      target: Cilj
+      rate_of_change: Sprememba
     tooltip:
       help: >-
-        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
-        />Click a power to toggle in the graph.
+        Držite shift za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
+        />Kliknite na moč, da spremenite vidnost v grafu.
   console:
     label:
-      auto_scroll: Auto scroll
-      flip_layout: Flip layout
-      hide_temp_waits: Hide temp waits
+      auto_scroll: Samodejno drsenje
+      flip_layout: Obrni postavitev
+      hide_temp_waits: Skrij čakanje temperature
     placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+      command: '''tab'' za samodejno dokončanje, ''help'' za seznam ukazov ''puščice'' za zgodovino'
   endpoint:
     error:
       cant_connect: >-
-        Something went wrong, and fluidd can't reach the destination. Are you
-        sure this is the correct address?
-      cors_error: blocked by CORS policy
+        Nekaj se je zalomilo in fluidd ne more dostopati do cilja. Ste prepričani,
+        da je to pravi naslov?
+      cors_error: blokirano zaradi CORS politike
       cors_note: >-
-        This may mean you need to modify your moonraker configuration. Please
-        see the documentation on multi printer setups <a href="%{url}"
-        target="_blank">here</a>
+        To pomeni, da je mogoče potrebno spremeniti moonraker konfiguracijo.
+        Prosimo, preberite dokumentacijo o <a href="%{url}"
+        target="_blank">nastavitvi</a> več tiskalnikov.
     hint:
-      add_printer: E.g., http://fluiddpi.local
+      add_printer: Npr., http://fluiddpi.local
     msg:
       trouble: >-
-        Having trouble? <a href="%{url}" target="_blank">See here</a> for more
-        information.
+        Imate težave?<a href="%{url}" target="_blank">Poglejte tukaj</a> za več informacij.
     tooltip:
       endpoint_examples: >-
-        Enter your API URL.<br />Some examples might be;<br
+        Vnesite API URL.<br />Nekaj primerov:<br
         /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
   endstop:
     label:
-      open: OPEN
-      triggered: TRIGGERED
+      open: ODPRT
+      triggered: SPROŽEN
     msg:
-      subtitle: Use the refresh button to update endstop status.
+      subtitle: Uporabite gumb za osveževanje, da osvežite status končnih stikal.
   file_system:
     filters:
       label:
-        print_start_time: Filter printed
-        print_start_time_desc: Filters out items you've already printed.
-        hidden_files: Filter hidden files
-        klipper_backup_files: Filter Klipper backup files
+        print_start_time: Filtriraj natisnjeno
+        print_start_time_desc: Filtriraj že natisnjene izdelke.
+        hidden_files: Filtriraj skrite datoteke
+        klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
     label:
-      dir_name: Directory name
-      disk_usage: Disk Usage
-      diskinfo: Disk Information
-      downloaded: Downloaded
-      file_name: Filename
-      transfer_rate: Transfer rate
-      uploaded: Uploaded
+      dir_name: Ime mape
+      disk_usage: Poraba diska
+      diskinfo: Informacije o disku
+      downloaded: Prenešeno
+      file_name: Ime datoteke
+      transfer_rate: Hitrost prenosa
+      uploaded: Naloženo
       view_section_documentation: >-
-        View '%{section}' documentation
+        Prikaži dokumentacijo: '%{section}'
     msg:
-      confirm: Are you sure? This will delete all files and folders.
-      not_found: No files found
-      processing: Processing
+      confirm: Ste prepričani? To dejanje bo brizalo vse datoteke in mape.
+      not_found: Ni najdenih datotek
+      processing: Procesiram
     overlay:
-      drag_files_folders: <strong>Drag</strong> files and folders here
+      drag_files_folders: <strong>Povlecite</strong> datoteke in mape sem.
     title:
-      add_dir: Add Directory
-      add_file: Add File
-      command_palette: Command Palette
-      download_file: Retrieving file
-      rename_dir: Rename Directory
-      rename_file: Rename File
-      upload_file: Uploading file | Uploading files
+      add_dir: Dodaj mapo
+      add_file: Dodaj datoteko
+      command_palette: Nadzorna plošča
+      download_file: Pridobivam datoteko
+      rename_dir: Preimenuj mapo
+      rename_file: Preimenuj datoteko
+      upload_file: Nalaganje datoteke | Nalaganje datotek
     tooltip:
-      low_on_space: Low on disk space
-      root_disabled: '{root} root is not available. Please check your logs.'
+      low_on_space: Na disku primanjkuje prostora
+      root_disabled: '{root} root ni na voljo. Prosimo, preverite dnevnike.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
   gcode:
     btn:
-      load_current_file: Load Current File
+      load_current_file: Naloži trenutno datoteko
     label:
-      current_layer_height: Current Layer Height
-      exclude_object: Exclude Object
-      follow_progress: Follow progress
-      layer: Layer
-      layers: Layers
-      parsed: Parsed
-      show_current_layer: Show current layer
-      show_extrusions: Show extrusions
-      show_moves: Show moves
-      show_next_layer: Show next layer
-      show_previous_layer: Show previous layer
-      show_retractions: Show retractions
-      parsing_file: Parsing file
+      current_layer_height: Trenutna višina plasti
+      exclude_object: Izključi objekt
+      follow_progress: Sledi napredku
+      layer: Plast
+      layers: Plasti
+      parsed: Razčlenjeno
+      show_current_layer: Prikaži trenutno plast
+      show_extrusions: Prikaži iztiske
+      show_moves: Prikaži pomike
+      show_next_layer: Prikaži naslednjo plast
+      show_previous_layer: Prikaži prejšnjo plast
+      show_retractions: Prikaži umike
+      parsing_file: Razčlenjujem datoteko
     msg:
       confirm: >-
-        The file "%{filename}" is %{size}, this might be resource intensive for
-        your system. Are you sure?
+        Datoteka "%{filename}" je velika %{size}. To lahko povzroči dodatno obremenitev
+        za sistem. Ste prepričani?
   general:
     btn:
       abort: Prekini
@@ -297,7 +296,7 @@ app:
       unretract_extra_length: Unretract Extra Length
       unretract_speed: Unretract Speed
       upload_and_print: Naloži in tiskaj
-      used: uporabljeno
+      used: porabljeno
       username: Uporabniško ime
       variance: Odstopanje
       velocity: Hitrost
