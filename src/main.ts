@@ -4,7 +4,7 @@ import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
 // Global Registrations
 import './registerComponentHooks'
-import './consola'
+import './setupConsola'
 
 // Common, 1st party.
 import Vue from 'vue'
