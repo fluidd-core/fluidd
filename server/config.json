@@ -26,6 +26,15 @@
       }
     },
     {
+      "name": "BTT",
+      "color": "#475A91",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_btt.svg",
+        "dynamic": true
+      }
+    },
+    {
       "name": "EVA",
       "color": "#76FB00",
       "isDark": true,
