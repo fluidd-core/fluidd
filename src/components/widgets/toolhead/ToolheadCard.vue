@@ -101,23 +101,29 @@
             </app-btn>
           </template>
           <v-list dense>
-            <v-list-item
-              v-for="tool in availableTools"
-              :key="tool.name"
-              :disabled="tool.disabled || (tool.wait && hasWait(tool.wait))"
-              @click="sendGcode(tool.name, tool.wait)"
-            >
-              <v-list-item-icon>
-                <v-icon>
-                  $tools
-                </v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ tool.name }}
-                </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <template v-for="(tool, index) of availableTools">
+              <v-list-item
+                v-if="tool.name !== '-'"
+                :key="tool.name"
+                :disabled="tool.disabled || (tool.wait && hasWait(tool.wait))"
+                @click="sendGcode(tool.name, tool.wait)"
+              >
+                <v-list-item-icon>
+                  <v-icon>
+                    $tools
+                  </v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ tool.label || tool.name }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+              <v-divider
+                v-else
+                :key="`sep=${index}`"
+              />
+            </template>
           </v-list>
         </v-menu>
       </app-btn-collapse-group>
@@ -142,9 +148,11 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
+import { Macro } from '@/store/macros/types'
 
 type Tool = {
   name: string,
+  label?: string,
   disabled?: boolean,
   wait?: string,
 }
@@ -200,8 +208,48 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
+  get macros (): Macro[] {
+    return this.$store.getters['macros/getMacros'] as Macro[]
+  }
+
   get availableTools () {
+    const macros = this.macros
+    const macroNames = new Set(macros
+      .map(macro => macro.name))
+
     const tools: Tool[] = []
+
+    if (macroNames.has('load_filament')) {
+      tools.push({
+        name: 'LOAD_FILAMENT',
+        disabled: !this.extruderReady
+      })
+    } else if (macroNames.has('m701')) {
+      tools.push({
+        name: 'M701',
+        label: 'M701 (Load Filament)',
+        disabled: !this.extruderReady
+      })
+    }
+
+    if (macroNames.has('unload_filament')) {
+      tools.push({
+        name: 'UNLOAD_FILAMENT',
+        disabled: !this.extruderReady
+      })
+    } else if (macroNames.has('m702')) {
+      tools.push({
+        name: 'M702',
+        label: 'M702 (Unload Filament)',
+        disabled: !this.extruderReady
+      })
+    }
+
+    if (tools.length > 0) {
+      tools.push({
+        name: '-'
+      })
+    }
 
     if (this.printerSupportsBedScrewsAdjust) {
       tools.push({
@@ -241,19 +289,19 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       })
     }
 
-    if (this.printerSupportsQuadGantryLevel) {
-      tools.push({
-        name: 'QUAD_GANTRY_LEVEL',
-        disabled: !this.allHomed || this.isManualProbeActive,
-        wait: this.$waits.onQGL
-      })
-    }
-
     if (this.printerSupportsBedScrewsCalculate) {
       tools.push({
         name: 'SCREWS_TILT_CALCULATE',
         disabled: !this.allHomed || this.isManualProbeActive,
         wait: this.$waits.onBedScrewsCalculate
+      })
+    }
+
+    if (this.printerSupportsQuadGantryLevel) {
+      tools.push({
+        name: 'QUAD_GANTRY_LEVEL',
+        disabled: !this.allHomed || this.isManualProbeActive,
+        wait: this.$waits.onQGL
       })
     }
 
@@ -274,7 +322,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     }
 
     return tools
-      .sort((a, b) => a.name.localeCompare(b.name))
   }
 
   get printerSupportsForceMove () {
