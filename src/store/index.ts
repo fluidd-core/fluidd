@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import consola from 'consola'
+import { consola } from 'consola'
 import { RootState } from './types'
 import { InitConfig } from './config/types'
 

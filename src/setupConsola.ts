@@ -1,7 +1,7 @@
-import Consola, { LogLevel } from 'consola'
+import { consola, LogLevels } from 'consola'
 
 // Configure Consola
-Consola.wrapAll()
-Consola.level = 1
+consola.wrapAll()
+consola.level = LogLevels.warn
 
-if (import.meta.env.DEV) Consola.level = LogLevel.Verbose
+if (import.meta.env.DEV) consola.level = LogLevels.verbose

@@ -1,6 +1,6 @@
 import _Vue from 'vue'
 import { EventBus, FlashMessageTypes } from '@/eventBus'
-import consola from 'consola'
+import { consola } from 'consola'
 import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Globals } from '@/globals'
 

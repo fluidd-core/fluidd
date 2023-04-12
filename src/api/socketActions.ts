@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
 import { NotifyOptions } from '@/plugins/socketClient'
-import consola from 'consola'
+import { consola } from 'consola'
 import { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {

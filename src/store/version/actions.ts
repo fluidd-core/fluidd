@@ -1,5 +1,5 @@
 import { ActionTree } from 'vuex'
-import consola from 'consola'
+import { consola } from 'consola'
 import { VersionState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'

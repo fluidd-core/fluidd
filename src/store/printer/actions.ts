@@ -5,7 +5,7 @@ import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectCha
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import consola from 'consola'
+import { consola } from 'consola'
 import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
 

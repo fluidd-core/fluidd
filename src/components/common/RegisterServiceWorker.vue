@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import consola from 'consola'
+import { consola } from 'consola'
 import { EventBus } from '@/eventBus'
 
 @Component({})
