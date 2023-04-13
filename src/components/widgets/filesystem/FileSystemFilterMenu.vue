@@ -102,6 +102,10 @@ export default class FileSystemFilterMenu extends Vue {
     klipper_backup_files: {
       enabled: true,
       text: this.$tc('app.file_system.filters.label.klipper_backup_files')
+    },
+    rolled_log_files: {
+      enabled: true,
+      text: this.$tc('app.file_system.filters.label.rolled_log_files')
     }
   }
 

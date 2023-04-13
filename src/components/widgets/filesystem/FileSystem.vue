@@ -46,7 +46,6 @@
       :loading="filesLoading"
       :disabled="disabled"
       :search="search"
-      :filters="filters"
       :files="files"
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
@@ -408,6 +407,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             break
           case 'print_start_time':
             if (file.print_start_time !== null) {
+              return false
+            }
+            break
+          case 'rolled_log_files':
+            if (file.filename.match(/\.\d{4}-\d{2}-\d{2}$/)) {
               return false
             }
             break
