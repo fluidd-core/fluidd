@@ -338,6 +338,10 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     )
   }
 
+  get readonly () {
+    return this.$store.getters['files/getRootProperties'](this.root).readonly
+  }
+
   get thumbnailSize () {
     const thumbnailSize = this.$store.state.config.uiSettings.general.thumbnailSize
 
@@ -392,6 +396,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     if (item.type === 'file') {
       if (item.extension === 'zip') {
         return '$fileZip'
+      } else if (item.permissions === 'r' || this.readonly) {
+        return '$fileLock'
       } else {
         return '$file'
       }

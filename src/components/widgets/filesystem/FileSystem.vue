@@ -684,7 +684,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
             contents: response.data,
             filename: file.filename,
             loading: false,
-            readonly: this.rootProperties.readonly
+            readonly: file.permissions === 'r' || this.rootProperties.readonly
           }
         }
       })
