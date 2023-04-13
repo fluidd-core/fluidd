@@ -389,29 +389,28 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
 
     const filteredFiles = files.filter(file => {
-      if (file.type !== 'file') {
-        return true
-      }
-
       for (const filter of this.filters) {
         switch (filter) {
           case 'hidden_files':
-            if (file.filename.match(/^\.(?!\.$)/)) {
+            if (file.name.match(/^\.(?!\.$)/)) {
               return false
             }
             break
+
           case 'klipper_backup_files':
-            if (file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
+            if (file.type === 'file' && file.filename.match(/^printer-\d{8}_\d{6}\.cfg$/)) {
               return false
             }
             break
+
           case 'print_start_time':
-            if (file.print_start_time !== null) {
+            if (file.type === 'file' && file.print_start_time !== null) {
               return false
             }
             break
+
           case 'rolled_log_files':
-            if (file.filename.match(/\.\d{4}-\d{2}-\d{2}$/)) {
+            if (file.type === 'file' && file.filename.match(/\.\d{4}-\d{2}-\d{2}$/)) {
               return false
             }
             break
