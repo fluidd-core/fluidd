@@ -99,7 +99,7 @@ export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
   }
 
   get loading (): boolean {
-    return this.hasWait(`${this.$waits.onFileSystem}${this.root}`) as boolean
+    return this.hasWait(`${this.$waits.onFileSystem}/${this.root}/`) as boolean
   }
 
   @Watch('loading')
