@@ -162,10 +162,10 @@ app:
       pause: Premor
       preheat: Predogrej
       presets: Prednastavitev
-      preview_gcode: Predogled Gkode
+      preview_gcode: Predogled g-kode
       print: Tiskaj
       quad_gantry_level: QGL
-      reboot: Ponovni zagon
+      reboot: Ponoven zagon
       recover: Obnovi
       refresh: Osveži
       reload: Ponovno naloži
@@ -393,7 +393,7 @@ app:
       edit_chart: Uredi graf
       endstops: Končna stikala
       fans_outputs: Ventilatorji & izhodi
-      gcode_preview: Predogled Gkode
+      gcode_preview: Predogled g-kode
       history: Zgodovina
       home: Domov
       jobs: Opravila
@@ -444,240 +444,243 @@ app:
       standby: Standby
   setting:
     btn:
-      add_camera: Add Camera
-      add_category: Add Category
-      add_filter: Add Filter
-      add_metric: Add Metric
-      add_thermal_preset: Add Preset
-      add_user: Add user
-      reset: Reset
-      select_theme: Select Theme
+      add_camera: Dodaj kamero
+      add_category: Dodaj kategorijo
+      add_filter: Dodaj filter
+      add_metric: Dodaj meritev
+      add_thermal_preset: Dodaj prednastavitev
+      add_user: Dodaj uporabnika
+      reset: Ponastavi
+      select_theme: Izbira teme
     camera_type_options:
-      mjpegadaptive: MJPEG Adaptive
-      mjpegstream: MJPEG Stream
-      video: IP Camera
-      iframe: HTTP page
+      mjpegadaptive: MJPEG adaptivno
+      mjpegstream: MJPEG pretok
+      video: IP Kamera
+      iframe: HTTP stran
     camera_rotate_options:
       '90': 90°
       '180': 180°
       '270': 270°
-      none: None
+      none: Brez
     label:
-      all_off: All off
-      all_on: All on
-      aspect_ratio: Aspect Ratio
-      aspect_ratio_format: '[width : height]'
-      auto_edit_extensions: Extensions to automatically open in edit mode
-      auto_follow_on_file_load: Automatically follow progress on file load
-      auto_load_on_print_start: Automatically load file on print start
-      axes: Axes
-      camera_flip_x: Flip horizontally
-      camera_flip_y: Flip vertically
+      all_off: Izklopi vse
+      all_on: Vklopi vse
+      aspect_ratio: Razmerje
+      aspect_ratio_format: '[širina : višina]'
+      auto_edit_extensions: Razširitve naj se samodejno odprejo v urejevalnem načinu
+      auto_follow_on_file_load: Samodejno spremljaj napreden na naloženih datotekah
+      auto_load_on_print_start: Samodejno naloži datoteko ob začetku tiska
+      axes: Osi
+      camera_flip_x: Obrni vodoravno
+      camera_flip_y: Obrni navpično
       camera_fullscreen_action:
-        title: Fullscreen action
-        embed: Embed
-        rawstream: Raw stream
-      camera_rotate_by: Rotate by
-      camera_stream_type: Stream type
-      camera_url: Camera Url
-      card: Card
-      collector: Collector
-      confirm_on_estop: Require confirm on Emergency Stop
-      confirm_on_power_device_change: Require confirm on Device Power changes
-      confirm_on_save_config_and_restart: Review Pending Configuration Changes before Save and Restart
-      confirm_dirty_editor_close: Require confirm when closing the editor with unsaved changes
-      contains: Contains
-      dark_mode: Dark mode
-      dashed: Dashed
-      default_extrude_length: Default extrude length
-      default_extrude_speed: Default extrude speed
-      default_toolhead_move_length: Default toolhead move length
-      default_toolhead_xy_speed: Default toolhead XY speed
-      default_toolhead_z_speed: Default toolhead Z speed
-      dotted: Dotted
-      draw_background: Draw Background
-      enable: Enable
-      enable_diagnostics: Enable diagnostics
-      enable_notifications: Enable notifications
-      expression: Expression
-      extrusion_line_width: Extrusion Line Width
-      flip_horizontal: Horizontal Flip
-      flip_vertical: Vertical Flip
-      fill_color: Fill color
-      fill_opacity: Fill opacity
-      filter: Filter | Filters
-      fps_target: FPS Target
-      fps_idle_target: FPS Target when not in focus
-      height: Height
-      gcode_coords: Use GCode Coordinates
-      group_lower_layers: Group lower layers
-      icon: Icon
-      invert_x_control: Invert X control
-      invert_y_control: Invert Y control
-      invert_z_control: Invert Z control
-      language: Display Language
-      last_result: Last result
-      left_y: Left Y-Axis
-      line_color: Line color
-      line_style: Line style
+        title: Celozaslonsko
+        embed: Vgrajeno
+        rawstream: Surov pretok
+      camera_rotate_by: Zavrti za
+      camera_stream_type: Pretočni tip
+      camera_url: URL kamere
+      card: Kartica
+      collector: Krmilnik
+      confirm_on_estop: Zahtevaj potrditev za zasilni izklop
+      confirm_on_power_device_change: Zahtevaj potrditev za spremembe napajanja
+      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem in ponovnim zagonom
+      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe niso shranjene
+      contains: Vsebuje
+      dark_mode: Temen način
+      dashed: Črtice
+      default_extrude_length: Privzeta dolžina iztiskovanja
+      default_extrude_speed: Privzeta hitrost iztiskovanja
+      default_toolhead_move_length: Privzeta dolžina premika orodja
+      default_toolhead_xy_speed: Privzeta XY hitrost orodja
+      default_toolhead_z_speed: Privzeta Z hitrost orodja
+      dotted: Pike
+      draw_background: Nariši ozadje
+      enable: Omogoči
+      enable_diagnostics: Vklopi diagnostiko
+      enable_notifications: Vklopi obvestila
+      expression: Izraz
+      extrusion_line_width: Širina iztiska
+      flip_horizontal: Obrni vodoravno
+      flip_vertical: Obrni navpično
+      fill_color: Barva polnila
+      fill_opacity: Prekrivnost
+      filter: Filter | Filtri
+      fps_target: Želeni FPS
+      fps_idle_target: Želeni FPS kadar ni v fokusu
+      height: Višina
+      gcode_coords: Uporabi koordinate iz g-kode
+      group_lower_layers: Združi spodnje plasti
+      icon: Ikona
+      invert_x_control: Obrni X pomike
+      invert_y_control: Obrni Y pomike
+      invert_z_control: Obrni Z pomike
+      language: Jezik
+      last_result: Zadnji rezultat
+      left_y: Leva Y os
+      line_color: Barva črte
+      line_style: Slog linije
       min: Minimum
-      max: Maximum
-      metrics: Metrics
-      move_line_width: Move Line Width
-      name: Name
-      none: None
-      optional: Optional
-      power_toggle_in_top_nav: Power toggle in top navigation
-      primary_color: Primary color
-      printer_name: Printer Name
-      reset: Reset settings
-      retraction_icon_size: Retraction Icon Size
-      right_y: Right Y-Axis
-      show_animations: Show animations
-      show_barometric_pressure: Show barometric pressure
-      show_code_lens: Show CodeLens
-      show_legend: Show legend
-      show_rate_of_change: Show temperature rate of change
-      show_relative_humidity: Show relative humidity
-      show_save_config_and_restart: Save Config and Restart button in top navigation
-      show_upload_and_print: Show Upload and Print button in top navigation
-      solid: Solid
-      starts_with: Starts with
-      theme_preset: Community preset
-      thermal_preset_gcode: GCode
-      thermal_preset_name: Preset Name
-      title: Title
-      toolhead_move_distances: Toolhead distance values
-      type: Type
-      unit: Unit
-      z_adjust_values: Z Adjust values
-      date_format: Date format
-      time_format: Time format
-      text_sort_order: Text Sort Order
-      force_move_toggle_warning: Require confirm when activating FORCE_MOVE
-      show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
-      show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
+      max: Maksimum
+      metrics: Meritve
+      move_line_width: Širina črte premikov
+      name: Ime
+      none: Brez
+      optional: Poljubno
+      power_toggle_in_top_nav: Preklop napajanja v navigaciji zgoraj
+      primary_color: Primarna barva
+      printer_name: Ime tiskalnika
+      reset: Ponastavitev nastavitev
+      retraction_icon_size: Velikost umikov
+      right_y: Desna Y os
+      show_animations: Prikaži animacije
+      show_barometric_pressure: Prikaži barometrični tlak
+      show_code_lens: Prikaži CodeLens
+      show_legend: Prikaži legendo
+      show_rate_of_change: Prikaži hitrost temperature
+      show_relative_humidity: Prikaži relativno vlažnost
+      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v navigaciji zgoraj
+      show_upload_and_print: Pokaži naloži in tiskaj gumb v navigaciji zgora
+      solid: Polno
+      starts_with: Začne se s/z
+      theme_preset: Prednastavitve skupnosti
+      thermal_preset_gcode: G-koda
+      thermal_preset_name: Ime prednastavitve
+      title: Naslov
+      toolhead_move_distances: Vrednost oddaljenosti orodja
+      type: Tip
+      unit: Enota
+      z_adjust_values: Vrednosti Z nastavitve
+      date_format: Format časa
+      time_format: Format datuma
+      text_sort_order: Vrstni red sortiranja
+      force_move_toggle_warning: Zahtevaj potrditev za prisilen gib
+      show_manual_probe_dialog_automatically: Prikaži dialog za ročno sondiranje samodejno
+      show_bed_screws_adjust_dialog_automatically: Prikaži dialog za nastavitev posteljnih vijakov samodejno
     timer_options:
-      duration: Duration only
-      filament: Filament Estimation
-      file: File Estimation
-      slicer: Slicer
+      duration: Samo trajanje
+      filament: Ocena filamenta
+      file: Ocena datoteke
+      slicer: Rezalnik
     title:
-      authentication: Authentication
-      console: Console
-      camera: Camera | Cameras
-      file_editor: File Editor
-      gcode_preview: Gcode Preview
-      general: General
-      macros: Macros
-      theme: Theme
-      thermal_presets: Thermal Presets
-      tool: Tool
+      authentication: Pristnost
+      console: Konzola
+      camera: Kamera | Kamere
+      file_editor: Urejevalnik datotek
+      gcode_preview: Predogled g-kode
+      general: Splošno
+      macros: Makroji
+      theme: Teme
+      thermal_presets: Prednastavitve grelcev
+      tool: Orodje
     tooltip:
-      diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
-      gcode_coords: Use GCode position instead of toolhead position on dashboard
-      show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
-      show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
+      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva na zmogljivost'
+      gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
+      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če ročno sondirate
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate posteljne vijake
   socket:
     msg:
       connecting: Connecting to moonraker...
       no_connection: No moonraker connection. Please check moonraker status and / or refresh.
   system_info:
     label:
-      capacity: Capacity
-      cpu_desc: CPU Description
-      distribution_codename: Codename
-      distribution_like: Distribution Like
-      distribution_name: Distribution
-      frequency: Frequency
-      hardware_desc: Hardware Description
-      hostname: Hostname
-      klipper_load: Klipper Load
-      manufactured: Manufactured
-      manufacturer: Manufacturer
-      mcu_awake: '{mcu} Awake Time'
-      mcu_bandwidth: '{mcu} Bandwidth'
-      mcu_information: '{mcu} Information'
-      mcu_load: '{mcu} Load'
-      micro_controller: Micro-Controller
-      model: CPU Model
-      moonraker_load: Moonraker Load
-      processor_desc: Processor
-      product_name: Product Name
-      serial_number: Serial Number
-      system_load: System Load
-      system_memory: System Memory
-      system_utilization: System Utilization
-      total_memory: Total Memory
-      operating_system: Operating System
-      version: Version
+      awake_time: čas budnosti
+      capacity: Kapaciteta
+      cpu_desc: Opis CPE
+      distribution_codename: Šifra
+      distribution_like: Podobna distribucija
+      distribution_name: Distribucija
+      frequency: Frekvenca
+      hardware_desc: Opis opreme
+      hostname: Ime gostitelja
+      klipper_load: Obremenitev Klipperja
+      load: obremenitev
+      manufactured: Proizvedeno
+      manufacturer: Proizvajalec
+      mcu_awake: '{mcu} čas budnosti'
+      mcu_bandwidth: '{mcu} pasovna širina'
+      mcu_information: '{mcu} informacije'
+      mcu_load: '{mcu} obremenitev'
+      memory_used: porabljenega spomina
+      micro_controller: Mikrokrmilnik
+      model: Model CPE
+      moonraker_load: Obremenitev Moonrakerja
+      processor_desc: Procesor
+      product_name: Ime izdelka
+      serial_number: Serijska številka
+      system_load: Obremenitev sistema
+      system_memory: Sistemski spomin
+      system_utilization: Poraba sistema
+      total_memory: Skupno spomina
+      operating_system: Operacijski sistem
+      version: Verzija
   tool:
     btn:
       home_x: X
-      home_y: 'Y'
-      home_all: All
+      home_y: Y
+      home_all: Vse
     title:
-      bed_screws_adjust: Bed Screws Adjust
-      manual_probe: Manual Probe
+      bed_screws_adjust: Nastavitev posteljnih vijakov
+      manual_probe: Ročna sonda
     tooltip:
-      absolute_positioning: Absolute Positioning
-      extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)
-      home_xy: Home XY
-      home_z: Home Z
-      manual_probe: Manual Probe
-      motors_off: MOTORS OFF
-      z_tilt_adjust: Z_Tilt_Adjust
-      quad_gantry_level: QGL
-      relative_positioning: Relative Positioning
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      bed_screws_adjust: BED_SCREWS_ADJUST
-      force_move: FORCE_MOVE
+      absolute_positioning: Absolutna pozicija
+      extruder_disabled: ekstruder je izklopljen, ker je pod min_extrude_temp (%{min}<small>°C</small>)
+      home_xy: Nuliraj XY
+      home_z: Nuliraj Z
+      manual_probe: Ročna sonda
+      motors_off: IZKLOP MOTORJEV
+      z_tilt_adjust: Nastavitev Z nagiba
+      quad_gantry_level: Leveliranje četvornega mosta
+      relative_positioning: Relativna pozicija
+      screws_tilt_calculate: Računanje nagiba vijaka
+      bed_screws_adjust: Nastavitev posteljnih vijakov
+      force_move: Prisilen gib
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">The active extruder configuration is set for</span>
-        %{filamentDiameter} mm diameter filament
-        <span class="secondary--text">and</span>
-        %{nozzleDiameter} mm nozzle
+        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena za </span>
+        filament premera %{filamentDiameter} mm <span class="secondary--text">in</span>
+        premer šobe %{nozzleDiameter}.
       stats_volumetric_flow: >-
-        Extruding at %{extrudeSpeed} mm/s<span class="secondary--text">,
-        the extruder should be able to provide an</span>
-        estimated volumetric flow of %{estimatedVolumetricFlow} mm³/s
+        <span class="secondary--text">Ekstruder bi moral biti sposoben zagotoviti</span>
+        pretok %{estimatedVolumetricFlow} mm³/s
+        <span class="secondary--text">pri</span>
+        hitrosti iztiskovanja %{extrudeSpeed} mm/s.
       stats_extruded_length: >-
-        Extruding %{extrudeLength} mm of filament at
-        %{extrudeFactor} % flow<span class="secondary--text">,
-        will provide an</span>
-        estimated output length of %{estimatedExtrudedLength} mm
+        Iztiskanje %{extrudeLength} mm filamenta pri
+        %{extrudeFactor} % pretoku<span class="secondary--text">,
+        bo iztisnilo približno</span>
+        %{estimatedExtrudedLength} mm filamenta.
       stats_max_speed: >-
-        <span class="secondary--text">Assuming a</span>
-        %{layerHeight} mm layer height<span class="secondary--text">,
-        the</span> estimated maximum print speed is %{estimatedMaxSpeed} mm/s
+        <span class="secondary--text">Pri višini plasti</span>
+        %{layerHeight} mm<span class="secondary--text">,
+        je ocenjena </span>najvišja histrost  %{estimatedMaxSpeed} mm/s.
   version:
     btn:
-      check_for_updates: Check for updates
-      finish: Finish
-      update: Update
-      update_all: Update all
-      view_versions: View versions
+      check_for_updates: Preveri za posodobitve
+      finish: Konec
+      update: Posodobi
+      update_all: Posodobi vse
+      view_versions: Poglej verzije
     label:
-      commit_history: Commit History
-      commits_on: commits on
-      committed: Committed
-      dirty: DIRTY
-      invalid: INVALID
-      os_packages: OS Packages
-      package_list: Package List
-      up_to_date: UP TO DATE
-      updates_available: Updates are available
+      commit_history: Zgodovina objav
+      commits_on: Zapiski na dan
+      committed: Objavljeno
+      dirty: UMAZANO
+      invalid: NEPRAVILNO
+      os_packages: OS Paketi
+      package_list: Seznam paketov
+      up_to_date: POSODOBLJENO
+      updates_available: Posodobitve so na voljo
     status:
-      finished: Updates finished
-      updating: Updating...
-    title: Software Updates
+      finished: Posodobitve končane
+      updating: Posodabljam...
+    title: Programske posodobitve
     tooltip:
-      commit_history: Commit history
-      dirty: indicates a detached head, not on master or an invalid origin
-      invalid: indicates local changes to the repo
-      packages: Packages
-      release_notes: Release notes
+      commit_history: Zgodovina objav
+      dirty: Označuje odsekano glavo. Ni na bazi ali nepravilen izvor.
+      invalid: nakazuje lokalne spremembe v repozitoriju
+      packages: Paketi
+      release_notes: Zapiski ob izdaji
   timelapse:
     btn:
       render: Render
