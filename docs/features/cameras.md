@@ -2,7 +2,7 @@
 layout: default
 title: Cameras
 parent: Features
-nav_order: 10
+nav_order: 12
 permalink: /features/cameras
 ---
 
