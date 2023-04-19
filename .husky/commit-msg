@@ -26,7 +26,7 @@ EOF
 
 COMMIT_MESSAGE=$(cat $1)
 
-COMMIT_HEAD="^merge.+|(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|types)(\(.+\))?: .{1,50}"
+COMMIT_HEAD="^merge.+|(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert|types|i18n)(\(.+\))?: .{1,50}"
 COMMIT_SIGNED_OFF="signed-off-by: .*<.*@.*>"
 
 if ! echo "$COMMIT_MESSAGE" | grep -iqE "$COMMIT_HEAD"; then

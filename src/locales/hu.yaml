@@ -76,7 +76,6 @@ app:
       label:
         print_start_time: Nyomtatottak szűrése
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
-        hidden_files: Rejtett fájlok szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
     label:
       dir_name: Könyvtár neve
@@ -350,12 +349,6 @@ app:
         confirm_service_stop: Biztos, hogy leállítod a %{name} szolgáltatást?
         confirm_power_device_toggle: Biztos, hogy átkapcsolod az eszköz teljesítményét?
         unsaved_changes: Nem mentett módosításaid vannak. Biztosan bezárod ezt a fájlt?
-        apply_z_offset_endstop: >-
-          A végpont Z-eltolása az aktuális értékből lesz számítva és frissítve
-          a Z-eltolás.
-        apply_z_offset_probe: >-
-          A Probe/Bltouch Z-eltolás kiszámítása és frissítése az aktuális értékből
-          történik.
         no_file_preview: >-
           %{name} jelenleg nem tekinthető meg.
     table:

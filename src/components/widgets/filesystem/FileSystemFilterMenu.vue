@@ -97,7 +97,7 @@ export default class FileSystemFilterMenu extends Vue {
     },
     hidden_files: {
       enabled: true,
-      text: this.$tc('app.file_system.filters.label.hidden_files')
+      text: this.$tc('app.file_system.filters.label.hidden_files_folders')
     },
     klipper_backup_files: {
       enabled: true,

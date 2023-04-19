@@ -72,7 +72,7 @@ app:
       label:
         print_start_time: Filter printed
         print_start_time_desc: Filters out items you've already printed.
-        hidden_files: Filter hidden files and folders
+        hidden_files_folders: Filter hidden files and folders
         klipper_backup_files: Filter Klipper backup files
         rolled_log_files: Filter rolled log files
     label:
@@ -358,12 +358,6 @@ app:
         confirm_service_stop: Are you sure you want to stop the %{name} service?
         confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
         unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
-        apply_z_offset_endstop: >-
-          Endstop Z-Offset will be calculated and updated from the current
-          Z-Offset.
-        apply_z_offset_probe: >-
-          Probe/Bltouch Z-Offset will be calculated and updated from the current
-          Z-Offset.
         no_file_preview: >-
           %{name} cannot currently be previewed.
     table:
