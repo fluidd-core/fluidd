@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.23.5](https://github.com/fluidd-core/fluidd/compare/v1.23.4...v1.23.5) (2023-04-20)
+
+
+### Features
+
+* adds AHT10 sensor support ([7f72b75](https://github.com/fluidd-core/fluidd/commit/7f72b75641664a4d6a4d2627a7911d332787199e))
+* adds load/unload filament support ([#1079](https://github.com/fluidd-core/fluidd/issues/1079)) ([49ab223](https://github.com/fluidd-core/fluidd/commit/49ab223e1693b456363cf8cf5585a323b03182d8))
+* BTT theme ([#1078](https://github.com/fluidd-core/fluidd/issues/1078)) ([8ccce66](https://github.com/fluidd-core/fluidd/commit/8ccce66aa0e0511b91b0b6fa400bcc124fd97ca6))
+* extruder stepper reset extruder ([66339c5](https://github.com/fluidd-core/fluidd/commit/66339c5c4e0ec5204991362331b5b3fa1174b199))
+* filter hidden folders as well as files ([#1083](https://github.com/fluidd-core/fluidd/issues/1083)) ([13e7394](https://github.com/fluidd-core/fluidd/commit/13e7394ba37f3cc2c79f530c3b66324a12f06260))
+* filter rolled log files ([eaae433](https://github.com/fluidd-core/fluidd/commit/eaae433fffb914bbc7dd74db903686199b53b4f9))
+* improves file system loading indicators ([7bd82a1](https://github.com/fluidd-core/fluidd/commit/7bd82a1e48dfa8d2711d41d6607970c4ed33c819))
+* show read-only files as such ([65966e2](https://github.com/fluidd-core/fluidd/commit/65966e2b1d5f66f2884fc3f9d5268672d49e3b8b))
+
+
+### Bug Fixes
+
+* allow applying z-offset to endstop or probe ([#1086](https://github.com/fluidd-core/fluidd/issues/1086)) ([19809d2](https://github.com/fluidd-core/fluidd/commit/19809d21ff7a82d608291d5fb844ec6f6531bd45))
+* linear file progress for file in sub-folder ([714ded6](https://github.com/fluidd-core/fluidd/commit/714ded6e833e0b6210965358354e6b8bcfb84d22))
+* mcu_awake is a percentage ([3a844da](https://github.com/fluidd-core/fluidd/commit/3a844daddc76a962d068b0fed0620b0a7ebcf2c2))
+
 ## [1.23.4](https://github.com/fluidd-core/fluidd/compare/v1.23.3...v1.23.4) (2023-03-27)
 
 
