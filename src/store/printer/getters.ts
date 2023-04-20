@@ -101,10 +101,12 @@ export const getters: GetterTree<PrinterState, RootState> = {
   },
 
   getPrintProgress: (state) => {
-    const { gcode_start_byte, gcode_end_byte, filename } = state.printer.current_file ?? {}
+    const { gcode_start_byte, gcode_end_byte, path, filename } = state.printer.current_file ?? {}
     const { file_position } = state.printer.virtual_sdcard ?? {}
 
-    if (gcode_start_byte && gcode_end_byte && file_position && filename === state.printer.print_stats.filename) {
+    const fullFilename = path ? `${path}/${filename}` : filename
+
+    if (gcode_start_byte && gcode_end_byte && file_position && fullFilename === state.printer.print_stats.filename) {
       if (file_position <= gcode_start_byte) return 0
       if (file_position >= gcode_end_byte) return 1
 
