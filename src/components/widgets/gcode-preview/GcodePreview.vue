@@ -615,7 +615,9 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
       smoothScroll: this.showAnimations,
 
       beforeMouseDown: () => this.disabled,
-      beforeWheel: () => !this.focused || this.disabled
+      beforeWheel: () => !this.focused || this.disabled,
+      onClick: () => this.disabled,
+      onDoubleClick: () => this.disabled
     })
 
     this.panzoom.on('panstart', () => {

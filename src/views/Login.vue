@@ -102,7 +102,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
-import consola from 'consola'
+import { consola } from 'consola'
 import { InitConfig } from '@/store/config/types'
 
 @Component({})

@@ -2,7 +2,7 @@
 layout: default
 title: Thermal Presets
 parent: Features
-nav_order: 8
+nav_order: 11
 permalink: /features/presets
 ---
 

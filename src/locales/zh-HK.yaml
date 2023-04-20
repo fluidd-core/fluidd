@@ -63,7 +63,6 @@ app:
       label:
         print_start_time: 隱藏已打印項目
         print_start_time_desc: 隱藏已經打印的項目文件
-        hidden_files: 過濾隱藏文件
         klipper_backup_files: 隱藏Klipper備份文件
     label:
       dir_name: 目錄名稱
@@ -333,8 +332,6 @@ app:
         confirm_service_stop: '你確定要停止 %{name} 服務嗎?'
         confirm_power_device_toggle: 這會切換設備開關狀態！是否確認？
         unsaved_changes: 這會丟失未保存的更改！是否確認？
-        apply_z_offset_endstop: Z軸限位偏移將以當前Z軸偏移量的基礎上進行計算並更新
-        apply_z_offset_probe: 自動調平的Z軸偏移量將以當前Z軸偏移量的基礎上進行計算並更新
         no_file_preview: ' 當前無法預覽%{name} 。'
     table:
       header:

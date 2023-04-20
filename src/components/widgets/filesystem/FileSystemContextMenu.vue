@@ -58,7 +58,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!Array.isArray(file) && file.type !== 'directory' && rootProperties.canEdit"
+              v-if="!Array.isArray(file) && file.type !== 'directory' && (file.permissions === 'rw' || (!file.permissions && rootProperties.canEdit))"
               @click="$emit('edit', file)"
             >
               <v-list-item-icon>
@@ -70,7 +70,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!Array.isArray(file) && file.type !== 'directory' && rootProperties.canView"
+              v-if="!Array.isArray(file) && file.type !== 'directory' && (file.permissions === 'r' || (!file.permissions && rootProperties.canView))"
               @click="$emit('view', file)"
             >
               <v-list-item-icon>

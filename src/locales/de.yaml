@@ -77,7 +77,6 @@ app:
       label:
         print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
-        hidden_files: Versteckte Dateien ausblenden
         klipper_backup_files: Klipper-Backupdateien ausblenden
     label:
       dir_name: Ordnername
@@ -325,12 +324,6 @@ app:
         invalid_number: Ungültige Zahl
         credentials: Ungültige Anmeldeinformationen
       msg:
-        apply_z_offset_endstop: >-
-          Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
-          aktualisiert.
-        apply_z_offset_probe: >-
-          Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
-          aktualisiert.
         no_file_preview: >-
           %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?

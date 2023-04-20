@@ -77,7 +77,7 @@ import { Globals } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
-import consola from 'consola'
+import { consola } from 'consola'
 import { httpClientActions } from '@/api/httpClientActions'
 
 @Component({})

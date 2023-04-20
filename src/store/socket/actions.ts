@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import consola from 'consola'
+import { consola } from 'consola'
 import { SocketState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'

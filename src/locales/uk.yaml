@@ -76,7 +76,6 @@ app:
       label:
         print_start_time: Відфільтрувати надруковане
         print_start_time_desc: Відфільтрувати вже надруковані деталі.
-        hidden_files: Відфільтрувати приховані файли
         klipper_backup_files: Відфільтрувати резервні копії klipperа
     label:
       dir_name: Імʼя каталогу
@@ -355,12 +354,6 @@ app:
         confirm_service_stop: Ви впевнені, що хочете зупинити службу %{name}?
         confirm_power_device_toggle: Ви впевнені? Це перемкне живлення цього пристрою.
         unsaved_changes: У вас є незбережені зміни. Ви впевнені, що бажаєте закрити цей файл?
-        apply_z_offset_endstop: >-
-          Кінцевик Z-зсуву буде розраховано та оновлено на основі поточного
-          зміщення по осі Z.
-        apply_z_offset_probe: >-
-          Probe/Bltouch Z-зсуву буде розраховано та оновлено на основі поточного
-          зміщення по осі Z
         no_file_preview: '%{name} зараз неможливо переглянути.'
     table:
       header:

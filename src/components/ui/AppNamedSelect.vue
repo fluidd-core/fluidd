@@ -84,7 +84,9 @@ export default class AppNamedSelect extends Vue {
   readonly returnObject?: boolean
 
   handleReset () {
-    this.inputValue = this.resetValue
+    if (this.resetValue !== undefined) {
+      this.$emit('change', this.resetValue)
+    }
   }
 }
 </script>

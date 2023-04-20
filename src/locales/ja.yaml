@@ -63,7 +63,6 @@ app:
   file_system:
     filters:
       label:
-        hidden_files: 隠しファイルを非表示
         klipper_backup_files: バックアップファイルを非表示
         print_start_time: 印刷済みを隠す
         print_start_time_desc: すでに印刷したものをフィルタリングします。
@@ -304,8 +303,6 @@ app:
         password_username: ユーザー名と一致しません
         required: 必須
       msg:
-        apply_z_offset_endstop: Endstop のZ-Offsetは、現在のZ-Offsetから計算され、更新されます。
-        apply_z_offset_probe: Probe/Bltouch Zオフセットは、現在のZオフセットから計算され、更新されます。
         confirm: よろしいですか？
         confirm_exclude_object: このオブジェクトを印刷から除外してもよろしいですか?
         confirm_forcemove_toggle: これにより、プリンターが損傷する可能性があります。よろしいですか？

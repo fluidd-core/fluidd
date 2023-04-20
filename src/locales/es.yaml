@@ -72,7 +72,6 @@ app:
   file_system:
     filters:
       label:
-        hidden_files: Filtrar archivos ocultos
         print_start_time: Filtrar ya impresos
         print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
     label:

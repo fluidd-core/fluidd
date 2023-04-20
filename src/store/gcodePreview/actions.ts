@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from './types'
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
-import consola from 'consola'
+import { consola } from 'consola'
 
 import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
 

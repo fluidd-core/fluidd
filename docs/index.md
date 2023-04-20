@@ -33,6 +33,7 @@ firmware.
 - View and Edit your Klipper config in app with code folding and Codelens support
 - View and Edit your Gcode files in app
 - [Bed Mesh](/features/bed_mesh) levelling
+- [Multiple extruder](/features/multiple_extruders) configurations
 - [Thermal Presets](/features/presets)
 - [Multiple web cam](/features/cameras) support
 - Control power devices - GPIO (relays), TPLink Smartplug, and Tasmota

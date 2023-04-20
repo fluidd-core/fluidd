@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import store from './store'
-import consola from 'consola'
+import { consola } from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'

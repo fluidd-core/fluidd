@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { TimelapseState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
-import consola from 'consola'
+import { consola } from 'consola'
 import { EventBus, FlashMessageTypes } from '@/eventBus'
 import i18n from '@/plugins/i18n'
 

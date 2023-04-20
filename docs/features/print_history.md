@@ -2,7 +2,7 @@
 layout: default
 title: Print History
 parent: Features
-nav_order: 12
+nav_order: 13
 permalink: /features/print_history
 ---
 
