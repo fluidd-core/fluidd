@@ -1,28 +1,27 @@
 app:
   bedmesh:
     label:
-      active: active
-      box_scale: Box scale
-      flat_surface: Show flat plane
-      mesh_matrix: Mesh matrix
-      probed_matrix: Probed matrix
-      profile_name: Profile Name
-      remove_profile: Remove %{name} profile
-      scale: Color scale
-      wireframe: Wireframe
+      active: aktivno
+      box_scale: Skaliranje
+      flat_surface: Prikaži ravno ravnino
+      mesh_matrix: Mrežasta matrika
+      probed_matrix: Sondirana matrika
+      profile_name: Ime profila
+      remove_profile: Odstrani profil %{name}
+      scale: Barvna lestvica
+      wireframe: Žični diagram
     msg:
       hint: >-
-        If saving as something other than %{name}, you can choose to also remove
-        the %{name} profile
-      not_found: No existing bed meshes found.
-      not_loaded: No mesh loaded
+        Če shranite drugače kot %{name}, lahko tudi izberete, da odstranite profil %{name}.
+      not_found: Ni obstoječe posteljne mreže
+      not_loaded: Nobena mreža ni naložena
     tooltip:
-      calibrate: Begins a new calibration, saving as profile 'default'
-      delete: Delete Profile. This WILL restart your printer
-      load: Load Profile
+      calibrate: Prične novo kalibracijo, ki jo shrani kot profil 'default'.
+      delete: Zbriši profil. To dejanje bo ponovno zagnalo tiskalnik.
+      load: Naloži profil
       save: >-
-        Commits calibrated profile to printer.cfg. This WILL restart your
-        printer
+        Shrani kalibriran profil v printer.cfg. To dejanje bo ponovno
+        zagnalo tiskalnik.
   chart:
     label:
       current: Dejansko
@@ -214,7 +213,7 @@ app:
     label:
       accel_to_decel: Pojemek
       acceleration: Pospešek
-      accepted_screws: Accepted screws
+      accepted_screws: Sprejeti vijaki
       actual_time: Dejansko
       add_camera: Dodaj kamero
       add_filter: Dodaj filter
@@ -222,7 +221,7 @@ app:
       add_user: Dodaj uporabnika
       api_key: Api ključ
       api_url: API URL
-      auth_source: Authentication Source
+      auth_source: Vir pristnosti
       category: Kategorija
       change_password: Spremeni geslo
       clear_all: Počisti vse
@@ -254,15 +253,15 @@ app:
       longest_job: Najdaljše opravilo
       low: Nizko
       manage_accounts: Urejaj račune
-      user_managed_source: User managed by %{source} authentication
+      user_managed_source: "Uporabnika nazdoruje pristnost: %{source}"
       m117: M117
       moonraker: Moonraker
       name: Ime
-      new_password: New Novo geslo
+      new_password: Novo geslo
       no_notifications: Ni obvestil
       'on': 'Vklopi'
       'off': 'Izklopi'
-      numeric_prefix_sort: Numeric Prefix sort
+      numeric_prefix_sort: Sortiraj po številski predponi
       password: Geslo
       partial_of_total: '%{partial} od %{total}'
       power: Moč
@@ -293,8 +292,8 @@ app:
       turn_device_on: Prižgi %{device}
       turn_device_off: Ugasni %{device}
       uncategorized: Nekategorizirano
-      unretract_extra_length: Unretract Extra Length
-      unretract_speed: Unretract Speed
+      unretract_extra_length: Dolžina pred iztiskom
+      unretract_speed: Hitrost pred iztiskom
       upload_and_print: Naloži in tiskaj
       used: porabljeno
       username: Uporabniško ime
@@ -313,73 +312,71 @@ app:
       password_changed: Geslo spremenjeno
       wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
       bed_screws_adjust: >-
-        Click <b>Adjusted</b> if a significant adjustment is necessary on the current screw; otherwise, click <b>Accept</b> to continue.
+        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
       welcome_back: >-
-        Welcome back.<br>Sign in below to stay in touch with your printer.
+        Dobrodošli nazaj.<br>Vprišite se spodaj, da ostane v stiku s svojim tiskalnikom.
       offline_ready: Fluidd je pripravljen za delo brez povezave.
-      needs_refresh: New content available, please click the <b>Reload</b> button to update.
+      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno naloži</b>, da ponovno naložite stran.
     simple_form:
       error:
-        arrayofnums: Only numbers
-        credentials: Invalid credentials
-        exists: Already exists
-        invalid_number: Invalid Number
-        invalid_url: Invalid URL
-        invalid_expression: Invalid Expression
-        max: Max %{max}
-        min: Min %{min}
-        min_or_0: Min %{min} or 0
-        password_username: Cannot match username
-        required: Required
-        invalid_aspect: Invalid Aspect Ratio
+        arrayofnums: Samo številke
+        credentials: Napačna poverilnica
+        exists: Že obstaja
+        invalid_number: Napačna številka
+        invalid_url: Napačen URL
+        invalid_expression: Napačen izraz
+        max: Največ %{max}
+        min: Najmanj %{min}
+        min_or_0: Najmanj %{min} ali 0
+        password_username: Ne najdem uporabnika
+        required: Zahtevano
+        invalid_aspect: Napačno razmerje
       msg:
-        confirm: Are you sure?
-        confirm_exclude_object: Are you sure you want to exclude this object from printing?
-        confirm_forcemove_toggle: Are you sure? This can damage the printer.
-        confirm_reboot_host: Are you sure? This will reboot your host system.
-        confirm_shutdown_host: Are you sure? This will shutdown your host system.
-        confirm_service_start: Are you sure you want to start the %{name} service?
-        confirm_service_restart: Are you sure you want to restart the %{name} service?
-        confirm_service_stop: Are you sure you want to stop the %{name} service?
-        confirm_power_device_toggle: Are you sure? This will toggle the power of this device.
-        unsaved_changes: You have unsaved changes. Are you sure you want to close this file?
+        confirm: Ste prepričani?
+        confirm_exclude_object: Ste prepričani, da želiti izključiti ta objek iz tiskanja?
+        confirm_forcemove_toggle: Ste prepričani? To dejanje lahko poškoduje tiskalnik.
+        confirm_reboot_host: Ste prepričani? To dejanje bo ponovno zagnalo gostitelja.
+        confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo gostitelja.
+        confirm_service_start: Ste prepričani, da želite zagnani storitev %{name}?
+        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev %{name}?
+        confirm_service_stop: Ste prepričani, da želite ustaviti storitev %{name}?
+        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje naprave.
+        unsaved_changes: Imate neshranjene spremembe. Ste prepričani, da želiti zapreti datoteko?
         apply_z_offset_endstop: >-
-          Endstop Z-Offset will be calculated and updated from the current
-          Z-Offset.
+          Z odmik končnega stikala bo zračunan in posodobljen.
         apply_z_offset_probe: >-
-          Probe/Bltouch Z-Offset will be calculated and updated from the current
-          Z-Offset.
+          Z odmik sonde / BLtoucha bo zračunan in posodobljen
         no_file_preview: >-
-          %{name} cannot currently be previewed.
+          Predogled za %{name} ni možen.
     table:
       header:
-        actions: Actions
-        chamber_temp: Chamber temp
-        end_time: Ended
-        estimated_time: Estimated time
+        actions: Dejanja
+        chamber_temp: Temperatura komore
+        end_time: Končano
+        estimated_time: Ocenjen čas
         filament: Filament
-        filament_name: Filament name
-        filament_type: Filament type
-        filament_used: Used filament
-        filament_weight_total: Filament weight
-        first_layer_bed_temp: First layer bed temp
-        first_layer_extr_temp: First layer extruder temp
-        first_layer_height: First layer height
-        height: Height
-        last_printed: Last printed
-        layer_height: Layer height
-        modified: Modified
-        name: Name
-        nozzle_diameter: Nozzle diameter
-        print_duration: Print duration
-        time_added: Time Added
-        time_in_queue: Time In Queue
-        size: Size
-        slicer: Slicer
-        slicer_version: Slicer version
-        start_time: Started
+        filament_name: Ime filamenta
+        filament_type: Tip filamenta
+        filament_used: Porabljenega filamenta
+        filament_weight_total: Masa filamenta
+        first_layer_bed_temp: Temperatura postelje za prvo plast
+        first_layer_extr_temp: Temperatura ekstruderja za prvo plast
+        first_layer_height: Višina prve plasti
+        height: Višina
+        last_printed: Nazadnje natisnjeno
+        layer_height: Višina plasti
+        modified: Spremenjeno
+        name: Ime
+        nozzle_diameter: Premer šobe
+        print_duration: Trajanje tiska
+        time_added: Čas ob dodaji
+        time_in_queue: Čas v vrsti
+        size: Velikost
+        slicer: Rezalnik
+        slicer_version: Verzija rezalnika
+        start_time: Pričetek
         status: Status
-        total_duration: Total duration
+        total_duration: Skupno trajanje
     title:
       add_chart: Dodaj graf
       add_printer: Dodaj tiskalnik
@@ -415,33 +412,32 @@ app:
       tool: Orodje
       tune: Uglaševanje
     tooltip:
-      browse_metrics: Browse available metrics
-      estop: Emergency Stop
-      managed_by_moonraker: Managed by your moonraker configuration
-      notifications: Notifications
-      reload_klipper: Reloads klipper configuration.
-      reload_restart_klipper: Reloads klipper configuration and restarts MCU's.
-      restart_klipper: Restarts the klipper system service.
-      run_collector: Run collector
+      browse_metrics: Brskaj meritve, ki so na voljo
+      estop: Zasilna ustavitev
+      managed_by_moonraker: Upravlja konfiguracija moonrakerja
+      notifications: Obvestila
+      reload_klipper: Ponovno naloži klipperjeve konfiguracije.
+      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno zažene MCU.
+      restart_klipper: Ponovno zažene sistemsko storitev klipper.
+      run_collector: Zaženi zbiralnik
   history:
     msg:
-      confirm: Are you sure? This will clear all history, and printer statistics
+      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
+      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   job_queue:
     msg:
-      confirm: Are you sure? This will clear the entire printer queue
-      confirm_jobs: Are you sure? This will clear all jobs.
-      confirm_stats: Are you sure? This will clear all stats.
+      confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
   printer:
     state:
-      busy: Busy
-      cancelled: Cancelled
-      complete: Complete
-      idle: Idle
-      loading: Loading
-      paused: Paused
-      printing: Printing
-      ready: Ready
-      standby: Standby
+      busy: Zaseden
+      cancelled: Preklicano
+      complete: Končano
+      idle: V mirovanju
+      loading: Nalagam
+      paused: Zaustavljeno
+      printing: Tiskanje
+      ready: Pripravljen
+      standby: V pripravljenosti
   setting:
     btn:
       add_camera: Dodaj kamero
@@ -471,8 +467,8 @@ app:
       auto_follow_on_file_load: Samodejno spremljaj napreden na naloženih datotekah
       auto_load_on_print_start: Samodejno naloži datoteko ob začetku tiska
       axes: Osi
-      camera_flip_x: Obrni vodoravno
-      camera_flip_y: Obrni navpično
+      camera_flip_x: Zrcali vodoravno
+      camera_flip_y: Zrcali navpično
       camera_fullscreen_action:
         title: Celozaslonsko
         embed: Vgrajeno
@@ -501,20 +497,20 @@ app:
       enable_notifications: Vklopi obvestila
       expression: Izraz
       extrusion_line_width: Širina iztiska
-      flip_horizontal: Obrni vodoravno
-      flip_vertical: Obrni navpično
+      flip_horizontal: Zrcali vodoravno
+      flip_vertical: Zrcali navpično
       fill_color: Barva polnila
       fill_opacity: Prekrivnost
       filter: Filter | Filtri
-      fps_target: Želeni FPS
-      fps_idle_target: Želeni FPS kadar ni v fokusu
+      fps_target: Želene slike na sekundo
+      fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
       height: Višina
       gcode_coords: Uporabi koordinate iz g-kode
       group_lower_layers: Združi spodnje plasti
       icon: Ikona
-      invert_x_control: Obrni X pomike
-      invert_y_control: Obrni Y pomike
-      invert_z_control: Obrni Z pomike
+      invert_x_control: Zrcali X pomike
+      invert_y_control: Zrcali Y pomike
+      invert_z_control: Zrcali Z pomike
       language: Jezik
       last_result: Zadnji rezultat
       left_y: Leva Y os
@@ -580,8 +576,8 @@ app:
       show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate posteljne vijake
   socket:
     msg:
-      connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+      connecting: Povezujem se na moonraker...
+      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja ali osvežite stran.
   system_info:
     label:
       awake_time: čas budnosti
@@ -678,57 +674,57 @@ app:
     tooltip:
       commit_history: Zgodovina objav
       dirty: Označuje odsekano glavo. Ni na bazi ali nepravilen izvor.
-      invalid: nakazuje lokalne spremembe v repozitoriju
+      invalid: nakazuje lokalne spremembe v skladišču
       packages: Paketi
       release_notes: Zapiski ob izdaji
   timelapse:
     btn:
-      render: Render
-      save_frames: Save Frames
+      render: Uprizori
+      save_frames: Shrani sličice
     error:
-      newframe: Error taking timelapse frame
+      newframe: Napaka pri zajemu sličice časovnega zamika
     label:
-      frames: '%{frames} frame | %{frames} frames'
-      length: 'Estimated length: %{length}'
-      frame: Frame | Frames
+      frames: '%{frames} sličica | %{frames} sličic'
+      length: 'Ocenjena dolžina: %{length}'
+      frame: Sličica | Sličice
     title:
-      timelapse_settings: Timelapse Settings
-      timelapse_status: Timelapse Status
-      render_settings: Render Settings
+      timelapse_settings: Nastavitve časovnega zamika
+      timelapse_status: Status časovnega zamika
+      render_settings: Nastavitve urizarjanja
     setting:
-      enable: Enabled
-      auto_render: Auto Render
-      crf: Constant Rate Factor
-      duplicatelastframe: Duplicate last frames
-      fw_retract: Use Firmware Retraction
-      gcode_verbose: Verbose Gcode
-      mode: Mode
-      mode_layermacro: Layer Macro
+      enable: Omogočeno
+      auto_render: Samodejno uprizori
+      crf: Konstantno razmerje
+      duplicatelastframe: Podvoji zadnjo sličico
+      fw_retract: Uporabi strojne umike
+      gcode_verbose: G-koda, podrobno
+      mode: Način
+      mode_layermacro: Makro za plast
       mode_hyperlapse: Hyperlapse
-      hyperlapse_cycle: Hyperlapse Cycle
-      output_framerate: Output Framerate
-      park_retract_distance: Park Retraction Distance
-      park_retract_speed: Park Retraction Speed
-      park_extrude_distance: Park Extrude Distance
-      park_extrude_speed: Park Extrude Speed
-      parkhead: Park Head
-      park_time: Park Time
-      park_travel_speed: Park Travel Speed
-      park_custom_pos_x: Park Position X
-      park_custom_pos_y: Park Position Y
-      park_custom_pos_dz: Park Position Z-Hop
+      hyperlapse_cycle: Hyperlapse cikel
+      output_framerate: Izhodna hitrost zajema
+      park_retract_distance: Dolžina umika pri parkiranju
+      park_retract_speed: Hitrost umika pri parkiranju
+      park_extrude_distance: Dolžina iztiska pri parkiranju
+      park_extrude_speed: Hitrost iztiska pri parkiranju
+      parkhead: Parkirna glava
+      park_time: Čas za parkiranje
+      park_travel_speed: Hitrost za parkiranje
+      park_custom_pos_x: Pozicija za parkiranje X
+      park_custom_pos_y: Pozicija za parkiranje Y
+      park_custom_pos_dz: Pozicija za parkiranje Z skok
       parkpos:
-        label: Park Position
-        custom: Custom
-        front_left: Front Left
-        front_right: Front Right
-        center: Center
-        back_left: Back Left
-        back_right: Back Right
-      previewimage: Generate Thumbnail
-      saveframes: Save Frames
-      stream_delay_compensation: Delay Compensation
-      targetlength: Target Length
-      variable_fps: Variable FPS
-      variable_fps_min: Minimum Framerate
-      variable_fps_max: Maximum Framerate
+        label: Pozicija za parkiranje
+        custom: Po meri
+        front_left: Spredaj levo
+        front_right: Spredaj desno
+        center: Sredina
+        back_left: Zadaj levo
+        back_right: Zadaj desno
+      previewimage: Ustvari sličico
+      saveframes: Shrani posnetke
+      stream_delay_compensation: Kompenzacija za zakasnitev
+      targetlength: Želena dolžina
+      variable_fps: Spremenljiva hitrost zajema
+      variable_fps_min: Najmanjša hitrost zajema
+      variable_fps_max: Največja hitrost zajema
