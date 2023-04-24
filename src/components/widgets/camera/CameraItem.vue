@@ -28,7 +28,7 @@
       class="camera-image"
       style="border: none; width: 100%"
       :style="{
-        height: (cameraHeight && !camera.aspectRatio) ? (fullscreen ? '100vh' : `${cameraHeight}px`) : undefined,
+        height: !camera.aspectRatio ? (fullscreen ? '100vh' : '720px') : undefined,
         'aspect-ratio': camera.aspectRatio ? camera.aspectRatio.replace(':', '/') : undefined,
         'max-height': camera.aspectRatio ? 'unset' : undefined
       }"
@@ -95,9 +95,6 @@ export default class CameraItem extends Vue {
   // URL used by camera
   cameraUrl = ''
   cameraFullScreenUrl = ''
-
-  // iframe height, deprecated
-  cameraHeight = 720
 
   // Maintains the last cachebust string
   refresh = Date.now()
@@ -224,8 +221,6 @@ export default class CameraItem extends Vue {
       const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
-
-      this.cameraHeight = this.camera.height || 720
 
       switch (type) {
         case 'mjpegstreamer':
