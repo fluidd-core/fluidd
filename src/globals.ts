@@ -11,6 +11,7 @@ import {
   mdiPrinter3dNozzle,
   mdiPrinter3dNozzleOutline,
   mdiFileCodeOutline,
+  mdiFileRefreshOutline,
   mdiConsole,
   mdiChevronUp,
   mdiChevronDown,
@@ -29,6 +30,7 @@ import {
   mdiArrowCollapseDown,
   mdiViewGridOutline,
   mdiArrowExpandHorizontal,
+  mdiArrowExpandVertical,
   mdiRefresh,
   mdiCheckCircleOutline,
   mdiCheckboxBlankCircleOutline,
@@ -36,6 +38,7 @@ import {
   mdiAlertCircle,
   mdiFolderPlus,
   mdiFile,
+  mdiFileLock,
   mdiFolder,
   mdiPencil,
   mdiMagnify,
@@ -135,7 +138,8 @@ import {
   mdiArchivePlus,
   mdiTrayFull,
   mdiTrayPlus,
-  mdiFolderArrowUp
+  mdiFolderArrowUp,
+  mdiShape
 } from '@mdi/js'
 
 /**
@@ -268,6 +272,7 @@ export const Icons = Object.freeze({
   zUp: mdiArrowExpandUp,
   zDown: mdiArrowCollapseDown,
   expandHorizontal: mdiArrowExpandHorizontal,
+  expandVertical: mdiArrowExpandVertical,
   cog: mdiCog,
   cogs: mdiCogs,
   save: mdiContentSaveOutline,
@@ -287,8 +292,10 @@ export const Icons = Object.freeze({
   chevronLeft: mdiChevronLeft,
   timer: mdiTimerSand,
   fileCode: mdiFileCodeOutline,
+  fileRefresh: mdiFileRefreshOutline,
   files: mdiFileTableOutline,
   file: mdiFile,
+  fileLock: mdiFileLock,
   fileCancel: mdiFileCancel,
   pause: mdiPause,
   cancel: mdiWindowClose,
@@ -350,6 +357,7 @@ export const Icons = Object.freeze({
   moves: mdiVectorLine,
   extrusions: mdiPrinter3dNozzle,
   retractions: mdiSwapVertical,
+  parts: mdiShape,
   folderOpen: mdiFolderOpen,
   fileZip: mdiArchive,
   fileZipAdd: mdiArchivePlus,
@@ -371,6 +379,8 @@ export const Waits = Object.freeze({
   onZTilt: 'onZTilt',
   onBedScrewsAdjust: 'onBedScrewAdjust',
   onBedScrewsCalculate: 'onBedScrewsCalculate',
+  onBedTiltCalibrate: 'onBedTiltCalibrate',
+  onDeltaCalibrate: 'onDeltaCalibrate',
   onPrintPause: 'onPrintPause',
   onPrintCancel: 'onPrintCancel',
   onPrintResume: 'onPrintResume',
@@ -402,9 +412,13 @@ export const Waits = Object.freeze({
   onJobQueue: 'onJobQueue',
   onTimelapseSaveFrame: 'onTimelapseSaveFrame',
   onManualProbe: 'onManualProbe',
+  onProbeCalibrate: 'onProbeCalibrate',
+  onZEndstopCalibrate: 'onZEndstopCalibrate',
   onQueryEndstops: 'onQueryEndstops',
   onQueryProbe: 'onQueryProbe',
-  onVersionRefresh: 'onVersionRefresh'
+  onVersionRefresh: 'onVersionRefresh',
+  onSyncExtruder: 'onSyncExtruder',
+  onStepperEnable: 'onStepperEnable'
 })
 
 export const SupportedLocales = Object.freeze([
@@ -433,9 +447,9 @@ type DateTimeFormat = {
   suffix?: string
 }
 
-export const DateFormats = Object.freeze({
+export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
     suffix: ' (ISO 8601)'
   },
@@ -445,11 +459,11 @@ export const DateFormats = Object.freeze({
   short: {
     options: { day: '2-digit', month: 'short', year: 'numeric' }
   }
-} as Record<string, DateTimeFormat>)
+})
 
-export const TimeFormats = Object.freeze({
+export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'sv-SE',
+    locale: 'lt',
     options: { hour: '2-digit', minute: '2-digit', hour12: false },
     suffix: ' (ISO 8601)'
   },
@@ -459,4 +473,4 @@ export const TimeFormats = Object.freeze({
   hours24: {
     options: { hour: '2-digit', minute: '2-digit', hour12: false }
   }
-} as Record<string, DateTimeFormat>)
+})
