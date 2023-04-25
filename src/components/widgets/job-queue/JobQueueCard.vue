@@ -11,7 +11,7 @@
         <app-btn
           v-if="['ready','loading','starting'].includes(queueStatus)"
           small
-          class="ma-1"
+          class="ms-1 my-1"
           @click="handlePause"
         >
           <v-icon
@@ -25,7 +25,7 @@
         <app-btn
           v-else-if="queueStatus === 'paused'"
           small
-          class="ma-1"
+          class="ms-1 my-1"
           @click="handleResume"
         >
           <v-icon
@@ -44,6 +44,7 @@
         fab
         x-small
         text
+        class="ms-1 my-1"
         @click="$filters.routeTo($router, '/jobs')"
       >
         <v-icon>$fullScreen</v-icon>

@@ -14,15 +14,13 @@ app:
       hint: >-
         Если сохранить не как %{name}, вы так же можете выбрать - удалить
         %{name} профиль
-      not_found: Не найдённо существующих сеток стола.
+      not_found: Не найдено существующих сеток стола.
       not_loaded: Сетка не загружена
     tooltip:
       calibrate: Начать новую калибровку, будет сохранено как профиль 'default'
-      delete: Удалить профиль. Это приведёт к ПЕРЕЗАГРУЗКЕ вашего принтера
+      delete: Удалить профиль
       load: Загрузить профиль
-      save: >-
-        Сохранить откалиброванный профиль в printer.cfg. Это приведёт к
-        ПЕРЕЗАГРУЗКЕ вашего принтера
+      save: Сохранить откалиброванный профиль в printer.cfg
   chart:
     label:
       current: Текущее значение
@@ -74,7 +72,6 @@ app:
       label:
         print_start_time: Фильтровать напечатанное
         print_start_time_desc: Фильтровывать уже напечатанные элементы.
-        hidden_files: Фильтровать скрытые файлы
         klipper_backup_files: Фильтровать резервные копии klipperа
     label:
       dir_name: Имя папки
@@ -331,12 +328,6 @@ app:
         confirm_service_stop: Вы уверены, что хотите остановить службу %{name}?
         confirm_power_device_toggle: Вы уверены? Это позволит переключить питание этого устройства.
         unsaved_changes: У вас есть несохраненные изменения. Вы уверены, что хотите закрыть файл?
-        apply_z_offset_endstop: >-
-          Z-смещение конечной точки будет рассчитано и обновлено по текущему
-          Z-Offset.
-        apply_z_offset_probe: >-
-          Z-смещение датчика/Bl touch будет рассчитано и обновлено на основе текущего
-          Z-Offset.
         no_file_preview: >-
           %{name} в настоящее время не может быть просмотрен.
     table:
@@ -603,13 +594,8 @@ app:
       home_xy: Домой XY
       home_z: Домой Z
       manual_probe: Ручная регулировка стола
-      motors_off: МОТОРЫ ВЫКЛ
-      z_tilt_adjust: Z Регулировка наклона
-      quad_gantry_level: QGL
+      motors_off: Моторы Выкл
       relative_positioning: Относительная позиция
-      screws_tilt_calculate: Расчет Наклона Винтами
-      bed_screws_adjust: РЕГУЛИРОВКА ВИНТОВ СТОЛА
-      force_move: Форс. перемещение
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Активный экструдер настроен на </span>

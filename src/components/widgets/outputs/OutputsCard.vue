@@ -2,7 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.fans_outputs')"
     icon="$motion"
-    :draggable="true"
+    draggable
     layout-path="dashboard.outputs-card"
     menu-breakpoint="lg"
   >

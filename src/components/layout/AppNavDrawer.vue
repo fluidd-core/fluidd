@@ -13,11 +13,11 @@
     >
       <v-navigation-drawer
         :color="theme.currentTheme.drawer"
-        :mini-variant="true"
+        mini-variant
         :value="open"
       >
         <div
-          v-show="isMobile"
+          v-show="isMobileViewport"
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
           class="app-icon"
         >
@@ -125,9 +125,10 @@
 import { Component, Mixins, VModel } from 'vue-property-decorator'
 
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class AppNavDrawer extends Mixins(StateMixin) {
+export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean, default: true })
     open!: boolean
 
@@ -157,10 +158,6 @@ export default class AppNavDrawer extends Mixins(StateMixin) {
 
   get showSubNavigation () {
     return this.hasSubNavigation && this.socketConnected && this.authenticated
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

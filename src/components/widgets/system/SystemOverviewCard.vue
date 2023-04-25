@@ -3,6 +3,26 @@
     :title="$t('app.general.title.system_overview')"
     icon="$desktopTower"
   >
+    <template #menu>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            color=""
+            fab
+            x-small
+            text
+            class="ms-1 my-1"
+            :disabled="printerBusy"
+            v-on="on"
+            @click="rolloverLogsDialogOpen = true"
+          >
+            <v-icon>$fileRefresh</v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.rollover_logs') }}</span>
+      </v-tooltip>
+    </template>
     <v-row no-gutters>
       <v-col>
         <v-simple-table dense>
@@ -49,6 +69,14 @@
               <th>{{ $t('app.system_info.label.distribution_codename') }}</th>
               <td>{{ distribution.codename }}</td>
             </tr>
+            <tr v-if="network">
+              <th>{{ $t('app.system_info.label.network') }}</th>
+              <td>{{ network }}</td>
+            </tr>
+            <tr v-if="virtualization.virt_type && virtualization.virt_type !== 'none'">
+              <th>{{ $t('app.system_info.label.virtualization') }}</th>
+              <td>{{ virtualization.virt_type }} ({{ virtualization.virt_identifier }})</td>
+            </tr>
           </tbody>
         </v-simple-table>
       </v-col>
@@ -59,51 +87,52 @@
       </v-col>
     </v-row>
 
-    <!-- <pre>{{ services }}</pre> -->
-    <!-- <pre>{{ sdInfo }}</pre> -->
-    <!-- <pre>{{ distribution }}</pre> -->
-    <!-- <pre>{{ printerInfo }}</pre> -->
+    <rollover-logs-dialog
+      v-if="rolloverLogsDialogOpen"
+      v-model="rolloverLogsDialogOpen"
+    />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
+import { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class PrinterStatsCard extends Vue {
-  get cpuInfo () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.cpu_info || {}
+export default class PrinterStatsCard extends Mixins(StateMixin) {
+  rolloverLogsDialogOpen = false
+
+  get systemInfo (): SystemInfo | null {
+    return this.$store.getters['server/getSystemInfo']
   }
 
-  get sdInfo () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.sd_info || {}
+  get cpuInfo () {
+    return this.systemInfo?.cpu_info || {} as CpuInfo
   }
 
   get distribution () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.distribution || {}
+    return this.systemInfo?.distribution || {} as DistroInfo
   }
 
-  get services () {
-    const info = this.$store.getters['server/getSystemInfo']
-    return info?.available_services || []
+  get virtualization () {
+    return this.systemInfo?.virtualization || {} as Virtualization
+  }
+
+  get network () {
+    return Object.entries(this.systemInfo?.network || {})
+      .map(([key, entry]) => {
+        const ipAddresses = entry.ip_addresses?.filter(x => x.family === 'ipv4') || entry.ip_addresses?.filter(x => x.family === 'ipv6')
+
+        return ipAddresses
+          ? `${key} (${ipAddresses.map(x => x.address).join(', ')})`
+          : key
+      })
+      .join(', ')
   }
 
   get printerInfo () {
     return this.$store.state.printer.printer.info
-  }
-
-  get fileSystemUsedPercent () {
-    // (250 / 500) * 100
-    const total = this.fileSystemUsage.total
-    const used = this.fileSystemUsage.used
-    return Math.floor((used / total) * 100).toFixed()
-  }
-
-  get fileSystemUsage () {
-    return this.$store.getters['files/getUsage']
   }
 }
 </script>

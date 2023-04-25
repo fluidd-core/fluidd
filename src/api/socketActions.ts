@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
 import { NotifyOptions } from '@/plugins/socketClient'
-import consola from 'consola'
+import { consola } from 'consola'
 import { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
@@ -67,6 +67,16 @@ export const SocketActions = {
       'machine.update.status', {
         dispatch: 'version/onUpdateStatus',
         params: { refresh },
+        wait: Waits.onVersionRefresh
+      }
+    )
+  },
+
+  async machineUpdateRefresh (name?: string) {
+    baseEmit(
+      'machine.update.refresh', {
+        dispatch: 'version/onUpdateStatus',
+        params: { name },
         wait: Waits.onVersionRefresh
       }
     )
@@ -533,7 +543,7 @@ export const SocketActions = {
    * for brevity.
    */
   async serverFilesGetDirectory (root: string, path: string) {
-    const wait = `${Waits.onFileSystem}${path}`
+    const wait = `${Waits.onFileSystem}/${root}/${path}/`
     baseEmit(
       'server.files.get_directory',
       {
@@ -545,7 +555,7 @@ export const SocketActions = {
   },
 
   async serverFilesListRoot (root: string) {
-    const wait = `${Waits.onFileSystem}${root}`
+    const wait = `${Waits.onFileSystem}/${root}/`
     baseEmit(
       'server.files.list',
       {
@@ -557,7 +567,7 @@ export const SocketActions = {
   },
 
   async serverFilesMove (source: string, dest: string) {
-    const wait = Waits.onFileSystem
+    const wait = `${Waits.onFileSystem}/${source}/`
     baseEmit(
       'server.files.move', {
         dispatch: 'void',
@@ -571,7 +581,7 @@ export const SocketActions = {
   },
 
   async serverFilesCopy (source: string, dest: string) {
-    const wait = Waits.onFileSystem
+    const wait = `${Waits.onFileSystem}/${source}/`
     baseEmit(
       'server.files.copy', {
         dispatch: 'void',
@@ -585,7 +595,7 @@ export const SocketActions = {
   },
 
   async serverFilesZip (dest: string, items: string[], store_only?: boolean) {
-    const wait = Waits.onFileSystem
+    const wait = `${Waits.onFileSystem}/${dest}/`
     baseEmit(
       'server.files.zip', {
         dispatch: 'void',
@@ -604,7 +614,7 @@ export const SocketActions = {
    * Root should be included in the path.
    */
   async serverFilesPostDirectory (path: string) {
-    const wait = Waits.onFileSystem
+    const wait = `${Waits.onFileSystem}/${path}/`
     baseEmit(
       'server.files.post_directory', {
         dispatch: 'void',
@@ -617,7 +627,7 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteFile (path: string) {
-    const wait = Waits.onFileSystem
+    const wait = `${Waits.onFileSystem}/${path}/`
     baseEmit(
       'server.files.delete_file', {
         dispatch: 'void',
@@ -630,7 +640,7 @@ export const SocketActions = {
   },
 
   async serverFilesDeleteDirectory (path: string, force = false) {
-    const wait = Waits.onFileSystem
+    const wait = `${Waits.onFileSystem}/${path}/`
     baseEmit(
       'server.files.delete_directory', {
         dispatch: 'void',
@@ -658,6 +668,17 @@ export const SocketActions = {
         params: {
           entry_id,
           wake_time
+        }
+      }
+    )
+  },
+
+  async serverLogsRollover (application?: string) {
+    baseEmit(
+      'server.logs.rollover', {
+        dispatch: 'server/onLogsRollOver',
+        params: {
+          application
         }
       }
     )

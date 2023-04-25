@@ -9,7 +9,7 @@
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn
           small
-          class="ma-1"
+          class="ms-1 my-1"
           @click="handleLoadAll"
         >
           <v-icon
@@ -22,7 +22,7 @@
         </app-btn>
         <app-btn
           small
-          class="ma-1"
+          class="ms-1 my-1"
           @click="handleRemoveAll"
         >
           <v-icon

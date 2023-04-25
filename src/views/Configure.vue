@@ -7,11 +7,10 @@
       <collapsable-card
         :title="$t('app.general.title.config_files')"
         icon="$codeJson"
-        :draggable="false"
       >
         <file-system
           :roots="['config']"
-          :max-height="816"
+          max-height="816"
           name="configure"
           bulk-actions
         />
@@ -24,11 +23,10 @@
       <collapsable-card
         :title="$t('app.general.title.other_files')"
         icon="$files"
-        :draggable="false"
       >
         <file-system
           :roots="['logs', 'docs', 'config_examples']"
-          :max-height="816"
+          max-height="816"
           name="configure"
         />
       </collapsable-card>

@@ -66,6 +66,7 @@ export interface GeneralConfig {
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
+  showGasResistance: boolean;
   showSaveConfigAndRestart: boolean;
   showUploadAndPrint: boolean;
   flipConsoleLayout: boolean;
@@ -173,8 +174,9 @@ export interface GcodePreviewConfig {
   retractionIconSize: number;
   drawBackground: boolean;
   showAnimations: boolean;
-  groupLowerLayers: boolean;
+  minLayerHeight: number;
   autoLoadOnPrintStart: boolean;
+  autoLoadMobileOnPrintStart: boolean;
   autoFollowOnFileLoad: boolean;
   autoZoom: boolean;
   flip: {

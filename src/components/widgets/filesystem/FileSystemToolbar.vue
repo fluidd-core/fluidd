@@ -58,11 +58,11 @@
 
     <app-btn-collapse-group
       v-if="['gcodes', 'timelapse'].includes(root)"
-      :collapsed="true"
+      collapsed
       menu-icon="$imageSizeSelectLarge"
       size="small"
     >
-      <app-slider
+      <app-named-slider
         v-model="thumbnailSize"
         class="ma-1"
         :label="$t('app.general.label.thumbnail_size')"
@@ -80,14 +80,33 @@
       :headers="headers"
     />
 
+    <div>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            :disabled="disabled"
+            fab
+            small
+            text
+            @click="$emit('go-to-file')"
+            v-on="on"
+          >
+            <v-icon>$magnify</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.go_to_file') }}</span>
+      </v-tooltip>
+    </div>
+
     <file-system-filter-menu
-      v-if="hasFilterMenu"
+      v-if="hasFilterTypes"
       :root="root"
       :disabled="disabled"
       @change="$emit('filter', $event)"
     />
 
-    <file-system-menu
+    <file-system-add-menu
       v-if="!readonly || canCreateDirectory"
       :root="root"
       :disabled="disabled"
@@ -96,22 +115,24 @@
       @upload="handleUpload"
     />
 
-    <v-tooltip bottom>
-      <template #activator="{ on, attrs }">
-        <v-btn
-          v-bind="attrs"
-          :disabled="disabled"
-          fab
-          small
-          text
-          @click="$emit('refresh')"
-          v-on="on"
-        >
-          <v-icon>$refresh</v-icon>
-        </v-btn>
-      </template>
-      <span>{{ $t('app.general.btn.refresh') }}</span>
-    </v-tooltip>
+    <div>
+      <v-tooltip bottom>
+        <template #activator="{ on, attrs }">
+          <v-btn
+            v-bind="attrs"
+            :disabled="disabled"
+            fab
+            small
+            text
+            @click="$emit('refresh')"
+            v-on="on"
+          >
+            <v-icon>$refresh</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.refresh') }}</span>
+      </v-tooltip>
+    </div>
 
     <div
       style="max-width: 160px;"
@@ -149,13 +170,13 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
-import FileSystemMenu from './FileSystemMenu.vue'
+import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
 
 @Component({
   components: {
-    FileSystemMenu,
+    FileSystemAddMenu,
     FileSystemFilterMenu
   }
 })
@@ -193,20 +214,20 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   textSearch = ''
 
   get readonly () {
-    return this.$store.getters['files/getRootProperties'](this.root).readonly
+    return this.rootProperties.readonly
   }
 
   get canCreateDirectory () {
-    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
+    return this.rootProperties.canCreateDirectory
+  }
+
+  get hasFilterTypes () {
+    return this.rootProperties.filterTypes.length > 0
   }
 
   get lowOnSpace () {
     if (!this.klippyReady) return false
     return this.$store.getters['files/getLowOnSpace']
-  }
-
-  get supportsHistoryComponent () {
-    return this.$store.getters['server/componentSupport']('history')
   }
 
   // Properties of the current root.
@@ -217,18 +238,6 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   // Only show roots that have been registered.
   get registeredRoots () {
     return this.roots.filter(r => this.$store.state.server.info.registered_directories.includes(r))
-  }
-
-  get hasFilterMenu () {
-    if (!this.readonly) {
-      switch (this.root) {
-        case 'gcodes':
-          return this.supportsHistoryComponent
-        case 'config':
-          return true
-      }
-    }
-    return false
   }
 
   get thumbnailSize () {

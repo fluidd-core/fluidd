@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="title"
-    :max-width="320"
+    max-width="320"
     @save="handleSave"
   >
     <v-card-text>

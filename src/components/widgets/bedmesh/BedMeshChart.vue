@@ -18,12 +18,13 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Prop, Watch, Ref } from 'vue-property-decorator'
+import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsOption, GraphicComponentOption } from 'echarts'
 import { merge, cloneDeepWith } from 'lodash-es'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class EChartsBedMesh extends Vue {
+export default class EChartsBedMesh extends Mixins(BrowserMixin) {
   @Prop({ type: Array, required: true, default: {} })
   readonly data!: []
 
@@ -65,14 +66,14 @@ export default class EChartsBedMesh extends Vue {
     // If options includes series data, rip it out so we can merge it with
     // the given series in our initial options.
     const darkMode = this.$store.state.config.uiSettings.theme.isDark
-    const fontSize = (this.isMobile) ? 14 : 16
+    const fontSize = (this.isMobileViewport) ? 14 : 16
     let labelBackground = 'rgba(10,10,10,0.90)'
     const opacity = 0.10
     let fontColor = 'rgba(255,255,255,0.25)'
     let lineColor = '#ffffff'
     const visualMap = {
-      itemWidth: (this.isMobile) ? 15 : 25,
-      itemHeight: (this.isMobile) ? 140 : 280
+      itemWidth: (this.isMobileViewport) ? 15 : 25,
+      itemHeight: (this.isMobileViewport) ? 140 : 280
     }
     if (!darkMode) {
       labelBackground = 'rgba(255,255,255,0.90)'
@@ -138,7 +139,7 @@ export default class EChartsBedMesh extends Vue {
       }
     })
 
-    const opts = {
+    const opts: EChartsOption = {
       legend: {
         show: false
       },
@@ -197,15 +198,11 @@ export default class EChartsBedMesh extends Vue {
       },
       graphic,
       series: [...this.data]
-    } as EChartsOption
+    }
 
     // Merge the default options with the given prop.
     merge(opts, this.options)
     return opts
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   tooltipFormatter (params: any) {

@@ -8,14 +8,13 @@
         :title="$t('app.general.title.jobs')"
         card-key="JobsPage"
         icon="$files"
-        :draggable="false"
         class="mb-2 mb-sm-4"
       >
         <file-system
           :roots="'gcodes'"
           name="jobs"
           bulk-actions
-          :max-height="816"
+          max-height="816"
         />
       </collapsable-card>
     </v-col>

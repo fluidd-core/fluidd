@@ -75,12 +75,23 @@
           </td>
           <td>/</td>
           <td>
-            <input-temperature
+            <app-text-field
               v-if="klippyReady"
               :value="item.target"
-              :max="item.maxTemp"
-              :min="item.minTemp"
-              @input="setHeaterTargetTemp(item.name, $event)"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThanOrEqualOrZero(item.minTemp),
+                $rules.numberLessThanOrEqualOrZero(item.maxTemp)
+              ]"
+              type="number"
+              outlined
+              dense
+              single-line
+              hide-details="auto"
+              suffix="°C"
+              class="v-input--width-x-small"
+              @submit="setHeaterTargetTemp(item.name, +$event)"
             />
           </td>
         </tr>
@@ -136,16 +147,30 @@
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
+              <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+              <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+              <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
             </span>
           </td>
           <td>/</td>
           <td>
-            <input-temperature
+            <app-text-field
               v-if="klippyReady && item.type === 'temperature_fan'"
               :value="item.target"
-              :max="item.maxTemp"
-              :min="item.minTemp"
-              @input="setFanTargetTemp(item.name, $event)"
+              :rules="[
+                $rules.required,
+                $rules.numberValid,
+                $rules.numberGreaterThanOrEqualOrZero(item.minTemp),
+                $rules.numberLessThanOrEqualOrZero(item.maxTemp)
+              ]"
+              type="number"
+              outlined
+              dense
+              single-line
+              hide-details="auto"
+              suffix="°C"
+              class="v-input--width-x-small"
+              @submit="setFanTargetTemp(item.name, +$event)"
             />
           </td>
         </tr>
@@ -191,6 +216,7 @@
                   {{ item.temperature.toFixed(1) }}<small>°C</small>
                   <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
                   <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+                  <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
                   <small v-if="item.current_z_adjust !== undefined"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
                 </div>
               </template>
@@ -211,14 +237,12 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
-import InputTemperature from './InputTemperature.vue'
 import StateMixin from '@/mixins/state'
 import { Heater, Sensor } from '@/store/printer/types'
 
 @Component({
   components: {
-    TemperaturePresetsMenu,
-    InputTemperature
+    TemperaturePresetsMenu
   }
 })
 export default class TemperatureTargets extends Mixins(StateMixin) {
@@ -256,6 +280,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   get showBarometricPressure () {
     return this.$store.state.config.uiSettings.general.showBarometricPressure
+  }
+
+  get showGasResistance () {
+    return this.$store.state.config.uiSettings.general.showGasResistance
   }
 
   setHeaterTargetTemp (heater: string, target: number) {

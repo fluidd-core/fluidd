@@ -1,9 +1,12 @@
+import Vue from 'vue'
 import { ActionTree } from 'vuex'
 import { ServerState, ServerThrottledState, ServiceState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { AppPushNotification } from '../notifications/types'
+import { EventBus, FlashMessageTypes } from '@/eventBus'
+import i18n from '@/plugins/i18n'
 
 let retryTimeout: number
 
@@ -76,6 +79,22 @@ export const actions: ActionTree<ServerState, RootState> = {
   async onServerConfig ({ commit }, payload) {
     if (payload.config) {
       commit('setServerConfig', payload.config)
+    }
+  },
+
+  async onLogsRollOver (_, payload?: { rolled_over?: string[], failed?: Record<string, string> }) {
+    if (payload?.failed && Object.keys(payload.failed).length > 0) {
+      const message = Object.values(payload.failed)
+        .join('\n')
+
+      EventBus.$emit(message, { type: FlashMessageTypes.error })
+    } else if (payload?.rolled_over && payload.rolled_over.length) {
+      const applications = payload.rolled_over
+        .map(Vue.$filters.startCase)
+        .join(', ')
+      const message = i18n.tc('app.general.msg.rolledover_logs', 0, { applications })
+
+      EventBus.$emit(message, { type: FlashMessageTypes.success })
     }
   },
 

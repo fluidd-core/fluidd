@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="$t('app.tool.title.bed_screws_adjust')"
-    :max-width="450"
+    max-width="450"
     @save="sendAccept"
   >
     <v-card-text>

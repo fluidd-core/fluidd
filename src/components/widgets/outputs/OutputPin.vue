@@ -1,9 +1,8 @@
 <template>
   <div>
     <!-- Output Pins -->
-    <app-slider
+    <app-named-slider
       v-if="pin && pin.pwm"
-      input-xs
       :label="pin.prettyName"
       :min="0"
       :max="pin.scale"
@@ -11,12 +10,12 @@
       :value="(pin.value * pin.scale) / 1"
       :reset-value="pin.config.value || 0"
       :disabled="!klippyReady"
-      :locked="!klippyReady || isMobile"
+      :locked="isMobileViewport"
       :loading="hasWait(`${$waits.onSetOutputPin}${pin.name}`)"
-      @change="setValue"
+      @submit="setValue"
     />
 
-    <app-switch
+    <app-named-switch
       v-if="pin && !pin.pwm"
       :disabled="!klippyReady"
       :label="pin.prettyName"
@@ -30,10 +29,11 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import { OutputPin as IOutputPin } from '@/store/printer/types'
 
 @Component({})
-export default class OutputPin extends Mixins(StateMixin) {
+export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly pin!: IOutputPin
 
@@ -42,10 +42,6 @@ export default class OutputPin extends Mixins(StateMixin) {
       target = (target) ? this.pin.scale : 0
     }
     this.sendGcode(`SET_PIN PIN=${this.pin.name} VALUE=${target}`, `${this.$waits.onSetOutputPin}${this.pin.name}`)
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <app-dialog
     v-model="open"
-    :max-width="320"
+    max-width="320"
     :save-button-disabled="!verified"
     :valid.sync="valid"
     persistent
@@ -77,7 +77,7 @@ import { Globals } from '@/globals'
 import Axios, { AxiosError, CancelTokenSource } from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
-import consola from 'consola'
+import { consola } from 'consola'
 import { httpClientActions } from '@/api/httpClientActions'
 
 @Component({})

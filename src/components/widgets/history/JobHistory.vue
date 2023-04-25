@@ -13,7 +13,7 @@
 
       <div
         style="max-width: 160px;"
-        class="ml-1"
+        class="ms-1 my-1"
       >
         <v-text-field
           v-model="search"
@@ -32,13 +32,14 @@
       :headers="visibleHeaders"
       :items-per-page="15"
       :item-class="getRowClasses"
-      :single-expand="true"
+      single-expand
       :search="search"
       :expanded="expanded"
       mobile-breakpoint="0"
       item-key="job_id"
       sort-by="start_time"
       sort-desc
+      fixed-header
     >
       <template #expanded-item="{ headers, item }">
         <td

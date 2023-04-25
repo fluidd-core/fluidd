@@ -1,10 +1,8 @@
 <template>
   <v-dialog
     v-model="open"
-    :width="width"
-    :max-width="maxWidth"
-    :persistent="persistent"
-    scrollable
+    :scrollable="scrollable"
+    v-bind="$attrs"
   >
     <v-form
       ref="form"
@@ -23,16 +21,14 @@
           v-if="subTitle || hasSubTitleSlot"
           class="card-heading pb-2 secondary--text"
         >
-          <slot name="subTitle">
+          <slot name="sub-title">
             {{ subTitle }}
           </slot>
         </v-card-subtitle>
 
         <v-divider />
 
-        <div class="card-content">
-          <slot />
-        </div>
+        <slot />
 
         <template v-if="!noActions">
           <v-divider />
@@ -98,14 +94,8 @@ export default class AppDialog extends Vue {
   @Prop({ type: Boolean })
   readonly saveButtonLoading?: boolean
 
-  @Prop({ type: Number })
-  readonly width?: number
-
-  @Prop({ type: Number })
-  readonly maxWidth?: number
-
-  @Prop({ type: Boolean })
-  readonly persistent?: boolean
+  @Prop({ type: Boolean, default: true })
+  readonly scrollable!: boolean
 
   @Prop({ type: Boolean })
   readonly noActions?: boolean
@@ -139,9 +129,3 @@ export default class AppDialog extends Vue {
   }
 }
 </script>
-
-<style lang="scss" scoped>
-.card-content {
-  overflow-y: auto;
-}
-</style>

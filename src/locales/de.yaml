@@ -18,11 +18,9 @@ app:
       not_loaded: Kein Mesh geladen
     tooltip:
       calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
-      delete: Profil löschen. Achtung, der Drucker wird neu gestartet
+      delete: Profil löschen
       load: Profil laden
-      save: >-
-        Fügt das Mesh Profil der printer.cfg hinzu. Achtung, der Drucker wird
-        neu gestartet
+      save: Fügt das Mesh Profil der printer.cfg hinzu
   chart:
     label:
       current: Aktuell
@@ -79,7 +77,6 @@ app:
       label:
         print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
-        hidden_files: Versteckte Dateien ausblenden
         klipper_backup_files: Klipper-Backupdateien ausblenden
     label:
       dir_name: Ordnername
@@ -327,12 +324,6 @@ app:
         invalid_number: Ungültige Zahl
         credentials: Ungültige Anmeldeinformationen
       msg:
-        apply_z_offset_endstop: >-
-          Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
-          aktualisiert.
-        apply_z_offset_probe: >-
-          Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
-          aktualisiert.
         no_file_preview: >-
           %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?
@@ -455,6 +446,7 @@ app:
       auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
+      auto_load_mobile_on_print_start: Datei bei Druckstart auch auf mobilen Geräten laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
@@ -608,20 +600,15 @@ app:
       home_y: 'Y'
       home_all: Alle
     tooltip:
+      absolute_positioning: Absolute Positionierung
       extruder_disabled: >-
         Extruder deaktiviert, da unter der min_extrude_temp
         (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
-      motors_off: MOTOREN AUS
-      relative_positioning: Relative Positionierung
-      absolute_positioning: Absolute Positionierung
-      force_move: FORCE_MOVE
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      z_tilt_adjust: Z_Tilt_Adjust
-      quad_gantry_level: QGL
-      bed_screws_adjust: BED_SCREWS_ADJUST
       manual_probe: Manuelles Probing
+      motors_off: Motoren Aus
+      relative_positioning: Relative Positionierung
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing
@@ -698,6 +685,8 @@ app:
         center: Mitte
         back_left: Hinten links
         back_right: Hinten rechts
+        x_only: Nur X bewegen
+        y_only: Nur Y bewegen
       previewimage: Vorschaubild erzeugen
       saveframes: Einzelbilder speichern
       stream_delay_compensation: Verzögerungs-Kompensation

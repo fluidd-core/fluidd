@@ -33,6 +33,7 @@ firmware.
 - View and Edit your Klipper config in app with code folding and Codelens support
 - View and Edit your Gcode files in app
 - [Bed Mesh](/features/bed_mesh) levelling
+- [Multiple extruder](/features/multiple_extruders) configurations
 - [Thermal Presets](/features/presets)
 - [Multiple web cam](/features/cameras) support
 - Control power devices - GPIO (relays), TPLink Smartplug, and Tasmota
@@ -50,7 +51,7 @@ printer communities and you, the user.
 ## Docker
 
 Fluidd ships with Docker support built in. The official docker can be found
-[here](https://hub.docker.com/r/cadriel/fluidd), and further information can be found [here](/installation/docker).
+[here](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and further information can be found [here](/installation/docker).
 
 ## Support
 

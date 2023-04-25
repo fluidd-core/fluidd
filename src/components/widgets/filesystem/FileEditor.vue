@@ -16,12 +16,13 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
+import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
-export default class FileEditor extends Vue {
+export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly value!: string
 
@@ -39,10 +40,6 @@ export default class FileEditor extends Vue {
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
 
   async mounted () {
     // Init the editor.
@@ -73,9 +70,9 @@ export default class FileEditor extends Vue {
         useShadows: false
       },
       minimap: {
-        enabled: (!this.isMobile)
+        enabled: (!this.isMobileViewport)
       },
-      rulers: (this.isMobile) ? [80, 120] : []
+      rulers: (this.isMobileViewport) ? [80, 120] : []
     })
 
     // Define the model. The filename will map to the supported languages.

@@ -2,7 +2,7 @@
   <collapsable-card
     :title="config.title"
     :icon="`$${config.icon}`"
-    :draggable="true"
+    draggable
     :layout-path="`diagnostics.${config.id}`"
   >
     <template #menu>
@@ -32,12 +32,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Prop, Mixins } from 'vue-property-decorator'
 import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import { EChartsOption } from 'echarts'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class DiagnosticsCard extends Vue {
+export default class DiagnosticsCard extends Mixins(BrowserMixin) {
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig
 
@@ -45,16 +46,11 @@ export default class DiagnosticsCard extends Vue {
     return this.$store.state.charts.diagnostics || []
   }
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
-
   get options () {
     const isDark = this.$store.state.config.uiSettings.theme.isDark
-    const isMobile = this.isMobile
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
-    const fontSize = (isMobile) ? 13 : 14
+    const fontSize = (this.isMobileViewport) ? 13 : 14
 
     const lineStyle = {
       color: (isDark) ? '#ffffff' : '#000000',
@@ -66,14 +62,14 @@ export default class DiagnosticsCard extends Vue {
       opacity: 0.5
     }
 
-    let right = (this.isMobile) ? 15 : 20
-    if (this.config.axes.length > 1) right = (this.isMobile) ? 35 : 45
+    let right = (this.isMobileViewport) ? 15 : 20
+    if (this.config.axes.length > 1) right = (this.isMobileViewport) ? 35 : 45
 
     const grid = {
       top: 20,
-      left: (this.isMobile) ? 35 : 45,
+      left: (this.isMobileViewport) ? 35 : 45,
       right,
-      bottom: (this.isMobile) ? 52 : 38
+      bottom: (this.isMobileViewport) ? 52 : 38
     }
 
     const tooltip = {
@@ -160,7 +156,7 @@ export default class DiagnosticsCard extends Vue {
           color: tooltip.textStyle.color,
           fontSize,
           formatter: '{H}:{mm}',
-          rotate: (this.isMobile) ? 45 : 0
+          rotate: (this.isMobileViewport) ? 45 : 0
         },
         axisPointer: {
           label: {

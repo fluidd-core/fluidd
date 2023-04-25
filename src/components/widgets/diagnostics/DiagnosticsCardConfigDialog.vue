@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="(config.id !== '') ? $t('app.general.title.edit_chart') : $t('app.general.title.add_chart')"
-    :max-width="800"
+    max-width="800"
   >
     <v-card-text>
       <v-stepper

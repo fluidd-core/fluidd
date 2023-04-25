@@ -70,18 +70,6 @@ import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {
-  get maxExtrudeLength (): number {
-    return this.activeExtruder?.max_extrude_only_distance || 50
-  }
-
-  get filamentDiameter (): number {
-    return this.activeExtruder?.filament_diameter || 1.75
-  }
-
-  get nozzleDiameter (): number {
-    return this.activeExtruder?.nozzle_diameter || 0.4
-  }
-
   get extrudeFactor (): number {
     return this.$store.state.printer.printer.gcode_move.extrude_factor || 1
   }

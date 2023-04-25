@@ -30,7 +30,7 @@
         fab
         x-small
         text
-        class="ml-1"
+        class="ms-1 my-1"
         @click="consoleElement.scrollToLatest(true)"
       >
         <v-icon>{{ flipLayout ? '$up' : '$down' }}</v-icon>
@@ -42,7 +42,7 @@
         fab
         x-small
         text
-        class="ml-1"
+        class="ms-1 my-1"
         @click="$filters.routeTo($router, '/console')"
       >
         <v-icon>$fullScreen</v-icon>
@@ -53,53 +53,88 @@
         fab
         x-small
         text
-        class="ml-1"
+        class="ms-1 my-1"
         @click="handleClear"
       >
         <v-icon>$delete</v-icon>
       </app-btn>
 
-      <app-btn-collapse-group
-        :collapsed="true"
-        menu-icon="$cog"
+      <v-menu
+        bottom
+        left
+        offset-y
+        transition="slide-y-transition"
+        :close-on-content-click="false"
       >
-        <v-checkbox
-          v-model="hideTempWaits"
-          :label="$t('app.console.label.hide_temp_waits')"
-          color="primary"
-          hide-details
-          class="mx-2 mt-2"
-        />
-        <v-checkbox
-          v-model="autoScroll"
-          :label="$t('app.console.label.auto_scroll')"
-          color="primary"
-          hide-details
-          class="mx-2 mb-2"
-        />
-        <v-checkbox
-          v-model="flipLayout"
-          :label="$t('app.console.label.flip_layout')"
-          color="primary"
-          hide-details
-          class="mx-2 mb-2"
-        />
-
-        <template v-for="(filter, index) in filters">
-          <v-divider
-            v-if="index === 0"
-            :key="index"
-          />
-          <v-checkbox
-            :key="filter.id"
-            v-model="filter.enabled"
-            :label="filter.name"
-            color="primary"
-            hide-details
-            class="mx-2 mt-2"
-          />
+        <template #activator="{ on, attrs }">
+          <v-btn
+            fab
+            x-small
+            text
+            v-bind="attrs"
+            class="ms-1 my-1"
+            v-on="on"
+          >
+            <v-icon>
+              $cog
+            </v-icon>
+          </v-btn>
         </template>
-      </app-btn-collapse-group>
+
+        <v-list dense>
+          <v-list-item @click="hideTempWaits = !hideTempWaits">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="hideTempWaits" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.console.label.hide_temp_waits') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="autoScroll = !autoScroll">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="autoScroll" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.console.label.auto_scroll') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-list-item @click="flipLayout = !flipLayout">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="flipLayout" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.console.label.flip_layout') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
+          <template v-if="filters && filters.length">
+            <v-divider />
+
+            <v-list-item
+              v-for="filter in filters"
+              :key="filter.id"
+              @click="filter.enabled = !filter.enabled"
+            >
+              <v-list-item-action class="my-0">
+                <v-checkbox :input-value="filter.enabled" />
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ filter.name }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+      </v-menu>
     </template>
 
     <console

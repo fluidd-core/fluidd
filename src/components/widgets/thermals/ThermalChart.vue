@@ -16,12 +16,13 @@
 </template>
 
 <script lang='ts'>
-import { Vue, Component, Watch, Prop, Ref } from 'vue-property-decorator'
+import { Component, Watch, Prop, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsOption } from 'echarts'
 import getKlipperType from '@/util/get-klipper-type'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class ThermalChart extends Vue {
+export default class ThermalChart extends Mixins(BrowserMixin) {
   @Prop({ type: String, default: '100%' })
   readonly height!: string
 
@@ -35,9 +36,9 @@ export default class ThermalChart extends Vue {
   handleLegendSelectChange (e: { name: string; type: string; selected: {[index: string]: boolean } }) {
     this.$store.dispatch('charts/saveSelectedLegends', e.selected)
 
-    let right = (this.isMobile) ? 15 : 20
+    let right = (this.isMobileViewport) ? 15 : 20
     if (this.showPowerAxis(e.selected)) {
-      right = (this.isMobile) ? 25 : 45
+      right = (this.isMobileViewport) ? 25 : 45
     }
 
     if (
@@ -87,8 +88,7 @@ export default class ThermalChart extends Vue {
     const keys = this.$store.getters['printer/getChartableSensors'] as string[]
 
     keys.forEach((key) => {
-      let label = key
-      if (key.includes(' ')) label = key.split(' ')[1]
+      const label = key.split(' ', 2).pop() || ''
 
       this.series.push(this.createSeries(label, key))
       if (dataKeys.includes(label + 'Target')) this.series.push(this.createSeries(label + 'Target', key))
@@ -99,10 +99,9 @@ export default class ThermalChart extends Vue {
 
   get options () {
     const isDark = this.$store.state.config.uiSettings.theme.isDark
-    const isMobile = this.isMobile
 
     const fontColor = (isDark) ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,0.45)'
-    const fontSize = (isMobile) ? 13 : 14
+    const fontSize = (this.isMobileViewport) ? 13 : 14
 
     const lineStyle = {
       color: (isDark) ? '#ffffff' : '#000000',
@@ -114,15 +113,15 @@ export default class ThermalChart extends Vue {
       opacity: 0.5
     }
 
-    let right = (this.isMobile) ? 15 : 20
+    let right = (this.isMobileViewport) ? 15 : 20
     if (this.showPowerAxis(this.initialSelected)) {
-      right = (this.isMobile) ? 35 : 45
+      right = (this.isMobileViewport) ? 35 : 45
     }
     const grid = {
       top: 20,
-      left: (this.isMobile) ? 35 : 45,
+      left: (this.isMobileViewport) ? 35 : 45,
       right,
-      bottom: (this.isMobile) ? 52 : 38
+      bottom: (this.isMobileViewport) ? 52 : 38
     }
 
     const tooltip = {
@@ -220,7 +219,7 @@ export default class ThermalChart extends Vue {
           color: tooltip.textStyle.color,
           fontSize,
           formatter: '{H}:{mm}',
-          rotate: (this.isMobile) ? 45 : 0
+          rotate: (this.isMobileViewport) ? 45 : 0
         },
         axisPointer: {
           label: {
@@ -292,7 +291,7 @@ export default class ThermalChart extends Vue {
 
   createSeries (label: string, key: string) {
     // Grab the color
-    const color = Vue.$colorset.next(getKlipperType(key), key)
+    const color = this.$colorset.next(getKlipperType(key), key)
 
     // Base properties
     const series: any = {
@@ -377,10 +376,6 @@ export default class ThermalChart extends Vue {
     const obj: { [index: string]: any } = { top: -10 }
     obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 10
     return obj
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   xAxisPointerFormatter (params: any) {

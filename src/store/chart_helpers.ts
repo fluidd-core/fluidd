@@ -132,8 +132,7 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
     const keys: string[] = getters.getChartableSensors
 
     keys.forEach((key) => {
-      let label = key
-      if (key.includes(' ')) label = key.split(' ')[1]
+      const label = key.split(' ', 2).pop() || ''
       const temp = state.printer.printer[key].temperature
       const target = state.printer.printer[key].target
       const power = state.printer.printer[key].power

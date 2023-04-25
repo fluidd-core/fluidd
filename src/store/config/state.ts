@@ -43,6 +43,7 @@ export const defaultState = (): ConfigState => {
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
+        showGasResistance: true,
         showSaveConfigAndRestart: true,
         showUploadAndPrint: true,
         flipConsoleLayout: false,
@@ -116,8 +117,9 @@ export const defaultState = (): ConfigState => {
         retractionIconSize: 0.6,
         drawBackground: true,
         showAnimations: true,
-        groupLowerLayers: false,
+        minLayerHeight: 0.1,
         autoLoadOnPrintStart: false,
+        autoLoadMobileOnPrintStart: false,
         autoFollowOnFileLoad: true,
         autoZoom: false,
         flip: {
@@ -128,7 +130,8 @@ export const defaultState = (): ConfigState => {
       fileSystem: {
         activeFilters: {
           gcodes: [],
-          config: []
+          config: [],
+          logs: []
         }
       },
       toolhead: {

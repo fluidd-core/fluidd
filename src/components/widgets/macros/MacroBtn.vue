@@ -1,29 +1,15 @@
 <template>
-  <app-btn
-    v-if="paramList.length === 0 || !enableParams"
-    :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
-    :style="borderStyle"
-    v-on="{
-      ...$listeners,
-      click: () => $emit('click', macro.name)
-    }"
-  >
-    <slot />
-  </app-btn>
-  <app-btn-group
-    v-else
-  >
+  <app-btn-group>
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
-      v-on="{
-        ...$listeners,
-        click: () => $emit('click', macro.name)
-      }"
+      v-on="filteredListeners"
+      @click="handleClick"
     >
       <slot />
     </app-btn>
     <v-menu
+      v-if="paramList.length > 0"
       left
       offset-y
       transition="slide-y-transition"
@@ -31,9 +17,8 @@
     >
       <template #activator="{ on, attrs, value }">
         <app-btn
-          v-if="paramList.length > 0"
           v-bind="attrs"
-          :min-width="24"
+          min-width="24"
           class="px-0"
           :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
           v-on="on"
@@ -102,14 +87,18 @@ import { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
 
 @Component({})
-export default class AppMacroBtn extends Mixins(StateMixin) {
+export default class MacroBtn extends Mixins(StateMixin) {
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
 
-  @Prop({ type: Boolean, default: false })
-  readonly enableParams!: boolean
-
   params: { [index: string]: { value: string | number; reset: string | number }} = {}
+
+  get filteredListeners () {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { click, ...listeners } = this.$listeners
+
+    return listeners
+  }
 
   get paramList () {
     return Object.keys(this.params)
@@ -137,6 +126,10 @@ export default class AppMacroBtn extends Mixins(StateMixin) {
       return `border-color: ${this.macro.color} !important; border-left: solid 4px ${this.macro.color} !important;`
     }
     return ''
+  }
+
+  handleClick () {
+    this.$emit('click', this.macro.name)
   }
 
   mounted () {

@@ -9,12 +9,14 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * Should include the macro's config.
    */
   getMacros: (state, getters, rootState) => {
-    const macros = Object.keys(rootState.printer.printer.configfile.settings)
+    const macros = Object.keys(rootState.printer.printer)
       .filter(key => /^gcode_macro (?!_)/.test(key))
       .map(key => {
-        const name = key.split(' ')[1]
-        const config = rootState.printer.printer.configfile.settings[key]
+        const lowerCaseKey = key.toLocaleLowerCase()
+        const name = lowerCaseKey.split(' ', 2)[1]
+        const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
         const stored = state.stored.find(macro => macro.name === name)
+        const variables = rootState.printer.printer[key]
 
         const macro: Macro = {
           name,
@@ -23,6 +25,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
           disabledWhilePrinting: false,
           color: '',
           categoryId: '0',
+          variables,
           ...stored,
           ...{ config }
         }
@@ -40,7 +43,6 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
         return macro
       })
-      .sort((a, b) => a.name.localeCompare(b.name))
 
     return macros
   },
@@ -48,29 +50,24 @@ export const getters: GetterTree<MacrosState, RootState> = {
   // Gets visible macros, transformed. Should include the macro's config.
   // Is only used on the dashboard. Grouped by category.
   getVisibleMacros: (state, getters) => {
-    const macros = getters.getMacros as Macro[]
+    const defaultCategory = { id: '0', name: null }
+    const categories = [...state.categories, defaultCategory]
 
-    const macrosGrouped = macros
-      .filter(macro => macro.visible)
-      .reduce((groups, macro) => {
-        const key = macro.categoryId ?? '0'
-
-        if (key in groups) {
-          groups[key].push(macro)
-        } else {
-          groups[key] = [macro]
+    return categories
+      .map(({ id, name }) => {
+        return {
+          id,
+          name,
+          macros: getters.getMacrosByCategory(id).filter((macro: Macro) => macro.visible)
         }
+      })
+      .filter(category => category.macros.length > 0)
+      .sort((a, b) => {
+        if (!a.name) return 1
+        if (!b.name) return -1
 
-        return groups
-      }, {} as Record<string, Macro[]>)
-
-    return Object.entries(macrosGrouped)
-      .map(([id, macros]) => ({
-        id,
-        name: macros[0]?.category?.name,
-        macros
-      }))
-      .sort((a, b) => !a.name ? 1 : !b.name ? -1 : a.name.localeCompare(b.name))
+        return a.name.localeCompare(b.name)
+      })
   },
 
   /**
@@ -86,6 +83,15 @@ export const getters: GetterTree<MacrosState, RootState> = {
 
     return macros
       .filter(macro => macro.categoryId === id)
+      .sort((a: Macro, b: Macro) => {
+        // Sorts preferrentially by order, then by name
+        // This offers backward compatibility with macros that have no order
+        if ((a.order !== undefined && b.order !== undefined) && a.order !== b.order) {
+          return a.order - b.order
+        }
+
+        return a.name.localeCompare(b.name)
+      })
   },
 
   /**

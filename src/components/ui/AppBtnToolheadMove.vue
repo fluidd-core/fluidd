@@ -5,7 +5,7 @@
     <template #activator="{ on, attrs }">
       <app-btn
         :disabled="disabled"
-        :min-width="40"
+        min-width="40"
         :loading="loading"
         :color="color"
         v-bind="(tooltip !== '') ? attrs : undefined"

@@ -6,27 +6,25 @@
     <div
       class="text-body-1"
       :class="{ 'text--disabled': disabled }"
-    >
-      {{ label }}
-    </div>
+      v-html="label"
+    />
     <v-switch
+      v-model="inputValue"
       class="mt-0"
-      :input-value="value"
       :disabled="disabled || loading"
       hide-details
-      @change="emitChange"
+      v-on="$listeners"
     />
   </v-layout>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins } from 'vue-property-decorator'
-import StateMixin from '@/mixins/state'
+import { Component, Prop, Vue, VModel } from 'vue-property-decorator'
 
 @Component({})
-export default class AppSwitch extends Mixins(StateMixin) {
-  @Prop({ type: Boolean, required: true })
-  readonly value!: boolean
+export default class AppNamedSwitch extends Vue {
+  @VModel({ type: Boolean, required: true })
+    inputValue!: boolean
 
   @Prop({ type: String, required: true })
   readonly label!: string
@@ -36,9 +34,5 @@ export default class AppSwitch extends Mixins(StateMixin) {
 
   @Prop({ type: Boolean, default: false })
   readonly loading!: boolean
-
-  emitChange (val: boolean) {
-    this.$emit('input', val)
-  }
 }
 </script>

@@ -1,4 +1,4 @@
-import consola from 'consola'
+import { consola } from 'consola'
 
 type EntryWithPath = {
   entry: FileSystemEntry,
@@ -51,19 +51,19 @@ export const getFilesWithPathFromHTMLInputElement = async (input: HTMLInputEleme
 
 export const convertFilesToFilesWithPath = (files: File[] | FileList) => {
   return [...files]
-    .map(file => ({
+    .map((file): FileWithPath => ({
       file,
       path: file.webkitRelativePath.slice(0, -file.name.length)
-    } as FileWithPath))
+    }))
 }
 
 export const getFilesFromFileSystemEntries = async (entries: readonly FileSystemEntry[]) => {
   const files: FileWithPath[] = []
   const items = entries
-    .map(entry => ({
+    .map((entry): EntryWithPath => ({
       entry,
       path: ''
-    } as EntryWithPath))
+    }))
 
   let item = items.pop()
   while (item) {

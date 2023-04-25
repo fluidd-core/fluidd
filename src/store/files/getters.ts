@@ -1,19 +1,15 @@
 import { GetterTree } from 'vuex'
-import { AppFile, FileRoot, Files, FilesState } from './types'
+import { AppFile, AppFileWithMeta, FileRoot, Files, FilesState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a directory of files and sub-directories.
    */
-  getDirectory: (state) => (r: FileRoot, path: string) => {
-    const root = r
-    if (state && state[root]) {
-      const dir = state[root].find(o => o.path === path)
-      if (dir) {
-        return dir
-      }
-    }
+  getDirectory: (state) => (root: FileRoot, path: string) => {
+    const dir = state[root]?.find(o => o.path === path)
+
+    return dir
   },
 
   getRootFiles: (state) => (root: FileRoot) => {
@@ -31,106 +27,91 @@ export const getters: GetterTree<FilesState, RootState> = {
    * Returns the properties of a root.
    */
   getRootProperties: () => (root: FileRoot) => {
-    if (root === 'gcodes') {
-      return {
-        readonly: false,
-        accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
-        canEdit: true,
-        canView: false,
-        canPrint: true,
-        canConfigure: true,
-        filterTypes: ['print_start_time']
-      }
-    }
-
-    if (root === 'config') {
-      return {
-        readonly: false,
-        accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
-        canEdit: true,
-        canView: false,
-        canPrint: false,
-        canConfigure: false,
-        filterTypes: ['hidden_files', 'klipper_backup_files']
-      }
-    }
-
-    if (root === 'config_examples') {
-      return {
-        readonly: true,
-        accepts: [],
-        canEdit: false,
-        canView: true,
-        canPrint: false,
-        canConfigure: false,
-        filterTypes: []
-      }
-    }
-
-    if (root === 'docs') {
-      return {
-        readonly: true,
-        accepts: [],
-        canEdit: false,
-        canView: true,
-        canPrint: false,
-        canConfigure: false,
-        filterTypes: []
-      }
-    }
-
-    if (root === 'logs') {
-      return {
-        readonly: true,
-        accepts: [],
-        canEdit: false,
-        canView: true,
-        canPrint: false,
-        canConfigure: false,
-        filterTypes: []
-      }
-    }
-
-    if (root === 'timelapse') {
-      return {
-        readonly: true,
-        accepts: [],
-        canEdit: false,
-        canView: true,
-        canPrint: false,
-        canConfigure: false,
-        canDelete: true,
-        canCreateDirectory: true,
-        filterTypes: []
-      }
-    }
-
-    return {
-      readonly: true,
-      accepts: [],
-      canEdit: false,
-      canView: true,
-      canPrint: false,
-      canConfigure: false,
-      filterTypes: []
+    switch (root) {
+      case 'gcodes':
+        return {
+          readonly: false,
+          accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
+          canEdit: true,
+          canView: false,
+          canPrint: true,
+          canConfigure: true,
+          filterTypes: ['hidden_files', 'print_start_time']
+        }
+      case 'config':
+        return {
+          readonly: false,
+          accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
+          canEdit: true,
+          canView: false,
+          canPrint: false,
+          canConfigure: false,
+          filterTypes: ['hidden_files', 'klipper_backup_files']
+        }
+      case 'config_examples':
+        return {
+          readonly: true,
+          accepts: [],
+          canEdit: false,
+          canView: true,
+          canPrint: false,
+          canConfigure: false,
+          filterTypes: []
+        }
+      case 'docs':
+        return {
+          readonly: true,
+          accepts: [],
+          canEdit: false,
+          canView: true,
+          canPrint: false,
+          canConfigure: false,
+          filterTypes: []
+        }
+      case 'logs':
+        return {
+          readonly: true,
+          accepts: [],
+          canEdit: false,
+          canView: true,
+          canPrint: false,
+          canConfigure: false,
+          filterTypes: ['rolled_log_files']
+        }
+      case 'timelapse':
+        return {
+          readonly: true,
+          accepts: [],
+          canEdit: false,
+          canView: true,
+          canPrint: false,
+          canConfigure: false,
+          canDelete: true,
+          canCreateDirectory: true,
+          filterTypes: ['hidden_files']
+        }
+      default:
+        return {
+          readonly: true,
+          accepts: [],
+          canEdit: false,
+          canView: true,
+          canPrint: false,
+          canConfigure: false,
+          filterTypes: []
+        }
     }
   },
 
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters) => (r: string, path: string, filename: string): AppFile | undefined => {
-    const dir: Files = getters.getDirectory(r, path)
-    if (
-      dir &&
-      dir.items
-    ) {
-      const file = dir.items.find(f => f.type === 'file' && f.filename === filename)
+  getFile: (state, getters) => (root: FileRoot, path: string, filename: string) => {
+    const dir = getters.getDirectory(root, path) as Files | undefined
 
-      if (file) {
-        return file as AppFile
-      }
-    }
+    const file = dir?.items?.find((item): item is AppFile | AppFileWithMeta => item.type === 'file' && item.filename === filename)
+
+    return file
   },
 
   /**

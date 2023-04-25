@@ -1,11 +1,13 @@
 import { KlipperFileMeta, Thumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
+import { CancelTokenSource } from 'axios'
 
 export type { KlipperFileMeta, Thumbnail }
 
 export interface FilesState {
   uploads: FilesUpload[];
   download: FileDownload | null;
+  fileTransferCancelTokenSource: CancelTokenSource | null;
   currentPaths: CurrentPaths;
   disk_usage: DiskUsage;
   rootFiles: RootFiles;
@@ -30,25 +32,31 @@ export interface CurrentPaths {
 
 export interface Files {
   path: string;
-  items: (FileBrowserEntry | AppFileWithMeta)[];
+  items: FileBrowserEntry[];
 }
 
 export interface AppFile extends KlipperFile {
   type: 'file';
-  name?: string;
+  name: string;
   extension: string;
-  filename: string;
-  modified: number;
-  size: number;
   path: string;
+  modified: number;
 }
 
 export interface KlipperFile {
   filename: string;
-  modified: number;
+  modified: number | string;
   size: number;
+  permissions?: '' | 'r' | 'rw';
   print_start_time?: number | null;
   job_id?: string | null;
+}
+
+export interface KlipperDir {
+  dirname: string;
+  modified: number | string;
+  size: number;
+  permissions?: '' | 'r' | 'rw';
 }
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
@@ -56,12 +64,10 @@ export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
 }
 export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
-export interface AppDirectory {
+export interface AppDirectory extends KlipperDir {
   type: 'directory';
-  name?: string;
-  dirname: string;
-  modified: number | null;
-  size: number;
+  name: string;
+  modified: number;
 }
 
 export interface FileMetaDataSocketResponse {
@@ -89,7 +95,7 @@ export interface FilePaths {
 
 export interface FileUpdate {
   paths: FilePaths;
-  file: AppFile | AppFileWithMeta;
+  file: Partial<AppFile | AppFileWithMeta> & { filename: string; };
   root: string;
 }
 
@@ -107,11 +113,11 @@ export interface FilesUpload extends FileDownload {
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
-export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files'
+export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files'
 
 export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
 
-export type FileBrowserEntry = AppFile | AppDirectory
+export type FileBrowserEntry = AppFile | AppFileWithMeta | AppDirectory
 
 export interface FilePreviewState {
   open: boolean;
