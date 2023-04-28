@@ -128,7 +128,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: true,
           canPrint: false,
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
       case 'docs':
         return {
@@ -138,7 +138,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: true,
           canPrint: false,
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
       case 'logs':
         return {

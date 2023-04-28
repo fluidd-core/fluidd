@@ -175,7 +175,7 @@ app:
       refresh: Refresh
       reload: Reload
       remove: Remove
-      remove_all: Remove All
+      remove_all: Remove all
       rename: Rename
       reprint: Re-Print
       reset_file: Clear File
@@ -192,6 +192,7 @@ app:
       save_as: Save As
       save_restart: Save & Restart
       save_config_and_restart: Save config & restart
+      select_columns: Select columns
       send: Send
       set_color: Set Color
       set_default_layout: Set as Default Layout
@@ -199,6 +200,7 @@ app:
       snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
+      thumbnail_size: Thumbnail size
       upload: Upload
       upload_files: Upload Files
       upload_folder: Upload Folder
