@@ -11,20 +11,8 @@ export const defaultState = (): FilesState => {
       used: 0,
       free: 0
     },
-    rootFiles: {
-      gcodes: [],
-      config: [],
-      config_examples: [],
-      docs: [],
-      logs: [],
-      timelapse: []
-    },
-    gcodes: [],
-    config: [],
-    config_examples: [],
-    docs: [],
-    logs: [],
-    timelapse: []
+    rootFiles: {},
+    pathFiles: {}
   }
 }
 

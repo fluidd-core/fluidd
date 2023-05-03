@@ -11,7 +11,7 @@ import {
 export default (filePath: string, root: string): FilePaths => {
   let path = filePath.substr(0, filePath.lastIndexOf('/'))
   path = (path && path.startsWith(root))
-    ? path.substring(root.length)
+    ? path.substring(root.length + 1)
     : path
   return {
     filename: filePath.split('/').pop() || '',

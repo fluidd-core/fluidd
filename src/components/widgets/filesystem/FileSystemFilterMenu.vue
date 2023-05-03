@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { FileFilterType, FileRoot } from '@/store/files/types'
+import { FileFilterType } from '@/store/files/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 type FileFilterEntry = {
@@ -84,7 +84,7 @@ type FileFilter = FileFilterEntry & {
 @Component({})
 export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
-  readonly root!: FileRoot
+  readonly root!: string
 
   @Prop({ type: Boolean, default: false })
   readonly disabled!: boolean

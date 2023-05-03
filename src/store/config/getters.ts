@@ -6,7 +6,7 @@ import { Heater, Fan } from '../printer/types'
 import tinycolor from '@ctrl/tinycolor'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
-import { RootFile } from '../files/types'
+import { MoonrakerRootFile } from '../files/types'
 import md5 from 'md5'
 
 export const getters: GetterTree<ConfigState, RootState> = {
@@ -99,7 +99,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
   },
 
   getCustomThemeFile: (state, getters, rootState, rootGetters) => (filename: string, extensions: string[]) => {
-    const files = rootGetters['files/getRootFiles']('config') as RootFile[]
+    const files = rootGetters['files/getRootFiles']('config') as MoonrakerRootFile[] | undefined
 
     if (files) {
       for (const extension of extensions) {

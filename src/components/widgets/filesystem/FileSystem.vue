@@ -138,7 +138,6 @@ import {
   AppFileWithMeta,
   FilesUpload,
   FileFilterType,
-  KlipperFileWithMeta,
   FilePreviewState,
   FileBrowserEntry
 } from '@/store/files/types'
@@ -384,11 +383,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   get files (): FileBrowserEntry[] {
     const files = this.getAllFiles()
 
-    if (this.currentRoot === 'timelapse') {
-      return this.transformTimelapseItems(files)
-    }
-
     const filteredFiles = files.filter(file => {
+      if (this.currentRoot === 'timelapse' && file.type === 'file' && file.extension === 'jpg') {
+        return false
+      }
+
       for (const filter of this.filters) {
         switch (filter) {
           case 'hidden_files':
@@ -423,15 +422,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return filteredFiles
   }
 
-  getAllFiles (): FileBrowserEntry[] {
-    const dir = this.$store.getters['files/getDirectory'](this.currentRoot, this.currentPath)
-    if (
-      dir &&
-      dir.items
-    ) {
-      return dir.items
-    }
-    return []
+  getAllFiles () {
+    const items = this.$store.getters['files/getDirectory'](this.currentPath) as FileBrowserEntry[] | undefined
+
+    return items ?? []
   }
 
   @Watch('files')
@@ -454,38 +448,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     return this.$store.state.server.info.registered_directories || []
   }
 
-  transformTimelapseItems (items: FileBrowserEntry[]) {
-    const timelapses: Record<string, KlipperFileWithMeta> = {}
+  includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
+    const thumbnailFilenames = new Set(items
+      .filter((item): item is AppFileWithMeta => item.type === 'file' && item.extension !== 'jpg' && 'thumbnails' in item)
+      .flatMap(item => item.thumbnails
+        ? item.thumbnails.map(thumbnail => thumbnail.relative_path)
+        : []
+      ))
 
-    for (const item of items) {
-      if (item.type === 'file' && item.extension !== 'jpg') {
-        timelapses[item.filename.slice(0, -(item.extension.length + 1))] = item
-      }
-    }
+    const thumbnails = this.getAllFiles()
+      .filter(file => file.type === 'file' && thumbnailFilenames.has(file.filename))
 
-    for (const item of items) {
-      if (item.type === 'file' && item.extension === 'jpg') {
-        const name = item.filename.slice(0, -4)
-        if (name in timelapses) {
-          const path = item.path ? `timelapse/${item.path}` : 'timelapse'
-
-          timelapses[name].thumbnails = [{
-            absolute_path: this.createFileUrl(item.filename, path, item.modified),
-            // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
-            data: '',
-            height: 0,
-            width: 0,
-            size: 0,
-            relative_path: ''
-          }]
-        }
-      }
-    }
-
-    return [
-      ...items.filter(item => item.type === 'directory'),
-      ...Object.values(timelapses) as AppFile[]
-    ]
+    items.push(...thumbnails)
   }
 
   // Set the initial root, and load the dir.
@@ -715,7 +689,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
-    const thumb = this.getThumb(file.thumbnails ?? [], file.path, true)
+    const thumb = this.getThumb(file.thumbnails ?? [], this.currentRoot, file.path, true)
 
     if (thumb) {
       const thumbUrl = thumb.absolute_path || thumb.data || ''
@@ -775,29 +749,16 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const items = (Array.isArray(source)) ? source.filter(item => (item.name !== '..')) : [source]
 
-    items.forEach((item) => {
-      if (item.type === 'file') {
-        const src = `${this.currentPath}/${item.filename}`
-        const dest = (destinationPath)
-          ? `${destinationPath}/${item.filename}`
-          : `${item.filename}`
-        SocketActions.serverFilesMove(src, dest)
+    if (this.currentRoot === 'timelapse') {
+      this.includeTimelapseThumbnailFiles(items)
+    }
 
-        if (this.currentRoot === 'timelapse' && item.extension !== 'jpg') {
-          // Move thumbnail
-          const name = item.filename.slice(0, -(item.extension.length + 1))
-          const thumbnails = this.getAllFiles().filter(file => file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name))
-          if (thumbnails.length) {
-            this.handleMove(thumbnails, destination)
-          }
-        }
-      } else {
-        const src = `${this.currentPath}/${item.dirname}`
-        const dest = (destinationPath)
-          ? `${destinationPath}/${item.dirname}`
-          : `${item.dirname}`
-        SocketActions.serverFilesMove(src, dest)
-      }
+    items.forEach((item) => {
+      const src = `${this.currentPath}/${item.name}`
+      const dest = destinationPath
+        ? `${destinationPath}/${item.name}`
+        : `${item.name}`
+      SocketActions.serverFilesMove(src, dest)
     })
   }
 
@@ -838,23 +799,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
 
       if (this.currentRoot === 'timelapse') {
-      // Override thumbnails for timelapse browser
-        const thumbnails = []
-
-        const allFiles = this.getAllFiles()
-        for (const item of items) {
-          if (item.type === 'file') {
-            const name = item.filename.slice(0, -(item.extension.length + 1))
-
-            for (const file of allFiles) {
-              if (file.type === 'file' && file.extension === 'jpg' && file.filename.startsWith(name)) {
-                thumbnails.push(file)
-              }
-            }
-          }
-        }
-
-        items.push(...thumbnails)
+        this.includeTimelapseThumbnailFiles(items)
       }
 
       items.forEach((item) => {
