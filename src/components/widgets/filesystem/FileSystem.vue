@@ -67,6 +67,7 @@
       @view="handleFileOpenDialog"
       @edit="handleFileOpenDialog"
       @rename="handleRenameDialog"
+      @duplicate="handleDuplicateDialog"
       @remove="handleRemove"
       @download="handleDownload"
       @preheat="handlePreheat"
@@ -577,8 +578,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.disabled) return
 
     const [title, label] = item.type === 'file'
-      ? [this.$t('app.file_system.title.rename_dir'), this.$t('app.file_system.label.dir_name')]
-      : [this.$t('app.file_system.title.rename_file'), this.$t('app.file_system.label.file_name')]
+      ? [this.$t('app.file_system.title.rename_file'), this.$t('app.file_system.label.file_name')]
+      : [this.$t('app.file_system.title.rename_dir'), this.$t('app.file_system.label.dir_name')]
 
     this.fileNameDialogState = {
       open: true,
@@ -586,6 +587,22 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       label,
       value: item.name,
       handler: this.handleRename
+    }
+  }
+
+  handleDuplicateDialog (item: FileBrowserEntry) {
+    if (this.disabled) return
+
+    const [title, label] = item.type === 'file'
+      ? [this.$t('app.file_system.title.duplicate_file'), this.$t('app.file_system.label.file_name')]
+      : [this.$t('app.file_system.title.duplicate_dir'), this.$t('app.file_system.label.dir_name')]
+
+    this.fileNameDialogState = {
+      open: true,
+      title,
+      label,
+      value: item.name,
+      handler: this.handleDuplicate
     }
   }
 
@@ -783,6 +800,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const src = `${this.currentPath}/${this.fileNameDialogState.value}`
     const dest = `${this.currentPath}/${name}`
     SocketActions.serverFilesMove(src, dest)
+  }
+
+  handleDuplicate (name: string) {
+    const src = `${this.currentPath}/${this.fileNameDialogState.value}`
+    const dest = `${this.currentPath}/${name}`
+    SocketActions.serverFilesCopy(src, dest)
   }
 
   async handleRemove (file: FileBrowserEntry | FileBrowserEntry[]) {

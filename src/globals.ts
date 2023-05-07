@@ -308,6 +308,7 @@ export const Icons = Object.freeze({
   printer: mdiPrinter,
   download: mdiDownload,
   rename: mdiFormTextbox,
+  duplicate: mdiContentCopy,
   delete: mdiDelete,
   camera: mdiCamera,
   fan: mdiFan,

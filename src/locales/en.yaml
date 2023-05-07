@@ -97,6 +97,8 @@ app:
       add_file: Add File
       command_palette: Command Palette
       download_file: Retrieving file
+      duplicate_dir: Duplicate Directory
+      duplicate_file: Duplicate File
       go_to_file: Go to file
       rename_dir: Rename Directory
       rename_file: Rename File
@@ -152,6 +154,7 @@ app:
       create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
+      duplicate: Duplicate
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
