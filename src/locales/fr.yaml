@@ -82,9 +82,6 @@ app:
       transfer_rate: Vitesse de transfert
       uploaded: Téléchargé
     msg:
-      confirm: >-
-        Êtes vous sûr(e) ? Ceci effacera tous les sous-fichiers et sous-dossiers
-        .
       not_found: Aucun fichier trouvé
       processing: Traitement en cours ...
     overlay:

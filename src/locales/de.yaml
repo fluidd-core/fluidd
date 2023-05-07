@@ -89,7 +89,6 @@ app:
       view_section_documentation: >-
         Dokumentation für '%{section}' anzeigen
     msg:
-      confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
       not_found: Keine Dateien gefunden
       processing: Verarbeiten...
     overlay:
@@ -327,6 +326,7 @@ app:
         no_file_preview: >-
           %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?
+        confirm_delete: Sind Sie sicher? Hierdurch wird das ausgewählte Element gelöscht. | Sind Sie sicher? Hierdurch werden die {count} ausgewählten Elemente gelöscht.
         confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.

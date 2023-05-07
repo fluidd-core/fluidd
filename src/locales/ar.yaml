@@ -78,7 +78,6 @@ app:
       transfer_rate: معدل النقل
       uploaded: مرفوع
     msg:
-      confirm: هل انت متأكد؟ سيتم حذف جميع المجلدات والملفات
       not_found: لا يوجد ملفات
       processing: جاري المعالجة
     overlay:

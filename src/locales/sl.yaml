@@ -86,7 +86,6 @@ app:
       view_section_documentation: >-
         Prikaži dokumentacijo: '%{section}'
     msg:
-      confirm: Ste prepričani? To dejanje bo izbrisalo vse datoteke in mape.
       not_found: Ni najdenih datotek
       processing: Procesiram
     overlay:

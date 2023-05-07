@@ -76,7 +76,6 @@ app:
       uploaded: アップロード
       view_section_documentation: '''%{section}'' ドキュメントを表示'
     msg:
-      confirm: すべてのファイルとフォルダーが削除されます。よろしいですか？
       not_found: ファイルが見つかりません
       processing: プロセッシング
     overlay:

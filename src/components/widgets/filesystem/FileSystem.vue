@@ -764,7 +764,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       destinationPath = arr.join('/')
     }
 
-    const items = (Array.isArray(source)) ? source.filter(item => (item.name !== '..')) : [source]
+    const items = Array.isArray(source)
+      ? source.filter(item => item.name !== '..')
+      : [source]
 
     if (this.currentRoot === 'timelapse') {
       this.includeTimelapseThumbnailFiles(items)
@@ -781,7 +783,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   handleDragStart (source: FileBrowserEntry| FileBrowserEntry[], dataTransfer: DataTransfer) {
     if (this.currentRoot === 'gcodes') {
-      const items = (Array.isArray(source)) ? source.filter(item => (item.name !== '..')) : [source]
+      const items = Array.isArray(source)
+        ? source.filter(item => item.name !== '..')
+        : [source]
+
       const files = items
         .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes('.' + item.extension))
 
@@ -811,15 +816,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   async handleRemove (file: FileBrowserEntry | FileBrowserEntry[]) {
     if (this.disabled) return
 
+    const items = Array.isArray(file)
+      ? file.filter(item => item.name !== '..')
+      : [file]
+
     const res = await this.$confirm(
-      this.$tc('app.file_system.msg.confirm'),
+      this.$tc('app.general.simple_form.msg.confirm_delete', items.length),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
     if (res) {
       this.filePreviewState.open = false
-
-      const items = (Array.isArray(file)) ? file.filter(item => (item.name !== '..')) : [file]
 
       if (this.currentRoot === 'timelapse') {
         this.includeTimelapseThumbnailFiles(items)

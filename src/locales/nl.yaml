@@ -80,9 +80,6 @@ app:
       transfer_rate: Snelheid
       uploaded: Geüpload
     msg:
-      confirm: >-
-        Ben je zeker? Dit zal alle onderliggende bestanden en mappen
-        verwijderen.
       not_found: Geen bestanden gevonden
       processing: Verwerken...
     overlay:
