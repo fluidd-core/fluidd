@@ -89,9 +89,6 @@ app:
       transfer_rate: Rateo di trasferimento
       uploaded: Caricato
     msg:
-      confirm: |-
-        Sei sicuro?
-        Questa azione eliminerà tutti i file e le cartelle.
       not_found: Nessun file trovato
       processing: Calcolando
     overlay:

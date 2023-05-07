@@ -87,7 +87,6 @@ app:
       uploaded: Завантажено
       view_section_documentation: Перегляд '%{section}' документації
     msg:
-      confirm: Ви впевнені? Це видалить всі файли і каталоги всередині.
       not_found: Файли не знайдені
       processing: Обробка
     overlay:

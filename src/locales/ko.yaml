@@ -71,7 +71,6 @@ app:
       transfer_rate: 전송 속도
       uploaded: 업로드 완료
     msg:
-      confirm: 확실합니까? 모든 파일 및 폴더가 삭제됩니다.
       not_found: 파일을 찾을 수 없습니다.
       processing: 처리중...
     overlay:

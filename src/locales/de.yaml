@@ -89,7 +89,6 @@ app:
       view_section_documentation: >-
         Dokumentation für '%{section}' anzeigen
     msg:
-      confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
       not_found: Keine Dateien gefunden
       processing: Verarbeiten...
     overlay:

@@ -86,7 +86,6 @@ app:
       view_section_documentation: >-
         View '%{section}' documentation
     msg:
-      confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
       processing: Processing
     overlay:
@@ -354,6 +353,7 @@ app:
         invalid_aspect: Invalid Aspect Ratio
       msg:
         confirm: Are you sure?
+        confirm_delete: Are you sure? This will delete the selected item. | Are you sure? This will delete the {count} selected items.
         confirm_exclude_object: Are you sure you want to exclude this object from printing?
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_reboot_host: Are you sure? This will reboot your host system.
