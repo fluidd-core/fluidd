@@ -60,6 +60,7 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
+  ignoreDefaultBedMeshPendingConfigurationChanges: boolean;
   dateFormat: string;
   timeFormat: string;
   textSortOrder: TextSortOrder;

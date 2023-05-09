@@ -28,17 +28,17 @@ export default class PendingChangesDialog extends Vue {
     open!: boolean
 
   get saveConfigPendingItems () {
-    const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems']
+    const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>
 
-    const { changed, deleted } = Object.entries<Record<string, string>>(saveConfigPendingItems)
+    const { changed, deleted } = Object.entries(saveConfigPendingItems)
       .reduce((previous, [sectionName, sectionEntries]) => {
         if (sectionEntries === null) {
           previous.deleted.push(`# [${sectionName}]`)
         } else {
-          const entryValues = Object.entries(sectionEntries)
-            .map(entry => `${entry[0]}: ${entry[1]}`)
+          const sectionEntryNameValues = Object.entries(sectionEntries)
+            .map(([entryName, entryValue]) => `${entryName}: ${entryValue}`)
 
-          previous.changed.push(`[${sectionName}]\n${entryValues.join('\n')}`)
+          previous.changed.push(`[${sectionName}]\n${sectionEntryNameValues.join('\n')}`)
         }
 
         return previous

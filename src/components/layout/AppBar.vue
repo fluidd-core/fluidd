@@ -39,7 +39,7 @@
 
     <div class="toolbar-supplemental">
       <div
-        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestart && saveConfigPending"
+        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
         class="mr-1"
       >
         <app-save-config-and-restart-btn
@@ -230,8 +230,26 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.getters['version/hasUpdates']
   }
 
-  get saveConfigPending () {
-    return this.$store.getters['printer/getSaveConfigPending']
+  get saveConfigPending (): boolean {
+    return this.$store.getters['printer/getSaveConfigPending'] as boolean
+  }
+
+  get saveConfigPendingItems (): Record<string, Record<string, string>> {
+    return this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>
+  }
+
+  get showSaveConfigAndRestartForPendingChanges (): boolean {
+    if (!this.showSaveConfigAndRestart || !this.saveConfigPending) {
+      return false
+    }
+
+    if (!this.ignoreDefaultBedMeshPendingConfigurationChanges) {
+      return true
+    }
+
+    const saveConfigPendingItemsKeys = Object.keys(this.saveConfigPendingItems)
+
+    return saveConfigPendingItemsKeys.length > 1 || saveConfigPendingItemsKeys[0] !== 'bed_mesh default'
   }
 
   get devicePowerComponentEnabled () {
@@ -247,7 +265,11 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
+  }
+
+  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
+    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
   }
 
   get showUploadAndPrint (): boolean {
