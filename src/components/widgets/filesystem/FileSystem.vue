@@ -84,6 +84,7 @@
       :filename="fileEditorDialogState.filename"
       :loading="fileEditorDialogState.loading"
       :readonly="fileEditorDialogState.readonly"
+      :path="currentPath"
       :root="currentRoot"
       @save="handleSaveFileChanges"
     />

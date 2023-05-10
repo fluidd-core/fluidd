@@ -38,6 +38,19 @@
       <v-divider />
 
       <app-setting
+        :title="$t('app.setting.label.save_and_restore_view_state')"
+      >
+        <v-switch
+          v-model="restoreViewState"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting
         :title="$t('app.setting.label.show_code_lens')"
       >
         <v-switch
@@ -96,6 +109,18 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
       value: value.sort(),
+      server: true
+    })
+  }
+
+  get restoreViewState (): boolean {
+    return this.$store.state.config.uiSettings.editor.restoreViewState
+  }
+
+  set restoreViewState (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.editor.restoreViewState',
+      value,
       server: true
     })
   }

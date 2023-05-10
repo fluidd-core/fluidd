@@ -69,6 +69,7 @@ export const defaultState = (): ConfigState => {
       editor: {
         confirmDirtyEditorClose: true,
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        restoreViewState: true,
         codeLens: true
       },
       dashboard: {

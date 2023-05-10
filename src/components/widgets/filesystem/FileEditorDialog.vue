@@ -99,6 +99,7 @@
         v-if="contents !== undefined && !useTextOnlyEditor"
         ref="editor"
         v-model="updatedContent"
+        :path="path"
         :filename="filename"
         :readonly="readonly"
         :code-lens="codeLens"
@@ -136,6 +137,9 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
 
   @Prop({ type: String, required: true })
   readonly root!: string
+
+  @Prop({ type: String, required: true })
+  readonly path!: string
 
   @Prop({ type: String, required: true })
   readonly filename!: string
