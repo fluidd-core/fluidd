@@ -148,7 +148,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: true,
           canPrint: false,
           canConfigure: false,
-          filterTypes: ['rolled_log_files']
+          filterTypes: ['hidden_files', 'rolled_log_files']
         }
       case 'timelapse':
         return {
