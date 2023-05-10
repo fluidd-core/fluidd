@@ -520,6 +520,7 @@ app:
       name: Name
       optional: Optional
       right_y: Rechte Y-Achse
+      save_and_restore_view_state: Ansicht speichern und wiederherstellen
       confirm_on_save_config_and_restart: >-
         Vor dem Speichern und Neustart die ausstehenden
         Konfigurationsänderungen überprüfen
