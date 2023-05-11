@@ -10,6 +10,7 @@
       <v-radio-group
         v-model="application"
         hide-details
+        class="mt-0"
       >
         <v-radio
           :label="$t('app.general.label.all')"

@@ -160,6 +160,23 @@
 
       <v-divider />
 
+      <template v-if="showSaveConfigAndRestart">
+        <v-divider />
+
+        <app-setting
+          :title="$t('app.setting.label.ignore_default_bed_mesh_pending_configuration_changes')"
+        >
+          <v-switch
+            v-model="ignoreDefaultBedMeshPendingConfigurationChanges"
+            hide-details
+            class="mb-5"
+            @click.native.stop
+          />
+        </app-setting>
+      </template>
+
+      <v-divider />
+
       <app-setting
         :title="$t('app.setting.label.enable_diagnostics')"
         :sub-title="$t('app.setting.tooltip.diagnostics_performance')"
@@ -377,13 +394,25 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get confirmOnSaveConfigAndRestart () {
-    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart
+  get confirmOnSaveConfigAndRestart (): boolean {
+    return this.$store.state.config.uiSettings.general.confirmOnSaveConfigAndRestart as boolean
   }
 
   set confirmOnSaveConfigAndRestart (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.confirmOnSaveConfigAndRestart',
+      value,
+      server: true
+    })
+  }
+
+  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
+    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
+  }
+
+  set ignoreDefaultBedMeshPendingConfigurationChanges (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges',
       value,
       server: true
     })
