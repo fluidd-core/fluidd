@@ -16,9 +16,9 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      delete: プロファイルを削除します。これにより、プリンタが再起動します
+      delete: プロファイルを削除します。
       load: プロファイルを読込み
-      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。これにより、プリンタが再起動します
+      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。
   chart:
     label:
       current: 温度
@@ -81,8 +81,8 @@ app:
       not_found: ファイルが見つかりません
       processing: プロセッシング
     overlay:
-      drag_files_enqueue: <strong></strong> ファイルをここにドラッグしてキューに入れる。
-      drag_files_folders_upload: <strong></strong> 個のファイルとフォルダをここにドラッグしてアップロードします
+      drag_files_enqueue: ファイルをここに<strong>ドラッグ</strong> してキューに入れる。
+      drag_files_folders_upload: ファイルとフォルダをここに<strong>ドラッグして</strong> アップロードします。
     title:
       add_dir: ディレクトリの追加
       add_file: ファイルの追加
