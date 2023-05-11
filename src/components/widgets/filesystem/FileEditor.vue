@@ -19,6 +19,8 @@
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import md5AsBase64 from '@/util/md5-as-base64'
+import { InstanceConfig } from '@/store/config/types'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
@@ -35,11 +37,24 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: Boolean, default: true })
   readonly codeLens!: boolean
 
+  @Prop({ type: String, required: true })
+  readonly path!: string
+
   @Ref('monaco-editor')
   readonly monacoEditor!: HTMLElement
 
+  viewStateHash: string | null = null
+
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
+
+  get restoreViewState (): boolean {
+    return this.$store.state.config.uiSettings.editor.restoreViewState
+  }
+
+  get activeInstance (): InstanceConfig {
+    return this.$store.getters['config/getCurrentInstance'] as InstanceConfig
+  }
 
   async mounted () {
     // Init the editor.
@@ -75,16 +90,31 @@ export default class FileEditor extends Mixins(BrowserMixin) {
       rulers: (this.isMobileViewport) ? [80, 120] : []
     })
 
+    const filename = this.path ? `${this.path}/${this.filename}` : this.filename
+    const apiFileUrl = `${this.activeInstance.apiUrl}/server/files/${filename}`
+
     // Define the model. The filename will map to the supported languages.
     const model = monaco.editor.createModel(
       this.value,
       undefined,
-      monaco.Uri.file(this.filename)
+      monaco.Uri.file(filename)
     )
     this.editor.setModel(model)
 
+    if (this.restoreViewState) {
+      this.viewStateHash = 'monaco.' + md5AsBase64(apiFileUrl)
+
+      if (this.viewStateHash in localStorage) {
+        const viewState = JSON.parse(localStorage[this.viewStateHash])
+
+        this.editor.restoreViewState(viewState)
+      }
+    }
+
     // Focus the editor.
-    this.editor.focus()
+    this.$nextTick(() => {
+      this.editor?.focus()
+    })
 
     this.$emit('ready')
     this.editor.onDidChangeModelContent(event => {
@@ -102,6 +132,14 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
   // Ensure we dispose of our models and editor.
   destroyed () {
+    if (this.restoreViewState && this.viewStateHash) {
+      const viewState = this.editor?.saveViewState()
+
+      if (viewState) {
+        localStorage[this.viewStateHash] = JSON.stringify(viewState)
+      }
+    }
+
     if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
     if (this.editor) this.editor.dispose()
   }

@@ -552,6 +552,7 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
+      save_and_restore_view_state: Save and restore view state
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_code_lens: Show CodeLens

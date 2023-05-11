@@ -109,6 +109,7 @@ export interface SupportedThemeLogo {
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;
   autoEditExtensions: string[];
+  restoreViewState: boolean,
   codeLens: boolean;
 }
 
