@@ -113,8 +113,10 @@ export default class MacroBtn extends Mixins(StateMixin) {
       if (['m117', 'm118'].includes(this.macro.name)) {
         s += ` ${this.params.message.value}`
       } else {
-        for (const param of Object.keys(this.params)) {
-          s += ` ${param}=${this.params[param].value}`
+        for (const [param, { value, reset }] of Object.entries(this.params)) {
+          if (value !== reset) {
+            s += ` ${param}=${value}`
+          }
         }
       }
     }
