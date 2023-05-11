@@ -544,6 +544,7 @@ app:
       metrics: Metrics
       move_line_width: Move Line Width
       name: Name
+      never: Never
       none: None
       optional: Optional
       power_toggle_in_top_nav: Power toggle in top navigation
@@ -568,6 +569,8 @@ app:
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
       title: Title
+      to_browser_local_storage: To browser local storage
+      to_browser_session_storage: To browser session storage
       toolhead_move_distances: Toolhead distance values
       type: Type
       unit: Unit

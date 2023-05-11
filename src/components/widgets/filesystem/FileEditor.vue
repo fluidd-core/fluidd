@@ -20,7 +20,8 @@ import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import md5AsBase64 from '@/util/md5-as-base64'
-import { InstanceConfig } from '@/store/config/types'
+import { InstanceConfig, RestoreViewState } from '@/store/config/types'
+import consola from 'consola'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
@@ -48,12 +49,22 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
-  get restoreViewState (): boolean {
-    return this.$store.state.config.uiSettings.editor.restoreViewState
+  get restoreViewState (): RestoreViewState {
+    return this.$store.state.config.uiSettings.editor.restoreViewState as RestoreViewState
   }
 
   get activeInstance (): InstanceConfig {
     return this.$store.getters['config/getCurrentInstance'] as InstanceConfig
+  }
+
+  get restoreViewStateStorage (): Storage | undefined {
+    switch (this.restoreViewState) {
+      case 'local':
+        return localStorage
+
+      case 'session':
+        return sessionStorage
+    }
   }
 
   async mounted () {
@@ -101,13 +112,15 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     )
     this.editor.setModel(model)
 
-    if (this.restoreViewState) {
+    const restoreViewStateStorage = this.restoreViewStateStorage
+
+    if (restoreViewStateStorage) {
       this.viewStateHash = 'monaco.' + md5AsBase64(apiFileUrl)
 
-      if (this.viewStateHash in localStorage) {
-        const viewState = JSON.parse(localStorage[this.viewStateHash])
+      const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
 
-        this.editor.restoreViewState(viewState)
+      if (viewState) {
+        this.editor.restoreViewState(JSON.parse(viewState))
       }
     }
 
@@ -132,11 +145,17 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
   // Ensure we dispose of our models and editor.
   destroyed () {
-    if (this.restoreViewState && this.viewStateHash) {
+    const restoreViewStateStorage = this.restoreViewStateStorage
+
+    if (restoreViewStateStorage && this.viewStateHash) {
       const viewState = this.editor?.saveViewState()
 
       if (viewState) {
-        localStorage[this.viewStateHash] = JSON.stringify(viewState)
+        try {
+          restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
+        } catch (e) {
+          consola.error('[Storage] setItem', e)
+        }
       }
     }
 

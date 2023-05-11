@@ -106,10 +106,12 @@ export interface SupportedThemeLogo {
   light?: string;
 }
 
+export type RestoreViewState = 'never' | 'session' | 'local'
+
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;
   autoEditExtensions: string[];
-  restoreViewState: boolean,
+  restoreViewState: RestoreViewState,
   codeLens: boolean;
 }
 

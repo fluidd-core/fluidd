@@ -40,11 +40,12 @@
       <app-setting
         :title="$t('app.setting.label.save_and_restore_view_state')"
       >
-        <v-switch
+        <v-select
           v-model="restoreViewState"
-          hide-details
-          class="mb-5"
-          @click.native.stop
+          filled
+          dense
+          hide-details="auto"
+          :items="availableRestoreViewState"
         />
       </app-setting>
 
@@ -81,6 +82,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { defaultState } from '@/store/config/state'
+import { RestoreViewState } from '@/store/config/types'
 
 @Component({
   components: {}
@@ -113,16 +115,33 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
     })
   }
 
-  get restoreViewState (): boolean {
+  get restoreViewState (): RestoreViewState {
     return this.$store.state.config.uiSettings.editor.restoreViewState
   }
 
-  set restoreViewState (value: boolean) {
+  set restoreViewState (value: RestoreViewState) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.editor.restoreViewState',
       value,
       server: true
     })
+  }
+
+  get availableRestoreViewState (): { value: RestoreViewState, text: string }[] {
+    return [
+      {
+        value: 'never',
+        text: this.$tc('app.setting.label.never')
+      },
+      {
+        value: 'session',
+        text: this.$tc('app.setting.label.to_browser_session_storage')
+      },
+      {
+        value: 'local',
+        text: this.$tc('app.setting.label.to_browser_local_storage')
+      }
+    ]
   }
 
   get codeLens (): boolean {
