@@ -156,11 +156,7 @@
             @click.native.stop
           />
         </app-setting>
-      </template>
 
-      <v-divider />
-
-      <template v-if="showSaveConfigAndRestart">
         <v-divider />
 
         <app-setting
