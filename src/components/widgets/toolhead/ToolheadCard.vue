@@ -110,7 +110,7 @@
               >
                 <v-list-item-icon>
                   <v-icon>
-                    $tools
+                    {{ tool.icon || '$tools' }}
                   </v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
@@ -155,6 +155,7 @@ type Tool = {
   label?: string,
   disabled?: boolean,
   wait?: string,
+  icon?: string,
 }
 
 @Component({
@@ -239,6 +240,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       tools.push({
         name: loadFilamentMacro.name.toUpperCase(),
         label: loadFilamentMacro.name === 'm701' ? 'M701 (Load Filament)' : undefined,
+        icon: '$loadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
@@ -251,6 +253,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       tools.push({
         name: unloadFilamentMacro.name.toUpperCase(),
         label: unloadFilamentMacro.name === 'm702' ? 'M702 (Unload Filament)' : undefined,
+        icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
