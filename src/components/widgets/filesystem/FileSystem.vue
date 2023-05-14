@@ -535,7 +535,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         this.selected = []
 
         return
-      } else if (item.dirname === '..') {
+      } else if (item.dirname === '..' || item.permissions === 'r' || this.rootProperties.readonly) {
         return
       }
     }
