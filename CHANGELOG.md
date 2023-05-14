@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.24.0](https://github.com/fluidd-core/fluidd/compare/v1.23.5...v1.24.0) (2023-05-14)
+
+
+### Features
+
+* allow ignoring default bed mesh pending configuration changes ([cd1a84a](https://github.com/fluidd-core/fluidd/commit/cd1a84a639f9b76c99f3c8ae6abfdc58b15a65b2))
+* duplicate file or directory ([1cf08c1](https://github.com/fluidd-core/fluidd/commit/1cf08c11e306da2e8fa7c54809339865379f5b83))
+* **i18n-JA:** update Japanese language ([#1098](https://github.com/fluidd-core/fluidd/issues/1098)) ([e9e4559](https://github.com/fluidd-core/fluidd/commit/e9e4559a9f60314526875fd96c2a8290f7978998))
+* **i18n-SL:** adds Slovenian translations ([#1088](https://github.com/fluidd-core/fluidd/issues/1088)) ([3d5daf3](https://github.com/fluidd-core/fluidd/commit/3d5daf3f5266d49ba40915d17d9a8a1b93285306))
+* save and restore editor view state ([#1099](https://github.com/fluidd-core/fluidd/issues/1099)) ([e0ce11d](https://github.com/fluidd-core/fluidd/commit/e0ce11db3a9b8c4216664b7b12243c34d49a3ddc))
+* update Moonraker webcams API ([f0986e4](https://github.com/fluidd-core/fluidd/commit/f0986e4b70719f4e154e3fef6ad8f4052a696c31))
+
+
+### Bug Fixes
+
+* adds missing File Browser button tooltips ([#1094](https://github.com/fluidd-core/fluidd/issues/1094)) ([44d94e6](https://github.com/fluidd-core/fluidd/commit/44d94e65de77e9d3e273b3a86ffd64727b624ea6))
+* allow ignoring min_extrude_temp for load/unload filament macros ([#1096](https://github.com/fluidd-core/fluidd/issues/1096)) ([d14fa81](https://github.com/fluidd-core/fluidd/commit/d14fa81d779a87bf1828401b007fbbcdd8f3d5d0))
+* hide context menu for read-only folders ([7e7c957](https://github.com/fluidd-core/fluidd/commit/7e7c957c5d62c4dee4d700e5c78f00d3ef306ec4))
+* more selective keyboard events for history navigation ([#1101](https://github.com/fluidd-core/fluidd/issues/1101)) ([fdddac1](https://github.com/fluidd-core/fluidd/commit/fdddac12dc0728fcb9af6037196d6c503274d094))
+
 ## [1.23.5](https://github.com/fluidd-core/fluidd/compare/v1.23.4...v1.23.5) (2023-04-20)
 
 
