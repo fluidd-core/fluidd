@@ -7,19 +7,24 @@
     min-width="150"
     :close-on-content-click="false"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        :disabled="disabled"
-        fab
-        small
-        text
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon>
-          $cogs
-        </v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            :disabled="disabled"
+            fab
+            small
+            text
+            v-bind="attrs"
+            v-on="{ ...tooltip, ...menu }"
+          >
+            <v-icon>
+              $tableColumn
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.select_columns') }}</span>
+      </v-tooltip>
     </template>
     <v-list
       dense

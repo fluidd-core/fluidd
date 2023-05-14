@@ -73,7 +73,6 @@ app:
       uploaded: 上传完成
       view_section_documentation: '%{section} 查看文档'
     msg:
-      confirm: 这将删除所有文件和文件夹！是否确认？
       not_found: 文件未找到
       processing: 处理中...
     overlay:

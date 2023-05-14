@@ -84,7 +84,6 @@ app:
       uploaded: Subido
       view_section_documentation: 'Ver documentación sobre ''%{section}'''
     msg:
-      confirm: ¿Está seguro? Esto borrará todos los subarchivos y subcarpetas.
       not_found: No se encontraron archivos
       processing: Procesando...
     overlay:

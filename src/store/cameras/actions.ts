@@ -38,15 +38,14 @@ export const actions: ActionTree<CamerasState, RootState> = {
         const camera: CameraConfigWithoutId = {
           name: legacyCamera.name,
           service,
+          enabled: legacyCamera.enabled,
           targetFps: legacyCamera.fpstarget,
+          targetFpsIdle: legacyCamera.fpsidletarget,
           urlStream: isMjpegStreamer ? setUrlQueryParam(legacyCamera.url, 'action', 'stream') : legacyCamera.url,
           urlSnapshot: isMjpegStreamer ? setUrlQueryParam(legacyCamera.url, 'action', 'snapshot') : legacyCamera.url,
           flipX: legacyCamera.flipX,
           flipY: legacyCamera.flipY,
-          rotation: legacyCamera.rotate ? +legacyCamera.rotate as MoonrakerWebcamRotation : 0,
-          enabled: legacyCamera.enabled,
-          height: legacyCamera.height,
-          targetFpsIdle: legacyCamera.fpsidletarget
+          rotation: legacyCamera.rotate ? +legacyCamera.rotate as MoonrakerWebcamRotation : 0
         }
 
         await httpClientActions.serverDatabaseItemPost(Globals.MOONRAKER_DB.webcams.NAMESPACE, legacyCamera.id, camera)

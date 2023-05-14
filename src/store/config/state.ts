@@ -37,6 +37,7 @@ export const defaultState = (): ConfigState => {
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
         confirmOnSaveConfigAndRestart: true,
+        ignoreDefaultBedMeshPendingConfigurationChanges: false,
         dateFormat: 'iso',
         timeFormat: 'iso',
         textSortOrder: 'default',
@@ -68,6 +69,7 @@ export const defaultState = (): ConfigState => {
       editor: {
         confirmDirtyEditorClose: true,
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        restoreViewState: 'session',
         codeLens: true
       },
       dashboard: {

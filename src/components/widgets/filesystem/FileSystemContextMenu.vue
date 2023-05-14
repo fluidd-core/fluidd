@@ -131,6 +131,19 @@
             </v-list-item>
 
             <v-list-item
+              v-if="!Array.isArray(file) && !rootProperties.readonly"
+              link
+              @click="$emit('duplicate', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$duplicate</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.duplicate') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
               v-if="!rootProperties.readonly || rootProperties.canDelete"
               @click="$emit('remove', file)"
             >
@@ -154,7 +167,7 @@
           >
             <img
               class="mx-2"
-              :src="getThumbUrl(file.thumbnails, file.path, true, file.modified)"
+              :src="getThumbUrl(file.thumbnails, root, file.path, true, file.modified)"
               :height="150"
             >
           </v-btn>

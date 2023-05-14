@@ -56,23 +56,10 @@
       </slot>
     </v-tooltip>
 
-    <app-btn-collapse-group
+    <app-thumbnail-size
       v-if="['gcodes', 'timelapse'].includes(root)"
-      collapsed
-      menu-icon="$imageSizeSelectLarge"
-      size="small"
-    >
-      <app-named-slider
-        v-model="thumbnailSize"
-        class="ma-1"
-        :label="$t('app.general.label.thumbnail_size')"
-        :min="32"
-        :max="192"
-        :step="16"
-        :reset-value="32"
-        suffix="px"
-      />
-    </app-btn-collapse-group>
+      v-model="thumbnailSize"
+    />
 
     <app-column-picker
       v-if="headers && rootProperties.canConfigure"

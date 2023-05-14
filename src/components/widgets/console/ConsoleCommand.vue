@@ -17,8 +17,8 @@
           @input="emitChange"
           @keyup.enter.exact="emitSend(newValue)"
           @keydown.enter.exact.prevent
-          @keyup.up="historyUp()"
-          @keyup.down="historyDown()"
+          @keydown.up.exact.prevent="historyUp()"
+          @keydown.down.exact.prevent="historyDown()"
           @keydown.prevent.tab="autoComplete()"
         />
       </v-col>

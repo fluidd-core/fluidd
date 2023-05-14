@@ -110,7 +110,7 @@
               >
                 <v-list-item-icon>
                   <v-icon>
-                    $tools
+                    {{ tool.icon || '$tools' }}
                   </v-icon>
                 </v-list-item-icon>
                 <v-list-item-content>
@@ -155,6 +155,7 @@ type Tool = {
   label?: string,
   disabled?: boolean,
   wait?: string,
+  icon?: string,
 }
 
 @Component({
@@ -212,36 +213,48 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.getters['macros/getMacros'] as Macro[]
   }
 
-  get availableTools () {
-    const macros = this.macros
-    const macroNames = new Set(macros
-      .map(macro => macro.name))
+  get loadFilamentMacro (): Macro | undefined {
+    const [loadFilamentMacro] = this.macros
+      .filter(macro => ['load_filament', 'm701'].includes(macro.name))
+      .sort(macro => macro.name === 'load_filament' ? -1 : 1)
 
+    return loadFilamentMacro
+  }
+
+  get unloadFilamentMacro (): Macro | undefined {
+    const [unloadFilamentMacro] = this.macros
+      .filter(macro => ['unload_filament', 'm702'].includes(macro.name))
+      .sort(macro => macro.name === 'unload_filament' ? -1 : 1)
+
+    return unloadFilamentMacro
+  }
+
+  get availableTools () {
     const tools: Tool[] = []
 
-    if (macroNames.has('load_filament')) {
+    const loadFilamentMacro = this.loadFilamentMacro
+
+    if (loadFilamentMacro) {
+      const ignoreMinExtrudeTemp = loadFilamentMacro.variables?.ignore_min_extrude_temp ?? false
+
       tools.push({
-        name: 'LOAD_FILAMENT',
-        disabled: !this.extruderReady
-      })
-    } else if (macroNames.has('m701')) {
-      tools.push({
-        name: 'M701',
-        label: 'M701 (Load Filament)',
-        disabled: !this.extruderReady
+        name: loadFilamentMacro.name.toUpperCase(),
+        label: loadFilamentMacro.name === 'm701' ? 'M701 (Load Filament)' : undefined,
+        icon: '$loadFilament',
+        disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
 
-    if (macroNames.has('unload_filament')) {
+    const unloadFilamentMacro = this.unloadFilamentMacro
+
+    if (unloadFilamentMacro) {
+      const ignoreMinExtrudeTemp = unloadFilamentMacro.variables?.ignore_min_extrude_temp ?? false
+
       tools.push({
-        name: 'UNLOAD_FILAMENT',
-        disabled: !this.extruderReady
-      })
-    } else if (macroNames.has('m702')) {
-      tools.push({
-        name: 'M702',
-        label: 'M702 (Unload Filament)',
-        disabled: !this.extruderReady
+        name: unloadFilamentMacro.name.toUpperCase(),
+        label: unloadFilamentMacro.name === 'm702' ? 'M702 (Unload Filament)' : undefined,
+        icon: '$unloadFilament',
+        disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
 

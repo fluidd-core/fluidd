@@ -802,12 +802,16 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return rootGetters['server/getInfo'].warnings || []
   },
 
-  getSaveConfigPending: (state) => {
-    return state.printer.configfile?.save_config_pending || false
+  getSaveConfigPending: (state): boolean => {
+    const saveConfigPending = state.printer.configfile?.save_config_pending as boolean | undefined
+
+    return saveConfigPending || false
   },
 
-  getSaveConfigPendingItems: (state) => {
-    return state.printer.configfile?.save_config_pending_items
+  getSaveConfigPendingItems: (state): Record<string, Record<string, string>> => {
+    const saveConfigPendingItems = state.printer.configfile?.save_config_pending_items as Record<string, Record<string, string>> | undefined
+
+    return saveConfigPendingItems || {}
   },
 
   getHasHomingOverride: (state, getters) => {

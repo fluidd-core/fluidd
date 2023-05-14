@@ -69,7 +69,7 @@
               <img
                 v-else
                 :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
-                :src="getThumbUrl(item.thumbnails, item.path, thumbnailSize > 16, item.modified)"
+                :src="getThumbUrl(item.thumbnails, root, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
           </td>

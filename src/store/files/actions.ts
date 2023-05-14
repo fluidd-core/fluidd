@@ -1,12 +1,11 @@
 import { ActionTree } from 'vuex'
 import axios from 'axios'
-import { FilesState, KlipperFile, AppDirectory, FileChangeSocketResponse, FileUpdate, AppFileWithMeta, KlipperFileWithMeta, DiskUsage, FileBrowserEntry, KlipperDir } from './types'
+import { FilesState, KlipperFile, KlipperDir, FileChangeSocketResponse, FileUpdate, KlipperFileWithMeta, DiskUsage } from './types'
 import { RootState } from '../types'
 import formatAsFile from '@/util/format-as-file'
 import getFilePaths from '@/util/get-file-paths'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import { HistoryItem } from '../history/types'
 
 export const actions: ActionTree<FilesState, RootState> = {
   /**
@@ -16,94 +15,38 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setReset')
   },
 
-  async onServerFilesGetDirectory ({ commit, rootState }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: KlipperDir[]; __request__: any }) {
-    const path = payload.__request__.params.path
-    const root = payload.__request__.params.root
-    const pathNoRoot = path.length > root.length
-      ? path.substring(root.length + 1)
-      : path.substring(root.length)
+  async onServerFilesGetDirectory ({ commit }, payload: { disk_usage: DiskUsage; files: (KlipperFile | KlipperFileWithMeta)[]; dirs: KlipperDir[]; __request__: any }) {
+    const { disk_usage, files, dirs, __request__: request } = payload
+    const { path } = request.params
 
-    const items: FileBrowserEntry[] = []
+    const filteredDirs = dirs
+      .filter(file =>
+        !Globals.FILTERED_FILES_PREFIX.some(e => file.dirname.startsWith(e)) &&
+        !Globals.FILTERED_FILES_EXTENSION.some(e => file.dirname.endsWith(e))
+      )
 
-    if (path && path.indexOf('/') >= 0) {
-      items.push({
-        type: 'directory',
-        dirname: '..',
-        name: '..',
-        size: 0,
-        modified: 0
-      } satisfies AppDirectory)
-    }
-
-    if (payload.dirs) {
-      payload.dirs.forEach((dir) => {
-        if (
-          !Globals.FILTERED_FILES_PREFIX.some(e => dir.dirname.startsWith(e)) &&
-          !Globals.FILTERED_FILES_EXTENSION.some(e => dir.dirname.endsWith(e))
-        ) {
-          items.push({
-            ...dir,
-            type: 'directory',
-            name: dir.dirname,
-            modified: new Date(dir.modified).getTime()
-          } satisfies AppDirectory)
-        }
-      })
-    }
-
-    if (payload.files) {
-      payload.files.forEach((file) => {
-        if (
-          !Globals.FILTERED_FILES_PREFIX.some(e => file.filename.startsWith(e)) &&
-          !Globals.FILTERED_FILES_EXTENSION.some(e => file.filename.endsWith(e))
-        ) {
-          let history = {} as HistoryItem
-          if (file.job_id) {
-            const h = rootState.history.jobs.find(job => job.job_id === file.job_id)
-            if (h) history = h
-          }
-          items.push({
-            ...file,
-            type: 'file',
-            name: file.filename,
-            extension: file.filename.split('.').pop() || '',
-            modified: new Date(file.modified).getTime(),
-            path: (pathNoRoot === '/') ? '' : pathNoRoot,
-            history
-          } satisfies AppFileWithMeta)
-        }
-      })
-    }
-    commit('setDiskUsage', payload.disk_usage)
-    commit('setServerFilesGetDirectory', { root, directory: { path, items } })
+    commit('setDiskUsage', disk_usage)
+    commit('setServerFilesGetDirectory', { path, content: { files, dirs: filteredDirs } })
   },
 
   async onServerFilesListRoot ({ commit }, payload) {
-    const root = payload.__request__.params.root
+    const { root } = payload.__request__.params
 
-    commit('setServerFilesListRoot', { root, files: payload })
+    commit('setServerFilesListRoot', { root, files: [...payload] })
   },
 
   /**
    * If we request the metadata (a file..) then we load and update here.
    */
-  async onFileMetaData ({ commit, rootState, rootGetters }, payload: KlipperFile | KlipperFileWithMeta) {
+  async onFileMetaData ({ commit, rootState }, payload: KlipperFile | KlipperFileWithMeta) {
     const root = 'gcodes' // We'd only ever load metadata for gcode files.
     const paths = getFilePaths(payload.filename, root)
-    let file = formatAsFile(root, payload)
+    const file = formatAsFile(root, payload)
     const filepath = (file.path) ? `${file.path}/${file.filename}` : `${file.filename}`
 
     // If this is an update to the currently printing file, then push it to
     // current_file.
     if (filepath === rootState.printer.printer.print_stats.filename) {
-      // Find an completed history item for this file, if it exists.
-      const history = rootGetters['history/getHistoryByFilename'](filepath)
-      if (history) {
-        file = {
-          ...file,
-          history
-        }
-      }
       commit('printer/setSocketNotify', { key: 'current_file', payload: file }, { root: true })
     }
 
@@ -148,7 +91,7 @@ export const actions: ActionTree<FilesState, RootState> = {
   async notifyCreateFile ({ commit, dispatch, rootState }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const file = formatAsFile(root, payload.item)
-    if (file.extension === 'gcode') {
+    if (root === 'gcodes' && file.extension === 'gcode') {
       // If the file in the gcode preview is the same as the one being updated, then reset gcode preview
       const gcodePreviewFile = rootState.gcodePreview.file
       if (gcodePreviewFile && gcodePreviewFile.path === file.path && gcodePreviewFile.filename === file.filename) {

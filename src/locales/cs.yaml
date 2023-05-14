@@ -78,7 +78,6 @@ app:
       transfer_rate: Přenosová rychlost
       uploaded: Nahráno
     msg:
-      confirm: Jste si jisti? Smažete tím všechny soubory a adresáře.
       not_found: Žádný soubor nenalezen
       processing: Zpracovávám
     overlay:

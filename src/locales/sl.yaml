@@ -1,0 +1,744 @@
+app:
+  bedmesh:
+    label:
+      active: aktivno
+      box_scale: Skaliranje
+      flat_surface: Prikaži ravno ravnino
+      mesh_matrix: Mrežasta matrika
+      probed_matrix: Sondirana matrika
+      profile_name: Ime profila
+      remove_profile: Odstrani profil %{name}
+      scale: Barvna lestvica
+      wireframe: Žični diagram
+    msg:
+      hint: >-
+        Če shranite drugače kot %{name}, lahko tudi izberete,
+        da odstranite profil %{name}.
+      not_found: Ni obstoječe posteljne mreže
+      not_loaded: Nobena mreža ni naložena
+    tooltip:
+      calibrate: Prične novo kalibracijo, ki jo shrani kot profil 'default'.
+      delete: Zbriši profil. To dejanje bo ponovno zagnalo tiskalnik.
+      load: Naloži profil
+      save: Shrani kalibriran profil v printer.cfg.
+  chart:
+    label:
+      current: Dejansko
+      item: Ime
+      'off': Skrij graf
+      'on': Prikaži graf
+      power: Moč
+      target: Cilj
+      rate_of_change: Sprememba
+    tooltip:
+      help: >-
+        Držite shift za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
+        />Kliknite na moč, da spremenite vidnost v grafu.
+  console:
+    label:
+      auto_scroll: Samodejno drsenje
+      flip_layout: Obrni postavitev
+      hide_temp_waits: Skrij čakanje temperature
+    placeholder:
+      command: '''tab'' za samodejno dokončanje, ''help'' za seznam ukazov ''puščice'' za zgodovino'
+  endpoint:
+    error:
+      cant_connect: >-
+        Nekaj se je zalomilo in fluidd ne more dostopati do cilja. Ste prepričani,
+        da je to pravi naslov?
+      cors_error: blokirano zaradi CORS politike
+      cors_note: >-
+        To pomeni, da je mogoče potrebno spremeniti moonraker konfiguracijo.
+        Prosimo, preberite dokumentacijo o <a href="%{url}"
+        target="_blank">nastavitvi</a> več tiskalnikov.
+    hint:
+      add_printer: Npr., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Imate težave?<a href="%{url}" target="_blank">Poglejte tukaj</a>
+        za več informacij.
+    tooltip:
+      endpoint_examples: >-
+        Vnesite API URL.<br />Nekaj primerov:<br
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: ODPRT
+      triggered: SPROŽEN
+    msg:
+      subtitle: Uporabite gumb za osveževanje, da osvežite status končnih stikal.
+  file_system:
+    filters:
+      label:
+        print_start_time: Filtriraj natisnjeno
+        print_start_time_desc: Filtriraj že natisnjene izdelke.
+        hidden_files: Filtriraj skrite datoteke
+        klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
+        rolled_log_files: Filtriraj zavite dnevniške datoteke
+    label:
+      dir_name: Ime mape
+      disk_usage: Poraba diska
+      diskinfo: Informacije o disku
+      downloaded: Prenešeno
+      file_name: Ime datoteke
+      transfer_rate: Hitrost prenosa
+      uploaded: Naloženo
+      view_section_documentation: >-
+        Prikaži dokumentacijo: '%{section}'
+    msg:
+      not_found: Ni najdenih datotek
+      processing: Procesiram
+    overlay:
+      drag_files_folders: <strong>Povlecite</strong> datoteke in mape sem.
+      drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v vrsto.
+    title:
+      add_dir: Dodaj mapo
+      add_file: Dodaj datoteko
+      command_palette: Nadzorna plošča
+      download_file: Pridobivam datoteko
+      go_to_file: Pojdi v datoteko
+      rename_dir: Preimenuj mapo
+      rename_file: Preimenuj datoteko
+      upload_file: Nalaganje datoteke | Nalaganje datotek
+    tooltip:
+      low_on_space: Na disku primanjkuje prostora
+      move_item: Premakni element | Premakni {count} elementov
+      root_disabled: '{root} root ni na voljo. Prosimo, preverite dnevnike.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+  gcode:
+    btn:
+      load_current_file: Naloži trenutno datoteko
+    label:
+      current_layer_height: Trenutna višina plasti
+      exclude_object: Izključi objekt
+      follow_progress: Sledi napredku
+      layer: Plast
+      layers: Plasti
+      parsed: Razčlenjeno
+      show_current_layer: Prikaži trenutno plast
+      show_extrusions: Prikaži iztiske
+      show_moves: Prikaži pomike
+      show_next_layer: Prikaži naslednjo plast
+      show_parts: Prikaži kose
+      show_previous_layer: Prikaži prejšnjo plast
+      show_retractions: Prikaži umike
+      parsing_file: Razčlenjujem datoteko
+    msg:
+      confirm: >-
+        Datoteka "%{filename}" je velika %{size}. To lahko povzroči dodatno obremenitev
+        za sistem. Ste prepričani?
+  general:
+    btn:
+      abort: Prekini
+      accept: Sprejmi
+      add: Dodaj
+      add_dir: Dodaj mapo
+      add_file: Dodaj datoteko
+      add_printer: Dodaj tiskalnik
+      add_to_queue: Dodaj v vrsto
+      adjust_layout: Prilagodi postavitev armature
+      adjusted: Prilagojeno
+      all: Vse
+      auth_unsure: Niste prepričani, zakaj se vam to prikazuje?
+      calibrate: Kalibriraj
+      cancel: Prekliči
+      clear_profile: Počisti profil
+      close: Zapri
+      config_reference: Sklic na konfiguracije
+      create_zip_archive: Ustvari ZIP arhiv
+      delete: Zbriši
+      download: Prenesi
+      edit: Uredi
+      exit_layout: Izhod iz načina postavitve
+      extrude: Iztisni
+      filter: Filter
+      forgot_password: Ste pozabili geslo?
+      go_to_file: Pojdi v datoteko
+      heaters_off: Izklopi grelce
+      job_queue: Opravila v vrsti
+      load_all: Naloži vse
+      login: Prijava
+      logout: Odjava
+      more_information: Več informacij
+      pause: Premor
+      preheat: Predgrej
+      presets: Prednastavitev
+      preview_gcode: Predogled g-kode
+      print: Tiskaj
+      quad_gantry_level: QGL
+      reboot: Ponoven zagon
+      recover: Obnovi
+      refresh: Osveži
+      reload: Ponovno naloži
+      remove: Odstrani
+      remove_all: Odstrani vse
+      rename: Preimenuj
+      reprint: Ponovno natisni
+      reset_file: Počisti datoteko
+      reset_layout: Ponastavi na privzeto postavitev
+      reset_default_layout: Ponastavi privzeto postavitev
+      restart_firmware: Ponovno zaženi MKE
+      restart_service: Ponovno zaženi %{service}
+      restart_service_klipper: Ponovno zaženi Klipper
+      restart_service_moonraker: Ponovno zaženi Moonraker
+      resume: Nadaljuj
+      retract: Umik
+      return_dashboard: Vrni se na armaturno ploščo
+      save: Shrani
+      save_as: Shrani kot
+      save_restart: Shrani & ponovno zaženi
+      save_config_and_restart: Shrani konfiguracijo & ponovno zaženi
+      send: Pošlji
+      set_color: Nastavi barvo
+      set_default_layout: Nastavi kot privzeto postavitev
+      shutdown: Ugasni
+      snooze: Dremež
+      socket_reconnect: Ponovno poveži
+      socket_refresh: Prisilna osvežitev
+      upload: Naloži
+      upload_files: Naloži datoteke
+      upload_folder: Naloži mape
+      upload_print: Naloži & tiskaj
+      view: Pogled
+      reset_stats: Ponastavi statistiko
+    error:
+      app_setup_link: >-
+        Zahteve za namestitve Fluidda lahko najdete <a target="_blank"
+        href="%{url}">tukaj.</a>
+      app_warnings_found: 'Aplikacija %{appName} je zaznala opozorila.'
+      components_config: >-
+        Konfiguracijo za vtičnik Moonraker lahko najdete <a target="_blank"
+        href="%{url}">tukaj.</a>
+      failed_components: >-
+        Vtičniki za Moonraker so spodleteli. Prosimo, preverite dnevnike,
+        posodobite konfiguracijo in ponovno zaženite Moonraker.
+    label:
+      accel_to_decel: Pojemek
+      acceleration: Pospešek
+      accepted_screws: Sprejeti vijaki
+      actual_time: Dejansko
+      add_camera: Dodaj kamero
+      add_filter: Dodaj filter
+      add_preset: Dodaj prednastavitev
+      add_user: Dodaj uporabnika
+      all: Vse
+      api_key: Api ključ
+      api_url: API URL
+      auth_source: Vir pristnosti
+      category: Kategorija
+      change_password: Spremeni geslo
+      clear_all: Počisti vse
+      color: Barva
+      command: Ukaz
+      confirm: Potrdi
+      current_password: Trenutno geslo
+      current_user: Trenutni uporabnik
+      default: Privzeto
+      disabled_while_printing: Onemogočeno med tiskanjem
+      edit_camera: Uredi kamero
+      edit_filter: Uredi filter
+      edit_preset: Uredi prednastavitev
+      edit_user: Uredi uporabnika
+      extrude_length: Dožina iztiskovanja
+      extrude_speed: Hitrost iztiskovanja
+      filament: Filament
+      file: Datoteka
+      finish_time: Konec
+      flow: Pretok
+      free: prosto
+      heaters_busy: >-
+        Tiskalnik je trenutno zaseden. Ugasnitev grelcev lahko povzroči
+        neuspešen tisk.
+      high: Visoko
+      host: Gostitelj
+      layer: Plast
+      layout: Postavitev
+      ldap: LDAP
+      longest_job: Najdaljše opravilo
+      low: Nizko
+      manage_accounts: Urejaj račune
+      user_managed_source: "Uporabnika nadzoruje pristnost: %{source}"
+      m117: M117
+      moonraker: Moonraker
+      name: Ime
+      new_password: Novo geslo
+      no_notifications: Ni obvestil
+      'on': 'Vklopi'
+      'off': 'Izklopi'
+      numeric_prefix_sort: Sortiraj po številski predponi
+      password: Geslo
+      partial_of_total: '%{partial} od %{total}'
+      pause_at_layer: Zaustavi na plasti
+      pause_at_next_layer: Zaustavi na naslednji plasti
+      pause_at_layer_number: Zaustavi na plasti št.
+      power: Moč
+      pressure_advance: Napredni tlak
+      printers: Tiskalniki
+      progress: Napredek
+      requested_speed: Hitrost
+      retract_length: Dolžina umika
+      retract_speed: Hitrost umika
+      save_as: Shrani kot
+      screw_index: Pozicija vijaka
+      screw_name: Ime vijaka
+      screw_number: Vijak %{index}
+      services: Storitve
+      slicer: Rezalnik
+      smooth_time: Čas glajenja
+      speed: Hitrost
+      sqv: Hitrost v vogalu
+      stepper_enabled: Motor omogočen
+      synced_extruder: Sinhroniziran ekstruder
+      thumbnail_size: Velikost sličice
+      total: Skupno
+      total_filament: Skupno porabljenega filamenta
+      total_filament_avg: Povp. dolžina na tisk
+      total_jobs: Skupno število opravili
+      total_print_time: Skupen čas tiskanja
+      total_print_time_avg: Povp. čas na tisk
+      total_time: Skupen čas
+      total_time_avg: Povp. čas na tisk
+      turn_device_on: Prižgi %{device}
+      turn_device_off: Ugasni %{device}
+      uncategorized: Nekategorizirano
+      unretract_extra_length: Dolžina pred iztiskom
+      unretract_speed: Hitrost pred iztiskom
+      upload_and_print: Naloži in tiskaj
+      used: porabljeno
+      username: Uporabniško ime
+      variance: Odstopanje
+      velocity: Hitrost
+      version_sort: Sortiraj po verziji
+      visible: Vidno
+      z_offset: Z odmik
+      unsaved_changes: Ne shranjene spremembe
+      alias: Vzdevek
+      apply_z_offset: Uporabi in shrani Z odmik
+      edit_category: Uredi kategorijo
+      add_category: Dodaj kategorijo
+      file_time: Datoteka
+    msg:
+      password_changed: Geslo spremenjeno
+      wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
+      bed_screws_adjust: >-
+        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
+      welcome_back: >-
+        Dobrodošli nazaj.<br>Vpišite se spodaj, da ostane v stiku s svojim tiskalnikom.
+      offline_ready: Fluidd je pripravljen za delo brez povezave.
+      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno naloži</b>, da ponovno naložite stran.
+      pending_configuration_sections_deleted: Sledeči odseki so izbrani za izbris
+      rolledover_logs: >-
+        Sledeči dnevniki aplikacij so bili zaviti: %{applications}
+    simple_form:
+      error:
+        arrayofnums: Samo številke
+        credentials: Napačna poverilnica
+        exists: Že obstaja
+        invalid_number: Napačna številka
+        invalid_url: Napačen URL
+        invalid_expression: Napačen izraz
+        max: Največ %{max}
+        min: Najmanj %{min}
+        min_or_0: Najmanj %{min} ali 0
+        password_username: Ne najdem uporabnika
+        required: Zahtevano
+        invalid_aspect: Napačno razmerje
+      msg:
+        confirm: Ste prepričani?
+        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz tiskanja?
+        confirm_forcemove_toggle: Ste prepričani? To dejanje lahko poškoduje tiskalnik.
+        confirm_reboot_host: Ste prepričani? To dejanje bo ponovno zagnalo gostitelja.
+        confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo gostitelja.
+        confirm_service_start: Ste prepričani, da želite zagnani storitev %{name}?
+        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev %{name}?
+        confirm_service_stop: Ste prepričani, da želite ustaviti storitev %{name}?
+        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje naprave.
+        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti datoteko?
+        no_file_preview: >-
+          Predogled za %{name} ni možen.
+    table:
+      header:
+        actions: Dejanja
+        chamber_temp: Temperatura komore
+        end_time: Končano
+        estimated_time: Ocenjen čas
+        filament: Filament
+        filament_name: Ime filamenta
+        filament_type: Tip filamenta
+        filament_used: Porabljenega filamenta
+        filament_weight_total: Masa filamenta
+        first_layer_bed_temp: Temperatura postelje za prvo plast
+        first_layer_extr_temp: Temperatura ekstruderja za prvo plast
+        first_layer_height: Višina prve plasti
+        height: Višina
+        last_printed: Nazadnje natisnjeno
+        layer_height: Višina plasti
+        modified: Spremenjeno
+        name: Ime
+        nozzle_diameter: Premer šobe
+        print_duration: Trajanje tiska
+        time_added: Čas ob dodaji
+        time_in_queue: Čas v vrsti
+        size: Velikost
+        slicer: Rezalnik
+        slicer_version: Verzija rezalnika
+        start_time: Pričetek
+        status: Status
+        total_duration: Skupno trajanje
+    title:
+      add_chart: Dodaj graf
+      add_printer: Dodaj tiskalnik
+      bedmesh: Mreža mize
+      bedmesh_controls: Nastavitve mreže mize
+      camera: Kamera | Kamere
+      config_files: Nastavitvene datoteke
+      configure: Konfiguracije
+      console: Konzola
+      diagnostics: Diagnostika
+      edit_chart: Uredi graf
+      endstops: Končna stikala
+      fans_outputs: Ventilatorji & izhodi
+      gcode_preview: Predogled g-kode
+      history: Zgodovina
+      home: Domov
+      jobs: Opravila
+      job_queue: Opravila v vrsti
+      limits: Omejitve tiskalnika
+      macros: Makroji
+      metrics_explorer: Raziskovalec meritev
+      not_found: 404 Ni najdeno
+      other_files: Ostale datoteke
+      pending_configuration_changes: Čakam na spremembe konfiguracij
+      retract: Strojni umik
+      rollover_logs: Zaviti dnevniki
+      runout_sensors: Senzorji za iztek filamenta
+      settings: Nastavitve
+      stats: Statistika tiskalnika
+      system: Sistem
+      system_overview: O sistemu
+      temperature: Temperatura
+      timelapse: Časovni zamik
+      tool: Orodje
+      tune: Uglaševanje
+    tooltip:
+      browse_metrics: Brskaj meritve, ki so na voljo
+      estop: Zasilna ustavitev
+      managed_by_moonraker: Upravlja konfiguracija moonrakerja
+      notifications: Obvestila
+      reload_klipper: Ponovno naloži klipperjeve konfiguracije.
+      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno zažene MKE.
+      restart_klipper: Ponovno zažene sistemsko storitev klipper.
+      run_collector: Zaženi zbiralnik
+      rollover_logs: Zaviti dnevniki
+  history:
+    msg:
+      confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in statistiko.
+  job_queue:
+    msg:
+      confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
+      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
+      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
+  printer:
+    state:
+      busy: Zaseden
+      cancelled: Preklicano
+      complete: Končano
+      idle: V mirovanju
+      loading: Nalagam
+      paused: Zaustavljeno
+      printing: Tiskanje
+      ready: Pripravljen
+      standby: V pripravljenosti
+  setting:
+    btn:
+      add_camera: Dodaj kamero
+      add_category: Dodaj kategorijo
+      add_filter: Dodaj filter
+      add_metric: Dodaj meritev
+      add_thermal_preset: Dodaj prednastavitev
+      add_user: Dodaj uporabnika
+      reset: Ponastavi
+      select_theme: Izbira teme
+    camera_type_options:
+      mjpegadaptive: MJPEG adaptivno
+      mjpegstream: MJPEG pretok
+      hlsstream: HLS pretok
+      video: IP Kamera
+      iframe: HTTP stran
+    camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
+      none: Brez
+    label:
+      all_off: Izklopi vse
+      all_on: Vklopi vse
+      aspect_ratio: Razmerje
+      aspect_ratio_format: '[širina : višina]'
+      auto_edit_extensions: Razširitve naj se samodejno odprejo v urejevalnem načinu
+      auto_follow_on_file_load: Samodejno spremljaj napreden na naloženih datotekah
+      auto_load_on_print_start: Samodejno naloži datoteko ob začetku tiska
+      auto_load_mobile_on_print_start: Samodejno naloži datoteko na mobilnih napravah
+      axes: Osi
+      camera_flip_x: Zrcali vodoravno
+      camera_flip_y: Zrcali navpično
+      camera_fullscreen_action:
+        title: Celozaslonsko
+        embed: Vgrajeno
+        rawstream: Surov pretok
+      camera_rotate_by: Zavrti za
+      camera_stream_type: Pretočni tip
+      camera_url: URL kamere
+      card: Kartica
+      collector: Krmilnik
+      confirm_on_estop: Zahtevaj potrditev za zasilni izklop
+      confirm_on_power_device_change: Zahtevaj potrditev za spremembe napajanja
+      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem in ponovnim zagonom
+      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe niso shranjene
+      contains: Vsebuje
+      dark_mode: Temen način
+      dashed: Črtice
+      default_extrude_length: Privzeta dolžina iztiskovanja
+      default_extrude_speed: Privzeta hitrost iztiskovanja
+      default_toolhead_move_length: Privzeta dolžina premika orodja
+      default_toolhead_xy_speed: Privzeta XY hitrost orodja
+      default_toolhead_z_speed: Privzeta Z hitrost orodja
+      dotted: Pike
+      draw_background: Nariši ozadje
+      enable: Omogoči
+      enable_diagnostics: Vklopi diagnostiko
+      enable_notifications: Vklopi obvestila
+      expression: Izraz
+      extrusion_line_width: Širina iztiska
+      flip_horizontal: Zrcali vodoravno
+      flip_vertical: Zrcali navpično
+      fill_color: Barva polnila
+      fill_opacity: Prekrivnost
+      filter: Filter | Filtri
+      fps_target: Želene slike na sekundo
+      fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
+      height: Višina
+      gcode_coords: Uporabi koordinate iz g-kode
+      group_lower_layers: Združi spodnje plasti
+      icon: Ikona
+      invert_x_control: Zrcali X pomike
+      invert_y_control: Zrcali Y pomike
+      invert_z_control: Zrcali Z pomike
+      language: Jezik
+      last_result: Zadnji rezultat
+      left_y: Leva Y os
+      line_color: Barva črte
+      line_style: Slog linije
+      min: Minimum
+      max: Maksimum
+      metrics: Meritve
+      move_line_width: Širina črte premikov
+      name: Ime
+      none: Brez
+      optional: Poljubno
+      power_toggle_in_top_nav: Preklop napajanja v navigaciji zgoraj
+      primary_color: Primarna barva
+      printer_name: Ime tiskalnika
+      reset: Ponastavitev nastavitev
+      retraction_icon_size: Velikost umikov
+      right_y: Desna Y os
+      show_animations: Prikaži animacije
+      show_barometric_pressure: Prikaži barometrični tlak
+      show_code_lens: Prikaži CodeLens
+      show_gas_resistance: Prikaži upor plina
+      show_legend: Prikaži legendo
+      show_rate_of_change: Prikaži hitrost temperature
+      show_relative_humidity: Prikaži relativno vlažnost
+      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v navigaciji zgoraj
+      show_upload_and_print: Pokaži naloži in tiskaj gumb v navigaciji zgoraj
+      solid: Polno
+      starts_with: Začne se s/z
+      theme_preset: Prednastavitve skupnosti
+      thermal_preset_gcode: G-koda
+      thermal_preset_name: Ime prednastavitve
+      title: Naslov
+      toolhead_move_distances: Vrednost oddaljenosti orodja
+      type: Tip
+      unit: Enota
+      z_adjust_values: Vrednosti Z nastavitve
+      date_format: Format časa
+      time_format: Format datuma
+      text_sort_order: Vrstni red sortiranja
+      force_move_toggle_warning: Zahtevaj potrditev za prisilen gib
+      show_manual_probe_dialog_automatically: Prikaži dialog za ročno sondiranje samodejno
+      show_bed_screws_adjust_dialog_automatically: Prikaži dialog za nastavitev posteljnih vijakov samodejno
+    timer_options:
+      duration: Samo trajanje
+      filament: Ocena filamenta
+      file: Ocena datoteke
+      slicer: Rezalnik
+    title:
+      authentication: Pristnost
+      console: Konzola
+      camera: Kamera | Kamere
+      file_editor: Urejevalnik datotek
+      gcode_preview: Predogled g-kode
+      general: Splošno
+      macros: Makroji
+      theme: Teme
+      thermal_presets: Prednastavitve grelcev
+      tool: Orodje
+    tooltip:
+      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva na zmogljivost'
+      gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
+      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če ročno sondirate
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate posteljne vijake
+  socket:
+    msg:
+      connecting: Povezujem se na moonraker...
+      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja ali osvežite stran.
+  system_info:
+    label:
+      capacity: Kapaciteta
+      cpu_desc: Opis CPE
+      distribution_codename: Šifra
+      distribution_like: Podobna distribucija
+      distribution_name: Distribucija
+      frequency: Frekvenca
+      hardware_desc: Opis opreme
+      hostname: Ime gostitelja
+      klipper_load: Obremenitev Klipperja
+      load: obremenitev
+      manufactured: Proizvedeno
+      manufacturer: Proizvajalec
+      mcu_awake: '{mcu} čas budnosti'
+      mcu_bandwidth: '{mcu} pasovna širina'
+      mcu_information: '{mcu} informacije'
+      mcu_load: '{mcu} obremenitev'
+      memory_used: porabljenega spomina
+      micro_controller: Mikrokrmilnik
+      model: Model CPE
+      moonraker_load: Obremenitev Moonrakerja
+      processor_desc: Procesor
+      product_name: Ime izdelka
+      serial_number: Serijska številka
+      system_load: Obremenitev sistema
+      system_memory: Sistemski spomin
+      system_utilization: Poraba sistema
+      total_memory: Skupno spomina
+      operating_system: Operacijski sistem
+      version: Verzija
+  tool:
+    btn:
+      home_x: X
+      home_y: Y
+      home_all: Vse
+    title:
+      bed_screws_adjust: Nastavitev posteljnih vijakov
+      manual_probe: Ročna sonda
+    tooltip:
+      absolute_positioning: Absolutna pozicija
+      extruder_disabled: ekstruder je izklopljen, ker je pod min_extrude_temp (%{min}<small>°C</small>)
+      home_xy: Nuliraj XY
+      home_z: Nuliraj Z
+      manual_probe: Ročna sonda
+      motors_off: IZKLOP MOTORJEV
+      relative_positioning: Relativna pozicija
+      tools: Orodja
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena za </span>
+        filament premera %{filamentDiameter} mm
+        <span class="secondary--text">in</span>
+        premer šobe %{nozzleDiameter}.
+      stats_volumetric_flow: >-
+        <span class="secondary--text">Ekstruder bi moral biti sposoben zagotoviti</span>
+        pretok %{estimatedVolumetricFlow} mm³/s
+        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed} mm/s.
+      stats_extruded_length: >-
+        Iztiskanje %{extrudeLength} mm filamenta pri
+        %{extrudeFactor} % pretoku<span class="secondary--text">,
+        bo iztisnilo približno</span>
+        %{estimatedExtrudedLength} mm filamenta.
+      stats_max_speed: >-
+        <span class="secondary--text">Pri višini plasti</span>
+        %{layerHeight} mm<span class="secondary--text">,
+        je ocenjena </span>najvišja histrost  %{estimatedMaxSpeed} mm/s.
+  version:
+    btn:
+      check_for_updates: Preveri za posodobitve
+      finish: Konec
+      update: Posodobi
+      update_all: Posodobi vse
+      view_versions: Poglej verzije
+    label:
+      commit_history: Zgodovina objav
+      commits_on: Zapiski na dan
+      committed: Objavljeno
+      dirty: UMAZANO
+      invalid: NEPRAVILNO
+      os_packages: OS Paketi
+      package_list: Seznam paketov
+      up_to_date: POSODOBLJENO
+      updates_available: Posodobitve so na voljo
+    status:
+      finished: Posodobitve končane
+      updating: Posodabljam...
+    title: Programske posodobitve
+    tooltip:
+      commit_history: Zgodovina objav
+      dirty: Označuje odsekano glavo. Ni na bazi ali nepravilen izvor.
+      invalid: nakazuje lokalne spremembe v skladišču
+      packages: Paketi
+      release_notes: Zapiski ob izdaji
+  timelapse:
+    btn:
+      render: Uprizori
+      save_frames: Shrani sličice
+    error:
+      newframe: Napaka pri zajemu sličice časovnega zamika
+    label:
+      frames: '%{frames} sličica | %{frames} sličic'
+      length: 'Ocenjena dolžina: %{length}'
+      frame: Sličica | Sličice
+    title:
+      timelapse_settings: Nastavitve časovnega zamika
+      timelapse_status: Status časovnega zamika
+      render_settings: Nastavitve uprizarjanja
+    setting:
+      enable: Omogočeno
+      auto_render: Samodejno uprizori
+      crf: Konstantno razmerje
+      duplicatelastframe: Podvoji zadnjo sličico
+      fw_retract: Uporabi strojne umike
+      gcode_verbose: G-koda, podrobno
+      mode: Način
+      mode_layermacro: Makro za plast
+      mode_hyperlapse: Hyperlapse
+      hyperlapse_cycle: Hyperlapse cikel
+      output_framerate: Izhodna hitrost zajema
+      park_retract_distance: Dolžina umika pri parkiranju
+      park_retract_speed: Hitrost umika pri parkiranju
+      park_extrude_distance: Dolžina iztiska pri parkiranju
+      park_extrude_speed: Hitrost iztiska pri parkiranju
+      parkhead: Parkirna glava
+      park_time: Čas za parkiranje
+      park_travel_speed: Hitrost za parkiranje
+      park_custom_pos_x: Pozicija za parkiranje X
+      park_custom_pos_y: Pozicija za parkiranje Y
+      park_custom_pos_dz: Pozicija za parkiranje Z skok
+      parkpos:
+        label: Pozicija za parkiranje
+        custom: Po meri
+        front_left: Spredaj levo
+        front_right: Spredaj desno
+        center: Sredina
+        back_left: Zadaj levo
+        back_right: Zadaj desno
+        x_only: Premakni samo x
+        y_only: Premakni samo y
+      previewimage: Ustvari sličico
+      saveframes: Shrani posnetke
+      stream_delay_compensation: Kompenzacija za zakasnitev
+      targetlength: Želena dolžina
+      variable_fps: Spremenljiva hitrost zajema
+      variable_fps_min: Najmanjša hitrost zajema
+      variable_fps_max: Največja hitrost zajema

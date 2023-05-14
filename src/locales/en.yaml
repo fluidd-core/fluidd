@@ -86,7 +86,6 @@ app:
       view_section_documentation: >-
         View '%{section}' documentation
     msg:
-      confirm: Are you sure? This will delete all files and folders.
       not_found: No files found
       processing: Processing
     overlay:
@@ -97,6 +96,8 @@ app:
       add_file: Add File
       command_palette: Command Palette
       download_file: Retrieving file
+      duplicate_dir: Duplicate Directory
+      duplicate_file: Duplicate File
       go_to_file: Go to file
       rename_dir: Rename Directory
       rename_file: Rename File
@@ -152,6 +153,7 @@ app:
       create_zip_archive: Create ZIP Archive
       delete: Delete
       download: Download
+      duplicate: Duplicate
       edit: Edit
       exit_layout: Exit layout mode
       extrude: Extrude
@@ -175,7 +177,7 @@ app:
       refresh: Refresh
       reload: Reload
       remove: Remove
-      remove_all: Remove All
+      remove_all: Remove all
       rename: Rename
       reprint: Re-Print
       reset_file: Clear File
@@ -192,6 +194,7 @@ app:
       save_as: Save As
       save_restart: Save & Restart
       save_config_and_restart: Save config & restart
+      select_columns: Select columns
       send: Send
       set_color: Set Color
       set_default_layout: Set as Default Layout
@@ -199,6 +202,7 @@ app:
       snooze: Snooze
       socket_reconnect: Re-Connect
       socket_refresh: Force refresh
+      thumbnail_size: Thumbnail size
       upload: Upload
       upload_files: Upload Files
       upload_folder: Upload Folder
@@ -349,6 +353,7 @@ app:
         invalid_aspect: Invalid Aspect Ratio
       msg:
         confirm: Are you sure?
+        confirm_delete: Are you sure? This will delete the selected item. | Are you sure? This will delete the {count} selected items.
         confirm_exclude_object: Are you sure you want to exclude this object from printing?
         confirm_forcemove_toggle: Are you sure? This can damage the printer.
         confirm_reboot_host: Are you sure? This will reboot your host system.
@@ -525,6 +530,7 @@ app:
       height: Height
       gcode_coords: Use GCode Coordinates
       icon: Icon
+      ignore_default_bed_mesh_pending_configuration_changes: Ignore default bed mesh Pending Configuration Changes
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -538,6 +544,7 @@ app:
       metrics: Metrics
       move_line_width: Move Line Width
       name: Name
+      never: Never
       none: None
       optional: Optional
       power_toggle_in_top_nav: Power toggle in top navigation
@@ -546,6 +553,7 @@ app:
       reset: Reset settings
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
+      save_and_restore_view_state: Save and restore view state
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_code_lens: Show CodeLens
@@ -561,6 +569,8 @@ app:
       thermal_preset_gcode: GCode
       thermal_preset_name: Preset Name
       title: Title
+      to_browser_local_storage: To browser local storage
+      to_browser_session_storage: To browser session storage
       toolhead_move_distances: Toolhead distance values
       type: Type
       unit: Unit
