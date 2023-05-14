@@ -4,7 +4,10 @@
     icon="$desktopTower"
   >
     <template #menu>
-      <v-tooltip bottom>
+      <v-tooltip
+        v-if="canRolloverLogs"
+        bottom
+      >
         <template #activator="{ on, attrs }">
           <app-btn
             v-bind="attrs"
@@ -133,6 +136,10 @@ export default class PrinterStatsCard extends Mixins(StateMixin) {
 
   get printerInfo () {
     return this.$store.state.printer.printer.info
+  }
+
+  get canRolloverLogs (): boolean {
+    return this.$store.getters['server/getIsMinApiVersion']('1.0.5') as boolean
   }
 }
 </script>
