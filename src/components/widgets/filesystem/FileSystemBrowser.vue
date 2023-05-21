@@ -403,6 +403,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       }
     } else if (item.name === '..') {
       return '$folderUp'
+    } else if (item.permissions === 'r' || this.readonly) {
+      return '$folderLock'
     } else {
       return '$folder'
     }
