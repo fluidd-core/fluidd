@@ -28,7 +28,6 @@ app:
       power: 功率
       target: 目标值
       rate_of_change: 变化值
-      
     tooltip:
       help: 按住 Shift 键可缩放图表。<br />单击一个项目名称或功率可在图表中切换显示。
   console:
@@ -66,7 +65,7 @@ app:
         print_start_time_desc: 隐藏已经打印的项目文件
         hidden_files_folders: 筛选隐藏的文件和文件夹                                                  
         klipper_backup_files: 隐藏Klipper备份文件
-        rolled_log_files:筛选滚动日志文件                                         
+        rolled_log_files: 筛选滚动日志文件                                         
     label:
       dir_name: 目录名称
       disk_usage: 磁盘使用率
@@ -81,21 +80,21 @@ app:
       processing: 处理中...
     overlay:
       drag_files_folders: <strong>拖动</strong> 一个文件到这里
-      drag_files_enquee：将文件拖到<strong>此处</strong>进行入队                                                               
+      drag_files_enqueue: 将文件拖到<strong>此处</strong>进行入队                                                               
     title:
       add_dir: 新建目录
       add_file: 新建文件
       command_palette: 命令面板
       download_file: 下载文件
-      duplicate_dir:重复目录
-      duplicate_file:重复文件
-      go_to_file:转到文件                                  
+      duplicate_dir: 重复目录
+      duplicate_file: 重复文件
+      go_to_file: 转到文件                                  
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
     tooltip:
       low_on_space: 磁盘空间不足
-      move_item:移动项目|移动｛count｝个项目
+      move_item: 移动项目|移动｛count｝个项目
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
     url:
       klipper_config: 'https://www.klipper3d.org/zh/Config_Reference.html#%{hash}'
@@ -115,7 +114,7 @@ app:
       show_extrusions: 显示已打印部分
       show_moves: 显示移动走线
       show_next_layer: 显示下一层
-      show_parts:显示零件                      
+      show_parts: 显示零件                      
       show_previous_layer: 显示上一层
       show_retractions: 显示回抽
       parsing_file: 解析文件
@@ -228,7 +227,6 @@ app:
       disabled_while_printing: 打印时禁用
       edit_camera: 编辑摄像头设置
       edit_filter: 编辑过滤器
-
       edit_preset: 编辑预设
       edit_user: 编辑用户
       extrude_length: 挤出距离
@@ -258,9 +256,9 @@ app:
       numeric_prefix_sort: 数字前缀排序
       password: 密码
       partial_of_total: '%{partial} - %{total}'
-      pause_at_layer:在层处暂停
-      pause_at_next_layer:在下一层暂停
-      pause_at_layer_number：在几层暂停
+      pause_at_layer: 在层处暂停
+      pause_at_next_layer: 在下一层暂停
+      pause_at_layer_number: 在几层暂停
       power: 设备
       pressure_advance: 压力补偿
       printers: 打印机列表
@@ -332,7 +330,7 @@ app:
         invalid_aspect: 宽高比无效
       msg:
         confirm: 是否确认？
-        confirm_delete：你确定吗？这将删除所选项目。|你确定吗？这将删除｛count｝个所选项目。
+        confirm_delete: 你确定吗？这将删除所选项目。|你确定吗？这将删除｛count｝个所选项目。
         confirm_exclude_object: 您确定要从打印中排除该对象吗？
         confirm_forcemove_toggle: 这可能会损坏打印机！是否确认？
         confirm_reboot_host: 这会重启您的系统！是否确认？
@@ -397,7 +395,7 @@ app:
       other_files: 其他文件（日志、文档及参考配置）
       pending_configuration_changes: 挂起的配置更改
       retract: 固件回抽
-      rollover_logs:滚动日志
+      rollover_logs: 滚动日志
       runout_sensors: 断料检测传感器
       settings: 设置
       stats: 打印任务统计
@@ -416,7 +414,7 @@ app:
       reload_restart_klipper: 重新载入 Klipper 配置并重启 MCU
       restart_klipper: 重启 Klipper 服务
       run_collector: 运行收集器
-      rollover_logs:滚动日志
+      rollover_logs: 滚动日志
   history:
     msg:
       confirm: 这将清除所有历史记录和打印机统计数据！是否确认？
@@ -467,7 +465,7 @@ app:
       auto_edit_extensions: 自动进入编辑模式的文件类型
       auto_follow_on_file_load: 加载文件时自动跟踪进度
       auto_load_on_print_start: 打印开始时自动加载文件
-      auto_load_mobile_on_print_start：在移动设备上自动加载文件
+      auto_load_mobile_on_print_start: 在移动设备上自动加载文件
       axes: 轴
       camera_flip_x: 水平翻转
       camera_flip_y: 垂直翻转
@@ -480,7 +478,6 @@ app:
       camera_url: 摄像头地址
       card: 卡片
       collector: 收集器
- 
       confirm_on_estop: 紧急停止时是否需要确认
       confirm_on_power_device_change: 改变设备开关状态时需要确认
       confirm_on_save_config_and_restart: 在保存并重新启动之前查看挂起的配置更改
@@ -562,7 +559,7 @@ app:
       text_sort_order: 文本排序
       force_move_toggle_warning: 强制移动时是否需要确认
       show_manual_probe_dialog_automatically: 自动显示手动探测对话框
-      show_bed_screws_adjust_dialog_automatically:自动显示“调整床螺钉”对话框
+      show_bed_screws_adjust_dialog_automatically: 自动显示“调整床螺钉”对话框
     timer_options:
       duration: 仅显示已用时间
       filament: 通过耗材用量估算
@@ -723,4 +720,3 @@ app:
       variable_fps: 可变帧率
       variable_fps_min: 最小帧率
       variable_fps_max: 最大帧率
-
