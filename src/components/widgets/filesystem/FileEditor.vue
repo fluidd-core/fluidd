@@ -130,9 +130,11 @@ export default class FileEditor extends Mixins(BrowserMixin) {
     })
 
     this.$emit('ready')
-    this.editor.onDidChangeModelContent(event => {
+
+    this.editor.onDidChangeModelContent(() => {
       const value = this.editor?.getValue()
-      this.emitChange(value, event)
+
+      this.$emit('input', value)
     })
   }
 
@@ -161,11 +163,6 @@ export default class FileEditor extends Mixins(BrowserMixin) {
 
     if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
     if (this.editor) this.editor.dispose()
-  }
-
-  emitChange (value: string | undefined, event: Monaco.editor.IModelContentChangedEvent) {
-    this.$emit('change', value, event)
-    this.$emit('input', value)
   }
 }
 </script>

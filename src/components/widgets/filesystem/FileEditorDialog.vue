@@ -27,7 +27,7 @@
         >
           <v-icon>$close</v-icon>
         </app-btn>
-        <v-toolbar-title>{{ filename }}</v-toolbar-title>
+        <v-toolbar-title>{{ filename }}{{ updatedContent !== lastSavedContent ? " *" : "" }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
           <app-btn
