@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      active: 
+      active: 激活
       box_scale: 显示比例
       flat_surface: 显示参考平面
       mesh_matrix: 网格矩阵
