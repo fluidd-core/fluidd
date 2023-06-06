@@ -472,6 +472,7 @@ app:
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
       hlsstream: HLS Stream
+      webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP Camera
       iframe: HTTP page
     camera_rotate_options:

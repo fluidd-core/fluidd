@@ -13,7 +13,7 @@
     >
 
     <video
-      v-else-if="camera.service === 'ipstream' || camera.service === 'hlsstream'"
+      v-else-if="camera.service === 'ipstream' || camera.service === 'hlsstream' || camera.service === 'webrtc-camerastreamer'"
       ref="camera_image"
       :src="cameraUrl"
       autoplay
@@ -66,6 +66,7 @@ import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
 import { CameraFullscreenAction } from '@/store/config/types'
 import type HlsType from 'hls.js'
+import consola from 'consola'
 let Hls: typeof HlsType
 
 /**
@@ -91,6 +92,8 @@ export default class CameraItem extends Vue {
   request_time_smoothing = 0.1
   currentFPS = '0'
   hls: HlsType | null = null
+  pc: RTCPeerConnection | null = null
+  remoteId: string | null = null
 
   // URL used by camera
   cameraUrl = ''
@@ -157,6 +160,7 @@ export default class CameraItem extends Vue {
    */
   beforeDestroy () {
     this.hls?.destroy()
+    this.pc?.close()
     this.cancelCameraTransform()
     this.cameraUrl = this.cameraImage.src = ''
     this.cameraFullScreenUrl = ''
@@ -286,9 +290,82 @@ export default class CameraItem extends Vue {
           }
           break
         }
+
+        case 'webrtc-camerastreamer': {
+          const cameraVideo = this.cameraImage as HTMLVideoElement
+
+          this.pc?.close()
+
+          const config = {
+            sdpSemantics: 'unified-plan'
+          } as RTCConfiguration
+
+          this.pc = new RTCPeerConnection(config)
+
+          this.pc.addTransceiver('video', {
+            direction: 'recvonly'
+          })
+
+          this.pc.ontrack = (evt: RTCTrackEvent) => {
+            if (evt.track.kind === 'video' && cameraVideo) {
+              cameraVideo.srcObject = evt.streams[0]
+            }
+          }
+
+          fetch(baseUrl, {
+            body: JSON.stringify({
+              type: 'request'
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            method: 'POST'
+          })
+            .then(response => response.json())
+            .then((answer: RTCSessionDescriptionInit) => {
+              this.remoteId = 'id' in answer && typeof (answer.id) === 'string' ? answer.id : null
+
+              return this.pc?.setRemoteDescription(answer)
+            })
+            .then(() => this.pc?.createAnswer())
+            .then(answer => this.pc?.setLocalDescription(answer))
+            .then(() => new Promise(resolve => {
+              const checkState = () => {
+                if (this.pc?.iceGatheringState === 'complete') {
+                  this.pc?.removeEventListener('icegatheringstatechange', checkState)
+
+                  resolve(true)
+                }
+              }
+
+              if (this.pc?.iceGatheringState === 'complete') {
+                resolve(true)
+              } else {
+                this.pc?.addEventListener('icegatheringstatechange', checkState)
+              }
+            }))
+            .then(() => {
+              const offer = this.pc?.localDescription
+
+              return fetch(baseUrl, {
+                body: JSON.stringify({
+                  type: offer?.type,
+                  id: this.remoteId,
+                  sdp: offer?.sdp
+                }),
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                method: 'POST'
+              })
+            })
+            .then(response => response.json())
+            .catch(e => consola.error('[CameraItem] setUrl', e))
+        }
       }
     } else {
       this.hls?.destroy()
+      this.pc?.close()
       this.cameraUrl = ''
     }
   }

@@ -4,7 +4,7 @@
     :title="(camera.id != '') ? $t('app.general.label.edit_camera') : $t('app.general.label.add_camera')"
     :cancel-button-text="camera.source === 'config' ? $t('app.general.btn.close') : $t('app.general.btn.cancel')"
     :save-button-text="(camera.id !== '') ? $t('app.general.btn.save') : $t('app.general.btn.add')"
-    max-width="500"
+    max-width="600"
     :disabled="camera.source === 'config'"
     @save="handleSave"
   >
@@ -83,6 +83,7 @@
             { text: $t('app.setting.camera_type_options.mjpegadaptive'), value: 'mjpegstreamer-adaptive' },
             { text: $t('app.setting.camera_type_options.mjpegstream'), value: 'mjpegstreamer' },
             { text: $t('app.setting.camera_type_options.hlsstream'), value: 'hlsstream' },
+            { text: $t('app.setting.camera_type_options.webrtc_camera_streamer'), value: 'webrtc-camerastreamer' },
             { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
             { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
           ]"
