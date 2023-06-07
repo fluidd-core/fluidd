@@ -206,6 +206,7 @@ export const Globals = Object.freeze({
     { filename: 'webcam.txt', service: 'webcamd' },
     { filename: 'crowsnest.conf', service: 'crowsnest', link: 'https://crowsnest.mainsail.xyz/configuration/sample-config' },
     { filename: 'klipperscreen.conf', service: 'KlipperScreen', link: 'https://klipperscreen.readthedocs.io/en/latest/' },
+    { filename: 'sonar.conf', service: 'sonar', link: 'https://github.com/mainsail-crew/sonar' },
     { filename: 'mooncord-webcam.json', service: 'webcamd', link: 'https://github.com/eliteSchwein/mooncord' },
     { prefix: 'mooncord', service: 'MoonCord', link: 'https://github.com/eliteSchwein/mooncord' },
     { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
