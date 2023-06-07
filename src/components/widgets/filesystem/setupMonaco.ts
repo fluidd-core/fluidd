@@ -11,12 +11,13 @@ import themeLight from '@/monaco/theme/editor.light.theme.json'
 
 import { MonacoLanguageImports } from '@/dynamicImports'
 
-type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot'
+type CodeLensSupportedService = 'klipper' | 'moonraker' | 'moonraker-telegram-bot' | 'crowsnest'
 
 const isCodeLensSupportedService = (service: string) : service is CodeLensSupportedService => [
   'klipper',
   'moonraker',
-  'moonraker-telegram-bot'
+  'moonraker-telegram-bot',
+  'crowsnest'
 ].includes(service)
 
 const getDocsSection = (service: CodeLensSupportedService, sectionName: string) => {
