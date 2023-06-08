@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.24.1](https://github.com/fluidd-core/fluidd/compare/v1.24.0...v1.24.1) (2023-06-08)
+
+
+### Features
+
+* adds sonar service mapping ([e86d389](https://github.com/fluidd-core/fluidd/commit/e86d38912adeafe8c9c2208b2a8c99dd61668358))
+* adds WebRTC (camera-streamer) support ([#1107](https://github.com/fluidd-core/fluidd/issues/1107)) ([1e42ca8](https://github.com/fluidd-core/fluidd/commit/1e42ca8037cffd7e0c5327f407fe1ed3201f2cf1))
+* crowsnest config support ([9a91182](https://github.com/fluidd-core/fluidd/commit/9a911822488a6830c8f878510b53267ae47dbcaf))
+* file editor content changes indicator ([7655f53](https://github.com/fluidd-core/fluidd/commit/7655f53a1b420c4d55ec6a63a93a2be8d557a1c0))
+* **i18n-RU:** Update Russian translations ([#1108](https://github.com/fluidd-core/fluidd/issues/1108)) ([f060315](https://github.com/fluidd-core/fluidd/commit/f060315233e2792ccdaf84ab95d1d73c5c3bea6e))
+* **i18n-zh-CN:** Update Chinese translation ([#1106](https://github.com/fluidd-core/fluidd/issues/1106)) ([220057f](https://github.com/fluidd-core/fluidd/commit/220057fe2a4a00c2bae7001e608bfd89eb850914))
+* save file editor content with Ctrl+S ([d490a5b](https://github.com/fluidd-core/fluidd/commit/d490a5b19a0f9673a0bdd145f830a23b52aea72d))
+* show read-only folders as such ([1ac93a3](https://github.com/fluidd-core/fluidd/commit/1ac93a35275d9ad81c70a0c191623b4691c7f7a2))
+
 ## [1.24.0](https://github.com/fluidd-core/fluidd/compare/v1.23.5...v1.24.0) (2023-05-14)
 
 
