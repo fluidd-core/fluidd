@@ -27,7 +27,7 @@
         >
           <v-icon>$close</v-icon>
         </app-btn>
-        <v-toolbar-title>{{ filename }}</v-toolbar-title>
+        <v-toolbar-title>{{ filename }}{{ updatedContent !== lastSavedContent ? " *" : "" }}</v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
           <app-btn
@@ -104,6 +104,7 @@
         :readonly="readonly"
         :code-lens="codeLens"
         @ready="editorReady = true"
+        @save="emitSave(false)"
       />
 
       <file-editor-text-only
@@ -118,7 +119,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 import FileEditor from './FileEditor.vue'
@@ -166,6 +167,13 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
       this.editorReady &&
       !this.isUploading
     )
+  }
+
+  @Watch('ready')
+  onReady (value: boolean) {
+    if (value) {
+      this.editor?.focus()
+    }
   }
 
   get isWebAssemblySupported () {

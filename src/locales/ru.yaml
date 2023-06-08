@@ -551,7 +551,7 @@ app:
   socket:
     msg:
       connecting: Подключение к moonraker...
-      no_connection: Нет подключения к moonraker. Пожалуйста проеверьте статус работы moonraker и/или перезагрузите страницу.
+      no_connection: Нет подключения к moonraker. Пожалуйста проверьте статус работы moonraker и/или перезагрузите страницу.
   system_info:
     label:
       capacity: Емкость
