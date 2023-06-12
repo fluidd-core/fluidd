@@ -156,7 +156,7 @@ import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import { AppTableHeader } from '@/types'
-import { FileWithPath, getFilesFromDataTransfer } from '@/util/file-system-entry'
+import { FileWithPath, getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -930,8 +930,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Drag handling.
    * ===========================================================================
   */
-  handleDragEnter () {
-    if (!this.rootProperties.readonly && !this.dragState.browserState) {
+  handleDragEnter (e: DragEvent) {
+    if (!this.rootProperties.readonly && !this.dragState.browserState && e.dataTransfer && hasFilesInDataTransfer(e.dataTransfer)) {
       this.dragState.overlay = true
     }
   }
