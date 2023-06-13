@@ -29,6 +29,15 @@ const readEntriesAsync = async (directoryReader: FileSystemDirectoryReader) => {
   }
 }
 
+export const hasFilesInDataTransfer = (dataTransfer: DataTransfer) => {
+  if (dataTransfer.items.length) {
+    return [...dataTransfer.items]
+      .every(x => x.kind === 'file')
+  } else {
+    return dataTransfer.files.length > 0
+  }
+}
+
 export const getFilesFromDataTransfer = async (dataTransfer: DataTransfer) => {
   if (dataTransfer.items.length) {
     const entries = [...dataTransfer.items]
