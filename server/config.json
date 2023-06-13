@@ -55,6 +55,15 @@
       }
     },
     {
+      "name": "Kingroon",
+      "color": "#DA7A2C",
+      "isDark": true,
+      "logo": {
+        "src": "/logo_kingroon.svg",
+        "dynamic": false
+      }
+    },
+    {
       "name": "Klipper",
       "color": "#B12F36",
       "isDark": true,
