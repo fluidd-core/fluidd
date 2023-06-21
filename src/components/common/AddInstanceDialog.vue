@@ -79,6 +79,7 @@ import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
 import { consola } from 'consola'
 import { httpClientActions } from '@/api/httpClientActions'
+import webSocketWrapper from '@/util/web-socket-wrapper'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
@@ -193,7 +194,9 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
         this.controller = new AbortController()
         const { signal } = this.controller
 
-        await fetch(url + 'server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
+        const apiEndpoints = this.$filters.getApiUrls(url.toString())
+
+        await webSocketWrapper(apiEndpoints.socketUrl, signal)
           .then(() => {
             // likely a cors issue
             this.error = this.$t('app.endpoint.error.cors_error')
