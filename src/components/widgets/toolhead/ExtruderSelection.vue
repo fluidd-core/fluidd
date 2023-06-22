@@ -3,7 +3,7 @@
     v-model="extruder"
     :items="extruders"
     :readonly="printerPrinting"
-    :disabled="!klippyReady"
+    :disabled="!klippyReady || printerPrinting"
     item-value="key"
     item-text="name"
     hide-details
@@ -18,9 +18,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
-@Component({
-  components: {}
-})
+@Component({})
 export default class ExtruderSelection extends Mixins(StateMixin) {
   get extruders () {
     return this.$store.getters['printer/getExtruders']
