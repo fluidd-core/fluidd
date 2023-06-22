@@ -444,6 +444,7 @@ export const SupportedLocales = Object.freeze([
   { name: 'Italiano', code: 'it' },
   { name: 'Magyar', code: 'hu' },
   { name: 'Nederlands', code: 'nl' },
+  { name: 'Polski', code: 'pl' },
   { name: 'Português', code: 'pt' },
   { name: 'Русский', code: 'ru' },
   { name: 'Slovenščina', code: 'sl' },
