@@ -641,9 +641,10 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getExtraSensorData: (state) => (sensorType: string, name: string) => {
     const supportedSensors = [
+      'aht10',
       'bme280',
       'htu21d',
-      'aht10'
+      'nevermoresensor',
     ]
 
     if (supportedSensors.includes(sensorType?.toLowerCase())) {
