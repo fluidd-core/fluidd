@@ -15,6 +15,7 @@
           dense
           hide-details
           spellcheck="false"
+          class="console-command"
           @input="emitChange"
           @keyup.enter.exact="emitSend(newValue)"
           @keydown.enter.exact.prevent
@@ -133,3 +134,9 @@ export default class ConsoleCommand extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .console-command {
+    font-family: monospace;
+  }
+</style>

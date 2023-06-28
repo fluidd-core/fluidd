@@ -90,6 +90,7 @@
           hide-details="auto"
           filled
           spellcheck="false"
+          class="console-command"
         />
       </app-setting>
     </div>
@@ -123,3 +124,9 @@ export default class TemperaturePresetDialog extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .console-command {
+    font-family: monospace;
+  }
+</style>

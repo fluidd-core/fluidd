@@ -47,7 +47,7 @@
                 dense
                 hide-details="auto"
                 spellcheck="false"
-                class=""
+                class="console-command"
                 :class="{ 'mb-3': (i < paramList.length - 1) }"
               >
                 <template #append>
@@ -158,5 +158,9 @@ export default class MacroBtn extends Mixins(StateMixin) {
   }
   .macro-params > * {
     flex: 1 1 40px;
+  }
+
+  .console-command :deep(.v-text-field__slot input) {
+    font-family: monospace;
   }
 </style>
