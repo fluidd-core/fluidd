@@ -142,6 +142,7 @@ import {
   mdiFolderArrowUp,
   mdiTableColumn,
   mdiShape,
+  mdiSync,
   mdiContentDuplicate
 } from '@mdi/js'
 
@@ -316,6 +317,7 @@ export const Icons = Object.freeze({
   download: mdiDownload,
   rename: mdiFormTextbox,
   duplicate: mdiContentDuplicate,
+  sync: mdiSync,
   delete: mdiDelete,
   camera: mdiCamera,
   fan: mdiFan,

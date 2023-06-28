@@ -529,9 +529,18 @@ export const SocketActions = {
    * Expects the full path including root.
    * Optionally pass the just the filename and path.
    */
-  async serverFilesMetaData (filepath: string) {
+  async serverFilesMetadata (filepath: string) {
     baseEmit(
       'server.files.metadata', {
+        dispatch: 'files/onFileMetaData',
+        params: { filename: filepath }
+      }
+    )
+  },
+
+  async serverFilesMetascan (filepath: string) {
+    baseEmit(
+      'server.files.metascan', {
         dispatch: 'files/onFileMetaData',
         params: { filename: filepath }
       }
