@@ -14,6 +14,7 @@
           single-line
           dense
           hide-details
+          spellcheck="false"
           @input="emitChange"
           @keyup.enter.exact="emitSend(newValue)"
           @keydown.enter.exact.prevent

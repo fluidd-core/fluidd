@@ -20,6 +20,8 @@
 
       <v-text-field
         v-model="url"
+        type="url"
+        spellcheck="false"
         autofocus
         :label="$t('app.general.label.api_url')"
         persistent-hint

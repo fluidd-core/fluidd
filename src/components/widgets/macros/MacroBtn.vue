@@ -46,6 +46,7 @@
                 outlined
                 dense
                 hide-details="auto"
+                spellcheck="false"
                 class=""
                 :class="{ 'mb-3': (i < paramList.length - 1) }"
               >

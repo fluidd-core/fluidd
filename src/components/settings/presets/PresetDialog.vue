@@ -89,6 +89,7 @@
           rows="2"
           hide-details="auto"
           filled
+          spellcheck="false"
         />
       </app-setting>
     </div>

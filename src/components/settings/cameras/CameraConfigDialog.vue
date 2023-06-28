@@ -133,6 +133,8 @@
       <app-setting :title="$t('app.setting.label.camera_url')">
         <v-text-field
           v-model="camera.urlStream"
+          type="url"
+          spellcheck="false"
           class="mt-5"
           filled
           dense
@@ -153,6 +155,7 @@
         >
           <v-text-field
             v-model="camera.aspectRatio"
+            spellcheck="false"
             class="mt-5"
             filled
             dense

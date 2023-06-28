@@ -4,7 +4,7 @@
     class="v-input v-textarea px-2"
     :class="{'theme--dark': $vuetify.theme.dark}"
     :readonly="readonly"
-    :spellcheck="false"
+    spellcheck="false"
   />
 </template>
 
