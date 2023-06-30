@@ -72,6 +72,7 @@
       @download="handleDownload"
       @preheat="handlePreheat"
       @preview-gcode="handlePreviewGcode"
+      @refresh-metadata="handleRefreshMetadata"
       @view-thumbnail="handleViewThumbnail"
       @enqueue="handleEnqueue"
       @create-zip="handleCreateZip"
@@ -704,6 +705,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       .finally(() => {
         this.$store.dispatch('files/removeFileDownload')
       })
+  }
+
+  handleRefreshMetadata (file: AppFileWithMeta) {
+    SocketActions.serverFilesMetadata(`${this.visiblePath}/${file.filename}`)
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
