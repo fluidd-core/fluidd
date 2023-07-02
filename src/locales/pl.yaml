@@ -250,7 +250,7 @@ app:
       save_as: Zapisz jako
       preheat: Rozgrzej
       pause: Wstrzymaj
-      preview_gcode: Podgląd kodu G
+      preview_gcode: Podgląd G-Code
       presets: Presety
       save_config_and_restart: Zapisz konfigurację i restartuj
       rename: Zmień nazwę
@@ -288,6 +288,7 @@ app:
       socket_refresh: Wymuś odświeżenie
       thumbnail_size: Rozmiar miniatury
       quad_gantry_level: QGL
+      refresh_metadata: Odśwież metadane
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -306,7 +307,7 @@ app:
       jobs: Zadania
       other_files: Inne pliki
       history: Historia
-      gcode_preview: Podgląd kodu G
+      gcode_preview: Podgląd G-Code
       runout_sensors: Czujniki braku filamentu
       tune: Strojenie
       configure: Konfiguracja
@@ -472,7 +473,7 @@ app:
       tool: Narzędzie
       authentication: Uwierzytelnienie
       file_editor: Edytor plików
-      gcode_preview: Podgląd kodu G
+      gcode_preview: Podgląd G-Code
       general: Ogólne
       theme: Motyw
       thermal_presets: Presety termiczne
@@ -493,7 +494,7 @@ app:
         stołu w oczekiwaniu na zmiany konfiguracji
       optional: Opcjonalne
       save_and_restore_view_state: Zapisz i przywróć stan widoku
-      thermal_preset_gcode: Kod G
+      thermal_preset_gcode: G-Code
       toolhead_move_distances: Wartości odległości głowicy
       height: Wysokość
       to_browser_session_storage: Do lokalnej pamięci sesji przeglądarki
@@ -564,7 +565,7 @@ app:
       fill_opacity: Krycie wypełnienia
       fps_target: Docelowe kl./s
       fps_idle_target: Docelowe kl./s, gdy nie ustawiono ostrości
-      gcode_coords: Użyj współrzędnych kodu G
+      gcode_coords: Użyj współrzędnych G-Code
       icon: Ikona
       show_animations: Pokaż animacje
       show_code_lens: Pokaż odnośniki do dokumentacji
@@ -602,7 +603,7 @@ app:
     tooltip:
       diagnostics_performance: '[BETA] Rejestrowanie informacji diagnostycznych może
         mieć wpływ na wydajność'
-      gcode_coords: Użyj pozycji kodu G zamiast pozycji głowicy narzędzia na pulpicie
+      gcode_coords: Użyj pozycji G-Code zamiast pozycji głowicy narzędzia na pulpicie
         nawigacyjnym
       show_manual_probe_dialog_automatically: Automatycznie wyświetla pomocnicze okno,
         gdy uruchomione jest ręczne sondowanie
@@ -710,7 +711,7 @@ app:
       auto_render: Renderuj automatycznie
       duplicatelastframe: Duplikuj ostatnie klatki
       fw_retract: Użyj retrakcji z firmware
-      gcode_verbose: Szczegółowy kod G
+      gcode_verbose: Szczegółowy G-Code
       mode: Tryb
       mode_layermacro: Makro warstwy
       mode_hyperlapse: Hiperlapse
