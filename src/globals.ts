@@ -202,7 +202,8 @@ export const Globals = Object.freeze({
     timelapse: { name: 'timelapse', dispatch: 'timelapse/init' },
     announcements: { name: 'announcements', dispatch: 'announcements/init' },
     webcams: { name: 'webcam', dispatch: 'webcams/init' },
-    jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' }
+    jobQueue: { name: 'job_queue', dispatch: 'jobQueue/init' },
+    spoolman: { name: 'spoolman', dispatch: 'spoolman/init' }
   },
   // Ordered by weight.
   CONFIG_SERVICE_MAP: [

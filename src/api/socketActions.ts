@@ -699,5 +699,19 @@ export const SocketActions = {
         dispatch: 'webcams/onWebcamsList'
       }
     )
+  },
+
+  async spoolmanState () {
+    baseEmit('server.spoolman.get_spool_id', {
+      dispatch: 'spoolman/onActiveSpool'
+    })
+
+    baseEmit('server.spoolman.proxy', {
+      params: {
+        request_method: 'GET',
+        path: '/v1/spool'
+      },
+      dispatch: 'spoolman/onAvailableSpools'
+    })
   }
 }
