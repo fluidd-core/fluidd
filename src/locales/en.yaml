@@ -772,3 +772,10 @@ app:
       no_spool: >-
         You haven't selected a spool.
         Are you sure you want to print without filament tracking?
+      no_filament: >-
+        The spool you selected may not have enough filament left on it to
+        successfully finish the print job.
+        Are you sure you want to continue?
+      no_required_length: >-
+        The amount of filament required to print the selected file is unknown.
+        Do you wish to continue?

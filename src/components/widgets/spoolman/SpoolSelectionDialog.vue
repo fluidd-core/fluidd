@@ -27,13 +27,13 @@
           class="row-select px-1"
           @click.prevent="selectedSpool = item.id"
         >
-          <td>{{ item.filament }}</td>
-          <td>{{ item.used_weight }}</td>
-          <td>{{ item.remaining_weight }}</td>
+          <td>{{ item.filament.vendor.name }} - {{ item.filament.name }}</td>
+          <td>{{ item.used_weight.toLocaleString() }}</td>
+          <td>{{ item.remaining_weight.toLocaleString() }}</td>
           <td>{{ item.location }}</td>
           <td>{{ item.lot_nr }}</td>
-          <td>{{ item.first_used }}</td>
-          <td>{{ item.last_used }}</td>
+          <td>{{ item.first_used ? $filters.formatRelativeTimeToNow(item.first_used) : $tc('app.setting.label.never') }}</td>
+          <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
           <td>{{ item.comment }}</td>
         </tr>
       </template>
@@ -64,17 +64,26 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins } from 'vue-property-decorator'
+import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileRowItem from '@/components/widgets/filesystem/FileRowItem.vue'
 import { SocketActions } from '@/api/socketActions'
+import { Spool } from '@/store/spoolman/types'
 
 @Component({
   components: { FileRowItem }
 })
-export default class FilePreviewDialog extends Mixins(StateMixin) {
+export default class SpoolSelectionDialog extends Mixins(StateMixin) {
   search = ''
-  selectedSpoolId = this.$store.state.spoolman.activeSpool
+  selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
+
+  @Watch('open')
+  onOpen () {
+    if (this.open) {
+      // prefetch file metadata
+      SocketActions.serverFilesMetadata(this.filename)
+    }
+  }
 
   get open () {
     return this.$store.state.spoolman.dialog.show
@@ -82,25 +91,13 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
 
   set open (val: boolean) {
     this.$store.commit('spoolman/setDialogState', {
-      show: val,
-      filename: ''
+      ...this.$store.state.spoolman.dialog,
+      show: val
     })
   }
 
-  get availableSpools () {
-    const spools = []
-    for (const spool of this.$store.state.spoolman.availableSpools) {
-      spools.push({
-        ...spool,
-        used_weight: `${spool.used_weight.toLocaleString()} g`,
-        remaining_weight: `${spool.remaining_weight.toLocaleString()} g`,
-        filament: `${spool.filament.vendor.name} - ${spool.filament.name}`,
-        first_used: spool.first_used ? this.$filters.formatRelativeTimeToNow(spool.first_used) : this.$tc('app.setting.label.never'),
-        last_used: spool.last_used ? this.$filters.formatRelativeTimeToNow(spool.last_used) : this.$tc('app.setting.label.never')
-      })
-    }
-
-    return spools
+  get availableSpools (): Spool[] {
+    return this.$store.state.spoolman.availableSpools
   }
 
   get headers () {
@@ -131,13 +128,61 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
     }
   }
 
+  get filename () {
+    let filename = this.$store.state.spoolman.dialog.filename
+    if (filename.startsWith('/')) {
+      filename = filename.slice(1)
+    }
+
+    return filename
+  }
+
   async handleSelectSpool () {
     if (!this.selectedSpool) {
-      if (!await this.$confirm(
+      // no spool selected
+
+      const confirmation = await this.$confirm(
         this.$tc('app.spoolman.msg.no_spool'),
-        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
-      )) {
+        { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+      )
+
+      if (!confirmation) {
         return
+      }
+    }
+
+    const spool = this.availableSpools.find(spool => spool.id === this.selectedSpool)
+    if (spool) {
+      // check for enough filament
+
+      // l = m/D/A
+      const remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2)
+      const requiredLength = this.$store.getters['files/getFile'](null, 'gcodes', this.filename)?.filament_total
+
+      if (!requiredLength) {
+        // missing file metadata
+
+        const confirmation = await this.$confirm(
+          this.$tc('app.spoolman.msg.no_required_length'),
+          { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+        )
+
+        if (!confirmation) {
+          return
+        }
+      }
+
+      if (requiredLength >= remainingLength) {
+        // not enough filament
+
+        const confirmation = await this.$confirm(
+          this.$tc('app.spoolman.msg.no_filament'),
+          { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+        )
+
+        if (!confirmation) {
+          return
+        }
       }
     }
 
