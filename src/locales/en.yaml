@@ -756,3 +756,19 @@ app:
       variable_fps: Variable FPS
       variable_fps_min: Minimum Framerate
       variable_fps_max: Maximum Framerate
+  spoolman:
+    title:
+      spool_selection: Spool Selection
+    label:
+      filament: Filament
+      used_weight: Used Weight
+      remaining_weight: Remaining Weight
+      location: Location
+      lot_nr: Lot Nr
+      first_used: First Used
+      last_used: Last Used
+      comment: Comment
+    msg:
+      no_spool: >-
+        You haven't selected a spool.
+        Are you sure you want to print without filament tracking?

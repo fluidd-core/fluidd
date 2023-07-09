@@ -26,10 +26,18 @@ export interface Spool {
   location?: string;
   lot_nr?: string;
   comment?: string;
+  first_used?: Date;
+  last_used?: Date;
 }
 
 export interface SpoolmanState {
   availableSpools: Spool[];
   activeSpool?: number;
   supported: boolean;
+  dialog: SpoolSelectionDialogState;
+}
+
+export interface SpoolSelectionDialogState {
+  show: boolean;
+  filename: string;
 }

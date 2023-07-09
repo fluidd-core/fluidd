@@ -113,6 +113,15 @@ export default class PrinterStatusCard extends Mixins(StateMixin) {
   }
 
   handlePrint (filename: string) {
+    if (this.$store.state.spoolman.supported) {
+      this.$store.commit('spoolman/setDialogState', {
+        show: true,
+        filename
+      })
+
+      return
+    }
+
     SocketActions.printerPrintStart(filename)
   }
 }

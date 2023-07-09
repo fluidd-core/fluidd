@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import { Spool, SpoolmanState } from '@/store/spoolman/types'
+import { Spool, SpoolmanState, SpoolSelectionDialogState } from '@/store/spoolman/types'
 
 export const mutations: MutationTree<SpoolmanState> = {
   /**
@@ -15,6 +15,17 @@ export const mutations: MutationTree<SpoolmanState> = {
   },
 
   setAvailableSpools (state, payload: Spool[]) {
-    state.availableSpools = payload
+    // implies working communication with spoolman server
+    state.supported = !!payload.length // spools available
+    state.availableSpools = payload.map(spool => ({
+      ...spool,
+      registered: new Date(spool.registered),
+      first_used: spool.first_used ? new Date(spool.first_used) : undefined,
+      last_used: spool.last_used ? new Date(spool.last_used) : undefined
+    }))
+  },
+
+  setDialogState (state, payload: SpoolSelectionDialogState) {
+    state.dialog = payload
   }
 }
