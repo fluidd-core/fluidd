@@ -24,5 +24,9 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
 
   async onAvailableSpools ({ commit }, payload) {
     commit('setAvailableSpools', [...payload])
+  },
+
+  async notifyActiveSpoolSet ({ commit }, payload) {
+    commit('setActiveSpool', payload.spool_id)
   }
 }
