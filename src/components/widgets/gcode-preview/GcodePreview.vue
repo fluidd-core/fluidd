@@ -103,7 +103,7 @@
           />
         </g>
         <g
-          v-if="!showExcludeObjects && getViewerOption('showParts') && svgPathParts.length > 0"
+          v-if="getViewerOption('showParts') && !showExcludeObjects && svgPathParts.length > 0"
           id="parts"
         >
           <path
@@ -209,7 +209,7 @@
           />
         </g>
         <exclude-objects
-          v-if="showExcludeObjects"
+          v-if="getViewerOption('showParts') && showExcludeObjects"
           :shape-rendering="shapeRendering"
           @cancel="$emit('cancelObject', $event)"
         />
@@ -391,7 +391,7 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   }
 
   get showExcludeObjects () {
-    if (!(this.printerPrinting || this.printerPaused)) return false
+    if (!this.klippyReady || !(this.printerPrinting || this.printerPaused)) return false
 
     const file = this.$store.getters['gcodePreview/getFile']
     if (!file) {
