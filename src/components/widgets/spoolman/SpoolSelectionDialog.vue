@@ -155,9 +155,17 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin) {
     if (spool) {
       // check for enough filament
 
-      // l = m/D/A
-      const remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2)
-      const requiredLength = this.$store.getters['files/getFile'](null, 'gcodes', this.filename)?.filament_total
+      let remainingLength = spool.remaining_length
+      if (!remainingLength) {
+        // l = m/D/A
+        remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2)
+      }
+
+      const splitFilepath = this.filename.split('/')
+      const filename = splitFilepath.pop()
+      const filepath = splitFilepath.join('/')
+      const requiredLength = this.$store.getters['files/getFile'](null, filepath ? `gcodes/${filepath}` : 'gcodes', filename)?.filament_total
+      console.log({ remainingLength, requiredLength })
 
       if (!requiredLength) {
         // missing file metadata
