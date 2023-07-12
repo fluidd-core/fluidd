@@ -66,13 +66,10 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import FileRowItem from '@/components/widgets/filesystem/FileRowItem.vue'
 import { SocketActions } from '@/api/socketActions'
 import { Spool } from '@/store/spoolman/types'
 
-@Component({
-  components: { FileRowItem }
-})
+@Component({})
 export default class SpoolSelectionDialog extends Mixins(StateMixin) {
   search = ''
   selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
