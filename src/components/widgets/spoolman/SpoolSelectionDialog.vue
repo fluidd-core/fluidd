@@ -1,66 +1,116 @@
 <template>
-  <app-dialog
+  <v-dialog
     v-model="open"
-    :title="$tc('app.spoolman.title.spool_selection')"
     no-actions
   >
-    a b c d
-    <!-- TODO show file info? -->
+    <v-card>
+      <!-- TODO show file info? -->
 
-    <v-divider />
+      <v-toolbar
+        dense
+        class="mb-2"
+      >
+        <v-toolbar-title>
+          <v-icon>$loadFilament</v-icon>
+          {{ $tc('app.spoolman.title.spool_selection') }}
+        </v-toolbar-title>
 
-    <v-data-table
-      :items="availableSpools"
-      :headers="headers"
-      :search="search"
-      :no-data-text="$t('app.file_system.msg.not_found')"
-      :no-results-text="$t('app.file_system.msg.not_found')"
-      mobile-breakpoint="0"
-      sort-by="last_used"
-      class="file-system"
-    >
-      <template #item="{ item }">
-        <tr
-          :class="{
-            'v-data-table__selected': (item.id === selectedSpool)
-          }"
-          class="row-select px-1"
-          @click.prevent="selectedSpool = item.id"
+        <v-spacer />
+
+        <app-btn
+          v-if="spoolmanURL"
+          :href="spoolmanURL"
+          target="_blank"
+          class="mr-2"
         >
-          <td>{{ item.filament.vendor.name }} - {{ item.filament.name }}</td>
-          <td>{{ item.used_weight.toLocaleString() }}</td>
-          <td>{{ item.remaining_weight.toLocaleString() }}</td>
-          <td>{{ item.location }}</td>
-          <td>{{ item.lot_nr }}</td>
-          <td>{{ item.first_used ? $filters.formatRelativeTimeToNow(item.first_used) : $tc('app.setting.label.never') }}</td>
-          <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
-          <td>{{ item.comment }}</td>
-        </tr>
-      </template>
-    </v-data-table>
+          <v-icon
+            small
+            class="mr-2"
+          >
+            $edit
+          </v-icon>
+          {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
+        </app-btn>
 
-    <v-divider />
+        <v-text-field
+          v-model="search"
+          outlined
+          dense
+          single-line
+          hide-details
+          append-icon="$magnify"
+          style="max-width: 360px"
+        />
+      </v-toolbar>
 
-    <v-card-actions class="pt-4">
+      <v-data-table
+        :items="availableSpools"
+        :headers="headers"
+        :search="search"
+        :custom-filter="filterResults"
+        :no-data-text="$t('app.file_system.msg.not_found')"
+        :no-results-text="$t('app.file_system.msg.not_found')"
+        sort-by="last_used"
+        sort-desc
+        mobile-breakpoint="0"
+        class="file-system spool-table"
+        :height="isMobileViewport ? '75vh' : '50vh'"
+        hide-default-footer
+        disable-pagination
+      >
+        <template #item="{ item }">
+          <tr
+            :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
+            class="row-select px-1"
+            @click.prevent="selectedSpool = item.id"
+          >
+            <td>
+              <div class="d-flex">
+                <v-icon
+                  :color="`#${item.filament.color_hex}`"
+                  class="mr-2"
+                >
+                  {{ item.id === selectedSpool ? '$markedCircle' : '$circle' }}
+                </v-icon>
+                {{ item.filament_name }}
+              </div>
+            </td>
+            <td>{{ item.remaining_weight.toLocaleString() }} / {{ item.filament.weight.toLocaleString() }} g</td>
+            <td>{{ item.location }}</td>
+            <td>{{ item.lot_nr }}</td>
+            <td>{{ item.first_used ? $filters.formatRelativeTimeToNow(item.first_used) : $tc('app.setting.label.never') }}</td>
+            <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
+            <td>{{ item.comment }}</td>
+          </tr>
+        </template>
+      </v-data-table>
+
+      <v-divider />
       <v-spacer />
-      <app-btn
-        text
-        color="warning"
-        @click="open = false"
+
+      <v-card-actions
+        class="pt-4"
       >
-        {{ $t('app.general.btn.cancel') }}
-      </app-btn>
-      <app-btn
-        color="primary"
-        @click="handleSelectSpool"
-      >
-        <v-icon class="mr-2">
-          $printer
-        </v-icon>
-        {{ $t('app.general.btn.print') }}
-      </app-btn>
-    </v-card-actions>
-  </app-dialog>
+        <v-spacer />
+        <app-btn
+          text
+          color="warning"
+          @click="open = false"
+        >
+          {{ $t('app.general.btn.cancel') }}
+        </app-btn>
+        <app-btn
+          color="primary"
+          @click="handleSelectSpool"
+        >
+          <v-icon class="mr-2">
+            {{ filename ? '$printer' : '$send' }}
+          </v-icon>
+          {{ filename ? $t('app.general.btn.print') : $t('app.spoolman.btn.select') }}
+        </app-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script lang="ts">
@@ -68,15 +118,16 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
 import { Spool } from '@/store/spoolman/types'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class SpoolSelectionDialog extends Mixins(StateMixin) {
+export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixin) {
   search = ''
   selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
 
   @Watch('open')
   onOpen () {
-    if (this.open) {
+    if (this.open && this.filename) {
       // prefetch file metadata
       SocketActions.serverFilesMetadata(this.filename)
     }
@@ -94,13 +145,21 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin) {
   }
 
   get availableSpools (): Spool[] {
-    return this.$store.state.spoolman.availableSpools
+    const spools = []
+    for (const spool of this.$store.state.spoolman.availableSpools) {
+      spools.push({
+        ...spool,
+        filament_name: `${spool.filament.vendor.name} - ${spool.filament.name}`,
+        filament_material: spool.filament.material
+      })
+    }
+
+    return spools
   }
 
   get headers () {
     return [
-      'filament',
-      'used_weight',
+      'filament_name',
       'remaining_weight',
       'location',
       'lot_nr',
@@ -108,7 +167,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin) {
       'last_used',
       'comment'
     ].map(value => ({
-      text: this.$tc(`app.spoolman.label.${value}`),
+      text: value && this.$tc(`app.spoolman.label.${value}`),
       value
     }))
   }
@@ -127,7 +186,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin) {
 
   get filename () {
     let filename = this.$store.state.spoolman.dialog.filename
-    if (filename.startsWith('/')) {
+    if (!filename) {
+      return
+    } else if (filename.startsWith('/')) {
       filename = filename.slice(1)
     }
 
@@ -192,8 +253,22 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin) {
     }
 
     await SocketActions.spoolmanSetSpool(this.selectedSpool)
-    await SocketActions.printerPrintStart(this.$store.state.spoolman.dialog.filename)
+    if (this.filename) {
+      await SocketActions.printerPrintStart(this.filename)
+    }
     this.open = false
+  }
+
+  filterResults (value: string, query: string, item: Spool): boolean {
+    query = query.toLowerCase()
+    return item.comment?.toLowerCase().includes(query) ||
+      item.filament.name.toLowerCase().includes(query) ||
+      item.filament.material.toLowerCase().includes(query) ||
+      item.filament.vendor.name.toLowerCase().includes(query)
+  }
+
+  get spoolmanURL () {
+    return this.$store.state.server.config.spoolman?.server
   }
 }
 </script>

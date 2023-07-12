@@ -22,6 +22,7 @@ export interface Spool {
   registered: Date;
   filament: Filament;
   remaining_weight: number;
+  remaining_length?: number;
   used_weight: number;
   location?: string;
   lot_nr?: string;
@@ -39,5 +40,5 @@ export interface SpoolmanState {
 
 export interface SpoolSelectionDialogState {
   show: boolean;
-  filename: string;
+  filename?: string;
 }
