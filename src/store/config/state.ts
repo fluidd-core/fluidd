@@ -37,12 +37,14 @@ export const defaultState = (): ConfigState => {
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
         confirmOnSaveConfigAndRestart: true,
+        ignoreDefaultBedMeshPendingConfigurationChanges: false,
         dateFormat: 'iso',
         timeFormat: 'iso',
         textSortOrder: 'default',
         showRateOfChange: false,
         showRelativeHumidity: true,
         showBarometricPressure: true,
+        showGasResistance: true,
         showSaveConfigAndRestart: true,
         showUploadAndPrint: true,
         flipConsoleLayout: false,
@@ -67,6 +69,7 @@ export const defaultState = (): ConfigState => {
       editor: {
         confirmDirtyEditorClose: true,
         autoEditExtensions: ['.cfg', '.conf', '.ini', '.log', '.md', '.sh', '.txt'],
+        restoreViewState: 'session',
         codeLens: true
       },
       dashboard: {
@@ -129,7 +132,8 @@ export const defaultState = (): ConfigState => {
       fileSystem: {
         activeFilters: {
           gcodes: [],
-          config: []
+          config: [],
+          logs: []
         }
       },
       toolhead: {

@@ -147,6 +147,9 @@
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
+              <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+              <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+              <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
             </span>
           </td>
           <td>/</td>
@@ -213,6 +216,7 @@
                   {{ item.temperature.toFixed(1) }}<small>°C</small>
                   <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
                   <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+                  <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
                   <small v-if="item.current_z_adjust !== undefined"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
                 </div>
               </template>
@@ -276,6 +280,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   get showBarometricPressure () {
     return this.$store.state.config.uiSettings.general.showBarometricPressure
+  }
+
+  get showGasResistance () {
+    return this.$store.state.config.uiSettings.general.showGasResistance
   }
 
   setHeaterTargetTemp (heater: string, target: number) {

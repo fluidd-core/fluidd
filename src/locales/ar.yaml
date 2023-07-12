@@ -17,11 +17,9 @@ app:
       not_loaded: لم يتم تحميل شبكة
     tooltip:
       calibrate: Begins a new calibration, saving as profile 'default'
-      delete: Delete Profile. This WILL restart your printer
+      delete: Delete Profile
       load: Load Profile
-      save: >-
-        Commits calibrated profile to printer.cfg. This WILL restart your
-        printer
+      save: Commits calibrated profile to printer.cfg
   chart:
     label:
       current: درجة الحرارة
@@ -80,7 +78,6 @@ app:
       transfer_rate: معدل النقل
       uploaded: مرفوع
     msg:
-      confirm: هل انت متأكد؟ سيتم حذف جميع المجلدات والملفات
       not_found: لا يوجد ملفات
       processing: جاري المعالجة
     overlay:

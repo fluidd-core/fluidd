@@ -3,33 +3,43 @@
     @focusin="hasFocus = true"
     @focusout="hasFocus = false"
   >
-    <v-input
-      ref="input"
-      class="v-text-field v-text-field--enclosed v-text-field--outlined"
+    <div
+      class="v-input v-input--hide-details v-text-field v-text-field--enclosed v-text-field--outlined"
       :class="{
         'v-input--is-focused': hasFocus,
+        'v-input--is-disabled': disabled,
+        [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
       }"
-      hide-details
     >
-      <slot />
-      <fieldset
-        aria-hidden="true"
-        :class="{
-          'primary--text': hasFocus
-        }"
-      />
-    </v-input>
+      <div class="v-input__control">
+        <div
+          ref="input-slot"
+          class="v-input__slot"
+          :tabindex="disabled ? undefined : 0"
+        >
+          <slot />
+          <fieldset
+            aria-hidden="true"
+            :class="{
+              'primary--text': hasFocus
+            }"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Ref, Vue, Watch } from 'vue-property-decorator'
-import { VInput } from '@/types'
+import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class AppFocusableContainer extends Vue {
-  @Ref('input')
-  readonly input!: VInput
+  @Prop({ type: Boolean, default: false })
+  readonly disabled!: boolean
+
+  @Ref('input-slot')
+  readonly inputSlot!: HTMLDivElement
 
   hasFocus = false
 
@@ -43,7 +53,7 @@ export default class AppFocusableContainer extends Vue {
   }
 
   focus () {
-    (this.input.$refs['input-slot'] as HTMLDivElement)?.focus()
+    this.inputSlot.focus()
   }
 }
 </script>

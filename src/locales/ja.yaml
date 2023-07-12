@@ -16,9 +16,9 @@ app:
       not_loaded: メッシュを読込しない
     tooltip:
       calibrate: 新しいキャリブレーションを開始し、プロファイル'default'として保存します
-      delete: プロファイルを削除します。これにより、プリンタが再起動します
+      delete: プロファイルを削除します。
       load: プロファイルを読込み
-      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。これにより、プリンタが再起動します
+      save: キャリブレーションされたプロファイルをprinter.cfgに書込みします。
   chart:
     label:
       current: 温度
@@ -63,10 +63,11 @@ app:
   file_system:
     filters:
       label:
-        hidden_files: 隠しファイルを非表示
+        hidden_files_folders: 隠しファイル・隠しフォルダの非表示
         klipper_backup_files: バックアップファイルを非表示
         print_start_time: 印刷済みを隠す
         print_start_time_desc: すでに印刷したものをフィルタリングします。
+        rolled_log_files: ロールされたログファイルを非表示
     label:
       dir_name: ディレクトリ名
       disk_usage: ディスク使用量
@@ -77,21 +78,25 @@ app:
       uploaded: アップロード
       view_section_documentation: '''%{section}'' ドキュメントを表示'
     msg:
-      confirm: すべてのファイルとフォルダーが削除されます。よろしいですか？
       not_found: ファイルが見つかりません
       processing: プロセッシング
     overlay:
-      label: <strong>ドラッグ</strong> ファイルをここに置く
+      drag_files_enqueue: ファイルをここに<strong>ドラッグ</strong> してキューに入れる。
+      drag_files_folders_upload: ファイルとフォルダをここに<strong>ドラッグして</strong> アップロードします。
     title:
       add_dir: ディレクトリの追加
       add_file: ファイルの追加
       command_palette: コマンドパレット
       download_file: ファイルの取得
+      duplicate_dir: ディレクトリの複製
+      duplicate_file: ファイルを複製
+      go_to_file: ファイルへ移動
       rename_dir: ディレクトリの名変更
       rename_file: ファイル名変更
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
     tooltip:
       low_on_space: ディスク容量が少なくなりました。
+      move_item: 'アイテムの移動｜ {count} 個のアイテムを移動'
       root_disabled: '{root} rootは使用できません。ログを確認してください。'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
@@ -113,6 +118,7 @@ app:
       show_extrusions: 押し出しを表示
       show_moves: 軌跡を表示
       show_next_layer: 次のレイヤーを表示
+      show_parts: パーツ表示
       show_previous_layer: 前のレイヤーを表示
       show_retractions: リトラクションの表示
     msg:
@@ -125,6 +131,7 @@ app:
       add_dir: ディレクトリを追加
       add_file: ファイルを追加
       add_printer: プリンターを追加
+      add_to_queue: キューに追加
       adjust_layout: ダッシュボードのレイアウトを調整する
       adjusted: 調整済み
       all: すべて
@@ -134,14 +141,18 @@ app:
       clear_profile: プロファイルをクリア
       close: 閉じる
       config_reference: Configリファレンス
+      create_zip_archive: ZIP圧縮の作成
       delete: 削除
       download: ダウンロード
+      duplicate: 複製
       edit: 編集
       exit_layout: レイアウトモードを終了する
       extrude: 押し出し
       filter: フィルタ
       forgot_password: パスワードをお忘れですか？
+      go_to_file: ファイルへ移動
       heaters_off: ヒーターオフ
+      job_queue: ジョブキュー
       load_all: すべて読み込み
       login: ログイン
       logout: ログアウト
@@ -151,10 +162,11 @@ app:
       presets: プリセット
       preview_gcode: Gコードをプレビュー
       print: 印刷する
-      quad_gantry_level: QGL
+      quad_gantry_level: 4方のガントリレベル
       reboot: 再起動
       recover: 回復する
       refresh: リフレッシュ
+      reload: 再読み込み
       remove: 削除
       remove_all: すべて削除
       rename: 名前の変更
@@ -174,6 +186,7 @@ app:
       save_as: 名前を付けて保存
       save_config_and_restart: 設定を保存して再起動
       save_restart: 保存と再起動
+      select_columns: カラムを選択
       send: 送信
       set_color: セットカラー
       set_default_layout: デフォルトのレイアウトとして設定
@@ -181,7 +194,10 @@ app:
       snooze: スヌーズ
       socket_reconnect: 再接続
       socket_refresh: 強制リフレッシュ
+      thumbnail_size: サムネイルサイズ
       upload: アップロード
+      upload_files: ファイルをアップロード
+      upload_folder: アップロードフォルダ
       upload_print: アップロード＆プリント
       view: ビュー
     error:
@@ -200,6 +216,7 @@ app:
       add_preset: プリセット追加
       add_user: ユーザーの追加
       alias: エイリアス
+      all: すべての
       api_key: APIキー
       api_url: API URL
       apply_z_offset: Z_Offsetの適用と保存
@@ -208,9 +225,11 @@ app:
       change_password: パスワードの変更
       clear_all: すべてクリア
       color: カラー
+      command: コマンド
       confirm: 確認
       current_password: 現在のパスワード
       current_user: 現在の使用者
+      default: デフォルト
       disabled_while_printing: 印刷中は無効
       edit_camera: カメラの編集
       edit_category: カテゴリを編集
@@ -239,10 +258,14 @@ app:
       name: 名前
       new_password: 新しいパスワード
       no_notifications: 通知なし
+      numeric_prefix_sort: 数値によるソート
       'off': オフ
       'on': オン
       partial_of_total: '%{total}の%{partial} '
       password: パスワード
+      pause_at_layer: レイヤーで一時停止
+      pause_at_layer_number: レイヤー番号で一時停止
+      pause_at_next_layer: 次のレイヤーで一時停止
       power: 電源
       pressure_advance: 圧力上昇
       printers: プリンター
@@ -259,6 +282,8 @@ app:
       smooth_time: スムーズタイム
       speed: スピード
       sqv: 正方形角速度
+      stepper_enabled: ステッパーの停止
+      synced_extruder: エクストルーダーの同期
       thumbnail_size: サムネイルのサイズ
       total: 合計
       total_filament: フィラメント総使用量
@@ -280,13 +305,18 @@ app:
       username: ユーザー名
       variance: 増減率
       velocity: 速度
+      version_sort: バージョンによるソート
       visible: 見える
       z_offset: Zオフセット
     msg:
       bed_screws_adjust: >-
         現在のネジで大幅な調整が必要な場合は、 <b>調整済み</b> をクリックします。そうでない場合は、 <b>同意する</b>
         をクリックして続行します。
+      needs_refresh: 新しいコンテンツがあります。更新するには、 <b>再読み込み</b> ボタンをクリックしてください。
+      offline_ready: Fluiddは、これでオフラインで動作するようになりました。
       password_changed: パスワードの変更
+      pending_configuration_sections_deleted: 次のセクションは削除の対象です。
+      rolledover_logs: '以下のアプリケーションログがロールオーバーされました： %{applications}'
       welcome_back: お帰りなさい。<br>以下でログインして、プリンタと接続してください。
       wrong_password: おっと、何か問題が発生したようですよ。パスワードは正しいですか？
     simple_form:
@@ -304,9 +334,8 @@ app:
         password_username: ユーザー名と一致しません
         required: 必須
       msg:
-        apply_z_offset_endstop: Endstop のZ-Offsetは、現在のZ-Offsetから計算され、更新されます。
-        apply_z_offset_probe: Probe/Bltouch Zオフセットは、現在のZオフセットから計算され、更新されます。
         confirm: よろしいですか？
+        confirm_delete: 'いいですか？選択した項目が削除されます。| 本当によろしいですか？選択されている {count} 個の項目を削除します。'
         confirm_exclude_object: このオブジェクトを印刷から除外してもよろしいですか?
         confirm_forcemove_toggle: これにより、プリンターが損傷する可能性があります。よろしいですか？
         confirm_power_device_toggle: このデバイスの電源が切り替わります。よろしいですか？
@@ -326,7 +355,7 @@ app:
         filament: フィラメント
         filament_name: フィラメント名
         filament_type: フィラメントタイプ
-        filament_used: 使用フィラメント
+        filament_used: フィラメント長
         filament_weight_total: フィラメント重量
         first_layer_bed_temp: １層目ベッド温度
         first_layer_extr_temp: １層目ホットエンド温度
@@ -337,13 +366,15 @@ app:
         modified: モディファイド
         name: 名前
         nozzle_diameter: ノズル径
-        print_duration: プリント期間
+        print_duration: 印刷時間
         size: サイズ
         slicer: スライサー
         slicer_version: スライサーバージョン
         start_time: スタート
         status: 状態
-        total_duration: 合計期間
+        time_added: 追加された時間
+        time_in_queue: 待機時間
+        total_duration: 合計時間
     title:
       add_chart: グラフを追加
       add_printer: プリンターの追加
@@ -360,6 +391,7 @@ app:
       gcode_preview: Gcode プレビュー
       history: 履歴
       home: ホーム
+      job_queue: ジョブ キュー
       jobs: 印刷ジョブ
       limits: プリンター制限
       macros: マクロ
@@ -368,6 +400,7 @@ app:
       other_files: その他のファイル
       pending_configuration_changes: 保留中の構成変更
       retract: ファームウェアを戻す
+      rollover_logs: ロールオーバーログ
       runout_sensors: フィラメント断線センサー
       settings: 設定
       stats: プリンター統計
@@ -385,11 +418,16 @@ app:
       reload_klipper: klipper の設定を再読み込みする。
       reload_restart_klipper: クリッパーのコンフィギュレーションを再読み込みし、MCUを再起動します。
       restart_klipper: klipperのシステムサービスを再起動します。
+      rollover_logs: ロールオーバーログ
       run_collector: 実行コレクター
   history:
     msg:
-      confirm_jobs: すべてのジョブがクリアされます。よろしいですか？
-      confirm_stats: すべての統計情報がクリアされます。よろしいですか？
+      confirm: 履歴とプリンター統計がすべて消去されます。よろしいですか？
+  job_queue:
+    msg:
+      confirm: これでプリンターキュー全体がクリアされます。よろしいですか？
+      confirm_jobs: これですべてのジョブがクリアされます。よろしいですか？
+      confirm_stats: これですべての統計情報がクリアされます。よろしいですか？
   printer:
     state:
       busy: 印刷中
@@ -417,6 +455,7 @@ app:
       '270': 270°
       none: なし
     camera_type_options:
+      hlsstream: HLSストリーム
       iframe: HTTPページ
       mjpegadaptive: MJPEG Adaptive
       mjpegstream: MJPEG Stream
@@ -428,6 +467,7 @@ app:
       aspect_ratio_format: '[幅 : 高さ]'
       auto_edit_extensions: 拡張機能を編集モードで自動的に開く
       auto_follow_on_file_load: ファイル読み込みの進行状況を自動的に追跡
+      auto_load_mobile_on_print_start: モバイル端末でファイルを自動で読み込む
       auto_load_on_print_start: 印刷開始時にファイルを自動的に読み込む
       axes: 軸
       camera_flip_x: 水平方向に反転させる
@@ -451,6 +491,7 @@ app:
       date_format: 日付表示方法
       default_extrude_length: デフォルトの押し出し長さ
       default_extrude_speed: デフォルトの押し出し速度
+      default_min_layer_height: レイヤーの高さのデフォルトの最小値
       default_toolhead_move_length: ツールヘッド移動長の初期設定
       default_toolhead_xy_speed: デフォルトのツールヘッドXY速度
       default_toolhead_z_speed: デフォルトのツールヘッドZ速度
@@ -470,7 +511,6 @@ app:
       fps_idle_target: '非フォーカス時のターゲットFPS '
       fps_target: FPSターゲット
       gcode_coords: GCode座標を使用する
-      group_lower_layers: グループ下位層
       height: 高さ
       icon: アイコン
       invert_x_control: Xコントロールを反転
@@ -498,6 +538,7 @@ app:
       show_barometric_pressure: 気圧を表示
       show_bed_screws_adjust_dialog_automatically: ベッドスクリュー調整ダイアログを自動的に表示
       show_code_lens: CodeLens を表示
+      show_gas_resistance: 耐ガス性を示す
       show_legend: 凡例を表示
       show_manual_probe_dialog_automatically: 手動プローブ ダイアログを自動的に表示
       show_rate_of_change: 温度変化率を表示する
@@ -506,6 +547,7 @@ app:
       show_upload_and_print: '上部のナビゲーションに [アップロードと印刷] ボタンを表示する'
       solid: ソリッド
       starts_with: で始まる
+      text_sort_order: 文字のソート順
       theme_preset: コミュニティプリセット
       thermal_preset_gcode: GCode
       thermal_preset_name: プリセット名
@@ -545,9 +587,9 @@ app:
       capacity: 容量
       cpu_desc: CPUの説明
       distribution_codename: コード名
-      distribution_like: ディストリビューションライク
+      distribution_like: 参照ディストリビューション
       distribution_name: ディストリビューション
-      frequency: 周波数
+      frequency: クロック数
       hardware_desc: ハードウェアの説明
       hostname: ホスト名
       klipper_load: Klipper 稼働状況
@@ -560,6 +602,8 @@ app:
       micro_controller: マイクロコントローラー
       model: CPUモデル
       moonraker_load: Moonraker稼働状況
+      network: ネットワーク
+      operating_system: オペレーティングシステム
       processor_desc: プロセッサー
       product_name: 商品名
       serial_number: シリアルナンバー
@@ -568,6 +612,7 @@ app:
       system_utilization: システム使用率
       total_memory: 総メモリ
       version: バージョン
+      virtualization: 仮想化
   timelapse:
     btn:
       render: レンダリング
@@ -608,6 +653,8 @@ app:
         front_left: 左前
         front_right: 右前
         label: パークポジション
+        x_only: Xのみ移動
+        y_only: Yのみ移動
       previewimage: サムネイルを生成
       saveframes: フレームを保存する
       stream_delay_compensation: 遅延補償
@@ -626,31 +673,27 @@ app:
       home_y: 'Y'
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">アクティブなエクストルーダー構成は、</span>
-        %{filamentDiameter} mm 直径のフィラメント <span class="secondary--text">と</span>
-        %{nozzleDiameter} mm ノズルに設定されています
-      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定出力長 %{estimatedExtrudedLength} mm となります。'
+        <span class="secondary--text">現在のエクストルーダー構成は、</span> %{filamentDiameter}
+        mmフィラメント <span class="secondary--text">と</span> %{nozzleDiameter} mm
+        ノズルに設定されています
+      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm となります。'
       stats_max_speed: >-
-        <span class="secondary--text">レイヤーの高さを</span> %{layerHeight} mm<span
+        <span class="secondary--text">レイヤー高を</span> %{layerHeight} mm<span
         class="secondary--text">とすると、</span> の推定最大印刷速度は %{estimatedMaxSpeed}
         mm/s です
-      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、エクストルーダーは</span>  %{estimatedVolumetricFlow} mm3/s の推定体積流量になります。'
+      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow} mm3/s になります。'
     title:
       bed_screws_adjust: ベッドスクリューの調整
       manual_probe: マニュアルプローブ
     tooltip:
       absolute_positioning: 相対位置
-      bed_screws_adjust: ベッドスクリューの調整
       extruder_disabled: '最小温度未満（%{min}<small>°C</small>）のためホットエンドが無効です。'
-      force_move: 強制移動
       home_xy: Home XY
       home_z: Home Z
       manual_probe: マニュアルプローブ
       motors_off: モーターオフ
-      quad_gantry_level: QGL
       relative_positioning: 相対位置
-      screws_tilt_calculate: ネジチルト計算
-      z_tilt_adjust: Zチルト調整
+      tools: ツール
   version:
     btn:
       check_for_updates: アップデートを確認

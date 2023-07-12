@@ -8,16 +8,10 @@ export interface FilesState {
   uploads: FilesUpload[];
   download: FileDownload | null;
   fileTransferCancelTokenSource: CancelTokenSource | null;
-  currentPaths: CurrentPaths;
+  currentPaths: Record<string, string>;
   disk_usage: DiskUsage;
-  rootFiles: RootFiles;
-
-  gcodes: Files[];
-  config: Files[];
-  config_examples: Files[];
-  docs: Files[];
-  logs: Files[];
-  timelapse: Files[]; // may be null, but will never be accessed when feature is unsupported
+  rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
+  pathFiles: Record<string, MoonrakerPathContent | undefined>;
 }
 
 export interface DiskUsage {
@@ -26,21 +20,9 @@ export interface DiskUsage {
   free: number;
 }
 
-export interface CurrentPaths {
-  [root: string]: string;
-}
-
-export interface Files {
-  path: string;
-  items: FileBrowserEntry[];
-}
-
-export interface AppFile extends KlipperFile {
-  type: 'file';
-  name: string;
-  extension: string;
-  path: string;
-  modified: number;
+export interface MoonrakerPathContent {
+  files: (KlipperFile | KlipperFileWithMeta) []
+  dirs: KlipperDir[]
 }
 
 export interface KlipperFile {
@@ -52,6 +34,9 @@ export interface KlipperFile {
   job_id?: string | null;
 }
 
+export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {
+}
+
 export interface KlipperDir {
   dirname: string;
   modified: number | string;
@@ -59,10 +44,17 @@ export interface KlipperDir {
   permissions?: '' | 'r' | 'rw';
 }
 
+export interface AppFile extends KlipperFile {
+  type: 'file';
+  name: string;
+  extension: string;
+  path: string;
+  modified: number;
+}
+
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   history: HistoryItem;
 }
-export interface KlipperFileWithMeta extends KlipperFile, KlipperFileMeta {}
 
 export interface AppDirectory extends KlipperDir {
   type: 'directory';
@@ -95,7 +87,7 @@ export interface FilePaths {
 
 export interface FileUpdate {
   paths: FilePaths;
-  file: Partial<AppFile | AppFileWithMeta> & { filename: string; };
+  file: Partial<KlipperFile | KlipperFileWithMeta> & { filename: string; };
   root: string;
 }
 
@@ -113,9 +105,7 @@ export interface FilesUpload extends FileDownload {
   cancelled: boolean; // in a cancelled state, don't show - nor try to upload.
 }
 
-export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files'
-
-export type FileRoot = 'gcodes' | 'config' | 'config_examples' | 'docs' | 'logs' | 'timelapse'
+export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_backup_files' | 'rolled_log_files'
 
 export type FileBrowserEntry = AppFile | AppFileWithMeta | AppDirectory
 
@@ -128,16 +118,7 @@ export interface FilePreviewState {
   width?: number;
 }
 
-export interface RootFiles {
-  gcodes: RootFile[];
-  config: RootFile[];
-  config_examples: RootFile[];
-  docs: RootFile[];
-  logs: RootFile[];
-  timelapse: RootFile[];
-}
-
-export interface RootFile {
+export interface MoonrakerRootFile {
   path: string;
   modified: number;
   size: number;

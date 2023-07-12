@@ -3,7 +3,7 @@
     v-model="open"
     :title="$t('app.general.title.pending_configuration_changes')"
     :save-button-text="$t('app.general.btn.save_config_and_restart')"
-    :max-width="600"
+    max-width="600"
     @save="handleSubmit"
   >
     <v-card-text>
@@ -12,7 +12,7 @@
         auto-grow
         rows="1"
         :value="saveConfigPendingItems"
-        :spellcheck="false"
+        spellcheck="false"
         style="width: 100%; font-family: monospace; font-size: 1rem; font-weight: 100 !important;"
       />
     </v-card-text>
@@ -28,15 +28,27 @@ export default class PendingChangesDialog extends Vue {
     open!: boolean
 
   get saveConfigPendingItems () {
-    const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems']
+    const saveConfigPendingItems = this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>
 
-    const lines = Object.entries<Record<string, string>>(saveConfigPendingItems).map(section => {
-      const [sectionName, sectionEntries] = section
+    const { changed, deleted } = Object.entries(saveConfigPendingItems)
+      .reduce((previous, [sectionName, sectionEntries]) => {
+        if (sectionEntries === null) {
+          previous.deleted.push(`# [${sectionName}]`)
+        } else {
+          const sectionEntryNameValues = Object.entries(sectionEntries)
+            .map(([entryName, entryValue]) => `${entryName}: ${entryValue}`)
 
-      const entryValues = Object.entries(sectionEntries).map(entry => `${entry[0]}: ${entry[1]}`)
+          previous.changed.push(`[${sectionName}]\n${sectionEntryNameValues.join('\n')}`)
+        }
 
-      return `[${sectionName}]\n${entryValues.join('\n')}`
-    })
+        return previous
+      }, { changed: [], deleted: [] } as { changed: string[], deleted: string[] })
+
+    const lines = [...changed]
+
+    if (deleted.length > 0) {
+      lines.push(`# ${this.$t('app.general.msg.pending_configuration_sections_deleted')}\n${deleted.join('\n')}`)
+    }
 
     return lines.join('\n\n')
   }

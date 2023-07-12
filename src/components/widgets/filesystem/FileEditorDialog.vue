@@ -27,7 +27,23 @@
         >
           <v-icon>$close</v-icon>
         </app-btn>
-        <v-toolbar-title>{{ filename }}</v-toolbar-title>
+        <v-toolbar-title>
+          {{ filename }}
+          <v-icon
+            v-if="readonly"
+            small
+            class="ml-1"
+          >
+            $lock
+          </v-icon>
+          <v-icon
+            v-else-if="updatedContent !== lastSavedContent"
+            small
+            class="ml-1"
+          >
+            $circle
+          </v-icon>
+        </v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
           <app-btn
@@ -99,10 +115,12 @@
         v-if="contents !== undefined && !useTextOnlyEditor"
         ref="editor"
         v-model="updatedContent"
+        :path="path"
         :filename="filename"
         :readonly="readonly"
         :code-lens="codeLens"
         @ready="editorReady = true"
+        @save="emitSave(false)"
       />
 
       <file-editor-text-only
@@ -117,11 +135,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop, Ref, VModel } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref, VModel, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 import FileEditor from './FileEditor.vue'
 import FileEditorTextOnly from './FileEditorTextOnly.vue'
-import isMobile from '@/util/is-mobile'
 import isWebAssemblySupported from '@/util/is-web-assembly-supported'
 
 @Component({
@@ -130,12 +148,15 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
     FileEditorTextOnly
   }
 })
-export default class FileEditorDialog extends Mixins(StateMixin) {
+export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   @VModel({ type: Boolean, required: true })
     open!: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string
+
+  @Prop({ type: String, required: true })
+  readonly path!: string
 
   @Prop({ type: String, required: true })
   readonly filename!: string
@@ -164,8 +185,11 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
     )
   }
 
-  get isMobile () {
-    return isMobile()
+  @Watch('ready')
+  onReady (value: boolean) {
+    if (value) {
+      this.editor?.focus()
+    }
   }
 
   get isWebAssemblySupported () {
@@ -173,7 +197,7 @@ export default class FileEditorDialog extends Mixins(StateMixin) {
   }
 
   get useTextOnlyEditor () {
-    return this.isMobile || !this.isWebAssemblySupported
+    return this.isMobileUserAgent || !this.isWebAssemblySupported
   }
 
   get isUploading (): boolean {

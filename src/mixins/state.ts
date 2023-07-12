@@ -50,25 +50,17 @@ export default class StateMixin extends Vue {
   // Returns a boolean indicating if the printer is busy.
   get printerBusy () {
     const printerState = this.printerState.toLowerCase()
-    if (
+
+    return (
       printerState === 'printing' ||
       printerState === 'paused' ||
       printerState === 'busy'
-    ) {
-      return true
-    }
-    return false
+    )
   }
 
   // Returns a boolean indicating if the printer is paused.
   get printerPaused () {
-    const printerState = this.printerState.toLowerCase()
-    if (
-      printerState === 'paused'
-    ) {
-      return true
-    }
-    return false
+    return this.printerState.toLowerCase() === 'paused'
   }
 
   /**
@@ -76,30 +68,29 @@ export default class StateMixin extends Vue {
    * (versus busy in some other way...)
    */
   get printerPrinting () {
-    if (this.printerState === 'printing') return true
-    return false
+    return this.printerState.toLowerCase() === 'printing'
   }
 
   /**
    * Indicates if we have a valid wait(s).
    * Supports a single string or a list of.
    */
-  hasWait (wait: string | string[]) {
-    return this.$store.getters['wait/hasWait'](wait)
+  hasWait (wait: string | string[]): boolean {
+    return this.$store.getters['wait/hasWait'](wait) as boolean
   }
 
   /**
    * Indicates if we have any waits.
    */
-  get hasWaits () {
-    return this.$store.getters['wait/hasWaits']
+  get hasWaits (): boolean {
+    return this.$store.getters['wait/hasWaits'] as boolean
   }
 
   /**
    * Indicates if we have any waits prefixed by.
    */
-  hasWaitsBy (prefix: string) {
-    return this.$store.getters['wait/hasWaitsBy'](prefix)
+  hasWaitsBy (prefix: string): boolean {
+    return this.$store.getters['wait/hasWaitsBy'](prefix) as boolean
   }
 
   /**

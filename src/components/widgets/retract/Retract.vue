@@ -18,7 +18,7 @@
           :step="0.01"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobile"
+          :locked="isMobileViewport"
           :loading="hasWait($waits.onSetRetractLength)"
           @submit="setRetractLength"
         />
@@ -40,7 +40,7 @@
           :step="0.01"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobile"
+          :locked="isMobileViewport"
           :loading="hasWait($waits.onSetUnretractExtraLength)"
           @submit="setUnRetractExtraLength"
         />
@@ -64,7 +64,7 @@
           :max="retract_speed_max"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobile"
+          :locked="isMobileViewport"
           :loading="hasWait($waits.onSetRetractSpeed)"
           @submit="setRetractSpeed"
         />
@@ -86,7 +86,7 @@
           :max="unretract_speed_max"
           overridable
           :disabled="!klippyReady"
-          :locked="isMobile"
+          :locked="isMobileViewport"
           :loading="hasWait($waits.onSetUnretractSpeed)"
           @submit="setUnretractSpeed"
         />
@@ -98,9 +98,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class Retract extends Mixins(StateMixin) {
+export default class Retract extends Mixins(StateMixin, BrowserMixin) {
   get retract_length () {
     return this.$store.state.printer.printer.firmware_retraction.retract_length
   }
@@ -139,10 +140,6 @@ export default class Retract extends Mixins(StateMixin) {
 
   get defaults () {
     return this.$store.getters['printer/getPrinterSettings']('firmware_retraction') || {}
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
   }
 
   setRetractLength (val: number) {

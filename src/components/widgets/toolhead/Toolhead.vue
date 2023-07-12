@@ -1,6 +1,8 @@
 <template>
   <div>
     <v-card-text>
+      <tool-change-macros />
+
       <v-row
         justify="space-between"
         align="start"
@@ -48,6 +50,8 @@ import SpeedAndFlowAdjust from './SpeedAndFlowAdjust.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
 import ExtruderStats from './ExtruderStats.vue'
 import ExtruderSteppers from './ExtruderSteppers.vue'
+import ToolChangeMacros from './ToolChangeMacros.vue'
+import { Extruder } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -59,7 +63,8 @@ import ExtruderSteppers from './ExtruderSteppers.vue'
     SpeedAndFlowAdjust,
     PressureAdvanceAdjust,
     ExtruderStats,
-    ExtruderSteppers
+    ExtruderSteppers,
+    ToolChangeMacros
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
@@ -68,7 +73,7 @@ export default class Toolhead extends Mixins(StateMixin) {
   }
 
   get showPressureAdvance () {
-    const extruder = this.$store.getters['printer/getActiveExtruder']
+    const extruder = this.$store.getters['printer/getActiveExtruder'] as Extruder | undefined
     return extruder?.pressure_advance !== undefined
   }
 }

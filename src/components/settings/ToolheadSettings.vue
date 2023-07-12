@@ -58,8 +58,7 @@
           :rules="[
             $rules.required,
             $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1),
-            $rules.numberLessThanOrEqual(maxExtrudeLength)
+            $rules.numberGreaterThanOrEqual(1)
           ]"
           filled
           dense
@@ -78,8 +77,7 @@
           :rules="[
             $rules.required,
             $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(1),
-            $rules.numberLessThanOrEqual(maxExtrudeSpeed)
+            $rules.numberGreaterThanOrEqual(1)
           ]"
           filled
           dense

@@ -14,11 +14,13 @@
           single-line
           dense
           hide-details
+          spellcheck="false"
+          class="console-command"
           @input="emitChange"
           @keyup.enter.exact="emitSend(newValue)"
           @keydown.enter.exact.prevent
-          @keyup.up="historyUp()"
-          @keyup.down="historyDown()"
+          @keydown.up.exact.prevent="historyUp()"
+          @keydown.down.exact.prevent="historyDown()"
           @keydown.prevent.tab="autoComplete()"
         />
       </v-col>
@@ -132,3 +134,9 @@ export default class ConsoleCommand extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .console-command {
+    font-family: monospace;
+  }
+</style>

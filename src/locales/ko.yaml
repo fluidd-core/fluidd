@@ -15,9 +15,9 @@ app:
       not_loaded: 메쉬가 로드되지 않았습니다.
     tooltip:
       calibrate: 프로파일을 'default'로 저장하여 신규 칼리브레이션을 시작합니다.
-      delete: 프로파일을 삭제합니다. 프린터가 다시 시작되게 됩니다.
+      delete: 프로파일을 삭제합니다
       load: 프로파일 불러오기
-      save: 칼리브레이션이 된 프로파일을 printer.cfg에 적용합니다. 프린터가 다시 시작되게 됩니다.
+      save: 칼리브레이션이 된 프로파일을 printer.cfg에 적용합니다
   chart:
     label:
       current: 현재 온도
@@ -71,7 +71,6 @@ app:
       transfer_rate: 전송 속도
       uploaded: 업로드 완료
     msg:
-      confirm: 확실합니까? 모든 파일 및 폴더가 삭제됩니다.
       not_found: 파일을 찾을 수 없습니다.
       processing: 처리중...
     overlay:

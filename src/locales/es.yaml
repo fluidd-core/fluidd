@@ -17,11 +17,9 @@ app:
       not_loaded: No está cargada ninguna malla.
     tooltip:
       calibrate: 'Comienza una nueva calibración, se guardará con el nombre ''default'''
-      delete: Elimina el perfil. Esto REINICIARÁ su impresora
+      delete: Elimina el perfil
       load: Cargar el perfil
-      save: >-
-        Guarda el perfil de calibracion en el archivo printer.cfg.  Esto
-        REINICIARÁ su impresora
+      save: Guarda el perfil de calibracion en el archivo printer.cfg
   chart:
     label:
       current: Tª
@@ -74,7 +72,6 @@ app:
   file_system:
     filters:
       label:
-        hidden_files: Filtrar archivos ocultos
         print_start_time: Filtrar ya impresos
         print_start_time_desc: Filtrar archivos que ya ha impreso anteriormente
     label:
@@ -87,7 +84,6 @@ app:
       uploaded: Subido
       view_section_documentation: 'Ver documentación sobre ''%{section}'''
     msg:
-      confirm: ¿Está seguro? Esto borrará todos los subarchivos y subcarpetas.
       not_found: No se encontraron archivos
       processing: Procesando...
     overlay:
@@ -490,17 +486,13 @@ app:
       bed_screws_adjust: Ajustar tornillos de la cama
     tooltip:
       absolute_positioning: Posicionamiento Absoluto
-      bed_screws_adjust: BED_SCREWS_ADJUST
       extruder_disabled: >-
         Extrusor deshabilidado, por debajo de min_extrude_temp
         (%{min}<small>°C</small>)
-      force_move: FORCE_MOVE
       home_xy: Origen XY
       home_z: Origen Z
-      motors_off: APAGAR MOTORES
+      motors_off: Apagar Motores
       relative_positioning: Posicionamiento Relativo
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      z_tilt_adjust: Z_Tilt_Adjust
   version:
     btn:
       check_for_updates: Buscar actualizaciones

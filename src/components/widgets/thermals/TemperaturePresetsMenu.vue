@@ -4,14 +4,14 @@
     left
     offset-y
     transition="slide-y-transition"
-    :min-width="150"
+    min-width="150"
   >
     <template #activator="{ on, attrs, value }">
       <app-btn
         :disabled="!klippyReady"
         v-bind="attrs"
         small
-        class="ml-1"
+        class="ms-1 my-1"
         v-on="on"
       >
         <v-icon
@@ -30,43 +30,37 @@
         </v-icon>
       </app-btn>
     </template>
-    <v-list
-      dense
-    >
-      <v-list-item
-        link
-        dense
-        @click="$emit('applyOff')"
-      >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-            color="info"
-          >
+    <v-list dense>
+      <v-list-item @click="$emit('applyOff')">
+        <v-list-item-icon>
+          <v-icon color="info">
             $snowflakeAlert
           </v-icon>
-          {{ $t('app.general.btn.heaters_off') }}
-        </v-list-item-title>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ $t('app.general.btn.heaters_off') }}
+          </v-list-item-title>
+        </v-list-item-content>
       </v-list-item>
-      <v-list-item
-        v-for="(preset) of presets"
-        :key="preset.index"
-        link
-        dense
-        @click="$emit('applyPreset', preset)"
-      >
-        <v-list-item-title>
-          <v-icon
-            small
-            left
-            color="error"
-          >
-            $fire
-          </v-icon>
-          {{ preset.name }}
-        </v-list-item-title>
-      </v-list-item>
+
+      <template v-for="(preset) of presets">
+        <v-list-item
+          :key="preset.index"
+          @click="$emit('applyPreset', preset)"
+        >
+          <v-list-item-icon>
+            <v-icon color="error">
+              $fire
+            </v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ preset.name }}
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </template>
     </v-list>
   </v-menu>
 </template>

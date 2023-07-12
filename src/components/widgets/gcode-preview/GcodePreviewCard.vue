@@ -11,7 +11,7 @@
         <app-btn
           :disabled="!printerFile || printerFileLoaded"
           small
-          class="ml-1"
+          class="ms-1 my-1"
           @click="loadCurrent"
         >
           {{ $t('app.gcode.btn.load_current_file') }}
@@ -23,7 +23,7 @@
           fab
           x-small
           text
-          class="ml-1"
+          class="ms-1 my-1"
           @click="$filters.routeTo($router, '/preview')"
         >
           <v-icon>$fullScreen</v-icon>
@@ -53,7 +53,6 @@
                 :min="(!fileLoaded) ? 0 : 1"
                 :max="layerCount"
                 :disabled="!fileLoaded"
-                :locked="isMobile"
                 @input="setCurrentLayer($event - 1)"
               />
             </v-col>
@@ -66,7 +65,6 @@
                 :min="0"
                 :max="currentLayerMoveRange.max - currentLayerMoveRange.min"
                 :disabled="!fileLoaded"
-                :locked="isMobile"
                 @input="setMoveProgress($event + currentLayerMoveRange.min)"
               />
             </v-col>
@@ -81,6 +79,7 @@
               <v-card
                 outlined
                 class="px-2 py-1 text-center stat-square justify-center"
+                :class="{ 'text--disabled': !fileLoaded }"
               >
                 <div class="">
                   {{ $t('app.gcode.label.layers') }}
@@ -132,6 +131,7 @@
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
+import BrowserMixin from '@/mixins/browser'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
 import { AppFile } from '@/store/files/types'
@@ -143,7 +143,7 @@ import { MinMax } from '@/store/gcodePreview/types'
     GcodePreview
   }
 })
-export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
+export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
 
@@ -238,10 +238,6 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get fileLoaded (): boolean {
     return this.$store.getters['gcodePreview/getMoves'].length > 0
-  }
-
-  get isMobile (): boolean {
-    return this.$vuetify.breakpoint.mobile
   }
 
   get parserProgress (): number {
@@ -352,7 +348,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
   }
 
   get autoLoadOnPrintStart () {
-    if (this.isMobile) {
+    if (this.isMobileViewport) {
       return this.$store.state.config.uiSettings.gcodePreview.autoLoadMobileOnPrintStart
     }
 
@@ -374,6 +370,15 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin) {
 
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
+  }
+
+  created () {
+    if (this.followProgress) {
+      this.currentLayer = this.fileProgressLayerNr
+      this.syncMoveProgress()
+    } else {
+      this.moveProgress = this.currentLayerMoveRange.min
+    }
   }
 }
 </script>

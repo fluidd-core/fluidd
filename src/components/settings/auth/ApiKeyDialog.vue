@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     :title="$t('app.general.label.api_key')"
-    :max-width="500"
+    max-width="500"
   >
     <v-card-text>
       <v-text-field
@@ -13,8 +13,6 @@
         hide-details
         readonly
       />
-
-      <v-divider />
 
       <v-layout
         align-center

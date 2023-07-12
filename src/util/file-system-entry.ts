@@ -1,4 +1,4 @@
-import consola from 'consola'
+import { consola } from 'consola'
 
 type EntryWithPath = {
   entry: FileSystemEntry,
@@ -26,6 +26,15 @@ const readEntriesAsync = async (directoryReader: FileSystemDirectoryReader) => {
     return new Promise<FileSystemEntry[]>((resolve, reject) => directoryReader.readEntries(resolve, reject))
   } catch (e) {
     consola.error('[FileSystemDirectoryReader] readEntries', e)
+  }
+}
+
+export const hasFilesInDataTransfer = (dataTransfer: DataTransfer) => {
+  if (dataTransfer.items.length) {
+    return [...dataTransfer.items]
+      .every(x => x.kind === 'file')
+  } else {
+    return dataTransfer.files.length > 0
   }
 }
 

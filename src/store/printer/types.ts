@@ -6,21 +6,47 @@ export interface Printer {
   [key: string]: any;
 }
 
-export interface Extruder {
+export interface KnownExtruder {
   name: string;
   key: string;
 }
 
+export interface Extruder {
+  config: ExtruderConfig
+  temperature: number;
+  target: number;
+  power: number;
+  can_extrude: boolean;
+  min_extrude_temp: number;
+  pressure_advance?: number;
+  smooth_time?: number;
+}
+
+export interface ExtruderConfig {
+  nozzle_diameter: number;
+  filament_diameter: number;
+  min_extrude_temp: number;
+  max_extrude_only_distance: number;
+  max_extrude_only_velocity: number;
+  pressure_advance?: number;
+  pressure_advance_smooth_time?: number;
+}
+
 export interface ExtruderStepper {
+  config: ExtruderStepperConfig;
   name: string;
   prettyName: string;
   key: string;
   enabled?: boolean;
-  pressure_advance: number;
-  smooth_time: number;
   motion_queue?: string | null;
-  config_pressure_advance: number;
-  config_smooth_time: number;
+  pressure_advance?: number;
+  smooth_time?: number;
+}
+
+export interface ExtruderStepperConfig {
+  extruder?: string;
+  pressure_advance?: number;
+  pressure_advance_smooth_time?: number;
 }
 
 export interface MCU {
@@ -101,6 +127,7 @@ export interface Sensor {
   temperature: number;
   pressure?: number;
   humidity?: number;
+  gas?: number;
   target?: number;
   measured_min_temp?: number;
   measured_max_temp?: number;
@@ -122,7 +149,10 @@ export interface Endstop {
 export interface Probe {
   last_z_result: number;
   last_query: boolean;
+  name: ProbeName;
 }
+
+export type ProbeName = 'bltouch' | 'smart_effector' | 'probe'
 
 // printer.mcu[num]
 export interface KlipperMcu {

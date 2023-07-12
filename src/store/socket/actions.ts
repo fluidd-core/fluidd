@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { ActionTree } from 'vuex'
-import consola from 'consola'
+import { consola } from 'consola'
 import { SocketState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
@@ -47,7 +47,7 @@ export const actions: ActionTree<SocketState, RootState> = {
    */
   async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
     const retry = state.disconnecting
-    const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait']
+    const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait', 'gcodePreview']
 
     if (e.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.

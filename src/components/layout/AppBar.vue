@@ -7,7 +7,7 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
-      v-show="!isMobile"
+      v-show="!isMobileViewport"
       to="/"
       class="toolbar-logo"
     >
@@ -16,7 +16,7 @@
 
     <div class="toolbar-title">
       <app-btn
-        v-if="isMobile"
+        v-if="isMobileViewport"
         fab
         small
         :elevation="0"
@@ -39,7 +39,7 @@
 
     <div class="toolbar-supplemental">
       <div
-        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestart && saveConfigPending"
+        v-if="socketConnected && klippyReady && authenticated && showSaveConfigAndRestartForPendingChanges"
         class="mr-1"
       >
         <app-save-config-and-restart-btn
@@ -49,7 +49,7 @@
         />
       </div>
 
-      <div v-if="socketConnected && !isMobile && authenticated">
+      <div v-if="socketConnected && !isMobileViewport && authenticated">
         <v-tooltip bottom>
           <template #activator="{ on, attrs }">
             <app-btn
@@ -192,6 +192,7 @@ import { defaultState } from '@/store/layout/state'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
+import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
 import { OutputPin } from '@/store/printer/types'
 import { Device } from '@/store/power/types'
@@ -204,7 +205,7 @@ import { Device } from '@/store/power/types'
     AppUploadAndPrintBtn
   }
 })
-export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin) {
+export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin, BrowserMixin) {
   menu = false
   userPasswordDialogOpen = false
   pendingChangesDialogOpen = false
@@ -229,8 +230,26 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.getters['version/hasUpdates']
   }
 
-  get saveConfigPending () {
-    return this.$store.getters['printer/getSaveConfigPending']
+  get saveConfigPending (): boolean {
+    return this.$store.getters['printer/getSaveConfigPending'] as boolean
+  }
+
+  get saveConfigPendingItems (): Record<string, Record<string, string>> {
+    return this.$store.getters['printer/getSaveConfigPendingItems'] as Record<string, Record<string, string>>
+  }
+
+  get showSaveConfigAndRestartForPendingChanges (): boolean {
+    if (!this.showSaveConfigAndRestart || !this.saveConfigPending) {
+      return false
+    }
+
+    if (!this.ignoreDefaultBedMeshPendingConfigurationChanges) {
+      return true
+    }
+
+    const saveConfigPendingItemsKeys = Object.keys(this.saveConfigPendingItems)
+
+    return saveConfigPendingItemsKeys.length > 1 || saveConfigPendingItemsKeys[0] !== 'bed_mesh default'
   }
 
   get devicePowerComponentEnabled () {
@@ -241,16 +260,16 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.getters['config/getTheme']
   }
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
-  }
-
   get inLayout (): boolean {
     return (this.$store.state.config.layoutMode)
   }
 
   get showSaveConfigAndRestart (): boolean {
-    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart
+    return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
+  }
+
+  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
+    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
   }
 
   get showUploadAndPrint (): boolean {

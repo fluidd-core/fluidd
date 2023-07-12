@@ -2,7 +2,7 @@
 layout: default
 title: Cameras
 parent: Features
-nav_order: 10
+nav_order: 12
 permalink: /features/cameras
 ---
 
@@ -22,14 +22,19 @@ You can add up to four cameras to display on your dashboard.
 Currently supported types are:
 
 - MJPEG Stream  
-  This is the traditional mjpegstream service. The service pushes images to
+  This is the traditional mjpegstream/ustreamer service. The service pushes images to
   fluidd at the configured resolution and FPS you have setup. This requires
   a lot of bandwidth, and can cause issues with unstable network connections.
 
 - MJPEG Adaptive  
-  This will PULL images from the mjpegstream service, using the snapshot URL.
+  This will PULL images from the mjpegstream/ustreamer service, using the snapshot URL.
   You can set a target FPS, and your browser will try to keep up with the
   intended target. This can be a more reliable approach for some.
+
+- HLS Stream  
+  This will load an HLS (HTTP Live Streaming) video stream via [HLS.js](https://hlsjs.video-dev.org/).
+  It relies on HTML5 video and MediaSource Extensions for playback, so you will
+  need a modern browser that supports it.
 
 - IP Camera  
   This is an experimental option. Effectively, it swaps out the `<img>` tag

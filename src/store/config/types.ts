@@ -1,6 +1,6 @@
 import { AppTablePartialHeader } from '@/types/tableheaders'
 import { VuetifyThemeItem } from 'vuetify/types/services/theme'
-import { FileFilterType, FileRoot } from '../files/types'
+import { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;
@@ -60,12 +60,14 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
+  ignoreDefaultBedMeshPendingConfigurationChanges: boolean;
   dateFormat: string;
   timeFormat: string;
   textSortOrder: TextSortOrder;
   showRateOfChange: boolean;
   showRelativeHumidity: boolean;
   showBarometricPressure: boolean;
+  showGasResistance: boolean;
   showSaveConfigAndRestart: boolean;
   showUploadAndPrint: boolean;
   flipConsoleLayout: boolean;
@@ -104,9 +106,12 @@ export interface SupportedThemeLogo {
   light?: string;
 }
 
+export type RestoreViewState = 'never' | 'session' | 'local'
+
 export interface EditorConfig {
   confirmDirtyEditorClose: boolean;
   autoEditExtensions: string[];
+  restoreViewState: RestoreViewState,
   codeLens: boolean;
 }
 
@@ -185,5 +190,5 @@ export interface GcodePreviewConfig {
 }
 
 export interface FileSystemConfig {
-  activeFilters: Partial<Record<FileRoot, FileFilterType[]>>
+  activeFilters: Partial<Record<string, FileFilterType[]>>
 }

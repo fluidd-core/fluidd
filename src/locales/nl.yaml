@@ -17,11 +17,9 @@ app:
       not_loaded: Geen meshes geladen
     tooltip:
       calibrate: Begint een nieuwe calibratie, opgeslagen als 'default'
-      delete: Verwijder profiel. Dit zal je printer herstarten
+      delete: Verwijder profiel
       load: Laad profiel
-      save: >-
-        Slaat afgesteld profiel op naar printer.cfg. Dit process zal je printer
-        opnieuw opstarten.
+      save: Slaat afgesteld profiel op naar printer.cfg
   chart:
     label:
       current: Huidig
@@ -82,9 +80,6 @@ app:
       transfer_rate: Snelheid
       uploaded: Geüpload
     msg:
-      confirm: >-
-        Ben je zeker? Dit zal alle onderliggende bestanden en mappen
-        verwijderen.
       not_found: Geen bestanden gevonden
       processing: Verwerken...
     overlay:

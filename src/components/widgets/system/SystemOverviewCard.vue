@@ -3,6 +3,29 @@
     :title="$t('app.general.title.system_overview')"
     icon="$desktopTower"
   >
+    <template #menu>
+      <v-tooltip
+        v-if="canRolloverLogs"
+        bottom
+      >
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            color=""
+            fab
+            x-small
+            text
+            class="ms-1 my-1"
+            :disabled="printerBusy"
+            v-on="on"
+            @click="rolloverLogsDialogOpen = true"
+          >
+            <v-icon>$fileRefresh</v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.general.tooltip.rollover_logs') }}</span>
+      </v-tooltip>
+    </template>
     <v-row no-gutters>
       <v-col>
         <v-simple-table dense>
@@ -66,15 +89,23 @@
         </v-card-text>
       </v-col>
     </v-row>
+
+    <rollover-logs-dialog
+      v-if="rolloverLogsDialogOpen"
+      v-model="rolloverLogsDialogOpen"
+    />
   </collapsable-card>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Mixins } from 'vue-property-decorator'
 import { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
+import StateMixin from '@/mixins/state'
 
 @Component({})
-export default class PrinterStatsCard extends Vue {
+export default class PrinterStatsCard extends Mixins(StateMixin) {
+  rolloverLogsDialogOpen = false
+
   get systemInfo (): SystemInfo | null {
     return this.$store.getters['server/getSystemInfo']
   }
@@ -105,6 +136,10 @@ export default class PrinterStatsCard extends Vue {
 
   get printerInfo () {
     return this.$store.state.printer.printer.info
+  }
+
+  get canRolloverLogs (): boolean {
+    return this.$store.getters['server/getIsMinApiVersion']('1.0.5') as boolean
   }
 }
 </script>

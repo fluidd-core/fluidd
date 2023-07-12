@@ -1,6 +1,6 @@
 .v-card.collapsable-card .v-card__title.collapsable-card-title {
   position: relative;
-  z-index: 2;
+  z-index: 4;
   font-size: 1rem;
   min-height: 36px;
   padding-top: 0;
@@ -25,6 +25,10 @@
   .v-tabs-bar__content > .v-tab:first-child:before {
     border-top-left-radius: $border-radius-root;
   }
+}
+
+.v-card.collapsable-card .v-toolbar {
+  z-index: 3;
 }
 
 .theme--dark .v-card .v-card__title.collapsable-card-title {

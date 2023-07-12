@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from './types'
 import { RootState } from '../types'
 import { AppFile } from '@/store/files/types'
-import consola from 'consola'
+import { consola } from 'consola'
 
 import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'
 
@@ -44,6 +44,7 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
           try {
             commit('setMoves', data.moves)
             commit('setLayers', data.layers)
+            commit('setParts', data.parts)
             commit('setParserProgress', payload.file.size ?? payload.gcode.length)
           } catch (error) {
             consola.error('Parser worker error', error)

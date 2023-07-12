@@ -27,6 +27,7 @@
             v-model="username"
             :label="$t('app.general.label.username')"
             autocomplete="username"
+            spellcheck="false"
             filled
             dense
             hide-details="auto"
@@ -102,7 +103,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { appInit } from '@/init'
-import consola from 'consola'
+import { consola } from 'consola'
 import { InitConfig } from '@/store/config/types'
 
 @Component({})

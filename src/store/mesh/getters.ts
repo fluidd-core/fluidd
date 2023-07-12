@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { MeshState, KlipperMesh, AppMeshes } from './types'
+import { BedMeshProfile, MeshState, AppMeshes, KlipperBedMesh, KlipperBedMeshProfile, LegacyKlipperBedMeshProfile } from './types'
 import { RootState } from '../types'
 import { transformMesh } from '@/util/transform-mesh'
 
@@ -12,42 +12,69 @@ export const getters: GetterTree<MeshState, RootState> = {
     return rootGetters['printer/getPrinterSettings']('bed_mesh') !== undefined
   },
 
-  /**
-   * Returns all available bed meshes, including those only in memory / currently loaded.
-   */
-  getBedMeshes: (state, getters, rootState, rootGetters): KlipperMesh[] => {
-    const meshes: KlipperMesh[] = []
-    const currentProfile = rootState.printer.printer.bed_mesh.profile_name || ''
+  getLegacyBedMeshProfiles: (state, getters, rootState, rootGetters) => {
+    const klipperProfiles = {} as Record<string, KlipperBedMeshProfile>
+
     const config = rootGetters['printer/getPrinterConfig']()
-    if (rootState.printer.printer.bed_mesh && currentProfile.length > 0) {
-      meshes.push({
-        ...rootState.printer.printer.bed_mesh,
-        active: true
-      })
-    }
-    if (config) {
-      const meshSettings = Object.keys(config).filter(key => key.startsWith('bed_mesh'))
-      for (const key of meshSettings) {
-        if (key === 'bed_mesh') continue // The mesh configuration.
-        const profile_name = key.split(' ').splice(1).join(' ')
-        if (
-          profile_name !== currentProfile
-        ) {
-          const profile: KlipperMesh = {
-            profile_name,
-            active: false
-          }
-          meshes.push(profile)
+    const meshProfileKeys = Object.keys(config)
+      .filter(key => key.startsWith('bed_mesh '))
+
+    for (const key of meshProfileKeys) {
+      const name = key.split(' ').splice(1).join(' ')
+      const legacyKlipperProfile = config[key] as LegacyKlipperBedMeshProfile
+
+      const profile: KlipperBedMeshProfile = {
+        points: legacyKlipperProfile.points.split('\n')
+          .filter(x => x.length)
+          .map(x => x.split(',').map(Number)),
+        mesh_params: {
+          algo: legacyKlipperProfile.algo,
+          max_x: +legacyKlipperProfile.max_x,
+          max_y: +legacyKlipperProfile.max_y,
+          mesh_x_pps: +legacyKlipperProfile.mesh_x_pps,
+          mesh_y_pps: +legacyKlipperProfile.mesh_y_pps,
+          min_x: +legacyKlipperProfile.min_x,
+          min_y: +legacyKlipperProfile.min_y,
+          tension: +legacyKlipperProfile.tension,
+          x_count: +legacyKlipperProfile.x_count,
+          y_count: +legacyKlipperProfile.y_count
         }
       }
+
+      klipperProfiles[name] = profile
     }
-    return meshes.sort((a, b) =>
-      a.profile_name === 'default'
+
+    return klipperProfiles
+  },
+
+  getBedMeshProfiles: (state, getters, rootState) => {
+    const profiles: BedMeshProfile[] = []
+    const bedMesh = rootState.printer.printer.bed_mesh as KlipperBedMesh
+
+    const klipperProfiles = bedMesh.profiles ?? getters.getLegacyBedMeshProfiles as Record<string, KlipperBedMeshProfile>
+
+    for (const [name, profile] of Object.entries(klipperProfiles)) {
+      const points = profile.points.flatMap(x => x)
+      const min = Math.min(...points)
+      const max = Math.max(...points)
+
+      profiles.push({
+        name,
+        active: name === bedMesh.profile_name,
+        min,
+        max,
+        variance: Math.abs(min - max),
+        ...profile
+      })
+    }
+
+    return profiles.sort((a, b) =>
+      a.name === 'default'
         ? -1
         : (
-            b.profile_name === 'default'
+            b.name === 'default'
               ? 1
-              : a.profile_name.localeCompare(b.profile_name)
+              : a.name.localeCompare(b.name)
           )
     )
   },
@@ -56,11 +83,13 @@ export const getters: GetterTree<MeshState, RootState> = {
    * Returns the current mesh, in a usable format for echarts.
    */
   getCurrentMeshData: (state, getters, rootState): AppMeshes => {
+    const bedMesh = rootState.printer.printer.bed_mesh as KlipperBedMesh
+
     return {
-      mesh_matrix: transformMesh(rootState.printer.printer.bed_mesh, 'mesh_matrix'),
-      probed_matrix: transformMesh(rootState.printer.printer.bed_mesh, 'probed_matrix'),
-      mesh_matrix_flat: transformMesh(rootState.printer.printer.bed_mesh, 'mesh_matrix', true),
-      probed_matrix_flat: transformMesh(rootState.printer.printer.bed_mesh, 'probed_matrix', true)
+      mesh_matrix: transformMesh(bedMesh, 'mesh_matrix'),
+      probed_matrix: transformMesh(bedMesh, 'probed_matrix'),
+      mesh_matrix_flat: transformMesh(bedMesh, 'mesh_matrix', true),
+      probed_matrix_flat: transformMesh(bedMesh, 'probed_matrix', true)
     }
   }
 }

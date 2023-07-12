@@ -1,18 +1,90 @@
 import { GetterTree } from 'vuex'
-import { AppFile, AppFileWithMeta, FileRoot, Files, FilesState } from './types'
+import { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState } from './types'
 import { RootState } from '../types'
+import { HistoryItem } from '../history/types'
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a directory of files and sub-directories.
    */
-  getDirectory: (state) => (root: FileRoot, path: string) => {
-    const dir = state[root]?.find(o => o.path === path)
+  getDirectory: (state, getters, rootState) => (path: string) => {
+    const pathContent = state.pathFiles[path]
 
-    return dir
+    if (pathContent) {
+      const items: FileBrowserEntry[] = []
+
+      const [root, ...restOfPath] = path.split('/')
+      const pathNoRoot = restOfPath.join('/')
+
+      if (pathNoRoot !== '') {
+        const item: AppDirectory = {
+          type: 'directory',
+          name: '..',
+          dirname: '..',
+          modified: 0,
+          size: 0
+        }
+
+        items.push(item)
+      }
+
+      for (const dir of pathContent.dirs) {
+        const item: AppDirectory = {
+          ...dir,
+          type: 'directory',
+          name: dir.dirname,
+          modified: new Date(dir.modified).getTime()
+        }
+
+        items.push(item)
+      }
+
+      // If root is timelapse, then add thumbnails data to files
+
+      const timelapseThumbnailFiles = root === 'timelapse'
+        ? new Set(pathContent.files
+          .map(file => file.filename)
+          .filter(filename => filename.endsWith('.jpg')))
+        : undefined
+
+      for (const file of pathContent.files) {
+        const history = (file.job_id && rootState.history.jobs.find(job => job.job_id === file.job_id)) || {} as HistoryItem
+
+        const item: AppFileWithMeta = {
+          ...file,
+          type: 'file',
+          name: file.filename,
+          extension: file.filename.split('.').pop() || '',
+          path: pathNoRoot,
+          modified: new Date(file.modified).getTime(),
+          history
+        }
+
+        if (timelapseThumbnailFiles && item.extension !== 'jpg') {
+          const expectedThumbnailFile = `${item.filename.slice(0, -(item.extension.length + 1))}.jpg`
+
+          if (timelapseThumbnailFiles.has(expectedThumbnailFile)) {
+            item.thumbnails = [
+              {
+                // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
+                data: '',
+                height: 0,
+                width: 0,
+                size: 0,
+                relative_path: expectedThumbnailFile
+              }
+            ]
+          }
+        }
+
+        items.push(item)
+      }
+
+      return items
+    }
   },
 
-  getRootFiles: (state) => (root: FileRoot) => {
+  getRootFiles: (state) => (root: string) => {
     return state.rootFiles[root]
   },
 
@@ -26,7 +98,7 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (root: FileRoot) => {
+  getRootProperties: () => (root: string) => {
     switch (root) {
       case 'gcodes':
         return {
@@ -36,7 +108,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: false,
           canPrint: true,
           canConfigure: true,
-          filterTypes: ['print_start_time']
+          filterTypes: ['hidden_files', 'print_start_time']
         }
       case 'config':
         return {
@@ -56,7 +128,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: true,
           canPrint: false,
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
       case 'docs':
         return {
@@ -66,7 +138,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: true,
           canPrint: false,
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
       case 'logs':
         return {
@@ -76,7 +148,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canView: true,
           canPrint: false,
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files', 'rolled_log_files']
         }
       case 'timelapse':
         return {
@@ -88,7 +160,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           canConfigure: false,
           canDelete: true,
           canCreateDirectory: true,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
       default:
         return {
@@ -106,12 +178,23 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a specific file.
    */
-  getFile: (state, getters) => (root: FileRoot, path: string, filename: string) => {
-    const dir = getters.getDirectory(root, path) as Files | undefined
+  getFile: (state) => (root: string, path: string, filename: string) => {
+    const pathContent = state.pathFiles[path]
 
-    const file = dir?.items?.find((item): item is AppFile | AppFileWithMeta => item.type === 'file' && item.filename === filename)
+    const file = pathContent?.files.find(file => file.filename === filename)
 
-    return file
+    if (file) {
+      const item: AppFile = {
+        ...file,
+        type: 'file',
+        name: file.filename,
+        extension: file.filename.split('.').pop() || '',
+        path,
+        modified: new Date(file.modified).getDate()
+      }
+
+      return item
+    }
   },
 
   /**

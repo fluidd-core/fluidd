@@ -16,11 +16,9 @@ app:
       not_loaded: Nenhuma malha carregada
     tooltip:
       calibrate: Nova calibração, salvando o perfil como 'default'
-      delete: Eliminar perfil. A impressora irá reiniciar.
+      delete: Eliminar perfil
       load: Carregar perfil
-      save: >-
-        Carregar o perfil calibrado no ficheiro printer.cfg. A impressora irá
-        reiniciar.
+      save: Carregar o perfil calibrado no ficheiro printer.cfg
   chart:
     label:
       current: Corrente
@@ -79,7 +77,6 @@ app:
       transfer_rate: Taxa de transferência
       uploaded: Carregado
     msg:
-      confirm: Tem a certeza? Vai excluir todos os arquivos e pastas existentes.
       not_found: Não foram encontrados ficheiros
       processing: A processar...
     overlay:
@@ -198,6 +195,7 @@ app:
         required: Obrigatório
       msg:
         confirm: Tem a certeza?
+        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem a certeza? Vai excluir os {count} itens selecionados.
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
         confirm_shutdown_host: Tem certeza? O sistema vai desligar.
     table:

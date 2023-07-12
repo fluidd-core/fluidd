@@ -9,12 +9,14 @@ export const getters: GetterTree<MacrosState, RootState> = {
    * Should include the macro's config.
    */
   getMacros: (state, getters, rootState) => {
-    const macros = Object.keys(rootState.printer.printer.configfile.settings)
+    const macros = Object.keys(rootState.printer.printer)
       .filter(key => /^gcode_macro (?!_)/.test(key))
       .map(key => {
-        const name = key.split(' ')[1]
-        const config = rootState.printer.printer.configfile.settings[key]
+        const lowerCaseKey = key.toLocaleLowerCase()
+        const name = lowerCaseKey.split(' ', 2)[1]
+        const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
         const stored = state.stored.find(macro => macro.name === name)
+        const variables = rootState.printer.printer[key]
 
         const macro: Macro = {
           name,
@@ -23,6 +25,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
           disabledWhilePrinting: false,
           color: '',
           categoryId: '0',
+          variables,
           ...stored,
           ...{ config }
         }

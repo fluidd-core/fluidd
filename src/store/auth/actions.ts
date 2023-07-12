@@ -4,7 +4,7 @@ import { AuthState } from './types'
 import { RootState } from '../types'
 import { httpClientActions } from '@/api/httpClientActions'
 import router from '@/router'
-import consola from 'consola'
+import { consola } from 'consola'
 
 export const actions: ActionTree<AuthState, RootState> = {
   /**

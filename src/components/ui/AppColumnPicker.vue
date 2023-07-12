@@ -4,44 +4,40 @@
     left
     offset-y
     transition="slide-y-transition"
-    :min-width="150"
+    min-width="150"
     :close-on-content-click="false"
   >
-    <template #activator="{ on, attrs }">
-      <v-btn
-        :disabled="disabled"
-        fab
-        small
-        text
-        v-bind="attrs"
-        v-on="on"
-      >
-        <v-icon>
-          $cogs
-        </v-icon>
-      </v-btn>
+    <template #activator="{ on: menu, attrs }">
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            :disabled="disabled"
+            fab
+            small
+            text
+            v-bind="attrs"
+            v-on="{ ...tooltip, ...menu }"
+          >
+            <v-icon>
+              $tableColumn
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.general.btn.select_columns') }}</span>
+      </v-tooltip>
     </template>
     <v-list
       dense
       class="overflow-y-auto"
     >
-      <template
-        v-for="header in headers"
-      >
+      <template v-for="header in headers">
         <v-list-item
           v-if="header.text !== '' && header.configurable"
           :key="header.value"
-          link
-          dense
           @click="handleToggleHeader(header)"
         >
           <v-list-item-action class="my-0">
-            <v-checkbox
-              :input-value="header.visible"
-              dense
-              hide-details
-              color="primary"
-            />
+            <v-checkbox :input-value="header.visible" />
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ header.text }}</v-list-item-title>

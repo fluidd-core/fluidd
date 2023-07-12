@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      active: active
+      active: 已啟用
       box_scale: 顯示比例
       flat_surface: 顯示參考平面
       mesh_matrix: 網格矩陣
@@ -16,9 +16,9 @@ app:
       not_loaded: 熱床網格配置不存在
     tooltip:
       calibrate: 開始校準，該校準信息會默認保存為 defalut
-      delete: 刪除配置。該操作將會重啟你的打印機
+      delete: 刪除配置
       load: 加載配置
-      save: 將校準的配置文件應用於 printer.cfg。該操作將會重啟你的打印機
+      save: 將校準的配置文件應用於 printer.cfg
   chart:
     label:
       current: 當前值
@@ -26,8 +26,8 @@ app:
       'off': 關閉圖表
       'on': 開啟圖表
       power: 功率
-      rate_of_change: 變化值
       target: 目標值
+      rate_of_change: 變化值
     tooltip:
       help: 按住 Shift 鍵可縮放圖表。<br />單擊一個項目名稱或功率可在圖表中切換顯示。
   console:
@@ -63,7 +63,6 @@ app:
       label:
         print_start_time: 隱藏已打印項目
         print_start_time_desc: 隱藏已經打印的項目文件
-        hidden_files: 過濾隱藏文件
         klipper_backup_files: 隱藏Klipper備份文件
     label:
       dir_name: 目錄名稱
@@ -75,11 +74,11 @@ app:
       uploaded: 上傳完成
       view_section_documentation: '%{section} 查看文檔'
     msg:
-      confirm: 這將刪除所有文件和文件夾！是否確認？
       not_found: 文件未找到
       processing: 處理中...
     overlay:
-      drag_files_folders: <strong>拖動</strong> 一個文件到這里
+      drag_files_folders_upload: <strong>拖動</strong>文件和文件夾到這裡上傳
+      drag_files_enqueue: <strong>拖動</strong>文件到這裡排隊
     title:
       add_dir: 新建目錄
       add_file: 新建文件
@@ -90,11 +89,13 @@ app:
       upload_file: 上傳文件
     tooltip:
       low_on_space: 磁盤空間不足
+      move_item: '移動項目 | 移動 {count} 項'
       root_disabled: '{root} G代碼文件目錄不可用，請首先連接打印機或者檢查G代碼存放目錄的路徑與讀權限'
     url:
       klipper_config: 'https://www.klipper3d.org/zh-Hant/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
-      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      moonraker_telegram_bot_config: >-
+        https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
   gcode:
     btn:
       load_current_file: 載入當前文件
@@ -109,6 +110,7 @@ app:
       show_extrusions: 顯示已打印部分
       show_moves: 顯示移動走線
       show_next_layer: 顯示下一層
+      show_parts: 顯示零件
       show_previous_layer: 顯示上一層
       show_retractions: 顯示回抽
       parsing_file: 解析文件
@@ -141,6 +143,7 @@ app:
       filter: 過濾
       forgot_password: 忘記密碼？
       heaters_off: 停止加熱
+      job_queue: 作業隊列
       load_all: 全部加載
       login: 登入
       logout: 登出
@@ -159,9 +162,9 @@ app:
       remove_all: 删除全部
       rename: 重命名
       reprint: 重新打印
-      reset_default_layout: 重置預設佈局
       reset_file: 重置文件
       reset_layout: 重置布局
+      reset_default_layout: 重置預設佈局
       restart_firmware: 重啟Firmware
       restart_service: '重啟 %{service}'
       restart_service_klipper: 重啟Klipper
@@ -171,12 +174,13 @@ app:
       return_dashboard: 返回到儀錶板
       save: 保存
       save_as: 另存為
-      save_config_and_restart: 保存配置並重新啟動
       save_restart: 保存並重啟
+      save_config_and_restart: 保存配置並重新啟動
       send: 發送
       set_color: 設置顏色
       set_default_layout: 設置為預設佈局
       shutdown: 關閉
+      snooze: 打盹
       socket_reconnect: 重新連接
       socket_refresh: 強制刷新
       upload: 上傳
@@ -193,11 +197,13 @@ app:
     label:
       accel_to_decel: 加速到減速度
       acceleration: 加速度
+      accepted_screws: 認可螺絲
       actual_time: 實際剩余
       add_camera: 添加攝像頭
       add_filter: 添加過濾
       add_preset: 添加預設
       add_user: 添加用戶
+      all: 全部
       api_key: API 密鑰
       api_url: Moonraker 服務器地址
       auth_source: 驗證源
@@ -205,6 +211,7 @@ app:
       change_password: 更改密碼
       clear_all: 全部清除
       color: 顏色
+      command: 命令
       confirm: 確認
       current_password: 當前密碼
       current_user: 當前使用者
@@ -241,6 +248,9 @@ app:
       numeric_prefix_sort: 數字前綴排序
       password: 密碼
       partial_of_total: '%{partial} - %{total}'
+      pause_at_layer: 在層暫停
+      pause_at_next_layer: 在下一層暫停
+      pause_at_layer_number: 在圖層編號處暫停
       power: 設備
       pressure_advance: 壓力補償
       printers: 打印機列表
@@ -249,11 +259,16 @@ app:
       retract_length: 回抽距離
       retract_speed: 回抽速度
       save_as: 另存為
+      screw_index: 螺絲索引
+      screw_name: 螺絲名稱
+      screw_number: '螺絲 %{index}'
       services: 服務
       slicer: 切片剩余
       smooth_time: 平滑時間
       speed: 移動速度
       sqv: 轉角速度
+      stepper_enabled: 啟用步進器
+      synced_extruder: 同步擠出機
       thumbnail_size: 縮圖大小
       total: 已用時間
       total_filament: 總消耗耗材
@@ -263,11 +278,12 @@ app:
       total_print_time_avg: 平均打印時間
       total_time: 總時間
       total_time_avg: 平均時間
-      turn_device_off: '關閉 %{device}'
       turn_device_on: '開啟 %{device}'
+      turn_device_off: '關閉 %{device}'
       uncategorized: 未分類
       unretract_extra_length: 回抽額外裝填量
       unretract_speed: 回抽裝填速度
+      upload_and_print: 上傳和打印
       used: 已用
       username: 用戶名
       variance: 偏差值
@@ -284,9 +300,12 @@ app:
     msg:
       password_changed: 密碼已更改
       wrong_password: 密碼錯誤
+      bed_screws_adjust: 如果需要對當前螺釘進行重大調整，請單擊<b>已調整</b>； 否則，單擊<b>接受</b>繼續。
       welcome_back: 歡迎回來。<br>在下面登錄以與您的打印機保持聯繫。
       offline_ready: Fluidd 現在可以離線工作了。
       needs_refresh: 有新內容可用，請單擊 <b>重新加載</b> 按鈕進行更新。
+      pending_configuration_sections_deleted: 以下部分已標記為刪除
+      rolledover_logs: '以下應用程序日誌已更新：%{applications}'
     simple_form:
       error:
         arrayofnums: 僅允許輸入數字
@@ -312,8 +331,6 @@ app:
         confirm_service_stop: '你確定要停止 %{name} 服務嗎?'
         confirm_power_device_toggle: 這會切換設備開關狀態！是否確認？
         unsaved_changes: 這會丟失未保存的更改！是否確認？
-        apply_z_offset_endstop: Z軸限位偏移將以當前Z軸偏移量的基礎上進行計算並更新
-        apply_z_offset_probe: 自動調平的Z軸偏移量將以當前Z軸偏移量的基礎上進行計算並更新
         no_file_preview: ' 當前無法預覽%{name} 。'
     table:
       header:
@@ -365,9 +382,11 @@ app:
       limits: 打印機限制
       macros: 宏
       metrics_explorer: 指標瀏覽器
+      not_found: 404 未找到
       other_files: 其他文件（日志、文檔及參考配置）
       pending_configuration_changes: 掛起的配置更改
       retract: 固件回抽
+      rollover_logs: 滾動日誌
       runout_sensors: 斷料檢測傳感器
       settings: 設置
       stats: 打印任務統計
@@ -386,11 +405,10 @@ app:
       reload_restart_klipper: 重新載入 Klipper 配置並重啟 MCU
       restart_klipper: 重啟 Klipper 服務
       run_collector: 運行收集器
+      rollover_logs: 滾動日誌
   history:
     msg:
       confirm: 這將清除所有歷史記錄和打印機統計信息！是否確認？
-      confirm_jobs: 這會清除任務歷史信息！是否確認？
-      confirm_stats: 這會清除狀態統計信息！是否確認？
   job_queue:
     msg:
       confirm: 這將清除整個打印機隊列！是否確認？
@@ -420,6 +438,7 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG 自適應
       mjpegstream: MJPEG 視頻流
+      hlsstream: HLS流
       video: IP 攝像頭
       iframe: HTTP 頁面
     camera_rotate_options:
@@ -433,6 +452,9 @@ app:
       aspect_ratio: 縱橫比
       aspect_ratio_format: '[寬度：高度]'
       auto_edit_extensions: 自動進入編輯模式的文件類型
+      auto_follow_on_file_load: 自動跟踪文件加載進度
+      auto_load_on_print_start: 打印開始時自動加載文件
+      auto_load_mobile_on_print_start: 在移動設備上自動加載文件
       axes: 軸
       camera_flip_x: 水平翻轉
       camera_flip_y: 垂直翻轉
@@ -445,21 +467,23 @@ app:
       camera_url: 攝像頭地址
       card: 卡片
       collector: 收集器
-      confirm_dirty_editor_close: 編輯器有未保存的更改時需要確認
       confirm_on_estop: 緊急停止時是否需要確認
       confirm_on_power_device_change: 改變設備開關狀態時需要確認
       confirm_on_save_config_and_restart: 在保存並重新啟動之前查看掛起的配置更改
+      confirm_dirty_editor_close: 編輯器有未保存的更改時需要確認
       contains: 包含字符
       dark_mode: 深色模式
       dashed: 虛線
       default_extrude_length: 默認擠出距離
       default_extrude_speed: 默認擠出速度
+      default_min_layer_height: 默認最小層高
       default_toolhead_move_length: 默認打印頭移動距離
       default_toolhead_xy_speed: 默認 XY 軸移動速度
       default_toolhead_z_speed: 默認 Z 軸移動速度
       dotted: 点线
       draw_background: 顯示背景
       enable: 啟用
+      enable_diagnostics: 啟用診斷
       enable_notifications: 更新通知
       expression: 表達式
       extrusion_line_width: 擠出線寬
@@ -472,7 +496,6 @@ app:
       fps_idle_target: 未對焦時 FPS
       height: 高度
       gcode_coords: 使用 GCode 坐標
-      group_lower_layers: 下層分組
       icon: 圖示
       invert_x_control: 反轉X軸控制
       invert_y_control: 反轉Y軸控制
@@ -497,10 +520,13 @@ app:
       right_y: 右 Y 軸
       show_animations: 顯示動畫
       show_barometric_pressure: 顯示氣壓
+      show_code_lens: 顯示 CodeLens
+      show_gas_resistance: 顯示耐氣體性
       show_legend: 顯示圖例
       show_rate_of_change: 顯示溫度變化值
       show_relative_humidity: 顯示相對濕度
       show_save_config_and_restart: 頂部導航中的保存配置並重啟按鈕
+      show_upload_and_print: 在頂部導航中顯示上傳和打印按鈕
       solid: 實線
       starts_with: 起始字符
       theme_preset: 預設主題
@@ -516,6 +542,7 @@ app:
       text_sort_order: 文本排序
       force_move_toggle_warning: 強制移動時是否需要確認
       show_manual_probe_dialog_automatically: 自動顯示手動探測對話框
+      show_bed_screws_adjust_dialog_automatically: 自動顯示床身螺絲調整對話框
     timer_options:
       duration: 僅顯示已用時間
       filament: 通過耗材用量估算
@@ -533,8 +560,10 @@ app:
       thermal_presets: 溫度預設
       tool: 移動控制
     tooltip:
+      diagnostics_performance: '[BETA] 記錄診斷信息可能會影響性能'
       gcode_coords: 使用 GCode 坐標位置而不是儀表板上的打印頭坐標位置
       show_manual_probe_dialog_automatically: 運行手動探測工具時自動顯示幫助對話框
+      show_bed_screws_adjust_dialog_automatically: 如果運行 BED_SCREWS_ADJUST 工具，自動顯示助手對話框
   socket:
     msg:
       connecting: 正在連接至 Moonraker ...
@@ -554,7 +583,9 @@ app:
       manufacturer: 制造商
       mcu_awake: '{mcu} 喚醒時間'
       mcu_bandwidth: '{mcu} 帶寬占用'
+      mcu_information: '{mcu}信息'
       mcu_load: '{mcu} 負載'
+      micro_controller: 微控制器
       model: 型號
       moonraker_load: Moonraker 負載
       network: 網路
@@ -574,6 +605,7 @@ app:
       home_y: 歸位Y
       home_all: 全部歸位
     title:
+      bed_screws_adjust: 底板螺絲調整
       manual_probe: 手動探測
     tooltip:
       absolute_positioning: 絕對位置
@@ -582,11 +614,8 @@ app:
       home_z: 歸位 Z
       manual_probe: 手動探測
       motors_off: 關閉電機
-      z_tilt_adjust: Z軸傾斜調整
-      quad_gantry_level: 龍門架調平
       relative_positioning: 相對位置
-      screws_tilt_calculate: 輔助調平螺絲
-      bed_screws_adjust: 手動調平螺絲
+      tools: 工具
     label:
       stats_active_extruder: '擠出機配置為耗材直徑 %{filamentDiameter}mm，噴嘴直徑 %{nozzleDiameter}mm'
       stats_volumetric_flow: '以 %{extrudeSpeed}mm/s 的速度，預估擠出耗材體積為 %{estimatedVolumetricFlow}mm³/s'
@@ -628,7 +657,9 @@ app:
     error:
       newframe: 拍攝延時幀時出錯
     label:
+      frames: '%{frames} 幀 | %{frames} 幀'
       length: '預計長度：%{length}'
+      frame: 相框 | 相框
     title:
       timelapse_settings: 延時設置
       timelapse_status: 延時狀態
@@ -663,10 +694,12 @@ app:
         center: 中心
         back_left: 左後
         back_right: 右後
+        x_only: 僅移動 X
+        y_only: 僅移動 Y
       previewimage: 生成縮略圖
       saveframes: 保存幀
       stream_delay_compensation: 延遲補償
       targetlength: 目標長度
       variable_fps: 可變幀率
-      variable_fps_max: 最大幀率
       variable_fps_min: 最小幀率
+      variable_fps_max: 最大幀率

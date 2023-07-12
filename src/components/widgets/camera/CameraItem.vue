@@ -13,21 +13,22 @@
     >
 
     <video
-      v-if="camera.service === 'ipstream'"
+      v-else-if="camera.service === 'ipstream' || camera.service === 'hlsstream' || camera.service === 'webrtc-camerastreamer'"
       ref="camera_image"
       :src="cameraUrl"
       autoplay
+      muted
       class="camera-image"
     />
 
     <iframe
-      v-if="camera.service === 'iframe'"
+      v-else-if="camera.service === 'iframe'"
       ref="camera_image"
       :src="cameraUrl"
       class="camera-image"
       style="border: none; width: 100%"
       :style="{
-        height: (cameraHeight && !camera.aspectRatio) ? (fullscreen ? '100vh' : `${cameraHeight}px`) : undefined,
+        height: !camera.aspectRatio ? (fullscreen ? '100vh' : '720px') : undefined,
         'aspect-ratio': camera.aspectRatio ? camera.aspectRatio.replace(':', '/') : undefined,
         'max-height': camera.aspectRatio ? 'unset' : undefined
       }"
@@ -64,6 +65,9 @@ import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { noop } from 'vue-class-component/lib/util'
 import { CameraFullscreenAction } from '@/store/config/types'
+import type HlsType from 'hls.js'
+import consola from 'consola'
+let Hls: typeof HlsType
 
 /**
  * Adaptive load credit to https://github.com/Rejdukien
@@ -77,7 +81,7 @@ export default class CameraItem extends Vue {
   readonly fullscreen!: boolean
 
   @Ref('camera_image')
-  readonly cameraImage!: HTMLImageElement
+  readonly cameraImage!: HTMLImageElement | HTMLVideoElement | HTMLIFrameElement
 
   // Adaptive load counters
   request_start_time = performance.now()
@@ -87,16 +91,16 @@ export default class CameraItem extends Vue {
   time_smoothing = 0.6
   request_time_smoothing = 0.1
   currentFPS = '0'
+  hls: HlsType | null = null
+  pc: RTCPeerConnection | null = null
+  remoteId: string | null = null
 
   // URL used by camera
   cameraUrl = ''
   cameraFullScreenUrl = ''
 
-  // iframe height, deprecated
-  cameraHeight = 720
-
   // Maintains the last cachebust string
-  refresh = new Date().getTime()
+  refresh = Date.now()
 
   // Callback to cancel requestAnimationFrame() when component is being destroyed.
   cancelCameraTransform = noop
@@ -146,11 +150,17 @@ export default class CameraItem extends Vue {
     this.cancelCameraTransform = this.createTransformAnimation()
   }
 
+  mounted () {
+    this.setUrl()
+  }
+
   /**
    * make sure to clear the URL and remove the listener when we destroy the
    * component.
    */
   beforeDestroy () {
+    this.hls?.destroy()
+    this.pc?.close()
     this.cancelCameraTransform()
     this.cameraUrl = this.cameraImage.src = ''
     this.cameraFullScreenUrl = ''
@@ -163,7 +173,7 @@ export default class CameraItem extends Vue {
    */
   handleRefresh () {
     if (!document.hidden) {
-      this.refresh = new Date().getTime()
+      this.refresh = Date.now()
       // this.setUrl()
       this.currentFPS = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
       this.$nextTick(() => {
@@ -209,46 +219,159 @@ export default class CameraItem extends Vue {
   /**
    * Sets the correct (cachebusted if applicable) camera url.
    */
-  setUrl () {
-    if (!document.hidden) {
+  async setUrl () {
+    if (!document.hidden && this.cameraImage !== undefined) {
       const type = this.camera.service
       const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
       const hostUrl = new URL(document.URL)
       const url = new URL(baseUrl, hostUrl.origin)
 
-      this.cameraHeight = this.camera.height || 720
+      switch (type) {
+        case 'mjpegstreamer':
+          url.searchParams.append('cacheBust', this.refresh.toString())
+          if (!url.searchParams.get('action')?.startsWith('stream')) {
+            url.searchParams.set('action', 'stream')
+          }
+          this.cameraUrl = url.toString()
+          if (!this.cameraFullScreenUrl) {
+            this.cameraFullScreenUrl = this.cameraUrl
+          }
+          break
 
-      if (type === 'mjpegstreamer') {
-        url.searchParams.append('cacheBust', this.refresh.toString())
-        if (!url.searchParams.get('action')?.startsWith('stream')) {
-          url.searchParams.set('action', 'stream')
-        }
-        this.cameraUrl = url.toString()
-        if (!this.cameraFullScreenUrl) {
-          this.cameraFullScreenUrl = this.cameraUrl
-        }
-      }
+        case 'mjpegstreamer-adaptive':
+          this.request_start_time = performance.now()
+          url.searchParams.append('cacheBust', this.refresh.toString())
+          if (!url.searchParams.get('action')?.startsWith('snapshot')) {
+            url.searchParams.set('action', 'snapshot')
+          }
+          this.cameraUrl = url.toString()
+          if (!this.cameraFullScreenUrl) {
+            url.searchParams.set('action', 'stream')
+            this.cameraFullScreenUrl = url.toString()
+          }
+          break
 
-      if (type === 'mjpegstreamer-adaptive') {
-        this.request_start_time = performance.now()
-        url.searchParams.append('cacheBust', this.refresh.toString())
-        if (!url.searchParams.get('action')?.startsWith('snapshot')) {
-          url.searchParams.set('action', 'snapshot')
-        }
-        this.cameraUrl = url.toString()
-        if (!this.cameraFullScreenUrl) {
-          url.searchParams.set('action', 'stream')
-          this.cameraFullScreenUrl = url.toString()
-        }
-      }
+        case 'ipstream':
+        case 'iframe':
+          this.cameraUrl = baseUrl
+          if (!this.cameraFullScreenUrl) {
+            this.cameraFullScreenUrl = baseUrl
+          }
+          break
 
-      if (type === 'ipstream' || type === 'iframe') {
-        this.cameraUrl = baseUrl
-        if (!this.cameraFullScreenUrl) {
-          this.cameraFullScreenUrl = baseUrl
+        case 'hlsstream': {
+          const cameraVideo = this.cameraImage as HTMLVideoElement
+
+          if (!Hls) {
+            Hls = (await import('hls.js')).default
+          }
+
+          if (Hls.isSupported()) {
+            this.hls?.destroy()
+
+            this.hls = new Hls({
+              enableWorker: true,
+              lowLatencyMode: true,
+              maxLiveSyncPlaybackRate: 2,
+              liveSyncDuration: 0.5,
+              liveMaxLatencyDuration: 2,
+              backBufferLength: 5
+            })
+            this.hls.loadSource(baseUrl)
+            this.hls.attachMedia(cameraVideo)
+            this.hls.on(Hls.Events.MANIFEST_PARSED, () => {
+              cameraVideo.play()
+            })
+          } else if (cameraVideo.canPlayType('application/vnd.apple.mpegurl')) {
+            fetch(baseUrl).then(() => {
+              cameraVideo.src = baseUrl
+              cameraVideo.play()
+            })
+          }
+          break
+        }
+
+        case 'webrtc-camerastreamer': {
+          const cameraVideo = this.cameraImage as HTMLVideoElement
+
+          this.pc?.close()
+
+          fetch(baseUrl, {
+            body: JSON.stringify({
+              type: 'request'
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            method: 'POST'
+          })
+            .then(response => response.json())
+            .then((answer: RTCSessionDescriptionInit) => {
+              this.remoteId = 'id' in answer && typeof (answer.id) === 'string' ? answer.id : null
+
+              const config = {
+                sdpSemantics: 'unified-plan'
+              } as RTCConfiguration
+
+              if ('iceServers' in answer && Array.isArray(answer.iceServers)) {
+                config.iceServers = answer.iceServers
+              }
+
+              this.pc = new RTCPeerConnection(config)
+
+              this.pc.addTransceiver('video', {
+                direction: 'recvonly'
+              })
+
+              this.pc.ontrack = (evt: RTCTrackEvent) => {
+                if (evt.track.kind === 'video' && cameraVideo) {
+                  cameraVideo.srcObject = evt.streams[0]
+                }
+              }
+
+              this.pc.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
+                if (e.candidate) {
+                  return fetch(baseUrl, {
+                    body: JSON.stringify({
+                      type: 'remote_candidate',
+                      id: this.remoteId,
+                      candidates: [e.candidate]
+                    }),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    method: 'POST'
+                  })
+                    .catch(e => consola.error('[CameraItem] onicecandidate', e))
+                }
+              }
+
+              return this.pc?.setRemoteDescription(answer)
+            })
+            .then(() => this.pc?.createAnswer())
+            .then(answer => this.pc?.setLocalDescription(answer))
+            .then(() => {
+              const offer = this.pc?.localDescription
+
+              return fetch(baseUrl, {
+                body: JSON.stringify({
+                  type: offer?.type,
+                  id: this.remoteId,
+                  sdp: offer?.sdp
+                }),
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                method: 'POST'
+              })
+            })
+            .then(response => response.json())
+            .catch(e => consola.error('[CameraItem] setUrl', e))
         }
       }
     } else {
+      this.hls?.destroy()
+      this.pc?.close()
       this.cameraUrl = ''
     }
   }

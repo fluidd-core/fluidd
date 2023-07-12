@@ -21,7 +21,7 @@
     />
 
     <v-btn
-      v-if="isMobile && authenticated && socketConnected"
+      v-if="isMobileViewport && authenticated && socketConnected"
       x-small
       fab
       fixed
@@ -86,6 +86,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { EventBus, FlashMessage } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
+import BrowserMixin from '@/mixins/browser'
 import { LinkPropertyHref } from 'vue-meta'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 
@@ -106,7 +107,7 @@ import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystem
     FileSystemDownloadDialog
   }
 })
-export default class App extends Mixins(StateMixin, FilesMixin) {
+export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   toolsdrawer: boolean | null = null
   navdrawer: boolean | null = null
   showUpdateUI = false
@@ -136,14 +137,9 @@ export default class App extends Mixins(StateMixin, FilesMixin) {
     return this.hasWait(this.$waits.onLoadLanguage)
   }
 
-  get progress () {
-    let progress = this.$store.getters['printer/getPrintProgress']
-    progress = (progress * 100).toFixed()
-    return progress
-  }
-
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
+  get progress (): number {
+    const progress = this.$store.getters['printer/getPrintProgress'] as number
+    return Math.floor(progress * 100)
   }
 
   get pageTitle () {

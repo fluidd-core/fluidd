@@ -18,11 +18,9 @@ app:
       not_loaded: Kein Mesh geladen
     tooltip:
       calibrate: Neue Kalibrierung beginnen und Profil als 'default' speichern
-      delete: Profil löschen. Achtung, der Drucker wird neu gestartet
+      delete: Profil löschen
       load: Profil laden
-      save: >-
-        Fügt das Mesh Profil der printer.cfg hinzu. Achtung, der Drucker wird
-        neu gestartet
+      save: Fügt das Mesh Profil der printer.cfg hinzu
   chart:
     label:
       current: Aktuell
@@ -79,7 +77,6 @@ app:
       label:
         print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
-        hidden_files: Versteckte Dateien ausblenden
         klipper_backup_files: Klipper-Backupdateien ausblenden
     label:
       dir_name: Ordnername
@@ -92,7 +89,6 @@ app:
       view_section_documentation: >-
         Dokumentation für '%{section}' anzeigen
     msg:
-      confirm: Sind Sie sicher? Es werden alle enthaltenen Dateien und Ordner gelöscht.
       not_found: Keine Dateien gefunden
       processing: Verarbeiten...
     overlay:
@@ -327,15 +323,10 @@ app:
         invalid_number: Ungültige Zahl
         credentials: Ungültige Anmeldeinformationen
       msg:
-        apply_z_offset_endstop: >-
-          Endschalter Z-Offset wird aus dem aktuellen Z-Offset berechnet und
-          aktualisiert.
-        apply_z_offset_probe: >-
-          Probe/Bltouch Z-Offset wird aus dem aktuellen Z-Offset berechnet und
-          aktualisiert.
         no_file_preview: >-
           %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?
+        confirm_delete: Sind Sie sicher? Hierdurch wird das ausgewählte Element gelöscht. | Sind Sie sicher? Hierdurch werden die {count} ausgewählten Elemente gelöscht.
         confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
         confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
@@ -529,6 +520,7 @@ app:
       name: Name
       optional: Optional
       right_y: Rechte Y-Achse
+      save_and_restore_view_state: Ansicht speichern und wiederherstellen
       confirm_on_save_config_and_restart: >-
         Vor dem Speichern und Neustart die ausstehenden
         Konfigurationsänderungen überprüfen
@@ -609,20 +601,15 @@ app:
       home_y: 'Y'
       home_all: Alle
     tooltip:
+      absolute_positioning: Absolute Positionierung
       extruder_disabled: >-
         Extruder deaktiviert, da unter der min_extrude_temp
         (%{min}<small>°C</small>)
       home_xy: Home XY
       home_z: Home Z
-      motors_off: MOTOREN AUS
-      relative_positioning: Relative Positionierung
-      absolute_positioning: Absolute Positionierung
-      force_move: FORCE_MOVE
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      z_tilt_adjust: Z_Tilt_Adjust
-      quad_gantry_level: QGL
-      bed_screws_adjust: BED_SCREWS_ADJUST
       manual_probe: Manuelles Probing
+      motors_off: Motoren Aus
+      relative_positioning: Relative Positionierung
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing

@@ -54,4 +54,24 @@ describe('formatDateTime', () => {
       expect(Filters.formatRelativeTimeToDate(date, new Date())).toBe('3 days ago')
     })
   })
+
+  it('Formats as ISO8601 correctly', () => {
+    timeTravel('2022-11-19 14:32', () => {
+      const now = Date.now()
+
+      expect(Filters.formatAbsoluteDateTime(now)).toBe('14:32')
+
+      const fiveMins = Date.now() + (5 * 60 * 1000)
+
+      expect(Filters.formatAbsoluteDateTime(fiveMins)).toBe('14:37')
+
+      const tenHours = Date.now() + (10 * 60 * 60 * 1000)
+
+      expect(Filters.formatAbsoluteDateTime(tenHours)).toBe('11-20 00:32')
+
+      const oneYear = Date.now() + (365 * 24 * 60 * 60 * 1000)
+
+      expect(Filters.formatAbsoluteDateTime(oneYear)).toBe('2023-11-19 14:32')
+    })
+  })
 })

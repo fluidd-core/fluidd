@@ -1,8 +1,7 @@
-import { KlipperMesh, ProcessedMesh } from '@/store/mesh/types'
+import { KlipperBedMesh, ProcessedMesh } from '@/store/mesh/types'
 
-export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = false): ProcessedMesh => {
-  const bed_mesh = mesh
-  const matrix = bed_mesh[meshMatrix] as number[][]
+export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof KlipperBedMesh, makeFlat = false): ProcessedMesh => {
+  const matrix = bedMesh[meshMatrix] as number[][]
   const coordinates = []
   let min = 0
   let mid = 0
@@ -14,11 +13,11 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
     matrix.length >= 3 &&
     matrix[0] &&
     matrix[0].length >= 3 &&
-    bed_mesh.mesh_min &&
-    bed_mesh.mesh_max
+    bedMesh.mesh_min &&
+    bedMesh.mesh_max
   ) {
-    const x_distance = (bed_mesh.mesh_max[0] - bed_mesh.mesh_min[0]) / (matrix[0].length - 1)
-    const y_distance = (bed_mesh.mesh_max[1] - bed_mesh.mesh_min[1]) / (matrix.length - 1)
+    const x_distance = (bedMesh.mesh_max[0] - bedMesh.mesh_min[0]) / (matrix[0].length - 1)
+    const y_distance = (bedMesh.mesh_max[1] - bedMesh.mesh_min[1]) / (matrix.length - 1)
     let x_idx = 0
     let y_idx = 0
 
@@ -33,9 +32,9 @@ export const transformMesh = (mesh: KlipperMesh, meshMatrix: string, makeFlat = 
 
     for (const x_axis of matrix) {
       x_idx = 0
-      const y_coord = bed_mesh.mesh_min[1] + (y_idx * y_distance)
+      const y_coord = bedMesh.mesh_min[1] + (y_idx * y_distance)
       for (const z_coord of x_axis) {
-        const x_coord = bed_mesh.mesh_min[0] + (x_idx * x_distance)
+        const x_coord = bedMesh.mesh_min[0] + (x_idx * x_distance)
         x_idx++
         coordinates.push(
           {

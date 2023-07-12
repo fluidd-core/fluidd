@@ -16,12 +16,16 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Ref } from 'vue-property-decorator'
+import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
+import BrowserMixin from '@/mixins/browser'
 import type * as Monaco from 'monaco-editor/esm/vs/editor/editor.api'
+import md5AsBase64 from '@/util/md5-as-base64'
+import { InstanceConfig, RestoreViewState } from '@/store/config/types'
+import consola from 'consola'
 let monaco: typeof Monaco // dynamically imported
 
 @Component({})
-export default class FileEditor extends Vue {
+export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly value!: string
 
@@ -34,14 +38,33 @@ export default class FileEditor extends Vue {
   @Prop({ type: Boolean, default: true })
   readonly codeLens!: boolean
 
+  @Prop({ type: String, required: true })
+  readonly path!: string
+
   @Ref('monaco-editor')
   readonly monacoEditor!: HTMLElement
+
+  viewStateHash: string | null = null
 
   // Our editor, once init'd.
   editor: Monaco.editor.IStandaloneCodeEditor | null = null
 
-  get isMobile () {
-    return this.$vuetify.breakpoint.mobile
+  get restoreViewState (): RestoreViewState {
+    return this.$store.state.config.uiSettings.editor.restoreViewState as RestoreViewState
+  }
+
+  get activeInstance (): InstanceConfig {
+    return this.$store.getters['config/getCurrentInstance'] as InstanceConfig
+  }
+
+  get restoreViewStateStorage (): Storage | undefined {
+    switch (this.restoreViewState) {
+      case 'local':
+        return localStorage
+
+      case 'session':
+        return sessionStorage
+    }
   }
 
   async mounted () {
@@ -73,27 +96,59 @@ export default class FileEditor extends Vue {
         useShadows: false
       },
       minimap: {
-        enabled: (!this.isMobile)
+        enabled: (!this.isMobileViewport)
       },
-      rulers: (this.isMobile) ? [80, 120] : []
+      rulers: (this.isMobileViewport) ? [80, 120] : []
     })
+
+    this.editor.addAction({
+      id: 'action-save-file',
+      label: this.$tc('app.general.btn.save'),
+      keybindings: [monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS],
+      run: () => {
+        this.$emit('save')
+      }
+    })
+
+    const filename = this.path ? `${this.path}/${this.filename}` : this.filename
+    const apiFileUrl = `${this.activeInstance.apiUrl}/server/files/${filename}`
 
     // Define the model. The filename will map to the supported languages.
     const model = monaco.editor.createModel(
       this.value,
       undefined,
-      monaco.Uri.file(this.filename)
+      monaco.Uri.file(filename)
     )
     this.editor.setModel(model)
 
+    const restoreViewStateStorage = this.restoreViewStateStorage
+
+    if (restoreViewStateStorage) {
+      this.viewStateHash = 'monaco.' + md5AsBase64(apiFileUrl)
+
+      const viewState = restoreViewStateStorage.getItem(this.viewStateHash)
+
+      if (viewState) {
+        this.editor.restoreViewState(JSON.parse(viewState))
+      }
+    }
+
     // Focus the editor.
-    this.editor.focus()
+    this.$nextTick(() => {
+      focus()
+    })
 
     this.$emit('ready')
-    this.editor.onDidChangeModelContent(event => {
+
+    this.editor.onDidChangeModelContent(() => {
       const value = this.editor?.getValue()
-      this.emitChange(value, event)
+
+      this.$emit('input', value)
     })
+  }
+
+  focus () {
+    this.editor?.focus()
   }
 
   showCommandPalette () {
@@ -105,13 +160,22 @@ export default class FileEditor extends Vue {
 
   // Ensure we dispose of our models and editor.
   destroyed () {
+    const restoreViewStateStorage = this.restoreViewStateStorage
+
+    if (restoreViewStateStorage && this.viewStateHash) {
+      const viewState = this.editor?.saveViewState()
+
+      if (viewState) {
+        try {
+          restoreViewStateStorage.setItem(this.viewStateHash, JSON.stringify(viewState))
+        } catch (e) {
+          consola.error('[Storage] setItem', e)
+        }
+      }
+    }
+
     if (monaco) monaco.editor.getModels().forEach(model => model.dispose())
     if (this.editor) this.editor.dispose()
-  }
-
-  emitChange (value: string | undefined, event: Monaco.editor.IModelContentChangedEvent) {
-    this.$emit('change', value, event)
-    this.$emit('input', value)
   }
 }
 </script>

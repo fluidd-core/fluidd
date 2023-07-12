@@ -1,6 +1,6 @@
 import _Vue from 'vue'
 import { EventBus, FlashMessageTypes } from '@/eventBus'
-import consola from 'consola'
+import { consola } from 'consola'
 import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Globals } from '@/globals'
 
@@ -26,7 +26,8 @@ const createHttpClient = (store: any) => {
       '/access/login'
     ],
     502: [
-      '/access/oneshot_token'
+      '/access/oneshot_token',
+      '/access/user'
     ]
   }
 

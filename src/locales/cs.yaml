@@ -17,9 +17,9 @@ app:
       not_loaded: Síť bodů nenačtena.
     tooltip:
       calibrate: Zahájí novou kalibraci, uloží se jako profil 'default'
-      delete: Smazat profil. Toto RESTARTUJE vaši tiskárnu!
+      delete: Smazat profil
       load: Načíst profil
-      save: Vloží profil do printer.cfg. Vaše tiskárna se RESTARTUJE!
+      save: Vloží profil do printer.cfg
   chart:
     label:
       current: Teplota
@@ -78,7 +78,6 @@ app:
       transfer_rate: Přenosová rychlost
       uploaded: Nahráno
     msg:
-      confirm: Jste si jisti? Smažete tím všechny soubory a adresáře.
       not_found: Žádný soubor nenalezen
       processing: Zpracovávám
     overlay:

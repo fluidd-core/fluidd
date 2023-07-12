@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import store from './store'
-import consola from 'consola'
+import { consola } from 'consola'
 import { Globals } from './globals'
 import { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'
 import router from './router'
 import { httpClientActions } from '@/api/httpClientActions'
 import sanitizeEndpoint from '@/util/sanitize-endpoint'
+import webSocketWrapper from '@/util/web-socket-wrapper'
 
 // Load API configuration
 /**
@@ -75,15 +76,13 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // If none are, we'll force the instance add dialog.
   // A 401 would indicate a good ping, since it's potentially an authenticated,
   // endpoint but working instance.
-  const results = await Promise.all(
-    endpoints.map(async endpoint => {
-      return httpClientActions.get(`${endpoint}/server/info?date=${Date.now()}`, { timeout: 1000 })
-        .then(() => true)
-        .catch((error) => error.response?.status === 401)
+  const i = await Promise.race(
+    endpoints.map(async (endpoint, index) => {
+      const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
+      return await webSocketWrapper(apiEndpoints.socketUrl) ? index : -1
     })
   )
 
-  const i = results.findIndex(endpoint => endpoint)
   return (i > -1)
     ? Vue.$filters.getApiUrls(endpoints[i])
     : { apiUrl: '', socketUrl: '' }

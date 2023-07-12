@@ -38,15 +38,14 @@ export const actions: ActionTree<CamerasState, RootState> = {
         const camera: CameraConfigWithoutId = {
           name: legacyCamera.name,
           service,
+          enabled: legacyCamera.enabled,
           targetFps: legacyCamera.fpstarget,
+          targetFpsIdle: legacyCamera.fpsidletarget,
           urlStream: isMjpegStreamer ? setUrlQueryParam(legacyCamera.url, 'action', 'stream') : legacyCamera.url,
           urlSnapshot: isMjpegStreamer ? setUrlQueryParam(legacyCamera.url, 'action', 'snapshot') : legacyCamera.url,
           flipX: legacyCamera.flipX,
           flipY: legacyCamera.flipY,
-          rotation: legacyCamera.rotate ? +legacyCamera.rotate as MoonrakerWebcamRotation : 0,
-          enabled: legacyCamera.enabled,
-          height: legacyCamera.height,
-          targetFpsIdle: legacyCamera.fpsidletarget
+          rotation: legacyCamera.rotate ? +legacyCamera.rotate as MoonrakerWebcamRotation : 0
         }
 
         await httpClientActions.serverDatabaseItemPost(Globals.MOONRAKER_DB.webcams.NAMESPACE, legacyCamera.id, camera)
@@ -64,10 +63,28 @@ export const actions: ActionTree<CamerasState, RootState> = {
    * Init any file configs we may have.
    */
   async initCameras ({ commit }, payload: Record<string, CameraConfigWithoutId>) {
-    const cameras = Object.entries(payload).map(([id, value]): CameraConfig => ({
-      id,
-      ...value
-    }))
+    const cameras = Object.entries(payload)
+      .map(([id, value]): CameraConfig => {
+        // Cameras created by Fluidd will provide `enabled`; otherwise,  assume `false`.
+        if (value.enabled === undefined) {
+          value.enabled = false
+        }
+
+        // Moonraker and Fluidd provide `rotation`, but Mainsail has `rotate`, so convert between then if property found.
+        if (value.rotation === undefined) {
+          if ('rotate' in value) {
+            value.rotation = value.rotate as MoonrakerWebcamRotation || 0
+            delete value.rotate
+          } else {
+            value.rotation = 0
+          }
+        }
+
+        return {
+          id,
+          ...value
+        }
+      })
 
     commit('setInitCameras', { cameras })
   },

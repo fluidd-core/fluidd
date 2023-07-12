@@ -18,11 +18,9 @@ app:
       not_loaded: Nincs háló betöltve
     tooltip:
       calibrate: Új kalibrálás kezdése, mentés "alapértelmezett" profilként
-      delete: Profil törlése. Ezután ÚJRAINDUL a nyomtató
+      delete: Profil törlése
       load: Profil betöltése
-      save: >-
-        A kalibrált profil a printer.cfg fájlba íródik. Ezután ÚJRAINDUL a
-        nyomtató
+      save: A kalibrált profil a printer.cfg fájlba íródik
   chart:
     label:
       current: Aktuális
@@ -78,7 +76,6 @@ app:
       label:
         print_start_time: Nyomtatottak szűrése
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
-        hidden_files: Rejtett fájlok szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
     label:
       dir_name: Könyvtár neve
@@ -91,7 +88,6 @@ app:
       view_section_documentation: >-
         Nézd '%{section}' dokumentáció
     msg:
-      confirm: Biztos, hogy minden fájlt és mappát törölsz?
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
@@ -352,12 +348,6 @@ app:
         confirm_service_stop: Biztos, hogy leállítod a %{name} szolgáltatást?
         confirm_power_device_toggle: Biztos, hogy átkapcsolod az eszköz teljesítményét?
         unsaved_changes: Nem mentett módosításaid vannak. Biztosan bezárod ezt a fájlt?
-        apply_z_offset_endstop: >-
-          A végpont Z-eltolása az aktuális értékből lesz számítva és frissítve
-          a Z-eltolás.
-        apply_z_offset_probe: >-
-          A Probe/Bltouch Z-eltolás kiszámítása és frissítése az aktuális értékből
-          történik.
         no_file_preview: >-
           %{name} jelenleg nem tekinthető meg.
     table:
@@ -637,13 +627,8 @@ app:
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
       manual_probe: Kézi szonda
-      motors_off: MOTOROK KI
-      z_tilt_adjust: Z_Tilt_Adjust
-      quad_gantry_level: QGL
+      motors_off: Motorok Ki
       relative_positioning: Relatív pozicionálás
-      screws_tilt_calculate: Screws_Tilt_Calculate
-      bed_screws_adjust: BED_SCREWS_ADJUST
-      force_move: FORCE_MOVE
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>
