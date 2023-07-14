@@ -81,7 +81,7 @@
               v-bind="attrs"
               small
               class="ms-1 my-1"
-              :disabled="!klippyReady || printerPrinting"
+              :disabled="!klippyReady"
               v-on="on"
             >
               <v-icon
@@ -105,7 +105,7 @@
               <v-list-item
                 v-if="tool.name !== '-'"
                 :key="tool.name"
-                :disabled="tool.disabled || (tool.wait && hasWait(tool.wait))"
+                :disabled="tool.disabled || (tool.wait && hasWait(tool.wait)) || (!tool.enabledOnPrint && printerPrinting)"
                 @click="tool.callback ? tool.callback() : sendGcode(tool.name, tool.wait)"
               >
                 <v-list-item-icon>
@@ -154,6 +154,7 @@ type Tool = {
   name: string,
   label?: string,
   disabled?: boolean,
+  enabledOnPrint?: boolean,
   wait?: string,
   icon?: string,
   callback?: () => void,
@@ -264,6 +265,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         name: 'CHANGE_SPOOL',
         label: this.$tc('app.spoolman.label.change_spool'),
         icon: '$changeFilament',
+        enabledOnPrint: true,
         callback: () => this.$store.commit('spoolman/setDialogState', { show: true })
       })
     }

@@ -2,6 +2,7 @@
   <v-dialog
     v-model="open"
     no-actions
+    :max-width="isMobileViewport ? '90vw' : '75vw'"
   >
     <v-card>
       <!-- TODO show file info? -->
@@ -11,7 +12,7 @@
         class="mb-2"
       >
         <v-toolbar-title>
-          <v-icon>$loadFilament</v-icon>
+          <v-icon>$changeFilament</v-icon>
           {{ $tc('app.spoolman.title.spool_selection') }}
         </v-toolbar-title>
 
@@ -54,7 +55,6 @@
         sort-desc
         mobile-breakpoint="0"
         class="file-system spool-table"
-        :height="isMobileViewport ? '75vh' : '50vh'"
         hide-default-footer
         disable-pagination
       >
@@ -68,25 +68,31 @@
               <div class="d-flex">
                 <v-icon
                   :color="`#${item.filament.color_hex}`"
-                  class="mr-2"
+                  x-large
+                  class="mr-4 flex-column"
                 >
-                  {{ item.id === selectedSpool ? '$markedCircle' : '$circle' }}
+                  {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
                 </v-icon>
-                {{ item.filament_name }}
+                <div class="flex-column">
+                  <div class="flex-row">
+                    {{ item.filament_name }}
+                  </div>
+                  <div class="flex-row">
+                    <small>
+                      <b>{{ item.remaining_weight.toLocaleString() }}g</b> / {{ item.filament.weight.toLocaleString() }}g
+                    </small>
+                  </div>
+                </div>
               </div>
             </td>
-            <td>{{ item.remaining_weight.toLocaleString() }} / {{ item.filament.weight.toLocaleString() }} g</td>
             <td>{{ item.location }}</td>
-            <td>{{ item.lot_nr }}</td>
-            <td>{{ item.first_used ? $filters.formatRelativeTimeToNow(item.first_used) : $tc('app.setting.label.never') }}</td>
-            <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
             <td>{{ item.comment }}</td>
+            <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
           </tr>
         </template>
       </v-data-table>
 
       <v-divider />
-      <v-spacer />
 
       <v-card-actions
         class="pt-4"
@@ -127,9 +133,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   @Watch('open')
   onOpen () {
-    if (this.open && this.filename) {
+    if (this.open && this.currentFile) {
       // prefetch file metadata
-      SocketActions.serverFilesMetadata(this.filename)
+      SocketActions.serverFilesMetadata(this.currentFile)
     }
   }
 
@@ -160,14 +166,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   get headers () {
     return [
       'filament_name',
-      'remaining_weight',
       'location',
-      'lot_nr',
-      'first_used',
-      'last_used',
-      'comment'
-    ].map(value => ({
-      text: value && this.$tc(`app.spoolman.label.${value}`),
+      'comment',
+      'last_used'
+    ].map((value) => ({
+      text: this.$tc(`app.spoolman.label.${value}`),
       value
     }))
   }
@@ -186,6 +189,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get filename () {
     let filename = this.$store.state.spoolman.dialog.filename
+
     if (!filename) {
       return
     } else if (filename.startsWith('/')) {
@@ -193,6 +197,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     return filename
+  }
+
+  get currentFile () {
+    return this.filename || this.$store.state.printer.printer.print_stats.filename
   }
 
   async handleSelectSpool () {
@@ -215,15 +223,20 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
       let remainingLength = spool.remaining_length
       if (!remainingLength) {
-        // l = m/D/A
-        remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2)
+        // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
+        remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
       }
 
-      const splitFilepath = this.filename.split('/')
-      const filename = splitFilepath.pop()
-      const filepath = splitFilepath.join('/')
-      const requiredLength = this.$store.getters['files/getFile'](null, filepath ? `gcodes/${filepath}` : 'gcodes', filename)?.filament_total
-      console.log({ remainingLength, requiredLength })
+      // l[mm]
+      let requiredLength = 0
+      if (this.currentFile) {
+        const splitFilepath = this.currentFile.split('/')
+        const filename = splitFilepath.pop()
+        const filepath = splitFilepath.join('/')
+        requiredLength = this.$store.getters['files/getFile'](null, filepath ? `gcodes/${filepath}` : 'gcodes', filename)?.filament_total ?? 0
+        requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
+        requiredLength = Math.max(requiredLength, 0)
+      }
 
       if (!requiredLength) {
         // missing file metadata
@@ -272,3 +285,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .spool-table tr td {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
+</style>
