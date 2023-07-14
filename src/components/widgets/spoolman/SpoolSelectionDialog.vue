@@ -79,7 +79,7 @@
                   </div>
                   <div class="flex-row">
                     <small>
-                      <b>{{ item.remaining_weight.toLocaleString() }}g</b> / {{ item.filament.weight.toLocaleString() }}g
+                      <b>{{ Math.floor(item.remaining_weight).toLocaleString() }}g</b> / {{ item.filament.weight.toLocaleString() }}g
                     </small>
                   </div>
                 </div>
