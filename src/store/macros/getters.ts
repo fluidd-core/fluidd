@@ -14,7 +14,7 @@ export const getters: GetterTree<MacrosState, RootState> = {
       .map(key => {
         const lowerCaseKey = key.toLocaleLowerCase()
         const name = lowerCaseKey.split(' ', 2)[1]
-        const config = rootState.printer.printer.configfile.settings[lowerCaseKey]
+        const config = rootState.printer.printer.configfile.settings[lowerCaseKey] || {}
         const stored = state.stored.find(macro => macro.name === name)
         const variables = rootState.printer.printer[key]
 
