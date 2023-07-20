@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { Macro, MacrosState } from './types'
+import { KObject, Macro, MacrosState } from './types'
 import { RootState } from '../types'
 
 export const getters: GetterTree<MacrosState, RootState> = {
@@ -45,6 +45,24 @@ export const getters: GetterTree<MacrosState, RootState> = {
       })
 
     return macros
+  },
+
+  /**
+   * Returns all klipper objects, transformed.
+   */
+  getObjects: (state, getters, rootState) => {
+    const objects = Object.keys(rootState.printer.printer)
+      .map(key => {
+        const config = rootState.printer.printer.configfile.settings[key] || {}
+        const obj: KObject = {
+          name: key,
+          state: rootState.printer.printer[key],
+          config: config,
+        }
+        return obj
+      })
+
+    return objects
   },
 
   // Gets visible macros, transformed. Should include the macro's config.

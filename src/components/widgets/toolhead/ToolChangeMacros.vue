@@ -21,9 +21,10 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Macro } from '@/store/macros/types'
+import { Macro, KObject } from '@/store/macros/types'
 
 const toolChangeMacroRegExp = /^t\d+$/i
+const toolChangeObjectRegExp = /^tool (.+)$/i
 
 type ToolChangeMacro = {
   name: string,
@@ -37,8 +38,12 @@ export default class ToolChangeMacros extends Mixins(StateMixin) {
     return this.$store.getters['macros/getMacros'] as Macro[]
   }
 
+  get objects(): KObject[] {
+    return this.$store.getters['macros/getObjects'] as KObject[]
+  }
+
   get toolChangeMacros (): ToolChangeMacro[] {
-    return this.macros
+      const tryMacros = this.macros
       .filter(macro => toolChangeMacroRegExp.test(macro.name))
       .map(macro => ({
         name: macro.name.toUpperCase(),
@@ -51,6 +56,22 @@ export default class ToolChangeMacros extends Mixins(StateMixin) {
 
         return numberA - numberB
       })
+      if (tryMacros.length > 0) {
+        return tryMacros
+      }
+      const tryObjects = this.objects
+      .filter(obj => toolChangeObjectRegExp.test(obj.name))
+      .map(obj => ({
+        name: obj.name.match(toolChangeObjectRegExp)[1].toUpperCase(),
+        color: undefined,
+        active: obj.state?.active ?? false
+      } as ToolChangeMacro))
+      .sort((a, b) => {
+        const numberA = parseInt(a.name.substring(1))
+        const numberB = parseInt(b.name.substring(1))
+        return numberA - numberB
+      })
+      return tryMacros
   }
 }
 </script>

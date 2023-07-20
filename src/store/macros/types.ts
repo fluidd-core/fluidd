@@ -24,3 +24,9 @@ export interface MacroCategory {
   count?: number;
   visible?: number;
 }
+
+export interface KObject {
+  name: string;
+  state: any;
+  config: any;
+}
