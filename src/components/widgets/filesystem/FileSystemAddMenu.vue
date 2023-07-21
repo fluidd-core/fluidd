@@ -27,7 +27,6 @@
 
     <v-list dense>
       <v-list-item
-        v-if="!readonly"
         :disabled="disabled"
         @click="emulateClick(false)"
       >
@@ -44,7 +43,6 @@
       </v-list-item>
 
       <v-list-item
-        v-if="!readonly"
         :disabled="disabled"
         @click="emulateClick(false, true)"
       >
@@ -61,8 +59,8 @@
       </v-list-item>
 
       <v-list-item
-        v-if="!readonly && root === 'gcodes'"
-        :disabled="disabled"
+        v-if="root === 'gcodes'"
+        :disabled="disabled || !printerReady"
         @click="emulateClick(true)"
       >
         <v-list-item-icon>
@@ -78,7 +76,6 @@
       </v-list-item>
 
       <v-list-item
-        v-if="!readonly"
         :disabled="disabled"
         @click="$emit('add-file')"
       >
@@ -95,7 +92,7 @@
       </v-list-item>
 
       <v-list-item
-        v-if="!readonly || canCreateDirectory"
+        v-if="canCreateDirectory"
         :disabled="disabled"
         @click="$emit('add-dir')"
       >
@@ -124,11 +121,12 @@
 </template>
 
 <script lang="ts">
+import StateMixin from '@/mixins/state'
 import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
-import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
+import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 
 @Component({})
-export default class FileSystemAddMenu extends Vue {
+export default class FileSystemAddMenu extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly root!: string
 
@@ -141,16 +139,24 @@ export default class FileSystemAddMenu extends Vue {
 
   andPrint = false
 
-  get readonly () {
-    return this.$store.getters['files/getRootProperties'](this.root).readonly
+  get rootProperties () {
+    return this.$store.getters['files/getRootProperties'](this.root)
   }
 
   get accepts () {
-    return this.$store.getters['files/getRootProperties'](this.root).accepts.join(',')
+    return this.rootProperties.accepts.join(',')
   }
 
   get canCreateDirectory () {
-    return this.$store.getters['files/getRootProperties'](this.root).canCreateDirectory
+    return this.rootProperties.canCreateDirectory
+  }
+
+  get printerReady () {
+    return (
+      !this.printerPrinting &&
+      !this.printerPaused &&
+      this.klippyReady
+    )
   }
 
   emulateClick (startPrint: boolean, folder = false) {
