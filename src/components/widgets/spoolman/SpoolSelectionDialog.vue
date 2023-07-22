@@ -358,10 +358,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   filterResults (value: string, query: string, item: Spool): boolean {
     query = query.toLowerCase()
-    return item.comment?.toLowerCase().includes(query) ||
-      item.filament.name.toLowerCase().includes(query) ||
-      item.filament.material.toLowerCase().includes(query) ||
-      item.filament.vendor.name.toLowerCase().includes(query)
+    return [item.comment, item.filament.name, item.filament.material, item.filament.vendor.name]
+      .some(val => val?.toLowerCase().includes(query))
   }
 
   get spoolmanURL () {
