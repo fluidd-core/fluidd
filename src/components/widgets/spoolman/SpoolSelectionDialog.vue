@@ -187,6 +187,7 @@ import { SocketActions } from '@/api/socketActions'
 import { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
+import { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: { QRReader }
@@ -272,6 +273,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get cameras () {
     return this.$store.getters['cameras/getEnabledCameras']
+      .filter((camera: CameraConfig) => camera.service !== 'iframe')
   }
 
   get scanSource () {
