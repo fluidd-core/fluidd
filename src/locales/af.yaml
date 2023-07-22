@@ -1,0 +1,758 @@
+app:
+  bedmesh:
+    label:
+      active: aktief
+      box_scale: Skaal
+      flat_surface: Wys platvlak
+      mesh_matrix: Maasmatriks
+      probed_matrix: Gemete matriks
+      profile_name: Profielnaam
+      remove_profile: Vee %{name} profiel uit
+      scale: Kleurskaal
+      wireframe: Draadraam
+    msg:
+      hint: >-
+        As jy hierdie onder 'n ander naam as %{name} stoor, kan jy kies  
+        om die %{name} profiel ook uit te vee
+      not_found: Geen bestaande bedmaas is gevind nie.
+      not_loaded: Geen maas is gelaai nie
+    tooltip:
+      calibrate: Begin nuwe kalibrasie, stoor as 'default' profiel
+      delete: Vee Profiel Uit
+      load: Laai Profiel
+      save: Stoor gekalibreerde profiel na printer.cfg
+  chart:
+    label:
+      current: Tans
+      item: Naam
+      'off': Grafiek af
+      'on': Grafiek aan
+      power: Drywing
+      target: Teiken
+      rate_of_change: Verandering
+    tooltip:
+      help: >-
+        Hou shift in om te zoem.<br />Klik op 'n item om dit aan en af te skakel op die grafiek.<br
+        />Klik 'n drywing om dit aan en af te skakel op die grafiek.
+  console:
+    label:
+      auto_scroll: Rol outomaties aan
+      flip_layout: Keer uitleg om
+      hide_temp_waits: Versteek temp. wagtye
+    placeholder:
+      command: '''tab'' vir outo-voltooi, ''help'' vir opdragte ''pyltjies'' vir geskiedenis'
+  endpoint:
+    error:
+      cant_connect: >-
+        Iets is verkeerd, fluidd kan nie die bestemming bereik nie. Is jy
+        seker die adres is korrek?
+      cors_error: geblok deur die CORS beleid
+      cors_note: >-
+        Dit mag wees dat die moonraker-konfigurasie opdateer moet word. Sien
+        die dokumentasie vir multi-drukker opstellings <a href="%{url}"
+        target="_blank">here</a>
+    hint:
+      add_printer: Bv., http://fluiddpi.local
+    msg:
+      trouble: >-
+        Sukkel jy? <a href="%{url}" target="_blank">Sien hier</a> vir meer
+        inligting.
+    tooltip:
+      endpoint_examples: >-
+        Voer jou API URL in.<br />Hier is voorbeelde;<br
+        /><blockquote>fluidd.local, https://192.168.1.150</blockquote>
+  endstop:
+    label:
+      open: OOP
+      triggered: GESNELLER
+    msg:
+      subtitle: Gebruik die vervrisknop om die endstop status op te dateer.
+  file_system:
+    filters:
+      label:
+        print_start_time: Filter druktyd.
+        print_start_time_desc: Filter items wat reeds gedruk is.
+        hidden_files_folders: Filter versteekte lêers and vouers.
+        klipper_backup_files: Filter Klipper rugsteunlêers.
+        rolled_log_files: Filter log-lêers wat oorgeslaan het.
+    label:
+      dir_name: Vouernaam
+      disk_usage: Skyfverbruik
+      diskinfo: Skyfinligting
+      downloaded: Afgelaai
+      file_name: Lêernaam
+      transfer_rate: Spoed
+      uploaded: Opgelaai
+      view_section_documentation: >-
+        Sien '%{section}' dokumentasie
+    msg:
+      not_found: Geen lêers gevind nie
+      processing: Verwerk tans
+    overlay:
+      drag_files_folders_upload: <strong>Sleep</strong> lêers en vouers hier om op te laai
+      drag_files_enqueue: <strong>Sleep</strong> lêers hier om dit op die waglys te plaas
+    title:
+      add_dir: Voeg Vouer By
+      add_file: Voeg Lêer By
+      command_palette: Opdraglys
+      download_file: Lêer word afgelaai
+      duplicate_dir: Dupliseer Vouer
+      duplicate_file: Dupliseer Lêer
+      go_to_file: Gaan na lêer
+      rename_dir: Herbenoem Vouer
+      rename_file: Herbenoem Lêer
+      upload_file: Lêer word opgelaai | Lêers word opgelaai
+    tooltip:
+      low_on_space: Stoorspasie is min
+      move_item: Skuif item | Skuif {count} items
+      root_disabled: '{root} root is nie beskikbaar nie. Sien die logs.'
+    url:
+      klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
+      moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
+      moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
+  gcode:
+    btn:
+      load_current_file: Laai Huidige Lêer
+    label:
+      current_layer_height: Huidige laaghoogte
+      exclude_object: Sluit voorwerp uit
+      follow_progress: Volg vordering
+      layer: Laag
+      layers: Lae
+      parsed: Ontleed
+      show_current_layer: Wys die huidige laag
+      show_extrusions: Wys ekstrusies
+      show_moves: Wys bewegings
+      show_next_layer: Wys volgende laag
+      show_parts: Wys parte
+      show_previous_layer: Wys vorige laag
+      show_retractions: Wys terugtrekkings
+      parsing_file: Ontleed tans lêer
+    msg:
+      confirm: >-
+        Die lêer "%{filename}" is %{size}, dit mag hulpbronintensief wees vir
+        jou stelsel. Is jy seker?
+  general:
+    btn:
+      abort: Staak
+      accept: Aanvaar
+      add: Voeg By
+      add_dir: Voeg Vouer By
+      add_file: Voeg Lêer By
+      add_printer: Voeg Drukker By
+      add_to_queue: Plaas op die druklys
+      adjust_layout: Verander paneelskerm uitleg
+      adjusted: Aangepas
+      all: Alles
+      auth_unsure: Onseker waarom jy hierdie sien?
+      calibrate: Kalibreer
+      cancel: Kanselleer
+      clear_profile: Maak Profiel Skoon
+      close: Maak toe
+      config_reference: Konfigurasieverwysings
+      create_zip_archive: Skep ZIP-Argief
+      delete: Vee Uit
+      download: Laai Af
+      duplicate: Dupliseer
+      edit: Verander
+      exit_layout: Maak uileg toe
+      extrude: Druk Uit
+      filter: Filter
+      forgot_password: Wagwoord vergeet?
+      go_to_file: Gaan na lêer
+      heaters_off: Verwarmers af
+      job_queue: Druklys
+      load_all: Laai alles
+      login: Teken in
+      logout: Teken uit
+      more_information: Meer inligting
+      pause: Pouse
+      preheat: Voorverhit
+      presets: Voorafinstellings
+      preview_gcode: Gcode-Voorskou
+      print: Druk
+      quad_gantry_level: QGL
+      reboot: Herbegin
+      recover: Herwin
+      refresh: Vervris
+      refresh_metadata: Vervris Metadata
+      reload: Herlaai
+      remove: Verwyder
+      remove_all: Verwyder Alles
+      rename: Herbenoem
+      reprint: Druk weer
+      reset_file: Maak Lêer Skoon
+      reset_layout: Stel terug na verstekuitleg
+      reset_default_layout: Herstel Verstekuitleg
+      restart_firmware: Herlaai Fermware
+      restart_service: Herlaai %{service}
+      restart_service_klipper: Herbegin Klipper
+      restart_service_moonraker: Herbegin Moonraker
+      resume: Hervat
+      retract: Trek terug
+      return_dashboard: Gaan terug na paneelskerm
+      save: Stoor
+      save_as: Stoor As
+      save_restart: Stoor en herbegin
+      save_config_and_restart: Stoor konfigurasie & herlaai
+      select_columns: Kies kolomme
+      send: Stuur
+      set_color: Stel Kleur
+      set_default_layout: Stel as Verstekuitleg
+      shutdown: Skakel af
+      snooze: Slaap
+      socket_reconnect: Herkonnekteer
+      socket_refresh: Vervris
+      thumbnail_size: Duimnaelgrootte
+      upload: Laai op
+      upload_files: Laai lêers Op
+      upload_folder: Laai Vouers Op
+      upload_print: Laai Op en Druk
+      view: Bekyk
+      reset_stats: Herstel Statistieke
+    error:
+      app_setup_link: >-
+        Fluidd opstellingsvereistes kan <a target="_blank"
+        href="%{url}">hier</a> gevind word. 
+      app_warnings_found: '%{appName} waarskuwings gevind.'
+      components_config: >-
+        Moonraker-toevoegingkonfigurasie kan <a target="_blank"
+        href="%{url}">hier</a> gevind word.
+      failed_components: >-
+        Moonraker het toevoegings wat gefaal het, gaan asb. die logs na, 
+        dateer die konfigurasie op en herlaai moonraker.
+    label:
+      accel_to_decel: Versnel. tot Vertraag.
+      acceleration: Versnelling
+      accepted_screws: Aanvaarde skroewe
+      actual_time: Tans
+      add_camera: Voeg Kamera by
+      add_filter: Voeg Filter by
+      add_preset: Voer Voorafinstellings by
+      add_user: Voeg gebruiker by
+      all: Alles
+      api_key: API Sleutel
+      api_url: API URL
+      auth_source: Verifikasiebron
+      category: Kategorie
+      change_password: Verander wagwoord
+      clear_all: Maak alles skoon
+      color: Kleur
+      command: Opdrag
+      confirm: Bevestig
+      current_password: Huidige wagwoord
+      current_user: Huidige gebruiker
+      default: Verstek
+      disabled_while_printing: Gedeaktiveer tydens drukwerk
+      edit_camera: Verander Kamera
+      edit_filter: Verander Filter
+      edit_preset: Verander Voorafinstelling
+      edit_user: Verander Gebruiker
+      extrude_length: Ekstrusielengte
+      extrude_speed: Ekstrusiespoed
+      filament: Filament
+      file: Lêer
+      finish_time: Klaar
+      flow: Vloei
+      free: vry
+      heaters_busy: >-
+        Die drukker is tans besig. Die druktaak mag faal as die
+        verwarmers nou afgeskakel word.
+      high: Hoog
+      host: Host
+      layer: Laag
+      layout: Uitleg
+      ldap: LDAP
+      longest_job: Langste druktaak
+      low: Low
+      manage_accounts: Bestuur Rekeninge
+      user_managed_source: Gebruiker word bestuur deur %{source} verifikasie
+      m117: M117
+      moonraker: Moonraker
+      name: Naam
+      new_password: Nuwe wagwoord
+      no_notifications: Geen kennisgewings
+      'on': 'Aan'
+      'off': 'Af'
+      numeric_prefix_sort: Volgens numeriese voorvoegsel
+      password: Wagwoord
+      partial_of_total: '%{partial} van %{total}'
+      pause_at_layer: Pouseer by laag
+      pause_at_next_layer: Pouseer by volgende laag
+      pause_at_layer_number: Pouseer by laagnommer
+      power: Krag
+      pressure_advance: Druk-vooruitgang
+      printers: Drukkers
+      progress: Vordering
+      requested_speed: Spoed
+      retract_length: Terugtreklengte
+      retract_speed: Terugtrekspoed
+      save_as: Stoor As
+      screw_index: Skroefindeks
+      screw_name: Skroefnaam
+      screw_number: Skroef %{index}
+      services: Dienste
+      slicer: Slicer
+      smooth_time: Uitgladtyd
+      speed: Spoed
+      sqv: Reghoeksnelheid
+      stepper_enabled: Stapper Aangeskakel
+      synced_extruder: Gesinchroniseerde Ekstruder
+      thumbnail_size: Duimnaelgrootte
+      total: Totaal
+      total_filament: Totale filament gebruik
+      total_filament_avg: Gem. per druktaak
+      total_jobs: Totale druktake
+      total_print_time: Totale druktyd
+      total_print_time_avg: Gem. per druktaak
+      total_time: Totale tyd
+      total_time_avg: Gem. per druktaak
+      turn_device_on: Skakel %{device} aan
+      turn_device_off: Skakel %{device} af
+      uncategorized: Ongekategoriseerd
+      unretract_extra_length: na-terugtrek ekstra lengte
+      unretract_speed: na-terugtrek-spoed
+      upload_and_print: Laai Op en Druk
+      used: gebruik
+      username: Gebruikersnaam
+      variance: Variansie
+      velocity: Snelheid
+      version_sort: Volgens weergawe
+      visible: Sigbaar
+      z_offset: Z-Afset
+      unsaved_changes: Ongestoorde Veranderinge
+      alias: Alias
+      apply_z_offset: Pas toe en Stoor Z_Offset
+      edit_category: Verander kategorie
+      add_category: Voeg kategorie by
+      file_time: Lêer
+    msg:
+      password_changed: Wagwoord is verander
+      wrong_password: Gits, iets het verkeerd gegaan. Is die wagwoord korrek?
+      bed_screws_adjust: >-
+        Klik <b>Aangepas</b> as 'n noemenswaardige verstelling van die huidige skroef nodig is; anders, klink <b>Aanvaar</b> om te begin.
+      welcome_back: >-
+        Welkom terug.<br>Teken hier onder in om in verbinding te bly met jou drukker.
+      offline_ready: Fluidd is nou gereed om vanlyn te werk.
+      needs_refresh: Nuwe inhoud beskikbaar, druk die <b>Herlaai</b> knoppie om op te dateer.
+      pending_configuration_sections_deleted: Die volgende afdelings is gemerk om uitgevee te word
+      rolledover_logs: >-
+        Die volgende toepassing-logs het oorgeslaan: %{applications}
+    simple_form:
+      error:
+        arrayofnums: Slegs nommers
+        credentials: Ongeldige intekenbesonderhede
+        exists: Bestaan reeds
+        invalid_number: Ongeldige nommer
+        invalid_url: Ongeldige URL
+        invalid_expression: Ongeldige uitdrukking
+        max: Maks %{max}
+        min: Min %{min}
+        min_or_0: Min %{min} of 0
+        password_username: Gebruikersnaam nie gevind
+        required: Vereis
+        invalid_aspect: Ongeldige verhouding
+      msg:
+        confirm: Is jy seker?
+        confirm_delete: Is jy seker? Die geselekteerde item gaan uitgevee word. | Is jy seker? Die {count} geselekteerde items gaan uitgevee word.
+        confirm_exclude_object: Is jy seker jy wil hierdie item uitlaat om te druk?
+        confirm_forcemove_toggle: Is jy seker? Dit kan die drukker beskadig.
+        confirm_reboot_host: Is jy seker? Hierdie gaan die stelsel herbegin.
+        confirm_shutdown_host: Is jy seker? Hierdie gaan die bedryfstelsel afskakel.
+        confirm_service_start: Is jy seker jy wil die %{name} diens begin loop?
+        confirm_service_restart: Is jy seker jy wil die diens %{name} herlaai?
+        confirm_service_stop: Is jy seker jy wil die diens %{name} stop?
+        confirm_power_device_toggle: Is jy seker? Hierdie gaan die krag afsit.
+        unsaved_changes: Daar is ongestoorde veranderinge. Is jy seker jy wil die lêer toe maak?
+        no_file_preview: >-
+          %{name} het tans geen voorskou beskikbaar nie.
+    table:
+      header:
+        actions: Aksies
+        chamber_temp: Kamertemp.
+        end_time: Geëindig
+        estimated_time: Geraamde tyd
+        filament: Filament
+        filament_name: Filamentnaam
+        filament_type: Filamenttipe
+        filament_used: Filament gebruik
+        filament_weight_total: Filamentgewig
+        first_layer_bed_temp: Eerstelaag bedtemp.
+        first_layer_extr_temp: Eerstelaag ekstrudertemp.
+        first_layer_height: Eerstelaaghoogte
+        height: Hoogte
+        last_printed: Laas gedruk
+        layer_height: Laaghoogte
+        modified: Verander
+        name: Naam
+        nozzle_diameter: Mondstukdeursnee
+        print_duration: Druktydsduur
+        time_added: Tyd bygevoeg
+        time_in_queue: Tyd op werklys
+        size: Grootte
+        slicer: Slicer
+        slicer_version: Slicer weergawe
+        start_time: Begin
+        status: Status
+        total_duration: Totale tydsduur
+    title:
+      add_chart: Voeg Grafiek By
+      add_printer: Voeg Drukker By
+      bedmesh: Bedmaas
+      bedmesh_controls: Bedmaaskontrole
+      camera: Kamera | Kameras
+      config_files: Konfigurasielêers
+      configure: Konfigurasie
+      console: Konsole
+      diagnostics: Diagnostiek
+      edit_chart: Verander Grafiek
+      endstops: Endstoppe
+      fans_outputs: Waaiers & Uitrees
+      gcode_preview: Gcode-Voorskou
+      history: Geskiedenis
+      home: Tuis
+      jobs: Druktake
+      job_queue: Werkslys
+      limits: Drukkerlimiete    
+      macros: Makro's
+      metrics_explorer: Metriekverkenner
+      not_found: 404 Nie gevind nie
+      other_files: Ander lêers
+      pending_configuration_changes: Hangende Konfigurasieveranderinge
+      retract: Fermware-Terugtrekking
+      rollover_logs: Laat logs oorslaan
+      runout_sensors: Uitloopsensors
+      settings: Instellings
+      stats: Drukkerstatistiek
+      system: Stelsel
+      system_overview: Stelselinligting
+      temperature: Temperature
+      timelapse: Timelapse
+      tool: Druktuig
+      tune: Stel in
+    tooltip:
+      browse_metrics: Deursoek beskikbare maatstawwe
+      estop: Noodstop
+      managed_by_moonraker: Bestuur deur jou moonraker-konfigurasie
+      notifications: Kennisgewings
+      reload_klipper: Herlaai klipper-konfigurasie.
+      reload_restart_klipper: Herlaai klipper-konfigurasie en herbegin MCU's.
+      restart_klipper: Herbegin die klipper-stelseldiens.
+      run_collector: Laat versamelaar loop
+      rollover_logs: Laat logs oorslaan
+  history:
+    msg:
+      confirm: Is jy seker? Hierdie sal alle geskiedenis en drukkerstatistieke uitvee
+  job_queue:
+    msg:
+      confirm: Is jy seker? Hierdie sal die hele drukker se werkslys uitvee.
+      confirm_jobs: Is jy seker? Hierdie sal alle druktake uitvee.
+      confirm_stats: Is jy seker? Hierdie sal alle statistieke uitvee.
+  printer:
+    state:
+      busy: Besig
+      cancelled: Gekanselleer
+      complete: Klaar
+      idle: Onaktief
+      loading: Laai tans
+      paused: Gepouseer
+      printing: Druk tans
+      ready: Gereed
+      standby: Op bystand
+  setting:
+    btn:
+      add_camera: Voeg Kamera By
+      add_category: Voeg Kategorie By
+      add_filter: Voeg Filter By
+      add_metric: Voeg Maatstaf By
+      add_thermal_preset: Voeg Voorafinstelling By
+      add_user: Voeg Gebruiker By
+      reset: Herstel
+      select_theme: Kies Tema
+    camera_type_options:
+      mjpegadaptive: MJPEG Aanpassend
+      mjpegstream: MJPEG Stroom
+      hlsstream: HLS Stroom
+      webrtc_camera_streamer: WebRTC (kamera-stroom)
+      video: IP Kamera
+      iframe: HTTP blad
+    camera_rotate_options:
+      '90': 90°
+      '180': 180°
+      '270': 270°
+      none: Geen
+    label:
+      all_off: Alles af
+      all_on: Alles aan
+      aspect_ratio: Beeldverhouding
+      aspect_ratio_format: '[wydte : hoogte]'
+      auto_edit_extensions: Lêer-tipes om outomaties oop te maak
+      auto_follow_on_file_load: Volg vordering outmaties wanneer lêer gelaai word
+      auto_load_on_print_start: Laai lêer outomaties wanneer druktaak begin
+      auto_load_mobile_on_print_start: Laai lêer outomaties op mobiele toestelle
+      axes: Asse
+      camera_flip_x: Keer horisontaal om
+      camera_flip_y: Keer vertikaal om
+      camera_fullscreen_action:
+        title: Volskermaksie
+        embed: Bed in
+        rawstream: Rou stroom
+      camera_rotate_by: Draai met
+      camera_stream_type: Stroomtipe
+      camera_url: Kamera Url
+      card: Kaart
+      collector: Versamelaar
+      confirm_on_estop: Bevestig 'n Noodstop
+      confirm_on_power_device_change: Bevestig toestelkragveranderinge
+      confirm_on_save_config_and_restart: Hersien hangende konfigurasieveranderinge voor Stoor-en-Herlaai.
+      confirm_dirty_editor_close: Bevestig voordat redigeerder toegemaak word met ongestoorde veranderinge 
+      contains: Bevat
+      dark_mode: Donkermodus
+      dashed: Gestippel
+      default_extrude_length: Verstek ekstrusielength
+      default_extrude_speed: Verstek ekstrusiespoed
+      default_min_layer_height: Verstel minimum laaghoogte
+      default_toolhead_move_length: Verstek druktuigbeweeglengte
+      default_toolhead_xy_speed: Verstek druktuig-XY-spoed
+      default_toolhead_z_speed: Verstek druktuig-Z-spoed
+      dotted: Gestippel
+      draw_background: Teken Agtergrond
+      enable: Skakel aan
+      enable_diagnostics: Skakel diagnostiek aan
+      enable_notifications: Skakel kennisgewings aan
+      expression: Uitdrukking
+      extrusion_line_width: Ekstrusielynwydte
+      flip_horizontal: Keer Horisontaal Om
+      flip_vertical: Keer Vertikaal Om
+      fill_color: Vulkleur
+      fill_opacity: Vuldeursigtigheid
+      filter: Filter | Filters
+      fps_target: FPS Teiken
+      fps_idle_target: FPS Teiken wanneer uit fokus
+      height: Hoogte
+      gcode_coords: Gebruik GCode-koordinate
+      icon: Ikoon
+      ignore_default_bed_mesh_pending_configuration_changes: Ignoreer verstek bedmaas hangende konfigurasie veranderinge
+      invert_x_control: Keer X-beheer om
+      invert_y_control: Keer Y-beheer om
+      invert_z_control: Keer Z-beheer om
+      language: Vertoontaal
+      last_result: Laaste resultaat
+      left_y: Linker Y-As
+      line_color: Lynkleur
+      line_style: Lynstyl
+      min: Minimum
+      max: Maximum
+      metrics: Maatstawwe
+      move_line_width: Beweeg-lynwydte
+      name: Naam
+      never: Nooit
+      none: Geen
+      optional: Opsioneel
+      power_toggle_in_top_nav: Kragskakelaar in boonste navigasiebalk
+      primary_color: Primêre Kleur
+      printer_name: Drukkernaam
+      reset: Herstel Instellings
+      retraction_icon_size: Terugtrekking-Ikoongrootte
+      right_y: Linker Y-As
+      save_and_restore_view_state: Stoor en keer terug
+      show_animations: Wys animasies
+      show_barometric_pressure: Wys barometriese druk
+      show_code_lens: Wys CodeLens
+      show_gas_resistance: Wys gasweerstand
+      show_legend: Wys verduideliking
+      show_rate_of_change: Wys temperatuur tempo-van-verandering
+      show_relative_humidity: Wys relatiewe humiditeit
+      show_save_config_and_restart: Toon Stoor-Konfigurasie-en-Herlaai knop in boonste navigasiebalk
+      show_upload_and_print: Toon Laai-Op-en-Druk knop in boonste navigasiebalk
+      solid: Solied
+      starts_with: Begin met
+      theme_preset: Gemeenskapsinstelling
+      thermal_preset_gcode: GCode
+      thermal_preset_name: Voorafinstellingnaam
+      title: Titel
+      to_browser_local_storage: Na webblaaier se plaaslike stoorspasie
+      to_browser_session_storage: Na webblaaier se sessie-stoorspasie
+      toolhead_move_distances: Druktuig afstandwaardes
+      type: Tipe
+      unit: Eenheid
+      z_adjust_values: Z-Verstelwaardes
+      date_format: Datumformaat
+      time_format: Tydformaat
+      text_sort_order: Tekssorteervolgorde
+      force_move_toggle_warning: Bevestig voordat FORCE_MOVE aangeskakel word
+      show_manual_probe_dialog_automatically: Wys Handmatige-probe-dialoog outomaties
+      show_bed_screws_adjust_dialog_automatically: Wys bedskroefverstelling-dialoog outomaties
+    timer_options:
+      duration: Slegs Tydsduur
+      filament: Filamentskatting
+      file: Lêerskatting
+      slicer: Slicer
+    title:
+      authentication: Magtiging
+      console: Konsole
+      camera: Kamera | Kameras
+      file_editor: Lêerredigeerder
+      gcode_preview: Gcode-Voorskou
+      general: Algemeen
+      macros: Makro's
+      theme: Tema
+      thermal_presets: Temperatuur-Voorafinstellings
+      tool: Druktuig
+    tooltip:
+      diagnostics_performance: '[BETA] Die loghou van diagnostieke inligting mag die prestasie beïnvloed.'
+      gcode_coords: Gebruik GCode posisie i.p.v. druktuigposisie op paneelblad
+      show_manual_probe_dialog_automatically: Wys hulpdialoog outomaties wanneer 'n probe met die hand uitgevoer word
+      show_bed_screws_adjust_dialog_automatically: Wys hulpdialoog outomaties wanneer BED_SCREWS_ADJUST geloop word
+  socket:
+    msg:
+      connecting: Konnekteer tans aan moonraker...
+      no_connection: Geen moonraker-konneksie nie. Gaan moonraker-status na en / of vervris.
+  system_info:
+    label:
+      capacity: Kapasiteit
+      cpu_desc: CPU Beskrywing
+      distribution_codename: Kodenaam
+      distribution_like: Distribusie soos
+      distribution_name: Distribusie
+      frequency: Frekwensie
+      hardware_desc: Hardewarebeskrywing
+      hostname: Hostname
+      klipper_load: Klipper-Lading
+      manufactured: Vervaardig
+      manufacturer: Vervaardiger
+      mcu_awake: '{mcu} Wakkertyd'
+      mcu_bandwidth: '{mcu} Bandwydte'
+      mcu_information: '{mcu} Inligting'
+      mcu_load: '{mcu}-Lading'
+      micro_controller: Mikrobeheerder
+      model: CPU Model
+      moonraker_load: Moonraker-Lading
+      network: Netwerk
+      processor_desc: Verwerker
+      product_name: Produknaam
+      serial_number: Serienommer
+      system_load: Stelsel-lading
+      system_memory: Stelselgeheue
+      system_utilization: Stelselbenutting
+      total_memory: Totale Geheue
+      operating_system: Bedryfstelsel
+      version: Weergawe
+      virtualization: Virtualisasie
+  tool:
+    btn:
+      home_x: X
+      home_y: 'Y'
+      home_all: Almal
+    title:
+      bed_screws_adjust: Bedskroefverstelling
+      manual_probe: Handmatige Probe
+    tooltip:
+      absolute_positioning: Absolute Posisionering
+      extruder_disabled: ekstruder gedeaktiveer, onder min_extrude_temp (%{min}<small>°C</small>)
+      home_xy: Bring XY tuis
+      home_z: Bring Z tuis
+      manual_probe: Handmatige Probe
+      motors_off: Motors Af
+      relative_positioning: Relatiewe Posisionering
+      tools: Gereedskap
+    label:
+      stats_active_extruder: >-
+        <span class="secondary--text">Die huidige ekstruderkonfigurasie is gestel vir</span>
+        %{filamentDiameter} mm diameter filament
+        <span class="secondary--text">en</span>
+        %{nozzleDiameter} mm mondstuk
+      stats_volumetric_flow: >-
+        Extruder voer teen %{extrudeSpeed} mm/s<span class="secondary--text">,
+        Die ekstruder behoort 'n</span>
+        geskatte volumetriese vloei van %{estimatedVolumetricFlow} mm³/s te handhaaf
+      stats_extruded_length: >-
+        Die invoer van %{extrudeLength} mm filament teen
+        %{extrudeFactor} % vloei<span class="secondary--text">,
+        lewer 'n</span>
+        geskatte uitgedrukte lengte van %{estimatedExtrudedLength} mm
+      stats_max_speed: >-
+        <span class="secondary--text">Vir 'n</span>
+        %{layerHeight} mm laaghoogte<span class="secondary--text">,
+        is</span> die maksimum drukspoed %{estimatedMaxSpeed} mm/s
+  version:
+    btn:
+      check_for_updates: Kyk vir opdaterings
+      finish: Klaar
+      update: Dateer op
+      update_all: Dateer alles op
+      view_versions: Sien weergawes
+    label:
+      commit_history: Commit-Geskiedenis
+      commits_on: commits op
+      committed: Committed
+      dirty: DIRTY
+      invalid: FOUTIEF
+      os_packages: OS Pakette
+      package_list: Paketlys
+      up_to_date: OP DATUM
+      updates_available: Opdaterings is Beskikbaar
+    status:
+      finished: Opdatering is klaar
+      updating: Dateer tans op...
+    title: Sagtewareopdaterings
+    tooltip:
+      commit_history: Commit-geskiedenis
+      dirty: indicates a detached head, not on master or an invalid origin
+      invalid: dui op plaaslike veranderinge aan die repo
+      packages: Pakette
+      release_notes: Vrystellingsnotas
+  timelapse:
+    btn:
+      render: Vertoon
+      save_frames: Stoor Rame
+    error:
+      newframe: Fout met neem van timelapse raam
+    label:
+      frames: '%{frames} raam | %{frames} rame'
+      length: 'Geskatte lengte: %{length}'
+      frame: Raam | Rame
+    title:
+      timelapse_settings: Timelapse instellings
+      timelapse_status: Timelapse status
+      render_settings: Vertoningsinstellings
+    setting:
+      enable: Aangeskakel
+      auto_render: Outovertoon
+      crf: Konstantetempofaktor
+      duplicatelastframe: Dupliseer laaste rame
+      fw_retract: Gebruik Fermware-terugtrekking
+      gcode_verbose: Verbose Gcode
+      mode: Modus
+      mode_layermacro: Laagmakro
+      mode_hyperlapse: Hiperlapse
+      hyperlapse_cycle: Hiperlapse Siklus
+      output_framerate: Uittreeraamtempo
+      park_retract_distance: Parkeer-terugtrekafstand
+      park_retract_speed: Parkeer-terugtrekspoed
+      park_extrude_distance: Parkeer-ekstrusieafstand
+      park_extrude_speed: Parkeer-ekstrusiespoed
+      parkhead: Parkeer druktuig
+      park_time: Parkeertyd
+      park_travel_speed: Parkeerbewegingspoed
+      park_custom_pos_x: Parkeerposisie X
+      park_custom_pos_y: Parkeerposisie Y
+      park_custom_pos_dz: Parkeerposisie Z-Hop
+      parkpos:
+        label: Parkeerposisie
+        custom: Pasgemaak
+        front_left: Voor-Links
+        front_right: Voor-Regs
+        center: Middel
+        back_left: Agter-Links
+        back_right: Agter-Regs
+        x_only: Beweeg slegs X
+        y_only: Beweeg slegs Y
+      previewimage: Skep Duimnael
+      saveframes: Stoor Rame
+      stream_delay_compensation: Vertragingkompensasie
+      targetlength: Teikenlengte
+      variable_fps: Veranderlike FPS
+      variable_fps_min: Minimum Raamtempo
+      variable_fps_max: Maksimum Raamtempo
