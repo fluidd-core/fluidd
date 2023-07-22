@@ -759,15 +759,14 @@ app:
   spoolman:
     btn:
       manage_spools: Manage Spools
+      scan_code: Scan Code
       select: Select
     title:
       spool_selection: Spool Selection
+      scan_spool: Scan Spool
     label:
       filament_name: Filament
-      remaining_weight: Remaining Weight
       location: Location
-      lot_nr: Lot Nr
-      first_used: First Used
       last_used: Last Used
       comment: Comment
       change_spool: Change Spool
@@ -782,3 +781,8 @@ app:
       no_required_length: >-
         The amount of filament required to print the selected file is unknown.
         Do you wish to continue?
+      warning:
+        code_not_recognized: This code doesn't look like a compatible QR code.
+        invalid_spool_id: The spool ID contained in this QR code is invalid.
+      error:
+        spool_not_existant: The spool you scanned doesn't exist in the database.

@@ -695,3 +695,33 @@ app:
       variable_fps: Variable Bildrate
       variable_fps_min: Minimum Bildrate
       variable_fps_max: Maximum Bildrate
+  spoolman:
+    btn:
+      manage_spools: Spulen verwalten
+      scan_code: Code scannen
+      select: Auswählen
+    title:
+      spool_selection: Spulenauswahl
+      scan_spool: Spule scannen
+    label:
+      filament_name: Filament
+      location: Ort
+      last_used: Zuletzt verwendet
+      comment: Kommentar
+      change_spool: Spule wechseln
+    msg:
+      no_spool: >-
+        Sie haben keine Spule ausgewählt.
+        Sind Sie sicher, dass Sie ohne Filamenttracking drucken wollen?
+      no_filament: >-
+        Die Spule, die Sie ausgewählt haben, hat eventuell nicht genug verbleibendes
+        Filament, um den Druckauftrag erfolgreich abzuschließen.
+        Sind Sie sicher, dass Sie fortfahren wollen?
+      no_required_length: >-
+        Die benötigte Filamentmenge für die von Ihnen ausgewählte Datei ist unbekannt.
+        Wollen Sie fortfahren?
+      warning:
+        code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code aus.
+        invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
+      error:
+        spool_not_existant: Die von Ihnen gescannte Spule existiert nicht in der Datenbank.
