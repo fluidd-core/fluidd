@@ -302,7 +302,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     const spool = this.availableSpools.find(spool => spool.id === this.selectedSpool)
-    if (spool) {
+    if (spool && this.filename) {
       // check for enough filament
 
       let remainingLength = spool.remaining_length
