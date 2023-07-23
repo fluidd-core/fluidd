@@ -19,19 +19,58 @@
 
           <v-spacer />
 
-          <app-btn
-            v-if="spoolmanURL"
-            :href="spoolmanURL"
-            target="_blank"
+          <v-menu
+            v-if="cameras.length > 1"
+            v-model="cameraSelectionMenuOpen"
             class="mr-2"
+            location="top"
+          >
+            <template #activator="{ on }">
+              <app-btn v-on="on">
+                <v-icon
+                  class="mr-1"
+                  small
+                >
+                  $camera
+                </v-icon>
+                <template v-if="!isMobileViewport">
+                  {{ $t('app.spoolman.btn.scan_code') }}
+                </template>
+              </app-btn>
+            </template>
+
+            <v-list>
+              <v-list-item
+                v-for="camera in cameras"
+                :key="camera.id"
+                @click="scanSource = camera.id"
+              >
+                <v-list-item-title>
+                  <v-icon
+                    small
+                    class="mr-1"
+                  >
+                    $camera
+                  </v-icon>
+                  {{ camera.name }}
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+          <app-btn
+            v-else-if="cameras.length"
+            class="mr-2"
+            @click="cameraScanSource = cameras[0].id"
           >
             <v-icon
+              class="mr-1"
               small
-              class="mr-2"
             >
-              $edit
+              $camera
             </v-icon>
-            {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
+            <template v-if="!isMobileViewport">
+              {{ $t('app.spoolman.btn.scan_code') }}
+            </template>
           </app-btn>
 
           <v-text-field
@@ -98,56 +137,18 @@
         <v-card-actions
           class="pt-4"
         >
-          <v-menu
-            v-if="cameras.length > 1"
-            v-model="cameraSelectionMenuOpen"
-            location="top"
-          >
-            <template #activator="{ on }">
-              <app-btn v-on="on">
-                <v-icon
-                  class="mr-1"
-                  small
-                >
-                  $camera
-                </v-icon>
-                <template v-if="!isMobileViewport">
-                  {{ $t('app.spoolman.btn.scan_code') }}
-                </template>
-              </app-btn>
-            </template>
-
-            <v-list>
-              <v-list-item
-                v-for="camera in cameras"
-                :key="camera.id"
-                @click="scanSource = camera.id"
-              >
-                <v-list-item-title>
-                  <v-icon
-                    small
-                    class="mr-1"
-                  >
-                    $camera
-                  </v-icon>
-                  {{ camera.name }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
           <app-btn
-            v-else-if="cameras.length"
-            @click="cameraScanSource = cameras[0].id"
+            v-if="spoolmanURL"
+            :href="spoolmanURL"
+            target="_blank"
           >
             <v-icon
-              class="mr-1"
               small
+              class="mr-2"
             >
-              $camera
+              $edit
             </v-icon>
-            <template v-if="!isMobileViewport">
-              {{ $t('app.spoolman.btn.scan_code') }}
-            </template>
+            {{ isMobileViewport ? '' : $tc('app.spoolman.btn.manage_spools') }}
           </app-btn>
 
           <v-spacer />
