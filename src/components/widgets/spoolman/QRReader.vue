@@ -70,8 +70,8 @@ export default class QRReader extends Mixins(StateMixin) {
       this.canvas.width = image.videoWidth
       this.canvas.height = image.videoHeight
     } else {
-      this.canvas.width = image.width
-      this.canvas.height = image.height
+      this.canvas.width = image.naturalWidth
+      this.canvas.height = image.naturalHeight
     }
 
     try {
