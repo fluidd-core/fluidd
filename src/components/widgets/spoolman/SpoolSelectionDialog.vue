@@ -22,11 +22,13 @@
           <v-menu
             v-if="cameras.length > 1"
             v-model="cameraSelectionMenuOpen"
-            class="mr-2"
             location="top"
           >
             <template #activator="{ on }">
-              <app-btn v-on="on">
+              <app-btn
+                class="mr-2"
+                v-on="on"
+              >
                 <v-icon
                   class="mr-1"
                   small
