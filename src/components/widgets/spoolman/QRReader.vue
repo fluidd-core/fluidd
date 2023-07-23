@@ -36,6 +36,7 @@ export default class QRReader extends Mixins(StateMixin) {
   context!: CanvasRenderingContext2D | null
   dataPatterns = [/\/spool\/show\/(\d+)\/?/]
   statusMessage = 'info.howto'
+  lastScanTimestamp = Date.now()
 
   @VModel({ type: String, default: null })
     source!: null | string
@@ -62,9 +63,17 @@ export default class QRReader extends Mixins(StateMixin) {
   }
 
   handlePrinterCameraFrame (image: HTMLVideoElement | HTMLImageElement) {
+    // if broken canvas
     if (!this.context) {
       return
     }
+
+    // limit to 10 scan attempts per second
+    if (Date.now() - this.lastScanTimestamp < 100) {
+      return
+    }
+
+    this.lastScanTimestamp = Date.now()
 
     if (image instanceof HTMLVideoElement) {
       this.canvas.width = image.videoWidth
@@ -93,7 +102,7 @@ export default class QRReader extends Mixins(StateMixin) {
 
     const imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height)
     const code = jsQR(imageData.data, imageData.width, imageData.height)
-    if (code) {
+    if (code && code.data) {
       // valid QR code found
       const pattern = this.dataPatterns.find(pattern => pattern.test(code.data))
       if (pattern) {
