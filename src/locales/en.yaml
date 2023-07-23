@@ -781,6 +781,9 @@ app:
       no_required_length: >-
         The amount of filament required to print the selected file is unknown.
         Do you wish to continue?
+      mismatched_filament: >-
+        The material of the selected filament does not match the selected material in the slicer.
+        Are you sure you want to continue?
       info:
         howto: >-
           Show your spool's QR code to the camera.

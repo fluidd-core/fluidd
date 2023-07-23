@@ -720,6 +720,9 @@ app:
       no_required_length: >-
         Die benötigte Filamentmenge für die von Ihnen ausgewählte Datei ist unbekannt.
         Wollen Sie fortfahren?
+      mismatched_filament: >-
+        Das Material des ausgewählten Filaments stimmt nicht mit dem im Slicer ausgewählten
+        Material überein. Sind Sie sicher, dass Sie fortfahren wollen?
       info:
         howto: >-
           Halten Sie den QR-Code der Spule in die Kamera.

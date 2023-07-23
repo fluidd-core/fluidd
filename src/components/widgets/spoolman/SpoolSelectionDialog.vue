@@ -204,9 +204,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   @Watch('open')
   onOpen () {
-    if (this.open && this.currentFile) {
+    if (this.open && this.currentFileName) {
       // prefetch file metadata
-      SocketActions.serverFilesMetadata(this.currentFile)
+      SocketActions.serverFilesMetadata(this.currentFileName)
     }
   }
 
@@ -270,8 +270,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return filename
   }
 
-  get currentFile () {
+  get currentFileName () {
     return this.filename || this.$store.state.printer.printer.print_stats.filename
+  }
+
+  get currentFile () {
+    const splitFilepath = this.currentFileName.split('/')
+    const filename = splitFilepath.pop()
+    const filepath = splitFilepath.join('/')
+    return this.$store.getters['files/getFile'](null, filepath ? `gcodes/${filepath}` : 'gcodes', filename)
   }
 
   get cameras () {
@@ -319,10 +326,21 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       // l[mm]
       let requiredLength = 0
       if (this.currentFile) {
-        const splitFilepath = this.currentFile.split('/')
-        const filename = splitFilepath.pop()
-        const filepath = splitFilepath.join('/')
-        requiredLength = this.$store.getters['files/getFile'](null, filepath ? `gcodes/${filepath}` : 'gcodes', filename)?.filament_total ?? 0
+        if (this.currentFile.filament_type !== spool.filament.material) {
+          // filament materials don't match
+
+          const confirmation = await this.$confirm(
+            this.$tc('app.spoolman.msg.mismatched_filament'),
+            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+          )
+
+          if (!confirmation) {
+            return
+          }
+        }
+
+        requiredLength = this.currentFile?.filament_total ?? 0
+        // subtract already printed length
         requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
         requiredLength = Math.max(requiredLength, 0)
       }
