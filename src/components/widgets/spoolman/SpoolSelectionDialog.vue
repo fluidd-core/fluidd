@@ -224,6 +224,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   get availableSpools (): Spool[] {
     const spools = []
     for (const spool of this.$store.state.spoolman.availableSpools) {
+      if (spool.archived) {
+        continue
+      }
+
       spools.push({
         ...spool,
         filament_name: `${spool.filament.vendor.name} - ${spool.filament.name}`,

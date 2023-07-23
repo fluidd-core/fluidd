@@ -29,6 +29,7 @@ export interface Spool {
   comment?: string;
   first_used?: Date;
   last_used?: Date;
+  archived?: boolean;
 }
 
 export interface SpoolmanState {
