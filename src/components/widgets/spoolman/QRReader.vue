@@ -2,7 +2,7 @@
   <app-dialog
     v-model="open"
     no-actions
-    width="60vw"
+    :width="isMobileViewport ? '100%' : '60vw'"
     :title="$t('app.spoolman.title.scan_spool')"
   >
     <v-card-text>
@@ -27,11 +27,12 @@ import StateMixin from '@/mixins/state'
 import jsQR from 'jsqr'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import { Spool } from '@/store/spoolman/types'
+import BrowserMixin from '@/mixins/browser'
 
 @Component({
   components: { CameraItem }
 })
-export default class QRReader extends Mixins(StateMixin) {
+export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   video!: HTMLVideoElement | HTMLImageElement
   context!: CanvasRenderingContext2D | null
   dataPatterns = [/\/spool\/show\/(\d+)\/?/]
