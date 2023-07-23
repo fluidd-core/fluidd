@@ -6,10 +6,7 @@
     :title="$t('app.spoolman.title.scan_spool')"
   >
     <v-card-text>
-      <v-alert
-        v-if="statusMessage"
-        :type="statusMessage.split('.')[0]"
-      >
+      <v-alert :type="statusMessage.split('.')[0]">
         {{ $t(`app.spoolman.msg.${statusMessage}`) }}
       </v-alert>
       <canvas
@@ -38,7 +35,7 @@ export default class QRReader extends Mixins(StateMixin) {
   video!: HTMLVideoElement | HTMLImageElement
   context!: CanvasRenderingContext2D | null
   dataPatterns = [/\/spool\/show\/(\d+)\/?/]
-  statusMessage = ''
+  statusMessage = 'info.howto'
 
   @VModel({ type: String, default: null })
     source!: null | string
@@ -77,8 +74,12 @@ export default class QRReader extends Mixins(StateMixin) {
       this.canvas.height = image.height
     }
 
-    this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
-    this.readCodeFromCanvasContext()
+    try {
+      this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
+      this.readCodeFromCanvasContext()
+    } catch {
+      this.statusMessage = 'error.no_image_data'
+    }
   }
 
   get availableSpools () {
@@ -94,10 +95,10 @@ export default class QRReader extends Mixins(StateMixin) {
     const code = jsQR(imageData.data, imageData.width, imageData.height)
     if (code) {
       // valid QR code found
-      const match = this.dataPatterns.find(pattern => pattern.test(code.data))
-      if (match) {
+      const pattern = this.dataPatterns.find(pattern => pattern.test(code.data))
+      if (pattern) {
         // code matches one of known patterns
-        const spoolId = code.data.match(match)?.[1]
+        const spoolId = code.data.match(pattern)?.[1]
         if (spoolId && !isNaN(Number(spoolId))) {
           // valid spool ID
           const id = parseInt(spoolId)

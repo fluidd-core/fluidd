@@ -720,8 +720,16 @@ app:
       no_required_length: >-
         Die benötigte Filamentmenge für die von Ihnen ausgewählte Datei ist unbekannt.
         Wollen Sie fortfahren?
+      info:
+        howto: >-
+          Halten Sie den QR-Code der Spule in die Kamera.
+          Dieses Fenster wird geschlossen, sobald eine Spule erkannt wurde.
       warning:
         code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code aus.
         invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
       error:
         spool_not_existant: Die von Ihnen gescannte Spule existiert nicht in der Datenbank.
+        no_image_data: >-
+          Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
+          Bitte überprüfen Sie Ihre Kameraeinstellungen oder versuchen Sie,
+          eine andere Kameraquelle zu verwenden.

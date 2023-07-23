@@ -781,8 +781,15 @@ app:
       no_required_length: >-
         The amount of filament required to print the selected file is unknown.
         Do you wish to continue?
+      info:
+        howto: >-
+          Show your spool's QR code to the camera.
+          This window will close as soon as a spool is detected.
       warning:
         code_not_recognized: This code doesn't look like a compatible QR code.
         invalid_spool_id: The spool ID contained in this QR code is invalid.
       error:
         spool_not_existant: The spool you scanned doesn't exist in the database.
+        no_image_data: >-
+          There was an error accessing the cameras feed.
+          Please check your camera configuration or try another camera source.
