@@ -691,7 +691,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   async handlePreviewGcode (file: AppFile | AppFileWithMeta) {
     this.getGcode(file)
       .then(response => response?.data)
-      .then((gcode) => {
+      .then(gcode => {
+        if (!gcode) return
+
         if (this.$router.currentRoute.path !== '/' || !this.$store.getters['layout/isEnabledInCurrentLayout']('gcode-preview-card')) {
           this.$router.push({ path: '/preview' })
         }
