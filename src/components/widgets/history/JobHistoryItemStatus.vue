@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
-import { HistoryItem, HistoryItemStatus } from '@/store/history/types'
+import { HistoryItem } from '@/store/history/types'
 
 @Component({})
 export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
@@ -28,8 +28,8 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
   readonly job!: HistoryItem
 
   // get status () {
-  //   if (this.job.status === HistoryItemStatus.Completed) return HistoryItemStatus.Completed
-  //   if (this.job.status === HistoryItemStatus.InProgress) return HistoryItemStatus.InProgress
+  //   if (this.job.status === 'completed') return 'completed'
+  //   if (this.job.status === 'in_progress') return 'in_progress'
   //   if (this.job.status.indexOf('_')) {
   //     return this.job.status.split('_').pop()
   //   }
@@ -53,20 +53,20 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
 
   get state () {
     if (
-      this.job.status === HistoryItemStatus.Cancelled ||
-      this.job.status === HistoryItemStatus.Error ||
-      this.job.status === HistoryItemStatus.Server_Exit
+      this.job.status === 'cancelled' ||
+      this.job.status === 'error' ||
+      this.job.status === 'server_exit'
     ) return 'error'
 
     if (
-      this.job.status === HistoryItemStatus.Printing ||
-      this.job.status === HistoryItemStatus.Completed ||
-      this.job.status === HistoryItemStatus.InProgress
+      this.job.status === 'printing' ||
+      this.job.status === 'completed' ||
+      this.job.status === 'in_progress'
     ) return 'success'
 
     if (
-      this.job.status === HistoryItemStatus.Klippy_Shutdown ||
-      this.job.status === HistoryItemStatus.Klippy_Disconnect
+      this.job.status === 'klippy_shutdown' ||
+      this.job.status === 'klippy_disconnect'
     ) return 'warning'
 
     return 'success'
@@ -74,8 +74,8 @@ export default class JobHistoryItemStatus extends Mixins(FilesMixin) {
 
   get inError () {
     return (
-      this.job.status !== HistoryItemStatus.Completed &&
-      this.job.status !== HistoryItemStatus.InProgress
+      this.job.status !== 'completed' &&
+      this.job.status !== 'in_progress'
     )
   }
 }

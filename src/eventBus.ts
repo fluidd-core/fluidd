@@ -2,7 +2,7 @@ import Vue from 'vue'
 
 export const EventBus = {
   bus: new Vue(),
-  $emit: (text?: string, options = {}): void => {
+  $emit: (text?: string, options: Partial<FlashMessage> = {}): void => {
     const opts: FlashMessage = {
       open: true,
       timeout: -1,
@@ -23,10 +23,4 @@ export interface FlashMessage {
   timeout?: number;
 }
 
-export enum FlashMessageTypes {
-  success = 'success',
-  error = 'error',
-  warning = 'warning',
-  primary = 'primary',
-  secondary = 'secondary'
-}
+export type FlashMessageTypes = 'success' | 'error' | 'warning' | 'primary' | 'secondary'
