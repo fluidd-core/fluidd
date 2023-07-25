@@ -15,6 +15,7 @@
       />
       <CameraItem
         :camera="camera"
+        :embedded="true"
         @frame="handlePrinterCameraFrame"
       />
     </v-card-text>
