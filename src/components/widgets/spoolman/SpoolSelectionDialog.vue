@@ -344,9 +344,11 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         }
 
         requiredLength = this.currentFile?.filament_total ?? 0
-        // subtract already printed length
-        requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
-        requiredLength = Math.max(requiredLength, 0)
+        if (this.$store.getters['printer/getPrinterState'] !== 'idle') {
+          // subtract already printed length
+          requiredLength -= this.$store.state.printer.printer.print_stats?.filament_used ?? 0
+          requiredLength = Math.max(requiredLength, 0)
+        }
       }
 
       if (!requiredLength) {
