@@ -736,3 +736,5 @@ app:
           Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
           Bitte überprüfen Sie Ihre Kameraeinstellungen oder versuchen Sie,
           eine andere Kameraquelle zu verwenden.
+    setting:
+      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen

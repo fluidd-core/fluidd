@@ -737,7 +737,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   handlePrint (file: AppFile) {
     if (this.disabled) return
     const filename = `${this.visiblePath}/${file.filename}`
-    if (this.$store.state.spoolman.supported) {
+
+    const spoolmanSupported = this.$store.getters['spoolman/getSupported']
+    const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.general.autoSpoolSelectionDialog
+    if (spoolmanSupported && autoSpoolSelectionDialog) {
       this.$store.commit('spoolman/setDialogState', {
         show: true,
         filename

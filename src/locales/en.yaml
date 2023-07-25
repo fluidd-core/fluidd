@@ -796,3 +796,5 @@ app:
         no_image_data: >-
           There was an error accessing the cameras feed.
           Please check your camera configuration or try another camera source.
+    setting:
+      show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
