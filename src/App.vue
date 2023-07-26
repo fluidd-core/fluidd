@@ -137,10 +137,9 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return this.hasWait(this.$waits.onLoadLanguage)
   }
 
-  get progress () {
-    let progress = this.$store.getters['printer/getPrintProgress']
-    progress = (progress * 100).toFixed()
-    return progress
+  get progress (): number {
+    const progress = this.$store.getters['printer/getPrintProgress'] as number
+    return Math.floor(progress * 100)
   }
 
   get pageTitle () {

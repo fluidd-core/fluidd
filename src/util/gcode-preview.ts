@@ -1,4 +1,4 @@
-import { ArcMove, Move, Point, Rotation } from '@/store/gcodePreview/types'
+import { ArcMove, Move, Point } from '@/store/gcodePreview/types'
 
 type BinarySearchComparer<T> = (item: T, index: number, array: T[]) => number
 
@@ -60,11 +60,11 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
   }
 
   switch (move.direction) {
-    case Rotation.Clockwise:
+    case 'clockwise':
       return 'A' + [
         radius, radius, 0, Number(angle < 0), 0, destination.x, destination.y
       ].join(',')
-    case Rotation.CounterClockwise:
+    case 'counter-clockwise':
       return '' +
         'M' + [destination.x, destination.y].join(',') +
         'A' + [radius, radius, 0, Number(angle > 0), 0, toolhead.x, toolhead.y].join(',') +

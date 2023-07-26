@@ -67,7 +67,7 @@ export const handleCurrentFileChange = (payload: any, state: RootState, commit: 
       // This refreshes the metadata for the current file, which also
       // ensures we update the current_file with the latest data via
       // the files/onFileUpdate action.
-      SocketActions.serverFilesMetaData(payload.print_stats.filename)
+      SocketActions.serverFilesMetadata(payload.print_stats.filename)
     }
   }
 }

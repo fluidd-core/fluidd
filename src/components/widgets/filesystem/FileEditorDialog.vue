@@ -27,7 +27,23 @@
         >
           <v-icon>$close</v-icon>
         </app-btn>
-        <v-toolbar-title>{{ filename }}{{ updatedContent !== lastSavedContent ? " *" : "" }}</v-toolbar-title>
+        <v-toolbar-title>
+          {{ filename }}
+          <v-icon
+            v-if="readonly"
+            small
+            class="ml-1"
+          >
+            $lock
+          </v-icon>
+          <v-icon
+            v-else-if="updatedContent !== lastSavedContent"
+            small
+            class="ml-1"
+          >
+            $circle
+          </v-icon>
+        </v-toolbar-title>
         <v-spacer />
         <v-toolbar-items>
           <app-btn

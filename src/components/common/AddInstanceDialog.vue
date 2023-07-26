@@ -20,6 +20,8 @@
 
       <v-text-field
         v-model="url"
+        type="url"
+        spellcheck="false"
         autofocus
         :label="$t('app.general.label.api_url')"
         persistent-hint
@@ -79,6 +81,7 @@ import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
 import { consola } from 'consola'
 import { httpClientActions } from '@/api/httpClientActions'
+import webSocketWrapper from '@/util/web-socket-wrapper'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
@@ -193,21 +196,38 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
         this.controller = new AbortController()
         const { signal } = this.controller
 
-        await fetch(url + 'server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
-          .then(() => {
-            // likely a cors issue
-            this.error = this.$t('app.endpoint.error.cors_error')
-            this.note = this.$t('app.endpoint.error.cors_note', {
-              url: Globals.DOCS_MULTIPLE_INSTANCES
+        if (this.hosted) {
+          const apiEndpoints = this.$filters.getApiUrls(url.toString())
+
+          await webSocketWrapper(apiEndpoints.socketUrl, signal)
+            .then(() => {
+              // likely a cors issue, but socket worked
+              this.verified = true
             })
-          })
-          .catch(e => {
-            // external host not reachable (fetch returns 'failed to fetch')
-            consola.debug('Network Error', e, request)
-            this.error = request
-            this.note = this.$t('app.endpoint.error.cant_connect')
-          })
-          .finally(() => { this.verifying = false })
+            .catch(e => {
+              // external host not reachable (fetch returns 'failed to fetch')
+              consola.debug('Network Error', e, request)
+              this.error = request
+              this.note = this.$t('app.endpoint.error.cant_connect')
+            })
+            .finally(() => { this.verifying = false })
+        } else {
+          await fetch(url + 'server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
+            .then(() => {
+              // likely a cors issue
+              this.error = this.$t('app.endpoint.error.cors_error')
+              this.note = this.$t('app.endpoint.error.cors_note', {
+                url: Globals.DOCS_MULTIPLE_INSTANCES
+              })
+            })
+            .catch(e => {
+              // external host not reachable (fetch returns 'failed to fetch')
+              consola.debug('Network Error', e, request)
+              this.error = request
+              this.note = this.$t('app.endpoint.error.cant_connect')
+            })
+            .finally(() => { this.verifying = false })
+        }
       }
     }
   }
@@ -216,6 +236,10 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
     return this.$t('app.endpoint.msg.trouble', {
       url: Globals.DOCS_MULTIPLE_INSTANCES
     })
+  }
+
+  get hosted () {
+    return this.$store.state.config.hostConfig.hosted
   }
 
   addInstance () {

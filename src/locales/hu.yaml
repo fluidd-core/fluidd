@@ -76,7 +76,9 @@ app:
       label:
         print_start_time: Nyomtatottak szűrése
         print_start_time_desc: Kiszűri a már kinyomtatott elemeket.
+        hidden_files_folders: Rejtett fájlok és mappák szűrése
         klipper_backup_files: Klipper biztonsági fájlok szűrése
+        rolled_log_files: A gördített naplófájlok szűrése
     label:
       dir_name: Könyvtár neve
       disk_usage: Lemezhasználat
@@ -98,16 +100,21 @@ app:
       add_file: Fájl hozzáadása
       command_palette: Parancs paletta
       download_file: Fájl lekérése
+      duplicate_dir: Duplikált könyvtár
+      duplicate_file: Duplikált fájl
+      go_to_file: Menj a fájlhoz
       rename_dir: Könyvtár átnevezése
       rename_file: Fájl átnevezése
       upload_file: Fájl feltöltése
     tooltip:
       low_on_space: Kevés a lemezterület
+      move_item: Elem mozgatása | {count} elem mozgatása
       root_disabled: '{root} nem elérhető. Kérjük, ellenőrizd a naplókat.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}'
+      crowsnest_config: 'https://crowsnest.mainsail.xyz/configuration/%{hash}-section'
   gcode:
     btn:
       load_current_file: Aktuális fájl betöltése
@@ -122,6 +129,7 @@ app:
       show_extrusions: Extrudálások megjelenítése
       show_moves: Mozgások megjelenítése
       show_next_layer: Következő réteg megjelenítése
+      show_parts: Részek mutatása
       show_previous_layer: Előző réteg megjelenítése
       show_retractions: Visszahúzások megjelenítése
       parsing_file: Fájl elemzése
@@ -150,11 +158,13 @@ app:
       create_zip_archive: ZIP archívum létrehozása
       delete: Töröl
       download: Letöltés
+      duplicate: Duplikált
       edit: Szerkesztés
       exit_layout: Elrendezési mód bezárása
       extrude: Extrudálás
       filter: Szűrő
       forgot_password: Elfelejtetted a jelszavad?
+      go_to_file: Menj a fájlhoz
       heaters_off: Fűtőtestek Ki
       job_queue: Feladatsor
       load_all: Minden betöltése
@@ -170,6 +180,7 @@ app:
       reboot: Újraindítás
       recover: Visszaállítás
       refresh: Frissítés
+      refresh_metadata: Metaadat frissítése
       reload: Újratöltés
       remove: Eltávolítás
       remove_all: Összes eltávolítása
@@ -189,6 +200,7 @@ app:
       save_as: Mentés másként
       save_restart: Mentés & Újraindítás
       save_config_and_restart: Konfiguráció mentése és újraindítás
+      select_columns: Oszlopok kijelölése
       send: Küldés
       set_color: Szín beállítása
       set_default_layout: Beállítás alapértelmezett elrendezésként
@@ -196,6 +208,7 @@ app:
       snooze: Szundi
       socket_reconnect: Újracsatlakozás
       socket_refresh: Frissítés kényszerítése
+      thumbnail_size: Miniatűr méret
       upload: Feltöltés
       upload_files: Fájlok feltöltése
       upload_folder: Mappa feltöltése
@@ -222,6 +235,7 @@ app:
       add_filter: Szűrő hozzáadása
       add_preset: Előbeállítás hozzáadása
       add_user: Felhasználó hozzáadása
+      all: Mind
       api_key: Api kulcs
       api_url: API URL
       auth_source: Hitelesítési forrás
@@ -229,6 +243,7 @@ app:
       change_password: Jelszóváltás
       clear_all: Mindent kitöröl
       color: Szín
+      command: Parancs
       confirm: Megerősít
       current_password: Aktuális jelszó
       current_user: Jelenlegi felhasználó
@@ -267,6 +282,9 @@ app:
       numeric_prefix_sort: Numerikus előtag rendezése
       password: Jelszó
       partial_of_total: '%{partial} - %{total}'
+      pause_at_layer: Szünet a rétegnél
+      pause_at_next_layer: Szünet a következő rétegnél
+      pause_at_layer_number: Szünet a rétegszámnál
       power: Áramellátás
       pressure_advance: Nyomás előtolás
       printers: Nyomtatók
@@ -323,6 +341,9 @@ app:
         Üdv újra.<br>Jelentkezz be alább, hogy kapcsolatban maradj a nyomtatóddal.
       offline_ready: Fluidd készen áll az offline munkavégzésre.
       needs_refresh: Új tartalom érhető el, frissítéshez kattints az <b>Újratöltés</b> gombra.
+      pending_configuration_sections_deleted: A következő szakaszok törlésre vannak jelölve
+      rolledover_logs: >-
+        A következő alkalmazási naplók átkerültek: %{applications}
     simple_form:
       error:
         arrayofnums: Csak számok
@@ -339,6 +360,7 @@ app:
         invalid_aspect: Érvénytelen képarány
       msg:
         confirm: Biztos vagy benne?
+        confirm_delete: Biztos vagy benne? Törlöd a kiválasztott elemet. | Biztos vagy benne? Törölsz {count} elemet.
         confirm_exclude_object: Biztosan kizárod ezt az objektumot a nyomtatásból?
         confirm_forcemove_toggle: Biztos vagy benne? Ez károsíthatja a nyomtatót.
         confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
@@ -404,6 +426,7 @@ app:
       other_files: Egyéb fájlok
       pending_configuration_changes: Függőben lévő konfigurációs változások
       retract: Szoftveres visszahúzás
+      rollover_logs: Forgó naplók
       runout_sensors: Kifutás érzékelők
       settings: Beállítások
       stats: Nyomtató statisztikák
@@ -422,12 +445,13 @@ app:
       reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
       restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
       run_collector: Gyűjtő futtatása
+      rollover_logs: Forgó naplók
   history:
     msg:
-      confirm: Biztos vagy benne? Ez törli az összes előzményt és a nyomtatóstatisztikát
+      confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
   job_queue:
     msg:
-      confirm: Biztos vagy benne? Ez törli a teljes nyomtatósort
+      confirm: Biztos vagy benne? Törlöd a teljes nyomtatósort
       confirm_jobs: Biztos vagy benne? Ez az összes munkát törli.
       confirm_stats: Biztos vagy benne? Ez az összes statisztikát törli.
   printer:
@@ -454,6 +478,8 @@ app:
     camera_type_options:
       mjpegadaptive: MJPEG Adaptív
       mjpegstream: MJPEG Sugárzás
+      hlsstream: HLS Sugárzás
+      webrtc_camera_streamer: WebRTC (kamera-sugárzása)
       video: IP Kamera
       iframe: HTTP oldal
     camera_rotate_options:
@@ -512,6 +538,7 @@ app:
       height: Magasság
       gcode_coords: G-Kód koordináták használata
       icon: Ikon
+      ignore_default_bed_mesh_pending_configuration_changes: Az alapértelmezett ágyháló figyelmen kívül hagyása - Függő konfigurációs módosítások
       invert_x_control: Fordított (X) vezérlés
       invert_y_control: Fordított (Y) vezérlés
       invert_z_control: Fordított (Z) vezérlés
@@ -525,6 +552,7 @@ app:
       metrics: Metrikus
       move_line_width: Vonalszélesség mozgatása
       name: Név
+      never: Soha
       none: Egyik sem
       optional: Opcionális
       power_toggle_in_top_nav: Bekapcsológomb a felső navigációban
@@ -533,9 +561,11 @@ app:
       reset: Beállítások visszaállítása
       retraction_icon_size: Visszahúzási ikon mérete
       right_y: Jobb Y-tengely
+      save_and_restore_view_state: A nézet állapot mentése és visszaállítása
       show_animations: Animációk megjelenítése
       show_barometric_pressure: Barometrikus nyomás mutatása
       show_code_lens: CodeLens megjelenítése
+      show_gas_resistance: Gázellenállás mutatása
       show_legend: Legenda mutatása
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
@@ -547,6 +577,8 @@ app:
       thermal_preset_gcode: G-Kód
       thermal_preset_name: Előre beállított név
       title: Cím
+      to_browser_local_storage: A böngésző helyi tárolója
+      to_browser_session_storage: A böngésző munkamenet tárolása
       toolhead_move_distances: Nyomtatófej távolsági értékek
       type: Típus
       unit: Egység
@@ -629,6 +661,7 @@ app:
       manual_probe: Kézi szonda
       motors_off: Motorok Ki
       relative_positioning: Relatív pozicionálás
+      tools: Eszközök
     label:
       stats_active_extruder: >-
         <span class="secondary--text">Az aktív extruder konfigurációja be van állítva</span>

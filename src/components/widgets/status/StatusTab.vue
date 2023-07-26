@@ -9,9 +9,7 @@
       :height="6"
       :value="estimates.progress"
       color="primary"
-    >
-      <!-- <small v-if="estimates.progress">{{ estimates.progress }}%</small> -->
-    </v-progress-linear>
+    />
 
     <v-card-text v-if="visible">
       <v-row>

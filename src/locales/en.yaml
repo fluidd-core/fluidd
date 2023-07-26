@@ -176,6 +176,7 @@ app:
       reboot: Reboot
       recover: Recover
       refresh: Refresh
+      refresh_metadata: Refresh Metadata
       reload: Reload
       remove: Remove
       remove_all: Remove all

@@ -213,7 +213,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     if (actualEndTime > 0) eta = actualEndTime
 
     return {
-      progress: (progress * 100).toFixed(),
+      progress: Math.floor(progress * 100),
       duration,
       slicer: slicerLeft,
       file: fileLeft,

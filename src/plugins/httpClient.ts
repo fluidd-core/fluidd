@@ -1,5 +1,5 @@
 import _Vue from 'vue'
-import { EventBus, FlashMessageTypes } from '@/eventBus'
+import { EventBus } from '@/eventBus'
 import { consola } from 'consola'
 import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 import { Globals } from '@/globals'
@@ -103,13 +103,13 @@ const createHttpClient = (store: any) => {
     switch (error.response.status) {
       case 500:
         consola.debug(error.response.status, error.message, message)
-        EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
+        EventBus.$emit(message || 'Server error', { type: 'error' })
         break
       case 502:
       case 400:
         consola.debug(error.response.status, error.message, message)
         if (!handledErrorRequests[error.response.status].includes(url)) {
-          EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
+          EventBus.$emit(message || 'Server error', { type: 'error' })
         }
         break
       case 401:
@@ -120,11 +120,11 @@ const createHttpClient = (store: any) => {
         break
       case 404:
         consola.debug(error.response.status, error.message, message)
-        // EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.warning })
+        // EventBus.$emit(message || 'Server error', { type: 'warning' })
         break
       default:
         consola.debug(error.response.status, error.message)
-        EventBus.$emit(message || 'Server error', { type: FlashMessageTypes.error })
+        EventBus.$emit(message || 'Server error', { type: 'error' })
     }
 
     return Promise.reject(error)

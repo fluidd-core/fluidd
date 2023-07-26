@@ -99,7 +99,7 @@ export const actions: ActionTree<FilesState, RootState> = {
       }
 
       // For gcode files, get the metadata and the meta update will take care of the rest.
-      SocketActions.serverFilesMetaData(payload.item.path)
+      SocketActions.serverFilesMetadata(payload.item.path)
     } else {
       const paths = getFilePaths(payload.item.path, root)
       const update: FileUpdate = {

@@ -64,6 +64,7 @@
           v-model="filter.value"
           filled
           dense
+          spellcheck="false"
           class="mt-0"
           hide-details="auto"
           :rules="[

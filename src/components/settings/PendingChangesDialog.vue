@@ -12,7 +12,7 @@
         auto-grow
         rows="1"
         :value="saveConfigPendingItems"
-        :spellcheck="false"
+        spellcheck="false"
         style="width: 100%; font-family: monospace; font-size: 1rem; font-weight: 100 !important;"
       />
     </v-card-text>

@@ -18,7 +18,6 @@
           <v-list dense>
             <v-list-item
               v-if="canPrint"
-              link
               :disabled="!printerReady"
               @click="$emit('print', file)"
             >
@@ -74,10 +73,22 @@
               @click="$emit('view', file)"
             >
               <v-list-item-icon>
-                <v-icon>$magnify</v-icon>
+                <v-icon>$open</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
+              v-if="canPrint"
+              @click="$emit('refresh-metadata', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$sync</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.refresh_metadata') }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -86,7 +97,7 @@
               @click="$emit('preview-gcode', file)"
             >
               <v-list-item-icon>
-                <v-icon>$magnify</v-icon>
+                <v-icon>$cubeScan</v-icon>
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.preview_gcode') }}</v-list-item-title>
@@ -107,7 +118,6 @@
 
             <v-list-item
               v-if="!Array.isArray(file) && file.type !== 'directory'"
-              link
               @click="$emit('download', file)"
             >
               <v-list-item-icon>
@@ -132,7 +142,6 @@
 
             <v-list-item
               v-if="!Array.isArray(file) && !rootProperties.readonly"
-              link
               @click="$emit('duplicate', file)"
             >
               <v-list-item-icon>

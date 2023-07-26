@@ -393,20 +393,34 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   getItemIcon (item: FileBrowserEntry) {
+    const readonly = (
+      this.readonly ||
+      (
+        item.permissions !== undefined &&
+        !item.permissions.includes('w')
+      )
+    )
+
     if (item.type === 'file') {
-      if (item.extension === 'zip') {
-        return '$fileZip'
-      } else if (item.permissions === 'r' || this.readonly) {
-        return '$fileLock'
-      } else {
-        return '$file'
+      switch (item.extension) {
+        case 'bmp':
+        case 'gif':
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'tif':
+        case 'tiff':
+        case 'webp':
+          return readonly ? '$fileImageLock' : '$fileImage'
+        case 'zip':
+          return readonly ? '$fileZipLock' : '$fileZip'
+        default:
+          return readonly ? '$fileLock' : '$file'
       }
     } else if (item.name === '..') {
       return '$folderUp'
-    } else if (item.permissions === 'r' || this.readonly) {
-      return '$folderLock'
     } else {
-      return '$folder'
+      return readonly ? '$folderLock' : '$folder'
     }
   }
 

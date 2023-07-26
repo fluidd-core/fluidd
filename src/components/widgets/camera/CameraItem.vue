@@ -296,22 +296,6 @@ export default class CameraItem extends Vue {
 
           this.pc?.close()
 
-          const config = {
-            sdpSemantics: 'unified-plan'
-          } as RTCConfiguration
-
-          this.pc = new RTCPeerConnection(config)
-
-          this.pc.addTransceiver('video', {
-            direction: 'recvonly'
-          })
-
-          this.pc.ontrack = (evt: RTCTrackEvent) => {
-            if (evt.track.kind === 'video' && cameraVideo) {
-              cameraVideo.srcObject = evt.streams[0]
-            }
-          }
-
           fetch(baseUrl, {
             body: JSON.stringify({
               type: 'request'
@@ -325,25 +309,47 @@ export default class CameraItem extends Vue {
             .then((answer: RTCSessionDescriptionInit) => {
               this.remoteId = 'id' in answer && typeof (answer.id) === 'string' ? answer.id : null
 
+              const config = {
+                sdpSemantics: 'unified-plan'
+              } as RTCConfiguration
+
+              if ('iceServers' in answer && Array.isArray(answer.iceServers)) {
+                config.iceServers = answer.iceServers
+              }
+
+              this.pc = new RTCPeerConnection(config)
+
+              this.pc.addTransceiver('video', {
+                direction: 'recvonly'
+              })
+
+              this.pc.ontrack = (evt: RTCTrackEvent) => {
+                if (evt.track.kind === 'video' && cameraVideo) {
+                  cameraVideo.srcObject = evt.streams[0]
+                }
+              }
+
+              this.pc.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
+                if (e.candidate) {
+                  return fetch(baseUrl, {
+                    body: JSON.stringify({
+                      type: 'remote_candidate',
+                      id: this.remoteId,
+                      candidates: [e.candidate]
+                    }),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    method: 'POST'
+                  })
+                    .catch(e => consola.error('[CameraItem] onicecandidate', e))
+                }
+              }
+
               return this.pc?.setRemoteDescription(answer)
             })
             .then(() => this.pc?.createAnswer())
             .then(answer => this.pc?.setLocalDescription(answer))
-            .then(() => new Promise(resolve => {
-              const checkState = () => {
-                if (this.pc?.iceGatheringState === 'complete') {
-                  this.pc?.removeEventListener('icegatheringstatechange', checkState)
-
-                  resolve(true)
-                }
-              }
-
-              if (this.pc?.iceGatheringState === 'complete') {
-                resolve(true)
-              } else {
-                this.pc?.addEventListener('icegatheringstatechange', checkState)
-              }
-            }))
             .then(() => {
               const offer = this.pc?.localDescription
 

@@ -3,6 +3,7 @@ import { Globals } from '@/globals'
 import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
 import { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
+import DOMPurify from 'dompurify'
 
 export const actions: ActionTree<ConsoleState, RootState> = {
   /**
@@ -41,7 +42,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
    * Add a console entry
    */
   async onAddConsoleEntry ({ commit }, payload: ConsoleEntry) {
-    payload.message = payload.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
+    payload.message = DOMPurify.sanitize(payload.message).replace(/(?:\r\n|\r|\n)/g, '<br />')
     if (!payload.time || payload.time <= 0) {
       payload.time = Date.now() / 1000 | 0
     }
@@ -58,7 +59,7 @@ export const actions: ActionTree<ConsoleState, RootState> = {
     if (payload && payload.gcode_store) {
       const entries = payload.gcode_store.map((s: ConsoleEntry, i: number) => {
         s.message = Globals.CONSOLE_RECEIVE_PREFIX + s.message
-        s.message = s.message.replace(/(?:\r\n|\r|\n)/g, '<br />')
+        s.message = DOMPurify.sanitize(s.message).replace(/(?:\r\n|\r|\n)/g, '<br />')
         s.id = i
         return s
       })
