@@ -25,7 +25,7 @@
 <script lang="ts">
 import { Component, Mixins, Ref, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import jsQR from 'jsqr'
+import QrScanner from 'qr-scanner'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
@@ -34,11 +34,14 @@ import BrowserMixin from '@/mixins/browser'
   components: { CameraItem }
 })
 export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
-  video!: HTMLVideoElement | HTMLImageElement
-  context!: CanvasRenderingContext2D | null
   dataPatterns = [/\/spool\/show\/(\d+)\/?/]
   statusMessage = 'info.howto'
   lastScanTimestamp = Date.now()
+  processing = false
+
+  video!: HTMLVideoElement | HTMLImageElement
+  engine!: any
+  context!: CanvasRenderingContext2D
 
   @VModel({ type: String, default: null })
     source!: null | string
@@ -60,13 +63,16 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     }
   }
 
-  mounted () {
-    this.context = this.canvas.getContext('2d', { willReadFrequently: true })
+  async mounted () {
+    this.processing = true
+    this.context = this.canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
+    this.engine = await QrScanner.createQrEngine()
+    this.processing = false
   }
 
-  handlePrinterCameraFrame (image: HTMLVideoElement | HTMLImageElement) {
-    // if broken canvas
-    if (!this.context) {
+  async handlePrinterCameraFrame (image: HTMLVideoElement | HTMLImageElement) {
+    // if broken canvas or still processing
+    if (this.processing) {
       return
     }
 
@@ -75,6 +81,7 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
       return
     }
 
+    this.processing = true
     this.lastScanTimestamp = Date.now()
 
     if (image instanceof HTMLVideoElement) {
@@ -87,46 +94,40 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
 
     try {
       this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
-      this.readCodeFromCanvasContext()
+      const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true, qrEngine: this.engine, canvas: this.canvas })
+      if (result.data) { this.handleCodeFound(result.data) }
     } catch {
-      this.statusMessage = 'error.no_image_data'
+      // no QR code found
     }
+    this.processing = false
   }
 
   get availableSpools () {
     return this.$store.getters['spoolman/getAvailableSpools']
   }
 
-  readCodeFromCanvasContext () {
-    if (!this.context || !this.canvas.width || !this.canvas.height) {
-      return
-    }
+  handleCodeFound (code: string) {
+    // valid QR code found
+    const pattern = this.dataPatterns.find(pattern => pattern.test(code))
+    if (pattern) {
+      // code matches one of known patterns
+      const spoolId = code.match(pattern)?.[1]
+      if (spoolId && !isNaN(Number(spoolId))) {
+        // valid spool ID
+        const id = parseInt(spoolId)
 
-    const imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height)
-    const code = jsQR(imageData.data, imageData.width, imageData.height)
-    if (code && code.data) {
-      // valid QR code found
-      const pattern = this.dataPatterns.find(pattern => pattern.test(code.data))
-      if (pattern) {
-        // code matches one of known patterns
-        const spoolId = code.data.match(pattern)?.[1]
-        if (spoolId && !isNaN(Number(spoolId))) {
-          // valid spool ID
-          const id = parseInt(spoolId)
-
-          if (this.availableSpools.some((spool: Spool) => spool.id === id)) {
-            // spool exists in spoolman
-            this.$emit('detected', id)
-          } else {
-            // spool doesn't exist
-            this.statusMessage = 'error.spool_not_existant'
-          }
+        if (this.availableSpools.some((spool: Spool) => spool.id === id)) {
+          // spool exists in spoolman
+          this.$emit('detected', id)
         } else {
-          this.statusMessage = 'warning.invalid_spool_id'
+          // spool doesn't exist
+          this.statusMessage = 'error.spool_not_existant'
         }
       } else {
-        this.statusMessage = 'warning.code_not_recognized'
+        this.statusMessage = 'warning.invalid_spool_id'
       }
+    } else {
+      this.statusMessage = 'warning.code_not_recognized'
     }
   }
 }
