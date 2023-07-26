@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.24.2](https://github.com/fluidd-core/fluidd/compare/v1.24.1...v1.24.2) (2023-07-26)
+
+
+### Features
+
+* adds Tool Changer controls ([#1111](https://github.com/fluidd-core/fluidd/issues/1111)) ([a7509e7](https://github.com/fluidd-core/fluidd/commit/a7509e763f91927d8afc29c6b13b7fee289ed655))
+* adds WebRTC trickle ICE support ([aa9e79c](https://github.com/fluidd-core/fluidd/commit/aa9e79c1180961a12e7e9a5b1b0cc282a2d8d200))
+* file metadata refresh ([7913e0c](https://github.com/fluidd-core/fluidd/commit/7913e0c1535ed52c3c033a61d225c18cdf7ca4e5))
+* **i18n-HU:** Update Hungarian Language ([#1121](https://github.com/fluidd-core/fluidd/issues/1121)) ([d1812aa](https://github.com/fluidd-core/fluidd/commit/d1812aa31c5ac1b0125d114381d84a3206ea66d9))
+* **i18n-PL:** adds Polish translations ([#1112](https://github.com/fluidd-core/fluidd/issues/1112)) ([491e863](https://github.com/fluidd-core/fluidd/commit/491e86369f0566a793e3f404a0a5119cb163ee0c))
+* **i18n-PL:** update Polish translations ([#1116](https://github.com/fluidd-core/fluidd/issues/1116)) ([2c5a59e](https://github.com/fluidd-core/fluidd/commit/2c5a59e401fe34ec69d34c34086fcdaffb9fca62))
+* **i18n-PL:** update Polish translations ([#1126](https://github.com/fluidd-core/fluidd/issues/1126)) ([3828b8a](https://github.com/fluidd-core/fluidd/commit/3828b8a1b40ad466df682b580a93ba5061fc7a2c))
+* improves File Editor state indicators ([39bbe7d](https://github.com/fluidd-core/fluidd/commit/39bbe7dab144ec8f6222d0acf5109f521f93e111))
+* Kingroon theme ([#1109](https://github.com/fluidd-core/fluidd/issues/1109)) ([a88e6df](https://github.com/fluidd-core/fluidd/commit/a88e6df9c90b19c288cb661bd529b49109a3ef5e))
+* sanitize HTML in console ([99ed4ea](https://github.com/fluidd-core/fluidd/commit/99ed4ea7b3ae2114f6732ece852461c2b78a803b))
+* show/hide objects on GcodePreview ([a00c1f7](https://github.com/fluidd-core/fluidd/commit/a00c1f738b63c37507136a2e49047f00456e7243))
+
+
+### Bug Fixes
+
+* adds missing metadata refresh code ([5528e74](https://github.com/fluidd-core/fluidd/commit/5528e74540ee3f702639e89ba0c574f116c201c4))
+* check for files on item dragging ([31028a2](https://github.com/fluidd-core/fluidd/commit/31028a28095b62b084816c4b39d0ad032290c44d))
+* don't show gcode load dialog if canceled ([#1128](https://github.com/fluidd-core/fluidd/issues/1128)) ([080bb46](https://github.com/fluidd-core/fluidd/commit/080bb461d150ebe17ce004b55ac19eb2ad9fc210))
+
 ## [1.24.1](https://github.com/fluidd-core/fluidd/compare/v1.24.0...v1.24.1) (2023-06-08)
 
 
