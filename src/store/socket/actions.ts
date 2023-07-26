@@ -5,7 +5,7 @@ import { SocketState } from './types'
 import { RootState } from '../types'
 import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
-import { EventBus, FlashMessageTypes } from '@/eventBus'
+import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
 import IsKeyOf from '@/util/is-key-of'
 
@@ -100,7 +100,7 @@ export const actions: ActionTree<SocketState, RootState> = {
         message = payload.message
       }
 
-      EventBus.$emit(message, { type: FlashMessageTypes.error })
+      EventBus.$emit(message, { type: 'error' })
     }
     if (payload.code === 503) {
       // This indicates klippy is non-responsive, or there's a configuration error

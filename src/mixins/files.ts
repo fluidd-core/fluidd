@@ -87,7 +87,7 @@ export default class FilesMixin extends Vue {
       this.$store.dispatch('files/createFileTransferCancelTokenSource')
 
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
-      return await this.getFile(file.filename, path, file.size, {
+      return await this.getFile<string>(file.filename, path, file.size, {
         responseType: 'text',
         transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
@@ -100,7 +100,7 @@ export default class FilesMixin extends Vue {
    * @param filename The filename to retrieve
    * @param path The path to the file
    */
-  async getFile (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
+  async getFile<T = any> (filename: string, path: string, size = 0, options?: AxiosRequestConfig) {
     // Sort out the filepath
     const filepath = path ? `${path}/${filename}` : filename
 
@@ -148,7 +148,7 @@ export default class FilesMixin extends Vue {
       }
     }
 
-    return await httpClientActions.serverFilesGet(filepath, o)
+    return await httpClientActions.serverFilesGet<T>(filepath, o)
   }
 
   /**
