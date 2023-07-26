@@ -45,6 +45,7 @@ export default class AppSettingsNav extends Vue {
       { name: this.$t('app.setting.title.thermal_presets'), hash: '#presets', visible: true },
       { name: this.$t('app.setting.title.gcode_preview'), icon: '$cubeScan', hash: '#gcodePreview', visible: true },
       { name: this.$t('app.general.title.timelapse'), hash: '#timelapse', visible: this.supportsTimelapse },
+      { name: this.$t('app.setting.title.spoolman'), hash: '#spoolman', visible: this.supportsSpoolman },
       { name: this.$t('app.version.title'), hash: '#versions', visible: this.supportsVersions }
     ]
   }
@@ -55,6 +56,10 @@ export default class AppSettingsNav extends Vue {
 
   get supportsTimelapse () {
     return this.$store.getters['server/componentSupport']('timelapse')
+  }
+
+  get supportsSpoolman () {
+    return this.$store.getters['spoolman/getSupported']
   }
 }
 </script>

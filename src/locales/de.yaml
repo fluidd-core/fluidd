@@ -737,4 +737,5 @@ app:
           Bitte überprüfen Sie Ihre Kameraeinstellungen oder versuchen Sie,
           eine andere Kameraquelle zu verwenden.
     setting:
+      auto_open_qr_camera: Kamera automatisch zur QR-Code- Erkennung öffnen
       show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen

@@ -20,6 +20,7 @@
         <preset-settings />
         <gcode-preview-settings />
         <timelapse-settings v-if="supportsTimelapse" />
+        <spoolman-settings v-if="supportsSpoolman" />
         <version-settings v-if="supportsVersions" />
       </div>
     </v-col>
@@ -42,9 +43,11 @@ import AuthSettings from '@/components/settings/auth/AuthSettings.vue'
 import ConsoleSettings from '@/components/settings/console/ConsoleSettings.vue'
 import FileEditorSettings from '@/components/settings/FileEditorSettings.vue'
 import TimelapseSettings from '@/components/settings/timelapse/TimelapseSettings.vue'
+import SpoolmanSettings from '@/components/settings/SpoolmanSettings.vue'
 
 @Component({
   components: {
+    SpoolmanSettings,
     TimelapseSettings,
     MacroCategories,
     GeneralSettings,
@@ -70,6 +73,10 @@ export default class Settings extends Mixins(StateMixin) {
 
   get supportsTimelapse () {
     return this.$store.getters['server/componentSupport']('timelapse')
+  }
+
+  get supportsSpoolman () {
+    return this.$store.getters['spoolman/getSupported']
   }
 }
 </script>

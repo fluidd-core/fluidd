@@ -229,20 +229,6 @@
         <v-divider />
       </template>
 
-      <template v-if="printerSupportsSpoolman">
-        <app-setting
-          :title="$t('app.spoolman.setting.show_spool_selection_dialog_on_print_start')"
-        >
-          <v-switch
-            v-model="autoSpoolSelectionDialog"
-            hide-details
-            class="mt-0 mb-4"
-          />
-        </app-setting>
-
-        <v-divider />
-      </template>
-
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -452,18 +438,6 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   set forceMoveToggleWarning (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.forceMoveToggleWarning',
-      value,
-      server: true
-    })
-  }
-
-  get autoSpoolSelectionDialog () {
-    return this.$store.state.config.uiSettings.general.autoSpoolSelectionDialog
-  }
-
-  set autoSpoolSelectionDialog (value: boolean) {
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.autoSpoolSelectionDialog',
       value,
       server: true
     })

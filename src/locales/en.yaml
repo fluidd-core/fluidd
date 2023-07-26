@@ -600,6 +600,7 @@ app:
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool
+      spoolman: Spoolman
     tooltip:
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
@@ -797,4 +798,5 @@ app:
           There was an error accessing the cameras feed.
           Please check your camera configuration or try another camera source.
     setting:
+      auto_open_qr_camera: Automatically open camera for QR code detection
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start

@@ -54,8 +54,7 @@ export const defaultState = (): ConfigState => {
         showBedScrewsAdjustDialogAutomatically: true,
         forceMoveToggleWarning: true,
         enableDiagnostics: false,
-        thumbnailSize: 32,
-        autoSpoolSelectionDialog: true
+        thumbnailSize: 32
       },
       theme: {
         isDark: true,
@@ -141,6 +140,10 @@ export const defaultState = (): ConfigState => {
         forceMove: false,
         extrudeSpeed: -1,
         extrudeLength: -1
+      },
+      spoolman: {
+        autoSpoolSelectionDialog: true,
+        autoOpenQRDetectionCamera: null
       }
     }
   }

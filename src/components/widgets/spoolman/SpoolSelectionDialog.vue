@@ -204,9 +204,16 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   @Watch('open')
   onOpen () {
-    if (this.open && this.currentFileName) {
-      // prefetch file metadata
-      SocketActions.serverFilesMetadata(this.currentFileName)
+    if (this.open) {
+      if (this.currentFileName) {
+        // prefetch file metadata
+        SocketActions.serverFilesMetadata(this.currentFileName)
+      }
+
+      const autoOpenCameraId = this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
+      if (this.$store.getters['cameras/getCameraById'](autoOpenCameraId)) {
+        this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
+      }
     }
   }
 
