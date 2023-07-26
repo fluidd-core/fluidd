@@ -42,7 +42,6 @@
         >
           {{ $t('app.setting.btn.reset') }}
         </app-btn>
-
       </app-setting>
     </v-card>
   </div>
