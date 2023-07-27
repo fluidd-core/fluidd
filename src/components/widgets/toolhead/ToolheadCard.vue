@@ -104,6 +104,7 @@
             <template v-for="(tool, index) of availableTools">
               <v-list-item
                 v-if="tool.name !== '-'"
+                :key="tool.name"
                 :disabled="tool.disabled || (tool.wait && hasWait(tool.wait))"
                 @click="sendGcode(tool.name, tool.wait)"
               >

@@ -65,8 +65,8 @@
               :label-width="labelWidth"
             >
               <span>{{
-                  activeSpool.first_used ? $filters.formatRelativeTimeToNow(activeSpool.first_used) : $tc('app.setting.label.never')
-                }}</span>
+                activeSpool.first_used ? $filters.formatRelativeTimeToNow(activeSpool.first_used) : $tc('app.setting.label.never')
+              }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.comment')"
