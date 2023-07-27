@@ -121,7 +121,8 @@
                     </div>
                     <div class="flex-row">
                       <small>
-                        <b>{{ Math.floor(item.remaining_weight).toLocaleString() }}g</b> / {{ item.filament.weight.toLocaleString() }}g
+                        <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
+                        / {{ $filters.getReadableWeightString(item.filament.weight) }}
                       </small>
                     </div>
                   </div>

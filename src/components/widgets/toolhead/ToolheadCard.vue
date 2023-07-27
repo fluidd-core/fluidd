@@ -81,7 +81,7 @@
               v-bind="attrs"
               small
               class="ms-1 my-1"
-              :disabled="!klippyReady"
+              :disabled="!klippyReady || printerPrinting"
               v-on="on"
             >
               <v-icon
@@ -104,9 +104,8 @@
             <template v-for="(tool, index) of availableTools">
               <v-list-item
                 v-if="tool.name !== '-'"
-                :key="tool.name"
-                :disabled="tool.disabled || (tool.wait && hasWait(tool.wait)) || (!tool.enabledOnPrint && printerPrinting)"
-                @click="tool.callback ? tool.callback() : sendGcode(tool.name, tool.wait)"
+                :disabled="tool.disabled || (tool.wait && hasWait(tool.wait))"
+                @click="sendGcode(tool.name, tool.wait)"
               >
                 <v-list-item-icon>
                   <v-icon>
@@ -211,10 +210,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     )
   }
 
-  get serverSupportsSpoolman (): boolean {
-    return this.$store.getters['spoolman/getSupported']
-  }
-
   get macros (): Macro[] {
     return this.$store.getters['macros/getMacros'] as Macro[]
   }
@@ -237,10 +232,12 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get availableTools () {
     const tools: Tool[] = []
+
     const loadFilamentMacro = this.loadFilamentMacro
 
     if (loadFilamentMacro) {
       const ignoreMinExtrudeTemp = loadFilamentMacro.variables?.ignore_min_extrude_temp ?? false
+
       tools.push({
         name: loadFilamentMacro.name.toUpperCase(),
         label: loadFilamentMacro.name === 'm701' ? 'M701 (Load Filament)' : undefined,
@@ -252,21 +249,12 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
     if (unloadFilamentMacro) {
       const ignoreMinExtrudeTemp = unloadFilamentMacro.variables?.ignore_min_extrude_temp ?? false
+
       tools.push({
         name: unloadFilamentMacro.name.toUpperCase(),
         label: unloadFilamentMacro.name === 'm702' ? 'M702 (Unload Filament)' : undefined,
         icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
-      })
-    }
-
-    if (this.serverSupportsSpoolman) {
-      tools.push({
-        name: 'CHANGE_SPOOL',
-        label: this.$tc('app.spoolman.label.change_spool'),
-        icon: '$changeFilament',
-        enabledOnPrint: true,
-        callback: () => this.$store.commit('spoolman/setDialogState', { show: true })
       })
     }
 

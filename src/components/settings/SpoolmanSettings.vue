@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-subheader id="spoolman">
-      {{ $t('app.setting.title.spoolman') }}
+      {{ $t('app.spoolman.title.spoolman') }}
     </v-subheader>
     <v-card
       :elevation="5"

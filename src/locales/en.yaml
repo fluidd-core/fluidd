@@ -600,7 +600,6 @@ app:
       theme: Theme
       thermal_presets: Thermal Presets
       tool: Tool
-      spoolman: Spoolman
     tooltip:
       diagnostics_performance: '[BETA] Logging diagnostics info may impact performance'
       gcode_coords: Use GCode position instead of toolhead position on dashboard
@@ -763,14 +762,20 @@ app:
       scan_code: Scan Code
       select: Select
     title:
+      spoolman: Spoolman
       spool_selection: Spool Selection
       scan_spool: Scan Spool
     label:
-      filament_name: Filament
-      location: Location
-      last_used: Last Used
-      comment: Comment
       change_spool: Change Spool
+      comment: Comment
+      filament_name: Filament
+      first_used: First Used
+      last_used: Last Used
+      location: Location
+      lot_nr: Lot Nr
+      material: Material
+      remaining_weight: Remaining Weight
+      vendor: Vendor
     msg:
       no_spool: >-
         You haven't selected a spool.

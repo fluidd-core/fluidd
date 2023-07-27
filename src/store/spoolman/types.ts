@@ -14,7 +14,7 @@ export interface Filament {
   density: number;
   diameter: number;
   weight: number;
-  color: string;
+  color_hex: string;
 }
 
 export interface Spool {
