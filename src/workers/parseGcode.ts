@@ -1,5 +1,5 @@
 /* eslint-disable no-fallthrough */
-import { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode, Rotation } from '@/store/gcodePreview/types'
+import { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
 import IsKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import shlex from 'shlex'
@@ -70,8 +70,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
   const lines = gcode.split('\n')
 
   let newLayerForNextMove = false
-  let extrusionMode = PositioningMode.Relative
-  let positioningMode = PositioningMode.Absolute
+  let extrusionMode: PositioningMode = 'relative'
+  let positioningMode: PositioningMode = 'absolute'
   const toolhead = {
     x: 0,
     y: 0,
@@ -136,8 +136,8 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
               'i', 'j', 'k', 'r'
             ]),
             direction: command === 'G2'
-              ? Rotation.Clockwise
-              : Rotation.CounterClockwise,
+              ? 'clockwise'
+              : 'counter-clockwise',
             filePosition: toolhead.filePosition
           } satisfies ArcMove
           break
@@ -162,22 +162,22 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
           }
           break
         case 'G90':
-          positioningMode = PositioningMode.Absolute
+          positioningMode = 'absolute'
         case 'M82':
-          extrusionMode = PositioningMode.Absolute
+          extrusionMode = 'absolute'
           toolhead.e = 0
           break
         case 'G91':
-          positioningMode = PositioningMode.Relative
+          positioningMode = 'relative'
         case 'M83':
-          extrusionMode = PositioningMode.Relative
+          extrusionMode = 'relative'
           break
         case 'G92':
-          if (extrusionMode === PositioningMode.Absolute) {
+          if (extrusionMode === 'absolute') {
             toolhead.e = args.e ?? toolhead.e
           }
 
-          if (positioningMode === PositioningMode.Absolute) {
+          if (positioningMode === 'absolute') {
             toolhead.x = args.x ?? toolhead.x
             toolhead.y = args.y ?? toolhead.y
             toolhead.z = args.z ?? toolhead.z
@@ -191,14 +191,14 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
       }
 
       if (move) {
-        if (extrusionMode === PositioningMode.Absolute && move.e !== undefined) {
+        if (extrusionMode === 'absolute' && move.e !== undefined) {
           const extrusionLength = decimalRound(move.e - toolhead.e)
 
           toolhead.e = move.e
           move.e = extrusionLength
         }
 
-        if (positioningMode === PositioningMode.Relative) {
+        if (positioningMode === 'relative') {
           if (move.x !== undefined) {
             move.x = decimalRound(move.x + toolhead.x)
           }

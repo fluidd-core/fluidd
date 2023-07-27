@@ -22,16 +22,16 @@ app:
       save: Zapisuje skalibrowany profil do pliku printer.cfg
   chart:
     label:
-      current: Aktualna
+      current: Aktualnie
       item: Nazwa
       'off': Ukryj wykres
       'on': Pokaż wykres
       power: Moc
       rate_of_change: Zmiana
-      target: Docelowa
+      target: Docelowo
     tooltip:
       help: Przytrzymaj Shift, aby powiększyć.<br />Kliknij element, aby przełączyć
-        na wykresie.<br />Kliknij zasilanie, aby przełączyć na wykresie.
+        na wykresie.<br />Kliknij Moc, aby przełączyć na wykresie.
   console:
     label:
       auto_scroll: Auto. przewijanie
@@ -124,7 +124,7 @@ app:
       heaters_busy: Drukarka jest obecnie zajęta. Wyłączenie grzałek może spowodować
         nieudany wydruk.
       flow: Przepływ
-      pressure_advance: Natężenie docisku
+      pressure_advance: Pressure Advance
       retract_length: Długość retrakcji
       unretract_speed: Prędkość powrotu retrakcji
       unretract_extra_length: Dodatkowa ilość dla powrotu
@@ -194,7 +194,7 @@ app:
       screw_index: Indeks śrub
       stepper_enabled: Silnik krokowy włączony
       total_filament: Całkowite użycie filamentu
-      thumbnail_size: Rozmiar miniatury
+      thumbnail_size: Rozmiar miniatur
       total_filament_avg: Średnio na wydruk
       total_jobs: Łącznie wydrukowano
       total_print_time: Łączny czas drukowania
@@ -271,7 +271,7 @@ app:
       return_dashboard: Wróć do pulpitu sterowania
       save: Zapisz
       save_restart: Zapisz i restartuj
-      restart_service_moonraker: Restart Moonraker
+      restart_service_moonraker: Restartuj Moonraker
       send: Wyślij
       set_color: Ustaw kolor
       set_default_layout: Ustaw jako domyślny układ
@@ -286,7 +286,7 @@ app:
       reset_stats: Resetuj statystyki
       upload: Wgraj
       socket_refresh: Wymuś odświeżenie
-      thumbnail_size: Rozmiar miniatury
+      thumbnail_size: Rozmiar miniatur
       quad_gantry_level: QGL
       refresh_metadata: Odśwież metadane
     title:
@@ -675,7 +675,7 @@ app:
       commit_history: Historia zmian
       updates_available: Dostępne aktualizacje
       up_to_date: AKTUALNY
-      os_packages: System
+      os_packages: Pakiety systemu
       commits_on: zmiany w
       committed: Zmieniono
       invalid: NIEPRAWIDŁOWY
@@ -689,10 +689,11 @@ app:
       finish: Zakończ
     tooltip:
       commit_history: Historia zmian
-      invalid: wskazuje lokalne zmiany w repozytorium
+      invalid: Wskazuje na lokalne zmiany w repozytorium
       packages: Pakiety
       release_notes: Informacje o wydaniu
-      dirty: wskazuje odłączoną głowicę, nie na głównej lub nieprawidłowe pochodzenie
+      dirty: Wskazuje brak powiązania z główną gałęzią (master) lub nieprawidłowe
+        źródło
     status:
       finished: Aktualizacje ukończone
       updating: Aktualizowanie...

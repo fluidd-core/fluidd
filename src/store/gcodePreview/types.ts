@@ -41,10 +41,7 @@ export interface ArcMove extends LinearMove {
 
 export type Move = LinearMove | ArcMove;
 
-export enum Rotation {
-  Clockwise = 'clockwise',
-  CounterClockwise = 'counter-clockwise',
-}
+export type Rotation = 'clockwise' | 'counter-clockwise'
 
 export interface LayerPaths {
   moves: string;
@@ -63,10 +60,7 @@ export interface Point3D extends Point {
   z: number;
 }
 
-export enum PositioningMode {
-  Relative = 'relative',
-  Absolute = 'absolute'
-}
+export type PositioningMode = 'relative' | 'absolute'
 
 export interface Layer {
   move: number;

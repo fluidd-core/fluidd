@@ -315,6 +315,8 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     this.getGcode(file)
       .then(response => response?.data)
       .then(gcode => {
+        if (!gcode) return
+
         this.$store.dispatch('gcodePreview/loadGcode', {
           file,
           gcode
