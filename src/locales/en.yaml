@@ -790,6 +790,9 @@ app:
       mismatched_filament: >-
         The material of the selected filament does not match the selected material in the slicer.
         Are you sure you want to continue?
+      tracking_inactive: >-
+        Filament tracking is inactive.
+        To get started, please select a spool.
       info:
         howto: >-
           Show your spool's QR code to the camera.

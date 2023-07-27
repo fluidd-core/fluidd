@@ -17,66 +17,71 @@
 
     <v-card-text>
       <v-row>
-        <template v-if="currentSpool">
+        <template v-if="activeSpool">
           <v-col align-self="center">
             <status-label
               :label="$t('app.spoolman.label.vendor')"
               :label-width="labelWidth"
             >
-              <span>{{ currentSpool.filament.vendor.name }}</span>
+              <span>{{ activeSpool.filament.vendor.name }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.filament_name')"
               :label-width="labelWidth"
             >
-              <span>{{ currentSpool.filament.name }}</span>
+              <span>{{ activeSpool.filament.name }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.remaining_weight')"
               :label-width="labelWidth"
             >
               <span>
-                {{ $filters.getReadableWeightString(currentSpool.remaining_weight) }}
-                <small>/ {{ $filters.getReadableWeightString(currentSpool.filament.weight) }}</small>
+                {{ $filters.getReadableWeightString(activeSpool.remaining_weight) }}
+                <small>/ {{ $filters.getReadableWeightString(activeSpool.filament.weight) }}</small>
               </span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.location')"
               :label-width="labelWidth"
             >
-              <span>{{ currentSpool.location || '-' }}</span>
+              <span>{{ activeSpool.location || '-' }}</span>
             </status-label>
           </v-col>
           <v-col align-self="center">
             <status-label
-                :label="$t('app.spoolman.label.material')"
-                :label-width="labelWidth"
+              :label="$t('app.spoolman.label.material')"
+              :label-width="labelWidth"
             >
-              <span>{{ currentSpool.filament.material }}</span>
+              <span>{{ activeSpool.filament.material }}</span>
             </status-label>
             <status-label
-                :label="$t('app.spoolman.label.lot_nr')"
-                :label-width="labelWidth"
+              :label="$t('app.spoolman.label.lot_nr')"
+              :label-width="labelWidth"
             >
-              <span>{{ currentSpool.lot_nr || '-' }}</span>
+              <span>{{ activeSpool.lot_nr || '-' }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.first_used')"
               :label-width="labelWidth"
             >
-              <span>{{ currentSpool.first_used ? $filters.formatRelativeTimeToNow(currentSpool.first_used) : $tc('app.setting.label.never') }}</span>
+              <span>{{
+                  activeSpool.first_used ? $filters.formatRelativeTimeToNow(activeSpool.first_used) : $tc('app.setting.label.never')
+                }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.comment')"
               :label-width="labelWidth"
             >
-              <span>{{ currentSpool.comment || '-' }}</span>
+              <span>{{ activeSpool.comment || '-' }}</span>
             </status-label>
           </v-col>
         </template>
 
-        <v-col v-else>
-          no spool
+        <v-col
+          v-else
+          align-self="center"
+        >
+          {{ $t('app.spoolman.msg.tracking_inactive') }}
         </v-col>
 
         <v-col
@@ -86,10 +91,10 @@
           class="pa-0"
         >
           <v-icon
-            :color="currentSpool ? `#${currentSpool.filament.color_hex}` : 'black'"
-            size="110px"
+            :color="activeSpool ? `#${activeSpool.filament.color_hex}` : $vuetify.theme.dark ? 'white' : 'black'"
+            :size="activeSpool ? '110px' : '55px'"
           >
-            $filament
+            {{ activeSpool ? '$filament' : '$progressQuestion' }}
           </v-icon>
         </v-col>
       </v-row>
@@ -117,7 +122,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
     return this.$store.getters['spoolman/getSupported']
   }
 
-  get currentSpool (): Spool | null {
+  get activeSpool (): Spool | null {
     return this.$store.getters['spoolman/getActiveSpool']
   }
 }

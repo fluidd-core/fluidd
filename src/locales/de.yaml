@@ -717,7 +717,7 @@ app:
     msg:
       no_spool: >-
         Sie haben keine Spule ausgewählt.
-        Sind Sie sicher, dass Sie ohne Filamenttracking drucken wollen?
+        Sind Sie sicher, dass Sie ohne Filament-Tracking drucken wollen?
       no_filament: >-
         Die Spule, die Sie ausgewählt haben, hat eventuell nicht genug verbleibendes
         Filament, um den Druckauftrag erfolgreich abzuschließen.
@@ -728,6 +728,9 @@ app:
       mismatched_filament: >-
         Das Material des ausgewählten Filaments stimmt nicht mit dem im Slicer ausgewählten
         Material überein. Sind Sie sicher, dass Sie fortfahren wollen?
+      tracking_inactive: >-
+        Filament-Tracking ist inaktiv.
+        Bitte wählen Sie eine Spule aus um fortzufahren.
       info:
         howto: >-
           Halten Sie den QR-Code der Spule in die Kamera.
