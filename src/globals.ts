@@ -443,6 +443,7 @@ export const Waits = Object.freeze({
 
 export const SupportedLocales = Object.freeze([
   { name: 'English', code: 'en' },
+  { name: 'Afrikaans', code: 'af' },
   { name: 'Čeština', code: 'cs' },
   { name: '简体中文', code: 'zh-CN' },
   { name: '繁體中文', code: 'zh-HK' },
