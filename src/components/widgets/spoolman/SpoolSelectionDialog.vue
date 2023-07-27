@@ -337,7 +337,9 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       // l[mm]
       let requiredLength = 0
       if (this.currentFile) {
-        if (this.currentFile.filament_type !== spool.filament.material) {
+        const fileMaterial = this.currentFile.filament_type?.toLowerCase()
+        const spoolMaterial = spool.filament.material.toLowerCase()
+        if (fileMaterial && fileMaterial !== spoolMaterial) {
           // filament materials don't match
 
           const confirmation = await this.$confirm(
