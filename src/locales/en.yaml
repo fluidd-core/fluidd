@@ -774,7 +774,7 @@ app:
       location: Location
       lot_nr: Lot Nr
       material: Material
-      remaining_weight: Remaining Weight
+      remaining_weight: Remaining
       vendor: Vendor
     msg:
       no_spool: >-

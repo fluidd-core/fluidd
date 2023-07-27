@@ -712,7 +712,7 @@ app:
       location: Ort
       lot_nr: Charge
       material: Material
-      remaining_weight: Verbleibendes Gewicht
+      remaining_weight: Verbleibend
       vendor: Hersteller
     msg:
       no_spool: >-
