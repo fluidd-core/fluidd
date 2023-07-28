@@ -305,6 +305,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   handleQRCodeDetected (id: number) {
     this.cameraScanSource = null
     this.selectedSpoolId = id
+    if (
+      !this.availableSpools
+        .filter(spool => this.filterResults('', this.search, spool))
+        .some(spool => spool.id === id)
+    ) {
+      // clear filter if selected spool isn't in filter results
+      this.search = ''
+    }
   }
 
   async handleSelectSpool () {
