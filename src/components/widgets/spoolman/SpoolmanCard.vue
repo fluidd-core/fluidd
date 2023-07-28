@@ -122,7 +122,7 @@ export default class SpoolmanCard extends Mixins(StateMixin) {
   labelWidth = '86px'
 
   handleSelectSpool () {
-    this.$store.state.spoolman.dialog = { show: true }
+    this.$store.commit('spoolman/setDialogState', { show: true })
   }
 
   get supportsSpoolman () {
