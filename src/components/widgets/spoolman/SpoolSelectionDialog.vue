@@ -6,8 +6,6 @@
       :max-width="isMobileViewport ? '90vw' : '75vw'"
     >
       <v-card>
-        <!-- TODO show file info? -->
-
         <v-toolbar
           dense
           class="mb-2"
@@ -104,7 +102,7 @@
             <tr
               :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
               class="row-select px-1"
-              @click.prevent="selectedSpool = item.id"
+              @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
             >
               <td>
                 <div class="d-flex">
@@ -198,7 +196,7 @@ import { CameraConfig } from '@/store/cameras/types'
 })
 export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixin) {
   search = ''
-  selectedSpoolId = this.$store.state.spoolman.activeSpool ?? null
+  selectedSpoolId: number | null = null
 
   cameraScanSource: null | string = null
   cameraSelectionMenuOpen = false
@@ -206,6 +204,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   @Watch('open')
   onOpen () {
     if (this.open) {
+      this.selectedSpoolId = this.$store.state.spoolman.activeSpool
+
       if (this.currentFileName) {
         // prefetch file metadata
         SocketActions.serverFilesMetadata(this.currentFileName)
@@ -262,12 +262,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     return this.selectedSpoolId
   }
 
-  set selectedSpool (id: number) {
-    if (this.selectedSpoolId === id) {
-      this.selectedSpoolId = undefined
-    } else {
-      this.selectedSpoolId = id
-    }
+  set selectedSpool (id: number | null) {
+    this.selectedSpoolId = id
   }
 
   get filename () {
@@ -388,7 +384,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    await SocketActions.spoolmanSetSpool(this.selectedSpool)
+    await SocketActions.spoolmanSetSpool(this.selectedSpool ?? undefined)
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
