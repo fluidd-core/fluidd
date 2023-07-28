@@ -4,6 +4,7 @@
     autoplay
     muted
     :style="cameraStyle"
+    crossorigin="anonymous"
   />
 </template>
 

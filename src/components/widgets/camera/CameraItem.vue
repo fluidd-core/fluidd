@@ -7,6 +7,7 @@
     <template v-if="cameraComponent">
       <component
         :is="cameraComponent"
+        ref="component-instance"
         :camera="camera"
         class="camera-image"
         @raw-camera-url="rawCameraUrl = $event"
@@ -53,10 +54,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
+import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 import { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
+import CameraMixin from '@/mixins/camera'
 
 @Component({})
 export default class CameraItem extends Vue {
@@ -66,8 +68,31 @@ export default class CameraItem extends Vue {
   @Prop({ type: Boolean, required: false, default: false })
   readonly fullscreen!: boolean
 
+  @Ref('component-instance')
+  readonly componentInstance!: CameraMixin
+
   rawCameraUrl: string | null = null
   framesPerSecond : string | null = null
+
+  mounted () {
+    // set up frame-event emitting on supported components
+    if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
+      this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
+    } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
+      this.handleFrame(true)
+    }
+  }
+
+  handleFrame (animate = false) {
+    const element = this.componentInstance?.streamingElement as HTMLImageElement | HTMLVideoElement
+    if (element) {
+      this.$emit('frame', element)
+    }
+
+    if (animate) {
+      requestAnimationFrame(() => this.handleFrame(this.componentInstance.animating))
+    }
+  }
 
   @Watch('camera')
   onCamera () {

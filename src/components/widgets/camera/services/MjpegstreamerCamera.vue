@@ -3,6 +3,7 @@
     ref="streamingElement"
     :src="cameraImageSource"
     :style="cameraStyle"
+    crossorigin="anonymous"
   >
 </template>
 

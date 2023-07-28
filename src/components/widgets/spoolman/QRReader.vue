@@ -94,9 +94,13 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
 
     try {
       this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
-      const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true, qrEngine: this.engine, canvas: this.canvas })
+      const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true })
       if (result.data) { this.handleCodeFound(result.data) }
-    } catch {
+    } catch (err) {
+      if (err instanceof DOMException) {
+        this.statusMessage = 'error.no_image_data'
+      }
+
       // no QR code found
     }
     this.processing = false
