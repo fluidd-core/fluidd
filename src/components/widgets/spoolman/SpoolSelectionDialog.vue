@@ -236,9 +236,14 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         continue
       }
 
+      let filamentName = spool.filament.name
+      if (spool.filament.vendor) {
+        filamentName = `${spool.filament.vendor.name} - ${filamentName}`
+      }
+
       spools.push({
         ...spool,
-        filament_name: `${spool.filament.vendor.name} - ${spool.filament.name}`,
+        filament_name: filamentName,
         filament_material: spool.filament.material
       })
     }
@@ -334,7 +339,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       // check for enough filament
 
       let remainingLength = spool.remaining_length
-      if (!remainingLength) {
+      if (!remainingLength && spool.remaining_weight) {
         // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
         remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
       }
@@ -343,8 +348,8 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       let requiredLength = 0
       if (this.currentFile) {
         const fileMaterial = this.currentFile.filament_type?.toLowerCase()
-        const spoolMaterial = spool.filament.material.toLowerCase()
-        if (fileMaterial && fileMaterial !== spoolMaterial) {
+        const spoolMaterial = spool.filament.material?.toLowerCase()
+        if (spoolMaterial && fileMaterial && fileMaterial !== spoolMaterial) {
           // filament materials don't match
 
           const confirmation = await this.$confirm(
@@ -378,7 +383,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         }
       }
 
-      if (requiredLength >= remainingLength) {
+      if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
         // not enough filament
 
         const confirmation = await this.$confirm(
@@ -405,7 +410,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   filterResults (value: string, query: string, item: Spool): boolean {
     query = query.toLowerCase()
-    return [item.comment, item.filament.name, item.filament.material, item.filament.vendor.name]
+    return [item.comment, item.filament.name, item.filament.material, item.filament.vendor?.name]
       .some(val => val?.toLowerCase().includes(query))
   }
 
