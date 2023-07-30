@@ -19,7 +19,7 @@
       v-if="activeSpool && $vuetify.breakpoint.lgAndDown"
       value="100"
       :height="6"
-      :color="`#${activeSpool.filament.color_hex}`"
+      :color="`#${activeSpool.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
     />
 
     <v-card-text>
@@ -98,7 +98,7 @@
           class="pa-0"
         >
           <v-icon
-            :color="activeSpool ? `#${activeSpool.filament.color_hex}` : $vuetify.theme.dark ? 'white' : 'black'"
+            :color="`#${activeSpool?.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
             :size="activeSpool ? '110px' : '55px'"
           >
             {{ activeSpool ? '$filament' : '$progressQuestion' }}

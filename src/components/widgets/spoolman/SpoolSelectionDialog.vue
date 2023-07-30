@@ -107,7 +107,7 @@
               <td>
                 <div class="d-flex">
                   <v-icon
-                    :color="`#${item.filament.color_hex}`"
+                    :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
                     x-large
                     class="mr-4 flex-column"
                   >
