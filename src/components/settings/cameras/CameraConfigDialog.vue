@@ -130,9 +130,27 @@
         <v-divider />
       </template>
 
-      <app-setting :title="$t('app.setting.label.camera_url')">
+      <app-setting :title="$t('app.setting.label.camera_url_stream')">
         <v-text-field
           v-model="camera.urlStream"
+          type="url"
+          spellcheck="false"
+          class="mt-5"
+          filled
+          dense
+          single-line
+          hide-details="auto"
+          :rules="[
+            $rules.required
+          ]"
+        />
+      </app-setting>
+
+      <v-divider />
+
+      <app-setting :title="$t('app.setting.label.camera_url_snapshot')">
+        <v-text-field
+          v-model="camera.urlSnapshot"
           type="url"
           spellcheck="false"
           class="mt-5"

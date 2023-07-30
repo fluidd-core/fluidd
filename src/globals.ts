@@ -159,7 +159,8 @@ export const Globals = Object.freeze({
   APP_NAME: 'fluidd',
   HEADER_HEIGHT: 56,
   DEFAULTS: {
-    CAMERA_URL: '/webcam?action=stream'
+    CAMERA_URL_STREAM: '/webcam?action=stream',
+    CAMERA_URL_SNAPSHOT: '/webcam?action=snapshot'
   },
   NETWORK_REQUEST_TIMEOUT: 0,
   KLIPPY_RETRY_DELAY: 1500,

@@ -20,9 +20,11 @@ export default class IpstreamCamera extends Mixins(CameraMixin) {
   cameraVideoSource = ''
 
   startPlayback () {
-    this.cameraVideoSource = this.cameraUrl
+    const url = this.buildAbsoluteUrl(this.camera.urlStream || '').toString()
 
-    this.$emit('raw-camera-url', this.cameraUrl)
+    this.cameraVideoSource = url
+
+    this.$emit('raw-camera-url', url)
   }
 
   stopPlayback () {
