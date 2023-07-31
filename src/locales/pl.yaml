@@ -522,8 +522,7 @@ app:
       enable_notifications: Włącz powiadomienia
       filter: Filtr | Filtry
       camera_rotate_by: Obróć o
-      camera_stream_type: Typ streamu
-      camera_url: Adres URL kamery
+      camera_stream_type: Typ strumienia
       card: Karta
       collector: Kolektor
       confirm_on_estop: Wymagaj potwierdzenia zatrzymania awaryjnego
@@ -584,10 +583,12 @@ app:
         automatycznie
       to_browser_local_storage: Do lokalnej pamięci przeglądarki
       z_adjust_values: Wartości korekcji Z
+      camera_url_stream: Adres URL strumienia wideo kamery
+      camera_url_snapshot: Adres URL migawki kamery
     camera_type_options:
-      mjpegstream: Stream MJPEG
+      mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
-      hlsstream: Stream HLS
+      hlsstream: Strumień HLS
       video: Kamera IP
       webrtc_camera_streamer: WebRTC (camera-streamer)
       iframe: Strona HTTP
