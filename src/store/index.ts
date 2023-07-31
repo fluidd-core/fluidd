@@ -18,7 +18,6 @@ import { macros } from './macros'
 import { power } from './power'
 import { history } from './history'
 import { version } from './version'
-import { cameras } from './cameras'
 import { mesh } from './mesh'
 import { notifications } from './notifications'
 import { announcements } from './announcements'
@@ -49,7 +48,6 @@ export default new Vuex.Store<RootState>({
     power,
     history,
     version,
-    cameras,
     mesh,
     notifications,
     announcements,

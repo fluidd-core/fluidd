@@ -27,7 +27,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   requestTimeSmoothing = 0.1
 
   handleImageLoad () {
-    const fpsTarget = (!document.hasFocus() && this.camera.targetFpsIdle) || this.camera.targetFps || 10
+    const fpsTarget = (!document.hasFocus() && this.camera.target_fps_idle) || this.camera.target_fps || 10
     const endTime = performance.now()
     const currentTime = endTime - this.startTime
 
@@ -73,11 +73,11 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.urlSnapshot || '')
+    this.cameraImageSourceUrl = this.buildAbsoluteUrl(this.camera.snapshot_url || '')
 
     this.updateCameraImageSource()
 
-    const rawUrl = this.buildAbsoluteUrl(this.camera.urlStream || '')
+    const rawUrl = this.buildAbsoluteUrl(this.camera.stream_url || '')
 
     rawUrl.searchParams.set('cacheBust', Date.now().toString())
 

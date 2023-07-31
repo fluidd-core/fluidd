@@ -184,6 +184,8 @@ export const Globals = Object.freeze({
   LOCAL_CARDSTATE_STORAGE_KEY: 'cardState', // collapsed or not
   LOCAL_CARDLAYOUT_STORAGE_KEY: 'cardLayout2', // Specific layout / enabled / disabled
   LOCAL_INSTANCES_STORAGE_KEY: 'appInstances',
+  KLIPPER_MIN_VERSION: 'v0.11.0-257',
+  MOONRAKER_MIN_VERSION: 'v0.8.0-309',
   MOONRAKER_DB: {
     fluidd: {
       NAMESPACE: 'fluidd',
@@ -192,15 +194,14 @@ export const Globals = Object.freeze({
         macros: { name: 'macros', dispatch: 'macros/initMacros' },
         console: { name: 'console', dispatch: 'console/initConsole' },
         charts: { name: 'charts', dispatch: 'charts/initCharts' },
-        cameras: { name: 'cameras', dispatch: 'cameras/initLegacyCameras' },
+        cameras: { name: 'cameras', dispatch: 'webcams/initLegacyCameras', migrate_only: true },
+        webcams: { name: 'webcams', dispatch: 'webcams/initWebcams' },
         layout: { name: 'layout', dispatch: 'layout/initLayout' }
       }
     },
     webcams: {
       NAMESPACE: 'webcams',
-      ROOTS: {
-        webcams: { dispatch: 'cameras/initCameras' }
-      }
+      ROOTS: []
     }
   },
   MOONRAKER_COMPONENTS: {
