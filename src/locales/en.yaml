@@ -500,7 +500,8 @@ app:
         rawstream: Raw stream
       camera_rotate_by: Rotate by
       camera_stream_type: Stream type
-      camera_url: Camera Url
+      camera_url_snapshot: Camera Url Snapshot
+      camera_url_stream: Camera Url Stream
       card: Card
       collector: Collector
       confirm_on_estop: Require confirm on Emergency Stop

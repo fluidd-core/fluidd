@@ -17,14 +17,6 @@ export default class CameraMixin extends Vue {
     return this.$store.state.config.apiUrl
   }
 
-  get cameraUrl () {
-    const baseUrl = this.camera.urlStream || this.camera.urlSnapshot || ''
-
-    const { origin } = new URL(this.apiUrl)
-
-    return new URL(baseUrl, origin).toString()
-  }
-
   get cameraStyle () {
     return {
       transform: this.cameraTransformStyle || undefined
@@ -93,6 +85,12 @@ export default class CameraMixin extends Vue {
     } else {
       this.stopPlayback()
     }
+  }
+
+  buildAbsoluteUrl (url: string) {
+    const { origin } = new URL(this.apiUrl)
+
+    return new URL(url, origin)
   }
 
   startPlayback () {

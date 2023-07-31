@@ -22,7 +22,7 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
   remoteId: string | null = null
 
   startPlayback () {
-    const url = this.cameraUrl
+    const url = this.buildAbsoluteUrl(this.camera.urlStream || '')
 
     this.pc?.close()
 

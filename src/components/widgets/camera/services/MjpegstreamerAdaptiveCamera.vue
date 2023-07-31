@@ -68,21 +68,19 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    const url = new URL(this.cameraUrl)
+    const url = this.buildAbsoluteUrl(this.camera.urlSnapshot || '')
 
     this.requestStartTime = performance.now()
-
-    if (!url.searchParams.get('action')?.startsWith('snapshot')) {
-      url.searchParams.set('action', 'snapshot')
-    }
 
     url.searchParams.set('cacheBust', Date.now().toString())
 
     this.cameraImageSource = url.toString()
 
-    url.searchParams.set('action', 'stream')
+    const rawUrl = this.buildAbsoluteUrl(this.camera.urlStream || '')
 
-    this.$emit('raw-camera-url', url.toString())
+    rawUrl.searchParams.set('cacheBust', Date.now().toString())
+
+    this.$emit('raw-camera-url', rawUrl.toString())
   }
 
   stopPlayback () {
