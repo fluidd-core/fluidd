@@ -40,7 +40,6 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   processing = false
 
   video!: HTMLVideoElement | HTMLImageElement
-  engine!: any
   context!: CanvasRenderingContext2D
 
   @VModel({ type: String, default: null })
@@ -66,7 +65,6 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   async mounted () {
     this.processing = true
     this.context = this.canvas.getContext('2d', { willReadFrequently: true }) as CanvasRenderingContext2D
-    this.engine = await QrScanner.createQrEngine()
     this.processing = false
   }
 
