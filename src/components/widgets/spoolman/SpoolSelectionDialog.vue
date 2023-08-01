@@ -3,6 +3,7 @@
     <v-dialog
       v-model="open"
       no-actions
+      scrollable
       :max-width="isMobileViewport ? '90vw' : '75vw'"
     >
       <v-card>
@@ -84,54 +85,56 @@
           />
         </v-toolbar>
 
-        <v-data-table
-          :items="availableSpools"
-          :headers="headers"
-          :search="search"
-          :custom-filter="filterResults"
-          :no-data-text="$t('app.file_system.msg.not_found')"
-          :no-results-text="$t('app.file_system.msg.not_found')"
-          sort-by="last_used"
-          sort-desc
-          mobile-breakpoint="0"
-          class="file-system spool-table"
-          hide-default-footer
-          disable-pagination
-        >
-          <template #item="{ item }">
-            <tr
-              :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
-              class="row-select px-1"
-              @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
-            >
-              <td>
-                <div class="d-flex">
-                  <v-icon
-                    :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
-                    x-large
-                    class="mr-4 flex-column"
-                  >
-                    {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
-                  </v-icon>
-                  <div class="flex-column">
-                    <div class="flex-row">
-                      {{ item.filament_name }}
-                    </div>
-                    <div class="flex-row">
-                      <small>
-                        <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
-                        / {{ $filters.getReadableWeightString(item.filament.weight) }}
-                      </small>
+        <v-card-text>
+          <v-data-table
+            :items="availableSpools"
+            :headers="headers"
+            :search="search"
+            :custom-filter="filterResults"
+            :no-data-text="$t('app.file_system.msg.not_found')"
+            :no-results-text="$t('app.file_system.msg.not_found')"
+            sort-by="last_used"
+            sort-desc
+            mobile-breakpoint="0"
+            class="file-system spool-table"
+            hide-default-footer
+            disable-pagination
+          >
+            <template #item="{ item }">
+              <tr
+                :class="{ 'v-data-table__selected': (item.id === selectedSpool) }"
+                class="row-select px-1"
+                @click.prevent="selectedSpool = selectedSpool === item.id ? null : item.id"
+              >
+                <td>
+                  <div class="d-flex">
+                    <v-icon
+                      :color="`#${item.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
+                      x-large
+                      class="mr-4 flex-column"
+                    >
+                      {{ item.id === selectedSpool ? '$markedCircle' : '$filament' }}
+                    </v-icon>
+                    <div class="flex-column">
+                      <div class="flex-row">
+                        {{ item.filament_name }}
+                      </div>
+                      <div class="flex-row">
+                        <small>
+                          <b>{{ $filters.getReadableWeightString(item.remaining_weight) }}</b>
+                          / {{ $filters.getReadableWeightString(item.filament.weight) }}
+                        </small>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td>{{ item.location }}</td>
-              <td>{{ item.comment }}</td>
-              <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
-            </tr>
-          </template>
-        </v-data-table>
+                </td>
+                <td>{{ item.location }}</td>
+                <td>{{ item.comment }}</td>
+                <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-card-text>
 
         <v-divider />
 
