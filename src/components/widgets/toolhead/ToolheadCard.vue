@@ -154,10 +154,8 @@ type Tool = {
   name: string,
   label?: string,
   disabled?: boolean,
-  enabledOnPrint?: boolean,
   wait?: string,
   icon?: string,
-  callback?: () => void,
 }
 
 @Component({
