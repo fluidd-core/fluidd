@@ -75,11 +75,12 @@ export default class CameraItem extends Vue {
   framesPerSecond : string | null = null
 
   mounted () {
-    // set up frame-event emitting on supported components
-    if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
-      this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
-    } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
-      this.handleFrame(true)
+    if (this.$listeners?.frame) {
+      if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
+        this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
+      } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
+        this.handleFrame(true)
+      }
     }
   }
 
