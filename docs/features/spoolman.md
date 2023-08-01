@@ -24,15 +24,18 @@ On print start, Fluidd will show a modal asking you to select the spool you want
 The modal shows all available (i.e. not archived) spools.
 A spool can either be selected by selecting it directly, or by scanning an associated QR code using an attached webcam.
 
-Fluidd currently supports the following QR code contents:
-- `<spoolman url>/spool/show/<spool id>`, e.g. `http://spoolman.local/spool/show/123`
-
 ![screenshot](/assets/images/spoolman-scan-spool.png)
 
-### Selecting a different spool
+Automatically opening the spool selection modal can be disabled from the Fluidd settings.
+
+### Dashboard card
+The currently selected spool and its metadata is shown in the Spoolman dashboard card.
+
+#### Selecting a different spool
 If you need to select another spool during your print (e.g. when your current spool has run out, or you have a multicolor print),
-you can do so in the "Tools" dropdown within the "Tool" panel:
-![screenshot](/assets/images/spoolman-change-spool.png)
+you can do so through the "Change Spool" button in the dashboard card.
+
+![screenshot](/assets/images/spoolman-dashboard-card.png)
 
 ### Sanity checks
 When starting a print or changing spools, Fluidd will automatically perform these sanity checks and warn you if they fail:  
