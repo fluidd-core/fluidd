@@ -30,7 +30,7 @@
               :label="$t('app.spoolman.label.vendor')"
               :label-width="labelWidth"
             >
-              <span>{{ activeSpool.filament.vendor?.name ?? '-' }}</span>
+              <span>{{ activeSpool.filament.vendor?.name || '-' }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.filament_name')"
@@ -51,7 +51,7 @@
               :label="$t('app.spoolman.label.location')"
               :label-width="labelWidth"
             >
-              <span>{{ activeSpool.location ?? '-' }}</span>
+              <span>{{ activeSpool.location || '-' }}</span>
             </status-label>
           </v-col>
           <v-col align-self="center">
@@ -59,7 +59,7 @@
               :label="$t('app.spoolman.label.material')"
               :label-width="labelWidth"
             >
-              <span>{{ activeSpool.filament.material ?? '-' }}</span>
+              <span>{{ activeSpool.filament.material || '-' }}</span>
             </status-label>
             <status-label
               :label="$t('app.spoolman.label.lot_nr')"
