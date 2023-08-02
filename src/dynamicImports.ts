@@ -14,3 +14,7 @@ export const MonacoLanguageImports = Object.freeze(dynamicImportFixKeys(
 export const I18nLocales = Object.freeze(dynamicImportFixKeys(
   import.meta.glob<LocaleMessageObject>('@/locales/*.yaml', { import: 'default' })
 ))
+
+export const CameraComponents = Object.freeze(dynamicImportFixKeys(
+  import.meta.glob<object>('@/components/widgets/camera/services/*Camera.vue')
+))

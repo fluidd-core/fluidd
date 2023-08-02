@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-list-group
+      v-if="canControlHost"
       prepend-icon="$host"
       no-action
     >
@@ -130,7 +131,7 @@ import { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
-import { ServiceInfo } from '@/store/server/types'
+import { ServiceInfo, SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
@@ -152,6 +153,14 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
   get services () {
     return this.$store.getters['server/getServices'].filter((service: ServiceInfo) => service.name !== 'klipper_mcu')
+  }
+
+  get systemInfo (): SystemInfo | null {
+    return this.$store.getters['server/getSystemInfo']
+  }
+
+  get canControlHost () {
+    return this.systemInfo?.virtualization?.virt_type !== 'container'
   }
 
   async checkDialog (executableFunction: any, service: ServiceInfo, action: string) {
