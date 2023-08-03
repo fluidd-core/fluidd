@@ -74,15 +74,10 @@ export const actions: ActionTree<ChartState, RootState> = {
         const label = key.split(' ', 2).pop() || ''
 
         if (rootState.printer.printer[key]) {
-          const temp = rootState.printer.printer[key].temperature || 0
-          const target = rootState.printer.printer[key].target || 0
-          const power = rootState.printer.printer[key].power || 0
-          const speed = rootState.printer.printer[key].speed || 0
-
-          r[label] = payload[key].temperatures[i] || temp
-          if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i] || target
-          if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i] || power
-          if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i] || speed
+          r[label] = payload[key].temperatures[i]
+          if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i]
+          if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i]
+          if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i]
         }
       })
       d.push(r)
