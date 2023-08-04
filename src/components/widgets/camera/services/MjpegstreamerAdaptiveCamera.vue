@@ -49,7 +49,7 @@ export default class MjpegstreamerAdaptiveCamera extends Mixins(CameraMixin) {
 
   handleRefresh () {
     if (!document.hidden) {
-      const framesPerSecond = Math.round(1000 / this.time).toLocaleString(undefined, { minimumIntegerDigits: 2 })
+      const framesPerSecond = Math.round(1000 / this.time).toString().padStart(2, '0')
 
       this.$emit('frames-per-second', framesPerSecond)
 

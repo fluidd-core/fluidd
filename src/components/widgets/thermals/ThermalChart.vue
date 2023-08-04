@@ -169,7 +169,7 @@ export default class ThermalChart extends Mixins(BrowserMixin) {
                 !param.seriesName.toLowerCase().endsWith('power') &&
                 !param.seriesName.toLowerCase().endsWith('speed') &&
                 param.seriesName &&
-                param.seriesName in param.value
+                param.value[param.seriesName] != null
               ) {
                 text += `
                   <div>

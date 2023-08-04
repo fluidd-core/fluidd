@@ -48,9 +48,9 @@ export const Filters = {
    * Formats a time to 00h 00m 00s
    * Expects to be passed seconds.
    */
-  formatCounterTime: (seconds: number) => {
-    seconds = Number(seconds)
-    if (isNaN(+seconds) || !isFinite(seconds)) seconds = 0
+  formatCounterTime: (seconds: number | string) => {
+    seconds = +seconds
+    if (isNaN(seconds) || !isFinite(seconds)) seconds = 0
     let isNeg = false
     if (seconds < 0) {
       seconds = Math.abs(seconds)
@@ -317,7 +317,7 @@ export const Filters = {
 
           // If are number prefixed, compare prefixes as number
           if (sortA && sortB && sortA[0] !== sortB[0]) {
-            return Number(sortA[0]) - Number(sortB[0])
+            return +sortA[0] - +sortB[0]
           }
         } else if (textSortOrder === 'version') {
           return versionStringCompare(sortValuesAsString[0], sortValuesAsString[1])

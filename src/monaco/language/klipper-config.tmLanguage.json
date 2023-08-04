@@ -69,7 +69,7 @@
 		},
 		"known_driver_type": {
 			"name": "support.type",
-			"match": "(?i)\\btmc(2130|2208|2209|2660|5160)\\b"
+			"match": "(?i)\\btmc(2130|2208|2209|2240|2660|5160)\\b"
 		},
 		"known_thermistor_type": {
 			"name": "support.type",

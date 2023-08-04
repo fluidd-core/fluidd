@@ -147,9 +147,12 @@
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
-              <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-              <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-              <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
+              <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+              <small v-if="item.pressure != null && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+              <small v-if="item.gas != null && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
+            </span>
+            <span v-else>
+              -
             </span>
           </td>
           <td>/</td>
@@ -207,17 +210,25 @@
             </span>
           </td>
           <td class="temp-actual">
-            <v-tooltip left>
+            <v-tooltip
+              left
+              :disabled="[item.measured_max_temp, item.measured_min_temp].every(x => x === undefined)"
+            >
               <template #activator="{ on, attrs }">
                 <div
                   v-bind="attrs"
                   v-on="on"
                 >
-                  {{ item.temperature.toFixed(1) }}<small>°C</small>
-                  <small v-if="item.humidity && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-                  <small v-if="item.pressure && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-                  <small v-if="item.gas && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
-                  <small v-if="item.current_z_adjust !== undefined"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
+                  <span v-if="item.temperature != null">
+                    {{ item.temperature.toFixed(1) }}<small>°C</small>
+                    <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
+                    <small v-if="item.pressure != null && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
+                    <small v-if="item.gas != null && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
+                    <small v-if="item.current_z_adjust != null"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
+                  </span>
+                  <span v-else>
+                    -
+                  </span>
                 </div>
               </template>
               <span v-if="[item.measured_max_temp, item.measured_min_temp].every(x => x !== undefined)">
