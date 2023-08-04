@@ -54,10 +54,10 @@ export const actions: ActionTree<ChartState, RootState> = {
         if (arr && arr.length) {
           if (arr.length < retention) {
             const length = retention - arr.length
-            const lastValue = payload[originalKey][k][0]
-            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...payload[originalKey][k]]
+            const lastValue = arr[0]
+            payload[originalKey][k] = [...Array.from({ length }, () => lastValue), ...arr]
           } else {
-            payload[originalKey][k] = payload[originalKey][k].splice(arr.length - retention)
+            payload[originalKey][k] = arr.splice(arr.length - retention)
           }
         }
       })
