@@ -605,6 +605,7 @@ export const getters: GetterTree<PrinterState, RootState> = {
     const supportedSensors = [
       'temperature_sensor',
       'temperature_probe',
+      'tmc2240',
       'z_thermal_adjust'
     ]
 
@@ -674,6 +675,9 @@ export const getters: GetterTree<PrinterState, RootState> = {
         'temperature_probe',
         'z_thermal_adjust',
         'temperature_sensor'
+      ],
+      [
+        'tmc2240'
       ]
     ]
 
