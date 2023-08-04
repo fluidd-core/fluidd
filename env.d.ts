@@ -5,7 +5,14 @@
 /// <reference types="vite-plugin-pwa/client" />
 
 declare module '*.yaml' {
-  const data: any
+  const data: unknown
+  export default data
+}
+
+declare module '@/locales/*.yaml' {
+  import type { LocaleMessageObject } from 'vue-i18n'
+
+  const data: LocaleMessageObject
   export default data
 }
 

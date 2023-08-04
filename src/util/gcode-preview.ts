@@ -62,12 +62,12 @@ function arcIJMoveToSVGPath (toolhead: Point, move: ArcMove): string {
   switch (move.direction) {
     case 'clockwise':
       return 'A' + [
-        radius, radius, 0, Number(angle < 0), 0, destination.x, destination.y
+        radius, radius, 0, +(angle < 0), 0, destination.x, destination.y
       ].join(',')
     case 'counter-clockwise':
       return '' +
         'M' + [destination.x, destination.y].join(',') +
-        'A' + [radius, radius, 0, Number(angle > 0), 0, toolhead.x, toolhead.y].join(',') +
+        'A' + [radius, radius, 0, +(angle > 0), 0, toolhead.x, toolhead.y].join(',') +
         'M' + [destination.x, destination.y].join(',')
     default:
       throw new TypeError('move has no direction')
