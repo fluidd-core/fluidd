@@ -29,6 +29,7 @@
       left
       class="ml-2 mb-2"
       color="error"
+      style="z-index: 2000"
       @click="emergencyStop()"
     >
       <v-icon>$estop</v-icon>
