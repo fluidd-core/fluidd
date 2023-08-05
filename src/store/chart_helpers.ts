@@ -138,9 +138,9 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
       const power = state.printer.printer[key].power
       const speed = state.printer.printer[key].speed
       r[label] = temp
-      if (target !== undefined) r[`${label}Target`] = target
-      if (power !== undefined) r[`${label}Power`] = power
-      if (speed !== undefined) r[`${label}Speed`] = speed
+      if (target != null) r[`${label}Target`] = target
+      if (power != null) r[`${label}Power`] = power
+      if (speed != null) r[`${label}Speed`] = speed
     })
 
     return r

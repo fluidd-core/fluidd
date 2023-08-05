@@ -214,7 +214,7 @@ export default class DiagnosticsCard extends Mixins(BrowserMixin) {
           unit: yAxis.unit,
           displayLegend: metric.style.displayLegend,
           type: 'line',
-          yAxisIndex: Number(yAxisIndex),
+          yAxisIndex: +yAxisIndex,
           showSymbol: false,
           animation: false,
           color: metric.style.lineColor,
