@@ -20,12 +20,20 @@ export const mutations: MutationTree<LayoutState> = {
   setInitLayout (state, payload: LayoutState) {
     if (payload && Object.keys(payload).length > 0) {
       const defaultState = getDefaultState()
-      const migratableLayouts = ['dashboard']
 
+      // add new layouts
       for (const [layout, defaultComponents] of Object.entries(defaultState.layouts)) {
         if (!payload.layouts[layout]) {
           payload.layouts[layout] = defaultComponents
-        } else if (migratableLayouts.includes(layout)) {
+        }
+      }
+
+      // migrate existing layouts
+      const migratableLayouts = ['dashboard']
+      for (const layout of Object.keys(payload.layouts)) {
+        const migratableLayout = migratableLayouts.find(migration => layout.startsWith(migration))
+        if (migratableLayout) {
+          const defaultComponents = defaultState.layouts[migratableLayout]
           const defaultComponentIds = Object.values(defaultComponents).flat().map(card => card.id)
           const currentComponentIds = Object.values(payload.layouts[layout]).flat().map(card => card.id)
 

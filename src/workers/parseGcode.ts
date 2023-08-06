@@ -8,7 +8,7 @@ const getArgsFromGcodeCommandArgs = (gcodeCommandArgs: string) => {
   const args: Record<string, number> = {}
 
   for (const [, key, value] of gcodeCommandArgs.matchAll(/([a-z])[ \t]*(-?(?:\d+(?:\.\d+)?|\.\d+))/ig)) {
-    args[key.toLowerCase()] = Number(value)
+    args[key.toLowerCase()] = +value
   }
 
   return args

@@ -417,7 +417,10 @@ export const SocketActions = {
   async serverTemperatureStore () {
     baseEmit(
       'server.temperature_store', {
-        dispatch: 'charts/initTempStore'
+        dispatch: 'charts/initTempStore',
+        params: {
+          include_monitors: true
+        }
       }
     )
   },
@@ -697,6 +700,33 @@ export const SocketActions = {
     baseEmit(
       'server.webcams.list', {
         dispatch: 'webcams/onWebcamsList'
+      }
+    )
+  },
+
+  async spoolmanState () {
+    baseEmit(
+      'server.spoolman.get_spool_id', {
+        dispatch: 'spoolman/onActiveSpool'
+      }
+    )
+
+    baseEmit(
+      'server.spoolman.proxy', {
+        params: {
+          request_method: 'GET',
+          path: '/v1/spool'
+        },
+        dispatch: 'spoolman/onAvailableSpools'
+      }
+    )
+  },
+
+  async spoolmanSetSpool (spoolId: number | undefined) {
+    baseEmit(
+      'server.spoolman.post_spool_id', {
+        params: { spool_id: spoolId },
+        dispatch: 'spoolman/onActiveSpool'
       }
     )
   }

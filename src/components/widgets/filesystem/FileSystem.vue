@@ -736,7 +736,20 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   */
   handlePrint (file: AppFile) {
     if (this.disabled) return
-    SocketActions.printerPrintStart(`${this.visiblePath}/${file.filename}`)
+    const filename = `${this.visiblePath}/${file.filename}`
+
+    const spoolmanSupported = this.$store.getters['spoolman/getSupported']
+    const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
+    if (spoolmanSupported && autoSpoolSelectionDialog) {
+      this.$store.commit('spoolman/setDialogState', {
+        show: true,
+        filename
+      })
+
+      return
+    }
+
+    SocketActions.printerPrintStart(filename)
 
     // If we aren't on the dashboard, push the user back there.
     if (this.$router.currentRoute.path !== '/') {

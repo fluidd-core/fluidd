@@ -505,6 +505,8 @@ app:
         rawstream: Nyers adás
       camera_rotate_by: Forgatás szerint
       camera_stream_type: Sugárzás típusa
+      camera_url_snapshot: Kamera pillanatkép URL
+      camera_url_stream: Kamera közvetítés URL
       camera_url: Kamera URL
       card: Kártya
       collector: Kollektor

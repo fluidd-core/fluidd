@@ -133,7 +133,8 @@ export default class CameraSettings extends Vue {
       service: 'mjpegstreamer-adaptive',
       targetFps: 15,
       targetFpsIdle: 5,
-      urlStream: Globals.DEFAULTS.CAMERA_URL
+      urlStream: Globals.DEFAULTS.CAMERA_URL_STREAM,
+      urlSnapshot: Globals.DEFAULTS.CAMERA_URL_SNAPSHOT
     }
 
     this.dialogState = {
