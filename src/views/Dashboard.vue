@@ -55,6 +55,7 @@ import { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
+import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
 
 @Component({
   components: {
@@ -71,7 +72,8 @@ import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
     OutputsCard,
     BedMeshCard,
     GcodePreviewCard,
-    JobQueueCard
+    JobQueueCard,
+    SpoolmanCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
@@ -122,6 +124,10 @@ export default class Dashboard extends Mixins(StateMixin) {
 
   get supportsBedMesh () {
     return this.$store.getters['mesh/getSupportsBedMesh']
+  }
+
+  get supportsSpoolman () {
+    return this.$store.getters['spoolman/getSupported']
   }
 
   get macros () {
@@ -196,6 +202,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
+    if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled

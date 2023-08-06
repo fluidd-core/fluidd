@@ -244,7 +244,6 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
-
     const unloadFilamentMacro = this.unloadFilamentMacro
 
     if (unloadFilamentMacro) {
