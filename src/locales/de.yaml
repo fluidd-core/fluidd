@@ -695,3 +695,55 @@ app:
       variable_fps: Variable Bildrate
       variable_fps_min: Minimum Bildrate
       variable_fps_max: Maximum Bildrate
+  spoolman:
+    btn:
+      manage_spools: Spulen verwalten
+      scan_code: Code scannen
+      select: Auswählen
+    title:
+      spool_selection: Spulenauswahl
+      scan_spool: Spule scannen
+    label:
+      change_spool: Suple wechseln
+      comment: Kommentar
+      filament_name: Filament
+      first_used: Zuerst genutzt
+      last_used: Zuletzt genutzt
+      location: Ort
+      lot_nr: Charge
+      material: Material
+      remaining_weight: Verbleibend
+      vendor: Hersteller
+    msg:
+      no_spool: >-
+        Sie haben keine Spule ausgewählt.
+        Sind Sie sicher, dass Sie ohne Filament-Tracking drucken wollen?
+      no_filament: >-
+        Die Spule, die Sie ausgewählt haben, hat eventuell nicht genug verbleibendes
+        Filament, um den Druckauftrag erfolgreich abzuschließen.
+        Sind Sie sicher, dass Sie fortfahren wollen?
+      no_required_length: >-
+        Die benötigte Filamentmenge für die von Ihnen ausgewählte Datei ist unbekannt.
+        Wollen Sie fortfahren?
+      mismatched_filament: >-
+        Das Material des ausgewählten Filaments stimmt nicht mit dem im Slicer ausgewählten
+        Material überein. Sind Sie sicher, dass Sie fortfahren wollen?
+      tracking_inactive: >-
+        Filament-Tracking ist inaktiv.
+        Bitte wählen Sie eine Spule aus um fortzufahren.
+      info:
+        howto: >-
+          Halten Sie den QR-Code der Spule in die Kamera.
+          Dieses Fenster wird geschlossen, sobald eine Spule erkannt wurde.
+      warning:
+        code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code aus.
+        invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
+      error:
+        spool_not_existant: Die von Ihnen gescannte Spule existiert nicht in der Datenbank.
+        no_image_data: >-
+          Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
+          Bitte überprüfen Sie Ihre Kameraeinstellungen oder versuchen Sie,
+          eine andere Kameraquelle zu verwenden.
+    setting:
+      auto_open_qr_camera: Kamera automatisch zur QR-Code- Erkennung öffnen
+      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen

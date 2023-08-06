@@ -757,3 +757,55 @@ app:
       variable_fps: Variable FPS
       variable_fps_min: Minimum Framerate
       variable_fps_max: Maximum Framerate
+  spoolman:
+    btn:
+      manage_spools: Manage Spools
+      scan_code: Scan Code
+      select: Select
+    title:
+      spoolman: Spoolman
+      spool_selection: Spool Selection
+      scan_spool: Scan Spool
+    label:
+      change_spool: Change Spool
+      comment: Comment
+      filament_name: Filament
+      first_used: First Used
+      last_used: Last Used
+      location: Location
+      lot_nr: Lot Nr
+      material: Material
+      remaining_weight: Remaining
+      vendor: Vendor
+    msg:
+      no_spool: >-
+        You haven't selected a spool.
+        Are you sure you want to print without filament tracking?
+      no_filament: >-
+        The spool you selected may not have enough filament left on it to
+        successfully finish the print job.
+        Are you sure you want to continue?
+      no_required_length: >-
+        The amount of filament required to print the selected file is unknown.
+        Do you wish to continue?
+      mismatched_filament: >-
+        The material of the selected filament does not match the selected material in the slicer.
+        Are you sure you want to continue?
+      tracking_inactive: >-
+        Filament tracking is inactive.
+        To get started, please select a spool.
+      info:
+        howto: >-
+          Show your spool's QR code to the camera.
+          This window will close as soon as a spool is detected.
+      warning:
+        code_not_recognized: This code doesn't look like a compatible QR code.
+        invalid_spool_id: The spool ID contained in this QR code is invalid.
+      error:
+        spool_not_existant: The spool you scanned doesn't exist in the database.
+        no_image_data: >-
+          There was an error accessing the cameras feed.
+          Please check your camera configuration or try another camera source.
+    setting:
+      auto_open_qr_camera: Automatically open camera for QR code detection
+      show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
