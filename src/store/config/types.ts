@@ -22,12 +22,18 @@ export interface UiSettings {
   gcodePreview: GcodePreviewConfig;
   fileSystem: FileSystemConfig;
   toolhead: ToolheadConfig;
+  spoolman: SpoolmanConfig;
 }
 
 export interface ToolheadConfig {
   forceMove: boolean;
   extrudeSpeed: number;
   extrudeLength: number;
+}
+
+export interface SpoolmanConfig {
+  autoSpoolSelectionDialog: boolean;
+  autoOpenQRDetectionCamera: string | null;
 }
 
 export interface HostConfig {

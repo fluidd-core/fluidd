@@ -40,6 +40,7 @@ firmware.
 - [Print history](/features/print_history)
 - [Version management](/updates/automated) and upgrades
 - Utilization graphs
+- Filament [spool management](/features/spoolman)
 
 ## Supporting Fluidd
 

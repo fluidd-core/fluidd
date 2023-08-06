@@ -76,6 +76,7 @@
 
       <file-system-download-dialog />
       <updating-dialog />
+      <spool-selection-dialog />
     </v-main>
 
     <app-footer />
@@ -90,6 +91,7 @@ import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import { LinkPropertyHref } from 'vue-meta'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
+import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -105,6 +107,7 @@ import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystem
     }
   },
   components: {
+    SpoolSelectionDialog,
     FileSystemDownloadDialog
   }
 })

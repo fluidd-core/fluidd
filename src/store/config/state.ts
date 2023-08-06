@@ -140,6 +140,10 @@ export const defaultState = (): ConfigState => {
         forceMove: false,
         extrudeSpeed: -1,
         extrudeLength: -1
+      },
+      spoolman: {
+        autoSpoolSelectionDialog: true,
+        autoOpenQRDetectionCamera: null
       }
     }
   }

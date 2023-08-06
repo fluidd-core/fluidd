@@ -28,6 +28,7 @@ import { timelapse } from './timelapse'
 import { parts } from './parts'
 import { webcams } from './webcams'
 import { jobQueue } from './jobQueue'
+import { spoolman } from './spoolman'
 
 Vue.use(Vuex)
 
@@ -56,7 +57,8 @@ export default new Vuex.Store<RootState>({
     timelapse,
     parts,
     webcams,
-    jobQueue
+    jobQueue,
+    spoolman
   },
   mutations: {},
   actions: {

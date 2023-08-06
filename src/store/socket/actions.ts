@@ -240,5 +240,9 @@ export const actions: ActionTree<SocketState, RootState> = {
 
   async notifyJobQueueChanged ({ dispatch }, payload) {
     dispatch('jobQueue/onJobQueueChanged', payload, { root: true })
+  },
+
+  async notifyActiveSpoolSet ({ dispatch }, payload) {
+    dispatch('spoolman/onActiveSpool', payload, { root: true })
   }
 }
