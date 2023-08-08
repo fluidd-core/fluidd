@@ -250,6 +250,8 @@ import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import StateMixin from '@/mixins/state'
 import { Heater, Sensor } from '@/store/printer/types'
+import { takeRightWhile } from 'lodash-es'
+import { ChartData } from '@/store/charts/types'
 
 @Component({
   components: {
@@ -281,6 +283,10 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     return this.$store.getters['charts/getSelectedLegends']
   }
 
+  get chartData (): ChartData[] {
+    return this.$store.getters['charts/getChartData'] as ChartData[]
+  }
+
   get showRateOfChange () {
     return this.$store.state.config.uiSettings.general.showRateOfChange
   }
@@ -306,12 +312,16 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   }
 
   getRateOfChange (item: Heater | Sensor) {
-    const chartData = this.$store.getters['charts/getChartData']
+    const recentChartData = this.chartData
+      .slice(-5)
+    const filteredChartData = takeRightWhile(recentChartData, x => x[item.name] != null)
+
     let rateOfChange = 0
-    if (chartData.length >= 2) {
-      const curr = chartData[chartData.length - 1]
-      const prev = chartData[chartData.length - Math.min(chartData.length, 5)] // rolling average of the last min(n, 5) data points
-      rateOfChange = (curr[item.name] - prev[item.name]) / (curr.date - prev.date) * 1000
+    if (filteredChartData.length >= 2) {
+      const curr = filteredChartData[filteredChartData.length - 1]
+      const prev = filteredChartData[0]
+
+      rateOfChange = (+curr[item.name] - +prev[item.name]) / (+curr.date - +prev.date) * 1000
 
       if (Math.abs(rateOfChange) < 0.05) {
         rateOfChange = 0 // prevent constant change of sign
