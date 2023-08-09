@@ -92,7 +92,6 @@
       </v-list-item>
 
       <v-list-item
-        v-if="canCreateDirectory"
         :disabled="disabled"
         @click="$emit('add-dir')"
       >
@@ -145,10 +144,6 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
 
   get accepts () {
     return this.rootProperties.accepts.join(',')
-  }
-
-  get canCreateDirectory () {
-    return this.rootProperties.canCreateDirectory
   }
 
   get printerReady () {
