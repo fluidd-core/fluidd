@@ -121,6 +121,7 @@
 
 <script lang="ts">
 import StateMixin from '@/mixins/state'
+import { RootProperties } from '@/store/files/types'
 import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 
@@ -138,8 +139,8 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
 
   andPrint = false
 
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.root)
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
   }
 
   get accepts () {

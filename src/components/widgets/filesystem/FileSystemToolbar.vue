@@ -62,7 +62,7 @@
     />
 
     <app-column-picker
-      v-if="headers && rootProperties.canConfigure"
+      v-if="headers && canConfigure"
       :key-name="`${root}_${name}`"
       :headers="headers"
     />
@@ -94,7 +94,7 @@
     />
 
     <file-system-add-menu
-      v-if="!readonly || canCreateDirectory"
+      v-if="!readonly"
       :root="root"
       :disabled="disabled"
       @add-file="$emit('add-file')"
@@ -160,6 +160,7 @@ import StatesMixin from '@/mixins/state'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
 import { AppTableHeader } from '@/types'
+import { RootProperties } from '@/store/files/types'
 
 @Component({
   components: {
@@ -204,8 +205,8 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
     return this.rootProperties.readonly
   }
 
-  get canCreateDirectory () {
-    return this.rootProperties.canCreateDirectory
+  get canConfigure () {
+    return this.rootProperties.canConfigure
   }
 
   get hasFilterTypes () {
@@ -218,8 +219,8 @@ export default class FileSystemToolbar extends Mixins(StatesMixin) {
   }
 
   // Properties of the current root.
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.root)
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
   }
 
   // Only show roots that have been registered.

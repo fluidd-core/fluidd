@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState } from './types'
+import { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
 import { RootState } from '../types'
 import { HistoryItem } from '../history/types'
 
@@ -98,15 +98,17 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns the properties of a root.
    */
-  getRootProperties: () => (root: string) => {
+  getRootProperties: () => (root: string): RootProperties => {
+    const canView = [
+      '.gif', '.jpeg', '.jpg', '.mp4', '.mpeg', '.mpg', '.png', '.svg', '.tif', '.tiff', '.webp'
+    ]
+
     switch (root) {
       case 'gcodes':
         return {
           readonly: false,
           accepts: ['.gcode', '.g', '.gc', '.gco', '.ufp', '.nc'],
-          canEdit: true,
-          canView: false,
-          canPrint: true,
+          canView,
           canConfigure: true,
           filterTypes: ['hidden_files', 'print_start_time']
         }
@@ -114,9 +116,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: false,
           accepts: ['.conf', '.cfg', '.md', '.css', '.jpg', '.jpeg', '.png', '.gif'],
-          canEdit: true,
-          canView: false,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files', 'klipper_backup_files']
         }
@@ -124,9 +124,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files']
         }
@@ -134,9 +132,7 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files']
         }
@@ -144,31 +140,23 @@ export const getters: GetterTree<FilesState, RootState> = {
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
           filterTypes: ['hidden_files', 'rolled_log_files']
         }
       case 'timelapse':
         return {
-          readonly: true,
+          readonly: false,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView,
           canConfigure: false,
-          canDelete: true,
-          canCreateDirectory: true,
           filterTypes: ['hidden_files']
         }
       default:
         return {
           readonly: true,
           accepts: [],
-          canEdit: false,
-          canView: true,
-          canPrint: false,
+          canView: [],
           canConfigure: false,
           filterTypes: []
         }
