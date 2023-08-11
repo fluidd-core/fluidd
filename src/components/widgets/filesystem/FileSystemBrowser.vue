@@ -283,7 +283,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
-import { FileBrowserEntry } from '@/store/files/types'
+import { FileBrowserEntry, RootProperties } from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
@@ -338,8 +338,12 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     )
   }
 
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+  }
+
   get readonly () {
-    return this.$store.getters['files/getRootProperties'](this.root).readonly
+    return this.rootProperties.readonly
   }
 
   get thumbnailSize () {

@@ -64,8 +64,8 @@
       :position-x="contextMenuState.x"
       :position-y="contextMenuState.y"
       @print="handlePrint"
-      @view="handleFileOpenDialog"
-      @edit="handleFileOpenDialog"
+      @view="handleFileOpenDialog($event, 'view')"
+      @edit="handleFileOpenDialog($event, 'edit')"
       @rename="handleRenameDialog"
       @duplicate="handleDuplicateDialog"
       @remove="handleRemove"
@@ -116,11 +116,16 @@
 
     <file-preview-dialog
       v-if="filePreviewState.open"
-      :file="filePreviewState"
-      removable
-      downloadable
-      @download="handleDownload"
+      v-model="filePreviewState.open"
+      :file="filePreviewState.file"
+      :filename="filePreviewState.filename"
+      :extension="filePreviewState.extension"
+      :src="filePreviewState.src"
+      :type="filePreviewState.type"
+      :width="filePreviewState.width"
+      :readonly="filePreviewState.readonly"
       @remove="handleRemove"
+      @download="handleDownload"
     />
 
     <file-system-go-to-file-dialog
@@ -141,8 +146,8 @@ import {
   AppFileWithMeta,
   FilesUpload,
   FileFilterType,
-  FilePreviewState,
-  FileBrowserEntry
+  FileBrowserEntry,
+  RootProperties
 } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
@@ -259,11 +264,11 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     handler: ''
   }
 
-  filePreviewState: FilePreviewState = {
+  filePreviewState: any = {
     open: false,
-    type: '',
     filename: '',
-    src: ''
+    src: '',
+    type: ''
   }
 
   goToFileDialogOpen = false
@@ -284,8 +289,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Properties of the current root.
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.currentRoot)
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.currentRoot) as RootProperties
   }
 
   // If this root is available or not.
@@ -550,14 +555,17 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (
       item.type === 'file' &&
-      e.type === 'click' && (
-        this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`) ||
-        this.currentRoot === 'timelapse'
-      )
+      e.type === 'click'
     ) {
-      this.handleFileOpenDialog(item)
+      if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)) {
+        this.handleFileOpenDialog(item, 'edit')
 
-      return
+        return
+      } else if (this.rootProperties.canView.includes(`.${item.extension}`)) {
+        this.handleFileOpenDialog(item, 'view')
+
+        return
+      }
     }
 
     // Open the context menu
@@ -635,18 +643,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.goToFileDialogOpen = true
   }
 
-  handleFileOpenDialog (file: AppFile) {
-    if (this.currentRoot === 'timelapse' && file.extension === 'zip') {
-      // don't download zipped frames before opening preview
-      this.filePreviewState = {
-        open: true,
-        type: 'unknown',
-        filename: file.filename,
-        src: '',
-        appFile: file
-      }
-      return
-    }
+  handleFileOpenDialog (file: AppFile, mode: 'edit' | 'view' | undefined = undefined) {
+    const viewOnly = mode
+      ? mode === 'view'
+      : this.rootProperties.canView.includes(`.${file.extension}`)
 
     // Grab the file. This should provide a dialog.
     this.$store.dispatch('files/createFileTransferCancelTokenSource')
@@ -656,22 +656,24 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       this.currentPath,
       file.size,
       {
-        responseType: this.currentRoot === 'timelapse' ? 'arraybuffer' : 'text',
+        responseType: viewOnly ? 'arraybuffer' : 'text',
         transformResponse: [v => v],
         cancelToken: this.cancelTokenSource.token
       }
     )
       .then(response => {
-        if (this.currentRoot === 'timelapse') {
+        if (viewOnly) {
           // Open the file preview dialog.
           const type = response.headers['content-type']
           const blob = new Blob([response.data], { type })
           this.filePreviewState = {
             open: true,
-            type,
+            file,
             filename: file.filename,
+            extension: file.extension,
             src: URL.createObjectURL(blob),
-            appFile: file
+            type,
+            readonly: file.permissions === 'r' || this.rootProperties.readonly
           }
         } else {
           // Open the edit dialog.
@@ -721,9 +723,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       this.filePreviewState = {
         open: true,
-        src: thumbUrl,
-        type: 'image',
         filename: file.filename,
+        src: thumbUrl,
+        type: 'image/any',
         width: thumb.width
       }
     }
@@ -809,7 +811,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
         : [source]
 
       const files = items
-        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes('.' + item.extension))
+        .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
 
       if (files.length > 0) {
         const data = {
@@ -926,7 +928,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     const items = Array.isArray(file) ? file : [file]
     const filenames = items
-      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes('.' + item.extension))
+      .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
       .map(file => file.path ? `${file.path}/${file.filename}` : file.filename)
 
     if (filenames.length > 0) {

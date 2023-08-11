@@ -130,6 +130,7 @@
                     </div>
                   </div>
                 </td>
+                <td>{{ item.filament.material }}</td>
                 <td>{{ item.location }}</td>
                 <td>{{ item.comment }}</td>
                 <td>{{ item.last_used ? $filters.formatRelativeTimeToNow(item.last_used) : $tc('app.setting.label.never') }}</td>
@@ -259,6 +260,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   get headers () {
     return [
       'filament_name',
+      'material',
       'location',
       'comment',
       'last_used'
@@ -296,7 +298,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     const splitFilepath = this.currentFileName.split('/')
     const filename = splitFilepath.pop()
     const filepath = splitFilepath.join('/')
-    return this.$store.getters['files/getFile'](null, filepath ? `gcodes/${filepath}` : 'gcodes', filename)
+    return this.$store.getters['files/getFile'](filepath ? `gcodes/${filepath}` : 'gcodes', filename)
   }
 
   get cameras () {

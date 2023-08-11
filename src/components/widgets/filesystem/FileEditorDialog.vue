@@ -204,10 +204,6 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     return this.$store.state.files.uploads.length > 0
   }
 
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.root)
-  }
-
   get configMap () {
     return this.$store.getters['server/getConfigMapByFilename'](this.filename)
   }

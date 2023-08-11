@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { FileFilterType } from '@/store/files/types'
+import { FileFilterType, RootProperties } from '@/store/files/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 type FileFilterEntry = {
@@ -109,8 +109,12 @@ export default class FileSystemFilterMenu extends Vue {
     }
   }
 
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
+  }
+
   get rootFilterTypes (): FileFilterType[] {
-    return this.$store.getters['files/getRootProperties'](this.root).filterTypes
+    return this.rootProperties.filterTypes
   }
 
   get filters (): FileFilter[] {

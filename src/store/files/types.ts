@@ -109,13 +109,12 @@ export type FileFilterType = 'print_start_time' | 'hidden_files' | 'klipper_back
 
 export type FileBrowserEntry = AppFile | AppFileWithMeta | AppDirectory
 
-export interface FilePreviewState {
-  open: boolean;
-  filename: string;
-  src: string;
-  type: string;
-  appFile?: AppFile;
-  width?: number;
+export interface RootProperties {
+  readonly: boolean;
+  accepts: string[];
+  canView: string[];
+  canConfigure: boolean;
+  filterTypes: FileFilterType[]
 }
 
 export interface MoonrakerRootFile {
