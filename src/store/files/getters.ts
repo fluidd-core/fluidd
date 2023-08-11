@@ -1,5 +1,5 @@
 import { GetterTree } from 'vuex'
-import { AppDirectory, AppFile, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
 import { RootState } from '../types'
 import { HistoryItem } from '../history/types'
 
@@ -166,20 +166,29 @@ export const getters: GetterTree<FilesState, RootState> = {
   /**
    * Returns a specific file.
    */
-  getFile: (state) => (root: string, path: string, filename: string) => {
+  getFile: (state, getters, rootState) => (path: string, filename: string) => {
     const pathContent = state.pathFiles[path]
 
     const file = pathContent?.files.find(file => file.filename === filename)
 
     if (file) {
-      const item: AppFile = {
+      const history = (file.job_id && rootState.history.jobs.find(job => job.job_id === file.job_id)) || {} as HistoryItem
+      const [, ...restOfPath] = path.split('/')
+      const pathNoRoot = restOfPath.join('/')
+
+      const item: AppFileWithMeta = {
         ...file,
         type: 'file',
         name: file.filename,
         extension: file.filename.split('.').pop() || '',
-        path,
-        modified: new Date(file.modified).getDate()
+        path: pathNoRoot,
+        modified: new Date(file.modified).getDate(),
+        history
       }
+
+      console.log({
+        file: { ...item }
+      })
 
       return item
     }
