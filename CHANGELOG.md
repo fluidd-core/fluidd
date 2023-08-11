@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.25.1](https://github.com/fluidd-core/fluidd/compare/v1.25.0...v1.25.1) (2023-08-11)
+
+
+### Features
+
+* add material type column to Spoolman dialog ([#1146](https://github.com/fluidd-core/fluidd/issues/1146)) ([c2b90bd](https://github.com/fluidd-core/fluidd/commit/c2b90bdad0ab5a00470bb6de8ca096ef49b7cc93))
+* allow Viewer in all file browsers ([8d2fdb5](https://github.com/fluidd-core/fluidd/commit/8d2fdb5306593ff9c17a9caf6fbf5050ef1576a1))
+* **i18n-PL:** update Polish translations ([#1135](https://github.com/fluidd-core/fluidd/issues/1135)) ([20f620a](https://github.com/fluidd-core/fluidd/commit/20f620a6ef935ec23a045afa68f6d58b7dd58c91))
+
+
+### Bug Fixes
+
+* ignore null on thermal change calculation ([#1139](https://github.com/fluidd-core/fluidd/issues/1139)) ([ee6579b](https://github.com/fluidd-core/fluidd/commit/ee6579b8ca857bc57ea80df75b5ff669447d4942))
+* remove obsolete check to create directory ([#1141](https://github.com/fluidd-core/fluidd/issues/1141)) ([58fd9c7](https://github.com/fluidd-core/fluidd/commit/58fd9c781a0f66d80f60c033c801a0ea71bc03b9))
+* use current origin for relative camera URLs ([#1145](https://github.com/fluidd-core/fluidd/issues/1145)) ([be693c3](https://github.com/fluidd-core/fluidd/commit/be693c3b1b4bc419d63e803b950bd43c09d088d9))
+
 ## [1.25.0](https://github.com/fluidd-core/fluidd/compare/v1.24.2...v1.25.0) (2023-08-06)
 
 
