@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.25.0](https://github.com/fluidd-core/fluidd/compare/v1.24.2...v1.25.0) (2023-08-06)
+
+
+### Features
+
+* adds TMC2240 support ([#1133](https://github.com/fluidd-core/fluidd/issues/1133)) ([68b6183](https://github.com/fluidd-core/fluidd/commit/68b61838aa8216b1285451b4fb51d5aed1c2f12f))
+* hide host controls when running on container ([253a9e2](https://github.com/fluidd-core/fluidd/commit/253a9e2dd83d4ab13f65048e2d82852c3d566872))
+* **i18n-AF:** New Afrikaans locale added ([#1125](https://github.com/fluidd-core/fluidd/issues/1125)) ([4a4e8f6](https://github.com/fluidd-core/fluidd/commit/4a4e8f6e3052d4087c90abf6e02ed481abf57b38))
+* **i18n-HU:** Update Hungarian translations ([#1134](https://github.com/fluidd-core/fluidd/issues/1134)) ([dc952ea](https://github.com/fluidd-core/fluidd/commit/dc952eaa71b0cf71a732fc7a4db340f890fd18fb))
+* **i18n-PL:** update Polish translations ([#1130](https://github.com/fluidd-core/fluidd/issues/1130)) ([64ea241](https://github.com/fluidd-core/fluidd/commit/64ea241dd52a4a10d18886115694a12969c4971c))
+* split camera stream and snapshot urls ([6d095b0](https://github.com/fluidd-core/fluidd/commit/6d095b0cc50fb22d0ac39b7b028646d39ef97121))
+* spoolman support ([#1119](https://github.com/fluidd-core/fluidd/issues/1119)) ([7e7c8dc](https://github.com/fluidd-core/fluidd/commit/7e7c8dcc2b627695992b015283feea040c871bff))
+* use overlays for file download and parse ([e28a958](https://github.com/fluidd-core/fluidd/commit/e28a958f77198b94947720bae3135a42b4e46180))
+
 ## [1.24.2](https://github.com/fluidd-core/fluidd/compare/v1.24.1...v1.24.2) (2023-07-26)
 
 

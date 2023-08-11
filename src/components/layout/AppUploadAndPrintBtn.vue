@@ -32,6 +32,7 @@
 </template>
 
 <script lang="ts">
+import { RootProperties } from '@/store/files/types'
 import { Component, Vue, Ref, Prop } from 'vue-property-decorator'
 
 @Component({})
@@ -42,8 +43,12 @@ export default class AppUploadAndPrintBtn extends Vue {
   @Ref('uploadFile')
   readonly uploadFile!: HTMLInputElement
 
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties']('gcodes') as RootProperties
+  }
+
   get accepts () {
-    return this.$store.getters['files/getRootProperties']('gcodes').accepts.join(',')
+    return this.rootProperties.accepts.join(',')
   }
 
   fileChanged (e: Event) {

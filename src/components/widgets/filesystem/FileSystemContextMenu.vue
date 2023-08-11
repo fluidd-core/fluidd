@@ -57,19 +57,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!Array.isArray(file) && file.type !== 'directory' && (file.permissions === 'rw' || (!file.permissions && rootProperties.canEdit))"
-              @click="$emit('edit', file)"
-            >
-              <v-list-item-icon>
-                <v-icon>$pencil</v-icon>
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title>{{ $t('app.general.btn.edit') }}</v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-
-            <v-list-item
-              v-if="!Array.isArray(file) && file.type !== 'directory' && (file.permissions === 'r' || (!file.permissions && rootProperties.canView))"
+              v-if="canView"
               @click="$emit('view', file)"
             >
               <v-list-item-icon>
@@ -77,6 +65,18 @@
               </v-list-item-icon>
               <v-list-item-content>
                 <v-list-item-title>{{ $t('app.general.btn.view') }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item
+              v-if="canEdit"
+              @click="$emit('edit', file)"
+            >
+              <v-list-item-icon>
+                <v-icon>$pencil</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>{{ $t('app.general.btn.edit') }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
 
@@ -153,7 +153,7 @@
             </v-list-item>
 
             <v-list-item
-              v-if="!rootProperties.readonly || rootProperties.canDelete"
+              v-if="!rootProperties.readonly"
               @click="$emit('remove', file)"
             >
               <v-list-item-icon>
@@ -190,7 +190,7 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import { FileBrowserEntry } from '@/store/files/types'
+import { FileBrowserEntry, RootProperties } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
@@ -212,21 +212,46 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
   @Prop({ type: Number, required: true })
   readonly positionY!: number
 
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.root)
+  get rootProperties (): RootProperties {
+    return this.$store.getters['files/getRootProperties'](this.root) as RootProperties
   }
 
   get canPrint () {
     return (
+      this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      this.rootProperties.accepts.includes('.' + this.file.extension) &&
-      this.rootProperties.canPrint
+      this.rootProperties.accepts.includes(`.${this.file.extension}`)
+    )
+  }
+
+  get canEdit () {
+    return (
+      !Array.isArray(this.file) &&
+      this.file.type !== 'directory' &&
+      !this.rootProperties.readonly &&
+      (
+        this.file.permissions === undefined ||
+        this.file.permissions.includes('w')
+      )
+    )
+  }
+
+  get canView () {
+    return (
+      !Array.isArray(this.file) &&
+      this.file.type !== 'directory' &&
+      this.rootProperties.canView.includes(`.${this.file.extension}`) &&
+      (
+        this.file.permissions === undefined ||
+        this.file.permissions.includes('r')
+      )
     )
   }
 
   get canPreheat () {
     return (
+      this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       'first_layer_extr_temp' in this.file &&
       'first_layer_bed_temp' in this.file
@@ -243,10 +268,10 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
 
   get canPreviewGcode () {
     return (
+      this.root === 'gcodes' &&
       !Array.isArray(this.file) &&
       this.file.type === 'file' &&
-      this.file.extension === 'gcode' &&
-      this.root === 'gcodes'
+      this.file.extension === 'gcode'
     )
   }
 
@@ -266,10 +291,10 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     const files = Array.isArray(this.file) ? this.file : [this.file]
 
     return (
+      this.root === 'gcodes' &&
       files.some(x =>
         x.type !== 'directory' &&
-        this.rootProperties.accepts.includes('.' + x.extension) &&
-        this.rootProperties.canPrint
+        this.rootProperties.accepts.includes('.' + x.extension)
       ) &&
       this.$store.getters['server/componentSupport']('job_queue')
     )
