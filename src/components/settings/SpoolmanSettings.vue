@@ -18,7 +18,6 @@
         />
       </app-setting>
 
-      <!-- TODO uncomment when QR scanning is available
       <v-divider />
       <app-setting
         :title="$tc('app.spoolman.setting.auto_open_qr_camera')"
@@ -32,7 +31,6 @@
           :items="supportedCameras"
         />
       </app-setting>
-      -->
 
       <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">

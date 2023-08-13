@@ -18,7 +18,6 @@
 
           <v-spacer />
 
-          <!-- TODO uncomment when QR scanning is available
           <v-menu
             v-if="cameras.length > 1"
             v-model="cameraSelectionMenuOpen"
@@ -74,7 +73,6 @@
               {{ $t('app.spoolman.btn.scan_code') }}
             </template>
           </app-btn>
-          -->
 
           <v-text-field
             v-model="search"
