@@ -34,7 +34,11 @@ import BrowserMixin from '@/mixins/browser'
   components: { CameraItem }
 })
 export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
-  dataPatterns = [/\/spool\/show\/(\d+)\/?/]
+  dataPatterns = [
+    /web\+spoomnan:s-(\d+)/,
+    /\/spool\/show\/(\d+)\/?/
+  ]
+
   statusMessage = 'info.howto'
   lastScanTimestamp = Date.now()
   processing = false
