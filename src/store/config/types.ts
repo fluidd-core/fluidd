@@ -34,6 +34,7 @@ export interface ToolheadConfig {
 export interface SpoolmanConfig {
   autoSpoolSelectionDialog: boolean;
   autoOpenQRDetectionCamera: string | null;
+  autoSelectSpoolOnMatch: boolean;
 }
 
 export interface HostConfig {

@@ -323,6 +323,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       // clear filter if selected spool isn't in filter results
       this.search = ''
     }
+
+    if (this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch) {
+      this.handleSelectSpool()
+    }
   }
 
   async handleSelectSpool () {

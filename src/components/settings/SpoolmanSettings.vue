@@ -33,6 +33,17 @@
       </app-setting>
 
       <v-divider />
+      <app-setting
+        :title="$t('app.spoolman.setting.auto_select_spool_on_match')"
+      >
+        <v-switch
+          v-model="autoSelectSpoolOnMatch"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -84,6 +95,18 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   set autoOpenQRDetectionCameraId (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoOpenQRDetectionCamera',
+      value,
+      server: true
+    })
+  }
+
+  get autoSelectSpoolOnMatch () {
+    return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
+  }
+
+  set autoSelectSpoolOnMatch (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.autoSelectSpoolOnMatch',
       value,
       server: true
     })

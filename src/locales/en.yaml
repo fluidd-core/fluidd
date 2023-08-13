@@ -808,4 +808,5 @@ app:
           Please check your camera configuration or try another camera source.
     setting:
       auto_open_qr_camera: Automatically open camera for QR code detection
+      auto_select_spool_on_match: Automatically commit spool selection on QR code match
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
