@@ -35,7 +35,7 @@ import BrowserMixin from '@/mixins/browser'
 })
 export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   dataPatterns = [
-    /web\+spoomnan:s-(\d+)/,
+    /web\+spoolman:s-(\d+)/,
     /\/spool\/show\/(\d+)\/?/
   ]
 
