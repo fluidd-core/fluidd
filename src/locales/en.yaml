@@ -769,6 +769,7 @@ app:
     label:
       change_spool: Change Spool
       comment: Comment
+      device_camera: Device
       filament_name: Filament
       first_used: First Used
       last_used: Last Used
@@ -809,4 +810,5 @@ app:
     setting:
       auto_open_qr_camera: Automatically open camera for QR code detection
       auto_select_spool_on_match: Automatically commit spool selection on QR code match
+      prefer_device_camera: Use device camera for QR code detection if available
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start

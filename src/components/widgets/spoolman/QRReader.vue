@@ -42,8 +42,6 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
   statusMessage = 'info.howto'
   lastScanTimestamp = Date.now()
   processing = false
-
-  video!: HTMLVideoElement | HTMLImageElement
   context!: CanvasRenderingContext2D
 
   @VModel({ type: String, default: null })
@@ -53,6 +51,9 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     canvas!: HTMLCanvasElement
 
   get camera () {
+    if (this.source === 'device') {
+      return { name: this.$t('app.spoolman.label.device_camera'), service: 'device' }
+    }
     return this.$store.getters['cameras/getCameraById'](this.source)
   }
 
@@ -92,6 +93,12 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     } else {
       this.canvas.width = image.naturalWidth
       this.canvas.height = image.naturalHeight
+    }
+
+    if (!this.canvas.width || !this.canvas.height) {
+      // no image drawn yet
+      this.processing = false
+      return
     }
 
     try {

@@ -33,7 +33,7 @@ export interface CameraConfig extends CameraConfigWithoutId {
   id: string;
 }
 
-export type CameraService = 'mjpegstreamer' | 'mjpegstreamer-adaptive' | 'ipstream' | 'iframe' | 'hlsstream' | 'webrtc-camerastreamer'
+export type CameraService = 'mjpegstreamer' | 'mjpegstreamer-adaptive' | 'ipstream' | 'iframe' | 'hlsstream' | 'webrtc-camerastreamer' | 'device'
 
 export interface LegacyCamerasState {
   activeCamera: string;

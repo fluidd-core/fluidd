@@ -144,7 +144,8 @@ export const defaultState = (): ConfigState => {
       spoolman: {
         autoSpoolSelectionDialog: true,
         autoOpenQRDetectionCamera: null,
-        autoSelectSpoolOnMatch: false
+        autoSelectSpoolOnMatch: false,
+        preferDeviceCamera: false
       }
     }
   }

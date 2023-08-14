@@ -12,6 +12,7 @@
         class="camera-image"
         @raw-camera-url="rawCameraUrl = $event"
         @frames-per-second="framesPerSecond = $event"
+        @playback="setupFrameEvents()"
       />
     </template>
     <div v-else>
@@ -32,7 +33,7 @@
     </div>
 
     <div
-      v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl)"
+      v-if="!fullscreen && (fullscreenMode === 'embed' || !rawCameraUrl) && camera.service !== 'device'"
       class="camera-fullscreen"
     >
       <a :href="`/#/camera/${camera.id}`">
@@ -75,7 +76,11 @@ export default class CameraItem extends Vue {
   framesPerSecond : string | null = null
 
   mounted () {
-    if (this.$listeners?.frame) {
+    this.setupFrameEvents()
+  }
+
+  setupFrameEvents () {
+    if (this.$listeners?.frame && this.componentInstance) {
       if (this.componentInstance.streamingElement instanceof HTMLImageElement) {
         this.componentInstance.streamingElement.addEventListener('load', () => this.handleFrame())
       } else if (this.componentInstance.streamingElement instanceof HTMLVideoElement) {
