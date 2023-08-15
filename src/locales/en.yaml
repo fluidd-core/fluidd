@@ -804,6 +804,9 @@ app:
         code_not_recognized: This code doesn't look like a compatible QR code.
         invalid_spool_id: The spool ID contained in this QR code is invalid.
       error:
+        cors: >-
+          There was an error accessing the cameras feed.
+          Please make sure your webcam server allows CORS access.
         spool_not_existant: The spool you scanned doesn't exist in the database.
         no_image_data: >-
           There was an error accessing the cameras feed.

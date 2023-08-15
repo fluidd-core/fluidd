@@ -108,7 +108,11 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
       if (result.data) { this.handleCodeFound(result.data) }
     } catch (err) {
       if (err instanceof DOMException) {
-        this.statusMessage = 'error.no_image_data'
+        if (err.name === 'SecurityError') {
+          this.statusMessage = 'error.cors'
+        } else {
+          this.statusMessage = 'error.no_image_data'
+        }
       }
 
       // no QR code found

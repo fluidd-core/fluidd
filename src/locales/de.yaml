@@ -740,6 +740,10 @@ app:
         code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code aus.
         invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
       error:
+        cors: >-
+          Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
+          Bitte stellen Sie sicher, dass Ihr Kameraserver CORS-Zugriff erlaubt.
+          Please make sure your webcam server allows CORS access.
         spool_not_existant: Die von Ihnen gescannte Spule existiert nicht in der Datenbank.
         no_image_data: >-
           Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
