@@ -9,6 +9,7 @@
         :is="cameraComponent"
         ref="component-instance"
         :camera="camera"
+        :crossorigin="crossorigin"
         class="camera-image"
         @raw-camera-url="rawCameraUrl = $event"
         @frames-per-second="framesPerSecond = $event"
@@ -68,6 +69,9 @@ export default class CameraItem extends Vue {
 
   @Prop({ type: Boolean, required: false, default: false })
   readonly fullscreen!: boolean
+
+  @Prop({ type: String })
+  readonly crossorigin?: 'anonymous' | 'use-credentials' | ''
 
   @Ref('component-instance')
   readonly componentInstance!: CameraMixin
