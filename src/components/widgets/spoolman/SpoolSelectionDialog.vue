@@ -128,6 +128,7 @@
                     </div>
                   </div>
                 </td>
+                <td>{{ item.id }}</td>
                 <td>{{ item.filament.material }}</td>
                 <td>{{ item.location }}</td>
                 <td>{{ item.comment }}</td>
@@ -269,6 +270,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   get headers () {
     return [
       'filament_name',
+      'id',
       'material',
       'location',
       'comment',

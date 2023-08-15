@@ -772,6 +772,7 @@ app:
       device_camera: Device
       filament_name: Filament
       first_used: First Used
+      id: ID
       last_used: Last Used
       location: Location
       lot_nr: Lot Nr
