@@ -16,6 +16,7 @@
       <CameraItem
         :camera="camera"
         :embedded="true"
+        crossorigin="anonymous"
         @frame="handlePrinterCameraFrame"
       />
     </v-card-text>
