@@ -3,7 +3,7 @@
     ref="streamingElement"
     autoplay
     muted
-    crossorigin="anonymous"
+    :crossorigin="crossorigin"
     :style="cameraStyle"
   />
 </template>
