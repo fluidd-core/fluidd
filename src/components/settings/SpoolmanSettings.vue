@@ -18,7 +18,6 @@
         />
       </app-setting>
 
-      <!-- TODO uncomment when QR scanning is available
       <v-divider />
       <app-setting
         :title="$tc('app.spoolman.setting.auto_open_qr_camera')"
@@ -32,7 +31,28 @@
           :items="supportedCameras"
         />
       </app-setting>
-      -->
+
+      <v-divider />
+      <app-setting
+        :title="$t('app.spoolman.setting.prefer_device_camera')"
+      >
+        <v-switch
+          v-model="preferDeviceCamera"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+      <app-setting
+        :title="$t('app.spoolman.setting.auto_select_spool_on_match')"
+      >
+        <v-switch
+          v-model="autoSelectSpoolOnMatch"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
 
       <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
@@ -86,6 +106,30 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   set autoOpenQRDetectionCameraId (value: string) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoOpenQRDetectionCamera',
+      value,
+      server: true
+    })
+  }
+
+  get preferDeviceCamera () {
+    return this.$store.state.config.uiSettings.spoolman.preferDeviceCamera
+  }
+
+  set preferDeviceCamera (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.preferDeviceCamera',
+      value,
+      server: true
+    })
+  }
+
+  get autoSelectSpoolOnMatch () {
+    return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
+  }
+
+  set autoSelectSpoolOnMatch (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.autoSelectSpoolOnMatch',
       value,
       server: true
     })

@@ -16,6 +16,7 @@
       <CameraItem
         :camera="camera"
         :embedded="true"
+        crossorigin="anonymous"
         @frame="handlePrinterCameraFrame"
       />
     </v-card-text>
@@ -34,12 +35,14 @@ import BrowserMixin from '@/mixins/browser'
   components: { CameraItem }
 })
 export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
-  dataPatterns = [/\/spool\/show\/(\d+)\/?/]
+  dataPatterns = [
+    /web\+spoolman:s-(\d+)/,
+    /\/spool\/show\/(\d+)\/?/
+  ]
+
   statusMessage = 'info.howto'
   lastScanTimestamp = Date.now()
   processing = false
-
-  video!: HTMLVideoElement | HTMLImageElement
   context!: CanvasRenderingContext2D
 
   @VModel({ type: String, default: null })
@@ -49,6 +52,9 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
     canvas!: HTMLCanvasElement
 
   get camera () {
+    if (this.source === 'device') {
+      return { name: this.$t('app.spoolman.label.device_camera'), service: 'device' }
+    }
     return this.$store.getters['cameras/getCameraById'](this.source)
   }
 
@@ -90,13 +96,23 @@ export default class QRReader extends Mixins(StateMixin, BrowserMixin) {
       this.canvas.height = image.naturalHeight
     }
 
+    if (!this.canvas.width || !this.canvas.height) {
+      // no image drawn yet
+      this.processing = false
+      return
+    }
+
     try {
       this.context.drawImage(image, 0, 0, this.canvas.width, this.canvas.height)
       const result = await QrScanner.scanImage(this.canvas, { returnDetailedScanResult: true })
       if (result.data) { this.handleCodeFound(result.data) }
     } catch (err) {
       if (err instanceof DOMException) {
-        this.statusMessage = 'error.no_image_data'
+        if (err.name === 'SecurityError') {
+          this.statusMessage = 'error.cors'
+        } else {
+          this.statusMessage = 'error.no_image_data'
+        }
       }
 
       // no QR code found
