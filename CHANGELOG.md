@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.25.2](https://github.com/fluidd-core/fluidd/compare/v1.25.1...v1.25.2) (2023-08-16)
+
+
+### Features
+
+* **spoolman:** QR code scanning support ([#1149](https://github.com/fluidd-core/fluidd/issues/1149)) ([5b6a44e](https://github.com/fluidd-core/fluidd/commit/5b6a44e30b7dff3d1425beb7fe358e68c8134c14))
+
+
+### Bug Fixes
+
+* ignore crossorigin in cameras by default ([#1152](https://github.com/fluidd-core/fluidd/issues/1152)) ([6e57724](https://github.com/fluidd-core/fluidd/commit/6e577243e6d25cf8a848a7b64202d395c4266d41))
+
 ## [1.25.1](https://github.com/fluidd-core/fluidd/compare/v1.25.0...v1.25.1) (2023-08-11)
 
 
