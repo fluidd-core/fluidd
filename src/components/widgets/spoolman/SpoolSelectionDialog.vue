@@ -18,7 +18,6 @@
 
           <v-spacer />
 
-          <!-- TODO uncomment when QR scanning is available
           <v-menu
             v-if="cameras.length > 1"
             v-model="cameraSelectionMenuOpen"
@@ -74,7 +73,6 @@
               {{ $t('app.spoolman.btn.scan_code') }}
             </template>
           </app-btn>
-          -->
 
           <v-text-field
             v-model="search"
@@ -130,6 +128,7 @@
                     </div>
                   </div>
                 </td>
+                <td>{{ item.id }}</td>
                 <td>{{ item.filament.material }}</td>
                 <td>{{ item.location }}</td>
                 <td>{{ item.comment }}</td>
@@ -196,6 +195,7 @@ import { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 import QRReader from '@/components/widgets/spoolman/QRReader.vue'
 import { CameraConfig } from '@/store/cameras/types'
+import QrScanner from 'qr-scanner'
 
 @Component({
   components: { QRReader }
@@ -207,6 +207,12 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   cameraScanSource: null | string = null
   cameraSelectionMenuOpen = false
 
+  hasDeviceCamera = false
+
+  async mounted () {
+    this.hasDeviceCamera = await QrScanner.hasCamera()
+  }
+
   @Watch('open')
   onOpen () {
     if (this.open) {
@@ -217,9 +223,13 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         SocketActions.serverFilesMetadata(this.currentFileName)
       }
 
-      const autoOpenCameraId = this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
-      if (this.$store.getters['cameras/getCameraById'](autoOpenCameraId)) {
-        this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
+      if (this.hasDeviceCamera && this.$store.state.config.uiSettings.spoolman.preferDeviceCamera) {
+        this.$nextTick(() => (this.cameraScanSource = 'device'))
+      } else {
+        const autoOpenCameraId = this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
+        if (this.$store.getters['cameras/getCameraById'](autoOpenCameraId)) {
+          this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
+        }
       }
     }
   }
@@ -260,6 +270,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   get headers () {
     return [
       'filament_name',
+      'id',
       'material',
       'location',
       'comment',
@@ -302,8 +313,15 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
   }
 
   get cameras () {
-    return this.$store.getters['cameras/getEnabledCameras']
+    const cameras = this.$store.getters['cameras/getEnabledCameras']
       .filter((camera: CameraConfig) => camera.service !== 'iframe')
+
+    if (this.hasDeviceCamera) {
+      // always show device camera first
+      cameras.unshift({ name: this.$t('app.spoolman.label.device_camera'), id: 'device' })
+    }
+
+    return cameras
   }
 
   get scanSource () {
@@ -324,6 +342,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     ) {
       // clear filter if selected spool isn't in filter results
       this.search = ''
+    }
+
+    if (this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch) {
+      this.handleSelectSpool()
     }
   }
 
