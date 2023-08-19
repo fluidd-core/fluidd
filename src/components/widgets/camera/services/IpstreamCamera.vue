@@ -4,7 +4,7 @@
     :src="cameraVideoSource"
     autoplay
     muted
-    crossorigin="anonymous"
+    :crossorigin="crossorigin"
     :style="cameraStyle"
   />
 </template>

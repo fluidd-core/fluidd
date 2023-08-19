@@ -11,7 +11,7 @@
     <v-spacer />
 
     <v-tooltip
-      v-if="rootProperties.canPrint"
+      v-if="root === 'gcodes'"
       bottom
     >
       <template #activator="{ on, attrs }">
@@ -81,9 +81,5 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   // The current path
   @Prop({ type: String, required: false })
   readonly path!: string
-
-  get rootProperties () {
-    return this.$store.getters['files/getRootProperties'](this.root)
-  }
 }
 </script>

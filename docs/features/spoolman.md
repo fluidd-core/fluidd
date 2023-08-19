@@ -22,11 +22,9 @@ Fluidd offers support for the [Spoolman](https://github.com/Donkie/Spoolman) fil
 ### Print start
 On print start, Fluidd will show a modal asking you to select the spool you want to use for printing.
 The modal shows all available (i.e. not archived) spools.
-<!-- TODO uncomment when QR scanning is available
 A spool can either be selected by selecting it directly, or by scanning an associated QR code using an attached webcam.
 
 ![screenshot](/assets/images/spoolman-scan-spool.png)
--->
 
 Automatically opening the spool selection modal can be disabled from the Fluidd settings.
 

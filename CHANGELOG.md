@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.25.2](https://github.com/fluidd-core/fluidd/compare/v1.25.1...v1.25.2) (2023-08-16)
+
+
+### Features
+
+* **spoolman:** QR code scanning support ([#1149](https://github.com/fluidd-core/fluidd/issues/1149)) ([5b6a44e](https://github.com/fluidd-core/fluidd/commit/5b6a44e30b7dff3d1425beb7fe358e68c8134c14))
+
+
+### Bug Fixes
+
+* ignore crossorigin in cameras by default ([#1152](https://github.com/fluidd-core/fluidd/issues/1152)) ([6e57724](https://github.com/fluidd-core/fluidd/commit/6e577243e6d25cf8a848a7b64202d395c4266d41))
+
+## [1.25.1](https://github.com/fluidd-core/fluidd/compare/v1.25.0...v1.25.1) (2023-08-11)
+
+
+### Features
+
+* add material type column to Spoolman dialog ([#1146](https://github.com/fluidd-core/fluidd/issues/1146)) ([c2b90bd](https://github.com/fluidd-core/fluidd/commit/c2b90bdad0ab5a00470bb6de8ca096ef49b7cc93))
+* allow Viewer in all file browsers ([8d2fdb5](https://github.com/fluidd-core/fluidd/commit/8d2fdb5306593ff9c17a9caf6fbf5050ef1576a1))
+* **i18n-PL:** update Polish translations ([#1135](https://github.com/fluidd-core/fluidd/issues/1135)) ([20f620a](https://github.com/fluidd-core/fluidd/commit/20f620a6ef935ec23a045afa68f6d58b7dd58c91))
+
+
+### Bug Fixes
+
+* ignore null on thermal change calculation ([#1139](https://github.com/fluidd-core/fluidd/issues/1139)) ([ee6579b](https://github.com/fluidd-core/fluidd/commit/ee6579b8ca857bc57ea80df75b5ff669447d4942))
+* remove obsolete check to create directory ([#1141](https://github.com/fluidd-core/fluidd/issues/1141)) ([58fd9c7](https://github.com/fluidd-core/fluidd/commit/58fd9c781a0f66d80f60c033c801a0ea71bc03b9))
+* use current origin for relative camera URLs ([#1145](https://github.com/fluidd-core/fluidd/issues/1145)) ([be693c3](https://github.com/fluidd-core/fluidd/commit/be693c3b1b4bc419d63e803b950bd43c09d088d9))
+
+## [1.25.0](https://github.com/fluidd-core/fluidd/compare/v1.24.2...v1.25.0) (2023-08-06)
+
+
+### Features
+
+* adds TMC2240 support ([#1133](https://github.com/fluidd-core/fluidd/issues/1133)) ([68b6183](https://github.com/fluidd-core/fluidd/commit/68b61838aa8216b1285451b4fb51d5aed1c2f12f))
+* hide host controls when running on container ([253a9e2](https://github.com/fluidd-core/fluidd/commit/253a9e2dd83d4ab13f65048e2d82852c3d566872))
+* **i18n-AF:** New Afrikaans locale added ([#1125](https://github.com/fluidd-core/fluidd/issues/1125)) ([4a4e8f6](https://github.com/fluidd-core/fluidd/commit/4a4e8f6e3052d4087c90abf6e02ed481abf57b38))
+* **i18n-HU:** Update Hungarian translations ([#1134](https://github.com/fluidd-core/fluidd/issues/1134)) ([dc952ea](https://github.com/fluidd-core/fluidd/commit/dc952eaa71b0cf71a732fc7a4db340f890fd18fb))
+* **i18n-PL:** update Polish translations ([#1130](https://github.com/fluidd-core/fluidd/issues/1130)) ([64ea241](https://github.com/fluidd-core/fluidd/commit/64ea241dd52a4a10d18886115694a12969c4971c))
+* split camera stream and snapshot urls ([6d095b0](https://github.com/fluidd-core/fluidd/commit/6d095b0cc50fb22d0ac39b7b028646d39ef97121))
+* spoolman support ([#1119](https://github.com/fluidd-core/fluidd/issues/1119)) ([7e7c8dc](https://github.com/fluidd-core/fluidd/commit/7e7c8dcc2b627695992b015283feea040c871bff))
+* use overlays for file download and parse ([e28a958](https://github.com/fluidd-core/fluidd/commit/e28a958f77198b94947720bae3135a42b4e46180))
+
 ## [1.24.2](https://github.com/fluidd-core/fluidd/compare/v1.24.1...v1.24.2) (2023-07-26)
 
 

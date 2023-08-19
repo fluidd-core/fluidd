@@ -706,6 +706,7 @@ app:
     label:
       change_spool: Suple wechseln
       comment: Kommentar
+      device_camera: Gerät
       filament_name: Filament
       first_used: Zuerst genutzt
       last_used: Zuletzt genutzt
@@ -739,6 +740,10 @@ app:
         code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code aus.
         invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
       error:
+        cors: >-
+          Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
+          Bitte stellen Sie sicher, dass Ihr Kameraserver CORS-Zugriff erlaubt.
+          Please make sure your webcam server allows CORS access.
         spool_not_existant: Die von Ihnen gescannte Spule existiert nicht in der Datenbank.
         no_image_data: >-
           Es ist ein Fehler beim Abrufen des Kamerabilds aufgetreten.
@@ -746,4 +751,6 @@ app:
           eine andere Kameraquelle zu verwenden.
     setting:
       auto_open_qr_camera: Kamera automatisch zur QR-Code- Erkennung öffnen
+      auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch übernehmen
+      prefer_device_camera: Gerätekamera wenn verfügbar zur QR-Code- Erkennung verwenden
       show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen

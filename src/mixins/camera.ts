@@ -7,6 +7,9 @@ export default class CameraMixin extends Vue {
   @Prop({ type: Object, required: true })
   readonly camera!: CameraConfig
 
+  @Prop({ type: String })
+  readonly crossorigin?: 'anonymous' | 'use-credentials' | ''
+
   @Ref('streamingElement')
   readonly streamingElement!: HTMLImageElement | HTMLIFrameElement | HTMLVideoElement
 
@@ -88,7 +91,7 @@ export default class CameraMixin extends Vue {
   }
 
   buildAbsoluteUrl (url: string) {
-    const { origin } = new URL(this.apiUrl)
+    const { origin } = new URL(document.URL)
 
     return new URL(url, origin)
   }
