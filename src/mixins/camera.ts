@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Component, Prop, Ref } from 'vue-property-decorator'
+import { Component, Prop, Ref, Watch } from 'vue-property-decorator'
 import { CameraConfig } from '@/store/cameras/types'
 
 @Component
@@ -16,6 +16,12 @@ export default class CameraMixin extends Vue {
   cameraTransformStyle = ''
   animating = false
 
+  @Watch('camera')
+  onCamera () {
+    this.stopPlayback()
+    this.checkPlayback()
+  }
+
   get apiUrl () {
     return this.$store.state.config.apiUrl
   }
@@ -31,11 +37,18 @@ export default class CameraMixin extends Vue {
     const { rotation, flipX, flipY } = this.camera
     const transformsArray: string[] = []
 
-    const scale = rotation === 0 || rotation === 180
+    const { clientWidth, clientHeight } = element
+
+    const scale = (
+      rotation === 0 ||
+      rotation === 180 ||
+      clientHeight === 0 ||
+      clientWidth === 0
+    )
       ? 1
-      : element.clientHeight < element.clientWidth
-        ? element.clientHeight / element.clientWidth
-        : element.clientWidth / element.clientHeight
+      : clientHeight < clientWidth
+        ? clientHeight / clientWidth
+        : clientWidth / clientHeight
 
     if (scale !== 1 || flipX) {
       transformsArray.push(`scaleX(${flipX ? -scale : scale})`)
