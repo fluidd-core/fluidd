@@ -20,6 +20,7 @@ declare module 'vue' {
     AppColorPicker: typeof import('./src/components/ui/AppColorPicker.vue')['default']
     AppColumnPicker: typeof import('./src/components/ui/AppColumnPicker.vue')['default']
     AppDialog: typeof import('./src/components/ui/AppDialog.vue')['default']
+    AppDraggable: typeof import('./src/components/ui/AppDraggable.vue')['default']
     AppDragOverlay: typeof import('./src/components/ui/AppDragOverlay.vue')['default']
     AppFocusableContainer: typeof import('./src/components/ui/AppFocusableContainer.vue')['default']
     AppFooter: typeof import('./src/components/layout/AppFooter.vue')['default']

@@ -188,10 +188,6 @@ export const getters: GetterTree<FilesState, RootState> = {
         history
       }
 
-      console.log({
-        file: { ...item }
-      })
-
       return item
     }
   },
