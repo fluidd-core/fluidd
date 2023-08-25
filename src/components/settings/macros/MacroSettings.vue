@@ -55,16 +55,21 @@
       </app-setting>
 
       <v-divider />
-      <draggable
+
+      <app-draggable
         v-model="macros"
-        v-bind="dragOptions"
+        :options="{
+          animation: 200,
+          handle: '.handle',
+          group: `macro-settings-${category.name}`,
+          ghostClass: 'ghost'
+        }"
       >
         <section
           v-for="(macro, i) in macros"
           :key="macro.name"
         >
           <app-setting
-            :key="`macro-${macro.name}`"
             :accent-color="macro.color"
             :r-cols="2"
             @click="handleSettingsDialog(macro)"
@@ -101,10 +106,9 @@
 
           <v-divider
             v-if="i < macros.length - 1 && macros.length > 0"
-            :key="`divider-${macro.name}`"
           />
         </section>
-      </draggable>
+      </app-draggable>
     </v-card>
 
     <macro-settings-dialog
@@ -117,7 +121,6 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import draggable from 'vuedraggable'
 import MacroSettingsDialog from './MacroSettingsDialog.vue'
 import { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
@@ -134,8 +137,7 @@ const routeGuard = (to: any) => {
 
 @Component({
   components: {
-    MacroSettingsDialog,
-    draggable
+    MacroSettingsDialog
   }
 })
 export default class MacroSettings extends Vue {
@@ -145,15 +147,6 @@ export default class MacroSettings extends Vue {
   dialogState: any = {
     open: false,
     macro: null
-  }
-
-  get dragOptions () {
-    return {
-      animation: 200,
-      handle: '.handle',
-      group: `macro-settings-${this.category.name}`,
-      ghostClass: 'ghost'
-    }
   }
 
   get macros () {
