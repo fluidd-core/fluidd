@@ -78,6 +78,8 @@ app:
         print_start_time: Nur ungedruckte
         print_start_time_desc: Blendet Elemente aus, die Sie bereits gedruckt haben.
         klipper_backup_files: Klipper-Backupdateien ausblenden
+        rolled_log_files: Alte Logdateien ausblenden
+        hidden_files_folders: Versteckte Dateien und Ordner ausblenden
     label:
       dir_name: Ordnername
       disk_usage: Belegter Speicher
@@ -93,6 +95,10 @@ app:
       processing: Verarbeiten...
     overlay:
       label: <strong>Ziehen</strong> Sie eine Datei hierher
+      drag_files_folders_upload: <strong>Ziehen</strong> Sie Dateien und Ordner zum
+        Hochladen hierher
+      drag_files_enqueue: <strong>Ziehen</strong> Sie Dateien hierher, um sie in die
+        Warteschlange zu stellen
     title:
       add_dir: Ordner hinzufügen
       add_file: Datei hinzufügen
@@ -101,14 +107,19 @@ app:
       rename_dir: Ordner umbennen
       rename_file: Datei umbennen
       upload_file: Datei hochladen | Dateien hochladen
+      duplicate_dir: Doppelter Ordner
+      duplicate_file: Doppelte Datei
+      go_to_file: Zur Datei gehen
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
+      move_item: Eintrag verschieben | {count} Einträge verschieben
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'
       moonraker_telegram_bot_config: >-
         https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
       load_current_file: Aktuelle Datei laden
@@ -126,6 +137,7 @@ app:
       show_retractions: Retracten zeigen
       parsing_file: Verarbeite Datei
       show_current_layer: Aktuelle Schicht anzeigen
+      show_parts: Teile anzeigen
     msg:
       confirm: >-
         Die Datei "%{filename}" ist %{size} groß, dies kann sehr
@@ -196,6 +208,18 @@ app:
       login: Einloggen
       logout: Ausloggen
       save_config_and_restart: Konfiguration speichern und neu starten
+      add_to_queue: Zur Warteschlange hinzufügen
+      filter: Filtern
+      go_to_file: Zur Datei gehen
+      job_queue: Job-Warteschlange
+      refresh_metadata: Metadaten aktualisieren
+      reload: Aktualisieren
+      thumbnail_size: Vorschaugröße
+      upload_files: Dateien hochladen
+      upload_folder: Ordner hochladen
+      create_zip_archive: ZIP-Archiv erstellen
+      duplicate: Duplizieren
+      select_columns: Spalten auswählen
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -300,14 +324,34 @@ app:
       screw_name: Schraubenname
       screw_number: Schraube %{index}
       user_managed_source: Benutzer durch %{source}-Authentifizierung verwaltet
+      numeric_prefix_sort: Sortierung nach numerischem Präfix
+      pause_at_layer: Pausieren bei Schicht
+      stepper_enabled: Motor aktiv
+      command: Befehl
+      default: Standard
+      pause_at_next_layer: Pausieren bei nächster Schicht
+      thumbnail_size: Vorschaugröße
+      upload_and_print: Hochladen und drucken
+      version_sort: Versions-Sortierung
+      all: Alle
+      pause_at_layer_number: Pausieren bei Schicht-Nummer
+      synced_extruder: Synchronisierte Extruder
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
       bed_screws_adjust: >-
-        Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der aktuellen Schraube erforderlich ist.
+        Klicken Sie auf <b>Angepasst</b>, wenn eine signifikante Anpassung an der
+        aktuellen Schraube erforderlich ist.
         Klicken Sie andernfalls auf <b>Akzeptieren</b>, um fortzufahren.
       welcome_back: >-
-        Willkommen zurück.<br>Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt zu bleiben.
+        Willkommen zurück.<br>Melden Sie sich unten an, um mit Ihrem Drucker in Kontakt
+        zu bleiben.
+      needs_refresh: Neue Inhalte verfügbar, bitte klicken Sie den <b>Aktualisieren</b>-Button
+        um zu aktualisieren.
+      offline_ready: Fluidd ist jetzt bereit, offline zu arbeiten.
+      pending_configuration_sections_deleted: Die folgenden Sektionen sind zur Löschung
+        markiert
+      rolledover_logs: 'Die folgenden Applikations-Protokolle wurden erneuert: %{applications}'
     simple_form:
       error:
         arrayofnums: Nur Zahlen
@@ -326,9 +370,12 @@ app:
         no_file_preview: >-
           %{name} kann momentan nicht angezeigt werden.
         confirm: Sind Sie sicher?
-        confirm_delete: Sind Sie sicher? Hierdurch wird das ausgewählte Element gelöscht. | Sind Sie sicher? Hierdurch werden die {count} ausgewählten Elemente gelöscht.
-        confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck ausschließen wollen?
-        confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw. ausschalten.
+        confirm_delete: Sind Sie sicher? Hierdurch wird das ausgewählte Element gelöscht.
+          | Sind Sie sicher? Hierdurch werden die {count} ausgewählten Elemente gelöscht.
+        confirm_exclude_object: Sind Sie sicher, dass Sie dieses Objekt vom Druck
+          ausschließen wollen?
+        confirm_power_device_toggle: Sind Sie sicher? Dies wird das Gerät ein- bzw.
+          ausschalten.
         confirm_reboot_host: Sind Sie sicher? Das Host-System wird neu gestartet.
         confirm_service_restart: Möchten Sie den Dienst %{name} wirklich neu starten?
         confirm_service_stop: Möchten Sie den Dienst %{name} wirklich beenden?
@@ -337,6 +384,8 @@ app:
           Sie haben ungespeicherte Änderungen. Sind Sie sicher, dass Sie den
           Editor schließen möchten?
         confirm_forcemove_toggle: Sind Sie sicher? Dies kann Schäden am Drucker verursachen.
+        confirm_service_start: Sind Sie sicher, dass Sie den %{name}-Dienst starten
+          wollen?
     table:
       header:
         actions: Aktionen
@@ -361,6 +410,11 @@ app:
         status: Status
         total_duration: Gesamtdauer
         chamber_temp: Kammertemperatur
+        time_in_queue: Zeit in Warteschlange
+        filament_name: Filament-Name
+        filament_type: Filament-Typ
+        nozzle_diameter: Düsendurchmesser
+        time_added: Hinzugefügt
     title:
       add_printer: Drucker hinzufügen
       bedmesh: Bettnivellierung
@@ -394,19 +448,25 @@ app:
       not_found: 404 Nicht Gefunden
       edit_chart: Diagramm bearbeiten
       add_chart: Diagramm hinzufügen
+      job_queue: Job-Warteschlange
+      rollover_logs: Protokolle erneuern
     tooltip:
       browse_metrics: Verfügbare Metriken durchsuchen
       estop: NOT-AUS
       managed_by_moonraker: Verwaltet durch Ihre moonraker-Konfiguration
       notifications: Benachrichtigungen
       reload_klipper: Lädt die Klipper-Konfiguration neu.
-      reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs neu.
+      reload_restart_klipper: Lädt die Klipper-Konfiguration neu und startet die MCUs
+        neu.
       restart_klipper: Starten den Klipper-Systemdienst neu.
       run_collector: Kollektor ausführen
+      rollover_logs: Protokolle erneuern
   history:
     msg:
       confirm_jobs: Sind Sie sicher? Dadurch werden alle Aufträge gelöscht.
       confirm_stats: Sind Sie sicher? Dadurch wird die Statistik gelöscht.
+      confirm: Sind Sie sicher? Hierdurch werden alle Historien und Druckerstatistiken
+        geleert
   printer:
     state:
       busy: Beschäftigt
@@ -433,6 +493,8 @@ app:
       mjpegadaptive: Adaptives MJPEG
       mjpegstream: MJPEG Stream
       video: IP Camera
+      webrtc_camera_streamer: WebRTC (camera-streamer)
+      hlsstream: HLS-Stream
     camera_rotate_options:
       none: Keine Drehung
       90: 90°
@@ -443,23 +505,28 @@ app:
       all_on: Alle an
       aspect_ratio: Seitenverhältnis
       aspect_ratio_format: '[Breite : Höhe]'
-      auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet werden
+      auto_edit_extensions: Erweiterungen, die automatisch im Bearbeitungsmodus geöffnet
+        werden
       auto_follow_on_file_load: Fortschritt beim Laden einer Datei automatisch folgen
       auto_load_on_print_start: Datei bei Druckstart automatisch laden
-      auto_load_mobile_on_print_start: Datei bei Druckstart auch auf mobilen Geräten laden
+      auto_load_mobile_on_print_start: Datei bei Druckstart auch auf mobilen Geräten
+        laden
       camera_flip_x: Horizontal spiegeln
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
       camera_stream_type: Art des Kamerastreams
       camera_url: Kamera-Url
-      confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen bestätigen
+      confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen
+        bestätigen
       confirm_on_estop: Bestätigung bei Notaus anfordern
-      confirm_on_power_device_change: Bestätigung bei Änderung eines Gerätestatus anfordern
+      confirm_on_power_device_change: Bestätigung bei Änderung eines Gerätestatus
+        anfordern
       contains: Enthält
       dark_mode: Nachtmodus
       date_time_format: Datum- und Zeitformat
       force_move_toggle_warning: Bestätigung bei Aktivierung von FORCE_MOVE anfordern
-      show_manual_probe_dialog_automatically: Dialog für manuelles Probing automatisch anzeigen
+      show_manual_probe_dialog_automatically: Dialog für manuelles Probing automatisch
+        anzeigen
       default_extrude_length: Standard Extrudierlänge
       default_extrude_speed: Standard Extrudiergeschwindigkeit
       default_toolhead_move_length: Standard Bewegungsdistanz des Druckkopfes
@@ -512,7 +579,8 @@ app:
         rawstream: Direkter Stream
         embed: Eingebettet
       last_result: Letztes Ergebnis
-      show_bed_screws_adjust_dialog_automatically: Dialog zum Anpassen der Bettschrauben automatisch anzeigen
+      show_bed_screws_adjust_dialog_automatically: Dialog zum Anpassen der Bettschrauben
+        automatisch anzeigen
       show_legend: Legende zeigen
       max: Maximum
       metrics: Metriken
@@ -534,6 +602,19 @@ app:
       collector: Kollektor
       dotted: Gepunktet
       axes: Achsen
+      ignore_default_bed_mesh_pending_configuration_changes: Ausstehende Änderungen
+        der Bettnivellierung ignorieren
+      camera_url_snapshot: Kamera-Snapshot-URL
+      camera_url_stream: Kamera-Stream-URL
+      default_min_layer_height: Standard minimum Schichthöhe
+      date_format: Datumsformat
+      never: Nie
+      show_upload_and_print: Hochladen und Drucken-Button in der Kopfzeile anzeigen
+      show_gas_resistance: Gas-Widerstand anzeigen
+      time_format: Zeitformat
+      text_sort_order: Reihenfolge der Textsortierung
+      to_browser_local_storage: zum Browser-Lokalspeicher
+      to_browser_session_storage: zum Browser-Sitzungsspeicher
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -551,7 +632,8 @@ app:
       thermal_presets: Temperatur-Voreinstellungen
       tool: Druckkopf
     tooltip:
-      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard anzeigen
+      gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard
+        anzeigen
       show_manual_probe_dialog_automatically: >-
         Öffnet automatisch einen Hilfsdialog,
         wenn ein manuelles Probe-Tool ausgeführt wird
@@ -595,6 +677,8 @@ app:
       total_memory: Gesamtspeicherplatz
       operating_system: Betriebssystem
       version: Version
+      network: Netzwerk
+      virtualization: Virtualisierung
   tool:
     btn:
       home_x: X
@@ -610,9 +694,23 @@ app:
       manual_probe: Manuelles Probing
       motors_off: Motoren Aus
       relative_positioning: Relative Positionierung
+      tools: Werkzeuge
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing
+    label:
+      stats_volumetric_flow: Bei einer Extrusion mit %{extrudeSpeed} mm/s<span class="secondary--text">
+        sollte der Druckkopf einen</span> ungefähren volumetrischen Fluss von %{estimatedVolumetricFlow}
+        mm³/s <span class="secondary--text">erreichen können</span>
+      stats_extruded_length: Bei der Extrusion von %{extrudeLength} mm Filament bei
+        %{extrudeFactor} % Fluss<span class="secondary--text"> wird eine</span> ungefähre
+        Austrittslänge von %{estimatedExtrudedLength} mm extrudiert
+      stats_active_extruder: <span class="secondary--text">Die aktive Extruderkonfiguration
+        ist auf ein</span> %{filamentDiameter} mm Durchmesser Filament<span class="secondary--text">und</span>
+        eine %{nozzleDiameter} mm Düse eingestellt
+      stats_max_speed: <span class="secondary--text">Unter der Annahme einer </span>
+        %{layerHeight} mm Schichthöhe <span class="secondary--text">liegt die</span>
+        ungefähre Maximaldruckgeschwindigkeit bei %{estimatedMaxSpeed} mm/s
   version:
     btn:
       check_for_updates: Nach Aktualisierungen suchen
@@ -703,6 +801,7 @@ app:
     title:
       spool_selection: Spulenauswahl
       scan_spool: Spule scannen
+      spoolman: Spoolman
     label:
       change_spool: Spule wechseln
       comment: Kommentar
@@ -715,6 +814,7 @@ app:
       material: Material
       remaining_weight: Verbleibend
       vendor: Hersteller
+      id: ID
     msg:
       no_spool: >-
         Sie haben keine Spule ausgewählt.
@@ -737,7 +837,8 @@ app:
           Halten Sie den QR-Code der Spule in die Kamera.
           Dieses Fenster wird geschlossen, sobald eine Spule erkannt wurde.
       warning:
-        code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code aus.
+        code_not_recognized: Dieser Code sieht nicht nach einem kompatiblen QR-Code
+          aus.
         invalid_spool_id: Die Spulen-ID in diesem QR-Code ist ungültig.
       error:
         cors: >-
@@ -751,6 +852,13 @@ app:
           eine andere Kameraquelle zu verwenden.
     setting:
       auto_open_qr_camera: Kamera automatisch zur QR-Code- Erkennung öffnen
-      auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch übernehmen
+      auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch
+        übernehmen
       prefer_device_camera: Gerätekamera wenn verfügbar zur QR-Code- Erkennung verwenden
-      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen
+      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch
+        bei Druckstart anzeigen
+  job_queue:
+    msg:
+      confirm_stats: Sind Sie sicher? HIerdurch werden alle Statistiken geleert.
+      confirm_jobs: Sind Sie sicher? Hierdurch werden alle Jobs geleert.
+      confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert
