@@ -161,7 +161,7 @@ app:
       finish_time: Koniec
       free: dostępne
       high: Wysoki
-      host: Gospodarz
+      host: Host
       edit_preset: Edytuj preset
       longest_job: Najdłuższa praca
       low: Niski
@@ -356,8 +356,8 @@ app:
           Spowoduje to usunięcie {count} wybranych elementów.
         confirm: Na pewno?
         confirm_forcemove_toggle: Czy na pewno? Może to spowodować uszkodzenie drukarki.
-        confirm_reboot_host: Czy na pewno? Spowoduje to restart systemu gospodarza.
-        confirm_shutdown_host: Czy na pewno? Spowoduje to zamknięcie systemu gospodarza.
+        confirm_reboot_host: Czy na pewno? Spowoduje to restart systemu hosta.
+        confirm_shutdown_host: Czy na pewno? Spowoduje to zamknięcie systemu hosta.
         confirm_service_start: Czy na pewno chcesz uruchomić usługę %{name}?
         confirm_exclude_object: Czy na pewno chcesz wykluczyć ten obiekt z drukowania?
         confirm_service_stop: Czy na pewno chcesz zatrzymać usługę %{name}?
@@ -677,8 +677,8 @@ app:
       updates_available: Dostępne aktualizacje
       up_to_date: AKTUALNY
       os_packages: Pakiety systemu
-      commits_on: zmiany w
-      committed: Zmieniono
+      commits_on: zatwierdzenia w
+      committed: Zatwierdzono
       invalid: NIEPRAWIDŁOWY
       dirty: BRUDNY
       package_list: Lista pakietów
@@ -689,7 +689,7 @@ app:
       update_all: Aktualizuj wszystko
       finish: Zakończ
     tooltip:
-      commit_history: Historia zmian
+      commit_history: Historia zatwierdzeń
       invalid: Wskazuje na lokalne zmiany w repozytorium
       packages: Pakiety
       release_notes: Informacje o wydaniu
