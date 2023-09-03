@@ -12,8 +12,8 @@ app:
       wireframe: Drahtmodell
     msg:
       hint: >-
-        Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann
-        ausgewählt werden das Profil %{name} zu löschen.
+        Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann ausgewählt
+        werden das Profil %{name} zu löschen
       not_found: Keine Bett-Meshes gefunden.
       not_loaded: Kein Mesh geladen
     tooltip:
@@ -92,7 +92,7 @@ app:
         Dokumentation für '%{section}' anzeigen
     msg:
       not_found: Keine Dateien gefunden
-      processing: Verarbeiten...
+      processing: Verarbeiten
     overlay:
       label: <strong>Ziehen</strong> Sie eine Datei hierher
       drag_files_folders_upload: <strong>Ziehen</strong> Sie Dateien und Ordner zum
@@ -720,7 +720,7 @@ app:
       view_versions: Versionen anzeigen
     label:
       commit_history: Commit-Verlauf
-      commits_on: Commit am
+      commits_on: Commits am
       committed: Committed
       dirty: VERUNREINIGT
       invalid: UNZULÄSSIG
@@ -749,7 +749,7 @@ app:
     label:
       frames: '%{frames} Bild | %{frames} Bilder'
       length: 'Geschätzte Länge: %{length}'
-      frame: Frame | Frames
+      frame: Bild | Bilder
     title:
       timelapse_settings: Zeitraffer-Einstellungen
       timelapse_status: Zeitraffer-Status
