@@ -132,15 +132,14 @@ export const handleAddChartEntry = (retention: number, state: RootState, commit:
     const keys: string[] = getters.getChartableSensors
 
     keys.forEach((key) => {
-      const label = key.split(' ', 2).pop() || ''
       const temp = state.printer.printer[key].temperature
       const target = state.printer.printer[key].target
       const power = state.printer.printer[key].power
       const speed = state.printer.printer[key].speed
-      r[label] = temp
-      if (target != null) r[`${label}Target`] = target
-      if (power != null) r[`${label}Power`] = power
-      if (speed != null) r[`${label}Speed`] = speed
+      r[key] = temp
+      if (target != null) r[`${key}Target`] = target
+      if (power != null) r[`${key}Power`] = power
+      if (speed != null) r[`${key}Speed`] = speed
     })
 
     return r
