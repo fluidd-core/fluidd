@@ -113,7 +113,7 @@ export const ColorSetPlugin = {
         heater: { base: '#ff5252', hsplit: 20, count: 3 },
         bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
         fan: ['#3DC25A', '#58FC7C', '#10EB40', '#7EF297'],
-        sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819']
+        sensor: ['#D67600', '#830EE3', '#B366F2', '#E06573', '#E38819', '#795548', '#607D8B', '#3F51B5']
       }
     }
     const colorset = new ColorSet({ ...opts, ...options })
