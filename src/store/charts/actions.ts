@@ -71,13 +71,11 @@ export const actions: ActionTree<ChartState, RootState> = {
         date
       }
       keys.forEach(key => {
-        const label = key.split(' ', 2).pop() || ''
-
         if (rootState.printer.printer[key]) {
-          r[label] = payload[key].temperatures[i]
-          if ('targets' in payload[key]) r[`${label}Target`] = payload[key].targets[i]
-          if ('powers' in payload[key]) r[`${label}Power`] = payload[key].powers[i]
-          if ('speeds' in payload[key]) r[`${label}Speed`] = payload[key].speeds[i]
+          r[key] = payload[key].temperatures[i]
+          if ('targets' in payload[key]) r[`${key}Target`] = payload[key].targets[i]
+          if ('powers' in payload[key]) r[`${key}Power`] = payload[key].powers[i]
+          if ('speeds' in payload[key]) r[`${key}Speed`] = payload[key].speeds[i]
         }
       })
       d.push(r)

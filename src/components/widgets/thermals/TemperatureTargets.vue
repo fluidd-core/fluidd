@@ -28,7 +28,7 @@
       <tbody v-if="klippyReady">
         <tr
           v-for="item in heaters"
-          :key="item.name"
+          :key="item.key"
         >
           <td>
             <v-icon
@@ -40,7 +40,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -49,7 +49,7 @@
           </td>
           <td class="temp-power">
             <span
-              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
               class="legend-item"
               @click="$emit('legendPowerClick', item)"
             >
@@ -64,7 +64,7 @@
             class="rate-of-change"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
               class="legend-item"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
@@ -97,7 +97,7 @@
         </tr>
         <tr
           v-for="item in fans"
-          :key="item.name"
+          :key="item.key"
         >
           <td>
             <v-icon
@@ -110,7 +110,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -120,7 +120,7 @@
           <td class="temp-power">
             <span
               v-if="item.speed"
-              :class="{ 'active': chartSelectedLegends[item.name + 'Speed'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Speed'] }"
               class="legend-item"
               @click="$emit('legendPowerClick', item)"
             >
@@ -138,7 +138,7 @@
             class="rate-of-change"
           >
             <span
-              :class="{ 'active': chartSelectedLegends[item.name + 'Power'] }"
+              :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
               class="legend-item"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
@@ -179,7 +179,7 @@
         </tr>
         <tr
           v-for="item in sensors"
-          :key="item.name"
+          :key="item.key"
         >
           <td>
             <v-icon
@@ -191,7 +191,7 @@
           </td>
           <td class="temp-name">
             <span
-              :class="{ 'active': !(item.name in chartSelectedLegends) || chartSelectedLegends[item.name] }"
+              :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
               class="legend-item"
               @click="$emit('legendClick', item)"
             >
@@ -314,14 +314,14 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
   getRateOfChange (item: Heater | Sensor) {
     const recentChartData = this.chartData
       .slice(-5)
-    const filteredChartData = takeRightWhile(recentChartData, x => x[item.name] != null)
+    const filteredChartData = takeRightWhile(recentChartData, x => x[item.key] != null)
 
     let rateOfChange = 0
     if (filteredChartData.length >= 2) {
       const curr = filteredChartData[filteredChartData.length - 1]
       const prev = filteredChartData[0]
 
-      rateOfChange = (+curr[item.name] - +prev[item.name]) / (+curr.date - +prev.date) * 1000
+      rateOfChange = (+curr[item.key] - +prev[item.key]) / (+curr.date - +prev.date) * 1000
 
       if (Math.abs(rateOfChange) < 0.05) {
         rateOfChange = 0 // prevent constant change of sign
