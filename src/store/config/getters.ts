@@ -3,7 +3,7 @@ import vuetify from '@/plugins/vuetify'
 import { ConfigState, SupportedTheme, TemperaturePreset, ThemeConfig } from './types'
 import { RootState } from '../types'
 import { Heater, Fan } from '../printer/types'
-import tinycolor from '@ctrl/tinycolor'
+import { TinyColor } from '@ctrl/tinycolor'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
 import { MoonrakerRootFile } from '../files/types'
@@ -90,7 +90,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
 
     for (const key in r.currentTheme) {
       // Currently used for the offset in the logo.
-      r.currentTheme[key + 'Offset'] = tinycolor(o.currentTheme.primary as string)
+      r.currentTheme[key + 'Offset'] = new TinyColor(o.currentTheme.primary as string)
         .desaturate(5)
         .darken(10)
         .toHexString()

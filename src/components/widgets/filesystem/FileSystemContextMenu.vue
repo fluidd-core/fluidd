@@ -229,10 +229,9 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return (
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      !this.rootProperties.readonly &&
       (
         this.file.permissions === undefined ||
-        this.file.permissions.includes('w')
+        this.file.permissions.includes('r')
       )
     )
   }

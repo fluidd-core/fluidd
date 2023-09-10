@@ -9,28 +9,34 @@
         :lg="columnSpan"
         :class="{ 'drag': inLayout }"
       >
-        <draggable
+        <app-draggable
           v-model="containers[containerIndex]"
           class="list-group"
-          v-bind="dragOptions"
-          @start.stop="drag = true"
-          @end.stop="handleStopDrag"
+          :options="{
+            animation: 200,
+            handle: '.handle',
+            group: 'dashboard',
+            disabled: !inLayout,
+            ghostClass: 'ghost'
+          }"
+          target=":first-child"
+          @end="handleUpdateLayout"
         >
           <transition-group
             type="transition"
-            :name="!drag ? 'flip-list' : null"
+            :name="!inLayout ? 'flip-list' : null"
           >
             <template v-for="c in container">
               <component
                 :is="c.id"
-                v-if="(c.enabled && !filtered(c)) || inLayout"
+                v-if="inLayout || (c.enabled && !filtered(c))"
                 :key="c.id"
                 :menu-collapsed="menuCollapsed"
                 class="mb-2 mb-sm-4"
               />
             </template>
           </transition-group>
-        </draggable>
+        </app-draggable>
       </v-col>
     </template>
   </v-row>
@@ -39,8 +45,6 @@
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import draggable from 'vuedraggable'
-
 import PrinterStatusCard from '@/components/widgets/status/PrinterStatusCard.vue'
 import JobsCard from '@/components/widgets/jobs/JobsCard.vue'
 import ToolheadCard from '@/components/widgets/toolhead/ToolheadCard.vue'
@@ -59,7 +63,6 @@ import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
 
 @Component({
   components: {
-    draggable,
     PrinterStatusCard,
     JobsCard,
     ToolheadCard,
@@ -77,7 +80,6 @@ import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
-  drag = false
   menuCollapsed = false
   containers: Array<LayoutConfig[]> = []
 
@@ -162,22 +164,11 @@ export default class Dashboard extends Mixins(StateMixin) {
     this.containers = containers.slice(0, 4)
   }
 
-  get dragOptions () {
-    return {
-      animation: 200,
-      handle: '.handle',
-      group: 'dashboard',
-      disabled: !this.inLayout,
-      ghostClass: 'ghost'
-    }
-  }
-
   updateMenuCollapsed () {
     this.menuCollapsed = (this.$el.clientWidth / this.columnCount) < 560
   }
 
-  handleStopDrag () {
-    this.drag = false
+  handleUpdateLayout () {
     this.$store.dispatch('layout/onLayoutChange', {
       name: this.$store.getters['layout/getSpecificLayoutName'],
       value: {

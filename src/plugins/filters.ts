@@ -2,7 +2,7 @@ import _Vue from 'vue'
 import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig, TextSortOrder } from '@/store/config/types'
-import tinycolor from '@ctrl/tinycolor'
+import { TinyColor } from '@ctrl/tinycolor'
 import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
@@ -346,7 +346,7 @@ export const Filters = {
    * Tells us if a color is considered dark or light
    */
   isColorDark (color: string) {
-    const t = tinycolor(color).getBrightness()
+    const t = new TinyColor(color).getBrightness()
     return ((t / 255) * 100) <= 50
   },
 
