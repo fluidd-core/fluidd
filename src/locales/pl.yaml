@@ -676,7 +676,7 @@ app:
       commit_history: Historia zmian
       updates_available: Dostępne aktualizacje
       up_to_date: AKTUALNY
-      os_packages: Pakiety systemu
+      os_packages: System
       commits_on: zatwierdzenia w
       committed: Zatwierdzono
       invalid: NIEPRAWIDŁOWY
