@@ -37,7 +37,7 @@
     </v-list-group>
 
     <v-list-group
-      v-if="devicePowerComponentEnabled"
+      v-if="devicePowerComponentEnabled && powerDevices.length"
       prepend-icon="$power"
       no-action
     >
