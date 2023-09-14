@@ -131,35 +131,38 @@ import { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
-import { ServiceInfo, SystemInfo } from '@/store/server/types'
+import { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
-  get serverInfo () {
-    return this.$store.getters['server/getInfo']
+  get serverInfo (): ServerInfo {
+    return this.$store.getters['server/getInfo'] as ServerInfo
   }
 
-  get hosted () {
-    return this.$store.state.config.hostConfig.hosted
+  get hosted (): boolean {
+    return this.$store.state.config.hostConfig.hosted as boolean
   }
 
-  get powerDevices () {
-    return this.$store.state.power.devices
+  get powerDevices (): Device[] {
+    return this.$store.getters['power/getDevices'] as Device[]
   }
 
-  get devicePowerComponentEnabled () {
-    return this.$store.getters['server/componentSupport']('power')
+  get devicePowerComponentEnabled (): boolean {
+    return this.$store.getters['server/componentSupport']('power') as boolean
   }
 
-  get services () {
-    return this.$store.getters['server/getServices'].filter((service: ServiceInfo) => service.name !== 'klipper_mcu')
+  get services (): ServiceInfo[] {
+    const services = this.$store.getters['server/getServices'] as ServiceInfo[]
+
+    return services
+      .filter(service => service.name !== 'klipper_mcu')
   }
 
   get systemInfo (): SystemInfo | null {
-    return this.$store.getters['server/getSystemInfo']
+    return this.$store.getters['server/getSystemInfo'] as SystemInfo | null
   }
 
-  get canControlHost () {
+  get canControlHost (): boolean {
     return this.systemInfo?.virtualization?.virt_type !== 'container'
   }
 
