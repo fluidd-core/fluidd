@@ -312,6 +312,14 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return extruderSteppers.sort((a, b) => a.name.localeCompare(b.name))
   },
 
+  getSteppers: (state, getters): string[] => {
+    const printerConfig = getters.getPrinterConfig()
+
+    return Object.keys(printerConfig)
+      .filter(key => key.startsWith('stepper_'))
+      .sort()
+  },
+
   /**
    * Given axes, returns a boolean indicating if the axes are homed.
    */
