@@ -587,6 +587,9 @@ app:
       z_adjust_values: Wartości korekcji Z
       camera_url_stream: Adres URL strumienia wideo kamery
       camera_url_snapshot: Adres URL migawki kamery
+      toolhead_control_style: Styl sterowania głowicą narzędziową
+      toolhead_xy_move_distances: Wartości odległości XY głowicy narzędziowej
+      toolhead_z_move_distances: Wartości odległości Z głowicy narzędziowej
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
