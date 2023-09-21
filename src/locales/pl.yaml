@@ -212,6 +212,8 @@ app:
       unsaved_changes: Niezapisane zmiany
       file_time: Plik
       turn_device_on: Włącz %{device}
+      cross: Krzyż
+      bars: Pasek
     btn:
       abort: Przerwij
       add: Dodaj
