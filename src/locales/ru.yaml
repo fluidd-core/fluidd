@@ -72,7 +72,9 @@ app:
       label:
         print_start_time: Фильтровать напечатанное
         print_start_time_desc: Фильтровывать уже напечатанные элементы.
-        klipper_backup_files: Фильтровать резервные копии klipperа
+        hidden_files_folders: Фильтровать скрытые файлы и папки
+        klipper_backup_files: Фильтровать резервные копии Klipper
+        rolled_log_files: Фильтровать файлы перезаписанных логов
     label:
       dir_name: Имя папки
       disk_usage: Использование дискового пространства
@@ -94,11 +96,15 @@ app:
       add_file: Добавить файл
       command_palette: Команды
       download_file: Получение файла
+      duplicate_dir: Копировать папку
+      duplicate_file: Копировать файл
+      go_to_file: Перейти к файлу
       rename_dir: Переименовать папку
       rename_file: Переименовать файл
-      upload_file: Загрузка файла(ов)
+      upload_file: Загрузка файла | Загрузка файлов
     tooltip:
       low_on_space: Мало места на диске
+      move_item: Переместить элемент | Переместить {count}
       root_disabled: Root недоступен. Проверьте файлы логов.
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
@@ -133,6 +139,7 @@ app:
       add_dir: Добавить папку
       add_file: Добавить файл
       add_printer: Добавить принтер
+      add_to_queue: Добавить в очередь
       adjust_layout: Настроить компановку интерфейса панели управления
       adjusted: Настроено
       all: Все
@@ -142,8 +149,10 @@ app:
       clear_profile: Очистить профиль
       close: Закрыть
       config_reference: Примеры конфигураций
+      create_zip_archive: Создать ZIP архив
       delete: Удалить
       download: Скачать
+      duplicate: Копировать
       edit: Редактировать
       exit_layout: Выйти из режима редактирования
       extrude: Экструдировать
@@ -180,6 +189,7 @@ app:
       save_as: Сохранить как
       save_restart: Сохранить и перезагрузить
       save_config_and_restart: Сохранить настройки и перезагрузить
+      select_columns: Выбрать столбцы
       send: Отправить
       set_color: Установить цвет
       set_default_layout: Установить по умолчанию
@@ -187,6 +197,7 @@ app:
       snooze: Вздремнуть
       socket_reconnect: Повторное подключение
       socket_refresh: Принудительно обновление
+      thumbnail_size: Размер эскиза
       upload: Загрузить
       upload_print: Загрузить и напечатать
       view: Вид
@@ -303,6 +314,11 @@ app:
         Нажмите <b>Скорректировать</b>, если требуется корректировка текущего винта; в противном случае нажмите <b>Принять</b>, чтобы продолжить
       welcome_back: >-
         С возвращением.<br>Войдите в систему, чтобы подключится к принтеру.
+      offline_ready: Fluidd теперь готов к работе в автономном режиме.
+      needs_refresh: Доступен новый контент. Пожалуйста, нажмите кнопку <b>Обновить</b>, чтобы обновить.
+      pending_configuration_sections_deleted: Следующие разделы помечены для удаления.
+      rolledover_logs: >-
+        Логи следующих приложений были перезаписаны: %{applications}
     simple_form:
       error:
         arrayofnums: Только цифры
@@ -381,6 +397,7 @@ app:
       other_files: Другие файлы
       pending_configuration_changes: Ожидающие изменения конфигурации
       retract: Настройки ретракта
+      rollover_logs: Перезаписать логи
       runout_sensors: Датчик контроля филамента
       settings: Настройки
       stats: Статистика принтера
@@ -398,7 +415,7 @@ app:
       reload_klipper: Перезагружает конфигурацию Klipper.
       reload_restart_klipper: Перезагружает конфигурацию Klipper и перезапускает MCU.
       restart_klipper: Перезагружает сервис Klipper.
-      run_collector: Run collector
+      run_collector: Запустить сбор данных
   history:
     msg:
       confirm_jobs: Вы уверены? Это очистит все выполненые работы.
@@ -451,18 +468,20 @@ app:
         rawstream: Чистый поток
       camera_rotate_by: Повернуть на
       camera_stream_type: Тип потока
-      camera_url: URL камеры
+      camera_url_snapshot: URL камеры
+      camera_url_stream: URL снимка камеры
       card: Card
       collector: Collector
       confirm_on_estop: Требовать подтверждение при аварийной остановке
       confirm_on_power_device_change: Требуется подтверждение при изменении мощности устройства
       confirm_on_save_config_and_restart: Просмотрите отложенные изменения в конфигурации перед сохранением и перезапуском
-      confirm_dirty_editor_close: Требовать подтверждения при закрытии редактора с несохраненными изменениями
+      confirm_dirty_editor_close: Требовать подтверждение при закрытии редактора с несохраненными изменениями
       contains: Содержит
       dark_mode: Тёмная тема
       dashed: Dashed
       default_extrude_length: Длина экструдирования по умолчанию
       default_extrude_speed: Скорость экструдера по умолчанию
+      default_min_layer_height: Минимальная высота слоя по умолчанию
       default_toolhead_move_length: Длина перемещения головки по умолчанию
       default_toolhead_xy_speed: Скорость головки для осей XY по умолчанию
       default_toolhead_z_speed: Скорость головки для оси Z по умолчанию
@@ -484,6 +503,7 @@ app:
       gcode_coords: Испрользовать координаты GCode
       group_lower_layers: Показывать напечатанные слои (большая нагрузка на CPU)
       icon: Иконка
+      ignore_default_bed_mesh_pending_configuration_changes: Игнорировать запланированные изменения сетки стола
       invert_x_control: Инвертировать управление по оси X
       invert_y_control: Инвертировать управление по оси Y
       invert_z_control: Инвертировать управление по оси Z
@@ -497,6 +517,7 @@ app:
       metrics: Metrics
       move_line_width: Ширина линии движения
       name: Name
+      never: Никогда
       none: None
       optional: Optional
       power_toggle_in_top_nav: Переключатель питания в верхней панели навигации
@@ -505,6 +526,7 @@ app:
       reset: Сбросить настройки
       retraction_icon_size: Размер иконки ретракта
       right_y: Right Y-Axis
+      save_and_restore_view_state: Сохранение и восстановление состояния просмотра
       show_animations: Показывать анимацию
       show_barometric_pressure: Показать атмосферное давление
       show_code_lens: Показывать CodeLens (подсказки в тексте)
@@ -512,19 +534,23 @@ app:
       show_rate_of_change: Показать скорость изменения температуры
       show_relative_humidity: Показать относительную влажность
       show_save_config_and_restart: Кнопка «Сохранить конфигурацию и перезапустить» в верхней части панели навигации
+      show_upload_and_print: Показывать кнопку «Загрузить и распечатать» в верхней части навигации
       solid: Solid
       starts_with: Начинается с
       theme_preset: Цветовая схема
       thermal_preset_gcode: GCode
       thermal_preset_name: Имя профиля
       title: Заголовок
+      to_browser_local_storage: В локальное хранилище браузера
+      to_browser_session_storage: В хранилище сеансов браузера
       toolhead_move_distances: Значения расстояния перемещения головки
       type: Тип
       unit: Unit
       z_adjust_values: Значения подстройки оси Z
       date_format: Формат даты
       time_format: Формат времени
-      force_move_toggle_warning: Требовать поддтверждения при активации "Форсированного перемещения"
+      text_sort_order: Сортировка текста
+      force_move_toggle_warning: Требовать подтверждение при активации "Форсированного перемещения"
       show_manual_probe_dialog_automatically: Автоматически показывать диалоговое окно "Ручная настройка стола"
       show_bed_screws_adjust_dialog_automatically: Автоматически показывать диалоговое окно "Регулировка винтов стола"
     timer_options:
@@ -546,8 +572,8 @@ app:
     tooltip:
       diagnostics_performance: '[BETA] Логирование диагностики может замедлить работу системы'
       gcode_coords: Использовать GCode положение вместо положение инструментальной головки на панели управления
-      show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
-      show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
+      show_manual_probe_dialog_automatically: Автоматически отображает вспомогательное диалоговое окно при запуске инструмента ручного зондирования.
+      show_bed_screws_adjust_dialog_automatically: Автоматически отображает вспомогательное диалоговое окно при запуске инструмента BED_SCREWS_ADJUST.
   socket:
     msg:
       connecting: Подключение к moonraker...
@@ -579,7 +605,9 @@ app:
       system_memory: Оперативная память
       system_utilization: Загрузка ОС
       total_memory: Всего памяти
+      operating_system: Операционная система
       version: Версия
+      virtualization: Виртуализация
   tool:
     btn:
       home_x: X
@@ -731,3 +759,8 @@ app:
       tracking_inactive: >-
         Отслеживание филамента неактивно.
         Для начала выберите катушку.
+    setting:
+      auto_open_qr_camera: Автоматически открывать камеру для обнаружения QR-кода
+      auto_select_spool_on_match: Автоматически фиксировать выбор катушки при совпадении QR-кода
+      prefer_device_camera: Использовать камеру устройства для обнаружения QR-кода, если она доступна
+      show_spool_selection_dialog_on_print_start: Показывать диалоговое окно выбора катушки при запуске печати
