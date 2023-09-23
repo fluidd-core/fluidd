@@ -295,8 +295,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       }
 
       default: {
-        const devices = this.$store.state.power.devices as Device[]
-        const device = devices.find(device => device.device === topNavPowerToggle)
+        const device = this.$store.getters['power/getDeviceByName'](topNavPowerToggle) as Device
+
         return {
           type: 'moonraker' as const,
           name: topNavPowerToggle,

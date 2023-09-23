@@ -704,7 +704,7 @@ app:
       spool_selection: Spulenauswahl
       scan_spool: Spule scannen
     label:
-      change_spool: Suple wechseln
+      change_spool: Spule wechseln
       comment: Kommentar
       device_camera: Gerät
       filament_name: Filament

@@ -162,17 +162,17 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
     // If this has a target, toggle that too.
     if (this.chartVisible) {
       if ('target' in item) {
-        this.thermalChartElement.legendToggleSelect(item.name + 'Target')
+        this.thermalChartElement.legendToggleSelect(item.key + 'Target')
       }
-      this.thermalChartElement.legendToggleSelect(item.name)
+      this.thermalChartElement.legendToggleSelect(item.key)
     }
   }
 
   legendTogglePowerSelect (item: Heater | Fan) {
     if (this.chartVisible) {
       const name = ('speed' in item)
-        ? item.name + 'Speed'
-        : item.name + 'Power'
+        ? item.key + 'Speed'
+        : item.key + 'Power'
       this.thermalChartElement.legendToggleSelect(name)
     }
   }

@@ -235,12 +235,14 @@ app:
       api_key: Api Key
       api_url: API URL
       auth_source: Authentication Source
+      bars: Bars
       category: Category
       change_password: Change password
       clear_all: Clear all
       color: Color
       command: Command
       confirm: Confirm
+      cross: Cross
       current_password: Current password
       current_user: Current user
       default: Default
@@ -575,7 +577,10 @@ app:
       title: Title
       to_browser_local_storage: To browser local storage
       to_browser_session_storage: To browser session storage
+      toolhead_control_style: Toolhead control style
       toolhead_move_distances: Toolhead distance values
+      toolhead_xy_move_distances: Toolhead XY distance values
+      toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
       z_adjust_values: Z Adjust values

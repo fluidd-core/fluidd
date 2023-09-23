@@ -63,7 +63,10 @@ export interface GeneralConfig {
   defaultToolheadMoveLength: number;
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
+  toolheadControlStyle: ToolheadControlStyle;
   toolheadMoveDistances: number[];
+  toolheadXYMoveDistances: number[];
+  toolheadZMoveDistances: number[];
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
@@ -89,6 +92,8 @@ export interface GeneralConfig {
   enableDiagnostics: boolean;
   thumbnailSize: number;
 }
+
+export type ToolheadControlStyle = 'cross' | 'bars'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
