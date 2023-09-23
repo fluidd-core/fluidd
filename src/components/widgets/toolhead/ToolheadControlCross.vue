@@ -193,7 +193,7 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
-export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
+export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
   moveLength = ''
   fab = false
 

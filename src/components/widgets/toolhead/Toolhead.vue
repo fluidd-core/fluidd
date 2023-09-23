@@ -9,7 +9,8 @@
       >
         <v-col class="controls-wrapper">
           <extruder-selection v-if="multipleExtruders" />
-          <toolhead-moves v-if="!printerPrinting" />
+          <toolhead-control-cross v-if="!printerPrinting && toolheadControlStyle === 'cross'" />
+          <toolhead-control-bars v-else-if="!printerPrinting && toolheadControlStyle === 'bars'" />
           <z-height-adjust v-if="printerPrinting" />
         </v-col>
 
@@ -41,7 +42,8 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import ToolheadMoves from './ToolheadMoves.vue'
+import ToolheadControlCross from './ToolheadControlCross.vue'
+import ToolheadControlBars from './ToolheadControlBars.vue'
 import ExtruderMoves from './ExtruderMoves.vue'
 import ExtruderSelection from './ExtruderSelection.vue'
 import ToolheadPosition from './ToolheadPosition.vue'
@@ -52,10 +54,12 @@ import ExtruderStats from './ExtruderStats.vue'
 import ExtruderSteppers from './ExtruderSteppers.vue'
 import ToolChangeMacros from './ToolChangeMacros.vue'
 import { Extruder } from '@/store/printer/types'
+import { ToolheadControlStyle } from '@/store/config/types'
 
 @Component({
   components: {
-    ToolheadMoves,
+    ToolheadControlCross,
+    ToolheadControlBars,
     ExtruderMoves,
     ExtruderSelection,
     ToolheadPosition,
@@ -68,13 +72,17 @@ import { Extruder } from '@/store/printer/types'
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
-  get multipleExtruders () {
+  get multipleExtruders (): boolean {
     return this.$store.getters['printer/getExtruders'].length > 1
   }
 
-  get showPressureAdvance () {
+  get showPressureAdvance (): boolean {
     const extruder = this.$store.getters['printer/getActiveExtruder'] as Extruder | undefined
     return extruder?.pressure_advance !== undefined
+  }
+
+  get toolheadControlStyle (): ToolheadControlStyle {
+    return this.$store.state.config.uiSettings.general.toolheadControlStyle as ToolheadControlStyle
   }
 }
 </script>
