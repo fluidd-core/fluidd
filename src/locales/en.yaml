@@ -821,3 +821,7 @@ app:
       auto_select_spool_on_match: Automatically commit spool selection on QR code match
       prefer_device_camera: Use device camera for QR code detection if available
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
+      warn_on_not_enough_filament: >-
+        Show a warning when the selected spool doesn't have enough filament left on it to finish the print
+      warn_on_filament_type_mismatch: >-
+        Show a warning when the spool's filament type and the one selected in the slicer don't match

@@ -36,6 +36,8 @@ export interface SpoolmanConfig {
   autoOpenQRDetectionCamera: string | null;
   autoSelectSpoolOnMatch: boolean;
   preferDeviceCamera: boolean;
+  warnOnNotEnoughFilament: boolean;
+  warnOnFilamentTypeMismatch: boolean;
 }
 
 export interface HostConfig {
