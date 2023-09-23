@@ -754,3 +754,7 @@ app:
       auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch übernehmen
       prefer_device_camera: Gerätekamera wenn verfügbar zur QR-Code- Erkennung verwenden
       show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen
+      warn_on_not_enough_filament: >-
+        Warnung anzeigen, wenn die Spule nicht genug Filament verbleibend hat, um den Druck abzuschließen
+      warn_on_filament_type_mismatch: >-
+        Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten übereinstimmt

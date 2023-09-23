@@ -145,7 +145,9 @@ export const defaultState = (): ConfigState => {
         autoSpoolSelectionDialog: true,
         autoOpenQRDetectionCamera: null,
         autoSelectSpoolOnMatch: false,
-        preferDeviceCamera: false
+        preferDeviceCamera: false,
+        warnOnNotEnoughFilament: true,
+        warnOnFilamentTypeMismatch: true
       }
     }
   }

@@ -55,6 +55,28 @@
       </app-setting>
 
       <v-divider />
+      <app-setting
+        :title="$t('app.spoolman.setting.warn_on_not_enough_filament')"
+      >
+        <v-switch
+          v-model="warnOnNotEnoughFilament"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+      <app-setting
+        :title="$t('app.spoolman.setting.warn_on_filament_type_mismatch')"
+      >
+        <v-switch
+          v-model="warnOnFilamentTypeMismatch"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
       <app-setting :title="$t('app.setting.label.reset')">
         <app-btn
           outlined
@@ -130,6 +152,30 @@ export default class SpoolmanSettings extends Mixins(StateMixin) {
   set autoSelectSpoolOnMatch (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.spoolman.autoSelectSpoolOnMatch',
+      value,
+      server: true
+    })
+  }
+
+  get warnOnNotEnoughFilament () {
+    return this.$store.state.config.uiSettings.spoolman.warnOnNotEnoughFilament
+  }
+
+  set warnOnNotEnoughFilament (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.warnOnNotEnoughFilament',
+      value,
+      server: true
+    })
+  }
+
+  get warnOnFilamentTypeMismatch () {
+    return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
+  }
+
+  set warnOnFilamentTypeMismatch (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.spoolman.warnOnFilamentTypeMismatch',
       value,
       server: true
     })
