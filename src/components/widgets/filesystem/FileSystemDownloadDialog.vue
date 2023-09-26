@@ -28,7 +28,7 @@
           <td class="pr-2">
             {{ $t('app.file_system.label.transfer_rate') }}:
           </td>
-          <td>{{ currentDownload.speed.toFixed(2) }} {{ currentDownload.unit }}/Sec</td>
+          <td>{{ $filters.getReadableDataRateString(currentDownload.speed) }}</td>
         </tr>
       </table>
     </template>
@@ -57,18 +57,12 @@ export default class FileSystemDownloadDialog extends Mixins(StateMixin) {
     this.open = !!val
   }
 
-  get cancelTokenSource () {
-    return this.$store.state.files.fileTransferCancelTokenSource
-  }
-
   get currentDownload () {
     return this.$store.state.files.download
   }
 
   handleCancelDownload () {
-    if (this.cancelTokenSource) {
-      this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
-    }
+    this.currentDownload.abortController.abort()
 
     this.$store.dispatch('files/removeFileDownload')
   }

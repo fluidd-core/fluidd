@@ -1,17 +1,17 @@
 import _Vue from 'vue'
 import { EventBus } from '@/eventBus'
 import { consola } from 'consola'
-import Axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosError, InternalAxiosRequestConfig, AxiosResponse } from 'axios'
 import { Globals } from '@/globals'
 
 const createHttpClient = (store: any) => {
   // Create a base instance with sane defaults.
-  const httpClient = Axios.create({
+  const httpClient = axios.create({
     withAuth: true,
     timeout: Globals.NETWORK_REQUEST_TIMEOUT
   })
-  httpClient.prototype.CancelToken = Axios.CancelToken
-  httpClient.prototype.isCancel = Axios.isCancel
+
+  httpClient.defaults.headers.common['Content-Type'] = 'application/json'
 
   // For these paths, we force remove the withAuth flag.
   const unauthenticatedPaths = [
@@ -31,15 +31,7 @@ const createHttpClient = (store: any) => {
     ]
   }
 
-  const requestInterceptor = async (config: AxiosRequestConfig) => {
-    if (!config.headers) {
-      config.headers = {}
-    }
-
-    // Common headers.
-    config.headers.Accept = 'application/json'
-    config.headers['Content-Type'] = 'application/json'
-
+  const requestInterceptor = async (config: InternalAxiosRequestConfig) => {
     // Check our auth token.
     // If the token is about to expire...
     // Attempt to refresh the token.
@@ -69,8 +61,8 @@ const createHttpClient = (store: any) => {
       // determine a user is trusted or authenticated in some way.
         if (
           store.state.config.apiUrl &&
-        response.config.baseURL === store.state.config.apiUrl &&
-        response.config.withAuth
+          response.config.baseURL === store.state.config.apiUrl &&
+          response.config.withAuth
         ) {
         // Set authenticated to true.
           store.commit('auth/setAuthenticated', true)
@@ -99,7 +91,7 @@ const createHttpClient = (store: any) => {
       message = error.response.data
     }
 
-    const url = error.config.url || ''
+    const url = error.config?.url || ''
     switch (error.response.status) {
       case 500:
         consola.debug(error.response.status, error.message, message)
@@ -113,7 +105,7 @@ const createHttpClient = (store: any) => {
         }
         break
       case 401:
-        if (error.config.withAuth) {
+        if (error.config?.withAuth) {
         // logout.
           store.dispatch('auth/logout')
         }

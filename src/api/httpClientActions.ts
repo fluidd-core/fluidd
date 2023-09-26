@@ -6,8 +6,12 @@ export const httpClientActions = {
     return Vue.$httpClient.get<T, R, D>(url, options)
   },
 
-  post<T = any, R = AxiosResponse<T>, D = any> (url: string, data: any, options?: AxiosRequestConfig) {
+  post<T = any, R = AxiosResponse<T>, D = any> (url: string, data: D, options?: AxiosRequestConfig) {
     return Vue.$httpClient.post<T, R, D>(url, data, options)
+  },
+
+  postForm<T = any, R = AxiosResponse<T>, D = any> (url: string, data: D, options?: AxiosRequestConfig) {
+    return Vue.$httpClient.postForm<T, R, D>(url, data, options)
   },
 
   delete<T = any, R = AxiosResponse<T>, D = any> (url: string, options?: AxiosRequestConfig) {
@@ -166,8 +170,8 @@ export const httpClientActions = {
     }, options)
   },
 
-  serverFilesUploadPost (data: FormData, options?: AxiosRequestConfig) {
-    return this.post<{
+  serverFilesUploadPost (file: File, path: string, root: string, print?: boolean, options?: AxiosRequestConfig) {
+    return this.postForm<{
       result: {
         item: {
           path: string,
@@ -176,7 +180,12 @@ export const httpClientActions = {
         print_started?: boolean,
         action: string
       }
-    }>('/server/files/upload', data, options)
+    }>('/server/files/upload', {
+      file,
+      path,
+      root,
+      print
+    }, options)
   },
 
   serverFilesGet<T = any> (filepath: string, options?: AxiosRequestConfig) {

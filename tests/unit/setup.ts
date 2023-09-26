@@ -1,7 +1,4 @@
-import axios from 'axios'
 import { vi } from 'vitest'
-
-axios.defaults.adapter = require('axios/lib/adapters/xhr')
 
 vi.mock('vue', async () => {
   const Vue = await vi.importActual('vue') as any

@@ -1,5 +1,4 @@
 import { ActionTree } from 'vuex'
-import axios from 'axios'
 import { FilesState, KlipperFile, KlipperDir, FileChangeSocketResponse, FileUpdate, KlipperFileWithMeta, DiskUsage } from './types'
 import { RootState } from '../types'
 import formatAsFile from '@/util/format-as-file'
@@ -187,22 +186,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     commit('setRemoveFileDownload', payload)
   },
 
-  async createFileTransferCancelTokenSource ({ commit }) {
-    const cancelTokenSource = axios.CancelToken.source()
-
-    commit('setFileTransferCancelTokenSource', cancelTokenSource)
-  },
-
-  async cancelFileTransferWithTokenSource ({ commit, state }, cancellationMessage) {
-    if (state.fileTransferCancelTokenSource) {
-      state.fileTransferCancelTokenSource.cancel(cancellationMessage)
-    }
-
-    commit('setFileTransferCancelTokenSource', null)
-  },
-
   async updateCurrentPathByRoot ({ commit }, payload) {
     commit('setCurrentPath', payload)
   }
-
 }
