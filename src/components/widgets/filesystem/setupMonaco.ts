@@ -206,6 +206,77 @@ async function setupMonaco () {
     }
   })
 
+  monaco.languages.registerFoldingRangeProvider('gcode', {
+    provideFoldingRanges: (model) => {
+      const linesContent = model.getLinesContent()
+
+      const layerBlocks = linesContent.reduce((layerBlocks, lineContent, index) => {
+        const isLayer = /^\s*SET_PRINT_STATS_INFO .*CURRENT_LAYER=/i.test(lineContent)
+
+        if (isLayer) {
+          return layerBlocks.concat({
+            start: index + 1,
+            end: index + 1
+          })
+        }
+
+        const isNotComment = /^\s*[^;]/.test(lineContent)
+
+        if (isNotComment && layerBlocks.length > 0) {
+          layerBlocks[layerBlocks.length - 1].end = index + 1
+        }
+
+        return layerBlocks
+      }, [] as Array<{ start: number, end: number }>)
+
+      const objectBlocks = linesContent.reduce((objectBlocks, lineContent, index) => {
+        lineContent = lineContent.trim()
+
+        if (lineContent.length > 0) {
+          const isObject = /^\s*EXCLUDE_OBJECT_(START|END) /i.exec(lineContent)
+
+          const lastObjectBlock = objectBlocks.length > 0 ? objectBlocks[objectBlocks.length - 1] : undefined
+
+          if (isObject) {
+            switch (isObject[1].toUpperCase()) {
+              case 'START':
+                return objectBlocks.concat({
+                  start: index + 1,
+                  end: index + 1,
+                  complete: false
+                })
+
+              case 'END':
+                if (lastObjectBlock) {
+                  lastObjectBlock.complete = true
+                }
+                break
+            }
+          } else {
+            if (lastObjectBlock && !lastObjectBlock.complete) {
+              lastObjectBlock.end = index + 1
+            }
+          }
+        }
+
+        return objectBlocks
+      }, [] as Array<{start: number, end: number, complete: boolean}>)
+
+      return [
+        ...layerBlocks.map(section => ({
+          start: section.start,
+          end: section.end,
+          kind: monaco.languages.FoldingRangeKind.Region
+        })),
+        ...objectBlocks.map(section => ({
+          start: section.start,
+          end: section.end,
+          kind: monaco.languages.FoldingRangeKind.Region
+        }))
+      ]
+    }
+  })
+
   // Defined the themes.
   monaco.editor.defineTheme('dark-converted', themeDark as any)
   monaco.editor.defineTheme('light-converted', themeLight as any)
