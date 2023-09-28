@@ -237,7 +237,7 @@ app:
       edit_filter: Редактировать фильтр
       edit_preset: Редактировать предустановку
       edit_user: Редактирование пользователя
-      extrude_length: Длинна экструзии
+      extrude_length: Длина экструзии
       extrude_speed: Скорость экструзии
       filament: Филамент
       file: Файл
