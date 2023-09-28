@@ -262,18 +262,41 @@ async function setupMonaco () {
         return objectBlocks
       }, [] as Array<{start: number, end: number, complete: boolean}>)
 
+      const thumbnailBlocks = linesContent.reduce((thumbnailBlocks, lineContent, index) => {
+        if (lineContent.startsWith('; thumbnail')) {
+          const type = lineContent.substring(11).split(' ')[1]
+
+          switch (type) {
+            case 'begin':
+              return thumbnailBlocks.concat({
+                start: index + 1,
+                end: index + 1
+              })
+
+            case 'end':
+              if (thumbnailBlocks.length > 0) {
+                const lastThumbnailBlock = thumbnailBlocks[thumbnailBlocks.length - 1]
+
+                if (lastThumbnailBlock.start === lastThumbnailBlock.end) {
+                  lastThumbnailBlock.end = index
+                }
+              }
+              break
+          }
+        }
+
+        return thumbnailBlocks
+      }, [] as Array<{start: number, end: number}>)
+
       return [
-        ...layerBlocks.map(section => ({
-          start: section.start,
-          end: section.end,
-          kind: monaco.languages.FoldingRangeKind.Region
-        })),
-        ...objectBlocks.map(section => ({
-          start: section.start,
-          end: section.end,
-          kind: monaco.languages.FoldingRangeKind.Region
-        }))
-      ]
+        ...thumbnailBlocks,
+        ...layerBlocks,
+        ...objectBlocks
+      ].map(section => ({
+        start: section.start,
+        end: section.end,
+        kind: monaco.languages.FoldingRangeKind.Region
+      }))
     }
   })
 
