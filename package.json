@@ -37,7 +37,7 @@
     "@fontsource/raleway": "^5.0.8",
     "@fontsource/roboto": "^5.0.8",
     "@jaames/iro": "^5.5.2",
-    "axios": "^0.27.2",
+    "axios": "^1.5.1",
     "consola": "^3.2.3",
     "deepmerge": "^4.3.1",
     "dompurify": "^3.0.5",

@@ -234,6 +234,21 @@ export const Filters = {
   },
 
   /**
+   * Formats a number (in bytes/sec) to a human readable data rate.
+   */
+  getReadableDataRateString (dataRateInBytesPerSec: number) {
+    let i = -1
+    const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
+    if (dataRateInBytesPerSec === 0) return `0${byteUnits[0]}`
+    do {
+      dataRateInBytesPerSec = dataRateInBytesPerSec / 1024
+      i++
+    } while (dataRateInBytesPerSec > 1024)
+
+    return Math.max(dataRateInBytesPerSec, 0.2).toFixed(1) + byteUnits[i] + '/Sec'
+  },
+
+  /**
    * Formats a number representing mm to human readable distance.
    */
   getReadableLengthString (lengthInMm: number, showMicrons = false) {

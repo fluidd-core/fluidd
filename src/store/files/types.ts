@@ -1,13 +1,11 @@
 import { KlipperFileMeta, Thumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
-import { CancelTokenSource } from 'axios'
 
 export type { KlipperFileMeta, Thumbnail }
 
 export interface FilesState {
   uploads: FilesUpload[];
   download: FileDownload | null;
-  fileTransferCancelTokenSource: CancelTokenSource | null;
   currentPaths: Record<string, string>;
   disk_usage: DiskUsage;
   rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
@@ -97,7 +95,7 @@ export interface FileDownload {
   loaded: number;
   percent: number;
   speed: number;
-  unit: string;
+  abortController: AbortController;
 }
 
 export interface FilesUpload extends FileDownload {
