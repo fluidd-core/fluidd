@@ -76,7 +76,7 @@
 <script lang="ts">
 import { Component, Mixins, VModel, Watch } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import Axios, { AxiosError, CancelTokenSource } from 'axios'
+import axios from 'axios'
 import StateMixin from '@/mixins/state'
 import { Debounce } from 'vue-debounce-decorator'
 import { consola } from 'consola'
@@ -126,11 +126,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   timer = 0
   url = ''
 
-  // Axios cancels.
-  cancelSource: CancelTokenSource | undefined = undefined
-
-  // Fetch cancels.
-  controller: AbortController | undefined = undefined
+  abortController: AbortController | undefined = undefined
 
   // Watch for valid url changes.
   @Watch('url')
@@ -150,37 +146,37 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       const url = this.buildUrl(value)
 
       // Handle cancelling axios requests.
-      if (this.cancelSource !== undefined) {
-        this.cancelSource.cancel('Cancelled due to new request.')
-      }
+      this.abortController?.abort()
 
-      this.cancelSource = Axios.CancelToken.source()
+      this.abortController = new AbortController()
+
+      const { signal } = this.abortController
 
       // Start by making a standard request. Maybe it's good?
       const request = await httpClientActions.get(`${url}server/info?t=${Date.now()}`, {
         withAuth: false,
-        cancelToken: this.cancelSource.token
+        signal
       })
         .then(() => {
           this.verified = true
           this.verifying = false
           return 'ok'
         })
-        .catch((e: AxiosError) => {
+        .catch(e => {
           // If it failed because we cancelled, set ok and move on.
-          if (Axios.isCancel(e)) {
+          if (axios.isCancel(e)) {
             return 'ok'
-          }
+          } else if (axios.isAxiosError(e)) {
+            // If it failed because of a 401, set ok and move on.
+            if (e.response?.status === 401) {
+              this.verified = true
+              this.verifying = false
+              return 'ok'
+            }
 
-          // If it failed because of a 401, set ok and move on.
-          if (e.response?.status === 401) {
-            this.verified = true
-            this.verifying = false
-            return 'ok'
+            // If it failed with a network issue..
+            if (e.request) return e.message
           }
-
-          // If it failed with a network issue..
-          if (e.request) return e.message
 
           // Otherwise pass along the error..
           this.error = e
@@ -189,13 +185,6 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
 
       // The initial request failed with a network issue..
       if (request !== 'ok') {
-        // Handle cancelling fetch requests.
-        if (this.controller !== undefined) {
-          this.controller.abort()
-        }
-        this.controller = new AbortController()
-        const { signal } = this.controller
-
         if (this.hosted) {
           const apiEndpoints = this.$filters.getApiUrls(url.toString())
 

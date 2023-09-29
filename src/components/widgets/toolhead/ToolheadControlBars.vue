@@ -46,7 +46,7 @@
   <div v-else>
     <toolhead-control-bars-stepper
       v-for="stepper in steppers"
-      :key="stepper"
+      :key="stepper.key"
       :stepper="stepper"
     />
   </div>
@@ -58,6 +58,7 @@ import ToolheadControlBarsAxis from './ToolheadControlBarsAxis.vue'
 import ToolheadControlBarsStepper from './ToolheadControlBarsStepper.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import { Stepper } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -66,8 +67,11 @@ import ToolheadMixin from '@/mixins/toolhead'
   }
 })
 export default class ToolheadControlBars extends Mixins(StateMixin, ToolheadMixin) {
-  get steppers (): string[] {
-    return this.$store.getters['printer/getSteppers'] as string[]
+  get steppers (): Stepper[] {
+    const steppers = this.$store.getters['printer/getSteppers'] as Stepper[]
+
+    return steppers
+      .filter(stepper => stepper.key.startsWith('stepper_'))
   }
 
   get forceMove (): boolean {

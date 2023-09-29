@@ -649,16 +649,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       : this.rootProperties.canView.includes(`.${file.extension}`)
 
     // Grab the file. This should provide a dialog.
-    this.$store.dispatch('files/createFileTransferCancelTokenSource')
-
     this.getFile(
       file.filename,
       this.currentPath,
       file.size,
       {
         responseType: viewOnly ? 'arraybuffer' : 'text',
-        transformResponse: [v => v],
-        cancelToken: this.cancelTokenSource.token
+        transformResponse: [v => v]
       }
     )
       .then(response => {
@@ -763,6 +760,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (contents.length > 0) {
       const file = new File([contents], this.fileEditorDialogState.filename)
       if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
+
       await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
       this.fileEditorDialogState.loading = false
       if (restart) {
@@ -882,9 +880,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       // Started uploading, but not complete.
       if (file.loaded > 0 && file.loaded < file.size) {
-        if (this.cancelTokenSource) {
-          this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
-        }
+        file.abortController.abort()
       }
     }
   }
