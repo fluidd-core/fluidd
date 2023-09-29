@@ -43,7 +43,7 @@
                 <td class="pr-2">
                   {{ $t('app.file_system.label.transfer_rate') }}:
                 </td>
-                <td>{{ file.speed.toFixed(2) }} {{ file.unit }}/Sec</td>
+                <td>{{ $filters.getReadableDataRateString(file.speed) }}</td>
               </tr>
             </table>
           </v-col>

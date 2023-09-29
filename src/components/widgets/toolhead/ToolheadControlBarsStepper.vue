@@ -10,7 +10,7 @@
         @click="sendForceMoveGcode($event)"
       >
         <div class="v-btn v-size--default btncolor flex-grow-1">
-          {{ stepper }}
+          {{ stepper.prettyName }}
         </div>
       </app-up-down-btn-group>
     </v-col>
@@ -20,11 +20,12 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import { Stepper } from '@/store/printer/types'
 
 @Component({})
 export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
-  @Prop({ type: String })
-  readonly stepper!: string
+  @Prop({ type: Object })
+  readonly stepper!: Stepper
 
   get values (): number[] {
     return [1, 10, 50]
@@ -43,11 +44,11 @@ export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {
   }
 
   get isStepperZ (): boolean {
-    return this.stepper.startsWith('stepper_z')
+    return this.stepper.key.startsWith('stepper_z')
   }
 
   sendForceMoveGcode (distance: number) {
-    this.sendGcode(`FORCE_MOVE STEPPER=${this.stepper} DISTANCE=${distance} VELOCITY=${this.rate} ACCEL=${this.accel}`)
+    this.sendGcode(`FORCE_MOVE STEPPER="${this.stepper.key}" DISTANCE=${distance} VELOCITY=${this.rate} ACCEL=${this.accel}`)
   }
 }
 </script>

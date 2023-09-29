@@ -32,12 +32,7 @@ export interface ExtruderConfig {
   pressure_advance_smooth_time?: number;
 }
 
-export interface ExtruderStepper {
-  config: ExtruderStepperConfig;
-  name: string;
-  prettyName: string;
-  key: string;
-  enabled?: boolean;
+export interface ExtruderStepper extends StepperType<ExtruderStepperConfig> {
   motion_queue?: string | null;
   pressure_advance?: number;
   smooth_time?: number;
@@ -47,6 +42,16 @@ export interface ExtruderStepperConfig {
   extruder?: string;
   pressure_advance?: number;
   pressure_advance_smooth_time?: number;
+}
+
+export interface Stepper extends StepperType {}
+
+export type StepperType<T = Record<string, any>> = {
+  config: T;
+  name: string;
+  prettyName: string;
+  key: string;
+  enabled?: boolean;
 }
 
 export interface MCU {
