@@ -813,3 +813,7 @@ app:
         kodu QR
       prefer_device_camera: Użyj kamery urządzenia do wykrywania kodów QR, jeśli jest
         dostępna
+      warn_on_not_enough_filament: Wyświetla ostrzeżenie, gdy na wybranej szpuli nie
+        ma wystarczającej ilości filamentu do zakończenia drukowania
+      warn_on_filament_type_mismatch: Wyświetla ostrzeżenie, gdy typ filamentu wybrany
+        w slicerze i filamentu na szpuli nie jest zgodny
