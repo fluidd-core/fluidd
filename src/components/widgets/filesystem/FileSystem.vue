@@ -709,7 +709,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleRefreshMetadata (file: AppFileWithMeta) {
-    SocketActions.serverFilesMetadata(`${this.visiblePath}/${file.filename}`)
+    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    SocketActions.serverFilesMetadata(filename)
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
@@ -735,7 +737,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   */
   handlePrint (file: AppFile) {
     if (this.disabled) return
-    const filename = `${this.visiblePath}/${file.filename}`
+
+    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
     const spoolmanSupported = this.$store.getters['spoolman/getSupported']
     const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
