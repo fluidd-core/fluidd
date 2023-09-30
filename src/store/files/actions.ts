@@ -129,7 +129,7 @@ export const actions: ActionTree<FilesState, RootState> = {
     }
   },
 
-  async notifyMoveDir (_, payload: FileChangeSocketResponse) {
+  async notifyMoveDir ({ commit }, payload: FileChangeSocketResponse) {
     const root = payload.item.root
     const itemPaths = getFilePaths(payload.item.path, root)
 
@@ -138,6 +138,8 @@ export const actions: ActionTree<FilesState, RootState> = {
       const sourcePaths = getFilePaths(payload.source_item.path, root)
       if (itemPaths.rootPath !== sourcePaths.rootPath) {
         SocketActions.serverFilesGetDirectory(root, sourcePaths.rootPath)
+
+        commit('setPathDelete', { path: `${sourcePaths.rootPath}/${sourcePaths.filename}`, root })
       }
     }
   },
