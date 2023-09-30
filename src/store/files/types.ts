@@ -81,6 +81,7 @@ export interface FilePaths {
   filename: string;
   path: string;
   rootPath: string;
+  filtered: boolean;
 }
 
 export interface FileUpdate {
