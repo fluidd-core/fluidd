@@ -662,6 +662,7 @@ app:
       manual_probe: Manual Probe
       motors_off: Motors Off
       relative_positioning: Relative Positioning
+      select_tool: Select tool %{tool}
       tools: Tools
     label:
       stats_active_extruder: >-
