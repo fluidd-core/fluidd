@@ -451,6 +451,7 @@ app:
       extruder_disabled: ekstruder jest wyłączony poniżej min_extrude_temp (%{min}<small>°C</small>)
       manual_probe: Sonda ręczna
       relative_positioning: Pozycjonowanie względne
+      select_tool: Wybierz narzędzie %{tool}
     title:
       bed_screws_adjust: Regulacja śrub stołu
       manual_probe: Sonda ręczna
