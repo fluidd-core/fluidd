@@ -238,6 +238,10 @@ export const actions: ActionTree<SocketState, RootState> = {
     dispatch('webcams/onWebcamsChanged', payload, { root: true })
   },
 
+  async notifySensorUpdate ({ dispatch }, payload) {
+    dispatch('sensors/onSensorUpdate', payload, { root: true })
+  },
+
   async notifyJobQueueChanged ({ dispatch }, payload) {
     dispatch('jobQueue/onJobQueueChanged', payload, { root: true })
   },

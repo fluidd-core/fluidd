@@ -60,6 +60,7 @@ import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
 import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
+import SensorsCard from '@/components/widgets/sensors/SensorsCard.vue'
 
 @Component({
   components: {
@@ -76,7 +77,8 @@ import SpoolmanCard from '@/components/widgets/spoolman/SpoolmanCard.vue'
     BedMeshCard,
     GcodePreviewCard,
     JobQueueCard,
-    SpoolmanCard
+    SpoolmanCard,
+    SensorsCard
   }
 })
 export default class Dashboard extends Mixins(StateMixin) {
@@ -113,7 +115,11 @@ export default class Dashboard extends Mixins(StateMixin) {
   }
 
   get hasCameras (): boolean {
-    return this.$store.getters['cameras/getEnabledCameras'].length
+    return this.$store.getters['cameras/getEnabledCameras'].length > 0
+  }
+
+  get hasSensors (): boolean {
+    return this.$store.getters['sensors/getSensors'].length > 0
   }
 
   get firmwareRetractionEnabled (): boolean {
@@ -194,6 +200,7 @@ export default class Dashboard extends Mixins(StateMixin) {
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
+    if (item.id === 'sensors-card' && !this.hasSensors) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled

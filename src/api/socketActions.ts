@@ -704,6 +704,14 @@ export const SocketActions = {
     )
   },
 
+  async serverSensorsList () {
+    baseEmit(
+      'server.sensors.list', {
+        dispatch: 'sensors/onSensorsList'
+      }
+    )
+  },
+
   async serverSpoolmanGetSpoolId () {
     baseEmit(
       'server.spoolman.get_spool_id', {
