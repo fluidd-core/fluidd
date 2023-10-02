@@ -429,7 +429,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       }
     }
 
-    await SocketActions.spoolmanSetSpool(this.selectedSpool ?? undefined)
+    await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
