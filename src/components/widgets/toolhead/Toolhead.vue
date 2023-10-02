@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card-text>
-      <tool-change-macros />
+      <tool-change-commands />
 
       <v-row
         justify="space-between"
@@ -52,7 +52,7 @@ import SpeedAndFlowAdjust from './SpeedAndFlowAdjust.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
 import ExtruderStats from './ExtruderStats.vue'
 import ExtruderSteppers from './ExtruderSteppers.vue'
-import ToolChangeMacros from './ToolChangeMacros.vue'
+import ToolChangeCommands from './ToolChangeCommands.vue'
 import { Extruder } from '@/store/printer/types'
 import { ToolheadControlStyle } from '@/store/config/types'
 
@@ -68,7 +68,7 @@ import { ToolheadControlStyle } from '@/store/config/types'
     PressureAdvanceAdjust,
     ExtruderStats,
     ExtruderSteppers,
-    ToolChangeMacros
+    ToolChangeCommands
   }
 })
 export default class Toolhead extends Mixins(StateMixin) {
