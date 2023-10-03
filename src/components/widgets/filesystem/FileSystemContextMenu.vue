@@ -176,7 +176,7 @@
           >
             <img
               class="mx-2"
-              :src="getThumbUrl(file.thumbnails, root, file.path, true, file.modified)"
+              :src="getThumbUrl(file, root, file.path, true, file.modified)"
               :height="150"
             >
           </v-btn>

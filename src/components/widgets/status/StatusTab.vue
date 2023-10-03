@@ -173,13 +173,28 @@
           align-self="center"
           class="pa-0"
         >
-          <img
-            class="print-thumb"
-            :src="thumbnail"
+          <v-btn
+            text
+            height="100%"
+            @click="handleViewThumbnail"
           >
+            <img
+              class="print-thumb"
+              :src="thumbnail"
+            >
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
+
+    <file-preview-dialog
+      v-if="filePreviewState.open"
+      v-model="filePreviewState.open"
+      :filename="filePreviewState.filename"
+      :src="filePreviewState.src"
+      type="image/any"
+      :width="filePreviewState.width"
+    />
   </div>
 </template>
 
@@ -188,10 +203,12 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import StatusLabel from './StatusLabel.vue'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
+import FilePreviewDialog from '../filesystem/FilePreviewDialog.vue'
 
 @Component({
   components: {
-    StatusLabel
+    StatusLabel,
+    FilePreviewDialog
   }
 })
 export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
@@ -201,6 +218,12 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
     lastExtruderPosition: 0,
     value: 0,
     max: 0
+  }
+
+  filePreviewState: any = {
+    open: false,
+    filename: '',
+    src: ''
   }
 
   get visible () {
@@ -288,7 +311,7 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
       this.current_file &&
       this.current_file.thumbnails
     ) {
-      const url = this.getThumbUrl(this.current_file.thumbnails, 'gcodes', this.current_file.path, true, this.current_file.modified)
+      const url = this.getThumbUrl(this.current_file, 'gcodes', this.current_file.path, true, this.current_file.modified)
       return url
     }
   }
@@ -379,6 +402,20 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
 
       this.flow.lastExtruderPosition = extruderPosition
       this.flow.timestamp = Date.now()
+    }
+  }
+
+  async handleViewThumbnail () {
+    const file = this.current_file
+    const thumb = this.getThumb(file, 'gcodes', file.path, true, file.modified)
+
+    if (thumb) {
+      this.filePreviewState = {
+        open: true,
+        filename: file.filename,
+        src: thumb.url,
+        width: thumb.width
+      }
     }
   }
 }

@@ -1,7 +1,7 @@
-import { KlipperFileMeta, Thumbnail } from './types.metadata'
+import { KlipperFileMeta, KlipperFileMetaThumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
 
-export type { KlipperFileMeta, Thumbnail }
+export type { KlipperFileMeta, KlipperFileMetaThumbnail }
 
 export interface FilesState {
   uploads: FilesUpload[];
@@ -52,6 +52,10 @@ export interface AppFile extends KlipperFile {
 
 export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   history: HistoryItem;
+}
+
+export interface AppFileThumbnail extends KlipperFileMetaThumbnail {
+  url: string;
 }
 
 export interface AppDirectory extends KlipperDir {

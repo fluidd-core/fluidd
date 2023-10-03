@@ -715,15 +715,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
-    const thumb = this.getThumb(file.thumbnails ?? [], this.currentRoot, file.path, true)
+    const thumb = this.getThumb(file, this.currentRoot, file.path, true)
 
     if (thumb) {
-      const thumbUrl = thumb.absolute_path || thumb.data || ''
-
       this.filePreviewState = {
         open: true,
         filename: file.filename,
-        src: thumbUrl,
+        src: thumb.url,
         type: 'image/any',
         width: thumb.width
       }
