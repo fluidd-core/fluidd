@@ -818,3 +818,6 @@ app:
         ma wystarczającej ilości filamentu do zakończenia drukowania
       warn_on_filament_type_mismatch: Wyświetla ostrzeżenie, gdy typ filamentu wybrany
         w slicerze i filamentu na szpuli nie jest zgodny
+  sensors:
+    title:
+      sensors: Czujniki
