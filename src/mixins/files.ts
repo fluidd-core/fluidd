@@ -1,4 +1,4 @@
-import { AppFile, FilesUpload, Thumbnail } from '@/store/files/types'
+import { AppFile, FilesUpload, AppFileThumbnail, KlipperFileMeta } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
@@ -17,44 +17,22 @@ export default class FilesMixin extends Vue {
     return forceLogins === false || this.$store.getters['auth/getCurrentUser']?.username === '_TRUSTED_USER_'
   }
 
-  getThumbUrl (thumbnails: Thumbnail[], root: string, path: string, large: boolean, date?: number) {
-    if (thumbnails.length) {
-      const thumb = this.getThumb(thumbnails, root, path, large, date)
+  getThumbUrl (meta: KlipperFileMeta, root: string, path: string, large: boolean, date?: number) {
+    const thumb = this.getThumb(meta, root, path, large, date)
 
-      if (thumb) {
-        return thumb.absolute_path || thumb.data || ''
-      }
-    }
-    return ''
+    return thumb?.url ?? ''
   }
 
-  getThumb (thumbnails: Thumbnail[], root: string, path: string, large = true, date?: number) {
-    if (thumbnails.length) {
-      let thumb: Thumbnail | undefined
-      if (thumbnails) {
-        if (large) {
-          thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size > c.size)) ? a : c)
-        } else {
-          thumb = thumbnails.reduce((a, c) => (a.size && c.size && (a.size < c.size)) ? a : c)
-        }
-        if (thumb) {
-          if (thumb.relative_path && thumb.relative_path.length > 0) {
-            const filepath = path ? `${root}/${path}` : root
+  getThumb (meta: KlipperFileMeta, root: string, path: string, large = true, date?: number): AppFileThumbnail | undefined {
+    if (meta.thumbnails?.length) {
+      const thumb = meta.thumbnails.reduce((a, b) => (a.size > b.size) === large ? a : b)
 
-            return {
-              ...thumb,
-              absolute_path: this.createFileUrl(thumb.relative_path, filepath, date)
-            }
-          }
-          if (thumb.data) {
-            return {
-              ...thumb,
-              data: 'data:image/gif;base64,' + thumb.data
-            }
-          }
-          if (thumb.absolute_path) {
-            return thumb
-          }
+      if (thumb.relative_path) {
+        const filepath = path ? `${root}/${path}` : root
+
+        return {
+          ...thumb,
+          url: this.createFileUrl(thumb.relative_path, filepath, date)
         }
       }
     }
