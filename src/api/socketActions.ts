@@ -704,13 +704,32 @@ export const SocketActions = {
     )
   },
 
-  async spoolmanState () {
+  async serverSensorsList () {
+    baseEmit(
+      'server.sensors.list', {
+        dispatch: 'sensors/onSensorsList'
+      }
+    )
+  },
+
+  async serverSpoolmanGetSpoolId () {
     baseEmit(
       'server.spoolman.get_spool_id', {
         dispatch: 'spoolman/onActiveSpool'
       }
     )
+  },
 
+  async serverSpoolmanPostSpoolId (spoolId: number | undefined) {
+    baseEmit(
+      'server.spoolman.post_spool_id', {
+        params: { spool_id: spoolId },
+        dispatch: 'spoolman/onActiveSpool'
+      }
+    )
+  },
+
+  async serverSpoolmanProxyGetAvailableSpools () {
     baseEmit(
       'server.spoolman.proxy', {
         params: {
@@ -718,15 +737,6 @@ export const SocketActions = {
           path: '/v1/spool'
         },
         dispatch: 'spoolman/onAvailableSpools'
-      }
-    )
-  },
-
-  async spoolmanSetSpool (spoolId: number | undefined) {
-    baseEmit(
-      'server.spoolman.post_spool_id', {
-        params: { spool_id: spoolId },
-        dispatch: 'spoolman/onActiveSpool'
       }
     )
   }

@@ -69,7 +69,7 @@
               <img
                 v-else
                 :style="{'max-width': `${thumbnailSize}px`, 'max-height': `${thumbnailSize}px`}"
-                :src="getThumbUrl(item.thumbnails, root, item.path, thumbnailSize > 16, item.modified)"
+                :src="getThumbUrl(item, root, item.path, thumbnailSize > 16, item.modified)"
               >
             </v-layout>
           </td>
@@ -288,6 +288,7 @@ import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
 import FileRowItem from './FileRowItem.vue'
+import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
 
 @Component({
   components: {
@@ -406,20 +407,15 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     )
 
     if (item.type === 'file') {
-      switch (item.extension) {
-        case 'bmp':
-        case 'gif':
-        case 'jpg':
-        case 'jpeg':
-        case 'png':
-        case 'tif':
-        case 'tiff':
-        case 'webp':
-          return readonly ? '$fileImageLock' : '$fileImage'
-        case 'zip':
-          return readonly ? '$fileZipLock' : '$fileZip'
-        default:
-          return readonly ? '$fileLock' : '$file'
+      if (item.extension === 'zip') {
+        return readonly ? '$fileZipLock' : '$fileZip'
+      } else if (
+        SupportedImageFormats.includes(`.${item.extension}`) ||
+            SupportedVideoFormats.includes(`.${item.extension}`)
+      ) {
+        return readonly ? '$fileImageLock' : '$fileImage'
+      } else {
+        return readonly ? '$fileLock' : '$file'
       }
     } else if (item.name === '..') {
       return '$folderUp'

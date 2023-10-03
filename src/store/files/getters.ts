@@ -2,6 +2,7 @@ import { GetterTree } from 'vuex'
 import { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
 import { RootState } from '../types'
 import { HistoryItem } from '../history/types'
+import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
 
 export const getters: GetterTree<FilesState, RootState> = {
   /**
@@ -67,7 +68,6 @@ export const getters: GetterTree<FilesState, RootState> = {
             item.thumbnails = [
               {
                 // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
-                data: '',
                 height: 0,
                 width: 0,
                 size: 0,
@@ -100,7 +100,8 @@ export const getters: GetterTree<FilesState, RootState> = {
    */
   getRootProperties: () => (root: string): RootProperties => {
     const canView = [
-      '.gif', '.jpeg', '.jpg', '.mp4', '.mpeg', '.mpg', '.png', '.svg', '.tif', '.tiff', '.webp'
+      ...SupportedImageFormats,
+      ...SupportedVideoFormats
     ]
 
     switch (root) {
@@ -158,7 +159,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: [],
           canView: [],
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
     }
   },
@@ -185,10 +186,6 @@ export const getters: GetterTree<FilesState, RootState> = {
         modified: new Date(file.modified).getDate(),
         history
       }
-
-      console.log({
-        file: { ...item }
-      })
 
       return item
     }

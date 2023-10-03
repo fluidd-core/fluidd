@@ -30,7 +30,10 @@ export const defaultState = (): ConfigState => {
         defaultToolheadMoveLength: 1.0,
         defaultToolheadXYSpeed: 130,
         defaultToolheadZSpeed: 10,
+        toolheadControlStyle: 'cross',
         toolheadMoveDistances: [0.1, 1, 10, 25, 50, 100],
+        toolheadXYMoveDistances: [1, 10, 50],
+        toolheadZMoveDistances: [0.1, 1, 10],
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
@@ -145,7 +148,9 @@ export const defaultState = (): ConfigState => {
         autoSpoolSelectionDialog: true,
         autoOpenQRDetectionCamera: null,
         autoSelectSpoolOnMatch: false,
-        preferDeviceCamera: false
+        preferDeviceCamera: false,
+        warnOnNotEnoughFilament: true,
+        warnOnFilamentTypeMismatch: true
       }
     }
   }

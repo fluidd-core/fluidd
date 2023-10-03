@@ -649,16 +649,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       : this.rootProperties.canView.includes(`.${file.extension}`)
 
     // Grab the file. This should provide a dialog.
-    this.$store.dispatch('files/createFileTransferCancelTokenSource')
-
     this.getFile(
       file.filename,
       this.currentPath,
       file.size,
       {
         responseType: viewOnly ? 'arraybuffer' : 'text',
-        transformResponse: [v => v],
-        cancelToken: this.cancelTokenSource.token
+        transformResponse: [v => v]
       }
     )
       .then(response => {
@@ -712,19 +709,19 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   handleRefreshMetadata (file: AppFileWithMeta) {
-    SocketActions.serverFilesMetadata(`${this.visiblePath}/${file.filename}`)
+    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
+
+    SocketActions.serverFilesMetadata(filename)
   }
 
   async handleViewThumbnail (file: AppFileWithMeta) {
-    const thumb = this.getThumb(file.thumbnails ?? [], this.currentRoot, file.path, true)
+    const thumb = this.getThumb(file, this.currentRoot, file.path, true)
 
     if (thumb) {
-      const thumbUrl = thumb.absolute_path || thumb.data || ''
-
       this.filePreviewState = {
         open: true,
         filename: file.filename,
-        src: thumbUrl,
+        src: thumb.url,
         type: 'image/any',
         width: thumb.width
       }
@@ -738,7 +735,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   */
   handlePrint (file: AppFile) {
     if (this.disabled) return
-    const filename = `${this.visiblePath}/${file.filename}`
+
+    const filename = file.path ? `${file.path}/${file.filename}` : file.filename
 
     const spoolmanSupported = this.$store.getters['spoolman/getSupported']
     const autoSpoolSelectionDialog = this.$store.state.config.uiSettings.spoolman.autoSpoolSelectionDialog
@@ -763,6 +761,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (contents.length > 0) {
       const file = new File([contents], this.fileEditorDialogState.filename)
       if (!restart && this.fileEditorDialogState.open) this.fileEditorDialogState.loading = true
+
       await this.uploadFile(file, this.visiblePath, this.currentRoot, false)
       this.fileEditorDialogState.loading = false
       if (restart) {
@@ -882,9 +881,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
       // Started uploading, but not complete.
       if (file.loaded > 0 && file.loaded < file.size) {
-        if (this.cancelTokenSource) {
-          this.$store.dispatch('files/cancelFileTransferWithTokenSource', 'User cancelled.')
-        }
+        file.abortController.abort()
       }
     }
   }

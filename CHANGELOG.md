@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.25.3](https://github.com/fluidd-core/fluidd/compare/v1.25.2...v1.25.3) (2023-09-10)
+
+
+### Features
+
+* **i18n-PL:** update Polish translations ([#1154](https://github.com/fluidd-core/fluidd/issues/1154)) ([8841557](https://github.com/fluidd-core/fluidd/commit/8841557a2abcae2f667655b3e6e9852d7361beed))
+* **i18n-PL:** update Polish translations ([#1163](https://github.com/fluidd-core/fluidd/issues/1163)) ([0fedb66](https://github.com/fluidd-core/fluidd/commit/0fedb660358d780e49f819db8f4aeeb32ebba5dd))
+
+
+### Bug Fixes
+
+* adds more chart colors for sensors ([#1168](https://github.com/fluidd-core/fluidd/issues/1168)) ([273092d](https://github.com/fluidd-core/fluidd/commit/273092d450c2b0ea6f5ed4dbf8d41810f8c0a83d))
+* always show Edit in File file browser ([0c1b576](https://github.com/fluidd-core/fluidd/commit/0c1b576c624decd9c510466b41c0db75800f1ed5))
+* **i18n-DE:** Fix typo in german translation ([#1162](https://github.com/fluidd-core/fluidd/issues/1162)) ([4d96dee](https://github.com/fluidd-core/fluidd/commit/4d96dee037118eb05e2032f4ee76e757ef6a42d8))
+* reset camera on change ([#1159](https://github.com/fluidd-core/fluidd/issues/1159)) ([4fe7c88](https://github.com/fluidd-core/fluidd/commit/4fe7c88ca64a644e95d8270c59650eed6db6b5eb))
+* use full Klipper key for thermal data storage ([#1167](https://github.com/fluidd-core/fluidd/issues/1167)) ([849b7ca](https://github.com/fluidd-core/fluidd/commit/849b7cac41972d4a0e31f077aee2e175fa57fa45))
+
 ## [1.25.2](https://github.com/fluidd-core/fluidd/compare/v1.25.1...v1.25.2) (2023-08-16)
 
 

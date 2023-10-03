@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { GetterTree } from 'vuex'
 import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName } from './types'
+import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 
@@ -290,26 +290,37 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return extruder
   },
 
-  getExtruderSteppers: (state, getters) => {
-    const extruderSteppers: ExtruderStepper[] = []
-    for (const item in state.printer) {
-      const [type, name] = item.split(' ', 2)
+  getExtruderSteppers: (state, getters): ExtruderStepper[] => {
+    const steppers = getters.getSteppers as Stepper[]
 
-      if (type === 'extruder_stepper') {
-        const e = state.printer[item]
-        const c = getters.getPrinterSettings(item)
+    return steppers
+      .filter((stepper): stepper is ExtruderStepper => stepper.key.startsWith('extruder_stepper '))
+  },
 
-        extruderSteppers.push({
-          name,
-          prettyName: Vue.$filters.startCase(name),
-          key: item,
-          enabled: state.printer.stepper_enable?.steppers[item],
-          ...e,
-          config: { ...c }
-        })
-      }
+  getSteppers: (state, getters): Stepper[] => {
+    const steppers: Stepper[] = []
+
+    const stepperKeys: string[] = state.printer.motion_report.steppers ?? []
+
+    for (const item of stepperKeys) {
+      const name = item.startsWith('stepper_')
+        ? item.substring(8)
+        : item.split(' ', 2).pop() || ''
+
+      const e = state.printer[item]
+      const c = getters.getPrinterSettings(item)
+
+      steppers.push({
+        name,
+        prettyName: Vue.$filters.startCase(name),
+        key: item,
+        enabled: state.printer.stepper_enable?.steppers[item],
+        ...e,
+        config: { ...c }
+      })
     }
-    return extruderSteppers.sort((a, b) => a.name.localeCompare(b.name))
+
+    return steppers
   },
 
   /**

@@ -12,6 +12,16 @@
       #menu
     >
       <app-btn
+        small
+        class="ms-1 my-1"
+        :loading="hasWait($waits.onMeshCalibrate)"
+        :disabled="printerBusy || !allHomed"
+        @click="calibrate()"
+      >
+        {{ $t('app.general.btn.calibrate') }}
+      </app-btn>
+
+      <app-btn
         color=""
         fab
         x-small
@@ -156,6 +166,10 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
       },
       data: this.mesh[matrix].coordinates
     }
+  }
+
+  calibrate () {
+    this.sendGcode('BED_MESH_CALIBRATE', this.$waits.onMeshCalibrate)
   }
 
   get matrix () {

@@ -8,6 +8,7 @@ app:
       remove_profile: Remover perfil %{name}
       scale: Escala por min / max
       wireframe: Wireframe
+      active: activo
     msg:
       hint: >-
         Se salvar algo diferente de % {name},  pode escolher remover também o
@@ -27,6 +28,7 @@ app:
       'on': Gráfico ligado
       power: Energia
       target: Alvo
+      rate_of_change: Mudança
     tooltip:
       help: >-
         Mantenha a tecla Shift pressionada para aumentar o zoom. <br /> Clique
@@ -37,7 +39,8 @@ app:
       auto_scroll: Auto scroll
       hide_temp_waits: Ocultar temperaturas
     placeholder:
-      command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para histórico'
+      command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para
+        histórico'
   endpoint:
     error:
       cant_connect: >-
@@ -69,6 +72,8 @@ app:
       label:
         print_start_time: Filtrar já impresso
         print_start_time_desc: Filtrar os itens que  já imprimiu.
+        hidden_files_folders: Filtrar ficheiros e pastas escondidas
+        klipper_backup_files: Filtrar cópias de segurança do Klipper
     label:
       dir_name: Nome diretório
       disk_usage: Disco usado
@@ -76,11 +81,16 @@ app:
       file_name: Nome ficheiro
       transfer_rate: Taxa de transferência
       uploaded: Carregado
+      view_section_documentation: Ver documentação para '%{section}'
     msg:
       not_found: Não foram encontrados ficheiros
       processing: A processar...
     overlay:
       label: <strong>Largar</strong> um ficheiro aqui.
+      drag_files_enqueue: <strong>Arrastar</strong> para aqui ficheiros para juntar
+        à fila
+      drag_files_folders_upload: <strong>Arrastar</strong> para aqui ficheiros e pastas
+        para carregar
     title:
       add_dir: Adicionar diretório
       add_file: Adicionar ficheiro
@@ -89,8 +99,12 @@ app:
       rename_dir: Renomear diretório
       rename_file: Renomear ficheiro
       upload_file: Carregando ficheiro | Carregando ficheiros
+      duplicate_dir: Duplicar directório
+      go_to_file: Ir para ficheiro
+      duplicate_file: Duplicar ficheiro
     tooltip:
       low_on_space: Pouco espaço em disco
+      move_item: Mover item | Mover {count} itemes
   general:
     btn:
       add: Adicionar
@@ -195,7 +209,8 @@ app:
         required: Obrigatório
       msg:
         confirm: Tem a certeza?
-        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem a certeza? Vai excluir os {count} itens selecionados.
+        confirm_delete: Tem a certeza? Vai excluir o item selecionado. | Tem a certeza?
+          Vai excluir os {count} itens selecionados.
         confirm_reboot_host: Tem certeza? O sistema vai reiniciar.
         confirm_shutdown_host: Tem certeza? O sistema vai desligar.
     table:

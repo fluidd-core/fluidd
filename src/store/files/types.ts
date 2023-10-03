@@ -1,13 +1,11 @@
-import { KlipperFileMeta, Thumbnail } from './types.metadata'
+import { KlipperFileMeta, KlipperFileMetaThumbnail } from './types.metadata'
 import { HistoryItem } from '@/store/history/types'
-import { CancelTokenSource } from 'axios'
 
-export type { KlipperFileMeta, Thumbnail }
+export type { KlipperFileMeta, KlipperFileMetaThumbnail }
 
 export interface FilesState {
   uploads: FilesUpload[];
   download: FileDownload | null;
-  fileTransferCancelTokenSource: CancelTokenSource | null;
   currentPaths: Record<string, string>;
   disk_usage: DiskUsage;
   rootFiles: Record<string, MoonrakerRootFile[] | undefined>;
@@ -56,6 +54,10 @@ export interface AppFileWithMeta extends AppFile, KlipperFileMeta {
   history: HistoryItem;
 }
 
+export interface AppFileThumbnail extends KlipperFileMetaThumbnail {
+  url: string;
+}
+
 export interface AppDirectory extends KlipperDir {
   type: 'directory';
   name: string;
@@ -83,6 +85,7 @@ export interface FilePaths {
   filename: string;
   path: string;
   rootPath: string;
+  filtered: boolean;
 }
 
 export interface FileUpdate {
@@ -97,7 +100,7 @@ export interface FileDownload {
   loaded: number;
   percent: number;
   speed: number;
-  unit: string;
+  abortController: AbortController;
 }
 
 export interface FilesUpload extends FileDownload {

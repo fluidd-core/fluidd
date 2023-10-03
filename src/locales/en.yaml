@@ -235,12 +235,14 @@ app:
       api_key: Api Key
       api_url: API URL
       auth_source: Authentication Source
+      bars: Bars
       category: Category
       change_password: Change password
       clear_all: Clear all
       color: Color
       command: Command
       confirm: Confirm
+      cross: Cross
       current_password: Current password
       current_user: Current user
       default: Default
@@ -575,7 +577,10 @@ app:
       title: Title
       to_browser_local_storage: To browser local storage
       to_browser_session_storage: To browser session storage
+      toolhead_control_style: Toolhead control style
       toolhead_move_distances: Toolhead distance values
+      toolhead_xy_move_distances: Toolhead XY distance values
+      toolhead_z_move_distances: Toolhead Z distance values
       type: Type
       unit: Unit
       z_adjust_values: Z Adjust values
@@ -657,6 +662,7 @@ app:
       manual_probe: Manual Probe
       motors_off: Motors Off
       relative_positioning: Relative Positioning
+      select_tool: Select tool %{tool}
       tools: Tools
     label:
       stats_active_extruder: >-
@@ -816,3 +822,10 @@ app:
       auto_select_spool_on_match: Automatically commit spool selection on QR code match
       prefer_device_camera: Use device camera for QR code detection if available
       show_spool_selection_dialog_on_print_start: Show spool selection dialog on print start
+      warn_on_not_enough_filament: >-
+        Show a warning when the selected spool doesn't have enough filament left on it to finish the print
+      warn_on_filament_type_mismatch: >-
+        Show a warning when the spool's filament type and the one selected in the slicer don't match
+  sensors:
+    title:
+      sensors: Sensors

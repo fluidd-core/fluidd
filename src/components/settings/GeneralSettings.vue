@@ -332,7 +332,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
   }
 
   get powerDevicesList () {
-    const devices = this.$store.state.power.devices as Device[]
+    const devices = this.$store.getters['power/getDevices'] as Device[]
     const deviceEntries = devices.length
       ? [
           { header: 'Moonraker' },

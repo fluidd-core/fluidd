@@ -176,7 +176,7 @@
           >
             <img
               class="mx-2"
-              :src="getThumbUrl(file.thumbnails, root, file.path, true, file.modified)"
+              :src="getThumbUrl(file, root, file.path, true, file.modified)"
               :height="150"
             >
           </v-btn>
@@ -229,10 +229,9 @@ export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin
     return (
       !Array.isArray(this.file) &&
       this.file.type !== 'directory' &&
-      !this.rootProperties.readonly &&
       (
         this.file.permissions === undefined ||
-        this.file.permissions.includes('w')
+        this.file.permissions.includes('r')
       )
     )
   }

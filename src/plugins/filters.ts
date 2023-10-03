@@ -2,7 +2,7 @@ import _Vue from 'vue'
 import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import { ApiConfig, TextSortOrder } from '@/store/config/types'
-import tinycolor from '@ctrl/tinycolor'
+import { TinyColor } from '@ctrl/tinycolor'
 import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
@@ -234,6 +234,21 @@ export const Filters = {
   },
 
   /**
+   * Formats a number (in bytes/sec) to a human readable data rate.
+   */
+  getReadableDataRateString (dataRateInBytesPerSec: number) {
+    let i = -1
+    const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
+    if (dataRateInBytesPerSec === 0) return `0${byteUnits[0]}`
+    do {
+      dataRateInBytesPerSec = dataRateInBytesPerSec / 1024
+      i++
+    } while (dataRateInBytesPerSec > 1024)
+
+    return Math.max(dataRateInBytesPerSec, 0.2).toFixed(1) + byteUnits[i] + '/Sec'
+  },
+
+  /**
    * Formats a number representing mm to human readable distance.
    */
   getReadableLengthString (lengthInMm: number, showMicrons = false) {
@@ -346,7 +361,7 @@ export const Filters = {
    * Tells us if a color is considered dark or light
    */
   isColorDark (color: string) {
-    const t = tinycolor(color).getBrightness()
+    const t = new TinyColor(color).getBrightness()
     return ((t / 255) * 100) <= 50
   },
 

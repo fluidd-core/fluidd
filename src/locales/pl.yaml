@@ -161,7 +161,7 @@ app:
       finish_time: Koniec
       free: dostępne
       high: Wysoki
-      host: Gospodarz
+      host: Host
       edit_preset: Edytuj preset
       longest_job: Najdłuższa praca
       low: Niski
@@ -212,6 +212,8 @@ app:
       unsaved_changes: Niezapisane zmiany
       file_time: Plik
       turn_device_on: Włącz %{device}
+      cross: Krzyż
+      bars: Pasek
     btn:
       abort: Przerwij
       add: Dodaj
@@ -356,8 +358,8 @@ app:
           Spowoduje to usunięcie {count} wybranych elementów.
         confirm: Na pewno?
         confirm_forcemove_toggle: Czy na pewno? Może to spowodować uszkodzenie drukarki.
-        confirm_reboot_host: Czy na pewno? Spowoduje to restart systemu gospodarza.
-        confirm_shutdown_host: Czy na pewno? Spowoduje to zamknięcie systemu gospodarza.
+        confirm_reboot_host: Czy na pewno? Spowoduje to restart systemu hosta.
+        confirm_shutdown_host: Czy na pewno? Spowoduje to zamknięcie systemu hosta.
         confirm_service_start: Czy na pewno chcesz uruchomić usługę %{name}?
         confirm_exclude_object: Czy na pewno chcesz wykluczyć ten obiekt z drukowania?
         confirm_service_stop: Czy na pewno chcesz zatrzymać usługę %{name}?
@@ -585,6 +587,9 @@ app:
       z_adjust_values: Wartości korekcji Z
       camera_url_stream: Adres URL strumienia wideo kamery
       camera_url_snapshot: Adres URL migawki kamery
+      toolhead_control_style: Styl sterowania głowicą narzędziową
+      toolhead_xy_move_distances: Wartości odległości XY głowicy narzędziowej
+      toolhead_z_move_distances: Wartości odległości Z głowicy narzędziowej
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
@@ -676,9 +681,9 @@ app:
       commit_history: Historia zmian
       updates_available: Dostępne aktualizacje
       up_to_date: AKTUALNY
-      os_packages: Pakiety systemu
-      commits_on: zmiany w
-      committed: Zmieniono
+      os_packages: System
+      commits_on: zatwierdzenia w
+      committed: Zatwierdzono
       invalid: NIEPRAWIDŁOWY
       dirty: BRUDNY
       package_list: Lista pakietów
@@ -689,7 +694,7 @@ app:
       update_all: Aktualizuj wszystko
       finish: Zakończ
     tooltip:
-      commit_history: Historia zmian
+      commit_history: Historia zatwierdzeń
       invalid: Wskazuje na lokalne zmiany w repozytorium
       packages: Pakiety
       release_notes: Informacje o wydaniu
@@ -776,6 +781,8 @@ app:
       remaining_weight: Pozostało
       vendor: Producent
       lot_nr: Nr. partii
+      device_camera: Urządzenie
+      id: ID
     msg:
       no_spool: Nie wybrano szpuli. Czy na pewno chcesz drukować bez śledzenia filamentu?
       no_filament: Na wybranej szpuli może nie być wystarczającej ilości filamentu,
@@ -796,7 +803,17 @@ app:
         spool_not_existant: Zeskanowana szpula nie istnieje w bazie danych.
         no_image_data: Wystąpił błąd dostępu do transmisji z kamery. Sprawdź jej konfigurację
           lub spróbuj użyć innego źródła.
+        cors: Wystąpił błąd dostępu do transmisji z kamery. Upewnij się, że serwer
+          webcam umożliwia dostęp CORS.
     setting:
       auto_open_qr_camera: Automatyczne otwórz kamerę w celu wykrycia kodu QR
       show_spool_selection_dialog_on_print_start: Pokaż okno dialogowe wyboru szpuli
         przy rozpoczęciu drukowania
+      auto_select_spool_on_match: Automatycznie zatwierdzaj wybór szpuli po dopasowaniu
+        kodu QR
+      prefer_device_camera: Użyj kamery urządzenia do wykrywania kodów QR, jeśli jest
+        dostępna
+      warn_on_not_enough_filament: Wyświetla ostrzeżenie, gdy na wybranej szpuli nie
+        ma wystarczającej ilości filamentu do zakończenia drukowania
+      warn_on_filament_type_mismatch: Wyświetla ostrzeżenie, gdy typ filamentu wybrany
+        w slicerze i filamentu na szpuli nie jest zgodny
