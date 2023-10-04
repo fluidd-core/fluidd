@@ -98,10 +98,17 @@
           class="pa-0"
         >
           <v-icon
-            :color="`#${activeSpool?.filament.color_hex ?? ($vuetify.theme.dark ? 'fff' : '000')}`"
-            :size="activeSpool ? '110px' : '55px'"
+            v-if="activeSpool"
+            :color="activeSpool.filament.color_hex ? `#${activeSpool.filament.color_hex}` : undefined"
+            size="110px"
           >
-            {{ activeSpool ? '$filament' : '$progressQuestion' }}
+            $filament
+          </v-icon>
+          <v-icon
+            v-else
+            size="55px"
+          >
+            $progressQuestion
           </v-icon>
         </v-col>
       </v-row>
