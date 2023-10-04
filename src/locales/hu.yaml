@@ -239,12 +239,14 @@ app:
       api_key: Api kulcs
       api_url: API URL
       auth_source: Hitelesítési forrás
+      bars: Bárok
       category: Kategória
       change_password: Jelszóváltás
       clear_all: Mindent kitöröl
       color: Szín
       command: Parancs
       confirm: Megerősít
+      cross: Kereszt
       current_password: Aktuális jelszó
       current_user: Jelenlegi felhasználó
       default: Alapértelmezett
@@ -581,7 +583,10 @@ app:
       title: Cím
       to_browser_local_storage: A böngésző helyi tárolója
       to_browser_session_storage: A böngésző munkamenet tárolása
+      toolhead_control_style: Nyomtatófej vezérlési stílus
       toolhead_move_distances: Nyomtatófej távolsági értékek
+      toolhead_xy_move_distances: Nyomtatófej XY távolságértékei
+      toolhead_z_move_distances: Nyomtatófej Z távolságértékei
       type: Típus
       unit: Egység
       z_adjust_values: A (Z) értékek beállítása
@@ -663,6 +668,7 @@ app:
       manual_probe: Kézi szonda
       motors_off: Motorok Ki
       relative_positioning: Relatív pozicionálás
+      select_tool: Eszköz kiválasztása %{tool}
       tools: Eszközök
     label:
       stats_active_extruder: >-
@@ -763,3 +769,69 @@ app:
       variable_fps: Változó FPS
       variable_fps_min: Minimális képkockaszám
       variable_fps_max: Maximális képkockaszám
+  spoolman:
+    btn:
+      manage_spools: Orsók kezelése
+      scan_code: Kód beolvasása
+      select: Kiválaszt
+    title:
+      spoolman: Orsómester
+      spool_selection: Orsó kiválasztása
+      scan_spool: Orsó beolvasása
+    label:
+      change_spool: Orsó cseréje
+      comment: Megjegyzés
+      device_camera: Eszköz
+      filament_name: Nyomtatószál
+      first_used: Először használt
+      id: ID
+      last_used: Utoljára használt
+      location: Helyszín
+      lot_nr: Lot Nr
+      material: Anyag
+      remaining_weight: Maradék
+      vendor: Forgalmazó
+    msg:
+      no_spool: >-
+        Nem választottál ki orsót.
+        Biztos, hogy szálkövetés nélkül szeretnél nyomtatni?
+      no_filament: >-
+        Lehet, hogy a kiválasztott orsón nem maradt elég szál ahhoz, hogy
+        a nyomtatási feladat sikeresen befejeződjön.
+        Biztos, hogy folytatni akarod?
+      no_required_length: >-
+        A kiválasztott fájl nyomtatásához szükséges szálmennyiség ismeretlen.
+        Szeretnéd folytatni?
+      mismatched_filament: >-
+        A kiválasztott szál anyaga nem egyezik a szeletelőben kiválasztott anyaggal.
+        Biztos, hogy folytatni akarod?
+      tracking_inactive: >-
+        A szálkövetés inaktív.
+        A kezdéshez kérjük, válassz egy orsót.
+      info:
+        howto: >-
+          Mutasd meg az orsó QR-kódját a kamerának.
+          Ez az ablak bezáródik, amint egy orsót észlel.
+      warning:
+        code_not_recognized: Ez a kód nem tűnik kompatibilis QR-kódnak.
+        invalid_spool_id: A QR-kódban szereplő orsóazonosító ID érvénytelen.
+      error:
+        cors: >-
+          Hiba történt a kamerákhoz való hozzáférésnél.
+          Kérjük, győződj meg, hogy a webkamszerver engedélyezi a CORS-hozzáférést.
+        spool_not_existant: A beolvasott orsó nem létezik az adatbázisban.
+        no_image_data: >-
+          Hiba történt a kamerákhoz való hozzáférésnél.
+          Kérjük, ellenőrizd a kamera konfigurációját, vagy próbálkozz másik kameraforrással.
+    setting:
+      auto_open_qr_camera: Automatikusan megnyitja a kamerát a QR-kód beolvasásához
+      auto_select_spool_on_match: Automatikusan rögzíti az orsókiválasztást QR-kód egyezés esetén
+      prefer_device_camera: A készülék kamerájának használata a QR-kódok felismeréséhez, ha van ilyen
+      show_spool_selection_dialog_on_print_start: Orsókiválasztó párbeszédpanel megjelenítése nyomtatás indításakor
+      warn_on_not_enough_filament: >-
+        Figyelmeztetés megjelenítése, ha a kiválasztott orsón nem maradt elég szál a nyomtatás befejezéséhez.
+      warn_on_filament_type_mismatch: >-
+        Figyelmeztetés megjelenítése, ha az orsó szál típusa és a szeletelőben kiválasztott szál típusa nem egyezik meg.
+  sensors:
+    title:
+      sensors: Érzékelők
