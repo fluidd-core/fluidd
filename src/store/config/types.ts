@@ -205,5 +205,5 @@ export interface GcodePreviewConfig {
 }
 
 export interface FileSystemConfig {
-  activeFilters: Partial<Record<string, FileFilterType[]>>
+  activeFilters: Record<string, FileFilterType[]>
 }

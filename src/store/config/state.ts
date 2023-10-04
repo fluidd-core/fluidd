@@ -133,11 +133,7 @@ export const defaultState = (): ConfigState => {
         }
       },
       fileSystem: {
-        activeFilters: {
-          gcodes: [],
-          config: [],
-          logs: []
-        }
+        activeFilters: {}
       },
       toolhead: {
         forceMove: false,
