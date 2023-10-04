@@ -222,11 +222,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   set filters (value: FileFilterType[]) {
-    this.$store.dispatch('config/saveByPath', {
-      path: `uiSettings.fileSystem.activeFilters.${this.currentRoot}`,
-      value,
-      server: true
-    })
+    this.$store.dispatch('config/updateFileSystemActiveFilters', { root: this.currentRoot, value })
   }
 
   // Maintains content menu state.

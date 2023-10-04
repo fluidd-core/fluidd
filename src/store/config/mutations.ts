@@ -7,6 +7,7 @@ import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
 import { AppTableHeader } from '@/types'
 import { AppTablePartialHeader } from '@/types/tableheaders'
+import { FileFilterType } from '../files/types'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -35,6 +36,10 @@ export const mutations: MutationTree<ConfigState> = {
 
       if (payload.editor && payload.editor.autoEditExtensions) {
         Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
+      }
+
+      if (payload.fileSystem && payload.fileSystem.activeFilters) {
+        Vue.set(processed.fileSystem, 'activeFilters', payload.fileSystem.activeFilters)
       }
 
       Vue.set(state, 'uiSettings', processed)
@@ -152,6 +157,10 @@ export const mutations: MutationTree<ConfigState> = {
   setRemovePreset (state, payload) {
     const i = state.uiSettings.dashboard.tempPresets.findIndex(preset => preset.id === payload.id)
     state.uiSettings.dashboard.tempPresets.splice(i, 1)
+  },
+
+  setFileSystemActiveFilters (state, payload: { root: string, value: FileFilterType[] }) {
+    Vue.set(state.uiSettings.fileSystem.activeFilters, payload.root, payload.value)
   },
 
   /**
