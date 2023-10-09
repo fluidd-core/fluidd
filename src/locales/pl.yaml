@@ -437,6 +437,8 @@ app:
     msg:
       confirm: Plik "%{filename}" ma rozmiar %{size}, może to wymagać dużej ilości
         zasobów w systemie. Czy na pewno?
+    overlay:
+      drag_file_load: <strong>Przeciągnij</strong> plik G-Code tutaj, aby go wczytać
   tool:
     btn:
       home_all: Wszystkie
