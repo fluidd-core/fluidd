@@ -31,7 +31,13 @@
       </app-btn-collapse-group>
     </template>
 
-    <v-card-text>
+    <v-card-text
+      :class="{ 'no-pointer-events': overlay }"
+      @dragover="handleDragOver"
+      @dragenter.self.prevent
+      @dragleave.self.prevent="handleDragLeave"
+      @drop.self.prevent="handleDrop"
+    >
       <gcode-preview-parser-progress-dialog
         v-if="showParserProgressDialog"
         :value="showParserProgressDialog"
@@ -123,6 +129,12 @@
           />
         </v-col>
       </v-row>
+
+      <app-drag-overlay
+        v-model="overlay"
+        :message="$t('app.gcode.overlay.drag_file_load')"
+        icon="$cubeScan"
+      />
     </v-card-text>
   </collapsable-card>
 </template>
@@ -155,6 +167,7 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
   currentLayer = 0
   moveProgress = 0
+  overlay = false
 
   @Watch('layerCount')
   onLayerCountChanged () {
@@ -311,7 +324,14 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   async loadCurrent () {
-    const file = this.printerFile as AppFile
+    const printerFile = this.printerFile
+
+    if (printerFile) {
+      this.loadFile(printerFile)
+    }
+  }
+
+  async loadFile (file: AppFile) {
     this.getGcode(file)
       .then(response => response?.data)
       .then(gcode => {
@@ -372,6 +392,36 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
 
   get parts () {
     return Object.values(this.$store.getters['parts/getParts'])
+  }
+
+  handleDragOver (e: DragEvent) {
+    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      e.preventDefault()
+
+      e.dataTransfer.dropEffect = 'link'
+
+      this.overlay = true
+    }
+  }
+
+  handleDragLeave () {
+    this.overlay = false
+  }
+
+  handleDrop (e: DragEvent) {
+    this.overlay = false
+
+    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      const data = e.dataTransfer.getData('x-fluidd-jobs')
+      const files: { path: string, jobs: string[] } = JSON.parse(data)
+      const path = files.path ? `gcodes/${files.path}` : 'gcodes'
+
+      const file = this.$store.getters['files/getFile'](path, files.jobs[0]) as AppFile | undefined
+
+      if (file) {
+        this.loadFile(file)
+      }
+    }
   }
 
   created () {

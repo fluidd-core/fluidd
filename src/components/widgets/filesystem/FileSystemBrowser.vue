@@ -6,7 +6,7 @@
     </div> -->
 
     <v-data-table
-      v-model="selectedItems"
+      :value="selected"
       :headers="headers"
       :items="files"
       :dense="dense"
@@ -26,13 +26,10 @@
       class="rounded-0"
       fixed-header
       @input="handleSelected"
-      @item-selected="handleItemSelected"
     >
       <template #item="{ item, isSelected, select }">
         <tr
           :class="{
-            'is-directory': (item.type === 'directory'),
-            'is-file': (item.type === 'file'),
             'is-disabled': disabled,
             'v-data-table__selected': (isSelected && item.name !== '..')
           }"
@@ -42,9 +39,10 @@
           @contextmenu.prevent="$emit('row-click', item, $event)"
           @dragstart="handleDragStart(item, $event)"
           @dragend="handleDragEnd"
-          @drop.prevent.stop="handleDrop(item, $event)"
-          @dragover.prevent="handleDragOver($event)"
-          @dragleave.prevent="handleDragLeave($event)"
+          @dragover="handleDragOver(item, $event)"
+          @dragenter.prevent
+          @dragleave.prevent="handleDragLeave"
+          @drop.prevent="handleDrop(item, $event)"
         >
           <td v-if="bulkActions">
             <v-simple-checkbox
@@ -282,7 +280,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
+import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import { FileBrowserEntry, RootProperties } from '@/store/files/types'
 import { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
@@ -296,6 +294,9 @@ import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
   }
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
+  @VModel({ type: Array, required: true })
+    selected!: FileBrowserEntry[]
+
   @Prop({ type: String, required: true })
   readonly root!: string
 
@@ -324,12 +325,8 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   @Prop({ type: Boolean, default: false })
   readonly bulkActions!: boolean
 
-  @Prop({ type: Array, required: true })
-  readonly selected!: FileBrowserEntry[]
-
   dragItem: FileBrowserEntry | null = null
   ghost: HTMLDivElement | undefined = undefined
-  selectedItems: FileBrowserEntry[] = []
 
   // Is the history component enabled
   get showHistory () {
@@ -357,44 +354,36 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     return this.$store.state.config.uiSettings.general.textSortOrder
   }
 
+  get draggedItems () {
+    if (this.dragItem) {
+      const filteredSelectedItems = this.selected
+        .filter(item => item.name !== '..')
+
+      const draggedItems = filteredSelectedItems.length > 0
+        ? filteredSelectedItems
+        : [this.dragItem]
+
+      return draggedItems
+    }
+
+    return []
+  }
+
   customSort (items: FileBrowserEntry[], sortBy: string[], sortDesc: boolean[], locale: string) {
     return this.$filters.fileSystemSort(items, sortBy, sortDesc, locale, this.textSortOrder)
   }
 
-  mounted () {
-    this.selectedItems = this.selected
-  }
-
-  // Make sure we update the selected items if it's changed.
-  @Watch('selected')
-  onSelected (selected: FileBrowserEntry[]) {
-    this.selectedItems = selected
-  }
-
-  // When the selected items change, update the parent.
   handleSelected (selected: FileBrowserEntry[]) {
-    this.$emit('update:selected', selected)
-  }
-
-  // We ignore our [..] dir, so handle faking our checkbox states.
-  handleItemSelected (item: { item: FileBrowserEntry; value: boolean }) {
-    // If last two, and filtered results in 0 - set to 0.
-    if (
-      !item.value &&
-      this.selectedItems.length <= 2 &&
-      this.selectedItems.filter(fileOrFolder => (fileOrFolder.name !== '..' && item.item !== fileOrFolder)).length === 0
-    ) {
-      this.selectedItems = []
+    if (selected.length === 1) {
+      if (selected[0].name === '..') {
+        selected = []
+      } else {
+        selected = this.files
+          .filter(item => item.name === selected[0].name || item.name === '..')
+      }
     }
 
-    // If top two, and filtered results in count -1, set to all.
-    if (
-      item.value &&
-      this.selectedItems.length + 2 >= this.files.length &&
-      this.selectedItems.length + 1 === this.files.filter(fileOrFolder => (fileOrFolder.name !== '..')).length
-    ) {
-      this.selectedItems = this.files
-    }
+    this.$emit('input', selected)
   }
 
   getItemIcon (item: FileBrowserEntry) {
@@ -444,64 +433,84 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     if (e.dataTransfer) {
-      const filteredSelectedItems = this.selected
-        .filter(item => (item.name !== '..'))
-      const draggedItems = filteredSelectedItems.length > 0
-        ? filteredSelectedItems
-        : [item]
+      const draggedItems = this.draggedItems
 
       this.ghost = document.createElement('div')
       this.ghost.classList.add('bulk-drag')
       this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
       this.ghost.innerHTML = this.$tc('app.file_system.tooltip.move_item', draggedItems.length)
       document.body.appendChild(this.ghost)
-      e.dataTransfer.dropEffect = 'move'
+      e.dataTransfer.effectAllowed = 'linkMove'
       e.dataTransfer.setDragImage(this.ghost, 0, 0)
-      const source = draggedItems
-      this.$emit('drag-start', source, e.dataTransfer)
+      if (item.type === 'file') {
+        const filepath = item.path ? `${this.root}/${item.path}` : this.root
+        const url = this.createFileUrl(item.filename, filepath)
+
+        e.dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
+        e.dataTransfer.setData('text/plain', url)
+        e.dataTransfer.setData('text/uri-list', url)
+      }
+      this.$emit('drag-start', draggedItems, e.dataTransfer)
     }
   }
 
   // File was dropped on another table row.
-  handleDrop (destination: FileBrowserEntry, e: DragEvent) {
+  handleDrop (item: FileBrowserEntry, e: DragEvent) {
     this.handleDragLeave(e)
-    if (
-      destination.type === 'directory' &&
-      this.dragItem &&
-      this.dragItem !== destination
-    ) {
-      const filteredSelectedItems = this.selected
-        .filter(item => (item.name !== '..'))
-      const draggedItems = filteredSelectedItems.length > 0
-        ? filteredSelectedItems
-        : [this.dragItem]
 
-      if (!draggedItems.includes(destination)) {
-        this.$emit('move', draggedItems, destination)
+    if (
+      item.type === 'directory' &&
+      e.dataTransfer &&
+      this.dragItem &&
+      this.dragItem !== item
+    ) {
+      const draggedItems = this.draggedItems
+
+      if (!draggedItems.includes(item)) {
+        this.$emit('move', draggedItems, item)
       }
     }
   }
 
   // Handles highlighting rows as drag over them
-  handleDragOver (e: DragEvent) {
-    const element = e.target as HTMLElement
-    if (element) {
-      if (
-        element.tagName === 'TD' &&
-        element.parentElement?.classList.contains('is-directory')
-      ) {
-        const row = element.parentElement
-        if (row) row.classList.add('active')
+  handleDragOver (item: FileBrowserEntry, e: DragEvent) {
+    if (
+      item.type === 'directory' &&
+      e.dataTransfer &&
+      this.dragItem &&
+      this.dragItem !== item &&
+      !this.draggedItems.includes(item)
+    ) {
+      e.preventDefault()
+
+      e.dataTransfer.dropEffect = 'move'
+
+      let element = e.target as HTMLElement | null
+
+      while (element) {
+        if (element.tagName === 'TR') {
+          element.classList.add('active')
+
+          return
+        }
+
+        element = element.parentElement
       }
     }
   }
 
   // Handles un highlighting rows as we drag out of them.
   handleDragLeave (e: DragEvent) {
-    const element = e.target as HTMLElement
-    if (element?.tagName === 'TD') {
-      const row = element.parentElement
-      if (row) row.classList.remove('active')
+    let element = e.target as HTMLElement | null
+
+    while (element) {
+      if (element.tagName === 'TR') {
+        element.classList.remove('active')
+
+        return
+      }
+
+      element = element.parentElement
     }
   }
 

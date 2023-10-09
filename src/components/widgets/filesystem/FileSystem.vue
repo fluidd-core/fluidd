@@ -5,10 +5,10 @@
     :max-height="maxHeight"
     :class="{ 'no-pointer-events': dragState.overlay }"
     flat
-    @dragenter.capture.prevent="handleDragEnter"
-    @dragover.prevent
+    @dragover="handleDragOver"
+    @dragenter.self.prevent
     @dragleave.self.prevent="handleDragLeave"
-    @drop.prevent.stop="handleDropFile"
+    @drop.self.prevent="handleDropFile"
   >
     <file-system-toolbar
       v-if="selected.length <= 0"
@@ -40,6 +40,7 @@
 
     <file-system-browser
       v-if="headers"
+      v-model="selected"
       :headers="visibleHeaders"
       :root="currentRoot"
       :dense="dense"
@@ -49,7 +50,6 @@
       :files="files"
       :drag-state.sync="dragState.browserState"
       :bulk-actions="bulkActions"
-      :selected.sync="selected"
       :large-thumbnails="currentRoot === 'timelapse'"
       @row-click="handleRowClick"
       @move="handleMove"
@@ -814,7 +814,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
           jobs: files.map(file => file.name)
         }
 
-        dataTransfer.setData('jobs', JSON.stringify(data))
+        dataTransfer.setData('x-fluidd-jobs', JSON.stringify(data))
       }
     }
   }
@@ -945,9 +945,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Drag handling.
    * ===========================================================================
   */
-  handleDragEnter (e: DragEvent) {
-    if (!this.rootProperties.readonly && !this.dragState.browserState && e.dataTransfer && hasFilesInDataTransfer(e.dataTransfer)) {
+  handleDragOver (e: DragEvent) {
+    if (
+      !this.rootProperties.readonly &&
+      !this.dragState.browserState &&
+      e.dataTransfer &&
+      hasFilesInDataTransfer(e.dataTransfer)
+    ) {
+      e.preventDefault()
+
       this.dragState.overlay = true
+
+      e.dataTransfer.dropEffect = 'copy'
     }
   }
 
