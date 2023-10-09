@@ -347,14 +347,31 @@ export const Filters = {
   /**
    * Determines API urls from a base url
    */
-  getApiUrls (url: string): ApiConfig {
-    const _url = new URL(url)
-    const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
-    const o = {
-      apiUrl: `${_url.protocol}//${_url.host}`,
-      socketUrl: `${wsProtocol}${_url.host}/websocket`
+  getApiUrls (apiUrl: string): ApiConfig {
+    if (
+      !apiUrl.startsWith('http://') &&
+      !apiUrl.startsWith('https://')
+    ) {
+      apiUrl = `http://${apiUrl}`
     }
-    return o
+
+    if (apiUrl.endsWith('/')) {
+      apiUrl = apiUrl.slice(0, -1)
+    }
+
+    const socketUrl = new URL(apiUrl)
+
+    socketUrl.protocol = socketUrl.protocol === 'https:'
+      ? 'wss://'
+      : 'ws://'
+    socketUrl.pathname += socketUrl.pathname.endsWith('/')
+      ? 'websocket'
+      : '/websocket'
+
+    return {
+      apiUrl,
+      socketUrl: socketUrl.toString()
+    }
   },
 
   /**

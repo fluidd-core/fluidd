@@ -105,22 +105,11 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
    */
   validUrl (url: string) {
     try {
-      this.buildUrl(url)
+      this.$filters.getApiUrls(url)
     } catch {
       return false
     }
     return true
-  }
-
-  /**
-   * Builds the URL using the browsers URL class
-   * Assume http:// if no protocol is given.
-  */
-  buildUrl (url: string) {
-    if (
-      !url.startsWith('http://') && !url.startsWith('https://')
-    ) url = `http://${url}`
-    return new URL(url)
   }
 
   timer = 0
@@ -143,7 +132,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       this.note = null
       this.verifying = true
 
-      const url = this.buildUrl(value)
+      const { apiUrl, socketUrl } = this.$filters.getApiUrls(value)
 
       // Handle cancelling axios requests.
       this.abortController?.abort()
@@ -153,7 +142,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       const { signal } = this.abortController
 
       // Start by making a standard request. Maybe it's good?
-      const request = await httpClientActions.get(`${url}server/info?t=${Date.now()}`, {
+      const request = await httpClientActions.get(`${apiUrl}/server/info?t=${Date.now()}`, {
         withAuth: false,
         signal
       })
@@ -186,9 +175,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
       // The initial request failed with a network issue..
       if (request !== 'ok') {
         if (this.hosted) {
-          const apiEndpoints = this.$filters.getApiUrls(url.toString())
-
-          await webSocketWrapper(apiEndpoints.socketUrl, signal)
+          await webSocketWrapper(socketUrl, signal)
             .then(() => {
               // likely a cors issue, but socket worked
               this.verified = true
@@ -201,7 +188,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
             })
             .finally(() => { this.verifying = false })
         } else {
-          await fetch(url + 'server/info', { signal, mode: 'no-cors', cache: 'no-cache' })
+          await fetch(`${apiUrl}/server/info`, { signal, mode: 'no-cors', cache: 'no-cache' })
             .then(() => {
               // likely a cors issue
               this.error = this.$t('app.endpoint.error.cors_error')
@@ -232,8 +219,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   }
 
   addInstance () {
-    const url = this.buildUrl(this.url)
-    const apiConfig = this.$filters.getApiUrls(url.toString())
+    const apiConfig = this.$filters.getApiUrls(this.url)
     this.open = false
     this.$emit('resolve', apiConfig)
   }
