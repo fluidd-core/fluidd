@@ -44,6 +44,7 @@ app:
       command: >-
         '''tab'' az automatikus kitöltéshez, ''help'' a parancsokhoz
         ''nyilak'' az előzményekhez'
+      scroll: Görgess lefelé
   endpoint:
     error:
       cant_connect: >-
@@ -92,8 +93,7 @@ app:
       not_found: Nincsenek fájlok
       processing: Feldolgozás
     overlay:
-      drag_files_folders_upload: Feltöltéshez <strong>húzd</strong> ide a fájlokat
-        és mappákat
+      drag_files_folders_upload: Feltöltéshez <strong>húzd</strong> ide a fájlokat és mappákat
       drag_files_enqueue: <strong>Húzd</strong> sorba a fájlokat
     title:
       add_dir: Könyvtár hozzáadása
@@ -340,10 +340,8 @@ app:
       welcome_back: >-
         Üdv újra.<br>Jelentkezz be alább, hogy kapcsolatban maradj a nyomtatóddal.
       offline_ready: Fluidd készen áll az offline munkavégzésre.
-      needs_refresh: Új tartalom érhető el, frissítéshez kattints az <b>Újratöltés</b>
-        gombra.
-      pending_configuration_sections_deleted: A következő szakaszok törlésre vannak
-        jelölve
+      needs_refresh: Új tartalom érhető el, frissítéshez kattints az <b>Újratöltés</b> gombra.
+      pending_configuration_sections_deleted: A következő szakaszok törlésre vannak jelölve
       rolledover_logs: >-
         A következő alkalmazási naplók átkerültek: %{applications}
     simple_form:
@@ -362,8 +360,7 @@ app:
         invalid_aspect: Érvénytelen képarány
       msg:
         confirm: Biztos vagy benne?
-        confirm_delete: Biztos vagy benne? Törlöd a kiválasztott elemet. | Biztos
-          vagy benne? Törölsz {count} elemet.
+        confirm_delete: Biztos vagy benne? Törlöd a kiválasztott elemet. | Biztos vagy benne? Törölsz {count} elemet.
         confirm_exclude_object: Biztosan kizárod ezt az objektumot a nyomtatásból?
         confirm_forcemove_toggle: Biztos vagy benne? Ez károsíthatja a nyomtatót.
         confirm_reboot_host: Biztos, hogy újraindítod a gazdagépet?
@@ -445,8 +442,7 @@ app:
       managed_by_moonraker: A moonraker konfigurációja által kezelt
       notifications: Értesítések
       reload_klipper: Újratölti a klipper konfigurációját.
-      reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az
-        MCU-kat.
+      reload_restart_klipper: Újratölti a klipper konfigurációját és újraindítja az MCU-kat.
       restart_klipper: Újraindítja a klipper rendszerszolgáltatást.
       run_collector: Gyűjtő futtatása
       rollover_logs: Forgó naplók
@@ -511,14 +507,13 @@ app:
       camera_stream_type: Sugárzás típusa
       camera_url_snapshot: Kamera pillanatkép URL
       camera_url_stream: Kamera közvetítés URL
+      camera_url: Kamera URL
       card: Kártya
       collector: Kollektor
       confirm_on_estop: Megerősítés kérése vészleállításkor
       confirm_on_power_device_change: Megerősítés kérése kikapcsoláskor
-      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintsd át
-        a függőben lévő konfigurációs módosításokat
-      confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül
-        zárod be a szerkesztőt
+      confirm_on_save_config_and_restart: Mentés és újraindítás előtt tekintsd át a függőben lévő konfigurációs módosításokat
+      confirm_dirty_editor_close: Megerősítés kérése, ha módosítások mentése nélkül zárod be a szerkesztőt
       contains: Tartalom
       dark_mode: Sötét mód
       dashed: Szaggatott
@@ -545,8 +540,7 @@ app:
       height: Magasság
       gcode_coords: G-Kód koordináták használata
       icon: Ikon
-      ignore_default_bed_mesh_pending_configuration_changes: Az alapértelmezett ágyháló
-        figyelmen kívül hagyása - Függő konfigurációs módosítások
+      ignore_default_bed_mesh_pending_configuration_changes: Az alapértelmezett ágyháló figyelmen kívül hagyása - Függő konfigurációs módosítások
       invert_x_control: Fordított (X) vezérlés
       invert_y_control: Fordított (Y) vezérlés
       invert_z_control: Fordított (Z) vezérlés
@@ -577,8 +571,7 @@ app:
       show_legend: Legenda mutatása
       show_rate_of_change: A hőmérséklet változásának mértéke
       show_relative_humidity: Relatív páratartalom mutatása
-      show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső
-        navigációban
+      show_save_config_and_restart: Konfiguráció mentése, újraindítás gomb a felső navigációban
       show_upload_and_print: A Feltöltés és Nyomtatás gomb megjelenítése a felső navigációban
       solid: Szilárd
       starts_with: Ezzel kezdődik
@@ -596,10 +589,8 @@ app:
       time_format: Idő formátum
       text_sort_order: Szövegrendezési sorrend
       force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
-      show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus
-        megjelenítése
-      show_bed_screws_adjust_dialog_automatically: Ágycsavarok automatikus beállítása
-        párbeszédpanel megjelenítése
+      show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus megjelenítése
+      show_bed_screws_adjust_dialog_automatically: Ágycsavarok automatikus beállítása párbeszédpanel megjelenítése
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
@@ -617,18 +608,14 @@ app:
       thermal_presets: Hőmérsékleti előbeállítások
       tool: Eszköz
     tooltip:
-      diagnostics_performance: A diagnosztikai információk naplózása hatással lehet
-        a teljesítményre
+      diagnostics_performance: A diagnosztikai információk naplózása hatással lehet a teljesítményre
       gcode_coords: G-Kód pozíció használata a nyomtatófej pozíciója helyett a műszerfalon
-      show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt,
-        ha kézi szintezőeszközt futtatsz
-      show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő
-        párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
+      show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha kézi szintezőeszközt futtatsz
+      show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
-      no_connection: Nincs Moonraker kapcsolat. Kérjük, ellenőrizd a Moonraker állapotát
-        és/vagy frissítsd.
+      no_connection: Nincs Moonraker kapcsolat. Kérjük, ellenőrizd a Moonraker állapotát és/vagy frissítsd.
   system_info:
     label:
       capacity: Kapacitás
@@ -670,8 +657,7 @@ app:
       manual_probe: Kézi szonda
     tooltip:
       absolute_positioning: Abszolút pozicionálás
-      extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>)
-        alatt van
+      extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van
       home_xy: XY kezdőpont
       home_z: Z kezdőpont
       manual_probe: Kézi szonda

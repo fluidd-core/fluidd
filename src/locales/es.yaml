@@ -86,6 +86,8 @@ app:
     msg:
       not_found: No se encontraron archivos
       processing: Procesando...
+    overlay:
+      label: <strong>Arrastrar</strong> un archivo aquí
     title:
       add_dir: Agregar una carpeta
       add_file: Agregar un archivo
@@ -291,8 +293,7 @@ app:
         required: Obligatorio
       msg:
         confirm: ¿Está seguro?
-        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación
-          del dispositivo.
+        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
     table:
@@ -380,6 +381,7 @@ app:
       camera_flip_x: Voltear horizontalmente
       camera_flip_y: Voltear verticalmente
       camera_stream_type: Tipo de stream
+      camera_url: URL de la cámara
       confirm_on_estop: Requerir confirmación para la Parada de Emergencia
       confirm_on_power_device_change: Requiere confirmar cambios de alimentación
       dark_mode: Modo oscuro
@@ -412,8 +414,7 @@ app:
       reset: Restablecer opciones
       retraction_icon_size: Tamaño del icono de retracción
       show_animations: Mostrar animaciones
-      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos
-        de cama automáticamente
+      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos de cama automáticamente
       show_rate_of_change: Mostrar tasa de cambio de temperatura
       solid: Sólido
       starts_with: Comienza con

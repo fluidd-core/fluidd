@@ -63,9 +63,9 @@ app:
       label:
         print_start_time: 隐藏已打印项目
         print_start_time_desc: 隐藏已经打印的项目文件
-        hidden_files_folders: 筛选隐藏的文件和文件夹
+        hidden_files_folders: 筛选隐藏的文件和文件夹                                                  
         klipper_backup_files: 隐藏Klipper备份文件
-        rolled_log_files: 筛选滚动日志文件
+        rolled_log_files: 筛选滚动日志文件                                         
     label:
       dir_name: 目录名称
       disk_usage: 磁盘使用率
@@ -79,7 +79,8 @@ app:
       not_found: 文件未找到
       processing: 处理中...
     overlay:
-      drag_files_enqueue: 将文件拖到<strong>此处</strong>进行入队
+      drag_files_folders: <strong>拖动</strong> 一个文件到这里
+      drag_files_enqueue: 将文件拖到<strong>此处</strong>进行入队                                                               
     title:
       add_dir: 新建目录
       add_file: 新建文件
@@ -87,7 +88,7 @@ app:
       download_file: 下载文件
       duplicate_dir: 重复目录
       duplicate_file: 重复文件
-      go_to_file: 转到文件
+      go_to_file: 转到文件                                  
       rename_dir: 重命名目录
       rename_file: 重命名文件
       upload_file: 上传文件
@@ -113,7 +114,7 @@ app:
       show_extrusions: 显示已打印部分
       show_moves: 显示移动走线
       show_next_layer: 显示下一层
-      show_parts: 显示零件
+      show_parts: 显示零件                      
       show_previous_layer: 显示上一层
       show_retractions: 显示回抽
       parsing_file: 解析文件
@@ -140,13 +141,13 @@ app:
       create_zip_archive: 压缩
       delete: 删除
       download: 下载
-      duplicate: 复制
+      duplicate: 复制                    
       edit: 编辑
       exit_layout: 退出修改模式
       extrude: 挤出
       filter: 过滤
       forgot_password: 忘记密码？
-      go_to_file: 转到文件
+      go_to_file: 转到文件                    
       heaters_off: 停止加热
       job_queue: 任务队列
       load_all: 全部加载
@@ -179,7 +180,7 @@ app:
       return_dashboard: 返回到仪表板
       save: 保存
       save_as: 另存为
-      save_restart: 保存并重启
+      save_restart: 保存并重启                            
       save_config_and_restart: 保存配置并重新启动
       select_columns: 选择列
       send: 发送
@@ -417,6 +418,8 @@ app:
   history:
     msg:
       confirm: 这将清除所有历史记录和打印机统计数据！是否确认？
+      confirm_jobs: 这会清除任务历史信息！是否确认？
+      confirm_stats: 这会清除状态统计信息！是否确认？
   job_queue:
     msg:
       confirm: 这将清除整个打印机队列！是否确认？
@@ -472,6 +475,7 @@ app:
         rawstream: 原始流
       camera_rotate_by: 旋转角度
       camera_stream_type: 视频流类型
+      camera_url: 摄像头地址
       card: 卡片
       collector: 收集器
       confirm_on_estop: 紧急停止时是否需要确认
@@ -503,6 +507,7 @@ app:
       fps_idle_target: 未对焦时 FPS
       height: 高度
       gcode_coords: 使用 GCode 坐标
+      group_lower_layers: 下层分组
       icon: 图标
       ignore_default_bed_mesh_pending_configuration_changes: 忽略默认的床网，等待配置更改
       invert_x_control: 反转X轴控制

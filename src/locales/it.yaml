@@ -91,6 +91,8 @@ app:
     msg:
       not_found: Nessun file trovato
       processing: Calcolando
+    overlay:
+      label: <strong> Trascina </strong> un file qui
     title:
       add_dir: Aggiungi Directory
       add_file: Aggiungi File
@@ -341,6 +343,7 @@ app:
       camera_flip_x: Capovolgi orizzontalmente
       camera_flip_y: Capovolgi verticalmente
       camera_stream_type: Tipo di Stream
+      camera_url: URL Camera
       confirm_on_estop: Conferma prima di arrestare
       dark_mode: Dark Mode
       default_extrude_length: Lunghezza di estrusione predefinita

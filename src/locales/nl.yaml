@@ -11,8 +11,7 @@ app:
       wireframe: Draadframe
     msg:
       hint: >-
-        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook
-        voor
+        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook voor
         kiezen %{name} te verwijderen.
       not_found: Geen bedmeshes gevonden.
       not_loaded: Geen meshes geladen
@@ -31,8 +30,7 @@ app:
       target: Doelwit
     tooltip:
       help: >-
-        Houd shift ingedrukt om te zoomen.<br />Klik op een item om deze aan of uit
-        te
+        Houd shift ingedrukt om te zoomen.<br />Klik op een item om deze aan of uit te
         schakelen in de grafiek.
   console:
     label:
@@ -84,6 +82,8 @@ app:
     msg:
       not_found: Geen bestanden gevonden
       processing: Verwerken...
+    overlay:
+      label: <strong>Sleep</strong> een bestand naar hier
     title:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
@@ -329,6 +329,7 @@ app:
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
+      camera_url: Camera Url
       confirm_on_estop: Weet je dit zeker?
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte

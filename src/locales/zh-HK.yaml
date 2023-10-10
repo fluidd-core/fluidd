@@ -464,6 +464,7 @@ app:
         rawstream: 原始流
       camera_rotate_by: 旋轉角度
       camera_stream_type: 視頻流類型
+      camera_url: 攝像頭地址
       card: 卡片
       collector: 收集器
       confirm_on_estop: 緊急停止時是否需要確認
