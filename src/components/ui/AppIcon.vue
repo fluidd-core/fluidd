@@ -1,7 +1,7 @@
 <template>
   <div class="logo-wrapper">
     <inline-svg
-      :src="theme.logo.src"
+      :src="logoSrc"
       @loaded="handleLogoLoad"
     />
   </div>
@@ -20,6 +20,10 @@ export default class AppIcon extends Vue {
 
   get theme () {
     return this.$store.getters['config/getTheme']
+  }
+
+  get logoSrc () {
+    return `${import.meta.env.BASE_URL}${this.theme.logo.src}`
   }
 
   handleLogoLoad () {
