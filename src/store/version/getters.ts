@@ -1,6 +1,5 @@
 import { GetterTree } from 'vuex'
-import { isOfType } from '@/store/helpers'
-import { ArtifactVersion, CommitItem, HashVersion, OSPackage, VersionState } from './types'
+import { CommitItem, VersionState } from './types'
 import { RootState } from '../types'
 import { valid, gt } from 'semver'
 
@@ -45,23 +44,21 @@ export const getters: GetterTree<VersionState, RootState> = {
    * Returns a boolean indicating if a given component has an update.
    */
   hasUpdate: (state) => (component: string): boolean => {
-    if (state.version_info[component] && isOfType<ArtifactVersion>(state.version_info[component], 'name')) {
-      const o = state.version_info[component] as ArtifactVersion
-      const version = valid(o.version)
-      const remoteVersion = valid(o.remote_version)
+    const componentVersionInfo = state.version_info[component]
+
+    if ('name' in componentVersionInfo) {
+      const version = valid(componentVersionInfo.version)
+      const remoteVersion = valid(componentVersionInfo.remote_version)
       if (version && remoteVersion) {
-        return (gt(remoteVersion, version))
+        return gt(remoteVersion, version)
       }
-      return false
+    } else if ('package_count' in componentVersionInfo) {
+      return componentVersionInfo.package_count > 0
+    } else {
+      return componentVersionInfo.current_hash !== componentVersionInfo.remote_hash
     }
 
-    if (state.version_info[component] && isOfType<OSPackage>(state.version_info[component], 'package_count')) {
-      const o = state.version_info[component] as OSPackage
-      return (o.package_count > 0)
-    }
-
-    const o = state.version_info[component] as HashVersion
-    return (o.current_hash !== o.remote_hash)
+    return false
   },
 
   getResponses: (state) => {
@@ -74,7 +71,7 @@ export const getters: GetterTree<VersionState, RootState> = {
   getCommitHistory: (state) => (component: string) => {
     // This is only relevant for certain types.
     const componentVersionInfo = state.version_info[component]
-    if (state.version_info[component] && isOfType<HashVersion>(componentVersionInfo, 'git_messages')) {
+    if (componentVersionInfo && 'git_messages' in componentVersionInfo) {
       const result = [...componentVersionInfo.commits_behind]
         .reduce((groups, commitItem) => {
           const dateAndTime = new Date(+commitItem.date * 1000)

@@ -122,7 +122,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
     return {
       name: 'Fluidd',
       logo: {
-        src: '/logo_fluidd.svg',
+        src: 'logo_fluidd.svg',
         changeWithTheme: true
       },
       color: '#2196F3'

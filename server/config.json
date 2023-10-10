@@ -12,7 +12,7 @@
       "color": "#2196F3",
       "isDark": true,
       "logo": {
-        "src": "/logo_fluidd.svg",
+        "src": "logo_fluidd.svg",
         "dynamic": true
       }
     },
@@ -21,7 +21,7 @@
       "color": "#96CC4A",
       "isDark": true,
       "logo": {
-        "src": "/logo_annex.svg",
+        "src": "logo_annex.svg",
         "dynamic": true
       }
     },
@@ -30,7 +30,7 @@
       "color": "#475A91",
       "isDark": true,
       "logo": {
-        "src": "/logo_btt.svg",
+        "src": "logo_btt.svg",
         "dynamic": true
       }
     },
@@ -39,7 +39,7 @@
       "color": "#76FB00",
       "isDark": true,
       "logo": {
-        "src": "/logo_eva.svg",
+        "src": "logo_eva.svg",
         "dark": "#232323",
         "light": "#ffffff",
         "dynamic": false
@@ -50,7 +50,7 @@
       "color": "#dfff3e",
       "isDark": true,
       "logo": {
-        "src": "/logo_hevort.svg",
+        "src": "logo_hevort.svg",
         "dynamic": true
       }
     },
@@ -59,7 +59,7 @@
       "color": "#DA7A2C",
       "isDark": true,
       "logo": {
-        "src": "/logo_kingroon.svg",
+        "src": "logo_kingroon.svg",
         "dynamic": false
       }
     },
@@ -68,7 +68,7 @@
       "color": "#B12F36",
       "isDark": true,
       "logo": {
-        "src": "/logo_klipper.svg",
+        "src": "logo_klipper.svg",
         "dynamic": false
       }
     },
@@ -77,7 +77,7 @@
       "color": "#76FB00",
       "isDark": true,
       "logo": {
-        "src": "/logo_ratrig.svg",
+        "src": "logo_ratrig.svg",
         "dark": "#232323",
         "light": "#ffffff",
         "dynamic": false
@@ -88,7 +88,7 @@
       "color": "#FF2300",
       "isDark": true,
       "logo": {
-        "src": "/logo_voron.svg",
+        "src": "logo_voron.svg",
         "dynamic": true
       }
     },
@@ -97,7 +97,7 @@
       "color": "#FF2300",
       "isDark": true,
       "logo": {
-        "src": "/logo_vzbot.svg",
+        "src": "logo_vzbot.svg",
         "dynamic": false
       }
     },
@@ -106,7 +106,7 @@
       "color": "#e34234",
       "isDark": true,
       "logo": {
-        "src": "/logo_zerog.svg",
+        "src": "logo_zerog.svg",
         "dynamic": true
       }
     }

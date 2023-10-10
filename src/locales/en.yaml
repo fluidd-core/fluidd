@@ -133,6 +133,8 @@ app:
       confirm: >-
         The file "%{filename}" is %{size}, this might be resource intensive for
         your system. Are you sure?
+    overlay:
+      drag_file_load: <strong>Drag</strong> a gcode file here to load
   general:
     btn:
       abort: Abort
