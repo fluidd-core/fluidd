@@ -82,8 +82,6 @@ app:
     msg:
       not_found: Geen bestanden gevonden
       processing: Verwerken...
-    overlay:
-      label: <strong>Sleep</strong> een bestand naar hier
     title:
       add_dir: Map toevoegen
       add_file: Bestand toevoegen
@@ -300,8 +298,6 @@ app:
       reload_klipper: Herlaad de klipper configuratie.
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
       restart_klipper: Start klipper opnieuw op.
-  history:
-    msg: {}
   printer:
     state:
       busy: Bezig
@@ -329,7 +325,6 @@ app:
       camera_flip_x: Flip horizontaal
       camera_flip_y: Flip vertikaal
       camera_stream_type: Stream type
-      camera_url: Camera Url
       confirm_on_estop: Weet je dit zeker?
       dark_mode: Donker modus
       default_extrude_length: Standaard extrudelengte

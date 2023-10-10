@@ -423,11 +423,11 @@ app:
   history:
     msg:
       confirm: 履歴とプリンター統計がすべて消去されます。よろしいですか？
+      confirm_jobs: これですべてのジョブがクリアされます。よろしいですか？
+      confirm_stats: これですべての統計情報がクリアされます。よろしいですか？
   job_queue:
     msg:
       confirm: これでプリンターキュー全体がクリアされます。よろしいですか？
-      confirm_jobs: これですべてのジョブがクリアされます。よろしいですか？
-      confirm_stats: これですべての統計情報がクリアされます。よろしいですか？
   printer:
     state:
       busy: 印刷中
@@ -478,7 +478,6 @@ app:
         title: フルスクリーンアクション
       camera_rotate_by: 回転させる
       camera_stream_type: ストリームタイプ
-      camera_url: カメラURL
       card: カード
       collector: コレクタ
       confirm_dirty_editor_close: 保存されていない変更内容でエディタを閉じる場合、確認を表示する。

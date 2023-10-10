@@ -448,11 +448,11 @@ app:
   history:
     msg:
       confirm: Are you sure? This will clear all history, and printer statistics
+      confirm_jobs: Are you sure? This will clear all jobs.
+      confirm_stats: Are you sure? This will clear all stats.
   job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
-      confirm_jobs: Are you sure? This will clear all jobs.
-      confirm_stats: Are you sure? This will clear all stats.
   printer:
     state:
       busy: Busy

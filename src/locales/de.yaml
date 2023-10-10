@@ -94,7 +94,6 @@ app:
       not_found: Keine Dateien gefunden
       processing: Verarbeiten
     overlay:
-      label: <strong>Ziehen</strong> Sie eine Datei hierher
       drag_files_folders_upload: <strong>Ziehen</strong> Sie Dateien und Ordner zum
         Hochladen hierher
       drag_files_enqueue: <strong>Ziehen</strong> Sie Dateien hierher, um sie in die
@@ -142,6 +141,8 @@ app:
       confirm: >-
         Die Datei "%{filename}" ist %{size} groß, dies kann sehr
         Ressourcenintensiv für Ihr System sein. Sind Sie sicher?
+    overlay:
+      drag_file_load: <strong>Ziehe</strong> eine Gcode-Datei hierher, um sie zu laden
   general:
     btn:
       add: Hinzufügen
@@ -336,6 +337,8 @@ app:
       all: Alle
       pause_at_layer_number: Pausieren bei Schicht-Nummer
       synced_extruder: Synchronisierte Extruder
+      cross: Kreuz
+      bars: Balken
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -515,7 +518,6 @@ app:
       camera_flip_y: Vertikal spiegeln
       camera_rotate_by: Rotieren um
       camera_stream_type: Art des Kamerastreams
-      camera_url: Kamera-Url
       confirm_dirty_editor_close: Schließen des Editors mit ungespeicherten Änderungen
         bestätigen
       confirm_on_estop: Bestätigung bei Notaus anfordern
@@ -523,7 +525,6 @@ app:
         anfordern
       contains: Enthält
       dark_mode: Nachtmodus
-      date_time_format: Datum- und Zeitformat
       force_move_toggle_warning: Bestätigung bei Aktivierung von FORCE_MOVE anfordern
       show_manual_probe_dialog_automatically: Dialog für manuelles Probing automatisch
         anzeigen
@@ -544,7 +545,6 @@ app:
       fps_target: FPS Ziel
       fps_idle_target: FPS Ziel im Ruhezustand
       gcode_coords: GCode-Koordinaten verwenden
-      group_lower_layers: Untere Schichten zusammenfassen
       height: Höhe
       invert_x_control: X-Steuerung invertieren
       invert_y_control: Y-Steuerung invertieren
@@ -615,6 +615,9 @@ app:
       text_sort_order: Reihenfolge der Textsortierung
       to_browser_local_storage: zum Browser-Lokalspeicher
       to_browser_session_storage: zum Browser-Sitzungsspeicher
+      toolhead_control_style: Druckkopf-Steuerstil
+      toolhead_xy_move_distances: Druckkopf-Bewegungsdistanzen für XY
+      toolhead_z_move_distances: Druckkopf-Bewegungsdistanzen für Z
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -695,6 +698,7 @@ app:
       motors_off: Motoren Aus
       relative_positioning: Relative Positionierung
       tools: Werkzeuge
+      select_tool: Werkzeug %{tool} auswählen
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing
@@ -855,13 +859,17 @@ app:
       auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch
         übernehmen
       prefer_device_camera: Gerätekamera wenn verfügbar zur QR-Code- Erkennung verwenden
-      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen
+      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch
+        bei Druckstart anzeigen
       warn_on_not_enough_filament: >-
-        Warnung anzeigen, wenn die Spule nicht genug Filament verbleibend hat, um den Druck abzuschließen
+        Warnung anzeigen, wenn die Spule nicht genug Filament verbleibend hat, um
+        den Druck abzuschließen
       warn_on_filament_type_mismatch: >-
-        Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten übereinstimmt
+        Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten
+        übereinstimmt
   job_queue:
     msg:
-      confirm_stats: Sind Sie sicher? Hierdurch werden alle Statistiken geleert.
-      confirm_jobs: Sind Sie sicher? Hierdurch werden alle Jobs geleert.
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert
+  sensors:
+    title:
+      sensors: Sensoren

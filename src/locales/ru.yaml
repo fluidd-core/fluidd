@@ -86,11 +86,8 @@ app:
       view_section_documentation: >-
         Просмотр '%{section}' документации
     msg:
-      confirm: Вы уверены? Это приведет к удалению всех файлов и папок внутри.
       not_found: Файлы не найдены
       processing: Обработка...
-    overlay:
-      label: <strong>Перетащите</strong> файл сюда
     title:
       add_dir: Добавить папку
       add_file: Добавить файл
@@ -501,7 +498,6 @@ app:
       fps_idle_target: Цель FPS, когда она не в фокусе
       height: Высота
       gcode_coords: Испрользовать координаты GCode
-      group_lower_layers: Показывать напечатанные слои (большая нагрузка на CPU)
       icon: Иконка
       ignore_default_bed_mesh_pending_configuration_changes: Игнорировать запланированные изменения сетки стола
       invert_x_control: Инвертировать управление по оси X

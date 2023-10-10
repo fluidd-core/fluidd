@@ -44,7 +44,6 @@ app:
       command: >-
         '''tab'' az automatikus kitöltéshez, ''help'' a parancsokhoz
         ''nyilak'' az előzményekhez'
-      scroll: Görgess lefelé
   endpoint:
     error:
       cant_connect: >-
@@ -451,11 +450,11 @@ app:
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
+      confirm_jobs: Biztos vagy benne? Ez az összes munkát törli.
+      confirm_stats: Biztos vagy benne? Ez az összes statisztikát törli.
   job_queue:
     msg:
       confirm: Biztos vagy benne? Törlöd a teljes nyomtatósort
-      confirm_jobs: Biztos vagy benne? Ez az összes munkát törli.
-      confirm_stats: Biztos vagy benne? Ez az összes statisztikát törli.
   printer:
     state:
       busy: Elfoglalt
@@ -509,7 +508,6 @@ app:
       camera_stream_type: Sugárzás típusa
       camera_url_snapshot: Kamera pillanatkép URL
       camera_url_stream: Kamera közvetítés URL
-      camera_url: Kamera URL
       card: Kártya
       collector: Kollektor
       confirm_on_estop: Megerősítés kérése vészleállításkor
