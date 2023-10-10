@@ -437,6 +437,8 @@ app:
     msg:
       confirm: Plik "%{filename}" ma rozmiar %{size}, może to wymagać dużej ilości
         zasobów w systemie. Czy na pewno?
+    overlay:
+      drag_file_load: <strong>Przeciągnij</strong> plik G-Code tutaj, aby go wczytać
   tool:
     btn:
       home_all: Wszystkie
@@ -451,6 +453,7 @@ app:
       extruder_disabled: ekstruder jest wyłączony poniżej min_extrude_temp (%{min}<small>°C</small>)
       manual_probe: Sonda ręczna
       relative_positioning: Pozycjonowanie względne
+      select_tool: Wybierz narzędzie %{tool}
     title:
       bed_screws_adjust: Regulacja śrub stołu
       manual_probe: Sonda ręczna
@@ -817,3 +820,6 @@ app:
         ma wystarczającej ilości filamentu do zakończenia drukowania
       warn_on_filament_type_mismatch: Wyświetla ostrzeżenie, gdy typ filamentu wybrany
         w slicerze i filamentu na szpuli nie jest zgodny
+  sensors:
+    title:
+      sensors: Czujniki
