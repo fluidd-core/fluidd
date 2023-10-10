@@ -500,7 +500,6 @@ app:
         rawstream: Rou stroom
       camera_rotate_by: Draai met
       camera_stream_type: Stroomtipe
-      camera_url: Kamera Url
       card: Kaart
       collector: Versamelaar
       confirm_on_estop: Bevestig 'n Noodstop

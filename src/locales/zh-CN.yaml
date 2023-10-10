@@ -79,7 +79,6 @@ app:
       not_found: 文件未找到
       processing: 处理中...
     overlay:
-      drag_files_folders: <strong>拖动</strong> 一个文件到这里
       drag_files_enqueue: 将文件拖到<strong>此处</strong>进行入队
     title:
       add_dir: 新建目录
@@ -473,7 +472,6 @@ app:
         rawstream: 原始流
       camera_rotate_by: 旋转角度
       camera_stream_type: 视频流类型
-      camera_url: 摄像头地址
       card: 卡片
       collector: 收集器
       confirm_on_estop: 紧急停止时是否需要确认
@@ -505,7 +503,6 @@ app:
       fps_idle_target: 未对焦时 FPS
       height: 高度
       gcode_coords: 使用 GCode 坐标
-      group_lower_layers: 下层分组
       icon: 图标
       ignore_default_bed_mesh_pending_configuration_changes: 忽略默认的床网，等待配置更改
       invert_x_control: 反转X轴控制

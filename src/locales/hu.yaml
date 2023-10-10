@@ -44,7 +44,6 @@ app:
       command: >-
         '''tab'' az automatikus kitöltéshez, ''help'' a parancsokhoz
         ''nyilak'' az előzményekhez'
-      scroll: Görgess lefelé
   endpoint:
     error:
       cant_connect: >-
@@ -507,7 +506,6 @@ app:
       camera_stream_type: Sugárzás típusa
       camera_url_snapshot: Kamera pillanatkép URL
       camera_url_stream: Kamera közvetítés URL
-      camera_url: Kamera URL
       card: Kártya
       collector: Kollektor
       confirm_on_estop: Megerősítés kérése vészleállításkor

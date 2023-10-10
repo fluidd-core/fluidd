@@ -44,7 +44,6 @@ app:
       command: >-
         'tab' для автозаповнення, 'help' для списку команд 'стрілки↑ і ↓'
         історія команд
-      scroll: Прокрути вниз
   endpoint:
     error:
       cant_connect: >-
@@ -90,10 +89,8 @@ app:
       not_found: Файли не знайдені
       processing: Обробка
     overlay:
-      label: <strong>Перетягніть</strong> файл сюди
       drag_files_enqueue: <strong>Перетягніть</strong> файли сюди, щоб поставити їх у чергу
       drag_files_folders_upload: <strong>Перетягніть</strong> файли та папки сюди, щоб завантажити
-      drag_files_folders: <strong>Перетягніть</strong> файли та папки сюди
     title:
       add_dir: Додати каталог
       add_file: Додати файл
@@ -484,7 +481,6 @@ app:
         rawstream: Потік Raw
       camera_rotate_by: Обертати на
       camera_stream_type: Тип потоку
-      camera_url: Url камери
       card: Картка
       collector: Збирач
       confirm_on_estop: Потрібно підтвердження Аварійної зупинки
@@ -568,8 +564,6 @@ app:
       force_move_toggle_warning: Вимагати підтвердження під час активації FORCE_MOVE
       show_manual_probe_dialog_automatically: Показувати діалогове вікно "Manual Probe" автоматично
       show_bed_screws_adjust_dialog_automatically: Автоматично відображати діалогове вікно "Налаштування гвинтів".
-      date_time_format: Формат дати й часу
-      group_lower_layers: Групування нижніх шарів
     timer_options:
       duration: Тільки тривалість
       filament: Оцінка використання філаменту

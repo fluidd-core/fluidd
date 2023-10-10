@@ -84,8 +84,6 @@ app:
     msg:
       not_found: Aucun fichier trouvé
       processing: Traitement en cours ...
-    overlay:
-      label: <strong>Glissez-déposez</strong> un fichier ici
     title:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
@@ -310,8 +308,6 @@ app:
       reload_klipper: Recharge la configuration Klipper.
       reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
       restart_klipper: Redémarre le service klipper
-  history:
-    msg: {}
   printer:
     state:
       busy: Occupée
@@ -339,7 +335,6 @@ app:
       camera_flip_x: Retourner horizontalement
       camera_flip_y: Retourner verticalement
       camera_stream_type: Type de flux
-      camera_url: URL de la webcam
       confirm_on_estop: Demander une confirmation en cas d'arrêt d'urgence
       dark_mode: Mode sombre
       default_extrude_length: Longueur d'extrusion par défaut
