@@ -409,11 +409,11 @@ app:
   history:
     msg:
       confirm: 這將清除所有歷史記錄和打印機統計信息！是否確認？
+      confirm_jobs: 這將清除所有作業！是否確認？
+      confirm_stats: 這將清除所有統計數據！是否確認？
   job_queue:
     msg:
       confirm: 這將清除整個打印機隊列！是否確認？
-      confirm_jobs: 這將清除所有作業！是否確認？
-      confirm_stats: 這將清除所有統計數據！是否確認？
   printer:
     state:
       busy: 處理中

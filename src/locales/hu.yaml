@@ -449,11 +449,11 @@ app:
   history:
     msg:
       confirm: Biztos vagy benne? Törlöd az összes előzményt és a nyomtatóstatisztikát
+      confirm_jobs: Biztos vagy benne? Ez az összes munkát törli.
+      confirm_stats: Biztos vagy benne? Ez az összes statisztikát törli.
   job_queue:
     msg:
       confirm: Biztos vagy benne? Törlöd a teljes nyomtatósort
-      confirm_jobs: Biztos vagy benne? Ez az összes munkát törli.
-      confirm_stats: Biztos vagy benne? Ez az összes statisztikát törli.
   printer:
     state:
       busy: Elfoglalt
