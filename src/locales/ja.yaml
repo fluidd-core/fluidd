@@ -478,7 +478,6 @@ app:
         title: フルスクリーンアクション
       camera_rotate_by: 回転させる
       camera_stream_type: ストリームタイプ
-      camera_url: カメラURL
       card: カード
       collector: コレクタ
       confirm_dirty_editor_close: 保存されていない変更内容でエディタを閉じる場合、確認を表示する。
@@ -576,7 +575,8 @@ app:
     tooltip:
       diagnostics_performance: '[ベータ] 診断情報をログに記録すると、パフォーマンスに影響を与える可能性があります'
       gcode_coords: ダッシュボードのツールヘッド位置の代わりにGCode位置を使用する
-      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー ダイアログを表示します
+      show_bed_screws_adjust_dialog_automatically: BED_SCREWS_ADJUST ツールを実行している場合、自動的にヘルパー
+        ダイアログを表示します
       show_manual_probe_dialog_automatically: Manual Probe ツールを実行している場合、自動的にヘルパー ダイアログを表示します
   socket:
     msg:
@@ -676,12 +676,15 @@ app:
         <span class="secondary--text">現在のエクストルーダー構成は、</span> %{filamentDiameter}
         mmフィラメント <span class="secondary--text">と</span> %{nozzleDiameter} mm
         ノズルに設定されています
-      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm となります。'
+      stats_extruded_length: ' %{extrudeFactor} % の流量<span class="secondary--text">で
+        %{extrudeLength} mm のフィラメントを押し出すと、</span> 推定長 %{estimatedExtrudedLength} mm
+        となります。'
       stats_max_speed: >-
         <span class="secondary--text">レイヤー高を</span> %{layerHeight} mm<span
         class="secondary--text">とすると、</span> の推定最大印刷速度は %{estimatedMaxSpeed}
         mm/s です
-      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow} mm3/s になります。'
+      stats_volumetric_flow: ' %{extrudeSpeed} mm/s<span class="secondary--text">で押し出すと、</span>推定体積流量は  %{estimatedVolumetricFlow}
+        mm3/s になります。'
     title:
       bed_screws_adjust: ベッドスクリューの調整
       manual_probe: マニュアルプローブ

@@ -44,7 +44,6 @@ app:
       command: >-
         'tab' для автозаповнення, 'help' для списку команд 'стрілки↑ і ↓'
         історія команд
-      scroll: Прокрути вниз
   endpoint:
     error:
       cant_connect: >-
@@ -90,10 +89,10 @@ app:
       not_found: Файли не знайдені
       processing: Обробка
     overlay:
-      label: <strong>Перетягніть</strong> файл сюди
-      drag_files_enqueue: <strong>Перетягніть</strong> файли сюди, щоб поставити їх у чергу
-      drag_files_folders_upload: <strong>Перетягніть</strong> файли та папки сюди, щоб завантажити
-      drag_files_folders: <strong>Перетягніть</strong> файли та папки сюди
+      drag_files_enqueue: <strong>Перетягніть</strong> файли сюди, щоб поставити їх
+        у чергу
+      drag_files_folders_upload: <strong>Перетягніть</strong> файли та папки сюди,
+        щоб завантажити
     title:
       add_dir: Додати каталог
       add_file: Додати файл
@@ -352,7 +351,8 @@ app:
         confirm_service_restart: Ви впевнені, що бажаєте перезапустити службу %{name}?
         confirm_service_stop: Ви впевнені, що хочете зупинити службу %{name}?
         confirm_power_device_toggle: Ви впевнені? Це перемкне живлення цього пристрою.
-        unsaved_changes: У вас є незбережені зміни. Ви впевнені, що бажаєте закрити цей файл?
+        unsaved_changes: У вас є незбережені зміни. Ви впевнені, що бажаєте закрити
+          цей файл?
         no_file_preview: '%{name} зараз неможливо переглянути.'
     table:
       header:
@@ -423,14 +423,13 @@ app:
       managed_by_moonraker: Managed by your moonraker configuration
       notifications: Сповіщення
       reload_klipper: Перезавантажує налаштування klipper
-      reload_restart_klipper: Перезавантажує налаштування klipper і перезавантажує MCU
+      reload_restart_klipper: Перезавантажує налаштування klipper і перезавантажує
+        MCU
       restart_klipper: Перезавантажує сервіс klipper
       run_collector: Запустити колектор
   history:
     msg:
       confirm: Ви впевнені? Це очистить всю історію та статистику принтера.
-      confirm_stats: Ви впевнені? Це очистить всю статистику.
-      confirm_jobs: Ви впевнені? Це очистить усі виконані завдання.
   job_queue:
     msg:
       confirm: Ви впевнені? Це очистить всю чергу принтера.
@@ -473,10 +472,12 @@ app:
       all_on: Увімкнути все
       aspect_ratio: Співвідношення сторін
       aspect_ratio_format: '[width : height]'
-      auto_edit_extensions: Розширення файлів, які автоматично відкриваються в режимі редагування
+      auto_edit_extensions: Розширення файлів, які автоматично відкриваються в режимі
+        редагування
       auto_follow_on_file_load: Автоматично стежити за прогресом завантаження файлу
       auto_load_on_print_start: Автоматично завантажувати файл коли починається друк
-      auto_load_mobile_on_print_start: Автоматично завантажувати файл на мобільні пристрої
+      auto_load_mobile_on_print_start: Автоматично завантажувати файл на мобільні
+        пристрої
       axes: Осі
       camera_flip_x: Перевернути горизонтально
       camera_flip_y: Перевернути вертикально
@@ -486,7 +487,6 @@ app:
         rawstream: Потік Raw
       camera_rotate_by: Обертати на
       camera_stream_type: Тип потоку
-      camera_url: Url камери
       card: Картка
       collector: Збирач
       confirm_on_estop: Потрібно підтвердження Аварійної зупинки
@@ -553,7 +553,8 @@ app:
       show_save_config_and_restart: >-
         Кнопка «Зберегти налаштування і перезавантажити» у верхній навігаційній
         панелі
-      show_upload_and_print: Показати кнопку «Завантажити та надрукувати» на верхній панелі навігації
+      show_upload_and_print: Показати кнопку «Завантажити та надрукувати» на верхній
+        панелі навігації
       solid: Суцільний
       starts_with: Почати з
       theme_preset: Шаблони спільноти
@@ -568,10 +569,10 @@ app:
       time_format: Формат часу
       text_sort_order: Порядок сортування тексту
       force_move_toggle_warning: Вимагати підтвердження під час активації FORCE_MOVE
-      show_manual_probe_dialog_automatically: Показувати діалогове вікно "Manual Probe" автоматично
-      show_bed_screws_adjust_dialog_automatically: Автоматично відображати діалогове вікно "Налаштування гвинтів".
-      date_time_format: Формат дати й часу
-      group_lower_layers: Групування нижніх шарів
+      show_manual_probe_dialog_automatically: Показувати діалогове вікно "Manual Probe"
+        автоматично
+      show_bed_screws_adjust_dialog_automatically: Автоматично відображати діалогове
+        вікно "Налаштування гвинтів".
     timer_options:
       duration: Тільки тривалість
       filament: Оцінка використання філаменту
@@ -589,7 +590,8 @@ app:
       thermal_presets: Шаблони температури
       tool: Інструмент
     tooltip:
-      diagnostics_performance: '[BETA] Реєстрація діагностичної інформації може вплинути на швидкодію'
+      diagnostics_performance: '[BETA] Реєстрація діагностичної інформації може вплинути
+        на швидкодію'
       gcode_coords: >-
         Використовувати позиції з GCode замість позиції головки на панелі
         керування

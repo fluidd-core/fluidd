@@ -32,7 +32,8 @@ app:
       rate_of_change: Sprememba
     tooltip:
       help: >-
-        Držite shift za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost v grafu.<br
+        Držite shift za približevanje.<br />Kliknite na objekt, da mu spremenite vidnost
+        v grafu.<br
         />Kliknite na moč, da spremenite vidnost v grafu.
   console:
     label:
@@ -40,7 +41,8 @@ app:
       flip_layout: Obrni postavitev
       hide_temp_waits: Skrij čakanje temperature
     placeholder:
-      command: '''tab'' za samodejno dokončanje, ''help'' za seznam ukazov ''puščice'' za zgodovino'
+      command: '''tab'' za samodejno dokončanje, ''help'' za seznam ukazov ''puščice''
+        za zgodovino'
   endpoint:
     error:
       cant_connect: >-
@@ -72,7 +74,6 @@ app:
       label:
         print_start_time: Filtriraj natisnjeno
         print_start_time_desc: Filtriraj že natisnjene izdelke.
-        hidden_files: Filtriraj skrite datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
         rolled_log_files: Filtriraj zavite dnevniške datoteke
     label:
@@ -89,7 +90,6 @@ app:
       not_found: Ni najdenih datotek
       processing: Procesiram
     overlay:
-      drag_files_folders: <strong>Povlecite</strong> datoteke in mape sem.
       drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v vrsto.
     title:
       add_dir: Dodaj mapo
@@ -324,11 +324,13 @@ app:
       password_changed: Geslo spremenjeno
       wrong_password: Ups, nekaj se je zalomilo. Ali ste vnesi pravilno geslo?
       bed_screws_adjust: >-
-        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
+        Pritisnite <b>Prilagojeno</b>, če je potrebna velika prilagoditev. V nasprotnem
+        primeru pritisnite <b>Sprejmi</b> za nadaljevanje.
       welcome_back: >-
         Dobrodošli nazaj.<br>Vpišite se spodaj, da ostane v stiku s svojim tiskalnikom.
       offline_ready: Fluidd je pripravljen za delo brez povezave.
-      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno naloži</b>, da ponovno naložite stran.
+      needs_refresh: Nova vsebina je na voljo. Prosimo, pritisnite na gumb <b>Ponovno
+        naloži</b>, da ponovno naložite stran.
       pending_configuration_sections_deleted: Sledeči odseki so izbrani za izbris
       rolledover_logs: >-
         Sledeči dnevniki aplikacij so bili zaviti: %{applications}
@@ -348,15 +350,19 @@ app:
         invalid_aspect: Napačno razmerje
       msg:
         confirm: Ste prepričani?
-        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz tiskanja?
+        confirm_exclude_object: Ste prepričani, da želite izključiti ta objekt iz
+          tiskanja?
         confirm_forcemove_toggle: Ste prepričani? To dejanje lahko poškoduje tiskalnik.
         confirm_reboot_host: Ste prepričani? To dejanje bo ponovno zagnalo gostitelja.
         confirm_shutdown_host: Ste prepričani? To dejanje bo zaustavilo gostitelja.
         confirm_service_start: Ste prepričani, da želite zagnani storitev %{name}?
-        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev %{name}?
+        confirm_service_restart: Ste prepričani, da želite ponovno zagnati storitev
+          %{name}?
         confirm_service_stop: Ste prepričani, da želite ustaviti storitev %{name}?
-        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje naprave.
-        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti datoteko?
+        confirm_power_device_toggle: Ste prepričani? To dejanje bo ugasnilo napajanje
+          naprave.
+        unsaved_changes: Imate ne shranjene spremembe. Ste prepričani, da želite zapreti
+          datoteko?
         no_file_preview: >-
           Predogled za %{name} ni možen.
     table:
@@ -429,7 +435,8 @@ app:
       managed_by_moonraker: Upravlja konfiguracija moonrakerja
       notifications: Obvestila
       reload_klipper: Ponovno naloži klipperjeve konfiguracije.
-      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno zažene MKE.
+      reload_restart_klipper: Ponovno naloži klipperjeve konfiguracije in ponovno
+        zažene MKE.
       restart_klipper: Ponovno zažene sistemsko storitev klipper.
       run_collector: Zaženi zbiralnik
       rollover_logs: Zaviti dnevniki
@@ -491,13 +498,14 @@ app:
         rawstream: Surov pretok
       camera_rotate_by: Zavrti za
       camera_stream_type: Pretočni tip
-      camera_url: URL kamere
       card: Kartica
       collector: Krmilnik
       confirm_on_estop: Zahtevaj potrditev za zasilni izklop
       confirm_on_power_device_change: Zahtevaj potrditev za spremembe napajanja
-      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem in ponovnim zagonom
-      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe niso shranjene
+      confirm_on_save_config_and_restart: Preglej čakajoče spremembe pred shranjevanjem
+        in ponovnim zagonom
+      confirm_dirty_editor_close: Zahtevaj potrditev ob zaprtju urejevalnika, če spremembe
+        niso shranjene
       contains: Vsebuje
       dark_mode: Temen način
       dashed: Črtice
@@ -522,7 +530,6 @@ app:
       fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
       height: Višina
       gcode_coords: Uporabi koordinate iz g-kode
-      group_lower_layers: Združi spodnje plasti
       icon: Ikona
       invert_x_control: Zrcali X pomike
       invert_y_control: Zrcali Y pomike
@@ -552,7 +559,8 @@ app:
       show_legend: Prikaži legendo
       show_rate_of_change: Prikaži hitrost temperature
       show_relative_humidity: Prikaži relativno vlažnost
-      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v navigaciji zgoraj
+      show_save_config_and_restart: Shrani konfiguracijo in ponovno zaženi gumb v
+        navigaciji zgoraj
       show_upload_and_print: Pokaži naloži in tiskaj gumb v navigaciji zgoraj
       solid: Polno
       starts_with: Začne se s/z
@@ -569,7 +577,8 @@ app:
       text_sort_order: Vrstni red sortiranja
       force_move_toggle_warning: Zahtevaj potrditev za prisilen gib
       show_manual_probe_dialog_automatically: Prikaži dialog za ročno sondiranje samodejno
-      show_bed_screws_adjust_dialog_automatically: Prikaži dialog za nastavitev posteljnih vijakov samodejno
+      show_bed_screws_adjust_dialog_automatically: Prikaži dialog za nastavitev posteljnih
+        vijakov samodejno
     timer_options:
       duration: Samo trajanje
       filament: Ocena filamenta
@@ -587,14 +596,18 @@ app:
       thermal_presets: Prednastavitve grelcev
       tool: Orodje
     tooltip:
-      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva na zmogljivost'
+      diagnostics_performance: '[BETA] Beleženje diagnostičnih podatkov lahko vpliva
+        na zmogljivost'
       gcode_coords: Uporabi položaj g-kode, namesto orodja v armaturi
-      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če ročno sondirate
-      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč, če nastavljate posteljne vijake
+      show_manual_probe_dialog_automatically: Samodejno prikaže dialog za pomoč, če
+        ročno sondirate
+      show_bed_screws_adjust_dialog_automatically: Samodejno prikaže dialog za pomoč,
+        če nastavljate posteljne vijake
   socket:
     msg:
       connecting: Povezujem se na moonraker...
-      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja ali osvežite stran.
+      no_connection: Ni povezave z moonrakerjem. Prosimo, preverite status moonrakerja
+        ali osvežite stran.
   system_info:
     label:
       capacity: Kapaciteta
@@ -606,14 +619,12 @@ app:
       hardware_desc: Opis opreme
       hostname: Ime gostitelja
       klipper_load: Obremenitev Klipperja
-      load: obremenitev
       manufactured: Proizvedeno
       manufacturer: Proizvajalec
       mcu_awake: '{mcu} čas budnosti'
       mcu_bandwidth: '{mcu} pasovna širina'
       mcu_information: '{mcu} informacije'
       mcu_load: '{mcu} obremenitev'
-      memory_used: porabljenega spomina
       micro_controller: Mikrokrmilnik
       model: Model CPE
       moonraker_load: Obremenitev Moonrakerja
@@ -645,14 +656,16 @@ app:
       tools: Orodja
     label:
       stats_active_extruder: >-
-        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena za </span>
+        <span class="secondary--text">Aktivna konfiguracija ekstruderja je nastavljena
+        za </span>
         filament premera %{filamentDiameter} mm
         <span class="secondary--text">in</span>
         premer šobe %{nozzleDiameter}.
       stats_volumetric_flow: >-
         <span class="secondary--text">Ekstruder bi moral biti sposoben zagotoviti</span>
         pretok %{estimatedVolumetricFlow} mm³/s
-        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed} mm/s.
+        <span class="secondary--text">pri</span> hitrosti iztiskovanja %{extrudeSpeed}
+        mm/s.
       stats_extruded_length: >-
         Iztiskanje %{extrudeLength} mm filamenta pri
         %{extrudeFactor} % pretoku<span class="secondary--text">,

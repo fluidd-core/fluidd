@@ -80,8 +80,6 @@ app:
     msg:
       not_found: لا يوجد ملفات
       processing: جاري المعالجة
-    overlay:
-      label: <strong>الق</strong> ملف هنا
     title:
       add_dir: اضافة مجلد
       add_file: اضافة ملف
@@ -324,7 +322,6 @@ app:
       camera_flip_x: عكس افقي
       camera_flip_y: عكس عمودي
       camera_stream_type: نوع البث
-      camera_url: رابط الكاميرا
       confirm_on_estop: ايقاف الطوارئ يحتاج تأكيد
       dark_mode: الوضع الداكن
       default_extrude_length: Default extrude length
@@ -373,7 +370,8 @@ app:
   socket:
     msg:
       connecting: Connecting to moonraker...
-      no_connection: No moonraker connection. Please check moonraker status and / or refresh.
+      no_connection: No moonraker connection. Please check moonraker status and /
+        or refresh.
   system_info:
     label:
       capacity: السعة

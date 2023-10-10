@@ -86,7 +86,6 @@ app:
       not_found: Não foram encontrados ficheiros
       processing: A processar...
     overlay:
-      label: <strong>Largar</strong> um ficheiro aqui.
       drag_files_enqueue: <strong>Arrastar</strong> para aqui ficheiros para juntar
         à fila
       drag_files_folders_upload: <strong>Arrastar</strong> para aqui ficheiros e pastas
@@ -289,7 +288,6 @@ app:
       camera_flip_x: Virar horizontal
       camera_flip_y: Virar vertical
       camera_stream_type: Tipo stream
-      camera_url: 'Url Camera '
       dark_mode: Modo escuro
       default_extrude_length: Comprimento de extrusão padrão
       default_extrude_speed: Velocidade de extrusão padrão

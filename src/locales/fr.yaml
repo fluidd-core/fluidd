@@ -67,7 +67,8 @@ app:
       open: OUVERT
       triggered: ACTIF
     msg:
-      subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut . '
+      subtitle: 'Appuyez sur le bouton ''Rafraîchir'' pour mettre à jour le statut
+        . '
   file_system:
     filters:
       label:
@@ -84,8 +85,6 @@ app:
     msg:
       not_found: Aucun fichier trouvé
       processing: Traitement en cours ...
-    overlay:
-      label: <strong>Glissez-déposez</strong> un fichier ici
     title:
       add_dir: Ajouter un dossier
       add_file: Créer un fichier
@@ -95,7 +94,8 @@ app:
       upload_file: Upload en cours
     tooltip:
       low_on_space: Espace disque limité
-      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier vos logs.
+      root_disabled: La racine {root} n'est pas disponible. Veuillez vérifier vos
+        logs.
   gcode:
     btn:
       load_current_file: Charger le fichier actuel
@@ -255,8 +255,10 @@ app:
         required: Requis
       msg:
         confirm: Êtes-vous sûr(e) ?
-        confirm_reboot_host: Êtes-vous sûr(e)? Ceci va redémarrer le système hôte .
-        confirm_shutdown_host: Êtes-vous sûr(e)? Ceci va éteindre le système hôte .
+        confirm_reboot_host: Êtes-vous sûr(e)? Ceci va redémarrer le système hôte
+          .
+        confirm_shutdown_host: Êtes-vous sûr(e)? Ceci va éteindre le système hôte
+          .
     table:
       header:
         actions: Actions
@@ -308,7 +310,8 @@ app:
     tooltip:
       estop: Arrêt d'urgence
       reload_klipper: Recharge la configuration Klipper.
-      reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes de contrôle.
+      reload_restart_klipper: Recharge la configuration Klipper et redémarre les cartes
+        de contrôle.
       restart_klipper: Redémarre le service klipper
   history:
     msg: {}
@@ -339,12 +342,12 @@ app:
       camera_flip_x: Retourner horizontalement
       camera_flip_y: Retourner verticalement
       camera_stream_type: Type de flux
-      camera_url: URL de la webcam
       confirm_on_estop: Demander une confirmation en cas d'arrêt d'urgence
       dark_mode: Mode sombre
       default_extrude_length: Longueur d'extrusion par défaut
       default_extrude_speed: Vitesse d'extrusion par défaut
-      default_toolhead_move_length: Longueur de déplacement de la tête d'outil par défaut
+      default_toolhead_move_length: Longueur de déplacement de la tête d'outil par
+        défaut
       default_toolhead_xy_speed: Vitesse XY de la tête d'outil par défaut
       default_toolhead_z_speed: Vitesse Z de la tête d'outil par défaut
       draw_background: Afficher le fond d'écran
