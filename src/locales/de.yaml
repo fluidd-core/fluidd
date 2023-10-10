@@ -873,8 +873,6 @@ app:
         übereinstimmt
   job_queue:
     msg:
-      confirm_stats: Sind Sie sicher? Hierdurch werden alle Statistiken geleert.
-      confirm_jobs: Sind Sie sicher? Hierdurch werden alle Jobs geleert.
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert
   sensors:
     title:
