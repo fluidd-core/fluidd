@@ -671,10 +671,10 @@ app:
     msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej historii i statystyk
         drukarki
-  job_queue:
-    msg:
       confirm_jobs: Czy na pewno? Spowoduje to wyczyszczenie wszystkich zadań.
       confirm_stats: Czy na pewno? Spowoduje to wyczyszczenie wszystkich statystyk.
+  job_queue:
+    msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej kolejki drukowania
   version:
     label:

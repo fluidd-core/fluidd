@@ -436,11 +436,11 @@ app:
   history:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in statistiko.
+      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
+      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   job_queue:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
-      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
-      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   printer:
     state:
       busy: Zaseden
