@@ -142,6 +142,8 @@ app:
       confirm: >-
         Die Datei "%{filename}" ist %{size} groß, dies kann sehr
         Ressourcenintensiv für Ihr System sein. Sind Sie sicher?
+    overlay:
+      drag_file_load: <strong>Ziehe</strong> eine Gcode-Datei hierher, um sie zu laden
   general:
     btn:
       add: Hinzufügen
@@ -336,6 +338,8 @@ app:
       all: Alle
       pause_at_layer_number: Pausieren bei Schicht-Nummer
       synced_extruder: Synchronisierte Extruder
+      cross: Kreuz
+      bars: Balken
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -615,6 +619,9 @@ app:
       text_sort_order: Reihenfolge der Textsortierung
       to_browser_local_storage: zum Browser-Lokalspeicher
       to_browser_session_storage: zum Browser-Sitzungsspeicher
+      toolhead_control_style: Druckkopf-Steuerstil
+      toolhead_xy_move_distances: Druckkopf-Bewegungsdistanzen für XY
+      toolhead_z_move_distances: Druckkopf-Bewegungsdistanzen für Z
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -695,6 +702,7 @@ app:
       motors_off: Motoren Aus
       relative_positioning: Relative Positionierung
       tools: Werkzeuge
+      select_tool: Werkzeug %{tool} auswählen
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing
@@ -855,13 +863,19 @@ app:
       auto_select_spool_on_match: Spulenauswahl bei QR-Code- Übereinstimmung automatisch
         übernehmen
       prefer_device_camera: Gerätekamera wenn verfügbar zur QR-Code- Erkennung verwenden
-      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch bei Druckstart anzeigen
+      show_spool_selection_dialog_on_print_start: Spulenauswahl-Dialog automatisch
+        bei Druckstart anzeigen
       warn_on_not_enough_filament: >-
-        Warnung anzeigen, wenn die Spule nicht genug Filament verbleibend hat, um den Druck abzuschließen
+        Warnung anzeigen, wenn die Spule nicht genug Filament verbleibend hat, um
+        den Druck abzuschließen
       warn_on_filament_type_mismatch: >-
-        Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten übereinstimmt
+        Warnung anzeigen, wenn der Filamenttyp der Spule nicht mit dem im Slicer ausgewählten
+        übereinstimmt
   job_queue:
     msg:
       confirm_stats: Sind Sie sicher? Hierdurch werden alle Statistiken geleert.
       confirm_jobs: Sind Sie sicher? Hierdurch werden alle Jobs geleert.
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert
+  sensors:
+    title:
+      sensors: Sensoren
