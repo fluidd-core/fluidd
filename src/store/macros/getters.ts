@@ -47,6 +47,12 @@ export const getters: GetterTree<MacrosState, RootState> = {
     return macros
   },
 
+  getMacroByName: (state, getters) => (name: string) => {
+    const macros = getters.getMacros as Macro[]
+
+    return macros.find(macro => macro.name === name)
+  },
+
   // Gets visible macros, transformed. Should include the macro's config.
   // Is only used on the dashboard. Grouped by category.
   getVisibleMacros: (state, getters) => {

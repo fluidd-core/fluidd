@@ -223,10 +223,10 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         SocketActions.serverFilesMetadata(this.currentFileName)
       }
 
-      if (this.hasDeviceCamera && this.$store.state.config.uiSettings.spoolman.preferDeviceCamera) {
+      if (this.hasDeviceCamera && this.preferDeviceCamera) {
         this.$nextTick(() => (this.cameraScanSource = 'device'))
       } else {
-        const autoOpenCameraId = this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
+        const autoOpenCameraId = this.autoOpenQRDetectionCamera
         if (this.$store.getters['cameras/getCameraById'](autoOpenCameraId)) {
           this.$nextTick(() => (this.cameraScanSource = autoOpenCameraId))
         }
@@ -344,7 +344,7 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
       this.search = ''
     }
 
-    if (this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch) {
+    if (this.autoSelectSpoolOnMatch) {
       this.handleSelectSpool()
     }
   }
@@ -364,30 +364,25 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
     }
 
     const spool = this.availableSpools.find(spool => spool.id === this.selectedSpool)
-    if (spool && this.filename) {
-      // check for enough filament
+    if (spool && this.filename && (this.warnOnFilamentTypeMismatch || this.warnOnNotEnoughFilament)) {
+      let requiredLength = 0 // l[mm]
 
-      let remainingLength = spool.remaining_length
-      if (!remainingLength && spool.remaining_weight) {
-        // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
-        remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
-      }
-
-      // l[mm]
-      let requiredLength = 0
       if (this.currentFile) {
-        const fileMaterial = this.currentFile.filament_type?.toLowerCase()
-        const spoolMaterial = spool.filament.material?.toLowerCase()
-        if (spoolMaterial && fileMaterial && fileMaterial !== spoolMaterial) {
-          // filament materials don't match
+        if (this.warnOnFilamentTypeMismatch) {
+          const fileMaterials = this.currentFile.filament_type?.toLowerCase()
+            .split(';').map((x: string) => x.replace(/"/g, ''))
+          const spoolMaterial = spool.filament.material?.toLowerCase()
+          if (spoolMaterial && fileMaterials && !fileMaterials.includes(spoolMaterial)) {
+            // filament materials don't match
 
-          const confirmation = await this.$confirm(
-            this.$tc('app.spoolman.msg.mismatched_filament'),
-            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-          )
+            const confirmation = await this.$confirm(
+              this.$tc('app.spoolman.msg.mismatched_filament'),
+              { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+            )
 
-          if (!confirmation) {
-            return
+            if (!confirmation) {
+              return
+            }
           }
         }
 
@@ -412,21 +407,29 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
         }
       }
 
-      if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
-        // not enough filament
+      if (this.warnOnNotEnoughFilament) {
+        let remainingLength = spool.remaining_length
+        if (!remainingLength && spool.remaining_weight) {
+          // l[mm] = m[g]/D[g/cm³]/A[mm²]*(1000mm³/cm³)
+          remainingLength = spool.remaining_weight / spool.filament.density / (Math.PI * (spool.filament.diameter / 2) ** 2) * 1000
+        }
 
-        const confirmation = await this.$confirm(
-          this.$tc('app.spoolman.msg.no_filament'),
-          { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
-        )
+        if (typeof remainingLength === 'number' && requiredLength >= remainingLength) {
+          // not enough filament
 
-        if (!confirmation) {
-          return
+          const confirmation = await this.$confirm(
+            this.$tc('app.spoolman.msg.no_filament'),
+            { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
+          )
+
+          if (!confirmation) {
+            return
+          }
         }
       }
     }
 
-    await SocketActions.spoolmanSetSpool(this.selectedSpool ?? undefined)
+    await SocketActions.serverSpoolmanPostSpoolId(this.selectedSpool ?? undefined)
     if (this.filename) {
       await SocketActions.printerPrintStart(this.filename)
 
@@ -445,6 +448,26 @@ export default class SpoolSelectionDialog extends Mixins(StateMixin, BrowserMixi
 
   get spoolmanURL () {
     return this.$store.state.server.config.spoolman?.server
+  }
+
+  get preferDeviceCamera () {
+    return this.$store.state.config.uiSettings.spoolman.preferDeviceCamera
+  }
+
+  get autoOpenQRDetectionCamera () {
+    return this.$store.state.config.uiSettings.spoolman.autoOpenQRDetectionCamera
+  }
+
+  get autoSelectSpoolOnMatch () {
+    return this.$store.state.config.uiSettings.spoolman.autoSelectSpoolOnMatch
+  }
+
+  get warnOnNotEnoughFilament () {
+    return this.$store.state.config.uiSettings.spoolman.warnOnNotEnoughFilament
+  }
+
+  get warnOnFilamentTypeMismatch (): boolean {
+    return this.$store.state.config.uiSettings.spoolman.warnOnFilamentTypeMismatch
   }
 }
 </script>

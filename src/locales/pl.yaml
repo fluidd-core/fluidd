@@ -212,6 +212,8 @@ app:
       unsaved_changes: Niezapisane zmiany
       file_time: Plik
       turn_device_on: Włącz %{device}
+      cross: Krzyż
+      bars: Pasek
     btn:
       abort: Przerwij
       add: Dodaj
@@ -435,6 +437,8 @@ app:
     msg:
       confirm: Plik "%{filename}" ma rozmiar %{size}, może to wymagać dużej ilości
         zasobów w systemie. Czy na pewno?
+    overlay:
+      drag_file_load: <strong>Przeciągnij</strong> plik G-Code tutaj, aby go wczytać
   tool:
     btn:
       home_all: Wszystkie
@@ -449,6 +453,7 @@ app:
       extruder_disabled: ekstruder jest wyłączony poniżej min_extrude_temp (%{min}<small>°C</small>)
       manual_probe: Sonda ręczna
       relative_positioning: Pozycjonowanie względne
+      select_tool: Wybierz narzędzie %{tool}
     title:
       bed_screws_adjust: Regulacja śrub stołu
       manual_probe: Sonda ręczna
@@ -585,6 +590,9 @@ app:
       z_adjust_values: Wartości korekcji Z
       camera_url_stream: Adres URL strumienia wideo kamery
       camera_url_snapshot: Adres URL migawki kamery
+      toolhead_control_style: Styl sterowania głowicą narzędziową
+      toolhead_xy_move_distances: Wartości odległości XY głowicy narzędziowej
+      toolhead_z_move_distances: Wartości odległości Z głowicy narzędziowej
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
@@ -666,17 +674,17 @@ app:
     msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej historii i statystyk
         drukarki
-  job_queue:
-    msg:
       confirm_jobs: Czy na pewno? Spowoduje to wyczyszczenie wszystkich zadań.
       confirm_stats: Czy na pewno? Spowoduje to wyczyszczenie wszystkich statystyk.
+  job_queue:
+    msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej kolejki drukowania
   version:
     label:
       commit_history: Historia zmian
       updates_available: Dostępne aktualizacje
       up_to_date: AKTUALNY
-      os_packages: Pakiety systemu
+      os_packages: System
       commits_on: zatwierdzenia w
       committed: Zatwierdzono
       invalid: NIEPRAWIDŁOWY
@@ -808,3 +816,10 @@ app:
         kodu QR
       prefer_device_camera: Użyj kamery urządzenia do wykrywania kodów QR, jeśli jest
         dostępna
+      warn_on_not_enough_filament: Wyświetla ostrzeżenie, gdy na wybranej szpuli nie
+        ma wystarczającej ilości filamentu do zakończenia drukowania
+      warn_on_filament_type_mismatch: Wyświetla ostrzeżenie, gdy typ filamentu wybrany
+        w slicerze i filamentu na szpuli nie jest zgodny
+  sensors:
+    title:
+      sensors: Czujniki

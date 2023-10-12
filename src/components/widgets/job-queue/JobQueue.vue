@@ -1,10 +1,10 @@
 <template>
   <v-card
     :class="{ 'no-pointer-events': overlay }"
-    @dragenter.capture.prevent="handleDragEnter"
-    @dragover.prevent
+    @dragover="handleDragOver"
+    @dragenter.self.prevent
     @dragleave.self.prevent="handleDragLeave"
-    @drop.prevent.stop="handleDropJob"
+    @drop.self.prevent="handleDrop"
   >
     <job-queue-toolbar
       v-if="selected.length === 0"
@@ -143,8 +143,12 @@ export default class JobQueue extends Vue {
     SocketActions.serverJobQueueDeleteJobs(jobIds)
   }
 
-  handleDragEnter (e: DragEvent) {
-    if (e.dataTransfer?.types.includes('jobs')) {
+  handleDragOver (e: DragEvent) {
+    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      e.preventDefault()
+
+      e.dataTransfer.dropEffect = 'link'
+
       this.overlay = true
     }
   }
@@ -153,11 +157,11 @@ export default class JobQueue extends Vue {
     this.overlay = false
   }
 
-  handleDropJob (e: DragEvent) {
+  handleDrop (e: DragEvent) {
     this.overlay = false
 
-    if (e.dataTransfer?.types.includes('jobs')) {
-      const data = e.dataTransfer.getData('jobs')
+    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      const data = e.dataTransfer.getData('x-fluidd-jobs')
       const files: { path: string, jobs: string[] } = JSON.parse(data)
       const filePath = files.path ? `${files.path}/` : ''
       const filenames = files.jobs

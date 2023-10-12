@@ -12,7 +12,7 @@ app:
       wireframe: Draadraam
     msg:
       hint: >-
-        As jy hierdie onder 'n ander naam as %{name} stoor, kan jy kies  
+        As jy hierdie onder 'n ander naam as %{name} stoor, kan jy kies
         om die %{name} profiel ook uit te vee
       not_found: Geen bestaande bedmaas is gevind nie.
       not_loaded: Geen maas is gelaai nie
@@ -214,13 +214,13 @@ app:
     error:
       app_setup_link: >-
         Fluidd opstellingsvereistes kan <a target="_blank"
-        href="%{url}">hier</a> gevind word. 
+        href="%{url}">hier</a> gevind word.
       app_warnings_found: '%{appName} waarskuwings gevind.'
       components_config: >-
         Moonraker-toevoegingkonfigurasie kan <a target="_blank"
         href="%{url}">hier</a> gevind word.
       failed_components: >-
-        Moonraker het toevoegings wat gefaal het, gaan asb. die logs na, 
+        Moonraker het toevoegings wat gefaal het, gaan asb. die logs na,
         dateer die konfigurasie op en herlaai moonraker.
     label:
       accel_to_decel: Versnel. tot Vertraag.
@@ -414,7 +414,7 @@ app:
       home: Tuis
       jobs: Druktake
       job_queue: Werkslys
-      limits: Drukkerlimiete    
+      limits: Drukkerlimiete
       macros: Makro's
       metrics_explorer: Metriekverkenner
       not_found: 404 Nie gevind nie
@@ -444,11 +444,11 @@ app:
   history:
     msg:
       confirm: Is jy seker? Hierdie sal alle geskiedenis en drukkerstatistieke uitvee
+      confirm_jobs: Is jy seker? Hierdie sal alle druktake uitvee.
+      confirm_stats: Is jy seker? Hierdie sal alle statistieke uitvee.
   job_queue:
     msg:
       confirm: Is jy seker? Hierdie sal die hele drukker se werkslys uitvee.
-      confirm_jobs: Is jy seker? Hierdie sal alle druktake uitvee.
-      confirm_stats: Is jy seker? Hierdie sal alle statistieke uitvee.
   printer:
     state:
       busy: Besig
@@ -500,13 +500,12 @@ app:
         rawstream: Rou stroom
       camera_rotate_by: Draai met
       camera_stream_type: Stroomtipe
-      camera_url: Kamera Url
       card: Kaart
       collector: Versamelaar
       confirm_on_estop: Bevestig 'n Noodstop
       confirm_on_power_device_change: Bevestig toestelkragveranderinge
       confirm_on_save_config_and_restart: Hersien hangende konfigurasieveranderinge voor Stoor-en-Herlaai.
-      confirm_dirty_editor_close: Bevestig voordat redigeerder toegemaak word met ongestoorde veranderinge 
+      confirm_dirty_editor_close: Bevestig voordat redigeerder toegemaak word met ongestoorde veranderinge
       contains: Bevat
       dark_mode: Donkermodus
       dashed: Gestippel

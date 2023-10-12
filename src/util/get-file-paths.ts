@@ -1,6 +1,5 @@
-import {
-  FilePaths
-} from '@/store/files/types'
+import { Globals } from '@/globals'
+import { FilePaths } from '@/store/files/types'
 
 /**
  * Takes a filename and root and provides;
@@ -9,13 +8,15 @@ import {
  * - the path, including root.
  */
 export default (filePath: string, root: string): FilePaths => {
-  let path = filePath.substr(0, filePath.lastIndexOf('/'))
-  path = (path && path.startsWith(root))
-    ? path.substring(root.length + 1)
-    : path
+  const pathParts = filePath.split('/')
+  const filtered = Globals.FILTERED_FOLDER_NAMES.some(x => pathParts.includes(x))
+  const filename = pathParts.pop() ?? ''
+  const path = pathParts.join('/')
+
   return {
-    filename: filePath.split('/').pop() || '',
+    filename,
     path,
-    rootPath: (path.length === 0) ? root : root + '/' + path
+    rootPath: path ? `${root}/${path}` : root,
+    filtered
   }
 }

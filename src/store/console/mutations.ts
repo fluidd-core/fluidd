@@ -4,12 +4,9 @@ import { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { ConsoleEntry, ConsoleFilter, ConsoleFilterType, ConsoleState } from './types'
+import escapeRegExp from '@/util/escape-regexp'
 
 const _compileExpression = (filter: ConsoleFilter): RegExp => {
-  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
-  function escapeRegExp (s: string) {
-    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-  }
   switch (filter.type) {
     case ConsoleFilterType.Contains:
       return new RegExp(`.*${escapeRegExp(filter.value)}.*`, 'i')

@@ -28,7 +28,6 @@
         />
       </v-col>
       <v-col
-        v-if="canHomeXY"
         class="ml-2"
       >
         <app-btn-toolhead-move
@@ -48,7 +47,12 @@
       justify="start"
       class="mb-2"
     >
-      <v-col cols="auto">
+      <v-col
+        cols="auto"
+        :class="{
+          'mr-12': !canHomeXY,
+        }"
+      >
         <app-btn-toolhead-move
           :color="axisButtonColor(xHomed)"
           :disabled="axisButtonDisabled(xHomed, xHasMultipleSteppers)"
@@ -57,6 +61,7 @@
         />
       </v-col>
       <v-col
+        v-if="canHomeXY"
         cols="auto"
         class="ml-2"
       >
@@ -188,7 +193,7 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
-export default class ToolheadMoves extends Mixins(StateMixin, ToolheadMixin) {
+export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMixin) {
   moveLength = ''
   fab = false
 

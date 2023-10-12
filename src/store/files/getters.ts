@@ -68,7 +68,6 @@ export const getters: GetterTree<FilesState, RootState> = {
             item.thumbnails = [
               {
                 // we have no data regarding the thumbnail other than it's URL, but setting it is mandatory...
-                data: '',
                 height: 0,
                 width: 0,
                 size: 0,
@@ -160,7 +159,7 @@ export const getters: GetterTree<FilesState, RootState> = {
           accepts: [],
           canView: [],
           canConfigure: false,
-          filterTypes: []
+          filterTypes: ['hidden_files']
         }
     }
   },

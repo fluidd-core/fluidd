@@ -15,7 +15,8 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
    * Make a socket request to init the spoolman component.
    */
   async init () {
-    SocketActions.spoolmanState()
+    SocketActions.serverSpoolmanGetSpoolId()
+    SocketActions.serverSpoolmanProxyGetAvailableSpools()
   },
 
   async onActiveSpool ({ commit }, payload) {
@@ -24,9 +25,5 @@ export const actions: ActionTree<SpoolmanState, RootState> = {
 
   async onAvailableSpools ({ commit }, payload) {
     commit('setAvailableSpools', [...payload])
-  },
-
-  async notifyActiveSpoolSet ({ commit }, payload) {
-    commit('setActiveSpool', payload.spool_id)
   }
 }

@@ -72,7 +72,6 @@ app:
       label:
         print_start_time: Filtriraj natisnjeno
         print_start_time_desc: Filtriraj že natisnjene izdelke.
-        hidden_files: Filtriraj skrite datoteke
         klipper_backup_files: Filtriraj Klipperjeve varnostne kopije
         rolled_log_files: Filtriraj zavite dnevniške datoteke
     label:
@@ -89,7 +88,6 @@ app:
       not_found: Ni najdenih datotek
       processing: Procesiram
     overlay:
-      drag_files_folders: <strong>Povlecite</strong> datoteke in mape sem.
       drag_files_enqueue: <strong>Povlecite</strong> datoteke sem za dodajanje v vrsto.
     title:
       add_dir: Dodaj mapo
@@ -436,11 +434,11 @@ app:
   history:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo celotno zgodovino in statistiko.
+      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
+      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   job_queue:
     msg:
       confirm: Ste prepričani? To dejanje bo počistilo vrsto za tiskanje.
-      confirm_jobs: Ste prepričani? To dejanje bo počistilo vsa dejanja.
-      confirm_stats: Ste prepričani? To dejanje bo počistilo vso statistiko.
   printer:
     state:
       busy: Zaseden
@@ -491,7 +489,6 @@ app:
         rawstream: Surov pretok
       camera_rotate_by: Zavrti za
       camera_stream_type: Pretočni tip
-      camera_url: URL kamere
       card: Kartica
       collector: Krmilnik
       confirm_on_estop: Zahtevaj potrditev za zasilni izklop
@@ -522,7 +519,6 @@ app:
       fps_idle_target: Želene slike na sekundo, kadar ni v fokusu
       height: Višina
       gcode_coords: Uporabi koordinate iz g-kode
-      group_lower_layers: Združi spodnje plasti
       icon: Ikona
       invert_x_control: Zrcali X pomike
       invert_y_control: Zrcali Y pomike
@@ -606,14 +602,12 @@ app:
       hardware_desc: Opis opreme
       hostname: Ime gostitelja
       klipper_load: Obremenitev Klipperja
-      load: obremenitev
       manufactured: Proizvedeno
       manufacturer: Proizvajalec
       mcu_awake: '{mcu} čas budnosti'
       mcu_bandwidth: '{mcu} pasovna širina'
       mcu_information: '{mcu} informacije'
       mcu_load: '{mcu} obremenitev'
-      memory_used: porabljenega spomina
       micro_controller: Mikrokrmilnik
       model: Model CPE
       moonraker_load: Obremenitev Moonrakerja

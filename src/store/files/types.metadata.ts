@@ -16,13 +16,11 @@ export interface KlipperFileMeta {
   object_height?: number;
   slicer?: string;
   slicer_version?: string;
-  thumbnails?: Thumbnail[];
+  thumbnails?: KlipperFileMetaThumbnail[];
 }
 
-export interface Thumbnail {
-  data: string;
+export interface KlipperFileMetaThumbnail {
   relative_path: string;
-  absolute_path?: string;
   height: number;
   width: number;
   size: number;

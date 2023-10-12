@@ -6,6 +6,7 @@ import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
 import { AppTableHeader } from '@/types'
+import { FileFilterType } from '../files/types'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**
@@ -140,6 +141,11 @@ export const actions: ActionTree<ConfigState, RootState> = {
   async removePreset ({ commit, state }, payload) {
     commit('setRemovePreset', payload)
     SocketActions.serverWrite('uiSettings.dashboard.tempPresets', state.uiSettings.dashboard.tempPresets)
+  },
+
+  async updateFileSystemActiveFilters ({ commit, state }, payload: { root: string, value: FileFilterType[] }) {
+    commit('setFileSystemActiveFilters', payload)
+    SocketActions.serverWrite(`uiSettings.fileSystem.activeFilters.${payload.root}`, state.uiSettings.fileSystem.activeFilters[payload.root])
   },
 
   /**

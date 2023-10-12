@@ -36,6 +36,8 @@ export interface SpoolmanConfig {
   autoOpenQRDetectionCamera: string | null;
   autoSelectSpoolOnMatch: boolean;
   preferDeviceCamera: boolean;
+  warnOnNotEnoughFilament: boolean;
+  warnOnFilamentTypeMismatch: boolean;
 }
 
 export interface HostConfig {
@@ -61,7 +63,10 @@ export interface GeneralConfig {
   defaultToolheadMoveLength: number;
   defaultToolheadXYSpeed: number;
   defaultToolheadZSpeed: number;
+  toolheadControlStyle: ToolheadControlStyle;
   toolheadMoveDistances: number[];
+  toolheadXYMoveDistances: number[];
+  toolheadZMoveDistances: number[];
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
@@ -87,6 +92,8 @@ export interface GeneralConfig {
   enableDiagnostics: boolean;
   thumbnailSize: number;
 }
+
+export type ToolheadControlStyle = 'cross' | 'bars'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 
@@ -198,5 +205,5 @@ export interface GcodePreviewConfig {
 }
 
 export interface FileSystemConfig {
-  activeFilters: Partial<Record<string, FileFilterType[]>>
+  activeFilters: Record<string, FileFilterType[]>
 }

@@ -20,7 +20,7 @@ import webSocketWrapper from '@/util/web-socket-wrapper'
  */
 
 const getHostConfig = async () => {
-  const hostConfigResponse = await httpClientActions.get<HostConfig>(`/config.json?date=${Date.now()}`)
+  const hostConfigResponse = await httpClientActions.get<HostConfig>(`${import.meta.env.BASE_URL}config.json?date=${Date.now()}`)
   if (hostConfigResponse && hostConfigResponse.data) {
     consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data

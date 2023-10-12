@@ -234,6 +234,21 @@ export const Filters = {
   },
 
   /**
+   * Formats a number (in bytes/sec) to a human readable data rate.
+   */
+  getReadableDataRateString (dataRateInBytesPerSec: number) {
+    let i = -1
+    const byteUnits = [' kB', ' MB', ' GB', ' TB', 'PB', 'EB', 'ZB', 'YB']
+    if (dataRateInBytesPerSec === 0) return `0${byteUnits[0]}`
+    do {
+      dataRateInBytesPerSec = dataRateInBytesPerSec / 1024
+      i++
+    } while (dataRateInBytesPerSec > 1024)
+
+    return Math.max(dataRateInBytesPerSec, 0.2).toFixed(1) + byteUnits[i] + '/Sec'
+  },
+
+  /**
    * Formats a number representing mm to human readable distance.
    */
   getReadableLengthString (lengthInMm: number, showMicrons = false) {
@@ -332,14 +347,31 @@ export const Filters = {
   /**
    * Determines API urls from a base url
    */
-  getApiUrls (url: string): ApiConfig {
-    const _url = new URL(url)
-    const wsProtocol = _url.protocol === 'https:' ? 'wss://' : 'ws://'
-    const o = {
-      apiUrl: `${_url.protocol}//${_url.host}`,
-      socketUrl: `${wsProtocol}${_url.host}/websocket`
+  getApiUrls (apiUrl: string): ApiConfig {
+    if (
+      !apiUrl.startsWith('http://') &&
+      !apiUrl.startsWith('https://')
+    ) {
+      apiUrl = `http://${apiUrl}`
     }
-    return o
+
+    if (apiUrl.endsWith('/')) {
+      apiUrl = apiUrl.slice(0, -1)
+    }
+
+    const socketUrl = new URL(apiUrl)
+
+    socketUrl.protocol = socketUrl.protocol === 'https:'
+      ? 'wss://'
+      : 'ws://'
+    socketUrl.pathname += socketUrl.pathname.endsWith('/')
+      ? 'websocket'
+      : '/websocket'
+
+    return {
+      apiUrl,
+      socketUrl: socketUrl.toString()
+    }
   },
 
   /**

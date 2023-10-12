@@ -2,11 +2,6 @@ import { Commit, Dispatch } from 'vuex'
 import { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 
-export const isOfType = <T> (
-  varToBeChecked: any,
-  propertyToCheckFor: keyof T
-): varToBeChecked is T => (varToBeChecked as T)[propertyToCheckFor] !== undefined
-
 export const handleExcludeObjectChange = (payload: any, state: RootState, dispatch: Dispatch) => {
   // For every notify - if print_stats.state changes from standby -> printing,
   // then record an entry in our print history.
