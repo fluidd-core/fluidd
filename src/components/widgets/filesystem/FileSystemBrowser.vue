@@ -34,7 +34,7 @@
             'v-data-table__selected': (isSelected && item.name !== '..')
           }"
           class="row-select px-1"
-          :draggable="draggable(item)"
+          :draggable="isItemDraggable(item)"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
           @dragstart="handleDragStart(item, $event)"
@@ -387,13 +387,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   getItemIcon (item: FileBrowserEntry) {
-    const readonly = (
-      this.readonly ||
-      (
-        item.permissions !== undefined &&
-        !item.permissions.includes('w')
-      )
-    )
+    const readonly = !this.isItemWriteable(item)
 
     if (item.type === 'file') {
       if (item.extension === 'zip') {
@@ -414,13 +408,24 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Determines if a row is currently in a draggable state or not.
-  draggable (item: FileBrowserEntry) {
+  isItemDraggable (item: FileBrowserEntry) {
     return (
       item.name !== '..' &&
       this.files.length > 0 &&
       (
         this.selected.length === 0 ||
         this.selected.includes(item)
+      )
+    )
+  }
+
+  isItemWriteable (item: FileBrowserEntry) {
+    return (
+      item.name !== '..' &&
+      !this.readonly &&
+      (
+        item.permissions === undefined ||
+        item.permissions.includes('w')
       )
     )
   }
@@ -460,6 +465,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
     if (
       item.type === 'directory' &&
+      this.isItemWriteable(item) &&
       e.dataTransfer &&
       this.dragItem &&
       this.dragItem !== item
@@ -476,6 +482,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   handleDragOver (item: FileBrowserEntry, e: DragEvent) {
     if (
       item.type === 'directory' &&
+      this.isItemWriteable(item) &&
       e.dataTransfer &&
       this.dragItem &&
       this.dragItem !== item &&
