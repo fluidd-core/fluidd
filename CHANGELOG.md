@@ -2,6 +2,41 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.26.0](https://github.com/fluidd-core/fluidd/compare/v1.25.3...v1.26.0) (2023-10-12)
+
+
+### Features
+
+* Added "calibrate" button to BedMeshCard ([#1182](https://github.com/fluidd-core/fluidd/issues/1182)) ([899c95c](https://github.com/fluidd-core/fluidd/commit/899c95c73d7257289315b191f48233a2bc37c206))
+* adds gcode code folding support ([2efd03e](https://github.com/fluidd-core/fluidd/commit/2efd03e03a6b851fdf2af59288caf2cb57416e36))
+* adds moonraker "route_prefix" support ([#1205](https://github.com/fluidd-core/fluidd/issues/1205)) ([b0fe01d](https://github.com/fluidd-core/fluidd/commit/b0fe01da268318d4251ec2447ada8e07aaf4aa3e))
+* adds Moonraker sensor support ([#1196](https://github.com/fluidd-core/fluidd/issues/1196)) ([67e48bd](https://github.com/fluidd-core/fluidd/commit/67e48bd21c243fc3d7923ed3e4a37d755c937552))
+* Adds toolhead bars style controls ([#1177](https://github.com/fluidd-core/fluidd/issues/1177)) ([9465a50](https://github.com/fluidd-core/fluidd/commit/9465a50d98b6cf0e4f9cfc53a074ca708d40703c))
+* expands tool change support to commands ([#1197](https://github.com/fluidd-core/fluidd/issues/1197)) ([a17efec](https://github.com/fluidd-core/fluidd/commit/a17efec4a6101ff9fa205dc2e3c45f485634c693))
+* hides Moonraker devices starting with "_" ([5c329e5](https://github.com/fluidd-core/fluidd/commit/5c329e5b8e4f6c139330205cbb969076c45a41e1))
+* **i18n-HU:** Update Hungarian language ([#1201](https://github.com/fluidd-core/fluidd/issues/1201)) ([50ac181](https://github.com/fluidd-core/fluidd/commit/50ac1810e82537b62574a5529cd9cbface85ead2))
+* **i18n-PL:** update Polish translations ([#1188](https://github.com/fluidd-core/fluidd/issues/1188)) ([733ed59](https://github.com/fluidd-core/fluidd/commit/733ed5939b50cb5daae5cc120be16937f7851980))
+* **i18n-RU:** Update Russian translations ([#1179](https://github.com/fluidd-core/fluidd/issues/1179)) ([83fc652](https://github.com/fluidd-core/fluidd/commit/83fc65227326e992227f5d1ef99c2328ad0d59c1))
+* **i18n-RU:** update Russian translations ([#1183](https://github.com/fluidd-core/fluidd/issues/1183)) ([ee16ea8](https://github.com/fluidd-core/fluidd/commit/ee16ea8c2c6be5ece464932b32541116b57bff08))
+* improve drag & drop support ([#1204](https://github.com/fluidd-core/fluidd/issues/1204)) ([b860ca0](https://github.com/fluidd-core/fluidd/commit/b860ca09da5602c80fd353cfa70b5102994adff2))
+* show all registered file system roots ([46a0a55](https://github.com/fluidd-core/fluidd/commit/46a0a55f130222b39c7c416c0c30006338f18fef))
+* **spoolman:** allow toggling individual sanity check warnings ([#1186](https://github.com/fluidd-core/fluidd/issues/1186)) ([2086c19](https://github.com/fluidd-core/fluidd/commit/2086c19cd1f63c3a5563b9bd13c483f2ade134d6))
+* use custom service worker ([d5c3b9a](https://github.com/fluidd-core/fluidd/commit/d5c3b9a654a5a862a856f4a2ae977f0f44c7f688))
+
+
+### Bug Fixes
+
+* adds support for public base path ([#1207](https://github.com/fluidd-core/fluidd/issues/1207)) ([7f0886d](https://github.com/fluidd-core/fluidd/commit/7f0886d7807c0e1882ef9f6ca073e75bfb087a9d))
+* check if folder is writeable on file drop ([d53462e](https://github.com/fluidd-core/fluidd/commit/d53462e7d321d2219dbe4abaefd3add39244b7a1))
+* corrects full filename for print and metadata ([3dd3079](https://github.com/fluidd-core/fluidd/commit/3dd307964058c8eaadf9af43df41716103e6d5da))
+* delta printers can only home all ([#1175](https://github.com/fluidd-core/fluidd/issues/1175)) ([ec0f56d](https://github.com/fluidd-core/fluidd/commit/ec0f56d3729e56e662298cef834fc592647ef224))
+* ensures .git folders are excluded ([#1194](https://github.com/fluidd-core/fluidd/issues/1194)) ([2cee275](https://github.com/fluidd-core/fluidd/commit/2cee27500dba239b9daad4731b4b622d16174a98))
+* file system filters reactivity ([5734323](https://github.com/fluidd-core/fluidd/commit/57343238ca425103f59e6cbe1fb8c1109d971be8))
+* hide Power section if there are no devices ([e1f1a99](https://github.com/fluidd-core/fluidd/commit/e1f1a9966941419a0ae5c1918d6021588e047041))
+* **i18n-EN:** fixes incorrect merge ([7713c5e](https://github.com/fluidd-core/fluidd/commit/7713c5eb1855c2ba753ffc1689c682e3865762d1))
+* **i18n:** fixes incorrect merge ([e533388](https://github.com/fluidd-core/fluidd/commit/e533388409ddc985bea15b66dc23eea47dfd0402))
+* remove moved paths from data store ([ba830f1](https://github.com/fluidd-core/fluidd/commit/ba830f14484b4b7968e8e5d071667e1c5c321752))
+
 ## [1.25.3](https://github.com/fluidd-core/fluidd/compare/v1.25.2...v1.25.3) (2023-09-10)
 
 
