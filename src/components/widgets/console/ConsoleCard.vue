@@ -2,6 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.console')"
     icon="$console"
+    :help-tooltip="$t('app.console.tooltip.help')"
     card-classes="d-flex flex-column"
     content-classes="flex-grow-1 flow-shrink-0"
     menu-breakpoint="none"
@@ -11,18 +12,6 @@
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
-    <template #title>
-      <v-icon left>
-        $console
-      </v-icon>
-      <span class="font-weight-light">{{ $t('app.general.title.console') }}</span>
-      <app-inline-help
-        bottom
-        small
-        :tooltip="$t('app.console.placeholder.command')"
-      />
-    </template>
-
     <template #menu>
       <app-btn
         v-if="scrollingPaused"

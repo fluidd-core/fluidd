@@ -2,22 +2,11 @@
   <collapsable-card
     :title="$t('app.general.title.temperature')"
     icon="$fire"
+    :help-tooltip="$t('app.chart.tooltip.help')"
     :lazy="false"
     draggable
     layout-path="dashboard.temperature-card"
   >
-    <template #title>
-      <v-icon left>
-        $fire
-      </v-icon>
-      <span class="font-weight-light">{{ $t('app.general.title.temperature') }}</span>
-      <app-inline-help
-        bottom
-        small
-        :tooltip="$t('app.chart.tooltip.help')"
-      />
-    </template>
-
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
         <app-btn

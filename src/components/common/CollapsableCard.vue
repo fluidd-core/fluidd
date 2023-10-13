@@ -17,11 +17,20 @@
           align-self="center"
           class="text-no-wrap"
         >
-          <slot name="title">
+          <slot
+            name="title"
+            :in-layout="inLayout"
+          >
             <v-icon left>
               {{ icon }}
             </v-icon>
             <span class="font-weight-light">{{ title }}</span>
+            <app-inline-help
+              v-if="!inLayout && helpTooltip"
+              bottom
+              small
+              :tooltip="helpTooltip"
+            />
           </slot>
         </v-col>
 
@@ -111,6 +120,9 @@ export default class CollapsableCard extends Vue {
    */
   @Prop({ type: String, required: true })
   readonly title!: string
+
+  @Prop({ type: String, required: false })
+  readonly helpTooltip!: string
 
   /**
    * Card color.
