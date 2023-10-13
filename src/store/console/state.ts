@@ -1,4 +1,4 @@
-import { ConsoleState } from './types'
+import type { ConsoleState } from './types'
 
 export const defaultState = (): ConsoleState => {
   return {

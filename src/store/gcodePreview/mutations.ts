@@ -1,8 +1,8 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import { GcodePreviewState } from './types'
+import type { GcodePreviewState } from './types'
 import Vue from 'vue'
-import { AppFile } from '@/store/files/types'
+import type { AppFile } from '@/store/files/types'
 
 export const mutations: MutationTree<GcodePreviewState> = {
   /**

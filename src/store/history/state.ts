@@ -1,4 +1,4 @@
-import { HistoryState } from './types'
+import type { HistoryState } from './types'
 
 export const defaultState = (): HistoryState => {
   return {

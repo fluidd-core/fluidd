@@ -1,5 +1,5 @@
-import { Commit, Dispatch } from 'vuex'
-import { RootState } from './types'
+import type { Commit, Dispatch } from 'vuex'
+import type { RootState } from './types'
 import { SocketActions } from '@/api/socketActions'
 
 export const handleExcludeObjectChange = (payload: any, state: RootState, dispatch: Dispatch) => {

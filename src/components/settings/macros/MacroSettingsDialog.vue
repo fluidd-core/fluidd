@@ -101,7 +101,7 @@
 </template>
 
 <script lang="ts">
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})

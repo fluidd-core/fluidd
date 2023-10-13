@@ -44,7 +44,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { AppFile } from '@/store/files/types'
+import type { AppFile } from '@/store/files/types'
 
 @Component({})
 export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin) {

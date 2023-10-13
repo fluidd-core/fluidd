@@ -1,9 +1,9 @@
-import { AppFile, FilesUpload, AppFileThumbnail, KlipperFileMeta } from '@/store/files/types'
+import type { AppFile, FilesUpload, AppFileThumbnail, KlipperFileMeta } from '@/store/files/types'
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
+import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
-import { FileWithPath } from '@/util/file-system-entry'
+import type { FileWithPath } from '@/util/file-system-entry'
 
 @Component
 export default class FilesMixin extends Vue {

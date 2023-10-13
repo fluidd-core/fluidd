@@ -25,7 +25,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 
 @Component({})
 export default class JobQueueContextMenu extends Vue {

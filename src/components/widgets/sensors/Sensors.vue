@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { MoonrakerSensor } from '@/store/sensors/types'
+import type { MoonrakerSensor } from '@/store/sensors/types'
 import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})

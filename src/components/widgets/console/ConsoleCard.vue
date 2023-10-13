@@ -138,7 +138,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import Console from './Console.vue'
-import { ConsoleEntry } from '@/store/console/types'
+import type { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {

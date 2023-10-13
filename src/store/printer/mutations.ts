@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { PrinterState } from './types'
+import type { MutationTree } from 'vuex'
+import type { PrinterState } from './types'
 import { defaultState } from './state'
 import { consola } from 'consola'
 import { get } from 'lodash-es'

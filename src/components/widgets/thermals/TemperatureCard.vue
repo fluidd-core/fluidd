@@ -117,12 +117,12 @@
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import { Fan, Heater } from '@/store/printer/types'
+import type { Fan, Heater } from '@/store/printer/types'
 
 import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets.vue'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
-import { TemperaturePreset } from '@/store/config/types'
+import type { TemperaturePreset } from '@/store/config/types'
 
 @Component({
   components: {

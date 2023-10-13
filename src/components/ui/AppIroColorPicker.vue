@@ -49,7 +49,7 @@
 import { Component, Vue, Prop, Ref, Watch } from 'vue-property-decorator'
 import iro from '@jaames/iro'
 import { IroColor } from '@irojs/iro-core'
-import { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
+import type { ColorPickerProps, IroColorPicker } from '@jaames/iro/dist/ColorPicker'
 
 @Component({
   components: {}

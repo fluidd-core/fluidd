@@ -92,7 +92,7 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Ref, VModel, Mixins } from 'vue-property-decorator'
-import { VForm } from '@/types'
+import type { VForm } from '@/types'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({})

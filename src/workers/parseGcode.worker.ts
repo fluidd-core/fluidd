@@ -1,4 +1,4 @@
-import { Layer, Move, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage, Part } from '@/store/gcodePreview/types'
+import type { Layer, Move, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage, Part } from '@/store/gcodePreview/types'
 import parseGcode from './parseGcode'
 
 const sendProgress = (filePosition: number) => {

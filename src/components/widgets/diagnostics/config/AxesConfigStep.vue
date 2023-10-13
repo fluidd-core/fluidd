@@ -99,7 +99,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 
 @Component({})
 export default class AxesConfigStep extends Vue {

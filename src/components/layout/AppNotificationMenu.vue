@@ -152,7 +152,7 @@
 </template>
 
 <script lang="ts">
-import { AppNotification } from '@/store/notifications/types'
+import type { AppNotification } from '@/store/notifications/types'
 import isSetAppBadgeSupported from '@/util/is-set-app-badge-supported'
 import { Component, Watch, Mixins } from 'vue-property-decorator'
 import BrowserMixin from '@/mixins/browser'

@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { Point, Part, PartsState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { Point, Part, PartsState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<PartsState, RootState> = {
   getParts: (state): {[key: string]: Part} => {

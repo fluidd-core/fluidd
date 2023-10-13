@@ -62,7 +62,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { IroColor } from '@irojs/iro-core'
-import { SupportedTheme, ThemeConfig } from '@/store/config/types'
+import type { SupportedTheme, ThemeConfig } from '@/store/config/types'
 import ThemePicker from '../ui/AppColorPicker.vue'
 
 @Component({

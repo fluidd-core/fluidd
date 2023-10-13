@@ -249,9 +249,9 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
 import StateMixin from '@/mixins/state'
-import { Heater, Sensor } from '@/store/printer/types'
+import type { Heater, Sensor } from '@/store/printer/types'
 import { takeRightWhile } from 'lodash-es'
-import { ChartData } from '@/store/charts/types'
+import type { ChartData } from '@/store/charts/types'
 
 @Component({
   components: {

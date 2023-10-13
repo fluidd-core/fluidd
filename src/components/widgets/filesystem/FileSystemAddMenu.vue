@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import StateMixin from '@/mixins/state'
-import { RootProperties } from '@/store/files/types'
+import type { RootProperties } from '@/store/files/types'
 import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 

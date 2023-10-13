@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { RootProperties } from '@/store/files/types'
+import type { RootProperties } from '@/store/files/types'
 import { Component, Vue, Ref, Prop } from 'vue-property-decorator'
 
 @Component({})

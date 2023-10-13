@@ -110,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})

@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { WaitState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { WaitState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<WaitState, RootState> = {
   /**

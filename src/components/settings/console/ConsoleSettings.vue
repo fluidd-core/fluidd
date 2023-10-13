@@ -77,7 +77,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
+import { type ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
 import ConsoleFilterDialog from './ConsoleFilterDialog.vue'
 
 @Component({

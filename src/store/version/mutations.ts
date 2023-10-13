@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { VersionState } from './types'
+import type { MutationTree } from 'vuex'
+import type { VersionState } from './types'
 import { defaultState } from './state'
 
 export const mutations: MutationTree<VersionState> = {

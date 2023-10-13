@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { WebcamsState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { WebcamsState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<WebcamsState, RootState> = {
   getWebcamsInConfig: (state) => {

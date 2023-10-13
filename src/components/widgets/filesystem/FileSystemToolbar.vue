@@ -159,8 +159,8 @@ import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StatesMixin from '@/mixins/state'
 import FileSystemAddMenu from './FileSystemAddMenu.vue'
 import FileSystemFilterMenu from './FileSystemFilterMenu.vue'
-import { AppTableHeader } from '@/types'
-import { RootProperties } from '@/store/files/types'
+import type { AppTableHeader } from '@/types'
+import type { RootProperties } from '@/store/files/types'
 
 @Component({
   components: {

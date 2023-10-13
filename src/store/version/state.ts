@@ -1,4 +1,4 @@
-import { VersionState } from './types'
+import type { VersionState } from './types'
 
 export const defaultState = (): VersionState => {
   return {

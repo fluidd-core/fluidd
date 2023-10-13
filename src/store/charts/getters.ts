@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import vuetify from '@/plugins/vuetify'
-import { GetterTree } from 'vuex'
-import { ChartState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { ChartState } from './types'
+import type { RootState } from '../types'
 import { Globals } from '@/globals'
-import { EChartsOption } from 'echarts'
+import type { EChartsOption } from 'echarts'
 
 export const getters: GetterTree<ChartState, RootState> = {
   /**

@@ -1,13 +1,13 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
-import { ApiConfig, TextSortOrder } from '@/store/config/types'
+import type { ApiConfig, TextSortOrder } from '@/store/config/types'
 import { TinyColor } from '@ctrl/tinycolor'
 import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
-import { FileBrowserEntry } from '@/store/files/types'
+import type { FileBrowserEntry } from '@/store/files/types'
 import versionStringCompare from '@/util/version-string-compare'
 
 /**

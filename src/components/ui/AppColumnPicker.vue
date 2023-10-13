@@ -51,7 +51,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { AppTableHeader } from '@/types'
+import type { AppTableHeader } from '@/types'
 
 @Component({})
 export default class AppColumnPicker extends Mixins(StateMixin) {

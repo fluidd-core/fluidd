@@ -1,4 +1,4 @@
-import { ArcMove, Move, Point } from '@/store/gcodePreview/types'
+import type { ArcMove, Move, Point } from '@/store/gcodePreview/types'
 
 type BinarySearchComparer<T> = (item: T, index: number, array: T[]) => number
 

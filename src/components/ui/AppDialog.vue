@@ -62,7 +62,7 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/types'
+import type { VForm } from '@/types'
 import { Component, Vue, Prop, VModel, Ref, PropSync } from 'vue-property-decorator'
 
 @Component({})

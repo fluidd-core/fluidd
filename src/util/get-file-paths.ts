@@ -1,5 +1,5 @@
 import { Globals } from '@/globals'
-import { FilePaths } from '@/store/files/types'
+import type { FilePaths } from '@/store/files/types'
 
 /**
  * Takes a filename and root and provides;

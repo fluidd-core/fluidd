@@ -1,4 +1,4 @@
-import { MeshState } from './types'
+import type { MeshState } from './types'
 
 export const defaultState = (): MeshState => {
   return {

@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleFilter, ConsoleFilterType, ConsoleState } from './types'
+import { type ConsoleEntry, type ConsoleFilter, ConsoleFilterType, type ConsoleState } from './types'
 import escapeRegExp from '@/util/escape-regexp'
 
 const _compileExpression = (filter: ConsoleFilter): RegExp => {

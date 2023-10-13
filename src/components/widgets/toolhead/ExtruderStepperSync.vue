@@ -37,7 +37,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
+import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
 
 @Component({})
 export default class ExtruderStepperSync extends Mixins(StateMixin) {

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export const httpClientActions = {
   get<T = any, R = AxiosResponse<T>, D = any> (url: string, options?: AxiosRequestConfig) {

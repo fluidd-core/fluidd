@@ -190,7 +190,7 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import { FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.

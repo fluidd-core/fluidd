@@ -281,8 +281,8 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
-import { FileBrowserEntry, RootProperties } from '@/store/files/types'
-import { AppTableHeader } from '@/types'
+import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
 import FileRowItem from './FileRowItem.vue'

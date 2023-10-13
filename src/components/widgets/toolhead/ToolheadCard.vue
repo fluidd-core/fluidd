@@ -148,7 +148,7 @@ import { Component, Mixins, Prop, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import Toolhead from './Toolhead.vue'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 
 type Tool = {
   name: string,

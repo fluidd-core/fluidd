@@ -1,7 +1,7 @@
-import { ActionTree } from 'vuex'
-import { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from './types'
-import { RootState } from '../types'
-import { AppFile } from '@/store/files/types'
+import type { ActionTree } from 'vuex'
+import type { GcodePreviewState, ParseGcodeWorkerClientMessage, ParseGcodeWorkerServerMessage } from './types'
+import type { RootState } from '../types'
+import type { AppFile } from '@/store/files/types'
 import { consola } from 'consola'
 
 import ParseGcodeWorker from '../../workers/parseGcode.worker.ts?worker'

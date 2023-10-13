@@ -91,7 +91,7 @@
 </template>
 
 <script lang="ts">
-import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
+import type { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})

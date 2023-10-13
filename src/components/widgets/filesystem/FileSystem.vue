@@ -140,15 +140,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import {
-  AppDirectory,
-  AppFile,
-  AppFileWithMeta,
-  FilesUpload,
-  FileFilterType,
-  FileBrowserEntry,
-  RootProperties
-} from '@/store/files/types'
+import type { AppDirectory, AppFile, AppFileWithMeta, FilesUpload, FileFilterType, FileBrowserEntry, RootProperties } from '@/store/files/types'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import ServicesMixin from '@/mixins/services'
@@ -161,8 +153,8 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import { AppTableHeader } from '@/types'
-import { FileWithPath, getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import type { AppTableHeader } from '@/types'
+import { type FileWithPath, getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.

@@ -1,7 +1,7 @@
-import { GetterTree } from 'vuex'
-import { CameraConfig, CameraService, CamerasState, MoonrakerWebcamRotation } from './types'
-import { RootState } from '../types'
-import { WebcamConfig } from '../webcams/types'
+import type { GetterTree } from 'vuex'
+import type { CameraConfig, CameraService, CamerasState, MoonrakerWebcamRotation } from './types'
+import type { RootState } from '../types'
+import type { WebcamConfig } from '../webcams/types'
 
 export const getters: GetterTree<CamerasState, RootState> = {
   /**

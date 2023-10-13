@@ -45,13 +45,13 @@
 
 <script lang="ts">
 import { SocketActions } from '@/api/socketActions'
-import { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import JobQueueToolbar from './JobQueueToolbar.vue'
 import JobQueueBulkActions from './JobQueueBulkActions.vue'
 import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
-import { AppTableHeader } from '@/types'
+import type { AppTableHeader } from '@/types'
 
 @Component({
   components: {

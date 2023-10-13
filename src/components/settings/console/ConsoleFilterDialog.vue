@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
+import { type ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleFilterDialog extends Vue {

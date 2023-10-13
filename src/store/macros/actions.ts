@@ -1,6 +1,6 @@
-import { ActionTree } from 'vuex'
-import { Macro, MacroCategory, MacrosState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { Macro, MacroCategory, MacrosState } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 

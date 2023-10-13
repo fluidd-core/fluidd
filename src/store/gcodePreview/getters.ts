@@ -1,16 +1,7 @@
-import { GetterTree } from 'vuex'
-import {
-  BBox,
-  GcodePreviewState,
-  Layer,
-  LayerNr,
-  LayerPaths,
-  Move,
-  Part,
-  Point3D
-} from './types'
-import { RootState } from '../types'
-import { AppFile } from '@/store/files/types'
+import type { GetterTree } from 'vuex'
+import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
+import type { RootState } from '../types'
+import type { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
 import IsKeyOf from '@/util/is-key-of'
 

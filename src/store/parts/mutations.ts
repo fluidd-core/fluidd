@@ -1,6 +1,6 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import { Part, PartObject, PartsState } from './types'
+import type { Part, PartObject, PartsState } from './types'
 import Vue from 'vue'
 
 export const mutations: MutationTree<PartsState> = {

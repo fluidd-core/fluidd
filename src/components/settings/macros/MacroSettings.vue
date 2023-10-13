@@ -122,7 +122,7 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import MacroSettingsDialog from './MacroSettingsDialog.vue'
-import { Macro, MacroCategory } from '@/store/macros/types'
+import type { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
 
 const routeGuard = (to: any) => {

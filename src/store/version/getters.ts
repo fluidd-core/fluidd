@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { CommitItem, VersionState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { CommitItem, VersionState } from './types'
+import type { RootState } from '../types'
 import { valid, gt } from 'semver'
 
 export const getters: GetterTree<VersionState, RootState> = {

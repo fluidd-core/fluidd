@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import { v4 as uuidv4 } from 'uuid'
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import { Macro, MacroCategory, MacrosState } from './types'
+import type { Macro, MacroCategory, MacrosState } from './types'
 
 export const mutations: MutationTree<MacrosState> = {
   /**

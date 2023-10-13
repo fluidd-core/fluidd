@@ -1,4 +1,4 @@
-import { JobQueueState } from './types'
+import type { JobQueueState } from './types'
 
 export const defaultState = (): JobQueueState => {
   return {

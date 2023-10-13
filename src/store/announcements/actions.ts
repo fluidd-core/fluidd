@@ -1,6 +1,6 @@
-import { ActionTree } from 'vuex'
-import { AnnouncementsState, Announcement } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { AnnouncementsState, Announcement } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
 export const actions: ActionTree<AnnouncementsState, RootState> = {

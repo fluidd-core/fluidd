@@ -1,12 +1,12 @@
 import vuetify from '@/plugins/vuetify'
-import { ActionTree } from 'vuex'
-import { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { ConfigState, SaveByPath, InitConfig, InstanceConfig, UiSettings } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import { loadLocaleMessagesAsync, getStartingLocale } from '@/plugins/i18n'
 import { Waits } from '@/globals'
-import { AppTableHeader } from '@/types'
-import { FileFilterType } from '../files/types'
+import type { AppTableHeader } from '@/types'
+import type { FileFilterType } from '../files/types'
 
 export const actions: ActionTree<ConfigState, RootState> = {
   /**

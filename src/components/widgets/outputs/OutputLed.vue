@@ -27,7 +27,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import { IroColor } from '@irojs/iro-core'
 import StateMixin from '@/mixins/state'
-import { Led } from '@/store/printer/types'
+import type { Led } from '@/store/printer/types'
 
 type Channel = 'r' | 'g' | 'b' | 'w'
 

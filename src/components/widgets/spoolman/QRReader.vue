@@ -28,7 +28,7 @@ import { Component, Mixins, Ref, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import QrScanner from 'qr-scanner'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
-import { Spool } from '@/store/spoolman/types'
+import type { Spool } from '@/store/spoolman/types'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({

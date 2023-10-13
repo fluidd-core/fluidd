@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import type { FlashMessage } from '@/types'
 
 export const EventBus = {
   bus: new Vue(),
@@ -15,12 +16,3 @@ export const EventBus = {
     EventBus.bus.$emit('flashMessage', opts) // custom message
   }
 }
-
-export interface FlashMessage {
-  type?: FlashMessageTypes;
-  open: boolean;
-  text?: string;
-  timeout?: number;
-}
-
-export type FlashMessageTypes = 'success' | 'error' | 'warning' | 'primary' | 'secondary'

@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { Macro, MacrosState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { Macro, MacrosState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<MacrosState, RootState> = {
 

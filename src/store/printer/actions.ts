@@ -1,12 +1,12 @@
-import { ActionTree } from 'vuex'
-import { PrinterState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { PrinterState } from './types'
+import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
-import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
 
 // let retryTimeout: number

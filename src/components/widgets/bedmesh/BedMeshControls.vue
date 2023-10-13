@@ -280,7 +280,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
+import type { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
 
 @Component({
   components: {

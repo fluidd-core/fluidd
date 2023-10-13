@@ -1,13 +1,13 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
+import type { MutationTree } from 'vuex'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
-import { AppTableHeader } from '@/types'
-import { AppTablePartialHeader } from '@/types/tableheaders'
-import { FileFilterType } from '../files/types'
+import type { AppTableHeader } from '@/types'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { FileFilterType } from '../files/types'
 
 export const mutations: MutationTree<ConfigState> = {
   /**

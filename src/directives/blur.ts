@@ -1,4 +1,4 @@
-import { FunctionDirective } from 'vue'
+import type { FunctionDirective } from 'vue'
 
 const blur: FunctionDirective<HTMLElement> = (el) => {
   el.onfocus = (ev) => {

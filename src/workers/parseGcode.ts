@@ -1,5 +1,5 @@
 /* eslint-disable no-fallthrough */
-import { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
+import type { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
 import IsKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import shlex from 'shlex'

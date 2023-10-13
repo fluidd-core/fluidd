@@ -1,4 +1,4 @@
-import { ConfigState } from './types'
+import type { ConfigState } from './types'
 import { Globals } from '@/globals'
 
 export const defaultState = (): ConfigState => {

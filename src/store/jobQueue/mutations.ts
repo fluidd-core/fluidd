@@ -1,5 +1,5 @@
-import { MutationTree } from 'vuex'
-import { JobQueueState, QueuedJob, QueueState } from './types'
+import type { MutationTree } from 'vuex'
+import type { JobQueueState, QueuedJob, QueueState } from './types'
 import { defaultState } from './state'
 
 export const mutations: MutationTree<JobQueueState> = {

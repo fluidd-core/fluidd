@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { CameraConfig } from '@/store/cameras/types'
+import type { CameraConfig } from '@/store/cameras/types'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 
 @Component({

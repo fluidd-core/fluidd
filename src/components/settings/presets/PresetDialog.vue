@@ -99,8 +99,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { TemperaturePreset } from '@/store/config/types'
-import { Fan, Heater } from '@/store/printer/types'
+import type { TemperaturePreset } from '@/store/config/types'
+import type { Fan, Heater } from '@/store/printer/types'
 
 @Component({})
 export default class TemperaturePresetDialog extends Vue {

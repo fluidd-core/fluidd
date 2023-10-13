@@ -192,7 +192,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { CameraConfig } from '@/store/cameras/types'
+import type { CameraConfig } from '@/store/cameras/types'
 
 @Component({})
 export default class CameraConfigDialog extends Vue {

@@ -85,13 +85,14 @@
 
 <script lang="ts">
 import { Component, Mixins, Watch } from 'vue-property-decorator'
-import { EventBus, FlashMessage } from '@/eventBus'
+import { EventBus } from '@/eventBus'
 import StateMixin from '@/mixins/state'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
-import { LinkPropertyHref } from 'vue-meta'
+import type { LinkPropertyHref } from 'vue-meta'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
+import type { FlashMessage } from '@/types'
 
 @Component<App>({
   metaInfo () {

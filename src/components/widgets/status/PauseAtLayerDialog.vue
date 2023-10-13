@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import StateMixin from '@/mixins/state'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 import { Component, VModel, Mixins } from 'vue-property-decorator'
 
 type PauseNextLayer = {

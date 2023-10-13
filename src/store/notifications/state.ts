@@ -1,4 +1,4 @@
-import { NotificationsState } from './types'
+import type { NotificationsState } from './types'
 
 export const defaultState = (): NotificationsState => {
   return {

@@ -77,7 +77,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 
 @Component({})
 export default class PauseResumeBtn extends Mixins(StateMixin) {

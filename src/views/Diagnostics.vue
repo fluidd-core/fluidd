@@ -82,10 +82,10 @@
 import { Component, Mixins, Watch } from 'vue-property-decorator'
 import { v4 as uuidv4 } from 'uuid'
 import StateMixin from '@/mixins/state'
-import { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import type { DiagnosticsCardConfig, DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import DiagnosticsCard from '@/components/widgets/diagnostics/DiagnosticsCard.vue'
 import DiagnosticsCardConfigDialog from '@/components/widgets/diagnostics/DiagnosticsCardConfigDialog.vue'
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 import { defaultState } from '@/store/layout/state'
 
 @Component({

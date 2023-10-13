@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
-import { HistoryItem } from '@/store/history/types'
+import type { HistoryItem } from '@/store/history/types'
 
 @Component({})
 export default class JobHistoryItemStatus extends Mixins(FilesMixin) {

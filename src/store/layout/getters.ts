@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { LayoutState, LayoutContainer, LayoutConfig } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { LayoutState, LayoutContainer, LayoutConfig } from './types'
+import type { RootState } from '../types'
 import { cloneDeep } from 'lodash-es'
 import vuetify from '@/plugins/vuetify'
 

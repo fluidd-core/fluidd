@@ -146,8 +146,8 @@ import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import GcodePreview from './GcodePreview.vue'
 import GcodePreviewParserProgressDialog from './GcodePreviewParserProgressDialog.vue'
-import { AppFile } from '@/store/files/types'
-import { MinMax } from '@/store/gcodePreview/types'
+import type { AppFile } from '@/store/files/types'
+import type { MinMax } from '@/store/gcodePreview/types'
 
 @Component({
   components: {
