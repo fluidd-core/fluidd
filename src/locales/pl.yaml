@@ -28,8 +28,8 @@ app:
       rate_of_change: Zmiana
       target: Docelowo
     tooltip:
-      help: Przytrzymaj Shift, aby powiększyć.<br />Kliknij element, aby przełączyć
-        na wykresie.<br />Kliknij Moc, aby przełączyć na wykresie.
+      help: Przytrzymaj <kbd>Shift</kbd>, aby powiększyć.<br />Kliknij element, aby
+        przełączyć na wykresie.<br />Kliknij Moc, aby przełączyć na wykresie.
   console:
     label:
       auto_scroll: Auto. przewijanie
@@ -38,6 +38,9 @@ app:
     placeholder:
       command: "Przycisk TAB do autouzupełniania; wpisz „help” dla komend; użyj strzałek
         dla historii"
+    tooltip:
+      help: Wprowadź "help", aby uzyskać komendy<br />Użyj <kbd>Tab</kbd> dla autouzupełniania<br
+        />Używaj <kbd>&uarr;</kbd> i <kbd>&darr;</kbd> dla historii poleceń
   endpoint:
     error:
       cant_connect: Coś poszło nie tak i fluidd nie może dotrzeć do celu. Czy to na
@@ -634,6 +637,8 @@ app:
       paused: Wstrzymano
       standby: Stan gotowości
       printing: Drukowanie
+    title:
+      printer_status: Status drukarki
   system_info:
     label:
       distribution_codename: Nazwa kodowa
