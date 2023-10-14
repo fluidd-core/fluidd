@@ -1,4 +1,5 @@
 import type { FileSystemDialogData, NewDirectory } from './dialogs'
+import type { FileWithPath } from './files'
 import type { FlashMessage, FlashMessageTypes } from './flashmessage'
 import type { MeshData } from './mesh'
 import type { AppTableHeader } from './tableheaders'
@@ -13,5 +14,6 @@ export type {
   AppTableHeader,
   VForm,
   VInput,
-  VSlider
+  VSlider,
+  FileWithPath
 }

@@ -1,11 +1,8 @@
+import type { FileWithPath } from '@/types'
 import { consola } from 'consola'
 
-type EntryWithPath = {
+type FileSystemEntryWithPath = {
   entry: FileSystemEntry,
-  path: string
-}
-export type FileWithPath = {
-  file: File,
   path: string
 }
 
@@ -69,7 +66,7 @@ export const convertFilesToFilesWithPath = (files: File[] | FileList) => {
 export const getFilesFromFileSystemEntries = async (entries: readonly FileSystemEntry[]) => {
   const files: FileWithPath[] = []
   const items = entries
-    .map((entry): EntryWithPath => ({
+    .map((entry): FileSystemEntryWithPath => ({
       entry,
       path: ''
     }))

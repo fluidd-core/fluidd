@@ -3,7 +3,7 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import type { AxiosRequestConfig, AxiosProgressEvent } from 'axios'
 import { httpClientActions } from '@/api/httpClientActions'
-import type { FileWithPath } from '@/util/file-system-entry'
+import type { FileWithPath } from '@/types'
 
 @Component
 export default class FilesMixin extends Vue {

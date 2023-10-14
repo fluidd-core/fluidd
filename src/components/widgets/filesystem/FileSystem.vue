@@ -153,8 +153,8 @@ import FileNameDialog from './FileNameDialog.vue'
 import FileSystemUploadDialog from './FileSystemUploadDialog.vue'
 import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
-import type { AppTableHeader } from '@/types'
-import { type FileWithPath, getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import type { AppTableHeader, FileWithPath } from '@/types'
+import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
