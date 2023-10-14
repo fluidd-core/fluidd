@@ -110,7 +110,7 @@
             <v-list-item
               v-for="filter in filters"
               :key="filter.id"
-              @click="filter.enabled = !filter.enabled"
+              @click="handleToggleFilter(filter)"
             >
               <v-list-item-action class="my-0">
                 <v-checkbox :input-value="filter.enabled" />
@@ -138,7 +138,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import Console from './Console.vue'
-import type { ConsoleEntry } from '@/store/console/types'
+import type { ConsoleEntry, ConsoleFilter } from '@/store/console/types'
 
 @Component({
   components: {
@@ -169,8 +169,8 @@ export default class ConsoleCard extends Vue {
 
   scrollingPaused = false
 
-  get filters () {
-    return this.$store.getters['console/getFilters']
+  get filters (): ConsoleFilter[] {
+    return this.$store.getters['console/getFilters'] as ConsoleFilter[]
   }
 
   get hideTempWaits (): boolean {
@@ -233,6 +233,13 @@ export default class ConsoleCard extends Vue {
 
   handleClear () {
     this.$store.dispatch('console/onClear')
+  }
+
+  handleToggleFilter (filter: ConsoleFilter) {
+    this.$store.dispatch('console/onSaveFilter', {
+      ...filter,
+      enabled: !filter.enabled
+    })
   }
 }
 </script>

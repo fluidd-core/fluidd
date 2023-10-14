@@ -79,7 +79,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { type ConsoleFilter, ConsoleFilterType } from '@/store/console/types'
+import type { ConsoleFilter } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleFilterDialog extends Vue {
@@ -99,17 +99,17 @@ export default class ConsoleFilterDialog extends Vue {
     return [
       {
         text: this.$t('app.setting.label.contains'),
-        value: ConsoleFilterType.Contains,
+        value: 'contains',
         rules: []
       },
       {
         text: this.$t('app.setting.label.starts_with'),
-        value: ConsoleFilterType.StartsWith,
+        value: 'starts-with',
         rules: []
       },
       {
         text: this.$t('app.setting.label.expression'),
-        value: ConsoleFilterType.Expression,
+        value: 'expression',
         rules: [
           this.$rules.regExpPatternValid
         ]
