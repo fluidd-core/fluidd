@@ -41,7 +41,7 @@
           <td class="temp-name">
             <span
               :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
-              class="legend-item"
+              class="legend-item toggle"
               @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
@@ -50,7 +50,7 @@
           <td class="temp-power">
             <span
               :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
-              class="legend-item"
+              class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
               <span v-if="item.power <= 0 && item.target <= 0">off</span>
@@ -65,7 +65,8 @@
           >
             <span
               :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
-              class="legend-item"
+              class="legend-item toggle"
+              @click="$emit('legendPowerClick', item)"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -111,7 +112,7 @@
           <td class="temp-name">
             <span
               :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
-              class="legend-item"
+              class="legend-item toggle"
               @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
@@ -121,7 +122,7 @@
             <span
               v-if="item.speed"
               :class="{ 'active': chartSelectedLegends[item.key + 'Speed'] }"
-              class="legend-item"
+              class="legend-item toggle"
               @click="$emit('legendPowerClick', item)"
             >
               <span v-if="item.speed > 0 && (item.target > 0 || !item.target)">
@@ -139,7 +140,8 @@
           >
             <span
               :class="{ 'active': chartSelectedLegends[item.key + 'Power'] }"
-              class="legend-item"
+              class="legend-item toggle"
+              @click="$emit('legendPowerClick', item)"
             >
               <span>{{ getRateOfChange(item) }}<small>&deg;C/s</small></span>
             </span>
@@ -192,7 +194,7 @@
           <td class="temp-name">
             <span
               :class="{ 'active': !(item.key in chartSelectedLegends) || chartSelectedLegends[item.key] }"
-              class="legend-item"
+              class="legend-item toggle"
               @click="$emit('legendClick', item)"
             >
               {{ item.prettyName }}
@@ -401,8 +403,11 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 
   .legend-item {
     display: inline-block;
-    cursor: pointer;
     opacity: 0.45
+  }
+
+  .legend-item.toggle {
+    cursor: pointer;
   }
 
   .legend-item.active {
