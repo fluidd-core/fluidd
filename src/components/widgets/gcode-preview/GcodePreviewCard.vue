@@ -394,11 +394,11 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     return Object.values(this.$store.getters['parts/getParts'])
   }
 
-  handleDragOver (e: DragEvent) {
-    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
-      e.preventDefault()
+  handleDragOver (event: DragEvent) {
+    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      event.preventDefault()
 
-      e.dataTransfer.dropEffect = 'link'
+      event.dataTransfer.dropEffect = 'link'
 
       this.overlay = true
     }
@@ -408,11 +408,11 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
     this.overlay = false
   }
 
-  handleDrop (e: DragEvent) {
+  handleDrop (event: DragEvent) {
     this.overlay = false
 
-    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
-      const data = e.dataTransfer.getData('x-fluidd-jobs')
+    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      const data = event.dataTransfer.getData('x-fluidd-jobs')
       const files: { path: string, jobs: string[] } = JSON.parse(data)
       const path = files.path ? `gcodes/${files.path}` : 'gcodes'
 

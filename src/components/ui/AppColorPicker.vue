@@ -312,10 +312,12 @@ export default class AppColorPicker extends Vue {
   }
 
   relativeMove (newPosition: PointerPosition) {
-    const parent = this.card.$el.parentElement as HTMLElement
+    const parent = this.card.$el.parentElement
 
-    parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
-    parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+    if (parent) {
+      parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
+      parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+    }
   }
 
   mouseMove (event: MouseEvent) {

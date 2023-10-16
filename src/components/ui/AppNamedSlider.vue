@@ -234,9 +234,9 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
   handleFocus (event: FocusEvent) {
     this.hasFocus = true
 
-    const input = event.target as HTMLInputElement
-
-    input.select()
+    if (event.target instanceof HTMLInputElement) {
+      event.target.select()
+    }
   }
 
   handleBlur () {

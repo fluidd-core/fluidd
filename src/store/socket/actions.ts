@@ -45,18 +45,18 @@ export const actions: ActionTree<SocketState, RootState> = {
   /**
    * Fired when the socket closes.
    */
-  async onSocketClose ({ dispatch, commit, state }, e: CloseEvent) {
+  async onSocketClose ({ dispatch, commit, state }, event: CloseEvent) {
     const retry = state.disconnecting
     const modules = ['server', 'power', 'webcams', 'jobQueue', 'charts', 'socket', 'wait', 'gcodePreview']
 
-    if (e.wasClean && retry) {
+    if (event.wasClean && retry) {
       // This is most likely a moonraker restart, so only partially reset.
       await dispatch('reset', modules, { root: true })
       commit('setSocketConnecting', true)
       Vue.$socket.connect()
     }
 
-    if (e.wasClean && !retry) {
+    if (event.wasClean && !retry) {
       // Set the socket state to closed.
       // If we swap printer endpoints, then the init will run
       // which will reset the state if necessary.
@@ -64,7 +64,7 @@ export const actions: ActionTree<SocketState, RootState> = {
       commit('setSocketOpen', false)
     }
 
-    if (!e.wasClean) {
+    if (!event.wasClean) {
       // Not a clean disconnect. Service went down?
       // Socket should attempt to reconnect itself.
       await dispatch('reset', modules, { root: true })

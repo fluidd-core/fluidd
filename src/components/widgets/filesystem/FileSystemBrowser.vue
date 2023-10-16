@@ -431,13 +431,13 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Fake a drag image when the user drags a file or folder.
-  handleDragStart (item: FileBrowserEntry, e: DragEvent) {
+  handleDragStart (item: FileBrowserEntry, event: DragEvent) {
     if (this.dragState !== true) {
       this.dragItem = item
       this.$emit('update:dragState', true)
     }
 
-    if (e.dataTransfer) {
+    if (event.dataTransfer) {
       const draggedItems = this.draggedItems
 
       this.ghost = document.createElement('div')
@@ -445,28 +445,28 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
       this.ghost.innerHTML = this.$tc('app.file_system.tooltip.move_item', draggedItems.length)
       document.body.appendChild(this.ghost)
-      e.dataTransfer.effectAllowed = 'linkMove'
-      e.dataTransfer.setDragImage(this.ghost, 0, 0)
+      event.dataTransfer.effectAllowed = 'linkMove'
+      event.dataTransfer.setDragImage(this.ghost, 0, 0)
       if (item.type === 'file') {
         const filepath = item.path ? `${this.root}/${item.path}` : this.root
         const url = this.createFileUrl(item.filename, filepath)
 
-        e.dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
-        e.dataTransfer.setData('text/plain', url)
-        e.dataTransfer.setData('text/uri-list', url)
+        event.dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
+        event.dataTransfer.setData('text/plain', url)
+        event.dataTransfer.setData('text/uri-list', url)
       }
-      this.$emit('drag-start', draggedItems, e.dataTransfer)
+      this.$emit('drag-start', draggedItems, event.dataTransfer)
     }
   }
 
   // File was dropped on another table row.
-  handleDrop (item: FileBrowserEntry, e: DragEvent) {
-    this.handleDragLeave(e)
+  handleDrop (item: FileBrowserEntry, event: DragEvent) {
+    this.handleDragLeave(event)
 
     if (
       item.type === 'directory' &&
       this.isItemWriteable(item) &&
-      e.dataTransfer &&
+      event.dataTransfer &&
       this.dragItem &&
       this.dragItem !== item
     ) {
@@ -479,24 +479,43 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Handles highlighting rows as drag over them
-  handleDragOver (item: FileBrowserEntry, e: DragEvent) {
+  handleDragOver (item: FileBrowserEntry, event: DragEvent) {
     if (
       item.type === 'directory' &&
       this.isItemWriteable(item) &&
-      e.dataTransfer &&
+      event.dataTransfer &&
       this.dragItem &&
       this.dragItem !== item &&
       !this.draggedItems.includes(item)
     ) {
-      e.preventDefault()
+      event.preventDefault()
 
-      e.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.dropEffect = 'move'
 
-      let element = e.target as HTMLElement | null
+      if (event.target instanceof HTMLElement) {
+        let element: HTMLElement | null = event.target
+
+        while (element) {
+          if (element.tagName === 'TR') {
+            element.classList.add('active')
+
+            return
+          }
+
+          element = element.parentElement
+        }
+      }
+    }
+  }
+
+  // Handles un highlighting rows as we drag out of them.
+  handleDragLeave (event: DragEvent) {
+    if (event.target instanceof HTMLElement) {
+      let element: HTMLElement | null = event.target
 
       while (element) {
         if (element.tagName === 'TR') {
-          element.classList.add('active')
+          element.classList.remove('active')
 
           return
         }
@@ -506,25 +525,15 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
   }
 
-  // Handles un highlighting rows as we drag out of them.
-  handleDragLeave (e: DragEvent) {
-    let element = e.target as HTMLElement | null
-
-    while (element) {
-      if (element.tagName === 'TR') {
-        element.classList.remove('active')
-
-        return
-      }
-
-      element = element.parentElement
-    }
-  }
-
   // Drag ended
   handleDragEnd () {
-    const e = this.ghost as HTMLDivElement
-    document.body.removeChild(e)
+    const ghost = this.ghost
+
+    if (ghost) {
+      document.body.removeChild(ghost)
+      this.ghost = undefined
+    }
+
     this.dragItem = null
     this.$emit('update:dragState', false)
   }

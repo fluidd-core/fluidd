@@ -386,22 +386,20 @@ export default class CollapsableCard extends Vue {
     }
   }
 
-  onCollapseChange (e: boolean) {
-    this.isCollapsed = e
+  onCollapseChange (isCollapsed: boolean) {
+    this.isCollapsed = isCollapsed
   }
 
-  onLayoutEnabled (e: Event) {
-    this.$emit('enabled', e)
+  onLayoutEnabled (event: Event) {
+    this.$emit('enabled', event)
   }
 
-  transitionEvent (e: TransitionEvent) {
+  transitionEvent (event: TransitionEvent) {
     if (
-      e.target &&
-      e.target) {
-      const target = e.target as Element
-      if (target.id === 'card-content') {
-        this.$emit('transition-end')
-      }
+      event.target instanceof HTMLElement &&
+      event.target.id === 'card-content'
+    ) {
+      this.$emit('transition-end')
     }
   }
 }

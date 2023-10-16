@@ -91,16 +91,16 @@ export default class FilesMixin extends Vue {
     const o = {
       ...options,
       signal: abortController.signal,
-      onDownloadProgress: (progressEvent: AxiosProgressEvent) => {
+      onDownloadProgress: (event: AxiosProgressEvent) => {
         const payload: any = {
           filepath,
-          loaded: progressEvent.loaded,
-          percent: progressEvent.progress ? Math.round(progressEvent.progress * 100) : 0,
-          speed: progressEvent.rate ?? 0
+          loaded: event.loaded,
+          percent: event.progress ? Math.round(event.progress * 100) : 0,
+          speed: event.rate ?? 0
         }
 
-        if (progressEvent.total) {
-          size = payload.size = progressEvent.total
+        if (event.total) {
+          size = payload.size = event.total
         }
 
         this.$store.dispatch('files/updateFileDownload', payload)
@@ -184,12 +184,12 @@ export default class FilesMixin extends Vue {
     return httpClientActions.serverFilesUploadPost(file, path, root, andPrint, {
       ...options,
       signal: abortController.signal,
-      onUploadProgress: (progressEvent: AxiosProgressEvent) => {
+      onUploadProgress: (event: AxiosProgressEvent) => {
         this.$store.dispatch('files/updateFileUpload', {
           filepath,
-          loaded: progressEvent.loaded,
-          percent: progressEvent.progress ? Math.round(progressEvent.progress * 100) : 0,
-          speed: progressEvent.rate ?? 0
+          loaded: event.loaded,
+          percent: event.progress ? Math.round(event.progress * 100) : 0,
+          speed: event.rate ?? 0
         })
       }
     })

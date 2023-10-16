@@ -31,8 +31,8 @@ export const actions: ActionTree<GcodePreviewState, RootState> = {
 
     commit('setParserWorker', worker)
 
-    worker.addEventListener('message', (e) => {
-      const data: ParseGcodeWorkerClientMessage = e.data
+    worker.addEventListener('message', (event) => {
+      const data: ParseGcodeWorkerClientMessage = event.data
 
       switch (data.action) {
         case 'progress': {

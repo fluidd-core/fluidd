@@ -166,7 +166,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
       const favIconSize = 64
       const primaryColor = theme.currentTheme.primary
       const secondaryColor = 'rgba(255, 255, 255, 0.10)'
-      const canvas = document.createElement('canvas') as HTMLCanvasElement
+      const canvas = document.createElement('canvas')
       const context = canvas.getContext('2d') as CanvasRenderingContext2D
       canvas.width = favIconSize
       canvas.height = favIconSize

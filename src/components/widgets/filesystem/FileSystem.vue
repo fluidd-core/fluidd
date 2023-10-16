@@ -8,7 +8,7 @@
     @dragover="handleDragOver"
     @dragenter.self.prevent
     @dragleave.self.prevent="handleDragLeave"
-    @drop.self.prevent="handleDropFile"
+    @drop.self.prevent="handleDrop"
   >
     <file-system-toolbar
       v-if="selected.length <= 0"
@@ -501,7 +501,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   }
 
   // Handles a user clicking a file row.
-  handleRowClick (item: FileBrowserEntry, e: MouseEvent) {
+  handleRowClick (item: FileBrowserEntry, event: MouseEvent) {
     if (this.disabled) {
       return
     }
@@ -509,13 +509,13 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     if (this.contextMenuState.open) {
       this.contextMenuState.open = false
 
-      if (e.type !== 'contextmenu') {
+      if (event.type !== 'contextmenu') {
         return
       }
     }
 
     if (item.type === 'directory') {
-      if (e.type === 'click') {
+      if (event.type === 'click') {
         if (item.dirname === '..') {
           const dirs = this.currentPath.split('/')
           const newpath = dirs.slice(0, -1).join('/')
@@ -543,7 +543,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (
       item.type === 'file' &&
-      e.type === 'click'
+      event.type === 'click'
     ) {
       if (this.$store.state.config.uiSettings.editor.autoEditExtensions.includes(`.${item.extension}`)) {
         this.handleFileOpenDialog(item, 'edit')
@@ -557,8 +557,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     }
 
     // Open the context menu
-    this.contextMenuState.x = e.clientX
-    this.contextMenuState.y = e.clientY
+    this.contextMenuState.x = event.clientX
+    this.contextMenuState.y = event.clientY
     this.contextMenuState.file = this.selected.length > 1
       ? this.selected
       : item
@@ -853,7 +853,9 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     const wait = `${this.$waits.onFileSystem}/${this.currentPath}/`
 
     this.$store.dispatch('wait/addWait', wait)
-    this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
+
+    await this.uploadFiles(files, this.visiblePath, this.currentRoot, print)
+
     this.$store.dispatch('wait/removeWait', wait)
   }
 
@@ -937,18 +939,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
    * Drag handling.
    * ===========================================================================
   */
-  handleDragOver (e: DragEvent) {
+  handleDragOver (event: DragEvent) {
     if (
       !this.rootProperties.readonly &&
       !this.dragState.browserState &&
-      e.dataTransfer &&
-      hasFilesInDataTransfer(e.dataTransfer)
+      event.dataTransfer &&
+      hasFilesInDataTransfer(event.dataTransfer)
     ) {
-      e.preventDefault()
+      event.preventDefault()
 
       this.dragState.overlay = true
 
-      e.dataTransfer.dropEffect = 'copy'
+      event.dataTransfer.dropEffect = 'copy'
     }
   }
 
@@ -956,17 +958,18 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.dragState.overlay = false
   }
 
-  async handleDropFile (e: DragEvent) {
+  async handleDrop (event: DragEvent) {
     this.dragState.overlay = false
 
-    if (!e.dataTransfer || this.rootProperties.readonly) {
-      return
-    }
+    if (
+      event.dataTransfer &&
+      !this.rootProperties.readonly
+    ) {
+      const files = await getFilesFromDataTransfer(event.dataTransfer)
 
-    const files = await getFilesFromDataTransfer(e.dataTransfer)
-
-    if (files) {
-      this.handleUpload(files, false)
+      if (files) {
+        this.handleUpload(files, false)
+      }
     }
   }
 }

@@ -90,18 +90,18 @@ export class WebSocketClient {
           }
         }
 
-        this.connection.onclose = (e) => {
-          consola.debug(`${this.logPrefix} Connection closed:`, e)
+        this.connection.onclose = (event) => {
+          consola.debug(`${this.logPrefix} Connection closed:`, event)
           clearTimeout(this.pingTimeout)
-          if (this.store) this.store.dispatch('socket/onSocketClose', e)
-          if (!e.wasClean) {
+          if (this.store) this.store.dispatch('socket/onSocketClose', event)
+          if (!event.wasClean) {
             this.reconnect()
           }
         }
 
-        this.connection.onerror = (e) => {
-          consola.error(`${this.logPrefix} Connection error:`, e)
-          if (this.store) this.store.dispatch('socket/onSocketError', e)
+        this.connection.onerror = (event) => {
+          consola.error(`${this.logPrefix} Connection error:`, event)
+          if (this.store) this.store.dispatch('socket/onSocketError', event)
         }
 
         this.connection.onmessage = (m) => {

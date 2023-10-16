@@ -162,17 +162,15 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
     this.uploadFile.click()
   }
 
-  async fileChanged (e: Event) {
-    const target = e.target as HTMLInputElement
-
-    if (target) {
-      const files = await getFilesWithPathFromHTMLInputElement(target)
+  async fileChanged (event: Event) {
+    if (event.target instanceof HTMLInputElement) {
+      const files = await getFilesWithPathFromHTMLInputElement(event.target)
 
       if (files) {
         this.$emit('upload', files, this.andPrint)
       }
 
-      target.value = ''
+      event.target.value = ''
     }
   }
 }

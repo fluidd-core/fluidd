@@ -93,11 +93,11 @@ export default class JobQueue extends Vue {
     return this.headers.filter(header => header.visible || header.visible === undefined)
   }
 
-  handleRowClick (item: QueuedJob, e: MouseEvent) {
+  handleRowClick (item: QueuedJob, event: MouseEvent) {
     if (this.contextMenuState.open) {
       this.contextMenuState.open = false
 
-      if (e.type !== 'contextmenu') {
+      if (event.type !== 'contextmenu') {
         return
       }
     }
@@ -110,8 +110,8 @@ export default class JobQueue extends Vue {
     }
 
     // Open the context menu
-    this.contextMenuState.x = e.clientX
-    this.contextMenuState.y = e.clientY
+    this.contextMenuState.x = event.clientX
+    this.contextMenuState.y = event.clientY
     this.contextMenuState.job = this.selected.length > 1
       ? this.selected
       : item
@@ -143,11 +143,11 @@ export default class JobQueue extends Vue {
     SocketActions.serverJobQueueDeleteJobs(jobIds)
   }
 
-  handleDragOver (e: DragEvent) {
-    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
-      e.preventDefault()
+  handleDragOver (event: DragEvent) {
+    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      event.preventDefault()
 
-      e.dataTransfer.dropEffect = 'link'
+      event.dataTransfer.dropEffect = 'link'
 
       this.overlay = true
     }
@@ -157,11 +157,11 @@ export default class JobQueue extends Vue {
     this.overlay = false
   }
 
-  handleDrop (e: DragEvent) {
+  handleDrop (event: DragEvent) {
     this.overlay = false
 
-    if (e.dataTransfer?.types.includes('x-fluidd-jobs')) {
-      const data = e.dataTransfer.getData('x-fluidd-jobs')
+    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
+      const data = event.dataTransfer.getData('x-fluidd-jobs')
       const files: { path: string, jobs: string[] } = JSON.parse(data)
       const filePath = files.path ? `${files.path}/` : ''
       const filenames = files.jobs
