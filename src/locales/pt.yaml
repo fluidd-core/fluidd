@@ -24,8 +24,6 @@ app:
     label:
       current: Corrente
       item: Item
-      'off': Gráfico desligado
-      'on': Gráfico ligado
       power: Energia
       target: Alvo
       rate_of_change: Mudança

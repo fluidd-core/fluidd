@@ -23,8 +23,6 @@ app:
     label:
       current: 當前值
       item: 名稱
-      'off': 關閉圖表
-      'on': 開啟圖表
       power: 功率
       target: 目標值
       rate_of_change: 變化值

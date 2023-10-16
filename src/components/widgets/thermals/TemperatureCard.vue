@@ -9,18 +9,6 @@
   >
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
-        <app-btn
-          small
-          :disabled="!klippyReady"
-          class="ms-1 my-1"
-          @click="chartVisible = !chartVisible"
-        >
-          <v-icon left>
-            $chart
-          </v-icon>
-          {{ (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
-        </app-btn>
-
         <temperature-presets-menu
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
@@ -50,6 +38,17 @@
         </template>
 
         <v-list dense>
+          <v-list-item @click="chartVisible = !chartVisible">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="chartVisible" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.setting.label.show_chart') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
           <v-list-item @click="showRateOfChange = !showRateOfChange">
             <v-list-item-action class="my-0">
               <v-checkbox :input-value="showRateOfChange" />

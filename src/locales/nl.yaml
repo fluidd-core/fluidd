@@ -24,8 +24,6 @@ app:
     label:
       current: Huidig
       item: Item
-      'off': Grafiek uit
-      'on': Grafiek aan
       power: Kracht
       target: Doelwit
     tooltip:

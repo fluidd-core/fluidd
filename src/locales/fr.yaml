@@ -26,8 +26,6 @@ app:
     label:
       current: Courant
       item: Élément
-      'off': Masquer le graphique
-      'on': Afficher le graphique
       power: Puissance
       target: Cible
     tooltip:

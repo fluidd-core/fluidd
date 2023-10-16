@@ -25,8 +25,6 @@ app:
     label:
       current: Aktuell
       item: Element
-      'off': Graph aus
-      'on': Graph an
       power: Leistung
       target: Ziel
       rate_of_change: Änderung

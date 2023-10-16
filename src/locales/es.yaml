@@ -24,8 +24,6 @@ app:
     label:
       current: Tª
       item: Nombre
-      'off': Gráfico desactivado
-      'on': Gráfico activado
       power: Potencia
       rate_of_change: Cambio
       target: Objetivo

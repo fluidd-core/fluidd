@@ -25,8 +25,6 @@ app:
     label:
       current: Actual
       item: Name
-      'off': Chart off
-      'on': Chart on
       power: Power
       target: Target
       rate_of_change: Change
@@ -567,6 +565,7 @@ app:
       save_and_restore_view_state: Save and restore view state
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
+      show_chart: Show chart
       show_code_lens: Show CodeLens
       show_gas_resistance: Show gas resistance
       show_legend: Show legend

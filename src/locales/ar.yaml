@@ -24,8 +24,6 @@ app:
     label:
       current: درجة الحرارة
       item: الاسم
-      'off': اخفاء الرسم البياني
-      'on': عرض الرسم البياني
       power: الطاقة
       target: الهدف
     tooltip:

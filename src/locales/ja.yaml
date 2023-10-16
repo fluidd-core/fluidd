@@ -23,8 +23,6 @@ app:
     label:
       current: 温度
       item: 名称
-      'off': チャートオフ
-      'on': チャートオン
       power: 出力
       rate_of_change: 変化値
       target: ターゲット温度

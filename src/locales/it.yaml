@@ -24,8 +24,6 @@ app:
     label:
       current: Effettivo
       item: Nome
-      'off': Disattiva Grafico
-      'on': Attiva Grafico
       power: Energia
       target: Target
     tooltip:
