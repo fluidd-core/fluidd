@@ -591,6 +591,7 @@ app:
       toolhead_control_style: Styl sterowania głowicą narzędziową
       toolhead_xy_move_distances: Wartości odległości XY głowicy narzędziowej
       toolhead_z_move_distances: Wartości odległości Z głowicy narzędziowej
+      show_chart: Pokaż wykres
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
