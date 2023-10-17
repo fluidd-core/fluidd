@@ -7,7 +7,7 @@ import { Globals } from '@/globals'
 import { SocketActions } from '@/api/socketActions'
 import { EventBus } from '@/eventBus'
 import { upperFirst, camelCase } from 'lodash-es'
-import IsKeyOf from '@/util/is-key-of'
+import isKeyOf from '@/util/is-key-of'
 
 let retryTimeout: number
 
@@ -127,10 +127,10 @@ export const actions: ActionTree<SocketState, RootState> = {
   async onServerRead ({ dispatch }, payload: {namespace: string, key?: string, value: any}) {
     const { namespace, key, value } = payload
 
-    if (IsKeyOf(namespace, Globals.MOONRAKER_DB)) {
+    if (isKeyOf(namespace, Globals.MOONRAKER_DB)) {
       const roots = Globals.MOONRAKER_DB[namespace].ROOTS
 
-      const root = key && IsKeyOf(key, roots) ? roots[key] : Object.values(roots)[0]
+      const root = key && isKeyOf(key, roots) ? roots[key] : Object.values(roots)[0]
 
       dispatch(root.dispatch, value, { root: true })
     }

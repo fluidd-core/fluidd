@@ -3,7 +3,7 @@ import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, P
 import type { RootState } from '../types'
 import type { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
-import IsKeyOf from '@/util/is-key-of'
+import isKeyOf from '@/util/is-key-of'
 
 export const getters: GetterTree<GcodePreviewState, RootState> = {
   /**
@@ -47,7 +47,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
       }
 
       if (move.e && move.e > 0 && (Number.isNaN(zLast) || z < zLast || z >= zNext)) {
-        if (['x', 'y', 'i', 'j'].some(x => IsKeyOf(x, move) && move[x] !== 0)) {
+        if (['x', 'y', 'i', 'j'].some(x => isKeyOf(x, move) && move[x] !== 0)) {
           zLast = z
           zNext = Math.round((z + minLayerHeight) * 10000) / 10000
 

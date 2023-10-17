@@ -365,7 +365,9 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   async handleDrop (event: DragEvent) {
-    if (this.fileDropRoot) {
+    const root = this.fileDropRoot
+
+    if (root) {
       event.preventDefault()
 
       this.dragState = false
@@ -374,11 +376,16 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
         const files = await getFilesFromDataTransfer(event.dataTransfer)
 
         if (files) {
-          const wait = `${this.$waits.onFileSystem}/gcodes/`
+          const pathWithRoot = this.$store.getters['files/getCurrentPathByRoot'](root) as string || ''
+          const path = pathWithRoot === root
+            ? ''
+            : pathWithRoot.substring(root.length + 1)
+
+          const wait = `${this.$waits.onFileSystem}/${pathWithRoot}/`
 
           this.$store.dispatch('wait/addWait', wait)
 
-          await this.uploadFiles(files, '', this.fileDropRoot, false)
+          await this.uploadFiles(files, path, root, false)
 
           this.$store.dispatch('wait/removeWait', wait)
         }
