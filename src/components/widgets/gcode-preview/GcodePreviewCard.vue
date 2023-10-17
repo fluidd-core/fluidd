@@ -134,6 +134,7 @@
         v-model="overlay"
         :message="$t('app.gcode.overlay.drag_file_load')"
         icon="$cubeScan"
+        absolute
       />
     </v-card-text>
   </collapsable-card>

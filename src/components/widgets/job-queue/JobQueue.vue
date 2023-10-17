@@ -30,6 +30,7 @@
       v-model="overlay"
       :message="$t('app.file_system.overlay.drag_files_enqueue')"
       icon="$enqueueJob"
+      absolute
     />
 
     <job-queue-context-menu

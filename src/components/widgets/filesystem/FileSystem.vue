@@ -105,6 +105,7 @@
       v-model="dragState.overlay"
       :message="$t('app.file_system.overlay.drag_files_folders_upload')"
       icon="$fileUpload"
+      absolute
     />
 
     <file-system-upload-dialog
@@ -442,6 +443,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
   get registeredRoots () {
     return this.$store.state.server.info.registered_directories || []
+  }
+
+  get fileDropRoot () {
+    return this.$route.meta?.fileDropRoot
   }
 
   includeTimelapseThumbnailFiles (items: FileBrowserEntry[]) {
@@ -941,6 +946,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   */
   handleDragOver (event: DragEvent) {
     if (
+      !this.fileDropRoot &&
       !this.rootProperties.readonly &&
       !this.dragState.browserState &&
       event.dataTransfer &&
@@ -962,6 +968,7 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     this.dragState.overlay = false
 
     if (
+      !this.fileDropRoot &&
       event.dataTransfer &&
       !this.rootProperties.readonly
     ) {

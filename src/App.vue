@@ -3,6 +3,7 @@
   <v-app
     v-else
     class="fluidd"
+    :class="{ 'no-pointer-events': dragState }"
   >
     <app-tools-drawer v-model="toolsdrawer" />
     <app-nav-drawer v-model="navdrawer" />
@@ -40,7 +41,7 @@
       <v-container
         fluid
         :class="{
-          'fill-height': $route.meta && $route.meta.fillHeight,
+          'fill-height': $route.meta?.fillHeight ?? false,
           [['single', 'double', 'triple', 'quad'][columnCount - 1]]: true
         }"
         class="constrained-width pa-2 pa-sm-4"
@@ -80,6 +81,12 @@
     </v-main>
 
     <app-footer />
+
+    <app-drag-overlay
+      v-model="dragState"
+      :message="$t('app.file_system.overlay.drag_files_folders_upload')"
+      icon="$fileUpload"
+    />
   </v-app>
 </template>
 
@@ -93,6 +100,7 @@ import type { LinkPropertyHref } from 'vue-meta'
 import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystemDownloadDialog.vue'
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
 import type { FlashMessage } from '@/types'
+import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-system-entry'
 
 @Component<App>({
   metaInfo () {
@@ -116,6 +124,7 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   toolsdrawer: boolean | null = null
   navdrawer: boolean | null = null
   showUpdateUI = false
+  dragState = false
   customBackgroundImageStyle: Record<string, string> = {}
 
   flashMessageState: FlashMessage = {
@@ -134,8 +143,12 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     return (this.$store.state.config.layoutMode)
   }
 
-  get columnCount () {
-    return this.$store.state.config.containerColumnCount
+  get columnCount (): number {
+    return this.$store.state.config.containerColumnCount as number
+  }
+
+  get fileDropRoot () {
+    return this.$route.meta?.fileDropRoot
   }
 
   get loading () {
@@ -272,6 +285,11 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 
   mounted () {
+    window.addEventListener('dragover', this.handleDragOver)
+    window.addEventListener('dragenter', this.handleDragEnter)
+    window.addEventListener('dragleave', this.handleDragLeave)
+    window.addEventListener('drop', this.handleDrop)
+
     // this.onLoadLocale(this.$i18n.locale)
     EventBus.bus.$on('flashMessage', (payload: FlashMessage) => {
       this.flashMessageState.text = (payload && payload.text) || undefined
@@ -298,12 +316,74 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     }
   }
 
+  beforeDestroy () {
+    window.removeEventListener('dragover', this.handleDragOver)
+    window.removeEventListener('dragenter', this.handleDragEnter)
+    window.removeEventListener('dragleave', this.handleDragLeave)
+    window.removeEventListener('drop', this.handleDrop)
+  }
+
   handleToolsDrawerChange () {
     this.toolsdrawer = !this.toolsdrawer
   }
 
   handleNavDrawerChange () {
     this.navdrawer = !this.navdrawer
+  }
+
+  handleDragOver (event: DragEvent) {
+    if (
+      this.fileDropRoot &&
+      event.dataTransfer &&
+      hasFilesInDataTransfer(event.dataTransfer)
+    ) {
+      event.preventDefault()
+
+      this.dragState = true
+
+      event.dataTransfer.dropEffect = 'copy'
+    }
+  }
+
+  handleDragEnter (event: DragEvent) {
+    if (this.fileDropRoot) {
+      event.preventDefault()
+    }
+  }
+
+  handleDragLeave (event: DragEvent) {
+    if (this.fileDropRoot) {
+      event.preventDefault()
+
+      if (
+        event.target instanceof HTMLElement &&
+        event.target.className.includes('fluidd')
+      ) {
+        this.dragState = false
+      }
+    }
+  }
+
+  async handleDrop (event: DragEvent) {
+    if (this.fileDropRoot) {
+      event.preventDefault()
+
+      this.dragState = false
+
+      if (event.dataTransfer) {
+        const files = await getFilesFromDataTransfer(event.dataTransfer)
+
+        if (files) {
+          const wait = `${this.$waits.onFileSystem}/gcodes/`
+
+          this.$store.dispatch('wait/addWait', wait)
+
+          await this.uploadFiles(files, '', this.fileDropRoot, false)
+
+          this.$store.dispatch('wait/removeWait', wait)
+        }
+      }
+    }
   }
 }
 </script>
