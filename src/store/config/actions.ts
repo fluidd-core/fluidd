@@ -19,7 +19,7 @@ export const actions: ActionTree<ConfigState, RootState> = {
   /**
    * Init any file configs we may have.
    */
-  async initUiSettings ({ commit, dispatch, state }, payload: UiSettings) {
+  async initUiSettings ({ commit, dispatch, state }, payload: Partial<UiSettings>) {
     commit('setInitUiSettings', payload)
 
     // Set vuetify to the correct initial theme.

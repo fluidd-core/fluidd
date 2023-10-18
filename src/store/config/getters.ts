@@ -121,11 +121,12 @@ export const getters: GetterTree<ConfigState, RootState> = {
     }
     return {
       name: 'Fluidd',
+      color: '#2196F3',
+      isDark: true,
       logo: {
         src: 'logo_fluidd.svg',
-        changeWithTheme: true
-      },
-      color: '#2196F3'
+        dynamic: true
+      }
     }
   },
 

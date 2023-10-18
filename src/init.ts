@@ -5,9 +5,10 @@ import { Globals } from './globals'
 import type { ApiConfig, InitConfig, HostConfig, InstanceConfig } from './store/config/types'
 import axios from 'axios'
 import router from './router'
-import { httpClientActions } from '@/api/httpClientActions'
-import sanitizeEndpoint from '@/util/sanitize-endpoint'
-import webSocketWrapper from '@/util/web-socket-wrapper'
+import { httpClientActions } from './api/httpClientActions'
+import sanitizeEndpoint from './util/sanitize-endpoint'
+import webSocketWrapper from './util/web-socket-wrapper'
+import promiseAny from './util/promise-any'
 
 // Load API configuration
 /**
@@ -20,7 +21,7 @@ import webSocketWrapper from '@/util/web-socket-wrapper'
  */
 
 const getHostConfig = async () => {
-  const hostConfigResponse = await httpClientActions.get<HostConfig>(`${import.meta.env.BASE_URL}config.json?date=${Date.now()}`)
+  const hostConfigResponse = await httpClientActions.get<HostConfig>(`${import.meta.env.BASE_URL}config.json`)
   if (hostConfigResponse && hostConfigResponse.data) {
     consola.debug('Loaded web host configuration', hostConfigResponse.data)
     return hostConfigResponse.data
@@ -74,18 +75,21 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
 
   // For each endpoint we have, ping each one to determine if any are active.
   // If none are, we'll force the instance add dialog.
-  // A 401 would indicate a good ping, since it's potentially an authenticated,
-  // endpoint but working instance.
-  const i = await Promise.race(
-    endpoints.map(async (endpoint, index) => {
-      const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
-      return await webSocketWrapper(apiEndpoints.socketUrl) ? index : -1
-    })
-  )
+  if (endpoints.length > 0) {
+    try {
+      return await promiseAny(
+        endpoints.map(async (endpoint) => {
+          const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
 
-  return (i > -1)
-    ? Vue.$filters.getApiUrls(endpoints[i])
-    : { apiUrl: '', socketUrl: '' }
+          await webSocketWrapper(apiEndpoints.socketUrl)
+
+          return apiEndpoints
+        })
+      )
+    } catch {}
+  }
+
+  return { apiUrl: '', socketUrl: '' }
 }
 
 const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
