@@ -58,6 +58,7 @@ export default class Outputs extends Mixins(StateMixin) {
   get showHidden () {
     return this.$store.state.config.uiSettings.general.showHidden
   }
+
   get all () {
     const items: Array<Fan | Led | OutputPin> = [
       ...this.$typedGetters['printer/getAllFans'](this.showHidden),
