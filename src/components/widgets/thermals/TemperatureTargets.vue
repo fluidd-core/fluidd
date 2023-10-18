@@ -149,9 +149,9 @@
           <td class="temp-actual">
             <span v-if="item.temperature">
               {{ item.temperature.toFixed(1) }}<small>°C</small>
-              <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-              <small v-if="item.pressure != null && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-              <small v-if="item.gas != null && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
+              <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
+              <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
+              <small v-if="item.gas != null && showGasResistance"><br>{{ $filters.getReadableResistanceString(item.gas) }}</small>
             </span>
             <span v-else>
               -
@@ -201,7 +201,7 @@
             </span>
           </td>
           <td class="temp-power">
-&nbsp;
+            &nbsp;
           </td>
           <td
             v-if="showRateOfChange"
@@ -223,9 +223,9 @@
                 >
                   <span v-if="item.temperature != null">
                     {{ item.temperature.toFixed(1) }}<small>°C</small>
-                    <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }}&nbsp;%</small>
-                    <small v-if="item.pressure != null && showBarometricPressure"><br>{{ item.pressure.toFixed(1) }}&nbsp;hpa</small>
-                    <small v-if="item.gas != null && showGasResistance"><br>{{ item.gas.toFixed(1) }}&nbsp;&ohm;</small>
+                    <small v-if="item.humidity != null && showRelativeHumidity"><br>{{ item.humidity.toFixed(1) }} %</small>
+                    <small v-if="item.pressure != null && showBarometricPressure"><br>{{ $filters.getReadableAtmosphericPressureString(item.pressure) }}</small>
+                    <small v-if="item.gas != null && showGasResistance"><br>{{ $filters.getReadableResistanceString(item.gas) }}</small>
                     <small v-if="item.current_z_adjust != null"><br>{{ $filters.getReadableLengthString(item.current_z_adjust, true) }}</small>
                   </span>
                   <span v-else>
@@ -362,6 +362,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
     .temp-actual {
       font-weight: 300;
       font-size: 1.125rem;
+      white-space: nowrap;
     }
 
     > thead > tr > th {
