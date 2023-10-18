@@ -69,7 +69,8 @@ export const defaultState = (): ConfigState => {
         printEtaCalculation: ['file'],
         enableDiagnostics: false,
         thumbnailSize: 32,
-        colorPickerValueRange: 'absolute'
+        colorPickerValueRange: 'absolute',
+        showHidden: false
       },
       theme: {
         isDark: true,
