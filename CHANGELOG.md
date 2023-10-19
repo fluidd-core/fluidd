@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.26.1](https://github.com/fluidd-core/fluidd/compare/v1.26.0...v1.26.1) (2023-10-19)
+
+
+### Features
+
+* full-screen file drag & drop ([a954be8](https://github.com/fluidd-core/fluidd/commit/a954be8b620f72d8d2c13f7b8603e053e0872c94))
+* improves measurement units display ([e4f8256](https://github.com/fluidd-core/fluidd/commit/e4f825648e36953d3d9501ee078f3e0fddd1dedd))
+
+
+### Bug Fixes
+
+* correct path on full-screen file drag & drop ([bb5d686](https://github.com/fluidd-core/fluidd/commit/bb5d686ae6afbedf5c2d0e722f5ce818b64f690c))
+* offline cache and init issues ([e9b418b](https://github.com/fluidd-core/fluidd/commit/e9b418bc83399a85b4ed3fda9383067d7f513d93))
+
 ## [1.26.0](https://github.com/fluidd-core/fluidd/compare/v1.25.3...v1.26.0) (2023-10-12)
 
 
