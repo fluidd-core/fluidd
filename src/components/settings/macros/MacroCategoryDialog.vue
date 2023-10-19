@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts">
-import { MacroCategory } from '@/store/macros/types'
+import type { MacroCategory } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})

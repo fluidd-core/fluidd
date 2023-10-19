@@ -1,4 +1,4 @@
-import { KlipperBedMesh, ProcessedMesh } from '@/store/mesh/types'
+import type { KlipperBedMesh, ProcessedMesh } from '@/store/mesh/types'
 
 export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof KlipperBedMesh, makeFlat = false): ProcessedMesh => {
   const matrix = bedMesh[meshMatrix] as number[][]

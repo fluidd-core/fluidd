@@ -17,11 +17,20 @@
           align-self="center"
           class="text-no-wrap"
         >
-          <slot name="title">
+          <slot
+            name="title"
+            :in-layout="inLayout"
+          >
             <v-icon left>
               {{ icon }}
             </v-icon>
             <span class="font-weight-light">{{ title }}</span>
+            <app-inline-help
+              v-if="!inLayout && helpTooltip"
+              bottom
+              small
+              :tooltip="helpTooltip"
+            />
           </slot>
         </v-col>
 
@@ -101,7 +110,7 @@
 </template>
 
 <script lang="ts">
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 import { Component, Vue, Prop, Watch } from 'vue-property-decorator'
 
 @Component({})
@@ -111,6 +120,9 @@ export default class CollapsableCard extends Vue {
    */
   @Prop({ type: String, required: true })
   readonly title!: string
+
+  @Prop({ type: String, required: false })
+  readonly helpTooltip!: string
 
   /**
    * Card color.
@@ -374,22 +386,20 @@ export default class CollapsableCard extends Vue {
     }
   }
 
-  onCollapseChange (e: boolean) {
-    this.isCollapsed = e
+  onCollapseChange (isCollapsed: boolean) {
+    this.isCollapsed = isCollapsed
   }
 
-  onLayoutEnabled (e: Event) {
-    this.$emit('enabled', e)
+  onLayoutEnabled (event: Event) {
+    this.$emit('enabled', event)
   }
 
-  transitionEvent (e: TransitionEvent) {
+  transitionEvent (event: TransitionEvent) {
     if (
-      e.target &&
-      e.target) {
-      const target = e.target as Element
-      if (target.id === 'card-content') {
-        this.$emit('transition-end')
-      }
+      event.target instanceof HTMLElement &&
+      event.target.id === 'card-content'
+    ) {
+      this.$emit('transition-end')
     }
   }
 }

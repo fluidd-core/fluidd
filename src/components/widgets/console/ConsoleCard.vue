@@ -2,6 +2,7 @@
   <collapsable-card
     :title="$t('app.general.title.console')"
     icon="$console"
+    :help-tooltip="$t('app.console.tooltip.help')"
     card-classes="d-flex flex-column"
     content-classes="flex-grow-1 flow-shrink-0"
     menu-breakpoint="none"
@@ -11,18 +12,6 @@
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
-    <template #title>
-      <v-icon left>
-        $console
-      </v-icon>
-      <span class="font-weight-light">{{ $t('app.general.title.console') }}</span>
-      <app-inline-help
-        bottom
-        small
-        :tooltip="$t('app.console.placeholder.command')"
-      />
-    </template>
-
     <template #menu>
       <app-btn
         v-if="scrollingPaused"
@@ -121,7 +110,7 @@
             <v-list-item
               v-for="filter in filters"
               :key="filter.id"
-              @click="filter.enabled = !filter.enabled"
+              @click="handleToggleFilter(filter)"
             >
               <v-list-item-action class="my-0">
                 <v-checkbox :input-value="filter.enabled" />
@@ -149,7 +138,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
 import Console from './Console.vue'
-import { ConsoleEntry } from '@/store/console/types'
+import type { ConsoleEntry, ConsoleFilter } from '@/store/console/types'
 
 @Component({
   components: {
@@ -180,8 +169,8 @@ export default class ConsoleCard extends Vue {
 
   scrollingPaused = false
 
-  get filters () {
-    return this.$store.getters['console/getFilters']
+  get filters (): ConsoleFilter[] {
+    return this.$store.getters['console/getFilters'] as ConsoleFilter[]
   }
 
   get hideTempWaits (): boolean {
@@ -244,6 +233,13 @@ export default class ConsoleCard extends Vue {
 
   handleClear () {
     this.$store.dispatch('console/onClear')
+  }
+
+  handleToggleFilter (filter: ConsoleFilter) {
+    this.$store.dispatch('console/onSaveFilter', {
+      ...filter,
+      enabled: !filter.enabled
+    })
   }
 }
 </script>

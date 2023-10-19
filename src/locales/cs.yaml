@@ -24,8 +24,6 @@ app:
     label:
       current: Teplota
       item: Název
-      'off': Vypnout graf
-      'on': Zapnout graf
       power: Zatížení
       target: Cílová
     tooltip:

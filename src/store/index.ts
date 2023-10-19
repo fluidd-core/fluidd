@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { consola } from 'consola'
-import { RootState } from './types'
-import { InitConfig } from './config/types'
+import type { RootState } from './types'
+import type { InitConfig } from './config/types'
 
 // Modules
 import { socket } from './socket'

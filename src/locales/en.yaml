@@ -25,22 +25,21 @@ app:
     label:
       current: Actual
       item: Name
-      'off': Chart off
-      'on': Chart on
       power: Power
       target: Target
       rate_of_change: Change
     tooltip:
       help: >-
-        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
+        Hold <kbd>Shift</kbd> to zoom.<br />Click an item to toggle in the graph.<br
         />Click a power to toggle in the graph.
   console:
     label:
       auto_scroll: Auto scroll
       flip_layout: Flip layout
       hide_temp_waits: Hide temp waits
-    placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+    tooltip:
+      help: >-
+        Enter "help" for commands<br />Use <kbd>Tab</kbd> for autocomplete<br />Use <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> for history
   endpoint:
     error:
       cant_connect: >-
@@ -464,6 +463,8 @@ app:
       printing: Printing
       ready: Ready
       standby: Standby
+    title:
+      printer_status: Printer Status
   setting:
     btn:
       add_camera: Add Camera
@@ -564,6 +565,7 @@ app:
       save_and_restore_view_state: Save and restore view state
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
+      show_chart: Show chart
       show_code_lens: Show CodeLens
       show_gas_resistance: Show gas resistance
       show_legend: Show legend

@@ -99,7 +99,7 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
+import type { SystemInfo, CpuInfo, DistroInfo, Virtualization } from '@/store/server/types'
 import StateMixin from '@/mixins/state'
 
 @Component({})

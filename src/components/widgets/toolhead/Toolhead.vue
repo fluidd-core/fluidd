@@ -53,8 +53,8 @@ import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
 import ExtruderStats from './ExtruderStats.vue'
 import ExtruderSteppers from './ExtruderSteppers.vue'
 import ToolChangeCommands from './ToolChangeCommands.vue'
-import { Extruder } from '@/store/printer/types'
-import { ToolheadControlStyle } from '@/store/config/types'
+import type { Extruder } from '@/store/printer/types'
+import type { ToolheadControlStyle } from '@/store/config/types'
 
 @Component({
   components: {

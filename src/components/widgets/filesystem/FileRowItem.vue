@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { AppTableHeader } from '@/types'
+import type { AppTableHeader } from '@/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})

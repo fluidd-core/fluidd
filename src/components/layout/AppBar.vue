@@ -194,8 +194,8 @@ import ServicesMixin from '@/mixins/services'
 import FilesMixin from '@/mixins/files'
 import BrowserMixin from '@/mixins/browser'
 import { SocketActions } from '@/api/socketActions'
-import { OutputPin } from '@/store/printer/types'
-import { Device } from '@/store/power/types'
+import type { OutputPin } from '@/store/printer/types'
+import type { Device } from '@/store/power/types'
 
 @Component({
   components: {

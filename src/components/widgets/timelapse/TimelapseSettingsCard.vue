@@ -54,7 +54,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { TimelapseSettings } from '@/store/timelapse/types'
+import type { TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 
 @Component({})

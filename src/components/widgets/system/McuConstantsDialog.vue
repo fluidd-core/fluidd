@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { MCU } from '@/store/printer/types'
+import type { MCU } from '@/store/printer/types'
 import { Component, Prop, VModel, Vue } from 'vue-property-decorator'
 
 @Component({})

@@ -30,7 +30,7 @@
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import { OutputPin as IOutputPin } from '@/store/printer/types'
+import type { OutputPin as IOutputPin } from '@/store/printer/types'
 
 @Component({})
 export default class OutputPin extends Mixins(StateMixin, BrowserMixin) {

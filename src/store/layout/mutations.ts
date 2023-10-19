@@ -1,7 +1,7 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState as getDefaultState } from './state'
-import { LayoutConfig, LayoutState, Layouts } from './types'
+import type { LayoutConfig, LayoutState, Layouts } from './types'
 
 export const mutations: MutationTree<LayoutState> = {
   /**

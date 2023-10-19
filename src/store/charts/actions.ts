@@ -1,8 +1,8 @@
-import { ActionTree } from 'vuex'
+import type { ActionTree } from 'vuex'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
-import { ChartData, ChartState } from './types'
-import { RootState } from '../types'
+import type { ChartData, ChartState } from './types'
+import type { RootState } from '../types'
 import { isEqual } from 'lodash-es'
 
 export const actions: ActionTree<ChartState, RootState> = {

@@ -1,5 +1,5 @@
 import getFilePaths from './get-file-paths'
-import { FileChangeItem, KlipperFile, KlipperFileWithMeta, AppFile, AppFileWithMeta } from '@/store/files/types'
+import type { FileChangeItem, KlipperFile, KlipperFileWithMeta, AppFile, AppFileWithMeta } from '@/store/files/types'
 
 /**
  * Takes file change item and formats to represent an app file.

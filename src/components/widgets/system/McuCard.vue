@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import McuConstantsDialog from './McuConstantsDialog.vue'
-import { MCU } from '@/store/printer/types'
+import type { MCU } from '@/store/printer/types'
 import { Component, Prop, Vue } from 'vue-property-decorator'
 
 @Component({

@@ -142,7 +142,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { GcodeCommands } from '@/store/console/types'
+import type { GcodeCommands } from '@/store/console/types'
 
 @Component({})
 export default class ZHeightAdjust extends Mixins(StateMixin) {

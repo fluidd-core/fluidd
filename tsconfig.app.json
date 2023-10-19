@@ -38,7 +38,9 @@
 
     "importsNotUsedAsValues": "remove",
 
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+
+    "verbatimModuleSyntax": true
   },
 
   "vueCompilerOptions": {

@@ -25,8 +25,6 @@ app:
     label:
       current: Текущее значение
       item: Датчик
-      'off': Выключить график
-      'on': Включить график
       power: Мощность
       target: Цель
       rate_of_change: Изменение

@@ -293,13 +293,13 @@
 import { Component, Mixins, Prop, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import panzoom, { PanZoom } from 'panzoom'
-import { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
-import { GcodePreviewConfig } from '@/store/config/types'
+import panzoom, { type PanZoom } from 'panzoom'
+import type { BBox, LayerNr, LayerPaths } from '@/store/gcodePreview/types'
+import type { GcodePreviewConfig } from '@/store/config/types'
 import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
-import { AppFile } from '@/store/files/types'
+import type { AppFile } from '@/store/files/types'
 
 @Component({
   components: {

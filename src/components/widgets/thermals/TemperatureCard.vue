@@ -2,36 +2,13 @@
   <collapsable-card
     :title="$t('app.general.title.temperature')"
     icon="$fire"
+    :help-tooltip="$t('app.chart.tooltip.help')"
     :lazy="false"
     draggable
     layout-path="dashboard.temperature-card"
   >
-    <template #title>
-      <v-icon left>
-        $fire
-      </v-icon>
-      <span class="font-weight-light">{{ $t('app.general.title.temperature') }}</span>
-      <app-inline-help
-        bottom
-        small
-        :tooltip="$t('app.chart.tooltip.help')"
-      />
-    </template>
-
     <template #menu>
       <app-btn-collapse-group :collapsed="menuCollapsed">
-        <app-btn
-          small
-          :disabled="!klippyReady"
-          class="ms-1 my-1"
-          @click="chartVisible = !chartVisible"
-        >
-          <v-icon left>
-            $chart
-          </v-icon>
-          {{ (chartVisible) ? $t('app.chart.label.off') : $t('app.chart.label.on') }}
-        </app-btn>
-
         <temperature-presets-menu
           @applyOff="handleApplyOff"
           @applyPreset="handleApplyPreset"
@@ -61,6 +38,17 @@
         </template>
 
         <v-list dense>
+          <v-list-item @click="chartVisible = !chartVisible">
+            <v-list-item-action class="my-0">
+              <v-checkbox :input-value="chartVisible" />
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ $t('app.setting.label.show_chart') }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+
           <v-list-item @click="showRateOfChange = !showRateOfChange">
             <v-list-item-action class="my-0">
               <v-checkbox :input-value="showRateOfChange" />
@@ -128,12 +116,12 @@
 import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
-import { Fan, Heater } from '@/store/printer/types'
+import type { Fan, Heater } from '@/store/printer/types'
 
 import ThermalChart from '@/components/widgets/thermals/ThermalChart.vue'
 import TemperatureTargets from '@/components/widgets/thermals/TemperatureTargets.vue'
 import TemperaturePresetsMenu from './TemperaturePresetsMenu.vue'
-import { TemperaturePreset } from '@/store/config/types'
+import type { TemperaturePreset } from '@/store/config/types'
 
 @Component({
   components: {

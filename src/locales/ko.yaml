@@ -22,8 +22,6 @@ app:
     label:
       current: 현재 온도
       item: 항목
-      'off': 차트 끄기
-      'on': 차트 켜기
       power: 전원
       target: 목표 온도
     tooltip:

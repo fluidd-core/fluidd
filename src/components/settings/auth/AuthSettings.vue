@@ -95,7 +95,7 @@
 </template>
 
 <script lang="ts">
-import { AppUser } from '@/store/auth/types'
+import type { AppUser } from '@/store/auth/types'
 import { Component, Vue } from 'vue-property-decorator'
 import UserConfigDialog from './UserConfigDialog.vue'
 import ApiKeyDialog from './ApiKeyDialog.vue'

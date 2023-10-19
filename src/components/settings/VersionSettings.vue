@@ -133,7 +133,7 @@ import VersionStatus from './VersionStatus.vue'
 import VersionCommitHistoryDialog from './VersionInformationDialog.vue'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
+import type { ArtifactVersion, HashVersion, OSPackage } from '@/store/version/types'
 
 @Component({
   components: {

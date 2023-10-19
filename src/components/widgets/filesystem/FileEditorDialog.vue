@@ -244,10 +244,10 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
     this.open = false
   }
 
-  handleBeforeUnload (e: Event) {
+  handleBeforeUnload (event: Event) {
     if (this.showDirtyEditorWarning) {
-      e.preventDefault() // show browser-native "Leave site?" modal
-      return ((e || window.event).returnValue = true) // fallback
+      event.preventDefault() // show browser-native "Leave site?" modal
+      return ((event || window.event).returnValue = true) // fallback
     }
   }
 

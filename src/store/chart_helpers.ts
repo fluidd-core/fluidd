@@ -1,6 +1,6 @@
-import { Commit } from 'vuex'
-import { RootState } from './types'
-import { ChartData } from './charts/types'
+import type { Commit } from 'vuex'
+import type { RootState } from './types'
+import type { ChartData } from './charts/types'
 
 export const handleMcuStatsChange = (payload: any, state: RootState, commit: Commit) => {
   const keys = Object.keys(payload).filter(key => key.startsWith('mcu'))

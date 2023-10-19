@@ -1,4 +1,4 @@
-import { SocketState } from './types'
+import type { SocketState } from './types'
 
 export const defaultState = (): SocketState => {
   return {

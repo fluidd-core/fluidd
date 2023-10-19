@@ -310,9 +310,9 @@
 <script lang="ts">
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import { defaultState } from '@/store/config/state'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 import ToolheadMixin from '@/mixins/toolhead'
-import { ToolheadControlStyle } from '@/store/config/types'
+import type { ToolheadControlStyle } from '@/store/config/types'
 
 @Component({
   components: {}

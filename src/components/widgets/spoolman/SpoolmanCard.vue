@@ -119,7 +119,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Spool } from '@/store/spoolman/types'
+import type { Spool } from '@/store/spoolman/types'
 import StatusLabel from '@/components/widgets/status/StatusLabel.vue'
 
 @Component({

@@ -24,8 +24,6 @@ app:
     label:
       current: Aktualnie
       item: Nazwa
-      'off': Ukryj wykres
-      'on': Pokaż wykres
       power: Moc
       rate_of_change: Zmiana
       target: Docelowo

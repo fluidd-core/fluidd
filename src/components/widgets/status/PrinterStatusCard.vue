@@ -1,13 +1,14 @@
 <template>
   <collapsable-card
-    :title="$t('app.printer.state.' + printerState)"
+    :title="$t('app.printer.title.printer_status')"
     icon="$printer3d"
     draggable
     :collapsable="collapsable"
     layout-path="dashboard.printer-status-card"
   >
-    <template #title>
+    <template #title="{inLayout}">
       <v-tabs
+        v-if="!inLayout"
         v-model="tab"
         background-color="transparent"
         mobile-breakpoint="0"

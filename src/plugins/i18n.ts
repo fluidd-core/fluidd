@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueI18n, { Locale } from 'vue-i18n'
+import VueI18n, { type Locale } from 'vue-i18n'
 import { SupportedLocales } from '@/globals'
 import getBrowserLocale from '@/util/get-browser-locale'
 import messages from '@/locales/en.yaml'

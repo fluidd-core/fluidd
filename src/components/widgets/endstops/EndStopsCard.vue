@@ -51,7 +51,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import { Endstop, Probe } from '@/store/printer/types'
+import type { Endstop, Probe } from '@/store/printer/types'
 
 @Component({
   components: {}

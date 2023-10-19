@@ -1,6 +1,6 @@
-import { AppTablePartialHeader } from '@/types/tableheaders'
-import { VuetifyThemeItem } from 'vuetify/types/services/theme'
-import { FileFilterType } from '../files/types'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { VuetifyThemeItem } from 'vuetify/types/services/theme'
+import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
   [key: string]: any;

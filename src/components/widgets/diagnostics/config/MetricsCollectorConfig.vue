@@ -67,7 +67,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Ref } from 'vue-property-decorator'
-import { Metric } from '@/store/diagnostics/types'
+import type { Metric } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
 import StateExplorer from '@/components/widgets/diagnostics/StateExplorer.vue'
 

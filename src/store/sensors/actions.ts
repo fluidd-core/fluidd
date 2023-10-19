@@ -1,6 +1,6 @@
-import { ActionTree } from 'vuex'
-import { MoonrakerSensors, MoonrakerSensorsState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { MoonrakerSensors, MoonrakerSensorsState } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
 export const actions: ActionTree<MoonrakerSensorsState, RootState> = {

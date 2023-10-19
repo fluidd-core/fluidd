@@ -1,9 +1,9 @@
 <template>
   <v-overlay
+    v-bind="$attrs"
     class="dragOverlay"
     :value="value"
     :opacity="0.85"
-    absolute
   >
     <v-container>
       <v-row

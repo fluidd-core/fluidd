@@ -92,7 +92,7 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Ref, VModel, Mixins } from 'vue-property-decorator'
-import { VForm } from '@/types'
+import type { VForm } from '@/types'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({})
@@ -234,9 +234,9 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
   handleFocus (event: FocusEvent) {
     this.hasFocus = true
 
-    const input = event.target as HTMLInputElement
-
-    input.select()
+    if (event.target instanceof HTMLInputElement) {
+      event.target.select()
+    }
   }
 
   handleBlur () {

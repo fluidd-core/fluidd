@@ -1,13 +1,13 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
+import type { MutationTree } from 'vuex'
+import type { ConfigState, UiSettings, SaveByPath, InstanceConfig, InitConfig } from './types'
 import { defaultState } from './state'
 import { Globals } from '@/globals'
 import { merge, set } from 'lodash-es'
 import { v4 as uuidv4 } from 'uuid'
-import { AppTableHeader } from '@/types'
-import { AppTablePartialHeader } from '@/types/tableheaders'
-import { FileFilterType } from '../files/types'
+import type { AppTableHeader } from '@/types'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { FileFilterType } from '../files/types'
 
 export const mutations: MutationTree<ConfigState> = {
   /**
@@ -20,26 +20,31 @@ export const mutations: MutationTree<ConfigState> = {
   /**
    * Inits UI settings from the db
    */
-  setInitUiSettings (state, payload: UiSettings) {
+  setInitUiSettings (state, payload: Partial<UiSettings>) {
     if (payload) {
       // Most settings should be merged, so start there.
       const processed = merge(state.uiSettings, payload)
 
       // Apply overrides.
-      if (payload.general && payload.general.zAdjustDistances) {
+      if (payload.general?.zAdjustDistances) {
         Vue.set(processed.general, 'zAdjustDistances', payload.general.zAdjustDistances)
       }
 
-      if (payload.general && payload.general.toolheadMoveDistances) {
+      if (payload.general?.toolheadMoveDistances) {
         Vue.set(processed.general, 'toolheadMoveDistances', payload.general.toolheadMoveDistances)
       }
 
-      if (payload.editor && payload.editor.autoEditExtensions) {
+      if (payload.editor?.autoEditExtensions) {
         Vue.set(processed.editor, 'autoEditExtensions', payload.editor.autoEditExtensions)
       }
 
-      if (payload.fileSystem && payload.fileSystem.activeFilters) {
+      if (payload.fileSystem?.activeFilters) {
         Vue.set(processed.fileSystem, 'activeFilters', payload.fileSystem.activeFilters)
+      }
+
+      const logoSrc = payload.theme?.logo?.src
+      if (logoSrc?.startsWith('/')) {
+        Vue.set(processed.theme.logo, 'src', logoSrc.substring(1))
       }
 
       Vue.set(state, 'uiSettings', processed)

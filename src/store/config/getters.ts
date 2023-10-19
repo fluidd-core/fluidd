@@ -1,12 +1,12 @@
-import { GetterTree } from 'vuex'
+import type { GetterTree } from 'vuex'
 import vuetify from '@/plugins/vuetify'
-import { ConfigState, SupportedTheme, TemperaturePreset, ThemeConfig } from './types'
-import { RootState } from '../types'
-import { Heater, Fan } from '../printer/types'
+import type { ConfigState, SupportedTheme, TemperaturePreset, ThemeConfig } from './types'
+import type { RootState } from '../types'
+import type { Heater, Fan } from '../printer/types'
 import { TinyColor } from '@ctrl/tinycolor'
-import { AppTableHeader } from '@/types'
-import { AppTablePartialHeader } from '@/types/tableheaders'
-import { MoonrakerRootFile } from '../files/types'
+import type { AppTableHeader } from '@/types'
+import type { AppTablePartialHeader } from '@/types/tableheaders'
+import type { MoonrakerRootFile } from '../files/types'
 import md5 from 'md5'
 
 export const getters: GetterTree<ConfigState, RootState> = {
@@ -121,11 +121,12 @@ export const getters: GetterTree<ConfigState, RootState> = {
     }
     return {
       name: 'Fluidd',
+      color: '#2196F3',
+      isDark: true,
       logo: {
         src: 'logo_fluidd.svg',
-        changeWithTheme: true
-      },
-      color: '#2196F3'
+        dynamic: true
+      }
     }
   },
 

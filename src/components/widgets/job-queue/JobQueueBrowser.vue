@@ -58,11 +58,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
-import { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
-import { AppTableHeader } from '@/types'
+import type { AppTableHeader } from '@/types'
 import StateMixin from '@/mixins/state'
-import { DataTableItemProps } from 'vuetify'
+import type { DataTableItemProps } from 'vuetify'
 
 type QueueJobWithKey = QueuedJob & {
   key: string

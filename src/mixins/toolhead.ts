@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
-import { Extruder } from '@/store/printer/types'
+import type { Extruder } from '@/store/printer/types'
 
 @Component
 export default class ToolheadMixin extends Vue {

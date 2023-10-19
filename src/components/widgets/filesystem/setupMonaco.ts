@@ -3,7 +3,7 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api'
 import { loadWASM } from 'onigasm'
 import onigasmWasm from 'onigasm/lib/onigasm.wasm?url'
 
-import { IGrammarDefinition, Registry } from 'monaco-textmate'
+import { Registry, type IGrammarDefinition } from 'monaco-textmate'
 import { wireTmGrammars } from 'monaco-editor-textmate'
 import getVueApp from '@/util/get-vue-app'
 import themeDark from '@/monaco/theme/editor.dark.theme.json'

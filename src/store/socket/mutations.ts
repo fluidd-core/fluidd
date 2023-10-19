@@ -1,5 +1,5 @@
-import { MutationTree } from 'vuex'
-import { SocketState } from './types'
+import type { MutationTree } from 'vuex'
+import type { SocketState } from './types'
 import { defaultState } from './state'
 
 export const mutations: MutationTree<SocketState> = {

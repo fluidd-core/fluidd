@@ -1,5 +1,5 @@
-import { AppDirectory, AppFile } from '@/store/files/types'
-import { InputValidationRules } from 'vuetify'
+import type { AppDirectory, AppFile } from '@/store/files/types'
+import type { InputValidationRules } from 'vuetify'
 
 export interface FileSystemDialogData {
   type: 'rename' | 'createdir' | 'createfile' | '';

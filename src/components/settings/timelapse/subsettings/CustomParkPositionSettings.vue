@@ -57,10 +57,10 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
+import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 
 @Component({
   components: {

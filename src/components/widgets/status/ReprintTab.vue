@@ -92,7 +92,7 @@ import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
 import getFilePaths from '@/util/get-file-paths'
 import JobHistoryItemStatus from '@/components/widgets/history/JobHistoryItemStatus.vue'
-import { HistoryItem } from '@/store/history/types'
+import type { HistoryItem } from '@/store/history/types'
 
 @Component({
   components: {

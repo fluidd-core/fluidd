@@ -1,4 +1,4 @@
-import { PrinterState } from './types'
+import type { PrinterState } from './types'
 
 /**
  * Maintains the state of the printer, by way of moonraker notifications.

@@ -1,13 +1,13 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
-import { ApiConfig, TextSortOrder } from '@/store/config/types'
+import type { ApiConfig, TextSortOrder } from '@/store/config/types'
 import { TinyColor } from '@ctrl/tinycolor'
 import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
-import { FileBrowserEntry } from '@/store/files/types'
+import type { FileBrowserEntry } from '@/store/files/types'
 import versionStringCompare from '@/util/version-string-compare'
 
 /**
@@ -271,16 +271,36 @@ export const Filters = {
   },
 
   /**
-   * Formats a number representing mm to human readable distance.
+   * Formats a number (in Hz) to a human readable frequency.
    */
   getReadableFrequencyString (frequencyInHz: number) {
     let i = 0
-    const frequencyUnits = [' Hz', ' KHz', ' MHz', ' GHz']
+    const frequencyUnits = [' Hz', ' kHz', ' MHz', ' GHz', ' THz']
     while (frequencyInHz >= 1000) {
       frequencyInHz = frequencyInHz / 1000
       i++
     }
     return frequencyInHz.toFixed() + frequencyUnits[i]
+  },
+
+  /**
+   * Formats a number (in ohms) to a human readable resistance.
+   */
+  getReadableResistanceString (resistanceInOhms: number) {
+    let i = 0
+    const resistanceUnits = [' Ω', ' kΩ', ' MΩ', ' GΩ', ' TΩ']
+    while (resistanceInOhms >= 1000) {
+      resistanceInOhms = resistanceInOhms / 1000
+      i++
+    }
+    return resistanceInOhms.toFixed(1) + resistanceUnits[i]
+  },
+
+  /**
+   * Formats a number (in hPa) to human readable atmospheric pressure.
+   */
+  getReadableAtmosphericPressureString (pressumeInHPa: number) {
+    return pressumeInHPa.toFixed(1) + ' hPa'
   },
 
   /**

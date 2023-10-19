@@ -68,7 +68,7 @@
 </template>
 
 <script lang="ts">
-import { FileFilterType, RootProperties } from '@/store/files/types'
+import type { FileFilterType, RootProperties } from '@/store/files/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 type FileFilterEntry = {

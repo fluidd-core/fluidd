@@ -127,11 +127,11 @@
 
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
-import { Device } from '@/store/power/types'
+import type { Device } from '@/store/power/types'
 import StateMixin from '@/mixins/state'
 import ServicesMixin from '@/mixins/services'
 import { SocketActions } from '@/api/socketActions'
-import { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
+import type { ServerInfo, ServiceInfo, SystemInfo } from '@/store/server/types'
 
 @Component({})
 export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {

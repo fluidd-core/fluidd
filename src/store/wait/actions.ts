@@ -1,6 +1,6 @@
-import { ActionTree } from 'vuex'
-import { WaitState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { WaitState } from './types'
+import type { RootState } from '../types'
 
 export const actions: ActionTree<WaitState, RootState> = {
   /**

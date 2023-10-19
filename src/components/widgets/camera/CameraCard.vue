@@ -44,7 +44,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
-// import { CameraConfig } from '@/store/cameras/types'
+// import type { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: {

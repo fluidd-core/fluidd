@@ -1,6 +1,8 @@
 export interface FlashMessage {
-  type?: 'error' | 'warning' | 'primary' | 'secondary';
+  type?: FlashMessageTypes;
   open: boolean;
   text?: string;
   timeout?: number;
 }
+
+export type FlashMessageTypes = 'success' | 'error' | 'warning' | 'primary' | 'secondary'

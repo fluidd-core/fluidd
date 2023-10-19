@@ -75,7 +75,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import FileSystem from '@/components/widgets/filesystem/FileSystem.vue'
-import { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
+import type { RenderStatus, TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import FilesMixin from '@/mixins/files'

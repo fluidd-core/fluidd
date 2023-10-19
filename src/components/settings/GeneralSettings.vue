@@ -190,10 +190,10 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
-import { OutputPin } from '@/store/printer/types'
-import { Device } from '@/store/power/types'
+import type { OutputPin } from '@/store/printer/types'
+import type { Device } from '@/store/power/types'
 
 @Component({
   components: {}

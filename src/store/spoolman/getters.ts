@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { SpoolmanState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { SpoolmanState } from './types'
+import type { RootState } from '../types'
 
 export const getters: GetterTree<SpoolmanState, RootState> = {
   getActiveSpool: (state) => {

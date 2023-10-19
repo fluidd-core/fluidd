@@ -17,7 +17,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Globals } from '@/globals'
-import { ConsoleEntry } from '@/store/console/types'
+import type { ConsoleEntry } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleItem extends Vue {
@@ -65,10 +65,12 @@ export default class ConsoleItem extends Vue {
   }
 
   itemClick (event: Event) {
-    const target = event.target as Element
-    if (target.tagName.toLowerCase() === 'a') {
-      const c = target.innerHTML.replace(/<br>/g, '\n').replace(/^\s+|\s+$/gm, '')
-      this.$emit('click', c)
+    if (event.target instanceof HTMLAnchorElement) {
+      const command = event.target.innerHTML
+        .replace(/<br>/g, '\n')
+        .replace(/^\s+|\s+$/gm, '')
+
+      this.$emit('click', command)
     }
   }
 }

@@ -13,6 +13,22 @@ self.addEventListener('message', (event) => {
   }
 })
 
+registerRoute(
+  `${import.meta.env.BASE_URL}config.json`,
+  new StaleWhileRevalidate({
+    cacheName: 'config',
+    fetchOptions: {
+      cache: 'no-cache'
+    },
+    plugins: [
+      new PrecacheFallbackPlugin({
+        fallbackURL: `${import.meta.env.BASE_URL}config.json`
+      })
+    ]
+  }),
+  'GET'
+)
+
 precacheAndRoute(self.__WB_MANIFEST)
 
 cleanupOutdatedCaches()
@@ -36,20 +52,4 @@ registerRoute(
     allowlist,
     denylist
   })
-)
-
-registerRoute(
-  ({ sameOrigin, url }) => sameOrigin && url.pathname === `${import.meta.env.BASE_URL}config.json`,
-  new StaleWhileRevalidate({
-    cacheName: 'config',
-    matchOptions: {
-      ignoreSearch: true
-    },
-    plugins: [
-      new PrecacheFallbackPlugin({
-        fallbackURL: `${import.meta.env.BASE_URL}config.json`
-      })
-    ]
-  }),
-  'GET'
 )

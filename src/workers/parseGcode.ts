@@ -1,6 +1,6 @@
 /* eslint-disable no-fallthrough */
-import { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
-import IsKeyOf from '@/util/is-key-of'
+import type { ArcMove, Layer, LinearMove, Move, Part, Point, PositioningMode } from '@/store/gcodePreview/types'
+import isKeyOf from '@/util/is-key-of'
 import { pick } from 'lodash-es'
 import shlex from 'shlex'
 
@@ -214,7 +214,7 @@ const parseGcode = (gcode: string, sendProgress: (filePosition: number) => void)
 
         if (newLayerForNextMove && move.e && move.e > 0) {
           const m = move
-          if (['x', 'y', 'i', 'j'].some(x => IsKeyOf(x, m) && m[x] !== 0)) {
+          if (['x', 'y', 'i', 'j'].some(x => isKeyOf(x, m) && m[x] !== 0)) {
             const layer: Layer = {
               z: toolhead.z,
               move: moves.length - 1,

@@ -84,7 +84,7 @@
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 import gcodeMacroParams from '@/util/gcode-macro-params'
 
 @Component({})

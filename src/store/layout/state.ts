@@ -1,6 +1,6 @@
-import { LayoutState } from './types'
+import type { LayoutState } from './types'
 import { v4 as uuidv4 } from 'uuid'
-import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 
 /**
  * Maintains the state of our page layouts.

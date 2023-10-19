@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { Component, Prop, Ref, Watch } from 'vue-property-decorator'
-import { CameraConfig } from '@/store/cameras/types'
+import type { CameraConfig } from '@/store/cameras/types'
 
 @Component
 export default class CameraMixin extends Vue {

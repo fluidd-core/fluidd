@@ -1,4 +1,4 @@
-import { DevicePowerState } from './types'
+import type { DevicePowerState } from './types'
 
 export const defaultState = (): DevicePowerState => {
   return {

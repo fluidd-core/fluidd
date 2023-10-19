@@ -56,8 +56,8 @@ import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
 import { SocketActions } from '@/api/socketActions'
-import { DinamicScroller } from 'vue-virtual-scroller'
-import { ConsoleEntry } from '@/store/console/types'
+import type { DinamicScroller } from 'vue-virtual-scroller'
+import type { ConsoleEntry } from '@/store/console/types'
 
 @Component({
   components: {

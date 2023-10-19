@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat, ServiceInfo, ServiceState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { ServerInfo, ServerConfig, ServerState, SystemInfo, ServerSystemStat, ServiceInfo, ServiceState } from './types'
+import type { RootState } from '../types'
 import { Globals } from '@/globals'
 import { gte, valid } from 'semver'
 

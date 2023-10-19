@@ -82,7 +82,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { defaultState } from '@/store/config/state'
-import { RestoreViewState } from '@/store/config/types'
+import type { RestoreViewState } from '@/store/config/types'
 
 @Component({
   components: {}

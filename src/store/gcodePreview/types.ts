@@ -1,4 +1,4 @@
-import { AppFile } from '@/store/files/types'
+import type { AppFile } from '@/store/files/types'
 
 export type LayerNr = number
 
