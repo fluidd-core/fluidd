@@ -16,6 +16,7 @@
     <job-queue-bulk-actions
       v-else
       @remove="handleRemove(selected)"
+      @multiply="handleMultiplyDialog(selected)"
     />
 
     <job-queue-browser
@@ -40,6 +41,14 @@
       :position-x="contextMenuState.x"
       :position-y="contextMenuState.y"
       @remove="handleRemove"
+      @multiply="handleMultiplyDialog"
+    />
+
+    <job-queue-multiply-job-dialog
+      v-if="multiplyJobDialogState.open"
+      v-model="multiplyJobDialogState.open"
+      :job="multiplyJobDialogState.job"
+      @save="handleMultiply"
     />
   </v-card>
 </template>
@@ -52,6 +61,7 @@ import JobQueueToolbar from './JobQueueToolbar.vue'
 import JobQueueBulkActions from './JobQueueBulkActions.vue'
 import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
+import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
 import type { AppTableHeader } from '@/types'
 
 @Component({
@@ -59,6 +69,7 @@ import type { AppTableHeader } from '@/types'
     JobQueueToolbar,
     JobQueueBulkActions,
     JobQueueBrowser,
+    JobQueueMultiplyJobDialog,
     JobQueueContextMenu
   }
 })
@@ -67,6 +78,11 @@ export default class JobQueue extends Vue {
     open: false,
     x: 0,
     y: 0,
+    job: null
+  }
+
+  multiplyJobDialogState: any = {
+    open: false,
     job: null
   }
 
@@ -142,6 +158,25 @@ export default class JobQueue extends Vue {
       : [jobs.job_id]
 
     SocketActions.serverJobQueueDeleteJobs(jobIds)
+  }
+
+  handleMultiplyDialog (jobs: QueuedJob | QueuedJob[]) {
+    this.multiplyJobDialogState = {
+      open: true,
+      job: jobs
+    }
+  }
+
+  handleMultiply (jobs: QueuedJob | QueuedJob[], copies: number) {
+    const filenames = Array.isArray(jobs)
+      ? jobs.map(job => job.filename)
+      : [jobs.filename]
+
+    const multipliedFilenames = Array.from({ length: copies })
+      .map(() => filenames)
+      .flat()
+
+    SocketActions.serverJobQueuePostJob(multipliedFilenames)
   }
 
   handleDragOver (event: DragEvent) {

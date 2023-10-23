@@ -9,6 +9,17 @@
     right
   >
     <v-list dense>
+      <v-list-item @click="$emit('multiply', job)">
+        <v-list-item-icon>
+          <v-icon>
+            $duplicate
+          </v-icon>
+        </v-list-item-icon>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('app.general.btn.multiply') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+
       <v-list-item @click="$emit('remove', job)">
         <v-list-item-icon>
           <v-icon>

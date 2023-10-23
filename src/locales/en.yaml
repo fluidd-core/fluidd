@@ -168,6 +168,7 @@ app:
       login: Login
       logout: Logout
       more_information: More information
+      multiply: Multiply
       pause: Pause
       preheat: Preheat
       presets: Presets
@@ -452,6 +453,10 @@ app:
   job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
+    label:
+      number_of_copies: Number of copies
+    title:
+      multiply_job: Multiply Job | Multiply Jobs
   printer:
     state:
       busy: Busy
