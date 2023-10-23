@@ -10,12 +10,12 @@
       <router-view v-if="authenticated && socketConnected" />
       <div v-if="$route.matched.length === 1">
         <general-settings />
-        <console-settings />
         <theme-settings />
-        <file-editor-settings />
         <auth-settings v-if="supportsAuth" />
-        <macro-categories />
-        <cameras />
+        <console-settings />
+        <file-editor-settings />
+        <macro-settings />
+        <camera-settings />
         <toolhead-settings />
         <preset-settings />
         <gcode-preview-settings />
@@ -31,10 +31,10 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 
-import MacroCategories from '@/components/settings/macros/MacroCategories.vue'
+import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
 import GeneralSettings from '@/components/settings/GeneralSettings.vue'
 import PresetSettings from '@/components/settings/presets/PresetSettings.vue'
-import Cameras from '@/components/settings/cameras/Cameras.vue'
+import CameraSettings from '@/components/settings/cameras/CameraSettings.vue'
 import ToolheadSettings from '@/components/settings/ToolheadSettings.vue'
 import ThemeSettings from '@/components/settings/ThemeSettings.vue'
 import VersionSettings from '@/components/settings/VersionSettings.vue'
@@ -49,10 +49,10 @@ import SpoolmanSettings from '@/components/settings/SpoolmanSettings.vue'
   components: {
     SpoolmanSettings,
     TimelapseSettings,
-    MacroCategories,
+    MacroSettings,
     GeneralSettings,
     PresetSettings,
-    Cameras,
+    CameraSettings,
     ToolheadSettings,
     ThemeSettings,
     VersionSettings,

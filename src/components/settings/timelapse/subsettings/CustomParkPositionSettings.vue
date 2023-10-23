@@ -67,7 +67,7 @@ import type { VInput } from '@/types'
     ParkExtrudeRetractSettings
   }
 })
-export default class LayerMacroSettings extends Mixins(StateMixin) {
+export default class CustomParkPositionSettings extends Mixins(StateMixin) {
   @Ref('parkPosXElement')
   readonly parkPosXElement?: VInput
 
