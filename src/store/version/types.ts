@@ -1,9 +1,8 @@
 export interface VersionState {
-  [key: string]: boolean | number | VersionComponents | FluiddVersion | UpdateResponse[];
   busy: boolean;
-  github_limit_reset_time: number;
   github_rate_limit: number;
   github_requests_remaining: number;
+  github_limit_reset_time: number;
   version_info: VersionComponents;
   responses: UpdateResponse[];
   fluidd: FluiddVersion;
@@ -16,20 +15,31 @@ export interface VersionComponents {
 /** For klipper / moonraker */
 export interface HashVersion {
   key: string;
-  branch: string;
-  commits_behind: CommitItem[];
-  current_hash: string;
-  debug_enabled: boolean;
-  detached: boolean;
-  git_messages: string[];
-  is_dirty: boolean;
-  is_valid: boolean;
+  configured_type?: string;
+  detected_type?: string;
+  channel?: string;
+  pristine?: boolean;
   owner: string;
+  branch: string;
   remote_alias: string;
-  remote_hash: string;
-  remote_version: string;
   version: string;
+  remote_version: string;
+  rollback_version?: string;
   full_version_string: string;
+  current_hash: string;
+  remote_hash: string;
+  is_valid: boolean;
+  corrupt?: boolean;
+  is_dirty: boolean;
+  detached: boolean;
+  debug_enabled: boolean;
+  commits_behind: CommitItem[];
+  git_messages: string[];
+  info_tags?: string[];
+  recovery_url?: string;
+  remote_url?: string;
+  warnings?: string[];
+  anomalies?: string[];
 }
 
 export interface CommitItem {
@@ -51,10 +61,17 @@ export interface OSPackage {
 /** For clients */
 export interface ArtifactVersion {
   key: string;
+  channel?: string;
+  configured_type?: string;
   name: string;
   owner: string;
   version: string;
   remote_version: string;
+  rollback_version?: string;
+  info_tags?: string[];
+  is_valid: boolean;
+  warnings?: string[];
+  anomalies?: string[];
 }
 
 export interface FluiddVersion {
