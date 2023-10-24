@@ -30,9 +30,9 @@ app:
       rate_of_change: Änderung
     tooltip:
       help: >-
-        Halten Sie die Umschalttaste gedrückt, um zu zoomen. <br />Klicken Sie
-        auf ein Element, um es im Diagramm ein-/auszublenden. <br />Klicken Sie
-        auf eine Leistung, um sie im Diagramm ein-/auszublenden.
+        Halten Sie <kbd>Umschalt</kbd> gedrückt, um zu zoomen. <br />Klicken Sie auf
+        ein Element, um es im Diagramm ein-/auszublenden. <br />Klicken Sie auf eine
+        Leistung, um sie im Diagramm ein-/auszublenden.
   console:
     label:
       auto_scroll: Automatisches Scrollen
@@ -42,6 +42,10 @@ app:
       command: >-
         Tab für Autovervollständigung, 'help' für Befehle, Pfeiltasten für
         Verlauf
+    tooltip:
+      help: Geben Sie "help" für eine Befehlsliste ein<br />Benutzen Sie <kbd>Tab</kbd>
+        für Autovervollständigung<br />Benutzen Sie <kbd>&uarr;</kbd> und <kbd>&darr;</kbd>
+        für den Verlauf
   endpoint:
     error:
       cant_connect: >-
@@ -478,6 +482,8 @@ app:
       printing: Druckt
       ready: Bereit
       standby: Standby
+    title:
+      printer_status: Druckerstatus
   setting:
     btn:
       add_camera: Kamera hinzufügen
@@ -613,6 +619,7 @@ app:
       toolhead_control_style: Druckkopf-Steuerstil
       toolhead_xy_move_distances: Druckkopf-Bewegungsdistanzen für XY
       toolhead_z_move_distances: Druckkopf-Bewegungsdistanzen für Z
+      show_chart: Diagramm anzeigen
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
