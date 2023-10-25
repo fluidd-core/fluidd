@@ -291,6 +291,7 @@ app:
       thumbnail_size: Rozmiar miniatur
       quad_gantry_level: QGL
       refresh_metadata: Odśwież metadane
+      multiply: Powiel
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -680,6 +681,10 @@ app:
   job_queue:
     msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej kolejki drukowania
+    title:
+      multiply_job: Powielone zadanie | Powielone zadania
+    label:
+      number_of_copies: Liczba kopii
   version:
     label:
       commit_history: Historia zmian
