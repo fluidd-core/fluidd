@@ -28,8 +28,8 @@ app:
       rate_of_change: Zmiana
       target: Docelowo
     tooltip:
-      help: Przytrzymaj <kbd>Shift</kbd>, aby powiększyć.<br />Kliknij element, aby
-        przełączyć na wykresie.<br />Kliknij Moc, aby przełączyć na wykresie.
+      help: Przytrzymaj <kbd>Shift</kbd>, aby powiększyć.<br />Kliknij nazwę, aby
+        przełączyć na wykresie.<br />Kliknij na moc, aby przełączyć na wykresie.
   console:
     label:
       auto_scroll: Auto. przewijanie
@@ -682,7 +682,7 @@ app:
     msg:
       confirm: Czy na pewno? Spowoduje to wyczyszczenie całej kolejki drukowania
     title:
-      multiply_job: Powielone zadanie | Powielone zadania
+      multiply_job: Powiel zadanie | Powiel zadania
     label:
       number_of_copies: Liczba kopii
   version:
@@ -822,9 +822,9 @@ app:
         kodu QR
       prefer_device_camera: Użyj kamery urządzenia do wykrywania kodów QR, jeśli jest
         dostępna
-      warn_on_not_enough_filament: Wyświetla ostrzeżenie, gdy na wybranej szpuli nie
-        ma wystarczającej ilości filamentu do zakończenia drukowania
-      warn_on_filament_type_mismatch: Wyświetla ostrzeżenie, gdy typ filamentu wybrany
+      warn_on_not_enough_filament: Pokaż ostrzeżenie, gdy na wybranej szpuli nie ma
+        wystarczającej ilości filamentu do zakończenia drukowania
+      warn_on_filament_type_mismatch: Pokaż ostrzeżenie, gdy typ filamentu wybrany
         w slicerze i filamentu na szpuli nie jest zgodny
   sensors:
     title:
