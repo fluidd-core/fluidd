@@ -267,6 +267,7 @@ app:
       velocity: Velocidad
       visible: Visible
       z_offset: Z Offset
+      range: Rango
     msg:
       bed_screws_adjust: >-
         Haga click en <b>Ajustado</b> si fue necesario un ajuste significativo
@@ -288,7 +289,8 @@ app:
         required: Obligatorio
       msg:
         confirm: ¿Está seguro?
-        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación del dispositivo.
+        confirm_power_device_toggle: ¿Está seguro? Esto alternará la alimentación
+          del dispositivo.
         confirm_reboot_host: ¿Está seguro? Esto reiniciará el sistema anfitrión.
         confirm_shutdown_host: ¿Está seguro? Esto apagará el sistema anfitrión.
     table:
@@ -408,7 +410,8 @@ app:
       reset: Restablecer opciones
       retraction_icon_size: Tamaño del icono de retracción
       show_animations: Mostrar animaciones
-      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos de cama automáticamente
+      show_bed_screws_adjust_dialog_automatically: Mostrar diálogo de ajuste de tornillos
+        de cama automáticamente
       show_rate_of_change: Mostrar tasa de cambio de temperatura
       solid: Sólido
       starts_with: Comienza con
