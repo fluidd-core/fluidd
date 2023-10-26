@@ -291,7 +291,6 @@ app:
       upload_and_print: 上传并打印
       used: 已用
       username: 用户名
-      variance: 偏差值
       velocity: 速度
       version_sort: 版本排序
       visible: 可见性

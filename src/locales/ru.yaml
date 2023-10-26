@@ -292,7 +292,6 @@ app:
       unretract_speed: Скорость деретракта
       used: Использованно
       username: Имя пользователя
-      variance: Различие
       velocity: Скорость
       visible: Видимый
       z_offset: Смещение Z

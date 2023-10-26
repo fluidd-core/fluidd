@@ -63,7 +63,7 @@ export const getters: GetterTree<MeshState, RootState> = {
         active: name === bedMesh.profile_name,
         min,
         max,
-        variance: Math.abs(min - max),
+        range: Math.abs(min - max),
         ...profile
       })
     }

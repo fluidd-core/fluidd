@@ -6,7 +6,7 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
   let min = 0
   let mid = 0
   let max = 0
-  let variance = 0
+  let range = 0
 
   if (
     matrix &&
@@ -28,7 +28,7 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
     } else {
       mid = (max + min) / 2
     }
-    variance = Math.abs(min - max)
+    range = Math.abs(min - max)
 
     for (const x_axis of matrix) {
       x_idx = 0
@@ -56,6 +56,6 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
     min,
     mid,
     max,
-    variance
+    range
   }
 }
