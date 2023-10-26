@@ -156,17 +156,25 @@
             @click.native.stop
           />
         </app-setting>
+      </template>
 
+      <template v-if="showSaveConfigAndRestart && confirmOnSaveConfigAndRestart">
         <v-divider />
 
         <app-setting
-          :title="$t('app.setting.label.ignore_default_bed_mesh_pending_configuration_changes')"
+          :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')"
         >
-          <v-switch
-            v-model="ignoreDefaultBedMeshPendingConfigurationChanges"
-            hide-details
-            class="mb-5"
-            @click.native.stop
+          <v-combobox
+            v-model="sectionsToIgnorePendingConfigurationChanges"
+            :items="['bed_mesh default', 'bed_tilt']"
+            filled
+            dense
+            hide-selected
+            hide-details="auto"
+            multiple
+            small-chips
+            append-icon=""
+            deletable-chips
           />
         </app-setting>
       </template>
@@ -402,14 +410,14 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
-    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
+  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
   }
 
-  set ignoreDefaultBedMeshPendingConfigurationChanges (value: boolean) {
+  set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges',
-      value,
+      path: 'uiSettings.general.sectionsToIgnorePendingConfigurationChanges',
+      value: [...new Set(value)].sort((a, b) => a.localeCompare(b)),
       server: true
     })
   }

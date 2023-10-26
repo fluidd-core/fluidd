@@ -40,7 +40,7 @@ export const defaultState = (): ConfigState => {
         confirmOnEstop: false,
         confirmOnPowerDeviceChange: false,
         confirmOnSaveConfigAndRestart: true,
-        ignoreDefaultBedMeshPendingConfigurationChanges: false,
+        sectionsToIgnorePendingConfigurationChanges: [],
         dateFormat: 'iso',
         timeFormat: 'iso',
         textSortOrder: 'default',

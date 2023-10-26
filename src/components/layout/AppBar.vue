@@ -243,13 +243,14 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
       return false
     }
 
-    if (!this.ignoreDefaultBedMeshPendingConfigurationChanges) {
-      return true
-    }
+    const sectionsToIgnore = this.sectionsToIgnorePendingConfigurationChanges
 
-    const saveConfigPendingItemsKeys = Object.keys(this.saveConfigPendingItems)
-
-    return saveConfigPendingItemsKeys.length > 1 || saveConfigPendingItemsKeys[0] !== 'bed_mesh default'
+    return (
+      sectionsToIgnore.length === 0 ||
+      Object.keys(this.saveConfigPendingItems)
+        .filter(key => !sectionsToIgnore.includes(key))
+        .length > 0
+    )
   }
 
   get devicePowerComponentEnabled () {
@@ -268,8 +269,8 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
     return this.$store.state.config.uiSettings.general.showSaveConfigAndRestart as boolean
   }
 
-  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
-    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
+  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
   }
 
   get showUploadAndPrint (): boolean {
