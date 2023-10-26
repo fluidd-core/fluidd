@@ -117,7 +117,6 @@ app:
       requested_speed: Prędkość
       extrude_length: Długość wytłaczania
       synced_extruder: Zsynchronizowany ekstruder
-      variance: Odchylenie
       z_offset: Przesunięcie Z
       heaters_busy: Drukarka jest obecnie zajęta. Wyłączenie grzałek może spowodować
         nieudany wydruk.

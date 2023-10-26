@@ -301,7 +301,6 @@ app:
       used: 使用済み
       user_managed_source: ' %{source} 認証によって管理されるユーザー'
       username: ユーザー名
-      variance: 増減率
       velocity: 速度
       version_sort: バージョンによるソート
       visible: 見える

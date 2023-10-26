@@ -289,6 +289,7 @@ app:
       pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
+      range: Range
       requested_speed: Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
@@ -320,7 +321,6 @@ app:
       upload_and_print: Upload and Print
       used: used
       username: Username
-      variance: Variance
       velocity: Velocity
       version_sort: Version sort
       visible: Visible

@@ -134,7 +134,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   }
 
   get graphics () {
-    const variance = this.mesh[this.matrix].variance
+    const { range } = this.mesh[this.matrix]
 
     return [{
       type: 'text',
@@ -143,7 +143,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
       z: 100,
       silent: true,
       style: {
-        text: `Variance: ${variance.toFixed(4)}`
+        text: `Range: ${range.toFixed(4)}`
       }
     }]
   }

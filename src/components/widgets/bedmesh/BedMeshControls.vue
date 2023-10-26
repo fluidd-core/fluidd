@@ -24,7 +24,7 @@
           <tr>
             <th>{{ $t('app.general.label.name') }}</th>
             <th>&nbsp;</th>
-            <th>{{ $t('app.general.label.variance') }}</th>
+            <th>{{ $t('app.general.label.range') }}</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -47,7 +47,7 @@
             </td>
             <td class="focus--text">
               <span>
-                {{ item.variance.toFixed(4) }}
+                {{ item.range.toFixed(4) }}
               <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
               </span>
             </td>
