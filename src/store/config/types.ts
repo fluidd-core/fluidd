@@ -73,7 +73,7 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
-  ignoreDefaultBedMeshPendingConfigurationChanges: boolean;
+  sectionsToIgnorePendingConfigurationChanges: string[];
   dateFormat: string;
   timeFormat: string;
   textSortOrder: TextSortOrder;

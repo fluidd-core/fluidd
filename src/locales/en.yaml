@@ -544,7 +544,6 @@ app:
       height: Height
       gcode_coords: Use GCode Coordinates
       icon: Icon
-      ignore_default_bed_mesh_pending_configuration_changes: Ignore default bed mesh Pending Configuration Changes
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -568,6 +567,7 @@ app:
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
       save_and_restore_view_state: Save and restore view state
+      sections_to_ignore_pending_configuration_changes: Sections to ignore Pending Configuration Changes
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
       show_chart: Show chart

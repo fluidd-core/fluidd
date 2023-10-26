@@ -600,8 +600,6 @@ app:
       collector: Kollektor
       dotted: Gepunktet
       axes: Achsen
-      ignore_default_bed_mesh_pending_configuration_changes: Ausstehende Änderungen
-        der Bettnivellierung ignorieren
       camera_url_snapshot: Kamera-Snapshot-URL
       camera_url_stream: Kamera-Stream-URL
       default_min_layer_height: Standard minimum Schichthöhe
