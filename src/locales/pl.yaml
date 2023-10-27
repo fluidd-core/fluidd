@@ -214,6 +214,7 @@ app:
       turn_device_on: Włącz %{device}
       cross: Krzyż
       bars: Pasek
+      range: Zakres
     btn:
       abort: Przerwij
       add: Dodaj
@@ -593,6 +594,8 @@ app:
       toolhead_xy_move_distances: Wartości odległości XY głowicy narzędziowej
       toolhead_z_move_distances: Wartości odległości Z głowicy narzędziowej
       show_chart: Pokaż wykres
+      sections_to_ignore_pending_configuration_changes: Sekcje do ignorowania oczekujących
+        zmian konfiguracji
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
