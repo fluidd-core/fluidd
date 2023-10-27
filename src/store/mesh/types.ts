@@ -65,6 +65,7 @@ export interface AppMeshes {
 
 export interface ProcessedMesh {
   coordinates: MeshCoordinates[];
+  dimensions: [number, number];
   range: number;
   min: number;
   mid: number;

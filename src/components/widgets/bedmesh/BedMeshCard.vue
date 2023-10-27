@@ -53,6 +53,7 @@ import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import BrowserMixin from '@/mixins/browser'
+import type { AppMeshes } from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -125,7 +126,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
         wireframe: {
           show: wireframe
         },
-        data: this.mesh[matrix].coordinates
+        data: this.mesh[matrix].coordinates,
+        dataShape: this.mesh[matrix].dimensions
       },
       this.createFlatSeries('probed_matrix_flat'),
       this.createFlatSeries('mesh_matrix_flat')
@@ -164,7 +166,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
           color: '#ffffff'
         }
       },
-      data: this.mesh[matrix].coordinates
+      data: this.mesh[matrix].coordinates,
+      dataShape: this.mesh[matrix].dimensions
     }
   }
 
@@ -193,8 +196,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   }
 
   // The current processed mesh data, if any.
-  get mesh () {
-    return this.$store.getters['mesh/getCurrentMeshData']
+  get mesh (): AppMeshes {
+    return this.$store.getters['mesh/getCurrentMeshData'] as AppMeshes
   }
 }
 </script>

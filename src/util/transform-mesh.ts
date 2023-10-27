@@ -7,6 +7,8 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
   let mid = 0
   let max = 0
   let range = 0
+  let x_idx = 0
+  let y_idx = 0
 
   if (
     matrix &&
@@ -18,8 +20,6 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
   ) {
     const x_distance = (bedMesh.mesh_max[0] - bedMesh.mesh_min[0]) / (matrix[0].length - 1)
     const y_distance = (bedMesh.mesh_max[1] - bedMesh.mesh_min[1]) / (matrix.length - 1)
-    let x_idx = 0
-    let y_idx = 0
 
     min = Math.min(...matrix.map(row => Math.min(...row)))
     max = Math.max(...matrix.map(row => Math.max(...row)))
@@ -53,6 +53,7 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
 
   return {
     coordinates,
+    dimensions: [x_idx, y_idx],
     min,
     mid,
     max,
