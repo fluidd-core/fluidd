@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
 import type { ApiConfig, TextSortOrder } from '@/store/config/types'
 import { TinyColor } from '@ctrl/tinycolor'
-import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
+import { DateFormats, Globals, TimeFormats, Waits, type DateTimeFormat } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
@@ -67,16 +67,20 @@ export const Filters = {
     return (isNeg) ? '-' + r : r
   },
 
-  getDateFormat: (override?: string) => {
+  getNavigatorLocales: () => {
+    return navigator.languages ?? [navigator.language]
+  },
+
+  getDateFormat: (override?: string): DateTimeFormat => {
     return {
-      locale: i18n.locale,
+      locales: Filters.getNavigatorLocales(),
       ...DateFormats[override ?? store.state.config.uiSettings.general.dateFormat]
     }
   },
 
-  getTimeFormat: (override?: string) => {
+  getTimeFormat: (override?: string): DateTimeFormat => {
     return {
-      locale: i18n.locale,
+      locales: Filters.getNavigatorLocales(),
       ...TimeFormats[override ?? store.state.config.uiSettings.general.timeFormat]
     }
   },
@@ -85,7 +89,7 @@ export const Filters = {
     const date = new Date(value)
     const dateFormat = Filters.getDateFormat()
 
-    return date.toLocaleDateString(dateFormat.locale, {
+    return date.toLocaleDateString(dateFormat.locales, {
       ...dateFormat.options,
       ...options
     })
@@ -95,7 +99,7 @@ export const Filters = {
     const date = new Date(value)
     const timeFormat = Filters.getTimeFormat()
 
-    return date.toLocaleTimeString(timeFormat.locale, {
+    return date.toLocaleTimeString(timeFormat.locales, {
       ...timeFormat.options,
       ...options
     })
@@ -109,11 +113,16 @@ export const Filters = {
   },
 
   formatDateTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-    const date = new Date(value)
     const timeFormat = Filters.getTimeFormat()
     const dateFormat = Filters.getDateFormat()
 
-    return date.toLocaleDateString(dateFormat.locale, {
+    if (timeFormat.locales !== dateFormat.locales) {
+      return Filters.formatDate(value, options) + ' ' + Filters.formatTime(value, options)
+    }
+
+    const date = new Date(value)
+
+    return date.toLocaleDateString(dateFormat.locales, {
       ...dateFormat.options,
       ...timeFormat.options,
       ...options
@@ -148,7 +157,7 @@ export const Filters = {
   },
 
   formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
-    const rtf = new Intl.RelativeTimeFormat(i18n.locale, {
+    const rtf = new Intl.RelativeTimeFormat(Filters.getNavigatorLocales() as string[], {
       numeric: 'auto',
       ...options
     })
