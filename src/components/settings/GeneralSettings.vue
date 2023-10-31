@@ -260,7 +260,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(DateFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleDateString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -282,7 +282,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(TimeFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleTimeString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -432,10 +432,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
-  }
-
-  get current_time () {
-    return Math.floor(Date.now() / 1000)
   }
 }
 </script>

@@ -494,15 +494,15 @@ export const SupportedVideoFormats = Object.freeze([
   '.mpg'
 ])
 
-type DateTimeFormat = {
-  locale?: string,
+export type DateTimeFormat = {
+  locales?: Intl.LocalesArgument,
   options: Intl.DateTimeFormatOptions,
   suffix?: string
 }
 
 export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'lt',
+    locales: 'lt',
     options: { day: '2-digit', month: '2-digit', year: 'numeric' },
     suffix: ' (ISO 8601)'
   },
@@ -516,7 +516,7 @@ export const DateFormats = Object.freeze<Record<string, DateTimeFormat>>({
 
 export const TimeFormats = Object.freeze<Record<string, DateTimeFormat>>({
   iso: {
-    locale: 'lt',
+    locales: 'lt',
     options: { hour: '2-digit', minute: '2-digit', hour12: false },
     suffix: ' (ISO 8601)'
   },
