@@ -37,7 +37,7 @@
                 {{ $t('app.bedmesh.label.base') }}
               </v-chip>
               <v-chip
-                v-else-if="screw.adjust === '00:00'"
+                v-else-if="getScrewAdjustMinutes(screw.adjust) < 6"
                 color="success"
                 small
                 label
@@ -46,7 +46,7 @@
                   left
                   small
                 >
-                  $success
+                  {{ screw.sign === 'CW' ? '$zRotateClockwise' : screw.sign === 'CCW' ? '$zRotateCounterclockwise' : '$success' }}
                 </v-icon>
                 {{ screw.adjust }}
               </v-chip>
@@ -105,6 +105,11 @@ export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadM
 
   destroyed () {
     this.$store.commit('printer/setClearScrewsTiltAdjust')
+  }
+
+  getScrewAdjustMinutes (value: string) {
+    const [hours, minutes] = value.split(':').map(v => parseInt(v))
+    return hours * 60 + minutes
   }
 }
 </script>
