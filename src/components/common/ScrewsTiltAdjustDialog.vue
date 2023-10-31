@@ -38,7 +38,7 @@
               </v-chip>
               <v-chip
                 v-else
-                :color="getScrewAdjustMinutes(screw.adjust) < 6 ? 'success' : 'error'"
+                :color="screw.adjustMinutes < 6 ? 'success' : 'error'"
                 small
                 label
               >
@@ -46,7 +46,7 @@
                   left
                   small
                 >
-                  {{ screw.adjust === '00:00' ? '$success' : screw.sign === 'CW' ? '$zRotateClockwise' : '$zRotateCounterclockwise' }}
+                  {{ screw.adjustMinutes === 0 ? '$success' : screw.sign === 'CW' ? '$zRotateClockwise' : '$zRotateCounterclockwise' }}
                 </v-icon>
                 {{ screw.adjust }}
               </v-chip>
@@ -91,14 +91,6 @@ export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadM
 
   destroyed () {
     this.$store.commit('printer/setClearScrewsTiltAdjust')
-  }
-
-  getScrewAdjustMinutes (value: string) {
-    const [hours, minutes] = value
-      .split(':')
-      .map(Number)
-
-    return hours * 60 + minutes
   }
 }
 </script>

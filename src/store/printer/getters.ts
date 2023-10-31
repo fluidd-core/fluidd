@@ -767,12 +767,17 @@ export const getters: GetterTree<PrinterState, RootState> = {
       const coords = config[key]
       const name = config[`${key}_name`]
       const prettyName = Vue.$filters.startCase(name || i18n.t('app.general.label.screw_number', { index: index + 1 }))
+      const [hours, minutes] = result.adjust
+        .split(':')
+        .map(Number)
+      const adjustMinutes = hours * 60 + minutes
 
       screws.push({
         key,
         name,
         prettyName,
         ...result,
+        adjustMinutes,
         x: coords[0],
         y: coords[1]
       })
