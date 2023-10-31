@@ -395,14 +395,12 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   @Watch('hasScrewsTiltAdjustResults')
   onHasScrewsTiltAdjustResults (value: boolean) {
-    if (
+    this.screwsTiltAdjustDialogOpen = (
       value &&
       this.showScrewsTiltAdjustDialogAutomatically &&
       this.klippyReady &&
       !this.printerPrinting
-    ) {
-      this.screwsTiltAdjustDialogOpen = true
-    }
+    )
   }
 
   async toggleForceMove () {
