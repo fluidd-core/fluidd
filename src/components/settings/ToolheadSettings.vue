@@ -281,6 +281,19 @@
 
       <v-divider />
 
+      <app-setting
+        :title="$t('app.setting.label.show_screws_tilt_adjust_dialog_automatically')"
+        :sub-title="$t('app.setting.tooltip.show_screws_tilt_adjust_dialog_automatically')"
+      >
+        <v-switch
+          v-model="showScrewsTiltAdjustDialogAutomatically"
+          hide-details
+          class="mt-0 mb-4"
+        />
+      </app-setting>
+
+      <v-divider />
+
       <template v-if="printerSupportsForceMove">
         <app-setting :title="$t('app.setting.label.force_move_toggle_warning')">
           <v-switch
@@ -554,6 +567,18 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
   set showBedScrewsAdjustDialogAutomatically (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.general.showBedScrewsAdjustDialogAutomatically',
+      value,
+      server: true
+    })
+  }
+
+  get showScrewsTiltAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
+
+  set showScrewsTiltAdjustDialogAutomatically (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.general.showScrewsTiltAdjustDialogAutomatically',
       value,
       server: true
     })

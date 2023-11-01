@@ -19,7 +19,7 @@
     </template>
 
     <template v-if="bedMeshProfiles.length > 0">
-      <v-simple-table class="no-hover">
+      <v-simple-table>
         <thead>
           <tr>
             <th>{{ $t('app.general.label.name') }}</th>

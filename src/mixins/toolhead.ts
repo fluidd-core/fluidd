@@ -74,4 +74,8 @@ export default class ToolheadMixin extends Vue {
   get isBedScrewsAdjustActive (): boolean {
     return this.$store.getters['printer/getIsBedScrewsAdjustActive'] as boolean
   }
+
+  get hasScrewsTiltAdjustResults (): boolean {
+    return this.$store.getters['printer/getHasScrewsTiltAdjustResults'] as boolean
+  }
 }

@@ -159,6 +159,34 @@ export interface Probe {
 
 export type ProbeName = 'bltouch' | 'smart_effector' | 'probe'
 
+export interface BedScrews {
+  key: string;
+  name: string;
+  prettyName: string;
+  fine: number;
+  x: number;
+  y: number;
+}
+
+export interface ScrewsTiltAdjust {
+  error: boolean;
+  max_deviation?: number | null;
+  screws: ScrewsTiltAdjustScrew[]
+}
+
+export interface ScrewsTiltAdjustScrew {
+  key: string;
+  name: string;
+  prettyName: string;
+  adjustMinutes: number;
+  x: number;
+  y: number;
+  z: number;
+  sign: 'CW' | 'CCW';
+  adjust: string;
+  is_base: boolean;
+}
+
 // printer.mcu[num]
 export interface KlipperMcu {
   last_stats: KlipperMcuStats;

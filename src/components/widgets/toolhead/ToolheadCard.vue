@@ -140,6 +140,11 @@
       v-if="bedScrewsAdjustDialogOpen"
       v-model="bedScrewsAdjustDialogOpen"
     />
+
+    <screws-tilt-adjust-dialog
+      v-if="screwsTiltAdjustDialogOpen"
+      v-model="screwsTiltAdjustDialogOpen"
+    />
   </collapsable-card>
 </template>
 
@@ -166,6 +171,7 @@ type Tool = {
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   manualProbeDialogOpen = false
   bedScrewsAdjustDialogOpen = false
+  screwsTiltAdjustDialogOpen = false
 
   @Prop({ type: Boolean, default: false })
   readonly menuCollapsed!: boolean
@@ -355,24 +361,46 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
+  get showScrewsTiltAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
+
   get forceMove () {
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   @Watch('isManualProbeActive')
   onIsManualProbeActive (value: boolean) {
-    if (value && this.showManualProbeDialogAutomatically &&
-      this.klippyReady && !this.printerPrinting) {
+    if (
+      value &&
+      this.showManualProbeDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    ) {
       this.manualProbeDialogOpen = true
     }
   }
 
   @Watch('isBedScrewsAdjustActive')
   onIsBedScrewsAdjustActive (value: boolean) {
-    if (value && this.showBedScrewsAdjustDialogAutomatically &&
-      this.klippyReady && !this.printerPrinting) {
+    if (
+      value &&
+      this.showBedScrewsAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    ) {
       this.bedScrewsAdjustDialogOpen = true
     }
+  }
+
+  @Watch('hasScrewsTiltAdjustResults')
+  onHasScrewsTiltAdjustResults (value: boolean) {
+    this.screwsTiltAdjustDialogOpen = (
+      value &&
+      this.showScrewsTiltAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    )
   }
 
   async toggleForceMove () {
