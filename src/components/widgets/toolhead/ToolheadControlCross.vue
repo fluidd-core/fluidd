@@ -169,6 +169,7 @@
           v-model.number="toolheadMoveLength"
           mandatory
           dense
+          class="elevation-2"
         >
           <app-btn
             v-for="(distance, index) of toolheadMoveDistances"
@@ -176,7 +177,6 @@
             small
             min-width="40"
             :value="distance"
-            :elevation="2"
             :disabled="!klippyReady"
           >
             {{ distance }}

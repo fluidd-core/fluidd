@@ -2,7 +2,9 @@
   <v-item-group
     class="app-btn-group"
     :class="{
-      'app-btn-group-vertical': vertical
+      'app-btn-group--vertical': vertical,
+      'app-btn-group--divided': divided,
+      [`elevation-${elevation ?? 2}`]: divided || elevation
     }"
   >
     <slot />
@@ -16,23 +18,39 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 export default class AppBtnGroup extends Vue {
   @Prop({ type: Boolean, default: false })
   readonly vertical!: boolean
+
+  @Prop({ type: Boolean, default: false })
+  readonly divided!: boolean
+
+  @Prop({ type: Number, required: false })
+  readonly elevation?: boolean
 }
 </script>
 
 <style lang="scss" scoped>
   @import 'vuetify/src/styles/styles.sass';
 
-  .app-btn-group {
-    display: flex;
-    white-space: nowrap;
+  @include theme(app-btn-group) using ($material) {
+    &.app-btn-group--divided > :deep(.v-btn) {
+      border-color: map-get($material, 'dividers') !important;
+    }
+  }
 
-    &:not(.app-btn-group-vertical) {
+  .app-btn-group {
+    display: inline-flex;
+    vertical-align: middle;
+    white-space: nowrap;
+    border-radius: $border-radius-root;
+
+    &.app-btn-group--divided {
+      & > :deep(.v-btn) {
+        box-shadow: none;
+      }
+    }
+
+    &:not(.app-btn-group--vertical) {
       & > :deep(.v-btn) {
         border-radius: 0;
-
-        &:not(:last-child) {
-          margin-right: 2px;
-        }
 
         &:first-child {
           border-top-left-radius: $border-radius-root;
@@ -43,25 +61,40 @@ export default class AppBtnGroup extends Vue {
           border-bottom-right-radius: $border-radius-root;
         }
       }
+
+      &.app-btn-group--divided > :deep(.v-btn):not(:last-child) {
+        border-right-width: thin;
+        border-right-style: solid;
+      }
+
+      &:not(.app-btn-group--divided) > :deep(.v-btn):not(:last-child) {
+        margin-right: 2px;
+      }
     }
 
-    &.app-btn-group-vertical {
+    &.app-btn-group--vertical {
       flex-direction: column;
 
       & > :deep(.v-btn) {
         border-radius: 0;
         align-self: center;
 
-        &:not(:last-child) {
-          margin-bottom: 2px;
-        }
-
         &:first-child {
-          border-radius: $border-radius-root $border-radius-root 0 0;
+          border-top-left-radius: $border-radius-root;
+          border-top-right-radius: $border-radius-root;
         }
         &:last-child {
-          border-radius: 0 0 $border-radius-root $border-radius-root;
+          border-bottom-left-radius: $border-radius-root;
+          border-bottom-right-radius: $border-radius-root;
         }
+
+      &.app-btn-group--divided > :deep(.v-btn):not(:last-child) {
+        border-bottom-width: thin;
+        border-bottom-style: solid;
+      }}
+
+      &:not(.app-btn-group--divided) > :deep(.v-btn):not(:last-child) {
+        margin-bottom: 2px;
       }
     }
   }

@@ -48,7 +48,7 @@
           cols="3"
           offset="1"
         >
-          <app-btn-group>
+          <app-btn-group class="d-flex">
             <app-btn
               :disabled="!klippyReady || printerPrinting"
               color="primary"
@@ -69,7 +69,7 @@
           cols="3"
           offset="4"
         >
-          <app-btn-group>
+          <app-btn-group class="d-flex">
             <app-btn
               :disabled="!klippyReady || printerPrinting"
               color="primary"

@@ -1,11 +1,13 @@
 <template>
-  <app-btn-group class="d-inline">
+  <app-btn-group
+    divided
+    class="ms-1 my-1"
+  >
     <app-btn
       v-if="!printerPaused"
       :loading="hasWait($waits.onPrintPause)"
       :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
       small
-      class="ml-1"
       @click="$emit('pause')"
     >
       <v-icon
@@ -22,7 +24,6 @@
       :loading="hasWait($waits.onPrintResume)"
       :disabled="hasWait([$waits.onPrintCancel, $waits.onPrintResume, $waits.onPrintPause])"
       small
-      class="ml-1"
       @click="$emit('resume')"
     >
       <v-icon
@@ -44,7 +45,7 @@
         <app-btn
           v-bind="attrs"
           small
-          class="px-0 mr-1"
+          class="px-0"
           min-width="24"
           v-on="on"
         >

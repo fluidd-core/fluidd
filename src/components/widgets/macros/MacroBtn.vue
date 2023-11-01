@@ -1,5 +1,5 @@
 <template>
-  <app-btn-group>
+  <app-btn-group divided>
     <app-btn
       :disabled="(macro.disabledWhilePrinting && printerPrinting) || !klippyReady"
       :style="borderStyle"
