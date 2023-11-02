@@ -1,7 +1,7 @@
 <template>
   <v-row v-if="toolChangeCommands.length > 0">
     <v-col>
-      <app-btn-group>
+      <app-btn-group class="d-flex">
         <v-tooltip
           v-for="(macro, index) of toolChangeCommands"
           :key="index"
