@@ -1,6 +1,6 @@
 # Fluidd
 
-Fluidd is a free and open-source Klipper web interface for managing your 3d printer.
+Fluidd is a free and open-source Klipper web interface for managing your 3D printer.
 
 ![Fluidd](/docs/assets/images/preview_sliced.png "Fluidd")
 
