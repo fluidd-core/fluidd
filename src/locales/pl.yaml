@@ -10,6 +10,7 @@ app:
       remove_profile: Usuń profil %{name}
       scale: Skala barw
       wireframe: Szkielet
+      base: baza
     msg:
       hint: Zapisując profil jako inny niż %{name}, możesz wybrać usunięcie profilu
         %{name}
@@ -293,6 +294,7 @@ app:
       quad_gantry_level: QGL
       refresh_metadata: Odśwież metadane
       multiply: Powiel
+      retry: Ponów
     title:
       home: Ekran główny
       camera: Kamera | Kamery
@@ -459,6 +461,7 @@ app:
     title:
       bed_screws_adjust: Regulacja śrub stołu
       manual_probe: Sonda ręczna
+      screws_tilt_adjust: Regulacja pochylenia śrubami
     label:
       stats_active_extruder: <span class="secondary--text">Aktywna konfiguracja ekstrudera
         jest ustawiona na</span> %{filamentDiameter} mm średnicy filamentu <span class="secondary--text">i</span>
@@ -596,6 +599,8 @@ app:
       show_chart: Pokaż wykres
       sections_to_ignore_pending_configuration_changes: Sekcje do ignorowania oczekujących
         zmian konfiguracji
+      show_screws_tilt_adjust_dialog_automatically: Automatycznie wyświetl okno "Regulacja
+        pochylenia śrubami"
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
@@ -621,6 +626,8 @@ app:
         gdy uruchomione jest ręczne sondowanie
       show_bed_screws_adjust_dialog_automatically: Automatycznie wyświetla pomocnicze
         okno, gdy uruchomione jest narzędzie BED_SCREWS_ADJUST
+      show_screws_tilt_adjust_dialog_automatically: Automatycznie wyświetla okno pomocnicze,
+        jeśli uruchomione jest narzędzie SCREWS_TILT_CALCULATE
     camera_rotate_options:
       '90': 90°
       '180': 180°
