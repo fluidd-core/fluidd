@@ -149,8 +149,8 @@ import isWebAssemblySupported from '@/util/is-web-assembly-supported'
   }
 })
 export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string
@@ -164,11 +164,11 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly contents!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly readonly!: boolean
+  @Prop({ type: Boolean })
+  readonly readonly?: boolean
 
   @Ref('editor')
   readonly editor?: FileEditor
@@ -230,18 +230,17 @@ export default class FileEditorDialog extends Mixins(StateMixin, BrowserMixin) {
   }
 
   async emitClose () {
-    if (this.showDirtyEditorWarning) {
-      const result = await this.$confirm(
+    const result = (
+      !this.showDirtyEditorWarning ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.unsaved_changes'),
         { title: this.$tc('app.general.label.unsaved_changes'), color: 'card-heading', icon: '$error' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.open = false
     }
-
-    this.open = false
   }
 
   handleBeforeUnload (event: Event) {

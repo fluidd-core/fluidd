@@ -129,8 +129,8 @@ import BrowserMixin from '@/mixins/browser'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
-  @VModel({ type: Boolean, default: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']

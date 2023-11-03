@@ -106,8 +106,8 @@ import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
 
 @Component({})
 export default class MacroMoveDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly macro!: Macro

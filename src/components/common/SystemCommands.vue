@@ -167,18 +167,20 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
   }
 
   async checkDialog (executableFunction: any, service: ServiceInfo, action: string) {
-    if (this.printerPrinting || ['restart', 'stop'].includes(action)) {
-      const res = await this.$confirm(
+    const result = (
+      !(
+        this.printerPrinting ||
+        ['restart', 'stop'].includes(action)
+      ) ||
+      await this.$confirm(
         this.$t(
           `app.general.simple_form.msg.confirm_service_${action}`,
           { name: service.name })?.toString(),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-      if (res) {
-        this.$emit('click')
-        await executableFunction(service)
-      }
-    } else {
+    )
+
+    if (result) {
       this.$emit('click')
       await executableFunction(service)
     }
@@ -224,14 +226,16 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
 
   async togglePowerDevice (device: Device, wait?: string) {
     const confirmOnPowerDeviceChange = this.$store.state.config.uiSettings.general.confirmOnPowerDeviceChange
-    let res: boolean | undefined = true
-    if (confirmOnPowerDeviceChange) {
-      res = await this.$confirm(
+
+    const result = (
+      !confirmOnPowerDeviceChange ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_power_device_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-    }
-    if (res) {
+    )
+
+    if (result) {
       const state = (device.status === 'on') ? 'off' : 'on'
       SocketActions.machineDevicePowerToggle(device.device, state, wait)
     }

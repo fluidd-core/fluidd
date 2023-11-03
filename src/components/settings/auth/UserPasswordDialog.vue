@@ -65,8 +65,8 @@ import { EventBus } from '@/eventBus'
 
 @Component({})
 export default class UserPasswordDialog extends Vue {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   currentPassword = ''
   password = ''

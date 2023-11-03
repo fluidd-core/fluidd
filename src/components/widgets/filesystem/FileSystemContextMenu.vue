@@ -197,8 +197,8 @@ import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
  */
 @Component({})
 export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string

@@ -181,12 +181,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   @Prop({ type: [String, Array], required: true })
   readonly roots!: string | string[]
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: true })
   readonly name!: string
 
   // If dense, hide the meta and reduce the overall size.
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
   // Constrain height
   @Prop({ type: [Number, String] })
@@ -197,8 +197,8 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
   readonly maxHeight!: number | string
 
   // Allow bulk-actions
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
   // Ready. True once the available roots have loaded from moonraker.
   ready = false
@@ -835,12 +835,12 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       ? file.filter(item => item.name !== '..')
       : [file]
 
-    const res = await this.$confirm(
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_delete', items.length),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
-    if (res) {
+    if (result) {
       this.filePreviewState.open = false
 
       if (this.currentRoot === 'timelapse') {

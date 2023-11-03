@@ -142,7 +142,7 @@ const routeGuard = (to: any) => {
 })
 export default class MacroCategorySettings extends Vue {
   search = ''
-  categoryId: string | undefined = undefined
+  categoryId?: string = undefined
 
   dialogState: any = {
     open: false,

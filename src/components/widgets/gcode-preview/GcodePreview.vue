@@ -308,8 +308,8 @@ import type { AppFile } from '@/store/files/types'
   }
 })
 export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
-  @Prop({ type: Boolean, default: true })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Prop({ type: String })
   readonly width!: string

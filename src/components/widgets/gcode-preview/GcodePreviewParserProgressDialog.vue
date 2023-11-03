@@ -48,8 +48,8 @@ import type { AppFile } from '@/store/files/types'
 
 @Component({})
 export default class GcodePreviewParserProgressDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Number })
   readonly progress!: number

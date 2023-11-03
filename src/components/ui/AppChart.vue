@@ -28,7 +28,7 @@ export default class AppChart extends Vue {
   @Prop({ type: Array, required: true })
   readonly data!: any
 
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Object, default: () => {} })
   readonly options!: any
 
   @Prop({ type: String, default: '100%' })

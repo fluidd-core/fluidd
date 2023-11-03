@@ -31,14 +31,14 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class AppUpDownBtnGroup extends Vue {
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<number>, required: true })
   readonly values!: number[]
 
   @Prop({ type: String })
   readonly color?: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   get valuesDown (): number[] {
     return [...this.values]

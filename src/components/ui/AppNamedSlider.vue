@@ -92,12 +92,13 @@
 
 <script lang="ts">
 import { Component, Prop, Watch, Ref, VModel, Mixins } from 'vue-property-decorator'
+import type { InputValidationRules } from 'vuetify'
 import type { VForm } from '@/types'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({})
 export default class AppNamedSlider extends Mixins(BrowserMixin) {
-  @VModel({ type: Number })
+  @VModel({ type: Number, required: true })
     inputValue!: number
 
   @Prop({ type: Number })
@@ -106,17 +107,17 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: Array })
-  readonly rules?: []
+  @Prop({ type: Array<InputValidationRules> })
+  readonly rules?: InputValidationRules[]
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly locked!: boolean
+  @Prop({ type: Boolean })
+  readonly locked?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   @Prop({ type: Number, default: 0 })
   readonly min!: number
@@ -124,8 +125,8 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @Prop({ type: Number, default: 100 })
   readonly max!: number
 
-  @Prop({ type: Boolean, default: false })
-  readonly overridable!: boolean
+  @Prop({ type: Boolean })
+  readonly overridable?: boolean
 
   @Prop({ type: Number, default: 1 })
   readonly step!: number
@@ -136,8 +137,8 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
   @Prop({ type: String })
   readonly suffix?: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly fullWidth!: boolean
+  @Prop({ type: Boolean })
+  readonly fullWidth?: boolean
 
   @Ref('form')
   readonly form!: VForm
@@ -179,7 +180,7 @@ export default class AppNamedSlider extends Mixins(BrowserMixin) {
 
   currentValue = ''
   sliderValue = 0
-  internalLocked = false
+  internalLocked? = false
   internalMax = 0
   overridden = false
   hasFocus = false

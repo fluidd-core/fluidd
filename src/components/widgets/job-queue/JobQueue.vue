@@ -89,11 +89,11 @@ export default class JobQueue extends Vue {
   selected: QueuedJob[] = []
   overlay = false
 
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
   get headers (): AppTableHeader[] {
     const headers = [
@@ -138,12 +138,12 @@ export default class JobQueue extends Vue {
   }
 
   async handleRemoveAll () {
-    const res = await this.$confirm(
+    const result = await this.$confirm(
       this.$tc('app.job_queue.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
-    if (res) {
+    if (result) {
       SocketActions.serverJobQueueDeleteJobs(['all'])
     }
   }

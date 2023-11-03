@@ -38,8 +38,8 @@ import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class RolloverLogsDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   application = ''
 

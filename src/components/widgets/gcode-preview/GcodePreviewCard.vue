@@ -2,8 +2,8 @@
   <collapsable-card
     :title="$tc('app.general.title.gcode_preview')"
     icon="$cubeScan"
-    :draggable="!fullScreen"
-    :collapsable="!fullScreen"
+    :draggable="!fullscreen"
+    :collapsable="!fullscreen"
     layout-path="dashboard.gcode-preview-card"
   >
     <template #menu>
@@ -18,7 +18,7 @@
         </app-btn>
 
         <app-btn
-          v-if="!fullScreen"
+          v-if="!fullscreen"
           color=""
           fab
           x-small
@@ -157,11 +157,11 @@ import type { MinMax } from '@/store/gcodePreview/types'
   }
 })
 export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly fullScreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   @Ref('preview')
   readonly preview!: GcodePreview
@@ -379,12 +379,12 @@ export default class GcodePreviewCard extends Mixins(StateMixin, FilesMixin, Bro
   }
 
   async cancelObject (id: string) {
-    const res = await this.$confirm(
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_exclude_object'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
 
-    if (res) {
+    if (result) {
       const reqId = id.toUpperCase().replace(/\s/g, '_')
 
       this.sendGcode(`EXCLUDE_OBJECT NAME=${reqId}`)

@@ -30,7 +30,7 @@ import type { FlashMessageTypes } from '@/types'
 @Component({})
 export default class FlashMessage extends Vue {
   @VModel({ type: Boolean })
-    open!: boolean
+    open?: boolean
 
   @Prop({ type: String, default: 'dark' })
   readonly type!: FlashMessageTypes

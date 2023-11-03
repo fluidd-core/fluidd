@@ -3,12 +3,12 @@
     :title="$t('app.general.title.bedmesh')"
     :lazy="false"
     icon="$bedMesh"
-    :draggable="!fullScreen"
-    :collapsable="!fullScreen"
+    :draggable="!fullscreen"
+    :collapsable="!fullscreen"
     layout-path="dashboard.bed-mesh-card"
   >
     <template
-      v-if="!fullScreen"
+      v-if="!fullscreen"
       #menu
     >
       <app-btn
@@ -61,8 +61,8 @@ import type { AppMeshes } from '@/store/mesh/types'
   }
 })
 export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly fullScreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   get options () {
     const map_scale = this.scale / 2
