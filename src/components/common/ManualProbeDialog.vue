@@ -137,8 +137,8 @@ import ToolheadMixin from '@/mixins/toolhead'
 
 @Component({})
 export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get offsets () {
     return [

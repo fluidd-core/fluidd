@@ -131,8 +131,8 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
   readonly root!: string
 
   // If the controls are disabled or not.
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Ref('uploadFile')
   readonly uploadFile!: HTMLInputElement

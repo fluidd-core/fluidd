@@ -7,8 +7,8 @@
     content-classes="flex-grow-1 flow-shrink-0"
     menu-breakpoint="none"
     menu-icon="$cog"
-    :draggable="!fullScreen"
-    :collapsable="!fullScreen"
+    :draggable="!fullscreen"
+    :collapsable="!fullscreen"
     layout-path="dashboard.console-card"
     @collapsed="handleCollapseChange"
   >
@@ -26,7 +26,7 @@
       </app-btn>
 
       <app-btn
-        v-if="!fullScreen"
+        v-if="!fullscreen"
         color=""
         fab
         x-small
@@ -130,7 +130,7 @@
       ref="console"
       :scrolling-paused.sync="scrollingPaused"
       :items="items"
-      :height="fullScreen ? (height - 236) : 300"
+      :height="fullscreen ? (height - 236) : 300"
     />
   </collapsable-card>
 </template>
@@ -161,8 +161,8 @@ export default class ConsoleCard extends Vue {
     this.height = window.innerHeight
   }
 
-  @Prop({ type: Boolean, default: false })
-  readonly fullScreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   @Ref('console')
   readonly consoleElement!: Console

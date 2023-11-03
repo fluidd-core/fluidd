@@ -49,8 +49,8 @@ import { SocketActions } from '@/api/socketActions'
   }
 })
 export default class PrinterHistoryCard extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
   handleRemoveAll () {
     this.$confirm(

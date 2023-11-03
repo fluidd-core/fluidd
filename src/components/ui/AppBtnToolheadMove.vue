@@ -35,23 +35,20 @@ export default class AppBtnToolheadMove extends Vue {
   @Prop({ type: String, required: true })
   readonly icon!: string
 
-  @Prop()
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Prop({ type: String, default: 'btncolor' })
   readonly color!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
-
-  @Prop({ type: String, default: '' })
-  readonly badge!: string
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   @Prop({ type: String, default: '' })
   readonly tooltip!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly smallIcon!: boolean
+  @Prop({ type: Boolean })
+  readonly smallIcon?: boolean
 
   get hasDefaultSlot () {
     return !!this.$slots.default || !!this.$scopedSlots.default

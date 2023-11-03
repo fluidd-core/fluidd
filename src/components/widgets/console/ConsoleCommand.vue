@@ -52,8 +52,8 @@ export default class ConsoleCommand extends Vue {
   @Ref('input')
   readonly input!: VInput
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Watch('value')
   onValueChange (val: string) {

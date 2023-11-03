@@ -173,8 +173,8 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   bedScrewsAdjustDialogOpen = false
   screwsTiltAdjustDialogOpen = false
 
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
@@ -404,22 +404,22 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   async toggleForceMove () {
-    if (!this.forceMove && this.$store.state.config.uiSettings.general.forceMoveToggleWarning) {
-      const result = await this.$confirm(
+    const result = (
+      this.forceMove ||
+      !this.$store.state.config.uiSettings.general.forceMoveToggleWarning ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.$store.dispatch('config/saveByPath', {
+        path: 'uiSettings.toolhead.forceMove',
+        value: !this.forceMove,
+        server: false
+      })
     }
-
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.toolhead.forceMove',
-      value: !this.forceMove,
-      server: false
-    })
   }
 }
 </script>

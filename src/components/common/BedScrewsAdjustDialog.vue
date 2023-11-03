@@ -95,8 +95,8 @@ import type { BedScrews } from '@/store/printer/types'
 
 @Component({})
 export default class BedScrewsAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get bedScrews (): BedScrews[] {
     return this.$store.getters['printer/getBedScrews'] as BedScrews[]

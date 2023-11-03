@@ -35,8 +35,8 @@ import { Component, Prop, Ref, Vue, Watch } from 'vue-property-decorator'
 
 @Component({})
 export default class AppFocusableContainer extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Ref('input-slot')
   readonly inputSlot!: HTMLDivElement

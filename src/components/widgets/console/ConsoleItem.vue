@@ -21,7 +21,7 @@ import type { ConsoleEntry } from '@/store/console/types'
 
 @Component({})
 export default class ConsoleItem extends Vue {
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Object, default: () => {} })
   readonly value!: ConsoleEntry
 
   get knownCommands () {

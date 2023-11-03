@@ -67,8 +67,8 @@ export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
   readonly camera!: CameraConfig
 
-  @Prop({ type: Boolean, required: false, default: false })
-  readonly fullscreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   @Prop({ type: String })
   readonly crossorigin?: 'anonymous' | 'use-credentials' | ''

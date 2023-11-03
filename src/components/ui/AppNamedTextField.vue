@@ -47,11 +47,12 @@
 <script lang="ts">
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import type { InputValidationRules } from 'vuetify'
 
 @Component({})
 export default class AppNamedTextField extends Mixins(StateMixin) {
   @VModel({ })
-    inputValue?: any
+    inputValue?: unknown
 
   @Prop({ type: String })
   readonly type?: string
@@ -59,17 +60,17 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly label!: string
 
-  @Prop({ type: [String, Number], required: false })
-  readonly resetValue!: string | number
+  @Prop({ })
+  readonly resetValue?: unknown
 
-  @Prop({ type: Boolean, default: false })
-  readonly readonly!: boolean
+  @Prop({ type: Boolean })
+  readonly readonly?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   @Prop({ type: String })
   readonly prefix!: string
@@ -77,8 +78,8 @@ export default class AppNamedTextField extends Mixins(StateMixin) {
   @Prop({ type: String })
   readonly suffix!: string
 
-  @Prop({ type: Array, default: () => { return [] } })
-  readonly rules!: []
+  @Prop({ type: Array<InputValidationRules> })
+  readonly rules?: InputValidationRules[]
 
   handleReset () {
     if (this.resetValue !== undefined) {
