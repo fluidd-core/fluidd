@@ -51,7 +51,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, Watch, Ref } from 'vue-property-decorator'
+import { Component, Prop, Mixins, Watch, Ref, PropSync } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ConsoleCommand from './ConsoleCommand.vue'
 import ConsoleItem from './ConsoleItem.vue'
@@ -66,7 +66,7 @@ import type { ConsoleEntry } from '@/store/console/types'
   }
 })
 export default class Console extends Mixins(StateMixin) {
-  @Prop({ type: Array, default: [] })
+  @Prop({ type: Array<ConsoleEntry>, default: () => [] })
   readonly items!: ConsoleEntry[]
 
   @Prop({ type: String, default: 'id' })
@@ -75,8 +75,11 @@ export default class Console extends Mixins(StateMixin) {
   @Prop({ type: Number, default: 250 })
   readonly height!: number
 
-  @Prop({ type: Boolean, default: false })
-  readonly readonly!: boolean
+  @Prop({ type: Boolean })
+  readonly readonly?: boolean
+
+  @PropSync('scrollingPaused', { type: Boolean })
+    scrollingPausedModel?: boolean
 
   @Ref('scroller')
   readonly dynamicScroller!: DinamicScroller
@@ -138,7 +141,7 @@ export default class Console extends Mixins(StateMixin) {
 
       if (this._pauseScroll !== pauseScroll) {
         this._pauseScroll = pauseScroll
-        this.$emit('update:scrollingPaused', pauseScroll)
+        this.scrollingPausedModel = pauseScroll
       }
     })
   }

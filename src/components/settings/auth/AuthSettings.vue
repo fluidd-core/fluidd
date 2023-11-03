@@ -108,7 +108,7 @@ import ApiKeyDialog from './ApiKeyDialog.vue'
 })
 export default class AuthSettings extends Vue {
   search = ''
-  categoryId: string | undefined = undefined
+  categoryId?: string = undefined
 
   userDialogState: any = {
     open: false,

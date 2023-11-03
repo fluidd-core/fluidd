@@ -70,16 +70,16 @@ type QueueJobWithKey = QueuedJob & {
 
 @Component({})
 export default class JobQueueBrowser extends Mixins(StateMixin) {
-  @VModel({ type: Array, default: [] })
-    selected!: any[]
+  @VModel({ type: Array<QueuedJob>, default: () => [] })
+    selected!: QueuedJob[]
 
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<AppTableHeader>, required: true })
   readonly headers!: AppTableHeader[]
 
   get jobs () {

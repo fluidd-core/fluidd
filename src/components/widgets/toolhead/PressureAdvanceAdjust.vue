@@ -49,7 +49,7 @@ import type { ExtruderStepper } from '@/store/printer/types'
 
 @Component({})
 export default class PressureAdvanceAdjust extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
-  @Prop({ type: Object, required: false })
+  @Prop({ type: Object })
   readonly extruderStepper?: ExtruderStepper
 
   get selectedExtruderStepper () {

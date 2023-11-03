@@ -49,7 +49,7 @@ export default class FileSystemToolbar extends Vue {
   @VModel({ type: Number, required: true })
     thumbnailSize!: number
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 }
 </script>

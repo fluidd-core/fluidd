@@ -23,7 +23,7 @@
       cols="12"
       lg="4"
     >
-      <job-queue-card full-screen />
+      <job-queue-card fullscreen />
     </v-col>
   </v-row>
 </template>

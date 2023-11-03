@@ -25,13 +25,13 @@ import BrowserMixin from '@/mixins/browser'
 
 @Component({})
 export default class EChartsBedMesh extends Mixins(BrowserMixin) {
-  @Prop({ type: Array, required: true, default: {} })
+  @Prop({ type: Array, required: true })
   readonly data!: []
 
-  @Prop({ type: Array, required: false, default: () => [] })
+  @Prop({ type: Array<GraphicComponentOption>, default: () => [] })
   readonly graphics!: GraphicComponentOption[]
 
-  @Prop({ type: Object, default: {} })
+  @Prop({ type: Object, default: () => {} })
   readonly options!: any
 
   @Prop({ type: String, default: '100%' })

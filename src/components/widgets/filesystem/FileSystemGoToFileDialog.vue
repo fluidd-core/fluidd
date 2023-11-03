@@ -59,8 +59,8 @@ type File = MoonrakerRootFile &{
 
 @Component({})
 export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string

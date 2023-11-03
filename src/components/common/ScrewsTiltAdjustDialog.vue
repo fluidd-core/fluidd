@@ -77,8 +77,8 @@ import type { ScrewsTiltAdjust } from '@/store/printer/types'
 
 @Component({})
 export default class ScrewsTiltAdjustDialog extends Mixins(StateMixin, ToolheadMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get screwsTiltAdjust (): ScrewsTiltAdjust {
     return this.$store.getters['printer/getScrewsTiltAdjust'] as ScrewsTiltAdjust

@@ -40,8 +40,8 @@ import type { QueuedJob } from '@/store/jobQueue/types'
 
 @Component({})
 export default class JobQueueContextMenu extends Vue {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Number, required: true })
   readonly positionX!: number

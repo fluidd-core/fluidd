@@ -7,7 +7,7 @@ type ElementWithVueApp = Element & {
 const elementHasVueApp = (element: Element): element is ElementWithVueApp => '__vue__' in element
 
 const getVueApp = () => {
-  const app = document.querySelector('#app')
+  const app = document.getElementById('app')
 
   if (!app || !elementHasVueApp(app)) {
     throw new Error('Vue app not found')

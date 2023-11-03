@@ -17,7 +17,7 @@ export default class StatusCard extends Vue {
   error: any = null
   result: any = null
 
-  @Prop({ type: Promise, required: false })
+  @Prop({ type: Promise })
   readonly promise?: Promise<unknown> | null
 
   @Watch('promise')
