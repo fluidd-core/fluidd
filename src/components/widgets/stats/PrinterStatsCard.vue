@@ -172,16 +172,15 @@ export default class PrinterStatsCard extends Vue {
     return this.$store.getters['server/componentSupport']('history')
   }
 
-  handleResetStats () {
-    this.$confirm(
+  async handleResetStats () {
+    const result = await this.$confirm(
       this.$tc('app.history.msg.confirm_stats'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          SocketActions.serverHistoryResetTotals()
-        }
-      })
+
+    if (result) {
+      SocketActions.serverHistoryResetTotals()
+    }
   }
 }
 </script>

@@ -3,8 +3,10 @@ import { EventBus } from '@/eventBus'
 import { consola } from 'consola'
 import axios, { AxiosError, type InternalAxiosRequestConfig, type AxiosResponse } from 'axios'
 import { Globals } from '@/globals'
+import type { Store } from 'vuex'
+import type { RootState } from '@/store/types'
 
-const createHttpClient = (store: any) => {
+const createHttpClient = (store: Store<RootState>) => {
   // Create a base instance with sane defaults.
   const httpClient = axios.create({
     withAuth: true,
@@ -138,11 +140,19 @@ declare module 'axios' {
 }
 
 export const HttpClientPlugin = {
-  install (Vue: typeof _Vue, options?: any) {
+  install (Vue: typeof _Vue, options?: HttpClientPluginOptions) {
+    if (!options?.store) {
+      throw new Error('store is required')
+    }
+
     const httpClient = createHttpClient(options.store)
     Vue.prototype.$httpClient = httpClient
     Vue.$httpClient = httpClient
   }
+}
+
+interface HttpClientPluginOptions {
+  store?: Store<RootState>
 }
 
 declare module 'vue/types/vue' {

@@ -166,7 +166,7 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     return this.systemInfo?.virtualization?.virt_type !== 'container'
   }
 
-  async checkDialog (executableFunction: any, service: ServiceInfo, action: string) {
+  async checkDialog (executableFunction: (service: ServiceInfo) => Promise<unknown>, service: ServiceInfo, action: string) {
     const result = (
       !(
         this.printerPrinting ||
@@ -198,30 +198,28 @@ export default class SystemCommands extends Mixins(StateMixin, ServicesMixin) {
     await this.serviceStopByName(service.name)
   }
 
-  handleHostReboot () {
-    this.$confirm(
+  async handleHostReboot () {
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_reboot_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$emit('click')
-          this.hostReboot()
-        }
-      })
+
+    if (result) {
+      this.$emit('click')
+      this.hostReboot()
+    }
   }
 
-  handleHostShutdown () {
-    this.$confirm(
+  async handleHostShutdown () {
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm_shutdown_host'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$emit('click')
-          this.hostShutdown()
-        }
-      })
+
+    if (result) {
+      this.$emit('click')
+      this.hostShutdown()
+    }
   }
 
   async togglePowerDevice (device: Device, wait?: string) {

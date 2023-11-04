@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
+import type { BBox, GcodePreviewState, ViewerOptions, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
 import type { RootState } from '../types'
 import type { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
@@ -17,8 +17,8 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return state.file
   },
 
-  getViewerOption: (state) => (key: string): any => {
-    return (state.viewer as any)[key]
+  getViewerOption: (state) => (key: keyof ViewerOptions): boolean => {
+    return state.viewer[key]
   },
 
   getParserProgress: (state): number => {

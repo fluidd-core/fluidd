@@ -94,7 +94,7 @@ export default class ConsoleSettings extends Mixins(StateMixin) {
   }
 
   handleEditFilterDialog (filter: ConsoleFilter | null) {
-    const filterCopy = filter
+    const filterCopy: ConsoleFilter = filter
       ? { ...filter }
       : {
           id: '',

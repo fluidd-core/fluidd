@@ -32,7 +32,7 @@ export default class EChartsBedMesh extends Mixins(BrowserMixin) {
   readonly graphics!: GraphicComponentOption[]
 
   @Prop({ type: Object, default: () => {} })
-  readonly options!: any
+  readonly options!: Record<string, unknown>
 
   @Prop({ type: String, default: '100%' })
   readonly height!: string

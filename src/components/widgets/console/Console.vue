@@ -115,7 +115,7 @@ export default class Console extends Mixins(StateMixin) {
   }
 
   @Watch('items', { immediate: true })
-  onItemsChange (_: any, oldItems: any[]) {
+  onItemsChange (_: unknown, oldItems: unknown[]) {
     if (this.dynamicScroller) {
       const el = this.dynamicScroller.$el
 

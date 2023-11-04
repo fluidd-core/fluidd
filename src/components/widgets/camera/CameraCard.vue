@@ -44,7 +44,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import CameraItem from '@/components/widgets/camera/CameraItem.vue'
 import CameraMenu from './CameraMenu.vue'
 import StateMixin from '@/mixins/state'
-// import type { CameraConfig } from '@/store/cameras/types'
+import type { CameraConfig } from '@/store/cameras/types'
 
 @Component({
   components: {
@@ -53,11 +53,6 @@ import StateMixin from '@/mixins/state'
   }
 })
 export default class CameraCard extends Mixins(StateMixin) {
-  dialogState: any = {
-    open: false,
-    camera: null
-  }
-
   collapsed = false
 
   get cols () {
@@ -66,8 +61,8 @@ export default class CameraCard extends Mixins(StateMixin) {
     if (this.cameras.length > 2) return 4
   }
 
-  get cameras () {
-    return this.$store.getters['cameras/getVisibleCameras']
+  get cameras (): CameraConfig[] {
+    return this.$store.getters['cameras/getVisibleCameras'] as CameraConfig[]
   }
 
   handleCameraSelect (cam: string) {

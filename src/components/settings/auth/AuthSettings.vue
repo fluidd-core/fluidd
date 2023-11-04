@@ -149,16 +149,15 @@ export default class AuthSettings extends Vue {
     this.apiKeyDialogState.open = true
   }
 
-  handleRemoveUser (user: AppUser) {
-    this.$confirm(
+  async handleRemoveUser (user: AppUser) {
+    const result = await this.$confirm(
       this.$tc('app.general.simple_form.msg.confirm'),
       { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
     )
-      .then(res => {
-        if (res) {
-          this.$store.dispatch('auth/removeUser', user)
-        }
-      })
+
+    if (result) {
+      this.$store.dispatch('auth/removeUser', user)
+    }
   }
 
   async handleSaveUser (user: AppUser) {

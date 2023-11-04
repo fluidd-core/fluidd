@@ -81,7 +81,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     const zBoxMin = -Math.abs(this.mesh[this.matrix].mid - box_scale)
     const zBoxMax = this.mesh[this.matrix].mid + box_scale
 
-    const legends = this.series.reduce((obj, series: any) => {
+    const legends = this.series.reduce((obj, series) => {
       return Object.assign(
         obj,
         {
@@ -118,7 +118,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   get series () {
     const matrix = this.matrix
     const wireframe = this.wireframe
-    const series: any[] = [
+    const series = [
       {
         type: 'surface',
         name: matrix,

@@ -3,7 +3,7 @@ import type { FileWithPath } from './files'
 import type { FlashMessage, FlashMessageTypes } from './flashmessage'
 import type { MeshData } from './mesh'
 import type { AppTableHeader } from './tableheaders'
-import type { VForm, VInput, VSlider } from './vuetify'
+import type { VForm, VInput, VTextArea, VSlider } from './vuetify'
 
 export type {
   FileSystemDialogData,
@@ -14,6 +14,7 @@ export type {
   AppTableHeader,
   VForm,
   VInput,
+  VTextArea,
   VSlider,
   FileWithPath
 }

@@ -1,8 +1,9 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import type { GcodePreviewState } from './types'
+import type { GcodePreviewState, ViewerOptions } from './types'
 import Vue from 'vue'
 import type { AppFile } from '@/store/files/types'
+import IsKeyOf from '@/util/is-key-of'
 
 export const mutations: MutationTree<GcodePreviewState> = {
   /**
@@ -32,9 +33,9 @@ export const mutations: MutationTree<GcodePreviewState> = {
     state.file = undefined
   },
 
-  setViewerState (state, payload: any) {
+  setViewerState (state, payload: Partial<ViewerOptions>) {
     for (const key of Object.keys(state.viewer)) {
-      if (payload[key] !== undefined) {
+      if (IsKeyOf(key, payload) && payload[key] !== undefined) {
         Vue.set(state.viewer, key, payload[key])
       }
     }

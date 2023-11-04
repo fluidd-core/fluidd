@@ -64,8 +64,6 @@ export default class AppColumnPicker extends Mixins(StateMixin) {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  value: any[] = []
-
   handleToggleHeader (header: AppTableHeader) {
     header.visible = !header.visible
     this.$store.dispatch('config/updateHeader', { name: this.keyName, header })

@@ -124,15 +124,16 @@ import { Component, Vue } from 'vue-property-decorator'
 import MacroSettingsDialog from './MacroSettingsDialog.vue'
 import type { Macro, MacroCategory } from '@/store/macros/types'
 import store from '@/store'
+import type { NavigationGuardNext, Route, Location } from 'vue-router'
 
-const routeGuard = (to: any) => {
+const routeGuard = (to: Route): Parameters<NavigationGuardNext>[0] => {
   // No need to translate here, these are just used for the route.
   const id = to.params.categoryId
   const categories = store.getters['macros/getCategories']
   const i = categories.findIndex((c: MacroCategory) => c.id === id)
-  return (i > -1 || id === '0')
-    ? true
-    : { path: '/settings', hash: 'macros' }
+  if (id !== '0' && i === -1) {
+    return { path: '/settings', hash: 'macros' } satisfies Location
+  }
 }
 
 @Component({
@@ -173,11 +174,11 @@ export default class MacroCategorySettings extends Vue {
     }
   }
 
-  beforeRouteEnter (to: any, from: any, next: any) {
+  beforeRouteEnter (to: Route, from: Route, next: NavigationGuardNext<Vue>) {
     next(routeGuard(to))
   }
 
-  beforeRouteUpdate (to: any, from: any, next: any) {
+  beforeRouteUpdate (to: Route, from: Route, next: NavigationGuardNext<Vue>) {
     next(routeGuard(to))
   }
 

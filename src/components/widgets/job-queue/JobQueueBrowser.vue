@@ -110,7 +110,7 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
       }))
   }
 
-  handleRowClick (_data: any, props: DataTableItemProps, event: MouseEvent) {
+  handleRowClick (_data: unknown, props: DataTableItemProps, event: MouseEvent) {
     this.$emit('row-click', props.item, event)
   }
 

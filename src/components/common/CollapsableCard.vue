@@ -222,7 +222,7 @@ export default class CollapsableCard extends Vue {
 
   get _cardClasses () {
     // If user defined, format to an object based on the input.
-    const classes: any = {}
+    const classes: Record<string, unknown> = {}
     if (this.cardClasses) {
       this.cardClasses.split(' ').forEach(s => {
         classes[s] = true
@@ -236,7 +236,7 @@ export default class CollapsableCard extends Vue {
   }
 
   get _contentClasses () {
-    const classes: any = {}
+    const classes: Record<string, unknown> = {}
     if (this.contentClasses) {
       this.contentClasses.split(' ').forEach(s => {
         classes[s] = true

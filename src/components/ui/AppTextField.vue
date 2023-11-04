@@ -26,19 +26,19 @@ import { Component, Vue, VModel, Watch, Ref } from 'vue-property-decorator'
 @Component({})
 export default class AppTextField extends Vue {
   @VModel()
-    inputValue!: any
+    inputValue!: unknown
 
   @Ref('form')
   readonly form!: VForm
 
   @Watch('value')
-  onValue (value: any) {
+  onValue (value: unknown) {
     if (!this.hasFocus) {
       this.currentValue = value
     }
   }
 
-  currentValue: any = ''
+  currentValue: unknown = ''
   hasFocus = false
 
   get filteredListeners () {

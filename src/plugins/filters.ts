@@ -421,11 +421,11 @@ export const Filters = {
 }
 
 export const Rules = {
-  required (v: any) {
+  required (v: unknown) {
     return ((v ?? '') !== '') || i18n.t('app.general.simple_form.error.required')
   },
 
-  numberValid (v: any) {
+  numberValid (v: unknown) {
     return !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
   },
 
@@ -462,14 +462,14 @@ export const Rules = {
   },
 
   lengthGreaterThanOrEqual (min: number) {
-    return (v: string | any[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
+    return (v: string | unknown[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
   },
 
   lengthLessThanOrEqual (max: number) {
-    return (v: string | any[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
+    return (v: string | unknown[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  numberArrayValid (v: any[]) {
+  numberArrayValid (v: unknown[]) {
     return !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
   },
 

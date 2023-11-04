@@ -57,7 +57,7 @@ export default class AppNamedSelect extends Vue {
   readonly resetValue?: unknown
 
   @Prop({ type: Array })
-  readonly items?: any[]
+  readonly items?: unknown[]
 
   @Prop({ type: String, required: true })
   readonly label!: string
