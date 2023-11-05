@@ -531,6 +531,7 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       dotted: Dotted
       draw_background: Draw Background
+      draw_origin: Draw origin
       enable: Enable
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
