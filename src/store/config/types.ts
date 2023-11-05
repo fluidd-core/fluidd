@@ -192,6 +192,7 @@ export interface GcodePreviewConfig {
   extrusionLineWidth: number;
   moveLineWidth: number;
   retractionIconSize: number;
+  drawOrigin: boolean;
   drawBackground: boolean;
   showAnimations: boolean;
   minLayerHeight: number;

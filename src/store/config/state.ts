@@ -121,6 +121,7 @@ export const defaultState = (): ConfigState => {
         extrusionLineWidth: 0.3,
         moveLineWidth: 0.1,
         retractionIconSize: 0.6,
+        drawOrigin: true,
         drawBackground: true,
         showAnimations: true,
         minLayerHeight: 0.1,
