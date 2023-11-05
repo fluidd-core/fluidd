@@ -19,6 +19,17 @@
 
       <v-divider />
 
+      <app-setting :title="$t('app.setting.label.draw_origin')">
+        <v-switch
+          v-model="drawOrigin"
+          hide-details
+          class="mb-5"
+          @click.native.stop
+        />
+      </app-setting>
+
+      <v-divider />
+
       <app-setting :title="$t('app.setting.label.draw_background')">
         <v-switch
           v-model="drawBackground"
@@ -240,6 +251,18 @@ export default class GcodePreviewSettings extends Vue {
   set flipVertical (value: boolean) {
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.gcodePreview.flip.vertical',
+      value,
+      server: true
+    })
+  }
+
+  get drawOrigin () {
+    return this.$store.state.config.uiSettings.gcodePreview.drawOrigin
+  }
+
+  set drawOrigin (value: boolean) {
+    this.$store.dispatch('config/saveByPath', {
+      path: 'uiSettings.gcodePreview.drawOrigin',
       value,
       server: true
     })

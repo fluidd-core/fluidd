@@ -29,6 +29,16 @@
             :fill-opacity="disabled ? 0.6 : undefined"
           />
         </pattern>
+        <clipPath
+          v-if="isDelta"
+          id="clipCircle"
+        >
+          <circle
+            :r="bedSize.x.max"
+            cx="0"
+            cy="0"
+          />
+        </clipPath>
         <svg
           id="retraction"
           :width="retractionIconSize"
@@ -71,35 +81,53 @@
             :shape-rendering="shapeRendering"
           />
         </svg>
-      </defs>
-      <g :transform="flipTransform">
-        <clipPath id="clipCircle">
+        <svg
+          id="origin"
+          width="12"
+          height="12"
+          viewBox="-2 -2 12 12"
+        >
+          <path
+            fill="#ff0000"
+            fill-opacity="0.4"
+            d="M 8.5859375 -1.4140625 L 8.2324219 -1.0605469 L 9.0429688 -0.25 L 0.96875 -0.25 A 1 1 0 0 1 1 0 A 1 1 0 0 1 0.96679688 0.25 L 9.0429688 0.25 L 8.2324219 1.0605469 L 8.5859375 1.4140625 L 10 0 L 8.5859375 -1.4140625 z "
+            :shape-rendering="shapeRendering"
+          />
+          <path
+            fill="#00ff00"
+            fill-opacity="0.4"
+            d="M -0.25 0.96679688 L -0.25 9.0429688 L -1.0605469 8.2324219 L -1.4140625 8.5859375 L 0 10 L 1.4140625 8.5859375 L 1.0605469 8.2324219 L 0.25 9.0429688 L 0.25 0.96679688 A 1 1 0 0 1 0 1 A 1 1 0 0 1 -0.25 0.96679688 z "
+            :shape-rendering="shapeRendering"
+          />
           <circle
-            :r="bedSize.x.max"
+            fill="#0000ff"
+            fill-opacity="0.4"
             cx="0"
             cy="0"
+            r="1"
+            :shape-rendering="shapeRendering"
           />
-        </clipPath>
+        </svg>
+      </defs>
+      <g :transform="flipTransform">
         <g
           v-if="drawBackground"
           id="background"
         >
           <rect
-            v-if="isDelta"
             :height="bedSize.y.max - bedSize.y.min"
             :width="bedSize.x.max - bedSize.x.min"
             fill="url(#backgroundPattern)"
-            clip-path="url(#clipCircle)"
+            :clip-path="isDelta ? 'url(#clipCircle)' : undefined"
             :x="bedSize.x.min"
             :y="bedSize.y.min"
           />
-          <rect
-            v-else
-            :height="bedSize.y.max - bedSize.y.min"
-            :width="bedSize.x.max - bedSize.x.min"
-            fill="url(#backgroundPattern)"
-            :x="bedSize.x.min"
-            :y="bedSize.y.min"
+        </g>
+        <g v-if="drawOrigin">
+          <use
+            xlink:href="#origin"
+            x="-2"
+            y="-2"
           />
         </g>
         <g
@@ -368,6 +396,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return this.getUiSetting('drawBackground')
   }
 
+  get drawOrigin () {
+    return this.getUiSetting('drawOrigin')
+  }
+
   get showAnimations () {
     return this.getUiSetting('showAnimations')
   }
@@ -526,10 +558,10 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     } = this.viewBox
 
     if (this.isDelta) {
-      return `${x.min} ${y.min} ${x.max} ${y.max}`
+      return `${x.min - 2} ${y.min - 2} ${x.max + 4} ${y.max + 4}`
     }
 
-    return `${x.min} ${y.min} ${x.max - x.min} ${y.max - y.min}`
+    return `${x.min - 2} ${y.min - 2} ${x.max - x.min + 4} ${y.max - y.min + 4}`
   }
 
   get defaultLayerPaths (): LayerPaths {
@@ -610,8 +642,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     this.panzoom = panzoom(this.svg, {
       maxZoom: 20,
       minZoom: 0.95,
-      bounds: true,
-      boundsPadding: 0.6,
       smoothScroll: this.showAnimations,
 
       beforeMouseDown: () => this.disabled,
