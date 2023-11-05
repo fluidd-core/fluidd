@@ -121,8 +121,8 @@ import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-sy
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
-  toolsdrawer = false
-  navdrawer = true
+  toolsdrawer: boolean | null = null
+  navdrawer: boolean | null = null
   showUpdateUI = false
   dragState = false
   customBackgroundImageStyle: Record<string, string> = {}
