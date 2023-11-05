@@ -628,6 +628,7 @@ app:
         mit ausstehenden Konfigurationsänderungen
       show_screws_tilt_adjust_dialog_automatically: Dialog zum Anpassen der Bettneigung
         automatisch anzeigen
+      draw_origin: Ursprung anzeigen
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
