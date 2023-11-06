@@ -247,6 +247,17 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return mcus
   },
 
+  getHasExtruder: (state) => {
+    return state.printer.extruder
+  },
+
+  getHasMultipleExtruders: (state) => {
+    return (
+      state.printer.extruder &&
+      state.printer.extruder1
+    )
+  },
+
   /**
  * Return known extruders, giving them a friendly name.
  */

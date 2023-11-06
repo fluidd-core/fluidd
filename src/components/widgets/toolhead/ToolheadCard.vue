@@ -15,7 +15,7 @@
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <v-icon
-            v-show="!extruderReady"
+            v-show="hasExtruder && !extruderReady"
             v-bind="attrs"
             class="ml-3"
             color="info"
