@@ -601,6 +601,7 @@ app:
         zmian konfiguracji
       show_screws_tilt_adjust_dialog_automatically: Automatycznie wyświetl okno "Regulacja
         pochylenia śrubami"
+      draw_origin: Rysuj początek
     camera_type_options:
       mjpegstream: Strumień MJPEG
       mjpegadaptive: Adaptacyjny MJPEG
