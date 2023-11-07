@@ -15,6 +15,7 @@
         :color="theme.currentTheme.drawer"
         mini-variant
         :value="open"
+        class="pb-16 pb-sm-0"
       >
         <div
           v-show="isMobileViewport"
