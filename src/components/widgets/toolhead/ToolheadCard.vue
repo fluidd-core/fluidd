@@ -220,19 +220,29 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get loadFilamentMacro (): Macro | undefined {
-    const [loadFilamentMacro] = this.macros
-      .filter(macro => ['load_filament', 'm701'].includes(macro.name))
-      .sort(macro => macro.name === 'load_filament' ? -1 : 1)
-
-    return loadFilamentMacro
+    return this.findMacro([
+      'load_filament',
+      'filament_load',
+      'm701'
+    ])
   }
 
   get unloadFilamentMacro (): Macro | undefined {
-    const [unloadFilamentMacro] = this.macros
-      .filter(macro => ['unload_filament', 'm702'].includes(macro.name))
-      .sort(macro => macro.name === 'unload_filament' ? -1 : 1)
+    return this.findMacro([
+      'unload_filament',
+      'filament_unload',
+      'm702'
+    ])
+  }
 
-    return unloadFilamentMacro
+  get cleanNozzleMacro (): Macro | undefined {
+    return this.findMacro([
+      'clean_nozzle',
+      'nozzle_clean',
+      'wipe_nozzle',
+      'nozzle_wipe',
+      'g12'
+    ])
   }
 
   get availableTools () {
@@ -250,6 +260,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
+
     const unloadFilamentMacro = this.unloadFilamentMacro
 
     if (unloadFilamentMacro) {
@@ -260,6 +271,16 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         label: unloadFilamentMacro.name === 'm702' ? 'M702 (Unload Filament)' : undefined,
         icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
+      })
+    }
+
+    const cleanNozzleMacro = this.cleanNozzleMacro
+
+    if (cleanNozzleMacro) {
+      tools.push({
+        name: cleanNozzleMacro.name.toUpperCase(),
+        label: cleanNozzleMacro.name === 'g12' ? 'G12 (Clean the Nozzle)' : undefined,
+        icon: '$cleanNozzle'
       })
     }
 
@@ -367,6 +388,14 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
 
   get forceMove () {
     return this.$store.state.config.uiSettings.toolhead.forceMove
+  }
+
+  findMacro (names: string[]): Macro | undefined {
+    const [macro] = this.macros
+      .filter(macro => names.includes(macro.name))
+      .sort((a, b) => names.indexOf(a.name) - names.indexOf(b.name))
+
+    return macro
   }
 
   @Watch('isManualProbeActive')
