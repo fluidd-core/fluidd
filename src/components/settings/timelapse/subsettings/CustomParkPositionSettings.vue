@@ -106,20 +106,40 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
     }
   }
 
+  get kinematics (): string {
+    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
+  }
+
+  get isDelta (): boolean {
+    return ['delta', 'rotary_delta'].includes(this.kinematics)
+  }
+
+  get printerRadius (): number {
+    return this.$store.getters['printer/getPrinterSettings']('printer.print_radius') ?? Infinity
+  }
+
   get printerMinX () {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_x.position_min') ?? 0
+    return this.isDelta
+      ? -this.printerRadius
+      : this.$store.getters['printer/getPrinterSettings']('stepper_x.position_min') ?? 0
   }
 
   get printerMaxX () {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_x.position_max') ?? Infinity
+    return this.isDelta
+      ? this.printerRadius
+      : this.$store.getters['printer/getPrinterSettings']('stepper_x.position_max') ?? Infinity
   }
 
   get printerMinY () {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_y.position_min') ?? 0
+    return this.isDelta
+      ? -this.printerRadius
+      : this.$store.getters['printer/getPrinterSettings']('stepper_y.position_min') ?? 0
   }
 
   get printerMaxY () {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_y.position_max') ?? Infinity
+    return this.isDelta
+      ? this.printerRadius
+      : this.$store.getters['printer/getPrinterSettings']('stepper_y.position_max') ?? Infinity
   }
 
   get settings (): TimelapseSettings {
