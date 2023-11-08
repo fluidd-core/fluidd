@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.26.2](https://github.com/fluidd-core/fluidd/compare/v1.26.1...v1.26.2) (2023-11-08)
+
+
+### Features
+
+* adds clean nozzle support ([5ee8026](https://github.com/fluidd-core/fluidd/commit/5ee80266c27e6348a7e55a5889f5f7a02a0d1417))
+* adds gcode comments folding support ([a760fb1](https://github.com/fluidd-core/fluidd/commit/a760fb1305e888c1be8664b946c2d9b87071a3e6))
+* adds Multiply context menu item to Job Queue ([#1213](https://github.com/fluidd-core/fluidd/issues/1213)) ([300f293](https://github.com/fluidd-core/fluidd/commit/300f29373441338440cd13bf2781cd5ff937064a))
+* adds new Screws Tilt Adjust helper dialog ([#1223](https://github.com/fluidd-core/fluidd/issues/1223)) ([0b2e197](https://github.com/fluidd-core/fluidd/commit/0b2e197e43ad5daca819fc83fc1b905458f156c6))
+* adds origin to GcodePreview ([#1230](https://github.com/fluidd-core/fluidd/issues/1230)) ([9628f66](https://github.com/fluidd-core/fluidd/commit/9628f665d817f9a31d4a92d0680f3d87708182e7))
+* adds Update Manager warnings and anomalies support ([#1215](https://github.com/fluidd-core/fluidd/issues/1215)) ([9d02cbf](https://github.com/fluidd-core/fluidd/commit/9d02cbfafd49e637ac163c27b46d8546501ee03a))
+* hide extruder controls if none defined ([0844424](https://github.com/fluidd-core/fluidd/commit/08444242c0aafc8c9b3b29ad26325677df1c0d7e))
+* hide temperature card in no heaters or sensors ([7c48275](https://github.com/fluidd-core/fluidd/commit/7c482755c48cf577d580fcc638796dcf58ef7061))
+* ignore pending config changes in custom sections ([#1217](https://github.com/fluidd-core/fluidd/issues/1217)) ([bf2bbf5](https://github.com/fluidd-core/fluidd/commit/bf2bbf51c39ba977f74deb4591483eda9491dd17))
+* improves Gcode Preview delta support ([5dbdd76](https://github.com/fluidd-core/fluidd/commit/5dbdd76d81b39e3709315a3220c4837ee7f52dc4))
+* improves Timelapse Custom Parking delta support ([d0e9a5f](https://github.com/fluidd-core/fluidd/commit/d0e9a5f323f47bc752230792fd888c4fb420cfc7))
+* LDO theme ([#1225](https://github.com/fluidd-core/fluidd/issues/1225)) ([a24dc03](https://github.com/fluidd-core/fluidd/commit/a24dc0353c611bd8c2f829e8005966719abcedaf))
+
+
+### Bug Fixes
+
+* mitigates echarts warning on bed mesh page ([fb9a46c](https://github.com/fluidd-core/fluidd/commit/fb9a46ce0de9ef465a3a8127673e092fdae10c2c))
+* mixed ISO / non-ISO date & time formats ([#1222](https://github.com/fluidd-core/fluidd/issues/1222)) ([507d881](https://github.com/fluidd-core/fluidd/commit/507d881570799e41d8d9804387644c22f8e605a1))
+* reverts nav drawer initialization ([6ce9bc0](https://github.com/fluidd-core/fluidd/commit/6ce9bc03d3adf8314df33b46b8fbeac43e2ebea1))
+* **style:** pad navigation drawer bottom on mobile view ([#1232](https://github.com/fluidd-core/fluidd/issues/1232)) ([b72399e](https://github.com/fluidd-core/fluidd/commit/b72399e9995106e3c9400bcd90df24d66ea1bebc))
+
 ## [1.26.1](https://github.com/fluidd-core/fluidd/compare/v1.26.0...v1.26.1) (2023-10-19)
 
 
