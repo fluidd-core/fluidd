@@ -280,7 +280,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
+import { Component, Prop, Mixins, VModel, PropSync } from 'vue-property-decorator'
 import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
 import type { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
@@ -294,39 +294,39 @@ import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
   }
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
-  @VModel({ type: Array, required: true })
+  @VModel({ type: Array<FileBrowserEntry>, required: true })
     selected!: FileBrowserEntry[]
 
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<FileBrowserEntry>, required: true })
   readonly files!: FileBrowserEntry[]
 
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   // Currently defined list of headers.
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<AppTableHeader>, required: true })
   readonly headers!: AppTableHeader[]
 
-  @Prop({ type: String, required: false })
-  readonly search!: string
+  @Prop({ type: String })
+  readonly search?: string
 
-  @Prop({ type: Boolean, required: true })
-  readonly dragState!: boolean
+  @PropSync('dragState', { type: Boolean, required: true })
+    dragStateModel!: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
   dragItem: FileBrowserEntry | null = null
-  ghost: HTMLDivElement | undefined = undefined
+  ghost?: HTMLDivElement = undefined
 
   // Is the history component enabled
   get showHistory () {
@@ -431,9 +431,9 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
 
   // Fake a drag image when the user drags a file or folder.
   handleDragStart (item: FileBrowserEntry, event: DragEvent) {
-    if (this.dragState !== true) {
+    if (this.dragStateModel !== true) {
       this.dragItem = item
-      this.$emit('update:dragState', true)
+      this.dragStateModel = true
     }
 
     if (event.dataTransfer) {
@@ -534,7 +534,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
 
     this.dragItem = null
-    this.$emit('update:dragState', false)
+    this.dragStateModel = false
   }
 }
 </script>

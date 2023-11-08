@@ -1,7 +1,7 @@
 import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
 import type { AuthState } from './types'
-import jwtDecode from 'jwt-decode'
+import { jwtDecode } from 'jwt-decode'
 
 export const mutations: MutationTree<AuthState> = {
   /**

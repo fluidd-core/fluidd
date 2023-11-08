@@ -44,6 +44,17 @@ const getDocsSection = (service: CodeLensSupportedService, sectionName: string) 
   return sectionName
 }
 
+type PartialFoldingRange = Pick<monaco.languages.FoldingRange, 'start' | 'end'>
+
+const toFoldingRanges = (ranges: PartialFoldingRange[], kind: monaco.languages.FoldingRangeKind): monaco.languages.FoldingRange[] => {
+  return ranges
+    .map(({ start, end }) => ({
+      start,
+      end,
+      kind
+    }))
+}
+
 async function setupMonaco () {
   await Promise.all([
     loadWASM(onigasmWasm),
@@ -163,7 +174,7 @@ async function setupMonaco () {
         }
 
         return sectionBlocks
-      }, [] as Array<{ start: number, end: number }>)
+      }, [] as PartialFoldingRange[])
 
       const commentBlocks = linesContent.reduce((commentBlocks, lineContent, index) => {
         lineContent = lineContent.trim()
@@ -189,19 +200,11 @@ async function setupMonaco () {
         }
 
         return commentBlocks
-      }, [] as Array<{start: number, end: number, complete: boolean}>)
+      }, [] as Array<PartialFoldingRange & { complete: boolean }>)
 
       return [
-        ...sectionBlocks.map(section => ({
-          start: section.start,
-          end: section.end,
-          kind: monaco.languages.FoldingRangeKind.Region
-        })),
-        ...commentBlocks.map(section => ({
-          start: section.start,
-          end: section.end,
-          kind: monaco.languages.FoldingRangeKind.Comment
-        }))
+        ...toFoldingRanges(sectionBlocks, monaco.languages.FoldingRangeKind.Region),
+        ...toFoldingRanges(commentBlocks, monaco.languages.FoldingRangeKind.Comment)
       ]
     }
   })
@@ -227,7 +230,7 @@ async function setupMonaco () {
         }
 
         return layerBlocks
-      }, [] as Array<{ start: number, end: number }>)
+      }, [] as PartialFoldingRange[])
 
       const objectBlocks = linesContent.reduce((objectBlocks, lineContent, index) => {
         lineContent = lineContent.trim()
@@ -260,7 +263,7 @@ async function setupMonaco () {
         }
 
         return objectBlocks
-      }, [] as Array<{start: number, end: number, complete: boolean}>)
+      }, [] as Array<PartialFoldingRange & { complete: boolean }>)
 
       const thumbnailBlocks = linesContent.reduce((thumbnailBlocks, lineContent, index) => {
         if (lineContent.startsWith('; thumbnail')) {
@@ -286,23 +289,46 @@ async function setupMonaco () {
         }
 
         return thumbnailBlocks
-      }, [] as Array<{start: number, end: number}>)
+      }, [] as Array<PartialFoldingRange>)
+
+      const commentBlocks = linesContent.reduce((commentBlocks, lineContent, index) => {
+        lineContent = lineContent.trim()
+
+        if (lineContent.length > 0) {
+          const isComment = lineContent.startsWith(';')
+
+          const lastCommentBlock = commentBlocks.length > 0 ? commentBlocks[commentBlocks.length - 1] : undefined
+
+          if (isComment) {
+            if (lastCommentBlock && !lastCommentBlock.complete) {
+              lastCommentBlock.end = index + 1
+            } else {
+              return commentBlocks.concat({
+                start: index + 1,
+                end: index + 1,
+                complete: false
+              })
+            }
+          } else if (lastCommentBlock) {
+            lastCommentBlock.complete = true
+          }
+        }
+
+        return commentBlocks
+      }, [] as Array<PartialFoldingRange & { complete: boolean }>)
 
       return [
-        ...thumbnailBlocks,
-        ...layerBlocks,
-        ...objectBlocks
-      ].map(section => ({
-        start: section.start,
-        end: section.end,
-        kind: monaco.languages.FoldingRangeKind.Region
-      }))
+        ...toFoldingRanges(layerBlocks, monaco.languages.FoldingRangeKind.Region),
+        ...toFoldingRanges(objectBlocks, monaco.languages.FoldingRangeKind.Region),
+        ...toFoldingRanges(commentBlocks, monaco.languages.FoldingRangeKind.Comment),
+        ...toFoldingRanges(thumbnailBlocks, monaco.languages.FoldingRangeKind.Comment)
+      ]
     }
   })
 
   // Defined the themes.
-  monaco.editor.defineTheme('dark-converted', themeDark as any)
-  monaco.editor.defineTheme('light-converted', themeLight as any)
+  monaco.editor.defineTheme('dark-converted', themeDark as monaco.editor.IStandaloneThemeData)
+  monaco.editor.defineTheme('light-converted', themeLight as monaco.editor.IStandaloneThemeData)
 
   // Wire it up.
   await wireTmGrammars(monaco, registry, grammars)

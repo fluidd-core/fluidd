@@ -105,12 +105,11 @@ export default class FileEditorSettings extends Mixins(StateMixin) {
   }
 
   set autoEditExtensions (value: string[]) {
-    value = value.map((ext: string) => ext.startsWith('.') ? ext : `.${ext}`)
-    value = value.filter((ext: string, index: number) => value.indexOf(ext) === index) // deduplicate entries
-
     this.$store.dispatch('config/saveByPath', {
       path: 'uiSettings.editor.autoEditExtensions',
-      value: value.sort(),
+      value: [
+        ...new Set(value.map(ext => ext.startsWith('.') ? ext : `.${ext}`))
+      ].sort((a, b) => a.localeCompare(b)),
       server: true
     })
   }

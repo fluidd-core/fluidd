@@ -24,20 +24,13 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   hasUpdates: (state, getters, rootState) => {
     const enableNotifications = rootState.config.uiSettings.general.enableVersionNotifications
-    let r = false
-    for (const key in state.version_info) {
-      if (!r) {
-        if (
-          key !== 'system' && // don't check system updates..
-          enableNotifications
-        ) {
-          r = getters.hasUpdate(key)
-        }
-      } else {
-        break
-      }
-    }
-    return r
+
+    return (
+      enableNotifications &&
+      Object.keys(state.version_info)
+        .filter(component => component !== 'system')
+        .some(getters.hasUpdate)
+    )
   },
 
   /**

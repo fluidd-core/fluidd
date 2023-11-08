@@ -291,7 +291,6 @@ app:
       upload_and_print: 上传并打印
       used: 已用
       username: 用户名
-      variance: 偏差值
       velocity: 速度
       version_sort: 版本排序
       visible: 可见性
@@ -502,7 +501,6 @@ app:
       height: 高度
       gcode_coords: 使用 GCode 坐标
       icon: 图标
-      ignore_default_bed_mesh_pending_configuration_changes: 忽略默认的床网，等待配置更改
       invert_x_control: 反转X轴控制
       invert_y_control: 反转Y轴控制
       invert_z_control: 反转Z轴控制

@@ -169,6 +169,7 @@
           v-model.number="toolheadMoveLength"
           mandatory
           dense
+          class="elevation-2"
         >
           <app-btn
             v-for="(distance, index) of toolheadMoveDistances"
@@ -176,7 +177,6 @@
             small
             min-width="40"
             :value="distance"
-            :elevation="2"
             :disabled="!klippyReady"
           >
             {{ distance }}
@@ -201,12 +201,10 @@ export default class ToolheadControlCross extends Mixins(StateMixin, ToolheadMix
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
-  get kinematics () {
-    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
-  }
-
   get canHomeXY () {
-    return !['delta', 'rotary_delta'].includes(this.kinematics)
+    const hasRoundBed = this.$store.getters['printer/getHasRoundBed'] as boolean
+
+    return !hasRoundBed
   }
 
   get toolheadMoveDistances () {

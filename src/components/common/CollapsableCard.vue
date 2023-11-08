@@ -121,8 +121,8 @@ export default class CollapsableCard extends Vue {
   @Prop({ type: String, required: true })
   readonly title!: string
 
-  @Prop({ type: String, required: false })
-  readonly helpTooltip!: string
+  @Prop({ type: String })
+  readonly helpTooltip?: string
 
   /**
    * Card color.
@@ -133,8 +133,8 @@ export default class CollapsableCard extends Vue {
   /**
    * Sub title.
    */
-  @Prop({ type: String, required: false })
-  readonly subTitle!: string
+  @Prop({ type: String })
+  readonly subTitle?: string
 
   /**
    * Required to bind to a layout.
@@ -156,38 +156,32 @@ export default class CollapsableCard extends Vue {
    * visible.
    */
   @Prop({ type: Boolean, default: true })
-  readonly lazy!: boolean
+  readonly lazy?: boolean
 
   /**
    * The icon to use in the title.
    */
-  @Prop({ type: String, required: false })
+  @Prop({ type: String, required: true })
   readonly icon!: string
-
-  /**
-   * The icon color to use in the title.
-   */
-  @Prop({ type: String, required: false })
-  readonly iconColor!: string
 
   /**
    * Loading state.
    */
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   /**
    * Enables dragging of the card. Also causes the card
    * to react to layoutMode state.
    */
-  @Prop({ type: Boolean, default: false })
-  readonly draggable!: boolean
+  @Prop({ type: Boolean })
+  readonly draggable?: boolean
 
   /**
    * Whether this card is collapsable or not.
    */
   @Prop({ type: Boolean, default: true })
-  readonly collapsable!: boolean
+  readonly collapsable?: boolean
 
   /**
    * Rounded
@@ -198,8 +192,8 @@ export default class CollapsableCard extends Vue {
   /**
    * Optionally set a defined height.
    */
-  @Prop({ type: [Number, String], required: false })
-  readonly height!: number | string
+  @Prop({ type: [Number, String] })
+  readonly height?: number | string
 
   /**
    * Breakpoint at which to condense the menu buttons to a hamburger.
@@ -212,13 +206,13 @@ export default class CollapsableCard extends Vue {
    * Define any optional classes for the card itself.
    */
   @Prop({ type: String })
-  readonly cardClasses!: string
+  readonly cardClasses?: string
 
   /**
    * Define any optional classes for the card content itself.
    */
   @Prop({ type: String })
-  readonly contentClasses!: string
+  readonly contentClasses?: string
 
   /**
    * Base classes.
@@ -228,7 +222,7 @@ export default class CollapsableCard extends Vue {
 
   get _cardClasses () {
     // If user defined, format to an object based on the input.
-    const classes: any = {}
+    const classes: Record<string, unknown> = {}
     if (this.cardClasses) {
       this.cardClasses.split(' ').forEach(s => {
         classes[s] = true
@@ -242,7 +236,7 @@ export default class CollapsableCard extends Vue {
   }
 
   get _contentClasses () {
-    const classes: any = {}
+    const classes: Record<string, unknown> = {}
     if (this.contentClasses) {
       this.contentClasses.split(' ').forEach(s => {
         classes[s] = true

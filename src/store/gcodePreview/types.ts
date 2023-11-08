@@ -9,17 +9,18 @@ export interface GcodePreviewState {
   file?: AppFile;
   parserProgress: number;
   parserWorker: Worker | null;
+  viewer: ViewerOptions;
+}
 
-  viewer: {
-    showCurrentLayer: boolean;
-    showNextLayer: boolean;
-    showPreviousLayer: boolean;
-    showMoves: boolean;
-    showExtrusions: boolean;
-    showRetractions: boolean;
-    showParts: boolean;
-    followProgress: boolean;
-  };
+export interface ViewerOptions {
+  showCurrentLayer: boolean;
+  showNextLayer: boolean;
+  showPreviousLayer: boolean;
+  showMoves: boolean;
+  showExtrusions: boolean;
+  showRetractions: boolean;
+  showParts: boolean;
+  followProgress: boolean;
 }
 
 export interface LinearMove {

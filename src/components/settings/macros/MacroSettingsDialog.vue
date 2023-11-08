@@ -103,11 +103,12 @@
 <script lang="ts">
 import type { Macro } from '@/store/macros/types'
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
+import type { IroColor } from '@irojs/iro-core'
 
 @Component({})
 export default class MacroMoveDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly macro!: Macro
@@ -134,7 +135,7 @@ export default class MacroMoveDialog extends Vue {
     return theme.currentTheme.secondary
   }
 
-  handleColorChange (color: any) {
+  handleColorChange (color: { channel: string, color: IroColor }) {
     if (this.newMacro) this.newMacro.color = color.color.hexString
   }
 

@@ -32,11 +32,11 @@ export default class FileEditor extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly filename!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly readonly!: boolean
+  @Prop({ type: Boolean })
+  readonly readonly?: boolean
 
   @Prop({ type: Boolean, default: true })
-  readonly codeLens!: boolean
+  readonly codeLens?: boolean
 
   @Prop({ type: String, required: true })
   readonly path!: string

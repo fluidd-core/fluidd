@@ -292,7 +292,6 @@ app:
       unretract_speed: Скорость деретракта
       used: Использованно
       username: Имя пользователя
-      variance: Различие
       velocity: Скорость
       visible: Видимый
       z_offset: Смещение Z
@@ -497,7 +496,6 @@ app:
       height: Высота
       gcode_coords: Испрользовать координаты GCode
       icon: Иконка
-      ignore_default_bed_mesh_pending_configuration_changes: Игнорировать запланированные изменения сетки стола
       invert_x_control: Инвертировать управление по оси X
       invert_y_control: Инвертировать управление по оси Y
       invert_z_control: Инвертировать управление по оси Z

@@ -17,7 +17,7 @@ export interface WebcamConfig
   flip_vertical?: boolean,
   rotation?: WebcamRotation,
   aspect_ratio?: string,
-  extra_data?: any,
+  extra_data?: Record<string, unknown>,
   source?: WebcamSource
 }
 

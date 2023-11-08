@@ -112,6 +112,32 @@
           />
         </app-setting>
 
+        <template v-if="'warnings' in component">
+          <v-alert
+            v-for="(warning, index) in component.warnings ?? []"
+            :key="`warning-${index}`"
+            dense
+            type="warning"
+            text
+            class="mx-4"
+          >
+            {{ warning }}
+          </v-alert>
+        </template>
+
+        <template v-if="'anomalies' in component">
+          <v-alert
+            v-for="(anomaly, index) in component.anomalies ?? []"
+            :key="`anomaly-${index}`"
+            dense
+            icon="$info"
+            text
+            class="mx-4"
+          >
+            {{ anomaly }}
+          </v-alert>
+        </template>
+
         <v-divider
           v-if="i < components.length - 1 && components.length > 0"
           :key="`component-${component.key}-${component.name}-_divider`"

@@ -11,6 +11,7 @@
         v-model="moveDistance"
         mandatory
         dense
+        class="elevation-2"
       >
         <app-btn
           v-for="(value, i) in zAdjustValues"
@@ -19,7 +20,6 @@
           class="px-1"
           :disabled="!klippyReady"
           min-width="36"
-          :elevation="2"
           :value="value"
         >
           {{ value }}

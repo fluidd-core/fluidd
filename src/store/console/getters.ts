@@ -24,17 +24,6 @@ export const getters: GetterTree<ConsoleState, RootState> = {
     return state.consoleFilters
   },
 
-  getAvailableCalibrationCommands: (state) => {
-    return Object.keys(state.availableCommands)
-      .filter(key => key.endsWith('CALIBRATE'))
-      .reduce((o, key) => {
-        return {
-          ...o,
-          [key]: state.availableCommands[key]
-        }
-      }, {})
-  },
-
   getAllGcodeCommands: (state) => {
     const commands = state.availableCommands
     const additional = [

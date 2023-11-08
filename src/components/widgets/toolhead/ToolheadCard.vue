@@ -15,7 +15,7 @@
       <v-tooltip bottom>
         <template #activator="{ on, attrs }">
           <v-icon
-            v-show="!extruderReady"
+            v-show="hasExtruder && !extruderReady"
             v-bind="attrs"
             class="ml-3"
             color="info"
@@ -140,6 +140,11 @@
       v-if="bedScrewsAdjustDialogOpen"
       v-model="bedScrewsAdjustDialogOpen"
     />
+
+    <screws-tilt-adjust-dialog
+      v-if="screwsTiltAdjustDialogOpen"
+      v-model="screwsTiltAdjustDialogOpen"
+    />
   </collapsable-card>
 </template>
 
@@ -166,9 +171,10 @@ type Tool = {
 export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   manualProbeDialogOpen = false
   bedScrewsAdjustDialogOpen = false
+  screwsTiltAdjustDialogOpen = false
 
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
   get printerSettings () {
     return this.$store.getters['printer/getPrinterSettings']()
@@ -214,19 +220,29 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   get loadFilamentMacro (): Macro | undefined {
-    const [loadFilamentMacro] = this.macros
-      .filter(macro => ['load_filament', 'm701'].includes(macro.name))
-      .sort(macro => macro.name === 'load_filament' ? -1 : 1)
-
-    return loadFilamentMacro
+    return this.findMacro([
+      'load_filament',
+      'filament_load',
+      'm701'
+    ])
   }
 
   get unloadFilamentMacro (): Macro | undefined {
-    const [unloadFilamentMacro] = this.macros
-      .filter(macro => ['unload_filament', 'm702'].includes(macro.name))
-      .sort(macro => macro.name === 'unload_filament' ? -1 : 1)
+    return this.findMacro([
+      'unload_filament',
+      'filament_unload',
+      'm702'
+    ])
+  }
 
-    return unloadFilamentMacro
+  get cleanNozzleMacro (): Macro | undefined {
+    return this.findMacro([
+      'clean_nozzle',
+      'nozzle_clean',
+      'wipe_nozzle',
+      'nozzle_wipe',
+      'g12'
+    ])
   }
 
   get availableTools () {
@@ -244,6 +260,7 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
       })
     }
+
     const unloadFilamentMacro = this.unloadFilamentMacro
 
     if (unloadFilamentMacro) {
@@ -254,6 +271,16 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
         label: unloadFilamentMacro.name === 'm702' ? 'M702 (Unload Filament)' : undefined,
         icon: '$unloadFilament',
         disabled: !(ignoreMinExtrudeTemp || this.extruderReady)
+      })
+    }
+
+    const cleanNozzleMacro = this.cleanNozzleMacro
+
+    if (cleanNozzleMacro) {
+      tools.push({
+        name: cleanNozzleMacro.name.toUpperCase(),
+        label: cleanNozzleMacro.name === 'g12' ? 'G12 (Clean the Nozzle)' : undefined,
+        icon: '$cleanNozzle'
       })
     }
 
@@ -339,12 +366,12 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   get printerSupportsForceMove () {
     return (
       (this.printerSettings.force_move?.enable_force_move ?? false) &&
-      !this.printerIsDelta
+      !this.hasRoundBed
     )
   }
 
-  get printerIsDelta () {
-    return ['delta', 'rotary_delta'].includes(this.printerSettings.printer.kinematics)
+  get hasRoundBed (): boolean {
+    return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
   get showManualProbeDialogAutomatically () {
@@ -355,43 +382,73 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
     return this.$store.state.config.uiSettings.general.showBedScrewsAdjustDialogAutomatically
   }
 
+  get showScrewsTiltAdjustDialogAutomatically () {
+    return this.$store.state.config.uiSettings.general.showScrewsTiltAdjustDialogAutomatically
+  }
+
   get forceMove () {
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
+  findMacro (names: string[]): Macro | undefined {
+    const [macro] = this.macros
+      .filter(macro => names.includes(macro.name))
+      .sort((a, b) => names.indexOf(a.name) - names.indexOf(b.name))
+
+    return macro
+  }
+
   @Watch('isManualProbeActive')
   onIsManualProbeActive (value: boolean) {
-    if (value && this.showManualProbeDialogAutomatically &&
-      this.klippyReady && !this.printerPrinting) {
+    if (
+      value &&
+      this.showManualProbeDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    ) {
       this.manualProbeDialogOpen = true
     }
   }
 
   @Watch('isBedScrewsAdjustActive')
   onIsBedScrewsAdjustActive (value: boolean) {
-    if (value && this.showBedScrewsAdjustDialogAutomatically &&
-      this.klippyReady && !this.printerPrinting) {
+    if (
+      value &&
+      this.showBedScrewsAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    ) {
       this.bedScrewsAdjustDialogOpen = true
     }
   }
 
+  @Watch('hasScrewsTiltAdjustResults')
+  onHasScrewsTiltAdjustResults (value: boolean) {
+    this.screwsTiltAdjustDialogOpen = (
+      value &&
+      this.showScrewsTiltAdjustDialogAutomatically &&
+      this.klippyReady &&
+      !this.printerPrinting
+    )
+  }
+
   async toggleForceMove () {
-    if (!this.forceMove && this.$store.state.config.uiSettings.general.forceMoveToggleWarning) {
-      const result = await this.$confirm(
+    const result = (
+      this.forceMove ||
+      !this.$store.state.config.uiSettings.general.forceMoveToggleWarning ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm_forcemove_toggle'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$warning' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.$store.dispatch('config/saveByPath', {
+        path: 'uiSettings.toolhead.forceMove',
+        value: !this.forceMove,
+        server: false
+      })
     }
-
-    this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.toolhead.forceMove',
-      value: !this.forceMove,
-      server: false
-    })
   }
 }
 </script>

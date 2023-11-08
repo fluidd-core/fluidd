@@ -3,12 +3,12 @@
     :title="$t('app.general.title.bedmesh')"
     :lazy="false"
     icon="$bedMesh"
-    :draggable="!fullScreen"
-    :collapsable="!fullScreen"
+    :draggable="!fullscreen"
+    :collapsable="!fullscreen"
     layout-path="dashboard.bed-mesh-card"
   >
     <template
-      v-if="!fullScreen"
+      v-if="!fullscreen"
       #menu
     >
       <app-btn
@@ -53,6 +53,7 @@ import EChartsBedMesh from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import BrowserMixin from '@/mixins/browser'
+import type { AppMeshes } from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -60,8 +61,8 @@ import BrowserMixin from '@/mixins/browser'
   }
 })
 export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly fullScreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   get options () {
     const map_scale = this.scale / 2
@@ -80,7 +81,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     const zBoxMin = -Math.abs(this.mesh[this.matrix].mid - box_scale)
     const zBoxMax = this.mesh[this.matrix].mid + box_scale
 
-    const legends = this.series.reduce((obj, series: any) => {
+    const legends = this.series.reduce((obj, series) => {
       return Object.assign(
         obj,
         {
@@ -117,7 +118,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   get series () {
     const matrix = this.matrix
     const wireframe = this.wireframe
-    const series: any[] = [
+    const series = [
       {
         type: 'surface',
         name: matrix,
@@ -125,7 +126,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
         wireframe: {
           show: wireframe
         },
-        data: this.mesh[matrix].coordinates
+        data: this.mesh[matrix].coordinates,
+        dataShape: this.mesh[matrix].dimensions
       },
       this.createFlatSeries('probed_matrix_flat'),
       this.createFlatSeries('mesh_matrix_flat')
@@ -134,7 +136,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   }
 
   get graphics () {
-    const variance = this.mesh[this.matrix].variance
+    const { range } = this.mesh[this.matrix]
 
     return [{
       type: 'text',
@@ -143,7 +145,7 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
       z: 100,
       silent: true,
       style: {
-        text: `Variance: ${variance.toFixed(4)}`
+        text: `Range: ${range.toFixed(4)}`
       }
     }]
   }
@@ -164,7 +166,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
           color: '#ffffff'
         }
       },
-      data: this.mesh[matrix].coordinates
+      data: this.mesh[matrix].coordinates,
+      dataShape: this.mesh[matrix].dimensions
     }
   }
 
@@ -193,8 +196,8 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   }
 
   // The current processed mesh data, if any.
-  get mesh () {
-    return this.$store.getters['mesh/getCurrentMeshData']
+  get mesh (): AppMeshes {
+    return this.$store.getters['mesh/getCurrentMeshData'] as AppMeshes
   }
 }
 </script>

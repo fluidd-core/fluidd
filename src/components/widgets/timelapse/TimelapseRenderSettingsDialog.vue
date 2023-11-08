@@ -213,8 +213,8 @@ import type { VInput } from '@/types'
 
 @Component({})
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Boolean, required: true })
   readonly renderable!: boolean

@@ -73,7 +73,7 @@ export interface GeneralConfig {
   confirmOnEstop: boolean;
   confirmOnPowerDeviceChange: boolean;
   confirmOnSaveConfigAndRestart: boolean;
-  ignoreDefaultBedMeshPendingConfigurationChanges: boolean;
+  sectionsToIgnorePendingConfigurationChanges: string[];
   dateFormat: string;
   timeFormat: string;
   textSortOrder: TextSortOrder;
@@ -88,6 +88,7 @@ export interface GeneralConfig {
   topNavPowerToggle: null | string;
   showManualProbeDialogAutomatically: boolean;
   showBedScrewsAdjustDialogAutomatically: boolean;
+  showScrewsTiltAdjustDialogAutomatically: boolean;
   forceMoveToggleWarning: boolean;
   enableDiagnostics: boolean;
   thumbnailSize: number;
@@ -191,6 +192,7 @@ export interface GcodePreviewConfig {
   extrusionLineWidth: number;
   moveLineWidth: number;
   retractionIconSize: number;
+  drawOrigin: boolean;
   drawBackground: boolean;
   showAnimations: boolean;
   minLayerHeight: number;

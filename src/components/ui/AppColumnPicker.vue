@@ -58,13 +58,11 @@ export default class AppColumnPicker extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly keyName!: string
 
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<AppTableHeader>, required: true })
   readonly headers!: AppTableHeader[]
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
-
-  value: any[] = []
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   handleToggleHeader (header: AppTableHeader) {
     header.visible = !header.visible

@@ -43,10 +43,10 @@ export default class FilesMixin extends Vue {
    */
   async getGcode (file: AppFile) {
     const sizeInMB = file.size / 1024 / 1024
-    let res: boolean | undefined = true
 
-    if (sizeInMB >= 100) {
-      res = await this.$confirm(
+    const result = (
+      sizeInMB < 100 ||
+      await this.$confirm(
         this.$t('app.gcode.msg.confirm', {
           filename: file.filename,
           size: this.$filters.getReadableFileSizeString(file.size)
@@ -55,9 +55,9 @@ export default class FilesMixin extends Vue {
           color: 'card-heading',
           icon: '$error'
         })
-    }
+    )
 
-    if (res) {
+    if (result) {
       const path = file.path ? `gcodes/${file.path}` : 'gcodes'
       return await this.getFile<string>(file.filename, path, file.size, {
         responseType: 'text',

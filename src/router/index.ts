@@ -14,7 +14,7 @@ import Configure from '@/views/Configure.vue'
 import System from '@/views/System.vue'
 import Settings from '@/views/Settings.vue'
 import AppSettingsNav from '@/components/layout/AppSettingsNav.vue'
-import MacroSettings from '@/components/settings/macros/MacroSettings.vue'
+import MacroCategorySettings from '@/components/settings/macros/MacroCategorySettings.vue'
 import FullscreenCamera from '@/views/FullscreenCamera.vue'
 import NotFound from '@/views/NotFound.vue'
 import Login from '@/views/Login.vue'
@@ -118,7 +118,7 @@ const routes: Array<RouteConfig> = [
           hasSubNavigation: true
         },
         components: {
-          default: MacroSettings,
+          default: MacroCategorySettings,
           navigation: AppSettingsNav
         }
       }

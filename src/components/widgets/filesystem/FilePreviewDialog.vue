@@ -61,8 +61,8 @@ import type { AppFile } from '@/store/files/types'
 
 @Component({})
 export default class FilePreviewDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object })
   readonly file?: AppFile
@@ -70,7 +70,7 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly filename!: string
 
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   readonly extension?: string
 
   @Prop({ type: String, required: true })
@@ -79,10 +79,10 @@ export default class FilePreviewDialog extends Mixins(StateMixin) {
   @Prop({ type: String, required: true })
   readonly type!: string
 
-  @Prop({ type: Number, required: false })
+  @Prop({ type: Number })
   readonly width?: number
 
-  @Prop({ type: Boolean, default: false })
+  @Prop({ type: Boolean })
   readonly readonly?: boolean
 
   get calculatedWidth () {

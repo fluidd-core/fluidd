@@ -8,6 +8,7 @@
         :values="values"
         color="primary"
         :disabled="!klippyReady || printerPrinting || !homed"
+        class="d-flex"
         @click="sendMoveGcode($event)"
       >
         <app-btn

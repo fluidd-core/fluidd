@@ -137,7 +137,7 @@ import type { VInput } from '@/types'
     ParkExtrudeRetractSettings
   }
 })
-export default class LayerMacroSettings extends Mixins(StateMixin) {
+export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   @Ref('parkTimeElement')
   readonly parkTimeElement?: VInput
 

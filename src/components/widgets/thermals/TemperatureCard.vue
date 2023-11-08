@@ -131,8 +131,8 @@ import type { TemperaturePreset } from '@/store/config/types'
   }
 })
 export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
-  @Prop({ type: Boolean, default: false })
-  readonly menuCollapsed!: boolean
+  @Prop({ type: Boolean })
+  readonly menuCollapsed?: boolean
 
   @Ref('thermalchart')
   readonly thermalChartElement!: ThermalChart
@@ -246,18 +246,17 @@ export default class TemperatureCard extends Mixins(StateMixin, BrowserMixin) {
   }
 
   async handleApplyOff () {
-    if (['printing', 'busy', 'paused'].includes(this.$store.getters['printer/getPrinterState'])) {
-      const result = await this.$confirm(
+    const result = (
+      !['printing', 'busy', 'paused'].includes(this.$store.getters['printer/getPrinterState']) ||
+      await this.$confirm(
         this.$tc('app.general.label.heaters_busy'),
         { title: this.$tc('app.general.simple_form.msg.confirm'), color: 'card-heading', icon: '$error' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.sendGcode('TURN_OFF_HEATERS')
     }
-
-    this.sendGcode('TURN_OFF_HEATERS')
   }
 }
 </script>

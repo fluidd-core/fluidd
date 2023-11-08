@@ -33,6 +33,12 @@ Fluidd can be easily installed via [KIAUH](https://github.com/th33xitus/kiauh), 
 
 Please see the [docs](https://docs.fluidd.xyz) for help with installation and configuration.
 
+## Official sponsors
+
+[![LDO](/docs/assets/images/logo_ldo.svg "LDO")](https://ldomotors.com/)
+
+LDO, Excellence in Motion. LDO is an official sponsor of Fluidd.
+
 ### Credit
 
 A big thank you to:

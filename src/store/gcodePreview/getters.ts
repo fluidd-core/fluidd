@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { BBox, GcodePreviewState, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
+import type { BBox, GcodePreviewState, ViewerOptions, Layer, LayerNr, LayerPaths, Move, Part, Point3D } from './types'
 import type { RootState } from '../types'
 import type { AppFile } from '@/store/files/types'
 import { binarySearch, moveToSVGPath } from '@/util/gcode-preview'
@@ -17,8 +17,8 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
     return state.file
   },
 
-  getViewerOption: (state) => (key: string): any => {
-    return (state.viewer as any)[key]
+  getViewerOption: (state) => (key: keyof ViewerOptions): boolean => {
+    return state.viewer[key]
   },
 
   getParserProgress: (state): number => {
@@ -79,7 +79,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
 
   getBounds: (state, getters): BBox => {
     let moves = getters.getMoves
-    const layers = getters.getLayers
+    const layers = getters.getLayers as Layer[]
 
     // ignore first and last layer (priming and parking)
     const moveRangeStart = layers[layers.length > 1 ? 1 : 0]?.move
@@ -230,7 +230,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getLayerPaths: (state, getters) => (layerNr: LayerNr): LayerPaths => {
-    const layers = getters.getLayers
+    const layers = getters.getLayers as Layer[]
 
     return getters.getPaths(layers[layerNr]?.move ?? 0, (layers[layerNr + 1]?.move ?? Infinity) - 1)
   },
@@ -261,7 +261,7 @@ export const getters: GetterTree<GcodePreviewState, RootState> = {
   },
 
   getLayerNrByFilePosition: (state, getters) => (filePosition: number): LayerNr => {
-    const layers = getters.getLayers
+    const layers = getters.getLayers as Layer[]
 
     for (let i = 0; i < layers.length - 1; i++) {
       if (filePosition < layers[i + 1].filePosition) {

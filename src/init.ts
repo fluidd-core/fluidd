@@ -76,17 +76,24 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
   // For each endpoint we have, ping each one to determine if any are active.
   // If none are, we'll force the instance add dialog.
   if (endpoints.length > 0) {
+    const abortController = new AbortController()
+
     try {
+      const { signal } = abortController
+
       return await promiseAny(
         endpoints.map(async (endpoint) => {
           const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
 
-          await webSocketWrapper(apiEndpoints.socketUrl)
+          await webSocketWrapper(apiEndpoints.socketUrl, signal)
 
           return apiEndpoints
         })
       )
-    } catch {}
+    } catch {
+    } finally {
+      abortController.abort()
+    }
   }
 
   return { apiUrl: '', socketUrl: '' }

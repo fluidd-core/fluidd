@@ -228,7 +228,6 @@ app:
       unretract_extra_length: Extra délka detrakce
       unretract_speed: Rychlost detrakce
       used: použito
-      variance: Rozptyl
       velocity: Rychlost
       visible: Viditelné
       z_offset: Odchylka Z

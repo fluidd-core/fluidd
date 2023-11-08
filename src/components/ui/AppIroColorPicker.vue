@@ -58,7 +58,7 @@ export default class AppColorPicker extends Vue {
   @Prop({ type: [Object, String], default: '#ffffff' })
   readonly color!: IroColor
 
-  @Prop({ type: Object, default: () => ({}) })
+  @Prop({ type: Object, default: () => {} })
   readonly options!: ColorPickerProps
 
   @Ref('picker')

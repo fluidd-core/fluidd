@@ -45,7 +45,7 @@ export default class RegisterServiceWorker extends Vue {
     consola.debug('[PWA] registered', registration)
   }
 
-  onRegisterError (e: any) {
+  onRegisterError (e: unknown) {
     consola.error('[PWA] registration error', e)
   }
 

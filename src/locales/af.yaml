@@ -314,7 +314,6 @@ app:
       upload_and_print: Laai Op en Druk
       used: gebruik
       username: Gebruikersnaam
-      variance: Variansie
       velocity: Snelheid
       version_sort: Volgens weergawe
       visible: Sigbaar
@@ -530,7 +529,6 @@ app:
       height: Hoogte
       gcode_coords: Gebruik GCode-koordinate
       icon: Ikoon
-      ignore_default_bed_mesh_pending_configuration_changes: Ignoreer verstek bedmaas hangende konfigurasie veranderinge
       invert_x_control: Keer X-beheer om
       invert_y_control: Keer Y-beheer om
       invert_z_control: Keer Z-beheer om

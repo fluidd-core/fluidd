@@ -55,6 +55,7 @@ declare module 'vue' {
     RolloverLogsDialog: typeof import('./src/components/common/RolloverLogsDialog.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ScrewsTiltAdjustDialog: typeof import('./src/components/common/ScrewsTiltAdjustDialog.vue')['default']
     SocketDisconnected: typeof import('./src/components/common/SocketDisconnected.vue')['default']
     SystemCommands: typeof import('./src/components/common/SystemCommands.vue')['default']
     SystemControl: typeof import('./src/components/common/SystemControl.vue')['default']

@@ -79,7 +79,7 @@ export default class FileSystemBulkActions extends Mixins(StatesMixin) {
   readonly root!: string
 
   // The current path
-  @Prop({ type: String, required: false })
+  @Prop({ type: String })
   readonly path!: string
 }
 </script>

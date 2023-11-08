@@ -72,7 +72,7 @@ export default new Vuex.Store<RootState>({
       Vue.$colorset.forceResetAll()
 
       // Dispatch a reset for each registered module.
-      const p: Promise<any>[] = []
+      const p: Promise<unknown>[] = []
       const keys = payload || Object.keys(this.state)
       keys.forEach((key) => {
         if (this.hasModule(key)) {

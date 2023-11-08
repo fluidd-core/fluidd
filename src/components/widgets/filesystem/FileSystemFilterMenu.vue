@@ -86,8 +86,8 @@ export default class FileSystemFilterMenu extends Vue {
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   availableFilters: Record<FileFilterType, FileFilterEntry> = {
     print_start_time: {

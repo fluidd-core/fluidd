@@ -85,8 +85,8 @@ import webSocketWrapper from '@/util/web-socket-wrapper'
 
 @Component({})
 export default class AddInstanceDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   valid = true
   verifying = false
@@ -115,7 +115,7 @@ export default class AddInstanceDialog extends Mixins(StateMixin) {
   timer = 0
   url = ''
 
-  abortController: AbortController | undefined = undefined
+  abortController?: AbortController = undefined
 
   // Watch for valid url changes.
   @Watch('url')

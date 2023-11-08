@@ -99,6 +99,9 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
+    if (payload?.status?.screws_tilt_adjust) {
+      delete payload.status.screws_tilt_adjust
+    }
     // Accept notifications, and commit the first subscribe.
     commit('socket/setAcceptNotifications', true, { root: true })
     await dispatch('onNotifyStatusUpdate', payload.status)
@@ -196,8 +199,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
 
       if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
       data = JSON.parse(data)
-    } catch (err: any) {
-      data = Object.fromEntries(collectors.map(collector => [collector, err?.message ?? 'Unknown Error']))
+    } catch (err) {
+      data = Object.fromEntries(collectors.map(collector => [collector, (err instanceof Error && err.message) ?? 'Unknown Error']))
     }
 
     data.date = new Date()

@@ -102,7 +102,7 @@ import { SocketActions } from '@/api/socketActions'
 import type { VInput } from '@/types'
 
 @Component({})
-export default class LayerMacroSettings extends Mixins(StateMixin) {
+export default class ParkExtrudeRetractSettings extends Mixins(StateMixin) {
   @Ref('parkRetractDistanceElement')
   readonly parkRetractDistanceElement!: VInput
 

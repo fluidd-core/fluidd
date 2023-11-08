@@ -12,6 +12,8 @@ import { consola } from 'consola'
 import { camelCase } from 'lodash-es'
 import { httpClientActions } from '@/api/httpClientActions'
 import deepMerge from 'deepmerge'
+import type { Store } from 'vuex'
+import type { RootState } from '@/store/types'
 
 export class WebSocketClient {
   url = ''
@@ -26,7 +28,7 @@ export class WebSocketClient {
   pingTimeout: any
   cache: CachedParams | null = null
 
-  constructor (options: Options) {
+  constructor (options: SocketPluginOptions) {
     this.url = options.url
     this.reconnectEnabled = options.reconnectEnabled || false
     this.reconnectInterval = options.reconnectInterval || 1000
@@ -250,7 +252,11 @@ export class WebSocketClient {
 }
 
 export const SocketPlugin = {
-  install (Vue: typeof _Vue, options?: any) {
+  install (Vue: typeof _Vue, options?: SocketPluginOptions) {
+    if (options?.url == null || options.store == null) {
+      throw new Error('options required')
+    }
+
     const socket = new WebSocketClient(options)
     Vue.prototype.$socket = socket
     Vue.$socket = socket
@@ -267,12 +273,12 @@ declare module 'vue/types/vue' {
   }
 }
 
-interface Options {
+interface SocketPluginOptions {
   url: string;
   token?: string;
   reconnectEnabled?: boolean;
   reconnectInterval?: number;
-  store: any;
+  store: Store<RootState>;
 }
 
 export interface NotifyOptions {

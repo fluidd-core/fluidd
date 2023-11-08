@@ -37,8 +37,8 @@ import { Component, Vue, Ref, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class AppUploadAndPrintBtn extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Ref('uploadFile')
   readonly uploadFile!: HTMLInputElement

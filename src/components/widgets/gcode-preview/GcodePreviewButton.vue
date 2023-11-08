@@ -34,8 +34,8 @@ export default class GcodePreviewButton extends Mixins(BrowserMixin) {
   @Prop({ type: String, required: true })
   readonly tooltip!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   get property () {
     return this.$store.getters['gcodePreview/getViewerOption'](this.name)
