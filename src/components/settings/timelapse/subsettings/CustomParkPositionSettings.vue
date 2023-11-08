@@ -12,8 +12,8 @@
           :rules="[
             $rules.required,
             $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(printerMinX),
-            $rules.numberLessThanOrEqual(printerMaxX)
+            $rules.numberGreaterThanOrEqual(bedSize.minX),
+            $rules.numberLessThanOrEqual(bedSize.maxX)
           ]"
           :disabled="getCustomParkPosBlocked('x')"
           hide-details="auto"
@@ -38,8 +38,8 @@
           :rules="[
             $rules.required,
             $rules.numberValid,
-            $rules.numberGreaterThanOrEqual(printerMinY),
-            $rules.numberLessThanOrEqual(printerMaxY)
+            $rules.numberGreaterThanOrEqual(bedSize.minY),
+            $rules.numberLessThanOrEqual(bedSize.maxY)
           ]"
           :disabled="getCustomParkPosBlocked('y')"
           hide-details="auto"
@@ -61,6 +61,7 @@ import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import type { VInput } from '@/types'
+import type { BedSize } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -106,40 +107,15 @@ export default class CustomParkPositionSettings extends Mixins(StateMixin) {
     }
   }
 
-  get kinematics (): string {
-    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
-  }
+  get bedSize (): BedSize {
+    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize | undefined
 
-  get isDelta (): boolean {
-    return ['delta', 'rotary_delta'].includes(this.kinematics)
-  }
-
-  get printerRadius (): number {
-    return this.$store.getters['printer/getPrinterSettings']('printer.print_radius') ?? Infinity
-  }
-
-  get printerMinX () {
-    return this.isDelta
-      ? -this.printerRadius
-      : this.$store.getters['printer/getPrinterSettings']('stepper_x.position_min') ?? 0
-  }
-
-  get printerMaxX () {
-    return this.isDelta
-      ? this.printerRadius
-      : this.$store.getters['printer/getPrinterSettings']('stepper_x.position_max') ?? Infinity
-  }
-
-  get printerMinY () {
-    return this.isDelta
-      ? -this.printerRadius
-      : this.$store.getters['printer/getPrinterSettings']('stepper_y.position_min') ?? 0
-  }
-
-  get printerMaxY () {
-    return this.isDelta
-      ? this.printerRadius
-      : this.$store.getters['printer/getPrinterSettings']('stepper_y.position_max') ?? Infinity
+    return bedSize ?? {
+      minX: -Infinity,
+      minY: -Infinity,
+      maxX: Infinity,
+      maxY: Infinity
+    }
   }
 
   get settings (): TimelapseSettings {

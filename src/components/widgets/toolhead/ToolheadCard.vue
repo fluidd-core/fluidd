@@ -366,12 +366,12 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
   get printerSupportsForceMove () {
     return (
       (this.printerSettings.force_move?.enable_force_move ?? false) &&
-      !this.printerIsDelta
+      !this.hasRoundBed
     )
   }
 
-  get printerIsDelta () {
-    return ['delta', 'rotary_delta'].includes(this.printerSettings.printer.kinematics)
+  get hasRoundBed (): boolean {
+    return this.$store.getters['printer/getHasRoundBed'] as boolean
   }
 
   get showManualProbeDialogAutomatically () {

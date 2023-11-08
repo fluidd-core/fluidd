@@ -225,3 +225,10 @@ export interface SystemStats {
   memavail: number;
   sysload: number;
 }
+
+export interface BedSize {
+  minX: number;
+  minY: number;
+  maxX: number;
+  maxY: number;
+}

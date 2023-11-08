@@ -76,6 +76,8 @@ export const defaultState = (): PrinterState => {
         max_accel_to_decel: 0,
         max_velocity: 0,
         position: [0, 0, 0, 0],
+        axis_minimum: [],
+        axis_maximum: [],
         print_time: 0,
         square_corner_velocity: 0,
         extruder: ''

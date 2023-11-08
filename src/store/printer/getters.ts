@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
@@ -894,6 +894,38 @@ export const getters: GetterTree<PrinterState, RootState> = {
       return true
     } else {
       return false
+    }
+  },
+
+  getHasRoundBed: (_, getters): boolean => {
+    const kinematics = getters.getPrinterSettings('printer.kinematics') || ''
+
+    return [
+      'delta',
+      'polar',
+      'rotary_delta',
+      'winch'
+    ].includes(kinematics)
+  },
+
+  getBedSize: (state): BedSize | undefined => {
+    const { axis_minimum, axis_maximum } = state.printer.toolhead
+
+    if (
+      axis_minimum.length < 2 ||
+      axis_maximum.length < 2
+    ) {
+      return undefined
+    }
+
+    const [minX, minY] = axis_minimum
+    const [maxX, maxY] = axis_maximum
+
+    return {
+      minX,
+      minY,
+      maxX,
+      maxY
     }
   },
 

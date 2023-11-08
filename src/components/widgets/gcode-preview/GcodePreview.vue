@@ -30,11 +30,11 @@
           />
         </pattern>
         <clipPath
-          v-if="isDelta"
+          v-if="hasRoundBed"
           id="clipCircle"
         >
           <circle
-            :r="bedSize.x.max"
+            :r="bedSize.maxX"
             cx="0"
             cy="0"
           />
@@ -115,12 +115,12 @@
           id="background"
         >
           <rect
-            :height="bedSize.y.max - bedSize.y.min"
-            :width="bedSize.x.max - bedSize.x.min"
+            :height="bedSize.maxY - bedSize.minY"
+            :width="bedSize.maxX - bedSize.minX"
             fill="url(#backgroundPattern)"
-            :clip-path="isDelta ? 'url(#clipCircle)' : undefined"
-            :x="bedSize.x.min"
-            :y="bedSize.y.min"
+            :clip-path="hasRoundBed ? 'url(#clipCircle)' : undefined"
+            :x="bedSize.minX"
+            :y="bedSize.minY"
           />
         </g>
         <g v-if="drawOrigin">
@@ -328,6 +328,7 @@ import AppFocusableContainer from '@/components/ui/AppFocusableContainer.vue'
 import ExcludeObjects from '@/components/widgets/exclude-objects/ExcludeObjects.vue'
 import GcodePreviewButton from './GcodePreviewButton.vue'
 import type { AppFile } from '@/store/files/types'
+import type { BedSize } from '@/store/printer/types'
 
 @Component({
   components: {
@@ -362,34 +363,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   panzoom?: PanZoom
 
   panning = false
-
-  get kinematics (): string {
-    return this.$store.getters['printer/getPrinterSettings']('printer.kinematics') || ''
-  }
-
-  get isDelta (): boolean {
-    return ['delta', 'rotary_delta'].includes(this.kinematics)
-  }
-
-  get printerRadius (): number {
-    return this.$store.getters['printer/getPrinterSettings']('printer.print_radius') ?? 100
-  }
-
-  get printerMinX (): number {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_x.position_min') ?? 0
-  }
-
-  get printerMaxX (): number {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_x.position_max') ?? 100
-  }
-
-  get printerMinY (): number {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_y.position_min') ?? 0
-  }
-
-  get printerMaxY (): number {
-    return this.$store.getters['printer/getPrinterSettings']('stepper_y.position_max') ?? 100
-  }
 
   get themeIsDark (): boolean {
     return this.$store.state.config.uiSettings.theme.isDark
@@ -483,31 +456,18 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
     return `scale(${scale.join()}) translate(${transform.join()})`
   }
 
-  get bedSize (): BBox {
-    if (this.isDelta) {
-      const radius = this.printerRadius
+  get hasRoundBed (): boolean {
+    return this.$store.getters['printer/getHasRoundBed'] as boolean
+  }
 
-      return {
-        x: {
-          min: -radius,
-          max: radius
-        },
-        y: {
-          min: -radius,
-          max: radius
-        }
-      }
-    }
+  get bedSize (): BedSize {
+    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize | undefined
 
-    return {
-      x: {
-        min: this.printerMinX,
-        max: this.printerMaxX
-      },
-      y: {
-        min: this.printerMinY,
-        max: this.printerMaxY
-      }
+    return bedSize ?? {
+      minX: 0,
+      minY: 0,
+      maxX: 100,
+      maxY: 100
     }
   }
 
@@ -533,12 +493,12 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
     return {
       x: {
-        min: Math.min(bedSize.x.min, bounds.x.min) - 2,
-        max: Math.max(bedSize.x.max, bounds.x.max) + 2
+        min: Math.min(bedSize.minX, bounds.x.min) - 2,
+        max: Math.max(bedSize.maxX, bounds.x.max) + 2
       },
       y: {
-        min: Math.min(bedSize.y.min, bounds.y.min) - 2,
-        max: Math.max(bedSize.y.max, bounds.y.max) + 2
+        min: Math.min(bedSize.minY, bounds.y.min) - 2,
+        max: Math.max(bedSize.maxY, bounds.y.max) + 2
       }
     }
   }
