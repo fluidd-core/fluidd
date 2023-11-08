@@ -20,6 +20,8 @@ LDO, Excellence in Motion. LDO is an official Sponsor of Fluidd.
 
 ## Support Fluidd development
 
-Fluidd, is driven by passionate volunteers who dedicate their time to improving and expanding its capabilities. Your sponsorship can help us enhance Fluidd, introduce new features, and ensure it remains accessible to all Klipper users.
+Fluidd development is driven by passionate volunteers who dedicate their time to improving and expanding its capabilities.
+
+Your sponsorship can help us enhance Fluidd, introduce new features, and ensure it remains accessible to all Klipper users.
 
 Your support can make a significant impact on the evolution of Fluidd. Please consider [sponsoring Fluidd](https://github.com/sponsors/fluidd-core).
