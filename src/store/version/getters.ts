@@ -1,6 +1,6 @@
-import { GetterTree } from 'vuex'
-import { CommitItem, VersionState } from './types'
-import { RootState } from '../types'
+import type { GetterTree } from 'vuex'
+import type { CommitItem, VersionState } from './types'
+import type { RootState } from '../types'
 import { valid, gt } from 'semver'
 
 export const getters: GetterTree<VersionState, RootState> = {
@@ -24,20 +24,13 @@ export const getters: GetterTree<VersionState, RootState> = {
    */
   hasUpdates: (state, getters, rootState) => {
     const enableNotifications = rootState.config.uiSettings.general.enableVersionNotifications
-    let r = false
-    for (const key in state.version_info) {
-      if (!r) {
-        if (
-          key !== 'system' && // don't check system updates..
-          enableNotifications
-        ) {
-          r = getters.hasUpdate(key)
-        }
-      } else {
-        break
-      }
-    }
-    return r
+
+    return (
+      enableNotifications &&
+      Object.keys(state.version_info)
+        .filter(component => component !== 'system')
+        .some(getters.hasUpdate)
+    )
   },
 
   /**

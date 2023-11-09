@@ -25,8 +25,6 @@ app:
     label:
       current: Aktuális
       item: Név
-      'off': Táblázat Ki
-      'on': Táblázat Be
       power: Kapacitás
       target: Cél
       rate_of_change: Változás
@@ -321,7 +319,6 @@ app:
       upload_and_print: Feltöltés és nyomtatás
       used: használt
       username: Felhasználónév
-      variance: Eltérés
       velocity: Sebesség
       version_sort: Verzió rendezés
       visible: Látható
@@ -540,7 +537,6 @@ app:
       height: Magasság
       gcode_coords: G-Kód koordináták használata
       icon: Ikon
-      ignore_default_bed_mesh_pending_configuration_changes: Az alapértelmezett ágyháló figyelmen kívül hagyása - Függő konfigurációs módosítások
       invert_x_control: Fordított (X) vezérlés
       invert_y_control: Fordított (Y) vezérlés
       invert_z_control: Fordított (Z) vezérlés

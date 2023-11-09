@@ -1,9 +1,10 @@
 import Vue from 'vue'
-import { GetterTree } from 'vuex'
-import { RootState } from '../types'
-import { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper } from './types'
+import type { GetterTree } from 'vuex'
+import type { RootState } from '../types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
+import i18n from '@/plugins/i18n'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -244,6 +245,17 @@ export const getters: GetterTree<PrinterState, RootState> = {
         })
       })
     return mcus
+  },
+
+  getHasExtruder: (state) => {
+    return state.printer.extruder
+  },
+
+  getHasMultipleExtruders: (state) => {
+    return (
+      state.printer.extruder &&
+      state.printer.extruder1
+    )
   },
 
   /**
@@ -722,23 +734,70 @@ export const getters: GetterTree<PrinterState, RootState> = {
 
   getBedScrews: (_, getters) => {
     const config = getters.getPrinterSettings('bed_screws')
-    const screws = []
+    const screws: BedScrews[] = []
 
     for (let index = 1; index <= 99; index++) {
-      const adjust = config[`screw${index}`]
+      const key = `screw${index}`
+      const coords = config[key]
 
-      if (!adjust) {
+      if (!coords) {
         break
       }
 
+      const fine = config[`screw${index}_fine_adjust`]
+      const name = config[`screw${index}_name`]
+      const prettyName = Vue.$filters.startCase(name || i18n.t('app.general.label.screw_number', { index: index + 1 }))
+
       screws.push({
-        adjust,
-        fine: config[`screw${index}_fine_adjust`],
-        name: config[`screw${index}_name`]
+        key,
+        name,
+        prettyName,
+        fine,
+        x: coords[0],
+        y: coords[1]
       })
     }
 
     return screws
+  },
+
+  getScrewsTiltAdjust: (state, getters) => {
+    const config = getters.getPrinterSettings('screws_tilt_adjust')
+    const screws: ScrewsTiltAdjustScrew[] = []
+
+    const { results, ...rest } = state.printer.screws_tilt_adjust
+
+    for (let index = 1; index <= 99; index++) {
+      const key = `screw${index}`
+      const result = results?.[key]
+
+      if (!result) {
+        break
+      }
+
+      const coords = config[key]
+      const name = config[`${key}_name`]
+      const prettyName = Vue.$filters.startCase(name || i18n.t('app.general.label.screw_number', { index: index + 1 }))
+      const [hours, minutes] = result.adjust
+        .split(':')
+        .map(Number)
+      const adjustMinutes = hours * 60 + minutes
+
+      screws.push({
+        key,
+        name,
+        prettyName,
+        ...result,
+        adjustMinutes,
+        x: coords[0],
+        y: coords[1]
+      })
+    }
+
+    return {
+      ...rest,
+      screws
+    } as ScrewsTiltAdjust
   },
 
   /**
@@ -838,11 +897,54 @@ export const getters: GetterTree<PrinterState, RootState> = {
     }
   },
 
+  getHasRoundBed: (_, getters): boolean => {
+    const kinematics = getters.getPrinterSettings('printer.kinematics') || ''
+
+    return [
+      'delta',
+      'polar',
+      'rotary_delta',
+      'winch'
+    ].includes(kinematics)
+  },
+
+  getBedSize: (state): BedSize | undefined => {
+    const { axis_minimum, axis_maximum } = state.printer.toolhead
+
+    if (
+      axis_minimum.length < 2 ||
+      axis_maximum.length < 2
+    ) {
+      return undefined
+    }
+
+    const [minX, minY] = axis_minimum
+    const [maxX, maxY] = axis_maximum
+
+    return {
+      minX,
+      minY,
+      maxX,
+      maxY
+    }
+  },
+
   getIsManualProbeActive: (state) => {
     return state.printer.manual_probe?.is_active || false
   },
 
   getIsBedScrewsAdjustActive: (state) => {
     return state.printer.bed_screws?.is_active || false
+  },
+
+  getHasScrewsTiltAdjustResults: (state) => {
+    const { error, max_deviation, results } = state.printer.screws_tilt_adjust ?? {}
+
+    return (
+      !error &&
+      max_deviation == null &&
+      results &&
+      Object.keys(results).length > 0
+    )
   }
 }

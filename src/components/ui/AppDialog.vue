@@ -62,13 +62,13 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/types'
+import type { VForm } from '@/types'
 import { Component, Vue, Prop, VModel, Ref, PropSync } from 'vue-property-decorator'
 
 @Component({})
 export default class AppDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Boolean })
   readonly disabled?: boolean
@@ -95,13 +95,13 @@ export default class AppDialog extends Vue {
   readonly saveButtonLoading?: boolean
 
   @Prop({ type: Boolean, default: true })
-  readonly scrollable!: boolean
+  readonly scrollable?: boolean
 
   @Prop({ type: Boolean })
   readonly noActions?: boolean
 
   @PropSync('valid', { type: Boolean })
-  readonly validModel?: boolean
+    validModel?: boolean
 
   @Ref('form')
   readonly form!: VForm

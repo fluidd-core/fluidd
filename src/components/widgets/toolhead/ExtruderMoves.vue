@@ -82,7 +82,7 @@
 import { Component, Mixins, Ref, Watch } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { VForm } from '@/types'
+import type { VForm } from '@/types'
 
 @Component({})
 export default class ExtruderMoves extends Mixins(StateMixin, ToolheadMixin) {

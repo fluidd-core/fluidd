@@ -53,7 +53,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import ExtruderStepperSync from './ExtruderStepperSync.vue'
 import PressureAdvanceAdjust from './PressureAdvanceAdjust.vue'
-import { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
+import type { KnownExtruder, ExtruderStepper } from '@/store/printer/types'
 
 @Component({
   components: {

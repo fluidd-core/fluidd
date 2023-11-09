@@ -121,18 +121,14 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import {
-  TimelapseMode,
-  TimelapseSettings as TimelapseSettingsType
-} from '@/store/timelapse/types'
+import type { TimelapseMode, TimelapseSettings as TimelapseSettingsType } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import HyperlapseSettings from '@/components/settings/timelapse/subsettings/modes/HyperlapseSettings.vue'
-import { CameraConfig } from '@/store/cameras/types'
+import type { CameraConfig } from '@/store/cameras/types'
 import ToolheadParkingSettings from '@/components/settings/timelapse/subsettings/ToolheadParkingSettings.vue'
 import { defaultWritableSettings } from '@/store/timelapse/state'
-import TimelapseRenderSettingsDialog
-  from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
-import { VInput } from '@/types'
+import TimelapseRenderSettingsDialog from '@/components/widgets/timelapse/TimelapseRenderSettingsDialog.vue'
+import type { VInput } from '@/types'
 
 @Component({
   components: {

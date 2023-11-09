@@ -22,11 +22,7 @@ export interface GcodeCommands {
   [key: string]: string;
 }
 
-export enum ConsoleFilterType {
-  Contains,
-  StartsWith,
-  Expression
-}
+export type ConsoleFilterType = 'contains' | 'starts-with' | 'expression'
 
 export interface ConsoleFilter {
   id: string;

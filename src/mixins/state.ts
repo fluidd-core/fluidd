@@ -107,14 +107,16 @@ export default class StateMixin extends Vue {
 
   async emergencyStop () {
     const confirmOnEstop = this.$store.state.config.uiSettings.general.confirmOnEstop
-    let res: boolean | undefined = true
-    if (confirmOnEstop) {
-      res = await this.$confirm(
+
+    const result = (
+      !confirmOnEstop ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-    }
-    if (res) {
+    )
+
+    if (result) {
       SocketActions.printerEmergencyStop()
     }
   }

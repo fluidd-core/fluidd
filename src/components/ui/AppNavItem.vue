@@ -59,13 +59,13 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
   readonly title!: string
 
   @Prop({ type: String })
-  readonly to!: string
+  readonly to?: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly exact!: boolean
+  @Prop({ type: Boolean })
+  readonly exact?: boolean
 
   @Prop({ type: String })
-  readonly icon!: string
+  readonly icon?: string
 }
 
 </script>

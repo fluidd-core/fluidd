@@ -24,8 +24,6 @@ app:
     label:
       current: Corrente
       item: Item
-      'off': Gráfico desligado
-      'on': Gráfico ligado
       power: Energia
       target: Alvo
       rate_of_change: Mudança
@@ -180,6 +178,7 @@ app:
       'off': Desligado
       power: Energia
       printers: Impressoras
+      range: Amplitude
       requested_speed: Velocidade requerida
       save_as: Salvar como
       services: Serviços
@@ -194,7 +193,6 @@ app:
       total_time_avg: Média por impressão
       uncategorized: Sem categoria
       used: usado
-      variance: Variação
       velocity: Velocidade
       z_offset: Z Offset
     simple_form:

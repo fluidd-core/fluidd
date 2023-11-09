@@ -26,8 +26,8 @@ import StateMixin from '@/mixins/state'
 
 @Component({})
 export default class FileNameDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly title!: string

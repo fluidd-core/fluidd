@@ -58,11 +58,11 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
-import { QueuedJob } from '@/store/jobQueue/types'
+import type { QueuedJob } from '@/store/jobQueue/types'
 import { SocketActions } from '@/api/socketActions'
-import { AppTableHeader } from '@/types'
+import type { AppTableHeader } from '@/types'
 import StateMixin from '@/mixins/state'
-import { DataTableItemProps } from 'vuetify'
+import type { DataTableItemProps } from 'vuetify'
 
 type QueueJobWithKey = QueuedJob & {
   key: string
@@ -70,16 +70,16 @@ type QueueJobWithKey = QueuedJob & {
 
 @Component({})
 export default class JobQueueBrowser extends Mixins(StateMixin) {
-  @VModel({ type: Array, default: [] })
-    selected!: any[]
+  @VModel({ type: Array<QueuedJob>, default: () => [] })
+    selected!: QueuedJob[]
 
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<AppTableHeader>, required: true })
   readonly headers!: AppTableHeader[]
 
   get jobs () {
@@ -110,7 +110,7 @@ export default class JobQueueBrowser extends Mixins(StateMixin) {
       }))
   }
 
-  handleRowClick (_data: any, props: DataTableItemProps, event: MouseEvent) {
+  handleRowClick (_data: unknown, props: DataTableItemProps, event: MouseEvent) {
     this.$emit('row-click', props.item, event)
   }
 

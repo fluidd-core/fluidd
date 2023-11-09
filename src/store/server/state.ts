@@ -1,4 +1,4 @@
-import { ServerState } from './types'
+import type { ServerState } from './types'
 
 export const defaultState = (): ServerState => {
   return {

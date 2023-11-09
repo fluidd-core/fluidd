@@ -25,9 +25,9 @@
         </app-btn>
       </app-setting>
 
-      <v-divider />
+      <template v-for="camera in cameras">
+        <v-divider :key="camera.id + '_divider'" />
 
-      <template v-for="(camera, i) in cameras">
         <app-setting
           :key="camera.id"
           :r-cols="2"
@@ -57,11 +57,6 @@
             </v-icon>
           </app-btn>
         </app-setting>
-
-        <v-divider
-          v-if="i < cameras.length - 1 && cameras.length > 0"
-          :key="camera.id + '_divider'"
-        />
       </template>
 
       <v-divider />
@@ -96,7 +91,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { CameraConfig } from '@/store/cameras/types'
+import type { CameraConfig } from '@/store/cameras/types'
 import CameraConfigDialog from './CameraConfigDialog.vue'
 import { Globals } from '@/globals'
 

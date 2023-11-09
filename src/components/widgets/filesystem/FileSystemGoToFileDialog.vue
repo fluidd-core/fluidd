@@ -47,7 +47,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, VModel, Watch } from 'vue-property-decorator'
 import { SocketActions } from '@/api/socketActions'
-import { MoonrakerRootFile } from '@/store/files/types'
+import type { MoonrakerRootFile } from '@/store/files/types'
 import getFilePaths from '@/util/get-file-paths'
 import StateMixin from '@/mixins/state'
 
@@ -59,8 +59,8 @@ type File = MoonrakerRootFile &{
 
 @Component({})
 export default class FileSystemGoToFileDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string

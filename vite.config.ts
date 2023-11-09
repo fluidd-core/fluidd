@@ -27,7 +27,8 @@ export default defineConfig({
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
+        rollupFormat: 'iife'
       },
       manifest: {
         name: 'fluidd',
@@ -144,6 +145,8 @@ export default defineConfig({
       { find: /^vue$/, replacement: 'vue/dist/vue.runtime.common.js' }
     ]
   },
+
+  base: './',
 
   server: {
     host: '0.0.0.0',

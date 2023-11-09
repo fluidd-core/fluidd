@@ -23,7 +23,7 @@ import { InlineSvgPlugin } from 'vue-inline-svg'
 
 // Init.
 import { appInit } from './init'
-import { InitConfig } from './store/config/types'
+import type { InitConfig } from './store/config/types'
 
 // Import plugins
 import { HttpClientPlugin } from './plugins/httpClient'

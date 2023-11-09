@@ -1,13 +1,13 @@
 import _Vue from 'vue'
 import VueRouter from 'vue-router'
 import { camelCase, startCase, capitalize, isFinite } from 'lodash-es'
-import { ApiConfig, TextSortOrder } from '@/store/config/types'
+import type { ApiConfig, TextSortOrder } from '@/store/config/types'
 import { TinyColor } from '@ctrl/tinycolor'
-import { DateFormats, Globals, TimeFormats, Waits } from '@/globals'
+import { DateFormats, Globals, TimeFormats, Waits, type DateTimeFormat } from '@/globals'
 import i18n from '@/plugins/i18n'
 import type { TranslateResult } from 'vue-i18n'
 import store from '@/store'
-import { FileBrowserEntry } from '@/store/files/types'
+import type { FileBrowserEntry } from '@/store/files/types'
 import versionStringCompare from '@/util/version-string-compare'
 
 /**
@@ -67,16 +67,20 @@ export const Filters = {
     return (isNeg) ? '-' + r : r
   },
 
-  getDateFormat: (override?: string) => {
+  getNavigatorLocales: () => {
+    return navigator.languages ?? [navigator.language]
+  },
+
+  getDateFormat: (override?: string): DateTimeFormat => {
     return {
-      locale: i18n.locale,
+      locales: Filters.getNavigatorLocales(),
       ...DateFormats[override ?? store.state.config.uiSettings.general.dateFormat]
     }
   },
 
-  getTimeFormat: (override?: string) => {
+  getTimeFormat: (override?: string): DateTimeFormat => {
     return {
-      locale: i18n.locale,
+      locales: Filters.getNavigatorLocales(),
       ...TimeFormats[override ?? store.state.config.uiSettings.general.timeFormat]
     }
   },
@@ -85,7 +89,7 @@ export const Filters = {
     const date = new Date(value)
     const dateFormat = Filters.getDateFormat()
 
-    return date.toLocaleDateString(dateFormat.locale, {
+    return date.toLocaleDateString(dateFormat.locales, {
       ...dateFormat.options,
       ...options
     })
@@ -95,7 +99,7 @@ export const Filters = {
     const date = new Date(value)
     const timeFormat = Filters.getTimeFormat()
 
-    return date.toLocaleTimeString(timeFormat.locale, {
+    return date.toLocaleTimeString(timeFormat.locales, {
       ...timeFormat.options,
       ...options
     })
@@ -109,11 +113,16 @@ export const Filters = {
   },
 
   formatDateTime: (value: number | string | Date, options?: Intl.DateTimeFormatOptions) => {
-    const date = new Date(value)
     const timeFormat = Filters.getTimeFormat()
     const dateFormat = Filters.getDateFormat()
 
-    return date.toLocaleDateString(dateFormat.locale, {
+    if (timeFormat.locales !== dateFormat.locales) {
+      return Filters.formatDate(value, options) + ' ' + Filters.formatTime(value, options)
+    }
+
+    const date = new Date(value)
+
+    return date.toLocaleDateString(dateFormat.locales, {
       ...dateFormat.options,
       ...timeFormat.options,
       ...options
@@ -148,7 +157,7 @@ export const Filters = {
   },
 
   formatRelativeTime (value: number, unit: Intl.RelativeTimeFormatUnit, options?: Intl.RelativeTimeFormatOptions) {
-    const rtf = new Intl.RelativeTimeFormat(i18n.locale, {
+    const rtf = new Intl.RelativeTimeFormat(Filters.getNavigatorLocales() as string[], {
       numeric: 'auto',
       ...options
     })
@@ -271,16 +280,36 @@ export const Filters = {
   },
 
   /**
-   * Formats a number representing mm to human readable distance.
+   * Formats a number (in Hz) to a human readable frequency.
    */
   getReadableFrequencyString (frequencyInHz: number) {
     let i = 0
-    const frequencyUnits = [' Hz', ' KHz', ' MHz', ' GHz']
+    const frequencyUnits = [' Hz', ' kHz', ' MHz', ' GHz', ' THz']
     while (frequencyInHz >= 1000) {
       frequencyInHz = frequencyInHz / 1000
       i++
     }
     return frequencyInHz.toFixed() + frequencyUnits[i]
+  },
+
+  /**
+   * Formats a number (in ohms) to a human readable resistance.
+   */
+  getReadableResistanceString (resistanceInOhms: number) {
+    let i = 0
+    const resistanceUnits = [' Ω', ' kΩ', ' MΩ', ' GΩ', ' TΩ']
+    while (resistanceInOhms >= 1000) {
+      resistanceInOhms = resistanceInOhms / 1000
+      i++
+    }
+    return resistanceInOhms.toFixed(1) + resistanceUnits[i]
+  },
+
+  /**
+   * Formats a number (in hPa) to human readable atmospheric pressure.
+   */
+  getReadableAtmosphericPressureString (pressumeInHPa: number) {
+    return pressumeInHPa.toFixed(1) + ' hPa'
   },
 
   /**
@@ -392,11 +421,11 @@ export const Filters = {
 }
 
 export const Rules = {
-  required (v: any) {
+  required (v: unknown) {
     return ((v ?? '') !== '') || i18n.t('app.general.simple_form.error.required')
   },
 
-  numberValid (v: any) {
+  numberValid (v: unknown) {
     return !isNaN(+(v ?? NaN)) || i18n.t('app.general.simple_form.error.invalid_number')
   },
 
@@ -433,14 +462,14 @@ export const Rules = {
   },
 
   lengthGreaterThanOrEqual (min: number) {
-    return (v: string | any[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
+    return (v: string | unknown[]) => v.length >= min || i18n.t('app.general.simple_form.error.min', { min })
   },
 
   lengthLessThanOrEqual (max: number) {
-    return (v: string | any[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
+    return (v: string | unknown[]) => v.length <= max || i18n.t('app.general.simple_form.error.max', { max })
   },
 
-  numberArrayValid (v: any[]) {
+  numberArrayValid (v: unknown[]) {
     return !v.some(i => i === '' || isNaN(+(i ?? NaN))) || i18n.t('app.general.simple_form.error.arrayofnums')
   },
 

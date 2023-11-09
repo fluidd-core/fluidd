@@ -1,4 +1,4 @@
-import { PrinterState } from './types'
+import type { PrinterState } from './types'
 
 /**
  * Maintains the state of the printer, by way of moonraker notifications.
@@ -76,6 +76,8 @@ export const defaultState = (): PrinterState => {
         max_accel_to_decel: 0,
         max_velocity: 0,
         position: [0, 0, 0, 0],
+        axis_minimum: [],
+        axis_maximum: [],
         print_time: 0,
         square_corner_velocity: 0,
         extruder: ''
@@ -113,6 +115,7 @@ export const defaultState = (): PrinterState => {
         current_screw: 0,
         accepted_screws: 0
       },
+      screws_tilt_adjust: {},
       fan: {
         speed: 0
       },

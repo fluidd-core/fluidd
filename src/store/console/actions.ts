@@ -1,7 +1,7 @@
-import { ActionTree } from 'vuex'
+import type { ActionTree } from 'vuex'
 import { Globals } from '@/globals'
-import { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
-import { RootState } from '../types'
+import type { ConsoleEntry, ConsoleFilter, ConsoleState } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 import DOMPurify from 'dompurify'
 

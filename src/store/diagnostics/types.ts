@@ -1,4 +1,4 @@
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 
 export interface DiagnosticsCardContainer {
   [key: string]: DiagnosticsCardConfig[]

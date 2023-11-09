@@ -1,6 +1,6 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import { Spool, SpoolmanState, SpoolSelectionDialogState } from '@/store/spoolman/types'
+import type { Spool, SpoolmanState, SpoolSelectionDialogState } from '@/store/spoolman/types'
 
 export const mutations: MutationTree<SpoolmanState> = {
   /**

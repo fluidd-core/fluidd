@@ -1,4 +1,4 @@
-import { TimelapseState, TimelapseWritableSettings } from './types'
+import type { TimelapseState, TimelapseWritableSettings } from './types'
 
 export const defaultWritableSettings = (): TimelapseWritableSettings => {
   return {

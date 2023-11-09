@@ -24,8 +24,6 @@ app:
     label:
       current: درجة الحرارة
       item: الاسم
-      'off': اخفاء الرسم البياني
-      'on': عرض الرسم البياني
       power: الطاقة
       target: الهدف
     tooltip:
@@ -219,7 +217,6 @@ app:
       uncategorized: غير مصنف
       unretract_speed: سرعة الكسر
       used: مستخدم
-      variance: التباين
       velocity: السرعة
       visible: ظاهر
       z_offset: موازنة Z

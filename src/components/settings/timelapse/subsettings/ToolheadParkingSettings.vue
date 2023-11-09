@@ -125,11 +125,11 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
+import type { ParkPosition, TimelapseSettings } from '@/store/timelapse/types'
 import { SocketActions } from '@/api/socketActions'
 import ParkExtrudeRetractSettings from './ParkExtrudeRetractSettings.vue'
 import CustomParkPositionSettings from './CustomParkPositionSettings.vue'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 
 @Component({
   components: {
@@ -137,7 +137,7 @@ import { VInput } from '@/types'
     ParkExtrudeRetractSettings
   }
 })
-export default class LayerMacroSettings extends Mixins(StateMixin) {
+export default class ToolheadParkingSettings extends Mixins(StateMixin) {
   @Ref('parkTimeElement')
   readonly parkTimeElement?: VInput
 

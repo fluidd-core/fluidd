@@ -1,5 +1,5 @@
-import { MutationTree } from 'vuex'
-import { WebcamConfig, WebcamsState } from './types'
+import type { MutationTree } from 'vuex'
+import type { WebcamConfig, WebcamsState } from './types'
 import { defaultState } from './state'
 
 export const mutations: MutationTree<WebcamsState> = {

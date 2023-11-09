@@ -55,7 +55,7 @@ import ConsoleCard from '@/components/widgets/console/ConsoleCard.vue'
 import OutputsCard from '@/components/widgets/outputs/OutputsCard.vue'
 import PrinterLimitsCard from '@/components/widgets/limits/PrinterLimitsCard.vue'
 import RetractCard from '@/components/widgets/retract/RetractCard.vue'
-import { LayoutConfig } from '@/store/layout/types'
+import type { LayoutConfig } from '@/store/layout/types'
 import BedMeshCard from '@/components/widgets/bedmesh/BedMeshCard.vue'
 import GcodePreviewCard from '@/components/widgets/gcode-preview/GcodePreviewCard.vue'
 import JobQueueCard from '@/components/widgets/job-queue/JobQueueCard.vue'
@@ -118,6 +118,14 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['cameras/getEnabledCameras'].length > 0
   }
 
+  get hasHeatersOrTemperatureSensors () {
+    return (
+      this.$store.getters['printer/getHeaters'].length > 0 ||
+      this.$store.getters['printer/getOutputs'](['temperature_fan']).length > 0 ||
+      this.$store.getters['printer/getSensors'].length > 0
+    )
+  }
+
   get hasSensors (): boolean {
     return this.$store.getters['sensors/getSensors'].length > 0
   }
@@ -138,8 +146,8 @@ export default class Dashboard extends Mixins(StateMixin) {
     return this.$store.getters['spoolman/getSupported']
   }
 
-  get macros () {
-    return this.$store.getters['macros/getVisibleMacros']
+  get hasMacros () {
+    return this.$store.getters['macros/getVisibleMacros'].length > 0
   }
 
   get inLayout (): boolean {
@@ -194,13 +202,14 @@ export default class Dashboard extends Mixins(StateMixin) {
     // Take care of special cases.
     if (this.inLayout) return false
     if (item.id === 'camera-card' && !this.hasCameras) return true
-    if (item.id === 'macros-card' && (this.macros.length <= 0)) return true
+    if (item.id === 'macros-card' && !this.hasMacros) return true
     if (item.id === 'printer-status-card' && !this.klippyReady) return true
     if (item.id === 'job-queue-card' && !this.supportsJobQueue) return true
     if (item.id === 'retract-card' && !this.firmwareRetractionEnabled) return true
     if (item.id === 'bed-mesh-card' && !this.supportsBedMesh) return true
     if (item.id === 'spoolman-card' && !this.supportsSpoolman) return true
     if (item.id === 'sensors-card' && !this.hasSensors) return true
+    if (item.id === 'temperature-card' && !this.hasHeatersOrTemperatureSensors) return true
 
     // Otherwise return the opposite of whatever the enabled state is.
     return !item.enabled

@@ -33,7 +33,7 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { RunoutSensor } from '@/store/printer/types'
+import type { RunoutSensor } from '@/store/printer/types'
 
 @Component({})
 export default class RunoutSensorsCard extends Mixins(StateMixin) {

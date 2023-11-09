@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       active: active
+      base: base
       box_scale: Box scale
       flat_surface: Show flat plane
       mesh_matrix: Mesh matrix
@@ -25,22 +26,21 @@ app:
     label:
       current: Actual
       item: Name
-      'off': Chart off
-      'on': Chart on
       power: Power
       target: Target
       rate_of_change: Change
     tooltip:
       help: >-
-        Hold shift to zoom.<br />Click an item to toggle in the graph.<br
+        Hold <kbd>Shift</kbd> to zoom.<br />Click an item to toggle in the graph.<br
         />Click a power to toggle in the graph.
   console:
     label:
       auto_scroll: Auto scroll
       flip_layout: Flip layout
       hide_temp_waits: Hide temp waits
-    placeholder:
-      command: '''tab'' for autocomplete, ''help'' for commands ''arrows'' for history'
+    tooltip:
+      help: >-
+        Enter "help" for commands<br />Use <kbd>Tab</kbd> for autocomplete<br />Use <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> for history
   endpoint:
     error:
       cant_connect: >-
@@ -169,6 +169,7 @@ app:
       login: Login
       logout: Logout
       more_information: More information
+      multiply: Multiply
       pause: Pause
       preheat: Preheat
       presets: Presets
@@ -193,6 +194,7 @@ app:
       restart_service_moonraker: Restart Moonraker
       resume: Resume
       retract: Retract
+      retry: Retry
       return_dashboard: Return to the dashboard
       save: Save
       save_as: Save As
@@ -289,6 +291,7 @@ app:
       pressure_advance: Pressure Advance
       printers: Printers
       progress: Progress
+      range: Range
       requested_speed: Speed
       retract_length: Retract Length
       retract_speed: Retract Speed
@@ -320,7 +323,6 @@ app:
       upload_and_print: Upload and Print
       used: used
       username: Username
-      variance: Variance
       velocity: Velocity
       version_sort: Version sort
       visible: Visible
@@ -453,6 +455,10 @@ app:
   job_queue:
     msg:
       confirm: Are you sure? This will clear the entire printer queue
+    label:
+      number_of_copies: Number of copies
+    title:
+      multiply_job: Multiply Job | Multiply Jobs
   printer:
     state:
       busy: Busy
@@ -464,6 +470,8 @@ app:
       printing: Printing
       ready: Ready
       standby: Standby
+    title:
+      printer_status: Printer Status
   setting:
     btn:
       add_camera: Add Camera
@@ -523,6 +531,7 @@ app:
       default_toolhead_z_speed: Default toolhead Z speed
       dotted: Dotted
       draw_background: Draw Background
+      draw_origin: Draw origin
       enable: Enable
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
@@ -538,7 +547,6 @@ app:
       height: Height
       gcode_coords: Use GCode Coordinates
       icon: Icon
-      ignore_default_bed_mesh_pending_configuration_changes: Ignore default bed mesh Pending Configuration Changes
       invert_x_control: Invert X control
       invert_y_control: Invert Y control
       invert_z_control: Invert Z control
@@ -562,8 +570,10 @@ app:
       retraction_icon_size: Retraction Icon Size
       right_y: Right Y-Axis
       save_and_restore_view_state: Save and restore view state
+      sections_to_ignore_pending_configuration_changes: Sections to ignore Pending Configuration Changes
       show_animations: Show animations
       show_barometric_pressure: Show barometric pressure
+      show_chart: Show chart
       show_code_lens: Show CodeLens
       show_gas_resistance: Show gas resistance
       show_legend: Show legend
@@ -592,6 +602,7 @@ app:
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
+      show_screws_tilt_adjust_dialog_automatically: Show Screws Tilt Adjust dialog automatically
     timer_options:
       duration: Duration only
       filament: Filament Estimation
@@ -613,6 +624,7 @@ app:
       gcode_coords: Use GCode position instead of toolhead position on dashboard
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
+      show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
   socket:
     msg:
       connecting: Connecting to moonraker...
@@ -656,6 +668,7 @@ app:
     title:
       bed_screws_adjust: Bed Screws Adjust
       manual_probe: Manual Probe
+      screws_tilt_adjust: Screws Tilt Adjust
     tooltip:
       absolute_positioning: Absolute Positioning
       extruder_disabled: extruder disabled, below min_extrude_temp (%{min}<small>°C</small>)

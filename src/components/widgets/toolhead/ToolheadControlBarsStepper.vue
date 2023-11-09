@@ -20,7 +20,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { Stepper } from '@/store/printer/types'
+import type { Stepper } from '@/store/printer/types'
 
 @Component({})
 export default class ToolheadControlBarsStepper extends Mixins(StateMixin) {

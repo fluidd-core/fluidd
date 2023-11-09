@@ -19,12 +19,12 @@
     </template>
 
     <template v-if="bedMeshProfiles.length > 0">
-      <v-simple-table class="no-hover">
+      <v-simple-table>
         <thead>
           <tr>
             <th>{{ $t('app.general.label.name') }}</th>
             <th>&nbsp;</th>
-            <th>{{ $t('app.general.label.variance') }}</th>
+            <th>{{ $t('app.general.label.range') }}</th>
             <th>&nbsp;</th>
           </tr>
         </thead>
@@ -47,7 +47,7 @@
             </td>
             <td class="focus--text">
               <span>
-                {{ item.variance.toFixed(4) }}
+                {{ item.range.toFixed(4) }}
               <!-- / {{ mesh.min }} / {{ mesh.mid }} / {{ mesh.max }} -->
               </span>
             </td>
@@ -280,7 +280,7 @@ import { Component, Mixins, Watch } from 'vue-property-decorator'
 import SaveMeshDialog from './SaveMeshDialog.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
+import type { MeshState, BedMeshProfile, KlipperBedMesh, MatrixType } from '@/store/mesh/types'
 
 @Component({
   components: {
@@ -368,33 +368,30 @@ export default class BedMesh extends Mixins(StateMixin, ToolheadMixin) {
   }
 
   async clearMesh () {
-    if (this.printerPrinting) {
-      const result = await this.$confirm(
+    const result = (
+      !this.printerPrinting ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
-
-      if (!result) {
-        return
-      }
+    )
+    if (result) {
+      this.sendGcode('BED_MESH_CLEAR')
     }
-
-    this.sendGcode('BED_MESH_CLEAR')
   }
 
   async loadProfile (name: string) {
-    if (this.printerPrinting) {
-      const result = await this.$confirm(
+    const result = (
+      !this.printerPrinting ||
+      await this.$confirm(
         this.$tc('app.general.simple_form.msg.confirm'),
         { title: this.$tc('app.general.label.confirm'), color: 'card-heading', icon: '$error' }
       )
+    )
 
-      if (!result) {
-        return
-      }
+    if (result) {
+      this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
     }
-
-    this.sendGcode(`BED_MESH_PROFILE LOAD="${name}"`)
   }
 
   removeProfile (name: string) {

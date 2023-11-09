@@ -8,7 +8,7 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
-        v-show="!dot"
+        v-if="!dot"
         v-bind="attrs"
         :color="controlColor.hexString"
         outlined
@@ -19,7 +19,7 @@
       </v-btn>
 
       <v-icon
-        v-show="dot"
+        v-else
         v-bind="attrs"
         :color="controlColor.hexString"
         v-on="on"
@@ -165,14 +165,14 @@ export default class AppColorPicker extends Vue {
   @Prop({ type: String, required: true })
   readonly primary!: string
 
-  @Prop({ type: String, required: false })
-  readonly white!: string
+  @Prop({ type: String })
+  readonly white?: string
 
   @Prop({ type: String, default: '' })
   readonly title!: string
 
-  @Prop({ type: Boolean, default: false })
-  readonly dot!: boolean
+  @Prop({ type: Boolean })
+  readonly dot?: boolean
 
   @Prop({ type: String, default: 'RGB' })
   readonly supportedChannels!: string
@@ -264,7 +264,7 @@ export default class AppColorPicker extends Vue {
 
   created () {
     this.primaryColor = this.getColor(this.primary)
-    if (this.supportedChannels.includes('W')) this.whiteColor = this.getColor(this.white)
+    if (this.supportedChannels.includes('W') && this.white) this.whiteColor = this.getColor(this.white)
   }
 
   getColor (color: string) {
@@ -312,10 +312,12 @@ export default class AppColorPicker extends Vue {
   }
 
   relativeMove (newPosition: PointerPosition) {
-    const parent = this.card.$el.parentElement as HTMLElement
+    const parent = this.card.$el.parentElement
 
-    parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
-    parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+    if (parent) {
+      parent.style.left = (parseFloat(parent.style.left) + (newPosition.x - this.lastPointerPosition.x)) + 'px'
+      parent.style.top = (parseFloat(parent.style.top) + (newPosition.y - this.lastPointerPosition.y)) + 'px'
+    }
   }
 
   mouseMove (event: MouseEvent) {

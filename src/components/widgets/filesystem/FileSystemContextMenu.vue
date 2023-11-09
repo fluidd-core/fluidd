@@ -190,15 +190,15 @@
 import { Component, Mixins, Prop, VModel } from 'vue-property-decorator'
 import FilesMixin from '@/mixins/files'
 import StateMixin from '@/mixins/state'
-import { FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
 
 /**
  * NOTE: Generally, moonraker expects the paths to include the root.
  */
 @Component({})
 export default class FileSystemContextMenu extends Mixins(StateMixin, FilesMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: String, required: true })
   readonly root!: string

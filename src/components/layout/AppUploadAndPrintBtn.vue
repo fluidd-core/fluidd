@@ -32,13 +32,13 @@
 </template>
 
 <script lang="ts">
-import { RootProperties } from '@/store/files/types'
+import type { RootProperties } from '@/store/files/types'
 import { Component, Vue, Ref, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class AppUploadAndPrintBtn extends Vue {
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Ref('uploadFile')
   readonly uploadFile!: HTMLInputElement
@@ -51,15 +51,13 @@ export default class AppUploadAndPrintBtn extends Vue {
     return this.rootProperties.accepts.join(',')
   }
 
-  fileChanged (e: Event) {
-    const target = e.target as HTMLInputElement
-
-    if (target) {
-      if (target.files?.length === 1) {
-        this.$emit('upload', target.files[0])
+  fileChanged (event: Event) {
+    if (event.target instanceof HTMLInputElement) {
+      if (event.target.files?.length === 1) {
+        this.$emit('upload', event.target.files[0])
       }
 
-      target.value = ''
+      event.target.value = ''
     }
   }
 }

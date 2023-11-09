@@ -1,6 +1,6 @@
-import { ActionTree } from 'vuex'
-import { WebcamConfig, WebcamsState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { WebcamConfig, WebcamsState } from './types'
+import type { RootState } from '../types'
 import { SocketActions } from '@/api/socketActions'
 
 export const actions: ActionTree<WebcamsState, RootState> = {

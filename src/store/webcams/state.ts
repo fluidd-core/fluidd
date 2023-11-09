@@ -1,4 +1,4 @@
-import { WebcamsState } from './types'
+import type { WebcamsState } from './types'
 
 export const defaultState = (): WebcamsState => {
   return {

@@ -48,12 +48,12 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { AppUser } from '@/store/auth/types'
+import type { AppUser } from '@/store/auth/types'
 
 @Component({})
 export default class UserConfigDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly user!: AppUser

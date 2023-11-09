@@ -121,7 +121,7 @@
 
 <script lang="ts">
 import StateMixin from '@/mixins/state'
-import { RootProperties } from '@/store/files/types'
+import type { RootProperties } from '@/store/files/types'
 import { getFilesWithPathFromHTMLInputElement } from '@/util/file-system-entry'
 import { Component, Prop, Ref, Mixins } from 'vue-property-decorator'
 
@@ -131,8 +131,8 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
   readonly root!: string
 
   // If the controls are disabled or not.
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
   @Ref('uploadFile')
   readonly uploadFile!: HTMLInputElement
@@ -162,17 +162,15 @@ export default class FileSystemAddMenu extends Mixins(StateMixin) {
     this.uploadFile.click()
   }
 
-  async fileChanged (e: Event) {
-    const target = e.target as HTMLInputElement
-
-    if (target) {
-      const files = await getFilesWithPathFromHTMLInputElement(target)
+  async fileChanged (event: Event) {
+    if (event.target instanceof HTMLInputElement) {
+      const files = await getFilesWithPathFromHTMLInputElement(event.target)
 
       if (files) {
         this.$emit('upload', files, this.andPrint)
       }
 
-      target.value = ''
+      event.target.value = ''
     }
   }
 }

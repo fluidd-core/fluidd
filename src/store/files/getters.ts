@@ -1,7 +1,7 @@
-import { GetterTree } from 'vuex'
-import { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
-import { RootState } from '../types'
-import { HistoryItem } from '../history/types'
+import type { GetterTree } from 'vuex'
+import type { AppDirectory, AppFileWithMeta, FileBrowserEntry, FilesState, RootProperties } from './types'
+import type { RootState } from '../types'
+import type { HistoryItem } from '../history/types'
 import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
 
 export const getters: GetterTree<FilesState, RootState> = {

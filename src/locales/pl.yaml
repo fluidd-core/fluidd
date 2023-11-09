@@ -24,8 +24,6 @@ app:
     label:
       current: Aktualnie
       item: Nazwa
-      'off': Ukryj wykres
-      'on': Pokaż wykres
       power: Moc
       rate_of_change: Zmiana
       target: Docelowo
@@ -119,7 +117,6 @@ app:
       requested_speed: Prędkość
       extrude_length: Długość wytłaczania
       synced_extruder: Zsynchronizowany ekstruder
-      variance: Odchylenie
       z_offset: Przesunięcie Z
       heaters_busy: Drukarka jest obecnie zajęta. Wyłączenie grzałek może spowodować
         nieudany wydruk.
@@ -495,8 +492,6 @@ app:
       show_barometric_pressure: Pokaż ciśnienie barometryczne
       show_gas_resistance: Pokaż opór gazu
       show_upload_and_print: Pokaż przycisk „Wgraj i drukuj” w górnym pasku nawigacyjnym
-      ignore_default_bed_mesh_pending_configuration_changes: Ignoruj domyślną siatkę
-        stołu w oczekiwaniu na zmiany konfiguracji
       optional: Opcjonalne
       save_and_restore_view_state: Zapisz i przywróć stan widoku
       thermal_preset_gcode: G-Code

@@ -14,10 +14,10 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 @Component({})
 export default class StatusCard extends Vue {
   pending = false
-  error: any = null
-  result: any = null
+  error: unknown = null
+  result: unknown = null
 
-  @Prop({ type: Promise, required: false })
+  @Prop({ type: Promise })
   readonly promise?: Promise<unknown> | null
 
   @Watch('promise')
@@ -45,7 +45,7 @@ export default class StatusCard extends Vue {
     }
   }
 
-  setPromiseResults (promise: Promise<unknown> | null, result: any, error: any) {
+  setPromiseResults (promise: Promise<unknown> | null, result: unknown, error: unknown) {
     if (!promise || this.promise === promise) {
       this.error = error
       this.result = result

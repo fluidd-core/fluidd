@@ -75,15 +75,15 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, VModel } from 'vue-property-decorator'
-import { DiagnosticsCardConfig } from '@/store/diagnostics/types'
+import type { DiagnosticsCardConfig } from '@/store/diagnostics/types'
 import CardConfigStep from './config/CardConfigStep.vue'
 import AxesConfigStep from './config/AxesConfigStep.vue'
 import MetricsConfigStep from './config/MetricsConfigStep.vue'
 
 @Component({})
 export default class DiagnosticsCardConfigDialog extends Vue {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Object, required: true })
   readonly config!: DiagnosticsCardConfig

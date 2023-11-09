@@ -1,6 +1,6 @@
-import { MutationTree } from 'vuex'
+import type { MutationTree } from 'vuex'
 import { defaultState } from './state'
-import { TimelapseState, TimelapseLastFrame, TimelapseSettings, RenderStatus } from './types'
+import type { TimelapseState, TimelapseLastFrame, TimelapseSettings, RenderStatus } from './types'
 
 export const mutations: MutationTree<TimelapseState> = {
   /**

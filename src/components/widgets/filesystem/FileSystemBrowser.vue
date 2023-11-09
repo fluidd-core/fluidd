@@ -34,7 +34,7 @@
             'v-data-table__selected': (isSelected && item.name !== '..')
           }"
           class="row-select px-1"
-          :draggable="draggable(item)"
+          :draggable="isItemDraggable(item)"
           @click.prevent="$emit('row-click', item, $event)"
           @contextmenu.prevent="$emit('row-click', item, $event)"
           @dragstart="handleDragStart(item, $event)"
@@ -280,9 +280,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Mixins, VModel } from 'vue-property-decorator'
-import { FileBrowserEntry, RootProperties } from '@/store/files/types'
-import { AppTableHeader } from '@/types'
+import { Component, Prop, Mixins, VModel, PropSync } from 'vue-property-decorator'
+import type { FileBrowserEntry, RootProperties } from '@/store/files/types'
+import type { AppTableHeader } from '@/types'
 import FilesMixin from '@/mixins/files'
 
 import FileRowItem from './FileRowItem.vue'
@@ -294,39 +294,39 @@ import { SupportedImageFormats, SupportedVideoFormats } from '@/globals'
   }
 })
 export default class FileSystemBrowser extends Mixins(FilesMixin) {
-  @VModel({ type: Array, required: true })
+  @VModel({ type: Array<FileBrowserEntry>, required: true })
     selected!: FileBrowserEntry[]
 
   @Prop({ type: String, required: true })
   readonly root!: string
 
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<FileBrowserEntry>, required: true })
   readonly files!: FileBrowserEntry[]
 
-  @Prop({ type: Boolean, default: false })
-  readonly dense!: boolean
+  @Prop({ type: Boolean })
+  readonly dense?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly loading!: boolean
+  @Prop({ type: Boolean })
+  readonly loading?: boolean
 
   // Currently defined list of headers.
-  @Prop({ type: Array, required: true })
+  @Prop({ type: Array<AppTableHeader>, required: true })
   readonly headers!: AppTableHeader[]
 
-  @Prop({ type: String, required: false })
-  readonly search!: string
+  @Prop({ type: String })
+  readonly search?: string
 
-  @Prop({ type: Boolean, required: true })
-  readonly dragState!: boolean
+  @PropSync('dragState', { type: Boolean, required: true })
+    dragStateModel!: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly disabled!: boolean
+  @Prop({ type: Boolean })
+  readonly disabled?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly bulkActions!: boolean
+  @Prop({ type: Boolean })
+  readonly bulkActions?: boolean
 
   dragItem: FileBrowserEntry | null = null
-  ghost: HTMLDivElement | undefined = undefined
+  ghost?: HTMLDivElement = undefined
 
   // Is the history component enabled
   get showHistory () {
@@ -387,13 +387,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   getItemIcon (item: FileBrowserEntry) {
-    const readonly = (
-      this.readonly ||
-      (
-        item.permissions !== undefined &&
-        !item.permissions.includes('w')
-      )
-    )
+    const readonly = !this.isItemWriteable(item)
 
     if (item.type === 'file') {
       if (item.extension === 'zip') {
@@ -414,7 +408,7 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Determines if a row is currently in a draggable state or not.
-  draggable (item: FileBrowserEntry) {
+  isItemDraggable (item: FileBrowserEntry) {
     return (
       item.name !== '..' &&
       this.files.length > 0 &&
@@ -425,14 +419,24 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     )
   }
 
+  isItemWriteable (item: FileBrowserEntry) {
+    return (
+      !this.readonly &&
+      (
+        item.permissions === undefined ||
+        item.permissions.includes('w')
+      )
+    )
+  }
+
   // Fake a drag image when the user drags a file or folder.
-  handleDragStart (item: FileBrowserEntry, e: DragEvent) {
-    if (this.dragState !== true) {
+  handleDragStart (item: FileBrowserEntry, event: DragEvent) {
+    if (this.dragStateModel !== true) {
       this.dragItem = item
-      this.$emit('update:dragState', true)
+      this.dragStateModel = true
     }
 
-    if (e.dataTransfer) {
+    if (event.dataTransfer) {
       const draggedItems = this.draggedItems
 
       this.ghost = document.createElement('div')
@@ -440,27 +444,28 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
       this.ghost.innerHTML = this.$tc('app.file_system.tooltip.move_item', draggedItems.length)
       document.body.appendChild(this.ghost)
-      e.dataTransfer.effectAllowed = 'linkMove'
-      e.dataTransfer.setDragImage(this.ghost, 0, 0)
+      event.dataTransfer.effectAllowed = 'linkMove'
+      event.dataTransfer.setDragImage(this.ghost, 0, 0)
       if (item.type === 'file') {
         const filepath = item.path ? `${this.root}/${item.path}` : this.root
         const url = this.createFileUrl(item.filename, filepath)
 
-        e.dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
-        e.dataTransfer.setData('text/plain', url)
-        e.dataTransfer.setData('text/uri-list', url)
+        event.dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
+        event.dataTransfer.setData('text/plain', url)
+        event.dataTransfer.setData('text/uri-list', url)
       }
-      this.$emit('drag-start', draggedItems, e.dataTransfer)
+      this.$emit('drag-start', draggedItems, event.dataTransfer)
     }
   }
 
   // File was dropped on another table row.
-  handleDrop (item: FileBrowserEntry, e: DragEvent) {
-    this.handleDragLeave(e)
+  handleDrop (item: FileBrowserEntry, event: DragEvent) {
+    this.handleDragLeave(event)
 
     if (
       item.type === 'directory' &&
-      e.dataTransfer &&
+      this.isItemWriteable(item) &&
+      event.dataTransfer &&
       this.dragItem &&
       this.dragItem !== item
     ) {
@@ -473,23 +478,43 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
   }
 
   // Handles highlighting rows as drag over them
-  handleDragOver (item: FileBrowserEntry, e: DragEvent) {
+  handleDragOver (item: FileBrowserEntry, event: DragEvent) {
     if (
       item.type === 'directory' &&
-      e.dataTransfer &&
+      this.isItemWriteable(item) &&
+      event.dataTransfer &&
       this.dragItem &&
       this.dragItem !== item &&
       !this.draggedItems.includes(item)
     ) {
-      e.preventDefault()
+      event.preventDefault()
 
-      e.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.dropEffect = 'move'
 
-      let element = e.target as HTMLElement | null
+      if (event.target instanceof HTMLElement) {
+        let element: HTMLElement | null = event.target
+
+        while (element) {
+          if (element.tagName === 'TR') {
+            element.classList.add('active')
+
+            return
+          }
+
+          element = element.parentElement
+        }
+      }
+    }
+  }
+
+  // Handles un highlighting rows as we drag out of them.
+  handleDragLeave (event: DragEvent) {
+    if (event.target instanceof HTMLElement) {
+      let element: HTMLElement | null = event.target
 
       while (element) {
         if (element.tagName === 'TR') {
-          element.classList.add('active')
+          element.classList.remove('active')
 
           return
         }
@@ -499,27 +524,17 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
     }
   }
 
-  // Handles un highlighting rows as we drag out of them.
-  handleDragLeave (e: DragEvent) {
-    let element = e.target as HTMLElement | null
-
-    while (element) {
-      if (element.tagName === 'TR') {
-        element.classList.remove('active')
-
-        return
-      }
-
-      element = element.parentElement
-    }
-  }
-
   // Drag ended
   handleDragEnd () {
-    const e = this.ghost as HTMLDivElement
-    document.body.removeChild(e)
+    const ghost = this.ghost
+
+    if (ghost) {
+      document.body.removeChild(ghost)
+      this.ghost = undefined
+    }
+
     this.dragItem = null
-    this.$emit('update:dragState', false)
+    this.dragStateModel = false
   }
 }
 </script>

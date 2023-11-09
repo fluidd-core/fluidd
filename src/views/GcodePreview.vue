@@ -1,5 +1,5 @@
 <template>
-  <GcodePreviewCard full-screen />
+  <GcodePreviewCard fullscreen />
 </template>
 
 <script lang="ts">

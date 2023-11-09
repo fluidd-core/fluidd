@@ -80,7 +80,7 @@
 
 <script lang="ts">
 import StateMixin from '@/mixins/state'
-import { Macro } from '@/store/macros/types'
+import type { Macro } from '@/store/macros/types'
 import { Component, VModel, Mixins } from 'vue-property-decorator'
 
 type PauseNextLayer = {
@@ -99,8 +99,8 @@ type PrintStatsMacroVariables = {
 
 @Component({})
 export default class PauseAtLayerDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, default: false })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   pauseNextLayer: PauseNextLayer = {
     enable: false,

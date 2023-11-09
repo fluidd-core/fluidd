@@ -15,6 +15,7 @@
         :color="theme.currentTheme.drawer"
         mini-variant
         :value="open"
+        class="pb-16 pb-sm-0"
       >
         <div
           v-show="isMobileViewport"
@@ -129,8 +130,8 @@ import BrowserMixin from '@/mixins/browser'
 
 @Component({})
 export default class AppNavDrawer extends Mixins(StateMixin, BrowserMixin) {
-  @VModel({ type: Boolean, default: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   get theme () {
     return this.$store.getters['config/getTheme']

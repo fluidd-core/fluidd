@@ -24,8 +24,6 @@ app:
     label:
       current: Huidig
       item: Item
-      'off': Grafiek uit
-      'on': Grafiek aan
       power: Kracht
       target: Doelwit
     tooltip:
@@ -224,7 +222,6 @@ app:
       uncategorized: Zonder categorie
       unretract_speed: Terugduw lengte
       used: Gebruikt
-      variance: Afwijking
       velocity: Snelheid
       visible: Zichtbaar
       z_offset: Z-Offset

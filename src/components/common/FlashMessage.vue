@@ -25,14 +25,15 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop, VModel } from 'vue-property-decorator'
+import type { FlashMessageTypes } from '@/types'
 
 @Component({})
 export default class FlashMessage extends Vue {
   @VModel({ type: Boolean })
-    open!: boolean
+    open?: boolean
 
   @Prop({ type: String, default: 'dark' })
-  readonly type!: string
+  readonly type!: FlashMessageTypes
 
   @Prop({ type: String, default: 'Saved!' })
   readonly text!: string

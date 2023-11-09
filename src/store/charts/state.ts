@@ -1,4 +1,4 @@
-import { ChartState } from './types'
+import type { ChartState } from './types'
 
 export const defaultState = (): ChartState => {
   return {

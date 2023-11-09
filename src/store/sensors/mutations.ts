@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { MoonrakerSensors, MoonrakerSensorsState } from './types'
+import type { MutationTree } from 'vuex'
+import type { MoonrakerSensors, MoonrakerSensorsState } from './types'
 import { defaultState } from './state'
 
 export const mutations: MutationTree<MoonrakerSensorsState> = {

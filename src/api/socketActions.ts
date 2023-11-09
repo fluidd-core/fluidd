@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import { Globals, Waits } from '@/globals'
-import { NotifyOptions } from '@/plugins/socketClient'
+import type { NotifyOptions } from '@/plugins/socketClient'
 import { consola } from 'consola'
-import { TimelapseWritableSettings } from '@/store/timelapse/types'
+import type { TimelapseWritableSettings } from '@/store/timelapse/types'
 
 const baseEmit = (method: string, options: NotifyOptions) => {
   if (!Vue.$socket) {
@@ -371,7 +371,7 @@ export const SocketActions = {
   /**
    * Writes data to moonraker's DB.
    */
-  async serverWrite (key: string, value: any, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
+  async serverWrite (key: string, value: unknown, namespace: string = Globals.MOONRAKER_DB.fluidd.NAMESPACE) {
     baseEmit(
       'server.database.post_item', {
         params: {

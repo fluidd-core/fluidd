@@ -156,17 +156,25 @@
             @click.native.stop
           />
         </app-setting>
+      </template>
 
+      <template v-if="showSaveConfigAndRestart && confirmOnSaveConfigAndRestart">
         <v-divider />
 
         <app-setting
-          :title="$t('app.setting.label.ignore_default_bed_mesh_pending_configuration_changes')"
+          :title="$t('app.setting.label.sections_to_ignore_pending_configuration_changes')"
         >
-          <v-switch
-            v-model="ignoreDefaultBedMeshPendingConfigurationChanges"
-            hide-details
-            class="mb-5"
-            @click.native.stop
+          <v-combobox
+            v-model="sectionsToIgnorePendingConfigurationChanges"
+            :items="['bed_mesh default', 'bed_tilt']"
+            filled
+            dense
+            hide-selected
+            hide-details="auto"
+            multiple
+            small-chips
+            append-icon=""
+            deletable-chips
           />
         </app-setting>
       </template>
@@ -190,10 +198,10 @@
 <script lang="ts">
 import { Component, Mixins, Ref } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 import { SupportedLocales, DateFormats, TimeFormats } from '@/globals'
-import { OutputPin } from '@/store/printer/types'
-import { Device } from '@/store/power/types'
+import type { OutputPin } from '@/store/printer/types'
+import type { Device } from '@/store/power/types'
 
 @Component({
   components: {}
@@ -252,7 +260,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(DateFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleDateString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleDateString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -274,7 +282,7 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     return Object.entries(TimeFormats)
       .map(([key, entry]) => ({
         value: key,
-        text: `${date.toLocaleTimeString(entry.locale ?? this.$i18n.locale, entry.options)}${entry.suffix ?? ''}`
+        text: `${date.toLocaleTimeString(entry.locales ?? this.$filters.getNavigatorLocales(), entry.options)}${entry.suffix ?? ''}`
       }))
   }
 
@@ -402,14 +410,14 @@ export default class GeneralSettings extends Mixins(StateMixin) {
     })
   }
 
-  get ignoreDefaultBedMeshPendingConfigurationChanges (): boolean {
-    return this.$store.state.config.uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges as boolean
+  get sectionsToIgnorePendingConfigurationChanges (): string[] {
+    return this.$store.state.config.uiSettings.general.sectionsToIgnorePendingConfigurationChanges as string[]
   }
 
-  set ignoreDefaultBedMeshPendingConfigurationChanges (value: boolean) {
+  set sectionsToIgnorePendingConfigurationChanges (value: string[]) {
     this.$store.dispatch('config/saveByPath', {
-      path: 'uiSettings.general.ignoreDefaultBedMeshPendingConfigurationChanges',
-      value,
+      path: 'uiSettings.general.sectionsToIgnorePendingConfigurationChanges',
+      value: [...new Set(value)].sort((a, b) => a.localeCompare(b)),
       server: true
     })
   }
@@ -424,10 +432,6 @@ export default class GeneralSettings extends Mixins(StateMixin) {
       value,
       server: true
     })
-  }
-
-  get current_time () {
-    return Math.floor(Date.now() / 1000)
   }
 }
 </script>

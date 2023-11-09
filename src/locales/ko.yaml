@@ -22,8 +22,6 @@ app:
     label:
       current: 현재 온도
       item: 항목
-      'off': 차트 끄기
-      'on': 차트 켜기
       power: 전원
       target: 목표 온도
     tooltip:
@@ -206,7 +204,6 @@ app:
       uncategorized: 카테고리 없음
       unretract_speed: Unretract 속도
       used: 사용중
-      variance: 변화량
       velocity: 속도
       visible: 보이기
       z_offset: Z 오프셋

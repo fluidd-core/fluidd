@@ -57,8 +57,8 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch, Ref } from 'vue-property-decorator'
-import { CameraConfig } from '@/store/cameras/types'
-import { CameraFullscreenAction } from '@/store/config/types'
+import type { CameraConfig } from '@/store/cameras/types'
+import type { CameraFullscreenAction } from '@/store/config/types'
 import { CameraComponents } from '@/dynamicImports'
 import CameraMixin from '@/mixins/camera'
 
@@ -67,8 +67,8 @@ export default class CameraItem extends Vue {
   @Prop({ type: Object, required: true })
   readonly camera!: CameraConfig
 
-  @Prop({ type: Boolean, required: false, default: false })
-  readonly fullscreen!: boolean
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   @Prop({ type: String })
   readonly crossorigin?: 'anonymous' | 'use-credentials' | ''

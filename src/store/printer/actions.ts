@@ -1,12 +1,12 @@
-import { ActionTree } from 'vuex'
-import { PrinterState } from './types'
-import { RootState } from '../types'
+import type { ActionTree } from 'vuex'
+import type { PrinterState } from './types'
+import type { RootState } from '../types'
 import { handlePrintStateChange, handleCurrentFileChange, handleExcludeObjectChange } from '../helpers'
 import { handleAddChartEntry, handleSystemStatsChange, handleMcuStatsChange } from '../chart_helpers'
 import { SocketActions } from '@/api/socketActions'
 import { Globals } from '@/globals'
 import { consola } from 'consola'
-import { DiagnosticsCardContainer } from '@/store/diagnostics/types'
+import type { DiagnosticsCardContainer } from '@/store/diagnostics/types'
 import sandboxedEval from '@/plugins/sandboxedEval'
 
 // let retryTimeout: number
@@ -99,6 +99,9 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
+    if (payload?.status?.screws_tilt_adjust) {
+      delete payload.status.screws_tilt_adjust
+    }
     // Accept notifications, and commit the first subscribe.
     commit('socket/setAcceptNotifications', true, { root: true })
     await dispatch('onNotifyStatusUpdate', payload.status)
@@ -196,8 +199,8 @@ export const actions: ActionTree<PrinterState, RootState> = {
 
       if (typeof data !== 'string') throw new Error('Metrics collector returned invalid data')
       data = JSON.parse(data)
-    } catch (err: any) {
-      data = Object.fromEntries(collectors.map(collector => [collector, err?.message ?? 'Unknown Error']))
+    } catch (err) {
+      data = Object.fromEntries(collectors.map(collector => [collector, (err instanceof Error && err.message) ?? 'Unknown Error']))
     }
 
     data.date = new Date()

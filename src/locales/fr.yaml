@@ -26,8 +26,6 @@ app:
     label:
       current: Courant
       item: Élément
-      'off': Masquer le graphique
-      'on': Afficher le graphique
       power: Puissance
       target: Cible
     tooltip:
@@ -225,7 +223,6 @@ app:
       uncategorized: Non catégorisé
       unretract_speed: Vitesse de dérétractation
       used: occupé
-      variance: Variance
       velocity: Velocité
       visible: Visible
       z_offset: Z Offset

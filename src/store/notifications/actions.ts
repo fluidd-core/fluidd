@@ -1,8 +1,8 @@
-import { ActionTree } from 'vuex'
+import type { ActionTree } from 'vuex'
 import { EventBus } from '@/eventBus'
 import { v4 as uuidv4 } from 'uuid'
-import { NotificationsState, AppPushNotification, AppNotification } from './types'
-import { RootState } from '../types'
+import type { NotificationsState, AppPushNotification, AppNotification } from './types'
+import type { RootState } from '../types'
 
 export const actions: ActionTree<NotificationsState, RootState> = {
   /**

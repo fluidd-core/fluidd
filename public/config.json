@@ -73,6 +73,15 @@
       }
     },
     {
+      "name": "LDO",
+      "color": "#326799",
+      "isDark": true,
+      "logo": {
+        "src": "logo_ldo.svg",
+        "dynamic": true
+      }
+    },
+    {
       "name": "RatRig",
       "color": "#76FB00",
       "isDark": true,

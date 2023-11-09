@@ -53,19 +53,19 @@ export default class WebrtcCamerastreamerCamera extends Mixins(CameraMixin) {
           direction: 'recvonly'
         })
 
-        this.pc.ontrack = (evt: RTCTrackEvent) => {
-          if (evt.track.kind === 'video') {
-            this.cameraVideo.srcObject = evt.streams[0]
+        this.pc.ontrack = (event: RTCTrackEvent) => {
+          if (event.track.kind === 'video') {
+            this.cameraVideo.srcObject = event.streams[0]
           }
         }
 
-        this.pc.onicecandidate = (e: RTCPeerConnectionIceEvent) => {
-          if (e.candidate) {
+        this.pc.onicecandidate = (event: RTCPeerConnectionIceEvent) => {
+          if (event.candidate) {
             return fetch(url, {
               body: JSON.stringify({
                 type: 'remote_candidate',
                 id: this.remoteId,
-                candidates: [e.candidate]
+                candidates: [event.candidate]
               }),
               headers: {
                 'Content-Type': 'application/json'

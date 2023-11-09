@@ -207,14 +207,14 @@
 import { Component, Prop, Mixins, Ref, VModel } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import { SocketActions } from '@/api/socketActions'
-import { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
+import type { TimelapseLastFrame, TimelapseSettings } from '@/store/timelapse/types'
 import { defaultWritableSettings } from '@/store/timelapse/state'
-import { VInput } from '@/types'
+import type { VInput } from '@/types'
 
 @Component({})
 export default class TimelapseRenderSettingsDialog extends Mixins(StateMixin) {
-  @VModel({ type: Boolean, required: true })
-    open!: boolean
+  @VModel({ type: Boolean })
+    open?: boolean
 
   @Prop({ type: Boolean, required: true })
   readonly renderable!: boolean

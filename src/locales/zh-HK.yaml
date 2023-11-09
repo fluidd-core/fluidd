@@ -23,8 +23,6 @@ app:
     label:
       current: 當前值
       item: 名稱
-      'off': 關閉圖表
-      'on': 開啟圖表
       power: 功率
       target: 目標值
       rate_of_change: 變化值
@@ -286,7 +284,6 @@ app:
       upload_and_print: 上傳和打印
       used: 已用
       username: 用戶名
-      variance: 偏差值
       velocity: 速度
       version_sort: 版本排序
       visible: 可見性

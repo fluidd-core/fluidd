@@ -58,7 +58,7 @@ import ToolheadControlBarsAxis from './ToolheadControlBarsAxis.vue'
 import ToolheadControlBarsStepper from './ToolheadControlBarsStepper.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { Stepper } from '@/store/printer/types'
+import type { Stepper } from '@/store/printer/types'
 
 @Component({
   components: {

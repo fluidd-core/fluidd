@@ -1,20 +1,20 @@
 import Vue from 'vue'
-import { AxiosRequestConfig, AxiosResponse } from 'axios'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 export const httpClientActions = {
-  get<T = any, R = AxiosResponse<T>, D = any> (url: string, options?: AxiosRequestConfig) {
+  get<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, options?: AxiosRequestConfig) {
     return Vue.$httpClient.get<T, R, D>(url, options)
   },
 
-  post<T = any, R = AxiosResponse<T>, D = any> (url: string, data: D, options?: AxiosRequestConfig) {
+  post<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, data: D, options?: AxiosRequestConfig) {
     return Vue.$httpClient.post<T, R, D>(url, data, options)
   },
 
-  postForm<T = any, R = AxiosResponse<T>, D = any> (url: string, data: D, options?: AxiosRequestConfig) {
+  postForm<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, data: D, options?: AxiosRequestConfig) {
     return Vue.$httpClient.postForm<T, R, D>(url, data, options)
   },
 
-  delete<T = any, R = AxiosResponse<T>, D = any> (url: string, options?: AxiosRequestConfig) {
+  delete<T = unknown, R = AxiosResponse<T>, D = unknown> (url: string, options?: AxiosRequestConfig) {
     return Vue.$httpClient.delete<T, R, D>(url, options)
   },
 
@@ -146,7 +146,7 @@ export const httpClientActions = {
     }>('/access/api_key', undefined, options)
   },
 
-  serverDatabaseItemGet<T = any> (namespace: string, options?: AxiosRequestConfig) {
+  serverDatabaseItemGet<T = unknown> (namespace: string, options?: AxiosRequestConfig) {
     return this.get<{
       result: {
         namespace: string,
@@ -156,7 +156,7 @@ export const httpClientActions = {
     }>(`/server/database/item?namespace=${namespace}`, options)
   },
 
-  serverDatabaseItemPost<T = any> (namespace: string, key: string, value: T, options?: AxiosRequestConfig) {
+  serverDatabaseItemPost<T = unknown> (namespace: string, key: string, value: T, options?: AxiosRequestConfig) {
     return this.post<{
       result: {
         namespace: string,
@@ -188,7 +188,7 @@ export const httpClientActions = {
     }, options)
   },
 
-  serverFilesGet<T = any> (filepath: string, options?: AxiosRequestConfig) {
+  serverFilesGet<T = unknown> (filepath: string, options?: AxiosRequestConfig) {
     return this.get<T>(`/server/files/${encodeURI(filepath)}?date=${Date.now()}`, options)
   }
 }

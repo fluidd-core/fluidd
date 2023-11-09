@@ -23,8 +23,6 @@ app:
     label:
       current: 温度
       item: 名称
-      'off': チャートオフ
-      'on': チャートオン
       power: 出力
       rate_of_change: 変化値
       target: ターゲット温度
@@ -303,7 +301,6 @@ app:
       used: 使用済み
       user_managed_source: ' %{source} 認証によって管理されるユーザー'
       username: ユーザー名
-      variance: 増減率
       velocity: 速度
       version_sort: バージョンによるソート
       visible: 見える

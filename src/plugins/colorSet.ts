@@ -8,7 +8,7 @@ export class ColorSet {
   logPrefix = '[WEBSOCKET]'
   colorList: ColorList = {}
 
-  constructor (options: Options) {
+  constructor (options: ColorSetPluginOptions) {
     if (options.colorList) {
       for (const item in options.colorList) {
         if ('base' in options.colorList[item]) {
@@ -105,10 +105,10 @@ export class ColorSet {
 }
 
 export const ColorSetPlugin = {
-  install (Vue: typeof _Vue, options?: Options) {
+  install (Vue: typeof _Vue, options?: ColorSetPluginOptions) {
     // Provide a specific list, or an option object to
     // define the color lists.
-    const opts: Options = {
+    const opts: ColorSetPluginOptions = {
       colorList: {
         heater: { base: '#ff5252', hsplit: 20, count: 3 },
         bed: { base: '#1fb0ff', hsplit: 20, count: 2 },
@@ -131,7 +131,7 @@ declare module 'vue/types/vue' {
   }
 }
 
-interface Options {
+interface ColorSetPluginOptions {
   colorList?: ColorListOption;
 }
 

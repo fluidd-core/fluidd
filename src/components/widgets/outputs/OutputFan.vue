@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import { Fan } from '@/store/printer/types'
+import type { Fan } from '@/store/printer/types'
 import StateMixin from '@/mixins/state'
 import BrowserMixin from '@/mixins/browser'
 

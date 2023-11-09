@@ -1,9 +1,10 @@
-import { FunctionDirective } from 'vue'
+import type { FunctionDirective } from 'vue'
 
-const blur: FunctionDirective<HTMLElement> = (el) => {
-  el.onfocus = (ev) => {
-    const target = ev.target as HTMLElement
-    target.blur()
+const blur: FunctionDirective<HTMLElement> = (element) => {
+  element.onfocus = (event) => {
+    if (event.target instanceof HTMLElement) {
+      event.target.blur()
+    }
     // console.log('called blur', target)
   }
 }

@@ -70,7 +70,7 @@
           v-model="positioning"
           mandatory
           dense
-          class="d-block"
+          class="elevation-2 d-flex"
         >
           <v-tooltip top>
             <template #activator="{ on, attrs }">
@@ -78,7 +78,6 @@
                 v-bind="attrs"
                 class="positioning-toggle-button"
                 :disabled="!klippyReady || printerBusy"
-                :elevation="2"
                 v-on="on"
               >
                 <v-icon small>
@@ -94,7 +93,6 @@
                 v-bind="attrs"
                 class="positioning-toggle-button"
                 :disabled="!klippyReady || printerBusy"
-                :elevation="2"
                 v-on="on"
               >
                 <v-icon small>

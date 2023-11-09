@@ -1,4 +1,4 @@
-import { MacrosState } from './types'
+import type { MacrosState } from './types'
 
 export const defaultState = (): MacrosState => {
   return {

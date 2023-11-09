@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import { MutationTree } from 'vuex'
-import { DevicePowerState } from './types'
+import type { MutationTree } from 'vuex'
+import type { DevicePowerState } from './types'
 import { defaultState } from './state'
 
 export const mutations: MutationTree<DevicePowerState> = {

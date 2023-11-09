@@ -10,28 +10,22 @@
 </template>
 
 <script lang="ts">
-import { AppTableHeader } from '@/types'
+import type { AppTableHeader } from '@/types'
 import { Component, Vue, Prop } from 'vue-property-decorator'
 
 @Component({})
 export default class FileRowItem extends Vue {
-  @Prop({ type: String, required: false })
-  readonly itemValue!: string
+  @Prop({ type: String })
+  readonly itemValue?: string
 
-  /**
-   * Optionally pass a key to define how we lookup this header item.
-   */
-  @Prop({ type: String, required: false })
-  readonly itemKey!: string
-
-  @Prop({ type: Array, required: false })
-  readonly headers!: AppTableHeader[]
+  @Prop({ type: Array<AppTableHeader> })
+  readonly headers?: AppTableHeader[]
 
   @Prop({ type: Boolean, default: true })
-  readonly nowrap!: boolean
+  readonly nowrap?: boolean
 
-  @Prop({ type: Boolean, default: false })
-  readonly right!: boolean
+  @Prop({ type: Boolean })
+  readonly right?: boolean
 
   /**
    * Self check if it should appear or not based on the headers

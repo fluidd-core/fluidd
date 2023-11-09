@@ -20,25 +20,25 @@
 </template>
 
 <script lang="ts">
-import { VForm } from '@/types'
+import type { VForm } from '@/types'
 import { Component, Vue, VModel, Watch, Ref } from 'vue-property-decorator'
 
 @Component({})
 export default class AppTextField extends Vue {
   @VModel()
-    inputValue!: any
+    inputValue!: unknown
 
   @Ref('form')
   readonly form!: VForm
 
   @Watch('value')
-  onValue (value: any) {
+  onValue (value: unknown) {
     if (!this.hasFocus) {
       this.currentValue = value
     }
   }
 
-  currentValue: any = ''
+  currentValue: unknown = ''
   hasFocus = false
 
   get filteredListeners () {
@@ -57,11 +57,11 @@ export default class AppTextField extends Vue {
   handleFocus (event: FocusEvent) {
     this.hasFocus = true
 
-    const input = event.target as HTMLInputElement
+    if (event.target instanceof HTMLInputElement) {
+      event.target.select()
 
-    input.select()
-
-    this.$emit('focus', event)
+      this.$emit('focus', event)
+    }
   }
 
   handleBlur (event: FocusEvent) {

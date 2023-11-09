@@ -1,5 +1,5 @@
-import { KlipperFileMeta, KlipperFileMetaThumbnail } from './types.metadata'
-import { HistoryItem } from '@/store/history/types'
+import type { KlipperFileMeta, KlipperFileMetaThumbnail } from './types.metadata'
+import type { HistoryItem } from '@/store/history/types'
 
 export type { KlipperFileMeta, KlipperFileMetaThumbnail }
 
