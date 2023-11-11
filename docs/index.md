@@ -44,17 +44,21 @@ firmware.
 
 ## Supporting Fluidd
 
-Fluidd was created by [Craig Bassett](https://github.com/cadriel) and is currently
-developed and maintained by the [Fluidd team](https://github.com/orgs/fluidd-core/people)
-and our contributors - along with support from the entire Klipper Team, associated
-printer communities and you, the user.
+Fluidd was created by [Craig Bassett](https://github.com/cadriel) and is
+currently developed and maintained by the passionate volunteers of the
+[Fluidd team](https://github.com/orgs/fluidd-core/people) who dedicate their
+time to improving and expanding its capabilities.
+
+In order to help us enhance Fluidd, introduce new features, and ensure it
+remains accessible to all Klipper users, we have now enabled [GitHub Sponsors](https://github.com/sponsors/fluidd-core)
+for Fluidd.
 
 ## Docker
 
 Fluidd ships with Docker support built in. The official docker can be found
 [here](https://github.com/fluidd-core/fluidd/pkgs/container/fluidd), and further information can be found [here](/installation/docker).
 
-## Support
+## Need help?
 
 Primary support is provided via Discord, or Github Issues.
 
