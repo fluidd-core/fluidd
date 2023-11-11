@@ -16,26 +16,26 @@ providing you with comprehensive insights into your 3D prints.
 
 Here's what you can achieve with this feature:
 
-  - **Effortless Viewing**  
-    Review your print history effortlessly, gaining quick access to a
-    chronological list of your past prints.
+- **Effortless Viewing**  
+  Review your print history effortlessly, gaining quick access to a
+  chronological list of your past prints.
 
-  - **Smart Sorting**  
-    Easily sort your print jobs by their last print date, enabling efficient
-    organization and retrieval of relevant information.
+- **Smart Sorting**  
+  Easily sort your print jobs by their last print date, enabling efficient
+  organization and retrieval of relevant information.
 
-  - **Advanced Filtering**  
-    Filter jobs you've already printed, streamlining your view to focus on
-    the prints that matter most to you.
+- **Advanced Filtering**  
+  Filter jobs you've already printed, streamlining your view to focus on
+  the prints that matter most to you.
 
-  - **Printer Statistics**  
-    Gain valuable insights into printer performance over time. Track metrics
-    such as total print time and filament usage to optimize your printing
-    workflow.
+- **Printer Statistics**  
+  Gain valuable insights into printer performance over time. Track metrics
+  such as total print time and filament usage to optimize your printing
+  workflow.
 
-  - **Re-Print Capability**  
-    In case of failed or cancelled jobs, utilize the re-print feature seamlessly
-    integrated into this component.
+- **Re-Print Capability**  
+  In case of failed or cancelled jobs, utilize the re-print feature seamlessly
+  integrated into this component.
 
 Fluidd is designed to balance functionality and performance for an optimal user
 experience, and for that reason, it will only load the last 50 prints from the
