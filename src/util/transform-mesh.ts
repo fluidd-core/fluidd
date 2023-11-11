@@ -53,7 +53,7 @@ export const transformMesh = (bedMesh: KlipperBedMesh, meshMatrix: keyof Klipper
 
   return {
     coordinates,
-    dimensions: [x_idx, y_idx],
+    dimensions: [y_idx, x_idx],
     min,
     mid,
     max,

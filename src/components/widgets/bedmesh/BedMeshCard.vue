@@ -33,7 +33,7 @@
     </template>
 
     <v-card-text>
-      <e-charts-bed-mesh
+      <bed-mesh-chart
         v-if="mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0"
         ref="chart"
         :options="options"
@@ -49,7 +49,7 @@
 
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator'
-import EChartsBedMesh from './BedMeshChart.vue'
+import BedMeshChart from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import BrowserMixin from '@/mixins/browser'
@@ -57,7 +57,7 @@ import type { AppMeshes } from '@/store/mesh/types'
 
 @Component({
   components: {
-    EChartsBedMesh
+    BedMeshChart
   }
 })
 export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {

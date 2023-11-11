@@ -24,7 +24,7 @@ import { merge, cloneDeepWith } from 'lodash-es'
 import BrowserMixin from '@/mixins/browser'
 
 @Component({})
-export default class EChartsBedMesh extends Mixins(BrowserMixin) {
+export default class BedMeshChart extends Mixins(BrowserMixin) {
   @Prop({ type: Array, required: true })
   readonly data!: []
 
