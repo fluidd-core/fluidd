@@ -11,25 +11,32 @@ permalink: /features/console
 
 ---
 
-Fluidd's console has a bunch of hidden features;
+Fluidd's console comes with these some sophisticated features:
 
-1. Hit the ↑ up and ↓ down arrow keys to scroll through your console history.
-   This history is saved across sessions!
+- **Effortless History Navigation**  
+  - Scroll through your console history using the <kbd>&uarr;</kbd> and
+    <kbd>&darr;</kbd> keys.
+  - Benefit from intelligent history preservation across sessions for a
+    seamless workflow.
 
-2. The console has autocomplete, built in! Start typing, and hit the TAB key
-   to retrieve a list of available commands.
+- **Intelligent Autocomplete Functionality**  
+  - Harness the power of built-in autocomplete by initiating a command and
+    using the <kbd>Tab</kbd> key.
 
-3. Known commands in the console are clickable! Try clicking a command, and
-   you'll see it appear in the console entry text area.
+- **Clickable Commands**
+  - Click any known command, and watch it populate the console text entry area.
 
-4. Want to know a full list of klipper commands? Type `help` and hit return!
+- **Klipper Commands Listing**
+  - Gain insights into Klipper commands with ease by typing `help` and hitting
+    return to access an extensive list of available commands.
 
-5. You can filter the console output the way you'd like!
-   Head on over to the console settings tab to configure custom filters.
-   Currently, the following types of filters are supported:
-   * `contains` - Hides messages that contain the given string (case insensitive)
-   * `starts with` - Hides messages that start with the given string (case insensitive)
-   * `expression` - Hides messages that match the given [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)  
-     (e.g. `probe at [\d\.,]+ is z=[01]\.\d+`) (case sensitive)
+- **Tailored Console Output**
+  - Visit the Console Settings to configure custom filters, including:
+    - `contains`: Hides messages containing the specified string (case
+      insensitive).
+    - `starts with`: Hides messages that commence with the given string (case
+      insensitive).
+    - `expression` - Filters messages matching the provided [regular expression](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp)  
+      (e.g. `probe at [\d\.,]+ is z=[01]\.\d+`) (case sensitive)
 
 ![screenshot](/assets/images/console.png)
