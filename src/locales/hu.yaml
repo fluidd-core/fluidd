@@ -2,6 +2,7 @@ app:
   bedmesh:
     label:
       active: aktív
+      base: alap
       box_scale: Doboz skála
       flat_surface: Lapos sík megjelenítése
       mesh_matrix: Hálós mátrix
@@ -38,10 +39,9 @@ app:
       auto_scroll: Automatikus görgetés
       flip_layout: Fordított elrendezés
       hide_temp_waits: Hőmérsékletek elrejtése
-    placeholder:
-      command: >-
-        '''tab'' az automatikus kitöltéshez, ''help'' a parancsokhoz
-        ''nyilak'' az előzményekhez'
+    tooltip:
+      help: >-
+        Írd be a "help"-et a parancsokhoz<br />Használd <kbd>Tab</kbd> az automatikus kiegészítéshez<br />és <kbd>&uarr;</kbd> az <kbd>&darr;</kbd> előzményekhez
   endpoint:
     error:
       cant_connect: >-
@@ -134,6 +134,8 @@ app:
       confirm: >-
         A fájl "%{filename}" mérete %{size}, megterhelheti a rendszert.
         Biztos, hogy folytatod?
+    overlay:
+      drag_file_load: <strong>Húzz</strong> ide egy G-Kód fájlt a betöltéshez
   general:
     btn:
       abort: Elvet
@@ -168,6 +170,7 @@ app:
       login: Belépés
       logout: Kijelentkezés
       more_information: Bővebb információ
+      multiply: Többszöröz
       pause: Szünet
       preheat: Előfűtés
       presets: Előbeállítások
@@ -192,6 +195,7 @@ app:
       restart_service_moonraker: Moonraker újraindítása
       resume: Folytatás
       retract: Visszahúzás
+      retry: Próbáld újra
       return_dashboard: Vissza a műszerfalra
       save: Mentés
       save_as: Mentés másként
@@ -288,6 +292,7 @@ app:
       pressure_advance: Nyomás előtolás
       printers: Nyomtatók
       progress: Folyamat
+      range: Hatótávolság
       requested_speed: Sebesség
       retract_length: Visszahúzási hossz
       retract_speed: Visszahúzási sebesség
@@ -452,6 +457,10 @@ app:
   job_queue:
     msg:
       confirm: Biztos vagy benne? Törlöd a teljes nyomtatósort
+    label:
+      number_of_copies: Másolatok száma
+    title:
+      multiply_job: Munka szorzása | Munkák szorzása
   printer:
     state:
       busy: Elfoglalt
@@ -463,6 +472,8 @@ app:
       printing: Nyomtatás
       ready: Kész
       standby: Készenlét
+    title:
+      printer_status: Nyomtató állapota
   setting:
     btn:
       add_camera: Kamera hozzáadása
@@ -522,6 +533,7 @@ app:
       default_toolhead_z_speed: Alapértelmezett (Z) nyomtatófej sebesség
       dotted: Pöttyös
       draw_background: Háttér rajzolása
+      draw_origin: Rajzolj eredetet
       enable: Engedélyez
       enable_diagnostics: Diagnosztika engedélyezése
       enable_notifications: Értesítések engedélyezése
@@ -560,8 +572,10 @@ app:
       retraction_icon_size: Visszahúzási ikon mérete
       right_y: Jobb Y-tengely
       save_and_restore_view_state: A nézet állapot mentése és visszaállítása
+      sections_to_ignore_pending_configuration_changes: Szakasz a függőben lévő konfigurációs változások figyelmen kívül hagyásához
       show_animations: Animációk megjelenítése
       show_barometric_pressure: Barometrikus nyomás mutatása
+      show_chart: Diagram megjelenítése
       show_code_lens: CodeLens megjelenítése
       show_gas_resistance: Gázellenállás mutatása
       show_legend: Legenda mutatása
@@ -589,7 +603,8 @@ app:
       text_sort_order: Szövegrendezési sorrend
       force_move_toggle_warning: A FORCE_MOVE aktiválásakor megerősítés szükséges
       show_manual_probe_dialog_automatically: Kézi szonda párbeszédpanel automatikus megjelenítése
-      show_bed_screws_adjust_dialog_automatically: Ágycsavarok automatikus beállítása párbeszédpanel megjelenítése
+      show_bed_screws_adjust_dialog_automatically: Ágycsavarok beállítása párbeszédpanel automatikus megjelenítése
+      show_screws_tilt_adjust_dialog_automatically: Ágycsavarok dőlésszögének beállítása párbeszédpanel automatikus megjelenítése
     timer_options:
       duration: Csak időtartam
       filament: Nyomtatószál becslés
@@ -611,6 +626,7 @@ app:
       gcode_coords: G-Kód pozíció használata a nyomtatófej pozíciója helyett a műszerfalon
       show_manual_probe_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha kézi szintezőeszközt futtatsz
       show_bed_screws_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a BED_SCREWS_ADJUST eszközt futtatod
+      show_screws_tilt_adjust_dialog_automatically: Automatikusan megjeleníti a segítő párbeszédpanelt, ha a SCREWS_TILT_CALCULATE eszközt futtatod
   socket:
     msg:
       connecting: Csatlakozás a Moonraker-hez...
@@ -654,6 +670,7 @@ app:
     title:
       bed_screws_adjust: Ágycsavarok beállítása
       manual_probe: Kézi szonda
+      screws_tilt_adjust: Csavarok dőlésszög beállítása
     tooltip:
       absolute_positioning: Abszolút pozicionálás
       extruder_disabled: extruder letiltva, min_extrude_temp (%{min}<small>°C</small>) alatt van

@@ -1,7 +1,7 @@
 app:
   bedmesh:
     label:
-      flat_surface: Mostrar plano plano
+      flat_surface: Mostrar plano raso
       mesh_matrix: Matriz de malha
       probed_matrix: Matriz sondada
       profile_name: Perfil
@@ -11,8 +11,8 @@ app:
       active: activo
     msg:
       hint: >-
-        Se salvar algo diferente de % {name},  pode escolher remover também o
-        perfi % {name}
+        Se guardar como algo diferente de % {name}, pode escolher remover também o
+        perfil % {name}
       not_found: Não foram encontrados nivelamentos da mesa.
       not_loaded: Nenhuma malha carregada
     tooltip:

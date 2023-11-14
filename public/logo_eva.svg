@@ -1,19 +1,11 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   xmlns:svg="http://www.w3.org/2000/svg"
-   xmlns="http://www.w3.org/2000/svg"
-   version="1.1"
-   viewBox="0 0 270.93333 270.93334"
-   height="40"
-   width="40">
-  <g
-     transform="translate(0,-26.06665)"
-     id="layer1">
-    <path
-      class="color-primary"
-       id="path1065"
-       d="M 129.48941,26.593936 0.52728394,155.55605 v 11.95658 L 129.48941,296.4727 h 11.95658 L 270.40605,167.51263 V 155.55605 L 141.44599,26.593936 Z m 5.97725,61.663389 73.27808,73.276015 -73.27808,73.27801 -40.907751,-40.90775 8.455081,-8.4551 h 46.86238 v -47.82832 h -46.86238 l -8.455081,-8.4551 z"
-       clip-path="none"
-       style="fill:#000000;stroke:none;stroke-width:1.05456793px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+<svg width="56" height="56" viewBox="0 0 56 56"
+  xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .color-primary {
+      fill: var(--logo-color)
+    }
+  </style>
+  <g>
+    <path class="color-primary" d="M 27.114082,8.0000005 8,27.114081 v 1.772141 L 27.114082,48 h 1.772141 L 48,28.886222 V 27.114081 L 28.886223,8.0000005 Z m 0.885916,9.1394205 10.860889,10.860582 -10.860889,10.860878 -6.063129,-6.06313 1.253167,-1.25317 h 6.945694 v -7.08886 h -6.945694 l -1.253167,-1.25317 z" />
   </g>
 </svg>

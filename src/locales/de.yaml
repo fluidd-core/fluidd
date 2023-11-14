@@ -10,6 +10,7 @@ app:
       remove_profile: Profil %{name} löschen
       scale: Farbskala
       wireframe: Drahtmodell
+      base: Basis
     msg:
       hint: >-
         Wird das Profil mit einem anderen Namen als %{name} gespeichert, kann ausgewählt
@@ -30,9 +31,9 @@ app:
       rate_of_change: Änderung
     tooltip:
       help: >-
-        Halten Sie die Umschalttaste gedrückt, um zu zoomen. <br />Klicken Sie
-        auf ein Element, um es im Diagramm ein-/auszublenden. <br />Klicken Sie
-        auf eine Leistung, um sie im Diagramm ein-/auszublenden.
+        Halten Sie <kbd>Umschalt</kbd> gedrückt, um zu zoomen. <br />Klicken Sie auf
+        ein Element, um es im Diagramm ein-/auszublenden. <br />Klicken Sie auf eine
+        Leistung, um sie im Diagramm ein-/auszublenden.
   console:
     label:
       auto_scroll: Automatisches Scrollen
@@ -42,6 +43,10 @@ app:
       command: >-
         Tab für Autovervollständigung, 'help' für Befehle, Pfeiltasten für
         Verlauf
+    tooltip:
+      help: Geben Sie "help" für eine Befehlsliste ein<br />Benutzen Sie <kbd>Tab</kbd>
+        für Autovervollständigung<br />Benutzen Sie <kbd>&uarr;</kbd> und <kbd>&darr;</kbd>
+        für den Verlauf
   endpoint:
     error:
       cant_connect: >-
@@ -219,6 +224,8 @@ app:
       create_zip_archive: ZIP-Archiv erstellen
       duplicate: Duplizieren
       select_columns: Spalten auswählen
+      retry: Wiederholen
+      multiply: Vermehren
     error:
       app_setup_link: >-
         Die Anforderungen für die Einrichtung von Fluidd finden Sie <a
@@ -336,6 +343,7 @@ app:
       synced_extruder: Synchronisierte Extruder
       cross: Kreuz
       bars: Balken
+      range: Distanz
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -478,6 +486,8 @@ app:
       printing: Druckt
       ready: Bereit
       standby: Standby
+    title:
+      printer_status: Druckerstatus
   setting:
     btn:
       add_camera: Kamera hinzufügen
@@ -613,6 +623,12 @@ app:
       toolhead_control_style: Druckkopf-Steuerstil
       toolhead_xy_move_distances: Druckkopf-Bewegungsdistanzen für XY
       toolhead_z_move_distances: Druckkopf-Bewegungsdistanzen für Z
+      show_chart: Diagramm anzeigen
+      sections_to_ignore_pending_configuration_changes: Zu ignorierende Sektionen
+        mit ausstehenden Konfigurationsänderungen
+      show_screws_tilt_adjust_dialog_automatically: Dialog zum Anpassen der Bettneigung
+        automatisch anzeigen
+      draw_origin: Ursprung anzeigen
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -636,10 +652,12 @@ app:
         Öffnet automatisch einen Hilfsdialog,
         wenn ein manuelles Probe-Tool ausgeführt wird
       show_bed_screws_adjust_dialog_automatically: >-
-        Öffnet automatisch einen Hilfsdialog,
-        wenn das BED_SCREWS_ADJUST-Tool ausgeführt wird
+        Öffnet automatisch einen Hilfsdialog, wenn das BED_SCREWS_ADJUST-Werkzeug
+        ausgeführt wird
       diagnostics_performance: >-
         [BETA] Das Protokollieren von Diagnoseinformationen kann die Leistung beeinträchtigen
+      show_screws_tilt_adjust_dialog_automatically: Öffnet automatisch einen Hilfsdialog,
+        wenn das SCREWS_TILT_CALCULATE-Werkzeug ausgeführt wird
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
@@ -697,6 +715,7 @@ app:
     title:
       bed_screws_adjust: Bettschrauben einstellen
       manual_probe: Manuelles Probing
+      screws_tilt_adjust: Bettneigung einstellen
     label:
       stats_volumetric_flow: Bei einer Extrusion mit %{extrudeSpeed} mm/s<span class="secondary--text">
         sollte der Druckkopf einen</span> ungefähren volumetrischen Fluss von %{estimatedVolumetricFlow}
@@ -865,6 +884,10 @@ app:
   job_queue:
     msg:
       confirm: Sind Sie sicher? Hierdurch wird die gesamte Druckwarteschlange geleert
+    title:
+      multiply_job: Auftrag vermehren | Aufträge vermehren
+    label:
+      number_of_copies: Anzahl der Kopien
   sensors:
     title:
       sensors: Sensoren
