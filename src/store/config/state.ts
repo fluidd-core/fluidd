@@ -63,8 +63,7 @@ export const defaultState = (): ConfigState => {
       theme: {
         isDark: true,
         logo: {
-          src: 'logo_fluidd.svg',
-          dynamic: true
+          src: 'logo_fluidd.svg'
         },
         currentTheme: {
           primary: '#2196F3'

@@ -124,8 +124,7 @@ export const getters: GetterTree<ConfigState, RootState> = {
       color: '#2196F3',
       isDark: true,
       logo: {
-        src: 'logo_fluidd.svg',
-        dynamic: true
+        src: 'logo_fluidd.svg'
       }
     }
   },
