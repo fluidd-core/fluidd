@@ -7,24 +7,37 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    name: Build
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Install node
-        uses: actions/setup-node@v3
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
-      - name: Install deps
-        run: npm ci --no-optional
+      - name: Install dependencies
+        run: |
+          npm ci
+
+      - name: Run lint
+        run: |
+          npm run lint -- --no-fix
 
       - name: Run tests
-        run: npm run test:unit
+        run: |
+          npm run test:unit
+
+      - name: Run circular references check
+        run: |
+          npm run circular-check -- --no-spinner
 
       - name: Build
-        run: npm run build
+        run: |
+          npm run build
 
       - name: Create Artifact
         run: |
