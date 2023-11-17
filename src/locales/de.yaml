@@ -115,7 +115,6 @@ app:
     tooltip:
       low_on_space: Wenig Speicherplatz auf der Festplatte
       root_disabled: '{root} ist nicht verfügbar. Bitte überprüfen Sie Ihre Logdateien.'
-      move_item: Eintrag verschieben | {count} Einträge verschieben
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'
       moonraker_config: 'https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}'

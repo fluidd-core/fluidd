@@ -226,6 +226,10 @@ export const Globals = Object.freeze({
     { filename: 'telegram.conf', service: 'moonraker-telegram-bot', link: 'https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config' },
     { suffix: '.cfg', service: 'klipper', link: 'https://www.klipper3d.org/Config_Reference.html' }
   ],
+  FILE_DATA_TRANSFER_TYPES: {
+    files: 'x-fluidd-files',
+    jobs: 'x-fluidd-jobs'
+  },
   FILTERED_FOLDER_NAMES: ['.git'],
   FILTERED_FILES_PREFIX: ['.thumbs', 'thumbs'],
   FILTERED_FILES_EXTENSION: ['.ignoreme'],

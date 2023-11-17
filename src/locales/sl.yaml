@@ -98,7 +98,6 @@ app:
       upload_file: Nalaganje datoteke | Nalaganje datotek
     tooltip:
       low_on_space: Na disku primanjkuje prostora
-      move_item: Premakni element | Premakni {count} elementov
       root_disabled: '{root} root ni na voljo. Prosimo, preverite dnevnike.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'

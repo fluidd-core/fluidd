@@ -102,7 +102,6 @@ app:
       upload_file: Lêer word opgelaai | Lêers word opgelaai
     tooltip:
       low_on_space: Stoorspasie is min
-      move_item: Skuif item | Skuif {count} items
       root_disabled: '{root} root is nie beskikbaar nie. Sien die logs.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'

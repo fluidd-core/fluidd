@@ -442,19 +442,14 @@ export default class FileSystemBrowser extends Mixins(FilesMixin) {
       this.ghost = document.createElement('div')
       this.ghost.classList.add('bulk-drag')
       this.ghost.classList.add((this.$vuetify.theme.dark) ? 'theme--dark' : 'theme--light')
-      this.ghost.innerHTML = this.$tc('app.file_system.tooltip.move_item', draggedItems.length)
+      this.ghost.innerHTML = draggedItems.length > 1
+        ? this.$tc('app.file_system.tooltip.items_count', draggedItems.length)
+        : item.name
       document.body.appendChild(this.ghost)
-      event.dataTransfer.effectAllowed = 'linkMove'
+      event.dataTransfer.effectAllowed = 'all'
       event.dataTransfer.setDragImage(this.ghost, 0, 0)
-      if (item.type === 'file') {
-        const filepath = item.path ? `${this.root}/${item.path}` : this.root
-        const url = this.createFileUrl(item.filename, filepath)
 
-        event.dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
-        event.dataTransfer.setData('text/plain', url)
-        event.dataTransfer.setData('text/uri-list', url)
-      }
-      this.$emit('drag-start', draggedItems, event.dataTransfer)
+      this.$emit('drag-start', item, draggedItems, event.dataTransfer)
     }
   }
 

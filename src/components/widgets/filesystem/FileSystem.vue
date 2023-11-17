@@ -156,6 +156,7 @@ import FileSystemGoToFileDialog from './FileSystemGoToFileDialog.vue'
 import FilePreviewDialog from './FilePreviewDialog.vue'
 import type { AppTableHeader, FileWithPath } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from '@/util/file-system-entry'
+import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer, setFileDataTransferDataInDataTransfer } from '@/util/file-data-transfer'
 
 /**
  * Represents the filesystem, bound to moonrakers supplied roots.
@@ -796,22 +797,29 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
     })
   }
 
-  handleDragStart (source: FileBrowserEntry| FileBrowserEntry[], dataTransfer: DataTransfer) {
-    if (this.currentRoot === 'gcodes') {
-      const items = Array.isArray(source)
-        ? source.filter(item => item.name !== '..')
-        : [source]
+  handleDragStart (item: FileBrowserEntry, items: FileBrowserEntry[], dataTransfer: DataTransfer) {
+    if (item.type === 'file') {
+      const url = this.createFileUrl(item.name, this.currentPath)
 
+      dataTransfer.setData('text/html', `<A HREF="${encodeURI(url)}">${item.filename}</A>`)
+      dataTransfer.setData('text/plain', url)
+      dataTransfer.setData('text/uri-list', url)
+    }
+
+    setFileDataTransferDataInDataTransfer(dataTransfer, 'files', {
+      path: this.currentPath,
+      items: items.map(file => file.name)
+    })
+
+    if (this.currentRoot === 'gcodes') {
       const files = items
         .filter((item): item is AppFile => item.type === 'file' && this.rootProperties.accepts.includes(`.${item.extension}`))
 
       if (files.length > 0) {
-        const data = {
+        setFileDataTransferDataInDataTransfer(dataTransfer, 'jobs', {
           path: files[0].path,
-          jobs: files.map(file => file.name)
-        }
-
-        dataTransfer.setData('x-fluidd-jobs', JSON.stringify(data))
+          items: files.map(file => file.name)
+        })
       }
     }
   }
@@ -950,7 +958,10 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
       !this.rootProperties.readonly &&
       !this.dragState.browserState &&
       event.dataTransfer &&
-      hasFilesInDataTransfer(event.dataTransfer)
+      (
+        hasFilesInDataTransfer(event.dataTransfer) ||
+        hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'files')
+      )
     ) {
       event.preventDefault()
 
@@ -969,13 +980,23 @@ export default class FileSystem extends Mixins(StateMixin, FilesMixin, ServicesM
 
     if (
       !this.fileDropRoot &&
-      event.dataTransfer &&
-      !this.rootProperties.readonly
+      !this.rootProperties.readonly &&
+      event.dataTransfer
     ) {
-      const files = await getFilesFromDataTransfer(event.dataTransfer)
+      if (hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'files')) {
+        const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'files')
 
-      if (files) {
-        this.handleUpload(files, false)
+        for (const file of files.items) {
+          const src = `${files.path}/${file}`
+          const dest = `${this.currentPath}/${file}`
+          SocketActions.serverFilesCopy(src, dest)
+        }
+      } else if (hasFilesInDataTransfer(event.dataTransfer)) {
+        const files = await getFilesFromDataTransfer(event.dataTransfer)
+
+        if (files) {
+          this.handleUpload(files, false)
+        }
       }
     }
   }

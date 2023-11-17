@@ -99,7 +99,6 @@ app:
       upload_file: Загрузка файла | Загрузка файлов
     tooltip:
       low_on_space: Мало места на диске
-      move_item: Переместить элемент | Переместить {count}
       root_disabled: Root недоступен. Проверьте файлы логов.
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'

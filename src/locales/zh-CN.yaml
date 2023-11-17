@@ -91,7 +91,6 @@ app:
       upload_file: 上传文件
     tooltip:
       low_on_space: 磁盘空间不足
-      move_item: 移动项目|移动｛count｝个项目
       root_disabled: '{root} G代码文件目录不可用，请首先连接打印机或者检查G代码存放目录的路径与读权限'
     url:
       klipper_config: 'https://www.klipper3d.org/zh/Config_Reference.html#%{hash}'

@@ -101,7 +101,6 @@ app:
       duplicate_file: Duplicar ficheiro
     tooltip:
       low_on_space: Pouco espaço em disco
-      move_item: Mover item | Mover {count} itemes
   general:
     btn:
       add: Adicionar
