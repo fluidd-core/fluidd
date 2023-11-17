@@ -17,6 +17,15 @@ Fluidd is a free and open-source Klipper web interface for managing your 3d prin
 See our [Docs](https://docs.fluidd.xyz).
 Join our [Discord!](https://discord.gg/GZ3D5tqfcF).
 
+## Translations <a href="https://hosted.weblate.org/engage/fluidd/"><img src="https://hosted.weblate.org/widget/fluidd/svg-badge.svg" alt="Stan tłumaczenia" /></a>
+
+Translations are hosted on Weblate.
+If you want to translate our project, click the widget below:
+
+<a href="https://hosted.weblate.org/engage/fluidd/">
+<img src="https://hosted.weblate.org/widget/fluidd/horizontal-auto.svg" alt="Translation status" />
+</a>
+
 ## Where to download?
 
 You can download the latest release [here](https://github.com/fluidd-core/fluidd/releases/latest).
