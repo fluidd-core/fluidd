@@ -37,7 +37,6 @@ export default class WebrtcGortcCamera extends Mixins(CameraMixin) {
   }
 
   startPlayback () {
-    
     this.pc?.close()
     this.pc = new RTCPeerConnection({
       iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
