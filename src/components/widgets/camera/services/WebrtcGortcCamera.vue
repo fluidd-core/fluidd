@@ -26,8 +26,8 @@ export default class WebrtcGortcCamera extends Mixins(CameraMixin) {
   
   // webrtc player methods
   // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/webrtc.html
-  // also adaptgd from https://github.com/mainsail-crew/mainsail/pull/1651
-  
+  // also adapted from https://github.com/mainsail-crew/mainsail/pull/1651
+
 
   get url() {
         const urlSearch = new URL(this.buildAbsoluteUrl(this.camera.urlStream || '')).search.toString()
