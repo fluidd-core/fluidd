@@ -52,6 +52,10 @@ The current supported types are:
   - Allows embedding any web video feed not supported by the aforementioned
     methods.
 
+- **WebRTC (go2rtc)**  
+  - Loads a webrtc stream from go2rtc. 
+  - for example http(s)://your.domain/webrtc/stream.html?src=trident&mode=webrtc
+
 Visit the UI Settings page to define and configure your cameras.
 
 ![screenshot](/assets/images/camera_settings.png)

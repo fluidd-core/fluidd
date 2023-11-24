@@ -85,7 +85,8 @@
             { text: $t('app.setting.camera_type_options.hlsstream'), value: 'hlsstream' },
             { text: $t('app.setting.camera_type_options.webrtc_camera_streamer'), value: 'webrtc-camerastreamer' },
             { text: $t('app.setting.camera_type_options.video'), value: 'ipstream' },
-            { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }
+            { text: $t('app.setting.camera_type_options.iframe'), value: 'iframe' }, 
+            { text: $t('app.setting.camera_type_options.webrtc_gortc'), value: 'webrtc-gortc' }
           ]"
           item-value="value"
           item-text="text"
