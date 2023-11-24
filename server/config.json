@@ -74,6 +74,14 @@
       }
     },
     {
+      "name": "Qidi Tech",
+      "color": "#5B7AEA",
+      "isDark": true,
+      "logo": {
+        "src": "logo_qidi.svg"
+      }
+    },
+    {
       "name": "RatRig",
       "color": "#76FB00",
       "isDark": true,

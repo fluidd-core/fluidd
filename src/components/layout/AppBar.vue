@@ -7,7 +7,7 @@
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
-      v-show="!isMobileViewport"
+      v-if="!isMobileViewport"
       to="/"
       class="toolbar-logo"
     >
