@@ -32,7 +32,9 @@ export default class WebrtcGortcCamera extends Mixins(CameraMixin) {
     const url = new URL('api/ws' + urlSearch, this.buildAbsoluteUrl(this.camera.urlStream || ''))
     url.searchParams.set('media', 'video+audio')
     // change protocol to ws
-    if (url.protocol === 'https') { url.protocol = 'wss' + ':' } else { url.protocol = 'ws' + ':' }
+    url.protocol = url.protocol === 'https'
+      ? 'wss:'
+      : 'ws:'
     return url.toString()
   }
 
