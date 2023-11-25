@@ -15,7 +15,7 @@ import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
 
 @Component({})
-export default class WebrtcGortcCamera extends Mixins(CameraMixin) {
+export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   @Ref('streamingElement')
   readonly cameraVideo!: HTMLVideoElement
 
