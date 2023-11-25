@@ -10,7 +10,11 @@
         <v-col class="controls-wrapper">
           <extruder-selection v-if="hasMultipleExtruders" />
           <toolhead-control-cross v-if="!printerPrinting && toolheadControlStyle === 'cross'" />
-          <toolhead-control-bars v-else-if="!printerPrinting && toolheadControlStyle === 'bars'" />
+          <toolhead-control-bars
+            v-else-if="!printerPrinting && toolheadControlStyle === 'bars'"
+            class="mx-auto"
+          />
+          <toolhead-control-circle v-else-if="!printerPrinting && toolheadControlStyle === 'circle'" />
           <z-height-adjust v-if="printerPrinting" />
         </v-col>
 
@@ -45,6 +49,7 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import ToolheadControlCross from './ToolheadControlCross.vue'
 import ToolheadControlBars from './ToolheadControlBars.vue'
+import ToolheadControlCircle from './ToolheadControlCircle.vue'
 import ExtruderMoves from './ExtruderMoves.vue'
 import ExtruderSelection from './ExtruderSelection.vue'
 import ToolheadPosition from './ToolheadPosition.vue'
@@ -60,6 +65,7 @@ import type { ToolheadControlStyle } from '@/store/config/types'
   components: {
     ToolheadControlCross,
     ToolheadControlBars,
+    ToolheadControlCircle,
     ExtruderMoves,
     ExtruderSelection,
     ToolheadPosition,

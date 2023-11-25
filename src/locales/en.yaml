@@ -247,6 +247,7 @@ app:
       command: Command
       confirm: Confirm
       cross: Cross
+      cirle: Circle
       current_password: Current password
       current_user: Current user
       default: Default

@@ -94,7 +94,7 @@ export interface GeneralConfig {
   thumbnailSize: number;
 }
 
-export type ToolheadControlStyle = 'cross' | 'bars'
+export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 

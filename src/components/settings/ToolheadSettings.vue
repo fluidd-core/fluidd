@@ -440,6 +440,10 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       {
         value: 'bars',
         text: this.$t('app.general.label.bars')
+      },
+      {
+        value: 'circle',
+        text: this.$t('app.general.label.cirlce')
       }
     ]
   }
