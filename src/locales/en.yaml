@@ -489,6 +489,7 @@ app:
       webrtc_camera_streamer: WebRTC (camera-streamer)
       video: IP Camera
       iframe: HTTP page
+      webrtc_gortc: WebRTC (go2rtc)
     camera_rotate_options:
       '90': 90°
       '180': 180°
