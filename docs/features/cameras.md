@@ -43,6 +43,10 @@ The current supported types are:
   - A highly bandwidth-efficient stream type.
   - **IMPORTANT:** Currently only available on Raspberry devices.
 
+- **WebRTC (go2rtc)**  
+  - Loads a webrtc stream from go2rtc.
+  - Example stream URL: `http(s)://your.domain/webrtc/stream.html?src=trident&mode=webrtc`
+
 - **IP Camera**  
   - Experimental option replacing the `<img>` tag with a `<video>` tag.
   - Use only if your provided URL supports native HTML5 video tags.
@@ -51,10 +55,6 @@ The current supported types are:
   - Loads a website, displaying it in place of the camera feed.
   - Allows embedding any web video feed not supported by the aforementioned
     methods.
-
-- **WebRTC (go2rtc)**  
-  - Loads a webrtc stream from go2rtc. 
-  - for example http(s)://your.domain/webrtc/stream.html?src=trident&mode=webrtc
 
 Visit the UI Settings page to define and configure your cameras.
 
