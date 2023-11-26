@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.26.3](https://github.com/fluidd-core/fluidd/compare/v1.26.2...v1.26.3) (2023-11-14)
+
+
+### Features
+
+* **i18n-HU:** Update Hungarian translations ([#1233](https://github.com/fluidd-core/fluidd/issues/1233)) ([4323186](https://github.com/fluidd-core/fluidd/commit/432318610068b53cdd10a26ca4b1316017229fc0))
+
+
+### Bug Fixes
+
+* corrects order of e-charts dimensions ([#1235](https://github.com/fluidd-core/fluidd/issues/1235)) ([3331223](https://github.com/fluidd-core/fluidd/commit/33312238690225b920861f50f84d82e6d946f5a2))
+
 ## [1.26.2](https://github.com/fluidd-core/fluidd/compare/v1.26.1...v1.26.2) (2023-11-08)
 
 

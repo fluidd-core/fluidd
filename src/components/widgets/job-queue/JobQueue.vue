@@ -63,6 +63,7 @@ import JobQueueBrowser from './JobQueueBrowser.vue'
 import JobQueueContextMenu from './JobQueueContextMenu.vue'
 import JobQueueMultiplyJobDialog from './JobQueueMultiplyJobDialog.vue'
 import type { AppTableHeader } from '@/types'
+import { getFileDataTransferDataFromDataTransfer, hasFileDataTransferTypeInDataTransfer } from '@/util/file-data-transfer'
 
 @Component({
   components: {
@@ -180,7 +181,10 @@ export default class JobQueue extends Vue {
   }
 
   handleDragOver (event: DragEvent) {
-    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
       event.preventDefault()
 
       event.dataTransfer.dropEffect = 'link'
@@ -196,11 +200,13 @@ export default class JobQueue extends Vue {
   handleDrop (event: DragEvent) {
     this.overlay = false
 
-    if (event.dataTransfer?.types.includes('x-fluidd-jobs')) {
-      const data = event.dataTransfer.getData('x-fluidd-jobs')
-      const files: { path: string, jobs: string[] } = JSON.parse(data)
+    if (
+      event.dataTransfer &&
+      hasFileDataTransferTypeInDataTransfer(event.dataTransfer, 'jobs')
+    ) {
+      const files = getFileDataTransferDataFromDataTransfer(event.dataTransfer, 'jobs')
       const filePath = files.path ? `${files.path}/` : ''
-      const filenames = files.jobs
+      const filenames = files.items
         .map(file => `${filePath}${file}`)
 
       SocketActions.serverJobQueuePostJob(filenames)

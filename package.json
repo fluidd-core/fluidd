@@ -1,6 +1,6 @@
 {
   "name": "fluidd",
-  "version": "1.26.2",
+  "version": "1.26.3",
   "private": true,
   "description": "fluidd, a klipper web client.",
   "author": {
@@ -79,7 +79,7 @@
     "@types/jsdom": "^21.1.5",
     "@types/lodash-es": "^4.17.11",
     "@types/md5": "^2.3.5",
-    "@types/node": "^18.18.9",
+    "@types/node": "^20.9.0",
     "@types/semver": "^7.5.5",
     "@types/sortablejs": "^1.15.5",
     "@types/uuid": "^9.0.7",
@@ -127,6 +127,6 @@
     "url": "git+https://github.com/fluidd-core/fluidd.git"
   },
   "engines": {
-    "node": "^16 || ^18"
+    "node": "^18 || ^20"
   }
 }

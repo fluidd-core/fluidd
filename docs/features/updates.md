@@ -11,7 +11,8 @@ permalink: /features/updates
 
 ---
 
-Fluidd supports automated updates by way of Moonraker. Please see the moonraker
-[configuration docs](/configuration/moonraker) for further information.
+Fluidd facilitates seamless automated updates through Moonraker. For detailed
+information on configuring automatic updates, please refer to the
+[Moonraker configuration documentation](/configuration/moonraker).
 
 ![screenshot](/assets/images/updates.png)

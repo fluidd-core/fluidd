@@ -105,7 +105,6 @@ app:
       upload_file: Fájl feltöltése
     tooltip:
       low_on_space: Kevés a lemezterület
-      move_item: Elem mozgatása | {count} elem mozgatása
       root_disabled: '{root} nem elérhető. Kérjük, ellenőrizd a naplókat.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'

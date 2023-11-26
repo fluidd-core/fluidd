@@ -94,7 +94,6 @@ app:
       upload_file: ファイルをアップロードする｜ファイルをアップロードする
     tooltip:
       low_on_space: ディスク容量が少なくなりました。
-      move_item: 'アイテムの移動｜ {count} 個のアイテムを移動'
       root_disabled: '{root} rootは使用できません。ログを確認してください。'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'

@@ -13,6 +13,7 @@
       >
         <app-btn
           :color="!homed ? 'primary' : undefined"
+          :disabled="!klippyReady || printerPrinting"
           :loading="hasWait(wait)"
           class="flex-grow-1"
           @click="sendHomeGcode"

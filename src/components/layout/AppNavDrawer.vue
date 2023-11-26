@@ -18,7 +18,7 @@
         class="pb-16 pb-sm-0"
       >
         <div
-          v-show="isMobileViewport"
+          v-if="isMobileViewport"
           :style="`height: ${$globals.HEADER_HEIGHT}px;`"
           class="app-icon"
         >

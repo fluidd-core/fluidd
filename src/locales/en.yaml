@@ -104,7 +104,7 @@ app:
       upload_file: Uploading file | Uploading files
     tooltip:
       low_on_space: Low on disk space
-      move_item: Move item | Move {count} items
+      items_count: '{count} item | {count} items'
       root_disabled: '{root} root is not available. Please check your logs.'
     url:
       klipper_config: 'https://www.klipper3d.org/Config_Reference.html#%{hash}'

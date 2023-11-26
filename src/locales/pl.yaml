@@ -102,7 +102,6 @@ app:
         aby je wgrać
     tooltip:
       low_on_space: Mało miejsca na dysku
-      move_item: Przenieś element | Przenieś {count} elementy
       root_disabled: '{root} root jest niedostępny. Sprawdź logi.'
     url:
       klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}

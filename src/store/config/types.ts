@@ -117,7 +117,6 @@ export interface SupportedTheme {
 
 export interface SupportedThemeLogo {
   src: string;
-  dynamic: boolean;
   dark?: string;
   light?: string;
 }

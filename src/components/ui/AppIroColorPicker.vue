@@ -1,46 +1,5 @@
 <template>
   <div>
-    <!-- custom handle svg -->
-    <svg style="display:none;">
-      <defs>
-        <g
-          id="handle"
-          stroke="none"
-          stroke-width="1"
-          fill="none"
-          fill-rule="evenodd"
-        >
-          <g
-            id="Desktop"
-            transform="translate(-497.000000, -493.000000)"
-          >
-            <g
-              id="Group-2"
-              transform="translate(498.000000, 494.000000)"
-            >
-              <g
-                id="Group"
-                stroke="#000000"
-                stroke-width="2"
-              >
-                <circle
-                  id="Oval"
-                  cx="7.5"
-                  cy="7.5"
-                  r="7.5"
-                />
-              </g>
-              <path
-                id="Combined-Shape"
-                d="M7.5,14 C3.91014913,14 1,11.0898509 1,7.5 C1,3.91014913 3.91014913,1 7.5,1 C11.0898509,1 14,3.91014913 14,7.5 C14,11.0898509 11.0898509,14 7.5,14 Z M7.5,12 C9.98528137,12 12,9.98528137 12,7.5 C12,5.01471863 9.98528137,3 7.5,3 C5.01471863,3 3,5.01471863 3,7.5 C3,9.98528137 5.01471863,12 7.5,12 Z"
-                fill="#D8D8D8"
-              />
-            </g>
-          </g>
-        </g>
-      </defs>
-    </svg>
-    <!-- / custom handle svg -->
     <div ref="picker" />
   </div>
 </template>
@@ -86,12 +45,7 @@ export default class AppColorPicker extends Vue {
     const opts: ColorPickerProps = {
       ...this.options,
       color: this.color,
-      // borderWidth: 1,
-      // borderColor: '#000000',
-      // handleRadius: 20,
-      sliderSize: 14,
-      handleSvg: '#handle',
-      handleProps: { x: 0, y: 0 }
+      sliderSize: 14
     }
     return opts
   }
