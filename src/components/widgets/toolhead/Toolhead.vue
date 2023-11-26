@@ -7,14 +7,14 @@
         justify="space-between"
         align="start"
       >
-        <v-col class="controls-wrapper">
+        <v-col class="mx-auto controls-wrapper">
           <extruder-selection v-if="hasMultipleExtruders" />
           <toolhead-control-cross v-if="!printerPrinting && toolheadControlStyle === 'cross'" />
           <toolhead-control-bars v-else-if="!printerPrinting && toolheadControlStyle === 'bars'" />
           <z-height-adjust v-if="printerPrinting" />
         </v-col>
 
-        <v-col class="controls-wrapper">
+        <v-col class="mx-auto controls-wrapper">
           <toolhead-position />
           <extruder-moves v-if="!printerPrinting && hasExtruder" />
           <z-height-adjust v-if="!printerPrinting" />
