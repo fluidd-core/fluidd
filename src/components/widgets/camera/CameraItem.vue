@@ -116,7 +116,7 @@ export default class CameraItem extends Vue {
 
   get cameraComponent () {
     if (this.camera.service) {
-      const componentName = `${this.$filters.startCase(this.camera.service).replace(' ', '')}Camera`
+      const componentName = `${this.$filters.startCase(this.camera.service).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
