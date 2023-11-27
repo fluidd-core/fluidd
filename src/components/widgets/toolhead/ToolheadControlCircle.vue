@@ -725,34 +725,38 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get stepTextClass () {
-    if (!this.homedAxes.includes('xy') || this.isPrinting) return ['disabled']
-
-    return []
+    const classes = []
+    if (!this.homedAxes.includes('xy') || this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('disabled')
+    return classes
   }
 
   get xStepClass () {
-    if (!this.homedAxes.includes('x') || this.isPrinting) return ['disabled']
-
-    return []
+    const classes = []
+    if (!this.homedAxes.includes('x') || this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('disabled')
+    return classes
   }
 
   get yStepClass () {
-    if (!this.homedAxes.includes('y') || this.isPrinting) return ['disabled']
-
-    return []
+    const classes = []
+    if (!this.homedAxes.includes('y') || this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('disabled')
+    return classes
   }
 
   get zStepClass () {
-    if (!this.homedAxes.includes('z') || this.isPrinting) return ['disabled']
-
-    return []
+    const classes = []
+    if (!this.homedAxes.includes('z') || this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('disabled')
+    return classes
   }
 
   get xHomeClass () {
     const classes = []
     if (this.homedAxes.includes('x')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
-
+    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('loading')
     return classes
   }
 
@@ -760,6 +764,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const classes = []
     if (this.homedAxes.includes('y')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('loading')
 
     return classes
   }
@@ -768,6 +773,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const classes = []
     if (this.homedAxes.includes('xy')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('loading')
 
     return classes
   }
@@ -776,6 +782,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const classes = []
     if (this.homedAxes.includes('xyz')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])) classes.push('loading')
 
     return classes
   }
@@ -784,6 +791,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const classes = []
     if (this.homedAxes.includes('z')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('loading')
 
     return classes
   }
@@ -878,15 +886,19 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get colorQuadGantryLevel () {
-    const status = this.$store.state.printer.printer.quad_gantry_level?.applied ?? true
+    const classes = []
+    classes.push(this.$store.state.printer.printer.quad_gantry_level?.applied ? 'primary' : 'warning')
+    if (this.hasWait([this.$waits.onQGL, this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('loading')
 
-    return status ? 'primary' : 'warning'
+    return classes
   }
 
   get colorZTilt () {
-    const status = this.$store.state.printer.printer.z_tilt?.applied ?? true
+    const classes = []
+    classes.push(this.$store.state.printer.printer.z_tilt?.applied ? 'primary' : 'warning')
+    if (this.hasWait([this.$waits.onZTilt, this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('loading')
 
-    return status ? 'primary' : 'warning'
+    return classes
   }
 
   get defaultActionButton () {
@@ -1018,6 +1030,14 @@ svg .homed a#home_all_center {
     fill: var(--v-anchor-base);
 }
 
+svg .loading g.home_button,
+svg a#tilt_adjust.loading,
+svg a#stepper_off.loading,
+svg .loading a#home_all_center {
+    fill: rgb(85,85,85);
+    pointer-events: none;
+}
+
 svg g.home_button:hover,
 svg a#home_all_center:hover,
 svg a#tilt_adjust:hover,
@@ -1037,4 +1057,31 @@ svg a#tilt_adjust #tilt_icon,
 svg a#stepper_off #stepper_off_icon {
     fill: #000;
 }
+
+$randomNumber: random(2);
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0);
+    }
+    100% {
+        transform: rotate(370deg);
+    }
+}
+
+@keyframes dash {
+    0% {
+        stroke-dasharray: 1, 150;
+        stroke-dashoffset: 0;
+    }
+    50% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -35;
+    }
+    100% {
+        stroke-dasharray: 90, 150;
+        stroke-dashoffset: -124;
+    }
+}
+
 </style>
