@@ -508,6 +508,7 @@ app:
       axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
+      enableXYHoming: Enable XY Homing
       camera_fullscreen_action:
         title: Fullscreen action
         embed: Embed

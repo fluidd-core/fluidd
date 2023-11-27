@@ -202,6 +202,14 @@
         </app-setting>
 
         <v-divider />
+
+        <app-setting :title="$t('app.setting.label.enableXYHoming')">
+          <v-switch
+            v-model="toolheadControlXYHomingEnabled"
+            hide-details
+            class="mt-0 mb-4"
+          />
+        </app-setting>
       </template>
 
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
@@ -469,6 +477,18 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
    this.$store.dispatch('config/saveByPath', {
      path: 'uiSettings.general.zAdjustDistances',
      value: [...new Set(value.map(Number))].sort((a, b) => a - b),
+     server: true
+   })
+ }
+
+ get toolheadControlXYHomingEnabled () {
+   return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled
+ }
+
+ set toolheadControlXYHomingEnabled (value: ToolheadControlStyle) {
+   this.$store.dispatch('config/saveByPath', {
+     path: 'uiSettings.general.toolheadControlXYHomingEnabled',
+     value,
      server: true
    })
  }

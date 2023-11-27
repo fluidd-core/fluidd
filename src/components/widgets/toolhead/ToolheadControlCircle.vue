@@ -359,7 +359,7 @@
                 >
                   <a
                     class="step inner"
-                    @click="sendMoveGcode('Y',stepsXY[0],false)"
+                    @click="sendMoveGcode('X',stepsXY[0],false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
                       <path :d="xyStepInner" />
@@ -367,7 +367,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="sendMoveGcode('Y',stepsXY[1],false)"
+                    @click="sendMoveGcode('X',stepsXY[1],false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
                       <path :d="xyStepInnerMid" />
@@ -375,7 +375,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="sendMoveGcode('Y',stepsXY[2],false)"
+                    @click="sendMoveGcode('X',stepsXY[2],false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
                       <path :d="xyStepOuterMid" />
@@ -383,7 +383,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="sendMoveGcode('Y',stepsXY[3],false)"
+                    @click="sendMoveGcode('X',stepsXY[3],false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
                       <path :d="xyStepOuter" />
@@ -394,44 +394,6 @@
                   id="Left"
                   :class="xStepClass"
                   transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,61.9767,61.9767)"
-                >
-                  <a
-                    class="step inner"
-                    @click="sendMoveGcode('Y',stepsXY[0],true)"
-                  >
-                    <g transform="matrix(0.48,0,0,0.48,19,19)">
-                      <path :d="xyStepInner" />
-                    </g>
-                  </a>
-                  <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('Y',stepsXY[1],true)"
-                  >
-                    <g transform="matrix(0.72,0,0,0.72,13,13)">
-                      <path :d="xyStepInnerMid" />
-                    </g>
-                  </a>
-                  <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('Y',stepsXY[2],true)"
-                  >
-                    <g transform="matrix(0.96,0,0,0.96,7,7)">
-                      <path :d="xyStepOuterMid" />
-                    </g>
-                  </a>
-                  <a
-                    class="step outer"
-                    @click="sendMoveGcode('Y',stepsXY[3],true)"
-                  >
-                    <g transform="matrix(1.2,0,0,1.2,1,1)">
-                      <path :d="xyStepOuter" />
-                    </g>
-                  </a>
-                </g>
-                <g
-                  id="Bottom1"
-                  :class="yStepClass"
-                  transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)"
                 >
                   <a
                     class="step inner"
@@ -467,13 +429,13 @@
                   </a>
                 </g>
                 <g
-                  id="Top1"
+                  id="Bottom1"
                   :class="yStepClass"
-                  transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)"
+                  transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)"
                 >
                   <a
                     class="step inner"
-                    @click="sendMoveGcode('X',stepsXY[0],false)"
+                    @click="sendMoveGcode('Y',stepsXY[0],true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
                       <path :d="xyStepInner" />
@@ -481,7 +443,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="sendMoveGcode('X',stepsXY[1],false)"
+                    @click="sendMoveGcode('Y',stepsXY[1],true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
                       <path :d="xyStepInnerMid" />
@@ -489,7 +451,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="sendMoveGcode('X',stepsXY[2],false)"
+                    @click="sendMoveGcode('Y',stepsXY[2],true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
                       <path :d="xyStepOuterMid" />
@@ -497,7 +459,45 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="sendMoveGcode('X',stepsXY[3],false)"
+                    @click="sendMoveGcode('Y',stepsXY[3],true)"
+                  >
+                    <g transform="matrix(1.2,0,0,1.2,1,1)">
+                      <path :d="xyStepOuter" />
+                    </g>
+                  </a>
+                </g>
+                <g
+                  id="Top1"
+                  :class="yStepClass"
+                  transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)"
+                >
+                  <a
+                    class="step inner"
+                    @click="sendMoveGcode('Y',stepsXY[0],false)"
+                  >
+                    <g transform="matrix(0.48,0,0,0.48,19,19)">
+                      <path :d="xyStepInner" />
+                    </g>
+                  </a>
+                  <a
+                    class="step inner-mid"
+                    @click="sendMoveGcode('Y',stepsXY[1],false)"
+                  >
+                    <g transform="matrix(0.72,0,0,0.72,13,13)">
+                      <path :d="xyStepInnerMid" />
+                    </g>
+                  </a>
+                  <a
+                    class="step outer-mid"
+                    @click="sendMoveGcode('Y',stepsXY[2],false)"
+                  >
+                    <g transform="matrix(0.96,0,0,0.96,7,7)">
+                      <path :d="xyStepOuterMid" />
+                    </g>
+                  </a>
+                  <a
+                    class="step outer"
+                    @click="sendMoveGcode('Y',stepsXY[3],false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
                       <path :d="xyStepOuter" />
@@ -550,7 +550,7 @@
             </g>
           </g>
           <a
-            v-if="true"
+            v-if="printerSupportsQuadGantryLevel"
             id="tilt_adjust"
             :class="colorSpecialButton"
             @click="clickSpecialButton"
@@ -571,7 +571,7 @@
             </g>
           </a>
           <a
-            v-else-if="homeIcon"
+            v-else-if="printerSupportsZTiltAdjust"
             id="tilt_adjust"
             :class="colorSpecialButton"
             @click="clickSpecialButton"
@@ -595,7 +595,7 @@
             v-else
             id="stepper_off"
             :class="motorsOffClass"
-            @click="clickNothing"
+            @click="sendGcode('M84')"
           >
             <circle
               id="stepper_off_button"
@@ -677,11 +677,11 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     'M3.78 2.5L21.5 20.22l-1.27 1.28L18 19.27V20h-8l-2-2H5v-3H3v3H1v-8h2v3h2v-3l1.87-1.86L2.5 3.77L3.78 2.5M20 9v3h-2V8h-6V6h3V4H7.82l15 15H23V9h-3Z'
 
   get actionButton (): string {
-    return this.$store.state.gui.control.actionButton // TODO ?? this.defaultActionButton
+    return this.$store.state.gui.control.actionButton // ?? this.defaultActionButton
   }
 
   get enableXYHoming (): boolean {
-    return false // this.$store.state.gui.control.enableXYHoming
+    return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled
   }
 
   get reverseX () {
@@ -710,6 +710,18 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get isPrinting () {
     return ['printing'].includes(this.printerState)
+  }
+
+  get printerSettings () {
+    return this.$store.getters['printer/getPrinterSettings']()
+  }
+
+  get printerSupportsQuadGantryLevel (): boolean {
+    return 'quad_gantry_level' in this.printerSettings
+  }
+
+  get printerSupportsZTiltAdjust (): boolean {
+    return 'z_tilt' in this.printerSettings
   }
 
   get stepTextClass () {
@@ -779,8 +791,8 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get colorSpecialButton () {
     const classes = []
     if (this.isPrinting) classes.push('disabled')
-    if (this.existsQGL) classes.push(this.colorQuadGantryLevel)
-    else if (this.existsZtilt) classes.push(this.colorZTilt)
+    if (this.printerSupportsQuadGantryLevel) classes.push(this.colorQuadGantryLevel)
+    else if (this.printerSupportsZTiltAdjust) classes.push(this.colorZTilt)
 
     return classes
   }
@@ -798,8 +810,8 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   clickSpecialButton () {
-    // if (this.existsQGL) this.doQGL()
-    // else if (this.existsZtilt) return this.doZtilt()
+    if (this.printerSupportsQuadGantryLevel) this.sendGcode('QUAD_GANTRY_LEVEL')
+    else if (this.printerSupportsZTiltAdjust) return this.sendGcode('Z_TILT_ADJUST')
   }
 
   sendGcode (gcode: string, wait?: string) {
@@ -845,14 +857,6 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$store.state.gui.control?.feedrateZ ?? 10
   }
 
-  get existsQGL () {
-    return this.$store.getters['printer/existsQGL']
-  }
-
-  get existsZtilt () {
-    return this.$store.getters['printer/existsZtilt']
-  }
-
   get existsBedTilt () {
     return this.$store.getters['printer/existsBedTilt']
   }
@@ -874,13 +878,13 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get colorQuadGantryLevel () {
-    const status = this.$store.state.printer.quad_gantry_level?.applied ?? true
+    const status = this.$store.state.printer.printer.quad_gantry_level?.applied ?? true
 
     return status ? 'primary' : 'warning'
   }
 
   get colorZTilt () {
-    const status = this.$store.state.printer.z_tilt?.applied ?? true
+    const status = this.$store.state.printer.printer.z_tilt?.applied ?? true
 
     return status ? 'primary' : 'warning'
   }
@@ -976,7 +980,7 @@ svg g#home_buttons text {
 
 svg g.home_button,
 svg a#home_all_center {
-    fill: var(--v-anchor-base);
+    fill: var(--v-warning-lighten3);
     transition: opacity 250ms;
 }
 
@@ -1001,17 +1005,17 @@ svg a#stepper_off {
 
 svg a#tilt_adjust.warning,
 svg a#stepper_off.warning {
-    fill: var(--v-anchor-base);
+    fill: var(--v-warning-lighten3);
 }
 
 svg a#tilt_adjust.primary,
 svg a#stepper_off.primary {
-    fill: var(--v-error-base);
+    fill: var(--v-anchor-base);
 }
 
 svg .homed g.home_button,
 svg .homed a#home_all_center {
-    fill: var(--v-error-base);
+    fill: var(--v-anchor-base);
 }
 
 svg g.home_button:hover,
