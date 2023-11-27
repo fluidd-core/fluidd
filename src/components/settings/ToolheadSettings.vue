@@ -443,7 +443,7 @@ export default class ToolHeadSettings extends Mixins(ToolheadMixin) {
       },
       {
         value: 'circle',
-        text: this.$t('app.general.label.cirlce')
+        text: this.$t('app.general.label.circle')
       }
     ]
   }
