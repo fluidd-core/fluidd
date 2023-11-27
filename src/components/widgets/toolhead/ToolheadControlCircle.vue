@@ -621,6 +621,9 @@ import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { SocketActions } from '@/api/socketActions'
 
+// heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
+// modified to work with fluidd concepts.
+
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
   /**
