@@ -193,6 +193,45 @@
                   </g>
                 </g>
               </a>
+
+              <a
+                v-if="!enableXYHoming"
+                :class="centerToolheadClass"
+                @click="centerToolHead()"
+              >
+                <g
+                  id="home_all_center"
+                  class="home_button"
+                >
+                  <circle
+                    id="home_button_all_center"
+                    cx="31"
+                    cy="31"
+                    r="5"
+                  />
+                </g>
+                <g
+                  id="icon5"
+                  class="center-icon"
+                  transform="scale(0.3) translate(91.25,91.25)"
+                  fill="none"
+                >
+                  <path
+                    d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+                    stroke="#1C274C"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
+                    stroke="#1C274C"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                  />
+
+                </g>
+              </a>
+
               <!-- HOME ALL BUTTON IN THE CENTER -->
               <a
                 v-if="enableXYHoming"
@@ -200,7 +239,7 @@
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
-                  id="home_all_center"
+                  id="center_toolhead"
                   class="home_button"
                 >
                   <circle
@@ -620,6 +659,7 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import { SocketActions } from '@/api/socketActions'
+import type { BedSize } from '@/store/printer/types'
 
 // heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
 // modified to work with fluidd concepts.
@@ -790,6 +830,17 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return classes
   }
 
+  get centerToolheadClass () {
+    const tool_pos = this.$store.state.printer.printer.toolhead.position
+    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize
+    const classes = []
+    if ((tool_pos[0] === bedSize.maxX / 2) && (tool_pos[1] === bedSize.maxY / 2)) classes.push('homed')
+    if (this.isPrinting) classes.push('disabled')
+    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])) classes.push('loading')
+
+    return classes
+  }
+
   get zHomeClass () {
     const classes = []
     if (this.homedAxes.includes('z')) classes.push('homed')
@@ -849,6 +900,20 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
       this.sendGcode(`G91
       G1 ${axis}${distance} F${rate * 60}
       G90`)
+    }
+  }
+
+  centerToolHead () {
+    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize
+
+    if (bedSize) {
+      const maxY = bedSize?.maxY ?? 0 // Using nullish coalescing to provide a default value if maxX is undefined or null
+      const maxX = bedSize?.maxX ?? 0 // Using nullish coalescing to provide a default value if maxX is undefined or null
+      const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+      const centerX = maxX / 2
+      const centerY = maxY / 2
+
+      this.sendGcode(`G1 X${centerX} Y${centerY} F${rate * 60}`)
     }
   }
 
