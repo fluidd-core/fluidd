@@ -1061,30 +1061,4 @@ svg a#stepper_off #stepper_off_icon {
     fill: #000;
 }
 
-$randomNumber: random(2);
-
-@keyframes rotate {
-    0% {
-        transform: rotate(0);
-    }
-    100% {
-        transform: rotate(370deg);
-    }
-}
-
-@keyframes dash {
-    0% {
-        stroke-dasharray: 1, 150;
-        stroke-dashoffset: 0;
-    }
-    50% {
-        stroke-dasharray: 90, 150;
-        stroke-dashoffset: -35;
-    }
-    100% {
-        stroke-dasharray: 90, 150;
-        stroke-dashoffset: -124;
-    }
-}
-
 </style>
