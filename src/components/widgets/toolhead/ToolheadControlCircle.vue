@@ -710,32 +710,32 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get stepTextClass () {
-    // if (!this.homedAxes.includes('xy') || this.isPrinting) return ['disabled']
+    if (!this.homedAxes.includes('xy') || this.isPrinting) return ['disabled']
 
     return []
   }
 
   get xStepClass () {
-    // if (!this.homedAxes.includes('x') || this.isPrinting) return ['disabled']
+    if (!this.homedAxes.includes('x') || this.isPrinting) return ['disabled']
 
     return []
   }
 
   get yStepClass () {
-    // if (!this.homedAxes.includes('y') || this.isPrinting) return ['disabled']
+    if (!this.homedAxes.includes('y') || this.isPrinting) return ['disabled']
 
     return []
   }
 
   get zStepClass () {
-    // if (!this.homedAxes.includes('z') || this.isPrinting) return ['disabled']
+    if (!this.homedAxes.includes('z') || this.isPrinting) return ['disabled']
 
     return []
   }
 
   get xHomeClass () {
     const classes = []
-    // if (this.homedAxes.includes('x')) classes.push('homed')
+    if (this.homedAxes.includes('x')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
 
     return classes
@@ -743,7 +743,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get yHomeClass () {
     const classes = []
-    // if (this.homedAxes.includes('y')) classes.push('homed')
+    if (this.homedAxes.includes('y')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
 
     return classes
@@ -751,7 +751,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get xyHomeClass () {
     const classes = []
-    // if (this.homedAxes.includes('xy')) classes.push('homed')
+    if (this.homedAxes.includes('xy')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
 
     return classes
@@ -759,7 +759,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get xyzHomeClass () {
     const classes = []
-    // if (this.homedAxes.includes('xyz')) classes.push('homed')
+    if (this.homedAxes.includes('xyz')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
 
     return classes
@@ -767,7 +767,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get zHomeClass () {
     const classes = []
-    // if (this.homedAxes.includes('z')) classes.push('homed')
+    if (this.homedAxes.includes('z')) classes.push('homed')
     if (this.isPrinting) classes.push('disabled')
 
     return classes
@@ -776,15 +776,15 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get colorSpecialButton () {
     const classes = []
     if (this.isPrinting) classes.push('disabled')
-    // if (this.existsQGL) classes.push(this.colorQuadGantryLevel)
-    // else if (this.existsZtilt) classes.push(this.colorZTilt)
+    if (this.existsQGL) classes.push(this.colorQuadGantryLevel)
+    else if (this.existsZtilt) classes.push(this.colorZTilt)
 
     return classes
   }
 
   get motorsOffClass () {
     const classes = []
-    // classes.push(this.homedAxes !== '' ? 'primary' : 'warning')
+    classes.push(this.homedAxes !== '' ? 'primary' : 'warning')
     if (this.isPrinting) classes.push('disabled')
 
     return classes
@@ -797,6 +797,82 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   clickSpecialButton () {
     // if (this.existsQGL) this.doQGL()
     // else if (this.existsZtilt) return this.doZtilt()
+  }
+
+  get absolute_coordinates () {
+    return this.$store.state.printer?.gcode_move?.absolute_coordinates ?? true
+  }
+
+  get feedrateXY () {
+    return this.$store.state.gui.control?.feedrateXY ?? 100
+  }
+
+  get feedrateZ () {
+    return this.$store.state.gui.control?.feedrateZ ?? 10
+  }
+
+  get existsQGL () {
+    return this.$store.getters['printer/existsQGL']
+  }
+
+  get existsZtilt () {
+    return this.$store.getters['printer/existsZtilt']
+  }
+
+  get existsBedTilt () {
+    return this.$store.getters['printer/existsBedTilt']
+  }
+
+  get existsBedScrews () {
+    return this.$store.getters['printer/existsBedScrews']
+  }
+
+  get existsDeltaCalibrate () {
+    return this.$store.getters['printer/existsDeltaCalibrate']
+  }
+
+  get existsScrewsTilt () {
+    return this.$store.getters['printer/existsScrewsTilt']
+  }
+
+  get existsFirmwareRetraction (): boolean {
+    return this.$store.getters['printer/existsFirmwareRetraction']
+  }
+
+  get colorQuadGantryLevel () {
+    const status = this.$store.state.printer.quad_gantry_level?.applied ?? true
+
+    return status ? 'primary' : 'warning'
+  }
+
+  get colorZTilt () {
+    const status = this.$store.state.printer.z_tilt?.applied ?? true
+
+    return status ? 'primary' : 'warning'
+  }
+
+  get defaultActionButton () {
+    return this.$store.getters['gui/getDefaultControlActionButton']
+  }
+
+  /**
+     * Axes home states
+     */
+
+  get homedAxes (): string {
+    return this.$store.state.printer?.toolhead?.homed_axes ?? ''
+  }
+
+  get xAxisHomed (): boolean {
+    return this.homedAxes.includes('x')
+  }
+
+  get yAxisHomed (): boolean {
+    return this.homedAxes.includes('y')
+  }
+
+  get zAxisHomed (): boolean {
+    return this.homedAxes.includes('z')
   }
 }
 </script>
@@ -866,7 +942,7 @@ svg g#home_buttons text {
 
 svg g.home_button,
 svg a#home_all_center {
-    fill: var(--color-warning);
+    fill: var(--v-anchor-base);
     transition: opacity 250ms;
 }
 
@@ -891,17 +967,17 @@ svg a#stepper_off {
 
 svg a#tilt_adjust.warning,
 svg a#stepper_off.warning {
-    fill: var(--color-warning);
+    fill: var(--v-anchor-base);
 }
 
 svg a#tilt_adjust.primary,
 svg a#stepper_off.primary {
-    fill: var(--color-primary);
+    fill: var(--v-error-base);
 }
 
 svg .homed g.home_button,
 svg .homed a#home_all_center {
-    fill: var(--color-primary);
+    fill: var(--v-error-base);
 }
 
 svg g.home_button:hover,
