@@ -28,8 +28,9 @@
               <!-- HOME X BUTTON -->
               <a
                 :class="xHomeClass"
-                @click="clickNothing"
+                @click="sendGcode('G28 X', $waits.onHomeX)"
               >
+                >
                 <g
                   id="home_x"
                   transform="matrix(0.707107,-0.707107,0.707107,0.707107,-1.41799,4.05689)"
@@ -62,8 +63,9 @@
               <!-- HOME Y BUTTON -->
               <a
                 :class="yHomeClass"
-                @click="clickNothing"
+                @click="sendGcode('G28 Y', $waits.onHomeY)"
               >
+                >
                 <g
                   id="home_y"
                   transform="matrix(0.707107,0.707107,-0.707107,0.707107,57.8807,-1.41799)"
@@ -96,7 +98,7 @@
               <!-- HOME Z BUTTON -->
               <a
                 :class="zHomeClass"
-                @click="clickNothing"
+                @click="sendGcode('G28 Z', $waits.onHomeZ)"
               >
                 <g
                   id="home_z"
@@ -131,7 +133,7 @@
               <a
                 v-if="enableXYHoming"
                 :class="xyHomeClass"
-                @click="clickNothing"
+                @click="sendGcode('G28 X Y', $waits.onHomeXY)"
               >
                 <g
                   id="home_xy"
@@ -166,7 +168,7 @@
               <a
                 v-else
                 :class="xyzHomeClass"
-                @click="clickNothing"
+                @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
                   id="home_all"
@@ -195,7 +197,7 @@
               <a
                 v-if="enableXYHoming"
                 :class="xyzHomeClass"
-                @click="clickNothing"
+                @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
                   id="home_all_center"
@@ -237,13 +239,13 @@
                 >
                   <a
                     class="step inner"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[0],true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)"><path :d="zStepInner" /></g>
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[1],true)"
                   >
                     <g
                       transform="matrix(0.804902,1.2326e-32,-9.92118e-33,1,-5.71917e-15,-7.10543e-15)"
@@ -253,7 +255,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[2],true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
                       <path :d="zStepOuterMid" />
@@ -261,7 +263,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[3],true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
                       <path :d="zStepOuter" />
@@ -274,7 +276,7 @@
                 >
                   <a
                     class="step inner"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[0],false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
                       <path :d="zStepInner" />
@@ -282,7 +284,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[1],false)"
                   >
                     <g transform="matrix(0.804902,1.2326e-32,-9.92118e-33,1,-5.71917e-15,-7.10543e-15)">
                       <path :d="zStepInnerMid" />
@@ -290,7 +292,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[2],false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
                       <path :d="zStepOuterMid" />
@@ -298,7 +300,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Z',stepsZ[3],false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
                       <path :d="zStepOuter" />
@@ -357,7 +359,7 @@
                 >
                   <a
                     class="step inner"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[0],false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
                       <path :d="xyStepInner" />
@@ -365,7 +367,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[1],false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
                       <path :d="xyStepInnerMid" />
@@ -373,7 +375,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[2],false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
                       <path :d="xyStepOuterMid" />
@@ -381,7 +383,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[3],false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
                       <path :d="xyStepOuter" />
@@ -395,7 +397,7 @@
                 >
                   <a
                     class="step inner"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[0],true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
                       <path :d="xyStepInner" />
@@ -403,7 +405,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[1],true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
                       <path :d="xyStepInnerMid" />
@@ -411,7 +413,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[2],true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
                       <path :d="xyStepOuterMid" />
@@ -419,7 +421,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('Y',stepsXY[3],true)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
                       <path :d="xyStepOuter" />
@@ -433,7 +435,7 @@
                 >
                   <a
                     class="step inner"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[0],true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
                       <path :d="xyStepInner" />
@@ -441,7 +443,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[1],true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
                       <path :d="xyStepInnerMid" />
@@ -449,7 +451,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[2],true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
                       <path :d="xyStepOuterMid" />
@@ -457,7 +459,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[3],true)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
                       <path :d="xyStepOuter" />
@@ -471,7 +473,7 @@
                 >
                   <a
                     class="step inner"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[0],false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
                       <path :d="xyStepInner" />
@@ -479,7 +481,7 @@
                   </a>
                   <a
                     class="step inner-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[1],false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
                       <path :d="xyStepInnerMid" />
@@ -487,7 +489,7 @@
                   </a>
                   <a
                     class="step outer-mid"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[2],false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
                       <path :d="xyStepOuterMid" />
@@ -495,7 +497,7 @@
                   </a>
                   <a
                     class="step outer"
-                    @click="clickNothing"
+                    @click="sendMoveGcode('X',stepsXY[3],false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
                       <path :d="xyStepOuter" />
@@ -617,6 +619,7 @@
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
+import { SocketActions } from '@/api/socketActions'
 
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
@@ -678,7 +681,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get enableXYHoming (): boolean {
-    return true // this.$store.state.gui.control.enableXYHoming
+    return false // this.$store.state.gui.control.enableXYHoming
   }
 
   get reverseX () {
@@ -694,15 +697,15 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get stepsXY () {
-    // const steps = [] // this.$store.state.gui.control?.stepsCircleXY ?? []
+    const steps = this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances ?? []
 
-    return [5, 10, 50, 100] // Array.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
+    return Array.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
   }
 
   get stepsZ () {
-    // const steps = []// this.$store.state.gui.control?.stepsCircleZ ?? []
+    const steps = this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances ?? []
 
-    return [5, 10, 50, 100] //  rray.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
+    return Array.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
   }
 
   get isPrinting () {
@@ -799,6 +802,37 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     // else if (this.existsZtilt) return this.doZtilt()
   }
 
+  sendGcode (gcode: string, wait?: string) {
+    SocketActions.printerGcodeScript(gcode, wait)
+    this.addConsoleEntry(gcode)
+  }
+
+  sendMoveGcode (axis: string, distance: string, negative = false) {
+    axis = axis.toLowerCase()
+    const rate = (axis.toLowerCase() === 'z')
+      ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
+      : this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+    const inverted = this.$store.state.config.uiSettings.general.axis[axis].inverted || false
+    distance = ((negative && !inverted) || (!negative && inverted))
+      ? '-' + distance
+      : distance
+
+    if (this.forceMove) {
+      const accel = (axis.toLowerCase() === 'z')
+        ? this.$store.getters['printer/getPrinterSettings']('printer.max_z_accel')
+        : this.$store.state.printer.printer.toolhead.max_accel
+      this.sendGcode(`FORCE_MOVE STEPPER=stepper_${axis} DISTANCE=${distance} VELOCITY=${rate} ACCEL=${accel}`)
+    } else {
+      this.sendGcode(`G91
+      G1 ${axis}${distance} F${rate * 60}
+      G90`)
+    }
+  }
+
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
+  }
+
   get absolute_coordinates () {
     return this.$store.state.printer?.gcode_move?.absolute_coordinates ?? true
   }
@@ -860,7 +894,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
      */
 
   get homedAxes (): string {
-    return this.$store.state.printer?.toolhead?.homed_axes ?? ''
+    return this.$store.state.printer?.printer?.toolhead?.homed_axes ?? ''
   }
 
   get xAxisHomed (): boolean {
