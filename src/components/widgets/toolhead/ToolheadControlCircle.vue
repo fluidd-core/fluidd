@@ -821,8 +821,8 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   clickSpecialButton () {
-    if (this.printerSupportsQuadGantryLevel) this.sendGcode('QUAD_GANTRY_LEVEL')
-    else if (this.printerSupportsZTiltAdjust) return this.sendGcode('Z_TILT_ADJUST')
+    if (this.printerSupportsQuadGantryLevel) this.sendGcode('QUAD_GANTRY_LEVEL', this.$waits.onQGL)
+    else if (this.printerSupportsZTiltAdjust) return this.sendGcode('Z_TILT_ADJUST', this.$waits.onZTilt)
   }
 
   sendGcode (gcode: string, wait?: string) {
