@@ -146,7 +146,7 @@
             append-icon=""
             deletable-chips
             :rules="[
-              $rules.lengthGreaterThanOrEqual(4),
+              $rules.lengthGreaterThanOrEqual(1),
               $rules.lengthLessThanOrEqual(3),
               $rules.numberArrayValid
             ]"
@@ -194,7 +194,7 @@
             append-icon=""
             deletable-chips
             :rules="[
-              $rules.lengthGreaterThanOrEqual(1),
+              $rules.lengthGreaterThanOrEqual(4),
               $rules.lengthLessThanOrEqual(4),
               $rules.numberArrayValid
             ]"
