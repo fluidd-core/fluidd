@@ -1163,6 +1163,18 @@ svg a.disabled
   pointer-events: none;
 }
 
+// TODO: see if we can simplify this!
+
+svg g#home_x:hover .home_icon,
+svg g#home_x:hover text,
+svg g#home_y:hover .home_icon,
+svg g#home_y:hover text,
+svg g#home_z:hover .home_icon,
+svg g#home_z:hover text,
+svg g#home_z:hover .home_icon,
+svg g#home_z:hover text,
+svg g#home_all:hover .home_icon,
+
 svg g.home_button:hover,
 svg a#home_all_center:hover,
 svg a#tilt_adjust:hover,
