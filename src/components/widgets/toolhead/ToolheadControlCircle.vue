@@ -681,11 +681,11 @@
     </v-row>
   </div>
 </template>
+
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
-import { SocketActions } from '@/api/socketActions'
 import type { BedSize } from '@/store/printer/types'
 
 // heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
@@ -701,18 +701,6 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled
   }
 
-  get reverseX () {
-    return this.$store.state.gui.control.reverseX
-  }
-
-  get reverseY () {
-    return this.$store.state.gui.control.reverseY
-  }
-
-  get reverseZ () {
-    return this.$store.state.gui.control.reverseZ
-  }
-
   get stepsXY () {
     const steps = this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances ?? []
 
@@ -723,10 +711,6 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const steps = this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances ?? []
 
     return Array.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
-  }
-
-  get isPrinting () {
-    return ['printing'].includes(this.printerState)
   }
 
   get printerSettings () {
@@ -742,119 +726,133 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get stepTextClass () {
-    const classes = []
-    if (!this.homedAxes.includes('xy') || this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('disabled')
-    return classes
+    return {
+      disabled: (
+        this.printerPrinting ||
+        !this.xyHomed ||
+        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      )
+    }
   }
 
   get xStepClass () {
-    const classes = []
-    if (!this.homedAxes.includes('x') || this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('disabled')
-    return classes
+    return {
+      disabled: (
+        this.printerPrinting ||
+        !this.xHomed ||
+        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      )
+    }
   }
 
   get yStepClass () {
-    const classes = []
-    if (!this.homedAxes.includes('y') || this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('disabled')
-    return classes
+    return {
+      disabled: (
+        this.printerPrinting ||
+        !this.yHomed ||
+        this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      )
+    }
   }
 
   get zStepClass () {
-    const classes = []
-    if (!this.homedAxes.includes('z') || this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('disabled')
-    return classes
+    return {
+      disabled: (
+        this.printerPrinting ||
+        !this.zHomed ||
+        this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
+      )
+    }
   }
 
   get xHomeClass () {
-    const classes = []
-    if (this.homedAxes.includes('x')) classes.push('homed')
-    if (this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('loading')
-    return classes
+    return {
+      homed: this.xHomed,
+      disabled: this.printerPrinting,
+      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
+    }
   }
 
   get yHomeClass () {
-    const classes = []
-    if (this.homedAxes.includes('y')) classes.push('homed')
-    if (this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('loading')
-
-    return classes
+    return {
+      homed: this.yHomed,
+      disabled: this.printerPrinting,
+      loading: this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+    }
   }
 
   get xyHomeClass () {
-    const classes = []
-    if (this.homedAxes.includes('xy')) classes.push('homed')
-    if (this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])) classes.push('loading')
-
-    return classes
+    return {
+      homed: this.xyHomed,
+      disabled: this.printerPrinting,
+      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+    }
   }
 
   get xyzHomeClass () {
-    const classes = []
-    if (this.homedAxes.includes('xyz')) classes.push('homed')
-    if (this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])) classes.push('loading')
-
-    return classes
+    return {
+      homed: this.allHomed,
+      disabled: this.printerPrinting,
+      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])
+    }
   }
 
   get centerToolheadClass () {
     const tool_pos = this.$store.state.printer.printer.toolhead.position
     const bedCenter = this.bedCenter
-    const classes = []
-    if ((tool_pos[0] === bedCenter.x) && (tool_pos[1] === bedCenter.y) && this.homedAxes.includes('y') && this.homedAxes.includes('x')) classes.push('homed')
-    if (!this.homedAxes.includes('xy')) classes.push('disabled')
-    if (this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])) classes.push('loading')
 
-    return classes
+    return {
+      homed: (
+        this.xyHomed &&
+        tool_pos[0] === bedCenter.x &&
+        tool_pos[1] === bedCenter.y
+      ),
+      disabled: (
+        this.printerPrinting ||
+        !this.xyHomed
+      ),
+      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])
+    }
   }
 
   get zHomeClass () {
-    const classes = []
-    if (this.homedAxes.includes('z')) classes.push('homed')
-    if (this.isPrinting) classes.push('disabled')
-    if (this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('loading')
-
-    return classes
+    return {
+      homed: this.zHomed,
+      disabled: this.printerPrinting,
+      loading: this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
+    }
   }
 
   get colorSpecialButton () {
-    const classes = []
-    if (this.isPrinting) classes.push('disabled')
-    if (!this.homedAxes.includes('xyz')) classes.push('disabled')
-    if (this.printerSupportsQuadGantryLevel) classes.push(this.colorQuadGantryLevel)
-    else if (this.printerSupportsZTiltAdjust) classes.push(this.colorZTilt)
-
-    return classes
+    return {
+      disabled: (
+        this.printerPrinting ||
+        this.allHomed
+      ),
+      [this.colorQuadGantryLevel.toString()]: this.printerSupportsQuadGantryLevel,
+      ...(
+        this.printerSupportsQuadGantryLevel
+          ? this.colorQuadGantryLevel
+          : this.printerSupportsZTiltAdjust
+            ? this.colorZTilt
+            : undefined
+      )
+    }
   }
 
   get motorsOffClass () {
-    const classes = []
-    classes.push(this.homedAxes !== '' ? 'primary' : 'warning')
-    if (this.isPrinting) classes.push('disabled')
-
-    return classes
-  }
-
-  clickNothing () {
-
+    return {
+      disabled: this.printerPrinting
+      // [this.homedAxes !== '' ? 'primary' : 'warning']: true
+    }
   }
 
   clickSpecialButton () {
-    if (this.printerSupportsQuadGantryLevel) this.sendGcode('QUAD_GANTRY_LEVEL', this.$waits.onQGL)
-    else if (this.printerSupportsZTiltAdjust) return this.sendGcode('Z_TILT_ADJUST', this.$waits.onZTilt)
-  }
-
-  sendGcode (gcode: string, wait?: string) {
-    SocketActions.printerGcodeScript(gcode, wait)
-    this.addConsoleEntry(gcode)
+    if (this.printerSupportsQuadGantryLevel) {
+      this.sendGcode('QUAD_GANTRY_LEVEL', this.$waits.onQGL)
+    } else if (this.printerSupportsZTiltAdjust) {
+      return this.sendGcode('Z_TILT_ADJUST', this.$waits.onZTilt)
+    }
   }
 
   sendMoveGcode (axis: string, distance: string, negative = false) {
@@ -910,266 +908,207 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
-  get absolute_coordinates () {
-    return this.$store.state.printer?.gcode_move?.absolute_coordinates ?? true
-  }
-
-  get feedrateXY () {
-    return this.$store.state.gui.control?.feedrateXY ?? 100
-  }
-
-  get feedrateZ () {
-    return this.$store.state.gui.control?.feedrateZ ?? 10
-  }
-
-  get existsBedTilt () {
-    return this.$store.getters['printer/existsBedTilt']
-  }
-
-  get existsBedScrews () {
-    return this.$store.getters['printer/existsBedScrews']
-  }
-
-  get existsDeltaCalibrate () {
-    return this.$store.getters['printer/existsDeltaCalibrate']
-  }
-
-  get existsScrewsTilt () {
-    return this.$store.getters['printer/existsScrewsTilt']
-  }
-
-  get existsFirmwareRetraction (): boolean {
-    return this.$store.getters['printer/existsFirmwareRetraction']
-  }
-
   get colorQuadGantryLevel () {
-    const classes = []
-    classes.push(this.$store.state.printer.printer.quad_gantry_level?.applied ? 'primary' : 'warning')
-    if (this.hasWait([this.$waits.onQGL, this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('loading')
-
-    return classes
+    return {
+      [this.$store.state.printer.printer.quad_gantry_level?.applied ? 'primary' : 'warning']: true,
+      loading: this.hasWait([this.$waits.onQGL, this.$waits.onHomeZ, this.$waits.onHomeAll])
+    }
   }
 
   get colorZTilt () {
-    const classes = []
-    classes.push(this.$store.state.printer.printer.z_tilt?.applied ? 'primary' : 'warning')
-    if (this.hasWait([this.$waits.onZTilt, this.$waits.onHomeZ, this.$waits.onHomeAll])) classes.push('loading')
-
-    return classes
+    return {
+      [this.$store.state.printer.printer.z_tilt?.applied ? 'primary' : 'warning']: true,
+      loading: this.hasWait([this.$waits.onZTilt, this.$waits.onHomeZ, this.$waits.onHomeAll])
+    }
   }
 
   get defaultActionButton () {
     return this.$store.getters['gui/getDefaultControlActionButton']
   }
-
-  /**
-     * Axes home states
-     */
-
-  get homedAxes (): string {
-    return this.$store.state.printer?.printer?.toolhead?.homed_axes ?? ''
-  }
-
-  get xAxisHomed (): boolean {
-    return this.homedAxes.includes('x')
-  }
-
-  get yAxisHomed (): boolean {
-    return this.homedAxes.includes('y')
-  }
-
-  get zAxisHomed (): boolean {
-    return this.homedAxes.includes('z')
-  }
 }
 </script>
 
 <style lang="scss" scoped>
-svg {
-  max-height: 350px;
-  min-height: 275px;
-  user-select: none;
-  filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3));
-}
+  svg {
+    max-height: 350px;
+    min-height: 275px;
+    user-select: none;
+    filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3));
+  }
 
-svg a {
-  stroke: hsl(0, 0%, 10%);
-  stroke-width: 0.3px;
-}
+  svg a {
+    stroke: hsl(0, 0%, 10%);
+    stroke-width: 0.3px;
+  }
 
-svg a.step {
-  transition: fill 750ms ease-out;
-}
+  svg a.step {
+    transition: fill 750ms ease-out;
+  }
 
-svg a.step:hover {
-  fill: hsl(215, 0%, 50%) !important;
-  transition: fill 100ms ease-in;
-}
+  svg a.step:hover {
+    fill: hsl(215, 0%, 50%) !important;
+    transition: fill 100ms ease-in;
+  }
 
-svg a.step:active {
-  fill: hsl(215, 0%, 70%) !important;
-}
+  svg a.step:active {
+    fill: hsl(215, 0%, 70%) !important;
+  }
 
-svg a.step.inner {
-  fill: #666;
-}
-svg a.step.inner-mid {
-  fill: #555;
-}
-svg a.step.outer-mid {
-  fill: #444;
-}
-svg a.step.outer {
-  fill: #333;
-}
+  svg a.step.inner {
+    fill: #666;
+  }
+  svg a.step.inner-mid {
+    fill: #555;
+  }
+  svg a.step.outer-mid {
+    fill: #444;
+  }
+  svg a.step.outer {
+    fill: #333;
+  }
 
-svg .disabled a.step {
-  pointer-events: none;
-}
+  svg .disabled a.step {
+    pointer-events: none;
+  }
 
-svg g#stepsZ,
-svg g#stepsXY {
-  pointer-events: none;
-  user-select: none;
-  font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-  font-size: 3px;
-  fill: white;
-}
+  svg g#stepsZ,
+  svg g#stepsXY {
+    pointer-events: none;
+    user-select: none;
+    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+    font-size: 3px;
+    fill: white;
+  }
 
-svg a#tilt_adjust text {
-  font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-  font-size: 3px;
-  display: none;
-}
+  svg a#tilt_adjust text {
+    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+    font-size: 3px;
+    display: none;
+  }
 
-svg a.disabled {
-  pointer-events: none;
-}
+  svg a.disabled {
+    pointer-events: none;
+  }
 
-svg a.disabled .home_button path,
-svg a.disabled circle {
-  fill: rgb(92, 92, 92);
-}
+  svg a.disabled .home_button path,
+  svg a.disabled circle {
+    fill: rgb(92, 92, 92);
+  }
 
-svg g#stepsXY.disabled text,
-svg g#stepsZ.disabled text {
-  fill: rgba(255, 255, 255, 0.3);
-}
+  svg g#stepsXY.disabled text,
+  svg g#stepsZ.disabled text {
+    fill: rgba(255, 255, 255, 0.3);
+  }
 
-svg a#tilt_adjust,
-svg a#stepper_off {
-  transition: opacity 250ms;
-}
+  svg a#tilt_adjust,
+  svg a#stepper_off {
+    transition: opacity 250ms;
+  }
 
-svg g.home_button,
-svg a#home_all_center,
-svg a#tilt_adjust.warning,
-svg a#stepper_off.warning {
+  svg g.home_button,
+  svg a#home_all_center,
+  svg a#tilt_adjust.warning,
+  svg a#stepper_off.warning {
     fill: var(--v-btncolor-base);
     transition: opacity 250ms;
-}
+  }
 
-svg a#tilt_adjust #tilt_icon,
-svg a#stepper_off #stepper_off_icon {
+  svg a#tilt_adjust #tilt_icon,
+  svg a#stepper_off #stepper_off_icon {
     fill: white; // TODO: change to fg color
     stroke: none;
-}
+  }
 
-svg g#icon.center_icon {
-  fill: none;
-  stroke: white;
-  pointer-events: none;
-}
-svg g#icon.home_icon
-  {
+  svg g#icon.center_icon {
+    fill: none;
+    stroke: white;
+    pointer-events: none;
+  }
+  svg g#icon.home_icon {
     fill: white;
     stroke: white;
     transition: opacity 250ms;
     pointer-events: none;
-}
+  }
 
-svg g#home_buttons text {
+  svg g#home_buttons text {
     font-family: 'Roboto-Regular', 'Roboto', sans-serif;
     font-size: 5px;
     fill: white;
     stroke: none;
     pointer-events: none;
-}
+  }
 
-svg g#icon.center_icon {
-  fill: none;
-  stroke: white
-}
-svg g#icon.home_icon
-  {
+  svg g#icon.center_icon {
+    fill: none;
+    stroke: white
+  }
+  svg g#icon.home_icon {
     fill: white;
     stroke: white;
     transition: opacity 250ms;
-}
+  }
 
-// DISABLED STATES / LOADING STATES
+  // DISABLED STATES / LOADING STATES
 
-svg a#tilt_adjust.disabled #tilt_icon,
-svg a#stepper_off.disabled #stepper_off_icon {
+  svg a#tilt_adjust.disabled #tilt_icon,
+  svg a#stepper_off.disabled #stepper_off_icon {
     fill: black; // TODO: change to fg color
     stroke: none;
-}
+  }
 
-svg a.loading g#icon.center_icon ,
-svg a.disabled g#icon.center_icon {
-  fill: none;
-  stroke:  rgb(85,85,85);// TODO change to disabled
-}
+  svg a.loading g#icon.center_icon,
+  svg a.disabled g#icon.center_icon {
+    fill: none;
+    stroke:  rgb(85,85,85);// TODO change to disabled
+  }
 
-svg a.disabled g#icon.center_icon,
-svg a.loading  g#icon.center_icon {
-  fill: none;
-  stroke: black
-}
+  svg a.disabled g#icon.center_icon,
+  svg a.loading  g#icon.center_icon {
+    fill: none;
+    stroke: black
+  }
 
-svg a.disabled g#home_buttons text,
-svg a.loading g#home_buttons text {
+  svg a.disabled g#home_buttons text,
+  svg a.loading g#home_buttons text {
     font-family: 'Roboto-Regular', 'Roboto', sans-serif;
     font-size: 5px;
     fill: black;
     stroke: black;
-}
+  }
 
-svg a.disabled g#icon.home_icon,
-svg a.loading  g#icon.home_icon
-  {
+  svg a.disabled g#icon.home_icon,
+  svg a.loading  g#icon.home_icon {
     fill:  black;
     stroke: black;
     transition: opacity 250ms;
-}
-svg  g#home_buttons .disabled text,
-svg  g#home_buttons .loading text {
+  }
+  svg  g#home_buttons .disabled text,
+  svg  g#home_buttons .loading text {
     fill:  black;
     stroke: black;
-}
+  }
 
-svg a#tilt_adjust.primary,
-svg a#stepper_off.primary {
-  fill: var(--v-anchor-base);
-}
+  svg a#tilt_adjust.primary,
+  svg a#stepper_off.primary {
+    fill: var(--v-anchor-base);
+  }
 
-svg .homed g.home_button,
-svg .homed a#home_all_center {
-  fill: var(--v-anchor-base);
-}
+  svg .homed g.home_button,
+  svg .homed a#home_all_center {
+    fill: var(--v-anchor-base);
+  }
 
-svg a.loading
-svg a.disabled
-{
-  fill: rgb(85,85,85);
-  pointer-events: none;
-}
+  svg a.loading
+  svg a.disabled {
+    fill: rgb(85,85,85);
+    pointer-events: none;
+  }
 
-svg g.home_button:hover,
-svg a#home_all_center:hover,
-svg a#tilt_adjust:hover,
-svg a#stepper_off:hover {
-  opacity: 0.4;
-}
-
+  svg g.home_button:hover,
+  svg a#home_all_center:hover,
+  svg a#tilt_adjust:hover,
+  svg a#stepper_off:hover {
+    opacity: 0.4;
+  }
 </style>
