@@ -828,7 +828,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get colorSpecialButton () {
     const classes = []
     if (this.isPrinting) classes.push('disabled')
-    if (!this.homedAxes.includes('xy')) classes.push('disabled')
+    if (!this.homedAxes.includes('xyz')) classes.push('disabled')
     if (this.printerSupportsQuadGantryLevel) classes.push(this.colorQuadGantryLevel)
     else if (this.printerSupportsZTiltAdjust) classes.push(this.colorZTilt)
 
