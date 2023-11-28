@@ -1085,7 +1085,7 @@ svg g#icon.home_icon
     fill: white;
     stroke: white;
     transition: opacity 250ms;
-    pointer-events: auto;
+    pointer-events: none;
 }
 
 svg g#home_buttons text {
