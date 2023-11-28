@@ -1084,6 +1084,7 @@ svg g#icon.home_icon
     fill: white;
     stroke: white;
     transition: opacity 250ms;
+    pointer-events: auto;
 }
 
 svg g#home_buttons text {
@@ -1155,10 +1156,9 @@ svg .homed a#home_all_center {
   fill: var(--v-anchor-base);
 }
 
-svg .loading g.home_button,
-svg a#tilt_adjust.loading,
-svg a#stepper_off.loading,
-svg .loading a#home_all_center {
+svg a.loading
+svg a.disabled
+{
   fill: rgb(85,85,85);
   pointer-events: none;
 }
@@ -1167,7 +1167,7 @@ svg g.home_button:hover,
 svg a#home_all_center:hover,
 svg a#tilt_adjust:hover,
 svg a#stepper_off:hover {
-  opacity: 0.8;
+  opacity: 0.4;
 }
 
 </style>
