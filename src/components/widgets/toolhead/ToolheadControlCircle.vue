@@ -280,8 +280,8 @@
                   />
                 </g>
                 <g
-                  id="home-icon"
-                  class="home-icon"
+                  id="icon"
+                  class="home_icon"
                   transform="scale(0.3) translate(91.25,91.25)"
                 >
                   <!-- transform="matrix(0.29377,0,0,0.29377,0.346087,1.64241)"-->
