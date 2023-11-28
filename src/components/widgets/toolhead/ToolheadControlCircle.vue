@@ -839,6 +839,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     if (bedSize) {
       if ((tool_pos[0] === bedSize.maxX / 2) && (tool_pos[1] === bedSize.maxY / 2) && this.homedAxes.includes('y') && this.homedAxes.includes('x')) classes.push('homed')
     }
+    if (!this.homedAxes.includes('xy')) classes.push('disabled')
     if (this.isPrinting) classes.push('disabled')
     if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])) classes.push('loading')
 
