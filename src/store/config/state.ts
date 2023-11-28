@@ -33,7 +33,7 @@ export const defaultState = (): ConfigState => {
         toolheadControlStyle: 'cross',
         toolheadMoveDistances: [0.1, 1, 10, 25, 50, 100],
         toolheadXYMoveDistances: [1, 10, 50],
-        toolheadCircleXYMoveDistances: [0.1, 1, 10, 50],
+        toolheadCircleXYMoveDistances: [1, 10, 25, 50],
         toolheadZMoveDistances: [0.1, 1, 10],
         toolheadCircleZMoveDistances: [0.1, 1, 10, 50],
         useGcodeCoords: false,
