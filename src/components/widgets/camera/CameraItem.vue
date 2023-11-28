@@ -130,7 +130,8 @@ export default class CameraItem extends Vue {
   .camera-image {
     display: block;
     max-width: 100%;
-    max-height: calc(100vh - 56px - 32px);
+    max-height: calc(100vh - 130px);
+    max-height: calc(100svh - 130px);
     white-space: nowrap;
     margin: auto;
   }

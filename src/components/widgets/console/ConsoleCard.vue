@@ -130,7 +130,7 @@
       ref="console"
       :scrolling-paused.sync="scrollingPaused"
       :items="items"
-      :height="fullscreen ? (height - 236) : 300"
+      :fullscreen="fullscreen"
     />
   </collapsable-card>
 </template>
@@ -146,21 +146,6 @@ import type { ConsoleEntry, ConsoleFilter } from '@/store/console/types'
   }
 })
 export default class ConsoleCard extends Vue {
-  height = 0
-
-  created () {
-    window.addEventListener('resize', this.changeHeight)
-    this.changeHeight()
-  }
-
-  destroyed () {
-    window.removeEventListener('resize', this.changeHeight)
-  }
-
-  changeHeight () {
-    this.height = window.innerHeight
-  }
-
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
 

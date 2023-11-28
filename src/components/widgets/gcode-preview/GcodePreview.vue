@@ -8,8 +8,8 @@
     <svg
       ref="svg"
       :viewBox="svgViewBox"
-      :height="height"
-      :width="width"
+      height="100%"
+      width="100%"
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
     >
@@ -340,12 +340,6 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
   @Prop({ type: Boolean })
   readonly disabled?: boolean
 
-  @Prop({ type: String })
-  readonly width!: string
-
-  @Prop({ type: String })
-  readonly height!: string
-
   @Prop({ type: Number, default: Infinity })
   readonly progress!: number
 
@@ -660,7 +654,9 @@ export default class GcodePreview extends Mixins(StateMixin, BrowserMixin) {
 
   :deep(.v-input__slot) {
     overflow: hidden;
-    max-height: calc(100vh * 2/3);
+    max-height: calc(100vh - 380px);
+    max-height: calc(100svh - 380px);
+    min-height: 250px !important;
     aspect-ratio: 1;
 
     svg {
