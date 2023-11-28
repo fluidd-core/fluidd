@@ -210,6 +210,8 @@
             class="mt-0 mb-4"
           />
         </app-setting>
+
+        <v-divider />
       </template>
 
       <app-setting :title="$t('app.setting.label.default_toolhead_xy_speed')">
