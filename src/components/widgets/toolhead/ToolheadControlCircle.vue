@@ -71,7 +71,7 @@
             >
               <!-- HOME X BUTTON -->
               <a
-                class="xHomeClass"
+                :class="xHomeClass"
                 @click="sendGcode('G28 X', $waits.onHomeX)"
               >
                 <g
@@ -102,7 +102,7 @@
               </a>
               <!-- HOME Y BUTTON -->
               <a
-                class="yHomeClass"
+                :class="yHomeClass"
                 @click="sendGcode('G28 Y', $waits.onHomeY)"
               >
                 >
@@ -134,7 +134,7 @@
               </a>
               <!-- HOME Z BUTTON -->
               <a
-                class="zHomeClass"
+                :class="zHomeClass"
                 @click="sendGcode('G28 Z', $waits.onHomeZ)"
               >
                 <g
@@ -166,7 +166,7 @@
               <!-- HOME XY BUTTON -->
               <a
                 v-if="enableXYHoming"
-                class="xyHomeClass"
+                :class="xyHomeClass"
                 @click="sendGcode('G28 X Y', $waits.onHomeXY)"
               >
                 <g
@@ -198,7 +198,7 @@
               <!-- HOME ALL BUTTON -->
               <a
                 v-else
-                class="xyzHomeClass"
+                :class="xyzHomeClass"
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
@@ -224,7 +224,7 @@
 
               <a
                 v-if="!enableXYHoming"
-                class="centerToolheadClass"
+                :class="centerToolheadClass"
                 @click="centerToolHead()"
               >
                 <g
@@ -263,7 +263,7 @@
               <!-- HOME ALL BUTTON IN THE CENTER -->
               <a
                 v-if="enableXYHoming"
-                class="xyzHomeClass"
+                :class="xyzHomeClass"
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
@@ -298,7 +298,7 @@
               >
                 <g
                   id="Bottom"
-                  class="zStepClass"
+                  :class="zStepClass"
                   transform="matrix(-1,-1.52149e-16,9.85721e-17,-1,114.34,62)"
                 >
                   <a
@@ -336,7 +336,7 @@
                 </g>
                 <g
                   id="Top"
-                  class="zStepClass"
+                  :class="zStepClass"
                 >
                   <a
                     class="step inner"
@@ -375,7 +375,7 @@
               <!-- Z STEP BUTTON TEXT -->
               <g
                 id="stepsZ"
-                class="zStepClass"
+                :class="zStepClass"
                 transform="matrix(1,0,0,1,40,0)"
               >
                 <g transform="matrix(1,0,0,1,0.483899,4.07983)">
@@ -419,7 +419,7 @@
               <g id="XY">
                 <g
                   id="Right"
-                  class="xStepClass"
+                  :class="xStepClass"
                 >
                   <a
                     class="step inner"
@@ -456,7 +456,7 @@
                 </g>
                 <g
                   id="Left"
-                  class="xStepClass"
+                  :class="xStepClass"
                   transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,61.9767,61.9767)"
                 >
                   <a
@@ -494,7 +494,7 @@
                 </g>
                 <g
                   id="Bottom1"
-                  class="yStepClass"
+                  :class="yStepClass"
                   transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)"
                 >
                   <a
@@ -532,7 +532,7 @@
                 </g>
                 <g
                   id="Top1"
-                  class="yStepClass"
+                  :class="yStepClass"
                   transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)"
                 >
                   <a
@@ -572,7 +572,7 @@
               <!-- XY STEP BUTTON TEXT -->
               <g
                 id="stepsXY"
-                class="stepTextClass"
+                :class="stepTextClass"
               >
                 <g transform="matrix(1,0,0,1,0.483899,4.07983)">
                   <text
@@ -616,7 +616,7 @@
           <a
             v-if="printerSupportsQuadGantryLevel"
             id="tilt_adjust"
-            class="colorSpecialButton"
+            :class="colorSpecialButton"
             @click="clickSpecialButton"
           >
             <circle
@@ -637,7 +637,7 @@
           <a
             v-else-if="printerSupportsZTiltAdjust"
             id="tilt_adjust"
-            class="colorSpecialButton"
+            :class="colorSpecialButton"
             @click="clickSpecialButton"
           >
             <circle
@@ -658,7 +658,7 @@
           <a
             v-else
             id="stepper_off"
-            class="motorsOffClass"
+            :class="motorsOffClass"
             @click="sendGcode('M84')"
           >
             <circle
@@ -804,11 +804,9 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get centerToolheadClass () {
     const tool_pos = this.$store.state.printer.printer.toolhead.position
-    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize
+    const bedCenter = this.bedCenter
     const classes = []
-    if (bedSize) {
-      if ((tool_pos[0] === bedSize.maxX / 2) && (tool_pos[1] === bedSize.maxY / 2) && this.homedAxes.includes('y') && this.homedAxes.includes('x')) classes.push('homed')
-    }
+    if ((tool_pos[0] === bedCenter.x) && (tool_pos[1] === bedCenter.y) && this.homedAxes.includes('y') && this.homedAxes.includes('x')) classes.push('homed')
     if (!this.homedAxes.includes('xy')) classes.push('disabled')
     if (this.isPrinting) classes.push('disabled')
     if (this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])) classes.push('loading')
@@ -878,18 +876,31 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  centerToolHead () {
-    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize
+  get bedSize (): BedSize {
+    const bedSize = this.$store.getters['printer/getBedSize'] as BedSize | undefined
 
-    if (bedSize) {
-      const maxY = bedSize?.maxY ?? 0 // Using nullish coalescing to provide a default value if maxX is undefined or null
-      const maxX = bedSize?.maxX ?? 0 // Using nullish coalescing to provide a default value if maxX is undefined or null
-      const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
-      const centerX = maxX / 2
-      const centerY = maxY / 2
-
-      this.sendGcode(`G1 X${centerX} Y${centerY} F${rate * 60}`)
+    return bedSize ?? {
+      minX: 0,
+      minY: 0,
+      maxX: 0,
+      maxY: 0
     }
+  }
+
+  get bedCenter () {
+    const bedSize = this.bedSize
+
+    return {
+      x: (bedSize.maxX - bedSize.minX) / 2,
+      y: (bedSize.maxY - bedSize.minY) / 2
+    }
+  }
+
+  centerToolHead () {
+    const bedCenter = this.bedCenter
+    const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
+
+    this.sendGcode(`G1 X${bedCenter.x} Y${bedCenter.y} F${rate * 60}`)
   }
 
   get forceMove () {
@@ -969,136 +980,136 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 }
 </script>
-<style scoped>
+
+<style lang="scss" scoped>
 svg {
-    max-height: 350px;
-    min-height: 275px;
-    user-select: none;
-    filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3));
+  max-height: 350px;
+  min-height: 275px;
+  user-select: none;
+  filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3));
 }
 
 svg a {
-    stroke: hsl(0, 0%, 10%);
-    stroke-width: 0.3px;
+  stroke: hsl(0, 0%, 10%);
+  stroke-width: 0.3px;
 }
 
 svg a.step {
-    transition: fill 750ms ease-out;
+  transition: fill 750ms ease-out;
 }
 
 svg a.step:hover {
-    fill: hsl(215, 0%, 50%) !important;
-    transition: fill 100ms ease-in;
+  fill: hsl(215, 0%, 50%) !important;
+  transition: fill 100ms ease-in;
 }
 
 svg a.step:active {
-    fill: hsl(215, 0%, 70%) !important;
+  fill: hsl(215, 0%, 70%) !important;
 }
 
 svg a.step.inner {
-    fill: #666;
+  fill: #666;
 }
 svg a.step.inner-mid {
-    fill: #555;
+  fill: #555;
 }
 svg a.step.outer-mid {
-    fill: #444;
+  fill: #444;
 }
 svg a.step.outer {
-    fill: #333;
+  fill: #333;
 }
 
 svg .disabled a.step {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 svg g#stepsZ,
 svg g#stepsXY {
-    pointer-events: none;
-    user-select: none;
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 3px;
-    fill: white;
+  pointer-events: none;
+  user-select: none;
+  font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+  font-size: 3px;
+  fill: white;
 }
 
 svg a#tilt_adjust text {
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 3px;
-    display: none;
+  font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+  font-size: 3px;
+  display: none;
 }
 
 svg g#home_buttons text {
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 5px;
-    fill: black;
+  font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+  font-size: 5px;
+  fill: black;
 }
 
 svg g.home_button,
 svg a#home_all_center {
-    fill: var(--v-warning-lighten3);
-    transition: opacity 250ms;
+  fill: var(--v-warning-lighten3);
+  transition: opacity 250ms;
 }
 
 svg a.disabled {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 svg a.disabled .home_button path,
 svg a.disabled circle {
-    fill: rgb(92, 92, 92);
+  fill: rgb(92, 92, 92);
 }
 
 svg g#stepsXY.disabled text,
 svg g#stepsZ.disabled text {
-    fill: rgba(255, 255, 255, 0.3);
+  fill: rgba(255, 255, 255, 0.3);
 }
 
 svg a#tilt_adjust,
 svg a#stepper_off {
-    transition: opacity 250ms;
+  transition: opacity 250ms;
 }
 
 svg a#tilt_adjust.warning,
 svg a#stepper_off.warning {
-    fill: var(--v-warning-lighten3);
+  fill: var(--v-warning-lighten3);
 }
 
 svg a#tilt_adjust.primary,
 svg a#stepper_off.primary {
-    fill: var(--v-anchor-base);
+  fill: var(--v-anchor-base);
 }
 
 svg .homed g.home_button,
 svg .homed a#home_all_center {
-    fill: var(--v-anchor-base);
+  fill: var(--v-anchor-base);
 }
 
 svg .loading g.home_button,
 svg a#tilt_adjust.loading,
 svg a#stepper_off.loading,
 svg .loading a#home_all_center {
-    fill: rgb(85,85,85);
-    pointer-events: none;
+  fill: rgb(85,85,85);
+  pointer-events: none;
 }
 
 svg g.home_button:hover,
 svg a#home_all_center:hover,
 svg a#tilt_adjust:hover,
 svg a#stepper_off:hover {
-    opacity: 0.8;
+  opacity: 0.8;
 }
 
 svg a#tilt_adjust text,
 svg a#tilt_adjust #tilt_icon,
 svg a#stepper_off #stepper_off_icon,
 svg g#home_buttons .home_icon {
-    pointer-events: none;
-    user-select: none;
+  pointer-events: none;
+  user-select: none;
 }
 
 svg a#tilt_adjust #tilt_icon,
 svg a#stepper_off #stepper_off_icon {
-    fill: #000;
+  fill: #000;
 }
-
 </style>
