@@ -87,12 +87,13 @@
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
+                      id="x_text"
                       x="3.789px"
                       y="6.089px"
                     >X</text>
                   </g>
                   <g
-                    id="Icon"
+                    id="icon"
                     class="home_icon"
                     transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
                   >
@@ -119,6 +120,7 @@
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
+                      id="y_text"
                       x="3.789px"
                       y="6.089px"
                     >Y</text>
@@ -150,12 +152,13 @@
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
+                      id="z_text"
                       x="3.93px"
                       y="6.089px"
                     >Z</text>
                   </g>
                   <g
-                    id="icon1"
+                    id="icon"
                     class="home_icon"
                     transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
                   >
@@ -182,12 +185,13 @@
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
+                      id="xy_text"
                       x="2.3px"
                       y="6.089px"
                     >XY</text>
                   </g>
                   <g
-                    id="icon2"
+                    id="icon"
                     class="home_icon"
                     transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
                   >
@@ -213,7 +217,7 @@
                     <use href="#pathHomeButtonBottom" />
                   </g>
                   <g
-                    id="icon3"
+                    id="icon"
                     class="home_icon"
                     transform="matrix(0.29377,0,0,0.29377,0.346087,1.64241)"
                   >
@@ -239,20 +243,18 @@
                   />
                 </g>
                 <g
-                  id="icon5"
-                  class="center-icon"
+                  id="icon"
+                  class="center_icon"
                   transform="scale(0.3) translate(91.25,91.25)"
                   fill="none"
                 >
                   <path
                     d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                    stroke="#1C274C"
                     stroke-width="1.5"
                     stroke-linecap="round"
                   />
                   <path
                     d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
-                    stroke="#1C274C"
                     stroke-width="1.5"
                     stroke-linecap="round"
                   />
@@ -278,7 +280,7 @@
                   />
                 </g>
                 <g
-                  id="icon4"
+                  id="home-icon"
                   class="home-icon"
                   transform="scale(0.3) translate(91.25,91.25)"
                 >
@@ -1039,18 +1041,6 @@ svg a#tilt_adjust text {
   display: none;
 }
 
-svg g#home_buttons text {
-  font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-  font-size: 5px;
-  fill: black;
-}
-
-svg g.home_button,
-svg a#home_all_center {
-  fill: var(--v-warning-lighten3);
-  transition: opacity 250ms;
-}
-
 svg a.disabled {
   pointer-events: none;
 }
@@ -1070,9 +1060,36 @@ svg a#stepper_off {
   transition: opacity 250ms;
 }
 
+svg g.home_button,
+svg a#home_all_center,
 svg a#tilt_adjust.warning,
 svg a#stepper_off.warning {
-  fill: var(--v-warning-lighten3);
+    fill: var(--v-btncolor-base);
+    transition: opacity 250ms;
+}
+
+svg a#tilt_adjust #tilt_icon,
+svg a#stepper_off #stepper_off_icon {
+    fill: white; // TODO: change to fg color
+    stroke: none;
+}
+
+svg g#icon.center_icon {
+  fill: none;
+  stroke: white
+}
+svg g#icon.home_icon
+  {
+    fill: white;
+    stroke: white;
+    transition: opacity 250ms;
+}
+
+svg g#home_buttons text {
+    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+    font-size: 5px;
+    fill: white;
+    stroke: white;
 }
 
 svg a#tilt_adjust.primary,
@@ -1100,16 +1117,4 @@ svg a#stepper_off:hover {
   opacity: 0.8;
 }
 
-svg a#tilt_adjust text,
-svg a#tilt_adjust #tilt_icon,
-svg a#stepper_off #stepper_off_icon,
-svg g#home_buttons .home_icon {
-  pointer-events: none;
-  user-select: none;
-}
-
-svg a#tilt_adjust #tilt_icon,
-svg a#stepper_off #stepper_off_icon {
-  fill: #000;
-}
 </style>
