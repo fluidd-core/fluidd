@@ -1092,6 +1092,58 @@ svg g#home_buttons text {
     stroke: white;
 }
 
+svg g#icon.center_icon {
+  fill: none;
+  stroke: white
+}
+svg g#icon.home_icon
+  {
+    fill: white;
+    stroke: white;
+    transition: opacity 250ms;
+}
+
+// DISABLED STATES / LOADING STATES
+
+svg a#tilt_adjust.disabled #tilt_icon,
+svg a#stepper_off.disabled #stepper_off_icon {
+    fill: black; // TODO: change to fg color
+    stroke: none;
+}
+
+svg a.loading g#icon.center_icon ,
+svg a.disabled g#icon.center_icon {
+  fill: none;
+  stroke:  rgb(85,85,85);// TODO change to disabled
+}
+
+svg a.disabled g#icon.center_icon,
+svg a.loading  g#icon.center_icon {
+  fill: none;
+  stroke: black
+}
+
+svg a.disabled g#home_buttons text,
+svg a.loading g#home_buttons text {
+    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+    font-size: 5px;
+    fill: black;
+    stroke: black;
+}
+
+svg a.disabled g#icon.home_icon,
+svg a.loading  g#icon.home_icon
+  {
+    fill:  black;
+    stroke: black;
+    transition: opacity 250ms;
+}
+svg  g#home_buttons .disabled text,
+svg  g#home_buttons .loading text {
+    fill:  black;
+    stroke: black;
+}
+
 svg a#tilt_adjust.primary,
 svg a#stepper_off.primary {
   fill: var(--v-anchor-base);
