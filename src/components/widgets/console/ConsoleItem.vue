@@ -2,7 +2,7 @@
   <v-layout class="console-item">
     <span
       v-if="value.time"
-      class="secondary--text mr-3 d-none d-sm-block"
+      class="secondary--text mr-3 d-none d-sm-block text-no-wrap"
     >
       {{ itemTime }}&nbsp;
     </span>
