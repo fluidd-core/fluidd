@@ -4,7 +4,7 @@
     <v-progress-linear
       v-if="
         progressVisible &&
-          $vuetify.breakpoint.mdAndDown
+          $vuetify.breakpoint.smAndDown
       "
       :height="6"
       :value="estimates.progress"
@@ -13,21 +13,44 @@
 
     <v-card-text v-if="visible">
       <v-row>
-        <!-- Only show the circular progress for lgAndUp -->
+        <!-- Only show the circular progress for mdAndUp since its more compact now -->
         <v-col
-          v-if="progressVisible && $vuetify.breakpoint.lgAndUp"
+          v-if="progressVisible && $vuetify.breakpoint.mdAndUp"
           cols="auto"
           align-self="center"
+          class="position-relative"
         >
-          <v-progress-circular
-            :rotate="-90"
-            :size="90"
-            :width="7"
-            :value="estimates.progress"
-            color="primary"
+          <v-row>
+            <div
+              class="progress-wrapper"
+              style="cursor: pointer"
+              @click="handleViewThumbnail"
+            >
+              <v-progress-circular
+                :rotate="-90"
+                :size="90"
+                :width="7"
+                :value="estimates.progress"
+                color="primary"
+                class="progress-circle"
+              />
+              <div class="thumbnail-background" />
+
+              <div class="fill-height print-thumb">
+                <img
+                  class="print-thumb"
+                  :src="thumbnail"
+                >
+              </div>
+            </div>
+          </v-row>
+          <v-row
+            justify="center"
           >
-            <span class="percentComplete focus--text">{{ estimates.progress }}%</span>
-          </v-progress-circular>
+            <div class="percentage-wrapper">
+              <span class="primary--text">{{ estimates.progress }}%</span>
+            </div>
+          </v-row>
         </v-col>
 
         <v-col align-self="center">
@@ -164,25 +187,6 @@
               </status-label>
             </v-col>
           </v-row>
-        </v-col>
-
-        <!-- Only show the thumb if we're lgAndUp and have a thumb to show -->
-        <v-col
-          v-if="thumbVisible"
-          cols="auto"
-          align-self="center"
-          class="pa-0"
-        >
-          <v-btn
-            text
-            height="100%"
-            @click="handleViewThumbnail"
-          >
-            <img
-              class="print-thumb"
-              :src="thumbnail"
-            >
-          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
@@ -422,17 +426,66 @@ export default class StatusTab extends Mixins(StateMixin, FilesMixin) {
 </script>
 
 <style lang="scss" scoped>
-  .print-thumb {
-    display: block;
-    max-height: 110px;
-  }
+.print-thumb {
+  display: block;
+  max-height: 110px;
+}
 
-  .filename {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    // width: 200px;
-    direction: rtl;
-    text-align: left;
-  }
+.filename {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  // width: 200px;
+  direction: rtl;
+  text-align: left;
+}
+
+.position-relative {
+  position: relative;
+}
+
+.progress-wrapper {
+  position: relative;
+  width: 90px;
+  /* Set the width and height to match progress circle size */
+  height: 90px;
+  /* Set the width and height to match progress circle size */
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.progress-circle {
+  position: absolute;
+  z-index: 4;
+}
+
+.thumbnail-background {
+  position: absolute;
+  width: 85px;
+  /* 10% less than the size of the progress circle */
+  height: 85px;
+  /* 10% less than the size of the progress circle */
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* Adjust transparency here */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+.print-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  max-height: 73px;
+  max-width: 73px;
+  /* Adjust as needed */
+  border-radius: 50%;
+  opacity: 0.8;
+  /* Adjust opacity as needed */
+}
+
 </style>
