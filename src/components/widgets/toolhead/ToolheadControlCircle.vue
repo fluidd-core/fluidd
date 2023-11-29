@@ -71,7 +71,7 @@
             >
               <!-- HOME X BUTTON -->
               <a
-                :class="xHomeClass"
+                :class="xHomeClasses"
                 @click="sendGcode('G28 X', $waits.onHomeX)"
               >
                 <g
@@ -103,7 +103,7 @@
               </a>
               <!-- HOME Y BUTTON -->
               <a
-                :class="yHomeClass"
+                :class="yHomeClasses"
                 @click="sendGcode('G28 Y', $waits.onHomeY)"
               >
                 >
@@ -136,7 +136,7 @@
               </a>
               <!-- HOME Z BUTTON -->
               <a
-                :class="zHomeClass"
+                :class="zHomeClasses"
                 @click="sendGcode('G28 Z', $waits.onHomeZ)"
               >
                 <g
@@ -169,7 +169,7 @@
               <!-- HOME XY BUTTON -->
               <a
                 v-if="enableXYHoming"
-                :class="xyHomeClass"
+                :class="xyHomeClasses"
                 @click="sendGcode('G28 X Y', $waits.onHomeXY)"
               >
                 <g
@@ -202,7 +202,7 @@
               <!-- HOME ALL BUTTON -->
               <a
                 v-else
-                :class="xyzHomeClass"
+                :class="xyzHomeClasses"
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
@@ -228,8 +228,8 @@
 
               <a
                 v-if="!enableXYHoming"
-                :class="centerToolheadClass"
-                @click="centerToolHead()"
+                :class="centerToolheadClasses"
+                @click="sendMoveCenterGcode()"
               >
                 <g
                   id="home_all_center"
@@ -265,7 +265,7 @@
               <!-- HOME ALL BUTTON IN THE CENTER -->
               <a
                 v-if="enableXYHoming"
-                :class="xyzHomeClass"
+                :class="xyzHomeClasses"
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
                 <g
@@ -300,7 +300,7 @@
               >
                 <g
                   id="Bottom"
-                  :class="zStepClass"
+                  :class="zStepClasses"
                   transform="matrix(-1,-1.52149e-16,9.85721e-17,-1,114.34,62)"
                 >
                   <a
@@ -338,7 +338,7 @@
                 </g>
                 <g
                   id="Top"
-                  :class="zStepClass"
+                  :class="zStepClasses"
                 >
                   <a
                     class="step inner"
@@ -377,7 +377,7 @@
               <!-- Z STEP BUTTON TEXT -->
               <g
                 id="stepsZ"
-                :class="zStepClass"
+                :class="zStepClasses"
                 transform="matrix(1,0,0,1,40,0)"
               >
                 <g transform="matrix(1,0,0,1,0.483899,4.07983)">
@@ -421,7 +421,7 @@
               <g id="XY">
                 <g
                   id="Right"
-                  :class="xStepClass"
+                  :class="xStepClasses"
                 >
                   <a
                     class="step inner"
@@ -458,7 +458,7 @@
                 </g>
                 <g
                   id="Left"
-                  :class="xStepClass"
+                  :class="xStepClasses"
                   transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,61.9767,61.9767)"
                 >
                   <a
@@ -496,7 +496,7 @@
                 </g>
                 <g
                   id="Bottom1"
-                  :class="yStepClass"
+                  :class="yStepClasses"
                   transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)"
                 >
                   <a
@@ -534,7 +534,7 @@
                 </g>
                 <g
                   id="Top1"
-                  :class="yStepClass"
+                  :class="yStepClasses"
                   transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)"
                 >
                   <a
@@ -574,7 +574,7 @@
               <!-- XY STEP BUTTON TEXT -->
               <g
                 id="stepsXY"
-                :class="stepTextClass"
+                :class="stepTextClasses"
               >
                 <g transform="matrix(1,0,0,1,0.483899,4.07983)">
                   <text
@@ -616,13 +616,12 @@
             </g>
           </g>
           <a
-            v-if="printerSupportsQuadGantryLevel"
+            v-if="printerSupportsLeveling"
             id="tilt_adjust"
-            :class="colorSpecialButton"
-            @click="clickSpecialButton"
+            :class="levelingClasses"
+            @click="sendLevelingGcode"
           >
             <circle
-              id="qgl_button"
               cx="70.92"
               cy="31"
               r="5"
@@ -630,28 +629,7 @@
             <text
               x="66.776px"
               y="32.066px"
-            >QGL</text>
-            <g id="tilt_icon">
-              <use href="#zTiltIcon1" />
-              <use href="#zTiltIcon2" />
-            </g>
-          </a>
-          <a
-            v-else-if="printerSupportsZTiltAdjust"
-            id="tilt_adjust"
-            :class="colorSpecialButton"
-            @click="clickSpecialButton"
-          >
-            <circle
-              id="tilt_button"
-              cx="70.92"
-              cy="31"
-              r="5"
-            />
-            <text
-              x="66.776px"
-              y="32.066px"
-            >Z-TILT</text>
+            >{{ printerSupportsQuadGantryLevel ? "QGL" : "ZTILT" }}</text>
             <g id="tilt_icon">
               <use href="#zTiltIcon1" />
               <use href="#zTiltIcon2" />
@@ -660,11 +638,10 @@
           <a
             v-else
             id="stepper_off"
-            :class="motorsOffClass"
+            :class="motorsOffClasses"
             @click="sendGcode('M84')"
           >
             <circle
-              id="stepper_off_button"
               cx="70.92"
               cy="31"
               r="5"
@@ -693,24 +670,20 @@ import type { BedSize } from '@/store/printer/types'
 
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
-  get actionButton (): string {
-    return this.$store.state.gui.control.actionButton // ?? this.defaultActionButton
-  }
-
   get enableXYHoming (): boolean {
-    return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled
+    return this.$store.state.config.uiSettings.general.toolheadControlXYHomingEnabled as boolean
   }
 
-  get stepsXY () {
-    const steps = this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances ?? []
-
-    return Array.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
+  get stepsXY (): number[] {
+    return this.$store.state.config.uiSettings.general.toolheadCircleXYMoveDistances as number[]
   }
 
-  get stepsZ () {
-    const steps = this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances ?? []
+  get stepsZ (): number[] {
+    return this.$store.state.config.uiSettings.general.toolheadCircleZMoveDistances as number[]
+  }
 
-    return Array.from(new Set([...(steps ?? [])])).sort((a, b) => a - b)
+  get forceMove () {
+    return this.$store.state.config.uiSettings.toolhead.forceMove
   }
 
   get printerSettings () {
@@ -725,7 +698,14 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return 'z_tilt' in this.printerSettings
   }
 
-  get stepTextClass () {
+  get printerSupportsLeveling (): boolean {
+    return (
+      this.printerSupportsQuadGantryLevel ||
+      this.printerSupportsZTiltAdjust
+    )
+  }
+
+  get stepTextClasses () {
     return {
       disabled: (
         this.printerPrinting ||
@@ -735,7 +715,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get xStepClass () {
+  get xStepClasses () {
     return {
       disabled: (
         this.printerPrinting ||
@@ -745,7 +725,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get yStepClass () {
+  get yStepClasses () {
     return {
       disabled: (
         this.printerPrinting ||
@@ -755,7 +735,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get zStepClass () {
+  get zStepClasses () {
     return {
       disabled: (
         this.printerPrinting ||
@@ -765,7 +745,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get xHomeClass () {
+  get xHomeClasses () {
     return {
       homed: this.xHomed,
       disabled: this.printerPrinting,
@@ -773,7 +753,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get yHomeClass () {
+  get yHomeClasses () {
     return {
       homed: this.yHomed,
       disabled: this.printerPrinting,
@@ -781,7 +761,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get xyHomeClass () {
+  get xyHomeClasses () {
     return {
       homed: this.xyHomed,
       disabled: this.printerPrinting,
@@ -789,7 +769,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get xyzHomeClass () {
+  get xyzHomeClasses () {
     return {
       homed: this.allHomed,
       disabled: this.printerPrinting,
@@ -797,7 +777,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get centerToolheadClass () {
+  get centerToolheadClasses () {
     const tool_pos = this.$store.state.printer.printer.toolhead.position
     const bedCenter = this.bedCenter
 
@@ -815,7 +795,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get zHomeClass () {
+  get zHomeClasses () {
     return {
       homed: this.zHomed,
       disabled: this.printerPrinting,
@@ -823,39 +803,44 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  get colorSpecialButton () {
+  get levelingClasses () {
+    const baseLevelingClasses = this.printerSupportsQuadGantryLevel
+      ? {
+          [this.$store.state.printer.printer.quad_gantry_level?.applied ? 'primary' : 'warning']: true,
+          loading: this.hasWait([this.$waits.onQGL, this.$waits.onHomeZ, this.$waits.onHomeAll])
+        }
+      : this.printerSupportsZTiltAdjust
+        ? {
+            [this.$store.state.printer.printer.z_tilt?.applied ? 'primary' : 'warning']: true,
+            loading: this.hasWait([this.$waits.onZTilt, this.$waits.onHomeZ, this.$waits.onHomeAll])
+          }
+        : undefined
+
     return {
       disabled: (
         this.printerPrinting ||
-        this.allHomed
+        !this.allHomed
       ),
-      [this.colorQuadGantryLevel.toString()]: this.printerSupportsQuadGantryLevel,
-      ...(
-        this.printerSupportsQuadGantryLevel
-          ? this.colorQuadGantryLevel
-          : this.printerSupportsZTiltAdjust
-            ? this.colorZTilt
-            : undefined
-      )
+      ...baseLevelingClasses
     }
   }
 
-  get motorsOffClass () {
+  get motorsOffClasses () {
     return {
-      disabled: this.printerPrinting
-      // [this.homedAxes !== '' ? 'primary' : 'warning']: true
+      disabled: this.printerPrinting,
+      [this.$store.state.printer.printer.toolhead.homed_axes.length > 0 ? 'primary' : 'warning']: true
     }
   }
 
-  clickSpecialButton () {
+  sendLevelingGcode () {
     if (this.printerSupportsQuadGantryLevel) {
       this.sendGcode('QUAD_GANTRY_LEVEL', this.$waits.onQGL)
     } else if (this.printerSupportsZTiltAdjust) {
-      return this.sendGcode('Z_TILT_ADJUST', this.$waits.onZTilt)
+      this.sendGcode('Z_TILT_ADJUST', this.$waits.onZTilt)
     }
   }
 
-  sendMoveGcode (axis: string, distance: string, negative = false) {
+  sendMoveGcode (axis: string, distance: number | string, negative = false) {
     axis = axis.toLowerCase()
     const rate = (axis.toLowerCase() === 'z')
       ? this.$store.state.config.uiSettings.general.defaultToolheadZSpeed
@@ -897,33 +882,11 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  centerToolHead () {
+  sendMoveCenterGcode () {
     const bedCenter = this.bedCenter
     const rate = this.$store.state.config.uiSettings.general.defaultToolheadXYSpeed
 
     this.sendGcode(`G1 X${bedCenter.x} Y${bedCenter.y} F${rate * 60}`)
-  }
-
-  get forceMove () {
-    return this.$store.state.config.uiSettings.toolhead.forceMove
-  }
-
-  get colorQuadGantryLevel () {
-    return {
-      [this.$store.state.printer.printer.quad_gantry_level?.applied ? 'primary' : 'warning']: true,
-      loading: this.hasWait([this.$waits.onQGL, this.$waits.onHomeZ, this.$waits.onHomeAll])
-    }
-  }
-
-  get colorZTilt () {
-    return {
-      [this.$store.state.printer.printer.z_tilt?.applied ? 'primary' : 'warning']: true,
-      loading: this.hasWait([this.$waits.onZTilt, this.$waits.onHomeZ, this.$waits.onHomeAll])
-    }
-  }
-
-  get defaultActionButton () {
-    return this.$store.getters['gui/getDefaultControlActionButton']
   }
 }
 </script>
