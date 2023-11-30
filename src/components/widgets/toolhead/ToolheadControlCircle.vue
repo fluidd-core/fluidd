@@ -758,7 +758,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return {
       disabled: (
         !this.klippyReady ||
-        this.printerPrinting,
+        this.printerPrinting ||
         this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
       ),
       primary: !this.xHomed
@@ -769,7 +769,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return {
       disabled: (
         !this.klippyReady ||
-        this.printerPrinting,
+        this.printerPrinting ||
         this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
       ),
       primary: !this.yHomed
@@ -780,7 +780,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     return {
       disabled: (
         !this.klippyReady ||
-        this.printerPrinting,
+        this.printerPrinting ||
         this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
       ),
       primary: !this.zHomed
