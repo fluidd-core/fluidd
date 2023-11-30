@@ -184,6 +184,7 @@
                 </g>
               </a>
 
+              <!-- CENTER BUTTON IN THE CENTER -->
               <a
                 v-if="!enableXYHoming"
                 class="cc-btn"
@@ -234,11 +235,11 @@
               <!-- Z STEPS BUTTONS -->
               <g transform="matrix(1.24239,0,0,1,-0.0534526,0)">
                 <g
-                  :class="zStepClasses"
                   transform="matrix(-1,-1.52149e-16,9.85721e-17,-1,114.34,62)"
                 >
                   <a
                     class="cc-btn inner"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[0], true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
@@ -250,6 +251,7 @@
                   </a>
                   <a
                     class="cc-btn inner-mid"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[1], true)"
                   >
                     <g transform="matrix(0.804902,1.2326e-32,-9.92118e-33,1,-5.71917e-15,-7.10543e-15)">
@@ -261,6 +263,7 @@
                   </a>
                   <a
                     class="cc-btn outer-mid"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[2], true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
@@ -272,6 +275,7 @@
                   </a>
                   <a
                     class="cc-btn outer"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[3], true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
@@ -285,6 +289,7 @@
                 <g :class="zStepClasses">
                   <a
                     class="cc-btn inner"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[0], false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
@@ -296,6 +301,7 @@
                   </a>
                   <a
                     class="cc-btn inner-mid"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[1], false)"
                   >
                     <g transform="matrix(0.804902,1.2326e-32,-9.92118e-33,1,-5.71917e-15,-7.10543e-15)">
@@ -307,6 +313,7 @@
                   </a>
                   <a
                     class="cc-btn outer-mid"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[2], false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
@@ -318,6 +325,7 @@
                   </a>
                   <a
                     class="cc-btn outer"
+                    :class="zStepClasses"
                     @click="sendMoveGcode('Z', stepsZ[3], false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
@@ -376,9 +384,10 @@
 
               <!-- XY STEP BUTTONS -->
               <g>
-                <g :class="xStepClasses">
+                <g>
                   <a
                     class="cc-btn inner"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[0], false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
@@ -390,6 +399,7 @@
                   </a>
                   <a
                     class="cc-btn inner-mid"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[1], false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
@@ -401,6 +411,7 @@
                   </a>
                   <a
                     class="cc-btn outer-mid"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[2], false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
@@ -412,6 +423,7 @@
                   </a>
                   <a
                     class="cc-btn outer"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[3], false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
@@ -422,12 +434,10 @@
                     </g>
                   </a>
                 </g>
-                <g
-                  :class="xStepClasses"
-                  transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,61.9767,61.9767)"
-                >
+                <g transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,61.9767,61.9767)">
                   <a
                     class="cc-btn inner"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[0], true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
@@ -439,6 +449,7 @@
                   </a>
                   <a
                     class="cc-btn inner-mid"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[1], true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
@@ -450,6 +461,7 @@
                   </a>
                   <a
                     class="cc-btn outer-mid"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[2], true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
@@ -461,6 +473,7 @@
                   </a>
                   <a
                     class="cc-btn outer"
+                    :class="xStepClasses"
                     @click="sendMoveGcode('X', stepsXY[3], true)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
@@ -471,12 +484,10 @@
                     </g>
                   </a>
                 </g>
-                <g
-                  :class="yStepClasses"
-                  transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)"
-                >
+                <g transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)">
                   <a
                     class="cc-btn inner"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[0], true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
@@ -488,6 +499,7 @@
                   </a>
                   <a
                     class="cc-btn inner-mid"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[1], true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
@@ -499,6 +511,7 @@
                   </a>
                   <a
                     class="cc-btn outer-mid"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[2], true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
@@ -510,6 +523,7 @@
                   </a>
                   <a
                     class="cc-btn outer"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[3], true)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
@@ -520,12 +534,10 @@
                     </g>
                   </a>
                 </g>
-                <g
-                  :class="yStepClasses"
-                  transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)"
-                >
+                <g transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)">
                   <a
                     class="cc-btn inner"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[0], false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
@@ -537,6 +549,7 @@
                   </a>
                   <a
                     class="cc-btn inner-mid"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[1], false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
@@ -548,6 +561,7 @@
                   </a>
                   <a
                     class="cc-btn outer-mid"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[2], false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
@@ -559,6 +573,7 @@
                   </a>
                   <a
                     class="cc-btn outer"
+                    :class="yStepClasses"
                     @click="sendMoveGcode('Y', stepsXY[3], false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
@@ -573,7 +588,7 @@
 
               <!-- XY STEP BUTTON TEXT -->
               <g
-                :class="stepTextClasses"
+                :class="xyStepClasses"
                 class="cc-lbls"
               >
                 <g transform="matrix(1,0,0,1,0.483899,4.07983)">
@@ -699,22 +714,12 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     )
   }
 
-  get stepTextClasses () {
-    return {
-      disabled: (
-        this.printerPrinting ||
-        !this.xyHomed ||
-        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
-      )
-    }
-  }
-
   get xStepClasses () {
     return {
       disabled: (
+        !this.klippyReady ||
         this.printerPrinting ||
-        !this.xHomed ||
-        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
+        !this.xHomed
       )
     }
   }
@@ -722,9 +727,9 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get yStepClasses () {
     return {
       disabled: (
+        !this.klippyReady ||
         this.printerPrinting ||
-        !this.yHomed ||
-        this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+        !this.yHomed
       )
     }
   }
@@ -732,42 +737,75 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   get zStepClasses () {
     return {
       disabled: (
+        !this.klippyReady ||
         this.printerPrinting ||
-        !this.zHomed ||
-        this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
+        !this.zHomed
+      )
+    }
+  }
+
+  get xyStepClasses () {
+    return {
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting ||
+        !(this.xHomed || this.yHomed)
       )
     }
   }
 
   get xHomeClasses () {
     return {
-      primary: !this.xHomed,
-      disabled: this.printerPrinting,
-      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting,
+        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      ),
+      primary: !this.xHomed
     }
   }
 
   get yHomeClasses () {
     return {
-      primary: !this.yHomed,
-      disabled: this.printerPrinting,
-      loading: this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting,
+        this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      ),
+      primary: !this.yHomed
+    }
+  }
+
+  get zHomeClasses () {
+    return {
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting,
+        this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
+      ),
+      primary: !this.zHomed
     }
   }
 
   get xyHomeClasses () {
     return {
-      primary: !this.xyHomed,
-      disabled: this.printerPrinting,
-      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting ||
+        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      ),
+      primary: !this.xyHomed
     }
   }
 
   get xyzHomeClasses () {
     return {
-      primary: !this.allHomed,
-      disabled: this.printerPrinting,
-      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting ||
+        this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeZ, this.$waits.onHomeXY, this.$waits.onHomeAll])
+      ),
+      primary: !this.allHomed
     }
   }
 
@@ -776,42 +814,34 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const bedCenter = this.bedCenter
 
     return {
-      primary: !(
-        this.xyHomed &&
-        tool_pos[0] === bedCenter.x &&
-        tool_pos[1] === bedCenter.y
-      ),
       disabled: (
+        !this.klippyReady ||
         this.printerPrinting ||
         !this.xyHomed
       ),
-      loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])
-    }
-  }
-
-  get zHomeClasses () {
-    return {
-      primary: !this.zHomed,
-      disabled: this.printerPrinting,
-      loading: this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
+      primary: !(
+        tool_pos[0] === bedCenter.x &&
+        tool_pos[1] === bedCenter.y
+      )
     }
   }
 
   get levelingClasses () {
     const baseLevelingClasses = this.printerSupportsQuadGantryLevel
       ? {
-          [this.$store.state.printer.printer.quad_gantry_level?.applied ? 'primary' : 'warning']: true,
+          primary: this.$store.state.printer.printer.quad_gantry_level?.applied,
           loading: this.hasWait([this.$waits.onQGL, this.$waits.onHomeZ, this.$waits.onHomeAll])
         }
       : this.printerSupportsZTiltAdjust
         ? {
-            [this.$store.state.printer.printer.z_tilt?.applied ? 'primary' : 'warning']: true,
+            primary: this.$store.state.printer.printer.z_tilt?.applied,
             loading: this.hasWait([this.$waits.onZTilt, this.$waits.onHomeZ, this.$waits.onHomeAll])
           }
         : undefined
 
     return {
       disabled: (
+        !this.klippyReady ||
         this.printerPrinting ||
         !this.allHomed
       ),
@@ -821,8 +851,8 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get motorsOffClasses () {
     return {
-      disabled: this.printerPrinting,
-      [this.$store.state.printer.printer.toolhead.homed_axes.length > 0 ? 'primary' : 'warning']: true
+      disabled: !this.klippyReady || this.printerPrinting,
+      primary: this.$store.state.printer.printer.toolhead.homed_axes.length > 0
     }
   }
 
@@ -888,23 +918,48 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 <style lang="scss" scoped>
   @import 'vuetify/src/styles/styles.sass';
 
-  // @include theme(app-circle-control) using ($material) {
-  //   .cc-btn {
-  //     fill: map-deep-get($material, 'text', 'primary');
-  //     stroke: map-deep-get($material, 'text', 'primary');
+  @include theme(app-circle-control) using ($material) {
+    .disabled {
+      fill: map-deep-get($material, 'buttons', 'disabled') !important;
+      stroke: map-deep-get($material, 'buttons', 'disabled') !important;
+    }
 
-  //     .cc-btn-container {
-  //       fill: var(--v-btncolor-base);
-  //     }
+    .cc-btn,
+    .cc-lbls {
+      fill: map-deep-get($material, 'text', 'primary');
+      stroke: map-deep-get($material, 'text', 'primary');
+    }
+  }
 
-  //     &:hover {
-  //       .cc-btn-container {
-  //         fill: hsl(215, 0%, 50%) !important;
-  //         transition: fill 100ms ease-in;
-  //       }
-  //     }
-  //   }
-  // }
+  .theme--light.app-circle-control .cc-btn {
+    &.inner .cc-btn-container {
+      fill: var(--v-btncolor-lighten1);
+    }
+    &.inner-mid .cc-btn-container {
+      fill: var(--v-btncolor-base);
+    }
+    &.outer-mid .cc-btn-container {
+      fill: var(--v-btncolor-darken1);
+    }
+    &.outer .cc-btn-container {
+      fill: var(--v-btncolor-darken2);
+    }
+  }
+
+  .theme--dark.app-circle-control .cc-btn {
+    &.inner .cc-btn-container {
+      fill: var(--v-btncolor-lighten2);
+    }
+    &.inner-mid .cc-btn-container {
+      fill: var(--v-btncolor-lighten1);
+    }
+    &.outer-mid .cc-btn-container {
+      fill: var(--v-btncolor-base);
+    }
+    &.outer .cc-btn-container {
+      fill: var(--v-btncolor-darken1);
+    }
+  }
 
   .app-circle-control {
     font-family: 'Roboto-Regular', 'Roboto', sans-serif;
@@ -912,57 +967,98 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     max-height: 350px;
     min-height: 275px;
     user-select: none;
-    filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.12)) drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.14));
 
     .large {
       font-size: 5px !important;
     }
 
-    .disabled {
-      pointer-events: none;
-      fill: map-deep-get($material-dark, 'buttons', 'disabled') !important;
-      stroke: map-deep-get($material-dark, 'buttons', 'disabled') !important;
-      stroke-width: 0;
-    }
-
     .cc-btn {
-      fill: map-deep-get($material-dark, 'text', 'primary');
-      stroke: map-deep-get($material-dark, 'text', 'primary');
       stroke-width: 0;
 
       .cc-btn-container {
         fill: var(--v-btncolor-base);
         stroke-width: 0.3px;
-        stroke: #000;
-      }
-
-      &.primary:not(.disabled) .cc-btn-container {
-        fill: var(--v-primary-base) !important;
-      }
-      &.inner .cc-btn-container {
-        fill: #666 !important;
-      }
-      &.inner-mid .cc-btn-container {
-        fill: #555 !important;
-      }
-      &.outer-mid .cc-btn-container {
-        fill: #444 !important;
-      }
-      &.outer .cc-btn-container {
-        fill: #333 !important;
+        stroke: var(--v-btncolor-darken4);
       }
 
       &:hover {
         .cc-btn-container {
-          fill: hsl(215, 0%, 50%) !important;
+          fill: var(--v-btncolor-lighten1);
           transition: fill 100ms ease-in;
+        }
+      }
+
+      &.primary:not(.disabled) {
+        fill: map-deep-get($material-dark, 'text', 'primary');
+        stroke: map-deep-get($material-dark, 'text', 'primary');
+
+        .cc-btn-container {
+          fill: var(--v-primary-base);
+        }
+
+        &:hover .cc-btn-container {
+          fill: var(--v-primary-lighten1);
+        }
+      }
+
+      &.inner:not(.disabled) {
+        fill: map-deep-get($material-dark, 'text', 'primary');
+
+        .cc-btn-container {
+          fill: var(--v-primary-lighten1);
+        }
+
+        &:hover .cc-btn-container {
+          fill: var(--v-primary-lighten2);
+        }
+      }
+
+      &.inner-mid:not(.disabled) {
+        fill: map-deep-get($material-dark, 'text', 'primary');
+
+        .cc-btn-container {
+          fill: var(--v-primary-base);
+        }
+
+        &:hover .cc-btn-container {
+          fill: var(--v-primary-lighten1);
+        }
+      }
+
+      &.outer-mid:not(.disabled) {
+        fill: map-deep-get($material-dark, 'text', 'primary');
+
+        .cc-btn-container {
+          fill: var(--v-primary-darken1);
+        }
+
+        &:hover .cc-btn-container {
+          fill: var(--v-primary-base);
+        }
+      }
+
+      &.outer:not(.disabled) {
+        fill: map-deep-get($material-dark, 'text', 'primary');
+
+        .cc-btn-container {
+          fill: var(--v-primary-darken2);
+        }
+
+        &:hover .cc-btn-container {
+          fill: var(--v-primary-darken1);
         }
       }
     }
 
     .cc-lbls {
-      fill: map-deep-get($material-dark, 'text', 'primary');
       pointer-events: none;
+      stroke-width: 0;
+    }
+
+    .disabled {
+      pointer-events: none;
+      stroke-width: 0;
     }
   }
 </style>
