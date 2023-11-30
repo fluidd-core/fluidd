@@ -8,6 +8,10 @@
           viewBox="0 0 78 62"
           xmlns="http://www.w3.org/2000/svg"
           style="fill-rule: evenodd; clip-rule: evenodd; stroke-linejoin: round; stroke-miterlimit: 2"
+          class="app-circle-control"
+          :class="{
+            [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
+          }"
         >
           <defs>
             <path
@@ -55,172 +59,126 @@
               id="zStepInner"
               d="M66.037,19.186C69.409,18.542 72.742,18.52 76.037,19.102L76.037,23.682C76.037,23.815 75.984,23.942 75.891,24.036C75.564,24.362 74.774,25.153 74.359,25.567C74.204,25.722 73.967,25.757 73.773,25.656C72.955,25.236 72.029,25 71.048,25C70.051,25 69.112,25.243 68.284,25.674C68.09,25.777 67.852,25.742 67.697,25.586C67.283,25.175 66.506,24.395 66.183,24.071C66.09,23.977 66.037,23.85 66.037,23.718C66.037,22.806 66.037,19.186 66.037,19.186Z"
             />
-            <path
-              id="zTiltIcon1"
-              d="M74.189,31.503L67.751,30.009L67.638,30.496L74.076,31.99L74.189,31.503Z"
-            />
-            <path
-              id="zTiltIcon2"
-              d="M74.361,32.85L74.034,32.676L74.939,32.188L75.039,33.211L74.745,33.055C74.386,33.724 73.858,34.288 73.213,34.69L72.983,34.321C73.563,33.959 74.038,33.452 74.361,32.85ZM67.193,28.75C67.586,28.1 68.142,27.564 68.807,27.196L69.018,27.576C68.42,27.907 67.919,28.389 67.565,28.974L67.883,29.165L66.954,29.605L66.907,28.578L67.193,28.75Z"
-            />
           </defs>
           <g transform="matrix(1.24239,0,0,1,0,0)">
-            <g
-              id="home_buttons"
-              transform="matrix(0.804902,0,0,1,0.0430241,0)"
-            >
+            <g transform="matrix(0.804902,0,0,1,0.0430241,0)">
+
               <!-- HOME X BUTTON -->
               <a
+                class="cc-btn large"
                 :class="xHomeClasses"
                 @click="sendGcode('G28 X', $waits.onHomeX)"
               >
-                <g
-                  id="home_x"
-                  transform="matrix(0.707107,-0.707107,0.707107,0.707107,-1.41799,4.05689)"
-                >
-                  <g
-                    id="home_button_x"
-                    class="home_button"
-                    transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)"
-                  >
-                    <use href="#pathHomeButtonTop" />
+                <g transform="matrix(0.707107,-0.707107,0.707107,0.707107,-1.41799,4.05689)">
+                  <g transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)">
+                    <use
+                      class="cc-btn-container"
+                      href="#pathHomeButtonTop"
+                    />
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
-                      id="x_text"
                       x="3.789px"
                       y="6.089px"
                     >X</text>
                   </g>
-                  <g
-                    id="icon"
-                    class="home_icon"
-                    transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
-                  >
+                  <g transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)">
                     <use href="#homeIcon" />
                   </g>
                 </g>
               </a>
+
               <!-- HOME Y BUTTON -->
               <a
+                class="cc-btn large"
                 :class="yHomeClasses"
                 @click="sendGcode('G28 Y', $waits.onHomeY)"
               >
-                >
-                <g
-                  id="home_y"
-                  transform="matrix(0.707107,0.707107,-0.707107,0.707107,57.8807,-1.41799)"
-                >
-                  <g
-                    id="home_button_y"
-                    class="home_button"
-                    transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)"
-                  >
-                    <use href="#pathHomeButtonTop" />
+                <g transform="matrix(0.707107,0.707107,-0.707107,0.707107,57.8807,-1.41799)">
+                  <g transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)">
+                    <use
+                      class="cc-btn-container"
+                      href="#pathHomeButtonTop"
+                    />
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
-                      id="y_text"
                       x="3.789px"
                       y="6.089px"
                     >Y</text>
                   </g>
-                  <g
-                    id="icon"
-                    class="home_icon"
-                    transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
-                  >
+                  <g transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)">
                     <use href="#homeIcon" />
                   </g>
                 </g>
               </a>
+
               <!-- HOME Z BUTTON -->
               <a
+                class="cc-btn large"
                 :class="zHomeClasses"
                 @click="sendGcode('G28 Z', $waits.onHomeZ)"
               >
-                <g
-                  id="home_z"
-                  transform="matrix(-0.707107,0.707107,-0.707107,-0.707107,63.3555,57.8807)"
-                >
-                  <g
-                    id="home_button_z"
-                    class="home_button"
-                    transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)"
-                  >
-                    <use href="#pathHomeButtonBottom" />
+                <g transform="matrix(-0.707107,0.707107,-0.707107,-0.707107,63.3555,57.8807)">
+                  <g transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)">
+                    <use
+                      class="cc-btn-container"
+                      href="#pathHomeButtonBottom"
+                    />
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
-                      id="z_text"
                       x="3.93px"
                       y="6.089px"
                     >Z</text>
                   </g>
-                  <g
-                    id="icon"
-                    class="home_icon"
-                    transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
-                  >
+                  <g transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)">
                     <use href="#homeIcon" />
                   </g>
                 </g>
               </a>
+
               <!-- HOME XY BUTTON -->
               <a
                 v-if="enableXYHoming"
+                class="cc-btn large"
                 :class="xyHomeClasses"
                 @click="sendGcode('G28 X Y', $waits.onHomeXY)"
               >
-                <g
-                  id="home_xy"
-                  transform="matrix(-0.707107,-0.707107,0.707107,-0.707107,4.05689,63.3555)"
-                >
-                  <g
-                    id="home_button_xy"
-                    class="home_button"
-                    transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)"
-                  >
-                    <use href="#pathHomeButtonBottom" />
+                <g transform="matrix(-0.707107,-0.707107,0.707107,-0.707107,4.05689,63.3555)">
+                  <g transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)">
+                    <use
+                      class="cc-btn-container"
+                      href="#pathHomeButtonBottom"
+                    />
                   </g>
                   <g transform="matrix(0.654426,0,0,0.654426,0.298666,4.01315)">
                     <text
-                      id="xy_text"
                       x="2.3px"
                       y="6.089px"
                     >XY</text>
                   </g>
-                  <g
-                    id="icon"
-                    class="home_icon"
-                    transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)"
-                  >
+                  <g transform="matrix(0.147059,0,0,0.147059,2.10662,2.08254)">
                     <use href="#homeIcon" />
                   </g>
                 </g>
               </a>
+
               <!-- HOME ALL BUTTON -->
               <a
                 v-else
+                class="cc-btn large"
                 :class="xyzHomeClasses"
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
-                <g
-                  id="home_all"
-                  transform="matrix(-0.707107,-0.707107,0.707107,-0.707107,4.05689,63.3555)"
-                >
-                  <g
-                    id="home_button_all"
-                    class="home_button"
-                    transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)"
-                  >
-                    <use href="#pathHomeButtonBottom" />
+                <g transform="matrix(-0.707107,-0.707107,0.707107,-0.707107,4.05689,63.3555)">
+                  <g transform="matrix(0.68689,0.68689,-0.68689,0.68689,3.87132,0.962447)">
+                    <use
+                      class="cc-btn-container"
+                      href="#pathHomeButtonBottom"
+                    />
                   </g>
-                  <g
-                    id="icon"
-                    class="home_icon"
-                    transform="matrix(0.29377,0,0,0.29377,0.346087,1.64241)"
-                  >
+                  <g transform="matrix(0.29377,0,0,0.29377,0.346087,1.64241)">
                     <use href="#homeIcon" />
                   </g>
                 </g>
@@ -228,155 +186,153 @@
 
               <a
                 v-if="!enableXYHoming"
+                class="cc-btn"
                 :class="centerToolheadClasses"
                 @click="sendMoveCenterGcode()"
               >
-                <g
-                  id="home_all_center"
-                  class="home_button"
-                >
+                <g>
                   <circle
-                    id="home_button_all_center"
+                    class="cc-btn-container"
                     cx="31"
                     cy="31"
                     r="5"
                   />
                 </g>
-                <g
-                  id="icon"
-                  class="center_icon"
-                  transform="scale(0.3) translate(91.25,91.25)"
-                  fill="none"
-                >
+                <g transform="scale(0.3) translate(91.25,91.25)">
                   <path
-                    d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+                    d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15 M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
                     stroke-width="1.5"
                     stroke-linecap="round"
+                    fill="none"
                   />
-                  <path
-                    d="M22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C21.5093 4.43821 21.8356 5.80655 21.9449 8"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                  />
-
                 </g>
               </a>
 
               <!-- HOME ALL BUTTON IN THE CENTER -->
               <a
-                v-if="enableXYHoming"
+                v-else
+                class="cc-btn"
                 :class="xyzHomeClasses"
                 @click="sendGcode('G28', $waits.onHomeAll)"
               >
-                <g
-                  id="center_toolhead"
-                  class="home_button"
-                >
+                <g>
                   <circle
-                    id="home_button_all_center"
+                    class="cc-btn-container"
                     cx="31"
                     cy="31"
                     r="5"
                   />
                 </g>
-                <g
-                  id="icon"
-                  class="home_icon"
-                  transform="scale(0.3) translate(91.25,91.25)"
-                >
-                  <!-- transform="matrix(0.29377,0,0,0.29377,0.346087,1.64241)"-->
+                <g transform="scale(0.3) translate(91.25,91.25)">
                   <use href="#homeIcon" />
                 </g>
               </a>
             </g>
-            <g
-              id="step_buttons"
-              transform="matrix(0.804902,0,0,1,0.0430241,0)"
-            >
+
+            <g transform="matrix(0.804902,0,0,1,0.0430241,0)">
+
               <!-- Z STEPS BUTTONS -->
-              <g
-                id="Z"
-                transform="matrix(1.24239,0,0,1,-0.0534526,0)"
-              >
+              <g transform="matrix(1.24239,0,0,1,-0.0534526,0)">
                 <g
-                  id="Bottom"
                   :class="zStepClasses"
                   transform="matrix(-1,-1.52149e-16,9.85721e-17,-1,114.34,62)"
                 >
                   <a
-                    class="step inner"
-                    @click="sendMoveGcode('Z',stepsZ[0],true)"
+                    class="cc-btn inner"
+                    @click="sendMoveGcode('Z', stepsZ[0], true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
-                      <use href="#zStepInner" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepInner"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('Z',stepsZ[1],true)"
+                    class="cc-btn inner-mid"
+                    @click="sendMoveGcode('Z', stepsZ[1], true)"
                   >
                     <g transform="matrix(0.804902,1.2326e-32,-9.92118e-33,1,-5.71917e-15,-7.10543e-15)">
-                      <use href="#zStepInnerMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepInnerMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('Z',stepsZ[2],true)"
+                    class="cc-btn outer-mid"
+                    @click="sendMoveGcode('Z', stepsZ[2], true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
-                      <use href="#zStepOuterMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepOuterMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer"
-                    @click="sendMoveGcode('Z',stepsZ[3],true)"
+                    class="cc-btn outer"
+                    @click="sendMoveGcode('Z', stepsZ[3], true)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
-                      <use href="#zStepOuter" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepOuter"
+                      />
                     </g>
                   </a>
                 </g>
-                <g
-                  id="Top"
-                  :class="zStepClasses"
-                >
+                <g :class="zStepClasses">
                   <a
-                    class="step inner"
-                    @click="sendMoveGcode('Z',stepsZ[0],false)"
+                    class="cc-btn inner"
+                    @click="sendMoveGcode('Z', stepsZ[0], false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
-                      <use href="#zStepInner" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepInner"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('Z',stepsZ[1],false)"
+                    class="cc-btn inner-mid"
+                    @click="sendMoveGcode('Z', stepsZ[1], false)"
                   >
                     <g transform="matrix(0.804902,1.2326e-32,-9.92118e-33,1,-5.71917e-15,-7.10543e-15)">
-                      <use href="#zStepInnerMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepInnerMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('Z',stepsZ[2],false)"
+                    class="cc-btn outer-mid"
+                    @click="sendMoveGcode('Z', stepsZ[2], false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
-                      <use href="#zStepOuterMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepOuterMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer"
-                    @click="sendMoveGcode('Z',stepsZ[3],false)"
+                    class="cc-btn outer"
+                    @click="sendMoveGcode('Z', stepsZ[3], false)"
                   >
                     <g transform="matrix(0.804902,0,0,1,0,0)">
-                      <use href="#zStepOuter" />
+                      <use
+                        class="cc-btn-container"
+                        href="#zStepOuter"
+                      />
                     </g>
                   </a>
                 </g>
               </g>
+
               <!-- Z STEP BUTTON TEXT -->
               <g
-                id="stepsZ"
+                class="cc-lbls"
                 :class="zStepClasses"
                 transform="matrix(1,0,0,1,40,0)"
               >
@@ -417,164 +373,208 @@
                   </text>
                 </g>
               </g>
+
               <!-- XY STEP BUTTONS -->
-              <g id="XY">
-                <g
-                  id="Right"
-                  :class="xStepClasses"
-                >
+              <g>
+                <g :class="xStepClasses">
                   <a
-                    class="step inner"
-                    @click="sendMoveGcode('X',stepsXY[0],false)"
+                    class="cc-btn inner"
+                    @click="sendMoveGcode('X', stepsXY[0], false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
-                      <use href="#xyStepInner" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInner"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('X',stepsXY[1],false)"
+                    class="cc-btn inner-mid"
+                    @click="sendMoveGcode('X', stepsXY[1], false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
-                      <use href="#xyStepInnerMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInnerMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('X',stepsXY[2],false)"
+                    class="cc-btn outer-mid"
+                    @click="sendMoveGcode('X', stepsXY[2], false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
-                      <use href="#xyStepOuterMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuterMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer"
-                    @click="sendMoveGcode('X',stepsXY[3],false)"
+                    class="cc-btn outer"
+                    @click="sendMoveGcode('X', stepsXY[3], false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
-                      <use href="#xyStepOuter" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuter"
+                      />
                     </g>
                   </a>
                 </g>
                 <g
-                  id="Left"
                   :class="xStepClasses"
                   transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,61.9767,61.9767)"
                 >
                   <a
-                    class="step inner"
-                    @click="sendMoveGcode('X',stepsXY[0],true)"
+                    class="cc-btn inner"
+                    @click="sendMoveGcode('X', stepsXY[0], true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
-                      <use href="#xyStepInner" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInner"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('X',stepsXY[1],true)"
+                    class="cc-btn inner-mid"
+                    @click="sendMoveGcode('X', stepsXY[1], true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
-                      <use href="#xyStepInnerMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInnerMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('X',stepsXY[2],true)"
+                    class="cc-btn outer-mid"
+                    @click="sendMoveGcode('X', stepsXY[2], true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
-                      <use href="#xyStepOuterMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuterMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer"
-                    @click="sendMoveGcode('X',stepsXY[3],true)"
+                    class="cc-btn outer"
+                    @click="sendMoveGcode('X', stepsXY[3], true)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
-                      <use href="#xyStepOuter" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuter"
+                      />
                     </g>
                   </a>
                 </g>
                 <g
-                  id="Bottom1"
                   :class="yStepClasses"
                   transform="matrix(6.12323e-17,1,-1,6.12323e-17,61.9767,-1.77705e-14)"
                 >
                   <a
-                    class="step inner"
-                    @click="sendMoveGcode('Y',stepsXY[0],true)"
+                    class="cc-btn inner"
+                    @click="sendMoveGcode('Y', stepsXY[0], true)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
-                      <use href="#xyStepInner" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInner"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('Y',stepsXY[1],true)"
+                    class="cc-btn inner-mid"
+                    @click="sendMoveGcode('Y', stepsXY[1], true)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
-                      <use href="#xyStepInnerMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInnerMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('Y',stepsXY[2],true)"
+                    class="cc-btn outer-mid"
+                    @click="sendMoveGcode('Y', stepsXY[2], true)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
-                      <use href="#xyStepOuterMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuterMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer"
-                    @click="sendMoveGcode('Y',stepsXY[3],true)"
+                    class="cc-btn outer"
+                    @click="sendMoveGcode('Y', stepsXY[3], true)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
-                      <use href="#xyStepOuter" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuter"
+                      />
                     </g>
                   </a>
                 </g>
                 <g
-                  id="Top1"
                   :class="yStepClasses"
                   transform="matrix(6.12323e-17,-1,1,6.12323e-17,7.10543e-15,61.9767)"
                 >
                   <a
-                    class="step inner"
-                    @click="sendMoveGcode('Y',stepsXY[0],false)"
+                    class="cc-btn inner"
+                    @click="sendMoveGcode('Y', stepsXY[0], false)"
                   >
                     <g transform="matrix(0.48,0,0,0.48,19,19)">
-                      <use href="#xyStepInner" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInner"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step inner-mid"
-                    @click="sendMoveGcode('Y',stepsXY[1],false)"
+                    class="cc-btn inner-mid"
+                    @click="sendMoveGcode('Y', stepsXY[1], false)"
                   >
                     <g transform="matrix(0.72,0,0,0.72,13,13)">
-                      <use href="#xyStepInnerMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepInnerMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer-mid"
-                    @click="sendMoveGcode('Y',stepsXY[2],false)"
+                    class="cc-btn outer-mid"
+                    @click="sendMoveGcode('Y', stepsXY[2], false)"
                   >
                     <g transform="matrix(0.96,0,0,0.96,7,7)">
-                      <use href="#xyStepOuterMid" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuterMid"
+                      />
                     </g>
                   </a>
                   <a
-                    class="step outer"
-                    @click="sendMoveGcode('Y',stepsXY[3],false)"
+                    class="cc-btn outer"
+                    @click="sendMoveGcode('Y', stepsXY[3], false)"
                   >
                     <g transform="matrix(1.2,0,0,1.2,1,1)">
-                      <use href="#xyStepOuter" />
+                      <use
+                        class="cc-btn-container"
+                        href="#xyStepOuter"
+                      />
                     </g>
                   </a>
                 </g>
               </g>
+
               <!-- XY STEP BUTTON TEXT -->
               <g
-                id="stepsXY"
                 :class="stepTextClasses"
+                class="cc-lbls"
               >
                 <g transform="matrix(1,0,0,1,0.483899,4.07983)">
                   <text
@@ -617,39 +617,33 @@
           </g>
           <a
             v-if="printerSupportsLeveling"
-            id="tilt_adjust"
+            class="cc-btn"
             :class="levelingClasses"
             @click="sendLevelingGcode"
           >
             <circle
+              class="cc-btn-container"
               cx="70.92"
               cy="31"
               r="5"
             />
-            <text
-              x="66.776px"
-              y="32.066px"
-            >{{ printerSupportsQuadGantryLevel ? "QGL" : "ZTILT" }}</text>
-            <g id="tilt_icon">
-              <use href="#zTiltIcon1" />
-              <use href="#zTiltIcon2" />
+            <g>
+              <path d="M74.189,31.503L67.751,30.009L67.638,30.496L74.076,31.99L74.189,31.503Z M74.361,32.85L74.034,32.676L74.939,32.188L75.039,33.211L74.745,33.055C74.386,33.724 73.858,34.288 73.213,34.69L72.983,34.321C73.563,33.959 74.038,33.452 74.361,32.85ZM67.193,28.75C67.586,28.1 68.142,27.564 68.807,27.196L69.018,27.576C68.42,27.907 67.919,28.389 67.565,28.974L67.883,29.165L66.954,29.605L66.907,28.578L67.193,28.75Z" />
             </g>
           </a>
           <a
             v-else
-            id="stepper_off"
+            class="cc-btn"
             :class="motorsOffClasses"
             @click="sendGcode('M84')"
           >
             <circle
+              class="cc-btn-container"
               cx="70.92"
               cy="31"
               r="5"
             />
-            <g
-              id="stepper_off_icon"
-              transform="scale(0.3) translate(224,91)"
-            >
+            <g transform="scale(0.3) translate(224,91)">
               <path d="M3.78 2.5L21.5 20.22l-1.27 1.28L18 19.27V20h-8l-2-2H5v-3H3v3H1v-8h2v3h2v-3l1.87-1.86L2.5 3.77L3.78 2.5M20 9v3h-2V8h-6V6h3V4H7.82l15 15H23V9h-3Z" />
             </g>
           </a>
@@ -747,7 +741,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get xHomeClasses () {
     return {
-      homed: this.xHomed,
+      primary: !this.xHomed,
       disabled: this.printerPrinting,
       loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeAll])
     }
@@ -755,7 +749,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get yHomeClasses () {
     return {
-      homed: this.yHomed,
+      primary: !this.yHomed,
       disabled: this.printerPrinting,
       loading: this.hasWait([this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
     }
@@ -763,7 +757,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get xyHomeClasses () {
     return {
-      homed: this.xyHomed,
+      primary: !this.xyHomed,
       disabled: this.printerPrinting,
       loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeY, this.$waits.onHomeXY, this.$waits.onHomeAll])
     }
@@ -771,7 +765,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get xyzHomeClasses () {
     return {
-      homed: this.allHomed,
+      primary: !this.allHomed,
       disabled: this.printerPrinting,
       loading: this.hasWait([this.$waits.onHomeX, this.$waits.onHomeXY, this.$waits.onHomeZ, this.$waits.onHomeY, this.$waits.onHomeAll])
     }
@@ -782,7 +776,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     const bedCenter = this.bedCenter
 
     return {
-      homed: (
+      primary: !(
         this.xyHomed &&
         tool_pos[0] === bedCenter.x &&
         tool_pos[1] === bedCenter.y
@@ -797,7 +791,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get zHomeClasses () {
     return {
-      homed: this.zHomed,
+      primary: !this.zHomed,
       disabled: this.printerPrinting,
       loading: this.hasWait([this.$waits.onHomeZ, this.$waits.onHomeAll])
     }
@@ -892,186 +886,83 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
-  svg {
+  @import 'vuetify/src/styles/styles.sass';
+
+  // @include theme(app-circle-control) using ($material) {
+  //   .cc-btn {
+  //     fill: map-deep-get($material, 'text', 'primary');
+  //     stroke: map-deep-get($material, 'text', 'primary');
+
+  //     .cc-btn-container {
+  //       fill: var(--v-btncolor-base);
+  //     }
+
+  //     &:hover {
+  //       .cc-btn-container {
+  //         fill: hsl(215, 0%, 50%) !important;
+  //         transition: fill 100ms ease-in;
+  //       }
+  //     }
+  //   }
+  // }
+
+  .app-circle-control {
+    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
+    font-size: 3px;
     max-height: 350px;
     min-height: 275px;
     user-select: none;
     filter: drop-shadow(0px 10px 10px rgba(0, 0, 0, 0.3));
-  }
 
-  svg a {
-    stroke: hsl(0, 0%, 10%);
-    stroke-width: 0.3px;
-  }
+    .large {
+      font-size: 5px !important;
+    }
 
-  svg a.step {
-    transition: fill 750ms ease-out;
-  }
+    .disabled {
+      pointer-events: none;
+      fill: map-deep-get($material-dark, 'buttons', 'disabled') !important;
+      stroke: map-deep-get($material-dark, 'buttons', 'disabled') !important;
+      stroke-width: 0;
+    }
 
-  svg a.step:hover {
-    fill: hsl(215, 0%, 50%) !important;
-    transition: fill 100ms ease-in;
-  }
+    .cc-btn {
+      fill: map-deep-get($material-dark, 'text', 'primary');
+      stroke: map-deep-get($material-dark, 'text', 'primary');
+      stroke-width: 0;
 
-  svg a.step:active {
-    fill: hsl(215, 0%, 70%) !important;
-  }
+      .cc-btn-container {
+        fill: var(--v-btncolor-base);
+        stroke-width: 0.3px;
+        stroke: #000;
+      }
 
-  svg a.step.inner {
-    fill: #666;
-  }
-  svg a.step.inner-mid {
-    fill: #555;
-  }
-  svg a.step.outer-mid {
-    fill: #444;
-  }
-  svg a.step.outer {
-    fill: #333;
-  }
+      &.primary:not(.disabled) .cc-btn-container {
+        fill: var(--v-primary-base) !important;
+      }
+      &.inner .cc-btn-container {
+        fill: #666 !important;
+      }
+      &.inner-mid .cc-btn-container {
+        fill: #555 !important;
+      }
+      &.outer-mid .cc-btn-container {
+        fill: #444 !important;
+      }
+      &.outer .cc-btn-container {
+        fill: #333 !important;
+      }
 
-  svg .disabled a.step {
-    pointer-events: none;
-  }
+      &:hover {
+        .cc-btn-container {
+          fill: hsl(215, 0%, 50%) !important;
+          transition: fill 100ms ease-in;
+        }
+      }
+    }
 
-  svg g#stepsZ,
-  svg g#stepsXY {
-    pointer-events: none;
-    user-select: none;
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 3px;
-    fill: white;
-  }
-
-  svg a#tilt_adjust text {
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 3px;
-    display: none;
-  }
-
-  svg a.disabled {
-    pointer-events: none;
-  }
-
-  svg a.disabled .home_button path,
-  svg a.disabled circle {
-    fill: rgb(92, 92, 92);
-  }
-
-  svg g#stepsXY.disabled text,
-  svg g#stepsZ.disabled text {
-    fill: rgba(255, 255, 255, 0.3);
-  }
-
-  svg a#tilt_adjust,
-  svg a#stepper_off {
-    transition: opacity 250ms;
-  }
-
-  svg g.home_button,
-  svg a#home_all_center,
-  svg a#tilt_adjust.warning,
-  svg a#stepper_off.warning {
-    fill: var(--v-btncolor-base);
-    transition: opacity 250ms;
-  }
-
-  svg a#tilt_adjust #tilt_icon,
-  svg a#stepper_off #stepper_off_icon {
-    fill: white; // TODO: change to fg color
-    stroke: none;
-  }
-
-  svg g#icon.center_icon {
-    fill: none;
-    stroke: white;
-    pointer-events: none;
-  }
-  svg g#icon.home_icon {
-    fill: white;
-    stroke: white;
-    transition: opacity 250ms;
-    pointer-events: none;
-  }
-
-  svg g#home_buttons text {
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 5px;
-    fill: white;
-    stroke: none;
-    pointer-events: none;
-  }
-
-  svg g#icon.center_icon {
-    fill: none;
-    stroke: white
-  }
-  svg g#icon.home_icon {
-    fill: white;
-    stroke: white;
-    transition: opacity 250ms;
-  }
-
-  // DISABLED STATES / LOADING STATES
-
-  svg a#tilt_adjust.disabled #tilt_icon,
-  svg a#stepper_off.disabled #stepper_off_icon {
-    fill: black; // TODO: change to fg color
-    stroke: none;
-  }
-
-  svg a.loading g#icon.center_icon,
-  svg a.disabled g#icon.center_icon {
-    fill: none;
-    stroke:  rgb(85,85,85);// TODO change to disabled
-  }
-
-  svg a.disabled g#icon.center_icon,
-  svg a.loading  g#icon.center_icon {
-    fill: none;
-    stroke: black
-  }
-
-  svg a.disabled g#home_buttons text,
-  svg a.loading g#home_buttons text {
-    font-family: 'Roboto-Regular', 'Roboto', sans-serif;
-    font-size: 5px;
-    fill: black;
-    stroke: black;
-  }
-
-  svg a.disabled g#icon.home_icon,
-  svg a.loading  g#icon.home_icon {
-    fill:  black;
-    stroke: black;
-    transition: opacity 250ms;
-  }
-  svg  g#home_buttons .disabled text,
-  svg  g#home_buttons .loading text {
-    fill:  black;
-    stroke: black;
-  }
-
-  svg a#tilt_adjust.primary,
-  svg a#stepper_off.primary {
-    fill: var(--v-anchor-base);
-  }
-
-  svg .homed g.home_button,
-  svg .homed a#home_all_center {
-    fill: var(--v-anchor-base);
-  }
-
-  svg a.loading
-  svg a.disabled {
-    fill: rgb(85,85,85);
-    pointer-events: none;
-  }
-
-  svg g.home_button:hover,
-  svg a#home_all_center:hover,
-  svg a#tilt_adjust:hover,
-  svg a#stepper_off:hover {
-    opacity: 0.4;
+    .cc-lbls {
+      fill: map-deep-get($material-dark, 'text', 'primary');
+      pointer-events: none;
+    }
   }
 </style>
