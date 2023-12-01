@@ -12,7 +12,7 @@ tour of the codebase, see the
 
 - Read the [Development guide](https://docs.fluidd.xyz/development/) — it covers the
   Dev Container, running Fluidd locally, and a quick architecture overview.
-- After cloning, run `npm ci && npm run bootstrap` to install dependencies and set up
+- After cloning, run `pnpm i --frozen-lockfile && pnpm run bootstrap` to install dependencies and set up
   the Git hooks that pre-validate your commits.
 
 ## Branching and pull requests
@@ -50,12 +50,12 @@ Source must pass linting and type-checking with **zero warnings and zero type er
 Before pushing, run:
 
 ```bash
-npm run lint
-npm run type-check
-npm run test
+pnpm run lint
+pnpm run type-check
+pnpm run test
 ```
 
-CI runs the same checks (plus `npm run circular-check` and a production build) on
+CI runs the same checks (plus `pnpm run circular-check` and a production build) on
 every pull request.
 
 ## Translations

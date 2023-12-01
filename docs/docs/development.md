@@ -168,20 +168,20 @@ Check that Node.js was installed properly:
 
 ```bash
 node --version
-npm --version
+pnpm --version
 ```
 
 ### Install dependencies
 
 ```bash
 cd .../path/to/fluidd
-npm ci
+pnpm i --frozen-lockfile
 ```
 
 ### Run a local development server
 
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 Browse to [http://localhost:8080/](http://localhost:8080/) and type in the URL
@@ -190,7 +190,7 @@ of your Moonraker instance, e.g. `http://192.168.0.101:7125`.
 ### Run unit tests
 
 ```bash
-npm run test
+pnpm run test
 ```
 
 ## Running the documentation site locally

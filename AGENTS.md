@@ -70,22 +70,22 @@ export default class PrinterWidget extends Mixins(StateMixin) {
 - **`unplugin-vue-components/rolldown`** — auto-imports components from `src/components/common|layout|ui`
 - **`sass-embedded`** — SCSS preprocessor (variables auto-injected via `@/scss/variables`)
 - **vitest v4** — unit test runner (jsdom environment)
-- **`commit-and-tag-version`** — release versioning (`npm run release`)
+- **`commit-and-tag-version`** — release versioning (`pnpm run release`)
 - **ESLint flat config** (`eslint.config.mjs`) — enforced at dev time via `vite-plugin-checker` with `useFlatConfig: true`
 - **`vite-plugin-checker`** — runs vue-tsc and ESLint during dev (disabled at build time)
-- **`skott`** — circular dependency detection (`npm run circular-check`)
+- **`skott`** — circular dependency detection (`pnpm run circular-check`)
 - **ES2020 lib target** (`tsconfig.app.json`) — no ES2021+ built-ins without polyfills
 
 ### Essential Commands
 
 ```bash
-npm run bootstrap      # Install git hooks (after clone)
-npm run dev            # Start development server (port 8080)
-npm run build          # Production build
-npm run type-check     # TypeScript validation (vue-tsc)
-npm run lint           # ESLint with Vue/TS rules
-npm run test           # Vitest unit tests
-npm run circular-check # Check for circular dependencies
+pnpm run bootstrap      # Install git hooks (after clone)
+pnpm run dev            # Start development server (port 8080)
+pnpm run build          # Production build
+pnpm run type-check     # TypeScript validation (vue-tsc)
+pnpm run lint           # ESLint with Vue/TS rules
+pnpm run test           # Vitest unit tests
+pnpm run circular-check # Check for circular dependencies
 ```
 
 ### File Organization
@@ -174,7 +174,7 @@ src/
 
 ## Code Style
 
-- Source must pass linting with **zero warnings and zero type errors** — run `npm run lint` and `npm run type-check` before committing
+- Source must pass linting with **zero warnings and zero type errors** — run `pnpm run lint` and `pnpm run type-check` before committing
 - Vue class-style components with `vue-property-decorator` (`@Component`, `@Prop`, `@VModel`, `Mixins()`)
 - ESLint enforced: `neostandard` + `pluginVue.configs['flat/vue2-recommended']` + `pluginRegexp` + `@vue/eslint-config-typescript`
 - `.editorconfig` rules: 2 spaces, LF line endings, UTF-8, trim trailing whitespace, max line 100 (code)
@@ -204,7 +204,7 @@ src/
 - **PR branches** must be off a branch other than `develop` or `master`
 - **Clean develop** preferred: squash and rebase feature branches prior to merge
 - **CHANGELOG visibility**: only `feat`, `fix`, `perf`, `refactor` appear in `CHANGELOG.md` (configured in `.versionrc.json`)
-- **CI pipeline order**: `npm ci` → `lint --no-fix` → `type-check` → `test:unit` → `circular-check` → `build`
+- **CI pipeline order**: `pnpm i --frozen-lockfile` → `lint --no-fix` → `type-check` → `test:unit` → `circular-check` → `build`
 
 ## Common Gotchas
 
@@ -225,7 +225,7 @@ src/
 ## Dev Container
 
 - VSCode Dev Container (`.devcontainer/`) bundles a `docker-klipper-simulavr` container — real Klipper/Moonraker simulation on port 7125, Fluidd on port 8080
-- `postCreateCommand` runs `npm ci && npm run bootstrap` automatically
+- `postCreateCommand` runs `pnpm i --frozen-lockfile && pnpm run bootstrap` automatically
 
 ## Documentation Site
 
@@ -238,7 +238,7 @@ src/
 - Lint: `markdownlint --config docs/.markdownlint.json docs/docs/`
 - Install: `cd docs && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt`
 - Build: `cd docs && zensical build --clean`
-- Serve: `cd docs && zensical serve` or `npm run serve:docs` (localhost:8000)
+- Serve: `cd docs && zensical serve` or `pnpm run serve:docs` (localhost:8000)
 - Deploy: GitHub Actions (`.github/workflows/docs.yml`) — builds on push to `master`, uploads Pages artifact via `actions/upload-pages-artifact`, deploys via `actions/deploy-pages`
 
 ### Documentation Structure
