@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <v-subheader id="theme">
