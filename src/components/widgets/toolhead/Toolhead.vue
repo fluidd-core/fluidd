@@ -9,13 +9,12 @@
       >
         <v-col class="controls-wrapper">
           <extruder-selection v-if="hasMultipleExtruders" />
-          <toolhead-control-cross v-if="!printerPrinting && toolheadControlStyle === 'cross'" />
-          <toolhead-control-bars
-            v-else-if="!printerPrinting && toolheadControlStyle === 'bars'"
-            class="mx-auto"
-          />
-          <toolhead-control-circle v-else-if="!printerPrinting && toolheadControlStyle === 'circle'" />
-          <z-height-adjust v-if="printerPrinting" />
+          <template v-if="!printerPrinting">
+            <toolhead-control-cross v-if="toolheadControlStyle === 'cross'" />
+            <toolhead-control-bars v-else-if="toolheadControlStyle === 'bars'" />
+            <toolhead-control-circle v-else-if="toolheadControlStyle === 'circle'" />
+          </template>
+          <z-height-adjust v-else />
         </v-col>
 
         <v-col class="controls-wrapper">
