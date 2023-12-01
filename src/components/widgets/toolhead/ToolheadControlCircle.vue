@@ -931,34 +931,33 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     }
   }
 
-  .theme--light.app-circle-control .cc-btn {
-    &.inner .cc-btn-container {
-      fill: var(--v-btncolor-lighten1);
-    }
-    &.inner-mid .cc-btn-container {
-      fill: var(--v-btncolor-base);
-    }
-    &.outer-mid .cc-btn-container {
-      fill: var(--v-btncolor-darken1);
-    }
-    &.outer .cc-btn-container {
-      fill: var(--v-btncolor-darken2);
+  @mixin cc-btn-theme ($component, $text, $back, $hover) {
+    &#{$component} {
+      fill: #{$text};
+      stroke: #{$text};
+
+      .cc-btn-container {
+        fill: #{$back};
+      }
+
+      &:hover .cc-btn-container {
+        fill: #{$hover};
+      }
     }
   }
 
+  .theme--light.app-circle-control .cc-btn {
+    @include cc-btn-theme('.inner', '', 'var(--v-btncolor-lighten1)', '');
+    @include cc-btn-theme('.inner-mid', '', 'var(--v-btncolor-base)', '');
+    @include cc-btn-theme('.outer-mid', '', 'var(--v-btncolor-darken1)', '');
+    @include cc-btn-theme('.outer', '', 'var(--v-btncolor-darken2)', '');
+  }
+
   .theme--dark.app-circle-control .cc-btn {
-    &.inner .cc-btn-container {
-      fill: var(--v-btncolor-lighten2);
-    }
-    &.inner-mid .cc-btn-container {
-      fill: var(--v-btncolor-lighten1);
-    }
-    &.outer-mid .cc-btn-container {
-      fill: var(--v-btncolor-base);
-    }
-    &.outer .cc-btn-container {
-      fill: var(--v-btncolor-darken1);
-    }
+    @include cc-btn-theme('.inner', '', 'var(--v-btncolor-lighten2)', '');
+    @include cc-btn-theme('.inner-mid', '', 'var(--v-btncolor-lighten1)', '');
+    @include cc-btn-theme('.outer-mid', '', 'var(--v-btncolor-base)', '');
+    @include cc-btn-theme('.outer', '', 'var(--v-btncolor-darken1)', '');
   }
 
   .app-circle-control {
@@ -967,87 +966,56 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
     max-height: 350px;
     min-height: 275px;
     user-select: none;
-    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.12)) drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.14));
-
-    .large {
-      font-size: 5px !important;
-    }
+    filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.2)) drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.14)) drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.12));
 
     .cc-btn {
       stroke-width: 0;
 
       .cc-btn-container {
         fill: var(--v-btncolor-base);
-        stroke-width: 0.3px;
         stroke: var(--v-btncolor-darken4);
+        stroke-width: 0.2px;
       }
 
-      &:hover {
-        .cc-btn-container {
-          fill: var(--v-btncolor-lighten1);
-          transition: fill 100ms ease-in;
-        }
+      &:hover .cc-btn-container {
+        fill: var(--v-btncolor-lighten1);
+        transition-duration: 0.28s;
+        transition-property: fill;
+        transition-timing-function: map-get($transition, 'fast-out-slow-in');
       }
 
-      &.primary:not(.disabled) {
-        fill: map-deep-get($material-dark, 'text', 'primary');
-        stroke: map-deep-get($material-dark, 'text', 'primary');
+      &:not(.disabled) {
+        $material-dark-text-primary: map-deep-get($material-dark, 'text', 'primary');
 
-        .cc-btn-container {
-          fill: var(--v-primary-base);
-        }
+        @include cc-btn-theme(
+          '.primary',
+          $material-dark-text-primary,
+          'var(--v-primary-base)',
+          'var(--v-primary-lighten1)');
 
-        &:hover .cc-btn-container {
-          fill: var(--v-primary-lighten1);
-        }
-      }
+        @include cc-btn-theme(
+          '.inner',
+          $material-dark-text-primary,
+          'var(--v-primary-lighten1)',
+          'var(--v-primary-lighten2)');
 
-      &.inner:not(.disabled) {
-        fill: map-deep-get($material-dark, 'text', 'primary');
+        @include cc-btn-theme(
+          '.inner-mid',
+          $material-dark-text-primary,
+          'var(--v-primary-base)',
+          'var(--v-primary-lighten1)');
 
-        .cc-btn-container {
-          fill: var(--v-primary-lighten1);
-        }
+        @include cc-btn-theme(
+          '.outer-mid',
+          $material-dark-text-primary,
+          'var(--v-primary-darken1)',
+          'var(--v-primary-base)');
 
-        &:hover .cc-btn-container {
-          fill: var(--v-primary-lighten2);
-        }
-      }
-
-      &.inner-mid:not(.disabled) {
-        fill: map-deep-get($material-dark, 'text', 'primary');
-
-        .cc-btn-container {
-          fill: var(--v-primary-base);
-        }
-
-        &:hover .cc-btn-container {
-          fill: var(--v-primary-lighten1);
-        }
-      }
-
-      &.outer-mid:not(.disabled) {
-        fill: map-deep-get($material-dark, 'text', 'primary');
-
-        .cc-btn-container {
-          fill: var(--v-primary-darken1);
-        }
-
-        &:hover .cc-btn-container {
-          fill: var(--v-primary-base);
-        }
-      }
-
-      &.outer:not(.disabled) {
-        fill: map-deep-get($material-dark, 'text', 'primary');
-
-        .cc-btn-container {
-          fill: var(--v-primary-darken2);
-        }
-
-        &:hover .cc-btn-container {
-          fill: var(--v-primary-darken1);
-        }
+        @include cc-btn-theme(
+          '.outer',
+          $material-dark-text-primary,
+          'var(--v-primary-darken2)',
+          'var(--v-primary-darken1)');
       }
     }
 
@@ -1056,9 +1024,12 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
       stroke-width: 0;
     }
 
+    .large {
+      font-size: 5px;
+    }
+
     .disabled {
       pointer-events: none;
-      stroke-width: 0;
     }
   }
 </style>
