@@ -340,8 +340,12 @@ export const getters: GetterTree<PrinterState, RootState> = {
    */
   getHomedAxes: (state) => (axes?: string): boolean => {
     if (axes && axes.length > 0) {
-      return axes.split('')
-        .every(char => state.printer.toolhead.homed_axes.includes(char))
+      let r = false
+      const a = axes.split('')
+      a.forEach((char) => {
+        r = state.printer.toolhead.homed_axes.includes(char)
+      })
+      return r
     }
     return false
   },
