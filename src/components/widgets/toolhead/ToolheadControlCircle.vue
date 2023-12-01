@@ -648,7 +648,7 @@
           </a>
           <a
             v-else
-            class="cc-btn"
+            class="cc-btn primary"
             :class="motorsOffClasses"
             @click="sendGcode('M84')"
           >
@@ -693,6 +693,10 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get forceMove () {
     return this.$store.state.config.uiSettings.toolhead.forceMove
+  }
+
+  get hasSteppersEnabled (): boolean {
+    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
   }
 
   get printerSettings () {
@@ -852,8 +856,11 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 
   get motorsOffClasses () {
     return {
-      disabled: !this.klippyReady || this.printerPrinting,
-      primary: this.$store.state.printer.printer.toolhead.homed_axes.length > 0
+      disabled: (
+        !this.klippyReady ||
+        this.printerPrinting ||
+        !this.hasSteppersEnabled
+      )
     }
   }
 
