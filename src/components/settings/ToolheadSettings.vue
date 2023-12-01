@@ -203,7 +203,7 @@
 
         <v-divider />
 
-        <app-setting :title="$t('app.setting.label.enableXYHoming')">
+        <app-setting :title="$t('app.setting.label.enable_xy_homing')">
           <v-switch
             v-model="toolheadControlXYHomingEnabled"
             hide-details

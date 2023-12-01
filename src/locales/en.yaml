@@ -508,7 +508,6 @@ app:
       axes: Axes
       camera_flip_x: Flip horizontally
       camera_flip_y: Flip vertically
-      enableXYHoming: Enable XY Homing
       camera_fullscreen_action:
         title: Fullscreen action
         embed: Embed
@@ -538,6 +537,7 @@ app:
       enable: Enable
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
+      enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
