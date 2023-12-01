@@ -827,16 +827,26 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
   }
 
   get levelingClasses () {
+    const [primary, disabled] = this.printerSupportsQuadGantryLevel
+      ? [
+          !this.$store.state.printer.printer.quad_gantry_level?.applied,
+          this.hasWait(this.$waits.onQGL)
+        ]
+      : this.printerSupportsZTiltAdjust
+        ? [
+            !this.$store.state.printer.printer.z_tilt?.applied,
+            this.hasWait(this.$waits.onZTilt)
+          ]
+        : []
+
     return {
       disabled: (
         !this.klippyReady ||
         this.printerPrinting ||
-        !this.allHomed
+        !this.allHomed ||
+        disabled
       ),
-      primary: (
-        (this.printerSupportsQuadGantryLevel && !this.$store.state.printer.printer.quad_gantry_level?.applied) ||
-        (this.printerSupportsZTiltAdjust && !this.$store.state.printer.printer.z_tilt?.applied)
-      )
+      primary
     }
   }
 
