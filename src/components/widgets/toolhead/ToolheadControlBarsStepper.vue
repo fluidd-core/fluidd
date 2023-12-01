@@ -7,6 +7,7 @@
       <app-up-down-btn-group
         :values="values"
         color="error"
+        class="d-flex"
         @click="sendForceMoveGcode($event)"
       >
         <div class="v-btn v-size--default btncolor flex-grow-1">
