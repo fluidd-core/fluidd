@@ -62,6 +62,7 @@
         </app-btn>
 
         <app-btn
+          v-if="hasSteppersEnabled"
           :disabled="!klippyReady || printerPrinting"
           small
           class="ms-1 my-1"
@@ -364,6 +365,10 @@ export default class ToolheadCard extends Mixins(StateMixin, ToolheadMixin) {
       (this.printerSettings.force_move?.enable_force_move ?? false) &&
       !this.hasRoundBed
     )
+  }
+
+  get hasSteppersEnabled (): boolean {
+    return this.$store.getters['printer/getHasSteppersEnabled'] as boolean
   }
 
   get hasRoundBed (): boolean {
