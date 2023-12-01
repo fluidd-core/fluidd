@@ -350,7 +350,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsZ.length >= 0 ? stepsZ[0] : '--' }}
+                    {{ stepsZ[0] }}
                   </text>
                 </g>
                 <g transform="matrix(1,0,0,1,0.220227,-1.95729)">
@@ -359,7 +359,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsZ.length >= 1 ? stepsZ[1] : '--' }}
+                    {{ stepsZ[1] }}
                   </text>
                 </g>
                 <g transform="matrix(1,0,0,1,0.220227,-7.99441)">
@@ -368,7 +368,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsZ.length >= 2 ? stepsZ[2] : '--' }}
+                    {{ stepsZ[2] }}
                   </text>
                 </g>
                 <g transform="matrix(1,0,0,1,0.220227,-14.0315)">
@@ -377,7 +377,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsZ.length >= 3 ? stepsZ[3] : '--' }}
+                    {{ stepsZ[3] }}
                   </text>
                 </g>
               </g>
@@ -597,7 +597,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsXY.length >= 0 ? stepsXY[0] : '--' }}
+                    {{ stepsXY[0] }}
                   </text>
                 </g>
                 <g transform="matrix(1,0,0,1,0.220227,-1.95729)">
@@ -606,7 +606,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsXY.length >= 1 ? stepsXY[1] : '--' }}
+                    {{ stepsXY[1] }}
                   </text>
                 </g>
                 <g transform="matrix(1,0,0,1,0.220227,-7.99441)">
@@ -615,7 +615,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsXY.length >= 2 ? stepsXY[2] : '--' }}
+                    {{ stepsXY[2] }}
                   </text>
                 </g>
                 <g transform="matrix(1,0,0,1,0.220227,-14.0315)">
@@ -624,7 +624,7 @@
                     y="19.056px"
                     text-anchor="middle"
                   >
-                    {{ stepsXY.length >= 3 ? stepsXY[3] : '--' }}
+                    {{ stepsXY[3] }}
                   </text>
                 </g>
               </g>
