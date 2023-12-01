@@ -67,6 +67,8 @@ export interface GeneralConfig {
   toolheadMoveDistances: number[];
   toolheadXYMoveDistances: number[];
   toolheadZMoveDistances: number[];
+  toolheadCircleXYMoveDistances: number[];
+  toolheadCircleZMoveDistances: number[];
   useGcodeCoords: boolean;
   zAdjustDistances: number[];
   enableVersionNotifications: boolean;
@@ -94,7 +96,7 @@ export interface GeneralConfig {
   thumbnailSize: number;
 }
 
-export type ToolheadControlStyle = 'cross' | 'bars'
+export type ToolheadControlStyle = 'cross' | 'bars' | 'circle'
 
 export type TextSortOrder = 'default' | 'numeric-prefix' | 'version'
 

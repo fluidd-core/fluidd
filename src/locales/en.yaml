@@ -247,6 +247,7 @@ app:
       command: Command
       confirm: Confirm
       cross: Cross
+      circle: Circle
       current_password: Current password
       current_user: Current user
       default: Default
@@ -536,6 +537,7 @@ app:
       enable: Enable
       enable_diagnostics: Enable diagnostics
       enable_notifications: Enable notifications
+      enable_xy_homing: Enable XY Homing
       expression: Expression
       extrusion_line_width: Extrusion Line Width
       flip_horizontal: Horizontal Flip
