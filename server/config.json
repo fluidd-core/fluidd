@@ -92,6 +92,14 @@
       }
     },
     {
+      "name": "Siboor",
+      "color": "#32E0DF",
+      "isDark": true,
+      "logo": {
+        "src": "logo_siboor.svg"
+      }
+    },
+    {
       "name": "Voron",
       "color": "#FF2300",
       "isDark": true,
