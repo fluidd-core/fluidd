@@ -77,10 +77,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   // TODO: do we need this iOS keeps disconnecting?
   pcStateChange (ev: Event) {
     consola.debug('[WebrtcGo2RtcCamera] pcstate changes', ev)
-    const peerConnection = ev.target as RTCPeerConnection
-    if (peerConnection && peerConnection.connectionState === 'disconnected') {
-      this.startPlayback()
-    }
+    if ((ev.target as RTCPeerConnection)?.connectionState === 'disconnected') { this.startPlayback() }
   }
 
   onWebSocketOpen () {
