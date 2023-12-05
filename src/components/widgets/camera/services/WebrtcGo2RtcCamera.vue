@@ -115,7 +115,7 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
         this.startPlayback()
       } catch {}
-    } else { consola.error('[WebrtcGo2RtcCamera] socket close was clean', ev) }
+    }
   }
 
   onWebSocketMessage (ev: MessageEvent) {
