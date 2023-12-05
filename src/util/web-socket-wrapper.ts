@@ -1,12 +1,10 @@
 import { consola } from 'consola'
 
 const webSocketWrapper = (url: string, signal?: AbortSignal) => {
-  const debug = (message: string) => consola.debug(`[webSocketWrapper] ${url} ${message}`)
+  const debug = (message: string, ...args: unknown[]) => consola.debug(`[webSocketWrapper] ${url} ${message}`, ...args)
 
   return new Promise((resolve, reject) => {
     debug('opening...')
-
-    const connection = new WebSocket(url)
 
     const dispose = () => {
       signal?.removeEventListener('abort', abortHandler)
@@ -17,31 +15,33 @@ const webSocketWrapper = (url: string, signal?: AbortSignal) => {
     const abortHandler = () => {
       debug('aborted')
 
-      reject(new Error('AbortError'))
-
       dispose()
+
+      reject(new Error('AbortError'))
     }
 
     signal?.addEventListener('abort', abortHandler)
 
-    connection.onopen = () => {
-      debug('opened')
+    const connection = new WebSocket(url)
 
-      resolve(null)
+    connection.onopen = (event) => {
+      debug('opened', event)
 
       dispose()
+
+      resolve(null)
     }
 
     connection.onerror = (event) => {
-      debug('error')
-
-      reject(event)
+      debug('error', event)
 
       dispose()
+
+      reject(event)
     }
 
-    connection.onclose = () => {
-      debug('closed')
+    connection.onclose = (event) => {
+      debug('closed', event)
     }
   })
 }
