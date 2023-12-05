@@ -14,6 +14,7 @@
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
 import consola from 'consola'
+import sleep from '@/util/sleep'
 
 @Component({})
 export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
@@ -22,8 +23,8 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
   pc: RTCPeerConnection | null = null
   ws: WebSocket | null = null
-  restartPause = 2000
-  restartTimeout: any = null
+  abortController: AbortController | null = null
+
   // webrtc player methods
   // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/webrtc.html
   // also adapted from https://github.com/mainsail-crew/mainsail/pull/1651
@@ -43,6 +44,8 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   startPlayback () {
     this.pc?.close()
     this.ws?.close()
+
+    this.abortController = new AbortController()
 
     this.pc = new RTCPeerConnection({
       iceServers: [
@@ -65,18 +68,13 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.cameraVideo.srcObject = new MediaStream(localTracks)
 
     this.ws = new WebSocket(this.socketUrl)
-    this.ws.addEventListener('open', this.onWebSocketOpen)
-    this.ws.addEventListener('message', this.onWebSocketMessage)
-    this.ws.addEventListener('close', this.onWebSocketClose)
+    this.ws.onopen = this.onWebSocketOpen
+    this.ws.onmessage = this.onWebSocketMessage
+    this.ws.onclose = this.onWebSocketClose
   }
 
   onWebSocketOpen () {
     consola.debug('[WebrtcGo2RtcCamera] socket opened')
-
-    if (this.restartTimeout !== null) {
-      clearTimeout(this.restartTimeout)
-      this.restartTimeout = null
-    }
 
     this.pc?.addEventListener('icecandidate', ev => {
       if (!ev.candidate) return
@@ -101,10 +99,15 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
       })
   }
 
-  onWebSocketClose (ev: CloseEvent) {
+  async onWebSocketClose (ev: CloseEvent) {
     if (!ev.wasClean) {
-      consola.error(`[WebrtcGo2RtcCamera] socket close was not clean ${ev?.reason}`)
-      this.scheduleRestart()
+      consola.error('[WebrtcGo2RtcCamera] socket close was not clean', ev)
+
+      try {
+        await sleep(2000, this.abortController?.signal)
+
+        this.startPlayback()
+      } catch {}
     }
   }
 
@@ -130,20 +133,13 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
   }
 
   stopPlayback () {
+    this.abortController?.abort()
+    this.abortController = null
     this.pc?.close()
     this.pc = null
     this.ws?.close()
     this.ws = null
     this.cameraVideo.src = ''
-  }
-
-  scheduleRestart () {
-    if (this.restartTimeout !== null) return
-    this.stopPlayback()
-    this.restartTimeout = window.setTimeout(() => {
-      this.restartTimeout = null
-      this.startPlayback()
-    }, this.restartPause)
   }
 }
 </script>
