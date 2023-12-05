@@ -9,6 +9,7 @@ import { httpClientActions } from './api/httpClientActions'
 import sanitizeEndpoint from './util/sanitize-endpoint'
 import webSocketWrapper from './util/web-socket-wrapper'
 import promiseAny from './util/promise-any'
+import sleep from './util/sleep'
 
 // Load API configuration
 /**
@@ -73,30 +74,33 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     endpoints.push(`${document.location.protocol}//${document.location.hostname}:${port}`)
   }
 
-  // For each endpoint we have, ping each one to determine if any are active.
-  // If none are, we'll force the instance add dialog.
-  if (endpoints.length > 0) {
-    const abortController = new AbortController()
+  const abortController = new AbortController()
 
-    try {
-      const { signal } = abortController
+  try {
+    const { signal } = abortController
 
-      return await promiseAny(
-        endpoints.map(async (endpoint) => {
-          const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
+    const defaultOnTimeout = async () => {
+      await sleep(5000)
 
-          await webSocketWrapper(apiEndpoints.socketUrl, signal)
-
-          return apiEndpoints
-        })
-      )
-    } catch {
-    } finally {
-      abortController.abort()
+      return {
+        apiUrl: '',
+        socketUrl: ''
+      } satisfies ApiConfig
     }
-  }
 
-  return { apiUrl: '', socketUrl: '' }
+    return await promiseAny([
+      ...endpoints.map(async (endpoint) => {
+        const apiEndpoints = Vue.$filters.getApiUrls(endpoint)
+
+        await webSocketWrapper(apiEndpoints.socketUrl, signal)
+
+        return apiEndpoints
+      }),
+      defaultOnTimeout()
+    ])
+  } finally {
+    abortController.abort()
+  }
 }
 
 const getMoorakerDatabase = async (apiConfig: ApiConfig, namespace: string) => {
