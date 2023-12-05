@@ -1,7 +1,7 @@
 import consola from 'consola'
 
 const sleep = (ms: number, signal?: AbortSignal) => {
-  const debug = (message: string) => consola.debug(`[sleep] ${message}`)
+  const debug = (message: string, ...args: unknown[]) => consola.debug(`[sleep] ${message}`, ...args)
 
   return new Promise((resolve, reject) => {
     debug(`sleeping for ${ms}...`)

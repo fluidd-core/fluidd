@@ -80,7 +80,7 @@ const getApiConfig = async (hostConfig: HostConfig): Promise<ApiConfig | Instanc
     const { signal } = abortController
 
     const defaultOnTimeout = async () => {
-      await sleep(5000)
+      await sleep(5000, signal)
 
       return {
         apiUrl: '',
