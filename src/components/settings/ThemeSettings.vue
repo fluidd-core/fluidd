@@ -113,7 +113,7 @@ export default class ThemeSettings extends Mixins(StateMixin) {
 
     if (this.theme.color.toLowerCase() !== color.toLowerCase()) {
       this.updateTheme({
-        color: value.color.hexString
+        color
       })
     }
   }

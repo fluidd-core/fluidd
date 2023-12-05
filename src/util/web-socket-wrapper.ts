@@ -15,7 +15,7 @@ const webSocketWrapper = (url: string, signal?: AbortSignal) => {
     }
 
     const abortHandler = () => {
-      debug('abort')
+      debug('aborted')
 
       reject(new Error('AbortError'))
 
@@ -25,7 +25,7 @@ const webSocketWrapper = (url: string, signal?: AbortSignal) => {
     signal?.addEventListener('abort', abortHandler)
 
     connection.onopen = () => {
-      debug('open')
+      debug('opened')
 
       resolve(null)
 
@@ -41,7 +41,7 @@ const webSocketWrapper = (url: string, signal?: AbortSignal) => {
     }
 
     connection.onclose = () => {
-      debug('close')
+      debug('closed')
     }
   })
 }
