@@ -22,7 +22,8 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
   pc: RTCPeerConnection | null = null
   ws: WebSocket | null = null
-
+  restartPause = 2000
+  restartTimeout: any = null
   // webrtc player methods
   // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/webrtc.html
   // also adapted from https://github.com/mainsail-crew/mainsail/pull/1651
@@ -66,9 +67,17 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.ws = new WebSocket(this.socketUrl)
     this.ws.addEventListener('open', this.onWebSocketOpen)
     this.ws.addEventListener('message', this.onWebSocketMessage)
+    this.ws.addEventListener('close', this.onWebSocketClose)
   }
 
   onWebSocketOpen () {
+    consola.debug('[WebrtcGo2RtcCamera] socket opened')
+
+    if (this.restartTimeout !== null) {
+      clearTimeout(this.restartTimeout)
+      this.restartTimeout = null
+    }
+
     this.pc?.addEventListener('icecandidate', ev => {
       if (!ev.candidate) return
 
@@ -90,6 +99,13 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
         this.ws?.send(JSON.stringify(msg))
       })
+  }
+
+  onWebSocketClose (ev: CloseEvent) {
+    if (!ev.wasClean) {
+      consola.error(`[WebrtcGo2RtcCamera] socket close was not clean ${ev?.reason}`)
+      this.scheduleRestart()
+    }
   }
 
   onWebSocketMessage (ev: MessageEvent) {
@@ -119,6 +135,15 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
     this.ws?.close()
     this.ws = null
     this.cameraVideo.src = ''
+  }
+
+  scheduleRestart () {
+    if (this.restartTimeout !== null) return
+    this.stopPlayback()
+    this.restartTimeout = window.setTimeout(() => {
+      this.restartTimeout = null
+      this.startPlayback()
+    }, this.restartPause)
   }
 }
 </script>
