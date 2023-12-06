@@ -9,6 +9,7 @@ app:
       scale: Escala por min / max
       wireframe: Wireframe
       active: activo
+      base: base
     msg:
       hint: >-
         Se guardar como algo diferente de % {name}, pode escolher remover também o
@@ -19,7 +20,7 @@ app:
       calibrate: Nova calibração, salvando o perfil como 'default'
       delete: Eliminar perfil
       load: Carregar perfil
-      save: Carregar o perfil calibrado no ficheiro printer.cfg
+      save: Guard perfil calibrado no ficheiro printer.cfg
   chart:
     label:
       current: Corrente
@@ -29,8 +30,8 @@ app:
       rate_of_change: Mudança
     tooltip:
       help: >-
-        Mantenha a tecla Shift pressionada para aumentar o zoom. <br /> Clique
-        num item para alternar no gráfico. <br /> Clique em Ligar para alternar
+        Mantenha a tecla <kbd>Shift</kbd> pressionada para aumentar o zoom. <br />
+        Clique num item para alternar no gráfico. <br /> Clique em Ligar para alternar
         no gráfico.
   console:
     label:
@@ -39,11 +40,14 @@ app:
     placeholder:
       command: '''tab'' para autocompletar, ''help'' para comandos  ''setas'' para
         histórico'
+    tooltip:
+      help: Introduza "help" para comandos<br />Carregue em <kbd>Tab</kbd> para autocomplemento<br
+        />Carregue em <kbd>&uarr;</kbd> e <kbd>&darr;</kbd> para o historico
   endpoint:
     error:
       cant_connect: >-
-        Algo está errado e não é possivel carregar o fluidd  . Tem a certeza de
-        que este é o endereço correto?
+        Algo está errado e não é possível carregar o fluidd . Tem a certeza de que
+        este é o endereço correto?
       cors_error: bloqueado pela política CORS
       cors_note: >-
         Isso pode significar que você precisa modificar a configuração do
