@@ -602,7 +602,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
-      text_sort_order: Text Sort Order
+      text_sort_order: Text sort order
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
@@ -616,6 +616,7 @@ app:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_browser: File Browser
       file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
