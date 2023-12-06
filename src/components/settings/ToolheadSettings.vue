@@ -34,7 +34,7 @@
 
       <v-divider />
 
-      <template v-if="toolheadControlStyle === 'cross'">
+      <template v-if="toolheadControlStyle === 'cross' || toolheadControlStyle === 'circle'">
         <app-setting :title="$t('app.setting.label.invert_x_control')">
           <v-switch
             v-model="invertX"
@@ -64,7 +64,9 @@
         </app-setting>
 
         <v-divider />
+      </template>
 
+      <template v-if="toolheadControlStyle === 'cross'">
         <app-setting :title="$t('app.setting.label.toolhead_move_distances')">
           <v-combobox
             ref="toolheadMoveDistances"
