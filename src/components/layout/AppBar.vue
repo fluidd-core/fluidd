@@ -3,7 +3,7 @@
     app
     clipped-left
     extension-height="46"
-    :color="theme.currentTheme.appbar"
+    :color="$vuetify.theme.currentTheme.appbar"
     :height="$globals.HEADER_HEIGHT"
   >
     <router-link
@@ -255,10 +255,6 @@ export default class AppBar extends Mixins(StateMixin, ServicesMixin, FilesMixin
 
   get devicePowerComponentEnabled () {
     return this.$store.getters['server/componentSupport']('power')
-  }
-
-  get theme () {
-    return this.$store.getters['config/getTheme']
   }
 
   get inLayout (): boolean {

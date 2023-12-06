@@ -580,6 +580,7 @@ app:
       show_code_lens: Show CodeLens
       show_gas_resistance: Show gas resistance
       show_legend: Show legend
+      show_logo_on_background: Show logo on background
       show_rate_of_change: Show temperature rate of change
       show_relative_humidity: Show relative humidity
       show_save_config_and_restart: Save Config and Restart button in top navigation

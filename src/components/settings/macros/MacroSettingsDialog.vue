@@ -128,11 +128,10 @@ export default class MacroMoveDialog extends Vue {
   }
 
   get color () {
-    const theme = this.$store.getters['config/getTheme']
     if (this.newMacro && this.newMacro.color !== '') {
       return this.newMacro.color
     }
-    return theme.currentTheme.secondary
+    return this.$vuetify.theme.currentTheme.secondary
   }
 
   handleColorChange (color: { channel: string, color: IroColor }) {

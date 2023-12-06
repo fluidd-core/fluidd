@@ -1,5 +1,4 @@
 import type { AppTablePartialHeader } from '@/types/tableheaders'
-import type { VuetifyThemeItem } from 'vuetify/types/services/theme'
 import type { FileFilterType } from '../files/types'
 
 export interface ConfigState {
@@ -44,7 +43,7 @@ export interface HostConfig {
   endpoints: string[];
   blacklist: string[];
   hosted: boolean;
-  themePresets: SupportedTheme[];
+  themePresets: ThemePreset[];
 }
 
 export interface SupportedLocale {
@@ -104,20 +103,21 @@ export type CameraFullscreenAction = 'embed' | 'rawstream';
 
 // Config stored in moonraker db
 export interface ThemeConfig {
-  currentTheme: {[index: string]: string | Partial<VuetifyThemeItem> | undefined }; // the color list.
-  isDark: boolean; // inidicates if the theme as a whole is dark or not.
-  logo: SupportedThemeLogo; // Current logo to use.
+  color: string;
+  isDark: boolean;
+  logo: ThemeLogo;
+  backgroundLogo: boolean;
 }
 
 // Config defined in host
-export interface SupportedTheme {
+export interface ThemePreset {
   name: string;
-  logo: SupportedThemeLogo;
   color: string;
   isDark: boolean;
+  logo: ThemeLogo;
 }
 
-export interface SupportedThemeLogo {
+export interface ThemeLogo {
   src: string;
   dark?: string;
   light?: string;

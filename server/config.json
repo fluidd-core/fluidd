@@ -74,6 +74,14 @@
       }
     },
     {
+      "name": "Peopoly",
+      "color": "#007CC2",
+      "isDark": true,
+      "logo": {
+        "src": "logo_peopoly.svg"
+      }
+    },
+    {
       "name": "Qidi Tech",
       "color": "#5B7AEA",
       "isDark": true,
@@ -89,6 +97,14 @@
         "src": "logo_ratrig.svg",
         "dark": "#232323",
         "light": "#ffffff"
+      }
+    },
+    {
+      "name": "Siboor",
+      "color": "#32E0DF",
+      "isDark": true,
+      "logo": {
+        "src": "logo_siboor.svg"
       }
     },
     {
