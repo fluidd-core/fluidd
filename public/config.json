@@ -74,6 +74,14 @@
       }
     },
     {
+      "name": "Peopoly",
+      "color": "#007CC2",
+      "isDark": true,
+      "logo": {
+        "src": "logo_peopoly.svg"
+      }
+    },
+    {
       "name": "Qidi Tech",
       "color": "#5B7AEA",
       "isDark": true,
