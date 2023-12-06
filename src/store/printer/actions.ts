@@ -99,12 +99,24 @@ export const actions: ActionTree<PrinterState, RootState> = {
   },
 
   async onPrinterObjectsSubscribe ({ commit, dispatch }, payload) {
-    if (payload?.status?.screws_tilt_adjust) {
-      delete payload.status.screws_tilt_adjust
+    // Initial printer status
+    const status = payload.status
+
+    if ('screws_tilt_adjust' in status) {
+      status.screws_tilt_adjust = {}
     }
+
+    if ('toolhead' in status) {
+      if ('max_accel_to_decel' in status.toolhead) {
+        status.toolhead.minimum_cruise_ratio = null
+      } else {
+        status.toolhead.max_accel_to_decel = null
+      }
+    }
+
     // Accept notifications, and commit the first subscribe.
     commit('socket/setAcceptNotifications', true, { root: true })
-    await dispatch('onNotifyStatusUpdate', payload.status)
+    await dispatch('onNotifyStatusUpdate', status)
 
     SocketActions.serverGcodeStore()
     SocketActions.printerGcodeHelp()
