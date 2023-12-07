@@ -7,6 +7,7 @@ export interface ConsoleState {
   commandHistory: string[];
   autoScroll: boolean;
   lastCleared: number;
+  promptDialog: PromptDialog;
   consoleFilters: ConsoleFilter[];
   consoleFiltersRegexp: RegExp[];
 }
@@ -14,7 +15,7 @@ export interface ConsoleState {
 export interface ConsoleEntry {
   id?: number;
   message: string;
-  type: 'command' | 'response';
+  type: 'command' | 'response' | 'action';
   time?: number;
 }
 
@@ -30,4 +31,28 @@ export interface ConsoleFilter {
   type: ConsoleFilterType;
   value: string;
   enabled: boolean;
+}
+
+export interface PromptDialog {
+  open: boolean;
+  title?: string;
+  items: PromptDialogItem[];
+  footerButtons: PromptDialogButton[]
+}
+
+export type PromptDialogItem = PromptDialogItemText | PromptDialogItemButton
+
+export interface PromptDialogItemText {
+  type: 'text';
+  text: string;
+}
+
+export interface PromptDialogItemButton extends PromptDialogButton {
+  type: 'button';
+}
+
+export interface PromptDialogButton {
+  text: string;
+  command?: string;
+  color?: string;
 }
