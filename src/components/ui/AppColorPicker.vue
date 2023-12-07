@@ -336,7 +336,6 @@ export default class AppColorPicker extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   .color-input div {

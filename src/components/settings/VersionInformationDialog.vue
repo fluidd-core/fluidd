@@ -120,7 +120,6 @@ export default class VersionInformationDialog extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   ol.commit-history {

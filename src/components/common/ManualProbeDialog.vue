@@ -187,7 +187,6 @@ export default class ManualProbeDialog extends Mixins(StateMixin, ToolheadMixin)
 </script>
 
 <style lang="scss" scoped>
-  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   .bysect-row > .col {

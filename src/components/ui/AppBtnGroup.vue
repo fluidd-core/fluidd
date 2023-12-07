@@ -28,7 +28,6 @@ export default class AppBtnGroup extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   @include theme(app-btn-group) using ($material) {

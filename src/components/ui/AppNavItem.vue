@@ -71,7 +71,6 @@ export default class AppNavItem extends Mixins(StateMixin, BrowserMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   button {

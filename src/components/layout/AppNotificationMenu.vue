@@ -250,7 +250,6 @@ export default class AppNotificationMenu extends Mixins(BrowserMixin) {
 </script>
 
 <style lang="scss" scoped>
-  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   :deep(.app-notifications .v-list-item__action.notification-suffix),
