@@ -336,6 +336,7 @@ export default class TemperatureTargets extends Mixins(StateMixin) {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   .theme--light :deep(.v-data-table.temperature-table > .v-data-table__wrapper > table) {

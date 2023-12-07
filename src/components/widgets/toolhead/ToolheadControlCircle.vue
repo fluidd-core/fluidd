@@ -924,6 +924,7 @@ export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMi
 </script>
 
 <style lang="scss" scoped>
+  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   @include theme(app-circle-control) using ($material) {

@@ -64,6 +64,7 @@ export default class AppCodeView extends Vue {
 </script>
 
 <style lang="scss" scoped>
+  @import '@/scss/variables';
   @import 'vuetify/src/styles/styles.sass';
 
   .theme--light .code-view {
