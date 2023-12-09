@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "npm",
+      "script": "run build",
+      "problemMatcher": [],
+      "label": "Build"
+    },
+    {
+      "type": "npm",
+      "script": "run type-check",
+      "problemMatcher": [],
+      "label": "Type check"
+    },
+    {
+      "type": "npm",
+      "script": "run circular-check",
+      "problemMatcher": [],
+      "label": "Circular reference check"
+    },
+    {
+      "type": "npm",
+      "script": "run lint",
+      "problemMatcher": [],
+      "label": "Type lint"
+    }
+  ]
+}
