@@ -2,13 +2,8 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/alpine
 {
   "name": "Fluidd Dev",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-  "image": "mcr.microsoft.com/devcontainers/base:alpine-3.18",
-  "features": {
-    "ghcr.io/cirolosapio/devcontainers-features/alpine-node:0": {
-      "lts": true
-    },
-    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
+   "build": {
+    "dockerfile": "./Dockerfile"
   },
   "postCreateCommand": "npm run bootstrap",
   "customizations": {
