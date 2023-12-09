@@ -274,6 +274,7 @@ app:
       longest_job: Longest job
       low: Low
       manage_accounts: Manage Accounts
+      minimum_cruise_ratio: Minimum Cruise Ratio
       user_managed_source: User managed by %{source} authentication
       m117: M117
       moonraker: Moonraker
