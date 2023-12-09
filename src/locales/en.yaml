@@ -631,6 +631,12 @@ app:
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
       show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
+      theme_disclaimer: >-
+        These themes feature brand names and logos that are the intellectual property of their respective owners.<br>
+        The inclusion of these names and logos is done with permission from the brands.<br>
+        However, please note that these themes are not officially maintained by the respective brands.<br>
+        Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
+        The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
   socket:
     msg:
       connecting: Connecting to moonraker...
