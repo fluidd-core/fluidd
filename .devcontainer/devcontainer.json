@@ -12,7 +12,7 @@
     },
     "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
   },
-  "postCreateCommand": "npm run bootstrap",
+  "postCreateCommand": "npm ci && npm run bootstrap",
   "customizations": {
     "vscode": {
       "extensions": [
