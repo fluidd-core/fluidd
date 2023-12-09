@@ -14,7 +14,9 @@
         "editorconfig.editorconfig",
         "esbenp.prettier-vscode",
         "lukas-tr.materialdesignicons-intellisense",
-        "redhat.vscode-yaml"
+        "redhat.vscode-yaml",
+        "eamodio.gitlens",
+        "vue.volar"
       ],
       "settings": {
         "editor.codeActionsOnSave": {
