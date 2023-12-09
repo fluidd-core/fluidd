@@ -82,6 +82,14 @@
       }
     },
     {
+      "name": "Prusa",
+      "color": "#E05D2D",
+      "isDark": false,
+      "logo": {
+        "src": "logo_prusa.svg"
+      }
+    },
+    {
       "name": "Qidi Tech",
       "color": "#5B7AEA",
       "isDark": true,
