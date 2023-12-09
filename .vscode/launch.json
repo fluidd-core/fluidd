@@ -9,19 +9,16 @@
       "request": "launch",
       "type": "chrome",
       "url": "http://localhost:8080",
-      "webRoot": "${workspaceFolder}"
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "Serve"
     },
     {
-      "command": "npm run serve",
-      "name": "npm run serve",
+      "name": "Launch Edge",
       "request": "launch",
-      "type": "node-terminal"
-    },
-    {
-      "command": "npm run serve:prod",
-      "name": "npm run serve:prod",
-      "request": "launch",
-      "type": "node-terminal"
+      "type": "msedge",
+      "url": "http://localhost:8080",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "Serve"
     }
   ]
 }

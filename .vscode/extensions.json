@@ -3,8 +3,11 @@
     "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
     "editorconfig.editorconfig",
+    "eamodio.gitlens",
     "esbenp.prettier-vscode",
     "lukas-tr.materialdesignicons-intellisense",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "vue.volar",
+    "vue.vscode-typescript-vue-plugin"
   ]
 }
