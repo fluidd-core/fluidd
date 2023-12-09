@@ -345,6 +345,7 @@ app:
       bars: Balken
       range: Distanz
       circle: Kreis
+      minimum_cruise_ratio: Minimales Konstantfahrtverhältnis
     msg:
       password_changed: Passwort geändert
       wrong_password: Ups, etwas ist schiefgelaufen. Ist Ihr Passwort korrekt?
@@ -632,6 +633,7 @@ app:
         automatisch anzeigen
       draw_origin: Ursprung anzeigen
       enable_xy_homing: XY-Homing aktivieren
+      show_logo_on_background: Logo auf dem Hintergrund anzeigen
     timer_options:
       duration: Nur Dauer
       filament: Filament-Schätzung
@@ -648,6 +650,7 @@ app:
       theme: Farbschema
       thermal_presets: Temperatur-Voreinstellungen
       tool: Druckkopf
+      file_browser: Dateibrowser
     tooltip:
       gcode_coords: GCode-Position anstelle der Toolhead-Position auf dem Dashboard
         anzeigen
@@ -661,6 +664,14 @@ app:
         [BETA] Das Protokollieren von Diagnoseinformationen kann die Leistung beeinträchtigen
       show_screws_tilt_adjust_dialog_automatically: Öffnet automatisch einen Hilfsdialog,
         wenn das SCREWS_TILT_CALCULATE-Werkzeug ausgeführt wird
+      theme_disclaimer: Diese Farbschemata enthalten Markennamen und Logos, die geistiges
+        Eigentum ihrer jeweiligen Eigentümer sind.<br> Die Nutzung dieser Namen und
+        Logos erfolgt mit Genehmigung dieser Marken.<br> Bitte beachten SIe jedoch,
+        dass die Farbschemata nicht offiziell von diesen Marken gepflegt werden.<br>
+        Alle Probleme oder Anfragen bezüglich dieser Schemata sollten an das Fluidd-Team
+        gerichtet werden.<br> Die Verwendung der Markennamen und Logos dient ausschließlich
+        zu dekorativen und ästhetischen Zwecken und stellt keine offizielle Verbindung
+        zu den Firmen oder eine Billigung dieser dar.
   socket:
     msg:
       connecting: Verbinde mit Moonraker...
