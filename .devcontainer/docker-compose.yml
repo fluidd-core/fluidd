@@ -2,7 +2,8 @@ version: '3.8'
 
 services:
   fluidd:
-    image: mcr.microsoft.com/devcontainers/base:alpine
+    build:
+      context: ./
     volumes:
       - ../..:/workspaces:cached
     command: sleep infinity

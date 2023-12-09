@@ -7,10 +7,6 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "forwardPorts": [5000, 8080, 7125, 8110],
   "features": {
-    "ghcr.io/cirolosapio/devcontainers-features/alpine-node:0": {
-      "lts": true
-    },
-    "ghcr.io/devcontainers-contrib/features/zsh-plugins:0": {}
   },
   "postCreateCommand": "npm ci && npm run bootstrap",
   "customizations": {
