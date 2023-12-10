@@ -2,10 +2,11 @@
   "recommendations": [
     "davidanson.vscode-markdownlint",
     "dbaeumer.vscode-eslint",
-    "editorconfig.editorconfig",
     "eamodio.gitlens",
+    "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "lukas-tr.materialdesignicons-intellisense",
+    "ms-azuretools.vscode-docker",
     "redhat.vscode-yaml",
     "vue.volar",
     "vue.vscode-typescript-vue-plugin"
