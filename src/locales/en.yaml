@@ -274,6 +274,7 @@ app:
       longest_job: Longest job
       low: Low
       manage_accounts: Manage Accounts
+      minimum_cruise_ratio: Minimum Cruise Ratio
       user_managed_source: User managed by %{source} authentication
       m117: M117
       moonraker: Moonraker
@@ -602,7 +603,7 @@ app:
       z_adjust_values: Z Adjust values
       date_format: Date format
       time_format: Time format
-      text_sort_order: Text Sort Order
+      text_sort_order: Text sort order
       force_move_toggle_warning: Require confirm when activating FORCE_MOVE
       show_manual_probe_dialog_automatically: Show Manual Probe dialog automatically
       show_bed_screws_adjust_dialog_automatically: Show Bed Screws Adjust dialog automatically
@@ -616,6 +617,7 @@ app:
       authentication: Authentication
       console: Console
       camera: Camera | Cameras
+      file_browser: File Browser
       file_editor: File Editor
       gcode_preview: Gcode Preview
       general: General
@@ -629,6 +631,12 @@ app:
       show_manual_probe_dialog_automatically: Automatically shows helper dialog if running a Manual Probe tool
       show_bed_screws_adjust_dialog_automatically: Automatically shows helper dialog if running BED_SCREWS_ADJUST tool
       show_screws_tilt_adjust_dialog_automatically: Automatically shows helper dialog if running SCREWS_TILT_CALCULATE tool
+      theme_disclaimer: >-
+        These themes feature brand names and logos that are the intellectual property of their respective owners.<br>
+        The inclusion of these names and logos is done with permission from the brands.<br>
+        However, please note that these themes are not officially maintained by the respective brands.<br>
+        Any issues or inquiries related to the themes should be directed to the Fluidd team.<br>
+        The use of brand names and logos is for decorative and aesthetic purposes only, and no official association with or endorsement by the brands is implied.
   socket:
     msg:
       connecting: Connecting to moonraker...

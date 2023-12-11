@@ -9,6 +9,11 @@ export const defaultState = (): ConsoleState => {
     commandHistory: [],
     autoScroll: true,
     lastCleared: 0,
+    promptDialog: {
+      open: false,
+      items: [],
+      footerButtons: []
+    },
     consoleFilters: [],
     consoleFiltersRegexp: []
   }

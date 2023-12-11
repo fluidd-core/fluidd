@@ -3,7 +3,6 @@
     ref="streamingElement"
     autoplay
     playsinline
-    controls
     muted
     :style="cameraStyle"
     :crossorigin="crossorigin"
@@ -14,6 +13,18 @@
 import { Component, Ref, Mixins } from 'vue-property-decorator'
 import CameraMixin from '@/mixins/camera'
 import consola from 'consola'
+import sleep from '@/util/sleep'
+
+type RTCConfigurationWithSdpSemantics = RTCConfiguration & {
+  sdpSemantics: 'unified-plan'
+}
+
+type Go2RtcReceivedMessageType = 'webrtc/candidate' | 'webrtc/offer' | 'webrtc/answer' | 'error'
+
+type Go2RtcMessage = {
+  type: Go2RtcReceivedMessageType,
+  value?: string
+}
 
 @Component({})
 export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
@@ -22,103 +33,141 @@ export default class WebrtcGo2RtcCamera extends Mixins(CameraMixin) {
 
   pc: RTCPeerConnection | null = null
   ws: WebSocket | null = null
+  abortController: AbortController | null = null
 
   // webrtc player methods
   // adapted from https://github.com/AlexxIT/go2rtc/blob/master/www/webrtc.html
   // also adapted from https://github.com/mainsail-crew/mainsail/pull/1651
 
-  get socketUrl () {
+  startPlayback () {
+    this.abortController?.abort()
+    this.pc?.close()
+    this.ws?.close()
+
+    this.abortController = new AbortController()
+
     const url = this.buildAbsoluteUrl(this.camera.urlStream || '')
+
     const socketUrl = new URL('api/ws' + url.search, url)
 
-    socketUrl.searchParams.set('media', 'video+audio')
     socketUrl.protocol = socketUrl.protocol === 'https:'
       ? 'wss:'
       : 'ws:'
 
-    return socketUrl
+    this.ws = new WebSocket(socketUrl)
+    this.ws.binaryType = 'arraybuffer'
+    this.ws.onopen = this.onWebSocketOpen
+    this.ws.onmessage = this.onWebSocketMessage
+    this.ws.onclose = this.onWebSocketClose
+
+    this.$emit('raw-camera-url', url)
   }
 
-  startPlayback () {
-    this.pc?.close()
-    this.ws?.close()
+  async onWebSocketOpen () {
+    consola.debug('[WebrtcGo2RtcCamera] socket opened')
 
-    this.pc = new RTCPeerConnection({
+    const config: RTCConfigurationWithSdpSemantics = {
       iceServers: [
-        {
-          urls: 'stun:stun.l.google.com:19302'
-        }
-      ]
-    })
+        { urls: 'stun:stun.l.google.com:19302' }
+      ],
+      sdpSemantics: 'unified-plan'
+    }
 
-    const localTracks = ['video', 'audio']
-      .map(kind => {
-        const init: RTCRtpTransceiverInit = {
-          direction: 'recvonly'
-        }
+    this.pc = new RTCPeerConnection(config)
 
-        return this.pc?.addTransceiver(kind, init).receiver.track
-      })
-      .filter((track): track is MediaStreamTrack => track != null)
-
-    this.cameraVideo.srcObject = new MediaStream(localTracks)
-
-    this.ws = new WebSocket(this.socketUrl)
-    this.ws.addEventListener('open', this.onWebSocketOpen)
-    this.ws.addEventListener('message', this.onWebSocketMessage)
-  }
-
-  onWebSocketOpen () {
-    this.pc?.addEventListener('icecandidate', ev => {
+    this.pc.onicecandidate = ev => {
       if (!ev.candidate) return
 
-      const msg = {
+      const msg: Go2RtcMessage = {
         type: 'webrtc/candidate',
-        value: ev.candidate.candidate
+        value: ev.candidate.toJSON().candidate
       }
 
       this.ws?.send(JSON.stringify(msg))
-    })
+    }
 
-    this.pc?.createOffer()
-      .then(offer => this.pc?.setLocalDescription(offer))
-      .then(() => {
-        const msg = {
-          type: 'webrtc/offer',
-          value: this.pc?.localDescription?.sdp
+    this.pc.onconnectionstatechange = () => {
+      switch (this.pc?.connectionState) {
+        case 'connected': {
+          const tracks = this.pc.getReceivers()
+            .map(receiver => receiver.track)
+
+          this.cameraVideo.srcObject = new MediaStream(tracks)
+
+          break
         }
+        case 'failed':
+        case 'disconnected':
+          this.startPlayback()
+      }
+    }
 
-        this.ws?.send(JSON.stringify(msg))
-      })
+    this.pc.addTransceiver('video', { direction: 'recvonly' })
+
+    const offer = await this.pc.createOffer()
+
+    await this.pc.setLocalDescription(offer)
+
+    const msg: Go2RtcMessage = {
+      type: 'webrtc/offer',
+      value: offer.sdp
+    }
+
+    this.ws?.send(JSON.stringify(msg))
   }
 
-  onWebSocketMessage (ev: MessageEvent) {
-    const msg = JSON.parse(ev.data) as {
-      type: 'webrtc/candidate' | 'webrtc/answer' | 'error',
-      value: string
-    }
+  async onWebSocketMessage (ev: MessageEvent) {
+    const msg: Go2RtcMessage = JSON.parse(ev.data)
 
     switch (msg.type) {
       case 'webrtc/candidate':
-        this.pc?.addIceCandidate({ candidate: msg.value, sdpMid: '0' })
+        try {
+          await this.pc?.addIceCandidate({ candidate: msg.value, sdpMid: '0' })
+        } catch (error) {
+          consola.warn('[WebrtcGo2RtcCamera] RTCPeerConnection.addIceCandidate() error', error)
+        }
         break
 
       case 'webrtc/answer':
-        this.pc?.setRemoteDescription({ type: 'answer', sdp: msg.value })
+        try {
+          this.pc?.setRemoteDescription({ type: 'answer', sdp: msg.value })
+        } catch (error) {
+          consola.warn('[WebrtcGo2RtcCamera] RTCPeerConnection.setRemoteDescription() error', error)
+        }
         break
 
       case 'error':
         consola.error(`[WebrtcGo2RtcCamera] ${msg.value}`)
-        break
+        this.pc?.close()
+    }
+  }
+
+  async onWebSocketClose (ev: CloseEvent) {
+    if (!ev.wasClean) {
+      consola.error('[WebrtcGo2RtcCamera] socket close was not clean', ev)
+
+      try {
+        await sleep(2000, this.abortController?.signal)
+
+        this.startPlayback()
+      } catch {}
     }
   }
 
   stopPlayback () {
-    this.pc?.close()
-    this.pc = null
+    this.abortController?.abort()
+    this.abortController = null
+    if (this.pc) {
+      this.pc.getSenders().forEach(sender => {
+        sender.track?.stop()
+      })
+      this.pc.close()
+      this.pc = null
+    }
     this.ws?.close()
     this.ws = null
     this.cameraVideo.src = ''
+    this.cameraVideo.srcObject = null
   }
 }
 </script>

@@ -84,6 +84,7 @@
       <file-system-download-dialog />
       <updating-dialog />
       <spool-selection-dialog />
+      <action-command-prompt-dialog />
     </v-main>
 
     <app-footer />
@@ -108,6 +109,7 @@ import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDi
 import type { FlashMessage } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-system-entry'
 import type { ThemeConfig } from '@/store/config/types'
+import ActionCommandPromptDialog from './components/common/ActionCommandPromptDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -119,7 +121,8 @@ import type { ThemeConfig } from '@/store/config/types'
   },
   components: {
     SpoolSelectionDialog,
-    FileSystemDownloadDialog
+    FileSystemDownloadDialog,
+    ActionCommandPromptDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {

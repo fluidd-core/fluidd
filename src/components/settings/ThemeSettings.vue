@@ -8,7 +8,15 @@
       dense
       class="mb-4"
     >
-      <app-setting :title="$t('app.setting.label.theme_preset')">
+      <app-setting>
+        <template #title>
+          <span>{{ $t('app.setting.label.theme_preset') }}</span>
+          <app-inline-help
+            bottom
+            small
+            :tooltip="$t('app.setting.tooltip.theme_disclaimer')"
+          />
+        </template>
         <v-select
           v-model="themePreset"
           filled

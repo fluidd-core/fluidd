@@ -130,11 +130,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       css: { charset: false },
+      scss: {
+        additionalData: '@import "@/scss/variables";\n'
+      },
       sass: {
-        additionalData: [
-          '@import "@/scss/variables.scss"',
-          ''
-        ].join('\n')
+        additionalData: '@import "@/scss/variables.scss"\n'
       }
     }
   },
