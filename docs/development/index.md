@@ -12,29 +12,46 @@ Fluidd is built using VueJS, and the Vuetify Framework to provide a cohesive,
 easily to implement UI.
 {: .fs-6 .fw-300 }
 
+## Dev Container in Visual Studio Code
+
+Fluidd includes a Dev Container configuration to easily open with Visual Studio Code
+(VSCode) and have every tool and dependency installed.
+
+### Install Visual Studio Code
+
+Follow the instruction from [Visual Studio Code](https://code.visualstudio.com/) to
+install.
+
+Make sure to also install the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+extension so that VSCode knows how to use the Dev Container configuration.
+
+### Install Docker
+
+Follow the instruction from [Docker](https://docs.docker.com/engine/install/) to install.
+
+### Open the Dev Container
+
+At this point all you need to do is open Fluidd folder in VSCode and you should see a
+popup indicating that it found a Dev Container configuration file; click the "Reopen in
+Container" to have everything configured.
+
+The configuration includes a container running [docker-klipper-simulavr](https://github.com/pedrolamas/docker-klipper-simulavr),
+a virtualized Klipper and Moonraker image that makes it easy to debug without a real
+printer.
+
 ## Running Fluidd locally
 
-### Install Node v16
+### Install Node v20
 
-Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v16.x.
-
-For example, on Ubuntu flavored Linux distributions,
-follow the instructions from [NodeSource](https://github.com/nodesource/distributions/blob/master/README.md#deb)
-under "Node.js v16.x":
-
-```bash
-# Using Ubuntu
-$ curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-$ sudo apt-get install -y nodejs
-```
+Follow the instructions from [Node.js](https://nodejs.org) to install Node.js, v20.x.
 
 Check that Node.js was installed properly:
 
 ```bash
 $ node --version
-v16.13.2
+v20.9.0
 $ npm --version
-8.3.2
+10.1.0
 ```
 
 ### Install dependencies
