@@ -4,7 +4,7 @@
   "name": "Fluidd Dev",
   "dockerComposeFile": "docker-compose.yml",
   "service": "fluidd",
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/workspaces/fluidd",
   "forwardPorts": [5000, 8080, 7125, 8110],
   "features": {
   },
@@ -32,5 +32,6 @@
         ]
       }
     }
-  }
+  },
+  "remoteUser": "vscode"
 }

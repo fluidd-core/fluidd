@@ -5,7 +5,7 @@ services:
     build:
       context: ./
     volumes:
-      - ../..:/workspaces:cached
+      - ..:/workspaces/fluidd/:cached
     command: sleep infinity
     networks:
       - fluidd-dev
