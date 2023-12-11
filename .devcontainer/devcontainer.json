@@ -1,0 +1,37 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/alpine
+{
+  "name": "Fluidd Dev",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "fluidd",
+  "workspaceFolder": "/workspaces/fluidd",
+  "forwardPorts": [5000, 8080, 7125, 8110],
+  "features": {
+  },
+  "postCreateCommand": "npm ci && npm run bootstrap",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "davidanson.vscode-markdownlint",
+        "dbaeumer.vscode-eslint",
+        "eamodio.gitlens",
+        "editorconfig.editorconfig",
+        "esbenp.prettier-vscode",
+        "lukas-tr.materialdesignicons-intellisense",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-yaml",
+        "vue.volar",
+        "vue.vscode-typescript-vue-plugin"
+      ],
+      "settings": {
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": true
+        },
+        "i18n-ally.localesPaths": [
+          "src/locales"
+        ]
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}

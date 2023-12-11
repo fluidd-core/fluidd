@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Serve",
+      "type": "npm",
+      "script": "serve",
+      "problemMatcher": [
+        "$vite"
+      ],
+      "isBackground": true
+    },
+    {
+      "label": "Build",
+      "type": "npm",
+      "script": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "Type check",
+      "type": "npm",
+      "script": "type-check",
+      "problemMatcher": []
+    },
+    {
+      "label": "Circular reference check",
+      "type": "npm",
+      "script": "circular-check",
+      "problemMatcher": []
+    },
+    {
+      "label": "Lint",
+      "type": "npm",
+      "script": "lint",
+      "problemMatcher": []
+    }
+  ]
+}

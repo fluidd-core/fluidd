@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  fluidd:
+    build:
+      context: ./
+    volumes:
+      - ..:/workspaces/fluidd/:cached
+    command: sleep infinity
+    networks:
+      - fluidd-dev
+    ports:
+      - "5000:5000"
+      - "8080:8080"
+
+  klipper-simulavr:
+    image: ei99070/docker-klipper-simulavr:latest
+    restart: unless-stopped
+    networks:
+      - fluidd-dev
+    ports:
+      - "7125:7125"
+      - "8110:8080"
+
+networks:
+  fluidd-dev:
+    driver: bridge
