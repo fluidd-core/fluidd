@@ -335,19 +335,23 @@ export const getters: GetterTree<PrinterState, RootState> = {
     return steppers
   },
 
+  getHasSteppersEnabled: (state, getters): boolean => {
+    const steppers = getters.getSteppers as Stepper[]
+
+    return Object.values(steppers)
+      .some(stepper => stepper.enabled == null || stepper.enabled)
+  },
+
   /**
    * Given axes, returns a boolean indicating if the axes are homed.
    */
   getHomedAxes: (state) => (axes?: string): boolean => {
-    if (axes && axes.length > 0) {
-      let r = false
-      const a = axes.split('')
-      a.forEach((char) => {
-        r = state.printer.toolhead.homed_axes.includes(char)
-      })
-      return r
-    }
-    return false
+    return (
+      axes != null &&
+      axes.length > 0 &&
+      axes.split('')
+        .every(char => state.printer.toolhead.homed_axes.includes(char))
+    )
   },
 
   getRunoutSensors: (state): RunoutSensor[] => {

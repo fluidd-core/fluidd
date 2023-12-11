@@ -25,14 +25,9 @@
         </app-btn>
       </app-setting>
 
-      <v-divider />
+      <template v-for="category in categories">
+        <v-divider :key="`divider-${category.name}`" />
 
-      <!-- <pre>{{ categories }}</pre> -->
-
-      <!-- Look through user categories.. -->
-      <template
-        v-for="category in categories"
-      >
         <app-setting
           :key="`category-${category.name}`"
           :r-cols="3"
@@ -74,25 +69,26 @@
 
           <!-- <v-icon>$chevronRight</v-icon> -->
         </app-setting>
-
-        <v-divider :key="`divider-${category.name}`" />
       </template>
 
-      <!-- Add the uncategorized macros.. -->
-      <app-setting
-        v-if="uncategorizedMacros.count > 0"
-        :key="`category-uncategorized`"
-        :r-cols="3"
-        @click="handleCategoryClick()"
-      >
-        <template #title>
-          {{ $t('app.general.label.uncategorized') }}
-          <v-chip small>
-            {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}
-          </v-chip>
-        </template>
-        <v-icon>$chevronRight</v-icon>
-      </app-setting>
+      <template v-if="uncategorizedMacros.count > 0">
+        <v-divider />
+
+        <!-- Add the uncategorized macros.. -->
+        <app-setting
+          :key="`category-uncategorized`"
+          :r-cols="3"
+          @click="handleCategoryClick()"
+        >
+          <template #title>
+            {{ $t('app.general.label.uncategorized') }}
+            <v-chip small>
+              {{ uncategorizedMacros.visible }} / {{ uncategorizedMacros.count }}
+            </v-chip>
+          </template>
+          <v-icon>$chevronRight</v-icon>
+        </app-setting>
+      </template>
 
       <macro-category-dialog
         v-if="categoryDialogState.open"

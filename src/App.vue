@@ -8,6 +8,12 @@
     <app-tools-drawer v-model="toolsdrawer" />
     <app-nav-drawer v-model="navdrawer" />
 
+    <inline-svg
+      v-if="showBackgroundLogo && !isMobileViewport"
+      :src="logoSrc"
+      class="background-logo"
+    />
+
     <app-bar
       @toolsdrawer="handleToolsDrawerChange"
       @navdrawer="handleNavDrawerChange"
@@ -78,6 +84,7 @@
       <file-system-download-dialog />
       <updating-dialog />
       <spool-selection-dialog />
+      <action-command-prompt-dialog />
     </v-main>
 
     <app-footer />
@@ -101,6 +108,8 @@ import FileSystemDownloadDialog from '@/components/widgets/filesystem/FileSystem
 import SpoolSelectionDialog from '@/components/widgets/spoolman/SpoolSelectionDialog.vue'
 import type { FlashMessage } from '@/types'
 import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-system-entry'
+import type { ThemeConfig } from '@/store/config/types'
+import ActionCommandPromptDialog from './components/common/ActionCommandPromptDialog.vue'
 
 @Component<App>({
   metaInfo () {
@@ -112,7 +121,8 @@ import { getFilesFromDataTransfer, hasFilesInDataTransfer } from './util/file-sy
   },
   components: {
     SpoolSelectionDialog,
-    FileSystemDownloadDialog
+    FileSystemDownloadDialog,
+    ActionCommandPromptDialog
   }
 })
 export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
@@ -128,16 +138,24 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
     type: undefined
   }
 
-  get theme () {
-    return this.$store.getters['config/getTheme']
+  get theme (): ThemeConfig {
+    return this.$store.state.config.uiSettings.theme as ThemeConfig
   }
 
-  get primaryColor () {
-    return this.theme.currentTheme.primary
+  get showBackgroundLogo () {
+    return this.theme.backgroundLogo
   }
 
-  get primaryOffsetColor () {
-    return this.theme.currentTheme.primaryOffset
+  get logoSrc () {
+    return `${import.meta.env.BASE_URL}${this.theme.logo.src}`
+  }
+
+  get primaryColor (): string {
+    return this.$vuetify.theme.currentTheme.primary?.toString() ?? ''
+  }
+
+  get primaryOffsetColor (): string {
+    return this.$vuetify.theme.currentTheme['primary-offset']?.toString() ?? ''
   }
 
   // Our app is in a loading state when the socket isn't quite ready, or
@@ -409,3 +427,15 @@ export default class App extends Mixins(StateMixin, FilesMixin, BrowserMixin) {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+  .background-logo {
+    pointer-events: none;
+    position: fixed;
+    width: 50%;
+    height: auto;
+    right: -10%;
+    bottom: -20%;
+    opacity: 8%;
+  }
+</style>

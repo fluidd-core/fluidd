@@ -33,7 +33,9 @@ export const defaultState = (): ConfigState => {
         toolheadControlStyle: 'cross',
         toolheadMoveDistances: [0.1, 1, 10, 25, 50, 100],
         toolheadXYMoveDistances: [1, 10, 50],
+        toolheadCircleXYMoveDistances: [1, 10, 25, 50],
         toolheadZMoveDistances: [0.1, 1, 10],
+        toolheadCircleZMoveDistances: [0.1, 1, 10, 50],
         useGcodeCoords: false,
         zAdjustDistances: [0.005, 0.01, 0.025, 0.050],
         enableVersionNotifications: true,
@@ -65,9 +67,8 @@ export const defaultState = (): ConfigState => {
         logo: {
           src: 'logo_fluidd.svg'
         },
-        currentTheme: {
-          primary: '#2196F3'
-        }
+        color: '#2196F3',
+        backgroundLogo: true
       },
       editor: {
         confirmDirtyEditorClose: true,

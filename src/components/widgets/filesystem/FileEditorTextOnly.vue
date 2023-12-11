@@ -2,7 +2,9 @@
   <textarea
     v-model="content"
     class="v-input v-textarea px-2"
-    :class="{'theme--dark': $vuetify.theme.dark}"
+    :class="{
+      [$vuetify.theme.dark ? 'theme--dark': 'theme--light']: true,
+    }"
     :readonly="readonly"
     spellcheck="false"
   />

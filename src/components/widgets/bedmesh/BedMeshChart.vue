@@ -22,6 +22,7 @@ import { Component, Prop, Watch, Ref, Mixins } from 'vue-property-decorator'
 import type { ECharts, EChartsOption, GraphicComponentOption } from 'echarts'
 import { merge, cloneDeepWith } from 'lodash-es'
 import BrowserMixin from '@/mixins/browser'
+import type { BedSize } from '@/store/printer/types'
 
 @Component({})
 export default class BedMeshChart extends Mixins(BrowserMixin) {
@@ -42,6 +43,10 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
 
   get flatSurface () {
     return this.$store.state.mesh.flatSurface
+  }
+
+  get bedSize (): BedSize | undefined {
+    return this.$store.getters['printer/getBedSize'] as BedSize | undefined
   }
 
   @Watch('flatSurface')
@@ -175,10 +180,14 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
       },
       xAxis3D: {
         type: 'value',
+        min: this.bedSize?.minX,
+        max: this.bedSize?.maxX,
         ...axisCommon
       },
       yAxis3D: {
         type: 'value',
+        min: this.bedSize?.minY,
+        max: this.bedSize?.maxY,
         ...axisCommon
       },
       zAxis3D: {

@@ -116,7 +116,7 @@ export default class CameraItem extends Vue {
 
   get cameraComponent () {
     if (this.camera.service) {
-      const componentName = `${this.$filters.startCase(this.camera.service).replace(' ', '')}Camera`
+      const componentName = `${this.$filters.startCase(this.camera.service).replace(/ /g, '')}Camera`
 
       if (componentName in CameraComponents) {
         return CameraComponents[componentName]
@@ -130,7 +130,8 @@ export default class CameraItem extends Vue {
   .camera-image {
     display: block;
     max-width: 100%;
-    max-height: calc(100vh - 56px - 32px);
+    max-height: calc(100vh - 130px);
+    max-height: calc(100svh - 130px);
     white-space: nowrap;
     margin: auto;
   }

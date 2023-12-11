@@ -120,9 +120,12 @@ export default class ConsoleCommand extends Vue {
 
   autoComplete () {
     const gcodeCommands: GcodeCommands = this.$store.getters['console/getAllGcodeCommands']
+
     if (this.newValue.length) {
-      const commands = Object.keys(gcodeCommands).filter((c: string) => c.toLowerCase().indexOf(this.newValue.toLowerCase()) === 0)
-      if (commands && commands.length === 1) {
+      const commands = Object.keys(gcodeCommands)
+        .filter(command => command.toLowerCase().startsWith(this.newValue.toLowerCase()))
+
+      if (commands.length === 1) {
         this.emitChange(commands[0])
       } else {
         commands.forEach((c) => {

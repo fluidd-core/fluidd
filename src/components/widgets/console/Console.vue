@@ -17,7 +17,10 @@
         ref="scroller"
         :items="flipLayout ? [...items].reverse() : items"
         :min-item-size="24"
-        :style="{ height: height + 'px' }"
+        class="console-scroller"
+        :class="{
+          'console-scroller-fullscreen': fullscreen
+        }"
         :key-field="keyField"
         :buffer="600"
         @resize="scrollToLatest()"
@@ -72,8 +75,8 @@ export default class Console extends Mixins(StateMixin) {
   @Prop({ type: String, default: 'id' })
   readonly keyField!: string
 
-  @Prop({ type: Number, default: 250 })
-  readonly height!: number
+  @Prop({ type: Boolean })
+  readonly fullscreen?: boolean
 
   @Prop({ type: Boolean })
   readonly readonly?: boolean
@@ -176,7 +179,7 @@ export default class Console extends Mixins(StateMixin) {
   sendCommand (command?: string) {
     if (command && command.length) {
       // If clients detect M112 input from the console, we should invoke the emergency_stop endpoint
-      if (command && command.trim().toLowerCase() === 'm112') {
+      if (command.trim().toLowerCase() === 'm112') {
         SocketActions.printerEmergencyStop()
       }
       this.sendGcode(command)
@@ -201,6 +204,14 @@ export default class Console extends Mixins(StateMixin) {
     font-size: 1rem; // 15 px
     font-weight: 100 !important;
     padding-left: 4px;
+  }
+
+  .console-scroller {
+    height: 300px;
+  }
+  .console-scroller-fullscreen {
+    height: calc(100vh - 240px);
+    height: calc(100svh - 240px);
   }
 
   .v-input {
