@@ -31,7 +31,24 @@
         <v-icon>$fullScreen</v-icon>
       </app-btn>
     </template>
-
+    <template
+      #collapse-button
+    >
+      <v-tooltip bottom>
+        <template #activator="{ on: tooltip }">
+          <v-btn
+            fab
+            small
+            text
+            v-on="{ ...tooltip}"
+            @click="copyImage()"
+          >
+            <v-icon>$camera</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t('app.bedmesh.tooltip.copy_image') }}</span>
+      </v-tooltip>
+    </template>
     <v-card-text>
       <bed-mesh-chart
         v-if="mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0"
@@ -56,6 +73,11 @@ import BrowserMixin from '@/mixins/browser'
 import type { AppMeshes } from '@/store/mesh/types'
 
 @Component({
+  computed: {
+    BedMeshChart () {
+      return BedMeshChart
+    }
+  },
   components: {
     BedMeshChart
   }
@@ -198,6 +220,10 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
   // The current processed mesh data, if any.
   get mesh (): AppMeshes {
     return this.$store.getters['mesh/getCurrentMeshData'] as AppMeshes
+  }
+
+  copyImage () {
+    (this.$refs.chart as BedMeshChart)?.copyImage()
   }
 }
 </script>

@@ -22,6 +22,7 @@ app:
       delete: Delete Profile
       load: Load Profile
       save: Commits calibrated profile to printer.cfg
+      copy_image: Copy bed mesh image
   chart:
     label:
       current: Actual
