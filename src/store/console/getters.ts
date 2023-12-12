@@ -1,5 +1,5 @@
 import type { GetterTree } from 'vuex'
-import type { ConsoleState } from './types'
+import type { ConsoleState, GcodeHelp } from './types'
 import type { RootState } from '../types'
 
 const _tempWaitExpr = /^(?:ok\s+)?(b|t\d+):\d+\.\d+ \/\d+\.+\d+/i
@@ -24,19 +24,14 @@ export const getters: GetterTree<ConsoleState, RootState> = {
     return state.consoleFilters
   },
 
-  getAllGcodeCommands: (state) => {
-    const commands = state.availableCommands
-    const additional = [
-      'TESTZ',
-      'ABORT',
-      'ACCEPT',
-      'ADJUSTED'
-    ]
-    additional.forEach(command => {
-      if (command in commands !== true) {
-        commands[command] = ''
+  getAllKnownCommands: (state): GcodeHelp => {
+    const commands = state.gcodeHelp
+
+    for (const extraCommand of ['TESTZ', 'ABORT', 'ACCEPT', 'ADJUSTED']) {
+      if (extraCommand in commands !== true) {
+        commands[extraCommand] = ''
       }
-    })
+    }
 
     return commands
   }

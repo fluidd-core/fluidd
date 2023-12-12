@@ -100,6 +100,9 @@ export const defaultState = (): PrinterState => {
         filament_total: 0,
         thumbnails: []
       },
+      gcode: {
+        commands: null
+      },
       gcode_move: {
         gcode_position: [0, 0, 0, 0],
         homing_origin: [],

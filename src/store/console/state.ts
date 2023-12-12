@@ -5,7 +5,7 @@ export const defaultState = (): ConsoleState => {
     consoleCommand: '',
     consoleEntryCount: 0,
     console: [],
-    availableCommands: {},
+    gcodeHelp: {},
     commandHistory: [],
     autoScroll: true,
     lastCleared: 0,

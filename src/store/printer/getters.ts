@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import type { GetterTree } from 'vuex'
 import type { RootState } from '../types'
-import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize } from './types'
+import type { PrinterState, Heater, Fan, Led, OutputPin, Sensor, RunoutSensor, KnownExtruder, MCU, Endstop, Probe, ExtruderStepper, Extruder, ExtruderConfig, ProbeName, Stepper, ScrewsTiltAdjustScrew, ScrewsTiltAdjust, BedScrews, BedSize, GcodeCommands } from './types'
 import { get } from 'lodash-es'
 import getKlipperType from '@/util/get-klipper-type'
 import i18n from '@/plugins/i18n'
+import type { GcodeHelp } from '../console/types'
 
 export const getters: GetterTree<PrinterState, RootState> = {
 
@@ -931,6 +932,23 @@ export const getters: GetterTree<PrinterState, RootState> = {
       maxX,
       maxY
     }
+  },
+
+  getAvailableCommands: (state, getters, rootState, rootGetters): GcodeCommands => {
+    const availableCommands = state.printer.gcode.commands as GcodeCommands | null
+
+    if (availableCommands) {
+      return availableCommands
+    }
+
+    const knownCommands = rootGetters['console/getAllKnownCommands'] as GcodeHelp
+
+    return Object.entries(knownCommands)
+      .reduce((availableCommands, [key, help]) => {
+        availableCommands[key] = { help }
+
+        return availableCommands
+      }, {} as GcodeCommands)
   },
 
   getIsManualProbeActive: (state) => {
