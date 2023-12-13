@@ -33,7 +33,7 @@ export default defineConfig({
         '**/*.svg',
         '**/*.png',
         '**/*.ico',
-        '*.json'
+        'editor.theme.json'
       ],
       injectManifest: {
         globPatterns: [

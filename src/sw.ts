@@ -1,8 +1,9 @@
 /// <reference lib="WebWorker" />
 
-import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute, PrecacheFallbackPlugin } from 'workbox-precaching'
+import { cleanupOutdatedCaches, createHandlerBoundToURL, precacheAndRoute } from 'workbox-precaching'
 import { NavigationRoute, registerRoute } from 'workbox-routing'
 import { StaleWhileRevalidate } from 'workbox-strategies'
+import { warmStrategyCache } from 'workbox-recipes'
 
 declare let self: ServiceWorkerGlobalScope
 
@@ -12,25 +13,27 @@ self.addEventListener('message', (event) => {
   }
 })
 
-registerRoute(
-  'config.json',
-  new StaleWhileRevalidate({
-    cacheName: 'config',
-    fetchOptions: {
-      cache: 'no-cache'
-    },
-    plugins: [
-      new PrecacheFallbackPlugin({
-        fallbackURL: 'config.json'
-      })
-    ]
-  }),
-  'GET'
-)
-
 precacheAndRoute(self.__WB_MANIFEST)
 
 cleanupOutdatedCaches()
+
+const configPathname = new URL('config.json', self.location.href).pathname
+
+const configStrategy = new StaleWhileRevalidate({
+  cacheName: 'config',
+  fetchOptions: {
+    cache: 'no-cache'
+  }
+})
+
+warmStrategyCache({
+  urls: [
+    configPathname
+  ],
+  strategy: configStrategy
+})
+
+registerRoute(configPathname, configStrategy, 'GET')
 
 const denylist = import.meta.env.DEV
   ? undefined
