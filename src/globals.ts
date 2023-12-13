@@ -148,6 +148,7 @@ import {
   mdiArchiveLock,
   mdiFileImage,
   mdiGauge,
+  mdiMonitorScreenshot,
   mdiRotateLeft,
   mdiRotateRight,
   mdiToothbrush
@@ -403,6 +404,7 @@ export const Icons = Object.freeze({
   jobQueue: mdiTrayFull,
   enqueueJob: mdiTrayPlus,
   sensors: mdiGauge,
+  screenshot: mdiMonitorScreenshot,
   zRotateClockwise: mdiRotateRight,
   zRotateCounterclockwise: mdiRotateLeft
 })

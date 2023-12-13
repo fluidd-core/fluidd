@@ -241,6 +241,18 @@ export default class BedMeshChart extends Mixins(BrowserMixin) {
     }
     return text
   }
+
+  async copyImage () {
+    const image = await fetch(this.chart.getDataURL({ type: 'png', backgroundColor: '#262629' }))
+
+    const blob = await image.blob()
+
+    const data = [
+      new ClipboardItem({ 'image/png': blob })
+    ]
+
+    await navigator.clipboard.write(data)
+  }
 }
 </script>
 
