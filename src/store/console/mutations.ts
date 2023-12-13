@@ -74,7 +74,7 @@ export const mutations: MutationTree<ConsoleState> = {
    * Defines the list of available commands
    */
   setGcodeHelp (state, payload) {
-    Vue.set(state, 'availableCommands', payload)
+    Vue.set(state, 'gcodeHelp', payload)
   },
 
   /**

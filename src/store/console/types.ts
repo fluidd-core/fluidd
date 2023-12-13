@@ -2,7 +2,7 @@ export interface ConsoleState {
   // [key: string]: string;
   consoleCommand: string;
   console: ConsoleEntry[]; // console stream
-  availableCommands: GcodeCommands; // available gcode commands
+  gcodeHelp: GcodeHelp; // known commands
   consoleEntryCount: number; // give each console entry a unique id.
   commandHistory: string[];
   autoScroll: boolean;
@@ -19,7 +19,7 @@ export interface ConsoleEntry {
   time?: number;
 }
 
-export interface GcodeCommands {
+export interface GcodeHelp {
   [key: string]: string;
 }
 

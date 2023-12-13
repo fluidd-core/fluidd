@@ -45,24 +45,31 @@
 <script lang="ts">
 import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
+import type { GcodeCommands } from '@/store/printer/types'
+import type { TranslateResult } from 'vue-i18n'
 
 type ToolChangeCommand = {
   name: string,
-  description: string,
+  description: string | TranslateResult,
   color?: string,
   active?: boolean
 }
 
 @Component({})
 export default class ToolChangeCommands extends Mixins(StateMixin) {
+  get availableCommands (): GcodeCommands {
+    return this.$store.getters['printer/getAvailableCommands'] as GcodeCommands
+  }
+
   get toolChangeCommands (): ToolChangeCommand[] {
-    const availableCommands = this.$store.state.console.availableCommands
+    const availableCommands = this.availableCommands
 
     return Object.keys(availableCommands)
       .filter(command => /^t\d+$/i.test(command))
       .map(command => {
-        const description = availableCommands[command] !== 'G-Code macro'
-          ? availableCommands[command]
+        const { help } = availableCommands[command]
+        const description = help && help !== 'G-Code macro'
+          ? help
           : this.$t('app.tool.tooltip.select_tool', { tool: command.substring(1) })
 
         const macro = this.$store.getters['macros/getMacroByName'](command.toLowerCase())

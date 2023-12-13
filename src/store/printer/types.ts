@@ -232,3 +232,11 @@ export interface BedSize {
   maxX: number;
   maxY: number;
 }
+
+export interface GcodeCommands {
+  [key: string]: GcodeCommand
+}
+
+export interface GcodeCommand {
+  help?: string
+}
