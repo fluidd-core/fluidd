@@ -13,6 +13,13 @@ self.addEventListener('message', (event) => {
   }
 })
 
+const swPath = self.location.pathname
+const swPathIndex = swPath.lastIndexOf('/')
+
+const baseUrl = swPathIndex >= 0
+  ? swPath.substring(0, swPathIndex + 1)
+  : '/'
+
 registerRoute(
   `${import.meta.env.BASE_URL}config.json`,
   new StaleWhileRevalidate({
@@ -33,7 +40,7 @@ precacheAndRoute(self.__WB_MANIFEST)
 
 cleanupOutdatedCaches()
 
-const escapedBaseUrl = escapeRegExp(import.meta.env.BASE_URL)
+const escapedBaseUrl = escapeRegExp(baseUrl)
 
 const denylist = import.meta.env.DEV
   ? undefined
