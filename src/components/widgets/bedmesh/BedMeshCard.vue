@@ -7,11 +7,9 @@
     :collapsable="!fullscreen"
     layout-path="dashboard.bed-mesh-card"
   >
-    <template
-      v-if="!fullscreen"
-      #menu
-    >
+    <template #menu>
       <app-btn
+        v-if="!fullscreen"
         small
         class="ms-1 my-1"
         :loading="hasWait($waits.onMeshCalibrate)"
@@ -22,36 +20,34 @@
       </app-btn>
 
       <app-btn
+        v-if="canCopyImage"
         color=""
         fab
         x-small
         text
+        class="ms-1 my-1"
+        :disabled="!hasMeshLoaded"
+        @click="copyImage()"
+      >
+        <v-icon>$screenshot</v-icon>
+      </app-btn>
+
+      <app-btn
+        v-if="!fullscreen"
+        color=""
+        fab
+        x-small
+        text
+        class="ms-1 my-1"
         @click="$filters.routeTo($router, '/tune')"
       >
         <v-icon>$fullScreen</v-icon>
       </app-btn>
     </template>
-    <template
-      #collapse-button
-    >
-      <v-tooltip bottom>
-        <template #activator="{ on: tooltip }">
-          <v-btn
-            fab
-            small
-            text
-            v-on="{ ...tooltip}"
-            @click="copyImage()"
-          >
-            <v-icon>$camera</v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t('app.bedmesh.tooltip.copy_image') }}</span>
-      </v-tooltip>
-    </template>
+
     <v-card-text>
       <bed-mesh-chart
-        v-if="mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0"
+        v-if="hasMeshLoaded"
         ref="chart"
         :options="options"
         :data="series"
@@ -65,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator'
+import { Component, Mixins, Prop, Ref } from 'vue-property-decorator'
 import BedMeshChart from './BedMeshChart.vue'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
@@ -73,11 +69,6 @@ import BrowserMixin from '@/mixins/browser'
 import type { AppMeshes } from '@/store/mesh/types'
 
 @Component({
-  computed: {
-    BedMeshChart () {
-      return BedMeshChart
-    }
-  },
   components: {
     BedMeshChart
   }
@@ -85,6 +76,16 @@ import type { AppMeshes } from '@/store/mesh/types'
 export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, BrowserMixin) {
   @Prop({ type: Boolean })
   readonly fullscreen?: boolean
+
+  @Ref('chart')
+  readonly bedMeshChart!: BedMeshChart
+
+  get hasMeshLoaded () {
+    const mesh = this.mesh
+    const matrix = this.matrix
+
+    return mesh && mesh[matrix] && mesh[matrix].coordinates && mesh[matrix].coordinates.length > 0
+  }
 
   get options () {
     const map_scale = this.scale / 2
@@ -222,8 +223,16 @@ export default class BedMeshCard extends Mixins(StateMixin, ToolheadMixin, Brows
     return this.$store.getters['mesh/getCurrentMeshData'] as AppMeshes
   }
 
+  get canCopyImage () {
+    return (
+      typeof navigator.clipboard === 'object' &&
+      typeof navigator.clipboard.write === 'function' &&
+      typeof ClipboardItem === 'function'
+    )
+  }
+
   copyImage () {
-    (this.$refs.chart as BedMeshChart)?.copyImage()
+    this.bedMeshChart.copyImage()
   }
 }
 </script>
