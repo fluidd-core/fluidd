@@ -19,18 +19,27 @@
         {{ $t('app.general.btn.calibrate') }}
       </app-btn>
 
-      <app-btn
+      <v-tooltip
         v-if="canCopyImage"
-        color=""
-        fab
-        x-small
-        text
-        class="ms-1 my-1"
-        :disabled="!hasMeshLoaded"
-        @click="copyImage()"
+        bottom
       >
-        <v-icon>$screenshot</v-icon>
-      </app-btn>
+        <template #activator="{ on, attrs }">
+          <app-btn
+            v-bind="attrs"
+            color=""
+            fab
+            x-small
+            text
+            class="ms-1 my-1"
+            :disabled="!hasMeshLoaded"
+            v-on="on"
+            @click="copyImage()"
+          >
+            <v-icon>$screenshot</v-icon>
+          </app-btn>
+        </template>
+        <span>{{ $t('app.bedmesh.tooltip.copy_image') }}</span>
+      </v-tooltip>
 
       <app-btn
         v-if="!fullscreen"
