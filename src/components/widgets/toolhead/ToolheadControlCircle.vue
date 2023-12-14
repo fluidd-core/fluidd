@@ -1,6 +1,7 @@
+  <!-- Circle control adapted from Mainsail's cirlce control, new SVG icons added for toolhead centering
+       heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
+       modified to work with fluidd's concepts -->
 <template>
-  <!-- Circle control adapted from Mainsail's cirlce control, new SVG icons added for toolhead centering -->
-  <!-- https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CircleControl.vue -->
   <div>
     <v-row>
       <v-col class="pa-0 mt-1">
@@ -675,9 +676,6 @@ import { Component, Mixins } from 'vue-property-decorator'
 import StateMixin from '@/mixins/state'
 import ToolheadMixin from '@/mixins/toolhead'
 import type { BedSize } from '@/store/printer/types'
-
-// heavly adapted from https://github.com/mainsail-crew/mainsail/blob/develop/src/components/panels/ToolheadControls/CrossControl.vue
-// modified to work with fluidd concepts.
 
 @Component({})
 export default class ToolheadControlCircle extends Mixins(StateMixin, ToolheadMixin) {
