@@ -39,8 +39,7 @@ export default defineConfig({
         globPatterns: [
           '**/*.{js,css,html,ttf,woff,woff2,wasm}'
         ],
-        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2,
-        rollupFormat: 'iife'
+        maximumFileSizeToCacheInBytes: 4 * 1024 ** 2
       },
       manifest: {
         name: 'fluidd',
