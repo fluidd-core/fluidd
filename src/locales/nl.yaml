@@ -9,9 +9,12 @@ app:
       remove_profile: Verwijder %{name} profiel
       scale: Kleurschaal
       wireframe: Draadframe
+      base: base
+      active: actief
     msg:
       hint: >-
-        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook voor
+        Als je je bestand opslaat onder een andere naam dan %{name}, kun je er ook
+        voor
         kiezen %{name} te verwijderen.
       not_found: Geen bedmeshes gevonden.
       not_loaded: Geen meshes geladen
@@ -26,18 +29,24 @@ app:
       item: Item
       power: Kracht
       target: Doelwit
+      rate_of_change: Wijzig
     tooltip:
       help: >-
-        Houd shift ingedrukt om te zoomen.<br />Klik op een item om deze aan of uit te
-        schakelen in de grafiek.
+        Houd <kbd>shift</kbd> ingedrukt om te zoomen.<br />Klik op een item om deze
+        aan of uit te schakelen in de grafiek.<br />Click a power to toggle in the
+        graph.
   console:
     label:
       auto_scroll: Automatisch scrollen
       hide_temp_waits: Verberg temperatuurwachten
+      flip_layout: Flip layout
     placeholder:
       command: >-
         'tab' voor autocomplete, 'help' voor commandos 'pijltjes' voor
         geschiedenis
+    tooltip:
+      help: Typ "help" voor commando's<br />Gebruik <kbd>Tab</kbd>voor automatisch
+        aanvullen<br />Gebruik <kbd>&uarr;</kbd> en<kbd>&darr;</kbd> voor geschiedenis
   endpoint:
     error:
       cant_connect: >-
@@ -69,6 +78,9 @@ app:
       label:
         print_start_time: Filter geprint
         print_start_time_desc: Filtert de items die je al geprint hebt weg
+        rolled_log_files: Filter roterende log bestanden
+        klipper_backup_files: Filter Klipper backup bestanden
+        hidden_files_folders: Filter verborgen bestanden en mappen
     label:
       dir_name: Mapnaam
       disk_usage: Schijfgebruik
@@ -77,6 +89,7 @@ app:
       file_name: Bestandsnaam
       transfer_rate: Snelheid
       uploaded: Geüpload
+      view_section_documentation: Bekijk '%{section}' documentatie
     msg:
       not_found: Geen bestanden gevonden
       processing: Verwerken...
@@ -87,9 +100,23 @@ app:
       rename_dir: Map hernoemen
       rename_file: Bestand hernoemen
       upload_file: Upload bestand | Bestanden uploaden
+      go_to_file: Ga naar bestand
+      command_palette: Command Palette
+      duplicate_file: Dupliceer Bestand
+      duplicate_dir: Dupliceer Directory
     tooltip:
       low_on_space: Weinig geheugen over op de schijf
       root_disabled: '{root} is niet beschikbaar. Controleer je logs.'
+      items_count: '{count} item | {count} items'
+    overlay:
+      drag_files_enqueue: <strong>Sleep</strong> bestanden hier om in rij te zetten
+      drag_files_folders_upload: <strong>Sleep</strong> bestanden en mappen hierheen
+        voor upload
+    url:
+      moonraker_telegram_bot_config: https://github.com/nlef/moonraker-telegram-bot/wiki/Sample-config#%{hash}
+      moonraker_config: https://moonraker.readthedocs.io/en/latest/configuration/#%{hash}
+      klipper_config: https://www.klipper3d.org/Config_Reference.html#%{hash}
+      crowsnest_config: https://crowsnest.mainsail.xyz/configuration/%{hash}-section
   gcode:
     btn:
       load_current_file: Laad huidig ​​bestand
@@ -104,12 +131,18 @@ app:
       show_next_layer: Toon volgende laag
       show_previous_layer: Toon vorige laag
       show_retractions: Toon terugtrekpunten
+      parsing_file: Analyseren bestand
+      exclude_object: Uitsluiten Object
+      show_current_layer: Toon huidige laag
+      show_parts: Toon onderdelen
     msg:
       confirm: >-
         Het bestand "% {filename}" is% {size}, dit kan resource-intensief zijn
         voor uw systeem.
 
         Weet je het zeker?
+    overlay:
+      drag_file_load: <strong>Sleep</strong> hier een gcode bestand om te laden
   general:
     btn:
       add: Toevoegen
@@ -159,6 +192,33 @@ app:
       upload: Uploaden
       upload_print: Uploaden & Printen
       view: Bekijken
+      add_to_queue: Voeg toe aan Queue
+      auth_unsure: Niet zeker waarom je dit ziet?
+      save_config_and_restart: Opslaan configuratie & herstarten
+      reload: Herladen
+      print: Print
+      delete: Verwijder
+      logout: Uitloggen
+      reset_default_layout: Reset Standaard Indeling
+      upload_folder: Upload Map
+      reset_stats: Reset Stats
+      return_dashboard: Ga terug naar het dashboard
+      snooze: Snooze
+      go_to_file: Ga naar bestand
+      set_default_layout: Gebruik als Standaard Indeling
+      upload_files: Bestanden Uploaden
+      adjusted: Bijgesteld
+      forgot_password: Wachtwoord vergeten?
+      create_zip_archive: Maak ZIP Archief
+      retry: Opnieuw
+      accept: Accepteren
+      duplicate: Dupliceer
+      login: Inloggen
+      filter: Filter
+      refresh_metadata: Ververs Metadata
+      thumbnail_size: Thumbnail grootte
+      select_columns: Selecteer kolommen
+      abort: Afbreken
     error:
       app_setup_link: >-
         Fluidd opstart vereisten kan je <a target="_blank" href="%{url}">hier</a>
@@ -225,9 +285,40 @@ app:
       velocity: Snelheid
       visible: Zichtbaar
       z_offset: Z-Offset
+      turn_device_off: Zet %{device} uit
+      edit_filter: Wijzig Filter
+      pause_at_layer: Pauzeer bij Laag
+      cross: Kruis
+      command: Commando
+      current_user: Huidige gebruiker
+      'on': Aan
+      layer: Laag
+      slicer: Slicer
+      all: Alle
+      edit_category: Wijzig categorie
+      thumbnail_size: Thumbnail Grootte
+      upload_and_print: Uploaden en Printen
+      file_time: Bestand
+      pause_at_layer_number: Pauzeer bij laag nummer
+      file: Bestand
+      auth_source: Authenticatie Bron
+      username: Gebruikersnaam
+      actual_time: Werkelijke
+      circle: Cirkel
+      finish_time: Afronden
+      total: Totaal
+      add_category: Voeg categorie toe
+      filament: Filament
+      accepted_screws: Geaccepteerde screws
+      turn_device_on: Zet %{device} aan
+      default: Standaard
+      pause_at_next_layer: Pauzeer bij volgende laag
+      add_filter: Filter Toevoegen
+      alias: Alias
     msg:
       password_changed: Wachtwoord aangepast
       wrong_password: Oeps! Er is iets fout gegaan, klopt je wachtwoord wel?
+      offline_ready: Fluidd is nu klaar om offline te werken.
     simple_form:
       error:
         arrayofnums: Alleen nummers
@@ -238,10 +329,18 @@ app:
         min_or_0: Min %{min} or 0
         password_username: Gebruikersnaam mag niet overeenkomen met je wachtwoord.
         required: Vereist
+        invalid_number: Ongeldig Getal
+        credentials: Ongeldige credentials
       msg:
         confirm: Weet je dit zeker?
         confirm_reboot_host: Weet je dit zeker? Hierdoor zal je host systeem herstarten.
         confirm_shutdown_host: Weet je dit zeker? Hierdoor zal je host systeem afsluiten.
+        unsaved_changes: Er zijn niet opgeslagen wijzigingen. Weet je zeker dat je
+          dit bestand wilt sluiten?
+        confirm_forcemove_toggle: Weet je het zeker? Dit kan de printer beschadigen.
+        confirm_service_stop: Weet je zeker dat je de %{name} service wilt stoppen?
+        confirm_service_start: Weet je zeker dat je de %{name} service wilt starten?
+        confirm_service_restart: Weet je zeker dat je de %{name} service wilt herstarten?
     table:
       header:
         actions: Acties
@@ -265,6 +364,8 @@ app:
         start_time: Gestart
         status: Status
         total_duration: Totale tijd
+        filament_type: Filament type
+        filament_name: Filament naam
     title:
       add_printer: Printer toevoegen
       bedmesh: Bed Mesh
@@ -290,11 +391,13 @@ app:
       temperature: Temperaturen
       tool: Werktuig
       tune: Afstellen
+      other_files: Andere Bestanden
     tooltip:
       estop: Noodstop
       reload_klipper: Herlaad de klipper configuratie.
       reload_restart_klipper: Herlaad de klipper configuratie en herstart de MCUs.
       restart_klipper: Start klipper opnieuw op.
+      notifications: Notificaties
   printer:
     state:
       busy: Bezig
@@ -433,3 +536,6 @@ app:
       invalid: duidt op lokale veranderingen in je repo
       packages: Pakketten
       release_notes: Release notities
+  sensors:
+    title:
+      sensors: Sensoren
